@@ -335,7 +335,7 @@ ANALYSIS_SCHEMA = "qi-pathion-one-cz-null-analysis-v2"
 # control's power), each template appears in REPLICATES batches of each kind,
 # and the X-only joint preparations run at JOINT_SHOTS.
 BATCH_SHOTS = 32768
-CONTROL_SHOTS = 65536
+CONTROL_SHOTS = 131072
 REPLICATES = 2
 JOINT_SHOTS = 16384
 QX_SHOTS = 2048
@@ -368,15 +368,25 @@ LOW_NAMES = tuple(name for name, _ in LOW_CZ)
 # hypothesis, from c2_one_cz_mech.txt and c2_one_cz_twins.txt (each model sized to give b0's base circuit +0.0164). The
 # X-axis over-rotation (sized to 0.0513 rad after every X90 and X gate) and the q12 correlation leave a 6-CZ block at
 # 0, and the worst admitted over-rotation about another axis (Y, before or after the pulse gate, 0.07 rad) leaves it at
-# 0.0038 and 0.0039; the coin-conditioned dropout reads the b0 value on it;
-# the superposition-only offset is a hypothesis with no simulation, an offset that the classical-coin twin cannot show.
+# 0.0038 and 0.0039; the coin-conditioned dropout reads the b0 value on it; the two X-axis over-rotations that also
+# rotate Rz (before and after every single-qubit gate, angles sized to b0) lie outside the admitted set, because
+# cqasm.md lists Rz as native on Tuna-17 and the frame-change hypothesis is unverified, and are listed in
+# OUTSIDE_ADMITTED; the superposition-only offset is a hypothesis with no simulation, an offset that the classical-coin
+# twin cannot show.
 PREDICTED: dict[str, dict[str, float]] = {
     "over_rotation": {"s_b0": 0.0164, "t_b0": 0.0166, "s_k": 0.0, "t_k": 0.0},
     "over_rotation_y_axis": {"s_b0": 0.0164, "t_b0": 0.0164, "s_k": 0.0038, "t_k": 0.0039},
     "coin_dropout": {"s_b0": 0.0164, "t_b0": 0.0170, "s_k": 0.0164, "t_k": 0.0170},
     "q12_correlation": {"s_b0": 0.0164, "t_b0": 0.0170, "s_k": 0.0, "t_k": 0.0},
     "superposition_only": {"s_b0": 0.0164, "t_b0": 0.0, "s_k": 0.0164, "t_k": 0.0},
+    "over_rotation_x_all_before": {"s_b0": 0.0164, "t_b0": 0.0164, "s_k": 0.0076, "t_k": 0.0103},
+    "over_rotation_x_all_after": {"s_b0": 0.0164, "t_b0": 0.0164, "s_k": -0.0040, "t_k": 0.0},
 }
+OUTSIDE_ADMITTED = ("over_rotation_x_all_before", "over_rotation_x_all_after")
+# The band of the b0-like row: a resolved 6-CZ mean m reads b0-like only within B0_LIKE_Z combined standard errors of
+# the b0 combination r, which bounds how far below r a response may sit. The over-rotation about X before every
+# single-qubit gate sits 3.1 se below r, and a band of 3 se read it as b0-like in 48 percent of series.
+B0_LIKE_Z = 2.0
 WORLDS_SIZED = ("absent", *PREDICTED)
 CONTROL_KIND = pcs.CONTROL_KIND
 # Operating characteristics: Gaussian batch estimates at the design standard errors, drawn from a QRNG seed.
@@ -627,7 +637,8 @@ def preregistered() -> dict[str, str]:
         "six_cz": f"c and d the inverse-variance means of the three 6-CZ base and twin contrasts, m their combination "
         f"and r the combination of s0 and t0: contexts disagree when |c - d| exceeds {z} combined se; zero when |m| "
         f"is within {z} se and r - m exceeds {z} combined se; b0-like when m exceeds {z} se and |r - m| is within "
-        f"{z} combined se; otherwise unresolved",
+        f"{B0_LIKE_Z} combined se; intermediate (unresolved) when m exceeds {z} se outside that band; otherwise "
+        "unresolved",
         "calibration": "the eight X-only preparations of q2, q8 and q12 are a secondary readout calibration in a "
         "terminal-assignment context: D, the selector misassignment with the coin prepared 1 minus 0 at a prepared "
         f"selector 1, and G, with q12 prepared 0 minus 1, are reported with large (>= {MODEL_SIZE} - {z} se) and small "
@@ -765,7 +776,10 @@ def design() -> dict[str, Any]:
             round(jobs * 2.6 + shots_total * 0.53e-3, 1),
             round(jobs * 2.6 + shots_total * timing["seconds_per_shot_max"], 1),
         ],
+        "longest_job_seconds": round(2.6 + max(row_shots(r) for r in rows) * timing["seconds_per_shot_max"], 1),
+        "job_seconds_limit": 300,
         "pause_seconds_per_batch": 30,
+        "pause_seconds_total": 30 * (len(rows) - 1),
         "coin_series_timing": timing,
     }
 
@@ -785,15 +799,21 @@ OUTCOMES: dict[str, tuple[str, str]] = {
         "refuted as modeled: the over-rotation predicts the offset in the classical-coin twin as well",
     ),
     "zero": (
-        "6-CZ blocks read zero in both contexts: the coin-conditioned selector dropout is excluded; a coherent "
-        "over-rotation and a q12 correlation remain, and these observables do not separate them",
+        "6-CZ blocks read zero in both contexts: the coin-conditioned selector dropout is excluded; consistent with "
+        "the over-rotation, the assignment-level q12 flip being excluded by the retained brackets; a post-schedule q12 "
+        "correlation remains",
         "survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction "
-        "of zero, is unmet; the q12 correlation stays open",
+        "of zero, is unmet; a post-schedule q12 correlation stays open",
     ),
     "b0_like": (
         "6-CZ blocks read the b0 value in both contexts: consistent with a coin-conditioned selector dropout, and the "
         "over-rotation and the q12 correlation are excluded",
         "refuted as stated: the resolved 6-CZ response is inconsistent with the model's bounded prediction of zero",
+    ),
+    "intermediate": (
+        "unresolved: the 6-CZ response is resolved above zero and sits outside the b0 band, an intermediate response "
+        "that matches no modeled mechanism",
+        "unchanged; the numbers are reported",
     ),
     "unresolved_batch": (
         "unresolved: replicate batches disagree beyond the heterogeneity bound",
@@ -857,8 +877,10 @@ def decide_estimates(rows: dict[str, dict[str, list[tuple[float, float]]]]) -> d
         label = "unresolved_context"
     elif abs(m[0]) <= z * m[1] and diff >= z * diff_se:
         label = "zero"
-    elif m[0] >= z * m[1] and abs(diff) <= z * diff_se:
+    elif m[0] >= z * m[1] and abs(diff) <= B0_LIKE_Z * diff_se:
         label = "b0_like"
+    elif m[0] >= z * m[1]:
+        label = "intermediate"
     else:
         label = "unresolved"
     outcome, effect = OUTCOMES[label]
@@ -909,6 +931,7 @@ def predictions(operating: bool = True) -> dict[str, Any]:
         "under each hypothesis, from docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.txt and "
         "c2_one_cz_twins.txt",
         "predicted_contrast": PREDICTED,
+        "outside_admitted_set": list(OUTSIDE_ADMITTED),
         "design": design(),
         "preregistered": preregistered(),
         "outcomes": {label: {"outcome": v[0], "a5_186": v[1]} for label, v in OUTCOMES.items()},

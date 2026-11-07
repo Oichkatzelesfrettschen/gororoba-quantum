@@ -22,11 +22,14 @@ the raw selector contrast of the base circuit (s) and of the coin-twin pair (t, 
 
 The over-rotation model is named exactly: `c3_mech2.simulate` multiplies each X90 and X gate by an X rotation of the
 stated angle, before the gate in time, and leaves Rz exact. The robustness replay (`c2_one_cz_twins.txt`, section 4)
-repeats it about X, Y and Z, before and after the gate in time, on the pulse gates X90 and X (the admitted set; hypothesis:
-Rz is a frame change, not a pulse), with the angle sized to b0 wherever |angle| <= 0.15 rad reaches +0.0164: the largest
+repeats it about X, Y and Z, before and after the gate in time, on the pulse gates X90 and X (the admitted set; the
+hypothesis that Rz is a frame change, which would exempt it from pulse errors, is unverified: `cqasm.md` lists Rz as native
+on Tuna-17), with the angle sized to b0 wherever |angle| <= 0.15 rad reaches +0.0164: the largest
 6-CZ response over the 12 admitted sized models is 0.0038 (base) and 0.0039 (twin), so "zero" below means within three
 standard errors of zero and the over-rotation's bounded prediction is |6-CZ contrast| <= 0.0039. A rotation added to
-every single-qubit gate including Rz is outside the admitted set; it reaches 0.0076 and 0.0103.
+every single-qubit gate including Rz is outside the admitted set; before every gate (angle -0.0786 rad) it reaches 0.0076
+(base) and 0.0103 (twin), after every gate (-0.1150 rad) -0.0040 and 0. Both are rows of the operating characteristics
+below.
 
 A 1-CZ test does not exist on this device: a coin block compiles to 3 CZ at all-to-all connectivity, and with b0's whole
 role map held it routes to 12 CZ, where the over-rotation itself predicts +0.028 (0.0279 to 0.0549 over every candidate
@@ -44,7 +47,7 @@ template's own gate sequence and shows no arm-label error.
 
 - Batches 00-15 (16 template batches, mirrored order): for b0, k4, k8, k12, two base batches [readout-0, template,
   readout-1] and two twin batches (the forward round [readout-0, coin-0 twin, coin-1 twin], the mirror round
-  [coin-1 twin, coin-0 twin, readout-1]). Circuits run at 32,768 shots, b0's base circuit at 65,536. The second round
+  [coin-1 twin, coin-0 twin, readout-1]). Circuits run at 32,768 shots, b0's base circuit at 131,072 (the Tuna-17 maximum per job). The second round
   repeats the first in reverse (b0 base, b0 twin, k4 twin, k4 base, k8 base, k8 twin, k12 twin, k12 base, then the same
   list backwards), so each template's base and twin batches sit at mirrored positions and a linear drift cancels between
   replicates. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte (the transpiler seed and role map of the
@@ -85,11 +88,14 @@ the context of the others. A noise simulation of a calibration that is not known
 
 - Backend: Tuna-17 (type 7, `tuna_17`), region q2, q4, q8, q11, q12 (the excluded qubits of the coin series, q15 and q13,
   stay out). QX emulator (type 1) for the twin.
-- Jobs and shots: 56 jobs in 19 batches of at most 3 circuits, 1,900,544 shots in all, every job at or under 131,072
-  shots and the 300 s job limit. The power rule below raised b0's base circuits from 32,768 to 65,536 shots, which added
-  196,608 shots and about 110 s of execution.
-- Expected time: about 19 to 21 minutes of execution (1,153 to 1,268 s: 2.6 s per job plus 0.53 ms per shot, and the
-  coin series' 0.59 ms per shot), 18 pauses of 30 s between batches, plus queue time.
+- Jobs and shots: 56 jobs in 19 batches of at most 3 circuits, 2,293,760 shots in all, every job at or under 131,072
+  shots (`backends.md`). The longest job, a 131,072-shot b0 base circuit, takes about 80 s (2.6 s plus 0.59 ms per shot),
+  well under the 300 s job limit; the three jobs of a b0 base batch take about 4 minutes. The b0 base circuits rose from
+  32,768 to 131,072 shots after the final review (the b0-like band of 2 se needs a tighter control to keep the dropout
+  world deciding), which added 589,824 shots over the first design and 393,216 over the 65,536-shot version, about 230 s
+  of execution.
+- Expected time: about 23 to 25 minutes of execution (1,361 to 1,500 s: 2.6 s per job plus 0.53 ms per shot, and the
+  coin series' 0.59 ms per shot), 18 pauses of 30 s (540 s) between batches, plus queue time.
 - Quota: `docs/notes/quantum_inspire/usage.md` records no metered seconds, credits or minutes for this account.
 
 ## Preregistered decision rules
@@ -97,7 +103,7 @@ the context of the others. A noise simulation of a calibration that is not known
 Z = 3 standard errors. The raw counts are read.
 
 1. Estimates: each batch gives a base contrast (value, binomial se) or a twin contrast; replicate batches of one template
-   and kind pool by inverse variance. Pooled standard errors: b0 base 0.0028 and twin 0.0028; each 6-CZ base 0.0039 and
+   and kind pool by inverse variance. Pooled standard errors: b0 base 0.0020 and twin 0.0028; each 6-CZ base 0.0039 and
    twin 0.0028.
 2. Heterogeneity (before any class): replicate batches of one template and kind must agree within chi-square 10.83 (1
    degree of freedom, alpha 0.001 across the eight comparisons); the three 6-CZ blocks must agree within chi-square 9.21
@@ -108,13 +114,15 @@ Z = 3 standard errors. The raw counts are read.
    the coin in superposition, otherwise unresolved.
 5. 6-CZ class: c and d the pooled 6-CZ base and twin contrasts, m their inverse-variance combination (se about 0.0013),
    r the combination of s0 and t0. The contexts disagree when |c - d| exceeds 3 combined se (unresolved). Zero when |m|
-   is within 3 se and r - m exceeds 3 combined se; b0-like when m exceeds 3 se and |r - m| is within 3 combined se;
-   otherwise unresolved.
+   is within 3 se and r - m exceeds 3 combined se; b0-like when m exceeds 3 se and |r - m| is within 2 combined se
+   (`B0_LIKE_Z`, which bounds how far below r a resolved response may sit and still read as the b0 value); intermediate
+   (unresolved) when m exceeds 3 se outside that band; otherwise unresolved.
 
 | class | outcome | effect on A5-186 |
 |---|---|---|
 | zero | 6-CZ blocks read zero in both contexts: the coin-conditioned dropout is excluded; consistent with the over-rotation, the assignment-level q12 flip being excluded by the retained brackets; a post-schedule q12 correlation remains | survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction of zero (|contrast| <= 0.0039), is unmet; a post-schedule q12 correlation stays open |
 | b0-like | 6-CZ blocks read the b0 value in both contexts: consistent with the coin-conditioned dropout; the over-rotation and the q12 correlation are excluded | refuted as stated: the resolved 6-CZ response is inconsistent with the bounded prediction of zero |
+| intermediate | 6-CZ blocks resolve above zero and outside the b0 band: a response that matches no modeled mechanism | unchanged |
 | superposition only | b0's classical-coin twin reads below its base contrast | refuted as modeled: the over-rotation predicts the offset in the twin as well |
 | offset absent | b0's base contrast no longer reads positive | unchanged |
 | any other | unresolved, numbers reported | unchanged |
@@ -132,24 +140,40 @@ relaxation on the coin edge, and drift between the batches are not fitted.
 
 `prediction.json` (`operating_characteristics`; 20,000 simulated series per world drawn at the design standard errors and
 decided by the rule above, so every gate and comparison counts; `--operating-characteristics` repeats it). Share of runs
-that read each row:
+that read each row, stationary; "no mechanism decided" is the intermediate, offset-absent and unresolved shares together:
 
-| world | zero | b0-like | superposition only | offset absent | unresolved (all kinds) |
-|---|---|---|---|---|---|
-| over-rotation (X axis) | 0.963 | 0 | 0.0002 | 0.0014 | 0.035 |
-| q12 correlation | 0.967 | 0 | 0.0001 | 0.0020 | 0.031 |
-| coin-conditioned dropout | 0 | 0.965 | 0.0002 | 0.0019 | 0.033 |
-| superposition-only offset | 0 | 0 | 0.858 | 0.0016 | 0.140 |
-| no offset | 0 | 0 | 0.0003 | 0.972 | 0.028 |
-| worst admitted over-rotation (Y axis, 6-CZ 0.0038 / 0.0039) | 0.496 | 0.008 | 0.0001 | 0.0013 | 0.495 |
+| world | zero | b0-like | intermediate | superposition only | offset absent | other unresolved | no mechanism decided |
+|---|---|---|---|---|---|---|---|
+| over-rotation (X axis, pulse gates) | 0.964 | 0 | 0.001 | 0 | 0 | 0.034 | 0.035 |
+| q12 correlation | 0.969 | 0 | 0.001 | 0 | 0 | 0.030 | 0.031 |
+| coin-conditioned dropout | 0 | 0.924 | 0.044 | 0 | 0 | 0.031 | 0.076 |
+| superposition-only offset | 0 | 0 | 0 | 0.941 | 0 | 0.059 | 0.059 |
+| no offset | 0 | 0 | 0 | 0 | 0.972 | 0.028 | 0.028 (reads absent) |
+| worst admitted over-rotation (Y axis, 6-CZ 0.0038 / 0.0039) | 0.497 | 0 | 0.470 | 0 | 0 | 0.033 | 0.503 |
+| X rotation before every single-qubit gate, Rz included (outside the admitted set; 6-CZ 0.0076 / 0.0103) | 0 | 0.077 | 0.873 | 0.001 | 0 | 0.050 | 0.922 |
+| X rotation after every single-qubit gate, Rz included (outside the admitted set; 6-CZ -0.0040 / 0) | 0.887 | 0 | 0 | 0 | 0 | 0.113 | 0.113 |
 
-The chance that a run decides nothing is the sum of the unresolved and offset-absent shares: 3.7 percent
-(over-rotation), 3.5 percent (dropout), 3.3 percent (q12 correlation), 14 percent (superposition only) and 50 percent
-(the worst admitted over-rotation about another axis, which reads b0-like, a wrong row, in under one percent of runs).
-The over-rotation world decides in 96.3 percent of runs, above the 80 percent the power rule asks, so the shots stay as
-listed. With an extra independent batch drift of 0.003 (55 percent of a base batch's standard error) the over-rotation
-world reads zero in 0.831 of runs, the dropout world b0-like in 0.833 and the q12 world zero in 0.833, and 0.165 to 0.168
-of runs decide nothing.
+The over-rotation world decides in 96.4 percent of runs and the dropout world in 92.4 percent, above the 80 percent the
+power rule asks. A wrong refutation of A5-186 (a b0-like reading of an over-rotation world) occurs in 7.7 percent of
+runs of the world that rotates before every gate, Rz included, and in under 0.1 percent of runs of any admitted world; under the earlier band
+of 3 se that world read b0-like in 48 percent (`c2_one_cz_rz_worlds.txt` reproduces the earlier band at the current
+shots: 33 percent). With an extra independent batch drift of 0.003 (55 percent of a base batch's standard error) the
+shares are:
+
+| world | zero | b0-like | intermediate | superposition only | offset absent | other unresolved | no mechanism decided |
+|---|---|---|---|---|---|---|---|
+| over-rotation (X axis, pulse gates) | 0.827 | 0 | 0.006 | 0.002 | 0 | 0.165 | 0.171 |
+| q12 correlation | 0.828 | 0 | 0.005 | 0.003 | 0 | 0.164 | 0.170 |
+| coin-conditioned dropout | 0 | 0.727 | 0.112 | 0.002 | 0 | 0.159 | 0.271 |
+| superposition-only offset | 0 | 0 | 0 | 0.775 | 0 | 0.225 | 0.225 |
+| no offset | 0 | 0 | 0 | 0.003 | 0.839 | 0.158 | 0.158 (reads absent) |
+| worst admitted over-rotation (Y axis) | 0.427 | 0.001 | 0.407 | 0.004 | 0 | 0.162 | 0.569 |
+| X rotation before every single-qubit gate, Rz included (outside the admitted set) | 0 | 0.114 | 0.690 | 0.004 | 0 | 0.192 | 0.882 |
+| X rotation after every single-qubit gate, Rz included (outside the admitted set) | 0.718 | 0 | 0 | 0.003 | 0 | 0.279 | 0.279 |
+
+Under drift the wrong refutation by the world that rotates before every gate rises to 11.4 percent. The cost of the
+tighter b0-like band is the dropout world's 4.4 percent (stationary) and 11.2 percent (drift) intermediate share: those
+runs decide nothing rather than refute A5-186 on a response that sits between the two values.
 
 ## What made the coin series succeed, and its challenges
 
@@ -177,10 +201,11 @@ response of the written k0 compile; no ibm_kingston compile was simulated).
 ## Not built
 
 - The Ry emulator: the circuits are expressible (X90 as Rx(pi/2), CZ as H-CNOT-H on `qubit[5]` with no bit register and
-  no measure statement, qubit 0 leftmost), but a coarse +-0.03 check at 3 se needs 9 jobs of 1,024 shots per template
-  (27 jobs of 16 s in 9 batches on the shared hardware pause, about 12 minutes) on a noise model that is undocumented,
-  so it is left out with this reason.
-- A data-qubit-fixed twin (see above) and a model of a physical Rz pulse error.
+  no measure statement, qubit 0 leftmost), but Ry caps a job at 1,024 shots, resolving the 0.0164 b0 contrast at 3 se
+  takes about 33 jobs per template (the contrast's standard error is 1/sqrt(shots), so 33,500 shots; about 9 jobs reach
+  only +-0.03), and its noise model is undocumented, so it cannot stand in for the device. The QX twin checks every
+  circuit's ideal laws. Owner decision 2026-11-07.
+- A data-qubit-fixed twin (see above); a physical Rz pulse error is covered only by the two outside-the-set rows above.
 
 ## Submission commands (not run)
 

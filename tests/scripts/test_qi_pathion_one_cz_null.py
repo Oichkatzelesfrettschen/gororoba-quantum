@@ -280,10 +280,14 @@ def test_the_predicted_contrasts_equal_the_twin_simulation_log() -> None:
 
 def test_the_design_sizes_the_series_from_the_coin_series_timings() -> None:
     plan = json.loads((CASES / oc.TUNA_SERIES / "prediction.json").read_text(encoding="utf-8"))["design"]
-    _expect(plan["jobs"] == 56 and plan["batches"] == 19 and plan["shots_total"] == 1900544, f"{plan}")
+    _expect(plan["jobs"] == 56 and plan["batches"] == 19 and plan["shots_total"] == 2293760, f"{plan}")
     low, high = plan["execution_seconds_range"]
-    _expect(1000 < low < high < 1300, f"seconds {plan['execution_seconds_range']}")
-    _expect(plan["pooled_se"]["b0_base"] < 0.003 and plan["pooled_se"]["twin"] < 0.003, f"{plan['pooled_se']}")
+    _expect(1300 < low < high < 1600, f"seconds {plan['execution_seconds_range']}")
+    _expect(
+        plan["longest_job_seconds"] < plan["job_seconds_limit"] == 300, f"longest job {plan['longest_job_seconds']}"
+    )
+    _expect(plan["pause_seconds_total"] == 540, "eighteen pauses of 30 s")
+    _expect(plan["pooled_se"]["b0_base"] < 0.002 and plan["pooled_se"]["twin"] < 0.003, f"{plan['pooled_se']}")
 
 
 @pytest.mark.parametrize("world", list(oc.WORLDS))
@@ -354,11 +358,55 @@ def test_the_decision_reads_each_preregistered_row_on_hand_built_estimates() -> 
             twin={"b0": 0.0166, "k4": 0.005, "k8": 0.005, "k12": 0.005},
         )
     )
-    _expect(between["label"] == "unresolved", f"{between['numbers']['m_six_cz']}")
+    _expect(between["label"] == "intermediate" and not between["decided"], f"{between['numbers']['m_six_cz']}")
+    negative = oc.decide_estimates(
+        _rows(
+            base={"b0": 0.0164, "k4": -0.01, "k8": -0.01, "k12": -0.01},
+            twin={"b0": 0.0166, "k4": -0.01, "k8": -0.01, "k12": -0.01},
+        )
+    )
+    _expect(negative["label"] == "unresolved", f"{negative['numbers']['m_six_cz']}")
     context = oc.decide_estimates(
         _rows(base={"b0": 0.0164, "k4": 0.012, "k8": 0.012, "k12": 0.012}, twin={"b0": 0.0166})
     )
     _expect(context["label"] == "unresolved_context", f"{context['label']}")
+
+
+def _world_rows(world: str) -> dict[str, dict[str, list[tuple[float, float]]]]:
+    """Batch estimates at the means of a PREDICTED world and the design standard errors."""
+    mean = oc.PREDICTED[world]
+    return _rows(
+        base={t: mean["s_b0" if t == "b0" else "s_k"] for t in oc.TEMPLATES},
+        twin={t: mean["t_b0" if t == "b0" else "t_k"] for t in oc.TEMPLATES},
+    )
+
+
+def test_the_rz_rotating_world_does_not_read_b0_like_at_the_band() -> None:
+    """The X rotation before every single-qubit gate, Rz included, leaves the 6-CZ mean about 3.4 combined se below the
+    b0 combination: outside the band of B0_LIKE_Z = 2, so it reads intermediate and refutes nothing."""
+    _expect(oc.B0_LIKE_Z == 2.0 and "over_rotation_x_all_before" in oc.OUTSIDE_ADMITTED, "constants")
+    result = oc.decide_estimates(_world_rows("over_rotation_x_all_before"))
+    gap = result["numbers"]["r_minus_m"][0] / result["numbers"]["r_minus_m"][1]
+    _expect(result["label"] == "intermediate" and gap > oc.B0_LIKE_Z, f"{result['label']} at {gap:.2f} se")
+    _expect(not result["decided"] and result["a5_186"].startswith("unchanged"), "an intermediate row decides nothing")
+    after = oc.decide_estimates(_world_rows("over_rotation_x_all_after"))
+    _expect(after["label"] == "zero", f"{after['label']}")
+
+
+def test_the_intermediate_label_sits_between_zero_and_b0_like_and_the_band_decides_it(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _expect("intermediate" in oc.OUTCOMES and "intermediate" not in oc.DECIDING, "the label is not deciding")
+    _expect("intermediate" in oc.OUTCOMES["intermediate"][0], "the outcome text names the intermediate response")
+    rows = _rows(
+        base={"b0": 0.0164, **{t: 0.0113 for t in oc.LOW_NAMES}},
+        twin={"b0": 0.0166, **{t: 0.0113 for t in oc.LOW_NAMES}},
+    )
+    narrow = oc.decide_estimates(rows)
+    gap = narrow["numbers"]["r_minus_m"][0] / narrow["numbers"]["r_minus_m"][1]
+    _expect(2.0 < gap < 3.0 and narrow["label"] == "intermediate", f"{narrow['label']} at {gap:.2f} se")
+    monkeypatch.setattr(oc, "B0_LIKE_Z", 3.0)
+    _expect(oc.decide_estimates(rows)["label"] == "b0_like", "a band of 3 se reads the same response as b0-like")
 
 
 def test_heterogeneous_blocks_and_batches_are_unresolved_and_never_pooled_into_a_class() -> None:
@@ -377,7 +425,9 @@ def test_the_operating_characteristics_state_the_chance_of_deciding_nothing(monk
     ocs = oc.operating_characteristics(draws=1500)
     over = ocs["over_rotation"]
     _expect(over.get("zero", 0.0) >= 0.9 and sum(v for k, v in over.items() if k != "zero") <= 0.1, f"{over}")
-    _expect(ocs["coin_dropout"].get("b0_like", 0.0) >= 0.9, f"{ocs['coin_dropout']}")
+    _expect(ocs["coin_dropout"].get("b0_like", 0.0) >= 0.88, f"{ocs['coin_dropout']}")
+    before = ocs["over_rotation_x_all_before"]
+    _expect(before.get("b0_like", 0.0) <= 0.15 and before.get("intermediate", 0.0) >= 0.75, f"{before}")
     _expect(ocs["absent"].get("offset_absent", 0.0) >= 0.9 and not ocs["absent"].get("zero"), f"{ocs['absent']}")
     for world in ("over_rotation", "q12_correlation", "coin_dropout"):
         wrong = {k: v for k, v in ocs[world].items() if k in ("zero", "b0_like", "superposition_only")}
@@ -385,6 +435,12 @@ def test_the_operating_characteristics_state_the_chance_of_deciding_nothing(monk
     stored = json.loads((CASES / oc.TUNA_SERIES / "prediction.json").read_text(encoding="utf-8"))
     nominal = stored["operating_characteristics"]["stationary"]["over_rotation"]
     _expect(nominal["zero"] >= 0.8, f"the over-rotation world decides in {nominal['zero']} of runs")
+    _expect(stored["operating_characteristics"]["stationary"]["coin_dropout"]["b0_like"] >= 0.9, "dropout power")
+    wrong = stored["operating_characteristics"]["stationary"]["over_rotation_x_all_before"].get("b0_like", 0.0)
+    _expect(wrong < 0.1, f"the Rz-rotating world reads b0-like in {wrong} of runs")
+    _expect(stored["outside_admitted_set"] == list(oc.OUTSIDE_ADMITTED), "the outside-the-set rows")
+    for key in oc.OUTSIDE_ADMITTED:
+        _expect(key in stored["operating_characteristics"]["stationary"], f"{key} has a stored row")
     monkeypatch.setattr(oc, "OC_SEED_INDEX", 0)
     first = oc.operating_characteristics(draws=300)
     _expect(first == oc.operating_characteristics(draws=300), "the operating characteristics are deterministic")
