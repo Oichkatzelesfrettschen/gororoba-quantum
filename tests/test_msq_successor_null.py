@@ -156,11 +156,13 @@ def noisy_counts(
     return {"final": {n: (int(generator.binomial(n_, k / n_)), n_) for n, (k, n_) in expected.items()}}
 
 
-def test_rows_equal_the_scalar_rows_field_for_field() -> None:
+def rows_equal_the_scalar_rows(qubits: tuple[int, ...], replicates: int) -> None:
     generator = np.random.default_rng(TEST_SEED)
-    contexts = planned(msa.FIXTURE_QUBITS[:3])
+    contexts = planned(qubits)
     for qubit, ctx in contexts.items():
-        counts = [noisy_counts(generator, ctx, qubit, 1.0 + 0.4 * generator.standard_normal()) for _ in range(4)]
+        counts = [
+            noisy_counts(generator, ctx, qubit, 1.0 + 0.4 * generator.standard_normal()) for _ in range(replicates)
+        ]
         # A replicate whose readout contrast falls below the floor takes the unusable path.
         counts.append({"final": {n: (SHOTS // 2, SHOTS) for n in counts[0]["final"]}})
         memo = nl.FitMemo(ctx["t1_delays_s"])
@@ -176,6 +178,15 @@ def test_rows_equal_the_scalar_rows_field_for_field() -> None:
                             f"q{qubit}: gate curve {name} differs",
                         )
     check(not batched[-1]["usable"], "the degenerate replicate was usable")
+
+
+@pytest.mark.audit
+def test_rows_equal_the_scalar_rows_field_for_field() -> None:
+    rows_equal_the_scalar_rows(msa.FIXTURE_QUBITS[:3], 4)
+
+
+def test_rows_equal_the_scalar_rows_on_one_qubit_and_the_degenerate_replicate() -> None:
+    rows_equal_the_scalar_rows(msa.FIXTURE_QUBITS[:1], 1)
 
 
 def test_shape_bound_rows_equal_the_scalar_bound() -> None:
@@ -223,16 +234,26 @@ def small(arm: str, active: int = 8, param: float = 3.0) -> nl.Case:
     return nl.Case(arm, f"{active}-qubits", active, param)
 
 
-def test_truth_equals_the_model_device_on_the_exponential_limit(setup: nl.Setup) -> None:
-    ctx = setup.contexts[3]
+def truth_equals_the_model_device_on_the_exponential_limit(ctx: dict[str, Any], equilibrium_s: float) -> None:
     truth = nl.Truth(ctx["t1_cal_s"], math.inf, 1.0, 1.0, {}, 0.0, 0.0)
-    got = nl.member_probabilities(ctx, 5, truth, setup.equilibrium_s)
+    got = nl.member_probabilities(ctx, 5, truth, equilibrium_s)
     expected = msa.device_counts({5: msa.device_model(ctx, p_init=0.0)}, {5: ctx}, SHOTS)[5]["final"]
     check(set(expected) <= set(got), "a member has no probability")
     worst = max(abs(got[name] - ones / SHOTS) for name, (ones, _) in expected.items())
     check(worst < 1.0 / SHOTS, f"largest difference {worst} exceeds one shot")
 
 
+@pytest.mark.audit
+def test_truth_equals_the_model_device_on_the_exponential_limit(setup: nl.Setup) -> None:
+    truth_equals_the_model_device_on_the_exponential_limit(setup.contexts[3], setup.equilibrium_s)
+
+
+def test_truth_equals_the_model_device_on_the_exponential_limit_for_a_fixture_context() -> None:
+    (ctx,) = planned(msa.FIXTURE_QUBITS[:1]).values()
+    truth_equals_the_model_device_on_the_exponential_limit(ctx, 1e-3)
+
+
+@pytest.mark.audit
 def test_the_gamma_truth_departs_from_the_exponential_by_the_shape_bound(setup: nl.Setup) -> None:
     ctx = setup.contexts[3]
     exponential = nl.Truth(ctx["t1_cal_s"], math.inf, 1.0, 1.0, {}, 0.0, 0.0)
@@ -249,6 +270,7 @@ def planted_slots(setup: nl.Setup, case: nl.Case) -> tuple[nl.Drawn, list[nl.Tru
     return drawn, drawn.truths
 
 
+@pytest.mark.audit
 def test_carryover_arms_plant_the_boundary_less_three_standard_errors(setup: nl.Setup) -> None:
     margin = su.SCREEN_FRACTION * su.BOUND_FLOOR
     for arm, classes in (("carryover-positive", setup.positive), ("carryover-negative", setup.negative)):
@@ -273,6 +295,7 @@ def test_carryover_arms_plant_the_boundary_less_three_standard_errors(setup: nl.
     check(abs(setup.allocation[0] * carried[0] - margin) < 1e-9, "offset 0 is not the boundary")
 
 
+@pytest.mark.audit
 def test_q_arm_plants_the_screen_bound_plus_its_confidence_margin(setup: nl.Setup) -> None:
     drawn, truths = planted_slots(setup, small("q-tolerance"))
     for j, truth in zip(drawn.calibration, truths, strict=True):
@@ -294,6 +317,7 @@ def test_q_arm_plants_the_screen_bound_plus_its_confidence_margin(setup: nl.Setu
     check(abs(screen["lower_bound"] - screen["tolerance"]) < 0.1 * estimate["se"], f"{screen}")
 
 
+@pytest.mark.audit
 def test_settle_arms_plant_their_gaps_at_the_stated_sizes(setup: nl.Setup) -> None:
     floor = su.SETTLE_TAU_FLOOR
     _, common = planted_slots(setup, small("settle-common"))
@@ -381,6 +405,7 @@ def linear_power(law: Callable[[float], float]) -> Callable[[Any, int, int], lis
     return powers
 
 
+@pytest.mark.audit
 def test_the_sparse_calibration_steps_to_the_target_power(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     for seed in (nl.SUCCESSOR_NULL_SEED, nl.SPARSE_CONFIRMATION_SEED):
         with pytest.raises(ValueError, match="own seed"):
@@ -435,6 +460,7 @@ def test_the_sparse_power_target_takes_a_bonferroni_share_per_pool() -> None:
     )
 
 
+@pytest.mark.audit
 def test_minority_arms_plant_two_slots_and_count_verdicts_that_select_one(setup: nl.Setup) -> None:
     drawn, truths = planted_slots(setup, small("q-minority"))
     expected = [setup.q_planted[j] for j in drawn.calibration[: nl.PLANTED_QUBITS]]
@@ -457,6 +483,7 @@ def test_minority_arms_plant_two_slots_and_count_verdicts_that_select_one(setup:
     )
 
 
+@pytest.mark.audit
 def test_plateau_and_gamma_arms_plant_their_truth(setup: nl.Setup) -> None:
     drawn, truths = planted_slots(setup, small("plateau-retained"))
     check(all(math.isinf(t.shape) and (t.t_s, t.q) in setup.plateau for t in truths), "plateau pairs")
@@ -472,6 +499,7 @@ def test_plateau_and_gamma_arms_plant_their_truth(setup: nl.Setup) -> None:
         check(t.t_s == setup.contexts[j]["t1_cal_s"] and 0.25 <= t.shape <= 64.0, f"{t}")
 
 
+@pytest.mark.audit
 def test_residuals_follow_the_stated_common_and_independent_parts(setup: nl.Setup) -> None:
     factors: list[float] = []
     for index in range(20):
@@ -485,6 +513,7 @@ def test_residuals_follow_the_stated_common_and_independent_parts(setup: nl.Setu
     )
 
 
+@pytest.mark.audit
 def test_readers_carry_the_planted_excitation_and_read_zero_without_it(setup: nl.Setup) -> None:
     ctx = setup.contexts[2]
     generator = np.random.default_rng(TEST_SEED)
@@ -506,6 +535,7 @@ def test_readers_carry_the_planted_excitation_and_read_zero_without_it(setup: nl
         check(ones == [int(p.sum()) for p in predecessors], "the predecessor counts are not the bits")
 
 
+@pytest.mark.audit
 def test_the_measure_rows_and_the_reader_prefixes_are_separate_draws(setup: nl.Setup) -> None:
     """Production reads the N = 2, 4 and 8 measure rows and the reader circuits' prefixes from separate PUBs, so the
     rows the fit reads share no sample with the carryover strata."""
@@ -517,6 +547,7 @@ def test_the_measure_rows_and_the_reader_prefixes_are_separate_draws(setup: nl.S
         check(rows != prefixes, f"q{qubit}: the measure rows are the reader prefixes")
 
 
+@pytest.mark.audit
 def test_a_replicate_is_a_function_of_seed_and_index(setup: nl.Setup) -> None:
     case = small("gamma")
     a, b, c = (nl.draw_replicate(setup, case, TEST_SEED, i) for i in (0, 0, 1))
@@ -538,18 +569,22 @@ def block_equals_reference(setup: nl.Setup, case: nl.Case, indices: list[int]) -
             check(canon(got) == canon(want), f"replicate {index}: {name} differs from the scalar pipeline")
 
 
+@pytest.mark.audit
 def test_block_equals_the_scalar_pipeline_through_the_settle_veto(setup: nl.Setup) -> None:
     block_equals_reference(setup, small("settle-common", 8), [0])
 
 
+@pytest.mark.audit
 def test_block_equals_the_scalar_pipeline_through_the_carryover_screen(setup: nl.Setup) -> None:
     block_equals_reference(setup, small("carryover-positive", 8), [0])
 
 
+@pytest.mark.audit
 def test_block_equals_the_scalar_pipeline_through_the_equilibrium_bound(setup: nl.Setup) -> None:
     block_equals_reference(setup, small("plateau-low", 8), [0])
 
 
+@pytest.mark.audit
 def test_blocking_leaves_the_rows_alone(setup: nl.Setup) -> None:
     case = small("carryover-negative")
     whole = nl.analyse_block((setup, case, TEST_SEED, [0, 1, 2, 3]))
@@ -557,6 +592,7 @@ def test_blocking_leaves_the_rows_alone(setup: nl.Setup) -> None:
     check(whole == parts, "a replicate depends on its block")
 
 
+@pytest.mark.audit
 def test_the_healthy_arm_issues_verdicts(setup: nl.Setup) -> None:
     rows = nl.analyse_block((setup, small("gamma", 12), TEST_SEED, [0, 1, 2, 3]))
     check(sum(row["issued"] for row in rows) >= 3, f"{[row['issued'] for row in rows]}")
@@ -568,6 +604,96 @@ def test_upper_bound_of_zero_fires_crosses_the_ceiling_at_299() -> None:
     check(nl.upper_bound(5, 5) == 1.0, "all fires bound at one")
 
 
+# --- the arm runner on deterministic rows ------------------------------------------------------------------
+# run_arms, run_arm and merge_records read the setup only for its identity fields, so these tests run them on a
+# stand-in setup with `analyse_block` and `case_statistics` replaced by pure functions of (seed, case, index): they
+# hold the sharding, per-case stopping and pooling rules in every pull request while the tests above that draw real
+# replicates on the shared setup run in the audit.
+
+
+class _StubSetup:
+    width = 8
+    shots = 4096
+    sparse_scale: dict[int, float] = {}
+    digests = {"snapshot_sha256": "s", "plateau_sha256": "p", "sparse_scale_sha256": "c"}
+
+
+def _stub_rows(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, int, list[int]]]:
+    """Replace the replicate analysis by rows that count a verdict on every third index shifted by the case; the
+    returned list records each block the runner asks for."""
+    asked: list[tuple[str, int, list[int]]] = []
+
+    def block(item: Any) -> list[dict[str, Any]]:
+        _, case, seed, indices = item
+        asked.append((case.label, seed, list(indices)))
+        return [
+            {"i": i, "counted": int((i + case.active + seed) % 3 == 0), "tag": f"{seed}:{case.label}:{i}"}
+            for i in indices
+        ]
+
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    monkeypatch.setattr(nl, "analyse_block", block)
+    monkeypatch.setattr(nl, "case_statistics", lambda arm, rows: {"n": len(rows)})
+    monkeypatch.setattr(nl, "ROUND", 1)
+    return asked
+
+
+def _stub_setup() -> nl.Setup:
+    return _StubSetup()  # type: ignore[return-value]
+
+
+def test_stub_shards_merge_to_the_bytes_of_one_run(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_rows(monkeypatch)
+    cases = [small("gamma", 8, 0.0), small("gamma", 9, 0.0)]
+    run = nl.ArmRun("carryover-positive", 7, 40, cases=cases, needed=4, setup=_stub_setup())
+    whole = nl.merge_records(nl.run_arms(None, [run]))
+    for shards in (2, 3):
+        parts = [nl.run_arms(None, [run], shard, shards)[0] for shard in range(shards)]
+        check(nl.dumps(nl.merge_records(parts)) == nl.dumps(whole), f"{shards} shards differ from one run")
+        check(
+            all(
+                sorted(r["i"] for r in part["cases"]["8-qubits"]["rows"]) == list(range(shard, 40, shards))
+                for shard, part in enumerate(parts)
+            ),
+            "a shard holds indices off its residue",
+        )
+    one = nl.run_arm(_stub_setup(), "carryover-positive", 7, 40, cases=cases, needed=4)
+    check(nl.dumps(nl.merge_records([one])) == nl.dumps(whole), "run_arm differs from run_arms of one arm")
+
+
+def test_stub_each_case_stops_at_its_own_verdict_count(monkeypatch: pytest.MonkeyPatch) -> None:
+    asked = _stub_rows(monkeypatch)
+    cases = [small("gamma", 8, 0.0), small("gamma", 9, 0.0)]
+    run = nl.ArmRun("carryover-positive", 7, 60, cases=cases, needed=3, setup=_stub_setup())
+    (record,) = nl.run_arms(None, [run])
+    merged = nl.merge_records([record])
+    for label, case in merged["cases"].items():
+        total = 0
+        for k, row in enumerate(case["rows"]):
+            total += row["counted"]
+            check(total < 3 or k == len(case["rows"]) - 1, f"{label}: rows run past the third verdict")
+        check(total == 3, f"{label}: {total} verdicts")
+    lengths = {label: len(case["rows"]) for label, case in merged["cases"].items()}
+    check(len(set(lengths.values())) == 2, f"both cases stopped at one length: {lengths}")
+    # A case that reached its count asks for no further block while the other runs on.
+    short = min(lengths, key=lambda label: lengths[label])
+    last = max(i for label, _, indices in asked if label == short for i in indices)
+    check(last < 59, f"{short} ran to the cap")
+
+
+def test_stub_one_pool_writes_each_arm_the_bytes_of_its_own_run(monkeypatch: pytest.MonkeyPatch) -> None:
+    _stub_rows(monkeypatch)
+    setup = _stub_setup()
+    gamma = nl.ArmRun("carryover-positive", 3, 30, cases=[small("gamma", 9, 0.0)], needed=2)
+    settle = nl.ArmRun("settle-common", 5, 12, cases=[small("settle-common", 8, 0.0)])
+    joint = [nl.dumps(nl.merge_records([record])) for record in nl.run_arms(setup, [gamma, settle])]
+    alone = [nl.dumps(nl.merge_records([nl.run_arms(setup, [run])[0]])) for run in (gamma, settle)]
+    check(joint == alone, "an arm's record depends on the arms it shares the pool with")
+    with pytest.raises(ValueError, match="twice"):
+        nl.run_arms(setup, [gamma, gamma])
+
+
+@pytest.mark.audit
 def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
     cases = [small("gamma", 8, 0.0)]
     whole = nl.merge_records([nl.run_arm(setup, "gamma", TEST_SEED, 2, cases=cases, record_name="r")])
@@ -577,6 +703,7 @@ def test_two_shards_merge_to_the_bytes_of_one_run(setup: nl.Setup) -> None:
     check(whole["replicates"] == {"8-qubits": 2}, f"{whole['replicates']}")
 
 
+@pytest.mark.audit
 def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -590,6 +717,7 @@ def test_the_verdict_requirement_cuts_every_sharding_at_one_replicate(
     check(len(rows) == 1 and rows[0]["issued"], "the 9-qubit case did not stop at its first verdict")
 
 
+@pytest.mark.audit
 def test_each_case_stops_at_its_own_verdict_count(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     # The 6-qubit case issues no verdict and runs to the cap while the 9-qubit case stops at its first.
     monkeypatch.setattr(nl, "ROUND", 1)
@@ -598,6 +726,7 @@ def test_each_case_stops_at_its_own_verdict_count(setup: nl.Setup, monkeypatch: 
     check(whole["replicates"] == {"9-qubits": 1, "6-qubits": 2}, f"{whole['replicates']}")
 
 
+@pytest.mark.audit
 def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
     setup: nl.Setup, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -618,6 +747,7 @@ def test_a_limit_leaves_the_merged_bytes_and_refuses_a_case_it_cuts_short(
         nl.run_arms(setup, [nl.ArmRun("gamma", TEST_SEED, 2, cases=cases, limits={"7-qubits": 1})])
 
 
+@pytest.mark.audit
 def test_the_round_size_leaves_the_record_bytes_unchanged(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     # A round of one replicate stops the 9-qubit case at its first verdict; a round of two blocks runs it past.
     cases = [small("gamma", 9, 0.0)]
@@ -635,6 +765,7 @@ def test_a_computed_round_gives_every_worker_whole_blocks(monkeypatch: pytest.Mo
     check(nl.round_size(25) == nl.NULL_BLOCK, "a round holds at least one block per case")
 
 
+@pytest.mark.audit
 def test_one_pool_writes_each_arm_the_bytes_of_its_own_run(setup: nl.Setup, monkeypatch: pytest.MonkeyPatch) -> None:
     # The gamma case stops at its first verdict while the settle case shares its rounds and runs to the cap.
     monkeypatch.setattr(nl, "ROUND", 1)
@@ -647,6 +778,7 @@ def test_one_pool_writes_each_arm_the_bytes_of_its_own_run(setup: nl.Setup, monk
         nl.run_arms(setup, [gamma, gamma])
 
 
+@pytest.mark.audit
 def test_an_explicit_single_shard_writes_a_shard_record(setup: nl.Setup, tmp_path: Path) -> None:
     import msq_successor_null
 
@@ -694,6 +826,7 @@ def test_the_null_plan_names_every_arm_once_at_its_seed() -> None:
             msq_successor_null.plan_runs(["gamma"], [], "r", bad)
 
 
+@pytest.mark.audit
 def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:
     cases = [small("gamma", 8, 0.0)]
     one = nl.run_arm(setup, "gamma", TEST_SEED, 2, 0, 2, cases=cases)
@@ -702,6 +835,7 @@ def test_merge_refuses_incomplete_or_mismatched_shards(setup: nl.Setup) -> None:
             nl.merge_records(bad)
 
 
+@pytest.mark.audit
 def test_the_record_names_its_inputs_and_reports_the_arm_statistics(setup: nl.Setup) -> None:
     cases = [small("settle-common", 8, 0.0)]
     record = nl.merge_records(
@@ -719,6 +853,7 @@ def test_the_record_names_its_inputs_and_reports_the_arm_statistics(setup: nl.Se
     check(record["cases"]["8-qubits"]["common_veto_rate"] == 1.0, "a 4 x floor common gap escaped the veto")
 
 
+@pytest.mark.audit
 def test_the_summary_keeps_each_record_digest_and_drops_the_rows(setup: nl.Setup) -> None:
     cases = [small("settle-common", 8, 0.0)]
     shard = nl.run_arm(setup, "settle-common", TEST_SEED, 2, seed_source="default", record_name="r", cases=cases)
@@ -739,6 +874,7 @@ def test_the_summary_keeps_each_record_digest_and_drops_the_rows(setup: nl.Setup
         nl.null_summary([nl.dumps(stale)])
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("arm", nl.ARMS)
 def test_every_arm_completes_a_small_run(setup: nl.Setup, arm: str) -> None:
     cases = nl.arm_cases(arm, setup.width)
@@ -786,6 +922,7 @@ def minis(tmp_path_factory: pytest.TempPathFactory) -> dict[int, nl.Setup]:
     return {4096: built, 8192: built._replace(shots=8192)}
 
 
+@pytest.mark.audit
 def test_a_setup_draws_its_counts_out_of_the_records_shots(minis: dict[int, nl.Setup]) -> None:
     for shots, mini in minis.items():
         check(mini.shots == shots, f"{mini.shots}")
@@ -802,6 +939,7 @@ def test_a_record_without_shots_raises(tmp_path: Path) -> None:
         nl.build_setup(shots_record(tmp_path / "bare", None))
 
 
+@pytest.mark.audit
 def test_the_reader_standard_error_grows_with_the_root_of_the_shot_deficit(setup: nl.Setup) -> None:
     ctx = setup.contexts[2]
     errors = {}
@@ -813,6 +951,7 @@ def test_the_reader_standard_error_grows_with_the_root_of_the_shot_deficit(setup
     check(abs(ratio - math.sqrt(2)) < 0.03, f"standard error ratio {ratio} against sqrt(2)")
 
 
+@pytest.mark.audit
 def test_records_carry_their_shots_and_mixed_shots_do_not_merge(minis: dict[int, nl.Setup]) -> None:
     runs = {shots: nl.run_arm(mini, "gamma", TEST_SEED, 1, 0, 2, record_name="r") for shots, mini in minis.items()}
     other = nl.run_arm(minis[8192], "gamma", TEST_SEED, 1, 1, 2, record_name="r")
@@ -823,6 +962,7 @@ def test_records_carry_their_shots_and_mixed_shots_do_not_merge(minis: dict[int,
         nl.merge_records([runs[4096], other])
 
 
+@pytest.mark.audit
 def test_the_summary_reads_a_v1_record_and_writes_v2(minis: dict[int, nl.Setup]) -> None:
     record = nl.merge_records([nl.run_arm(minis[8192], "gamma", TEST_SEED, 1, record_name="r")])
     legacy = {key: value for key, value in record.items() if key != "shots"} | {"schema": nl.LEGACY_SCHEMA}
@@ -868,6 +1008,7 @@ def pool_scaled_power(items: Any, _seed: int, _replicates: int) -> list[tuple[in
     return [(round(1000 * (0.3 + 0.2 * scale * 8 / pool)), 1000) for _, pool, scale in items]
 
 
+@pytest.mark.audit
 def test_calibrations_in_one_pool_equal_their_own_calibrations(
     minis: dict[int, nl.Setup], monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -881,6 +1022,7 @@ def test_calibrations_in_one_pool_equal_their_own_calibrations(
     check(records[0]["pools"]["8"]["scale"] == together[0]["scale"], "the record holds the job's scale")
 
 
+@pytest.mark.audit
 def test_a_calibration_record_sets_the_scales_and_digest_a_later_build_reads(minis: dict[int, nl.Setup]) -> None:
     record = {"pools": {"8": {"scale": 1.25}}}
     (applied,) = nl.with_calibrated_scales([minis[4096]], [record])
@@ -889,6 +1031,7 @@ def test_a_calibration_record_sets_the_scales_and_digest_a_later_build_reads(min
     check(all(set(losses) == {8} and losses[8] > 0 for losses in applied.sparse_loss), f"{applied.sparse_loss}")
 
 
+@pytest.mark.audit
 def test_one_call_runs_each_setup_to_the_bytes_of_its_own_run(
     minis: dict[int, nl.Setup], monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -908,6 +1051,7 @@ def test_one_call_runs_each_setup_to_the_bytes_of_its_own_run(
         nl.run_arms(None, [runs[0]._replace(setup=None)])
 
 
+@pytest.mark.audit
 def test_the_command_writes_one_record_per_directory_and_a_single_record_flat(
     minis: dict[int, nl.Setup], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -937,6 +1081,7 @@ def test_the_command_writes_one_record_per_directory_and_a_single_record_flat(
     )
 
 
+@pytest.mark.audit
 def test_the_command_calibrates_each_record_to_its_own_sparse_path(
     minis: dict[int, nl.Setup], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

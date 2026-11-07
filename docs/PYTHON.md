@@ -34,8 +34,6 @@ platform boundaries:
    - Package management: Arch system packages (`pacman`, `paru` for AUR recipes) and the workspace's own
      recipes in gororoba-infrastructure `packaging/`, all linking the system OpenBLAS (`blas-openblas`) as
      BLAS and LAPACK. `/etc/makepkg.conf` builds with `-march=native -O3`, LTO and Rust `target-cpu=native`.
-     The pins in `requirements.txt` and `ci/requirements-ci.txt` equal the installed system packages, so a
-     package upgrade on the host and its pin bump land together.
    - Hardware acceleration: NVIDIA RTX 4070 Ti (SM 89), CUDA 13.4.3, cuQuantum 26.09.0.8
      (libcustatevec.so.1 and libcutensornet.so.2), and cutensor 2.8.1.0.
    - Locally compiled packages: `python-qiskit` (2.6.2), `python-qiskit-aer-cuda` (0.18.2-3 with cuStateVec support and unique provider names),
@@ -53,7 +51,7 @@ platform boundaries:
 2. **Hosted CI / Pull-Request Verification (`ci/`)**
    - Python 3.14.7 container environment.
    - Strictly locked dependencies from `requirements.txt` and `ci/requirements-ci.txt`.
-   - Tool pinning: `ci/pinned_tool.py` runs pinned `ruff==0.17.3` and `mypy==2.4.0` via uv.
+   - Tool pinning: `ci/pinned_tool.py` runs pinned `ruff==0.17.4` and `mypy==2.4.1` via uv.
    - Browser checks: `ci/requirements-browser.txt` installs `playwright==1.64.0` for
      headless validation of rendered explorer artifacts.
 

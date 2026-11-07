@@ -1,0 +1,39 @@
+{
+ "approval": "User, 2026-11-06: approved for belenos. User, 2026-11-06: OK design the plan and job and focus on ascella runs if ascella is functional.",
+ "case": "docs/design/belenos-mesh-persistence-case.md",
+ "enabled": false,
+ "jobs": [
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": null,
+   "case_dir": "results/quandela/cases/belenos_mesh_persistence/job-00",
+   "expected_seconds": 260,
+   "inputs_sha256": {
+    "cases.json": "ea486c9e58595239ba3391b5d376121eafaf0f5fd54c953c7bafd5420c9c67e9",
+    "circuit.json": "5684737d7bfa2f0aa5ccec77d3de506a1f8978070b36f3ceb69c876c36621e66"
+   },
+   "key": "persistence-replay",
+   "matched_check": [
+    "scripts/belenos_mesh_persistence.py",
+    "--analyze",
+    "{run}"
+   ],
+   "max_credits": 1.09,
+   "not_before": "2026-11-06T00:00:00Z",
+   "per_job_credits": 1,
+   "plan_check": [
+    "scripts/belenos_mesh_persistence.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-belenos_mesh_persistence-job-00"
+  }
+ ],
+ "max_total_credits": 1.09,
+ "name": "belenos-mesh-persistence",
+ "platform": "qpu:belenos",
+ "schema": "qd-schedule-v1"
+}

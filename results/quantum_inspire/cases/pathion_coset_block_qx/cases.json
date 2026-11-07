@@ -1,0 +1,70 @@
+{
+ "schema": "qi-pathion-coset-block-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "ba-plus-r0.cq",
+    "ba-minus-r0.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "bb-plus-r0.cq",
+    "bb-minus-r0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "b0-plus-r0.cq",
+    "b0-minus-r0.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "xor_ba-plus-r0.cq",
+    "xor_ba-minus-r0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "files": [
+    "ba-minus-r1.cq",
+    "ba-plus-r1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "files": [
+    "bb-minus-r1.cq",
+    "bb-plus-r1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "files": [
+    "b0-minus-r1.cq",
+    "b0-plus-r1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "files": [
+    "xor_ba-minus-r1.cq",
+    "xor_ba-plus-r1.cq",
+    "readout-0.cq"
+   ]
+  }
+ ]
+}

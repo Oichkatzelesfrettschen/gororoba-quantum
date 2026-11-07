@@ -1,0 +1,21 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=11&type=uint16",
+ "retrieved_utc": "2026-11-06T184402Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"11\", \"data\": [60833, 49488, 31980, 33986, 54843, 2117, 26198, 25334, 39707, 103, 37337]}",
+ "raw_sha256": "8bd0c8ae82eb86eb69335f6a95e0ba4315db021a694a68cf47d9f25282738b59",
+ "type": "uint16",
+ "values": [
+  60833,
+  49488,
+  31980,
+  33986,
+  54843,
+  2117,
+  26198,
+  25334,
+  39707,
+  103,
+  37337
+ ]
+}

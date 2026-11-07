@@ -1,0 +1,42 @@
+{
+ "classes_new_at_32_spectra": [
+  [
+   0.0,
+   0.0,
+   0.0,
+   16.0
+  ],
+  [
+   0.0,
+   0.0,
+   4.0,
+   12.0
+  ],
+  [
+   0.0,
+   0.0,
+   4.0,
+   12.0
+  ],
+  [
+   0.0,
+   1.528,
+   4.0,
+   10.472
+  ]
+ ],
+ "classes_of_all_4x4_pm1": 12,
+ "four_term_blocks_16": 528,
+ "four_term_blocks_32": 2688,
+ "four_term_classes_16": 5,
+ "four_term_classes_32": 9,
+ "schema": "pathion-kernel-map-census-v1",
+ "two_term_nullity_counts": {
+  "0": 342,
+  "12": 252,
+  "4": 168,
+  "8": 168
+ },
+ "two_term_nullity_equals_aligned_pairs": true,
+ "two_term_operands": 930
+}

@@ -74,7 +74,6 @@ def second_instance_contract(
     for mutate in (
         lambda value: value.update(instance_crn_hash="c" * 12),
         lambda value: value["account_usage"].update(usage_consumed_seconds=1, usage_remaining_seconds=599),
-        lambda value: value["account_usage"].update(usage_consumed_seconds=545, usage_remaining_seconds=55),
     ):
         mutant = copy.deepcopy(backup)
         mutate(mutant)
@@ -85,6 +84,13 @@ def second_instance_contract(
             pass
         else:
             raise RuntimeError("a mutated backup inventory was admitted")
+    low = copy.deepcopy(backup)
+    low["account_usage"] |= {"usage_limit_seconds": 57, "usage_consumed_seconds": 2, "usage_remaining_seconds": 55}
+    write(backup_path, low)
+    audit.require(
+        audit.reconcile(backup_path)["account_reserve_met"] is False, "a below-reserve balance is not recorded"
+    )
+    write(backup_path, backup)
     duplicate = copy.deepcopy(backup)
     duplicate["instance_crn_hash"] = snapshot["instance_crn_hash"]
     write(backup_path, duplicate)
@@ -358,7 +364,6 @@ def main() -> None:
             for usage in (
                 {},
                 {"usage_limit_seconds": 600, "usage_consumed_seconds": 1, "usage_remaining_seconds": 600},
-                {"usage_limit_seconds": 600, "usage_consumed_seconds": 550, "usage_remaining_seconds": 50},
                 {"usage_limit_seconds": 600, "usage_consumed_seconds": 1.5, "usage_remaining_seconds": 598.5},
                 {"usage_limit_seconds": 600, "usage_consumed_seconds": 2, "usage_remaining_seconds": 598},
             ):

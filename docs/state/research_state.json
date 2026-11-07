@@ -2837,6 +2837,34 @@
       "question": "How do Ascella target outputs vary across eight requested slots?"
     },
     {
+      "id": "qd-qpu-ascella-cz-tomography-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+      "family": "postselected CZ process tomography on qpu:ascella",
+      "question": "What process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella as compiled per setting, fitted from absolute outcome rates over 144 preparation and measurement settings?"
+    },
+    {
+      "id": "qd-qpu-ascella-cz-tomography-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
+      "family": "postselected CZ process tomography on qpu:ascella",
+      "question": "What process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella as compiled per setting, fitted from absolute outcome rates over 144 preparation and measurement settings?"
+    },
+    {
+      "id": "qd-qpu-belenos-suppression-law-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00",
+      "family": "three-photon Fourier suppression law on qpu:belenos",
+      "question": "Does a three-photon input on a 6-mode Fourier interferometer suppress the outputs the label-sum rule forbids, beyond the distinguishable and mean-field forecasts, and does the paired control contrast exclude both without a detection model?"
+    },
+    {
+      "id": "qd-qpu-belenos-suppression-law-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01",
+      "family": "three-photon Fourier suppression law on qpu:belenos",
+      "question": "Does a three-photon input on a 6-mode Fourier interferometer suppress the outputs the label-sum rule forbids, beyond the distinguishable and mean-field forecasts, and does the paired control contrast exclude both without a detection model?"
+    },
+    {
       "id": "qd-qpu-belenos-teleportation-rehearsal-job-02",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
@@ -2933,6 +2961,27 @@
       "run": "results/quandela/runs/2026-10-31T102907Z-qpu_belenos-belenos_mode_swap_interleaved-job-10",
       "family": "interleaved packed and swapped box-kite layouts with replicate compilation seeds on qpu:belenos",
       "question": "For block set 4, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
+    },
+    {
+      "id": "ibm-fez-pathion-kernel-map",
+      "provider": "ibm",
+      "run": "results/live/2026-11-06T183538.809814Z",
+      "family": "pathion kernel map (A_5, dimension 32)",
+      "question": "Does ibm_fez resolve the pair-resolved kernel map of two-term A_5 operands (nullity 0 to 12, twins, mutations) through one compiled SELECT, and which prediction of the visibility at 136 to 173 routed CZ survives?"
+    },
+    {
+      "id": "ibm-fez-pathion-coset-map",
+      "provider": "ibm",
+      "run": "results/live/2026-11-06T201037.234804Z",
+      "family": "pathion coset-block map (A_5, dimension 32)",
+      "question": "Does ibm_fez resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
+    },
+    {
+      "id": "ibm-marrakesh-pathion-coset-map",
+      "provider": "ibm",
+      "run": "results/live/2026-11-06T200832.558771Z",
+      "family": "pathion coset-block map (A_5, dimension 32)",
+      "question": "Does ibm_marrakesh resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
     }
   ],
   "claims": [
@@ -14317,6 +14366,134 @@
         "qd-ascella-target-slot-drift"
       ],
       "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-ascella-postselected-cz-process-fidelity",
+      "statement": "The preregistered unprojected least-squares Choi fit of absolute outcome rates over 100,629 eligible two-click events, taken from the 144 process-tomography settings (preparation and measurement) of the postselected CZ on qpu:ascella in jobs fee9dd00-ef9d-4532-8cb6-40db4c90d1de (submitted 2026-10-31 05:22:47 UTC) and 518f8687-e291-447c-866d-3722adb7d817 (2026-10-31 05:27:31 UTC) at HOM 87.56 %, g2 1.8 %, transmittance 5.81 %, reads process fidelity 0.849 (95 % percentile bootstrap interval 0.828 to 0.869, 500 replicates) and success-weighted average fidelity 0.879 (0.863 to 0.895). Both jobs returned all 72 settings and pooled under the preregistered rule (4.7 minutes apart, equal HOM and transmittance). The point estimate exceeds every forecast of the case's Perceval model at the read (0.786 with source, loss and dark counts, 0.790 with source and loss, 0.823 source only, 0.834 with indistinguishability alone); the interval lies above the first three and contains the last. The descriptive companions read 0.811 (positive projection) and 0.819 (conditional estimator).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Two jobs on one chip, each setting under its own compilation seed, so the fit is one Choi matrix of 144 outcome tables taken through different compiled meshes; it is not shown to equal the mean process of those meshes and describes this set of settings and compilations. The two plan reads are equal (HOM 87.56 %, g2 1.8 %, transmittance 5.81 %) and the submissions lie 284 s apart; no calibration identifier or control tests cross-job stationarity. The absolute rates assume the same any-click probability for every setting, which no record verifies. The interval covers sampling error only, under those assumptions; the estimator's coverage study gave 187 of 200 (0.935) at nominal 0.95. The forecasts take the reported HOM as Perceval's indistinguishability; the interval contains the indistinguishability-only forecast, so the case gives no estimate of an in-situ overlap above the reported figure. No comparison is made with the vendor's published CNOT figure, whose fidelity type the literature note does not state.",
+      "evidence": [
+        {
+          "path": "results/quandela/ascella-cz-tomography-analysis.json",
+          "sha256": "de25c047587b4fe8cf767d5e3c860b07775ef319853474d5386b100027c3ef2e"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/results.json",
+          "sha256": "e60f6b82048f4d65c88ad87c786404195fe916f5e3c7aa59d71f070dcc63fed2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/submission.json",
+          "sha256": "fbcc6816203f6c28ef781e3cecac5cc37ae4a87d2ea4326bf3e7d97d6346fc10"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/cases.json",
+          "sha256": "2f5e9d9743da782043cb646c436d18a21ad37eef3a51b64984f661aef03455dd"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00/raw/result.json",
+          "sha256": "8f4469f28fa6ed137a5b6bea8f9cc2e98225e933d1d970dd0867438152f1f98c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/results.json",
+          "sha256": "25fe70c1f70fbf45c96079fdeed119cb610f2d1859c954ea3e03b4be32c1dde3"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/submission.json",
+          "sha256": "e63aca08232734ca272b2d22c11216c86d5f4f602f68a53eb677b70142db4fe4"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/cases.json",
+          "sha256": "e7c5b2969f5989157a0ba9d1da66fbb60a5468545d02ba004ceb411dafa1a6bc"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01/raw/result.json",
+          "sha256": "ab09869bf68dc0ca247b4145dc32ef7bee60ee8e8789141d30effc9fa62a2fbf"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-cz-process-tomography-case.md",
+        "scripts/ascella_cz_tomography_case.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-ascella-cz-tomography-job-00",
+        "qd-qpu-ascella-cz-tomography-job-01"
+      ],
+      "assumptions": [
+        "A result iteration binds to its setting by its echoed compilation_seed, one to one.",
+        "The chance of at least one click per attempt is the same for every setting (unverified: no record holds per-setting attempt counts).",
+        "The two jobs share one device state (unverified: equal plan reads and a 284 s submission gap bound it, and no control tests stationarity)."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qd-belenos-three-photon-suppression-law",
+      "statement": "Three photons on chip modes 16, 18 and 20 of qpu:belenos through a 6-mode Fourier interferometer on modes 16 to 21 suppress the outputs the label-sum rule forbids. Jobs b0013bf3-8256-4c5b-baab-18e71a8929f7 (submitted 2026-10-31 05:11:21 UTC) and 98c9692d-e8ce-4243-80ba-f7f513783823 (2026-10-31 05:17:37 UTC), at HOM 88.6 %, g2 1.4 %, transmittance 4.89 %, returned all eight iterations with 339 to 391 accepted collision-free three-click events each. The periodic arm's suppressed fraction reads 0.172 over four compiled meshes (99 % one-sided Student-t upper bound 0.233) against the distinguishable forecast 0.602 and the mean-field forecast 0.727, and the paired contrast s(control) - s(periodic) reads +0.486 (lower bound 0.368) against exactly 0 for distinguishable photons at the requested matrices and -0.138 for the mean-field sampler; both preregistered rules hold with the 0.10 margin, the control arm reads 0.658 against its 0.645 forecast, and the periodic level sits 0.028 below the indistinguishable forecast 0.200. The HOM at which the indistinguishable forecast equals the periodic mean is 0.910, a model-conditional point estimate; the inverses at the one-sided 99 % limits of the periodic fraction are 0.857 at the upper limit 0.233 of the fraction and 0.959 at the lower limit 0.111, an interval that contains the platform HOM 0.886.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs on one chip in one calibration state, one source triple and one window. The forecasts use Perceval's source model and the t_out per-mode detection convention; the contrast rule needs neither, the level rule and the HOM inverses need both. The nominal matrices of the eight returned meshes move the forecasts far less than the rule margins, and the distinguishable contrast is exactly 0 only at the requested matrices, but the returned computed_circuit is not the applied phases, so mesh error remains a confound of the level rule and the HOM inverses. The fraction is conditional on three clicks inside modes 16 to 21: 249 of 3200 samples (7.8 %) are three-click events with a click outside the window, excluded from every count (the outside_window entries of analysis.json). The window slot of the missing click is not recorded; the design document's bounding calculation over the 248 events with two window clicks and one outside click, which the retained analysis does not regenerate, finds both rules holding under every assignment of those events to either side of their completions. The frozen cases.json preregistration keeps two sentences that do not hold as written, that the 0.910 inverse bounds the HOM from below and that compile error raises s; the analysis reports the inverse as a point estimate with its interval. The rules reject the distinguishable, mean-field and one-photon-distinguishable nulls and not partial distinguishability in general, since the accepted indistinguishable model has HOM 0.886. The control arm's iterations spread beyond binomial error (chi-square 9.7 on 3 degrees of freedom, p 0.021), which the Student-t interval carries.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/results.json",
+          "sha256": "889e121de88003d90689a17c2fa4964b069d885a59d7b855dd46ac4ebad6d5a1"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/submission.json",
+          "sha256": "2dc02a5b8227b603bbfe8970c4771133ad2867455b56946a9066eb2341ef41c0"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/analysis.json",
+          "sha256": "8b22c7724cd532809b638ae62c2a58cd39ccb6ffe916e98e8d90f6ffbfdd4861"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/cases.json",
+          "sha256": "5920ca4126b26f1384804e529dc5bb568d4c184e6681b2c51c10022b5ea68a18"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00/raw/result.json",
+          "sha256": "a20bd998b0bc3aa51d0f0e25430ac0accb039327f2f540397d1da3a131df6869"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/results.json",
+          "sha256": "a96de313d1f2c2257ac54c4f368dbb0d0e367da8d65aeb482829d100e2bddaf8"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/submission.json",
+          "sha256": "6356c7fe036541676df6efaf1e3ee9daaf0e10175b38eb13e76cbad9f20c229c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/analysis.json",
+          "sha256": "8b22c7724cd532809b638ae62c2a58cd39ccb6ffe916e98e8d90f6ffbfdd4861"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/cases.json",
+          "sha256": "a3cfbf0288091a9af63d59ace955a328a09cc925458f6a4474ddee8f743c683b"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01/raw/result.json",
+          "sha256": "59ef3e9f46d3628aca2cc8ab13a8377e6d930753335dcd92a2739021d89e9845"
+        }
+      ],
+      "documents": [
+        "docs/design/belenos-suppression-law-case.md",
+        "scripts/belenos_suppression_case.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-qpu-belenos-suppression-law-job-00",
+        "qd-qpu-belenos-suppression-law-job-01"
+      ],
+      "assumptions": [
+        "A result iteration binds to its setting by its echoed compilation_seed and carries its circuit_params, each run's cases.json equals a manifest retained under the case directory, and an iteration below 200 accepted events does not count."
+      ],
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null

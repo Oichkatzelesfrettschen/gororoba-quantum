@@ -1,0 +1,1541 @@
+{
+ "case": "docs/design/ascella-cz-process-tomography-case.md",
+ "eligible_per_shot": {
+  "analysis": "results/quandela/ascella-cz-tomography-analysis.json",
+  "input_mean_ratio": {
+   "++": 1.0264956676272297,
+   "+0": 1.0322894127773181,
+   "+1": 0.9196444620212946,
+   "+i": 1.0231571236619366,
+   "0+": 0.9214119556090574,
+   "00": 0.8817972376107008,
+   "01": 0.9520709258123582,
+   "0i": 0.9081475047341981,
+   "1+": 1.1176537729611233,
+   "10": 1.1971529777036798,
+   "11": 0.9611072507564968,
+   "1i": 1.0960835686874704,
+   "i+": 0.9898397579968974,
+   "i0": 1.0636501363170356,
+   "i1": 0.9140023036505958,
+   "ii": 0.995495942072607
+  },
+  "mean": 0.0034138972315604053,
+  "setting_ratio": {
+   "max": 1.3066357700731497,
+   "min": 0.7857498607550671
+  }
+ },
+ "jobs": {
+  "job-00": {
+   "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+   "settings": [
+    {
+     "column_modulus_deviation": 0.0005713446883162229,
+     "eligible_events": 533,
+     "eligible_per_shot_ratio": 0.8371127520404167,
+     "name": "in-00-XX",
+     "nominal_tvd": 0.00023448910330504946,
+     "observation_index": 0,
+     "shots": 186506,
+     "success_ratio": 1.0002529672575204
+    },
+    {
+     "column_modulus_deviation": 0.0005080946953845431,
+     "eligible_events": 608,
+     "eligible_per_shot_ratio": 0.9468837542329632,
+     "name": "in-00-XY",
+     "nominal_tvd": 0.00047247175864068014,
+     "observation_index": 1,
+     "shots": 188086,
+     "success_ratio": 1.000139142347282
+    },
+    {
+     "column_modulus_deviation": 0.0006992638611675246,
+     "eligible_events": 558,
+     "eligible_per_shot_ratio": 0.8190456045399002,
+     "name": "in-00-XZ",
+     "nominal_tvd": 0.0003177523832569255,
+     "observation_index": 2,
+     "shots": 199561,
+     "success_ratio": 1.000200363311887
+    },
+    {
+     "column_modulus_deviation": 0.0007673568928796614,
+     "eligible_events": 551,
+     "eligible_per_shot_ratio": 0.8519846355820957,
+     "name": "in-00-YX",
+     "nominal_tvd": 0.00020604802817876522,
+     "observation_index": 3,
+     "shots": 189439,
+     "success_ratio": 0.9998846015614712
+    },
+    {
+     "column_modulus_deviation": 0.0005184205013648932,
+     "eligible_events": 543,
+     "eligible_per_shot_ratio": 0.8534041277096266,
+     "name": "in-00-YY",
+     "nominal_tvd": 0.00010512295344215772,
+     "observation_index": 4,
+     "shots": 186378,
+     "success_ratio": 1.0004193994025776
+    },
+    {
+     "column_modulus_deviation": 0.00038251631919683027,
+     "eligible_events": 597,
+     "eligible_per_shot_ratio": 0.9093641485479936,
+     "name": "in-00-YZ",
+     "nominal_tvd": 0.0002452585562455134,
+     "observation_index": 5,
+     "shots": 192303,
+     "success_ratio": 0.9997592790967994
+    },
+    {
+     "column_modulus_deviation": 0.0005126775736273175,
+     "eligible_events": 510,
+     "eligible_per_shot_ratio": 0.9796667499046224,
+     "name": "in-00-ZX",
+     "nominal_tvd": 6.427153959069866e-05,
+     "observation_index": 6,
+     "shots": 152490,
+     "success_ratio": 1.0008697781054026
+    },
+    {
+     "column_modulus_deviation": 0.0006331345917017151,
+     "eligible_events": 457,
+     "eligible_per_shot_ratio": 0.881001169541925,
+     "name": "in-00-ZY",
+     "nominal_tvd": 6.6170401469743455e-06,
+     "observation_index": 7,
+     "shots": 151946,
+     "success_ratio": 1.0011693641337966
+    },
+    {
+     "column_modulus_deviation": 0.00048777813370598516,
+     "eligible_events": 442,
+     "eligible_per_shot_ratio": 0.8577121963967638,
+     "name": "in-00-ZZ",
+     "nominal_tvd": 3.652729930197081e-07,
+     "observation_index": 8,
+     "shots": 150949,
+     "success_ratio": 0.999483420328782
+    },
+    {
+     "column_modulus_deviation": 0.0004656116866150728,
+     "eligible_events": 568,
+     "eligible_per_shot_ratio": 1.0187785555856388,
+     "name": "in-0+-XX",
+     "nominal_tvd": 0.0003870674899840128,
+     "observation_index": 9,
+     "shots": 163312,
+     "success_ratio": 1.00039447718827
+    },
+    {
+     "column_modulus_deviation": 0.0005235488240324207,
+     "eligible_events": 517,
+     "eligible_per_shot_ratio": 0.8914937435275163,
+     "name": "in-0+-XY",
+     "nominal_tvd": 0.000672894030392307,
+     "observation_index": 10,
+     "shots": 169872,
+     "success_ratio": 0.9990649274611689
+    },
+    {
+     "column_modulus_deviation": 0.0006806890896738294,
+     "eligible_events": 533,
+     "eligible_per_shot_ratio": 0.9419001968667987,
+     "name": "in-0+-XZ",
+     "nominal_tvd": 0.00032615617436994315,
+     "observation_index": 11,
+     "shots": 165757,
+     "success_ratio": 0.999990878505182
+    },
+    {
+     "column_modulus_deviation": 0.0008593301467859516,
+     "eligible_events": 498,
+     "eligible_per_shot_ratio": 0.857353071758195,
+     "name": "in-0+-YX",
+     "nominal_tvd": 8.006137592366847e-05,
+     "observation_index": 12,
+     "shots": 170145,
+     "success_ratio": 0.9992994786195336
+    },
+    {
+     "column_modulus_deviation": 0.00033305331930635125,
+     "eligible_events": 507,
+     "eligible_per_shot_ratio": 0.892159301331784,
+     "name": "in-0+-YY",
+     "nominal_tvd": 0.0004762792114298975,
+     "observation_index": 13,
+     "shots": 166462,
+     "success_ratio": 1.0002925115228927
+    },
+    {
+     "column_modulus_deviation": 0.0006852793417186576,
+     "eligible_events": 540,
+     "eligible_per_shot_ratio": 0.9486445570325077,
+     "name": "in-0+-YZ",
+     "nominal_tvd": 0.00014668669086796704,
+     "observation_index": 14,
+     "shots": 166740,
+     "success_ratio": 0.9995757183280289
+    },
+    {
+     "column_modulus_deviation": 0.0003565648430514591,
+     "eligible_events": 423,
+     "eligible_per_shot_ratio": 0.8289089612502472,
+     "name": "in-0+-ZX",
+     "nominal_tvd": 4.127326614062282e-07,
+     "observation_index": 15,
+     "shots": 149480,
+     "success_ratio": 0.9995235139128784
+    },
+    {
+     "column_modulus_deviation": 0.0004990361342452456,
+     "eligible_events": 498,
+     "eligible_per_shot_ratio": 0.9517785430091547,
+     "name": "in-0+-ZY",
+     "nominal_tvd": 3.2175883098894015e-05,
+     "observation_index": 16,
+     "shots": 153265,
+     "success_ratio": 1.0003273899968539
+    },
+    {
+     "column_modulus_deviation": 0.0006069711459254454,
+     "eligible_events": 489,
+     "eligible_per_shot_ratio": 0.9616906701196742,
+     "name": "in-0+-ZZ",
+     "nominal_tvd": 6.669952033267955e-05,
+     "observation_index": 17,
+     "shots": 148944,
+     "success_ratio": 1.0000652847311944
+    },
+    {
+     "column_modulus_deviation": 0.0005835593873284013,
+     "eligible_events": 563,
+     "eligible_per_shot_ratio": 0.8281608858335606,
+     "name": "in-11-XX",
+     "nominal_tvd": 9.014578653133987e-05,
+     "observation_index": 18,
+     "shots": 199133,
+     "success_ratio": 0.9991461944568603
+    },
+    {
+     "column_modulus_deviation": 0.0009368604913282094,
+     "eligible_events": 631,
+     "eligible_per_shot_ratio": 0.9618840117079014,
+     "name": "in-11-XY",
+     "nominal_tvd": 0.00036591381918460453,
+     "observation_index": 19,
+     "shots": 192157,
+     "success_ratio": 1.000197881110083
+    },
+    {
+     "column_modulus_deviation": 0.0006803977207131089,
+     "eligible_events": 529,
+     "eligible_per_shot_ratio": 1.0349160104668098,
+     "name": "in-11-XZ",
+     "nominal_tvd": 8.206589713699927e-05,
+     "observation_index": 20,
+     "shots": 149727,
+     "success_ratio": 1.0003615287519199
+    },
+    {
+     "column_modulus_deviation": 0.0006803808419380698,
+     "eligible_events": 647,
+     "eligible_per_shot_ratio": 1.0171173282310897,
+     "name": "in-11-YX",
+     "nominal_tvd": 0.00023379598707007343,
+     "observation_index": 21,
+     "shots": 186330,
+     "success_ratio": 0.9997903437695661
+    },
+    {
+     "column_modulus_deviation": 0.0008484723052574892,
+     "eligible_events": 731,
+     "eligible_per_shot_ratio": 1.0779160111147081,
+     "name": "in-11-YY",
+     "nominal_tvd": 0.00030341829389105013,
+     "observation_index": 22,
+     "shots": 198647,
+     "success_ratio": 1.0000818798324358
+    },
+    {
+     "column_modulus_deviation": 0.0009053665455186386,
+     "eligible_events": 497,
+     "eligible_per_shot_ratio": 0.9522033503788802,
+     "name": "in-11-YZ",
+     "nominal_tvd": 0.0004284751988980721,
+     "observation_index": 23,
+     "shots": 152889,
+     "success_ratio": 0.9991192007157582
+    },
+    {
+     "column_modulus_deviation": 0.00046786105589787094,
+     "eligible_events": 571,
+     "eligible_per_shot_ratio": 0.8540606243143123,
+     "name": "in-11-ZX",
+     "nominal_tvd": 2.5535656359316838e-05,
+     "observation_index": 24,
+     "shots": 195838,
+     "success_ratio": 1.0005324260112258
+    },
+    {
+     "column_modulus_deviation": 0.0004979583778370812,
+     "eligible_events": 579,
+     "eligible_per_shot_ratio": 0.8442139165658102,
+     "name": "in-11-ZY",
+     "nominal_tvd": 0.0002023063699768832,
+     "observation_index": 25,
+     "shots": 200898,
+     "success_ratio": 0.9991188152908207
+    },
+    {
+     "column_modulus_deviation": 0.00049500337471921,
+     "eligible_events": 543,
+     "eligible_per_shot_ratio": 1.0794931181953997,
+     "name": "in-11-ZZ",
+     "nominal_tvd": 4.665006741887861e-07,
+     "observation_index": 26,
+     "shots": 147343,
+     "success_ratio": 1.0003134821514668
+    },
+    {
+     "column_modulus_deviation": 0.000582926624635697,
+     "eligible_events": 743,
+     "eligible_per_shot_ratio": 1.0268596684952427,
+     "name": "in-1i-XX",
+     "nominal_tvd": 0.00012123534692828897,
+     "observation_index": 27,
+     "shots": 211947,
+     "success_ratio": 0.9996390423391561
+    },
+    {
+     "column_modulus_deviation": 0.0007404063925062538,
+     "eligible_events": 848,
+     "eligible_per_shot_ratio": 1.1695794999167384,
+     "name": "in-1i-XY",
+     "nominal_tvd": 0.00010875474517982306,
+     "observation_index": 28,
+     "shots": 212381,
+     "success_ratio": 0.9994698653433537
+    },
+    {
+     "column_modulus_deviation": 0.00043942776720387226,
+     "eligible_events": 860,
+     "eligible_per_shot_ratio": 1.1623394673068297,
+     "name": "in-1i-XZ",
+     "nominal_tvd": 0.00015299850747806099,
+     "observation_index": 29,
+     "shots": 216728,
+     "success_ratio": 0.9996748835089442
+    },
+    {
+     "column_modulus_deviation": 0.0004951367259321662,
+     "eligible_events": 760,
+     "eligible_per_shot_ratio": 1.008016664093233,
+     "name": "in-1i-YX",
+     "nominal_tvd": 0.00027319506307098285,
+     "observation_index": 30,
+     "shots": 220849,
+     "success_ratio": 0.9997849587915721
+    },
+    {
+     "column_modulus_deviation": 0.00048781815493992563,
+     "eligible_events": 835,
+     "eligible_per_shot_ratio": 1.183530916069571,
+     "name": "in-1i-YY",
+     "nominal_tvd": 0.00011586374322169007,
+     "observation_index": 31,
+     "shots": 206660,
+     "success_ratio": 0.9995988830626371
+    },
+    {
+     "column_modulus_deviation": 0.00048108871638895474,
+     "eligible_events": 836,
+     "eligible_per_shot_ratio": 1.140176554408842,
+     "name": "in-1i-YZ",
+     "nominal_tvd": 0.0005609490700484582,
+     "observation_index": 32,
+     "shots": 214775,
+     "success_ratio": 0.9991081774221087
+    },
+    {
+     "column_modulus_deviation": 0.0007540370491440332,
+     "eligible_events": 811,
+     "eligible_per_shot_ratio": 0.931356900412919,
+     "name": "in-1i-ZX",
+     "nominal_tvd": 0.00024323888762920067,
+     "observation_index": 33,
+     "shots": 255067,
+     "success_ratio": 1.0003332252053476
+    },
+    {
+     "column_modulus_deviation": 0.00034714575422498795,
+     "eligible_events": 945,
+     "eligible_per_shot_ratio": 1.1345870400915696,
+     "name": "in-1i-ZY",
+     "nominal_tvd": 1.1116677460471906e-07,
+     "observation_index": 34,
+     "shots": 243974,
+     "success_ratio": 1.0007995751650034
+    },
+    {
+     "column_modulus_deviation": 0.0005679952450662467,
+     "eligible_events": 1001,
+     "eligible_per_shot_ratio": 1.1083054073922876,
+     "name": "in-1i-ZZ",
+     "nominal_tvd": 0.00021458755477956715,
+     "observation_index": 35,
+     "shots": 264560,
+     "success_ratio": 0.9997233363110201
+    },
+    {
+     "column_modulus_deviation": 0.0005995928456299015,
+     "eligible_events": 765,
+     "eligible_per_shot_ratio": 0.9973964990249381,
+     "name": "in-+0-XX",
+     "nominal_tvd": 0.00040558939369243524,
+     "observation_index": 36,
+     "shots": 224669,
+     "success_ratio": 1.001492620139314
+    },
+    {
+     "column_modulus_deviation": 0.00046325087396820576,
+     "eligible_events": 853,
+     "eligible_per_shot_ratio": 1.137106981909601,
+     "name": "in-+0-XY",
+     "nominal_tvd": 0.0001883919729935183,
+     "observation_index": 37,
+     "shots": 219734,
+     "success_ratio": 0.9997621618438942
+    },
+    {
+     "column_modulus_deviation": 0.0008008767287249456,
+     "eligible_events": 880,
+     "eligible_per_shot_ratio": 0.9547705773180493,
+     "name": "in-+0-XZ",
+     "nominal_tvd": 7.285431076346149e-08,
+     "observation_index": 38,
+     "shots": 269981,
+     "success_ratio": 1.0000168658383533
+    },
+    {
+     "column_modulus_deviation": 0.0005662966676792133,
+     "eligible_events": 778,
+     "eligible_per_shot_ratio": 1.0193638423903466,
+     "name": "in-+0-YX",
+     "nominal_tvd": 0.0001622173577803948,
+     "observation_index": 39,
+     "shots": 223563,
+     "success_ratio": 1.0000324411870374
+    },
+    {
+     "column_modulus_deviation": 0.0005787777694276682,
+     "eligible_events": 710,
+     "eligible_per_shot_ratio": 0.9836283223555811,
+     "name": "in-+0-YY",
+     "nominal_tvd": 0.00027646744297533943,
+     "observation_index": 40,
+     "shots": 211435,
+     "success_ratio": 0.9998825342398424
+    },
+    {
+     "column_modulus_deviation": 0.00045168597319857485,
+     "eligible_events": 841,
+     "eligible_per_shot_ratio": 0.9915874561829463,
+     "name": "in-+0-YZ",
+     "nominal_tvd": 0.000180806902422172,
+     "observation_index": 41,
+     "shots": 248436,
+     "success_ratio": 1.000201210741456
+    },
+    {
+     "column_modulus_deviation": 0.0005485193703182103,
+     "eligible_events": 800,
+     "eligible_per_shot_ratio": 1.0604459544897284,
+     "name": "in-+0-ZX",
+     "nominal_tvd": 0.00019830335589228476,
+     "observation_index": 42,
+     "shots": 220979,
+     "success_ratio": 0.9993909986109761
+    },
+    {
+     "column_modulus_deviation": 0.0005189490483208097,
+     "eligible_events": 823,
+     "eligible_per_shot_ratio": 1.1311470597555393,
+     "name": "in-+0-ZY",
+     "nominal_tvd": 0.0004766975187468492,
+     "observation_index": 43,
+     "shots": 213123,
+     "success_ratio": 0.99920512365843
+    },
+    {
+     "column_modulus_deviation": 0.00030172197826328675,
+     "eligible_events": 902,
+     "eligible_per_shot_ratio": 1.0151580215691336,
+     "name": "in-+0-ZZ",
+     "nominal_tvd": 0.00018727266074481137,
+     "observation_index": 44,
+     "shots": 260269,
+     "success_ratio": 0.9990266188922585
+    },
+    {
+     "column_modulus_deviation": 0.0005153621055457126,
+     "eligible_events": 593,
+     "eligible_per_shot_ratio": 1.0101406879897352,
+     "name": "in-++-XX",
+     "nominal_tvd": 0.00021975613503445734,
+     "observation_index": 45,
+     "shots": 171958,
+     "success_ratio": 0.9991006637157371
+    },
+    {
+     "column_modulus_deviation": 0.0006115710278716376,
+     "eligible_events": 653,
+     "eligible_per_shot_ratio": 1.0110953383513295,
+     "name": "in-++-XY",
+     "nominal_tvd": 0.00016485383916470253,
+     "observation_index": 46,
+     "shots": 189178,
+     "success_ratio": 0.9997020047306249
+    },
+    {
+     "column_modulus_deviation": 0.00047669690558460587,
+     "eligible_events": 543,
+     "eligible_per_shot_ratio": 0.8515992917298796,
+     "name": "in-++-XZ",
+     "nominal_tvd": 0.0001627669167128215,
+     "observation_index": 47,
+     "shots": 186773,
+     "success_ratio": 0.9994918236698156
+    },
+    {
+     "column_modulus_deviation": 0.0006175363100552096,
+     "eligible_events": 638,
+     "eligible_per_shot_ratio": 0.9943504139259123,
+     "name": "in-++-YX",
+     "nominal_tvd": 5.93052258539839e-05,
+     "observation_index": 48,
+     "shots": 187945,
+     "success_ratio": 1.0000694978423392
+    },
+    {
+     "column_modulus_deviation": 0.0005545785403801872,
+     "eligible_events": 574,
+     "eligible_per_shot_ratio": 0.9273414903708054,
+     "name": "in-++-YY",
+     "nominal_tvd": 6.794353028232746e-05,
+     "observation_index": 49,
+     "shots": 181310,
+     "success_ratio": 1.0000524352824816
+    },
+    {
+     "column_modulus_deviation": 0.0007187656632327904,
+     "eligible_events": 705,
+     "eligible_per_shot_ratio": 1.1237170451924108,
+     "name": "in-++-YZ",
+     "nominal_tvd": 0.00033362311404913636,
+     "observation_index": 50,
+     "shots": 183773,
+     "success_ratio": 0.9999312533419809
+    },
+    {
+     "column_modulus_deviation": 0.0007591759710369983,
+     "eligible_events": 635,
+     "eligible_per_shot_ratio": 0.9699804833654452,
+     "name": "in-++-ZX",
+     "nominal_tvd": 0.0001923766697958008,
+     "observation_index": 51,
+     "shots": 191761,
+     "success_ratio": 1.0000551980716272
+    },
+    {
+     "column_modulus_deviation": 0.0008049144369558032,
+     "eligible_events": 786,
+     "eligible_per_shot_ratio": 1.2341223724637107,
+     "name": "in-++-ZY",
+     "nominal_tvd": 5.986157842173545e-05,
+     "observation_index": 52,
+     "shots": 186558,
+     "success_ratio": 0.9997576201755769
+    },
+    {
+     "column_modulus_deviation": 0.00045539258770839404,
+     "eligible_events": 703,
+     "eligible_per_shot_ratio": 1.116113885255837,
+     "name": "in-++-ZZ",
+     "nominal_tvd": 0.00036519932934810095,
+     "observation_index": 53,
+     "shots": 184500,
+     "success_ratio": 1.0002907337695488
+    },
+    {
+     "column_modulus_deviation": 0.0005594193358713592,
+     "eligible_events": 556,
+     "eligible_per_shot_ratio": 0.9846419625350297,
+     "name": "in-i1-XX",
+     "nominal_tvd": 0.00015068579676617844,
+     "observation_index": 54,
+     "shots": 165404,
+     "success_ratio": 1.000104982404556
+    },
+    {
+     "column_modulus_deviation": 0.0006312285385421569,
+     "eligible_events": 535,
+     "eligible_per_shot_ratio": 0.9328340653854433,
+     "name": "in-i1-XY",
+     "nominal_tvd": 0.0001560499790947828,
+     "observation_index": 55,
+     "shots": 167996,
+     "success_ratio": 0.9995508990040292
+    },
+    {
+     "column_modulus_deviation": 0.0005239872150564898,
+     "eligible_events": 504,
+     "eligible_per_shot_ratio": 0.9652926673442329,
+     "name": "in-i1-XZ",
+     "nominal_tvd": 8.641128547658784e-05,
+     "observation_index": 56,
+     "shots": 152940,
+     "success_ratio": 1.0003598280697712
+    },
+    {
+     "column_modulus_deviation": 0.0008983491468892713,
+     "eligible_events": 554,
+     "eligible_per_shot_ratio": 0.9724750163581515,
+     "name": "in-i1-YX",
+     "nominal_tvd": 0.00024172897252414208,
+     "observation_index": 57,
+     "shots": 166871,
+     "success_ratio": 0.999942496870204
+    },
+    {
+     "column_modulus_deviation": 0.0005690765404418168,
+     "eligible_events": 540,
+     "eligible_per_shot_ratio": 0.9496184370417085,
+     "name": "in-i1-YY",
+     "nominal_tvd": 0.0004419749285664168,
+     "observation_index": 58,
+     "shots": 166569,
+     "success_ratio": 1.0005602960141182
+    },
+    {
+     "column_modulus_deviation": 0.0004542671434179002,
+     "eligible_events": 443,
+     "eligible_per_shot_ratio": 0.8454819140867258,
+     "name": "in-i1-YZ",
+     "nominal_tvd": 1.396320049365657e-06,
+     "observation_index": 59,
+     "shots": 153479,
+     "success_ratio": 0.9990270759698094
+    },
+    {
+     "column_modulus_deviation": 0.0008313867463111239,
+     "eligible_events": 502,
+     "eligible_per_shot_ratio": 0.8582068496576069,
+     "name": "in-i1-ZX",
+     "nominal_tvd": 0.0001678911296433827,
+     "observation_index": 60,
+     "shots": 171341,
+     "success_ratio": 0.9998868996347952
+    },
+    {
+     "column_modulus_deviation": 0.0006208776917767309,
+     "eligible_events": 459,
+     "eligible_per_shot_ratio": 0.7857498607550671,
+     "name": "in-i1-ZY",
+     "nominal_tvd": 0.0003540776121947614,
+     "observation_index": 61,
+     "shots": 171111,
+     "success_ratio": 0.9993364723162235
+    },
+    {
+     "column_modulus_deviation": 0.0006031119207301983,
+     "eligible_events": 481,
+     "eligible_per_shot_ratio": 0.931719959691396,
+     "name": "in-i1-ZZ",
+     "nominal_tvd": 0.0004176893655358421,
+     "observation_index": 62,
+     "shots": 151220,
+     "success_ratio": 0.9995924283604569
+    },
+    {
+     "column_modulus_deviation": 0.000667017523786175,
+     "eligible_events": 638,
+     "eligible_per_shot_ratio": 1.003394282690056,
+     "name": "in-ii-XX",
+     "nominal_tvd": 3.9008472769954183e-05,
+     "observation_index": 63,
+     "shots": 186251,
+     "success_ratio": 0.9997423449714978
+    },
+    {
+     "column_modulus_deviation": 0.0006445649370726077,
+     "eligible_events": 607,
+     "eligible_per_shot_ratio": 0.9612305374833201,
+     "name": "in-ii-XY",
+     "nominal_tvd": 0.00030719826775507664,
+     "observation_index": 64,
+     "shots": 184974,
+     "success_ratio": 1.0000516986604553
+    },
+    {
+     "column_modulus_deviation": 0.0005978541513915038,
+     "eligible_events": 604,
+     "eligible_per_shot_ratio": 0.9948990691486591,
+     "name": "in-ii-XZ",
+     "nominal_tvd": 0.00031483538980063563,
+     "observation_index": 65,
+     "shots": 177831,
+     "success_ratio": 1.000259615474361
+    },
+    {
+     "column_modulus_deviation": 0.00028348038412548583,
+     "eligible_events": 639,
+     "eligible_per_shot_ratio": 1.0073684463100263,
+     "name": "in-ii-YX",
+     "nominal_tvd": 0.00014376450090251847,
+     "observation_index": 66,
+     "shots": 185807,
+     "success_ratio": 0.9998165334594112
+    },
+    {
+     "column_modulus_deviation": 0.0009343800696484067,
+     "eligible_events": 618,
+     "eligible_per_shot_ratio": 0.9527820658375753,
+     "name": "in-ii-YY",
+     "nominal_tvd": 0.0001015100378155831,
+     "observation_index": 67,
+     "shots": 189996,
+     "success_ratio": 0.9998807594653495
+    },
+    {
+     "column_modulus_deviation": 0.0004685914883395372,
+     "eligible_events": 641,
+     "eligible_per_shot_ratio": 1.0046010723265135,
+     "name": "in-ii-YZ",
+     "nominal_tvd": 0.0005148511423071177,
+     "observation_index": 68,
+     "shots": 186902,
+     "success_ratio": 1.000235341263836
+    },
+    {
+     "column_modulus_deviation": 0.000720681017228475,
+     "eligible_events": 658,
+     "eligible_per_shot_ratio": 1.07159033558355,
+     "name": "in-ii-ZX",
+     "nominal_tvd": 0.00042205178919367536,
+     "observation_index": 69,
+     "shots": 179865,
+     "success_ratio": 1.0001903302460777
+    },
+    {
+     "column_modulus_deviation": 0.0008609658668244079,
+     "eligible_events": 605,
+     "eligible_per_shot_ratio": 0.9587683091355493,
+     "name": "in-ii-ZY",
+     "nominal_tvd": 6.902294560982403e-06,
+     "observation_index": 70,
+     "shots": 184838,
+     "success_ratio": 0.9998592569276782
+    },
+    {
+     "column_modulus_deviation": 0.0006254878844211195,
+     "eligible_events": 638,
+     "eligible_per_shot_ratio": 1.0048293601382132,
+     "name": "in-ii-ZZ",
+     "nominal_tvd": 0.0005017461738617696,
+     "observation_index": 71,
+     "shots": 185985,
+     "success_ratio": 1.0007303873611695
+    }
+   ],
+   "summary": {
+    "column_modulus_deviation": {
+     "max": 0.0009368604913282094,
+     "median": 0.0005750612288719456,
+     "min": 0.00028348038412548583
+    },
+    "nominal_tvd": {
+     "max": 0.000672894030392307,
+     "median": 0.00018783231686916483,
+     "min": 7.285431076346149e-08
+    },
+    "settings": 72,
+    "success_ratio": {
+     "max": 1.001492620139314,
+     "median": 0.999909076488388,
+     "min": 0.9990266188922585
+    }
+   }
+  },
+  "job-01": {
+   "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
+   "settings": [
+    {
+     "column_modulus_deviation": 0.0007304673930126768,
+     "eligible_events": 538,
+     "eligible_per_shot_ratio": 1.0480086234349306,
+     "name": "in-01-XX",
+     "nominal_tvd": 2.0287325819767776e-05,
+     "observation_index": 0,
+     "shots": 150372,
+     "success_ratio": 1.0000105627650298
+    },
+    {
+     "column_modulus_deviation": 0.0006076832803113406,
+     "eligible_events": 474,
+     "eligible_per_shot_ratio": 0.943504599117836,
+     "name": "in-01-XY",
+     "nominal_tvd": 0.00012467627907362944,
+     "observation_index": 1,
+     "shots": 147158,
+     "success_ratio": 0.9998493619606517
+    },
+    {
+     "column_modulus_deviation": 0.0005859677330760589,
+     "eligible_events": 487,
+     "eligible_per_shot_ratio": 0.9076069480566874,
+     "name": "in-01-XZ",
+     "nominal_tvd": 7.695846060401732e-05,
+     "observation_index": 2,
+     "shots": 157174,
+     "success_ratio": 0.9997435114369287
+    },
+    {
+     "column_modulus_deviation": 0.0007651384265056297,
+     "eligible_events": 444,
+     "eligible_per_shot_ratio": 0.8419322284030845,
+     "name": "in-01-YX",
+     "nominal_tvd": 0.00012783215623037025,
+     "observation_index": 3,
+     "shots": 154474,
+     "success_ratio": 0.9999274568394354
+    },
+    {
+     "column_modulus_deviation": 0.0007738814762973292,
+     "eligible_events": 506,
+     "eligible_per_shot_ratio": 0.9525926530590507,
+     "name": "in-01-YY",
+     "nominal_tvd": 0.00015882878242334808,
+     "observation_index": 4,
+     "shots": 155594,
+     "success_ratio": 0.9999358455823079
+    },
+    {
+     "column_modulus_deviation": 0.0006784239364473353,
+     "eligible_events": 499,
+     "eligible_per_shot_ratio": 0.9974087408989579,
+     "name": "in-01-YZ",
+     "nominal_tvd": 8.685606746819411e-05,
+     "observation_index": 5,
+     "shots": 146547,
+     "success_ratio": 1.0000102454818702
+    },
+    {
+     "column_modulus_deviation": 0.000491775522645692,
+     "eligible_events": 470,
+     "eligible_per_shot_ratio": 0.9079746769293959,
+     "name": "in-01-ZX",
+     "nominal_tvd": 5.569212096775105e-05,
+     "observation_index": 6,
+     "shots": 151626,
+     "success_ratio": 0.9999726776496173
+    },
+    {
+     "column_modulus_deviation": 0.0005880643292826623,
+     "eligible_events": 539,
+     "eligible_per_shot_ratio": 1.0220820019121715,
+     "name": "in-01-ZY",
+     "nominal_tvd": 4.999078954672728e-05,
+     "observation_index": 7,
+     "shots": 154473,
+     "success_ratio": 0.99977310505244
+    },
+    {
+     "column_modulus_deviation": 0.000686837660428214,
+     "eligible_events": 487,
+     "eligible_per_shot_ratio": 0.9475278604991085,
+     "name": "in-01-ZZ",
+     "nominal_tvd": 2.431024922759813e-07,
+     "observation_index": 8,
+     "shots": 150552,
+     "success_ratio": 1.00075473675448
+    },
+    {
+     "column_modulus_deviation": 0.0005200122663798257,
+     "eligible_events": 464,
+     "eligible_per_shot_ratio": 0.82495248226013,
+     "name": "in-0i-XX",
+     "nominal_tvd": 0.0002827351009412338,
+     "observation_index": 9,
+     "shots": 164755,
+     "success_ratio": 0.9992753970463193
+    },
+    {
+     "column_modulus_deviation": 0.0004983158088001746,
+     "eligible_events": 468,
+     "eligible_per_shot_ratio": 0.8324380326063944,
+     "name": "in-0i-XY",
+     "nominal_tvd": 0.00012313611987105227,
+     "observation_index": 10,
+     "shots": 164681,
+     "success_ratio": 0.9998612231068886
+    },
+    {
+     "column_modulus_deviation": 0.0006853247058604513,
+     "eligible_events": 562,
+     "eligible_per_shot_ratio": 0.9886508478146966,
+     "name": "in-0i-XZ",
+     "nominal_tvd": 8.620468699406525e-05,
+     "observation_index": 11,
+     "shots": 166511,
+     "success_ratio": 0.9996341254182918
+    },
+    {
+     "column_modulus_deviation": 0.0005267423963753612,
+     "eligible_events": 539,
+     "eligible_per_shot_ratio": 0.9644308006461474,
+     "name": "in-0i-YX",
+     "nominal_tvd": 0.00026022585536507326,
+     "observation_index": 12,
+     "shots": 163707,
+     "success_ratio": 1.0002672241627177
+    },
+    {
+     "column_modulus_deviation": 0.0007692044096451588,
+     "eligible_events": 501,
+     "eligible_per_shot_ratio": 0.8654272759753177,
+     "name": "in-0i-YY",
+     "nominal_tvd": 0.00012749729236367387,
+     "observation_index": 13,
+     "shots": 169573,
+     "success_ratio": 0.9997286891669009
+    },
+    {
+     "column_modulus_deviation": 0.000557646367303549,
+     "eligible_events": 540,
+     "eligible_per_shot_ratio": 0.96203012674614,
+     "name": "in-0i-YZ",
+     "nominal_tvd": 0.0003185070221683739,
+     "observation_index": 14,
+     "shots": 164420,
+     "success_ratio": 0.9992762589380307
+    },
+    {
+     "column_modulus_deviation": 0.000598907897792955,
+     "eligible_events": 449,
+     "eligible_per_shot_ratio": 0.8899197566915588,
+     "name": "in-0i-ZX",
+     "nominal_tvd": 8.496899796266975e-05,
+     "observation_index": 15,
+     "shots": 147790,
+     "success_ratio": 1.0001978635469049
+    },
+    {
+     "column_modulus_deviation": 0.0007450477220163002,
+     "eligible_events": 467,
+     "eligible_per_shot_ratio": 0.8979153196633463,
+     "name": "in-0i-ZY",
+     "nominal_tvd": 1.3120593429493588e-07,
+     "observation_index": 16,
+     "shots": 152346,
+     "success_ratio": 0.9999449526732409
+    },
+    {
+     "column_modulus_deviation": 0.0005310621083303653,
+     "eligible_events": 476,
+     "eligible_per_shot_ratio": 0.9475629002040523,
+     "name": "in-0i-ZZ",
+     "nominal_tvd": 5.9215624025229705e-05,
+     "observation_index": 17,
+     "shots": 147146,
+     "success_ratio": 0.9994501160237482
+    },
+    {
+     "column_modulus_deviation": 0.0005725655645722973,
+     "eligible_events": 1118,
+     "eligible_per_shot_ratio": 1.2782893965089075,
+     "name": "in-10-XX",
+     "nominal_tvd": 0.0002680446128537489,
+     "observation_index": 18,
+     "shots": 256190,
+     "success_ratio": 1.0007683564847627
+    },
+    {
+     "column_modulus_deviation": 0.000580862598614635,
+     "eligible_events": 1103,
+     "eligible_per_shot_ratio": 1.2645248415613641,
+     "name": "in-10-XY",
+     "nominal_tvd": 0.00035838535156700047,
+     "observation_index": 19,
+     "shots": 255504,
+     "success_ratio": 0.9999955615432181
+    },
+    {
+     "column_modulus_deviation": 0.00043847629543481033,
+     "eligible_events": 1737,
+     "eligible_per_shot_ratio": 1.3066357700731497,
+     "name": "in-10-XZ",
+     "nominal_tvd": 0.00016553865168012155,
+     "observation_index": 20,
+     "shots": 389399,
+     "success_ratio": 1.0006633119379194
+    },
+    {
+     "column_modulus_deviation": 0.0005634347346557655,
+     "eligible_events": 1082,
+     "eligible_per_shot_ratio": 1.241124772759163,
+     "name": "in-10-YX",
+     "nominal_tvd": 8.497522400688351e-05,
+     "observation_index": 21,
+     "shots": 255365,
+     "success_ratio": 1.00041571979601
+    },
+    {
+     "column_modulus_deviation": 0.0006820968544397649,
+     "eligible_events": 1151,
+     "eligible_per_shot_ratio": 1.2791670263910897,
+     "name": "in-10-YY",
+     "nominal_tvd": 0.000599909564052134,
+     "observation_index": 22,
+     "shots": 263571,
+     "success_ratio": 1.0000098498798295
+    },
+    {
+     "column_modulus_deviation": 0.000487796659397034,
+     "eligible_events": 1635,
+     "eligible_per_shot_ratio": 1.1725161783486795,
+     "name": "in-10-YZ",
+     "nominal_tvd": 0.00019837380474122912,
+     "observation_index": 23,
+     "shots": 408459,
+     "success_ratio": 1.000871442389637
+    },
+    {
+     "column_modulus_deviation": 0.00046359766665855936,
+     "eligible_events": 1618,
+     "eligible_per_shot_ratio": 1.1769507972712394,
+     "name": "in-10-ZX",
+     "nominal_tvd": 0.00039072481360102754,
+     "observation_index": 24,
+     "shots": 402689,
+     "success_ratio": 1.0015309303916158
+    },
+    {
+     "column_modulus_deviation": 0.0003643353404904298,
+     "eligible_events": 1404,
+     "eligible_per_shot_ratio": 0.9962408625305488,
+     "name": "in-10-ZY",
+     "nominal_tvd": 7.998849134740836e-05,
+     "observation_index": 25,
+     "shots": 412812,
+     "success_ratio": 1.0008017423713282
+    },
+    {
+     "column_modulus_deviation": 0.0003878006736833923,
+     "eligible_events": 3873,
+     "eligible_per_shot_ratio": 1.0589271538889757,
+     "name": "in-10-ZZ",
+     "nominal_tvd": 4.4451760980429333e-07,
+     "observation_index": 26,
+     "shots": 1071349,
+     "success_ratio": 1.0004248366095643
+    },
+    {
+     "column_modulus_deviation": 0.0005960548400188399,
+     "eligible_events": 841,
+     "eligible_per_shot_ratio": 1.1781028639541398,
+     "name": "in-1+-XX",
+     "nominal_tvd": 5.941372748581301e-05,
+     "observation_index": 27,
+     "shots": 209104,
+     "success_ratio": 0.9995512924685503
+    },
+    {
+     "column_modulus_deviation": 0.0006293205861172647,
+     "eligible_events": 763,
+     "eligible_per_shot_ratio": 1.0451559250427458,
+     "name": "in-1+-XY",
+     "nominal_tvd": 0.0007611477109370629,
+     "observation_index": 28,
+     "shots": 213842,
+     "success_ratio": 1.0005918537181004
+    },
+    {
+     "column_modulus_deviation": 0.0005116119911389328,
+     "eligible_events": 792,
+     "eligible_per_shot_ratio": 1.0628031542000964,
+     "name": "in-1+-XZ",
+     "nominal_tvd": 0.0002665644026150077,
+     "observation_index": 29,
+     "shots": 218284,
+     "success_ratio": 0.999966757728976
+    },
+    {
+     "column_modulus_deviation": 0.0005060399049246842,
+     "eligible_events": 921,
+     "eligible_per_shot_ratio": 1.2565014178484402,
+     "name": "in-1+-YX",
+     "nominal_tvd": 6.137867079668611e-05,
+     "observation_index": 30,
+     "shots": 214707,
+     "success_ratio": 1.0008016716987311
+    },
+    {
+     "column_modulus_deviation": 0.0005163453695084905,
+     "eligible_events": 823,
+     "eligible_per_shot_ratio": 1.137069211870403,
+     "name": "in-1+-YY",
+     "nominal_tvd": 0.00039207024139520374,
+     "observation_index": 31,
+     "shots": 212013,
+     "success_ratio": 0.9990444763343556
+    },
+    {
+     "column_modulus_deviation": 0.0003800867177764468,
+     "eligible_events": 858,
+     "eligible_per_shot_ratio": 1.204307210030388,
+     "name": "in-1+-YZ",
+     "nominal_tvd": 0.00029278548617826805,
+     "observation_index": 32,
+     "shots": 208689,
+     "success_ratio": 0.9996510752107187
+    },
+    {
+     "column_modulus_deviation": 0.0005950581545665228,
+     "eligible_events": 995,
+     "eligible_per_shot_ratio": 1.1473145474421618,
+     "name": "in-1+-ZX",
+     "nominal_tvd": 3.7611027159072605e-07,
+     "observation_index": 33,
+     "shots": 254033,
+     "success_ratio": 0.9993567307215404
+    },
+    {
+     "column_modulus_deviation": 0.0006855696271233768,
+     "eligible_events": 852,
+     "eligible_per_shot_ratio": 1.0043994172641222,
+     "name": "in-1+-ZY",
+     "nominal_tvd": 0.00045338117515276717,
+     "observation_index": 34,
+     "shots": 248475,
+     "success_ratio": 1.0000430266497145
+    },
+    {
+     "column_modulus_deviation": 0.000834143504030176,
+     "eligible_events": 914,
+     "eligible_per_shot_ratio": 1.0232302089976137,
+     "name": "in-1+-ZZ",
+     "nominal_tvd": 0.00023646046496856763,
+     "observation_index": 35,
+     "shots": 261651,
+     "success_ratio": 0.9998745200775409
+    },
+    {
+     "column_modulus_deviation": 0.000536225965689515,
+     "eligible_events": 563,
+     "eligible_per_shot_ratio": 0.9875395172232369,
+     "name": "in-+1-XX",
+     "nominal_tvd": 7.384076893591571e-05,
+     "observation_index": 36,
+     "shots": 166995,
+     "success_ratio": 0.9993745410350998
+    },
+    {
+     "column_modulus_deviation": 0.0006022223950544546,
+     "eligible_events": 547,
+     "eligible_per_shot_ratio": 0.9455846982386968,
+     "name": "in-+1-XY",
+     "nominal_tvd": 5.36434906043205e-05,
+     "observation_index": 37,
+     "shots": 169448,
+     "success_ratio": 1.0006858097548088
+    },
+    {
+     "column_modulus_deviation": 0.0006926210354368131,
+     "eligible_events": 441,
+     "eligible_per_shot_ratio": 0.8856170762479166,
+     "name": "in-+1-XZ",
+     "nominal_tvd": 6.073879187807918e-07,
+     "observation_index": 38,
+     "shots": 145862,
+     "success_ratio": 0.9998677006496103
+    },
+    {
+     "column_modulus_deviation": 0.00028494061178642867,
+     "eligible_events": 559,
+     "eligible_per_shot_ratio": 0.9772519918701345,
+     "name": "in-+1-YX",
+     "nominal_tvd": 0.0003506179836090806,
+     "observation_index": 39,
+     "shots": 167554,
+     "success_ratio": 0.9999410285109991
+    },
+    {
+     "column_modulus_deviation": 0.0007705312207083363,
+     "eligible_events": 489,
+     "eligible_per_shot_ratio": 0.8407617388948844,
+     "name": "in-+1-YY",
+     "nominal_tvd": 0.0002877230206380921,
+     "observation_index": 40,
+     "shots": 170367,
+     "success_ratio": 1.0000176427744156
+    },
+    {
+     "column_modulus_deviation": 0.0008536689528520334,
+     "eligible_events": 480,
+     "eligible_per_shot_ratio": 0.9267859648821851,
+     "name": "in-+1-YZ",
+     "nominal_tvd": 2.5735206228696592e-05,
+     "observation_index": 41,
+     "shots": 151709,
+     "success_ratio": 1.0000511210968792
+    },
+    {
+     "column_modulus_deviation": 0.0007874780823492871,
+     "eligible_events": 472,
+     "eligible_per_shot_ratio": 0.8168355916634048,
+     "name": "in-+1-ZX",
+     "nominal_tvd": 0.0002557139064248981,
+     "observation_index": 42,
+     "shots": 169261,
+     "success_ratio": 0.9996523991323706
+    },
+    {
+     "column_modulus_deviation": 0.0003390964389929363,
+     "eligible_events": 580,
+     "eligible_per_shot_ratio": 0.9841328585407172,
+     "name": "in-+1-ZY",
+     "nominal_tvd": 0.0005320221883673426,
+     "observation_index": 43,
+     "shots": 172633,
+     "success_ratio": 1.0014772180480875
+    },
+    {
+     "column_modulus_deviation": 0.0006123019898876772,
+     "eligible_events": 462,
+     "eligible_per_shot_ratio": 0.9122907206304754,
+     "name": "in-+1-ZZ",
+     "nominal_tvd": 4.66300143965171e-06,
+     "observation_index": 44,
+     "shots": 148340,
+     "success_ratio": 0.9997272182778218
+    },
+    {
+     "column_modulus_deviation": 0.00040570274741099103,
+     "eligible_events": 670,
+     "eligible_per_shot_ratio": 1.038801647250209,
+     "name": "in-+i-XX",
+     "nominal_tvd": 0.0001204084035028169,
+     "observation_index": 45,
+     "shots": 188926,
+     "success_ratio": 0.9999586723836182
+    },
+    {
+     "column_modulus_deviation": 0.0004748973250632142,
+     "eligible_events": 705,
+     "eligible_per_shot_ratio": 1.1135434104034732,
+     "name": "in-+i-XY",
+     "nominal_tvd": 0.00021053972135529064,
+     "observation_index": 46,
+     "shots": 185452,
+     "success_ratio": 0.9996862072975139
+    },
+    {
+     "column_modulus_deviation": 0.0005229266495040535,
+     "eligible_events": 578,
+     "eligible_per_shot_ratio": 0.8790469930635743,
+     "name": "in-+i-XZ",
+     "nominal_tvd": 0.0001410518017364446,
+     "observation_index": 47,
+     "shots": 192604,
+     "success_ratio": 0.9998310665055731
+    },
+    {
+     "column_modulus_deviation": 0.0004199834011931574,
+     "eligible_events": 647,
+     "eligible_per_shot_ratio": 1.049039476194503,
+     "name": "in-+i-YX",
+     "nominal_tvd": 7.101293684307499e-05,
+     "observation_index": 48,
+     "shots": 180660,
+     "success_ratio": 1.0003255305009828
+    },
+    {
+     "column_modulus_deviation": 0.0005985860023858356,
+     "eligible_events": 619,
+     "eligible_per_shot_ratio": 0.9869509933271503,
+     "name": "in-+i-YY",
+     "nominal_tvd": 0.00016734165772806786,
+     "observation_index": 49,
+     "shots": 183715,
+     "success_ratio": 0.9998013362043326
+    },
+    {
+     "column_modulus_deviation": 0.000769597616484904,
+     "eligible_events": 627,
+     "eligible_per_shot_ratio": 0.9604950689269632,
+     "name": "in-+i-YZ",
+     "nominal_tvd": 0.000374955288296383,
+     "observation_index": 50,
+     "shots": 191215,
+     "success_ratio": 0.9995291668515446
+    },
+    {
+     "column_modulus_deviation": 0.0004914103383490129,
+     "eligible_events": 698,
+     "eligible_per_shot_ratio": 1.1187813475088755,
+     "name": "in-+i-ZX",
+     "nominal_tvd": 0.00014561442548820247,
+     "observation_index": 51,
+     "shots": 182751,
+     "success_ratio": 0.9999494324951184
+    },
+    {
+     "column_modulus_deviation": 0.00032218296584382274,
+     "eligible_events": 647,
+     "eligible_per_shot_ratio": 1.0452901789733433,
+     "name": "in-+i-ZY",
+     "nominal_tvd": 0.0003409979667656258,
+     "observation_index": 52,
+     "shots": 181308,
+     "success_ratio": 1.0000918613501666
+    },
+    {
+     "column_modulus_deviation": 0.0006875484973980678,
+     "eligible_events": 638,
+     "eligible_per_shot_ratio": 1.0164649973093376,
+     "name": "in-+i-ZZ",
+     "nominal_tvd": 9.921701213236322e-05,
+     "observation_index": 53,
+     "shots": 183856,
+     "success_ratio": 0.9999909730307411
+    },
+    {
+     "column_modulus_deviation": 0.0006513936198234612,
+     "eligible_events": 810,
+     "eligible_per_shot_ratio": 1.1172164417126575,
+     "name": "in-i0-XX",
+     "nominal_tvd": 0.00021822231078914844,
+     "observation_index": 54,
+     "shots": 212372,
+     "success_ratio": 0.9995952990506767
+    },
+    {
+     "column_modulus_deviation": 0.0007904599297267167,
+     "eligible_events": 852,
+     "eligible_per_shot_ratio": 1.1297532659048133,
+     "name": "in-i0-XY",
+     "nominal_tvd": 0.00027053623107836655,
+     "observation_index": 55,
+     "shots": 220905,
+     "success_ratio": 0.999775067896171
+    },
+    {
+     "column_modulus_deviation": 0.0005143680932731241,
+     "eligible_events": 879,
+     "eligible_per_shot_ratio": 1.004623612429115,
+     "name": "in-i0-XZ",
+     "nominal_tvd": 0.00012594504070435718,
+     "observation_index": 56,
+     "shots": 256292,
+     "success_ratio": 1.000453030169558
+    },
+    {
+     "column_modulus_deviation": 0.00045292545183104964,
+     "eligible_events": 773,
+     "eligible_per_shot_ratio": 1.0394828781794987,
+     "name": "in-i0-YX",
+     "nominal_tvd": 0.00023254284004132488,
+     "observation_index": 57,
+     "shots": 217827,
+     "success_ratio": 0.9994269355967418
+    },
+    {
+     "column_modulus_deviation": 0.0005689434351896199,
+     "eligible_events": 732,
+     "eligible_per_shot_ratio": 0.9973009154416548,
+     "name": "in-i0-YY",
+     "nominal_tvd": 1.2803298732344445e-05,
+     "observation_index": 58,
+     "shots": 214998,
+     "success_ratio": 0.999685192181132
+    },
+    {
+     "column_modulus_deviation": 0.00044715728474055416,
+     "eligible_events": 1014,
+     "eligible_per_shot_ratio": 1.1693979930179053,
+     "name": "in-i0-YZ",
+     "nominal_tvd": 1.5228002472202068e-06,
+     "observation_index": 59,
+     "shots": 253995,
+     "success_ratio": 0.9998132718166904
+    },
+    {
+     "column_modulus_deviation": 0.0008117664217981438,
+     "eligible_events": 814,
+     "eligible_per_shot_ratio": 1.11897154947902,
+     "name": "in-i0-ZX",
+     "nominal_tvd": 0.00015914276045320142,
+     "observation_index": 60,
+     "shots": 213086,
+     "success_ratio": 1.0000776216341314
+    },
+    {
+     "column_modulus_deviation": 0.0004359649155577253,
+     "eligible_events": 782,
+     "eligible_per_shot_ratio": 1.0616056844024406,
+     "name": "in-i0-ZY",
+     "nominal_tvd": 0.0004720243556031456,
+     "observation_index": 61,
+     "shots": 215771,
+     "success_ratio": 1.0003512817965432
+    },
+    {
+     "column_modulus_deviation": 0.0005422469881426811,
+     "eligible_events": 861,
+     "eligible_per_shot_ratio": 0.9344988862862144,
+     "name": "in-i0-ZZ",
+     "nominal_tvd": 0.0001506028401490541,
+     "observation_index": 62,
+     "shots": 269882,
+     "success_ratio": 1.0004663595253567
+    },
+    {
+     "column_modulus_deviation": 0.0007064414185342457,
+     "eligible_events": 622,
+     "eligible_per_shot_ratio": 0.9753140273101895,
+     "name": "in-i+-XX",
+     "nominal_tvd": 0.00013654812233299118,
+     "observation_index": 63,
+     "shots": 186808,
+     "success_ratio": 0.9999812719582546
+    },
+    {
+     "column_modulus_deviation": 0.000524801701142906,
+     "eligible_events": 607,
+     "eligible_per_shot_ratio": 0.9644527839638507,
+     "name": "in-i+-XY",
+     "nominal_tvd": 4.25971014360488e-05,
+     "observation_index": 64,
+     "shots": 184356,
+     "success_ratio": 1.000725155824123
+    },
+    {
+     "column_modulus_deviation": 0.000602405624727657,
+     "eligible_events": 554,
+     "eligible_per_shot_ratio": 0.8628038751964627,
+     "name": "in-i+-XZ",
+     "nominal_tvd": 0.0003445515164426094,
+     "observation_index": 65,
+     "shots": 188082,
+     "success_ratio": 0.9992953458231731
+    },
+    {
+     "column_modulus_deviation": 0.0004757181929094677,
+     "eligible_events": 659,
+     "eligible_per_shot_ratio": 1.0645422794114447,
+     "name": "in-i+-YX",
+     "nominal_tvd": 0.00019632827223738103,
+     "observation_index": 66,
+     "shots": 181331,
+     "success_ratio": 1.000144469760698
+    },
+    {
+     "column_modulus_deviation": 0.0004105333499100637,
+     "eligible_events": 586,
+     "eligible_per_shot_ratio": 0.9479570891497364,
+     "name": "in-i+-YY",
+     "nominal_tvd": 0.0004419068684710231,
+     "observation_index": 67,
+     "shots": 181075,
+     "success_ratio": 0.9997668602082491
+    },
+    {
+     "column_modulus_deviation": 0.0007986345458629276,
+     "eligible_events": 639,
+     "eligible_per_shot_ratio": 1.0100592994707687,
+     "name": "in-i+-YZ",
+     "nominal_tvd": 0.00017672934494634773,
+     "observation_index": 68,
+     "shots": 185312,
+     "success_ratio": 1.000095678160585
+    },
+    {
+     "column_modulus_deviation": 0.0005285029223374095,
+     "eligible_events": 641,
+     "eligible_per_shot_ratio": 1.0092395286034415,
+     "name": "in-i+-ZX",
+     "nominal_tvd": 0.00034145160884625574,
+     "observation_index": 69,
+     "shots": 186043,
+     "success_ratio": 0.9995008231162537
+    },
+    {
+     "column_modulus_deviation": 0.0005452145485362012,
+     "eligible_events": 651,
+     "eligible_per_shot_ratio": 1.050211777028566,
+     "name": "in-i+-ZY",
+     "nominal_tvd": 0.00022744729520551843,
+     "observation_index": 70,
+     "shots": 181574,
+     "success_ratio": 1.0006427048627666
+    },
+    {
+     "column_modulus_deviation": 0.000416046076732089,
+     "eligible_events": 635,
+     "eligible_per_shot_ratio": 1.0239771618376163,
+     "name": "in-i+-ZZ",
+     "nominal_tvd": 0.00032951724380102243,
+     "observation_index": 71,
+     "shots": 181649,
+     "success_ratio": 0.9998903427026034
+    }
+   ],
+   "summary": {
+    "column_modulus_deviation": {
+     "max": 0.0008536689528520334,
+     "median": 0.0005661890849226927,
+     "min": 0.00028494061178642867
+    },
+    "nominal_tvd": {
+     "max": 0.0007611477109370629,
+     "median": 0.00015471581128620107,
+     "min": 1.3120593429493588e-07
+    },
+    "settings": 72,
+    "success_ratio": {
+     "max": 1.0015309303916158,
+     "median": 0.9999540524393683,
+     "min": 0.9990444763343556
+    }
+   }
+  }
+ },
+ "metrics": {
+  "column_modulus_deviation": "largest |abs(served) - abs(designed)| over the two photon-input columns",
+  "nominal_tvd": "total variation distance between served and designed eligible-outcome distributions",
+  "success_ratio": "served over designed probability of one photon on each rail pair, modes 4..11 empty"
+ },
+ "schema": "ascella-cz-served-mesh-v1",
+ "summary": {
+  "column_modulus_deviation": {
+   "max": 0.0009368604913282094,
+   "median": 0.0005702106143790199,
+   "min": 0.00028348038412548583
+  },
+  "nominal_tvd": {
+   "max": 0.0007611477109370629,
+   "median": 0.0001664401547040947,
+   "min": 7.285431076346149e-08
+  },
+  "settings": 144,
+  "success_ratio": {
+   "max": 1.0015309303916158,
+   "median": 0.9999437247717224,
+   "min": 0.9990266188922585
+  }
+ }
+}

@@ -264,8 +264,8 @@ and makes no dark-subspace claim.
   ([Confirmation design](#confirmation-design-and-its-falsified-premise)).
 - **Resources.** 300000 eligible trials per setting are 28800000 in all;
   max_shots = 2 x 300000 per iteration. A job bills 1 credit plus 1e-6 per
-  shot of its largest iteration's max_shots, so each job costs 1.6 credits
-  and the case 12.8; one job per setting would cost 153.6 for the same
+  shot, up to its largest iteration's max_shots, so each job costs at most
+  1.6 credits and the case 12.8; one job per setting would cost 153.6 for the same
   trials ([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)).
   An iteration takes 6.3 s plus 26 us per sample, so a 12-iteration job
   takes about 169 s, 0.56 of the 300 s limit, and the case about 1354 s

@@ -300,7 +300,7 @@ def request(method: str, route: str, auth: bool = True, body: Any = None, raw: b
         return answer
     try:
         return json.loads(answer) if answer else None
-    except json.JSONDecodeError, UnicodeDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         raise UnansweredError(f"{method} {route}: answer is not usable JSON") from None
 
 
@@ -479,7 +479,7 @@ def observed(host: str, route: str, auth: bool) -> dict[str, Any]:
         return {**entry, "unanswered": f"answer exceeds {RESULT_LIMIT} bytes"}
     try:
         value = json.loads(answer)
-    except json.JSONDecodeError, UnicodeDecodeError:
+    except (json.JSONDecodeError, UnicodeDecodeError):
         # A non-JSON answer (the RSS feed, an HTML home page) is kept as text with its digest.
         return {**entry, "sha256": sha256_bytes(answer), "text": answer.decode("utf-8", errors="replace")}
     cleaned = scrub(value)
@@ -1222,7 +1222,8 @@ def plan(
         raise PlatformError(f"max_duration {manifest['max_duration']} exceeds the platform's {row['max_duration']}")
     if expected_seconds > manifest["max_duration"]:
         raise PlatformError(f"expected {expected_seconds} s exceed the case's max_duration {manifest['max_duration']}")
-    # A job bills its largest iteration's max_shots (docs/runbooks/quandela-credit-optimization.md).
+    # An iterated job bills at most its largest iteration's max_shots, the ceiling that --max-credits must cover
+    # (docs/runbooks/quandela-credit-optimization.md).
     billed_shots = max(shots for _, shots in iteration_budgets(manifest))
     ceiling = row["price_per_shot"] * billed_shots + per_job_credits
     if ceiling > max_credits:
@@ -1311,12 +1312,14 @@ def job_billing(data: dict[str, Any], row: dict[str, Any], per_job_credits: floa
 
     The rule (docs/runbooks/quandela-credit-optimization.md) is the per-job
     price plus the platform's price per shot times the billed shots: the
-    shots used by a one-computation job, the largest iteration's max_shots by
-    an iterated one, which the job data does not split out. charge_used
-    prices the shots the job data reports and charge_ceiling prices the
-    payload's total max_shots; the charge lies between them for an iterated
-    job and equals charge_used for a single one. A job canceled before its
-    start time ran nothing and bills nothing.
+    shots used by a one-computation job, the smaller of the shots used and
+    the largest iteration's max_shots by an iterated one, a cap the job data
+    does not split out. charge_used prices the shots the job data reports and
+    charge_ceiling prices the payload's total max_shots; the charge equals
+    charge_used for a single job and for an iterated one that stays under its
+    cap, lies at or below charge_used for an iterated one that reaches the
+    cap, and never exceeds charge_ceiling. A job canceled before its start
+    time ran nothing and bills nothing.
     """
     if not math.isfinite(per_job_credits) or per_job_credits < 0:
         raise PlatformError(f"per_job_credits {per_job_credits} is not a finite, non-negative number")
@@ -1764,8 +1767,14 @@ def retain_bytes(path: Path, data: bytes) -> None:
 def run_facts(directory: Path) -> dict[str, Any]:
     """qd_records.read_run's facts plus the credit charge, the account fact the token usage reports bind."""
     run = read_run(directory)
+    reported = run.summary is not None and "shots_used" in run.summary
     charge = charged(
-        run.submission, run.collected, run.shots, run.manifest, interim_usage(directory, run.submission, run.collected)
+        run.submission,
+        run.collected,
+        run.shots,
+        run.manifest,
+        interim_usage(directory, run.submission, run.collected),
+        reported,
     )
     return {**run.facts, "charge": charge}
 
@@ -1815,6 +1824,7 @@ def charged(
     shots: int,
     manifest: dict[str, Any] | None = None,
     interim: list[Any] | None = None,
+    reported: bool = True,
 ) -> float:
     """The credits a run consumed: the first later usage report holding exactly one more job, minus the one before.
 
@@ -1826,8 +1836,14 @@ def charged(
     job submitted and collected in different months, a negative difference, a
     window holding another job or a receipt without both reports falls back to
     the billing rule: the recorded per-job price plus the price per shot times
-    the shots used by a one-computation job, or times the largest iteration's
-    max_shots of an iterated one.
+    the shots used by a one-computation job, or times the smaller of the shots
+    used and the largest iteration's max_shots of an iterated one.
+
+    reported says that shots is a shots-used figure of the result. A run whose
+    result carries none (an iteration that failed without nb_shots_used, or a job
+    that returned no result) passes a stand-in shots, and an iterated job then
+    bills the largest iteration's max_shots in full, so the stand-in cannot lower
+    the bill below the cap.
     """
     first = submission.get("usage_before")
     before, jobs_before = usage_total(first), usage_jobs(first)
@@ -1861,7 +1877,8 @@ def charged(
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
     if manifest is not None and iteration_form(manifest) != "single":
-        billed = max(budget for _, budget in iteration_budgets(manifest))
+        cap = max(budget for _, budget in iteration_budgets(manifest))
+        billed = min(shots, cap) if reported else cap
     return round(float(submission.get("per_job_credits", 0)) + billed * price, 6)
 
 
@@ -1894,11 +1911,27 @@ def charge_self_test() -> None:
         got = charged(submission, {"collected_utc": collected_utc, "usage_after": after}, 10000, None, interim)
         if got != want:
             raise SystemExit(f"self-test: charged() read {got} for a collection at {collected_utc}, not {want}")
-    # An iterated job across a month boundary bills its largest iteration's max_shots, not the shots it used.
+    # An iterated job across a month boundary bills the smaller of the shots it used and its largest iteration's
+    # max_shots: the cap when the shots exceed it, the shots when they stay below it.
     iterated = {"job": "self-test", "gate_form": "mesh", "iterations": 12, "max_samples": 3600000, "max_shots": 7200000}
     got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 3600000, iterated)
     if got != 1.6:
         raise SystemExit(f"self-test: charged() read {got} for an iterated job across a reset, not 1.6")
+    under = {"job": "self-test", "gate_form": "mesh", "iterations": 6, "max_samples": 360000, "max_shots": 600000}
+    got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 60000, under)
+    if got != 1.06:
+        raise SystemExit(f"self-test: charged() read {got} for 60000 shots under a 100000 cap across a reset, not 1.06")
+    # An iterated job whose result reports no shots used bills the cap whatever stand-in shots it passes.
+    for stand_in in (0, 60000, 3600000):
+        got = charged(
+            submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, stand_in, under, None, False
+        )
+        if got != 1.1:
+            raise SystemExit(f"self-test: charged() read {got} for an iterated job without shots used, not 1.1")
+    # A reported figure keeps min(shots used, cap) beside the unreported cap.
+    got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 60000, under, None, True)
+    if got != 1.06:
+        raise SystemExit(f"self-test: charged() read {got} for 60000 reported shots under a 100000 cap, not 1.06")
     # A job canceled before it started costs nothing even when another job shares its usage window; one
     # canceled after its start keeps the billing rule.
     for start, want in ((None, 0.0), (1792667218.0, 1.01)):
@@ -2562,7 +2595,7 @@ def check(directory: Path, agents: list[Path] | None = None, server: Path = MCP_
     for name, stamp in catalogue["architecture_observed_utc"].items():
         try:
             datetime.datetime.fromisoformat(stamp)
-        except TypeError, ValueError:
+        except (TypeError, ValueError):
             raise SystemExit(f"{name}: architecture_observed_utc {stamp!r} is not an ISO timestamp") from None
     for row in catalogue["explorer_platforms"]:
         name = row["name"]
