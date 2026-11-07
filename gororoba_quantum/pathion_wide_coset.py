@@ -11,16 +11,22 @@ certifies (python-flint fmpz_mat rank). The group reads every block of six opera
 * ``m64`` and ``m128`` tile the operands ``o64`` and ``o128`` with the cocycle-free SELECT (every L_m replaced by its
   unsigned XOR permutation), the mutation test: the ideal sum of N_b is -2 where the true tiling sums to 28 and 60.
 
-Every member is one four-qubit circuit that compiles onto one layout, so each fused PUB reads one block arm on every
-replica of the placement search, as in pathion_parallel_coset. Each block keeps its own ideal marginal; there is no
-cross-block entanglement, and the blocks of an operand never share a shot. A shot reads one replica of one block arm
-on each placement, so a PUB of S shots reads 16 or 17 copies of that block arm, and an operand's whole nullity is the
-sum over its blocks of the per-block estimators. The estimator of pathion_parallel_coset (``estimate``) applies
-unchanged: N_hat of a block is the half-sum of its output contrasts divided by their signed visibility, and the
-readout-corrected summary of live_run applies it to readout-inverted replica laws.
+One fused PUB carries one arm of one operand, and its placements run different blocks: placement p of a
+``PLACEMENTS``-placement layout holds block p mod (the operand's block count) of every operand, so a 128-dimensional
+operand's 16 blocks fill the 16 placements at once and a 64-dimensional operand's 8 blocks run twice. The blocks of an
+operand are four-qubit circuits that share no gate, so there is no cross-block entanglement and each placement keeps
+the ideal marginal of its own block (``Group.per_placement_laws``). The plus and minus arms of block b sit on the same
+placement in their two PUBs, so the contrast of a placement pairs its own arms, and block b of an operand, of its null
+control and of its mutation share one placement. The estimator of pathion_parallel_coset (``estimate``) applies to
+each placement's block: N_hat of a block is the half-sum of its output contrasts divided by their signed visibility.
+The whole-operand nullity is the sum over the blocks of one shot, which the pooled mean over placements gives when each
+placement scales its contribution by the operand's block count (``placed_summary``).
 
-The first member is the minus arm of block k0 of ``n64``; it fixes the placement and takes live_run's isolated
-reference, the same circuit alone on replica 0, against which the packed replica is compared.
+``pathion_wide_coset_d32`` adds placement 16 for an ibm_fez layout of 17: its bodies are the two arms of block k0 of the
+32-dimensional null operand e1 + e17 of the drain case, read in all twelve PUBs at the same time as the wide blocks.
+
+The first member is the minus arm of ``n64``; its first body, block k0 of ``n64``, fixes the placement and takes
+live_run's isolated reference, the same circuit alone on replica 0, against which the packed replica is compared.
 """
 
 from __future__ import annotations
@@ -38,6 +44,11 @@ from pathion_parallel_coset import estimate
 from select_lcu import joint_select_signs
 
 ZERO = pkm.ZERO
+# Placements that carry operand blocks: the largest block count of an operand, so one PUB reads a whole operand.
+PLACEMENTS = 16
+# The 32-dimensional reference block of pathion_wide_coset_d32: block k0 of the null operand e1 + e17 of the drain case.
+REFERENCE_OPERAND = (1, 17, 1)
+REFERENCE_TAG = "wide_ref32"
 
 
 @dataclass(frozen=True)
@@ -57,13 +68,20 @@ class WideOperand:
     def blocks(self) -> list[pcb.Block]:
         return [pcb.Block(f"k{k0}", self.operand, self.basis, k0, self.dim) for k0 in pcb.cosets(self.basis, self.dim)]
 
+    def block_at(self, placement: int) -> pcb.Block:
+        """The block that placement runs: blocks repeat in order when the operand has fewer than PLACEMENTS."""
+        blocks = self.blocks()
+        if not 0 <= placement < PLACEMENTS:
+            raise ValueError(f"{self.key}: placement {placement} carries no operand block")
+        return blocks[placement % len(blocks)]
+
     @property
     def nullity(self) -> int:
         """The rank defect of the true operand, from the cd_core integer rank; a mutated tiling keeps its operand's."""
         return certified_nullity(self.dim, self.operand)
 
 
-# Order fixes the member order: the first member of the group is the minus arm of block k0 of n64.
+# Order fixes the member order: the first member of the group is the minus arm of n64.
 WIDE_OPERANDS: tuple[WideOperand, ...] = (
     WideOperand("n64", "null", 64, (1, 33, 1)),
     WideOperand("o64", "target", 64, (1, 36, 1)),
@@ -73,6 +91,7 @@ WIDE_OPERANDS: tuple[WideOperand, ...] = (
     WideOperand("m128", "mutation", 128, (4, 72, 1), cocycle_free=True),
 )
 BY_KEY = {op.key: op for op in WIDE_OPERANDS}
+ARMS = ("minus", "plus")
 
 
 @functools.cache
@@ -84,83 +103,229 @@ def block_prefix(op: WideOperand, block: pcb.Block) -> str:
     return f"wide_{op.key}_{block.name}"
 
 
-def wide_members() -> tuple[Member, ...]:
-    members: list[Member] = []
+def member_name(op: WideOperand, arm: str) -> str:
+    return f"wide_{op.key}_{arm}"
+
+
+def reference_block() -> pcb.Block:
+    basis = pcb.default_basis(REFERENCE_OPERAND)
+    return pcb.Block("k0", REFERENCE_OPERAND, basis, 0)
+
+
+def _arm_binding(arm: str) -> dict:
+    return {pcb.ORIENTATION: np.pi if arm == "plus" else 0.0}
+
+
+@dataclass(frozen=True)
+class _Body:
+    """One block arm: the body name, its template, its ideal law and its orientation binding."""
+
+    name: str
+    template: QuantumCircuit
+    ideal: np.ndarray
+    binding: dict
+
+
+def _bodies(block: pcb.Block, prefix: str, cocycle_free: bool) -> dict[str, _Body]:
+    template = pcb.block_template(block, cocycle_free=cocycle_free)
+    template.name = prefix
+    return {
+        arm: _Body(
+            f"{prefix}_{arm}",
+            template,
+            pcb.block_law_closed_form(block, arm == "plus", cocycle_free=cocycle_free),
+            _arm_binding(arm),
+        )
+        for arm in ARMS
+    }
+
+
+def wide_layout(reference: bool = False) -> tuple[dict[str, list[_Body]], list[str]]:
+    """The body of each member at each placement, by member name, and the member names in group order."""
+    chosen: dict[str, list[_Body]] = {member_name(op, arm): [] for op in WIDE_OPERANDS for arm in ARMS}
+    cache: dict[str, dict[str, _Body]] = {}
     for op in WIDE_OPERANDS:
-        for block in op.blocks():
-            template = pcb.block_template(block, cocycle_free=op.cocycle_free)
+        for placement in range(PLACEMENTS):
+            block = op.block_at(placement)
             prefix = block_prefix(op, block)
-            template.name = prefix
-            for plus in (False, True):
-                phase = np.pi if plus else 0.0
-                ideal = pcb.block_law_closed_form(block, plus, cocycle_free=op.cocycle_free)
-                members.append(
-                    Member(f"{prefix}_{'plus' if plus else 'minus'}", template, ideal, {pcb.ORIENTATION: phase})
-                )
-    return tuple(members)
+            if prefix not in cache:
+                cache[prefix] = _bodies(block, prefix, op.cocycle_free)
+            for arm in ARMS:
+                chosen[member_name(op, arm)].append(cache[prefix][arm])
+    if reference:
+        ref = _bodies(reference_block(), f"{REFERENCE_TAG}_k0", False)
+        for op in WIDE_OPERANDS:
+            for arm in ARMS:
+                chosen[member_name(op, arm)].append(ref[arm])
+    return chosen, list(chosen)
 
 
-def summarize_operand(op: WideOperand, dist: dict[str, np.ndarray], ideal: dict[str, np.ndarray]) -> dict[str, float]:
-    """Per-block and whole-operand values of one operand from the laws of its member names."""
+def wide_members(
+    reference: bool = False, layout: tuple[dict[str, list[_Body]], list[str]] | None = None
+) -> tuple[Member, ...]:
+    """One member per operand arm; its replica bodies are that arm's block at each placement.
+
+    The member's circuit is its first body's template, the same object the group's body templates hold, so a caller
+    that builds both passes one layout."""
+    chosen, names = wide_layout(reference) if layout is None else layout
+    return tuple(
+        Member(
+            name,
+            chosen[name][0].template,
+            chosen[name][0].ideal,
+            chosen[name][0].binding,
+            replica_bodies=tuple(body.name for body in chosen[name]),
+        )
+        for name in names
+    )
+
+
+def block_values(
+    plus: np.ndarray, minus: np.ndarray, ideal_plus: np.ndarray, ideal_minus: np.ndarray
+) -> dict[str, float]:
+    """The per-block quantities of one placement: estimate, ideal, signs, visibility, selector contrast."""
+    est = estimate(plus, minus, ideal_plus, ideal_minus)
+    c_obs = pcb.output_contrast(plus, minus)
+    c_ideal = pcb.output_contrast(ideal_plus, ideal_minus)
+    decided = np.abs(c_ideal) > ZERO
+    return {
+        "visibility": est["visibility"],
+        "half_sum": est["half_sum"],
+        "nullity_estimate": est["nullity_estimate"],
+        "nullity_ideal": float(c_ideal.sum() / 2.0),
+        "sign_agreement": float(np.sum(np.sign(c_obs[decided]) == np.sign(c_ideal[decided]))),
+        "selector_contrast": pcb.selector_contrast(plus, minus),
+    }
+
+
+def placed_operand_values(
+    op: WideOperand, placement: int, dist: dict[str, np.ndarray], ideal: dict[str, np.ndarray]
+) -> dict[str, float]:
+    """The values one placement reports for one operand: its own block's, and the operand sum's contribution.
+
+    The block's quantities carry the block's name. The operand-level keys are that block's quantity times the
+    operand's block count, so their mean over the placements, in which each block appears equally often, is the sum
+    over the operand's blocks (the mean over copies for a 64-dimensional operand that runs twice)."""
+    block = op.block_at(placement)
+    prefix = block_prefix(op, block)
+    plus, minus = member_name(op, "plus"), member_name(op, "minus")
+    values = block_values(dist[plus], dist[minus], ideal[plus], ideal[minus])
+    count = len(op.blocks())
+    summary = {f"{prefix}_{key}": value for key, value in values.items()}
+    tag = f"wide_{op.key}"
+    summary[f"{tag}_nullity_estimate"] = values["nullity_estimate"] * count
+    summary[f"{tag}_nullity_ideal"] = values["nullity_ideal"] * count
+    summary[f"{tag}_certified_nullity"] = float(op.nullity)
+    summary[f"{tag}_selector_contrast_sum"] = values["selector_contrast"] * count
+    summary[f"{tag}_sign_agreement"] = values["sign_agreement"] * count
+    summary[f"{tag}_bins"] = float(sum(1 << b.d for b in op.blocks()))
+    summary[f"{tag}_visibility_mean"] = values["visibility"]
+    return summary
+
+
+def placed_reference_values(dist: dict[str, np.ndarray], ideal: dict[str, np.ndarray]) -> dict[str, float]:
+    """The 32-dimensional reference block's values at the reference placement, once per operand's PUB pair.
+
+    Each operand's two PUBs carry the same reference block on that placement, so the six pairs read it at six
+    moments of the job; the keys name the operand whose PUBs read it."""
     summary: dict[str, float] = {}
+    for op in WIDE_OPERANDS:
+        plus, minus = member_name(op, "plus"), member_name(op, "minus")
+        values = block_values(dist[plus], dist[minus], ideal[plus], ideal[minus])
+        summary |= {f"{REFERENCE_TAG}_{op.key}_{key}": value for key, value in values.items()}
+    return summary
+
+
+def operand_sum(op: WideOperand, dist: dict[str, np.ndarray], ideal: dict[str, np.ndarray]) -> dict[str, float]:
+    """The whole-operand values of one shot: the blocks' quantities summed, from laws under their body names.
+
+    A shot that reads every block of the operand at once (the side-by-side circuit, or one PUB's placements) gives
+    the nullity as the sum of the block estimates."""
     n_hat = n_ideal = selector = agreement = 0.0
     visibilities: list[float] = []
     for block in op.blocks():
         prefix = block_prefix(op, block)
-        plus, minus = dist[f"{prefix}_plus"], dist[f"{prefix}_minus"]
-        ideal_plus, ideal_minus = ideal[f"{prefix}_plus"], ideal[f"{prefix}_minus"]
-        est = estimate(plus, minus, ideal_plus, ideal_minus)
-        c_obs = pcb.output_contrast(plus, minus)
-        c_ideal = pcb.output_contrast(ideal_plus, ideal_minus)
-        decided = np.abs(c_ideal) > ZERO
-        block_ideal = float(c_ideal.sum() / 2.0)
-        block_agreement = float(np.sum(np.sign(c_obs[decided]) == np.sign(c_ideal[decided])))
-        block_selector = pcb.selector_contrast(plus, minus)
-        summary[f"{prefix}_visibility"] = est["visibility"]
-        summary[f"{prefix}_half_sum"] = est["half_sum"]
-        summary[f"{prefix}_nullity_estimate"] = est["nullity_estimate"]
-        summary[f"{prefix}_nullity_ideal"] = block_ideal
-        summary[f"{prefix}_sign_agreement"] = block_agreement
-        summary[f"{prefix}_selector_contrast"] = block_selector
-        n_hat += est["nullity_estimate"]
-        n_ideal += block_ideal
-        selector += block_selector
-        agreement += block_agreement
-        visibilities.append(est["visibility"])
+        values = block_values(
+            dist[f"{prefix}_plus"], dist[f"{prefix}_minus"], ideal[f"{prefix}_plus"], ideal[f"{prefix}_minus"]
+        )
+        n_hat += values["nullity_estimate"]
+        n_ideal += values["nullity_ideal"]
+        selector += values["selector_contrast"]
+        agreement += values["sign_agreement"]
+        visibilities.append(values["visibility"])
     tag = f"wide_{op.key}"
-    summary[f"{tag}_nullity_estimate"] = n_hat
-    summary[f"{tag}_nullity_ideal"] = n_ideal
-    summary[f"{tag}_certified_nullity"] = float(op.nullity)
-    summary[f"{tag}_selector_contrast_sum"] = selector
-    summary[f"{tag}_sign_agreement"] = agreement
-    summary[f"{tag}_bins"] = float(sum(1 << block.d for block in op.blocks()))
-    summary[f"{tag}_visibility_mean"] = float(np.mean(visibilities))
-    summary[f"{tag}_visibility_min"] = float(np.min(visibilities))
-    return summary
+    return {
+        f"{tag}_nullity_estimate": n_hat,
+        f"{tag}_nullity_ideal": n_ideal,
+        f"{tag}_certified_nullity": float(op.nullity),
+        f"{tag}_selector_contrast_sum": selector,
+        f"{tag}_sign_agreement": agreement,
+        f"{tag}_bins": float(sum(1 << block.d for block in op.blocks())),
+        f"{tag}_visibility_mean": float(np.mean(visibilities)),
+        f"{tag}_visibility_min": float(np.min(visibilities)),
+    }
 
 
-def pathion_wide_coset_group() -> Group:
-    members = wide_members()
+def pathion_wide_coset_group(reference: bool = False) -> Group:
+    """The wide group of PLACEMENTS operand placements, or of PLACEMENTS + 1 with the 32-dimensional reference block."""
+    layout = wide_layout(reference)
+    chosen, names = layout
+    members = wide_members(reference, layout)
     if len({member.name for member in members}) != len(members):
         raise ValueError("pathion_wide_coset: member names must be unique")
-    ideal = {member.name: member.ideal for member in members}
+    templates: list[tuple[str, QuantumCircuit, np.ndarray]] = []
+    bindings: list[tuple[str, dict]] = []
+    seen: set[str] = set()
+    for name in names:
+        for body in chosen[name]:
+            if body.name not in seen:
+                seen.add(body.name)
+                templates.append((body.name, body.template, body.ideal))
+                bindings.append((body.name, body.binding))
+    first = {member.name: member.ideal for member in members}
 
-    def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
+    def placed(placement: int, dist: dict[str, np.ndarray], ideal: dict[str, np.ndarray]) -> dict[str, float]:
+        if placement >= PLACEMENTS:
+            return placed_reference_values(dist, ideal)
         summary: dict[str, float] = {}
         for op in WIDE_OPERANDS:
-            summary |= summarize_operand(op, dist, ideal)
+            summary |= placed_operand_values(op, placement, dist, ideal)
         for dim in (64, 128):
             target, null, mutation = (summary[f"wide_{role}{dim}_nullity_estimate"] for role in "onm")
             summary[f"wide_d{dim}_target_minus_null"] = target - null
             summary[f"wide_d{dim}_target_minus_mutation"] = target - mutation
-        summary["wide_ratio_o128_over_o64_nullity_estimate"] = (
-            summary["wide_o128_nullity_estimate"] / summary["wide_o64_nullity_estimate"]
-            if abs(summary["wide_o64_nullity_estimate"]) > ZERO
-            else float("nan")
-        )
         return summary
 
-    return Group("pathion_wide_coset", members, summarize)
+    return Group(
+        "pathion_wide_coset_d32" if reference else "pathion_wide_coset",
+        members,
+        lambda dist: placed(0, dist, first),
+        body_templates=tuple(templates),
+        body_bindings=tuple(bindings),
+        per_placement_laws=True,
+        placed_summary=placed,
+    )
+
+
+def pathion_wide_coset_d32_group() -> Group:
+    return pathion_wide_coset_group(reference=True)
+
+
+def placed_ideal_summary(group: Group) -> dict[str, float]:
+    """The pooled summary of the ideal laws: each key's mean over the placements that report it."""
+    if group.placed_summary is None:
+        raise ValueError(f"{group.name} has no placed summary")
+    bodies = {member.name: member.replica_bodies or () for member in group.members}
+    ideals = {name: ideal for name, _, ideal in group.body_templates}
+    count = len(next(iter(bodies.values())))
+    per_placement = [
+        group.placed_summary(
+            k, {n: ideals[b[k]] for n, b in bodies.items()}, {n: ideals[b[k]] for n, b in bodies.items()}
+        )
+        for k in range(count)
+    ]
+    keys = list(dict.fromkeys(key for row in per_placement for key in row))
+    return {key: float(np.mean([row[key] for row in per_placement if key in row])) for key in keys}
 
 
 def full_width_circuit(op: WideOperand, plus: bool, blocks: list[pcb.Block] | None = None) -> QuantumCircuit:
@@ -262,7 +427,7 @@ def clifford_block_circuit(block: pcb.Block, plus: bool, *, cocycle_free: bool =
 
 if __name__ == "__main__":
     group = pathion_wide_coset_group()
-    out = group.summarize({member.name: member.ideal for member in group.members})
+    out = placed_ideal_summary(group)
     print(
         f"pathion wide coset: {len(group.members)} members;",
         {k: round(v, 6) for k, v in out.items() if k.startswith("wide_") and k.count("_k") == 0},

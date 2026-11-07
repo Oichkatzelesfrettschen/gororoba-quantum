@@ -525,7 +525,7 @@ def standalone_campaign_groups() -> list[Group]:
     from pathion_coset_block import pathion_coset_map_group
     from pathion_kernel_map import pathion_kernel_map_group
     from pathion_parallel_coset import pathion_parallel_coset_group
-    from pathion_wide_coset import pathion_wide_coset_group
+    from pathion_wide_coset import pathion_wide_coset_d32_group, pathion_wide_coset_group
     from primorial_campaigns import coherence_probe_group, gap88_group
     from qet_ladder import qet_compensated_ladder_group, qet_frame_diagnostic_group, qet_ladder_group
     from qubit_baseline import qubit_baseline_group
@@ -550,6 +550,7 @@ def standalone_campaign_groups() -> list[Group]:
         pathion_coset_map_group(),
         pathion_parallel_coset_group(),
         pathion_wide_coset_group(),
+        pathion_wide_coset_d32_group(),
     ]
 
 

@@ -1128,6 +1128,13 @@
    "value": 25510,
    "record": "docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json",
    "index": 2
+  },
+  {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset_analysis.py",
+   "name": "SIMULATION_SEED",
+   "value": 64049,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json",
+   "index": 3
   }
  ],
  "runtime": [

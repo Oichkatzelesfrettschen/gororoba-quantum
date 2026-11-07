@@ -29,7 +29,9 @@ from live_run import EXPERIMENT_SOURCE_MANIFEST
 # Sampling seed of the simulations: index 2 of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json.
 SIMULATION_SEED = 25510
 GROUP = pw.pathion_wide_coset_group()
-IDEAL = {member.name: member.ideal for member in GROUP.members}
+GROUP_D32 = pw.pathion_wide_coset_d32_group()
+# The ideal law of every block arm, under its body name wide_<operand>_k<coset>_<arm>.
+IDEAL = {name: law for name, _, law in GROUP.body_templates}
 OPERAND_KEYS = [op.key for op in pw.WIDE_OPERANDS]
 NULLITY = {"n64": 0, "o64": 28, "m64": 28, "n128": 0, "o128": 60, "m128": 60}
 # Sums of the ideal N_b: the cocycle-free tiling of both targets reads -2.
@@ -136,11 +138,14 @@ def test_every_block_law_is_the_full_map_law_on_its_output_coset(key: str, plus:
     _expect(pcb.contrast_restriction_error(op.blocks()[0], cocycle_free=op.cocycle_free) < 1e-12, f"{key}: c(y)")
 
 
-def test_member_ideal_laws_equal_the_state_vector_law_of_their_circuits() -> None:
+def test_body_ideal_laws_equal_the_state_vector_law_of_their_bound_templates() -> None:
+    bindings = dict(GROUP_D32.body_bindings)
+    for name, template, ideal in GROUP_D32.body_templates:
+        error = float(np.abs(pcb.block_law(template.assign_parameters(bindings[name])) - ideal).max())
+        _expect(error < 1e-12, f"{name}: closed-form law differs by {error}")
     for member in GROUP.members:
         bound = member.circuit.assign_parameters(member.binding or {})
-        error = float(np.abs(pcb.block_law(bound) - member.ideal).max())
-        _expect(error < 1e-12, f"{member.name}: closed-form law differs by {error}")
+        _expect(float(np.abs(pcb.block_law(bound) - member.ideal).max()) < 1e-12, f"{member.name}: first body law")
 
 
 def test_closed_form_law_equals_the_state_vector_law_at_d32() -> None:
@@ -157,15 +162,45 @@ def test_closed_form_law_equals_the_state_vector_law_at_d32() -> None:
                 _expect(float(np.abs(reference - closed).max()) < 1e-12, f"{block.name} plus={plus} free={free}")
 
 
-def test_group_structure_and_registration() -> None:
+def test_group_holds_one_member_per_operand_arm_with_one_body_per_placement() -> None:
     names = [member.name for member in GROUP.members]
-    _expect(len(names) == 144 and len(set(names)) == 144, f"{len(names)} members")
-    _expect(names[0] == "wide_n64_k0_minus", f"the placement member is {names[0]}")
-    blocks = {key: sum(n.startswith(f"wide_{key}_k") and n.endswith("_minus") for n in names) for key in OPERAND_KEYS}
-    _expect(blocks == {"n64": 8, "o64": 8, "m64": 8, "n128": 16, "o128": 16, "m128": 16}, f"{blocks}")
+    _expect(names[0] == "wide_n64_minus" and len(names) == 12, f"members {names}")
+    _expect(GROUP.per_placement_laws and GROUP.placed_summary is not None, "the group is not per-placement")
+    templates = {name: (circuit, ideal) for name, circuit, ideal in GROUP.body_templates}
+    _expect(len(templates) == 144, f"{len(templates)} bodies")
     for member in GROUP.members:
-        _expect(member.circuit.num_qubits == 4 and member.circuit.num_clbits == 4, f"{member.name}: width")
-        _expect(member.ideal.size == 16 and abs(float(member.ideal.sum()) - 1.0) < 1e-12, f"{member.name}: law")
+        bodies = member.replica_bodies or ()
+        _expect(len(bodies) == pw.PLACEMENTS, f"{member.name}: {len(bodies)} bodies")
+        _expect(member.circuit is templates[bodies[0]][0], f"{member.name}: first body is not its circuit")
+        for body in bodies:
+            circuit, ideal = templates[body]
+            _expect(circuit.num_qubits == 4 and circuit.num_clbits == 4, f"{body}: width")
+            _expect(ideal.size == 16 and abs(float(ideal.sum()) - 1.0) < 1e-12, f"{body}: law")
+    _expect(
+        [len(m.replica_bodies or ()) for m in GROUP_D32.members] == [pw.PLACEMENTS + 1] * 12, "d32 group: 17 bodies"
+    )
+    _expect(len(GROUP_D32.body_templates) == 146, f"d32 group: {len(GROUP_D32.body_templates)} bodies")
+
+
+def test_placements_align_arms_and_the_blocks_of_one_dimension() -> None:
+    by_member = {m.name: m.replica_bodies or () for m in GROUP.members}
+    for op in pw.WIDE_OPERANDS:
+        minus, plus = by_member[f"wide_{op.key}_minus"], by_member[f"wide_{op.key}_plus"]
+        _expect(
+            [b.removesuffix("_minus") for b in minus] == [b.removesuffix("_plus") for b in plus],
+            f"{op.key}: the arms hold different blocks on a placement",
+        )
+        coset = [b.rsplit("_", 2)[1] for b in minus]
+        blocks = len(op.blocks())
+        _expect(coset[:blocks] == [f"k{k0}" for k0 in pcb.cosets(op.basis, op.dim)], f"{op.key}: block order")
+        _expect(coset == coset[:blocks] * (pw.PLACEMENTS // blocks), f"{op.key}: blocks do not repeat in order")
+    for dim in (64, 128):
+        indices = {key: [b.rsplit("_", 2)[1] for b in by_member[f"wide_{key}{dim}_minus"]] for key in "nom"}
+        _expect(indices["n"] == indices["o"] == indices["m"], f"d{dim}: target, null and mutation misaligned")
+    reference = {m.name: (m.replica_bodies or ())[-1] for m in GROUP_D32.members}
+    _expect(set(reference.values()) == {"wide_ref32_k0_minus", "wide_ref32_k0_plus"}, f"{set(reference.values())}")
+    for name, body in reference.items():
+        _expect(body.endswith(name.rsplit("_", 1)[1]), f"{name}: reference arm {body}")
 
 
 def test_group_is_registered_and_its_source_is_in_the_manifest() -> None:
@@ -173,24 +208,56 @@ def test_group_is_registered_and_its_source_is_in_the_manifest() -> None:
     _expect("pathion_wide_coset.py" in EXPERIMENT_SOURCE_MANIFEST, "the source manifest omits the module")
 
 
+def _pooled(group, laws: dict[str, np.ndarray], transform=lambda law: law) -> dict[str, float]:
+    """live_run's pooled summary: each key's mean over the placements that report it, from body laws by name."""
+    bodies = {member.name: member.replica_bodies or () for member in group.members}
+    ideal = {name: law for name, _, law in group.body_templates}
+    rows = []
+    for placement in range(len(next(iter(bodies.values())))):
+        dist = {name: transform(laws[names[placement]]) for name, names in bodies.items()}
+        ideals = {name: ideal[names[placement]] for name, names in bodies.items()}
+        rows.append(group.placed_summary(placement, dist, ideals))
+    keys = list(dict.fromkeys(key for row in rows for key in row))
+    return {key: float(np.mean([row[key] for row in rows if key in row])) for key in keys}
+
+
 def test_ideal_summary_reads_the_nullities_and_the_mutation_separates() -> None:
-    summary = GROUP.summarize(IDEAL)
+    summary = pw.placed_ideal_summary(GROUP)
     for key in OPERAND_KEYS:
         tag = f"wide_{key}"
         _expect(abs(summary[f"{tag}_nullity_estimate"] - IDEAL_SUM[key]) < 1e-9, f"{key}: N_hat")
         _expect(summary[f"{tag}_certified_nullity"] == NULLITY[key], f"{key}: certified nullity")
         _expect(summary[f"{tag}_sign_agreement"] == summary[f"{tag}_bins"], f"{key}: signs")
-        _expect(abs(summary[f"{tag}_visibility_min"] - 1.0) < 1e-9, f"{key}: ideal visibility")
+        _expect(abs(summary[f"{tag}_visibility_mean"] - 1.0) < 1e-9, f"{key}: ideal visibility")
     _expect(abs(summary["wide_o64_selector_contrast_sum"] - 7.0) < 1e-9, "o64 selector contrast N / 4")
     _expect(abs(summary["wide_o128_selector_contrast_sum"] - 15.0) < 1e-9, "o128 selector contrast N / 4")
     _expect(abs(summary["wide_d64_target_minus_mutation"] - 30.0) < 1e-9, "o64 against its mutation")
     _expect(abs(summary["wide_d128_target_minus_mutation"] - 62.0) < 1e-9, "o128 against its mutation")
-    _expect(abs(summary["wide_ratio_o128_over_o64_nullity_estimate"] - 60 / 28) < 1e-9, "nullity ratio")
+    _expect(abs(summary["wide_d128_target_minus_null"] - 60.0) < 1e-9, "o128 against its null control")
+    _expect("wide_o128_k0_nullity_estimate" in summary, "per-block keys are reported")
 
 
-def test_uniform_contraction_leaves_the_summed_estimate_and_the_ratio_unchanged() -> None:
-    contracted = {name: ppc.contract(law, 0.7) for name, law in IDEAL.items()}
-    summary = GROUP.summarize(contracted)
+def test_the_pooled_summary_equals_the_ideal_sum_of_the_one_shot_blocks() -> None:
+    pooled = pw.placed_ideal_summary(GROUP)
+    for op in pw.WIDE_OPERANDS:
+        whole = pw.operand_sum(op, IDEAL, IDEAL)
+        for key, value in whole.items():
+            if key.endswith("_visibility_min"):
+                continue
+            _expect(abs(pooled[key] - value) < 1e-9, f"{op.key}: {key} pooled {pooled[key]} against the sum {value}")
+
+
+def test_the_d32_group_reports_the_reference_block_once_per_operand_pair() -> None:
+    summary = pw.placed_ideal_summary(GROUP_D32)
+    keys = [k for k in summary if k.startswith("wide_ref32_")]
+    _expect(len(keys) == 6 * 6, f"{len(keys)} reference keys")
+    _expect(all(abs(summary[f"wide_ref32_{op.key}_nullity_estimate"]) < 1e-9 for op in pw.WIDE_OPERANDS), "null block")
+    plain = pw.placed_ideal_summary(GROUP)
+    _expect(all(abs(summary[k] - plain[k]) < 1e-9 for k in plain), "the reference placement alters an operand value")
+
+
+def test_uniform_contraction_leaves_the_summed_estimate_unchanged() -> None:
+    summary = _pooled(GROUP, IDEAL, lambda law: ppc.contract(law, 0.7))
     for key in OPERAND_KEYS:
         _expect(abs(summary[f"wide_{key}_nullity_estimate"] - IDEAL_SUM[key]) < 1e-9, f"{key}: contracted N_hat")
         _expect(abs(summary[f"wide_{key}_visibility_mean"] - 0.7) < 1e-9, f"{key}: visibility")
@@ -205,9 +272,9 @@ def test_readout_asymmetry_biases_the_null_operand_and_inversion_removes_it() ->
             out = ppc.apply_readout_clbit(out, clbit, e01[clbit], e10[clbit])
         return out
 
-    summary = GROUP.summarize({name: noisy(law) for name, law in IDEAL.items()})
-    _expect(summary["wide_n128_nullity_estimate"] > 0.1, "the asymmetric channel biases the 16-block null operand")
-    restored = GROUP.summarize({name: ppc.invert_readout(noisy(law), e01, e10) for name, law in IDEAL.items()})
+    noisy_laws = {name: noisy(law) for name, law in IDEAL.items()}
+    _expect(_pooled(GROUP, noisy_laws)["wide_n128_nullity_estimate"] > 0.1, "the channel biases the null operand")
+    restored = _pooled(GROUP, noisy_laws, lambda law: ppc.invert_readout(law, e01, e10))
     for key in OPERAND_KEYS:
         _expect(abs(restored[f"wide_{key}_nullity_estimate"] - IDEAL_SUM[key]) < 1e-9, f"{key}: inverted N_hat")
 
@@ -272,17 +339,26 @@ def test_full_width_matrix_product_state_reads_the_ideal_sum(key: str) -> None:
     circuit = pw.full_width_circuit(op, False)
     _expect(circuit.num_qubits == 4 * len(op.blocks()), f"{key}: width {circuit.num_qubits}")
     laws = pw.simulate_full_width(op, 4000, SIMULATION_SEED)
-    summary = pw.summarize_operand(op, laws, IDEAL)
+    summary = pw.operand_sum(op, laws, IDEAL)
     n_hat = summary[f"wide_{key}_nullity_estimate"]
     _expect(abs(n_hat - IDEAL_SUM[key]) < 0.05, f"{key}: full-width N_hat {n_hat} against {IDEAL_SUM[key]}")
     _expect(summary[f"wide_{key}_sign_agreement"] == summary[f"wide_{key}_bins"], f"{key}: signs")
 
 
-def _record(backend: str, shots: int, pubs: int, dt: int, *, arms: int = 144, cz_plus: int = 20) -> dict:
-    names = [f"m{index}" for index in range(arms // 2)]
-    members = [{"name": f"{n}_minus", "cz": 20} for n in names] + [{"name": f"{n}_plus", "cz": cz_plus} for n in names]
-    members.append({"name": f"{names[0]}_minus_isolated", "cz": 20})
-    group = {"group": check.GROUP, "backend": backend, "members": members, "replicas": [{"physical_qubits": [1]}] * 16}
+def _record(backend: str, shots: int, pubs: int, dt: int, *, plus_cz: int = 20, replicas: int = 16) -> dict:
+    members = []
+    for op in pw.WIDE_OPERANDS:
+        for arm in ("minus", "plus"):
+            cz = [plus_cz if arm == "plus" and op.key == "o128" else 20] * replicas
+            bodies = [f"b{index}" for index in range(replicas)]
+            members.append({"name": f"wide_{op.key}_{arm}", "cz": 20, "replica_cz": cz, "replica_bodies": bodies})
+    members.append({"name": "wide_n64_minus_isolated", "cz": 20})
+    group = {
+        "group": "pathion_wide_coset",
+        "backend": backend,
+        "members": members,
+        "replicas": [{"physical_qubits": [1]}] * replicas,
+    }
     return {
         "groups": [group],
         "shots": shots,
@@ -291,31 +367,34 @@ def _record(backend: str, shots: int, pubs: int, dt: int, *, arms: int = 144, cz
     }
 
 
-def _wanted(record: dict) -> set[str]:
-    return {m["name"] for m in record["groups"][0]["members"] if not m["name"].endswith("_isolated")}
-
-
-def test_check_script_prices_with_the_drain_residuals_and_rounds_the_bill_up() -> None:
-    record = _record("ibm_fez", 1000, 145, 800)
-    expected = 2.3 + 1000 * 145 * (2e-5 + 800 * 4e-9 + 7.2e-6)
+def test_check_script_prices_the_drain_residual_and_the_per_pub_term_and_rounds_the_bill_up() -> None:
+    record = _record("ibm_fez", 10000, 13, 800)
+    expected = 2.3 + 13 * (10000 * (2e-5 + 800 * 4e-9 + 7.2e-6) + 5.7e-3)
     _expect(abs(check.estimated_charge(record, "ibm_fez") - expected) < 1e-9, "charge model")
-    kingston = check.estimated_charge(_record("ibm_kingston", 1000, 145, 800), "ibm_kingston")
-    _expect(abs(kingston - expected - 1000 * 145 * 2e-6) < 1e-9, "kingston residual")
+    kingston = check.estimated_charge(_record("ibm_kingston", 10000, 13, 800), "ibm_kingston")
+    _expect(abs(kingston - (2.3 + 13 * (10000 * (2e-5 + 800 * 4e-9 + 9.2e-6) + 2.6e-3))) < 1e-9, "kingston terms")
     billed = math.ceil(expected)
-    _expect(check.failures(record, billed + 1.0, 16, _wanted(record)) == [], "admits at one second under the remainder")
-    over = check.failures(record, float(billed), 16, _wanted(record))
+    _expect(check.failures(record, billed + 1.0, 16) == [], "admits at one second under the remainder")
+    over = check.failures(record, float(billed), 16)
     _expect(any("worst-case billed" in line for line in over), f"{over}")
 
 
-def test_check_script_refuses_an_arm_that_routes_deeper_a_missing_member_and_few_replicas() -> None:
-    record = _record("ibm_fez", 500, 145, 800, cz_plus=22)
-    deeper = check.failures(record, 10.0, 16, _wanted(record))
-    _expect(any("22 CZ" in line or "20 CZ against 22" in line for line in deeper), f"{deeper}")
-    record = _record("ibm_fez", 500, 145, 800)
-    missing = check.failures(record, 10.0, 16, _wanted(record) | {"wide_absent_k0_minus"})
-    _expect(any("not planned" in line for line in missing), f"{missing}")
-    few = check.failures(record, 10.0, 17, _wanted(record))
-    _expect(any("16 replicas" in line for line in few), f"{few}")
-    _expect(
-        check.failures(_record("ibm_marrakesh", 500, 145, 800), 10.0, 16, set())[0].startswith("no measured"), "backend"
+def test_check_script_refuses_an_arm_that_routes_deeper_a_missing_member_and_a_wrong_replica_count() -> None:
+    deeper = check.failures(_record("ibm_fez", 500, 13, 800, plus_cz=22), 10.0, 16)
+    _expect(any("against" in line and "plus arm" in line for line in deeper), f"{deeper}")
+    record = _record("ibm_fez", 500, 13, 800)
+    missing = check.failures(
+        record, 10.0, 16, {m["name"] for m in record["groups"][0]["members"]} | {"wide_absent_minus"}
     )
+    _expect(any("not planned" in line for line in missing), f"{missing}")
+    few = check.failures(record, 10.0, 17)
+    _expect(any("16 replicas, not 17" in line for line in few), f"{few}")
+    many = check.failures(_record("ibm_fez", 500, 13, 800, replicas=17), 10.0, 16)
+    _expect(any("17 replicas, not 16" in line for line in many), f"{many}")
+    _expect(check.failures(_record("ibm_marrakesh", 500, 13, 800), 10.0, 16)[0].startswith("no measured"), "backend")
+
+
+def test_the_d32_group_expects_seventeen_placements_by_default() -> None:
+    record = _record("ibm_fez", 500, 13, 800, replicas=17)
+    record["groups"][0]["group"] = "pathion_wide_coset_d32"
+    _expect(check.failures(record, 10.0) == [], f"{check.failures(record, 10.0)}")
