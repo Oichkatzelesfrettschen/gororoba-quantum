@@ -204,6 +204,17 @@ record's Transmittance (%) against job-00's plan-time 4.89 % (hypothesis: the gl
 transmittance). At 4.94 MHz the floor is 2.18 %; the record of 2026-11-06 reads 5.23 %. The matched check runs
 `--analyze` on the collected run.
 
+**Deferred while the chip is unreachable.** A read-only recovery watch planned this case against `qpu:belenos`
+every 30 minutes from 2026-11-06 18:21 UTC, and every plan through 2026-11-07 04:00 UTC was refused with the chip
+`unreachable`; the processor record of 2026-11-07 still lacks `specs.architecture` and its command set, and its
+figures (HOM 88.2 %, g2 1.3 %, transmittance 5.23 %) are those of its last calibration. The watch only plans and
+reports; it neither pins nor enables the schedule, which stays disabled and unpinned. The per-seed persistence
+question meanwhile runs on Ascella, whose
+[prospective correction case](ascella-signed-coherence-conformance.md#prospective-correction-case-job-09) scores a
+frozen per-seed table on a fresh repeat. The case resumes when `qd_platform.py plan` accepts it: `qd_schedule.py pin`
+plans the schedule read-only, the plan check runs on that plan, and the change to `enabled: true` is the submission
+the 2026-11-06 approval covers.
+
 ## Optional second case: the teleportation replay
 
 Only if this case reads **persists**, a replay of the twelve job-02 and job-03 teleportation seeds asks whether the
