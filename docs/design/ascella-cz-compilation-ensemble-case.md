@@ -148,8 +148,9 @@ Estimates, the anchor iterations entering estimate 1 alone:
    that index; a pooled interval follows estimate 1. Each
    table's score is the mean over s with a Student-t interval on 9 degrees of freedom, which carries mesh variance and
    shot noise together. The per-input scores F' are reported with the same construction. The index s pairs the four
-   settings of a table arbitrarily: each setting's replicates sit in segments drawn by their own order keys, so drift
-   in time between values of s enters as variance the interval carries, not as a bias.
+   settings of a table arbitrarily: each setting's replicates sit in segments drawn by their own order keys, so over
+   the draw of schedules drift in time between values of s enters as variance the interval carries, not as a bias.
+   The frozen schedule is one draw and leaves some values of s uneven in time (section "Limits").
 4. **Bound.** L is the one-sided 97.5 % lower limit of the mean over s of F_ZX(s) + F_XZ(s) - 1, and U is the
    smaller of the one-sided 98.75 % upper limits of F_ZX and F_XZ, so [L, U] covers the bound at a joint level of at
    least 95 % by Bonferroni. The case reports [L, U] as the conditional statement above, never as the result.
@@ -210,6 +211,10 @@ Perceval's deserializer on all 144 meshes.
 - The truth tables bound the process fidelity and give no Choi matrix. A full reconstruction under an ensemble needs
   the 1440 iterations this design declines.
 - The anchors test drift over about 180 s and across one gap between jobs, the time scales of this case only.
+- Each setting's seed tables sit at different positions in the frozen schedule, so drift below the power of
+  estimate 1's tests inflates estimate 2's between-seed spread as if it were mesh variance. A rejection of estimate 2
+  is therefore attributed to the mesh only when estimate 1's drift family passes, and a pass bounds drift only to the
+  power of those tests.
 - hypothesis: preparation and readout rotations contribute comparable mesh error to the gate itself; each compiled
   mesh carries all three, and no setting of this design separates them.
 
