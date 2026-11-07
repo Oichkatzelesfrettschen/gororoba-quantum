@@ -1121,6 +1121,13 @@
    "value": 36200,
    "record": "docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json",
    "index": 1
+  },
+  {
+   "path": "tests/scripts/test_ascella_correction_score.py",
+   "name": "FIXTURE_SEED",
+   "value": 29161,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json",
+   "index": 4
   }
  ],
  "runtime": [

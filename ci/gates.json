@@ -4196,6 +4196,20 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --freeze results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/correction-table.json --check",
+      "name": "core-ascella-signed-coherence-correction-table-replay",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --power docs/evidence/ascella-order-coefficients/correction-table.json docs/evidence/ascella-order-coefficients/correction-power.json --check",
+      "name": "core-ascella-signed-coherence-correction-power-replay",
+      "seconds": 60.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json --check",
       "name": "core-ascella-signed-coherence-long-horizon-reading-03-08-replay",
       "seconds": 15.0

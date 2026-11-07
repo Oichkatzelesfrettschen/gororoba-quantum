@@ -1,0 +1,70 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-prospective-correction-case",
+  "kind": "investigation",
+  "summary": "Run one qpu:ascella job (job-09) that repeats job-02's 64 seeded settings a day after job-08, and score on it the per-seed correction table frozen from job-02 and job-03 before the request is sent.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "docs/evidence/ascella-order-coefficients/long-horizon-first-principles.md",
+    "docs/evidence/ascella-order-coefficients/long-horizon-controls.json",
+    "scripts/ascella_correction_score.py",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_long_horizon_reading.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The readings below are fixed before acquisition. The per-seed correction scored on job-08 (variance ratio 7.71) was defined after job-08 returned, and the interpretation review of that branch asked for a frozen estimator scored unchanged on a fresh acquisition. The frozen table reproduces the retrospective job-08 numbers exactly, so the estimator is the one reviewed."
+  },
+  "scope": "Job-09 submits job-02's 64 settings of theta2-x-arm0 at 32,768 samples per iteration with job-02's compilation seeds under the same setting names, anchors every eighth position, the 56 perturbed meshes in the order of values 0..55 of docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json; value 56 seeds the score's resamples, 57 its power record, 58 the job-08 against job-09 reading. Table: ascella_correction_score.py --freeze over job-02 and job-03 alone, offset slope x (c2 + c3) / 2 by setting name, frozen in correction-table.json before submission. Mesh gate: a sim:ascella run of job-09's request must serve every one of its 64 unitaries within 1e-6 of job-02's, or the case stops before the QPU request. M: job-09's perturbed settings whose served unitary lies within 1e-6 of job-02's; fewer than 16 reads nothing. C (primary): R = var(d) / var(d - t) over those meshes with its two-sided 98 % bootstrap interval (20,000 resamples); correction holds when the lower end reaches 2, fails when the upper end stays below 2, indeterminate otherwise. S (secondary): ascella_long_horizon_reading.py job-08 against job-09 by the job-08 case's persistence rule. Power (correction-power.json): persistent errors at amplitude 1.0 and 0.88 hold in every replicate, 0.75 in 0.85; redrawn at correlation 0.5 fails in 0.78 and fully redrawn in every replicate.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "Run the sim:ascella mesh gate of job-09's request on the owner's approval of the written case, then the qpu:ascella request.",
+  "related": [
+    "ascella-long-horizon-seed-repeat-case",
+    "ascella-seed-repeat-case"
+  ],
+  "steps": [
+    {
+      "id": "request-builder",
+      "action": "Register job-09 in ascella_coherence_request.py with job-02's seeds by name, anchors at stride 8, the perturbed meshes in the new draw's order, and freeze its body against the live qpu:ascella command set without sending it.",
+      "acceptance": "--check rebuilds every registered job to its retained bytes and validates job-09's frozen body.",
+      "state": "todo"
+    },
+    {
+      "id": "table-freeze",
+      "action": "Freeze the per-seed correction table from job-02 and job-03 with its decision rule, and write the power record of the score.",
+      "acceptance": "correction-table.json and correction-power.json replay byte-identical, and the table reproduces long-horizon-controls.json's job-08 correction.",
+      "state": "todo",
+      "depends_on": [
+        "request-builder"
+      ]
+    },
+    {
+      "id": "sim-mesh-gate",
+      "action": "Run job-09's request on sim:ascella and require every served unitary within 1e-6 of job-02's.",
+      "acceptance": "The simulator run is retained and ascella_correction_score.py --mesh-gate passes on it.",
+      "state": "todo",
+      "depends_on": [
+        "table-freeze"
+      ]
+    },
+    {
+      "id": "qpu-acquisition",
+      "action": "Run job-09 on qpu:ascella under the owner's approval and retain it.",
+      "acceptance": "The QPU run is collected and retained with its research_state acquisition.",
+      "state": "todo",
+      "depends_on": [
+        "sim-mesh-gate"
+      ]
+    },
+    {
+      "id": "score",
+      "action": "Score the frozen table on job-09 and read job-08 against job-09.",
+      "acceptance": "correction-score-09.json and long-horizon-reading-08-09.json are written and replay byte-identical.",
+      "state": "todo",
+      "depends_on": [
+        "qpu-acquisition"
+      ]
+    }
+  ]
+}

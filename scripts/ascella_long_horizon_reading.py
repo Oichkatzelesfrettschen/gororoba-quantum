@@ -32,9 +32,12 @@ come from ascella_compilation_reading.x_statistics, as in scripts/ascella_seed_r
 Exploratory, outside the decision: the Spearman correlation of the identical perturbed meshes' block mode-2 fractions
 between the runs, and that of each mesh's z change with the change of its predecessor's L1 heater-phase distance.
 
-One numpy generator per pair, seeded with the LONG_REPEAT_ORDER_DRAW value PAIR_INDEX names, draws the S
-relabelings, then the P1 relabelings, then the P2 labelings; the request consumes values 0..55 and the power record
-value POWER_INDEX, so every value seeds one use.
+One numpy generator per pair, seeded with the draw value PAIR_SEED names, draws the S relabelings, then the P1
+relabelings, then the P2 labelings. The pairs with job-08 and the rehearsal take values of LONG_REPEAT_ORDER_DRAW,
+whose request consumes values 0..55 and whose power record takes value POWER_INDEX; job-08 against job-09, the
+secondary reading of docs/state/plans/ascella-prospective-correction-case.json, takes value 58 of
+PROSPECTIVE_ORDER_DRAW, whose request consumes values 0..55 and whose correction score takes 56 and 57. Every value
+seeds one use.
 
 --power OUT [--check] writes the design's power record: POWER_REPLICATES Gaussian replicates per true slope in
 POWER_SLOPES of 56 meshes whose reference z is a true error of variance s_c^2 plus counting noise at the reference's
@@ -77,11 +80,18 @@ RELABELINGS = 20000
 MESH_TOLERANCE = 1e-6
 SPREAD_RECORD = "docs/evidence/ascella-order-coefficients/heater-coupling.json"
 SPREAD_SAMPLES = 8192
-PAIRS = {("job-02", "job-03"), ("job-02", "job-08"), ("job-03", "job-08")}
 PLAN = "docs/state/plans/ascella-long-horizon-seed-repeat-case.json"
 LONG_REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json"
+PROSPECTIVE_PLAN = "docs/state/plans/ascella-prospective-correction-case.json"
+PROSPECTIVE_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json"
 POWER_INDEX = 57
-PAIR_INDEX = {("job-03", "job-08"): 56, ("job-02", "job-08"): 58, ("job-02", "job-03"): 59}
+# Each pair's plan, and the draw and value that seed its generator.
+PAIR_SEED = {
+    ("job-03", "job-08"): (PLAN, LONG_REPEAT_ORDER_DRAW, 56),
+    ("job-02", "job-08"): (PLAN, LONG_REPEAT_ORDER_DRAW, 58),
+    ("job-02", "job-03"): (PLAN, LONG_REPEAT_ORDER_DRAW, 59),
+    ("job-08", "job-09"): (PROSPECTIVE_PLAN, PROSPECTIVE_ORDER_DRAW, 58),
+}
 POWER_SLOPES = (0.0, 0.25, 0.5, 0.75, 1.0)
 POWER_REPLICATES = 400
 POWER_RELABELINGS = 2000
@@ -173,7 +183,7 @@ def reproduction(
 def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
     old, new = models.job_data(old_dir), models.job_data(new_dir)
     pair = (old["record"]["manifest"]["job"], new["record"]["manifest"]["job"])
-    models.require(pair in PAIRS, f"the pair {pair} is not one of {sorted(PAIRS)}")
+    models.require(pair in PAIR_SEED, f"the pair {pair} is not one of {sorted(PAIR_SEED)}")
     names_old, names_new = seed_repeat.names(old), seed_repeat.names(new)
     models.require(sorted(names_old) == sorted(names_new), f"{pair[1]} does not hold {pair[0]}'s settings")
     index_old = {name: i for i, name in enumerate(names_old)}
@@ -185,7 +195,7 @@ def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
     byte_equal = [left == right for left, right in pairs]
     z_old, v_old = reading.x_statistics(old)
     z_new, v_new = reading.x_statistics(new)
-    draw, seed_index = LONG_REPEAT_ORDER_DRAW, PAIR_INDEX[pair]
+    plan, draw, seed_index = PAIR_SEED[pair]
     generator = np.random.default_rng(int(json.loads((ROOT / draw).read_text(encoding="utf-8"))["values"][seed_index]))
     keep = np.array(identical)
     anchors = [i for i in range(len(names_new)) if anchor_new[i] and identical[i]]
@@ -193,7 +203,7 @@ def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
     paired = [index_old[names_new[i]] for i in perturbed]
     record: dict[str, Any] = {
         "schema": "ascella-long-horizon-reading-v1",
-        "plan": PLAN,
+        "plan": plan,
         "jobs": list(pair),
         "runs": [old_dir.relative_to(ROOT).as_posix(), new_dir.relative_to(ROOT).as_posix()],
         "samples": [samples_of(old), samples_of(new)],
