@@ -147,7 +147,7 @@ The [package-checked joint algebra analysis](evidence/tuna-projector-geometry/jo
 compares exact data-derived associators, retained package tables and an installed split-algebra control.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
-[provider-counter audit](evidence/provider-counter-audit/README.md) names the population every retained shot,
+[provider-counter audit](evidence/provider-counter-audit/README-v2.md) names the population every retained shot,
 sample and exposure counter counts, traces each to its scientific sinks and reconciles the claims they support. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
 density interventions and a separately labeled trapped-ion qualification; every generated program remains
@@ -475,7 +475,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/tuna-order-pilot-adversarial-admission.md](design/tuna-order-pilot-adversarial-admission.md) | descriptive pilot preregistration, adversarial findings and execution admission |
 | [design/hypercomplex-operator-evidence.md](design/hypercomplex-operator-evidence.md) | algebra falsifiers, operator encodings, library roles and device evidence |
 | [design/heron-idle-readout-attribution.md](design/heron-idle-readout-attribution.md) | own-partner, near-field and far-field split of the Kingston idle readout phase rate, by complementary reader classes |
-| [runbooks/hypercomplex-operator-cases.md](runbooks/hypercomplex-operator-cases.md) | frozen provider cases, pacing, costs and approval boundary |
+| [runbooks/hypercomplex-operator-cases-v2.md](runbooks/hypercomplex-operator-cases-v2.md) | frozen provider cases, pacing, costs and approval boundary |
 | [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | expanded Python distribution roles and documented candidates |
 | [evidence/submitted_circuits/README.md](evidence/submitted_circuits/README.md) | complete retained IBM job-input comparison and immutable replay successor |
 | [evidence/sedenion-clifford-envelope/README.md](evidence/sedenion-clifford-envelope/README.md) | exact eight-generator Cl(0,8) envelope spanning M16(R) |
@@ -517,7 +517,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/belenos-mesh-persistence-case.md](design/belenos-mesh-persistence-case.md) | written case, awaiting approval, for one qpu:belenos job that replays the four retained meshes of the mode-swap packed set-4 group after recalibration: seed-to-mesh identity by decoded unitary first, then the persistence slope of each mesh's centered share deviation with its relabeling upper bound; the teleportation replay as an optional second case ([script](../scripts/belenos_mesh_persistence.py)) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
-| [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela job sizing for case design: the billing rule measured per job, the per-iteration time of each qpu:belenos job shape, packing limits, the shape rule and cost planning |
+| [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela job sizing for case design: the billing rule measured per job, the per-iteration time of each qpu:belenos job shape, packing limits, the shape rule and cost planning; the [billing-rule successor](evidence/quandela-billing-rule-successor/README.md) names the pinned records that state the older rule |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [runbooks/generated-views.md](runbooks/generated-views.md) | the plan, research-state and reading-copy views that render on demand, their commands and why none is committed |
 | [runbooks/classical-compute-pool.md](runbooks/classical-compute-pool.md) | free classical capacity per substrate (build host, Kaggle, GitHub Actions, Azure trial), what pooling across machines buys, tool installs per substrate, measured memory of the A_5 Rees eliminations |

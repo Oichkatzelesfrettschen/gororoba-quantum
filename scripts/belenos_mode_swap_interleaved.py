@@ -129,7 +129,7 @@ EXTRA_REPLICATE_SEEDS = (
     31274,
 )
 # job-00 ran 6,000 samples and 18,000 max_shots per iteration; the packed jobs run 30,000 and 90,000, and a job bills
-# 1 credit plus 1e-6 per shot of its largest iteration.
+# 1 credit plus 1e-6 per shot used, capped at its largest iteration's max_shots.
 SAMPLES_PER_ITERATION = 30000
 SHOTS_PER_ITERATION = 90000
 MAX_DURATION = 300
