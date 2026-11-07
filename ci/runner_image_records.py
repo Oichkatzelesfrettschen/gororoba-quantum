@@ -3,13 +3,30 @@
 A fitted float byte-replays only under the arithmetic that wrote it: the
 libm, Python build, numpy, scipy and OpenBLAS of ci/runner-image/Containerfile
 and ci/install_pins.sh. ci/runner_image_records.json binds each such record's
-sha256 to the digest of IMAGE_INPUTS (the image, the pins, the script that
-runs the producer and the gate environment it runs under) and of
-LEDGER_ARITHMETIC, the kernel, thread and loader variables every record of
+sha256 to the digest of IMAGE_INPUTS (the image, the installer, the script
+that runs the producer and the gate environment it runs under), of
+ARITHMETIC_PINS (the pinned distributions a producer imports, or that an
+imported one loads and computes with) and of LEDGER_ARITHMETIC, the kernel, thread and loader variables every record of
 the ledger was written under; ``check`` (a pr gate)
 fails once any of them or a record changes, naming the records to rewrite
 through ci/runner_image.sh, before their replay gates report float
 differences.
+
+A pin enters the digest only when it can change a computed byte. The set is
+derived from the producers the ledger records: the third-party imports of
+every script a replay gate that declares a bound record runs, followed through
+the repository modules it imports, are numpy, scipy, sympy, mpmath, qiskit,
+qiskit-aer, qiskit-ibm-runtime, perceval-quandela, exqalibur and rustworkx;
+importing those loads python-flint (sympy selects it for integer and rational
+arithmetic), samplomatic, qiskit-mitigation and ibm-quantum-schemas
+(qiskit-ibm-runtime builds on them), so they enter too. mpmath is pinned in
+ci/install_pins.sh, an input of the digest. The lint, type and test tools
+(ruff, mypy, pytest, pytest-xdist, threadpoolctl), the validation library
+pydantic, mcp, matplotlib and the semidefinite solvers (cvxpy, clarabel)
+compute no recorded value for a producer, and a tool pin cannot change a
+replayed byte, so bumping one leaves the digest, and the ledger, in place. A
+new pin that a producer imports for arithmetic joins ARITHMETIC_PINS in the
+change that adds the import.
 
 ``"$PYTHON" ci/runner_image_records.py write COMMAND...`` runs COMMAND
 under LEDGER_ARITHMETIC through ci/runner_image.sh over a snapshot of the tree, copies back every
@@ -50,6 +67,7 @@ from pathlib import Path
 from typing import Any
 
 import manifest
+import pins
 
 ROOT = Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "ci" / "runner_image_records.json"
@@ -63,12 +81,28 @@ RECEIPTS = (
 )
 IMAGE_INPUTS = (
     "ci/runner-image/Containerfile",
-    "requirements.txt",
-    "ci/requirements-ci.txt",
     "ci/install_pins.sh",
     "ci/runner_image.sh",
     "ci/gate_env.py",
 )
+# The pinned distributions whose version can change a byte a ledger record holds, by normalized name; the module
+# docstring derives the set. They are read from requirements.txt and ci/requirements-ci.txt.
+ARITHMETIC_PINS = (
+    "exqalibur",
+    "ibm-quantum-schemas",
+    "numpy",
+    "perceval-quandela",
+    "python-flint",
+    "qiskit",
+    "qiskit-aer",
+    "qiskit-ibm-runtime",
+    "qiskit-mitigation",
+    "rustworkx",
+    "samplomatic",
+    "scipy",
+    "sympy",
+)
+PIN_FILES = ("requirements.txt", "ci/requirements-ci.txt")
 # The kernel, thread and loader variables the ledger's records were written under: the OpenBLAS Haswell core and
 # numpy's x86-64-v3 dispatch cap select one AVX2 path, and single-threaded libraries fix the reduction order. The
 # ledger declares them rather than reading run_gates.environment_for, so a gate environment that computes on the
@@ -94,25 +128,34 @@ def arithmetic_environment() -> dict[str, str]:
     return dict(LEDGER_ARITHMETIC)
 
 
-def requirement_lines(data: bytes) -> bytes:
-    """The lines pip installs from a requirements file: comments and blank lines drop out."""
-    lines = (line.split(b"#", 1)[0].strip() for line in data.splitlines())
-    return b"\n".join(line for line in lines if line)
+def normalized(name: str) -> str:
+    return name.lower().replace("_", "-").replace(".", "-")
+
+
+def arithmetic_pins(root: Path = ROOT) -> dict[str, str]:
+    """The version of each ARITHMETIC_PINS distribution as the pin files of root name it."""
+    pinned: dict[str, str] = {}
+    for name in PIN_FILES:
+        pinned.update({normalized(key): value for key, value in pins.read_pins(root / name).items()})
+    missing = sorted(set(ARITHMETIC_PINS) - set(pinned))
+    if missing:
+        raise ValueError(f"{', '.join(PIN_FILES)} pin no {', '.join(missing)}")
+    return {name: pinned[name] for name in sorted(ARITHMETIC_PINS)}
 
 
 def image_id(root: Path = ROOT) -> str:
-    """sha256 over each image input's path and content, the patches of ci/patches/ in name order, then the
-    arithmetic environment.
+    """sha256 over each image input's path and content, the patches of ci/patches/ in name order, the
+    arithmetic pins, then the arithmetic environment.
 
-    A requirements file contributes its requirement lines alone, so a comment edit leaves the installed
-    packages, and the digest, unchanged.
+    Only ARITHMETIC_PINS enter from the pin files, as sorted ``name==version`` lines, so a pin of a lint, type or
+    test tool, or a comment edit, leaves the digest unchanged.
     """
     paths = [root / name for name in IMAGE_INPUTS] + sorted((root / "ci" / "patches").iterdir())
     digest = hashlib.sha256()
     for path in paths:
-        data = path.read_bytes()
-        content = requirement_lines(data) if path.suffix == ".txt" else data
-        digest.update(path.relative_to(root).as_posix().encode() + b"\0" + content + b"\0")
+        digest.update(path.relative_to(root).as_posix().encode() + b"\0" + path.read_bytes() + b"\0")
+    pinned = "\n".join(f"{name}=={version}" for name, version in arithmetic_pins(root).items())
+    digest.update(b"arithmetic-pins\0" + pinned.encode() + b"\0")
     digest.update(json.dumps(arithmetic_environment(), sort_keys=True).encode())
     return digest.hexdigest()
 

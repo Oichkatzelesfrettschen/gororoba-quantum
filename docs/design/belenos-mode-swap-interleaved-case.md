@@ -44,8 +44,8 @@ their pair mean. In a ten-iteration set the replicates sit at the pair mean only
 0 and 8), so a linear drift, and a step between a set's two jobs, add to the spread of a layout's meshes and raise the
 measured mesh variance.
 
-**Jobs.** A 24-mode iteration takes up to 50 s on `qpu:belenos` (see Duration), and a job costs 1 credit plus 1e-6 per shot of
-its largest iteration whatever else it holds (1.018 for job-00, 1.09 for a packed job), so each job carries as many iterations as fit with one iteration of margin under the 300 s cut: five. Job-00 ran
+**Jobs.** A 24-mode iteration takes up to 50 s on `qpu:belenos` (see Duration), and a job costs 1 credit plus 1e-6 per shot used, up to
+its largest iteration's `max_shots`, whatever else it holds (1.018 for job-00, at most 1.09 for a packed job), so each job carries as many iterations as fit with one iteration of margin under the 300 s cut: five. Job-00 ran
 sets 0 and 1 in `SEQUENCE` and returned set 0 before the cut. Sets 1 to 4 run `SEQUENCE_PACKED` as two jobs each, its
 first five and last five iterations, submitted one after the other; the two added replicate seeds per layout fill the
 time a three-iteration half set would leave empty. A primary pair straddles the gap between its set's two jobs; the
@@ -62,7 +62,8 @@ variances.
 
 Each packed iteration takes 30,000 samples with a `max_shots` cap of 90,000 and `min_detected_photons` 1 (job-00 took
 6,000 and 18,000). Quandela bills a job
-1 credit plus 1e-6 per shot of its largest iteration ([credit optimization](../runbooks/quandela-credit-optimization.md)),
+1 credit plus 1e-6 per shot, the smaller of the shots used and its largest iteration's `max_shots`
+([credit optimization](../runbooks/quandela-credit-optimization.md)),
 so job-00 billed 1 + 18,000 x 1e-6 = 1.018 and each packed job ceilings at 1 + 90,000 x 1e-6 = 1.09, 8.72 credits for
 the eight. Samples cost almost no time (see Duration), so the fivefold samples cut each block's binomial error by
 sqrt(5) at 0.072 credits per job. Job-00's frozen `cases.json` keeps its bytes (`RETAINED_CASES` binds its sha256), and its settings equal the

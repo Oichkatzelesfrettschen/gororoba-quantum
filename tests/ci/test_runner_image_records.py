@@ -1,5 +1,5 @@
-"""Contract for ci/runner_image_records.py: the image digest follows the installed requirement lines and every
-other input byte, the ledger check names each record to rewrite once the digest moves, and add binds only
+"""Contract for ci/runner_image_records.py: the image digest follows the arithmetic pins and every other input
+byte and ignores every tool pin, the ledger check names each record to rewrite once the digest moves, and add binds only
 bytes that a runner-image write receipted.
 """
 
@@ -22,30 +22,69 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def copy_inputs(target: Path) -> None:
-    for name in records.IMAGE_INPUTS:
+    for name in (*records.IMAGE_INPUTS, *records.PIN_FILES):
         (target / name).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, target / name)
     shutil.copytree(ROOT / "ci" / "patches", target / "ci" / "patches", dirs_exist_ok=True)
 
 
-@pytest.mark.audit
-def test_digest_ignores_requirement_comments_and_follows_pins() -> None:
+def pin_line(text: str, name: str) -> str:
+    return next(line for line in text.splitlines() if line.startswith(f"{name}=="))
+
+
+def test_digest_follows_arithmetic_pins_and_ignores_tool_pins() -> None:
     with TemporaryDirectory() as directory:
         root = Path(directory)
         copy_inputs(root)
         before = records.image_id(root)
-        requirements = root / "ci" / "requirements-ci.txt"
-        requirements.write_text("# a rewritten comment\n\n" + requirements.read_text().replace("\n", "  # note\n"))
+        originals = {name: (root / name).read_text() for name in records.PIN_FILES}
+
+        def with_pin(name: str, version: str) -> None:
+            """Rewrite both pin files from their original text with exactly one pin changed."""
+            holders = [
+                file for file, text in originals.items() if any(x.startswith(f"{name}==") for x in text.splitlines())
+            ]
+            if len(holders) != 1:
+                raise AssertionError(f"{name} is pinned in {holders}")
+            for file, text in originals.items():
+                changed = text.replace(pin_line(text, name), f"{name}=={version}") if file == holders[0] else text
+                (root / file).write_text(changed)
+
+        # A tool pin leaves the digest in place.
+        for tool in ("ruff", "mypy", "pytest", "pytest-xdist", "threadpoolctl", "mcp", "matplotlib", "pydantic"):
+            with_pin(tool, "999.0")
+            if records.image_id(root) != before:
+                raise AssertionError(f"a {tool} pin moved the image digest")
+        # An added unrelated pin and a rewritten comment leave it in place too.
+        for file, text in originals.items():
+            (root / file).write_text(
+                "# a rewritten comment\n\n" + text.replace("\n", "  # note\n") + "extra-package==1.0\n"
+            )
         if records.image_id(root) != before:
-            raise AssertionError("a comment edit moved the image digest")
-        requirements.write_text(requirements.read_text() + "extra-package==1.0\n")
-        if records.image_id(root) == before:
-            raise AssertionError("an added pin left the image digest unchanged")
-        containerfile = root / "ci" / "runner-image" / "Containerfile"
+            raise AssertionError("a comment edit or an unrelated pin moved the image digest")
+        # Each arithmetic pin moves it, whichever pin file holds the line.
+        for name in records.ARITHMETIC_PINS:
+            with_pin(name, "999.0")
+            if records.image_id(root) == before:
+                raise AssertionError(f"a {name} pin left the image digest unchanged")
+
+
+@pytest.mark.audit
+def test_digest_follows_every_other_input_byte() -> None:
+    with TemporaryDirectory() as directory:
+        root = Path(directory)
         copy_inputs(root)
+        before = records.image_id(root)
+        containerfile = root / "ci" / "runner-image" / "Containerfile"
         containerfile.write_text(containerfile.read_text() + "# trailing comment\n")
         if records.image_id(root) == before:
             raise AssertionError("a Containerfile edit left the image digest unchanged")
+
+
+def test_every_arithmetic_pin_is_pinned_in_the_tree() -> None:
+    pinned = records.arithmetic_pins(ROOT)
+    if set(pinned) != set(records.ARITHMETIC_PINS):
+        raise AssertionError(sorted(set(pinned) ^ set(records.ARITHMETIC_PINS)))
 
 
 @pytest.mark.audit

@@ -726,6 +726,7 @@ def verdict(run: Run) -> dict[str, Any]:
     return result
 
 
+@pytest.mark.audit
 def test_collected_reaches_a_verdict_on_a_planted_ground_state_run(verdict: dict[str, Any]) -> None:
     check("withheld" not in verdict, f"{verdict.get('withheld')}")
     check(verdict["order"]["passes"] and verdict["order"]["chunk"]["passes"], f"{verdict['order']}")
@@ -743,6 +744,7 @@ def test_collected_reaches_a_verdict_on_a_planted_ground_state_run(verdict: dict
     check(all(s["carryover"]["vertex"]["allocation"] > 0 for s in kept), "no vertex allocation")
 
 
+@pytest.mark.audit
 def test_collected_record_serializes_to_plain_json(verdict: dict[str, Any]) -> None:
     import json
 
@@ -750,6 +752,7 @@ def test_collected_record_serializes_to_plain_json(verdict: dict[str, Any]) -> N
     check(0 < len(text) < 5_000_000, f"{len(text)} bytes")
 
 
+@pytest.mark.audit
 def test_collected_reports_the_delay_arm_beside_the_echo_time(verdict: dict[str, Any]) -> None:
     for q in verdict["selected"]:
         entry = verdict["delay_descriptive"][str(q)]
@@ -763,6 +766,7 @@ def narrow() -> tuple[Run, dict[str, Any]]:
     return small, su.collected(small.record, small.distributions, small.executed, small.registers, small.chunks, FLOOR)
 
 
+@pytest.mark.audit
 def test_collected_reports_a_lost_shot_order_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
     """The readers read inside one circuit, so a shuffled row order fails the sentinels as a report and leaves the
     carryover screen and the selection as they are on the ordered run."""
@@ -780,6 +784,7 @@ def test_collected_reports_a_lost_shot_order_and_still_decides(narrow: tuple[Run
     check(evaluated > 0 and result["selected"] == reference["selected"], "a shuffled order changed the selection")
 
 
+@pytest.mark.audit
 def test_collected_reports_an_unreadable_chunk_timing_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
     small, reference = narrow
     result = su.collected(
@@ -789,6 +794,7 @@ def test_collected_reports_an_unreadable_chunk_timing_and_still_decides(narrow: 
     check(result["selected"] == reference["selected"], "an unreadable chunk_timing changed the selection")
 
 
+@pytest.mark.audit
 def test_pattern_crosscheck_compares_the_magnitude_with_the_reader_bound(verdict: dict[str, Any]) -> None:
     """U bounds |D|, so a carryover of either sign beyond U is the falsifier."""
     compared = 0
@@ -804,6 +810,7 @@ def test_pattern_crosscheck_compares_the_magnitude_with_the_reader_bound(verdict
     )
 
 
+@pytest.mark.audit
 def test_collected_reports_a_split_job_and_still_decides(narrow: tuple[Run, dict[str, Any]]) -> None:
     small, reference = narrow
     count = len(small.record["execution_pubs"])
@@ -817,6 +824,7 @@ def test_collected_reports_a_split_job_and_still_decides(narrow: tuple[Run, dict
         check(not order["chunk"]["passes"], f"chunks {chunks} must fail the report")
 
 
+@pytest.mark.audit
 def test_collected_fails_closed_on_absent_registers_and_a_reordered_job(run: Run) -> None:
     absent = su.collected(run.record, run.distributions, run.executed, None, run.chunks, FLOOR)
     check("unavailable" in absent["withheld"], f"absent registers: {absent.get('withheld')}")
@@ -846,6 +854,7 @@ def test_collected_fails_closed_on_absent_registers_and_a_reordered_job(run: Run
     check("differ from the collector's counts" in result["withheld"], f"{result['withheld']}")
 
 
+@pytest.mark.audit
 def test_required_pubs_name_the_sentinel_and_reader_rows(run: Run) -> None:
     names = su.required_pubs(run.record)
     check(len(names) == 12 + 12, f"{len(names)} PUBs")
@@ -874,6 +883,7 @@ def test_collected_withholds_every_qubit_when_the_relaxation_target_is_far_from_
     check(result["selected"] == [], "qubits selected under q near 0.7")
 
 
+@pytest.mark.audit
 def test_measured_family_hands_the_order_evidence_to_the_analysis(run: Run, monkeypatch: pytest.MonkeyPatch) -> None:
     seen: list[tuple[Any, ...]] = []
     reasons: list[Any] = []
@@ -1094,6 +1104,7 @@ def test_carryover_reader_is_free_of_block_baselines_through_stratification() ->
     check(not empty["evaluable"] and not empty["passes"], f"{empty}")
 
 
+@pytest.mark.audit
 def test_relaxation_shot_order_reads_a_run_and_reports_a_malformed_one(tmp_path: Any, run: Run) -> None:
     import hashlib
     import json

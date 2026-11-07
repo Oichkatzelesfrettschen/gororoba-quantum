@@ -360,7 +360,8 @@ then. A new compilation or schedule requires a new exact case and approval.
 ## Seconds and credits
 
 The retained billing rule is one per-job price plus 1e-6 credits times the
-largest iteration's `max_shots`, once per iterated job
+smaller of the shots used and the largest iteration's `max_shots`, once per
+iterated job
 ([credit runbook](../runbooks/quandela-credit-optimization.md)). At 32,768
 shots that is 1.032768. The builder recomputes the account's `qpu:ascella`
 free-credit movement on six retained runs. Each movement is one new job, and

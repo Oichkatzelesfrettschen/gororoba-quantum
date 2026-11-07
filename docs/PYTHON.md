@@ -50,7 +50,7 @@ platform boundaries:
 2. **Hosted CI / Pull-Request Verification (`ci/`)**
    - Python 3.14.7 container environment.
    - Strictly locked dependencies from `requirements.txt` and `ci/requirements-ci.txt`.
-   - Tool pinning: `ci/pinned_tool.py` runs pinned `ruff==0.17.1` and `mypy==2.4.0` via uv.
+   - Tool pinning: `ci/pinned_tool.py` runs pinned `ruff==0.17.4` and `mypy==2.4.1` via uv.
    - Browser checks: `ci/requirements-browser.txt` installs `playwright==1.64.0` for
      headless validation of rendered explorer artifacts.
 
