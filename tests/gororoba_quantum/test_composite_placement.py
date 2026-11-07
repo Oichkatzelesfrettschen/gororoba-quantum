@@ -42,14 +42,15 @@ ROOT = Path(__file__).resolve().parents[2]
 BLOCKS = 3
 PAIRS = 3
 # sha256 prefixes of the offline plan of each group before per-placement laws existed (FakeFez, two seeds, three
-# replicas): the digest covers choice_structure, every fused-PUB manifest and the archive bytes.
+# replicas) under the pinned qiskit 2.6.1 and qiskit-aer 0.18.2: the digest covers choice_structure, every fused-PUB
+# manifest, and the archive bytes, whose QPY encoding follows the qiskit release.
 PLAN_DIGESTS = {
-    "design_a": ("fd2b1ecfcc7badf4", "fe1fa93744567621"),
-    "design_c_8_1_4": ("0842747b6e0275a1", "56a34676f8fd2ba5"),
-    "readout_delay": ("40a929a918455daa", "03ec79e41df9514a"),
+    "design_a": ("fd2b1ecfcc7badf4", "7088272e83aa9fa5"),
+    "design_c_8_1_4": ("0842747b6e0275a1", "2a37211be39f64ec"),
+    "readout_delay": ("40a929a918455daa", "c89689eec82cb639"),
 }
 # The patterned synthetic group of test_idle_readout on its three pinned FakeKingston pairs.
-IDLE_DIGEST = ("374c47952a5cf9b4", "13e8eae25de87a4c")
+IDLE_DIGEST = ("374c47952a5cf9b4", "30ba9ac326eabdfb")
 
 
 def _expect(condition: bool, message: str) -> None:
