@@ -13,8 +13,9 @@ X-axis angle that gives b0's base circuit +0.0164.
 
 Section 3 fixes the data qubit d1 (the role q12 holds in the 6-CZ blocks) instead of the coin. b0 has no such variant:
 the first single-qubit run on the qubit that starts d0 holds four gates, the data Hadamard mixed with later rotations, so
-fixing d0 changes the gate sequence. Section 4 replays the over-rotation about each axis, on the pulse gates X90 and X (the admitted set; Rz is a frame
-change) or on every single-qubit gate (reported outside the admitted set), before and after the gate in time, sized to b0
+fixing d0 changes the gate sequence. Section 4 replays the over-rotation about each axis, on the pulse gates X90 and X (the admitted set) or on every single-qubit gate
+(reported outside the admitted set: cqasm.md lists Rz as native on Tuna-17, so the hypothesis that Rz is a frame change, which
+would exempt it from pulse errors, is unverified), before and after the gate in time, sized to b0
 where an angle up to 0.15 rad reaches it.
 """
 
@@ -306,7 +307,7 @@ def main() -> None:
                     )
     admitted = [b for b in bounds if b[3] == "x90x"]
     print(
-        f"   admitted set: the pulse gates X90 and X (Rz is a frame change); {len(admitted)} sized models, max |k4 s| "
+        f"   admitted set: the pulse gates X90 and X (hypothesis: Rz is a frame change; cqasm.md lists it native, so unverified); {len(admitted)} sized models, max |k4 s| "
         f"{max(b[0] for b in admitted):.4f}, max |k4 t| {max(b[1] for b in admitted):.4f}; the rows after every "
         f"single-qubit gate lie outside it (largest |k4 s| {max(b[0] for b in bounds):.4f}, |k4 t| {max(b[1] for b in bounds):.4f})"
     )

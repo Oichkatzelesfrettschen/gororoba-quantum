@@ -1,7 +1,7 @@
-decision-label shares, 20000 simulated series per world, seed docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json value 1
+decision-label shares at B0_LIKE_Z 3.0, 20000 simulated series per world, seed docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json value 1
   stationary
-    over_rotation_x_all_before: b0_like 0.4825, offset_absent 0.0015, superposition_only 0.0001, unresolved 0.4676, unresolved_batch 0.0078, unresolved_block 0.0194, unresolved_context 0.0210, zero 0.0001
-    over_rotation_x_all_after: offset_absent 0.0014, superposition_only 0.0003, unresolved 0.0238, unresolved_batch 0.0086, unresolved_block 0.0209, unresolved_context 0.0609, zero 0.8841
+    over_rotation_x_all_before: b0_like 0.3292, intermediate 0.6204, superposition_only 0.0002, unresolved 0.0018, unresolved_batch 0.0078, unresolved_block 0.0194, unresolved_context 0.0211, zero 0.0001
+    over_rotation_x_all_after: intermediate 0.0001, superposition_only 0.0004, unresolved 0.0236, unresolved_batch 0.0086, unresolved_block 0.0209, unresolved_context 0.0609, zero 0.8854
   batch drift sd 0.003
-    over_rotation_x_all_before: b0_like 0.4121, offset_absent 0.0079, superposition_only 0.0020, unresolved 0.4119, unresolved_batch 0.0520, unresolved_block 0.0749, unresolved_context 0.0389, zero 0.0003
-    over_rotation_x_all_after: offset_absent 0.0092, superposition_only 0.0031, unresolved 0.0493, unresolved_batch 0.0566, unresolved_block 0.0761, unresolved_context 0.0825, zero 0.7231
+    over_rotation_x_all_before: b0_like 0.3095, intermediate 0.5003, offset_absent 0.0003, superposition_only 0.0028, unresolved 0.0054, unresolved_batch 0.0688, unresolved_block 0.0740, unresolved_context 0.0386, zero 0.0003
+    over_rotation_x_all_after: intermediate 0.0005, offset_absent 0.0001, superposition_only 0.0043, unresolved 0.0472, unresolved_batch 0.0720, unresolved_block 0.0747, unresolved_context 0.0817, zero 0.7195

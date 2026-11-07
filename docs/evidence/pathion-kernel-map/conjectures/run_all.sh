@@ -58,3 +58,4 @@ step d3_crosstalk d3_crosstalk.py
 step d4_four_term d4_four_term.py
 step c2_one_cz_mech c2_one_cz_mech.py
 step c2_one_cz_twins c2_one_cz_twins.py
+step c2_one_cz_rz_worlds c2_one_cz_rz_worlds.py

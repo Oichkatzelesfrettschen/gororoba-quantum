@@ -1,13 +1,16 @@
-"""C2 one-CZ null case: operating characteristics of the over-rotation worlds that also rotate Rz.
+"""C2 one-CZ null case: the over-rotation worlds that also rotate Rz, decided with the superseded b0-like band of 3.
 
-The case admits an X-axis over-rotation on the pulse gates X90 and X only, on the hypothesis that Rz is a frame change.
-c2_one_cz_twins.txt section 4 lists two worlds outside that set whose 6-CZ response is nonzero: an X-axis rotation
-before every single-qubit gate, Rz included (eps -0.0786: k4 s +0.0076, t +0.0103) and after every single-qubit gate
-(eps -0.1150: k4 s -0.0040, t 0). This script runs the case's own decision rule (decide_estimates through
-operating_characteristics) on both worlds at the design standard errors, stationary and with the case's batch drift, so
-the share that reads "b0-like" (a wrong refutation of A5-186) is measured, not assumed. b0's twin contrast is set equal
-to its base contrast, as for every over-rotation world of the case. Seed: value 1 of draw-2026-11-07T193501Z, read at
-run time."""
+The case admits an X-axis over-rotation on the pulse gates X90 and X only; cqasm.md lists Rz as native on Tuna-17, so the
+hypothesis that Rz is a frame change, which would exempt it, is unverified. c2_one_cz_twins.txt section 4 lists two worlds
+outside the admitted set whose 6-CZ response is nonzero: an X-axis rotation before every single-qubit gate, Rz included
+(eps -0.0786: k4 s +0.0076, t +0.0103) and after every single-qubit gate (eps -0.1150: k4 s -0.0040, t 0). Both worlds are
+now rows of scripts/qi_pathion_one_cz_null_cases.py PREDICTED, and the stored operating characteristics of
+results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/prediction.json decide them with the case's band of
+B0_LIKE_Z = 2 combined standard errors. This script only documents the result of the earlier band, B0_LIKE_Z = 3, at the
+case's current shots: the world before every gate reads b0-like (a wrong refutation of A5-186) in a third of the series
+(48 percent at the earlier shots of 65,536 for b0's base circuits).
+b0's twin contrast is set equal to its base contrast, as for every over-rotation world of the case. Seed: value 1 of
+draw-2026-11-07T193501Z, read at run time."""
 
 import sys
 from pathlib import Path
@@ -27,7 +30,10 @@ def main() -> None:
     case.WORLDS_SIZED = tuple(WORLDS)
     case.OC_DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json"
     case.OC_SEED_INDEX = 1
-    print(f"decision-label shares, {case.OC_DRAWS} simulated series per world, seed {case.OC_DRAW} value 1")
+    case.B0_LIKE_Z = 3.0
+    print(
+        f"decision-label shares at B0_LIKE_Z {case.B0_LIKE_Z}, {case.OC_DRAWS} simulated series per world, seed {case.OC_DRAW} value 1"
+    )
     for title, drift in (("stationary", 0.0), (f"batch drift sd {case.OC_DRIFT_SD}", case.OC_DRIFT_SD)):
         print(f"  {title}")
         for world, shares in case.operating_characteristics(drift_sd=drift).items():

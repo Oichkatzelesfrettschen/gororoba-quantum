@@ -21,7 +21,7 @@
   selector flip when q12 reads 0, x 0.036                  +0.0164 / +0.0170    +0.0000 / -0.0000    +0.0000 / -0.0000    +0.0000 / -0.0000  
   (each cell: base s / twin t; k8 and k12 equal k4 to four decimals)
 
-   planned pooled standard errors: b0 base 0.00276, twin 0.00276; 6-CZ base 0.00226, twin 0.00159, combined 0.00130
+   planned pooled standard errors: b0 base 0.00195, twin 0.00276; 6-CZ base 0.00226, twin 0.00159, combined 0.00130
    separation of mechanisms in standard errors (6-CZ combined m, 6-CZ base c, 6-CZ twin d, b0 base-twin gap):
      over-rotation  vs dropout  : m  13.0  c   7.4  d  10.7  b0 gap   0.1
      over-rotation  vs q12 flip : m   0.1  c   0.1  d   0.0  b0 gap   0.1
@@ -62,4 +62,4 @@
    z    all    before   +0.0337   +0.0164   -0.0000   -0.0000
    z    all    after    -0.0356   +0.0164   +0.0000   -0.0000
    z    all    after    +0.0337   +0.0164   +0.0000   +0.0000
-   admitted set: the pulse gates X90 and X (Rz is a frame change); 12 sized models, max |k4 s| 0.0038, max |k4 t| 0.0039; the rows after every single-qubit gate lie outside it (largest |k4 s| 0.0076, |k4 t| 0.0103)
+   admitted set: the pulse gates X90 and X (hypothesis: Rz is a frame change; cqasm.md lists it native, so unverified); 12 sized models, max |k4 s| 0.0038, max |k4 t| 0.0039; the rows after every single-qubit gate lie outside it (largest |k4 s| 0.0076, |k4 t| 0.0103)

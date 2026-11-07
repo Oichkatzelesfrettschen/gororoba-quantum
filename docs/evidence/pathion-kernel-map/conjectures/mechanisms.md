@@ -186,7 +186,7 @@ planned shots, and no twin separates the over-rotation from the q12 flip. Fixing
 blocks leaves P(s = 0) at 1/2 under every model, and b0's d0 starts in a four-gate run, so neither variant is built.
 Replayed about X, Y and Z, before and after the gate in time, on X90 and X, the sized over-rotation leaves a 6-CZ block
 at most 0.0038 (base) and 0.0039 (twin) from zero; a rotation added to every single-qubit gate, Rz included, reaches
-0.0076 and 0.0103 and is outside the admitted set (hypothesis: Rz is a frame change).
+0.0076 and 0.0103 and is outside the admitted set (the hypothesis that Rz is a frame change is unverified: cqasm.md lists Rz as native on Tuna-17).
 
 Same-question IBM reference (`results/live/pathion_parallel_coset_analysis.json` and `d1_ibm_overrotation.txt` on branch
 `pathion/interpret-tuna-ascella-runs`, ibm_fez with 17 and ibm_kingston with 16 parallel placements): the k0 null
