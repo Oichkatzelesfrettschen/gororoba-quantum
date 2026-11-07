@@ -932,7 +932,17 @@ CONTROLS: tuple[dict[str, str], ...] = (
 )
 
 
+def max_generator_degree() -> int:
+    """Largest total degree of a closure or hypersurface generator in z'."""
+    return max(
+        sum(exp for _, exp in monomial) for gens in ideal_terms().values() for gen in gens for monomial, _ in gen
+    )
+
+
 def build() -> dict[str, Any]:
+    degree = max_generator_degree()
+    if len(LINE_S) < degree + 1:
+        raise SystemExit(f"{len(LINE_S)} test values of s do not decide membership for degree {degree}")
     gate = map_gate()
     if not gate["pass"]:
         raise SystemExit("the split-coordinate map gate failed")
@@ -941,6 +951,7 @@ def build() -> dict[str, Any]:
             raise SystemExit(f"the rank path at t = {t} differs from {key}")
     classified = classify_all()
     return {
+        "generator_degree_max": degree,
         "map_gate": gate,
         "operands": classified,
         "incidences": incidence_rows(classified),

@@ -632,6 +632,7 @@
    "reason": "arms of a block of B12, C8 or A16 with a changed input or sign table; the block itself keeps the parent orbit"
   }
  ],
+ "generator_degree_max": 4,
  "incidences": [
   {
    "chords": [

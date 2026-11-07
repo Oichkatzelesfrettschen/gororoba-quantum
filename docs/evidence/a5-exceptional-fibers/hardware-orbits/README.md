@@ -35,9 +35,9 @@ The case directories are listed in [`result.json`](result.json) under `cases` an
 [`table.tsv`](table.tsv); [the findings](../../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md) interpret the pathion
 runs and `results/live/CAMPAIGN_FINDINGS.md` section 6 the rank-sector run. Three observations follow from the table.
 
-- Nullity 12 does not separate orbits. e1 + e24 (V, dimension 8), e1 + e18 (VB, dimension 7) and B12 (B9, dimension 9)
-  read the same N_hat = 12, so the nullity readings of the kernel map and the coset blocks cannot tell the three
-  attachments apart.
+- Nullity 12 does not separate orbits. e1 + e24 (V, dimension 8), e1 + e18 and e17 - e2 (VB, dimension 7) read
+  N_hat = 12 on the kernel map and the coset blocks, so those readings cannot tell V from VB. B12 (B9, dimension 9) has
+  the same nullity, and the hardware reads it through block levels and visibilities, not N_hat.
 - The twins keep the orbit class of their primaries: e17 - e2 lies in VB with e1 + e18, and e17 - e10 lies in the same
   nullity-4 stratum as e1 + e26.
 - The hardware has measured the opposite end of three incidences only through A16 (N-). The N+ end of E8-bar -> N+ and
@@ -62,9 +62,9 @@ and the sign pairing of the incidence list rest on this convention.
 
 The line search takes each measured operand a_Z of the orbit Z and tests a(s) = a_Z + s b for membership in the closure
 of Y at nine values of s. The closure generators have degree at most 4 in z', so vanishing at nine values is
-vanishing for every s. The directions b are the coefficient vectors with entries -2 to 2 over each 2-flat that
-contains the support of a_Z (the four-term operands the block designs realize) and every basis vector and basis pair
-e_k + sigma e_l (supports of up to six indices). A direction counts once per plane span(a_Z, b), because C^* maps the
+vanishing for every s; the script checks the degree bound and refuses a larger one. The directions b are the
+coefficient vectors with entries -2 to 2 over each 2-flat that contains the support of a_Z (the four-term operands
+the block designs realize) and every basis vector and basis pair e_k + sigma e_l (supports of up to six indices). A direction counts once per plane span(a_Z, b), because C^* maps the
 line a_Z + s b to every other line of its plane. A kept plane reports the orbit of its generic point (majority over
 seven values of s), its support, the nullity at s = 0, 1, 2, 1/2, -1, and the measured operands it contains. For each
 incidence the script also tests the chord through a_Z and every other measured operand in the closure of Y.
