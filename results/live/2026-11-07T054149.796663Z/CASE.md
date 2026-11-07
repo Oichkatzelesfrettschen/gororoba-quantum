@@ -64,7 +64,11 @@ equals the module's full-map law on its output coset (`restriction_error` below 
   read it; no hardware run places it.
 - Estimator. N_hat of a block is the half-sum of its output contrasts c(y) = P_plus(s = 0 | y) - P_minus(s = 0 | y)
   divided by their signed visibility (`pathion_parallel_coset.estimate`); the readout-corrected value applies it to the
-  replica laws after inversion of each placement's own confusion matrices (live_run `corrected_summary`). The summed
+  replica laws after inversion of each placement's own confusion matrices (live_run `corrected_summary`). live_run keeps
+  only the mean of that corrected value, so `scripts/pathion_wide_coset_analysis.py` recomputes it on every placement from
+  `collect.json` (the execution-start `placed_qubit_calibration` of each member's PUB, at the physical qubit that the
+  archived routed circuit measures into each clbit), takes the Student-t interval over the placements, evaluates the rules
+  below and reports its difference from live_run's pooled value; its bounded test builds a synthetic run. The summed
   N_hat per operand is `wide_<operand>_nullity_estimate`, the per-block values are `wide_<operand>_k<coset>_...`, and
   `wide_<operand>_selector_contrast_sum` is the estimator-free sum of plus-minus selector contrasts (ideal nullity / 4).
 - Clifford structure. A +-1 diagonal is Clifford when its sign function has degree at most 2 over GF(2). Blocks with
@@ -141,7 +145,7 @@ the shots (1,408 and 1,664 give margins of about 1.7 s and 1.9 s) buys margin at
 
 ## Preregistered readout and decision rules
 
-Intervals are Student t over the placements (17 and 16). Bands add the model's deviation from the integer (at most 0.2 on
+Intervals are Student t over the placements (17 and 16), computed by `scripts/pathion_wide_coset_analysis.py`. Bands add the model's deviation from the integer (at most 0.2 on
 the readout-corrected sum) to an allowance of 0.05 per block for an offset the model lacks, the largest per-block value
 that a retained run measured after readout correction (the ibm_marrakesh one-CZ null blocks of the drain case, +0.045).
 The readout-corrected summary is the primary reading; the raw one is reported beside it.
@@ -203,6 +207,9 @@ Run from the repository root after approval:
       --max-total-execution-seconds 12 --max-execution-seconds 12 --reserve-seconds 0 \
       --min-remaining-seconds 1 --max-pending 100 --out ../results/live
 
+After both jobs are collected, `"$PYTHON" scripts/pathion_wide_coset_analysis.py results/live/<ibm_fez run> results/live/<ibm_kingston
+run>` prints every rule's verdict and the device-agreement rule.
+
 Both binding dry runs pass the check script (worst-case charge 8.87 s of 10 s and 10.66 s of 12 s), made from a clean
 source tree at 64f3f42ab. The check's last argument is the account's `usage_remaining_seconds`; read each account's
 `usage()` again before the submit and lower the argument and the shots if the remainder moved.
@@ -211,8 +218,17 @@ source tree at 64f3f42ab. The check's last argument is the account's `usage_rema
 
 - The arm order inside a job is IBM's choice; the blocks of an operand run in different PUBs, so drift between PUBs
   enters a sum as block-to-block variation, and the per-block rule and the null controls are the guard.
-- The cost model rests on the drain jobs' residual range for each backend, measured on 112 PUBs of one circuit family;
-  this case has 145 PUBs, and the job overhead of 2.3 s is the value of the retained jobs.
+- The cost model rests on the drain jobs' residual range for each backend and on the 2.3 s job overhead of the retained
+  jobs; this case runs 1,536 and 1,792 shots over 145 PUBs, fewer shots per PUB than the drain jobs (8,192 to 16,384).
+  A fit of billed charge minus (2.3 s + planned charge) against executions and PUBs over the retained single-job runs
+  (8 on ibm_fez, 14 on ibm_kingston, each billed in whole seconds) gives a residual of 7.5 +- 0.7 us (ibm_fez) and
+  9.2 +- 0.4 us (ibm_kingston) per execution and a per-PUB term of -4.4 +- 5.0 ms and -1.1 +- 1.8 ms: consistent with zero,
+  not proof of zero. Its two-sigma upper bounds, 5.7 ms and 2.6 ms, would add 0.8 s and 0.4 s at 145 PUBs, inside the
+  1.1 s and 1.3 s margins to the ceilings and past the 1 s margin under the remainder on ibm_fez. Two retained jobs run in
+  this regime without an excess: ibm_fez 48 PUBs of 1,536 shots (6.6 us) and ibm_kingston 99 PUBs of 800 shots (9.1 us).
+  This is the case's main billing risk. The levers are fewer PUBs at more shots (dropping `m128` removes 32 PUBs and
+  lets the same seconds carry 1,970 shots on ibm_fez) or fewer shots at the same PUBs (1,280 on ibm_fez keeps the
+  two-sigma bound 1 s under the remainder).
 - A per-block offset below 0.05 is near what one block resolves (model placement standard error 0.007 to 0.008 median,
   0.02 at most, per block); the whole-operand rules resolve it at 8 or 16 blocks.
 - Relaxation and residual excitation both land in the offset the null controls read; separating them needs an arm at a

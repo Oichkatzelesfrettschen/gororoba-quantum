@@ -16,6 +16,7 @@ run's own.
 | Worst-case charge | 10.66 s at 9.2 us residual (10.37 s at 8.1 us); 11 s billed against 12 s remaining |
 | Ceiling, reserve | 12 s, 0 s |
 | Check | `pathion_wide_coset_check.py 16 12` admits the plan |
+| Billing risk | per-PUB charge term not excluded by the retained jobs: -1.1 +- 1.8 ms fitted, 2.6 ms at two sigma, 0.4 s at 145 PUBs against a 1.3 s margin to the ceiling |
 
 Command, from the repository root after approval:
 
