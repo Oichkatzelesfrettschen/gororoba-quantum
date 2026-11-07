@@ -199,6 +199,16 @@ def test_successor_writers_refuse_the_retained_record_roots(root: str) -> None:
         raise AssertionError(f"{target} was created")
 
 
+def test_successor_writer_refuses_a_link_into_the_record_roots(tmp_path: Path) -> None:
+    files = records_v2.documents("stationarity")
+    job = sorted(name for name in files if name != "case.json")[0]
+    (tmp_path / job).symlink_to(ROOT / "results/quandela")
+    with pytest.raises(ValueError, match="outside the retained records"):
+        records_v2.write("stationarity", tmp_path, None)
+    if (tmp_path / "case.json").exists():
+        raise AssertionError("the writer wrote before refusing the linked job directory")
+
+
 @pytest.mark.audit
 def test_bdsc_certificate_successor_changes_only_billing_fields() -> None:
     import bdsc_certificate as cert

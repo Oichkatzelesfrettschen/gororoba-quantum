@@ -57,9 +57,13 @@ def documents() -> dict[str, str]:
 
 
 def write(directory: Path) -> None:
-    outside_records(ROOT, directory)
+    """Write the records, refusing an output directory or file that resolves under a retained record root, so a
+    symbolic link in an allowed directory cannot redirect a write onto a pinned record."""
+    records = documents()
+    for name in [None, *records]:
+        outside_records(ROOT, directory if name is None else directory / name)
     directory.mkdir(parents=True, exist_ok=True)
-    for name, content in documents().items():
+    for name, content in records.items():
         (directory / name).write_text(content, encoding="utf-8")
     print(f"wrote {len(cert.FILES)} bdsc records under {directory}")
 
@@ -71,6 +75,15 @@ def check(directory: Path) -> None:
     cert.require(retained == sorted(cert.FILES), f"record set differs: {retained}")
     for name in cert.FILES:
         cert.close(json.loads(fresh[name]), json.loads((directory / name).read_text(encoding="utf-8")), name)
+    # cert.close admits floats within CHECK_TOLERANCE, so the target identity is recomputed exactly, as
+    # bdsc_certificate.check does; every other record binds target_sha256.
+    target = json.loads((directory / "target.json").read_text(encoding="utf-8"))
+    core = {
+        key: target[key]
+        for key in target
+        if key not in ("schema", "record", "target_sha256", "assignment", "exact_checks")
+    }
+    cert.require(cert.digest(core) == target["target_sha256"], "target_sha256 does not match the retained target")
     print(f"bdsc records (billing successor): {len(cert.FILES)} files match")
 
 

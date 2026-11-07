@@ -66,8 +66,16 @@ def documents(family: str, draw: Path | None = None) -> Documents:
 
 
 def write(family: str, directory: Path, draw: Path | None) -> None:
+    """Write the tree, refusing an output directory, job directory or file that resolves under a retained record
+    root, so a symbolic link in an allowed directory cannot redirect a write."""
+    tree = documents(family, draw)
     outside_records(ROOT, directory)
-    for name, content in documents(family, draw).items():
+    for name, content in tree.items():
+        outside_records(ROOT, directory / name)
+        if isinstance(content, dict):
+            for file in content:
+                outside_records(ROOT, directory / name / file)
+    for name, content in tree.items():
         if isinstance(content, bytes):
             directory.mkdir(parents=True, exist_ok=True)
             (directory / name).write_bytes(content)
