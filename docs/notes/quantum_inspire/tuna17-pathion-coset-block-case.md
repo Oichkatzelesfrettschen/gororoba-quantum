@@ -234,13 +234,16 @@ single misrouted bin is a deviation of about 0.1 to 0.2 in the ratio against the
 ## Preregistered decisions
 
 All use the coin piles of a template's job (the coin read as the arm) and Z_RESOLVE = 3.0 standard errors; the readout-corrected statistic enters only the cross-platform and depth readings.
+A bin whose sampled selector outcomes are deterministic in both arms has standard error 0 and counts as resolved when its contrast carries the ideal sign exactly
+(`signed_z`) and each arm holds at least `DETERMINISTIC_MIN_COUNT` (5) shots in the bin, the least count at which a chance run of one outcome in both arms (probability at most 4^-n) falls below the
+3-sigma one-sided tail; a deterministic bin with fewer shots decides nothing. The report lists deterministic bins under `deterministic_bins` with a null z.
 
 1. Resolution: `ba` and `bb` each read the ideal sign at 3 standard errors on at least 6 of their 8 bins. Failure refutes "Tuna-17 realizes the compiled A_5 block map at 21 to 23 CZ"
    (predicted z 17.6 to 44.6).
-2. Pattern: `ba` and `bb` read opposite signs at 3 standard errors in both bins (2 and 6) where their ideal c(y) differ in sign; their selector contrasts agree to
+2. Pattern: `ba` and `bb` read opposite signs at 3 standard errors in both bins (2 and 6) where their ideal c(y) carry opposite signs (`pattern_bins` selects them by the sign of the ideal contrasts); their selector contrasts agree to
    1e-4 by construction (0.5), so only the pattern separates the two cocycles.
 3. Null: the `b0` selector contrast lies within 3 standard errors (0.012) of zero. The reported reference is the first series' coin-free +0.0167 +- 0.0055.
-4. Cocycle-free control: the `xor_ba` selector contrast is negative at 3 standard errors and the `ba` contrast positive at 3 standard errors (predicted -0.57 to -0.60 against +0.17 to +0.22).
+4. Cocycle-free control: the `xor_ba` selector contrast is negative at 3 standard errors and the `ba` contrast positive at 3 standard errors, each with a strict sign, so a zero contrast with zero standard error does not pass (predicted -0.57 to -0.60 against +0.17 to +0.22).
 5. Depth, reported and not decided: the contraction per CZ implied by each primary's readout-corrected visibility, against 0.955 to 0.9654, with the routed CZ and the coin read fraction beside it.
    The correction removes the readout part of the coin factor; the relaxation part is unidentified from these data, so the reading is a lower bound.
 6. Cross-platform: the readout-corrected D(y) of the previous section, at least 7 of 8 bins within 3 combined standard errors of zero for each of `ba`, `bb` and `b0`, against each of ibm_fez and ibm_marrakesh

@@ -174,8 +174,11 @@ both caps, through
 it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
 host process writes, then copies back and receipts each file the command
 wrote there. `ci/runner_image_records.json` binds the record to that
-image and its pins through `ci/runner_image_records.py add`, which refuses
-bytes without a receipt, and gate core-635 checks the ledger. A gate that
+image and its arithmetic pins (`ARITHMETIC_PINS`: numpy, scipy, sympy,
+python-flint, the Qiskit and Perceval stacks and the other packages a replayed
+producer imports; a lint, type or test tool pin leaves the digest in place)
+through `ci/runner_image_records.py add`, which refuses bytes without a
+receipt, and gate core-635 checks the ledger. A gate that
 byte-compares a retained record lists it under `"replays"` in its entry of ci/gates.json,
 and the unmarked pr test `test_every_replayed_record_is_declared_bound_float_free_or_exempt`
 requires each listed record (each file of a listed directory) to be bound in
@@ -477,9 +480,13 @@ build. A replay sets the environment its record names (the caps below, thread
 counts) and runs on the machine whose CPU the record's platform matches:
 - a record with no AVX-512 dispatch, or written under the CI caps
   (`OPENBLAS_CORETYPE=Haswell`, `NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL
-  AVX512_SPR"`, set by `ci/pr_checks.sh` and `ci/run_gates.py`), including the
-  AMD EPYC 7763 (Zen 3) runners, replays on the AVX2 build host, the reference
-  machine;
+  AVX512_SPR"`, both set by `ci/run_gates.py`), including the AMD EPYC 7763
+  (Zen 3) runners, replays on the AVX2 build host, the reference machine.
+  `ci/pr_checks.sh` sets the numpy cap alone and leaves OpenBLAS on its
+  detected kernel, because the forced Haswell kernel of numpy 2.5.4's OpenBLAS
+  0.3.34 segfaults in dgemm on the AMD EPYC 9V74 (Zen 4) runners for a
+  576 x 256 or 2000 x 300 product; a gate whose product reaches that size
+  inherits the fault on those runners;
 - a record from an AMD Zen 4 or Zen 5 runner with AVX-512 dispatch replays on
   a Zen 4 CPU (numpy's AVX-512 dispatch groups resolve the same on both), with
   the record's recorded `OPENBLAS_CORETYPE` set, because OpenBLAS core

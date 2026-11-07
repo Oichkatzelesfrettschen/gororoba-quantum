@@ -147,7 +147,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | mthree | 3.0.0 | Readout sensitivity analysis with explicit calibration and factorization assumptions. |
 | multicomplex | separate/unobserved | Documented algebra candidate: multicomplex numbers C++ extension. Decision: **skip** |
 | multidict | 7.0.0 | SDK/environment infrastructure: Environment support dependency |
-| mypy | 2.4.0 | Pinned static type gate. |
+| mypy | 2.4.1 | Pinned static type gate. |
 | mypy-extensions | 1.1.0 | SDK/environment infrastructure: Type system extensions for programs checked with the mypy type checker. |
 | myst-nb | separate/unobserved | SDK/environment infrastructure: A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser. |
 | myst-parser | 5.1.0 | SDK/environment infrastructure: An extended [CommonMark](https://spec.commonmark.org/) compliant parser, |
@@ -220,7 +220,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pybind11 | 3.1.0 | SDK/environment infrastructure: Environment support dependency |
 | pycparser | 3.11 | SDK/environment infrastructure: C parser in Python |
 | pycurl | 7.48.0 | SDK/environment infrastructure: PycURL -- A Python Interface To The cURL library |
-| pydantic | 2.14.1 | SDK/environment infrastructure: Data validation using Python type hints |
+| pydantic | 2.14.3 | SDK/environment infrastructure: Data validation using Python type hints |
 | pydantic-core | 2.50.1 | SDK/environment infrastructure: Core functionality for Pydantic validation and serialization |
 | pydantic-settings | 2.16.0 | SDK/environment infrastructure: Settings management using Pydantic |
 | pygments | 2.21.0 | SDK/environment infrastructure: Pygments is a syntax highlighting package written in Python. |
@@ -236,7 +236,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pyquafu | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | pyquaternion | 0.9.9 | Scalar quaternion and rotation bookkeeping. |
 | pyspnego | 0.12.4 | SDK/environment infrastructure: Windows Negotiate Authentication Client and Server |
-| pytest | 9.1.1 | Behavioral regressions and mutation checks. |
+| pytest | 9.2.0 | Behavioral regressions and mutation checks. |
 | pytest-xdist | 3.8.0 | CPU-budgeted independent test execution. |
 | python-dateutil | 2.9.0 | SDK/environment infrastructure: Extensions to the standard Python datetime module |
 | python-dotenv | 1.2.4 | SDK/environment infrastructure: Read key-value pairs from a .env file and set them as environment variables |
@@ -309,7 +309,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | roman-numerals | 4.1.0 | SDK/environment infrastructure: Manipulate well-formed Roman numerals |
 | rpds-py | 2026.9.1 | SDK/environment infrastructure: Python bindings to Rust's persistent data structures (rpds) |
 | ruamel-yaml | 0.19.1 | SDK/environment infrastructure: ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order |
-| ruff | 0.17.1 | Pinned lint and format gate. |
+| ruff | 0.17.4 | Pinned lint and format gate. |
 | runningman | 2.3.0 | Execution support used by measurement mitigation; provider submission stays guarded. |
 | rustworkx | 0.18.1 | Coupling graphs, placement and disjoint-support candidates. |
 | sagemath | 10.10 | Exact derivations, Clifford and Albert references through certified convention maps. |
@@ -345,7 +345,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | sympy | 1.14.0 | Exact operator identities and symbolic certificates. |
 | tabulate | 0.10.0 | SDK/environment infrastructure: Pretty-print tabular data |
 | tfga | separate/unobserved | Documented algebra candidate: tensor-framework geometric algebra. Decision: **skip**: no CD content, heavy dependencies |
-| threadpoolctl | 3.7.0 | Inspect and bound native BLAS/OpenMP threads. |
+| threadpoolctl | 3.8.0 | Inspect and bound native BLAS/OpenMP threads. |
 | toolz | 1.1.0 | SDK/environment infrastructure: List processing tools and functional utilities |
 | torch | 2.14.1 | Qualified GPU tensor arithmetic and the octonion package backend. |
 | torch-ga | separate/unobserved | Documented algebra candidate: tensor-framework geometric algebra. Decision: **skip**: no CD content, heavy dependencies |

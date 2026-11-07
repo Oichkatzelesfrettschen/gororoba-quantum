@@ -344,10 +344,11 @@ derivations, and `--check` re-derives the first.
 **Seconds and credits.** The server compiles each iteration for about 10 s (6 iterations, 60 s), and acquiring 5400
 samples at the 4.94 MHz clock and the modeled three-click probabilities of 3.3e-5 to 5.0e-5 takes about 30 s, so
 the job runs under 100 s; the written case states 120 s against the 300 s limit. Credits follow the measured rule,
-1 credit per job plus 1e-06 per billed shot, with the largest iteration's `max_shots` billed
-([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)): 1 + 1.2 = 2.2 credits. An
-iterated job bills its largest iteration's `max_shots` whatever it returns (`qd_platform.charged`; every retained
-iterated `qpu:belenos` job charged 1 + 1e-06 times that budget), so 2.2 credits is the charge, not a ceiling. The
+1 credit per job plus 1e-06 per billed shot, where an iterated job bills the smaller of the shots it used and its
+largest iteration's `max_shots`
+([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)): at most 1 + 1.2 = 2.2 credits.
+Every retained iterated `qpu:belenos` job used more shots than that budget and was charged 1 + 1e-06 times it
+(`qd_platform.charged`), so 2.2 credits is the expected charge as well as the ceiling. The
 primary 200-credit monthly pool covers it.
 
 **Decision rule and falsifier.** With `F_hat` the pooled conditional fidelity over `n` accepted outcomes and

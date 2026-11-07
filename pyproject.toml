@@ -13,9 +13,13 @@ extend-exclude = [
     "results/kaggle/2026-10-31T075059Z-gororoba-aer-cu13-native/kernel/aer-cu13-native.py",
 ]
 
-# Quantum Inspire shares these modules with its pinned Python 3.13 interpreter.
+# The Quantum Inspire and Kaggle GPU interpreters run Python 3.13, which rejects the PEP 758 `except A, B:` that
+# `ruff format` writes at py314; the shared package, the kernel entries and their helpers keep the 3.13 grammar.
 [tool.ruff.per-file-target-version]
 "scripts/qi_*.py" = "py313"
+"scripts/qd_platform.py" = "py313"
+"gororoba_quantum/*.py" = "py313"
+"kaggle_kernel/*.py" = "py313"
 
 [tool.ruff.lint]
 # S101 bans assert: python -O strips it, so a check must raise explicitly to

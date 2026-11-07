@@ -81,6 +81,7 @@ import qi_zero_divisor_cases as zd  # noqa: E402
 import parallel  # noqa: E402
 import pathion_coset_block as pcb  # noqa: E402
 import pathion_kernel_map as pkm  # noqa: E402
+import qi_records  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
 TUNA_SERIES = "pathion_coset_block_tuna_17"
@@ -886,7 +887,7 @@ def bin_contrast(plus: np.ndarray, minus: np.ndarray) -> tuple[np.ndarray, np.nd
 
 def selector_stat(plus: np.ndarray, minus: np.ndarray) -> tuple[float, float]:
     n_plus, n_minus = plus.sum(), minus.sum()
-    p, m = plus[:8].sum() / n_plus, minus[:8].sum() / n_minus
+    p, m = float(plus[:8].sum() / n_plus), float(minus[:8].sum() / n_minus)
     return p - m, math.sqrt(p * (1 - p) / n_plus + m * (1 - m) / n_minus)
 
 
@@ -912,6 +913,7 @@ def register_assignment(shots: dict[str, list[str]]) -> dict[int, tuple[float, f
 
 
 Z_EXACT = 1.0e6
+DETERMINISTIC_MIN_COUNT = math.ceil(-math.log(0.5 * math.erfc(Z_RESOLVE / math.sqrt(2.0))) / math.log(4.0))
 
 
 def z_score(value: Any, error: Any) -> Any:
@@ -920,6 +922,34 @@ def z_score(value: Any, error: Any) -> Any:
     value, error = np.asarray(value, dtype=float), np.asarray(error, dtype=float)
     safe = np.where(error > 0, error, 1.0)
     return np.where(error > 0, value / safe, np.sign(value) * Z_EXACT)
+
+
+def signed_z(c: float, se: float, sign: float, n_min: float = math.inf) -> float:
+    """Contrast c along the ideal sign in standard errors.
+
+    A bin whose sampled selector outcomes are deterministic in both arms has se 0 and decides by an exact sign
+    match: +inf when c carries the ideal sign, -inf when it carries the opposite sign, 0 when c or the ideal sign
+    is zero. A deterministic bin counts only when each arm holds at least DETERMINISTIC_MIN_COUNT shots in it
+    (`n_min` is the smaller arm count): two arms that share one selector probability q give a matching
+    deterministic pair with probability at most max_q q^n (1 - q)^n = 4^-n, and n = DETERMINISTIC_MIN_COUNT is
+    the least n at which that bound falls to the one-sided normal tail of Z_RESOLVE. A deterministic bin below
+    that count decides nothing (0), since a chance run of one outcome is not a resolved contrast."""
+    along = c * sign
+    if se > 0:
+        return along / se
+    if n_min < DETERMINISTIC_MIN_COUNT:
+        return 0.0
+    return math.inf if along > 0 else -math.inf if along < 0 else 0.0
+
+
+def ratio_or_none(value: float, se: float) -> float | None:
+    """value / se for a report, None when se is 0 (a deterministic statistic has no finite z)."""
+    return value / se if se > 0 else None
+
+
+def pattern_bins(ideal_a: np.ndarray, ideal_b: np.ndarray) -> list[int]:
+    """The preregistered pattern bins: those where the two templates' ideal contrasts carry opposite signs."""
+    return [y for y in range(len(ideal_a)) if np.sign(ideal_a[y]) * np.sign(ideal_b[y]) < 0]
 
 
 def control_floor(law: np.ndarray, shots: int) -> float:
@@ -969,6 +999,7 @@ def evaluate(
     templates = manifest["templates"]
     rows: dict[str, dict[str, Any]] = {}
     ideal_c = {n: np.array(t["ideal_c"]) for n, t in templates.items()}
+    along_ideal: dict[str, list[float]] = {}
     assignment = register_assignment(shots)
     ibm = {device: ibm_reference(device) for device in IBM_RECORDS} if references is None else references
     for name, t in templates.items():
@@ -990,7 +1021,13 @@ def evaluate(
         selector, selector_se = selector_stat(plus, minus)
         sign = np.sign(ideal_c[name])
         decided = np.abs(ideal_c[name]) > 0.5
-        z_signed = z_score(c * sign, se)
+        z_raw = [
+            signed_z(
+                float(c[y]), float(se[y]), float(sign[y]), float(min(plus[y] + plus[y + 8], minus[y] + minus[y + 8]))
+            )
+            for y in range(8)
+        ]
+        along_ideal[name] = z_raw
         visibility = float(np.mean(c[decided] * sign[decided]))
         cz = t["cz"]
         statistics: dict[str, Any] = {"raw": contrast_statistics(plus, minus, sign)}
@@ -1006,8 +1043,9 @@ def evaluate(
             "files": replicate_rows,
             "c": [float(x) for x in c],
             "se": [float(x) for x in se],
-            "z_signed": [float(x) for x in z_signed],
-            "bins_with_ideal_sign": int(np.sum(z_signed >= Z_RESOLVE)),
+            "z_signed": [None if math.isinf(z) else float(z) for z in z_raw],
+            "deterministic_bins": [bool(se[y] == 0) for y in range(8)],
+            "bins_with_ideal_sign": int(sum(z >= Z_RESOLVE for z in z_raw)),
             "selector_contrast": selector,
             "selector_se": selector_se,
             "visibility": visibility,
@@ -1020,14 +1058,8 @@ def evaluate(
         if name in PRIMARY:
             rows[name]["nullity_ideal"] = float(ideal_c[name].sum() / 2.0)
     ba, bb, b0, xor = rows["ba"], rows["bb"], rows["b0"], rows["xor_ba"]
-    differing = [y for y in range(8) if ideal_c["ba"][y] != ideal_c["bb"][y]]
-    pattern_z = [
-        min(
-            abs(float(z_score(ba["c"][y], ba["se"][y]))) if ba["c"][y] * ideal_c["ba"][y] > 0 else 0.0,
-            abs(float(z_score(bb["c"][y], bb["se"][y]))) if bb["c"][y] * ideal_c["bb"][y] > 0 else 0.0,
-        )
-        for y in differing
-    ]
+    differing = pattern_bins(ideal_c["ba"], ideal_c["bb"])
+    pattern_z = [max(min(along_ideal["ba"][y], along_ideal["bb"][y]), 0.0) for y in differing]
     cross: dict[str, Any] = {"statistic": CROSS_STATISTIC, "bins_min": CROSS_BINS_MIN, "devices": {}}
     for device, reference in ibm.items():
         per_template: dict[str, Any] = {}
@@ -1058,16 +1090,22 @@ def evaluate(
             "ba": ba["bins_with_ideal_sign"] >= 6,
             "bb": bb["bins_with_ideal_sign"] >= 6,
         },
-        "pattern": {"bins": differing, "z": pattern_z, "resolved": bool(all(z >= Z_RESOLVE for z in pattern_z))},
+        "pattern": {
+            "bins": differing,
+            "z": [None if math.isinf(z) else z for z in pattern_z],
+            "resolved": bool(differing) and all(z >= Z_RESOLVE for z in pattern_z),
+        },
         "null": {
-            "z": float(z_score(b0["selector_contrast"], b0["selector_se"])),
+            "z": ratio_or_none(b0["selector_contrast"], b0["selector_se"]),
             "holds": bool(abs(b0["selector_contrast"]) <= Z_RESOLVE * b0["selector_se"]),
         },
         "cocycle_free": {
-            "xor_z": float(z_score(xor["selector_contrast"], xor["selector_se"])),
-            "ba_z": float(z_score(ba["selector_contrast"], ba["selector_se"])),
+            "xor_z": ratio_or_none(xor["selector_contrast"], xor["selector_se"]),
+            "ba_z": ratio_or_none(ba["selector_contrast"], ba["selector_se"]),
             "resolved": bool(
-                xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
+                xor["selector_contrast"] < 0
+                and ba["selector_contrast"] > 0
+                and xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
                 and ba["selector_contrast"] >= Z_RESOLVE * ba["selector_se"]
             ),
         },
@@ -1098,6 +1136,33 @@ def evaluate(
     }
 
 
+def law_shots(law: np.ndarray, roles: dict[str, int], shots: int) -> list[str]:
+    """Bit strings of the expected counts of a 16-outcome law over (d0, d1, d2, selector), by largest remainder, so
+    the series carries no sampling noise and no random seed."""
+    expected = law / law.sum() * shots
+    counts = np.floor(expected).astype(int)
+    for v in np.argsort(counts - expected)[: shots - counts.sum()]:
+        counts[v] += 1
+    strings: list[str] = []
+    for v, count in enumerate(counts):
+        value = 0
+        for k, key in enumerate(("d0", "d1", "d2", "selector")):
+            value |= (v >> k & 1) << roles[key]
+        strings += [format(value, f"0{NQUBITS}b")] * int(count)
+    return strings
+
+
+def validate_runs(run_dirs: list[Path]) -> None:
+    """Apply the shared Quantum Inspire record rules to each collected batch before it is scored.
+
+    qi_records.read_run checks the receipt, the circuit and job identities and the raw shots against the recorded
+    outcome histogram of a qi-collection-v1 collection; a job that did not complete stops the series."""
+    for run_dir in run_dirs:
+        acquisition = qi_records.read_run(run_dir, str(run_dir))
+        if not acquisition.completed:
+            raise ValueError(f"{run_dir}: a job did not complete: {dict(acquisition.statuses)}")
+
+
 def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> dict[str, Any]:
     """Score collected batches of one series: decisions, per-block statistics, the IBM comparison and the drift rule.
 
@@ -1118,6 +1183,8 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
             shared = fields
         elif fields != shared:
             raise ValueError(f"{run_dir}/cases.json describes a different series")
+        if cases["batch"] in digests:
+            raise ValueError(f"{run_dir}: batch {cases['batch']} appears twice")
         digests[cases["batch"]] = pcs.file_sha256(run_dir / "cases.json")
         for row in cases["circuits"]:
             key = f"{cases['batch']}/{row['file']}"
@@ -1230,23 +1297,15 @@ def self_test() -> str:
             if template == "b0" and offset_b0 and plus:
                 law = np.concatenate([law[:8] * (1 + offset_b0), law[8:] * (1 - offset_b0)])
             roles = manifest["templates"][template]["roles"]
-            # Expected counts by largest remainder: the logic test carries no sampling noise and no random seed.
-            expected = law / law.sum() * SHOTS
-            counts = np.floor(expected).astype(int)
-            for v in np.argsort(counts - expected)[: SHOTS - counts.sum()]:
-                counts[v] += 1
-            strings = []
-            for v, count in enumerate(counts):
-                value = 0
-                for k, key in enumerate(("d0", "d1", "d2", "selector")):
-                    value |= (v >> k & 1) << roles[key]
-                strings += [format(value, f"0{NQUBITS}b")] * int(count)
-            out[rel] = strings
+            out[rel] = law_shots(law, roles, SHOTS)
         return out
 
     honest = evaluate(device(0.5), manifest)
     if not honest["all_decisions_met"]:
         raise RuntimeError(f"an honest device at retention 0.5 fails a decision: {honest['decisions']}")
+    exact = evaluate(device(1.0), manifest)
+    if not exact["all_decisions_met"] or not any(any(r["deterministic_bins"]) for r in exact["templates"].values()):
+        raise RuntimeError(f"a noiseless device leaves a decision unmet or no deterministic bin: {exact['decisions']}")
     implied = honest["templates"]["ba"]["contraction_per_cz_implied"]
     if abs(implied - 0.5 ** (1 / plan["templates"]["ba"]["cz"])) > 2e-3:
         raise RuntimeError(f"a device of retention 0.5 implies {implied} per CZ")
@@ -1299,6 +1358,7 @@ def main() -> int:
     else:
         if args.out is None:
             parser.error("--analyze needs --out")
+        validate_runs(args.analyze)
         args.out.write_text(json.dumps(analyze(args.analyze), indent=1, sort_keys=True) + "\n", encoding="utf-8")
         print(f"wrote {args.out}")
     return 0
