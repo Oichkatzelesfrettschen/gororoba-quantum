@@ -168,15 +168,7 @@ def freeze(job_02: Path, job_03: Path) -> dict[str, Any]:
         "counting_variance": counting,
         "table_noise_variance": slope * slope * 0.25 * sum(counting),
         "offsets": {name: float(value) for name, value in zip(names, offsets, strict=True)},
-        "decision": {
-            "statistic": "R = var(d) / var(d - t) over the repeat's perturbed meshes identical to job-02's",
-            "alpha": ALPHA,
-            "useful_ratio": USEFUL_RATIO,
-            "bootstrap": BOOTSTRAP,
-            "min_meshes": MIN_MESHES,
-            "seed_draw": DRAW,
-            "seed_index": BOOTSTRAP_INDEX,
-        },
+        "decision": decision(),
     }
 
 
@@ -203,9 +195,24 @@ def ratio_reading(d: np.ndarray, t: np.ndarray, generator: np.random.Generator, 
     return {"ratio": observed, "lower": lower, "upper": upper, "reading": verdict}
 
 
+def decision() -> dict[str, Any]:
+    """The decision rule --score applies, as the table records it."""
+    return {
+        "statistic": "R = var(d) / var(d - t) over the repeat's perturbed meshes identical to job-02's",
+        "alpha": ALPHA,
+        "useful_ratio": USEFUL_RATIO,
+        "bootstrap": BOOTSTRAP,
+        "min_meshes": MIN_MESHES,
+        "seed_draw": DRAW,
+        "seed_index": BOOTSTRAP_INDEX,
+    }
+
+
 def table_of(path: Path) -> dict[str, Any]:
+    """The frozen table, refused when its recorded decision is not the rule --score applies."""
     table: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
     models.require(table.get("schema") == "ascella-correction-table-v1", f"{path} is not a correction table")
+    models.require(table.get("decision") == decision(), f"{path} records another decision rule than --score applies")
     return table
 
 

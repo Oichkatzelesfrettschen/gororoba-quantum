@@ -88,3 +88,15 @@ def test_the_mesh_gate_admits_the_same_meshes_and_refuses_swapped_ones(tmp_path:
     swapped = served_run(tmp_path / "swapped", names, [thetas[1], thetas[0], thetas[2]])
     with pytest.raises(ValueError, match="2 of 3 served meshes left job-02's"):
         score.mesh_gate(reference, swapped)
+
+
+def test_a_table_with_another_decision_rule_is_refused(tmp_path: Path) -> None:
+    """--score applies its own rule, so a table whose recorded decision differs (a useful ratio of 20) is refused."""
+    table = {"schema": "ascella-correction-table-v1", "decision": {**score.decision(), "useful_ratio": 20.0}}
+    path = tmp_path / "table.json"
+    path.write_text(json.dumps(table), encoding="utf-8")
+    with pytest.raises(ValueError, match="another decision rule"):
+        score.table_of(path)
+    path.write_text(json.dumps({**table, "decision": score.decision()}), encoding="utf-8")
+    if score.table_of(path)["decision"] != score.decision():
+        raise AssertionError("the matching table was not admitted")

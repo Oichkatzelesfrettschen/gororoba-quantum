@@ -2215,9 +2215,11 @@ same 64 iterations of 32,768 samples in 194 s; the case expects 205 s against th
 ceiling 1.032768 for each run: 1.0 per job plus 32,768 billed shots of one iteration at 1e-6.
 
 **Procedure.** `scripts/ascella_coherence_request.py job-09` writes the case directory and `--body job-09` freezes
-the body against the live command set without sending it; `--preflight RUN` and `--submit RUN APPROVAL` send the
-simulator run, `--mesh-gate` reads it, and the QPU run follows the same commands; `qd_platform.py collect RUN`
-retrieves each. `--score` writes `correction-score-09.json` and the reading script writes
+the body against the live command set without sending it. The simulator rehearsal goes through
+`qd_platform.py submit --platform sim:ascella` on a run directory holding job-09's `cases.json` and `circuit.json`,
+and `ascella_correction_score.py --mesh-gate` reads it; only after the gate passes do
+`ascella_coherence_request.py --preflight RUN` and `--submit RUN APPROVAL`, whose platform is fixed to `qpu:ascella`,
+send the QPU request. `qd_platform.py collect RUN` retrieves each. `--score` writes `correction-score-09.json` and the reading script writes
 `long-horizon-reading-08-09.json`.
 
 **Stopping rule.** A mesh gate that refuses stops the case before the QPU request. A job that errors or is cut short

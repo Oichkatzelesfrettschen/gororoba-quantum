@@ -32,9 +32,10 @@ come from ascella_compilation_reading.x_statistics, as in scripts/ascella_seed_r
 Exploratory, outside the decision: the Spearman correlation of the identical perturbed meshes' block mode-2 fractions
 between the runs, and that of each mesh's z change with the change of its predecessor's L1 heater-phase distance.
 
-The caller names the plan a reading belongs to and the QRNG draw value that seeds it (--plan, --seed-draw,
---seed-index); ci/gates.json carries each retained reading's values. One numpy generator per reading, seeded with that
-value, draws the S relabelings, then the P1 relabelings, then the P2 labelings. The readings with job-08 and the
+The caller names the plan a reading belongs to and the QRNG draw value that seeds it (--plan, and --seed
+qrng:<draw>#<index> through qrng_seeds.add_seed_argument); ci/gates.json carries each retained reading's values. One
+numpy generator per reading, seeded with that value, draws the S relabelings, then the P1 relabelings, then the P2
+labelings. The readings with job-08 and the
 rehearsal take values 56, 58 and 59 of LONG_REPEAT_ORDER_DRAW, whose request consumes values 0..55 and whose power
 record takes value POWER_INDEX; job-08 against job-09, the secondary reading of
 docs/state/plans/ascella-prospective-correction-case.json, takes value 58 of
@@ -48,13 +49,13 @@ s_c^2 (1 - slope^2) plus counting noise at 32,768 samples, each read with POWER_
 replicate takes its own generator spawned, before the map, from value POWER_INDEX of LONG_REPEAT_ORDER_DRAW.
 
 Usage:
-  "$PYTHON" scripts/ascella_long_horizon_reading.py REFERENCE REPEAT OUT --plan PLAN --seed-draw DRAW --seed-index N
-    [--check]
+  "$PYTHON" scripts/ascella_long_horizon_reading.py REFERENCE REPEAT OUT --plan PLAN --seed qrng:DRAW#INDEX [--check]
   "$PYTHON" scripts/ascella_long_horizon_reading.py --power OUT [--check]
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import sys
@@ -73,6 +74,7 @@ import ascella_physical_models as models  # noqa: E402
 import ascella_seed_repeat_reading as seed_repeat  # noqa: E402
 
 import mesh_selection  # noqa: E402
+import qrng_seeds  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 ALPHA = 0.01
@@ -301,19 +303,24 @@ def power() -> dict[str, Any]:
 
 
 def main(argv: list[str]) -> int:
-    check = argv[-1:] == ["--check"]
-    args = argv[:-1] if check else argv
-    if len(args) == 2 and args[0] == "--power":
-        record = power()
-    elif len(args) == 9 and args[3::2] == ["--plan", "--seed-draw", "--seed-index"]:
-        plan, draw, index = args[4], args[6], int(args[8])
-        models.require((ROOT / plan).is_file() and (ROOT / draw).is_file(), f"{plan} or {draw} is not a retained file")
-        record = build(Path(args[0]).resolve(), Path(args[1]).resolve(), plan, draw, index)
+    parser = argparse.ArgumentParser(description="the long-horizon seed-repeat reading (module docstring)")
+    parser.add_argument("paths", nargs="*", help="REFERENCE REPEAT OUT")
+    parser.add_argument("--power", metavar="OUT", help="write the power record")
+    parser.add_argument("--plan", help="the plan the reading belongs to")
+    qrng_seeds.add_seed_argument(parser, "--seed", help="the reading's relabeling seed, qrng:<draw>#<index>")
+    parser.add_argument("--check", action="store_true", help="replay against the retained record")
+    args = parser.parse_args(argv)
+    if args.power is not None and not args.paths and args.plan is None and args.seed is None:
+        record, out = power(), Path(args.power).resolve()
+    elif args.power is None and len(args.paths) == 3 and args.plan is not None and args.seed is not None:
+        models.require((ROOT / args.plan).is_file(), f"{args.plan} is not a retained plan")
+        _, draw, index = qrng_seeds.resolve(args.seed_source)
+        record = build(Path(args.paths[0]).resolve(), Path(args.paths[1]).resolve(), args.plan, draw, index)
+        out = Path(args.paths[2]).resolve()
     else:
-        raise ValueError(f"usage: see the module docstring, not {argv}")
-    out = Path(args[1] if len(args) == 2 else args[2]).resolve()
+        parser.error("give --power OUT, or REFERENCE REPEAT OUT with --plan and --seed")
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
-    if check:
+    if args.check:
         models.replay(json.loads(text), json.loads(out.read_text(encoding="utf-8")), out.name)
         return 0
     models.require(not out.exists() or out.read_text(encoding="utf-8") == text, f"{out} differs from the recomputed")
