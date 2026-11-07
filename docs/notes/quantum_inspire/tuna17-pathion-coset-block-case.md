@@ -246,27 +246,17 @@ A bin whose sampled selector outcomes are deterministic in both arms has standar
    (predicted z 17.6 to 44.6).
 2. Pattern: `ba` and `bb` read opposite signs at 3 standard errors in both bins (2 and 6) where their ideal c(y) carry opposite signs (`pattern_bins` selects them by the sign of the ideal contrasts); their selector contrasts agree to
    1e-4 by construction (0.5), so only the pattern separates the two cocycles.
-3. Null: the `b0` selector contrast lies within 3 standard errors (0.012) of zero at a standard error no worse than twice the design value (0.0039, precision floor below). The reported reference is the first series' coin-free +0.0167 +- 0.0055.
+3. Null: the `b0` selector contrast lies within 3 standard errors (0.012) of zero. The reported reference is the first series' coin-free +0.0167 +- 0.0055.
 4. Cocycle-free control: the `xor_ba` selector contrast is negative at 3 standard errors and the `ba` contrast positive at 3 standard errors, each with a strict sign, so a zero contrast with zero standard error does not pass (predicted -0.57 to -0.60 against +0.17 to +0.22).
 5. Depth, reported and not decided: the contraction per CZ implied by each primary's readout-corrected visibility, against 0.955 to 0.9654, with the routed CZ and the coin read fraction beside it.
    The correction removes the readout part of the coin factor; the relaxation part is unidentified from these data, so the reading is a lower bound.
 6. Cross-platform: the readout-corrected D(y) of the previous section, at least 7 of 8 bins within 3 combined standard errors of zero for each of `ba`, `bb` and `b0`, against each of ibm_fez and ibm_marrakesh
-   separately (both devices must hold); a bin counts only at a combined standard error no worse than twice its design value (precision floor below).
+   separately (both devices must hold).
 7. Drift, a covariate: recorded per batch as in the rule change above; it stops nothing and enters no decision, and the analysis reports whether decision 6 holds under every bracket of the series
    (`drift_covariate.cross_platform_under_each_bracket`, `stable`).
 
-Precision floor (`PRECISION_FACTOR` = 2 in `qi_pathion_coset_block_cases.py`, shared by both analyzers). A null "holds" and a cross-platform bin "within" accept a departure up to 3 standard errors, so a run
-with a larger standard error accepts a wider departure; failure to reject zero is not agreement. Each of the two verdicts therefore also requires the measured standard error to stay within twice its design
-value, the larger of the two RHO_BAND ends of this case's `prediction.json` (`templates.b0.rho_*.selector_se`; `cross_platform.templates.<template>.<device>.rho_*.readout_corrected.se`, which carries the
-IBM replica spread), scaled by the root of the forecast's shots over the run's shots. At the hardware forecast's shots the factor bounds the 3-standard-error acceptance half-width at six design standard errors: 0.023 on the `b0` selector
-(an aligned pair gives 0.5 times the visibility, about 0.16 or more here) and at most 0.44 on a ratio bin (the largest design combined error is 0.074; a wrong label differs by about 1), so the verdict still excludes the effects the rule exists to exclude,
-and a run that reaches the forecast's precision is never refused. The QX twin runs 2048 shots and scales the design by 2.8 (16384-shot circuits) or 5.7 (65536-shot circuits), which widens its bound by the same factor; it is a control of the
-analysis path. A verdict whose precision fails reads `uninformative` (`decisions.null.outcome`; `outcome` of each cross-platform cell, device and total, with `precise` and `bins_within_unfloored` in each cell)
-and leaves `all_decisions_met` false. The resolution, pattern and cocycle-free rules reject zero and need no floor. The analysis reads each batch through `qi_records` (receipt, job and batch identities, raw shots
-against the recorded histogram), rejects a duplicate batch, and writes null for a statistic that is undefined (zero visibility, no readout circuit); `--out` refuses a non-finite number.
-
 Each decision has a refusal in the generator's `--self-test`: a cocycle-free circuit in the `ba` slot, a `b0` selector offset and a device at retention 0.02 fail the corresponding rule, an honest device at retention
-0.5 passes every one (including the comparison with the measured IBM runs), a standard error three times the design reads `uninformative`, and a 0.17 assignment move on a register qubit between brackets is recorded, flagged and corrected without a stop.
+0.5 passes every one (including the comparison with the measured IBM runs), and a 0.17 assignment move on a register qubit between brackets is recorded, flagged and corrected without a stop.
 `tests/scripts/test_qi_pathion_coset_coin.py` scores synthetic series built from the ideal laws (a contracted device, a coin misread, a `bb` slot carrying the `ba` laws, a drifting bracket, a partial series, a short shot
 list and the QX control) and exercises every refusal of `--submit-next`.
 
@@ -304,3 +294,23 @@ another operand and the quarter-turn twin each cost another job for a question t
   two batches of the first series, so a move inside a batch reaches the corrected ratio unseen, and the covariate reports only moves between batches.
 - Residual risk: q8 is the star center and no retained single-qubit record covers q8 beside q2, q4, q11 and q12 at once; the readout assignment above is from the first series' calibration and the series measures its own; the
   model's per-CZ contraction treats every error as depolarizing; the 0.02 flag threshold of the drift covariate is informational.
+
+## Amendments after data (2026-11-07)
+
+The rules above are the preregistration the owner approved on 2026-11-06 and stay as written. These amendments came
+after the coin series ran, from the local review of PR #774; none changes a retained verdict (the coin Tuna-17 null
+reads `fails` and its cross-platform rule `fails` with or without them; the retained standard errors sit within the floor).
+
+- The null (rule 3) and each cross-platform bin also require a standard error no worse than twice its design value.
+  Precision floor (`PRECISION_FACTOR` = 2 in `qi_pathion_coset_block_cases.py`, shared by both analyzers). A null "holds" and a cross-platform bin "within" accept a departure up to 3 standard errors, so a run
+  with a larger standard error accepts a wider departure; failure to reject zero is not agreement. Each of the two verdicts therefore also requires the measured standard error to stay within twice its design
+  value, the larger of the two RHO_BAND ends of this case's `prediction.json` (`templates.b0.rho_*.selector_se`; `cross_platform.templates.<template>.<device>.rho_*.readout_corrected.se`, which carries the
+  IBM replica spread), scaled by the root of the forecast's shots over the run's shots. At the hardware forecast's shots the factor bounds the 3-standard-error acceptance half-width at six design standard errors: 0.023 on the `b0` selector
+  (an aligned pair gives 0.5 times the visibility, about 0.16 or more here) and at most 0.44 on a ratio bin (the largest design combined error is 0.074; a wrong label differs by about 1), so the verdict still excludes the effects the rule exists to exclude,
+  and a run that reaches the forecast's precision is never refused. The QX twin runs 2048 shots and scales the design by 2.8 (16384-shot circuits) or 5.7 (65536-shot circuits), which widens its bound by the same factor; it is a control of the
+  analysis path. A verdict whose precision fails reads `uninformative` (`decisions.null.outcome`; `outcome` of each cross-platform cell, device and total, with `precise` and `bins_within_unfloored` in each cell)
+  and leaves `all_decisions_met` false. The resolution, pattern and cocycle-free rules reject zero and need no floor. The analysis reads each batch through `qi_records` (receipt, job and batch identities, raw shots
+  against the recorded histogram), rejects a duplicate batch, and writes null for a statistic that is undefined (zero visibility, no readout circuit); `--out` refuses a non-finite number.
+- The analysis tests add a run with three times the design standard error, which reads `uninformative`.
+- Wording for any interpretation: a null or cross-platform bin that passes means no disagreement detected at 3
+  standard errors, not agreement; the floor bounds the acceptance half-width but sets no equivalence margin.

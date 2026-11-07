@@ -6,7 +6,7 @@ This is the written case for one `sim:ascella` job followed by one `qpu:ascella`
 
 ## What the fold buys
 
-The fold changes the number of reconfigurations, not the number of samples. A fold level is read as twice a click share, so its binomial variance is L (2 - L) / n against L (1 - L) / n for a block read alone, a factor (2 - L) / (1 - L) of 5 at L = 3/4 and 3.9 at L = 0.6545. Equal per-block error would take about five times the samples per iteration (163,840 against 32,768), above the 156,159 shots per iteration that any retained Ascella job measured; the case uses four times (131,072), which reads each block to within 12 % of the predecessor's standard error, and bills 1.131072 credits against 1.032768. The analysis reports the standard error of each calibrated level by the delta method through the dark subtraction and the efficiency calibration, with the dark and anchor counts included (`level_errors`), not this planning variance. What the fold saves is reconfigurations per block reading: each of the 46 pooled block-item readings comes from two iterations that read two blocks each, where the predecessor spent every iteration on one block, and the freed time inside the 300 s cut pays for the slot swap, the crosstalk arms and the independence arms. The fold is one job on each platform, as the predecessor was, so it saves no runs.
+The fold changes the number of reconfigurations, not the number of samples. A fold level is read as twice a click share, so its binomial variance is L (2 - L) / n against L (1 - L) / n for a block read alone, a factor (2 - L) / (1 - L) of 5 at L = 3/4 and 3.9 at L = 0.6545. Equal per-block error would take about five times the samples per iteration (163,840 against 32,768), above the 156,159 shots per iteration that any retained Ascella job measured; the case uses four times (131,072), which reads each block to within 12 % of the predecessor's standard error, and bills 1.131072 credits against 1.032768. What the fold saves is reconfigurations per block reading: each of the 46 pooled block-item readings comes from two iterations that read two blocks each, where the predecessor spent every iteration on one block, and the freed time inside the 300 s cut pays for the slot swap, the crosstalk arms and the independence arms. The fold is one job on each platform, as the predecessor was, so it saves no runs.
 
 ## Live state
 
@@ -139,3 +139,12 @@ Both jobs of the case ran (header). Local Perceval SLOS runs and the repository 
 - an overall pass probability of the decision chain under mesh spread (the predecessor's `--power` quadrature has no counterpart here; the spread test's power is stated above);
 - the full `sh ci/pr_checks.sh tests` lane (the targeted tests ran under the host interpreter, which differs from the hosted pins);
 - a measurement of the iteration time at 131,072 samples: the budget rests on the retained 3 s per iteration up to 156,159 shots, and the first QPU iterations are the measurement.
+
+## Amendments after data (2026-11-07)
+
+The sections above are the preregistration the owner approved on 2026-11-06 and stay as written. After the jobs ran,
+the local review of PR #774 changed one reported quantity and no decision: the analysis reports the standard error of
+each calibrated level by the delta method through the dark subtraction and the efficiency calibration, with the dark
+and anchor counts included (`level_errors`), in place of the planning variance L (2 - L) / n; every preregistered
+decision uses absolute limits, and the admission verdict (`instrument not admitted`, mirror agreement 9 of 46 over
+0.07 against an allowance of 4) is unchanged.
