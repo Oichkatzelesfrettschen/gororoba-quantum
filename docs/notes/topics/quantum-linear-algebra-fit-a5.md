@@ -86,3 +86,26 @@ instances that fit.
 
 The acceleration lever is classical. `scope.md` records the engine v11 quotient-mode product and closure loops as
 serial (`fiber_rank_v11.py` around lines 861-909 and 1166-1189), which bears on the W8 closure-bound runs.
+
+## Addendum 2026-11-07: the t-space slice ladder
+
+The Iso fiber question moves off the 23-variable blowup chart, which failed in six formulations (ledger A5-070,
+A5-071, A5-174, A5-176, A5-181, A5-205), onto a six-variable test. K2 holds the quadratic relations of F(I)
+(`k2_hilbert.py`), and k[y]/K2 is a five-dimensional domain (A5-058 to A5-060). F(I) = k[y]/K2 therefore holds exactly
+when the analytic spread is 5. That happens exactly when the origin lies on the closure of
+V(J, l1(G), ..., l4(G)) minus V(I) for generic forms l1..l4 in the t-variables. The junk through the origin
+saturates away by the linear form t2 (A5-068). The preregistration and the controls (X+ and X- with k = 2 and 3,
+Iso with k = 3 and 5) live in `docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/`.
+
+The ladder's dominant stage is a saturation, Qk : t2^inf in dp, followed by evaluation at the origin. It falls in the
+standard-basis row of the fit table, so the verdict above applies unchanged. A search of arXiv for 2026-09-01 to
+2026-11-07 returned no quantum algorithm for standard bases, saturation, Macaulay-matrix rank or exact rank over a
+finite field. It ran on 2026-11-07 for quantum together with Groebner, Macaulay matrix, polynomial system, finite
+field, matrix rank or Gaussian elimination. The finite-field result it found, Imran 2610.28368, gives hidden
+parabolic subgroups of GL_n over finite chain rings by Fourier sampling. That is a hidden-subgroup problem rather than
+an elimination problem.
+
+The quantum hardware's part in the ladder is its forms. The ladder decides only for forms generic with respect to a
+possible lower-dimensional E0 and to the exceptional divisor. A form drawn uniformly from the ANU QRNG avoids each
+closed bad set with probability at least 1 - deg/p. Two independent draws at each of two primes raise the confidence
+multiplicatively, at no change to the classical cost.
