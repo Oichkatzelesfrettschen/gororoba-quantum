@@ -66,8 +66,12 @@ needing the coin superposition. No twin separates the over-rotation from the q12
 A twin with the data qubit d1 (the role q12 holds in the 6-CZ blocks) fixed leaves P(s = 0) at 1/2 under the q12 flip
 (section 3), so it separates nothing and is not built; b0 has no such variant, because the first single-qubit run on the
 qubit that starts d0 holds four gates (the data Hadamard mixed with later rotations), so fixing d0 changes the gate
-sequence. The q12 correlation therefore rests on the X-only calibration alone, which measures a terminal-assignment
-context and changes no outcome label.
+sequence. No circuit of the case separates the over-rotation from the q12 flip, so the q12 correlation rests on readout
+data. The coin series' retained brackets already measure it: `c2_q12_bracket.txt` splits the selector's assignment by
+q12's read value in both brackets and both bit orders, and the 0.036 flip is excluded at 5.6 to 18 standard errors
+(differences +0.0057, -0.0027, +0.0003 and -0.0021 against the +-0.034 the flip needs). That check, like the X-only
+calibration of this case, covers the assignment context: a q12 correlation that appears only after the template's CZ and
+X90 schedule stays open, and no outcome label changes.
 
 ## Why simulation cannot answer it
 
@@ -113,6 +117,9 @@ Z = 3 standard errors. The raw counts are read.
 | superposition only | b0's classical-coin twin reads below its base contrast | refuted as modeled: the over-rotation predicts the offset in the twin as well |
 | offset absent | b0's base contrast no longer reads positive | unchanged |
 | any other | unresolved, numbers reported | unchanged |
+
+Under the retained-bracket exclusion of an assignment-level q12 flip, a "zero" outcome reads consistent with the
+over-rotation; the q12 correlation it leaves open is the post-schedule one.
 
 The X-only calibration reports D (selector misassignment with the coin prepared 1 minus 0 at a prepared selector 1, from
 the two matched pairs inside a batch) and G (with q12 prepared 0 minus 1), each as large (>= 0.036 - 3 se) or small
