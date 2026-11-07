@@ -1,0 +1,93 @@
+{
+ "aligned_mean": {
+  "design_reads_follows_design": 0.9842774594647526,
+  "design_reads_follows_mesh": 0.00988519125926779,
+  "mesh_reads_follows_design": 0.009574194218591181,
+  "mesh_reads_follows_mesh": 0.984742734800081,
+  "standard_error": 0.008366666666666666
+ },
+ "fresh_anchor_classification": {
+  "per_mesh": {
+   "anchor ratio follows the mesh": 0.9553,
+   "slot efficiency": 0.0,
+   "unresolved": 0.0447
+  },
+  "slot": {
+   "anchor ratio follows the mesh": 0.0,
+   "slot efficiency": 1.0,
+   "unresolved": 0.0
+  }
+ },
+ "measured_mode_drift": [
+  0.0192,
+  0.0091,
+  0.0189,
+  0.0034,
+  -0.0034,
+  0.0115,
+  -0.0342,
+  -0.0244
+ ],
+ "non_finite": {
+  "measured": 0,
+  "none": 0,
+  "random": 0
+ },
+ "persistence_cutoff": 0.988,
+ "persistence_cutoff_without_platform_differing": 0.9864,
+ "plan_seed_source": {
+  "experiment": "ascella-pathion-mesh-persistence-plan",
+  "flag": "--persistence-plan",
+  "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+  "sources": [
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json#0",
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json#1"
+  ]
+ },
+ "platform_differing": [
+  "a-h-CC",
+  "a-h-NN",
+  "b-f-EE"
+ ],
+ "r_quantiles": {
+  "measured": {
+   "0.001": 0.9867669882940362,
+   "0.01": 0.9901194023556913,
+   "0.05": 0.9924427012419537,
+   "0.5": 0.9956222755357771
+  },
+  "none": {
+   "0.001": 0.9883353071646966,
+   "0.01": 0.9913881275974128,
+   "0.05": 0.9935362305950696,
+   "0.5": 0.9963357668733175
+  },
+  "random": {
+   "0.001": 0.9841420366786333,
+   "0.01": 0.9880058623996145,
+   "0.05": 0.990769184565442,
+   "0.5": 0.9954028330762199
+  }
+ },
+ "r_quantiles_without_platform_differing": {
+  "measured": {
+   "0.001": 0.985315455918563,
+   "0.01": 0.9888127121944836,
+   "0.05": 0.9916264401584317,
+   "0.5": 0.9952678981180935
+  },
+  "none": {
+   "0.001": 0.9877893108671696,
+   "0.01": 0.9908894537073767,
+   "0.05": 0.9930122751403423,
+   "0.5": 0.9960839540452214
+  },
+  "random": {
+   "0.001": 0.9814367757437439,
+   "0.01": 0.9864105450810626,
+   "0.05": 0.9899594404598229,
+   "0.5": 0.9950438017791821
+  }
+ },
+ "replicates": 2000
+}

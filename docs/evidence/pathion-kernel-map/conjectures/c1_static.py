@@ -122,6 +122,8 @@ def fit(task):
         "perm": perm,
         "P": P,
         "x": x,
+        "a": a,
+        "c": c,
         "nfev": sol.nfev,
         "cost": float(sol.cost),
         "train_n": len(train),
@@ -172,7 +174,12 @@ def main():
             txt = f"train level rms {rms_t:.4f}; HELD-OUT level rms {rms_h:.4f}; corr(d_obs, d_model) {corr:+.3f}; model |d| max {abs(dmod).max():.4f}; flags {(abs(dmod) > MIRROR).sum()} (failing flagged {((abs(dmod) > MIRROR) & (abs(d_obs) > MIRROR)).sum()}/9)"
         results[(o["model"], train)] = txt
         print(f"{o['model']:7s} {train:4s} cost {o['cost']:9.1f} nfev {o['nfev']:3d} | {txt}", flush=True)
-    np.savez(HERE / "c1_static.npz", **{f"{o['model']}_{o['train']}": o["P"] for o in out})
+    arrays = {f"{o['model']}_{o['train']}": o["P"] for o in out}
+    # the fitted shifter map of each model, frozen here so a later job's configurations can be scored out of sample
+    for o in out:
+        for part in ("x", "a", "c"):
+            arrays[f"{part}_{o['model']}_{o['train']}"] = np.asarray(o[part])
+    np.savez(HERE / "c1_static.npz", **arrays)
 
 
 if __name__ == "__main__":
