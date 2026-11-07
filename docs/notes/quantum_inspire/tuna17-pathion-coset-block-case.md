@@ -314,3 +314,10 @@ reads `fails` and its cross-platform rule `fails` with or without them; the reta
 - The analysis tests add a run with three times the design standard error, which reads `uninformative`.
 - Wording for any interpretation: a null or cross-platform bin that passes means no disagreement detected at 3
   standard errors, not agreement; the floor bounds the acceptance half-width but sets no equivalence margin.
+- The QX control analyses that the series gate checked before each Tuna-17 submission keep their bytes, since the
+  `series-gate.json` receipts bind them (`results/quantum_inspire/pathion_coset_block_qx_analysis.json`,
+  `pathion_coset_coin_qx_analysis.json`). Their successors under the amended analyzer,
+  `results/quantum_inspire/pathion_coset_block_qx_analysis.v2.json` and `pathion_coset_coin_qx_analysis.v2.json`, keep
+  `qx_control.pass` true, so each gate decision holds under the corrected rules.
+- Derived analyses of this series come from the pinned CI interpreter (ci-py3.14.7); against the build host's
+  /usr/bin/python every verdict, flag and text field agrees and floats differ by at most 1e-12.

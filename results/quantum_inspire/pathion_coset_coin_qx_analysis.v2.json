@@ -1,0 +1,532 @@
+{
+ "all_decisions_met": false,
+ "backend": "QXsinglenodesimulator",
+ "batch_cases_sha256": {
+  "batch-00": "7c0d76bc25648cd7b77a1b3e4994f00e811489828aa2b25d1e80b32a765d5bc6"
+ },
+ "claim_kind": "preregistered emulator control",
+ "complete": true,
+ "decisions": {
+  "cocycle_free": {
+   "ba_z": 26.019875823245634,
+   "resolved": true,
+   "xor_z": null
+  },
+  "cross_platform": {
+   "bins_min": 7,
+   "devices": {
+    "ibm_fez": {
+     "holds": false,
+     "outcome": "not read",
+     "templates": {
+      "b0": {
+       "outcome": "not read",
+       "read": false
+      },
+      "ba": {
+       "outcome": "not read",
+       "read": false
+      },
+      "bb": {
+       "outcome": "not read",
+       "read": false
+      }
+     }
+    },
+    "ibm_marrakesh": {
+     "holds": false,
+     "outcome": "not read",
+     "templates": {
+      "b0": {
+       "outcome": "not read",
+       "read": false
+      },
+      "ba": {
+       "outcome": "not read",
+       "read": false
+      },
+      "bb": {
+       "outcome": "not read",
+       "read": false
+      }
+     }
+    }
+   },
+   "holds": false,
+   "outcome": "not read",
+   "precision_factor": 2.0,
+   "statistic": "readout_corrected"
+  },
+  "null": {
+   "design_se": 0.0220961558734886,
+   "holds": true,
+   "informative": true,
+   "outcome": "holds",
+   "se": 0.022072406086988607,
+   "stopped_series_reference": {
+    "se": 0.005523,
+    "selector_contrast": 0.016663,
+    "z_of_difference": -0.31031941332978535
+   },
+   "z": 0.4350378544098689
+  },
+  "pattern": {
+   "bins": [
+    2,
+    6
+   ],
+   "resolved": true,
+   "z": [
+    null,
+    null
+   ]
+  },
+  "resolution": {
+   "ba": true,
+   "bb": true
+  }
+ },
+ "drift_covariate": {
+  "brackets": {},
+  "cross_platform_under_each_bracket": {},
+  "references": {
+   "flagged": [],
+   "max_abs_delta": 0.0,
+   "pairs": [],
+   "references": [],
+   "threshold": 0.02
+  },
+  "stable": false
+ },
+ "executed_order": {
+  "batch-00": "ba bb b0 xor_ba "
+ },
+ "qx_control": {
+  "arms": {
+   "batch-00/b0.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.043731803357000006
+   },
+   "batch-00/ba.cq": {
+    "floor": 0.03447753481872691,
+    "ok": true,
+    "tvd": 0.040578675843999996
+   },
+   "batch-00/bb.cq": {
+    "floor": 0.035065201636631724,
+    "ok": true,
+    "tvd": 0.043083507368
+   },
+   "batch-00/xor_ba.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.03369140625
+   }
+  },
+  "factor": 2.0,
+  "pass": true
+ },
+ "schema": "qi-pathion-coset-coin-analysis-v1",
+ "templates": {
+  "b0": {
+   "against_rho_band": "not read",
+   "bins_with_ideal_sign": 8,
+   "c": [
+    -1.0,
+    1.0,
+    -0.9914529914529915,
+    0.9917355371900827,
+    -0.993006993006993,
+    1.0,
+    -1.0,
+    1.0
+   ],
+   "coin_read_fraction": 0.50830078125,
+   "contraction_per_cz_implied": null,
+   "cz": 21,
+   "deterministic_bins": [
+    true,
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true
+   ],
+   "nullity_ideal": 0.0,
+   "se": [
+    0.0,
+    0.0,
+    0.008510404487813967,
+    0.008230241284825923,
+    0.006968513022852836,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "selector_contrast": 0.009602332185746854,
+   "selector_se": 0.022072406086988607,
+   "statistics": {
+    "raw": {
+     "c": [
+      -1.0,
+      1.0,
+      -0.9914529914529915,
+      0.9917355371900827,
+      -0.993006993006993,
+      1.0,
+      -1.0,
+      1.0
+     ],
+     "c_se": [
+      0.0,
+      0.0,
+      0.008511026229813408,
+      0.008230803459777078,
+      0.006968853814765127,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "nullity_estimate": 0.003648633090976709,
+     "nullity_se": 0.006891463674562896,
+     "ratio": [
+      -1.0029844401739298,
+      1.0029844401739298,
+      -0.9944119235912467,
+      0.9946953125691868,
+      -0.9959705629699164,
+      1.0029844401739298,
+      -1.0029844401739298,
+      1.0029844401739298
+     ],
+     "ratio_se": [
+      0.0017275624231789246,
+      0.0017275624231789246,
+      0.007595167124132636,
+      0.007357814292235781,
+      0.0062954495843053045,
+      0.0017275624231789246,
+      0.0017275624231789246,
+      0.0017275624231789246
+     ],
+     "visibility": 0.9970244402062585,
+     "visibility_se": 0.001717322664469409
+    }
+   },
+   "visibility": 0.9970244402062585,
+   "visibility_readout_corrected": null,
+   "z_signed": [
+    null,
+    null,
+    116.49892703368579,
+    120.49896265113676,
+    142.49912280431764,
+    null,
+    null,
+    null
+   ]
+  },
+  "ba": {
+   "against_rho_band": "not read",
+   "bins_with_ideal_sign": 8,
+   "c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "coin_read_fraction": 0.5029296875,
+   "contraction_per_cz_implied": null,
+   "cz": 21,
+   "deterministic_bins": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nullity_ideal": 1.999634,
+   "se": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "selector_contrast": 0.4982127529707975,
+   "selector_se": 0.019147391646108635,
+   "statistics": {
+    "raw": {
+     "c": [
+      -1.0,
+      1.0,
+      -1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "c_se": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "nullity_estimate": 2.0,
+     "nullity_se": 0.0,
+     "ratio": [
+      -1.0,
+      1.0,
+      -1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+     ],
+     "ratio_se": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "visibility": 1.0,
+     "visibility_se": 0.0
+    }
+   },
+   "visibility": 1.0,
+   "visibility_readout_corrected": null,
+   "z_signed": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "bb": {
+   "against_rho_band": "not read",
+   "bins_with_ideal_sign": 8,
+   "c": [
+    -0.99375,
+    0.9921875,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    -1.0,
+    1.0
+   ],
+   "coin_read_fraction": 0.48681640625,
+   "contraction_per_cz_implied": null,
+   "cz": 23,
+   "deterministic_bins": [
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "nullity_ideal": 1.999634,
+   "se": [
+    0.006230438136680266,
+    0.007781922583256459,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "selector_contrast": 0.5078584946084685,
+   "selector_se": 0.01900929597490228,
+   "statistics": {
+    "raw": {
+     "c": [
+      -0.99375,
+      0.9921875,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      -1.0,
+      1.0
+     ],
+     "c_se": [
+      0.006230681522677206,
+      0.007782397583108944,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "nullity_estimate": 2.0027391899823908,
+     "nullity_se": 0.0050716681456483064,
+     "ratio": [
+      -0.9954999021717863,
+      0.9939346507532772,
+      1.0017609078458227,
+      1.0017609078458227,
+      1.0017609078458227,
+      1.0017609078458227,
+      -1.0017609078458227,
+      1.0017609078458227
+     ],
+     "ratio_se": [
+      0.005550345950019849,
+      0.006871301651877267,
+      0.0012505409567874282,
+      0.0012505409567874282,
+      0.0012505409567874282,
+      0.0012505409567874282,
+      0.0012505409567874282,
+      0.0012505409567874282
+     ],
+     "visibility": 0.9982421875,
+     "visibility_se": 0.0012461635149192004
+    }
+   },
+   "visibility": 0.9982421875,
+   "visibility_readout_corrected": null,
+   "z_signed": [
+    159.4992162990154,
+    127.49901960407381,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  },
+  "xor_ba": {
+   "against_rho_band": "not read",
+   "bins_with_ideal_sign": 8,
+   "c": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+   ],
+   "coin_read_fraction": 0.49560546875,
+   "contraction_per_cz_implied": null,
+   "cz": 5,
+   "deterministic_bins": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "se": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "selector_contrast": -1.0,
+   "selector_se": 0.0,
+   "statistics": {
+    "raw": {
+     "c": [
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     "c_se": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "nullity_estimate": -4.0,
+     "nullity_se": 0.0,
+     "ratio": [
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0,
+      -1.0
+     ],
+     "ratio_se": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     "visibility": 1.0,
+     "visibility_se": 0.0
+    }
+   },
+   "visibility": 1.0,
+   "visibility_readout_corrected": null,
+   "z_signed": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ]
+  }
+ }
+}
