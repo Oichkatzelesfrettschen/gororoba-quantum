@@ -1816,7 +1816,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/ascella_cz_ensemble_case.py --forecast",
       "name": "core-ascella-cz-ensemble-forecast",
-      "seconds": 720.0,
+      "seconds": 900.0,
       "workers": "all",
       "replays": [
         "results/quandela/cases/ascella_cz_ensemble/forecast.json"

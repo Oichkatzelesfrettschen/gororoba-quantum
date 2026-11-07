@@ -82,7 +82,8 @@ DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T164259Z.json"
 SEED_RULE = (
     "nonzero draw values in index order, repeats skipped: 4 anchor seeds in anchor order, then 10 seeds per ensemble "
     "setting in setting order (seed index s = 1..10, s <= 5 in job-00), then the analysis Monte Carlo seed, then the "
-    "false-alarm study seed; the order keys are the raw values of the next 176 indices"
+    "false-alarm study seed; the order keys are the raw values of the next 176 indices; the three indices after them "
+    "seed the bootstrap of the tomography prediction, the random-map check of the bound and the test fixtures"
 )
 TABLES = {
     "ZX": (("0", "+"), ("0", "-"), ("1", "+"), ("1", "-")),
@@ -105,7 +106,8 @@ MC_TABLES = 100000
 SCORE_LEVEL = 0.95
 BOUND_LOWER_LEVEL = 0.975
 BOUND_UPPER_LEVEL = 0.9875
-FALSE_ALARM_DATASETS = 200
+# 1000 null datasets put the 95 % Clopper-Pearson upper limit of a family rate near 0.01 below 0.02.
+FALSE_ALARM_DATASETS = 1000
 FALSE_ALARM_VARIANT = "source, loss and dark counts"
 # The retained tomography: its two runs and the analysis whose unprojected fit predicts the ensemble's tables.
 TOMOGRAPHY_RUNS = (
@@ -114,6 +116,9 @@ TOMOGRAPHY_RUNS = (
 )
 TOMOGRAPHY_ANALYSIS = "results/quandela/ascella-cz-tomography-analysis.json"
 HOM_READING_POINTS = 1.0
+TOMOGRAPHY_HOM_LABEL = "HOM at which the tomography's job-00 was submitted (its submission.json perfs_at_plan)"
+PREDICTION_REPLICATES = tomo.BOOTSTRAP_REPLICATES
+BOUND_CHECK_MAPS = 20000
 
 
 def require(condition: bool, message: str) -> None:
@@ -213,7 +218,24 @@ def seed_plan() -> dict[str, Any]:
         ]
         for j, job in enumerate(JOBS)
     }
-    return {"anchors": anchors, "ensemble": ensemble, "analysis": analysis, "false_alarm": false_alarm, "keys": keys}
+    tail = first_key + count
+    used = {value for _, value in usable[: after + 2]}
+    extra = []
+    for index in range(tail, tail + 3):
+        require(index < len(values) and values[index] != 0, f"{DRAW} has no nonzero value at index {index}")
+        require(values[index] not in used, f"{DRAW} index {index} repeats a seed already taken")
+        used.add(values[index])
+        extra.append((index, values[index]))
+    return {
+        "anchors": anchors,
+        "ensemble": ensemble,
+        "analysis": analysis,
+        "false_alarm": false_alarm,
+        "keys": keys,
+        "prediction": extra[0],
+        "bound_check": extra[1],
+        "fixture": extra[2],
+    }
 
 
 def ranked(items: Sequence[Any], keys: Sequence[tuple[int, int]]) -> list[Any]:
@@ -342,27 +364,39 @@ def preregistered() -> dict[str, Any]:
         "circuit_params. The five members of an anchor group are labeled in returned order, which proves no "
         "physical chronology; no statistic below depends on that label, since a homogeneity table is invariant "
         "under permuting its rows",
-        "preconditions": "every one of the 120 iterations returns counts and carries at least "
-        f"{MIN_ELIGIBLE} eligible events; otherwise the case is undecided",
+        "preconditions": "both runs complete, and every one of the 120 iterations returns counts and carries at "
+        f"least {MIN_ELIGIBLE} eligible events; otherwise the case is undecided",
         "homogeneity_test": "Pearson chi-square of an R x 4 table of eligible outcome counts against the pooled "
         f"row proportions (columns with no events dropped); Monte Carlo p = (1 + b) / (1 + {MC_TABLES}), b the "
         f"number of {MC_TABLES} tables drawn multinomially from the pooled proportions at the observed row totals "
         "whose statistic reaches the observed one",
-        "rate_test": "exact conditional binomial test of an anchor's eligible events between the jobs: given "
-        "k0 + k1, k0 ~ Binomial(k0 + k1, n0 / (n0 + n1)) with n the summed nb_shots_used, two-sided",
+        "rate_test": "conditional binomial comparison of an anchor's per-shot eligible rate between the jobs: given "
+        "k0 + k1, k0 ~ Binomial(k0 + k1, n0 / (n0 + n1)) with n the summed nb_shots_used, two-sided; this is the "
+        "Poisson-rate form, and under the stopping rule (fixed samples, random shots) its variance ratio is "
+        "1 - p_eligible / p_any_click, about 0.996 at the forecast, so it is slightly conservative",
         "estimate_1_drift": f"per anchor: positions in job-00, positions in job-01, job-00 against job-01 "
         f"(homogeneity) and the rate test; the jobs pool only when all {DRIFT_TESTS} p-values exceed "
-        f"{ALPHA} / {DRIFT_TESTS} and every anchor returns one computed_circuit digest in both jobs",
+        f"{ALPHA} / {DRIFT_TESTS} and every anchor iteration returns a computed_circuit, one digest per anchor across "
+        "both jobs; a missing or empty computed_circuit unpools the jobs",
         "estimate_2_mesh_variance": f"per ensemble setting, homogeneity of its ten seed tables at {ALPHA} / "
-        f"{MESH_TESTS}; the between-seed variance of its correct fraction minus the mean binomial variance is "
-        "reported as the excess",
+        f"{MESH_TESTS} when the jobs pool, else of each job's five seed tables at {ALPHA} / {2 * MESH_TESTS}, so a "
+        "shift between jobs never reads as mesh variance; the between-seed variance of its correct fraction minus the "
+        "mean binomial variance is reported as the excess, and seeds that return one computed_circuit are reported as "
+        "one mesh",
         "estimate_3_scores": f"mean over s of F_T(s) with a two-sided {SCORE_LEVEL} Student-t interval on 9 degrees "
-        "of freedom when the jobs pool, else per job on 4; the same for F'_T",
+        "of freedom when the jobs pool, else per job on 4; the same for F'_T. The seed index s pairs the four "
+        "settings of a table arbitrarily, each setting's replicates being placed by independent order keys; time "
+        "drift between s adds variance the interval carries. The interval's coverage under a non-normal mesh "
+        "distribution is not established",
         "estimate_4_bound": f"L = one-sided {BOUND_LOWER_LEVEL} lower limit of the mean of F_ZX(s) + F_XZ(s) - 1, "
         f"U = the smaller one-sided {BOUND_UPPER_LEVEL} upper limit of F_ZX and F_XZ; reported only when the jobs "
         "pool, as a statement conditional on one process for every setting and one chance of a shot per attempt",
         "estimate_5_tomography": "each ensemble score minus the score that the retained unprojected tomography fit "
-        "predicts for the same settings (forecast.json tomography_prediction), with the interval of estimate 3",
+        "predicts for the same settings (forecast.json tomography_prediction); the interval combines estimate 3's "
+        "standard error with the standard deviation of the prediction over a parametric bootstrap of the tomography "
+        f"runs ({PREDICTION_REPLICATES} replicates, tomo.resampled_rates), at the Student-t quantile of estimate 3; "
+        "the predicted rates are linear images of an unprojected fit and can be negative",
+        "hom": f"each plan's HOM minus the {TOMOGRAPHY_HOM_LABEL}; hom_moved is true beyond {HOM_READING_POINTS} point",
         "monte_carlo_seed": {"draw": DRAW, "index": plan["analysis"][0]},
         "readings": READINGS,
     }
@@ -429,15 +463,20 @@ def table_scores(correct: np.ndarray, eligible: np.ndarray, shots: np.ndarray) -
     return float(rate_correct.sum() / rate_eligible.sum()), float(np.mean(correct / eligible))
 
 
-def map_scores(kraus: np.ndarray) -> dict[str, float]:
-    """Exact rate-weighted and per-input scores of each table, and the process fidelity, of the trace-non-increasing
-    map rho -> K rho K^dagger, the design's check of the Hofmann bound."""
+def map_scores(kraus: np.ndarray | Sequence[np.ndarray]) -> dict[str, float]:
+    """Exact rate-weighted and per-input scores of each table, and the trace-normalized process fidelity, of the
+    trace-non-increasing map rho -> sum_k K_k rho K_k^dagger, the design's check of the Hofmann bound."""
+    operators = [kraus] if isinstance(kraus, np.ndarray) else list(kraus)
+
+    def apply(rho: np.ndarray) -> np.ndarray:
+        return np.asarray(sum(k @ rho @ k.conj().T for k in operators))
+
     out: dict[str, float] = {}
     for table, inputs in TABLES.items():
         correct, eligible = [], []
         for control, target in inputs:
             row = {"input": control + target, "basis": table}
-            output = kraus @ input_density(row["input"]) @ kraus.conj().T
+            output = apply(input_density(row["input"]))
             probabilities = [float(np.real(np.trace(tomo.outcome_projector(table, o) @ output))) for o in range(4)]
             correct.append(probabilities[correct_outcome({**row, "name": table})])
             eligible.append(sum(probabilities))
@@ -449,7 +488,7 @@ def map_scores(kraus: np.ndarray) -> dict[str, float]:
         for j in range(4):
             unit = np.zeros((4, 4), dtype=complex)
             unit[i, j] = 1.0
-            choi += np.kron(unit, kraus @ unit @ kraus.conj().T)
+            choi += np.kron(unit, apply(unit))
     out["process_fidelity"] = float(np.real(choi_vector.conj() @ choi @ choi_vector) / (4 * np.real(np.trace(choi))))
     return out
 
@@ -513,6 +552,7 @@ def drift(runs: Mapping[str, Sequence[Mapping[str, Any]]], streams: Sequence[np.
     """Estimate 1 from per-job iteration tallies in request order."""
     tests: list[dict[str, Any]] = []
     digests: dict[str, dict[str, list[str]]] = {}
+    missing: list[str] = []
     stream = iter(streams)
     for anchor in ANCHORS:
         groups = {job: [t for t in runs[job] if t["setting"] == anchor and t["role"] == "anchor"] for job in JOBS}
@@ -524,16 +564,19 @@ def drift(runs: Mapping[str, Sequence[Mapping[str, Any]]], streams: Sequence[np.
         k = [int(tally_arrays(groups[job])["eligible"].sum()) for job in JOBS]
         n = [int(tally_arrays(groups[job])["shots"].sum()) for job in JOBS]
         tests.append({"anchor": anchor, "test": "eligible rate between jobs", "p": rate_test(k[0], n[0], k[1], n[1])})
-        digests[anchor] = {job: sorted({str(t.get("digest")) for t in groups[job]}) for job in JOBS}
+        digests[anchor] = {job: sorted({t["digest"] for t in groups[job] if t.get("digest")}) for job in JOBS}
+        if any(not t.get("digest") for job in JOBS for t in groups[job]):
+            missing.append(anchor)
     threshold = ALPHA / DRIFT_TESTS
     passed = all(test["p"] > threshold for test in tests)
-    one_mesh_within = {a: all(len(d[job]) == 1 for job in JOBS) for a, d in digests.items()}
-    same_mesh_across = {a: d[JOBS[0]] == d[JOBS[1]] and len(d[JOBS[0]]) == 1 for a, d in digests.items()}
+    one_mesh_within = {a: a not in missing and all(len(d[job]) == 1 for job in JOBS) for a, d in digests.items()}
+    same_mesh_across = {a: one_mesh_within[a] and d[JOBS[0]] == d[JOBS[1]] for a, d in digests.items()}
     return {
         "tests": tests,
         "threshold": threshold,
         "all_pass": passed,
         "computed_circuit_digests": digests,
+        "anchors_missing_computed_circuit": missing,
         "one_mesh_within_each_job": one_mesh_within,
         "same_mesh_across_jobs": same_mesh_across,
         "pooled": passed and all(same_mesh_across.values()),
@@ -549,24 +592,39 @@ def ensemble_groups(runs: Mapping[str, Sequence[Mapping[str, Any]]]) -> dict[str
     return out
 
 
-def mesh_variance(groups: Mapping[str, Sequence[Mapping[str, Any]]], streams: Sequence[np.random.Generator]) -> dict:
-    """Estimate 2."""
+def mesh_variance(
+    groups: Mapping[str, Sequence[Mapping[str, Any]]], streams: Sequence[np.random.Generator], pooled: bool
+) -> dict:
+    """Estimate 2: each setting's ten seeds when the jobs pool, else each job's five, so a shift between the jobs never
+    reads as mesh variance. streams holds 2 * MESH_TESTS generators; the pooled test takes the first MESH_TESTS."""
+    blocks: list[tuple[str, str, list[Mapping[str, Any]]]] = []
+    for name, members in groups.items():
+        if pooled:
+            blocks.append((name, name, list(members)))
+        else:
+            for j, job in enumerate(JOBS):
+                low, high = j * SEEDS_PER_JOB + 1, (j + 1) * SEEDS_PER_JOB
+                blocks.append((name, f"{name} {job}", [t for t in members if low <= t["seed_index"] <= high]))
     rows: dict[str, Any] = {}
-    for (name, members), generator in zip(groups.items(), streams, strict=True):
+    for (setting, label, members), generator in zip(blocks, streams, strict=False):
         table = tally_arrays(members)["eligible"]
         correct = np.asarray([t["eligible"][t["correct_outcome"]] for t in members], dtype=float)
         events = table.sum(axis=1).astype(float)
         fraction = correct / events
         binomial = float(np.mean(fraction * (1 - fraction) / events))
         between = float(np.var(fraction, ddof=1))
-        rows[name] = {
+        rows[label] = {
+            "setting": setting,
             **homogeneity(table, generator),
             "correct_fraction_variance": between,
             "mean_binomial_variance": binomial,
             "excess_variance": between - binomial,
+            "distinct_meshes": len({t.get("digest") for t in members if t.get("digest")}),
+            "seeds": len(members),
         }
-    threshold = ALPHA / MESH_TESTS
+    threshold = ALPHA / len(rows)
     return {
+        "pooled": pooled,
         "settings": rows,
         "threshold": threshold,
         "rejects": sorted(n for n, r in rows.items() if r["p"] <= threshold),
@@ -608,7 +666,9 @@ def score_estimates(groups: Mapping[str, Sequence[Mapping[str, Any]]], pooled: b
             table: {
                 "F": mean_interval(values["F"]),
                 "F_prime": mean_interval(values["F_prime"]),
-                "difference_from_tomography": difference(mean_interval(values["F"]), prediction[table]["F"]),
+                "difference_from_tomography": difference(
+                    mean_interval(values["F"]), prediction[table]["F"], prediction[table]["F_sd"]
+                ),
             }
             for table, values in by_seed.items()
         }
@@ -628,16 +688,28 @@ def score_estimates(groups: Mapping[str, Sequence[Mapping[str, Any]]], pooled: b
     return out
 
 
-def difference(estimate: Mapping[str, Any], predicted: float) -> dict[str, Any]:
-    low, high = estimate["interval"]
-    shifted = [low - predicted, high - predicted]
+def difference(estimate: Mapping[str, Any], predicted: float, predicted_sd: float) -> dict[str, Any]:
+    """Estimate 5: the ensemble mean minus the prediction, its interval at estimate 3's t quantile on the combined
+    standard error of the two independent estimates."""
+    se = math.sqrt(estimate["se"] ** 2 + predicted_sd**2)
+    half = t_quantile(0.5 + SCORE_LEVEL / 2, estimate["df"]) * se
+    centre = estimate["mean"] - predicted
+    shifted = [centre - half, centre + half]
     sign = "contains_zero" if shifted[0] <= 0 <= shifted[1] else ("above_zero" if shifted[0] > 0 else "below_zero")
-    return {"predicted": predicted, "difference": estimate["mean"] - predicted, "interval": shifted, "reading": sign}
+    return {
+        "predicted": predicted,
+        "predicted_sd": predicted_sd,
+        "difference": centre,
+        "se": se,
+        "interval": shifted,
+        "reading": sign,
+    }
 
 
 def analysis_streams(seed: int) -> tuple[list[np.random.Generator], list[np.random.Generator]]:
-    """One SeedSequence per test, drift tests first, so a result does not depend on evaluation order."""
-    children = np.random.SeedSequence(seed).spawn(DRIFT_TESTS + MESH_TESTS)
+    """One SeedSequence per test, drift tests first, then one per per-job mesh test, so a result does not depend on
+    evaluation order or on whether the jobs pool."""
+    children = np.random.SeedSequence(seed).spawn(DRIFT_TESTS + 2 * MESH_TESTS)
     generators = [np.random.default_rng(child) for child in children]
     return generators[:DRIFT_TESTS], generators[DRIFT_TESTS:]
 
@@ -648,7 +720,7 @@ def estimates(runs: Mapping[str, Sequence[Mapping[str, Any]]], seed: int, predic
     groups = ensemble_groups(runs)
     return {
         "estimate_1_drift": first,
-        "estimate_2_mesh_variance": mesh_variance(groups, mesh_streams),
+        "estimate_2_mesh_variance": mesh_variance(groups, mesh_streams, first["pooled"]),
         "scores": score_estimates(groups, first["pooled"], prediction),
     }
 
@@ -657,28 +729,33 @@ def estimates(runs: Mapping[str, Sequence[Mapping[str, Any]]], seed: int, predic
 
 
 @cache
-def tomography_choi() -> tuple[np.ndarray, float]:
-    """The unprojected tomography fit from the two retained runs, and its process fidelity."""
+def tomography_arrays() -> dict[str, np.ndarray]:
+    """Eligible events, samples, shots and job scale of the 144 retained tomography settings in schedule order."""
     loaded = [tomo.load_run(ROOT / run) for run in TOMOGRAPHY_RUNS]
     pool = tomo.pooling(loaded)
     tallies: dict[str, Any] = {}
     for entry in loaded:
         tallies.update(entry["tallies"])
     rows = tomo.schedule()
-    eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
-    shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
-    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
-    choi = tomo.linear_inversion(tomo.absolute_rates(eligible, shots, scale))
+    return {
+        "eligible": np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float),
+        "samples": np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float),
+        "shots": np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float),
+        "scale": np.asarray([pool["scales"][row["job"]] for row in rows]),
+    }
+
+
+@cache
+def tomography_choi() -> tuple[np.ndarray, float]:
+    """The unprojected tomography fit from the two retained runs, and its process fidelity."""
+    a = tomography_arrays()
+    choi = tomo.linear_inversion(tomo.absolute_rates(a["eligible"], a["shots"], a["scale"]))
     return choi, tomo.trace_normalized_fidelity(choi)
 
 
-def tomography_prediction() -> dict[str, Any]:
-    """Estimate 5's reference: the rates the retained fit predicts for the eight settings, and its table scores."""
-    choi, fidelity = tomography_choi()
-    retained = json.loads((ROOT / TOMOGRAPHY_ANALYSIS).read_text(encoding="utf-8"))["process"]["process_fidelity"]
-    require(abs(fidelity - retained) <= TOLERANCE, f"the recomputed fit reads {fidelity}, the retained {retained}")
-    settings: dict[str, Any] = {}
-    out: dict[str, Any] = {"process_fidelity": fidelity, "retained_analysis": TOMOGRAPHY_ANALYSIS}
+def predicted_tables(choi: np.ndarray) -> dict[str, Any]:
+    """Rates a Choi matrix predicts for the eight settings, Tr[(rho^T x E) J], and its F and F' per table."""
+    out: dict[str, Any] = {"rates": {}}
     for table, inputs in TABLES.items():
         correct, eligible = [], []
         for control, target in inputs:
@@ -687,13 +764,76 @@ def tomography_prediction() -> dict[str, Any]:
             rates = [
                 float(np.real(np.trace(np.kron(density, tomo.outcome_projector(table, o)) @ choi))) for o in range(4)
             ]
-            settings[row["name"]] = rates
+            out["rates"][row["name"]] = rates
             correct.append(rates[correct_outcome(row)])
             eligible.append(sum(rates))
         f, f_prime = table_scores(np.asarray(correct), np.asarray(eligible), np.ones(4))
         out[table] = {"F": f, "F_prime": f_prime}
-    out["rates"] = settings
     return out
+
+
+def tomography_prediction() -> dict[str, Any]:
+    """Estimate 5's reference: the rates the retained fit predicts for the eight settings, and its table scores."""
+    choi, fidelity = tomography_choi()
+    retained = json.loads((ROOT / TOMOGRAPHY_ANALYSIS).read_text(encoding="utf-8"))["process"]["process_fidelity"]
+    require(abs(fidelity - retained) <= TOLERANCE, f"the recomputed fit reads {fidelity}, the retained {retained}")
+    point = predicted_tables(choi)
+    index, value = seed_plan()["prediction"]
+    a = tomography_arrays()
+    generator = np.random.default_rng(value)
+    batch = tomo.resampled_rates(a["eligible"], a["samples"], a["shots"], a["scale"], generator, PREDICTION_REPLICATES)
+    replicate = [predicted_tables(tomo.linear_inversion(rates)) for rates in batch]
+    out: dict[str, Any] = {
+        "process_fidelity": fidelity,
+        "retained_analysis": TOMOGRAPHY_ANALYSIS,
+        "rates": point["rates"],
+        "bootstrap": {"replicates": PREDICTION_REPLICATES, "seed": {"draw": DRAW, "index": index}},
+    }
+    for table in TABLES:
+        values = [r[table]["F"] for r in replicate]
+        out[table] = {
+            **point[table],
+            "F_sd": float(np.std(values, ddof=1)),
+            "F_percentile_95": [float(q) for q in np.percentile(values, [2.5, 97.5])],
+        }
+    return out
+
+
+def random_trace_non_increasing_map(generator: np.random.Generator) -> list[np.ndarray]:
+    """Kraus operators of a random CP map on two qubits, scaled so sum K^dagger K <= 1 with a random top eigenvalue in
+    (0, 1]. Half the maps are Ginibre maps of rank 1 to 4; the other half are CZ times a random input filter diag(d)
+    plus a weak random Kraus term, the input-dependent-success regime near the bound."""
+    rank = int(generator.integers(1, 5))
+    kraus = [generator.normal(size=(4, 4)) + 1j * generator.normal(size=(4, 4)) for _ in range(rank)]
+    if generator.uniform() < 0.5:
+        weak = float(generator.uniform(0.0, 0.3))
+        kraus = [tomo.ideal_cz() @ np.diag(generator.uniform(0.0, 1.0, size=4))] + [weak * k for k in kraus]
+    top = float(np.linalg.eigvalsh(sum(k.conj().T @ k for k in kraus)).max())
+    scale = math.sqrt(float(generator.uniform(0.0, 1.0)) / top)
+    return [k * scale for k in kraus]
+
+
+def bound_margins(item: int) -> tuple[float, float]:
+    """(F - (F_ZX + F_XZ - 1), min(F_ZX, F_XZ) - F) of one random map, seeded by its SeedSequence child index."""
+    _, value = seed_plan()["bound_check"]
+    # SeedSequence(value, spawn_key=(item,)) is child `item` of SeedSequence(value).spawn(...).
+    generator = np.random.default_rng(np.random.SeedSequence(value, spawn_key=(item,)))
+    scores = map_scores(random_trace_non_increasing_map(generator))
+    f = scores["process_fidelity"]
+    return f - (scores["F_ZX"] + scores["F_XZ"] - 1), min(scores["F_ZX"], scores["F_XZ"]) - f
+
+
+def bound_check(maps: int = BOUND_CHECK_MAPS) -> dict[str, Any]:
+    """The normalized Hofmann bound on random trace-non-increasing CP maps: the smallest margin of each side."""
+    margins = ordered_map(bound_margins, list(range(maps)), min_items=1)
+    index, _ = seed_plan()["bound_check"]
+    return {
+        "maps": maps,
+        "seed": {"draw": DRAW, "index": index},
+        "least_lower_margin": float(min(m[0] for m in margins)),
+        "least_upper_margin": float(min(m[1] for m in margins)),
+        "violations": sum(1 for m in margins if min(m) < -1e-12),
+    }
 
 
 # ---------------------------------------------------------------- noise forecast
@@ -783,15 +923,16 @@ def false_alarm_dataset(item: tuple[Mapping[str, Mapping[str, Any]], np.random.S
     per_setting, sequence = item
     data_sequence, test_sequence = sequence.spawn(2)
     runs = synthetic_tallies(per_setting, np.random.default_rng(data_sequence))
-    children = test_sequence.spawn(DRIFT_TESTS + MESH_TESTS)
+    children = test_sequence.spawn(DRIFT_TESTS + 2 * MESH_TESTS)
     generators = [np.random.default_rng(child) for child in children]
     first = drift(runs, generators[:DRIFT_TESTS])
-    second = mesh_variance(ensemble_groups(runs), generators[DRIFT_TESTS:])
+    second = mesh_variance(ensemble_groups(runs), generators[DRIFT_TESTS:], first["pooled"])
     return {
         "drift_p": [test["p"] for test in first["tests"]],
         "mesh_p": [row["p"] for row in second["settings"].values()],
         "drift_family_rejects": not first["all_pass"],
         "mesh_family_rejects": bool(second["rejects"]),
+        "pooled": first["pooled"],
     }
 
 
@@ -800,18 +941,25 @@ def false_alarm_study(per_setting: Mapping[str, Mapping[str, Any]], datasets: in
     index, value = seed_plan()["false_alarm"]
     sequences = np.random.SeedSequence(value).spawn(datasets)
     results = ordered_map(false_alarm_dataset, [(per_setting, s) for s in sequences], min_items=1)
+    from scipy.stats import binomtest
+
     drift_p = np.asarray([r["drift_p"] for r in results])
-    mesh_p = np.asarray([r["mesh_p"] for r in results])
-    return {
+    mesh_p = np.asarray([p for r in results for p in r["mesh_p"]])
+    out: dict[str, Any] = {
         "variant": FALSE_ALARM_VARIANT,
         "datasets": datasets,
         "monte_carlo_tables": MC_TABLES,
         "seed": {"draw": DRAW, "index": index},
-        "drift_family_rate": float(np.mean([r["drift_family_rejects"] for r in results])),
-        "mesh_family_rate": float(np.mean([r["mesh_family_rejects"] for r in results])),
         "drift_test_rate_at_unadjusted_alpha": [float(v) for v in np.mean(drift_p <= ALPHA, axis=0)],
-        "mesh_test_rate_at_unadjusted_alpha": [float(v) for v in np.mean(mesh_p <= ALPHA, axis=0)],
+        "mesh_test_rate_at_unadjusted_alpha": float(np.mean(mesh_p <= ALPHA)),
+        "unpooled_datasets": sum(1 for r in results if not r["pooled"]),
     }
+    for family in ("drift", "mesh"):
+        rejects = sum(1 for r in results if r[f"{family}_family_rejects"])
+        interval = binomtest(rejects, datasets).proportion_ci(confidence_level=0.95, method="exact")
+        out[f"{family}_family_rate"] = rejects / datasets
+        out[f"{family}_family_rate_interval"] = [float(interval.low), float(interval.high)]
+    return out
 
 
 def forecast() -> dict[str, Any]:
@@ -840,6 +988,7 @@ def forecast() -> dict[str, Any]:
         "variants": variants,
         "expected_by_setting": expected,
         "tomography_prediction": tomography_prediction(),
+        "bound_check": bound_check(),
         "false_alarm": false_alarm_study(per_setting),
         "settings": per_setting,
     }
@@ -901,6 +1050,30 @@ def check_job(job: str) -> str:
     require(plan["cases_sha256"] == qd_platform.sha256_bytes((out / "cases.json").read_bytes()), f"{job}: stale plan")
     ceiling = PER_JOB_CREDITS + JOB_SHOTS[job] * PRICE_PER_SHOT
     require(abs(plan["credit_ceiling"] - ceiling) < TOLERANCE, f"{job}: the plan's credit ceiling is not {ceiling}")
+    # plan-read.json is a read of the live platform, not a reproducible build; its request-derived fields must name
+    # this request.
+    for key, want in (
+        ("case", job),
+        ("platform", PLATFORM),
+        ("per_job_credits", PER_JOB_CREDITS),
+        ("max_samples", manifest["max_samples"]),
+        ("max_shots", manifest["max_shots"]),
+        ("max_credits", round(ceiling, 6)),
+        ("expected_seconds", float(EXPECTED_SECONDS)),
+    ):
+        require(plan.get(key) == want, f"{job}: plan-read.json {key} reads {plan.get(key)!r}, not {want!r}")
+    require(set(plan["admitted_statuses"]) <= {"available", "running"}, f"{job}: the plan admits other statuses")
+    estimate = json.loads((FAMILY_DIR / ESTIMATE).read_text(encoding="utf-8"))["jobs"][job]
+    inputs = estimate["inputs"]
+    require(sorted(inputs) == sorted(s["name"] for s in settings), f"{job}: {ESTIMATE} names other iterations")
+    values = list(inputs.values())
+    require(
+        (estimate["smallest"], estimate["largest"]) == (min(values), max(values))
+        and abs(estimate["mean"] - sum(values) / len(values)) <= TOLERANCE * max(values),
+        f"{job}: {ESTIMATE} summary disagrees with its inputs",
+    )
+    cap = math.ceil(estimate["largest"] * SHOT_MARGIN / SHOT_QUANTUM) * SHOT_QUANTUM
+    require(estimate["shots_per_iteration"] == cap == JOB_SHOTS[job], f"{job}: the shot cap is not {cap}")
     worst, expected = worst_case_seconds(job), expected_seconds_model(job)
     require(worst <= MAX_DURATION, f"{job}: every iteration at its cap takes {worst:.0f} s, past {MAX_DURATION} s")
     require(expected <= EXPECTED_SECONDS, f"{job}: the modeled {expected:.0f} s pass the {EXPECTED_SECONDS} s bound")
@@ -923,7 +1096,8 @@ def check() -> int:
     require(total <= CASE_CREDIT_CEILING, f"the two jobs' ceilings sum to {total}, past {CASE_CREDIT_CEILING}")
     anchors = [seed_plan()["anchors"][name][1] for name in ANCHORS]
     ensemble = [value for seeds in seed_plan()["ensemble"].values() for _, value in seeds]
-    values = anchors + ensemble + [seed_plan()["analysis"][1], seed_plan()["false_alarm"][1]]
+    values = anchors + ensemble + [seed_plan()[key][1] for key in ("analysis", "false_alarm", "prediction")]
+    values += [seed_plan()[key][1] for key in ("bound_check", "fixture")]
     require(len(set(values)) == len(values) and 0 not in values, "a seed repeats or is zero")
     for line in [check_job(job) for job in JOBS]:
         print(line)
@@ -946,8 +1120,15 @@ def check() -> int:
         least >= MIN_ELIGIBLE, f"the forecast expects {least:.0f} eligible events in a setting, below {MIN_ELIGIBLE}"
     )
     study = retained["false_alarm"]
-    for family in ("drift_family_rate", "mesh_family_rate"):
-        require(study[family] <= 2 * ALPHA, f"the forecast's {family} {study[family]} exceeds twice the level {ALPHA}")
+    for family in ("drift", "mesh"):
+        low, high = study[f"{family}_family_rate_interval"]
+        require(
+            low <= ALPHA and high <= 2 * ALPHA,
+            f"the {family} family's false-alarm rate interval [{low}, {high}] excludes the level {ALPHA} or passes "
+            f"{2 * ALPHA}",
+        )
+    bound = retained["bound_check"]
+    require(bound["violations"] == 0, f"{bound['violations']} random maps violate the normalized Hofmann bound")
     prediction = retained["tomography_prediction"]
     print(
         f"{FAMILY}: tomography fit {prediction['process_fidelity']:.6f} predicts F_ZX {prediction['ZX']['F']:.4f}, "
@@ -1050,8 +1231,10 @@ def load_run(run: Path) -> dict[str, Any]:
     retained = (FAMILY_DIR / str(job) / "cases.json").read_bytes()
     require(record.cases_sha256 == qd_platform.sha256_bytes(retained), f"{run}: cases.json differs from {job}")
     tallies, missing = bind_entries(str(run), manifest["settings"], results.get("iterations") or [])
+    status = results.get("status")
     return {
         "job": job,
+        "status": status.get("status") if isinstance(status, dict) else status,
         "cases_sha256": record.cases_sha256,
         "tallies": tallies,
         "uncounted": missing,
@@ -1119,7 +1302,8 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
 
 
 def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """The preregistered record of two loaded runs: undecided unless every iteration counts its eligible events."""
+    """The preregistered record of two loaded runs: undecided unless both completed and every iteration counts its
+    eligible events."""
     jobs = [entry["job"] for entry in loaded]
     require(sorted(jobs) == sorted(JOBS) and len(set(jobs)) == len(jobs), f"the runs are not both jobs: {jobs}")
     by_job = {entry["job"]: entry["tallies"] for entry in loaded}
@@ -1128,12 +1312,16 @@ def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "schema": "qd-cz-ensemble-analysis-v1",
         "runs": [{"job": e["job"], "cases_sha256": e["cases_sha256"], "counted": len(e["tallies"])} for e in loaded],
         "uncounted": {e["job"]: e["uncounted"] for e in loaded},
+        "job_status": {e["job"]: e.get("status") for e in loaded},
         "eligible_events": {job: [sum(t["eligible"]) for t in tallies] for job, tallies in by_job.items()},
     }
-    complete = all(len(by_job[job]) == ITERATIONS and not short[job] for job in JOBS)
+    completed = all(e.get("status") == "completed" for e in loaded)
+    complete = completed and all(len(by_job[job]) == ITERATIONS and not short[job] for job in JOBS)
     if not complete:
         record["status"] = "undecided"
-        record["reason"] = "an iteration returned no counts or fewer than the preregistered eligible events"
+        record["reason"] = (
+            "a job did not complete, or an iteration returned no counts or fewer than the preregistered eligible events"
+        )
         return record
     retained = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))
     prediction = retained["tomography_prediction"]
@@ -1143,7 +1331,12 @@ def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "perfs_at_plan"
     ]["HOM (%)"]
     homs = {e["job"]: (e["perfs"] or {}).get("HOM (%)") for e in loaded}
-    record["hom_difference_points"] = {job: None if hom is None else hom - tomography_hom for job, hom in homs.items()}
+    differences = {job: None if hom is None else hom - tomography_hom for job, hom in homs.items()}
+    record["hom"] = {
+        "tomography_hom": tomography_hom,
+        "difference_points": differences,
+        "hom_moved": any(d is None or abs(d) > HOM_READING_POINTS for d in differences.values()),
+    }
     return record
 
 

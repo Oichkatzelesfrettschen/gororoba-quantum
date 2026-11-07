@@ -11,6 +11,12 @@ import numpy as np
 import pytest
 
 
+def generators(count: int) -> list[np.random.Generator]:
+    """Independent generators from the case's QRNG fixture value (seed_plan()["fixture"], draw index in SEED_RULE)."""
+    _, value = case.seed_plan()["fixture"]
+    return [np.random.default_rng(child) for child in np.random.SeedSequence(value).spawn(count)]
+
+
 def test_every_setting_has_one_correct_outcome_and_matches_its_permanents() -> None:
     for row in case.base_settings():
         outcome = case.correct_outcome(row)
@@ -56,7 +62,7 @@ def test_schedule_holds_anchor_positions_balance_and_seed_identity(job: str) -> 
 
 
 def test_homogeneity_separates_one_law_from_two() -> None:
-    generator = np.random.default_rng(7)
+    generator = generators(1)[0]
     same = np.asarray([[900, 30, 40, 30]] * 5)
     split = np.asarray([[900, 30, 40, 30]] * 4 + [[700, 230, 40, 30]])
     held = case.homogeneity(same, generator, tables=2000)
@@ -99,7 +105,7 @@ def synthetic_runs(ensemble_law: dict[str, list[int]] | None = None) -> dict[str
 def test_drift_reads_only_the_anchor_repeats(monkeypatch: pytest.MonkeyPatch) -> None:
     """An anchor setting's ensemble iterations, served by other meshes, never enter its drift tests."""
     monkeypatch.setattr(case, "MC_TABLES", 2000)
-    streams = [np.random.default_rng(k) for k in range(case.DRIFT_TESTS)]
+    streams = generators(case.DRIFT_TESTS)
     moved = synthetic_runs({name: [1000, 1000, 0, 0] for name in case.ANCHORS})
     result = case.drift(moved, streams)
     if not result["pooled"] or not all(test["p"] > result["threshold"] for test in result["tests"]):
@@ -115,7 +121,7 @@ def test_drift_unpools_on_a_recalibrated_anchor(monkeypatch: pytest.MonkeyPatch)
     for t in runs[case.JOBS[1]]:
         if t["role"] == "anchor" and t["setting"] == case.ANCHORS[0]:
             t["digest"] = "recompiled"
-    result = case.drift(runs, [np.random.default_rng(k) for k in range(case.DRIFT_TESTS)])
+    result = case.drift(runs, generators(case.DRIFT_TESTS))
     if result["pooled"] or result["same_mesh_across_jobs"][case.ANCHORS[0]]:
         raise AssertionError("an anchor served by another mesh in job-01 still pools the jobs")
 
@@ -123,7 +129,7 @@ def test_drift_unpools_on_a_recalibrated_anchor(monkeypatch: pytest.MonkeyPatch)
 def test_scores_and_bound_follow_the_rate_weighting() -> None:
     runs = synthetic_runs()
     groups = case.ensemble_groups(runs)
-    prediction = {table: {"F": 0.9} for table in case.TABLES}
+    prediction = {table: {"F": 0.9, "F_sd": 0.0} for table in case.TABLES}
     scores = case.score_estimates(groups, True, prediction)["pooled"]
     for table in case.TABLES:
         f = scores["tables"][table]["F"]
@@ -185,8 +191,55 @@ def test_a_short_iteration_leaves_the_case_undecided() -> None:
     runs = synthetic_runs()
     runs[case.JOBS[0]][7]["eligible"] = [100, 50, 0, 0]
     loaded = [
-        {"job": job, "cases_sha256": "0" * 64, "tallies": runs[job], "uncounted": 0, "perfs": None} for job in case.JOBS
+        {
+            "job": job,
+            "cases_sha256": "0" * 64,
+            "tallies": runs[job],
+            "uncounted": 0,
+            "perfs": None,
+            "status": "completed",
+        }
+        for job in case.JOBS
     ]
-    record = case.summarize(loaded)
-    if record["status"] != "undecided":
+    if case.summarize(loaded)["status"] != "undecided":
         raise AssertionError("an iteration below the eligible floor still decides the case")
+    runs[case.JOBS[0]][7]["eligible"] = [1800, 200, 0, 0]
+    loaded[1] = {**loaded[1], "status": "canceled"}
+    if case.summarize(loaded)["status"] != "undecided":
+        raise AssertionError("a canceled job still decides the case")
+
+
+def test_a_missing_computed_circuit_unpools_the_jobs(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(case, "MC_TABLES", 2000)
+    runs = synthetic_runs()
+    for job in case.JOBS:
+        for t in runs[job]:
+            if t["role"] == "anchor":
+                t["digest"] = None
+    result = case.drift(runs, generators(case.DRIFT_TESTS))
+    if result["pooled"] or sorted(result["anchors_missing_computed_circuit"]) != sorted(case.ANCHORS):
+        raise AssertionError("anchors without a computed_circuit still pool the jobs")
+
+
+def test_unpooled_jobs_test_mesh_variance_per_job(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A shift between the jobs, with five identical meshes in each, rejects nothing once the jobs are unpooled."""
+    monkeypatch.setattr(case, "MC_TABLES", 2000)
+    runs = synthetic_runs()
+    for t in runs[case.JOBS[1]]:
+        if t["role"] == "ensemble":
+            t["eligible"] = [1500 if k == t["correct_outcome"] else 0 for k in range(4)]
+            t["eligible"][(t["correct_outcome"] + 1) % 4] = 500
+    groups = case.ensemble_groups(runs)
+    streams = generators(2 * case.MESH_TESTS)
+    pooled = case.mesh_variance(groups, streams, True)
+    split = case.mesh_variance(groups, generators(2 * case.MESH_TESTS), False)
+    if not pooled["rejects"] or split["rejects"] or len(split["settings"]) != 2 * case.MESH_TESTS:
+        raise AssertionError("a between-job shift reads as mesh variance in the per-job test")
+
+
+def test_estimate_5_widens_with_the_prediction_uncertainty() -> None:
+    estimate = case.mean_interval([0.90, 0.91, 0.89, 0.90, 0.92, 0.88, 0.90, 0.91, 0.89, 0.90])
+    exact = case.difference(estimate, 0.88, 0.0)
+    noisy = case.difference(estimate, 0.88, 0.02)
+    if exact["reading"] != "above_zero" or noisy["reading"] != "contains_zero":
+        raise AssertionError(f"the prediction's uncertainty does not widen the difference: {exact}, {noisy}")

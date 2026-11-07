@@ -11,12 +11,12 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "95f5cb602a29154cf1145103d744725b3ee52ec083abbf2ed1eaf6ec1b1e76f2",
+ "body_sha256": "4518eb4afa340c738b4fc922c90d7a3ed4a445532b0b4e17afc1476297ad76c6",
  "case": "job-01",
- "cases_sha256": "65c958eba3ad98eba7cb4faa028a513840af7a4a28bb7e7391fa25ccd8729bb7",
+ "cases_sha256": "1e49bfdd53777e27b4055f6b962d8f612eaeb6c3d15fbeff838ff1463e98a2fd",
  "credit_ceiling": 1.4,
  "estimated_credits": 1.4,
- "estimated_shots": 11728650,
+ "estimated_shots": 11793960,
  "expected_seconds": 220.0,
  "max_credits": 1.4,
  "max_samples": 240000,
@@ -26,21 +26,21 @@
  "perfs_at_plan": {
   "Clock (MHz)": 13.33,
   "Dark counts (detection/s)": [
-   187.0,
-   93.0,
-   89.0,
-   92.0,
-   85.0,
-   122.0,
-   96.0,
-   101.0,
-   249.0,
-   289.0,
-   118.0,
-   145.0
+   176.0,
+   99.0,
+   119.0,
+   88.0,
+   84.0,
+   115.0,
+   97.0,
+   108.0,
+   310.0,
+   322.0,
+   114.0,
+   153.0
   ],
-  "HOM (%)": 88.98,
-  "Transmittance (%)": 5.57,
+  "HOM (%)": 88.46,
+  "Transmittance (%)": 5.54,
   "g2 (%)": 2.0
  },
  "platform": "qpu:ascella",
@@ -76,7 +76,7 @@
     "availability": 92.33
    },
    "2026-11-07": {
-    "availability": 92.77000000000001
+    "availability": 91.94
    }
   },
   "status": "running",

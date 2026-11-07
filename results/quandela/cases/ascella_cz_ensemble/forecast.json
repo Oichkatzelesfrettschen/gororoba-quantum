@@ -1,4 +1,14 @@
 {
+ "bound_check": {
+  "least_lower_margin": 2.1536483837070186e-05,
+  "least_upper_margin": 1.4242774924344559e-05,
+  "maps": 20000,
+  "seed": {
+   "draw": "docs/evidence/anu_qrng/draw-2026-11-07T164259Z.json",
+   "index": 263
+  },
+  "violations": 0
+ },
  "expected_by_setting": {
   "in-+0-XZ": {
    "eligible_events_per_iteration": 974.8878408411307,
@@ -34,42 +44,42 @@
   }
  },
  "false_alarm": {
-  "datasets": 200,
-  "drift_family_rate": 0.005,
+  "datasets": 1000,
+  "drift_family_rate": 0.007,
+  "drift_family_rate_interval": [
+   0.0028188587596205254,
+   0.014369194978918656
+  ],
   "drift_test_rate_at_unadjusted_alpha": [
-   0.02,
-   0.025,
+   0.009,
+   0.017,
+   0.011,
+   0.009,
+   0.013,
+   0.013,
+   0.003,
+   0.007,
+   0.011,
+   0.01,
+   0.012,
+   0.007,
    0.01,
    0.005,
-   0.015,
-   0.03,
-   0.005,
-   0.0,
-   0.02,
-   0.005,
-   0.02,
-   0.005,
-   0.015,
-   0.005,
-   0.01,
-   0.0
+   0.004,
+   0.008
   ],
-  "mesh_family_rate": 0.01,
-  "mesh_test_rate_at_unadjusted_alpha": [
-   0.02,
-   0.015,
-   0.01,
-   0.005,
-   0.015,
-   0.0,
-   0.01,
-   0.01
+  "mesh_family_rate": 0.009,
+  "mesh_family_rate_interval": [
+   0.004123395660342473,
+   0.017015783069894548
   ],
+  "mesh_test_rate_at_unadjusted_alpha": 0.013282025819265145,
   "monte_carlo_tables": 100000,
   "seed": {
    "draw": "docs/evidence/anu_qrng/draw-2026-11-07T164259Z.json",
    "index": 85
   },
+  "unpooled_datasets": 7,
   "variant": "source, loss and dark counts"
  },
  "read": {
@@ -503,11 +513,28 @@
  "tomography_prediction": {
   "XZ": {
    "F": 0.8822651873563385,
-   "F_prime": 0.8856727955025254
+   "F_percentile_95": [
+    0.858735510436435,
+    0.9076393155130658
+   ],
+   "F_prime": 0.8856727955025254,
+   "F_sd": 0.011992479569850851
   },
   "ZX": {
    "F": 0.8878397587566252,
-   "F_prime": 0.8922121007175684
+   "F_percentile_95": [
+    0.8660251834045525,
+    0.9109778554194434
+   ],
+   "F_prime": 0.8922121007175684,
+   "F_sd": 0.011842178426106631
+  },
+  "bootstrap": {
+   "replicates": 500,
+   "seed": {
+    "draw": "docs/evidence/anu_qrng/draw-2026-11-07T164259Z.json",
+    "index": 262
+   }
   },
   "process_fidelity": 0.8493279646017844,
   "rates": {
