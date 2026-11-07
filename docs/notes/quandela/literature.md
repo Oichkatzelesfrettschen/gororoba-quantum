@@ -1413,3 +1413,21 @@ CROSS floor sin^2(alpha1 + alpha2) of the MZIs on it.
     counting-noise TVD floor near 0.1 % at its rate, and source 18 reports a
     reproducibility floor of 0.9998 amplitude fidelity between repeats of one
     unitary.
+
+## Source, demultiplexer and linear-optics references
+
+Nine further references cover the quantum-dot photon source behind Ascella's source-connected modes, the n-photon
+Fock-space law of an interferometer and a published two-register postselected gate on Belenos. Each note states its
+reading scope; none of the PDFs is redistributable, and the same bytes sit in the private documents repository.
+
+| Reference | Note | Relevance |
+|---|---|---|
+| Loredo et al., Boson Sampling with single-photon Fock states from a bright solid-state source (arXiv 1603.00054) | [note](../papers/1603.00054.md) | passive demultiplexer scaling and the two-photon coincidence law with partial indistinguishability, Eq. (1) |
+| Lenzini et al., Active demultiplexing of single-photons from a solid-state source (arXiv 1611.02294) | [note](../papers/1611.02294.md) | active demultiplexer scaling with photon number |
+| Ollivier et al., Reproducibility of high-performance quantum dot single-photon sources (arXiv 1910.08863) | [note](../papers/1910.08863.md) | source-to-source spread of indistinguishability and brightness |
+| Pont et al., Quantifying n-photon indistinguishability with a cyclic integrated interferometer (arXiv 2201.13333) | [note](../papers/2201.13333.md) | n-photon indistinguishability is not fixed by the two-photon HOM visibility |
+| Pollet et al., Near-identical photons from distant quantum dot-cavity devices (arXiv 2604.25615) | [note](../papers/2604.25615.md) | remote-source indistinguishability of 88 % |
+| Tully et al., Fixed-order postselected CHSH reference acquisition on Belenos (arXiv 2608.18153) | [note](../papers/2608.18153.md) | two 8-mode registers, one photon each, postselected controlled-Z with ideal success 1/9 |
+| Scheel, Permanents in linear optical networks (arXiv quant-ph/0406127) | [note](../papers/quant-ph-0406127.md) | Fock-state matrix elements as permanents, Eqs. (10) and (14) |
+| Aaronson and Arkhipov, The Computational Complexity of Linear Optics (arXiv 1011.3245) | [note](../papers/1011.3245.md) | the permanent model of n identical photons (abstract only) |
+| Knill, Laflamme and Milburn, Efficient Linear Optics Quantum Computation (arXiv quant-ph/0006088) | [note](../papers/quant-ph-0006088.md) | dual-rail encoding and the absence of deterministic two-qubit linear-optical gates |
