@@ -13,17 +13,36 @@
   "state": "active",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The owner chose the hybrid successor ledger on 2026-10-30 after the adversarial review; the caps stay in the gate environment until the native-baselines-and-switch step lands."
+    "note": "The owner chose the hybrid successor ledger on 2026-10-30 after the adversarial review, and on 2026-11-06 ruled that both caps leave every lane and the ledger at once; the comparator and native baselines follow."
   },
   "scope": "ci/runner_image_records.py and its ledger, ci/replay_check.py, the numeric-stack probe of ci/run_gates.py, the replay declarations of ci/gates.json, scripts/n21_dose_decisions.py diagnostics, ci/pr_checks.sh and the ci.yml and null-shards.yml workflows. Retained record bytes stay unchanged.",
   "owner": "repository maintainer",
-  "next_action": "Freeze the v1 ledger digest on its recorded arithmetic environment.",
+  "next_action": "Rebind the ledger natively on a Haswell-core CPU, then classify every replay root and build the cross-identity comparator.",
   "steps": [
     {
       "id": "freeze-v1-ledger-digest",
-      "state": "doing",
+      "state": "done",
       "action": "Make ci/runner_image_records.py hash the v1 ledger's recorded arithmetic environment instead of the live gate environment, so the ledger digest and gate core-635 survive the removal of OPENBLAS_CORETYPE and NPY_DISABLE_CPU_FEATURES from run_gates.environment_for.",
-      "acceptance": "Fails if `runner_image_records.py id` changes or raises after both caps leave environment_for, or if core-635 fails on main."
+      "acceptance": "Fails if `runner_image_records.py id` changes or raises after both caps leave environment_for, or if core-635 fails on main.",
+      "reason": "The ledger declares its arithmetic in LEDGER_ARITHMETIC (7905d6c85), now free of both caps.",
+      "receipts": [
+        {
+          "result": "LEDGER_ARITHMETIC holds only thread and loader variables, and the gate environment no longer moves the ledger digest; test_native_numeric_path passes on this tree and flags all eight former cap sites on main's.",
+          "observed_at": "2026-11-07T03:52:34+00:00",
+          "revision": "f24598d6f7c2ebf0cec6c2b09fa8d81208f949c6",
+          "evidence": [
+            {
+              "ref": "ci/runner_image_records.py",
+              "sha256": "340c0efd146e40be30a12b9c12ef42b9ea940757cecca9b9837f0abbc62ea202"
+            },
+            {
+              "ref": "tests/ci/test_native_numeric_path.py",
+              "sha256": "a35a3f69133f288ce0492b04451b7251f7e2ab54f2b66bc0dbf5a10dd267ba05"
+            }
+          ],
+          "scope_sha256": "2647828e2f9bf180463cdb27283ad5ef50d9f8f829e186ecb6ad14a130775f74"
+        }
+      ]
     },
     {
       "id": "replay-root-inventory",
@@ -57,9 +76,10 @@
     },
     {
       "id": "native-baselines-and-switch",
-      "state": "todo",
+      "state": "doing",
       "action": "Write native baselines with receipts at new paths, switch gate declarations and the successor ledger in one change, remove both caps from ci/run_gates.py, ci/pr_checks.sh and the workflows (branch ci/openblas-native-kernel), and report per-identity coverage in each audit.",
-      "acceptance": "Fails if a nightly audit reports a skipped replay as passed, or the v1 ledger records lose their historical gate."
+      "acceptance": "Fails if a nightly audit reports a skipped replay as passed, or the v1 ledger records lose their historical gate.",
+      "reason": "Owner ruling 2026-11-06: both caps left ci/run_gates.py, ci/pr_checks.sh, the workflows and LEDGER_ARITHMETIC ahead of the comparator; the ledger rebinds natively on a Haswell-core CPU."
     }
   ]
 }
