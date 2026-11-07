@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from typing import Any
 
 import ascella_cz_ensemble_case as case
@@ -219,6 +220,30 @@ def test_a_missing_computed_circuit_unpools_the_jobs(monkeypatch: pytest.MonkeyP
     result = case.drift(runs, generators(case.DRIFT_TESTS))
     if result["pooled"] or sorted(result["anchors_missing_computed_circuit"]) != sorted(case.ANCHORS):
         raise AssertionError("anchors without a computed_circuit still pool the jobs")
+    settings, entries = manifest_entries(case.JOBS[0])
+    for entry in entries:
+        entry["result_fields"]["computed_circuit"] = "  "
+    tallies, _ = case.bind_entries("run", settings, entries)
+    if any(t["digest"] is not None for t in tallies):
+        raise AssertionError("an empty computed_circuit becomes a mesh digest")
+
+
+def test_run_status_reads_the_retained_tomography_records() -> None:
+    for run in case.TOMOGRAPHY_RUNS:
+        results = json.loads((case.ROOT / run / "results.json").read_text(encoding="utf-8"))
+        if case.run_status(results) != "completed":
+            raise AssertionError(f"{run}: run_status misreads a completed job")
+    if case.run_status({"status": "completed"}) is not None or case.run_status({}) is not None:
+        raise AssertionError("run_status accepts a status outside status.status")
+
+
+def test_conditional_tables_keep_both_margins() -> None:
+    table = np.asarray([[900, 30, 0, 12], [880, 41, 3, 9], [910, 25, 1, 15]])
+    drawn = case.conditional_tables(table, generators(1)[0], 500)
+    if (drawn.sum(axis=2) != table.sum(axis=1)).any() or (drawn.sum(axis=1) != table.sum(axis=0)).any():
+        raise AssertionError("a conditional table moves a row or column total")
+    if (drawn < 0).any() or len({d.tobytes() for d in drawn}) < 100:
+        raise AssertionError("the conditional tables are negative or barely vary")
 
 
 def test_unpooled_jobs_test_mesh_variance_per_job(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -11,9 +11,9 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "4518eb4afa340c738b4fc922c90d7a3ed4a445532b0b4e17afc1476297ad76c6",
+ "body_sha256": "bd186a444186ecdfb7ae7b875fbc90260c3afa4f9826d07d34fbfb30fb8bfcf5",
  "case": "job-01",
- "cases_sha256": "1e49bfdd53777e27b4055f6b962d8f612eaeb6c3d15fbeff838ff1463e98a2fd",
+ "cases_sha256": "3fb95e77386981d256152654bb7a74334c71f32e6ab0281da580873830ec5580",
  "credit_ceiling": 1.4,
  "estimated_credits": 1.4,
  "estimated_shots": 11793960,
@@ -76,7 +76,7 @@
     "availability": 92.33
    },
    "2026-11-07": {
-    "availability": 91.94
+    "availability": 90.92
    }
   },
   "status": "running",

@@ -51,29 +51,29 @@
    0.014369194978918656
   ],
   "drift_test_rate_at_unadjusted_alpha": [
-   0.009,
-   0.017,
-   0.011,
-   0.009,
-   0.013,
-   0.013,
-   0.003,
    0.007,
+   0.017,
+   0.01,
+   0.009,
    0.011,
    0.01,
+   0.003,
+   0.007,
+   0.009,
+   0.008,
    0.012,
    0.007,
    0.01,
-   0.005,
+   0.003,
    0.004,
    0.008
   ],
-  "mesh_family_rate": 0.009,
+  "mesh_family_rate": 0.007,
   "mesh_family_rate_interval": [
-   0.004123395660342473,
-   0.017015783069894548
+   0.0028188587596205254,
+   0.014369194978918656
   ],
-  "mesh_test_rate_at_unadjusted_alpha": 0.013282025819265145,
+  "mesh_test_rate_at_unadjusted_alpha": 0.01079940417080437,
   "monte_carlo_tables": 100000,
   "seed": {
    "draw": "docs/evidence/anu_qrng/draw-2026-11-07T164259Z.json",

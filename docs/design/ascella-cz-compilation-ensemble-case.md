@@ -127,14 +127,15 @@ Preconditions, each a refusal when it fails:
 
 Estimates, the anchor iterations entering estimate 1 alone:
 
-1. **Drift and job effect.** For each anchor, three Monte Carlo multinomial homogeneity tests of its outcome tables,
-   each with 100 000 tables drawn from the pooled table at the observed eligible counts: positions inside job-00,
+1. **Drift and job effect.** For each anchor, three Monte Carlo homogeneity tests of its outcome tables, each with
+   100 000 tables drawn uniformly over the arrangements with the observed row and column totals (sequential
+   hypergeometric draws, the exact conditional null): positions inside job-00,
    positions inside job-01, and job-00 against job-01. A fourth test per anchor compares its eligible rate between
    the jobs (the conditional binomial comparison of per-shot rates, the Poisson-rate form; because each iteration
    stops at its samples and its shots are random, its variance ratio is 1 - p_eligible / p_any_click, about 0.996 at
    the forecast, so it is slightly conservative rather than exact). The two jobs pool only when all 16 tests pass at
    the 0.01 level after a Bonferroni factor of 16. When an anchor returns more than one `computed_circuit` digest,
-   different digests in the two jobs, or none, a recalibration or a missing identity leaves the jobs unpooled, and
+   different digests in the two jobs, or a missing or empty one, a recalibration or a missing identity leaves the jobs unpooled, and
    they are reported separately.
 2. **Mesh variance.** For each ensemble setting, a Monte Carlo multinomial homogeneity test of its ten seed outcome
    tables as in estimate 1, at the 0.01 level after a Bonferroni factor of 8; when estimate 1 leaves the jobs
@@ -155,7 +156,9 @@ Estimates, the anchor iterations entering estimate 1 alone:
 5. **Comparison with the tomography.** The build recomputes the retained unprojected tomography fit from the two
    retained runs and predicts from it the eligible and correct rates of the eight ensemble settings, hence its own
    rate-weighted scores F_ZX^tomo and F_XZ^tomo. A parametric bootstrap of the two tomography runs (500 replicates,
-   the resampling of the tomography's own interval) gives each prediction a standard deviation. Each ensemble score
+   the resampling of the tomography's own interval) gives each prediction a standard deviation; it carries the shot
+   noise of the 144 tomography tables only, and leaves out the spread among the tomography's own meshes on purpose,
+   since that spread is what this comparison exists to expose. Each ensemble score
    is compared with its prediction by the difference and an interval at estimate 3's Student-t quantile on the
    combined standard error of the two; the predicted rates are linear images of the unprojected fit and can be
    negative, and the 0.849 process fidelity of the fit, a non-positive Choi matrix, enters no comparison.
@@ -258,16 +261,17 @@ replicate in a second segment, so each appears in every pair of adjacent segment
   (95 % percentile intervals [0.866, 0.911] and [0.859, 0.908]), comparable to the ensemble's expected interval.
 - **False alarms.** Over 1000 synthetic datasets at the forecast law, with each iteration stopping at its samples and
   its shots drawn as the samples plus a negative binomial count, the drift family rejects in 0.007 of datasets (95 %
-  Clopper-Pearson interval [0.003, 0.014]) and the mesh-variance family in 0.009 ([0.004, 0.017]), at the 0.01 level;
+  Clopper-Pearson interval [0.003, 0.014]) and the mesh-variance family in 0.007 ([0.003, 0.014]), at the 0.01 level;
   `--check` requires each interval to reach down to 0.01 and stay below 0.02. Seven datasets unpooled and took the
-  per-job mesh test. The mesh tests' unadjusted per-test rate reads 0.0133 against 0.01; hypothesis: the Monte Carlo
-  tables draw from the estimated pooled proportions rather than conditioning on the column totals, which runs slightly
-  anti-conservative when the wrong-outcome columns are sparse.
+  per-job mesh test. With the Monte Carlo tables drawn exactly conditional on both margins, the mesh tests'
+  unadjusted per-test rate reads 0.0108 against 0.01, and the sixteen drift tests read 0.003 to 0.017.
 - **Bound check.** 20 000 random trace-non-increasing maps (`forecast.json` `bound_check`), half Ginibre maps and half
   CZ times a random input filter plus a weak random term, show no violation of the normalized bound; the least
   margins are 2.2e-5 below F and 1.4e-5 above it.
 - **Binding.** The two retained tomography runs echo `circuit_params` equal to their manifests in all 144 iterations,
   the property the binding rule requires.
-- **HOM reading.** The read's 88.88 % differs from the 87.56 % at which both tomography jobs were submitted by more
-  than one point; if the submission plans hold that difference, estimate 5 states it beside each comparison
-  (`hom_difference_points` of the analysis, against the job-00 tomography submission).
+- **HOM reading.** Both tomography jobs were submitted at 87.56 %. The platform read behind the forecast gave
+  88.88 %, and the retained plans read 88.46 %, 0.90 points above it and inside the one-point threshold; the
+  analysis states each submission plan's difference and sets `hom_moved` beyond one point (`hom` of the analysis
+  record). Under the design's hypothesis of about 0.013 process fidelity per point of HOM, a submission at 90 %
+  would shift estimate 5 by about 0.03, about 2.5 times the prediction's standard deviation.

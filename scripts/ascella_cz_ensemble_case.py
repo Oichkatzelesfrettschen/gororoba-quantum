@@ -368,8 +368,8 @@ def preregistered() -> dict[str, Any]:
         f"least {MIN_ELIGIBLE} eligible events; otherwise the case is undecided",
         "homogeneity_test": "Pearson chi-square of an R x 4 table of eligible outcome counts against the pooled "
         f"row proportions (columns with no events dropped); Monte Carlo p = (1 + b) / (1 + {MC_TABLES}), b the "
-        f"number of {MC_TABLES} tables drawn multinomially from the pooled proportions at the observed row totals "
-        "whose statistic reaches the observed one",
+        f"number of {MC_TABLES} tables drawn uniformly over the arrangements with the observed row and column totals "
+        "(sequential hypergeometric draws, the exact conditional null) whose statistic reaches the observed one",
         "rate_test": "conditional binomial comparison of an anchor's per-shot eligible rate between the jobs: given "
         "k0 + k1, k0 ~ Binomial(k0 + k1, n0 / (n0 + n1)) with n the summed nb_shots_used, two-sided; this is the "
         "Poisson-rate form, and under the stopping rule (fixed samples, random shots) its variance ratio is "
@@ -503,6 +503,30 @@ def pearson(table: np.ndarray) -> np.ndarray:
     return np.asarray(terms.sum(axis=(-2, -1)))
 
 
+def conditional_tables(table: np.ndarray, generator: np.random.Generator, size: int) -> np.ndarray:
+    """`size` random tables with the row and column totals of `table`, uniform over the arrangements of its events
+    (the exact conditional null of homogeneity): each cell is a hypergeometric draw of its row's remaining events from
+    the remaining column totals, vectorized over the tables."""
+    rows, columns = table.sum(axis=1), table.sum(axis=0)
+    remaining = np.tile(columns, (size, 1)).astype(np.int64)
+    out = np.zeros((size, *table.shape), dtype=np.int64)
+    for i in range(table.shape[0] - 1):
+        need = np.full(size, rows[i], dtype=np.int64)
+        for j in range(table.shape[1] - 1):
+            good, bad = remaining[:, j], remaining[:, j + 1 :].sum(axis=1)
+            drawn = np.zeros(size, dtype=np.int64)
+            active = need > 0
+            if active.any():
+                drawn[active] = generator.hypergeometric(good[active], bad[active], need[active])
+            out[:, i, j] = drawn
+            remaining[:, j] -= drawn
+            need -= drawn
+        out[:, i, -1] = need
+        remaining[:, -1] -= need
+    out[:, -1, :] = remaining
+    return out
+
+
 def homogeneity(table: np.ndarray, generator: np.random.Generator, tables: int | None = None) -> dict[str, Any]:
     """Monte Carlo homogeneity test of an R x 4 table of eligible outcome counts (homogeneity_test of cases.json), at
     MC_TABLES tables unless `tables` names another count."""
@@ -510,11 +534,10 @@ def homogeneity(table: np.ndarray, generator: np.random.Generator, tables: int |
     table = np.asarray(table, dtype=np.int64)
     kept = table[:, table.sum(axis=0) > 0]
     statistic = float(pearson(kept.astype(float)))
-    pooled = kept.sum(axis=0) / kept.sum()
     exceed = 0
     for start in range(0, tables, 10000):
         size = min(10000, tables - start)
-        drawn = generator.multinomial(kept.sum(axis=1), pooled, size=(size, kept.shape[0]))
+        drawn = conditional_tables(kept, generator, size)
         exceed += int(np.count_nonzero(pearson(drawn.astype(float)) >= statistic * (1.0 - 1e-12)))
     return {"statistic": statistic, "rows": int(kept.shape[0]), "p": (1 + exceed) / (1 + tables)}
 
@@ -1231,16 +1254,22 @@ def load_run(run: Path) -> dict[str, Any]:
     retained = (FAMILY_DIR / str(job) / "cases.json").read_bytes()
     require(record.cases_sha256 == qd_platform.sha256_bytes(retained), f"{run}: cases.json differs from {job}")
     tallies, missing = bind_entries(str(run), manifest["settings"], results.get("iterations") or [])
-    status = results.get("status")
     return {
         "job": job,
-        "status": status.get("status") if isinstance(status, dict) else status,
+        "status": run_status(results),
         "cases_sha256": record.cases_sha256,
         "tallies": tallies,
         "uncounted": missing,
         "perfs": submission.get("perfs_at_plan"),
         "submitted_utc": submission.get("submitted_utc"),
     }
+
+
+def run_status(results: Mapping[str, Any]) -> str | None:
+    """The terminal status a collected results.json records under status.status, or None."""
+    status = results.get("status")
+    value = status.get("status") if isinstance(status, dict) else None
+    return value if isinstance(value, str) else None
 
 
 def bind_entries(
@@ -1292,7 +1321,9 @@ def bind_entries(
             "eligible": eligible,
             "samples": samples,
             "shots": shots,
-            "digest": qd_platform.sha256_bytes(str(computed).encode()) if computed is not None else None,
+            "digest": (
+                qd_platform.sha256_bytes(computed.encode()) if isinstance(computed, str) and computed.strip() else None
+            ),
         }
     return [bound[s["name"]] for s in settings if s["name"] in bound], missing
 
