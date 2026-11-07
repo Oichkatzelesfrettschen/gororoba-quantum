@@ -4212,7 +4212,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --score docs/evidence/ascella-order-coefficients/correction-table.json results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09 docs/evidence/ascella-order-coefficients/correction-score-09.json --check",
       "name": "core-ascella-signed-coherence-correction-score-09-replay",
-      "seconds": 15.0
+      "seconds": 45.0
     },
     {
       "suite": "core",

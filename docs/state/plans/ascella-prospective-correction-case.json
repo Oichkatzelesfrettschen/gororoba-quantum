@@ -2,7 +2,7 @@
   "schema": "work-plan-v1",
   "id": "ascella-prospective-correction-case",
   "kind": "investigation",
-  "summary": "Run one qpu:ascella job (job-09) that repeats job-02's 64 seeded settings a day after job-08, and score on it the per-seed correction table frozen from job-02 and job-03 before the request is sent.",
+  "summary": "Run one qpu:ascella job (job-09) that repeats job-02's 64 seeded settings nine hours after job-08, and score on it the per-seed correction table frozen from job-02 and job-03 before the request is sent.",
   "sources": [
     "docs/design/ascella-signed-coherence-conformance.md",
     "docs/evidence/ascella-order-coefficients/long-horizon-first-principles.md",

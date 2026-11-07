@@ -2172,7 +2172,8 @@ be corrected by seed. Job-09 submits job-02's 64 settings of theta2-x-arm0 at 32
 job-02's compilation seed under the same setting name, the 8 seed-0 anchors at every eighth position and the 56
 perturbed meshes on the off-stride positions in the order of values 0 to 55 of
 [`draw-2026-11-07T040400Z.json`](../evidence/anu_qrng/draw-2026-11-07T040400Z.json); value 56 seeds the score's
-resamples, 57 its power record and 58 the job-08 against job-09 reading.
+resamples, 57 its power record and 58 the job-08 against job-09 reading; value 59, added after job-09 returned,
+seeds the score's secondary count resimulation.
 
 [`scripts/ascella_correction_score.py`](../../scripts/ascella_correction_score.py) `--freeze` writes the table,
 [`correction-table.json`](../evidence/ascella-order-coefficients/correction-table.json), from job-02 and job-03 alone:
@@ -2201,7 +2202,7 @@ Monte Carlo error at 400 replicates; they sized the case and decide nothing.
 
 **Why simulation cannot answer it.** The simulator serves job-02's meshes without their error: the `sim:ascella` run
 of job-08's request spread its perturbed X at counting noise (0.00211 against 0.00203), so whether the frozen table
-predicts the chip's error a day later is a property of the chip. A `sim:ascella` run of job-09's request is the mesh
+predicts the chip's error twelve days after job-03 is a property of the chip. A `sim:ascella` run of job-09's request is the mesh
 gate: `ascella_correction_score.py --mesh-gate` requires every one of its 64 served unitaries within 1e-6 of
 job-02's, as the job-02 and job-08 simulator runs did on 2026-11-06 (largest distance 2.45e-7), and the QPU request
 is sent only after it passes, since a redrawn compilation would score other meshes than the table's.
@@ -2237,7 +2238,7 @@ below 2; redrawing from observed shares adds a second layer of counting noise, s
 ([reading](../evidence/ascella-order-coefficients/long-horizon-reading-08-09.json)): slope 1.003 with one-sided 99 %
 upper bound 1.102, beside the 0.956 a fully persistent error reaches through job-08's counting noise; P1 reads fixed
 per mesh (r 0.958 at the ceiling 0.956), every mesh byte-equal to job-08's, anchors steady (z -0.61). A table fitted
-on job-02 and job-03, run twelve and eleven days earlier, therefore predicts each seed's error to within job-09's counting noise and
+on job-02 and job-03, run about twelve days earlier, therefore predicts each seed's error to within job-09's counting noise and
 the table's own estimation noise: per-seed calibration through the cloud interface removes about 90 % of the per-mesh X variance on these
 56 seeds of theta2-x-arm0.
 

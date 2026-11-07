@@ -36,7 +36,7 @@ One numpy generator per pair, seeded with the draw value PAIR_SEED names, draws 
 relabelings, then the P2 labelings. The pairs with job-08 and the rehearsal take values of LONG_REPEAT_ORDER_DRAW,
 whose request consumes values 0..55 and whose power record takes value POWER_INDEX; job-08 against job-09, the
 secondary reading of docs/state/plans/ascella-prospective-correction-case.json, takes value 58 of
-PROSPECTIVE_ORDER_DRAW, whose request consumes values 0..55 and whose correction score takes 56 and 57. Every value
+PROSPECTIVE_ORDER_DRAW, whose request consumes values 0..55 and whose correction score takes 56, 57 and 59. Every value
 seeds one use.
 
 --power OUT [--check] writes the design's power record: POWER_REPLICATES Gaussian replicates per true slope in

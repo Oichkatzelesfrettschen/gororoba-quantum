@@ -153,7 +153,8 @@ REPEAT_PLAN = "docs/state/plans/ascella-seed-repeat-case.json"
 LONG_REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json"
 LONG_REPEAT_PLAN = "docs/state/plans/ascella-long-horizon-seed-repeat-case.json"
 # The ANU QRNG draw whose values 0..55 place job-02's 56 perturbed meshes on the prospective-correction repeat's
-# off-stride positions, by the same rule; values 56..58 seed its score and reading (ascella_correction_score.py).
+# off-stride positions, by the same rule; values 56..59 seed its score, power record,
+# reading and secondary count resimulation (ascella_correction_score.py, ascella_long_horizon_reading.py).
 PROSPECTIVE_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json"
 PROSPECTIVE_PLAN = "docs/state/plans/ascella-prospective-correction-case.json"
 # The ANU QRNG draw whose nonzero values, job-02's seeds and repeats skipped, seed the new-seed jobs: a job takes its

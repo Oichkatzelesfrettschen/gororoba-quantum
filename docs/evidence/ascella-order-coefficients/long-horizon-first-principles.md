@@ -77,7 +77,7 @@ which makes the reduction a prospective result or refutes it.
 The [prospective correction case](../../design/ascella-signed-coherence-conformance.md#prospective-correction-case-job-09)
 froze that table by setting name in [`correction-table.json`](correction-table.json) before job-09 was sent, with a
 decision rule fixed in advance: R = var(d) / var(d - t) and a 98 % bootstrap interval whose lower end must reach 2.
-On job-09, eleven days after job-03, the frozen table lowers the per-mesh standard deviation from 0.01085 to 0.00337,
+On job-09, twelve days after job-03, the frozen table lowers the per-mesh standard deviation from 0.01085 to 0.00337,
 R = 10.37 with the interval 6.16 to 16.21 over meshes resampled as exchangeable seeds
 ([score](correction-score-09.json)); redrawing every run's counts and refitting the table gives the conservative range
 3.88 to 7.95, still above 2. The correction is therefore prospective: it removes about 90 % of the per-mesh X variance
