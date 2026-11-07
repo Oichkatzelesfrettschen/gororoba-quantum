@@ -1,0 +1,50 @@
+{
+ "alpha": 0.01,
+ "meshes": 56,
+ "plan": "docs/state/plans/ascella-long-horizon-seed-repeat-case.json",
+ "relabelings": 2000,
+ "replicates": 400,
+ "rows": [
+  {
+   "shares": {
+    "indeterminate": 0.11,
+    "redrawn": 0.89
+   },
+   "true_slope": 0.0
+  },
+  {
+   "shares": {
+    "indeterminate": 0.61,
+    "persists": 0.0125,
+    "recurs below the useful slope": 0.01,
+    "redrawn": 0.3675
+   },
+   "true_slope": 0.25
+  },
+  {
+   "shares": {
+    "indeterminate": 0.64,
+    "persists": 0.34,
+    "redrawn": 0.02
+   },
+   "true_slope": 0.5
+  },
+  {
+   "shares": {
+    "indeterminate": 0.02,
+    "persists": 0.98
+   },
+   "true_slope": 0.75
+  },
+  {
+   "shares": {
+    "persists": 1.0
+   },
+   "true_slope": 1.0
+  }
+ ],
+ "schema": "ascella-long-horizon-power-v1",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json",
+ "seed_index": 57,
+ "useful_slope": 0.5
+}

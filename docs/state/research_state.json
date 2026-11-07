@@ -2963,6 +2963,27 @@
       "question": "For block set 4, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
     },
     {
+      "id": "qd-sim-ascella-signed-coherence-job-02-sim-replay",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T175319Z-sim_ascella-ascella_signed_coherence-job-02-sim-replay",
+      "family": "ascella_signed_coherence",
+      "question": "Does the Ascella simulator, after the 2026-11 software update, serve the unitaries the QPU served for job-02's compilation seeds?"
+    },
+    {
+      "id": "qd-sim-ascella-signed-coherence-job-08-sim",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T175944Z-sim_ascella-ascella_signed_coherence-job-08-sim",
+      "family": "ascella_signed_coherence",
+      "question": "How far does the Ascella simulator spread the X statistic of job-08's 56 seeded meshes beyond counting noise?"
+    },
+    {
+      "id": "qd-qpu-ascella-signed-coherence-job-08",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08",
+      "family": "ascella_signed_coherence",
+      "question": "Does each served mesh of job-02's seeds keep its per-mesh analyzer error twelve days and one software update after job-03?"
+    },
+    {
       "id": "ibm-fez-pathion-kernel-map",
       "provider": "ibm",
       "run": "results/live/2026-11-06T183538.809814Z",

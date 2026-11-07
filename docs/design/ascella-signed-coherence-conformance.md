@@ -2087,3 +2087,77 @@ The 168 meshes are spent for confirmatory use. A critical review of this case
 by three external referees and the orchestrator, against
 [the critical-review runbook](../runbooks/critical-peer-review.md), set this
 wording.
+
+## Long-horizon seed-repeat case (job-08)
+
+**What it measures.** Job-08 submits job-02's 64 settings of theta2-x-arm0 at 32,768 samples per iteration, each
+with job-02's compilation seed and circuit parameters under the same setting name, twelve days after job-03 and
+after a Quandela software update: job-02 ran under mosaiq-arcturus 2.1.5.2.post4 and hardware-core 3.9.3, and the
+processor record of 2026-11-06 reads mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11. The 8
+seed-0 anchors keep every eighth position. The 56 perturbed meshes take the off-stride positions in the order of
+values 0 to 55 of [`draw-2026-11-06T175610Z.json`](../evidence/anu_qrng/draw-2026-11-06T175610Z.json); value 56
+seeds the job-03 against job-08 reading, 57 the power record, 58 the job-02 against job-08 reading and 59 the
+rehearsal. The question is the Belenos mesh-persistence case's
+([belenos-mesh-persistence-case.md](belenos-mesh-persistence-case.md)) on the chip whose per-mesh error is already
+known to hold for nine hours: job-03 reproduced every per-mesh X error of job-02 at the attenuation ceiling (r 0.885
+against 0.880, anchors steady, [seed-repeat reading](../evidence/ascella-order-coefficients/seed-repeat-reading.json)).
+
+[`scripts/ascella_long_horizon_reading.py`](../../scripts/ascella_long_horizon_reading.py) reads job-03 as the
+reference against job-08 at alpha 0.01, and job-02 against job-08 as the secondary pair:
+
+| Reading | Statistic | Reading rule |
+|---|---|---|
+| M, mesh identity | settings whose served unitary lies within 1e-6 of the reference's under the same name (largest entry modulus), with the byte-equal count beside it | fewer than four identical perturbed meshes: nothing else is read, and the service redraws the meshes |
+| A, anchor control | job-08 minus reference anchor mean X, in counting standard errors | a moved mean marks a calibration change |
+| S, persistence (primary) | slope of job-08's centered X on the reference's over the identical perturbed meshes, one block, 20,000 sampled relabelings plus the identity, and the one-sided 99 % upper bound that inverts the relabeling test | `mesh_selection.persistence_reading` at alpha 0.01 and useful slope 0.5: persists, recurs below the useful slope, redrawn, indeterminate |
+| P1, reproduction (secondary) | Pearson r against the ceiling s_c^2 / sqrt((s_c^2 + s_n^2(16,384))(s_c^2 + s_n^2(32,768))) and its Fisher-z 0.01 bound | fixed per mesh, partly fixed, not reproduced, as for job-03 |
+| P2, replicated dependence | job-02's R1 anchor-ratio test on job-08 alone | dependent when the perturbed dispersion exceeds the anchors' |
+
+The reference's counting noise attenuates the slope of a fully persistent error to the reliability s_c^2 / (s_c^2 +
+s_n^2(16,384)), 0.916 against job-03, recorded beside the slope. The rehearsal on the retained job-02 and job-03 pair
+reads persists (slope 0.914, upper bound 1.074, p 5e-5) and reproduces the job-03 reading's M, A and P1. The power
+record [`long-horizon-power.json`](../evidence/ascella-order-coefficients/long-horizon-power.json) (400 Gaussian
+replicates per true slope, `--power`) reads a fully persistent error persists in every replicate, a slope of 0.75
+persists in 0.98, a slope of 0.5 indeterminate in 0.64 and persists in 0.34, a slope of 0.25 persists in 0.0125, and
+a redrawn error redrawn in 0.89.
+
+**Why simulation cannot answer it.** A `sim:ascella` run of job-02's request on 2026-11-06 served job-02's QPU
+meshes after the update: every unitary lies within 2.4e-7 of the QPU's, 60 of 64 within 1e-9, while no serialized
+`computed_circuit` string is byte-equal, so mesh identity reads unitaries. The update therefore left the compilation
+of these seeds unchanged. A `sim:ascella` run of job-08's request spread its perturbed X with standard deviation
+0.00211 against a counting standard deviation of 0.00203, where job-03 on the QPU spread 0.01175 against 0.00313: the
+simulator serves the same meshes without their error, so whether each mesh keeps its error twelve days on is a
+property of the chip's calibration and control loop.
+
+**Backend, seconds and credits.** `qpu:ascella`, available on 2026-11-06 with HOM 88.64 % and g2 2 %. The line through
+job-04 (80 iterations of 32,768 samples in 243 s) and job-05-i88 (88 in 265 s) puts 64 iterations at 199 s; the case
+expects 205 s against the 300 s `max_duration`. Ceiling and expectation 1.032768 credits: 1.0 per job plus 32,768
+billed shots of one iteration at 1e-6.
+
+**Procedure.** `scripts/ascella_coherence_request.py job-08` writes the case directory and `--body job-08` freezes
+the body against the live command set without sending it; `--preflight RUN` and `--submit RUN APPROVAL` stage and
+send the frozen request, `qd_platform.py collect RUN` retrieves it, and the reading script writes
+`long-horizon-reading-03-08.json` and `long-horizon-reading-02-08.json` beside the seed-repeat reading.
+
+**Stopping rule.** A job that errors or is cut short is resubmitted only on the owner's further approval. Every
+reading of S closes the case.
+
+**Outcome.** Job-08 (`fbdd5956`) ran on 2026-11-06 from 19:09:50 UTC for 194 s at HOM 88.98 %, g2 2 % and
+transmittance 5.59 %, retained as [`2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08`](../../results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/). Every one of the 64 settings
+returned job-03's mesh byte for byte, so the software update left these compilations unchanged. Against job-03
+([reading](../evidence/ascella-order-coefficients/long-horizon-reading-03-08.json)) the anchors stay steady (z 0.88),
+S reads **persists**: slope 0.815 with one-sided 99 % upper bound 0.924, beside the 0.916 a fully persistent error
+reaches through job-03's counting noise, and p 5e-5 at the sample's floor; P1 reads fixed per mesh (r 0.925, ceiling
+0.936, bound 0.882) and P2 compilation dependent. Against job-02
+([reading](../evidence/ascella-order-coefficients/long-horizon-reading-02-08.json)) S also reads persists (slope 0.810,
+upper bound 0.946 against 0.845; anchors steady at z 2.29). Each served mesh therefore keeps most of its analyzer error
+across twelve days and the update: the slope estimates about 89 % of the full-persistence value and the bound does not
+exclude full persistence. The dark-output ranks agree between the jobs (Spearman 0.58, exploratory), and the
+predecessor transition carries none (Spearman -0.07).
+[First principles](../evidence/ascella-order-coefficients/long-horizon-first-principles.md) separates the
+returned circuit model, the analysis and the implementation path as sources of the persistent error, keeps the
+implementation path, and scores a per-seed correction retrospectively on job-08.
+
+**Review.** Codex, an Opus agent and grok reviewed the case before acquisition; the
+[reconciliation](../archive/reviews/ascella-long-horizon-seed-repeat-reconciliation.md) records the unitary mesh
+identity and the separate seed values it led to.
