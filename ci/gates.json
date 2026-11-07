@@ -4981,11 +4981,11 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-drift-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+      "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-2 --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
       "name": "core-quantum-experiment-cases",
       "seconds": 15.0,
       "replays": [
-        "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1"
+        "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-2"
       ],
       "workers": "all"
     },
@@ -4999,14 +4999,14 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check",
+      "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-2/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-2.json --check",
       "name": "core-quantum-experiment-toolchain",
       "seconds": 30.0,
       "requires": [
         "qi"
       ],
       "replays": [
-        "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json"
+        "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-2.json"
       ]
     },
     {

@@ -29,8 +29,13 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
 
 ## Contract
 
-1. Retained bytes stay immutable. The v1 ledger, its 676 digests and its capped image identity remain
-   the historical record of the capped path; a native baseline is a new file at a new path.
+1. Retained bytes stay immutable. The owner ruled on 2026-11-06 that no lane, gate, workflow or ledger
+   forces a kernel: `OPENBLAS_CORETYPE` and `NPY_DISABLE_CPU_FEATURES` left `ci/run_gates.py`,
+   `ci/pr_checks.sh`, the workflows and the ledger's arithmetic set, and
+   `tests/ci/test_native_numeric_path.py` keeps them out. The ledger's 676 digests stay; its records are
+   rewritten natively on a CPU whose OpenBLAS selects the Haswell core (the build host, AMD EPYC 7763
+   runners), where they reproduce the capped bytes, and a record that a native rewrite does not reproduce
+   byte for byte moves to a new file at a new path.
 2. A record names its numeric identity: CPU model and flags, numpy dispatch targets, each OpenBLAS
    library and selected core, glibc and libm version, Python build, the loaded arithmetic objects'
    hashes, thread and worker counts, and an operation fingerprint
@@ -63,9 +68,9 @@ acceptance and receipts:
 - build the semantic comparator with mutation tests that move a decision across each boundary;
 - benchmark fixed-order arithmetic for the decision-bearing reductions the trace implicates, adopted
   only within its accuracy and wall-time budgets;
-- write native baselines with receipts, switch the gate declarations and the successor ledger in one
-  change, and remove `OPENBLAS_CORETYPE` and `NPY_DISABLE_CPU_FEATURES` from `ci/run_gates.py`,
-  `ci/pr_checks.sh` and the workflows.
+- write native baselines with receipts and switch the gate declarations; the removal of
+  `OPENBLAS_CORETYPE` and `NPY_DISABLE_CPU_FEATURES` from `ci/run_gates.py`, `ci/pr_checks.sh`, the
+  workflows and the ledger landed ahead of the other steps by the owner's ruling of 2026-11-06.
 
 ## Falsifiers
 

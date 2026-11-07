@@ -70,7 +70,10 @@ Merge and check:
 ```
 
 Before a shard record enters evidence, the host recomputes the first two and the last replicate of each shard
-with `msq_successor_null_batch.analyse_block` and compares the rows byte for byte.
+with `msq_successor_null_batch.analyse_block`. Each shard computes on its runner's native numeric path and records
+that runner's CPU; a shard whose CPU shares the host's path (OpenBLAS core Haswell, no `avx512f`, as on AMD EPYC
+7763) compares its rows byte for byte, and a shard on another path compares integers and strings exactly and each
+float within a relative 1e-9 (docs/design/native-numeric-replay.md, contract items 3 and 4).
 
 ### Kaggle CPU kernels
 
