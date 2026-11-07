@@ -1,0 +1,134 @@
+routed blocks on the retained b0 qubits (region q2, q4, q8, q11, q12)
+  b0   replay of the retained compile  cz 21  roles {'d0': 12, 'd1': 4, 'd2': 11, 'selector': 8, 'coin': 2}
+  k4      cz 12  roles {'d0': 12, 'd1': 4, 'd2': 11, 'selector': 8, 'coin': 2}  draw index 0  initial layout [2, 0, 4, 3, 1]  ideal selector contrast 0
+  k8      cz 12  roles {'d0': 12, 'd1': 4, 'd2': 11, 'selector': 8, 'coin': 2}  draw index 69  initial layout [2, 0, 4, 3, 1]  ideal selector contrast 0
+  k12     cz 12  roles {'d0': 12, 'd1': 4, 'd2': 11, 'selector': 8, 'coin': 2}  draw index 132  initial layout [2, 0, 4, 3, 1]  ideal selector contrast 0
+  k4_sc   cz  6  roles {'d0': 4, 'd1': 12, 'd2': 11, 'selector': 8, 'coin': 2}  draw index 0  initial layout [1, 2, 3, 4, 0]  ideal selector contrast 0
+  k8_sc   cz  6  roles {'d0': 4, 'd1': 12, 'd2': 11, 'selector': 8, 'coin': 2}  draw index 64  initial layout [1, 2, 3, 4, 0]  ideal selector contrast 0
+  k12_sc  cz  6  roles {'d0': 4, 'd1': 12, 'd2': 11, 'selector': 8, 'coin': 2}  draw index 128  initial layout [1, 2, 3, 4, 0]  ideal selector contrast 0
+observed b0 raw selector contrast +0.0164 +- 0.0039; per-CZ retention 0.9680
+b0  (cz 21, ideal c [-0.996  0.996]...)
+  ideal, bracket readout only                                            V 0.877  selector contrast -0.0000  N_hat +0.0703
+  contraction to V=0.44 + bracket readout                                V 0.443  selector contrast +0.0000  N_hat +0.0703
+  gate Pauli depolarizing p2=0.03                                        V 0.381  selector contrast +0.0000  N_hat +0.0703
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.434  selector contrast +0.0000  N_hat +0.0842
+  T1 12 us                                                               V 0.597  selector contrast +0.0001  N_hat +0.1082
+  T1 25 us                                                               V 0.723  selector contrast +0.0000  N_hat +0.0851
+  X90 over-rotation +0.03                                                V 0.864  selector contrast +0.0167  N_hat +0.0931
+  X90 over-rotation -0.03                                                V 0.869  selector contrast -0.0092  N_hat +0.0804
+  X90 over-rotation +0.03 with contraction                               V 0.436  selector contrast +0.0085  N_hat +0.1191
+  CZ phase +0.06 rad                                                     V 0.855  selector contrast -0.0006  N_hat +0.0493
+  CZ phase -0.06 rad                                                     V 0.852  selector contrast +0.0006  N_hat +0.0797
+  ZZ coupler table x1                                                    V 0.875  selector contrast -0.0003  N_hat +0.0666
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.427  selector contrast +0.0164  N_hat +0.2238
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.435  selector contrast +0.0164  N_hat +0.2211
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.427  selector contrast +0.0164  N_hat +0.2240
+k4  (cz 12, ideal c [-1.  1.]...)
+  ideal, bracket readout only                                            V 0.881  selector contrast +0.0000  N_hat +0.0703
+  contraction to V=0.44 + bracket readout                                V 0.596  selector contrast -0.0000  N_hat +0.0703
+  gate Pauli depolarizing p2=0.03                                        V 0.557  selector contrast -0.0000  N_hat +0.0703
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.615  selector contrast +0.0000  N_hat +0.0736
+  T1 12 us                                                               V 0.762  selector contrast -0.0000  N_hat +0.0780
+  T1 25 us                                                               V 0.821  selector contrast -0.0000  N_hat +0.0737
+  X90 over-rotation +0.03                                                V 0.875  selector contrast +0.0279  N_hat +0.0849
+  X90 over-rotation -0.03                                                V 0.877  selector contrast -0.0262  N_hat +0.0699
+  X90 over-rotation +0.03 with contraction                               V 0.592  selector contrast +0.0189  N_hat +0.1212
+  CZ phase +0.06 rad                                                     V 0.867  selector contrast +0.0032  N_hat +0.0997
+  CZ phase -0.06 rad                                                     V 0.867  selector contrast +0.0032  N_hat +0.0997
+  ZZ coupler table x1                                                    V 0.881  selector contrast +0.0000  N_hat +0.0702
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.575  selector contrast +0.0221  N_hat +0.2238
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.585  selector contrast +0.0164  N_hat +0.1823
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.575  selector contrast +0.0221  N_hat +0.2240
+k8  (cz 12, ideal c [-1.  1.]...)
+  ideal, bracket readout only                                            V 0.881  selector contrast +0.0000  N_hat +0.0703
+  contraction to V=0.44 + bracket readout                                V 0.596  selector contrast -0.0000  N_hat +0.0703
+  gate Pauli depolarizing p2=0.03                                        V 0.557  selector contrast -0.0000  N_hat +0.0703
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.615  selector contrast +0.0000  N_hat +0.0736
+  T1 12 us                                                               V 0.762  selector contrast -0.0000  N_hat +0.0780
+  T1 25 us                                                               V 0.821  selector contrast -0.0000  N_hat +0.0737
+  X90 over-rotation +0.03                                                V 0.875  selector contrast +0.0279  N_hat +0.0849
+  X90 over-rotation -0.03                                                V 0.877  selector contrast -0.0262  N_hat +0.0699
+  X90 over-rotation +0.03 with contraction                               V 0.592  selector contrast +0.0189  N_hat +0.1212
+  CZ phase +0.06 rad                                                     V 0.867  selector contrast +0.0032  N_hat +0.0997
+  CZ phase -0.06 rad                                                     V 0.867  selector contrast +0.0032  N_hat +0.0997
+  ZZ coupler table x1                                                    V 0.881  selector contrast +0.0000  N_hat +0.0702
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.575  selector contrast +0.0221  N_hat +0.2238
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.585  selector contrast +0.0164  N_hat +0.1823
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.575  selector contrast +0.0221  N_hat +0.2240
+k12  (cz 12, ideal c [-1.  1.]...)
+  ideal, bracket readout only                                            V 0.881  selector contrast +0.0000  N_hat +0.0703
+  contraction to V=0.44 + bracket readout                                V 0.596  selector contrast -0.0000  N_hat +0.0703
+  gate Pauli depolarizing p2=0.03                                        V 0.557  selector contrast -0.0000  N_hat +0.0703
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.615  selector contrast +0.0000  N_hat +0.0736
+  T1 12 us                                                               V 0.762  selector contrast -0.0000  N_hat +0.0780
+  T1 25 us                                                               V 0.821  selector contrast -0.0000  N_hat +0.0737
+  X90 over-rotation +0.03                                                V 0.875  selector contrast +0.0279  N_hat +0.0849
+  X90 over-rotation -0.03                                                V 0.877  selector contrast -0.0262  N_hat +0.0699
+  X90 over-rotation +0.03 with contraction                               V 0.592  selector contrast +0.0189  N_hat +0.1212
+  CZ phase +0.06 rad                                                     V 0.867  selector contrast +0.0032  N_hat +0.0997
+  CZ phase -0.06 rad                                                     V 0.867  selector contrast +0.0032  N_hat +0.0997
+  ZZ coupler table x1                                                    V 0.881  selector contrast +0.0000  N_hat +0.0702
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.575  selector contrast +0.0221  N_hat +0.2238
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.585  selector contrast +0.0164  N_hat +0.1823
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.575  selector contrast +0.0221  N_hat +0.2240
+k4_sc  (cz 6, ideal c [-1.  1.]...)
+  ideal, bracket readout only                                            V 0.857  selector contrast +0.0000  N_hat +0.1272
+  contraction to V=0.44 + bracket readout                                V 0.705  selector contrast +0.0000  N_hat +0.1272
+  gate Pauli depolarizing p2=0.03                                        V 0.677  selector contrast -0.0000  N_hat +0.1272
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.718  selector contrast +0.0000  N_hat +0.1301
+  T1 12 us                                                               V 0.797  selector contrast +0.0000  N_hat +0.1331
+  T1 25 us                                                               V 0.827  selector contrast +0.0000  N_hat +0.1301
+  X90 over-rotation +0.03                                                V 0.853  selector contrast +0.0000  N_hat +0.1348
+  X90 over-rotation -0.03                                                V 0.853  selector contrast -0.0000  N_hat +0.1347
+  X90 over-rotation +0.03 with contraction                               V 0.702  selector contrast -0.0001  N_hat +0.1336
+  CZ phase +0.06 rad                                                     V 0.852  selector contrast +0.0000  N_hat +0.1271
+  CZ phase -0.06 rad                                                     V 0.852  selector contrast +0.0000  N_hat +0.1271
+  ZZ coupler table x1                                                    V 0.857  selector contrast +0.0000  N_hat +0.1273
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.680  selector contrast +0.0000  N_hat +0.1272
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.692  selector contrast +0.0164  N_hat +0.2220
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.680  selector contrast +0.0000  N_hat +0.1272
+k8_sc  (cz 6, ideal c [-1.  1.]...)
+  ideal, bracket readout only                                            V 0.857  selector contrast +0.0000  N_hat +0.1272
+  contraction to V=0.44 + bracket readout                                V 0.705  selector contrast +0.0000  N_hat +0.1272
+  gate Pauli depolarizing p2=0.03                                        V 0.677  selector contrast -0.0000  N_hat +0.1272
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.718  selector contrast +0.0000  N_hat +0.1301
+  T1 12 us                                                               V 0.797  selector contrast +0.0000  N_hat +0.1331
+  T1 25 us                                                               V 0.827  selector contrast +0.0000  N_hat +0.1301
+  X90 over-rotation +0.03                                                V 0.853  selector contrast +0.0000  N_hat +0.1348
+  X90 over-rotation -0.03                                                V 0.853  selector contrast -0.0000  N_hat +0.1347
+  X90 over-rotation +0.03 with contraction                               V 0.702  selector contrast -0.0001  N_hat +0.1336
+  CZ phase +0.06 rad                                                     V 0.852  selector contrast +0.0000  N_hat +0.1271
+  CZ phase -0.06 rad                                                     V 0.852  selector contrast +0.0000  N_hat +0.1271
+  ZZ coupler table x1                                                    V 0.857  selector contrast +0.0000  N_hat +0.1273
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.680  selector contrast +0.0000  N_hat +0.1272
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.692  selector contrast +0.0164  N_hat +0.2220
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.680  selector contrast +0.0000  N_hat +0.1272
+k12_sc  (cz 6, ideal c [-1.  1.]...)
+  ideal, bracket readout only                                            V 0.857  selector contrast +0.0000  N_hat +0.1272
+  contraction to V=0.44 + bracket readout                                V 0.705  selector contrast +0.0000  N_hat +0.1272
+  gate Pauli depolarizing p2=0.03                                        V 0.677  selector contrast -0.0000  N_hat +0.1272
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.718  selector contrast +0.0000  N_hat +0.1301
+  T1 12 us                                                               V 0.797  selector contrast +0.0000  N_hat +0.1331
+  T1 25 us                                                               V 0.827  selector contrast +0.0000  N_hat +0.1301
+  X90 over-rotation +0.03                                                V 0.853  selector contrast +0.0000  N_hat +0.1348
+  X90 over-rotation -0.03                                                V 0.853  selector contrast -0.0000  N_hat +0.1347
+  X90 over-rotation +0.03 with contraction                               V 0.702  selector contrast -0.0001  N_hat +0.1336
+  CZ phase +0.06 rad                                                     V 0.852  selector contrast +0.0000  N_hat +0.1271
+  CZ phase -0.06 rad                                                     V 0.852  selector contrast +0.0000  N_hat +0.1271
+  ZZ coupler table x1                                                    V 0.857  selector contrast +0.0000  N_hat +0.1273
+  selector readout, flip on q8 when q12 = 0, x 0.0360                    V 0.680  selector contrast +0.0000  N_hat +0.1272
+  selector readout, dropout on q8 when q2 = 1, x 0.0362                  V 0.692  selector contrast +0.0164  N_hat +0.2220
+  selector readout, dropout on q8 when q12 = 0, x 0.0720                 V 0.680  selector contrast +0.0000  N_hat +0.1272
+decision gate per routing and model: over-rotation at most 0.004 in magnitude on every block (sign and size of EPS = 0.03 rad), the model at least 0.012 on every block
+  roles: max |selector| under over-rotation 0.0279
+    selector readout, flip on q8 when q12 = 0, x 0.0360: min selector over the blocks +0.0221 -> does not discriminate
+    selector readout, dropout on q8 when q2 = 1, x 0.0362: min selector over the blocks +0.0164 -> does not discriminate
+    selector readout, dropout on q8 when q12 = 0, x 0.0720: min selector over the blocks +0.0221 -> does not discriminate
+  selector_coin: max |selector| under over-rotation 0.0000
+    selector readout, flip on q8 when q12 = 0, x 0.0360: min selector over the blocks +0.0000 -> does not discriminate
+    selector readout, dropout on q8 when q2 = 1, x 0.0362: min selector over the blocks +0.0164 -> discriminates
+    selector readout, dropout on q8 when q12 = 0, x 0.0720: min selector over the blocks +0.0000 -> does not discriminate
+over-rotation response of every distinct routed circuit that meets the roles pin (search of --select)
+  k4: 2 distinct circuits, CZ [12, 15], max |selector| under +-0.03 rad over-rotation: min 0.0279, max 0.0549
+  k8: 2 distinct circuits, CZ [12, 15], max |selector| under +-0.03 rad over-rotation: min 0.0279, max 0.0549
+  k12: 2 distinct circuits, CZ [12, 15], max |selector| under +-0.03 rad over-rotation: min 0.0279, max 0.0549

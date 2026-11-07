@@ -2278,6 +2278,11 @@
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
    "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
    "reason": "DRAW_B: curve, finite-field sample and float-start seeds read by runtime index"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json",
+   "path": "scripts/qi_pathion_one_cz_null_cases.py",
+   "reason": "DRAW: transpiler seeds of the low-CZ null-block routing search, read by runtime index in slices of SEEDS_PER_BLOCK (indices 0 to 191)"
   }
  ]
 }
