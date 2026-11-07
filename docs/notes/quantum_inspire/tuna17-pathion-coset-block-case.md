@@ -1,7 +1,11 @@
 # Written case: A_5 coset-block kernel map on Tuna-17, coin-arm series
 
-Status: written, awaiting the owner's approval of this case; no job is submitted and each submission quotes the approval
-(`--approval`). The series is `pathion_coset_coin_tuna_17` (hardware) with the twin `pathion_coset_coin_qx` (emulator),
+Status: run on 2026-11-07 under the owner's approval of 2026-11-06, quoted in each submission receipt (`--approval`): the QX
+control (`results/quantum_inspire/runs/2026-11-07T000930Z-pathion_coset_coin_qx-batch-00`, batch job 922371, jobs 1686078 to 1686081,
+2048 shots) and Tuna-17 batches 00 to 03 (`results/quantum_inspire/runs/2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-0{0..3}`,
+batch jobs 922372, 922375, 922378 and 922382, jobs 1686082 to 1686084, 1686091 to 1686093, 1686100 to 1686102 and 1686114, 65536 shots
+and 16384 for batch 03), every job completed. The analyses are `results/quantum_inspire/pathion_coset_coin_qx_analysis.json` and
+`results/quantum_inspire/pathion_coset_coin_tuna_17_analysis.json`; their interpretation lands in a later change. The series is `pathion_coset_coin_tuna_17` (hardware) with the twin `pathion_coset_coin_qx` (emulator),
 retained under `results/quantum_inspire/cases/`, built by `scripts/qi_pathion_coset_coin_cases.py` from
 `gororoba_quantum/pathion_coset_block.py` and gated by `scripts/qi_pathion_coset_coin_series.py`. It succeeds the
 first series (`pathion_coset_block_tuna_17`, 8 batches of 3 jobs, generator `scripts/qi_pathion_coset_block_cases.py`), which
@@ -288,12 +292,12 @@ another operand and the quarter-turn twin each cost another job for a question t
 
 ## Not run and open
 
-- Not run: every provider job, including the QX dry run. The IBM comparison uses the measured ibm_fez and ibm_marrakesh records and needs no further job.
-- Open before a merge: the retained record of `qi_toolchain_check.py` (gate core-368) names exactly the current case files, so it needs the regeneration `"$QI_PYTHON" scripts/qi_toolchain_check.py` for the
-  14 new circuits (the check above ran the same functions on them without writing the record); a gate entry in `ci/gates.json` for `--check` and `--self-test` of the generator and for
-  `tests/gororoba_quantum/test_pathion_coset_block.py` and `tests/scripts/test_qi_pathion_coset_coin.py`; the QX local replay record; the registration of the run in `docs/state/research_state.json` after the
-  acquisition. The first series' stopped runs and analyses (`pathion_coset_block_tuna_17_analysis.json`, `pathion_coset_block_qx_analysis.json`) are untracked until the owner commits them, and
-  they must land in the same commit as this case: the generator pins four of their readout files and the `b0` arm files by sha256 (`STOPPED_FILES`) and refuses `--write` and `--check` when one is missing or changed.
+- Run: the first series' QX control (`results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-0{0..7}`, batch jobs 922207 to 922220, 2048 shots) and its
+  Tuna-17 batches 00 to 03 (`results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-0{0..3}`, batch jobs 922223, 922226, 922229 and 922232, 16384 shots), after
+  which the drift stop ended the series; the coin series above. The IBM comparison uses the measured ibm_fez and ibm_marrakesh records and needs no further job.
+- Open before a merge: a gate entry in `ci/gates.json` for `--check` and `--self-test` of the generator and for
+  `tests/gororoba_quantum/test_pathion_coset_block.py` and `tests/scripts/test_qi_pathion_coset_coin.py`; the QX local replay record. The generator pins four of the first series'
+  readout files and the `b0` arm files by sha256 (`STOPPED_FILES`) and refuses `--write` and `--check` when one is missing or changed.
 - Residual risk: the coin is a new circuit element whose arm-dependent effects only the null decision reads (the first series' coin-free `b0` reading of +0.017 is the reference). q2 couples to q4 at +4.1 kHz, so a
   coin in |1> shifts q4's phase relative to |0> by about 0.03 rad per microsecond of idle; the null block and the cross-platform ratio would show it.
 - Residual risk: the assignment correction takes each bracket as the state of its batch's data job; the bracket's two circuits and the data job run minutes apart inside one batch, and q11's e10 moved by 0.17 between
