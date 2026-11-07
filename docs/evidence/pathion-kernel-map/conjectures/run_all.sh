@@ -52,3 +52,4 @@ step c3_depol c3_depol.py
 step c3_multi c3_multi.py
 step c2_tuna_mech c2_tuna_mech.py
 step c2_overrotation c2_overrotation.py
+step c2_one_cz_mech c2_one_cz_mech.py

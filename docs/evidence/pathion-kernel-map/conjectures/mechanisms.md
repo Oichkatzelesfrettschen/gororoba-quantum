@@ -159,6 +159,33 @@ correlated-readout offset predicts about +0.016). A mirrored recompile cannot de
 keeps the sign of the pulse error. IBM control: the 20-CZ k0-type null block on at least 17 placements plus the 1-CZ
 blocks, reporting selector contrast and readout-corrected N_hat.
 
+Routed decider (`c2_one_cz_mech.txt`; routing by `scripts/qi_pathion_one_cz_null_cases.py --select` under qiskit 2.6.2, seeds from
+`docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json`). The coin template of the k4, k8 and k12 blocks compiles on b0's
+five qubits (q2, q4, q8, q11, q12) from all 120 initial layouts at 64 transpiler seeds per block. The coin CZ and the
+selector CNOT give a coin block 3 CZ at all-to-all connectivity (the coin-free IBM k4 block holds 1); the region's star
+at q8 plus the edge (2, 4) routes it to 4 CZ unpinned, 6 CZ with the selector on q8 and the coin on q2, and 12 CZ with
+b0's whole role map (d0 q12, d1 q4, d2 q11). The retained b0 compile replays byte for byte (21 CZ). Simulated on the
+routed circuits, an X90 over-rotation of +0.03 and -0.03 rad gives a selector contrast of +0.0279 and -0.0262 on each
+12-CZ block (b0: +0.0167 and -0.0092) and 0 on each 6-CZ block; the contraction-free simulation is the larger bound.
+The search holds two distinct circuits per block that meet b0's whole role map (12 and 15 CZ), and the over-rotation
+gives a selector contrast of 0.0279 and 0.0549 in magnitude on them, so the over-rotation predicts selector 0 on none of
+them. With b0's role map held the block does not decide: at the angle b0 implies (+0.0295 rad) the over-rotation predicts
++0.027, a readout correlation of the selector with q12 +0.022 (1.4 standard errors away at 0.0039) and a
+coin-conditioned selector dropout +0.016 (2.8 standard errors from the over-rotation); each model is sized to give b0
++0.0164. On the 6-CZ blocks a coin-conditioned
+dropout (+0.016) separates from the over-rotation (0) and a q12 correlation (0) does not. No probe isolates which
+routed pulses carry the 12-CZ response.
+
+Same-question IBM reference (`results/live/pathion_parallel_coset_analysis.json` and `d1_ibm_overrotation.txt` on branch
+`pathion/interpret-tuna-ascella-runs`, ibm_fez with 17 and ibm_kingston with 16 parallel placements): the k0 null
+selector contrast reads -0.0020 +- 0.0015 (ibm_fez) and -0.0000 +- 0.0011 (ibm_kingston), and the coin-free 1-CZ blocks
+k4, k8 and k12 average -0.0008 +- 0.0007 and -0.0001 +- 0.0010. Both are zero or negative, so IBM shows no X90
+over-rotation (-0.0036 +- 0.0027 and -0.0000 +- 0.0019 rad; pooled with the earlier two readings -0.0015 +- 0.0014 rad,
+4.3 combined standard errors below the Tuna angle +0.0295 +- 0.0070 rad), under the response of 0.57 per rad that the
+written case's k0 compile gives; no ibm_kingston compile was simulated. The Tuna decider asks whether Tuna's b0 offset
+follows the over-rotation (a low-CZ block reads 0, subject to the routing above) or a readout or arm asymmetry (a
+low-CZ block reads about +0.016).
+
 ## C3. The Tuna-17 `ba` misses follow the logical bit d2
 
 Layout at measurement (`c3_readout.txt`): `ba` d0 on q11, d1 on q12, d2 on q4; `bb` d0 on q12, d1 on q11, d2 on q4;
