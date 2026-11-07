@@ -124,8 +124,16 @@ def test_frozen_requests_match_each_other_the_draw_and_the_script_digests() -> N
     draw = json.loads((ROOT / sources[0].split(":")[1].split("#")[0]).read_text(encoding="utf-8"))["values"]
     for setting in qpu["settings"]:
         require(setting["compilation_seed"] == draw[setting["seed_index"]], f"{setting['name']}: seed")
-    for name, digest in qpu["analysis_sources"].items():
-        require(hashlib.sha256((ROOT / name).read_bytes()).hexdigest() == digest, f"{name} changed after the freeze")
+    # The bound source bytes live at the pinned revision; scripts/frozen_case_sources.py --check (on-demand gate
+    # core-ascella-predecessor-source-pin) proves them, so main's shared copies may move past the freeze.
+    require(
+        set(qpu["analysis_sources"]) >= {"scripts/ascella_pathion_coset_block_pairs.py", "scripts/qd_platform.py"},
+        "analysis sources",
+    )
+    pins = json.loads((ROOT / "docs/evidence/quandela/frozen-case-source-pins.json").read_text(encoding="utf-8"))
+    pinned = {row["case"] for row in pins["cases"]}
+    for kind in ("sim-00", "job-00"):
+        require(f"results/quandela/cases/ascella_pathion_coset_block_pairs/{kind}/cases.json" in pinned, f"{kind} pin")
     require(
         hashlib.sha256((CASES / "job-00/circuit.json").read_bytes()).hexdigest() == qpu["circuit"]["sha256"],
         "circuit digest",
