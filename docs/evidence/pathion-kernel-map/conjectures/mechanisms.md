@@ -35,7 +35,7 @@ bit-identical meshes (iterations 0/51, 1/50, 2/49).
 |---|---|---|---|
 | counting statistics | z = d/se near 1 | bootstrap se median 0.0041; z rms 11.33; chi2 5908 on 46 (`c1_observed.txt`) | refuted |
 | drift | abs(d) grows with separation | Spearman -0.050 (p 0.743); identical-mesh repeats differ at most 0.0055 raw; predecessor repeats rms 0.0024 against 0.0028 from counting (`c1_observed.txt`, `c1_predecessor.txt`) | refuted |
-| per-mode efficiency | a nine-parameter model predicts d | median 0.0026, max 0.0155 in sample, max 0.0167 held out on orientation 0, flags 0 of the 9 failing pairs (`mirror_test.txt`) | refuted |
+| per-mode efficiency | a nine-parameter model predicts d | median 0.0026, max 0.0155 in sample, max 0.0167 held out on orientation 0, flags 0 of the 9 failing pairs; residual rms 0.0461 against 0.0488 observed, about a tenth of the variance (`mirror_test.txt`) | refuted |
 | multiphoton or threshold events | abs(d) tracks excluded events | invalid share at most 5.26e-4 and sentinel share at most 7.86e-4 against \|d\| of order 0.03; rank correlation of abs(d) with the invalid share +0.609 | refuted by size |
 | count rate | `shots_used` or `physical_perf` tracks the pairs | `shots_used` 131072 in every iteration; Spearman(abs d, abs of the perf difference) -0.334 | no support |
 | anchor calibration | a wrong B/A ratio gives an antisymmetric slot term | below | dominant |

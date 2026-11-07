@@ -142,7 +142,7 @@ The b0 selector contrast is zero under any arm-symmetric product readout and any
 (`c2_algebra.txt`, `c2_tuna_mech.txt`), so the +0.0164 offset is physics, not an estimator artifact. On IBM the same
 block (e1 + e17, coset k0) reads -0.0019 +- 0.0020 on ibm_fez and -0.0003 +- 0.0033 on ibm_marrakesh, measured values
 from `collect.json` (`c2_scale.txt`; the `record.json` numbers are noise-model predictions). Two independent compiles
-of the null block (the coin design and the stopped series, 20 CZ each) respond to a single X90 over-rotation with
+of the null block (the coin design at 21 CZ and the stopped series at 20 CZ) respond to a single X90 over-rotation with
 selector contrast +0.0167 per +0.03 rad and +0.0160 per +0.029 rad, against +0.0164 and +0.0167 observed
 (`c2_tuna_mech.txt`, `c2_stopped.txt`); CZ phase error, T1 and depolarizing noise move the selector by at most 0.0006 and the
 retained ZZ coupler table by -0.0003 (0.0018 at ten times the table); `c2_overrotation.txt` inverts the responses.
@@ -212,8 +212,8 @@ Retraction. The mechanism recorded before this analysis, that per-mode efficienc
 to 8) shrink the C8 slot cells from up to 0.0524 to at most 0.0061 and that a per-mode calibration would admit the fold, is
 withdrawn. It read `c8_spread_under_mode_efficiencies` of `analysis.json`, the spread that the efficiency model itself
 predicts, as if it were corrected data. The model predicts a mirror difference with median 0.0026 and maximum 0.0155
-against 0.0259 and 0.1082 observed, flags none of the 9 failing pairs, and does the same when fitted on orientation 0
-only (maximum 0.0167); `mirror_test.txt` holds the numbers and `c1_observed.txt` the observed distribution. Nine
+against 0.0259 and 0.1082 observed and leaves a residual rms of 0.0461 against 0.0488 (about a tenth of the variance
+explained), flags none of the 9 failing pairs, and does the same when fitted on orientation 0 only (maximum 0.0167); `mirror_test.txt` holds the numbers and `c1_observed.txt` the observed distribution. Nine
 single-mode anchors are not the remedy.
 
 Result of the mechanism probes (`c1_*.txt`): counting statistics, drift, multiphoton events and count rate are refuted

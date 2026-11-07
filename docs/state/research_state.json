@@ -15095,7 +15095,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "Instrument conformance for one-photon encodings of the blocks, not a new algebraic result; the C8 class spreads 0.048 (three blocks 0.024 low, one 0.023 high), under its 0.05 flag. The spread is not attributed to per-mode efficiencies, which explain none of the successor job's mirror failure, and the two-block successor job did not reproduce it in a run whose instrument is not admitted; its cause is open.",
+      "boundary": "Instrument conformance for one-photon encodings of the blocks, not a new algebraic result; the C8 class spreads 0.048 (three blocks 0.024 low, one 0.023 high), under its 0.05 flag. The spread is not attributed to per-mode efficiencies, which explain about a tenth of the successor job's mirror-difference variance and flag none of its 9 failing pairs, and the two-block successor job did not reproduce it in a run whose instrument is not admitted; its cause is open.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00/analysis.json",
@@ -15122,7 +15122,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "An admission failure, not a conformance result. The mirror failure follows the per-slot anchor calibration (anchor B/A 1.082 against 0.992 from the mode fit; with no efficiency division 1 of 46 pairs fails, with the mode-fit slot sums 0) and a static phase error of about 0.02 rad per shifter remains, a hypothesis at confidence 0.55 whose equalized analysis is a diagnostic that does not readmit the instrument. Per-mode efficiencies explain none of the failure (modeled median mirror difference 0.0026 against 0.0259 observed), and the earlier attribution of the C8 spread to them is withdrawn.",
+      "boundary": "An admission failure, not a conformance result. The mirror failure follows the per-slot anchor calibration (anchor B/A 1.082 against 0.992 from the mode fit; with no efficiency division 1 of 46 pairs fails, with the mode-fit slot sums 0) and a static phase error of about 0.02 rad per shifter remains, a hypothesis at confidence 0.55 whose equalized analysis is a diagnostic that does not readmit the instrument. Per-mode efficiencies explain about a tenth of the mirror-difference variance (residual rms 0.0461 against 0.0488 observed) and flag none of the 9 failing pairs (modeled median mirror difference 0.0026 against 0.0259 observed), and the earlier attribution of the C8 spread to them is withdrawn.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00/analysis.json",

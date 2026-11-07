@@ -14,8 +14,10 @@ each script writes the log of the same stem, and a script that saves an array or
 
 ## Interpreter and inputs
 
-The probes ran under the hosted-CI interpreter `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/ci-py3.14.7/bin/python`:
-Python 3.14.7, numpy 2.5.4, scipy 1.18.1, qiskit 2.6.0 and perceval 1.3.1, with
+The probes ran under the build host's `ci-py3.14.7` virtual environment
+(`${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/ci-py3.14.7/bin/python`; its qiskit, qiskit-aer and ruff versions differ
+from the pull-request pins, so `ci/pr_checks.sh` refuses it): Python 3.14.7, numpy 2.5.4, scipy 1.18.1, qiskit 2.6.0 and
+perceval 1.3.1, with
 `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`. Every simulation is local: at most five qubits for the Tuna-17
 and IBM block circuits, and single-photon propagation through the 12-mode compiled Ascella mesh. The scripts read the
 retained records under `results/` (the two Ascella run directories, the Tuna-17 coin series and its stopped
