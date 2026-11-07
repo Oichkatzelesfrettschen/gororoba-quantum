@@ -245,7 +245,7 @@ request, in normal and `-O` mode, and name the first differing path of any misma
 The record `docs/evidence/measurement_sequence/envelope-null-w32.json` (sha256
 6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975) regenerates byte for byte from
 `msq_envelope_null.py --width 32 --replicates 400` pooled, with `GOROROBA_WORKERS=1`, and under the hosted lane's
-environment (`OPENBLAS_CORETYPE=Haswell`, `NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"`). The record
+former caps (`OPENBLAS_CORETYPE=Haswell`, `NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"`). The record
 holds the fire count, the withheld count, the mean kept count and the bound, none of which moves with the last bits
 of a per-qubit row, so the byte match is necessary and does not discriminate; the row-level tests carry the
 bit-equality claim.

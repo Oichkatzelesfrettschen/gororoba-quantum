@@ -34,9 +34,6 @@ permissions:
 
 env:
   GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
-  # The numeric environment of ci/run_gates.py, under which the null's rows replay byte for byte on the build host.
-  OPENBLAS_CORETYPE: Haswell
-  NPY_DISABLE_CPU_FEATURES: X86_V4 AVX512_ICL AVX512_SPR
 
 jobs:
   plan:

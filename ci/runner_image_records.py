@@ -103,19 +103,16 @@ ARITHMETIC_PINS = (
     "sympy",
 )
 PIN_FILES = ("requirements.txt", "ci/requirements-ci.txt")
-# The kernel, thread and loader variables the ledger's records were written under: the OpenBLAS Haswell core and
-# numpy's x86-64-v3 dispatch cap select one AVX2 path, and single-threaded libraries fix the reduction order. The
-# ledger declares them rather than reading run_gates.environment_for, so a gate environment that computes on the
-# runner's native path leaves the digest, and every record ``write`` reproduces, on this path
-# (docs/design/native-numeric-replay.md).
+# The thread and loader variables the ledger's records are written under: single-threaded libraries fix the
+# reduction order. numpy and OpenBLAS select their kernels from the CPU that runs ``write``, its native numeric path,
+# which the record's identity names (docs/design/native-numeric-replay.md); the ledger declares these variables
+# rather than reading run_gates.environment_for, so a gate environment change leaves the digest in place.
 LEDGER_ARITHMETIC = {
     "BLIS_NUM_THREADS": "1",
     "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
     "MKL_NUM_THREADS": "1",
-    "NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR",
     "NUMEXPR_NUM_THREADS": "1",
     "OMP_NUM_THREADS": "1",
-    "OPENBLAS_CORETYPE": "Haswell",
     "OPENBLAS_NUM_THREADS": "1",
     "QISKIT_NUM_PROCS": "1",
     "RAYON_NUM_THREADS": "1",

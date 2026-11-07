@@ -6,9 +6,10 @@
 #   sh ci/runner_image.sh sh -c '"$PYTHON" scripts/ANALYZER.py RUN --out FILE'
 #
 # A fitted float depends on the libm, the numpy and OpenBLAS kernels and the
-# Python build that compute it. The gate environment fixes the kernels for
-# every x86-64-v3 CPU, and this image supplies the runner's libm and Python,
-# so a record written here byte-replays on the runners. The image and its pin
+# Python build that compute it. numpy and OpenBLAS select their kernels from
+# the CPU that runs the image, and this image supplies the runner's libm and
+# Python, so a record written here byte-replays on a runner whose CPU takes the
+# same native numeric path (docs/design/native-numeric-replay.md). The image and its pin
 # venv live under ${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/runner-image/.
 set -eu
 cd "$(dirname "$0")/.."
