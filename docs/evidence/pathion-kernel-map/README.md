@@ -39,3 +39,21 @@ equal to `pathion_kernel_map.nullity`.
 Every two-term pair block on these operands is one of the 16 sign matrices Belenos already measured in all 32
 configurations (2026-10-30); a photonic two-term kernel map would repeat retained data, which is why the photonic
 candidate moves to four-term blocks.
+
+## Coset-block classes at D = 64 and D = 128
+
+`census.py --wide` writes `census-wide.json`: the two-term and four-term censuses at D = 64 (3906 two-term operands)
+and D = 128 (16002), with the nullity of every operand certified against the cd_core integer rank (python-flint
+fmpz_mat) and equal to its aligned-pair count. No coset-block class first occurs at either dimension:
+
+- A two-term block with |V| = 8 is four 2 x 2 sign blocks, one per XOR pair, so its class under row and column
+  permutation and negation is the number of aligned pairs, 0 to 4, and all five occur at D = 32. The ideal outcome
+  law of the block circuit carries the same five classes at D = 32, 64 and 128.
+- The four-term 4 x 4 blocks of D = 64 and D = 128 fall into the same 9 of the 12 classes of all 4 x 4 +-1 matrices
+  that D = 32 reaches; the three never reached through D = 128 have Gram spectra (0, 0, 2.708, 13.292),
+  (0, 1.314, 5.059, 9.627) and (0.536, 4, 4, 7.464).
+- What the doublings add is operand-level: two-term nullities 16, 20, 24 and 28 first occur at D = 64 and 32 to 60 in
+  steps of 4 at D = 128, each a sum of block counts drawn from the five classes.
+
+A hardware case for the doublings therefore reads operand nullities above 12 (every block of one operand), not new
+block classes.
