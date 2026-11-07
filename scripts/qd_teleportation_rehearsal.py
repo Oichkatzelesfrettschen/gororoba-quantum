@@ -1963,7 +1963,7 @@ def prepare(name: str) -> int:
     fresh read and its anchor read. choose_layout places the logical modes on it, justify derives the case's rule
     (CASE_DESIGNS) and its budget under its figures (noise-model.json), and estimate_required_shots under its perfs
     sizes
-    max_shots (shot-estimate.json) on the request staged in a temporary directory. The job bills 1 + max_shots * 1e-6
+    max_shots (shot-estimate.json) on the request staged in a temporary directory. A job bills <= 1 + max_shots * 1e-6
     credits, and its expected seconds follow expected_seconds at the read's clock. A decision case without decision
     power (bernoulli_decision_count), or any case whose expected seconds exceed max_duration, retains nothing: a job
     cut off at max_duration bills its max_shots. A descriptive case prints the forecast against each comparison. The

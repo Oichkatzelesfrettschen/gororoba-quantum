@@ -223,7 +223,7 @@ pattern does not recover every photon occupation. The declared rows retain
 
 The Explorer per-job maximum is 300 seconds. A job stops at its duration,
 sample or shot limit; more iterations do not extend the duration. The measured
-iterated tariff is `1 + 0.000001 * largest_iteration_max_shots`, not a flat
+iterated tariff is `1 + 0.000001 * min(shots_used, largest_iteration_max_shots)`, not a flat
 one-credit unlimited computation. A static job bills the shots used under
 the measured rule. Shared circuit structure, photon filter and processing
 policy define a packable job. Incompatible filters or policies require

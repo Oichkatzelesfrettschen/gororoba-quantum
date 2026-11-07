@@ -185,7 +185,7 @@ def test_template_experiment_binding() -> None:
 
 
 def test_credit_ceiling_rule() -> None:
-    """Verify credit billing rule: 1 + 10^-6 * max_shots_per_setting."""
+    """Verify the credit ceiling: 1 + 10^-6 * max_shots_per_setting."""
     # Test explicit shots_factor=64
     docs64 = case.build_documents(samples_per_iteration=8192, shots_factor=64)
     manifest64 = json.loads(docs64["cases.json"].decode())
