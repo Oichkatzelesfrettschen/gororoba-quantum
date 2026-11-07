@@ -478,6 +478,7 @@ def standalone_campaign_groups() -> list[Group]:
     from maximal_experiments import spectator_wavefront_ramsey_group
     from pathion_coset_block import pathion_coset_map_group
     from pathion_kernel_map import pathion_kernel_map_group
+    from pathion_parallel_coset import pathion_parallel_coset_group
     from primorial_campaigns import coherence_probe_group, gap88_group
     from qet_ladder import qet_compensated_ladder_group, qet_frame_diagnostic_group, qet_ladder_group
     from qubit_baseline import qubit_baseline_group
@@ -500,6 +501,7 @@ def standalone_campaign_groups() -> list[Group]:
         idle_readout_group(),
         pathion_kernel_map_group(),
         pathion_coset_map_group(),
+        pathion_parallel_coset_group(),
     ]
 
 
