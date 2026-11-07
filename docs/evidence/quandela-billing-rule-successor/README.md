@@ -41,10 +41,21 @@ emits the superseded wording. [`scripts/bdsc_certificate_v2.py`](../../../script
 diagnostic and stationarity builders and re-binds each job manifest's `diagnostic_case_sha256` or
 `stationarity_case_sha256` to the successor case record; and
 [`scripts/ascella_predecessor_case_v2.py`](../../../scripts/ascella_predecessor_case_v2.py) succeeds
-`ascella_predecessor_case.py`, records its own digest as `preregistered.builder_sha256` and names the original's `charge` figure
-`credit_ceiling`. Every credit number keeps its value as the ceiling at the frozen `max_shots`. No successor record
-is retained; [`tests/scripts/test_billing_rule_v2.py`](../../../tests/scripts/test_billing_rule_v2.py) holds each
-successor's difference from its original to exactly those JSON pointers.
+`ascella_predecessor_case.py`, records its own digest as `preregistered.builder_sha256` and names the original's
+`charge` figure `credit_ceiling`. Every credit number keeps its value as the ceiling at the frozen `max_shots`. No
+successor record is retained; [`tests/scripts/test_billing_rule_v2.py`](../../../tests/scripts/test_billing_rule_v2.py)
+holds each successor's difference from its original to exactly those JSON pointers.
+
+The successors emit records, not acquisition requests. Each original family's readout admits only its one frozen
+case: `bdsc_diagnostic.admit_run` and `draw_claims` compare against `docs/evidence/bdsc/diagnostic/case.json`,
+`bdsc_stationarity.admit` against its own `documents()`, `ascella_predecessor_analysis.analyze` against
+`ascella_predecessor_case.check()`, and `bdsc_cases.py` builds from `docs/evidence/bdsc/qualification_case.json`.
+Every successor job manifest therefore carries `acquisition_admission: awaiting-analyzer`, which
+`qd_platform.submit` refuses, and every successor writer refuses a directory under `results/quandela` or
+`docs/evidence`, where a successor tree would claim a retained draw or replace a pinned record. A new acquisition of
+either family takes a successor builder together with a successor analyzer, as
+`scripts/ascella_predecessor_current_case.py` ships with `scripts/ascella_predecessor_current_analysis.py`;
+[issue 780](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/780) holds that work.
 
 Three pinned documents carry the same rule in prose and have full successors:
 [`hypercomplex-operator-cases-v2.md`](../../runbooks/hypercomplex-operator-cases-v2.md),

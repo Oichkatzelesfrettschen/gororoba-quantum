@@ -4,7 +4,9 @@ bdsc_certificate.py keeps its bytes because evidence records pin its sha256. Thi
 bdsc records and replaces the two billing statements that
 docs/evidence/quandela-billing-rule-successor/README.md supersedes, planning.json
 /resources_historical/rates/credits and qualification_case.json /resources/billing_rule, with the rule in
-billing_rule_v2.RULE. Every number stays: each credit figure is the ceiling at the frozen max_shots.
+billing_rule_v2.RULE. Every number stays: each credit figure is the ceiling at the frozen max_shots. bdsc_cases.py
+builds job manifests from the retained docs/evidence/bdsc/qualification_case.json only, so the successor records are
+derivations, and the writer refuses a directory under billing_rule_v2.RECORD_ROOTS.
 
 Usage:
   "$PYTHON" scripts/bdsc_certificate_v2.py --write DIR
@@ -23,7 +25,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import bdsc_certificate as cert  # noqa: E402
-from billing_rule_v2 import RULE, supersede  # noqa: E402
+from billing_rule_v2 import RULE, outside_records, supersede  # noqa: E402
 
 # Each SUPERSEDED row names a record, the JSON path of its billing field, the wording bdsc_certificate.py emits there
 # and the successor wording that replaces it.
@@ -55,6 +57,7 @@ def documents() -> dict[str, str]:
 
 
 def write(directory: Path) -> None:
+    outside_records(ROOT, directory)
     directory.mkdir(parents=True, exist_ok=True)
     for name, content in documents().items():
         (directory / name).write_text(content, encoding="utf-8")

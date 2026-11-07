@@ -5,7 +5,9 @@ retained case tree byte for byte with a fresh build. This producer rebuilds eith
 /resources/billing_rule field that docs/evidence/quandela-billing-rule-successor/README.md supersedes with
 billing_rule_v2.RULE, and rewrites each job manifest's digest of the case record (`diagnostic_case_sha256` or
 `stationarity_case_sha256`) to the successor record's sha256, so every manifest names the record it ships with.
-The credit figure stays: it is the ceiling at the frozen max_shots.
+The credit figure stays: it is the ceiling at the frozen max_shots. Each job manifest carries
+`acquisition_admission` billing_rule_v2.ADMISSION, which qd_platform.submit refuses, because the original readouts
+admit only the original case record; the writer refuses a directory under billing_rule_v2.RECORD_ROOTS.
 
 Usage:
   "$PYTHON" scripts/bdsc_case_records_v2.py diagnostic --write DIR [--draw DRAW_JSON]
@@ -26,7 +28,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import bdsc_diagnostic as diag  # noqa: E402
 import bdsc_stationarity as st  # noqa: E402
-from billing_rule_v2 import RULE, supersede  # noqa: E402
+from billing_rule_v2 import RULE, admit_none, outside_records, supersede  # noqa: E402
 
 OLD_RULE = "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots"
 # CASE_DIGEST maps each family to the job-manifest field that carries the sha256 of its case.json.
@@ -58,11 +60,13 @@ def documents(family: str, draw: Path | None = None) -> Documents:
             manifest: dict[str, Any] = json.loads(files["cases.json"])
             diag.require(manifest.get(field) == diag.sha256_bytes(case_bytes), f"{name}: {field} names another case")
             manifest[field] = diag.sha256_bytes(record_bytes)
+            admit_none(manifest)
             files["cases.json"] = (json.dumps(manifest, indent=1) + "\n").encode()
     return out
 
 
 def write(family: str, directory: Path, draw: Path | None) -> None:
+    outside_records(ROOT, directory)
     for name, content in documents(family, draw).items():
         if isinstance(content, bytes):
             directory.mkdir(parents=True, exist_ok=True)

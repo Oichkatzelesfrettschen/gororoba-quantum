@@ -88,6 +88,7 @@ def changed(original: dict[str, Any], successor: dict[str, Any]) -> dict[str, se
     return found
 
 
+@pytest.mark.audit
 def test_pinned_producers_keep_their_recorded_bytes() -> None:
     for name, digest in PINNED_PRODUCERS.items():
         if hashlib.sha256((ROOT / name).read_bytes()).hexdigest() != digest:
@@ -128,7 +129,9 @@ def test_bdsc_case_successor_changes_only_billing_and_case_digest(family: str, d
     successor = records_v2.documents(family, draw)
     field = records_v2.CASE_DIGEST[family]
     jobs = sorted(name for name in original if name != "case.json")
-    expected = {"case.json": {"/resources/billing_rule"}} | {f"{job}/cases.json": {f"/{field}"} for job in jobs}
+    expected = {"case.json": {"/resources/billing_rule"}} | {
+        f"{job}/cases.json": {f"/{field}", "/acquisition_admission"} for job in jobs
+    }
     found = changed(original, successor)
     if found != expected:
         raise AssertionError(f"{family}: successor changes {found}, expected {expected}")
@@ -158,7 +161,7 @@ def test_predecessor_successor_changes_only_credit_basis_and_its_source(
     monkeypatch.setattr(predecessor, "documents", lambda: dict(original))
     successor = predecessor_v2.documents()
     expected = {
-        "cases.json": {"/preregistered/credit_basis", "/preregistered/builder_sha256"},
+        "cases.json": {"/preregistered/credit_basis", "/preregistered/builder_sha256", "/acquisition_admission"},
     }
     found = changed(original, successor)
     if found != expected:
@@ -173,6 +176,27 @@ def test_predecessor_successor_changes_only_credit_basis_and_its_source(
         raise AssertionError("the successor request does not name its builder's digest")
     predecessor.publish_case(tmp_path, successor)
     predecessor_v2.check(tmp_path)
+
+
+def test_submit_refuses_a_successor_request(tmp_path: Path) -> None:
+    files = records_v2.documents("stationarity")
+    job = sorted(name for name in files if name != "case.json")[0]
+    content = files[job]
+    if not isinstance(content, dict):
+        raise AssertionError("a job holds no files")
+    for name, data in content.items():
+        (tmp_path / name).write_bytes(data)
+    with pytest.raises(qd_platform.PlatformError, match="acquisition admission is awaiting-analyzer"):
+        qd_platform.submit(tmp_path, "qpu:belenos", "an approval", 1.0, 10.0, 1.0)
+
+
+@pytest.mark.parametrize("root", billing_rule_v2.RECORD_ROOTS)
+def test_successor_writers_refuse_the_retained_record_roots(root: str) -> None:
+    target = ROOT / root / "billing-successor-probe"
+    with pytest.raises(ValueError, match="outside the retained records"):
+        records_v2.write("stationarity", target, None)
+    if target.exists():
+        raise AssertionError(f"{target} was created")
 
 
 @pytest.mark.audit

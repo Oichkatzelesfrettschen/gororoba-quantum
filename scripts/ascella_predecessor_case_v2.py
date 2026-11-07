@@ -6,6 +6,9 @@ docs/evidence/quandela-billing-rule-successor/README.md supersedes with billing_
 sha256 as `preregistered.builder_sha256`, where the target-slot successor records its own; `analysis_sources` keeps
 the set qd_platform.acquisition_sources verifies. `max_credits` and `expected_credits` keep their values, the
 ceiling at the largest iteration's max_shots; `credit_ceiling` names that figure, which the original calls `charge`.
+ascella_predecessor_analysis.analyze admits only the original request, so the manifest carries
+`acquisition_admission` billing_rule_v2.ADMISSION, which qd_platform.submit refuses, and --build refuses a
+directory under billing_rule_v2.RECORD_ROOTS.
 
 Usage:
   "$PYTHON" scripts/ascella_predecessor_case_v2.py --build DIR
@@ -20,7 +23,7 @@ import sys
 from pathlib import Path
 
 import ascella_predecessor_case as original
-from billing_rule_v2 import RULE, supersede
+from billing_rule_v2 import RULE, admit_none, outside_records, supersede
 
 BUILDER = "scripts/ascella_predecessor_case_v2.py"
 OLD_CREDIT_BASIS = "1 + 1e-6 times the largest iteration max_shots, once per job"
@@ -36,6 +39,7 @@ def documents() -> dict[str, bytes]:
     manifest = json.loads(payload["cases.json"])
     supersede(manifest, ("preregistered", "credit_basis"), OLD_CREDIT_BASIS, RULE)
     manifest["preregistered"]["builder_sha256"] = original.sha256_bytes((original.ROOT / BUILDER).read_bytes())
+    admit_none(manifest)
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": payload["circuit.json"]}
 
 
@@ -56,7 +60,7 @@ def main() -> int:
     args = parser.parse_args()
     directory = args.build if args.build is not None else args.check
     if args.build is not None:
-        original.publish_case(directory, documents())
+        original.publish_case(outside_records(original.ROOT, directory), documents())
     sys.stdout.write(original.summary(check(directory)))
     return 0
 

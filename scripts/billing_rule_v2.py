@@ -11,6 +11,7 @@ those fields through `supersede`.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 RULE_SOURCE = (
@@ -39,3 +40,35 @@ def supersede(record: dict[str, Any], path: tuple[str, ...], old: str, new: str)
     if current != old:
         raise ValueError(f"/{'/'.join(path)} reads {current!r}, not the superseded wording {old!r}")
     parent[path[-1]] = new
+
+
+# Each original family's readout admits only its one frozen case (bdsc_diagnostic.admit_run and draw_claims compare
+# against docs/evidence/bdsc/diagnostic/case.json, bdsc_stationarity.admit against its own documents(),
+# ascella_predecessor_analysis.analyze against ascella_predecessor_case.check(), bdsc_cases against
+# docs/evidence/bdsc/qualification_case.json), so a successor request would pass submission and fail analysis.
+# qd_platform.submit refuses a manifest whose acquisition_admission is not "ready"; a successor job manifest carries
+# this value until a successor analyzer admits it, as ascella_predecessor_current_analysis.py admits the
+# current-schema request.
+ADMISSION = "awaiting-analyzer"
+# draw_claims scans results/quandela for manifests that name a draw, and docs/evidence holds the retained records the
+# originals' --check compares, so a successor tree written under either would claim a retained draw or replace a
+# pinned record.
+RECORD_ROOTS = ("results/quandela", "docs/evidence")
+
+
+def admit_none(manifest: dict[str, Any]) -> None:
+    """Mark a successor job manifest as a record that qd_platform.submit refuses."""
+    if "acquisition_admission" in manifest:
+        raise ValueError(
+            f"the original manifest already sets acquisition_admission {manifest['acquisition_admission']!r}"
+        )
+    manifest["acquisition_admission"] = ADMISSION
+
+
+def outside_records(root: Path, directory: Path) -> Path:
+    """`directory`, refused when it lies under one of RECORD_ROOTS of the repository at `root`."""
+    resolved = directory.resolve()
+    for name in RECORD_ROOTS:
+        if resolved.is_relative_to((root / name).resolve()):
+            raise ValueError(f"{directory} lies under {name}; a successor record goes outside the retained records")
+    return directory
