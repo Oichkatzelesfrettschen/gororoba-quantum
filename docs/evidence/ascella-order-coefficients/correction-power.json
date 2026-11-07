@@ -1,0 +1,70 @@
+{
+ "alpha": 0.01,
+ "bootstrap": 2000,
+ "counting_variance": 4.911983887307586e-06,
+ "plan": "docs/state/plans/ascella-prospective-correction-case.json",
+ "replicates": 400,
+ "rows": [
+  {
+   "family": "persistent",
+   "parameter": 1.0,
+   "shares": {
+    "correction holds": 1.0
+   }
+  },
+  {
+   "family": "persistent",
+   "parameter": 0.88,
+   "shares": {
+    "correction holds": 1.0
+   }
+  },
+  {
+   "family": "persistent",
+   "parameter": 0.75,
+   "shares": {
+    "correction holds": 0.8475,
+    "indeterminate": 0.1525
+   }
+  },
+  {
+   "family": "redrawn",
+   "parameter": 0.9,
+   "shares": {
+    "correction holds": 0.495,
+    "indeterminate": 0.505
+   }
+  },
+  {
+   "family": "redrawn",
+   "parameter": 0.75,
+   "shares": {
+    "correction fails": 0.0375,
+    "correction holds": 0.005,
+    "indeterminate": 0.9575
+   }
+  },
+  {
+   "family": "redrawn",
+   "parameter": 0.5,
+   "shares": {
+    "correction fails": 0.7775,
+    "indeterminate": 0.2225
+   }
+  },
+  {
+   "family": "redrawn",
+   "parameter": 0.0,
+   "shares": {
+    "correction fails": 1.0
+   }
+  }
+ ],
+ "samples": 32768,
+ "schema": "ascella-correction-power-v1",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json",
+ "seed_index": 57,
+ "table": "docs/evidence/ascella-order-coefficients/correction-table.json",
+ "table_sha256": "cd9a43deeaa033d37f665abeefda5501762a73701b975679325475250120b8af",
+ "useful_ratio": 2.0
+}
