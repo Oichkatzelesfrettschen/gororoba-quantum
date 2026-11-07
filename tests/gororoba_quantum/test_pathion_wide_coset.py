@@ -144,8 +144,11 @@ def test_member_ideal_laws_equal_the_state_vector_law_of_their_circuits() -> Non
 
 
 def test_closed_form_law_equals_the_state_vector_law_at_d32() -> None:
-    blocks = (pcb.Block("ba", (1, 18, 1), (19, 2, 12), 1), pcb.Block("be", (2, 27, 1), (25, 2, 9), 1))
-    blocks += (pcb.Block("bt", (17, 2, -1), (19, 2, 12), 0),)
+    blocks = (
+        pcb.Block("ba", (1, 18, 1), (19, 2, 12), 1),
+        pcb.Block("be", (2, 27, 1), (25, 2, 9), 1),
+        pcb.Block("bt", (17, 2, -1), (19, 2, 12), 0),
+    )
     for block in blocks:
         for plus in (False, True):
             for free in (False, True):
