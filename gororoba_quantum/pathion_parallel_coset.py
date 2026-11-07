@@ -69,20 +69,40 @@ def deflip(distribution: np.ndarray) -> np.ndarray:
     return np.asarray(distribution)[np.arange(distribution.size) ^ FLIP_MASK]
 
 
-def apply_readout(distribution: np.ndarray, e01: float, e10: float) -> np.ndarray:
-    """The law after every measured qubit reads 1 with probability e01 when prepared 0 and 0 with probability e10 when
-    prepared 1, the readout-asymmetry channel the flip twins test."""
+def apply_readout_clbit(distribution: np.ndarray, clbit: int, e01: float, e10: float) -> np.ndarray:
+    """The law after clbit reads 1 with probability e01 when prepared 0 and 0 with probability e10 when prepared 1."""
     qubits = distribution.size.bit_length() - 1
+    axis = qubits - 1 - clbit
     confusion = np.array([[1.0 - e01, e10], [e01, 1.0 - e10]])
     tensor = np.asarray(distribution, dtype=float).reshape((2,) * qubits)
-    for axis in range(qubits):
-        tensor = np.moveaxis(np.tensordot(confusion, tensor, axes=([1], [axis])), 0, axis)
-    return tensor.reshape(-1)
+    return np.moveaxis(np.tensordot(confusion, tensor, axes=([1], [axis])), 0, axis).reshape(-1)
+
+
+def apply_readout(distribution: np.ndarray, e01: float, e10: float) -> np.ndarray:
+    """The law after every measured qubit takes one asymmetric channel, the readout asymmetry the twins test."""
+    out = np.asarray(distribution, dtype=float)
+    for clbit in range(distribution.size.bit_length() - 1):
+        out = apply_readout_clbit(out, clbit, e01, e10)
+    return out
 
 
 def contract(distribution: np.ndarray, visibility: float) -> np.ndarray:
     """The law contracted toward uniform, the symmetric depolarizing response of the routed circuit."""
     return visibility * np.asarray(distribution) + (1.0 - visibility) / distribution.size
+
+
+def invert_readout(distribution: np.ndarray, e01: list[float], e10: list[float]) -> np.ndarray:
+    """The law with each clbit's asymmetric confusion matrix inverted, e01[i] and e10[i] belonging to clbit i.
+
+    A placement's readout correction takes the calibration of the physical qubits that carry its clbits, so the
+    corrected N_hat of every placement follows from its own two lists; the result is a quasi-probability vector."""
+    qubits = distribution.size.bit_length() - 1
+    tensor = np.asarray(distribution, dtype=float).reshape((2,) * qubits)
+    for clbit in range(qubits):
+        axis = qubits - 1 - clbit
+        inverse = np.linalg.inv(np.array([[1.0 - e01[clbit], e10[clbit]], [e01[clbit], 1.0 - e10[clbit]]]))
+        tensor = np.moveaxis(np.tensordot(inverse, tensor, axes=([1], [axis])), 0, axis)
+    return tensor.reshape(-1)
 
 
 def estimate(plus: np.ndarray, minus: np.ndarray, ideal_plus: np.ndarray, ideal_minus: np.ndarray) -> dict[str, float]:
@@ -151,6 +171,9 @@ def pathion_parallel_coset_group() -> Group:
     def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
         summary = dict(retained_group.summarize({k: v for k, v in dist.items() if k.startswith("cmap_")}))
         summary |= four_term.summarize({k: v for k, v in dist.items() if k.startswith("ftb_")})
+        for name in dist:
+            if name.startswith("cmap_") and name.endswith("_minus") and f"{name[:-6]}_plus" in dist:
+                summary[f"{name[:-6]}_selector_contrast"] = pcb.selector_contrast(dist[f"{name[:-6]}_plus"], dist[name])
         per_operand: dict[str, dict[str, float]] = {}
         for operand, k0, _block in controls:
             prefix = block_prefix(operand, k0)
@@ -176,6 +199,9 @@ def pathion_parallel_coset_group() -> Group:
                 ideal[f"{prefix}_minus"],
             )
             values = {
+                "flip_selector_contrast": pcb.selector_contrast(
+                    deflip(dist[f"{flip_prefix}_plus"]), deflip(dist[f"{flip_prefix}_minus"])
+                ),
                 "flip_visibility": flip["visibility"],
                 "flip_half_sum": flip["half_sum"],
                 "flip_nullity_estimate": flip["nullity_estimate"],

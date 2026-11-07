@@ -178,3 +178,28 @@ def test_check_script_refuses_a_flip_twin_that_routes_deeper_and_a_charge_above_
     _expect(any("estimated charge" in line for line in over), f"{over}")
     few = ppc_check.failures(_record("ibm_fez", 14336, 111, 928), 60.0, 13)
     _expect(any("12 replicas" in line for line in few), f"{few}")
+
+
+def test_asymmetric_product_readout_maps_the_selector_contrast_to_zero_and_inversion_restores_the_law() -> None:
+    summary = GROUP.summarize(_distributions(lambda name, law: ppc.apply_readout(law, 0.005, 0.030)))
+    for key in ("selector_contrast", "flip_selector_contrast"):
+        value = summary[_null_key(f"k0_{key}")]
+        _expect(abs(value) < 1e-12, f"{key} reads {value} under a product readout channel")
+    _expect(summary[_null_key("nullity_estimate")] > 0.05, "the estimator is biased by the same channel")
+    law = IDEAL["cmap_e1pe17_k0_minus"]
+    e01, e10 = [0.004, 0.006, 0.01, 0.02], [0.02, 0.03, 0.015, 0.05]
+    noisy = law.copy()
+    for clbit in range(4):
+        noisy = ppc.apply_readout_clbit(noisy, clbit, e01[clbit], e10[clbit])
+    _expect(float(np.abs(ppc.invert_readout(noisy, e01, e10) - law).max()) < 1e-12, "inversion restores the law")
+
+
+def test_selector_contrast_of_the_ideal_null_blocks_is_zero_and_of_nullity_12_blocks_is_half() -> None:
+    summary = GROUP.summarize(IDEAL)
+    for k0 in pcb.cosets(pcb.default_basis(NULL)):
+        _expect(abs(summary[_null_key(f"k{k0}_selector_contrast")]) < 1e-12, f"null block k{k0}")
+    total = sum(
+        summary[f"cmap_{pkm.operand_tag(NONNULL)}_k{k0}_selector_contrast"]
+        for k0 in pcb.cosets(pcb.default_basis(NONNULL))
+    )
+    _expect(abs(total - 3.0) < 1e-9, f"nullity-12 contrasts sum to {total}, N / 4 = 3")
