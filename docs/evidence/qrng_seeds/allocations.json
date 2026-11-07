@@ -1128,6 +1128,90 @@
    "value": 29161,
    "record": "docs/evidence/anu_qrng/draw-2026-10-31T193354Z.json",
    "index": 4
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_controls.py",
+   "name": "default_rng",
+   "value": 52300,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 1
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_observed.py",
+   "name": "default_rng",
+   "value": 34782,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 2
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_phase.py",
+   "name": "PHASE_SEED",
+   "value": 23523,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 3
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_phase_eq.py",
+   "name": "PHASE_EQ_SEED",
+   "value": 13183,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 4
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_predecessor.py",
+   "name": "default_rng",
+   "value": 19971,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 5
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_static_null.py",
+   "name": "default_rng",
+   "value": 41577,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 6
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c2_algebra.py",
+   "name": "default_rng",
+   "value": 9346,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 7
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c2_mech.py",
+   "name": "default_rng",
+   "value": 54666,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 8
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c2_scale.py",
+   "name": "default_rng",
+   "value": 15053,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 9
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c2_tuna.py",
+   "name": "default_rng",
+   "value": 22436,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 10
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c3_data.py",
+   "name": "seed",
+   "value": 17331,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 11
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c3_multi.py",
+   "name": "default_rng",
+   "value": 34580,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 12
   }
  ],
  "runtime": [

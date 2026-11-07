@@ -1,0 +1,10 @@
+trained on orientation 0, scored on orientation 1 levels (46 readings): base rms 0.0306
+  gain1   corr(obs - base, model - base) +0.510; residual rms 0.0278 (+9 percent vs base)
+  theta1  corr(obs - base, model - base) -0.720; residual rms 0.0367 (-20 percent vs base)
+  offset  corr(obs - base, model - base) +0.273; residual rms 0.0295 (+4 percent vs base)
+  gain    corr(obs - base, model - base) +0.543; residual rms 0.0254 (+17 percent vs base)
+trained on orientation 1, scored on orientation 0 levels (46 readings): base rms 0.0224
+  gain1   corr(obs - base, model - base) +0.358; residual rms 0.0215 (+4 percent vs base)
+  theta1  corr(obs - base, model - base) -0.497; residual rms 0.0244 (-9 percent vs base)
+  offset  corr(obs - base, model - base) +0.546; residual rms 0.0198 (+12 percent vs base)
+  gain    corr(obs - base, model - base) +0.561; residual rms 0.0195 (+13 percent vs base)

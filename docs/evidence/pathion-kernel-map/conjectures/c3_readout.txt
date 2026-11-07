@@ -1,0 +1,33 @@
+== final layout (logical bit -> physical qubit at measurement) ==
+ba      {'d0': 11, 'd1': 12, 'd2': 4, 'selector': 8, 'coin': 2}  cz 21 operand [1, 18, 1] basis [19, 2, 12]
+bb      {'d0': 12, 'd1': 11, 'd2': 4, 'selector': 8, 'coin': 2}  cz 23 operand [1, 26, 1] basis [27, 2, 9]
+b0      {'d0': 12, 'd1': 4, 'd2': 11, 'selector': 8, 'coin': 2}  cz 21 operand [1, 17, 1] basis [16, 1, 2]
+xor_ba  {'d0': 8, 'd1': 12, 'd2': 4, 'selector': 11, 'coin': 2}  cz 5 operand [1, 18, 1] basis [19, 2, 12]
+ba      CZ per physical edge: {(8, 12): 6, (4, 8): 10, (2, 4): 1, (8, 11): 4}
+bb      CZ per physical edge: {(8, 11): 8, (4, 8): 10, (2, 4): 1, (8, 12): 4}
+b0      CZ per physical edge: {(4, 8): 10, (8, 11): 6, (2, 4): 1, (8, 12): 4}
+xor_ba  CZ per physical edge: {(2, 4): 1, (4, 8): 3, (8, 11): 1}
+brackets (e01, e10), batch-00: {11: (0.067, 0.041), 12: (0.005, 0.022), 2: (0.019, 0.017), 4: (0.012, 0.045), 8: (0.032, 0.023)}
+
+== observed raw and corrected misfit m(y) = ratio*sign - 1 per bin (bin y = d0 + 2 d1 + 4 d2) ==
+ba: raw m [-0.171 -0.203 -0.058 -0.103  0.055  0.201  0.068  0.212] (se ~0.022); corrected m [-0.094 -0.165  0.049 -0.053 -0.001  0.124  0.007  0.133] (se ~0.023); V raw 0.433 corrected 0.514
+    split by bin bit d0 (physical qubit 11): corrected +0.019 +- 0.016 (z +1.2); raw +0.053
+    split by bin bit d1 (physical qubit 12): corrected +0.068 +- 0.016 (z +4.3); raw +0.060
+    split by bin bit d2 (physical qubit 4): corrected +0.132 +- 0.016 (z +8.3); raw +0.267
+    logical d0 on q11: e01 0.067 e10 0.041;    logical d1 on q12: e01 0.005 e10 0.022;    logical d2 on q4: e01 0.012 e10 0.045;
+bb: raw m [-0.063  0.094 -0.28   0.021  0.054  0.163 -0.066  0.077] (se ~0.027); corrected m [ 0.054  0.007 -0.157 -0.079  0.093  0.061  0.036 -0.015] (se ~0.027); V raw 0.357 corrected 0.433
+    split by bin bit d0 (physical qubit 12): corrected -0.013 +- 0.019 (z -0.7); raw +0.177
+    split by bin bit d1 (physical qubit 11): corrected -0.107 +- 0.019 (z -5.6); raw -0.124
+    split by bin bit d2 (physical qubit 4): corrected +0.088 +- 0.019 (z +4.5); raw +0.114
+    logical d0 on q12: e01 0.005 e10 0.021;    logical d1 on q11: e01 0.068 e10 0.046;    logical d2 on q4: e01 0.013 e10 0.044;
+b0: raw m [-0.082 -0.048 -0.066 -0.021  0.016  0.162 -0.021  0.061] (se ~0.021); corrected m [-0.077 -0.077 -0.051 -0.045  0.046  0.16   0.002  0.043] (se ~0.023); V raw 0.442 corrected 0.505
+    split by bin bit d0 (physical qubit 12): corrected +0.040 +- 0.017 (z +2.4); raw +0.077
+    split by bin bit d1 (physical qubit 4): corrected -0.026 +- 0.017 (z -1.6); raw -0.024
+    split by bin bit d2 (physical qubit 11): corrected +0.125 +- 0.017 (z +7.6); raw +0.109
+    logical d0 on q12: e01 0.005 e10 0.023;    logical d1 on q4: e01 0.012 e10 0.044;    logical d2 on q11: e01 0.069 e10 0.040;
+
+== product-form readout model: ideal coin law contracted toward uniform, then the bracket misassignment of the five qubits ==
+ba: contraction rho 0.515 (V 0.432 vs observed 0.433); predicted raw m [-0.095 -0.05  -0.095 -0.05   0.06   0.085  0.06   0.085]; observed - predicted [-0.077 -0.153  0.037 -0.053 -0.005  0.116  0.008  0.127]; chi2 137.9 on 8 bins (7 dof after V)
+bb: contraction rho 0.435 (V 0.357 vs observed 0.357); predicted raw m [-0.131  0.09  -0.119  0.103 -0.022  0.103 -0.114  0.09 ]; observed - predicted [ 0.068  0.004 -0.161 -0.082  0.077  0.06   0.048 -0.013]; chi2 69.7 on 8 bins (7 dof after V)
+b0: contraction rho 0.505 (V 0.443 vs observed 0.442); predicted raw m [-0.018  0.018 -0.018  0.018 -0.018  0.018 -0.018  0.018]; observed - predicted [-0.065 -0.066 -0.049 -0.038  0.033  0.144 -0.003  0.043]; chi2 81.4 on 8 bins (7 dof after V)
+total raw chi2 over three templates 288.9 (24 bins, 21 dof); a corrected-ratio of exactly 1 would be the prediction of the corrected statistic: chi2 of corrected m 298.5

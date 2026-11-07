@@ -1,0 +1,5 @@
+b0 roles {'d0': 12, 'd1': 4, 'd2': 11, 'selector': 8, 'coin': 2} bracket (e01, e10) per qubit: {12: (0.0054, 0.023), 4: (0.0119, 0.0437), 11: (0.0694, 0.0402), 8: (0.0329, 0.0266), 2: (0.0187, 0.0175)}
+Tuna b0 raw N_hat +0.1537 (half-sum +0.0680, V 0.442); readout-corrected (batch-02 bracket, joint product matrix) N_hat +0.0805 +- 0.0307 (half-sum +0.0406 +- 0.0155, V 0.505)
+readout-only prediction (contraction r=1.00, then bracket misassignment): N_hat +0.0703, half-sum +0.0616, V 0.877
+readout-only prediction (contraction r=0.50, then bracket misassignment): N_hat +0.0703, half-sum +0.0308, V 0.439
+coin read fraction 0.45458984375 (ideal 0.5); coin qubit bracket (0.0186614990234375, 0.0175323486328125)

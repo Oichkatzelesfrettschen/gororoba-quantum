@@ -1,0 +1,10 @@
+ideal selector contrast of the routed stopped-series arms: 5.551115123125783e-17
+observed (stopped series, raw): selector contrast +0.0167 +- 0.0055, N_hat +0.152 +- 0.042, V 0.483
+readout only                         V 0.915 selector contrast -0.0000 N_hat +0.0693
+X90/X over-rotation +0.029 rad       V 0.900 selector contrast +0.0160 N_hat +0.0915
+X90/X over-rotation -0.029 rad       V 0.905 selector contrast -0.0103 N_hat +0.0738
+CZ phase +0.06 rad                   V 0.895 selector contrast -0.0006 N_hat +0.0678
+CZ phase -0.06 rad                   V 0.894 selector contrast +0.0005 N_hat +0.0824
+T1 25 us                             V 0.791 selector contrast +0.0000 N_hat +0.0832
+T1 12 us                             V 0.679 selector contrast +0.0002 N_hat +0.1049
+gate depolarizing p2 0.03            V 0.411 selector contrast +0.0000 N_hat +0.0693
