@@ -335,10 +335,13 @@ the case's outcome map specifies ([case](../design/ascella-pathion-mesh-persiste
 | any decision "not read" | no verdict on that decision; the run is read as far as its other decisions allow |
 | correction leaves more than 4 of 46 above 0.07 | a per-mesh table does not correct the pathion meshes and the signed-coherence correction does not transfer |
 
-Each decision awaits the owner's approval of the case, the `sim:ascella` mesh gate and the QPU job. Further open items:
+The job ran on 2026-11-07 (`6bc382af`): the first two rows apply (fixed per mesh, failure follows the mesh, gain map
+carries 0.20), the fresh-anchor rule reads unresolved with slot efficiency excluded, and A5-191 is decided by A5-200 to
+A5-203 (revision log). Further open items:
 
-- Whether the pathion meshes persist like the signed-coherence meshes: the replay decides, and every row of the "served
-  mesh" table that comes from the signed-coherence family stays a hypothesis for pathion until then.
+- The pathion meshes persist like the signed-coherence meshes (replay r 0.9966); whether they persist across days and
+  software updates, as job-08 showed for that family, is untested on pathion meshes.
+- Where the anchor-ratio distribution centers: the fresh seeds read median 0.951 against the mode-fit 0.992.
 - Whether the frozen maps carry on pathion meshes: no power record exists at 16 seed blocks.
 - What the half-job correlations of the within-job control mean without a threshold.
 - The origin of the per-mesh error: a noise model of it does not exist, per-component loss is not retained, and the
@@ -353,3 +356,4 @@ Append an entry per result or per revised rule: date, source, what changed. Keep
 | Date (UTC) | Change |
 |---|---|
 | 2026-11-07 | First version: the served-mesh facts, the four-term and two-block comparison, the ten mechanisms of the mesh-persistence reading with their review findings, ten design rules and the open questions. No run of the mesh-persistence case exists. |
+| 2026-11-07 | Mesh-persistence job `6bc382af` read: fixed per mesh (r 0.9966 against 0.988, same 9 of 46, anchor B/A 1.0876), no drift within the job, failure follows the mesh on fresh seeds (aligned mean -0.0024), fresh anchor B/A 0.84 to 1.05 (median 0.951, sd 0.067; preregistered rule unresolved, slot efficiency excluded), frozen gain map carries 0.20 (p 0.0016), offset map does not (p 0.011). sim and qpu compile three of 52 requests to different meshes, so a simulator mesh gate compares simulator with simulator. The rule "calibrate slots from many anchor seeds or a per-mesh table" now rests on this job; the center of the anchor-ratio distribution reads near 0.95, so the next case sizes its anchor set against sd 0.067 rather than 0.025. Ledger A5-200 to A5-204; claim hw-ascella-pathion-mesh-persistence. |
