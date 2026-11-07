@@ -34,10 +34,10 @@ def _null_key(key: str) -> str:
 
 def test_member_structure_and_placement_member() -> None:
     names = [member.name for member in GROUP.members]
-    _expect(len(names) == 110 and len(set(names)) == 110, f"{len(names)} members, {len(set(names))} distinct")
+    _expect(len(names) == 111 and len(set(names)) == 111, f"{len(names)} members, {len(set(names))} distinct")
     _expect(names[0] == "cmap_e1pe17_k0_minus", f"the placement member is {names[0]}")
     _expect(sum(n.startswith("cmap_") for n in names) == 64, "the retained map keeps its 64 members")
-    _expect(sum(n.startswith("ftb_") for n in names) == 14, "two four-term blocks of seven arms")
+    _expect(sum(n.startswith("ftb_") for n in names) == 15, "two four-term blocks of eight and seven arms")
     _expect(sum(n.startswith("cflip_") for n in names) == 16, "flip twins of eight blocks")
     _expect(sum(n.startswith("crep_") for n in names) == 16, "repeats of eight blocks")
 

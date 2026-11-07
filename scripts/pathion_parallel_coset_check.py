@@ -58,7 +58,7 @@ def failures(record: dict, ceiling: float = CEILING_SECONDS, min_replicas: int =
             found.append(f"{name}: {count} CZ above the four-term budget {FOUR_TERM_CZ_BUDGET}")
     shared: dict[str, set[int]] = {}
     for name, count in cz.items():
-        if name.startswith("ftb_") and name.rsplit("_", 1)[1] in ("T", "D", "F", "E0", "E1"):
+        if name.startswith("ftb_") and name.rsplit("_", 1)[1] in ("T", "D", "D2", "F", "E0", "E1"):
             shared.setdefault(name.rsplit("_", 1)[0], set()).add(count)
     for block, counts in shared.items():
         if len(counts) != 1:

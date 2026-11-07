@@ -15,7 +15,8 @@ and it equals lambda / 16 for an input in the Gram eigenspace of B^T B with eige
 vector, the largest lambda the bright vector). A basis input has level 1/4 for every block, because each column of B
 holds four entries of modulus 1.
 
-Arms: T the top Gram eigenvector, D a kernel vector, F the top vector with the sign of one component flipped, E0 and
+Arms: T the top Gram eigenvector, D a kernel vector (D2 a second, orthogonal kernel vector where the kernel has
+dimension 2), F the top vector with the sign of one component flipped, E0 and
 E1 basis inputs (null level 1/4), C the cocycle-free block (every entry +1) on the true top vector, N the block with
 the one entry whose negation moves the level most, on the true top vector. T, D, F, E0 and E1 are one parametrized
 circuit (the input state is three Ry angles), so they share routing; C and N carry their own diagonal.
@@ -37,11 +38,11 @@ from experiments import Group, Member
 DIM = 32
 # Two-flat operands whose coset blocks Ascella read one block per photon (scripts/ascella_pathion_four_term_blocks.py).
 OPERANDS: dict[str, tuple[int, int, int, int]] = {"B12": (1, 10, 20, 31), "C8": (1, 8, 18, 27)}
-ARMS = ("T", "D", "F", "E0", "E1", "C", "N")
+ARMS = ("T", "D", "D2", "F", "E0", "E1", "C", "N")
 # Gram spectra of four-term 4 x 4 blocks absent below dimension 32 that carry a kernel and a bright eigenvalue above 10
 # (docs/evidence/pathion-kernel-map/census.json, classes_new_at_32_spectra), rounded to 3 digits.
 NEW_AT_32 = ((0.0, 0.0, 4.0, 12.0), (0.0, 1.528, 4.0, 10.472))
-SHARED_ARMS = ("T", "D", "F", "E0", "E1")
+SHARED_ARMS = ("T", "D", "D2", "F", "E0", "E1")
 # A mutated arm's ideal level must lie this far from the true top level for the arm to separate.
 SEPARATION = 0.10
 # Ideal levels are multiples of 1/64; a value below this is zero.
@@ -152,6 +153,24 @@ def kernel_vector(matrix: np.ndarray) -> np.ndarray | None:
     return None
 
 
+def second_kernel_vector(matrix: np.ndarray) -> np.ndarray | None:
+    """A unit kernel vector orthogonal to ``kernel_vector``, else None when the kernel has dimension below 2: the
+    first kernel-projected basis vector left over after removing its component along the first kernel vector."""
+    values, vectors = np.linalg.eigh(matrix.T @ matrix)
+    inside = vectors[:, values < ZERO]
+    first = kernel_vector(matrix)
+    if first is None or inside.shape[1] < 2:
+        return None
+    projector = inside @ inside.T
+    for n in range(4):
+        rest = projector[:, n] - float(projector[:, n] @ first) * first
+        if np.linalg.norm(rest) > 1e-6:
+            vector = rest / np.linalg.norm(rest)
+            lead = vector[int(np.argmax(np.abs(vector) > ZERO))]
+            return vector * (1.0 if lead > 0 else -1.0)
+    return None
+
+
 def level(matrix: np.ndarray, psi: np.ndarray) -> float:
     return float(np.sum((matrix @ psi) ** 2) / 16.0)
 
@@ -243,6 +262,7 @@ def arm_inputs(block: FourBlock) -> dict[str, tuple[np.ndarray | None, np.ndarra
     return {
         "T": (top, None),
         "D": (kernel_vector(matrix), None),
+        "D2": (second_kernel_vector(matrix), None),
         "F": (flipped_top(matrix), None),
         "E0": (np.array([1.0, 0.0, 0.0, 0.0]), None),
         "E1": (np.array([0.0, 1.0, 0.0, 0.0]), None),

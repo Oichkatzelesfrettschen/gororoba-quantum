@@ -54,6 +54,8 @@ def test_circuit_law_matches_the_level_of_every_arm(block: pft.FourBlock) -> Non
 def test_mutation_test_separates_the_bright_arm_and_the_null_arms_hold(block: pft.FourBlock) -> None:
     levels = pft.arm_levels(block)
     _expect(levels["D"] < 1e-9, f"{block.tag}: the kernel arm reads {levels['D']}")
+    if "D2" in levels:
+        _expect(levels["D2"] < 1e-9, f"{block.tag}: the second kernel arm reads {levels['D2']}")
     _expect(abs(levels["E0"] - 0.25) < 1e-12 and abs(levels["E1"] - 0.25) < 1e-12, f"{block.tag}: null level")
     for arm in ("F", "C", "N"):
         _expect(levels["T"] - levels[arm] >= pft.SEPARATION, f"{block.tag}: arm {arm} reads {levels[arm]}")
@@ -74,7 +76,9 @@ def test_input_state_circuit_prepares_the_vector_up_to_sign(block: pft.FourBlock
 @pytest.mark.parametrize("block", CHOSEN, ids=lambda b: b.tag)
 def test_parametrized_arms_share_one_circuit_and_mutated_arms_do_not(block: pft.FourBlock) -> None:
     members = {m.name: m for m in pft.four_term_members((block,))}
-    shared = {id(members[f"ftb_{block.tag}_{arm}"].circuit) for arm in pft.SHARED_ARMS}
+    shared = {
+        id(members[f"ftb_{block.tag}_{arm}"].circuit) for arm in pft.SHARED_ARMS if f"ftb_{block.tag}_{arm}" in members
+    }
     _expect(len(shared) == 1, f"{block.tag}: the shared arms use {len(shared)} circuits")
     for arm in ("C", "N"):
         _expect(id(members[f"ftb_{block.tag}_{arm}"].circuit) not in shared, f"{block.tag}: arm {arm} shares it")
@@ -87,3 +91,14 @@ def test_ideal_summary_has_unit_visibility_and_zero_closure() -> None:
     _expect(len(visibilities) == len(CHOSEN) and all(abs(v - 1.0) < 1e-12 for v in visibilities), "visibility")
     closures = [v for k, v in summary.items() if "_closure_" in k]
     _expect(bool(closures) and max(abs(v) for v in closures) < 1e-12, "closure")
+
+
+def test_second_kernel_arm_exists_exactly_for_a_two_dimensional_kernel() -> None:
+    for block in CHOSEN:
+        matrix = pft.block_matrix(block)
+        kernel_dimension = int(np.sum(pft.gram_spectrum(matrix) < pft.ZERO))
+        first, second = pft.kernel_vector(matrix), pft.second_kernel_vector(matrix)
+        _expect((second is not None) == (kernel_dimension >= 2), f"{block.tag}: kernel dimension {kernel_dimension}")
+        if first is not None and second is not None:
+            _expect(abs(float(first @ second)) < 1e-12, f"{block.tag}: the kernel arms are not orthogonal")
+            _expect(float(np.linalg.norm(matrix @ second)) < 1e-12, f"{block.tag}: D2 is not in the kernel")
