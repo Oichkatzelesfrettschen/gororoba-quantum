@@ -239,7 +239,7 @@ single misrouted bin is a deviation of about 0.1 to 0.2 in the ratio against the
 
 All use the coin piles of a template's job (the coin read as the arm) and Z_RESOLVE = 3.0 standard errors; the readout-corrected statistic enters only the cross-platform and depth readings.
 A bin whose sampled selector outcomes are deterministic in both arms has standard error 0 and counts as resolved when its contrast carries the ideal sign exactly
-(`signed_z`) and each arm holds at least `DETERMINISTIC_MIN_COUNT` (5) shots in the bin, the least count at which a chance run of one outcome in both arms (probability at most 4^-n) falls below the
+(`signed_z` in `gororoba_quantum/pathion_coset_analysis.py`) and each arm holds at least `DETERMINISTIC_MIN_COUNT` (5) shots in the bin, the least count at which a chance run of one outcome in both arms (probability at most 4^-n) falls below the
 3-sigma one-sided tail; a deterministic bin with fewer shots decides nothing. The report lists deterministic bins under `deterministic_bins` with a null z.
 
 1. Resolution: `ba` and `bb` each read the ideal sign at 3 standard errors on at least 6 of their 8 bins. Failure refutes "Tuna-17 realizes the compiled A_5 block map at 21 to 23 CZ"
@@ -302,7 +302,7 @@ after the coin series ran, from the local review of PR #774; none changes a reta
 reads `fails` and its cross-platform rule `fails` with or without them; the retained standard errors sit within the floor).
 
 - The null (rule 3) and each cross-platform bin also require a standard error no worse than twice its design value.
-  Precision floor (`PRECISION_FACTOR` = 2 in `qi_pathion_coset_block_cases.py`, shared by both analyzers). A null "holds" and a cross-platform bin "within" accept a departure up to 3 standard errors, so a run
+  Precision floor (`PRECISION_FACTOR` = 2 in `gororoba_quantum/pathion_coset_analysis.py`, shared by both analyzers). A null "holds" and a cross-platform bin "within" accept a departure up to 3 standard errors, so a run
   with a larger standard error accepts a wider departure; failure to reject zero is not agreement. Each of the two verdicts therefore also requires the measured standard error to stay within twice its design
   value, the larger of the two RHO_BAND ends of this case's `prediction.json` (`templates.b0.rho_*.selector_se`; `cross_platform.templates.<template>.<device>.rho_*.readout_corrected.se`, which carries the
   IBM replica spread), scaled by the root of the forecast's shots over the run's shots. At the hardware forecast's shots the factor bounds the 3-standard-error acceptance half-width at six design standard errors: 0.023 on the `b0` selector

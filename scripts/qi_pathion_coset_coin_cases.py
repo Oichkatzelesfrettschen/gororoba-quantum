@@ -94,6 +94,7 @@ import qi_pathion_coset_coin_series as coin_series  # noqa: E402
 import qi_zero_divisor_cases as zd  # noqa: E402
 
 import parallel  # noqa: E402
+import pathion_coset_analysis as pca  # noqa: E402
 import pathion_coset_block as pcb  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
@@ -106,7 +107,7 @@ QX_QUBITS = 10
 QX_SHOTS = 2048
 GRID = kcc.GRID
 BASIS = kcc.BASIS
-Z_RESOLVE = blk.Z_RESOLVE
+Z_RESOLVE = pca.Z_RESOLVE
 ANALYSIS_SCHEMA = "qi-pathion-coset-coin-analysis-v1"
 # The ANU QRNG draw whose 64 values seed every routing candidate; it belongs to this case's manifest.
 DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T225841Z.json"
@@ -117,9 +118,9 @@ POOR_READOUT_QUBIT = 11
 J_LIMIT_HZ = blk.J_LIMIT_HZ
 REGION_SIZE = 5
 RHO_BAND = blk.RHO_BAND
-CROSS_BINS_MIN = blk.CROSS_BINS_MIN
-PRECISION_FACTOR = blk.PRECISION_FACTOR
-CROSS_STATISTIC = blk.CROSS_STATISTIC
+CROSS_BINS_MIN = pca.CROSS_BINS_MIN
+PRECISION_FACTOR = pca.PRECISION_FACTOR
+CROSS_STATISTIC = pca.CROSS_STATISTIC
 IBM_RECORDS = blk.IBM_RECORDS
 # Readout of the register qubits at the calibration the stopped series measured: its four readout circuits.
 STOPPED_RUN = "results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17"
@@ -146,7 +147,7 @@ PRIMARY = blk.PRIMARY
 NOUT = 32
 HALF = 16
 BATCH_TEMPLATES = (("batch-00", "ba"), ("batch-01", "bb"), ("batch-02", "b0"), ("batch-03", "xor_ba"))
-bit = pcs.bit
+bit = pca.bit
 
 
 def template_circuit(name: str) -> Any:
@@ -296,12 +297,12 @@ def verify_stopped_files() -> None:
     cases = json.loads(stopped_path("batch-02/cases.json").read_text(encoding="utf-8"))
     roles = cases["templates"]["b0"]["roles"]
     plus, minus = (
-        blk.outcome_counts(
+        pca.outcome_counts(
             json.loads(stopped_path(f"batch-02/raw/b0-{arm}-r0.cq.json").read_text(encoding="utf-8")), roles
         )
         for arm in ("plus", "minus")
     )
-    selector, se = blk.selector_stat(plus, minus)
+    selector, se = pca.selector_stat(plus, minus)
     if abs(selector - STOPPED_B0_SELECTOR[0]) > 1e-6 or abs(se - STOPPED_B0_SELECTOR[1]) > 1e-6:
         raise ValueError(f"STOPPED_B0_SELECTOR differs from the pinned files: {selector} +- {se}")
 
@@ -324,7 +325,7 @@ def retained_readout(region: tuple[int, ...]) -> dict[int, tuple[float, float]]:
     return {q: (float(np.mean(zero[q])), 1.0 - float(np.mean(one[q]))) for q in region if zero[q] and one[q]}
 
 
-confusion = blk.confusion
+confusion = pca.confusion
 
 
 def coin_counts(shots: list[str], roles: dict[str, int]) -> np.ndarray:
@@ -342,7 +343,7 @@ def coin_outputs(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None
     before they split by coin."""
     x = counts if matrix is None else np.linalg.solve(matrix, counts)
     plus, minus = x[HALF:], x[:HALF]
-    return blk.pile_vector(plus, minus, sign)
+    return pca.pile_vector(plus, minus, sign)
 
 
 def coin_statistics(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None = None) -> dict[str, Any]:
@@ -362,7 +363,12 @@ def coin_statistics(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | N
     cov = x.sum() * (np.diag(p) - np.outer(p, p))
     with np.errstate(invalid="ignore"):
         se = np.sqrt(np.einsum("ij,jk,ik->i", jac, cov, jac))
-    return blk.pack_statistics(base, se)
+    return pca.pack_statistics(base, se)
+
+
+def readout_matrix(assignment: dict[int, tuple[float, float]], roles: dict[str, int]) -> np.ndarray:
+    """Joint assignment matrix of the five logical bits of a template from one bracket's per-qubit (e01, e10)."""
+    return confusion([assignment[roles[k]] for k in KEYS])
 
 
 def piles(counts: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -381,8 +387,8 @@ def forecast(ideal: np.ndarray, cz: int, rho: float, readout: list[tuple[float, 
     law = model_law(ideal, cz, rho, readout)
     counts = law * shots
     plus, minus = piles(counts)
-    selector, selector_se = blk.selector_stat(plus, minus)
-    c, se = blk.bin_contrast(plus, minus)
+    selector, selector_se = pca.selector_stat(plus, minus)
+    c, se = pca.bin_contrast(plus, minus)
     plus_ideal, minus_ideal = arm_laws(ideal)
     ideal_c = pcb.output_contrast(plus_ideal, minus_ideal)
     sign = np.sign(ideal_c)
@@ -520,12 +526,12 @@ def cross_platform_prediction(plan: dict[str, Any], readout: dict[int, tuple[flo
                 cell[f"rho_{rho}"] = {
                     statistic: {
                         key: value if key in ("labels", "ibm_coset", "bins_within") else blk.rounded(value)
-                        for key, value in blk.cross_platform(model[statistic], labels, reference).items()
+                        for key, value in pca.cross_platform(model[statistic], labels, reference).items()
                     }
                     for statistic in model
                 }
-                compared = blk.cross_platform(model[CROSS_STATISTIC], labels, reference)
-                refuted = blk.refutation_probability(
+                compared = pca.cross_platform(model[CROSS_STATISTIC], labels, reference)
+                refuted = pca.refutation_probability(
                     compared["difference"], compared["se"], model[CROSS_STATISTIC]["ratio_se"]
                 )
                 cell[f"rho_{rho}"]["refutation_probability"] = round(refuted, 6)
@@ -704,6 +710,28 @@ def select_region() -> None:
     )
 
 
+class BracketStatistics:
+    """coin_statistics of a primary template corrected with one readout bracket, for an item (batch, template);
+    a module-level callable for the pool."""
+
+    def __init__(
+        self,
+        counts: dict[str, np.ndarray],
+        ideal_c: dict[str, np.ndarray],
+        brackets: dict[str, dict[int, tuple[float, float]]],
+        roles: dict[str, dict[str, int]],
+    ) -> None:
+        self.counts = counts
+        self.ideal_c = ideal_c
+        self.brackets = brackets
+        self.roles = roles
+
+    def __call__(self, item: tuple[str, str]) -> dict[str, Any]:
+        batch, name = item
+        matrix = readout_matrix(self.brackets[batch], self.roles[name])
+        return coin_statistics(self.counts[name], np.sign(self.ideal_c[name]), matrix)
+
+
 # Analysis -------------------------------------------------------------------------------------------------------
 
 
@@ -722,18 +750,7 @@ def control_arms(
     arms: dict[str, tuple[list[str], dict[str, int], list[float]]],
 ) -> dict[str, Any]:
     """Each data circuit's observed 32-outcome law against its ideal law of record at the sampling floor."""
-    report: dict[str, Any] = {}
-    for key, (listed, roles, ideal) in sorted(arms.items()):
-        counts = coin_counts(listed, roles)
-        law = np.array(ideal)
-        tvd = 0.5 * float(np.abs(counts / counts.sum() - law).sum())
-        floor = blk.control_floor(law, len(listed))
-        report[key] = {"tvd": tvd, "floor": floor, "ok": tvd <= blk.CONTROL_FLOOR_FACTOR * floor}
-    return {
-        "arms": report,
-        "factor": blk.CONTROL_FLOOR_FACTOR,
-        "pass": bool(report) and all(v["ok"] for v in report.values()),
-    }
+    return pca.control_report(arms, coin_counts)
 
 
 def template_file(shots: dict[str, list[str]], name: str) -> str:
@@ -747,8 +764,8 @@ def template_row(
     name: str, t: dict[str, Any], counts: np.ndarray, matrix: np.ndarray | None, ideal_c: np.ndarray
 ) -> dict[str, Any]:
     plus, minus = piles(counts)
-    c, se, z_signed = blk.bin_scores(plus, minus, ideal_c)
-    selector, selector_se = blk.selector_stat(plus, minus)
+    c, se, z_signed = pca.bin_scores(plus, minus, ideal_c)
+    selector, selector_se = pca.selector_stat(plus, minus)
     sign = np.sign(ideal_c)
     decided = np.abs(ideal_c) > 0.5
     statistics: dict[str, Any] = {"raw": coin_statistics(counts, sign)}
@@ -827,40 +844,50 @@ def evaluate(
         key = template_file(shots, name)
         owner[name] = key.split("/")[0]
         counts[name] = coin_counts(shots[key], t["roles"])
-        scale[name] = blk.design_scale(XOR_SHOTS if name == "xor_ba" else SHOTS, len(shots[key]))
+        scale[name] = pca.design_scale(XOR_SHOTS if name == "xor_ba" else SHOTS, len(shots[key]))
 
     def matrix_of(name: str, batch: str) -> np.ndarray | None:
         asg = brackets.get(batch)
         if asg is None:
             return None
-        return confusion([asg[templates[name]["roles"][k]] for k in KEYS])
+        return readout_matrix(asg, templates[name]["roles"])
 
     for name, t in templates.items():
         rows[name] = template_row(name, t, counts[name], matrix_of(name, owner[name]), ideal_c[name])
     ba, bb, b0, xor = rows["ba"], rows["bb"], rows["b0"], rows["xor_ba"]
-    along = {name: blk.bin_scores(*piles(counts[name]), ideal_c[name])[2] for name in ("ba", "bb")}
-    cross = blk.cross_decision(
+    along = {name: pca.bin_scores(*piles(counts[name]), ideal_c[name])[2] for name in ("ba", "bb")}
+    cross = pca.cross_decision(
         templates,
         manifest["labels"],
         ibm,
         lambda n: rows[n]["statistics"] if CROSS_STATISTIC in rows[n]["statistics"] else None,
         design,
         scale,
+        PRIMARY,
     )
     drift = pcs.reference_drift(
         [(k.split("/")[0], k.split("/")[1], v) for k, v in shots.items() if k.split("/")[1] in pcs.READOUT_KIND],
         register,
     )
+    # Each (bracket, primary template) statistic is an independent delta-method propagation.
+    bracket_jobs = [(batch, n) for batch in brackets for n in PRIMARY]
+    bracket_stats = parallel.ordered_map(
+        BracketStatistics(counts, ideal_c, brackets, {n: templates[n]["roles"] for n in PRIMARY}), bracket_jobs
+    )
+    alternatives: dict[str, dict[str, dict[str, Any]]] = {batch: {} for batch in brackets}
+    for (batch, n), stats in zip(bracket_jobs, bracket_stats, strict=True):
+        alternatives[batch][n] = stats
     sensitivity: dict[str, Any] = {}
     for batch in brackets:
-        alternative = {n: coin_statistics(counts[n], np.sign(ideal_c[n]), matrix_of(n, batch)) for n in PRIMARY}
-        under = blk.cross_decision(
+        alternative = alternatives[batch]
+        under = pca.cross_decision(
             templates,
             manifest["labels"],
             ibm,
             lambda n, alternative=alternative: {CROSS_STATISTIC: alternative[n]},
             design,
             scale,
+            PRIMARY,
         )
         sensitivity[batch] = {
             "holds": under["holds"],
@@ -874,19 +901,19 @@ def evaluate(
         }
     decisions = {
         "resolution": {"ba": ba["bins_with_ideal_sign"] >= 6, "bb": bb["bins_with_ideal_sign"] >= 6},
-        "pattern": blk.pattern_decision(ideal_c["ba"], ideal_c["bb"], along["ba"], along["bb"]),
+        "pattern": pca.pattern_decision(ideal_c["ba"], ideal_c["bb"], along["ba"], along["bb"]),
         "null": {
-            **blk.null_decision(b0["selector_contrast"], b0["selector_se"], design["selector_se"]["b0"] * scale["b0"]),
+            **pca.null_decision(b0["selector_contrast"], b0["selector_se"], design["selector_se"]["b0"] * scale["b0"]),
             "stopped_series_reference": {
                 "selector_contrast": STOPPED_B0_SELECTOR[0],
                 "se": STOPPED_B0_SELECTOR[1],
-                "z_of_difference": blk.ratio_or_none(
+                "z_of_difference": pca.ratio_or_none(
                     b0["selector_contrast"] - STOPPED_B0_SELECTOR[0],
                     math.hypot(b0["selector_se"], STOPPED_B0_SELECTOR[1]),
                 ),
             },
         },
-        "cocycle_free": blk.cocycle_free_decision(
+        "cocycle_free": pca.cocycle_free_decision(
             xor["selector_contrast"], xor["selector_se"], ba["selector_contrast"], ba["selector_se"]
         ),
         "cross_platform": cross,
@@ -921,7 +948,9 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
     """Score collected batches of one series: decisions, per-template statistics, the IBM comparison and the drift
     covariate. A series that holds fewer batches than the case reports its batch list and drift covariate only; a
     QX series reports the control verdict a Tuna-17 submission needs."""
-    series = blk.read_series(run_dirs, case_root, coin_series.series_of, "data", ("batch", "circuits", "shots"))
+    series = pca.read_series(
+        run_dirs, case_root, coin_series.series_of, "data", ("batch", "circuits", "shots"), pcs.load_run
+    )
     shared, shots, executed, digests, arms = (
         series["shared"],
         series["shots"],

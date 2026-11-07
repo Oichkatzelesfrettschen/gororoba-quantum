@@ -173,26 +173,6 @@ def test_pattern_decision_requires_only_the_opposite_sign_bins() -> None:
     _check(all(report["decisions"]["resolution"].values()), "seven of eight bins meet the resolution decision")
 
 
-def test_signed_z_decides_a_deterministic_bin_by_an_exact_sign_match() -> None:
-    _check(cb.signed_z(1.0, 0.0, 1.0) == math.inf, "match on a deterministic bin")
-    _check(cb.signed_z(-1.0, 0.0, -1.0) == math.inf, "match with a negative ideal sign")
-    _check(cb.signed_z(-1.0, 0.0, 1.0) == -math.inf, "mismatch on a deterministic bin")
-    _check(cb.signed_z(0.0, 0.0, 1.0) == 0.0, "a zero contrast decides nothing")
-    _check(cb.signed_z(0.5, 0.0, 0.0) == 0.0, "a zero ideal sign decides nothing")
-    _check(abs(cb.signed_z(0.3, 0.1, 1.0) - 3.0) < 1e-12, "a sampled bin keeps c * sign / se")
-    _check(cb.ratio_or_none(1.0, 0.0) is None and cb.ratio_or_none(1.0, 0.5) == 2.0, "ratio_or_none")
-
-
-def test_a_deterministic_bin_counts_only_with_enough_shots_in_each_arm() -> None:
-    least = cb.DETERMINISTIC_MIN_COUNT
-    tail = 0.5 * math.erfc(cb.Z_RESOLVE / math.sqrt(2.0))
-    _check(4.0**-least <= tail < 4.0 ** -(least - 1), f"{least} is the least count with 4^-n below the normal tail")
-    _check(cb.signed_z(1.0, 0.0, 1.0, n_min=least) == math.inf, "a deterministic bin at the minimum count decides")
-    _check(cb.signed_z(1.0, 0.0, 1.0, n_min=least - 1) == 0.0, "a chance-deterministic bin decides nothing")
-    _check(cb.signed_z(-1.0, 0.0, 1.0, n_min=least - 1) == 0.0, "a short bin never reads as a contrary result")
-    _check(abs(cb.signed_z(0.3, 0.1, 1.0, n_min=1) - 3.0) < 1e-12, "a sampled bin ignores the count rule")
-
-
 def test_a_zero_contrast_does_not_resolve_the_cocycle_free_decision() -> None:
     """Selectors that never fire give a zero contrast with zero standard error in ba and xor_ba."""
     manifest = _manifest()
@@ -261,49 +241,6 @@ def _scramble_bin(strings: list[str], roles: dict[str, int], bin_index: int) -> 
                 shot = shot[:position] + str(1 - int(shot[position])) + shot[position + 1 :]
         out.append(shot)
     return out
-
-
-def _noise_reference() -> dict[str, Any]:
-    entry = {"ratio": 0.0, "se": 0.0, "se_mean": 0.0, "coset": 0}
-    return {"labels": {label: entry for label in range(32)}}
-
-
-def test_a_high_uncertainty_bin_set_does_not_count_eight_of_eight() -> None:
-    """IBM ratios 0 against Tuna ratios 1 at a standard error of 1: every z is 1; a design of 0.05 refuses all eight."""
-    statistics = {"ratio": [1.0] * 8, "ratio_se": [1.0] * 8}
-    labels = list(range(8))
-    _check(cb.cross_platform(statistics, labels, _noise_reference())["bins_within"] == 8, "z = 1 reads as agreement")
-    floored = cb.cross_platform(statistics, labels, _noise_reference(), design_se=[0.05] * 8)
-    _check(floored["bins_within"] == 0 and floored["bins_within_unfloored"] == 8, f"{floored}")
-    reached = cb.cross_platform(
-        {"ratio": [0.01] * 8, "ratio_se": [0.04] * 8}, labels, _noise_reference(), design_se=[0.05] * 8
-    )
-    _check(reached["bins_within"] == 8 and all(reached["precise"]), "a run at the design precision counts its bins")
-    at_factor = cb.cross_platform(
-        {"ratio": [0.0] * 8, "ratio_se": [cb.PRECISION_FACTOR * 0.05] * 8},
-        labels,
-        _noise_reference(),
-        design_se=[0.05] * 8,
-    )
-    _check(at_factor["bins_within"] == 8, "a combined error at exactly PRECISION_FACTOR times the design is precise")
-    beyond = cb.cross_platform(
-        {"ratio": [0.0] * 8, "ratio_se": [cb.PRECISION_FACTOR * 0.05 * 1.01] * 8},
-        labels,
-        _noise_reference(),
-        design_se=[0.05] * 8,
-    )
-    _check(beyond["bins_within"] == 0, "a combined error beyond the factor is imprecise")
-
-
-def test_a_selector_contrast_at_a_coarse_error_is_uninformative_not_a_null() -> None:
-    design = 0.004
-    holds = cb.null_decision(0.003, 0.005, design)
-    _check(holds["outcome"] == "holds" and holds["holds"], f"{holds}")
-    fails = cb.null_decision(0.05, 0.005, design)
-    _check(fails["outcome"] == "fails" and not fails["holds"], f"{fails}")
-    coarse = cb.null_decision(0.5, 1.0, design)
-    _check(coarse["outcome"] == "uninformative" and not coarse["holds"], "a contrast of 0.5 at se 1 satisfies no null")
-    _check(coarse["z"] == 0.5 and coarse["informative"] is False, f"{coarse}")
 
 
 def test_a_run_coarser_than_the_design_leaves_the_decisions_unmet() -> None:
