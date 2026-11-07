@@ -1,0 +1,126 @@
+{
+ "dimension": 32,
+ "packages": {
+  "hypercomplex": {
+   "basis_pairs": 1024,
+   "basis_pairs_agreeing": 1024,
+   "map": "identity",
+   "matches_cd_core_nullity": true,
+   "operands": {
+    "1,10,1": {
+     "aligned_pairs": 8,
+     "nullity": 8
+    },
+    "1,17,1": {
+     "aligned_pairs": 0,
+     "nullity": 0
+    },
+    "1,18,1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "1,24,1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "1,26,1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    },
+    "17,10,-1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    },
+    "17,2,-1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "2,27,1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    }
+   }
+  },
+  "hypercomplex-engine": {
+   "basis_pairs": 1024,
+   "basis_pairs_agreeing": 1024,
+   "map": "identity",
+   "matches_cd_core_nullity": true,
+   "operands": {
+    "1,10,1": {
+     "aligned_pairs": 8,
+     "nullity": 8
+    },
+    "1,17,1": {
+     "aligned_pairs": 0,
+     "nullity": 0
+    },
+    "1,18,1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "1,24,1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "1,26,1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    },
+    "17,10,-1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    },
+    "17,2,-1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "2,27,1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    }
+   }
+  },
+  "hyprat": {
+   "basis_pairs": 1024,
+   "basis_pairs_agreeing": 1024,
+   "map": "identity",
+   "matches_cd_core_nullity": true,
+   "operands": {
+    "1,10,1": {
+     "aligned_pairs": 8,
+     "nullity": 8
+    },
+    "1,17,1": {
+     "aligned_pairs": 0,
+     "nullity": 0
+    },
+    "1,18,1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "1,24,1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "1,26,1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    },
+    "17,10,-1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    },
+    "17,2,-1": {
+     "aligned_pairs": 12,
+     "nullity": 12
+    },
+    "2,27,1": {
+     "aligned_pairs": 4,
+     "nullity": 4
+    }
+   }
+  }
+ },
+ "schema": "pathion-kernel-map-packages-v1"
+}

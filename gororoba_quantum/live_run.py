@@ -217,6 +217,8 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "diagnostic_controls.py",
     "idle_penalty.py",
     "idle_readout.py",
+    "pathion_coset_block.py",
+    "pathion_kernel_map.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qrng_seeds.py",
