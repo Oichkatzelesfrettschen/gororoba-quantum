@@ -41,7 +41,7 @@ emits the superseded wording. [`scripts/bdsc_certificate_v2.py`](../../../script
 diagnostic and stationarity builders and re-binds each job manifest's `diagnostic_case_sha256` or
 `stationarity_case_sha256` to the successor case record; and
 [`scripts/ascella_predecessor_case_v2.py`](../../../scripts/ascella_predecessor_case_v2.py) succeeds
-`ascella_predecessor_case.py`, adds its own digest to `analysis_sources` and names the original's `charge` figure
+`ascella_predecessor_case.py`, records its own digest as `preregistered.builder_sha256` and names the original's `charge` figure
 `credit_ceiling`. Every credit number keeps its value as the ceiling at the frozen `max_shots`. No successor record
 is retained; [`tests/scripts/test_billing_rule_v2.py`](../../../tests/scripts/test_billing_rule_v2.py) holds each
 successor's difference from its original to exactly those JSON pointers.

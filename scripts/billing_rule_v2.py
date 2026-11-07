@@ -18,7 +18,8 @@ RULE_SOURCE = (
     "'The billing rule'"
 )
 RULE = (
-    "a completed job bills 1 credit plus 1e-6 per billed shot, and a completed iterated job bills the smaller of the "
+    "a completed job bills 1 credit plus the platform's price per billed shot (1e-6 on qpu:ascella and "
+    "qpu:belenos), and a completed iterated job bills the smaller of the "
     "shots it used and its largest iteration's max_shots; an isolated usage report gives the charge where one exists, "
     "a job canceled before its start bills nothing, and the cap bills in full only when neither a usage report nor a "
     f"shots-used figure gives the charge ({RULE_SOURCE}); a credit figure computed at max_shots is the job's ceiling"

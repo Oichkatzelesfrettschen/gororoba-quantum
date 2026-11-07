@@ -2,9 +2,10 @@
 
 ascella_predecessor_case.py keeps its bytes because admission records pin its sha256. This producer builds the
 same request and replaces the /preregistered/credit_basis field that
-docs/evidence/quandela-billing-rule-successor/README.md supersedes with billing_rule_v2.RULE, and adds its own
-sha256 to `analysis_sources`. `max_credits` and `expected_credits` keep their values, the ceiling at the
-largest iteration's max_shots; `credit_ceiling` names that figure, which the original calls `charge`.
+docs/evidence/quandela-billing-rule-successor/README.md supersedes with billing_rule_v2.RULE, and records its own
+sha256 as `preregistered.builder_sha256`, where the target-slot successor records its own; `analysis_sources` keeps
+the set qd_platform.acquisition_sources verifies. `max_credits` and `expected_credits` keep their values, the
+ceiling at the largest iteration's max_shots; `credit_ceiling` names that figure, which the original calls `charge`.
 
 Usage:
   "$PYTHON" scripts/ascella_predecessor_case_v2.py --build DIR
@@ -34,7 +35,7 @@ def documents() -> dict[str, bytes]:
     payload = original.documents()
     manifest = json.loads(payload["cases.json"])
     supersede(manifest, ("preregistered", "credit_basis"), OLD_CREDIT_BASIS, RULE)
-    manifest["analysis_sources"][BUILDER] = original.sha256_bytes((original.ROOT / BUILDER).read_bytes())
+    manifest["preregistered"]["builder_sha256"] = original.sha256_bytes((original.ROOT / BUILDER).read_bytes())
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": payload["circuit.json"]}
 
 

@@ -1391,9 +1391,6 @@ def acquisition_sources(manifest: dict[str, Any]) -> dict[str, str]:
     }
     if manifest.get("family") == "ascella_target_slot_drift":
         required |= {"scripts/ascella_target_slot_drift.py", "scripts/ascella_target_slot_drift_analysis.py"}
-    # A request built by the billing-rule successor names that builder too; its digest is verified with the rest.
-    if isinstance(expected, dict) and "scripts/ascella_predecessor_case_v2.py" in expected:
-        required.add("scripts/ascella_predecessor_case_v2.py")
     if not isinstance(expected, dict) or set(expected) != required:
         raise PlatformError("a reviewed acquisition requires complete constructor/analyzer source identities")
     registered = manifest.get("preregistered", {})

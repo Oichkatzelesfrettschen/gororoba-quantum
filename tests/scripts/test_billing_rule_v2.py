@@ -116,10 +116,16 @@ def test_rule_names_the_cap_as_ceiling_and_the_used_shots() -> None:
             raise AssertionError(f"the successor rule omits {phrase!r}")
 
 
-@pytest.mark.parametrize("family", ["diagnostic", "stationarity"])
-def test_bdsc_case_successor_changes_only_billing_and_case_digest(family: str) -> None:
-    original = records_v2.original(family, None)
-    successor = records_v2.documents(family)
+# The diagnostic's retained manifests name this ANU draw; the drawn build adds the draw binding and the seeds.
+DIAGNOSTIC_DRAW = ROOT / "docs/evidence/anu_qrng/draw-2026-10-22T110545Z.json"
+
+
+@pytest.mark.parametrize(
+    ("family", "draw"), [("diagnostic", None), ("diagnostic", DIAGNOSTIC_DRAW), ("stationarity", None)]
+)
+def test_bdsc_case_successor_changes_only_billing_and_case_digest(family: str, draw: Path | None) -> None:
+    original = records_v2.original(family, draw)
+    successor = records_v2.documents(family, draw)
     field = records_v2.CASE_DIGEST[family]
     jobs = sorted(name for name in original if name != "case.json")
     expected = {"case.json": {"/resources/billing_rule"}} | {f"{job}/cases.json": {f"/{field}"} for job in jobs}
@@ -152,7 +158,7 @@ def test_predecessor_successor_changes_only_credit_basis_and_its_source(
     monkeypatch.setattr(predecessor, "documents", lambda: dict(original))
     successor = predecessor_v2.documents()
     expected = {
-        "cases.json": {"/preregistered/credit_basis", f"/analysis_sources/{predecessor_v2.BUILDER}"},
+        "cases.json": {"/preregistered/credit_basis", "/preregistered/builder_sha256"},
     }
     found = changed(original, successor)
     if found != expected:
@@ -161,9 +167,10 @@ def test_predecessor_successor_changes_only_credit_basis_and_its_source(
     ceiling = predecessor_v2.credit_ceiling(predecessor.SHOTS_PER_ITERATION)
     if manifest["max_credits"] != ceiling or manifest["preregistered"]["expected_credits"] != ceiling:
         raise AssertionError("the credit figures no longer equal the ceiling at the largest iteration's max_shots")
-    sources = qd_platform.acquisition_sources(manifest)
-    if sources.get(predecessor_v2.BUILDER) != manifest["analysis_sources"][predecessor_v2.BUILDER]:
-        raise AssertionError("the reviewed-acquisition gate does not verify the successor builder's digest")
+    qd_platform.acquisition_sources(manifest)
+    builder = hashlib.sha256((ROOT / predecessor_v2.BUILDER).read_bytes()).hexdigest()
+    if manifest["preregistered"]["builder_sha256"] != builder:
+        raise AssertionError("the successor request does not name its builder's digest")
     predecessor.publish_case(tmp_path, successor)
     predecessor_v2.check(tmp_path)
 
