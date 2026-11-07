@@ -235,5 +235,150 @@ the difference within 0.005 test the static-error form.
 | Conjecture | Verdict | Confidence | Next measurement |
 |---|---|---|---|
 | C1: the mirror failure is not per-mode efficiency; its cause is a configuration-specific phase error | not per-mode efficiency survives; the anchor calibration dominates the failure count and a phase error is the residual | 0.9 and 0.55 | anchor configurations per slot; replay of failing settings at identical configuration |
-| C2: the positive null offset is a cross-platform systematic | refuted for the Tuna-17 selector contrast, which a coherent X90 over-rotation of +0.03 rad reproduces; the ibm_fez N_hat offset is estimator plus readout | 0.75 and 0.8 | Tuna-17 1-CZ null block added to the coin design; 20-CZ k0-type null block on at least 17 IBM placements with the 1-CZ blocks |
+| C2: the positive null offset is a cross-platform systematic | refuted for the Tuna-17 selector contrast, which a coherent X90 over-rotation of +0.03 rad reproduces; the ibm_fez N_hat offset is estimator plus readout | 0.75 and 0.8 | Tuna-17 1-CZ null block added to the coin design; 20-CZ k0-type null block on at least 17 IBM placements with the 1-CZ blocks (run 2026-11-07 on 17 and 16 placements, see the section below) |
 | C3: the `ba` misses come from a per-template coupling set by routing | refuted; the pattern follows the logical bit d2 and gate-level noise on the compiled structure explains part of it | 0.75 and 0.5 | the template on a graph-automorphic placement; joint four-state readout of the routed d0 and d2 qubits |
+
+# Parallel coset blocks on ibm_fez and ibm_kingston (2026-11-07)
+
+This section scores the two parallel coset-block runs of the written case
+[2026-11-07T035554.327341Z/CASE.md](2026-11-07T035554.327341Z/CASE.md) (group `pathion_parallel_coset`, 111 four-qubit
+circuits plus live_run's isolated reference, one fused PUB per circuit over every placement). ibm_fez, backup account:
+run [2026-11-07T042521.359670Z](2026-11-07T042521.359670Z/collect.json), job `dbnai2oqtr0c73acl9gg`, 17 placements, 57 s
+charged; acquisition `ibm-fez-pathion-parallel-coset`. ibm_kingston, primary account: run
+[2026-11-07T042346.084449Z](2026-11-07T042346.084449Z/collect.json), job `dbnahh5t7fqc73aj7bdg`, 16 placements, 32 s
+charged; acquisition `ibm-kingston-pathion-parallel-coset`. Registry claim: `hw-ibm-pathion-parallel-coset`. The
+script `scripts/pathion_parallel_coset_analysis.py` applies every preregistered rule in the case's order, with Student t
+intervals at 95 percent over the placements and each placement's model value taken from the approved dry run of the
+record (`prediction_reuse.approved_record`); it writes [pathion_parallel_coset_analysis.json](pathion_parallel_coset_analysis.json),
+which holds every number below. Its per-placement summaries and per-placement readout-corrected summaries (each
+placement's own confusion matrices, the measured qubit of each clbit read from `isa.qpy`) reproduce the collector's
+`measured_statistics` and `measured_summary_readout_corrected` to below 5e-7.
+
+The runs differ from the approved case in four recorded facts, and the bands stay as the case wrote them: ibm_fez ran
+16,384 shots per member (case: 14,336) under a 65 s ceiling (case: 60 s), ibm_kingston ran 8,192 shots under a 42 s
+ceiling (case: 40 s), the models are the approved dry runs `2026-11-07T041623.255956Z` and `2026-11-07T041624.522872Z`
+(case prose: `035554.327341Z` and `040239.842834Z`; ibm_fez model calibration 2026-11-06T19:35:16-08:00 against the
+executed 20:05:31-08:00). The case's cost model reproduces the ibm_fez charge of 57 s at 16,384 shots with a residual of
+6.9 us per execution (6.6 to 7.2 us after integer-second rounding; retained runs 6.6 to 7.1 us) and the ibm_kingston
+charge of 32 s with 8.7 us (8.1 to 9.2 us; the case priced 9.0 us). The model N_hat per operand on ibm_fez differs from
+the case prose by at most 0.01 (0.122 against 0.12, 12.169 against 12.17).
+
+| Rule | ibm_fez | ibm_kingston |
+|---|---|---|
+| resolution (32 of 32 pooled signs; block visibility above 0.5) | PASS | PASS |
+| nullity bands (N_hat within 0.5 of the model; corrected within 0.15 of the integer) | PASS | PASS |
+| null selector contrast (two standard errors and 0.006) | FAIL (k8 base) | FAIL (k8 flip) |
+| null N_hat per placement (1-CZ blocks within +-0.02) | UNINFORMATIVE | FAIL |
+| odd part O within +-0.04 of the model | UNINFORMATIVE | FAIL |
+| even part E within +-0.03 of the model | UNINFORMATIVE | PASS |
+| placement spread (slope in [0.7, 1.3], R squared above 0.5) | FAIL | FAIL |
+| within-arm repeats (two standard errors and 0.02) | PASS | FAIL (within plus) |
+| parallel crosstalk (90 percent interval inside +-0.015) | PASS | PASS |
+| four-term blocks B12 and C8 | PASS | PASS |
+| devices (N_hat agree; odd and even pass against each model) | FAIL | |
+
+## Resolution, nullity and the devices
+
+Both devices read all 32 per-output signs on every one of the eight operands in the pooled map (and on every
+placement), and the lowest block visibility interval is [0.658, 0.773] (ibm_fez, e1 + e24, coset 8) and [0.770, 0.827]
+(ibm_kingston, e1 + e10, coset 0), above the 0.5 floor. The N_hat of the six operands, the twin and the cocycle-free
+control covers each model value within 0.5, and the readout-corrected values lie within 0.15 of the integer nullity:
+ibm_fez 0.009, 4.074, 4.027, 8.006, 11.981, 11.973, twin 11.974, cocycle-free -1.943 and ibm_kingston -0.077, 4.082,
+4.081, 7.964, 11.985, 12.008, twin 12.010, cocycle-free -1.958 (nullities 0, 4, 4, 8, 12, 12, 12, -2). The compiled sign
+network agrees with `cd_core` on every operand of both devices. The two devices' N_hat agree within the sum of their
+intervals on all eight operands (largest difference 0.049 on e1 + e17 against 0.198 allowed), so the devices rule fails
+only through the odd-part band of ibm_kingston and the unresolved bands of ibm_fez below.
+
+## Null selector contrast
+
+The k0 selector contrast of the null operand, the observable that a coherent sx over-rotation raises by 0.57 per rad,
+reads -0.0020 +- 0.0015 on ibm_fez and -0.0000 +- 0.0011 on ibm_kingston (flip twin +0.0015 +- 0.0021 and +0.0009 +-
+0.0021), and the 1-CZ blocks k4, k8, k12 read +0.0008, -0.0028, -0.0004 (ibm_fez) and +0.0019, -0.0007, -0.0015
+(ibm_kingston). The rule fails as written on each device through one block: ibm_fez k8 reads -0.0028 +- 0.0014, which
+exceeds two standard errors by 0.00001, and the ibm_kingston k8 flip twin reads -0.0048 +- 0.0023 (2.1 standard errors).
+The sx over-rotation signature (k0 above +0.006 with the 1-CZ blocks at zero) is absent on both devices. Both
+excursions are negative, 2 of 16 tests exceed two standard errors where chance gives 0.8, and the one-sided band
+(+0.006) is far from both, so `hypothesis:` the two FAILs are the tail of 16 independent tests and carry no mechanism;
+the per-block k8 values are the first thing a repeat run would check. `d1_ibm_overrotation.txt`: the implied angle is
+-0.0036 +- 0.0027 rad (ibm_fez) and -0.0000 +- 0.0019 rad (ibm_kingston), 4.4 and 4.1 combined standard errors below
+the Tuna-17 coin angle +0.0295 +- 0.0070 rad (12.4 and 15.3 against the IBM error alone); with the earlier ibm_fez and
+ibm_marrakesh angles the four IBM readings pool to -0.0015 +- 0.0014 rad (chi2 1.60 on 3 degrees of freedom), 4.3
+combined standard errors below the Tuna angle with a 95 percent upper bound of +0.0013 rad. IBM excludes the Tuna-17
+angle at more than 3 sigma on every reading; the scope is the case's 0.57 per rad response, which no ibm_kingston
+compile confirmed.
+
+## Null N_hat and the odd and even decomposition
+
+The retained ibm_marrakesh 1-CZ null blocks read +0.045 after the pooled readout correction. With each placement's own
+confusion matrices the readout-corrected N_hat of k4, k8, k12 reads +0.0057, +0.0045, +0.0070 on ibm_fez (standard
+errors 0.022 to 0.024, 95 percent half-width 0.045, so the rule is UNINFORMATIVE and the intervals span +0.045) and
+-0.0283, -0.0313, -0.0297 on ibm_kingston (standard errors 0.010, FAIL: below -0.02, opposite in sign to ibm_marrakesh,
+and each mean lies 7.3 to 8.0 standard errors below +0.045; `d2_null_offset.txt`). The raw means are +0.030, +0.027,
++0.031 and +0.009, +0.007, +0.008, so the correction moves ibm_kingston below zero: its flip twin reads +0.031, +0.035,
++0.026 after correction, the mirror image. The odd part O of the null operand's N_hat measures +0.0888 (model +0.1151,
+paired -0.0263 +- 0.0629) on ibm_fez and +0.0501 (model +0.1349, paired -0.0848 +- 0.0302) on ibm_kingston, and the even
+part E +0.0244 (model +0.0067, paired +0.0177 +- 0.0145) and +0.0138 (model -0.0040, paired +0.0178 +- 0.0128). The
+signature table selects, on ibm_kingston, readout asymmetry after the X below its calibrated size (row 1, O under the
+band by 0.045 beyond the band edge) with relaxation and residual excitation at the model's size (row 2, E inside the
+band), and flags the within-arm repeat below; on ibm_fez it selects the same two rows with O and E unresolved (95
+percent half-widths 0.133 and 0.031 against bands 0.04 and 0.03). The placement spread fails on both devices: slope
++1.23 (95 percent [-0.02, +2.49]) with R squared 0.227 on ibm_fez and +0.26 ([-0.13, +0.66], R squared 0.130) on
+ibm_kingston, where the case expected a slope standard error of 0.12 and the runs give 0.59 and 0.18, so the per-placement
+O carries more sampling variance than the case assumed (ibm_fez placements 13 and 15 read O +0.50 and +1.08, placement 9
+reads E +0.23). Exploratory sensitivity, not a verdict: dropping the three ibm_fez placements beyond 3.5 robust sigma
+on paired O or paired E (placements 9, 13, 15) moves the paired O to -0.1012 +- 0.0320, the same sign and size as
+ibm_kingston, and E to +0.0065 +- 0.0087. The odd part of the ideal laws pushed through the executed confusion matrices
+alone is +0.1394 (ibm_kingston) and +0.1101 (ibm_fez), within 0.005 of the dry-run model's +0.1349 and +0.1151, so a
+calibration change between the dry run and the run does not explain the shortfall: measured minus this readout-only
+part is -0.0893 +- 0.0290 (ibm_kingston) and, without the three placements, -0.0976 +- 0.0301 (ibm_fez).
+`hypothesis:` the calibrated confusion matrix overstates the readout asymmetry that the circuits see by about 0.09 on the
+operand total (0.085 +- 0.030 on ibm_kingston, 0.10 +- 0.03 on ibm_fez without three placements), which makes a
+calibration-based correction overcorrect the null operand; confidence 0.5. A readout-calibration arm on the same
+placements (the four qubits prepared 0 or 1 and read, with and without the X) measures the in-circuit asymmetry directly and
+decides it. The ibm_marrakesh +0.045 does not recur: ibm_kingston excludes it and ibm_fez does not resolve it.
+
+## Within-arm repeats and packing
+
+The within-arm repeats of the null operand read +0.0004 +- 0.0063 (minus), +0.0068 +- 0.0048 (plus) and a pair gap of
++0.0064 +- 0.0069 on ibm_fez (PASS) and +0.0031 +- 0.0076, +0.0127 +- 0.0047 and +0.0096 +- 0.0090 on ibm_kingston. The
+ibm_kingston plus repeat exceeds two standard errors (2.7) at a size below 0.02, so the rule fails as written and marks a
+small position or drift effect inside the plus arms; `hypothesis:` it is one of six tests and the size is well below the
+0.02 band. Packed against isolated replica 0 of the k0 minus arm, the 90 percent Newcombe-Wilson interval reads -0.0042
+[-0.0090, +0.0007] on ibm_fez (16,384 shots, half-width 0.0048) and -0.0018 [-0.0082, +0.0046] on ibm_kingston (8,192
+shots, half-width 0.0064), recomputed from the raw shot lists (`d3_crosstalk.txt`) and equal to the collector's
+interval: inside the +-0.015 band on both, which shows no crosstalk at the one-hop separation with 17 and 16 placements
+active. Both differences are negative (inverse-variance mean -0.0033 +- 0.0023, 90 percent interval [-0.0071,
++0.0005]), the earlier 8,192-shot runs read +0.0011 and +0.0059, and the interval half-width matches the case's
+prediction.
+
+## Four-term blocks and Ascella
+
+B12 (coset 2) and C8 (coset 5) pass every four-term rule on both devices. Visibility reads 0.799 [0.761, 0.838] (B12)
+and 0.754 [0.715, 0.794] (C8) on ibm_fez and 0.849 [0.826, 0.873] and 0.825 [0.790, 0.859] on ibm_kingston, where the
+dry-run models read 0.87 to 0.91, so the model overpredicts the visibility by 0.06 to 0.11. The closures of F, E0, E1,
+D2 and N differ from the model's by at most 0.0184 in magnitude (N of B12 on ibm_fez) and the closure of C lies 0.009 below the
+model's on every block, all inside 0.03; the separations T - F, T - C, T - N read 0.405, 0.636, 0.176 (B12) and 0.443, 0.531,
+0.163 (C8) on ibm_fez and 0.425, 0.667, 0.183 and 0.484, 0.567, 0.180 on ibm_kingston, each above half its ideal; the E0
+and E1 levels sit within 0.0122 of the model's. `d4_four_term.txt` normalizes each IBM placement with the dark arm D as
+zero and the basis arms E0 and E1 (ideal 1/4) as the scale, so T keeps its own reading, and compares with the Ascella
+readings of A5-188 on arms of equal ideal level: T reads 0.727 and 0.726 (B12; Ascella 0.7495, ideal 0.75) and 0.649 and
+0.658 (C8; Ascella 0.642, ideal 0.6545), F 0.236 and 0.242 (Ascella 0.2496), N 0.512 and 0.518 (B12; Ascella 0.538, ideal
+0.5625); the largest gap to Ascella is -0.045 (ibm_fez) and -0.033 (ibm_kingston) on the B12 C arm, which reads -0.047 and
+-0.035 on IBM; every matched arm lies within 0.07 of the other platform and of its ideal. The C8 C arm is not run: no
+Ascella C8 block carries its ideal level 0. `hypothesis:` the negative C level on IBM follows the dark arm's depth: D
+routes to 18 CZ and reads 0.057 and 0.044 where C (8 CZ) reads 0.021 and 0.014, so the D-based zero over-subtracts at
+low depth.
+
+## Bearing on the ledger rows
+
+A5-185 (the Tuna-17 null block reads selector contrast 0, and its ratios agree with IBM) stays refuted; its IBM
+comparator reads zero again on two more devices (k0 selector contrast -0.0020 and -0.0000). A5-186 (a coherent X90
+over-rotation of about +0.03 rad on Tuna-17, which IBM does not show) keeps its confidence of 0.75 for the over-rotation
+and rises to 0.9 for the IBM half: four IBM readings pool to -0.0015 +- 0.0014 rad, 4.3 combined standard errors below
+the Tuna angle; the decisive Tuna-17 1-CZ null block is still owed. A5-188 (qpu:ascella realizes the pathion 4 x 4
+coset blocks within 0.07) gains an independent platform: the same B12 and C8 block classes on ibm_fez and ibm_kingston
+agree with the Ascella readings within 0.046 on every matched arm. The new rows A5-192 to A5-199 of
+`docs/evidence/a5-exceptional-fibers/ledger.tsv` record the nullity result (survives), the IBM selector contrast
+(survives), the 1-CZ null band (refuted on ibm_kingston), the calibrated odd part (refuted), the overstated-asymmetry
+hypothesis (survives at 0.5), the within-arm repeat (refuted on ibm_kingston), packing (survives) and the four-term
+agreement (survives).

@@ -52,3 +52,7 @@ step c3_depol c3_depol.py
 step c3_multi c3_multi.py
 step c2_tuna_mech c2_tuna_mech.py
 step c2_overrotation c2_overrotation.py
+step d1_ibm_overrotation d1_ibm_overrotation.py
+step d2_null_offset d2_null_offset.py
+step d3_crosstalk d3_crosstalk.py
+step d4_four_term d4_four_term.py
