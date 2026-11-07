@@ -290,7 +290,12 @@ def persistence_plan(replicates: int = 2000) -> dict[str, Any]:
         rates[truth] = {k: c / 20000 for k, c in counts.items()}
     return {
         "replicates": replicates,
-        "plan_draw": case.PLAN_DRAW,
+        "plan_seed_source": {
+            "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+            "flag": "--persistence-plan",
+            "experiment": "ascella-pathion-mesh-persistence-plan",
+            "sources": [f"qrng:{case.PLAN_DRAW}#{index}" for index in range(2)],
+        },
         "measured_mode_drift": list(MEASURED_MODE_DRIFT),
         "r_quantiles": {
             name: {str(q): float(np.nanquantile(v[:, 0], q)) for q in (0.001, 0.01, 0.05, 0.5)}

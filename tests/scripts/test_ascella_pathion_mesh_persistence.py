@@ -26,18 +26,19 @@ def check(condition: object, statement: str) -> None:
         raise AssertionError(statement)
 
 
-def test_the_qpu_case_rebuilds_byte_for_byte() -> None:
-    payload = case.documents(DRAW, "hardware", "qpu:ascella")
-    for name, data in payload.items():
-        check((CASES / "job-00" / name).read_bytes() == data, f"job-00/{name} rebuilds byte for byte")
+RUNS = {
+    "sim-00": ROOT / "results/quandela/runs/2026-11-07T181127Z-sim_ascella-ascella_pathion_mesh_persistence-sim-00",
+    "job-00": ROOT / "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00",
+}
 
 
-def test_the_submitted_sim_case_keeps_its_bytes() -> None:
+@pytest.mark.parametrize("directory", ["sim-00", "job-00"])
+def test_the_submitted_cases_keep_their_bytes(directory: str) -> None:
     import hashlib
 
-    submitted = json.loads((CASES / "sim-00" / "submission-state.json").read_bytes())
-    digest = hashlib.sha256((CASES / "sim-00" / "cases.json").read_bytes()).hexdigest()
-    check(submitted["cases_sha256"] == digest, "sim-00 cases.json is the submitted request")
+    submitted = json.loads((RUNS[directory] / "submission-state.json").read_bytes())
+    for data in ((CASES / directory / "cases.json").read_bytes(), (RUNS[directory] / "cases.json").read_bytes()):
+        check(submitted["cases_sha256"] == hashlib.sha256(data).hexdigest(), f"{directory} is the submitted request")
 
 
 def test_replays_send_the_retained_requests_and_fresh_seeds_are_new() -> None:

@@ -35,7 +35,15 @@
  },
  "persistence_cutoff": 0.988,
  "persistence_cutoff_without_platform_differing": 0.9864,
- "plan_draw": "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json",
+ "plan_seed_source": {
+  "experiment": "ascella-pathion-mesh-persistence-plan",
+  "flag": "--persistence-plan",
+  "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+  "sources": [
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json#0",
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json#1"
+  ]
+ },
  "platform_differing": [
   "a-h-CC",
   "a-h-NN",
