@@ -172,6 +172,15 @@ sit at the largest multiple of 128 that keeps 0.1 s of margin in the unrounded e
 the shots to 15,872 (ibm_fez) and 19,328 (ibm_kingston) buys about 0.05 s of margin at a cost of under 1 percent of the
 block reads.
 
+Sizing update (owner, 2026-11-07: fit the shots to the retained billing so each account spends nearly all it has).
+The isolated reference PUB is dropped (`--no-isolated-reference`): the case reads no crosstalk decision from it, so its
+13th PUB spent about 8 percent of each job on nothing the rules use. The check admits a plan whose unrounded worst-case
+charge (upper residual 7.2 us or 9.2 us, two-sigma per-PUB term, each PUB at its deepest placement) stays 0.4 s under the
+remainder, since the job is killed only when its real charge passes the ceiling (the remainder). At 12 PUBs: ibm_fez
+18,816 shots (225,792 executions, worst case about 9.58 s of 10 s) and ibm_kingston 21,888 shots (262,656 executions,
+worst case about 11.58 s of 12 s), 18 and 12.5 percent more block reads per arm than the 13-PUB sizing above; the binding
+dry runs re-price both on live calibration.
+
 ## Preregistered readout and decision rules
 
 Intervals are the delta-method 95 percent intervals above, computed by `scripts/pathion_wide_coset_analysis.py`. Bands
@@ -226,8 +235,8 @@ Run from the repository root after approval:
 
     GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform sh scripts/approved_run.sh \
       --check '"$PYTHON" ../scripts/pathion_wide_coset_check.py 17 10' -- \
-      --groups pathion_wide_coset_d32 --backends ibm_fez --shots 16000 --rep-delay 2e-5 --replica-floor 0.5 \
-      --max-replicas 17 --exclude-qubits ibm_fez:2-4,16 \
+      --groups pathion_wide_coset_d32 --backends ibm_fez --shots 18816 --rep-delay 2e-5 --replica-floor 0.5 \
+      --max-replicas 17 --no-isolated-reference --exclude-qubits ibm_fez:2-4,16 \
       --seed-transpiler qrng:docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json#0 \
       --seed-simulator qrng:docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json#1 \
       --max-total-execution-seconds 10 --max-execution-seconds 10 --reserve-seconds 0 \
@@ -235,8 +244,8 @@ Run from the repository root after approval:
 
     GOROROBA_IBM_ACCOUNT= sh scripts/approved_run.sh \
       --check '"$PYTHON" ../scripts/pathion_wide_coset_check.py 16 12' -- \
-      --groups pathion_wide_coset --backends ibm_kingston --shots 19456 --rep-delay 2e-5 --replica-floor 0.5 \
-      --max-replicas 16 \
+      --groups pathion_wide_coset --backends ibm_kingston --shots 21888 --rep-delay 2e-5 --replica-floor 0.5 \
+      --max-replicas 16 --no-isolated-reference \
       --seed-transpiler qrng:docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json#0 \
       --seed-simulator qrng:docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json#1 \
       --max-total-execution-seconds 12 --max-execution-seconds 12 --reserve-seconds 0 \

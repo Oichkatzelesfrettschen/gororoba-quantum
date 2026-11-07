@@ -10,7 +10,6 @@ Statevector or a matrix-product-state or stabilizer sample of at most 64 qubits.
 from __future__ import annotations
 
 import hashlib
-import math
 
 import numpy as np
 import pathion_wide_coset_check as check
@@ -367,16 +366,19 @@ def _record(backend: str, shots: int, pubs: int, dt: int, *, plus_cz: int = 20, 
     }
 
 
-def test_check_script_prices_the_drain_residual_and_the_per_pub_term_and_rounds_the_bill_up() -> None:
+def test_check_script_prices_the_drain_residual_and_the_per_pub_term_against_the_ceiling() -> None:
     record = _record("ibm_fez", 10000, 13, 800)
     expected = 2.3 + 13 * (10000 * (2e-5 + 800 * 4e-9 + 7.2e-6) + 5.7e-3)
     _expect(abs(check.estimated_charge(record, "ibm_fez") - expected) < 1e-9, "charge model")
     kingston = check.estimated_charge(_record("ibm_kingston", 10000, 13, 800), "ibm_kingston")
     _expect(abs(kingston - (2.3 + 13 * (10000 * (2e-5 + 800 * 4e-9 + 9.2e-6) + 2.6e-3))) < 1e-9, "kingston terms")
-    billed = math.ceil(expected)
-    _expect(check.failures(record, billed + 1.0, 16) == [], "admits at one second under the remainder")
-    over = check.failures(record, float(billed), 16)
-    _expect(any("worst-case billed" in line for line in over), f"{over}")
+    _expect(check.failures(record, expected + 0.41, 16) == [], "admits 0.4 s under the remainder")
+    over = check.failures(record, expected + 0.39, 16)
+    _expect(any("worst-case charge" in line for line in over), f"{over}")
+    no_reference = _record("ibm_fez", 10000, 13, 800)
+    for group in no_reference["groups"]:
+        group["members"] = [m for m in group["members"] if not m["name"].endswith("_isolated")]
+    _expect(check.failures(no_reference, expected + 1.0, 16) == [], "the isolated reference is optional")
 
 
 def test_check_script_refuses_an_arm_that_routes_deeper_a_missing_member_and_a_wrong_replica_count() -> None:
