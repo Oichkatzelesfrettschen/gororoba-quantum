@@ -67,6 +67,7 @@ decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.
 | Azure FX4mds_v2 (84 GB) | `chart-iso-p32029-elim.sing` | stopped by the memory watchdog at 29.7 GB after 3 h 21 min |
 | Azure FX4mds_v2 | `chart-iso-p32009-elim.sing` | stopped by the memory watchdog at 52.1 GB after 7 h 29 min |
 | Azure FX4mds_v2 | `chart-iso-p32029-sat.sing`, `chart-iso-p32009-sat.sing` | 8 h limit (exit 124) at 15.1 and 15.8 GB |
+| Azure FX4mds_v2, 55 GB scope | `chart-runs/fx4-w8p2/chart-ckpt.sing` (sliced chart, saturation by one function per component of V(J + G)) | first std(C) unfinished after 23.5 h: degree 15, 37,018+ elements, 25.7 GB resident, still growing; ended by the VM's daily auto-shutdown at 2026-11-07T21:00Z (`first-attempt/` ended at the same schedule a day earlier) |
 
 `chart-runs/azure/events` lists the two watchdog stops as `exit 0` because Singular exits 0 on the watchdog's SIGTERM;
 the `mem.log` lines before each stop and the absence of any RESULT line in the logs show neither finished. The
