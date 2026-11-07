@@ -17,7 +17,7 @@
   },
   "scope": "ci/runner_image_records.py and its ledger, ci/replay_check.py, the numeric-stack probe of ci/run_gates.py, the replay declarations of ci/gates.json, scripts/n21_dose_decisions.py diagnostics, ci/pr_checks.sh and the ci.yml and null-shards.yml workflows. Retained record bytes stay unchanged.",
   "owner": "repository maintainer",
-  "next_action": "Rebind the ledger natively on a Haswell-core CPU, then classify every replay root and build the cross-identity comparator.",
+  "next_action": "Classify every replay root, extend the numeric identity probe to a per-producer ledger identity (issue 776), then build the cross-identity comparator.",
   "steps": [
     {
       "id": "freeze-v1-ledger-digest",
@@ -53,8 +53,8 @@
     {
       "id": "numeric-identity-probe",
       "state": "todo",
-      "action": "Extend NUMERIC_STACK_PROBE of ci/run_gates.py to the identity of the design contract: CPU flags, numpy dispatch, OpenBLAS cores, glibc and libm version, Python build, loaded arithmetic object hashes, thread and worker counts and the numerics_fingerprint operation digests.",
-      "acceptance": "Fails if two shards that reproduce a record differently report equal identities."
+      "action": "Extend NUMERIC_STACK_PROBE of ci/run_gates.py to the identity of the design contract: CPU flags, numpy dispatch, OpenBLAS cores, glibc and libm version, Python build, loaded arithmetic object hashes, thread and worker counts and the numerics_fingerprint operation digests; record the identity per producer in the ledger (issue 776) and report per-identity coverage in each audit.",
+      "acceptance": "Fails if two shards that reproduce a record differently report equal identities, or a nightly audit reports a skipped replay as passed."
     },
     {
       "id": "dose-staged-trace",
@@ -76,10 +76,36 @@
     },
     {
       "id": "native-baselines-and-switch",
-      "state": "doing",
-      "action": "Write native baselines with receipts at new paths, switch gate declarations and the successor ledger in one change, remove both caps from ci/run_gates.py, ci/pr_checks.sh and the workflows (branch ci/openblas-native-kernel), and report per-identity coverage in each audit.",
-      "acceptance": "Fails if a nightly audit reports a skipped replay as passed, or the v1 ledger records lose their historical gate.",
-      "reason": "Owner ruling 2026-11-06: both caps left ci/run_gates.py, ci/pr_checks.sh, the workflows and LEDGER_ARITHMETIC ahead of the comparator; the ledger rebinds natively on a Haswell-core CPU."
+      "state": "done",
+      "action": "Remove both caps from ci/run_gates.py, ci/pr_checks.sh, the workflows and LEDGER_ARITHMETIC, rebind every runner-image ledger record natively on a Haswell-core CPU, and write the Qiskit conformance campaign and its toolchain receipt at successor paths whose gates check them by full regeneration.",
+      "acceptance": "Fails if tests/ci/test_native_numeric_path.py finds a lane that sets OPENBLAS_CORETYPE or NPY_DISABLE_CPU_FEATURES, or ci/runner_image_records.py check fails on main.",
+      "reason": "Owner ruling 2026-11-06: both caps left ci/run_gates.py, ci/pr_checks.sh, the workflows and LEDGER_ARITHMETIC ahead of the comparator; the ledger rebinds natively on a Haswell-core CPU.",
+      "receipts": [
+        {
+          "result": "PR 771 merged: no lane, workflow or LEDGER_ARITHMETIC sets either cap (test_native_numeric_path passes), the 676 ledger records rebound on a Haswell-core hosted runner check clean, and the qiskit 2.6.2 campaign and toolchain receipt sit at successor paths.",
+          "observed_at": "2026-11-07T09:29:10+00:00",
+          "revision": "fad6c9f1fd0a7a4be5bef5b1a760f892464fe715",
+          "evidence": [
+            {
+              "ref": "tests/ci/test_native_numeric_path.py",
+              "sha256": "a35a3f69133f288ce0492b04451b7251f7e2ab54f2b66bc0dbf5a10dd267ba05"
+            },
+            {
+              "ref": "ci/runner_image_records.json",
+              "sha256": "66f6429a5b9987bbccb5dc67502c6b07343bae6dbb13c800118b8582dad29407"
+            },
+            {
+              "ref": "ci/runner_image_records.py",
+              "sha256": "340c0efd146e40be30a12b9c12ef42b9ea940757cecca9b9837f0abbc62ea202"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-2.json",
+              "sha256": "f863111458837d793933d1dc3324bb3168c0ae3b5321be8db83bd6353b33cf29"
+            }
+          ],
+          "scope_sha256": "9dd3039bcda363a95a9137d93cfabbfb492a012ec5aee8c90377a39ecf21bc4a"
+        }
+      ]
     }
   ]
 }
