@@ -3164,6 +3164,20 @@
       "run": "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00",
       "family": "pathion coset blocks, two blocks per photon (A_5, dimension 32)",
       "question": "With one photon shared by two 4 x 4 coset blocks on 9 modes, does qpu:ascella hold every block level within 0.07 after per-slot anchor and dark calibration, keep crosstalk between the blocks under 0.03 and one block's level independent of its partner's arm, and does the predecessor's C8 spread follow the block or the mode slot?"
+    },
+    {
+      "id": "ibm-kingston-pathion-parallel-coset",
+      "provider": "ibm",
+      "run": "results/live/2026-11-07T042346.084449Z",
+      "family": "pathion parallel coset blocks (A_5, dimension 32)",
+      "question": "On ibm_kingston with 16 disjoint four-qubit placements per shot, do the 64 coset blocks of the retained kernel map, the e1+e17 null with readout-flip twins and mirrored repeats, and the D = 32-only four-term B12 and C8 blocks read their cd_core values per placement, and does an isolated reference show parallel-operation crosstalk?"
+    },
+    {
+      "id": "ibm-fez-pathion-parallel-coset",
+      "provider": "ibm",
+      "run": "results/live/2026-11-07T042521.359670Z",
+      "family": "pathion parallel coset blocks (A_5, dimension 32)",
+      "question": "On ibm_fez with 17 disjoint four-qubit placements per shot, do the 64 coset blocks of the retained kernel map, the e1+e17 null with readout-flip twins and mirrored repeats, and the D = 32-only four-term B12 and C8 blocks read their cd_core values per placement, and does an isolated reference show parallel-operation crosstalk?"
     }
   ],
   "claims": [
