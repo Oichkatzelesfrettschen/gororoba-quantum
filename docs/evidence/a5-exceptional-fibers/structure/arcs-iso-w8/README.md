@@ -77,3 +77,9 @@ a0 = G_j, z_j = 1, which decides the case equally (y_j lies outside K2 because K
 4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`. The coordinate charts a0 = G_16 and a0 = G_2 (`chart-iso-p32009-coord16.sing`,
 `-coord2.sing`, 41 and 49 terms against 665) then died at a 5 GB cap after 34 min on lab-a1, faster than the dense
 chart, so sparsity of a0 does not shrink this saturation.
+
+## The t-space slice ladder
+
+| Directory | Content |
+|---|---|
+| [tslice/](tslice/README.md) | the six-variable successor of the chart route: the saturation by t2 of (J, l_1(G), ..., l_k(G)) for k QRNG linear forms, read as "the origin lies on the closure" for dim E0 >= k. Controls on X+ -> N-, X- -> N+ (k = 2 on, k = 3 off) and Iso (k = 5 off, k = 3 on) read as predicted at p = 32009 in seconds to 50 minutes at under 0.5 GiB; the Iso k = 4 rows at p = 32009 and p = 32029 are preregistered there, with the criterion, its genericity conditions, the cost forecast and the outcome table. The scripts, forms ledger, run wrapper and every log sit beside the README. |

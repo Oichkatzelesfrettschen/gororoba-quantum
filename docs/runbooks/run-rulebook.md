@@ -134,3 +134,38 @@ the closest entry and say what changed.
   Microsoft.DevTestLab/schedules` first and moves the schedule past the run's own deadline. Logs:
   `structure/arcs-iso-w8/chart-runs/fx4-w8p2/`. Six chart formulations have now failed; the 23 chart variables and the
   15-dimensional junk over L0 are the cost, so the successor works in the six t-variables (ledger A5-205).
+
+### Iso -> N- t-space slice ladder (does a generic codimension-k slice of the graph of G reach the origin)
+
+- Question and decisive outcome: whether the origin lies on the closure of V(J) minus V(I) cut by k generic linear
+  forms l_i(G), read as Q_k : t2^inf with every generator vanishing at 0. Controls first: X+ -> N- and X- -> N+
+  (l(I) = 3) must read on at k = 2 and off at k = 3; Iso at k = 5 must read off and at k = 3 on. A control reading the
+  other way stops the work. The preregistered Iso k = 4 rows at p = 32009 and 32029 then decide dim E0 >= 4: on keeps
+  A5-007 in every degree at that prime, off refutes it for generic forms.
+- Formulation: six variables and one saturation in place of the 23-variable chart (A5-205, six failed chart runs);
+  the criterion and its reduction are in `docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/README.md`.
+  Alternatives kept as twins: `sat_with_exp` against the homogenized standard basis with t2 last; the dense a0
+  saturation as the chart-style cross-check.
+- Host and tool versions: the build host capsule (10 CPUs visible, 47 GiB), passagemath-singular 10.8.13 (Singular
+  4.4.1, 12 October 2026 build), `/usr/bin/time` GNU, `prlimit` util-linux.
+- Launch line and environment: `sh run.sh CASE CAP_GIB LIMIT_S`: `prlimit --as=CAP timeout -k 10 LIMIT /usr/bin/time -v
+  Singular -q --no-rc sing/CASE.sing < /dev/null`, `MALLOC_ARENA_MAX=2`,
+  `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`. `option(prot)` on the Iso scripts for the pair trace; global
+  `dp`; no `redSB` or `noredTail` (defaults, no measurement for either on this workload). Caps: 12 GiB (X), 20 GiB
+  (Iso k = 5 and the preregistered rows), 8 GiB (a0 cross-checks). Limits: 300 to 900 s (X), 3,600 s (Iso k = 5),
+  7,200 s (Iso k = 3 and k = 4).
+- Departures from the foundations: no cgroup `MemoryMax`, because `systemd-run --user --scope` fails with "Failed to
+  connect to user scope bus" after the capsule start, so `prlimit --as` is the cap (Singular reserves little beyond its
+  resident set; the measured peaks sit at 0.45 GiB or below against 8 to 20 GiB). Up to five Singular processes
+  ran at once instead of one, each under 0.5 GiB resident, so their sum stays far below the host's oomd threshold.
+  The homogenized saturation by t2 replaces `sat_with_exp` as the primary route, with a measurement (the
+  measured-combinations table).
+- Parallelism: single-thread processes, at most five at once on 10 CPUs.
+- Memory and time limits: a "no more memory" line, or `exit 124` in `logs/CASE.result`, means the cap or the limit
+  ended the run and no reading exists; `.time` holds the peak resident set and `.rss` the curve.
+- Checkpoints: `logs/CASE.result` receives each RESULT line when it exists; no standard basis is written.
+- End state: logs retained beside the scripts; nothing to deallocate.
+- Outcome: all controls read as predicted (17 readings: X 12, Iso k = 5 off three ways, Iso k = 3 on two ways); the longest was
+  `sat_with_exp` at Iso k = 5, 3,022 s at 382 MiB; the homogenized saturation took 272 s. Iso k = 3 cost less than
+  k = 5 (16 s). The a0 cross-check at Iso k = 3 was stopped at 786 s and the junk split of that run's slice proper hit
+  its 1,800 s limit; neither is a required control. Rows added to the measured-combinations table; the Iso k = 4 rows are preregistered and unrun.
