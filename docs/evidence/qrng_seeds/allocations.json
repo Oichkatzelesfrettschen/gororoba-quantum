@@ -1212,6 +1212,13 @@
    "value": 34580,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
    "index": 12
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.py",
+   "name": "PERMUTATION_SEED",
+   "value": 33974,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json",
+   "index": 0
   }
  ],
  "runtime": [

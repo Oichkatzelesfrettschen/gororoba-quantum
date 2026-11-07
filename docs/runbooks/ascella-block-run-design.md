@@ -336,7 +336,7 @@ the case's outcome map specifies ([case](../design/ascella-pathion-mesh-persiste
 | correction leaves more than 4 of 46 above 0.07 | a per-mesh table does not correct the pathion meshes and the signed-coherence correction does not transfer |
 
 The job ran on 2026-11-07 (`6bc382af`): the first two rows apply (fixed per mesh, failure follows the mesh; the frozen
-model carries through its per-mode efficiencies, not its shifter map), the fresh-anchor rule reads unresolved with slot efficiency excluded, and A5-191 is decided by A5-200 to
+model carries mainly through its per-mode efficiencies; a shifter map beyond them is not established), the fresh-anchor rule reads unresolved with slot efficiency excluded, and A5-191 is decided by A5-200 to
 A5-203 (revision log). Further open items:
 
 - The pathion meshes persist like the signed-coherence meshes (replay r 0.9966); whether they persist across days and
@@ -357,4 +357,4 @@ Append an entry per result or per revised rule: date, source, what changed. Keep
 |---|---|
 | 2026-11-07 | First version: the served-mesh facts, the four-term and two-block comparison, the ten mechanisms of the mesh-persistence reading with their review findings, ten design rules and the open questions. No run of the mesh-persistence case exists. |
 | 2026-11-07 | Mesh-persistence job `6bc382af` read: fixed per mesh (r 0.9966 against 0.988, same 9 of 46, anchor B/A 1.0876), no drift within the job, failure follows the mesh on fresh seeds (aligned mean -0.0024), fresh anchor B/A 0.84 to 1.05 (median 0.951, sd 0.067; preregistered rule unresolved, slot efficiency excluded), frozen gain model carries (p 0.0016) and the offset model does not (p 0.011), but a post-hoc diagnostic shows the frozen per-mode efficiencies carry it (efficiency-only r 0.484; shifter increments r 0.055 and 0.213), so a static per-shifter map adds little. sim and qpu compile three of 52 requests to different meshes, so a simulator mesh gate compares simulator with simulator. The rule "calibrate slots from many anchor seeds or a per-mesh table" now rests on this job; the center of the anchor-ratio distribution reads near 0.95, so the next case sizes its anchor set against sd 0.067 rather than 0.025. Ledger A5-200 to A5-204; claim hw-ascella-pathion-mesh-persistence. |
-| 2026-11-07 | A frozen-map test scores the efficiency-only model and the shifter-map increment over it, since each frozen model carries its own per-mode efficiencies; the mesh-persistence job's "map carries" came from the efficiencies (c1_map_increment.txt). |
+| 2026-11-07 | A frozen-map test scores the efficiency-only model and the shifter-map increment over it, since each frozen model carries its own per-mode efficiencies; the mesh-persistence job's "map carries" came mainly from the efficiencies (c1_map_increment.txt: increments p 0.28 gain, 0.041 offset, post hoc), so A5-202 stays open until a preregistered fresh-seed increment test. |

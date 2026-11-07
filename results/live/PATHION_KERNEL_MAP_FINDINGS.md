@@ -420,10 +420,11 @@ Static map. The per-shifter gain model frozen from the original job (`c1_static.
 fresh iterations' raw departures at r 0.446 with seed-block relabeling p 0.0016, the preregistered "map carries"; the
 offset model reads r 0.444, p 0.011, above the preregistered 0.005. Each frozen model carries its own per-mode
 efficiencies beside its shifter vector, and a post-hoc diagnostic
-([c1_map_increment.txt](../../docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.txt), r values only) reads the
-efficiency-only model at r 0.484 on the same 64 readings, with shifter-map increments of r 0.055 (gain) and 0.213
-(offset) over it: the frozen per-mode efficiencies carry the result and a static per-shifter map adds little (A5-202,
-refuted as a carrier beyond the efficiencies).
+([c1_map_increment.txt](../../docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.txt), seed-block p after the data) reads the
+efficiency-only model at r 0.484 on the same 64 readings, with shifter-map increments of r 0.055 (gain, p 0.28) and
+0.213 (offset, p 0.041) over it: the frozen per-mode efficiencies carry most of the result, and a static per-shifter map
+beyond them is not established; the offset increment is suggestive only, post hoc across two tests and above the 0.005
+the case preregistered (A5-202, open; a preregistered fresh-seed increment test decides it).
 
 Consequence for the pathion block cases. Each served mesh carries a fixed error of rms about 0.025 in level that a
 seed-specific table removes, and one anchor mesh per slot puts that mesh's error into every reading of its slot. A

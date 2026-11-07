@@ -4,9 +4,10 @@ Each frozen model of c1_static.npz carries its own per-mode efficiencies (a_) an
 vector (x_). The preregistered frozen-map decision scored the full model on the fresh iterations' raw slot departures,
 so its r mixes the efficiency fit with the shifter map. This script scores the efficiency-only model (x = 0) on the same
 64 centered readings and the increment of each shifter map over it: r of (observed - efficiency-only) with (map -
-efficiency-only), and the joint least-squares coefficients. It reports r values only (no new p, which would need a
-fresh draw); the preregistered reading stays the recorded outcome. Falsifier of "the shifter map carries beyond the
-efficiencies": an increment r near 0 while the efficiency-only r matches the full model's."""
+efficiency-only), the joint least-squares coefficients, and a seed-block permutation p of each increment r (whole
+compilation-seed blocks of the increment relabeled, as in the preregistered map_score). The preregistered reading stays
+the recorded outcome; this p is post hoc. Falsifier of "the shifter map carries beyond the efficiencies": a fresh-seed
+increment test, preregistered, positive at 0.005."""
 
 import json
 import sys
@@ -21,6 +22,9 @@ import ascella_pathion_mesh_persistence_analysis as reading  # noqa: E402
 
 RUN = ROOT / "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00"
 FRESH = ("fresh-anchor", "fresh-failing", "fresh-dark")
+PERMUTATIONS = 20000
+# QRNG seed: docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json index 0
+PERMUTATION_SEED = 33974
 
 
 def predictions(settings, entries, maps, kinds0, lo0):
@@ -62,6 +66,22 @@ def centered(rows, settings, pred):
     return o, m
 
 
+def blocks(settings, pred):
+    seeds = [settings[i]["compilation_seed"] for i in pred for _ in reading.an.SLOTS]
+    members = {s: np.flatnonzero(np.array(seeds) == s) for s in sorted(set(seeds))}
+    if len({len(v) for v in members.values()}) != 1:
+        raise ValueError("seed blocks of unequal size")
+    return np.array(list(members.values()))
+
+
+def block_p(residual, increment, groups, rng):
+    r = np.corrcoef(residual, increment)[0, 1]
+    orders = np.array([rng.permutation(len(groups)) for _ in range(PERMUTATIONS)])
+    shuffled = np.empty((PERMUTATIONS, len(increment)))
+    shuffled[:, groups.ravel()] = increment[groups[orders].reshape(PERMUTATIONS, -1)]
+    return (1 + int(np.sum(reading.batch_r(residual, shuffled) >= r))) / (PERMUTATIONS + 1)
+
+
 def main():
     _, settings, rows = reading.load(RUN)
     entries = json.loads((RUN / "results.json").read_bytes())["iterations"]
@@ -69,14 +89,19 @@ def main():
     kinds0, lo0, _, _, _ = cached(ROOT / reading.case.ORIGINAL_RUN, "pairs")
     pred = predictions(settings, entries, maps, kinds0, lo0)
     obs, none = centered(rows, settings, pred["none"])
-    print(f"fresh readings {len(obs)}; efficiency-only model r {np.corrcoef(obs, none)[0, 1]:.3f}")
+    groups = blocks(settings, pred["none"])
+    rng = np.random.default_rng(PERMUTATION_SEED)
+    print(
+        f"fresh readings {len(obs)} in {len(groups)} seed blocks; efficiency-only model r {np.corrcoef(obs, none)[0, 1]:.3f}"
+    )
     for model in ("gain", "offset"):
         _, full = centered(rows, settings, pred[model])
         increment = np.corrcoef(obs - none, full - none)[0, 1]
         beta = np.linalg.lstsq(np.column_stack([none, full]), obs, rcond=None)[0]
         print(
             f"{model:6s} full model r {np.corrcoef(obs, full)[0, 1]:.3f}; increment over efficiencies r {increment:.3f}; "
-            f"joint coefficients efficiency-only {beta[0]:.2f}, {model} {beta[1]:.2f}"
+            f"joint coefficients efficiency-only {beta[0]:.2f}, {model} {beta[1]:.2f}; "
+            f"increment seed-block p {block_p(obs - none, full - none, groups, rng):.4f} ({PERMUTATIONS} relabelings)"
         )
 
 

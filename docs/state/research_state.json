@@ -15231,11 +15231,11 @@
     },
     {
       "id": "hw-ascella-pathion-mesh-persistence",
-      "statement": "On qpu:ascella the two-block mirror failure is a fixed property of the served meshes: replaying the 52 original settings, each served the identical mesh, reproduces the 46 calibrated mirror differences at r 0.9966 against the preregistered fixed-mesh cutoff 0.988 with the same 9 of 46 over 0.07 and the anchor B/A 1.0876 against 1.082, with no drift within the job; fresh seeds of the eight failing designs do not carry the failures (aligned mean -0.0024, carried fraction -0.06 [-0.64, 0.51]); seven fresh anchor seeds give B/A 0.84 to 1.05, none within 0.03 of 1.082, so the anchor ratio is a property of each anchor mesh; the frozen gain model reads the preregistered 'map carries' (r 0.446, seed-block p 0.0016), carried by its per-mode efficiencies (efficiency-only r 0.484) rather than its shifter map (increment r 0.055).",
+      "statement": "On qpu:ascella the two-block mirror failure is a fixed property of the served meshes: replaying the 52 original settings, each served the identical mesh, reproduces the 46 calibrated mirror differences at r 0.9966 against the preregistered fixed-mesh cutoff 0.988 with the same 9 of 46 over 0.07 and the anchor B/A 1.0876 against 1.082, with no drift within the job; fresh seeds of the eight failing designs do not carry the failures (aligned mean -0.0024, carried fraction -0.06 [-0.64, 0.51]); seven fresh anchor seeds give B/A 0.84 to 1.05, none within 0.03 of 1.082, so the anchor ratio is a property of each anchor mesh; the frozen gain model reads the preregistered 'map carries' (r 0.446, seed-block p 0.0016), carried mainly by its per-mode efficiencies (efficiency-only r 0.484); a shifter-map contribution beyond them is not established (increments r 0.055, p 0.28, gain; r 0.213, p 0.041, offset; post hoc).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "An instrument result about the served meshes, not a block-conformance result: the per-mesh table that removes the failures subtracts each mesh's departure from its ideal level and validates no block level. The fresh-anchor rule reads unresolved as preregistered (median 0.951 outside 0.992 +- 0.03); the slot-efficiency reading is excluded descriptively. The offset model does not carry at the preregistered 0.005 (p 0.011). The split between efficiencies and shifter map is a post-hoc diagnostic with r values only. The simulator gate was amended after the simulator run and before the QPU job because three requests compile to different meshes on sim:ascella and qpu:ascella; the QPU job served all 52 replay meshes identically, so the amendment changed no reading.",
+      "boundary": "An instrument result about the served meshes, not a block-conformance result: the per-mesh table that removes the failures subtracts each mesh's departure from its ideal level and validates no block level. The fresh-anchor rule reads unresolved as preregistered (median 0.951 outside 0.992 +- 0.03); the slot-efficiency reading is excluded descriptively. The offset model does not carry at the preregistered 0.005 (p 0.011). The split between efficiencies and shifter map is a post-hoc diagnostic whose seed-block p values come from draw-2026-11-07T193501Z index 0. The simulator gate was amended after the simulator run and before the QPU job because three requests compile to different meshes on sim:ascella and qpu:ascella; the QPU job served all 52 replay meshes identically, so the amendment changed no reading.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00/analysis.json",
@@ -15251,7 +15251,7 @@
         },
         {
           "path": "docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.txt",
-          "sha256": "f39948ae18ad02d0b86c0cbbd1586c15a92cf8f63a72f14399aa28e4f7610aa5"
+          "sha256": "fbf18b142b2f3d68cdb96262608787d506377c1f26c468d470be033f0becb4d4"
         }
       ],
       "documents": [
