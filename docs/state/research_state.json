@@ -15228,6 +15228,44 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "hw-ascella-pathion-mesh-persistence",
+      "statement": "On qpu:ascella the two-block mirror failure is a fixed property of the served meshes: replaying the 52 original settings, each served the identical mesh, reproduces the 46 calibrated mirror differences at r 0.9966 against the preregistered fixed-mesh cutoff 0.988 with the same 9 of 46 over 0.07 and the anchor B/A 1.0876 against 1.082, with no drift within the job; fresh seeds of the eight failing designs do not carry the failures (aligned mean -0.0024, carried fraction -0.06 [-0.64, 0.51]); seven fresh anchor seeds give B/A 0.84 to 1.05, none within 0.03 of 1.082, so the anchor ratio is a property of each anchor mesh; a static per-shifter gain map frozen from the original job carries 0.20 of the resolvable per-mesh variance on the fresh meshes (seed-block p 0.0016).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "An instrument result about the served meshes, not a block-conformance result: the per-mesh table that removes the failures subtracts each mesh's departure from its ideal level and validates no block level. The fresh-anchor rule reads unresolved as preregistered (median 0.951 outside 0.992 +- 0.03); the slot-efficiency reading is excluded descriptively. The offset map does not carry at the preregistered 0.005 (p 0.011). The simulator gate was amended after the simulator run and before the QPU job because three requests compile to different meshes on sim:ascella and qpu:ascella; the QPU job served all 52 replay meshes identically, so the amendment changed no reading.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00/analysis.json",
+          "sha256": "4d25564c93d8a15f32bfd0f7f0e328966ae2ec200f2de9c7561050505376256f"
+        },
+        {
+          "path": "results/quandela/runs/2026-11-07T181127Z-sim_ascella-ascella_pathion_mesh_persistence-sim-00/analysis.json",
+          "sha256": "d993b1fb2ae62b35c6a74de7e21a8fbbe6bd18bfa5079d584c8732a18186636c"
+        },
+        {
+          "path": "results/quandela/cases/ascella_pathion_mesh_persistence/persistence_plan.json",
+          "sha256": "1c23466715f1079e5a76fb798397c85ce2960951a23eda0f73f353a1354957de"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-pathion-mesh-persistence-case.md",
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md",
+        "docs/runbooks/ascella-block-run-design.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qd-sim-ascella-pathion-mesh-persistence",
+        "qd-qpu-ascella-pathion-mesh-persistence"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-ascella-pathion-coset-block-pairs"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
