@@ -184,6 +184,8 @@ class Job:
     draw_start: int = 0
     iterations: int = 64
     repeat_plan: str = REPEAT_PLAN
+    # Platform statuses besides available that the written case admits at plan and submit.
+    admit_statuses: tuple[str, ...] = ()
 
 
 JOBS = {
@@ -215,9 +217,19 @@ JOBS = {
     "job-08": Job(
         "job-08", 32768, 32768, 1.032768, 205.0, True, True, LONG_REPEAT_ORDER_DRAW, repeat_plan=LONG_REPEAT_PLAN
     ),
-    # job-08 ran the same 64 iterations of 32,768 samples in 194 s.
+    # job-08 ran the same 64 iterations of 32,768 samples in 194 s. The case admits a running chip: the platform
+    # queues the job behind another user's.
     "job-09": Job(
-        "job-09", 32768, 32768, 1.032768, 205.0, True, True, PROSPECTIVE_ORDER_DRAW, repeat_plan=PROSPECTIVE_PLAN
+        "job-09",
+        32768,
+        32768,
+        1.032768,
+        205.0,
+        True,
+        True,
+        PROSPECTIVE_ORDER_DRAW,
+        repeat_plan=PROSPECTIVE_PLAN,
+        admit_statuses=("running",),
     ),
 }
 STAGED = ("cases.json", "circuit.json")
@@ -787,7 +799,7 @@ def binding(job: Job) -> Callable[[dict[str, Any]], None]:
 def preflight(run: Path) -> int:
     """Plan the written case read-only against the live platform and retain the plan without its body."""
     job = staged(run)
-    checked = plan(run, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS)
+    checked = plan(run, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS, job.admit_statuses)
     binding(job)(checked)
     snapshot(run / BEFORE)
     observe(run / BEFORE)
@@ -807,7 +819,14 @@ def send(run: Path, approval: str) -> int:
     job = staged(run)
     require((run / "preflight.json").is_file(), f"{run} has no preflight.json; run --preflight first")
     record = submit(
-        run, PLATFORM, approval, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS, verify=binding(job)
+        run,
+        PLATFORM,
+        approval,
+        job.credit_ceiling,
+        job.expected_seconds,
+        PER_JOB_CREDITS,
+        job.admit_statuses,
+        verify=binding(job),
     )
     print(f"job {record['job_id']} on {record['platform']}")
     return 0

@@ -2205,8 +2205,10 @@ is sent only after it passes, since a redrawn compilation would score other mesh
 
 **Backend, seconds and credits.** `sim:ascella`, then `qpu:ascella`, available on 2026-11-07 with HOM 88.98 %, g2
 2 % and transmittance 5.57 % under mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11, job-08's
-versions. Job-08 ran the same 64 iterations of 32,768 samples in 194 s; the case expects 205 s against the 300 s
-`max_duration`. Credit ceiling 1.032768 for each run: 1.0 per job plus 32,768 billed shots of one iteration at 1e-6.
+versions. The plan and the submission admit `running` as well as `available` (owner, 2026-11-07: "ascella is great
+when running, we can still submit jobs"), since the platform queues the job behind another user's. Job-08 ran the
+same 64 iterations of 32,768 samples in 194 s; the case expects 205 s against the 300 s `max_duration`. Credit
+ceiling 1.032768 for each run: 1.0 per job plus 32,768 billed shots of one iteration at 1e-6.
 
 **Procedure.** `scripts/ascella_coherence_request.py job-09` writes the case directory and `--body job-09` freezes
 the body against the live command set without sending it; `--preflight RUN` and `--submit RUN APPROVAL` send the
@@ -2216,3 +2218,20 @@ retrieves each. `--score` writes `correction-score-09.json` and the reading scri
 
 **Stopping rule.** A mesh gate that refuses stops the case before the QPU request. A job that errors or is cut short
 is resubmitted only on the owner's further approval. Every reading of C closes the case.
+
+**Outcome.** The `sim:ascella` run of job-09's request
+([`2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim`](../../results/quandela/runs/2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim/))
+served all 64 meshes within 2.45e-7 of job-02's, so the mesh gate passed. Job-09 (`6400527c`) queued behind another
+user's job and ran on 2026-11-07 from 04:34:35 UTC for 194 s at HOM 88.98 %, g2 2 % and transmittance 5.57 %,
+retained as [`2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09`](../../results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09/).
+Every one of its 64 settings returned job-02's mesh. C reads **correction holds**
+([score](../evidence/ascella-order-coefficients/correction-score-09.json)): the frozen table brings the per-mesh
+standard deviation of X from 0.01085 to 0.00337, R = 10.37 with the 98 % interval 6.16 to 16.21 (r 0.951 between
+job-09's deviations and the table), against the 10.89 a correction limited by job-09's counting variance (4.65e-6)
+and the table's noise (6.15e-6) alone would reach. S reads **persists** against job-08
+([reading](../evidence/ascella-order-coefficients/long-horizon-reading-08-09.json)): slope 1.003 with one-sided 99 %
+upper bound 1.102, beside the 0.956 a fully persistent error reaches through job-08's counting noise; P1 reads fixed
+per mesh (r 0.958 at the ceiling 0.956), every mesh byte-equal to job-08's, anchors steady (z -0.61). A table fitted
+on job-02 and job-03, run twelve and eleven days earlier, therefore predicts each seed's error almost to the noise
+floor: per-seed calibration through the cloud interface removes about 90 % of the per-mesh X variance on these
+meshes.

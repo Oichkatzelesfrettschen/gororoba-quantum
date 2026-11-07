@@ -62,7 +62,7 @@ the pattern and scales its amplitude down by about 11 %, as a recalibration that
 persistent one is not detected at this precision; a bound on it needs a persistent-plus-redrawn variance fit or a
 third run.
 
-## Per-seed correction (retrospective)
+## Per-seed correction
 
 The estimator below was defined after job-08 was retained and is not part of the preregistered plan, so it is a
 retrospective analysis of a held run, not a prospective test. Because the error persists, a table of per-seed offsets
@@ -73,6 +73,14 @@ applied unchanged to job-08, whose data the table never saw, it lowers job-08's 
 noise (about 6e-6 from the 8,192- and 16,384-sample runs) and about 3e-6 of unexplained residual. Frozen as written in
 `scripts/ascella_mesh_error_controls.py`, the estimator is scored unchanged on the next acquisition of these seeds,
 which makes the reduction a prospective result or refutes it.
+
+The [prospective correction case](../../design/ascella-signed-coherence-conformance.md#prospective-correction-case-job-09)
+froze that table by setting name in [`correction-table.json`](correction-table.json) before job-09 was sent, with a
+decision rule fixed in advance: R = var(d) / var(d - t) and a 98 % bootstrap interval whose lower end must reach 2.
+On job-09, eleven days after job-03, the frozen table lowers the per-mesh standard deviation from 0.01085 to 0.00337,
+R = 10.37 with the interval 6.16 to 16.21 ([score](correction-score-09.json)), against the 10.89 that job-09's
+counting variance and the table's own noise allow. The correction is therefore prospective: it removes about 90 % of
+the per-mesh X variance, and what remains is almost entirely counting noise.
 
 ## Assumption ledger
 
@@ -92,7 +100,8 @@ which makes the reduction a prospective result or refutes it.
 - **Attribution.** The persistent error sits in the implementation path; see "What the interface returns" for the
   data that could separate its stages.
 - **Redrawn share.** Bounded only by the r interval above; a variance-component fit or a third run bounds it.
-- **Correction.** The per-seed table is retrospective until it scores on a fresh acquisition.
+- **Correction.** The frozen per-seed table holds prospectively on job-09; its reach beyond these 56 seeds, and to
+  settings other than theta2-x-arm0, is untested.
 
 - **Mechanism.** The returned circuit and its fitted offsets explain at most part of the error; the applied voltages
   are the missing quantity.
@@ -177,7 +186,7 @@ configurations read algebra share 0.048 at seed 0 and move by a median of 0.043 
 at 98.8 % of the attenuation ceiling. If Belenos meshes persist as Ascella's do (the
 [Belenos persistence case](../../design/belenos-mesh-persistence-case.md) tests it), a measured table over a few seeds
 per configuration lets each of the 32 configurations run on its lowest-error seed and subtract its persistent offset,
-which on Ascella cut the per-mesh variance 7.7-fold out of sample. The algebra also supplies its own replicates: the
+which on Ascella cut the per-mesh variance 10.4-fold on a run the frozen table never saw (job-09). The algebra also supplies its own replicates: the
 thousands of zero products that share one configuration have the same ideal, so they calibrate the hardware rather
 than adding unknowns. The higher algebras therefore improve accuracy through block folding, built-in replication and
 seed selection; they leave the chip's per-mesh error itself unchanged.

@@ -1,0 +1,41 @@
+{
+ "decision": {
+  "alpha": 0.01,
+  "bootstrap": 20000,
+  "min_meshes": 16,
+  "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json",
+  "seed_index": 56,
+  "statistic": "R = var(d) / var(d - t) over the repeat's perturbed meshes identical to job-02's",
+  "useful_ratio": 2.0
+ },
+ "job": "job-09",
+ "mesh_identity": {
+  "anchors": 8,
+  "anchors_identical": 8,
+  "perturbed": 56,
+  "perturbed_identical": 56,
+  "tolerance": 1e-06
+ },
+ "plan": "docs/state/plans/ascella-prospective-correction-case.json",
+ "reading": "correction holds",
+ "runs": [
+  "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+  "results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09"
+ ],
+ "samples": 32768,
+ "schema": "ascella-correction-score-v1",
+ "score": {
+  "counting_variance": 4.648646867019219e-06,
+  "lower": 6.1558019923380405,
+  "meshes": 56,
+  "noise_limited_ratio": 10.893846037699626,
+  "r": 0.9505803879672294,
+  "ratio": 10.370877583390811,
+  "reading": "correction holds",
+  "sd_after": 0.003368375319936003,
+  "sd_before": 0.010847464327128738,
+  "upper": 16.20550959674285
+ },
+ "table": "docs/evidence/ascella-order-coefficients/correction-table.json",
+ "table_sha256": "cd9a43deeaa033d37f665abeefda5501762a73701b975679325475250120b8af"
+}

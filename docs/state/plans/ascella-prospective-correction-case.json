@@ -28,22 +28,62 @@
       "id": "request-builder",
       "action": "Register job-09 in ascella_coherence_request.py with job-02's seeds by name, anchors at stride 8, the perturbed meshes in the new draw's order, and freeze its body against the live qpu:ascella command set without sending it.",
       "acceptance": "--check rebuilds every registered job to its retained bytes and validates job-09's frozen body.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "ascella_coherence_request.py registers job-09; --check rebuilds every job to its retained bytes and validates job-09's frozen body (64 iterations, 32,768 samples, ceiling 1.032768).",
+          "observed_at": "2026-11-07T04:20:58+00:00",
+          "revision": "2698c83c9748135da19828c9746dd926c0920e78",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-09/cases.json",
+              "sha256": "42748855729270d872b72cda1cb88f4c4dce7575bbe15033cd34174c1dfd79fa"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-09/job-body.json",
+              "sha256": "942ea531ffc05b5465864feb26efc00e0703286d39e4da67d956cf7083fca30b"
+            }
+          ],
+          "scope_sha256": "e989d2e4944589b62f00e619deb956f5cba238c13b7347bdb5d69aa39de725bd"
+        }
+      ]
     },
     {
       "id": "table-freeze",
       "action": "Freeze the per-seed correction table from job-02 and job-03 with its decision rule, and write the power record of the score.",
       "acceptance": "correction-table.json and correction-power.json replay byte-identical, and the table reproduces long-horizon-controls.json's job-08 correction.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "request-builder"
+      ],
+      "receipts": [
+        {
+          "result": "correction-table.json freezes the job-02/job-03 table (slope 0.9136, 56 offsets, table noise 6.15e-6) and reproduces the retrospective job-08 correction (SD 0.01036 to 0.00373, ratio 7.71); correction-power.json reads persistent errors at amplitude 1.0 and 0.88 as correction holds in every replicate and a redrawn error as fails; both replay byte-identical.",
+          "observed_at": "2026-11-07T04:20:58+00:00",
+          "revision": "2698c83c9748135da19828c9746dd926c0920e78",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/correction-table.json",
+              "sha256": "cd9a43deeaa033d37f665abeefda5501762a73701b975679325475250120b8af"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/correction-power.json",
+              "sha256": "cca5e99f91a064bc5bdda3206d218215c186ffeb74defd0e63518b5377ce4f61"
+            },
+            {
+              "ref": "scripts/ascella_correction_score.py",
+              "sha256": "c58d345a9e3dfbe2f41f4ebc012a158e01f1673d43f05e131f234b160d27263f"
+            }
+          ],
+          "scope_sha256": "85ce111ad173e9958ed24c5210a3105609d0eb9cbff91db7b6e1dbb2e05a1eb4"
+        }
       ]
     },
     {
       "id": "sim-mesh-gate",
       "action": "Run job-09's request on sim:ascella and require every served unitary within 1e-6 of job-02's.",
       "acceptance": "The simulator run is retained and ascella_correction_score.py --mesh-gate passes on it.",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "table-freeze"
       ]
