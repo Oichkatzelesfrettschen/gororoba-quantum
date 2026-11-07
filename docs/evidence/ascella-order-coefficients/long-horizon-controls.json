@@ -1,0 +1,64 @@
+{
+ "analysis": {
+  "echoed_seed_and_parameters": [
+   64,
+   64,
+   64
+  ],
+  "iterations": [
+   64,
+   64,
+   64
+  ],
+  "position_rank_correlation_03_08": -0.3082023239917977,
+  "position_trend_spearman": [
+   -0.1762816131237184,
+   -0.06678058783321941,
+   0.14948735475051264
+  ],
+  "r_by_name_03_08": 0.9245501760662466,
+  "r_by_position_03_08": -0.1991186014460721,
+  "r_detrended_03_08": 0.911565465916401
+ },
+ "chip": {
+  "dark_share_mean": [
+   0.00085043562838298,
+   0.0008953427947195361,
+   0.0005813555886705508
+  ],
+  "dark_share_r_02_08": 0.439021488861675,
+  "dark_share_r_03_08": 0.629308462613084
+ },
+ "compiler": {
+  "counting_sd": [
+   0.0044396577695532185,
+   0.00313274320611659,
+   0.0021480656962755123
+  ],
+  "logical_ideal": 0.9045084971874736,
+  "observed_sd": [
+   0.01137793603891548,
+   0.011748956097535877,
+   0.01035952554149453
+  ],
+  "served_against_observed_r": -0.09534888907321785,
+  "served_ideal_identical_across_jobs": true,
+  "served_ideal_mean": 0.9044997373461536,
+  "served_ideal_sd": 9.787975811249683e-05
+ },
+ "correction": {
+  "counting_variance": 4.61474342209976e-06,
+  "sd_after": 0.003730756347286709,
+  "sd_before": 0.01035952554149453,
+  "slope_02_to_03": 0.9135678159260758,
+  "variance_after": 1.3918542922820065e-05,
+  "variance_before": 0.00010731976944487753
+ },
+ "perturbed_meshes": 56,
+ "runs": [
+  "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+  "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03",
+  "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08"
+ ],
+ "schema": "ascella-mesh-error-controls-v1"
+}

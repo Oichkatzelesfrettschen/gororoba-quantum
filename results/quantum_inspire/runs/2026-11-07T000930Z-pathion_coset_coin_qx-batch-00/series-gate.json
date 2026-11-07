@@ -1,0 +1,13 @@
+{
+ "schema": "qi-pathion-coset-coin-gate-v1",
+ "series": "pathion_coset_coin_qx",
+ "batch": "batch-00",
+ "cases_sha256": "7c0d76bc25648cd7b77a1b3e4994f00e811489828aa2b25d1e80b32a765d5bc6",
+ "predecessors": [],
+ "stops": {
+  "batches_checked": [],
+  "drift": null
+ },
+ "control": null,
+ "pause_seconds": 0
+}

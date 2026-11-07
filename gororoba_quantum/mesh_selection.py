@@ -349,10 +349,26 @@ def centered(shares: np.ndarray) -> np.ndarray:
     return shares - shares.mean(axis=1, keepdims=True)
 
 
-def relabeled_values(e_old: np.ndarray, e_new: np.ndarray) -> list[np.ndarray]:
-    """Per block, the block's cross product under each of the m! relabelings of the new meshes."""
-    m = e_old.shape[1]
-    perms = np.array(list(itertools.permutations(range(m))))
+def relabelings_of(m: int, relabelings: np.ndarray | None) -> np.ndarray:
+    """The relabelings a test enumerates: all m! permutations, or a caller's nonempty integer sample of them whose
+    every row is a permutation of range(m) and whose row 0 is the identity, which keeps the observed labeling inside
+    the reference set so the p-value stays valid."""
+    if relabelings is None:
+        return np.array(list(itertools.permutations(range(m))))
+    if relabelings.ndim != 2 or relabelings.shape[0] == 0 or relabelings.shape[1] != m:
+        raise ValueError(f"sampled relabelings need at least one row of {m} columns")
+    if not np.issubdtype(relabelings.dtype, np.integer):
+        raise ValueError(f"sampled relabelings need integer labels, not {relabelings.dtype}")
+    if not np.array_equal(np.sort(relabelings, axis=1), np.broadcast_to(np.arange(m), relabelings.shape)):
+        raise ValueError(f"every sampled relabeling must be a permutation of range({m})")
+    if not np.array_equal(relabelings[0], np.arange(m)):
+        raise ValueError(f"sampled relabelings need the identity in row 0, not {relabelings[0]}")
+    return relabelings
+
+
+def relabeled_values(e_old: np.ndarray, e_new: np.ndarray, relabelings: np.ndarray | None = None) -> list[np.ndarray]:
+    """Per block, the block's cross product under each relabeling of the new meshes (relabelings_of)."""
+    perms = relabelings_of(e_old.shape[1], relabelings)
     return [e_new[b][perms] @ e_old[b] for b in range(e_old.shape[0])]
 
 
@@ -377,15 +393,17 @@ def exact_lower_p(per_block: Sequence[np.ndarray], observed: float) -> float:
     return exact_upper_p([-values for values in per_block], -observed)
 
 
-def slope_terms(e_old: np.ndarray, e_new: np.ndarray) -> tuple[list[np.ndarray], list[np.ndarray]]:
+def slope_terms(
+    e_old: np.ndarray, e_new: np.ndarray, relabelings: np.ndarray | None = None
+) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """Per block and relabeling, the two coefficients of the slope test: ``rise``, the relabeled cross product of
     e_new with e_old minus the observed one, and ``lost``, the block's sum of e_old^2 minus the relabeled sum.
 
     Under a slope b the relabeled cross product of the residuals e_new - b e_old exceeds the observed one by
     rise + b lost, summed over the blocks. lost is nonnegative, and exactly zero for a relabeling that permutes
-    equal retained deviations, so that relabeling's term holds at every slope."""
-    m = e_old.shape[1]
-    perms = np.array(list(itertools.permutations(range(m))))
+    equal retained deviations, so that relabeling's term holds at every slope. Row 0 of the relabelings is the
+    identity, so rise is measured from cross[0], the observed cross product in the same arithmetic."""
+    perms = relabelings_of(e_old.shape[1], relabelings)
     rise, lost = [], []
     for old, new in zip(e_old, e_new, strict=True):
         cross = new[perms] @ old
@@ -405,7 +423,7 @@ def slope_terms_p(rise: Sequence[np.ndarray], lost: Sequence[np.ndarray], slope:
     return exact_lower_p(values, 0.0)
 
 
-def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float) -> float:
+def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float, relabelings: np.ndarray | None = None) -> float:
     """Exact one-sided p-value of the hypothesis that the persistence slope is at least ``slope``.
 
     Under a slope b the residuals e_new - b e_old carry the fresh error alone. With that error exchangeable within
@@ -414,17 +432,23 @@ def slope_lower_p(e_old: np.ndarray, e_new: np.ndarray, slope: float) -> float:
     residuals whose cross product with e_old lies at or below the observed one. It never increases with b: the
     observed cross product minus a relabeled one falls linearly in b at the rate sum e_old^2 minus the relabeled
     sum, which is nonnegative (slope_terms)."""
-    return slope_terms_p(*slope_terms(e_old, e_new), slope)
+    return slope_terms_p(*slope_terms(e_old, e_new, relabelings), slope)
 
 
-def slope_upper_bound(e_old: np.ndarray, e_new: np.ndarray, alpha: float, tolerance: float = 1e-9) -> float:
+def slope_upper_bound(
+    e_old: np.ndarray,
+    e_new: np.ndarray,
+    alpha: float,
+    tolerance: float = 1e-9,
+    relabelings: np.ndarray | None = None,
+) -> float:
     """The largest slope that slope_lower_p does not reject at level alpha, by bisection to ``tolerance`` or to
     adjacent floats; plus infinity when the p-value stays at or above alpha in the limit of large slopes, which
     takes tied retained deviations, and minus infinity when it lies below alpha in the limit of small ones.
 
     The set of slopes with slope_lower_p >= alpha is a closed half line, so the bound lies below a value u exactly
     when slope_lower_p(u) < alpha."""
-    rise, lost = slope_terms(e_old, e_new)
+    rise, lost = slope_terms(e_old, e_new, relabelings)
     if slope_terms_p(rise, lost, math.inf) >= alpha:
         return math.inf
     if slope_terms_p(rise, lost, -math.inf) < alpha:
@@ -453,7 +477,12 @@ def slope_upper_bound(e_old: np.ndarray, e_new: np.ndarray, alpha: float, tolera
 
 
 def persistence(
-    old: np.ndarray, new: np.ndarray, alpha: float, useful_slope: float, bound: bool = True
+    old: np.ndarray,
+    new: np.ndarray,
+    alpha: float,
+    useful_slope: float,
+    bound: bool = True,
+    relabelings: np.ndarray | None = None,
 ) -> dict[str, Any]:
     """The cross product of block-centered shares, its exact relabeling p-value, the slope and its upper bound.
 
@@ -461,17 +490,18 @@ def persistence(
     the new centered shares on the old ones. useful_slope_p is slope_lower_p at useful_slope, and the one-sided
     1 - alpha upper bound inverts that test over the slope (slope_upper_bound), so both need exchangeability
     within a block only and hold when the blocks differ in error size. bound=False leaves the bisection out for a
-    caller that needs the reading alone."""
+    caller that needs the reading alone. relabelings replaces the full enumeration by a sample whose row 0 is the
+    identity (relabelings_of), for blocks too large to enumerate; every p-value is then the sample's share."""
     e_old, e_new = centered(old), centered(new)
     observed = float((e_old * e_new).sum())
     result = {
         "statistic": observed,
-        "p_value": exact_upper_p(relabeled_values(e_old, e_new), observed),
+        "p_value": exact_upper_p(relabeled_values(e_old, e_new, relabelings), observed),
         "slope": observed / float((e_old**2).sum()),
-        "useful_slope_p": slope_lower_p(e_old, e_new, useful_slope),
+        "useful_slope_p": slope_lower_p(e_old, e_new, useful_slope, relabelings),
     }
     if bound:
-        result["slope_upper"] = slope_upper_bound(e_old, e_new, alpha)
+        result["slope_upper"] = slope_upper_bound(e_old, e_new, alpha, relabelings=relabelings)
     return result
 
 

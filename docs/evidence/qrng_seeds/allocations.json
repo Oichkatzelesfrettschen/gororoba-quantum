@@ -1483,6 +1483,206 @@
    "experiment": "ascella-pathion-four-term-blocks"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 0,
+   "value": 59387,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 1,
+   "value": 53664,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 2,
+   "value": 27339,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 3,
+   "value": 31466,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 4,
+   "value": 10934,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 5,
+   "value": 32007,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 6,
+   "value": 64612,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 7,
+   "value": 55620,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 8,
+   "value": 18283,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 9,
+   "value": 18045,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 10,
+   "value": 53138,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 11,
+   "value": 58748,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 12,
+   "value": 27247,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 13,
+   "value": 16983,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 14,
+   "value": 49806,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 15,
+   "value": 49926,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 16,
+   "value": 33519,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 17,
+   "value": 41031,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 18,
+   "value": 8184,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 19,
+   "value": 48826,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 20,
+   "value": 27747,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 21,
+   "value": 16818,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 22,
+   "value": 46918,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 23,
+   "value": 49577,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-06T230523Z.json",
+   "index": 24,
+   "value": 7326,
+   "script": "scripts/ascella_pathion_coset_block_pairs.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-coset-block-pairs"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,

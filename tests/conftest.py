@@ -15,8 +15,10 @@ from __future__ import annotations
 
 import os
 import sys
-from collections.abc import Generator
+from collections.abc import Callable, Generator, Sequence
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -88,3 +90,38 @@ def pytest_runtest_makereport(
             " shrink its input or mark it audit with a small unmarked counterpart"
         )
     return report
+
+
+class PoolSpy:
+    """What a test with forced_pool ran through parallel.ordered_map: the (callable class, item count) of each map
+    and the pool sizes that were requested from the executor."""
+
+    def __init__(self) -> None:
+        self.maps: list[tuple[str, int]] = []
+        self.pools: list[int] = []
+
+
+@pytest.fixture
+def forced_pool(monkeypatch: pytest.MonkeyPatch) -> PoolSpy:
+    """Send every parallel.ordered_map through the spawned process pool, whatever its size.
+
+    Each test runs in one CPU slot (pytest_configure sets GOROROBA_WORKERS=1) and the committed pathion series are
+    below parallel.MIN_PARALLEL_ITEMS, so their maps run inline. This fixture reports two workers and passes
+    min_items=1 to the real ordered_map, which pickles the callable and its items and runs the chunks in spawned
+    workers; the returned PoolSpy records the maps and pool requests so a test can require that the pool ran."""
+    spy = PoolSpy()
+    real_map = parallel.ordered_map
+    real_executor = parallel._executor
+
+    def ordered_map(function: Callable[[Any], Any], items: Sequence[Any], min_items: int = 1) -> list[Any]:
+        spy.maps.append((type(function).__name__, len(items)))
+        return real_map(function, items, min_items=1)
+
+    def executor(count: int) -> ProcessPoolExecutor:
+        spy.pools.append(count)
+        return real_executor(count)
+
+    monkeypatch.setattr(parallel, "workers", lambda: 2)
+    monkeypatch.setattr(parallel, "ordered_map", ordered_map)
+    monkeypatch.setattr(parallel, "_executor", executor)
+    return spy

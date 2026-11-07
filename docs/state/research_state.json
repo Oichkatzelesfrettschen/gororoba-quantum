@@ -2963,6 +2963,27 @@
       "question": "For block set 4, the last five of its ten iterations: do the primary repeats keep one compiled mesh across the set's two jobs, and how far do three replicate seeds per layout move each block's single-click algebra-mode share against the packed-swapped placement contrast?"
     },
     {
+      "id": "qd-sim-ascella-signed-coherence-job-02-sim-replay",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T175319Z-sim_ascella-ascella_signed_coherence-job-02-sim-replay",
+      "family": "ascella_signed_coherence",
+      "question": "Does the Ascella simulator, after the 2026-11 software update, serve the unitaries the QPU served for job-02's compilation seeds?"
+    },
+    {
+      "id": "qd-sim-ascella-signed-coherence-job-08-sim",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T175944Z-sim_ascella-ascella_signed_coherence-job-08-sim",
+      "family": "ascella_signed_coherence",
+      "question": "How far does the Ascella simulator spread the X statistic of job-08's 56 seeded meshes beyond counting noise?"
+    },
+    {
+      "id": "qd-qpu-ascella-signed-coherence-job-08",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08",
+      "family": "ascella_signed_coherence",
+      "question": "Does each served mesh of job-02's seeds keep its per-mesh analyzer error twelve days and one software update after job-03?"
+    },
+    {
       "id": "ibm-fez-pathion-kernel-map",
       "provider": "ibm",
       "run": "results/live/2026-11-06T183538.809814Z",
@@ -2982,6 +3003,153 @@
       "run": "results/live/2026-11-06T200832.558771Z",
       "family": "pathion coset-block map (A_5, dimension 32)",
       "question": "Does ibm_marrakesh resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
+    },
+    {
+      "id": "qd-sim-ascella-pathion-four-term-blocks",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T215025Z-sim_ascella-ascella_pathion_four_term_blocks-sim-00",
+      "family": "pathion four-term coset blocks (A_5, dimension 32)",
+      "question": "Does sim:ascella reproduce the ideal levels of the D = 32-only four-term coset blocks within 0.01 (the gate before the QPU job)?"
+    },
+    {
+      "id": "qd-qpu-ascella-pathion-four-term-blocks",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00",
+      "family": "pathion four-term coset blocks (A_5, dimension 32)",
+      "question": "Does qpu:ascella realize the 4 x 4 coset blocks of the four classes that exist only at D = 32, with the anchor and dark normalization, mutation arms and the preregistered 0.07 tolerance?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-00",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-01",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-02",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-03",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-04",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-05",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-06",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-qx-2026-11-06t221242-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221242Z-pathion_coset_block_qx-batch-07",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On the QX emulator, do the coset-block circuits of e1+e18 (ba), e1+e26 (bb), the null b0 and the cocycle-free xor arm reproduce their cd_core selector contrasts, as the series control the Tuna-17 batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-block-tuna-17-2026-11-06t221626-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-00",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On Tuna-17, do the coset-block selector contrasts of ba, bb and b0 resolve their cd_core signs per bin, with the readout-bracket drift stop of the first series design (stopped at batch 03)?"
+    },
+    {
+      "id": "qi-pathion-coset-block-tuna-17-2026-11-06t221626-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-01",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On Tuna-17, do the coset-block selector contrasts of ba, bb and b0 resolve their cd_core signs per bin, with the readout-bracket drift stop of the first series design (stopped at batch 03)?"
+    },
+    {
+      "id": "qi-pathion-coset-block-tuna-17-2026-11-06t221626-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-02",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On Tuna-17, do the coset-block selector contrasts of ba, bb and b0 resolve their cd_core signs per bin, with the readout-bracket drift stop of the first series design (stopped at batch 03)?"
+    },
+    {
+      "id": "qi-pathion-coset-block-tuna-17-2026-11-06t221626-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-03",
+      "family": "pathion coset-block kernel map (A_5, dimension 32)",
+      "question": "On Tuna-17, do the coset-block selector contrasts of ba, bb and b0 resolve their cd_core signs per bin, with the readout-bracket drift stop of the first series design (stopped at batch 03)?"
+    },
+    {
+      "id": "qi-pathion-coset-coin-qx-2026-11-07t000930-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T000930Z-pathion_coset_coin_qx-batch-00",
+      "family": "pathion coset-block kernel map, coin-arm series (A_5, dimension 32)",
+      "question": "On the QX emulator, does the coin-arm coset-block series (one coin qubit carrying both orientation arms) reproduce the analytic arm laws, as the control the Tuna-17 coin batches require?"
+    },
+    {
+      "id": "qi-pathion-coset-coin-tuna-17-2026-11-07t001031-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-00",
+      "family": "pathion coset-block kernel map, coin-arm series (A_5, dimension 32)",
+      "question": "On Tuna-17, does one coin-arm job per template resolve the cd_core selector signs of ba and bb per bin, the sign pattern on bins 2 and 6, the cocycle-free arm and the null, and do the readout-corrected contrasts agree with ibm_fez and ibm_marrakesh?"
+    },
+    {
+      "id": "qi-pathion-coset-coin-tuna-17-2026-11-07t001031-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-01",
+      "family": "pathion coset-block kernel map, coin-arm series (A_5, dimension 32)",
+      "question": "On Tuna-17, does one coin-arm job per template resolve the cd_core selector signs of ba and bb per bin, the sign pattern on bins 2 and 6, the cocycle-free arm and the null, and do the readout-corrected contrasts agree with ibm_fez and ibm_marrakesh?"
+    },
+    {
+      "id": "qi-pathion-coset-coin-tuna-17-2026-11-07t001031-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-02",
+      "family": "pathion coset-block kernel map, coin-arm series (A_5, dimension 32)",
+      "question": "On Tuna-17, does one coin-arm job per template resolve the cd_core selector signs of ba and bb per bin, the sign pattern on bins 2 and 6, the cocycle-free arm and the null, and do the readout-corrected contrasts agree with ibm_fez and ibm_marrakesh?"
+    },
+    {
+      "id": "qi-pathion-coset-coin-tuna-17-2026-11-07t001031-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-03",
+      "family": "pathion coset-block kernel map, coin-arm series (A_5, dimension 32)",
+      "question": "On Tuna-17, does one coin-arm job per template resolve the cd_core selector signs of ba and bb per bin, the sign pattern on bins 2 and 6, the cocycle-free arm and the null, and do the readout-corrected contrasts agree with ibm_fez and ibm_marrakesh?"
+    },
+    {
+      "id": "qd-sim-ascella-pathion-coset-block-pairs",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-07T002936Z-sim_ascella-ascella_pathion_coset_block_pairs-sim-00",
+      "family": "pathion coset blocks, two blocks per photon (A_5, dimension 32)",
+      "question": "Does sim:ascella return the ideal two-block levels within 0.01 (the pipeline gate of the QPU job)?"
+    },
+    {
+      "id": "qd-qpu-ascella-pathion-coset-block-pairs",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00",
+      "family": "pathion coset blocks, two blocks per photon (A_5, dimension 32)",
+      "question": "With one photon shared by two 4 x 4 coset blocks on 9 modes, does qpu:ascella hold every block level within 0.07 after per-slot anchor and dark calibration, keep crosstalk between the blocks under 0.03 and one block's level independent of its partner's arm, and does the predecessor's C8 spread follow the block or the mode slot?"
     }
   ],
   "claims": [
@@ -14719,6 +14887,85 @@
       ],
       "depends_on": [
         "qd-belenos-packed-mode-swap"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-pathion-kernel-map-fez",
+      "statement": "One compiled A_5 SELECT on ibm_fez reproduces the cd_core sign network of e1 + e18 (N_hat 12.65 [11.87, 13.42] against 12), its quarter-turn twin e17 - e2 (11.87), the single flipped SELECT sign (11.39 against 11) and the cocycle-free control (-6.78 against -6); visibility at 136 to 173 routed CZ is 0.09 to 0.24, refuting the calibrated model's 0.49 to 0.58, and operands with i ^ j in {25, 27} lose it on two placements while m = 19 holds there.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Most deep operands miss the preregistered 31 of 32 sign agreement; N_hat is exact only under a bin-independent contraction; the m-dependent collapse is a device hypothesis until the placements' calibration is read.",
+      "evidence": [
+        {
+          "path": "results/live/2026-11-06T183538.809814Z/collect.json",
+          "sha256": "79eaf03b9c5f0af8dda754b780b7a3d497f55fc548a087a089c0213d5fc0f6e8"
+        }
+      ],
+      "documents": [
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-fez-pathion-kernel-map"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-pathion-coset-map-fez",
+      "statement": "Coset blocks of the A_5 kernel map (four 4-qubit blocks per operand, 1 to 20 routed CZ) on ibm_fez recover the nullity of all six two-term operands with every one of 32 per-output signs correct (readout-corrected N_hat -0.04, 4.02, 4.03, 8.00, 11.98, 11.99 for nullity 0, 4, 4, 8, 12, 12), the quarter-turn twin (difference 0.008 [-0.018, 0.033]) and the cocycle-free control (-1.96 against -2); the i ^ j-dependent loss of the full six-qubit map does not recur on the same qubits at this depth.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "N_hat is exact under a bin-independent contraction; the raw values carry a +0.05 to +0.25 bias that the readout correction removes; the matching ibm_marrakesh run is retained as claim hw-pathion-coset-map-marrakesh.",
+      "evidence": [
+        {
+          "path": "results/live/2026-11-06T201037.234804Z/collect.json",
+          "sha256": "bbb2415b53e07e97e745b3da472114afb84cb0fc8be34686a39b7fac18d15051"
+        }
+      ],
+      "documents": [
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-fez-pathion-coset-map"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-pathion-kernel-map-fez"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-pathion-coset-map-marrakesh",
+      "statement": "The same coset-block kernel map on ibm_marrakesh recovers the nullity of all six two-term A_5 operands with all 32 per-output signs (readout-corrected N_hat 0.14, 4.05, 4.04, 8.04, 11.99, 11.87 for nullity 0, 4, 4, 8, 12, 12), the twin (difference 0.014 [-0.017, 0.045]) and the cocycle-free control (-1.85 against -2), in agreement with ibm_fez on every operand.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Retained with the account below the inventory's 60 s reserve (account_reserve_met false); N_hat is exact under a bin-independent contraction.",
+      "evidence": [
+        {
+          "path": "results/live/2026-11-06T200832.558771Z/collect.json",
+          "sha256": "003031ac080ca40af9c20924109b5659c38b06554591eb65ef1f68e853c76093"
+        }
+      ],
+      "documents": [
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-marrakesh-pathion-coset-map"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-pathion-coset-map-fez"
       ],
       "supersedes": [],
       "superseded_by": null

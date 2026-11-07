@@ -1,0 +1,79 @@
+{
+ "alpha": 0.01,
+ "anchor_control": {
+  "difference": 0.004022901753032437,
+  "reading": "steady",
+  "reference_mean": 0.8829365564774474,
+  "repeat_mean": 0.8869594582304798,
+  "standard_error": 0.0017579643092839436,
+  "z": 2.288386477351779
+ },
+ "dependence": {
+  "p": 4.999750012499375e-05,
+  "permutations": 20000,
+  "ratio": 52.1653366425358,
+  "reading": "compilation dependent"
+ },
+ "exploratory": {
+  "dark_output_spearman": {
+   "p": 0.0022022344059393958,
+   "rho": 0.4008476314170483
+  },
+  "predecessor_transition_spearman": {
+   "p": 0.2668680956218218,
+   "rho": 0.15092276144907724
+  },
+  "x_means": {
+   "reference_perturbed": 0.8867852456894624,
+   "repeat_perturbed": 0.8888347228617715
+  }
+ },
+ "jobs": [
+  "job-02",
+  "job-08"
+ ],
+ "mesh_identity": {
+  "anchors": 8,
+  "anchors_identical": 8,
+  "byte_equal": 64,
+  "largest_identical_distance": 0.0,
+  "perturbed": 56,
+  "perturbed_identical": 56,
+  "tolerance": 1e-06
+ },
+ "persistence": {
+  "alpha": 0.01,
+  "attenuated_full_persistence": 0.8454691169756923,
+  "meshes": 56,
+  "p_value": 4.999750012499375e-05,
+  "reading": "persists",
+  "relabelings": 20000,
+  "slope": 0.8097203044588983,
+  "slope_upper": 0.9461610082071192,
+  "statistic": 0.005765336963323428,
+  "useful_slope": 0.5,
+  "useful_slope_p": 1.0
+ },
+ "plan": "docs/state/plans/ascella-long-horizon-seed-repeat-case.json",
+ "reading": "persists",
+ "reproduction": {
+  "bound": 0.8172138786836937,
+  "ceiling": 0.8991799239209225,
+  "meshes": 56,
+  "p": 4.999750012499375e-05,
+  "r": 0.8893212142431187,
+  "reading": "fixed per mesh",
+  "relabelings": 20000
+ },
+ "runs": [
+  "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+  "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08"
+ ],
+ "samples": [
+  8192,
+  32768
+ ],
+ "schema": "ascella-long-horizon-reading-v1",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json",
+ "seed_index": 58
+}

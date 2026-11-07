@@ -1,0 +1,163 @@
+{
+ "backend": "tuna_17",
+ "batch_cases_sha256": {
+  "batch-00": "01eaf253bab39a4e1a3dbaf18f807507d432a54e97b4aaca0c97ae8aaad04f52",
+  "batch-01": "d130e9393aaf22f282eb13aa55ace21da7c5f94531f4079d85d6d8d9466739a3",
+  "batch-02": "a6cdf65c28b76d06633661f5d17e8e22107b6235abed2d677611dffff4f037d2",
+  "batch-03": "be1ae0cbd156f689f9d0d26ada75b32c3e46cb100cc0adb2c141e40a8df8861c"
+ },
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02",
+  "batch-03"
+ ],
+ "claim_kind": "hardware acquisition",
+ "complete": false,
+ "references": {
+  "flagged": [
+   {
+    "delta": -0.1695556640625,
+    "flag": true,
+    "from": "batch-01",
+    "kind": "e10",
+    "qubit": 11,
+    "rate_from": 0.27618408203125,
+    "rate_to": 0.10662841796875,
+    "to": "batch-03"
+   }
+  ],
+  "max_abs_delta": 0.1695556640625,
+  "pairs": [
+   {
+    "delta": -0.0009765625,
+    "flag": false,
+    "from": "batch-00",
+    "kind": "e01",
+    "qubit": 4,
+    "rate_from": 0.01361083984375,
+    "rate_to": 0.01263427734375,
+    "to": "batch-02"
+   },
+   {
+    "delta": 0.00115966796875,
+    "flag": false,
+    "from": "batch-00",
+    "kind": "e01",
+    "qubit": 8,
+    "rate_from": 0.03143310546875,
+    "rate_to": 0.0325927734375,
+    "to": "batch-02"
+   },
+   {
+    "delta": 0.0001220703125,
+    "flag": false,
+    "from": "batch-00",
+    "kind": "e01",
+    "qubit": 11,
+    "rate_from": 0.0689697265625,
+    "rate_to": 0.069091796875,
+    "to": "batch-02"
+   },
+   {
+    "delta": -0.00091552734375,
+    "flag": false,
+    "from": "batch-00",
+    "kind": "e01",
+    "qubit": 12,
+    "rate_from": 0.00616455078125,
+    "rate_to": 0.0052490234375,
+    "to": "batch-02"
+   },
+   {
+    "delta": 0.00384521484375,
+    "flag": false,
+    "from": "batch-01",
+    "kind": "e10",
+    "qubit": 4,
+    "rate_from": 0.0469970703125,
+    "rate_to": 0.05084228515625,
+    "to": "batch-03"
+   },
+   {
+    "delta": 0.00115966796875,
+    "flag": false,
+    "from": "batch-01",
+    "kind": "e10",
+    "qubit": 8,
+    "rate_from": 0.02215576171875,
+    "rate_to": 0.0233154296875,
+    "to": "batch-03"
+   },
+   {
+    "delta": -0.1695556640625,
+    "flag": true,
+    "from": "batch-01",
+    "kind": "e10",
+    "qubit": 11,
+    "rate_from": 0.27618408203125,
+    "rate_to": 0.10662841796875,
+    "to": "batch-03"
+   },
+   {
+    "delta": -0.00262451171875,
+    "flag": false,
+    "from": "batch-01",
+    "kind": "e10",
+    "qubit": 12,
+    "rate_from": 0.02435302734375,
+    "rate_to": 0.021728515625,
+    "to": "batch-03"
+   }
+  ],
+  "references": [
+   {
+    "batch": "batch-00",
+    "kind": "e01",
+    "rates": {
+     "4": 0.01361083984375,
+     "8": 0.03143310546875,
+     "11": 0.0689697265625,
+     "12": 0.00616455078125
+    },
+    "reference": "readout-0.cq"
+   },
+   {
+    "batch": "batch-01",
+    "kind": "e10",
+    "rates": {
+     "4": 0.0469970703125,
+     "8": 0.02215576171875,
+     "11": 0.27618408203125,
+     "12": 0.02435302734375
+    },
+    "reference": "readout-1.cq"
+   },
+   {
+    "batch": "batch-02",
+    "kind": "e01",
+    "rates": {
+     "4": 0.01263427734375,
+     "8": 0.0325927734375,
+     "11": 0.069091796875,
+     "12": 0.0052490234375
+    },
+    "reference": "readout-0.cq"
+   },
+   {
+    "batch": "batch-03",
+    "kind": "e10",
+    "rates": {
+     "4": 0.05084228515625,
+     "8": 0.0233154296875,
+     "11": 0.10662841796875,
+     "12": 0.021728515625
+    },
+    "reference": "readout-1.cq"
+   }
+  ],
+  "threshold": 0.02
+ },
+ "schema": "qi-pathion-coset-block-analysis-v2",
+ "stopped": true
+}

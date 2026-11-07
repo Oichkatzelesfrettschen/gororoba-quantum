@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-06T22:16:35+00:00",
+ "approval": "Owner approved 2026-11-06: execute the Tuna-17 coset-block case (QX control series, then Tuna-17 batches 00-07)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "01eaf253bab39a4e1a3dbaf18f807507d432a54e97b4aaca0c97ae8aaad04f52",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 922223,
+ "project": 822667,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "ba-plus-r0.cq",
+   "job": 1685658,
+   "sha256": "b8c5a0abea22c6a1238a3c6539d755ce49adeef199cd24967c5012342b6637dc"
+  },
+  {
+   "file": "ba-minus-r0.cq",
+   "job": 1685659,
+   "sha256": "ee6954efa06850d92d977417841ba67db8f8a6c38da2dae080fe2d558e00496e"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1685660,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  }
+ ],
+ "submitted_utc": "2026-11-06T22:16:35+00:00"
+}

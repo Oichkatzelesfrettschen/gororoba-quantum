@@ -1,0 +1,19 @@
+{
+ "schema": "qi-pathion-coset-coin-gate-v1",
+ "series": "pathion_coset_coin_tuna_17",
+ "batch": "batch-00",
+ "cases_sha256": "946c4448327b95b9480660c16aff9ac583a9b2eb8da796546a26f199ba3e1fe3",
+ "predecessors": [],
+ "stops": {
+  "batches_checked": [],
+  "drift": null
+ },
+ "control": {
+  "file": "results/quantum_inspire/pathion_coset_coin_qx_analysis.json",
+  "sha256": "68916414d1514957cea56ee8404827e1eb4442f99f01be3725ae332f757b9483",
+  "batch_cases_sha256": {
+   "batch-00": "7c0d76bc25648cd7b77a1b3e4994f00e811489828aa2b25d1e80b32a765d5bc6"
+  }
+ },
+ "pause_seconds": 30
+}
