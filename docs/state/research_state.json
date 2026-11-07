@@ -15157,6 +15157,63 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "hw-ibm-pathion-parallel-coset",
+      "statement": "The wide parallel coset-block runs on ibm_fez (17 placements, 16,384 shots per member) and ibm_kingston (16 placements, 8,192 shots) read all 32 per-output signs of eight two-term operands, keep N_hat within 0.5 of the model and the readout-corrected values within 0.15 of the integer nullity (ibm_fez 0.009, 4.074, 4.027, 8.006, 11.981, 11.973, twin 11.974, cocycle-free -1.943; ibm_kingston -0.077, 4.082, 4.081, 7.964, 11.985, 12.008, 12.010, -1.958), show no parallel crosstalk (packed minus isolated -0.0042 [-0.0090, +0.0007] and -0.0018 [-0.0082, +0.0046] against a +-0.015 band) and pass every four-term rule for B12 and C8, which agree with the Ascella readings within 0.046 on every matched arm; the null operand's k0 selector contrast reads -0.0020 +- 0.0015 and -0.0000 +- 0.0011, which excludes the Tuna-17 over-rotation angle of +0.0295 rad at 4.4 and 4.1 combined standard errors. The runs fail the preregistered rules on the null selector contrast of one block per device, the readout-corrected 1-CZ null N_hat on ibm_kingston (-0.028 to -0.031), the odd-part band on ibm_kingston (paired -0.085 +- 0.030), the placement spread of the odd part on both devices and the within-arm repeat on ibm_kingston, and leave ibm_fez's null offset and odd and even parts unresolved.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The decisions are the preregistered rules of the written case with Student t intervals over placements; the runs executed 16,384 shots on ibm_fez (case 14,336) under a 65 s ceiling and the models are the approved dry runs of the record, recorded in the analysis. The null offset of ibm_marrakesh (+0.045) is not reproduced: ibm_kingston excludes it and ibm_fez does not resolve it. That the calibrated readout confusion matrix overstates the in-circuit asymmetry by about 0.09 is a hypothesis at confidence 0.5; the two selector-contrast misses are negative single-block excursions among 16 tests and the ibm_kingston within-arm excess is 2.7 standard errors below the 0.02 band, so none is attributed to a mechanism. The Tuna-17 angle exclusion uses the case's response of 0.57 per rad, which no ibm_kingston compile confirmed.",
+      "evidence": [
+        {
+          "path": "results/live/pathion_parallel_coset_analysis.json",
+          "sha256": "cb0cc6b6c9839147cd7032811b018a43d73d805d6119ce0a57f4a8e6c072c5c2"
+        },
+        {
+          "path": "results/live/2026-11-07T042521.359670Z/collect.json",
+          "sha256": "1fa6329e34c9d6045942dabc1fecabe5a156507386cef68fd4c5beb866110315"
+        },
+        {
+          "path": "results/live/2026-11-07T042346.084449Z/collect.json",
+          "sha256": "9dc5996d3feeb11bbaec6109a5dac33a5a1eac1b0690287cbb1927b0da9b6235"
+        },
+        {
+          "path": "docs/evidence/pathion-kernel-map/conjectures/d1_ibm_overrotation.txt",
+          "sha256": "819bf4cb575798a40ec7c5978b874951fbe39636ab38457c64424cb1a8765432"
+        },
+        {
+          "path": "docs/evidence/pathion-kernel-map/conjectures/d2_null_offset.txt",
+          "sha256": "29fa95a65869f4812f6d6f631add2fbac0a45c634ebb568150451ade802b72a8"
+        },
+        {
+          "path": "docs/evidence/pathion-kernel-map/conjectures/d3_crosstalk.txt",
+          "sha256": "5acbb84083946067efd74b5ea3adc63f743535971bc29bdb31a78e7b7d931bfc"
+        },
+        {
+          "path": "docs/evidence/pathion-kernel-map/conjectures/d4_four_term.txt",
+          "sha256": "f08f332ae73f186e6b460648c5ba459ef786e0328d36de8455b87276a568b2c9"
+        }
+      ],
+      "documents": [
+        "results/live/PATHION_KERNEL_MAP_FINDINGS.md",
+        "results/live/2026-11-07T035554.327341Z/CASE.md",
+        "docs/evidence/pathion-kernel-map/conjectures/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-fez-pathion-parallel-coset",
+        "ibm-kingston-pathion-parallel-coset"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-pathion-coset-map-fez",
+        "hw-pathion-coset-map-marrakesh",
+        "hw-tuna17-pathion-coset-coin",
+        "hw-ascella-pathion-four-term-blocks"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
