@@ -148,8 +148,8 @@ Verdict C2. The ibm_fez N_hat offset is an estimator-plus-readout effect at 0.8 
 correction); the three low-CZ blocks of ibm_marrakesh at +0.05 stay open. The Tuna selector contrast is not an
 estimator artifact (zero under every product readout and unital or T1 channel); its size and sign are reproduced by one
 coherent X90 over-rotation of about +0.03 rad in two independent compiles, at 0.75, and the IBM selector contrasts sit
-3.1 to 4.0 combined standard errors away from that angle. A correlated selector readout is not excluded. Next: the Tuna
-1-CZ null block (k4 type) in the coin design (an over-rotation predicts selector 0; an arm-asymmetric or
+3.1 to 4.0 combined standard errors away from that angle. A correlated selector readout is not excluded. Next: a Tuna
+1-CZ null block (k4 type) added to the coin design (an over-rotation predicts selector 0; an arm-asymmetric or
 correlated-readout offset predicts about +0.016). A mirrored recompile cannot decide it, since virtual-Z conjugation
 keeps the sign of the pulse error. IBM control: the 20-CZ k0-type null block on at least 17 placements plus the 1-CZ
 blocks, reporting selector contrast and readout-corrected N_hat.

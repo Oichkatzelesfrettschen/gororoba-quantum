@@ -90,3 +90,150 @@ m = 19 blocks is 0.064 (Fez) and 0.089 (Marrakesh), and on the very qubits where
 136 with 142-144) the m in {25, 27} blocks read 0.84 to 0.86 against 0.86 to 0.89 for m = 19, so the loss of the full
 map comes from its depth, not from a broken coupler; (6) the two devices agree on every operand within their
 intervals.
+
+# Cross-platform runs: Tuna-17 and Ascella (2026-11-07)
+
+This section interprets the acquisitions retained with the Tuna-17 and Ascella runs: the first Tuna-17 series that
+stopped on its drift rule (QX emulator batches `qi-pathion-coset-block-qx-2026-11-06t221242-batch-00` to `-07` and
+Tuna-17 batches `qi-pathion-coset-block-tuna-17-2026-11-06t221626-batch-00` to `-03`), the coin-arm series (QX control
+`qi-pathion-coset-coin-qx-2026-11-07t000930-batch-00` and Tuna-17 batches
+`qi-pathion-coset-coin-tuna-17-2026-11-07t001031-batch-00` to `-03`), and the two Ascella pathion jobs, each with its
+`sim:ascella` twin (`qd-sim-ascella-pathion-four-term-blocks`, `qd-qpu-ascella-pathion-four-term-blocks`,
+`qd-sim-ascella-pathion-coset-block-pairs`, `qd-qpu-ascella-pathion-coset-block-pairs`). Registry claims:
+`hw-tuna17-pathion-coset-coin`, `hw-tuna17-pathion-coset-block-stopped`, `hw-ascella-pathion-four-term-blocks` and
+`hw-ascella-pathion-coset-block-pairs`. The two parallel-coset runs on ibm_fez and ibm_kingston receive their findings
+with their own claim. The mechanism probes behind the conjecture results are in
+[the conjectures directory](../../docs/evidence/pathion-kernel-map/conjectures/README.md); each mechanism statement
+below is a `hypothesis:` unless a retained file decides it.
+
+## Tuna-17: the stopped series and the coin-arm series
+
+The first series ran the QX control (8 batches) and Tuna-17 batches 00 to 03 of the coset-block design and stopped when
+the readout-1 circuit of batch 03 read q11 e10 = 0.1066 against 0.2762 in batch 01, a change of -0.1696 against the
+0.02 limit (`results/quantum_inspire/pathion_coset_block_tuna_17_analysis.json`, `references.flagged`). Its coin-free
+null block b0 (e1 + e17, basis 16, 1, 2) reads selector contrast +0.0167 +- 0.0055 (pinned as `STOPPED_B0_SELECTOR` in
+`scripts/qi_pathion_coset_coin_cases.py`; recomputed from the raw shots in `c2_scale.txt`). The series stays as the
+coin-free reference for the null.
+
+The coin series (QX control, then Tuna-17 batches 00 to 03 on qubits 2, 4, 8, 11, 12) treats a readout drift as a
+covariate, not a stop. The analysis `results/quantum_inspire/pathion_coset_coin_tuna_17_analysis.json` is complete with
+`all_decisions_met` false:
+
+| Decision | Result | Measured value |
+|---|---|---|
+| resolution (every one of 8 bins reads its ideal sign) | holds for `ba` and `bb` | selector contrast `ba` 0.2350 +- 0.0038 (z 61.6), `bb` 0.1749 +- 0.0039 (ideal 0.5 for both); every bin z at least 25.5 |
+| pattern (bins 2 and 6, where the ideal signs of the two blocks differ) | holds | z 25.5 and 32.8 |
+| cocycle-free control | holds | `xor_ba` selector contrast -0.7181 +- 0.0054 (z -132.3) against `ba` +0.2350 (z 61.6) |
+| null (selector contrast of b0 is 0) | fails | 0.0164 +- 0.0039, z 4.19; the stopped series reads 0.0167 +- 0.0055 (difference z -0.03) |
+| cross-platform agreement of the readout-corrected ratios, at least 7 of 8 bins per template and device | fails | `b0` 7 of 8 on both devices, `bb` 7 of 8 on both, `ba` 5 of 8 against ibm_fez and 6 of 8 against ibm_marrakesh |
+
+The QX control passes its analysis-path gate (`pathion_coset_coin_qx_analysis.v2.json`, `qx_control.pass` true, every
+arm within twice its sampling floor). The implied contraction per routed CZ is 0.9688 (`ba`), 0.9643 (`bb`) and 0.9680
+(`b0`). The cross-platform result does not depend on the readout bracket: the bins within agreement stay at 5 and 6 for
+`ba` under each batch's bracket (`drift_covariate.cross_platform_under_each_bracket`).
+
+The cocycle-free result carries the physics claim: with every SELECT sign table replaced by its XOR permutation the
+selector contrast flips from +0.235 to -0.718, so the Tuna-17 block reads the A_5 sign network and not its XOR
+permutation.
+
+### The null offset
+
+The b0 selector contrast is zero under any arm-symmetric product readout and any unital or T1 channel
+(`c2_algebra.txt`, `c2_tuna_mech.txt`), so the +0.0164 offset is physics, not an estimator artifact. On IBM the same
+block (e1 + e17, coset k0) reads -0.0019 +- 0.0020 on ibm_fez and -0.0003 +- 0.0033 on ibm_marrakesh, measured values
+from `collect.json` (`c2_scale.txt`; the `record.json` numbers are noise-model predictions). Two independent compiles
+of the null block (the coin design and the stopped series, 20 CZ each) respond to a single X90 over-rotation with
+selector contrast +0.0167 per +0.03 rad and +0.0160 per +0.029 rad, against +0.0164 and +0.0167 observed
+(`c2_tuna_mech.txt`, `c2_stopped.txt`); CZ phase error, T1 and depolarizing noise move the selector by at most 0.0006 and the
+retained ZZ coupler table by -0.0003 (0.0018 at ten times the table); `c2_overrotation.txt` inverts the responses.
+
+hypothesis: one coherent X90 over-rotation of about +0.03 rad (+0.0295 +- 0.0070 rad from the coin series, +0.0302 +-
+0.0100 rad from the stopped series) produces the Tuna-17 offset. IBM reads -0.0044 +- 0.0046 rad on ibm_fez and -0.0007
++- 0.0069 rad on ibm_marrakesh, which sit 4.0 and 3.1 combined standard errors below the Tuna-17 angle (7.3 and 4.4
+against the IBM error alone). Confidence 0.75. A correlated selector readout is not excluded and would also give
+about +0.016. A Tuna-17 1-CZ null block (the k4 type of the IBM coset map) added to the coin design decides it: an
+over-rotation predicts selector 0 there (every 1-CZ block reads 0 for any angle, `c2_mech.json`), a
+correlated-readout offset predicts about +0.016. A
+repetition on one more Tuna-17 calibration raises the confidence; a nonzero 1-CZ selector contrast lowers it.
+
+### The `ba` misses follow the logical bit d2
+
+The failing `ba` bins (1, 5, 7 against ibm_fez; 5, 7 against ibm_marrakesh; bin y = d0 + 2 d1 + 4 d2) all have d0 = 1.
+The readout-corrected Tuna ratios there read 0.835 and 0.947 where d2 = 0 and 1.124 and 1.133 where d2 = 1; the d0 = 0
+bins agree with both devices within 0.07, and the IBM ratios sit within 0.051 (ibm_fez) and 0.067 (ibm_marrakesh) of
+the ideal +-1 (`pathion_coset_coin_tuna_17_analysis.json`, `decisions.cross_platform`). The Walsh decomposition of the
+corrected misfit puts the d2 main effect in all three templates, `ba` +0.066 (z 8.3), `bb` +0.044 (z 4.5) and `b0` +0.063
+(z 7.6), although d2 sits on physical qubit q4, q4 and q11 (`c3_walsh.txt`, `c3_readout.txt`). A coupling set by the
+routed physical qubits does not reproduce this: the best correlated readout over one physical pair (q4 onto q11)
+reaches chi2 214.6 against a baseline of 288.9 on 24 raw bins, one over the logical pair (d2 onto the selector) 149.8,
+ZZ at the retained coupler table 285.0 to 299.7, X90 over-rotation 289.1 and above, CZ phase 231.8 and above
+(`c3_corr.txt`, `c3_multi.txt`, `c3_zz.txt`, `c3_mech2.txt`). Gate depolarizing noise of p2 0.03 reaches 143.3 and
+reproduces the per-CZ contraction near 0.97 (`c3_depol.txt`).
+
+hypothesis: gate-level noise on the compiled structure acts on the logical bit d2 and leaves a bin-dependent contraction
+that the per-qubit assignment correction cannot remove. Confidence 0.5; chi2 about 143 is still seven times the degrees of
+freedom. The routing-coupling alternative is refuted at 0.75. The same template on a placement related by a device-graph
+automorphism (identical compiled structure, different qubits) decides it: a d2 effect that follows the logical bit raises
+the confidence, an effect that follows the qubits lowers it. A joint four-state readout of the routed d0 and d2 qubits
+costs no IBM time and tests the correlated-readout form.
+
+## Ascella: four-term blocks (one block per photon)
+
+The qpu:ascella job `f3a11b5f-b045-42be-9205-de7da91cbfec` (88 iterations of 32,768 samples, 1.032768 credits) passes
+admission and conformance (`results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00/analysis.json`):
+anchor 0.9989, dark 0.0023, anchor drift 3.4e-8, null levels 0.2813 and 0.2494 against 0.25, repeated arm pairs 0 of 44
+over the limit. All 8 pathion readings (B12 blocks 2, 3, 6, 7 at ideal 0.75; C8 blocks 4 to 7 at ideal 0.6545) and both
+D = 16 reference readings lie within 0.07, and all 11 mutation readings read their mutated level. The C8 class spreads by
+0.048 (blocks 4, 5, 6 read 0.0234, 0.0253 and 0.0241 low, block 7 reads 0.0227 high), under its 0.05 flag. The matching
+`sim:ascella` job returns the ideal levels (maximum pooled departure 0.0035). The result is conformance of programmed
+operator blocks to their interference law on one 12-mode mesh; the client computes every cd_core sign, so the chip does
+not compute the algebra.
+
+## Ascella: two coset blocks per photon (instrument not admitted)
+
+The qpu:ascella job `db6355f7-87d5-4e7a-91f5-b898c33c839a` (52 iterations of 131,072 samples, 161 s against 166.4 s
+expected, 1.131072 credits) fails admission on mirror agreement: 9 of 46 mirrored readings (the same setting in the
+other slot orientation) differ by more than 0.07 against an allowance of 4
+(`results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00/analysis.json`).
+The other admission conditions pass: anchors 1.0037 (slot A) and 1.0419 (slot B), darks 0.0023 and 0.0013, anchor drift
+at most 0.0055, dark drift at most 0.0008, sentinel share at most 0.0008, null levels within 0.017 of 0.25. The matching
+`sim:ascella` job is admitted (maximum pooled departure 0.0039), so the pipeline closes and the failure belongs to the
+device. Per the preregistration the verdict is instrument not admitted, and conformance, mutation, crosstalk and
+independence are not interpreted; their raw readings (16 of 16 true arms and 17 of 17 mutation arms within 0.07,
+crosstalk excess at most 0.0031, partner ranges 0.044 and 0.050) are descriptive and carry no verdict. The fold is not
+admitted at 0.07 on Ascella with per-slot anchors and darks.
+
+The predecessor's C8 spread (+0.047, job `f3a11b5f`) is not reproduced: the contrast reads -0.0162 (slot A) and +0.0051
+(slot B) against the 0.0235 threshold, in a run whose instrument is not admitted. The C8 cells carry slot offsets of
+opposite sign (slot A cells +0.0057 to +0.0301, slot B cells -0.0524 to -0.0209), the same open cause as the mirror
+failure.
+
+Retraction. The mechanism recorded before this analysis, that per-mode efficiencies (fitted 0.926 to 1.055 over modes 0
+to 8) shrink the C8 slot cells from up to 0.0524 to at most 0.0061 and that a per-mode calibration would admit the fold, is
+withdrawn. It read `c8_spread_under_mode_efficiencies` of `analysis.json`, the spread that the efficiency model itself
+predicts, as if it were corrected data. The model predicts a mirror difference with median 0.0026 and maximum 0.0155
+against 0.0259 and 0.1082 observed, flags none of the 9 failing pairs, and does the same when fitted on orientation 0
+only (maximum 0.0167); `mirror_test.txt` holds the numbers and `c1_observed.txt` the observed distribution. Nine
+single-mode anchors are not the remedy.
+
+Result of the mechanism probes (`c1_*.txt`): counting statistics, drift, multiphoton events and count rate are refuted
+or unsupported; the failure count follows the per-slot anchor calibration. The anchors give B/A 1.082 against about
+0.99 from the mode fit over all iterations; with no efficiency division or equal efficiencies 1 of the 46 pairs fails,
+with the mode-fit slot sums 0, below the allowance of 4 (`c1_anchor.txt`). White phase error of 0.033 rad per shifter reproduces the
+observed rms (0.0488) and the gain term of the slot model at z +1.4, and the error is static per configuration
+(predicted repeat-pair rms 0.0189 against 0.0024 observed, `c1_predecessor.txt`). The equalized analysis is a diagnostic
+on this job's own iterations and does not readmit the instrument.
+
+hypothesis: the two anchor meshes carry a phase error that the per-slot calibration spreads into every level, and a
+static residual of rms 0.024 (about 0.02 rad per shifter) remains. Confidence 0.55; the finding that per-mode
+efficiencies do not explain the failure stands at 0.9. Several anchor configurations (compilation seeds) per slot whose B/A scatters by about 0.09
+raise it, anchors that agree near 1.08 lower it, and failing settings replayed at identical configuration reproducing
+the difference within 0.005 test the static-error form.
+
+## Conjecture results
+
+| Conjecture | Verdict | Confidence | Next measurement |
+|---|---|---|---|
+| C1: the mirror failure is not per-mode efficiency; its cause is a configuration-specific phase error | not per-mode efficiency survives; the anchor calibration dominates the failure count and a phase error is the residual | 0.9 and 0.55 | anchor configurations per slot; replay of failing settings at identical configuration |
+| C2: the positive null offset is a cross-platform systematic | refuted for the Tuna-17 selector contrast, which a coherent X90 over-rotation of +0.03 rad reproduces; the ibm_fez N_hat offset is estimator plus readout | 0.75 and 0.8 | Tuna-17 1-CZ null block added to the coin design; 20-CZ k0-type null block on at least 17 IBM placements with the 1-CZ blocks |
+| C3: the `ba` misses come from a per-template coupling set by routing | refuted; the pattern follows the logical bit d2 and gate-level noise on the compiled structure explains part of it | 0.75 and 0.5 | the template on a graph-automorphic placement; joint four-state readout of the routed d0 and d2 qubits |
