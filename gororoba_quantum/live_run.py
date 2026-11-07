@@ -43,7 +43,7 @@ import tempfile
 import threading
 import time
 from collections import OrderedDict
-from collections.abc import Callable, Collection, Iterator, Mapping
+from collections.abc import Callable, Collection, Iterator, Mapping, Sequence
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -56,7 +56,7 @@ from typing import Any, NamedTuple, NoReturn
 import numpy as np
 import rustworkx as rx
 from qiskit import QuantumCircuit, qpy, transpile
-from qiskit.circuit import ControlFlowOp, ParameterExpression
+from qiskit.circuit import ControlFlowOp, Parameter, ParameterExpression
 from qiskit.converters import circuit_to_dag
 from qiskit.exceptions import QiskitError
 from qiskit.providers import BackendV2, Options
@@ -1037,7 +1037,9 @@ class Entry:
     A patterned entry (Member.replica_bodies) records the body name each
     replica runs and the packing.body_digest of that body's compiled
     instruction sequence on the unrelabeled base qubits; both stay None
-    for every other entry, so their records are unchanged.
+    for every other entry, so their records are unchanged. A per-placement
+    entry (Group.per_placement_laws) also carries replica_ideals, the ideal law
+    of each replica's body; ideal is the first body's.
     """
 
     name: str
@@ -1051,6 +1053,11 @@ class Entry:
     weights: np.ndarray | None = None
     replica_bodies: tuple[str, ...] | None = None
     body_digests: tuple[str, ...] | None = None
+    replica_ideals: tuple[np.ndarray, ...] | None = None
+
+    def ideal_at(self, index: int) -> np.ndarray:
+        """The ideal law of replica index: its own body's for a per-placement entry, else the entry's."""
+        return self.ideal if self.replica_ideals is None else self.replica_ideals[index]
 
 
 @dataclass(frozen=True)
@@ -1298,13 +1305,17 @@ def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCi
 
 
 def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
+    """Bind the shared ISA of a member through its binding."""
+    return _bind_values(isa, member.binding)
+
+
+def _bind_values(isa: QuantumCircuit, binding: dict[Parameter, float] | None) -> QuantumCircuit:
     """Bind the shared ISA while preserving its exact compiled global phase.
 
     Qiskit circuit substitution can expand a compiled multi-parameter global
     phase during successive assignments. Binding that expression simultaneously
     avoids the expansion and retains the phase required by operator checks.
     """
-    binding = member.binding
     if not binding:
         return isa
     phase = isa.global_phase
@@ -1604,7 +1615,8 @@ class EntryBase(NamedTuple):
     """One single-copy entry definition: name, compiled base, ideal, score weights and per-replica bodies.
 
     A patterned member (Member.replica_bodies) adds the body names and the compiled body of each
-    replica in placement order; its isa is the first body's.
+    replica in placement order; its isa is the first body's. A per-placement member adds the ideal
+    law of each body (body_ideals).
     """
 
     name: str
@@ -1613,6 +1625,7 @@ class EntryBase(NamedTuple):
     weights: np.ndarray | None
     body_names: tuple[str, ...] | None = None
     bodies: tuple[QuantumCircuit, ...] | None = None
+    body_ideals: tuple[np.ndarray, ...] | None = None
 
 
 def _entry(
@@ -1623,11 +1636,15 @@ def _entry(
     weights: np.ndarray | None = None,
     body_names: tuple[str, ...] | None = None,
     bodies: tuple[QuantumCircuit, ...] | None = None,
+    body_ideals: tuple[np.ndarray, ...] | None = None,
+    placement_graph: Any | None = None,
 ) -> Entry:
     """The entry packing base on every replica, or the replica's own body when bodies are given.
 
     The digest of each body is taken from the compiled body the name selects on the unrelabeled
-    base qubits, so collection can test the archived replica against what the plan named.
+    base qubits, so collection can test the archived replica against what the plan named. With
+    body_ideals each replica keeps its own body's law, and placement_graph, the device's physical
+    coupler graph, lets the entry refuse replicas that share a qubit or sit within one coupler.
     """
     digests: tuple[str, ...] | None = None
     if bodies is not None:
@@ -1635,6 +1652,10 @@ def _entry(
             raise LiveRunError(f"{name}: replica bodies and their names differ in count")
         if len(bodies) != len(replicas):
             raise LiveRunError(f"{name}: {len(replicas)} replicas for {len(bodies)} replica bodies")
+        if body_ideals is not None:
+            if len(body_ideals) != len(bodies):
+                raise LiveRunError(f"{name}: replica ideals and bodies differ in count")
+            check_replica_isolation(name, bodies, replicas, placement_graph)
         digests = tuple(
             packing.body_digest(body, {qubit: qubit for qubit in replica.mapping})
             for body, replica in zip(bodies, replicas, strict=True)
@@ -1651,11 +1672,49 @@ def _entry(
         replica_qubits=[r.qubits for r in replicas],
         replica_bodies=body_names,
         body_digests=digests,
+        replica_ideals=body_ideals,
     )
 
 
-def _compiled_bodies(choice: Choice, name: str, body_names: tuple[str, ...]) -> tuple[QuantumCircuit, ...]:
-    """The routed circuit of each named body, from the group's unpatterned members and its templates."""
+def check_replica_isolation(
+    name: str, bodies: Sequence[QuantumCircuit], replicas: Sequence[Replica], graph: Any | None
+) -> None:
+    """Refuse a per-placement entry whose replicas share a qubit or couple, or whose body leaves its replica.
+
+    Each replica's body acts only on the qubits its placement maps (a base qubit outside the mapping would be
+    relabeled onto a spare qubit that another replica may own); replicas hold pairwise disjoint qubits; and with
+    graph, the coupler graph the placement search buffers on, no coupler joins qubits of two replicas, the
+    one-qubit separation place_replicas keeps, so a block never drives a neighbor's coupler or qubit.
+    """
+    for index, (body, replica) in enumerate(zip(bodies, replicas, strict=True)):
+        stray = sorted({q for _, qargs in _ops(body) for q in qargs} - set(replica.mapping))
+        if stray:
+            raise LiveRunError(f"{name}: replica {index} body acts on qubits {stray} outside its placement")
+    owner: dict[int, int] = {}
+    for index, replica in enumerate(replicas):
+        for qubit in replica.qubits:
+            if qubit in owner:
+                raise LiveRunError(f"{name}: replicas {owner[qubit]} and {index} share qubit {qubit}")
+            owner[qubit] = index
+    if graph is None:
+        return
+    for qubit, index in owner.items():
+        for neighbor in graph.neighbors(qubit):
+            if owner.get(neighbor, index) != index:
+                raise LiveRunError(
+                    f"{name}: replicas {index} and {owner[neighbor]} sit within one coupler "
+                    f"(qubits {qubit} and {neighbor}), breaking the one-qubit buffer"
+                )
+
+
+def _compiled_bodies(
+    choice: Choice, name: str, body_names: tuple[str, ...], per_placement: bool = False
+) -> tuple[QuantumCircuit, ...]:
+    """The routed circuit of each named body, from the group's unpatterned members and its templates.
+
+    The bodies of a shared-law member touch one qubit set and coupler set; with per_placement each body may touch
+    a subset of the group's placement pattern, the union of every body's qubits and couplers.
+    """
     compiled = dict(choice.template_isas)
     if not choice.isas:
         raise LiveRunError(f"{name}: replica bodies need the group's routed circuits")
@@ -1666,11 +1725,42 @@ def _compiled_bodies(choice: Choice, name: str, body_names: tuple[str, ...]) -> 
     if missing:
         raise LiveRunError(f"{name}: no routed circuit for replica bodies {missing}")
     bodies = tuple(compiled[body] for body in body_names)
+    if per_placement:
+        return bodies
     pattern = packing.pattern(_ops(bodies[0]))
     for body_name, body in zip(body_names, bodies, strict=True):
         if packing.pattern(_ops(body)) != pattern:
             raise LiveRunError(f"{name}: replica body {body_name} touches another qubit set or coupler than the first")
     return bodies
+
+
+def _body_ideals(group: Group) -> dict[str, np.ndarray]:
+    """The ideal law of each unpatterned member and body template of group, by name."""
+    ideals = {member.name: member.ideal for member in group.members if member.replica_bodies is None}
+    return ideals | {name: ideal for name, _, ideal in group.body_templates}
+
+
+def _pattern_isas(bases: list[EntryBase]) -> list[QuantumCircuit]:
+    """The circuits whose qubits and couplers the replica pattern must cover.
+
+    A shared-law patterned entry's bodies touch the first body's qubits and couplers, so each base contributes
+    its isa alone. A per-placement entry (body ideals present) contributes every body, since its bodies may
+    touch different subsets and every placement must admit all of them.
+    """
+    isas: list[QuantumCircuit] = []
+    for base in bases:
+        if base.body_ideals is None or base.bodies is None:
+            isas.append(base.isa)
+        else:
+            isas.extend(base.bodies)
+    return isas
+
+
+def _isolation_graph(snap: Snapshot) -> Any:
+    """The admitted coupler graph that place_replicas separates a group's replicas on."""
+    if snap.admission_target is None:
+        snap.admission_target = build_admission_target(snap)
+    return packing.coupling_graph(snap.admission_target, snap.backend.num_qubits)
 
 
 def _entry_bases(choice: Choice) -> list[EntryBase]:
@@ -1681,6 +1771,7 @@ def _entry_bases(choice: Choice) -> list[EntryBase]:
     samples retain their physical-qubit pairing. A patterned member resolves
     its replica bodies by name through the group's routed members and templates.
     """
+    per_placement = choice.group.per_placement_laws
     if choice.entries:
         return [
             EntryBase(
@@ -1689,16 +1780,25 @@ def _entry_bases(choice: Choice) -> list[EntryBase]:
                 entry.ideal,
                 entry.weights,
                 entry.replica_bodies,
-                None if entry.replica_bodies is None else _compiled_bodies(choice, entry.name, entry.replica_bodies),
+                None
+                if entry.replica_bodies is None
+                else _compiled_bodies(choice, entry.name, entry.replica_bodies, per_placement),
+                entry.replica_ideals,
             )
             for entry in choice.entries
             if not entry.reference
         ]
     bases: list[EntryBase] = []
+    ideals = _body_ideals(choice.group) if per_placement else {}
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
         if member.replica_bodies is not None:
-            bodies = _compiled_bodies(choice, member.name, member.replica_bodies)
-            bases.append(EntryBase(member.name, bodies[0], member.ideal, member.weights, member.replica_bodies, bodies))
+            bodies = _compiled_bodies(choice, member.name, member.replica_bodies, per_placement)
+            body_ideals = tuple(ideals[body] for body in member.replica_bodies) if per_placement else None
+            bases.append(
+                EntryBase(
+                    member.name, bodies[0], member.ideal, member.weights, member.replica_bodies, bodies, body_ideals
+                )
+            )
             continue
         bases.append(EntryBase(member.name, isa, member.ideal, member.weights))
         if member.mirror:
@@ -1725,8 +1825,19 @@ def _set_entries(
     bases = _entry_bases(choice) if bases is None else bases
     choice.replica_floor = replica_floor(choice.group, policy)
     choice.replicas = replicas
+    graph = _isolation_graph(choice.snap) if any(base.body_ideals is not None for base in bases) else None
     choice.entries = [
-        _entry(base.name, base.isa, base.ideal, choice.replicas, base.weights, base.body_names, base.bodies)
+        _entry(
+            base.name,
+            base.isa,
+            base.ideal,
+            choice.replicas,
+            base.weights,
+            base.body_names,
+            base.bodies,
+            base.body_ideals,
+            graph,
+        )
         for base in bases
     ]
     if policy.isolated_reference and len(choice.replicas) > 1:
@@ -1752,7 +1863,7 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
     """Build one group's independently placed logical entries for candidate selection."""
     bases = _entry_bases(choice)
     floor = replica_floor(choice.group, policy)
-    replicas = place_replicas(choice.snap, [base.isa for base in bases], floor, policy)
+    replicas = place_replicas(choice.snap, _pattern_isas(bases), floor, policy)
     return _set_entries(choice, replicas, policy)
 
 
@@ -1931,7 +2042,7 @@ def allocate_fusion_replicas(
                 graph, candidates, pattern_width, bases = cache[key]
             else:
                 bases = _entry_bases(choice)
-                graph, candidates, pattern_width = _replica_candidates(choice.snap, [base.isa for base in bases], floor)
+                graph, candidates, pattern_width = _replica_candidates(choice.snap, _pattern_isas(bases), floor)
                 if cache is not None:
                     cache[key] = (graph, candidates, pattern_width, bases)
             if not candidates:
@@ -2295,11 +2406,14 @@ def select_candidates(
                         if key not in templates:
                             templates[key] = _compile(member.circuit, snap, seed, layout)
                         isas.append(_bind(templates[key], member))
+                    template_bindings = dict(group.body_bindings)
                     for template_name, template_circuit, _ in group.body_templates:
                         key = id(template_circuit)
                         if key not in templates:
                             templates[key] = _compile(template_circuit, snap, seed, layout)
-                        template_isas[template_name] = templates[key]
+                        template_isas[template_name] = _bind_values(
+                            templates[key], template_bindings.get(template_name)
+                        )
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
@@ -2756,6 +2870,12 @@ def _pooled_summaries(
     covariances carries each replica's one-shot covariance of a readout-inverted
     distribution; a group with summarize_with_covariance summarizes through it.
 
+    A group with placed_summary summarizes each replica from that replica's
+    own ideal laws, so the replicas hold different bodies; a quantity summed
+    over a member's bodies enters each replica scaled by the body count, which
+    makes the pooled mean the sum. Each pooled key is the mean over the
+    replicas that report it.
+
     Every pooled value is the mean over replicas of that value computed on
     each replica alone, the estimand summary_interval spans. For a ratio, a
     fringe fit, or a TVD this differs from the statistic of averaged
@@ -2764,14 +2884,20 @@ def _pooled_summaries(
     """
     count = len(runs[0].replicas)
     with_covariance = group.summarize_with_covariance
-    if covariances is not None and with_covariance is not None:
+    if group.placed_summary is not None:
+        per_replica = [
+            group.placed_summary(k, {e.name: dists[e.name][k] for e in runs}, {e.name: e.ideal_at(k) for e in runs})
+            for k in range(count)
+        ]
+    elif covariances is not None and with_covariance is not None:
         per_replica = [
             with_covariance({e.name: dists[e.name][k] for e in runs}, {e.name: covariances[e.name][k] for e in runs})
             for k in range(count)
         ]
     else:
         per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
-    pooled = {key: float(np.mean([r[key] for r in per_replica])) for key in per_replica[0]}
+    keys = list(dict.fromkeys(key for r in per_replica for key in r)) if group.placed_summary else list(per_replica[0])
+    pooled = {key: float(np.mean([r[key] for r in per_replica if key in r])) for key in keys}
     return pooled, per_replica
 
 
@@ -2800,14 +2926,17 @@ def replica_statistics(
     out: dict[str, Any] = {"summary": pooled, "summary_per_replica": per_replica}
     # A declared rate has a Wilson interval from one replica's shots; any
     # other value needs two replicas for a spread.
+    # Replicas that hold different bodies replicate nothing, so a spread over them is no interval.
     intervals = {
         key: variance.interval([r[key] for r in per_replica], shots, bernoulli=key in group.rate_keys)
         for key in pooled
-        if (count >= 2 or key in group.rate_keys) and all(math.isfinite(r[key]) for r in per_replica)
+        if group.placed_summary is None
+        and (count >= 2 or key in group.rate_keys)
+        and all(math.isfinite(r[key]) for r in per_replica)
     }
     if intervals:
         out["summary_interval"] = intervals
-    scores = {e.name: [variance.score(d, e.ideal, e.weights) for d in dists[e.name]] for e in runs}
+    scores = {e.name: [variance.score(d, e.ideal_at(k), e.weights) for k, d in enumerate(dists[e.name])] for e in runs}
     out["variance"] = {
         name: variance.decompose([m for m, _ in pairs], [v for _, v in pairs], shots) for name, pairs in scores.items()
     }
@@ -2983,8 +3112,9 @@ def _physical(isa: QuantumCircuit) -> list[int]:
 def _member_fields(entry: Entry) -> dict[str, Any]:
     """An entry's record fields that its circuits and oracle fix, before any replica.
 
-    Only a patterned entry carries replica_bodies and replica_body_sha256, so every other
-    entry's fields, and the approved records that compare them, are unchanged.
+    Only a patterned entry carries replica_bodies and replica_body_sha256, and only a per-placement
+    entry replica_ideals and replica_cz, so every other entry's fields, and the approved records
+    that compare them, are unchanged.
     """
     dynamic = _is_dynamic(entry.base)
     fields: dict[str, Any] = {
@@ -3002,6 +3132,9 @@ def _member_fields(entry: Entry) -> dict[str, Any]:
     if entry.replica_bodies is not None:
         fields["replica_bodies"] = list(entry.replica_bodies)
         fields["replica_body_sha256"] = list(entry.body_digests or ())
+    if entry.replica_ideals is not None:
+        fields["replica_ideals"] = [encoded_ideal(ideal) for ideal in entry.replica_ideals]
+        fields["replica_cz"] = [replica.count_ops().get("cz", 0) for replica in entry.replicas]
     return fields
 
 
@@ -3125,7 +3258,7 @@ def _choice_record(
             "idle_padded": {
                 **idle[entry.name][k],
                 "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
-                "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+                "tvd_noisy_to_ideal": tvd(dist, entry.ideal_at(k)),
             }
         }
 
@@ -3136,7 +3269,7 @@ def _choice_record(
                 {
                     **_replica_fields(rep, target),
                     "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
-                    "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+                    "tvd_noisy_to_ideal": tvd(dist, entry.ideal_at(k)),
                     **idle_padded(entry, k),
                 }
                 for k, (rep, dist) in enumerate(zip(entry.replicas, noisy[entry.name], strict=True))
@@ -3867,7 +4000,7 @@ def pinned_replicas(candidate: Choice, paths: list[list[int]]) -> list[Replica]:
     snap = candidate.snap
     bases = _entry_bases(candidate)
     judge = PlacementJudge(
-        (*(base.isa for base in bases), *candidate.template_isas.values()),
+        (*_pattern_isas(bases), *candidate.template_isas.values()),
         snap.backend.target,
         frozenset(snap.excluded_qubits),
         frozenset(snap.excluded_edges),
@@ -6672,6 +6805,36 @@ def _verified_replica_bodies(
     return tuple(recorded), tuple(digests)
 
 
+def _verified_replica_ideals(
+    group_name: str,
+    member: dict[str, Any],
+    bodies: tuple[str, ...] | None,
+    declared_ideals: dict[tuple[str, str], tuple[np.ndarray, ...]],
+) -> tuple[np.ndarray, ...] | None:
+    """The recorded per-replica ideal laws of a per-placement member, after testing them against the group's bodies.
+
+    A member without replica_ideals must be one the code declares shared-law; a recorded law that differs from
+    the ideal of the body its replica names, beyond the record's 12-decimal rounding, refuses collection.
+    """
+    name = member["name"]
+    recorded = member.get("replica_ideals")
+    code = declared_ideals.get((group_name, name))
+    if recorded is None:
+        if code is not None:
+            raise LiveRunError(f"logical member {name!r} is per-placement in code but its group record has no ideals")
+        return None
+    if bodies is None or len(recorded) != len(bodies):
+        raise LiveRunError(f"logical member {name!r} records {len(recorded)} replica ideals for its replica bodies")
+    laws = tuple(np.asarray(law_encoding.dense(law), dtype=float) for law in recorded)
+    if code is not None:
+        for index, (law, expected) in enumerate(zip(laws, code, strict=True)):
+            if law.shape != np.shape(expected) or not np.allclose(law, expected, rtol=0, atol=1e-9):
+                raise LiveRunError(
+                    f"logical member {name!r} replica {index} ideal differs from its body {bodies[index]!r}"
+                )
+    return laws
+
+
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
     """Rebuild logical entries from archived fused PUBs and their component map.
 
@@ -6683,6 +6846,13 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
     known_groups = [*all_experiment_groups(), *record_groups(record)]
     weights = {m.name: m.weights for g in known_groups for m in g.members}
     declared_bodies = {(g.name, m.name): m.replica_bodies for g in known_groups for m in g.members}
+    declared_ideals = {
+        (g.name, m.name): tuple(_body_ideals(g)[body] for body in m.replica_bodies)
+        for g in known_groups
+        if g.per_placement_laws
+        for m in g.members
+        if m.replica_bodies is not None
+    }
     planned_jobs = record.get("submission", {}).get("planned_jobs")
     if planned_jobs is None:
         raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
@@ -6727,6 +6897,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
             bodies, digests = _verified_replica_bodies(
                 group["group"], member, component, replicas, placements, declared_bodies
             )
+            replica_ideals = _verified_replica_ideals(group["group"], member, bodies, declared_ideals)
             weight_name = member_name
             if member["reference"] and member_name not in weights:
                 weight_name = member_name.removesuffix(ISOLATED_SUFFIX)
@@ -6743,6 +6914,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                     weights=weights.get(weight_name),
                     replica_bodies=bodies,
                     body_digests=digests,
+                    replica_ideals=replica_ideals,
                 )
             )
     return out

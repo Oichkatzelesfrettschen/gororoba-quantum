@@ -37,6 +37,8 @@ Admission = Callable[[list[dict[str, float]], int], dict[str, Any]]
 # Every member's routed ISA in member order and the Target they compiled
 # against, to the reasons the candidate is rejected.
 RoutedCheck = Callable[[list[QuantumCircuit], Any], list[str]]
+# A placement's index, its observed laws and its ideal laws, each by member name, to that placement's summary values.
+PlacedSummary = Callable[[int, dict[str, np.ndarray], dict[str, np.ndarray]], dict[str, float]]
 
 
 @dataclass(frozen=True)
@@ -96,7 +98,18 @@ class Group:
     body_templates are (name, circuit, ideal) circuits that patterned members
     name in replica_bodies. They compile, pass the routed checks and the
     Target checks with the members, and are part of the group's source, but
-    form no entry and no PUB.
+    form no entry and no PUB. body_bindings assigns parameters to a template
+    (name, then binding), so the two arms of one parametrized block circuit
+    are two bodies that share a single compile.
+    per_placement_laws opts the group into per-placement bodies: each body of
+    a patterned member keeps its own ideal law and may touch any subset of
+    the group's placement pattern (live_run.place_replicas takes the union
+    of every body), and the first member may be patterned. The bodies still
+    share width and classical registers, and the member's ideal is its first
+    body's. placed_summary, which requires per_placement_laws, summarizes one
+    placement from that placement's laws and ideals by member name; live_run
+    averages it over placements, so a quantity summed over the placements of a
+    member's bodies is that average times the body count.
     """
 
     name: str
@@ -110,9 +123,13 @@ class Group:
     summarize_with_covariance: CovarianceSummary | None = None
     routed_violations: RoutedCheck | None = None
     body_templates: tuple[tuple[str, QuantumCircuit, np.ndarray], ...] = ()
+    body_bindings: tuple[tuple[str, dict[Parameter, float]], ...] = ()
+    per_placement_laws: bool = False
+    placed_summary: PlacedSummary | None = None
 
     def __post_init__(self) -> None:
         self._check_patterned_members()
+        self._check_per_placement_laws()
         if self.execution_rows is None:
             return
         if not isinstance(self.execution_rows, tuple):
@@ -147,7 +164,7 @@ class Group:
             names = member.replica_bodies
             if not isinstance(names, tuple) or not names or not all(isinstance(name, str) for name in names):
                 raise ValueError(f"{self.name}: {member.name} replica bodies must be a nonempty tuple of names")
-            if member is self.members[0]:
+            if member is self.members[0] and not self.per_placement_laws:
                 raise ValueError(f"{self.name}: the first member fixes the placement and cannot be patterned")
             if member.mirror:
                 raise ValueError(f"{self.name}: {member.name} is patterned and cannot take a mirror twin")
@@ -165,10 +182,39 @@ class Group:
                     raise ValueError(f"{self.name}: {member.name} body {name} differs in width")
                 if _register_shape(circuit) != _register_shape(reference[0]):
                     raise ValueError(f"{self.name}: {member.name} body {name} differs in classical registers")
-                if np.shape(ideal) != np.shape(reference[1]) or not np.allclose(
-                    ideal, reference[1], atol=1e-12, rtol=0
-                ):
+                if np.shape(ideal) != np.shape(reference[1]):
                     raise ValueError(f"{self.name}: {member.name} body {name} differs in ideal law")
+                if not self.per_placement_laws and not np.allclose(ideal, reference[1], atol=1e-12, rtol=0):
+                    raise ValueError(f"{self.name}: {member.name} body {name} differs in ideal law")
+
+    def _check_per_placement_laws(self) -> None:
+        """Refuse a binding that names no template and a per-placement group its summary or members cannot serve."""
+        templates = {template[0] for template in self.body_templates}
+        if not isinstance(self.body_bindings, tuple):
+            raise ValueError(f"{self.name}: body bindings must be an immutable tuple")
+        bound = [name for name, _ in self.body_bindings]
+        if len(set(bound)) != len(bound) or not set(bound) <= templates:
+            raise ValueError(f"{self.name}: body bindings must name each template at most once")
+        if not self.per_placement_laws:
+            if self.placed_summary is not None:
+                raise ValueError(f"{self.name}: a placed summary needs per-placement laws")
+            return
+        if not any(member.replica_bodies is not None for member in self.members):
+            raise ValueError(f"{self.name}: per-placement laws need a patterned member")
+        if self.summarize_with_covariance is not None:
+            raise ValueError(f"{self.name}: per-placement laws exclude a covariance summary")
+        if self.execution_rows is not None:
+            raise ValueError(f"{self.name}: per-placement laws exclude explicit execution rows")
+        lengths = {len(member.replica_bodies) for member in self.members if member.replica_bodies is not None}
+        if len(lengths) != 1:
+            raise ValueError(f"{self.name}: patterned members must name one body per placement, in one count")
+        bodies = {member.name: member.ideal for member in self.members if member.replica_bodies is None}
+        bodies |= {name: ideal for name, _, ideal in self.body_templates}
+        for member in self.members:
+            if member.replica_bodies is not None and not np.allclose(
+                bodies[member.replica_bodies[0]], member.ideal, atol=1e-12, rtol=0
+            ):
+                raise ValueError(f"{self.name}: {member.name} ideal differs from that of its first body")
 
 
 def _register_shape(circuit: QuantumCircuit) -> list[tuple[str, int]]:
