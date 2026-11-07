@@ -233,14 +233,6 @@ def submit_next(
     name = series_dir.name
     case_root = series_dir.parent
     batches = [r["batch"] for r in json.loads((series_dir / "cases.json").read_text(encoding="utf-8"))["batches"]]
-    done = series_runs(name, runs)
-    pending = [b for b in batches if b not in done]
-    if not pending:
-        raise SystemExit(f"every batch of {name} is submitted")
-    if any(b in done for b in batches[batches.index(pending[0]) :]):
-        raise SystemExit(f"{name}: a later batch was submitted before {pending[0]}")
-    batch = pending[0]
-    first = json.loads((series_dir / batch / "cases.json").read_text(encoding="utf-8"))
     hardware = name == TUNA_SERIES
     fd = os.open(series_dir, os.O_RDONLY)
     try:
@@ -249,6 +241,16 @@ def submit_next(
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 raise SystemExit(f"another --submit-next holds {name}") from None
+        # The submitted set is read under the lock: a snapshot taken before it goes stale when another call
+        # submits the batch in between, and a first batch re-run in a new run directory is a duplicate.
+        done = series_runs(name, runs)
+        pending = [b for b in batches if b not in done]
+        if not pending:
+            raise SystemExit(f"every batch of {name} is submitted")
+        if any(b in done for b in batches[batches.index(pending[0]) :]):
+            raise SystemExit(f"{name}: a later batch was submitted before {pending[0]}")
+        batch = pending[0]
+        first = json.loads((series_dir / batch / "cases.json").read_text(encoding="utf-8"))
         loaded = [load_run(done[b], series_dir / b) for b in batches if b in done]
         stops: dict[str, Any] = {"batches_checked": [r["cases"]["batch"] for r in loaded]}
         if loaded:
