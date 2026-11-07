@@ -156,3 +156,11 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHON="${PYTHON:-pyth
 
 The run takes about 90 s on ten CPUs through `parallel.py`, and two runs give byte-identical `result.json` and
 `table.tsv`. Python 3.14.7 and python-flint 0.9.0 ran it; Singular is not required.
+
+## Order of contact along the measured lines
+
+`contact_order.py` (output `contact_order.txt`) fits the singular values of L_a that vanish at the boundary against the
+distance eps along each measured incidence line (float64 SVD of `cd_core.left_mult_matrix`). On W8 -> N- eight values
+open linearly (four as 1.414 eps, four as 2.000 eps); on E8-bar -> VB four open quadratically (2.000 eps^2). A nullity
+contrast scanned toward the boundary inherits these orders. Falsifier: an exact (rational) evaluation of the same
+singular values with a different order.
