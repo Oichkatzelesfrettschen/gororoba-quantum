@@ -221,6 +221,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "pathion_four_term_block.py",
     "pathion_kernel_map.py",
     "pathion_parallel_coset.py",
+    "pathion_wide_coset.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qrng_seeds.py",
