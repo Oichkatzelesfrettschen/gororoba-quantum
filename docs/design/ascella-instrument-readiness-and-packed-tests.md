@@ -4,7 +4,7 @@ The hardware programme measures the transfer response of a 12-mode optical
 processor, rather than treating ideal circuit synthesis as device evidence.
 The [case generator](../../scripts/hypercomplex_photonic_cases.py) preserves
 the original frozen cases and writes successors with every physical output
-retained. The [operator case runbook](../runbooks/hypercomplex-operator-cases.md)
+retained. The [operator case runbook](../runbooks/hypercomplex-operator-cases-v2.md)
 owns the operator definitions and the submission procedure.
 
 ## Instrument failure and repair boundary
