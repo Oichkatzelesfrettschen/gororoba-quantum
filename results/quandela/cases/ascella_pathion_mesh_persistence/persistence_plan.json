@@ -1,0 +1,31 @@
+{
+ "aligned_mean": {
+  "design_reads_follows_design": 0.9842774594647526,
+  "design_reads_follows_mesh": 0.00988519125926779,
+  "mesh_reads_follows_design": 0.009574194218591181,
+  "mesh_reads_follows_mesh": 0.984742734800081,
+  "standard_error": 0.008366666666666666
+ },
+ "fresh_anchor_classification": {
+  "per_mesh": {
+   "anchor ratio follows the mesh": 0.9553,
+   "slot efficiency": 0.0,
+   "unresolved": 0.0447
+  },
+  "slot": {
+   "anchor ratio follows the mesh": 0.0,
+   "slot efficiency": 1.0,
+   "unresolved": 0.0
+  }
+ },
+ "non_finite": 0,
+ "persistence_cutoff": 0.9919,
+ "plan_draw": "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json",
+ "r_quantiles": {
+  "0.001": 0.9882259198206843,
+  "0.01": 0.9918658038864985,
+  "0.05": 0.9934929171097534,
+  "0.5": 0.9963256537449041
+ },
+ "replicates": 2000
+}

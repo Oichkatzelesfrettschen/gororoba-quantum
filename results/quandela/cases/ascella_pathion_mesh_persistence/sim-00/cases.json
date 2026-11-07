@@ -78,21 +78,33 @@
    "permutation": [
     16
    ],
-   "bootstrap": [
+   "map_permutation": [
     17
    ]
   },
   "usage": "replay settings keep the original job's compilation seeds (identifiers of the meshes they reproduce); fresh anchor, failing and dark settings take the draw values in layout order, both orientations of a fresh setting sharing one; the last two values seed the analysis permutation and bootstrap generators; the same seeds serve the simulator and hardware cases"
  },
+ "plan_seed_source": {
+  "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+  "flag": "--persistence-plan",
+  "experiment": "ascella-pathion-mesh-persistence-plan",
+  "sources": [
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json#0",
+   "qrng:docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json#1"
+  ],
+  "usage": "value 0 seeds the fixed-mesh resampling of the persistence plan, value 1 the fresh-anchor classification simulation; persistence_plan.json is their record"
+ },
  "analysis_sources": {
-  "scripts/ascella_pathion_mesh_persistence.py": "846cb77def0adbd67949455a074cf81d33a6f0e098e1cde4921686a53dc74ae6",
-  "scripts/ascella_pathion_mesh_persistence_analysis.py": "3056c4af3aa54ac888bea5653dc66f510dbb011fe4a405ca8c843a21470099e3",
+  "scripts/ascella_pathion_mesh_persistence.py": "8428e0bb2b444ac051479b89fa4747242a8d98330b9c0fed4a6ea64fad99dd52",
+  "scripts/ascella_pathion_mesh_persistence_analysis.py": "74a4b8b033803ac942a2b13b2762ac72671f7cf8c1006f40af0f2e83805e30a9",
   "scripts/ascella_pathion_coset_block_pairs.py": "4e171bed41b0b9bb3360d4175e54c1224e75ba959c50deb5e5c8f4a39db136e7",
   "scripts/ascella_pathion_four_term_blocks.py": "34d62100475e902290bfa631aa8f03ee5e5420da6c6a00395fd7f75998cbd06b",
   "scripts/hypercomplex_cases.py": "ccda90e4da975ff6d9808f0210bdf05040ad1206809ca071ff45a04c87649120",
   "scripts/qd_platform.py": "d6ce946b008941e31b9ce07242b3e87ba204a1720a89c7b20273ff0d106d2fd9",
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
   "docs/evidence/pathion-kernel-map/conjectures/c1_static.npz": "b772fefddab6f2e5254d445d023cb6645fde101170bbc96d16f84e133a9bb77e",
+  "results/quandela/cases/ascella_pathion_mesh_persistence/persistence_plan.json": "65d50cf43011e76635126907e5022c3fc7b565d5c00d5d799c8417c2ec00c02b",
+  "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json": "2194f6677ada9b67f4238eca4daf84e3832f0c5d7cff77eb3fbf60e04f448b6e",
   "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00/cases.json": "63e270d72df8f3faad285244df062717d0688515f997f42086764890febe19fa",
   "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00/results.json": "98d2197ed34da6a7b9783c22af5bef4215f8dce267b9b37c3664b4df557e6609"
  },
@@ -56598,13 +56610,19 @@
  },
  "preregistered": {
   "question": "Does the two-block mirror failure on qpu:ascella follow fixed per-mesh errors (the anchor pair's among them), a static per-shifter error map, a true slot efficiency, or drift?",
-  "decisions": "(PREREGISTERED below holds the thresholds; counting standard errors from SAMPLES):\n- mesh gate (sim run): every replay iteration's served unitary lies within 1e-6 of ORIGINAL_RUN's under the same\n  setting (largest entry modulus); otherwise the QPU job is not sent;\n- admission: the predecessor's anchor floor, dark ceiling and sentinel share on the replay anchors and darks;\n- persistence: Pearson r of the 46 replay mirror differences with the original ones, its p from PERMUTATIONS\n  relabelings; \"fixed per mesh\" at p < ALPHA with r at least the Fisher-z ALPHA lower bound of the counting ceiling,\n  \"partly fixed\" at p < ALPHA below it, \"not reproduced\" otherwise;\n- anchor replay: the replayed B/A within ANCHOR_REPLAY_BAND of 1.082 reads \"anchor error fixed per mesh\";\n- fresh anchors: the median fresh B/A within FRESH_BAND of the mode-fit 0.992 and their standard deviation above\n  SPREAD_FLOOR read \"anchor ratio follows the mesh\"; every fresh B/A within FRESH_BAND of 1.082 reads \"slot\n  efficiency\"; anything else reads \"unresolved\";\n- fresh failing settings: Pearson r of the nine fresh mirror differences with the original ones; r at least\n  BLOCK_R with p < ALPHA reads \"failure follows the block and slot\"; otherwise \"failure follows the mesh\";\n- frozen map: the per-shifter gain and offset maps of c1_static.npz (x_gain_all, x_offset_all, frozen in commit\n  cc8d8107c before this case) applied to each fresh iteration's returned circuit predict its slot levels; Pearson r of\n  predicted against observed departures from the ideal, centered, one-sided at MAP_ALPHA each (Bonferroni over the two\n  maps); \"map carries\" for a map at p < MAP_ALPHA, with its share r^2 / ceiling; otherwise \"map does not carry\";\n- correction: the original job's per-iteration level departures applied as a per-mesh table to the replay leave at\n  most the allowance (4) of 46 mirror differences above 0.07; reported with the rms before and after.",
-  "outcome_map": "fixed per mesh, anchor fixed, fresh ratio following the mesh, failure following the mesh and\nmap not carrying rewrite A5-191 to \"per-mesh fixed errors, the anchor pair's among them\"; a carrying map keeps the\nper-shifter clause with its measured share; \"not reproduced\" refutes the static reading in favor of drift.",
+  "decisions": "(PREREGISTERED below holds the thresholds). Each decision names what it excludes; the readings\nare not exclusive, a mixture of carriers is allowed, and every decision can read \"not read\" (a partial run, or a\ncorrelation input that is non-finite or constant) or \"unresolved\":\n- mesh gate (sim run): the run's cases.json is the frozen sim-00 case byte for byte, all ITERATIONS results returned\n  with their echoed requests, the replay original names are exactly the original job's 52 names once each, and every\n  replay served unitary lies within 1e-6 of the original job's (largest entry modulus); otherwise the QPU job is not\n  sent;\n- admission: the predecessor's anchor floor, dark ceiling and sentinel share on the replay anchors and darks;\n- persistence: Pearson r of the 46 calibrated replay mirror differences with the original ones. The cutoff is the\n  first percentile of r under a fixed-mesh model (PERSISTENCE_CUTOFF: both jobs resampled from the original job's\n  per-iteration click laws at SAMPLES with their own calibration rows; persistence_plan.json). r at or above it\n  excludes a redraw of the per-mesh errors between the jobs (\"fixed per mesh\"); r below it with relabeling p < ALPHA\n  reads \"partly fixed\"; otherwise \"not reproduced\". A time-ordered control reads within the job: the same r on the\n  replay's early half and late half, and the early and late replayed anchors (positions 0, 1 and the last two)\n  within the predecessor's 0.03 drift band; drift within the job is read only from that control;\n- anchor replay: the replayed B/A within anchor_replay_band of 1.082 excludes a change of the anchor pair's error;\n- fresh anchors (engineering thresholds whose classification rates persistence_plan.json records): median within\n  fresh_band of the mode-fit 0.992 with standard deviation above spread_floor excludes a slot efficiency of 1.08\n  (\"anchor ratio follows the mesh\"); every seed within fresh_band of 1.082 excludes the per-mesh anchor reading (\"slot\n  efficiency\"); otherwise \"unresolved\";\n- fresh failing settings: the aligned mean A = mean over the nine failing items of sign(original raw d) x fresh raw d,\n  against the original mean |raw d| 0.0376 and the per-mesh raw spread 0.025 (standard error 0.0084 for nine items).\n  A at or above aligned_block excludes a purely per-mesh failure (\"follows the design\"); A below aligned_mesh excludes\n  a design-tied failure at the original size (\"follows the mesh\"); between them \"unresolved\". The carried fraction\n  A / 0.0376 is reported with its 99 percent interval, so a partial carrier reads as a fraction;\n- frozen map: the per-shifter gain and offset maps of c1_static.npz (x_, a_, c_ with _gain_all and _offset_all, frozen\n  in commit cc8d8107c before this case) applied to each fresh iteration's returned circuit (BS.Rx convention checked)\n  predict its raw slot levels; Pearson r of predicted against observed departures from the ideal, centered within\n  kind; its p from relabelings that permute whole compilation-seed blocks (both orientations and both slots of a seed\n  move together), one-sided at MAP_ALPHA each (Bonferroni over the two maps); \"map carries\" at p < MAP_ALPHA with its\n  share r^2 over the ceiling 1 - (mean multinomial variance) / (observed variance); otherwise \"map does not carry\";\n- correction: the original job's per-iteration calibrated departures applied as a per-mesh table to the replay leave at\n  most the allowance (4) of 46 mirror differences above 0.07; reported with the rms before and after.",
+  "outcome_map": "the row is rewritten to the carriers the decisions leave standing. Persistence fixed per mesh,\nfresh anchor ratio following the mesh and a failure following the mesh (or a small carried fraction) with no carrying\nmap give \"per-mesh fixed errors, the anchor pair's among them\"; a carrying map adds the per-shifter clause with its\nshare; a design-tied carried fraction adds a block or slot term of that size; \"not reproduced\" leaves redraw and drift\nbetween the jobs unresolved unless the within-job control reads drift.",
   "thresholds": {
    "anchor_replay_band": 0.02,
    "fresh_band": 0.03,
    "spread_floor": 0.012,
-   "block_r": 0.6,
+   "anchor_drift": 0.03,
+   "original_failing_raw_mean": 0.0376,
+   "per_mesh_raw_sd": 0.0251,
+   "aligned_block": 0.0196,
+   "aligned_mesh": 0.0181,
+   "persistence_cutoff": 0.9919,
+   "persistence_plan": "results/quandela/cases/ascella_pathion_mesh_persistence/persistence_plan.json",
    "mirror_spread": 0.07,
    "mirror_allowance": 4,
    "mesh_identity_tolerance": 1e-06

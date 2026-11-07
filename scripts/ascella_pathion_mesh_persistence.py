@@ -27,29 +27,45 @@ Design. One `qpu:ascella` job of ITERATIONS iterations at SAMPLES single-photon 
 - fresh dark: the dark design at one new seed in both orientations.
 A `sim:ascella` run of the identical request precedes the QPU job and gates it on mesh identity.
 
-Preregistered decisions (PREREGISTERED below holds the thresholds; counting standard errors from SAMPLES):
-- mesh gate (sim run): every replay iteration's served unitary lies within 1e-6 of ORIGINAL_RUN's under the same
-  setting (largest entry modulus); otherwise the QPU job is not sent;
+Preregistered decisions (PREREGISTERED below holds the thresholds). Each decision names what it excludes; the readings
+are not exclusive, a mixture of carriers is allowed, and every decision can read "not read" (a partial run, or a
+correlation input that is non-finite or constant) or "unresolved":
+- mesh gate (sim run): the run's cases.json is the frozen sim-00 case byte for byte, all ITERATIONS results returned
+  with their echoed requests, the replay original names are exactly the original job's 52 names once each, and every
+  replay served unitary lies within 1e-6 of the original job's (largest entry modulus); otherwise the QPU job is not
+  sent;
 - admission: the predecessor's anchor floor, dark ceiling and sentinel share on the replay anchors and darks;
-- persistence: Pearson r of the 46 replay mirror differences with the original ones, its p from PERMUTATIONS
-  relabelings; "fixed per mesh" at p < ALPHA with r at least the Fisher-z ALPHA lower bound of the counting ceiling,
-  "partly fixed" at p < ALPHA below it, "not reproduced" otherwise;
-- anchor replay: the replayed B/A within ANCHOR_REPLAY_BAND of 1.082 reads "anchor error fixed per mesh";
-- fresh anchors: the median fresh B/A within FRESH_BAND of the mode-fit 0.992 and their standard deviation above
-  SPREAD_FLOOR read "anchor ratio follows the mesh"; every fresh B/A within FRESH_BAND of 1.082 reads "slot
-  efficiency"; anything else reads "unresolved";
-- fresh failing settings: Pearson r of the nine fresh mirror differences with the original ones; r at least
-  BLOCK_R with p < ALPHA reads "failure follows the block and slot"; otherwise "failure follows the mesh";
-- frozen map: the per-shifter gain and offset maps of c1_static.npz (x_gain_all, x_offset_all, frozen in commit
-  cc8d8107c before this case) applied to each fresh iteration's returned circuit predict its slot levels; Pearson r of
-  predicted against observed departures from the ideal, centered, one-sided at MAP_ALPHA each (Bonferroni over the two
-  maps); "map carries" for a map at p < MAP_ALPHA, with its share r^2 / ceiling; otherwise "map does not carry";
-- correction: the original job's per-iteration level departures applied as a per-mesh table to the replay leave at
+- persistence: Pearson r of the 46 calibrated replay mirror differences with the original ones. The cutoff is the
+  first percentile of r under a fixed-mesh model (PERSISTENCE_CUTOFF: both jobs resampled from the original job's
+  per-iteration click laws at SAMPLES with their own calibration rows; persistence_plan.json). r at or above it
+  excludes a redraw of the per-mesh errors between the jobs ("fixed per mesh"); r below it with relabeling p < ALPHA
+  reads "partly fixed"; otherwise "not reproduced". A time-ordered control reads within the job: the same r on the
+  replay's early half and late half, and the early and late replayed anchors (positions 0, 1 and the last two)
+  within the predecessor's 0.03 drift band; drift within the job is read only from that control;
+- anchor replay: the replayed B/A within anchor_replay_band of 1.082 excludes a change of the anchor pair's error;
+- fresh anchors (engineering thresholds whose classification rates persistence_plan.json records): median within
+  fresh_band of the mode-fit 0.992 with standard deviation above spread_floor excludes a slot efficiency of 1.08
+  ("anchor ratio follows the mesh"); every seed within fresh_band of 1.082 excludes the per-mesh anchor reading ("slot
+  efficiency"); otherwise "unresolved";
+- fresh failing settings: the aligned mean A = mean over the nine failing items of sign(original raw d) x fresh raw d,
+  against the original mean |raw d| 0.0376 and the per-mesh raw spread 0.025 (standard error 0.0084 for nine items).
+  A at or above aligned_block excludes a purely per-mesh failure ("follows the design"); A below aligned_mesh excludes
+  a design-tied failure at the original size ("follows the mesh"); between them "unresolved". The carried fraction
+  A / 0.0376 is reported with its 99 percent interval, so a partial carrier reads as a fraction;
+- frozen map: the per-shifter gain and offset maps of c1_static.npz (x_, a_, c_ with _gain_all and _offset_all, frozen
+  in commit cc8d8107c before this case) applied to each fresh iteration's returned circuit (BS.Rx convention checked)
+  predict its raw slot levels; Pearson r of predicted against observed departures from the ideal, centered within
+  kind; its p from relabelings that permute whole compilation-seed blocks (both orientations and both slots of a seed
+  move together), one-sided at MAP_ALPHA each (Bonferroni over the two maps); "map carries" at p < MAP_ALPHA with its
+  share r^2 over the ceiling 1 - (mean multinomial variance) / (observed variance); otherwise "map does not carry";
+- correction: the original job's per-iteration calibrated departures applied as a per-mesh table to the replay leave at
   most the allowance (4) of 46 mirror differences above 0.07; reported with the rms before and after.
 
-Outcome map onto A5-191: fixed per mesh, anchor fixed, fresh ratio following the mesh, failure following the mesh and
-map not carrying rewrite A5-191 to "per-mesh fixed errors, the anchor pair's among them"; a carrying map keeps the
-per-shifter clause with its measured share; "not reproduced" refutes the static reading in favor of drift.
+Outcome map onto A5-191: the row is rewritten to the carriers the decisions leave standing. Persistence fixed per mesh,
+fresh anchor ratio following the mesh and a failure following the mesh (or a small carried fraction) with no carrying
+map give "per-mesh fixed errors, the anchor pair's among them"; a carrying map adds the per-shifter clause with its
+share; a design-tied carried fraction adds a block or slot term of that size; "not reproduced" leaves redraw and drift
+between the jobs unresolved unless the within-job control reads drift.
 
 Usage:
   "$PYTHON" scripts/ascella_pathion_mesh_persistence.py --plan
@@ -102,7 +118,7 @@ DRAW_LAYOUT = {
     "failing": list(range(FRESH_ANCHOR_SEEDS, FRESH_ANCHOR_SEEDS + len(FAILING))),
     "dark": [FRESH_ANCHOR_SEEDS + len(FAILING)],
     "permutation": [FRESH_ANCHOR_SEEDS + len(FAILING) + 1],
-    "bootstrap": [FRESH_ANCHOR_SEEDS + len(FAILING) + 2],
+    "map_permutation": [FRESH_ANCHOR_SEEDS + len(FAILING) + 2],
 }
 SEED_COUNT = FRESH_ANCHOR_SEEDS + len(FAILING) + 3
 SAMPLES = pairs.SAMPLES
@@ -118,11 +134,25 @@ MODE_FIT_BA = 0.992
 ALPHA = 0.01
 MAP_ALPHA = 0.005
 PERMUTATIONS = 20000
-PREREGISTERED = {
+# The fixed-mesh plan (persistence_plan.json in the case directory, written by the reading script from PLAN_DRAW)
+# freezes the persistence cutoff; the test rebuilds the record and checks the constant against it.
+PLAN_DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json"
+PERSISTENCE_PLAN = "results/quandela/cases/ascella_pathion_mesh_persistence/persistence_plan.json"
+PERSISTENCE_CUTOFF = 0.9919
+PREREGISTERED: dict[str, Any] = {
     "anchor_replay_band": 0.02,
     "fresh_band": 0.03,
     "spread_floor": 0.012,
-    "block_r": 0.6,
+    "anchor_drift": pairs.THRESHOLDS["anchor_drift"],
+    # Fresh failing settings: original mean |raw d| of the nine items and the per-mesh raw spread of all 46 raw mirror
+    # differences of the original job; the aligned-mean thresholds sit at the original mean minus and plus 2.2
+    # standard errors of a nine-item mean under the per-mesh reading.
+    "original_failing_raw_mean": 0.0376,
+    "per_mesh_raw_sd": 0.0251,
+    "aligned_block": 0.0196,
+    "aligned_mesh": 0.0181,
+    "persistence_cutoff": PERSISTENCE_CUTOFF,
+    "persistence_plan": PERSISTENCE_PLAN,
     "mirror_spread": pairs.THRESHOLDS["mirror_spread"],
     "mirror_allowance": 4,
     "mesh_identity_tolerance": 1e-6,
@@ -204,63 +234,41 @@ def level_se(level: float, samples: int = SAMPLES) -> float:
     return math.sqrt(level * (2 - level) / samples)
 
 
-def persistence_bound(observed_d: list[float], noise_var: float, n: int = 46) -> dict[str, float]:
-    """Counting ceiling of r between two jobs reading one fixed per-mesh error, and its one-sided Fisher-z bound.
-
-    Each mirror difference d = true + noise with noise variance noise_var in each job; r between the jobs then
-    reaches var_true / (var_true + noise_var) at most."""
-    var_d = float(np.var(observed_d, ddof=1))
-    var_true = max(var_d - noise_var, 0.0)
-    ceiling = var_true / (var_true + noise_var)
-    z = math.atanh(min(ceiling, 0.999999)) - 2.326 / math.sqrt(n - 3)
-    return {"var_d": var_d, "noise_var": noise_var, "ceiling": ceiling, "fisher_lower_99": math.tanh(z)}
-
-
 def plan() -> dict[str, Any]:
-    """Sizes, counting errors and the predicted readings under each mechanism, from the retained records only."""
-    sys.path.insert(0, str(ROOT / "docs/evidence/pathion-kernel-map/conjectures"))
-    import c1_common  # noqa: PLC0415
-
-    keys, d, _, _ = c1_common.signed_diffs(c1_common.observed_rows())
-    rows = c1_common.observed_rows()
-    cal = c1_common.an.calibrate(rows, c1_common.settings)
-    typical = 0.6
-    noise_var = 2 * level_se(typical) ** 2
-    bound = persistence_bound(list(d), noise_var)
-    # No-division residual of the original job (c1_anchor.txt: rms 0.0250 of d) sets the per-mesh level spread.
-    per_mesh_level_sd = 0.0250 / math.sqrt(2)
-    ba_sd_mesh = math.sqrt(2) * per_mesh_level_sd
-    ba_sd_counting = math.sqrt(2) * level_se(1.0)
-    failing_d = {key: float(value) for key, value in zip(keys, d, strict=True) if key in FAILING_ITEMS}
+    """Sizes, counting errors, the frozen persistence plan and the predicted readings under each mechanism."""
+    record = json.loads((ROOT / PERSISTENCE_PLAN).read_bytes())
+    if record["persistence_cutoff"] != PERSISTENCE_CUTOFF:
+        raise ValueError("PERSISTENCE_CUTOFF differs from the frozen persistence plan")
+    th = PREREGISTERED
+    slot_sd = math.sqrt(2) * level_se(1.0)
+    design = th["original_failing_raw_mean"]
     return {
         "iterations": ITERATIONS,
         "expected_seconds": check_duration(),
         "samples_per_iteration": SAMPLES,
         "level_standard_error": {f"L={lv}": level_se(lv) for lv in (0.25, 0.5, 0.75, 1.0)},
-        "persistence": bound,
-        "original_anchor_efficiency": cal["efficiency"],
-        "original_failing_d": {f"{k[0]}/{k[1]}": v for k, v in failing_d.items()},
+        "persistence_plan": record,
         "predictions": {
             "per_mesh_fixed": {
-                "replay_r": f">= {bound['fisher_lower_99']:.3f} (ceiling {bound['ceiling']:.3f})",
-                "replay_ba": f"{ORIGINAL_BA} +- {PREREGISTERED['anchor_replay_band']}",
-                "fresh_ba": f"median {MODE_FIT_BA} +- {PREREGISTERED['fresh_band']}, sd about {ba_sd_mesh:.3f}",
-                "fresh_failing_r": "near 0 (new meshes draw new errors)",
+                "persistence_r": f">= {PERSISTENCE_CUTOFF} (fixed-mesh median {record['r_quantiles']['0.5']:.4f})",
+                "replay_ba": f"{ORIGINAL_BA} +- {th['anchor_replay_band']}",
+                "fresh_ba": f"median {MODE_FIT_BA} +- {th['fresh_band']}, sd about 0.025",
+                "fresh_failing_aligned_mean": f"below {th['aligned_mesh']} (near 0)",
             },
             "slot_efficiency": {
-                "fresh_ba": f"every seed {ORIGINAL_BA} +- {PREREGISTERED['fresh_band']}, sd about {ba_sd_counting:.4f}",
-                "fresh_failing_r": f">= {PREREGISTERED['block_r']}",
+                "fresh_ba": f"every seed {ORIGINAL_BA} +- {th['fresh_band']}, sd about {slot_sd:.4f}",
+                "fresh_failing_aligned_mean": f"at or above {th['aligned_block']} (near {design:.4f})",
             },
-            "drift": {"replay_r": "below the bound; replay B/A outside its band"},
             "static_shifter_map": {
-                "frozen_map_r": "positive at p < 0.005 on the fresh iterations",
+                "frozen_map": "carries at seed-block p < 0.005, with its share",
                 "prior_art": "signed-coherence new-seed score r 0.157 and 0.319 (share 2.5 and 10.5 percent)",
             },
+            "redraw_or_drift_between_jobs": {"persistence_r": f"below {PERSISTENCE_CUTOFF}"},
         },
     }
 
 
-def spec_check() -> dict[str, Any]:
+def spec_check(limit: int | None = None) -> dict[str, Any]:
     """Ascella's published imperfections on single-photon levels, for the anchor and every failing setting.
 
     Perceval's NoiseModel with the processor record's g2 and indistinguishability adds multi-photon events; the
@@ -271,6 +279,7 @@ def spec_check() -> dict[str, Any]:
 
     designs = design_by_name()
     targets = [(pairs.ANCHOR, 0), (pairs.ANCHOR, 1)] + [(designs[name], o) for name in FAILING for o in (0, 1)]
+    targets = targets[:limit] if limit else targets
     noise = pcvl.NoiseModel(g2=ASCELLA_SPEC["g2"], indistinguishability=ASCELLA_SPEC["indistinguishability"])
     worst = 0.0
     out = []
@@ -427,6 +436,14 @@ def documents(draw: Path, job: str, platform: str) -> dict[str, bytes]:
                 "bootstrap generators; the same seeds serve the simulator and hardware cases"
             ),
         },
+        "plan_seed_source": {
+            "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+            "flag": "--persistence-plan",
+            "experiment": "ascella-pathion-mesh-persistence-plan",
+            "sources": [f"qrng:{PLAN_DRAW}#{index}" for index in range(2)],
+            "usage": "value 0 seeds the fixed-mesh resampling of the persistence plan, value 1 the fresh-anchor "
+            "classification simulation; persistence_plan.json is their record",
+        },
         "analysis_sources": {
             name: sha256_bytes((ROOT / name).read_bytes())
             for name in (
@@ -438,6 +455,8 @@ def documents(draw: Path, job: str, platform: str) -> dict[str, bytes]:
                 "scripts/qd_platform.py",
                 "gororoba_quantum/cd_core.py",
                 "docs/evidence/pathion-kernel-map/conjectures/c1_static.npz",
+                PERSISTENCE_PLAN,
+                PLAN_DRAW,
                 f"{ORIGINAL_RUN}/cases.json",
                 f"{ORIGINAL_RUN}/results.json",
             )

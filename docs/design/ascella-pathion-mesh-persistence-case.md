@@ -44,44 +44,79 @@ original job already argues against the first (0.992), and the signed-coherence 
 
 Seeds: [`draw-2026-11-07T162910Z.json`](../evidence/anu_qrng/draw-2026-11-07T162910Z.json), 18 uint16 values in index
 order: 0 to 6 fresh anchor seeds, 7 to 14 one seed per failing setting, 15 the dark seed, 16 the permutation
-generator, 17 the bootstrap generator (reserved; the frozen decisions draw none). Every value is nonzero, distinct and
+generator, 17 the seed-block relabeling generator of the frozen maps. Every value is nonzero, distinct and
 unused by the original job. The replay keeps the original job's seeds as identifiers of the meshes it reproduces
 (AGENTS.md, Seeds).
 
 ## Preregistered decisions
 
 The thresholds live in the builder's `PREREGISTERED` and in `cases.json` (`preregistered`); the reading script holds
-them as code and its test runs it on synthetic runs built from the retained record.
+them as code, and its tests run it on synthetic runs built from the retained record. The readings are not exclusive:
+each decision names what it excludes, a mixture of carriers is allowed, and every decision can read "not read" (a
+partial run, or a non-finite or constant correlation input) or "unresolved".
 
-| Decision | Statistic | Reading rule |
-|---|---|---|
-| mesh gate (sim run) | largest entry modulus of each replay iteration's served unitary minus the original job's under the same setting | every one at most 1e-6, or the QPU job is not sent |
-| admission | replayed anchors and darks: raw anchor level, dark share, sentinel share | the predecessor's 0.90 floor, 0.05 ceiling, 0.05 share |
-| persistence | Pearson r of the 46 calibrated replay mirror differences with the original ones, p from 20,000 relabelings | fixed per mesh at p < 0.01 with r at least 0.989 (the one-sided 99 percent Fisher bound of the counting ceiling 0.995); partly fixed at p < 0.01 below it; not reproduced otherwise. The raw-level r is reported beside it |
-| anchor replay | replayed B/A | within 0.02 of 1.082: anchor error fixed per mesh; otherwise moved |
-| fresh anchors | the seven per-seed B/A | median within 0.03 of 0.992 and standard deviation above 0.012: anchor ratio follows the mesh; every one within 0.03 of 1.082: slot efficiency; otherwise unresolved |
-| fresh failing | Pearson r of the nine fresh raw mirror differences with the original raw ones, relabeling p | r at least 0.6 at p < 0.01: failure follows the block and slot; otherwise failure follows the mesh |
-| frozen map | the gain and offset maps of `c1_static.npz` (keys `x_`, `a_`, `c_` with `_gain_all` and `_offset_all`, frozen in commit cc8d8107c before this case) applied to each fresh iteration's returned circuit; Pearson r of predicted against observed raw level departures, centered within kind | map carries at one-sided p < 0.005 (t on n - 1 - kinds degrees of freedom; Bonferroni over the two maps), with its share r^2 / ceiling; otherwise does not carry |
-| correction | the original job's per-iteration calibrated departures applied as a per-mesh table to the replay | at most 4 of 46 mirror differences above 0.07; rms before and after reported |
+| Decision | Statistic | Reading rule | What it excludes |
+|---|---|---|---|
+| mesh gate (sim run) | the run's `cases.json` against the frozen `sim-00` bytes; 84 results with echoed seeds and parameters; the 52 replay original names, each once; largest entry modulus of each replay served unitary minus the original job's | every check holds and every gap is at most 1e-6, or the QPU job is not sent | a QPU job on meshes other than the original ones |
+| admission | replayed anchors and darks: raw anchor level, dark share, sentinel share | the predecessor's 0.90 floor, 0.05 ceiling, 0.05 share | an instrument outside the predecessor's admission |
+| persistence | Pearson r of the 46 calibrated replay mirror differences with the original ones | at or above 0.9919 (`persistence_plan.json`): fixed per mesh; below it with relabeling p < 0.01: partly fixed; otherwise not reproduced. The raw-level r is reported beside it | at or above: a redraw of the per-mesh errors between the jobs |
+| within-job control | the same r on the replay's early and late halves; the early and late replayed anchors | anchors more than 0.03 apart read drift within the job | drift within the job, the only drift this case reads |
+| anchor replay | replayed B/A | within 0.02 of 1.082: anchor error unchanged; otherwise moved | a change of the anchor pair's error |
+| fresh anchors | the seven per-seed B/A | median within 0.03 of 0.992 with standard deviation above 0.012: anchor ratio follows the mesh; every seed within 0.03 of 1.082: slot efficiency; otherwise unresolved | follows the mesh: a slot efficiency of 1.08; slot efficiency: the per-mesh anchor reading |
+| fresh failing | aligned mean A = mean over the nine failing items of sign(original raw d) x fresh raw d; carried fraction A / 0.0376 with its 99 percent interval | A at or above 0.0196: follows the design; A below 0.0181: follows the mesh; between: unresolved | follows the design: a purely per-mesh failure; follows the mesh: a design-tied failure at the original size |
+| frozen map | the gain and offset maps of `c1_static.npz` (frozen in commit cc8d8107c) on each fresh iteration's returned circuit (BS.Rx checked); Pearson r of predicted against observed raw departures, centered within kind | p from 20,000 relabelings of whole compilation-seed blocks (both orientations and slots of a seed together), one-sided below 0.005 per map: map carries, with share r^2 / ceiling (ceiling from each row's multinomial variance) | does not carry: a static map carrying the per-mesh error at the size the test resolves |
+| correction | the original job's per-iteration calibrated departures applied as a per-mesh table to the replay | at most 4 of 46 mirror differences above 0.07 | a per-mesh table failing to correct a fixed error |
 
 Raw levels carry no calibration, so the fresh-failing and frozen-map decisions compare meshes without the anchor
 pair; dividing both sides by the replayed anchors would put the shared B/A gain into both and bias the fresh
-comparison toward "follows the block".
+comparison toward "follows the design".
 
-Predictions under each reading (`--plan`; counting standard error of a level 0.0018 at L = 0.25 to 0.0028 at L = 1):
+Error rates and cutoffs (`persistence_plan.json`, from [`draw-2026-11-07T165920Z.json`](../evidence/anu_qrng/draw-2026-11-07T165920Z.json)
+value 0 for the resampling and value 1 for the classification; the audit test rebuilds it):
 
-| Reading | Persistence r | Replay B/A | Fresh B/A | Fresh failing r | Frozen map |
+- Persistence: 2,000 pairs of jobs resampled from the original job's per-iteration click laws at 131,072 samples,
+  each calibrated with its own anchor and dark rows, give r with first percentile 0.9919 and median 0.9963. The cutoff
+  is that first percentile, so a fixed per-mesh error reads "fixed per mesh" in 99 percent of jobs; a redraw gives r
+  near 0 against 46 pairs.
+- Fresh anchors: under the per-mesh reading (median 0.992, sd 0.025) the rule reads "follows the mesh" in 95.5 percent
+  and "unresolved" in 4.5 percent; under the slot reading (1.082, sd 0.0039) it reads "slot efficiency" in 100 percent.
+  The bands are engineering thresholds, and these rates are their calibration.
+- Fresh failing: the aligned-mean standard error is 0.0084 for nine items (per-mesh raw spread 0.0251 of the original
+  46 raw differences). A design-tied failure at the original size reads "follows the design" in 98.4 percent and
+  "follows the mesh" in 1.0 percent; a per-mesh failure reads "follows the mesh" in 98.5 percent and "follows the
+  design" in 1.0 percent.
+
+Predictions under each reading:
+
+| Reading | Persistence r | Replay B/A | Fresh B/A | Fresh failing A | Frozen map |
 |---|---|---|---|---|---|
-| per-mesh fixed | at least 0.989 | 1.082 +- 0.02 | median 0.992, sd about 0.025 | near 0 | weak (prior art r 0.16 to 0.32) |
-| static per-shifter map | high | 1.082 | spread set by the map | partial | carries at p < 0.005 |
-| slot efficiency | high | 1.082 | every seed near 1.082, sd about 0.004 | at least 0.6 | not decisive |
-| drift | below 0.989 | moved | | | |
+| per-mesh fixed | at least 0.9919 | 1.082 +- 0.02 | median 0.992, sd about 0.025 | below 0.0181 | weak (prior art r 0.16 to 0.32) |
+| static per-shifter map | high | 1.082 | spread set by the map | partial carried fraction | carries at p < 0.005 |
+| slot efficiency | high | 1.082 | every seed near 1.082, sd about 0.004 | at or above 0.0196 | not decisive |
+| redraw or drift between jobs | below 0.9919 | may move | | | |
 
-Outcome onto ledger A5-191: fixed per mesh, anchor fixed, fresh ratio following the mesh, failure following the mesh
-and no carrying map rewrite the row to "per-mesh fixed errors, the anchor pair's among them"; a carrying map keeps the
-per-shifter clause with its measured share; "not reproduced" refutes the static reading in favor of drift. The
-pathion block cases then take their slot efficiencies from many anchor seeds (or a per-mesh table), which the fresh
-anchors of this job size.
+Outcome onto ledger A5-191: the row is rewritten to the carriers the decisions leave standing. Persistence fixed per
+mesh, a fresh anchor ratio following the mesh and a failure following the mesh with no carrying map give "per-mesh
+fixed errors, the anchor pair's among them"; a carrying map adds the per-shifter clause with its share; a design-tied
+carried fraction adds a block or slot term of that size; "not reproduced" leaves redraw and drift between the jobs
+unresolved unless the within-job control reads drift. The pathion block cases then take their slot efficiencies from
+many anchor seeds or a per-mesh table, sized by the fresh anchors of this job.
+
+## Review and the changes it made
+
+A Codex review (gpt-daybreak-blue at high effort, `docs/local/reviews/codex-ascella-report.md`, untracked) read the
+first version and ranked eight findings; each is fixed in the builder, the reading script or this document:
+
+| Finding | Change |
+|---|---|
+| the nine-item correlation had about 25 percent power at r 0.6 and read non-rejection as "follows the mesh" | replaced by the aligned mean with both error rates near 1 percent and an "unresolved" band |
+| the mesh gate could pass an incomplete or duplicated replay set | the gate binds the frozen `sim-00` bytes, the result count, the echoed requests and the 52 names once each; tests cover a changed, missing and duplicated replay and a foreign manifest |
+| the outcome map treated the readings as exclusive and read drift from low persistence | the decisions name what each excludes, mixtures are allowed, and drift is read only from the within-job control |
+| the frozen-map p counted 64 correlated readings as independent | relabelings move whole compilation-seed blocks; the ceiling uses each row's multinomial variance |
+| the persistence cutoff was a homoscedastic plug-in | the fixed-mesh resampling of the full calibrated statistic sets it at 0.9919 |
+| non-finite or constant inputs became mechanism labels | every correlation returns "not read" on such input; a test covers it |
+| the frozen-map topology check omitted the beam-splitter convention | every served beam splitter must be BS.Rx |
+| the specification test missed the 15 s budget on a cold cache | the unmarked test runs two settings; the full check stays the `--spec-check` command |
 
 ## Published imperfections, simulated
 
@@ -103,9 +138,9 @@ chip.
 ## Live state and cost
 
 `qd_platform` read `qpu:ascella` available at 15:45 UTC on 2026-11-07, token occupancy 0 of 1. `scripts/qd_platform.py
-plan` at 16:38 UTC: `sim:ascella` credit ceiling 1.0, body sha256 `ffb09ba6b44b4eb86c742dc409453e92d7defe1a17a6f62c3f921a6f00717dfe`;
+plan` at 17:14 and 17:16 UTC: `sim:ascella` credit ceiling 1.0, body sha256 `cc6e1c1ced0a79f0c81a19fdb3d8739fe4dccb5e89a8a5d3e7532c8ea754d6f0`;
 `qpu:ascella` credit ceiling 1.131072 (1 + 1e-6 x 131,072), body sha256
-`445683dc52c010ff352102634ee2202f27468101b6ea698ab4f5076c615a3efe`, Explorer `running`, processor `available`;
+`47e146cfb15515846bfcd6553e351f90b1e51277afff8970320a4484bc539224`, Explorer `running`, processor `available`;
 11,010,048 estimated shots each. Expected seconds: 84 x 3.2 = 268.8 against the 270 s packing margin of the 300 s cut
 (the original job ran 52 iterations in 161 s, 3.10 s each). The binding plan at submission replaces the plan quoted
 here.
