@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import math
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,8 @@ SLOTS = ("A", "B")
 # law by more than this stops the sequence before the QPU job. cases.json carries no such key.
 SIMULATOR_TOLERANCE = 0.01
 EM_ITERATIONS = 400
+# Step of the central difference of a level in one click count (the level is a smooth rational function of the counts).
+COUNT_STEP = 1.0e-3
 
 
 def observation(task: tuple[int, dict[str, Any], dict[str, Any], int, int, dict[str, Any]]) -> dict[str, Any]:
@@ -166,8 +169,87 @@ def slot_levels(row: dict[str, Any], calibration: dict[str, Any]) -> dict[str, d
     return out
 
 
-def standard_error(level: float, total: int) -> float:
-    return math.sqrt(max(level * (2 - level), 0.0) / total)
+def counts_of(row: dict[str, Any]) -> np.ndarray:
+    """The (slot A, slot B, failure) clicks of a returned iteration: the counts every level is a function of."""
+    return np.array([row["slot"]["A"], row["slot"]["B"], row["failure"]], dtype=float)
+
+
+def with_counts(row: dict[str, Any], counts: np.ndarray) -> dict[str, Any]:
+    return {
+        **row,
+        "slot": {"A": float(counts[0]), "B": float(counts[1])},
+        "failure": float(counts[2]),
+        "total": float(counts.sum()),
+    }
+
+
+def counting_variance(function: Callable[[dict[str, Any]], float], row: dict[str, Any]) -> float:
+    """Variance of function(row) from the multinomial sampling of the row's (A, B, failure) clicks.
+
+    Every level is homogeneous of degree 0 in these counts (the dark term scales with the total), so the sampling
+    law is the multinomial of the labeled clicks at their total n with covariance n (diag p - p p^T); the gradient
+    is a central difference of one count by COUNT_STEP."""
+    counts = counts_of(row)
+    gradient = np.empty(3)
+    for k in range(3):
+        up, down = counts.copy(), counts.copy()
+        up[k] += COUNT_STEP
+        down[k] -= COUNT_STEP
+        gradient[k] = (function(with_counts(row, up)) - function(with_counts(row, down))) / (2 * COUNT_STEP)
+    total = counts.sum()
+    p = counts / total
+    return float(total * gradient @ (np.diag(p) - np.outer(p, p)) @ gradient)
+
+
+def level_standard_error(row: dict[str, Any], calibration: dict[str, Any], slot: str) -> float:
+    """Standard error of one iteration's calibrated level l_hat of `slot` from its own clicks, the calibration held
+    fixed: the counting error of the dark subtraction and the efficiency division."""
+    return math.sqrt(counting_variance(lambda r: slot_levels(r, calibration)[slot]["l_hat"], row))
+
+
+def calibration_rows(rows: list[dict[str, Any]], settings: list[dict[str, Any]]) -> list[int]:
+    """Indices of the returned dark and anchor iterations, the counts calibrate() reads."""
+    return [
+        i
+        for i, (row, setting) in enumerate(zip(rows, settings, strict=True))
+        if row["returned"] and setting["role"] in ("dark", "anchor")
+    ]
+
+
+def pooled_level(
+    rows: list[dict[str, Any]], settings: list[dict[str, Any]], orientations: list[tuple[int, str]]
+) -> float:
+    """Mean calibrated level of the (iteration, slot) pairs, calibrated from the dark and anchor iterations of
+    `rows`."""
+    calibration = calibrate(rows, settings)
+    return mean([slot_levels(rows[i], calibration)[slot]["l_hat"] for i, slot in orientations])
+
+
+def level_errors(
+    task: tuple[list[dict[str, Any]], list[dict[str, Any]], list[tuple[int, str]]],
+) -> dict[str, float]:
+    """Delta-method standard error of the pooled calibrated level of (iteration, slot) pairs.
+
+    `se` carries the sampling of every count the level reads: the measured iterations' clicks and the dark and
+    anchor iterations' clicks through the dark share and the efficiencies, each iteration an independent
+    multinomial. `se_counting` carries the measured iterations' clicks alone, the calibration held fixed. The
+    calibration is shared by every reading, so the pooled error of the two orientations of one item adds their
+    gradients before squaring."""
+    rows, settings, orientations = task
+    measured = sorted({i for i, _ in orientations})
+    shared = [i for i in calibration_rows(rows, settings) if i not in measured]
+
+    def variance(indices: list[int]) -> float:
+        total = 0.0
+        for i in indices:
+
+            def level(moved: dict[str, Any], i: int = i) -> float:
+                return pooled_level([*rows[:i], moved, *rows[i + 1 :]], settings, orientations)
+
+            total += counting_variance(level, rows[i])
+        return total
+
+    return {"se": math.sqrt(variance(measured + shared)), "se_counting": math.sqrt(variance(measured))}
 
 
 def mode_efficiency_fit(rows: list[dict[str, Any]], settings: list[dict[str, Any]]) -> list[float] | None:
@@ -216,7 +298,9 @@ def readings_of(
     calibration: dict[str, Any],
     tolerance: float,
 ) -> list[dict[str, Any]]:
-    """Each block item of every sign and null setting, in both slot orientations and pooled over them."""
+    """Each block item of every sign and null setting, in both slot orientations and pooled over them.
+
+    Every level carries `se` (level_errors: counting plus calibration, delta method) and `se_counting`."""
     settings = manifest["settings"]
     readings = []
     for name, design in structure["designs"].items():
@@ -230,12 +314,7 @@ def readings_of(
                 if not rows[index]["returned"]:
                     continue
                 level = slot_levels(rows[index], calibration)[slot]
-                per[str(orientation)] = {
-                    "iteration": index,
-                    "slot": slot,
-                    **level,
-                    "se": standard_error(min(max(level["l_hat"], 1e-9), 2 - 1e-9), rows[index]["total"]),
-                }
+                per[str(orientation)] = {"iteration": index, "slot": slot, **level}
             first = settings[structure["by_setting"][name][0][0]]["slots"]["A" if item_index == 0 else "B"]
             if not per:
                 continue
@@ -256,12 +335,21 @@ def readings_of(
                 "l_hat": pooled,
                 "a_prime": mean([v["a_prime"] for v in values]),
                 "a": mean([v["a"] for v in values]),
-                "se": math.sqrt(sum(v["se"] ** 2 for v in values)) / len(values),
                 "deviation": pooled - first["ideal_level"],
                 "within_tolerance": abs(pooled - first["ideal_level"]) <= tolerance,
                 "mirror_difference": abs(values[0]["l_hat"] - values[1]["l_hat"]) if len(values) == 2 else None,
             }
             readings.append(record)
+    tasks: list[tuple[list[dict[str, Any]], list[dict[str, Any]], list[tuple[int, str]]]] = []
+    for record in readings:
+        pairs = [(v["iteration"], v["slot"]) for v in record["orientations"].values()]
+        tasks.append((rows, settings, pairs))
+        tasks.extend((rows, settings, [pair]) for pair in pairs)
+    errors = iter(ordered_map(level_errors, tasks, min_items=2))
+    for record in readings:
+        record.update(next(errors))
+        for orientation in record["orientations"].values():
+            orientation.update(next(errors))
     return readings
 
 

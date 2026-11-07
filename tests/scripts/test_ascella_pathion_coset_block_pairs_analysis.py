@@ -365,3 +365,41 @@ def test_a_returned_iteration_must_match_its_request_and_the_case_budget() -> No
         analysis.score(manifest(), entries)
     with pytest.raises(ValueError, match="one entry per setting"):
         analysis.score(manifest(), run()[:-1])
+
+
+def test_the_level_error_is_the_delta_method_through_the_calibration_transform() -> None:
+    """Slot efficiencies 0.5 and 1, no dark rate, no failure clicks, click shares 1/3 and 2/3 at n = 10000: the level
+    is 1 and its conditional error sqrt(1.125 / n), not the 0.01 of the uncalibrated fold variance."""
+    n = 10000.0
+    row = {"slot": {"A": n / 3, "B": 2 * n / 3}, "failure": 0.0, "total": n}
+    calibration = {
+        "dark": {"A": 0.0, "B": 0.0},
+        "efficiency": {"A": 0.5, "B": 1.0},
+        "anchor_raw": {"A": 1.0, "B": 1.0},
+    }
+    require(math.isclose(analysis.slot_levels(row, calibration)["A"]["l_hat"], 1.0, rel_tol=1e-12), "calibrated level")
+    expected = math.sqrt(1.125 / n)
+    for slot in ("A", "B"):
+        error = analysis.level_standard_error(row, calibration, slot)
+        require(math.isclose(error, expected, rel_tol=1e-5), f"slot {slot}: {error} against {expected}")
+    require(abs(expected - 0.010607) < 1e-6 and abs(expected - 0.01) > 5e-4, "the example differs from the old error")
+
+
+def test_the_reported_error_adds_the_dark_and_anchor_counts_and_shares_them_between_orientations() -> None:
+    result = analysis.score(manifest(), run(lambda i, s: weights_for(s, leak=0.04)))
+    for reading in result["readings"]:
+        require(reading["se"] > reading["se_counting"] > 0, f"{reading['setting']}: calibration adds variance")
+        for orientation in reading["orientations"].values():
+            require(orientation["se"] > orientation["se_counting"] > 0, f"{reading['setting']} orientation")
+    for reading in result["readings"]:
+        for orientation in reading["orientations"].values():
+            row = result["iterations"][orientation["iteration"]]
+            conditional = analysis.level_standard_error(row, result["calibration"], orientation["slot"])
+            require(
+                math.isclose(conditional, orientation["se_counting"], rel_tol=1e-9), "se_counting is the level error"
+            )
+    pooled = result["readings"][0]
+    first, second = pooled["orientations"]["0"], pooled["orientations"]["1"]
+    independent = math.sqrt(first["se"] ** 2 + second["se"] ** 2) / 2
+    require(not math.isclose(pooled["se"], independent, rel_tol=1e-3), "the two orientations share one calibration")
+    json.dumps(result, allow_nan=False)
