@@ -1,8 +1,9 @@
 # Quandela iterated-job billing rule: successor for pinned records
 
 `qd_platform.job_billing` and `qd_platform.charged` bill an iterated Quandela job 1 credit plus 1e-6 per shot of
-the smaller of the shots it used and its largest iteration's `max_shots`. An iterated job whose result reports no
-shots-used figure bills the cap in full. The [credit optimization runbook](../../runbooks/quandela-credit-optimization.md),
+the smaller of the shots it used and its largest iteration's `max_shots`. `qd_platform.charged` takes an isolated
+usage report as the charge where one exists, bills nothing for a job canceled before its start, and bills the cap in
+full only when neither a usage report nor a shots-used figure gives the charge. The [credit optimization runbook](../../runbooks/quandela-credit-optimization.md),
 "The billing rule", carries the measured charges behind the rule: run
 `2026-10-30T190300Z-qpu_ascella-a5-kernel-slice` used 60,000 shots under a 100,000 cap and was charged 1.06 credits.
 
@@ -31,6 +32,30 @@ The producers emit the same wording and keep it, because a changed string change
 `billing_rule` and `credits` strings and the job-model comments), `scripts/ascella_predecessor_case.py` (sha256
 `2310aa98d1c0c68812d7edcbd30fd6a0713ca5fb6ab1e1b8c3c96e3d845b197b`, `charge` and `credit_basis`), and the
 `billing_rule` strings of `scripts/bdsc_diagnostic.py` and `scripts/bdsc_stationarity.py`.
+
+A new record of either family comes from a versioned successor, which rebuilds the original's records in memory and
+replaces only the fields in the table above with the rule text in
+[`scripts/billing_rule_v2.py`](../../../scripts/billing_rule_v2.py); each refuses a build whose original no longer
+emits the superseded wording. [`scripts/bdsc_certificate_v2.py`](../../../scripts/bdsc_certificate_v2.py) succeeds
+`bdsc_certificate.py`; [`scripts/bdsc_case_records_v2.py`](../../../scripts/bdsc_case_records_v2.py) succeeds the
+diagnostic and stationarity builders and re-binds each job manifest's `diagnostic_case_sha256` or
+`stationarity_case_sha256` to the successor case record; and
+[`scripts/ascella_predecessor_case_v2.py`](../../../scripts/ascella_predecessor_case_v2.py) succeeds
+`ascella_predecessor_case.py`, records its own digest as `preregistered.builder_sha256` and names the original's
+`charge` figure `credit_ceiling`. Every credit number keeps its value as the ceiling at the frozen `max_shots`. No
+successor record is retained; [`tests/scripts/test_billing_rule_v2.py`](../../../tests/scripts/test_billing_rule_v2.py)
+holds each successor's difference from its original to exactly those JSON pointers.
+
+The successors emit records, not acquisition requests. Each original family's readout admits only its one frozen
+case: `bdsc_diagnostic.admit_run` and `draw_claims` compare against `docs/evidence/bdsc/diagnostic/case.json`,
+`bdsc_stationarity.admit` against its own `documents()`, `ascella_predecessor_analysis.analyze` against
+`ascella_predecessor_case.check()`, and `bdsc_cases.py` builds from `docs/evidence/bdsc/qualification_case.json`.
+Every successor job manifest therefore carries `acquisition_admission: awaiting-analyzer`, which
+`qd_platform.submit` refuses, and every successor writer refuses a directory under `results/quandela` or
+`docs/evidence`, where a successor tree would claim a retained draw or replace a pinned record. A new acquisition of
+either family takes a successor builder together with a successor analyzer, as
+`scripts/ascella_predecessor_current_case.py` ships with `scripts/ascella_predecessor_current_analysis.py`;
+[issue 780](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/780) holds that work.
 
 Three pinned documents carry the same rule in prose and have full successors:
 [`hypercomplex-operator-cases-v2.md`](../../runbooks/hypercomplex-operator-cases-v2.md),
