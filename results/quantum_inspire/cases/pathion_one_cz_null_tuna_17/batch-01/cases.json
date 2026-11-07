@@ -1,0 +1,247 @@
+{
+ "schema": "qi-pathion-one-cz-null-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "0": 2,
+  "1": 4,
+  "2": 8,
+  "3": 11,
+  "4": 12
+ },
+ "register": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json",
+ "joint_qubits": {
+  "coin": 2,
+  "selector": 8,
+  "q12": 12
+ },
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "pin": "replay of the retained coin series b0",
+   "draw_index": 32,
+   "transpiler_seed": 22836,
+   "initial_layout": null,
+   "cz": 21,
+   "roles": {
+    "d0": 12,
+    "d1": 4,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  },
+  "k4": {
+   "block": "k4",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 4,
+   "pin": "selector_coin",
+   "draw_index": 0,
+   "transpiler_seed": 47769,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 4,
+    "d1": 12,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  },
+  "k8": {
+   "block": "k8",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 8,
+   "pin": "selector_coin",
+   "draw_index": 64,
+   "transpiler_seed": 64282,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 4,
+    "d1": 12,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  },
+  "k12": {
+   "block": "k12",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 12,
+   "pin": "selector_coin",
+   "draw_index": 128,
+   "transpiler_seed": 43671,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 4,
+    "d1": 12,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "control": "b0 raw selector contrast above 3.0 standard errors, else the offset is absent and nothing about its mechanism is decided",
+  "six_cz": "inverse-variance mean s of the raw selector contrasts of k4, k8 and k12 with b0's contrast s0: zero when |s| within 3.0 se of 0 and (s - s0) beyond 3.0 combined se, b0-like when (s - s0) within 3.0 combined se and |s| beyond 3.0 se, else unresolved",
+  "coin_dropout": "D = misassignment of a prepared selector 1 with the coin prepared 1 minus with the coin prepared 0: large when D >= 0.036 - 3.0 se and D >= 3.0 se; small when |D| + 3.0 se < 0.012 for a prepared selector 0 and for a prepared selector 1",
+  "q12_correlation": "G = misassignment of the selector with q12 prepared 0 minus with q12 prepared 1, the larger of the values at a prepared selector 0 and 1: large when G >= 0.036 - 3.0 se and G >= 3.0 se; small when |G| + 3.0 se < 0.012 at both prepared selector values",
+  "decision": "the combination of the control, six_cz, coin_dropout and q12_correlation classes read from DECISIONS; every other combination is unresolved",
+  "qx": "every template within twice the sampling floor of its ideal law"
+ },
+ "shots": 32768,
+ "batch": "batch-01",
+ "circuits": [
+  {
+   "file": "joint-011.cq",
+   "kind": "joint",
+   "prep": {
+    "coin": 0,
+    "selector": 1,
+    "q12": 1
+   },
+   "sha256": "7e540671422e928a94def9fa0aec75293e9a78d490b0a6223e2642667ee5035a"
+  },
+  {
+   "file": "joint-100.cq",
+   "kind": "joint",
+   "prep": {
+    "coin": 1,
+    "selector": 0,
+    "q12": 0
+   },
+   "sha256": "b984dc483d4aaebab53c7e4a3d79fc0a95284483335faeb00e4f250119f758a1"
+  },
+  {
+   "file": "joint-101.cq",
+   "kind": "joint",
+   "prep": {
+    "coin": 1,
+    "selector": 0,
+    "q12": 1
+   },
+   "sha256": "08cc19fadab780cdb12bd8646dd8ba6fd9ff7845b4cdfd49f94cadb0e3af3059"
+  }
+ ]
+}

@@ -1,0 +1,61 @@
+{
+ "schema": "qi-pathion-one-cz-null-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "joint-000.cq",
+    "joint-001.cq",
+    "joint-010.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "joint-011.cq",
+    "joint-100.cq",
+    "joint-101.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "joint-110.cq",
+    "joint-111.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "readout-0.cq",
+    "b0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "files": [
+    "readout-0.cq",
+    "k4.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "files": [
+    "readout-0.cq",
+    "k8.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "files": [
+    "readout-0.cq",
+    "k12.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

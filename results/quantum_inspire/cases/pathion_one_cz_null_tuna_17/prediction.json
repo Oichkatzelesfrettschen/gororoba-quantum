@@ -1,0 +1,116 @@
+{
+ "decisions": [
+  {
+   "a5_186": "survives; the readout alternative is excluded and the falsifier (6-CZ blocks at zero) is unmet",
+   "if": [
+    "zero",
+    "small",
+    "small"
+   ],
+   "outcome": "over-rotation supported: the 6-CZ blocks read zero and both readout offsets are excluded"
+  },
+  {
+   "a5_186": "refuted as an over-rotation: the offset is an arm-asymmetric readout effect",
+   "if": [
+    "b0-like",
+    "large",
+    "small"
+   ],
+   "outcome": "coin-conditioned selector dropout supported: the 6-CZ blocks read the b0 value and the joint readout shows the dropout"
+  },
+  {
+   "a5_186": "refuted as an over-rotation: the offset is an arm-asymmetric readout effect",
+   "if": [
+    "b0-like",
+    "large",
+    "mid"
+   ],
+   "outcome": "coin-conditioned selector dropout supported: the 6-CZ blocks read the b0 value and the joint readout shows the dropout; the q12 correlation is neither shown nor excluded"
+  },
+  {
+   "a5_186": "weakened: a measured readout correlation of the needed size explains the offset without a coherent error",
+   "if": [
+    "zero",
+    "small",
+    "large"
+   ],
+   "outcome": "q12 correlation supported: the 6-CZ blocks read zero and the joint readout shows the q12 correlation"
+  },
+  {
+   "a5_186": "weakened: a measured readout correlation of the needed size explains the offset without a coherent error",
+   "if": [
+    "zero",
+    "mid",
+    "large"
+   ],
+   "outcome": "q12 correlation supported: the 6-CZ blocks read zero and the joint readout shows the q12 correlation"
+  },
+  {
+   "a5_186": "refuted as stated: the over-rotation predicts zero on the 6-CZ blocks; the mechanism stays open",
+   "if": [
+    "b0-like",
+    "small",
+    "small"
+   ],
+   "outcome": "neither a coherent over-rotation nor a measured readout offset: the 6-CZ blocks read the b0 value and the joint readout excludes both readout models"
+  }
+ ],
+ "design": {
+  "batches": 7,
+  "coin_series_timing": {
+   "jobs": 9,
+   "seconds_per_shot_max": 0.0005905707092285157,
+   "seconds_per_shot_min": 0.0005423932342529297
+  },
+  "execution_seconds_range": [
+   568.7,
+   619.3
+  ],
+  "jobs": 20,
+  "joint_se": {
+   "selector_prepared_0": 0.000972,
+   "selector_prepared_1": 0.000823
+  },
+  "joint_se_limit": 0.004,
+  "model_size_in_se": {
+   "selector_prepared_0": 37.0,
+   "selector_prepared_1": 43.7
+  },
+  "pause_seconds_per_batch": 30,
+  "retained_selector_readout_e01_e10": [
+   0.032,
+   0.0227
+  ],
+  "selector_se": 0.00390625,
+  "selector_se_limit": 0.0045,
+  "shots_total": 1048576
+ },
+ "joint_effect": {
+  "coin_dropout": 0.036,
+  "q12_correlation": 0.036,
+  "readout_excluded_below": 0.012
+ },
+ "model": "raw selector contrast of b0 and of a 6-CZ block under each hypothesis, and the size of the joint readout effect each hypothesis needs, from docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.txt",
+ "predicted_selector_contrast": {
+  "coin_dropout": {
+   "b0": 0.0164,
+   "six_cz": 0.0164
+  },
+  "over_rotation": {
+   "b0": 0.0167,
+   "six_cz": 0.0
+  },
+  "q12_correlation": {
+   "b0": 0.0164,
+   "six_cz": 0.0
+  }
+ },
+ "preregistered": {
+  "coin_dropout": "D = misassignment of a prepared selector 1 with the coin prepared 1 minus with the coin prepared 0: large when D >= 0.036 - 3.0 se and D >= 3.0 se; small when |D| + 3.0 se < 0.012 for a prepared selector 0 and for a prepared selector 1",
+  "control": "b0 raw selector contrast above 3.0 standard errors, else the offset is absent and nothing about its mechanism is decided",
+  "decision": "the combination of the control, six_cz, coin_dropout and q12_correlation classes read from DECISIONS; every other combination is unresolved",
+  "q12_correlation": "G = misassignment of the selector with q12 prepared 0 minus with q12 prepared 1, the larger of the values at a prepared selector 0 and 1: large when G >= 0.036 - 3.0 se and G >= 3.0 se; small when |G| + 3.0 se < 0.012 at both prepared selector values",
+  "qx": "every template within twice the sampling floor of its ideal law",
+  "six_cz": "inverse-variance mean s of the raw selector contrasts of k4, k8 and k12 with b0's contrast s0: zero when |s| within 3.0 se of 0 and (s - s0) beyond 3.0 combined se, b0-like when (s - s0) within 3.0 combined se and |s| beyond 3.0 se, else unresolved"
+ }
+}

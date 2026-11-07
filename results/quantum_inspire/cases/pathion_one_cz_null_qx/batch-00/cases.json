@@ -1,0 +1,377 @@
+{
+ "schema": "qi-pathion-one-cz-null-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "0": 0,
+  "1": 1,
+  "2": 2,
+  "3": 3,
+  "4": 4
+ },
+ "register": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json",
+ "joint_qubits": {
+  "coin": 2,
+  "selector": 8,
+  "q12": 12
+ },
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "pin": "replay of the retained coin series b0",
+   "draw_index": 32,
+   "transpiler_seed": 22836,
+   "initial_layout": null,
+   "cz": 21,
+   "roles": {
+    "d0": 4,
+    "d1": 1,
+    "d2": 3,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  },
+  "k4": {
+   "block": "k4",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 4,
+   "pin": "selector_coin",
+   "draw_index": 0,
+   "transpiler_seed": 47769,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 1,
+    "d1": 4,
+    "d2": 3,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  },
+  "k8": {
+   "block": "k8",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 8,
+   "pin": "selector_coin",
+   "draw_index": 64,
+   "transpiler_seed": 64282,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 1,
+    "d1": 4,
+    "d2": 3,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  },
+  "k12": {
+   "block": "k12",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 12,
+   "pin": "selector_coin",
+   "draw_index": 128,
+   "transpiler_seed": 43671,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 1,
+    "d1": 4,
+    "d2": 3,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "control": "b0 raw selector contrast above 3.0 standard errors, else the offset is absent and nothing about its mechanism is decided",
+  "six_cz": "inverse-variance mean s of the raw selector contrasts of k4, k8 and k12 with b0's contrast s0: zero when |s| within 3.0 se of 0 and (s - s0) beyond 3.0 combined se, b0-like when (s - s0) within 3.0 combined se and |s| beyond 3.0 se, else unresolved",
+  "coin_dropout": "D = misassignment of a prepared selector 1 with the coin prepared 1 minus with the coin prepared 0: large when D >= 0.036 - 3.0 se and D >= 3.0 se; small when |D| + 3.0 se < 0.012 for a prepared selector 0 and for a prepared selector 1",
+  "q12_correlation": "G = misassignment of the selector with q12 prepared 0 minus with q12 prepared 1, the larger of the values at a prepared selector 0 and 1: large when G >= 0.036 - 3.0 se and G >= 3.0 se; small when |G| + 3.0 se < 0.012 at both prepared selector values",
+  "decision": "the combination of the control, six_cz, coin_dropout and q12_correlation classes read from DECISIONS; every other combination is unresolved",
+  "qx": "every template within twice the sampling floor of its ideal law"
+ },
+ "shots": 2048,
+ "batch": "batch-00",
+ "circuits": [
+  {
+   "file": "b0.cq",
+   "kind": "data",
+   "template": "b0",
+   "ideal": [
+    0.06242201442,
+    7.798558e-05,
+    0.062419618627,
+    8.0381373e-05,
+    0.06232564198,
+    0.00017435802,
+    0.062419618627,
+    8.0381373e-05,
+    0.00017435802,
+    0.06232564198,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    8.0381373e-05,
+    0.062419618627,
+    0.00017435802,
+    0.06232564198,
+    8.0381373e-05,
+    0.062419618627,
+    0.06232564198,
+    0.00017435802,
+    0.062322015216,
+    0.000177984784,
+    0.06242201442,
+    7.798558e-05,
+    0.062322015216,
+    0.000177984784
+   ],
+   "sha256": "9c348677d607b06019b57d7187aae861ecaeebeb36bd90b401527ea2a2723ac1"
+  },
+  {
+   "file": "k4.cq",
+   "kind": "data",
+   "template": "k4",
+   "ideal": [
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0
+   ],
+   "sha256": "e7c0d06ceb8d088dbc7ddcc1e39dda670b2f980aa650b495e3a468f3faf5acbe"
+  },
+  {
+   "file": "k8.cq",
+   "kind": "data",
+   "template": "k8",
+   "ideal": [
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0
+   ],
+   "sha256": "687603a86eaa737fc6bfba359ef6274df6ebc84478a14e126d3a6fae7a2894c4"
+  },
+  {
+   "file": "k12.cq",
+   "kind": "data",
+   "template": "k12",
+   "ideal": [
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0,
+    0.0625,
+    0.0
+   ],
+   "sha256": "4c1108ef862fa3f1c3f8415d61a854f65f959fa1eb58a784c7c9dc7510d47f3d"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "schema": "qi-pathion-one-cz-null-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "b0.cq",
+    "k4.cq",
+    "k8.cq",
+    "k12.cq"
+   ]
+  }
+ ]
+}
