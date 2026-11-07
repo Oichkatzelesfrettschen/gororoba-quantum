@@ -4,7 +4,9 @@ Written case for one `sim:ascella` gate job and one `qpu:ascella` job of 84 sing
 the [two-coset-block case](ascella-pathion-coset-block-pairs-case.md). Builder
 [`scripts/ascella_pathion_mesh_persistence.py`](../../scripts/ascella_pathion_mesh_persistence.py), reading
 [`scripts/ascella_pathion_mesh_persistence_analysis.py`](../../scripts/ascella_pathion_mesh_persistence_analysis.py),
-test `tests/scripts/test_ascella_pathion_mesh_persistence.py`. Nothing has been submitted.
+test `tests/scripts/test_ascella_pathion_mesh_persistence.py`. Nothing has been submitted. The
+[block-run design runbook](../runbooks/ascella-block-run-design.md) carries the served-mesh facts, the reading module
+with the review finding behind each mechanism, and the design rules for the next block case.
 
 ## The question
 

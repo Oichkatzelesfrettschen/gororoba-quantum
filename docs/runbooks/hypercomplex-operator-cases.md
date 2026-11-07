@@ -50,6 +50,8 @@ Replace uppercase command arguments with the retained acquisition paths. The col
 The [Ascella instrument-readiness and packed-test design](../design/ascella-instrument-readiness-and-packed-tests.md)
 records the input-port configuration incident, tested static reproducer, full-output
 successor cases, finite capability frontier and the approved five-job Belenos repeat programme.
+The [Ascella block-run design runbook](ascella-block-run-design.md) holds the served-mesh facts, the reading
+module and the design rules for single-photon pathion block cases.
 
 The fixed single-photon meshes implement complete 4-mode order or 8-mode wave/Fourier operators. Every iteration requests at most 8192 detected samples and 16384 shots, under a 180 s job duration cap. The existing Quandela runner checks the complete operator for this schema. The order, wave and transform jobs contain 8, 24 and 8 iterations respectively.
 
