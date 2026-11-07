@@ -37,12 +37,17 @@ F_32009 and F(I)_5 = (k[y]/K2)_5: no degree-5 relation beyond K2 at this prime. 
 - The runner's check() reports a failed block invariant in n18.events but exits 0 (it only gates p = 32029); this run
   passed every check, and later runners exit nonzero on a failed invariant.
 
+## Prediction for p = 32029, committed before that run starts
+
+r_18 = 952 with blocks 215 / 197 / 270 / 270 and quotient dimension 72,693, and the degree-4 control r = 495. Basis: the
+N = 17 step agrees across the two primes in rank, blocks and quotient dimension (n17-laptop/), and h_1..h_6 of K2 agree
+at both primes (k2-hilbert.jsonl). A different value refutes the prime independence of the N = 18 step.
+
 ## Scope and falsifiers
 
 - The statement holds over F_32009. The repeat at p = 32029 (gate: p = 32009 moved with every invariant intact) runs on
-  the Azure FX4 after its Iso chart exits, on `e8-nm-p32029.sing` (sha256 48bdcbe0fa17d04c...) with K2 receipt sha256
-  5573ef662aef..., the same engine and flags, and a runner that exits nonzero on a failed invariant; the laptop's
-  degree-4 control (expected r = 495) finishes first and the laptop does not repeat p = 32029.
+  `e8-nm-p32029.sing` (sha256 48bdcbe0fa17d04c...) with K2 receipt sha256 5573ef662aef... and the same engine and flags,
+  after the degree-4 control (expected r = 495).
 - hypothesis (to verify, task: characteristic 0): reduction modulo p cannot raise a rank, and HF(k[y]/K2) can only rise
   under reduction, so if the arc system and K2 at p are the reductions of their rational counterparts, 952 = r_p <= r_Q
   <= h_5(Q) <= HF_Q(k[y]/K2, 5) <= HF_p(k[y]/K2, 5) = 952 would give h_5 = 952 over Q. The step that needs proof is that
