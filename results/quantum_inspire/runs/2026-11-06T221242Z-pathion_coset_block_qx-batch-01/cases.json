@@ -1,0 +1,323 @@
+{
+ "schema": "qi-pathion-coset-block-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "region": [
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "0": 0,
+  "1": 1,
+  "2": 2,
+  "3": 3
+ },
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-06T184327Z.json",
+ "candidates_per_template": 16,
+ "templates": {
+  "ba": {
+   "block": "ba",
+   "operand": [
+    1,
+    18,
+    1
+   ],
+   "basis": [
+    19,
+    2,
+    12
+   ],
+   "coset": 1,
+   "cocycle_free": false,
+   "draw_index": 0,
+   "draw_indices_searched": [
+    0,
+    15
+   ],
+   "transpiler_seed": 31581,
+   "cz": 20,
+   "roles": {
+    "d0": 0,
+    "d1": 3,
+    "d2": 2,
+    "selector": 1
+   },
+   "ideal_selector_contrast": 0.499905,
+   "ideal_c": [
+    -0.999809,
+    0.999809,
+    -0.999809,
+    0.999809,
+    0.999809,
+    0.999809,
+    0.999809,
+    0.999809
+   ],
+   "rounding_gap": 1.2e-05
+  },
+  "bb": {
+   "block": "bb",
+   "operand": [
+    1,
+    26,
+    1
+   ],
+   "basis": [
+    27,
+    2,
+    9
+   ],
+   "coset": 0,
+   "cocycle_free": false,
+   "draw_index": 16,
+   "draw_indices_searched": [
+    16,
+    31
+   ],
+   "transpiler_seed": 53647,
+   "cz": 22,
+   "roles": {
+    "d0": 0,
+    "d1": 3,
+    "d2": 2,
+    "selector": 1
+   },
+   "ideal_selector_contrast": 0.5,
+   "ideal_c": [
+    -0.996195,
+    0.996195,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    -0.996195,
+    0.996195
+   ],
+   "rounding_gap": 0.000238
+  },
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cocycle_free": false,
+   "draw_index": 32,
+   "draw_indices_searched": [
+    32,
+    47
+   ],
+   "transpiler_seed": 3704,
+   "cz": 20,
+   "roles": {
+    "d0": 3,
+    "d1": 0,
+    "d2": 2,
+    "selector": 1
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ],
+   "rounding_gap": 0.000356
+  },
+  "xor_ba": {
+   "block": "ba",
+   "operand": [
+    1,
+    18,
+    1
+   ],
+   "basis": [
+    19,
+    2,
+    12
+   ],
+   "coset": 1,
+   "cocycle_free": true,
+   "draw_index": 48,
+   "draw_indices_searched": [
+    48,
+    63
+   ],
+   "transpiler_seed": 22884,
+   "cz": 4,
+   "roles": {
+    "d0": 3,
+    "d1": 0,
+    "d2": 2,
+    "selector": 1
+   },
+   "ideal_selector_contrast": -1.0,
+   "ideal_c": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+   ],
+   "rounding_gap": 0.0
+  }
+ },
+ "labels": {
+  "ba": {
+   "operand": [
+    1,
+    18,
+    1
+   ],
+   "basis": [
+    19,
+    2,
+    12
+   ],
+   "coset": 1,
+   "ibm_data_index_of_bin": [
+    0,
+    19,
+    2,
+    17,
+    12,
+    31,
+    14,
+    29
+   ]
+  },
+  "bb": {
+   "operand": [
+    1,
+    26,
+    1
+   ],
+   "basis": [
+    27,
+    2,
+    9
+   ],
+   "coset": 0,
+   "ibm_data_index_of_bin": [
+    1,
+    26,
+    3,
+    24,
+    8,
+    19,
+    10,
+    17
+   ]
+  },
+  "b0": {
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "ibm_data_index_of_bin": [
+    1,
+    17,
+    0,
+    16,
+    3,
+    19,
+    2,
+    18
+   ]
+  }
+ },
+ "preregistered": {
+  "resolution": "ba and bb each read the ideal sign of at least 6 of 8 bins at 3.0 se",
+  "pattern": "ba and bb read opposite signs in their two differing bins at 3.0 se",
+  "null": "b0 selector contrast within 3.0 se of zero",
+  "cocycle_free": "xor_ba selector contrast below -3.0 se and ba selector contrast above 3.0 se",
+  "depth": "contraction per CZ implied by each template visibility against RHO_BAND, reported with its CZ",
+  "cross_platform": "D(y) = c_T(y) / V_T - c_I(label(y)) / V_I of ba, bb and b0 within 3.0 combined standard errors on at least 7 of 8 bins, against each of ibm_fez and ibm_marrakesh (IBM_RECORDS); the Tuna ratio is the readout_corrected one, the raw ratio is reported",
+  "drift": "a readout circuit moving a register qubit by more than 0.02 against the previous circuit of its kind (e01 on readout-0, e10 on readout-1) stops the series and fails the rule"
+ },
+ "batch": "batch-01",
+ "circuits": [
+  {
+   "file": "bb-plus-r0.cq",
+   "kind": "arm",
+   "template": "bb",
+   "arm": "plus",
+   "replicate": 0,
+   "ideal": [
+    0.000237831369,
+    0.124762168631,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.000237831369,
+    0.124762168631,
+    0.124762168631,
+    0.000237831369,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.124762168631,
+    0.000237831369
+   ],
+   "sha256": "81942a1400bb4fe7289011cdbed9c6eef647a15b21ac0569681414b9c7b66309"
+  },
+  {
+   "file": "bb-minus-r0.cq",
+   "kind": "arm",
+   "template": "bb",
+   "arm": "minus",
+   "replicate": 0,
+   "ideal": [
+    0.124762168631,
+    0.000237831369,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.124762168631,
+    0.000237831369,
+    0.000237831369,
+    0.124762168631,
+    0.125,
+    0.125,
+    0.125,
+    0.125,
+    0.000237831369,
+    0.124762168631
+   ],
+   "sha256": "773e47e35e305ca1bd0198047dd98419d3c2e73054f872cc1b7ac521e535fa16"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "60ecbe81d641021373451a90b7e12fcab073c703403f4316f89bae05c8b85938"
+  }
+ ]
+}

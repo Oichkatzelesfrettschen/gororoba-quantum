@@ -99,3 +99,21 @@ def test_output_labels_are_the_coset_the_select_permutation_reaches() -> None:
         "output labels are not (k0 XOR i) + V",
     )
     _expect(pkm.DIM == 32, "the module's dimension")
+
+
+@pytest.mark.parametrize("block", BLOCKS, ids=lambda b: b.name)
+@pytest.mark.parametrize("free", [False, True])
+def test_coin_circuit_reads_both_arms_with_uniform_data_marginals(block: pcb.Block, free: bool) -> None:
+    circuit = pcb.block_template(block, cocycle_free=free, measure=False, coin=True)
+    _expect(circuit.num_qubits == block.d + 2, f"{block.name}: the coin adds one qubit")
+    plus, minus = pcb.coin_arm_laws(circuit)
+    for arm, law in ((True, plus), (False, minus)):
+        reference = pcb.block_law(pcb.block_circuit(block, arm, cocycle_free=free, measure=False))
+        _expect(float(np.abs(law - reference).max()) < 1e-12, f"{block.name} {arm}: coin arm differs from phase arm")
+        marginal = law[: law.size // 2] + law[law.size // 2 :]
+        _expect(float(np.abs(marginal - 1.0 / marginal.size).max()) < 1e-12, f"{block.name}: data marginal not uniform")
+
+
+def test_coin_circuit_refuses_the_explicit_plus_construction() -> None:
+    with pytest.raises(ValueError, match="no explicit plus"):
+        pcb.block_template(BLOCKS[0], direct_plus=True, coin=True)

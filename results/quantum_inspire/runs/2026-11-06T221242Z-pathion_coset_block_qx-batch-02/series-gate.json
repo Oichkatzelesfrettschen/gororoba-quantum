@@ -1,0 +1,28 @@
+{
+ "schema": "qi-pathion-coset-block-gate-v1",
+ "series": "pathion_coset_block_qx",
+ "batch": "batch-02",
+ "cases_sha256": "209b365e1911c8efdcd8b045477ac4cdf7918dc2ee00768bd8e168f37ebb140a",
+ "predecessors": [
+  {
+   "batch": "batch-00",
+   "run_dir": "2026-11-06T221242Z-pathion_coset_block_qx-batch-00",
+   "results_sha256": "501a9a8840e894bdf5540f475ce61b21f3e6c38f4d5311d5d5844dba9491376a"
+  },
+  {
+   "batch": "batch-01",
+   "run_dir": "2026-11-06T221242Z-pathion_coset_block_qx-batch-01",
+   "results_sha256": "e2db3a08bffd26e8168b1e5dfa25ad09329798647153c7c6fa30db4764ae893f"
+  }
+ ],
+ "stops": {
+  "batches_checked": [
+   "batch-00",
+   "batch-01"
+  ],
+  "bracket_drift_flagged": [],
+  "max_drift": 0.0
+ },
+ "control": null,
+ "pause_seconds": 0
+}

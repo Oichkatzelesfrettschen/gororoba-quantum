@@ -1,0 +1,36 @@
+{
+ "schema": "qi-pathion-coset-coin-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "readout-0.cq",
+    "ba.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "files": [
+    "readout-0.cq",
+    "bb.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "files": [
+    "readout-0.cq",
+    "b0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "files": [
+    "xor_ba.cq"
+   ]
+  }
+ ]
+}
