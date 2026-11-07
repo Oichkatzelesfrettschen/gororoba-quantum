@@ -42,15 +42,16 @@ ROOT = Path(__file__).resolve().parents[2]
 BLOCKS = 3
 PAIRS = 3
 # sha256 prefixes of the offline plan of each group before per-placement laws existed (FakeFez, two seeds, three
-# replicas) under the pinned qiskit 2.6.1 and qiskit-aer 0.18.2: the digest covers choice_structure, every fused-PUB
-# manifest, and the archive bytes, whose QPY encoding follows the qiskit release.
+# replicas): the digest covers choice_structure and every fused-PUB manifest, which agree under qiskit 2.6.0, 2.6.1 and
+# 2.6.2. The QPY bytes of the archive follow the qiskit release, so the archive is compared in the commit that
+# introduced these digests and not pinned here.
 PLAN_DIGESTS = {
-    "design_a": ("fd2b1ecfcc7badf4", "7088272e83aa9fa5"),
-    "design_c_8_1_4": ("0842747b6e0275a1", "2a37211be39f64ec"),
-    "readout_delay": ("40a929a918455daa", "c89689eec82cb639"),
+    "design_a": "fd2b1ecfcc7badf4",
+    "design_c_8_1_4": "0842747b6e0275a1",
+    "readout_delay": "40a929a918455daa",
 }
 # The patterned synthetic group of test_idle_readout on its three pinned FakeKingston pairs.
-IDLE_DIGEST = ("374c47952a5cf9b4", "30ba9ac326eabdfb")
+IDLE_DIGEST = "374c47952a5cf9b4"
 
 
 def _expect(condition: bool, message: str) -> None:
@@ -58,16 +59,14 @@ def _expect(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def _plan_digest(choice: live_run.Choice) -> tuple[str, str]:
+def _plan_digest(choice: live_run.Choice) -> str:
     pubs = live_run.execution_pubs([choice])
     body = json.dumps(
         [live_run._json_value(live_run.choice_structure(choice)), [live_run._json_value(p.manifest()) for p in pubs]],
         sort_keys=True,
         default=str,
     )
-    return hashlib.sha256(body.encode()).hexdigest()[:16], hashlib.sha256(live_run.archive_bytes([choice])).hexdigest()[
-        :16
-    ]
+    return hashlib.sha256(body.encode()).hexdigest()[:16]
 
 
 def _existing_group(name: str) -> Group:
