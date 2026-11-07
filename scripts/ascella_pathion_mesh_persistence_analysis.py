@@ -123,6 +123,13 @@ def finite_r(x: np.ndarray, y: np.ndarray) -> float | None:
     return float(np.corrcoef(x, y)[0, 1])
 
 
+def batch_r(x: np.ndarray, ys: np.ndarray) -> np.ndarray:
+    """Pearson r of x with every row of ys (the relabeled copies), vectorized."""
+    xc = x - x.mean()
+    yc = ys - ys.mean(axis=1, keepdims=True)
+    return np.asarray((yc @ xc) / (np.linalg.norm(yc, axis=1) * np.linalg.norm(xc)))
+
+
 def mirror(rows: list[dict[str, Any]], settings: list[dict[str, Any]], calibration: dict[str, Any] | None, key: str):
     """Signed differences l(o0) - l(o1) per (setting, item) over sign and null settings read in both orientations."""
     found: dict[tuple[str, int], dict[int, float]] = {}
@@ -321,14 +328,11 @@ def map_score(
     sizes = {len(v) for v in members.values()}
     if len(sizes) != 1:
         raise ValueError(f"seed blocks of unequal size {sorted(sizes)}")
-    hits = 0
-    for _ in range(permutations):
-        order = rng.permutation(len(seeds))
-        shuffled = np.empty_like(m)
-        for s, j in zip(seeds, order, strict=True):
-            shuffled[members[s]] = m[members[seeds[j]]]
-        hits += int(float(np.corrcoef(o, shuffled)[0, 1]) >= r)
-    p = (1 + hits) / (permutations + 1)
+    blocks = np.array([members[s] for s in seeds])
+    orders = np.array([rng.permutation(len(seeds)) for _ in range(permutations)])
+    shuffled = np.empty((permutations, len(m)))
+    shuffled[:, blocks.ravel()] = m[blocks[orders].reshape(permutations, -1)]
+    p = (1 + int(np.sum(batch_r(o, shuffled) >= r))) / (permutations + 1)
     ceiling = 1 - float(np.mean(var)) / float(np.var(o, ddof=1))
     return {
         "n_readings": len(o),
@@ -374,8 +378,8 @@ def analyze(run: Path) -> dict[str, Any]:
     if r_value is None:
         entry["reading"] = NOT_READ
     else:
-        draws = [finite_r(x, rng.permutation(y)) for _ in range(reg["permutations"])]
-        p = (1 + sum(1 for d in draws if d is not None and d >= r_value)) / (reg["permutations"] + 1)
+        relabeled = np.array([rng.permutation(y) for _ in range(reg["permutations"])])
+        p = (1 + int(np.sum(batch_r(x, relabeled) >= r_value))) / (reg["permutations"] + 1)
         entry.update({"r": r_value, "p": p, "replay_failing": int(np.sum(np.abs(y) > th["mirror_spread"]))})
         if r_value >= th["persistence_cutoff"]:
             entry["reading"] = "fixed per mesh"

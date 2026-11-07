@@ -138,9 +138,9 @@ chip.
 ## Live state and cost
 
 `qd_platform` read `qpu:ascella` available at 15:45 UTC on 2026-11-07, token occupancy 0 of 1. `scripts/qd_platform.py
-plan` at 17:14 and 17:16 UTC: `sim:ascella` credit ceiling 1.0, body sha256 `cc6e1c1ced0a79f0c81a19fdb3d8739fe4dccb5e89a8a5d3e7532c8ea754d6f0`;
+plan` at 17:22 UTC: `sim:ascella` credit ceiling 1.0, body sha256 `6ab1a6c5471ce566f9f26ec02643418526ac47e32f804a1e018879258694181a`;
 `qpu:ascella` credit ceiling 1.131072 (1 + 1e-6 x 131,072), body sha256
-`47e146cfb15515846bfcd6553e351f90b1e51277afff8970320a4484bc539224`, Explorer `running`, processor `available`;
+`041a127962a32460daa8defec1153597c1fd95bfaec320fc643e243c5101dd22`, Explorer `running`, processor `available`;
 11,010,048 estimated shots each. Expected seconds: 84 x 3.2 = 268.8 against the 270 s packing margin of the 300 s cut
 (the original job ran 52 iterations in 161 s, 3.10 s each). The binding plan at submission replaces the plan quoted
 here.
