@@ -12,6 +12,7 @@ import ascella_predecessor_case_v2 as predecessor_v2
 import bdsc_case_records_v2 as records_v2
 import billing_rule_v2
 import pytest
+import qd_platform
 
 ROOT = Path(__file__).resolve().parents[2]
 # docs/evidence/quandela-billing-rule-successor/README.md records these producer digests.
@@ -121,6 +122,9 @@ def test_predecessor_successor_changes_only_credit_basis_and_its_source(tmp_path
     ceiling = predecessor_v2.credit_ceiling(predecessor.SHOTS_PER_ITERATION)
     if manifest["max_credits"] != ceiling or manifest["preregistered"]["expected_credits"] != ceiling:
         raise AssertionError("the credit figures no longer equal the ceiling at the largest iteration's max_shots")
+    sources = qd_platform.acquisition_sources(manifest)
+    if sources.get(predecessor_v2.BUILDER) != manifest["analysis_sources"][predecessor_v2.BUILDER]:
+        raise AssertionError("the reviewed-acquisition gate does not verify the successor builder's digest")
     predecessor.publish_case(tmp_path, successor)
     predecessor_v2.check(tmp_path)
 
