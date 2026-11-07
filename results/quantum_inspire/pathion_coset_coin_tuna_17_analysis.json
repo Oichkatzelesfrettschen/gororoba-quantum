@@ -20,8 +20,10 @@
    "devices": {
     "ibm_fez": {
      "holds": false,
+     "outcome": "fails",
      "templates": {
       "b0": {
+       "outcome": "holds",
        "raw": {
         "bins_within": 7,
         "difference": [
@@ -108,6 +110,17 @@
        "read": true,
        "readout_corrected": {
         "bins_within": 7,
+        "bins_within_unfloored": 7,
+        "design_se": [
+         0.04917,
+         0.041196,
+         0.043128,
+         0.041685,
+         0.04693,
+         0.042928,
+         0.043785,
+         0.041793
+        ],
         "difference": [
          0.026187044283235483,
          -0.04993851933760929,
@@ -147,6 +160,16 @@
          19,
          2,
          18
+        ],
+        "precise": [
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true
         ],
         "se": [
          0.03962706278121466,
@@ -191,6 +214,7 @@
        }
       },
       "ba": {
+       "outcome": "fails",
        "raw": {
         "bins_within": 3,
         "difference": [
@@ -277,6 +301,17 @@
        "read": true,
        "readout_corrected": {
         "bins_within": 5,
+        "bins_within_unfloored": 5,
+        "design_se": [
+         0.04985,
+         0.049327,
+         0.044256,
+         0.042507,
+         0.044076,
+         0.038466,
+         0.03829,
+         0.041732
+        ],
         "difference": [
          0.06265165058912758,
          -0.1488746587906753,
@@ -316,6 +351,16 @@
          31,
          14,
          29
+        ],
+        "precise": [
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true
         ],
         "se": [
          0.04144481755512932,
@@ -360,6 +405,7 @@
        }
       },
       "bb": {
+       "outcome": "holds",
        "raw": {
         "bins_within": 7,
         "difference": [
@@ -446,6 +492,17 @@
        "read": true,
        "readout_corrected": {
         "bins_within": 7,
+        "bins_within_unfloored": 7,
+        "design_se": [
+         0.058687,
+         0.048675,
+         0.043438,
+         0.050751,
+         0.057883,
+         0.056875,
+         0.058754,
+         0.049869
+        ],
         "difference": [
          -0.10002719180678787,
          -0.006756341903291885,
@@ -485,6 +542,16 @@
          19,
          10,
          17
+        ],
+        "precise": [
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true
         ],
         "se": [
          0.05153137451597522,
@@ -532,8 +599,10 @@
     },
     "ibm_marrakesh": {
      "holds": false,
+     "outcome": "fails",
      "templates": {
       "b0": {
+       "outcome": "holds",
        "raw": {
         "bins_within": 7,
         "difference": [
@@ -620,6 +689,17 @@
        "read": true,
        "readout_corrected": {
         "bins_within": 7,
+        "bins_within_unfloored": 7,
+        "design_se": [
+         0.059656,
+         0.057671,
+         0.048697,
+         0.050543,
+         0.050426,
+         0.051343,
+         0.061075,
+         0.057598
+        ],
         "difference": [
          0.03936368664310963,
          -0.03829015873641484,
@@ -659,6 +739,16 @@
          19,
          2,
          18
+        ],
+        "precise": [
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true
         ],
         "se": [
          0.05207179047145779,
@@ -703,6 +793,7 @@
        }
       },
       "ba": {
+       "outcome": "fails",
        "raw": {
         "bins_within": 6,
         "difference": [
@@ -789,6 +880,17 @@
        "read": true,
        "readout_corrected": {
         "bins_within": 6,
+        "bins_within_unfloored": 6,
+        "design_se": [
+         0.062594,
+         0.073983,
+         0.064475,
+         0.061596,
+         0.040764,
+         0.043212,
+         0.0458,
+         0.046436
+        ],
         "difference": [
          0.06422179305291131,
          -0.16733574589654288,
@@ -828,6 +930,16 @@
          31,
          14,
          29
+        ],
+        "precise": [
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true
         ],
         "se": [
          0.056130226549825336,
@@ -872,6 +984,7 @@
        }
       },
       "bb": {
+       "outcome": "holds",
        "raw": {
         "bins_within": 7,
         "difference": [
@@ -958,6 +1071,17 @@
        "read": true,
        "readout_corrected": {
         "bins_within": 7,
+        "bins_within_unfloored": 7,
+        "design_se": [
+         0.047803,
+         0.053835,
+         0.047351,
+         0.05559,
+         0.048826,
+         0.061532,
+         0.062277,
+         0.063918
+        ],
         "difference": [
          -0.09735835412495852,
          -0.005140849606011244,
@@ -997,6 +1121,16 @@
          19,
          10,
          17
+        ],
+        "precise": [
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true,
+         true
         ],
         "se": [
          0.03868298734114099,
@@ -1044,10 +1178,16 @@
     }
    },
    "holds": false,
+   "outcome": "fails",
+   "precision_factor": 2.0,
    "statistic": "readout_corrected"
   },
   "null": {
+   "design_se": 0.0039060854140746874,
    "holds": false,
+   "informative": true,
+   "outcome": "fails",
+   "se": 0.0039211317702120664,
    "stopped_series_reference": {
     "se": 0.005523,
     "selector_contrast": 0.016663,
@@ -1509,6 +1649,16 @@
    "coin_read_fraction": 0.45458984375,
    "contraction_per_cz_implied": 0.9679731331201387,
    "cz": 21,
+   "deterministic_bins": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
    "nullity_ideal": 0.0,
    "se": [
     0.00908135995811437,
@@ -1645,6 +1795,16 @@
    "coin_read_fraction": 0.4441375732421875,
    "contraction_per_cz_implied": 0.9688295890335683,
    "cz": 21,
+   "deterministic_bins": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
    "nullity_ideal": 1.999634,
    "se": [
     0.00993676854517446,
@@ -1781,6 +1941,16 @@
    "coin_read_fraction": 0.45782470703125,
    "contraction_per_cz_implied": 0.9642917620049115,
    "cz": 23,
+   "deterministic_bins": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
    "nullity_ideal": 1.999634,
    "se": [
     0.010036920868000003,
@@ -1917,6 +2087,16 @@
    "coin_read_fraction": 0.49737548828125,
    "contraction_per_cz_implied": null,
    "cz": 5,
+   "deterministic_bins": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
    "se": [
     0.014897766280862802,
     0.015034812841133262,
