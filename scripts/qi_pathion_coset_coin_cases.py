@@ -42,8 +42,9 @@ QX series holds the four templates in one batch at QX_SHOTS.
 Preregistered decisions (Z_RESOLVE standard errors; raw counts, the coin read as the arm):
 - resolution: ba and bb each read the ideal sign of at least 6 of their 8 bins;
 - pattern: ba and bb differ in two bins of c(y), and the two blocks read opposite signs there;
-- null: the b0 selector contrast lies within Z_RESOLVE standard errors of zero (it also tests that the coin adds no
-  arm-dependent offset); its difference from the coin-free value of the stopped series (STOPPED_B0_SELECTOR) is
+- null: the b0 selector contrast lies within Z_RESOLVE standard errors of zero, at a standard error no worse than
+  PRECISION_FACTOR times the design value of prediction.json (it also tests that the coin adds no arm-dependent
+  offset); its difference from the coin-free value of the stopped series (STOPPED_B0_SELECTOR) is
   reported, so a nonzero reading separates a device offset from a coin-induced one;
 - cocycle-free: the xor_ba selector contrast is negative at Z_RESOLVE and the ba selector contrast positive;
 - depth, reported: the contraction per CZ implied by each template's readout-corrected visibility against RHO_BAND,
@@ -51,9 +52,19 @@ Preregistered decisions (Z_RESOLVE standard errors; raw counts, the coin read as
   part is unidentified, so the reading is a lower bound;
 - cross-platform: the readout-corrected ratio c(y) / V of ba, bb and b0 differs from the measured IBM ratio of the
   same algebra labels (qi_pathion_coset_block_cases.IBM_RECORDS) by at most Z_RESOLVE combined standard errors on at
-  least CROSS_BINS_MIN of 8 bins against each device;
+  least CROSS_BINS_MIN of 8 bins against each device, a bin counting only at a combined standard error no worse than
+  PRECISION_FACTOR times its design value;
 - drift: recorded, never a stop. The analysis reports the change of every register qubit between successive
   brackets and recomputes the cross-platform statistic of each primary under every bracket of the series.
+
+Decision machinery. The analysis shares qi_pathion_coset_block_cases.py's implementation of every rule: the
+qi_records reading of each collected batch (read_series, which rejects a duplicate batch), the deterministic-bin
+floor of signed_z (DETERMINISTIC_MIN_COUNT shots per arm), the strict-sign cocycle-free rule and the precision floor.
+Failure to reject zero is not agreement, so a null "holds" and a cross-platform bin "within" also require the
+measured standard error to stay within PRECISION_FACTOR (2) times the design value, the larger of the two RHO_BAND
+ends of prediction.json, scaled by the root of the forecast's shots over the run's shots; the factor and its reason
+are in the predecessor's docstring. A verdict that fails the floor reads "uninformative" and leaves
+all_decisions_met false.
 
 Usage: "$PYTHON" scripts/qi_pathion_coset_coin_cases.py
        (--write DIR | --check DIR | --select-region | --qx-conformance RUN_DIR | --analyze RUN_DIR... --out FILE
@@ -84,7 +95,6 @@ import qi_zero_divisor_cases as zd  # noqa: E402
 
 import parallel  # noqa: E402
 import pathion_coset_block as pcb  # noqa: E402
-import pathion_kernel_map as pkm  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
 TUNA_SERIES = coin_series.TUNA_SERIES
@@ -108,6 +118,7 @@ J_LIMIT_HZ = blk.J_LIMIT_HZ
 REGION_SIZE = 5
 RHO_BAND = blk.RHO_BAND
 CROSS_BINS_MIN = blk.CROSS_BINS_MIN
+PRECISION_FACTOR = blk.PRECISION_FACTOR
 CROSS_STATISTIC = blk.CROSS_STATISTIC
 IBM_RECORDS = blk.IBM_RECORDS
 # Readout of the register qubits at the calibration the stopped series measured: its four readout circuits.
@@ -314,7 +325,6 @@ def retained_readout(region: tuple[int, ...]) -> dict[int, tuple[float, float]]:
 
 
 confusion = blk.confusion
-z_score = blk.z_score
 
 
 def coin_counts(shots: list[str], roles: dict[str, int]) -> np.ndarray:
@@ -332,9 +342,7 @@ def coin_outputs(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None
     before they split by coin."""
     x = counts if matrix is None else np.linalg.solve(matrix, counts)
     plus, minus = x[HALF:], x[:HALF]
-    c = pcb.output_contrast(plus / plus.sum(), minus / minus.sum())
-    v = float(np.mean(c * sign))
-    return np.concatenate([c, c / v, [v, c.sum() / 2.0 / v]])
+    return blk.pile_vector(plus, minus, sign)
 
 
 def coin_statistics(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None = None) -> dict[str, Any]:
@@ -352,17 +360,9 @@ def coin_statistics(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | N
         jac[:, i] = (coin_outputs(up, sign, matrix) - coin_outputs(down, sign, matrix)) / 2.0
     p = x / x.sum()
     cov = x.sum() * (np.diag(p) - np.outer(p, p))
-    se = np.sqrt(np.einsum("ij,jk,ik->i", jac, cov, jac))
-    return {
-        "c": [float(v) for v in base[:8]],
-        "c_se": [float(v) for v in se[:8]],
-        "ratio": [float(v) for v in base[8:16]],
-        "ratio_se": [float(v) for v in se[8:16]],
-        "visibility": float(base[16]),
-        "visibility_se": float(se[16]),
-        "nullity_estimate": float(base[17]),
-        "nullity_se": float(se[17]),
-    }
+    with np.errstate(invalid="ignore"):
+        se = np.sqrt(np.einsum("ij,jk,ik->i", jac, cov, jac))
+    return blk.pack_statistics(base, se)
 
 
 def piles(counts: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -747,11 +747,10 @@ def template_row(
     name: str, t: dict[str, Any], counts: np.ndarray, matrix: np.ndarray | None, ideal_c: np.ndarray
 ) -> dict[str, Any]:
     plus, minus = piles(counts)
-    c, se = blk.bin_contrast(plus, minus)
+    c, se, z_signed = blk.bin_scores(plus, minus, ideal_c)
     selector, selector_se = blk.selector_stat(plus, minus)
     sign = np.sign(ideal_c)
     decided = np.abs(ideal_c) > 0.5
-    z_signed = z_score(c * sign, se)
     statistics: dict[str, Any] = {"raw": coin_statistics(counts, sign)}
     corrected_visibility: float | None = None
     implied: float | None = None
@@ -760,15 +759,16 @@ def template_row(
     if matrix is not None:
         statistics["readout_corrected"] = coin_statistics(counts, sign, matrix)
         corrected_visibility = statistics["readout_corrected"]["visibility"]
-        if corrected_visibility > 0:
+        if corrected_visibility is not None and corrected_visibility > 0:
             implied = corrected_visibility ** (1.0 / t["cz"])
             position = "below" if implied < RHO_BAND[0] else "above" if implied > RHO_BAND[1] else "inside"
     cz = t["cz"]
     row = {
         "c": [float(x) for x in c],
         "se": [float(x) for x in se],
-        "z_signed": [float(x) for x in z_signed],
-        "bins_with_ideal_sign": int(np.sum(z_signed >= Z_RESOLVE)),
+        "z_signed": [None if math.isinf(z) else float(z) for z in z_signed],
+        "deterministic_bins": [bool(se[y] == 0) for y in range(8)],
+        "bins_with_ideal_sign": int(sum(z >= Z_RESOLVE for z in z_signed)),
         "selector_contrast": selector,
         "selector_se": selector_se,
         "visibility": float(np.mean(c[decided] * sign[decided])),
@@ -784,41 +784,15 @@ def template_row(
     return row
 
 
-def cross_decision(
-    rows: dict[str, dict[str, Any]],
-    manifest: dict[str, Any],
-    ibm: dict[str, dict[str, Any]],
-    statistic: Any,
-) -> dict[str, Any]:
-    """The cross-platform rule over the primary templates; `statistic(name)` supplies a template's ratio table or
-    None when it cannot be read."""
-    templates = manifest["templates"]
-    devices: dict[str, Any] = {}
-    for device, reference in ibm.items():
-        per_template: dict[str, Any] = {}
-        for name in PRIMARY:
-            stats = statistic(name)
-            if stats is None:
-                per_template[name] = {"read": False}
-                continue
-            labels = manifest["labels"][templates[name]["block"]]["ibm_data_index_of_bin"]
-            tag = pkm.operand_tag(tuple(templates[name]["operand"]))
-            per_template[name] = {
-                "read": True,
-                **{s: blk.cross_platform(v, labels, reference[tag]) for s, v in stats.items()},
-            }
-        devices[device] = {
-            "templates": per_template,
-            "holds": all(
-                v["read"] and v[CROSS_STATISTIC]["bins_within"] >= CROSS_BINS_MIN for v in per_template.values()
-            ),
-        }
-    return {
-        "statistic": CROSS_STATISTIC,
-        "bins_min": CROSS_BINS_MIN,
-        "devices": devices,
-        "holds": bool(devices) and all(d["holds"] for d in devices.values()),
-    }
+def ratio_shift(alternative: dict[str, Any], base: dict[str, Any]) -> float | None:
+    """Largest shift of the eight ratios c / V between two statistics records in units of the base standard
+    error; None when a ratio or error is undefined or the base error is zero."""
+    values = [*alternative["ratio"], *base["ratio"], *base["ratio_se"]]
+    if any(v is None for v in values) or any(e == 0 for e in base["ratio_se"]):
+        return None
+    return float(
+        max(abs(a - b) / e for a, b, e in zip(alternative["ratio"], base["ratio"], base["ratio_se"], strict=True))
+    )
 
 
 def evaluate(
@@ -826,14 +800,18 @@ def evaluate(
     manifest: dict[str, Any],
     executed: dict[str, str] | None = None,
     references: dict[str, dict[str, Any]] | None = None,
+    design: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Preregistered decisions from shot lists keyed by "batch/file"; manifest is any batch's cases.json.
 
-    Each primary template is corrected with the assignment of its own batch. The drift between brackets is a
-    covariate: its report and the cross-platform statistic under every bracket of the series enter the output, and
-    no drift value stops a decision."""
+    `design` is blk.design_from_prediction of the case (default: the committed case), against which the null and
+    the cross-platform bins meet their precision floor. Each primary template is corrected with the assignment of
+    its own batch. The drift between brackets is a covariate: its report and the cross-platform statistic under
+    every bracket of the series enter the output, and no drift value stops a decision."""
     templates = manifest["templates"]
     register = [int(q) for q in manifest["register"]]
+    if design is None:
+        design = blk.load_design(None, TUNA_SERIES)
     ibm = {device: blk.ibm_reference(device) for device in IBM_RECORDS} if references is None else references
     ideal_c = {n: np.array(t["ideal_c"]) for n, t in templates.items()}
     brackets = {
@@ -843,11 +821,13 @@ def evaluate(
     }
     counts: dict[str, np.ndarray] = {}
     owner: dict[str, str] = {}
+    scale: dict[str, float] = {}
     rows: dict[str, dict[str, Any]] = {}
     for name, t in templates.items():
         key = template_file(shots, name)
         owner[name] = key.split("/")[0]
         counts[name] = coin_counts(shots[key], t["roles"])
+        scale[name] = blk.design_scale(XOR_SHOTS if name == "xor_ba" else SHOTS, len(shots[key]))
 
     def matrix_of(name: str, batch: str) -> np.ndarray | None:
         asg = brackets.get(batch)
@@ -858,16 +838,14 @@ def evaluate(
     for name, t in templates.items():
         rows[name] = template_row(name, t, counts[name], matrix_of(name, owner[name]), ideal_c[name])
     ba, bb, b0, xor = rows["ba"], rows["bb"], rows["b0"], rows["xor_ba"]
-    differing = [y for y in range(8) if np.sign(ideal_c["ba"][y]) != np.sign(ideal_c["bb"][y])]
-    pattern_z = [
-        min(
-            abs(float(z_score(ba["c"][y], ba["se"][y]))) if ba["c"][y] * ideal_c["ba"][y] > 0 else 0.0,
-            abs(float(z_score(bb["c"][y], bb["se"][y]))) if bb["c"][y] * ideal_c["bb"][y] > 0 else 0.0,
-        )
-        for y in differing
-    ]
-    cross = cross_decision(
-        rows, manifest, ibm, lambda n: rows[n]["statistics"] if CROSS_STATISTIC in rows[n]["statistics"] else None
+    along = {name: blk.bin_scores(*piles(counts[name]), ideal_c[name])[2] for name in ("ba", "bb")}
+    cross = blk.cross_decision(
+        templates,
+        manifest["labels"],
+        ibm,
+        lambda n: rows[n]["statistics"] if CROSS_STATISTIC in rows[n]["statistics"] else None,
+        design,
+        scale,
     )
     drift = pcs.reference_drift(
         [(k.split("/")[0], k.split("/")[1], v) for k, v in shots.items() if k.split("/")[1] in pcs.READOUT_KIND],
@@ -876,8 +854,13 @@ def evaluate(
     sensitivity: dict[str, Any] = {}
     for batch in brackets:
         alternative = {n: coin_statistics(counts[n], np.sign(ideal_c[n]), matrix_of(n, batch)) for n in PRIMARY}
-        under = cross_decision(
-            rows, manifest, ibm, lambda n, alternative=alternative: {CROSS_STATISTIC: alternative[n]}
+        under = blk.cross_decision(
+            templates,
+            manifest["labels"],
+            ibm,
+            lambda n, alternative=alternative: {CROSS_STATISTIC: alternative[n]},
+            design,
+            scale,
         )
         sensitivity[batch] = {
             "holds": under["holds"],
@@ -886,43 +869,26 @@ def evaluate(
                 for device, entry in under["devices"].items()
             },
             "max_ratio_shift_over_se": {
-                n: float(
-                    np.max(
-                        np.abs(
-                            np.array(alternative[n]["ratio"])
-                            - np.array(rows[n]["statistics"][CROSS_STATISTIC]["ratio"])
-                        )
-                        / np.array(rows[n]["statistics"][CROSS_STATISTIC]["ratio_se"])
-                    )
-                )
-                for n in PRIMARY
+                n: ratio_shift(alternative[n], rows[n]["statistics"][CROSS_STATISTIC]) for n in PRIMARY
             },
         }
     decisions = {
         "resolution": {"ba": ba["bins_with_ideal_sign"] >= 6, "bb": bb["bins_with_ideal_sign"] >= 6},
-        "pattern": {"bins": differing, "z": pattern_z, "resolved": bool(all(z >= Z_RESOLVE for z in pattern_z))},
+        "pattern": blk.pattern_decision(ideal_c["ba"], ideal_c["bb"], along["ba"], along["bb"]),
         "null": {
-            "z": float(z_score(b0["selector_contrast"], b0["selector_se"])),
-            "holds": bool(abs(b0["selector_contrast"]) <= Z_RESOLVE * b0["selector_se"]),
+            **blk.null_decision(b0["selector_contrast"], b0["selector_se"], design["selector_se"]["b0"] * scale["b0"]),
             "stopped_series_reference": {
                 "selector_contrast": STOPPED_B0_SELECTOR[0],
                 "se": STOPPED_B0_SELECTOR[1],
-                "z_of_difference": float(
-                    z_score(
-                        b0["selector_contrast"] - STOPPED_B0_SELECTOR[0],
-                        math.hypot(b0["selector_se"], STOPPED_B0_SELECTOR[1]),
-                    )
+                "z_of_difference": blk.ratio_or_none(
+                    b0["selector_contrast"] - STOPPED_B0_SELECTOR[0],
+                    math.hypot(b0["selector_se"], STOPPED_B0_SELECTOR[1]),
                 ),
             },
         },
-        "cocycle_free": {
-            "xor_z": float(z_score(xor["selector_contrast"], xor["selector_se"])),
-            "ba_z": float(z_score(ba["selector_contrast"], ba["selector_se"])),
-            "resolved": bool(
-                xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
-                and ba["selector_contrast"] >= Z_RESOLVE * ba["selector_se"]
-            ),
-        },
+        "cocycle_free": blk.cocycle_free_decision(
+            xor["selector_contrast"], xor["selector_se"], ba["selector_contrast"], ba["selector_se"]
+        ),
         "cross_platform": cross,
     }
     order: dict[str, str] | None = None
@@ -955,30 +921,14 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
     """Score collected batches of one series: decisions, per-template statistics, the IBM comparison and the drift
     covariate. A series that holds fewer batches than the case reports its batch list and drift covariate only; a
     QX series reports the control verdict a Tuna-17 submission needs."""
-    shared: dict[str, Any] | None = None
-    shots: dict[str, list[str]] = {}
-    executed: dict[str, str] = {}
-    digests: dict[str, str] = {}
-    arms: dict[str, tuple[list[str], dict[str, int], list[float]]] = {}
-    for run_dir in sorted(run_dirs, key=lambda p: p.name):
-        series_name = coin_series.series_of(run_dir)
-        case_batch = None if case_root is None else case_root / series_name / f"batch-{run_dir.name[-2:]}"
-        run = pcs.load_run(run_dir, case_batch)
-        cases = run["cases"]
-        fields = {k: v for k, v in cases.items() if k not in ("batch", "circuits", "shots")}
-        if shared is None:
-            shared = fields
-        elif fields != shared:
-            raise ValueError(f"{run_dir}/cases.json describes a different series")
-        digests[cases["batch"]] = pcs.file_sha256(run_dir / "cases.json")
-        for row in cases["circuits"]:
-            key = f"{cases['batch']}/{row['file']}"
-            shots[key] = run["shots"][row["file"]]
-            executed[key] = run["jobs"][row["file"]]["queued_at"]
-            if row["kind"] == "data":
-                arms[key] = (shots[key], cases["templates"][row["template"]]["roles"], row["ideal"])
-    if shared is None:
-        raise ValueError("an analysis needs its run directories")
+    series = blk.read_series(run_dirs, case_root, coin_series.series_of, "data", ("batch", "circuits", "shots"))
+    shared, shots, executed, digests, arms = (
+        series["shared"],
+        series["shots"],
+        series["executed"],
+        series["digests"],
+        series["arms"],
+    )
     emulator = shared["backend_type_id"] == 1
     expected = sorted(r["batch"] for r in batch_rows(QX_SERIES if emulator else TUNA_SERIES))
     held = sorted({k.split("/")[0] for k in shots})
@@ -996,7 +946,8 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
             [int(q) for q in shared["register"]],
         )
         return {**head, "complete": False, "batches": held, "drift_covariate": {"references": drift}}
-    return {**head, "complete": True, **evaluate(shots, shared, executed)}
+    design = blk.load_design(case_root, TUNA_SERIES)
+    return {**head, "complete": True, **evaluate(shots, shared, executed, design=design)}
 
 
 def qx_conformance(run_dir: Path, bound: float = 0.025) -> dict[str, Any]:
@@ -1133,6 +1084,13 @@ def self_test() -> str:
     implied = honest["templates"]["ba"]["contraction_per_cz_implied"]
     if implied is None or abs(implied - 0.5 ** (1 / plan["templates"]["ba"]["cz"])) > 2e-3:
         raise RuntimeError(f"a device of retention 0.5 implies {implied} per CZ")
+    coarse = evaluate(
+        simulated_series(files, plan, manifest, 0.5, assignment),
+        manifest,
+        design=blk.scale_design(blk.design_from_prediction(predictions(plan)), 1 / 3),
+    )
+    if coarse["decisions"]["null"]["outcome"] != "uninformative" or coarse["all_decisions_met"]:
+        raise RuntimeError("a run three times coarser than the design left the null or the decisions standing")
     free = evaluate(simulated_series(files, plan, manifest, 0.5, assignment, swap=("ba", "xor_ba")), manifest)
     if free["all_decisions_met"] or free["decisions"]["cocycle_free"]["resolved"]:
         raise RuntimeError("a cocycle-free circuit in the ba slot left the decisions standing")
@@ -1155,8 +1113,9 @@ def self_test() -> str:
         f"qi pathion coset coin: region {plan['region']}, routed CZ "
         + ", ".join(f"{n} {t['cz']}" for n, t in plan["templates"].items())
         + f"; {len(angles)} Rz on the pi/36 grid; {jobs} jobs in 4 batches; honest device resolves every decision, "
-        "a cocycle-free circuit in the ba slot, a b0 selector offset and a retention of 0.02 each fail one, and a "
-        "0.17 assignment move between brackets is recorded and corrected without a stop"
+        "a cocycle-free circuit in the ba slot, a b0 selector offset, a retention of 0.02 and a standard error three "
+        "times the design each fail one, and a 0.17 assignment move between brackets is recorded and corrected "
+        "without a stop"
     )
 
 
@@ -1184,7 +1143,9 @@ def main() -> int:
     else:
         if args.out is None:
             parser.error("--analyze needs --out")
-        args.out.write_text(json.dumps(analyze(args.analyze), indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        args.out.write_text(
+            json.dumps(analyze(args.analyze), indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8"
+        )
         print(f"wrote {args.out}")
     return 0
 

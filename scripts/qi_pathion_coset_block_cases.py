@@ -36,15 +36,32 @@ Preregistered decisions (Z_RESOLVE standard errors; raw counts, pooled over a te
 - resolution: ba and bb each read the ideal sign of at least 6 of their 8 bins at Z_RESOLVE;
 - pattern: ba and bb differ in two bins of c(y), and the two blocks read opposite signs there at Z_RESOLVE, so the
   selector contrast (0.5 for both) is not the observable;
-- null: the b0 selector contrast lies within Z_RESOLVE standard errors of zero;
+- null: the b0 selector contrast lies within Z_RESOLVE standard errors of zero, at a precision no worse than
+  PRECISION_FACTOR times the design standard error (see "Precision floor" below);
 - cocycle-free: the xor_ba selector contrast is negative at Z_RESOLVE and the ba selector contrast positive;
 - depth: the contraction per CZ implied by each template's visibility lies inside or outside the retained band
   RHO_BAND, reported with the template's routed CZ;
 - cross-platform: the readout-corrected Tuna ratio c(y) / V of ba, bb and b0 differs from the measured IBM ratio
   c(k) / V_I of the same algebra labels (ibm_fez and ibm_marrakesh coset-map runs, IBM_RECORDS) by at most Z_RESOLVE
   combined standard errors on at least CROSS_BINS_MIN of 8 bins against each device, D(y) = 0 being the prediction;
+  a bin counts only at a combined standard error no worse than PRECISION_FACTOR times its design value;
 - drift: no readout circuit moves a register qubit by more than 0.02 against the previous circuit of its kind
   (qi_pathion_coset_block_series.DRIFT_STOP); the series gate stops before the next batch is submitted.
+
+Precision floor. A null "holds" and a cross-platform bin "within" accept a departure from zero up to Z_RESOLVE
+standard errors, so a noisier run accepts a wider departure and passes more easily; failure to reject zero is not
+agreement. Each such verdict therefore also requires the measured standard error to stay within PRECISION_FACTOR (2)
+times the design standard error, the larger of the two RHO_BAND ends of the case's prediction.json (the b0 selector
+standard error, and each bin's combined standard error with the IBM replica spread), scaled by the root of the ratio
+of the forecast's shots to the run's shots. At the hardware forecast's shots a factor of 2 bounds the acceptance
+half-width Z_RESOLVE * se at six design standard errors: 0.023 on the b0 selector (an aligned pair gives 0.5 times
+the visibility) and at most 0.43 (block case) or 0.44 (coin case) on a ratio bin, whose largest design combined
+error is 0.071 or 0.074 (a wrong label differs by about 1), so the verdict still excludes the effects the rule
+exists to exclude, and a run that reaches the forecast's precision is never refused. The QX twins run fewer shots
+and scale the design by the root of the shot ratio (2.8 for block, 5.7 for coin), which widens their bound by the
+same factor; a twin is a control of the analysis path and decides nothing about a device. A verdict whose precision
+fails reads "uninformative" (outcome of the null and of each cross-platform cell, device and total) and leaves
+all_decisions_met false. The resolution, pattern and cocycle-free rules reject zero and need no floor.
 
 Usage: "$PYTHON" scripts/qi_pathion_coset_block_cases.py
        (--write DIR | --check DIR | --select-region | --qx-conformance RUN_DIR | --analyze RUN_DIR... --out FILE
@@ -93,6 +110,7 @@ QX_SHOTS = 2048
 GRID = kcc.GRID
 BASIS = kcc.BASIS
 Z_RESOLVE = 3.0
+PRECISION_FACTOR = 2.0
 ANALYSIS_SCHEMA = "qi-pathion-coset-block-analysis-v2"
 # The ANU QRNG draw whose 64 values seed every routing candidate; it belongs to this case's manifest.
 DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T184327Z.json"
@@ -422,6 +440,43 @@ def ibm_reference(device: str) -> dict[str, dict[str, Any]]:
     return out
 
 
+def contrast_vector(c: np.ndarray, sign: np.ndarray) -> np.ndarray:
+    """c(y), c / V, V and N_hat = (sum of c) / (2 V) of the 8 per-bin contrasts, V the mean of c times the ideal sign.
+
+    A zero V leaves c / V and N_hat undefined; they read as non-finite numbers here and as null in the record."""
+    v = float(np.mean(c * sign))
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return np.concatenate([c, c / v, [v, c.sum() / 2.0 / v]])
+
+
+def pile_vector(plus: np.ndarray, minus: np.ndarray, sign: np.ndarray) -> np.ndarray:
+    """contrast_vector of two 16-outcome piles of counts; an empty pile leaves every statistic undefined."""
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return contrast_vector(pcb.output_contrast(plus / plus.sum(), minus / minus.sum()), sign)
+
+
+def finite_or_none(value: Any) -> float | None:
+    """A float for a finite number and None for nan or an infinity, so a record stays RFC 8259 JSON."""
+    number = float(value)
+    return number if math.isfinite(number) else None
+
+
+def pack_statistics(base: np.ndarray, se: np.ndarray) -> dict[str, Any]:
+    """The statistics record of a contrast vector and its delta-method errors; a value that is not finite and the
+    error of such a value are null."""
+    error = [finite_or_none(e) if math.isfinite(b) else None for b, e in zip(base, se, strict=True)]
+    return {
+        "c": [finite_or_none(v) for v in base[:8]],
+        "c_se": error[:8],
+        "ratio": [finite_or_none(v) for v in base[8:16]],
+        "ratio_se": error[8:16],
+        "visibility": finite_or_none(base[16]),
+        "visibility_se": error[16],
+        "nullity_estimate": finite_or_none(base[17]),
+        "nullity_se": error[17],
+    }
+
+
 def contrast_outputs(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None) -> np.ndarray:
     """c(y) of the 8 bins, c / V, V and the nullity estimate N_hat from stacked [plus, minus] counts of 16 outcomes.
 
@@ -430,9 +485,7 @@ def contrast_outputs(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | 
     plus, minus = counts[:16], counts[16:]
     if matrix is not None:
         plus, minus = np.linalg.solve(matrix, plus), np.linalg.solve(matrix, minus)
-    c = pcb.output_contrast(plus / plus.sum(), minus / minus.sum())
-    v = float(np.mean(c * sign))
-    return np.concatenate([c, c / v, [v, c.sum() / 2.0 / v]])
+    return pile_vector(plus, minus, sign)
 
 
 def contrast_statistics(
@@ -454,37 +507,49 @@ def contrast_statistics(
     for low, arm in ((0, plus), (16, minus)):
         p = arm / arm.sum()
         cov[low : low + 16, low : low + 16] = arm.sum() * (np.diag(p) - np.outer(p, p))
-    se = np.sqrt(np.einsum("ij,jk,ik->i", jac, cov, jac))
-    return {
-        "c": [float(v) for v in base[:8]],
-        "c_se": [float(v) for v in se[:8]],
-        "ratio": [float(v) for v in base[8:16]],
-        "ratio_se": [float(v) for v in se[8:16]],
-        "visibility": float(base[16]),
-        "visibility_se": float(se[16]),
-        "nullity_estimate": float(base[17]),
-        "nullity_se": float(se[17]),
-    }
+    with np.errstate(invalid="ignore"):
+        se = np.sqrt(np.einsum("ij,jk,ik->i", jac, cov, jac))
+    return pack_statistics(base, se)
 
 
 def cross_platform(
-    statistics: dict[str, Any], labels: list[int], reference: dict[str, Any], z_limit: float = Z_RESOLVE
+    statistics: dict[str, Any],
+    labels: list[int],
+    reference: dict[str, Any],
+    z_limit: float = Z_RESOLVE,
+    design_se: list[float] | None = None,
 ) -> dict[str, Any]:
     """D(y) = c_T(y) / V_T - c_I(label(y)) / V_I on the 8 bins of a Tuna block, against one IBM device.
 
     `labels` is the block's algebra index of each bin (the case's label table), `reference` one operand's entry of
     ibm_reference; the Tuna side carries its delta-method error, the IBM side the replica spread, and the bins are
-    compared at the quadrature sum.
+    compared at the quadrature sum. A bin whose Tuna ratio or error is undefined (null) is never within.
     The prediction is D = 0 within z_limit combined standard errors on at least CROSS_BINS_MIN of the 8 bins;
-    `z_of_mean` reports the same difference against the standard error of the IBM mean instead of its spread."""
+    `z_of_mean` reports the same difference against the standard error of the IBM mean instead of its spread.
+
+    `design_se`, when given, is the design combined standard error of each bin: a bin then counts as within only
+    when its combined standard error is at most PRECISION_FACTOR times its design value (the precision floor of
+    the module docstring), `precise` lists that test per bin and `bins_within_unfloored` the count without it."""
     ibm = [reference["labels"][label] for label in labels]
     tuna = statistics["ratio"]
-    difference = [t - i["ratio"] for t, i in zip(tuna, ibm, strict=True)]
-    se = [math.hypot(s, i["se"]) for s, i in zip(statistics["ratio_se"], ibm, strict=True)]
-    z = [float(v) for v in z_score(difference, se)]
-    se_mean = [math.hypot(s, i["se_mean"]) for s, i in zip(statistics["ratio_se"], ibm, strict=True)]
-    z_mean = [float(v) for v in z_score(difference, se_mean)]
-    return {
+    difference: list[float | None] = []
+    se: list[float | None] = []
+    z: list[float | None] = []
+    z_mean: list[float | None] = []
+    for t, t_se, i in zip(tuna, statistics["ratio_se"], ibm, strict=True):
+        if t is None or t_se is None:
+            difference.append(None)
+            se.append(None)
+            z.append(None)
+            z_mean.append(None)
+            continue
+        d, combined = t - i["ratio"], math.hypot(t_se, i["se"])
+        difference.append(d)
+        se.append(combined)
+        z.append(float(z_score(d, combined)))
+        z_mean.append(float(z_score(d, math.hypot(t_se, i["se_mean"]))))
+    inside = [v is not None and abs(v) <= z_limit for v in z]
+    out: dict[str, Any] = {
         "labels": list(labels),
         "tuna_ratio": list(tuna),
         "ibm_ratio": [i["ratio"] for i in ibm],
@@ -493,8 +558,15 @@ def cross_platform(
         "se": se,
         "z": z,
         "z_of_mean": z_mean,
-        "bins_within": int(sum(abs(v) <= z_limit for v in z)),
+        "bins_within": int(sum(inside)),
     }
+    if design_se is not None:
+        precise = [e is not None and e <= PRECISION_FACTOR * d for e, d in zip(se, design_se, strict=True)]
+        out["design_se"] = [float(d) for d in design_se]
+        out["precise"] = precise
+        out["bins_within_unfloored"] = out["bins_within"]
+        out["bins_within"] = int(sum(a and b for a, b in zip(inside, precise, strict=True)))
+    return out
 
 
 def refutation_probability(difference: list[float], se: list[float], tuna_se: list[float]) -> float:
@@ -952,6 +1024,226 @@ def pattern_bins(ideal_a: np.ndarray, ideal_b: np.ndarray) -> list[int]:
     return [y for y in range(len(ideal_a)) if np.sign(ideal_a[y]) * np.sign(ideal_b[y]) < 0]
 
 
+def bin_scores(plus: np.ndarray, minus: np.ndarray, ideal_c: np.ndarray) -> tuple[np.ndarray, np.ndarray, list[float]]:
+    """c(y), its standard error and the signed z of each of the 8 bins of one template's pooled arm counts.
+
+    `plus` and `minus` are 16-outcome counts indexed y + 8 s; the signed z is signed_z along the sign of the
+    template's ideal contrast with the smaller arm count of the bin as the deterministic-bin floor."""
+    c, se = bin_contrast(plus, minus)
+    sign = np.sign(ideal_c)
+    z = [
+        signed_z(float(c[y]), float(se[y]), float(sign[y]), float(min(plus[y] + plus[y + 8], minus[y] + minus[y + 8])))
+        for y in range(8)
+    ]
+    return c, se, z
+
+
+def pattern_decision(ideal_a: np.ndarray, ideal_b: np.ndarray, z_a: list[float], z_b: list[float]) -> dict[str, Any]:
+    """The pattern rule: the two blocks read opposite signs in every bin where their ideal contrasts do, each at
+    Z_RESOLVE along its own ideal sign (z_a and z_b are the templates' signed z per bin)."""
+    differing = pattern_bins(ideal_a, ideal_b)
+    z = [max(min(z_a[y], z_b[y]), 0.0) for y in differing]
+    return {
+        "bins": differing,
+        "z": [None if math.isinf(v) else v for v in z],
+        "resolved": bool(differing) and all(v >= Z_RESOLVE for v in z),
+    }
+
+
+def null_decision(contrast: float, se: float, design_se: float) -> dict[str, Any]:
+    """The null rule: the contrast lies within Z_RESOLVE standard errors of zero at a standard error no worse than
+    PRECISION_FACTOR times `design_se`. A contrast within the limit at a coarser standard error is "uninformative",
+    which holds nothing; "outcome" is holds, fails or uninformative."""
+    informative = se <= PRECISION_FACTOR * design_se
+    within = bool(abs(contrast) <= Z_RESOLVE * se)
+    return {
+        "z": ratio_or_none(contrast, se),
+        "se": se,
+        "design_se": design_se,
+        "informative": informative,
+        "outcome": "uninformative" if not informative else "holds" if within else "fails",
+        "holds": informative and within,
+    }
+
+
+def cocycle_free_decision(xor_contrast: float, xor_se: float, ba_contrast: float, ba_se: float) -> dict[str, Any]:
+    """The cocycle-free rule: the xor_ba selector contrast is negative and the ba selector contrast positive, each
+    at Z_RESOLVE standard errors. Both signs are strict, so a zero contrast with zero standard error resolves
+    nothing."""
+    return {
+        "xor_z": ratio_or_none(xor_contrast, xor_se),
+        "ba_z": ratio_or_none(ba_contrast, ba_se),
+        "resolved": bool(
+            xor_contrast < 0
+            and ba_contrast > 0
+            and xor_contrast <= -Z_RESOLVE * xor_se
+            and ba_contrast >= Z_RESOLVE * ba_se
+        ),
+    }
+
+
+def cell_outcome(cell: dict[str, Any]) -> str:
+    """holds, uninformative or fails for one template against one device; "not read" without readout circuits.
+
+    A cell is uninformative when the bins within Z_RESOLVE would reach CROSS_BINS_MIN but too few meet the
+    precision floor."""
+    if not cell["read"]:
+        return "not read"
+    ratio = cell[CROSS_STATISTIC]
+    if ratio["bins_within"] >= CROSS_BINS_MIN:
+        return "holds"
+    return "uninformative" if ratio["bins_within_unfloored"] >= CROSS_BINS_MIN else "fails"
+
+
+def combined_outcome(outcomes: list[str]) -> str:
+    """not read if any member is unread, else fails if any fails, else uninformative if any is, else holds."""
+    for name in ("not read", "fails", "uninformative"):
+        if name in outcomes:
+            return name
+    return "holds" if outcomes else "not read"
+
+
+def cross_decision(
+    templates: dict[str, Any],
+    labels: dict[str, Any],
+    ibm: dict[str, dict[str, Any]],
+    statistic: Any,
+    design: dict[str, Any],
+    scale: dict[str, float],
+) -> dict[str, Any]:
+    """The cross-platform rule over the primary templates against each IBM device.
+
+    `statistic(name)` supplies a template's statistics (raw and readout-corrected ratio tables) or None when it
+    cannot be read, `labels` is the manifest's label table, and the CROSS_STATISTIC ratio meets its precision floor
+    against `design` scaled per template by `scale`."""
+    devices: dict[str, Any] = {}
+    for device, reference in ibm.items():
+        per_template: dict[str, Any] = {}
+        for name in PRIMARY:
+            stats = statistic(name)
+            if stats is None:
+                per_template[name] = {"read": False}
+                continue
+            bins = labels[templates[name]["block"]]["ibm_data_index_of_bin"]
+            tag = pkm.operand_tag(tuple(templates[name]["operand"]))
+            floor = [v * scale[name] for v in design["cross_se"][device][name]]
+            per_template[name] = {
+                "read": True,
+                **{
+                    s: cross_platform(v, bins, reference[tag], design_se=floor if s == CROSS_STATISTIC else None)
+                    for s, v in stats.items()
+                },
+            }
+        for cell in per_template.values():
+            cell["outcome"] = cell_outcome(cell)
+        devices[device] = {
+            "templates": per_template,
+            "holds": all(
+                v["read"] and v[CROSS_STATISTIC]["bins_within"] >= CROSS_BINS_MIN for v in per_template.values()
+            ),
+            "outcome": combined_outcome([c["outcome"] for c in per_template.values()]),
+        }
+    return {
+        "statistic": CROSS_STATISTIC,
+        "bins_min": CROSS_BINS_MIN,
+        "precision_factor": PRECISION_FACTOR,
+        "devices": devices,
+        "holds": bool(devices) and all(d["holds"] for d in devices.values()),
+        "outcome": combined_outcome([d["outcome"] for d in devices.values()]),
+    }
+
+
+def design_from_prediction(prediction: dict[str, Any]) -> dict[str, Any]:
+    """Design standard errors of a case's prediction.json: per template the selector error and per device and
+    primary template the combined error of each of the 8 bins, each the larger of the two RHO_BAND ends.
+
+    The values hold at the forecast's shots; design_scale gives the factor for a run of other length."""
+    rho_keys = [f"rho_{rho}" for rho in RHO_BAND]
+    cross = prediction["cross_platform"]["templates"]
+    return {
+        "selector_se": {
+            name: max(cell[k]["selector_se"] for k in rho_keys) for name, cell in prediction["templates"].items()
+        },
+        "cross_se": {
+            device: {
+                name: [max(cell[device][k][CROSS_STATISTIC]["se"][y] for k in rho_keys) for y in range(8)]
+                for name, cell in cross.items()
+            }
+            for device in IBM_RECORDS
+        },
+    }
+
+
+def scale_design(design: dict[str, Any], factor: float) -> dict[str, Any]:
+    """`design` with every standard error multiplied by `factor` (a run's design at other shots, or a test's)."""
+    return {
+        "selector_se": {name: v * factor for name, v in design["selector_se"].items()},
+        "cross_se": {
+            device: {name: [v * factor for v in values] for name, values in per.items()}
+            for device, per in design["cross_se"].items()
+        },
+    }
+
+
+def design_scale(forecast_shots: int, run_shots: int) -> float:
+    """Factor from the design standard errors of a forecast at `forecast_shots` to a run of `run_shots`: sampling
+    errors scale with the inverse root of the shots (an upper bound on the combined error, whose IBM replica
+    spread does not shrink with the run)."""
+    return math.sqrt(forecast_shots / run_shots)
+
+
+def load_design(case_root: Path | None, series: str) -> dict[str, Any]:
+    """design_from_prediction of the prediction.json of `series` under `case_root` (default: the committed cases)."""
+    path = (pcs.CASES_ROOT if case_root is None else case_root) / series / "prediction.json"
+    return design_from_prediction(json.loads(path.read_text(encoding="utf-8")))
+
+
+def read_series(
+    run_dirs: list[Path],
+    case_root: Path | None,
+    series_of: Any,
+    data_kind: str,
+    ignored: tuple[str, ...],
+) -> dict[str, Any]:
+    """The collected batches of one series, each read through qi_records (receipt, circuit, batch and job
+    identities, raw shots against the recorded histogram) and then through pcs.load_run (binding to the series
+    case).
+
+    A job that did not complete, a batch listed twice or run directories that describe different series raise
+    ValueError. Returns the series fields shared by every batch (`ignored` are the per-batch keys left out of that
+    comparison), the shot lists and provider start times keyed "batch/file", the sha256 of each batch's cases.json,
+    and the (shots, roles, ideal law) of every circuit of kind `data_kind`."""
+    shared: dict[str, Any] | None = None
+    shots: dict[str, list[str]] = {}
+    executed: dict[str, str] = {}
+    digests: dict[str, str] = {}
+    arms: dict[str, tuple[list[str], dict[str, int], list[float]]] = {}
+    for run_dir in sorted(run_dirs, key=lambda p: p.name):
+        acquisition = qi_records.read_run(run_dir, str(run_dir))
+        if not acquisition.completed:
+            raise ValueError(f"{run_dir}: a job did not complete: {dict(acquisition.statuses)}")
+        case_batch = None if case_root is None else case_root / series_of(run_dir) / f"batch-{run_dir.name[-2:]}"
+        run = pcs.load_run(run_dir, case_batch)
+        cases = run["cases"]
+        fields = {k: v for k, v in cases.items() if k not in ignored}
+        if shared is None:
+            shared = fields
+        elif fields != shared:
+            raise ValueError(f"{run_dir}/cases.json describes a different series")
+        if cases["batch"] in digests:
+            raise ValueError(f"{run_dir}: batch {cases['batch']} appears twice")
+        digests[cases["batch"]] = pcs.file_sha256(run_dir / "cases.json")
+        for row in cases["circuits"]:
+            key = f"{cases['batch']}/{row['file']}"
+            shots[key] = run["shots"][row["file"]]
+            executed[key] = run["jobs"][row["file"]]["queued_at"]
+            if row["kind"] == data_kind:
+                arms[key] = (shots[key], cases["templates"][row["template"]]["roles"], row["ideal"])
+    if shared is None:
+        raise ValueError("an analysis needs its run directories")
+    return {"shared": shared, "shots": shots, "executed": executed, "digests": digests, "arms": arms}
+
+
 def control_floor(law: np.ndarray, shots: int) -> float:
     """Expected total variation distance of `shots` draws from `law`: the sum of the mean absolute deviations
     sqrt(2 p (1 - p) / (pi N)) of each outcome, halved."""
@@ -992,14 +1284,20 @@ def evaluate(
     manifest: dict[str, Any],
     executed: dict[str, str] | None = None,
     references: dict[str, dict[str, Any]] | None = None,
+    design: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Preregistered decisions from shot lists keyed by "batch/file"; manifest is any batch's cases.json.
 
-    `references` maps an IBM device to its ibm_reference table (default: the retained measured runs)."""
+    `references` maps an IBM device to its ibm_reference table (default: the retained measured runs); `design` is
+    design_from_prediction of the case (default: the committed case), against which the null and the
+    cross-platform bins meet their precision floor."""
     templates = manifest["templates"]
+    if design is None:
+        design = load_design(None, TUNA_SERIES)
     rows: dict[str, dict[str, Any]] = {}
     ideal_c = {n: np.array(t["ideal_c"]) for n, t in templates.items()}
     along_ideal: dict[str, list[float]] = {}
+    run_shots: dict[str, int] = {}
     assignment = register_assignment(shots)
     ibm = {device: ibm_reference(device) for device in IBM_RECORDS} if references is None else references
     for name, t in templates.items():
@@ -1017,28 +1315,26 @@ def evaluate(
             else:
                 minus += counts
             replicate_rows.append(key)
-        c, se = bin_contrast(plus, minus)
+        c, se, z_raw = bin_scores(plus, minus, ideal_c[name])
         selector, selector_se = selector_stat(plus, minus)
         sign = np.sign(ideal_c[name])
         decided = np.abs(ideal_c[name]) > 0.5
-        z_raw = [
-            signed_z(
-                float(c[y]), float(se[y]), float(sign[y]), float(min(plus[y] + plus[y + 8], minus[y] + minus[y + 8]))
-            )
-            for y in range(8)
-        ]
         along_ideal[name] = z_raw
+        run_shots[name] = len(shots[replicate_rows[0]])
         visibility = float(np.mean(c[decided] * sign[decided]))
         cz = t["cz"]
         statistics: dict[str, Any] = {"raw": contrast_statistics(plus, minus, sign)}
-        corrected_visibility = float("nan")
+        corrected_visibility: float | None = None
         if assignment is not None:
             keys = ("d0", "d1", "d2", "selector")
             matrix = confusion([assignment[roles[k]] for k in keys])
             statistics["readout_corrected"] = contrast_statistics(plus, minus, sign, matrix)
             corrected_visibility = statistics["readout_corrected"]["visibility"]
-        implied = corrected_visibility ** (1.0 / cz) if corrected_visibility > 0 else float("nan")
-        position = "below" if implied < RHO_BAND[0] else "above" if implied > RHO_BAND[1] else "inside"
+        implied: float | None = None
+        position = "not read"
+        if corrected_visibility is not None and corrected_visibility > 0:
+            implied = corrected_visibility ** (1.0 / cz)
+            position = "below" if implied < RHO_BAND[0] else "above" if implied > RHO_BAND[1] else "inside"
         rows[name] = {
             "files": replicate_rows,
             "c": [float(x) for x in c],
@@ -1052,35 +1348,21 @@ def evaluate(
             "cz": cz,
             "visibility_readout_corrected": corrected_visibility,
             "contraction_per_cz_implied": implied,
-            "against_rho_band": position if implied == implied else "not read",
+            "against_rho_band": position,
             "statistics": statistics,
         }
         if name in PRIMARY:
             rows[name]["nullity_ideal"] = float(ideal_c[name].sum() / 2.0)
     ba, bb, b0, xor = rows["ba"], rows["bb"], rows["b0"], rows["xor_ba"]
-    differing = pattern_bins(ideal_c["ba"], ideal_c["bb"])
-    pattern_z = [max(min(along_ideal["ba"][y], along_ideal["bb"][y]), 0.0) for y in differing]
-    cross: dict[str, Any] = {"statistic": CROSS_STATISTIC, "bins_min": CROSS_BINS_MIN, "devices": {}}
-    for device, reference in ibm.items():
-        per_template: dict[str, Any] = {}
-        for name in PRIMARY:
-            stats = rows[name]["statistics"]
-            if CROSS_STATISTIC not in stats:
-                per_template[name] = {"read": False}
-                continue
-            labels = manifest["labels"][templates[name]["block"]]["ibm_data_index_of_bin"]
-            tag = pkm.operand_tag(tuple(templates[name]["operand"]))
-            per_template[name] = {
-                "read": True,
-                **{s: cross_platform(stats[s], labels, reference[tag]) for s in stats},
-            }
-        cross["devices"][device] = {
-            "templates": per_template,
-            "holds": all(
-                v["read"] and v[CROSS_STATISTIC]["bins_within"] >= CROSS_BINS_MIN for v in per_template.values()
-            ),
-        }
-    cross["holds"] = bool(cross["devices"]) and all(d["holds"] for d in cross["devices"].values())
+    scale = {name: design_scale(SHOTS, run_shots[name]) for name in templates}
+    cross = cross_decision(
+        templates,
+        manifest["labels"],
+        ibm,
+        lambda n: rows[n]["statistics"] if CROSS_STATISTIC in rows[n]["statistics"] else None,
+        design,
+        scale,
+    )
     drift = pcs.reference_drift(
         [(key.split("/")[0], key.split("/")[1], shots[key]) for key in shots if key.split("/")[1] in pcs.READOUT_KIND],
         pcs.register_qubits(manifest),
@@ -1090,25 +1372,11 @@ def evaluate(
             "ba": ba["bins_with_ideal_sign"] >= 6,
             "bb": bb["bins_with_ideal_sign"] >= 6,
         },
-        "pattern": {
-            "bins": differing,
-            "z": [None if math.isinf(z) else z for z in pattern_z],
-            "resolved": bool(differing) and all(z >= Z_RESOLVE for z in pattern_z),
-        },
-        "null": {
-            "z": ratio_or_none(b0["selector_contrast"], b0["selector_se"]),
-            "holds": bool(abs(b0["selector_contrast"]) <= Z_RESOLVE * b0["selector_se"]),
-        },
-        "cocycle_free": {
-            "xor_z": ratio_or_none(xor["selector_contrast"], xor["selector_se"]),
-            "ba_z": ratio_or_none(ba["selector_contrast"], ba["selector_se"]),
-            "resolved": bool(
-                xor["selector_contrast"] < 0
-                and ba["selector_contrast"] > 0
-                and xor["selector_contrast"] <= -Z_RESOLVE * xor["selector_se"]
-                and ba["selector_contrast"] >= Z_RESOLVE * ba["selector_se"]
-            ),
-        },
+        "pattern": pattern_decision(ideal_c["ba"], ideal_c["bb"], along_ideal["ba"], along_ideal["bb"]),
+        "null": null_decision(b0["selector_contrast"], b0["selector_se"], design["selector_se"]["b0"] * scale["b0"]),
+        "cocycle_free": cocycle_free_decision(
+            xor["selector_contrast"], xor["selector_se"], ba["selector_contrast"], ba["selector_se"]
+        ),
         "cross_platform": cross,
         "drift": drift_decision(drift),
     }
@@ -1161,35 +1429,14 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
 
     A series that holds fewer batches than the case (a stopped run) reports its drift and batch list only. A QX
     series (backend type 1) reports the control verdict a Tuna-17 submission needs."""
-    shared: dict[str, Any] | None = None
-    shots: dict[str, list[str]] = {}
-    executed: dict[str, str] = {}
-    digests: dict[str, str] = {}
-    arms: dict[str, tuple[list[str], dict[str, int], list[float]]] = {}
-    for run_dir in sorted(run_dirs, key=lambda p: p.name):
-        acquisition = qi_records.read_run(run_dir, str(run_dir))
-        if not acquisition.completed:
-            raise ValueError(f"{run_dir}: a job did not complete: {dict(acquisition.statuses)}")
-        series_name = pcs.series_of(run_dir)
-        case_batch = None if case_root is None else case_root / series_name / f"batch-{run_dir.name[-2:]}"
-        run = pcs.load_run(run_dir, case_batch)
-        cases = run["cases"]
-        fields = {k: v for k, v in cases.items() if k not in ("batch", "circuits")}
-        if shared is None:
-            shared = fields
-        elif fields != shared:
-            raise ValueError(f"{run_dir}/cases.json describes a different series")
-        if cases["batch"] in digests:
-            raise ValueError(f"{run_dir}: batch {cases['batch']} appears twice")
-        digests[cases["batch"]] = pcs.file_sha256(run_dir / "cases.json")
-        for row in cases["circuits"]:
-            key = f"{cases['batch']}/{row['file']}"
-            shots[key] = run["shots"][row["file"]]
-            executed[key] = run["jobs"][row["file"]]["queued_at"]
-            if row["kind"] == "arm":
-                arms[key] = (shots[key], cases["templates"][row["template"]]["roles"], row["ideal"])
-    if shared is None:
-        raise ValueError("an analysis needs its run directories")
+    series = read_series(run_dirs, case_root, pcs.series_of, "arm", ("batch", "circuits"))
+    shared, shots, executed, digests, arms = (
+        series["shared"],
+        series["shots"],
+        series["executed"],
+        series["digests"],
+        series["arms"],
+    )
     expected = sorted(row["batch"] for row in batch_plan())
     held = sorted({k.split("/")[0] for k in shots})
     emulator = shared["backend_type_id"] == 1
@@ -1214,7 +1461,7 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
             "references": drift,
             "stopped": bool(drift["flagged"]),
         }
-    return {**head, "complete": True, **evaluate(shots, shared, executed)}
+    return {**head, "complete": True, **evaluate(shots, shared, executed, design=load_design(case_root, TUNA_SERIES))}
 
 
 def qx_conformance(run_dir: Path, bound: float = 0.025) -> dict[str, Any]:
@@ -1299,6 +1546,9 @@ def self_test() -> str:
     honest = evaluate(device(0.5), manifest)
     if not honest["all_decisions_met"]:
         raise RuntimeError(f"an honest device at retention 0.5 fails a decision: {honest['decisions']}")
+    coarse = evaluate(device(0.5), manifest, design=scale_design(design_from_prediction(predictions(plan)), 1 / 3))
+    if coarse["decisions"]["null"]["outcome"] != "uninformative" or coarse["all_decisions_met"]:
+        raise RuntimeError("a run three times coarser than the design left the null or the decisions standing")
     exact = evaluate(device(1.0), manifest)
     if not exact["all_decisions_met"] or not any(any(r["deterministic_bins"]) for r in exact["templates"].values()):
         raise RuntimeError(f"a noiseless device leaves a decision unmet or no deterministic bin: {exact['decisions']}")
@@ -1326,7 +1576,8 @@ def self_test() -> str:
         f"qi pathion coset block: region {plan['region']}, routed CZ "
         + ", ".join(f"{n} {t['cz']}" for n, t in plan["templates"].items())
         + f"; {len(angles)} Rz on the pi/36 grid; honest device resolves every decision, a cocycle-free circuit in "
-        "the ba slot, a b0 selector offset, a retention of 0.02 and a readout bracket drift of 0.05 each fail one"
+        "the ba slot, a b0 selector offset, a retention of 0.02, a readout bracket drift of 0.05 and a standard error "
+        "three times the design each fail one"
     )
 
 
@@ -1354,7 +1605,9 @@ def main() -> int:
     else:
         if args.out is None:
             parser.error("--analyze needs --out")
-        args.out.write_text(json.dumps(analyze(args.analyze), indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        args.out.write_text(
+            json.dumps(analyze(args.analyze), indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8"
+        )
         print(f"wrote {args.out}")
     return 0
 

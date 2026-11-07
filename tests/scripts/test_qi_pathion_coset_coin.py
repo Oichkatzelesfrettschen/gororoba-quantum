@@ -1,25 +1,30 @@
 """Contracts of the coin-arm coset-block series on Quantum Inspire: scoring, the IBM comparison, the drift covariate.
 
 Each fixture builds run directories from the retained case files with largest-remainder expected counts of the
-ideal laws of record (no random draw), in the layout qi_platform.collect writes (submission.json, results.json with
-a job record per file, raw/<file>.json shot lists). The IBM side is the retained measured ibm_fez and ibm_marrakesh
+ideal laws of record (no random draw), in the layout qi_platform.collect writes (a qi-submission-v2 receipt, a
+qi-collection-v1 results.json with a job record and outcome histogram per file, raw/<file>.json shot lists), which
+analyze reads through qi_records. The IBM side is the retained measured ibm_fez and ibm_marrakesh
 coset-map records. A drift between readout brackets is recorded in the analysis and in the gate receipt and
 refuses nothing.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
+import math
 import shutil
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pytest
+import qi_pathion_coset_block_cases as blk
 import qi_pathion_coset_block_series as old_series
 import qi_pathion_coset_coin_cases as gen
 import qi_pathion_coset_coin_series as gate
+
+import qi_records
 
 CASES = gate.CASES_ROOT
 TUNA = gate.TUNA_SERIES
@@ -53,8 +58,11 @@ def build_series(
     assignment: dict[str, dict[int, tuple[float, float]]] | None = None,
     swap: tuple[str, str] | None = None,
     short: str | None = None,
+    laws: dict[str, np.ndarray] | None = None,
 ) -> Path:
-    """Collected run directories `<stamp>-<series>-batch-NN` under root/runs for the listed batches."""
+    """Collected run directories `<stamp>-<series>-batch-NN` under root/runs for the listed batches.
+
+    `laws` maps a template to the 32-outcome law its circuit reads in place of the contracted ideal law."""
     runs = root / "runs"
     for n in batches:
         case_batch = CASES / series / f"batch-{n:02d}"
@@ -62,7 +70,8 @@ def build_series(
         run = runs / f"2026-11-07T000000Z-{series}-batch-{n:02d}"
         shutil.copytree(case_batch, run)
         (run / "raw").mkdir()
-        jobs = []
+        submitted: list[dict[str, Any]] = []
+        collected: list[dict[str, Any]] = []
         width, total = cases["nqubits"], cases["shots"]
         asg = (assignment or {}).get(f"batch-{n:02d}", {q: (0.0, 0.0) for q in cases["register"]})
         for k, row in enumerate(cases["circuits"]):
@@ -72,23 +81,43 @@ def build_series(
                 source = swap[1] if swap and row["template"] == swap[0] else row["template"]
                 ideal = _ideal_of(series, source)
                 law = retention * ideal + (1 - retention) / ideal.size
+                if laws and row["template"] in laws:
+                    law = laws[row["template"]]
                 roles = cases["templates"][row["template"]]["roles"]
                 matrix = gen.confusion([asg[roles[key]] for key in gen.KEYS])
                 listed = gen.place_counts(gen.largest_remainder(matrix @ law, total), gen.KEYS, roles, width)
+            histogram = dict(sorted(Counter(listed).items()))
             if short == f"batch-{n:02d}/{row['file']}":
                 listed = listed[:-1]
             (run / "raw" / f"{row['file']}.json").write_text(json.dumps(listed), encoding="utf-8")
-            jobs.append(
-                {
-                    "file": row["file"],
-                    "job": {"id": 100 * n + k, "status": "completed", "queued_at": f"2026-11-07T00:{n:02d}:{k:02d}Z"},
-                    "results": [],
-                }
-            )
-        (run / "results.json").write_text(json.dumps({"schema": "test", "jobs": jobs}), encoding="utf-8")
-        digest = hashlib.sha256((run / "cases.json").read_bytes()).hexdigest()
-        (run / "submission.json").write_text(
-            json.dumps({"state": "enqueued", "cases_sha256": digest}), encoding="utf-8"
+            job_id = 100 * n + k
+            submitted.append({"file": row["file"], "job": job_id, "sha256": row["sha256"]})
+            job = {
+                "id": job_id,
+                "created_on": f"2026-11-07T00:{n:02d}:00.000000Z",
+                "status": "completed",
+                "batch_job_id": 77 + n,
+                "queued_at": f"2026-11-07T00:{n:02d}:{k:02d}.000000Z",
+                "finished_at": f"2026-11-07T01:{n:02d}:{k:02d}.000000Z",
+                "number_of_shots": total,
+            }
+            results = [{"job_id": job_id, "shots_requested": total, "shots_done": total, "results": histogram}]
+            collected.append({"file": row["file"], "job": job, "results": results, "logs": ""})
+        cases_text = (run / "cases.json").read_text(encoding="utf-8")
+        receipt = {
+            "schema": "qi-submission-v2",
+            "state": "enqueued",
+            "approval": "fixture",
+            "backend": cases["backend"],
+            "backend_type_id": cases["backend_type_id"],
+            "cases_sha256": qi_records.digest(cases_text.encode()),
+            "batch_job": 77 + n,
+            "shots": total,
+            "jobs": submitted,
+        }
+        (run / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+        (run / "results.json").write_text(
+            json.dumps({"schema": "qi-collection-v1", "transactions": [], "jobs": collected}), encoding="utf-8"
         )
     return runs
 
@@ -285,3 +314,130 @@ def test_a_changed_or_missing_stopped_series_file_refuses_the_build(
     monkeypatch.setattr(gen, "STOPPED_RUN", (tmp_path / "absent").as_posix().removeprefix(gen.ROOT.as_posix() + "/"))
     with pytest.raises(ValueError, match="missing"):
         gen.verify_stopped_files.__wrapped__()
+
+
+def _first_run(tmp_path: Path, **kwargs: Any) -> Path:
+    return _dirs(build_series(tmp_path, TUNA, range(1), 0.5, **kwargs))[0]
+
+
+def test_analyze_rejects_a_raw_bitstring_that_contradicts_the_recorded_histogram(tmp_path: Path) -> None:
+    run = _first_run(tmp_path)
+    raw = run / "raw" / "ba.cq.json"
+    listed = json.loads(raw.read_text(encoding="utf-8"))
+    listed[0] = "0" * len(listed[0]) if set(listed[0]) != {"0"} else "1" * len(listed[0])
+    raw.write_text(json.dumps(listed), encoding="utf-8")
+    with pytest.raises(ValueError, match="differs from the recorded outcome histogram"):
+        gen.analyze([run])
+
+
+def test_analyze_rejects_a_batch_listed_twice(tmp_path: Path) -> None:
+    run = _first_run(tmp_path)
+    twin = run.parent / f"2026-11-08T000000Z-{TUNA}-batch-00"
+    shutil.copytree(run, twin)
+    with pytest.raises(ValueError, match="appears twice"):
+        gen.analyze([run, twin])
+
+
+@pytest.mark.parametrize("remove_raw", [False, True])
+def test_analyze_rejects_a_collection_that_is_not_a_qi_record(tmp_path: Path, remove_raw: bool) -> None:
+    """A results.json of schema "test" (the layout an unvalidated reader accepted) and a run with no raw files both
+    fail the qi_records reading before any statistic is computed."""
+    run = _first_run(tmp_path)
+    collection = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    collection["schema"] = "test"
+    (run / "results.json").write_text(json.dumps(collection), encoding="utf-8")
+    if remove_raw:
+        shutil.rmtree(run / "raw")
+    with pytest.raises(ValueError):
+        gen.analyze([run])
+
+
+def test_a_one_shot_deterministic_bin_resolves_nothing() -> None:
+    manifest = json.loads((CASES / TUNA / "batch-00/cases.json").read_text(encoding="utf-8"))
+    template = manifest["templates"]["ba"]
+    ideal_c = np.array(template["ideal_c"])
+    y = int(np.argmax(np.abs(ideal_c)))
+    counts = np.zeros(gen.NOUT)
+    # One shot per pile whose selector reads the ideal sign: a bin with zero variance and a contrast of 1.
+    if ideal_c[y] > 0:
+        counts[gen.HALF + y], counts[y + 8] = 1, 1
+    else:
+        counts[gen.HALF + y + 8], counts[y] = 1, 1
+    row = gen.template_row("ba", template, counts, None, ideal_c)
+    _expect(row["deterministic_bins"][y] and row["c"][y] * np.sign(ideal_c[y]) == 1.0, "the bin is deterministic")
+    _expect(row["z_signed"][y] == 0.0, f"a one-shot deterministic bin decides {row['z_signed'][y]}")
+    _expect(row["bins_with_ideal_sign"] == 0, "a chance run of one outcome per arm counted as a resolved bin")
+
+
+def test_a_zero_contrast_resolves_neither_the_cocycle_free_rule_nor_a_finite_ratio(tmp_path: Path) -> None:
+    """Selectors that never fire with the coin balanced give a zero contrast at zero standard error in ba and xor_ba,
+    and a zero visibility that leaves c / V undefined: the record writes null, never nan."""
+    law = np.zeros(gen.NOUT)
+    law[0] = law[gen.HALF] = 0.5
+    runs = build_series(tmp_path, TUNA, range(4), 0.5, laws={"ba": law, "xor_ba": law})
+    analysis = gen.analyze(_dirs(runs))
+    _expect(not analysis["decisions"]["cocycle_free"]["resolved"], "a zero contrast carries no sign")
+    raw = analysis["templates"]["ba"]["statistics"]["raw"]
+    _expect(raw["visibility"] == 0.0 and all(r is None for r in raw["ratio"]), f"{raw}")
+    _expect(raw["nullity_estimate"] is None, "N_hat is undefined at zero visibility")
+    json.dumps(analysis, allow_nan=False)
+
+
+def test_the_out_file_refuses_a_non_finite_number(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(gen, "analyze", lambda dirs: {"x": math.nan})
+    monkeypatch.setattr("sys.argv", ["coin", "--analyze", str(tmp_path), "--out", str(tmp_path / "out.json")])
+    with pytest.raises(ValueError, match="not JSON compliant"):
+        gen.main()
+
+
+def _noise_reference() -> dict[str, Any]:
+    entry = {"ratio": 0.0, "se": 0.0, "se_mean": 0.0, "coset": 0}
+    return {"labels": {label: entry for label in range(32)}}
+
+
+def test_a_high_uncertainty_run_does_not_count_eight_of_eight_bins() -> None:
+    """IBM ratios 0 against Tuna ratios 1 at a standard error of 1: every z is 1, the old rule counted 8 of 8."""
+    statistics = {"ratio": [1.0] * 8, "ratio_se": [1.0] * 8}
+    labels = list(range(8))
+    old = blk.cross_platform(statistics, labels, _noise_reference())
+    _expect(old["bins_within"] == 8, "without a design the ratio of 1 at se 1 reads as agreement")
+    floored = blk.cross_platform(statistics, labels, _noise_reference(), design_se=[0.05] * 8)
+    _expect(floored["bins_within"] == 0 and floored["bins_within_unfloored"] == 8, f"{floored}")
+    _expect(not any(floored["precise"]), "no bin reaches the design precision")
+    manifest = json.loads((CASES / TUNA / "batch-00/cases.json").read_text(encoding="utf-8"))
+    design = blk.load_design(None, TUNA)
+    scale = {name: 1.0 for name in manifest["templates"]}
+    ibm = {device: {tag: _noise_reference() for tag in _tags(manifest)} for device in gen.IBM_RECORDS}
+    decision = blk.cross_decision(
+        manifest["templates"],
+        manifest["labels"],
+        ibm,
+        lambda name: {gen.CROSS_STATISTIC: statistics},
+        design,
+        scale,
+    )
+    _expect(not decision["holds"], "eight imprecise bins held the cross-platform rule")
+    _expect(decision["outcome"] == "uninformative", f"imprecise bins read {decision['outcome']}, not uninformative")
+
+
+def _tags(manifest: dict[str, Any]) -> list[str]:
+    return [blk.pkm.operand_tag(tuple(manifest["templates"][n]["operand"])) for n in gen.PRIMARY]
+
+
+def test_a_run_coarser_than_the_design_leaves_the_null_and_the_decisions_unmet(
+    contracted: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _expect(contracted["analysis"]["decisions"]["null"]["outcome"] == "holds", "the contracted run holds the null")
+    original = blk.load_design
+    monkeypatch.setattr(blk, "load_design", lambda root, series: blk.scale_design(original(root, series), 1 / 3))
+    coarse = gen.analyze(_dirs(contracted["runs"]))
+    null = coarse["decisions"]["null"]
+    _expect(null["outcome"] == "uninformative" and not null["holds"], f"{null}")
+    _expect(not coarse["all_decisions_met"], "a run three times coarser than the design met every decision")
+    cross = coarse["decisions"]["cross_platform"]
+    _expect(cross["outcome"] == "uninformative", f"coarse cross-platform outcome {cross['outcome']}")
+    _expect(contracted["analysis"]["decisions"]["cross_platform"]["outcome"] == "holds", "the contracted run holds")
+    for entry in coarse["decisions"]["cross_platform"]["devices"].values():
+        for cell in entry["templates"].values():
+            ratio = cell[gen.CROSS_STATISTIC]
+            _expect(ratio["bins_within"] == 0 and ratio["bins_within_unfloored"] > 0, f"{ratio}")

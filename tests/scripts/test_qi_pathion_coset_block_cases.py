@@ -201,8 +201,8 @@ def test_a_zero_contrast_does_not_resolve_the_cocycle_free_decision() -> None:
         name = key.split("/")[1].split("-")[0]
         if name in ("ba", "xor_ba"):
             shots[key] = ["0" * cb.NQUBITS] * SHOTS
-    with np.errstate(all="ignore"):  # a zero visibility makes the per-bin ratios undefined; the decision ignores them
-        report = cb.evaluate(shots, manifest)
+    report = cb.evaluate(shots, manifest)  # a zero visibility leaves the per-bin ratios undefined: null, not nan
+    json.dumps(report, allow_nan=False)
     for name in ("ba", "xor_ba"):
         row = report["templates"][name]
         _check(row["selector_contrast"] == 0.0 and row["selector_se"] == 0.0, f"{name} selector is deterministic")
@@ -261,3 +261,91 @@ def _scramble_bin(strings: list[str], roles: dict[str, int], bin_index: int) -> 
                 shot = shot[:position] + str(1 - int(shot[position])) + shot[position + 1 :]
         out.append(shot)
     return out
+
+
+def _noise_reference() -> dict[str, Any]:
+    entry = {"ratio": 0.0, "se": 0.0, "se_mean": 0.0, "coset": 0}
+    return {"labels": {label: entry for label in range(32)}}
+
+
+def test_a_high_uncertainty_bin_set_does_not_count_eight_of_eight() -> None:
+    """IBM ratios 0 against Tuna ratios 1 at a standard error of 1: every z is 1; a design of 0.05 refuses all eight."""
+    statistics = {"ratio": [1.0] * 8, "ratio_se": [1.0] * 8}
+    labels = list(range(8))
+    _check(cb.cross_platform(statistics, labels, _noise_reference())["bins_within"] == 8, "z = 1 reads as agreement")
+    floored = cb.cross_platform(statistics, labels, _noise_reference(), design_se=[0.05] * 8)
+    _check(floored["bins_within"] == 0 and floored["bins_within_unfloored"] == 8, f"{floored}")
+    reached = cb.cross_platform(
+        {"ratio": [0.01] * 8, "ratio_se": [0.04] * 8}, labels, _noise_reference(), design_se=[0.05] * 8
+    )
+    _check(reached["bins_within"] == 8 and all(reached["precise"]), "a run at the design precision counts its bins")
+    at_factor = cb.cross_platform(
+        {"ratio": [0.0] * 8, "ratio_se": [cb.PRECISION_FACTOR * 0.05] * 8},
+        labels,
+        _noise_reference(),
+        design_se=[0.05] * 8,
+    )
+    _check(at_factor["bins_within"] == 8, "a combined error at exactly PRECISION_FACTOR times the design is precise")
+    beyond = cb.cross_platform(
+        {"ratio": [0.0] * 8, "ratio_se": [cb.PRECISION_FACTOR * 0.05 * 1.01] * 8},
+        labels,
+        _noise_reference(),
+        design_se=[0.05] * 8,
+    )
+    _check(beyond["bins_within"] == 0, "a combined error beyond the factor is imprecise")
+
+
+def test_a_selector_contrast_at_a_coarse_error_is_uninformative_not_a_null() -> None:
+    design = 0.004
+    holds = cb.null_decision(0.003, 0.005, design)
+    _check(holds["outcome"] == "holds" and holds["holds"], f"{holds}")
+    fails = cb.null_decision(0.05, 0.005, design)
+    _check(fails["outcome"] == "fails" and not fails["holds"], f"{fails}")
+    coarse = cb.null_decision(0.5, 1.0, design)
+    _check(coarse["outcome"] == "uninformative" and not coarse["holds"], "a contrast of 0.5 at se 1 satisfies no null")
+    _check(coarse["z"] == 0.5 and coarse["informative"] is False, f"{coarse}")
+
+
+def test_a_run_coarser_than_the_design_leaves_the_decisions_unmet() -> None:
+    manifest = _manifest()
+    shots = _device(manifest, 0.5)
+    design = cb.load_design(None, cb.TUNA_SERIES)
+    met = cb.evaluate(shots, manifest, design=design)
+    _check(met["decisions"]["null"]["outcome"] == "holds" and met["all_decisions_met"], f"{met['decisions']['null']}")
+    coarse = cb.evaluate(shots, manifest, design=cb.scale_design(design, 1 / 10))
+    _check(coarse["decisions"]["null"]["outcome"] == "uninformative", f"{coarse['decisions']['null']}")
+    _check(not coarse["all_decisions_met"], "a run ten times coarser than the design met every decision")
+    bins = [
+        cell["readout_corrected"]["bins_within"]
+        for entry in coarse["decisions"]["cross_platform"]["devices"].values()
+        for cell in entry["templates"].values()
+    ]
+    _check(max(bins) == 0, f"coarse bins counted within: {bins}")
+    cross = coarse["decisions"]["cross_platform"]
+    _check(cross["outcome"] == "uninformative", f"coarse cross-platform outcome {cross['outcome']}")
+    _check(met["decisions"]["cross_platform"]["outcome"] == "holds", "the contracted run holds")
+
+
+def test_an_undefined_statistic_is_null_in_the_record() -> None:
+    """Without readout circuits the corrected visibility is undefined, and a zero visibility leaves c / V undefined:
+    both read null, and the record is RFC 8259 JSON."""
+    manifest = _manifest()
+    shots = {k: v for k, v in _device(manifest, 0.5).items() if "/readout" not in k}
+    report = cb.evaluate(shots, manifest)
+    for row in report["templates"].values():
+        _check(row["visibility_readout_corrected"] is None and row["contraction_per_cz_implied"] is None, "nan")
+        _check(row["against_rho_band"] == "not read", "position of an unread contraction")
+    json.dumps(report, allow_nan=False)
+    flat = np.full(16, 1.0 / 16)
+    statistics = cb.contrast_statistics(flat * 100, flat * 100, np.ones(8))
+    _check(statistics["visibility"] == 0.0 and all(r is None for r in statistics["ratio"]), f"{statistics}")
+    _check(statistics["nullity_estimate"] is None and statistics["nullity_se"] is None, "N_hat at zero visibility")
+    _check(all(e is None for e in statistics["ratio_se"]), "the error of an undefined ratio is undefined")
+    json.dumps(statistics, allow_nan=False)
+
+
+def test_the_out_file_refuses_a_non_finite_number(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cb, "analyze", lambda dirs: {"x": math.nan})
+    monkeypatch.setattr("sys.argv", ["block", "--analyze", str(tmp_path), "--out", str(tmp_path / "out.json")])
+    with pytest.raises(ValueError, match="not JSON compliant"):
+        cb.main()
