@@ -1,116 +1,225 @@
 {
- "decisions": [
-  {
-   "a5_186": "survives; the readout alternative is excluded and the falsifier (6-CZ blocks at zero) is unmet",
-   "if": [
-    "zero",
-    "small",
-    "small"
-   ],
-   "outcome": "over-rotation supported: the 6-CZ blocks read zero and both readout offsets are excluded"
-  },
-  {
-   "a5_186": "refuted as an over-rotation: the offset is an arm-asymmetric readout effect",
-   "if": [
-    "b0-like",
-    "large",
-    "small"
-   ],
-   "outcome": "coin-conditioned selector dropout supported: the 6-CZ blocks read the b0 value and the joint readout shows the dropout"
-  },
-  {
-   "a5_186": "refuted as an over-rotation: the offset is an arm-asymmetric readout effect",
-   "if": [
-    "b0-like",
-    "large",
-    "mid"
-   ],
-   "outcome": "coin-conditioned selector dropout supported: the 6-CZ blocks read the b0 value and the joint readout shows the dropout; the q12 correlation is neither shown nor excluded"
-  },
-  {
-   "a5_186": "weakened: a measured readout correlation of the needed size explains the offset without a coherent error",
-   "if": [
-    "zero",
-    "small",
-    "large"
-   ],
-   "outcome": "q12 correlation supported: the 6-CZ blocks read zero and the joint readout shows the q12 correlation"
-  },
-  {
-   "a5_186": "weakened: a measured readout correlation of the needed size explains the offset without a coherent error",
-   "if": [
-    "zero",
-    "mid",
-    "large"
-   ],
-   "outcome": "q12 correlation supported: the 6-CZ blocks read zero and the joint readout shows the q12 correlation"
-  },
-  {
-   "a5_186": "refuted as stated: the over-rotation predicts zero on the 6-CZ blocks; the mechanism stays open",
-   "if": [
-    "b0-like",
-    "small",
-    "small"
-   ],
-   "outcome": "neither a coherent over-rotation nor a measured readout offset: the 6-CZ blocks read the b0 value and the joint readout excludes both readout models"
-  }
- ],
  "design": {
-  "batches": 7,
+  "b0_base_batch_se": 0.003906,
+  "base_batch_se": 0.005524,
+  "batches": 19,
+  "calibration_se": {
+   "selector_prepared_0": 0.001375,
+   "selector_prepared_1": 0.001165
+  },
+  "calibration_se_limit": 0.004,
   "coin_series_timing": {
    "jobs": 9,
    "seconds_per_shot_max": 0.0005905707092285157,
    "seconds_per_shot_min": 0.0005423932342529297
   },
   "execution_seconds_range": [
-   568.7,
-   619.3
+   1152.9,
+   1268.0
   ],
-  "jobs": 20,
-  "joint_se": {
-   "selector_prepared_0": 0.000972,
-   "selector_prepared_1": 0.000823
-  },
-  "joint_se_limit": 0.004,
-  "model_size_in_se": {
-   "selector_prepared_0": 37.0,
-   "selector_prepared_1": 43.7
-  },
+  "jobs": 56,
   "pause_seconds_per_batch": 30,
+  "pooled_se": {
+   "b0_base": 0.002762,
+   "base": 0.003906,
+   "twin": 0.002762
+  },
   "retained_selector_readout_e01_e10": [
    0.032,
    0.0227
   ],
-  "selector_se": 0.00390625,
-  "selector_se_limit": 0.0045,
-  "shots_total": 1048576
+  "shots_total": 1900544,
+  "twin_batch_se": 0.003906
  },
- "joint_effect": {
-  "coin_dropout": 0.036,
-  "q12_correlation": 0.036,
-  "readout_excluded_below": 0.012
+ "model": "raw selector contrast of the base circuit (s) and the coin-twin pair (t) of b0 and of a 6-CZ block under each hypothesis, from docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.txt and c2_one_cz_twins.txt",
+ "operating_characteristics": {
+  "batch_drift_sd_0.003": {
+   "absent": {
+    "offset_absent": 0.8632,
+    "superposition_only": 0.0015,
+    "unresolved": 0.005,
+    "unresolved_batch": 0.0562,
+    "unresolved_block": 0.074
+   },
+   "coin_dropout": {
+    "b0_like": 0.833,
+    "offset_absent": 0.0083,
+    "superposition_only": 0.0015,
+    "unresolved": 0.0155,
+    "unresolved_batch": 0.0542,
+    "unresolved_block": 0.0772,
+    "unresolved_context": 0.0103
+   },
+   "over_rotation": {
+    "offset_absent": 0.0089,
+    "superposition_only": 0.0016,
+    "unresolved": 0.0169,
+    "unresolved_batch": 0.0574,
+    "unresolved_block": 0.0755,
+    "unresolved_context": 0.0092,
+    "zero": 0.8305
+   },
+   "over_rotation_y_axis": {
+    "b0_like": 0.021,
+    "offset_absent": 0.0076,
+    "superposition_only": 0.0025,
+    "unresolved": 0.3969,
+    "unresolved_batch": 0.0563,
+    "unresolved_block": 0.0769,
+    "unresolved_context": 0.0095,
+    "zero": 0.4293
+   },
+   "q12_correlation": {
+    "b0_like": 0.0001,
+    "offset_absent": 0.0082,
+    "superposition_only": 0.0016,
+    "unresolved": 0.0157,
+    "unresolved_batch": 0.0541,
+    "unresolved_block": 0.0776,
+    "unresolved_context": 0.0095,
+    "zero": 0.8331
+   },
+   "superposition_only": {
+    "b0_like": 0.0001,
+    "offset_absent": 0.0088,
+    "superposition_only": 0.7116,
+    "unresolved": 0.1368,
+    "unresolved_batch": 0.0556,
+    "unresolved_block": 0.0804,
+    "unresolved_context": 0.0067
+   }
+  },
+  "draws_per_world": 20000,
+  "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-07T185234Z.json",
+  "seed_index": 0,
+  "stationary": {
+   "absent": {
+    "offset_absent": 0.972,
+    "superposition_only": 0.0003,
+    "unresolved": 0.0011,
+    "unresolved_batch": 0.0088,
+    "unresolved_block": 0.0178
+   },
+   "coin_dropout": {
+    "b0_like": 0.9647,
+    "offset_absent": 0.0019,
+    "superposition_only": 0.0002,
+    "unresolved": 0.0026,
+    "unresolved_batch": 0.0072,
+    "unresolved_block": 0.0204,
+    "unresolved_context": 0.0031
+   },
+   "over_rotation": {
+    "offset_absent": 0.0014,
+    "superposition_only": 0.0002,
+    "unresolved": 0.0033,
+    "unresolved_batch": 0.0098,
+    "unresolved_block": 0.0197,
+    "unresolved_context": 0.0026,
+    "zero": 0.963
+   },
+   "over_rotation_y_axis": {
+    "b0_like": 0.0076,
+    "offset_absent": 0.0013,
+    "superposition_only": 0.0001,
+    "unresolved": 0.4631,
+    "unresolved_batch": 0.0084,
+    "unresolved_block": 0.0204,
+    "unresolved_context": 0.0027,
+    "zero": 0.4963
+   },
+   "q12_correlation": {
+    "offset_absent": 0.002,
+    "superposition_only": 0.0001,
+    "unresolved": 0.0028,
+    "unresolved_batch": 0.0069,
+    "unresolved_block": 0.0188,
+    "unresolved_context": 0.0024,
+    "zero": 0.9668
+   },
+   "superposition_only": {
+    "offset_absent": 0.0016,
+    "superposition_only": 0.858,
+    "unresolved": 0.111,
+    "unresolved_batch": 0.0075,
+    "unresolved_block": 0.0204,
+    "unresolved_context": 0.0014
+   }
+  }
  },
- "model": "raw selector contrast of b0 and of a 6-CZ block under each hypothesis, and the size of the joint readout effect each hypothesis needs, from docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.txt",
- "predicted_selector_contrast": {
+ "outcomes": {
+  "b0_like": {
+   "a5_186": "refuted as stated: the resolved 6-CZ response is inconsistent with the model's bounded prediction of zero",
+   "outcome": "6-CZ blocks read the b0 value in both contexts: consistent with a coin-conditioned selector dropout, and the over-rotation and the q12 correlation are excluded"
+  },
+  "offset_absent": {
+   "a5_186": "unchanged",
+   "outcome": "offset absent: b0's base contrast no longer reads positive at the control level; nothing about the mechanism is decided"
+  },
+  "superposition_only": {
+   "a5_186": "refuted as modeled: the over-rotation predicts the offset in the classical-coin twin as well",
+   "outcome": "the offset exists only with the coin in superposition: b0's classical-coin twin reads below the base contrast, where the over-rotation, the coin-conditioned dropout and the q12 correlation all predict the same value"
+  },
+  "unresolved": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the contrasts match no preregistered row"
+  },
+  "unresolved_batch": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: replicate batches disagree beyond the heterogeneity bound"
+  },
+  "unresolved_block": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the three 6-CZ blocks disagree beyond the heterogeneity bound"
+  },
+  "unresolved_context": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the 6-CZ base and twin contrasts disagree beyond three standard errors"
+  },
+  "zero": {
+   "a5_186": "survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction of zero, is unmet; the q12 correlation stays open",
+   "outcome": "6-CZ blocks read zero in both contexts: the coin-conditioned selector dropout is excluded; a coherent over-rotation and a q12 correlation remain, and these observables do not separate them"
+  }
+ },
+ "predicted_contrast": {
   "coin_dropout": {
-   "b0": 0.0164,
-   "six_cz": 0.0164
+   "s_b0": 0.0164,
+   "s_k": 0.0164,
+   "t_b0": 0.017,
+   "t_k": 0.017
   },
   "over_rotation": {
-   "b0": 0.0167,
-   "six_cz": 0.0
+   "s_b0": 0.0164,
+   "s_k": 0.0,
+   "t_b0": 0.0166,
+   "t_k": 0.0
+  },
+  "over_rotation_y_axis": {
+   "s_b0": 0.0164,
+   "s_k": 0.0038,
+   "t_b0": 0.0164,
+   "t_k": 0.0039
   },
   "q12_correlation": {
-   "b0": 0.0164,
-   "six_cz": 0.0
+   "s_b0": 0.0164,
+   "s_k": 0.0,
+   "t_b0": 0.017,
+   "t_k": 0.0
+  },
+  "superposition_only": {
+   "s_b0": 0.0164,
+   "s_k": 0.0164,
+   "t_b0": 0.0,
+   "t_k": 0.0
   }
  },
  "preregistered": {
-  "coin_dropout": "D = misassignment of a prepared selector 1 with the coin prepared 1 minus with the coin prepared 0: large when D >= 0.036 - 3.0 se and D >= 3.0 se; small when |D| + 3.0 se < 0.012 for a prepared selector 0 and for a prepared selector 1",
-  "control": "b0 raw selector contrast above 3.0 standard errors, else the offset is absent and nothing about its mechanism is decided",
-  "decision": "the combination of the control, six_cz, coin_dropout and q12_correlation classes read from DECISIONS; every other combination is unresolved",
-  "q12_correlation": "G = misassignment of the selector with q12 prepared 0 minus with q12 prepared 1, the larger of the values at a prepared selector 0 and 1: large when G >= 0.036 - 3.0 se and G >= 3.0 se; small when |G| + 3.0 se < 0.012 at both prepared selector values",
-  "qx": "every template within twice the sampling floor of its ideal law",
-  "six_cz": "inverse-variance mean s of the raw selector contrasts of k4, k8 and k12 with b0's contrast s0: zero when |s| within 3.0 se of 0 and (s - s0) beyond 3.0 combined se, b0-like when (s - s0) within 3.0 combined se and |s| beyond 3.0 se, else unresolved"
+  "calibration": "the eight X-only preparations of q2, q8 and q12 are a secondary readout calibration in a terminal-assignment context: D, the selector misassignment with the coin prepared 1 minus 0 at a prepared selector 1, and G, with q12 prepared 0 minus 1, are reported with large (>= 0.036 - 3.0 se) and small (|.| + 3.0 se < 0.012) classes and change no outcome",
+  "control": "b0 base contrast s0 above 3.0 se, else the offset is absent and nothing about its mechanism is decided",
+  "estimates": "per template and batch kind, the raw selector contrast of each batch (base: the arm contrast P(s=0 | coin read 1) - P(s=0 | coin read 0); twin: P(s=0) of the coin-1 twin minus that of the coin-0 twin), pooled over the replicate batches by inverse variance",
+  "heterogeneity": "replicate batches of one template and kind agree within chi-square 10.828 (1 degree of freedom, alpha 0.001); the three 6-CZ blocks agree within chi-square 9.21 (2 degrees of freedom, alpha 0.01) for the base contrasts and for the twin contrasts; otherwise the decision is unresolved",
+  "qx": "every circuit within twice the sampling floor of its ideal law",
+  "six_cz": "c and d the inverse-variance means of the three 6-CZ base and twin contrasts, m their combination and r the combination of s0 and t0: contexts disagree when |c - d| exceeds 3.0 combined se; zero when |m| is within 3.0 se and r - m exceeds 3.0 combined se; b0-like when m exceeds 3.0 se and |r - m| is within 3.0 combined se; otherwise unresolved",
+  "twin_control": "b0 twin contrast t0 above 3.0 se; if not, and s0 - t0 exceeds 3.0 combined se, the offset exists only with the coin in superposition"
  }
 }

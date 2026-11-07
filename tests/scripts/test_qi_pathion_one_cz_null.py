@@ -10,6 +10,8 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import subprocess
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -104,11 +106,12 @@ def test_templates_run_through_the_coin_series_constants() -> None:
     _expect(sorted(sum(labels.values(), [])) == list(range(32)), "the four cosets do not tile the 32 algebra indices")
 
 
-# Series, joint readout and decisions ------------------------------------------------------------------------------
+# Series, twins, decisions -----------------------------------------------------------------------------------------
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = ROOT / "results/quantum_inspire/cases"
-LOG = ROOT / "docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.txt"
+TWIN_LOG = ROOT / "docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_twins.txt"
+SUBMIT = ROOT / "scripts/qi_pathion_one_cz_null_submit.sh"
 
 
 @pytest.fixture(scope="module")
@@ -120,34 +123,109 @@ def built() -> dict[str, dict[str, str]]:
 def worlds(built: dict[str, dict[str, str]]) -> dict[str, dict[str, list[str]]]:
     files = built[oc.TUNA_SERIES]
     manifest = json.loads(files["batch-00/cases.json"])
-    return {w: oc.synthetic_series(files, oc.series_plan(), manifest, **kw) for w, kw in oc.WORLDS.items()}
+    return {w: oc.synthetic_series(files, manifest, **kw) for w, kw in oc.WORLDS.items()}
 
 
 def test_the_committed_case_directory_reproduces_its_bytes() -> None:
+    oc.check(CASES, operating=False)
+    base = CASES / oc.TUNA_SERIES
+    copies = [p / "b0.cq" for p in base.glob("batch-*") if (p / "b0.cq").exists()]
+    _expect(len(copies) == 2, "b0 appears in its two base batches")
+    _expect(all(c.read_bytes() == (oc.COIN_BATCH / "b0.cq").read_bytes() for c in copies), "b0 is the retained circuit")
+
+
+@pytest.mark.audit
+def test_the_stored_operating_characteristics_replay() -> None:
     oc.check(CASES)
-    _expect(
-        (CASES / oc.TUNA_SERIES / "batch-03" / "b0.cq").read_bytes() == (oc.COIN_BATCH / "b0.cq").read_bytes(), "b0"
-    )
 
 
-def test_the_series_holds_twenty_jobs_in_seven_batches_within_the_platform_limits(
+def test_the_series_holds_fifty_six_jobs_in_nineteen_batches_within_the_platform_limits(
     built: dict[str, dict[str, str]],
 ) -> None:
     files = built[oc.TUNA_SERIES]
     series = json.loads(files["cases.json"])
-    _expect([len(b["files"]) for b in series["batches"]] == [3, 3, 2, 3, 3, 3, 3], "batch sizes")
-    shots = []
+    _expect([len(b["files"]) for b in series["batches"]] == [3] * 18 + [2], "batch sizes")
+    shots = {}
     for batch in series["batches"]:
         manifest = json.loads(files[f"{batch['batch']}/cases.json"])
         _expect(manifest["shots"] <= 131072 and manifest["register"] == [2, 4, 8, 11, 12], "limits")
-        shots.append(manifest["shots"])
-    _expect(shots == [32768] * 3 + [65536] * 4, f"shots {shots}")
+        shots[batch["batch"]] = (manifest["kind"], manifest["template"], manifest["shots"])
+    kinds = [v[0] for v in shots.values()]
+    _expect(kinds[:16].count("base") == 8 and kinds[:16].count("twin") == 8 and kinds[16:] == ["joint"] * 3, f"{kinds}")
+    for kind, template, n in shots.values():
+        want = (
+            oc.JOINT_SHOTS
+            if kind == "joint"
+            else oc.CONTROL_SHOTS
+            if (kind, template) == ("base", "b0")
+            else oc.BATCH_SHOTS
+        )
+        _expect(n == want, f"{kind} {template}: {n} shots")
     qx = json.loads(built[oc.QX_SERIES]["cases.json"])
-    _expect([len(b["files"]) for b in qx["batches"]] == [4], "the QX control holds every template in one batch")
-    _expect(json.loads(built[oc.QX_SERIES]["batch-00/cases.json"])["shots"] == oc.QX_SHOTS, "QX shots")
+    _expect(
+        [len(b["files"]) for b in qx["batches"]] == [5, 5, 2], "the QX control holds every circuit, five to a batch"
+    )
 
 
-def test_the_joint_circuits_prepare_every_basis_state_of_the_coin_the_selector_and_q12_with_x_gates_only(
+def test_the_batch_order_is_a_palindrome_over_templates_and_kinds_with_each_template_in_both_rounds() -> None:
+    order = oc.batch_order()
+    _expect(len(order) == 16, "sixteen template batches")
+    forward = [(t, k) for t, k, r in order if r == 0]
+    mirror = [(t, k) for t, k, r in order if r == 1]
+    _expect(mirror == forward[::-1], "the second round mirrors the first")
+    for template in oc.TEMPLATES:
+        for kind in ("base", "twin"):
+            _expect([r for t, k, r in order if (t, k) == (template, kind)] == [0, 1], f"{template} {kind} replicates")
+
+
+def test_every_twin_is_the_template_without_the_coin_hadamard(built: dict[str, dict[str, str]]) -> None:
+    files = built[oc.TUNA_SERIES]
+    by_file = {rel.split("/")[1]: text for rel, text in files.items() if rel.endswith(".cq") and "readout" not in rel}
+    for name in oc.TEMPLATES:
+        base_lines = [ln for ln in by_file[f"{name}.cq"].splitlines() if not ln.startswith("//")]
+        for value in (0, 1):
+            twin = oc.twin_entry(name, value)
+            twin_lines = [ln for ln in by_file[oc.twin_file(name, value)].splitlines() if not ln.startswith("//")]
+            _expect(twin["removed"] == ["rz", "sx", "rz"], f"{name}: removed {twin['removed']}")
+            extra = [ln for ln in twin_lines if ln not in base_lines]
+            _expect(extra == (["X q[2]"] if value else []), f"{name} coin {value}: added {extra}")
+            _expect(
+                sum(ln.startswith("CZ") for ln in twin_lines) == sum(ln.startswith("CZ") for ln in base_lines), "CZ"
+            )
+            kept = [ln for ln in base_lines if ln not in twin_lines]
+            _expect(
+                len(kept) == 3 and all(" q[2]" in ln for ln in kept),
+                f"{name}: the base-only lines are the coin Hadamard",
+            )
+            ideal = twin["ideal"]
+            coin = sum(ideal[i] for i in range(oc.NOUT) if (i >> oc.COIN) & 1)
+            _expect(abs(coin - value) < 1e-9, f"{name} coin {value}: ideal coin read {coin}")
+
+
+def test_a_run_that_is_not_a_coin_hadamard_refuses_the_twin() -> None:
+    from qiskit import QuantumCircuit
+
+    base = oc.series_plan()["templates"]["k4"]["circuit"]
+    bad = base.copy()
+    index = next(i for i, inst in enumerate(bad.data) if inst.operation.name == "sx")
+    bad.data.pop(index)
+    with pytest.raises(ValueError, match="not the Hadamard"):
+        oc.coin_fixed(bad, 0)
+    del QuantumCircuit
+
+
+def test_the_series_templates_share_the_selector_and_coin_qubits_and_the_blocks_route_to_six_cz(
+    built: dict[str, dict[str, str]],
+) -> None:
+    templates = json.loads(built[oc.TUNA_SERIES]["batch-00/cases.json"])["templates"]
+    ref = oc.reference()["roles"]
+    for name, t in templates.items():
+        _expect(t["roles"]["selector"] == ref["selector"] and t["roles"]["coin"] == ref["coin"], f"{name}: roles")
+    _expect([templates[n]["cz"] for n in oc.TEMPLATES] == [21, 6, 6, 6], "CZ counts")
+    _expect(templates["b0"]["roles"] == ref, "b0 keeps its retained role map")
+
+
+def test_the_calibration_circuits_prepare_every_basis_state_of_the_coin_the_selector_and_q12_with_x_gates_only(
     built: dict[str, dict[str, str]],
 ) -> None:
     files = built[oc.TUNA_SERIES]
@@ -159,74 +237,73 @@ def test_the_joint_circuits_prepare_every_basis_state_of_the_coin_the_selector_a
         flipped = {int(re.search(r"\[(\d+)\]", g).group(1)) for g in gates if g.startswith("X ")}  # type: ignore[union-attr]
         _expect(flipped <= {2, 8, 12} and all(g.startswith("X ") for g in gates if "barrier" not in g), f"{rel}: gates")
         seen.add(tuple(int(q in flipped) for q in (2, 8, 12)))
-        _expect(text.rstrip().endswith("b = measure q"), f"{rel}: measures all qubits")
     _expect(seen == set(oc.JOINT_PREPS), f"preparations {sorted(seen)}")
+    batches = [{p for p in preps} for preps in oc.JOINT_BATCHES]
+    for third in (0, 1):
+        _expect(any({(1, 1, third), (0, 1, third)} <= b for b in batches), f"the matched pair at q12 = {third} splits")
 
 
-def test_the_series_templates_share_the_selector_and_coin_qubits_and_the_blocks_route_to_six_cz(
-    built: dict[str, dict[str, str]],
-) -> None:
-    templates = json.loads(built[oc.TUNA_SERIES]["batch-03/cases.json"])["templates"]
-    ref = oc.reference()["roles"]
-    for name, t in templates.items():
-        _expect(t["roles"]["selector"] == ref["selector"] and t["roles"]["coin"] == ref["coin"], f"{name}: roles")
-    _expect([templates[n]["cz"] for n in oc.TEMPLATES] == [21, 6, 6, 6], "CZ counts")
-    _expect(templates["b0"]["roles"] == ref, "b0 keeps its retained role map")
+def _twin_log() -> dict[str, dict[str, tuple[float, float]]]:
+    table: dict[str, dict[str, tuple[float, float]]] = {}
+    for line in TWIN_LOG.read_text(encoding="utf-8").splitlines():
+        match = re.match(r"^  (\S.*?)\s{2,}((?:[+-]\d\.\d+ / [+-]\d\.\d+\s*){4})$", line)
+        if match:
+            cells = re.findall(r"([+-]\d\.\d+) / ([+-]\d\.\d+)", match.group(2))
+            table[match.group(1)] = dict(zip(oc.TEMPLATES, ((float(a), float(b)) for a, b in cells), strict=True))
+    return table
 
 
-def _selector_log() -> dict[str, dict[str, float]]:
-    sections: dict[str, dict[str, float]] = {}
-    name = ""
-    for line in LOG.read_text(encoding="utf-8").splitlines():
-        head = re.match(r"^(\S+)  \(cz", line)
-        if head:
-            name = head.group(1)
-            sections[name] = {}
-        elif name and "selector contrast" in line:
-            value = float(re.search(r"selector contrast ([+-]\d\.\d+)", line).group(1))  # type: ignore[union-attr]
-            sections[name][line.strip().split("  ")[0]] = value
-    return sections
-
-
-def test_the_predicted_contrasts_equal_the_simulation_log() -> None:
-    log = _selector_log()
-    over, dropout = "X90 over-rotation +0.03", "selector readout, dropout on q8 when q2 = 1, x 0.0362"
-    expected = oc.PREDICTED
-    _expect(abs(log["b0"][over] - expected["over_rotation"]["b0"]) < 6e-5, "b0 over-rotation")
-    _expect(abs(log["b0"][dropout] - expected["coin_dropout"]["b0"]) < 6e-5, "b0 dropout")
-    for block in ("k4_sc", "k8_sc", "k12_sc"):
-        _expect(abs(log[block][over] - expected["over_rotation"]["six_cz"]) < 6e-5, f"{block} over-rotation")
-        _expect(abs(log[block][dropout] - expected["coin_dropout"]["six_cz"]) < 6e-5, f"{block} dropout")
+def test_the_predicted_contrasts_equal_the_twin_simulation_log() -> None:
+    log = _twin_log()
+    over = next(k for k in log if k.startswith("X-axis error"))
+    drop = next(k for k in log if k.startswith("selector dropout"))
+    flip = next(k for k in log if k.startswith("selector flip"))
+    for key, label, rows in (
+        ("over_rotation", over, ("b0", "k4")),
+        ("coin_dropout", drop, ("b0", "k4")),
+        ("q12_correlation", flip, ("b0", "k4")),
+    ):
+        want = oc.PREDICTED[key]
+        _expect(abs(log[label]["b0"][0] - want["s_b0"]) < 6e-5 + 1e-9, f"{key} s_b0")
+        _expect(abs(log[label]["b0"][1] - want["t_b0"]) < 6e-5 + 1e-9, f"{key} t_b0 {log[label]['b0']} {want['t_b0']}")
+        _expect(abs(log[label]["k4"][0] - want["s_k"]) < 4e-4, f"{key} s_k {log[label]['k4']}")
+        _expect(abs(log[label]["k4"][1] - want["t_k"]) < 4e-4, f"{key} t_k")
+        del rows
+    worst = re.search(
+        r"admitted set: .*max \|k4 s\| ([\d.]+), max \|k4 t\| ([\d.]+)", TWIN_LOG.read_text(encoding="utf-8")
+    )
+    if worst is None:
+        raise AssertionError("the log states the admitted bound")
+    _expect(abs(float(worst.group(1)) - oc.PREDICTED["over_rotation_y_axis"]["s_k"]) < 6e-5, "worst s_k")
+    _expect(abs(float(worst.group(2)) - oc.PREDICTED["over_rotation_y_axis"]["t_k"]) < 6e-5, "worst t_k")
 
 
 def test_the_design_sizes_the_series_from_the_coin_series_timings() -> None:
     plan = json.loads((CASES / oc.TUNA_SERIES / "prediction.json").read_text(encoding="utf-8"))["design"]
-    _expect(plan["jobs"] == 20 and plan["batches"] == 7 and plan["shots_total"] == 1048576, f"{plan}")
-    _expect(abs(plan["selector_se"] - 1 / 256) < 1e-12, "selector se")
-    for value in plan["model_size_in_se"].values():
-        _expect(value >= 3.0, f"the 0.036 model reads {value} se")
+    _expect(plan["jobs"] == 56 and plan["batches"] == 19 and plan["shots_total"] == 1900544, f"{plan}")
     low, high = plan["execution_seconds_range"]
-    _expect(500 < low < high < 700, f"seconds {plan['execution_seconds_range']}")
+    _expect(1000 < low < high < 1300, f"seconds {plan['execution_seconds_range']}")
+    _expect(plan["pooled_se"]["b0_base"] < 0.003 and plan["pooled_se"]["twin"] < 0.003, f"{plan['pooled_se']}")
 
 
 @pytest.mark.parametrize("world", list(oc.WORLDS))
-def test_each_simulated_world_reads_its_preregistered_outcome(
+def test_each_simulated_world_reads_its_preregistered_row(
     world: str, built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]]
 ) -> None:
     manifest = json.loads(built[oc.TUNA_SERIES]["batch-00/cases.json"])
     result = oc.evaluate(worlds[world], manifest)
-    _expect(result["decision"]["outcome"].startswith(oc.WORLD_OUTCOMES[world]), f"{world}: {result['decision']}")
+    _expect(result["decision"]["label"] == oc.WORLD_LABELS[world], f"{world}: {result['decision']}")
     json.dumps(result, allow_nan=False)
 
 
-def test_the_joint_statistics_recover_the_injected_readout_effects(
+def test_the_calibration_statistics_recover_the_injected_readout_effects(
     built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]]
 ) -> None:
     manifest = json.loads(built[oc.TUNA_SERIES]["batch-00/cases.json"])
     e10 = 0.06  # the synthetic assignment of q8 (register index 2): (0.04, 0.06)
     coin = oc.joint_statistics(worlds["coin_dropout"], manifest)["coin_dropout"]
     _expect(abs(coin["D"]["value"] - 0.0362 * (1 - e10)) < 2e-4, f"D {coin['D']}")
-    _expect(abs(coin["by_selector"]["selector_prepared_0"]["value"]) < 1e-4, "no dropout of a prepared 0")
+    _expect(len(coin["matched_pairs"]) == 2, "two matched pairs")
     q12 = oc.joint_statistics(worlds["q12_correlation"], manifest)["q12_correlation"]["G_by_selector"]
     for s, rate in (("selector_prepared_0", 0.04), ("selector_prepared_1", 0.06)):
         want = 0.036 * (1 - 2 * rate)
@@ -237,50 +314,96 @@ def test_the_joint_statistics_recover_the_injected_readout_effects(
         oc.joint_statistics({k: v for k, v in worlds["absent"].items() if "joint-111" not in k}, manifest)
 
 
-def test_every_preregistered_row_decides_and_every_other_combination_is_unresolved() -> None:
-    for (six, coin, q12), (outcome, effect) in oc.DECISIONS.items():
-        got = oc.decide(True, True, six, coin, q12)
-        _expect(got["outcome"] == outcome and got["a5_186"] == effect and got["decided"], f"{six} {coin} {q12}")
-    for six in ("zero", "b0-like", "unresolved"):
-        for coin in ("large", "small", "mid"):
-            for q12 in ("large", "small", "mid"):
-                got = oc.decide(True, True, six, coin, q12)
-                _expect(got["decided"] == ((six, coin, q12) in oc.DECISIONS), f"{six} {coin} {q12}")
-                if not got["decided"]:
-                    _expect(got["outcome"].startswith("unresolved"), f"{six} {coin} {q12}: {got['outcome']}")
-                    _expect(got["a5_186"].startswith("unchanged"), "an unresolved row leaves A5-186 unchanged")
-    absent = oc.decide(False, True, "zero", "small", "small")
-    _expect(absent["outcome"].startswith("offset absent") and absent["a5_186"] == "unchanged", f"{absent}")
-    _expect(not absent["decided"], "an absent offset decides nothing")
-    coarse = oc.decide(True, False, "zero", "small", "small")
-    _expect(coarse["outcome"].startswith("uninformative") and not coarse["decided"], f"{coarse}")
+def _rows(**kwargs: Any) -> dict[str, dict[str, list[tuple[float, float]]]]:
+    """Batch estimates (two replicates each) from per-template base and twin values."""
+    base = kwargs.get("base", {})
+    twin = kwargs.get("twin", {})
+    se_base = {t: 1 / np.sqrt(oc.CONTROL_SHOTS if t == "b0" else oc.BATCH_SHOTS) for t in oc.TEMPLATES}
+    se_twin = np.sqrt(0.5 / oc.BATCH_SHOTS)
+    return {
+        t: {
+            "base": [(base.get(t, 0.0), se_base[t])] * oc.REPLICATES,
+            "twin": [(twin.get(t, 0.0), se_twin)] * oc.REPLICATES,
+        }
+        for t in oc.TEMPLATES
+    }
+
+
+def test_every_decision_label_has_a_row_and_the_deciding_labels_are_exactly_the_three_mechanism_rows() -> None:
+    _expect(set(oc.OUTCOMES) >= set(oc.DECIDING), "every deciding label has an outcome")
+    _expect(oc.DECIDING == ("zero", "b0_like", "superposition_only"), "deciding labels")
+    for label, (outcome, effect) in oc.OUTCOMES.items():
+        _expect(bool(outcome) and bool(effect), label)
+        _expect(("falsifier" in effect) <= (label == "zero"), f"{label}: only the zero row names the falsifier")
+    _expect("unmet" in oc.OUTCOMES["zero"][1] and "inconsistent" in oc.OUTCOMES["zero"][1], "the zero row's falsifier")
+
+
+def test_the_decision_reads_each_preregistered_row_on_hand_built_estimates() -> None:
+    offset = {"b0": 0.0164}
+    zero = oc.decide_estimates(_rows(base=offset, twin={"b0": 0.0166}))
+    _expect(zero["label"] == "zero", f"{zero['numbers']}")
+    like = oc.decide_estimates(_rows(base={t: 0.0164 for t in oc.TEMPLATES}, twin={t: 0.017 for t in oc.TEMPLATES}))
+    _expect(like["label"] == "b0_like", f"{like['numbers']}")
+    absent = oc.decide_estimates(_rows())
+    _expect(absent["label"] == "offset_absent" and not absent["decided"], "absent")
+    only = oc.decide_estimates(_rows(base={t: 0.02 for t in oc.TEMPLATES}))
+    _expect(only["label"] == "superposition_only", f"{only['numbers']}")
+    between = oc.decide_estimates(
+        _rows(
+            base={"b0": 0.0164, "k4": 0.005, "k8": 0.005, "k12": 0.005},
+            twin={"b0": 0.0166, "k4": 0.005, "k8": 0.005, "k12": 0.005},
+        )
+    )
+    _expect(between["label"] == "unresolved", f"{between['numbers']['m_six_cz']}")
+    context = oc.decide_estimates(
+        _rows(base={"b0": 0.0164, "k4": 0.012, "k8": 0.012, "k12": 0.012}, twin={"b0": 0.0166})
+    )
+    _expect(context["label"] == "unresolved_context", f"{context['label']}")
+
+
+def test_heterogeneous_blocks_and_batches_are_unresolved_and_never_pooled_into_a_class() -> None:
+    """Opposite 6-CZ blocks pool to zero and one large block pools to the b0 value; the bound refuses both."""
+    opposite = _rows(base={"b0": 0.0164, "k4": 0.03, "k8": -0.03}, twin={"b0": 0.0166, "k4": 0.03, "k8": -0.03})
+    _expect(oc.decide_estimates(opposite)["label"] == "unresolved_block", "opposite blocks")
+    single = _rows(base={"b0": 0.0164, "k4": 0.03}, twin={"b0": 0.0166, "k4": 0.03})
+    _expect(oc.decide_estimates(single)["label"] == "unresolved_block", "one large block")
+    rows = _rows(base={"b0": 0.0164}, twin={"b0": 0.0166})
+    se = rows["b0"]["base"][0][1]
+    rows["b0"]["base"] = [(0.0164 + 4 * se, se), (0.0164 - 4 * se, se)]
+    _expect(oc.decide_estimates(rows)["label"] == "unresolved_batch", "disagreeing replicate batches")
+
+
+def test_the_operating_characteristics_state_the_chance_of_deciding_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    ocs = oc.operating_characteristics(draws=1500)
+    over = ocs["over_rotation"]
+    _expect(over.get("zero", 0.0) >= 0.9 and sum(v for k, v in over.items() if k != "zero") <= 0.1, f"{over}")
+    _expect(ocs["coin_dropout"].get("b0_like", 0.0) >= 0.9, f"{ocs['coin_dropout']}")
+    _expect(ocs["absent"].get("offset_absent", 0.0) >= 0.9 and not ocs["absent"].get("zero"), f"{ocs['absent']}")
+    for world in ("over_rotation", "q12_correlation", "coin_dropout"):
+        wrong = {k: v for k, v in ocs[world].items() if k in ("zero", "b0_like", "superposition_only")}
+        _expect(max(wrong, key=lambda k: wrong[k]) == oc.WORLD_LABELS[world], f"{world}: {wrong}")
+    stored = json.loads((CASES / oc.TUNA_SERIES / "prediction.json").read_text(encoding="utf-8"))
+    nominal = stored["operating_characteristics"]["stationary"]["over_rotation"]
+    _expect(nominal["zero"] >= 0.8, f"the over-rotation world decides in {nominal['zero']} of runs")
+    monkeypatch.setattr(oc, "OC_SEED_INDEX", 0)
+    first = oc.operating_characteristics(draws=300)
+    _expect(first == oc.operating_characteristics(draws=300), "the operating characteristics are deterministic")
+
+
+def test_a_coarser_standard_error_than_the_limit_is_flagged_in_the_calibration(
+    built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    manifest = json.loads(built[oc.TUNA_SERIES]["batch-00/cases.json"])
+    monkeypatch.setattr(oc, "JOINT_SE_LIMIT", 1e-5)
+    result = oc.evaluate(worlds["over_rotation"], manifest)
+    _expect(not result["calibration"]["classes"]["informative"], "the calibration reads uninformative")
+    _expect(result["decision"]["label"] == "zero", "the decider does not depend on the calibration")
 
 
 def test_the_classes_read_the_preregistered_thresholds() -> None:
     _expect(oc.classify_large(0.036, 0.002) and not oc.classify_large(0.02, 0.002), "large threshold")
     _expect(oc.classify_large(0.031, 0.002) and not oc.classify_large(0.0, 0.002), "large with se")
     _expect(oc.classify_small([(0.0, 0.002), (0.004, 0.0015)]) and not oc.classify_small([(0.01, 0.002)]), "small")
-    six = oc.six_cz_class({"k4": (0.001, 0.004), "k8": (-0.001, 0.004), "k12": (0.0, 0.004)}, (0.0164, 0.0039))
-    _expect(six["class"] == "zero", f"{six}")
-    like = oc.six_cz_class({"k4": (0.017, 0.004), "k8": (0.015, 0.004), "k12": (0.016, 0.004)}, (0.0164, 0.0039))
-    _expect(like["class"] == "b0-like", f"{like}")
-    between = oc.six_cz_class({"k4": (0.005, 0.004), "k8": (0.005, 0.004), "k12": (0.005, 0.004)}, (0.0164, 0.0039))
-    _expect(between["class"] == "unresolved", f"{between}")
-
-
-def test_a_coarser_standard_error_than_the_limit_is_uninformative(
-    built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]], monkeypatch: pytest.MonkeyPatch
-) -> None:
-    manifest = json.loads(built[oc.TUNA_SERIES]["batch-00/cases.json"])
-    monkeypatch.setattr(oc, "JOINT_SE_LIMIT", 1e-4)
-    result = oc.evaluate(worlds["over_rotation"], manifest)
-    _expect(
-        not result["decision"]["informative"] and result["decision"]["outcome"].startswith("uninformative"), "joint"
-    )
-    monkeypatch.undo()
-    monkeypatch.setattr(oc, "SELECTOR_SE_LIMIT", 1e-4)
-    result = oc.evaluate(worlds["over_rotation"], manifest)
-    _expect(not result["decision"]["informative"], "selector")
 
 
 def _runs(
@@ -352,26 +475,26 @@ def test_analyze_scores_collected_batches_and_reports_an_incomplete_series(
     result = oc.analyze(dirs, tmp_path / "cases")
     _expect(result["complete"] and result["claim_kind"] == "hardware acquisition", f"{result.get('batches')}")
     json.dumps(result, allow_nan=False)
-    _expect(result["decision"]["outcome"].startswith("over-rotation supported"), f"{result['decision']}")
-    _expect(result["control"]["positive_at_3_se"] and result["classes"]["six_cz"] == "zero", f"{result['classes']}")
+    _expect(result["decision"]["label"] == "zero", f"{result['decision']}")
     _expect(not result["drift_covariate"]["references"]["flagged"], "drift")
     partial = oc.analyze(dirs[:3], tmp_path / "cases")
     _expect(not partial["complete"] and partial["batches"] == ["batch-00", "batch-01", "batch-02"], f"{partial}")
-    sanity = oc.sanity(dirs[3:], tmp_path / "cases")
-    _expect(sanity["batches"] == ["batch-03", "batch-04", "batch-05", "batch-06"] and sanity["drift"], "sanity")
+    sanity = oc.sanity(dirs[:8], tmp_path / "cases")
+    _expect(sanity["batches"] == [f"batch-{n:02d}" for n in range(8)] and sanity["drift"], "sanity")
     with pytest.raises((ValueError, SystemExit), match="differs from"):
-        shutil.copy(dirs[4] / "k4.cq", dirs[3] / "b0.cq")
+        shutil.copy(dirs[0] / "readout-0.cq", dirs[0] / "b0.cq")
         oc.analyze(dirs, tmp_path / "cases")
 
 
 def _qx_shots(files: dict[str, str], uniform: str | None = None) -> dict[str, list[str]]:
-    manifest = json.loads(files["batch-00/cases.json"])
     out: dict[str, list[str]] = {}
-    for row in manifest["circuits"]:
-        ideal = [1.0 / oc.NOUT] * oc.NOUT if row["template"] == uniform else row["ideal"]
-        roles = manifest["templates"][row["template"]]["roles"]
-        counts = oc.cc.largest_remainder(np.array(ideal), manifest["shots"])
-        out[f"batch-00/{row['file']}"] = oc.cc.place_counts(counts, oc.KEYS, roles, manifest["nqubits"])
+    for batch in sorted({rel.split("/")[0] for rel in files if rel.startswith("batch-")}):
+        manifest = json.loads(files[f"{batch}/cases.json"])
+        for row in manifest["circuits"]:
+            ideal = [1.0 / oc.NOUT] * oc.NOUT if row["file"] == uniform else row["ideal"]
+            roles = manifest["templates"][row["template"]]["roles"]
+            counts = oc.cc.largest_remainder(np.array(ideal), manifest["shots"])
+            out[f"{batch}/{row['file']}"] = oc.cc.place_counts(counts, oc.KEYS, roles, manifest["nqubits"])
     return out
 
 
@@ -381,6 +504,67 @@ def test_the_qx_control_passes_on_the_ideal_laws_and_fails_on_a_wrong_circuit(
     files = built[oc.QX_SERIES]
     good = oc.analyze(_runs(tmp_path / "g", oc.QX_SERIES, files, _qx_shots(files)), tmp_path / "g" / "cases")
     _expect(good["claim_kind"] == oc.CONTROL_KIND and good["qx_control"]["pass"], f"{good['qx_control']}")
-    wrong = _qx_shots(files, uniform="k4")
-    bad = oc.analyze(_runs(tmp_path / "w", oc.QX_SERIES, files, wrong), tmp_path / "w" / "cases")
-    _expect(not bad["qx_control"]["pass"], "a uniform law in the k4 slot passed")
+    _expect(len(good["qx_control"]["arms"]) == 12, "every base circuit and twin is controlled")
+    bad_shots = _qx_shots(files, uniform="k4-coin1.cq")
+    bad = oc.analyze(_runs(tmp_path / "w", oc.QX_SERIES, files, bad_shots), tmp_path / "w" / "cases")
+    _expect(not bad["qx_control"]["pass"], "a uniform law in a twin slot passed")
+
+
+def _stub(tmp_path: Path, failures: list[str]) -> tuple[Path, Path]:
+    """A stand-in for qi_platform.py: it logs every call, refuses the first submits with the given messages, then
+    accepts every call."""
+    log = tmp_path / "calls.log"
+    script = tmp_path / "platform.py"
+    script.write_text(
+        "import sys\n"
+        f"LOG = {str(log)!r}\n"
+        f"REFUSALS = {failures!r}\n"
+        "with open(LOG, 'a', encoding='utf-8') as handle:\n"
+        "    handle.write(' '.join(sys.argv[1:]) + '\\n')\n"
+        "if sys.argv[1] == 'submit':\n"
+        "    count = sum(1 for line in open(LOG, encoding='utf-8') if line.startswith('submit'))\n"
+        "    if count <= len(REFUSALS):\n"
+        "        sys.exit(REFUSALS[count - 1])\n",
+        encoding="utf-8",
+    )
+    return script, log
+
+
+def _submit(tmp_path: Path, failures: list[str], batches: int = 2) -> tuple[int, str, str]:
+    series = tmp_path / "series"
+    for n in range(batches):
+        (series / f"batch-{n:02d}").mkdir(parents=True)
+    script, log = _stub(tmp_path, failures)
+    env = {
+        "PATH": "/usr/bin:/bin",
+        "QI_PYTHON": sys.executable,
+        "QI_PLATFORM": str(script),
+        "SANITY_COMMAND": "true",
+        "QI_PAUSE_SLEEP": "0",
+    }
+    done = subprocess.run(
+        ["sh", str(SUBMIT), "7", str(series), str(tmp_path / "runs"), "STAMP", "QUOTE"],
+        capture_output=True,
+        text=True,
+        env=env,
+        check=False,
+    )
+    return done.returncode, log.read_text(encoding="utf-8") if log.exists() else "", done.stderr
+
+
+def test_the_submission_sequence_waits_out_the_reported_pause_and_keeps_one_batch_queued(tmp_path: Path) -> None:
+    refusal = "the last hardware job finished less than 30 s ago; wait 17 more seconds so the platform can calibrate"
+    code, calls, err = _submit(tmp_path, [refusal, refusal])
+    _expect(code == 0, f"exit {code}: {err}")
+    lines = calls.splitlines()
+    kinds = [ln.split()[0] for ln in lines]
+    _expect(kinds == ["submit", "submit", "submit", "collect", "submit", "collect"], f"{kinds}")
+    _expect("sleep 18" in err, f"the wait follows the reported remainder: {err}")
+
+
+def test_the_submission_sequence_stops_on_the_first_failure_and_after_ten_refusals(tmp_path: Path) -> None:
+    code, calls, err = _submit(tmp_path, ["Quantum backend error"])
+    _expect(code != 0 and calls.count("submit") == 1 and "collect" not in calls, f"{code} {calls} {err}")
+    refusal = "wait 5 more seconds so the platform can calibrate"
+    code, calls, err = _submit(tmp_path / "x", [refusal] * 12)
+    _expect(code != 0 and calls.count("submit") == 10, f"{code} {calls.count('submit')} {err}")
