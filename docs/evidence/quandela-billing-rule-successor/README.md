@@ -1,8 +1,9 @@
 # Quandela iterated-job billing rule: successor for pinned records
 
 `qd_platform.job_billing` and `qd_platform.charged` bill an iterated Quandela job 1 credit plus 1e-6 per shot of
-the smaller of the shots it used and its largest iteration's `max_shots`. An iterated job whose result reports no
-shots-used figure bills the cap in full. The [credit optimization runbook](../../runbooks/quandela-credit-optimization.md),
+the smaller of the shots it used and its largest iteration's `max_shots`. `qd_platform.charged` takes an isolated
+usage report as the charge where one exists, bills nothing for a job canceled before its start, and bills the cap in
+full only when neither a usage report nor a shots-used figure gives the charge. The [credit optimization runbook](../../runbooks/quandela-credit-optimization.md),
 "The billing rule", carries the measured charges behind the rule: run
 `2026-10-30T190300Z-qpu_ascella-a5-kernel-slice` used 60,000 shots under a 100,000 cap and was charged 1.06 credits.
 

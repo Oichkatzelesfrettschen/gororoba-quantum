@@ -52,11 +52,40 @@ def flatten(documents: dict[str, Any], prefix: str = "") -> dict[str, Any]:
     return out
 
 
+def raw(documents: dict[str, Any], prefix: str = "") -> dict[str, bytes]:
+    out: dict[str, bytes] = {}
+    for name, content in documents.items():
+        if isinstance(content, dict):
+            out |= raw(content, f"{prefix}{name}/")
+        else:
+            out[f"{prefix}{name}"] = content.encode() if isinstance(content, str) else content
+    return out
+
+
+def reserialize(original: bytes, value: Any) -> bytes:
+    """`value` in the one serialization that reproduces `original` byte for byte from its own parse."""
+    parsed = json.loads(original)
+    for sort_keys in (False, True):
+        form = (json.dumps(parsed, indent=1, sort_keys=sort_keys) + "\n").encode()
+        if form == original:
+            return (json.dumps(value, indent=1, sort_keys=sort_keys) + "\n").encode()
+    raise AssertionError("no indent=1 serialization reproduces the original record")
+
+
 def changed(original: dict[str, Any], successor: dict[str, Any]) -> dict[str, set[str]]:
+    """JSON pointers that differ per record; a record outside them keeps its bytes, and a changed record equals the
+    original producer's serialization of its parsed successor value, so formatting cannot drift unseen."""
     before, after = flatten(original), flatten(successor)
     if before.keys() != after.keys():
         raise AssertionError(f"record sets differ: {sorted(before.keys() ^ after.keys())}")
-    return {name: diff for name in before if (diff := differences(before[name], after[name]))}
+    found = {name: diff for name in before if (diff := differences(before[name], after[name]))}
+    old_bytes, new_bytes = raw(original), raw(successor)
+    for name in before:
+        if name not in found and old_bytes[name] != new_bytes[name]:
+            raise AssertionError(f"{name}: bytes differ while its parsed value does not")
+        if name in found and new_bytes[name] != reserialize(old_bytes[name], after[name]):
+            raise AssertionError(f"{name}: serialization differs from the original producer's")
+    return found
 
 
 def test_pinned_producers_keep_their_recorded_bytes() -> None:
@@ -76,7 +105,13 @@ def test_supersede_refuses_a_field_that_moved() -> None:
 
 
 def test_rule_names_the_cap_as_ceiling_and_the_used_shots() -> None:
-    for phrase in ("smaller of the shots it used", "qd_platform.job_billing", "ceiling"):
+    for phrase in (
+        "smaller of the shots it used",
+        "isolated usage report",
+        "canceled before its start bills nothing",
+        "qd_platform.charged",
+        "ceiling",
+    ):
         if phrase not in billing_rule_v2.RULE:
             raise AssertionError(f"the successor rule omits {phrase!r}")
 
@@ -109,8 +144,12 @@ def test_bdsc_case_successor_check_round_trips(tmp_path: Path) -> None:
         records_v2.check("stationarity", tmp_path, None)
 
 
-def test_predecessor_successor_changes_only_credit_basis_and_its_source(tmp_path: Path) -> None:
+def test_predecessor_successor_changes_only_credit_basis_and_its_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     original = predecessor.documents()
+    # One build of the original serves every successor call below, which keeps the test inside the call budget.
+    monkeypatch.setattr(predecessor, "documents", lambda: dict(original))
     successor = predecessor_v2.documents()
     expected = {
         "cases.json": {"/preregistered/credit_basis", f"/analysis_sources/{predecessor_v2.BUILDER}"},
@@ -135,6 +174,10 @@ def test_bdsc_certificate_successor_changes_only_billing_fields() -> None:
     import bdsc_certificate_v2 as cert_v2
 
     found = changed(cert.documents(), cert_v2.documents())
-    expected = {name: {"/" + "/".join(path)} for name, path, _, _ in cert_v2.SUPERSEDED}
+    # The two pointers docs/evidence/quandela-billing-rule-successor/README.md names for bdsc_certificate.py.
+    expected = {
+        "planning.json": {"/resources_historical/rates/credits"},
+        "qualification_case.json": {"/resources/billing_rule"},
+    }
     if found != expected:
         raise AssertionError(f"successor changes {found}, expected {expected}")

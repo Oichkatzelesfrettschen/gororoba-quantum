@@ -1,21 +1,27 @@
 """The iterated-job billing statement that versioned producers write in place of the full-cap wording.
 
-`qd_platform.job_billing` holds the rule: one credit per job plus 1e-6 per billed shot, where an iterated job
-bills the smaller of the shots it used and its largest iteration's max_shots, and the cap in full when its
-result reports no shots used. docs/evidence/quandela-billing-rule-successor/README.md lists the pinned records
-whose fields state the cap as the charge and the producers that wrote them; each producer's `_v2` successor
-rebuilds its records and replaces only those fields through `supersede`.
+`qd_platform.job_billing` and `qd_platform.charged` hold the rule: a completed job bills one credit plus 1e-6 per
+billed shot, where a completed iterated job bills the smaller of the shots it used and its largest iteration's
+max_shots. `charged` takes an isolated usage report as the charge first, bills nothing for a job canceled before its
+start, and bills the cap in full only when neither a usage report nor a shots-used figure gives the charge.
+docs/evidence/quandela-billing-rule-successor/README.md lists the pinned records whose fields state the cap as the
+charge and the producers that wrote them; each producer's `_v2` successor rebuilds its records and replaces only
+those fields through `supersede`.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-RULE_SOURCE = "qd_platform.job_billing, docs/runbooks/quandela-credit-optimization.md section 'The billing rule'"
+RULE_SOURCE = (
+    "qd_platform.job_billing and qd_platform.charged, docs/runbooks/quandela-credit-optimization.md section "
+    "'The billing rule'"
+)
 RULE = (
-    "1 credit per job plus 1e-6 per billed shot; an iterated job bills the smaller of the shots it used and its "
-    "largest iteration's max_shots, and that cap in full when its result reports no shots used "
-    f"({RULE_SOURCE}); a credit figure computed at max_shots is the job's ceiling"
+    "a completed job bills 1 credit plus 1e-6 per billed shot, and a completed iterated job bills the smaller of the "
+    "shots it used and its largest iteration's max_shots; an isolated usage report gives the charge where one exists, "
+    "a job canceled before its start bills nothing, and the cap bills in full only when neither a usage report nor a "
+    f"shots-used figure gives the charge ({RULE_SOURCE}); a credit figure computed at max_shots is the job's ceiling"
 )
 
 

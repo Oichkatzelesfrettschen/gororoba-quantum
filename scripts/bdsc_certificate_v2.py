@@ -25,7 +25,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import bdsc_certificate as cert  # noqa: E402
 from billing_rule_v2 import RULE, supersede  # noqa: E402
 
-# (record, JSON path, wording bdsc_certificate.py emits, successor wording)
+# Each SUPERSEDED row names a record, the JSON path of its billing field, the wording bdsc_certificate.py emits there
+# and the successor wording that replaces it.
 SUPERSEDED = (
     (
         "planning.json",

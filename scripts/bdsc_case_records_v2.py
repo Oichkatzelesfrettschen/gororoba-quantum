@@ -29,7 +29,7 @@ import bdsc_stationarity as st  # noqa: E402
 from billing_rule_v2 import RULE, supersede  # noqa: E402
 
 OLD_RULE = "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots"
-# family -> the manifest field that carries the sha256 of case.json
+# CASE_DIGEST maps each family to the job-manifest field that carries the sha256 of its case.json.
 CASE_DIGEST = {"diagnostic": "diagnostic_case_sha256", "stationarity": "stationarity_case_sha256"}
 
 Documents = dict[str, bytes | dict[str, bytes]]
