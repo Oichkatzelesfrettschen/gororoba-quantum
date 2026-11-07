@@ -94,3 +94,48 @@ jobs:
           name: pytest-durations-contracts
           path: ${{ runner.temp }}/pytest-report.xml
           if-no-files-found: ignore
+
+  # Temporary: rebinds the runner-image ledger after the cap removal and the qiskit 2.6.2 pin, on a hosted runner
+  # whose OpenBLAS selects the Haswell core natively (AMD EPYC 7763, no avx512f), the path the ledger's records were
+  # written on. Three copies raise the chance of drawing that CPU; a copy on another CPU writes nothing.
+  ledger-rebind:
+    name: ledger-rebind
+    if: github.head_ref == 'deps/pins-match-build-host'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        copy: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: ./.github/actions/pins-venv
+      - name: Require a Haswell-core CPU and podman
+        id: cpu
+        run: |
+          model=$(lscpu | sed -n 's/^Model name:[[:space:]]*//p')
+          core=$(GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 "$PYTHON" -c "import numpy, threadpoolctl; print(*sorted({i.get('architecture') for i in threadpoolctl.threadpool_info() if i.get('internal_api') == 'openblas'}))")
+          avx512=$(grep -c -m1 avx512f /proc/cpuinfo || true)
+          echo "cpu=$model openblas=$core avx512f=$avx512 podman=$(podman --version 2>&1)"
+          if [ "$core" = Haswell ] && [ "$avx512" = 0 ] && command -v podman >/dev/null; then
+            echo "ok=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::copy ${{ matrix.copy }} drew $model (OpenBLAS $core); it writes nothing"
+          fi
+      - name: Rewrite and bind every ledger record
+        if: steps.cpu.outputs.ok == '1'
+        timeout-minutes: 140
+        run: |
+          export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+          sh ci/runner_image_rebind.sh 2>&1 | tee "$RUNNER_TEMP/rebind.log"
+          git status --porcelain --untracked-files=all > "$RUNNER_TEMP/changed.txt"
+          tar czf "$RUNNER_TEMP/rebind.tgz" ci/runner_image_records.json $(awk '{print $2}' "$RUNNER_TEMP/changed.txt" | grep -v '^ci/runner_image_records.json$') 
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: steps.cpu.outputs.ok == '1' && always()
+        with:
+          name: ledger-rebind-${{ matrix.copy }}
+          path: |
+            ${{ runner.temp }}/rebind.tgz
+            ${{ runner.temp }}/rebind.log
+            ${{ runner.temp }}/changed.txt
+          if-no-files-found: warn
