@@ -1,0 +1,7 @@
+decision-label shares, 20000 simulated series per world, seed docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json value 1
+  stationary
+    over_rotation_x_all_before: b0_like 0.4825, offset_absent 0.0015, superposition_only 0.0001, unresolved 0.4676, unresolved_batch 0.0078, unresolved_block 0.0194, unresolved_context 0.0210, zero 0.0001
+    over_rotation_x_all_after: offset_absent 0.0014, superposition_only 0.0003, unresolved 0.0238, unresolved_batch 0.0086, unresolved_block 0.0209, unresolved_context 0.0609, zero 0.8841
+  batch drift sd 0.003
+    over_rotation_x_all_before: b0_like 0.4121, offset_absent 0.0079, superposition_only 0.0020, unresolved 0.4119, unresolved_batch 0.0520, unresolved_block 0.0749, unresolved_context 0.0389, zero 0.0003
+    over_rotation_x_all_after: offset_absent 0.0092, superposition_only 0.0031, unresolved 0.0493, unresolved_batch 0.0566, unresolved_block 0.0761, unresolved_context 0.0825, zero 0.7231

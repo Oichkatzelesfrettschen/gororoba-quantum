@@ -68,8 +68,9 @@ A twin with the data qubit d1 (the role q12 holds in the 6-CZ blocks) fixed leav
 qubit that starts d0 holds four gates (the data Hadamard mixed with later rotations), so fixing d0 changes the gate
 sequence. No circuit of the case separates the over-rotation from the q12 flip, so the q12 correlation rests on readout
 data. The coin series' retained brackets already measure it: `c2_q12_bracket.txt` splits the selector's assignment by
-q12's read value in both brackets and both bit orders, and the 0.036 flip is excluded at 5.6 to 18 standard errors
-(differences +0.0057, -0.0027, +0.0003 and -0.0021 against the +-0.034 the flip needs). That check, like the X-only
+q12's read value, in the bit order of the coin-series reader (qubit 0 rightmost). The all-ones bracket decides, since a
+correlated decay of q8 and q12 would push it toward the flip: difference +0.0003 (se 0.0024) against the -0.034 the
+0.036 flip needs, excluded at 14.5 standard errors; the all-zeros bracket supports it at 5.6. That check, like the X-only
 calibration of this case, covers the assignment context: a q12 correlation that appears only after the template's CZ and
 X90 schedule stays open, and no outcome label changes.
 
@@ -112,7 +113,7 @@ Z = 3 standard errors. The raw counts are read.
 
 | class | outcome | effect on A5-186 |
 |---|---|---|
-| zero | 6-CZ blocks read zero in both contexts: the coin-conditioned dropout is excluded; the over-rotation and the q12 correlation remain and these observables do not separate them | survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction of zero (|contrast| <= 0.0039), is unmet; the q12 correlation stays open |
+| zero | 6-CZ blocks read zero in both contexts: the coin-conditioned dropout is excluded; consistent with the over-rotation, the assignment-level q12 flip being excluded by the retained brackets; a post-schedule q12 correlation remains | survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction of zero (|contrast| <= 0.0039), is unmet; a post-schedule q12 correlation stays open |
 | b0-like | 6-CZ blocks read the b0 value in both contexts: consistent with the coin-conditioned dropout; the over-rotation and the q12 correlation are excluded | refuted as stated: the resolved 6-CZ response is inconsistent with the bounded prediction of zero |
 | superposition only | b0's classical-coin twin reads below its base contrast | refuted as modeled: the over-rotation predicts the offset in the twin as well |
 | offset absent | b0's base contrast no longer reads positive | unchanged |
