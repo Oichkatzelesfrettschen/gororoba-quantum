@@ -29,7 +29,8 @@ BODIES = {member.name: member.replica_bodies or () for member in GROUP.members}
 REPLICAS = pw.PLACEMENTS
 PUBS = {name: f"synthetic_pub_{index:02d}" for index, name in enumerate(BODIES)}
 SHOTS = 200_000
-# Sampling seed of the multinomial draws: index 3 of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json.
+# Sampling seed of the multinomial draws: index 3 of the ANU QRNG draw
+# docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json.
 SIMULATION_SEED = 64049
 # Physical qubit measured into clbit c of placement r, deliberately out of order.
 WRITERS = {r: [10 * r + 3, 10 * r + 1, 10 * r + 2, 10 * r] for r in range(REPLICAS)}
@@ -133,23 +134,20 @@ def test_each_block_is_scored_against_its_own_ideal_not_its_neighbors() -> None:
 
 
 def test_the_sixty_four_dimensional_operands_average_their_two_copies() -> None:
-    corrected = _stats(_entry(), corrected=True)
-    readings = analysis.placement_readings(_entry(), _writers(), GROUP, corrected=True)["o64"]
-    _expect([r["block"] for r in readings[:8]] == [r["block"] for r in readings[8:]], "copies hold different blocks")
-    blocks = analysis.block_means(readings)
+    entry = _entry()
+    corrected = _stats(entry, corrected=True)
+    readings = analysis.placement_readings(entry, _writers(), GROUP, corrected=True)
+    rows = readings["o64"]
+    _expect([r["block"] for r in rows[:8]] == [r["block"] for r in rows[8:]], "copies hold different blocks")
+    blocks = analysis.block_means(rows)
     _expect(len(blocks) == 8 and all(row["copies"] == 2 for row in blocks.values()), "block copies")
     first = next(iter(blocks))
     _expect(abs(corrected[f"{first}_nullity_estimate"]["se"] ** 2 - blocks[first]["nullity_variance"]) < 1e-15, "se")
-    _expect(
-        analysis.copy_agreement(
-            {
-                "o64": readings,
-                "n64": analysis.placement_readings(_entry(), _writers(), GROUP, corrected=True)["n64"],
-                "m64": analysis.placement_readings(_entry(), _writers(), GROUP, corrected=True)["m64"],
-            }
-        )[0][1],
-        "copy agreement",
-    )
+    agreement = analysis.copy_agreement(readings)
+    _expect([title for title, _, _ in agreement] == [f"copy agreement {k}64" for k in "nom"], f"{agreement}")
+    _expect(all(ok for _, ok, _ in agreement), "ideal copies disagree")
+    shifted = {**readings, "o64": [*rows[:8], *({**r, "nullity": r["nullity"] + 1.0} for r in rows[8:])]}
+    _expect(not dict((t, ok) for t, ok, _ in analysis.copy_agreement(shifted))["copy agreement o64"], "shift")
 
 
 def test_delta_method_standard_error_matches_the_multinomial_simulation() -> None:
