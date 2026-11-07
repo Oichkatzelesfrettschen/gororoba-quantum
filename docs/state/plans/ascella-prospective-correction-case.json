@@ -11,14 +11,14 @@
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_long_horizon_reading.py"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "The readings below are fixed before acquisition. The per-seed correction scored on job-08 (variance ratio 7.71) was defined after job-08 returned, and the interpretation review of that branch asked for a frozen estimator scored unchanged on a fresh acquisition. The frozen table reproduces the retrospective job-08 numbers exactly, so the estimator is the one reviewed."
   },
   "scope": "Job-09 submits job-02's 64 settings of theta2-x-arm0 at 32,768 samples per iteration with job-02's compilation seeds under the same setting names, anchors every eighth position, the 56 perturbed meshes in the order of values 0..55 of docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json; value 56 seeds the score's resamples, 57 its power record, 58 the job-08 against job-09 reading. Table: ascella_correction_score.py --freeze over job-02 and job-03 alone, offset slope x (c2 + c3) / 2 by setting name, frozen in correction-table.json before submission. Mesh gate: a sim:ascella run of job-09's request must serve every one of its 64 unitaries within 1e-6 of job-02's, or the case stops before the QPU request. M: job-09's perturbed settings whose served unitary lies within 1e-6 of job-02's; fewer than 16 reads nothing. C (primary): R = var(d) / var(d - t) over those meshes with its two-sided 98 % bootstrap interval (20,000 resamples); correction holds when the lower end reaches 2, fails when the upper end stays below 2, indeterminate otherwise. S (secondary): ascella_long_horizon_reading.py job-08 against job-09 by the job-08 case's persistence rule. Power (correction-power.json): persistent errors at amplitude 1.0 and 0.88 hold in every replicate, 0.75 in 0.85; redrawn at correlation 0.5 fails in 0.78 and fully redrawn in every replicate.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Run the sim:ascella mesh gate of job-09's request on the owner's approval of the written case, then the qpu:ascella request.",
+  "next_action": "None; a claim that interprets job-09 with job-08 against job-02 and job-03 is a later change.",
   "related": [
     "ascella-long-horizon-seed-repeat-case",
     "ascella-seed-repeat-case"
@@ -83,28 +83,102 @@
       "id": "sim-mesh-gate",
       "action": "Run job-09's request on sim:ascella and require every served unitary within 1e-6 of job-02's.",
       "acceptance": "The simulator run is retained and ascella_correction_score.py --mesh-gate passes on it.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "table-freeze"
+      ],
+      "receipts": [
+        {
+          "result": "The sim:ascella run of job-09 (e1be94c5) is retained and ascella_correction_score.py --mesh-gate reads all 64 served meshes within 2.45e-7 of job-02s.",
+          "observed_at": "2026-11-07T04:43:19+00:00",
+          "revision": "e27f23bf12b39de4f5bc0ae5263db441d1163baf",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim/results.json",
+              "sha256": "099151d773e45d8608d2d926a49540e177dc2bfafbc427073c668a81e0b4a973"
+            }
+          ],
+          "scope_sha256": "8a7980a6b13cc7f182fdcef33beba3bb3e3ef611f83d32646e96d7038bdcdfd1"
+        }
       ]
     },
     {
       "id": "qpu-acquisition",
       "action": "Run job-09 on qpu:ascella under the owner's approval and retain it.",
       "acceptance": "The QPU run is collected and retained with its research_state acquisition.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "sim-mesh-gate"
+      ],
+      "receipts": [
+        {
+          "result": "Job 6400527c completed on qpu:ascella (194 s) and is retained with its research_state acquisition; all 64 meshes are job-02s.",
+          "observed_at": "2026-11-07T04:43:19+00:00",
+          "revision": "e27f23bf12b39de4f5bc0ae5263db441d1163baf",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09/results.json",
+              "sha256": "5deb4064a1f333d5890b660653305f9dd301aca1c16f8db0f47c34c20921b5d4"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qd-qpu-ascella-signed-coherence-job-09",
+              "sha256": "2315773cd9db4c958108adf9f5eafef2c6851ba2a3017be75b686865d3f36c8d"
+            }
+          ],
+          "scope_sha256": "da1cba1ca128d08ac206bf3b0bb608fc85c573f00d89f921729a88cff8c8a03b"
+        }
       ]
     },
     {
       "id": "score",
       "action": "Score the frozen table on job-09 and read job-08 against job-09.",
       "acceptance": "correction-score-09.json and long-horizon-reading-08-09.json are written and replay byte-identical.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "qpu-acquisition"
+      ],
+      "receipts": [
+        {
+          "result": "C reads correction holds (R 10.37, 98 % interval 6.16 to 16.21; SD 0.01085 to 0.00337); S against job-08 reads persists (slope 1.003, upper bound 1.102, full persistence 0.956; P1 fixed per mesh, r 0.958); both replay byte-identical.",
+          "observed_at": "2026-11-07T04:43:19+00:00",
+          "revision": "e27f23bf12b39de4f5bc0ae5263db441d1163baf",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/correction-score-09.json",
+              "sha256": "609ff2652fd7bb60e9bba61c415a0616df31a5bb7c2f6e0e595f03e50b40a277"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/long-horizon-reading-08-09.json",
+              "sha256": "d3cbfe75419f0b555e422f4104f04e781441be907bac59995d0acc50bb736f85"
+            }
+          ],
+          "scope_sha256": "901ca04b8a431ad2f35956b0e1710146be829b853816de3dd40fda8a6a063df7"
+        }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The per-seed correction table frozen from job-02 and job-03 holds prospectively on job-09: R 10.37 (98 % interval 6.16 to 16.21), per-mesh SD 0.01085 to 0.00337, near the 10.89 noise limit; each mesh keeps job-08's error (slope 1.003).",
+  "receipts": [
+    {
+      "result": "Job 6400527c completed (194 s) and is retained; all 64 meshes are job-02's; C reads correction holds (R 10.37, interval 6.16 to 16.21) and S against job-08 reads persists (slope 1.003, upper bound 1.102).",
+      "evidence": [
+        {
+          "ref": "results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09/results.json",
+          "sha256": "5deb4064a1f333d5890b660653305f9dd301aca1c16f8db0f47c34c20921b5d4"
+        },
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/correction-score-09.json",
+          "sha256": "609ff2652fd7bb60e9bba61c415a0616df31a5bb7c2f6e0e595f03e50b40a277"
+        },
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/long-horizon-reading-08-09.json",
+          "sha256": "d3cbfe75419f0b555e422f4104f04e781441be907bac59995d0acc50bb736f85"
+        }
+      ],
+      "observed_at": "2026-11-07T04:43:40+00:00",
+      "revision": "e27f23bf12b39de4f5bc0ae5263db441d1163baf",
+      "scope_sha256": "a7fb81d3a934ecc72df5892262df66a217a9e0903c4a31488bad249f4e63adda"
     }
   ]
 }
