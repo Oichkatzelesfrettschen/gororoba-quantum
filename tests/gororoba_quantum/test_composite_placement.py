@@ -147,7 +147,9 @@ def _placed(placement: int, dist: dict[str, np.ndarray], ideal: dict[str, np.nda
 
 def _group(**changes: Any) -> Group:
     blocks = _blocks()
-    templates, bindings, bodies = [], [], {"plus": [], "minus": []}
+    templates: list[tuple[str, QuantumCircuit, np.ndarray]] = []
+    bindings: list[tuple[str, dict]] = []
+    bodies: dict[str, list[str]] = {"plus": [], "minus": []}
     for index, block in enumerate(blocks):
         template = pcb.block_template(block)
         template.name = f"syn_{index}"
@@ -190,12 +192,11 @@ def planned() -> Iterator[live_run.Choice]:
 def test_group_validation_admits_per_placement_laws_and_refuses_each_inconsistency() -> None:
     group = _group()
     _expect(group.members[0].replica_bodies is not None, "the first member is patterned under the opt-in")
-    plain = {"per_placement_laws": False, "placed_summary": None}
     with pytest.raises(ValueError, match="first member fixes the placement"):
-        dataclasses.replace(group, **plain)
+        dataclasses.replace(group, per_placement_laws=False, placed_summary=None)
     lead = Member("lead", QuantumCircuit(4, 4), group.members[0].ideal)
     with pytest.raises(ValueError, match="differs in ideal law"):
-        dataclasses.replace(group, members=(lead, *group.members), **plain)
+        dataclasses.replace(group, members=(lead, *group.members), per_placement_laws=False, placed_summary=None)
     with pytest.raises(ValueError, match="placed summary needs per-placement laws"):
         dataclasses.replace(Group("g", (lead,), lambda d: {}), placed_summary=_placed)
     with pytest.raises(ValueError, match="at most once"):
@@ -243,7 +244,7 @@ def test_each_placement_carries_its_own_body_ideal_digest_and_cz_count(planned: 
         _expect(len(fields["replica_ideals"]) == BLOCKS and len(fields["replica_cz"]) == BLOCKS, "record fields")
         _expect(fields["replica_cz"] == [r.count_ops().get("cz", 0) for r in entry.replicas], "cz per replica")
         _expect(len(set(entry.body_digests or ())) == BLOCKS, f"{entry.name}: bodies are not distinct")
-        _expect(len({tuple(law) for law in entry.replica_ideals}) > 1, f"{entry.name}: every ideal is the same")
+        _expect(len({tuple(law) for law in entry.replica_ideals or ()}) > 1, f"{entry.name}: every ideal is the same")
     minus, plus = (next(e for e in planned.entries if e.name == f"block_{arm}") for arm in ("minus", "plus"))
     _expect(
         [r.count_ops().get("cz", 0) for r in minus.replicas] == [r.count_ops().get("cz", 0) for r in plus.replicas],
