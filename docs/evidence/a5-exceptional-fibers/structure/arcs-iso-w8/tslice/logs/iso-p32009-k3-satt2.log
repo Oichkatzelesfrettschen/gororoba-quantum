@@ -1,0 +1,122 @@
+// ** redefining A_Z (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining A_Z (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining A_Z_L (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining A_Z_L (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining ASCII (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining ASCII (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining absValue (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining absValue (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining binomial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining binomial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining factorial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining factorial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining fibonacci (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining fibonacci (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining kmemory (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining kmemory (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining killall (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining killall (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining number_e (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining number_e (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining number_pi (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining number_pi (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining primes (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining primes (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining product (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining product (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining sort (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining sort (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining lsum (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining sum (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining sum (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining watchdog (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining watchdog (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining deleteSublist (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining deleteSublist (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining primecoeffs (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining primecoeffs (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining timeFactorize (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining timeFactorize (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining timeStd (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining timeStd (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining factorH (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+// ** redefining factorH (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-satt2.sing:3
+RESULT iso-p32009-k3-satt2 start: variables 6, forms 3, size(Q) 4, s 0
+[1048575:3]2(3)s7(2)sss8(3)s(4)s(5)s(6)s9(7)s(9)s(11)s(13)s(15)---10-s(13)s(15)s(17)s(19)s(21)s(22)s(23)s(25)---11-s(23)-s(24)-s(25)-s(26)s(28)-s(29)s(32)----------12-s(23)s(26)s(28)s--ss(30)-------------13-s(19)s(21)s(23)s(26)---s(25)s(27)----14---s(22)-------------15---------
+product criterion:23 chain criterion:640
+{1}[1048575:5]2(38)s3(52)s7(51)s(54)s8(58)s(61)ss(66)s(69)-s(71)-ss--9-s(70)s(71)s(73)s(74)s(78)s(83)s(88)---s(89)-s(91)-----------10-s(82)s(85)-s(86)s(89)-----s(88)s(93)-s(97)s(102)-s(106)s(111)--s(112)------------(100)-----------11-s(91)s(96)s(100)s(102)s(105)-s(106)s(107)s(110)------s(107)-s(110)-s(113)------s(111)s(116)s(120)-s(124)s(126)------------------------s(107)-s(112)-------12-s(108)-s(111)--s(113)-s(116)--s(118)--s(121)-----s---------------------(100)---s(103)s(109)s(116)s(120)--s(122)--------s(120)s(125)------------------------13-(100)s(103)-s(106)-s(111)-s(112)--------s(106)-s(108)----ss(112)--s(115)---------------(100)-----------s(91)----s(92)s(95)------------------s(80)s(84)----14------------s(70)----------------------------------------------------------15------------
+product criterion:0 chain criterion:1249
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+[1048575:3]2(42)s7(41)sss8(42)ss(44)s(45)s(46)---9-s(44)s(46)s(48)s(50)-------10-s(43)s(44)s(46)s(50)s(52)s(53)s(56)ss(57)s(60)------------s11(50)s(53)s(55)s(57)s(60)s(63)s(65)s(66)s(69)s(71)-----------s(62)-------------------12-s(44)s(46)s(49)s(52)s(54)s(55)s(58)----------s(52)---------s(46)-------------13-------s(28)-------------------------14---
+product criterion:25 chain criterion:755
+{1}[1048575:5]2(42)s3(57)s7(56)s(59)s8(64)s(67)ss(71)s(74)-s(76)-ss--9-s(75)s(76)s(78)s(79)s(83)s(88)s(93)---s(94)-s(96)-----------10-s(87)s(90)-s(91)s(94)-----s(93)s(98)-s(102)s(107)-s(111)s(116)--s(117)----------------s(104)s(108)s(111)-------11-s(106)s(111)s(115)s(117)s(120)-s(121)s(122)s(125)------s(123)s(127)-s(132)---------s(128)s(132)s(138)s(140)-s(145)-s(149)------s(147)-----------------------s(130)------s(131)------12-s(128)-s(131)--s(133)-s(136)--s(138)--s(141)-----s------------------------s(123)s(129)s(134)s(139)s(145)s(151)s(158)s(163)-s(166)---s(167)-s(168)---------------s(156)-----s(157)s(161)s(166)------------------------------13-s(138)-s(141)-s(146)-s(147)--------s(141)-s(143)----ss(147)--s(150)--------------------------------s(123)-------s(122)s(125)-------------------------(100)----------s(94)-------14---------s(80)----------------------------------------s(43)-------------------------------15------------
+product criterion:0 chain criterion:1741
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+[1048575:3]2(42)s7(41)sss8(42)ss(44)s(45)s(46)---9-s(44)s(46)s(48)s(50)-------10-s(43)s(44)s(46)s(50)s(52)s(53)s(56)ss(57)s(60)------------s11(50)s(53)s(55)s(57)s(60)s(63)s(65)s(66)s(69)s(71)-----------s(62)-------------------12-s(44)s(46)s(49)s(52)s(54)s(55)s(58)----------s(52)---------s(46)-------------13-------s(28)-------------------------14---
+product criterion:25 chain criterion:755
+RESULT iso-p32009-k3-satt2 saturation done: generators 43, exponent 1, s 34
+[1048575:3]2(42)s7(41)sss8(42)ss(44)s(45)s(46)---9-s(44)s(46)s(48)s(50)-------10-s(43)s(44)s(46)s(50)s(52)s(53)s(56)ss(57)s(60)------------s11(50)s(53)s(55)s(57)s(60)s(63)s(65)s(66)s(69)s(71)-----------s(62)-------------------12-s(44)s(46)s(49)s(52)s(54)s(55)s(58)----------s(52)---------s(46)-------------13-------s(28)-------------------------14---
+product criterion:25 chain criterion:755
+RESULT iso-p32009-k3-satt2 standard basis of the saturation: generators 43, s 36
+RESULT iso-p32009-k3-satt2 dim 4 degree 6 s 36
+[1048575:2]1(5)s(4)s(3)s(2)sss
+product criterion:15 chain criterion:0
+(S:43)rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+RESULT iso-p32009-k3-satt2 origin on the closure (all generators vanish at 0) 1 s 36

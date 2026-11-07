@@ -1,0 +1,22 @@
+// t-space slice iso-p32009-k5-satt2: k = 5 forms, saturation by t2; header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing (sha256 1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170)
+// forms l1..l5: docs/evidence/anu_qrng/draw-2026-11-06T113431Z.json, key iso-l1..iso-l5 of forms.json (values below 32009, index order)
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; string rl;
+option(prot);
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing";
+poly l1=21750*G[1]+1459*G[2]+1005*G[3]+12521*G[4]+1932*G[5]+27013*G[6]+12613*G[7]+27727*G[8]+961*G[9]+7363*G[10]+22910*G[11]+25771*G[12]+6054*G[13]+28147*G[14]+2128*G[15]+23464*G[16]+2206*G[17];
+poly l2=16226*G[1]+427*G[2]+317*G[3]+30317*G[4]+20375*G[5]+29522*G[6]+5258*G[7]+20396*G[8]+21877*G[9]+9596*G[10]+12824*G[11]+31456*G[12]+12750*G[13]+26108*G[14]+25857*G[15]+10487*G[16]+27202*G[17];
+poly l3=24241*G[1]+29292*G[2]+1330*G[3]+2472*G[4]+27950*G[5]+9079*G[6]+16451*G[7]+17152*G[8]+18923*G[9]+3208*G[10]+1491*G[11]+23510*G[12]+6943*G[13]+21013*G[14]+10330*G[15]+24757*G[16]+15113*G[17];
+poly l4=13218*G[1]+14568*G[2]+15498*G[3]+1746*G[4]+405*G[5]+25632*G[6]+27198*G[7]+29813*G[8]+2797*G[9]+9270*G[10]+25870*G[11]+28068*G[12]+14305*G[13]+4800*G[14]+29116*G[15]+26669*G[16]+17531*G[17];
+poly l5=28590*G[1]+7984*G[2]+13481*G[3]+28593*G[4]+30412*G[5]+23229*G[6]+10684*G[7]+30184*G[8]+24061*G[9]+20228*G[10]+4515*G[11]+25977*G[12]+4962*G[13]+26615*G[14]+4754*G[15]+30830*G[16]+7539*G[17];
+ideal Q=J,l1,l2,l3,l4,l5;
+ideal S0=t2;
+rl="RESULT iso-p32009-k5-satt2 "+"start: variables "+string(nvars(basering))+", forms 5, size(Q) "+string(size(Q))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k5-satt2.result", rl);
+def SS=sat_with_exp(Q,S0); ideal S=SS[1]; int ex=SS[2];
+rl="RESULT iso-p32009-k5-satt2 "+"saturation done: generators "+string(size(S))+", exponent "+string(ex)+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k5-satt2.result", rl);
+S=std(S);
+rl="RESULT iso-p32009-k5-satt2 "+"standard basis of the saturation: generators "+string(size(S))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k5-satt2.result", rl);
+int dm=dim(S); int dg=0; if (dm>=0) { dg=mult(S); }
+rl="RESULT iso-p32009-k5-satt2 "+"dim "+string(dm)+" degree "+string(dg)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k5-satt2.result", rl);
+int on=(size(reduce(S,std(maxideal(1))))==0);
+rl="RESULT iso-p32009-k5-satt2 "+"origin on the closure (all generators vanish at 0) "+string(on)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k5-satt2.result", rl);
+quit;

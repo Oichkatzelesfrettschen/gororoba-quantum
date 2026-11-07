@@ -1,0 +1,25 @@
+// t-space slice xmnp-p32009-k2-satt2h: k = 2 forms, saturation by t2 (homogenized standard basis, t2 last, then division by powers of t2); header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-np.sing (sha256 b47b99e772a0878d7d0aba3473d67f46944a46fb91a0189c840ec541f078f500)
+// forms l1..l2: docs/evidence/anu_qrng/draw-2026-11-06T113431Z.json, key x-l1..x-l2 of forms.json (values below 32009, index order)
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; string rl;
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-np.sing";
+poly l1=27367*G[1]+3861*G[2]+29705*G[3];
+poly l2=24460*G[1]+8493*G[2]+9529*G[3];
+ideal Q=J,l1,l2;
+ideal S0=t2;
+rl="RESULT xmnp-p32009-k2-satt2h "+"start: variables "+string(nvars(basering))+", forms 2, size(Q) "+string(size(Q))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/xmnp-p32009-k2-satt2h.result", rl);
+ideal Qs_Q=std(Q);
+ring rh_Q=32009,(t1,t4,t5,t6,t7,t9,h,t2),dp;
+ideal Qh=homog(imap(r,Qs_Q),h);
+ideal Sh=std(Qh);
+int ex=0; int ii; poly gg; int ee; for (ii=1;ii<=ncols(Sh);ii++) { gg=Sh[ii]; ee=0; while (gg!=0 && subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>ex) { ex=ee; } }
+ideal Sd=subst(Sh,h,1);
+setring r; ideal S=imap(rh_Q,Sd);
+kill rh_Q;
+rl="RESULT xmnp-p32009-k2-satt2h "+"saturation done: generators "+string(size(S))+", exponent "+string(ex)+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/xmnp-p32009-k2-satt2h.result", rl);
+S=std(S);
+rl="RESULT xmnp-p32009-k2-satt2h "+"standard basis of the saturation: generators "+string(size(S))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/xmnp-p32009-k2-satt2h.result", rl);
+int dm=dim(S); int dg=0; if (dm>=0) { dg=mult(S); }
+rl="RESULT xmnp-p32009-k2-satt2h "+"dim "+string(dm)+" degree "+string(dg)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/xmnp-p32009-k2-satt2h.result", rl);
+int on=(size(reduce(S,std(maxideal(1))))==0);
+rl="RESULT xmnp-p32009-k2-satt2h "+"origin on the closure (all generators vanish at 0) "+string(on)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/xmnp-p32009-k2-satt2h.result", rl);
+quit;

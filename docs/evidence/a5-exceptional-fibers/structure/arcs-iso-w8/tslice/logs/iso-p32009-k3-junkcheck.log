@@ -1,0 +1,48 @@
+// ** redefining A_Z (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining A_Z (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining A_Z_L (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining A_Z_L (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining ASCII (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining ASCII (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining absValue (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining absValue (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining binomial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining binomial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining factorial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining factorial (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining fibonacci (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining fibonacci (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining kmemory (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining kmemory (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining killall (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining killall (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining number_e (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining number_e (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining number_pi (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining number_pi (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining primes (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining primes (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining product (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining product (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining sort (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining sort (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining lsum (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining sum (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining sum (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining watchdog (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining watchdog (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining deleteSublist (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining deleteSublist (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining primecoeffs (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining primecoeffs (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining timeFactorize (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining timeFactorize (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining timeStd (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining timeStd (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining factorH (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+// ** redefining factorH (;return();) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-junkcheck.sing:3
+RESULT iso-p32009-k3-junkcheck slice: dim 4 degree 6 s 17
+// ** redefining ii (&& subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>exj) { exj=ee; } }) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-
+// ** redefining ee (&& subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>exj) { exj=ee; } }) docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/sing/iso-p32009-k3-
+RESULT iso-p32009-k3-junkcheck junk V(J,G) minus V(t2): dim 4 degree 6 s 17
+RESULT iso-p32009-k3-junkcheck origin on the junk 0 s 17

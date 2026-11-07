@@ -1,0 +1,6 @@
+RESULT xmnp-p32009-k2-sata0 start: variables 7, forms 2, size(Q) 14, s 0
+RESULT xmnp-p32009-k2-sata0 saturation done: generators 57, exponent 1, s 177
+RESULT xmnp-p32009-k2-sata0 standard basis of the saturation: generators 57, s 177
+RESULT xmnp-p32009-k2-sata0 dim 2 degree 58 s 177
+RESULT xmnp-p32009-k2-sata0 origin on the closure (all generators vanish at 0) 1 s 177
+exit 0
