@@ -36,6 +36,13 @@ equal to `pathion_kernel_map.nullity`.
 | Quantum Inspire Tuna-17 | two-term coset blocks: 4 XOR pairs (16 SELECT signs) on 3 data qubits and the selector, 20 to 22 CZ; the full map routes to 116 to 144 CZ and does not resolve at the measured 0.955 retention per CZ | ran 2026-11-06 and 2026-11-07: the first series (QX control of 8 batches, then Tuna-17 batches 00 to 03, stopped by its drift rule) and the coin-arm series (QX control, then Tuna-17 batches 00 to 03, 10 jobs at 65536 shots and 16384 for the last, on qubits 2, 4, 8, 11, 12); every job completed | [tuna17-pathion-coset-block-case.md](../../notes/quantum_inspire/tuna17-pathion-coset-block-case.md) (run directories and job ids), `results/quantum_inspire/pathion_coset_*_analysis.json`, [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md#cross-platform-runs-tuna-17-and-ascella-2026-11-07) (coin-series decisions, null offset, `ba` misses) |
 | Quandela Ascella | four-term operands, whose 4 x 4 coset blocks include classes absent below dimension 32 | ran 2026-11-06 and 2026-11-07: the four-term block case (`sim:ascella` job `bfa9a0ef-1557-4f20-8f7a-7681bf6d8e56`, `qpu:ascella` job `f3a11b5f-b045-42be-9205-de7da91cbfec`) and the two-block pair case (`sim:ascella` job `64b1ba77-7f79-4f2f-a1c1-37740eeecf2a`, `qpu:ascella` job `db6355f7-87d5-4e7a-91f5-b898c33c839a`); all four completed | `results/quandela/runs/*-ascella_pathion_four_term_blocks-*`, `results/quandela/runs/*-ascella_pathion_coset_block_pairs-*`, [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md#cross-platform-runs-tuna-17-and-ascella-2026-11-07) (four-term blocks conform; two-block job not admitted) |
 
+Every measured reading of these runs sits in one long table, [evidence_table.csv](evidence_table.csv), one row per
+reading with its ideal, standard error, calibration and the claim-ledger rows that cite the run;
+[evidence_pivots.md](evidence_pivots.md) holds the four pivots computed from it (per backend and observable, the same
+block across platforms, simulator against QPU, and each ledger row against its readings).
+`scripts/pathion_evidence_table_build.py` writes both files (`--check` reports drift) through the reader
+`gororoba_quantum/pathion_evidence_table.py`.
+
 The mechanism probes behind the cross-platform findings (Ascella mirror failure, Tuna-17 null offset, Tuna-17 `ba`
 misses) live in [conjectures/](conjectures/README.md) with their logs and a runner.
 
