@@ -24,6 +24,7 @@ step() {
 
 ONLY=$(printf '%s\n' "$@")
 step mirror_test mirror_test.py
+step mirror_test_sim mirror_test.py ../../../../results/quandela/runs/2026-11-07T002936Z-sim_ascella-ascella_pathion_coset_block_pairs-sim-00
 step c1_mesh c1_mesh.py
 step c1_observed c1_observed.py
 step c1_predecessor c1_predecessor.py

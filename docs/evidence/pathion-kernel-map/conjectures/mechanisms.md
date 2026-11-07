@@ -76,6 +76,11 @@ Which pairs fail (`c1_controls.txt`): the simulated phase sensitivity has Spearm
 ideal level alone +0.676; the partial rank correlation given the item's ideal level, total level, entropy and lit
 modes is +0.007 (p 0.965), so the sensitivity adds no prediction beyond the level.
 
+Simulator control (`mirror_test_sim.txt`): the same mirror test on the case's `sim:ascella` gate run reads 0 of 46
+failing pairs, |d| median 0.0015 and maximum 0.0066, with every fitted mode efficiency within 0.003 of 1. The analysis
+chain and the compiled configurations therefore produce no mirror failure on their own; the failure enters on the chip.
+The simulator carries no anchor drift and no shifter error, so it does not separate the two hardware mechanisms.
+
 Verdict C1. Part one (the mirror failure is not per-mode efficiency) survives at 0.9. Part two, that the cause is
 configuration-specific phase error, survives weaker and redirected at 0.55: the failure count follows the anchor
 calibration (B/A 1.082 from two anchor meshes against about 0.99 from the rest), and without that division 0 or 1
