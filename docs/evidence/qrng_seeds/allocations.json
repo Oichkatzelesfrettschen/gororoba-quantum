@@ -1483,6 +1483,34 @@
    "experiment": "ascella-pathion-four-term-blocks"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T031954Z.json",
+   "index": 0,
+   "value": 52202,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-11-07T035554.327341Z",
+   "resubmissions": [
+    "2026-11-07T040239.842834Z",
+    "2026-11-07T041623.255956Z",
+    "2026-11-07T041624.522872Z"
+   ],
+   "envelope": "results/live/2026-11-07T035554.327341Z/CASE.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T031954Z.json",
+   "index": 1,
+   "value": 29979,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-11-07T035554.327341Z",
+   "resubmissions": [
+    "2026-11-07T040239.842834Z",
+    "2026-11-07T041623.255956Z",
+    "2026-11-07T041624.522872Z"
+   ],
+   "envelope": "results/live/2026-11-07T035554.327341Z/CASE.md"
+  },
+  {
    "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
    "index": 0,
    "value": 34509,

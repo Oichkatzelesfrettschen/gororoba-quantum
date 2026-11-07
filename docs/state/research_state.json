@@ -3003,6 +3003,20 @@
       "run": "results/live/2026-11-06T200832.558771Z",
       "family": "pathion coset-block map (A_5, dimension 32)",
       "question": "Does ibm_marrakesh resolve the coset-block kernel map of the six two-term A_5 operands at 1 to 20 routed CZ, does the i ^ j-dependent loss persist at low depth, and do ibm_fez and ibm_marrakesh agree?"
+    },
+    {
+      "id": "ibm-kingston-pathion-parallel-coset",
+      "provider": "ibm",
+      "run": "results/live/2026-11-07T042346.084449Z",
+      "family": "pathion parallel coset blocks (A_5, dimension 32)",
+      "question": "On ibm_kingston with 16 disjoint four-qubit placements per shot, do the 64 coset blocks of the retained kernel map, the e1+e17 null with readout-flip twins and mirrored repeats, and the D = 32-only four-term B12 and C8 blocks read their cd_core values per placement, and does an isolated reference show parallel-operation crosstalk?"
+    },
+    {
+      "id": "ibm-fez-pathion-parallel-coset",
+      "provider": "ibm",
+      "run": "results/live/2026-11-07T042521.359670Z",
+      "family": "pathion parallel coset blocks (A_5, dimension 32)",
+      "question": "On ibm_fez with 17 disjoint four-qubit placements per shot, do the 64 coset blocks of the retained kernel map, the e1+e17 null with readout-flip twins and mirrored repeats, and the D = 32-only four-term B12 and C8 blocks read their cd_core values per placement, and does an isolated reference show parallel-operation crosstalk?"
     }
   ],
   "claims": [
