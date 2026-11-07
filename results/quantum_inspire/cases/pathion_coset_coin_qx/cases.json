@@ -1,0 +1,15 @@
+{
+ "schema": "qi-pathion-coset-coin-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "files": [
+    "ba.cq",
+    "bb.cq",
+    "b0.cq",
+    "xor_ba.cq"
+   ]
+  }
+ ]
+}

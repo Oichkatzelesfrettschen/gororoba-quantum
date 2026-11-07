@@ -1,0 +1,40 @@
+{
+ "schema": "qi-pathion-coset-block-gate-v1",
+ "series": "pathion_coset_block_qx",
+ "batch": "batch-04",
+ "cases_sha256": "febe4dec9d765705e9fe304e4e6a742060cccc55bd6b4e96e64354b4afd7666e",
+ "predecessors": [
+  {
+   "batch": "batch-00",
+   "run_dir": "2026-11-06T221242Z-pathion_coset_block_qx-batch-00",
+   "results_sha256": "501a9a8840e894bdf5540f475ce61b21f3e6c38f4d5311d5d5844dba9491376a"
+  },
+  {
+   "batch": "batch-01",
+   "run_dir": "2026-11-06T221242Z-pathion_coset_block_qx-batch-01",
+   "results_sha256": "e2db3a08bffd26e8168b1e5dfa25ad09329798647153c7c6fa30db4764ae893f"
+  },
+  {
+   "batch": "batch-02",
+   "run_dir": "2026-11-06T221242Z-pathion_coset_block_qx-batch-02",
+   "results_sha256": "0da12fca472584a5dd1a1fb49b20c133b7944b8a6a66f72c821040537a5db0d1"
+  },
+  {
+   "batch": "batch-03",
+   "run_dir": "2026-11-06T221242Z-pathion_coset_block_qx-batch-03",
+   "results_sha256": "3f8ebbdf0e920da4cd4daa3c03ed6b4ac5cf07a5266335a001b98a58a319c31b"
+  }
+ ],
+ "stops": {
+  "batches_checked": [
+   "batch-00",
+   "batch-01",
+   "batch-02",
+   "batch-03"
+  ],
+  "bracket_drift_flagged": [],
+  "max_drift": 0.0
+ },
+ "control": null,
+ "pause_seconds": 0
+}

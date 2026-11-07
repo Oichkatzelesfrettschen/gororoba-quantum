@@ -1,5 +1,8 @@
 """Analysis of the Tuna coset-block series: the shared reader, the sign-selected pattern bins, deterministic bins.
 
+analyze binds each run to the committed case byte for byte; the bounded fixture rewrites the manifest at SHOTS shots,
+so these tests pass case_root=None; analyze applies the shared qi_records rules to every batch.
+
 The fixture is the committed case (eight batches, 24 circuits) with a bounded shot count: each batch directory is
 copied, its manifest is rewritten at SHOTS shots, and a v2 receipt and a qi-collection-v1 collection (every job
 metadata nested under `job`, as scripts/qi_platform.py collects) are written around expected-count raw shots.
@@ -83,7 +86,7 @@ def _write_run(case_batch: Path, run_dir: Path, retention: float, status: str = 
 def _series(root: Path, retention: float) -> list[Path]:
     runs = []
     for batch in sorted(CASE.glob("batch-*")):
-        run_dir = root / f"2026-11-07T00000{batch.name[-1]}Z-pathion-{batch.name}"
+        run_dir = root / f"2026-11-07T00000{batch.name[-1]}Z-{cb.TUNA_SERIES}-{batch.name}"
         _write_run(batch, run_dir, retention)
         runs.append(run_dir)
     return runs
@@ -94,12 +97,32 @@ def _manifest() -> dict[str, Any]:
 
 
 def test_analyze_reads_the_nested_job_metadata_through_the_shared_reader(tmp_path: Path) -> None:
-    report = cb.analyze(_series(tmp_path, 0.9))
-    _check(report["schema"] == "qi-pathion-coset-block-analysis-v1", "schema")
+    runs = _series(tmp_path, 0.9)
+    report = cb.analyze(runs, case_root=None)
+    _check(report["schema"] == cb.ANALYSIS_SCHEMA and report["complete"], "schema")
     order = report["executed_order"]
     _check(sorted(order) == [f"batch-{n:02d}" for n in range(8)], f"executed batches {sorted(order)}")
     _check(order["batch-00"] == "+-" and order["batch-04"] == "-+", f"arm order of the replicates {order}")
     json.dumps(report, allow_nan=False)
+
+
+@pytest.fixture(scope="module")
+def inline(tmp_path_factory: pytest.TempPathFactory) -> dict[str, Any]:
+    """The series and its analysis with every map inline (8 statistics, below parallel.MIN_PARALLEL_ITEMS)."""
+    runs = _series(tmp_path_factory.mktemp("inline"), 0.9)
+    return {"runs": runs, "analysis": cb.analyze(runs, case_root=None)}
+
+
+def test_the_pooled_template_statistics_equal_the_inline_analysis(inline: dict[str, Any], forced_pool: Any) -> None:
+    """With the pool forced, ContrastTask pickles through the spawned workers and the record is identical."""
+    pooled = cb.analyze(inline["runs"], case_root=None)
+    mapped = [count for name, count in forced_pool.maps if name == "ContrastTask"]
+    _check(len(mapped) == 1 and mapped[0] > 1, f"the statistics map ran {forced_pool.maps}")
+    _check(forced_pool.pools == [2], f"the pool was requested {forced_pool.pools}")
+    _check(
+        json.dumps(pooled, sort_keys=True) == json.dumps(inline["analysis"], sort_keys=True),
+        "the pooled record differs from the inline one",
+    )
 
 
 def test_analyze_rejects_a_batch_the_shared_reader_rejects(tmp_path: Path) -> None:
@@ -109,7 +132,7 @@ def test_analyze_rejects_a_batch_the_shared_reader_rejects(tmp_path: Path) -> No
     shots[0] = "0" * cb.NQUBITS if shots[0] != "0" * cb.NQUBITS else "1" * cb.NQUBITS
     raw.write_text(_text(shots), encoding="utf-8")
     with pytest.raises(ValueError, match="differs from the recorded outcome histogram"):
-        cb.analyze(runs)
+        cb.analyze(runs, case_root=None)
 
 
 def test_analyze_rejects_a_job_that_did_not_complete(tmp_path: Path) -> None:
@@ -121,12 +144,21 @@ def test_analyze_rejects_a_job_that_did_not_complete(tmp_path: Path) -> None:
     (runs[1] / "results.json").write_text(_text(collection), encoding="utf-8")
     (runs[1] / "raw" / f"{row['file']}.json").unlink()
     with pytest.raises(ValueError, match="did not complete"):
-        cb.analyze(runs)
+        cb.analyze(runs, case_root=None)
 
 
-def test_analyze_rejects_a_missing_batch(tmp_path: Path) -> None:
-    with pytest.raises(ValueError, match="other batches"):
-        cb.analyze(_series(tmp_path, 0.9)[:-1])
+def test_analyze_reports_a_series_short_of_a_batch_without_decisions(tmp_path: Path) -> None:
+    report = cb.analyze(_series(tmp_path, 0.9)[:-1], case_root=None)
+    _check(report["complete"] is False and len(report["batches"]) == 7, f"batches {report.get('batches')}")
+    _check("decisions" not in report, "a partial series reports no decisions")
+
+
+def test_analyze_rejects_a_batch_listed_twice(tmp_path: Path) -> None:
+    runs = _series(tmp_path, 0.9)
+    twin = tmp_path / f"2026-11-08T000000Z-{cb.TUNA_SERIES}-batch-00"
+    shutil.copytree(runs[0], twin)
+    with pytest.raises(ValueError, match="appears twice"):
+        cb.analyze([*runs, twin], case_root=None)
 
 
 def test_pattern_bins_follow_the_ideal_signs_not_the_rounded_values() -> None:
@@ -160,14 +192,20 @@ def test_pattern_decision_requires_only_the_opposite_sign_bins() -> None:
     _check(all(report["decisions"]["resolution"].values()), "seven of eight bins meet the resolution decision")
 
 
-def test_signed_z_decides_a_deterministic_bin_by_an_exact_sign_match() -> None:
-    _check(cb.signed_z(1.0, 0.0, 1.0) == math.inf, "match on a deterministic bin")
-    _check(cb.signed_z(-1.0, 0.0, -1.0) == math.inf, "match with a negative ideal sign")
-    _check(cb.signed_z(-1.0, 0.0, 1.0) == -math.inf, "mismatch on a deterministic bin")
-    _check(cb.signed_z(0.0, 0.0, 1.0) == 0.0, "a zero contrast decides nothing")
-    _check(cb.signed_z(0.5, 0.0, 0.0) == 0.0, "a zero ideal sign decides nothing")
-    _check(abs(cb.signed_z(0.3, 0.1, 1.0) - 3.0) < 1e-12, "a sampled bin keeps c * sign / se")
-    _check(cb.ratio_or_none(1.0, 0.0) is None and cb.ratio_or_none(1.0, 0.5) == 2.0, "ratio_or_none")
+def test_a_zero_contrast_does_not_resolve_the_cocycle_free_decision() -> None:
+    """Selectors that never fire give a zero contrast with zero standard error in ba and xor_ba."""
+    manifest = _manifest()
+    shots = _device(manifest, 1.0)
+    for key in shots:
+        name = key.split("/")[1].split("-")[0]
+        if name in ("ba", "xor_ba"):
+            shots[key] = ["0" * cb.NQUBITS] * SHOTS
+    report = cb.evaluate(shots, manifest)  # a zero visibility leaves the per-bin ratios undefined: null, not nan
+    json.dumps(report, allow_nan=False)
+    for name in ("ba", "xor_ba"):
+        row = report["templates"][name]
+        _check(row["selector_contrast"] == 0.0 and row["selector_se"] == 0.0, f"{name} selector is deterministic")
+    _check(not report["decisions"]["cocycle_free"]["resolved"], "a zero contrast carries no sign")
 
 
 def test_noiseless_data_evaluates_with_zero_standard_error_bins() -> None:
@@ -222,3 +260,48 @@ def _scramble_bin(strings: list[str], roles: dict[str, int], bin_index: int) -> 
                 shot = shot[:position] + str(1 - int(shot[position])) + shot[position + 1 :]
         out.append(shot)
     return out
+
+
+def test_a_run_coarser_than_the_design_leaves_the_decisions_unmet() -> None:
+    manifest = _manifest()
+    shots = _device(manifest, 0.5)
+    design = cb.load_design(None, cb.TUNA_SERIES)
+    met = cb.evaluate(shots, manifest, design=design)
+    _check(met["decisions"]["null"]["outcome"] == "holds" and met["all_decisions_met"], f"{met['decisions']['null']}")
+    coarse = cb.evaluate(shots, manifest, design=cb.scale_design(design, 1 / 10))
+    _check(coarse["decisions"]["null"]["outcome"] == "uninformative", f"{coarse['decisions']['null']}")
+    _check(not coarse["all_decisions_met"], "a run ten times coarser than the design met every decision")
+    bins = [
+        cell["readout_corrected"]["bins_within"]
+        for entry in coarse["decisions"]["cross_platform"]["devices"].values()
+        for cell in entry["templates"].values()
+    ]
+    _check(max(bins) == 0, f"coarse bins counted within: {bins}")
+    cross = coarse["decisions"]["cross_platform"]
+    _check(cross["outcome"] == "uninformative", f"coarse cross-platform outcome {cross['outcome']}")
+    _check(met["decisions"]["cross_platform"]["outcome"] == "holds", "the contracted run holds")
+
+
+def test_an_undefined_statistic_is_null_in_the_record() -> None:
+    """Without readout circuits the corrected visibility is undefined, and a zero visibility leaves c / V undefined:
+    both read null, and the record is RFC 8259 JSON."""
+    manifest = _manifest()
+    shots = {k: v for k, v in _device(manifest, 0.5).items() if "/readout" not in k}
+    report = cb.evaluate(shots, manifest)
+    for row in report["templates"].values():
+        _check(row["visibility_readout_corrected"] is None and row["contraction_per_cz_implied"] is None, "nan")
+        _check(row["against_rho_band"] == "not read", "position of an unread contraction")
+    json.dumps(report, allow_nan=False)
+    flat = np.full(16, 1.0 / 16)
+    statistics = cb.contrast_statistics(flat * 100, flat * 100, np.ones(8))
+    _check(statistics["visibility"] == 0.0 and all(r is None for r in statistics["ratio"]), f"{statistics}")
+    _check(statistics["nullity_estimate"] is None and statistics["nullity_se"] is None, "N_hat at zero visibility")
+    _check(all(e is None for e in statistics["ratio_se"]), "the error of an undefined ratio is undefined")
+    json.dumps(statistics, allow_nan=False)
+
+
+def test_the_out_file_refuses_a_non_finite_number(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cb, "analyze", lambda dirs: {"x": math.nan})
+    monkeypatch.setattr("sys.argv", ["block", "--analyze", str(tmp_path), "--out", str(tmp_path / "out.json")])
+    with pytest.raises(ValueError, match="not JSON compliant"):
+        cb.main()

@@ -16,6 +16,22 @@
     {
       "case": "docs/evidence/ascella-transition-day-repeat-reviewed-transport/campaign.json",
       "revision": "60fdf76a007f9015bd38c15e3adbe7da8aeee195"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_four_term_blocks/sim-00/cases.json",
+      "revision": "de5f7f43b427fba6bcb4790ff6cbaff7a458ebe2"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_four_term_blocks/job-00/cases.json",
+      "revision": "de5f7f43b427fba6bcb4790ff6cbaff7a458ebe2"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_coset_block_pairs/sim-00/cases.json",
+      "revision": "8ec99cd2e74d7cb01eae6a04d499a452f5c81be5"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_coset_block_pairs/job-00/cases.json",
+      "revision": "8ec99cd2e74d7cb01eae6a04d499a452f5c81be5"
     }
   ]
 }

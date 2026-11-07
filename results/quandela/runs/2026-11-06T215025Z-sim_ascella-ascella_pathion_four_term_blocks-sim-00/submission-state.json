@@ -1,0 +1,120 @@
+{
+ "body_sha256": "9f8d43740194a8f90a591cb8a13712a4b79930a2aefb964d3ee016014252a4fa",
+ "cases_sha256": "d65f1675733bfa0e370a0232ce76f01ae3782712bb877b4e2fe76df02d9e7092",
+ "job_id": "bfa9a0ef-1557-4f20-8f7a-7681bf6d8e56",
+ "phase": "posted",
+ "platform": "sim:ascella",
+ "receipt": {
+  "admitted_statuses": [
+   "available"
+  ],
+  "approval": "Owner approved 2026-11-06: execute the Ascella four-term pathion-block case (sim-00 then job-00)",
+  "availability_at_plan": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "body_sha256": "9f8d43740194a8f90a591cb8a13712a4b79930a2aefb964d3ee016014252a4fa",
+  "case": "2026-11-06T215025Z-sim_ascella-ascella_pathion_four_term_blocks-sim-00",
+  "cases_sha256": "d65f1675733bfa0e370a0232ce76f01ae3782712bb877b4e2fe76df02d9e7092",
+  "credit_ceiling": 1.0,
+  "estimated_credits": 1.0,
+  "estimated_shots": 2883584,
+  "expected_seconds": 264.0,
+  "max_credits": 1.04,
+  "max_samples": 2883584,
+  "max_shots": 2883584,
+  "payload_version_basis": "declared",
+  "per_job_credits": 1.0,
+  "perfs_at_plan": {},
+  "platform": "sim:ascella",
+  "platform_at_plan": {
+   "bookable": false,
+   "description": "Arcturus simulator",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:ascella",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-30": {
+     "availability": 99.9
+    },
+    "2026-10-31": {
+     "availability": 99.9
+    },
+    "2026-11-01": {
+     "availability": 99.9
+    },
+    "2026-11-02": {
+     "availability": 99.89999999999999
+    },
+    "2026-11-03": {
+     "availability": 99.9
+    },
+    "2026-11-04": {
+     "availability": 99.9
+    },
+    "2026-11-05": {
+     "availability": 99.88
+    },
+    "2026-11-06": {
+     "availability": 100.42
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  "schema": "qd-submission-v1",
+  "status_at_plan": {
+   "explorer": "available",
+   "processor": "available"
+  },
+  "usage_before": [
+   {
+    "total_jobs": 161,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 3728,
+      "free_credits": 49.35712,
+      "nb_jobs": 49,
+      "platform_name": "qpu:ascella"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1526,
+      "free_credits": 22.0,
+      "nb_jobs": 24,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 9568,
+      "free_credits": 96.36970800000005,
+      "nb_jobs": 78,
+      "platform_name": "qpu:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 315,
+      "free_credits": 10.0,
+      "nb_jobs": 10,
+      "platform_name": "sim:ascella"
+     }
+    ]
+   }
+  ],
+  "versions": {
+   "exqalibur": "1.4.2",
+   "perceval-quandela": "1.3.1"
+  }
+ },
+ "schema": "qd-submission-state-v1",
+ "started_utc": "2026-11-06T21:51:55+00:00",
+ "submitted_utc": "2026-11-06T21:51:59+00:00"
+}

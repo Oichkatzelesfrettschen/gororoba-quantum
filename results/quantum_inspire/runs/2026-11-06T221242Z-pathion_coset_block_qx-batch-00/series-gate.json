@@ -1,0 +1,12 @@
+{
+ "schema": "qi-pathion-coset-block-gate-v1",
+ "series": "pathion_coset_block_qx",
+ "batch": "batch-00",
+ "cases_sha256": "e5ba9a5825e4af4adab934937582a10ce35ad2b3a39147b7f39daad411fbf826",
+ "predecessors": [],
+ "stops": {
+  "batches_checked": []
+ },
+ "control": null,
+ "pause_seconds": 0
+}
