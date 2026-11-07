@@ -152,7 +152,7 @@ chip.
 `qd_platform` read `qpu:ascella` available at 15:45 UTC on 2026-11-07, token occupancy 0 of 1. `scripts/qd_platform.py
 plan` at 17:33 UTC: `sim:ascella` credit ceiling 1.0, body sha256 `6a38f1f11ab692f7610e5dad326420e3e6a188a299b6424436ffe7fe7ee8504f`;
 `qpu:ascella` credit ceiling 1.131072 (1 + 1e-6 x 131,072), body sha256
-`d9db69c681cc69fa564db78ff9e9b0552ce67abbc939d58f890d0eaaf257618f`, Explorer `running`, processor `available`;
+`e1a7e990497ae114a73f79846e6ec9b40bfc25e08dc7951f012ad3fead5b7d2e (re-planned at 18:17 UTC after the amendment below)`, Explorer `running`, processor `available`;
 11,010,048 estimated shots each. Expected seconds: 84 x 3.2 = 268.8 against the 270 s packing margin of the 300 s cut
 (the original job ran 52 iterations in 161 s, 3.10 s each). The binding plan at submission replaces the plan quoted
 here.
@@ -187,6 +187,28 @@ On the owner's approval, with `PYTHON` set and `GLIBC_TUNABLES=glibc.rtld.option
 ```
 
 The runtime seed rows (`ci/seed_provenance.py --add-runtime`) land in the change that retains the runs.
+
+## Amendment after the simulator run (2026-11-07, before any QPU job)
+
+The `sim:ascella` gate job (`86cc1405`, collected into `sim-00/`, 11,010,048 samples) served every replay mesh
+identical to the original simulator run's (largest gap 0.0 over 52 replays), but three differ from the meshes the
+original QPU job served: a-h-CC o1 (gap 1.94), a-h-NN o0 (1.43) and b-f-EE o0 (1.33). The original simulator run
+already differed from the original QPU job on exactly those three, so the service compiles those three requests to
+one mesh on `sim:ascella` and another on `qpu:ascella`; the simulator cannot predict the QPU mesh for them. As written,
+the gate compared the simulator with the QPU meshes and failed (`docs/local/mesh-gate.json` before the amendment), and
+the QPU job was not sent.
+
+The amendment, frozen before any QPU job and recorded in the builder docstring and the reading script:
+
+- the gate's reference is the original simulator run, and the differences to the original QPU job are reported as
+  `platform_differences`; the amended gate passes (52 compared, worst gap 0.0, 3 platform differences);
+- the QPU reading compares each replay's served mesh with the original QPU job's and leaves a differing design out
+  of the persistence, half and correction decisions, both orientations; with exactly those three designs out the
+  persistence cutoff is 0.9864 (40 pairs, the same fixed-mesh plan with random drift, `persistence_plan.json`), and
+  any other differing design, or a differing anchor or dark, makes persistence "not read";
+- `sim-00/cases.json` keeps its submitted bytes (`submission-state.json` cases sha256 `c94269f3...`); `job-00` is
+  rebuilt for the new reading-script digest, and its manifest now differs from `sim-00` in that digest as well as in
+  `job` and `platforms`.
 
 ## Not run
 

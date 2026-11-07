@@ -96,9 +96,14 @@ def mesh_gate(sim_run: Path, frozen: Path | None = None) -> dict[str, Any]:
     if sorted(names) != sorted(expected):
         problems.append(f"replay names: {len(names)} present, {len(set(names))} distinct, {len(expected)} required")
     misses, worst, compared = [], 0.0, 0
+    platform: list[dict[str, Any]] = []
     if not problems:
         tolerance = manifest["preregistered"]["thresholds"]["mesh_identity_tolerance"]
-        reference = dict(zip(expected, served_unitaries(ROOT / case.ORIGINAL_RUN), strict=True))
+        # The simulator compiles a seed to the original simulator run's mesh; the original QPU job served a different
+        # mesh than the simulator on three settings (a-h-CC o1, a-h-NN o0, b-f-EE o0), so the gate's reference is the
+        # original sim run and the QPU differences are reported, not gated.
+        reference = dict(zip(expected, served_unitaries(ROOT / case.ORIGINAL_SIM_RUN), strict=True))
+        qpu = dict(zip(expected, served_unitaries(ROOT / case.ORIGINAL_RUN), strict=True))
         for setting, unitary in zip(settings, served_unitaries(sim_run), strict=True):
             if setting["kind"] != "replay":
                 continue
@@ -107,10 +112,14 @@ def mesh_gate(sim_run: Path, frozen: Path | None = None) -> dict[str, Any]:
             worst = max(worst, gap)
             if gap > tolerance:
                 misses.append({"setting": setting["name"], "gap": gap})
+            qpu_gap = float(np.max(np.abs(unitary - qpu[setting["original_name"]])))
+            if qpu_gap > tolerance:
+                platform.append({"setting": setting["name"], "gap_to_original_qpu": qpu_gap})
     return {
         "replay_compared": compared,
         "worst_gap": worst,
         "misses": misses,
+        "platform_differences": platform,
         "problems": problems,
         "passed": not problems and not misses and compared == 52,
     }
@@ -167,10 +176,11 @@ def persistence_r(
     old_set: list[dict[str, Any]],
     new_rows: list[dict[str, Any]],
     new_set: list[dict[str, Any]],
+    exclude: frozenset[str] = frozenset(),
 ) -> tuple[float | None, np.ndarray, np.ndarray]:
     old = mirror(old_rows, old_set, an.calibrate(old_rows, old_set), "l_hat")
     new = mirror(new_rows, new_set, an.calibrate(new_rows, new_set), "l_hat")
-    keys = sorted(set(old) & set(new))
+    keys = sorted(k for k in set(old) & set(new) if k[0] not in exclude)
     x, y = np.array([old[k] for k in keys]), np.array([new[k] for k in keys])
     return finite_r(x, y), x, y
 
@@ -204,6 +214,10 @@ def aligned_power() -> dict[str, float]:
         "mesh_reads_follows_design": 1 - phi(th["aligned_block"] / se),
     }
 
+
+# The three designs whose original QPU mesh differs from the simulator's mesh under the same seed and parameters
+# (sim:ascella runs 2026-11-07T002936Z and the mesh-persistence sim-00 agree with each other on all 52 replays).
+PLATFORM_DIFFERING = frozenset({"a-h-CC", "a-h-NN", "b-f-EE"})
 
 # Per-mode efficiency ratio (log) of the two-block job over the four-term job, modes 0 to 7, each fitted against its
 # ideal laws by mode_efficiency_fit's EM on iterations with at least 0.05 ideal weight in those modes. It also absorbs
@@ -240,7 +254,8 @@ def resampled_r(
                 rows.append(row_from_counts(i, s, rng.multinomial(case.SAMPLES, q), modes))
             jobs.append(rows)
         r, _, _ = persistence_r(jobs[0], settings, jobs[1], settings)
-        values.append(np.nan if r is None else r)
+        r_out, _, _ = persistence_r(jobs[0], settings, jobs[1], settings, PLATFORM_DIFFERING)
+        values.append((np.nan if r is None else r, np.nan if r_out is None else r_out))
     return np.array(values)
 
 
@@ -278,11 +293,19 @@ def persistence_plan(replicates: int = 2000) -> dict[str, Any]:
         "plan_draw": case.PLAN_DRAW,
         "measured_mode_drift": list(MEASURED_MODE_DRIFT),
         "r_quantiles": {
-            name: {str(q): float(np.nanquantile(v, q)) for q in (0.001, 0.01, 0.05, 0.5)}
+            name: {str(q): float(np.nanquantile(v[:, 0], q)) for q in (0.001, 0.01, 0.05, 0.5)}
+            for name, v in scenarios.items()
+        },
+        "r_quantiles_without_platform_differing": {
+            name: {str(q): float(np.nanquantile(v[:, 1], q)) for q in (0.001, 0.01, 0.05, 0.5)}
             for name, v in scenarios.items()
         },
         "non_finite": {name: int(np.sum(~np.isfinite(v))) for name, v in scenarios.items()},
-        "persistence_cutoff": round(float(np.nanquantile(scenarios["random"], 0.01)), 4),
+        "persistence_cutoff": round(float(np.nanquantile(scenarios["random"][:, 0], 0.01)), 4),
+        "persistence_cutoff_without_platform_differing": round(
+            float(np.nanquantile(scenarios["random"][:, 1], 0.01)), 4
+        ),
+        "platform_differing": sorted(PLATFORM_DIFFERING),
         "fresh_anchor_classification": rates,
         "aligned_mean": aligned_power(),
     }
@@ -413,15 +436,34 @@ def analyze(run: Path) -> dict[str, Any]:
 
     _, o_set, o_rows = original()
     o_cal = an.calibrate(o_rows, o_set)
-    r_value, x, y = persistence_r(o_rows, o_set, r_rows, r_set)
-    entry: dict[str, Any] = {"pairs": len(x), "cutoff": th["persistence_cutoff"]}
-    if r_value is None:
+    # Replay meshes the QPU served differently from the original QPU job leave the persistence comparison, with both
+    # orientations of their design; the frozen cutoff for the three simulator-differing designs covers that case.
+    qpu_reference = dict(zip([s["name"] for s in o_set], served_unitaries(ROOT / case.ORIGINAL_RUN), strict=True))
+    differing = sorted(
+        {
+            s["setting"]
+            for s, u in zip(settings, served_unitaries(run), strict=True)
+            if s["kind"] == "replay"
+            and float(np.max(np.abs(u - qpu_reference[s["original_name"]]))) > th["mesh_identity_tolerance"]
+        }
+    )
+    exclude = frozenset(differing)
+    report["replay_mesh_identity"] = {"differing_designs": differing}
+    if not exclude:
+        cutoff = th["persistence_cutoff"]
+    elif exclude <= PLATFORM_DIFFERING and not exclude & {"anchor", "dark"}:
+        cutoff = th["persistence_cutoff_without_platform_differing"]
+    else:
+        cutoff = None
+    r_value, x, y = persistence_r(o_rows, o_set, r_rows, r_set, exclude)
+    entry: dict[str, Any] = {"pairs": len(x), "cutoff": cutoff, "excluded_designs": differing}
+    if r_value is None or cutoff is None:
         entry["reading"] = NOT_READ
     else:
         relabeled = np.array([rng.permutation(y) for _ in range(reg["permutations"])])
         p = (1 + int(np.sum(batch_r(x, relabeled) >= r_value))) / (reg["permutations"] + 1)
         entry.update({"r": r_value, "p": p, "replay_failing": int(np.sum(np.abs(y) > th["mirror_spread"]))})
-        if r_value >= th["persistence_cutoff"]:
+        if r_value >= cutoff:
             entry["reading"] = "fixed per mesh"
         else:
             entry["reading"] = "partly fixed" if p < reg["alpha"] else "not reproduced"
@@ -442,6 +484,8 @@ def analyze(run: Path) -> dict[str, Any]:
         new_dep, old_dep = [], []
         for row, setting in zip(r_rows, r_set, strict=True):
             if setting["role"] not in ("sign", "null") or (setting["observation_index"] >= middle) != late:
+                continue
+            if setting["setting"] in exclude:
                 continue
             o_row, o_setting = twin[setting["original_name"]]
             lv, olv = an.slot_levels(row, cal), an.slot_levels(o_row, o_cal)
@@ -542,7 +586,8 @@ def analyze(run: Path) -> dict[str, Any]:
             found.setdefault((setting["setting"], item), {})[o] = (
                 lv[slot]["l_hat"] - table[(setting["original_name"], slot)]
             )
-    after = {k: v[0] - v[1] for k, v in found.items() if set(v) == {0, 1}}
+    after = {k: v[0] - v[1] for k, v in found.items() if set(v) == {0, 1} and k[0] not in exclude}
+    before = {k: v for k, v in before.items() if k[0] not in exclude}
     b, a_ = np.array(list(before.values())), np.array([after[k] for k in before])
     report["correction"] = {
         "failing_before": int(np.sum(np.abs(b) > th["mirror_spread"])),

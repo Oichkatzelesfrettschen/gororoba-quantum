@@ -32,8 +32,13 @@ are not exclusive, a mixture of carriers is allowed, and every decision can read
 correlation input that is non-finite or constant) or "unresolved":
 - mesh gate (sim run): the run's cases.json is the frozen sim-00 case byte for byte, all ITERATIONS results returned
   with their echoed requests, the replay original names are exactly the original job's 52 names once each, and every
-  replay served unitary lies within 1e-6 of the original job's (largest entry modulus); otherwise the QPU job is not
-  sent;
+  replay served unitary lies within 1e-6 of the original sim run's (largest entry modulus); otherwise the QPU job is
+  not sent. Amended 2026-11-07 after the sim run and before any QPU job: the original QPU job served a mesh different
+  from the simulator's on three designs (a-h-CC o1, a-h-NN o0, b-f-EE o0), so the gate's reference is the original
+  sim run and the differences to the original QPU job are reported. The QPU reading then compares each replay's
+  served mesh with the original QPU job's and leaves a differing design out of the persistence, half and correction
+  decisions; with those three out the persistence cutoff is PERSISTENCE_CUTOFF_REDUCED (40 pairs), and any other
+  differing design, or a differing anchor or dark, makes persistence "not read";
 - admission: the predecessor's anchor floor, dark ceiling and sentinel share on the replay anchors and darks;
 - persistence: Pearson r of the 46 calibrated replay mirror differences with the original ones. The cutoff is the
   first percentile of r under a fixed-mesh model with between-job efficiency drift (PERSISTENCE_CUTOFF: both jobs
@@ -144,6 +149,9 @@ PERMUTATIONS = 20000
 PLAN_DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json"
 PERSISTENCE_PLAN = "results/quandela/cases/ascella_pathion_mesh_persistence/persistence_plan.json"
 PERSISTENCE_CUTOFF = 0.988
+# The same plan with the three designs whose original QPU mesh differs from the simulator mesh left out (40 pairs);
+# it applies when the QPU job serves those designs differently from the original job.
+PERSISTENCE_CUTOFF_REDUCED = 0.9864
 PREREGISTERED: dict[str, Any] = {
     "anchor_replay_band": 0.02,
     "fresh_band": 0.03,
@@ -157,6 +165,7 @@ PREREGISTERED: dict[str, Any] = {
     "aligned_block": 0.0196,
     "aligned_mesh": 0.0181,
     "persistence_cutoff": PERSISTENCE_CUTOFF,
+    "persistence_cutoff_without_platform_differing": PERSISTENCE_CUTOFF_REDUCED,
     "persistence_plan": PERSISTENCE_PLAN,
     "mirror_spread": pairs.THRESHOLDS["mirror_spread"],
     "mirror_allowance": 4,

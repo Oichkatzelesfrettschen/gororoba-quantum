@@ -26,11 +26,18 @@ def check(condition: object, statement: str) -> None:
         raise AssertionError(statement)
 
 
-@pytest.mark.parametrize(("directory", "platform"), [("sim-00", "sim:ascella"), ("job-00", "qpu:ascella")])
-def test_case_directories_rebuild_byte_for_byte(directory: str, platform: str) -> None:
-    payload = case.documents(DRAW, "simulator" if platform.startswith("sim:") else "hardware", platform)
+def test_the_qpu_case_rebuilds_byte_for_byte() -> None:
+    payload = case.documents(DRAW, "hardware", "qpu:ascella")
     for name, data in payload.items():
-        check((CASES / directory / name).read_bytes() == data, f"{directory}/{name} rebuilds byte for byte")
+        check((CASES / "job-00" / name).read_bytes() == data, f"job-00/{name} rebuilds byte for byte")
+
+
+def test_the_submitted_sim_case_keeps_its_bytes() -> None:
+    import hashlib
+
+    submitted = json.loads((CASES / "sim-00" / "submission-state.json").read_bytes())
+    digest = hashlib.sha256((CASES / "sim-00" / "cases.json").read_bytes()).hexdigest()
+    check(submitted["cases_sha256"] == digest, "sim-00 cases.json is the submitted request")
 
 
 def test_replays_send_the_retained_requests_and_fresh_seeds_are_new() -> None:
@@ -53,6 +60,10 @@ def test_replays_send_the_retained_requests_and_fresh_seeds_are_new() -> None:
 def test_the_persistence_cutoff_is_the_frozen_plans() -> None:
     record = json.loads((ROOT / case.PERSISTENCE_PLAN).read_bytes())
     check(record["persistence_cutoff"] == case.PERSISTENCE_CUTOFF, "cutoff equals the frozen plan")
+    check(
+        record["persistence_cutoff_without_platform_differing"] == case.PERSISTENCE_CUTOFF_REDUCED,
+        "reduced cutoff equals the frozen plan",
+    )
     check(case.PREREGISTERED["persistence_cutoff"] == case.PERSISTENCE_CUTOFF, "manifest carries the cutoff")
     power = reading.aligned_power()
     check(power["design_reads_follows_mesh"] < 0.02 and power["mesh_reads_follows_design"] < 0.02, "aligned errors")
@@ -67,8 +78,10 @@ def test_the_persistence_plan_rebuilds() -> None:
 def synthetic_run(tmp_path: Path, directory: str = "job-00", mutate: str = "") -> Path:
     """A run whose every iteration reuses the original job's entry for the same setting and orientation."""
     manifest = json.loads((CASES / directory / "cases.json").read_bytes())
-    original = json.loads((ORIGINAL / "results.json").read_bytes())["iterations"]
-    settings = json.loads((ORIGINAL / "cases.json").read_bytes())["settings"]
+    # A synthetic simulator run reuses the original simulator run's entries, a QPU run the original QPU job's.
+    source = ROOT / case.ORIGINAL_SIM_RUN if directory == "sim-00" else ORIGINAL
+    original = json.loads((source / "results.json").read_bytes())["iterations"]
+    settings = json.loads((source / "cases.json").read_bytes())["settings"]
     by_name = {s["name"]: e for s, e in zip(settings, original, strict=True)}
     by_design = {(s["setting"], s["orientation"]): e for s, e in zip(settings, original, strict=True)}
     entries = []
@@ -88,6 +101,11 @@ def synthetic_run(tmp_path: Path, directory: str = "job-00", mutate: str = "") -
         # The palindrome ends on the same anchor mesh it starts with, so take a sign setting's mesh instead.
         sign = next(i for i, s in enumerate(manifest["settings"]) if s["role"] == "sign")
         entries[replay]["result_fields"]["computed_circuit"] = entries[sign]["result_fields"]["computed_circuit"]
+    elif mutate == "platform":
+        # The QPU serves a-h-CC o1 a different mesh, as the original QPU job did against the simulator.
+        target = next(i for i, s in enumerate(manifest["settings"]) if s.get("original_name") == "a-h-CC-o1-i20")
+        sign = next(i for i, s in enumerate(manifest["settings"]) if s["role"] == "sign" and i != target)
+        entries[target]["result_fields"]["computed_circuit"] = entries[sign]["result_fields"]["computed_circuit"]
     elif mutate == "missing":
         entries = entries[:-1]
     elif mutate == "duplicate":
@@ -152,6 +170,24 @@ def test_a_replay_of_the_original_counts_reads_fixed_per_mesh(tmp_path: Path, mo
 def test_a_foreign_manifest_is_not_read(tmp_path: Path) -> None:
     run = synthetic_run(tmp_path, "sim-00")
     check(reading.analyze(run)["reading"].startswith("not read"), "a run of another manifest is not read")
+
+
+def test_a_qpu_mesh_differing_on_a_known_design_is_left_out(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    run = synthetic_run(tmp_path, mutate="platform")
+    monkeypatch.setattr(reading, "ROOT", tmp_path)
+    monkeypatch.setattr(case, "ORIGINAL_RUN", str(ORIGINAL))
+    monkeypatch.setattr(case, "ORIGINAL_SIM_RUN", str(ROOT / case.ORIGINAL_SIM_RUN))
+    for relative in (
+        DRAW.relative_to(ROOT),
+        Path("docs/evidence/pathion-kernel-map/conjectures/c1_static.npz"),
+        (CASES / "job-00" / "cases.json").relative_to(ROOT),
+    ):
+        (tmp_path / relative).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / relative).write_bytes((ROOT / relative).read_bytes())
+    report = reading.analyze(run)
+    check(report["replay_mesh_identity"]["differing_designs"] == ["a-h-CC"], "a-h-CC differs")
+    check(report["persistence"]["pairs"] == 44, "the design's two mirror items leave")
+    check(report["persistence"]["cutoff"] == case.PERSISTENCE_CUTOFF_REDUCED, "reduced cutoff applies")
 
 
 def test_spec_check_bounds_published_imperfections() -> None:
