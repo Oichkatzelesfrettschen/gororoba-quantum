@@ -18,6 +18,10 @@ to job-08, keyed by setting name so a repeat in another order reads it unchanged
   frozen table removes at least half the per-mesh variance), "correction fails" when the upper end stays below it,
   and "indeterminate" otherwise. Beside it: the Pearson r of d and t, the repeat's counting variance, and the ratio
   a correction limited only by counting and table noise would reach, var(d) / (counting + table noise).
+  The bootstrap resamples the meshes as exchangeable seeds with the table and every count held fixed. A secondary
+  interval, added after job-09 returned and outside the decision, redraws every iteration's block counts in job-02,
+  job-03 and the repeat from its observed shares, refits the table and rescores, over RESIMULATIONS replicates seeded
+  with value RESIMULATION_INDEX of the draw.
 - Mesh gate (--mesh-gate): exits nonzero unless every one of the run's served unitaries lies within MESH_TOLERANCE
   of job-02's under the same name; the sim:ascella rehearsal of the repeat passes it before the QPU request is sent,
   since a redrawn compilation would score other meshes than the table's. It reads no draw value.
@@ -25,10 +29,12 @@ to job-08, keyed by setting name so a repeat in another order reads it unchanged
   is S = t - n with n of the table's noise variance; a persistent scenario scales it, d = a S + c, and a redrawn
   scenario keeps the variance of S, d = rho S + f + c with f of variance (1 - rho^2) var(S); c is counting noise at
   the repeat's samples, scaled from job-02's (heater-coupling.json). Each replicate is read with POWER_BOOTSTRAP
-  resamples.
+  resamples. The shares are a sensitivity calculation under one scalar table variance and one scalar counting
+  variance; they sized the case and decide nothing.
 
 The ANU QRNG draw PROSPECTIVE_ORDER_DRAW of ascella_coherence_request.py orders the repeat with values 0..55; value
-BOOTSTRAP_INDEX seeds the score's resamples and value POWER_INDEX the power record, whose replicates take generators
+BOOTSTRAP_INDEX seeds the score's resamples, value RESIMULATION_INDEX its secondary count resimulation and value
+POWER_INDEX the power record, whose replicates take generators
 spawned before the map.
 
 Usage:
@@ -64,6 +70,8 @@ PLAN = "docs/state/plans/ascella-prospective-correction-case.json"
 DRAW = "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json"
 BOOTSTRAP_INDEX = 56
 POWER_INDEX = 57
+RESIMULATION_INDEX = 59
+RESIMULATIONS = 20000
 ALPHA = 0.01
 USEFUL_RATIO = 2.0
 BOOTSTRAP = 20000
@@ -108,6 +116,34 @@ def perturbed_statistics(directory: Path) -> tuple[str, dict[str, float], dict[s
         {names[i]: float(v[i]) for i in keep},
         long_horizon.samples_of(data),
     )
+
+
+def perturbed_blocks(directory: Path, names: list[str]) -> np.ndarray:
+    """The run's modes 0..3 block counts of the named perturbed settings, in that order."""
+    data = models.job_data(directory)
+    index = {name: i for i, name in enumerate(seed_repeat.names(data))}
+    return np.asarray(data["block"][[index[name] for name in names]], dtype=float)
+
+
+def resimulated_ratios(
+    blocks: tuple[np.ndarray, np.ndarray, np.ndarray], kept: np.ndarray, generator: np.random.Generator, count: int
+) -> np.ndarray:
+    """R of `count` replicates that redraw every iteration's block counts in job-02, job-03 and the repeat from its
+    observed shares, refit the table over all of job-02's perturbed settings and score the kept ones (module
+    docstring, secondary interval)."""
+    z = []
+    for block in blocks:
+        totals = block.sum(axis=1).astype(np.int64)
+        drawn = generator.multinomial(totals, block / totals[:, None], size=(count, len(totals)))
+        z.append((drawn[..., 0] - drawn[..., 3]) / totals)
+    c_2 = z[0] - z[0].mean(axis=1, keepdims=True)
+    c_3 = z[1] - z[1].mean(axis=1, keepdims=True)
+    slope = (c_2 * c_3).sum(axis=1) / (c_2 * c_2).sum(axis=1)
+    t = (slope[:, None] * 0.5 * (c_2 + c_3))[:, kept]
+    t = t - t.mean(axis=1, keepdims=True)
+    d = z[2][:, kept] - z[2][:, kept].mean(axis=1, keepdims=True)
+    out: np.ndarray = d.var(axis=1, ddof=1) / (d - t).var(axis=1, ddof=1)
+    return out
 
 
 def freeze(job_02: Path, job_03: Path) -> dict[str, Any]:
@@ -259,6 +295,30 @@ def score(table_path: Path, job_02: Path, repeat_dir: Path) -> dict[str, Any]:
         "r": float(np.corrcoef(d, t)[0, 1]),
         "counting_variance": counting,
         "noise_limited_ratio": float(d.var(ddof=1) / (counting + table["table_noise_variance"])),
+        "interval_population": "the 56 meshes resampled as exchangeable seeds; table and counts held fixed",
+    }
+    names = sorted(offsets)
+    blocks = (
+        perturbed_blocks(job_02, names),
+        perturbed_blocks(Path(ROOT / table["runs"][1]), names),
+        perturbed_blocks(repeat_dir, names),
+    )
+    kept_names = {names_new[i] for i in kept}
+    mask = np.array([name in kept_names for name in names])
+    resimulated = resimulated_ratios(blocks, mask, np.random.default_rng(draw_value(RESIMULATION_INDEX)), RESIMULATIONS)
+    lower, upper = (float(q) for q in np.quantile(resimulated, [ALPHA, 1.0 - ALPHA]))
+    record["secondary"] = {
+        "count_resimulation": {
+            "added": "after job-09 returned; outside the preregistered decision",
+            "population": "the same 56 meshes with every run's block counts redrawn and the table refitted",
+            "replicates": RESIMULATIONS,
+            "seed_draw": DRAW,
+            "seed_index": RESIMULATION_INDEX,
+            "lower": lower,
+            "upper": upper,
+            "median": float(np.median(resimulated)),
+            "share_below_useful_ratio": float((resimulated < USEFUL_RATIO).mean()),
+        }
     }
     record["reading"] = result["reading"]
     return record

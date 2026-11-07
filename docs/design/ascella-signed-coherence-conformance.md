@@ -2189,12 +2189,15 @@ the decision.
 | S, persistence (secondary) | `ascella_long_horizon_reading.py` with job-08 as the reference and job-09 as the repeat | the job-08 case's rule: persists, recurs below the useful slope, redrawn, indeterminate |
 
 Beside C the score records the Pearson r of d and t, job-09's counting variance and the ratio a correction limited
-only by counting and table noise would reach. The power record
+only by counting and table noise would reach. The bootstrap treats the 56 meshes as exchangeable seeds and holds the
+table and every count fixed. The power record
 [`correction-power.json`](../evidence/ascella-order-coefficients/correction-power.json) (400 Gaussian replicates per
 scenario, 2,000 resamples each, counting noise at 32,768 samples) reads a persistent error at full amplitude or
 scaled by 0.88 as correction holds in every replicate and one scaled by 0.75 in 0.85 (indeterminate 0.15); a
 partly redrawn error correlated 0.9 with the table holds in 0.50 and is indeterminate in 0.50, at 0.75 indeterminate
-in 0.96, at 0.5 fails in 0.78, and a fully redrawn error fails in every replicate.
+in 0.96, at 0.5 fails in 0.78, and a fully redrawn error fails in every replicate. These shares are sensitivity
+calculations under one scalar table variance and one scalar counting variance per run, each within about 0.025 of
+Monte Carlo error at 400 replicates; they sized the case and decide nothing.
 
 **Why simulation cannot answer it.** The simulator serves job-02's meshes without their error: the `sim:ascella` run
 of job-08's request spread its perturbed X at counting noise (0.00211 against 0.00203), so whether the frozen table
@@ -2226,12 +2229,18 @@ user's job and ran on 2026-11-07 from 04:34:35 UTC for 194 s at HOM 88.98 %, g2 
 retained as [`2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09`](../../results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09/).
 Every one of its 64 settings returned job-02's mesh. C reads **correction holds**
 ([score](../evidence/ascella-order-coefficients/correction-score-09.json)): the frozen table brings the per-mesh
-standard deviation of X from 0.01085 to 0.00337, R = 10.37 with the 98 % interval 6.16 to 16.21 (r 0.951 between
-job-09's deviations and the table), against the 10.89 a correction limited by job-09's counting variance (4.65e-6)
-and the table's noise (6.15e-6) alone would reach. S reads **persists** against job-08
+standard deviation of X from 0.01085 to 0.00337, R = 10.37 with the 98 % interval 6.16 to 16.21 over meshes resampled as exchangeable seeds (r 0.951 between
+job-09's deviations and the table), against the plug-in benchmark 10.89 of a correction limited by job-09's counting
+variance (4.65e-6) and the table's noise (6.15e-6) alone. A secondary interval added after the data, which redraws
+every iteration's block counts in job-02, job-03 and job-09 and refits the table, spans 3.88 to 7.95 with no replicate
+below 2; redrawing from observed shares adds a second layer of counting noise, so that range is conservative. S reads **persists** against job-08
 ([reading](../evidence/ascella-order-coefficients/long-horizon-reading-08-09.json)): slope 1.003 with one-sided 99 %
 upper bound 1.102, beside the 0.956 a fully persistent error reaches through job-08's counting noise; P1 reads fixed
 per mesh (r 0.958 at the ceiling 0.956), every mesh byte-equal to job-08's, anchors steady (z -0.61). A table fitted
-on job-02 and job-03, run twelve and eleven days earlier, therefore predicts each seed's error almost to the noise
-floor: per-seed calibration through the cloud interface removes about 90 % of the per-mesh X variance on these
-meshes.
+on job-02 and job-03, run twelve and eleven days earlier, therefore predicts each seed's error to within job-09's counting noise and
+the table's own estimation noise: per-seed calibration through the cloud interface removes about 90 % of the per-mesh X variance on these
+56 seeds of theta2-x-arm0.
+
+**Review.** The `codex` agent on gpt-daybreak-blue reviewed the branch after acquisition; the
+[reconciliation](../archive/reviews/ascella-prospective-correction-reconciliation.md) records the interval's stated
+population, the secondary count resimulation and the corrected noise attribution it led to.

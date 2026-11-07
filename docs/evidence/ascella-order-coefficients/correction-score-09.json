@@ -26,6 +26,7 @@
  "schema": "ascella-correction-score-v1",
  "score": {
   "counting_variance": 4.648646867019219e-06,
+  "interval_population": "the 56 meshes resampled as exchangeable seeds; table and counts held fixed",
   "lower": 6.1558019923380405,
   "meshes": 56,
   "noise_limited_ratio": 10.893846037699626,
@@ -35,6 +36,19 @@
   "sd_after": 0.003368375319936003,
   "sd_before": 0.010847464327128738,
   "upper": 16.20550959674285
+ },
+ "secondary": {
+  "count_resimulation": {
+   "added": "after job-09 returned; outside the preregistered decision",
+   "lower": 3.883656494559902,
+   "median": 5.374642316904227,
+   "population": "the same 56 meshes with every run's block counts redrawn and the table refitted",
+   "replicates": 20000,
+   "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json",
+   "seed_index": 59,
+   "share_below_useful_ratio": 0.0,
+   "upper": 7.947429040202898
+  }
  },
  "table": "docs/evidence/ascella-order-coefficients/correction-table.json",
  "table_sha256": "cd9a43deeaa033d37f665abeefda5501762a73701b975679325475250120b8af"
