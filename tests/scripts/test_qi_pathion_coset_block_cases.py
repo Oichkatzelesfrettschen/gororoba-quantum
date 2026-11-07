@@ -106,6 +106,25 @@ def test_analyze_reads_the_nested_job_metadata_through_the_shared_reader(tmp_pat
     json.dumps(report, allow_nan=False)
 
 
+@pytest.fixture(scope="module")
+def inline(tmp_path_factory: pytest.TempPathFactory) -> dict[str, Any]:
+    """The series and its analysis with every map inline (8 statistics, below parallel.MIN_PARALLEL_ITEMS)."""
+    runs = _series(tmp_path_factory.mktemp("inline"), 0.9)
+    return {"runs": runs, "analysis": cb.analyze(runs, case_root=None)}
+
+
+def test_the_pooled_template_statistics_equal_the_inline_analysis(inline: dict[str, Any], forced_pool: Any) -> None:
+    """With the pool forced, ContrastTask pickles through the spawned workers and the record is identical."""
+    pooled = cb.analyze(inline["runs"], case_root=None)
+    mapped = [count for name, count in forced_pool.maps if name == "ContrastTask"]
+    _check(len(mapped) == 1 and mapped[0] > 1, f"the statistics map ran {forced_pool.maps}")
+    _check(forced_pool.pools == [2], f"the pool was requested {forced_pool.pools}")
+    _check(
+        json.dumps(pooled, sort_keys=True) == json.dumps(inline["analysis"], sort_keys=True),
+        "the pooled record differs from the inline one",
+    )
+
+
 def test_analyze_rejects_a_batch_the_shared_reader_rejects(tmp_path: Path) -> None:
     runs = _series(tmp_path, 0.9)
     raw = runs[2] / "raw" / "b0-plus-r0.cq.json"

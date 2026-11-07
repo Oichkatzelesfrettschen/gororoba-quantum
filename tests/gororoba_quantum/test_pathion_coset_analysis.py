@@ -5,12 +5,17 @@ Every function takes its inputs explicitly, so each test builds the counts, refe
 
 from __future__ import annotations
 
+import json
 import math
+from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 import numpy as np
+import pytest
 
 import pathion_coset_analysis as pca
+import qi_records
 
 
 def _check(condition: object, message: str) -> None:
@@ -158,3 +163,45 @@ def test_an_undefined_statistic_is_null_in_the_statistics_record() -> None:
     _check(statistics["visibility"] == 0.0 and all(r is None for r in statistics["ratio"]), f"{statistics}")
     _check(statistics["nullity_estimate"] is None and statistics["nullity_se"] is None, "N_hat at zero visibility")
     _check(all(e is None for e in statistics["ratio_se"]), "the error of an undefined ratio is undefined")
+
+
+def _stub_series(root: Path, monkeypatch: pytest.MonkeyPatch, extras: list[dict[str, Any]]) -> tuple[list[Path], Any]:
+    """Run directories whose cases.json carry the given extra fields, read through a stub qi_records.read_run and a
+    load_run that returns each directory's cases; the shared-series comparison is the unit under test."""
+    monkeypatch.setattr(qi_records, "read_run", lambda *_: SimpleNamespace(completed=True, statuses={}))
+    runs: dict[Path, dict[str, Any]] = {}
+    for number, extra in enumerate(extras):
+        run_dir = root / f"run-{number:02d}"
+        run_dir.mkdir(parents=True)
+        cases = {
+            "batch": f"batch-{number:02d}",
+            "circuits": [{"file": "a.cq", "kind": "data", "template": "ba", "ideal": [1.0]}],
+            "templates": {"ba": {"roles": {"d0": 0}}},
+            **extra,
+        }
+        (run_dir / "cases.json").write_text(json.dumps(cases), encoding="utf-8")
+        runs[run_dir] = {"cases": cases, "shots": {"a.cq": ["0"]}, "jobs": {"a.cq": {"queued_at": "t"}}}
+    return list(runs), lambda run_dir, _case: runs[run_dir]
+
+
+def test_read_series_binds_every_batch_to_one_series(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    dirs, load_run = _stub_series(tmp_path, monkeypatch, [{"shots": 8}, {"shots": 8}])
+    read = pca.read_series(dirs, None, None, "data", ("batch", "circuits"), load_run)
+    _check(sorted(read["shots"]) == ["batch-00/a.cq", "batch-01/a.cq"], f"{sorted(read['shots'])}")
+    _check(sorted(read["arms"]) == sorted(read["shots"]) and read["shared"]["shots"] == 8, f"{read}")
+    mixed_dirs, mixed_load = _stub_series(tmp_path / "mixed", monkeypatch, [{"shots": 8}, {"shots": 9}])
+    with pytest.raises(ValueError, match="describes a different series"):
+        pca.read_series(mixed_dirs, None, None, "data", ("batch", "circuits"), mixed_load)
+
+
+def test_read_series_refuses_an_empty_run_list_and_an_incomplete_job(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    with pytest.raises(ValueError, match="needs its run directories"):
+        pca.read_series([], None, None, "data", (), lambda *_: {})
+    dirs, load_run = _stub_series(tmp_path, monkeypatch, [{}])
+    monkeypatch.setattr(
+        qi_records, "read_run", lambda *_: SimpleNamespace(completed=False, statuses={"a.cq": "failed"})
+    )
+    with pytest.raises(ValueError, match="a job did not complete"):
+        pca.read_series(dirs, None, None, "data", ("batch", "circuits"), load_run)

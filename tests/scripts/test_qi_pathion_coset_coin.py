@@ -188,6 +188,27 @@ def test_a_contracted_series_meets_every_decision_and_recovers_the_block_statist
     _expect(not analysis["drift_covariate"]["references"]["flagged"] and analysis["drift_covariate"]["stable"], "drift")
 
 
+def test_the_pooled_readout_bracket_sensitivity_equals_the_inline_analysis(
+    contracted: dict[str, Any], forced_pool: Any
+) -> None:
+    """The committed series run inline below parallel.MIN_PARALLEL_ITEMS; with the pool forced, the bracket
+    statistics pickle through the spawned workers and the analysis reads the same."""
+    pooled = gen.analyze(_dirs(contracted["runs"]))
+    brackets = [count for name, count in forced_pool.maps if name == "BracketStatistics"]
+    _expect(len(brackets) == 1 and brackets[0] > 1, f"the bracket map ran {forced_pool.maps}")
+    _expect(forced_pool.pools == [2], f"the pool was requested {forced_pool.pools}")
+    under = "cross_platform_under_each_bracket"
+    _expect(
+        pooled["drift_covariate"][under] == contracted["analysis"]["drift_covariate"][under]
+        and bool(pooled["drift_covariate"][under]),
+        "the pooled bracket sensitivity differs",
+    )
+    _expect(
+        json.dumps(pooled, sort_keys=True) == json.dumps(contracted["analysis"], sort_keys=True),
+        "the pooled analysis differs from the inline one",
+    )
+
+
 def test_a_coin_misread_scales_every_contrast_by_one_factor() -> None:
     roles = {"d0": 0, "d1": 1, "d2": 2, "selector": 3, "coin": 4}
     name = "ba"

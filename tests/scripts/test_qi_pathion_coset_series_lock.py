@@ -51,17 +51,16 @@ def test_a_call_that_waited_for_another_submission_does_not_submit_the_batch_aga
     monkeypatch.setattr(qi_platform, "submit", submit)
     monkeypatch.setattr(module, "datetime", types.SimpleNamespace(datetime=_Clock, UTC=datetime.UTC))
     original = block_series.series_runs
-    refusals: list[str] = []
-    entered: list[bool] = []
+    nested: list[BaseException | None] = []
 
     def interleaved(name: str, runs: Path) -> dict[str, Path]:
         snapshot = original(name, runs)
-        if not entered:
-            entered.append(True)
+        if not nested:
+            nested.append(None)
             try:
                 module.submit_next(series_dir, runs, "approval")
             except SystemExit as refusal:
-                refusals.append(str(refusal))
+                nested[0] = refusal
         return snapshot
 
     monkeypatch.setattr(block_series, "series_runs", interleaved)
@@ -69,5 +68,8 @@ def test_a_call_that_waited_for_another_submission_does_not_submit_the_batch_aga
     batches = sorted(path.name.rpartition("-")[2] for path in submitted)
     if batches != ["00"]:
         raise AssertionError(f"batch-00 was submitted {len(batches)} times: {sorted(p.name for p in submitted)}")
-    if len(refusals) != 1 or "another --submit-next holds" not in refusals[0]:
-        raise AssertionError(f"the overlapping call was not refused by the series lock: {refusals}")
+    if len(nested) != 1:
+        raise AssertionError("the overlapping call never ran inside the first call's read")
+    with pytest.raises(SystemExit, match="another --submit-next holds"):
+        if nested[0] is not None:
+            raise nested[0]
