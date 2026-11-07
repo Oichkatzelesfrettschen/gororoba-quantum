@@ -84125,6 +84125,3326 @@
    }
   },
   {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_qx/batch-00/b0.cq",
+   "sha256": "9c348677d607b06019b57d7187aae861ecaeebeb36bd90b401527ea2a2723ac1",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "763cc248f7768b461063a097de2622bed361cf3f50429716b488cf26ee8f306b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "0": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "1": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.5307274153917776)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.832595714594046)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.5307274)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.8325957)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "2": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.7853981633974483)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.7853981633974483)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.2617993877991494)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.8726646259971648)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.1344640137963142)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(4.276056667386107)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-4.71238898038469)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.7853981633974483)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.08726646259971647)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.78539816)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.78539816)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.26179939)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.87266463)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.134464)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.0071286)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.78539816)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.087266463)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "3": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.7853981633974483)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.78539816)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "4": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.48352986419518)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.0543261909900767)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.4835299)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.0543262)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_qx/batch-00/k4.cq",
+   "sha256": "e7c0d06ceb8d088dbc7ddcc1e39dda670b2f980aa650b495e3a468f3faf5acbe",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "cc7af050d5b044f1e4e3db145e0ab904d5c11eba0feca0e06331db3bcf76afab",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "0": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "1": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "2": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "3": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_qx/batch-00/k8.cq",
+   "sha256": "687603a86eaa737fc6bfba359ef6274df6ebc84478a14e126d3a6fae7a2894c4",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "cc7af050d5b044f1e4e3db145e0ab904d5c11eba0feca0e06331db3bcf76afab",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "0": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "1": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "2": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "3": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_qx/batch-00/k12.cq",
+   "sha256": "4c1108ef862fa3f1c3f8415d61a854f65f959fa1eb58a784c7c9dc7510d47f3d",
+   "backend": "QXsinglenodesimulator",
+   "compiler_config_sha256": "4f49f5218bf6612d462efe937d3154bacb1ce5b1549f777f1b16d3a89ffe70e9",
+   "passes": [],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "cc7af050d5b044f1e4e3db145e0ab904d5c11eba0feca0e06331db3bcf76afab",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "0": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "1": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "2": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "3": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-00/joint-000.cq",
+   "sha256": "a0ea5306e9fbca7cd6c61246b28b7c8802fdb87c8b0edaa705c5fd1306c75962",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-00/joint-001.cq",
+   "sha256": "d8fcf0c84c2458d70f5374f5b6927e56455eb2cdac1f6854ef341205b1d8d5fa",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "00a40a0a2c6c36bc6cd0158cb86b9b9c7c9cc21e0811f14db9e2d13a31f2ecbd",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-00/joint-010.cq",
+   "sha256": "49e7b1b17f613c5900d8adda8d2763322c7f7dd14f91d6f328a7e6673a920629",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b0e83065d93f62a15e6f32591914c93eea299301f8830c98fd56df9bdf334fe3",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-01/joint-011.cq",
+   "sha256": "7e540671422e928a94def9fa0aec75293e9a78d490b0a6223e2642667ee5035a",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "7a12f4c30bd80bbc3c8c4e7bc61081f605fae18f982399362cf55066847211b0",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-01/joint-100.cq",
+   "sha256": "b984dc483d4aaebab53c7e4a3d79fc0a95284483335faeb00e4f250119f758a1",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3ee3adff2ddb94a6d2b00f43a28a8c14f58c71df9b15bf9293216f2180363b34",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-01/joint-101.cq",
+   "sha256": "08cc19fadab780cdb12bd8646dd8ba6fd9ff7845b4cdfd49f94cadb0e3af3059",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "a80aa4acb61b0c96525fd5ed07e3e0b7012b5731ec8d0966a3f8634792cb6e80",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-02/joint-110.cq",
+   "sha256": "2f5f7a5de27d8daa84b3aa310fbc416d95e2689a8fb755aa1b52fe8559e4129b",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "79969004b40c272eae08051ab887cb2ff46ebf200289533d588b85882f297338",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-02/joint-111.cq",
+   "sha256": "e4ada5ae60f81d0ea41f3b4e9145307bb43a5eff8ebb952b038e3343d16eadc8",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "21ad1bc22d0b01e53f2587d6f593b105ad86d40d29918442d3dff40c05c0652b",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-03/readout-0.cq",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-03/b0.cq",
+   "sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b4a27eb33b635b0e833675f2607ea686c05b9ddcbc5f3c5933fbf40fca3e9069",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "2": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "4": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.5307274153917776)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.832595714594046)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(2.5307274)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.8325957)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "8": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.7853981633974483)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.7853981633974483)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.2617993877991494)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.8726646259971648)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.1344640137963142)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(4.276056667386107)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.356194490192345)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-4.71238898038469)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.7853981633974483)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.08726646259971647)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.78539816)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.78539816)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.26179939)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.87266463)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.134464)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.0071286)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-2.3561945)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-0.78539816)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.087266463)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "11": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.7853981633974483)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(0.78539816)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "12": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.48352986419518)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(-3.141592653589793)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.0543261909900767)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.4835299)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.0543262)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-03/readout-1.cq",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3d835b5b894c4b4c8e0ebc9eb4aa8488fddbcca939b9381dc663b62db27685fa",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-04/readout-0.cq",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-04/k4.cq",
+   "sha256": "175212c34f8f24345933290782484853080fee5ea698e13615d4b7feab020f15",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "39b7acaffe4d8bb7138e48c1ff1e35839516ac45c87ab2bc52f6ae004d7cc5b6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "2": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "4": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "8": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "11": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-04/readout-1.cq",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3d835b5b894c4b4c8e0ebc9eb4aa8488fddbcca939b9381dc663b62db27685fa",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-05/readout-0.cq",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-05/k8.cq",
+   "sha256": "5b39ca419456e62eb2d417d2f5e489f564ba633441f1d4b02a255d00741c6872",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "39b7acaffe4d8bb7138e48c1ff1e35839516ac45c87ab2bc52f6ae004d7cc5b6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "2": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "4": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "8": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "11": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-05/readout-1.cq",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3d835b5b894c4b4c8e0ebc9eb4aa8488fddbcca939b9381dc663b62db27685fa",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-06/readout-0.cq",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "b9f6522943487823c55f09c907d3b3fbfbb9c2cf628f9a5cda94f990975ebe87",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-06/k12.cq",
+   "sha256": "1c917372d4ca8b8280e80afd2b3eec6fbb979a12cdb45bc6eaf60923cf09a45c",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "39b7acaffe4d8bb7138e48c1ff1e35839516ac45c87ab2bc52f6ae004d7cc5b6",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": false,
+   "control_changes": {},
+   "gate_changes": {
+    "2": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "CZ"
+      ]
+     ]
+    },
+    "4": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "8": {
+     "source": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.141592653589793)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(3.1415927)"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "CZ"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(1.5707963)"
+      ]
+     ]
+    },
+    "11": {
+     "source": [
+      [
+       "Rz(1.5707963267948966)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963267948966)"
+      ]
+     ],
+     "compiled": [
+      [
+       "Rz(1.5707963)"
+      ],
+      [
+       "X90"
+      ],
+      [
+       "Rz(-1.5707963)"
+      ]
+     ]
+    }
+   }
+  },
+  {
+   "case": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/batch-06/readout-1.cq",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36",
+   "backend": "tuna_17",
+   "compiler_config_sha256": "ef1399163666513aeb0ab3168b92badc15330d0700a9ca6bd7cdba3b22d823fd",
+   "passes": [
+    "opensquirrel.passes.decomposer.SWAP2CZDecomposer",
+    "opensquirrel.passes.decomposer.CZDecomposer"
+   ],
+   "libqasm": "ok",
+   "compiled": "ok",
+   "compiled_sha256": "3d835b5b894c4b4c8e0ebc9eb4aa8488fddbcca939b9381dc663b62db27685fa",
+   "control_sequence_preserved": true,
+   "gate_sequence_preserved": true,
+   "control_changes": {},
+   "gate_changes": {}
+  },
+  {
    "case": "results/quantum_inspire/cases/qx_reset_phase/batch-00/reset_phase.cq",
    "sha256": "7d4ac09ba0430ec9e4435a350e60a413ba191bbd15f555292e2b3983dfd6a80c",
    "backend": "QXsinglenodesimulator",
