@@ -25,6 +25,7 @@ on:
       - docs/evidence/cd-annihilator-symmetry-real/**
       - docs/evidence/cd-tower-domain/**
       - docs/evidence/cd-half-fold/**
+      - docs/evidence/cd-twisted-product/**
       - docs/evidence/folding_proofs/**
       - docs/evidence/formal_certificates/**
       - docs/evidence/stiefel_witness/**
@@ -56,6 +57,7 @@ on:
       - docs/evidence/cd-annihilator-symmetry-real/**
       - docs/evidence/cd-tower-domain/**
       - docs/evidence/cd-half-fold/**
+      - docs/evidence/cd-twisted-product/**
       - docs/evidence/folding_proofs/**
       - docs/evidence/formal_certificates/**
       - docs/evidence/stiefel_witness/**
@@ -119,7 +121,7 @@ jobs:
         run: |
           set -eu
           rocq=$(sed -n 's/^rocq //p' "$RUNNER_TEMP/opam_list.txt")
-          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation cd-annihilator-symmetry cd-annihilator-symmetry-real cd-tower-domain cd-half-fold"
+          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation cd-annihilator-symmetry cd-annihilator-symmetry-real cd-tower-domain cd-half-fold cd-twisted-product"
           if [ "${{ github.event_name }}" != pull_request ]; then
             only="$only stiefel_witness"
           fi

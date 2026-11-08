@@ -186,10 +186,16 @@ cited record or recomputed.
   pure or not, and for the second half: (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and (0, b)(c, d) = 0 iff b c = 0
   and b d = 0, at every level over any ordered domain, from `kernel_equality` and `lemma_9_2` (integer instance closed
   under the global context, real instance on the Stdlib reals' two axioms;
-  [replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). Doubling of nullity and rank for every real
-  operand follows from CdHalfFold.v's all-operand kernel identity by rank-nullity; the missing Rocq piece is that
-  kernel-dimension bridge (gororoba-open can alternatively close its pure-only gap by showing that an operand with
-  nonzero real part has full rank). The mixed-pair rule's census Theorem 3 step is the open formal target.
+  [replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). `RealHalfFoldDimension` there turns the kernel
+  identity into the basis count: a basis of n vectors of ker L_a gives bases of 2n vectors of ker L_(a,0) and
+  ker L_(0,a), and the rank 2^k - n doubles (the existence of bases and the invariance of their size are the
+  hypotheses of the standard finite-dimensional facts). gororoba-open closes its pure-only gap by showing that an
+  operand with nonzero real part has full rank: pull request 266 there proves `doubling_nullity` for every operand
+  (`CDUnconditionalDoublingNullity.v`). The twisted-product identities Re f = (f(z) + f(z'))/2 and Im f = (f(z) -
+  f(z'))/(2 i) for the W8 equations, with the ideal exchange for every ideal, are
+  [CdTwistedProduct.v](../../../proofs/CdTwistedProduct.v) ([replay bundle](../../evidence/cd-twisted-product/README.md)).
+  The mixed-pair rule's census Theorem 3 step is the open formal target; its statement, with the index ranges
+  h = 2^k, k >= 3, 0 < i < h, 0 <= j < h, is in the header of `CdHalfFold.v`.
 
 **Instruments: two faults, an estimator property that hides one of them, and a sharper contact-order test.**
 - Tuna-17 (PR #789): b0's two base replicates read 0.0162 and 0.0393, and the replicate gate failed (chi2 34.9 against
@@ -242,9 +248,9 @@ their record lands.
 
 | Statement | Class | Evidence |
 |---|---|---|
-| Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, and nullity L_(a,0) = 2 nullity L_a for pure a | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) |
+| Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, nullity L_(a,0) = 2 nullity L_a whenever ker L_a has a finite basis, and the same for nullity of every operand in gororoba-open | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v) (`RealHalfFoldDimension`); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) and pull request 266 (`doubling_nullity`) |
 | Mixed fold on basis pairs: n_2h(e_i +- e_(h+j)) = h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i; maximum D/2 - 4 | computed through D = 512 | [singular_sector_dynamics](../singular_sector_dynamics.md) |
-| Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | proved by the change of variables (Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2; J(z) and J(z') use disjoint variables), computed at p = 32009 and 32003 | ledger A5-223, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) (mutation controls: one flipped sign of i breaks both containments) |
+| Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | generator-level ideal equality proved in Rocq (`W8_ideal_exchange` of [CdTwistedProduct.v](../../../proofs/CdTwistedProduct.v): Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2); the disjoint variables of J(z) and J(z'), the product of varieties, dimension 24, degree 16 and the Hilbert numerator computed at p = 32009 and 32003 | ledger A5-223, [cd-twisted-product](../../evidence/cd-twisted-product/README.md), [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) (mutation controls: one flipped sign of i breaks both containments) |
 | Restriction to the sedenion coordinates is the diagonal z = z' and returns J; J is the radical of the A_4 Pfaffian ideal PB, not PB | computed at p = 32009 | ledger A5-222, [a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md) |
 | Nullity sum rule n_32(x) = n_16(z) + n_16(z') | refuted: holds at 800 QRNG-seeded random points (200 each on W8, the diagonal, off W8 and generic), fails on 480 of 512 mixed basis pairs | ledger A5-224, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
 | On every mixed basis pair n_16(z) = n_16(z'), and (n_32, n_16) takes four values: (0,0) x32, (0,8) x60, (4,4) x168, (12,8) x252; on the 420 pairs with i, j >= 1 and i != j, n_16(z) = 8 - n_16(e_i +- e_j), so n_32 = 2 n_16(z) - 4; the exceptions are i = 0, j = 0 or i = j (92 pairs), where n_32 = 0 | computed (512 of 512; ranks over Q agree with F_32009) | ledger A5-225, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |

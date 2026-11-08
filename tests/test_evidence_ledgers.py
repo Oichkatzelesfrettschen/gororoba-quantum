@@ -40,6 +40,7 @@ LEDGERS = [
     (".", "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256"),
     (".", "docs/evidence/cd-tower-domain/source_hashes.sha256"),
     (".", "docs/evidence/cd-half-fold/source_hashes.sha256"),
+    (".", "docs/evidence/cd-twisted-product/source_hashes.sha256"),
     ("docs/evidence/four_support_geometry", "SHA256SUMS"),
     ("docs/evidence/four_support_doubling", "SHA256SUMS"),
     ("docs/evidence/four_support_homology", "SHA256SUMS"),
