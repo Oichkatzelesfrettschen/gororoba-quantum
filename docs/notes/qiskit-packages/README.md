@@ -27,7 +27,7 @@ on, as recorded in each distribution's `requires_dist` and in its imports.
 An arrow `A -> B` means that A imports B at run time.
 
 ```text
-                        qiskit 2.6.1  (circuits, transpiler, quantum_info, qpy, qasm3)
+                        qiskit 2.6.2  (circuits, transpiler, quantum_info, qpy, qasm3)
       ┌──────────────┬────────┼───────────────┬──────────────────┬──────────────┐
   qiskit-aer 0.18.2  samplomatic 0.21  qiskit-qasm3-import   rustworkx      numpy/scipy
       │   ▲               │  ▲  ▲            │

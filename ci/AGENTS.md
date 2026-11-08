@@ -163,13 +163,16 @@ path, AVX-512 included, and records that path (CPU model, numpy dispatch
 targets, OpenBLAS cores, any cap set); a result computed on an Intel chip
 replays on the build host under Intel SDE emulating that chip
 ([docs/PYTHON.md](../docs/PYTHON.md#emulating-another-cpu-with-intel-sde)), and
-one computed on an AMD Zen 4 or Zen 5 runner replays on such a CPU. The
-byte-replayed records of the runner-image ledger keep the caps until each is
-re-bound with its platform: for their gates `ci/run_gates.py` defaults
-`OPENBLAS_CORETYPE` to Haswell and caps numpy's dispatch at x86-64-v3 with
-`NPY_DISABLE_CPU_FEATURES`, the kernel set every runner and build host
-executes. Such a record is written in the runner's userland, which supplies
-both caps, through
+one computed on an AMD Zen 4 or Zen 5 runner replays on such a CPU. Every
+lane, gate, workflow and record writer computes on its CPU's native numeric
+path: no script, workflow or ledger sets `OPENBLAS_CORETYPE` or
+`NPY_DISABLE_CPU_FEATURES`, and `tests/ci/test_native_numeric_path.py` fails
+when one does (owner ruling 2026-11-06,
+[native-numeric-replay.md](../docs/design/native-numeric-replay.md)). A
+record names the path it was written on, and its byte replay holds on a CPU
+that takes the same path; the build host and the AMD EPYC 7763 (Zen 3)
+runners select the OpenBLAS Haswell core natively. A runner-image ledger
+record is written in the runner's userland through
 `"$PYTHON" ci/runner_image_records.py write sh -c '"$PYTHON" PRODUCER ...'`:
 it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
 host process writes, then copies back and receipts each file the command
@@ -476,29 +479,27 @@ the documents repositories move: `sh ci/pr_checks.sh gates [--gates NAME,...]`.
 A replay of a record that the runner-image ledger binds runs inside the
 runner image (`ci/runner_image.sh`, podman) for a record that the runner-image
 ledger binds, because those records are tied to the image's libm and Python
-build. A replay sets the environment its record names (the caps below, thread
-counts) and runs on the machine whose CPU the record's platform matches:
-- a record with no AVX-512 dispatch, or written under the CI caps
-  (`OPENBLAS_CORETYPE=Haswell`, `NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL
-  AVX512_SPR"`, both set by `ci/run_gates.py`), including the AMD EPYC 7763
-  (Zen 3) runners, replays on the AVX2 build host, the reference machine.
-  `ci/pr_checks.sh` sets the numpy cap alone and leaves OpenBLAS on its
-  detected kernel, because the forced Haswell kernel of numpy 2.5.4's OpenBLAS
-  0.3.34 segfaults in dgemm on the AMD EPYC 9V74 (Zen 4) runners for a
-  576 x 256 or 2000 x 300 product; a gate whose product reaches that size
-  inherits the fault on those runners;
+build. A replay sets the thread counts its record names and runs on the
+machine whose CPU the record's platform matches:
+- a record with no AVX-512 dispatch whose OpenBLAS core is Haswell, which
+  includes every record written before 2026-11-06 under the former CI caps and
+  every record from an AMD EPYC 7763 (Zen 3) runner, replays on the AVX2 build
+  host, the reference machine. A forced kernel is no remedy for another CPU:
+  measured with numpy 2.5.4 (OpenBLAS 0.3.34), the forced Haswell kernel
+  segfaults in dgemm on the AMD EPYC 9V74 (Zen 4) runners for a 576 x 256 or
+  2000 x 300 product;
 - a record from an AMD Zen 4 or Zen 5 runner with AVX-512 dispatch replays on
-  a Zen 4 CPU (numpy's AVX-512 dispatch groups resolve the same on both), with
-  the record's recorded `OPENBLAS_CORETYPE` set, because OpenBLAS core
-  detection can differ;
+  a Zen 4 CPU (numpy's AVX-512 dispatch groups resolve the same on both) whose
+  detected OpenBLAS core equals the record's; a CPU with another core is a
+  different identity, which the design's bounded comparison covers;
 - a record from an Intel server replays on a Zen 4 CPU when the record's
   dispatch groups are ones Zen 4 has, and under Intel SDE (`sde64 -icx` or `-spr
   -follow_subprocess`) otherwise and always for the FP16 group; SDE emulates the
   chip at about 3x slowdown, so it answers a single question and never the
   whole set.
 A producer records the platform it computed on (CPU model, numpy dispatch
-targets, OpenBLAS cores, any cap set), and the routing keys on that record, not
-on the vendor alone.
+targets, OpenBLAS cores), and the routing keys on that record, not on the
+vendor alone.
 
 ## Code style tools
 

@@ -1,0 +1,124 @@
+{
+ "admission": {
+  "anchor_raw": {
+   "A": 1.0068313992339974,
+   "B": 1.0480066584708425
+  },
+  "dark": {
+   "A": 0.0010154299544201742,
+   "B": 0.0006565938051137968
+  },
+  "max_sentinel_share": 0.00086212158203125,
+  "passed": true
+ },
+ "anchor_replay": {
+  "ba": 1.0876309815770133,
+  "reading": "anchor error unchanged"
+ },
+ "correction": {
+  "failing_after": 0,
+  "failing_before": 9,
+  "passed": true,
+  "rms_after": 0.003995545432059623,
+  "rms_before": 0.04855170951278956
+ },
+ "fresh_anchors": {
+  "ba": [
+   0.9394786361004136,
+   0.9449552391212268,
+   0.8350751442177342,
+   0.9963127160674565,
+   0.9799555521765784,
+   0.9513563337644988,
+   1.0531807453403785
+  ],
+  "median": 0.9513563337644988,
+  "reading": "unresolved",
+  "sd": 0.06667399778512105
+ },
+ "fresh_failing": {
+  "aligned_mean": -0.0024329937294441354,
+  "carried_fraction": -0.06470728003840785,
+  "carried_fraction_99": [
+   -0.6379129537972731,
+   0.5084983937204574
+  ],
+  "empirical_sd": 0.02929493587603931,
+  "fresh_raw_d": [
+   -0.03495140281606257,
+   -0.0012142845165452054,
+   -0.002082460469974734,
+   0.0033907171050687746,
+   -0.035315573476590534,
+   -0.04902126891779046,
+   -0.009573031320465053,
+   -0.043772766496880444,
+   0.004684022704946167
+  ],
+  "items": [
+   "a-h-NN/1",
+   "b-i-NN/1",
+   "c-d-TD/0",
+   "c-d-TN/1",
+   "c-d-TT/1",
+   "e-b-TT/0",
+   "e-b-TT/1",
+   "g-h-TT/0",
+   "i-f-TC/1"
+  ],
+  "original_raw_d": [
+   -0.07605114468486318,
+   -0.042202215105972496,
+   0.03587963743931244,
+   -0.049950478569956824,
+   -0.014955325076230652,
+   0.029772767989052484,
+   -0.04328748970197094,
+   0.02471774728517917,
+   -0.02153303249489935
+  ],
+  "reading": "follows the mesh"
+ },
+ "frozen_maps": {
+  "gain": {
+   "ceiling": 0.9887535388350698,
+   "n_readings": 64,
+   "n_seed_blocks": 16,
+   "p_one_sided": 0.0015999200039998,
+   "r": 0.4459397046956074,
+   "reading": "map carries",
+   "share": 0.20112415522507374
+  },
+  "offset": {
+   "ceiling": 0.9887535388350698,
+   "n_readings": 64,
+   "n_seed_blocks": 16,
+   "p_one_sided": 0.010849457527123643,
+   "r": 0.4439838290956712,
+   "reading": "map does not carry",
+   "share": 0.19936377747957196
+  }
+ },
+ "persistence": {
+  "cutoff": 0.988,
+  "excluded_designs": [],
+  "p": 4.999750012499375e-05,
+  "pairs": 46,
+  "r": 0.996640149059137,
+  "raw_r": 0.979080197979943,
+  "reading": "fixed per mesh",
+  "replay_failing": 9
+ },
+ "replay_mesh_identity": {
+  "differing_designs": []
+ },
+ "run": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00",
+ "schema": "ascella-pathion-mesh-persistence-analysis-v2",
+ "within_job_control": {
+  "anchor_early": 1.0265293665962874,
+  "anchor_late": 1.0283085979869848,
+  "drift_within_job": false,
+  "early_half_r": 0.9944276840785546,
+  "late_half_r": 0.9964648176124157
+ }
+}

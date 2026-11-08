@@ -64,15 +64,10 @@ import parallel  # noqa: E402
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
-OPENBLAS_CORETYPE = "Haswell"
-# numpy's dispatched loops above x86-64-v3 (AVX-512 on the runners' Intel
-# CPUs) round differently from the AVX2 loops; every runner and build host
-# supports x86-64-v3, so capping dispatch there gives all of them one path.
-NUMPY_DISABLED_FEATURES = "X86_V4 AVX512_ICL AVX512_SPR"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # The numeric stack a gate's interpreter loads under the gate environment: the CPU model, numpy's enabled dispatch
-# targets, and each OpenBLAS that numpy and scipy.linalg load with the core it selected, which shows whether
-# OPENBLAS_CORETYPE and NPY_DISABLE_CPU_FEATURES took effect on the runner.
+# targets, and each OpenBLAS that numpy and scipy.linalg load with the core it selected: the native numeric path a
+# gate computed on, which names its identity (docs/design/native-numeric-replay.md).
 NUMERIC_STACK_PROBE = """
 import json, os, numpy, scipy.linalg, threadpoolctl
 from numpy._core._multiarray_umath import __cpu_dispatch__, __cpu_features__
@@ -219,12 +214,8 @@ def environment_for(device: str | None) -> dict[str, str]:
         "QISKIT_NUM_PROCS",
     ):
         environment.setdefault(variable, "1")
-    # OpenBLAS and numpy select kernels by the running CPU, and kernels differ
-    # in rounding; one named x86-64 AVX2 kernel set for each gives every
-    # x86-64-v3 CPU one rounding path. libm and the Python build follow the
-    # host image, so records are written in the runner's (ci/runner_image.sh).
-    environment.setdefault("OPENBLAS_CORETYPE", OPENBLAS_CORETYPE)
-    environment.setdefault("NPY_DISABLE_CPU_FEATURES", NUMPY_DISABLED_FEATURES)
+    # OpenBLAS and numpy select their kernels from the running CPU: a gate computes on its native numeric path, and
+    # the numeric-stack probe records which path that was (docs/design/native-numeric-replay.md).
     return environment
 
 

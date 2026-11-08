@@ -32,9 +32,15 @@ come from ascella_compilation_reading.x_statistics, as in scripts/ascella_seed_r
 Exploratory, outside the decision: the Spearman correlation of the identical perturbed meshes' block mode-2 fractions
 between the runs, and that of each mesh's z change with the change of its predecessor's L1 heater-phase distance.
 
-One numpy generator per pair, seeded with the LONG_REPEAT_ORDER_DRAW value PAIR_INDEX names, draws the S
-relabelings, then the P1 relabelings, then the P2 labelings; the request consumes values 0..55 and the power record
-value POWER_INDEX, so every value seeds one use.
+The caller names the plan a reading belongs to and the QRNG draw value that seeds it (--plan, and --seed
+qrng:<draw>#<index> through qrng_seeds.add_seed_argument); ci/gates.json carries each retained reading's values. One
+numpy generator per reading, seeded with that value, draws the S relabelings, then the P1 relabelings, then the P2
+labelings. The readings with job-08 and the
+rehearsal take values 56, 58 and 59 of LONG_REPEAT_ORDER_DRAW, whose request consumes values 0..55 and whose power
+record takes value POWER_INDEX; job-08 against job-09, the secondary reading of
+docs/state/plans/ascella-prospective-correction-case.json, takes value 58 of
+docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json, whose request consumes values 0..55 and whose correction score
+takes 56, 57 and 59. Every value seeds one use.
 
 --power OUT [--check] writes the design's power record: POWER_REPLICATES Gaussian replicates per true slope in
 POWER_SLOPES of 56 meshes whose reference z is a true error of variance s_c^2 plus counting noise at the reference's
@@ -43,12 +49,13 @@ s_c^2 (1 - slope^2) plus counting noise at 32,768 samples, each read with POWER_
 replicate takes its own generator spawned, before the map, from value POWER_INDEX of LONG_REPEAT_ORDER_DRAW.
 
 Usage:
-  "$PYTHON" scripts/ascella_long_horizon_reading.py REFERENCE REPEAT OUT [--check]
+  "$PYTHON" scripts/ascella_long_horizon_reading.py REFERENCE REPEAT OUT --plan PLAN --seed qrng:DRAW#INDEX [--check]
   "$PYTHON" scripts/ascella_long_horizon_reading.py --power OUT [--check]
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import sys
@@ -67,6 +74,7 @@ import ascella_physical_models as models  # noqa: E402
 import ascella_seed_repeat_reading as seed_repeat  # noqa: E402
 
 import mesh_selection  # noqa: E402
+import qrng_seeds  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 ALPHA = 0.01
@@ -77,11 +85,9 @@ RELABELINGS = 20000
 MESH_TOLERANCE = 1e-6
 SPREAD_RECORD = "docs/evidence/ascella-order-coefficients/heater-coupling.json"
 SPREAD_SAMPLES = 8192
-PAIRS = {("job-02", "job-03"), ("job-02", "job-08"), ("job-03", "job-08")}
 PLAN = "docs/state/plans/ascella-long-horizon-seed-repeat-case.json"
 LONG_REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json"
 POWER_INDEX = 57
-PAIR_INDEX = {("job-03", "job-08"): 56, ("job-02", "job-08"): 58, ("job-02", "job-03"): 59}
 POWER_SLOPES = (0.0, 0.25, 0.5, 0.75, 1.0)
 POWER_REPLICATES = 400
 POWER_RELABELINGS = 2000
@@ -170,10 +176,9 @@ def reproduction(
     }
 
 
-def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
+def build(old_dir: Path, new_dir: Path, plan: str, draw: str, seed_index: int) -> dict[str, Any]:
     old, new = models.job_data(old_dir), models.job_data(new_dir)
     pair = (old["record"]["manifest"]["job"], new["record"]["manifest"]["job"])
-    models.require(pair in PAIRS, f"the pair {pair} is not one of {sorted(PAIRS)}")
     names_old, names_new = seed_repeat.names(old), seed_repeat.names(new)
     models.require(sorted(names_old) == sorted(names_new), f"{pair[1]} does not hold {pair[0]}'s settings")
     index_old = {name: i for i, name in enumerate(names_old)}
@@ -185,7 +190,6 @@ def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
     byte_equal = [left == right for left, right in pairs]
     z_old, v_old = reading.x_statistics(old)
     z_new, v_new = reading.x_statistics(new)
-    draw, seed_index = LONG_REPEAT_ORDER_DRAW, PAIR_INDEX[pair]
     generator = np.random.default_rng(int(json.loads((ROOT / draw).read_text(encoding="utf-8"))["values"][seed_index]))
     keep = np.array(identical)
     anchors = [i for i in range(len(names_new)) if anchor_new[i] and identical[i]]
@@ -193,7 +197,7 @@ def build(old_dir: Path, new_dir: Path) -> dict[str, Any]:
     paired = [index_old[names_new[i]] for i in perturbed]
     record: dict[str, Any] = {
         "schema": "ascella-long-horizon-reading-v1",
-        "plan": PLAN,
+        "plan": plan,
         "jobs": list(pair),
         "runs": [old_dir.relative_to(ROOT).as_posix(), new_dir.relative_to(ROOT).as_posix()],
         "samples": [samples_of(old), samples_of(new)],
@@ -299,17 +303,24 @@ def power() -> dict[str, Any]:
 
 
 def main(argv: list[str]) -> int:
-    check = argv[-1:] == ["--check"]
-    args = argv[:-1] if check else argv
-    if len(args) == 2 and args[0] == "--power":
-        record = power()
-    elif len(args) == 3:
-        record = build(Path(args[0]).resolve(), Path(args[1]).resolve())
+    parser = argparse.ArgumentParser(description="the long-horizon seed-repeat reading (module docstring)")
+    parser.add_argument("paths", nargs="*", help="REFERENCE REPEAT OUT")
+    parser.add_argument("--power", metavar="OUT", help="write the power record")
+    parser.add_argument("--plan", help="the plan the reading belongs to")
+    qrng_seeds.add_seed_argument(parser, "--seed", help="the reading's relabeling seed, qrng:<draw>#<index>")
+    parser.add_argument("--check", action="store_true", help="replay against the retained record")
+    args = parser.parse_args(argv)
+    if args.power is not None and not args.paths and args.plan is None and args.seed is None:
+        record, out = power(), Path(args.power).resolve()
+    elif args.power is None and len(args.paths) == 3 and args.plan is not None and args.seed is not None:
+        models.require((ROOT / args.plan).is_file(), f"{args.plan} is not a retained plan")
+        _, draw, index = qrng_seeds.resolve(args.seed_source)
+        record = build(Path(args.paths[0]).resolve(), Path(args.paths[1]).resolve(), args.plan, draw, index)
+        out = Path(args.paths[2]).resolve()
     else:
-        raise ValueError(f"usage: see the module docstring, not {argv}")
-    out = Path(args[-1]).resolve()
+        parser.error("give --power OUT, or REFERENCE REPEAT OUT with --plan and --seed")
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
-    if check:
+    if args.check:
         models.replay(json.loads(text), json.loads(out.read_text(encoding="utf-8")), out.name)
         return 0
     models.require(not out.exists() or out.read_text(encoding="utf-8") == text, f"{out} differs from the recomputed")

@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-06T22:28:48+00:00",
+ "approval": "Owner approved 2026-11-06: execute the Tuna-17 coset-block case (QX control series, then Tuna-17 batches 00-07)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "be1ae0cbd156f689f9d0d26ada75b32c3e46cb100cc0adb2c141e40a8df8861c",
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "xor_ba-plus-r0.cq",
+   "job": 1685685,
+   "sha256": "c652bd7b63b1000176943481b3ec134430dba5e526ca3237bc20fe62acb11115"
+  },
+  {
+   "file": "xor_ba-minus-r0.cq",
+   "job": 1685686,
+   "sha256": "ad8241c3b0b1cdbc577ea0d0dc1d4bd2abdfdf6ceecc866cfd48873ae917ee5b"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1685687,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ],
+ "project": 822676,
+ "batch_job": 922232,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-06T22:28:51+00:00",
+  "approval": "Owner approved 2026-11-06: execute the Tuna-17 coset-block case (QX control series, then Tuna-17 batches 00-07)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "be1ae0cbd156f689f9d0d26ada75b32c3e46cb100cc0adb2c141e40a8df8861c",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 922232,
+  "project": 822676,
+  "shots": 16384,
+  "jobs": [
+   {
+    "file": "xor_ba-plus-r0.cq",
+    "job": 1685685,
+    "sha256": "c652bd7b63b1000176943481b3ec134430dba5e526ca3237bc20fe62acb11115"
+   },
+   {
+    "file": "xor_ba-minus-r0.cq",
+    "job": 1685686,
+    "sha256": "ad8241c3b0b1cdbc577ea0d0dc1d4bd2abdfdf6ceecc866cfd48873ae917ee5b"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1685687,
+    "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+   }
+  ],
+  "submitted_utc": "2026-11-06T22:28:51+00:00"
+ },
+ "confirmed_utc": "2026-11-06T22:28:51+00:00"
+}

@@ -35,9 +35,10 @@ OpenBLAS that numpy and scipy wheels bundle. `OPENBLAS_NUM_THREADS` and
 dispatched loops and OpenBLAS kernels round differently above x86-64-v3, so a
 run computes on its platform's native path and records it, and an Intel
 AVX-512 result replays on the build host under Intel SDE emulating that chip
-([PYTHON.md](../PYTHON.md#emulating-another-cpu-with-intel-sde)). Only a run
-that reproduces a runner-image ledger record sets `OPENBLAS_CORETYPE=Haswell`
-and `NPY_DISABLE_CPU_FEATURES` as `ci/run_gates.py` does.
+([PYTHON.md](../PYTHON.md#emulating-another-cpu-with-intel-sde)). No run sets
+`OPENBLAS_CORETYPE` or `NPY_DISABLE_CPU_FEATURES`; a runner-image ledger record
+byte-replays on a CPU whose native path equals the one it records
+([ci/AGENTS.md](../../ci/AGENTS.md)).
 
 The host carried AMD AOCL-BLAS 5.3 before; its single library-wide thread
 setting made LU and symmetric eigensolves slower at 6 threads than at 1 (rows
@@ -93,7 +94,7 @@ Uses: every module; `threadpoolctl` in `ci/runner_specs.py` and
 |---|---|---|---|---|---|
 | `OPENBLAS_NUM_THREADS` | OpenBLAS threads, identical on the host, Kaggle, Azure and CI | `threadpoolctl` reports the value | 1 inside `parallel.py` workers; physical cores (6 on the host, 2 on a Standard_FX4mds_v2, 2 on Kaggle) for one large dense call | the BLAS rows of compute-flags.md Measured combinations | measured on the host |
 | `threadpoolctl.threadpool_limits(limits=, user_api=)` | runtime thread bound per API | `threadpoolctl` 3.8.0 module; used in `ci/runner_specs.py` | bound inside a function instead of mutating the environment | none | verified |
-| `NPY_DISABLE_CPU_FEATURES` | numpy dispatch mask; `ci/run_gates.py` sets it for the runner-image ledger's records | `scripts/numerics_fingerprint.py`, `ci/run_gates.py` | unset for a native run; set exactly as `ci/run_gates.py` does only when replaying a ledger record | a ledger replay bit mismatch without it | verified use |
+| `NPY_DISABLE_CPU_FEATURES` | numpy dispatch mask; no lane sets it, and `scripts/numerics_fingerprint.py` sets it only to fingerprint a configuration | `scripts/numerics_fingerprint.py` | unset in every lane, gate and record writer | a record whose native path differs from its replay CPU's; replay it on a CPU of its own path | verified use |
 | `NPY_PROMOTION_STATE` | accepted only as `weak` in numpy 2.5 | `numpy/__init__.py` line 913 | leave unset | a numpy that accepts another value | verified |
 | `scipy.optimize.linprog(method=)` | `highs` is the default | `scipy/optimize/_linprog.py` | `highs` | n/a | verified |
 | `linprog(method='simplex')` | the installed 1.18.1 emits a DeprecationWarning that says removal in 1.11.0 and still runs | executed under `timeout` | never use | n/a | verified |

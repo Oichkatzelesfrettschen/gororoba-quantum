@@ -1,0 +1,25 @@
+{
+ "schema": "qi-pathion-coset-block-gate-v1",
+ "series": "pathion_coset_block_tuna_17",
+ "batch": "batch-00",
+ "cases_sha256": "01eaf253bab39a4e1a3dbaf18f807507d432a54e97b4aaca0c97ae8aaad04f52",
+ "predecessors": [],
+ "stops": {
+  "batches_checked": []
+ },
+ "control": {
+  "file": "results/quantum_inspire/pathion_coset_block_qx_analysis.json",
+  "sha256": "2f8d8325afbd3832eb2c32576c96ac2146f71b4383958e2afb9fa2b206b46722",
+  "batch_cases_sha256": {
+   "batch-00": "e5ba9a5825e4af4adab934937582a10ce35ad2b3a39147b7f39daad411fbf826",
+   "batch-01": "a7161db1295bda436b48b1c873b128bc2a5bb3b0f791604b32596fead62aefc4",
+   "batch-02": "209b365e1911c8efdcd8b045477ac4cdf7918dc2ee00768bd8e168f37ebb140a",
+   "batch-03": "f990b3d987e0c448c3caf1d9503eeeebf8103b7634056812bcf694150a97bc39",
+   "batch-04": "febe4dec9d765705e9fe304e4e6a742060cccc55bd6b4e96e64354b4afd7666e",
+   "batch-05": "f55d585bfdff17c7ea0f8ddccb062ca10fb08be7cedf8b2f9de4893b849b2d2e",
+   "batch-06": "eca75aed8bd3c1ad32f43428cf3a09a0c15ea0eefd07ce53d6b365fea64d7ecf",
+   "batch-07": "9013b6392b14fbd02286ffa799797a27c1052a76fa12d42bb38236475c9ebdb8"
+  }
+ },
+ "pause_seconds": 30
+}

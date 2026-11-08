@@ -1,0 +1,37 @@
+// junk split of the saturation by t2: k = 3 forms, header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing (sha256 1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170)
+// forms l1..l3: docs/evidence/anu_qrng/draw-2026-11-06T113431Z.json, key iso-l1..iso-l3 of forms.json (values below 32009, index order)
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; string rl;
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing";
+poly l1=21750*G[1]+1459*G[2]+1005*G[3]+12521*G[4]+1932*G[5]+27013*G[6]+12613*G[7]+27727*G[8]+961*G[9]+7363*G[10]+22910*G[11]+25771*G[12]+6054*G[13]+28147*G[14]+2128*G[15]+23464*G[16]+2206*G[17];
+poly l2=16226*G[1]+427*G[2]+317*G[3]+30317*G[4]+20375*G[5]+29522*G[6]+5258*G[7]+20396*G[8]+21877*G[9]+9596*G[10]+12824*G[11]+31456*G[12]+12750*G[13]+26108*G[14]+25857*G[15]+10487*G[16]+27202*G[17];
+poly l3=24241*G[1]+29292*G[2]+1330*G[3]+2472*G[4]+27950*G[5]+9079*G[6]+16451*G[7]+17152*G[8]+18923*G[9]+3208*G[10]+1491*G[11]+23510*G[12]+6943*G[13]+21013*G[14]+10330*G[15]+24757*G[16]+15113*G[17];
+ideal Q=J,l1,l2,l3;
+ideal QJ=J,G;
+ideal Qs_Q=std(Q);
+ring rh_Q=32009,(t3,t4,t5,t6,t7,h,t2),dp;
+ideal Qh=homog(imap(r,Qs_Q),h);
+ideal Sh=std(Qh);
+int ex=0; int ii; poly gg; int ee; for (ii=1;ii<=ncols(Sh);ii++) { gg=Sh[ii]; ee=0; while (gg!=0 && subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>ex) { ex=ee; } }
+ideal Sd=subst(Sh,h,1);
+setring r; ideal S=imap(rh_Q,Sd);
+kill rh_Q;
+S=std(S);
+rl="RESULT iso-p32009-k3-junkcheck "+"slice: dim "+string(dim(S))+" degree "+string(mult(S))+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k3-junkcheck.result", rl);
+ideal Qs_QJ=std(QJ);
+ring rh_QJ=32009,(t3,t4,t5,t6,t7,h,t2),dp;
+ideal Qh=homog(imap(r,Qs_QJ),h);
+ideal Sh=std(Qh);
+int exj=0; int ii; poly gg; int ee; for (ii=1;ii<=ncols(Sh);ii++) { gg=Sh[ii]; ee=0; while (gg!=0 && subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>exj) { exj=ee; } }
+ideal Sd=subst(Sh,h,1);
+setring r; ideal JK=imap(rh_QJ,Sd);
+kill rh_QJ;
+JK=std(JK);
+rl="RESULT iso-p32009-k3-junkcheck "+"junk V(J,G) minus V(t2): dim "+string(dim(JK))+" degree "+string(mult(JK))+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k3-junkcheck.result", rl);
+int onj=(size(reduce(JK,std(maxideal(1))))==0);
+rl="RESULT iso-p32009-k3-junkcheck "+"origin on the junk "+string(onj)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k3-junkcheck.result", rl);
+def SP=sat_with_exp(S,JK); ideal R=std(SP[1]);
+int dr=dim(R); int gr=0; if (dr>=0) { gr=mult(R); }
+rl="RESULT iso-p32009-k3-junkcheck "+"slice proper (saturation by the junk): dim "+string(dr)+" degree "+string(gr)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k3-junkcheck.result", rl);
+int onr=(size(reduce(R,std(maxideal(1))))==0);
+rl="RESULT iso-p32009-k3-junkcheck "+"origin on the slice proper "+string(onr)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k3-junkcheck.result", rl);
+quit;

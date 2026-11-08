@@ -91,10 +91,21 @@ def upper_qubits(block: Block) -> list[int]:
 
 
 def block_template(
-    block: Block, *, cocycle_free: bool = False, direct_plus: bool = False, measure: bool = True
+    block: Block,
+    *,
+    cocycle_free: bool = False,
+    direct_plus: bool = False,
+    measure: bool = True,
+    coin: bool = False,
 ) -> QuantumCircuit:
     """The block circuit with ORIENTATION unbound; ``direct_plus`` builds the plus oracle diagonal explicitly with
-    no phase gates, the reference the parametrized form is checked against."""
+    no phase gates, the reference the parametrized form is checked against.
+
+    ``coin`` replaces the phase pi on each upper data qubit by a CZ from a coin qubit (index d + 1) prepared in
+    |+>: the state is (|0> minus + |1> plus) / sqrt(2), so a Z-basis read of the coin labels each shot with the
+    orientation it ran and both arms share one circuit, one routing and one calibration."""
+    if coin and direct_plus:
+        raise ValueError("the coin circuit has no explicit plus construction")
     i, j, t = block.operand
     d = block.d
     labels = input_labels(block)
@@ -105,10 +116,16 @@ def block_template(
     if cocycle_free:
         f0 = np.ones(1 << d)
         f1 = np.full(1 << d, -1.0 if t < 0 else 1.0)
-    qc = QuantumCircuit(d + 1, d + 1 if measure else 0)
+    width = d + 2 if coin else d + 1
+    qc = QuantumCircuit(width, width if measure else 0)
+    if coin:
+        qc.h(d + 1)
     qc.h(range(d))
     qc.append(DiagonalGate(list(np.array([orientation[k] for k in labels]) * f0)), range(d))
-    if not direct_plus:
+    if coin:
+        for c in upper_qubits(block):
+            qc.cz(d + 1, c)
+    elif not direct_plus:
         for c in upper_qubits(block):
             qc.p(ORIENTATION, c)
     qc.h(d)
@@ -116,7 +133,7 @@ def block_template(
     qc.cx(d, 0)
     qc.h(d)
     if measure:
-        qc.measure(range(d + 1), range(d + 1))
+        qc.measure(range(width), range(width))
     return qc
 
 
@@ -149,6 +166,14 @@ def block_law_closed_form(block: Block, plus: bool, *, cocycle_free: bool = Fals
     low = psi / np.sqrt(2.0)
     high = (psi * f0 * f1 / np.sqrt(2.0))[np.arange(1 << block.d) ^ 1]
     return np.concatenate([(low + high) / np.sqrt(2.0), (low - high) / np.sqrt(2.0)]) ** 2
+
+
+def coin_arm_laws(circuit: QuantumCircuit) -> tuple[np.ndarray, np.ndarray]:
+    """(plus law, minus law) of a coin circuit: the outcome law indexed v + 2^(d + 1) c with the coin the top bit
+    splits into the two arms, each carrying probability 1/2 of the shots."""
+    law = block_law(circuit)
+    half = law.size // 2
+    return 2.0 * law[half:], 2.0 * law[:half]
 
 
 def selector_contrast(plus_law: np.ndarray, minus_law: np.ndarray) -> float:

@@ -67,7 +67,7 @@ SOURCE_DIR = diag.CASES_DIR
 FAMILY = "bdsc_stationarity"
 JOBS = ("b1-j1", "b1-j2", "b2-j1", "b2-j2")
 # Every retained diagnostic iteration used exactly as many shots as samples (nb_shots_used equals samples on all 96),
-# so a shot budget 1.2 times the sample budget stops on samples; a job bills its largest iteration's max_shots.
+# so a shot budget 1.2 times the sample budget stops on samples; a job bills at most its largest iteration's max_shots.
 TRIALS = 100000
 MAX_SHOTS = 120000
 # The only manifest fields a request changes from its source; settings, circuit, policy and order stay equal.

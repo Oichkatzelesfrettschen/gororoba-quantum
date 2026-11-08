@@ -1,0 +1,6 @@
+RESULT xmnp-p32009-k2-satt2h start: variables 7, forms 2, size(Q) 14, s 0
+RESULT xmnp-p32009-k2-satt2h saturation done: generators 73, exponent 1, s 1
+RESULT xmnp-p32009-k2-satt2h standard basis of the saturation: generators 63, s 2
+RESULT xmnp-p32009-k2-satt2h dim 3 degree 18 s 2
+RESULT xmnp-p32009-k2-satt2h origin on the closure (all generators vanish at 0) 1 s 2
+exit 0

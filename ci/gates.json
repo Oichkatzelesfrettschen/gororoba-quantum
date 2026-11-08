@@ -1786,6 +1786,10 @@
       "seconds": 20.0,
       "replays": [
         "docs/evidence/heron_platform/feedforward-latency.json",
+        "results/quandela/cases/ascella_cz_ensemble/job-00/cases.json",
+        "results/quandela/cases/ascella_cz_ensemble/job-00/circuit.json",
+        "results/quandela/cases/ascella_cz_ensemble/job-01/cases.json",
+        "results/quandela/cases/ascella_cz_ensemble/job-01/circuit.json",
         "results/quandela/cases/ascella_cz_tomography/job-00/cases.json",
         "results/quandela/cases/ascella_cz_tomography/job-00/circuit.json",
         "results/quandela/cases/ascella_cz_tomography/job-01/cases.json",
@@ -1801,6 +1805,17 @@
         "results/quandela/cases/ascella_signed_coherence/job-06/circuit.json",
         "results/quandela/cases/ascella_signed_coherence/job-07-i88/circuit.json",
         "results/quandela/cases/ascella_signed_coherence/job-07-i96/circuit.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_cz_ensemble_case.py --forecast",
+      "name": "core-ascella-cz-ensemble-forecast",
+      "seconds": 900.0,
+      "workers": "all",
+      "replays": [
+        "results/quandela/cases/ascella_cz_ensemble/forecast.json"
       ]
     },
     {
@@ -4182,7 +4197,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/long-horizon-rehearsal-02-03.json --check",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/long-horizon-rehearsal-02-03.json --plan docs/state/plans/ascella-long-horizon-seed-repeat-case.json --seed qrng:docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json#59 --check",
       "name": "core-ascella-signed-coherence-long-horizon-rehearsal-replay",
       "seconds": 15.0
     },
@@ -4196,14 +4211,49 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json --check",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --freeze results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/correction-table.json --check",
+      "name": "core-ascella-signed-coherence-correction-table-replay",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --power docs/evidence/ascella-order-coefficients/correction-table.json docs/evidence/ascella-order-coefficients/correction-power.json --check",
+      "name": "core-ascella-signed-coherence-correction-power-replay",
+      "seconds": 60.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --score docs/evidence/ascella-order-coefficients/correction-table.json results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09 docs/evidence/ascella-order-coefficients/correction-score-09.json --check",
+      "name": "core-ascella-signed-coherence-correction-score-09-replay",
+      "seconds": 45.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_correction_score.py --mesh-gate results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim",
+      "name": "core-ascella-signed-coherence-job-09-mesh-gate-replay",
+      "seconds": 20.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09 docs/evidence/ascella-order-coefficients/long-horizon-reading-08-09.json --plan docs/state/plans/ascella-prospective-correction-case.json --seed qrng:docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json#58 --check",
+      "name": "core-ascella-signed-coherence-long-horizon-reading-08-09-replay",
+      "seconds": 15.0
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json --plan docs/state/plans/ascella-long-horizon-seed-repeat-case.json --seed qrng:docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json#56 --check",
       "name": "core-ascella-signed-coherence-long-horizon-reading-03-08-replay",
       "seconds": 15.0
     },
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-02-08.json --check",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_long_horizon_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08 docs/evidence/ascella-order-coefficients/long-horizon-reading-02-08.json --plan docs/state/plans/ascella-long-horizon-seed-repeat-case.json --seed qrng:docs/evidence/anu_qrng/draw-2026-11-06T175610Z.json#58 --check",
       "name": "core-ascella-signed-coherence-long-horizon-reading-02-08-replay",
       "seconds": 15.0
     },
@@ -4946,11 +4996,11 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1 --replay-receipt docs/evidence/quantum-experiment-conformance/ascella-drift-source-replay.json --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+      "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-2 --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
       "name": "core-quantum-experiment-cases",
       "seconds": 15.0,
       "replays": [
-        "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1"
+        "docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-2"
       ],
       "workers": "all"
     },
@@ -4964,14 +5014,14 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-1/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json --check",
+      "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators-qiskit-2-6-2/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-2.json --check",
       "name": "core-quantum-experiment-toolchain",
       "seconds": 30.0,
       "requires": [
         "qi"
       ],
       "replays": [
-        "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-1.json"
+        "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain-qiskit-2-6-2.json"
       ]
     },
     {

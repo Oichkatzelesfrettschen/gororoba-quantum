@@ -15,9 +15,9 @@ each branch this record states:
   plug-in share below the held-out point estimate of fixed-mesh-confirmation.json, less the ALPHA_EACH probability of
   an upper bound below 0, which reads anticorrelated; atanh(r) is taken as normal with standard error
   1 / sqrt(n - J - 2);
-- credits, 1.0 per job plus SAMPLES max_shots at 1e-6, and the seconds the linear duration model projects at 186 / 64
-  per iteration, the bound that 64 iterations in 186 s set with nonnegative fixed overhead; 300 s is the platform's
-  maximum, and no retained source states what happens when a job reaches it.
+- the credit ceiling, 1.0 per job plus SAMPLES max_shots at 1e-6, and the seconds the linear duration model projects
+  at 186 / 64 per iteration, the bound that 64 iterations in 186 s set with nonnegative fixed overhead; 300 s is
+  the platform's maximum, and no retained source states what happens when a job reaches it.
 
 Usage:
   "$PYTHON" scripts/ascella_new_seed_sizing.py CONFIRMATION SPREAD OUT [--check]

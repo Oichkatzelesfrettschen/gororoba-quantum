@@ -1,0 +1,5 @@
+W8 -> N-: 8 singular values vanish at the boundary
+  4 values: sigma ~ 1.4142 eps^1.000
+  4 values: sigma ~ 2.0000 eps^1.000
+E8-bar -> VB: 4 singular values vanish at the boundary
+  4 values: sigma ~ 2.0000 eps^1.998

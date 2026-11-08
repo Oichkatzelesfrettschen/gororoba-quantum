@@ -1,0 +1,43 @@
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+with
+	GMP(6.3.0),NTL(11.6.0),FLINT(3.6.0),
+	omalloc,static readline(8),Plural,vspace(2),DBM,
+	dynamic modules,OM_NDEBUG,SING_NDEBUG,
+	CC:OPTIMIZE,GenericAdd,TableMult,no invTable,
+	eigenvalues,Gauss-Manin system,random=1793900116
+built-in modules: {}
+AC_CONFIGURE_ARGS =  '--prefix=/host/var/tmp/sage-local-manylinux_2_28_x86_64' '--libdir=/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib' '--disable-maintainer-mode' '--disable-dependency-tracking' '--exec-prefix=/host/var/tmp/sage-local-manylinux_2_28_x86_64' '--bindir=/host/var/tmp/sage-local-manylinux_2_28_x86_64/bin' '--with-gmp=/host/var/tmp/sage-local-manylinux_2_28_x86_64' '--with-ntl=/host/var/tmp/sage-local-manylinux_2_28_x86_64' '--with-flint=/host/var/tmp/sage-local-manylinux_2_28_x86_64' '--enable-gfanlib' '--enable-Singular' '--enable-factory' '--disable-doc' '--disable-polymake' '--without-python' '--without-pythonmodule' '--disable-python' '--disable-python_module' '--disable-python-module' '--disable-static' '--with-libparse' 'CC=gcc' 'CFLAGS=-g -O2' 'LDFLAGS=-Wl,-rpath-link,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath-link,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib ' 'CXX=g++' 'CXXFLAGS=-g -O2' --enable-omalloc  OMALLOC_LIBS='/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src/omalloc/libomalloc.la' OMALLOC_INCLUDES='-I/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src' --htmldir=${prefix}/share/doc/singular --with-Singular RESOURCES_LIBS='/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src/resources/libsingular_resources.la' RESOURCES_INCLUDES='-I/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src ' FACTORY_LIBS='/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src/factory/libfactory.la' FACTORY_INCLUDES='-I/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src -I/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src/factory -I/host/var/tmp/sage-local-manylinux_2_28_x86_64/var/tmp/sage/build/singular-4.4.1p5/src/factory/include',
+CC = gcc,FLAGS : -I/host/var/tmp/sage-local-manylinux_2_28_x86_64/include -g -O2  -pipe -fno-common -g0 -O3 -Wno-unused-function -Wno-trigraphs -Wno-unused-parameter -Wunknown-pragmas -Wno-unused-variable -fomit-frame-pointer -fwrapv -fvisibility=default -finline-functions -fno-exceptions -fconserve-space -funroll-loops -pthread -pthread,
+CXX = g++,FLAGS : -I/host/var/tmp/sage-local-manylinux_2_28_x86_64/include -g -O2 -pipe -fno-common -g0 -O3 -Wno-unused-function -Wno-trigraphs -Wno-unused-parameter -Wunknown-pragmas -Wno-unused-variable -fomit-frame-pointer -fwrapv -fvisibility=default -finline-functions -fno-exceptions -fno-threadsafe-statics -fno-enforce-eh-specs -fconserve-space -funroll-loops -fno-rtti -fno-delete-null-pointer-checks -pthread,
+DEFS : ,CPPFLAGS : ,
+LDFLAGS : -Wl,-rpath-link,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath-link,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib  -pipe -fno-common -g0 -O3 -Wno-unused-function -Wno-trigraphs -Wno-unused-parameter -Wunknown-pragmas -Wno-unused-variable -fomit-frame-pointer -fwrapv -fvisibility=default -finline-functions -fno-exceptions -fconserve-space -funroll-loops  -rdynamic -Wl,-undefined,dynamic_lookup,LIBS : -lreadline  -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -lgmp -lrt -lpthread   (ver: 14.2.1 20250110 (Red Hat 14.2.1-11))
+argv[0]   :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/Singular
+SearchPath:	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/singular/LIB:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/factory:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../lib/singular/MOD:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/..
+Singular  :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/Singular
+BinDir    :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin
+ProcDir   :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/..:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../lib/singular/MOD
+RootDir   :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/..
+DataDir   :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share
+DefaultDir:	
+InfoFile  :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/info/singular.info
+IdxFile   :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/singular/singular.idx
+HtmlDir   :	
+ManualUrl :	https://www.singular.uni-kl.de/Manual/
+ExDir     :	
+Path      :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/..:/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../lib/singular/MOD:/home/eirikr/a5env/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+emacs     :	
+xemacs    :	
+SingularEmacs:	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/Singular
+EmacsLoad :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/singular/emacs/.emacs-singular
+EmacsDir  :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/singular/emacs
+SingularXterm:	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/Singular
+xterm     :	
+EmacsDir  :	/home/eirikr/a5env/lib/python3.13/site-packages/sage_wheels/bin/../share/singular/emacs
+Available HelpBrowsers: info, builtin, dummy, emacs, 
+Current HelpBrowser: info 
+                     SINGULAR                                 /  Development
+ A Computer Algebra System for Polynomial Computations       /   version 4.4.1
+                                                           0<
+ by: W. Decker, G.-M. Greuel, G. Pfister, H. Schoenemann     \   Jan 2025
+FB Mathematik der Universitaet, D-67653 Kaiserslautern        \
+Auf Wiedersehen.

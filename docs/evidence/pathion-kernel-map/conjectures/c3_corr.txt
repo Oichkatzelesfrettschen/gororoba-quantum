@@ -1,0 +1,17 @@
+baseline (bracket product readout + contraction): chi2 288.9 on 24 bins
+logical  ('d2', 'selector') chi2   149.8  d0 +0.068 d1 +0.016
+logical  ('d2', 'coin')     chi2   149.8  d0 +0.068 d1 +0.016
+logical  ('d2', 'd0')       chi2   207.8  d0 +0.036 d1 -0.018
+physical (4, 11)            chi2   214.6  d0 +0.048 d1 -0.029
+physical (11, 12)           chi2   243.0  d0 -0.005 d1 -0.049
+physical (4, 8)             chi2   246.1  d0 +0.030 d1 -0.000
+physical (4, 2)             chi2   246.1  d0 +0.030 d1 -0.000
+physical (12, 11)           chi2   253.6  d0 +0.038 d1 +0.022
+physical (8, 11)            chi2   256.0  d0 +0.047 d1 +0.020
+physical (2, 11)            chi2   256.1  d0 +0.047 d1 +0.020
+physical (8, 2)             chi2   260.6  d0 +0.400 d1 -0.050
+logical  ('selector', 'coin') chi2   260.6  d0 +0.400 d1 -0.050
+logical  ('d1', 'd0')       chi2   270.3  d0 +0.027 d1 +0.021
+logical  ('selector', 'd0') chi2   271.3  d0 +0.039 d1 +0.010
+best physical: ((4, 11), 'physical') 214.6018070130845
+best logical : (('d2', 'selector'), 'logical') 149.82764069152134

@@ -16,6 +16,38 @@
     {
       "case": "docs/evidence/ascella-transition-day-repeat-reviewed-transport/campaign.json",
       "revision": "60fdf76a007f9015bd38c15e3adbe7da8aeee195"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_four_term_blocks/sim-00/cases.json",
+      "revision": "de5f7f43b427fba6bcb4790ff6cbaff7a458ebe2"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_four_term_blocks/job-00/cases.json",
+      "revision": "de5f7f43b427fba6bcb4790ff6cbaff7a458ebe2"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_coset_block_pairs/sim-00/cases.json",
+      "revision": "8ec99cd2e74d7cb01eae6a04d499a452f5c81be5"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_coset_block_pairs/job-00/cases.json",
+      "revision": "8ec99cd2e74d7cb01eae6a04d499a452f5c81be5"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_mesh_persistence/sim-00/cases.json",
+      "revision": "df54d03b9d4f4121e81c6ee0bb269607c042a58d"
+    },
+    {
+      "case": "results/quandela/cases/ascella_pathion_mesh_persistence/job-00/cases.json",
+      "revision": "c77c801d704b7af6196bd4cb5bad28891810f027"
+    },
+    {
+      "case": "results/quandela/runs/2026-11-07T181127Z-sim_ascella-ascella_pathion_mesh_persistence-sim-00/cases.json",
+      "revision": "df54d03b9d4f4121e81c6ee0bb269607c042a58d"
+    },
+    {
+      "case": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00/cases.json",
+      "revision": "c77c801d704b7af6196bd4cb5bad28891810f027"
     }
   ]
 }

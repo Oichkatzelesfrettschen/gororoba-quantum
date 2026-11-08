@@ -1,0 +1,439 @@
+{
+ "schema": "qi-pathion-coset-coin-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "0": 0,
+  "1": 1,
+  "2": 2,
+  "3": 3,
+  "4": 4
+ },
+ "register": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-06T225841Z.json",
+ "candidates_per_template": 16,
+ "templates": {
+  "ba": {
+   "block": "ba",
+   "operand": [
+    1,
+    18,
+    1
+   ],
+   "basis": [
+    19,
+    2,
+    12
+   ],
+   "coset": 1,
+   "cocycle_free": false,
+   "draw_index": 0,
+   "draw_indices_searched": [
+    0,
+    15
+   ],
+   "transpiler_seed": 60989,
+   "cz": 21,
+   "roles": {
+    "d0": 3,
+    "d1": 4,
+    "d2": 1,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": 0.499909,
+   "ideal_c": [
+    -0.999817,
+    0.999817,
+    -0.999817,
+    0.999817,
+    0.999817,
+    0.999817,
+    0.999817,
+    0.999817
+   ],
+   "rounding_gap": 1.1e-05
+  },
+  "bb": {
+   "block": "bb",
+   "operand": [
+    1,
+    26,
+    1
+   ],
+   "basis": [
+    27,
+    2,
+    9
+   ],
+   "coset": 0,
+   "cocycle_free": false,
+   "draw_index": 16,
+   "draw_indices_searched": [
+    16,
+    31
+   ],
+   "transpiler_seed": 3527,
+   "cz": 23,
+   "roles": {
+    "d0": 4,
+    "d1": 3,
+    "d2": 1,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": 0.499909,
+   "ideal_c": [
+    -0.996015,
+    0.996015,
+    0.999817,
+    0.999817,
+    0.999817,
+    0.999817,
+    -0.996015,
+    0.996015
+   ],
+   "rounding_gap": 0.000347
+  },
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cocycle_free": false,
+   "draw_index": 32,
+   "draw_indices_searched": [
+    32,
+    47
+   ],
+   "transpiler_seed": 22836,
+   "cz": 21,
+   "roles": {
+    "d0": 4,
+    "d1": 1,
+    "d2": 3,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_selector_contrast": -0.0,
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ],
+   "rounding_gap": 0.000356
+  },
+  "xor_ba": {
+   "block": "ba",
+   "operand": [
+    1,
+    18,
+    1
+   ],
+   "basis": [
+    19,
+    2,
+    12
+   ],
+   "coset": 1,
+   "cocycle_free": true,
+   "draw_index": 48,
+   "draw_indices_searched": [
+    48,
+    63
+   ],
+   "transpiler_seed": 63671,
+   "cz": 5,
+   "roles": {
+    "d0": 2,
+    "d1": 4,
+    "d2": 1,
+    "selector": 3,
+    "coin": 0
+   },
+   "ideal_selector_contrast": -1.0,
+   "ideal_c": [
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0,
+    -1.0
+   ],
+   "rounding_gap": 0.0
+  }
+ },
+ "labels": {
+  "ba": {
+   "operand": [
+    1,
+    18,
+    1
+   ],
+   "basis": [
+    19,
+    2,
+    12
+   ],
+   "coset": 1,
+   "ibm_data_index_of_bin": [
+    0,
+    19,
+    2,
+    17,
+    12,
+    31,
+    14,
+    29
+   ]
+  },
+  "bb": {
+   "operand": [
+    1,
+    26,
+    1
+   ],
+   "basis": [
+    27,
+    2,
+    9
+   ],
+   "coset": 0,
+   "ibm_data_index_of_bin": [
+    1,
+    26,
+    3,
+    24,
+    8,
+    19,
+    10,
+    17
+   ]
+  },
+  "b0": {
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "ibm_data_index_of_bin": [
+    1,
+    17,
+    0,
+    16,
+    3,
+    19,
+    2,
+    18
+   ]
+  }
+ },
+ "preregistered": {
+  "resolution": "ba and bb each read the ideal sign of at least 6 of 8 bins at 3.0 se",
+  "pattern": "ba and bb read opposite signs in their two differing bins at 3.0 se",
+  "null": "b0 selector contrast within 3.0 se of zero; its difference from the stopped series' coin-free 0.016663 +- 0.005523 is reported",
+  "cocycle_free": "xor_ba selector contrast below -3.0 se and ba selector contrast above 3.0 se",
+  "depth": "contraction per CZ implied by each corrected template visibility against RHO_BAND, reported with its CZ and the coin read fraction; the correction removes the readout part of the coin factor, the relaxation part is unidentified, so depth is a lower bound",
+  "cross_platform": "D(y) = c_T(y) / V_T - c_I(label(y)) / V_I of ba, bb and b0 within 3.0 combined standard errors on at least 7 of 8 bins, against each of ibm_fez and ibm_marrakesh (IBM_RECORDS); the Tuna ratio is the readout_corrected one with the assignment of its own batch, the raw ratio is reported",
+  "drift": "recorded, never a stop: per-batch assignment of every register qubit, the change between successive brackets (flag above 0.02), and the cross-platform statistic of each primary under every bracket of the series"
+ },
+ "shots": 2048,
+ "batch": "batch-00",
+ "circuits": [
+  {
+   "file": "ba.cq",
+   "kind": "data",
+   "template": "ba",
+   "ideal": [
+    0.062494296434,
+    5.703566e-06,
+    0.062494296434,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    0.062494296434,
+    5.703566e-06,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    5.703566e-06,
+    0.062494296434,
+    5.703566e-06,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    5.703566e-06,
+    0.062494296434,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06
+   ],
+   "sha256": "454446aa11dc5edf0e51673c49dcdc475b7c1701048558a32c626fd60febbd94"
+  },
+  {
+   "file": "bb.cq",
+   "kind": "data",
+   "template": "bb",
+   "ideal": [
+    0.062326579118,
+    0.000173420882,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    0.062424225788,
+    7.5774212e-05,
+    7.5774212e-05,
+    0.062424225788,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.000173420882,
+    0.062326579118,
+    0.000173420882,
+    0.062326579118,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    0.062494296434,
+    7.5774212e-05,
+    0.062424225788,
+    0.062424225788,
+    7.5774212e-05,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    5.703566e-06,
+    0.062326579118,
+    0.000173420882
+   ],
+   "sha256": "b4579313c6eee50b5e79edaef0f6a19df216275abe63f4e75199a5146f3346b0"
+  },
+  {
+   "file": "b0.cq",
+   "kind": "data",
+   "template": "b0",
+   "ideal": [
+    0.06242201442,
+    7.798558e-05,
+    0.062419618627,
+    8.0381373e-05,
+    0.06232564198,
+    0.00017435802,
+    0.062419618627,
+    8.0381373e-05,
+    0.00017435802,
+    0.06232564198,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    8.0381373e-05,
+    0.062419618627,
+    0.00017435802,
+    0.06232564198,
+    8.0381373e-05,
+    0.062419618627,
+    0.06232564198,
+    0.00017435802,
+    0.062322015216,
+    0.000177984784,
+    0.06242201442,
+    7.798558e-05,
+    0.062322015216,
+    0.000177984784
+   ],
+   "sha256": "9c348677d607b06019b57d7187aae861ecaeebeb36bd90b401527ea2a2723ac1"
+  },
+  {
+   "file": "xor_ba.cq",
+   "kind": "data",
+   "template": "xor_ba",
+   "ideal": [
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625,
+    0.0625
+   ],
+   "sha256": "ba36405c4bf16465d49c5e62990a90ad3eafec6ed8a1cbf199da5ea13d3d283a"
+  }
+ ]
+}

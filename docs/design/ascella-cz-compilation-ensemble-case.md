@@ -1,7 +1,9 @@
 # Ascella postselected CZ: compilation ensemble with interleaved anchors
 
-Status: proposed design. No builder, frozen request or forecast exists, nothing has been sent, and each job waits
-for the owner's approval of a written case built from this design.
+Status: built, not sent. [`scripts/ascella_cz_ensemble_case.py`](../../scripts/ascella_cz_ensemble_case.py) freezes
+both requests, the platform read, the shot estimate, the plan reads and the forecast under
+`results/quandela/cases/ascella_cz_ensemble/` (section "The built case"). Each job waits for the owner's approval of the
+written case.
 
 ## What the experiment asks
 
@@ -60,7 +62,9 @@ correct rate is the same quotient for the eligible events on the ideal output. T
 
   then holds for the trace-normalized process fidelity F of that map whatever its success depends on. Checked
   numerically: no violation over 20 000 and, independently, 200 000 random trace-non-increasing CP maps, and on both
-  counterexamples below.
+  counterexamples below. Hofmann proves the bound for one map's raw output probabilities (Eqs. (15) and (16)); the normalization to
+  the trace-normalized fidelity of a postselected map is this design's linearity argument, which the paper does not
+  contain ([source note](../notes/papers/quant-ph-0409083.md), "Relation to the ascella CZ ensemble case").
 - **Per-input score** F'_ZX, F'_XZ: the mean over the four inputs of each setting's correct over eligible events. It
   equals the rate-weighted score when success is equal within a table and violates the bound otherwise. The Kraus
   operator (CZ / 3) diag(1, 0.1, 0.1, 0.1) gives F' = 0.7995 on both tables, a claimed lower bound of 0.599 above its
@@ -123,29 +127,42 @@ Preconditions, each a refusal when it fails:
 
 Estimates, the anchor iterations entering estimate 1 alone:
 
-1. **Drift and job effect.** For each anchor, three Monte Carlo multinomial homogeneity tests of its outcome tables,
-   each with 100 000 tables drawn from the pooled table at the observed eligible counts: positions inside job-00,
+1. **Drift and job effect.** For each anchor, three Monte Carlo homogeneity tests of its outcome tables, each with
+   100 000 tables drawn uniformly over the arrangements with the observed row and column totals (sequential
+   hypergeometric draws, the exact conditional null): positions inside job-00,
    positions inside job-01, and job-00 against job-01. A fourth test per anchor compares its eligible rate between
-   the jobs (exact conditional binomial test on the eligible events given the shots). The two jobs pool only when
-   all 16 tests pass at the 0.01 level after a Bonferroni factor of 16. When the four anchors return different
-   `computed_circuit` digests in the two jobs, a recalibration took place between them, and the jobs are reported
-   separately.
+   the jobs (the conditional binomial comparison of per-shot rates, the Poisson-rate form; because each iteration
+   stops at its samples and its shots are random, its variance ratio is 1 - p_eligible / p_any_click, about 0.996 at
+   the forecast, so it is slightly conservative rather than exact). The two jobs pool only when all 16 tests pass at
+   the 0.01 level after a Bonferroni factor of 16. When an anchor returns more than one `computed_circuit` digest,
+   different digests in the two jobs, or a missing or empty one, a recalibration or a missing identity leaves the jobs unpooled, and
+   they are reported separately.
 2. **Mesh variance.** For each ensemble setting, a Monte Carlo multinomial homogeneity test of its ten seed outcome
-   tables as in estimate 1, at the 0.01 level after a Bonferroni factor of 8; the excess of the between-seed
-   variance of its correct fraction over the binomial variance is reported beside it as a magnitude.
+   tables as in estimate 1, at the 0.01 level after a Bonferroni factor of 8; when estimate 1 leaves the jobs
+   unpooled, each job's five seed tables are tested instead, with a factor of 16, so a shift between the jobs never
+   reads as mesh variance. The excess of the between-seed variance of its correct fraction over the binomial variance
+   is reported beside it as a magnitude, and seeds that return one `computed_circuit` count as one mesh in the
+   reported mesh count.
 3. **Scores.** The seed index s of a setting is the position of its seed in the case's pre-data draw order, 1 to 5
    in job-00 and 6 to 10 in job-01. For each s, the rate-weighted scores F_ZX(s) and F_XZ(s) of the four settings at
    that index; a pooled interval follows estimate 1. Each
    table's score is the mean over s with a Student-t interval on 9 degrees of freedom, which carries mesh variance and
-   shot noise together. The per-input scores F' are reported with the same construction.
+   shot noise together. The per-input scores F' are reported with the same construction. The index s pairs the four
+   settings of a table arbitrarily: each setting's replicates sit in segments drawn by their own order keys, so over
+   the draw of schedules drift in time between values of s enters as variance the interval carries, not as a bias.
+   The frozen schedule is one draw and leaves some values of s uneven in time (section "Limits").
 4. **Bound.** L is the one-sided 97.5 % lower limit of the mean over s of F_ZX(s) + F_XZ(s) - 1, and U is the
    smaller of the one-sided 98.75 % upper limits of F_ZX and F_XZ, so [L, U] covers the bound at a joint level of at
    least 95 % by Bonferroni. The case reports [L, U] as the conditional statement above, never as the result.
 5. **Comparison with the tomography.** The build recomputes the retained unprojected tomography fit from the two
    retained runs and predicts from it the eligible and correct rates of the eight ensemble settings, hence its own
-   rate-weighted scores F_ZX^tomo and F_XZ^tomo. Each ensemble score is compared with its prediction by the
-   difference and its Student-t interval from estimate 3; the 0.849 process fidelity of the fit, a non-positive
-   Choi matrix, enters no comparison.
+   rate-weighted scores F_ZX^tomo and F_XZ^tomo. A parametric bootstrap of the two tomography runs (500 replicates,
+   the resampling of the tomography's own interval) gives each prediction a standard deviation; it carries the shot
+   noise of the 144 tomography tables only, and leaves out the spread among the tomography's own meshes on purpose,
+   since that spread is what this comparison exists to expose. Each ensemble score
+   is compared with its prediction by the difference and an interval at estimate 3's Student-t quantile on the
+   combined standard error of the two; the predicted rates are linear images of the unprojected fit and can be
+   negative, and the 0.849 process fidelity of the fit, a non-positive Choi matrix, enters no comparison.
 
 Readings fixed before the data:
 
@@ -189,10 +206,15 @@ Perceval's deserializer on all 144 meshes.
 - The served-mesh check covers the compiler's nominal law only. Physical phase error, loss and source imperfection
   do not appear in a decoded mesh.
 - Ten seeds sample the mesh ensemble thinly; the Student-t interval states that honestly and a wide interval is a
-  valid outcome.
+  valid outcome. Its coverage rests on near-normal seed scores; a skewed or bimodal mesh distribution can undercover,
+  and the forecast's false-alarm study covers estimates 1 and 2 only, not the intervals of estimates 3 to 5.
 - The truth tables bound the process fidelity and give no Choi matrix. A full reconstruction under an ensemble needs
   the 1440 iterations this design declines.
 - The anchors test drift over about 180 s and across one gap between jobs, the time scales of this case only.
+- Each setting's seed tables sit at different positions in the frozen schedule, so drift below the power of
+  estimate 1's tests inflates estimate 2's between-seed spread as if it were mesh variance. A rejection of estimate 2
+  is therefore attributed to the mesh only when estimate 1's drift family passes, and a pass bounds drift only to the
+  power of those tests.
 - hypothesis: preparation and readout rotations contribute comparable mesh error to the gate itself; each compiled
   mesh carries all three, and no setting of this design separates them.
 
@@ -204,3 +226,57 @@ Perceval's deserializer on all 144 meshes.
    g2, and simulate the false-alarm rate of estimates 1 and 2 at that forecast.
 3. Register Hofmann 2005 as a retrieval receipt in the source registry.
 4. Review the built case adversarially, then ask the owner for approval of the two jobs.
+
+## The built case
+
+`scripts/ascella_cz_ensemble_case.py --check` rebuilds both requests byte for byte, binds every iteration through
+`qd_platform.template_experiment`, and holds the schedule above: the anchors at iterations 0-3, 14-17, 28-31, 42-45
+and 56-59 under one seed each, the same four in both jobs, and every ensemble setting once in every segment plus one
+replicate in a second segment, so each appears in every pair of adjacent segments. `--forecast` recomputes
+`forecast.json` within 1e-12 (gate `core-ascella-cz-ensemble-forecast`); `--check` runs in gate
+`core-record-check-07`. The shared readout, eligibility rule and noise model are those of
+[`ascella_cz_tomography_case.py`](../../scripts/ascella_cz_tomography_case.py); the iterated-job charge is stated by
+`billing_rule_v2.RULE`.
+
+- **Seeds and order.** One ANU QRNG draw,
+  [draw-2026-11-07T164259Z.json](../evidence/anu_qrng/draw-2026-11-07T164259Z.json) (320 uint16 values, no zero and
+  no repeat), seeds everything in index order: indices 0 to 3 the anchors, 4 to 83 the ensemble (ten per setting in
+  table order, seed index s = 1 to 10, s <= 5 in job-00), 84 the analysis Monte Carlo stream, 85 the forecast's
+  false-alarm study, 86 to 261 the order keys (88 per job), 262 the bootstrap of the tomography prediction, 263 the
+  random-map check of the bound and 264 the test fixtures; indices 265 to 319 are owned and unused. The manifests
+  name the draw without an index, so the case owns it whole.
+- **Platform read** (2026-11-07, read-only): HOM 88.88 %, g2 2.0 %, transmittance 5.57 %, clock 13.33 MHz. The
+  photon inputs sit on chip modes 0 and 2, both connected sources; the window stays at chip modes 0 to 5 for
+  comparison with the tomography fit, although the read's darkest connected window starts at mode 2 (623 against 681
+  dark counts per second, about 4e-6 dark clicks per attempt).
+- **Shots.** Perceval's estimate for 4000 samples reaches 251 328 shots at most (`shot-estimate.json`); times 1.25,
+  rounded up to the 100 000-shot quantum, each iteration's `max_shots` is 400 000, so each job's credit ceiling is
+  1.4 and both jobs' 2.8, inside the 6-credit ceiling of this design.
+- **Plan reads** (`plan-read.json`, `qd_platform.py plan --admit-status running`, since qpu:ascella's Explorer row
+  read `running` while its processor read `available`): ceiling 1.4 credits and 11 793 960 estimated shots per job;
+  the modeled job takes 188 s expected and 197 s with every iteration at its cap. Both plans warn that HOM 88.46 %
+  sits below strategy.md design rule 1's 90 %, as the tomography's pre-build plan did at 87.54 %. `--check` holds
+  each plan's request fields (case, circuit digest, budgets, ceiling) to the request; the live fields are a read.
+- **Forecast** under Perceval's NoiseModel at the read, with loss and dark counts: F_ZX = F_XZ = 0.8635, F' = 0.8766,
+  Hofmann interval [0.727, 0.864]; indistinguishability alone gives 0.900. The thinnest settings expect 447 eligible
+  events per iteration, above the floor of 200.
+- **Tomography prediction** (estimate 5): the unprojected fit recomputed from the two retained runs reproduces the
+  retained process fidelity 0.849328 within 1e-12 and predicts F_ZX = 0.888 and F_XZ = 0.882, above the noise
+  forecast; over 500 bootstrap replicates of the tomography runs each prediction has a standard deviation of 0.012
+  (95 % percentile intervals [0.866, 0.911] and [0.859, 0.908]), comparable to the ensemble's expected interval.
+- **False alarms.** Over 1000 synthetic datasets at the forecast law, with each iteration stopping at its samples and
+  its shots drawn as the samples plus a negative binomial count, the drift family rejects in 0.007 of datasets (95 %
+  Clopper-Pearson interval [0.003, 0.014]) and the mesh-variance family in 0.007 ([0.003, 0.014]), at the 0.01 level;
+  `--check` requires each interval to reach down to 0.01 and stay below 0.02. Seven datasets unpooled and took the
+  per-job mesh test. With the Monte Carlo tables drawn exactly conditional on both margins, the mesh tests'
+  unadjusted per-test rate reads 0.0108 against 0.01, and the sixteen drift tests read 0.003 to 0.017.
+- **Bound check.** 20 000 random trace-non-increasing maps (`forecast.json` `bound_check`), half Ginibre maps and half
+  CZ times a random input filter plus a weak random term, show no violation of the normalized bound; the least
+  margins are 2.2e-5 below F and 1.4e-5 above it.
+- **Binding.** The two retained tomography runs echo `circuit_params` equal to their manifests in all 144 iterations,
+  the property the binding rule requires.
+- **HOM reading.** Both tomography jobs were submitted at 87.56 %. The platform read behind the forecast gave
+  88.88 %, and the retained plans read 88.46 %, 0.90 points above it and inside the one-point threshold; the
+  analysis states each submission plan's difference and sets `hom_moved` beyond one point (`hom` of the analysis
+  record). Under the design's hypothesis of about 0.013 process fidelity per point of HOM, a submission at 90 %
+  would shift estimate 5 by about 0.03, about 2.5 times the prediction's standard deviation.

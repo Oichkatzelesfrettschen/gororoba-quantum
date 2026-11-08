@@ -1,0 +1,16 @@
+mirror pairs 46, failing 9
+observed |diff|: median 0.0259, max 0.1082
+in-sample eta: model |diff| median 0.0026 max 0.0155; corr(obs, model) +0.449; residual rms 0.0461 vs observed rms 0.0488; model flags 0, of the 9 failing it flags 0
+held-out eta (orientation 0): model |diff| median 0.0021 max 0.0167; corr(obs, model) +0.514; residual rms 0.0457 vs observed rms 0.0488; model flags 0, of the 9 failing it flags 0
+failing pairs (setting, item, observed, in-sample model):
+  ('a-h-NN', 1) -0.1082 -0.0137
+  ('b-i-NN', 1) -0.0792 -0.0144
+  ('c-d-TD', 0) +0.0715 +0.0000
+  ('c-d-TN', 1) -0.0992 -0.0032
+  ('c-d-TT', 1) -0.0732 -0.0000
+  ('e-b-TT', 0) +0.0866 -0.0135
+  ('e-b-TT', 1) -0.1006 +0.0054
+  ('g-h-TT', 0) +0.0741 +0.0112
+  ('i-f-TC', 1) -0.0834 -0.0053
+eta all [1.015, 1.055, 1.038, 0.941, 1.034, 1.045, 0.926, 1.012, 0.944]
+eta o0  [1.003, 1.03, 1.022, 0.943, 1.064, 1.046, 0.93, 1.022, 0.95]

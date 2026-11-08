@@ -1,0 +1,8 @@
+observed under mode-fit slot efficiencies (1.0721, 1.064): |d| median 0.0138 max 0.0698 rms 0.0237 failing 0
+sigma 0.005: |d| median 0.0040 max 0.0241 rms 0.0088 failing 0.0
+sigma 0.010: |d| median 0.0063 max 0.0372 rms 0.0132 failing 0.0
+sigma 0.015: |d| median 0.0088 max 0.0512 rms 0.0183 failing 0.1
+sigma 0.020: |d| median 0.0115 max 0.0685 rms 0.0240 failing 0.6
+sigma 0.025: |d| median 0.0139 max 0.0870 rms 0.0298 failing 1.8
+sigma 0.030: |d| median 0.0171 max 0.1016 rms 0.0353 failing 3.1
+sigma 0.040: |d| median 0.0231 max 0.1356 rms 0.0474 failing 6.4

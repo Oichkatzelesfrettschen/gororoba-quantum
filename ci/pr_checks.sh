@@ -46,12 +46,8 @@ export PATH
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 BLIS_NUM_THREADS=1
 export VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1 RAYON_NUM_THREADS=1 QISKIT_NUM_PROCS=1
-# OpenBLAS selects its kernel from the CPU in these lanes; ci/run_gates.py
-# sets OPENBLAS_CORETYPE=Haswell for the gates alone, since its records replay
-# byte for byte. Measured on the hosted AMD EPYC 9V74 runners with numpy 2.5.4
-# (OpenBLAS 0.3.34): the forced Haswell kernel segfaults in dgemm on a
-# 576 x 256 or 2000 x 300 product, and the detected SkylakeX kernel computes it.
-export NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"
+# numpy and OpenBLAS select their kernels from the CPU: every lane computes on
+# its native numeric path (docs/design/native-numeric-replay.md).
 export GOROROBA_PINS_REQUIRED=1 PYTHONHASHSEED=0 MPLBACKEND=Agg
 
 cd "$root"

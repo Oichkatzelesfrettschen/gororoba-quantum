@@ -1,0 +1,32 @@
+pairs 46; failing 9; |d| median 0.0259 max 0.1082; rms 0.0488
+bootstrap se of a mirror difference: median 0.0041 range 0.0003-0.0064
+z = d/se: rms 11.33; chi2 5908 on 46 dof; p 0.00e+00; |z|>3: 38
+under pure statistics (bootstrap about observed) |d| median 0.0018, P(|d|>0.07 for a pair) mean 0.0000
+item0 mean d +0.0332 (n 23), item1 mean d -0.0377; slot-offset estimate c = mean(sgn*d) +0.0355 +- 0.0050
+after removing c: residual rms 0.0335; |resid|>0.07: 1; residual chi2 89277
+offset+gain slot model beta [0.0057 0.0761]; resid rms 0.0248; chi2 31419
+separation (iterations) range 1-45; spearman(|d|, separation) -0.050 p 0.743
+signed d ~ b*(i0-i1) + c*sgn: b +5.88e-05/iteration (x52 = +0.0031 over the job), c +0.0355; resid rms 0.0335; R2 vs d 0.531
+spearman(signed d, i0-i1) +0.050 p 0.742
+|d| rms: separation<=10 (n 10) 0.0461; >=30 (n 16) 0.0474
+repeat iterations 0 and 51: same circuit_params True; slot A 0.50047 vs 0.50320; slot B 0.00112 vs 0.00101; failure 0.49841 vs 0.49580
+repeat iterations 1 and 50: same circuit_params True; slot A 0.00156 vs 0.00115; slot B 0.52023 vs 0.52164; failure 0.47822 vs 0.47721
+repeat iterations 2 and 49: same circuit_params True; slot A 0.00136 vs 0.00095; slot B 0.00072 vs 0.00060; failure 0.99792 vs 0.99844
+compiled mesh iterations 0/51: max |dphi| 0.000e+00, max |dtheta| 0.000e+00
+compiled mesh iterations 1/50: max |dphi| 0.000e+00, max |dtheta| 0.000e+00
+compiled mesh iterations 2/49: max |dphi| 0.000e+00, max |dtheta| 0.000e+00
+invalid-event share per iteration: median 3.17e-04 max 5.26e-04; sentinel share max 7.86e-04
+spearman(|d|, invalid share) +0.609
+platform physical_perf per iteration: distinct values [np.float64(0.037), np.float64(0.04), np.float64(0.041), np.float64(0.059), np.float64(0.066), np.float64(0.067), np.float64(0.068)]; spearman(|d|, |perf0 - perf1|) -0.334
+shots_used values: [131072]
+{'anchor': (np.float64(0.059), np.float64(0.0681)), 'dark': (np.float64(0.0402), np.float64(0.0402)), 'sign': (np.float64(0.037), np.float64(0.0678)), 'null': (np.float64(0.0406), np.float64(0.0587))}
+failing pairs with indices (setting item d se z i0 i1):
+  ('a-h-NN', 1) d -0.1082 se 0.0043 z -25.4 i0 21 i1 30
+  ('b-i-NN', 1) d -0.0792 se 0.0046 z -17.1 i0 43 i1 8
+  ('c-d-TD', 0) d +0.0715 se 0.0046 z +15.6 i0 15 i1 36
+  ('c-d-TN', 1) d -0.0992 se 0.0054 z -18.5 i0 17 i1 34
+  ('c-d-TT', 1) d -0.0732 se 0.0055 z -13.3 i0 37 i1 14
+  ('e-b-TT', 0) d +0.0866 se 0.0056 z +15.4 i0 5 i1 46
+  ('e-b-TT', 1) d -0.1006 se 0.0058 z -17.3 i0 5 i1 46
+  ('g-h-TT', 0) d +0.0741 se 0.0052 z +14.3 i0 33 i1 18
+  ('i-f-TC', 1) d -0.0834 se 0.0064 z -13.0 i0 39 i1 12

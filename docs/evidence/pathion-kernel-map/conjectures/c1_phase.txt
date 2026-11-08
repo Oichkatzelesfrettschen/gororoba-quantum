@@ -1,0 +1,14 @@
+observed: |d| median 0.0259 max 0.1082 rms 0.0488 failing 9; sentinel share observed ~5.8e-4 (all iterations 3.7e-4..7.9e-4, dark-floor)
+sigma  leak(sentinel share)  |d| median  max  rms  failing/46 (mean over draws)  p(failing>=9)  mean(signed d item0) mean(item1)
+0.002  3.32e-07  0.0029  0.0184  0.0074    0.0  0.00  +0.0018 -0.0041
+0.005  1.13e-06  0.0046  0.0261  0.0101    0.0  0.00  +0.0023 -0.0044
+0.010  4.01e-06  0.0076  0.0438  0.0163    0.1  0.00  +0.0021 -0.0044
+0.020  1.51e-05  0.0139  0.0796  0.0296    1.6  0.01  +0.0029 -0.0051
+0.030  3.47e-05  0.0212  0.1202  0.0441    5.5  0.19  +0.0000 -0.0020
+0.050  9.53e-05  0.0364  0.1977  0.0750   12.8  0.82  -0.0018 -0.0017
+0.080  2.40e-04  0.0648  0.3196  0.1219   20.9  1.00  -0.0103 +0.0054
+0.120  5.23e-04  0.1153  0.5181  0.1998   29.5  1.00  -0.0270 +0.0162
+sigma matching the observed rms mirror difference 0.0488: 0.033 rad; the mesh then leaks 4.39e-05 of clicks into sentinel modes 9-11 (observed 5.8e-4 including detector background)
+sensitivity (sigma 0.05 per-pair rms of simulated d): spearman with observed |d| +0.633 (p 0.000); AUC for failing pairs 0.829
+  predicted-rms of failing pairs median 0.1058, others 0.0513
+sigma bound from sentinel leak <= 2e-4: 0.07163854952716081

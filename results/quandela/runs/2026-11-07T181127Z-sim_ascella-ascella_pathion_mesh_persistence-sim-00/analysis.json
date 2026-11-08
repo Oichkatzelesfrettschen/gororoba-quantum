@@ -1,0 +1,21 @@
+{
+ "misses": [],
+ "passed": true,
+ "platform_differences": [
+  {
+   "gap_to_original_qpu": 1.9396620384811671,
+   "setting": "replay-a-h-CC-o1-i20"
+  },
+  {
+   "gap_to_original_qpu": 1.4303076091584201,
+   "setting": "replay-a-h-NN-o0-i21"
+  },
+  {
+   "gap_to_original_qpu": 1.330949223375233,
+   "setting": "replay-b-f-EE-o0-i25"
+  }
+ ],
+ "problems": [],
+ "replay_compared": 52,
+ "worst_gap": 0.0
+}

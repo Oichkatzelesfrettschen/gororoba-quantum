@@ -1,0 +1,79 @@
+{
+ "alpha": 0.01,
+ "anchor_control": {
+  "difference": -0.0006595651679127679,
+  "reading": "steady",
+  "reference_mean": 0.8869594582304798,
+  "repeat_mean": 0.8862998930625671,
+  "standard_error": 0.0010742239098670094,
+  "z": -0.6139922616267433
+ },
+ "dependence": {
+  "p": 9.99950002499875e-05,
+  "permutations": 20000,
+  "ratio": 51.10803805386966,
+  "reading": "compilation dependent"
+ },
+ "exploratory": {
+  "dark_output_spearman": {
+   "p": 5.354857441308061e-19,
+   "rho": 0.8788898953724507
+  },
+  "predecessor_transition_spearman": {
+   "p": 0.18370757745189734,
+   "rho": 0.1802583912886045
+  },
+  "x_means": {
+   "reference_perturbed": 0.8888347228617715,
+   "repeat_perturbed": 0.8880523208259685
+  }
+ },
+ "jobs": [
+  "job-08",
+  "job-09"
+ ],
+ "mesh_identity": {
+  "anchors": 8,
+  "anchors_identical": 8,
+  "byte_equal": 64,
+  "largest_identical_distance": 0.0,
+  "perturbed": 56,
+  "perturbed_identical": 56,
+  "tolerance": 1e-06
+ },
+ "persistence": {
+  "alpha": 0.01,
+  "attenuated_full_persistence": 0.9563028611554614,
+  "meshes": 56,
+  "p_value": 4.999750012499375e-05,
+  "reading": "persists",
+  "relabelings": 20000,
+  "slope": 1.0029868041427064,
+  "slope_upper": 1.102089961319625,
+  "statistic": 0.005920217191726739,
+  "useful_slope": 0.5,
+  "useful_slope_p": 1.0
+ },
+ "plan": "docs/state/plans/ascella-prospective-correction-case.json",
+ "reading": "persists",
+ "reproduction": {
+  "bound": 0.9187915949108444,
+  "ceiling": 0.9563028611554614,
+  "meshes": 56,
+  "p": 4.999750012499375e-05,
+  "r": 0.9578706232121472,
+  "reading": "fixed per mesh",
+  "relabelings": 20000
+ },
+ "runs": [
+  "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08",
+  "results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09"
+ ],
+ "samples": [
+  32768,
+  32768
+ ],
+ "schema": "ascella-long-horizon-reading-v1",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-07T040400Z.json",
+ "seed_index": 58
+}

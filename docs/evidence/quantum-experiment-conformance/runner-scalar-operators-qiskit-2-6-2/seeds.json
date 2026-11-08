@@ -1,0 +1,461 @@
+{
+ "schema": "quantum-experiment-seeds-v1",
+ "allocations": [
+  {
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 2,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#2",
+   "value": 34907
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 3,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#3",
+   "value": 24454
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 4,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#4",
+   "value": 464
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 5,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#5",
+   "value": 4365
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 6,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#6",
+   "value": 53776
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-computational-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 7,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#7",
+   "value": 17509
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 8,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#8",
+   "value": 6765
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 9,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#9",
+   "value": 33662
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 10,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#10",
+   "value": 51709
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 11,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#11",
+   "value": 3895
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 12,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#12",
+   "value": 57762
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_fourier-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 13,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#13",
+   "value": 13141
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 14,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#14",
+   "value": 44402
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 15,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#15",
+   "value": 47611
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 16,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#16",
+   "value": 13319
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 17,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#17",
+   "value": 12419
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 18,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#18",
+   "value": 56950
+  },
+  {
+   "family": "mub-six",
+   "setting": "computational-to-product_chirped-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 19,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#19",
+   "value": 63123
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 20,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#20",
+   "value": 3783
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 21,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#21",
+   "value": 6659
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 22,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#22",
+   "value": 47841
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 23,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#23",
+   "value": 12385
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 24,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#24",
+   "value": 28587
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-computational-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 25,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#25",
+   "value": 38912
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 26,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#26",
+   "value": 60262
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 27,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#27",
+   "value": 43383
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 28,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#28",
+   "value": 57337
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 29,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#29",
+   "value": 27532
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 30,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#30",
+   "value": 63559
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_fourier-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 31,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#31",
+   "value": 40888
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 32,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#32",
+   "value": 16340
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 33,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#33",
+   "value": 12339
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 34,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#34",
+   "value": 59350
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 35,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#35",
+   "value": 20145
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 36,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#36",
+   "value": 26521
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_fourier-to-product_chirped-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 37,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#37",
+   "value": 27994
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 38,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#38",
+   "value": 49140
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 39,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#39",
+   "value": 18511
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 40,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#40",
+   "value": 504
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 41,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#41",
+   "value": 55633
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 42,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#42",
+   "value": 57061
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-computational-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 43,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#43",
+   "value": 5205
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 44,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#44",
+   "value": 702
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 45,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#45",
+   "value": 42538
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 46,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#46",
+   "value": 38104
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 47,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#47",
+   "value": 53606
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 48,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#48",
+   "value": 20079
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_fourier-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 49,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#49",
+   "value": 59899
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-0",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 50,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#50",
+   "value": 60457
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-1",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 51,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#51",
+   "value": 20268
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-2",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 52,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#52",
+   "value": 38323
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-3",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 53,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#53",
+   "value": 2133
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-4",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 54,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#54",
+   "value": 45680
+  },
+  {
+   "family": "mub-six",
+   "setting": "product_chirped-to-product_chirped-input-5",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 55,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#55",
+   "value": 10405
+  },
+  {
+   "family": "sedenion-lcu",
+   "setting": "dark",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 56,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#56",
+   "value": 55048
+  },
+  {
+   "family": "sedenion-lcu",
+   "setting": "bright",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 57,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#57",
+   "value": 6151
+  },
+  {
+   "family": "sedenion-lcu",
+   "setting": "fixture",
+   "source": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 58,
+   "reference": "qrng:docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json#58",
+   "value": 37568
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-07T00:15:36+00:00",
+ "approval": "Owner approved 2026-11-06: Approve as designed - redesigned Tuna-17 coin series, QX control then Tuna-17 batches 00-03 (10 jobs)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "525168ee75de69775ccee6e097c4496aec35a62d5dc198cc6bea556c3eb4f136",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 922375,
+ "project": 822808,
+ "shots": 65536,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1686091,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "bb.cq",
+   "job": 1686092,
+   "sha256": "35d53029efa22669c52126252dc13fe69acaca0c82a312c4fcd71b224de648b2"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1686093,
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  }
+ ],
+ "submitted_utc": "2026-11-07T00:15:37+00:00"
+}

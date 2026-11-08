@@ -1,0 +1,14 @@
+ba: ideal TVD to the case's ideal 7.70e-12; scheduled duration 1.80 us; edges [(2, 4), (4, 8), (8, 11), (8, 12)]
+bb: ideal TVD to the case's ideal 6.43e-12; scheduled duration 1.92 us; edges [(2, 4), (4, 8), (8, 11), (8, 12)]
+b0: ideal TVD to the case's ideal 4.68e-12; scheduled duration 1.88 us; edges [(2, 4), (4, 8), (8, 11), (8, 12)]
+coupler table edges used (Hz): {(2, 4): 8266, (4, 8): -9971, (8, 11): 13226, (8, 12): -1414}
+kappa   +0 (table ZZ x kappa, gate times 20/60 ns): chi2    288.9
+kappa   +1 (table ZZ x kappa, gate times 20/60 ns): chi2    299.7
+kappa   +3 (table ZZ x kappa, gate times 20/60 ns): chi2    344.5
+kappa  +10 (table ZZ x kappa, gate times 20/60 ns): chi2    973.4
+kappa  +30 (table ZZ x kappa, gate times 20/60 ns): chi2  30342.1
+kappa   -1 (table ZZ x kappa, gate times 20/60 ns): chi2    285.0
+kappa   -3 (table ZZ x kappa, gate times 20/60 ns): chi2    297.9
+kappa  -10 (table ZZ x kappa, gate times 20/60 ns): chi2    742.4
+kappa  -30 (table ZZ x kappa, gate times 20/60 ns): chi2  36840.7
+best kappa -1.08: chi2 285.0

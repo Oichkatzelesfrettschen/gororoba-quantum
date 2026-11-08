@@ -5,7 +5,7 @@ claim boundaries. The [evidence bundle](../evidence/quantum-experiment-conforman
 exact payloads, complete setting inventory, seed assignments, shot design and aggregate credit ceilings.
 This procedure turns those prospective cases into separately approved provider acquisitions.
 
-The [Ascella cancellation and dimension-six case](../evidence/ascella-cancellation-transition-acquisition/README.md)
+The [Ascella cancellation and dimension-six case](../evidence/ascella-cancellation-transition-acquisition/README-v2.md)
 freezes five ordered cancellation jobs and a packed twelve-setting pilot, including duration qualification,
 complete-output confidence bounds and the full-campaign expansion rule.
 The [retained Ascella findings](../evidence/ascella-cancellation-transition-acquisition/findings.md) record
@@ -24,6 +24,8 @@ admits the busy `running` platform status and any start at least 24 hours after 
 The repeat's [findings](../evidence/ascella-transition-day-repeat-ci/findings.md) compare all five
 matched meshes 33.38 hours after the baseline. The [transport-source successor](../evidence/ascella-transition-day-repeat-reviewed-transport/README.md)
 binds the provider wrapper and local launcher; the original cases retain their bytes and timing windows.
+The [Ascella block-run design runbook](ascella-block-run-design.md) records what a served mesh is, the reading
+module of the mesh-persistence case and the design rules that the next photonic block case takes from them.
 The [original returned-mesh analysis source](../evidence/ascella-cancellation-transition-acquisition/analysis-sources/returned-mesh-reference.py)
 preserves the bytes bound by the retained pilot analysis. The current analyzer pools independent settings;
 its replay reproduces the retained values with a new source digest.

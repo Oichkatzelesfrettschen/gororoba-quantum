@@ -1,0 +1,15 @@
+falsifier: k0 contrast >= +0.006 with the 1-CZ blocks at zero, or an epsilon interval containing +0.0295
+response of the k0 contrast to the over-rotation: 0.57 per rad (written case)
+ibm_fez       placements 17  k0 contrast -0.0020 +- 0.0015  1-CZ mean -0.0008 +- 0.0007  k0 minus 1-CZ -0.0013 +- 0.0017
+              epsilon -0.0036 +- 0.0027 rad (95 percent [-0.0093, +0.0021]); k0 band hit False; interval contains Tuna angle False; signature flag False
+              Tuna angle minus epsilon +0.0331 rad: 12.4 sigma of the IBM error alone, 4.4 sigma of both errors
+ibm_kingston  placements 16  k0 contrast -0.0000 +- 0.0011  1-CZ mean -0.0001 +- 0.0010  k0 minus 1-CZ +0.0001 +- 0.0015
+              epsilon -0.0000 +- 0.0019 rad (95 percent [-0.0041, +0.0041]); k0 band hit False; interval contains Tuna angle False; signature flag False
+              Tuna angle minus epsilon +0.0295 rad: 15.3 sigma of the IBM error alone, 4.1 sigma of both errors
+earlier angles (c2_overrotation.txt, piecewise response of the compile):
+  ibm_fez earlier        epsilon -0.0044 +- 0.0046 rad: Tuna distance 4.0 sigma of both errors
+  ibm_marrakesh earlier  epsilon -0.0007 +- 0.0069 rad: Tuna distance 3.1 sigma of both errors
+inverse-variance mean over 4 IBM readings (two new, two earlier): epsilon -0.0015 +- 0.0014 rad, chi2 1.60 on 3 dof (p 0.66)
+Tuna angle +0.0295 +- 0.0070 minus the IBM mean: 21.4 sigma of the IBM error alone, 4.3 sigma of both errors; 95 percent upper bound of the IBM mean +0.0013 rad
+IBM now excludes the Tuna angle at 3 sigma of both errors on the new readings and on the pooled mean: True
+scope: the 0.57 per rad response is the k0 compile of the written case's model circuit; the earlier angles use the ibm_fez k0 compile's piecewise response (+0.557 and +0.427 per rad), and no ibm_kingston compile was simulated

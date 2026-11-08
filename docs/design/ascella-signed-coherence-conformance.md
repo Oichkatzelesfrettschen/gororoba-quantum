@@ -2161,3 +2161,89 @@ implementation path, and scores a per-seed correction retrospectively on job-08.
 **Review.** Codex, an Opus agent and grok reviewed the case before acquisition; the
 [reconciliation](../archive/reviews/ascella-long-horizon-seed-repeat-reconciliation.md) records the unitary mesh
 identity and the separate seed values it led to.
+
+## Prospective correction case (job-09)
+
+**What it measures.** The per-seed correction table that removed most of job-08's per-mesh X error was defined after
+job-08 returned ([first principles](../evidence/ascella-order-coefficients/long-horizon-first-principles.md), and the
+interpretation review's finding that the score is retrospective). Job-09 scores that estimator prospectively: the
+table is frozen before the request is sent, and its score on job-09 decides whether the persistent per-mesh error can
+be corrected by seed. Job-09 submits job-02's 64 settings of theta2-x-arm0 at 32,768 samples per iteration, each with
+job-02's compilation seed under the same setting name, the 8 seed-0 anchors at every eighth position and the 56
+perturbed meshes on the off-stride positions in the order of values 0 to 55 of
+[`draw-2026-11-07T040400Z.json`](../evidence/anu_qrng/draw-2026-11-07T040400Z.json); value 56 seeds the score's
+resamples, 57 its power record and 58 the job-08 against job-09 reading; value 59, added after job-09 returned,
+seeds the score's secondary count resimulation.
+
+[`scripts/ascella_correction_score.py`](../../scripts/ascella_correction_score.py) `--freeze` writes the table,
+[`correction-table.json`](../evidence/ascella-order-coefficients/correction-table.json), from job-02 and job-03 alone:
+over the 56 perturbed settings, with c the X statistic centered on the perturbed mean, the slope c2.c3 / c2.c2 =
+0.9136 and each setting's offset slope x (c2 + c3) / 2, keyed by setting name, with the table's own noise variance
+6.15e-6 beside them. This is the estimator `long-horizon-controls.json` applied to job-08, which the frozen table
+reproduces exactly (standard deviation 0.01036 to 0.00373, ratio 7.71). The table refitted with job-08 is not part of
+the decision.
+
+| Reading | Statistic | Reading rule |
+|---|---|---|
+| M, mesh identity | job-09's settings whose served unitary lies within 1e-6 of job-02's under the same name | fewer than 16 identical perturbed meshes: nothing is read, and the service redrew the meshes |
+| C, correction (primary) | R = var(d) / var(d - t) over the identical perturbed meshes, d job-09's centered X and t the frozen offsets centered on the same meshes; 20,000 bootstrap resamples of the meshes give the two-sided 98 % percentile interval | correction holds when the lower end reaches 2 (the table removes at least half the per-mesh variance), correction fails when the upper end stays below 2, indeterminate otherwise |
+| S, persistence (secondary) | `ascella_long_horizon_reading.py` with job-08 as the reference and job-09 as the repeat | the job-08 case's rule: persists, recurs below the useful slope, redrawn, indeterminate |
+
+Beside C the score records the Pearson r of d and t, job-09's counting variance and the ratio a correction limited
+only by counting and table noise would reach. The bootstrap treats the 56 meshes as exchangeable seeds and holds the
+table and every count fixed. The power record
+[`correction-power.json`](../evidence/ascella-order-coefficients/correction-power.json) (400 Gaussian replicates per
+scenario, 2,000 resamples each, counting noise at 32,768 samples) reads a persistent error at full amplitude or
+scaled by 0.88 as correction holds in every replicate and one scaled by 0.75 in 0.85 (indeterminate 0.15); a
+partly redrawn error correlated 0.9 with the table holds in 0.50 and is indeterminate in 0.50, at 0.75 indeterminate
+in 0.96, at 0.5 fails in 0.78, and a fully redrawn error fails in every replicate. These shares are sensitivity
+calculations under one scalar table variance and one scalar counting variance per run, each within about 0.025 of
+Monte Carlo error at 400 replicates; they sized the case and decide nothing.
+
+**Why simulation cannot answer it.** The simulator serves job-02's meshes without their error: the `sim:ascella` run
+of job-08's request spread its perturbed X at counting noise (0.00211 against 0.00203), so whether the frozen table
+predicts the chip's error twelve days after job-03 is a property of the chip. A `sim:ascella` run of job-09's request is the mesh
+gate: `ascella_correction_score.py --mesh-gate` requires every one of its 64 served unitaries within 1e-6 of
+job-02's, as the job-02 and job-08 simulator runs did on 2026-11-06 (largest distance 2.45e-7), and the QPU request
+is sent only after it passes, since a redrawn compilation would score other meshes than the table's.
+
+**Backend, seconds and credits.** `sim:ascella`, then `qpu:ascella`, available on 2026-11-07 with HOM 88.98 %, g2
+2 % and transmittance 5.57 % under mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11, job-08's
+versions. The plan and the submission admit `running` as well as `available` (owner, 2026-11-07: "ascella is great
+when running, we can still submit jobs"), since the platform queues the job behind another user's. Job-08 ran the
+same 64 iterations of 32,768 samples in 194 s; the case expects 205 s against the 300 s `max_duration`. Credit
+ceiling 1.032768 for each run: 1.0 per job plus 32,768 billed shots of one iteration at 1e-6.
+
+**Procedure.** `scripts/ascella_coherence_request.py job-09` writes the case directory and `--body job-09` freezes
+the body against the live command set without sending it. The simulator rehearsal goes through
+`qd_platform.py submit --platform sim:ascella` on a run directory holding job-09's `cases.json` and `circuit.json`,
+and `ascella_correction_score.py --mesh-gate` reads it; only after the gate passes do
+`ascella_coherence_request.py --preflight RUN` and `--submit RUN APPROVAL`, whose platform is fixed to `qpu:ascella`,
+send the QPU request. `qd_platform.py collect RUN` retrieves each. `--score` writes `correction-score-09.json` and the reading script writes
+`long-horizon-reading-08-09.json`.
+
+**Stopping rule.** A mesh gate that refuses stops the case before the QPU request. A job that errors or is cut short
+is resubmitted only on the owner's further approval. Every reading of C closes the case.
+
+**Outcome.** The `sim:ascella` run of job-09's request
+([`2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim`](../../results/quandela/runs/2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim/))
+served all 64 meshes within 2.45e-7 of job-02's, so the mesh gate passed. Job-09 (`6400527c`) queued behind another
+user's job and ran on 2026-11-07 from 04:34:35 UTC for 194 s at HOM 88.98 %, g2 2 % and transmittance 5.57 %,
+retained as [`2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09`](../../results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09/).
+Every one of its 64 settings returned job-02's mesh. C reads **correction holds**
+([score](../evidence/ascella-order-coefficients/correction-score-09.json)): the frozen table brings the per-mesh
+standard deviation of X from 0.01085 to 0.00337, R = 10.37 with the 98 % interval 6.16 to 16.21 over meshes resampled as exchangeable seeds (r 0.951 between
+job-09's deviations and the table), against the plug-in benchmark 10.89 of a correction limited by job-09's counting
+variance (4.65e-6) and the table's noise (6.15e-6) alone. A secondary interval added after the data, which redraws
+every iteration's block counts in job-02, job-03 and job-09 and refits the table, spans 3.88 to 7.95 with no replicate
+below 2; redrawing from observed shares adds a second layer of counting noise, so that range is conservative. S reads **persists** against job-08
+([reading](../evidence/ascella-order-coefficients/long-horizon-reading-08-09.json)): slope 1.003 with one-sided 99 %
+upper bound 1.102, beside the 0.956 a fully persistent error reaches through job-08's counting noise; P1 reads fixed
+per mesh (r 0.958 at the ceiling 0.956), every mesh byte-equal to job-08's, anchors steady (z -0.61). A table fitted
+on job-02 and job-03, run about twelve days earlier, therefore predicts each seed's error to within job-09's counting noise and
+the table's own estimation noise: per-seed calibration through the cloud interface removes about 90 % of the per-mesh X variance on these
+56 seeds of theta2-x-arm0.
+
+**Review.** The `codex` agent on gpt-daybreak-blue reviewed the branch after acquisition; the
+[reconciliation](../archive/reviews/ascella-prospective-correction-reconciliation.md) records the interval's stated
+population, the secondary count resimulation and the corrected noise attribution it led to.

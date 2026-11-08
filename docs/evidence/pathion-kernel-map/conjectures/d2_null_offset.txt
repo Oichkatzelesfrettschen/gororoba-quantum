@@ -1,0 +1,52 @@
+falsifier: a 1-CZ null block with a readout-corrected N_hat mean above +0.02 reproduces the +0.045 offset
+== ibm_fez: 17 placements, 16384 shots per member
+  k0  raw +0.0257  corrected -0.0080 +- 0.0179  flip twin corrected +0.0646 +- 0.0213
+  k4  raw +0.0297  corrected +0.0057 +- 0.0215  flip twin corrected -0.0088 +- 0.0220; rule UNINFORMATIVE (band 0.02, half-width resolves band False)
+  k8  raw +0.0271  corrected +0.0045 +- 0.0227  flip twin corrected -0.0090 +- 0.0251; rule UNINFORMATIVE (band 0.02, half-width resolves band False)
+  k12 raw +0.0307  corrected +0.0070 +- 0.0239  flip twin corrected -0.0059 +- 0.0231; rule UNINFORMATIVE (band 0.02, half-width resolves band False)
+  1-CZ corrected mean +0.0057; blocks above +0.02: none; the 95 percent interval of k4 holds +0.045: True
+  1-CZ mean minus k0 corrected +0.0137; distance of k4, k8, k12 from +0.045 in standard errors: 1.8, 1.8, 1.6
+  offset_odd: measured +0.0888, model +0.1151, paired -0.0263 +- 0.0629, band 0.04, UNINFORMATIVE
+  offset_even: measured +0.0244, model +0.0067, paired +0.0177 +- 0.0145, band 0.03, UNINFORMATIVE
+  O spread: slope +1.234 (95 percent [-0.02, +2.49]), R squared 0.227, FAIL
+  within-arm pair_half_sum_gap: +0.0064 +- 0.0069, PASS
+  within-arm within_minus_half_sum: +0.0004 +- 0.0063, PASS
+  within-arm within_plus_half_sum: +0.0068 +- 0.0048, PASS
+  odd part, measured minus readout-only at the executed calibration: -0.0213 +- 0.0631
+  odd part, dry-run model minus readout-only at the executed calibration: +0.0050 +- 0.0033
+  readout-only O at the executed calibration +0.1101, dry-run model O +0.1151, measured O +0.0888
+  signature rows selected:
+    - readout asymmetry after the X at the calibrated size (O within the model's band; the interval half-width exceeds the band, so unresolved)
+    - relaxation and residual excitation at the model's size (E within the model's band; the interval half-width exceeds the band, so unresolved)
+  sensitivity (exploratory): placements dropped [9, 13, 15]
+    paired O all -0.0263 +- 0.0629 (95 percent [-0.1596, +0.1070]); kept -0.1012 +- 0.0320 (95 percent [-0.1702, -0.0322])
+    paired E all +0.0177 +- 0.0145 (95 percent [-0.0132, +0.0485]); kept +0.0065 +- 0.0087 (95 percent [-0.0124, +0.0253])
+    paired O against the executed-calibration readout-only O, kept: -0.0976 +- 0.0301 (95 percent [-0.1627, -0.0326])
+    O on model O, kept: slope +0.176 +- 0.223, R squared 0.049
+== ibm_kingston: 16 placements, 8192 shots per member
+  k0  raw +0.0399  corrected +0.0119 +- 0.0139  flip twin corrected +0.0144 +- 0.0167
+  k4  raw +0.0094  corrected -0.0283 +- 0.0096  flip twin corrected +0.0309 +- 0.0103; rule FAIL (band 0.02, half-width resolves band False)
+  k8  raw +0.0067  corrected -0.0313 +- 0.0096  flip twin corrected +0.0354 +- 0.0121; rule FAIL (band 0.02, half-width resolves band False)
+  k12 raw +0.0079  corrected -0.0297 +- 0.0103  flip twin corrected +0.0263 +- 0.0114; rule FAIL (band 0.02, half-width resolves band False)
+  1-CZ corrected mean -0.0297; blocks above +0.02: none; the 95 percent interval of k4 holds +0.045: False
+  1-CZ mean minus k0 corrected -0.0416; distance of k4, k8, k12 from +0.045 in standard errors: 7.7, 8.0, 7.3
+  offset_odd: measured +0.0501, model +0.1349, paired -0.0848 +- 0.0302, band 0.04, FAIL
+  offset_even: measured +0.0138, model -0.0040, paired +0.0178 +- 0.0128, band 0.03, PASS
+  O spread: slope +0.264 (95 percent [-0.13, +0.66]), R squared 0.130, FAIL
+  within-arm pair_half_sum_gap: +0.0096 +- 0.0090, PASS
+  within-arm within_minus_half_sum: +0.0031 +- 0.0076, PASS
+  within-arm within_plus_half_sum: +0.0127 +- 0.0047, FAIL
+  odd part, measured minus readout-only at the executed calibration: -0.0893 +- 0.0290
+  odd part, dry-run model minus readout-only at the executed calibration: -0.0046 +- 0.0050
+  readout-only O at the executed calibration +0.1394, dry-run model O +0.1349, measured O +0.0501
+  signature rows selected:
+    - readout asymmetry after the X below the calibrated size (O under the model's band)
+    - relaxation and residual excitation at the model's size (E within the model's band)
+    - position or drift between PUBs (a within-arm repeat departs from zero)
+  sensitivity (exploratory): placements dropped none
+    paired O all -0.0848 +- 0.0302 (95 percent [-0.1491, -0.0205]); kept -0.0848 +- 0.0302 (95 percent [-0.1491, -0.0205])
+    paired E all +0.0178 +- 0.0128 (95 percent [-0.0095, +0.0452]); kept +0.0178 +- 0.0128 (95 percent [-0.0095, +0.0452])
+    paired O against the executed-calibration readout-only O, kept: -0.0893 +- 0.0290 (95 percent [-0.1512, -0.0275])
+    O on model O, kept: slope +0.264 +- 0.183, R squared 0.130
+interval of every 1-CZ block excludes +0.045: {'ibm_fez': False, 'ibm_kingston': True}
+hypothesis: the corrected 1-CZ offset is device-specific; a backend whose three intervals exclude +0.045 does not carry it, and a backend whose intervals span it is unresolved at this precision

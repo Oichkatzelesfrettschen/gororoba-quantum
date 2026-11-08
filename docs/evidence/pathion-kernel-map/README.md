@@ -30,11 +30,26 @@ equal to `pathion_kernel_map.nullity`.
 
 ## Program across platforms
 
-| Platform | Object | State on 2026-11-06 | Record |
+| Platform | Object | Runs | Record |
 |---|---|---|---|
-| IBM Heron r2 | the full map: one compiled A_5 SELECT on all 16 pairs, six operands of nullity 0 to 12, twins, mutations, six replicas | case written, awaiting approval; binding dry run on ibm_fez, about 15 s | `results/live/2026-11-06T175157.605255Z/CASE.md` |
-| Quantum Inspire Tuna-17 | two-term coset blocks: 4 XOR pairs (16 SELECT signs) on 3 data qubits and the selector, 20 to 22 CZ; the full map routes to 116 to 144 CZ and does not resolve at the measured 0.955 retention per CZ | case written, awaiting approval; 8 batches, 24 jobs at 16384 shots on qubits 4, 8, 11, 12, routed to 20, 22, 20 and 4 CZ | [tuna17-pathion-coset-block-case.md](../../notes/quantum_inspire/tuna17-pathion-coset-block-case.md), `results/quantum_inspire/cases/pathion_coset_block_tuna_17/` |
-| Quandela Ascella | four-term operands, whose 4 x 4 coset blocks include classes absent below dimension 32 | design only; Ascella running, Belenos unreachable since 2026-11-01 | session report, not retained |
+| IBM Heron r2 | the full map: one compiled A_5 SELECT on all 16 pairs, six operands of nullity 0 to 12, twins, mutations, six replicas | ran 2026-11-06 on ibm_fez (backup account), job `dbn1tv8qtr0c73ac82eg`, 24 PUBs at 16,384 shots, five replicas; the coset-block map ran the same day on ibm_fez (job `dbn3a55t7fqc73ais42g`) and ibm_marrakesh (job `dbn38t0ou4as73b3q1n0`) | `results/live/2026-11-06T183538.809814Z/collect.json`, `results/live/2026-11-06T201037.234804Z/collect.json`, `results/live/2026-11-06T200832.558771Z/collect.json`, [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md) |
+| Quantum Inspire Tuna-17 | two-term coset blocks: 4 XOR pairs (16 SELECT signs) on 3 data qubits and the selector, 20 to 22 CZ; the full map routes to 116 to 144 CZ and does not resolve at the measured 0.955 retention per CZ | ran 2026-11-06 and 2026-11-07: the first series (QX control of 8 batches, then Tuna-17 batches 00 to 03, stopped by its drift rule) and the coin-arm series (QX control, then Tuna-17 batches 00 to 03, 10 jobs at 65536 shots and 16384 for the last, on qubits 2, 4, 8, 11, 12); every job completed | [tuna17-pathion-coset-block-case.md](../../notes/quantum_inspire/tuna17-pathion-coset-block-case.md) (run directories and job ids), `results/quantum_inspire/pathion_coset_*_analysis.json`, [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md#cross-platform-runs-tuna-17-and-ascella-2026-11-07) (coin-series decisions, null offset, `ba` misses) |
+| Quandela Ascella | four-term operands, whose 4 x 4 coset blocks include classes absent below dimension 32 | ran 2026-11-06 and 2026-11-07: the four-term block case (`sim:ascella` job `bfa9a0ef-1557-4f20-8f7a-7681bf6d8e56`, `qpu:ascella` job `f3a11b5f-b045-42be-9205-de7da91cbfec`) and the two-block pair case (`sim:ascella` job `64b1ba77-7f79-4f2f-a1c1-37740eeecf2a`, `qpu:ascella` job `db6355f7-87d5-4e7a-91f5-b898c33c839a`); all four completed | `results/quandela/runs/*-ascella_pathion_four_term_blocks-*`, `results/quandela/runs/*-ascella_pathion_coset_block_pairs-*`, [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md#cross-platform-runs-tuna-17-and-ascella-2026-11-07) (four-term blocks conform; two-block job not admitted) |
+
+Every measured reading of these runs sits in one long table, [evidence_table.csv](evidence_table.csv), one row per
+reading with its ideal, standard error, calibration and the claim-ledger rows that cite the run;
+[evidence_pivots.md](evidence_pivots.md) holds the four pivots computed from it (per backend and observable, the same
+block across platforms, simulator against QPU, and each ledger row against its readings).
+`scripts/pathion_evidence_table_build.py` writes both files (`--check` reports drift) through the reader
+`gororoba_quantum/pathion_evidence_table.py`.
+
+The evidence table holds block-level readings only. The Ascella mesh-persistence runs record the instrument (the fixed
+error of each served mesh and the simulator's mesh identity), so `scripts/pathion_evidence_table_build.py` skips them by
+name through `pathion_evidence_table.is_ascella_instrument_record` and raises on any unknown record; their readings live
+in the [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md) section "Ascella mesh persistence".
+
+The mechanism probes behind the cross-platform findings (Ascella mirror failure, Tuna-17 null offset, Tuna-17 `ba`
+misses) live in [conjectures/](conjectures/README.md) with their logs and a runner.
 
 Every two-term pair block on these operands is one of the 16 sign matrices Belenos already measured in all 32
 configurations (2026-10-30); a photonic two-term kernel map would repeat retained data, which is why the photonic
