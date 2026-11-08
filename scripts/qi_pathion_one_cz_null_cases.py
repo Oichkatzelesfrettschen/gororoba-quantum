@@ -47,7 +47,7 @@ import itertools
 import json
 import math
 import sys
-from functools import cache
+from functools import cache, partial
 from pathlib import Path
 from typing import Any
 
@@ -887,10 +887,33 @@ def decide_estimates(rows: dict[str, dict[str, list[tuple[float, float]]]]) -> d
     return {"label": label, "outcome": outcome, "a5_186": effect, "decided": label in DECIDING, "numbers": numbers}
 
 
+def _series_label(
+    draw: tuple[np.ndarray, np.ndarray], mean: dict[str, float], se_base: dict[str, float], se_twin: float
+) -> str:
+    """The decision label of one simulated series from its noise and drift draws, shape (templates, 2, REPLICATES)."""
+    noise, drift = draw
+    rows: dict[str, dict[str, list[tuple[float, float]]]] = {}
+    for j, name in enumerate(TEMPLATES):
+        key = "b0" if name == "b0" else "k"
+        rows[name] = {
+            "base": [
+                (mean[f"s_{key}"] + se_base[name] * noise[j, 0, r] + drift[j, 0, r], se_base[name])
+                for r in range(REPLICATES)
+            ],
+            "twin": [
+                (mean[f"t_{key}"] + se_twin * noise[j, 1, r] + drift[j, 1, r], se_twin) for r in range(REPLICATES)
+            ],
+        }
+    return str(decide_estimates(rows)["label"])
+
+
 def operating_characteristics(draws: int = OC_DRAWS, drift_sd: float = 0.0) -> dict[str, dict[str, float]]:
     """Frequency of each decision label per world, from `draws` simulated series of Gaussian batch estimates at the
     design standard errors (extra independent batch drift of standard deviation `drift_sd`), seeded from QRNG value
-    OC_SEED_INDEX of OC_DRAW. The decision is decide_estimates, so every gate and comparison of the table counts."""
+    OC_SEED_INDEX of OC_DRAW. The decision is decide_estimates, so every gate and comparison of the table counts.
+
+    Every series' noise and drift are drawn before any series is decided, in the order of the serial loop, and the
+    decisions run through parallel.ordered_map, which returns them in series order."""
     seed = int(read_record(OC_DRAW)["values"][OC_SEED_INDEX])
     rng = np.random.default_rng(seed)
     se_base = {t: 1.0 / math.sqrt(CONTROL_SHOTS if t == "b0" else BATCH_SHOTS) for t in TEMPLATES}
@@ -898,24 +921,13 @@ def operating_characteristics(draws: int = OC_DRAWS, drift_sd: float = 0.0) -> d
     out: dict[str, dict[str, float]] = {}
     for world in WORLDS_SIZED:
         mean = {"s_b0": 0.0, "t_b0": 0.0, "s_k": 0.0, "t_k": 0.0} if world == "absent" else PREDICTED[world]
-        counts: dict[str, int] = {}
         noise = rng.normal(size=(draws, len(TEMPLATES), 2, REPLICATES))
         drift = rng.normal(scale=drift_sd, size=(draws, len(TEMPLATES), 2, REPLICATES))
-        for i in range(draws):
-            rows: dict[str, dict[str, list[tuple[float, float]]]] = {}
-            for j, name in enumerate(TEMPLATES):
-                key = "b0" if name == "b0" else "k"
-                rows[name] = {
-                    "base": [
-                        (mean[f"s_{key}"] + se_base[name] * noise[i, j, 0, r] + drift[i, j, 0, r], se_base[name])
-                        for r in range(REPLICATES)
-                    ],
-                    "twin": [
-                        (mean[f"t_{key}"] + se_twin * noise[i, j, 1, r] + drift[i, j, 1, r], se_twin)
-                        for r in range(REPLICATES)
-                    ],
-                }
-            label = decide_estimates(rows)["label"]
+        labels = parallel.ordered_map(
+            partial(_series_label, mean=mean, se_base=se_base, se_twin=se_twin), list(zip(noise, drift, strict=True))
+        )
+        counts: dict[str, int] = {}
+        for label in labels:
             counts[label] = counts.get(label, 0) + 1
         out[world] = {label: round(n / draws, 4) for label, n in sorted(counts.items())}
     return out

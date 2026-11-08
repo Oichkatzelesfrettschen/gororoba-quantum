@@ -126,6 +126,7 @@ def worlds(built: dict[str, dict[str, str]]) -> dict[str, dict[str, list[str]]]:
     return {w: oc.synthetic_series(files, manifest, **kw) for w, kw in oc.WORLDS.items()}
 
 
+@pytest.mark.audit
 def test_the_committed_case_directory_reproduces_its_bytes() -> None:
     oc.check(CASES, operating=False)
     base = CASES / oc.TUNA_SERIES
