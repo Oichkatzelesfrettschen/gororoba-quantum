@@ -48,7 +48,10 @@ A point reading cannot see an attachment. A reading along a path that enters the
    but unresolved, since the interval also holds 4 and 12 ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
    These point readings carry the estimator's bias (rows 228 and 231: the replica-mean N_hat of e1 + e18 reads 12.75
    from a class-mean gap of 0.030). The full map's resolution rests on its interval and misses the 31 of 32 sign rule
-   (26 of 32 on pooled laws), while the coset-block runs read 32 of 32 signs on every operand.
+   (26 of 32 on pooled laws), while the coset-block runs read 32 of 32 signs on every operand. In Walsh form
+   N_hat = N lambda_0 / lambda_bar (row 238): the coset-block bias follows a local output-bit channel near 0.021 per
+   bit whose predicted ratio of N_b = 3 to N_b = 2 bias matches the wide runs (row 239), while the full-map bias
+   survives readout correction and is ordered by the orientation qubit's character (row 242, open).
 2. **Two incidences of the fiber program have both ends measured.**
    - W8 -> N- along a(b) = e1 + e10 + b (e18 - e25) (row 208).
    - E8-bar -> VB along a(b) = e1 + e18 + b (e8 + e27) (row 209).
@@ -72,7 +75,10 @@ A point reading cannot see an attachment. A reading along a path that enters the
    - Nullity 12 spans V, VB and B9, so an N_hat of 12 does not identify the orbit.
    - The block profile of a coset tiling does not identify it either: of the 252 two-term operands of nullity 12 the
      sorted profile (2, 2, 4, 4) occurs in V (24), VB (108), V^a- and V^a+ (6 each) and only (0, 4, 4, 4) is VB-exclusive
-     (row 232); the measured pair e1 + e24 and e1 + e18 separates because its orbits were known first.
+     (row 232); the measured pair e1 + e24 and e1 + e18 separates because its orbits were known first. The blindness
+     is structural (row 243): for all 252 operands the misaligned pairs form a linear 2-plane, so every one of the 35
+     admissible tilings gives the same profile signature in V, VB, V^a- and V^a+, and no sign or block-nullity
+     observable of the kernel map separates these orbits.
    - No measured operand lies in Iso, X+, X- or N+ (rows 211 and 212).
    - The doubling image e1 + e10 - e18 + e25 of A16 is the unmeasured N+ end.
    - The IBM rank path joins W8, VB and N- through nullity-4 points and probes no incidence (row 213).

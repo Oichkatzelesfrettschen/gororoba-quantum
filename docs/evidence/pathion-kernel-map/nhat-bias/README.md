@@ -168,3 +168,85 @@ bin (the identity gains the term sum over undecided bins of c_obs / (2 V_hat)).
 
 Inputs: the five run directories of `RUNS` in the script (collect.json sha256 in `result.json`), `census.json`, and
 `hardware-orbits/hardware_orbits.py` for the orbit of each nullity-12 operand.
+
+## Spectral reading of the estimator
+
+[`nhat_spectral.py`](nhat_spectral.py) rewrites the estimator on the Walsh characters of the output register and reads
+every retained unit through it; [`result_spectral.json`](result_spectral.json) holds the numbers below. Command:
+`"$PYTHON" -B docs/evidence/pathion-kernel-map/nhat-bias/nhat_spectral.py --out docs/evidence/pathion-kernel-map/nhat-bias`
+(45 s, 0.2 GiB); `--check` recomputes and compares, `--self-test` runs the controls in normal and `-O` modes.
+
+**Identity (proved).** With c^_a the Walsh coefficients, w_a = c^_ideal,a^2 (their sum is 1) and
+lambda_a = c^_obs,a / c^_ideal,a on the ideal's support, Parseval gives N_hat = N lambda_0 / sum_a w_a lambda_a for
+N != 0 and N_hat = n c^_obs,0 / (2 V_hat) for N = 0. The bias identity of claim 1 is the same statement split by class.
+Consequences for a channel that acts diagonally on the characters (a stochastic bit-flip channel on the output bits,
+Pauli noise after the last gate): an all-aligned block (zero character only) reads N, which is claim 3; a block whose
+ideal is one character (every N_b = 0 block here) reads exactly 0; every other unit reads N times lambda_0 over the
+power-weighted mean contraction. A conditional contrast under an asymmetric bit channel is the row-normalized channel
+applied to c, which does not preserve sum c, so only a channel that is not character-diagonal moves a one-character
+block (the self-test reads -0.200 for flip rates 0.01 and 0.06).
+
+**The coset-block bias follows a local output-bit channel (survives).** The N_b = 2 blocks carry the characters
+{0, a, b, a ^ b} with a and b of weight 1. Their contractions fall with weight and multiply,
+lambda_(a^b) lambda_0 = lambda_a lambda_b, within 1.7 standard errors on 25 of 28 block fits; the three misses are one
+block, the cocycle-free `xor_e1pe18_k0` (z 2.5, 2.5 and 3.0), which reads z 1.4 on the fourth run. The fitted flip rate
+per output bit averages 0.020 to 0.023 per run. The recorded readout flip (e10 + e01)/2 of the very qubits that carry
+each output bit, read through the measure map of `isa.qpy` and the PUB's `placed_qubit_calibration`, averages 0.012 to
+0.018, an excess of 0.005 to 0.009 per bit (2.2 to 3.8 standard errors per run, 14 bit fits per run), and the per-bit
+fitted rates do not track the per-bit readout (correlation -0.23 to 0.25). The collector's readout-corrected readings
+move the N_b = 2 bias from +0.062 to +0.076 (raw, mean per run) to -0.019 to +0.007, while a residual rate of 0.007
+would leave about +0.03; the split between readout and later bit errors is open.
+Out of sample: at the coset runs' median rate 0.0212 the channel predicts 2.088 for an N_b = 2 block and 3.096 for an
+N_b = 3 block. The separate wide runs read 2.073 +- 0.010 over 9 of 10 N_b = 2 placements and 3.096 +- 0.011 over 7 of
+8 N_b = 3 placements (spread across placements; the two excluded readings are the failed ibm_fez placements below,
+excluded after inspection). The informative test is the ratio of the two biases, measured 1.32 +- 0.25: the channel
+predicts 1.10, while a constant class gap per unit visibility, the reading of claim 1 without a mechanism, predicts
+(7/8)/(12/8) = 0.58, 3 standard errors away. The two misses are ibm_fez placements: o64 k4 at placement 9 reads
+2.294, and o128 k8 at placement 2 reads 4.003 because its single minus bin reads contrast -0.002 (Vbar- = 0 makes an
+N_b = 3 block read 4).
+
+**Leakage on one-character blocks (survives).** Under a character-diagonal channel these blocks read 0. The N_b = 0
+blocks k4 and k12 of the nullity-4 operands e1 + e26 and e2 + e27 leak into the zero character at 0.010 to 0.016 of
+their contrast on all four coset runs (combined t 2.8 to 6.9 per operand and run); the cocycle-free one-character
+blocks do not (combined t -0.9 to 1.3); the null operand's blocks leak at 0.003 to 0.012 (t 1.9 to 3.7). On both
+parallel runs the output-relabeled copies of the null operand (`cflip`) leak with the opposite sign (-0.004 and
+-0.002, t -1.2 and -1.8), consistent with a channel that favors the physical outcome 0 (relaxation or readout
+asymmetry), since relabeling reverses which logical value lands on physical 0, but not resolved at these counts. Readout correction halves the e1 + e26
+leakage and leaves the rest. hypothesis: the e1 + e26 and e2 + e27 leakage is a property of their compiled circuits,
+since it repeats on three devices and the cocycle-free blocks of the same runs stay at 0; confidence 0.5. Falsifier:
+an output-relabeled e1 + e26 block whose leakage keeps its sign supports the circuit reading, one that reverses it
+assigns the leakage to physical outcome 0.
+
+**All-aligned blocks are not flat (computed).** Every tensor-product readout channel, symmetric or not, leaves an
+all-aligned block flat across its eight bins. Within-replica deviations from the block mean give chi2 medians of 15 to
+31 on 7 degrees of freedom across the four coset runs, p below 0.001 on 19 of the 52 forced blocks, with a bin spread of
+0.007 to 0.011. A bin-dependent contraction that no readout channel produces therefore runs through these circuits at
+about a quarter of the N_b = 2 class gap; the forced law hides it from N_hat.
+
+**The full-map bias survives readout correction, and the orientation qubit's character orders it (open).** On
+pooled laws, the aggregation both the raw and the corrected collector summaries use, readout correction moves the
+nullity-4 readings from 34.08 to 31.79 (e1 + e26) and 8.25 to 8.00 (e2 + e27) and the twin from 10.41 to 11.14, so
+readout does not produce the bias. In the spectral split the character 16 (bit 4, the upper bit h of m = i XOR j for
+every operand here, the qubit of the orientation phase) contracts faster than the zero character on the three
+nullity-4 units and slower on the three nullity-12 units; paired over the five replicas, lambda_16 - lambda_0 reads
+-0.155 (t -3.8), -0.118 (t -5.4) and -0.066 (t -2.1) at nullity 4 and +0.103 (t 2.9), +0.081 (t 1.5) and +0.059
+(t 4.7) at nullity 12. Character 16 holds 0.5625 of the ideal power at nullity 4, so its 61 to 63 percent share of
+the bias there largely restates where the power sits. The alternative that the dominant-power character contracts
+fastest fails on the cocycle-free control e1 + e18 (its dominant character 17 contracts slower than the zero
+character, +0.215, t 2.6) and holds on e1 + e10 (character 9, -0.086, t -2.6). Compiled size does not order the
+effect: e2 + e27 and e1 + e24 both route 142 CZ and sit on opposite sides. The character contractions are neither
+weight-ordered nor multiplicative, so the coset-block channel does not transfer to the full map. This reading was
+formed after the data on five replicas. hypothesis: the orientation-phase qubit decays at an operand-dependent rate
+set by how the compiled SELECT acts on qubit h; falsifier: a full-map rerun with the orientation phase on another
+data qubit whose bias does not follow the new qubit's character.
+
+**Orbit blindness of the sign network (proved by enumeration).** For each of the 252 two-term operands of nullity 12,
+the four misaligned pairs, as points of F_2^5 / <m>, form a linear 2-plane that contains the class of the operand's own
+pair {i, j}; the ideal contrast is -1 exactly on the lower members, which form that plane in F_2^5. The profile under
+all 35 tilings by 3-dimensional subspaces that contain m is one signature for every operand, (0, 4, 4, 4) once,
+(2, 2, 4, 4) 18 times, (3, 3, 3, 3) 16 times, in V (56 operands), VB (168), V^a- (14) and V^a+ (14) alike. Every such
+ideal contrast is 1 - 2 1_D for a linear 2-plane D, and any two are related by a linear relabeling of the output bits.
+No kernel-map or coset-tiling observable built from signs or block nullities therefore separates the H-orbits of
+nullity-12 two-term operands, and the statement of claim 5 that a [0, 4, 4, 4] reading under the default tiling
+excludes V is a property of the rule that picks the default basis, not of the orbit. An orbit discriminator needs an
+observable outside the sign network (operands with more terms, or amplitudes that the conditional contrast discards).
