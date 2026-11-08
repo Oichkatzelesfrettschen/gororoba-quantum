@@ -126,7 +126,7 @@ arms differently gives a selector contrast.
 | measured | +0.0257 / +0.0112, +0.0042, +0.0039 | -0.0019 +- 0.0020 | +0.154 +- 0.031 | +0.0164 +- 0.0039 |
 | calibrated readout only | +0.0358 / +0.0163 | 0 | +0.0703 | 0 |
 | T1 and T2, gates only | +0.0038 / +0.0007 | 0 | +0.085 (25 us) to +0.108 (12 us), with readout | 0 |
-| all calibrated incoherent | +0.0395 / +0.0170 | 0 | +0.0842 (depolarizing 0.02 and T1 25 us) | 0 |
+| all calibrated incoherent | +0.0395 / +0.0170 | 0 | +0.0843 (depolarizing 0.02 and T1 25 us) | 0 |
 | all calibrated incoherent with measurement-time T1 | +0.0969 / +0.0638 | 0 | not run | not run |
 | sx or X90 over-rotation +0.03 rad | +0.0079 / -0.0037 | +0.0167 | +0.0931 | +0.0167 |
 | sx or X90 over-rotation -0.03 rad | +0.0084 / -0.0035 | -0.0128 | +0.0804 | -0.0092 |
@@ -212,7 +212,7 @@ the baseline of the bracket product readout with a contraction per template has 
 | CZ conditional phase +-0.03 and +-0.06 rad | 231.8 (+0.06) to 453.2 (-0.06) |
 | T1 12 to 100 us (T2 = 2 T1) | 193.2 to 267.7 |
 | gate depolarizing, p2 0.03 (reproduces a per-CZ contraction near 0.97) | 143.3 |
-| T1 25 us with p2 0.02 | 154.2 |
+| T1 25 us with p2 0.02 | 159.8 |
 
 Verdict C3. A per-template coupling set by routing is refuted at 0.75: no physical-qubit or coupler formulation
 reproduces the pattern, whose main effect follows the logical bit d2 across three different physical placements. The

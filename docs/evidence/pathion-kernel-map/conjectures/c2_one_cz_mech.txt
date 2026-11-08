@@ -11,7 +11,7 @@ b0  (cz 21, ideal c [-0.996  0.996]...)
   ideal, bracket readout only                                            V 0.877  selector contrast -0.0000  N_hat +0.0703
   contraction to V=0.44 + bracket readout                                V 0.443  selector contrast +0.0000  N_hat +0.0703
   gate Pauli depolarizing p2=0.03                                        V 0.381  selector contrast +0.0000  N_hat +0.0703
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.434  selector contrast +0.0000  N_hat +0.0842
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.416  selector contrast +0.0000  N_hat +0.0843
   T1 12 us                                                               V 0.597  selector contrast +0.0001  N_hat +0.1082
   T1 25 us                                                               V 0.723  selector contrast +0.0000  N_hat +0.0851
   X90 over-rotation +0.03                                                V 0.864  selector contrast +0.0167  N_hat +0.0931
@@ -27,7 +27,7 @@ k4  (cz 12, ideal c [-1.  1.]...)
   ideal, bracket readout only                                            V 0.881  selector contrast +0.0000  N_hat +0.0703
   contraction to V=0.44 + bracket readout                                V 0.596  selector contrast -0.0000  N_hat +0.0703
   gate Pauli depolarizing p2=0.03                                        V 0.557  selector contrast -0.0000  N_hat +0.0703
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.615  selector contrast +0.0000  N_hat +0.0736
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.606  selector contrast +0.0000  N_hat +0.0736
   T1 12 us                                                               V 0.762  selector contrast -0.0000  N_hat +0.0780
   T1 25 us                                                               V 0.821  selector contrast -0.0000  N_hat +0.0737
   X90 over-rotation +0.03                                                V 0.875  selector contrast +0.0279  N_hat +0.0849
@@ -43,7 +43,7 @@ k8  (cz 12, ideal c [-1.  1.]...)
   ideal, bracket readout only                                            V 0.881  selector contrast +0.0000  N_hat +0.0703
   contraction to V=0.44 + bracket readout                                V 0.596  selector contrast -0.0000  N_hat +0.0703
   gate Pauli depolarizing p2=0.03                                        V 0.557  selector contrast -0.0000  N_hat +0.0703
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.615  selector contrast +0.0000  N_hat +0.0736
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.606  selector contrast +0.0000  N_hat +0.0736
   T1 12 us                                                               V 0.762  selector contrast -0.0000  N_hat +0.0780
   T1 25 us                                                               V 0.821  selector contrast -0.0000  N_hat +0.0737
   X90 over-rotation +0.03                                                V 0.875  selector contrast +0.0279  N_hat +0.0849
@@ -59,7 +59,7 @@ k12  (cz 12, ideal c [-1.  1.]...)
   ideal, bracket readout only                                            V 0.881  selector contrast +0.0000  N_hat +0.0703
   contraction to V=0.44 + bracket readout                                V 0.596  selector contrast -0.0000  N_hat +0.0703
   gate Pauli depolarizing p2=0.03                                        V 0.557  selector contrast -0.0000  N_hat +0.0703
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.615  selector contrast +0.0000  N_hat +0.0736
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.606  selector contrast +0.0000  N_hat +0.0736
   T1 12 us                                                               V 0.762  selector contrast -0.0000  N_hat +0.0780
   T1 25 us                                                               V 0.821  selector contrast -0.0000  N_hat +0.0737
   X90 over-rotation +0.03                                                V 0.875  selector contrast +0.0279  N_hat +0.0849
@@ -75,7 +75,7 @@ k4_sc  (cz 6, ideal c [-1.  1.]...)
   ideal, bracket readout only                                            V 0.857  selector contrast +0.0000  N_hat +0.1272
   contraction to V=0.44 + bracket readout                                V 0.705  selector contrast +0.0000  N_hat +0.1272
   gate Pauli depolarizing p2=0.03                                        V 0.677  selector contrast -0.0000  N_hat +0.1272
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.718  selector contrast +0.0000  N_hat +0.1301
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.708  selector contrast +0.0000  N_hat +0.1301
   T1 12 us                                                               V 0.797  selector contrast +0.0000  N_hat +0.1331
   T1 25 us                                                               V 0.827  selector contrast +0.0000  N_hat +0.1301
   X90 over-rotation +0.03                                                V 0.853  selector contrast +0.0000  N_hat +0.1348
@@ -91,7 +91,7 @@ k8_sc  (cz 6, ideal c [-1.  1.]...)
   ideal, bracket readout only                                            V 0.857  selector contrast +0.0000  N_hat +0.1272
   contraction to V=0.44 + bracket readout                                V 0.705  selector contrast +0.0000  N_hat +0.1272
   gate Pauli depolarizing p2=0.03                                        V 0.677  selector contrast -0.0000  N_hat +0.1272
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.718  selector contrast +0.0000  N_hat +0.1301
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.708  selector contrast +0.0000  N_hat +0.1301
   T1 12 us                                                               V 0.797  selector contrast +0.0000  N_hat +0.1331
   T1 25 us                                                               V 0.827  selector contrast +0.0000  N_hat +0.1301
   X90 over-rotation +0.03                                                V 0.853  selector contrast +0.0000  N_hat +0.1348
@@ -107,7 +107,7 @@ k12_sc  (cz 6, ideal c [-1.  1.]...)
   ideal, bracket readout only                                            V 0.857  selector contrast +0.0000  N_hat +0.1272
   contraction to V=0.44 + bracket readout                                V 0.705  selector contrast +0.0000  N_hat +0.1272
   gate Pauli depolarizing p2=0.03                                        V 0.677  selector contrast -0.0000  N_hat +0.1272
-  gate depolarizing p2=0.02 + T1 25 us                                   V 0.718  selector contrast +0.0000  N_hat +0.1301
+  gate depolarizing p2=0.02 + T1 25 us                                   V 0.708  selector contrast +0.0000  N_hat +0.1301
   T1 12 us                                                               V 0.797  selector contrast +0.0000  N_hat +0.1331
   T1 25 us                                                               V 0.827  selector contrast +0.0000  N_hat +0.1301
   X90 over-rotation +0.03                                                V 0.853  selector contrast +0.0000  N_hat +0.1348

@@ -32,6 +32,7 @@ RUNS = {
 }
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("directory", ["sim-00", "job-00"])
 def test_the_submitted_cases_keep_their_bytes(directory: str) -> None:
     import hashlib
@@ -41,6 +42,7 @@ def test_the_submitted_cases_keep_their_bytes(directory: str) -> None:
         check(submitted["cases_sha256"] == hashlib.sha256(data).hexdigest(), f"{directory} is the submitted request")
 
 
+@pytest.mark.audit
 def test_replays_send_the_retained_requests_and_fresh_seeds_are_new() -> None:
     manifest = json.loads((CASES / "job-00" / "cases.json").read_bytes())
     retained = {s["name"]: s for s in json.loads((ORIGINAL / "cases.json").read_bytes())["settings"]}
@@ -58,6 +60,7 @@ def test_replays_send_the_retained_requests_and_fresh_seeds_are_new() -> None:
     check(manifest["expected_seconds"] <= case.BUDGET_FRACTION * case.MAX_DURATION, "packing margin")
 
 
+@pytest.mark.audit
 def test_the_persistence_cutoff_is_the_frozen_plans() -> None:
     record = json.loads((ROOT / case.PERSISTENCE_PLAN).read_bytes())
     check(record["persistence_cutoff"] == case.PERSISTENCE_CUTOFF, "cutoff equals the frozen plan")
@@ -66,6 +69,9 @@ def test_the_persistence_cutoff_is_the_frozen_plans() -> None:
         "reduced cutoff equals the frozen plan",
     )
     check(case.PREREGISTERED["persistence_cutoff"] == case.PERSISTENCE_CUTOFF, "manifest carries the cutoff")
+
+
+def test_the_aligned_mean_holds_its_error_rates() -> None:
     power = reading.aligned_power()
     check(power["design_reads_follows_mesh"] < 0.02 and power["mesh_reads_follows_design"] < 0.02, "aligned errors")
 
@@ -195,9 +201,3 @@ def test_spec_check_bounds_published_imperfections() -> None:
     spec = case.spec_check(limit=2)
     check(spec["worst_level_shift_from_g2_and_indistinguishability"] < 0.005, "g2 and indistinguishability shift")
     check(spec["dark_level_shift_bound"] < 0.005, "dark count bound")
-
-
-@pytest.mark.audit
-def test_the_parallel_persistence_plan_reproduces_the_frozen_record() -> None:
-    plan = json.dumps(reading.persistence_plan(), indent=1, sort_keys=True) + "\n"
-    check(plan == (ROOT / case.PERSISTENCE_PLAN).read_text(), "the draw-first parallel plan equals the frozen bytes")

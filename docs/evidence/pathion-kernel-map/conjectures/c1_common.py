@@ -70,3 +70,21 @@ def signed_diffs(rows):
     t, cal = mirror_table(rows)
     keys = sorted(t)
     return keys, np.array([t[k][0][2] - t[k][1][2] for k in keys]), t, cal
+
+
+def bootstrap_diffs(rows, draws):
+    """Signed mirror differences of one parametric-bootstrap replicate: rows with their 12-mode counts replaced by draws
+    (one multinomial per row, in row order), recalibrated through signed_diffs."""
+    rr = []
+    for r, c12 in zip(rows, draws, strict=True):
+        k9 = c12[:9]
+        rr.append(
+            {
+                **r,
+                "port_counts": list(c12),
+                "slot": {k: float(sum(c12[m] for m in modes["slots"][k])) for k in an.SLOTS},
+                "failure": float(c12[8]),
+                "total": float(k9.sum()),
+            }
+        )
+    return signed_diffs(rr)[1]
