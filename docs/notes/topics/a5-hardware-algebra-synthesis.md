@@ -159,7 +159,9 @@ cited record or recomputed.
   nonzero i, j has nullity h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i.
 - The maximum D/2 - 4, BDI II Proposition 8.2, follows. So do two corollaries the record leaves implicit. The count at
   the maximum in A_2h is twice the invertible two-term count in A_h (84, 252, 684, 1740 from the octonions' 42). The
-  spectrum is palindromic: nullities k and max - k occur equally often. A session recheck by exact rank (python-flint)
+  support is palindromic and the interior counts mirror under r -> D/2 - 4 - r, but the endpoint counts differ:
+  at D = 32 the unsigned counts at nullities 0 and 12 are 171 and 126, at D = 64 those at 0 and 28 are 435 and 342
+  (`pair_sizes` of scripts/singular_sector_dynamics.py, rerun 2026-11-08). A session recheck by exact rank (python-flint)
   of every two-term operand from D = 8 to 256 agreed with the recursion at every operand; that check duplicates the
   owned checker and is not retained.
 - PR #788 measured Proposition 8.2 elements on hardware: whole-operand nullities 28 and 60 at D = 64 and 128. On
@@ -172,9 +174,10 @@ cited record or recomputed.
   ideal restricted to x_16..x_31 = 0 is J = (y_0, y_8, U - V, W): prime, a complete intersection, dimension 12,
   degree 4. The A_4 zero-divisor ideal PB (the order-6 Pfaffians of the doubly pure encoding) has radical J, the same
   dimension and degree, and J as its only minimal prime with multiplicity 1. But U - V and W lie outside PB, the
-  Hilbert series differ, and PB carries embedded components over a dimension-6 locus. So the folding argument carries
-  varieties, degrees and multiplicities between the sedenion and A_5 levels, never ideals or Hilbert functions. A
-  Hilbert-function count at A_5 cannot be read off the sedenion ideal; it needs the A_5 ideal itself.
+  Hilbert series differ, and PB carries embedded components over a dimension-6 locus. So restriction to the
+  sedenion half carries the variety, degree and multiplicity to the Pfaffian scheme PB but not its ideal or Hilbert
+  function. The W8 ideal itself does carry over at the ideal level, as the twisted product J(z) + J(z') with squared
+  Hilbert series (A5-223); what no fold supplies is the fiber ring k[y]/K2 behind the h_d ladders.
 - Rocq: the nullity doubling of a half operand is proved in gororoba-open for every pure operand.
   `proofs/theories/CDPureDoublingKernel.v` there proves `zero_upper_half_product` ((a, 0)(c, d) = (ac, da)),
   `pure_doubling_kernel_decomposition`, `zero_upper_half_matrix` (L_(a,0) is block-diagonal with blocks L_a and R_a),
@@ -183,9 +186,10 @@ cited record or recomputed.
   pure or not, and for the second half: (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and (0, b)(c, d) = 0 iff b c = 0
   and b d = 0, at every level over any ordered domain, from `kernel_equality` and `lemma_9_2` (integer instance closed
   under the global context, real instance on the Stdlib reals' two axioms;
-  [replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). Unconditional doubling over the reals needs one
-  lemma more: an operand r + p with r nonzero has L = rI + L_p with L_p skew, invertible over the reals, so both
-  nullities are 0. The mixed-pair rule's census Theorem 3 step is the open formal target.
+  [replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). Doubling of nullity and rank for every real
+  operand follows from CdHalfFold.v's all-operand kernel identity by rank-nullity; the missing Rocq piece is that
+  kernel-dimension bridge (gororoba-open can alternatively close its pure-only gap by showing that an operand with
+  nonzero real part has full rank). The mixed-pair rule's census Theorem 3 step is the open formal target.
 
 **Instruments: two faults, an estimator property that hides one of them, and a sharper contact-order test.**
 - Tuna-17 (PR #789): b0's two base replicates read 0.0162 and 0.0393, and the replicate gate failed (chi2 34.9 against
@@ -247,7 +251,7 @@ their record lands.
 | The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: h_1 = 24 and 144 degree-2 relations give h_2 = 156, so the halves' degree-2 values sum to 12, which caps h_3 at 167 against the measured h_3 >= 551 | receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
 
 What folding reaches. The nullity of every half operand, from one level down; the nullity of every two-term basis
-element, through the mixed rule (a reflection n -> h - 4 - 2n, which is why the spectrum is palindromic); and the
+element, through the mixed rule (a reflection n -> h - 4 - 2n, which is why the support of the spectrum is palindromic); and the
 geometry of the W8 component (its dimension, degree, irreducibility and Hilbert series come from the 16-variable
 ideal J in seconds instead of a 32-variable computation). These are the points of the nullity atlas whose values are
 known exactly before any rank computation, and they are the operands a hardware probe can use with a known answer.
