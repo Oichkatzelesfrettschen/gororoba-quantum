@@ -37,6 +37,7 @@ from dataclasses import dataclass
 import numpy as np
 from qiskit import QuantumCircuit
 
+import parallel
 import pathion_coset_block as pcb
 import pathion_kernel_map as pkm
 from experiments import Group, Member
@@ -355,20 +356,32 @@ def block_marginals(counts: dict[str, int], blocks: int) -> list[np.ndarray]:
     return laws
 
 
-def simulate_full_width(
-    op: WideOperand, shots: int, seed: int, blocks: list[pcb.Block] | None = None
-) -> dict[str, np.ndarray]:
-    """Noise-free matrix-product-state samples of the full-width circuit, as laws under the group's member names."""
+def _simulate_arm(job: tuple[WideOperand, bool, tuple[pcb.Block, ...], int, int]) -> list[np.ndarray]:
+    """One orientation arm of the full-width circuit on a matrix-product-state simulator: per-block marginal laws."""
     from qiskit import transpile
     from qiskit_aer import AerSimulator
 
-    chosen = op.blocks() if blocks is None else blocks
-    simulator = AerSimulator(method="matrix_product_state")
+    op, plus, chosen, shots, seed = job
+    circuit = transpile(full_width_circuit(op, plus, list(chosen)), basis_gates=["cx", "u"], optimization_level=0)
+    counts = (
+        AerSimulator(method="matrix_product_state").run(circuit, shots=shots, seed_simulator=seed).result().get_counts()
+    )
+    return block_marginals(counts, len(chosen))
+
+
+def simulate_full_width(
+    op: WideOperand, shots: int, seed: int, blocks: list[pcb.Block] | None = None
+) -> dict[str, np.ndarray]:
+    """Noise-free matrix-product-state samples of the full-width circuit, as laws under the group's member names.
+
+    The two orientation arms are independent simulations with the same seed and run through parallel.ordered_map; the
+    result order is the arms' order, so the laws equal those of a serial loop."""
+    chosen = tuple(op.blocks() if blocks is None else blocks)
+    arms = (False, True)
+    results = parallel.ordered_map(_simulate_arm, [(op, plus, chosen, shots, seed) for plus in arms], min_items=2)
     laws: dict[str, np.ndarray] = {}
-    for plus in (False, True):
-        circuit = transpile(full_width_circuit(op, plus, chosen), basis_gates=["cx", "u"], optimization_level=0)
-        counts = simulator.run(circuit, shots=shots, seed_simulator=seed).result().get_counts()
-        for block, law in zip(chosen, block_marginals(counts, len(chosen)), strict=True):
+    for plus, marginals in zip(arms, results, strict=True):
+        for block, law in zip(chosen, marginals, strict=True):
             laws[f"{block_prefix(op, block)}_{'plus' if plus else 'minus'}"] = law
     return laws
 
