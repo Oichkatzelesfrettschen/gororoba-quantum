@@ -1,0 +1,21 @@
+// t-space slice iso-p32029-k4b-satt2: k = 4 forms, saturation by t2; header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-nm.sing (sha256 28c3c473369c6edab4fb131098d00465e55d3dd7970e8554985f005d443bf4e6)
+// forms l1..l4: docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json, key iso-b-l1..iso-b-l4 of forms.json (values below 32029, index order)
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; string rl;
+option(prot);
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-nm.sing";
+poly l1=15209*G[1]+28287*G[2]+28299*G[3]+16991*G[4]+3576*G[5]+7844*G[6]+30535*G[7]+30442*G[8]+30168*G[9]+17665*G[10]+8879*G[11]+28202*G[12]+6916*G[13]+6097*G[14]+13487*G[15]+7155*G[16]+6706*G[17];
+poly l2=645*G[1]+15319*G[2]+19859*G[3]+27365*G[4]+15680*G[5]+23104*G[6]+21892*G[7]+22069*G[8]+21141*G[9]+17413*G[10]+29824*G[11]+3854*G[12]+32008*G[13]+18448*G[14]+17166*G[15]+13669*G[16]+25265*G[17];
+poly l3=9775*G[1]+1560*G[2]+14857*G[3]+12994*G[4]+9526*G[5]+30890*G[6]+28023*G[7]+21614*G[8]+16088*G[9]+5498*G[10]+10470*G[11]+19084*G[12]+19988*G[13]+9081*G[14]+14504*G[15]+20199*G[16]+15338*G[17];
+poly l4=24339*G[1]+20773*G[2]+16061*G[3]+10512*G[4]+8356*G[5]+29269*G[6]+8168*G[7]+29738*G[8]+12548*G[9]+3864*G[10]+1691*G[11]+11091*G[12]+7054*G[13]+18139*G[14]+8293*G[15]+11303*G[16]+24695*G[17];
+ideal Q=J,l1,l2,l3,l4;
+ideal S0=t2;
+rl="RESULT iso-p32029-k4b-satt2 "+"start: variables "+string(nvars(basering))+", forms 4, size(Q) "+string(size(Q))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-k4b-satt2.result", rl);
+def SS=sat_with_exp(Q,S0); ideal S=SS[1]; int ex=SS[2];
+rl="RESULT iso-p32029-k4b-satt2 "+"saturation done: generators "+string(size(S))+", exponent "+string(ex)+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-k4b-satt2.result", rl);
+S=std(S);
+rl="RESULT iso-p32029-k4b-satt2 "+"standard basis of the saturation: generators "+string(size(S))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-k4b-satt2.result", rl);
+int dm=dim(S); int dg=0; if (dm>=0) { dg=mult(S); }
+rl="RESULT iso-p32029-k4b-satt2 "+"dim "+string(dm)+" degree "+string(dg)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-k4b-satt2.result", rl);
+int on=(size(reduce(S,std(maxideal(1))))==0);
+rl="RESULT iso-p32029-k4b-satt2 "+"origin on the closure (all generators vanish at 0) "+string(on)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-k4b-satt2.result", rl);
+quit;

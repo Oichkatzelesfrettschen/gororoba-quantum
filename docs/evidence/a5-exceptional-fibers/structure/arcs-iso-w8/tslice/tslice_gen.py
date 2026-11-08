@@ -17,9 +17,14 @@ p = 32009 equal those of chart-iso-p32009-slice-coefficients.json (and of the sl
 chart-runs/fx4-w8p2/). The cross-check function a0 of Iso is that chart's l0 from the draw 2026-11-05T235924Z. The X
 forms continue in the same draw after the Iso forms at p = 32009 and serve both X incidences.
 
+The independent Iso k = 4 families (case names with k4b) take four forms per prime from DRAW_B, a draw made after the
+first family was fixed: the p = 32009 family on the first indices, the p = 32029 family on the indices after it.
+
     $PYTHON tslice_gen.py            # writes forms.json and sing/CASE.sing for every case, from the repository root
+    $PYTHON tslice_gen.py --check    # regenerates in memory and requires every retained file to match
 """
 
+import argparse
 import hashlib
 import json
 import re
@@ -29,6 +34,8 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[5]
 W = "docs/evidence/a5-exceptional-fibers/working"
 DRAW = "docs/evidence/anu_qrng/draw-2026-11-06T113431Z.json"
+# independent Iso k = 4 form families: a fresh draw, one disjoint index range per prime
+DRAW_B = "docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json"
 ISO_DIR = "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8"
 TS = f"{ISO_DIR}/tslice"
 HEADERS = {
@@ -63,11 +70,13 @@ CASES += [
     ("iso", 32009, 4, "t2", 0, False),
     ("iso", 32029, 4, "t2", 0, False),
 ]
+# independent form families at k = 4 (variant b): prime, saturating function; preregistered, not run
+B_CASES = [(32009, "t2h"), (32029, "t2h"), (32009, "t2"), (32029, "t2")]
 JUNK_CASES = [(32009, 3), (32029, 0)]
 
 
-def case_name(fiber: str, prime: int, k: int, sat: str) -> str:
-    return f"{fiber}-p{prime}-k{k}-sat{sat}"
+def case_name(fiber: str, prime: int, k: int, sat: str, variant: str = "") -> str:
+    return f"{fiber}-p{prime}-k{k}{variant}-sat{sat}"
 
 
 def take(values: list[int], prime: int, count: int, start: int) -> tuple[list[tuple[int, int]], int]:
@@ -100,6 +109,21 @@ def build_forms() -> dict[str, dict[str, list[list[int]]]]:
     if mine != retained:
         raise SystemExit("Iso l1..l4 at p = 32009 differ from chart-iso-p32009-slice-coefficients.json")
     return forms
+
+
+def build_forms_b() -> dict[str, dict[str, list[list[int]]]]:
+    """Four independent Iso forms per prime from DRAW_B: values below the prime, the p = 32009 family first and the
+    p = 32029 family on the indices after it, so the two index ranges are disjoint."""
+    values = json.loads((ROOT / DRAW_B).read_text())["values"]
+    out: dict[str, dict[str, list[list[int]]]] = {}
+    pos = 0
+    for prime in (32009, 32029):
+        entry: dict[str, list[list[int]]] = {}
+        for f in range(1, 5):
+            got, pos = take(values, prime, NGEN["iso"], pos)
+            entry[f"iso-b-l{f}"] = [list(p) for p in got]
+        out[str(prime)] = entry
+    return out
 
 
 def a0_coefficients(prime: int) -> list[list[int]]:
@@ -141,8 +165,12 @@ def bayer(src: str, dst: str, ex_name: str, tvars: list[str], prime: int) -> str
     )
 
 
-def script(fiber: str, prime: int, k: int, sat: str, forms: dict[str, dict[str, list[list[int]]]]) -> str:
-    name = case_name(fiber, prime, k, sat)
+def script(
+    fiber: str, prime: int, k: int, sat: str, forms: dict[str, dict[str, list[list[int]]]], variant: str = ""
+) -> str:
+    name = case_name(fiber, prime, k, sat, variant)
+    draw = DRAW_B if variant == "b" else DRAW
+    key = f"iso-{variant}-l" if variant else ("iso-l" if fiber == "iso" else "x-l")
     header = HEADERS[(fiber, prime)]
     digest = hashlib.sha256((ROOT / header).read_bytes()).hexdigest()
     fam = "iso" if fiber == "iso" else "x"
@@ -156,7 +184,7 @@ def script(fiber: str, prime: int, k: int, sat: str, forms: dict[str, dict[str, 
         emit(f'rl="RESULT {name} "+{expr}; print(rl); write(":a {TS}/logs/{name}.result", rl);')
 
     emit(f"// t-space slice {name}: k = {k} forms, saturation by {SAT_LABEL[sat]}; header {header} (sha256 {digest})")
-    emit(f"// forms l1..l{k}: {DRAW}, key {fam}-l1..{fam}-l{k} of forms.json (values below {prime}, index order)")
+    emit(f"// forms l1..l{k}: {draw}, key {key}1..{key}{k} of forms.json (values below {prime}, index order)")
     if sat == "a0":
         emit(
             f"// a0 = l0(G): {ISO_DIR}/chart-iso-p{prime}-coefficients.json"
@@ -168,7 +196,7 @@ def script(fiber: str, prime: int, k: int, sat: str, forms: dict[str, dict[str, 
         emit("option(prot);")
     emit(f'< "{header}";')
     for f in range(1, k + 1):
-        emit(f"poly l{f}={lin([v for _, v in entry[f'{fam}-l{f}']], 'G')};")
+        emit(f"poly l{f}={lin([v for _, v in entry[f'{key}{f}']], 'G')};")
     forms_list = ",".join(f"l{f}" for f in range(1, k + 1))
     emit(f"ideal Q=J,{forms_list};")
     if sat == "a0":
@@ -245,23 +273,46 @@ def junk_script(prime: int, k: int, forms: dict[str, dict[str, list[list[int]]]]
     return "\n".join(lines) + "\n"
 
 
-def main() -> None:
+def outputs() -> dict[Path, str]:
+    """Every generated file: forms.json and the Singular scripts, as path -> text."""
     forms = build_forms()
+    forms_b = build_forms_b()
+    for prime_key, entry in forms_b.items():
+        forms[prime_key].update(entry)
     ledger = {
         "draw": DRAW,
         "rule": "uint16 values below the prime in index order, zero-based; [index, value] per coefficient",
+        "draw_b": DRAW_B,
+        "rule_b": "keys iso-b-l1..4: the same rule on draw_b, the p = 32009 family first, then the p = 32029 family",
         "forms": forms,
         "a0": {str(p): a0_coefficients(p) for p in (32009, 32029)},
     }
-    (HERE / "forms.json").write_text(json.dumps(ledger, indent=1) + "\n")
-    (HERE / "sing").mkdir(exist_ok=True)
+    out: dict[Path, str] = {HERE / "forms.json": json.dumps(ledger, indent=1) + "\n"}
     for fiber, prime, k, sat, _limit, _run in CASES:
-        (HERE / "sing" / f"{case_name(fiber, prime, k, sat)}.sing").write_text(script(fiber, prime, k, sat, forms))
-        print(f"sing/{case_name(fiber, prime, k, sat)}.sing")
+        out[HERE / "sing" / f"{case_name(fiber, prime, k, sat)}.sing"] = script(fiber, prime, k, sat, forms)
+    for prime, sat in B_CASES:
+        out[HERE / "sing" / f"{case_name('iso', prime, 4, sat, 'b')}.sing"] = script("iso", prime, 4, sat, forms, "b")
     for prime, k in JUNK_CASES:
         junk_name = f"iso-p{prime}-k{k}-junkcheck" if k else f"iso-p{prime}-junk"
-        (HERE / "sing" / f"{junk_name}.sing").write_text(junk_script(prime, k, forms))
-        print(f"sing/{junk_name}.sing")
+        out[HERE / "sing" / f"{junk_name}.sing"] = junk_script(prime, k, forms)
+    return out
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--check", action="store_true", help="regenerate in memory and require every file to match")
+    args = ap.parse_args()
+    files = outputs()
+    if args.check:
+        bad = [str(p.relative_to(HERE)) for p, text in files.items() if not p.exists() or p.read_text() != text]
+        if bad:
+            raise SystemExit("generated files differ: " + ", ".join(bad))
+        print(f"{len(files)} generated files match")
+        return
+    (HERE / "sing").mkdir(exist_ok=True)
+    for path, text in files.items():
+        path.write_text(text)
+        print(path.relative_to(HERE))
 
 
 if __name__ == "__main__":
