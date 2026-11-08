@@ -564,7 +564,7 @@ twice; neither failure was retained as a receipt. Block B takes 5573, 39099, 453
 - `shot-estimate.json`, holding `max_shots` at 1.25 times the largest per-iteration estimate, rounded up to 100,000;
 - the printed `REQUESTS` and `JOBS` rows, together with the forecast against each comparison.
 
-The charge is 1 + `max_shots` * 1e-06 credits.
+The charge is 1 + min(shots used, `max_shots`) * 1e-06 credits, so `max_shots` sets the ceiling.
 
 **Procedure.** Each step reads the platform and sends no job until the owner approves the written case.
 1. `"$PYTHON" scripts/qd_platform.py snapshot --out results/quandela/cases/teleportation_rehearsal/job-01/platform-read`

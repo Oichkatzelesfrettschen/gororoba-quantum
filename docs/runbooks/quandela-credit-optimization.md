@@ -57,6 +57,9 @@ bill.
 `scripts/qd_platform.py` `plan` prices `estimated_credits` with the smaller of
 the billed shots and the estimate, so `estimated_credits` predicts the charge
 and `credit_ceiling` bounds it.
+Pinned case records that state the older full-cap rule keep their bytes; the
+[billing-rule successor](../evidence/quandela-billing-rule-successor/README.md)
+names each one and the field it supersedes.
 
 Evidence: every retained run under `results/quandela/runs/` holds the usage
 report before submission (`submission.json`) and after collection

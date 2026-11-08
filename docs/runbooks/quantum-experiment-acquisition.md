@@ -5,7 +5,7 @@ claim boundaries. The [evidence bundle](../evidence/quantum-experiment-conforman
 exact payloads, complete setting inventory, seed assignments, shot design and aggregate credit ceilings.
 This procedure turns those prospective cases into separately approved provider acquisitions.
 
-The [Ascella cancellation and dimension-six case](../evidence/ascella-cancellation-transition-acquisition/README.md)
+The [Ascella cancellation and dimension-six case](../evidence/ascella-cancellation-transition-acquisition/README-v2.md)
 freezes five ordered cancellation jobs and a packed twelve-setting pilot, including duration qualification,
 complete-output confidence bounds and the full-campaign expansion rule.
 The [retained Ascella findings](../evidence/ascella-cancellation-transition-acquisition/findings.md) record

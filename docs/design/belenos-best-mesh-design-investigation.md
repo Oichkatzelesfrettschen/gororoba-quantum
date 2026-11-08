@@ -49,9 +49,9 @@ Block A pools job-02 with its exact replay (`...-job-02-replay`), which used the
    iteration) gives power 0.73 with two six-iteration jobs and 0.87 with four, falling to 0.54 and 0.70 when three of
    the six pairs drop out; size is 0.051 when no mesh error persists. This simulates a replay of the two meshes in
    hand; the draft's own Monte Carlo simulated its six-candidate screen and two confirm jobs and gave power 0.81 (0.97
-   at a mesh spread of 0.06), so the two figures answer different designs. Each job costs 5.0 credits at the lossiest
-   mesh's 2,662 shots per sample: a job bills 1 credit plus 1e-6 per shot of its largest iteration's `max_shots`
-   ([credit optimization](../runbooks/quandela-credit-optimization.md)), here 4,000,000.
+   at a mesh spread of 0.06), so the two figures answer different designs. Each job costs at most 5.0 credits at the lossiest
+   mesh's 2,662 shots per sample: a job bills 1 credit plus 1e-6 per shot used, capped at its largest iteration's
+   `max_shots` ([credit optimization](../runbooks/quandela-credit-optimization.md)), here 4,000,000.
 4. **Acceptance tends to move against correctness, short of significance.** Within an input, the mesh with the
    higher acceptance per sample reads the lower correctness in five of six inputs (r -0.75, direction stated
    beforehand), and more herald rejections go with higher correctness (r +0.87, direction found after looking). The
