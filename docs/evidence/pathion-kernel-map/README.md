@@ -72,3 +72,19 @@ fmpz_mat) and equal to its aligned-pair count. No coset-block class first occurs
 
 A hardware case for the doublings therefore reads operand nullities above 12 (every block of one operand), not new
 block classes.
+
+### Analysis of the retained wide-coset runs
+
+`scripts/pathion_wide_coset_analysis.py` applies the case's rules to the ibm_fez and ibm_kingston runs (acquisitions
+`ibm-fez-pathion-wide-coset` and `ibm-kingston-pathion-wide-coset`) and writes
+[pathion_wide_coset_analysis.json](../../../results/live/pathion_wide_coset_analysis.json) with the input digests. Every
+interval takes the covariance across the placements of one PUB from the retained per-shot bitstrings, since the
+placements of a PUB share each shot; the per-placement multinomial model that adds variances is kept as a report-only
+column. The whole-operand and difference standard errors of the two models agree within 1 percent on both devices, and
+no rule changes verdict between them. ibm_kingston passes every rule. ibm_fez fails eight: sign resolution of o128,
+null control at n64 and n128, null-referenced difference at d64 and d128, per-block localization of n64 and n128, and
+the visibility floor. Two placements carry the low visibilities: placement 7 (physical qubits 79, 92, 93, 94) reads
+mean visibility 0.595 and placement 15 (qubits 10, 11, 12, 18) reads 0.710 over the six operands, against 0.888 to 0.973
+on the other fourteen. Block k28 sits on placement 7 in every operand and on placement 15 in the 64-dimensional ones; its
+null-block readings are -0.771 (n64) and -0.742 (n128) on placement 7 and +0.218 (n64) on placement 15, so the loss
+follows the placement's qubits (inference from two placements and one block, moderate confidence), and neither set holds a qubit of the drain jobs' exclusion (2 to 4 and 16).
