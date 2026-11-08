@@ -812,9 +812,10 @@ def exact_float(endpoint: arb) -> float:
 
 
 def certified_float(value: arb) -> float | None:
-    """The float64 every point of the ball rounds to, or None when the ball straddles a rounding boundary."""
+    """The float64 every point of the ball rounds to, or None when the ball straddles a rounding boundary. Signed
+    zeros compare equal, so the endpoints must also agree in sign: a ball across 0 rounds to -0.0 and +0.0."""
     low, high = exact_float(value.lower()), exact_float(value.upper())
-    return low if low == high else None
+    return low if low == high and math.copysign(1.0, low) == math.copysign(1.0, high) else None
 
 
 def to_arb_mat(rows: np.ndarray) -> arb_mat:
