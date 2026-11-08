@@ -46,7 +46,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from flint import arb, arb_mat, ctx
+from flint import arb, arb_mat, arf, ctx
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -854,62 +854,106 @@ def percentile_ball(values: Sequence[arb], q: float) -> arb:
     return below + (above - below) * weight
 
 
-def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
-    """Rates, F and F' of each column of observed rates (576 x K) and the point column's process fidelity, as arb balls.
-
-    pinv(A) b is the least-squares solution of the full-column-rank design A, so it equals the solution of the normal
-    equations (A^T A) x = A^T b, which arb_mat solves with a rigorous radius on the producer's float64 inputs. A rate is
-    Tr[(rho^T x E) J] = sum_k x_k Tr[(rho^T x E) H_k], formed exactly on the doubles."""
-    ctx.prec, ctx.threads = precision, workers()
-    design = tomo.design_matrix()
-    a = to_arb_mat(design)
-    at = a.transpose()
-    x = (at * a).solve(at * to_arb_mat(columns))
+@cache
+def prediction_inputs() -> dict[str, Any]:
+    """The float64 inputs of the certified prediction: the tomography design, the rate observables of the eight
+    settings with their names, and the real and imaginary parts of the Hermitian basis."""
     rows: list[np.ndarray] = []
-    names: list[tuple[str, str, Mapping[str, Any]]] = []
+    names: list[tuple[str, str, int]] = []
     for table, inputs in TABLES.items():
         for control, target in inputs:
             row = {"name": f"in-{control}{target}-{table}", "input": control + target, "basis": table}
-            names.append((table, row["name"], row))
+            names.append((table, row["name"], correct_outcome(row)))
             density = input_density(row["input"]).T
             rows.extend(np.kron(density, tomo.outcome_projector(table, o)) for o in range(4))
-    observables = np.asarray(rows).reshape(len(rows), -1)
     basis = np.transpose(tomo.hermitian_stack(), (0, 2, 1)).reshape(256, -1)
+    return {"design": tomo.design_matrix(), "observables": np.asarray(rows), "basis": basis, "names": names}
+
+
+def ball_parts(value: arb) -> tuple[int, int, int, int]:
+    """The exact dyadic midpoint and radius of a ball as (mantissa, exponent) pairs, which pickle."""
+    mid, rad = value.mid().man_exp(), value.rad().man_exp()
+    return int(mid[0]), int(mid[1]), int(rad[0]), int(rad[1])
+
+
+def from_parts(parts: Sequence[int]) -> arb:
+    """The ball of ball_parts: the midpoint exact, the radius rounded up to arb's radius type, so it still encloses."""
+    return arb(arf((parts[0], parts[1])), arf((parts[2], parts[3])))
+
+
+def solve_columns(columns: np.ndarray) -> arb_mat:
+    """The least-squares coefficients of each column at ctx.prec: pinv(A) b of the full-column-rank design A equals the
+    solution of the normal equations (A^T A) x = A^T b, which arb_mat solves with a rigorous radius on the float64
+    inputs."""
+    a = to_arb_mat(prediction_inputs()["design"])
+    at = a.transpose()
+    return (at * a).solve(at * to_arb_mat(columns))
+
+
+def column_balls(item: tuple[np.ndarray, int]) -> dict[str, Any]:
+    """Rates, F and F' of each column of one batch of observed rates (576 x k) at one working precision, as
+    ball_parts. A rate is Tr[(rho^T x E) J] = sum_k x_k Tr[(rho^T x E) H_k], formed exactly on the doubles."""
+    columns, precision = item
+    ctx.prec = precision
+    inputs = prediction_inputs()
+    observables = inputs["observables"].reshape(len(inputs["observables"]), -1)
+    basis = inputs["basis"]
     rate_matrix = to_arb_mat(observables.real) * to_arb_mat(basis.real).transpose()
     rate_matrix -= to_arb_mat(observables.imag) * to_arb_mat(basis.imag).transpose()
-    rates = rate_matrix * x
+    rates = rate_matrix * solve_columns(columns)
+    out: dict[str, Any] = {"rates": [], "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    for k in range(rates.ncols()):
+        sums: dict[str, list[arb]] = {t: [arb(0), arb(0), arb(0)] for t in TABLES}
+        column = []
+        for i, (table, _, correct_index) in enumerate(inputs["names"]):
+            values = [rates[4 * i + o, k] for o in range(4)]
+            column.append([ball_parts(v) for v in values])
+            eligible = values[0] + values[1] + values[2] + values[3]
+            correct = values[correct_index]
+            sums[table][0] += correct
+            sums[table][1] += eligible
+            sums[table][2] += correct / eligible
+        out["rates"].append(column)
+        for table, (correct, eligible, ratio) in sums.items():
+            out["F"][table].append(ball_parts(correct / eligible))
+            out["F_prime"][table].append(ball_parts(ratio / 4))
+    return out
+
+
+def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
+    """Rates of the point column, F and F' of each column of observed rates (576 x K), and the point column's process
+    fidelity, as arb balls. The columns are scored in batches through parallel.ordered_map, each worker solving its
+    batch at the same precision; the certified values do not depend on the batching, since each is the correct
+    rounding of an exact value its ball encloses."""
+    ctx.prec, ctx.threads = precision, 1
+    inputs = prediction_inputs()
+    batches = [columns[:, idx] for idx in np.array_split(np.arange(columns.shape[1]), 4 * workers())]
+    scored = ordered_map(column_balls, [(batch, precision) for batch in batches if batch.shape[1]], min_items=2)
+    out: dict[str, Any] = {"rates": {}, "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    for part in scored:
+        for table in TABLES:
+            out["F"][table].extend(from_parts(v) for v in part["F"][table])
+            out["F_prime"][table].extend(from_parts(v) for v in part["F_prime"][table])
+    for (_, name, _), values in zip(inputs["names"], scored[0]["rates"][0], strict=True):
+        out["rates"][name] = [from_parts(v) for v in values]
     vector = tomo.ideal_choi_vector()
     require(not np.any(vector.imag), "the ideal CZ Choi vector is not real")
     weights = np.vstack([np.outer(vector.real, vector.real).reshape(-1), np.eye(16).reshape(-1)])
+    x = solve_columns(columns[:, :1])
     functional = to_arb_mat(weights) * to_arb_mat(tomo.hermitian_stack().real.reshape(256, -1)).transpose() * x
-    out: dict[str, Any] = {"rates": {}, "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    out["process_fidelity"] = functional[0, 0] / (4 * functional[1, 0])
     # the certificate covers these float64 bits, which float64 libm and BLAS calls produce; their digests let a replay
     # tell an input that moved from an output that did
     out["inputs_sha256"] = {
         name: hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest()
         for name, array in (
-            ("design_matrix", design),
-            ("rate_observables", np.asarray(rows)),
+            ("design_matrix", inputs["design"]),
+            ("rate_observables", inputs["observables"]),
             ("hermitian_basis", tomo.hermitian_stack()),
             ("ideal_choi_vector", vector),
             ("observed_rate_columns", columns),
         )
     }
-    out["process_fidelity"] = functional[0, 0] / (4 * functional[1, 0])
-    for k in range(x.ncols()):
-        sums: dict[str, list[arb]] = {t: [arb(0), arb(0), arb(0)] for t in TABLES}
-        for i, (table, name, setting) in enumerate(names):
-            values = [rates[4 * i + o, k] for o in range(4)]
-            if k == 0:
-                out["rates"][name] = values
-            eligible = values[0] + values[1] + values[2] + values[3]
-            correct = values[correct_outcome(setting)]
-            sums[table][0] += correct
-            sums[table][1] += eligible
-            sums[table][2] += correct / eligible
-        for table, (correct, eligible, ratio) in sums.items():
-            out["F"][table].append(correct / eligible)
-            out["F_prime"][table].append(ratio / 4)
     return out
 
 

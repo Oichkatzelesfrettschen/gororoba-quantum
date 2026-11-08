@@ -25,7 +25,7 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
 - SDE runs about 30 times slower than native (dose decisions 147 s against about 5 s), and its cache
   sizes and core count are the host's.
 - Thread count alone moves native bits: the Ascella CZ ensemble's float64 least-squares prediction took four
-  different values at OpenBLAS threads 1, 2, 4, 6 and 10 on the build host, up to 1.5e-15 apart
+  different values at OpenBLAS threads 1, 2, 4, 6 and 10 on the build host, up to 1.1e-15 apart
   ([least-squares precision](../evidence/least-squares-precision/README.md)).
 - ci/gates.json declares 101 replay roots across 86 gates, of which three gates run `ci/replay_check.py`;
   634 of the 676 ledger records sit in the quantum-experiment case directory.

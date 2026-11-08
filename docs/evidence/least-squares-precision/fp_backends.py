@@ -133,8 +133,8 @@ def float64_pinv(d: dict):
     t0 = time.perf_counter()
     p = np.linalg.pinv(d["a"])
     b = rhs(d)
-    x = np.column_stack([p @ b[:, k] for k in range(b.shape[1])])  # matvec per column, the producer's order
-    SOLVE["float64 pinv (producer)"] = time.perf_counter() - t0
+    x = np.column_stack([p @ b[:, k] for k in range(b.shape[1])])  # matvec per column, as the producer solves
+    SOLVE["float64 pinv, rate-matrix evaluation"] = time.perf_counter() - t0
     r, fn = model_rows(d, None)
     return evaluate(x, r, fn, d, 0.0, math.sqrt, lambda c: [float(v) for v in c])
 
@@ -438,7 +438,7 @@ def main() -> int:
         "max_radius": max(float(v.rad()) for k, v in reference.items() if k != "rates"),
     }
     for name, fn in (
-        ("float64 pinv (producer)", float64_pinv),
+        ("float64 pinv, rate-matrix evaluation", float64_pinv),
         ("float64 QR lstsq", float64_qr),
         ("float64 + x87 refinement", float64_x87_refined),
         ("x87 80-bit Householder", x87_householder),
