@@ -366,3 +366,23 @@ def test_moved_inputs_reports_rather_than_fails() -> None:
         raise AssertionError("a moved input is not named")
     if tomo.first_difference(retained, recomputed) is not None:
         raise AssertionError("the digests still reach the tolerance comparison")
+
+
+def test_column_batches_certify_the_same_values() -> None:
+    """A ball survives its pickled parts, and scoring columns apart or together certifies the same floats."""
+    from flint import arb, ctx
+
+    ctx.prec = 128
+    ball = arb(1) / 3 + arb("0 +/- 1e-30")
+    rebuilt = case.from_parts(case.ball_parts(ball))
+    if rebuilt.mid() != ball.mid() or not rebuilt.contains(ball):
+        raise AssertionError("the rebuilt ball moves its midpoint or loses the enclosure")
+    coefficients = np.linspace(-1e-3, 2e-3, 256)
+    columns = tomo.design_matrix() @ (coefficients[:, None] + np.outer(np.ones(256), [0.0, 1e-5]))
+    together = case.column_balls((columns, 128))
+    apart = [case.column_balls((columns[:, [k]], 128)) for k in range(2)]
+    for table in case.TABLES:
+        joined = [case.certified_float(case.from_parts(v)) for v in together["F"][table]]
+        split = [case.certified_float(case.from_parts(part["F"][table][0])) for part in apart]
+        if None in joined or joined != split:
+            raise AssertionError(f"{table}: batching changes the certified scores {joined} against {split}")
