@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import copy
-import json
 from typing import Any
 
 import ascella_cz_ensemble_case as case
@@ -228,13 +227,15 @@ def test_a_missing_computed_circuit_unpools_the_jobs(monkeypatch: pytest.MonkeyP
         raise AssertionError("an empty computed_circuit becomes a mesh digest")
 
 
-def test_run_status_reads_the_retained_tomography_records() -> None:
-    for run in case.TOMOGRAPHY_RUNS:
-        results = json.loads((case.ROOT / run / "results.json").read_text(encoding="utf-8"))
-        if case.run_status(results) != "completed":
-            raise AssertionError(f"{run}: run_status misreads a completed job")
-    if case.run_status({"status": "completed"}) is not None or case.run_status({}) is not None:
-        raise AssertionError("run_status accepts a status outside status.status")
+def test_run_status_reads_the_nested_status_field() -> None:
+    collected = {"status": {"status": "completed", "duration": 188}, "results": []}
+    if case.run_status(collected) != "completed":
+        raise AssertionError("run_status misreads a completed job")
+    if case.run_status({"status": {"status": "canceled"}}) != "canceled":
+        raise AssertionError("run_status drops a terminal status other than completed")
+    for shape in ({"status": "completed"}, {}, {"status": {"status": 3}}, {"status": None}):
+        if case.run_status(shape) is not None:
+            raise AssertionError(f"run_status accepts {shape}")
 
 
 def test_conditional_tables_keep_both_margins() -> None:

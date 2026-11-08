@@ -776,6 +776,12 @@ def tomography_choi() -> tuple[np.ndarray, float]:
     return choi, tomo.trace_normalized_fidelity(choi)
 
 
+def replicate_prediction(rates: np.ndarray) -> dict[str, Any]:
+    """The tables one bootstrap replicate's (576,) rates predict; parallel.py runs it under one BLAS thread, the
+    arithmetic of the runner-image ledger."""
+    return predicted_tables(tomo.linear_inversion(rates))
+
+
 def predicted_tables(choi: np.ndarray) -> dict[str, Any]:
     """Rates a Choi matrix predicts for the eight settings, Tr[(rho^T x E) J], and its F and F' per table."""
     out: dict[str, Any] = {"rates": {}}
@@ -805,7 +811,7 @@ def tomography_prediction() -> dict[str, Any]:
     a = tomography_arrays()
     generator = np.random.default_rng(value)
     batch = tomo.resampled_rates(a["eligible"], a["samples"], a["shots"], a["scale"], generator, PREDICTION_REPLICATES)
-    replicate = [predicted_tables(tomo.linear_inversion(rates)) for rates in batch]
+    replicate = ordered_map(replicate_prediction, list(batch))
     out: dict[str, Any] = {
         "process_fidelity": fidelity,
         "retained_analysis": TOMOGRAPHY_ANALYSIS,
