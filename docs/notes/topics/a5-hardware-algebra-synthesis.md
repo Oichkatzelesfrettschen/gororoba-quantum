@@ -46,6 +46,9 @@ A point reading cannot see an attachment. A reading along a path that enters the
    ([hardware-orbits](../../evidence/a5-exceptional-fibers/hardware-orbits/README.md)). On ibm_fez e1 + e18 reads
    N_hat 12.65 [11.87, 13.42], which resolves its nullity of 12. e1 + e10 reads 7.30 [0.85, 13.74], consistent with 8
    but unresolved, since the interval also holds 4 and 12 ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
+   These point readings carry the estimator's bias (rows 228 and 231: the replica-mean N_hat of e1 + e18 reads 12.75
+   from a class-mean gap of 0.030), so the sign map carries the resolution: 29 of 32 signs on the replica mean of the
+   full map and 32 of 32 on every operand of the coset-block runs.
 2. **Two incidences of the fiber program have both ends measured.**
    - W8 -> N- along a(b) = e1 + e10 + b (e18 - e25) (row 208).
    - E8-bar -> VB along a(b) = e1 + e18 + b (e8 + e27) (row 209).
@@ -67,6 +70,9 @@ A point reading cannot see an attachment. A reading along a path that enters the
    same phenomenon. Falsifier: an incidence whose arc limit order differs from its singular-value order.
 4. **Blind spots.**
    - Nullity 12 spans V, VB and B9, so an N_hat of 12 does not identify the orbit.
+   - The block profile of a coset tiling does not identify it either: of the 252 two-term operands of nullity 12 the
+     sorted profile (2, 2, 4, 4) occurs in V (24), VB (108), V^a- and V^a+ (6 each) and only (0, 4, 4, 4) is VB-exclusive
+     (row 232); the measured pair e1 + e24 and e1 + e18 separates because its orbits were known first.
    - No measured operand lies in Iso, X+, X- or N+ (rows 211 and 212).
    - The doubling image e1 + e10 - e18 + e25 of A16 is the unmeasured N+ end.
    - The IBM rank path joins W8, VB and N- through nullity-4 points and probes no incidence (row 213).
@@ -80,7 +86,7 @@ The algebra's exact predictions therefore turn each run into a calibration of it
 |---|---|---|
 | Ascella (photonic) | each served mesh carries a fixed error of rms about 0.025 in level, persistent at r 0.9966 under verbatim replay; the two-block mirror failure is that fixed error divided by one anchor mesh per slot; per-mode efficiencies carry most of a frozen map's reach, and a shifter map beyond them is not established (p 0.041 post hoc) | 200 to 204; [runbook](../../runbooks/ascella-block-run-design.md) |
 | IBM Heron r2 | the null operand's selector reads zero within 0.006 on Fez and Kingston; the pooled X90 over-rotation is -0.0015 +- 0.0014 rad; no packing effect above 0.015 on the packed null-k0 minus arm at the tested one-hop layouts (90 percent intervals); the calibration's confusion matrix overstates the asymmetry the circuits see by about 0.09 (hypothesis) | 192 to 199 |
-| Tuna-17 | the null selector offset +0.0164 is consistent with a coherent X90 over-rotation (+0.03 rad); IBM's own pooled angle sits 4.3 sigma below that value, so the offset is Tuna-specific; an assignment-level q12 readout flip is excluded at 14.5 se; the 6-CZ null-block case (named one-CZ), approved 2026-11-07 and acquiring on its case branch since 20:27Z (not part of this change; its retention change carries the approval, stamp and records), separates the coin-conditioned dropout from the bounded over-rotation, while a post-schedule q12 correlation stays open | 186; [c2_q12_bracket.txt](../../evidence/pathion-kernel-map/conjectures/c2_q12_bracket.txt) |
+| Tuna-17 | the null selector offset +0.0164 is consistent with a coherent X90 over-rotation (+0.03 rad); IBM's own pooled angle sits 4.3 sigma below that value, so the offset is Tuna-specific; an assignment-level q12 readout flip is excluded at 14.5 se; the 6-CZ null-block case (named one-CZ), approved 2026-11-07, ran from 20:27Z and is retained by PR #789 (merged 2026-11-08); its preregistered rule read unresolved_batch (b0 base replicates, chi2 34.9 against 10.83), so row 186 stays a hypothesis, and a post-schedule q12 correlation stays open | 186; [c2_q12_bracket.txt](../../evidence/pathion-kernel-map/conjectures/c2_q12_bracket.txt) |
 
 The design rule this yields for every platform: calibrate against an operand whose ideal nullity is exact and known,
 on the same instrument realization (mesh, routing, readout context) as the measurement. One anchor mesh per slot
@@ -143,12 +149,12 @@ QRNG forms ([survey and addendum](quantum-linear-algebra-fit-a5.md)).
 | the Tuna b0-like band admitted a wrong refutation in 48 percent of runs if Rz is not virtual | band narrowed to 2 se with doubled b0 shots: 7.7 percent; Rz on Tuna-17 stays unverified | Tuna CASE.md |
 | an FX4 run extended past its limit was killed by a daily auto-shutdown schedule invisible to the run | records retained; the schedule is checked and moved before any run past its first day | row 205; [run rulebook](../../runbooks/run-rulebook.md) |
 | row 011 states (spread, multiplicity) as the criterion | the multiplicity half follows from row 060's primality | row 011 basis |
-| the Codex review read the one-CZ case as unapproved and unsubmitted | the case's status line predates the owner's approval; batches run since 20:27Z; the submitted case keeps its bytes and the retention change records approval and stamp | case branch run directories |
+| the Codex review read the one-CZ case as unapproved and unsubmitted | the case's status line predates the owner's approval; batches run since 20:27Z; the submitted case keeps its bytes and the retention change records approval and stamp | PR #789 run directories |
 
 ## Findings across the open acquisitions (2026-11-08)
 
 This section joins PR #788 (IBM 64- and 128-dimensional wide case), PR #789 (Tuna-17 6-CZ null-block series) and
-PR #790 (h_5 at p = 32029). Codex daybreak-blue and Grok each reviewed them adversarially
+PR #790 (h_5 at p = 32029), all merged to main by 2026-11-08T18:21Z. Codex daybreak-blue and Grok each reviewed them adversarially
 ([brief and reviews](../../archive/reviews/findings-32d/brief.md)), and every statement below was checked against the
 cited record or recomputed.
 
@@ -166,7 +172,9 @@ cited record or recomputed.
   owned checker and is not retained.
 - PR #788 measured Proposition 8.2 elements on hardware: whole-operand nullities 28 and 60 at D = 64 and 128. On
   ibm_kingston they read 27.995 and 60.126, and the ratio 2.148 sits on 60/28 = 2.143. On ibm_fez they read 28.071
-  and 59.978. A point reading confirms the instrument against a known exact answer and adds no evidence for the law.
+  and 59.978. A point reading confirms the instrument against a known exact answer and adds no evidence for the law. Of
+  the 28 and 60, algebra forces 24 and 48 (six of eight and twelve of sixteen blocks have all four XOR pairs aligned
+  and read 4 on any data), so the ratio test rests on the informative 4 and 12 (row 234).
 - The halves rule ties the 16-dimensional sedenion program to A_5 directly. The W8 operand e1 + e10 has nullity 8
   because e1 + e10 is a sedenion zero divisor of nullity 4, doubled. [a5-zero-divisor-strata](../../evidence/a5-zero-divisor-strata/README.md)
   already describes W8 through pairs of A_4 zero divisors. The restriction holds set-theoretically and fails as a
@@ -203,8 +211,8 @@ cited record or recomputed.
   night sit on q11, a data qubit of b0's region. Row 186 stays a hypothesis.
 - ibm_fez (PR #788): the null controls fail (n64 -0.531, n128 -1.056) and per-block localization fails on k28, at
   visibility 0.53 to 0.65 against 0.96 to 0.97 on Kingston's k28.
-- The target blocks hide the fault: N_hat saturates at its ideal integer whenever every sign agrees, so Fez's o128 k28
-  reads exactly 4.000 at visibility 0.649 while its null twin fails. Only null controls and null-referenced
+- The target blocks hide the fault: a block whose four XOR pairs are all aligned has B- empty and reads N_hat = 4 for
+  any data (row 229), so Fez's o128 k28 reads exactly 4.000 at visibility 0.649 while its null twin fails. Only null controls and null-referenced
   differences see a dead placement.
 - Two explanations compete. Grok's: single-site readout or placement collapses. Codex's: logical-role error amplified
   by circuit depth, after A5-187, where Tuna's `ba` misses follow the logical bit d2 across physical qubits. The data
@@ -215,7 +223,7 @@ cited record or recomputed.
   replicates still disagreeing.
 - PR #788's first analysis summed marginal per-placement variances, although every block of an arm shares one fused PUB
   with aligned per-shot records. The reanalysis propagates the covariance of per-shot influence values across each
-  PUB's placements (`results/live/pathion_wide_coset_analysis.json` on that branch). Across its 32 interval pairs the
+  PUB's placements (`results/live/pathion_wide_coset_analysis.json`, merged to main with PR #788). Across its 32 interval pairs the
   two standard errors differ by at most 0.93 percent, and no rule verdict changes: ibm_kingston passes all 23 rules, and ibm_fez fails eight (sign
   resolution o128, both null controls, both null-referenced differences, two per-block localizations, the visibility
   floor). The shot data show no measurable cross-placement correlation. Fez's copy-agreement z of -11.4 (n64) records
@@ -251,10 +259,10 @@ their record lands.
 | Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, nullity L_(a,0) = 2 nullity L_a whenever ker L_a has a finite basis, and the same for nullity of every operand in gororoba-open (branch `proofs/unconditional-doubling-nullity`, awaiting merge) | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v) (`RealHalfFoldDimension`); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) and pull request 266 (`doubling_nullity`) |
 | Mixed fold on basis pairs: n_2h(e_i +- e_(h+j)) = h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i; maximum D/2 - 4 | computed through D = 512 | [singular_sector_dynamics](../singular_sector_dynamics.md) |
 | Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | generator-level ideal equality proved in Rocq (`W8_ideal_exchange` of [CdTwistedProduct.v](../../../proofs/CdTwistedProduct.v): Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2); the disjoint variables of J(z) and J(z'), the product of varieties, dimension 24, degree 16 and the Hilbert numerator computed at p = 32009 and 32003 | ledger A5-223, [cd-twisted-product](../../evidence/cd-twisted-product/README.md), [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) (mutation controls: one flipped sign of i breaks both containments) |
-| Restriction to the sedenion coordinates is the diagonal z = z' and returns J; J is the radical of the A_4 Pfaffian ideal PB, not PB | computed at p = 32009 | ledger A5-222, [a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md) |
+| Restriction to the sedenion coordinates is the diagonal z = z' and returns J; J is the radical of the A_4 Pfaffian ideal PB, not PB | computed at p = 32009 | ledger A5-222 (status refuted for the claim that the restricted ideal equals PB; the row records what holds), [a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md) |
 | Nullity sum rule n_32(x) = n_16(z) + n_16(z') | refuted: holds at 800 QRNG-seeded random points (200 each on W8, the diagonal, off W8 and generic), fails on 480 of 512 mixed basis pairs | ledger A5-224, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
 | On every mixed basis pair n_16(z) = n_16(z'), and (n_32, n_16) takes four values: (0,0) x32, (0,8) x60, (4,4) x168, (12,8) x252; on the 420 pairs with i, j >= 1 and i != j, n_16(z) = 8 - n_16(e_i +- e_j), so n_32 = 2 n_16(z) - 4; the exceptions are i = 0, j = 0 or i = j (92 pairs), where n_32 = 0 | computed (512 of 512; ranks over Q agree with F_32009) | ledger A5-225, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
-| The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: h_1 = 24 and 144 degree-2 relations give h_2 = 156, so the halves' degree-2 values sum to 12, which caps h_3 at 167 against the measured h_3 >= 551 | receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
+| The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: h_1 = 24 and 144 degree-2 relations give h_2 = 156, so the halves' degree-2 values sum to 12, which caps h_3 at 167 against the measured h_3 >= 551 | ledger A5-235; A5-139 (h_2 = 156) and its receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
 
 What folding reaches. The nullity of every half operand, from one level down; the nullity of every two-term basis
 element, through the mixed rule (a reflection n -> h - 4 - 2n, which is why the support of the spectrum is palindromic); and the

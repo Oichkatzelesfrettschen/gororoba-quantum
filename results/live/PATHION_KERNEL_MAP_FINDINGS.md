@@ -28,6 +28,14 @@ V is the signed mean of the per-output contrasts against the ideal signs; N_hat 
 
 Skeleton P(s = 0) = 0.990 [0.979, 1.001].
 
+N_hat is not visibility-free when the contraction differs between the bins of the two ideal signs: it obeys
+N_hat - N = |B+||B-|/|B| (Vbar+ - Vbar-)/V_hat for the class means Vbar+ and Vbar- of the per-output contrasts
+(A5-228). On the replica mean of the contrasts the six operands read 1.40, 10.04, 6.48, 9.17, 12.75 and 12.54 against
+0, 4, 4, 8, 12 and 12, with Vbar+ above Vbar- on 7 of 8 circuits (A5-231; the table above averages the per-replica
+N_hat, where single replicas with V near zero dominate the unresolved rows). The sign map, not the point value,
+carries the resolution of this run
+([audit](../../docs/evidence/pathion-kernel-map/nhat-bias/README.md)).
+
 ## Preregistered rules
 
 1. Resolution (visibility above zero and at least 31 of 32 signs): holds for the null, the twin e17 - e2 and both
@@ -89,7 +97,10 @@ branch's 0.70 to 0.80; (5) no replica shows the i ^ j-dependent loss: the larges
 m = 19 blocks is 0.064 (Fez) and 0.089 (Marrakesh), and on the very qubits where the full map collapsed (24-26 with 37,
 136 with 142-144) the m in {25, 27} blocks read 0.84 to 0.86 against 0.86 to 0.89 for m = 19, so the loss of the full
 map comes from its depth, not from a broken coupler; (6) the two devices agree on every operand within their
-intervals.
+intervals. Rule (2) binds the signs and the informative blocks: each nullity-12 operand has two or three blocks with
+all four XOR pairs aligned, which read 4 whatever the device did (A5-229, A5-230), so of the 8.05, 12.02 and 12.14 of
+the coset map (e1 + e10, e1 + e18, e1 + e24), 8, 12 and 8 come from algebra and the informative blocks read 0.05 against
+0, 0.02 against 0 and 4.14 against 4 ([audit](../../docs/evidence/pathion-kernel-map/nhat-bias/README.md)).
 
 # Cross-platform runs: Tuna-17 and Ascella (2026-11-07)
 
@@ -285,7 +296,8 @@ placement), and the lowest block visibility interval is [0.658, 0.773] (ibm_fez,
 control covers each model value within 0.5, and the readout-corrected values lie within 0.15 of the integer nullity:
 ibm_fez 0.009, 4.074, 4.027, 8.006, 11.981, 11.973, twin 11.974, cocycle-free -1.943 and ibm_kingston -0.077, 4.082,
 4.081, 7.964, 11.985, 12.008, twin 12.010, cocycle-free -1.958 (nullities 0, 4, 4, 8, 12, 12, 12, -2). The compiled sign
-network agrees with `cd_core` on every operand of both devices. The two devices' N_hat agree within the sum of their
+network agrees with `cd_core` on every operand of both devices; the all-aligned blocks of the nullity-8 and nullity-12
+operands are forced to 4 by the estimator (A5-229), so these bands bind the informative blocks. The two devices' N_hat agree within the sum of their
 intervals on all eight operands (largest difference 0.049 on e1 + e17 against 0.198 allowed), so the devices rule fails
 only through the odd-part band of ibm_kingston and the unresolved bands of ibm_fez below.
 
