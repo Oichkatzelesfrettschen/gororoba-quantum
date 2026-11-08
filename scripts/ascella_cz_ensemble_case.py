@@ -34,11 +34,13 @@ import math
 import sys
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
+from fractions import Fraction
 from functools import cache
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+from flint import arb, arb_mat, ctx
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -50,7 +52,7 @@ import qd_platform  # noqa: E402
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
 
 import qd_records  # noqa: E402
-from parallel import ordered_map  # noqa: E402
+from parallel import ordered_map, workers  # noqa: E402
 
 PLATFORM = "qpu:ascella"
 FAMILY = "ascella_cz_ensemble"
@@ -118,6 +120,8 @@ TOMOGRAPHY_ANALYSIS = "results/quandela/ascella-cz-tomography-analysis.json"
 HOM_READING_POINTS = 1.0
 TOMOGRAPHY_HOM_LABEL = "HOM at which the tomography's job-00 was submitted (its submission.json perfs_at_plan)"
 PREDICTION_REPLICATES = tomo.BOOTSTRAP_REPLICATES
+# arb working precisions tried in order until every float64 of the prediction certifies
+CERTIFIED_PRECISIONS = (128, 256, 512)
 BOUND_CHECK_MAPS = 20000
 
 
@@ -793,56 +797,144 @@ def tomography_choi() -> tuple[np.ndarray, float]:
     return choi, tomo.trace_normalized_fidelity(choi)
 
 
-def replicate_prediction(rates: np.ndarray) -> dict[str, Any]:
-    """The tables one bootstrap replicate's (576,) rates predict; parallel.py runs it under one BLAS thread, the
-    arithmetic of the runner-image ledger."""
-    return predicted_tables(tomo.linear_inversion(rates))
+def exact_float(endpoint: arb) -> float:
+    """The float64 nearest an exact arb value: Fraction division rounds to nearest, ties to even."""
+    mantissa, exponent = (int(v) for v in endpoint.man_exp())
+    exact = Fraction(mantissa) * 2**exponent if exponent >= 0 else Fraction(mantissa, 2**-exponent)
+    return float(exact)
 
 
-def predicted_tables(choi: np.ndarray) -> dict[str, Any]:
-    """Rates a Choi matrix predicts for the eight settings, Tr[(rho^T x E) J], and its F and F' per table."""
-    out: dict[str, Any] = {"rates": {}}
+def certified_float(value: arb) -> float | None:
+    """The float64 every point of the ball rounds to, or None when the ball straddles a rounding boundary."""
+    low, high = exact_float(value.lower()), exact_float(value.upper())
+    return low if low == high else None
+
+
+def to_arb_mat(rows: np.ndarray) -> arb_mat:
+    return arb_mat([[arb(float(v)) for v in row] for row in np.asarray(rows, dtype=np.float64)])
+
+
+def nonnegative_sqrt(value: arb) -> arb:
+    """The root of a ball whose exact value is a variance: its part below zero holds no admissible value."""
+    if exact_float(value.lower()) < 0:
+        value = arb(0).union(value.upper())
+    return value.sqrt()
+
+
+def order_statistic(values: Sequence[arb], k: int) -> arb:
+    """A ball holding the k-th smallest exact value: it lies between the k-th smallest lower and upper endpoints."""
+    return sorted((v.lower() for v in values), key=exact_float)[k].union(
+        sorted((v.upper() for v in values), key=exact_float)[k]
+    )
+
+
+def percentile_ball(values: Sequence[arb], q: float) -> arb:
+    """numpy.percentile's default linear interpolation of the q-th percentile, enclosed."""
+    h = q / 100 * (len(values) - 1)  # numpy's float64 virtual index, taken exactly
+    low = math.floor(h)
+    weight = arb(h) - low
+    below, above = order_statistic(values, low), order_statistic(values, min(low + 1, len(values) - 1))
+    return below + (above - below) * weight
+
+
+def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
+    """Rates, F and F' of each column of observed rates (576 x K) and the point column's process fidelity, as arb balls.
+
+    pinv(A) b is the least-squares solution of the full-column-rank design A, so it equals the solution of the normal
+    equations (A^T A) x = A^T b, which arb_mat solves with a rigorous radius on the producer's float64 inputs. A rate is
+    Tr[(rho^T x E) J] = sum_k x_k Tr[(rho^T x E) H_k], formed exactly on the doubles."""
+    ctx.prec, ctx.threads = precision, workers()
+    a = to_arb_mat(tomo.design_matrix())
+    at = a.transpose()
+    x = (at * a).solve(at * to_arb_mat(columns))
+    rows: list[np.ndarray] = []
+    names: list[tuple[str, str, Mapping[str, Any]]] = []
     for table, inputs in TABLES.items():
-        correct, eligible = [], []
         for control, target in inputs:
             row = {"name": f"in-{control}{target}-{table}", "input": control + target, "basis": table}
+            names.append((table, row["name"], row))
             density = input_density(row["input"]).T
-            rates = [
-                float(np.real(np.trace(np.kron(density, tomo.outcome_projector(table, o)) @ choi))) for o in range(4)
-            ]
-            out["rates"][row["name"]] = rates
-            correct.append(rates[correct_outcome(row)])
-            eligible.append(sum(rates))
-        f, f_prime = table_scores(np.asarray(correct), np.asarray(eligible), np.ones(4))
-        out[table] = {"F": f, "F_prime": f_prime}
+            rows.extend(np.kron(density, tomo.outcome_projector(table, o)) for o in range(4))
+    observables = np.asarray(rows).reshape(len(rows), -1)
+    basis = np.transpose(tomo.hermitian_stack(), (0, 2, 1)).reshape(256, -1)
+    rate_matrix = to_arb_mat(observables.real) * to_arb_mat(basis.real).transpose()
+    rate_matrix -= to_arb_mat(observables.imag) * to_arb_mat(basis.imag).transpose()
+    rates = rate_matrix * x
+    vector = tomo.ideal_choi_vector()
+    require(not np.any(vector.imag), "the ideal CZ Choi vector is not real")
+    weights = np.vstack([np.outer(vector.real, vector.real).reshape(-1), np.eye(16).reshape(-1)])
+    functional = to_arb_mat(weights) * to_arb_mat(tomo.hermitian_stack().real.reshape(256, -1)).transpose() * x
+    out: dict[str, Any] = {"rates": {}, "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    out["process_fidelity"] = functional[0, 0] / (4 * functional[1, 0])
+    for k in range(x.ncols()):
+        sums: dict[str, list[arb]] = {t: [arb(0), arb(0), arb(0)] for t in TABLES}
+        for i, (table, name, setting) in enumerate(names):
+            values = [rates[4 * i + o, k] for o in range(4)]
+            if k == 0:
+                out["rates"][name] = values
+            eligible = values[0] + values[1] + values[2] + values[3]
+            correct = values[correct_outcome(setting)]
+            sums[table][0] += correct
+            sums[table][1] += eligible
+            sums[table][2] += correct / eligible
+        for table, (correct, eligible, ratio) in sums.items():
+            out["F"][table].append(correct / eligible)
+            out["F_prime"][table].append(ratio / 4)
     return out
 
 
+def certified_prediction(columns: np.ndarray) -> tuple[dict[str, Any], int]:
+    """The prediction record with every float64 certified as the correctly rounded value of its ball, at the first
+    precision of CERTIFIED_PRECISIONS where every value certifies."""
+    for precision in CERTIFIED_PRECISIONS:
+        balls = prediction_balls(columns, precision)
+        record: dict[str, Any] = {"rates": {}}
+        floats: list[float | None] = []
+        for name, values in balls["rates"].items():
+            record["rates"][name] = [certified_float(v) for v in values]
+            floats.extend(record["rates"][name])
+        record["process_fidelity"] = certified_float(balls["process_fidelity"])
+        floats.append(record["process_fidelity"])
+        for table in TABLES:
+            replicates = balls["F"][table][1:]
+            n = len(replicates)
+            mean = sum(replicates, arb(0)) / n
+            sd = nonnegative_sqrt(sum(((v - mean) ** 2 for v in replicates), arb(0)) / (n - 1))
+            scores = [certified_float(balls["F"][table][0]), certified_float(balls["F_prime"][table][0])]
+            spread = certified_float(sd)
+            percentiles = [certified_float(percentile_ball(replicates, q)) for q in (2.5, 97.5)]
+            floats.extend([*scores, spread, *percentiles])
+            record[table] = {"F": scores[0], "F_prime": scores[1], "F_sd": spread, "F_percentile_95": percentiles}
+        if all(v is not None for v in floats):
+            return record, precision
+    raise RuntimeError(f"a prediction value straddles a float64 rounding boundary at {CERTIFIED_PRECISIONS[-1]} bits")
+
+
 def tomography_prediction() -> dict[str, Any]:
-    """Estimate 5's reference: the rates the retained fit predicts for the eight settings, and its table scores."""
-    choi, fidelity = tomography_choi()
+    """Estimate 5's reference: the rates the retained fit predicts for the eight settings, its table scores, and the
+    bootstrap spread of F, each float64 the certified correct rounding of an arb enclosure, so the record does not
+    depend on the host, the BLAS or its thread count."""
+    _, fidelity = tomography_choi()
     retained = json.loads((ROOT / TOMOGRAPHY_ANALYSIS).read_text(encoding="utf-8"))["process"]["process_fidelity"]
     require(abs(fidelity - retained) <= TOLERANCE, f"the recomputed fit reads {fidelity}, the retained {retained}")
-    point = predicted_tables(choi)
     index, value = seed_plan()["prediction"]
     a = tomography_arrays()
     generator = np.random.default_rng(value)
     batch = tomo.resampled_rates(a["eligible"], a["samples"], a["shots"], a["scale"], generator, PREDICTION_REPLICATES)
-    replicate = ordered_map(replicate_prediction, list(batch))
-    out: dict[str, Any] = {
-        "process_fidelity": fidelity,
+    point = tomo.absolute_rates(a["eligible"], a["shots"], a["scale"])
+    record, precision = certified_prediction(np.column_stack([point, batch.T]))
+    return {
+        "process_fidelity": record["process_fidelity"],
         "retained_analysis": TOMOGRAPHY_ANALYSIS,
-        "rates": point["rates"],
+        "rates": record["rates"],
         "bootstrap": {"replicates": PREDICTION_REPLICATES, "seed": {"draw": DRAW, "index": index}},
+        "arithmetic": {
+            "method": "arb normal equations (python-flint arb_mat)",
+            "precision_bits": precision,
+            "rounding": "each float64 is the correctly rounded value of every point of its arb enclosure",
+        },
+        **{table: record[table] for table in TABLES},
     }
-    for table in TABLES:
-        values = [r[table]["F"] for r in replicate]
-        out[table] = {
-            **point[table],
-            "F_sd": float(np.std(values, ddof=1)),
-            "F_percentile_95": [float(q) for q in np.percentile(values, [2.5, 97.5])],
-        }
-    return out
 
 
 def random_trace_non_increasing_map(generator: np.random.Generator) -> list[np.ndarray]:

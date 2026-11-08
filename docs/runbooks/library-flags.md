@@ -93,6 +93,8 @@ Uses: every module; `threadpoolctl` in `ci/runner_specs.py` and
 | Knob | Meaning | Verified by | Recommended | Falsifier | Status |
 |---|---|---|---|---|---|
 | `OPENBLAS_NUM_THREADS` | OpenBLAS threads, identical on the host, Kaggle, Azure and CI | `threadpoolctl` reports the value | 1 inside `parallel.py` workers; physical cores (6 on the host, 2 on a Standard_FX4mds_v2, 2 on Kaggle) for one large dense call | the BLAS rows of compute-flags.md Measured combinations | measured on the host |
+| `OPENBLAS_NUM_THREADS` and float bits | the thread count changes the last bits of an SVD or QR result: a 576 x 256 least-squares fit took four float64 values at 1, 2, 4, 6 and 10 threads, up to 1.5e-15 apart | [least-squares precision](../evidence/least-squares-precision/README.md) | 1 for a record bound in the runner-image ledger, whose arithmetic sets 1; certified rounding for a record that must not depend on it | a thread count whose result equals the one-thread bytes | measured on the host |
+| `scipy.linalg.lstsq(lapack_driver=)` | `gelsd` (default), `gelsy` (pivoted QR), `gelss` (SVD) | [least-squares precision](../evidence/least-squares-precision/README.md) | `gelsy` where float64 bits matter: 49.9 correct bits against 48.8 (`gelsd`) and 47.2 (`gelss`) on that fit | a driver beating `gelsy` on the same fit | measured on the host |
 | `threadpoolctl.threadpool_limits(limits=, user_api=)` | runtime thread bound per API | `threadpoolctl` 3.8.0 module; used in `ci/runner_specs.py` | bound inside a function instead of mutating the environment | none | verified |
 | `NPY_DISABLE_CPU_FEATURES` | numpy dispatch mask; no lane sets it, and `scripts/numerics_fingerprint.py` sets it only to fingerprint a configuration | `scripts/numerics_fingerprint.py` | unset in every lane, gate and record writer | a record whose native path differs from its replay CPU's; replay it on a CPU of its own path | verified use |
 | `NPY_PROMOTION_STATE` | accepted only as `weak` in numpy 2.5 | `numpy/__init__.py` line 913 | leave unset | a numpy that accepts another value | verified |
@@ -145,6 +147,8 @@ replicas ([jax-bridge-structure-report.md](../notes/kaggle/jax-bridge-structure-
 | sympy ground types | `sympy.external.gmpy.GROUND_TYPES` reports `flint` on this host | executed | keep flint | time of a `Poly` factorization under `SYMPY_GROUND_TYPES=python` | name unverified, backend verified |
 | `flint.ctx.threads` | threads for FLINT parallel routines; default 1, settable | executed (`flint.ctx.threads = 2` read back 2) | 1 beside a Singular job; the free core count alone | time of a large `fmpz_mpoly` or `fmpz_mat` product at 1 and 4 threads | verified, unmeasured |
 | `flint.ctx.prec`, `dps`, `cap` | arb/acb precision (53), digits, series cap (10) | `flint.ctx` attributes | set `prec` explicitly per computation | certified ball width | verified |
+| `flint.arb_mat.solve` on normal equations | rigorous least squares for a full-column-rank design: (A^T A) x = A^T b with a ball radius; 128 bits gave 120.7 correct bits on the 576 x 256 fit in 2.6 s at one thread and 0.9 s at 10 (`flint.ctx.threads`) | [least-squares precision](../evidence/least-squares-precision/README.md) | 128 bits, raised to 256 or 512 when a value fails to certify | a solve that fails to certify at 512 bits | measured on the host |
+| `arb.lower()`, `arb.upper()`, `man_exp()` | exact ball endpoints as (mantissa, exponent); `Fraction` division then rounds to nearest, ties to even; python-flint 0.9.0 has no `sqrtpos`, so a variance ball is clamped at zero before its root | `exact_float`, `certified_float` and `nonnegative_sqrt` in `scripts/ascella_cz_ensemble_case.py` | certify each written float64 as the rounding of every point of its ball | a ball whose endpoints round to different floats | verified |
 | mpmath backend | `gmpy` | `mpmath.libmp.BACKEND` | keep | time against the `python` backend | verified |
 | `NUMBA_NUM_THREADS`, `NUMBA_THREADING_LAYER`, `NUMBA_CACHE_DIR`, `NUMBA_DISABLE_JIT`, `NUMBA_OPT`, `NUMBA_CPU_NAME` | numba configuration | names in `numba/core/config.py` | none in use; [simulation-cost-levers.md](simulation-cost-levers.md) rejects numba for `dynamic_density` | n/a | name verified; no repository import found in imports scan |
 
@@ -173,6 +177,18 @@ paths call numpy, so `OPENBLAS_NUM_THREADS` governs them. Per-package options:
 unverified. Recommended setting: one process per package under
 `GOROROBA_WORKERS`; falsifier: any pair where the package product differs from
 `cd_core`; status unmeasured.
+
+## numpy-quaddtype 1.0.0 and numpy-flint-arb 1.5.4 (system Python only)
+
+gororoba-infrastructure `packaging/` builds both for the system interpreter; the repository's pinned venv carries
+neither, and only the precision study in [least-squares precision](../evidence/least-squares-precision/README.md) imports them.
+
+| Knob | Meaning | Verified by | Recommended | Falsifier | Status |
+|---|---|---|---|---|---|
+| `QuadPrecDType(backend=)` | `sleef` (IEEE binary128, 113-bit significand) or `longdouble` (x87 80-bit arithmetic under the quad dtype) | the sweep: 108 to 110 bits against 57 to 60 | `sleef`; numpy `longdouble` directly for x87 | a backend whose bits differ from those | measured |
+| `numpy_quaddtype.set_num_threads` | QuadBLAS threads | the sweep at 1, 4 and 10 | 1; threads changed no time on a 576 x 256 fit | a larger GEMM that speeds up with threads | measured |
+| quad matmul operands | a strided-view operand returns wrong products without an error; an empty inner dimension raises `QBLAS operation failed`; the `longdouble` backend has no QBLAS matmul | `quad_view_matmul.py` in [least-squares precision](../evidence/least-squares-precision/README.md) | multiply contiguous copies; handle an empty inner dimension | a release whose view product equals the contiguous one | verified defect |
+| numpy-flint-arb matmul | maps over object arrays element by element; peak memory grows about tenfold per doubling of the side (1.1 GiB at 96 x 48) | `nfa_scaling.py` in [least-squares precision](../evidence/least-squares-precision/README.md) | small arrays only, inside a memory-capped scope; python-flint `arb_mat` for linear algebra | a release whose 96 x 48 matmul stays under 100 MiB | verified defect |
 
 ## Other imports
 

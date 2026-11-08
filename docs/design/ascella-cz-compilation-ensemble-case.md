@@ -264,6 +264,9 @@ replicate in a second segment, so each appears in every pair of adjacent segment
   retained process fidelity 0.849328 within 1e-12 and predicts F_ZX = 0.888 and F_XZ = 0.882, above the noise
   forecast; over 500 bootstrap replicates of the tomography runs each prediction has a standard deviation of 0.012
   (95 % percentile intervals [0.866, 0.911] and [0.859, 0.908]), comparable to the ensemble's expected interval.
+  The prediction is solved in arb ball arithmetic at 128 bits, and each retained float64 is the certified correct
+  rounding of its enclosure, so its bytes do not depend on the host, the BLAS or its thread count
+  ([least-squares precision](../evidence/least-squares-precision/README.md)).
 - **False alarms.** Over 1000 synthetic datasets at the forecast law, with each iteration stopping at its samples and
   its shots drawn as the samples plus a negative binomial count, the drift family rejects in 0.007 of datasets (95 %
   Clopper-Pearson interval [0.003, 0.014]) and the mesh-variance family in 0.007 ([0.003, 0.014]), at the 0.01 level;
