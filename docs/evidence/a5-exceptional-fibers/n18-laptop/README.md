@@ -63,7 +63,7 @@ meets that upper bound, and h_5 = 952 holds at p = 32029 as at p = 32009 (ledger
   <= h_5(Q) <= HF_Q(k[y]/K2, 5) <= HF_p(k[y]/K2, 5) = 952 would give h_5 = 952 over Q. The step that needs proof is that
   the degree-2 K2 used at p equals the reduction of K2 over Q (it can be larger at a bad prime).
 - Falsifiers: r_18 below 952 at p = 32029 (a prime-specific rank; not met, the run read 952), a degree-4 control other
-  than 495 (at p = 32009 the control read 495; at p = 32029 it has not run), or a replay of this record with a different
+  than 495 (not met: the control read 495 at both primes, `e8nm_d4_n18_p32009.json` and `e8nm_d4_n18_p32029.json`), or a replay of this record with a different
   rank.
 
 ## Files
