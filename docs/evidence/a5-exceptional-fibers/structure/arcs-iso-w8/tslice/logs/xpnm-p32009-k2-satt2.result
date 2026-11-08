@@ -1,0 +1,6 @@
+RESULT xpnm-p32009-k2-satt2 start: variables 7, forms 2, size(Q) 14, s 0
+RESULT xpnm-p32009-k2-satt2 saturation done: generators 63, exponent 1, s 9
+RESULT xpnm-p32009-k2-satt2 standard basis of the saturation: generators 63, s 9
+RESULT xpnm-p32009-k2-satt2 dim 3 degree 18 s 9
+RESULT xpnm-p32009-k2-satt2 origin on the closure (all generators vanish at 0) 1 s 10
+exit 0

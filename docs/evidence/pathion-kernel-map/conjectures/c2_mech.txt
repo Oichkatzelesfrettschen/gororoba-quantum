@@ -1,0 +1,27 @@
+== (b) estimator algebra on the ideal null laws ==
+k0: y-marginal plus [0.125 0.125 0.125 0.125].. minus [0.125 0.125 0.125 0.125]; max |P+(y)-P-(y)| 0.00e+00; ideal selector contrast +0.0e+00; sum c +0.0e+00
+k4: y-marginal plus [0.125 0.125 0.125 0.125].. minus [0.125 0.125 0.125 0.125]; max |P+(y)-P-(y)| 0.00e+00; ideal selector contrast +0.0e+00; sum c +0.0e+00
+k8: y-marginal plus [0.125 0.125 0.125 0.125].. minus [0.125 0.125 0.125 0.125]; max |P+(y)-P-(y)| 0.00e+00; ideal selector contrast +0.0e+00; sum c +0.0e+00
+k12: y-marginal plus [0.125 0.125 0.125 0.125].. minus [0.125 0.125 0.125 0.125]; max |P+(y)-P-(y)| 0.00e+00; ideal selector contrast +0.0e+00; sum c +0.0e+00
+arm-symmetric PRODUCT-form readout (per-qubit asymmetric flips up to 0.1): max |sum c| and |selector contrast| over 2000 draws = 6.65e-01
+arm-symmetric CORRELATED readout (random stochastic mixing 10 percent): max |sum c| = 0.223, max |selector contrast| = 0.022
+finite-sample bias of N_hat at 8192 shots per arm, ideal law: mean +0.00000 +- 0.00000 (sd of one replica 0.0000)
+finite-sample bias of N_hat at 8192 shots per arm, law contracted to V=0.9: mean -0.00019 +- 0.00024 (sd of one replica 0.0153)
+finite-sample bias of N_hat at 8192 shots per arm, law contracted to V=0.75: mean +0.00019 +- 0.00044 (sd of one replica 0.0276)
+observed mean TVD to ideal per block: {'k0': 0.125, 'k4': 0.066, 'k8': 0.064, 'k12': 0.065}
+
+== (c) mechanism predictions on the Fez replica circuits (17 replicas per block; mean of per-replica N_hat) ==
+mechanism                                                                      k0                      k4                      k8                     k12
+readout only (calibrated)                                  N +0.0358 TVD 0.036  N +0.0163 TVD 0.036  N +0.0163 TVD 0.036  N +0.0163 TVD 0.036
+gate depolarizing only (calibrated)                        N +0.0000 TVD 0.053  N +0.0000 TVD 0.005  N +0.0000 TVD 0.005  N +0.0000 TVD 0.005
+T1/T2 relaxation, gates only (calibrated)                  N +0.0038 TVD 0.033  N +0.0007 TVD 0.002  N +0.0007 TVD 0.002  N +0.0007 TVD 0.002
+T1/T2 incl. measurement time                               N +0.0626 TVD 0.048  N +0.0497 TVD 0.020  N +0.0497 TVD 0.020  N +0.0497 TVD 0.020
+all calibrated incoherent (readout+depol+T1)               N +0.0395 TVD 0.111  N +0.0170 TVD 0.041  N +0.0170 TVD 0.041  N +0.0170 TVD 0.041
+all calibrated incoherent + measurement-time T1            N +0.0969 TVD 0.121  N +0.0638 TVD 0.054  N +0.0638 TVD 0.054  N +0.0638 TVD 0.054
+sx over-rotation +0.03 rad                                 N +0.0079 TVD 0.025  N -0.0037 TVD 0.016  N -0.0037 TVD 0.016  N -0.0037 TVD 0.016
+sx over-rotation -0.03 rad                                 N +0.0084 TVD 0.026  N -0.0035 TVD 0.016  N -0.0035 TVD 0.016  N -0.0035 TVD 0.016
+CZ phase error +0.05 rad                                   N +0.0059 TVD 0.032  N +0.0000 TVD 0.025  N +0.0000 TVD 0.025  N +0.0000 TVD 0.025
+CZ phase error -0.05 rad                                   N +0.0038 TVD 0.029  N +0.0000 TVD 0.025  N +0.0000 TVD 0.025  N +0.0000 TVD 0.025
+ZZ crosstalk zeta +1 MHz*2pi (phase rate 6.3e6 rad/s)      N -3.2072 TVD 0.660  N +0.0000 TVD 0.315  N +0.0000 TVD 0.315  N +0.0000 TVD 0.315
+ZZ crosstalk zeta -1 MHz*2pi                               N +0.1127 TVD 0.532  N -0.0000 TVD 0.315  N -0.0000 TVD 0.315  N -0.0000 TVD 0.315
+ZZ crosstalk zeta +5 MHz*2pi                               N +0.1284 TVD 0.609  N +0.0000 TVD 0.750  N +0.0000 TVD 0.750  N +0.0000 TVD 0.750

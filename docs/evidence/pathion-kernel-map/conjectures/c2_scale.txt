@@ -1,0 +1,24 @@
+=== IBM measured (collect.json measured_statistics; replica mean, replica spread se) ===
+fez       k0  N_hat +0.0257 +- 0.0122 (repo summary +0.0257); half-sum +0.0203 +- 0.0091; V 0.759; selector contrast -0.0019 +- 0.0020; replicas 17; replicas > 0: 11
+fez       k4  N_hat +0.0112 +- 0.0121 (repo summary +0.0112); half-sum +0.0080 +- 0.0098; V 0.877; selector contrast -0.0036 +- 0.0022; replicas 17; replicas > 0: 11
+fez       k8  N_hat +0.0042 +- 0.0100 (repo summary +0.0042); half-sum +0.0021 +- 0.0082; V 0.878; selector contrast -0.0009 +- 0.0015; replicas 17; replicas > 0: 7
+fez       k12 N_hat +0.0039 +- 0.0099 (repo summary +0.0039); half-sum +0.0022 +- 0.0083; V 0.878; selector contrast -0.0012 +- 0.0020; replicas 17; replicas > 0: 10
+fez       operand sum N_hat +0.0451 +- 0.0222
+fez       readout-corrected blocks (repo): k0 -0.0102, k4 -0.0028, k8 -0.0119, k12 -0.0130
+marrakesh k0  N_hat +0.0289 +- 0.0243 (repo summary +0.0289); half-sum +0.0178 +- 0.0149; V 0.748; selector contrast -0.0003 +- 0.0033; replicas 11; replicas > 0: 6
+marrakesh k4  N_hat +0.0544 +- 0.0269 (repo summary +0.0544); half-sum +0.0476 +- 0.0226; V 0.895; selector contrast +0.0007 +- 0.0019; replicas 11; replicas > 0: 10
+marrakesh k8  N_hat +0.0510 +- 0.0239 (repo summary +0.0510); half-sum +0.0447 +- 0.0202; V 0.900; selector contrast -0.0002 +- 0.0022; replicas 11; replicas > 0: 9
+marrakesh k12 N_hat +0.0528 +- 0.0249 (repo summary +0.0528); half-sum +0.0463 +- 0.0211; V 0.898; selector contrast +0.0027 +- 0.0024; replicas 11; replicas > 0: 10
+marrakesh operand sum N_hat +0.1871 +- 0.0501
+marrakesh readout-corrected blocks (repo): k0 +0.0025, k4 +0.0483, k8 +0.0439, k12 +0.0454
+
+=== Tuna coin series (coin-resolved arms, b0 = IBM block k0 of e1+e17: basis 16,1,2) ===
+Tuna b0 raw: N_hat +0.1537 +- 0.0314; half-sum +0.0680 +- 0.0138; V 0.442; selector contrast +0.0164; arms shots 29792/35744
+Tuna analysis b0 visibility 0.44233540544680955 selector 0.01642840675355095 +- 0.0039211317702120664 readout-corrected visibility 0.5048116499011893
+raw selector contrast = sum c /8: 0.01700218984773494
+Tuna stopped (coin-free, plus then minus circuits) b0 raw: N_hat +0.1517 +- 0.0424; half-sum +0.0733 +- 0.0205; V 0.483; selector contrast +0.0167; shots 16384/16384
+Tuna coin vs IBM Fez k0: difference +0.1280 +- 0.0337 (z +3.8)
+Tuna coin vs IBM Marrakesh k0: difference +0.1248 +- 0.0397 (z +3.1)
+Tuna stopped vs IBM Fez k0: difference +0.1259 +- 0.0442 (z +2.9)
+Tuna coin vs Tuna stopped: difference +0.0021 +- 0.0528 (z +0.0)
+half-sum scale: Tuna coin +0.0680+-0.0138; stopped +0.0733+-0.0205; Fez k0 +0.0203+-0.0091; Marrakesh k0 +0.0178+-0.0149

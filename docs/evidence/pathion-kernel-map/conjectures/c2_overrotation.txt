@@ -1,0 +1,10 @@
+response of the selector contrast (rad -> contrast), 1-CZ blocks 0 for any angle (c2_mech.json k4 to k12):
+  ibm_fez k0 compile  +0.030 +0.0167  -0.030 -0.0128
+  Tuna-17 coin compile +0.030 +0.0167  -0.030 -0.0092
+  Tuna-17 stopped compile +0.029 +0.0160  -0.029 -0.0103
+Tuna-17 coin b0      selector contrast +0.0164 +- 0.0039 -> over-rotation +0.0295 +- 0.0070 rad
+Tuna-17 stopped b0   selector contrast +0.0167 +- 0.0055 -> over-rotation +0.0302 +- 0.0100 rad
+ibm_fez k0           selector contrast -0.0019 +- 0.0020 -> over-rotation -0.0044 +- 0.0046 rad
+ibm_marrakesh k0     selector contrast -0.0003 +- 0.0033 -> over-rotation -0.0007 +- 0.0069 rad
+Tuna coin angle minus ibm_fez: +0.0340 rad; 7.3 sigma of the IBM error alone, 4.0 sigma of both errors
+Tuna coin angle minus ibm_marrakesh: +0.0302 rad; 4.4 sigma of the IBM error alone, 3.1 sigma of both errors

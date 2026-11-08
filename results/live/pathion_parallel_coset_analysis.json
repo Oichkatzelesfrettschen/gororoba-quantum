@@ -1,0 +1,1798 @@
+{
+ "backends": {
+  "ibm_fez": {
+   "backend": "ibm_fez",
+   "calibration": "2026-11-06T20:05:31-08:00",
+   "calibration_drift_check": {
+    "measured_minus_readout_only_odd": {
+     "hi": 0.112403,
+     "lo": -0.154977,
+     "mean": -0.021287,
+     "n": 17.0,
+     "se": 0.063064
+    },
+    "model_minus_readout_only_odd": {
+     "hi": 0.01203,
+     "lo": -0.001978,
+     "mean": 0.005026,
+     "n": 17.0,
+     "se": 0.003304
+    }
+   },
+   "charge_seconds": 57,
+   "checks": {
+    "corrected_vs_collect": {
+     "keys": 426,
+     "max_abs_difference": 0.0,
+     "status": "checked"
+    },
+    "summaries_vs_collect": {
+     "keys": 426,
+     "max_abs_difference": 0.0,
+     "status": "checked"
+    }
+   },
+   "deviations_from_case": {
+    "binding_dry_run": {
+     "case": "2026-11-07T035554.327341Z",
+     "model_of_record": "2026-11-07T041623.255956Z"
+    },
+    "ceiling_seconds": {
+     "case": 60,
+     "run": 65
+    },
+    "charged_seconds": 57,
+    "estimated_seconds": 52.3,
+    "executed_calibration": "2026-11-06T20:05:31-08:00",
+    "model_calibration": "2026-11-06T19:35:16-08:00",
+    "shots_per_member": {
+     "case": 14336,
+     "run": 16384
+    }
+   },
+   "input_sha256": {
+    "collect.json": "1fa6329e34c9d6045942dabc1fecabe5a156507386cef68fd4c5beb866110315",
+    "isa.qpy": "2c1b4433927c5a045733b41ab46beab2dfb8ed26ef04c8287c7135a2687325c4",
+    "record.json": "99500bacbf19b0df746aad1eff49ace81dfc8257aa6a9926a4d49ef3563f5aae"
+   },
+   "job_id": "dbnai2oqtr0c73acl9gg",
+   "operand_nhat": {
+    "cmap_e1pe10": {
+     "hi": 8.129918,
+     "lo": 8.000004,
+     "mean": 8.064961,
+     "n": 17.0,
+     "se": 0.030642
+    },
+    "cmap_e1pe17": {
+     "hi": 0.260624,
+     "lo": -0.034344,
+     "mean": 0.11314,
+     "n": 17.0,
+     "se": 0.069571
+    },
+    "cmap_e1pe18": {
+     "hi": 12.067125,
+     "lo": 11.965154,
+     "mean": 12.01614,
+     "n": 17.0,
+     "se": 0.024051
+    },
+    "cmap_e1pe24": {
+     "hi": 12.213848,
+     "lo": 12.033554,
+     "mean": 12.123701,
+     "n": 17.0,
+     "se": 0.042524
+    },
+    "cmap_e1pe26": {
+     "hi": 4.437945,
+     "lo": 4.113915,
+     "mean": 4.27593,
+     "n": 17.0,
+     "se": 0.076426
+    },
+    "cmap_e2pe27": {
+     "hi": 4.397157,
+     "lo": 4.082201,
+     "mean": 4.239679,
+     "n": 17.0,
+     "se": 0.074285
+    },
+    "cmap_twin_e17me2": {
+     "hi": 12.043625,
+     "lo": 11.971291,
+     "mean": 12.007458,
+     "n": 17.0,
+     "se": 0.017061
+    },
+    "cmap_xor_e1pe18": {
+     "hi": -2.02374,
+     "lo": -2.212144,
+     "mean": -2.117942,
+     "n": 17.0,
+     "se": 0.044437
+    }
+   },
+   "per_placement": {
+    "e_measured": [
+     0.018211,
+     0.029488,
+     0.008419,
+     -0.036482,
+     0.012248,
+     0.035219,
+     0.055052,
+     -0.006536,
+     0.010326,
+     0.23167,
+     -0.024738,
+     -0.003526,
+     0.044346,
+     0.03596,
+     0.025976,
+     -0.023701,
+     0.002232
+    ],
+    "e_model": [
+     -0.003658,
+     0.005246,
+     0.009759,
+     0.004871,
+     0.006506,
+     0.002918,
+     -0.016782,
+     -0.004104,
+     0.008794,
+     0.026206,
+     0.026059,
+     0.011326,
+     0.010727,
+     -0.021715,
+     -0.006105,
+     0.02966,
+     0.02409
+    ],
+    "o_measured": [
+     0.087651,
+     0.105064,
+     0.065822,
+     0.046745,
+     -0.021089,
+     -0.026587,
+     -0.037428,
+     -0.039557,
+     -0.016242,
+     -0.05621,
+     0.062013,
+     -0.011476,
+     0.059445,
+     0.502133,
+     -0.065678,
+     1.078716,
+     -0.224106
+    ],
+    "o_model": [
+     0.043345,
+     0.054804,
+     0.072598,
+     -0.035955,
+     0.10395,
+     0.05979,
+     0.07101,
+     0.271331,
+     0.178416,
+     0.136851,
+     0.085373,
+     0.11993,
+     0.300914,
+     0.070645,
+     0.169142,
+     0.347348,
+     -0.092963
+    ],
+    "o_readout_only": [
+     0.042969,
+     0.058594,
+     0.078125,
+     -0.027344,
+     0.078125,
+     0.042969,
+     0.074219,
+     0.265625,
+     0.179687,
+     0.128906,
+     0.105469,
+     0.109375,
+     0.269531,
+     0.0625,
+     0.15625,
+     0.328125,
+     -0.082031
+    ]
+   },
+   "placements": 17,
+   "rules": {
+    "four_term_blocks": {
+     "blocks": {
+      "ftb_B12_c2": {
+       "closures": {
+        "C": {
+         "literal_pass": true,
+         "measured_mean": -0.036147,
+         "model_mean": -0.026705,
+         "paired_mean": -0.009442,
+         "paired_se": 0.005795
+        },
+        "D2": {
+         "literal_pass": true,
+         "measured_mean": 0.000618,
+         "model_mean": 0.000542,
+         "paired_mean": 7.5e-05,
+         "paired_se": 0.001145
+        },
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.010322,
+         "model_mean": 0.003465,
+         "paired_mean": 0.006857,
+         "paired_se": 0.001785
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.002775,
+         "model_mean": 0.003217,
+         "paired_mean": -0.000442,
+         "paired_se": 0.00317
+        },
+        "F": {
+         "literal_pass": true,
+         "measured_mean": -0.004876,
+         "model_mean": 0.002029,
+         "paired_mean": -0.006904,
+         "paired_se": 0.002693
+        },
+        "N": {
+         "literal_pass": true,
+         "measured_mean": -0.026199,
+         "model_mean": -0.007754,
+         "paired_mean": -0.018445,
+         "paired_se": 0.00356
+        }
+       },
+       "closures_within_0.03": true,
+       "model_visibility": 0.869413,
+       "null_levels": {
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.267133,
+         "paired_mean": 0.011984
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.259586,
+         "paired_mean": 0.004685
+        }
+       },
+       "null_levels_within_0.02": true,
+       "separations": {
+        "C": {
+         "half_ideal": 0.375,
+         "ideal": 0.75,
+         "mean": 0.635753,
+         "reaches_half": true
+        },
+        "F": {
+         "half_ideal": 0.25,
+         "ideal": 0.5,
+         "mean": 0.404613,
+         "reaches_half": true
+        },
+        "N": {
+         "half_ideal": 0.09375,
+         "ideal": 0.1875,
+         "mean": 0.176101,
+         "reaches_half": true
+        }
+       },
+       "separations_reach_half": true,
+       "verdict": "PASS",
+       "visibility_above_0.6": true,
+       "visibility_interval": [
+        0.760714,
+        0.838234
+       ],
+       "visibility_mean": 0.799474
+      },
+      "ftb_C8_c5": {
+       "closures": {
+        "C": {
+         "literal_pass": true,
+         "measured_mean": -0.037142,
+         "model_mean": -0.028406,
+         "paired_mean": -0.008735,
+         "paired_se": 0.00588
+        },
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.002556,
+         "model_mean": 0.000979,
+         "paired_mean": 0.001577,
+         "paired_se": 0.002161
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.001044,
+         "model_mean": 0.001934,
+         "paired_mean": -0.00089,
+         "paired_se": 0.003654
+        },
+        "F": {
+         "literal_pass": true,
+         "measured_mean": -0.001828,
+         "model_mean": 3.9e-05,
+         "paired_mean": -0.001867,
+         "paired_se": 0.001455
+        },
+        "N": {
+         "literal_pass": true,
+         "measured_mean": -0.010543,
+         "model_mean": -0.005993,
+         "paired_mean": -0.00455,
+         "paired_se": 0.002906
+        }
+       },
+       "closures_within_0.03": true,
+       "model_visibility": 0.865238,
+       "null_levels": {
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.250395,
+         "paired_mean": -0.003676
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.248883,
+         "paired_mean": -0.006143
+        }
+       },
+       "null_levels_within_0.02": true,
+       "separations": {
+        "C": {
+         "half_ideal": 0.327254,
+         "ideal": 0.654508,
+         "mean": 0.530769,
+         "reaches_half": true
+        },
+        "F": {
+         "half_ideal": 0.292705,
+         "ideal": 0.58541,
+         "mean": 0.443341,
+         "reaches_half": true
+        },
+        "N": {
+         "half_ideal": 0.101127,
+         "ideal": 0.202254,
+         "mean": 0.163082,
+         "reaches_half": true
+        }
+       },
+       "separations_reach_half": true,
+       "verdict": "PASS",
+       "visibility_above_0.6": true,
+       "visibility_interval": [
+        0.714768,
+        0.793623
+       ],
+       "visibility_mean": 0.754195
+      }
+     },
+     "id": "four_term_blocks",
+     "rule": "visibility above 0.6, closures within 0.03 of the model's, separations at half their ideal, null levels within 0.02",
+     "verdict": "PASS"
+    },
+    "null_nhat_per_placement": {
+     "blocks": {
+      "k0": {
+       "corrected_interval": [
+        -0.045884,
+        0.029856
+       ],
+       "corrected_mean": -0.008014,
+       "corrected_se": 0.017864,
+       "flip_corrected_mean": 0.064567,
+       "flip_corrected_se": 0.021317,
+       "raw_mean": 0.025658
+      },
+      "k12": {
+       "band": 0.02,
+       "corrected_interval": [
+        -0.043743,
+        0.0577
+       ],
+       "corrected_mean": 0.006979,
+       "corrected_se": 0.023926,
+       "flip_corrected_mean": -0.005886,
+       "flip_corrected_se": 0.023081,
+       "literal_pass": true,
+       "raw_mean": 0.030659,
+       "resolves_band": false,
+       "verdict": "UNINFORMATIVE"
+      },
+      "k4": {
+       "band": 0.02,
+       "corrected_interval": [
+        -0.039932,
+        0.051298
+       ],
+       "corrected_mean": 0.005683,
+       "corrected_se": 0.021518,
+       "flip_corrected_mean": -0.008772,
+       "flip_corrected_se": 0.02204,
+       "literal_pass": true,
+       "raw_mean": 0.029743,
+       "resolves_band": false,
+       "verdict": "UNINFORMATIVE"
+      },
+      "k8": {
+       "band": 0.02,
+       "corrected_interval": [
+        -0.043739,
+        0.052654
+       ],
+       "corrected_mean": 0.004458,
+       "corrected_se": 0.022735,
+       "flip_corrected_mean": -0.009013,
+       "flip_corrected_se": 0.025132,
+       "literal_pass": true,
+       "raw_mean": 0.027081,
+       "resolves_band": false,
+       "verdict": "UNINFORMATIVE"
+      }
+     },
+     "id": "null_nhat_per_placement",
+     "rule": "readout-corrected N_hat of each 1-CZ null block within +-0.02 of 0 (k0 reported)",
+     "verdict": "UNINFORMATIVE"
+    },
+    "null_selector_contrast": {
+     "blocks": {
+      "k0_base": {
+       "band": 0.006,
+       "interval": [
+        -0.005276,
+        0.00119
+       ],
+       "literal_pass": true,
+       "mean": -0.002043,
+       "resolves_band": true,
+       "se": 0.001525,
+       "verdict": "PASS"
+      },
+      "k0_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.002908,
+        0.005881
+       ],
+       "literal_pass": true,
+       "mean": 0.001486,
+       "resolves_band": true,
+       "se": 0.002073,
+       "verdict": "PASS"
+      },
+      "k12_base": {
+       "band": 0.006,
+       "interval": [
+        -0.002085,
+        0.001346
+       ],
+       "literal_pass": true,
+       "mean": -0.00037,
+       "resolves_band": true,
+       "se": 0.000809,
+       "verdict": "PASS"
+      },
+      "k12_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.002277,
+        0.003124
+       ],
+       "literal_pass": true,
+       "mean": 0.000424,
+       "resolves_band": true,
+       "se": 0.001274,
+       "verdict": "PASS"
+      },
+      "k4_base": {
+       "band": 0.006,
+       "interval": [
+        -0.002215,
+        0.003874
+       ],
+       "literal_pass": true,
+       "mean": 0.000829,
+       "resolves_band": true,
+       "se": 0.001436,
+       "verdict": "PASS"
+      },
+      "k4_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.001682,
+        0.003226
+       ],
+       "literal_pass": true,
+       "mean": 0.000772,
+       "resolves_band": true,
+       "se": 0.001158,
+       "verdict": "PASS"
+      },
+      "k8_base": {
+       "band": 0.006,
+       "interval": [
+        -0.005663,
+        0.000155
+       ],
+       "literal_pass": false,
+       "mean": -0.002754,
+       "resolves_band": true,
+       "se": 0.001372,
+       "verdict": "FAIL"
+      },
+      "k8_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.003652,
+        0.001871
+       ],
+       "literal_pass": true,
+       "mean": -0.00089,
+       "resolves_band": true,
+       "se": 0.001303,
+       "verdict": "PASS"
+      }
+     },
+     "id": "null_selector_contrast",
+     "rule": "mean selector contrast within two standard errors of zero and within 0.006 on k0, k4, k8, k12, base and flip",
+     "sx_overrotation_signature": false,
+     "verdict": "FAIL"
+    },
+    "nullity_bands": {
+     "id": "nullity_bands",
+     "operands": {
+      "cmap_e1pe10": {
+       "case_prose_model": 8.06,
+       "corrected_interval": [
+        7.949389,
+        8.063497
+       ],
+       "corrected_mean": 8.006443,
+       "corrected_within_0.15": true,
+       "integer_nullity": 8,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 8.068544,
+       "nhat_interval": [
+        8.000004,
+        8.129918
+       ],
+       "nhat_mean": 8.064961,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe17": {
+       "case_prose_model": 0.12,
+       "corrected_interval": [
+        -0.13027,
+        0.14848
+       ],
+       "corrected_mean": 0.009105,
+       "corrected_within_0.15": true,
+       "integer_nullity": 0,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 0.121784,
+       "nhat_interval": [
+        -0.034344,
+        0.260624
+       ],
+       "nhat_mean": 0.11314,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe18": {
+       "case_prose_model": 12.03,
+       "corrected_interval": [
+        11.931285,
+        12.030575
+       ],
+       "corrected_mean": 11.98093,
+       "corrected_within_0.15": true,
+       "integer_nullity": 12,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 12.03699,
+       "nhat_interval": [
+        11.965154,
+        12.067125
+       ],
+       "nhat_mean": 12.01614,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe24": {
+       "case_prose_model": 12.17,
+       "corrected_interval": [
+        11.903347,
+        12.04338
+       ],
+       "corrected_mean": 11.973363,
+       "corrected_within_0.15": true,
+       "integer_nullity": 12,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 12.169264,
+       "nhat_interval": [
+        12.033554,
+        12.213848
+       ],
+       "nhat_mean": 12.123701,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe26": {
+       "case_prose_model": 4.24,
+       "corrected_interval": [
+        3.956246,
+        4.192576
+       ],
+       "corrected_mean": 4.074411,
+       "corrected_within_0.15": true,
+       "integer_nullity": 4,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 4.234808,
+       "nhat_interval": [
+        4.113915,
+        4.437945
+       ],
+       "nhat_mean": 4.27593,
+       "verdict": "PASS"
+      },
+      "cmap_e2pe27": {
+       "case_prose_model": 4.25,
+       "corrected_interval": [
+        3.882034,
+        4.171779
+       ],
+       "corrected_mean": 4.026906,
+       "corrected_within_0.15": true,
+       "integer_nullity": 4,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 4.243922,
+       "nhat_interval": [
+        4.082201,
+        4.397157
+       ],
+       "nhat_mean": 4.239679,
+       "verdict": "PASS"
+      },
+      "cmap_twin_e17me2": {
+       "case_prose_model": 12.03,
+       "corrected_interval": [
+        11.939748,
+        12.007775
+       ],
+       "corrected_mean": 11.973761,
+       "corrected_within_0.15": true,
+       "integer_nullity": 12,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 12.035737,
+       "nhat_interval": [
+        11.971291,
+        12.043625
+       ],
+       "nhat_mean": 12.007458,
+       "verdict": "PASS"
+      },
+      "cmap_xor_e1pe18": {
+       "case_prose_model": -2.19,
+       "corrected_interval": [
+        -2.046847,
+        -1.83954
+       ],
+       "corrected_mean": -1.943193,
+       "corrected_within_0.15": true,
+       "integer_nullity": -2,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": -2.189637,
+       "nhat_interval": [
+        -2.212144,
+        -2.02374
+       ],
+       "nhat_mean": -2.117942,
+       "verdict": "PASS"
+      }
+     },
+     "rule": "N_hat interval covers its model value within 0.5; readout-corrected within 0.15 of the integer nullity",
+     "verdict": "PASS"
+    },
+    "offset_even": {
+     "band": 0.03,
+     "id": "offset_even",
+     "interval": [
+      -0.013165,
+      0.048502
+     ],
+     "literal_pass": true,
+     "measured_mean": 0.024363,
+     "model_mean": 0.006694,
+     "paired_mean": 0.017669,
+     "paired_se": 0.014545,
+     "resolves_band": false,
+     "rule": "paired mean of E minus the model's E within +-0.03",
+     "verdict": "UNINFORMATIVE"
+    },
+    "offset_odd": {
+     "band": 0.04,
+     "id": "offset_odd",
+     "interval": [
+      -0.159634,
+      0.107009
+     ],
+     "literal_pass": true,
+     "measured_mean": 0.088777,
+     "model_mean": 0.11509,
+     "paired_mean": -0.026313,
+     "paired_se": 0.06289,
+     "resolves_band": false,
+     "rule": "paired mean of O minus the model's O within +-0.04",
+     "verdict": "UNINFORMATIVE"
+    },
+    "offset_spread": {
+     "id": "offset_spread",
+     "intercept": -0.053208,
+     "model_o_sd": 0.113188,
+     "r_squared": 0.226636,
+     "r_squared_above_0.5": false,
+     "rule": "regression of measured O on the model's O: slope in [0.7, 1.3] and R squared above 0.5",
+     "slope": 1.233695,
+     "slope_in_range": true,
+     "slope_interval_95": [
+      -0.0205,
+      2.487889
+     ],
+     "slope_se": 0.588423,
+     "verdict": "FAIL"
+    },
+    "parallel_crosstalk": {
+     "collector_interval_90": [
+      -0.008965,
+      0.000663
+     ],
+     "difference": -0.00415,
+     "half_width": 0.004814,
+     "id": "parallel_crosstalk",
+     "interval_90": [
+      -0.008965,
+      0.000663
+     ],
+     "isolated_score": 0.927673,
+     "method": "newcombe_wilson",
+     "packed_score": 0.923523,
+     "recomputed_matches_collector": true,
+     "rule": "90 percent Newcombe-Wilson interval of packed minus isolated k0 minus score inside +-0.015",
+     "shots": 16384,
+     "verdict": "PASS"
+    },
+    "resolution": {
+     "blocks": 32,
+     "id": "resolution",
+     "lowest_visibility_block": "cmap_e1pe24_k8",
+     "lowest_visibility_interval": [
+      0.657638,
+      0.772567
+     ],
+     "mean_per_placement_signs_of_32": {
+      "cmap_e1pe10": 32.0,
+      "cmap_e1pe17": 32.0,
+      "cmap_e1pe18": 32.0,
+      "cmap_e1pe24": 32.0,
+      "cmap_e1pe26": 32.0,
+      "cmap_e2pe27": 32.0,
+      "cmap_twin_e17me2": 32.0,
+      "cmap_xor_e1pe18": 32.0
+     },
+     "pooled_signs_of_32": {
+      "cmap_e1pe10": 32,
+      "cmap_e1pe17": 32,
+      "cmap_e1pe18": 32,
+      "cmap_e1pe24": 32,
+      "cmap_e1pe26": 32,
+      "cmap_e2pe27": 32,
+      "cmap_twin_e17me2": 32,
+      "cmap_xor_e1pe18": 32
+     },
+     "rule": "pooled map signs at least 31 of 32 per operand; every block's visibility interval above 0.5",
+     "verdict": "PASS",
+     "visibility_mean_range": [
+      0.715102,
+      0.882308
+     ]
+    },
+    "within_arm_repeats": {
+     "id": "within_arm_repeats",
+     "quantities": {
+      "pair_half_sum_gap": {
+       "band": 0.02,
+       "interval": [
+        -0.008214,
+        0.020952
+       ],
+       "literal_pass": true,
+       "mean": 0.006369,
+       "resolves_band": true,
+       "se": 0.006879,
+       "verdict": "PASS"
+      },
+      "within_minus_half_sum": {
+       "band": 0.02,
+       "interval": [
+        -0.012868,
+        0.013647
+       ],
+       "literal_pass": true,
+       "mean": 0.000389,
+       "resolves_band": true,
+       "se": 0.006254,
+       "verdict": "PASS"
+      },
+      "within_plus_half_sum": {
+       "band": 0.02,
+       "interval": [
+        -0.003392,
+        0.016908
+       ],
+       "literal_pass": true,
+       "mean": 0.006758,
+       "resolves_band": true,
+       "se": 0.004788,
+       "verdict": "PASS"
+      }
+     },
+     "rule": "mean within two standard errors of zero and within 0.02 for the within-arm repeats and the pair gap",
+     "verdict": "PASS"
+    }
+   },
+   "run": "results/live/2026-11-07T042521.359670Z",
+   "shots_per_member": 16384
+  },
+  "ibm_kingston": {
+   "backend": "ibm_kingston",
+   "calibration": "2026-11-06T20:19:03-08:00",
+   "calibration_drift_check": {
+    "measured_minus_readout_only_odd": {
+     "hi": -0.027509,
+     "lo": -0.151151,
+     "mean": -0.08933,
+     "n": 16.0,
+     "se": 0.029004
+    },
+    "model_minus_readout_only_odd": {
+     "hi": 0.006198,
+     "lo": -0.015298,
+     "mean": -0.00455,
+     "n": 16.0,
+     "se": 0.005043
+    }
+   },
+   "charge_seconds": 32,
+   "checks": {
+    "corrected_vs_collect": {
+     "keys": 426,
+     "max_abs_difference": 0.0,
+     "status": "checked"
+    },
+    "summaries_vs_collect": {
+     "keys": 426,
+     "max_abs_difference": 0.0,
+     "status": "checked"
+    }
+   },
+   "deviations_from_case": {
+    "binding_dry_run": {
+     "case": "2026-11-07T040239.842834Z",
+     "model_of_record": "2026-11-07T041624.522872Z"
+    },
+    "ceiling_seconds": {
+     "case": 40,
+     "run": 42
+    },
+    "charged_seconds": 32,
+    "estimated_seconds": 32.3,
+    "executed_calibration": "2026-11-06T20:19:03-08:00",
+    "model_calibration": "2026-11-06T19:59:44-08:00",
+    "shots_per_member": {
+     "case": 8192,
+     "run": 8192
+    }
+   },
+   "input_sha256": {
+    "collect.json": "9dc5996d3feeb11bbaec6109a5dac33a5a1eac1b0690287cbb1927b0da9b6235",
+    "isa.qpy": "7f8403f33b47c2140987663be9b66820e26225ec4e70a4cdca0ad22729237f17",
+    "record.json": "6e716741452702aada31a59e5d83379d8d95d5bbe8f0f5150a4d38d46100a3db"
+   },
+   "job_id": "dbnahh5t7fqc73aj7bdg",
+   "operand_nhat": {
+    "cmap_e1pe10": {
+     "hi": 8.07333,
+     "lo": 7.988644,
+     "mean": 8.030987,
+     "n": 16.0,
+     "se": 0.019866
+    },
+    "cmap_e1pe17": {
+     "hi": 0.11483,
+     "lo": 0.012907,
+     "mean": 0.063869,
+     "n": 16.0,
+     "se": 0.023909
+    },
+    "cmap_e1pe18": {
+     "hi": 12.049624,
+     "lo": 11.979013,
+     "mean": 12.014318,
+     "n": 16.0,
+     "se": 0.016564
+    },
+    "cmap_e1pe24": {
+     "hi": 12.19125,
+     "lo": 12.098894,
+     "mean": 12.145072,
+     "n": 16.0,
+     "se": 0.021665
+    },
+    "cmap_e1pe26": {
+     "hi": 4.430951,
+     "lo": 4.124542,
+     "mean": 4.277747,
+     "n": 16.0,
+     "se": 0.071878
+    },
+    "cmap_e2pe27": {
+     "hi": 4.39451,
+     "lo": 4.126955,
+     "mean": 4.260733,
+     "n": 16.0,
+     "se": 0.062763
+    },
+    "cmap_twin_e17me2": {
+     "hi": 12.073479,
+     "lo": 12.00403,
+     "mean": 12.038754,
+     "n": 16.0,
+     "se": 0.016292
+    },
+    "cmap_xor_e1pe18": {
+     "hi": -1.963762,
+     "lo": -2.205946,
+     "mean": -2.084854,
+     "n": 16.0,
+     "se": 0.056812
+    }
+   },
+   "per_placement": {
+    "e_measured": [
+     0.008934,
+     0.00147,
+     -0.046312,
+     0.016385,
+     -0.017167,
+     0.030651,
+     0.007074,
+     0.070958,
+     0.049547,
+     0.037677,
+     -0.03014,
+     0.010119,
+     -0.009617,
+     0.115347,
+     -0.00177,
+     -0.022442
+    ],
+    "e_model": [
+     -0.017757,
+     0.02242,
+     0.02193,
+     -0.013184,
+     -0.004915,
+     0.002015,
+     -0.019636,
+     -0.02629,
+     -0.018981,
+     -0.050265,
+     0.00818,
+     0.021796,
+     -0.012911,
+     0.006151,
+     0.021443,
+     -0.004787
+    ],
+    "o_measured": [
+     0.020641,
+     0.131238,
+     0.033836,
+     0.091898,
+     0.081252,
+     -0.239839,
+     0.135307,
+     0.112154,
+     0.020601,
+     0.111915,
+     0.076361,
+     0.070918,
+     0.08542,
+     0.052545,
+     0.013429,
+     0.003509
+    ],
+    "o_model": [
+     0.176874,
+     0.17799,
+     0.197187,
+     0.292146,
+     0.122389,
+     0.039598,
+     0.124968,
+     0.132519,
+     -0.184946,
+     0.309522,
+     0.185672,
+     -0.007499,
+     0.165622,
+     0.243395,
+     0.053409,
+     0.12882
+    ],
+    "o_readout_only": [
+     0.15625,
+     0.167969,
+     0.164062,
+     0.320312,
+     0.132812,
+     0.023438,
+     0.136719,
+     0.140625,
+     -0.191406,
+     0.3125,
+     0.175781,
+     0.035156,
+     0.1875,
+     0.242188,
+     0.078125,
+     0.148437
+    ]
+   },
+   "placements": 16,
+   "rules": {
+    "four_term_blocks": {
+     "blocks": {
+      "ftb_B12_c2": {
+       "closures": {
+        "C": {
+         "literal_pass": true,
+         "measured_mean": -0.029976,
+         "model_mean": -0.021004,
+         "paired_mean": -0.008972,
+         "paired_se": 0.0023
+        },
+        "D2": {
+         "literal_pass": true,
+         "measured_mean": 0.000374,
+         "model_mean": -0.001747,
+         "paired_mean": 0.002121,
+         "paired_se": 0.001627
+        },
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.008135,
+         "model_mean": -9.4e-05,
+         "paired_mean": 0.00823,
+         "paired_se": 0.004807
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.006144,
+         "model_mean": -0.001361,
+         "paired_mean": 0.007505,
+         "paired_se": 0.003838
+        },
+        "F": {
+         "literal_pass": true,
+         "measured_mean": -0.000432,
+         "model_mean": 0.001813,
+         "paired_mean": -0.002246,
+         "paired_se": 0.005078
+        },
+        "N": {
+         "literal_pass": true,
+         "measured_mean": -0.023413,
+         "model_mean": -0.006578,
+         "paired_mean": -0.016834,
+         "paired_se": 0.005357
+        }
+       },
+       "closures_within_0.03": true,
+       "model_visibility": 0.912303,
+       "null_levels": {
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.264755,
+         "paired_mean": 0.012177
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.262764,
+         "paired_mean": 0.011452
+        }
+       },
+       "null_levels_within_0.02": true,
+       "separations": {
+        "C": {
+         "half_ideal": 0.375,
+         "ideal": 0.75,
+         "mean": 0.666946,
+         "reaches_half": true
+        },
+        "F": {
+         "half_ideal": 0.25,
+         "ideal": 0.5,
+         "mean": 0.425079,
+         "reaches_half": true
+        },
+        "N": {
+         "half_ideal": 0.09375,
+         "ideal": 0.1875,
+         "mean": 0.182655,
+         "reaches_half": true
+        }
+       },
+       "separations_reach_half": true,
+       "verdict": "PASS",
+       "visibility_above_0.6": true,
+       "visibility_interval": [
+        0.825526,
+        0.873062
+       ],
+       "visibility_mean": 0.849294
+      },
+      "ftb_C8_c5": {
+       "closures": {
+        "C": {
+         "literal_pass": true,
+         "measured_mean": -0.027687,
+         "model_mean": -0.018547,
+         "paired_mean": -0.00914,
+         "paired_se": 0.001662
+        },
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.001123,
+         "model_mean": 0.00057,
+         "paired_mean": 0.000553,
+         "paired_se": 0.003251
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": -0.003324,
+         "model_mean": 0.001852,
+         "paired_mean": -0.005176,
+         "paired_se": 0.005078
+        },
+        "F": {
+         "literal_pass": true,
+         "measured_mean": -0.001479,
+         "model_mean": -0.000815,
+         "paired_mean": -0.000664,
+         "paired_se": 0.002408
+        },
+        "N": {
+         "literal_pass": true,
+         "measured_mean": -0.013179,
+         "model_mean": -0.001992,
+         "paired_mean": -0.011187,
+         "paired_se": 0.005879
+        }
+       },
+       "closures_within_0.03": true,
+       "model_visibility": 0.911995,
+       "null_levels": {
+        "E0": {
+         "literal_pass": true,
+         "measured_mean": 0.251114,
+         "paired_mean": -0.000885
+        },
+        "E1": {
+         "literal_pass": true,
+         "measured_mean": 0.246666,
+         "paired_mean": -0.006615
+        }
+       },
+       "null_levels_within_0.02": true,
+       "separations": {
+        "C": {
+         "half_ideal": 0.327254,
+         "ideal": 0.654508,
+         "mean": 0.56736,
+         "reaches_half": true
+        },
+        "F": {
+         "half_ideal": 0.292705,
+         "ideal": 0.58541,
+         "mean": 0.484177,
+         "reaches_half": true
+        },
+        "N": {
+         "half_ideal": 0.101127,
+         "ideal": 0.202254,
+         "mean": 0.179947,
+         "reaches_half": true
+        }
+       },
+       "separations_reach_half": true,
+       "verdict": "PASS",
+       "visibility_above_0.6": true,
+       "visibility_interval": [
+        0.789718,
+        0.859375
+       ],
+       "visibility_mean": 0.824547
+      }
+     },
+     "id": "four_term_blocks",
+     "rule": "visibility above 0.6, closures within 0.03 of the model's, separations at half their ideal, null levels within 0.02",
+     "verdict": "PASS"
+    },
+    "null_nhat_per_placement": {
+     "blocks": {
+      "k0": {
+       "corrected_interval": [
+        -0.017812,
+        0.041551
+       ],
+       "corrected_mean": 0.01187,
+       "corrected_se": 0.013925,
+       "flip_corrected_mean": 0.014432,
+       "flip_corrected_se": 0.016731,
+       "raw_mean": 0.039853
+      },
+      "k12": {
+       "band": 0.02,
+       "corrected_interval": [
+        -0.051661,
+        -0.007747
+       ],
+       "corrected_mean": -0.029704,
+       "corrected_se": 0.010302,
+       "flip_corrected_mean": 0.02629,
+       "flip_corrected_se": 0.011423,
+       "literal_pass": false,
+       "raw_mean": 0.007872,
+       "resolves_band": false,
+       "verdict": "FAIL"
+      },
+      "k4": {
+       "band": 0.02,
+       "corrected_interval": [
+        -0.048687,
+        -0.00787
+       ],
+       "corrected_mean": -0.028279,
+       "corrected_se": 0.009575,
+       "flip_corrected_mean": 0.030907,
+       "flip_corrected_se": 0.010308,
+       "literal_pass": false,
+       "raw_mean": 0.009422,
+       "resolves_band": false,
+       "verdict": "FAIL"
+      },
+      "k8": {
+       "band": 0.02,
+       "corrected_interval": [
+        -0.051685,
+        -0.010848
+       ],
+       "corrected_mean": -0.031266,
+       "corrected_se": 0.00958,
+       "flip_corrected_mean": 0.035409,
+       "flip_corrected_se": 0.012058,
+       "literal_pass": false,
+       "raw_mean": 0.006721,
+       "resolves_band": false,
+       "verdict": "FAIL"
+      }
+     },
+     "id": "null_nhat_per_placement",
+     "rule": "readout-corrected N_hat of each 1-CZ null block within +-0.02 of 0 (k0 reported)",
+     "verdict": "FAIL"
+    },
+    "null_selector_contrast": {
+     "blocks": {
+      "k0_base": {
+       "band": 0.006,
+       "interval": [
+        -0.002357,
+        0.002327
+       ],
+       "literal_pass": true,
+       "mean": -1.5e-05,
+       "resolves_band": true,
+       "se": 0.001099,
+       "verdict": "PASS"
+      },
+      "k0_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.003587,
+        0.005296
+       ],
+       "literal_pass": true,
+       "mean": 0.000854,
+       "resolves_band": true,
+       "se": 0.002084,
+       "verdict": "PASS"
+      },
+      "k12_base": {
+       "band": 0.006,
+       "interval": [
+        -0.005653,
+        0.002632
+       ],
+       "literal_pass": true,
+       "mean": -0.001511,
+       "resolves_band": true,
+       "se": 0.001944,
+       "verdict": "PASS"
+      },
+      "k12_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.005363,
+        0.003868
+       ],
+       "literal_pass": true,
+       "mean": -0.000748,
+       "resolves_band": true,
+       "se": 0.002165,
+       "verdict": "PASS"
+      },
+      "k4_base": {
+       "band": 0.006,
+       "interval": [
+        -0.002,
+        0.005891
+       ],
+       "literal_pass": true,
+       "mean": 0.001945,
+       "resolves_band": true,
+       "se": 0.001851,
+       "verdict": "PASS"
+      },
+      "k4_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.00253,
+        0.003445
+       ],
+       "literal_pass": true,
+       "mean": 0.000458,
+       "resolves_band": true,
+       "se": 0.001402,
+       "verdict": "PASS"
+      },
+      "k8_base": {
+       "band": 0.006,
+       "interval": [
+        -0.004053,
+        0.002619
+       ],
+       "literal_pass": true,
+       "mean": -0.000717,
+       "resolves_band": true,
+       "se": 0.001565,
+       "verdict": "PASS"
+      },
+      "k8_flip": {
+       "band": 0.006,
+       "interval": [
+        -0.009656,
+        5.9e-05
+       ],
+       "literal_pass": false,
+       "mean": -0.004799,
+       "resolves_band": true,
+       "se": 0.002279,
+       "verdict": "FAIL"
+      }
+     },
+     "id": "null_selector_contrast",
+     "rule": "mean selector contrast within two standard errors of zero and within 0.006 on k0, k4, k8, k12, base and flip",
+     "sx_overrotation_signature": false,
+     "verdict": "FAIL"
+    },
+    "nullity_bands": {
+     "id": "nullity_bands",
+     "operands": {
+      "cmap_e1pe10": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        7.914848,
+        8.013127
+       ],
+       "corrected_mean": 7.963988,
+       "corrected_within_0.15": true,
+       "integer_nullity": 8,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 8.066233,
+       "nhat_interval": [
+        7.988644,
+        8.07333
+       ],
+       "nhat_mean": 8.030987,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe17": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        -0.143992,
+        -0.010767
+       ],
+       "corrected_mean": -0.077379,
+       "corrected_within_0.15": true,
+       "integer_nullity": 0,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 0.130805,
+       "nhat_interval": [
+        0.012907,
+        0.11483
+       ],
+       "nhat_mean": 0.063869,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe18": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        11.954201,
+        12.016556
+       ],
+       "corrected_mean": 11.985379,
+       "corrected_within_0.15": true,
+       "integer_nullity": 12,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 12.029947,
+       "nhat_interval": [
+        11.979013,
+        12.049624
+       ],
+       "nhat_mean": 12.014318,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe24": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        11.948473,
+        12.066637
+       ],
+       "corrected_mean": 12.007555,
+       "corrected_within_0.15": true,
+       "integer_nullity": 12,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 12.147483,
+       "nhat_interval": [
+        12.098894,
+        12.19125
+       ],
+       "nhat_mean": 12.145072,
+       "verdict": "PASS"
+      },
+      "cmap_e1pe26": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        3.951199,
+        4.212513
+       ],
+       "corrected_mean": 4.081856,
+       "corrected_within_0.15": true,
+       "integer_nullity": 4,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 4.224678,
+       "nhat_interval": [
+        4.124542,
+        4.430951
+       ],
+       "nhat_mean": 4.277747,
+       "verdict": "PASS"
+      },
+      "cmap_e2pe27": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        3.982775,
+        4.178952
+       ],
+       "corrected_mean": 4.080863,
+       "corrected_within_0.15": true,
+       "integer_nullity": 4,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 4.214706,
+       "nhat_interval": [
+        4.126955,
+        4.39451
+       ],
+       "nhat_mean": 4.260733,
+       "verdict": "PASS"
+      },
+      "cmap_twin_e17me2": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        11.982297,
+        12.038504
+       ],
+       "corrected_mean": 12.0104,
+       "corrected_within_0.15": true,
+       "integer_nullity": 12,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": 12.023492,
+       "nhat_interval": [
+        12.00403,
+        12.073479
+       ],
+       "nhat_mean": 12.038754,
+       "verdict": "PASS"
+      },
+      "cmap_xor_e1pe18": {
+       "case_prose_model": null,
+       "corrected_interval": [
+        -2.072648,
+        -1.843737
+       ],
+       "corrected_mean": -1.958192,
+       "corrected_within_0.15": true,
+       "integer_nullity": -2,
+       "interval_covers_model_within_0.5": true,
+       "mean_within_0.5_of_model": true,
+       "model_mean": -2.114606,
+       "nhat_interval": [
+        -2.205946,
+        -1.963762
+       ],
+       "nhat_mean": -2.084854,
+       "verdict": "PASS"
+      }
+     },
+     "rule": "N_hat interval covers its model value within 0.5; readout-corrected within 0.15 of the integer nullity",
+     "verdict": "PASS"
+    },
+    "offset_even": {
+     "band": 0.03,
+     "id": "offset_even",
+     "interval": [
+      -0.009517,
+      0.045205
+     ],
+     "literal_pass": true,
+     "measured_mean": 0.013795,
+     "model_mean": -0.004049,
+     "paired_mean": 0.017844,
+     "paired_se": 0.012837,
+     "resolves_band": true,
+     "rule": "paired mean of E minus the model's E within +-0.03",
+     "verdict": "PASS"
+    },
+    "offset_odd": {
+     "band": 0.04,
+     "id": "offset_odd",
+     "interval": [
+      -0.149052,
+      -0.020508
+     ],
+     "literal_pass": false,
+     "measured_mean": 0.050074,
+     "model_mean": 0.134854,
+     "paired_mean": -0.08478,
+     "paired_se": 0.030154,
+     "resolves_band": false,
+     "rule": "paired mean of O minus the model's O within +-0.04",
+     "verdict": "FAIL"
+    },
+    "offset_spread": {
+     "id": "offset_spread",
+     "intercept": 0.014409,
+     "model_o_sd": 0.120169,
+     "r_squared": 0.130396,
+     "r_squared_above_0.5": false,
+     "rule": "regression of measured O on the model's O: slope in [0.7, 1.3] and R squared above 0.5",
+     "slope": 0.264472,
+     "slope_in_range": false,
+     "slope_interval_95": [
+      -0.127025,
+      0.655969
+     ],
+     "slope_se": 0.182534,
+     "verdict": "FAIL"
+    },
+    "parallel_crosstalk": {
+     "collector_interval_90": [
+      -0.008215,
+      0.004551
+     ],
+     "difference": -0.001831,
+     "half_width": 0.006383,
+     "id": "parallel_crosstalk",
+     "interval_90": [
+      -0.008215,
+      0.004551
+     ],
+     "isolated_score": 0.93689,
+     "method": "newcombe_wilson",
+     "packed_score": 0.935059,
+     "recomputed_matches_collector": true,
+     "rule": "90 percent Newcombe-Wilson interval of packed minus isolated k0 minus score inside +-0.015",
+     "shots": 8192,
+     "verdict": "PASS"
+    },
+    "resolution": {
+     "blocks": 32,
+     "id": "resolution",
+     "lowest_visibility_block": "cmap_e1pe10_k0",
+     "lowest_visibility_interval": [
+      0.770209,
+      0.826541
+     ],
+     "mean_per_placement_signs_of_32": {
+      "cmap_e1pe10": 32.0,
+      "cmap_e1pe17": 32.0,
+      "cmap_e1pe18": 32.0,
+      "cmap_e1pe24": 32.0,
+      "cmap_e1pe26": 32.0,
+      "cmap_e2pe27": 32.0,
+      "cmap_twin_e17me2": 32.0,
+      "cmap_xor_e1pe18": 32.0
+     },
+     "pooled_signs_of_32": {
+      "cmap_e1pe10": 32,
+      "cmap_e1pe17": 32,
+      "cmap_e1pe18": 32,
+      "cmap_e1pe24": 32,
+      "cmap_e1pe26": 32,
+      "cmap_e2pe27": 32,
+      "cmap_twin_e17me2": 32,
+      "cmap_xor_e1pe18": 32
+     },
+     "rule": "pooled map signs at least 31 of 32 per operand; every block's visibility interval above 0.5",
+     "verdict": "PASS",
+     "visibility_mean_range": [
+      0.798375,
+      0.911198
+     ]
+    },
+    "within_arm_repeats": {
+     "id": "within_arm_repeats",
+     "quantities": {
+      "pair_half_sum_gap": {
+       "band": 0.02,
+       "interval": [
+        -0.009508,
+        0.028692
+       ],
+       "literal_pass": true,
+       "mean": 0.009592,
+       "resolves_band": true,
+       "se": 0.008961,
+       "verdict": "PASS"
+      },
+      "within_minus_half_sum": {
+       "band": 0.02,
+       "interval": [
+        -0.013018,
+        0.019255
+       ],
+       "literal_pass": true,
+       "mean": 0.003118,
+       "resolves_band": true,
+       "se": 0.007571,
+       "verdict": "PASS"
+      },
+      "within_plus_half_sum": {
+       "band": 0.02,
+       "interval": [
+        0.002597,
+        0.022824
+       ],
+       "literal_pass": false,
+       "mean": 0.01271,
+       "resolves_band": true,
+       "se": 0.004745,
+       "verdict": "FAIL"
+      }
+     },
+     "rule": "mean within two standard errors of zero and within 0.02 for the within-arm repeats and the pair gap",
+     "verdict": "FAIL"
+    }
+   },
+   "run": "results/live/2026-11-07T042346.084449Z",
+   "shots_per_member": 8192
+  }
+ },
+ "case": "results/live/2026-11-07T035554.327341Z/CASE.md",
+ "cross_device": {
+  "backends": [
+   "ibm_fez",
+   "ibm_kingston"
+  ],
+  "id": "devices",
+  "odd_even_verdicts": {
+   "ibm_fez": {
+    "offset_even": "UNINFORMATIVE",
+    "offset_odd": "UNINFORMATIVE"
+   },
+   "ibm_kingston": {
+    "offset_even": "PASS",
+    "offset_odd": "FAIL"
+   }
+  },
+  "operand_agreement": true,
+  "operands": {
+   "cmap_e1pe10": {
+    "agree": true,
+    "difference": 0.033974,
+    "sum_of_half_widths": 0.1073
+   },
+   "cmap_e1pe17": {
+    "agree": true,
+    "difference": 0.049271,
+    "sum_of_half_widths": 0.198446
+   },
+   "cmap_e1pe18": {
+    "agree": true,
+    "difference": 0.001822,
+    "sum_of_half_widths": 0.086291
+   },
+   "cmap_e1pe24": {
+    "agree": true,
+    "difference": -0.021371,
+    "sum_of_half_widths": 0.136325
+   },
+   "cmap_e1pe26": {
+    "agree": true,
+    "difference": -0.001817,
+    "sum_of_half_widths": 0.315219
+   },
+   "cmap_e2pe27": {
+    "agree": true,
+    "difference": -0.021053,
+    "sum_of_half_widths": 0.291255
+   },
+   "cmap_twin_e17me2": {
+    "agree": true,
+    "difference": -0.031297,
+    "sum_of_half_widths": 0.070892
+   },
+   "cmap_xor_e1pe18": {
+    "agree": true,
+    "difference": -0.033088,
+    "sum_of_half_widths": 0.215294
+   }
+  },
+  "rule": "operand N_hat agree within the sum of the intervals; each backend's odd and even parts pass against its model",
+  "verdict": "FAIL"
+ },
+ "interval": "Student t, 95 percent, over placements",
+ "schema": "pathion-parallel-coset-analysis-v1"
+}

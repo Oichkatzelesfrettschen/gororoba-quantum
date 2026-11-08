@@ -1,0 +1,7 @@
+anchor efficiencies (A, B): {'A': 1.0064, 'B': 1.0886} ; mode-fit slot/failure: 1.0721 1.064
+anchor-calibrated (as analyzed)                eff (1.0064, 1.0886): failing 9 of 46, |d| median 0.0259 max 0.1082 rms 0.0488; slot offset/gain [0.0057 0.0761]
+no efficiency division (1, 1)                  eff (1.0, 1.0): failing 1 of 46, |d| median 0.0142 max 0.0752 rms 0.0250; slot offset/gain [-0.0002  0.0178]
+equal efficiency, mean of the two anchors      eff (1.0475, 1.0475): failing 1 of 46, |d| median 0.0141 max 0.0737 rms 0.0246; slot offset/gain [-0.0003  0.0177]
+mode-fit slot sums over the failure mode       eff (1.0721, 1.064): failing 0 of 46, |d| median 0.0138 max 0.0698 rms 0.0237; slot offset/gain [-0.001   0.0121]
+B/A efficiency ratio minimizing the mirror rms: 0.985 (anchor-calibrated 1.082); rms 0.0240, failing 0
+white phase error sigma 0.033 (300 draws): offset +0.0019 +- 0.0087, gain -0.0033 +- 0.0566; observed offset +0.0057, gain +0.0761; gain z +1.4; draws with gain >= observed 24

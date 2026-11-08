@@ -1,0 +1,8 @@
+falsifier: the 90 percent interval of packed minus isolated k0 minus score has its upper end below -0.015
+ibm_fez       shots 16384  packed 0.9235  isolated 0.9277  difference -0.0042  90 percent [-0.0090, +0.0007] (half-width 0.0048)  95 percent [-0.0099, +0.0016]  z -1.43  inside the band
+ibm_kingston  shots 8192  packed 0.9351  isolated 0.9369  difference -0.0018  90 percent [-0.0082, +0.0046] (half-width 0.0064)  95 percent [-0.0094, +0.0058]  z -0.48  inside the band
+inverse-variance mean of the two devices -0.0033 +- 0.0023: 90 percent interval [-0.0071, +0.0005] (normal approximation)
+earlier 8192-shot reference runs (90 percent Newcombe-Wilson):
+  ibm_fez       +0.0011 [-0.0067, +0.0089] (half-width 0.0078)
+  ibm_marrakesh +0.0059 [-0.0028, +0.0145] (half-width 0.0086)
+written case's prediction of the 90 percent half-width: 0.008 at 8192 shots and about 0.006 at 14336 shots

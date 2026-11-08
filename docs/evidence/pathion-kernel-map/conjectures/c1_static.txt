@@ -1,0 +1,16 @@
+model  train  cost  | held-out rms of level residual (obs - model) on the unseen orientation; corr(d_obs, d_pred_holdout)
+none    o0   cost    8464.1 nfev  26 | train level rms 0.0215; HELD-OUT level rms 0.0306; corr(d_obs, d_model) +0.498; model |d| max 0.0163; flags 0 (failing flagged 0/9)
+none    o1   cost    7313.8 nfev  23 | train level rms 0.0310; HELD-OUT level rms 0.0224; corr(d_obs, d_model) +0.329; model |d| max 0.0137; flags 0 (failing flagged 0/9)
+none    all  cost   15138.4 nfev  19 | in-sample level rms 0.0264; corr(d_obs, d_model) +0.454; |d_model| max 0.0161; failing flagged 0
+gain1   o0   cost    7452.4 nfev  25 | train level rms 0.0207; HELD-OUT level rms 0.0278; corr(d_obs, d_model) +0.645; model |d| max 0.0487; flags 0 (failing flagged 0/9)
+gain1   o1   cost    6883.2 nfev  25 | train level rms 0.0291; HELD-OUT level rms 0.0215; corr(d_obs, d_model) +0.544; model |d| max 0.0367; flags 0 (failing flagged 0/9)
+gain1   all  cost   14059.6 nfev  23 | in-sample level rms 0.0248; corr(d_obs, d_model) +0.617; |d_model| max 0.0398; failing flagged 0
+theta1  o0   cost    7696.7 nfev  23 | train level rms 0.0278; HELD-OUT level rms 0.0367; corr(d_obs, d_model) -0.555; model |d| max 0.0378; flags 0 (failing flagged 0/9)
+theta1  o1   cost    7244.7 nfev  29 | train level rms 0.0329; HELD-OUT level rms 0.0244; corr(d_obs, d_model) -0.285; model |d| max 0.0224; flags 0 (failing flagged 0/9)
+theta1  all  cost   14492.6 nfev  19 | in-sample level rms 0.0305; corr(d_obs, d_model) -0.431; |d_model| max 0.0314; failing flagged 0
+offset  o0   cost    4215.6 nfev  40 | train level rms 0.0166; HELD-OUT level rms 0.0295; corr(d_obs, d_model) +0.600; model |d| max 0.0787; flags 1 (failing flagged 1/9)
+offset  o1   cost    3490.7 nfev  32 | train level rms 0.0162; HELD-OUT level rms 0.0198; corr(d_obs, d_model) +0.826; model |d| max 0.1053; flags 3 (failing flagged 3/9)
+offset  all  cost    9677.1 nfev  28 | in-sample level rms 0.0209; corr(d_obs, d_model) +0.729; |d_model| max 0.0622; failing flagged 0
+gain    o0   cost    3620.0 nfev  60 | train level rms 0.0144; HELD-OUT level rms 0.0254; corr(d_obs, d_model) +0.831; model |d| max 0.0986; flags 1 (failing flagged 1/9)
+gain    o1   cost    2886.9 nfev  34 | train level rms 0.0134; HELD-OUT level rms 0.0195; corr(d_obs, d_model) +0.878; model |d| max 0.0887; flags 5 (failing flagged 3/9)
+gain    all  cost    9324.1 nfev  31 | in-sample level rms 0.0181; corr(d_obs, d_model) +0.882; |d_model| max 0.0706; failing flagged 1

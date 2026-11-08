@@ -1,0 +1,28 @@
+// t-space slice iso-p32009-k4b-satt2h: k = 4 forms, saturation by t2 (homogenized standard basis, t2 last, then division by powers of t2); header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing (sha256 1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170)
+// forms l1..l4: docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json, key iso-b-l1..iso-b-l4 of forms.json (values below 32009, index order)
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; string rl;
+option(prot);
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing";
+poly l1=17136*G[1]+10826*G[2]+24624*G[3]+28201*G[4]+4907*G[5]+5915*G[6]+11408*G[7]+8742*G[8]+17373*G[9]+15255*G[10]+20419*G[11]+9920*G[12]+23057*G[13]+3649*G[14]+28350*G[15]+25155*G[16]+21101*G[17];
+poly l2=21861*G[1]+6635*G[2]+25941*G[3]+5530*G[4]+2851*G[5]+30489*G[6]+20222*G[7]+30042*G[8]+10116*G[9]+22574*G[10]+7525*G[11]+28060*G[12]+27850*G[13]+14783*G[14]+20290*G[15]+30994*G[16]+17871*G[17];
+poly l3=10752*G[1]+23083*G[2]+24137*G[3]+25914*G[4]+15288*G[5]+14055*G[6]+8487*G[7]+5787*G[8]+7316*G[9]+21033*G[10]+23904*G[11]+12134*G[12]+25750*G[13]+4080*G[14]+9077*G[15]+7387*G[16]+21707*G[17];
+poly l4=1340*G[1]+1184*G[2]+21356*G[3]+14587*G[4]+17096*G[5]+27863*G[6]+544*G[7]+9922*G[8]+2970*G[9]+6641*G[10]+7737*G[11]+4902*G[12]+4728*G[13]+25150*G[14]+20573*G[15]+10329*G[16]+299*G[17];
+ideal Q=J,l1,l2,l3,l4;
+ideal S0=t2;
+rl="RESULT iso-p32009-k4b-satt2h "+"start: variables "+string(nvars(basering))+", forms 4, size(Q) "+string(size(Q))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k4b-satt2h.result", rl);
+ideal Qs_Q=std(Q);
+ring rh_Q=32009,(t3,t4,t5,t6,t7,h,t2),dp;
+ideal Qh=homog(imap(r,Qs_Q),h);
+ideal Sh=std(Qh);
+int ex=0; int ii; poly gg; int ee; for (ii=1;ii<=ncols(Sh);ii++) { gg=Sh[ii]; ee=0; while (gg!=0 && subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>ex) { ex=ee; } }
+ideal Sd=subst(Sh,h,1);
+setring r; ideal S=imap(rh_Q,Sd);
+kill rh_Q;
+rl="RESULT iso-p32009-k4b-satt2h "+"saturation done: generators "+string(size(S))+", exponent "+string(ex)+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k4b-satt2h.result", rl);
+S=std(S);
+rl="RESULT iso-p32009-k4b-satt2h "+"standard basis of the saturation: generators "+string(size(S))+", s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k4b-satt2h.result", rl);
+int dm=dim(S); int dg=0; if (dm>=0) { dg=mult(S); }
+rl="RESULT iso-p32009-k4b-satt2h "+"dim "+string(dm)+" degree "+string(dg)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k4b-satt2h.result", rl);
+int on=(size(reduce(S,std(maxideal(1))))==0);
+rl="RESULT iso-p32009-k4b-satt2h "+"origin on the closure (all generators vanish at 0) "+string(on)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32009-k4b-satt2h.result", rl);
+quit;

@@ -67,6 +67,7 @@ decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.
 | Azure FX4mds_v2 (84 GB) | `chart-iso-p32029-elim.sing` | stopped by the memory watchdog at 29.7 GB after 3 h 21 min |
 | Azure FX4mds_v2 | `chart-iso-p32009-elim.sing` | stopped by the memory watchdog at 52.1 GB after 7 h 29 min |
 | Azure FX4mds_v2 | `chart-iso-p32029-sat.sing`, `chart-iso-p32009-sat.sing` | 8 h limit (exit 124) at 15.1 and 15.8 GB |
+| Azure FX4mds_v2, 55 GB scope | `chart-runs/fx4-w8p2/chart-ckpt.sing` (sliced chart, saturation by one function per component of V(J + G)) | first std(C) unfinished after 23.5 h: degree 15, 37,018+ elements, 25.7 GB resident, still growing; ended by the VM's daily auto-shutdown at 2026-11-07T21:00Z (`first-attempt/` ended at the same schedule a day earlier) |
 
 `chart-runs/azure/events` lists the two watchdog stops as `exit 0` because Singular exits 0 on the watchdog's SIGTERM;
 the `mem.log` lines before each stop and the absence of any RESULT line in the logs show neither finished. The
@@ -76,3 +77,9 @@ a0 = G_j, z_j = 1, which decides the case equally (y_j lies outside K2 because K
 4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`. The coordinate charts a0 = G_16 and a0 = G_2 (`chart-iso-p32009-coord16.sing`,
 `-coord2.sing`, 41 and 49 terms against 665) then died at a 5 GB cap after 34 min on lab-a1, faster than the dense
 chart, so sparsity of a0 does not shrink this saturation.
+
+## The t-space slice ladder
+
+| Directory | Content |
+|---|---|
+| [tslice/](tslice/README.md) | the six-variable successor of the chart route: the saturation by t2 of (J, l_1(G), ..., l_k(G)) for k QRNG linear forms, read as "the origin lies on the closure" for dim E0 >= k. Controls on X+ -> N-, X- -> N+ (k = 2 on, k = 3 off) and Iso (k = 5 off, k = 3 on) read as predicted at p = 32009 in seconds to 50 minutes at under 0.5 GiB; the Iso k = 4 rows at p = 32009 and p = 32029 read on with two independent form families (A5-067 survives as an F_p statement), with the criterion, its genericity conditions, the cost forecast and the outcome table. The scripts, forms ledger, run wrapper and every log sit beside the README. |

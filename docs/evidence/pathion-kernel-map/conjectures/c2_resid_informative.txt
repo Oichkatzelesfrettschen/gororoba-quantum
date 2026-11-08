@@ -1,0 +1,12 @@
+fez: 32 blocks; deterministic (N_b = 4): 10; informative 22 = ideal-zero 15 + |N_b| = 2 7
+  ideal-zero: n 15 mean measured residual +0.0240; mean calibrated prediction +0.0194; mean (measured - prediction) +0.0046 +- 0.0030; corr(measured, prediction) +0.74
+  |N_b| = 2 (6 positive + xor): n 7 mean measured residual +0.0377; mean calibrated prediction +0.0601; mean (measured - prediction) -0.0225 +- 0.0070; corr(measured, prediction) +1.00
+  N_b = +2 only (n 6): measured residual +0.056 to +0.082 (mean +0.0655), prediction +0.076 to +0.112; measured - prediction [-0.025, -0.03, -0.043, -0.024, -0.026, -0.02]
+  informative blocks: Spearman(residual, cz) +0.50; Spearman(measured - prediction, cz) -0.67; corr(measured, prediction) +0.93
+  xor block: {'cmap_xor_e1pe18_k0': (-0.1296, -0.1398)}
+marrakesh: 32 blocks; deterministic (N_b = 4): 10; informative 22 = ideal-zero 15 + |N_b| = 2 7
+  ideal-zero: n 15 mean measured residual +0.0308; mean calibrated prediction +0.0076; mean (measured - prediction) +0.0232 +- 0.0049; corr(measured, prediction) +0.77
+  |N_b| = 2 (6 positive + xor): n 7 mean measured residual +0.0487; mean calibrated prediction +0.0786; mean (measured - prediction) -0.0299 +- 0.0085; corr(measured, prediction) +0.93
+  N_b = +2 only (n 6): measured residual +0.036 to +0.097 (mean +0.0784), prediction +0.089 to +0.147; measured - prediction [-0.076, -0.093, -0.049, -0.0, -0.041, 0.007]
+  informative blocks: Spearman(residual, cz) +0.18; Spearman(measured - prediction, cz) -0.76; corr(measured, prediction) +0.87
+  xor block: {'cmap_xor_e1pe18_k0': (-0.1292, -0.173)}

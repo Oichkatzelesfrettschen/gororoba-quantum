@@ -24,6 +24,8 @@ admits the busy `running` platform status and any start at least 24 hours after 
 The repeat's [findings](../evidence/ascella-transition-day-repeat-ci/findings.md) compare all five
 matched meshes 33.38 hours after the baseline. The [transport-source successor](../evidence/ascella-transition-day-repeat-reviewed-transport/README.md)
 binds the provider wrapper and local launcher; the original cases retain their bytes and timing windows.
+The [Ascella block-run design runbook](ascella-block-run-design.md) records what a served mesh is, the reading
+module of the mesh-persistence case and the design rules that the next photonic block case takes from them.
 The [original returned-mesh analysis source](../evidence/ascella-cancellation-transition-acquisition/analysis-sources/returned-mesh-reference.py)
 preserves the bytes bound by the retained pilot analysis. The current analyzer pools independent settings;
 its replay reproduces the retained values with a new source digest.

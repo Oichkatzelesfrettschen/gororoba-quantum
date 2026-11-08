@@ -1,0 +1,10 @@
+spearman(|d|, predictor):
+  phase sensitivity (sigma .05 sim)    +0.633 (p 0.000)
+  own ideal level                      +0.676 (p 0.000)
+  sum of both ideal levels             +0.562 (p 0.000)
+  own(1-own)                           +0.518 (p 0.000)
+  label-law entropy                    +0.568 (p 0.000)
+  number of lit modes                  +0.411 (p 0.005)
+partial rank correlation of |d| with phase sensitivity given own level, total level, entropy, lit modes: +0.007 (p 0.965)
+sensitivity rank of failing pairs among 46 (1 = most sensitive): [1, 3, 5, 6, 8, 13, 17, 24, 25]
+white sigma 0.033, pairs job: per-reading deviation rms 0.0323 (observed 0.0282); slot A mean -0.0027 (observed +0.0200), slot B mean -0.0016 (observed -0.0155)

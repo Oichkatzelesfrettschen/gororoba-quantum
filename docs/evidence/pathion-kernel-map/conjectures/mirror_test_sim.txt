@@ -1,0 +1,7 @@
+mirror pairs 46, failing 0
+observed |diff|: median 0.0015, max 0.0066
+in-sample eta: model |diff| median 0.0000 max 0.0004; corr(obs, model) -0.095; residual rms 0.0026 vs observed rms 0.0026; model flags 0, of the 0 failing it flags 0
+held-out eta (orientation 0): model |diff| median 0.0000 max 0.0001; corr(obs, model) +0.163; residual rms 0.0026 vs observed rms 0.0026; model flags 0, of the 0 failing it flags 0
+failing pairs (setting, item, observed, in-sample model):
+eta all [1.001, 0.999, 1.0, 0.999, 1.003, 1.0, 0.999, 0.998, 0.999]
+eta o0  [1.002, 1.002, 0.998, 0.997, 1.003, 1.003, 0.999, 0.997, 0.999]
