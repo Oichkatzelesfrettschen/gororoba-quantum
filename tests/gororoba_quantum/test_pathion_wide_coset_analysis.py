@@ -12,14 +12,17 @@ interval misses it.
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import io
 import json
 import math
+import shutil
 from pathlib import Path
 
 import numpy as np
 import pathion_wide_coset_analysis as analysis
+import pytest
 from qiskit import QuantumCircuit, qpy
 from qiskit.circuit import ClassicalRegister, QuantumRegister
 
@@ -62,8 +65,11 @@ def _calibration() -> dict[str, dict[str, float]]:
     return out
 
 
+@functools.cache
 def _channel_laws() -> dict[str, np.ndarray]:
-    """Each member's exact law at every placement: the block's ideal law through that placement's readout channel."""
+    """Each member's exact law at every placement: the block's ideal law through that placement's readout channel.
+
+    The result is shared between tests and read-only."""
     calibration = _calibration()
     laws = {}
     for name, bodies in BODIES.items():
@@ -145,6 +151,7 @@ def _coupled_outcomes(
     return out
 
 
+@functools.cache
 def _tables(rho: float = 0.0, *, seed: int = TABLE_SEED, shots: int = SHOTS, antithetic: bool = False) -> dict:
     """Shot tables of every member, (shots, placements); rho couples the placements of each PUB."""
     laws = _channel_laws()
@@ -153,6 +160,7 @@ def _tables(rho: float = 0.0, *, seed: int = TABLE_SEED, shots: int = SHOTS, ant
     return {name: _coupled_outcomes(rng, laws[name], orders[name], (shots,), rho, antithetic) for name in BODIES}
 
 
+@functools.cache
 def _influence_orders() -> dict[str, np.ndarray]:
     """Per member and placement, the outcomes sorted by the gradient of the corrected N_hat at the exact laws."""
     readings = analysis.placement_readings(_entry(), _writers(), GROUP, corrected=True)
@@ -333,6 +341,7 @@ def test_the_batch_estimator_of_the_simulation_is_the_analysis_estimator() -> No
     _expect(abs(float(batch[0]) - sum(row["nullity"] for row in readings["o128"])) < 1e-9, f"{batch}")
 
 
+@pytest.mark.audit
 def test_coupled_placements_widen_or_narrow_the_interval_where_independent_placements_cannot() -> None:
     """Fixed marginal laws, varying joint coupling: the covariance interval follows the sampling spread of the
     whole-operand sum and the independent-placement interval does not."""
@@ -511,9 +520,9 @@ def test_nonpositive_shot_counts_and_a_same_backend_pair_are_refused(tmp_path: P
         else:
             raise AssertionError(f"{argv}: the argument count must be refused")
     first, second = tmp_path / "first", tmp_path / "second"
-    for directory in (first, second):
-        directory.mkdir()
-        _write_run(directory, _tables(shots=500))
+    first.mkdir()
+    _write_run(first, _tables(shots=500))
+    shutil.copytree(first, second)
     try:
         analysis.main([str(first), str(second)])
     except SystemExit as error:
