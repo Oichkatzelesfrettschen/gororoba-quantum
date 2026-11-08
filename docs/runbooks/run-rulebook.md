@@ -215,3 +215,24 @@ the closest entry and say what changed.
 - Outcome: five planes (three at 32009, two at 32029) of 45 to 52 s and 26 MiB each, every one inside V(K2), outside V(P) and
   V(Lambda), inside V(K2 : P) at 32009, Jacobian rank 6; the controls read as predicted; the global slice stalled
   (`A5-237`). Rows added to the measured-combinations table of compute-flags.md.
+
+### Iso -> N- degree 6, N = 19: truncated rank against the K2 count on the laptop
+
+- Question and decisive outcome: whether h_6 of the Iso fiber reaches HF(k[y]/K2, 6) = 2,422 at p = 32009. r_19 = 2,422
+  certifies h_6 = 2,422 (A5-119) and extends the N = 3d + 1 law to degree 6; r_19 below 2,422 would leave h_6 open or
+  falsify the law at degree 6.
+- Formulation: engine v11 quotient mode at N = 3d + 1 = 19 in raw mode, every product, because the Iso degree-2
+  receipt has never run; rejected: N = 18 first (the law puts the count at 19, and 18 alone decides nothing).
+- Host and tool versions: the laptop WSL host (substrate row in compute-flags.md), passagemath Singular 4.4.1, the
+  laptop's pinned Python environment.
+- Launch line and environment: `docs/evidence/a5-exceptional-fibers/iso-d6-n19-laptop/run-iso-d6.sh` under a
+  `systemd-run --user` unit: `--quotient --export-chunks 5 --dense-tables-gb 0 --max-gb 47`, `MALLOC_ARENA_MAX=2`,
+  `GOROROBA_WORKERS=8`, `timeout 43200`.
+- Departures from the foundations: none.
+- Parallelism: 8 workers on the laptop's physical cores; the laptop carried no other heavy job.
+- Memory and time limits: the engine's `--max-gb 47` preflight (49.5 GB raw estimate) and the 12 h timeout; neither
+  ended the run.
+- Checkpoints: `out/iso6.events` start and exit lines; the json, time and err files at exit.
+- End state: the four files and the runner copied into the evidence directory and hash-checked against the laptop; the
+  export stays on the laptop.
+- Outcome: wall 1,900.6 s, peak RSS 19.6 GiB, r_19 = 2,422 (blocks 632/610/590/590); h_6 certified at p = 32009.

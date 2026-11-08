@@ -1,0 +1,3 @@
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+with
+	GMP(6.3.0),NTL(11.6.0),FLINT(3.6.0),

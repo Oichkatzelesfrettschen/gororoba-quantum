@@ -826,7 +826,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -951,8 +952,18 @@
     {
      "d": 6,
      "k2_count": 2422,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 19,
+       "engine": "7849cbc71ccf1787",
+       "header": "1f1757d55751f1e3",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 2422,
+       "source": "iso-d6-n19-laptop/isonm_d6_n19_p32009.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "Iso",
