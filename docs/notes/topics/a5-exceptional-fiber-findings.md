@@ -338,18 +338,25 @@ non-reduced tangent cone; arcs on the normalization replace them.
 - X-: Hilbert function equal to the quadric values through degree 5 at 32009 (h_5 = 417); V(K2) has one irreducible reduced support of projective dimension 3 and degree 12 inside a P^11, and the fiber
   has 3 nilpotent linear directions; the fiber's support lies in that threefold and equals it only with an arc
   certificate, and the nilpotent part needs a scheme-theoretic construction rather than arcs.
-- Iso: Hilbert function equal to the quadric values through degree 5 at both primes (h_4 = 640 by two methods,
-  h_5 = 1,316); K2 radical, Cohen-Macaulay and geometrically prime of degree 23 at both primes
+- Iso: Hilbert function equal to the quadric values through degree 6 at both primes (h_4 = 640 by two methods,
+  h_5 = 1,316, h_6 = 2,422 at N = 19 with r_18 = 2,253 below it, [iso-d6-n19-laptop](../../evidence/a5-exceptional-fibers/iso-d6-n19-laptop/README.md)); K2 radical, Cohen-Macaulay and geometrically prime of degree 23 at both primes
   ([structure/iso-k2](../../evidence/a5-exceptional-fibers/structure/iso-k2/sections/README.md)), so Iso arcs need the one target V(K2).
 - W8 -> N-: Hilbert function equal to the quadric values through degree 4 at both primes (h_4 = 1,725); K2 radical, equal to P cap (K2 : P) with V(P) the geometrically irreducible degree-20 component and K2 : P of projective
   dimension 5 and degree 30, geometrically prime, at both primes (structure/w8-kp, no primality of P used); h_5 = 4,116 at 32009 (r_16, two product sets); W8 -> N+ follows through the t9 isomorphism; F(I) = k[y]/K2 holds exactly when
   arcs reach every top-dimensional component of V(K2); arcs reach V(P) at both primes (analytic spread 6), and
   V(K2 : P) lies in the fiber too (linear 3-spaces over the base locus of the point blowup sweep a 5-dimensional set
   of V(K2 : P) outside V(P) at both primes; [structure/c30-bounded](../../evidence/a5-exceptional-fibers/structure/c30-bounded/README.md),
-  ledger row A5-066), so F(I) = k[y]/K2 for W8 at both primes.
-- Coverage (`claims.json`): every pair is certified through degree 3 at both primes; through degree 4 for W8 and
-  Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes and for X and
-  E8-bar -> VB at 32009. All certificates hold over F_p only.
+  ledger row A5-066), so F(I) = k[y]/K2 for W8 at both primes in every degree, proved after the Codex and Grok
+  adversarial reviews repaired the Cartier twist and the exact v2-divisibility of the slice step; h_6 = 8,624 and
+  h_7 = 16,416 follow without a rank run.
+- Last-jump law (ledger row A5-244): on Iso, W8 -> N- and X- the rank ladder's last jump r_{3d+1} - r_{3d} is
+  (2d+1)^2 and splits by character block like the parity classes of the box k[x, y]/(x^{2d+1}, y^{2d+1}); fitted on
+  d = 1 to 5, it predicted Iso d = 6 (r_18 = 2,253, blocks 583/568/551/551) before the run. E8-bar -> N- breaks it
+  (last jump 81 at d = 5 with blocks 18/21/21/21, which no union of parity classes of a 9 x 9 box produces).
+- Coverage (`claims.json`, rank certificates only): every pair is certified through degree 3 at both primes; through
+  degree 4 for W8 and Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes
+  and for X and E8-bar -> VB at 32009; through degree 6 for Iso at both primes. W8 holds in every degree by the C30
+  proof, which the rank registry does not carry. All certificates hold over F_p only.
 - E8-bar -> N+- (one class by the pair flip): Hilbert function equal to the quadric values through degree 3 at both
   primes (h_3 = 225, by two eliminations at 32009); non-reduced, and V(K2) not equidimensional, with minimal primes
   (4, 11) and (3, 4).
