@@ -195,3 +195,9 @@ def test_spec_check_bounds_published_imperfections() -> None:
     spec = case.spec_check(limit=2)
     check(spec["worst_level_shift_from_g2_and_indistinguishability"] < 0.005, "g2 and indistinguishability shift")
     check(spec["dark_level_shift_bound"] < 0.005, "dark count bound")
+
+
+@pytest.mark.audit
+def test_the_parallel_persistence_plan_reproduces_the_frozen_record() -> None:
+    plan = json.dumps(reading.persistence_plan(), indent=1, sort_keys=True) + "\n"
+    check(plan == (ROOT / case.PERSISTENCE_PLAN).read_text(), "the draw-first parallel plan equals the frozen bytes")

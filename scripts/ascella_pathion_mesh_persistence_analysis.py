@@ -25,6 +25,7 @@ import importlib
 import json
 import math
 import sys
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -35,6 +36,8 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "docs/evidence/pathion-kernel-map/conjectures"))
 import ascella_pathion_mesh_persistence as case  # noqa: E402
+
+import parallel  # noqa: E402
 
 an = importlib.import_module("ascella_pathion_coset_block_pairs_analysis")
 SCHEMA = "ascella-pathion-mesh-persistence-analysis-v2"
@@ -225,6 +228,19 @@ PLATFORM_DIFFERING = frozenset({"a-h-CC", "a-h-NN", "b-f-EE"})
 MEASURED_MODE_DRIFT = (0.0192, 0.0091, 0.0189, 0.0034, -0.0034, 0.0115, -0.0342, -0.0244)
 
 
+def _score_replicate(
+    settings: list[dict[str, Any]], modes: dict[str, Any], counts: list[list[np.ndarray]]
+) -> tuple[float, float]:
+    """Persistence r of one resampled job pair (all designs, then without the platform-differing ones)."""
+    jobs = [
+        [row_from_counts(i, s, c, modes) for i, (s, c) in enumerate(zip(settings, side, strict=True))]
+        for side in counts
+    ]
+    r, _, _ = persistence_r(jobs[0], settings, jobs[1], settings)
+    r_out, _, _ = persistence_r(jobs[0], settings, jobs[1], settings, PLATFORM_DIFFERING)
+    return (np.nan if r is None else r, np.nan if r_out is None else r_out)
+
+
 def resampled_r(
     settings: list[dict[str, Any]],
     laws: list[np.ndarray],
@@ -233,11 +249,15 @@ def resampled_r(
     replicates: int,
     drift: str,
 ) -> np.ndarray:
-    """r between two jobs drawn from the same per-mesh laws; the replay side carries the named efficiency drift."""
-    values = []
+    """r between two jobs drawn from the same per-mesh laws; the replay side carries the named efficiency drift.
+
+    Every random input is drawn first, in the order of the scalar loop (per replicate: the drift factor, then the
+    original and the replay side's multinomial counts setting by setting), so the scoring maps through parallel.py and
+    the frozen persistence plan reproduces byte for byte."""
     measured = np.zeros(len(laws[0]))
     measured[: len(MEASURED_MODE_DRIFT)] = MEASURED_MODE_DRIFT
     sd = float(np.std(MEASURED_MODE_DRIFT, ddof=1))
+    draws = []
     for _ in range(replicates):
         if drift == "none":
             factor = np.ones(len(laws[0]))
@@ -246,17 +266,16 @@ def resampled_r(
         else:
             factor = np.ones(len(laws[0]))
             factor[: len(MEASURED_MODE_DRIFT)] = np.exp(rng.normal(0.0, sd, len(MEASURED_MODE_DRIFT)))
-        jobs = []
+        sides = []
         for side in range(2):
-            rows = []
-            for i, (s, p) in enumerate(zip(settings, laws, strict=True)):
-                q = p * factor / float(np.sum(p * factor)) if side == 1 else p
-                rows.append(row_from_counts(i, s, rng.multinomial(case.SAMPLES, q), modes))
-            jobs.append(rows)
-        r, _, _ = persistence_r(jobs[0], settings, jobs[1], settings)
-        r_out, _, _ = persistence_r(jobs[0], settings, jobs[1], settings, PLATFORM_DIFFERING)
-        values.append((np.nan if r is None else r, np.nan if r_out is None else r_out))
-    return np.array(values)
+            sides.append(
+                [
+                    rng.multinomial(case.SAMPLES, p * factor / float(np.sum(p * factor)) if side == 1 else p)
+                    for p in laws
+                ]
+            )
+        draws.append(sides)
+    return np.array(parallel.ordered_map(partial(_score_replicate, settings, modes), draws))
 
 
 def persistence_plan(replicates: int = 2000) -> dict[str, Any]:
@@ -285,8 +304,9 @@ def persistence_plan(replicates: int = 2000) -> dict[str, Any]:
     models = {"per_mesh": (case.MODE_FIT_BA, 0.025), "slot": (case.ORIGINAL_BA, math.sqrt(2) * case.level_se(1.0))}
     for truth, (centre, sd) in models.items():
         counts = {"anchor ratio follows the mesh": 0, "slot efficiency": 0, "unresolved": 0}
-        for _ in range(20000):
-            counts[fresh_anchor_reading(list(rng2.normal(centre, sd, case.FRESH_ANCHOR_SEEDS)), th)] += 1
+        samples = [list(rng2.normal(centre, sd, case.FRESH_ANCHOR_SEEDS)) for _ in range(20000)]
+        for reading in parallel.ordered_map(partial(fresh_anchor_reading, th=th), samples):
+            counts[reading] += 1
         rates[truth] = {k: c / 20000 for k, c in counts.items()}
     return {
         "replicates": replicates,
