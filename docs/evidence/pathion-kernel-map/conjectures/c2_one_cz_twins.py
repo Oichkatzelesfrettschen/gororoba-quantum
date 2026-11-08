@@ -215,7 +215,7 @@ def main() -> None:
             models.setdefault(label, {})[base] = (arm_contrast(base, s_law), twin_p[0] - twin_p[1])
     print(f"  {'mechanism':56s} " + "  ".join(f"{n:>17s}" for n in oc.TEMPLATES))
     for label, per in models.items():
-        print(f"  {label:56s} " + "  ".join(f"{per[n][0]:+.4f} / {per[n][1]:+.4f}  " for n in oc.TEMPLATES))
+        print(f"  {label:56s} " + "    ".join(f"{per[n][0]:+.4f} / {per[n][1]:+.4f}" for n in oc.TEMPLATES))
     print("  (each cell: base s / twin t; k8 and k12 equal k4 to four decimals)")
     # Separation at the planned shots: pooled standard errors of the series design.
     design = oc.design()["pooled_se"]
