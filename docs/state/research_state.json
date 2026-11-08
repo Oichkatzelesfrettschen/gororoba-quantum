@@ -14983,6 +14983,122 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-long-horizon-persistence",
+      "statement": "Job-02's 64 settings of theta2-x-arm0 rerun on qpu:ascella (job fbdd5956, 2026-11-06 19:09 UTC, HOM 88.98 %, g2 2 %, transmittance 5.59 %, 64 iterations of 32,768 samples in 194 s), twelve days after job-03 and after a Quandela software update (job-02's platform catalogue records mosaiq-arcturus 2.1.5.2.post4 and hardware-core 3.9.3, job-08's mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11), at job-02's compilation seeds, return job-03's mesh byte for byte in all 64 settings. Against job-03 the 56 perturbed meshes' centered X statistics read persists: slope 0.815 with one-sided 99 % upper bound 0.924 beside the 0.916 a fully persistent error reaches through job-03's counting noise, relabeling p 5e-5 at the floor of 20,000 relabelings; the reproduction correlation is r 0.925 against the ceiling 0.936 (fixed per mesh), the seed-0 anchors stay steady and the perturbed dispersion stays compilation dependent. Against job-02 the slope is 0.810 with upper bound 0.946 beside 0.845, also persists. Each served mesh therefore keeps most of its analyzer error across twelve days and the update; the bound does not exclude full persistence.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One chip, one logical setting and one acquisition twelve days on; the readings M, A, S, P1 and P2 were fixed in plan ascella-long-horizon-seed-repeat-case before the acquisition, and the dark-output and predecessor correlations are exploratory. The slope's point estimates sit 11 % (against job-03) and 4 % (against job-02) below the attenuated full-persistence values; the reading supplies a one-sided upper bound only, so a partly redrawn component is not excluded and no maximum redrawn fraction is established. The software update left these compilations unchanged, so the reading says nothing about an update that redraws them.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/results.json",
+          "sha256": "7a3e3169e8f01085c96dbc454788ca51cb3e712b8d84e66a04c9277939d90fc0"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/long-horizon-reading-03-08.json",
+          "sha256": "b53f5405b88888a5aed151a98538fc4d428f3c84162ef2e19d9eaf743f1faea3"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/long-horizon-reading-02-08.json",
+          "sha256": "597052848d64f16634d6b60f3b2582d306d4d98c1fc6f22d8574a99f2762eafc"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/long-horizon-power.json",
+          "sha256": "e55f018fb0a880e999e4a632a8d6d4d7f910b336d633cb1fe3832c157a56b889"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/platform-before/catalogue.json",
+          "sha256": "7a0811e294db45b18d24e8b3632bba0751d10953c8c13b81ba04eb0d5a0eb0b9"
+        },
+        {
+          "path": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/platform-before/catalogue.json",
+          "sha256": "fb36baf07c6c7be24cf6964abd550bb48640487c9277a98ce21138dc0d3a1184"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "docs/evidence/ascella-order-coefficients/long-horizon-first-principles.md",
+        "scripts/ascella_long_horizon_reading.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-long-horizon-reading-03-08-replay": "replay",
+        "core-ascella-signed-coherence-long-horizon-reading-02-08-replay": "replay",
+        "core-ascella-signed-coherence-long-horizon-power-replay": "replay",
+        "core-ascella-signed-coherence-long-horizon-rehearsal-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-sim-ascella-signed-coherence-job-08-sim",
+        "qd-qpu-ascella-signed-coherence-job-08"
+      ],
+      "assumptions": [
+        "A setting's served mesh is identified by its unitary within 1e-6 (largest entry modulus) under the same setting name; serialized computed_circuit strings may differ for one unitary."
+      ],
+      "depends_on": [
+        "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-prospective-correction",
+      "statement": "A per-seed correction table fitted on job-02 and job-03 alone (slope 0.9136 times each setting's mean centered X, keyed by setting name) and frozen in correction-table.json before job-09 was sent predicts the per-mesh X error of job-09 on qpu:ascella (job 6400527c, 2026-11-07 04:34 UTC, HOM 88.98 %, g2 2 %, transmittance 5.57 %, 64 iterations of 32,768 samples in 194 s), whose 64 settings all returned job-02's mesh (the sim:ascella mesh gate passed beforehand at 2.45e-7). Over the 56 perturbed meshes the preregistered statistic R = var(d) / var(d - t) is 10.37 with a 98 % percentile interval of 6.16 to 16.21 over meshes resampled as exchangeable seeds, so the decision reads correction holds (lower end at least 2): the per-mesh standard deviation falls from 0.01085 to 0.00337, about 90 % of the per-mesh X variance, at r 0.951 between job-09's deviations and the table, against the plug-in benchmark 10.89 of a correction limited by job-09's counting variance (4.65e-6) and the table's noise (6.15e-6). Against job-08 the persistence reading is persists (slope 1.003, upper bound 1.102 beside 0.956; reproduction r 0.958 at the ceiling 0.956; every mesh byte-equal to job-08's; anchors steady).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "56 seeds of one logical setting on one chip, about twelve days after the table's runs. The bootstrap interval holds the table and every count fixed and resamples meshes as exchangeable seeds; a count resimulation added after job-09 returned, which redraws every run's block counts and refits the table, gives the conservative range 3.88 to 7.95 with no replicate below 2 and stays outside the preregistered decision. The power shares in correction-power.json are sensitivity calculations under one scalar table variance and one scalar counting variance per run. Whether the table corrects other settings, new seeds or a recompiled mesh is untested.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09/results.json",
+          "sha256": "5deb4064a1f333d5890b660653305f9dd301aca1c16f8db0f47c34c20921b5d4"
+        },
+        {
+          "path": "results/quandela/runs/2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim/results.json",
+          "sha256": "099151d773e45d8608d2d926a49540e177dc2bfafbc427073c668a81e0b4a973"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/correction-table.json",
+          "sha256": "cd9a43deeaa033d37f665abeefda5501762a73701b975679325475250120b8af"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/correction-score-09.json",
+          "sha256": "37d3eaef22b62531e423403644c0af6c3508998bf7e4c693e77aab521e39ef9d"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/correction-power.json",
+          "sha256": "cca5e99f91a064bc5bdda3206d218215c186ffeb74defd0e63518b5377ce4f61"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/long-horizon-reading-08-09.json",
+          "sha256": "d3cbfe75419f0b555e422f4104f04e781441be907bac59995d0acc50bb736f85"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "docs/evidence/ascella-order-coefficients/long-horizon-first-principles.md",
+        "scripts/ascella_correction_score.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-correction-table-replay": "replay",
+        "core-ascella-signed-coherence-correction-score-09-replay": "replay",
+        "core-ascella-signed-coherence-correction-power-replay": "replay",
+        "core-ascella-signed-coherence-job-09-mesh-gate-replay": "replay",
+        "core-ascella-signed-coherence-long-horizon-reading-08-09-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-sim-ascella-signed-coherence-job-09-sim",
+        "qd-qpu-ascella-signed-coherence-job-09"
+      ],
+      "assumptions": [
+        "A setting's served mesh is identified by its unitary within 1e-6 (largest entry modulus) under the same setting name.",
+        "The decision rule, table, thresholds and seed indices were committed in plan ascella-prospective-correction-case (commit 2698c83c9, 04:18 UTC) before job-09's submission (04:29 UTC)."
+      ],
+      "depends_on": [
+        "ascella-signed-coherence-long-horizon-persistence"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
