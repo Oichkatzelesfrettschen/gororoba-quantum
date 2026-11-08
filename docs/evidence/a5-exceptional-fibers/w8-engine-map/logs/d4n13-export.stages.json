@@ -1,0 +1,65 @@
+{
+ "tag": "d4n13-export",
+ "args": [
+  "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing",
+  "4",
+  "13",
+  "--quotient",
+  "--k2-receipt",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+  "--export-dir",
+  "docs/local/w8-engine-map/exports/n13",
+  "--export-chunks",
+  "5",
+  "--dense-tables-gb",
+  "0",
+  "--singular",
+  "~/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3.13/site-packages/sage_wheels/bin/Singular",
+  "--export-only"
+ ],
+ "rc": 0,
+ "tracemalloc": false,
+ "keep_blocks": null,
+ "total_wall_s": 208.7,
+ "stages": [
+  {
+   "phase": "start",
+   "start_s": 0.0,
+   "wall_s": 1.14,
+   "self_hwm_kib": 72296,
+   "tree_peak_kib": 71208
+  },
+  {
+   "phase": "representatives",
+   "start_s": 1.14,
+   "wall_s": 0.4,
+   "self_hwm_kib": 72312,
+   "tree_peak_kib": 71632
+  },
+  {
+   "phase": "pre-export",
+   "start_s": 1.54,
+   "wall_s": 0.0,
+   "self_hwm_kib": 72312,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "export",
+   "start_s": 1.54,
+   "wall_s": 206.9,
+   "self_hwm_kib": 413936,
+   "tree_peak_kib": 695492
+  },
+  {
+   "phase": "setup",
+   "start_s": 208.44,
+   "wall_s": 0.23,
+   "self_hwm_kib": 412984,
+   "tree_peak_kib": 0
+  }
+ ],
+ "generator_blocks_calls": [],
+ "final_echelons": [],
+ "n_inserts": 0,
+ "tree_peak_kib_overall": 695492
+}

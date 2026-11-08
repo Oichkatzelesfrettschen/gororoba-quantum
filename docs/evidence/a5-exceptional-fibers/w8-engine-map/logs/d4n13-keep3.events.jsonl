@@ -1,0 +1,29 @@
+{"stage": {"phase": "start", "start_s": 0.0, "wall_s": 0.49, "self_hwm_kib": 72508, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "representatives", "start_s": 0.49, "wall_s": 0.18, "self_hwm_kib": 72568, "self_rss_sampled_max_kib": 71628, "tree_peak_kib": 71628}}
+{"stage": {"phase": "pre-export", "start_s": 0.66, "wall_s": 0.0, "self_hwm_kib": 72568, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "export", "start_s": 0.66, "wall_s": 8.98, "self_hwm_kib": 412244, "self_rss_sampled_max_kib": 406488, "tree_peak_kib": 406488}}
+{"stage": {"phase": "setup", "start_s": 9.65, "wall_s": 0.02, "self_hwm_kib": 409568, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "block_tables", "start_s": 9.67, "wall_s": 1.85, "self_hwm_kib": 467696, "self_rss_sampled_max_kib": 436872, "tree_peak_kib": 436872}}
+{"stage": {"phase": "gvecs", "start_s": 11.51, "wall_s": 0.18, "self_hwm_kib": 451660, "self_rss_sampled_max_kib": 241708, "tree_peak_kib": 241708}}
+{"stage": {"phase": "order_walk", "start_s": 11.69, "wall_s": 0.12, "self_hwm_kib": 247524, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "pre-products", "start_s": 11.81, "wall_s": 0.0, "self_hwm_kib": 247524, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "products", "start_s": 11.81, "wall_s": 0.08, "self_hwm_kib": 306496, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "stack", "start_s": 11.9, "wall_s": 0.17, "self_hwm_kib": 437020, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"ins": [3, 450, 7728, 0, 432, 2.358, 292]}
+{"ins": [3, 450, 7728, 432, 864, 2.528, 169]}
+{"ins": [3, 435, 7728, 864, 1292, 2.393, 144]}
+{"ins": [3, 435, 7728, 1292, 1715, 2.743, 220]}
+{"ins": [3, 420, 7728, 1715, 2122, 2.546, 264]}
+{"ins": [3, 420, 7728, 2122, 2524, 2.499, 308]}
+{"ins": [3, 420, 7728, 2524, 2924, 2.472, 352]}
+{"ins": [3, 2924, 7728, 2924, 4962, 12.811, 1308]}
+{"ins": [3, 2924, 7728, 4962, 4966, 6.933, 945]}
+{"ins": [3, 1506, 7728, 4966, 4976, 1.93, 584]}
+{"ins": [3, 1506, 7728, 4976, 4976, 0.952, 177]}
+{"ins": [3, 10, 7728, 4976, 4979, 1.044, 586]}
+{"ins": [3, 10, 7728, 4979, 4979, 0.194, 0]}
+{"ins": [3, 3, 7728, 4979, 4979, 0.28, 0]}
+{"ins": [3, 3, 7728, 4979, 4979, 0.193, 0]}
+{"ins": [3, 420, 7728, 4979, 5399, 2.075, 589]}
+{"ins": [3, 62, 7728, 5399, 5400, 1.055, 635]}
+{"stage": {"phase": "closure+final", "start_s": 12.06, "wall_s": 52.3, "self_hwm_kib": 2360464, "self_rss_sampled_max_kib": 1962852, "tree_peak_kib": 1960804}}

@@ -1,0 +1,29 @@
+{"stage": {"phase": "start", "start_s": 0.0, "wall_s": 0.48, "self_hwm_kib": 72424, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "representatives", "start_s": 0.48, "wall_s": 0.17, "self_hwm_kib": 72036, "self_rss_sampled_max_kib": 71308, "tree_peak_kib": 71308}}
+{"stage": {"phase": "pre-export", "start_s": 0.65, "wall_s": 0.0, "self_hwm_kib": 72036, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "export", "start_s": 0.65, "wall_s": 9.92, "self_hwm_kib": 412020, "self_rss_sampled_max_kib": 405584, "tree_peak_kib": 405552}}
+{"stage": {"phase": "setup", "start_s": 10.57, "wall_s": 0.02, "self_hwm_kib": 409344, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "block_tables", "start_s": 10.59, "wall_s": 2.12, "self_hwm_kib": 467632, "self_rss_sampled_max_kib": 467600, "tree_peak_kib": 467600}}
+{"stage": {"phase": "gvecs", "start_s": 12.71, "wall_s": 0.18, "self_hwm_kib": 452580, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "order_walk", "start_s": 12.89, "wall_s": 0.13, "self_hwm_kib": 237448, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "pre-products", "start_s": 13.02, "wall_s": 0.0, "self_hwm_kib": 237448, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "products", "start_s": 13.02, "wall_s": 0.11, "self_hwm_kib": 290804, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "stack", "start_s": 13.12, "wall_s": 0.19, "self_hwm_kib": 421328, "self_rss_sampled_max_kib": 345608, "tree_peak_kib": 345560}}
+{"ins": [0, 450, 7812, 0, 432, 2.771, 351]}
+{"ins": [0, 450, 7812, 432, 864, 2.749, 200]}
+{"ins": [0, 435, 7812, 864, 1292, 2.918, 170]}
+{"ins": [0, 420, 7812, 1292, 1700, 2.875, 222]}
+{"ins": [0, 420, 7812, 1700, 2107, 3.326, 269]}
+{"ins": [0, 420, 7812, 2107, 2511, 2.903, 319]}
+{"ins": [0, 420, 7812, 2511, 2909, 3.33, 369]}
+{"ins": [0, 2909, 7812, 2909, 4990, 15.089, 1299]}
+{"ins": [0, 2909, 7812, 4990, 4997, 9.557, 1018]}
+{"ins": [0, 1741, 7812, 4997, 5014, 2.875, 625]}
+{"ins": [0, 1741, 7812, 5014, 5017, 2.278, 597]}
+{"ins": [0, 18, 7812, 5017, 5023, 1.15, 597]}
+{"ins": [0, 18, 7812, 5023, 5023, 0.159, 0]}
+{"ins": [0, 6, 7812, 5023, 5023, 0.326, 0]}
+{"ins": [0, 6, 7812, 5023, 5023, 0.219, 0]}
+{"ins": [0, 450, 7812, 5023, 5473, 2.53, 635]}
+{"ins": [0, 71, 7812, 5473, 5475, 1.567, 651]}
+{"stage": {"phase": "closure+final", "start_s": 13.32, "wall_s": 65.17, "self_hwm_kib": 2339484, "self_rss_sampled_max_kib": 2131068, "tree_peak_kib": 2131068}}

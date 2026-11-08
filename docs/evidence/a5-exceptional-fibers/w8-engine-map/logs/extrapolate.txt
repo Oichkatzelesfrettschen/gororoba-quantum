@@ -1,0 +1,15 @@
+sum c^2 (1e9) 13.870201081 rms c 58885.908927773206
+L GiB 103.3410510495305 walk 10% GiB 10.334105104953052
+rows*widest (1e6) 934.599072
+rho 0.62: B_b 16.0 GiB, sum B 64.1 GiB, closure 7 B_b 112.1 GiB, 4 B_b 64.1
+rho 0.645: B_b 16.7 GiB, sum B 66.7 GiB, closure 7 B_b 116.6 GiB, 4 B_b 66.7
+rho 0.657: B_b 17.0 GiB, sum B 67.9 GiB, closure 7 B_b 118.8 GiB, 4 B_b 67.9
+rho 0.67: B_b 17.3 GiB, sum B 69.2 GiB, closure 7 B_b 121.2 GiB, 4 B_b 69.2
+rho 0.75: B_b 19.4 GiB, sum B 77.5 GiB, closure 7 B_b 135.6 GiB, 4 B_b 77.5
+rho 1.0: B_b 25.8 GiB, sum B 103.3 GiB, closure 7 B_b 180.8 GiB, 4 B_b 103.3
+Q GiB 3.7836336195468903
+marshal (121 B/entry) chunk 4000 free c: 26.543348096311092  free 19.6k: 8.834898471832275  chunk 500 free c: 3.3179185120388865
+D ratio vs d=4 7.6128959276018096 57.95618440449621 441.2144002323287
+closure from d=4 split: blas h 13.910509562880364  r^2 part h 2.350445256404569  rref h 2.867893601510137
+vs d=5:  2.5320669934640523 6.411363259390085 16.23400129220974 closure h 13.6464800452591
+products from d=5 2201 s: x 6.411363259390085 (L) to 13.463862844719179 (matmul) -> 3.9198362594215492 8.231656144785255 h

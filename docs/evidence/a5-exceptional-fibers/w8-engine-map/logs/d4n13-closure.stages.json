@@ -1,0 +1,150 @@
+{
+ "tag": "d4n13-closure",
+ "args": [
+  "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing",
+  "4",
+  "13",
+  "--quotient",
+  "--k2-receipt",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+  "--export-dir",
+  "docs/local/w8-engine-map/exports/n13",
+  "--export-chunks",
+  "5",
+  "--dense-tables-gb",
+  "0",
+  "--singular",
+  "~/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3.13/site-packages/sage_wheels/bin/Singular"
+ ],
+ "rc": 0,
+ "tracemalloc": false,
+ "keep_blocks": null,
+ "total_wall_s": 490.8,
+ "stages": [
+  {
+   "phase": "start",
+   "start_s": 0.0,
+   "wall_s": 1.24,
+   "self_hwm_kib": 72412,
+   "self_rss_sampled_max_kib": 71132,
+   "tree_peak_kib": 71132
+  },
+  {
+   "phase": "representatives",
+   "start_s": 1.24,
+   "wall_s": 0.25,
+   "self_hwm_kib": 72320,
+   "self_rss_sampled_max_kib": 0,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "pre-export",
+   "start_s": 1.49,
+   "wall_s": 0.0,
+   "self_hwm_kib": 72320,
+   "self_rss_sampled_max_kib": 0,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "export",
+   "start_s": 1.49,
+   "wall_s": 26.74,
+   "self_hwm_kib": 412416,
+   "self_rss_sampled_max_kib": 406380,
+   "tree_peak_kib": 406380
+  },
+  {
+   "phase": "setup",
+   "start_s": 28.24,
+   "wall_s": 0.02,
+   "self_hwm_kib": 410312,
+   "self_rss_sampled_max_kib": 0,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "block_tables",
+   "start_s": 28.26,
+   "wall_s": 5.46,
+   "self_hwm_kib": 469168,
+   "self_rss_sampled_max_kib": 456572,
+   "tree_peak_kib": 456572
+  },
+  {
+   "phase": "gvecs",
+   "start_s": 33.71,
+   "wall_s": 0.25,
+   "self_hwm_kib": 454056,
+   "self_rss_sampled_max_kib": 0,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "order_walk",
+   "start_s": 33.97,
+   "wall_s": 0.49,
+   "self_hwm_kib": 264752,
+   "self_rss_sampled_max_kib": 264752,
+   "tree_peak_kib": 264752
+  },
+  {
+   "phase": "pre-products",
+   "start_s": 34.46,
+   "wall_s": 0.0,
+   "self_hwm_kib": 264752,
+   "self_rss_sampled_max_kib": 0,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "products",
+   "start_s": 34.46,
+   "wall_s": 0.14,
+   "self_hwm_kib": 317044,
+   "self_rss_sampled_max_kib": 0,
+   "tree_peak_kib": 0
+  },
+  {
+   "phase": "stack",
+   "start_s": 34.59,
+   "wall_s": 0.28,
+   "self_hwm_kib": 447564,
+   "self_rss_sampled_max_kib": 447564,
+   "tree_peak_kib": 447564
+  },
+  {
+   "phase": "closure+final",
+   "start_s": 34.87,
+   "wall_s": 455.96,
+   "self_hwm_kib": 3734172,
+   "self_rss_sampled_max_kib": 3625612,
+   "tree_peak_kib": 3625612
+  }
+ ],
+ "generator_blocks_calls": [],
+ "final_echelons": [
+  {
+   "blk": 0,
+   "rows": 5486,
+   "cols": 7812,
+   "bytes": 342853056
+  },
+  {
+   "blk": 1,
+   "rows": 5408,
+   "cols": 7672,
+   "bytes": 331921408
+  },
+  {
+   "blk": 2,
+   "rows": 5419,
+   "cols": 7728,
+   "bytes": 335024256
+  },
+  {
+   "blk": 3,
+   "rows": 5419,
+   "cols": 7728,
+   "bytes": 335024256
+  }
+ ],
+ "n_inserts": 148,
+ "tree_peak_kib_overall": 3625612
+}
