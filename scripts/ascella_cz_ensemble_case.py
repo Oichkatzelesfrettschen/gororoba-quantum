@@ -135,6 +135,8 @@ SUBMIT_STATUSES = ("available", "running")
 SUBMIT_WRAPPER = "scripts/ascella_cz_ensemble_case.py --submit"
 # arb working precisions tried in order until every float64 of the prediction certifies
 CERTIFIED_PRECISIONS = (128, 256, 512)
+# each worker batch re-solves the normal equations, so a batch takes at least this many columns
+MIN_BATCH_COLUMNS = 32
 BOUND_CHECK_MAPS = 20000
 
 
@@ -927,8 +929,9 @@ def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
     rounding of an exact value its ball encloses."""
     ctx.prec, ctx.threads = precision, 1
     inputs = prediction_inputs()
-    batches = [columns[:, idx] for idx in np.array_split(np.arange(columns.shape[1]), 4 * workers())]
-    scored = ordered_map(column_balls, [(batch, precision) for batch in batches if batch.shape[1]], min_items=2)
+    count = max(1, min(4 * workers(), columns.shape[1] // MIN_BATCH_COLUMNS))
+    batches = [columns[:, idx] for idx in np.array_split(np.arange(columns.shape[1]), count)]
+    scored = ordered_map(column_balls, [(batch, precision) for batch in batches], min_items=2)
     out: dict[str, Any] = {"rates": {}, "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
     for part in scored:
         for table in TABLES:
