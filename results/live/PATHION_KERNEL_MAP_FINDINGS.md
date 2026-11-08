@@ -404,7 +404,8 @@ original QPU job, so no design left the reading (A5-204).
 Persistence. The 46 calibrated mirror differences of the replay correlate with the original job's at r 0.9966 against
 the fixed-mesh cutoff 0.988 (relabeling p 5e-5; raw levels r 0.979), and the same 9 of 46 exceed 0.07. The replayed
 anchor pair reads B/A 1.0876 against 1.082. Within the job the early and late replay halves read r 0.994 and 0.996 and
-the replayed anchors 1.027 and 1.028, so no drift enters. A per-mesh table from the original job leaves 0 of 46 above
+the replayed anchors 1.027 and 1.028: the early-to-late anchor change stays inside the preregistered 0.03 band, and the
+half-job correlations are descriptive. A per-mesh table from the original job leaves 0 of 46 above
 0.07 (rms 0.0486 to 0.0040); that table subtracts each mesh's departure from its ideal level, so it shows persistence
 and does not validate any block level. Admission passes: anchors 1.007 and 1.048, darks 0.0010 and 0.0007, sentinel
 share 0.0009 (A5-200).

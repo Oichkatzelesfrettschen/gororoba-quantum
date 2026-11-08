@@ -3,8 +3,9 @@ the boundary orbit.
 
 On W8 -> N- (a(b) = e1 + e10 + b (e18 - e25), N- at b = 1) and E8-bar -> VB (a(b) = e1 + e18 + b (e8 + e27), VB at
 b = 0), the singular values of cd_core.left_mult_matrix(32, a) that vanish at the boundary are fitted against the
-distance eps to it: the slope of log(sigma) against log(eps) is the order of contact of each group. A hardware nullity
-contrast scanned toward the boundary inherits these orders, so the two incidences read apart by their scaling.
+distance eps to it: the slope of log(sigma) against log(eps) is the order of contact of each group. The orders are
+statements about the matrices. Hypothesis: a hardware contrast scanned toward the boundary shows the same orders;
+testing it needs an observable-specific noisy forward model and a calibrated scan.
 """
 
 import sys
@@ -34,7 +35,7 @@ def main() -> None:
         rows = []
         for eps in EPS:
             b = boundary - eps if boundary else eps
-            s = np.sort(np.linalg.svd(cd_core.left_mult_matrix(32, operand(line(b))), compute_uv=False))
+            s = np.sort(np.linalg.svd(cd_core.left_mult_matrix(32, operand(line(b)).tolist()), compute_uv=False))
             rows.append(s[n_open:n_boundary])
         values = np.array(rows)
         groups = sorted({round(float(x), 6) for x in values[0]})

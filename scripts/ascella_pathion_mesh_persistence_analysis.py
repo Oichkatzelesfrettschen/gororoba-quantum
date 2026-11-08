@@ -411,6 +411,7 @@ def map_score(
 
 
 def analyze(run: Path) -> dict[str, Any]:
+    run = run.resolve()
     frozen = ROOT / "results/quandela/cases/ascella_pathion_mesh_persistence/job-00/cases.json"
     if (run / "cases.json").read_bytes() != frozen.read_bytes():
         return {"schema": SCHEMA, "reading": "not read: cases.json differs from the frozen job-00 case"}

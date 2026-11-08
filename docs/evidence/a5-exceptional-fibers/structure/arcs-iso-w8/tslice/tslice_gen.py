@@ -65,12 +65,12 @@ CASES += [
     ("iso", 32009, 3, "t2h", 7200, True),
     ("iso", 32009, 3, "t2", 7200, True),
     ("iso", 32009, 3, "a0", 7200, True),
-    ("iso", 32009, 4, "t2h", 0, False),
-    ("iso", 32029, 4, "t2h", 0, False),
-    ("iso", 32009, 4, "t2", 0, False),
-    ("iso", 32029, 4, "t2", 0, False),
+    ("iso", 32009, 4, "t2h", 7200, True),
+    ("iso", 32029, 4, "t2h", 7200, True),
+    ("iso", 32009, 4, "t2", 7200, True),
+    ("iso", 32029, 4, "t2", 7200, True),
 ]
-# independent form families at k = 4 (variant b): prime, saturating function; preregistered, not run
+# independent form families at k = 4 (variant b): prime, saturating function; ran 2026-11-08 (cap 20 GiB, limit 7,200 s)
 B_CASES = [(32009, "t2h"), (32029, "t2h"), (32009, "t2"), (32029, "t2")]
 JUNK_CASES = [(32009, 3), (32029, 0)]
 

@@ -9,10 +9,12 @@ rule it changes; the numbers below link to the file that carries them, and the s
 Evidence classes. "Measured" is a number read from a retained file or log. "Computed" comes from a model or a
 simulation whose script is in the repository. "Hypothesis" is a reading that no retained result has tested.
 
-Status. The mesh-persistence case is written, reviewed and frozen, and nothing has been submitted to any provider: its
-`sim:ascella` and `qpu:ascella` runs wait for the owner's approval
-([case](../design/ascella-pathion-mesh-persistence-case.md), "Execution"). Every statement below about what that case
-will read is a preregistered rule, not a result.
+Status. The mesh-persistence case ran on 2026-11-07: the `sim:ascella` gate run
+(`results/quandela/runs/2026-11-07T181127Z-sim_ascella-ascella_pathion_mesh_persistence-sim-00/`) and the
+`qpu:ascella` job `6bc382af` (`results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00/`).
+The rules below were preregistered in the [case](../design/ascella-pathion-mesh-persistence-case.md) before either run;
+the readings are in the [findings](../../results/live/PATHION_KERNEL_MAP_FINDINGS.md) section "Ascella mesh persistence"
+and the revision log.
 
 | Part | Content |
 |---|---|
@@ -285,11 +287,12 @@ This is the pathion counterpart of the signed-coherence per-seed table (ratio 10
 1. Calibrate slots from many anchor seeds or from a per-mesh table, never from one anchor mesh. One pair supplied B/A
    1.082 where the other meshes imply 0.992, and removing the division cut the failures from 9 to 1
    ([c1_anchor.txt](../evidence/pathion-kernel-map/conjectures/c1_anchor.txt)). Take the number of anchor seeds from the
-   classification rates above; seven seeds separate a mesh-following ratio (sd 0.025) from a slot efficiency (sd 0.0039)
-   in 95.5 and 100 percent of runs.
+   spread the job measured: seven fresh anchor seeds read B/A from 0.84 to 1.05, median 0.951 and sd 0.067, not the
+   sd 0.025 the case assumed, so a slot calibration sized for a 0.01 level needs about (0.067 / 0.01)^2 = 45 anchor
+   seeds, or a per-mesh table.
 2. Read one block per photon where a design allows. The four-term case did and passed every rule; the fold into two
-   blocks saved reconfigurations and introduced the slot ratio. Treat this rule as a hypothesis until the replay and the
-   fresh anchors read.
+   blocks saved reconfigurations and put one anchor mesh's fixed error into every reading of its slot, which the
+   mesh-persistence job confirmed (A5-200, A5-201).
 3. Replay verbatim. Send the retained setting's bytes (compilation seed and circuit parameters) under a new name and
    position, and check the rebuild against it: identical seed, orientation and role, the target operator and the laws within
    1e-12. The template decomposition is degenerate (equal columns from phases that differ by pi/2), so rebuilt parameters
@@ -356,5 +359,6 @@ Append an entry per result or per revised rule: date, source, what changed. Keep
 | Date (UTC) | Change |
 |---|---|
 | 2026-11-07 | First version: the served-mesh facts, the four-term and two-block comparison, the ten mechanisms of the mesh-persistence reading with their review findings, ten design rules and the open questions. No run of the mesh-persistence case exists. |
-| 2026-11-07 | Mesh-persistence job `6bc382af` read: fixed per mesh (r 0.9966 against 0.988, same 9 of 46, anchor B/A 1.0876), no drift within the job, failure follows the mesh on fresh seeds (aligned mean -0.0024), fresh anchor B/A 0.84 to 1.05 (median 0.951, sd 0.067; preregistered rule unresolved, slot efficiency excluded), frozen gain model carries (p 0.0016) and the offset model does not (p 0.011), but a post-hoc diagnostic shows the frozen per-mode efficiencies carry it (efficiency-only r 0.484; shifter increments r 0.055 and 0.213), so a static per-shifter map adds little. sim and qpu compile three of 52 requests to different meshes, so a simulator mesh gate compares simulator with simulator. The rule "calibrate slots from many anchor seeds or a per-mesh table" now rests on this job; the center of the anchor-ratio distribution reads near 0.95, so the next case sizes its anchor set against sd 0.067 rather than 0.025. Ledger A5-200 to A5-204; claim hw-ascella-pathion-mesh-persistence. |
+| 2026-11-07 | Mesh-persistence job `6bc382af` read: fixed per mesh (r 0.9966 against 0.988, same 9 of 46, anchor B/A 1.0876), early-to-late anchor change inside the preregistered 0.03 band (half-job persistence r 0.994 and 0.996, descriptive), failure follows the mesh on fresh seeds (aligned mean -0.0024), fresh anchor B/A 0.84 to 1.05 (median 0.951, sd 0.067; preregistered rule unresolved, slot efficiency excluded), frozen gain model carries (p 0.0016) and the offset model does not (p 0.011), but a post-hoc diagnostic shows the frozen per-mode efficiencies carry it (efficiency-only r 0.484; shifter increments r 0.055 and 0.213), so a static per-shifter map adds little. sim and qpu compile three of 52 requests to different meshes, so a simulator mesh gate compares simulator with simulator. The rule "calibrate slots from many anchor seeds or a per-mesh table" now rests on this job; the center of the anchor-ratio distribution reads near 0.95, so the next case sizes its anchor set against sd 0.067 rather than 0.025. Ledger A5-200 to A5-204; claim hw-ascella-pathion-mesh-persistence. |
 | 2026-11-07 | A frozen-map test scores the efficiency-only model and the shifter-map increment over it, since each frozen model carries its own per-mode efficiencies; the mesh-persistence job's "map carries" came mainly from the efficiencies (c1_map_increment.txt: increments p 0.28 gain, 0.041 offset, post hoc), so A5-202 stays open until a preregistered fresh-seed increment test. |
+| 2026-11-08 | Status paragraph set to the executed runs; design rule 1 resized on the measured anchor spread (sd 0.067); rule 2 states the confirmed mechanism; the drift statement narrowed to the anchor-change rule (local review of PR #783). |

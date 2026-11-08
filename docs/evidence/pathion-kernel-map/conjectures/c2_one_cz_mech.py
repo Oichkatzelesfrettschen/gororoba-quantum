@@ -197,11 +197,11 @@ def main() -> None:
             )
             seen[key] = (block, entry["cz"], response)
     for block, _ in oc.LOW_CZ:
-        rows = [v for v in seen.values() if v[0] == block]
+        distinct = [v for v in seen.values() if v[0] == block]
         print(
-            f"  {block}: {len(rows)} distinct circuits, CZ {sorted({r[1] for r in rows})}, "
-            f"max |selector| under +-{EPS} rad over-rotation: min {min(r[2] for r in rows):.4f}, "
-            f"max {max(r[2] for r in rows):.4f}"
+            f"  {block}: {len(distinct)} distinct circuits, CZ {sorted({r[1] for r in distinct})}, "
+            f"max |selector| under +-{EPS} rad over-rotation: min {min(r[2] for r in distinct):.4f}, "
+            f"max {max(r[2] for r in distinct):.4f}"
         )
     tmp.cleanup()
 

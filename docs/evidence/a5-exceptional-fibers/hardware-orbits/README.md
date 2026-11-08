@@ -141,8 +141,9 @@ is listed under `controls` in [`result.json`](result.json) with its reason.
 The record covers the A_5 operands of the pathion kernel map, the coset-block map, the parallel coset blocks, the IBM
 rank-sector run, the Tuna-17 coset-block and coin series, the Ascella four-term, two-block and mesh-persistence jobs and
 the Ascella kernel-slice job (the ibm_kingston rank-sector payloads were never submitted). Operands of the wide 64-dimensional and 128-dimensional case (A_6 and A_7) fall outside the
-A_5 stratification. The Quantum Inspire emulator and the `sim:ascella` twins are not hardware. The one-CZ null blocks
-of the Tuna-17 case (`scripts/qi_pathion_one_cz_null_cases.py`) have no retained run. The associator and zero-divisor
+A_5 stratification. The Quantum Inspire emulator and the `sim:ascella` twins are not hardware. The 6-CZ null blocks
+of the Tuna-17 case (named one-CZ, `scripts/qi_pathion_one_cz_null_cases.py`) are acquiring on their case branch and have
+no retained run in this tree. The associator and zero-divisor
 cases act in dimension 16 or measure trilinear data, not left multiplications of A_5 elements.
 
 ## Replay

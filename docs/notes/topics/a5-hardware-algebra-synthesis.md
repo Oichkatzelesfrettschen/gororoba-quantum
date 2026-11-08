@@ -41,7 +41,7 @@ A point reading cannot see an attachment. A reading along a path that enters the
    - V: e1 + e24.
    - VB: e1 + e18 and e17 - e2.
    - N-: A16 = e1 + e10 + e18 - e25.
-   
+
    cd_core nullity equals the orbit's nullity for every operand
    ([hardware-orbits](../../evidence/a5-exceptional-fibers/hardware-orbits/README.md)). On ibm_fez e1 + e18 reads
    N_hat 12.65 [11.87, 13.42], which resolves its nullity of 12. e1 + e10 reads 7.30 [0.85, 13.74], consistent with 8
@@ -80,7 +80,7 @@ The algebra's exact predictions therefore turn each run into a calibration of it
 |---|---|---|
 | Ascella (photonic) | each served mesh carries a fixed error of rms about 0.025 in level, persistent at r 0.9966 under verbatim replay; the two-block mirror failure is that fixed error divided by one anchor mesh per slot; per-mode efficiencies carry most of a frozen map's reach, and a shifter map beyond them is not established (p 0.041 post hoc) | 200 to 204; [runbook](../../runbooks/ascella-block-run-design.md) |
 | IBM Heron r2 | the null operand's selector reads zero within 0.006 on Fez and Kingston; the pooled X90 over-rotation is -0.0015 +- 0.0014 rad; no packing effect above 0.015 on the packed null-k0 minus arm at the tested one-hop layouts (90 percent intervals); the calibration's confusion matrix overstates the asymmetry the circuits see by about 0.09 (hypothesis) | 192 to 199 |
-| Tuna-17 | the null selector offset +0.0164 is consistent with a coherent X90 over-rotation (+0.03 rad); IBM's own pooled angle sits 4.3 sigma below that value, so the offset is Tuna-specific; an assignment-level q12 readout flip is excluded at 14.5 se; the 6-CZ null-block case (named one-CZ), approved and running since 2026-11-07T20:27Z, separates the coin-conditioned dropout from the bounded over-rotation, while a post-schedule q12 correlation stays open | 186; `docs/evidence/pathion-kernel-map/conjectures/c2_q12_bracket.txt` (with the one-CZ case) |
+| Tuna-17 | the null selector offset +0.0164 is consistent with a coherent X90 over-rotation (+0.03 rad); IBM's own pooled angle sits 4.3 sigma below that value, so the offset is Tuna-specific; an assignment-level q12 readout flip is excluded at 14.5 se; the 6-CZ null-block case (named one-CZ), approved 2026-11-07 and acquiring on its case branch since 20:27Z (not part of this change; its retention change carries the approval, stamp and records), separates the coin-conditioned dropout from the bounded over-rotation, while a post-schedule q12 correlation stays open | 186; [c2_q12_bracket.txt](../../evidence/pathion-kernel-map/conjectures/c2_q12_bracket.txt) |
 
 The design rule this yields for every platform: calibrate against an operand whose ideal nullity is exact and known,
 on the same instrument realization (mesh, routing, readout context) as the measurement. One anchor mesh per slot
@@ -115,8 +115,8 @@ The successor works in the six t-variables alone
 - **What "on" means.** One sampled slice that reads "on" is evidence consistent with dim E0 >= 4, not a certification:
   a special slice can meet a lower-dimensional E0. The slices meeting a 3-dimensional E0 form a hypersurface of
   degree about 4 deg(E0) in the form coefficients, and nothing in the record bounds deg(E0), so no numerical
-  confidence is attached. Both primes use the same integer coefficients, so independent ANU form sets at each prime
-  enter the preregistration before any status change.
+  confidence is attached. The original family uses the same integer coefficients at both primes, so an independent
+  ANU family per prime entered the preregistration and read on as well (result below).
 
 Limits found while building it:
 

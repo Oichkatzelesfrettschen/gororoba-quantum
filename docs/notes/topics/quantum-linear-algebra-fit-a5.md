@@ -93,7 +93,7 @@ The Iso fiber question moves off the 23-variable blowup chart, which failed in s
 A5-071, A5-174, A5-176, A5-181, A5-205), onto a six-variable test. K2 holds the quadratic relations of F(I)
 (`k2_hilbert.py`), and k[y]/K2 is a five-dimensional domain (A5-058 to A5-060). F(I) = k[y]/K2 therefore holds exactly
 when the analytic spread is 5. That happens exactly when the origin lies on the closure of
-V(J, l1(G), ..., l4(G)) minus V(I) for generic forms l1..l4 in the t-variables. The junk through the origin
+V(J, l1(G), ..., l4(G)) minus V(I) for generic linear forms l1..l4 in the 17 generators G (the y-variables). The junk through the origin
 saturates away by the linear form t2 (A5-068). The preregistration and the controls (X+ and X- with k = 2 and 3,
 Iso with k = 3 and 5) live in `docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/`.
 
@@ -109,5 +109,5 @@ The quantum hardware's part in the ladder is its forms. The ladder decides only 
 possible lower-dimensional E0 and to the exceptional divisor. A form drawn uniformly from the ANU QRNG avoids each
 closed bad set with probability at least 1 - deg/p, where deg is the degree of the bad set in the form coefficients.
 For the k = 4 slice that degree depends on deg(E0), which the record does not bound, so a single "on" carries no
-numerical confidence. Independently drawn form sets at each prime are the available strengthening; the controls and
-the first k = 4 rows share one draw across both primes.
+numerical confidence. The k = 4 rows read on with the original family, which shares one draw across both primes, and
+with an independent family drawn for each prime (A5-217).
