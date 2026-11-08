@@ -1295,10 +1295,24 @@ def check() -> int:
     return 0
 
 
+def moved_inputs(retained: dict[str, Any], recomputed: dict[str, Any]) -> list[str]:
+    """Remove the prediction's input digests from both records and name the inputs whose float64 bits differ.
+
+    The digests are exact strings over float64 bits that libm and BLAS produce, so another numeric identity may move
+    them by an ulp; the floats they feed stay inside the tolerance first_difference applies, and the digests report
+    which input moved instead of failing the comparison."""
+    digests = [r["tomography_prediction"]["arithmetic"].pop("inputs_sha256") for r in (retained, recomputed)]
+    return sorted(name for name in digests[0] if digests[0][name] != digests[1].get(name))
+
+
 def check_forecast() -> int:
     retained = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))
-    found = tomo.first_difference(retained, json.loads(forecast_bytes()))
+    recomputed = json.loads(forecast_bytes())
+    moved = moved_inputs(retained, recomputed)
+    found = tomo.first_difference(retained, recomputed)
     require(found is None, f"{FORECAST} differs from the recomputed forecast at {found}")
+    if moved:
+        print(f"tomography prediction inputs moved on this numeric identity: {', '.join(moved)}")
     for name, row in retained["variants"].items():
         print(f"{name}: F_ZX {row['ZX']['F']:.4f} F_XZ {row['XZ']['F']:.4f} Hofmann {row['hofmann_interval']}")
     return 0

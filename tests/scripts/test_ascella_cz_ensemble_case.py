@@ -352,3 +352,17 @@ def test_certified_prediction_raises_precision_then_refuses(monkeypatch: pytest.
         case.certified_prediction(columns)
     if seen != [128, 256, 512]:
         raise AssertionError(f"the refusal ran {seen}")
+
+
+def test_moved_inputs_reports_rather_than_fails() -> None:
+    """A digest that moved is named and removed, so the tolerance comparison sees only the floats."""
+
+    def record(design: str) -> dict[str, Any]:
+        digests = {"design_matrix": design, "observed_rate_columns": "same"}
+        return {"tomography_prediction": {"F": 0.5, "arithmetic": {"precision_bits": 128, "inputs_sha256": digests}}}
+
+    retained, recomputed = record("a"), record("b")
+    if case.moved_inputs(retained, recomputed) != ["design_matrix"]:
+        raise AssertionError("a moved input is not named")
+    if tomo.first_difference(retained, recomputed) is not None:
+        raise AssertionError("the digests still reach the tolerance comparison")

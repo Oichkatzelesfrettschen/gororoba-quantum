@@ -54,8 +54,9 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
 7. A producer may take its computation out of the identity question: when each float it writes is certified as the
    correct rounding of a rigorous enclosure (an arb ball every point of which rounds to that float64) computed from
    its inputs, the record replays byte for byte on every identity that produces the same input bits. The record
-   carries digests of those inputs, since float64 libm and BLAS calls still produce them. `tomography_prediction` of
-   `scripts/ascella_cz_ensemble_case.py` writes its floats this way
+   carries digests of those inputs, since float64 libm and BLAS calls still produce them; across identities the
+   replay compares the floats within their bound as item 4 requires and reports a moved digest rather than failing
+   on it. `tomography_prediction` of `scripts/ascella_cz_ensemble_case.py` writes its floats this way
    ([least-squares precision](../evidence/least-squares-precision/README.md)).
 8. Intel SDE serves as a scheduled transfer check for named Intel identities after a real-chip
    comparison has shown agreement, and as a diagnostic; it stays off the pull-request lane, whose

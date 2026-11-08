@@ -23,8 +23,12 @@ the producer's float64 inputs, and the solve and every step after it no longer d
 count: the prediction came out byte-identical at 1 and 10 FLINT threads and in the runner image, and certified at
 128 bits. The inputs themselves (design matrix, rate observables, Hermitian basis, ideal Choi vector, observed rate
 columns) still come from float64 libm and BLAS calls, so the record carries their SHA-256 digests under
-`arithmetic.inputs_sha256`; the bytes match across hosts whose input digests match, and a mismatch names the input
-that moved.
+`arithmetic.inputs_sha256`; the bytes match across hosts whose input digests match. All five digests agree on the
+build host (Zen 3, numpy `X86_V3`, OpenBLAS Haswell core), in the runner image, and under Intel SDE 10.13.1
+emulating Sapphire Rapids (`-spr`) and Ice Lake server (`-icx`) with numpy's AVX-512 loops dispatched; AMD Zen 4
+and Zen 5 have no emulated counterpart and stay untested. `check_forecast` therefore removes the digests before its
+float tolerance comparison and prints the inputs that moved, so an identity whose inputs differ by an ulp reports
+them instead of failing.
 
 ## Reference and certificate
 
