@@ -360,6 +360,14 @@ def report_readings(result: dict[str, Any]) -> list[str]:
     return lines
 
 
+def model_gap(first: dict[str, Any], second: dict[str, Any]) -> tuple[dict[str, float], list[str]]:
+    """Model nullity-estimate gap between two devices over the estimates both carry, and the estimates only one carries
+    (a reference PUB planned on one device and dropped from the other's plan)."""
+    keys = {k for k in first if k.endswith("_nullity_estimate")}
+    other = {k for k in second if k.endswith("_nullity_estimate")}
+    return {k: first[k] - second[k] for k in sorted(keys & other)}, sorted(keys ^ other)
+
+
 def main() -> int:
     runs = [analyze_run(Path(arg)) for arg in sys.argv[1:3]]
     failed = False
@@ -374,9 +382,9 @@ def main() -> int:
         for line in report_readings(result):
             print(line)
     if len(runs) == 2:
-        gap = {
-            k: runs[0]["model"][k] - runs[1]["model"][k] for k in runs[0]["model"] if k.endswith("_nullity_estimate")
-        }
+        gap, unmatched = model_gap(runs[0]["model"], runs[1]["model"])
+        for key in unmatched:
+            print(f"  report  device agreement: {key} is planned on one device only and left out")
         for title, ok, reading in device_agreement(runs[0]["corrected"], runs[1]["corrected"], gap):
             print(f"  {'pass' if ok else 'FAIL'}  {title}: {reading}")
             failed |= not ok

@@ -232,3 +232,13 @@ def test_analyze_run_reads_the_archive_and_agrees_with_the_pooled_value(tmp_path
     _expect(result["pooled_difference"] < 1e-9, f"pooled difference {result['pooled_difference']}")
     _expect(abs(result["corrected"]["wide_o64_nullity_estimate"]["mean"] - 28.0) < 1e-9, "o64 corrected")
     _expect(any("placement" in line for line in analysis.report_readings(result)), "per-placement report")
+
+
+def test_device_gap_skips_an_estimate_planned_on_one_device_only() -> None:
+    fez = {"wide_o64_nullity_estimate": 28.1, "wide_ref32_n64_nullity_estimate": 0.0, "other": 1.0}
+    kingston = {"wide_o64_nullity_estimate": 28.0}
+    gap, unmatched = analysis.model_gap(fez, kingston)
+    _expect(
+        gap == {"wide_o64_nullity_estimate": fez["wide_o64_nullity_estimate"] - 28.0}, "gap over the shared estimates"
+    )
+    _expect(unmatched == ["wide_ref32_n64_nullity_estimate"], "the one-sided reference estimate is named")
