@@ -43,6 +43,15 @@ r_18 = 952 with blocks 215 / 197 / 270 / 270 and quotient dimension 72,693, and 
 N = 17 step agrees across the two primes in rank, blocks and quotient dimension (n17-laptop/), and h_1..h_6 of K2 agree
 at both primes (k2-hilbert.jsonl). A different value refutes the prime independence of the N = 18 step.
 
+## Result at p = 32029 (2026-11-08)
+
+The run ended 2026-11-08T06:29Z with exit 0 (`e8nm_d5_n18_p32029.json`, `n18.events`; wall 93,763 s, peak resident
+35.4 GiB, the same engine `7849cbc71ccf1787`). It read r_18 = 952, blocks 215, 197, 270 and 270, and quotient
+dimension 72,693: every number of the prediction above, committed before the run. The degree-5 standard counts read
+21, 83, 225, 495 and 952 for degrees 1 to 5. The representatives' relation file has sha256 `bfd7470c...`, the K2 whose
+Hilbert function `../k2-hilbert.jsonl` records at p = 32029 with HF(k[y]/K2, 5) = 952. So the lower bound r_18 = 952
+meets that upper bound, and h_5 = 952 holds at p = 32029 as at p = 32009 (ledger A5-220).
+
 ## Scope and falsifiers
 
 - The statement holds over F_32009. The repeat at p = 32029 (gate: p = 32009 moved with every invariant intact) runs on
@@ -52,12 +61,12 @@ at both primes (k2-hilbert.jsonl). A different value refutes the prime independe
   under reduction, so if the arc system and K2 at p are the reductions of their rational counterparts, 952 = r_p <= r_Q
   <= h_5(Q) <= HF_Q(k[y]/K2, 5) <= HF_p(k[y]/K2, 5) = 952 would give h_5 = 952 over Q. The step that needs proof is that
   the degree-2 K2 used at p equals the reduction of K2 over Q (it can be larger at a bad prime).
-- Falsifiers: r_18 below 952 at p = 32029 (a prime-specific rank), a degree-4 control other than 495, or a replay of
+- Falsifiers: r_18 below 952 at p = 32029 (a prime-specific rank; not met, the run read 952), a degree-4 control other than 495, or a replay of
   this record with a different rank.
 
 ## Files
 
-`e8nm_d5_n18_p32009.json`, `.time`, `.err` (empty), `n18.events`, `n18-singular-version.txt`, `run-n18.sh`, and
+`e8nm_d5_n18_p32009.json` and `e8nm_d5_n18_p32029.json`, each with `.time` and an empty `.err`, `n18.events`, `n18-singular-version.txt`, `run-n18.sh`, and
 `export-e8nm-p32009-n18-v11/` (`export.json`, `qB.txt.sha256`, `qG.txt.sha256`). The 4.1 GB export (quotient basis and
 the nine multiplication tables) stays on the laptop under `~/a5/exports/e8nm-p32009-n18-v11/`; `export.json` and
 `files_sha256_16` in the record name every file by hash, so a replay of the four rank increments needs those bytes.
