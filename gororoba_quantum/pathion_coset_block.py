@@ -1,4 +1,4 @@
-"""Coset blocks of the pair-resolved kernel map of A_5, as circuits on d data qubits and the selector.
+"""Coset blocks of the pair-resolved kernel map of A_n, as circuits on d data qubits and the selector.
 
 pathion_kernel_map runs the map on all 32 basis states. The SELECT of the operand e_i + t e_j sends k to
 k XOR i XOR (s m), m = i XOR j, so for any subspace V of (Z/2)^5 that contains m it maps the coset k0 + V onto
@@ -42,9 +42,13 @@ class Block:
     operand: tuple[int, int, int]
     basis: tuple[int, ...]
     coset: int
+    dim: int = pkm.DIM
 
     def __post_init__(self) -> None:
         i, j, _ = self.operand
+        pkm.data_qubits(self.dim)
+        if not all(0 <= index < self.dim for index in (i, j, self.coset, *self.basis)):
+            raise ValueError(f"{self.name}: an index lies outside the algebra of dimension {self.dim}")
         if self.basis[0] != i ^ j:
             raise ValueError(f"{self.name}: the first basis vector {self.basis[0]} is not m = {i ^ j}")
         if len(set(span(self.basis))) != 1 << len(self.basis):
@@ -56,7 +60,8 @@ class Block:
 
     @property
     def tag(self) -> str:
-        return f"{pkm.operand_tag(self.operand)}_v{'-'.join(map(str, self.basis))}_k{self.coset}"
+        prefix = "" if self.dim == pkm.DIM else f"d{self.dim}_"
+        return f"{prefix}{pkm.operand_tag(self.operand)}_v{'-'.join(map(str, self.basis))}_k{self.coset}"
 
 
 def span(basis: tuple[int, ...]) -> list[int]:
@@ -104,10 +109,10 @@ def block_template(
     i, j, t = block.operand
     d = block.d
     labels = input_labels(block)
-    orientation = pkm.orientation_signs(block.operand, direct_plus)
-    signs = joint_select_signs(pkm.DIM, i, j)
+    orientation = pkm.orientation_signs(block.operand, direct_plus, dim=block.dim)
+    signs = joint_select_signs(block.dim, i, j)
     f0 = np.array([signs[k] for k in labels])
-    f1 = np.array([signs[k + pkm.DIM] for k in labels]) * (-1.0 if t < 0 else 1.0)
+    f1 = np.array([signs[k + block.dim] for k in labels]) * (-1.0 if t < 0 else 1.0)
     if cocycle_free:
         f0 = np.ones(1 << d)
         f1 = np.full(1 << d, -1.0 if t < 0 else 1.0)
@@ -140,6 +145,27 @@ def block_circuit(block: Block, plus: bool, **options: bool) -> QuantumCircuit:
 def block_law(circuit: QuantumCircuit) -> np.ndarray:
     """Outcome law indexed y + 2^d s (data clbits first, selector last)."""
     return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities())
+
+
+def block_law_closed_form(block: Block, plus: bool, *, cocycle_free: bool = False) -> np.ndarray:
+    """``block_law`` of the same circuit from its amplitudes, with no state-vector evolution.
+
+    After H on the data qubits and the oracle diagonal the data amplitudes are psi = orientation * f0 / sqrt(2^d); the
+    selector H splits them into low = psi / sqrt 2 on s = 0 and high = f0 f1 psi / sqrt 2 on s = 1, the CNOT moves the
+    selector-1 amplitudes from x to x XOR 1, and the final selector H returns (low +- high) / sqrt 2 on s = 0, 1."""
+    i, j, t = block.operand
+    labels = input_labels(block)
+    orientation = pkm.orientation_signs(block.operand, plus, dim=block.dim)
+    signs = joint_select_signs(block.dim, i, j)
+    f0 = np.array([signs[k] for k in labels])
+    f1 = np.array([signs[k + block.dim] for k in labels]) * (-1.0 if t < 0 else 1.0)
+    if cocycle_free:
+        f0 = np.ones(1 << block.d)
+        f1 = np.full(1 << block.d, -1.0 if t < 0 else 1.0)
+    psi = np.array([orientation[k] for k in labels]) * f0 / np.sqrt(float(1 << block.d))
+    low = psi / np.sqrt(2.0)
+    high = (psi * f0 * f1 / np.sqrt(2.0))[np.arange(1 << block.d) ^ 1]
+    return np.concatenate([(low + high) / np.sqrt(2.0), (low - high) / np.sqrt(2.0)]) ** 2
 
 
 def coin_arm_laws(circuit: QuantumCircuit) -> tuple[np.ndarray, np.ndarray]:
@@ -178,19 +204,21 @@ def restriction_error(block: Block, plus: bool, *, cocycle_free: bool = False) -
 
     The six-qubit input is uniform, so each of the 32 / |V| cosets carries weight |V| / 32 and the module's law on
     the output coset equals |V| / 32 times the block law."""
-    full = pkm.ideal_law(pkm.kernel_map_circuit(block.operand, plus, cocycle_free=cocycle_free))
+    full = pkm.ideal_law(pkm.kernel_map_circuit(block.operand, plus, cocycle_free=cocycle_free, dim=block.dim))
     reduced = block_law(block_circuit(block, plus, cocycle_free=cocycle_free))
-    weight = (1 << block.d) / pkm.DIM
+    weight = (1 << block.d) / block.dim
     labels = output_labels(block)
     size = 1 << block.d
-    return max(abs(full[labels[y] + pkm.DIM * s] - weight * reduced[y + size * s]) for y in range(size) for s in (0, 1))
+    return max(
+        abs(full[labels[y] + block.dim * s] - weight * reduced[y + size * s]) for y in range(size) for s in (0, 1)
+    )
 
 
 def contrast_restriction_error(block: Block, *, cocycle_free: bool = False) -> float:
     """Largest difference between the block's c(y) and the module's c(k) on the output coset."""
     full = pkm.output_contrast(
-        pkm.ideal_law(pkm.kernel_map_circuit(block.operand, True, cocycle_free=cocycle_free)),
-        pkm.ideal_law(pkm.kernel_map_circuit(block.operand, False, cocycle_free=cocycle_free)),
+        pkm.ideal_law(pkm.kernel_map_circuit(block.operand, True, cocycle_free=cocycle_free, dim=block.dim)),
+        pkm.ideal_law(pkm.kernel_map_circuit(block.operand, False, cocycle_free=cocycle_free, dim=block.dim)),
     )
     reduced = output_contrast(
         block_law(block_circuit(block, True, cocycle_free=cocycle_free)),
@@ -208,34 +236,35 @@ def orientation_error(block: Block) -> float:
     return float(1.0 - abs(np.vdot(bound.data, direct.data)))
 
 
-def cosets(basis: tuple[int, ...]) -> list[int]:
-    """One representative of every coset of span(basis) in (Z/2)^5, ascending."""
+def cosets(basis: tuple[int, ...], dim: int = pkm.DIM) -> list[int]:
+    """One representative of every coset of span(basis) in (Z/2)^n, dim = 2^n, ascending."""
     members = set(span(basis))
     reps: list[int] = []
     covered: set[int] = set()
-    for k in range(pkm.DIM):
+    for k in range(dim):
         if k not in covered:
             reps.append(k)
             covered |= {k ^ v for v in members}
     return reps
 
 
-def tile(operand: tuple[int, int, int], basis: tuple[int, ...]) -> dict[str, object]:
-    """The blocks of one subspace over every coset: their output bins cover all 32 algebra indices once, their
+def tile(operand: tuple[int, int, int], basis: tuple[int, ...], dim: int = pkm.DIM) -> dict[str, object]:
+    """The blocks of one subspace over every coset: their output bins cover all dim algebra indices once, their
     aligned counts N_b sum to the nullity of L_(e_i + t e_j), and the concatenated c(y) equals the module's c(k)."""
-    blocks = [Block(f"coset{k0}", operand, basis, k0) for k0 in cosets(basis)]
+    blocks = [Block(f"coset{k0}", operand, basis, k0, dim) for k0 in cosets(basis, dim)]
     covered = sorted(label for b in blocks for label in output_labels(b))
     full = pkm.output_contrast(
-        pkm.ideal_law(pkm.kernel_map_circuit(operand, True)), pkm.ideal_law(pkm.kernel_map_circuit(operand, False))
+        pkm.ideal_law(pkm.kernel_map_circuit(operand, True, dim=dim)),
+        pkm.ideal_law(pkm.kernel_map_circuit(operand, False, dim=dim)),
     )
     gap = 0.0
     for b in blocks:
         reduced = output_contrast(block_law(block_circuit(b, True)), block_law(block_circuit(b, False)))
         gap = max(gap, max(abs(full[label] - reduced[y]) for y, label in enumerate(output_labels(b))))
     return {
-        "covers_once": covered == list(range(pkm.DIM)),
+        "covers_once": covered == list(range(dim)),
         "aligned": [aligned_in_block(b) for b in blocks],
-        "nullity": pkm.nullity(operand),
+        "nullity": pkm.nullity(operand, dim=dim),
         "contrast_gap": gap,
     }
 
@@ -244,11 +273,11 @@ def tile(operand: tuple[int, int, int], basis: tuple[int, ...]) -> dict[str, obj
 COSET_MAP_CONTROLS: tuple[tuple[str, tuple[int, int, int]], ...] = (("xor", (1, 18, 1)), ("twin", (17, 2, -1)))
 
 
-def default_basis(operand: tuple[int, int, int]) -> tuple[int, ...]:
+def default_basis(operand: tuple[int, int, int], dim: int = pkm.DIM) -> tuple[int, ...]:
     """m followed by the two lowest vectors that extend it to a 3-dimensional subspace."""
     i, j, _ = operand
     basis: list[int] = [i ^ j]
-    for vector in range(1, pkm.DIM):
+    for vector in range(1, dim):
         if len(basis) == 3:
             break
         if vector not in span(tuple(basis)):

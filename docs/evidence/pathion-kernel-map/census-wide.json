@@ -1,0 +1,172 @@
+{
+ "classes_of_all_4x4_pm1": 12,
+ "d128_four_term_classes": 9,
+ "d128_four_term_classes_new": [],
+ "d128_four_term_normalized_blocks": 160,
+ "d128_nullities_new": [
+  32,
+  36,
+  40,
+  44,
+  48,
+  52,
+  56,
+  60
+ ],
+ "d128_nullity_equals_aligned_pairs_and_cd_core_rank": true,
+ "d128_two_term_block_aligned_counts": {
+  "0": 73932,
+  "1": 36480,
+  "2": 56880,
+  "3": 36480,
+  "4": 52260
+ },
+ "d128_two_term_block_classes_new": [],
+ "d128_two_term_block_law_classes": 5,
+ "d128_two_term_block_law_classes_new": 0,
+ "d128_two_term_nullity_counts": {
+  "0": 2118,
+  "12": 1008,
+  "16": 672,
+  "20": 672,
+  "24": 672,
+  "28": 672,
+  "32": 672,
+  "36": 672,
+  "4": 1368,
+  "40": 672,
+  "44": 672,
+  "48": 1008,
+  "52": 1008,
+  "56": 1368,
+  "60": 1740,
+  "8": 1008
+ },
+ "d128_two_term_operands": 16002,
+ "d64_four_term_classes": 9,
+ "d64_four_term_classes_new": [],
+ "d64_four_term_normalized_blocks": 156,
+ "d64_nullities_new": [
+  16,
+  20,
+  24,
+  28
+ ],
+ "d64_nullity_equals_aligned_pairs_and_cd_core_rank": true,
+ "d64_two_term_block_aligned_counts": {
+  "0": 10332,
+  "1": 4224,
+  "2": 7344,
+  "3": 4224,
+  "4": 5124
+ },
+ "d64_two_term_block_classes_new": [],
+ "d64_two_term_block_law_classes": 5,
+ "d64_two_term_block_law_classes_new": 0,
+ "d64_two_term_nullity_counts": {
+  "0": 870,
+  "12": 336,
+  "16": 336,
+  "20": 336,
+  "24": 504,
+  "28": 684,
+  "4": 504,
+  "8": 336
+ },
+ "d64_two_term_operands": 3906,
+ "four_term_classes_missing_after_128": [
+  [
+   0.0,
+   0.0,
+   2.708,
+   13.292
+  ],
+  [
+   0.0,
+   1.314,
+   5.059,
+   9.627
+  ],
+  [
+   0.536,
+   4.0,
+   4.0,
+   7.464
+  ]
+ ],
+ "schema": "pathion-kernel-map-census-wide-v1",
+ "spectra_of_all_4x4_pm1": [
+  [
+   0.0,
+   0.0,
+   0.0,
+   16.0
+  ],
+  [
+   0.0,
+   0.0,
+   2.708,
+   13.292
+  ],
+  [
+   0.0,
+   0.0,
+   4.0,
+   12.0
+  ],
+  [
+   0.0,
+   0.0,
+   4.0,
+   12.0
+  ],
+  [
+   0.0,
+   0.0,
+   8.0,
+   8.0
+  ],
+  [
+   0.0,
+   1.314,
+   5.059,
+   9.627
+  ],
+  [
+   0.0,
+   1.528,
+   4.0,
+   10.472
+  ],
+  [
+   0.0,
+   4.0,
+   4.0,
+   8.0
+  ],
+  [
+   0.0,
+   4.0,
+   4.0,
+   8.0
+  ],
+  [
+   0.536,
+   4.0,
+   4.0,
+   7.464
+  ],
+  [
+   1.172,
+   1.172,
+   6.828,
+   6.828
+  ],
+  [
+   4.0,
+   4.0,
+   4.0,
+   4.0
+  ]
+ ]
+}

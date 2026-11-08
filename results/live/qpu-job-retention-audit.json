@@ -2,24 +2,24 @@
   "account_reserve_met": false,
   "account_reserve_seconds": 60,
   "account_usage_observation": {
-    "usage_consumed_seconds": 588,
+    "usage_consumed_seconds": 599,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-11-07T04:49:12.621Z",
-      "start_time": "2026-10-10T04:49:12.621Z"
+      "end_time": "2026-11-08T09:29:00.136Z",
+      "start_time": "2026-10-11T09:29:00.136Z"
     },
-    "usage_remaining_seconds": 12
+    "usage_remaining_seconds": 1
   },
-  "acquisition_count": 37,
+  "acquisition_count": 38,
   "awaiting_observation": [],
   "failed_charge_seconds": "14",
   "failed_job_count": 4,
-  "final_charge_seconds": "588",
+  "final_charge_seconds": "599",
   "historical_charge_seconds": "49",
-  "indexed_metrics_snapshots": 41,
-  "indexed_raw_data_files": 1000,
-  "inventory_sha256": "6b6f95dd4cced2243c82b5df18d3c27a575cb465ec32d61eaa22c1e6229afde4",
-  "job_count": 45,
+  "indexed_metrics_snapshots": 42,
+  "indexed_raw_data_files": 1013,
+  "inventory_sha256": "85676eccad0d1f572137d5b3ed4fca3ec85dd0f7f5bb46d8ce0336c4ea9fa0cd",
+  "job_count": 46,
   "jobs": [
     {
       "backend": "ibm_kingston",
@@ -2275,18 +2275,60 @@
         "running": "2026-11-07T04:27:49.391345Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-11-07T15:33:49.368893+00:00",
+      "final_qpu_charge_seconds": 11,
+      "input_schema_version": "v2.0",
+      "job_id": "dbnk9ndt7fqc73ajpfl0",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 12,
+      "raw_data_files": 13,
+      "run": "results/live/2026-11-07T153325.886771Z",
+      "shots_per_pub": 21888,
+      "source_files": {
+        "results/live/2026-11-07T153325.886771Z/collect.json": "ba92b6f56094b2de0c1eaa67f054a7e7213ab30da30fb1df1c03f36d2f32b379",
+        "results/live/2026-11-07T153325.886771Z/isa.qpy": "5f6abec705955f0c27f71ac368f5731182bce55ee5db1786d7899675ebfa9d3c",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/acquisition-index.json": "d9653c7efbc9268c71cb466115533603f1a829c97ff2c092ee3321c0c3effb53",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/index.json": "babad253293044600c8400d2a19c55b632e267997f941e3620a92fcd1267b72a",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/job_metrics.json": "47af694213e3eedb18a97ed594d65a8e38e5a8f485dc2b427a9ade22394d7f4a",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_00.json": "81106831d51e5c7d7e8cd140f7296cf4be7f37dc6dfdb186140fafd6f011dbc4",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_01.json": "b2b1580a6b8a23c07431349f660643bd414491554f9d644bc151d8aa206768cd",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_02.json": "e3b231435e17264414b5cea36629eb82b294926d5bd72976a2f677c1edfbebc1",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_03.json": "e15135a401952a6fdc34edc37e9bddf89f9bc04f75516b462b7996c885d9da4a",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_04.json": "9a0027d5b1b43c86b90c9dc4e8106b12da49b5079b77ea315029281a0d135392",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_05.json": "bb5c5b6e3d53600dfdd3622bf09e4e3d502a7cb4ad832a35c385092e004c06f6",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_06.json": "40647d7552c360ff7651a2b2d18d9fc84c258dc617586cbaf2d6e63d5800b5b7",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_07.json": "0dd6ed5332688d9b2049dc0ee5be2395fe58feafafaf35d93b8c072fec3e6df3",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_08.json": "9f26f364bbf80d4853bb22c40cef04b3c3976281f72143dbae281e51b14105f1",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_09.json": "a5fffc8090ac6e765723d016871f4a547d2bef9f8ce2053555449adc46f37d8d",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_10.json": "9551f466b4df092f043bded89a1451d27fcd494f98c2f7b995fa3aaa239fe885",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/pub_11.json": "3c3b67554e4c8f388b45a2734542463ef59209112c6f1f3ecab32208f19b2050",
+        "results/live/2026-11-07T153325.886771Z/raw/dbnk9ndt7fqc73ajpfl0/result_metadata.json": "defa81e33af0462db88583c4771ca7c5ebc7555a2984611bf6f42bb30515f18d",
+        "results/live/2026-11-07T153325.886771Z/record.json": "68ea265d35d8b13319b6f49deb9af7674159c9618a0aa2779d52a5eff9dc7aa7"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 262656,
+      "timestamps": {
+        "created": "2026-11-07T15:33:49.368893Z",
+        "finished": "2026-11-08T09:20:09.107791Z",
+        "running": "2026-11-08T09:18:38.128469Z"
+      },
+      "usage_status": "complete"
     }
   ],
-  "later_program_charge_seconds": "378",
+  "later_program_charge_seconds": "389",
   "new_campaign_ceiling_seconds": 180,
   "new_campaign_charge_seconds": "161",
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
-  "observed_at": "2026-11-07T04:49:12.660647+00:00",
-  "pub_count": 963,
+  "observed_at": "2026-11-08T09:29:00.199154+00:00",
+  "pub_count": 975,
   "replay_source_sha256": "79c3feb4d62f365cd7d052e8c33e7909bfcce8b9a9002ad8d113543dc91786b7",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All completed jobs in the retained service inventory have lossless raw archives, and every failed job's settled charge is bound to the collection that records why it returned no result. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
-  "submitted_pub_shots": 4556736,
+  "submitted_pub_shots": 4819392,
   "unallocated_campaign_seconds": "19",
-  "usage_window_charge_seconds": "588"
+  "usage_window_charge_seconds": "599"
 }

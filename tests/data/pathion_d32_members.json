@@ -1,0 +1,7136 @@
+{
+"pathion_coset_map": [
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "8b9d6d6513f1aa467c2070b43be06a8dc333acd82b6e466dd3aeee0a7b4bc4bd",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe17_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "8b9d6d6513f1aa467c2070b43be06a8dc333acd82b6e466dd3aeee0a7b4bc4bd",
+"ideal": [
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.9789332093268p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.5ce7ff83d5018p-112",
+"0x1.ffffffffffff0p-4",
+"0x1.8e73ffc1ea805p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.01e24cc824c99p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.12d6ffd16fe08p-110"
+],
+"name": "cmap_e1pe17_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe17_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109"
+],
+"name": "cmap_e1pe17_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe17_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109"
+],
+"name": "cmap_e1pe17_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5ff881608fe296811a3ca3a166c235a12491adfbbb71d505d74044e577f3c098",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe17_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5ff881608fe296811a3ca3a166c235a12491adfbbb71d505d74044e577f3c098",
+"ideal": [
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108"
+],
+"name": "cmap_e1pe17_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5a99ff3116f5d956d589ce7af652ae2ff899bb4f361c4f63b7eb1a0ed9e85e01",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.77d86660310ccp-108",
+"0x1.8bc4999049933p-108",
+"0x1.25adffa2dfc08p-112",
+"0x1.03756650abacdp-109",
+"0x1.66eacca15759ap-110",
+"0x1.1cdd59942aeb5p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe26_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5a99ff3116f5d956d589ce7af652ae2ff899bb4f361c4f63b7eb1a0ed9e85e01",
+"ideal": [
+"0x1.6fec333018866p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.df619980c4339p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.8bc4999049933p-108",
+"0x1.1b9cfff07aa02p-109",
+"0x1.789332093268cp-113",
+"0x1.66eacca15759ap-110"
+],
+"name": "cmap_e1pe26_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "396ad55da14cb02168b7c23608855680b288dddef1e5615c9732ad825f9863eb",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.5f619980c4333p-111",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe26_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "396ad55da14cb02168b7c23608855680b288dddef1e5615c9732ad825f9863eb",
+"ideal": [
+"0x1.5cfb0ccc0621ap-106",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.ffffffffffff6p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110"
+],
+"name": "cmap_e1pe26_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "b5c9f5b1ead8c0479498689f9785c5054e066a5b81edfe7ef8f7a77929122d39",
+"ideal": [
+"0x1.73756650abacep-109",
+"0x1.134c065e4060cp-108",
+"0x1.134c065e4060cp-108",
+"0x1.73756650abacep-109",
+"0x1.ffffffffffff0p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff0p-4"
+],
+"name": "cmap_e1pe26_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "b5c9f5b1ead8c0479498689f9785c5054e066a5b81edfe7ef8f7a77929122d39",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ccb5bff45bf83p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.b9cfff07aa030p-113",
+"0x1.ffffffffffff3p-4",
+"0x1.789332093268cp-113",
+"0x1.cdd59942aeb39p-111",
+"0x1.93c4999049933p-109",
+"0x1.da6eacca15757p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.a0f126641264cp-107",
+"0x1.ffffffffffff3p-4",
+"0x1.06eacca15759dp-110"
+],
+"name": "cmap_e1pe26_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "ffae1a8643d58c584ec37325765a785c68d00cd1c88ba403c96120bb29bef038",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.5f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe26_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "ffae1a8643d58c584ec37325765a785c68d00cd1c88ba403c96120bb29bef038",
+"ideal": [
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.5cfb0ccc0621ap-106",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe26_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "190a7038707e16c0b607dee072fb494d491a79b3f829d464b7011ba7eb114902",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.03756650abacdp-109",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff3p-4",
+"0x1.77d86660310ccp-108",
+"0x1.8bc4999049933p-108",
+"0x1.25adffa2dfc08p-112",
+"0x1.1cdd59942aeb5p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e2pe27_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "190a7038707e16c0b607dee072fb494d491a79b3f829d464b7011ba7eb114902",
+"ideal": [
+"0x1.6fec333018866p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.df619980c4339p-110",
+"0x1.789332093268cp-113",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.8bc4999049933p-108",
+"0x1.1b9cfff07aa02p-109"
+],
+"name": "cmap_e2pe27_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "3754e2f9c204fb2fc2d7d3dd89aca8d69aba7b3d4074df50f55799acc2d255e3",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.ffffffffffff6p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.8b4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e2pe27_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "3754e2f9c204fb2fc2d7d3dd89aca8d69aba7b3d4074df50f55799acc2d255e3",
+"ideal": [
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.45a6e6586e5d2p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.21e24cc824c98p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.62d3732c372e7p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110"
+],
+"name": "cmap_e2pe27_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "a48d17f918189d7e814d9b8cafc71ec4e318d81509b62f1576adff89355220ee",
+"ideal": [
+"0x1.73756650abacep-109",
+"0x1.134c065e4060cp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.134c065e4060cp-108",
+"0x1.73756650abacep-109",
+"0x1.ffffffffffff0p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e2pe27_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "a48d17f918189d7e814d9b8cafc71ec4e318d81509b62f1576adff89355220ee",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.b9cfff07aa030p-113",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ccb5bff45bf83p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.789332093268cp-113",
+"0x1.cdd59942aeb39p-111",
+"0x1.ffffffffffff3p-4",
+"0x1.06eacca15759dp-110",
+"0x1.93c4999049933p-109",
+"0x1.da6eacca15757p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.a0f126641264cp-107"
+],
+"name": "cmap_e2pe27_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c6e62cc15d66906e1825d2e2522ef69ea7a28dd01ad80be90e80c895b98d7a1a",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.8b4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e2pe27_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c6e62cc15d66906e1825d2e2522ef69ea7a28dd01ad80be90e80c895b98d7a1a",
+"ideal": [
+"0x1.21e24cc824c98p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.62d3732c372e7p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.45a6e6586e5d2p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110"
+],
+"name": "cmap_e2pe27_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff0p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe10_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.2f126641264d2p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.1df619980c433p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.16e73ffc1ea7fp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.ffffffffffff6p-4",
+"0x1.3fb0ccc06219bp-109"
+],
+"name": "cmap_e1pe10_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe10_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "cmap_e1pe10_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "2cf4c680d49446fe98c7b725ae65142e523d255fe16ade8dabf8d79b5d0b237f",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.4478933209327p-107",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.4478933209327p-107",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe10_k16_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "2cf4c680d49446fe98c7b725ae65142e523d255fe16ade8dabf8d79b5d0b237f",
+"ideal": [
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110"
+],
+"name": "cmap_e1pe10_k16_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe10_k20_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe10_k20_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff0p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe18_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.2f126641264d2p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.1df619980c433p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.16e73ffc1ea7fp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.ffffffffffff6p-4",
+"0x1.3fb0ccc06219bp-109"
+],
+"name": "cmap_e1pe18_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe18_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "cmap_e1pe18_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe18_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "cmap_e1pe18_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe18_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe18_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "761c24f3b159cfc3bb988b867b1fbb7fa5c0fd7017c22bbc3b6dff1a52001b3a",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.06eacca15759dp-110",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-109",
+"0x1.91e24cc824c98p-107",
+"0x1.496b7fe8b7f03p-109",
+"0x1.e24cc824c9a34p-115",
+"0x1.e24cc824c9a34p-115",
+"0x1.acdd59942aeb1p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe24_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "761c24f3b159cfc3bb988b867b1fbb7fa5c0fd7017c22bbc3b6dff1a52001b3a",
+"ideal": [
+"0x1.88f126641264cp-106",
+"0x1.ffffffffffff0p-4",
+"0x1.55a6e6586e5cep-109",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.cbc4999049931p-108",
+"0x1.91e24cc824c98p-107",
+"0x1.496b7fe8b7f03p-109",
+"0x1.e24cc824c9a34p-115",
+"0x1.e24cc824c9a34p-115"
+],
+"name": "cmap_e1pe24_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "3978db9635c1be67194a75b91fa438539eae110f090cfdbed79b81b416d77be1",
+"ideal": [
+"0x1.2fb0ccc06219ap-110",
+"0x1.45a6e6586e5d2p-110",
+"0x1.88f126641264cp-108",
+"0x1.88f126641264cp-108",
+"0x1.88f126641264cp-108",
+"0x1.88f126641264cp-108",
+"0x1.2fb0ccc06219ap-110",
+"0x1.45a6e6586e5d2p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe24_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "3978db9635c1be67194a75b91fa438539eae110f090cfdbed79b81b416d77be1",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.4efb0ccc0621ap-107",
+"0x1.30f126641264bp-109",
+"0x1.4efb0ccc0621ap-107",
+"0x1.30f126641264bp-109",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109"
+],
+"name": "cmap_e1pe24_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "ad2ac3da043a07bbb64e04441d24b156d04489ccaafeb1b4c99fdd8f479fd4e0",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff3p-4",
+"0x1.df619980c4339p-110",
+"0x1.89e24cc824c99p-108",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.8bc4999049933p-108",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.41e24cc824c98p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.c3c4999049932p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe24_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "ad2ac3da043a07bbb64e04441d24b156d04489ccaafeb1b4c99fdd8f479fd4e0",
+"ideal": [
+"0x1.64f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.71e24cc824c9ap-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.93c4999049933p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.0f126641264d1p-111",
+"0x1.59f619980c433p-107",
+"0x1.b9cfff07aa030p-113",
+"0x1.0789332093269p-109",
+"0x1.06e73ffc1ea81p-107"
+],
+"name": "cmap_e1pe24_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "fbd26e44da7605085dc086692934301675b4d77fe829d94f2b648c51e04fa6e1",
+"ideal": [
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.20f126641264dp-108",
+"0x1.20f126641264dp-108",
+"0x1.20f126641264dp-108",
+"0x1.20f126641264dp-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe24_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "fbd26e44da7605085dc086692934301675b4d77fe829d94f2b648c51e04fa6e1",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.4478933209327p-107",
+"0x1.01e24cc824c99p-109",
+"0x1.4478933209327p-107",
+"0x1.01e24cc824c99p-109",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe24_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "e27746f0092cf5a2f6db8af171b357356099a03eaad65cc43ef14678bcd9b2a4",
+"ideal": [
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "e27746f0092cf5a2f6db8af171b357356099a03eaad65cc43ef14678bcd9b2a4",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "2f3c209205159a9f955e957b87b1c2f482211e445e73511ef8f7a0f98d4d899d",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff6p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff3p-4",
+"0x1.04f126641264cp-107",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "2f3c209205159a9f955e957b87b1c2f482211e445e73511ef8f7a0f98d4d899d",
+"ideal": [
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.9789332093268p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.8e73ffc1ea805p-110",
+"0x1.ffffffffffff0p-4",
+"0x1.5ce7ff83d5018p-112",
+"0x1.ffffffffffff3p-4",
+"0x1.12d6ffd16fe08p-110",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107"
+],
+"name": "cmap_twin_e17me2_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108"
+],
+"name": "cmap_twin_e17me2_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108"
+],
+"name": "cmap_twin_e17me2_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "ba43256d31a4fbd4c8d83f13d938a69d68d88f6475a0673de09c92fa523b1af3",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "ba43256d31a4fbd4c8d83f13d938a69d68d88f6475a0673de09c92fa523b1af3",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110"
+],
+"name": "cmap_twin_e17me2_k12_plus",
+"shape": [
+16
+]
+}
+],
+"pathion_four_term_block": [
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "-0x1.921fb54442d18p+1"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.adec333018868p-107",
+"0x1.ffffffffffff4p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.e369b9961b971p-107",
+"0x1.8014aff935a61p-108",
+"0x1.49e24cc824c99p-107",
+"0x1.ccfb0ccc06214p-107",
+"0x1.ac38599a7e00fp-108",
+"0x1.5acd359f36006p-107",
+"0x1.72cd359f36009p-107",
+"0x1.061c2ccd3f007p-107",
+"0x1.1478933209325p-108",
+"0x1.86dce7ff83d4dp-107",
+"0x1.7fffffffffffdp-107"
+],
+"name": "ftb_B12_c2_T",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.2bb512c81a41cp-53",
+"prep_c1": "-0x1.0d4f07e8c8b63p-51"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.0900000000000p-106",
+"0x1.45e24cc824c99p-108",
+"0x1.afec333018865p-108",
+"0x1.ab2d6ffd16fe1p-107",
+"0x1.6278933209324p-107",
+"0x1.0100000000001p-106",
+"0x1.20ffffffffffep-106",
+"0x1.f278933209324p-107",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "ftb_B12_c2_D",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d18p+0",
+"prep_c0": "0x1.921fb54442d18p+1",
+"prep_c1": "-0x1.0000000000000p-52"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.20f126641264bp-109",
+"0x1.cbc4999049936p-109",
+"0x1.03c4999049931p-110",
+"0x1.2dce7ff83d4ffp-109",
+"0x1.21e24cc824c9cp-108",
+"0x1.51e24cc824c9ap-110",
+"0x1.4000000000001p-108",
+"0x1.abec333018868p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffffcp-4",
+"0x1.ffffffffffffcp-4"
+],
+"name": "ftb_B12_c2_D2",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "-0x1.2d97c7f3321d2p+2"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffffep-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffffep-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff0p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff2p-5"
+],
+"name": "ftb_B12_c2_F",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "0x0.0p+0"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5"
+],
+"name": "ftb_B12_c2_E0",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "0x1.921fb54442d18p+0"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffffcp-5"
+],
+"name": "ftb_B12_c2_E1",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "-0x1.921fb54442d18p+1"
+},
+"circuit": "fbe433168a66708595109b1ac7879b4020ac859b530ad8835656b29177e3e01d",
+"ideal": [
+"0x1.1ffffffffffffp-109",
+"0x1.ffffffffffffep-110",
+"0x1.1ffffffffffffp-109",
+"0x1.ffffffffffffep-110",
+"0x1.f4959c36deb06p-111",
+"0x1.f4959c36deb06p-111",
+"0x1.041329dcaf440p-109",
+"0x1.041329dcaf440p-109",
+"0x1.c3c4999049934p-110",
+"0x1.41e24cc824c98p-109",
+"0x1.c3c4999049934p-110",
+"0x1.41e24cc824c98p-109",
+"0x1.ffffffffffff8p-3",
+"0x1.ffffffffffff8p-3",
+"0x1.ffffffffffff8p-3",
+"0x1.ffffffffffff8p-3"
+],
+"name": "ftb_B12_c2_C",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "-0x1.921fb54442d18p+1"
+},
+"circuit": "60a3965d3e7cfaaa0125a09d10bbff949685f8d47d6b7bfc5bf04c3b862284c4",
+"ideal": [
+"0x1.2d06b98696377p-109",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff0p-3",
+"0x1.ffffffffffff0p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.fffffffffffeep-5",
+"0x1.3efbeff5544e1p-107",
+"0x1.45fd32e27da6cp-110",
+"0x1.5f619980c4337p-115",
+"0x1.ffffffffffff6p-5",
+"0x1.842708fc8ab4fp-109",
+"0x1.6c2708fc8ab4ep-109",
+"0x1.88d2aa4d0307bp-107",
+"0x1.ffffffffffff6p-5",
+"0x1.f504f333f9de6p-109",
+"0x1.dd04f333f9de3p-109"
+],
+"name": "ftb_B12_c2_N",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.0468a8ace4df5p+1",
+"prep_c1": "-0x1.921fb54442d19p+1"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.e4f92e2dff6e7p-3",
+"0x1.727c9716ffb6ep-4",
+"0x1.e4f92e2dff6e3p-3",
+"0x1.727c9716ffb6ep-4",
+"0x1.b06d1d2009120p-7",
+"0x1.727c9716ffb71p-4",
+"0x1.b06d1d2009122p-7",
+"0x1.727c9716ffb6ep-4",
+"0x1.b7f25ea37ce67p-109",
+"0x1.1b06d1d200918p-5",
+"0x1.2696c5bd0110cp-110",
+"0x1.1b06d1d20090ep-5",
+"0x1.112c66ecf137bp-106",
+"0x1.1b06d1d20090fp-5",
+"0x1.0ca3d2f074a04p-105",
+"0x1.1b06d1d20091bp-5"
+],
+"name": "ftb_C8_c5_T",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1dp+0",
+"prep_c0": "-0x1.6a09e667f3be4p-53",
+"prep_c1": "-0x1.3cc8a99af5454p-50"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.5f619980c4333p-113",
+"0x1.0f7904c6b048dp-106",
+"0x1.81e24cc824c97p-110",
+"0x1.a7a5919a791a1p-106",
+"0x1.5ebc2d33dad39p-103",
+"0x1.9904f333f9de2p-108",
+"0x1.ab34a400ba407p-103",
+"0x1.7ed3019790184p-105",
+"0x1.ffffffffffffcp-4",
+"0x1.fffffffffffebp-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffffep-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffffep-4",
+"0x1.ffffffffffff6p-4",
+"0x1.fffffffffffedp-4"
+],
+"name": "ftb_C8_c5_D",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "-0x1.4b442ef893d87p+2"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.1b06d1d200912p-5",
+"0x1.fc7f5b52a9969p-107",
+"0x1.1b06d1d200911p-5",
+"0x1.7ec18ea5c5641p-110",
+"0x1.1b06d1d20090ep-5",
+"0x1.908cb764e726ep-110",
+"0x1.1b06d1d20090cp-5",
+"0x1.ec880d151ab9cp-106",
+"0x1.727c9716ffb6ep-4",
+"0x1.e4f92e2dff6e5p-3",
+"0x1.727c9716ffb6ep-4",
+"0x1.b06d1d200912dp-7",
+"0x1.727c9716ffb6ep-4",
+"0x1.b06d1d2009131p-7",
+"0x1.727c9716ffb71p-4",
+"0x1.e4f92e2dff6e5p-3"
+],
+"name": "ftb_C8_c5_F",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "0x0.0p+0"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5"
+],
+"name": "ftb_C8_c5_E0",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "0x1.921fb54442d18p+0"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff4p-5"
+],
+"name": "ftb_C8_c5_E1",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.0468a8ace4df5p+1",
+"prep_c1": "-0x1.921fb54442d19p+1"
+},
+"circuit": "fbe433168a66708595109b1ac7879b4020ac859b530ad8835656b29177e3e01d",
+"ideal": [
+"0x1.21606a2ad4559p-105",
+"0x1.005abebf712ccp-105",
+"0x1.1f9fd0a176f94p-105",
+"0x1.0823d2f074a04p-105",
+"0x1.1a2aa94830719p-106",
+"0x1.1a2aa94830719p-106",
+"0x1.058ec66a6f18ep-106",
+"0x1.058ec66a6f18ep-106",
+"0x1.b06d1d2009122p-7",
+"0x1.b06d1d2009120p-7",
+"0x1.b06d1d2009122p-7",
+"0x1.b06d1d2009122p-7",
+"0x1.e4f92e2dff6e7p-3",
+"0x1.e4f92e2dff6e7p-3",
+"0x1.e4f92e2dff6e7p-3",
+"0x1.e4f92e2dff6e7p-3"
+],
+"name": "ftb_C8_c5_C",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.0468a8ace4df5p+1",
+"prep_c1": "-0x1.921fb54442d19p+1"
+},
+"circuit": "9631e077bf24a23d6a232dfba45419ed88a8b630454aa9e9375b995007849099",
+"ideal": [
+"0x1.1b06d1d20091dp-5",
+"0x1.727c9716ffb6cp-4",
+"0x1.e4f92e2dff6dep-3",
+"0x1.727c9716ffb67p-4",
+"0x1.1b06d1d200905p-5",
+"0x1.727c9716ffb67p-4",
+"0x1.b06d1d2009107p-7",
+"0x1.727c9716ffb67p-4",
+"0x1.727c9716ffb67p-4",
+"0x1.1b06d1d200917p-5",
+"0x1.0e0c78c386618p-105",
+"0x1.1b06d1d200903p-5",
+"0x1.727c9716ffb67p-4",
+"0x1.1b06d1d2008fep-5",
+"0x1.c6688beb6a727p-105",
+"0x1.1b06d1d200917p-5"
+],
+"name": "ftb_C8_c5_N",
+"shape": [
+16
+]
+}
+],
+"pathion_kernel_map": [
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "866543529cd3bc68990f2ca0e47018544bad15e9cde8785cd62aac69fd1462d2",
+"ideal": [
+"0x1.000000000000cp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000019p-5",
+"0x1.43843fec99484p-109",
+"0x1.4d7f4cb89f69dp-108",
+"0x1.202098d609157p-111",
+"0x1.aeaf8ff363a20p-107",
+"0x1.b115f2e65efecp-110",
+"0x1.65ff4cb89f69ep-108",
+"0x1.93198886e35f6p-115",
+"0x1.dbdc065e4060fp-107",
+"0x1.57d86660310cdp-107",
+"0x1.5ae24cc824c99p-107",
+"0x1.8e66cfef824a2p-107",
+"0x1.2a79b27d9ab81p-111",
+"0x1.0dce7ff83d501p-107",
+"0x1.83619980c4332p-109",
+"0x1.1bcd9fdf04946p-108",
+"0x1.b1be3fcd8e889p-108",
+"0x1.b2d6ffd16fe09p-110",
+"0x1.dbdc065e4060fp-107",
+"0x1.3cefbfd551383p-109",
+"0x1.ef7f4cb89f69dp-108",
+"0x1.0aeacca1575a3p-109",
+"0x1.8852bfe4d6984p-108",
+"0x1.274c66221b8d8p-109",
+"0x1.e8980cbc80c21p-108",
+"0x1.4eaeacca15759p-107",
+"0x1.63f7e99713ed3p-106",
+"0x1.4fc57cb997bfbp-108",
+"0x1.3322a97bea85ap-108",
+"0x1.69a0b6577606fp-107",
+"0x1.2f4b3094b16d9p-112",
+"0x1.1daaf9732f7fap-108",
+"0x1.38bf61ca821b4p-104",
+"0x1.000000000000cp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000016p-5",
+"0x1.000000000001ap-5"
+],
+"name": "kmap_e1pe17_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "866543529cd3bc68990f2ca0e47018544bad15e9cde8785cd62aac69fd1462d2",
+"ideal": [
+"0x1.21d5bff45bf80p-108",
+"0x1.dbdc065e4060fp-107",
+"0x1.3cefbfd551383p-109",
+"0x1.ef7f4cb89f69dp-108",
+"0x1.0aeacca1575a3p-109",
+"0x1.8852bfe4d6984p-108",
+"0x1.926dccb0dcb9fp-108",
+"0x1.e8980cbc80c21p-108",
+"0x1.4eaeacca15759p-107",
+"0x1.63f7e99713ed3p-106",
+"0x1.4fc57cb997bfbp-108",
+"0x1.695b3fbe0928fp-109",
+"0x1.69a0b6577606fp-107",
+"0x1.2f4b3094b16d9p-112",
+"0x1.1daaf9732f7fap-108",
+"0x1.38bf61ca821b4p-104",
+"0x1.000000000000cp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000016p-5",
+"0x1.000000000001ap-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000019p-5",
+"0x1.677beff5544e2p-108",
+"0x1.4d7f4cb89f69dp-108",
+"0x1.202098d609157p-111",
+"0x1.aeaf8ff363a20p-107",
+"0x1.b115f2e65efecp-110",
+"0x1.65ff4cb89f69ep-108",
+"0x1.5e98cc44371afp-110",
+"0x1.dbdc065e4060fp-107",
+"0x1.57d86660310cdp-107",
+"0x1.5ae24cc824c99p-107",
+"0x1.570beff5544e3p-107",
+"0x1.a93cd93ecd5c0p-110",
+"0x1.0dce7ff83d501p-107",
+"0x1.83619980c4332p-109",
+"0x1.1bcd9fdf04946p-108",
+"0x1.b1be3fcd8e889p-108"
+],
+"name": "kmap_e1pe17_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "39605fc391a3a12d79cadf8bbcbbc4b0fd132aaa2837ddd7bcf58cb10622b841",
+"ideal": [
+"0x1.000000000000dp-5",
+"0x1.0000000000006p-5",
+"0x1.b6f619980c433p-107",
+"0x1.7b5adffa2dfc1p-107",
+"0x1.0000000000006p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000002p-5",
+"0x1.000000000000bp-5",
+"0x1.e6cc66221b8d7p-110",
+"0x1.57ed59942aeb5p-107",
+"0x1.0000000000005p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000009p-5",
+"0x1.5f619980c433ap-110",
+"0x1.d3c4999049933p-109",
+"0x1.6908933209326p-107",
+"0x1.4ac43fec99486p-109",
+"0x1.820b0ccc0621ap-107",
+"0x1.c444999049930p-110",
+"0x1.f5b39ffe0f542p-107",
+"0x1.420e7ff83d500p-109",
+"0x1.1106b98696375p-109",
+"0x1.734c065e4060dp-108",
+"0x1.2dee7ff83d502p-108",
+"0x1.4af3ffc1ea807p-110",
+"0x1.3dcdd59942aebp-105",
+"0x1.88f126641264ep-108",
+"0x1.59ab7fe8b7f05p-109",
+"0x1.7d6d59942aeb2p-107",
+"0x1.380b6577606fbp-112",
+"0x1.b07fffffffffep-106",
+"0x1.0000000000006p-5",
+"0x1.000000000000cp-5",
+"0x1.400c333018867p-108",
+"0x1.a7cc065e4060cp-108",
+"0x1.68f126641264dp-110",
+"0x1.bf035cc34b1bdp-108",
+"0x1.000000000000fp-5",
+"0x1.000000000000cp-5",
+"0x1.cf53732c372e6p-110",
+"0x1.5a6032f20306cp-111",
+"0x1.25eb7fe8b7f02p-110",
+"0x1.5b6ce7ff83d4fp-107",
+"0x1.5a2d6ffd16fe2p-107",
+"0x1.56f5bff45bf80p-109",
+"0x1.0000000000009p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000cp-5"
+],
+"name": "kmap_e1pe26_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "39605fc391a3a12d79cadf8bbcbbc4b0fd132aaa2837ddd7bcf58cb10622b841",
+"ideal": [
+"0x1.96b94c9994aa6p-110",
+"0x1.b07fffffffffep-106",
+"0x1.0000000000008p-5",
+"0x1.000000000000cp-5",
+"0x1.521b0ccc06218p-108",
+"0x1.a7cc065e4060cp-108",
+"0x1.16a6e6586e5cdp-111",
+"0x1.bf035cc34b1bdp-108",
+"0x1.000000000000dp-5",
+"0x1.000000000000cp-5",
+"0x1.a97126641264dp-110",
+"0x1.5252bfe4d6982p-110",
+"0x1.25eb7fe8b7f02p-110",
+"0x1.bcece7ff83d4ep-107",
+"0x1.53fce7ff83d4ep-106",
+"0x1.a226e6586e5d0p-110",
+"0x1.0000000000009p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000006p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000006p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000006p-5",
+"0x1.8d024cc824c99p-108",
+"0x1.7b5adffa2dfc1p-107",
+"0x1.0000000000003p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000bp-5",
+"0x1.d582d95dd81bdp-110",
+"0x1.57ed59942aeb5p-107",
+"0x1.0000000000002p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000006p-5",
+"0x1.3ef86660310ccp-108",
+"0x1.0a3c499904991p-108",
+"0x1.8463ab32855d7p-106",
+"0x1.4ac43fec99486p-109",
+"0x1.545c499904992p-108",
+"0x1.ec4499904992fp-110",
+"0x1.3908933209326p-107",
+"0x1.4695ff26b4c1fp-113",
+"0x1.1106b98696375p-109",
+"0x1.bb4c065e40609p-108",
+"0x1.2dee7ff83d502p-108",
+"0x1.4af3ffc1ea807p-110",
+"0x1.3dcdd59942aebp-105",
+"0x1.5169b9961b973p-108",
+"0x1.59ab7fe8b7f05p-109",
+"0x1.e180933209325p-106"
+],
+"name": "kmap_e1pe26_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5e3b66444389f42cbc74b705fa00bc402492dc3a8b778009199e94c683d03f10",
+"ideal": [
+"0x1.0000000000006p-5",
+"0x1.ed5c499904993p-108",
+"0x1.0000000000008p-5",
+"0x1.1106b98696375p-109",
+"0x1.000000000000cp-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000001p-5",
+"0x1.640df7faaa271p-107",
+"0x1.000000000000bp-5",
+"0x1.c5756650abad2p-110",
+"0x1.0000000000009p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000006p-5",
+"0x1.67980cbc80c1ap-109",
+"0x1.67980cbc80c1ap-109",
+"0x1.1126641264d19p-114",
+"0x1.17dbab32855d6p-107",
+"0x1.37adffa2dfc07p-112",
+"0x1.60586660310cbp-108",
+"0x1.038619980c432p-107",
+"0x1.21295ff26b4c1p-109",
+"0x1.137b0ccc06219p-110",
+"0x1.443619980c432p-109",
+"0x1.e54c065e4060cp-108",
+"0x1.3c9332093268cp-113",
+"0x1.3290000000000p-107",
+"0x1.e452bfe4d6981p-109",
+"0x1.cef619980c434p-111",
+"0x1.16269b9961b97p-105",
+"0x1.b830ccc06219ap-110",
+"0x1.0000000000003p-5",
+"0x1.0c4c065e4060fp-109",
+"0x1.000000000000bp-5",
+"0x1.fed59942aeb3ap-111",
+"0x1.42e24cc824c9ap-111",
+"0x1.ffb756650abaep-108",
+"0x1.59f619980c433p-111",
+"0x1.000000000000cp-5",
+"0x1.6e73ffc1ea80ep-111",
+"0x1.0000000000008p-5",
+"0x1.252bfe4d6983dp-114",
+"0x1.311d59942aeb2p-107",
+"0x1.61e24cc824c9ap-108",
+"0x1.33f0ccc06219cp-109",
+"0x1.c27c499904992p-107",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000002p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000009p-5"
+],
+"name": "kmap_e2pe27_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5e3b66444389f42cbc74b705fa00bc402492dc3a8b778009199e94c683d03f10",
+"ideal": [
+"0x1.49d86660310cdp-110",
+"0x1.0000000000003p-5",
+"0x1.214aff935a611p-112",
+"0x1.000000000000bp-5",
+"0x1.90586660310cep-108",
+"0x1.d97126641264dp-110",
+"0x1.ffb756650abaep-108",
+"0x1.59f619980c433p-111",
+"0x1.000000000000dp-5",
+"0x1.d773ffc1ea80ap-111",
+"0x1.0000000000008p-5",
+"0x1.10695ff26b4c0p-109",
+"0x1.e094aff935a5cp-108",
+"0x1.61e24cc824c9ap-108",
+"0x1.5fe19980c433ap-110",
+"0x1.c27c499904992p-107",
+"0x1.0000000000009p-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000002p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000001p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000003p-5",
+"0x1.ed5c499904993p-108",
+"0x1.0000000000009p-5",
+"0x1.1d06b98696372p-109",
+"0x1.0000000000009p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000001p-5",
+"0x1.1c1394c9994a9p-106",
+"0x1.000000000000bp-5",
+"0x1.c5756650abad2p-110",
+"0x1.0000000000009p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000006p-5",
+"0x1.dcf3732c372e7p-108",
+"0x1.dcf3732c372e7p-108",
+"0x1.1126641264d19p-114",
+"0x1.e998933209325p-108",
+"0x1.bf39ffe0f5405p-110",
+"0x1.23fc333018867p-107",
+"0x1.038619980c432p-107",
+"0x1.46ce7ff83d4ffp-109",
+"0x1.137b0ccc06219p-110",
+"0x1.c898933209328p-108",
+"0x1.32a6032f20305p-107",
+"0x1.2e49990499344p-112",
+"0x1.3290000000000p-107",
+"0x1.1953019790183p-106",
+"0x1.cef619980c434p-111",
+"0x1.3fd4dccb0dcbap-106"
+],
+"name": "kmap_e2pe27_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5278280141e5ed49ba4d04afeeb021725d98f0c95d1c32caf15ac0504bb8ce56",
+"ideal": [
+"0x1.0000000000001p-5",
+"0x1.0000000000006p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000008p-5",
+"0x1.ce92bfe4d6981p-109",
+"0x1.3e24cc824c9a5p-112",
+"0x1.9078933209326p-109",
+"0x1.83a35cc34b1b8p-108",
+"0x1.e40e7ff83d500p-109",
+"0x1.16843fec99485p-109",
+"0x1.ac6c333018867p-108",
+"0x1.01ffffffffffep-108",
+"0x1.954c065e4060dp-108",
+"0x1.3e6032f20306ap-111",
+"0x1.87adffa2dfc08p-112",
+"0x1.75dd59942aeb1p-107",
+"0x1.0000000000009p-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000010p-5",
+"0x1.f53756650abaep-106",
+"0x1.6ca27999fcef6p-108",
+"0x1.52eeacca1575bp-106",
+"0x1.51493cccfe778p-106",
+"0x1.e1c98cc443719p-107",
+"0x1.b2213fdd13e82p-109",
+"0x1.f3ff56650abb0p-106",
+"0x1.3743ef314ef20p-106",
+"0x1.0e0ffffffffffp-107",
+"0x1.a9bab32855d64p-108",
+"0x1.0800000000001p-112",
+"0x1.1600933209326p-106",
+"0x1.e43fffffffffbp-109",
+"0x1.184d6ffd16fdfp-108",
+"0x1.ea980cbc80c19p-109",
+"0x1.03f56650abad1p-110",
+"0x1.000000000000dp-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000006p-5",
+"0x1.ffffffffffffep-6",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000cp-5",
+"0x1.15569b9961b97p-105",
+"0x1.008ffffffffffp-105",
+"0x1.ba9ca64cca554p-109",
+"0x1.76073ffc1ea82p-106",
+"0x1.000000000000bp-5",
+"0x1.0000000000002p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000cp-5",
+"0x1.ffffffffffffep-6",
+"0x1.0000000000009p-5"
+],
+"name": "kmap_e1pe10_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5278280141e5ed49ba4d04afeeb021725d98f0c95d1c32caf15ac0504bb8ce56",
+"ideal": [
+"0x1.5c7ffffffffffp-108",
+"0x1.184d6ffd16fdfp-108",
+"0x1.ea980cbc80c19p-109",
+"0x1.078c065e40610p-109",
+"0x1.000000000000dp-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000006p-5",
+"0x1.000000000000cp-5",
+"0x1.c04c499904993p-107",
+"0x1.36c7fffffffffp-106",
+"0x1.16fbeff5544e3p-108",
+"0x1.3dfab32855d69p-107",
+"0x1.000000000000bp-5",
+"0x1.0000000000002p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000cp-5",
+"0x1.ffffffffffffep-6",
+"0x1.0000000000009p-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000006p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000008p-5",
+"0x1.ce92bfe4d6981p-109",
+"0x1.87adffa2dfc08p-112",
+"0x1.4a95d59942ae9p-106",
+"0x1.7bf56650abacfp-110",
+"0x1.37adffa2dfc07p-112",
+"0x1.16843fec99485p-109",
+"0x1.ac6c333018867p-108",
+"0x1.afffffffffffep-108",
+"0x1.266eacca15757p-107",
+"0x1.9fab7fe8b7f05p-109",
+"0x1.79ad6ffd16fe0p-108",
+"0x1.75dd59942aeb1p-107",
+"0x1.0000000000006p-5",
+"0x1.0000000000005p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000012p-5",
+"0x1.f53756650abaep-106",
+"0x1.6ca27999fcef6p-108",
+"0x1.a553019790184p-106",
+"0x1.371ffffffffffp-106",
+"0x1.33f82d95dd818p-106",
+"0x1.2f95f2e65efedp-110",
+"0x1.3eeeacca1575bp-108",
+"0x1.ce26e6586e5d0p-110",
+"0x1.210ffffffffffp-107",
+"0x1.e3c4999049931p-108",
+"0x1.0800000000001p-112",
+"0x1.1600933209326p-106"
+],
+"name": "kmap_e1pe10_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "b3c79f5b443cfa5b7f1063b27b81fbac2a8e6b060ceee6f0a618dbeaaa70ef91",
+"ideal": [
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000012p-5",
+"0x1.b92acca1575a1p-109",
+"0x1.99965e5adb340p-107",
+"0x1.d3cd93ecd5c19p-114",
+"0x1.36d67ff83d500p-106",
+"0x1.ae184ff744f9ep-107",
+"0x1.065b3fbe0928fp-109",
+"0x1.3b9cfff07aa01p-108",
+"0x1.0863732c372e5p-107",
+"0x1.8807c1fd741e6p-105",
+"0x1.056f5bff45bf7p-105",
+"0x1.888bc1fd741e3p-105",
+"0x1.0bdd3198886e1p-105",
+"0x1.cebcfff07aa00p-108",
+"0x1.907194a7163f6p-113",
+"0x1.bffc7f9b1d10bp-110",
+"0x1.56db9961b9740p-109",
+"0x1.3322a97bea85ap-108",
+"0x1.9cfa65c4fb4efp-111",
+"0x1.99965e5adb340p-107",
+"0x1.7ce57fc9ad306p-109",
+"0x1.444c065e4060ep-107",
+"0x1.6be4131ac122bp-108",
+"0x1.c9cfff07aa031p-111",
+"0x1.c252bfe4d6986p-108",
+"0x1.06f97b318d076p-105",
+"0x1.44c9990499347p-110",
+"0x1.f36fd32e27da7p-107",
+"0x1.1bbfc7f9b1d11p-106",
+"0x1.7b819980c4337p-108",
+"0x1.ecbcfff07aa00p-108",
+"0x1.3167ff83d5017p-110",
+"0x1.83fab32855d6ap-107",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000013p-5"
+],
+"name": "kmap_e1pe18_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "b3c79f5b443cfa5b7f1063b27b81fbac2a8e6b060ceee6f0a618dbeaaa70ef91",
+"ideal": [
+"0x1.c8819980c433ap-108",
+"0x1.88984ff744fa0p-107",
+"0x1.5326641264d19p-112",
+"0x1.e567ff83d5017p-110",
+"0x1.0000000000012p-5",
+"0x1.0000000000019p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000016p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000014p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000014p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000014p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000014p-5",
+"0x1.b92acca1575a1p-109",
+"0x1.357418429605dp-111",
+"0x1.0d3cd93ecd5c3p-110",
+"0x1.c0109fee89f46p-107",
+"0x1.96495ff26b4c1p-108",
+"0x1.2722a97bea85cp-108",
+"0x1.3b9cfff07aa01p-108",
+"0x1.2fb0ccc06219ap-108",
+"0x1.f16285927854dp-106",
+"0x1.f99eb7fe8b7f0p-106",
+"0x1.ddb7019790184p-105",
+"0x1.2aaeacca1575ap-107",
+"0x1.6bfab32855d68p-107",
+"0x1.20e3294e2c7e8p-114",
+"0x1.a677dfeaa89c3p-108",
+"0x1.be4131ac122acp-112",
+"0x1.3322a97bea85ap-108",
+"0x1.0babd98c683b9p-107",
+"0x1.0d86b98696377p-108",
+"0x1.4917dfeaa89c0p-108",
+"0x1.444c065e4060ep-107",
+"0x1.464f364fb3570p-108",
+"0x1.c9cfff07aa031p-111",
+"0x1.7a5e7ff83d4ffp-107",
+"0x1.b86c333018867p-106",
+"0x1.6e2e5326652a6p-107",
+"0x1.ac0c333018866p-106",
+"0x1.31b7c7f9b1d10p-106"
+],
+"name": "kmap_e1pe18_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "6a9fd920ba9a83eb2f616489fd4c4fd540c43bcf70da59bcb442e1733fb6ea4f",
+"ideal": [
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.0b3198886e358p-112",
+"0x1.eacfff07aa02fp-111",
+"0x1.212f364fb356fp-108",
+"0x1.4ff56650abad3p-108",
+"0x1.83b56650abacfp-109",
+"0x1.2f3e5326652a6p-107",
+"0x1.0000000000013p-5",
+"0x1.0000000000012p-5",
+"0x1.3b3fc7f9b1d0fp-106",
+"0x1.d9582d95dd817p-106",
+"0x1.b95ff26b4c208p-115",
+"0x1.e53cd93ecd5c3p-110",
+"0x1.65a19980c4333p-109",
+"0x1.cb4dccb0dcb9dp-108",
+"0x1.9b95f2e65efeep-110",
+"0x1.7d6dccb0dcb9ep-108",
+"0x1.36dd59942aeb4p-106",
+"0x1.764ab32855d69p-107",
+"0x1.4e7904c6b048dp-106",
+"0x1.04f364fb35704p-112",
+"0x1.20b6e6586e5d0p-107",
+"0x1.0b9b3fbe0928fp-109",
+"0x1.b13e99713ed39p-109",
+"0x1.8d3e99713ed3bp-109",
+"0x1.13cd93ecd5c1ap-114",
+"0x1.33c8263582455p-109",
+"0x1.ff3e99713ed3bp-109",
+"0x1.cd5ff4cb89f6ap-106",
+"0x1.7bdec64316f96p-109",
+"0x1.5f0acca15759bp-108",
+"0x1.f039ffe0f5403p-109",
+"0x1.4f13732c372e6p-107",
+"0x1.000000000000fp-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000013p-5",
+"0x1.ee57fc9ad307ep-113",
+"0x1.6b2acca1575a3p-109",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000019p-5"
+],
+"name": "kmap_e1pe24_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "6a9fd920ba9a83eb2f616489fd4c4fd540c43bcf70da59bcb442e1733fb6ea4f",
+"ideal": [
+"0x1.da843fec99481p-108",
+"0x1.ffe3732c372e4p-107",
+"0x1.000000000000fp-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000012p-5",
+"0x1.ee57fc9ad307ep-113",
+"0x1.6b2acca1575a3p-109",
+"0x1.0000000000013p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000dp-5",
+"0x1.0b3198886e358p-112",
+"0x1.ad819980c4339p-108",
+"0x1.e81f798a778f8p-108",
+"0x1.4ff56650abad3p-108",
+"0x1.d724cc824c9a4p-111",
+"0x1.3e2fbfd551383p-109",
+"0x1.0000000000013p-5",
+"0x1.0000000000012p-5",
+"0x1.3b3fc7f9b1d0fp-106",
+"0x1.26eeacca15759p-106",
+"0x1.de6032f20306bp-109",
+"0x1.e53cd93ecd5c3p-110",
+"0x1.65a19980c4333p-109",
+"0x1.adfab32855d68p-107",
+"0x1.9b95f2e65efeep-110",
+"0x1.9edb9961b9740p-109",
+"0x1.d2f7b190c5be5p-107",
+"0x1.764ab32855d69p-107",
+"0x1.4e7904c6b048dp-106",
+"0x1.c6d78646f8517p-108",
+"0x1.604f364fb356fp-108",
+"0x1.0b9b3fbe0928fp-109",
+"0x1.2e40ccc06219cp-107",
+"0x1.be7d32e27da76p-110",
+"0x1.3d3cd93ecd5c0p-110",
+"0x1.04f364fb35704p-112",
+"0x1.70956650abad1p-108",
+"0x1.b49ff4cb89f6bp-106",
+"0x1.39dec64316f96p-109",
+"0x1.1496b98696372p-107"
+],
+"name": "kmap_e1pe24_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "6029f0856817a49fb4f41ec6614499e43b2ed3f581b2e4d5d096830790daeac0",
+"ideal": [
+"0x1.3ee7ff83d5018p-112",
+"0x1.822c333018866p-109",
+"0x1.3134dccb0dcbap-106",
+"0x1.849cfff07aa00p-109",
+"0x1.42624cc824c98p-108",
+"0x1.0c4d6ffd16fdfp-108",
+"0x1.a440000000000p-109",
+"0x1.9d1b0ccc06217p-108",
+"0x1.e47df7faaa270p-107",
+"0x1.b9a19980c4334p-109",
+"0x1.cc739ffe0f53fp-107",
+"0x1.2e0e7ff83d500p-109",
+"0x1.ebec333018864p-111",
+"0x1.eb89b9961b973p-108",
+"0x1.e2624cc824c9bp-110",
+"0x1.4e7619980c435p-108",
+"0x1.000000000000bp-5",
+"0x1.0000000000008p-5",
+"0x1.6bc6e6586e5cap-108",
+"0x1.5dc9332093269p-109",
+"0x1.0000000000008p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000002p-5",
+"0x1.7689b9961b975p-108",
+"0x1.20393198886e4p-106",
+"0x1.0000000000003p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000003p-5",
+"0x1.3c44999049930p-108",
+"0x1.6f44dccb0dcb9p-107",
+"0x1.000000000000dp-5",
+"0x1.000000000000bp-5",
+"0x1.4644dccb0dcb8p-107",
+"0x1.4a3ffffffffffp-109",
+"0x1.0800000000001p-106",
+"0x1.bbec333018867p-111",
+"0x1.0000000000006p-5",
+"0x1.0000000000009p-5",
+"0x1.9c3ffffffffffp-107",
+"0x1.a3b9ffe0f5405p-110",
+"0x1.e7d86660310cbp-113",
+"0x1.a900000000000p-111",
+"0x1.50f8933209327p-108",
+"0x1.778c065e4060dp-109"
+],
+"name": "kmap_twin_e17me10_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "6029f0856817a49fb4f41ec6614499e43b2ed3f581b2e4d5d096830790daeac0",
+"ideal": [
+"0x1.000000000000bp-5",
+"0x1.0000000000006p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000003p-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000003p-5",
+"0x1.9a8126641264dp-107",
+"0x1.3b626e6586e5dp-106",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.11c4dccb0dcb8p-107",
+"0x1.1478933209326p-109",
+"0x1.c404999049938p-109",
+"0x1.57dce7ff83d4fp-107",
+"0x1.0000000000003p-5",
+"0x1.000000000000bp-5",
+"0x1.4648000000000p-106",
+"0x1.39f619980c434p-107",
+"0x1.6f619980c4332p-115",
+"0x1.f040000000001p-109",
+"0x1.50f8933209327p-108",
+"0x1.53dbab32855d8p-107",
+"0x1.3ee7ff83d5018p-112",
+"0x1.366eacca1575bp-108",
+"0x1.077904c6b0489p-107",
+"0x1.2e39cfff07aa0p-106",
+"0x1.e43c499904993p-107",
+"0x1.0c4d6ffd16fdfp-108",
+"0x1.771ffffffffffp-108",
+"0x1.e31b0ccc06218p-108",
+"0x1.e47df7faaa270p-107",
+"0x1.7e3ab32855d67p-108",
+"0x1.600619980c432p-107",
+"0x1.7af5bff45bf80p-109",
+"0x1.93c4999049935p-111",
+"0x1.eb89b9961b973p-108",
+"0x1.e2624cc824c9bp-110",
+"0x1.2bec333018867p-109",
+"0x1.0000000000008p-5",
+"0x1.0000000000008p-5",
+"0x1.a4e7ff83d5017p-112",
+"0x1.5dc9332093269p-109",
+"0x1.0000000000008p-5",
+"0x1.0000000000002p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000005p-5",
+"0x1.2080000000001p-106",
+"0x1.0574c66221b8ep-107",
+"0x1.0000000000005p-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000001p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5"
+],
+"name": "kmap_twin_e17me10_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "e5fcd0d43e8d6ebf16b252403c7ca7623c6168bb1094d2801fabb07dd55774a9",
+"ideal": [
+"0x1.c4521ff64ca3fp-107",
+"0x1.1a3efbfd55139p-106",
+"0x1.0356ffd16fe09p-110",
+"0x1.8d79ffe0f5400p-109",
+"0x1.1026b98696377p-108",
+"0x1.219fbcc53bc7bp-107",
+"0x1.61a19980c4333p-109",
+"0x1.5495ff26b4c21p-112",
+"0x1.aacc66221b8d5p-110",
+"0x1.4aeacca1575a3p-111",
+"0x1.b54b94c9994a4p-106",
+"0x1.df619980c4339p-110",
+"0x1.380b6577606fbp-112",
+"0x1.8c4dccb0dcba0p-111",
+"0x1.8814aff935a5dp-108",
+"0x1.3ee7ff83d5018p-112",
+"0x1.000000000000fp-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000dp-5",
+"0x1.78835cc34b1b7p-108",
+"0x1.a39cfff07a9ffp-108",
+"0x1.dd5e7ff83d500p-107",
+"0x1.1f521ff64ca3ep-107",
+"0x1.e4a57fc9ad308p-111",
+"0x1.06e73ffc1ea81p-107",
+"0x1.ecb80cbc80c20p-108",
+"0x1.6caf3ffc1ea80p-106",
+"0x1.a24f63218b7c8p-108",
+"0x1.4b3e99713ed3bp-109",
+"0x1.4befbfd551381p-109",
+"0x1.4e53ef314ef20p-105",
+"0x1.0000000000010p-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000006p-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000bp-5",
+"0x1.7bdec64316f96p-109",
+"0x1.7395f2e65efeep-110",
+"0x1.b3926641264d2p-110",
+"0x1.1b27299332954p-107",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000009p-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5"
+],
+"name": "kmap_twin_e17me2_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "e5fcd0d43e8d6ebf16b252403c7ca7623c6168bb1094d2801fabb07dd55774a9",
+"ideal": [
+"0x1.0000000000010p-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000008p-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000bp-5",
+"0x1.e9dec64316f94p-109",
+"0x1.f6f7dfeaa89c4p-109",
+"0x1.0bdcfff07aa04p-109",
+"0x1.f33beff5544dfp-107",
+"0x1.000000000000cp-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000bp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000dp-5",
+"0x1.000000000000fp-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000010p-5",
+"0x1.07a90ffb26520p-106",
+"0x1.d3defbfd55137p-106",
+"0x1.61126641264cfp-110",
+"0x1.a13198886e359p-112",
+"0x1.52a57fc9ad30ap-110",
+"0x1.7fa7299332953p-107",
+"0x1.fbfa65c4fb4edp-111",
+"0x1.19cf63218b7c9p-108",
+"0x1.aacc66221b8d5p-110",
+"0x1.d5d59942aeb45p-112",
+"0x1.f3098cc44371ap-107",
+"0x1.c98933209326ap-110",
+"0x1.980b6577606fcp-112",
+"0x1.fc04999049938p-109",
+"0x1.cf77c7f9b1d10p-107",
+"0x1.a3ee7ff83d503p-108",
+"0x1.000000000000fp-5",
+"0x1.000000000000cp-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000012p-5",
+"0x1.de3ab32855d63p-108",
+"0x1.5afbeff5544dep-107",
+"0x1.57d86660310cdp-107",
+"0x1.a4a95ff26b4c0p-108",
+"0x1.c2d80cbc80c1cp-109",
+"0x1.01e24cc824c99p-107",
+"0x1.ecb80cbc80c20p-108",
+"0x1.6caf3ffc1ea80p-106",
+"0x1.04bbe3fcd8e88p-106",
+"0x1.4c3f798a778f8p-108",
+"0x1.391beff5544e3p-108",
+"0x1.4e53ef314ef20p-105"
+],
+"name": "kmap_twin_e17me2_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "6198f16e29252703c07aae6939adc6177144194c12f61d6db601c07198fd8b8b",
+"ideal": [
+"0x1.ffffffffffff9p-6",
+"0x1.3a03b666fb66dp-108",
+"0x1.0000000000001p-5",
+"0x1.ffffffffffffep-6",
+"0x1.0000000000001p-5",
+"0x1.45e24cc824c99p-112",
+"0x1.0000000000001p-5",
+"0x1.5c80000000001p-109",
+"0x1.ffffffffffffep-6",
+"0x1.ffffffffffffep-6",
+"0x1.d984f333f9de3p-109",
+"0x1.ffffffffffff9p-6",
+"0x1.3c7ffffffffffp-109",
+"0x1.ffffffffffffep-6",
+"0x1.6f619980c4339p-114",
+"0x1.0000000000001p-5",
+"0x1.0000000000001p-5",
+"0x1.ffffffffffffep-6",
+"0x1.0000000000005p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000002p-5",
+"0x1.3e24cc824c9a1p-113",
+"0x1.0000000000003p-5",
+"0x1.bae24cc824c96p-110",
+"0x1.0000000000003p-5",
+"0x1.0000000000003p-5",
+"0x1.ffffffffffffep-6",
+"0x1.ffffffffffffep-6",
+"0x1.5ae24cc824c9cp-110",
+"0x1.0000000000003p-5",
+"0x1.3e24cc824c9a1p-113",
+"0x1.0000000000002p-5",
+"0x1.64f126641264cp-110",
+"0x1.ffffffffffffcp-6",
+"0x1.07ffffffffffep-109",
+"0x1.087ffffffffffp-109",
+"0x1.e5fd86660310bp-109",
+"0x1.ffffffffffff9p-6",
+"0x1.7fffffffffffdp-111",
+"0x1.0000000000002p-5",
+"0x1.087fffffffffdp-109",
+"0x1.cffffffffffffp-110",
+"0x1.ffffffffffffcp-6",
+"0x1.99f619980c430p-110",
+"0x1.0000000000001p-5",
+"0x1.ffffffffffffep-112",
+"0x1.ffffffffffff9p-6",
+"0x1.e5fd86660310bp-109",
+"0x1.e8ffffffffffep-110",
+"0x1.7904f333f9de7p-108",
+"0x1.88b8933209325p-108",
+"0x1.127619980c433p-109",
+"0x1.43e24cc824c9bp-111",
+"0x1.ffffffffffff3p-6",
+"0x1.2120000000001p-107",
+"0x1.ffffffffffff6p-6",
+"0x1.8cf8933209325p-109",
+"0x1.933b0ccc06218p-108",
+"0x1.a7a5919a791a1p-108",
+"0x1.a8ffffffffffcp-110",
+"0x1.ffffffffffff6p-6",
+"0x1.011ffffffffffp-107",
+"0x1.ffffffffffff3p-6",
+"0x1.adec333018866p-111"
+],
+"name": "kmap_xor_e1pe10_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "6198f16e29252703c07aae6939adc6177144194c12f61d6db601c07198fd8b8b",
+"ideal": [
+"0x1.1d4c1450a0038p-109",
+"0x1.ffffffffffffcp-6",
+"0x1.3d57559ef1261p-110",
+"0x1.18e6e481ebcfcp-110",
+"0x1.5d72795614807p-108",
+"0x1.ffffffffffff9p-6",
+"0x1.063234260cfe5p-111",
+"0x1.0000000000002p-5",
+"0x1.18e6e481ebcfcp-110",
+"0x1.faaeab3de24c0p-111",
+"0x1.ffffffffffffcp-6",
+"0x1.37ce8dea9cf2cp-109",
+"0x1.0000000000001p-5",
+"0x1.0c64684c19fcdp-112",
+"0x1.ffffffffffff9p-6",
+"0x1.5d72795614807p-108",
+"0x1.7e868a0c1b43bp-109",
+"0x1.8f3baad5c0d46p-108",
+"0x1.63a7ed1087b51p-108",
+"0x1.c294dc2619afap-110",
+"0x1.78cbe6204ab01p-111",
+"0x1.ffffffffffff3p-6",
+"0x1.214fe57dc1ecap-107",
+"0x1.ffffffffffff6p-6",
+"0x1.5bcce7ad09c6bp-109",
+"0x1.6e2a66aa84a46p-108",
+"0x1.bddc493c40100p-108",
+"0x1.5e868a0c1b439p-109",
+"0x1.ffffffffffff6p-6",
+"0x1.014fe57dc1ec8p-107",
+"0x1.ffffffffffff3p-6",
+"0x1.e2d5cc883e6ccp-111",
+"0x1.ffffffffffff9p-6",
+"0x1.4d1bb9f101eaep-108",
+"0x1.0000000000001p-5",
+"0x1.ffffffffffffep-6",
+"0x1.0000000000001p-5",
+"0x1.09c601383f689p-111",
+"0x1.0000000000001p-5",
+"0x1.2b54547b00948p-109",
+"0x1.ffffffffffffep-6",
+"0x1.ffffffffffffep-6",
+"0x1.ffb4fa4806e6bp-109",
+"0x1.ffffffffffff9p-6",
+"0x1.0b54547b00947p-109",
+"0x1.ffffffffffffep-6",
+"0x1.29821c088b14ap-112",
+"0x1.0000000000001p-5",
+"0x1.0000000000001p-5",
+"0x1.ffffffffffffep-6",
+"0x1.0000000000005p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000002p-5",
+"0x1.e9aa30a9d0aa3p-117",
+"0x1.0000000000003p-5",
+"0x1.358c6ef4268a9p-109",
+"0x1.0000000000003p-5",
+"0x1.0000000000003p-5",
+"0x1.ffffffffffffep-6",
+"0x1.ffffffffffffep-6",
+"0x1.058c6ef4268adp-109",
+"0x1.0000000000003p-5",
+"0x1.e9aa30a9d0aa3p-117",
+"0x1.0000000000002p-5"
+],
+"name": "kmap_xor_e1pe10_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "9ae0c85006b82022fb77fd62bb362fbd3dad59b77bed8b57a2d4fc9cd3f72763",
+"ideal": [
+"0x1.0000000000006p-5",
+"0x1.21e24cc824c97p-109",
+"0x1.0000000000008p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.e24cc824c9a34p-117",
+"0x1.0000000000005p-5",
+"0x1.0f126641264d0p-112",
+"0x1.0000000000005p-5",
+"0x1.3c49990499345p-114",
+"0x1.0000000000005p-5",
+"0x1.f2d3732c372e2p-110",
+"0x1.0000000000009p-5",
+"0x1.65f619980c432p-110",
+"0x1.0000000000009p-5",
+"0x1.cbec333018866p-111",
+"0x1.0000000000005p-5",
+"0x1.0000000000008p-5",
+"0x1.21e24cc824c97p-109",
+"0x1.0000000000006p-5",
+"0x1.0f126641264d0p-112",
+"0x1.0000000000005p-5",
+"0x1.e24cc824c9a34p-117",
+"0x1.0000000000005p-5",
+"0x1.e7d86660310cbp-110",
+"0x1.0000000000003p-5",
+"0x1.3c49990499345p-114",
+"0x1.0000000000005p-5",
+"0x1.61e24cc824c9ap-111",
+"0x1.0000000000009p-5",
+"0x1.30f126641264cp-110",
+"0x1.0000000000009p-5",
+"0x1.df619980c4335p-111",
+"0x1.0000000000005p-5",
+"0x1.4dce7ff83d4ffp-109",
+"0x1.00f126641264ap-108",
+"0x1.03c4999049931p-110",
+"0x1.0000000000005p-5",
+"0x1.0f126641264d0p-112",
+"0x1.0000000000005p-5",
+"0x1.93c4999049931p-110",
+"0x1.0000000000005p-5",
+"0x1.e5a6e6586e5cap-111",
+"0x1.0000000000005p-5",
+"0x1.0b2d6ffd16fe0p-107",
+"0x1.0000000000002p-5",
+"0x1.24193198886e3p-106",
+"0x1.0000000000002p-5",
+"0x1.00f126641264ap-108",
+"0x1.134c065e40610p-109",
+"0x1.0000000000005p-5",
+"0x1.05a6e6586e5d0p-110",
+"0x1.0000000000005p-5",
+"0x1.0f126641264d0p-112",
+"0x1.0000000000005p-5",
+"0x1.03c4999049931p-110",
+"0x1.0000000000003p-5",
+"0x1.cfb0ccc06219ap-111",
+"0x1.0000000000005p-5",
+"0x1.93c4999049931p-110",
+"0x1.0000000000002p-5",
+"0x1.2d78933209325p-106",
+"0x1.0000000000002p-5",
+"0x1.186eacca15759p-107"
+],
+"name": "kmap_xor_e1pe18_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "9ae0c85006b82022fb77fd62bb362fbd3dad59b77bed8b57a2d4fc9cd3f72763",
+"ideal": [
+"0x1.6593cda6d131ap-111",
+"0x1.0000000000005p-5",
+"0x1.93318ff9cecb1p-109",
+"0x1.6e83909ee5ceap-108",
+"0x1.8c1cc2ad075c2p-112",
+"0x1.0000000000005p-5",
+"0x1.b76ce8d4049ecp-116",
+"0x1.0000000000005p-5",
+"0x1.8237de5e7572ap-111",
+"0x1.0000000000005p-5",
+"0x1.af84d4ab6141fp-110",
+"0x1.0000000000005p-5",
+"0x1.1648cbcdfa792p-107",
+"0x1.0000000000002p-5",
+"0x1.3621afdffbf32p-106",
+"0x1.0000000000002p-5",
+"0x1.6e83909ee5ceap-108",
+"0x1.58af165fd1dbfp-109",
+"0x1.0000000000005p-5",
+"0x1.918000d6e9b86p-111",
+"0x1.0000000000005p-5",
+"0x1.b76ce8d4049e1p-116",
+"0x1.0000000000005p-5",
+"0x1.8c1cc2ad075c0p-112",
+"0x1.0000000000003p-5",
+"0x1.a489c7df5b209p-110",
+"0x1.0000000000005p-5",
+"0x1.8237de5e75728p-111",
+"0x1.0000000000002p-5",
+"0x1.3f8111797cb74p-106",
+"0x1.0000000000002p-5",
+"0x1.238a089af8f0ap-107",
+"0x1.0000000000006p-5",
+"0x1.cb1bdfc1c4801p-109",
+"0x1.0000000000008p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.55a1b4daf26f2p-113",
+"0x1.0000000000005p-5",
+"0x1.9d157326d9129p-111",
+"0x1.0000000000005p-5",
+"0x1.b27de05d95ae3p-112",
+"0x1.0000000000005p-5",
+"0x1.89adabd1b7bebp-109",
+"0x1.0000000000009p-5",
+"0x1.ee47e45e17495p-111",
+"0x1.0000000000009p-5",
+"0x1.3ed0f81f281b7p-110",
+"0x1.0000000000005p-5",
+"0x1.0000000000008p-5",
+"0x1.cb1bdfc1c4801p-109",
+"0x1.0000000000006p-5",
+"0x1.9d157326d912bp-111",
+"0x1.0000000000005p-5",
+"0x1.55a1b4daf26f4p-113",
+"0x1.0000000000005p-5",
+"0x1.8430256bb4adfp-109",
+"0x1.0000000000003p-5",
+"0x1.b27de05d95ae3p-112",
+"0x1.0000000000005p-5",
+"0x1.09cc04eb2e3d2p-110",
+"0x1.0000000000009p-5",
+"0x1.843dfdf6238cbp-111",
+"0x1.0000000000009p-5"
+],
+"name": "kmap_xor_e1pe18_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "feea00eb96e0e258c83207773e521fdbac34f48b3919f9de83c2abd2ea40c57a",
+"ideal": [
+"0x1.0000000000019p-5",
+"0x1.0000000000014p-5",
+"0x1.000000000001bp-5",
+"0x1.0000000000012p-5",
+"0x1.7a77dfeaa89c1p-108",
+"0x1.1e24cc824c9a2p-109",
+"0x1.4dffbfd551382p-109",
+"0x1.44a032f20306bp-109",
+"0x1.5277dfeaa89c0p-108",
+"0x1.c8d98cc443717p-107",
+"0x1.696dccb0dcb9dp-108",
+"0x1.24e07ff83d4fep-106",
+"0x1.75a6e6586e5d0p-107",
+"0x1.65eee6586e5cdp-108",
+"0x1.a5665e5adb341p-107",
+"0x1.4ff56650abad3p-110",
+"0x1.18b95ff26b4c1p-107",
+"0x1.0000000000019p-5",
+"0x1.055b3fbe0928ep-109",
+"0x1.2f151183310a9p-107",
+"0x1.a64131ac122aep-112",
+"0x1.4518cc44371afp-110",
+"0x1.3a2e12fbb662bp-109",
+"0x1.94b45b2bbb037p-107",
+"0x1.3114ccc06219cp-107",
+"0x1.0ba5f2e65eff5p-109",
+"0x1.b5ab9961b9740p-109",
+"0x1.532f364fb3570p-108",
+"0x1.584c66221b8d6p-110",
+"0x1.3befbfd551382p-109",
+"0x1.6ffcdccb0dcb9p-106",
+"0x1.a757097ddb315p-108",
+"0x1.a93e0feba0f1ep-107",
+"0x1.d0a032f203069p-109",
+"0x1.0f285927854c5p-109",
+"0x1.d55a5e5adb340p-107",
+"0x1.0000000000012p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000014p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000013p-5",
+"0x1.41f9b27d9ab81p-110",
+"0x1.0000000000016p-5",
+"0x1.0000000000019p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000013p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000bp-5",
+"0x1.0000000000013p-5"
+],
+"name": "kmap_flip3_e1pe18_minus",
+"shape": [
+64
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "feea00eb96e0e258c83207773e521fdbac34f48b3919f9de83c2abd2ea40c57a",
+"ideal": [
+"0x1.a93e0feba0f1ep-107",
+"0x1.d0a032f203069p-109",
+"0x1.d0d0263582459p-108",
+"0x1.b482a97bea85cp-108",
+"0x1.0000000000012p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000016p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000014p-5",
+"0x1.0000000000017p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000016p-5",
+"0x1.bdb8a59289d77p-110",
+"0x1.0000000000014p-5",
+"0x1.0000000000019p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000010p-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000017p-5",
+"0x1.0000000000012p-5",
+"0x1.0000000000012p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000010p-5",
+"0x1.000000000000cp-5",
+"0x1.0000000000013p-5",
+"0x1.0000000000019p-5",
+"0x1.0000000000014p-5",
+"0x1.000000000001ap-5",
+"0x1.0000000000014p-5",
+"0x1.fbf2431bb9785p-108",
+"0x1.f734cc824c9a0p-109",
+"0x1.7395f2e65efeep-110",
+"0x1.659ec64316f8ep-108",
+"0x1.12fbeff5544dfp-107",
+"0x1.d6d98cc443716p-107",
+"0x1.f6d5ccb0dcb9fp-108",
+"0x1.24e07ff83d4fep-106",
+"0x1.77e5984a58b6cp-111",
+"0x1.2eeacca15759cp-110",
+"0x1.a1f7b3fbe0926p-106",
+"0x1.850904c6b0488p-107",
+"0x1.eabacfef824a0p-107",
+"0x1.000000000001bp-5",
+"0x1.3ee7ff83d5018p-110",
+"0x1.2f151183310a9p-107",
+"0x1.9358263582456p-109",
+"0x1.555e12fbb662dp-109",
+"0x1.672e12fbb6629p-109",
+"0x1.e1675cc34b1bcp-107",
+"0x1.3114ccc06219cp-107",
+"0x1.c04be5ccbdfe9p-110",
+"0x1.002098d609157p-111",
+"0x1.03f7364fb3570p-108",
+"0x1.117c6660310ccp-107",
+"0x1.12843fec99480p-108",
+"0x1.b8e296612962bp-107",
+"0x1.b75c25f76cc56p-110"
+],
+"name": "kmap_flip3_e1pe18_plus",
+"shape": [
+64
+]
+},
+{
+"binding": {},
+"circuit": "4746c2f89c58021c1293c1b4644ba7c24cfefb3d6fe987c78416ac5930f1f037",
+"ideal": [
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000001p-5",
+"0x1.000000000000dp-5",
+"0x1.0000000000001p-5",
+"0x1.000000000000fp-5",
+"0x1.0000000000009p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000008p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000003p-5",
+"0x1.0000000000005p-5",
+"0x1.0000000000003p-5",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a67p-118",
+"0x1.e24cc824c9a67p-118",
+"0x1.5f619980c4333p-115",
+"0x1.4aff935a610e0p-119",
+"0x1.5f619980c4333p-115",
+"0x1.93198886e359dp-116",
+"0x1.4aff935a61013p-120",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a67p-116",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a67p-118",
+"0x1.e24cc824c9a67p-118",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a67p-118"
+],
+"name": "kmap_skeleton",
+"shape": [
+64
+]
+}
+],
+"pathion_parallel_coset": [
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "8b9d6d6513f1aa467c2070b43be06a8dc333acd82b6e466dd3aeee0a7b4bc4bd",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe17_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "8b9d6d6513f1aa467c2070b43be06a8dc333acd82b6e466dd3aeee0a7b4bc4bd",
+"ideal": [
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.9789332093268p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.5ce7ff83d5018p-112",
+"0x1.ffffffffffff0p-4",
+"0x1.8e73ffc1ea805p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.01e24cc824c99p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.12d6ffd16fe08p-110"
+],
+"name": "cmap_e1pe17_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe17_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109"
+],
+"name": "cmap_e1pe17_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe17_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109"
+],
+"name": "cmap_e1pe17_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5ff881608fe296811a3ca3a166c235a12491adfbbb71d505d74044e577f3c098",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe17_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5ff881608fe296811a3ca3a166c235a12491adfbbb71d505d74044e577f3c098",
+"ideal": [
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108"
+],
+"name": "cmap_e1pe17_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5a99ff3116f5d956d589ce7af652ae2ff899bb4f361c4f63b7eb1a0ed9e85e01",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.77d86660310ccp-108",
+"0x1.8bc4999049933p-108",
+"0x1.25adffa2dfc08p-112",
+"0x1.03756650abacdp-109",
+"0x1.66eacca15759ap-110",
+"0x1.1cdd59942aeb5p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe26_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5a99ff3116f5d956d589ce7af652ae2ff899bb4f361c4f63b7eb1a0ed9e85e01",
+"ideal": [
+"0x1.6fec333018866p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.df619980c4339p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.8bc4999049933p-108",
+"0x1.1b9cfff07aa02p-109",
+"0x1.789332093268cp-113",
+"0x1.66eacca15759ap-110"
+],
+"name": "cmap_e1pe26_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "396ad55da14cb02168b7c23608855680b288dddef1e5615c9732ad825f9863eb",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.5f619980c4333p-111",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe26_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "396ad55da14cb02168b7c23608855680b288dddef1e5615c9732ad825f9863eb",
+"ideal": [
+"0x1.5cfb0ccc0621ap-106",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.ffffffffffff6p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110"
+],
+"name": "cmap_e1pe26_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "b5c9f5b1ead8c0479498689f9785c5054e066a5b81edfe7ef8f7a77929122d39",
+"ideal": [
+"0x1.73756650abacep-109",
+"0x1.134c065e4060cp-108",
+"0x1.134c065e4060cp-108",
+"0x1.73756650abacep-109",
+"0x1.ffffffffffff0p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff0p-4"
+],
+"name": "cmap_e1pe26_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "b5c9f5b1ead8c0479498689f9785c5054e066a5b81edfe7ef8f7a77929122d39",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ccb5bff45bf83p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.b9cfff07aa030p-113",
+"0x1.ffffffffffff3p-4",
+"0x1.789332093268cp-113",
+"0x1.cdd59942aeb39p-111",
+"0x1.93c4999049933p-109",
+"0x1.da6eacca15757p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.a0f126641264cp-107",
+"0x1.ffffffffffff3p-4",
+"0x1.06eacca15759dp-110"
+],
+"name": "cmap_e1pe26_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "ffae1a8643d58c584ec37325765a785c68d00cd1c88ba403c96120bb29bef038",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.5f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe26_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "ffae1a8643d58c584ec37325765a785c68d00cd1c88ba403c96120bb29bef038",
+"ideal": [
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.5cfb0ccc0621ap-106",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe26_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "190a7038707e16c0b607dee072fb494d491a79b3f829d464b7011ba7eb114902",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.03756650abacdp-109",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff3p-4",
+"0x1.77d86660310ccp-108",
+"0x1.8bc4999049933p-108",
+"0x1.25adffa2dfc08p-112",
+"0x1.1cdd59942aeb5p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e2pe27_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "190a7038707e16c0b607dee072fb494d491a79b3f829d464b7011ba7eb114902",
+"ideal": [
+"0x1.6fec333018866p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.df619980c4339p-110",
+"0x1.789332093268cp-113",
+"0x1.66eacca15759ap-110",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.8bc4999049933p-108",
+"0x1.1b9cfff07aa02p-109"
+],
+"name": "cmap_e2pe27_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "3754e2f9c204fb2fc2d7d3dd89aca8d69aba7b3d4074df50f55799acc2d255e3",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.ffffffffffff6p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.8b4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e2pe27_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "3754e2f9c204fb2fc2d7d3dd89aca8d69aba7b3d4074df50f55799acc2d255e3",
+"ideal": [
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.45a6e6586e5d2p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.21e24cc824c98p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.62d3732c372e7p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110"
+],
+"name": "cmap_e2pe27_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "a48d17f918189d7e814d9b8cafc71ec4e318d81509b62f1576adff89355220ee",
+"ideal": [
+"0x1.73756650abacep-109",
+"0x1.134c065e4060cp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.134c065e4060cp-108",
+"0x1.73756650abacep-109",
+"0x1.ffffffffffff0p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.1e24cc824c9a2p-111",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e2pe27_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "a48d17f918189d7e814d9b8cafc71ec4e318d81509b62f1576adff89355220ee",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.b9cfff07aa030p-113",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ccb5bff45bf83p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.789332093268cp-113",
+"0x1.cdd59942aeb39p-111",
+"0x1.ffffffffffff3p-4",
+"0x1.06eacca15759dp-110",
+"0x1.93c4999049933p-109",
+"0x1.da6eacca15757p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.a0f126641264cp-107"
+],
+"name": "cmap_e2pe27_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c6e62cc15d66906e1825d2e2522ef69ea7a28dd01ad80be90e80c895b98d7a1a",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.8b4dccb0dcba1p-111",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e2pe27_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c6e62cc15d66906e1825d2e2522ef69ea7a28dd01ad80be90e80c895b98d7a1a",
+"ideal": [
+"0x1.21e24cc824c98p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.62d3732c372e7p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.2afb0ccc06218p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.45a6e6586e5d2p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a67p-116",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110"
+],
+"name": "cmap_e2pe27_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff0p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe10_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.2f126641264d2p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.1df619980c433p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.16e73ffc1ea7fp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.ffffffffffff6p-4",
+"0x1.3fb0ccc06219bp-109"
+],
+"name": "cmap_e1pe10_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe10_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "cmap_e1pe10_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "2cf4c680d49446fe98c7b725ae65142e523d255fe16ade8dabf8d79b5d0b237f",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.4478933209327p-107",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.4478933209327p-107",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe10_k16_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "2cf4c680d49446fe98c7b725ae65142e523d255fe16ade8dabf8d79b5d0b237f",
+"ideal": [
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e5a6e6586e5d0p-110"
+],
+"name": "cmap_e1pe10_k16_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe10_k20_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe10_k20_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff0p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe18_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.2f126641264d2p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.1df619980c433p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.16e73ffc1ea7fp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.ffffffffffff6p-4",
+"0x1.3fb0ccc06219bp-109"
+],
+"name": "cmap_e1pe18_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe18_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "cmap_e1pe18_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe18_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "cmap_e1pe18_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe18_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe18_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "761c24f3b159cfc3bb988b867b1fbb7fa5c0fd7017c22bbc3b6dff1a52001b3a",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.06eacca15759dp-110",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-109",
+"0x1.91e24cc824c98p-107",
+"0x1.496b7fe8b7f03p-109",
+"0x1.e24cc824c9a34p-115",
+"0x1.e24cc824c9a34p-115",
+"0x1.acdd59942aeb1p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.0f126641264d1p-111",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe24_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "761c24f3b159cfc3bb988b867b1fbb7fa5c0fd7017c22bbc3b6dff1a52001b3a",
+"ideal": [
+"0x1.88f126641264cp-106",
+"0x1.ffffffffffff0p-4",
+"0x1.55a6e6586e5cep-109",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.3a6032f203075p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.cbc4999049931p-108",
+"0x1.91e24cc824c98p-107",
+"0x1.496b7fe8b7f03p-109",
+"0x1.e24cc824c9a34p-115",
+"0x1.e24cc824c9a34p-115"
+],
+"name": "cmap_e1pe24_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "3978db9635c1be67194a75b91fa438539eae110f090cfdbed79b81b416d77be1",
+"ideal": [
+"0x1.2fb0ccc06219ap-110",
+"0x1.45a6e6586e5d2p-110",
+"0x1.88f126641264cp-108",
+"0x1.88f126641264cp-108",
+"0x1.88f126641264cp-108",
+"0x1.88f126641264cp-108",
+"0x1.2fb0ccc06219ap-110",
+"0x1.45a6e6586e5d2p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_e1pe24_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "3978db9635c1be67194a75b91fa438539eae110f090cfdbed79b81b416d77be1",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.4efb0ccc0621ap-107",
+"0x1.30f126641264bp-109",
+"0x1.4efb0ccc0621ap-107",
+"0x1.30f126641264bp-109",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109"
+],
+"name": "cmap_e1pe24_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "ad2ac3da043a07bbb64e04441d24b156d04489ccaafeb1b4c99fdd8f479fd4e0",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff3p-4",
+"0x1.df619980c4339p-110",
+"0x1.89e24cc824c99p-108",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.8bc4999049933p-108",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.41e24cc824c98p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.c3c4999049932p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4"
+],
+"name": "cmap_e1pe24_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "ad2ac3da043a07bbb64e04441d24b156d04489ccaafeb1b4c99fdd8f479fd4e0",
+"ideal": [
+"0x1.64f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.71e24cc824c9ap-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.93c4999049933p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.0f126641264d1p-111",
+"0x1.59f619980c433p-107",
+"0x1.b9cfff07aa030p-113",
+"0x1.0789332093269p-109",
+"0x1.06e73ffc1ea81p-107"
+],
+"name": "cmap_e1pe24_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "fbd26e44da7605085dc086692934301675b4d77fe829d94f2b648c51e04fa6e1",
+"ideal": [
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.20f126641264dp-108",
+"0x1.20f126641264dp-108",
+"0x1.20f126641264dp-108",
+"0x1.20f126641264dp-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_e1pe24_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "fbd26e44da7605085dc086692934301675b4d77fe829d94f2b648c51e04fa6e1",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.4478933209327p-107",
+"0x1.01e24cc824c99p-109",
+"0x1.4478933209327p-107",
+"0x1.01e24cc824c99p-109",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "cmap_e1pe24_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "e27746f0092cf5a2f6db8af171b357356099a03eaad65cc43ef14678bcd9b2a4",
+"ideal": [
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "e27746f0092cf5a2f6db8af171b357356099a03eaad65cc43ef14678bcd9b2a4",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.77d86660310c9p-109",
+"0x1.82d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.e24cc824c9a34p-117"
+],
+"name": "cmap_xor_e1pe18_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "06b6659644c0c8602911377658d747be3a5eeab17d073efa5d0a34a83eb34f15",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.3f061b7938fabp-111",
+"0x1.3f061b7938fabp-111",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.789d94af4299cp-108",
+"0x1.7e1b1b1545aaap-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cmap_xor_e1pe18_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "2f3c209205159a9f955e957b87b1c2f482211e445e73511ef8f7a0f98d4d899d",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff6p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff3p-4",
+"0x1.04f126641264cp-107",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "2f3c209205159a9f955e957b87b1c2f482211e445e73511ef8f7a0f98d4d899d",
+"ideal": [
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.9789332093268p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.8e73ffc1ea805p-110",
+"0x1.ffffffffffff0p-4",
+"0x1.5ce7ff83d5018p-112",
+"0x1.ffffffffffff3p-4",
+"0x1.12d6ffd16fe08p-110",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107"
+],
+"name": "cmap_twin_e17me2_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108"
+],
+"name": "cmap_twin_e17me2_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "99b1db6695636155faf368b68e48762541fdc30b230b980812c83f148fbc17fa",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108"
+],
+"name": "cmap_twin_e17me2_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "ba43256d31a4fbd4c8d83f13d938a69d68d88f6475a0673de09c92fa523b1af3",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cmap_twin_e17me2_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "ba43256d31a4fbd4c8d83f13d938a69d68d88f6475a0673de09c92fa523b1af3",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110"
+],
+"name": "cmap_twin_e17me2_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "-0x1.921fb54442d18p+1"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.adec333018868p-107",
+"0x1.ffffffffffff4p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.e369b9961b971p-107",
+"0x1.8014aff935a61p-108",
+"0x1.49e24cc824c99p-107",
+"0x1.ccfb0ccc06214p-107",
+"0x1.ac38599a7e00fp-108",
+"0x1.5acd359f36006p-107",
+"0x1.72cd359f36009p-107",
+"0x1.061c2ccd3f007p-107",
+"0x1.1478933209325p-108",
+"0x1.86dce7ff83d4dp-107",
+"0x1.7fffffffffffdp-107"
+],
+"name": "ftb_B12_c2_T",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.2bb512c81a41cp-53",
+"prep_c1": "-0x1.0d4f07e8c8b63p-51"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.0900000000000p-106",
+"0x1.45e24cc824c99p-108",
+"0x1.afec333018865p-108",
+"0x1.ab2d6ffd16fe1p-107",
+"0x1.6278933209324p-107",
+"0x1.0100000000001p-106",
+"0x1.20ffffffffffep-106",
+"0x1.f278933209324p-107",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "ftb_B12_c2_D",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d18p+0",
+"prep_c0": "0x1.921fb54442d18p+1",
+"prep_c1": "-0x1.0000000000000p-52"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.20f126641264bp-109",
+"0x1.cbc4999049936p-109",
+"0x1.03c4999049931p-110",
+"0x1.2dce7ff83d4ffp-109",
+"0x1.21e24cc824c9cp-108",
+"0x1.51e24cc824c9ap-110",
+"0x1.4000000000001p-108",
+"0x1.abec333018868p-110",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffffcp-4",
+"0x1.ffffffffffffcp-4"
+],
+"name": "ftb_B12_c2_D2",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "-0x1.2d97c7f3321d2p+2"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffffep-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffffep-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff6p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff0p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff2p-5"
+],
+"name": "ftb_B12_c2_F",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "0x0.0p+0"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff2p-5"
+],
+"name": "ftb_B12_c2_E0",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "0x1.921fb54442d18p+0"
+},
+"circuit": "33d6c24c4ba62e45bcbfd5d7a81c33045beae8076c6a6bf6ed398104dd4e84dd",
+"ideal": [
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffap-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffffcp-5"
+],
+"name": "ftb_B12_c2_E1",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "-0x1.921fb54442d18p+1"
+},
+"circuit": "fbe433168a66708595109b1ac7879b4020ac859b530ad8835656b29177e3e01d",
+"ideal": [
+"0x1.1ffffffffffffp-109",
+"0x1.ffffffffffffep-110",
+"0x1.1ffffffffffffp-109",
+"0x1.ffffffffffffep-110",
+"0x1.f4959c36deb06p-111",
+"0x1.f4959c36deb06p-111",
+"0x1.041329dcaf440p-109",
+"0x1.041329dcaf440p-109",
+"0x1.c3c4999049934p-110",
+"0x1.41e24cc824c98p-109",
+"0x1.c3c4999049934p-110",
+"0x1.41e24cc824c98p-109",
+"0x1.ffffffffffff8p-3",
+"0x1.ffffffffffff8p-3",
+"0x1.ffffffffffff8p-3",
+"0x1.ffffffffffff8p-3"
+],
+"name": "ftb_B12_c2_C",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d19p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "-0x1.921fb54442d18p+1"
+},
+"circuit": "60a3965d3e7cfaaa0125a09d10bbff949685f8d47d6b7bfc5bf04c3b862284c4",
+"ideal": [
+"0x1.2d06b98696377p-109",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff0p-3",
+"0x1.ffffffffffff0p-3",
+"0x1.ffffffffffff4p-3",
+"0x1.fffffffffffeep-5",
+"0x1.3efbeff5544e1p-107",
+"0x1.45fd32e27da6cp-110",
+"0x1.5f619980c4337p-115",
+"0x1.ffffffffffff6p-5",
+"0x1.842708fc8ab4fp-109",
+"0x1.6c2708fc8ab4ep-109",
+"0x1.88d2aa4d0307bp-107",
+"0x1.ffffffffffff6p-5",
+"0x1.f504f333f9de6p-109",
+"0x1.dd04f333f9de3p-109"
+],
+"name": "ftb_B12_c2_N",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.0468a8ace4df5p+1",
+"prep_c1": "-0x1.921fb54442d19p+1"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.e4f92e2dff6e7p-3",
+"0x1.727c9716ffb6ep-4",
+"0x1.e4f92e2dff6e3p-3",
+"0x1.727c9716ffb6ep-4",
+"0x1.b06d1d2009120p-7",
+"0x1.727c9716ffb71p-4",
+"0x1.b06d1d2009122p-7",
+"0x1.727c9716ffb6ep-4",
+"0x1.b7f25ea37ce67p-109",
+"0x1.1b06d1d200918p-5",
+"0x1.2696c5bd0110cp-110",
+"0x1.1b06d1d20090ep-5",
+"0x1.112c66ecf137bp-106",
+"0x1.1b06d1d20090fp-5",
+"0x1.0ca3d2f074a04p-105",
+"0x1.1b06d1d20091bp-5"
+],
+"name": "ftb_C8_c5_T",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1dp+0",
+"prep_c0": "-0x1.6a09e667f3be4p-53",
+"prep_c1": "-0x1.3cc8a99af5454p-50"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.5f619980c4333p-113",
+"0x1.0f7904c6b048dp-106",
+"0x1.81e24cc824c97p-110",
+"0x1.a7a5919a791a1p-106",
+"0x1.5ebc2d33dad39p-103",
+"0x1.9904f333f9de2p-108",
+"0x1.ab34a400ba407p-103",
+"0x1.7ed3019790184p-105",
+"0x1.ffffffffffffcp-4",
+"0x1.fffffffffffebp-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffffep-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffffep-4",
+"0x1.ffffffffffff6p-4",
+"0x1.fffffffffffedp-4"
+],
+"name": "ftb_C8_c5_D",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "-0x1.4b442ef893d87p+2"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.1b06d1d200912p-5",
+"0x1.fc7f5b52a9969p-107",
+"0x1.1b06d1d200911p-5",
+"0x1.7ec18ea5c5641p-110",
+"0x1.1b06d1d20090ep-5",
+"0x1.908cb764e726ep-110",
+"0x1.1b06d1d20090cp-5",
+"0x1.ec880d151ab9cp-106",
+"0x1.727c9716ffb6ep-4",
+"0x1.e4f92e2dff6e5p-3",
+"0x1.727c9716ffb6ep-4",
+"0x1.b06d1d200912dp-7",
+"0x1.727c9716ffb6ep-4",
+"0x1.b06d1d2009131p-7",
+"0x1.727c9716ffb71p-4",
+"0x1.e4f92e2dff6e5p-3"
+],
+"name": "ftb_C8_c5_F",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x0.0p+0",
+"prep_c1": "0x0.0p+0"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5"
+],
+"name": "ftb_C8_c5_E0",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x0.0p+0",
+"prep_c0": "0x1.921fb54442d18p+0",
+"prep_c1": "0x1.921fb54442d18p+0"
+},
+"circuit": "d89144f033a65dd541812100a82764c3193f5f0f654c7a426e06282f33a27d99",
+"ideal": [
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.ffffffffffff8p-5",
+"0x1.ffffffffffff4p-5",
+"0x1.fffffffffffeep-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff2p-5",
+"0x1.ffffffffffffcp-5",
+"0x1.ffffffffffff4p-5"
+],
+"name": "ftb_C8_c5_E1",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.0468a8ace4df5p+1",
+"prep_c1": "-0x1.921fb54442d19p+1"
+},
+"circuit": "fbe433168a66708595109b1ac7879b4020ac859b530ad8835656b29177e3e01d",
+"ideal": [
+"0x1.21606a2ad4559p-105",
+"0x1.005abebf712ccp-105",
+"0x1.1f9fd0a176f94p-105",
+"0x1.0823d2f074a04p-105",
+"0x1.1a2aa94830719p-106",
+"0x1.1a2aa94830719p-106",
+"0x1.058ec66a6f18ep-106",
+"0x1.058ec66a6f18ep-106",
+"0x1.b06d1d2009122p-7",
+"0x1.b06d1d2009120p-7",
+"0x1.b06d1d2009122p-7",
+"0x1.b06d1d2009122p-7",
+"0x1.e4f92e2dff6e7p-3",
+"0x1.e4f92e2dff6e7p-3",
+"0x1.e4f92e2dff6e7p-3",
+"0x1.e4f92e2dff6e7p-3"
+],
+"name": "ftb_C8_c5_C",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"prep_a": "0x1.921fb54442d1ap+0",
+"prep_c0": "0x1.0468a8ace4df5p+1",
+"prep_c1": "-0x1.921fb54442d19p+1"
+},
+"circuit": "9631e077bf24a23d6a232dfba45419ed88a8b630454aa9e9375b995007849099",
+"ideal": [
+"0x1.1b06d1d20091dp-5",
+"0x1.727c9716ffb6cp-4",
+"0x1.e4f92e2dff6dep-3",
+"0x1.727c9716ffb67p-4",
+"0x1.1b06d1d200905p-5",
+"0x1.727c9716ffb67p-4",
+"0x1.b06d1d2009107p-7",
+"0x1.727c9716ffb67p-4",
+"0x1.727c9716ffb67p-4",
+"0x1.1b06d1d200917p-5",
+"0x1.0e0c78c386618p-105",
+"0x1.1b06d1d200903p-5",
+"0x1.727c9716ffb67p-4",
+"0x1.1b06d1d2008fep-5",
+"0x1.c6688beb6a727p-105",
+"0x1.1b06d1d200917p-5"
+],
+"name": "ftb_C8_c5_N",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "8be0fcb528e85a9770fd3f7f70c5d684917b51b806a09836de0e0a68d03b28ee",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff0p-4"
+],
+"name": "cflip_e1pe17_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "8be0fcb528e85a9770fd3f7f70c5d684917b51b806a09836de0e0a68d03b28ee",
+"ideal": [
+"0x1.12d6ffd16fe08p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.01e24cc824c99p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.8e73ffc1ea805p-110",
+"0x1.ffffffffffff0p-4",
+"0x1.5ce7ff83d5018p-112",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.9789332093268p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.26d3732c372e7p-107"
+],
+"name": "cflip_e1pe17_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "72f4e9c431dd2b02d8222447aa0a007ff034d24503bbe63ae59cec4ce72e8a05",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cflip_e1pe17_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "72f4e9c431dd2b02d8222447aa0a007ff034d24503bbe63ae59cec4ce72e8a05",
+"ideal": [
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111"
+],
+"name": "cflip_e1pe17_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "72f4e9c431dd2b02d8222447aa0a007ff034d24503bbe63ae59cec4ce72e8a05",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cflip_e1pe17_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "72f4e9c431dd2b02d8222447aa0a007ff034d24503bbe63ae59cec4ce72e8a05",
+"ideal": [
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111"
+],
+"name": "cflip_e1pe17_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "2a5604791029812888723e5101e78b2453b7cad59b71d04d940b95896a918a6a",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cflip_e1pe17_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "2a5604791029812888723e5101e78b2453b7cad59b71d04d940b95896a918a6a",
+"ideal": [
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111"
+],
+"name": "cflip_e1pe17_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "9a1cbc7d7b662cb85328a48dd3db882d452c6cfd02491bf3ec9600369ef5d081",
+"ideal": [
+"0x1.ffffffffffff3p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff0p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4"
+],
+"name": "cflip_e1pe18_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "9a1cbc7d7b662cb85328a48dd3db882d452c6cfd02491bf3ec9600369ef5d081",
+"ideal": [
+"0x1.3fb0ccc06219bp-109",
+"0x1.ffffffffffff6p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.ffffffffffff3p-4",
+"0x1.0789332093269p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.16e73ffc1ea7fp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.1df619980c433p-106",
+"0x1.ffffffffffff3p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.2f126641264d2p-110"
+],
+"name": "cflip_e1pe18_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "3e3b9d42c50a20b00adcb157fa445e7640ab6240eafc5b035af8d4fdcdb33a85",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.44f126641264cp-107",
+"0x1.03c4999049934p-109",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109"
+],
+"name": "cflip_e1pe18_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "3e3b9d42c50a20b00adcb157fa445e7640ab6240eafc5b035af8d4fdcdb33a85",
+"ideal": [
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.9f619980c4333p-111",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cflip_e1pe18_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "3e3b9d42c50a20b00adcb157fa445e7640ab6240eafc5b035af8d4fdcdb33a85",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.44f126641264cp-107",
+"0x1.03c4999049934p-109",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109"
+],
+"name": "cflip_e1pe18_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "3e3b9d42c50a20b00adcb157fa445e7640ab6240eafc5b035af8d4fdcdb33a85",
+"ideal": [
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.9f619980c4333p-111",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "cflip_e1pe18_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "e4a4aa92094e72ed10b61891bde55d3b468d68ab5409a535876156464832f745",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.cfb0ccc06219ap-110",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.5169b9961b973p-108",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.44f126641264cp-107",
+"0x1.03c4999049934p-109"
+],
+"name": "cflip_e1pe18_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "e4a4aa92094e72ed10b61891bde55d3b468d68ab5409a535876156464832f745",
+"ideal": [
+"0x1.9f619980c4333p-111",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "cflip_e1pe18_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111"
+],
+"name": "crep_e1pe18_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "771fee26684387132421ee75a841d1cdddf8a2c737a231e9cb2f01d479c22c87",
+"ideal": [
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4"
+],
+"name": "crep_e1pe18_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "crep_e1pe18_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "crep_e1pe18_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.59f619980c433p-107",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cb4dccb0dcba1p-111",
+"0x1.9f619980c4333p-111",
+"0x1.89e24cc824c97p-108",
+"0x1.89e24cc824c97p-108",
+"0x1.59f619980c433p-107",
+"0x1.5cb4dccb0dcbap-107"
+],
+"name": "crep_e1pe18_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "480ce63321c3c26bcc58824f7de900a81f3b8d306718cb48ec30c32bf46dcf90",
+"ideal": [
+"0x1.e7d86660310cbp-109",
+"0x1.5169b9961b973p-108",
+"0x1.e5a6e6586e5d0p-110",
+"0x1.cfb0ccc06219ap-110",
+"0x1.03c4999049934p-109",
+"0x1.44f126641264cp-107",
+"0x1.e7d86660310cbp-109",
+"0x1.f2d3732c372e6p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff6p-4"
+],
+"name": "crep_e1pe18_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.2f126641264d2p-110",
+"0x1.ffffffffffff6p-4",
+"0x1.1fd86660310cdp-108",
+"0x1.ffffffffffff3p-4",
+"0x1.1df619980c433p-106",
+"0x1.ffffffffffff6p-4",
+"0x1.16e73ffc1ea7fp-108",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff3p-4",
+"0x1.03c4999049934p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.afb0ccc06219ep-109",
+"0x1.ffffffffffff6p-4",
+"0x1.3fb0ccc06219bp-109"
+],
+"name": "crep_e1pe18_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "c9cd970c2bfa511f829e20efd466c8ab99ca5d185b38aa8f06a05ce7390634bf",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4",
+"0x1.42f126641264ep-106",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff0p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.ffffffffffff6p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff3p-4"
+],
+"name": "crep_e1pe18_k0_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "5ff881608fe296811a3ca3a166c235a12491adfbbb71d505d74044e577f3c098",
+"ideal": [
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108"
+],
+"name": "crep_e1pe17_k12_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "5ff881608fe296811a3ca3a166c235a12491adfbbb71d505d74044e577f3c098",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "crep_e1pe17_k12_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109"
+],
+"name": "crep_e1pe17_k8_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "crep_e1pe17_k8_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.9f619980c4333p-111",
+"0x1.ffffffffffff6p-4",
+"0x1.0789332093269p-111",
+"0x1.ffffffffffff9p-4",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.5169b9961b973p-108",
+"0x1.ffffffffffff9p-4",
+"0x1.01e24cc824c99p-109"
+],
+"name": "crep_e1pe17_k4_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "257e751d633d0d24f207c178fded4b7a4c890b26280238acfe74889d8d7d0859",
+"ideal": [
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.88f126641264cp-108",
+"0x1.ffffffffffff9p-4",
+"0x1.20f126641264dp-108",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4",
+"0x1.e24cc824c9a34p-117",
+"0x1.ffffffffffff9p-4"
+],
+"name": "crep_e1pe17_k4_minus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x1.921fb54442d18p+1"
+},
+"circuit": "8b9d6d6513f1aa467c2070b43be06a8dc333acd82b6e466dd3aeee0a7b4bc4bd",
+"ideal": [
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.26d3732c372e7p-107",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff3p-4",
+"0x1.9789332093268p-109",
+"0x1.ffffffffffff0p-4",
+"0x1.ffffffffffff0p-4",
+"0x1.5ce7ff83d5018p-112",
+"0x1.ffffffffffff0p-4",
+"0x1.8e73ffc1ea805p-110",
+"0x1.ffffffffffff3p-4",
+"0x1.01e24cc824c99p-107",
+"0x1.ffffffffffff3p-4",
+"0x1.12d6ffd16fe08p-110"
+],
+"name": "crep_e1pe17_k0_plus",
+"shape": [
+16
+]
+},
+{
+"binding": {
+"orientation": "0x0.0p+0"
+},
+"circuit": "8b9d6d6513f1aa467c2070b43be06a8dc333acd82b6e466dd3aeee0a7b4bc4bd",
+"ideal": [
+"0x1.ffffffffffff0p-4",
+"0x1.6e73ffc1ea80bp-111",
+"0x1.ffffffffffff3p-4",
+"0x1.ef619980c4334p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.04f126641264cp-107",
+"0x1.ffffffffffff6p-4",
+"0x1.49e24cc824c97p-108",
+"0x1.8b4dccb0dcba1p-109",
+"0x1.ffffffffffff3p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff0p-4",
+"0x1.42f126641264ep-106",
+"0x1.ffffffffffff6p-4",
+"0x1.dfd86660310cep-108",
+"0x1.ffffffffffff6p-4"
+],
+"name": "crep_e1pe17_k0_minus",
+"shape": [
+16
+]
+}
+]
+}
