@@ -141,7 +141,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Selected main-result declarations of twenty proof sources, not every
+    Selected main-result declarations of twenty-one proof sources, not every
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
@@ -226,6 +226,19 @@ status:
       axioms:
         - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
         - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    - declaration: RealHalfFold.first_half
+      file: proofs/CdHalfFold.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    - declaration: RealHalfFold.second_half
+      file: proofs/CdHalfFold.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    - declaration: ZHalf.first_half
+      file: proofs/CdHalfFold.v
+      axioms: []
     - declaration: isum_conference
       file: proofs/CdImaginarySumConference.v
       axioms: []
