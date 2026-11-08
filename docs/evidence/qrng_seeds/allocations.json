@@ -1219,6 +1219,20 @@
    "value": 33974,
    "record": "docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json",
    "index": 0
+  },
+  {
+   "path": "docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py",
+   "name": "W8_SAMPLE_SEEDS",
+   "value": 48732,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py",
+   "name": "W8_SAMPLE_SEEDS",
+   "value": 12744,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1
   }
  ],
  "runtime": [
