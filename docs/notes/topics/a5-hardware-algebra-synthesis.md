@@ -268,8 +268,10 @@ checked against the records). The W8 closure is the i-twisted double of the sede
 equality, dimension 24, degree 16, the squared Hilbert numerator and the diagonal restriction to J survive, and they
 hold in characteristic 0, since the change of variables is defined over Z[i, 1/2] and faithfully flat base change
 descends dimension, degree and Hilbert series from Q(i) to Q. The strengthening that W8 nullity is a function of the
-pair (n_16(z), n_16(z')) is refuted on W8 itself: on the real slice a W8 point is a half operand, so the proved half
-fold gives n_32 = 2 x 8 = 16 when the sedenion factor has nullity 8, while the 168 mixed basis pairs on W8 read
+pair (n_16(z), n_16(z')) is refuted on W8 itself: on the real slice a W8 point is a half operand, whose L is block-diagonal
+with blocks L_z and R_z (gororoba-open `zero_upper_half_matrix`, a field-generic identity) and rank R_z = rank L_z for
+pure z, so n_32 = 2 x 8 = 16 when the F_p factor has nullity 8 (computed rows in the twisted-product record, in
+preparation), while the 168 mixed basis pairs on W8 read
 n_32 = 12 at the same pair (8, 8) (A5-225); the relative position of the two factor kernels carries information their
 dimensions do not. Seeded W8 classes give the rest of the pair map: (4,4) -> 8, (4,8) and (8,4) -> 10, (4,16) and
 (16,4) -> 20, (8,16) and (16,8) -> 22. The product does not decide A5-218 or the degree-30 W8 component C30, because
