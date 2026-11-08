@@ -108,7 +108,10 @@ The successor works in the six t-variables alone
 - **Junk.** The 4-dimensional junk JK, the closure of V(J, G) minus V(t2), misses the origin at both primes.
 - **Controls, all as predicted.** X+ and X- read on at k = 2 and off at k = 3 (row 214). Iso reads off at k = 5
   (272 s) and on at k = 3 (16 s) (rows 215 and 216).
-- **Forecast.** The decisive Iso k = 4 run, preregistered as row 217, is forecast at 15 s to 10 min under 1 GB.
+- **Result (2026-11-08).** The preregistered Iso k = 4 rows (row 217) read on with two independent form families at
+  p = 32009 and p = 32029, by both saturation routes, in 486 s each at 304 MB (twins 2,130 s), against the 23.5 h and
+  25.7 GB of the last chart attempt. Row 067 moves to survives: E0 = V(K2), l(I) = 5 and F(I) = k[y]/K2 in every degree
+  at both primes, as F_p statements without numerical confidence.
 - **What "on" means.** One sampled slice that reads "on" is evidence consistent with dim E0 >= 4, not a certification:
   a special slice can meet a lower-dimensional E0. The slices meeting a 3-dimensional E0 form a hypersurface of
   degree about 4 deg(E0) in the form coefficients, and nothing in the record bounds deg(E0), so no numerical
@@ -143,10 +146,9 @@ QRNG forms ([survey and addendum](quantum-linear-algebra-fit-a5.md)).
 
 ## Roadmap
 
-1. Run the preregistered Iso k = 4 rows at p = 32009 and 32029 (minutes each). Repeat with a second form set from a
-   fresh ANU draw:
-   - "on" at both primes keeps rows 067 and 007 as F_p statements, with the genericity caveat;
-   - "off" moves row 007 to refuted only after the repeat.
+1. Done 2026-11-08: the Iso k = 4 rows read on with two independent form families at both primes (row 217), and row
+   067 survives as an F_p statement. Remaining strengthening: a genericity witness or a bound on deg(E0) that turns the
+   reading into a certificate.
 2. Iso characteristic zero (task umbrella, rows 042 and 073 to 075). Hypothesis: a two-prime rational reconstruction
    of the slice witness lifts the statement. Reduction mod p can change the analytic spread, so the lift needs its own
    argument.

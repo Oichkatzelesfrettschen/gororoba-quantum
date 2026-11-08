@@ -1,0 +1,6 @@
+RESULT iso-p32029-k4b-satt2h start: variables 6, forms 4, size(Q) 5, s 0
+RESULT iso-p32029-k4b-satt2h saturation done: generators 228, exponent 2, s 343
+RESULT iso-p32029-k4b-satt2h standard basis of the saturation: generators 170, s 484
+RESULT iso-p32029-k4b-satt2h dim 4 degree 6 s 484
+RESULT iso-p32029-k4b-satt2h origin on the closure (all generators vanish at 0) 1 s 484
+exit 0

@@ -112,7 +112,7 @@ Reading the table.
 - `t2h` runs 5 to 11 times faster than `t2` on the cases measured (X: 5 to 10 times; Iso k = 5: 11 times; Iso k = 3:
   2 times), so it is the primary saturation of the preregistered rows and `t2` its twin.
 
-## Preregistered decision: Iso k = 4 at p = 32009 and p = 32029 (not run)
+## Preregistered decision: Iso k = 4 at p = 32009 and p = 32029 (ran 2026-11-08)
 
 Question. Does the origin lie on the closure of {t in V(J) minus V(I) : l_1(G(t)) = ... = l_4(G(t)) = 0} for a given
 form set? The reading tests dim E0 >= 4, that is l(I) = 5. A reading "on" is consistent with dim E0 >= 4 for that form
@@ -163,6 +163,16 @@ raised by a monotone time and memory trend in the `prot` trace and lowered by an
 | split between primes with agreeing families at each | l(I) depends on the prime, or the families are special at one prime. | A5-026 (agreement of the primes) is tested by a third family at both primes from a fresh draw. |
 | `t2` and `t2h` disagree | an implementation defect. | Stop; compare the saturated ideals by mutual reduction. |
 | a limit or cap ends the run | no reading. | Record the stage and the `prot` trace; no ledger status moves. |
+
+## Result of the k = 4 rows (2026-11-08)
+
+All eight preregistered rows read on: the original and the independent form family at each prime, by the `t2h` route
+(484 to 486 s, 304 MB peak) and its `sat_with_exp` twin (2,123 to 2,130 s, 320 MB peak); `logs/iso-pP-k4*-satt2*.result`.
+Every saturation has dimension 4 and degree 6, the junk JK, which misses the origin, so the origin lies on the slice
+proper. The two routes agree on every row. By the outcome table, A5-067 moves to survives at p = 32009 and p = 32029 as
+an F_p statement: each form set read is consistent with dim E0 >= 4, hence l(I) = 5 and F(I) = k[y]/K2 in every degree
+at those primes, with no numerical confidence attached (deg(E0) is unbounded in the record) and with the k = 5 control
+(off) showing the same code reads off.
 
 ## Reuse for W8 and for E8-bar -> VB
 
