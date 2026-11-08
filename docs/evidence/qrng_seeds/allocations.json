@@ -1123,6 +1123,34 @@
    "index": 1
   },
   {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset.py",
+   "name": "SIMULATION_SEED",
+   "value": 25510,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json",
+   "index": 2
+  },
+  {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset_analysis.py",
+   "name": "SIMULATION_SEED",
+   "value": 64049,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json",
+   "index": 3
+  },
+  {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset_analysis.py",
+   "name": "TABLE_SEED",
+   "value": 48953,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T140050Z.json",
+   "index": 0
+  },
+  {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset_analysis.py",
+   "name": "COUPLING_SEED",
+   "value": 31431,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T140050Z.json",
+   "index": 1
+  },
+  {
    "path": "tests/scripts/test_ascella_correction_score.py",
    "name": "FIXTURE_SEED",
    "value": 29161,
@@ -1837,6 +1865,34 @@
    "envelope": "results/live/2026-11-07T035554.327341Z/CASE.md"
   },
   {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json",
+   "index": 0,
+   "value": 41890,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-11-07T102253.403258Z",
+   "resubmissions": [
+    "2026-11-07T102337.840878Z",
+    "2026-11-07T153237.628673Z",
+    "2026-11-07T153238.421725Z"
+   ],
+   "envelope": "results/live/2026-11-07T102337.840878Z/CASE.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T051516Z.json",
+   "index": 1,
+   "value": 14810,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-11-07T102253.403258Z",
+   "resubmissions": [
+    "2026-11-07T102337.840878Z",
+    "2026-11-07T153237.628673Z",
+    "2026-11-07T153238.421725Z"
+   ],
+   "envelope": "results/live/2026-11-07T102337.840878Z/CASE.md"
+  },
+  {
    "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
    "index": 0,
    "value": 24922,
@@ -2473,11 +2529,6 @@
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
    "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
    "reason": "DRAW_B: curve, finite-field sample and float-start seeds read by runtime index"
-  },
-  {
-   "record": "docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json",
-   "path": "scripts/qi_pathion_one_cz_null_cases.py",
-   "reason": "DRAW: transpiler seeds of the low-CZ null-block routing search, read by runtime index in slices of SEEDS_PER_BLOCK (indices 0 to 191)"
   },
   {
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json",

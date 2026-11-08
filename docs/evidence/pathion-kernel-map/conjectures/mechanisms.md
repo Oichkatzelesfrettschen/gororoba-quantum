@@ -176,6 +176,18 @@ coin-conditioned selector dropout +0.016 (2.8 standard errors from the over-rota
 dropout (+0.016) separates from the over-rotation (0) and a q12 correlation (0) does not. No probe isolates which
 routed pulses carry the 12-CZ response.
 
+Coin-fixed twins (`c2_one_cz_twins.txt`). A twin is the routed template with the coin's Hadamard removed and the coin
+prepared in |0> or |1>, every other instruction byte-identical, so it carries a classical coin and shows the selector
+response conditioned on the coin inside the template's own gate sequence. Sized to give b0's base circuit +0.0164, the
+X-axis over-rotation (0.0513 rad added to every X90 and X gate, Rz exact) predicts a twin-pair contrast of +0.0166 on b0
+and 0 on the 6-CZ blocks, the coin-conditioned dropout +0.0170 on both, and the q12 flip +0.0170 on b0 and 0 on the
+6-CZ blocks; the 6-CZ base and twin contrasts separate the dropout from the other two by 13 standard errors at the
+planned shots, and no twin separates the over-rotation from the q12 flip. Fixing the data qubit that q12 holds in the 6-CZ
+blocks leaves P(s = 0) at 1/2 under every model, and b0's d0 starts in a four-gate run, so neither variant is built.
+Replayed about X, Y and Z, before and after the gate in time, on X90 and X, the sized over-rotation leaves a 6-CZ block
+at most 0.0038 (base) and 0.0039 (twin) from zero; a rotation added to every single-qubit gate, Rz included, reaches
+0.0076 and 0.0103 and is outside the admitted set (the hypothesis that Rz is a frame change is unverified: cqasm.md lists Rz as native on Tuna-17).
+
 Same-question IBM reference (`results/live/pathion_parallel_coset_analysis.json` and `d1_ibm_overrotation.txt` on branch
 `pathion/interpret-tuna-ascella-runs`, ibm_fez with 17 and ibm_kingston with 16 parallel placements): the k0 null
 selector contrast reads -0.0020 +- 0.0015 (ibm_fez) and -0.0000 +- 0.0011 (ibm_kingston), and the coin-free 1-CZ blocks

@@ -35,9 +35,9 @@ the two differ.
   never in a workflow.
 - The `pr.yml` checks `lint`, `types`, `tests` and `contracts` green on the head
   admit a merge. No local gate run or premerge replay is required before a
-  push, which overrides the user-level guide's local replica of the slowest
-  CI lanes; `sh ci/pr_checks.sh tests PATH` runs touched tests under the
-  hosted environment.
+  push, which overrides the local replica of the slowest CI lanes in the
+  `triage-automated-review` skill; `sh ci/pr_checks.sh tests PATH` runs
+  touched tests under the hosted environment.
 - Before each push, every touched Python file passes through
   `"$PYTHON" ci/pinned_tool.py` for ruff format, ruff check and mypy
   ([ci/AGENTS.md](ci/AGENTS.md#code-style-tools)).
@@ -231,6 +231,9 @@ lives; read it before writing one.
 
 ## Reviews and merges
 
+- Before the hosted review the operator asks the owner which local reviewers
+  run and closes with the Advisor, as the workspace guide states
+  (`workspace/AGENTS.md` in gororoba-infrastructure, "Reviews and merges").
 - Hosted review runs in a fixed order, each stage at most once per PR: Codex,
   then Copilot only when the Codex round needed a fix, then the owner. When
   the PR is a merge candidate the operator requests the Codex review through
@@ -253,7 +256,9 @@ lives; read it before writing one.
   `scripts/resolve_answered_threads.sh PR`. Never resolve a thread whose
   finding has not been read and answered.
 - Merge with a merge commit (`merge_method=merge`), which overrides the
-  user-level guide's squash option. Merge stacked PRs bottom-up, and retarget
-  the next PR to main before deleting a merged base branch, because deleting
-  a base closes every PR that targets it. The full loop is in
-  [codex-review-loop](docs/runbooks/codex-review-loop.md).
+  squash option of the `land-changes-through-pr` skill. A branch whose history
+  needs a rewrite, such as one that carried an AI trailer, publishes under a
+  new name, because the permission harness denies force-push. Merge stacked
+  PRs bottom-up, and retarget the next PR to main before deleting a merged
+  base branch, because deleting a base closes every PR that targets it. The
+  full loop is in [codex-review-loop](docs/runbooks/codex-review-loop.md).

@@ -1,0 +1,77 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "batch_cases_sha256": {
+  "batch-00": "394d77fc2da49b86e637912c0eb4926485c65388e2d0c864c41b0d2b0bd13a06",
+  "batch-01": "73d947d65bb7d50e62d93e01b921b87a0e9c81c23063c65f51d698b3d9992c54",
+  "batch-02": "3540e2d62f991c4b857f1458ffe3051e942c47ff76963f101035b0bba7f27076"
+ },
+ "claim_kind": "preregistered emulator control",
+ "complete": true,
+ "qx_control": {
+  "arms": {
+   "batch-00/b0-coin0.cq": {
+    "floor": 0.02440855152430773,
+    "ok": true,
+    "tvd": 0.027998787007999994
+   },
+   "batch-00/b0-coin1.cq": {
+    "floor": 0.02440855152430773,
+    "ok": true,
+    "tvd": 0.024577287187
+   },
+   "batch-00/b0.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.027916039386999995
+   },
+   "batch-00/k4-coin0.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.01953125
+   },
+   "batch-00/k4.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.0263671875
+   },
+   "batch-01/k12.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.0302734375
+   },
+   "batch-01/k4-coin1.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.01708984375
+   },
+   "batch-01/k8-coin0.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.02392578125
+   },
+   "batch-01/k8-coin1.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.03125
+   },
+   "batch-01/k8.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.0380859375
+   },
+   "batch-02/k12-coin0.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.02294921875
+   },
+   "batch-02/k12-coin1.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.0185546875
+   }
+  },
+  "factor": 2.0,
+  "pass": true
+ },
+ "schema": "qi-pathion-one-cz-null-analysis-v2"
+}

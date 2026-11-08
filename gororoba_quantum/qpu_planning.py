@@ -2038,6 +2038,12 @@ def compiled_ideal_law(replica: QuantumCircuit) -> tuple[float, ...]:
     return ideal_compiled_probabilities(replica)
 
 
+def _replica_ideals(entry: Any) -> list[np.ndarray]:
+    """The labeled ideal of each replica of entry: its own body's for a per-placement entry, else the entry's."""
+    per_replica = getattr(entry, "replica_ideals", None)
+    return [entry.ideal] * len(entry.replicas) if per_replica is None else list(per_replica)
+
+
 def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
     """Prove every replica of every entry equals its labeled ideal, raising for the first entry in order that fails.
 
@@ -2047,7 +2053,7 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
     pre-submit snapshot and the first batch beyond a calibration period.
     """
     names = [entry.name for choice in choices for entry in choice.entries for _ in entry.replicas]
-    ideals = [entry.ideal for choice in choices for entry in choice.entries for _ in entry.replicas]
+    ideals = [ideal for choice in choices for entry in choice.entries for ideal in _replica_ideals(entry)]
     replicas = [replica for choice in choices for entry in choice.entries for replica in entry.replicas]
     keyed = parallel.ordered_map(compiled_ideal_key, replicas, min_items=IDEAL_PARALLEL_MIN_ITEMS)
     inputs: dict[str, QuantumCircuit] = {}
