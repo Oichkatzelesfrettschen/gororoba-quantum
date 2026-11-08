@@ -149,8 +149,8 @@ QRNG forms ([survey and addendum](quantum-linear-algebra-fit-a5.md)).
 
 This section joins PR #788 (IBM 64- and 128-dimensional wide case), PR #789 (Tuna-17 6-CZ null-block series) and
 PR #790 (h_5 at p = 32029). Codex daybreak-blue and Grok each reviewed them adversarially
-(`docs/local/reviews/findings-32d-*.md`, session scratch), and every statement below was checked against the cited
-record or recomputed.
+([brief and reviews](../../archive/reviews/findings-32d/brief.md)), and every statement below was checked against the
+cited record or recomputed.
 
 **The doubling ladder: owned, and now measured at its top.**
 - The two-term nullity recursion is proved on paper in [singular_sector_dynamics.md](../singular_sector_dynamics.md),
@@ -171,14 +171,16 @@ record or recomputed.
   ideal restricted to the A_4 coordinates equals the A_4 zero-divisor ideal with equal Hilbert series. Falsifier: a
   differing radical, Hilbert series or multiplicity at one good prime, a seconds-scale Singular check.
 - Rocq: gororoba-open's `CayleyDicksonAlgebra.v` covers dimensions 2 and 4 only. The level-k tower lives in this
-  repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The half rule
-  is proved there: [CdHalfFold.v](../../../proofs/CdHalfFold.v) shows (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and
+  repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The kernel
+  identity behind the half rule is proved there: [CdHalfFold.v](../../../proofs/CdHalfFold.v) shows the kernel of a half
+  operand is a product of two copies of ker L_a, namely (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and
   (0, b)(c, d) = 0 iff b c = 0 and b d = 0, at every level over any ordered domain, from `kernel_equality` and
   `lemma_9_2`. The integer instance is closed under the global context, and the real instance uses only the Stdlib
-  reals' two axioms ([replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). The mixed-pair rule's census
-  Theorem 3 step is the open formal target.
+  reals' two axioms ([replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). The nullity doubling then
+  follows by linear algebra, which is not formalized. The mixed-pair rule's census Theorem 3 step is the open formal
+  target.
 
-**Instruments: two single-site faults, and an estimator property that hides one of them.**
+**Instruments: two faults, an estimator property that hides one of them, and a sharper contact-order test.**
 - Tuna-17 (PR #789): b0's two base replicates read 0.0162 and 0.0393, and the replicate gate failed (chi2 34.9 against
   10.83). Between those batches q11's e10 misassignment moved 0.095 -> 0.434. All five flagged readout shifts of the
   night sit on q11, a data qubit of b0's region. Row 186 stays a hypothesis.
@@ -186,12 +188,18 @@ record or recomputed.
   visibility 0.53 to 0.65 against 0.96 to 0.97 on Kingston's k28.
 - The target blocks hide the fault: N_hat saturates at its ideal integer whenever every sign agrees, so Fez's o128 k28
   reads exactly 4.000 at visibility 0.649 while its null twin fails. Only null controls and null-referenced
-  differences see a dead placement. Hypothesis: both faults are single-site readout or placement collapses, not
-  mechanisms of the circuits; falsifier: a rerun on disjoint placements that passes.
+  differences see a dead placement.
+- Two explanations compete. Grok's: single-site readout or placement collapses. Codex's: logical-role error amplified
+  by circuit depth, after A5-187, where Tuna's `ba` misses follow the logical bit d2 across physical qubits. The data
+  separate them by what the loss follows. At Fez it follows physical qubits (k28's placement, below), and Tuna's b0
+  replicate failure is a readout jump of physical q11, a different observable from A5-187's misses; both favor the
+  single-site reading for these two faults, while A5-187 stays a logical-role finding. Falsifier of single-site: a
+  Fez rerun that moves k28 to other qubits and keeps the loss, or a Tuna batch with q11's readout steady and b0's
+  replicates still disagreeing.
 - PR #788's first analysis summed marginal per-placement variances, although every block of an arm shares one fused PUB
   with aligned per-shot records. The reanalysis propagates the covariance of per-shot influence values across each
-  PUB's placements (`results/live/pathion_wide_coset_analysis.json` on that branch). The two standard errors differ by
-  at most 0.6 percent and no rule verdict changes: ibm_kingston passes all 23 rules, and ibm_fez fails eight (sign
+  PUB's placements (`results/live/pathion_wide_coset_analysis.json` on that branch). Across its 32 interval pairs the
+  two standard errors differ by at most 0.93 percent, and no rule verdict changes: ibm_kingston passes all 23 rules, and ibm_fez fails eight (sign
   resolution o128, both null controls, both null-referenced differences, two per-block localizations, the visibility
   floor). The shot data show no measurable cross-placement correlation. Fez's copy-agreement z of -11.4 (n64) records
   placement-level error far above shot noise, which no shot covariance captures.
@@ -199,12 +207,19 @@ record or recomputed.
   against 0.888 to 0.973 on the other placements; no qubit of it is among the drain case's excluded placements. The
   loss follows those qubits (inference, moderate confidence).
 
+- Contact order (A5-219): the matrix orders are 1 (W8 -> N-) and 2 (E8-bar -> VB) in the singular values. An
+  amplitude-like observable inherits those orders, and a probability-like one (a squared amplitude) shows 2 and 4.
+  This turns A5-219's hypothesis into a forward-model prediction per observable, testable on the local block simulator
+  before any hardware scan.
+
 **Algebra: what the three PRs move.**
 - PR #790 certifies h_5 = 952 for E8-bar -> N- at both primes (A5-183, A5-220). Rows A5-100 and A5-009 are reconciled
   in that PR.
-- The fourth finite difference of h_1..h_5 = 21, 83, 225, 495, 952 is already 11, the degree of V(K2) (projective
-  dimension 4, degree 11). So HF(k[y]/K2) is polynomial from degree 1, and h_6 = 1666 would follow from
-  F(I) = k[y]/K2. This is consistency, not evidence: five points fit a quartic, and 1666 is the K2 upper bound itself.
+- The fourth finite difference of h_1..h_5 = 21, 83, 225, 495, 952 is 11, and the K2 record's HF(k[y]/K2, 6) = 1666
+  gives a second fourth difference of 11, the degree of V(K2) (projective dimension 4, degree 11). That is consistent
+  with a Hilbert polynomial from degree 1, and proves nothing: with h_0 = 1 the first fourth difference is 10, and
+  k[y]/K2 for E8-bar -> N- is not Cohen-Macaulay (generic-section h-vector [1, 16, 3], length 20 against degree 11, at
+  both primes, `k2-cm.jsonl`), so no regularity bound supports polynomiality. h_6 = 1666 needs the degree-6 rank.
 - The E8-bar -> N+ value at degree 5 (A5-082, A5-088) stays open. The t8, t9 sign correspondence of A5-024 carries
   the quadrics, but no record shows it carries F(I).
 
