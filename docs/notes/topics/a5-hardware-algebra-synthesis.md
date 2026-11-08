@@ -240,10 +240,10 @@ their record lands.
 |---|---|---|
 | Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, and nullity L_(a,0) = 2 nullity L_a for pure a | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) |
 | Mixed fold on basis pairs: n_2h(e_i +- e_(h+j)) = h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i; maximum D/2 - 4 | computed through D = 512 | [singular_sector_dynamics](../singular_sector_dynamics.md) |
-| Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | proved by the change of variables (Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2; J(z) and J(z') use disjoint variables), computed at p = 32009 and 32003 | ledger A5-223; record in preparation |
+| Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | proved by the change of variables (Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2; J(z) and J(z') use disjoint variables), computed at p = 32009 and 32003 | ledger A5-223, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) (mutation controls: one flipped sign of i breaks both containments) |
 | Restriction to the sedenion coordinates is the diagonal z = z' and returns J; J is the radical of the A_4 Pfaffian ideal PB, not PB | computed at p = 32009 | ledger A5-222, [a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md) |
-| Nullity sum rule n_32(x) = n_16(z) + n_16(z') | refuted: holds at 10 QRNG-seeded random points, fails on 480 of 512 mixed basis pairs | scratch; record in preparation |
-| On every mixed basis pair n_16(z) = n_16(z'), and (n_32, n_16) takes four values: (0,0) x32, (0,8) x60, (4,4) x168, (12,8) x252 | computed (512 of 512) | scratch; record in preparation |
+| Nullity sum rule n_32(x) = n_16(z) + n_16(z') | refuted: holds at 800 QRNG-seeded random points (200 each on W8, the diagonal, off W8 and generic), fails on 480 of 512 mixed basis pairs | ledger A5-224, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
+| On every mixed basis pair n_16(z) = n_16(z'), and (n_32, n_16) takes four values: (0,0) x32, (0,8) x60, (4,4) x168, (12,8) x252; on the 420 pairs with i, j >= 1 and i != j, n_16(z) = 8 - n_16(e_i +- e_j), so n_32 = 2 n_16(z) - 4; the exceptions are i = 0, j = 0 or i = j (92 pairs), where n_32 = 0 | computed (512 of 512; ranks over Q agree with F_32009) | ledger A5-225, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
 | The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: h_1 = 24 and 144 degree-2 relations give h_2 = 156, so the halves' degree-2 values sum to 12, which caps h_3 at 167 against the measured h_3 >= 551 | receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
 
 What folding reaches. The nullity of every half operand, from one level down; the nullity of every two-term basis
@@ -265,8 +265,8 @@ diagonal z = z' (half operands) and on the antidiagonal transfers to the product
 sedenion nullities (n_16(z), n_16(z')), by a law still to be found. Falsifiers: a W8 point whose 32-dimensional
 nullity is not a function of (n_16(z), n_16(z')); a dimension other than 24 or a degree other than 16 at a good
 prime; a Hilbert numerator other than N_J(t)^2. The second and third passed at two primes; the first is open, and
-the basis spectrum (n_32 takes both 0 and 12 at n_16 = 8) already shows the law depends on more than the pair when
-the point leaves W8.
+the records already bound it to W8: the pair (4, 4) gives n_32 = 4 on the off-W8 basis cell and n_32 = 8 at every
+seeded W8 point, and n_16 = 8 gives both 0 and 12 off W8, so no single function of the pair serves the whole space.
 
 Quantum and free resources. No quantum allotment shrinks the N = 19 export: it is exact linear algebra over F_p with
 a forecast near 137 GiB, and the free quantum tiers (Open Quantum Spark, IQM Resonance, Quantum Inspire, Quandela) run
