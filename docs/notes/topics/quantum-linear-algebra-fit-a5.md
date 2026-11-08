@@ -107,5 +107,7 @@ an elimination problem.
 
 The quantum hardware's part in the ladder is its forms. The ladder decides only for forms generic with respect to a
 possible lower-dimensional E0 and to the exceptional divisor. A form drawn uniformly from the ANU QRNG avoids each
-closed bad set with probability at least 1 - deg/p. Two independent draws at each of two primes raise the confidence
-multiplicatively, at no change to the classical cost.
+closed bad set with probability at least 1 - deg/p, where deg is the degree of the bad set in the form coefficients.
+For the k = 4 slice that degree depends on deg(E0), which the record does not bound, so a single "on" carries no
+numerical confidence. Independently drawn form sets at each prime are the available strengthening; the controls and
+the first k = 4 rows share one draw across both primes.

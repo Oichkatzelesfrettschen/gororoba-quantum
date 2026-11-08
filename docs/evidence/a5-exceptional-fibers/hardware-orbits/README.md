@@ -161,6 +161,7 @@ The run takes about 90 s on ten CPUs through `parallel.py`, and two runs give by
 
 `contact_order.py` (output `contact_order.txt`) fits the singular values of L_a that vanish at the boundary against the
 distance eps along each measured incidence line (float64 SVD of `cd_core.left_mult_matrix`). On W8 -> N- eight values
-open linearly (four as 1.414 eps, four as 2.000 eps); on E8-bar -> VB four open quadratically (2.000 eps^2). A nullity
-contrast scanned toward the boundary inherits these orders. Falsifier: an exact (rational) evaluation of the same
-singular values with a different order.
+open linearly (four as 1.414 eps, four as 2.000 eps); on E8-bar -> VB four open quadratically (2.000 eps^2). These are
+statements about the matrices. Hypothesis: a hardware contrast scanned toward the boundary shows the same orders; it
+needs an observable-specific forward model and a calibrated scan. Falsifier of the matrix statement: an exact
+(symbolic) evaluation of L(b)^T L(b) with a different order.
