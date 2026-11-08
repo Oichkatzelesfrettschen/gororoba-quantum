@@ -351,11 +351,12 @@ non-reduced tangent cone; arcs on the normalization replace them.
   h_7 = 16,416 follow without a rank run.
 - Last-jump law (ledger row A5-244): on Iso, W8 -> N- and X- the rank ladder's last jump into the K2 count is
   (2d+1)^2 and splits by character block like the parity classes of the box k[x, y]/(x^{2d+1}, y^{2d+1}). Fitted on
-  ten Iso and W8 cells and two X- cells, it met three cells out of sample: Iso d = 6 (r_18 = 2,253, blocks
-  583/568/551/551, predicted before the run) and X- d = 2 and 3
-  ([xm-lown](../../evidence/a5-exceptional-fibers/xm-lown/README.md): jumps 25 and 49 split 9/6/5/5 and 9/12/14/14).
-  The closing N is 3d + 1 on Iso and W8 and 4, 8, 11, 18 at d = 1, 2, 3, 5 on X-, whose rule is open. E8-bar -> N-
-  follows its own law (last jump 81 at d = 5 with blocks 18/21/21/21).
+  ten Iso and W8 cells and two X- cells, it met four cells out of sample: Iso d = 6 (r_18 = 2,253, blocks
+  583/568/551/551, predicted before the run) and X- d = 2, 3 and 4
+  ([xm-lown](../../evidence/a5-exceptional-fibers/xm-lown/README.md): jumps 25, 49 and 81 split 9/6/5/5, 9/12/14/14
+  and 25/20/18/18). The closing N is 3d + 1 on Iso and W8 and 4, 8, 11, 15, 18 at d = 1 to 5 on X-, which fits
+  floor(7d/2) + 1 (hypothesis, predicts N = 22 at d = 6). E8-bar -> N- follows its own law (last jump 81 at d = 5 with
+  blocks 18/21/21/21).
 - Coverage (`claims.json`, rank certificates only): every pair is certified through degree 3 at both primes; through
   degree 4 for W8 and Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes
   and for X and E8-bar -> VB at 32009; through degree 6 for Iso at both primes. W8 holds in every degree by the C30
@@ -427,9 +428,10 @@ rank record); and the arc lower bound 861 <= h_5 for E8-bar -> N+- at both prime
 Ordered by information per hour. Each item names its acceptance and the result that would falsify the hypothesis it
 tests; the ledger row it enters is named where one exists.
 
-1. **X- closing N and last jump at degrees 4 and 6** (laptop, minutes to hours). A5-244 predicts last jumps of 81 split
-   25/20/18/18 into 240 and 169 split 49/42/39/39 into 665; the closing N (4, 8, 11, 18 at d = 1, 2, 3, 5) has no rule
-   yet. Falsifier: another jump size or split. Extends `../../evidence/a5-exceptional-fibers/xm-lown/`.
+1. **X- degree 6** (Kaggle CPU or workstation, hours). A5-244 predicts the last jump 169 split 49/42/39/39 into 665,
+   and the closing-N hypothesis floor(7d/2) + 1 (fitted on d = 1 to 5) predicts closing at N = 22 after a plateau at
+   N = 20 and 21. Falsifier: another jump, split or closing N. Extends
+   `../../evidence/a5-exceptional-fibers/xm-lown/`.
 2. **C30 as a family of planes** (minutes per point). Two-plane test rank [M(p) | M(q)] for distinct p, q in U: 8 means
    general planes are disjoint, below 8 means they meet; then the determinant locus of the Newton and (v4, v5) blocks
    over F_p[b, c], one point per component, to test whether every fiber over P(L0) is a linear 3-space. Falsifier of
@@ -440,7 +442,7 @@ tests; the ledger row it enters is named where one exists.
    dimension at every point of a sample, or a base locus that misses V(K2).
 4. **Engine v11 defects** (`../../evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`, reassessment):
    the preflight's walk and echelon terms, the marshaling transient of `Echelon.insert`, the four-basis block update,
-   the per-generator rebuild of L and the exit before the per-block ranks print. Acceptance: the d = 4 W8 cell reruns
+   the copy of every basis in the first closure round, the per-generator rebuild of L and the exit before the per-block ranks print. Acceptance: the d = 4 W8 cell reruns
    with byte-equal ranks and a preflight within 1.3x of the measured peak. Precondition for any W8 degree-6 run, which
    would be an engine test against the known r_19 = 8,624 with blocks 2,198 / 2,170 / 2,128 / 2,128.
 5. **Registry carries proved equalities** (#753): a `proof` lower-bound kind in `build_registry.py` that names the ledger
