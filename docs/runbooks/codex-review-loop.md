@@ -92,10 +92,13 @@ follows [codex-review-stalls.md](codex-review-stalls.md).
 - When one file conflicts heavily, take the lower branch's reviewed version and
   re-apply the upper branch's own changes on top, and run a dry run on every
   branch the merge touched.
-- A scripted merge stops on a conflict before it stages anything:
+- A scripted merge stops on a conflict before any later command stages:
   `git merge --no-ff origin/main || { git diff --name-only --diff-filter=U; exit 1; }`.
-  `git add -A` clears the unmerged state, so a chain that stages after a
-  failed merge commits the conflict markers.
+  The failed merge has already written the clean paths and the conflicting
+  paths' stages 1 to 3 to the index and markers to the work tree, so resolve
+  each listed path or run `git merge --abort`. A chain that runs `git add -A`
+  instead records the marker text and clears the unmerged state, and the next
+  commit seals it.
 
 ## Merging
 
@@ -111,18 +114,23 @@ A PR merges after this sequence:
    head's checks and requests nothing (the plain form treats a new head as an
    unreviewed round and re-requests after the stall interval).
 3. The `pr.yml` checks `lint`, `types`, `tests` and `contracts` pass on the
-   head (`proofs.yml` runs when the diff touches a proof path). A push that
+   head (`proofs.yml` runs when the diff touches a path its `paths:` filter
+   lists, and is not required). A push that
    changes the head reruns them; a red job gets its fix commit on the branch.
-4. GitHub reports mergeable_state clean. A PR whose mergeable_state is
-   `dirty` gets no `pr.yml` check runs at all, so a wait loop exits on
-   `dirty`, merges main, and waits again rather than polling for checks that
-   never start.
+4. GitHub reports mergeable_state clean. While a PR's mergeable_state is
+   `dirty`, GitHub starts no new `pull_request`-triggered run (a
+   `workflow_dispatch` run still can), so a wait loop exits on `dirty`
+   (`scripts/codex_review_wait.sh` exit 4), merges main, and waits again
+   rather than polling for checks that never start.
 5. The owner, consulted with the report of step 8 above, says to merge.
 
-When the owner says "just merge", the operator merges and cleans up and does
-nothing else: no edited body, no exception record, no further review. While
-required checks are still running, branch protection (admins enforced) refuses
-the merge, so one background loop polls the checks and merges on green.
+When the owner says "just merge", that is the decision of step 5, given at
+once: the operator merges and cleans up and does nothing else, with no edited
+body, no exception record and no further review. Steps 3 and 4 still bind the
+merge itself, because branch protection on `main` requires the four checks
+with admins enforced and refuses an earlier merge; while they run, one
+background loop polls them and calls the merge once they pass and the state
+is clean.
 
 Then, bottom-up, for each PR:
 1. Merge it with a merge commit:
