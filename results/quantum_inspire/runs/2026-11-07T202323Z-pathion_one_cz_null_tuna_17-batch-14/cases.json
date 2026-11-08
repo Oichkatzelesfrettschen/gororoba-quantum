@@ -1,0 +1,308 @@
+{
+ "schema": "qi-pathion-one-cz-null-cases-v2",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "0": 2,
+  "1": 4,
+  "2": 8,
+  "3": 11,
+  "4": 12
+ },
+ "register": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json",
+ "joint_qubits": {
+  "coin": 2,
+  "selector": 8,
+  "q12": 12
+ },
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "pin": "replay of the retained coin series b0",
+   "draw_index": 32,
+   "transpiler_seed": 22836,
+   "initial_layout": null,
+   "cz": 21,
+   "roles": {
+    "d0": 12,
+    "d1": 4,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  },
+  "k4": {
+   "block": "k4",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 4,
+   "pin": "selector_coin",
+   "draw_index": 0,
+   "transpiler_seed": 47769,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 4,
+    "d1": 12,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  },
+  "k8": {
+   "block": "k8",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 8,
+   "pin": "selector_coin",
+   "draw_index": 64,
+   "transpiler_seed": 64282,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 4,
+    "d1": 12,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  },
+  "k12": {
+   "block": "k12",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 12,
+   "pin": "selector_coin",
+   "draw_index": 128,
+   "transpiler_seed": 43671,
+   "initial_layout": [
+    1,
+    2,
+    3,
+    4,
+    0
+   ],
+   "cz": 6,
+   "roles": {
+    "d0": 4,
+    "d1": 12,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_selector_contrast": 0.0,
+   "ideal_c": [
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0,
+    -1.0,
+    1.0
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "estimates": "per template and batch kind, the raw selector contrast of each batch (base: the arm contrast P(s=0 | coin read 1) - P(s=0 | coin read 0); twin: P(s=0) of the coin-1 twin minus that of the coin-0 twin), pooled over the replicate batches by inverse variance",
+  "heterogeneity": "replicate batches of one template and kind agree within chi-square 10.828 (1 degree of freedom, alpha 0.001); the three 6-CZ blocks agree within chi-square 9.21 (2 degrees of freedom, alpha 0.01) for the base contrasts and for the twin contrasts; otherwise the decision is unresolved",
+  "control": "b0 base contrast s0 above 3.0 se, else the offset is absent and nothing about its mechanism is decided",
+  "twin_control": "b0 twin contrast t0 above 3.0 se; if not, and s0 - t0 exceeds 3.0 combined se, the offset exists only with the coin in superposition",
+  "six_cz": "c and d the inverse-variance means of the three 6-CZ base and twin contrasts, m their combination and r the combination of s0 and t0: contexts disagree when |c - d| exceeds 3.0 combined se; zero when |m| is within 3.0 se and r - m exceeds 3.0 combined se; b0-like when m exceeds 3.0 se and |r - m| is within 2.0 combined se; intermediate (unresolved) when m exceeds 3.0 se outside that band; otherwise unresolved",
+  "calibration": "the eight X-only preparations of q2, q8 and q12 are a secondary readout calibration in a terminal-assignment context: D, the selector misassignment with the coin prepared 1 minus 0 at a prepared selector 1, and G, with q12 prepared 0 minus 1, are reported with large (>= 0.036 - 3.0 se) and small (|.| + 3.0 se < 0.012) classes and change no outcome",
+  "qx": "every circuit within twice the sampling floor of its ideal law"
+ },
+ "shots": 32768,
+ "batch": "batch-14",
+ "kind": "twin",
+ "template": "b0",
+ "replicate": 1,
+ "circuits": [
+  {
+   "file": "b0-coin1.cq",
+   "kind": "data",
+   "template": "b0",
+   "coin": 1,
+   "ideal": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.000155971161,
+    0.124844028839,
+    0.000160762746,
+    0.124839237254,
+    0.000348716041,
+    0.124651283959,
+    0.000160762746,
+    0.124839237254,
+    0.124651283959,
+    0.000348716041,
+    0.124644030433,
+    0.000355969567,
+    0.124844028839,
+    0.000155971161,
+    0.124644030433,
+    0.000355969567
+   ],
+   "sha256": "41f83dff4d19acdfe9daea5b35b6aaba7968750cae83bd2eea0ee422bfb783ea"
+  },
+  {
+   "file": "b0-coin0.cq",
+   "kind": "data",
+   "template": "b0",
+   "coin": 0,
+   "ideal": [
+    0.124844028839,
+    0.000155971161,
+    0.124839237254,
+    0.000160762746,
+    0.124651283959,
+    0.000348716041,
+    0.124839237254,
+    0.000160762746,
+    0.000348716041,
+    0.124651283959,
+    0.000355969567,
+    0.124644030433,
+    0.000155971161,
+    0.124844028839,
+    0.000355969567,
+    0.124644030433,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "sha256": "02cafd834661110460cdbc5f474eba4b9231776a7bf74175e74082733ea927c2"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout",
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  }
+ ]
+}

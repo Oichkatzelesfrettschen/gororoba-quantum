@@ -1,0 +1,9 @@
+version 3.0
+
+qubit[17] q
+bit[17] b
+
+// joint preparation q2=0 q8=0 q12=0
+
+barrier q
+b = measure q

@@ -1,0 +1,65 @@
+1. Coin-fixed twins: gates removed, CZ count and ideal laws
+  b0 coin 0: removed ['rz', 'sx', 'rz'], CZ 21 (template 21), ideal coin read 0.000, ideal P(s=0) 0.5000, file 7d519b5914
+  b0 coin 1: removed ['rz', 'sx', 'rz'], CZ 21 (template 21), ideal coin read 1.000, ideal P(s=0) 0.5000, file 168e617c05
+  k4 coin 0: removed ['rz', 'sx', 'rz'], CZ 6 (template 6), ideal coin read 0.000, ideal P(s=0) 0.5000, file 2f599bc397
+  k4 coin 1: removed ['rz', 'sx', 'rz'], CZ 6 (template 6), ideal coin read 1.000, ideal P(s=0) 0.5000, file 4adcf2bbfb
+  k8 coin 0: removed ['rz', 'sx', 'rz'], CZ 6 (template 6), ideal coin read 0.000, ideal P(s=0) 0.5000, file 5293692494
+  k8 coin 1: removed ['rz', 'sx', 'rz'], CZ 6 (template 6), ideal coin read 1.000, ideal P(s=0) 0.5000, file 4ddfd33810
+  k12 coin 0: removed ['rz', 'sx', 'rz'], CZ 6 (template 6), ideal coin read 0.000, ideal P(s=0) 0.5000, file 154f215f7f
+  k12 coin 1: removed ['rz', 'sx', 'rz'], CZ 6 (template 6), ideal coin read 1.000, ideal P(s=0) 0.5000, file 320a36639d
+
+2. Mechanisms: raw selector contrast of the base circuit (s) and of the coin-twin pair (t); X-axis angle 0.0513 rad sized to b0
+  mechanism                                                               b0                 k4                 k8                k12
+  ideal, bracket readout only                              -0.0000 / +0.0000    +0.0000 / -0.0000    +0.0000 / -0.0000    +0.0000 / -0.0000
+  X-axis error 0.0513 rad after X90 and X                  +0.0164 / +0.0166    -0.0003 / -0.0000    -0.0003 / -0.0000    -0.0003 / -0.0000
+  CZ phase +0.06 rad                                       -0.0003 / -0.0003    +0.0000 / -0.0000    +0.0000 / -0.0000    +0.0000 / -0.0000
+  T1 12 us                                                 +0.0001 / +0.0002    +0.0000 / +0.0000    +0.0000 / +0.0000    +0.0000 / +0.0000
+  T1 25 us                                                 +0.0000 / +0.0000    +0.0000 / +0.0000    +0.0000 / +0.0000    +0.0000 / +0.0000
+  gate depolarizing p2 0.03                                +0.0000 / +0.0000    -0.0000 / +0.0000    -0.0000 / +0.0000    -0.0000 / +0.0000
+  ZZ coupler table x1                                      -0.0003 / -0.0003    +0.0000 / +0.0000    +0.0000 / +0.0000    +0.0000 / +0.0000
+  selector dropout when the coin reads 1, x 0.0362         +0.0164 / +0.0170    +0.0164 / +0.0170    +0.0164 / +0.0170    +0.0164 / +0.0170
+  selector flip when q12 reads 0, x 0.036                  +0.0164 / +0.0170    +0.0000 / -0.0000    +0.0000 / -0.0000    +0.0000 / -0.0000
+  (each cell: base s / twin t; k8 and k12 equal k4 to four decimals)
+
+   planned pooled standard errors: b0 base 0.00195, twin 0.00276; 6-CZ base 0.00226, twin 0.00159, combined 0.00130
+   separation of mechanisms in standard errors (6-CZ combined m, 6-CZ base c, 6-CZ twin d, b0 base-twin gap):
+     over-rotation  vs dropout  : m  13.0  c   7.4  d  10.7  b0 gap   0.1
+     over-rotation  vs q12 flip : m   0.1  c   0.1  d   0.0  b0 gap   0.1
+     dropout        vs q12 flip : m  12.9  c   7.3  d  10.7  b0 gap   0.0
+   kept: the 6-CZ base and twin contrasts (they separate the dropout from the over-rotation and the q12 flip);
+   the b0 twin is kept as a control only: every modeled mechanism gives it the base value, so it separates
+   no pair of modeled mechanisms, and it exposes an offset that needs the coin superposition (gap > 0).
+   no twin separates the over-rotation from the q12 flip: both give the 6-CZ blocks zero.
+
+3. Data-qubit-fixed variants of the 6-CZ blocks (d1, the role q12 holds): P(s = 0) with d1 = 0 minus d1 = 1
+   ideal    : +0.0000 (0.00 se at 32768 shots per variant)
+   dropout  : +0.0000 (0.00 se at 32768 shots per variant)
+   q12 flip : +0.0000 (0.00 se at 32768 shots per variant)
+   the q12 flip leaves P(s = 0) at 1/2 for either d1, so these variants do not separate it from the over-rotation;
+   they are not built. b0 has no data-fixed variant: its first run on d0's starting qubit has four gates.
+
+4. Over-rotation robustness: angle sized to b0 (+0.0164 contracted), 6-CZ response at that angle
+   axis gates  order       eps*      b0 s      k4 s      k4 t
+   x    x90x   before   -0.1441   +0.0164   -0.0033   +0.0000
+   x    x90x   before   +0.0513   +0.0164   -0.0003   -0.0000
+   x    x90x   after    -0.1441   +0.0164   -0.0033   +0.0000
+   x    x90x   after    +0.0513   +0.0164   -0.0003   +0.0000
+   x    all    before   -0.0786   +0.0164   +0.0076   +0.0103
+   x    all    before   +0.0275   +0.0164   +0.0009   +0.0011
+   x    all    after    -0.1150   +0.0164   -0.0040   +0.0000
+   x    all    after    +0.0277   +0.0164   -0.0002   -0.0000
+   y    x90x   before   -0.0694   +0.0164   +0.0038   +0.0039
+   y    x90x   before   +0.0656   +0.0164   +0.0030   +0.0031
+   y    x90x   after    -0.0656   +0.0164   -0.0030   -0.0031
+   y    x90x   after    +0.0694   +0.0164   -0.0038   -0.0039
+   y    all    before  no angle within +-0.15 reaches b0 (largest +0.0138)
+   y    all    after    -0.1095   +0.0164   +0.0001   +0.0002
+   z    x90x   before   -0.0694   +0.0164   +0.0000   -0.0000
+   z    x90x   before   +0.0656   +0.0164   +0.0000   +0.0000
+   z    x90x   after    -0.0694   +0.0164   -0.0000   +0.0000
+   z    x90x   after    +0.0656   +0.0164   -0.0000   +0.0000
+   z    all    before   -0.0356   +0.0164   +0.0000   +0.0000
+   z    all    before   +0.0337   +0.0164   -0.0000   -0.0000
+   z    all    after    -0.0356   +0.0164   +0.0000   -0.0000
+   z    all    after    +0.0337   +0.0164   +0.0000   +0.0000
+   admitted set: the pulse gates X90 and X (hypothesis: Rz is a frame change; cqasm.md lists it native, so unverified); 12 sized models, max |k4 s| 0.0038, max |k4 t| 0.0039; the rows after every single-qubit gate lie outside it (largest |k4 s| 0.0076, |k4 t| 0.0103)

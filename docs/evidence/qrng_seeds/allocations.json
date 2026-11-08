@@ -2503,11 +2503,6 @@
    "reason": "DRAW_B: curve, finite-field sample and float-start seeds read by runtime index"
   },
   {
-   "record": "docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json",
-   "path": "scripts/qi_pathion_one_cz_null_cases.py",
-   "reason": "DRAW: transpiler seeds of the low-CZ null-block routing search, read by runtime index in slices of SEEDS_PER_BLOCK (indices 0 to 191)"
-  },
-  {
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json",
    "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/tslice_gen.py",
    "reason": "DRAW_B: the independent Iso k = 4 slice forms, 17 coefficients each, read as raw values below the prime by index (p = 32009 indices 1 to 143, p = 32029 indices 144 to 271)"
