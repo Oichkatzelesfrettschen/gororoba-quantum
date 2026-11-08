@@ -33,7 +33,7 @@ bound rests on no membership receipt.
 
 The header is the canonical producer input `working/build/inputs/p32009-r10754/iso-nm.sing`, so `../build_registry.py`
 binds the record: run from `docs/evidence/a5-exceptional-fibers` with the scan roots
-`d5-p2 degree-one n15-laptop n16-laptop docs/local/a5-failed-runs iso-d6-n19-laptop` (in that order, because the first
+`d5-p2 degree-one n15-laptop n16-laptop ../../local/a5-failed-runs iso-d6-n19-laptop` (in that order, because the first
 root that holds a record names its source), it adds one bound certificate and marks Iso degree 6 at p = 32009
 certified in `../claims.json`; without the last root, `--check` reproduces the previous registry. Singular version:
 [`iso6-singular-version.txt`](iso6-singular-version.txt).
@@ -50,6 +50,5 @@ are empty.
   wall 1,905.6 s, peak RSS 20,525,468 KiB, closure in 6 rounds;
   [`isonm_d6_n19_p32029.json`](isonm_d6_n19_p32029.json) (sha256 40a86461193f2d1e...) reads r_19 = 2,422 with blocks
   632 / 610 / 590 / 590, the same per-block values as at 32009. It meets HF(k[y]/K2, 6) = 2,422, so h_6 = 2,422 over
-  F_32029 as well (A5-125). The registry build with the scan roots above (the a5-failed-runs root given as
-  `../../local/a5-failed-runs` from this directory) adds one bound certificate and marks Iso degree 6 certified at
+  F_32029 as well (A5-125). The registry build with the scan roots above adds one bound certificate and marks Iso degree 6 certified at
   32029.

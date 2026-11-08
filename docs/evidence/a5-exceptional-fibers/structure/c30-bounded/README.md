@@ -4,12 +4,13 @@ Result. At p = 32009 and p = 32029 the degree-30 component C30 of V(K2) for W8 -
 32029 the component of V(K2) other than C20, `../w8-kp/README.md` steps 5 and 6) lies in the fiber E0 = Proj F(I) over
 the origin. With C20 in E0 (arcs-iso-w8/README.md), E0 = V(K2) set-theoretically. K2 lies in the defining ideal L of
 F(I) (degree-2 receipts) and is radical and saturated (k[y]/K2 is Cohen-Macaulay of dimension 6), so the projective
-Nullstellensatz gives L = K2 and F(I) = k[y]/K2 in every degree at both primes (step 8 below). The W8 degree-6 rank run
-(N = 19, 17 to 20 h) does not decide the Hilbert function of F(I); it remains an independent test of the rank engine
-and of the convergence rule N = 3d + 1. Two adversarial reviews (Codex and Grok, 2026-11-08,
-`docs/local/reviews/c30-*.md`, not tracked) found two sentences whose stated reasons were insufficient, the unit claim
-of step 2 and the truncation argument of step 4; both steps below carry the corrected arguments, and the exact identity
-that step 4 needs is retained in `l0/`. The ledger rows A5-066, A5-236 and A5-237 record the result.
+Nullstellensatz gives L = K2 and F(I) = k[y]/K2 in every degree at both primes (step 8 below). The W8 degree-6 rank
+run (N = 19, 17 to 20 h) does not decide the Hilbert function of F(I); it remains an independent test of the rank
+engine and of the convergence rule N = 3d + 1. Two adversarial reviews (Codex and Grok, 2026-11-08,
+[docs/archive/reviews/c30-w8](../../../../archive/reviews/c30-w8/README.md)) found two sentences whose stated reasons
+were insufficient, the unit claim of step 2 and the truncation argument of step 4; both steps below carry the
+corrected arguments, and the exact identity that step 4 needs is retained in `l0/`. The ledger rows A5-066, A5-236 and
+A5-237 record the result.
 
 ## Decision criterion, from the records
 
@@ -85,7 +86,9 @@ t9 = 0}.
    (32009) and A5-144 to A5-148 (32029) equal the first five, so no certified value lies below HF(k[y]/K2, d). The
    result gives h_6 = 8,624, the receipt-bound upper bound of rows A5-143 and A5-149, and h_7 = 16,416; the doubling
    automorphism (`../README.md`, ledger row A5-013) carries the whole fiber to W8 -> N+, so rows A5-131 and A5-137
-   take the same values. A rank at degree 6 below 8,624 would falsify the reduction.
+   take the same values. A degree-6 element of L outside K2, which a degree-6 membership receipt would show as a
+   membership failure, would falsify the reduction. A truncated rank is a lower bound (r_N <= h_6), so no rank value
+   below 8,624 contradicts h_6 = 8,624; such a value bounds the engine or the N = 3d + 1 law instead.
 8. The ideal. K2 is radical and, k[y]/K2 being Cohen-Macaulay of positive dimension, saturated; F_p is perfect, so K2
    is geometrically radical and K2 = I(V_+(K2)) over an algebraic closure, contracted back. E0 = V_+(L) contains
    V_+(K2) = C20 cup C30, so L lies in I(V_+(K2)) = K2; with K2 in L, L = K2. L need not be assumed radical.
@@ -160,8 +163,8 @@ from the global variety.
   the nonzero Newton and (v4, v5) determinants, the vdim 1 of the quotient ideal and the Jacobian rank 6, at five
   points. The vanishing of K2 on the planes, the tangent consistency and the two controls check the pipeline.
 - Falsifiers. (a) A plane that fails any K2 generator at a point where the pipeline reports success. (b) Jacobian rank
-  below 6 at every point of a larger sample. (c) A relation of L outside K2 in some degree, for instance a W8 rank at
-  degree 6 below 8,624. (d) A J or G_j that fails to vanish on the chart curve of L0, or a vanishing Newton
+  below 6 at every point of a larger sample. (c) A relation of L outside K2 in some degree, for instance a membership
+  failure in a degree-6 receipt. (d) A J or G_j that fails to vanish on the chart curve of L0, or a vanishing Newton
   determinant at every point of P(L0).
 - Not claimed. The multiplicity statement e(F(I)) = 50 follows from F(I) = k[y]/K2 and the Cohen-Macaulay property of
   K2 recorded in `../w8-kp/README.md`; this directory runs no multiplicity computation.
