@@ -55,7 +55,8 @@ they differ); l5 continues the same draw (indices 151 to 187). The draw holds no
 188, so the p = 32029 lists are the same indices and values. The X forms use indices 188 to 209 and serve both
 incidences. The cross-check function a0 of the Iso runs is the l0 of the chart scripts
 (`../chart-iso-pP-coefficients.json`, draw 2026-11-05T235924Z, indices 2 to 27); the X a0 is `x-l0`. No Python seed
-literal is involved, so `ci/seed_provenance.py` needs no allocation row.
+literal is involved; `docs/evidence/qrng_seeds/allocations.json` lists the independent k = 4 draw (2026-11-08T000625Z)
+in its `owned` rows so no other case takes its values.
 
 Saturations. `t2` runs `sat_with_exp(Q, t2)` of `elim.lib` (iterated quotients). `t2h` computes the same ideal: it
 homogenizes the `dp` standard basis of Q with a variable h, takes a `dp` standard basis in the ring (other variables, h,
@@ -113,24 +114,40 @@ Reading the table.
 
 ## Preregistered decision: Iso k = 4 at p = 32009 and p = 32029 (not run)
 
-Question. Does the origin lie on the closure of {t in V(J) minus V(I) : l_1(G(t)) = ... = l_4(G(t)) = 0}? The
-reading decides dim E0 >= 4, that is l(I) = 5.
+Question. Does the origin lie on the closure of {t in V(J) minus V(I) : l_1(G(t)) = ... = l_4(G(t)) = 0} for a given
+form set? The reading tests dim E0 >= 4, that is l(I) = 5. A reading "on" is consistent with dim E0 >= 4 for that form
+set and carries no numerical confidence: the slices that meet a 3-dimensional E0 form a hypersurface in the form
+coefficients whose degree grows with deg(E0), and nothing bounds deg(E0). Two form families are preregistered at each
+prime. The original family (`forms.json` keys `iso-l1..4`, draw 2026-11-06T113431Z, indices 2 to 148) uses the same
+integer coefficients at both primes, so its two readings are not independent draws. The independent family (keys
+`iso-b-l1..4`, draw 2026-11-08T000625Z, made after the original family was fixed) takes the first 17 values below 32009
+for each form at p = 32009 (indices 1 to 143) and 17 values below 32029 for each form at p = 32029 (indices 144 to 271),
+so the index ranges are disjoint and no value serves two forms.
 
-Precondition, measured. The origin must lie off JK, the closure of V(J, G) minus V(t2), which does not depend on k. It
-does at p = 32009 (the k = 3 junk check) and at p = 32029 (`sing/iso-p32029-junk.sing`, `logs/iso-p32029-junk.result`:
-JK of dimension 4 and degree 6, "origin on the junk 0", 0.03 s), so the t2 saturation reads the slice at both primes.
+Precondition, measured. The origin must lie off JK, the closure of V(J, G) minus V(t2), which does not depend on k or on
+the forms. It does at p = 32009 (the k = 3 junk check) and at p = 32029 (`sing/iso-p32029-junk.sing`,
+`logs/iso-p32029-junk.result`: JK of dimension 4 and degree 6, "origin on the junk 0", 0.03 s), so the t2 saturation
+reads the slice at both primes.
 
-Commands, from the repository root, one decisive run per prime beside its twin:
+Commands, from the repository root, one run per prime and form family beside its twin. Original family:
 
     sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32009-k4-satt2h 20 7200
     sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32029-k4-satt2h 20 7200
     sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32009-k4-satt2 20 7200
     sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32029-k4-satt2 20 7200
 
-The scripts exist in `sing/` (`iso-pP-k4-satt2h.sing`, `iso-pP-k4-satt2.sing`); the forms are l1..l4 of `forms.json`
-(indices 2 to 148 of the draw; the same indices at both primes), each with the sha256 of its header in the first
-script line, `dp`, the `t2` saturation of item 4 (valid at k >= 4 by the dimension count there). The cap is 20 GiB of
-address space and the limit 7,200 s. The `t2h` run decides; the `t2` run confirms.
+Independent family:
+
+    sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32009-k4b-satt2h 20 7200
+    sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32029-k4b-satt2h 20 7200
+    sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32009-k4b-satt2 20 7200
+    sh docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/run.sh iso-p32029-k4b-satt2 20 7200
+
+The scripts exist in `sing/` (`iso-pP-k4-satt2h.sing`, `iso-pP-k4-satt2.sing`, `iso-pP-k4b-satt2h.sing`,
+`iso-pP-k4b-satt2.sing`); each names its draw and form keys and carries the sha256 of its header in the first script
+line, `dp`, the `t2` saturation of item 4 (valid at k >= 4 by the dimension count there). `tslice_gen.py --check`
+regenerates every script and `forms.json` in memory and requires them to match. The cap is 20 GiB of address space and
+the limit 7,200 s. The `t2h` run is the reading; the `t2` run confirms.
 
 Forecast. The bracketing controls ran on the same host: k = 3 in 16 s at 81 MiB and k = 5 in 272 s at 377 MiB (`t2h`);
 the `t2` twin took 37 s at k = 3 and 3,022 s at k = 5. Q_4 is one-dimensional, between the two. Forecast: `t2h` finishes
@@ -138,11 +155,12 @@ between 15 s and 10 min at under 1 GB, `t2` between 37 s and 1 h; rating: 80 per
 raised by a monotone time and memory trend in the `prot` trace and lowered by any pair-set growth past the k = 5 trace
 (4,000 pairs). The a0 cross-check costs 814 s at k = 5 and is not preregistered at k = 4.
 
-| Reading at a prime | Meaning | Ledger action |
+| Readings at a prime | Meaning | Ledger action |
 |---|---|---|
-| on | for this form set, E0 meets Lambda_4: dim E0 >= 4, l(I) = 5, F(I) = k[y]/K2 in every degree at that prime (A5-067 survives as an F_p statement; A5-007 holds in every degree there). | A5-067 and A5-007 move to survives with the genericity caveats; both primes on closes the question at the two primes. |
-| off | for this form set, E0 misses Lambda_4: dim E0 <= 3 for generic Lambda_4, l(I) <= 4, so F(I) is a proper quotient of k[y]/K2 and A5-007 fails in some degree of at least 6 at that prime. | A5-007 refuted at that prime for generic forms; the reading is first repeated with a second form set from a fresh ANU draw (registered in `docs/evidence/qrng_seeds/allocations.json` before use), because an "off" reading is also what a special Lambda_4 gives. |
-| split between the primes | the forms are special at one prime, or l(I) depends on the prime. | A5-026 (agreement of the primes) is tested by a repeat with a second form set at both primes. |
+| on with the original family and with the independent family | both form sets are consistent with dim E0 >= 4 (l(I) = 5, F(I) = k[y]/K2 in every degree at that prime); no numerical confidence attaches to either. | A5-067 moves to survives as an F_p statement at that prime without numerical confidence; A5-007 already reads survives and keeps it. |
+| on with one family only | the other family is special, or the reading is accidental; nothing separates the two. | No status moves; a third family from a fresh draw is preregistered before any move. |
+| off with one family | that form set misses E0: dim E0 <= 3 for generic forms, or the set is special. | The other family at that prime is read; off with both refutes A5-007 at that prime (F(I) is a proper quotient of k[y]/K2, a relation of L outside K2 in some degree of at least 6); split means at least one set is special and no status moves. |
+| split between primes with agreeing families at each | l(I) depends on the prime, or the families are special at one prime. | A5-026 (agreement of the primes) is tested by a third family at both primes from a fresh draw. |
 | `t2` and `t2h` disagree | an implementation defect. | Stop; compare the saturated ideals by mutual reduction. |
 | a limit or cap ends the run | no reading. | Record the stage and the `prot` trace; no ledger status moves. |
 
@@ -164,7 +182,7 @@ limit, untested and not proved.
 
 - A control reading the other way would break the method; none did (17 readings, three saturations).
 - A reading "on" at k = 4 from a special form set (the origin on a closure although dim E0 <= 3) or "off" from a special set
-  (dim E0 = 4 missed) is possible; a repeat with a fresh draw and the second prime bound it.
+  (dim E0 = 4 missed) is possible; the independent form family at each prime and, on a split, a third family from a fresh draw test it.
 - The t2 support condition holds by the dimension count at k >= 4; the origin is off JK at both primes
   (the junk checks above), which A5-068 predicts.
 - The reduction concerns the fiber over the origin of Bl_I V(J) at the primes 32009 and 32029.
