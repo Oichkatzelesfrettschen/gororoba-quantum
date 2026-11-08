@@ -1,6 +1,7 @@
 #!/bin/sh
 # Run one case of the C30 bounded check inside a cgroup memory scope and a wall-time limit, from any directory.
 #   sh run.sh CASE [LIMIT_S]      CASE names sing/CASE.sing; the limit defaults to 900 s, the memory cap is 8 GiB
+# The exit status is the Singular status (124 when the wall-time limit ends the run).
 # Writes logs/CASE.log (Singular stdout), logs/CASE.result (RESULT lines, one per stage as it exists), logs/CASE.err,
 # logs/CASE.time (/usr/bin/time -v: elapsed seconds and peak resident set; empty when `timeout` ends the run) and
 # logs/CASE.rss (resident set of the Singular process every 30 s). Exit 124 in logs/CASE.result means the wall-time
@@ -11,7 +12,12 @@ case_name=${1:?usage: run.sh CASE [LIMIT_S]}
 limit_s=${2:-900}
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../../.." && pwd)
-SINGULAR=${SINGULAR:-$(ls "$HOME"/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3*/site-packages/sage_wheels/bin/Singular)}
+if [ -z "${SINGULAR:-}" ]; then
+    for candidate in "$HOME"/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3*/site-packages/sage_wheels/bin/Singular; do
+        if [ -x "$candidate" ]; then SINGULAR=$candidate; break; fi
+    done
+fi
+: "${SINGULAR:?run.sh: no Singular found; set SINGULAR}"
 log="$here/logs/$case_name"
 mkdir -p "$here/logs"
 cd "$root"
@@ -44,4 +50,4 @@ printf 'exit %s\n' "$rc" >> "$log.result"
 for f in "$log.log" "$log.time" "$log.err" "$log.result"; do
     sed -i -e "s|$root/||g" -e "s|$HOME|~|g" "$f"
 done
-exit 0
+exit "$rc"

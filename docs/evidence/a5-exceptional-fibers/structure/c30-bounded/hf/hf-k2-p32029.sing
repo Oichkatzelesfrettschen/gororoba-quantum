@@ -1,0 +1,8 @@
+// Hilbert function of k[y]/K2 for W8 -> N- at prime 32029, degrees 1 to 7, from the receipt-bound degree-2 relations.
+system("--ticks-per-sec",1); int t0=rtimer; option(redSB);
+ring Y=32029,(y(1..24)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel")+";");
+ideal sK=std(K); int d; string l="RESULT hf-k2-p32029 generators "+string(ncols(K))+"; HF(k[y]/K2, d) for d = 1..7:";
+for (d=1;d<=7;d++) { l=l+" "+string(size(kbase(sK,d))); }
+print(l); print("RESULT hf-k2-p32029 dim "+string(dim(sK))+" (affine; projective = dim - 1), seconds "+string(rtimer-t0));
+quit;

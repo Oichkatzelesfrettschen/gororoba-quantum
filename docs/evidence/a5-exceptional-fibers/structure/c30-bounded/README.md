@@ -1,12 +1,15 @@
 # C30 in the W8 exceptional fiber: linear planes over the base locus of the point blowup
 
-Result. At p = 32009 and p = 32029 the degree-30 component C30 = V(K2 : P) of V(K2) for W8 -> N- lies in the fiber
-E0 = Proj F(I) over the origin. With C20 in E0 (arcs-iso-w8/README.md), E0 = V(K2); K2 is radical and lies in the
-defining ideal L of F(I) (degree-2 receipts), so L = K2 and F(I) = k[y]/K2 in every degree at both primes. The W8
-degree-6 rank run (N = 19, 17 to 20 h) is not needed to decide the Hilbert function of F(I); a rank at degree 6 below the
-Hilbert function of k[y]/K2 would contradict this result. The reduction below is an argument written here and read by
-no second reviewer yet, and the computations behind it are exact over F_32009 and F_32029 at five QRNG points; the
-ledger rows A5-066, A5-236 and A5-237 record it; A5-066 reads `survives`.
+Result. At p = 32009 and p = 32029 the degree-30 component C30 of V(K2) for W8 -> N- (C30 = V(K2 : P) at 32009; at
+32029 the component of V(K2) other than C20, `../w8-kp/README.md` steps 5 and 6) lies in the fiber E0 = Proj F(I) over
+the origin. With C20 in E0 (arcs-iso-w8/README.md), E0 = V(K2) set-theoretically. K2 lies in the defining ideal L of
+F(I) (degree-2 receipts) and is radical and saturated (k[y]/K2 is Cohen-Macaulay of dimension 6), so the projective
+Nullstellensatz gives L = K2 and F(I) = k[y]/K2 in every degree at both primes (step 8 below). The W8 degree-6 rank run
+(N = 19, 17 to 20 h) does not decide the Hilbert function of F(I); it remains an independent test of the rank engine
+and of the convergence rule N = 3d + 1. Two adversarial reviews (Codex and Grok, 2026-11-08,
+`docs/local/reviews/c30-*.md`, not tracked) found two sentences whose stated reasons were insufficient, the unit claim
+of step 2 and the truncation argument of step 4; both steps below carry the corrected arguments, and the exact identity
+that step 4 needs is retained in `l0/`. The ledger rows A5-066, A5-236 and A5-237 record the result.
 
 ## Decision criterion, from the records
 
@@ -31,8 +34,11 @@ t9 = 0}.
    G_j(s, s u) = s^2 G'_j(s, u) (exact division, checked by every plane script), so I O_B = s^2 I' with
    I' = (G'_1, ..., G'_24). B is smooth along {s = 0} because J' has a nonzero linear part at the points used. The
    exceptional divisor {s = 0} is the quadric Q^5 of tangent directions.
-2. The fibers. Bl_{I'} B equals Bl_{I O_B} B because s^2 is invertible there; I O_B is invertible on it, so the
-   composite with B -> V(J) factors through Bl_I V(J) by the universal property of the blowup of I. The factor map is
+2. The fibers. Near a point of {s = 0} the divisor s = 0 is Cartier (B is smooth there), so (s^2) is an invertible
+   ideal sheaf; s^2 itself vanishes on {s = 0} and is no unit. Multiplication by s^{2n} identifies the graded pieces of
+   the Rees algebras of I' and of s^2 I' = I O_B, so Bl_{I'} B = Bl_{I O_B} B, and on it both (s^2) and I' pull back
+   to invertible ideals, hence so does I O_B. The composite with B -> V(J) therefore factors through Bl_I V(J) by the
+   universal property of the blowup of I. The factor map is
    proper and birational, hence onto, and it preserves the projective coordinate, since [G] = [s^2 G'] = [G']. The fiber
    of Bl_{I'} B over any point p of {s = 0} therefore maps into E0.
 3. The base locus. The 24 quadrics G_2 = G'|_{s = 0} cut Q^5 in P(L0) = P^2 set-theoretically (arcs-iso-w8/README.md,
@@ -42,32 +48,47 @@ t9 = 0}.
 4. The slice. At a point p = [1 : 0 : b : c : b : c : 0] of P(L0), the slice B_4 = B cap {v6 = v7 = 0} (v_i = u_i minus
    the coordinate of p) is smooth of dimension 4 and transversal to P(L0). F(I'_{B,p}) maps onto F(I'|_{B_4}), so
    Proj F(I'|_{B_4}) embeds in the fiber over p. On B_4 the generators G'_2 and G'_11 have independent linear
-   parts; Newton iteration over truncated power series (order 10 in s, v2) solves the smooth surface
-   S = {G'_2 = G'_11 = 0} and the restrictions G'_j|_S, which are all divisible by v2. The quotient G'_j|_S / v2
-   generates the maximal ideal (s, v2) of k[[s, v2]] (vdim 1 in the local ordering `ds`). By Nakayama (the truncation order exceeds 1), I'|_{B_4} =
-   (G'_2, G'_11, v2 s, v2^2) in the coordinates (G'_2, G'_11, s, v2), a monomial ideal whose four generators have
-   affinely independent exponents, so its fiber cone is the polynomial ring k[Z1, Z2, Z3, Z4].
+   parts. The equations G'_2 = G'_11 = J' = 0 have an invertible Jacobian in (v4, v5, v9) at p (the Newton
+   determinant), so the formal implicit function theorem gives a unique solution (v4, v5, v9) = x(s, v2) in
+   k[[s, v2]]^3 with x(0, 0) = 0: the smooth surface S. Divisibility by v2 is exact, not a truncation statement. J and
+   all 24 G_j vanish identically on L0, and in the chart they vanish on the curve (s, v2 = v4 = v5 = v9 = 0) for every
+   (b, c) (`l0/l0-identity-*.log`, polynomial identities with symbolic b and c at both primes). That curve solves the
+   same three equations at v2 = 0, so by uniqueness x(s, 0) = 0, and G'_j|_S (s, 0) = G'_j(s, 0, 0, 0, 0) = 0: every
+   G'_j|_S is divisible by v2 in k[[s, v2]]. Newton iteration to order 10 computes the 2-jets of G'_j|_S exactly
+   (orders up to 10 of the composition depend only on orders up to 10 of x), hence the exact 1-jets of the quotients
+   G'_j|_S / v2; their linear parts span m/m^2 for m = (s, v2) (vdim 1 in the local ordering `ds`), and Nakayama gives
+   that the quotients generate m. Modulo (G'_2, G'_11) the image of I' is therefore v2 m = (v2 s, v2^2), so
+   I'|_{B_4} = (G'_2, G'_11, v2 s, v2^2) in the coordinates (G'_2, G'_11, s, v2), a monomial ideal whose four
+   generators have affinely independent exponents. A product of n generators x^a y^b z^c w^(c+2d) never lies in
+   m I^n (the w-exponent minus the z-exponent stays even), so dim I^n / m I^n = binom(n + 3, 3) and the fiber cone is
+   the polynomial ring k[Z1, Z2, Z3, Z4].
 5. The plane. Write G'_j = c_j1 G'_2 + c_j2 G'_11 + v2 (alpha_j s + beta_j v2) modulo m I'. The 24 x 4 matrix
    M(p) with rows (c_j1, c_j2, alpha_j, beta_j) (rows 2 and 11 are unit vectors) maps Proj k[Z] to a linear 3-space
    Pi_p = column space of M(p) in P^23, and Pi_p lies in E0. The coefficients c_jk(p) come from the linear parts of
    G'_j and alpha_j, beta_j from the linear parts of G'_j|_S / v2.
 6. The family. M(p) is a rational function of (b, c) on an open set U of P(L0) that contains the points used (the
    determinants of the Newton block and of the (v4, v5) block are nonzero there, and the conditions of step 4 are open).
-   The set T = closure of the union of Pi_p over U is irreducible and lies in E0. Dual-number arithmetic over
+   The set T = closure of the union of Pi_p over U is irreducible (U x A^4 is irreducible and M is rational on it)
+   and lies in E0, because steps 4 and 5 hold at every point of U. Dual-number arithmetic over
    F_p[eps]/eps^2 gives the derivatives of M(p) in b and c; the matrix [M(p) | dM/db Y0 | dM/dc Y0] for a random
    vector Y0 has rank 6. The map f(p, Z) = M(p) Z from the open set of (p, Z) to the affine cone over T has differential
    of rank at most the dimension of the cone at a general point, since the differential lands in the tangent space of the
    closure of the image at a smooth point of it (a statement that holds in every characteristic). Rank is lower
    semicontinuous, so the generic rank is at least the rank 6 read at one point. The affine cone over T therefore has
    dimension at least 6, and T has projective dimension at least 5.
-   T lies in V(K2) (the planes are in V(K2)) and not in C20 (a plane is not in V(P) at 32009, and is outside V(Lambda)
+   T lies in V(K2) because E0 does (K2 lies in L); the vanishing of the 144 quadrics of K2 on each computed plane is a
+   control of the pipeline, not a premise. T does not lie in C20 (a plane is not in V(P) at 32009, and is outside V(Lambda)
    at 32029, where C20 lies in V(Lambda)); V(K2) = C20 cup C30 and the irreducibility of T give T in C30. C30 is
    irreducible of dimension 5, so T = C30, and C30 lies in E0.
 7. The Hilbert function. HF(k[y]/K2, d) for d = 1 to 7 (`kbase` of the standard basis of K2, at 32009 and at 32029)
-   is 24, 156, 600, 1,725, 4,116, 8,624, 16,416. The certified values h_1 to h_5 of the W8 -> N- rows A5-138 to A5-142
+   is 24, 156, 600, 1,725, 4,116, 8,624, 16,416 (`hf/hf-k2-p*.log`, from the receipt-bound degree-2 relations). The certified values h_1 to h_5 of the W8 -> N- rows A5-138 to A5-142
    (32009) and A5-144 to A5-148 (32029) equal the first five, so no certified value lies below HF(k[y]/K2, d). The
-   result predicts h_6 = 8,624, the receipt-bound upper bound of rows A5-143 and A5-149 (currently `open`); a rank at
-   degree 6 below 8,624 falsifies it.
+   result gives h_6 = 8,624, the receipt-bound upper bound of rows A5-143 and A5-149, and h_7 = 16,416; the doubling
+   automorphism (`../README.md`, ledger row A5-013) carries the whole fiber to W8 -> N+, so rows A5-131 and A5-137
+   take the same values. A rank at degree 6 below 8,624 would falsify the reduction.
+8. The ideal. K2 is radical and, k[y]/K2 being Cohen-Macaulay of positive dimension, saturated; F_p is perfect, so K2
+   is geometrically radical and K2 = I(V_+(K2)) over an algebraic closure, contracted back. E0 = V_+(L) contains
+   V_+(K2) = C20 cup C30, so L lies in I(V_+(K2)) = K2; with K2 in L, L = K2. L need not be assumed radical.
 
 ## Computation
 
@@ -129,14 +150,18 @@ from the global variety.
 
 - Fields. Exact over F_32009 and F_32029; the statements say nothing about characteristic 0.
 - Points. Five rational points of P(L0), chosen from a QRNG draw, with Jacobian rank 6 at each. The rank at one point
-  bounds the generic rank from below, so T has dimension 5 as soon as one point reads 6.
-- Dependence. The reduction in steps 1 to 6 is argued here; its checks are the exact divisibilities, the vanishing of
-  K2 on the planes, the tangent consistency, and the two controls. A fault in step 2 (the factorization through
-  Bl_I V(J)) or step 4 (the embedding of the slice's fiber cone) would not be caught by the K2 vanishing alone, but
-  K2 vanishing on a plane built from the wrong object would be a coincidence of 144 quadrics.
+  bounds the generic rank from below, so T has projective dimension at least 5 as soon as one point reads 6; equality
+  comes from T lying in C30. A further point of lower rank lies on the rank-drop locus and falsifies nothing. Both
+  reviewers reproduced the RESULT lines of the plane script at one further point of P(L0) at 32009 (rank 6, K2
+  0 of 144, Lambda 9 of 9); its coordinates reuse draw values already assigned to controls in `points.json`, so it
+  is a reproduction, not a retained sixth point.
+- Dependence. Steps 1 to 8 are proof steps; two adversarial reviewers read them and the two repaired steps (2 and 4)
+  carry the corrected arguments. The computed inputs are the exact divisibilities by s^2, the L0 identities of `l0/`,
+  the nonzero Newton and (v4, v5) determinants, the vdim 1 of the quotient ideal and the Jacobian rank 6, at five
+  points. The vanishing of K2 on the planes, the tangent consistency and the two controls check the pipeline.
 - Falsifiers. (a) A plane that fails any K2 generator at a point where the pipeline reports success. (b) Jacobian rank
   below 6 at every point of a larger sample. (c) A relation of L outside K2 in some degree, for instance a W8 rank at
-  degree 6 below the Hilbert function of k[y]/K2 (the run this result makes unnecessary). (d) A reading of the second
-  reviewer that the fiber of Bl_{I'} B over p does not map into E0.
+  degree 6 below 8,624. (d) A J or G_j that fails to vanish on the chart curve of L0, or a vanishing Newton
+  determinant at every point of P(L0).
 - Not claimed. The multiplicity statement e(F(I)) = 50 follows from F(I) = k[y]/K2 and the Cohen-Macaulay property of
   K2 recorded in `../w8-kp/README.md`; this directory runs no multiplicity computation.
