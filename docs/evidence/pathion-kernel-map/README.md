@@ -54,3 +54,38 @@ misses) live in [conjectures/](conjectures/README.md) with their logs and a runn
 Every two-term pair block on these operands is one of the 16 sign matrices Belenos already measured in all 32
 configurations (2026-10-30); a photonic two-term kernel map would repeat retained data, which is why the photonic
 candidate moves to four-term blocks.
+
+## Coset-block classes at D = 64 and D = 128
+
+`census.py --wide` writes `census-wide.json`: the two-term and four-term censuses at D = 64 (3906 two-term operands)
+and D = 128 (16002), with the nullity of every operand certified against the cd_core integer rank (python-flint
+fmpz_mat) and equal to its aligned-pair count. No coset-block class first occurs at either dimension:
+
+- A two-term block with |V| = 8 is four 2 x 2 sign blocks, one per XOR pair, so its class under row and column
+  permutation and negation is the number of aligned pairs, 0 to 4, and all five occur at D = 32. The ideal outcome
+  law of the block circuit carries the same five classes at D = 32, 64 and 128.
+- The four-term 4 x 4 blocks of D = 64 and D = 128 fall into the same 9 of the 12 classes of all 4 x 4 +-1 matrices
+  that D = 32 reaches; the three never reached through D = 128 have Gram spectra (0, 0, 2.708, 13.292),
+  (0, 1.314, 5.059, 9.627) and (0.536, 4, 4, 7.464).
+- What the doublings add is operand-level: two-term nullities 16, 20, 24 and 28 first occur at D = 64 and 32 to 60 in
+  steps of 4 at D = 128, each a sum of block counts drawn from the five classes.
+
+A hardware case for the doublings therefore reads operand nullities above 12 (every block of one operand), not new
+block classes.
+
+### Analysis of the retained wide-coset runs
+
+`scripts/pathion_wide_coset_analysis.py` applies the case's rules to the ibm_fez and ibm_kingston runs (acquisitions
+`ibm-fez-pathion-wide-coset` and `ibm-kingston-pathion-wide-coset`) and writes
+[pathion_wide_coset_analysis.json](../../../results/live/pathion_wide_coset_analysis.json) with the input digests. Every
+interval takes the covariance across the placements of one PUB from the retained per-shot bitstrings, since the
+placements of a PUB share each shot; the per-placement multinomial model that adds variances is kept as a report-only
+column. The whole-operand and difference standard errors of the two models agree within 1 percent on both devices (the shot
+data show no measurable correlation between placements), and no rule changes verdict between them; arms and operands are
+separate PUBs taken as independent, and drift between the PUBs of one job is outside what the shot data test. ibm_kingston passes every rule. ibm_fez fails eight: sign resolution of o128,
+null control at n64 and n128, null-referenced difference at d64 and d128, per-block localization of n64 and n128, and
+the visibility floor. Two placements carry the low visibilities: placement 7 (physical qubits 79, 92, 93, 94) reads
+mean visibility 0.595 and placement 15 (qubits 10, 11, 12, 18) reads 0.710 over the six operands, against 0.888 to 0.973
+on the other fourteen. Block k28 sits on placement 7 in every operand and on placement 15 in the 64-dimensional ones; its
+null-block readings are -0.771 (n64) and -0.742 (n128) on placement 7 and +0.218 (n64) on placement 15, so the loss
+follows the placement's qubits (inference from two placements and one block, moderate confidence), and neither set holds a qubit of the drain jobs' exclusion (2 to 4 and 16).

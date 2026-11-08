@@ -3194,6 +3194,20 @@
       "question": "Does the two-block mirror failure on qpu:ascella persist on the identical meshes, follow fresh meshes of the same designs, follow the anchor seed, or follow a static per-shifter map?"
     },
     {
+      "id": "ibm-fez-pathion-wide-coset",
+      "provider": "ibm",
+      "run": "results/live/2026-11-07T153325.440007Z",
+      "family": "pathion wide coset nullity (A_6 and A_7, dimensions 64 and 128)",
+      "question": "On ibm_fez, does one wide circuit of disjoint coset-block placements read the whole-operand nullity of maximal 64- and 128-dimensional Cayley-Dickson operands (28 and 60) as the sum of block estimates, with null controls, mutations and copy agreement?"
+    },
+    {
+      "id": "ibm-kingston-pathion-wide-coset",
+      "provider": "ibm",
+      "run": "results/live/2026-11-07T153325.886771Z",
+      "family": "pathion wide coset nullity (A_6 and A_7, dimensions 64 and 128)",
+      "question": "On ibm_kingston, does one wide circuit of disjoint coset-block placements read the whole-operand nullity of maximal 64- and 128-dimensional Cayley-Dickson operands (28 and 60) as the sum of block estimates, with null controls, mutations and copy agreement?"
+    },
+    {
       "id": "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_qx-batch-00",
