@@ -5010,5 +5010,655 @@
   "numpy": "2.5.4",
   "python-flint": "0.9.0",
   "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22"
+ },
+ "pair_table": {
+  "draw": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+  "seed_indices": [
+   7,
+   8
+  ],
+  "seed_values": [
+   45825,
+   59536
+  ],
+  "numpy": "2.5.4",
+  "points_per_random_class": 64,
+  "deep_basis_points": 168,
+  "total_points": 30557,
+  "classes": {
+   "gen-gen": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "8,4,4": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "gen-deep": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "10,4,8": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "deep-gen": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "10,8,4": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "deep-deep": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "12,8,8": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "deep-deep-from-basis": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "12,8,8": 58,
+     "16,8,8": 6
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 6,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "zero-gen": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "20,16,4": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "gen-zero": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "20,4,16": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "zero-deep": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "22,16,8": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "deep-zero": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "22,8,16": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "diag-gen": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "8,4,4": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 64,
+    "diagonal_block_form": 64,
+    "diagonal_rank_R_eq_rank_L": 64,
+    "diagonal_R_eq_C_L_conj_C": 64
+   },
+   "diag-deep": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "16,8,8": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 64,
+    "diagonal_block_form": 64,
+    "diagonal_rank_R_eq_rank_L": 64,
+    "diagonal_R_eq_C_L_conj_C": 64
+   },
+   "conj-gen": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "8,4,4": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "conj-deep": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "16,8,8": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "proportional-deep": {
+    "kind": "random",
+    "points": 64,
+    "cells_n32_n16z_n16zb": {
+     "16,8,8": 64
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 64,
+    "x_on_W8": 64,
+    "z_in_J": 64,
+    "zprime_in_J": 64,
+    "flint_rank_agrees": 64,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "mixed-basis": {
+    "kind": "finite",
+    "points": 512,
+    "cells_n32_n16z_n16zb": {
+     "0,0,0": 32,
+     "0,8,8": 60,
+     "4,4,4": 168,
+     "12,8,8": 252
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 32,
+    "x_on_W8": 168,
+    "z_in_J": 168,
+    "zprime_in_J": 168,
+    "flint_rank_agrees": 512,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "zero-zero": {
+    "kind": "finite",
+    "points": 1,
+    "cells_n32_n16z_n16zb": {
+     "32,16,16": 1
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 1,
+    "x_on_W8": 1,
+    "z_in_J": 1,
+    "zprime_in_J": 1,
+    "flint_rank_agrees": 1,
+    "diagonal_points": 1,
+    "diagonal_block_form": 1,
+    "diagonal_rank_R_eq_rank_L": 1,
+    "diagonal_R_eq_C_L_conj_C": 1
+   },
+   "deep-basis-diag": {
+    "kind": "finite",
+    "points": 168,
+    "cells_n32_n16z_n16zb": {
+     "16,8,8": 168
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 168,
+    "x_on_W8": 168,
+    "z_in_J": 168,
+    "zprime_in_J": 168,
+    "flint_rank_agrees": 168,
+    "diagonal_points": 168,
+    "diagonal_block_form": 168,
+    "diagonal_rank_R_eq_rank_L": 168,
+    "diagonal_R_eq_C_L_conj_C": 168
+   },
+   "deep-basis-conj": {
+    "kind": "finite",
+    "points": 168,
+    "cells_n32_n16z_n16zb": {
+     "16,8,8": 168
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 168,
+    "x_on_W8": 168,
+    "z_in_J": 168,
+    "zprime_in_J": 168,
+    "flint_rank_agrees": 168,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "deep-basis-gauss-conj": {
+    "kind": "finite",
+    "points": 168,
+    "cells_n32_n16z_n16zb": {
+     "12,8,8": 168
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 168,
+    "z_in_J": 168,
+    "zprime_in_J": 168,
+    "flint_rank_agrees": 168,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "deep-basis-zero": {
+    "kind": "finite",
+    "points": 168,
+    "cells_n32_n16z_n16zb": {
+     "22,8,16": 168
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 168,
+    "z_in_J": 168,
+    "zprime_in_J": 168,
+    "flint_rank_agrees": 168,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "zero-deep-basis": {
+    "kind": "finite",
+    "points": 168,
+    "cells_n32_n16z_n16zb": {
+     "22,16,8": 168
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 0,
+    "x_on_W8": 168,
+    "z_in_J": 168,
+    "zprime_in_J": 168,
+    "flint_rank_agrees": 168,
+    "diagonal_points": 0,
+    "diagonal_block_form": 0,
+    "diagonal_rank_R_eq_rank_L": 0,
+    "diagonal_R_eq_C_L_conj_C": 0
+   },
+   "real-zd-diag": {
+    "kind": "finite",
+    "points": 84,
+    "cells_n32_n16z_n16zb": {
+     "8,4,4": 84
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 84,
+    "x_on_W8": 84,
+    "z_in_J": 84,
+    "zprime_in_J": 84,
+    "flint_rank_agrees": 84,
+    "diagonal_points": 84,
+    "diagonal_block_form": 84,
+    "diagonal_rank_R_eq_rank_L": 84,
+    "diagonal_R_eq_C_L_conj_C": 84
+   },
+   "deep-basis-all-pairs": {
+    "kind": "finite",
+    "points": 28224,
+    "cells_n32_n16z_n16zb": {
+     "12,8,8": 26208,
+     "16,8,8": 2016
+    },
+    "expected_cells_only": true,
+    "sum_rule_holds": 2016,
+    "x_on_W8": 28224,
+    "z_in_J": 28224,
+    "zprime_in_J": 28224,
+    "flint_rank_agrees": 28224,
+    "diagonal_points": 168,
+    "diagonal_block_form": 168,
+    "diagonal_rank_R_eq_rank_L": 168,
+    "diagonal_R_eq_C_L_conj_C": 168
+   }
+  },
+  "deep_basis_all_pairs_by_relation": {
+   "different XOR class": {
+    "12,8,8": 24192
+   },
+   "same XOR class, other support, sign match": {
+    "16,8,8": 1680
+   },
+   "same XOR class, other support, sign mismatch": {
+    "12,8,8": 1680
+   },
+   "same support, other line": {
+    "12,8,8": 336
+   },
+   "same support, same line (z' = z up to a scalar)": {
+    "16,8,8": 336
+   }
+  },
+  "rule_n32_16_iff_same_xor_class_and_sign_match": true,
+  "joint_map_on_W8": {
+   "4,4": {
+    "8": 276
+   },
+   "4,8": {
+    "10": 64
+   },
+   "4,16": {
+    "20": 64
+   },
+   "8,4": {
+    "10": 64
+   },
+   "8,8": {
+    "12": 26666,
+    "16": 2550
+   },
+   "8,16": {
+    "22": 232
+   },
+   "16,4": {
+    "20": 64
+   },
+   "16,8": {
+    "22": 232
+   },
+   "16,16": {
+    "32": 1
+   }
+  },
+  "pair_law_refuted": true,
+  "pair_law_multivalued_keys": {
+   "8,8": {
+    "12": 26666,
+    "16": 2550
+   }
+  },
+  "generic_stratum_sum_rule_on_sampled_class": true,
+  "diagonal_identities": {
+   "points": 549,
+   "pure_points": 549,
+   "block_form_L_z_R_z": 549,
+   "rank_R_z_equals_rank_L_z": 549,
+   "R_z_equals_C_L_zbar_C": 549,
+   "n32_equals_2_n16": 549
+  },
+  "integer_basis_identities": {
+   "block_form_on_16_basis_vectors": true,
+   "R_z_equals_C_L_zbar_C_on_16_basis_vectors": true
+  },
+  "witnesses": {
+   "n32_12_gaussian_conjugate": {
+    "z": "e_1 + i e_2",
+    "zprime": "e_1 - i e_2",
+    "over_F_32009": [
+     12,
+     8,
+     8
+    ],
+    "over_Q_i": [
+     12,
+     8,
+     8
+    ]
+   },
+   "n32_16_diagonal": {
+    "z": "e_1 + i e_2",
+    "zprime": "e_1 + i e_2",
+    "over_F_32009": [
+     16,
+     8,
+     8
+    ],
+    "over_Q_i": [
+     16,
+     8,
+     8
+    ]
+   }
+  },
+  "cross_check_over_Q_i": {
+   "points": 72,
+   "classes": {
+    "gen-gen": {
+     "points": 8,
+     "cells": [
+      [
+       8,
+       4,
+       4
+      ]
+     ],
+     "cells_over_Q_i": {
+      "8,4,4": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "gen-deep": {
+     "points": 8,
+     "cells": [
+      [
+       10,
+       4,
+       8
+      ]
+     ],
+     "cells_over_Q_i": {
+      "10,4,8": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "deep-gen": {
+     "points": 8,
+     "cells": [
+      [
+       10,
+       8,
+       4
+      ]
+     ],
+     "cells_over_Q_i": {
+      "10,8,4": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "deep-deep": {
+     "points": 8,
+     "cells": [
+      [
+       12,
+       8,
+       8
+      ]
+     ],
+     "cells_over_Q_i": {
+      "12,8,8": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "zero-gen": {
+     "points": 8,
+     "cells": [
+      [
+       20,
+       16,
+       4
+      ]
+     ],
+     "cells_over_Q_i": {
+      "20,16,4": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "deep-zero": {
+     "points": 8,
+     "cells": [
+      [
+       22,
+       8,
+       16
+      ]
+     ],
+     "cells_over_Q_i": {
+      "22,8,16": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "diag-deep": {
+     "points": 8,
+     "cells": [
+      [
+       16,
+       8,
+       8
+      ]
+     ],
+     "cells_over_Q_i": {
+      "16,8,8": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "conj-deep": {
+     "points": 8,
+     "cells": [
+      [
+       16,
+       8,
+       8
+      ]
+     ],
+     "cells_over_Q_i": {
+      "16,8,8": 8
+     },
+     "agrees_with_mod_p": true
+    },
+    "proportional-deep": {
+     "points": 8,
+     "cells": [
+      [
+       16,
+       8,
+       8
+      ]
+     ],
+     "cells_over_Q_i": {
+      "16,8,8": 8
+     },
+     "agrees_with_mod_p": true
+    }
+   },
+   "expected_cells_only": true,
+   "all_agree": true
+  },
+  "flint_rank_agrees_on_every_point": true,
+  "pass": true,
+  "seconds": 6.87,
+  "python": "3.14.7",
+  "python_flint": "0.9.0",
+  "script_sha256": "83b3d0045106e2b91c6fc59e1d6200817f1d219f1a2b7704b7c468ebfa946700"
  }
 }

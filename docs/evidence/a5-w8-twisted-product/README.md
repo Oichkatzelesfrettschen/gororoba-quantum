@@ -6,7 +6,8 @@ and z'_k = x_k - i x_(16+k). The variety of W8 is therefore the product V(J) x V
 dimension 12 + 12 = 24 and degree 4 x 4 = 16, and its first Hilbert numerator is N_J(t)^2. The nullity of left
 multiplication does not follow the product: n_32 = n_16(z) + n_16(z') holds on every random point of four sampled
 classes and fails on 480 of the 512 mixed basis pairs e_i + s e_(16+j), where the nullity of L_x is a function of the
-real nullity of e_i + s e_j. Ledger rows A5-223 (twisted product), A5-224 (sum rule) and A5-225 (joint nullity law).
+real nullity of e_i + s e_j. Ledger rows A5-223 (twisted product), A5-224 (sum rule), A5-225 (joint nullity law), A5-226 (the pair law, refuted) and
+A5-227 (the generic-stratum sum relation).
 
 `a5_w8_twisted_product.py` builds every input from the strata record's code, runs Singular and writes `result.json`;
 `driver_*.sing` and `ideal_*.sing` are the Singular inputs, `log_*.txt` the Singular outputs with the
@@ -125,12 +126,108 @@ the special points of the basis-pair table, where z and z' lie on loci of higher
 their class. Random points sample the generic nullity of each class, so they carry no information on the pairs where
 the rule fails.
 
+## W8 pair table
+
+Statement under test: on W8 = V(J) x V(J), n_32 is a function of the pair (n_16(z), n_16(z')). The pair table
+(`--pair-table`, key `pair_table` of `result.json`) tabulates (n_32, n_16(z), n_16(z')) over 30557 point evaluations:
+finite classes with every point, and random classes of 64 points. Every x is certified on W8 from the W8 generators
+(`evaluate_sparse`); every rank over F_32009 is also computed by python-flint `nmod_mat`, with no disagreement.
+
+**Constructions.** A generic point of V(J) is the existing `point_on_j` (n_16 = 4). A deep point has n_16 = 8: z_0 = z_8
+= 0 and either v = 0 with u isotropic (u.u = 0, u_0..u_5 uniform and u_6 a square root of -(u_0^2 + ... + u_5^2) from the
+table, redrawn on a non-residue), or u = 0 with v isotropic; a fair coin picks the block. U = V = 0 and W = 0, so
+z lies in V(J), and the run checks n_16 = 8 through the expected-cell test of every class. The 168 basis-type deep
+points are z = e_a + i s e_b with a != b in 1..15 and s = +-1 that lie in V(J) with n_16 = 8 (84 in the u block, 84 in
+the v block). The 84 real zero-divisors are z = e_a + s e_b with a < b in 1..15 in V(J), used as z = z'. The random
+classes follow `numpy.random.default_rng([45825, 59536])`, values at indices 7 and 8 of
+[the ANU draw](../anu_qrng/draw-2026-11-08T170257Z.json) (`PAIR_TABLE_SEEDS`, rows in
+`docs/evidence/qrng_seeds/allocations.json`; indices 0-6 serve other work), every input drawn before any rank, in the
+order of the table below, followed by the Q(i) points.
+
+| Class (z, z') | Construction | Points | (n_32, n_16(z), n_16(z')) |
+|---|---|---:|---|
+| gen-gen | independent generic points | 64 | (8, 4, 4) x 64 |
+| gen-deep, deep-gen | generic with random deep | 64 each | (10, 4, 8) x 64; (10, 8, 4) x 64 |
+| deep-deep | independent random deep points | 64 | (12, 8, 8) x 64 |
+| deep-deep-from-basis | two independent draws from the 168 basis-type deep points | 64 | (12, 8, 8) x 58; (16, 8, 8) x 6 |
+| zero-gen, gen-zero | one factor 0 | 64 each | (20, 16, 4) x 64; (20, 4, 16) x 64 |
+| zero-deep, deep-zero | one factor 0 | 64 each | (22, 16, 8) x 64; (22, 8, 16) x 64 |
+| diag-gen, diag-deep | z = z' | 64 each | (8, 4, 4) x 64; (16, 8, 8) x 64 |
+| conj-gen, conj-deep | z' = sedenion conjugate of z (-z for pure z) | 64 each | (8, 4, 4) x 64; (16, 8, 8) x 64 |
+| proportional-deep | z' = lambda z, lambda uniform | 64 | (16, 8, 8) x 64 |
+| mixed basis pairs | x = e_i + s e_(16+j), all 512 (168 on W8) | 512 | (0,0,0) x 32; (0,8,8) x 60; (4,4,4) x 168; (12,8,8) x 252 |
+| deep basis, diagonal / sedenion conjugate | z' = z; z' = -z | 168 each | (16, 8, 8) x 168 each |
+| deep basis, Gaussian conjugate | z' = e_a - i s e_b | 168 | (12, 8, 8) x 168 |
+| deep basis with a zero factor | (z, 0); (0, z) | 168 each | (22, 8, 16) x 168; (22, 16, 8) x 168 |
+| real zero-divisor diagonals | z = z' = e_a + s e_b | 84 | (8, 4, 4) x 84 |
+| zero pair | z = z' = 0 | 1 | (32, 16, 16) |
+| deep basis, every ordered pair | 168 x 168 | 28224 | (12, 8, 8) x 26208; (16, 8, 8) x 2016 |
+
+**The map (n_32 | n_16(z), n_16(z')) on W8** (counts are point evaluations across the classes above; classes overlap):
+
+| (n_16(z), n_16(z')) | n_32 |
+|---|---|
+| (4, 4) | 8 |
+| (4, 8), (8, 4) | 10 |
+| (4, 16), (16, 4) | 20 |
+| (8, 16), (16, 8) | 22 |
+| (16, 16) | 32 |
+| (8, 8) | 12 (26666 evaluations) or 16 (2550 evaluations) |
+
+The pair law is refuted at the single key (8, 8). The witness with n_32 = 12 is z = e_1 + i e_2, z' = e_1 - i e_2
+(x = e_1 + e_18); the witness with n_32 = 16 is z = z' = e_1 + i e_2 (x = e_1 + i e_2 in the low half). Exact ranks over
+Q(i), computed from the realified matrix [[A, -B], [B, A]] of L_x (its rank is twice the rank over Q(i)), give
+(12, 8, 8) and (16, 8, 8) for the two witnesses, so the refutation holds in characteristic 0.
+
+**Which deep pairs give 16.** The 28224 ordered pairs of basis-type deep points split by the relation of z = z_p (e_p +
+t e_q) and z' = z'_p' (e_p' + t' e_q'), p < q, p' < q': n_32 = 16 on all 2016 pairs with p xor q = p' xor q' and
+t' = cd_sign(p, p') cd_sign(q, q') t, and n_32 = 12 on every other pair. The 2016 pairs split into 336 with the same
+support and the same line (z' = c z) and 1680 with another support in the same xor class; the 26208 pairs at 12 split
+into 24192 in a different xor class, 1680 in the same class with another support and the opposite sign, and 336 with
+the same support and the other line (the Gaussian conjugates). The rule is fitted to this enumeration and has no
+held-out data. Pairs of random isotropic deep points give 12 on 64 of 64, since a
+proportional or same-class pair has probability near zero over F_32009.
+
+**The diagonal value.** For x with x_high = 0, so z = z' = x_low, L_x = diag(L_z, R_z) with R_z the matrix of d -> d z
+(gororoba-open `CDPureDoublingKernel.v`, `zero_upper_half_matrix`: the left matrix of (z, 0) is block_mx (L_z) 0 0
+(R_z)), and R_z = C L_(z*) C with C = diag(1, -1, ..., -1), because (c z)* = z* c* in a Cayley-Dickson algebra (the
+identity is verified over Z below). For pure z, z* = -z, so rank R_z = rank L_z (`pure_right_left_rank`) and n_32 = 2 n_16(z) over every field
+in which both identities hold. Both identities are linear in z, so the script checks them over Z on the 16 basis
+vectors (`integer_basis_identities`), which proves them over every ring, and over F_32009 on every diagonal point
+(549 point evaluations, all pure: block form 549, rank R_z = rank L_z 549, R_z = C L_(z*) C 549, n_32 = 2 n_16 549).
+The lower-right block of cd_core's left matrix of (z, 0) is R_z, not R_(z*).
+
+**Cross-check over Q(i).** 72 Gaussian-rational points (8 per class of gen-gen, gen-deep, deep-gen, deep-deep,
+zero-gen, deep-zero, diag-deep, conj-deep, proportional-deep; deep points are z = a + i b with a = (1, 2, 2) and
+b = (2, 1, -2) on three offsets of one block, generic points are real zero-divisors with u = (1, 2, 2) and v = (2, 2, 1)
+on disjoint offsets) have exact n_32, n_16(z), n_16(z') over Q(i) equal to the values modulo 32009 in every case. The
+Q(i) check covers both values 12 and 16 of the (8, 8) key; the 8-point sample per class is a subset, and the
+isotropic deep points of the random classes have no rational counterpart outside this construction.
+
+**Review claims.** Reproduced: independent generic (8, 4, 4); generic with deep (10, 4, 8) and (10, 8, 4); a zero factor
+with a generic or deep partner (20, 16, 4), (22, 16, 8) and mirrors; diagonal deep (16, 8, 8); the 168 mixed basis pairs
+on W8 at (12, 8, 8); independent deep points at (12, 8, 8) mostly and (16, 8, 8) sometimes when "deep" means a draw from
+the 168 basis-type points (6 of 64; 2016 of 28224 over all ordered pairs). Not reproduced: random isotropic deep points
+never give 16 (0 of 64). Conjugate-type pairs at (8, 8) give (16, 8, 8) for the sedenion conjugate z' = z* = -z, and
+(12, 8, 8) for the Gaussian conjugate z' = e_a - i s e_b of the same basis point (the mixed basis pairs).
+
+**Sum relation.** n_32 = n_16(z) + n_16(z') holds on 64 of 64 independent generic pairs, on the diagonal, conjugate,
+zero-times-generic and generic-times-zero generic classes, on 84 of 84 real zero-divisor diagonals and on 8 Gaussian-
+rational generic pairs, and on the proportional and same-class deep pairs (16 = 8 + 8); it fails on a deep factor met
+by a generic, zero or independent deep partner. The generic-stratum relation survives on the sampled generic class and
+stays open as a family-wide statement: nullity >= k is a closed condition, so the hits at 8 bound the generic
+nullity above, and the lower bound has no symbolic rank behind it (A5-227).
+
 ## Cost
 
 One `--out` run takes 1.7 s wall and 58 MiB peak resident set for the driving process (`/usr/bin/time -v`); the three
 Singular runs take at most 0.06 s wall and 15 MiB peak resident set each (the logs hold the figures of the retained
 run), under an 8 GiB cgroup cap. Versions
-are in `result.json` (`versions`): Python, numpy 2.5.4, python-flint 0.9.0, Singular 4.4.1.
+are in `result.json` (`versions`): Python, numpy 2.5.4, python-flint 0.9.0, Singular 4.4.1. The pair table alone
+(`--pair-table`, no Singular) takes 7 s wall and 55 CPU seconds on 10 CPUs, with a peak resident set of 68 MiB for the
+largest process (`/usr/bin/time -v`), under an 8 GiB cgroup cap; Python 3.14.7 and python-flint 0.9.0 are recorded in
+`pair_table`. The top-level `script_sha256` of `result.json` names the script that wrote the other keys, and
+`pair_table.script_sha256` names the script that wrote the pair table.
 
 ## Commands
 
@@ -139,11 +236,17 @@ export PYTHON="${PYTHON:-python3}" GLIBC_TUNABLES=glibc.rtld.optional_static_tls
 "$PYTHON" -B -W error docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py \
     --out docs/evidence/a5-w8-twisted-product
+"$PYTHON" -B -W error docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py \
+    --out docs/evidence/a5-w8-twisted-product --pair-table
 ```
+
+`--pair-table` recomputes the pair table into the existing `result.json` and keeps every other key.
 
 `--self-test` checks `left_matrix` against cd_core at dimensions 16 and 32, `rank_mod` on known ranks, the square-root
 table against a brute-force search, a sampled W8 point against every W8 generator, a moved point that leaves V(J) with
-a lower nullity, the mixed pair e_0 + e_17 in the cell (0, 8, 8), and the Singular mutation controls.
+a lower nullity, the mixed pair e_0 + e_17 in the cell (0, 8, 8), the pair-table mutation (the clean cells of the 512 mixed basis pairs
+and the 168 deep diagonal points hit their expected values, and reversing the dimension-32 sign entry cd_sign(1, 3)
+changes at least one cell) and the Singular mutation controls.
 
 ## Falsifiers
 
@@ -160,3 +263,9 @@ a lower nullity, the mixed pair e_0 + e_17 in the cell (0, 8, 8), and the Singul
   random point on a locus other than the four classes, decides the law off the basis pairs; no such point has been run.
 - Statements about the nullity of L_x at the special points rest on ranks modulo 32009 with the exact ranks over Q
   agreeing for the real matrices; the ranks of L_z and L_z' over F_32009 have no Q counterpart.
+- The pair law is refuted at the key (8, 8) only; a key outside the table (for instance (8, 12) or a pair with a factor
+  of nullity other than 0, 4, 8, 16) would need a class that this table does not draw.
+- The rule for the 16-cell is fitted to the 168 basis-type deep points; a deep point outside that family and outside
+  the proportional pairs that gives 16 would extend the rule, and none appeared among 64 random isotropic pairs.
+- The Q(i) cross-check samples 8 points per class from one construction; the statements about the deep diagonal over
+  characteristic 0 rest on that sample and on the integer identities, not on a symbolic rank.

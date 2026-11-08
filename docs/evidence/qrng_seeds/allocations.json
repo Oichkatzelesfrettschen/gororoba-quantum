@@ -1233,6 +1233,20 @@
    "value": 12744,
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
    "index": 1
+  },
+  {
+   "path": "docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py",
+   "name": "PAIR_TABLE_SEEDS",
+   "value": 45825,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 7
+  },
+  {
+   "path": "docs/evidence/a5-w8-twisted-product/a5_w8_twisted_product.py",
+   "name": "PAIR_TABLE_SEEDS",
+   "value": 59536,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 8
   }
  ],
  "runtime": [

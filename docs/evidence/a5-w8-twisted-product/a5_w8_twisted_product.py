@@ -27,9 +27,17 @@ real slice), offW8 (z in V(J), z' uniform) and generic (z, z' uniform). The firs
 W8 x 6, diag x 2, offW8 x 2 reproduce the orchestrator's recorded sample; the run then draws a fresh stream per
 200-point class and counts where n_32 = n_16(z) + n_16(z') holds.
 
+Statement 4 (pair table). On W8 = V(J) x V(J) the script tabulates n_32 against the pair (n_16(z), n_16(z')) over
+finite classes (the 512 mixed basis pairs, the 168 basis-type deep points of V(J) with every relation to each other,
+the real zero-divisor diagonals) and 64-point random classes drawn from numpy.random.default_rng(PAIR_TABLE_SEEDS),
+the values at indices 7 and 8 of the draw named by DRAW. A deep point has n_16 = 8: u isotropic and v = 0, or u = 0
+and v isotropic. Every rank is also computed by python-flint's nmod_mat, and Gaussian-rational points are checked
+by exact ranks over Q(i). Diagonal points (z = z') also check L_x = diag(L_z, R_z) and rank R_z = rank L_z.
+
 Usage:
     "$PYTHON" -B -W error a5_w8_twisted_product.py --self-test
     "$PYTHON" -B -W error a5_w8_twisted_product.py --out docs/evidence/a5-w8-twisted-product
+    "$PYTHON" -B -W error a5_w8_twisted_product.py --out docs/evidence/a5-w8-twisted-product --pair-table
 """
 
 from __future__ import annotations
@@ -66,6 +74,9 @@ DRAW = "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json"
 # Values at indices 0 and 1 of the retained draw DRAW; the run raises when the file disagrees.
 W8_SAMPLE_SEEDS = [48732, 12744]
 SEED_INDICES = (0, 1)
+# Values at indices 7 and 8 of the same draw DRAW, for the pair table; the run raises when the file disagrees.
+PAIR_TABLE_SEEDS = [45825, 59536]
+PAIR_SEED_INDICES = (7, 8)
 NEIGHBOR = ROOT / "docs/evidence/a5-w8-a4-restriction/a5_w8_a4_restriction.py"
 NEIGHBOR_J = ROOT / "docs/evidence/a5-w8-a4-restriction/ideal_J.sing"
 X_NAMES = tuple(f"x{k}" for k in range(32))
@@ -126,9 +137,10 @@ def sign_table(dim: int) -> np.ndarray:
     return np.array([[cd_sign(dim, p, q) for q in range(dim)] for p in range(dim)], dtype=np.int64)
 
 
-def left_matrix(dim: int, x: Any) -> np.ndarray:
-    """L_x modulo P: column c holds x e_c = sum_k x_k cd_sign(dim, k, c) e_(k XOR c)."""
-    sign = sign_table(dim)
+def left_matrix(dim: int, x: Any, sign: np.ndarray | None = None) -> np.ndarray:
+    """L_x modulo P: column c holds x e_c = sum_k x_k cd_sign(dim, k, c) e_(k XOR c); sign replaces the table."""
+    if sign is None:
+        sign = sign_table(dim)
     cols = np.arange(dim)
     m = np.zeros((dim, dim), dtype=np.int64)
     for k in range(dim):
@@ -160,8 +172,8 @@ def rank_mod(m: np.ndarray, p: int = P) -> int:
     return r
 
 
-def nullity_mod(dim: int, x: Any) -> int:
-    return dim - rank_mod(left_matrix(dim, x))
+def nullity_mod(dim: int, x: Any, sign: np.ndarray | None = None) -> int:
+    return dim - rank_mod(left_matrix(dim, x, sign))
 
 
 def nullity_q(dim: int, x: list[int]) -> int:
@@ -811,6 +823,567 @@ def sample_points(w8_sparse: list[Any]) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------------------------------------------
+# Statement 4 (pair table)
+
+RANDOM_POINTS = 64
+RANDOM_CLASS_ORDER = (
+    "gen-gen",
+    "gen-deep",
+    "deep-gen",
+    "deep-deep",
+    "deep-deep-from-basis",
+    "zero-gen",
+    "gen-zero",
+    "zero-deep",
+    "deep-zero",
+    "diag-gen",
+    "diag-deep",
+    "conj-gen",
+    "conj-deep",
+    "proportional-deep",
+)
+# Expected cells (n_32, n_16(z), n_16(z')) per class; deep-deep-from-basis meets proportional pairs now and then.
+PAIR_EXPECTED: dict[str, set[tuple[int, int, int]]] = {
+    "gen-gen": {(8, 4, 4)},
+    "gen-deep": {(10, 4, 8)},
+    "deep-gen": {(10, 8, 4)},
+    "deep-deep": {(12, 8, 8)},
+    "deep-deep-from-basis": {(12, 8, 8), (16, 8, 8)},
+    "zero-gen": {(20, 16, 4)},
+    "gen-zero": {(20, 4, 16)},
+    "zero-deep": {(22, 16, 8)},
+    "deep-zero": {(22, 8, 16)},
+    "diag-gen": {(8, 4, 4)},
+    "diag-deep": {(16, 8, 8)},
+    "conj-gen": {(8, 4, 4)},
+    "conj-deep": {(16, 8, 8)},
+    "proportional-deep": {(16, 8, 8)},
+    "mixed-basis": set(BASIS_CELLS),
+    "zero-zero": {(32, 16, 16)},
+    "deep-basis-diag": {(16, 8, 8)},
+    "deep-basis-conj": {(16, 8, 8)},
+    "deep-basis-gauss-conj": {(12, 8, 8)},
+    "deep-basis-zero": {(22, 8, 16)},
+    "zero-deep-basis": {(22, 16, 8)},
+    "real-zd-diag": {(8, 4, 4)},
+    "deep-basis-all-pairs": {(12, 8, 8), (16, 8, 8)},
+}
+FINITE_CLASSES = (
+    "mixed-basis",
+    "zero-zero",
+    "deep-basis-diag",
+    "deep-basis-conj",
+    "deep-basis-gauss-conj",
+    "deep-basis-zero",
+    "zero-deep-basis",
+    "real-zd-diag",
+    "deep-basis-all-pairs",
+)
+# The mutated sign entry (dimension 32, row k, column c) flips cd_sign for the product e_1 e_3 and acts on x = e_1 + ...
+MUTATED_SIGN_ENTRY = (1, 3)
+
+
+def conj_vector(z: Any) -> list[int]:
+    """The sedenion conjugate: the real coordinate stays and every other coordinate changes sign."""
+    return [int(z[0]) % P] + [(-int(t)) % P for t in z[1:]]
+
+
+def right_matrix(dim: int, z: Any) -> np.ndarray:
+    """R_z modulo P: column c holds e_c z = sum_k z_k cd_sign(dim, c, k) e_(c XOR k)."""
+    sign = sign_table(dim)
+    cols = np.arange(dim)
+    m = np.zeros((dim, dim), dtype=np.int64)
+    for k in range(dim):
+        zk = int(z[k]) % P
+        if zk:
+            m[cols ^ k, cols] += (zk * sign[cols, k]) % P
+    return m % P
+
+
+def conj_matrix(dim: int) -> np.ndarray:
+    return np.diag([1] + [P - 1] * (dim - 1)).astype(np.int64)
+
+
+def flint_rank(m: np.ndarray) -> int:
+    rows, cols = m.shape
+    return int(flint.nmod_mat(rows, cols, [int(t) for t in m.flatten()], P).rank())
+
+
+def diag_identities(z: list[int], m32: np.ndarray) -> tuple[bool, bool, bool]:
+    """For x = (z, 0): L_x = diag(L_z, R_z), rank R_z = rank L_z, and R_z = C L_(z*) C with C the conjugation."""
+    lz = left_matrix(16, z)
+    rz = right_matrix(16, z)
+    block = (
+        np.array_equal(m32[:16, :16], lz)
+        and np.array_equal(m32[16:, 16:], rz)
+        and not m32[:16, 16:].any()
+        and not m32[16:, :16].any()
+    )
+    c = conj_matrix(16)
+    conj_ok = np.array_equal(rz, c @ left_matrix(16, conj_vector(z)) @ c % P)
+    return bool(block), rank_mod(rz) == rank_mod(lz), bool(conj_ok)
+
+
+def integer_basis_identities() -> dict[str, bool]:
+    """The two diagonal identities on the 16 basis vectors over Z; both are linear in z, so they hold over every ring.
+
+    L_(z,0) = diag(L_z, R_z) is read off cd_core.left_mult_matrix_exact, and R_z = C L_(z*) C compares the integer
+    right matrix built from cd_core.cd_sign with the conjugated left matrix. For pure z, z* = -z, so rank R_z =
+    rank L_z over every field in which C is invertible, which holds in every characteristic since C * C = 1.
+    """
+    block, conj = True, True
+    sgn = [1] + [-1] * 15
+    for k in range(16):
+        e = [0] * 16
+        e[k] = 1
+        e32 = [0] * 32
+        e32[k] = 1
+        big = left_mult_matrix_exact(32, e32)
+        lz = left_mult_matrix_exact(16, e)
+        rz = [[0] * 16 for _ in range(16)]
+        for c in range(16):
+            rz[c ^ k][c] += cd_sign(16, c, k)
+        zstar = [0] * 16
+        zstar[k] = sgn[k]
+        lzs = left_mult_matrix_exact(16, zstar)
+        block &= all(
+            big[r][c] == lz[r][c] and big[16 + r][16 + c] == rz[r][c] and big[r][16 + c] == 0 and big[16 + r][c] == 0
+            for r in range(16)
+            for c in range(16)
+        )
+        conj &= all(rz[r][c] == sgn[r] * lzs[r][c] * sgn[c] for r in range(16) for c in range(16))
+    return {"block_form_on_16_basis_vectors": bool(block), "R_z_equals_C_L_zbar_C_on_16_basis_vectors": bool(conj)}
+
+
+def pair_row(flip: tuple[int, int] | None, w8: list[Any], item: tuple[str, list[int], list[int]]) -> tuple[Any, ...]:
+    """(class, n_32, n_16(z), n_16(z'), flint agrees, x on W8, z in V(J), z' in V(J), diagonal identities or None).
+
+    flip names one dimension-32 sign entry whose sign is reversed before the rank; the 16-dimensional ranks keep
+    the cd_core table. The flint rank is an independent implementation of the same matrix rank over F_P.
+    """
+    kind, z, zb = item
+    x = to_x(np.array(z, dtype=np.int64), np.array(zb, dtype=np.int64))
+    sign32 = None
+    if flip is not None:
+        sign32 = sign_table(32).copy()
+        sign32[flip] = -sign32[flip]
+    m32 = left_matrix(32, x, sign32)
+    n32 = 32 - rank_mod(m32)
+    agree = 32 - flint_rank(m32) == n32
+    diag = diag_identities(z, m32) if z == zb and flip is None else None
+    on_w8 = all(evaluate_sparse(g, x) == 0 for g in w8)
+    return (
+        kind,
+        n32,
+        nullity_mod(16, z),
+        nullity_mod(16, zb),
+        agree,
+        on_w8,
+        not any(j_values(z)),
+        not any(j_values(zb)),
+        diag,
+    )
+
+
+def deep_basis_points() -> list[list[int]]:
+    """z = e_a + i s e_b for a != b in 1..15, s = +-1, that lie in V(J) with n_16(z) = 8: 84 per block, 168 in all."""
+    points = []
+    for a in range(1, 16):
+        for b in range(1, 16):
+            for s in (1, -1):
+                if a == b:
+                    continue
+                z = [0] * 16
+                z[a] = 1
+                z[b] = I * s % P
+                if not any(j_values(z)) and nullity_mod(16, z) == 8:
+                    points.append(z)
+    return points
+
+
+def real_zd_points() -> list[list[int]]:
+    """z = e_a + s e_b for a < b in 1..15, s = +-1, that lie in V(J): the real zero-divisors among the basis pairs."""
+    points = []
+    for a in range(1, 16):
+        for b in range(a + 1, 16):
+            for s in (1, -1):
+                z = [0] * 16
+                z[a] = 1
+                z[b] = s % P
+                if not any(j_values(z)):
+                    points.append(z)
+    return points
+
+
+def isotropic_vector(rng: np.random.Generator) -> list[int]:
+    """A nonzero u in F_P^7 with u.u = 0: six uniform coordinates and the last from a square root table."""
+    while True:
+        head = rng.integers(0, P, 6)
+        root = sqrt_mod(-int(head @ head))
+        if root is not None and (root or head.any()):
+            return [int(t) for t in head] + [root]
+
+
+def deep_point(rng: np.random.Generator) -> list[int]:
+    """A point of V(J) with n_16 = 8: v = 0 and u isotropic, or u = 0 and v isotropic (a fair coin picks the block)."""
+    z = [0] * 16
+    block = int(rng.integers(0, 2))
+    z[1 + 8 * block : 8 + 8 * block] = isotropic_vector(rng)
+    return z
+
+
+def zero_vector() -> list[int]:
+    return [0] * 16
+
+
+def basis_form(z: list[int]) -> tuple[int, int, int]:
+    """(p, q, t) with p < q and z = z_p (e_p + t e_q) for a deep basis point z (two nonzero coordinates)."""
+    p, q = [k for k in range(16) if z[k]]
+    return p, q, z[q] * pow(z[p], P - 2, P) % P
+
+
+def twisted_match(z: list[int], zb: list[int]) -> tuple[bool, bool]:
+    """(same XOR class p xor q, t' = cd_sign(p, p') cd_sign(q, q') t) for two deep basis points."""
+    p, q, t = basis_form(z)
+    p2, q2, t2 = basis_form(zb)
+    sign = cd_sign(16, p, p2) * cd_sign(16, q, q2)
+    return (p ^ q) == (p2 ^ q2), t2 == sign * t % P
+
+
+def relation(z: list[int], zb: list[int]) -> str:
+    """The family of an ordered pair of deep basis points, by support, XOR class and the twisted sign match."""
+    same_class, matched = twisted_match(z, zb)
+    if not same_class:
+        return "different XOR class"
+    if basis_form(z)[:2] == basis_form(zb)[:2]:
+        return "same support, same line (z' = z up to a scalar)" if matched else "same support, other line"
+    return "same XOR class, other support, sign match" if matched else "same XOR class, other support, sign mismatch"
+
+
+def mixed_basis_items() -> list[tuple[str, list[int], list[int]]]:
+    items = []
+    for i in range(16):
+        for j in range(16):
+            for s in (1, -1):
+                x = [0] * 32
+                x[i] = 1
+                x[16 + j] = s % P
+                items.append(
+                    (
+                        "mixed-basis",
+                        [(a + I * b) % P for a, b in zip(x[:16], x[16:], strict=True)],
+                        [(a - I * b) % P for a, b in zip(x[:16], x[16:], strict=True)],
+                    )
+                )
+    return items
+
+
+def finite_items(deep: list[list[int]]) -> list[tuple[str, list[int], list[int]]]:
+    zero = zero_vector()
+    items = [("zero-zero", zero, zero)]
+    items += mixed_basis_items()
+    for z in deep:
+        items.append(("deep-basis-diag", z, z))
+        items.append(("deep-basis-conj", z, conj_vector(z)))
+        flipped = list(z)
+        flipped[[k for k in range(16) if z[k]][1]] *= -1
+        items.append(("deep-basis-gauss-conj", z, [t % P for t in flipped]))
+        items.append(("deep-basis-zero", z, zero))
+        items.append(("zero-deep-basis", zero, z))
+    items += [("real-zd-diag", z, z) for z in real_zd_points()]
+    items += [("deep-basis-all-pairs", z, zb) for z in deep for zb in deep]
+    return items
+
+
+def random_items(rng: np.random.Generator, deep: list[list[int]]) -> list[tuple[str, list[int], list[int]]]:
+    """64 points per random class in RANDOM_CLASS_ORDER; every input is drawn before any rank."""
+    zero = zero_vector()
+    items: list[tuple[str, list[int], list[int]]] = []
+
+    def gen() -> list[int]:
+        return [int(t) for t in point_on_j(rng)]
+
+    for kind in RANDOM_CLASS_ORDER:
+        for _ in range(RANDOM_POINTS):
+            if kind == "gen-gen":
+                pair = (gen(), gen())
+            elif kind == "gen-deep":
+                pair = (gen(), deep_point(rng))
+            elif kind == "deep-gen":
+                pair = (deep_point(rng), gen())
+            elif kind == "deep-deep":
+                pair = (deep_point(rng), deep_point(rng))
+            elif kind == "deep-deep-from-basis":
+                pair = (deep[int(rng.integers(0, len(deep)))], deep[int(rng.integers(0, len(deep)))])
+            elif kind == "zero-gen":
+                pair = (zero, gen())
+            elif kind == "gen-zero":
+                pair = (gen(), zero)
+            elif kind == "zero-deep":
+                pair = (zero, deep_point(rng))
+            elif kind == "deep-zero":
+                pair = (deep_point(rng), zero)
+            elif kind == "diag-gen":
+                z = gen()
+                pair = (z, list(z))
+            elif kind == "diag-deep":
+                z = deep_point(rng)
+                pair = (z, list(z))
+            elif kind == "conj-gen":
+                z = gen()
+                pair = (z, conj_vector(z))
+            elif kind == "conj-deep":
+                z = deep_point(rng)
+                pair = (z, conj_vector(z))
+            else:
+                z = deep_point(rng)
+                lam = int(rng.integers(2, P - 1))
+                pair = (z, [lam * t % P for t in z])
+            items.append((kind, pair[0], pair[1]))
+    return items
+
+
+def pair_seed_values() -> list[int]:
+    """The two draw values the literal PAIR_TABLE_SEEDS names, re-read from the retained draw."""
+    draw = json.loads((ROOT / DRAW).read_text(encoding="utf-8"))
+    values = [int(draw["values"][k]) for k in PAIR_SEED_INDICES]
+    check(values == PAIR_TABLE_SEEDS, f"{DRAW} indices {PAIR_SEED_INDICES} hold {values}, not {PAIR_TABLE_SEEDS}")
+    return values
+
+
+# Gaussian-rational points for the characteristic-0 cross-check: real parts and imaginary parts as integer lists.
+GaussVector = tuple[list[int], list[int]]
+
+
+def nullity_qi(dim: int, vec: GaussVector) -> int:
+    """dim - rank over Q(i) of L_(re + i im), from the realified matrix [[A, -B], [B, A]] whose rank is twice it."""
+    a = [[flint.fmpq(c.numerator, c.denominator) for c in r] for r in left_mult_matrix_exact(dim, vec[0])]
+    b = [[flint.fmpq(c.numerator, c.denominator) for c in r] for r in left_mult_matrix_exact(dim, vec[1])]
+    rows = [ra + [-t for t in rb] for ra, rb in zip(a, b, strict=True)] + [rb + ra for ra, rb in zip(a, b, strict=True)]
+    rank = int(flint.fmpq_mat(rows).rank())
+    check(rank % 2 == 0, "the realified rank is even")
+    return dim - rank // 2
+
+
+def gauss_to_mod(vec: GaussVector) -> list[int]:
+    return [(a + I * b) % P for a, b in zip(vec[0], vec[1], strict=True)]
+
+
+def gauss_x(z: GaussVector, zb: GaussVector) -> GaussVector:
+    """2 x for z = x_low + i x_high and z' = x_low - i x_high: (z + z') then -i (z - z'); the rank is scale free."""
+    sum_re = [a + c for a, c in zip(z[0], zb[0], strict=True)]
+    sum_im = [a + c for a, c in zip(z[1], zb[1], strict=True)]
+    dif_re = [a - c for a, c in zip(z[0], zb[0], strict=True)]
+    dif_im = [a - c for a, c in zip(z[1], zb[1], strict=True)]
+    # -i (dif_re + i dif_im) = dif_im - i dif_re
+    return sum_re + dif_im, sum_im + [-t for t in dif_re]
+
+
+def qi_point(rng: np.random.Generator, kind: str) -> GaussVector:
+    """A rational point of V(J) over Q(i) with n_16 = 4 (gen), 8 (deep) or 0 (zero), built from Pythagorean triples."""
+    re, im = [0] * 16, [0] * 16
+    if kind == "zero":
+        return re, im
+    offsets = [int(t) for t in rng.permutation(7)]
+    triples = [(1, 2, 2), (2, 2, 1), (2, 1, 2)]
+    pick = triples[int(rng.integers(0, 3))]
+    sign = [int(rng.choice([-1, 1])) for _ in range(3)]
+    if kind == "gen":
+        # u = (1, 2, 2) and v = (2, 2, 1) permuted on disjoint offsets: U = V = 9 and W = 0, a real zero-divisor
+        for t in range(3):
+            re[1 + offsets[t]] = pick[t] * sign[t]
+            re[9 + offsets[3 + t]] = triples[(triples.index(pick) + 1) % 3][t]
+        return re, im
+    # deep: u = a + i b with a = (1, 2, 2) and b = (2, 1, -2) on the same offsets: a.a = b.b = 9 and a.b = 0
+    base = 1 if int(rng.integers(0, 2)) == 0 else 9
+    for t in range(3):
+        re[base + offsets[t]] = (1, 2, 2)[t]
+        im[base + offsets[t]] = (2, 1, -2)[t]
+    return re, im
+
+
+QI_CLASSES = (
+    ("gen-gen", "gen", "gen"),
+    ("gen-deep", "gen", "deep"),
+    ("deep-gen", "deep", "gen"),
+    ("deep-deep", "deep", "deep"),
+    ("zero-gen", "zero", "gen"),
+    ("deep-zero", "deep", "zero"),
+    ("diag-deep", "deep", "same"),
+    ("conj-deep", "deep", "negative"),
+    ("proportional-deep", "deep", "double"),
+)
+
+
+def q_cross_check(rng: np.random.Generator) -> dict[str, Any]:
+    """Exact ranks over Q(i) of L_x for Gaussian-rational points, against the F_P ranks of the same points."""
+    rows = []
+    for name, first, second in QI_CLASSES:
+        for _ in range(8):
+            z = qi_point(rng, first)
+            if second == "same":
+                zb = (list(z[0]), list(z[1]))
+            elif second == "negative":
+                zb = ([z[0][0]] + [-t for t in z[0][1:]], [z[1][0]] + [-t for t in z[1][1:]])
+            elif second == "double":
+                zb = ([2 * t for t in z[0]], [2 * t for t in z[1]])
+            else:
+                zb = qi_point(rng, second)
+            x = gauss_x(z, zb)
+            exact = (nullity_qi(32, x), nullity_qi(16, z), nullity_qi(16, zb))
+            zp, zbp = gauss_to_mod(z), gauss_to_mod(zb)
+            modp = (
+                nullity_mod(32, to_x(np.array(zp, dtype=np.int64), np.array(zbp, dtype=np.int64))),
+                nullity_mod(16, zp),
+                nullity_mod(16, zbp),
+            )
+            rows.append((name, exact, modp))
+    classes: dict[str, Any] = {}
+    for name, _, _ in QI_CLASSES:
+        cls = [r for r in rows if r[0] == name]
+        classes[name] = {
+            "points": len(cls),
+            "cells": [list(k) for k in sorted({r[1] for r in cls})],
+            "cells_over_Q_i": dict(Counter(",".join(map(str, r[1])) for r in cls)),
+            "agrees_with_mod_p": all(r[1] == r[2] for r in cls),
+        }
+    return {
+        "points": len(rows),
+        "classes": classes,
+        "expected_cells_only": all(set(map(tuple, c["cells"])) <= PAIR_EXPECTED[n] for n, c in classes.items()),
+        "all_agree": all(r[1] == r[2] for r in rows),
+    }
+
+
+def witness_pair() -> dict[str, Any]:
+    """The two points of the factor stratum (8, 8) that carry n_32 = 12 and 16, with exact ranks over Q(i)."""
+    low, high = [0] * 16, [0] * 16
+    low[1], high[2] = 1, 1
+    z = (low, high)  # z = e_1 + i e_2
+    zc = (list(low), [-t for t in high])  # z' = e_1 - i e_2
+    out = {}
+    for label, pair in (("n32_12_gaussian_conjugate", (z, zc)), ("n32_16_diagonal", (z, z))):
+        x = gauss_x(*pair)
+        zp, zbp = gauss_to_mod(pair[0]), gauss_to_mod(pair[1])
+        out[label] = {
+            "z": "e_1 + i e_2",
+            "zprime": "e_1 - i e_2" if label.endswith("conjugate") else "e_1 + i e_2",
+            "over_F_32009": [
+                nullity_mod(32, to_x(np.array(zp, dtype=np.int64), np.array(zbp, dtype=np.int64))),
+                nullity_mod(16, zp),
+                nullity_mod(16, zbp),
+            ],
+            "over_Q_i": [nullity_qi(32, x), nullity_qi(16, pair[0]), nullity_qi(16, pair[1])],
+        }
+    return out
+
+
+def pair_table(w8_sparse: list[Any]) -> dict[str, Any]:
+    values = pair_seed_values()
+    deep = deep_basis_points()
+    check(len(deep) == 168, f"{len(deep)} deep basis points, expected 168")
+    rng = np.random.default_rng(PAIR_TABLE_SEEDS)
+    items = random_items(rng, deep) + finite_items(deep)
+    # The Q(i) points draw from the same stream after every random class, so the whole run follows one seed.
+    q_check = q_cross_check(rng)
+    worker = functools.partial(pair_row, None, w8_sparse)
+    rows = parallel.ordered_map(worker, items)
+    by_class: dict[str, list[tuple[Any, ...]]] = {}
+    for r in rows:
+        by_class.setdefault(r[0], []).append(r)
+    classes: dict[str, Any] = {}
+    for kind in (*RANDOM_CLASS_ORDER, *FINITE_CLASSES):
+        cls = by_class[kind]
+        cells = Counter((r[1], r[2], r[3]) for r in cls)
+        diag = [r[8] for r in cls if r[8] is not None]
+        classes[kind] = {
+            "kind": "finite" if kind in FINITE_CLASSES else "random",
+            "points": len(cls),
+            "cells_n32_n16z_n16zb": {",".join(map(str, k)): v for k, v in sorted(cells.items())},
+            "expected_cells_only": set(cells) <= PAIR_EXPECTED[kind],
+            "sum_rule_holds": sum(1 for r in cls if r[1] == r[2] + r[3]),
+            "x_on_W8": sum(1 for r in cls if r[5]),
+            "z_in_J": sum(1 for r in cls if r[6]),
+            "zprime_in_J": sum(1 for r in cls if r[7]),
+            "flint_rank_agrees": sum(1 for r in cls if r[4]),
+            "diagonal_points": len(diag),
+            "diagonal_block_form": sum(1 for d in diag if d[0]),
+            "diagonal_rank_R_eq_rank_L": sum(1 for d in diag if d[1]),
+            "diagonal_R_eq_C_L_conj_C": sum(1 for d in diag if d[2]),
+        }
+    # Relation to the cells of every ordered pair of deep basis points.
+    rel_cells: dict[str, Counter[tuple[int, int, int]]] = {}
+    for (kind, z, zb), r in zip(items, rows, strict=True):
+        if kind == "deep-basis-all-pairs":
+            rel_cells.setdefault(relation(z, zb), Counter())[(r[1], r[2], r[3])] += 1
+    # Fitted on this enumeration: n_32 = 16 exactly when p xor q = p' xor q' and t' = cd_sign(p, p') cd_sign(q, q') t.
+    relation_rule = all(
+        (r[1] == 16) == all(twisted_match(z, zb))
+        for (kind, z, zb), r in zip(items, rows, strict=True)
+        if kind == "deep-basis-all-pairs"
+    )
+    # The joint map over the points on W8: (n_16(z), n_16(z')) -> {n_32: count}.
+    joint: dict[tuple[int, int], Counter[int]] = {}
+    for r in rows:
+        if r[5]:
+            joint.setdefault((r[2], r[3]), Counter())[r[1]] += 1
+    joint_map = {f"{a},{b}": {str(k): v for k, v in sorted(c.items())} for (a, b), c in sorted(joint.items())}
+    multivalued = {key: val for key, val in joint_map.items() if len(val) > 1}
+    generic_sum = classes["gen-gen"]["sum_rule_holds"] == RANDOM_POINTS
+    diag_rows = [r for r in rows if r[8] is not None]
+    out: dict[str, Any] = {
+        "draw": DRAW,
+        "seed_indices": list(PAIR_SEED_INDICES),
+        "seed_values": values,
+        "numpy": np.__version__,
+        "points_per_random_class": RANDOM_POINTS,
+        "deep_basis_points": len(deep),
+        "total_points": len(rows),
+        "classes": classes,
+        "deep_basis_all_pairs_by_relation": {
+            rel: {",".join(map(str, k)): v for k, v in sorted(c.items())} for rel, c in sorted(rel_cells.items())
+        },
+        "rule_n32_16_iff_same_xor_class_and_sign_match": relation_rule,
+        "joint_map_on_W8": joint_map,
+        "pair_law_refuted": bool(multivalued),
+        "pair_law_multivalued_keys": multivalued,
+        "generic_stratum_sum_rule_on_sampled_class": generic_sum,
+        "diagonal_identities": {
+            "points": len(diag_rows),
+            "pure_points": sum(1 for (_, z, zb), r in zip(items, rows, strict=True) if r[8] is not None and z[0] == 0),
+            "block_form_L_z_R_z": sum(1 for r in diag_rows if r[8][0]),
+            "rank_R_z_equals_rank_L_z": sum(1 for r in diag_rows if r[8][1]),
+            "R_z_equals_C_L_zbar_C": sum(1 for r in diag_rows if r[8][2]),
+            "n32_equals_2_n16": sum(1 for r in rows if r[8] is not None and r[1] == 2 * r[2]),
+        },
+        "integer_basis_identities": integer_basis_identities(),
+        "witnesses": witness_pair(),
+        "cross_check_over_Q_i": q_check,
+    }
+    flint_ok = all(r[4] for r in rows)
+    out["flint_rank_agrees_on_every_point"] = flint_ok
+    out["pass"] = bool(
+        all(c["expected_cells_only"] for c in classes.values())
+        and all(c["points"] == RANDOM_POINTS for k, c in classes.items() if c["kind"] == "random")
+        and all(c["x_on_W8"] == c["points"] for k, c in classes.items() if k != "mixed-basis")
+        and classes["mixed-basis"]["x_on_W8"] == 168
+        and relation_rule
+        and bool(multivalued)
+        and set(multivalued) == {"8,8"}
+        and generic_sum
+        and flint_ok
+        and out["diagonal_identities"]["block_form_L_z_R_z"] == len(diag_rows)
+        and out["diagonal_identities"]["rank_R_z_equals_rank_L_z"] == len(diag_rows)
+        and out["diagonal_identities"]["R_z_equals_C_L_zbar_C"] == len(diag_rows)
+        and all(out["integer_basis_identities"].values())
+        and q_check["all_agree"]
+        and q_check["expected_cells_only"]
+        and all(w["over_F_32009"] == w["over_Q_i"] for w in out["witnesses"].values())
+    )
+    return out
+
+
+# ---------------------------------------------------------------------------------------------------------------
 # Self-test
 
 
@@ -850,6 +1423,18 @@ def self_test() -> int:
     # The mixed basis pair e_0 + e_17 breaks the sum rule: n_32 = 0 while z = e_0 + i e_1 has n_16 = 8.
     r01 = spectrum_row(w8_sparse, (0, 1, 1))
     check((r01["n32"], r01["n16z"], r01["n16zb"]) == (0, 8, 8), "the mixed pair e_0 + e_17 has cell (0, 8, 8)")
+    # Pair-table mutation: the clean cells of the mixed basis pairs and the deep diagonal hit their expected values,
+    # and reversing one dimension-32 sign entry changes at least one cell.
+    deep = deep_basis_points()
+    check(len(deep) == 168, "168 deep basis points")
+    probe = mixed_basis_items() + [("deep-basis-diag", z, z) for z in deep]
+    clean = Counter(pair_row(None, w8_sparse, it)[:4] for it in probe)
+    expected = Counter({("mixed-basis", *k): v for k, v in BASIS_CELLS.items()})
+    expected[("deep-basis-diag", 16, 8, 8)] = 168
+    check(clean == expected, f"clean pair-table cells {dict(clean)}")
+    mutated = Counter(pair_row(MUTATED_SIGN_ENTRY, w8_sparse, it)[:4] for it in probe)
+    check(mutated != clean, f"flipping the sign entry {MUTATED_SIGN_ENTRY} leaves every pair-table cell unchanged")
+    check(len(pair_seed_values()) == 2, "the pair-table draw values match PAIR_TABLE_SEEDS")
     # Singular mutation controls: one flipped sign breaks the identity, the swap keeps it.
     with tempfile.TemporaryDirectory(prefix="w8twisted-") as tmp:
         work = Path(tmp)
@@ -863,16 +1448,39 @@ def self_test() -> int:
 # ---------------------------------------------------------------------------------------------------------------
 
 
+def pair_table_only(out: Path) -> int:
+    """Recompute the pair table and store it under "pair_table" in the existing result.json, keeping the other keys."""
+    path = out / "result.json"
+    report = json.loads(path.read_text(encoding="utf-8"))
+    start = time.perf_counter()
+    table = pair_table(sparse(neighbor().w8_ideal_32()))
+    table["seconds"] = round(time.perf_counter() - start, 2)
+    table["python"] = sys.version.split()[0]
+    table["python_flint"] = flint.__version__
+    table["script_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    report["pair_table"] = table
+    path.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
+    print(f"pair table {table['seconds']} s; pass: {table['pass']}")
+    return 0 if table["pass"] else 1
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--self-test", action="store_true")
     ap.add_argument("--out", type=Path, help="evidence directory: Singular inputs, logs and result.json")
+    ap.add_argument(
+        "--pair-table",
+        action="store_true",
+        help="with --out: recompute only the pair table into the existing result.json and keep every other key",
+    )
     args = ap.parse_args()
     if args.self_test:
         return self_test()
     if not args.out:
         ap.error("--out DIR or --self-test is required")
     out: Path = args.out
+    if args.pair_table:
+        return pair_table_only(out)
     out.mkdir(parents=True, exist_ok=True)
     t0 = time.perf_counter()
     report: dict[str, Any] = {}
@@ -890,6 +1498,7 @@ def main() -> int:
     stage("mutation_controls", lambda: mutation_controls(out))
     stage("nullity_spectrum", lambda: nullity_spectrum(w8_sparse))
     stage("seeded_points", lambda: sample_points(w8_sparse))
+    stage("pair_table", lambda: pair_table(w8_sparse))
     report["stage_seconds"] = stamps
     report["total_s"] = round(time.perf_counter() - t0, 2)
     report["script_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
