@@ -276,11 +276,16 @@ hold in characteristic 0, since the change of variables is defined over Z[i, 1/2
 descends dimension, degree and Hilbert series from Q(i) to Q. The strengthening that W8 nullity is a function of the
 pair (n_16(z), n_16(z')) is refuted on W8 itself: on the real slice a W8 point is a half operand, whose L is block-diagonal
 with blocks L_z and R_z (gororoba-open `zero_upper_half_matrix`, a field-generic identity) and rank R_z = rank L_z for
-pure z, so n_32 = 2 x 8 = 16 when the F_p factor has nullity 8 (computed rows in the twisted-product record, in
-preparation), while the 168 mixed basis pairs on W8 read
+pure z, so n_32 = 2 x 8 = 16 when the F_p factor has nullity 8 (ledger A5-226, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md#w8-pair-table); exact over Q(i) at the witnesses
+x = e_1 + e_18 (n_32 = 12) and z = z' = e_1 + i e_2 (n_32 = 16)), while the 168 mixed basis pairs on W8 read
 n_32 = 12 at the same pair (8, 8) (A5-225); the relative position of the two factor kernels carries information their
-dimensions do not. Seeded W8 classes give the rest of the pair map: (4,4) -> 8, (4,8) and (8,4) -> 10, (4,16) and
-(16,4) -> 20, (8,16) and (16,8) -> 22. The product does not decide A5-218 or the degree-30 W8 component C30, because
+dimensions do not. Seeded W8 classes (ANU draw 2026-11-08T170257Z, values 7 and 8) give the rest of the pair map: (4,4) -> 8,
+(4,8) and (8,4) -> 10, (4,16) and (16,4) -> 20, (8,16) and (16,8) -> 22, (16,16) -> 32. At (8,8), independent
+random deep points read 12 (64 of 64); 16 occurs on the diagonal, on the sedenion conjugate z' = -z and on 2,016 of
+the 28,224 ordered pairs of basis-type deep points, where a rule fitted to that enumeration (p xor q = p' xor q' with a
+sign condition) has no held-out test yet; the Gaussian conjugate e_a - i s e_b reads 12. The generic-stratum sum
+relation n_32 = n_16(z) + n_16(z') survives on the sampled generic class and is open as a family-wide statement
+(A5-227). The product does not decide A5-218 or the degree-30 W8 component C30, because
 those live in V(K2) of the fiber ring, not in the base. The factor swap z <-> z' is (x_low, x_high) -> (x_low, -x_high)
 and is not the equality of character blocks 2 and 3 seen in every W8 run; that equality has no located proof, and a
 proved block swap would save at most 4/3 of the products, rank and closure, not the export.
