@@ -10,11 +10,16 @@ certified arb ball arithmetic.
 
 ## Finding
 
-The float64 producer path (`numpy.linalg.pinv`) scored 48.6 on the precision score defined below, and its last bits moved with the
-OpenBLAS thread count: thread counts 1, 2, 4, 6 and 10 gave four different float64 results, up to 1.5e-15 apart, and
-the runner-image ledger bytes equalled the one- and two-thread result. Near-zero wrong-outcome rates showed 1,000 to
-3,000 ulp of error, which is cancellation at 1e-17 absolute, not instability. The forecast gate's absolute tolerance
-of 1e-12 absorbed all of it.
+The float64 producer (`numpy.linalg.pinv`, then a Choi matrix and a trace per setting) scored 48.7 on the precision
+score defined below at one OpenBLAS thread, the runner-image ledger's setting, and its last bits moved with the thread
+count: thread counts 1, 2, 4, 6 and 10 gave four different records, up to 1.1e-15 apart, scoring 47.8 to 48.8, and
+the ledger bytes equalled the one- and two-thread record ([producer-records/](producer-records/), recorded from the
+producer's commit by [producer_record.py](producer_record.py) and scored in [producer-scores.json](producer-scores.json)
+by [score_producer.py](score_producer.py)). Near-zero wrong-outcome rates showed 1,000 to 3,000 ulp of error, which is
+cancellation at 1e-17 absolute, not instability. The forecast gate's absolute tolerance of 1e-12 absorbed all of it.
+The float64 pinv rows of the sweep evaluate the solved coefficients through a precomputed rate matrix, a
+reassociation of the producer's traces, so they score 48.6 with other per-quantity errors (ZX/F at 10.2 ulp against
+the producer's 0.77) and rank the solvers rather than reproduce the producer.
 
 `tomography_prediction` in `scripts/ascella_cz_ensemble_case.py` now solves the normal equations in python-flint
 `arb_mat` at 128 bits (256 and 512 bits as fallbacks) and writes each float64 only when every point of its ball
@@ -53,7 +58,7 @@ roughly; the precision column does not depend on load. [sweep.jsonl](sweep.jsonl
 
 | Configuration | Precision score | Worst rate error | Fastest solve (s) | Load average before |
 |---|---|---|---|---|
-| float64 pinv, OpenBLAS threads 1 | 48.6 | 5.8e-18 | 0.50 | 2.3 |
+| float64 pinv with rate-matrix evaluation, OpenBLAS threads 1 | 48.6 | 5.8e-18 | 0.50 | 2.3 |
 | float64 pinv, OpenBLAS threads 2 | 48.6 | 5.8e-18 | 0.08 | 2.2 |
 | float64 pinv, OpenBLAS threads 4 | 48.6 | 5.8e-18 | 0.53 | 2.1 |
 | float64 pinv, OpenBLAS threads 6 | 48.6 | 5.8e-18 | 0.36 | 5.0 |

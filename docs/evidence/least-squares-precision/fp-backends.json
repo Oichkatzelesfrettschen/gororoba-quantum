@@ -4,7 +4,7 @@
   "nmant": 63
  },
  "backends": {
-  "float64 pinv (producer)": {
+  "float64 pinv, rate-matrix evaluation": {
    "seconds": 2.843391775008058,
    "solve_seconds": 2.7714877359976526,
    "max_rate_abs_error": 5.7645646075531684e-18,
