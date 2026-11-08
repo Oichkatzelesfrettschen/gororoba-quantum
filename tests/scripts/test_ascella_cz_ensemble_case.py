@@ -306,3 +306,49 @@ def test_certified_prediction_recovers_a_synthetic_fit() -> None:
             raise AssertionError(f"{name}: certified {rates} against float64 {floats}")
     if not record["ZX"]["F_sd"] > 0.0:
         raise AssertionError("distinct replicates give no spread")
+
+
+def test_order_statistic_orders_endpoints_exactly() -> None:
+    """Endpoints that round to one float64 still sort by their exact values."""
+    from flint import arb, ctx
+
+    ctx.prec = 128
+    above_one = arb(1) + arb(2) ** -54  # rounds to 1.0 like 1 itself
+    smallest = case.order_statistic([above_one, arb(1)], 0)
+    if not smallest.contains(arb(1)):
+        raise AssertionError("the minimum ball excludes the exact minimum 1")
+    tiny_negative = arb(-(2**-1100)) + arb("0 +/- 1e-340")  # a lower endpoint that rounds to -0.0
+    if not (case.nonnegative_sqrt(tiny_negative.union(arb(4))) >= 0):
+        raise AssertionError("a negative endpoint rounding to -0.0 escapes the nonnegative clamp")
+
+
+def test_certified_prediction_raises_precision_then_refuses(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A value that fails to certify moves the solve to the next precision, and failing at the last one raises."""
+    seen: list[int] = []
+    real = case.prediction_balls
+
+    def failing(columns: np.ndarray, precision: int) -> dict[str, Any]:
+        seen.append(precision)
+        return real(columns, 128)
+
+    calls = {"n": 0}
+
+    def refuse_until(limit: int):
+        def certify(value: Any) -> float | None:
+            calls["n"] += 1
+            return None if len(seen) <= limit else float(value.mid())
+
+        return certify
+
+    columns = (tomo.design_matrix() @ np.linspace(-1e-3, 2e-3, 256))[:, None] + np.asarray([[0.0, 1e-9, 2e-9]])
+    monkeypatch.setattr(case, "prediction_balls", failing)
+    monkeypatch.setattr(case, "certified_float", refuse_until(2))
+    _, precision = case.certified_prediction(columns)
+    if seen != [128, 256, 512] or precision != 512:
+        raise AssertionError(f"the precision ladder ran {seen} and settled at {precision}")
+    seen.clear()
+    monkeypatch.setattr(case, "certified_float", refuse_until(3))
+    with pytest.raises(RuntimeError, match="straddles"):
+        case.certified_prediction(columns)
+    if seen != [128, 256, 512]:
+        raise AssertionError(f"the refusal ran {seen}")

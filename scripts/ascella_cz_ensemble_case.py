@@ -29,6 +29,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import sys
@@ -797,11 +798,15 @@ def tomography_choi() -> tuple[np.ndarray, float]:
     return choi, tomo.trace_normalized_fidelity(choi)
 
 
+def exact_fraction(endpoint: arb) -> Fraction:
+    """The exact rational value of an exact arb (a ball endpoint), from its dyadic mantissa and exponent."""
+    mantissa, exponent = (int(v) for v in endpoint.man_exp())
+    return Fraction(mantissa) * 2**exponent if exponent >= 0 else Fraction(mantissa, 2**-exponent)
+
+
 def exact_float(endpoint: arb) -> float:
     """The float64 nearest an exact arb value: Fraction division rounds to nearest, ties to even."""
-    mantissa, exponent = (int(v) for v in endpoint.man_exp())
-    exact = Fraction(mantissa) * 2**exponent if exponent >= 0 else Fraction(mantissa, 2**-exponent)
-    return float(exact)
+    return float(exact_fraction(endpoint))
 
 
 def certified_float(value: arb) -> float | None:
@@ -816,15 +821,13 @@ def to_arb_mat(rows: np.ndarray) -> arb_mat:
 
 def nonnegative_sqrt(value: arb) -> arb:
     """The root of a ball whose exact value is a variance: its part below zero holds no admissible value."""
-    if exact_float(value.lower()) < 0:
-        value = arb(0).union(value.upper())
-    return value.sqrt()
+    return value.nonnegative_part().sqrt()
 
 
 def order_statistic(values: Sequence[arb], k: int) -> arb:
     """A ball holding the k-th smallest exact value: it lies between the k-th smallest lower and upper endpoints."""
-    return sorted((v.lower() for v in values), key=exact_float)[k].union(
-        sorted((v.upper() for v in values), key=exact_float)[k]
+    return sorted((v.lower() for v in values), key=exact_fraction)[k].union(
+        sorted((v.upper() for v in values), key=exact_fraction)[k]
     )
 
 
@@ -844,7 +847,8 @@ def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
     equations (A^T A) x = A^T b, which arb_mat solves with a rigorous radius on the producer's float64 inputs. A rate is
     Tr[(rho^T x E) J] = sum_k x_k Tr[(rho^T x E) H_k], formed exactly on the doubles."""
     ctx.prec, ctx.threads = precision, workers()
-    a = to_arb_mat(tomo.design_matrix())
+    design = tomo.design_matrix()
+    a = to_arb_mat(design)
     at = a.transpose()
     x = (at * a).solve(at * to_arb_mat(columns))
     rows: list[np.ndarray] = []
@@ -865,6 +869,18 @@ def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
     weights = np.vstack([np.outer(vector.real, vector.real).reshape(-1), np.eye(16).reshape(-1)])
     functional = to_arb_mat(weights) * to_arb_mat(tomo.hermitian_stack().real.reshape(256, -1)).transpose() * x
     out: dict[str, Any] = {"rates": {}, "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    # the certificate covers these float64 bits, which float64 libm and BLAS calls produce; their digests let a replay
+    # tell an input that moved from an output that did
+    out["inputs_sha256"] = {
+        name: hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest()
+        for name, array in (
+            ("design_matrix", design),
+            ("rate_observables", np.asarray(rows)),
+            ("hermitian_basis", tomo.hermitian_stack()),
+            ("ideal_choi_vector", vector),
+            ("observed_rate_columns", columns),
+        )
+    }
     out["process_fidelity"] = functional[0, 0] / (4 * functional[1, 0])
     for k in range(x.ncols()):
         sums: dict[str, list[arb]] = {t: [arb(0), arb(0), arb(0)] for t in TABLES}
@@ -888,7 +904,7 @@ def certified_prediction(columns: np.ndarray) -> tuple[dict[str, Any], int]:
     precision of CERTIFIED_PRECISIONS where every value certifies."""
     for precision in CERTIFIED_PRECISIONS:
         balls = prediction_balls(columns, precision)
-        record: dict[str, Any] = {"rates": {}}
+        record: dict[str, Any] = {"rates": {}, "inputs_sha256": balls["inputs_sha256"]}
         floats: list[float | None] = []
         for name, values in balls["rates"].items():
             record["rates"][name] = [certified_float(v) for v in values]
@@ -912,8 +928,10 @@ def certified_prediction(columns: np.ndarray) -> tuple[dict[str, Any], int]:
 
 def tomography_prediction() -> dict[str, Any]:
     """Estimate 5's reference: the rates the retained fit predicts for the eight settings, its table scores, and the
-    bootstrap spread of F, each float64 the certified correct rounding of an arb enclosure, so the record does not
-    depend on the host, the BLAS or its thread count."""
+    bootstrap spread of F, each float64 the certified correct rounding of an arb enclosure computed from the float64
+    inputs whose digests the record carries. The solve and every step after it are independent of the BLAS and its
+    thread count; the inputs come from float64 libm and BLAS calls, so the bytes match across hosts whose input
+    digests match."""
     _, fidelity = tomography_choi()
     retained = json.loads((ROOT / TOMOGRAPHY_ANALYSIS).read_text(encoding="utf-8"))["process"]["process_fidelity"]
     require(abs(fidelity - retained) <= TOLERANCE, f"the recomputed fit reads {fidelity}, the retained {retained}")
@@ -932,6 +950,7 @@ def tomography_prediction() -> dict[str, Any]:
             "method": "arb normal equations (python-flint arb_mat)",
             "precision_bits": precision,
             "rounding": "each float64 is the correctly rounded value of every point of its arb enclosure",
+            "inputs_sha256": record["inputs_sha256"],
         },
         **{table: record[table] for table in TABLES},
     }

@@ -1,4 +1,4 @@
-"""Precision and speed of least-squares backends on the ensemble's tomography prediction (577 right-hand sides).
+"""Precision and speed of least-squares backends on the ensemble's tomography prediction (501 right-hand sides).
 
 Every backend solves min ||A x - b|| for the point rates and the 500 bootstrap replicates, maps x to the 32 predicted
 outcome rates, and scores F, F' and the process fidelity; arb at 256 bits (python-flint) is the reference, with a
@@ -97,7 +97,7 @@ def summary(values: list, sqrt, zero) -> dict:
 
 
 def evaluate(x_cols, r, functional, d: dict, zero, sqrt, to_list) -> dict:
-    """Point quantities from column 0 and bootstrap summaries from columns 1..500 of x (256 x 577)."""
+    """Point quantities from column 0 and bootstrap summaries from columns 1..500 of x (256 x 501)."""
     rates = mm(r, x_cols)
     fun = mm(functional, x_cols[:, :1])
     point_rates = to_list(rates[:, 0])
@@ -126,7 +126,7 @@ def model_rows(d: dict, dtype) -> tuple:
 
 
 def rhs(d: dict) -> np.ndarray:
-    return np.column_stack([d["f"], d["batch"].T])  # 576 x 577
+    return np.column_stack([d["f"], d["batch"].T])  # 576 x 501
 
 
 def float64_pinv(d: dict):

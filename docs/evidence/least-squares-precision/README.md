@@ -10,7 +10,7 @@ certified arb ball arithmetic.
 
 ## Finding
 
-The float64 producer path (`numpy.linalg.pinv`) got 48.6 of float64's 53 bits right, and its last bits moved with the
+The float64 producer path (`numpy.linalg.pinv`) scored 48.6 on the precision score defined below, and its last bits moved with the
 OpenBLAS thread count: thread counts 1, 2, 4, 6 and 10 gave four different float64 results, up to 1.5e-15 apart, and
 the runner-image ledger bytes equalled the one- and two-thread result. Near-zero wrong-outcome rates showed 1,000 to
 3,000 ulp of error, which is cancellation at 1e-17 absolute, not instability. The forecast gate's absolute tolerance
@@ -19,16 +19,22 @@ of 1e-12 absorbed all of it.
 `tomography_prediction` in `scripts/ascella_cz_ensemble_case.py` now solves the normal equations in python-flint
 `arb_mat` at 128 bits (256 and 512 bits as fallbacks) and writes each float64 only when every point of its ball
 rounds to that float64 under round-to-nearest. Each written value is therefore the correctly rounded exact value of
-the producer's float64 inputs, whatever the host, BLAS or thread count: the prediction came out byte-identical at 1
-and 10 FLINT threads and certified at 128 bits.
+the producer's float64 inputs, and the solve and every step after it no longer depend on the BLAS or its thread
+count: the prediction came out byte-identical at 1 and 10 FLINT threads and in the runner image, and certified at
+128 bits. The inputs themselves (design matrix, rate observables, Hermitian basis, ideal Choi vector, observed rate
+columns) still come from float64 libm and BLAS calls, so the record carries their SHA-256 digests under
+`arithmetic.inputs_sha256`; the bytes match across hosts whose input digests match, and a mismatch names the input
+that moved.
 
 ## Reference and certificate
 
 - Reference: arb normal equations at 256 bits, largest ball radius 9.4e-73 over every scored quantity.
-- Independent check: mpmath at 80 digits evaluates the normal-equation gradient A^T (A x - b) of the reference
-  midpoints on four columns: largest norm 7.9e-78, so the solution error is at most 1.7e-76
-  (||x - x*|| <= ||g|| / sigma_min^2).
-- "Correct bits" below is 52 minus the base-2 logarithm of the worst error in float64 ulp over F, F' and the process
+- Corroboration: mpmath at 80 digits evaluates the normal-equation gradient A^T (A x - b) of the reference midpoints
+  on four of the 501 columns: largest norm 7.9e-78, which gives a solution error near 1.7e-76 through
+  ||x - x*|| <= ||g|| / sigma_min^2 with the float64 estimate sigma_min = 0.219; without a certified lower bound on
+  sigma_min this corroborates the reference rather than proving it.
+- The precision score below is 52 minus the base-2 logarithm of the worst error, in ulp of the float64 nearest the
+  exact value, over F, F' and the process
   fidelity of the point fit and the F_sd and 2.5 and 97.5 percentiles of both tables.
 
 ## Sweep
@@ -41,7 +47,7 @@ roughly; the precision column does not depend on load. [sweep.jsonl](sweep.jsonl
 [sweep-contended.jsonl](sweep-contended.jsonl) the float64 rows of the first pass at load 13 to 19, and
 [fp-backends.json](fp-backends.json) the full-size five-backend run with the mpmath certificate.
 
-| Configuration | Correct bits | Worst rate error | Fastest solve (s) | Load average before |
+| Configuration | Precision score | Worst rate error | Fastest solve (s) | Load average before |
 |---|---|---|---|---|
 | float64 pinv, OpenBLAS threads 1 | 48.6 | 5.8e-18 | 0.50 | 2.3 |
 | float64 pinv, OpenBLAS threads 2 | 48.6 | 5.8e-18 | 0.08 | 2.2 |
@@ -97,13 +103,13 @@ roughly; the precision column does not depend on load. [sweep.jsonl](sweep.jsonl
 | arb normal equations, 256 bits, FLINT threads 4 | reference | 0.0e+00 | 1.28 | 4.7 |
 | arb normal equations, 256 bits, FLINT threads 10 | reference | 0.0e+00 | 1.18 | 5.0 |
 
-- float64: the LAPACK driver sets the bits (gelsy, pivoted QR, 49.9; gelss 47.2); threads change only the last bits
+- float64: the LAPACK driver sets the score (gelsy, pivoted QR, 49.9; gelss 47.2); threads change only the last bits
   and the time.
-- x87 80-bit: numpy `longdouble` (64-bit significand) Householder QR gives 59.5 bits in about 0.6 s, the fastest
+- x87 80-bit: numpy `longdouble` (64-bit significand) Householder QR scores 59.5 in about 0.6 s, the fastest
   configuration that beats float64; it exists only on x86 (ARM's `long double` is binary128, MSVC's is float64).
-- binary128 (numpy-quaddtype 1.0.0, SLEEF backend) gives 108 to 110 bits in 8 to 11 s; QuadBLAS threads change
-  nothing at this size. Its `longdouble` backend is x87 arithmetic under the quad dtype's name (57 to 60 bits).
-- arb: 128 bits gives 120.7 bits with a rigorous radius in 0.9 s on 10 FLINT threads (2.6 s on one), faster than
+- binary128 (numpy-quaddtype 1.0.0, SLEEF backend) scores 108 to 110 in 8 to 11 s; QuadBLAS threads change
+  nothing at this size. Its `longdouble` backend is x87 arithmetic under the quad dtype's name (57 to 60).
+- arb: 128 bits scores 120.7 with a rigorous radius in 0.9 s on 10 FLINT threads (2.6 s on one), faster than
   binary128 and with an error bound; python-flint 0.9.0 is already an arithmetic pin of the runner image.
 
 ## Library defects found
