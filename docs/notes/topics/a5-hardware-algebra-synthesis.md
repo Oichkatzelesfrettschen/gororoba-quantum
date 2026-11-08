@@ -167,9 +167,14 @@ cited record or recomputed.
   and 59.978. A point reading confirms the instrument against a known exact answer and adds no evidence for the law.
 - The halves rule ties the 16-dimensional sedenion program to A_5 directly. The W8 operand e1 + e10 has nullity 8
   because e1 + e10 is a sedenion zero divisor of nullity 4, doubled. [a5-zero-divisor-strata](../../evidence/a5-zero-divisor-strata/README.md)
-  already describes W8 through pairs of A_4 zero divisors. Hypothesis: the restriction is scheme-theoretic, so the W8
-  ideal restricted to the A_4 coordinates equals the A_4 zero-divisor ideal with equal Hilbert series. Falsifier: a
-  differing radical, Hilbert series or multiplicity at one good prime, a seconds-scale Singular check.
+  already describes W8 through pairs of A_4 zero divisors. The restriction holds set-theoretically and fails as a
+  scheme ([a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md), ledger A5-222, p = 32009). The W8
+  ideal restricted to x_16..x_31 = 0 is J = (y_0, y_8, U - V, W): prime, a complete intersection, dimension 12,
+  degree 4. The A_4 zero-divisor ideal PB (the order-6 Pfaffians of the doubly pure encoding) has radical J, the same
+  dimension and degree, and J as its only minimal prime with multiplicity 1. But U - V and W lie outside PB, the
+  Hilbert series differ, and PB carries embedded components over a dimension-6 locus. So the folding argument carries
+  varieties, degrees and multiplicities between the sedenion and A_5 levels, never ideals or Hilbert functions. A
+  Hilbert-function count at A_5 cannot be read off the sedenion ideal; it needs the A_5 ideal itself.
 - Rocq: gororoba-open's `CayleyDicksonAlgebra.v` covers dimensions 2 and 4 only. The level-k tower lives in this
   repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The kernel
   identity behind the half rule is proved there: [CdHalfFold.v](../../../proofs/CdHalfFold.v) shows the kernel of a half
@@ -260,7 +265,7 @@ labeled as one.
 | W8 degree 6 | receipt-bound rank at d = 6 | forecast 6 to 10 h, 40 to 70 GiB (W8 d5 x products) | FX4 only; Kaggle and laptop too small |
 | E8-bar degree 6, h_6 = 1666 | rank at d = 6, about N = 21 | forecast multi-day, about 50 GB receipt-bound | FX4 with its shutdown schedule moved (A5-205); no other host |
 | Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |
-| Scheme-theoretic A_4 restriction of W8 | radical and Hilbert series comparison at one prime | seconds to minutes | laptop |
+| Scheme-theoretic A_4 restriction of W8 | done: refuted for ideals, holds for radicals (A5-222); PB primary decomposition stalled at 3600 s | seconds for the decisive checks | laptop |
 | PR #788 reanalysis | covariance-aware intervals from the retained per-shot records | minutes | laptop |
 | Tuna-17 rerun of row 186 | the same 19-batch design with a per-batch q11 readout admission | about 25 min execution plus queue; owner approval | Tuna-17 only |
 | Characteristic zero | good-reduction argument for J, K2 and the receipts | proof work | none needed |
