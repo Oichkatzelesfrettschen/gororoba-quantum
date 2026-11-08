@@ -242,7 +242,8 @@ data qubit whose bias does not follow the new qubit's character.
 
 **Orbit blindness of the sign network (proved by enumeration).** For each of the 252 two-term operands of nullity 12,
 the four misaligned pairs, as points of F_2^5 / <m>, form a linear 2-plane that contains the class of the operand's own
-pair {i, j}; the ideal contrast is -1 exactly on the lower members, which form that plane in F_2^5. The profile under
+pair {i, j}; the ideal contrast is -1 exactly on the lower members, which form that plane in F_2^5 (the ideal
+contrast of the compiled-circuit model matches this rule on all 252). The profile under
 all 35 tilings by 3-dimensional subspaces that contain m is one signature for every operand, (0, 4, 4, 4) once,
 (2, 2, 4, 4) 18 times, (3, 3, 3, 3) 16 times, in V (56 operands), VB (168), V^a- (14) and V^a+ (14) alike. Every such
 ideal contrast is 1 - 2 1_D for a linear 2-plane D, and any two are related by a linear relabeling of the output bits.

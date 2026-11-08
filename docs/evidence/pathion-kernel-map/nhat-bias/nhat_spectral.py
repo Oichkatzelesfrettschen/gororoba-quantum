@@ -300,7 +300,8 @@ def analyze_run(name: str) -> dict[str, Any]:
 def block_spectrum_prediction(n_b: int, flip: float) -> float:
     """N_hat of an 8-bin block with N_b = 2 or 3 aligned pairs under a symmetric flip of rate ``flip`` on each bit.
 
-    The block's minus bins are 4 - N_b lower members. For N_b = 3 one bin carries -1, and for N_b = 2 the two minus
+    The toy block puts its 4 - N_b minus bins at k ^ 4 for k < 4 - N_b; Walsh powers do not change under translation,
+    so the placement matches the code's lower-member rule. For N_b = 3 one bin carries -1, and for N_b = 2 the two minus
     bins differ in one bit (the measured N_b = 2 blocks have the ideal characters {0, a, b, a ^ b} with a and b of
     weight 1). A uniform rate makes the reading depend only on N_b and the rate."""
     sign = np.ones(8)
@@ -349,6 +350,14 @@ def orbit_geometry(op: tuple[int, int, int]) -> dict[str, Any]:
     quotient = {min(k, k ^ m) for k in pcb.span(tuple(mis))} if mis else {0}
     # The ideal contrast reads -1 on the lower member of each misaligned pair, which is the pair's representative.
     linear = len(mis) == 4 and set(pcb.span(tuple(mis))) == set(mis)
+    circuit_rule = None
+    if len(aligned) == 12:
+        ideal = np.sign(
+            pkm.output_contrast(
+                pkm.ideal_law(pkm.kernel_map_circuit(op, True)), pkm.ideal_law(pkm.kernel_map_circuit(op, False))
+            )
+        )
+        circuit_rule = {k for k in range(pkm.DIM) if ideal[k] < 0} == set(mis)
     return {
         "operand": pkm.operand_tag(op),
         "nullity": len(aligned),
@@ -357,6 +366,7 @@ def orbit_geometry(op: tuple[int, int, int]) -> dict[str, Any]:
         "misaligned_is_subspace": len(mis) == 4 and len(quotient) == 4 and set(mis) == quotient,
         "contains_operand_pair": min(op[0], op[0] ^ m) in mis,
         "minus_bins_linear_plane": linear,
+        "minus_bins_match_circuit": circuit_rule,
     }
 
 
@@ -377,6 +387,7 @@ def orbit_blindness() -> dict[str, Any]:
         "misaligned_is_subspace": sum(r["misaligned_is_subspace"] for r in rows),
         "contains_operand_pair": sum(r["contains_operand_pair"] for r in rows),
         "minus_bins_linear_plane": sum(r["minus_bins_linear_plane"] for r in rows),
+        "minus_bins_match_circuit": sum(bool(r["minus_bins_match_circuit"]) for r in rows),
     }
 
 

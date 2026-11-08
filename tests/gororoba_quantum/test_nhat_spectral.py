@@ -34,6 +34,8 @@ def test_record_orbit_blindness() -> None:
     orbit = record["orbit_blindness"]
     if not (orbit["operands"] == 252 and orbit["signatures"] == 1 and orbit["misaligned_is_subspace"] == 252):
         raise AssertionError(orbit)
+    if orbit["minus_bins_match_circuit"] != 252:
+        raise AssertionError(orbit)
     if set(orbit["by_orbit"]) != {"V", "VB", "Vam", "Vap"}:
         raise AssertionError(orbit["by_orbit"])
 

@@ -18,6 +18,7 @@
   },
   "contains_operand_pair": 252,
   "minus_bins_linear_plane": 252,
+  "minus_bins_match_circuit": 252,
   "misaligned_is_subspace": 252,
   "operands": 252,
   "signature": [
