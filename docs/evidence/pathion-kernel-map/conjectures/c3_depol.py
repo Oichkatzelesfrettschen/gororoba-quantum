@@ -48,6 +48,12 @@ def simulate(n, p2, p1_ratio=0.1, T1=None, p_idle=0.0):
                 rho = kraus_apply(rho, relax_kraus(d, T1), q)
         for q in qs:
             clock[q] = start + d
+    if T1:
+        # The circuits end with `barrier q` and a joint measurement, so every region qubit idles until the last gate ends.
+        end = max(clock.values())
+        for q in REGION:
+            if end - clock[q] > 0:
+                rho = kraus_apply(rho, relax_kraus(end - clock[q], T1), q)
     prob = np.real(np.diag(rho)).clip(min=0)
     out = np.zeros(32)
     roles = T[n]["roles"]

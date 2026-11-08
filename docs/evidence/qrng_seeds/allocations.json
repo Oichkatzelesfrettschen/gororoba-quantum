@@ -1212,6 +1212,13 @@
    "value": 34580,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
    "index": 12
+  },
+  {
+   "path": "docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.py",
+   "name": "PERMUTATION_SEED",
+   "value": 33974,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T193501Z.json",
+   "index": 0
   }
  ],
  "runtime": [
@@ -1774,22 +1781,6 @@
    "experiment": "ascella-pathion-coset-block-pairs"
   },
   {
-   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
-   "index": 0,
-   "value": 34509,
-   "script": "gororoba_quantum/live_run.py",
-   "flag": "--seed-transpiler",
-   "experiment": "2026-10-27T173041.727190Z"
-  },
-  {
-   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
-   "index": 1,
-   "value": 63882,
-   "script": "gororoba_quantum/live_run.py",
-   "flag": "--seed-simulator",
-   "experiment": "2026-10-27T173041.727190Z"
-  },
-  {
    "record": "docs/evidence/anu_qrng/draw-2026-11-07T031954Z.json",
    "index": 0,
    "value": 52202,
@@ -1816,6 +1807,182 @@
     "2026-11-07T041624.522872Z"
    ],
    "envelope": "results/live/2026-11-07T035554.327341Z/CASE.md"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 0,
+   "value": 24922,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 1,
+   "value": 20919,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 2,
+   "value": 43368,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 3,
+   "value": 29824,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 4,
+   "value": 22735,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 5,
+   "value": 34476,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 6,
+   "value": 58403,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 7,
+   "value": 7504,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 8,
+   "value": 50540,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 9,
+   "value": 17650,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 10,
+   "value": 65198,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 11,
+   "value": 61993,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 12,
+   "value": 9216,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 13,
+   "value": 25382,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 14,
+   "value": 39914,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 15,
+   "value": 50946,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 16,
+   "value": 1348,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json",
+   "index": 17,
+   "value": 31305,
+   "script": "scripts/ascella_pathion_mesh_persistence.py",
+   "flag": "--draw",
+   "experiment": "ascella-pathion-mesh-persistence"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json",
+   "index": 0,
+   "value": 20206,
+   "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+   "flag": "--persistence-plan",
+   "experiment": "ascella-pathion-mesh-persistence-plan"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-07T165920Z.json",
+   "index": 1,
+   "value": 3868,
+   "script": "scripts/ascella_pathion_mesh_persistence_analysis.py",
+   "flag": "--persistence-plan",
+   "experiment": "ascella-pathion-mesh-persistence-plan"
+  },
+  {
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 0,
+   "value": 34509,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T173041.727190Z"
+  },
+  {
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 1,
+   "value": 63882,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T173041.727190Z"
   }
  ],
  "reserved": [
@@ -2278,6 +2445,11 @@
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
    "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
    "reason": "DRAW_B: curve, finite-field sample and float-start seeds read by runtime index"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json",
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/tslice_gen.py",
+   "reason": "DRAW_B: the independent Iso k = 4 slice forms, 17 coefficients each, read as raw values below the prime by index (p = 32009 indices 1 to 143, p = 32029 indices 144 to 271)"
   }
  ]
 }

@@ -842,6 +842,12 @@
     },
     "docs/notes/papers/2611.03348.md": {
       "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/quant-ph-0409083.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1103/PhysRevLett.94.160504",
+      "venue": "Physical Review Letters 94, 160504 (2005)",
+      "receipt_url": "https://api.crossref.org/works/10.1103/PhysRevLett.94.160504"
     }
   },
   "web_sources": [
@@ -3795,6 +3801,24 @@
       "retrieved_at_utc": "2026-11-06T22:19:10+00:00",
       "reading_scope": "Abstract and Sections I to IV (pp. 1-2 of 8); the gate constructions and later sections unread",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/quant-ph/0409083v3",
+      "note": "docs/notes/papers/quant-ph-0409083.md",
+      "sha256": "dbce37d440ba523ba2ebe155734e6afc5cf1fbb2b4a64fa34f8e240b6a0e1a1d",
+      "bytes": 125326,
+      "retrieved_at_utc": "2026-11-07T17:22:40+00:00",
+      "reading_scope": "All five pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1103/PhysRevLett.94.160504",
+      "note": "docs/notes/papers/quant-ph-0409083.md",
+      "sha256": "30e15c20d7a60165c3856a778c9f2bc465681a488f548b20608c1883f14abb63",
+      "bytes": 3863,
+      "retrieved_at_utc": "2026-11-07T17:23:53+00:00",
+      "reading_scope": "Hofmann 2005, Physical Review Letters 94, 160504: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -15470,6 +15494,37 @@
       "redistribution": "excluded_without_permission",
       "excluded_published_path": "docs/pdf/quant-ph-0006088v1.pdf",
       "local_cache_path": "docs/local_source_cache/quant-ph-0006088v1.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/quant-ph/0409083v3",
+      "note": "docs/notes/papers/quant-ph-0409083.md",
+      "audited_at_utc": "2026-11-07T17:22:40+00:00",
+      "status": "external_only",
+      "sha256": "dbce37d440ba523ba2ebe155734e6afc5cf1fbb2b4a64fa34f8e240b6a0e1a1d",
+      "bytes": 125326,
+      "pages": 5,
+      "acquisition": "download",
+      "prior_note_hash_match": null,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "dbce37d440ba523ba2ebe155734e6afc5cf1fbb2b4a64fa34f8e240b6a0e1a1d",
+        "verified_at_utc": "2026-11-07T17:22:40+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/quant-ph/0409083v3",
+        "evidence_sha256": "66310796708f02def641742389d3eae573676394cfdff2b1e766f4a63358692c",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific passages named in the note's reading scope; proofs and derivations remain independently unverified.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-quant-ph-0409083v3.html",
+        "evidence_retrieved_at_utc": "2026-11-07T17:22:44+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/quant-ph-0409083v3.pdf",
+      "local_cache_path": "docs/local_source_cache/quant-ph-0409083v3.pdf",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
     }

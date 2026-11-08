@@ -709,6 +709,23 @@ def class_table(analysis: Mapping[str, Any]) -> dict[tuple[str, int], str]:
     return out
 
 
+# Ascella pathion run directories whose analysis records the instrument rather than block levels: the mesh-persistence
+# reading (persistence of served-mesh errors) and its simulator gate (mesh identity, a record without a schema key).
+# Their readings live in results/live/PATHION_KERNEL_MAP_FINDINGS.md ("Ascella mesh persistence").
+ASCELLA_INSTRUMENT_SCHEMAS = frozenset({"ascella-pathion-mesh-persistence-analysis-v2"})
+ASCELLA_MESH_GATE_KEYS = frozenset({"passed", "platform_differences", "replay_compared", "worst_gap"})
+
+
+def is_ascella_instrument_record(analysis: Mapping[str, Any]) -> bool:
+    """True for a known instrument record, False for a block-level analysis; any other schema-less record raises, so a
+    new record kind forces a decision instead of entering or leaving the table silently."""
+    if "schema" in analysis:
+        return str(analysis["schema"]) in ASCELLA_INSTRUMENT_SCHEMAS
+    if ASCELLA_MESH_GATE_KEYS <= set(analysis):
+        return True
+    raise ValueError(f"Ascella analysis without a schema and not a mesh gate record: keys {sorted(analysis)}")
+
+
 def ascella_rows(
     analysis: Mapping[str, Any],
     operands: Mapping[str, Mapping[str, int]],

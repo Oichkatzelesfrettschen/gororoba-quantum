@@ -1,0 +1,6 @@
+RESULT xpnm-p32009-k3-sata0 start: variables 7, forms 3, size(Q) 15, s 0
+RESULT xpnm-p32009-k3-sata0 saturation done: generators 1, exponent 1, s 0
+RESULT xpnm-p32009-k3-sata0 standard basis of the saturation: generators 1, s 0
+RESULT xpnm-p32009-k3-sata0 dim -1 degree 0 s 0
+RESULT xpnm-p32009-k3-sata0 origin on the closure (all generators vanish at 0) 0 s 0
+exit 0

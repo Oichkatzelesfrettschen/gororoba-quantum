@@ -1,0 +1,5 @@
+RESULT iso-p32009-k3-junkcheck slice: dim 4 degree 6 s 17
+RESULT iso-p32009-k3-junkcheck junk V(J,G) minus V(t2): dim 4 degree 6 s 17
+RESULT iso-p32009-k3-junkcheck origin on the junk 0 s 17
+exit 124
+slice-proper stage (saturation of the slice by the junk) had no result at the 1800 s limit; it is not part of the required controls, the origin reading above is decided by the junk split

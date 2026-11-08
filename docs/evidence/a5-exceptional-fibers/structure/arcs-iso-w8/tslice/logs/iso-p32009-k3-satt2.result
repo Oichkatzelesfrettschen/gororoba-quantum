@@ -1,0 +1,6 @@
+RESULT iso-p32009-k3-satt2 start: variables 6, forms 3, size(Q) 4, s 0
+RESULT iso-p32009-k3-satt2 saturation done: generators 43, exponent 1, s 34
+RESULT iso-p32009-k3-satt2 standard basis of the saturation: generators 43, s 36
+RESULT iso-p32009-k3-satt2 dim 4 degree 6 s 36
+RESULT iso-p32009-k3-satt2 origin on the closure (all generators vanish at 0) 1 s 36
+exit 0

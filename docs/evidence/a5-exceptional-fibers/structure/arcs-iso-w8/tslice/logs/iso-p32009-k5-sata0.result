@@ -1,0 +1,6 @@
+RESULT iso-p32009-k5-sata0 start: variables 6, forms 5, size(Q) 6, s 0
+RESULT iso-p32009-k5-sata0 saturation done: generators 339, exponent 2, s 805
+RESULT iso-p32009-k5-sata0 standard basis of the saturation: generators 339, s 814
+RESULT iso-p32009-k5-sata0 dim 0 degree 720 s 814
+RESULT iso-p32009-k5-sata0 origin on the closure (all generators vanish at 0) 0 s 814
+exit 0

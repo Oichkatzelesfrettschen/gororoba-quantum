@@ -1,0 +1,11206 @@
+{
+ "cases": [
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "1.54 [-0.47, 3.54]",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "34.08 [-48.98, 117.15] (unresolved in the findings)",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e1+e26"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "8.25 [3.65, 12.84]",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e2+e27"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "7.30 [0.85, 13.74]",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "12.65 [11.87, 13.42]",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "8.37 [-1.77, 18.51]",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e1+e24"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "10.41 [-6.70, 27.51] (unresolved in the findings)",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e17-e10"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-pathion-kernel-map",
+   "measured": "11.87 [10.93, 12.81]",
+   "observable": "N_hat, raw, Student t 95% over 5 replicas",
+   "operands": [
+    "e17-e2"
+   ],
+   "record": "results/live/2026-11-06T183538.809814Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "0.05 [-0.02, 0.12]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "4.25 [4.15, 4.35]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e1+e26"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "4.23 [4.13, 4.33]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e2+e27"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "8.05 [8.01, 8.09]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "12.02 [12.00, 12.04]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "12.14 [12.05, 12.24]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e1+e24"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-coset-map",
+   "measured": "12.03 [12.00, 12.05]",
+   "observable": "N_hat, raw, Student t 95% over 17 replicas",
+   "operands": [
+    "e17-e2"
+   ],
+   "record": "results/live/2026-11-06T201037.234804Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "0.19 [0.03, 0.35]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "4.28 [4.19, 4.38]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e1+e26"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "4.26 [4.10, 4.42]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e2+e27"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "8.07 [8.02, 8.13]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "12.02 [11.98, 12.05]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "12.11 [12.02, 12.19]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e1+e24"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_marrakesh",
+   "case": "pathion-coset-map",
+   "measured": "12.03 [12.01, 12.06]",
+   "observable": "N_hat, raw, Student t 95% over 11 replicas",
+   "operands": [
+    "e17-e2"
+   ],
+   "record": "results/live/2026-11-06T200832.558771Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "0.11 [-0.03, 0.26]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "4.28 [4.11, 4.44]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e1+e26"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "4.24 [4.08, 4.40]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e2+e27"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "8.06 [8.00, 8.13]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "12.02 [11.97, 12.07]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "12.12 [12.03, 12.21]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e1+e24"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "12.01 [11.97, 12.04]",
+   "observable": "N_hat, raw, Student t 95% over 17 placements",
+   "operands": [
+    "e17-e2"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "0.799 [0.761, 0.838]",
+   "observable": "four-term block visibility (coset 2 of B12, coset 5 of C8)",
+   "operands": [
+    "B12"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "pathion-parallel-coset",
+   "measured": "0.754 [0.715, 0.794]",
+   "observable": "four-term block visibility (coset 2 of B12, coset 5 of C8)",
+   "operands": [
+    "C8"
+   ],
+   "record": "results/live/2026-11-07T042521.359670Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "0.06 [0.01, 0.11]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "4.28 [4.12, 4.43]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e1+e26"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "4.26 [4.13, 4.39]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e2+e27"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "8.03 [7.99, 8.07]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "12.01 [11.98, 12.05]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "12.15 [12.10, 12.19]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e1+e24"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "12.04 [12.00, 12.07]",
+   "observable": "N_hat, raw, Student t 95% over 16 placements",
+   "operands": [
+    "e17-e2"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "0.849 [0.826, 0.873]",
+   "observable": "four-term block visibility (coset 2 of B12, coset 5 of C8)",
+   "operands": [
+    "B12"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "ibm_kingston",
+   "case": "pathion-parallel-coset",
+   "measured": "0.825 [0.790, 0.859]",
+   "observable": "four-term block visibility (coset 2 of B12, coset 5 of C8)",
+   "operands": [
+    "C8"
+   ],
+   "record": "results/live/2026-11-07T042346.084449Z"
+  },
+  {
+   "backend": "tuna-17",
+   "case": "tuna-17-coset-coin-series",
+   "measured": "0.2350 +- 0.0038",
+   "observable": "selector contrast of block ba (ideal 0.5)",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/quantum_inspire/pathion_coset_coin_tuna_17_analysis.json"
+  },
+  {
+   "backend": "tuna-17",
+   "case": "tuna-17-coset-coin-series",
+   "measured": "0.1749 +- 0.0039",
+   "observable": "selector contrast of block bb (ideal 0.5)",
+   "operands": [
+    "e1+e26"
+   ],
+   "record": "results/quantum_inspire/pathion_coset_coin_tuna_17_analysis.json"
+  },
+  {
+   "backend": "tuna-17",
+   "case": "tuna-17-coset-coin-series",
+   "measured": "0.0164 +- 0.0039",
+   "observable": "selector contrast of block b0 (ideal 0.0)",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/quantum_inspire/pathion_coset_coin_tuna_17_analysis.json"
+  },
+  {
+   "backend": "tuna-17",
+   "case": "tuna-17-coset-block-series (stopped)",
+   "measured": "+0.0167 +- 0.0055",
+   "observable": "selector contrast of block b0 (ideal 0), pinned as STOPPED_B0_SELECTOR",
+   "operands": [
+    "e1+e17"
+   ],
+   "record": "results/quantum_inspire/pathion_coset_block_tuna_17_analysis.json"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-pathion-four-term-blocks",
+   "measured": "0.4942 to 0.7571 over 5 readings",
+   "observable": "anchor and dark normalized T level of its blocks (ideal 0.5, 0.75)",
+   "operands": [
+    "B12"
+   ],
+   "record": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-pathion-four-term-blocks",
+   "measured": "0.6292 to 0.6772 over 4 readings",
+   "observable": "anchor and dark normalized T level of its blocks (ideal 0.6545)",
+   "operands": [
+    "C8"
+   ],
+   "record": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-pathion-four-term-blocks",
+   "measured": "1.0000 to 1.0000 over 2 readings",
+   "observable": "anchor and dark normalized T level of its blocks (ideal 1.0)",
+   "operands": [
+    "A16"
+   ],
+   "record": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-pathion-coset-block-pairs",
+   "measured": "see PATHION_KERNEL_MAP_FINDINGS.md",
+   "observable": "two blocks per photon (a to i, anchors p and q); instrument not admitted at 0.07",
+   "operands": [
+    "B12",
+    "C8",
+    "A16"
+   ],
+   "record": "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-pathion-mesh-persistence",
+   "measured": "see PATHION_KERNEL_MAP_FINDINGS.md",
+   "observable": "two blocks per photon (a to i, anchors p and q); instrument not admitted at 0.07",
+   "operands": [
+    "B12",
+    "C8",
+    "A16"
+   ],
+   "record": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-a5-kernel-slice",
+   "measured": "0.5136",
+   "observable": "conditional success of the dark probe (ideal 1/2)",
+   "operands": [
+    "e1+e9"
+   ],
+   "record": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-a5-kernel-slice",
+   "measured": "0.0026",
+   "observable": "conditional success of the dark probe (ideal 0)",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-a5-kernel-slice",
+   "measured": "0.9982",
+   "observable": "conditional success of the dark probe (ideal 1)",
+   "operands": [
+    "e1-e10"
+   ],
+   "record": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-a5-kernel-slice",
+   "measured": "0.9997",
+   "observable": "conditional success of the bright probe (ideal 1)",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-a5-kernel-slice",
+   "measured": "0.5187",
+   "observable": "conditional success of the bright probe (ideal 1/2)",
+   "operands": [
+    "e1+e9"
+   ],
+   "record": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice"
+  },
+  {
+   "backend": "qpu:ascella",
+   "case": "ascella-a5-kernel-slice",
+   "measured": "0.0020",
+   "observable": "conditional success of the bright probe (ideal 0)",
+   "operands": [
+    "e1-e10"
+   ],
+   "record": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-rank-sector",
+   "measured": "probe success probabilities in the retained raw data (CAMPAIGN_FINDINGS.md section 6)",
+   "observable": "selector-success probes of the eight sector blocks of L_a(t) at t = 0 (no nullity estimate)",
+   "operands": [
+    "e1+e10"
+   ],
+   "record": "results/live/2026-10-13T032011.664435Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-rank-sector",
+   "measured": "probe success probabilities in the retained raw data (CAMPAIGN_FINDINGS.md section 6)",
+   "observable": "selector-success probes of the eight sector blocks of L_a(t) at t = 1/2 (no nullity estimate)",
+   "operands": [
+    "path t=1/2"
+   ],
+   "record": "results/live/2026-10-13T032011.664435Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-rank-sector",
+   "measured": "bright minus dark contrast +0.612 to +0.868 over 8 sectors (CAMPAIGN_FINDINGS.md section 6)",
+   "observable": "selector-success probes of the eight sector blocks of L_a(t) at t = 1 (no nullity estimate)",
+   "operands": [
+    "e1+e18"
+   ],
+   "record": "results/live/2026-10-13T032011.664435Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-rank-sector",
+   "measured": "probe success probabilities in the retained raw data (CAMPAIGN_FINDINGS.md section 6)",
+   "observable": "selector-success probes of the eight sector blocks of L_a(t) at t = 3/2 (no nullity estimate)",
+   "operands": [
+    "path t=3/2"
+   ],
+   "record": "results/live/2026-10-13T032011.664435Z"
+  },
+  {
+   "backend": "ibm_fez",
+   "case": "ibm-fez-rank-sector",
+   "measured": "probe success probabilities in the retained raw data (CAMPAIGN_FINDINGS.md section 6)",
+   "observable": "selector-success probes of the eight sector blocks of L_a(t) at t = 2 (no nullity estimate)",
+   "operands": [
+    "A16"
+   ],
+   "record": "results/live/2026-10-13T032011.664435Z"
+  }
+ ],
+ "controls": [
+  {
+   "cases": "ibm-fez-pathion-kernel-map; pathion-coset-map; pathion-parallel-coset; tuna-17-coset-coin-series (xor_ba)",
+   "control": "cocycle-free e1 + e10 and e1 + e18 (every SELECT sign replaced by the XOR permutation)",
+   "reason": "the sign table has no cd_core cocycle, so the matrix is not L_a for any a; ideal N_hat -6 and -2"
+  },
+  {
+   "cases": "ibm-fez-pathion-kernel-map",
+   "control": "flipped e1 + e18 (one SELECT sign negated at selector 1, data input 3)",
+   "reason": "a single negated entry of the L_(e1+e18) sign table is not a left multiplication; ideal nullity 11"
+  },
+  {
+   "cases": "ibm-fez-pathion-kernel-map",
+   "control": "skeleton e1 + e18 (permutation without signs)",
+   "reason": "a signless permutation network, not a left multiplication"
+  },
+  {
+   "cases": "pathion-parallel-coset",
+   "control": "readout-flip twins and mirrored repeats (X on every qubit before measurement; repeated arms)",
+   "reason": "readout and drift controls of the same operand, which keeps the orbit of its parent"
+  },
+  {
+   "cases": "ascella-pathion-four-term-blocks; pathion-parallel-coset",
+   "control": "mutated four-term arms F, C, N (flipped input sign, all-plus block, one negated entry) and null arms E0, E1, D",
+   "reason": "arms of a block of B12, C8 or A16 with a changed input or sign table; the block itself keeps the parent orbit"
+  }
+ ],
+ "generator_degree_max": 4,
+ "incidences": [
+  {
+   "chords": [
+    {
+     "flat": true,
+     "from": "A16",
+     "generic_orbit": "W8",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 8,
+      "0": 16,
+      "1": 8,
+      "1/2": 8,
+      "2": 16
+     },
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "e1+e10"
+    },
+    {
+     "flat": true,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 16
+     },
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "e1+e18"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 12
+     },
+     "support": [
+      1,
+      2,
+      10,
+      17,
+      18,
+      25
+     ],
+     "to": "e17-e2"
+    },
+    {
+     "flat": true,
+     "from": "A16",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "e1-e10"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": "W8",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 8,
+      "0": 16,
+      "1": 12,
+      "1/2": 8,
+      "2": 8
+     },
+     "support": [
+      1,
+      10,
+      18,
+      20,
+      25,
+      31
+     ],
+     "to": "B12"
+    }
+   ],
+   "closure": "W8",
+   "incidence": "W8 -> N-",
+   "lines": {
+    "A16": [
+     {
+      "direction": "e1 + e10",
+      "flat": true,
+      "generic_orbit": "W8",
+      "measured_in_plane": {
+       "e1+e10": "infinity"
+      },
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "1": "1",
+       "10": "1"
+      }
+     },
+     {
+      "direction": "e1 + e18",
+      "flat": true,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e1+e18": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "1": "1",
+       "18": "1"
+      }
+     },
+     {
+      "direction": "e2 - e9",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       2,
+       9,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "2": "1",
+       "9": "-1"
+      }
+     },
+     {
+      "direction": "e2 - e17",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e17-e2": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       2,
+       10,
+       17,
+       18,
+       25
+      ],
+      "terms": {
+       "17": "-1",
+       "2": "1"
+      }
+     },
+     {
+      "direction": "e3 - e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e4 - e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e23",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e5 - e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e22",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e6 - e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e15",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       15,
+       18,
+       25
+      ],
+      "terms": {
+       "15": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e21",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e7 - e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e11",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       11,
+       18,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e12",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       12,
+       18,
+       25
+      ],
+      "terms": {
+       "12": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e13",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       13,
+       18,
+       25
+      ],
+      "terms": {
+       "13": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e14",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       14,
+       18,
+       25
+      ],
+      "terms": {
+       "14": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e20",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e9 + e26",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       9,
+       10,
+       18,
+       25,
+       26
+      ],
+      "terms": {
+       "26": "1",
+       "9": "1"
+      }
+     },
+     {
+      "direction": "e11 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "11": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "11": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e11 - e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "11": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "11": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e11 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "11": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "11": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e11 - e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "11": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "11": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e12 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "12": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "12": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e12 - e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "12": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "12": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e12 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "12": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "12": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e12 - e31",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e13 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "13": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "13": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e13 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "13": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "13": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e13 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e30",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e13 - e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "13": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "13": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e14 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "14": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "14": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e14 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "14": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "14": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e14 - e29",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e14 - e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "14": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "14": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e15 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "15": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "15": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e15 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e28",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e15 - e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "15": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "15": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e15 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "15": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "15": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e17 + e26",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       17,
+       18,
+       25,
+       26
+      ],
+      "terms": {
+       "17": "1",
+       "26": "1"
+      }
+     },
+     {
+      "direction": "e19 - e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       28
+      ],
+      "terms": {
+       "19": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e19 + e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       28
+      ],
+      "terms": {
+       "19": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e19 - e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       29
+      ],
+      "terms": {
+       "19": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e19 + e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       29
+      ],
+      "terms": {
+       "19": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e19 - e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       30
+      ],
+      "terms": {
+       "19": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e19 + e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       30
+      ],
+      "terms": {
+       "19": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e19 - e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       31
+      ],
+      "terms": {
+       "19": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e19 + e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       19,
+       25,
+       31
+      ],
+      "terms": {
+       "19": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e20 - e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       27
+      ],
+      "terms": {
+       "20": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e20 + e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       27
+      ],
+      "terms": {
+       "20": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e20 - e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       29
+      ],
+      "terms": {
+       "20": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e20 + e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       29
+      ],
+      "terms": {
+       "20": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e20 - e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       30
+      ],
+      "terms": {
+       "20": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e20 + e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       30
+      ],
+      "terms": {
+       "20": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e20 - e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       31
+      ],
+      "terms": {
+       "20": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e20 + e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       20,
+       25,
+       31
+      ],
+      "terms": {
+       "20": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e21 - e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       27
+      ],
+      "terms": {
+       "21": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e21 + e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       27
+      ],
+      "terms": {
+       "21": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e21 - e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       28
+      ],
+      "terms": {
+       "21": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e21 + e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       28
+      ],
+      "terms": {
+       "21": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e21 - e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       30
+      ],
+      "terms": {
+       "21": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e21 + e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       30
+      ],
+      "terms": {
+       "21": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e21 - e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       31
+      ],
+      "terms": {
+       "21": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e21 + e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       21,
+       25,
+       31
+      ],
+      "terms": {
+       "21": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e22 - e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       27
+      ],
+      "terms": {
+       "22": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e22 + e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       27
+      ],
+      "terms": {
+       "22": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e22 - e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       28
+      ],
+      "terms": {
+       "22": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e22 + e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       28
+      ],
+      "terms": {
+       "22": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e22 - e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       29
+      ],
+      "terms": {
+       "22": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e22 + e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       29
+      ],
+      "terms": {
+       "22": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e22 - e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       31
+      ],
+      "terms": {
+       "22": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e22 + e31",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       22,
+       25,
+       31
+      ],
+      "terms": {
+       "22": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e23 - e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       27
+      ],
+      "terms": {
+       "23": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e23 + e27",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       27
+      ],
+      "terms": {
+       "23": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e23 - e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       28
+      ],
+      "terms": {
+       "23": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e23 + e28",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       28
+      ],
+      "terms": {
+       "23": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e23 - e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       29
+      ],
+      "terms": {
+       "23": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e23 + e29",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       29
+      ],
+      "terms": {
+       "23": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e23 - e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       30
+      ],
+      "terms": {
+       "23": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e23 + e30",
+      "flat": false,
+      "generic_orbit": "W8",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       23,
+       25,
+       30
+      ],
+      "terms": {
+       "23": "1",
+       "30": "1"
+      }
+     }
+    ]
+   },
+   "measured_in_Z": [
+    "A16"
+   ],
+   "measured_in_closure_of_Y": [
+    "e1+e10",
+    "e1+e18",
+    "e17-e2",
+    "e1-e10",
+    "B12",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [
+    "e1+e10",
+    "e1-e10"
+   ],
+   "z_orbit": "Nm"
+  },
+  {
+   "chords": [],
+   "closure": "Ehat",
+   "incidence": "E8-bar -> N+",
+   "lines": {},
+   "measured_in_Z": [],
+   "measured_in_closure_of_Y": [
+    "e1+e18",
+    "e1+e24",
+    "e17-e2",
+    "B12",
+    "C8",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [
+    "C8"
+   ],
+   "z_orbit": "Np"
+  },
+  {
+   "chords": [
+    {
+     "flat": true,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 16
+     },
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "e1+e18"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      10,
+      18,
+      24,
+      25
+     ],
+     "to": "e1+e24"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 12
+     },
+     "support": [
+      1,
+      2,
+      10,
+      17,
+      18,
+      25
+     ],
+     "to": "e17-e2"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      10,
+      18,
+      20,
+      25,
+      31
+     ],
+     "to": "B12"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": "Ehat",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 8,
+      "0": 16,
+      "1": 8,
+      "1/2": 8,
+      "2": 8
+     },
+     "support": [
+      1,
+      8,
+      10,
+      18,
+      25,
+      27
+     ],
+     "to": "C8"
+    }
+   ],
+   "closure": "Ehat",
+   "incidence": "E8-bar -> N-",
+   "lines": {
+    "A16": [
+     {
+      "direction": "e1 + e18",
+      "flat": true,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e1+e18": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "1": "1",
+       "18": "1"
+      }
+     },
+     {
+      "direction": "e1 - e25",
+      "flat": true,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "1": "1",
+       "25": "-1"
+      }
+     },
+     {
+      "direction": "e2 - e17",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e17-e2": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       2,
+       10,
+       17,
+       18,
+       25
+      ],
+      "terms": {
+       "17": "-1",
+       "2": "1"
+      }
+     },
+     {
+      "direction": "e2 - e26",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       2,
+       10,
+       18,
+       25,
+       26
+      ],
+      "terms": {
+       "2": "1",
+       "26": "-1"
+      }
+     },
+     {
+      "direction": "e3 - e24",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       24,
+       25
+      ],
+      "terms": {
+       "24": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e24",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       24,
+       25
+      ],
+      "terms": {
+       "24": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e27",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "27": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e27",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e4 - e23",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e28",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "28": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e5 + e22",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e29",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "29": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e6 - e21",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e30",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "30": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e7 + e20",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e31",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "31": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e8 - e19",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e19",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e27",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       10,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "27": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e27",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       10,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e9 + e17",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       9,
+       10,
+       17,
+       18,
+       25
+      ],
+      "terms": {
+       "17": "1",
+       "9": "1"
+      }
+     },
+     {
+      "direction": "e9 + e26",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       9,
+       10,
+       18,
+       25,
+       26
+      ],
+      "terms": {
+       "26": "1",
+       "9": "1"
+      }
+     },
+     {
+      "direction": "e11 - e19",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "19": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e19",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "19": "1"
+      }
+     },
+     {
+      "direction": "e11 - e24",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       24,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "24": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e24",
+      "flat": false,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       24,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "24": "1"
+      }
+     },
+     {
+      "direction": "e12 + e20",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "12": "1",
+       "20": "1"
+      }
+     },
+     {
+      "direction": "e12 - e31",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e21",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "13": "1",
+       "21": "1"
+      }
+     },
+     {
+      "direction": "e13 + e30",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e14 + e22",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "14": "1",
+       "22": "1"
+      }
+     },
+     {
+      "direction": "e14 - e29",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e23",
+      "flat": false,
+      "generic_orbit": "Vam",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "15": "1",
+       "23": "1"
+      }
+     },
+     {
+      "direction": "e15 + e28",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "1"
+      }
+     }
+    ]
+   },
+   "measured_in_Z": [
+    "A16"
+   ],
+   "measured_in_closure_of_Y": [
+    "e1+e18",
+    "e1+e24",
+    "e17-e2",
+    "B12",
+    "C8",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [
+    "C8"
+   ],
+   "z_orbit": "Nm"
+  },
+  {
+   "chords": [
+    {
+     "flat": false,
+     "from": "e1+e18",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      18,
+      24
+     ],
+     "to": "e1+e24"
+    },
+    {
+     "flat": false,
+     "from": "e1+e18",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      10,
+      18,
+      20,
+      31
+     ],
+     "to": "B12"
+    },
+    {
+     "flat": true,
+     "from": "e1+e18",
+     "generic_orbit": "Ehat",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 8,
+      "0": 12,
+      "1": 8,
+      "1/2": 8,
+      "2": 8
+     },
+     "support": [
+      1,
+      8,
+      18,
+      27
+     ],
+     "to": "C8"
+    },
+    {
+     "flat": true,
+     "from": "e1+e18",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 16,
+      "0": 12,
+      "1": 16,
+      "1/2": 12,
+      "2": 12
+     },
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "A16"
+    },
+    {
+     "flat": false,
+     "from": "e17-e2",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      2,
+      17,
+      24
+     ],
+     "to": "e1+e24"
+    },
+    {
+     "flat": false,
+     "from": "e17-e2",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      2,
+      10,
+      17,
+      20,
+      31
+     ],
+     "to": "B12"
+    },
+    {
+     "flat": false,
+     "from": "e17-e2",
+     "generic_orbit": "Ehat",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 8,
+      "0": 12,
+      "1": 8,
+      "1/2": 8,
+      "2": 8
+     },
+     "support": [
+      1,
+      2,
+      8,
+      17,
+      18,
+      27
+     ],
+     "to": "C8"
+    },
+    {
+     "flat": false,
+     "from": "e17-e2",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 12,
+      "1": 16,
+      "1/2": 12,
+      "2": 12
+     },
+     "support": [
+      1,
+      2,
+      10,
+      17,
+      18,
+      25
+     ],
+     "to": "A16"
+    }
+   ],
+   "closure": "Ehat",
+   "incidence": "E8-bar -> VB",
+   "lines": {
+    "e1+e18": [
+     {
+      "direction": "e3 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e27",
+      "flat": false,
+      "generic_orbit": "Xm",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       18,
+       27
+      ],
+      "terms": {
+       "27": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e27",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       18,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e4 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e5 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e6 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e7 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       18,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e8 - e19",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       19
+      ],
+      "terms": {
+       "19": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e19",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       19
+      ],
+      "terms": {
+       "19": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e20",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       20
+      ],
+      "terms": {
+       "20": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e20",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       20
+      ],
+      "terms": {
+       "20": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e21",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       21
+      ],
+      "terms": {
+       "21": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e21",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       21
+      ],
+      "terms": {
+       "21": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e22",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       22
+      ],
+      "terms": {
+       "22": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e22",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       22
+      ],
+      "terms": {
+       "22": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e23",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       23
+      ],
+      "terms": {
+       "23": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e23",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       23
+      ],
+      "terms": {
+       "23": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e27",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       27
+      ],
+      "terms": {
+       "27": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e27",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {
+       "C8": "1"
+      },
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       8,
+       18,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e11 - e19",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       11,
+       18,
+       19
+      ],
+      "terms": {
+       "11": "1",
+       "19": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e19",
+      "flat": false,
+      "generic_orbit": "Xm",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       11,
+       18,
+       19
+      ],
+      "terms": {
+       "11": "1",
+       "19": "1"
+      }
+     },
+     {
+      "direction": "e11 - e24",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       11,
+       18,
+       24
+      ],
+      "terms": {
+       "11": "1",
+       "24": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e24",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       11,
+       18,
+       24
+      ],
+      "terms": {
+       "11": "1",
+       "24": "1"
+      }
+     },
+     {
+      "direction": "e12 - e31",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       12,
+       18,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e30",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       13,
+       18,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e14 - e29",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       14,
+       18,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e28",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       15,
+       18,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "1"
+      }
+     }
+    ],
+    "e17-e2": [
+     {
+      "direction": "e3 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       3,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       3,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e27",
+      "flat": false,
+      "generic_orbit": "Xm",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       3,
+       17,
+       27
+      ],
+      "terms": {
+       "27": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e27",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       3,
+       17,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e4 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       4,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       4,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e5 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       5,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       5,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e6 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       6,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       6,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e7 - e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       7,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e24",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       7,
+       17,
+       24
+      ],
+      "terms": {
+       "24": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e8 - e19",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       19
+      ],
+      "terms": {
+       "19": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e19",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       19
+      ],
+      "terms": {
+       "19": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e20",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       20
+      ],
+      "terms": {
+       "20": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e20",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       20
+      ],
+      "terms": {
+       "20": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e21",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       21
+      ],
+      "terms": {
+       "21": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e21",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       21
+      ],
+      "terms": {
+       "21": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e22",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       22
+      ],
+      "terms": {
+       "22": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e22",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       22
+      ],
+      "terms": {
+       "22": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e23",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       23
+      ],
+      "terms": {
+       "23": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e23",
+      "flat": false,
+      "generic_orbit": "V",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       23
+      ],
+      "terms": {
+       "23": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 - e27",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       27
+      ],
+      "terms": {
+       "27": "-1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e8 + e27",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       8,
+       17,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "8": "1"
+      }
+     },
+     {
+      "direction": "e11 - e19",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       11,
+       17,
+       19
+      ],
+      "terms": {
+       "11": "1",
+       "19": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e19",
+      "flat": false,
+      "generic_orbit": "Xm",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       11,
+       17,
+       19
+      ],
+      "terms": {
+       "11": "1",
+       "19": "1"
+      }
+     },
+     {
+      "direction": "e11 - e24",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       11,
+       17,
+       24
+      ],
+      "terms": {
+       "11": "1",
+       "24": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e24",
+      "flat": true,
+      "generic_orbit": "Ehat",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 12,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       2,
+       11,
+       17,
+       24
+      ],
+      "terms": {
+       "11": "1",
+       "24": "1"
+      }
+     },
+     {
+      "direction": "e12 - e31",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       12,
+       17,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e30",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       13,
+       17,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e14 - e29",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       14,
+       17,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e28",
+      "flat": true,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 12,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       2,
+       15,
+       17,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "1"
+      }
+     }
+    ]
+   },
+   "measured_in_Z": [
+    "e1+e18",
+    "e17-e2"
+   ],
+   "measured_in_closure_of_Y": [
+    "e1+e18",
+    "e1+e24",
+    "e17-e2",
+    "B12",
+    "C8",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [
+    "C8"
+   ],
+   "z_orbit": "VB"
+  },
+  {
+   "chords": [
+    {
+     "flat": true,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 16
+     },
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "e1+e18"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 12
+     },
+     "support": [
+      1,
+      2,
+      10,
+      17,
+      18,
+      25
+     ],
+     "to": "e17-e2"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      10,
+      18,
+      20,
+      25,
+      31
+     ],
+     "to": "B12"
+    }
+   ],
+   "closure": "Iso",
+   "incidence": "Iso -> N-",
+   "lines": {
+    "A16": [
+     {
+      "direction": "e1 + e18",
+      "flat": true,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e1+e18": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "1": "1",
+       "18": "1"
+      }
+     },
+     {
+      "direction": "e2 - e17",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e17-e2": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       2,
+       10,
+       17,
+       18,
+       25
+      ],
+      "terms": {
+       "17": "-1",
+       "2": "1"
+      }
+     },
+     {
+      "direction": "e3 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 - e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e3 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e4 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 - e23",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e4 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e5 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e22",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 - e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e5 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e6 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e21",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 - e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e6 + e23",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e7 - e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e19",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "19": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e20",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e20",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e21",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 - e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "-1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e7 + e22",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e9 + e26",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       9,
+       10,
+       18,
+       25,
+       26
+      ],
+      "terms": {
+       "26": "1",
+       "9": "1"
+      }
+     },
+     {
+      "direction": "e11 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "11": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "11": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e11 - e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "11": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "11": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e11 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "11": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "11": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e11 - e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "11": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e11 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "11": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e12 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "12": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "12": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e12 - e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "12": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "12": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e12 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "12": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "12": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e12 - e31",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e12 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e13 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "13": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "13": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e13 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "13": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "13": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e13 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e30",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e13 - e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "13": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "13": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e14 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "14": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "14": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e14 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "14": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "14": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e14 - e29",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e14 - e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "14": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e14 + e31",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "14": "1",
+       "31": "1"
+      }
+     },
+     {
+      "direction": "e15 - e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "15": "1",
+       "27": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e27",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "15": "1",
+       "27": "1"
+      }
+     },
+     {
+      "direction": "e15 - e28",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e28",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "1"
+      }
+     },
+     {
+      "direction": "e15 - e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "15": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e29",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "15": "1",
+       "29": "1"
+      }
+     },
+     {
+      "direction": "e15 - e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "15": "1",
+       "30": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e30",
+      "flat": false,
+      "generic_orbit": "Iso",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "15": "1",
+       "30": "1"
+      }
+     }
+    ]
+   },
+   "measured_in_Z": [
+    "A16"
+   ],
+   "measured_in_closure_of_Y": [
+    "e1+e18",
+    "e17-e2",
+    "B12",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [],
+   "z_orbit": "Nm"
+  },
+  {
+   "chords": [
+    {
+     "flat": true,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 16
+     },
+     "support": [
+      1,
+      10,
+      18,
+      25
+     ],
+     "to": "e1+e18"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": "VB",
+     "in_closure_of_Y": true,
+     "nullity_along": {
+      "-1": 12,
+      "0": 16,
+      "1": 12,
+      "1/2": 12,
+      "2": 12
+     },
+     "support": [
+      1,
+      2,
+      10,
+      17,
+      18,
+      25
+     ],
+     "to": "e17-e2"
+    },
+    {
+     "flat": false,
+     "from": "A16",
+     "generic_orbit": null,
+     "in_closure_of_Y": false,
+     "support": [
+      1,
+      10,
+      18,
+      20,
+      25,
+      31
+     ],
+     "to": "B12"
+    }
+   ],
+   "closure": "Xp",
+   "incidence": "X+ -> N-",
+   "lines": {
+    "A16": [
+     {
+      "direction": "e1 + e18",
+      "flat": true,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e1+e18": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       18,
+       25
+      ],
+      "terms": {
+       "1": "1",
+       "18": "1"
+      }
+     },
+     {
+      "direction": "e2 - e17",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {
+       "e17-e2": "infinity"
+      },
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       2,
+       10,
+       17,
+       18,
+       25
+      ],
+      "terms": {
+       "17": "-1",
+       "2": "1"
+      }
+     },
+     {
+      "direction": "e3 + e27",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       3,
+       10,
+       18,
+       25,
+       27
+      ],
+      "terms": {
+       "27": "1",
+       "3": "1"
+      }
+     },
+     {
+      "direction": "e4 - e23",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       4,
+       10,
+       18,
+       23,
+       25
+      ],
+      "terms": {
+       "23": "-1",
+       "4": "1"
+      }
+     },
+     {
+      "direction": "e5 + e22",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       5,
+       10,
+       18,
+       22,
+       25
+      ],
+      "terms": {
+       "22": "1",
+       "5": "1"
+      }
+     },
+     {
+      "direction": "e6 - e21",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       6,
+       10,
+       18,
+       21,
+       25
+      ],
+      "terms": {
+       "21": "-1",
+       "6": "1"
+      }
+     },
+     {
+      "direction": "e7 + e20",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       7,
+       10,
+       18,
+       20,
+       25
+      ],
+      "terms": {
+       "20": "1",
+       "7": "1"
+      }
+     },
+     {
+      "direction": "e9 + e26",
+      "flat": false,
+      "generic_orbit": "VB",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       9,
+       10,
+       18,
+       25,
+       26
+      ],
+      "terms": {
+       "26": "1",
+       "9": "1"
+      }
+     },
+     {
+      "direction": "e11 - e19",
+      "flat": false,
+      "generic_orbit": "Xp",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 8,
+       "0": 16,
+       "1": 8,
+       "1/2": 8,
+       "2": 8
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       11,
+       18,
+       19,
+       25
+      ],
+      "terms": {
+       "11": "1",
+       "19": "-1"
+      }
+     },
+     {
+      "direction": "e12 - e31",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       12,
+       18,
+       25,
+       31
+      ],
+      "terms": {
+       "12": "1",
+       "31": "-1"
+      }
+     },
+     {
+      "direction": "e13 + e30",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       13,
+       18,
+       25,
+       30
+      ],
+      "terms": {
+       "13": "1",
+       "30": "1"
+      }
+     },
+     {
+      "direction": "e14 - e29",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       14,
+       18,
+       25,
+       29
+      ],
+      "terms": {
+       "14": "1",
+       "29": "-1"
+      }
+     },
+     {
+      "direction": "e15 + e28",
+      "flat": false,
+      "generic_orbit": "B9",
+      "measured_in_plane": {},
+      "nullity_along": {
+       "-1": 12,
+       "0": 16,
+       "1": 12,
+       "1/2": 12,
+       "2": 12
+      },
+      "special_points": {},
+      "support": [
+       1,
+       10,
+       15,
+       18,
+       25,
+       28
+      ],
+      "terms": {
+       "15": "1",
+       "28": "1"
+      }
+     }
+    ]
+   },
+   "measured_in_Z": [
+    "A16"
+   ],
+   "measured_in_closure_of_Y": [
+    "e1+e18",
+    "e17-e2",
+    "B12",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [],
+   "z_orbit": "Nm"
+  },
+  {
+   "chords": [],
+   "closure": "Xm",
+   "incidence": "X- -> N+",
+   "lines": {},
+   "measured_in_Z": [],
+   "measured_in_closure_of_Y": [
+    "e1+e18",
+    "e17-e2",
+    "B12",
+    "A16"
+   ],
+   "measured_in_open_orbit_of_Y": [],
+   "z_orbit": "Np"
+  }
+ ],
+ "map_gate": {
+  "pass": true,
+  "rows": [
+   {
+    "named_back": true,
+    "nullity": 8,
+    "orbit": "W8",
+    "rank": 12,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 8,
+    "orbit": "Ehat",
+    "rank": 11,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 8,
+    "orbit": "Iso",
+    "rank": 11,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 8,
+    "orbit": "Xp",
+    "rank": 10,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 8,
+    "orbit": "Xm",
+    "rank": 10,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 12,
+    "orbit": "B9",
+    "rank": 9,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 12,
+    "orbit": "V",
+    "rank": 8,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 12,
+    "orbit": "VB",
+    "rank": 7,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 12,
+    "orbit": "Vap",
+    "rank": 7,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 12,
+    "orbit": "Vam",
+    "rank": 7,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 16,
+    "orbit": "Np",
+    "rank": 6,
+    "round_trip": true
+   },
+   {
+    "named_back": true,
+    "nullity": 16,
+    "orbit": "Nm",
+    "rank": 6,
+    "round_trip": true
+   }
+  ]
+ },
+ "named_arcs": [
+  {
+   "arc": "W8 to N-: e1 + e10 + beta (e18 - e25)",
+   "points": [
+    {
+     "beta": "-2",
+     "nullity": 8,
+     "operand": "e1 + e10 - 2*e18 + 2*e25",
+     "orbit": "W8"
+    },
+    {
+     "beta": "-1",
+     "nullity": 16,
+     "operand": "e1 + e10 - e18 + e25",
+     "orbit": "Np"
+    },
+    {
+     "beta": "-1/2",
+     "nullity": 8,
+     "operand": "e1 + e10 - 1/2*e18 + 1/2*e25",
+     "orbit": "W8"
+    },
+    {
+     "beta": "0",
+     "nullity": 8,
+     "operand": "e1 + e10",
+     "orbit": "W8"
+    },
+    {
+     "beta": "1/2",
+     "nullity": 8,
+     "operand": "e1 + e10 + 1/2*e18 - 1/2*e25",
+     "orbit": "W8"
+    },
+    {
+     "beta": "1",
+     "nullity": 16,
+     "operand": "e1 + e10 + e18 - e25",
+     "orbit": "Nm"
+    },
+    {
+     "beta": "2",
+     "nullity": 8,
+     "operand": "e1 + e10 + 2*e18 - 2*e25",
+     "orbit": "W8"
+    },
+    {
+     "beta": "3",
+     "nullity": 8,
+     "operand": "e1 + e10 + 3*e18 - 3*e25",
+     "orbit": "W8"
+    }
+   ]
+  },
+  {
+   "arc": "E8-bar to VB: e1 + e18 + beta (e8 + e27)",
+   "points": [
+    {
+     "beta": "-2",
+     "nullity": 8,
+     "operand": "e1 - 2*e8 + e18 - 2*e27",
+     "orbit": "Ehat"
+    },
+    {
+     "beta": "-1",
+     "nullity": 8,
+     "operand": "e1 - e8 + e18 - e27",
+     "orbit": "Ehat"
+    },
+    {
+     "beta": "-1/2",
+     "nullity": 8,
+     "operand": "e1 - 1/2*e8 + e18 - 1/2*e27",
+     "orbit": "Ehat"
+    },
+    {
+     "beta": "0",
+     "nullity": 12,
+     "operand": "e1 + e18",
+     "orbit": "VB"
+    },
+    {
+     "beta": "1/2",
+     "nullity": 8,
+     "operand": "e1 + 1/2*e8 + e18 + 1/2*e27",
+     "orbit": "Ehat"
+    },
+    {
+     "beta": "1",
+     "nullity": 8,
+     "operand": "e1 + e8 + e18 + e27",
+     "orbit": "Ehat"
+    },
+    {
+     "beta": "2",
+     "nullity": 8,
+     "operand": "e1 + 2*e8 + e18 + 2*e27",
+     "orbit": "Ehat"
+    },
+    {
+     "beta": "3",
+     "nullity": 8,
+     "operand": "e1 + 3*e8 + e18 + 3*e27",
+     "orbit": "Ehat"
+    }
+   ]
+  }
+ ],
+ "operands": {
+  "A16": {
+   "closures": [
+    "W8",
+    "Ehat",
+    "Iso",
+    "Xp",
+    "Xm",
+    "B9",
+    "V",
+    "VB",
+    "Vam",
+    "Nm"
+   ],
+   "in_VG": true,
+   "in_VQ": true,
+   "nullity": 16,
+   "orbit": "Nm",
+   "orbit_rank": 6,
+   "split": [
+    "-1i",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1i",
+    "-1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "10": "1",
+    "18": "1",
+    "25": "-1"
+   }
+  },
+  "B12": {
+   "closures": [
+    "W8",
+    "Ehat",
+    "Iso",
+    "Xp",
+    "Xm",
+    "B9"
+   ],
+   "in_VG": true,
+   "in_VQ": true,
+   "nullity": 12,
+   "orbit": "B9",
+   "orbit_rank": 9,
+   "split": [
+    "-1i",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1i"
+   ],
+   "terms": {
+    "1": "1",
+    "10": "1",
+    "20": "1",
+    "31": "1"
+   }
+  },
+  "C8": {
+   "closures": [
+    "Ehat"
+   ],
+   "in_VG": true,
+   "in_VQ": true,
+   "nullity": 8,
+   "orbit": "Ehat",
+   "orbit_rank": 11,
+   "split": [
+    "-1i",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1i",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "18": "1",
+    "27": "1",
+    "8": "1"
+   }
+  },
+  "e1+e10": {
+   "closures": [
+    "W8"
+   ],
+   "in_VG": true,
+   "in_VQ": false,
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12,
+   "split": [
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "10": "1"
+   }
+  },
+  "e1+e17": {
+   "closures": [],
+   "in_VG": false,
+   "in_VQ": false,
+   "nullity": 0,
+   "orbit": "S0",
+   "orbit_rank": 8,
+   "split": [
+    "1-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "17": "1"
+   }
+  },
+  "e1+e18": {
+   "closures": [
+    "W8",
+    "Ehat",
+    "Iso",
+    "Xp",
+    "Xm",
+    "B9",
+    "V",
+    "VB"
+   ],
+   "in_VG": true,
+   "in_VQ": true,
+   "nullity": 12,
+   "orbit": "VB",
+   "orbit_rank": 7,
+   "split": [
+    "-1i",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "18": "1"
+   }
+  },
+  "e1+e24": {
+   "closures": [
+    "Ehat",
+    "V"
+   ],
+   "in_VG": true,
+   "in_VQ": true,
+   "nullity": 12,
+   "orbit": "V",
+   "orbit_rank": 8,
+   "split": [
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "24": "1"
+   }
+  },
+  "e1+e26": {
+   "closures": [],
+   "in_VG": false,
+   "in_VQ": true,
+   "nullity": 4,
+   "orbit": "S4_VQ",
+   "orbit_rank": 13,
+   "split": [
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "26": "1"
+   }
+  },
+  "e1+e9": {
+   "closures": [],
+   "in_VG": false,
+   "in_VQ": false,
+   "nullity": 0,
+   "orbit": "S0",
+   "orbit_rank": 8,
+   "split": [
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "9": "1"
+   }
+  },
+  "e1-e10": {
+   "closures": [
+    "W8"
+   ],
+   "in_VG": true,
+   "in_VQ": false,
+   "nullity": 8,
+   "orbit": "W8",
+   "orbit_rank": 12,
+   "split": [
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "10": "-1"
+   }
+  },
+  "e17-e10": {
+   "closures": [],
+   "in_VG": false,
+   "in_VQ": true,
+   "nullity": 4,
+   "orbit": "S4_VQ",
+   "orbit_rank": 13,
+   "split": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "10": "-1",
+    "17": "1"
+   }
+  },
+  "e17-e2": {
+   "closures": [
+    "W8",
+    "Ehat",
+    "Iso",
+    "Xp",
+    "Xm",
+    "B9",
+    "V",
+    "VB"
+   ],
+   "in_VG": true,
+   "in_VQ": true,
+   "nullity": 12,
+   "orbit": "VB",
+   "orbit_rank": 7,
+   "split": [
+    "1",
+    "1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "17": "1",
+    "2": "-1"
+   }
+  },
+  "e2+e27": {
+   "closures": [],
+   "in_VG": false,
+   "in_VQ": true,
+   "nullity": 4,
+   "orbit": "S4_VQ",
+   "orbit_rank": 13,
+   "split": [
+    "0",
+    "-1i",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "2": "1",
+    "27": "1"
+   }
+  },
+  "path t=1/2": {
+   "closures": [],
+   "in_VG": true,
+   "in_VQ": false,
+   "nullity": 4,
+   "orbit": "S4_VG",
+   "orbit_rank": 13,
+   "split": [
+    "-1i",
+    "5/8",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "-1/8i",
+    "-1/4",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "10": "1/4",
+    "18": "5/8",
+    "25": "1/8"
+   }
+  },
+  "path t=3/2": {
+   "closures": [],
+   "in_VG": true,
+   "in_VQ": false,
+   "nullity": 4,
+   "orbit": "S4_VG",
+   "orbit_rank": 13,
+   "split": [
+    "-1i",
+    "9/8",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "3/8i",
+    "-1/4",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "terms": {
+    "1": "1",
+    "10": "1/4",
+    "18": "9/8",
+    "25": "-3/8"
+   }
+  }
+ },
+ "rank_path": {
+  "generic": {
+   "-1": {
+    "nullity": 4,
+    "orbit": "S4_VG"
+   },
+   "1/3": {
+    "nullity": 4,
+    "orbit": "S4_VG"
+   },
+   "3": {
+    "nullity": 4,
+    "orbit": "S4_VG"
+   },
+   "5/2": {
+    "nullity": 4,
+    "orbit": "S4_VG"
+   }
+  },
+  "measured": {
+   "0": {
+    "nullity": 8,
+    "orbit": "W8"
+   },
+   "1": {
+    "nullity": 12,
+    "orbit": "VB"
+   },
+   "1/2": {
+    "nullity": 4,
+    "orbit": "S4_VG"
+   },
+   "2": {
+    "nullity": 16,
+    "orbit": "Nm"
+   },
+   "3/2": {
+    "nullity": 4,
+    "orbit": "S4_VG"
+   }
+  }
+ }
+}

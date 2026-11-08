@@ -23,7 +23,7 @@ drawn error, a best-mesh screen must be repeated after every recalibration and s
 
 The mode-swap template puts one photon in each 4-mode slot, so no two photons interfere and the source's HOM and g2
 drop out: the share reads the compiled mesh and the detection only. Its mesh signal stands far above its binomial
-noise, and a 24-mode iteration of 30,000 samples bills like any other: a job costs 1 credit plus 1e-6 per shot of its
+noise, and a 24-mode iteration of 30,000 samples bills like any other: a job costs 1 credit plus 1e-6 per shot used, capped at its
 largest iteration's `max_shots` ([credit optimization](../runbooks/quandela-credit-optimization.md)). The
 three-photon teleportation replay asks the same question at a binomial error of 0.03 to 0.05 per mesh and 4 to 5
 credits per six-iteration job; it is the optional second case below.

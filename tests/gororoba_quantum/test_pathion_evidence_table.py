@@ -417,3 +417,26 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def test_ascella_instrument_records_are_named_and_unknown_records_raise() -> None:
+    _check(
+        pet.is_ascella_instrument_record({"schema": "ascella-pathion-mesh-persistence-analysis-v2"}),
+        "the mesh-persistence reading is an instrument record",
+    )
+    gate = {"passed": True, "platform_differences": [], "replay_compared": 52, "worst_gap": 0.0, "misses": []}
+    _check(pet.is_ascella_instrument_record(gate), "the mesh gate record is an instrument record")
+    _check(
+        not pet.is_ascella_instrument_record({"schema": "ascella-pathion-four-term-blocks-analysis-v1"}),
+        "a block analysis enters the table",
+    )
+    with pytest.raises(ValueError, match="without a schema"):
+        pet.is_ascella_instrument_record({"levels": []})
+    with pytest.raises(ValueError, match="unknown schema"):
+        pet.ascella_rows(
+            {"schema": "ascella-pathion-future-v1", "backend": "qpu:ascella"},
+            {},
+            run_dir="r",
+            source_file="r/analysis.json",
+            classes={},
+        )

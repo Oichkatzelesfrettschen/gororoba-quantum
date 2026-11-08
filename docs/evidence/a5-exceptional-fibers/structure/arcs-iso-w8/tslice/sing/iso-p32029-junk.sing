@@ -1,0 +1,18 @@
+// closure of V(J, G) minus V(t2) and the origin test, header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-nm.sing (sha256 28c3c473369c6edab4fb131098d00465e55d3dd7970e8554985f005d443bf4e6)
+// no forms: the check does not depend on k
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; string rl;
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-nm.sing";
+ideal QJ=J,G;
+ideal Qs_QJ=std(QJ);
+ring rh_QJ=32029,(t3,t4,t5,t6,t7,h,t2),dp;
+ideal Qh=homog(imap(r,Qs_QJ),h);
+ideal Sh=std(Qh);
+int exj=0; int ii; poly gg; int ee; for (ii=1;ii<=ncols(Sh);ii++) { gg=Sh[ii]; ee=0; while (gg!=0 && subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>exj) { exj=ee; } }
+ideal Sd=subst(Sh,h,1);
+setring r; ideal JK=imap(rh_QJ,Sd);
+kill rh_QJ;
+JK=std(JK);
+rl="RESULT iso-p32029-junk "+"junk V(J,G) minus V(t2): dim "+string(dim(JK))+" degree "+string(mult(JK))+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-junk.result", rl);
+int onj=(size(reduce(JK,std(maxideal(1))))==0);
+rl="RESULT iso-p32029-junk "+"origin on the junk "+string(onj)+" s "+string(rtimer-t0); print(rl); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/logs/iso-p32029-junk.result", rl);
+quit;

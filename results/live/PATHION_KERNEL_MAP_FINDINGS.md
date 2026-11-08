@@ -382,3 +382,53 @@ agree with the Ascella readings within 0.046 on every matched arm. The new rows 
 (survives), the 1-CZ null band (refuted on ibm_kingston), the calibrated odd part (refuted), the overstated-asymmetry
 hypothesis (survives at 0.5), the within-arm repeat (refuted on ibm_kingston), packing (survives) and the four-term
 agreement (survives).
+
+# Ascella mesh persistence: what failed the two-block mirror test (2026-11-07)
+
+The [mesh-persistence case](../../docs/design/ascella-pathion-mesh-persistence-case.md) replayed the 52 settings of the
+two-block job (`db6355f7`) on `qpu:ascella` with their original seeds and circuit parameters, added seven fresh anchor
+seeds, the eight failing settings at fresh seeds and a fresh dark, and read the result against preregistered decisions
+([reading](../../scripts/ascella_pathion_mesh_persistence_analysis.py), [runbook](../../docs/runbooks/ascella-block-run-design.md)).
+Runs: `sim:ascella` gate `86cc1405`
+([run](../quandela/runs/2026-11-07T181127Z-sim_ascella-ascella_pathion_mesh_persistence-sim-00/analysis.json)) and
+`qpu:ascella` job `6bc382af`, 84 iterations, 11,010,048 samples
+([run](../quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00/analysis.json)).
+Registry claim: `hw-ascella-pathion-mesh-persistence`.
+
+Mesh identity. The simulator gate served all 52 replay meshes identical to the original simulator run (largest gap
+0.0); three requests (a-h-CC o1, a-h-NN o0, b-f-EE o0) compile to different meshes on `sim:ascella` and `qpu:ascella`,
+in the original jobs and again here, so the gate was amended before the QPU job to compare simulator with simulator
+(case document, "Amendment after the simulator run"). The QPU job then served all 52 replay meshes identical to the
+original QPU job, so no design left the reading (A5-204).
+
+Persistence. The 46 calibrated mirror differences of the replay correlate with the original job's at r 0.9966 against
+the fixed-mesh cutoff 0.988 (relabeling p 5e-5; raw levels r 0.979), and the same 9 of 46 exceed 0.07. The replayed
+anchor pair reads B/A 1.0876 against 1.082. Within the job the early and late replay halves read r 0.994 and 0.996 and
+the replayed anchors 1.027 and 1.028: the early-to-late anchor change stays inside the preregistered 0.03 band, and the
+half-job correlations are descriptive. A per-mesh table from the original job leaves 0 of 46 above
+0.07 (rms 0.0486 to 0.0040); that table subtracts each mesh's departure from its ideal level, so it shows persistence
+and does not validate any block level. Admission passes: anchors 1.007 and 1.048, darks 0.0010 and 0.0007, sentinel
+share 0.0009 (A5-200).
+
+Fresh meshes. The nine failing items at fresh seeds give an aligned mean of -0.0024 against the original 0.0376 (rule:
+below 0.0181 the failure follows the mesh), carried fraction -0.06 with 99 percent interval [-0.64, 0.51]: the failure
+does not follow the block or slot design (A5-201). Seven fresh anchor seeds give B/A 0.84 to 1.05 (median 0.951, sd
+0.067), none within 0.03 of 1.082; the preregistered anchor rule reads "unresolved" because the median falls 0.041
+below the mode-fit band, and a slot efficiency of 1.08 is excluded (A5-203). hypothesis: the mode-fit 0.992 is itself a
+mixture of mesh errors, so the center of the anchor-ratio distribution is near 0.95 rather than 0.99.
+
+Static map. The per-shifter gain model frozen from the original job (`c1_static.npz`, commit cc8d8107c) predicts the
+fresh iterations' raw departures at r 0.446 with seed-block relabeling p 0.0016, the preregistered "map carries"; the
+offset model reads r 0.444, p 0.011, above the preregistered 0.005. Each frozen model carries its own per-mode
+efficiencies beside its shifter vector, and a post-hoc diagnostic
+([c1_map_increment.txt](../../docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.txt), seed-block p after the data) reads the
+efficiency-only model at r 0.484 on the same 64 readings, with shifter-map increments of r 0.055 (gain, p 0.28) and
+0.213 (offset, p 0.041) over it: the frozen per-mode efficiencies carry most of the result, and a static per-shifter map
+beyond them is not established; the offset increment is suggestive only, post hoc across two tests and above the 0.005
+the case preregistered (A5-202, open; a preregistered fresh-seed increment test decides it).
+
+Consequence for the pathion block cases. Each served mesh carries a fixed error of rms about 0.025 in level that a
+seed-specific table removes, and one anchor mesh per slot puts that mesh's error into every reading of its slot. A
+block case that folds several blocks per photon calibrates its slots from many anchor seeds or a per-mesh table, and a
+block level is admitted only after that calibration; the
+[runbook](../../docs/runbooks/ascella-block-run-design.md) carries the rules and the open questions.

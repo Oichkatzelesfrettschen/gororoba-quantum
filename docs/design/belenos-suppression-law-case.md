@@ -259,8 +259,8 @@ iteration. On a degraded chip (35 microseconds per shot) a job takes about 238 s
 `max_duration`, which is the worst case measured. The earlier clock model (3.35e-5 events per pulse at 4.94 MHz) is not
 used: it predicted 240 s for the teleportation rehearsal's job-01, which was cut at 300 s with 11 of 12 iterations.
 
-**Credits.** Quandela bills each job its full ceiling, 1 credit plus 1e-6 per shot of its largest iteration's
-`max_shots`: 2.5 per job and 5.0 for the case. A repeat of one job brings the total to 7.5, under the 8 credits the case
+**Credits.** Quandela bills each job 1 credit plus 1e-6 per shot used, capped at its largest iteration's
+`max_shots`, so each job costs at most 2.5 and the case at most 5.0. A repeat of one job brings the total to at most 7.5, under the 8 credits the case
 allows. `plan` for both jobs (2026-10-31, status running) returned `credit_ceiling` 2.5 and `estimated_credits` 2.5.
 
 **Commands.** Per job, with the written case's arguments:

@@ -34,6 +34,8 @@ step c1_anchor c1_anchor.py
 step c1_controls c1_controls.py
 step c1_static c1_static.py
 step c1_heldout c1_heldout.py
+step c1_anchor_map c1_anchor_map.py
+step c1_map_increment c1_map_increment.py
 step c1_static_null c1_static_null.py
 step c2_scale c2_scale.py
 step c2_algebra c2_algebra.py

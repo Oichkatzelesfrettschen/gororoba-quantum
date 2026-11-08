@@ -56,7 +56,7 @@ The repository routes ordinary small circuit simulations through its Kaggle work
 5. Qualify disjoint-pair packing against isolated baselines before maximizing concurrent drive. The documented graph and measured crosstalk govern usable placement; a maximum graph matching alone supplies no equivalence certificate. Keep packed execution unadmitted until a paired equivalence case has approved margins and temporal-dependence treatment.
 6. Assess the descriptive pilot against the [adversarial admission addendum](tuna-order-pilot-adversarial-admission.md). Wave and transform acquisitions require their own reviewed entry conditions and approved cases. Preserve raw shots and provider identity, refresh the account ledger and research registry in the same evidence change, then render measured probabilities.
 
-The [operator runbook](../runbooks/hypercomplex-operator-cases.md) provides submit-free commands and the approval boundary. The branch implements isolated cases and guard reuse. Packed equivalence measurements and additional provider acquisitions remain contingent on their concrete approved cases.
+The [operator runbook](../runbooks/hypercomplex-operator-cases-v2.md) provides submit-free commands and the approval boundary. The branch implements isolated cases and guard reuse. Packed equivalence measurements and additional provider acquisitions remain contingent on their concrete approved cases.
 
 ## Retained Tuna-17 order pilot
 

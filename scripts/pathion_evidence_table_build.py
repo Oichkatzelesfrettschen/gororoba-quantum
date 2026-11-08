@@ -145,8 +145,11 @@ def build_rows() -> tuple[list[Row], list[tuple[str, str]]]:
         analysis_path = directory / "analysis.json"
         if not analysis_path.is_file():
             continue
+        analysis = load(analysis_path)
+        if pet.is_ascella_instrument_record(analysis):
+            continue
         rows += pet.ascella_rows(
-            load(analysis_path),
+            analysis,
             load(directory / "cases.json")["operands"],
             run_dir=rel(directory),
             source_file=rel(analysis_path),
