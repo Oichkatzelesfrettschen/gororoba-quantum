@@ -171,9 +171,12 @@ record or recomputed.
   ideal restricted to the A_4 coordinates equals the A_4 zero-divisor ideal with equal Hilbert series. Falsifier: a
   differing radical, Hilbert series or multiplicity at one good prime, a seconds-scale Singular check.
 - Rocq: gororoba-open's `CayleyDicksonAlgebra.v` covers dimensions 2 and 4 only. The level-k tower lives in this
-  repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The half
-  rule follows from (a, 0)(c, d) = (ac, da) and (0, b)(c, d) = (-conj(d) b, b conj(c)) with those proved annihilator
-  identities. The mixed-pair rule's census Theorem 3 step is the open formal target.
+  repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The half rule
+  is proved there: [CdHalfFold.v](../../../proofs/CdHalfFold.v) shows (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and
+  (0, b)(c, d) = 0 iff b c = 0 and b d = 0, at every level over any ordered domain, from `kernel_equality` and
+  `lemma_9_2`. The integer instance is closed under the global context, and the real instance uses only the Stdlib
+  reals' two axioms ([replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). The mixed-pair rule's census
+  Theorem 3 step is the open formal target.
 
 **Instruments: two single-site faults, and an estimator property that hides one of them.**
 - Tuna-17 (PR #789): b0's two base replicates read 0.0162 and 0.0393, and the replicate gate failed (chi2 34.9 against
