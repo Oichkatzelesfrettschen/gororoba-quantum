@@ -5,7 +5,11 @@ and both signs (python-flint fmpz_mat.rank, exact), and checks four statements:
 - doubling: the nullity in dimension 2D of an operand of the first half is twice its nullity in dimension D;
 - maximum: the largest two-term nullity is D/2 - 4 for D >= 16 (every two-term operand of the octonions is invertible);
 - recurrence: the number of maximal-nullity operands in dimension 2D is twice the number of invertible operands in D;
-- palindrome: for 0 < k < max, the numbers of operands of nullity k and of nullity max - k agree.
+- palindrome: for 0 < k < max, the numbers of operands of nullity k and of nullity max - k agree;
+- fold: every two-term nullity in dimension D follows from the octonions (all invertible) by the recursion of fold():
+  an operand inside one half has twice the nullity of its image one level down (0 when it contains the half's unit),
+  and a cross operand e_i +- e_(h+j), h = D/2, has nullity h - 4 - 2 n_h(e_i +- e_j) for distinct nonzero i, j and 0
+  otherwise. The script compares fold() with the exact rank of every two-term operand up to dimension 256.
 Output: two_term_ladder.json beside this script (the spectrum per dimension and each statement's verdict).
 """
 
@@ -23,6 +27,7 @@ import cd_core  # noqa: E402
 import parallel  # noqa: E402
 
 DIMS = (8, 16, 32, 64, 128)
+FOLD_DIMS = (*DIMS, 256)
 
 
 def nullity(item: tuple[int, int, int, int]) -> int:
@@ -31,6 +36,21 @@ def nullity(item: tuple[int, int, int, int]) -> int:
     a[i], a[j] = 1, sign
     rows = cd_core.left_mult_matrix(dim, a)
     return dim - int(flint.fmpz_mat([[int(x) for x in row] for row in rows]).rank())
+
+
+def fold(dim: int, i: int, j: int, sign: int) -> int:
+    """Two-term nullity of e_i + sign e_j (i < j) predicted from the octonions, with no matrix."""
+    if dim == 8:
+        return 0
+    h = dim // 2
+    if j < h:
+        return 2 * fold(h, i, j, sign) if i > 0 else 0
+    if i >= h:
+        return 2 * fold(h, i - h, j - h, sign) if i > h else 0
+    a, b = i, j - h
+    if a == 0 or b == 0 or a == b:
+        return 0
+    return h - 4 - 2 * fold(h, min(a, b), max(a, b), sign)
 
 
 def items(dim: int) -> list[tuple[int, int, int, int]]:
@@ -42,7 +62,12 @@ def main() -> None:
     for dim in DIMS:
         work = items(dim)
         values[dim] = {w[1:]: n for w, n in zip(work, parallel.ordered_map(nullity, work), strict=True)}
-    spectrum = {dim: dict(sorted(Counter(v.values()).items())) for dim, v in values.items()}
+    work = items(256)
+    values[256] = {w[1:]: n for w, n in zip(work, parallel.ordered_map(nullity, work), strict=True)}
+    fold_violations = {
+        str(dim): sum(fold(dim, i, j, s) != n for (i, j, s), n in values[dim].items()) for dim in FOLD_DIMS
+    }
+    spectrum = {dim: dict(sorted(Counter(v.values()).items())) for dim, v in values.items() if dim in DIMS}
     doubling = {
         f"{dim}->{2 * dim}": sum(values[2 * dim][key] != 2 * n for key, n in values[dim].items()) for dim in DIMS[:-1]
     }
@@ -61,6 +86,7 @@ def main() -> None:
         "maximum_vs_D_over_2_minus_4": {str(d): list(v) for d, v in maximum.items()},
         "recurrence_max_count_vs_twice_invertible": {k: list(v) for k, v in recurrence.items()},
         "palindrome": {str(d): v for d, v in palindrome.items()},
+        "fold_violations_against_exact_rank": fold_violations,
     }
     (HERE / "two_term_ladder.json").write_text(json.dumps(record, indent=1) + "\n")
     print(json.dumps(record, indent=1))

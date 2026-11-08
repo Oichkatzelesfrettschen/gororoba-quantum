@@ -91,5 +91,13 @@
   "32": true,
   "64": true,
   "128": true
+ },
+ "fold_violations_against_exact_rank": {
+  "8": 0,
+  "16": 0,
+  "32": 0,
+  "64": 0,
+  "128": 0,
+  "256": 0
  }
 }
