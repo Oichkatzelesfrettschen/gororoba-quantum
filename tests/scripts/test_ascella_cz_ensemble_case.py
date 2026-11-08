@@ -325,11 +325,12 @@ def test_order_statistic_orders_endpoints_exactly() -> None:
 def test_certified_prediction_raises_precision_then_refuses(monkeypatch: pytest.MonkeyPatch) -> None:
     """A value that fails to certify moves the solve to the next precision, and failing at the last one raises."""
     seen: list[int] = []
-    real = case.prediction_balls
+    columns = (tomo.design_matrix() @ np.linspace(-1e-3, 2e-3, 256))[:, None] + np.asarray([[0.0, 1e-9, 2e-9]])
+    balls = case.prediction_balls(columns, 128)  # one solve; every rung of the ladder reuses it
 
-    def failing(columns: np.ndarray, precision: int) -> dict[str, Any]:
+    def failing(_: np.ndarray, precision: int) -> dict[str, Any]:
         seen.append(precision)
-        return real(columns, 128)
+        return balls
 
     calls = {"n": 0}
 
@@ -340,7 +341,6 @@ def test_certified_prediction_raises_precision_then_refuses(monkeypatch: pytest.
 
         return certify
 
-    columns = (tomo.design_matrix() @ np.linspace(-1e-3, 2e-3, 256))[:, None] + np.asarray([[0.0, 1e-9, 2e-9]])
     monkeypatch.setattr(case, "prediction_balls", failing)
     monkeypatch.setattr(case, "certified_float", refuse_until(2))
     _, precision = case.certified_prediction(columns)
