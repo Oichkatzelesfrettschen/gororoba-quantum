@@ -188,9 +188,16 @@ record or recomputed.
   reads exactly 4.000 at visibility 0.649 while its null twin fails. Only null controls and null-referenced
   differences see a dead placement. Hypothesis: both faults are single-site readout or placement collapses, not
   mechanisms of the circuits; falsifier: a rerun on disjoint placements that passes.
-- The analysis of PR #788 sums marginal per-placement variances, but every block of an arm shares one fused PUB with
-  aligned per-shot records. Its 95 percent intervals therefore omit cross-placement covariance, and PR #788 is
-  reanalyzed with the covariance before its verdicts stand.
+- PR #788's first analysis summed marginal per-placement variances, although every block of an arm shares one fused PUB
+  with aligned per-shot records. The reanalysis propagates the covariance of per-shot influence values across each
+  PUB's placements (`results/live/pathion_wide_coset_analysis.json` on that branch). The two standard errors differ by
+  at most 0.6 percent and no rule verdict changes: ibm_kingston passes all 23 rules, and ibm_fez fails eight (sign
+  resolution o128, both null controls, both null-referenced differences, two per-block localizations, the visibility
+  floor). The shot data show no measurable cross-placement correlation. Fez's copy-agreement z of -11.4 (n64) records
+  placement-level error far above shot noise, which no shot covariance captures.
+- ibm_fez's k28 block ran on placement 7 (physical qubits 79, 92, 93, 94) in every operand, at mean visibility 0.595,
+  against 0.888 to 0.973 on the other placements; no qubit of it is among the drain case's excluded placements. The
+  loss follows those qubits (inference, moderate confidence).
 
 **Algebra: what the three PRs move.**
 - PR #790 certifies h_5 = 952 for E8-bar -> N- at both primes (A5-183, A5-220). Rows A5-100 and A5-009 are reconciled
