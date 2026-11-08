@@ -230,6 +230,51 @@ cited record or recomputed.
 - The E8-bar -> N+ value at degree 5 (A5-082, A5-088) stays open. The t8, t9 sign correspondence of A5-024 carries
   the quadrics, but no record shows it carries F(I).
 
+## Folding: what it reaches and what it does not (2026-11-08)
+
+Folding here means reading an A_5 (32-dimensional) object off A_4 (sedenion) data along the Cayley-Dickson doubling.
+Each statement below carries its class; the computed ones bind to an evidence directory or are marked scratch until
+their record lands.
+
+| Statement | Class | Evidence |
+|---|---|---|
+| Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, and nullity L_(a,0) = 2 nullity L_a for pure a | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) |
+| Mixed fold on basis pairs: n_2h(e_i +- e_(h+j)) = h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i; maximum D/2 - 4 | computed through D = 512 | [singular_sector_dynamics](../singular_sector_dynamics.md) |
+| Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | proved by the change of variables (Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2; J(z) and J(z') use disjoint variables), computed at p = 32009 and 32003 | ledger A5-223; record in preparation |
+| Restriction to the sedenion coordinates is the diagonal z = z' and returns J; J is the radical of the A_4 Pfaffian ideal PB, not PB | computed at p = 32009 | ledger A5-222, [a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md) |
+| Nullity sum rule n_32(x) = n_16(z) + n_16(z') | refuted: holds at 10 QRNG-seeded random points, fails on 480 of 512 mixed basis pairs | scratch; record in preparation |
+| On every mixed basis pair n_16(z) = n_16(z'), and (n_32, n_16) takes four values: (0,0) x32, (0,8) x60, (4,4) x168, (12,8) x252 | computed (512 of 512) | scratch; record in preparation |
+| The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: h_1 = 24 and 144 degree-2 relations give h_2 = 156, so the halves' degree-2 values sum to 12, which caps h_3 at 167 against the measured h_3 >= 551 | receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
+
+What folding reaches. The nullity of every half operand, from one level down; the nullity of every two-term basis
+element, through the mixed rule (a reflection n -> h - 4 - 2n, which is why the spectrum is palindromic); and the
+geometry of the W8 component (its dimension, degree, irreducibility and Hilbert series come from the 16-variable
+ideal J in seconds instead of a 32-variable computation). These are the points of the nullity atlas whose values are
+known exactly before any rank computation, and they are the operands a hardware probe can use with a known answer.
+
+What folding does not reach. The nullity of a general element: the sum rule fails, and the four-cell basis spectrum
+shows the passage across the twist is nonlinear. The strata that are not products: E8-bar has mu' nonzero
+(strata record, "R_8 = W8 u E8-bar"), so it lies off the doubled-cone picture, and Iso and X are not built from it.
+Ideals and Hilbert functions across the restriction: A5-222 shows they differ while radicals agree. The fiber
+ladders h_d: the product does not lift to k[y]/K2, so the degree-6 computations (Iso, W8, E8-bar at N = 19 to 22)
+keep their size; their cost is the export of k[t]/(J + m^N), which folding has not touched.
+
+Conjecture (stated before the adversarial review returns). The W8 closure is the i-twisted double of the sedenion
+zero-divisor cone, and the twist is the only fold that W8 carries: any nullity statement about W8 that holds on the
+diagonal z = z' (half operands) and on the antidiagonal transfers to the product V(J) x V(J) through the pair of
+sedenion nullities (n_16(z), n_16(z')), by a law still to be found. Falsifiers: a W8 point whose 32-dimensional
+nullity is not a function of (n_16(z), n_16(z')); a dimension other than 24 or a degree other than 16 at a good
+prime; a Hilbert numerator other than N_J(t)^2. The second and third passed at two primes; the first is open, and
+the basis spectrum (n_32 takes both 0 and 12 at n_16 = 8) already shows the law depends on more than the pair when
+the point leaves W8.
+
+Quantum and free resources. No quantum allotment shrinks the N = 19 export: it is exact linear algebra over F_p with
+a forecast near 137 GiB, and the free quantum tiers (Open Quantum Spark, IQM Resonance, Quantum Inspire, Quandela) run
+circuits of at most a few hundred qubits with sampling noise. The always-free classical hosts in gororoba-infrastructure
+(`clouds/oci-free-services.md`, `hosts/gcp-free-micro.md`, the lab VMs) hold 24 GiB or less. Their role is the
+hardware side of the atlas: an operand whose nullity folding fixes exactly (a half operand, a two-term element) is a
+probe with a known ideal value and a mutation that changes it.
+
 ## Roadmap
 
 1. Done 2026-11-08: the Iso k = 4 rows read on with two independent form families at both primes (row 217), and row
@@ -264,7 +309,7 @@ labeled as one.
 | Iso degree 6 (rows 119, 125) | receipt-bound truncated rank at d = 6, about N = 19 | forecast 2 to 4 h, 13 to 23 GiB (trends forecast; untested receipt path) | laptop after a pilot; Kaggle fits; FX4 fallback |
 | E8-bar -> N- degree-4 control at p = 32029 | truncated rank at d = 4, N = 18 | hours (the p = 32009 control) | laptop |
 | E8-bar -> N+ degree 5 (rows 082, 088) | the N = 18 rank on N+, or a proof that the A5-024 sign map carries F(I) | 26 h at 35 GiB (the N- run), or a proof | laptop, or none |
-| W8 degree 6 | receipt-bound rank at d = 6 | forecast 6 to 10 h, 40 to 70 GiB (W8 d5 x products) | FX4 only; Kaggle and laptop too small |
+| W8 degree 6 | receipt-bound rank at d = 6, N = 19 (the 3d + 1 law) | trends forecast about 137 GiB (low confidence), 17 to 20 h; the laptop export probe (2026-11-08) measures the preflight; the earlier 40 to 70 GiB figure scaled the product count only and is withdrawn | an Azure class with at least 168 GB (FX8mds_v2 168 GB, FX12mds_v2 252 GB, E32 v5 208-256 GB in westus3), chosen from the measured preflight |
 | E8-bar degree 6, h_6 = 1666 | rank at d = 6, about N = 21 | forecast multi-day, about 50 GB receipt-bound | FX4 with its shutdown schedule moved (A5-205); no other host |
 | Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |
 | Scheme-theoretic A_4 restriction of W8 | done: refuted for ideals, holds for radicals (A5-222); PB primary decomposition stalled at 3600 s | seconds for the decisive checks | laptop |
