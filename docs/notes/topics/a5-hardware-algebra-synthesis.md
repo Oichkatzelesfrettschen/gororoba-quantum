@@ -110,8 +110,9 @@ The successor works in the six t-variables alone
   (272 s) and on at k = 3 (16 s) (rows 215 and 216).
 - **Result (2026-11-08).** The preregistered Iso k = 4 rows (row 217) read on with two independent form families at
   p = 32009 and p = 32029, by both saturation routes, in 486 s each at 304 MB (twins 2,130 s), against the 23.5 h and
-  25.7 GB of the last chart attempt. Row 067 moves to survives: E0 = V(K2), l(I) = 5 and F(I) = k[y]/K2 in every degree
-  at both primes, as F_p statements without numerical confidence.
+  25.7 GB of the last chart attempt. Both form families at both primes are consistent with E0 = V(K2), hence with
+  l(I) = 5 and F(I) = k[y]/K2 in every degree, and row 067 moves to survives. The readings certify none of these: a
+  genericity witness or a bound on deg(E0) is the step that would.
 - **What "on" means.** One sampled slice that reads "on" is evidence consistent with dim E0 >= 4, not a certification:
   a special slice can meet a lower-dimensional E0. The slices meeting a 3-dimensional E0 form a hypersurface of
   degree about 4 deg(E0) in the form coefficients, and nothing in the record bounds deg(E0), so no numerical
@@ -144,6 +145,59 @@ QRNG forms ([survey and addendum](quantum-linear-algebra-fit-a5.md)).
 | row 011 states (spread, multiplicity) as the criterion | the multiplicity half follows from row 060's primality | row 011 basis |
 | the Codex review read the one-CZ case as unapproved and unsubmitted | the case's status line predates the owner's approval; batches run since 20:27Z; the submitted case keeps its bytes and the retention change records approval and stamp | case branch run directories |
 
+## Findings across the open acquisitions (2026-11-08)
+
+This section joins PR #788 (IBM 64- and 128-dimensional wide case), PR #789 (Tuna-17 6-CZ null-block series) and
+PR #790 (h_5 at p = 32029). Codex daybreak-blue and Grok each reviewed them adversarially
+(`docs/local/reviews/findings-32d-*.md`, session scratch), and every statement below was checked against the cited
+record or recomputed.
+
+**The doubling ladder: owned, and now measured at its top.**
+- The two-term nullity recursion is proved on paper in [singular_sector_dynamics.md](../singular_sector_dynamics.md),
+  and `scripts/singular_sector_dynamics.py` checks it through D = 512. It states nullity = |S+|/2: halves double
+  (a nullity-n operand of A_h has nullity 2n as (a, 0) or (0, a) in A_2h), and a mixed pair e_i +- e_(h+j) with distinct
+  nonzero i, j has nullity h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i.
+- The maximum D/2 - 4, BDI II Proposition 8.2, follows. So do two corollaries the record leaves implicit. The count at
+  the maximum in A_2h is twice the invertible two-term count in A_h (84, 252, 684, 1740 from the octonions' 42). The
+  spectrum is palindromic: nullities k and max - k occur equally often. A session recheck by exact rank (python-flint)
+  of every two-term operand from D = 8 to 256 agreed with the recursion at every operand; that check duplicates the
+  owned checker and is not retained.
+- PR #788 measured Proposition 8.2 elements on hardware: whole-operand nullities 28 and 60 at D = 64 and 128. On
+  ibm_kingston they read 27.995 and 60.126, and the ratio 2.148 sits on 60/28 = 2.143. On ibm_fez they read 28.071
+  and 59.978. A point reading confirms the instrument against a known exact answer and adds no evidence for the law.
+- The halves rule ties the 16-dimensional sedenion program to A_5 directly. The W8 operand e1 + e10 has nullity 8
+  because e1 + e10 is a sedenion zero divisor of nullity 4, doubled. [a5-zero-divisor-strata](../../evidence/a5-zero-divisor-strata/README.md)
+  already describes W8 through pairs of A_4 zero divisors. Hypothesis: the restriction is scheme-theoretic, so the W8
+  ideal restricted to the A_4 coordinates equals the A_4 zero-divisor ideal with equal Hilbert series. Falsifier: a
+  differing radical, Hilbert series or multiplicity at one good prime, a seconds-scale Singular check.
+- Rocq: gororoba-open's `CayleyDicksonAlgebra.v` covers dimensions 2 and 4 only. The level-k tower lives in this
+  repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The half
+  rule follows from (a, 0)(c, d) = (ac, da) and (0, b)(c, d) = (-conj(d) b, b conj(c)) with those proved annihilator
+  identities. The mixed-pair rule's census Theorem 3 step is the open formal target.
+
+**Instruments: two single-site faults, and an estimator property that hides one of them.**
+- Tuna-17 (PR #789): b0's two base replicates read 0.0162 and 0.0393, and the replicate gate failed (chi2 34.9 against
+  10.83). Between those batches q11's e10 misassignment moved 0.095 -> 0.434. All five flagged readout shifts of the
+  night sit on q11, a data qubit of b0's region. Row 186 stays a hypothesis.
+- ibm_fez (PR #788): the null controls fail (n64 -0.531, n128 -1.056) and per-block localization fails on k28, at
+  visibility 0.53 to 0.65 against 0.96 to 0.97 on Kingston's k28.
+- The target blocks hide the fault: N_hat saturates at its ideal integer whenever every sign agrees, so Fez's o128 k28
+  reads exactly 4.000 at visibility 0.649 while its null twin fails. Only null controls and null-referenced
+  differences see a dead placement. Hypothesis: both faults are single-site readout or placement collapses, not
+  mechanisms of the circuits; falsifier: a rerun on disjoint placements that passes.
+- The analysis of PR #788 sums marginal per-placement variances, but every block of an arm shares one fused PUB with
+  aligned per-shot records. Its 95 percent intervals therefore omit cross-placement covariance, and PR #788 is
+  reanalyzed with the covariance before its verdicts stand.
+
+**Algebra: what the three PRs move.**
+- PR #790 certifies h_5 = 952 for E8-bar -> N- at both primes (A5-183, A5-220). Rows A5-100 and A5-009 are reconciled
+  in that PR.
+- The fourth finite difference of h_1..h_5 = 21, 83, 225, 495, 952 is already 11, the degree of V(K2) (projective
+  dimension 4, degree 11). So HF(k[y]/K2) is polynomial from degree 1, and h_6 = 1666 would follow from
+  F(I) = k[y]/K2. This is consistency, not evidence: five points fit a quartic, and 1666 is the K2 upper bound itself.
+- The E8-bar -> N+ value at degree 5 (A5-082, A5-088) stays open. The t8, t9 sign correspondence of A5-024 carries
+  the quadrics, but no record shows it carries F(I).
+
 ## Roadmap
 
 1. Done 2026-11-08: the Iso k = 4 rows read on with two independent form families at both primes (row 217), and row
@@ -160,6 +214,31 @@ QRNG forms ([survey and addendum](quantum-linear-algebra-fit-a5.md)).
    sets real coefficients. It would then scan b toward the boundary and fit the contrast's order (1 against 2). A written case and owner approval are required. Its value is an attachment invariant measured on hardware,
    with the algebraic order as the exact prediction.
 5. Close the running acquisitions:
-   - the Tuna-17 6-CZ null-block case separates dropout from the bounded over-rotation for row 186, with a
+   - the Tuna-17 6-CZ null-block case ran (PR #789) and its preregistered rule read unresolved_batch, so row 186 stays
+     a hypothesis; a rerun needs the q11 guard below. Its design separates dropout from the bounded over-rotation, with a
      post-schedule q12 correlation left open;
-   - the IBM 64D/128D wide case extends the nullity readings to A_6 and A_7, outside this stratification.
+   - the IBM 64D/128D wide case (PR #788) reads the doubling ladder's top elements on two devices; its verdicts wait
+     for the covariance-aware reanalysis.
+
+### Remaining computations by host (2026-11-08)
+
+Costs come from retained runs: the E8-bar N = 18 degree-5 rank took 93,763 s at 35.4 GiB on the laptop (PR #790); the
+W8 N = 16 degree-5 receipt-bound rank took 2.18 h at 24.9 GiB on an FX4mds_v2; the Iso N = 16 degree-5 rank took
+about 1,060 s at 11.3 GB; the Iso k = 4 slice took 486 s at 304 MB. Kaggle CPU sessions end at 12 h. A forecast is
+labeled as one.
+
+| Item | Computation | Expected cost (basis) | Host |
+|---|---|---|---|
+| Iso degree 6 (rows 119, 125) | receipt-bound truncated rank at d = 6, about N = 19 | forecast 2 to 4 h, 13 to 23 GiB (trends forecast; untested receipt path) | laptop after a pilot; Kaggle fits; FX4 fallback |
+| E8-bar -> N- degree-4 control at p = 32029 | truncated rank at d = 4, N = 18 | hours (the p = 32009 control) | laptop |
+| E8-bar -> N+ degree 5 (rows 082, 088) | the N = 18 rank on N+, or a proof that the A5-024 sign map carries F(I) | 26 h at 35 GiB (the N- run), or a proof | laptop, or none |
+| W8 degree 6 | receipt-bound rank at d = 6 | forecast 6 to 10 h, 40 to 70 GiB (W8 d5 x products) | FX4 only; Kaggle and laptop too small |
+| E8-bar degree 6, h_6 = 1666 | rank at d = 6, about N = 21 | forecast multi-day, about 50 GB receipt-bound | FX4 with its shutdown schedule moved (A5-205); no other host |
+| Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |
+| Scheme-theoretic A_4 restriction of W8 | radical and Hilbert series comparison at one prime | seconds to minutes | laptop |
+| PR #788 reanalysis | covariance-aware intervals from the retained per-shot records | minutes | laptop |
+| Tuna-17 rerun of row 186 | the same 19-batch design with a per-batch q11 readout admission | about 25 min execution plus queue; owner approval | Tuna-17 only |
+| Characteristic zero | good-reduction argument for J, K2 and the receipts | proof work | none needed |
+
+No available host finishes the 23-variable Iso chart, the Rees route of E8-bar -> VB (209 GB without finishing) or a
+full W8 standard basis (out of memory at 77.8 GiB on an 84 GB VM); those routes stay closed.
