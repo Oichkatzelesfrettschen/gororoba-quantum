@@ -760,22 +760,23 @@ def self_test() -> list[str]:
                 moved = max(moved, abs(reading - 0.0))
     if moved < 0.05:
         problems.append(f"the same edits move the informative block by only {moved}: the control has no power")
-    # Loader agreement with the code: replica 0 of the ibm_fez coset run through the group's own summarize.
-    path = ROOT / RUNS["ibm_fez coset map"][0] / "collect.json"
-    if path.exists():
-        collect = json.loads(path.read_text())
-        units, entry, ideal, extra = run_units("cmap", collect)
-        group = extra["group"]
-        dist = {name: np.asarray(v, dtype=float)[0] for name, v in entry["measured"].items()}
-        summary = group.summarize(dist)
-        for unit in units:
-            code = summary[f"{unit.key}_nullity_estimate"]
-            mine = estimate(unit.contrast[0], unit.sign).n_hat
-            if abs(code - mine) > 1e-9:
-                problems.append(f"{unit.key}: estimator {mine} differs from the group's {code}")
-        if record_agreement("cmap", entry, units) > RECORD_ROUNDING:
-            problems.append("per-replica N_hat differs from the collector's summary_per_replica beyond rounding")
-        del ideal
+    # Loader agreement with the code: every replica of a coset run and of the full map through the group's summarize.
+    for name, kind, bound in (("ibm_fez coset map", "cmap", RECORD_ROUNDING), ("ibm_fez kernel map", "kmap", None)):
+        path = ROOT / RUNS[name][0] / "collect.json"
+        if not path.exists():
+            continue
+        units, entry, _ideal, extra = run_units(kind, json.loads(path.read_text()))
+        for replica in range(units[0].contrast.shape[0]):
+            # The selector-disconnected skeleton of the full map is read once; every other member per replica.
+            dist = {n: np.asarray(v, dtype=float)[min(replica, len(v) - 1)] for n, v in entry["measured"].items()}
+            summary = extra["group"].summarize(dist)
+            for unit in units:
+                code = summary[f"{unit.key}_nullity_estimate"]
+                mine = estimate(unit.contrast[replica], unit.sign).n_hat
+                if not (math.isnan(code) and math.isnan(mine)) and abs(code - mine) > 1e-9:
+                    problems.append(f"{name} replica {replica}, {unit.key}: estimator {mine} differs from {code}")
+        if bound is not None and record_agreement(kind, entry, units) > bound:
+            problems.append(f"{name}: per-replica N_hat differs from the collector's summary beyond rounding")
     return problems
 
 

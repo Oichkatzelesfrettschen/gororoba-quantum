@@ -28,7 +28,7 @@ e1 + e26: 10.036 against 34.089), because V_hat is near zero on single replicas.
 | Claim | Verdict | Evidence | Falsifier |
 |---|---|---|---|
 | 1. N_hat - N = \|B+\|\|B-\|/\|B\| (Vbar+ - Vbar-)/V_hat | proved, and computed | derivation below; exact rational residual 0 on all 171 units (replica mean and every replica of five runs); double-precision residual at most 7.1e-15; 192 wide placements: 0 exactly, 4.4e-16 | a residual above 1e-12 on a unit with every bin decided and \|V_hat\| above 1e-9; none found |
-| 2. The null operand reads 1.40 and e1 + e26 reads 10.04 on the full map, from Vbar+ above Vbar- | computed; the cause is real on e1 + e26 and e2 + e27 and not resolved on the null operand | 1.3993 (Vbar+ 0.3754, Vbar- 0.3150) and 10.0357 (Vbar+ 0.1221, Vbar- 0.0466); per-replica class gap t of 2.11 (null), 4.28 (e1 + e26), 8.27 (e2 + e27) on 4 degrees of freedom against 2.776 | an ibm_fez full-map rerun whose class gaps all lie within 2.776 standard errors of zero |
+| 2. The null operand reads 1.40 and e1 + e26 reads 10.04 on the full map, from Vbar+ above Vbar- | computed; the class gap is significant on e2 + e27 alone after correction over 8 circuits and unresolved on the null operand | 1.3993 (Vbar+ 0.3754, Vbar- 0.3150) and 10.0357 (Vbar+ 0.1221, Vbar- 0.0466); per-replica class gap t of 2.11 (null), 4.28 (e1 + e26, p 0.013 uncorrected and 0.10 corrected), 8.27 (e2 + e27, p 0.0093 corrected) on 4 degrees of freedom against 2.776 | an ibm_fez full-map rerun whose class gaps all lie within 2.776 standard errors of zero |
 | 3. Blocks with N_b = 4 read exactly 4.00 on any hardware | proved, and computed | below; 52 forced units over four runs, largest departure from the forced value 0.0 over every replica, no replica under the 1e-9 guard, stored readout-corrected values equal 4 on 40 of 40 blocks | a block with B- empty and \|V_hat\| above 1e-9 whose N_hat differs from \|B+\|/2 |
 | 4. The headline 12.015 is 4 + 4 + 4 + 0.015 and only N_b in {0, 2} carry information | computed for the six measured operands; refuted as a general statement | ibm_fez coset map e1 + e18: blocks 0.0151, 4, 4, 4; the informative blocks are those with N_b below 4, and N_b = 1 and 3 occur (384 blocks each of 3,720 in the default tiling, four N_b = 3 blocks in the 128-dimensional operand) | a measured operand whose block profile holds a value outside 0 to 4 |
 | 5. The profiles [2.08, 4, 2.06, 4] and [0.02, 4, 4, 4] separate the two nullity-12 orbits | the profiles are computed and separate the two measured operands at 65 to 137 standard errors; refuted as an orbit discriminator | ideal profiles [2, 4, 2, 4] (e1 + e24, orbit V) and [0, 4, 4, 4] (e1 + e18 and e17 - e2, orbit VB); census of the 252 two-term operands of nullity 12 below | an operand of orbit V with the profile [0, 4, 4, 4] under its default tiling, which would also void the one-directional statement below |
@@ -49,11 +49,18 @@ whatever the visibility (`gororoba_quantum/pathion_kernel_map.py`, module docstr
 `_pair_summary`). Domain: every bin decided with |c_ideal| = 1, which holds for the primary operands, twins,
 cocycle-free controls, flip mutation and the `cflip` and `crep` families of the parallel runs.
 
-Command: `"$PYTHON" -B nhat_bias.py --out .` (about 20 s) writes `result.json`; `--check .` recomputes and compares.
+Commands, from the repository root (about 20 s each for the first two):
+`"$PYTHON" -B docs/evidence/pathion-kernel-map/nhat-bias/nhat_bias.py --out docs/evidence/pathion-kernel-map/nhat-bias`
+writes `result.json`, and `--check docs/evidence/pathion-kernel-map/nhat-bias` recomputes and compares it. The wide
+record replays from a tree that holds `gororoba_quantum/pathion_wide_coset.py` and the two collect files: extract
+`git archive 4c4d5bd06 gororoba_quantum` and the `collect.json` of `results/live/2026-11-07T153325.440007Z` and
+`results/live/2026-11-07T153325.886771Z` into one directory `SRC`, then run
+`NHAT_BIAS_SOURCE=SRC "$PYTHON" -B nhat_bias.py --wide results/live/2026-11-07T153325.440007Z results/live/2026-11-07T153325.886771Z --source-commit 4c4d5bd0655e9c030055a8db5b3c08bb29868463 --out-wide result_wide.json`.
 `--self-test` checks the identity on a grid of class sizes in rational arithmetic and the loader against the group's own
-`summarize` (agreement to 1e-9). The collector stores each measured law rounded to six decimals, so per-replica N_hat
+`summarize` on every replica of the ibm_fez coset map and of the full map (agreement to 1e-9). The collector stores each measured law rounded to six decimals, so per-replica N_hat
 rebuilt from `collect.json` differs from the collector's `summary_per_replica` by at most 2.2e-5 on the coset and
-parallel runs; on the full map, where single-replica V_hat is near zero, by 0.025.
+parallel runs; on the full map, where single-replica V_hat is near zero, by 0.025, which the stored rounding amplifies (the loader
+itself matches `summarize` on the stored laws to 1e-9).
 
 ## Claim 2: the full map
 
@@ -61,7 +68,8 @@ parallel runs; on the full map, where single-replica V_hat is near zero, by 0.02
 `results/live/2026-11-06T183538.809814Z`. Replica-mean N_hat reads 1.399, 10.036, 6.483, 9.172, 12.752, 12.536 for the
 operands of nullity 0, 4, 4, 8, 12, 12 and 6.003, 11.929 for the twins; the biases follow the closed form to the last
 digit. Vbar+ exceeds Vbar- on 7 of 8 circuits, and the per-replica class gap clears the 95 percent critical value of
-2.776 on two (e1 + e26, e2 + e27). The null operand's gap t is 2.11, so its reading of 1.40 sits inside the
+2.776 on two (e1 + e26, e2 + e27); after a Bonferroni correction over the 8 circuits only e2 + e27 (p 0.0093) stays
+significant. The null operand's gap t is 2.11, so its reading of 1.40 sits inside the
 interval [-0.47, 3.54] of the findings table and the bin-dependent visibility is not resolved on it.
 
 Where the accuracy claim is stated, with its status after this audit:
@@ -70,7 +78,7 @@ Where the accuracy claim is stated, with its status after this audit:
 |---|---|---|
 | N_hat estimates N whatever visibility the circuit has, hypothesis-level when the contraction depends on the output bin | `pathion_kernel_map.py` module docstring; comment in `_pair_summary` | conditional, correct as written; premise falsified on the full map |
 | N_hat returns N under any contraction toward the uniform law | `results/live/2026-11-06T180755.872625Z/CASE.md` | correct for a global contraction; a per-bin contraction is not one |
-| e1 + e18 reads N_hat 12.65 [11.87, 13.42], which resolves its nullity of 12 | findings table; ledger A5-180; synthesis "What the hardware establishes about the algebra" | the point reading carries a bias of +0.75 (replica mean) from Vbar+ - Vbar- = 0.030; the sign agreement (29 of 32 on the replica mean) carries the resolution, so the sentence is corrected |
+| e1 + e18 reads N_hat 12.65 [11.87, 13.42], which resolves its nullity of 12 | findings table; ledger A5-180; synthesis "What the hardware establishes about the algebra" | the interval excludes 8 and 16, so the resolution among those values stands; the point reading carries a bias of +0.75 (replica mean) from Vbar+ - Vbar- = 0.030, and the full map's signs miss the 31 of 32 rule (26 of 32 on pooled laws, 29 of 32 on the replica mean of the contrasts); the findings paragraph, the A5-180 basis and the synthesis gain the bias qualifier, and the original sentence stays |
 | N_hat is exact only under a bin-independent contraction | `docs/state/research_state.json` boundary of `hw-pathion-kernel-map-fez` and the two coset claims | correct as written |
 | coset blocks recover the nullity of all six operands | ledger A5-182 and A5-192, findings coset paragraph, claims `hw-pathion-coset-map-*` | scoped by claims 3 and 4: the integer part of three nullity-12 and two nullity-8 readings is algebra |
 

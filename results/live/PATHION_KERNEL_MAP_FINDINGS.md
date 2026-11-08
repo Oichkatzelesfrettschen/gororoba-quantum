@@ -32,8 +32,10 @@ N_hat is not visibility-free when the contraction differs between the bins of th
 N_hat - N = |B+||B-|/|B| (Vbar+ - Vbar-)/V_hat for the class means Vbar+ and Vbar- of the per-output contrasts
 (A5-228). On the replica mean of the contrasts the six operands read 1.40, 10.04, 6.48, 9.17, 12.75 and 12.54 against
 0, 4, 4, 8, 12 and 12, with Vbar+ above Vbar- on 7 of 8 circuits (A5-231; the table above averages the per-replica
-N_hat, where single replicas with V near zero dominate the unresolved rows). The sign map, not the point value,
-carries the resolution of this run
+N_hat, where single replicas with V near zero dominate the unresolved rows). On the full map the interval, not the
+point value, carries the resolution: the e1 + e18 interval [11.87, 13.42] excludes 8 and 16 while its replica-mean
+reading carries +0.75 of bias, and its signs miss the 31 of 32 rule (26 of 32 on pooled laws, 29 of 32 on the replica
+mean of the contrasts); 32 of 32 signs resolve only in the coset-block runs below
 ([audit](../../docs/evidence/pathion-kernel-map/nhat-bias/README.md)).
 
 ## Preregistered rules

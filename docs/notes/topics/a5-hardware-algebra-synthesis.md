@@ -47,8 +47,8 @@ A point reading cannot see an attachment. A reading along a path that enters the
    N_hat 12.65 [11.87, 13.42], which resolves its nullity of 12. e1 + e10 reads 7.30 [0.85, 13.74], consistent with 8
    but unresolved, since the interval also holds 4 and 12 ([findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md)).
    These point readings carry the estimator's bias (rows 228 and 231: the replica-mean N_hat of e1 + e18 reads 12.75
-   from a class-mean gap of 0.030), so the sign map carries the resolution: 29 of 32 signs on the replica mean of the
-   full map and 32 of 32 on every operand of the coset-block runs.
+   from a class-mean gap of 0.030). The full map's resolution rests on its interval and misses the 31 of 32 sign rule
+   (26 of 32 on pooled laws), while the coset-block runs read 32 of 32 signs on every operand.
 2. **Two incidences of the fiber program have both ends measured.**
    - W8 -> N- along a(b) = e1 + e10 + b (e18 - e25) (row 208).
    - E8-bar -> VB along a(b) = e1 + e18 + b (e8 + e27) (row 209).
