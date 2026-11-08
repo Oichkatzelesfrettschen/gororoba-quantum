@@ -116,7 +116,8 @@ def run_one(inputs: str, selector: str, env: dict[str, str]) -> dict:
         row["result"] = next(iter(backends.values())) if backends else {"error": "no backend matched"}
         row["reference_seconds"] = report["reference"]["solve_seconds"]
     else:
-        row["result"] = {"error": (proc.stderr or proc.stdout)[-600:]}
+        tail = (proc.stderr or proc.stdout)[-600:]
+        row["result"] = {"error": tail or f"exit {proc.returncode} with no output (timeout 124, signal 128+N)"}
     out.unlink(missing_ok=True)
     return row
 
@@ -134,7 +135,18 @@ def main() -> int:
                 continue
             runs = [run_one(inputs, selector, env) for _ in range(repeats)]
             ok = [r for r in runs if "error" not in r["result"]]
-            row = {"config": label, "env": env, "repeats": len(runs), "load_before": [r["load_before"] for r in runs]}
+            row = {
+                "config": label,
+                "env": env,
+                "repeats": len(runs),
+                "load_before": [r["load_before"] for r in runs],
+                "returncodes": [r["returncode"] for r in runs],
+                "failed_repeats": [
+                    {"returncode": r["returncode"], "error": r["result"]["error"]}
+                    for r in runs
+                    if "error" in r["result"]
+                ],
+            }
             if ok:
                 best = min(ok, key=lambda r: r["result"]["solve_seconds"])
                 row.update(
