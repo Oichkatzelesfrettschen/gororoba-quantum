@@ -263,14 +263,19 @@ Ideals and Hilbert functions across the restriction: A5-222 shows they differ wh
 ladders h_d: the product does not lift to k[y]/K2, so the degree-6 computations (Iso, W8, E8-bar at N = 19 to 22)
 keep their size; their cost is the export of k[t]/(J + m^N), which folding has not touched.
 
-Conjecture (stated before the adversarial review returns). The W8 closure is the i-twisted double of the sedenion
-zero-divisor cone, and the twist is the only fold that W8 carries: any nullity statement about W8 that holds on the
-diagonal z = z' (half operands) and on the antidiagonal transfers to the product V(J) x V(J) through the pair of
-sedenion nullities (n_16(z), n_16(z')), by a law still to be found. Falsifiers: a W8 point whose 32-dimensional
-nullity is not a function of (n_16(z), n_16(z')); a dimension other than 24 or a degree other than 16 at a good
-prime; a Hilbert numerator other than N_J(t)^2. The second and third passed at two primes; the first is open, and
-the records already bound it to W8: the pair (4, 4) gives n_32 = 4 on the off-W8 basis cell and n_32 = 8 at every
-seeded W8 point, and n_16 = 8 gives both 0 and 12 off W8, so no single function of the pair serves the whole space.
+The twisted-double conjecture after review ([Codex final report](../../archive/reviews/fold-32d/review-codex-final-report.md),
+checked against the records). The W8 closure is the i-twisted double of the sedenion zero-divisor cone: the ideal
+equality, dimension 24, degree 16, the squared Hilbert numerator and the diagonal restriction to J survive, and they
+hold in characteristic 0, since the change of variables is defined over Z[i, 1/2] and faithfully flat base change
+descends dimension, degree and Hilbert series from Q(i) to Q. The strengthening that W8 nullity is a function of the
+pair (n_16(z), n_16(z')) is refuted on W8 itself: on the real slice a W8 point is a half operand, so the proved half
+fold gives n_32 = 2 x 8 = 16 when the sedenion factor has nullity 8, while the 168 mixed basis pairs on W8 read
+n_32 = 12 at the same pair (8, 8) (A5-225); the relative position of the two factor kernels carries information their
+dimensions do not. Seeded W8 classes give the rest of the pair map: (4,4) -> 8, (4,8) and (8,4) -> 10, (4,16) and
+(16,4) -> 20, (8,16) and (16,8) -> 22. The product does not decide A5-218 or the degree-30 W8 component C30, because
+those live in V(K2) of the fiber ring, not in the base. The factor swap z <-> z' is (x_low, x_high) -> (x_low, -x_high)
+and is not the equality of character blocks 2 and 3 seen in every W8 run; that equality has no located proof, and a
+proved block swap would save at most 4/3 of the products, rank and closure, not the export.
 
 Quantum and free resources. No quantum allotment shrinks the N = 19 export: it is exact linear algebra over F_p with
 a forecast near 137 GiB, and the free quantum tiers (Open Quantum Spark, IQM Resonance, Quantum Inspire, Quandela) run
@@ -313,7 +318,7 @@ labeled as one.
 | Iso degree 6 (rows 119, 125) | receipt-bound truncated rank at d = 6, about N = 19 | forecast 2 to 4 h, 13 to 23 GiB (trends forecast; untested receipt path) | laptop after a pilot; Kaggle fits; FX4 fallback |
 | E8-bar -> N- degree-4 control at p = 32029 | truncated rank at d = 4, N = 18 | hours (the p = 32009 control) | laptop |
 | E8-bar -> N+ degree 5 (rows 082, 088) | the N = 18 rank on N+, or a proof that the A5-024 sign map carries F(I) | 26 h at 35 GiB (the N- run), or a proof | laptop, or none |
-| W8 degree 6 | receipt-bound rank at d = 6, N = 19 (the 3d + 1 law) | trends forecast about 137 GiB (low confidence), 17 to 20 h; the laptop export probe (2026-11-08) measures the preflight; the earlier 40 to 70 GiB figure scaled the product count only and is withdrawn | an Azure class with at least 168 GB (FX8mds_v2 168 GB, FX12mds_v2 252 GB, E32 v5 208-256 GB in westus3), chosen from the measured preflight |
+| W8 degree 6 | receipt-bound rank at d = 6, N = 19 (the 3d + 1 law), target 8,624 | measured on the laptop 2026-11-08: Singular standard basis 2,774 s at 0.49 GB (export kept, 109 MB), preflight 375.62 GiB (D = 235,543), so `--max-gb` must exceed 375; peak RSS forecast 137 GiB from the W8 fit, about 160 GiB from the degree-5 receipt ratio 24.9/58.9, low confidence; 17 to 20 h. The earlier 40 to 70 GiB figure scaled the product count only and is withdrawn | FX12mds_v2 (252 GB, $1.641/h) with `--max-gb 380` on the forecast, or E48ads_v5 (384 GiB, $3.144/h) clearing the preflight; a proof that C30 lies in the fiber removes the run |
 | E8-bar degree 6, h_6 = 1666 | rank at d = 6, about N = 21 | forecast multi-day, about 50 GB receipt-bound | FX4 with its shutdown schedule moved (A5-205); no other host |
 | Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |
 | Scheme-theoretic A_4 restriction of W8 | done: refuted for ideals, holds for radicals (A5-222); PB primary decomposition stalled at 3600 s | seconds for the decisive checks | laptop |
