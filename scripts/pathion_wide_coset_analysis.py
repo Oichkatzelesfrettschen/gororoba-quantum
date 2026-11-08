@@ -14,12 +14,13 @@ law (through the placement's readout inverse) taken at the shot's outcome, so th
 plus a constant. The retained raw record of a PUB keeps the aligned bitstrings of every placement register, so the
 covariance of the influence values across placements, taken over the PUB's shots, is the covariance of the placements'
 estimates; the standard error of any sum or difference of placements (copy mean, whole operand, copy A minus copy B,
-visibility mean) is the quadratic form of its weights in that covariance. The plus and minus arms and the operands
-are separate PUBs, so their covariances add. The 95 percent interval is the estimate +- 1.96 standard errors. The
-marginal column keeps the earlier model that sums per-placement multinomial variances as if placements were
-independent; it is report-only, and its diagonal equals the covariance matrix's. The decision bands add the offset
-allowance for the unmodeled placement-to-placement error. The copy agreement of the 64-dimensional operands compares the
-two copies of every block and reports the standardized sum of their differences.
+visibility mean) is the quadratic form of its weights in that covariance. The plus and minus arms and the operands are
+separate PUBs whose estimates are taken as independent, so their covariances add; drift between the PUBs of one job
+lies outside what the shot data test and stays a stated boundary. The 95 percent interval is the estimate +- 1.96
+standard errors. The marginal column keeps the earlier model that sums per-placement multinomial variances as if
+placements were independent; it is report-only, and its diagonal equals the covariance matrix's. The decision bands add
+the offset allowance for the unmodeled placement-to-placement error. The copy agreement of the 64-dimensional operands
+compares the two copies of every block and reports the standardized sum of their differences.
 
 Usage: "$PYTHON" scripts/pathion_wide_coset_analysis.py RUN_DIR [OTHER_RUN_DIR] [--out FILE]   (a directory holding
 collect.json, record.json, its archive and raw/<job_id>/; a second directory of another backend adds the

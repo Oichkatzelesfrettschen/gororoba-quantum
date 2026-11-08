@@ -80,8 +80,9 @@ block classes.
 [pathion_wide_coset_analysis.json](../../../results/live/pathion_wide_coset_analysis.json) with the input digests. Every
 interval takes the covariance across the placements of one PUB from the retained per-shot bitstrings, since the
 placements of a PUB share each shot; the per-placement multinomial model that adds variances is kept as a report-only
-column. The whole-operand and difference standard errors of the two models agree within 1 percent on both devices, and
-no rule changes verdict between them. ibm_kingston passes every rule. ibm_fez fails eight: sign resolution of o128,
+column. The whole-operand and difference standard errors of the two models agree within 1 percent on both devices (the shot
+data show no measurable correlation between placements), and no rule changes verdict between them; arms and operands are
+separate PUBs taken as independent, and drift between the PUBs of one job is outside what the shot data test. ibm_kingston passes every rule. ibm_fez fails eight: sign resolution of o128,
 null control at n64 and n128, null-referenced difference at d64 and d128, per-block localization of n64 and n128, and
 the visibility floor. Two placements carry the low visibilities: placement 7 (physical qubits 79, 92, 93, 94) reads
 mean visibility 0.595 and placement 15 (qubits 10, 11, 12, 18) reads 0.710 over the six operands, against 0.888 to 0.973
