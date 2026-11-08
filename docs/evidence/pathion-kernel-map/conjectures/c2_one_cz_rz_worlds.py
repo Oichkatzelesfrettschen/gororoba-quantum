@@ -36,7 +36,7 @@ def main() -> None:
     )
     for title, drift in (("stationary", 0.0), (f"batch drift sd {case.OC_DRIFT_SD}", case.OC_DRIFT_SD)):
         print(f"  {title}")
-        for world, shares in case.operating_characteristics(drift_sd=drift).items():
+        for world, shares in case.operating_characteristics(drift_sd=drift, b0_like_z=case.B0_LIKE_Z).items():
             print(f"    {world}: " + ", ".join(f"{k} {v:.4f}" for k, v in shares.items()))
 
 

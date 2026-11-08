@@ -838,9 +838,12 @@ def heterogeneity(values: list[tuple[float, float]]) -> float:
     return sum(((v - mean) / se) ** 2 for v, se in values)
 
 
-def decide_estimates(rows: dict[str, dict[str, list[tuple[float, float]]]]) -> dict[str, Any]:
+def decide_estimates(
+    rows: dict[str, dict[str, list[tuple[float, float]]]], b0_like_z: float | None = None
+) -> dict[str, Any]:
     """The preregistered decision of per-batch estimates: rows[template]["base" | "twin"] lists (value, se) of each
-    batch."""
+    batch. `b0_like_z` is the b0-like band in combined standard errors, B0_LIKE_Z when None."""
+    band = B0_LIKE_Z if b0_like_z is None else b0_like_z
     base = {t: pooled(rows[t]["base"]) for t in TEMPLATES}
     twin = {t: pooled(rows[t]["twin"]) for t in TEMPLATES}
     z = Z_RESOLVE
@@ -877,7 +880,7 @@ def decide_estimates(rows: dict[str, dict[str, list[tuple[float, float]]]]) -> d
         label = "unresolved_context"
     elif abs(m[0]) <= z * m[1] and diff >= z * diff_se:
         label = "zero"
-    elif m[0] >= z * m[1] and abs(diff) <= B0_LIKE_Z * diff_se:
+    elif m[0] >= z * m[1] and abs(diff) <= band * diff_se:
         label = "b0_like"
     elif m[0] >= z * m[1]:
         label = "intermediate"
@@ -888,7 +891,11 @@ def decide_estimates(rows: dict[str, dict[str, list[tuple[float, float]]]]) -> d
 
 
 def _series_label(
-    draw: tuple[np.ndarray, np.ndarray], mean: dict[str, float], se_base: dict[str, float], se_twin: float
+    draw: tuple[np.ndarray, np.ndarray],
+    mean: dict[str, float],
+    se_base: dict[str, float],
+    se_twin: float,
+    b0_like_z: float,
 ) -> str:
     """The decision label of one simulated series from its noise and drift draws, shape (templates, 2, REPLICATES)."""
     noise, drift = draw
@@ -904,16 +911,20 @@ def _series_label(
                 (mean[f"t_{key}"] + se_twin * noise[j, 1, r] + drift[j, 1, r], se_twin) for r in range(REPLICATES)
             ],
         }
-    return str(decide_estimates(rows)["label"])
+    return str(decide_estimates(rows, b0_like_z)["label"])
 
 
-def operating_characteristics(draws: int = OC_DRAWS, drift_sd: float = 0.0) -> dict[str, dict[str, float]]:
+def operating_characteristics(
+    draws: int = OC_DRAWS, drift_sd: float = 0.0, b0_like_z: float | None = None
+) -> dict[str, dict[str, float]]:
     """Frequency of each decision label per world, from `draws` simulated series of Gaussian batch estimates at the
     design standard errors (extra independent batch drift of standard deviation `drift_sd`), seeded from QRNG value
     OC_SEED_INDEX of OC_DRAW. The decision is decide_estimates, so every gate and comparison of the table counts.
 
     Every series' noise and drift are drawn before any series is decided, in the order of the serial loop, and the
-    decisions run through parallel.ordered_map, which returns them in series order."""
+    decisions run through parallel.ordered_map, which returns them in series order. Spawned workers re-import this
+    module, so the b0-like band (B0_LIKE_Z when `b0_like_z` is None) is resolved here and passed to each decision."""
+    band = B0_LIKE_Z if b0_like_z is None else b0_like_z
     seed = int(read_record(OC_DRAW)["values"][OC_SEED_INDEX])
     rng = np.random.default_rng(seed)
     se_base = {t: 1.0 / math.sqrt(CONTROL_SHOTS if t == "b0" else BATCH_SHOTS) for t in TEMPLATES}
@@ -924,7 +935,8 @@ def operating_characteristics(draws: int = OC_DRAWS, drift_sd: float = 0.0) -> d
         noise = rng.normal(size=(draws, len(TEMPLATES), 2, REPLICATES))
         drift = rng.normal(scale=drift_sd, size=(draws, len(TEMPLATES), 2, REPLICATES))
         labels = parallel.ordered_map(
-            partial(_series_label, mean=mean, se_base=se_base, se_twin=se_twin), list(zip(noise, drift, strict=True))
+            partial(_series_label, mean=mean, se_base=se_base, se_twin=se_twin, b0_like_z=band),
+            list(zip(noise, drift, strict=True)),
         )
         counts: dict[str, int] = {}
         for label in labels:

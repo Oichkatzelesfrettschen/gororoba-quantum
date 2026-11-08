@@ -625,3 +625,18 @@ def test_the_submission_sequence_stops_on_the_first_failure_and_after_ten_refusa
     refusal = "wait 5 more seconds so the platform can calibrate"
     code, calls, err = _submit(tmp_path / "x", [refusal] * 12)
     _expect(code != 0 and calls.count("submit") == 10, f"{code} {calls.count('submit')} {err}")
+
+
+def test_operating_characteristics_carry_the_band_into_spawned_workers() -> None:
+    # 128 series per world exceed parallel.MIN_PARALLEL_ITEMS, so the labels come from spawned workers, which re-import
+    # the module with the default band; the band argument must still decide every b0-like comparison.
+    draws = 128
+    narrow = oc.operating_characteristics(draws=draws, b0_like_z=0.0)
+    wide = oc.operating_characteristics(draws=draws, b0_like_z=1e6)
+    _expect(all("b0_like" not in shares for shares in narrow.values()), f"band 0 admits no b0-like series: {narrow}")
+    _expect(any(shares.get("intermediate", 0.0) > 0 for shares in narrow.values()), "band 0 sends some to intermediate")
+    _expect(
+        all("intermediate" not in shares for shares in wide.values()),
+        f"an unbounded band leaves no intermediate: {wide}",
+    )
+    _expect(oc.B0_LIKE_Z == 2.0, "the module default band stays 2.0")
