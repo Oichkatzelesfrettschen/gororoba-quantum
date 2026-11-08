@@ -1,0 +1,106 @@
+{
+ "doubly_pure_dim16": {
+  "J_squares_to_minus_I": true,
+  "all_L_ek_skew": true,
+  "J_anticommutes": true,
+  "pass": true
+ },
+ "w8_crosscheck": {
+  "points": 40,
+  "generator_comparisons": 120,
+  "pass": true
+ },
+ "transport": {
+  "points": 126,
+  "pairs_nullity_rank": [
+   [
+    0,
+    6
+   ],
+   [
+    4,
+    4
+   ]
+  ],
+  "pass": true
+ },
+ "naive_construction_control": {
+  "s": 10754,
+  "y0": 1,
+  "rank_L_a_mod_p": 8,
+  "nullity_mod_p": 8,
+  "pass": true
+ },
+ "pb_structure": {
+  "pfaffians": 7,
+  "matching_ww_times_w_j": 7,
+  "pass": true
+ },
+ "pointwise": {
+  "zero_divisors": 84,
+  "nullity_L_a_on_zero_divisors": [
+   4
+  ],
+  "nullity_L_(a,0)_on_zero_divisors": [
+   8
+  ],
+  "ideals_vanish_on_all_zero_divisors": {
+   "PB": true,
+   "PA": true,
+   "PAp": true,
+   "J": true
+  },
+  "W8_32_vanishes_on_embedded_zero_divisors": true,
+  "nullity_L_a_on_invertible_points": [
+   0
+  ],
+  "invertible_points": 40,
+  "each_ideal_nonzero_at_every_invertible_point": {
+   "PB": true,
+   "PA": true,
+   "PAp": true,
+   "J": true
+  },
+  "pass": true
+ },
+ "isotropic_witness": {
+  "s": 10754,
+  "rank_L_a_mod_p": 8,
+  "nullity_mod_p": 8,
+  "all_generators_vanish_mod_p": {
+   "PB": false,
+   "PA": true,
+   "PAp": true,
+   "J": false
+  },
+  "pass": true
+ },
+ "generators": {
+  "J": 4,
+  "PB": 16,
+  "PA": 107,
+  "PAp": 456
+ },
+ "J_generators": [
+  "y8",
+  "y1^2 + y2^2 + y3^2 + y4^2 + y5^2 + y6^2 + y7^2 - y9^2 - y10^2 - y11^2 - y12^2 - y13^2 - y14^2 - y15^2",
+  "y1*y9 + y2*y10 + y3*y11 + y4*y12 + y5*y13 + y6*y14 + y7*y15",
+  "y0"
+ ],
+ "w8_32_generators": 8,
+ "sing_sha256": {
+  "ring.sing": "dfe8fe03dc765e5f4d9ebf7055c1fe46b790b84093104dbe69c7a7f19aafa59e",
+  "ideal_J.sing": "bc3947aae4b4358037a832de84a281f6f28b54cdd840942d729e038e6e16219f",
+  "ideal_PB.sing": "0ea74c4b7a488ca8c654c97f8502fe56993ef2d12b8619ff1d0b1c95fc50e903",
+  "ideal_Jsign.sing": "e90773616e912fec705f8cdb1db38d1df766cbd9e8d5931bdb96e72fe6c51576",
+  "ideal_Jnopure.sing": "5a68cacecb90dab486404c04fb9dc51d7fd62163749ff1906e78020aceba7744",
+  "ideal_PA.sing": "58a66ea25108cc0711f6b97add6eb6456afb49a29746ca33e1b75f3f07d250c5",
+  "ideal_PAp.sing": "f55c6792eb55e92413a643532d0058b442e3b4f6efedb684c866da04b747ce48"
+ },
+ "total_s": 16.98,
+ "script_sha256": "633bc808d700f5c946868727dd4ba8270f5dc2cedef025a41baef63225e0ed2d",
+ "versions": {
+  "python": "3.14.7",
+  "python-flint": "0.9.0"
+ }
+}

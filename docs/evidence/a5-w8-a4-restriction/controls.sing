@@ -1,0 +1,19 @@
+// Mutation controls for the comparison of compare.sing: each mutated W8 restriction must differ from the radical of the
+// realified Pfaffian ideal P of C_w. Jm replaces U - V by U + V; Jn drops the doubly pure equations y_0 = y_8 = 0.
+// The caller defines the ring r and the ideals P (the realified Pfaffian ideal), J, Jm and Jn.
+LIB "primdec.lib";
+option(redSB);
+ideal sJ = std(J);
+ideal sR = std(radical(P));
+"RESULT control_unmutated_radical_equals_J", size(reduce(J, sR)) == 0 and size(reduce(sR, sJ)) == 0;
+ideal sJm = std(Jm);
+"RESULT control_Jsign_dim", dim(sJm);
+"RESULT control_Jsign_mult", mult(sJm);
+"RESULT control_Jsign_contains_radical_of_P", size(reduce(sR, sJm)) == 0;
+"RESULT control_Jsign_contained_in_radical_of_P", size(reduce(Jm, sR)) == 0;
+ideal sJn = std(Jn);
+"RESULT control_Jnopure_dim", dim(sJn);
+"RESULT control_Jnopure_mult", mult(sJn);
+"RESULT control_Jnopure_contains_radical_of_P", size(reduce(sR, sJn)) == 0;
+"RESULT control_Jnopure_contained_in_radical_of_P", size(reduce(Jn, sR)) == 0;
+quit;

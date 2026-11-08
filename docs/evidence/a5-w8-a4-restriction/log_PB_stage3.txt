@@ -1,0 +1,51 @@
+family PB stage 3
+binary Singular (passagemath venv)
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+memory cap 24G (cgroup MemoryMax, MemorySwapMax=0), wall cap 7200 s
+2026-11-08T14:53:33Z
+RESULT stage 3
+RESULT generators_J 4
+RESULT generators_P 16
+RESULT J_dim 12
+RESULT J_mult 4
+RESULT J_hilb1 1, -2, -1, 4, -1, -2, 1, 0
+RESULT J_hilb2 1, 2, 1, 0
+RESULT J_equals_radical_of_J 1
+RESULT P_in_J 1
+RESULT P_colon_J_dim 6
+RESULT P_colon_J_mult 4
+RESULT P_colon_J_hilb1 1, -2, -48, 378, -1400, 3164, -4452, 2884, 2996, -11370, 17714, -18510, 14196, -8176, 3520, -1104, 239, -32, 2, 0
+RESULT P_colon_J_hilb2 1, 8, -13, 8, 15, -34, 29, -12, 2, 0
+RESULT rad_P_colon_J_dim 6
+RESULT rad_P_colon_J_mult 4
+RESULT rad_P_colon_J_hilb1 1, -2, -50, 410, -1640, 4284, -8092, 11620, -13020, 11510, -8026, 4370, -1820, 560, -120, 16, -1, 0
+RESULT rad_P_colon_J_hilb2 1, 8, -15, 20, -15, 6, -1, 0
+RESULT P_colon_J_contains_J 0
+RESULT minimal_prime_of_P_colon_J_1 dim=6 mult=2 contains_J=1
+RESULT minimal_prime_of_P_colon_J_2 dim=6 mult=2 contains_J=1
+RESULT saturation_of_P_by_P_colon_J_equals_J 1
+	Command being timed: "Singular (passagemath venv) -q --no-warn WORKDIR/drv_PB_3.sing"
+	User time (seconds): 0.38
+	System time (seconds): 0.02
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.41
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 32924
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 4479
+	Voluntary context switches: 0
+	Involuntary context switches: 1
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+exit status 0
+2026-11-08T14:53:33Z
