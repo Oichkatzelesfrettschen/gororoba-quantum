@@ -571,25 +571,36 @@ def tally_arrays(tallies: Sequence[Mapping[str, Any]]) -> dict[str, np.ndarray]:
     }
 
 
+def homogeneity_item(item: tuple[np.ndarray, np.random.Generator]) -> dict[str, Any]:
+    """homogeneity of one (table, its own generator) pair, the unit parallel.py maps; each generator serves one test."""
+    table, generator = item
+    return homogeneity(table, generator)
+
+
 def drift(runs: Mapping[str, Sequence[Mapping[str, Any]]], streams: Sequence[np.random.Generator]) -> dict[str, Any]:
     """Estimate 1 from per-job iteration tallies in request order."""
     tests: list[dict[str, Any]] = []
     digests: dict[str, dict[str, list[str]]] = {}
     missing: list[str] = []
     stream = iter(streams)
+    pending: list[tuple[int, np.ndarray, np.random.Generator]] = []
     for anchor in ANCHORS:
         groups = {job: [t for t in runs[job] if t["setting"] == anchor and t["role"] == "anchor"] for job in JOBS}
         for job in JOBS:
-            table = tally_arrays(groups[job])["eligible"]
-            tests.append({"anchor": anchor, "test": f"positions in {job}", **homogeneity(table, next(stream))})
+            pending.append((len(tests), tally_arrays(groups[job])["eligible"], next(stream)))
+            tests.append({"anchor": anchor, "test": f"positions in {job}"})
         between = np.asarray([tally_arrays(groups[job])["eligible"].sum(axis=0) for job in JOBS])
-        tests.append({"anchor": anchor, "test": "job-00 against job-01", **homogeneity(between, next(stream))})
+        pending.append((len(tests), between, next(stream)))
+        tests.append({"anchor": anchor, "test": "job-00 against job-01"})
         k = [int(tally_arrays(groups[job])["eligible"].sum()) for job in JOBS]
         n = [int(tally_arrays(groups[job])["shots"].sum()) for job in JOBS]
         tests.append({"anchor": anchor, "test": "eligible rate between jobs", "p": rate_test(k[0], n[0], k[1], n[1])})
         digests[anchor] = {job: sorted({t["digest"] for t in groups[job] if t.get("digest")}) for job in JOBS}
         if any(not t.get("digest") for job in JOBS for t in groups[job]):
             missing.append(anchor)
+    results = ordered_map(homogeneity_item, [(table, generator) for _, table, generator in pending], min_items=1)
+    for (position, _, _), result in zip(pending, results, strict=True):
+        tests[position].update(result)
     threshold = ALPHA / DRIFT_TESTS
     passed = all(test["p"] > threshold for test in tests)
     one_mesh_within = {a: a not in missing and all(len(d[job]) == 1 for job in JOBS) for a, d in digests.items()}
@@ -628,8 +639,14 @@ def mesh_variance(
             for j, job in enumerate(JOBS):
                 low, high = j * SEEDS_PER_JOB + 1, (j + 1) * SEEDS_PER_JOB
                 blocks.append((name, f"{name} {job}", [t for t in members if low <= t["seed_index"] <= high]))
+    assigned = list(zip(blocks, streams, strict=False))
+    tests = ordered_map(
+        homogeneity_item,
+        [(tally_arrays(members)["eligible"], generator) for (_, _, members), generator in assigned],
+        min_items=1,
+    )
     rows: dict[str, Any] = {}
-    for (setting, label, members), generator in zip(blocks, streams, strict=False):
+    for ((setting, label, members), _), test in zip(assigned, tests, strict=True):
         table = tally_arrays(members)["eligible"]
         correct = np.asarray([t["eligible"][t["correct_outcome"]] for t in members], dtype=float)
         events = table.sum(axis=1).astype(float)
@@ -638,7 +655,7 @@ def mesh_variance(
         between = float(np.var(fraction, ddof=1))
         rows[label] = {
             "setting": setting,
-            **homogeneity(table, generator),
+            **test,
             "correct_fraction_variance": between,
             "mean_binomial_variance": binomial,
             "excess_variance": between - binomial,
