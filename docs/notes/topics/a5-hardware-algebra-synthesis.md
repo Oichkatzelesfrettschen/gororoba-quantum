@@ -49,7 +49,7 @@ A point reading cannot see an attachment. A reading along a path that enters the
 2. **Two incidences of the fiber program have both ends measured.**
    - W8 -> N- along a(b) = e1 + e10 + b (e18 - e25) (row 208).
    - E8-bar -> VB along a(b) = e1 + e18 + b (e8 + e27) (row 209).
-   
+
    Both lines are four-term operands, the block class the Ascella and IBM coset-block cases already run (row 199: IBM
    and Ascella agree within 0.07 on B12 and C8).
 3. **The order of contact separates the two incidences in the exact matrices.**
@@ -57,7 +57,7 @@ A point reading cannot see an attachment. A reading along a path that enters the
    the operand leaves the boundary by eps:
    - On W8 -> N-, eight singular values of L_a open linearly: four as 1.414 eps and four as 2.000 eps.
    - On E8-bar -> VB, four open quadratically, as 2.000 eps^2.
-   
+
    This is a classical prediction about L_a. Hypothesis: a hardware contrast scanned toward the boundary shows the same
    orders. Testing it needs an observable-specific noisy forward model, because a probability can scale as an amplitude
    squared and normalization or a noise floor can change an exponent, and then a calibrated scan. Second hypothesis:
