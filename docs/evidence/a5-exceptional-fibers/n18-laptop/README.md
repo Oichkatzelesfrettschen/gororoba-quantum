@@ -1,4 +1,4 @@
-# E8-bar -> N-, degree 5, N = 18, p = 32009: h_5 = 952
+# E8-bar -> N-, degree 5, N = 18, p = 32009 and p = 32029: h_5 = 952
 
 The laptop unit `a5-v11-e8nm-n18` (`run-n18.sh`) ran engine v11 (`fiber_rank_v11.py`, sha256 7849cbc71ccf1787...) in
 quotient mode on `e8-nm-p32009.sing` (sha256 7d3521d0e8026e6f...) with the degree-2 K2 receipt of p = 32009, from
@@ -54,15 +54,17 @@ meets that upper bound, and h_5 = 952 holds at p = 32029 as at p = 32009 (ledger
 
 ## Scope and falsifiers
 
-- The statement holds over F_32009. The repeat at p = 32029 (gate: p = 32009 moved with every invariant intact) runs on
-  `e8-nm-p32029.sing` (sha256 48bdcbe0fa17d04c...) with K2 receipt sha256 5573ef662aef... and the same engine and flags,
-  after the degree-4 control (expected r = 495).
+- The first statement above holds over F_32009. The repeat at p = 32029 (gate: p = 32009 moved with every invariant
+  intact) ran on `e8-nm-p32029.sing` (sha256 48bdcbe0fa17d04c...) with K2 receipt sha256 5573ef662aef... and the same
+  engine and flags. The degree-4 control (expected r = 495) ran at p = 32009 only; at p = 32029 it is an unmet
+  corroborating check, and the exact degree-5 squeeze (r_18 = 952 meets HF(k[y]/K2, 5) = 952) decides.
 - hypothesis (to verify, task: characteristic 0): reduction modulo p cannot raise a rank, and HF(k[y]/K2) can only rise
   under reduction, so if the arc system and K2 at p are the reductions of their rational counterparts, 952 = r_p <= r_Q
   <= h_5(Q) <= HF_Q(k[y]/K2, 5) <= HF_p(k[y]/K2, 5) = 952 would give h_5 = 952 over Q. The step that needs proof is that
   the degree-2 K2 used at p equals the reduction of K2 over Q (it can be larger at a bad prime).
-- Falsifiers: r_18 below 952 at p = 32029 (a prime-specific rank; not met, the run read 952), a degree-4 control other than 495, or a replay of
-  this record with a different rank.
+- Falsifiers: r_18 below 952 at p = 32029 (a prime-specific rank; not met, the run read 952), a degree-4 control other
+  than 495 (at p = 32009 the control read 495; at p = 32029 it has not run), or a replay of this record with a different
+  rank.
 
 ## Files
 
