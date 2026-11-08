@@ -18,12 +18,17 @@ false-alarm simulation come from one ANU QRNG draw that the manifests own whole.
 --check rebuilds both jobs and the forecast inputs and compares them with the retained files, binds every iteration
 through qd_platform.template_experiment, and holds the schedule to the design. --forecast recomputes forecast.json.
 --read and --estimate retain the live platform read and Perceval's shot estimate (read-only platform calls; nothing is
-sent). --analyze OUT.json RUN RUN reduces the two collected runs to the preregistered estimates. Submission uses the
-generic runner, scripts/qd_platform.py plan/submit/collect, under the written case's approval.
+sent). --analyze OUT.json RUN RUN reduces the two collected runs to the preregistered estimates. --preflight JOB plans
+a job read-only and holds the fresh plan to the manifest's submission_policy; --submit JOB --approval TEXT sends it
+through qd_platform.submit with that policy as its verify step, and job-01 also takes --after, the collected job-00
+run. The manifests name this wrapper under submit_wrapper, and qd_platform.submit refuses such a case without a verify
+step. scripts/qd_platform.py collect retrieves each job.
 
 Usage:
   "$PYTHON" scripts/ascella_cz_ensemble_case.py [--check | --build | --forecast | --read | --estimate]
   "$PYTHON" scripts/ascella_cz_ensemble_case.py --analyze OUT.json RUN [RUN]
+  "$PYTHON" scripts/ascella_cz_ensemble_case.py --preflight JOB [--after RUN]
+  "$PYTHON" scripts/ascella_cz_ensemble_case.py --submit JOB --approval TEXT [--after RUN]
 """
 
 from __future__ import annotations
@@ -51,6 +56,7 @@ import ascella_cz_tomography_case as tomo  # noqa: E402
 import billing_rule_v2  # noqa: E402
 import qd_platform  # noqa: E402
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
+from qd_schedule import body_digest  # noqa: E402
 
 import qd_records  # noqa: E402
 from parallel import ordered_map, workers  # noqa: E402
@@ -121,6 +127,12 @@ TOMOGRAPHY_ANALYSIS = "results/quandela/ascella-cz-tomography-analysis.json"
 HOM_READING_POINTS = 1.0
 TOMOGRAPHY_HOM_LABEL = "HOM at which the tomography's job-00 was submitted (its submission.json perfs_at_plan)"
 PREDICTION_REPLICATES = tomo.BOOTSTRAP_REPLICATES
+# Submission admits a job only when the live HOM is strictly above qd_platform.HOM_FLOOR (strategy.md design rule 1:
+# a block with two photons waits for HOM above 90 %) and within HOM_READING_POINTS of the reference tomography's HOM,
+# so estimate 5 compares the ensemble with a fit taken at the same source quality. Explorer and processor read
+# available, or running while this token holds no running or queued job of its own.
+SUBMIT_STATUSES = ("available", "running")
+SUBMIT_WRAPPER = "scripts/ascella_cz_ensemble_case.py --submit"
 # arb working precisions tried in order until every float64 of the prediction certifies
 CERTIFIED_PRECISIONS = (128, 256, 512)
 BOUND_CHECK_MAPS = 20000
@@ -454,6 +466,8 @@ def documents(job: str) -> dict[str, bytes]:
         },
         "billing": billing_rule_v2.RULE,
         "preregistered": preregistered(),
+        "submit_wrapper": SUBMIT_WRAPPER,
+        "submission_policy": submission_policy(job),
     }
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
@@ -1219,7 +1233,9 @@ def check_job(job: str) -> str:
         ("expected_seconds", float(EXPECTED_SECONDS)),
     ):
         require(plan.get(key) == want, f"{job}: plan-read.json {key} reads {plan.get(key)!r}, not {want!r}")
-    require(set(plan["admitted_statuses"]) <= {"available", "running"}, f"{job}: the plan admits other statuses")
+    require(set(plan["admitted_statuses"]) <= set(SUBMIT_STATUSES), f"{job}: the plan admits other statuses")
+    admission = plan.get("admission")
+    require(isinstance(admission, dict) and "admitted" in admission, f"{job}: plan-read.json carries no admission")
     estimate = json.loads((FAMILY_DIR / ESTIMATE).read_text(encoding="utf-8"))["jobs"][job]
     inputs = estimate["inputs"]
     require(sorted(inputs) == sorted(s["name"] for s in settings), f"{job}: {ESTIMATE} names other iterations")
@@ -1236,7 +1252,9 @@ def check_job(job: str) -> str:
     require(expected <= EXPECTED_SECONDS, f"{job}: the modeled {expected:.0f} s pass the {EXPECTED_SECONDS} s bound")
     return (
         f"{FAMILY}/{job}: {ITERATIONS} iterations bound, credit ceiling {ceiling:g}, "
-        f"modeled {expected:.0f} s expected and {worst:.0f} s with every iteration at its cap"
+        f"modeled {expected:.0f} s expected and {worst:.0f} s with every iteration at its cap; the plan read of "
+        f"{plan.get('planned_utc')} "
+        + ("admits it" if admission["admitted"] else f"refuses it: {admission['refusal']}")
     )
 
 
@@ -1506,9 +1524,7 @@ def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     prediction = retained["tomography_prediction"]
     record["status"] = "decided"
     record.update(estimates(by_job, seed_plan()["analysis"][1], prediction))
-    tomography_hom = json.loads((ROOT / TOMOGRAPHY_RUNS[0] / "submission.json").read_text(encoding="utf-8"))[
-        "perfs_at_plan"
-    ]["HOM (%)"]
+    tomography_hom = reference_hom()
     homs = {e["job"]: (e["perfs"] or {}).get("HOM (%)") for e in loaded}
     differences = {job: None if hom is None else hom - tomography_hom for job, hom in homs.items()}
     record["hom"] = {
@@ -1517,6 +1533,152 @@ def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "hom_moved": any(d is None or abs(d) > HOM_READING_POINTS for d in differences.values()),
     }
     return record
+
+
+def reference_hom() -> float:
+    """The HOM visibility in percent at which the reference tomography's job-00 was submitted."""
+    submission = json.loads((ROOT / TOMOGRAPHY_RUNS[0] / "submission.json").read_text(encoding="utf-8"))
+    return float(submission["perfs_at_plan"]["HOM (%)"])
+
+
+def hom_band(reference: float) -> tuple[float, float]:
+    """(exclusive lower, inclusive upper) HOM percent a submission admits; empty when lower >= upper."""
+    return max(qd_platform.HOM_FLOOR, reference - HOM_READING_POINTS), reference + HOM_READING_POINTS
+
+
+def submission_policy(job: str) -> dict[str, Any]:
+    reference = reference_hom()
+    lower, upper = hom_band(reference)
+    return {
+        "platform": PLATFORM,
+        "credit_ceiling": round(PER_JOB_CREDITS + PRICE_PER_SHOT * JOB_SHOTS[job], 6),
+        "per_job_credits": PER_JOB_CREDITS,
+        "expected_seconds": EXPECTED_SECONDS,
+        "hom_percent": {
+            "above": qd_platform.HOM_FLOOR,
+            "reference": reference,
+            "reference_source": TOMOGRAPHY_HOM_LABEL,
+            "within_points_of_reference": HOM_READING_POINTS,
+            "admitted": f"{lower:g} < HOM <= {upper:g}" if lower < upper else "none",
+        },
+        "statuses": "Explorer row and processor read available, or running while the token counts no running and "
+        "no queued job",
+        "after": None
+        if job == JOBS[0]
+        else {
+            "job": JOBS[0],
+            "requires": f"a collected run of {JOBS[0]} that completed with {ITERATIONS} bound iterations, none "
+            f"uncounted, each with at least {MIN_ELIGIBLE} eligible events",
+        },
+    }
+
+
+def predecessor_decisive(loaded: Mapping[str, Any]) -> None:
+    """Refuse unless a loaded job-00 run completed with every iteration bound and above the eligible-event floor."""
+    eligible = [sum(t["eligible"]) for t in loaded["tallies"]]
+    require(loaded["job"] == JOBS[0], f"the predecessor run is {loaded['job']}, not {JOBS[0]}")
+    require(loaded["status"] == "completed", f"{JOBS[0]} reads {loaded['status']!r}, not completed")
+    require(
+        len(eligible) == ITERATIONS and loaded["uncounted"] == 0,
+        f"{JOBS[0]} bound {len(eligible)} of {ITERATIONS} iterations with {loaded['uncounted']} uncounted",
+    )
+    require(min(eligible) >= MIN_ELIGIBLE, f"{JOBS[0]} has an iteration of {min(eligible)} eligible events")
+
+
+def admit(job: str, planned: Mapping[str, Any], reference: float, predecessor: Mapping[str, Any] | None) -> None:
+    """Refuse a fresh plan that leaves the job's submission policy; raises qd_platform.PlatformError."""
+    try:
+        policy = submission_policy(job)
+        require(planned["case"] == job and planned["platform"] == PLATFORM, f"the plan names {planned['case']}")
+        for key in ("credit_ceiling", "per_job_credits", "expected_seconds"):
+            require(
+                abs(float(planned[key]) - float(policy[key])) <= TOLERANCE,
+                f"{job}: the plan's {key} {planned[key]!r} is not {policy[key]!r}",
+            )
+        read = (planned.get("perfs_at_plan") or {}).get("HOM (%)")
+        if isinstance(read, bool) or not isinstance(read, int | float) or not math.isfinite(read):
+            raise RuntimeError(f"{job}: the plan reads HOM {read!r}")
+        hom = float(read)
+        lower, upper = hom_band(reference)
+        require(
+            lower < hom <= upper,
+            f"{job}: HOM {hom:g} % is outside ({lower:g}, {upper:g}], the band above {qd_platform.HOM_FLOOR:g} % and "
+            f"within {HOM_READING_POINTS:g} point of the reference tomography's {reference:g} %",
+        )
+        statuses = planned["status_at_plan"]
+        require(all(statuses.get(k) in SUBMIT_STATUSES for k in ("explorer", "processor")), f"{job}: status {statuses}")
+        if "running" in statuses.values():
+            counters = planned["availability_at_plan"]
+            require(
+                counters.get("num_concurrent_jobs") == 0 and counters.get("num_jobs_in_queue") == 0,
+                f"{job}: {PLATFORM} reads running while this token holds jobs: {counters}",
+            )
+        if job != JOBS[0]:
+            require(predecessor is not None, f"{job} requires the collected {JOBS[0]} run (--after RUN)")
+            predecessor_decisive(predecessor or {})
+    except (RuntimeError, ValueError, KeyError, TypeError) as error:
+        raise qd_platform.PlatformError(str(error)) from None
+
+
+def bind_reviewed(job: str, planned: Mapping[str, Any], reviewed: Mapping[str, Any]) -> None:
+    """Refuse a fresh plan that differs from the admitted preflight the owner reviewed, in its case digest or in its
+    body beyond the process_id Perceval draws afresh for every job."""
+    require(
+        (reviewed.get("admission") or {}).get("admitted") is True, f"{job}: the retained preflight was not admitted"
+    )
+    require(reviewed.get("cases_sha256") == planned["cases_sha256"], f"{job}: the case changed since the preflight")
+    fresh, frozen = body_digest(planned["body"]), reviewed.get("body_sha256_without_process_id")
+    require(fresh == frozen, f"{job}: the planned body {fresh} differs from the preflight's {frozen}")
+
+
+def submission_gate(job: str, after: Path | None, reviewed: Mapping[str, Any] | None = None) -> Any:
+    """The verify step qd_platform.submit runs on the plan whose body it posts; with reviewed, the plan must also
+    match that admitted preflight."""
+    predecessor = None if after is None else load_run(after)
+    reference = reference_hom()
+
+    def verify(planned: dict[str, Any]) -> None:
+        admit(job, planned, reference, predecessor)
+        if reviewed is not None:
+            try:
+                bind_reviewed(job, planned, reviewed)
+            except RuntimeError as error:
+                raise qd_platform.PlatformError(str(error)) from None
+
+    return verify
+
+
+def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
+    """Without send, plan the job read-only, hold the plan to its policy and retain both as plan-read.json; with
+    send, submit it through qd_platform.submit with the policy and the binding to that admitted preflight as its verify
+    step."""
+    require(job in JOBS, f"{job} is not one of {JOBS}")
+    out = FAMILY_DIR / job
+    policy = submission_policy(job)
+    ceiling, seconds, statuses = float(policy["credit_ceiling"]), float(EXPECTED_SECONDS), ("running",)
+    if not send:
+        verify = submission_gate(job, after)
+        planned = qd_platform.plan(out, PLATFORM, ceiling, seconds, PER_JOB_CREDITS, statuses)
+        try:
+            verify(planned)
+            admission: dict[str, Any] = {"admitted": True}
+        except qd_platform.PlatformError as error:
+            admission = {"admitted": False, "refusal": str(error)}
+        record = {
+            **qd_platform.plan_summary(planned),
+            "body_sha256_without_process_id": body_digest(planned["body"]),
+            "admission": admission,
+            "planned_utc": qd_platform.now(),
+        }
+        qd_platform.write_json(out / "plan-read.json", record)
+        print(f"{job}: " + ("admitted" if admission["admitted"] else f"refused: {admission['refusal']}"))
+        return 0 if admission["admitted"] else 1
+    require(bool(approval.strip()), "--submit requires the owner's --approval text")
+    reviewed = json.loads((out / "plan-read.json").read_text(encoding="utf-8"))
+    verify = submission_gate(job, after, reviewed)
+    receipt = qd_platform.submit(out, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify)
+    print(f"submitted {job}: {receipt['job_id']}")
+    return 0
 
 
 def build() -> int:
@@ -1538,7 +1700,16 @@ def main() -> int:
     group.add_argument("--read", action="store_true", help="retain the live platform read")
     group.add_argument("--estimate", action="store_true", help="retain Perceval's shot estimate")
     group.add_argument("--analyze", nargs="+", metavar=("OUT.json", "RUN"))
+    group.add_argument("--preflight", choices=JOBS, help="plan the job read-only and hold it to its policy")
+    group.add_argument("--submit", choices=JOBS, help="submit the job once under --approval")
+    parser.add_argument("--approval", default="", help="the owner's approval text for --submit")
+    parser.add_argument("--after", type=Path, help="the collected job-00 run that job-01 requires")
     args = parser.parse_args()
+    if args.preflight or args.submit:
+        try:
+            return submit_job(args.preflight or args.submit, args.approval, args.after, send=bool(args.submit))
+        except (RuntimeError, qd_platform.PlatformError) as error:
+            raise SystemExit(f"refused: {error}") from None
     if args.build:
         return build()
     if args.forecast:

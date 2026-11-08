@@ -252,11 +252,22 @@ replicate in a second segment, so each appears in every pair of adjacent segment
 - **Shots.** Perceval's estimate for 4000 samples reaches 251 328 shots at most (`shot-estimate.json`); times 1.25,
   rounded up to the 100 000-shot quantum, each iteration's `max_shots` is 400 000, so each job's credit ceiling is
   1.4 and both jobs' 2.8, inside the 6-credit ceiling of this design.
-- **Plan reads** (`plan-read.json`, `qd_platform.py plan --admit-status running`, since qpu:ascella's Explorer row
-  read `running` while its processor read `available`): ceiling 1.4 credits and 11 793 960 estimated shots per job;
-  the modeled job takes 188 s expected and 197 s with every iteration at its cap. Both plans warn that HOM 88.46 %
-  sits below strategy.md design rule 1's 90 %, as the tomography's pre-build plan did at 87.54 %. `--check` holds
-  each plan's request fields (case, circuit digest, budgets, ceiling) to the request; the live fields are a read.
+- **Plan reads** (`plan-read.json`, `ascella_cz_ensemble_case.py --preflight JOB`, read-only): each retains the
+  fresh plan of its job without the body and the submission policy's verdict under `admission`. The reads of
+  2026-11-08 give a ceiling of 1.4 credits and 11 793 960 estimated shots per job, and HOM 88.64 %, which the policy
+  refuses; the modeled job takes 188 s expected and 197 s with every iteration at its cap. `--check` holds each
+  plan's request fields (case, circuit digest, budgets, ceiling) to the request and prints its verdict; the live
+  fields are a read.
+- **Submission policy** (`submission_policy` in each `cases.json`, enforced by `--submit` as the verify step of
+  `qd_platform.submit`, which refuses a manifest naming a `submit_wrapper` without one): HOM strictly above 90 %
+  (strategy.md design rule 1) and within one point of the reference tomography's HOM, so estimate 5 compares the
+  ensemble with a fit taken at the same source quality; Explorer row and processor `available`, or `running` while
+  the token counts no running and no queued job; the plan's ceiling, per-job price and expected seconds equal to the
+  case's; and for job-01 a collected job-00 run that completed with 60 bound iterations, none uncounted, each with at
+  least 200 eligible events (`--after RUN`). `--submit` also requires the retained preflight to be admitted and the
+  fresh plan to equal it in case digest and in body digest without `process_id`, so the request sent is the one the
+  owner reviewed. Against the reference of 87.56 % the HOM band is empty, so neither job
+  submits until a fresh tomography reference taken above 90 % replaces it; the owner set both rules on 2026-11-08.
 - **Forecast** under Perceval's NoiseModel at the read, with loss and dark counts: F_ZX = F_XZ = 0.8635, F' = 0.8766,
   Hofmann interval [0.727, 0.864]; indistinguishability alone gives 0.900. The thinnest settings expect 447 eligible
   events per iteration, above the floor of 200.
@@ -279,7 +290,8 @@ replicate in a second segment, so each appears in every pair of adjacent segment
 - **Binding.** The two retained tomography runs echo `circuit_params` equal to their manifests in all 144 iterations,
   the property the binding rule requires.
 - **HOM reading.** Both tomography jobs were submitted at 87.56 %. The platform read behind the forecast gave
-  88.88 %, and the retained plans read 88.46 %, 0.90 points above it and inside the one-point threshold; the
+  88.88 %, and the plan reads of 2026-11-08 read 88.64 %, 1.08 points above it and outside the one-point threshold; the
   analysis states each submission plan's difference and sets `hom_moved` beyond one point (`hom` of the analysis
   record). Under the design's hypothesis of about 0.013 process fidelity per point of HOM, a submission at 90 %
-  would shift estimate 5 by about 0.03, about 2.5 times the prediction's standard deviation.
+  would shift estimate 5 by about 0.03, about 2.5 times the prediction's standard deviation; the submission policy
+  therefore admits no HOM more than one point from the reference.

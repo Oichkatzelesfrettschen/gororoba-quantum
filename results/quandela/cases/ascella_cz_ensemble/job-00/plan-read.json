@@ -1,4 +1,8 @@
 {
+ "admission": {
+  "admitted": false,
+  "refusal": "job-00: HOM 88.64 % is outside (90, 88.56], the band above 90 % and within 1 point of the reference tomography's 87.56 %"
+ },
  "admitted_statuses": [
   "available",
   "running"
@@ -11,38 +15,43 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "96263515cbebaa7976d2488721cfbd6301c20f501518e5bdecfe56b8bd2ae070",
+ "body_sha256": "26106d7f0d1afe83b5e8b349ee70519c9a70d18fc240c5a7bf6b424d33afeb34",
+ "body_sha256_without_process_id": "b4d7e1f2d6d3663a7358d115f569e16f0fd6ce8a98f3f32941d4852755b8725e",
  "case": "job-00",
- "cases_sha256": "9ad3549a39dd067974bd3928106eaa84035ff98fdd459d0ced1617e842b54262",
+ "cases_sha256": "22984717ab8d9428525c39cb07f453eaf75b62cc6b8ff7828ecae99bc3b462c4",
  "credit_ceiling": 1.4,
  "estimated_credits": 1.4,
- "estimated_shots": 11793960,
+ "estimated_shots": 11904420,
  "expected_seconds": 220.0,
  "max_credits": 1.4,
  "max_samples": 240000,
  "max_shots": 24000000,
+ "mitigations": [],
+ "mitigations_key": true,
+ "payload_version": 2,
  "payload_version_basis": "declared",
  "per_job_credits": 1.0,
  "perfs_at_plan": {
   "Clock (MHz)": 13.33,
   "Dark counts (detection/s)": [
-   176.0,
-   99.0,
-   119.0,
-   88.0,
-   84.0,
+   154.0,
+   103.0,
+   86.0,
+   107.0,
+   87.0,
+   104.0,
+   87.0,
    115.0,
-   97.0,
-   108.0,
-   310.0,
-   322.0,
-   114.0,
-   153.0
+   256.0,
+   360.0,
+   100.0,
+   127.0
   ],
-  "HOM (%)": 88.46,
-  "Transmittance (%)": 5.54,
-  "g2 (%)": 2.0
+  "HOM (%)": 88.64,
+  "Transmittance (%)": 5.49,
+  "g2 (%)": 2.1
  },
+ "planned_utc": "2026-11-08T19:45:58+00:00",
  "platform": "qpu:ascella",
  "platform_at_plan": {
   "bookable": true,
@@ -54,9 +63,6 @@
   "name": "qpu:ascella",
   "price_per_shot": 1e-06,
   "statistic": {
-   "2026-10-31": {
-    "availability": 92.2
-   },
    "2026-11-01": {
     "availability": 92.03
    },
@@ -76,16 +82,20 @@
     "availability": 92.33
    },
    "2026-11-07": {
-    "availability": 90.9
+    "availability": 92.28
+   },
+   "2026-11-08": {
+    "availability": 92.32
    }
   },
-  "status": "running",
+  "status": "available",
   "type": "qpu"
  },
  "status_at_plan": {
-  "explorer": "running",
+  "explorer": "available",
   "processor": "available"
  },
+ "submitted": false,
  "versions": {
   "exqalibur": "1.4.2",
   "perceval-quandela": "1.3.1"

@@ -366,3 +366,104 @@ def test_moved_inputs_reports_rather_than_fails() -> None:
         raise AssertionError("a moved input is not named")
     if tomo.first_difference(retained, recomputed) is not None:
         raise AssertionError("the digests still reach the tolerance comparison")
+
+
+def planned_fixture(job: str, hom: float, explorer: str = "available", jobs: int = 0) -> dict[str, Any]:
+    """The fields of a qd_platform.plan record that the submission policy reads."""
+    policy = case.submission_policy(job)
+    return {
+        "case": job,
+        "platform": case.PLATFORM,
+        "credit_ceiling": policy["credit_ceiling"],
+        "per_job_credits": policy["per_job_credits"],
+        "expected_seconds": float(policy["expected_seconds"]),
+        "perfs_at_plan": {"HOM (%)": hom},
+        "status_at_plan": {"explorer": explorer, "processor": "available"},
+        "availability_at_plan": {"num_concurrent_jobs": jobs, "num_jobs_in_queue": 0},
+    }
+
+
+def decisive_run(job: str = "job-00", status: str = "completed", short: int = 0) -> dict[str, Any]:
+    tallies = [{"eligible": [100, 100, 100, 100]} for _ in range(case.ITERATIONS)]
+    for tally in tallies[:short]:
+        tally["eligible"] = [50, 50, 50, 49]
+    return {"job": job, "status": status, "tallies": tallies, "uncounted": 0}
+
+
+def test_the_retained_reference_admits_no_hom() -> None:
+    """The reference tomography ran at 87.56 %: no HOM is above 90 % and within one point of it."""
+    lower, upper = case.hom_band(case.reference_hom())
+    if lower < upper or case.submission_policy("job-00")["hom_percent"]["admitted"] != "none":
+        raise AssertionError(f"the band ({lower}, {upper}] admits a HOM")
+    with pytest.raises(case.qd_platform.PlatformError, match="outside"):
+        case.admit("job-00", planned_fixture("job-00", 88.0), case.reference_hom(), None)
+
+
+@pytest.mark.parametrize(("hom", "admitted"), [(90.0, False), (90.01, True), (91.5, True), (91.51, False)])
+def test_hom_band_is_above_the_floor_and_within_a_point(hom: float, admitted: bool) -> None:
+    planned = planned_fixture("job-00", hom)
+    if admitted:
+        case.admit("job-00", planned, 90.5, None)
+    else:
+        with pytest.raises(case.qd_platform.PlatformError, match="outside"):
+            case.admit("job-00", planned, 90.5, None)
+
+
+def test_running_admits_only_an_idle_token() -> None:
+    case.admit("job-00", planned_fixture("job-00", 91.0, "running"), 90.5, None)
+    with pytest.raises(case.qd_platform.PlatformError, match="holds jobs"):
+        case.admit("job-00", planned_fixture("job-00", 91.0, "running", jobs=1), 90.5, None)
+    with pytest.raises(case.qd_platform.PlatformError, match="status"):
+        case.admit("job-00", planned_fixture("job-00", 91.0, "maintenance"), 90.5, None)
+
+
+def test_a_plan_off_the_policy_is_refused() -> None:
+    planned = planned_fixture("job-00", 91.0)
+    planned["expected_seconds"] = 300.0
+    with pytest.raises(case.qd_platform.PlatformError, match="expected_seconds"):
+        case.admit("job-00", planned, 90.5, None)
+
+
+@pytest.mark.parametrize(
+    ("predecessor", "match"),
+    [
+        (None, "requires the collected"),
+        (decisive_run(status="canceled"), "not completed"),
+        (decisive_run(short=1), "eligible events"),
+        (decisive_run(job="job-01"), "not job-00"),
+    ],
+)
+def test_job_01_waits_for_a_decisive_job_00(predecessor: dict[str, Any] | None, match: str) -> None:
+    with pytest.raises(case.qd_platform.PlatformError, match=match):
+        case.admit("job-01", planned_fixture("job-01", 91.0), 90.5, predecessor)
+
+
+def test_job_01_admits_after_a_decisive_job_00() -> None:
+    case.admit("job-01", planned_fixture("job-01", 91.0), 90.5, decisive_run())
+
+
+def test_generic_submit_refuses_a_wrapper_case_without_verify(monkeypatch: pytest.MonkeyPatch) -> None:
+    from pathlib import Path
+
+    monkeypatch.setattr(case.qd_platform, "load_case", lambda _: ({"submit_wrapper": case.SUBMIT_WRAPPER}, {}, "x"))
+    with pytest.raises(case.qd_platform.PlatformError, match="submits only through"):
+        case.qd_platform.submit(Path("job-00"), case.PLATFORM, "approval", 1.4, 220, 1.0)
+
+
+def test_submit_binds_the_admitted_preflight() -> None:
+    from qd_schedule import body_digest
+
+    planned = {"cases_sha256": "c", "body": {"process_id": "a", "payload": {"x": 1}}}
+    reviewed = {
+        "admission": {"admitted": True},
+        "cases_sha256": "c",
+        "body_sha256_without_process_id": body_digest({"process_id": "b", "payload": {"x": 1}}),
+    }
+    case.bind_reviewed("job-00", planned, reviewed)
+    for change, match in (
+        ({"admission": {"admitted": False, "refusal": "HOM"}}, "not admitted"),
+        ({"cases_sha256": "d"}, "case changed"),
+        ({"body_sha256_without_process_id": body_digest({"payload": {"x": 2}})}, "differs from the preflight"),
+    ):
+        with pytest.raises(RuntimeError, match=match):
+            case.bind_reviewed("job-00", planned, {**reviewed, **change})
