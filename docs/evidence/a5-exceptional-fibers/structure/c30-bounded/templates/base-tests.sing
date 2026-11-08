@@ -1,0 +1,8 @@
+int nK=size(K); int nL=size(Lam); int jj; int kk;
+ring Z=@P@,(Y1,Y2,Y3,Y4,Y5,Y6),dp;
+matrix PM[24][6]; for (jj=1;jj<=24;jj++) { for (kk=1;kk<=6;kk++) { PM[jj,kk]=PLi[jj,kk]; } }
+res("off control: rank of the gradient of G' on the tangent space of B at the point (3 expected): "+string(rank(PM)));
+ideal im; for (jj=1;jj<=24;jj++) { im[jj]=PLi[jj,1]*Y1+PLi[jj,2]*Y2+PLi[jj,3]*Y3+PLi[jj,4]*Y4+PLi[jj,5]*Y5+PLi[jj,6]*Y6; }
+map psi=Y,im;
+ideal iK=psi(K);
+res("off control: K2 generators nonzero on the plane over the point: "+string(size(iK))+" of "+string(nK)+" (positive: the fibre over a point off the origin is not in V(K2))");

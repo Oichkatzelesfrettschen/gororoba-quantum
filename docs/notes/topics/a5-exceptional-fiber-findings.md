@@ -343,8 +343,10 @@ non-reduced tangent cone; arcs on the normalization replace them.
   ([structure/iso-k2](../../evidence/a5-exceptional-fibers/structure/iso-k2/sections/README.md)), so Iso arcs need the one target V(K2).
 - W8 -> N-: Hilbert function equal to the quadric values through degree 4 at both primes (h_4 = 1,725); K2 radical, equal to P cap (K2 : P) with V(P) the geometrically irreducible degree-20 component and K2 : P of projective
   dimension 5 and degree 30, geometrically prime, at both primes (structure/w8-kp, no primality of P used); h_5 = 4,116 at 32009 (r_16, two product sets); W8 -> N+ follows through the t9 isomorphism; F(I) = k[y]/K2 holds exactly when
-  arcs reach every top-dimensional component of V(K2); arcs reach V(P) at both primes (analytic spread 6), and V(K2 : P)
-  stays open.
+  arcs reach every top-dimensional component of V(K2); arcs reach V(P) at both primes (analytic spread 6), and
+  V(K2 : P) lies in the fiber too (linear 3-spaces over the base locus of the point blowup sweep a 5-dimensional set
+  of V(K2 : P) outside V(P) at both primes; [structure/c30-bounded](../../evidence/a5-exceptional-fibers/structure/c30-bounded/README.md),
+  ledger row A5-066), so F(I) = k[y]/K2 for W8 at both primes.
 - Coverage (`claims.json`): every pair is certified through degree 3 at both primes; through degree 4 for W8 and
   Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes and for X and
   E8-bar -> VB at 32009. All certificates hold over F_p only.

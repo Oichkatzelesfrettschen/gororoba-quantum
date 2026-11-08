@@ -1,0 +1,4 @@
+RESULT c30-control-base-p32029 off control: J and G not divisible by s^2 (0 required) ; J' at the point (0 required) 0; generators of G' nonzero at the point (0 required) 0
+RESULT c30-control-base-p32029 off control: rank of the gradient of G' on the tangent space of B at the point (3 expected): 3
+RESULT c30-control-base-p32029 off control: K2 generators nonzero on the plane over the point: 83 of 144 (positive: the fibre over a point off the origin is not in V(K2))
+exit 0

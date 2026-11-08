@@ -186,7 +186,9 @@ E8-bar -> VB (k = 3) is therefore a consistency control of the method and decide
 component-resolving variant would count the points of E0 cut by Lambda_{l-1} (20 against 50 for W8, 4 against 7 for
 E8-bar -> VB) by keeping the G-coordinates, which is the sliced chart that stalled, or by counting the branches of
 the closure at the origin; hypothesis: the branch count equals the point count when each point is a transversal
-limit, untested and not proved.
+limit, untested and not proved. The component-resolving
+variant that ran is local: [../../c30-bounded/](../../c30-bounded/README.md) reads the fiber cone over the base locus of
+the point blowup and finds C30 in the fiber.
 
 ## Limits and falsifiers
 

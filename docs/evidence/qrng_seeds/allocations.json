@@ -2483,6 +2483,11 @@
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T000625Z.json",
    "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/tslice_gen.py",
    "reason": "DRAW_B: the independent Iso k = 4 slice forms, 17 coefficients each, read as raw values below the prime by index (p = 32009 indices 1 to 143, p = 32029 indices 144 to 271)"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T182935Z.json",
+   "path": "docs/evidence/a5-exceptional-fibers/structure/c30-bounded/c30_gen.py",
+   "reason": "DRAW: the W8 base-locus plane points, controls and slice forms of the bounded C30 check, read as raw values in [1, 32008] by index (indices 4 to 358: the points and controls first, then 24 values for each of five slice forms)"
   }
  ]
 }

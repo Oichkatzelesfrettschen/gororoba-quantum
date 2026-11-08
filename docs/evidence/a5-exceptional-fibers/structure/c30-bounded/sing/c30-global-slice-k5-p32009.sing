@@ -1,0 +1,23 @@
+// c30-global-slice-k5-p32009: five QRNG linear forms of G, saturation of (J, l1(G), ..., l5(G)) by t2 through the homogenized standard
+// basis (the t-space slice ladder, ../arcs-iso-w8/tslice/README.md) for W8; header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing (sha256 585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760); forms docs/evidence/anu_qrng/draw-2026-11-08T182935Z.json
+LIB "elim.lib"; LIB "general.lib"; system("--ticks-per-sec",1); int t0=rtimer; option(prot);
+proc res(string m) { string l="RESULT c30-global-slice-k5-p32009 "+m; print(l); write(":a docs/evidence/a5-exceptional-fibers/structure/c30-bounded/logs/c30-global-slice-k5-p32009.result", l); }
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing";
+poly l1=2800*G[1]+9926*G[2]+6673*G[3]+7764*G[4]+13311*G[5]+29297*G[6]+10517*G[7]+282*G[8]+16726*G[9]+5398*G[10]+11798*G[11]+7292*G[12]+30039*G[13]+4707*G[14]+8412*G[15]+31646*G[16]+24422*G[17]+3532*G[18]+13012*G[19]+25164*G[20]+10942*G[21]+16900*G[22]+18713*G[23]+8131*G[24];
+poly l2=20974*G[1]+17979*G[2]+14241*G[3]+25410*G[4]+16228*G[5]+3238*G[6]+17678*G[7]+11716*G[8]+5864*G[9]+29915*G[10]+16281*G[11]+18365*G[12]+5262*G[13]+19285*G[14]+23709*G[15]+23589*G[16]+31849*G[17]+19684*G[18]+12469*G[19]+6826*G[20]+2671*G[21]+13031*G[22]+29369*G[23]+3885*G[24];
+poly l3=3607*G[1]+10208*G[2]+29296*G[3]+18439*G[4]+28544*G[5]+751*G[6]+24732*G[7]+3407*G[8]+2074*G[9]+13659*G[10]+557*G[11]+3064*G[12]+30711*G[13]+2661*G[14]+7229*G[15]+16602*G[16]+19310*G[17]+15108*G[18]+739*G[19]+16340*G[20]+28931*G[21]+8532*G[22]+27454*G[23]+9979*G[24];
+poly l4=31052*G[1]+31427*G[2]+5157*G[3]+30351*G[4]+14215*G[5]+8560*G[6]+10270*G[7]+14666*G[8]+3675*G[9]+14148*G[10]+4595*G[11]+22500*G[12]+13060*G[13]+29874*G[14]+25348*G[15]+31047*G[16]+2634*G[17]+18105*G[18]+29531*G[19]+8178*G[20]+13876*G[21]+31247*G[22]+13422*G[23]+12759*G[24];
+poly l5=6056*G[1]+28680*G[2]+29348*G[3]+10081*G[4]+22794*G[5]+5836*G[6]+30168*G[7]+22736*G[8]+25167*G[9]+28232*G[10]+16176*G[11]+23083*G[12]+13884*G[13]+22693*G[14]+26052*G[15]+24734*G[16]+30403*G[17]+29366*G[18]+31955*G[19]+27740*G[20]+3630*G[21]+29486*G[22]+16867*G[23]+20495*G[24];
+ideal Q=J,l1,l2,l3,l4,l5;
+res("start: variables "+string(nvars(basering))+", size(Q) "+string(size(Q))+", s "+string(rtimer-t0));
+ideal Qs=std(Q);
+res("standard basis of Q: generators "+string(size(Qs))+", s "+string(rtimer-t0));
+ring rh=32009,(t1,t4,t5,t6,t7,t9,h,t2),dp;
+ideal Qh=homog(imap(r,Qs),h);
+ideal Sh=std(Qh);
+res("standard basis of the homogenization: generators "+string(size(Sh))+", s "+string(rtimer-t0));
+int ex=0; int ii; poly gg; int ee; for (ii=1;ii<=ncols(Sh);ii++) { gg=Sh[ii]; ee=0; while (gg!=0 && subst(gg,t2,0)==0) { gg=gg/t2; ee++; } Sh[ii]=gg; if (ee>ex) { ex=ee; } }
+ideal Sd=subst(Sh,h,1);
+setring r; ideal S=imap(rh,Sd); S=std(S);
+res("saturation by t2: dim "+string(dim(S))+" degree "+string(mult(S))+", s "+string(rtimer-t0));
+quit;

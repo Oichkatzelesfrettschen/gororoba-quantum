@@ -189,3 +189,29 @@ the closest entry and say what changed.
 - Outcome: standard basis and preflight in 2,773.7 s at 486,608 KiB peak; preflight 375.62 GiB (D = 235,543); peak
   forecast about 160 GiB, at most about 195 GiB, from the degree-5 term-by-term reading. Case:
   `docs/evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`.
+
+### W8 -> N- degree-30 component C30: fiber-cone planes over the base locus of the point blowup (bounded check)
+
+- Question and decisive outcome: whether C30 = V(K2 : P) lies in the fiber E0 over the origin. A family of limit planes
+  of cone dimension 6 inside V(K2 : P) and outside V(P) decides it positively (F(I) = k[y]/K2, the degree-6 rank run
+  unnecessary); planes inside V(P), planes outside V(K2), or Jacobian rank below 6 would read the other way.
+- Formulation: the local fiber cone of the pullback ideal at a QRNG point of P(L0) in the point blowup, cut by a
+  transversal slice, read from a two-variable ideal (docs/evidence/a5-exceptional-fibers/structure/c30-bounded/README.md); rejected: the global t-space slice of codimension 5
+  (Bezout bound 131,072 for its degree, no standard basis in 900 s) and the Iso-style one-chart saturation (more than
+  23.5 h and 25.7 GiB on W8).
+- Host and tool versions: build host capsule (10 CPUs visible, 47 GiB), Singular 4.4.1 (passagemath-singular 10.8.13),
+  one thread.
+- Launch line and environment: `sh docs/evidence/a5-exceptional-fibers/structure/c30-bounded/run.sh CASE [LIMIT_S]`, which wraps
+  `systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 timeout -k 10 LIMIT /usr/bin/time -v Singular -q --no-rc`,
+  `MALLOC_ARENA_MAX=2`, `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, stdin from `/dev/null`; local ordering `ds`
+  only for the two-variable ideal of step 4, `dp` elsewhere; `option(prot)` on the global slice.
+- Departures from the foundations: none; the user scope that earlier entries record as failing after the capsule start
+  worked on 2026-11-08, so the cgroup cap is the memory limit here.
+- Parallelism: one single-thread process at a time, except the global slice beside the quick cases (under 0.6 GiB each).
+- Memory and time limits: 8 GiB cgroup cap; 300 s per plane or control, 900 s for the global slice; `exit 124` in
+  `logs/CASE.result` means the limit ended the run, an out-of-memory kill would leave a nonzero exit.
+- Checkpoints: `logs/CASE.result` receives each RESULT line when it exists.
+- End state: logs retained beside the scripts; nothing to deallocate.
+- Outcome: five planes (three at 32009, two at 32029) of 45 to 52 s and 26 MiB each, every one inside V(K2), outside V(P) and
+  V(Lambda), inside V(K2 : P) at 32009, Jacobian rank 6; the controls read as predicted; the global slice stalled
+  (`A5-237`). Rows added to the measured-combinations table of compute-flags.md.
