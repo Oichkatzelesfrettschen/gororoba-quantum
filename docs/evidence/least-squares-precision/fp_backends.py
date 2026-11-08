@@ -15,13 +15,18 @@ import os
 import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
+from fractions import Fraction
 from pathlib import Path
 
 import numpy as np
 from flint import arb, arb_mat, ctx
 
 PREC = 256
-WORKERS = int(os.environ.get("FP_WORKERS", str(os.cpu_count() or 1)))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "gororoba_quantum"))
+from parallel import workers  # noqa: E402
+
+# the process budget of parallel.workers (affinity, quota, GOROROBA_WORKERS); FP_WORKERS may only lower it
+WORKERS = min(int(os.environ.get("FP_WORKERS", str(workers()))), workers())
 REFINE_STEPS = int(os.environ.get("FP_REFINE_STEPS", "2"))
 QUAD_THREADS = int(os.environ.get("FP_QUAD_THREADS", "1"))
 QUAD_BACKEND = os.environ.get("FP_QUAD_BACKEND", "sleef")
@@ -81,9 +86,19 @@ def scores(rates, d: dict, zero) -> dict:
     return out
 
 
+def order_key(value):
+    """An exact sort key: the midpoint of an arb ball as a Fraction, any other value itself."""
+    if isinstance(value, arb):
+        mantissa, exponent = value.mid().man_exp()
+        return Fraction(int(mantissa)) * Fraction(2) ** int(exponent)
+    return value
+
+
 def summary(values: list, sqrt, zero) -> dict:
-    """Sample sd (ddof 1) and numpy's linear 2.5 / 97.5 percentiles, in the values' own type."""
-    vals = sorted(values, key=float)
+    """Sample sd (ddof 1) and numpy's linear 2.5 / 97.5 percentiles, in the values' own type, ordered exactly: an arb
+    ball by its exact dyadic midpoint, any other value by its own type's comparison, so values that round to one
+    float64 keep their order."""
+    vals = sorted(values, key=order_key)
     n = len(vals)
     mean = sum(vals, zero) / n
     sd = sqrt(sum(((v - mean) * (v - mean) for v in vals), zero) / (n - 1))

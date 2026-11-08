@@ -487,3 +487,14 @@ def test_column_batches_certify_the_same_values() -> None:
         split = [case.certified_float(case.from_parts(part["F"][table][0])) for part in apart]
         if None in joined or joined != split:
             raise AssertionError(f"{table}: batching changes the certified scores {joined} against {split}")
+
+
+def test_a_ball_across_zero_does_not_certify() -> None:
+    """[-2^-1100, 2^-1100] rounds to -0.0 at its lower end and +0.0 at its upper: two float64 encodings."""
+    from flint import arb, ctx
+
+    ctx.prec = 128
+    if case.certified_float(arb(0, arb(2) ** -1100)) is not None:
+        raise AssertionError("a ball across zero certifies one signed zero")
+    if case.certified_float(arb(2) ** -1100 * arb("0.5 +/- 0.25")) != 0.0:
+        raise AssertionError("a positive ball below the subnormal range does not certify +0.0")
