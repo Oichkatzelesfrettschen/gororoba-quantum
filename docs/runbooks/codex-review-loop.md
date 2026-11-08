@@ -92,6 +92,10 @@ follows [codex-review-stalls.md](codex-review-stalls.md).
 - When one file conflicts heavily, take the lower branch's reviewed version and
   re-apply the upper branch's own changes on top, and run a dry run on every
   branch the merge touched.
+- A scripted merge stops on a conflict before it stages anything:
+  `git merge --no-ff origin/main || { git diff --name-only --diff-filter=U; exit 1; }`.
+  `git add -A` clears the unmerged state, so a chain that stages after a
+  failed merge commits the conflict markers.
 
 ## Merging
 
@@ -106,11 +110,19 @@ A PR merges after this sequence:
    the head that round reviewed, accepts its verdict, waits on the current
    head's checks and requests nothing (the plain form treats a new head as an
    unreviewed round and re-requests after the stall interval).
-3. The `pr.yml` check `tests` passes on the head (`lint` and
-   `types` run beside them; `proofs.yml` runs when the diff touches a proof path). A push that changes the head reruns them; a red
-   job gets its fix commit on the branch.
-4. GitHub reports mergeable_state clean.
+3. The `pr.yml` checks `lint`, `types`, `tests` and `contracts` pass on the
+   head (`proofs.yml` runs when the diff touches a proof path). A push that
+   changes the head reruns them; a red job gets its fix commit on the branch.
+4. GitHub reports mergeable_state clean. A PR whose mergeable_state is
+   `dirty` gets no `pr.yml` check runs at all, so a wait loop exits on
+   `dirty`, merges main, and waits again rather than polling for checks that
+   never start.
 5. The owner, consulted with the report of step 8 above, says to merge.
+
+When the owner says "just merge", the operator merges and cleans up and does
+nothing else: no edited body, no exception record, no further review. While
+required checks are still running, branch protection (admins enforced) refuses
+the merge, so one background loop polls the checks and merges on green.
 
 Then, bottom-up, for each PR:
 1. Merge it with a merge commit:
