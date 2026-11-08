@@ -530,6 +530,13 @@
    "F_sd": 0.011842178426106643
   },
   "arithmetic": {
+   "inputs_sha256": {
+    "design_matrix": "4d26b7845989c8e1e29331a1e256cfef927eb658dbbc9ce6de6b1569cc423686",
+    "hermitian_basis": "df4ab54fb212dd62e55487858fde9b266fdfd7043fcbab60d586e368d9154871",
+    "ideal_choi_vector": "411d2854573bf05718bccb74b2bea00f6180dd0104861c8f112aa0295ea85b45",
+    "observed_rate_columns": "f9b69a5500a8c49c82c681a7c2ce98dc2a137e50c2c57f8dc07bcad70a79e1fc",
+    "rate_observables": "bb0c95204a0f1b69ca3f891701b5174189c55b0e2251d5e18420f3fc262f22bc"
+   },
    "method": "arb normal equations (python-flint arb_mat)",
    "precision_bits": 128,
    "rounding": "each float64 is the correctly rounded value of every point of its arb enclosure"
