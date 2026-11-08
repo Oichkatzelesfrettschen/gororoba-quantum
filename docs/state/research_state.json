@@ -14986,11 +14986,11 @@
     },
     {
       "id": "ascella-signed-coherence-long-horizon-persistence",
-      "statement": "Job-02's 64 settings of theta2-x-arm0 rerun on qpu:ascella (job fbdd5956, 2026-11-06 19:09 UTC, HOM 88.98 %, g2 2 %, transmittance 5.59 %, 64 iterations of 32,768 samples in 194 s), twelve days after job-03 and after a Quandela software update (mosaiq-arcturus 2.1.5.2.post4 to post11, hardware-core 3.9.3 to 3.9.11), at job-02's compilation seeds, return job-03's mesh byte for byte in all 64 settings. Against job-03 the 56 perturbed meshes' centered X statistics read persists: slope 0.815 with one-sided 99 % upper bound 0.924 beside the 0.916 a fully persistent error reaches through job-03's counting noise, relabeling p 5e-5 at the floor of 20,000 relabelings; the reproduction correlation is r 0.925 against the ceiling 0.936 (fixed per mesh), the seed-0 anchors stay steady and the perturbed dispersion stays compilation dependent. Against job-02 the slope is 0.810 with upper bound 0.946 beside 0.845, also persists. Each served mesh therefore keeps most of its analyzer error across twelve days and the update; the bound does not exclude full persistence.",
+      "statement": "Job-02's 64 settings of theta2-x-arm0 rerun on qpu:ascella (job fbdd5956, 2026-11-06 19:09 UTC, HOM 88.98 %, g2 2 %, transmittance 5.59 %, 64 iterations of 32,768 samples in 194 s), twelve days after job-03 and after a Quandela software update (job-02's platform catalogue records mosaiq-arcturus 2.1.5.2.post4 and hardware-core 3.9.3, job-08's mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11), at job-02's compilation seeds, return job-03's mesh byte for byte in all 64 settings. Against job-03 the 56 perturbed meshes' centered X statistics read persists: slope 0.815 with one-sided 99 % upper bound 0.924 beside the 0.916 a fully persistent error reaches through job-03's counting noise, relabeling p 5e-5 at the floor of 20,000 relabelings; the reproduction correlation is r 0.925 against the ceiling 0.936 (fixed per mesh), the seed-0 anchors stay steady and the perturbed dispersion stays compilation dependent. Against job-02 the slope is 0.810 with upper bound 0.946 beside 0.845, also persists. Each served mesh therefore keeps most of its analyzer error across twelve days and the update; the bound does not exclude full persistence.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One chip, one logical setting and one acquisition twelve days on; the readings M, A, S, P1 and P2 were fixed in plan ascella-long-horizon-seed-repeat-case before the acquisition, and the dark-output and predecessor correlations are exploratory. The slope's point estimate sits below the attenuated full-persistence value against both references, so a partly redrawn component of up to about a fifth of the slope is not excluded. The software update left these compilations unchanged, so the reading says nothing about an update that redraws them.",
+      "boundary": "One chip, one logical setting and one acquisition twelve days on; the readings M, A, S, P1 and P2 were fixed in plan ascella-long-horizon-seed-repeat-case before the acquisition, and the dark-output and predecessor correlations are exploratory. The slope's point estimates sit 11 % (against job-03) and 4 % (against job-02) below the attenuated full-persistence values; the reading supplies a one-sided upper bound only, so a partly redrawn component is not excluded and no maximum redrawn fraction is established. The software update left these compilations unchanged, so the reading says nothing about an update that redraws them.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/results.json",
@@ -15007,6 +15007,14 @@
         {
           "path": "docs/evidence/ascella-order-coefficients/long-horizon-power.json",
           "sha256": "e55f018fb0a880e999e4a632a8d6d4d7f910b336d633cb1fe3832c157a56b889"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/platform-before/catalogue.json",
+          "sha256": "7a0811e294db45b18d24e8b3632bba0751d10953c8c13b81ba04eb0d5a0eb0b9"
+        },
+        {
+          "path": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08/platform-before/catalogue.json",
+          "sha256": "fb36baf07c6c7be24cf6964abd550bb48640487c9277a98ce21138dc0d3a1184"
         }
       ],
       "documents": [
