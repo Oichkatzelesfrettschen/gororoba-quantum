@@ -43,6 +43,11 @@ block across platforms, simulator against QPU, and each ledger row against its r
 `scripts/pathion_evidence_table_build.py` writes both files (`--check` reports drift) through the reader
 `gororoba_quantum/pathion_evidence_table.py`.
 
+The evidence table holds block-level readings only. The Ascella mesh-persistence runs record the instrument (the fixed
+error of each served mesh and the simulator's mesh identity), so `scripts/pathion_evidence_table_build.py` skips them by
+name through `pathion_evidence_table.is_ascella_instrument_record` and raises on any unknown record; their readings live
+in the [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md) section "Ascella mesh persistence".
+
 The mechanism probes behind the cross-platform findings (Ascella mirror failure, Tuna-17 null offset, Tuna-17 `ba`
 misses) live in [conjectures/](conjectures/README.md) with their logs and a runner.
 
