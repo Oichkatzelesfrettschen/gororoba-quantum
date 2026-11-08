@@ -236,3 +236,7 @@ the closest entry and say what changed.
 - End state: the four files and the runner copied into the evidence directory and hash-checked against the laptop; the
   export stays on the laptop.
 - Outcome: wall 1,900.6 s, peak RSS 19.6 GiB, r_19 = 2,422 (blocks 632/610/590/590); h_6 certified at p = 32009.
+- Follow-on unit `a5-v11-iso-d6-next` (`run-iso-d6-next.sh`, same flags): N = 18 at 32009, to test the predicted last
+  jump 169 split 49/42/39/39 (r_18 = 2,253 or the law fails at degree 6), then N = 19 at 32029 to certify A5-125.
+  Outcome: r_18 = 2,253 (583/568/551/551) in 1,173.2 s at 15.4 GiB, as predicted; r_19 = 2,422 at 32029
+  (632/610/590/590) in 1,905.6 s at 19.6 GiB, h_6 certified there.

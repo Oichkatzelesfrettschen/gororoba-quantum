@@ -22,8 +22,11 @@ bound rests on no membership receipt.
   5) predicted N = 19; the rank reached the K2 count there, which extends the law to an eleventh cell. Reaching the
   count at N = 19 shows N = 19 suffices; whether N = 18 already reaches it is not measured.
 - Blocks 2 and 3 are equal (590, 590), as in every Iso and W8 run.
-- The predicted last jump r_19 - r_18 = 169 = (2 x 6 + 1)^2 with blocks 49 / 42 / 39 / 39 and r_18 = 2,253 is not
-  tested: r_18 was not run.
+- The last jump: N = 18 at p = 32009 reads r_18 = 2,253 with blocks 583 / 568 / 551 / 551
+  ([`isonm_d6_n18_p32009.json`](isonm_d6_n18_p32009.json), sha256 5efb4230edfcec7f...), so r_19 - r_18 = 169 =
+  (2 x 6 + 1)^2 with blocks 49 / 42 / 39 / 39, the values the trends file predicted before the run
+  (`../forecasts/trends-2026-11-06.md`, line 246, and the closed form under the last-jump table). h_6 is reached at
+  exactly N = 19, not before, which makes the N = 3d + 1 law exact in an eleventh cell.
 - Forecast cost: 13 to 23 GiB and 2 to 4 h; measured 19.6 GiB and 32 min.
 
 ## Registry binding
@@ -35,4 +38,18 @@ root that holds a record names its source), it adds one bound certificate and ma
 certified in `../claims.json`; without the last root, `--check` reproduces the previous registry. Singular version:
 [`iso6-singular-version.txt`](iso6-singular-version.txt).
 
-Not run: p = 32029 (A5-125 stays open) and N = 18.
+## Second run: N = 18 at 32009, then N = 19 at 32029
+
+The laptop unit `a5-v11-iso-d6-next` ([`run-iso-d6-next.sh`](run-iso-d6-next.sh), sha256 59d0290e70a8ddac...) ran the
+same engine in the same mode from 2026-11-08T20:11:57Z to 21:03:16Z ([`iso6b.events`](iso6b.events)); both error streams
+are empty.
+
+- N = 18, p = 32009, header 1f1757d55751f1e3...: wall 1,173.2 s, peak RSS 16,134,592 KiB, closure in 5 rounds;
+  r_18 = 2,253 (blocks 583 / 568 / 551 / 551), below h_6, so it certifies nothing and binds no certificate.
+- N = 19, p = 32029, canonical header `working/build/inputs/p32029-r9115/iso-nm.sing` (sha256 28c3c473369c6eda...):
+  wall 1,905.6 s, peak RSS 20,525,468 KiB, closure in 6 rounds;
+  [`isonm_d6_n19_p32029.json`](isonm_d6_n19_p32029.json) (sha256 40a86461193f2d1e...) reads r_19 = 2,422 with blocks
+  632 / 610 / 590 / 590, the same per-block values as at 32009. It meets HF(k[y]/K2, 6) = 2,422, so h_6 = 2,422 over
+  F_32029 as well (A5-125). The registry build with the scan roots above (the a5-failed-runs root given as
+  `../../local/a5-failed-runs` from this directory) adds one bound certificate and marks Iso degree 6 certified at
+  32029.
