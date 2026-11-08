@@ -169,3 +169,23 @@ the closest entry and say what changed.
   `sat_with_exp` at Iso k = 5, 3,022 s at 382 MiB; the homogenized saturation took 272 s. Iso k = 3 cost less than
   k = 5 (16 s). The a0 cross-check at Iso k = 3 was stopped at 786 s and the junk split of that run's slice proper hit
   its 1,800 s limit; neither is a required control. Rows added to the measured-combinations table; the Iso k = 4 rows are preregistered and unrun.
+
+### W8 -> N- degree 6, N = 19: export probe on the laptop (sizes the cloud case)
+
+- Question and decisive outcome: the preflight memory and the Singular standard-basis cost of the W8 degree-6 rank at
+  N = 19 (the 3d + 1 law), so the cloud case quotes a measured figure; the probe answers no algebra.
+- Formulation: engine v11 quotient mode with the degree-2 receipt; `--max-gb 1` stops it at the preflight gate after
+  the standard basis, keeping the degree-independent export for the full run.
+- Host and tool versions: the laptop (WSL, 32 threads, 54 GiB), passagemath Singular 4.4.1, the engine's venv.
+- Launch line and environment: `run-w8-d6-export.sh` (retained in
+  `docs/evidence/a5-exceptional-fibers/w8-d6-n19-probe/`) under `systemd-run --user --unit a5-v11-w8-d6-export -p
+  MemoryMax=48G -p MemorySwapMax=0`, `GOROROBA_WORKERS=8`, `MALLOC_ARENA_MAX=2`, timeout 43,200 s.
+- Departures from the foundations: none.
+- Parallelism: one job on the laptop; export chunks run through the engine's worker pool.
+- Memory and time limits: the cgroup cap of 48 GiB; the preflight gate ends the run by design (exit 1).
+- Checkpoints: the export directory keeps `s.txt` and `qB.txt` with their hashes.
+- End state: export kept on the laptop for the full run; records retained; the runner logs the engine status but
+  exits 0 on failure (#793 tracks the fix for new runners).
+- Outcome: standard basis and preflight in 2,773.7 s at 486,608 KiB peak; preflight 375.62 GiB (D = 235,543); peak
+  forecast about 160 GiB, at most about 195 GiB, from the degree-5 term-by-term reading. Case:
+  `docs/evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`.
