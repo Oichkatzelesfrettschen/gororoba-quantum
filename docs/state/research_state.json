@@ -3192,6 +3192,160 @@
       "run": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00",
       "family": "pathion coset blocks, two blocks per photon (A_5, dimension 32)",
       "question": "Does the two-block mirror failure on qpu:ascella persist on the identical meshes, follow fresh meshes of the same designs, follow the anchor seed, or follow a static per-shifter map?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_qx-batch-00",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On the QX emulator, do the 6-CZ null blocks, b0 and their coin-fixed twins reproduce their ideal laws, as the control the Tuna-17 null-block series requires?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_qx-batch-01",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On the QX emulator, do the 6-CZ null blocks, b0 and their coin-fixed twins reproduce their ideal laws, as the control the Tuna-17 null-block series requires?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_qx-batch-02",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On the QX emulator, do the 6-CZ null blocks, b0 and their coin-fixed twins reproduce their ideal laws, as the control the Tuna-17 null-block series requires?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-00",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-01",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-02",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-03",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-04",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-05",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-06",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-07",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-08",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-09",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-10",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-11",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-12",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-13",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-14",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-14",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-15",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-15",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-16",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-16",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-17",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-17",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-18",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-18",
+      "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
+      "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
     }
   ],
   "claims": [

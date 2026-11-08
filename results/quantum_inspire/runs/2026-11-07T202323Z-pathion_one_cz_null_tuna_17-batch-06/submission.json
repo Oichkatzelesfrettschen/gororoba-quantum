@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-08T01:00:56+00:00",
+ "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "dc4b07c21b2a0395e051c949ea720cc2fe48d88d6623266c41d3f256a16b49da",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 924190,
+ "project": 824625,
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1693516,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "k12-coin0.cq",
+   "job": 1693517,
+   "sha256": "5d971ff41f71b8e60a65ebc8990e11b464f7988b717793028dbf07fcbdd32b7a"
+  },
+  {
+   "file": "k12-coin1.cq",
+   "job": 1693518,
+   "sha256": "ae0d5e9e5460db1469c5c0fb59a3d7a52b249fcb8f70111cfd3cce4200469658"
+  }
+ ],
+ "submitted_utc": "2026-11-08T01:00:56+00:00"
+}

@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-08T05:47:44+00:00",
+ "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "9781f6d84924d6f80a8b3380f6d0b7ab892b88e6a1a2e323650781fea6acb149",
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "k12-coin1.cq",
+   "job": 1694761,
+   "sha256": "ae0d5e9e5460db1469c5c0fb59a3d7a52b249fcb8f70111cfd3cce4200469658"
+  },
+  {
+   "file": "k12-coin0.cq",
+   "job": 1694762,
+   "sha256": "5d971ff41f71b8e60a65ebc8990e11b464f7988b717793028dbf07fcbdd32b7a"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1694763,
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  }
+ ],
+ "project": 824904,
+ "batch_job": 924469,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-08T05:47:47+00:00",
+  "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "9781f6d84924d6f80a8b3380f6d0b7ab892b88e6a1a2e323650781fea6acb149",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 924469,
+  "project": 824904,
+  "shots": 32768,
+  "jobs": [
+   {
+    "file": "k12-coin1.cq",
+    "job": 1694761,
+    "sha256": "ae0d5e9e5460db1469c5c0fb59a3d7a52b249fcb8f70111cfd3cce4200469658"
+   },
+   {
+    "file": "k12-coin0.cq",
+    "job": 1694762,
+    "sha256": "5d971ff41f71b8e60a65ebc8990e11b464f7988b717793028dbf07fcbdd32b7a"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1694763,
+    "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+   }
+  ],
+  "submitted_utc": "2026-11-08T05:47:47+00:00"
+ },
+ "confirmed_utc": "2026-11-08T05:47:47+00:00"
+}
