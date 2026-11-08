@@ -175,15 +175,17 @@ cited record or recomputed.
   Hilbert series differ, and PB carries embedded components over a dimension-6 locus. So the folding argument carries
   varieties, degrees and multiplicities between the sedenion and A_5 levels, never ideals or Hilbert functions. A
   Hilbert-function count at A_5 cannot be read off the sedenion ideal; it needs the A_5 ideal itself.
-- Rocq: gororoba-open's `CayleyDicksonAlgebra.v` covers dimensions 2 and 4 only. The level-k tower lives in this
-  repository's `proofs/` (`CdTowerDomain.v`, with ker L_a = ker R_a in `CdAnnihilatorSymmetryReal.v`). The kernel
-  identity behind the half rule is proved there: [CdHalfFold.v](../../../proofs/CdHalfFold.v) shows the kernel of a half
-  operand is a product of two copies of ker L_a, namely (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and
-  (0, b)(c, d) = 0 iff b c = 0 and b d = 0, at every level over any ordered domain, from `kernel_equality` and
-  `lemma_9_2`. The integer instance is closed under the global context, and the real instance uses only the Stdlib
-  reals' two axioms ([replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). The nullity doubling then
-  follows by linear algebra, which is not formalized. The mixed-pair rule's census Theorem 3 step is the open formal
-  target.
+- Rocq: the nullity doubling of a half operand is proved in gororoba-open for every pure operand.
+  `proofs/theories/CDPureDoublingKernel.v` there proves `zero_upper_half_product` ((a, 0)(c, d) = (ac, da)),
+  `pure_doubling_kernel_decomposition`, `zero_upper_half_matrix` (L_(a,0) is block-diagonal with blocks L_a and R_a),
+  `pure_doubling_rank` and `pure_doubling_nullity` (nullity L_(a,0) = 2 nullity L_a in mathcomp rank, real part of a
+  zero). This repository's [CdHalfFold.v](../../../proofs/CdHalfFold.v) proves the kernel identity for every operand,
+  pure or not, and for the second half: (a, 0)(c, d) = 0 iff a c = 0 and a d = 0, and (0, b)(c, d) = 0 iff b c = 0
+  and b d = 0, at every level over any ordered domain, from `kernel_equality` and `lemma_9_2` (integer instance closed
+  under the global context, real instance on the Stdlib reals' two axioms;
+  [replay bundle](../../evidence/cd-half-fold/README.md), Rocq 9.3.0). Unconditional doubling over the reals needs one
+  lemma more: an operand r + p with r nonzero has L = rI + L_p with L_p skew, invertible over the reals, so both
+  nullities are 0. The mixed-pair rule's census Theorem 3 step is the open formal target.
 
 **Instruments: two faults, an estimator property that hides one of them, and a sharper contact-order test.**
 - Tuna-17 (PR #789): b0's two base replicates read 0.0162 and 0.0393, and the replicate gate failed (chi2 34.9 against
