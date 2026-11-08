@@ -47,7 +47,7 @@ at both primes (k2-hilbert.jsonl). A different value refutes the prime independe
 
 The run ended 2026-11-08T06:29Z with exit 0 (`e8nm_d5_n18_p32029.json`, `n18.events`; wall 93,763 s, peak resident
 35.4 GiB, the same engine `7849cbc71ccf1787`). It read r_18 = 952, blocks 215, 197, 270 and 270, and quotient
-dimension 72,693: every degree-5 number of the prediction above, committed before the run. The degree-4 control at p = 32029 did not run (the runner ran d = 4 at p = 32009 only, `n18.events`). The degree-5 standard counts read
+dimension 72,693: every degree-5 number of the prediction above, committed before the run. The degree-4 control at p = 32029 ran afterwards (2026-11-08, `run-n18-d4-p2.sh`, `e8nm_d4_n18_p32029.json`): r = 495 with blocks 158, 137, 100 and 100, as at p = 32009, wall 4,902 s, peak 35.4 GiB. The degree-5 standard counts read
 21, 83, 225, 495 and 952 for degrees 1 to 5. The representatives' relation file has sha256 `bfd7470c...`, the K2 whose
 Hilbert function `../k2-hilbert.jsonl` records at p = 32029 with HF(k[y]/K2, 5) = 952. So the lower bound r_18 = 952
 meets that upper bound, and h_5 = 952 holds at p = 32029 as at p = 32009 (ledger A5-220).
@@ -56,8 +56,8 @@ meets that upper bound, and h_5 = 952 holds at p = 32029 as at p = 32009 (ledger
 
 - The first statement above holds over F_32009. The repeat at p = 32029 (gate: p = 32009 moved with every invariant
   intact) ran on `e8-nm-p32029.sing` (sha256 48bdcbe0fa17d04c...) with K2 receipt sha256 5573ef662aef... and the same
-  engine and flags. The degree-4 control (expected r = 495) ran at p = 32009 only; at p = 32029 it is an unmet
-  corroborating check, and the exact degree-5 squeeze (r_18 = 952 meets HF(k[y]/K2, 5) = 952) decides.
+  engine and flags. The degree-4 control (expected r = 495) read 495 at both primes, the p = 32029 run
+  after the degree-5 run; the exact degree-5 squeeze (r_18 = 952 meets HF(k[y]/K2, 5) = 952) decides, and the control corroborates.
 - hypothesis (to verify, task: characteristic 0): reduction modulo p cannot raise a rank, and HF(k[y]/K2) can only rise
   under reduction, so if the arc system and K2 at p are the reductions of their rational counterparts, 952 = r_p <= r_Q
   <= h_5(Q) <= HF_Q(k[y]/K2, 5) <= HF_p(k[y]/K2, 5) = 952 would give h_5 = 952 over Q. The step that needs proof is that
