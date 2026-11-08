@@ -1137,6 +1137,20 @@
    "index": 3
   },
   {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset_analysis.py",
+   "name": "TABLE_SEED",
+   "value": 48953,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T140050Z.json",
+   "index": 0
+  },
+  {
+   "path": "tests/gororoba_quantum/test_pathion_wide_coset_analysis.py",
+   "name": "COUPLING_SEED",
+   "value": 31431,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T140050Z.json",
+   "index": 1
+  },
+  {
    "path": "tests/scripts/test_ascella_correction_score.py",
    "name": "FIXTURE_SEED",
    "value": 29161,

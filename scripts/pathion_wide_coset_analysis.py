@@ -8,19 +8,28 @@ archived routed circuit measures into each clbit) invert that placement's laws, 
 group's bodies) score them. A 64-dimensional operand's eight blocks run on two placements each, and a block's estimate
 is the mean over its copies.
 
-Interval. A block estimate N_hat is a smooth function of the plus and minus laws, each a multinomial sample of the
-PUB's shots; the delta method with the multinomial covariance (M (diag p - p p^T) M^T / shots for the readout inverse
-M, the identity for raw laws) gives its variance, the placements are disjoint and the arms are separate PUBs, so
-variances add over blocks, and the 95 percent interval is the estimate +- 1.96 standard errors. The decision bands add
-the offset allowance for the unmodeled placement-to-placement error. The copy agreement of the 64-dimensional operands
-compares the two copies of every block and reports the standardized sum of their differences.
+Interval. A block estimate N_hat is a smooth function of the plus and minus laws, each the empirical law of one PUB's
+shots. The delta method gives each shot an influence value, the gradient of the estimate with respect to the observed
+law (through the placement's readout inverse) taken at the shot's outcome, so the estimate is its arm's mean influence
+plus a constant. The retained raw record of a PUB keeps the aligned bitstrings of every placement register, so the
+covariance of the influence values across placements, taken over the PUB's shots, is the covariance of the placements'
+estimates; the standard error of any sum or difference of placements (copy mean, whole operand, copy A minus copy B,
+visibility mean) is the quadratic form of its weights in that covariance. The plus and minus arms and the operands
+are separate PUBs, so their covariances add. The 95 percent interval is the estimate +- 1.96 standard errors. The
+marginal column keeps the earlier model that sums per-placement multinomial variances as if placements were
+independent; it is report-only, and its diagonal equals the covariance matrix's. The decision bands add the offset
+allowance for the unmodeled placement-to-placement error. The copy agreement of the 64-dimensional operands compares the
+two copies of every block and reports the standardized sum of their differences.
 
-Usage: "$PYTHON" scripts/pathion_wide_coset_analysis.py RUN_DIR [OTHER_RUN_DIR]   (a directory holding collect.json,
-record.json and its archive; a second directory adds the device-agreement rule). Exit 0 when every rule passes.
+Usage: "$PYTHON" scripts/pathion_wide_coset_analysis.py RUN_DIR [OTHER_RUN_DIR] [--out FILE]   (a directory holding
+collect.json, record.json, its archive and raw/<job_id>/; a second directory of another backend adds the
+device-agreement rule; --out writes the analysis record). Exit 0 when every rule passes.
 """
 
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
 import math
 import re
@@ -51,6 +60,10 @@ PER_BLOCK_BAND = 0.25
 VISIBILITY_FLOOR = 0.5
 COPY_Z_LIMIT = 3.0
 STEP = 1e-7
+QUANTITIES = ("nullity", "visibility", "selector")
+LAW_TOLERANCE = 1e-6
+SCHEMA = "pathion-wide-coset-analysis-v2"
+DECIMALS = 6
 
 
 def replica_writers(circuit: QuantumCircuit) -> dict[int, list[int]]:
@@ -93,7 +106,10 @@ def block_reading(
     """One placement's block: N_hat, visibility and selector contrast with delta-method variances, and its signs.
 
     laws are the observed laws (the multinomial samples); with inverse they are inverted first and carry the
-    covariance of the inverted law."""
+    covariance of the inverted law. ``gradient`` is the derivative of (N_hat, visibility, selector) with respect to
+    the observed plus and minus laws, shape (3, 2, 16), the factor of every shot's influence value."""
+    if min(shots) <= 0:
+        raise ValueError(f"shot counts must be positive, got {shots}")
     raw = [np.asarray(law, dtype=float) for law in laws]
     matrices = inverse if inverse is not None else (np.eye(16), np.eye(16))
     used = [m @ law for m, law in zip(matrices, raw, strict=True)]
@@ -111,7 +127,9 @@ def block_reading(
         covariance[16 * arm : 16 * arm + 16, 16 * arm : 16 * arm + 16] = block
     variance = np.einsum("ij,jk,ik->i", jacobian, covariance, jacobian)
     full = pw.block_values(used[0], used[1], ideals[0], ideals[1])
+    gradient = np.stack([jacobian[:, :16] @ matrices[0], jacobian[:, 16:] @ matrices[1]], axis=1)
     return {
+        "gradient": gradient,
         "nullity": float(values[0]),
         "nullity_variance": float(variance[0]),
         "visibility": float(values[1]),
@@ -166,88 +184,191 @@ def placement_readings(
     return out
 
 
-def reading_stat(mean: float, variance: float) -> dict[str, Any]:
-    """A reading with its standard error and the 95 percent normal interval of the delta method."""
-    se = math.sqrt(max(variance, 0.0))
-    return {"mean": mean, "se": se, "lo": mean - Z95 * se, "hi": mean + Z95 * se}
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def block_means(readings: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    """Per block: the mean over its copies of every reading and the variance of that mean."""
-    by_block: dict[str, list[dict[str, Any]]] = {}
-    for reading in readings:
-        by_block.setdefault(reading["block"], []).append(reading)
-    out: dict[str, dict[str, Any]] = {}
-    for block, rows in by_block.items():
-        copies = len(rows)
-        out[block] = {
-            "copies": copies,
-            **{
-                key: float(np.mean([r[key] for r in rows]))
-                for key in ("nullity", "visibility", "selector", "sign_agreement", "ideal", "bins")
-            },
-            **{
-                f"{key}_variance": float(sum(r[f"{key}_variance"] for r in rows) / copies**2)
-                for key in ("nullity", "visibility", "selector")
-            },
-        }
+def load_outcomes(run: Path, entry: dict[str, Any]) -> dict[str, np.ndarray]:
+    """Every member's retained shots as integer outcomes, shape (shots, placements): the 4-bit value of the register
+    of each placement, read from the PUB's raw record after its SHA-256 matches the job's index.
+
+    A raw record that is missing, altered, or inconsistent with collect.json's laws raises; no marginal fallback
+    stands in for it."""
+    root = run / "raw" / entry["job_id"]
+    index_path = root / "index.json"
+    if not index_path.is_file():
+        raise FileNotFoundError(f"{index_path}: the retained raw record of the job is required")
+    digests = json.loads(index_path.read_text())["files"]
+    registers: dict[str, dict[str, Any]] = {}
+    for path in sorted(root.glob("pub_*.json")):
+        if digests.get(path.name) != sha256(path):
+            raise ValueError(f"{path}: SHA-256 differs from the job index")
+        body = json.loads(path.read_text())
+        registers[body["pub_name"]] = body["registers"]
+    out: dict[str, np.ndarray] = {}
+    for name, executed in entry["executed"].items():
+        if executed["pub"] not in registers:
+            raise ValueError(f"{name}: no raw record for {executed['pub']}")
+        columns = []
+        for placement, law in enumerate(entry["measured"][name]):
+            register = registers[executed["pub"]][f"g0_r{placement}_c"]
+            if register["num_bits"] != 4 or len(register["bitstrings"]) != executed["shots"]:
+                raise ValueError(f"{name} placement {placement}: raw shots differ from the executed count")
+            column = np.array([int(bits, 2) for bits in register["bitstrings"]], dtype=np.int64)
+            observed = np.bincount(column, minlength=16) / len(column)
+            if float(np.abs(observed - np.asarray(law_encoding.dense(law), dtype=float)).max()) > LAW_TOLERANCE:
+                raise ValueError(f"{name} placement {placement}: raw shots differ from collect.json's law")
+            columns.append(column)
+        out[name] = np.stack(columns, axis=1)
     return out
 
 
-def operand_stats(readings: dict[str, list[dict[str, Any]]]) -> dict[str, dict[str, Any]]:
-    """The summary keys of the case's rules, each a stat: per-block and whole-operand values and the differences."""
-    out: dict[str, dict[str, Any]] = {}
-    blocks = {key: block_means(rows) for key, rows in readings.items() if not key.startswith("ref32_")}
+def shot_covariances(
+    readings: dict[str, list[dict[str, Any]]], outcomes: dict[str, np.ndarray]
+) -> dict[str, np.ndarray]:
+    """Per operand key, the covariance across placements of (N_hat, visibility, selector contrast), shape (3, K, K).
+
+    Within one PUB every shot carries all K placement registers, so the influence value of shot s at placement k is
+    the gradient of that placement's reading at the outcome the shot recorded; the covariance matrix of those values
+    over the shots, divided by the shot count, is the covariance of the placements' estimates in that arm. The two
+    arms of an operand are separate PUBs and add."""
+    out: dict[str, np.ndarray] = {}
     for op in pw.WIDE_OPERANDS:
-        parts = blocks[op.key]
+        rows = [*readings[op.key], *readings.get(f"ref32_{op.key}", [])]
+        placements = np.arange(len(rows))[None, :]
+        total = np.zeros((len(QUANTITIES), len(rows), len(rows)))
+        for arm, name in enumerate((pw.member_name(op, "plus"), pw.member_name(op, "minus"))):
+            shots = outcomes[name]
+            if shots.shape[1] != len(rows):
+                raise ValueError(f"{name}: {shots.shape[1]} raw placements for {len(rows)} readings")
+            gradient = np.stack([row["gradient"][:, arm, :] for row in rows])
+            influence = gradient[placements, :, shots]
+            centered = influence - influence.mean(axis=0)
+            total += np.einsum("skq,slq->qkl", centered, centered) / shots.shape[0] ** 2
+        out[op.key] = total
+    return out
+
+
+def reading_stat(mean: float, variance: float, marginal: float | None = None) -> dict[str, Any]:
+    """A reading with its standard error and the 95 percent normal interval of the delta method; the marginal
+    columns hold the same interval under independent placements (report-only)."""
+    se = math.sqrt(max(variance, 0.0))
+    se_marginal = se if marginal is None else math.sqrt(max(marginal, 0.0))
+    return {
+        "mean": mean,
+        "se": se,
+        "lo": mean - Z95 * se,
+        "hi": mean + Z95 * se,
+        "marginal_se": se_marginal,
+        "marginal_lo": mean - Z95 * se_marginal,
+        "marginal_hi": mean + Z95 * se_marginal,
+    }
+
+
+def marginal_view(stats: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """The same stats with the independent-placement interval in lo, hi and se, to evaluate a rule under that model."""
+    return {
+        key: {**stat, "se": stat["marginal_se"], "lo": stat["marginal_lo"], "hi": stat["marginal_hi"]}
+        for key, stat in stats.items()
+    }
+
+
+def block_weights(rows: list[dict[str, Any]]) -> dict[str, np.ndarray]:
+    """Per block, the weights over the operand's placement rows of the mean over that block's copies."""
+    out: dict[str, np.ndarray] = {}
+    for position, row in enumerate(rows):
+        out.setdefault(row["block"], np.zeros(len(rows)))[position] = 1.0
+    return {block: weight / weight.sum() for block, weight in out.items()}
+
+
+def _linear(
+    rows: list[dict[str, Any]], covariance: np.ndarray, quantity: str, weights: np.ndarray, other: tuple | None = None
+) -> dict[str, Any]:
+    """Stat of sum_k w_k reading_k (minus the same sum over another operand's rows and covariance)."""
+    q = QUANTITIES.index(quantity)
+    values = np.array([row[quantity] for row in rows])
+    marginal = np.array([row[f"{quantity}_variance"] for row in rows])
+    mean = float(weights @ values)
+    variance = float(weights @ covariance[q] @ weights)
+    marginal_variance = float(weights**2 @ marginal)
+    if other is not None:
+        rows2, covariance2 = other
+        values2 = np.array([row[quantity] for row in rows2])
+        marginal2 = np.array([row[f"{quantity}_variance"] for row in rows2])
+        mean -= float(weights @ values2)
+        variance += float(weights @ covariance2[q] @ weights)
+        marginal_variance += float(weights**2 @ marginal2)
+    return reading_stat(mean, variance, marginal_variance)
+
+
+def operand_stats(
+    readings: dict[str, list[dict[str, Any]]], covariances: dict[str, np.ndarray]
+) -> dict[str, dict[str, Any]]:
+    """The summary keys of the case's rules, each a stat: per-block and whole-operand values and the differences.
+
+    A stat is a weighted sum of placement readings; its variance is the quadratic form of the weights in the
+    operand's placement covariance (``shot_covariances``), with the independent-placement variance beside it."""
+    out: dict[str, dict[str, Any]] = {}
+    ops = {
+        op.key: (readings[op.key], covariances[op.key][:, : pw.PLACEMENTS, : pw.PLACEMENTS]) for op in pw.WIDE_OPERANDS
+    }
+    sums: dict[str, np.ndarray] = {}
+    for op in pw.WIDE_OPERANDS:
+        rows, cov = ops[op.key]
         tag = f"wide_{op.key}"
-        for block, row in parts.items():
-            out[f"{block}_nullity_estimate"] = reading_stat(row["nullity"], row["nullity_variance"])
-            out[f"{block}_nullity_ideal"] = reading_stat(row["ideal"], 0.0)
-            out[f"{block}_visibility"] = reading_stat(row["visibility"], row["visibility_variance"])
-            out[f"{block}_selector_contrast"] = reading_stat(row["selector"], row["selector_variance"])
-            out[f"{block}_sign_agreement"] = reading_stat(row["sign_agreement"], 0.0)
-        out[f"{tag}_nullity_estimate"] = reading_stat(
-            sum(r["nullity"] for r in parts.values()), sum(r["nullity_variance"] for r in parts.values())
-        )
-        out[f"{tag}_nullity_ideal"] = reading_stat(sum(r["ideal"] for r in parts.values()), 0.0)
+        weights = block_weights(rows)
+        blocks = len(weights)
+        sums[op.key] = np.sum(list(weights.values()), axis=0)
+        for block, w in weights.items():
+            mine = [r for r, x in zip(rows, w, strict=True) if x > 0]
+            for quantity, label in (
+                ("nullity", "nullity_estimate"),
+                ("visibility", "visibility"),
+                ("selector", "selector_contrast"),
+            ):
+                out[f"{block}_{label}"] = _linear(rows, cov, quantity, w)
+            out[f"{block}_nullity_ideal"] = reading_stat(float(np.mean([r["ideal"] for r in mine])), 0.0)
+            out[f"{block}_sign_agreement"] = reading_stat(float(np.mean([r["sign_agreement"] for r in mine])), 0.0)
+        total = sums[op.key]
+        out[f"{tag}_nullity_estimate"] = _linear(rows, cov, "nullity", total)
+        out[f"{tag}_nullity_ideal"] = reading_stat(float(total @ np.array([r["ideal"] for r in rows])), 0.0)
         out[f"{tag}_certified_nullity"] = reading_stat(float(op.nullity), 0.0)
-        out[f"{tag}_selector_contrast_sum"] = reading_stat(
-            sum(r["selector"] for r in parts.values()), sum(r["selector_variance"] for r in parts.values())
-        )
-        out[f"{tag}_sign_agreement"] = reading_stat(sum(r["sign_agreement"] for r in parts.values()), 0.0)
-        out[f"{tag}_bins"] = reading_stat(sum(r["bins"] for r in parts.values()), 0.0)
-        out[f"{tag}_visibility_mean"] = reading_stat(
-            float(np.mean([r["visibility"] for r in parts.values()])),
-            sum(r["visibility_variance"] for r in parts.values()) / len(parts) ** 2,
-        )
+        out[f"{tag}_selector_contrast_sum"] = _linear(rows, cov, "selector", total)
+        out[f"{tag}_sign_agreement"] = reading_stat(float(total @ np.array([r["sign_agreement"] for r in rows])), 0.0)
+        out[f"{tag}_bins"] = reading_stat(float(total @ np.array([r["bins"] for r in rows])), 0.0)
+        out[f"{tag}_visibility_mean"] = _linear(rows, cov, "visibility", total / blocks)
     for dim in (64, 128):
         for other, name in (("n", "null"), ("m", "mutation")):
-            target, control = blocks[f"o{dim}"], blocks[f"{other}{dim}"]
-            variance = sum(
-                target[b]["nullity_variance"] + control[c]["nullity_variance"]
-                for b, c in zip(target, control, strict=True)
+            control = ops[f"{other}{dim}"]
+            target = ops[f"o{dim}"]
+            out[f"wide_d{dim}_target_minus_{name}"] = _linear(
+                target[0], target[1], "nullity", sums[f"o{dim}"], other=control
             )
-            mean = sum(target[b]["nullity"] - control[c]["nullity"] for b, c in zip(target, control, strict=True))
-            out[f"wide_d{dim}_target_minus_{name}"] = reading_stat(mean, variance)
     return out
 
 
-def copy_agreement(readings: dict[str, list[dict[str, Any]]]) -> list[tuple[str, bool, str]]:
+def copy_agreement(
+    readings: dict[str, list[dict[str, Any]]], covariances: dict[str, np.ndarray]
+) -> list[tuple[str, bool, str]]:
     """Report-only reading of the 64-dimensional operands: the sum over blocks of copy A minus copy B of N_hat,
-    over its standard error, which the shot-noise interval must cover for its bands to hold."""
+    over its standard error, which the shot-noise interval must cover for its bands to hold. The reading also
+    gives the z under independent placements."""
     out = []
     for op in pw.WIDE_OPERANDS:
         count = len(op.blocks())
         if count == pw.PLACEMENTS:
             continue
-        rows = readings[op.key]
-        first, second = rows[:count], rows[count : 2 * count]
-        difference = sum(a["nullity"] - b["nullity"] for a, b in zip(first, second, strict=True))
-        variance = sum(a["nullity_variance"] + b["nullity_variance"] for a, b in zip(first, second, strict=True))
-        z = difference / math.sqrt(variance) if variance > 0 else 0.0
+        rows = readings[op.key][: 2 * count]
+        weights = np.concatenate([np.ones(count), -np.ones(count)])
+        stat = _linear(rows, covariances[op.key][:, : 2 * count, : 2 * count], "nullity", weights)
+        z = stat["mean"] / stat["se"] if stat["se"] > 0 else 0.0
+        z_marginal = stat["mean"] / stat["marginal_se"] if stat["marginal_se"] > 0 else 0.0
         out.append(
-            (f"copy agreement {op.key}", abs(z) <= COPY_Z_LIMIT, f"copy A - copy B {difference:+.3f}, z {z:+.2f}")
+            (
+                f"copy agreement {op.key}",
+                abs(z) <= COPY_Z_LIMIT,
+                f"copy A - copy B {stat['mean']:+.3f}, z {z:+.2f} (independent placements {z_marginal:+.2f})",
+            )
         )
     return out
 
@@ -327,9 +448,12 @@ def analyze_run(run: Path) -> dict[str, Any]:
     group = pw.pathion_wide_coset_group(reference=entry["group"] == GROUPS[1])
     circuits = {c.name: c for c in qpy.load(run_archive.open_archive(run))}
     writers = {name: replica_writers(c) for name, c in circuits.items()}
+    outcomes = load_outcomes(run, entry)
     raw_readings = placement_readings(entry, writers, group, corrected=False)
     corr_readings = placement_readings(entry, writers, group, corrected=True)
-    raw, corr = operand_stats(raw_readings), operand_stats(corr_readings)
+    raw = operand_stats(raw_readings, shot_covariances(raw_readings, outcomes))
+    corr_covariances = shot_covariances(corr_readings, outcomes)
+    corr = operand_stats(corr_readings, corr_covariances)
     pooled = entry["measured_summary_readout_corrected"]
     drift = max(abs(corr[k]["mean"] - pooled[k]) for k in pooled if k in corr and k.endswith("_nullity_estimate"))
     record = json.loads((run / "record.json").read_text())
@@ -338,10 +462,18 @@ def analyze_run(run: Path) -> dict[str, Any]:
         "raw": raw,
         "corrected": corr,
         "readings": corr_readings,
+        "covariances": corr_covariances,
+        "writers": writers,
+        "pubs": {name: executed["pub"] for name, executed in entry["executed"].items()},
         "pooled_difference": drift,
         "model": model,
         "backend": entry["backend"],
         "group": entry["group"],
+        "job_id": entry["job_id"],
+        "input_sha256": {
+            name: sha256(run / name) for name in ("collect.json", "record.json", "isa.qpy") if (run / name).is_file()
+        }
+        | {"raw_index": sha256(run / "raw" / entry["job_id"] / "index.json")},
     }
 
 
@@ -368,26 +500,177 @@ def model_gap(first: dict[str, Any], second: dict[str, Any]) -> tuple[dict[str, 
     return {k: first[k] - second[k] for k in sorted(keys & other)}, sorted(keys ^ other)
 
 
-def main() -> int:
-    runs = [analyze_run(Path(arg)) for arg in sys.argv[1:3]]
-    failed = False
+def rule_table(
+    runs: list[dict[str, Any]],
+) -> tuple[list[list[dict[str, Any]]], list[dict[str, Any]], list[list[tuple[str, bool, str]]]]:
+    """Every single-run rule under the covariance and the independent-placement intervals, per run, the
+    device-agreement rules of a pair, and the copy-agreement readings of each run."""
+    per_run = []
     for result in runs:
-        drift = result["pooled_difference"]
-        print(f"{result['backend']}: corrected mean differs from live_run's pooled value by {drift:.2e}")
-        for title, ok, reading in rules(result["raw"], result["corrected"]):
-            print(f"  {'pass' if ok else 'FAIL'}  {title}: {reading}")
-            failed |= not ok
-        for title, ok, reading in copy_agreement(result["readings"]):
+        cov = rules(result["raw"], result["corrected"])
+        marginal = rules(marginal_view(result["raw"]), marginal_view(result["corrected"]))
+        per_run.append(
+            [
+                {
+                    "rule": title,
+                    "covariance": ok,
+                    "independent_placements": ok_m,
+                    "changed": ok != ok_m,
+                    "reading": reading,
+                    "reading_independent_placements": reading_m,
+                }
+                for (title, ok, reading), (_, ok_m, reading_m) in zip(cov, marginal, strict=True)
+            ]
+        )
+    pair: list[dict[str, Any]] = []
+    if len(runs) == 2:
+        gap, _ = model_gap(runs[0]["model"], runs[1]["model"])
+        cov = device_agreement(runs[0]["corrected"], runs[1]["corrected"], gap)
+        marginal = device_agreement(marginal_view(runs[0]["corrected"]), marginal_view(runs[1]["corrected"]), gap)
+        pair = [
+            {
+                "rule": title,
+                "covariance": ok,
+                "independent_placements": ok_m,
+                "changed": ok != ok_m,
+                "reading": reading,
+                "reading_independent_placements": reading_m,
+            }
+            for (title, ok, reading), (_, ok_m, reading_m) in zip(cov, marginal, strict=True)
+        ]
+    copies = [copy_agreement(result["readings"], result["covariances"]) for result in runs]
+    return per_run, pair, copies
+
+
+def rounded(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): rounded(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [rounded(v) for v in value]
+    if isinstance(value, (np.floating, float)):
+        return round(float(value), DECIMALS) if math.isfinite(float(value)) else None
+    if isinstance(value, np.integer):
+        return int(value)
+    return value
+
+
+def placement_map(result: dict[str, Any]) -> dict[str, Any]:
+    """The physical qubits each placement measures into clbits 0 to 3, and each block's placements, per operand."""
+    pubs = {name: result["writers"][pub] for name, pub in result["pubs"].items()}
+    qubits = {str(k): v for k, v in next(iter(pubs.values())).items()}
+    blocks: dict[str, dict[str, list[int]]] = {}
+    for key, rows in result["readings"].items():
+        for row in rows:
+            blocks.setdefault(row["block"], {}).setdefault(key, []).append(row["placement"])
+    return {"placement_qubits": qubits, "block_placements": blocks}
+
+
+def analysis_record(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    per_run, pair, copies = rule_table(runs)
+    backends = {}
+    for result, rows, copy in zip(runs, per_run, copies, strict=True):
+        stats = {
+            key: stat
+            for key, stat in result["corrected"].items()
+            if key.startswith("wide_")
+            and (key.count("_k") == 0)
+            and key.endswith(("_nullity_estimate", "_target_minus_null", "_target_minus_mutation", "_visibility_mean"))
+        }
+        backends[result["backend"]] = {
+            "group": result["group"],
+            "job_id": result["job_id"],
+            "input_sha256": result["input_sha256"],
+            "pooled_difference": result["pooled_difference"],
+            "rules": rows,
+            "copy_agreement": [{"rule": t, "within_limit": ok, "reading": r} for t, ok, r in copy],
+            "stats": stats,
+            "readings": {
+                key: [
+                    {k: row[k] for k in ("placement", "block", "nullity", "visibility", "selector")}
+                    | {"nullity_se": math.sqrt(max(row["nullity_variance"], 0.0))}
+                    for row in value
+                ]
+                for key, value in result["readings"].items()
+            },
+            **placement_map(result),
+        }
+    return rounded(
+        {
+            "schema": SCHEMA,
+            "interval": "delta method, 95 percent, covariance of per-shot influence values across a PUB's placements",
+            "independent_placements": "the same rules under per-placement multinomial variances that add (report-only)",
+            "backends": backends,
+            "cross_device": pair,
+            "changed_verdicts": [
+                {
+                    "backend": backend,
+                    "rule": row["rule"],
+                    "covariance": row["covariance"],
+                    "independent_placements": row["independent_placements"],
+                }
+                for backend, body in backends.items()
+                for row in body["rules"]
+                if row["changed"]
+            ]
+            + [
+                {
+                    "backend": "cross-device",
+                    "rule": row["rule"],
+                    "covariance": row["covariance"],
+                    "independent_placements": row["independent_placements"],
+                }
+                for row in pair
+                if row["changed"]
+            ],
+        }
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("runs", nargs="+", type=Path, help="one run directory, or two of different backends")
+    parser.add_argument("--out", type=Path, help="write the analysis record here")
+    args = parser.parse_args(argv)
+    if len(args.runs) > 2:
+        parser.error("give one run directory, or two for the device-agreement rule")
+    runs = [analyze_run(path.resolve()) for path in args.runs]
+    if len(runs) == 2 and runs[0]["backend"] == runs[1]["backend"]:
+        parser.error(f"device agreement compares two backends, both runs are {runs[0]['backend']}")
+    per_run, pair, copies = rule_table(runs)
+    failed = False
+    for result, rows, copy in zip(runs, per_run, copies, strict=True):
+        print(
+            f"{result['backend']}: corrected mean differs from live_run's pooled value"
+            f" by {result['pooled_difference']:.2e}"
+        )
+        for row in rows:
+            note = (
+                ""
+                if not row["changed"]
+                else f"  [independent placements: {'pass' if row['independent_placements'] else 'FAIL'}]"
+            )
+            print(f"  {'pass' if row['covariance'] else 'FAIL'}  {row['rule']}: {row['reading']}{note}")
+            failed |= not row["covariance"]
+        for title, ok, reading in copy:
             print(f"  report {'ok  ' if ok else 'WIDE'}  {title}: {reading}")
         for line in report_readings(result):
             print(line)
     if len(runs) == 2:
-        gap, unmatched = model_gap(runs[0]["model"], runs[1]["model"])
+        _, unmatched = model_gap(runs[0]["model"], runs[1]["model"])
         for key in unmatched:
             print(f"  report  device agreement: {key} is planned on one device only and left out")
-        for title, ok, reading in device_agreement(runs[0]["corrected"], runs[1]["corrected"], gap):
-            print(f"  {'pass' if ok else 'FAIL'}  {title}: {reading}")
-            failed |= not ok
+        for row in pair:
+            note = (
+                ""
+                if not row["changed"]
+                else f"  [independent placements: {'pass' if row['independent_placements'] else 'FAIL'}]"
+            )
+            print(f"  {'pass' if row['covariance'] else 'FAIL'}  {row['rule']}: {row['reading']}{note}")
+            failed |= not row["covariance"]
+    if args.out is not None:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        record = analysis_record(runs)
+        args.out.write_text(json.dumps(record, indent=1, sort_keys=True, allow_nan=False) + "\n")
     return 1 if failed else 0
 
 
