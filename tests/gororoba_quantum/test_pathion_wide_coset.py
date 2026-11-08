@@ -9,11 +9,16 @@ Statevector or a matrix-product-state or stabilizer sample of at most 64 qubits.
 
 from __future__ import annotations
 
+import copy
 import hashlib
+import json
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pathion_wide_coset_check as check
 import pytest
+import threadpoolctl
 from qiskit import QuantumCircuit, transpile
 from qiskit_aer import AerSimulator
 
@@ -37,13 +42,21 @@ NULLITY = {"n64": 0, "o64": 28, "m64": 28, "n128": 0, "o128": 60, "m128": 60}
 IDEAL_SUM = {"n64": 0, "o64": 28, "m64": -2, "n128": 0, "o128": 60, "m128": -2}
 CLIFFORD_BLOCKS = {"n64": 7, "o64": 6, "m64": 7, "n128": 15, "o128": 12, "m128": 15}
 # sha256 over the member names, circuit instructions (name, qubits, clbits, parameters), ideal laws and bindings of
-# each D = 32 group before the dimension parameter existed.
+# each D = 32 group before the dimension parameter existed. The bytes hold the rounding of the Haswell OpenBLAS core:
+# np.linalg.eigh in pathion_four_term_block rounds its eigenvectors differently on an AVX-512 core, so the digests
+# bind only the Haswell identity (docs/design/native-numeric-replay.md, "Contract" 3 and 4).
 D32_DIGESTS = {
     "pathion_coset_map": "61678aefc3291cbf17628e555323548b8e06f85cb733c739095b5db08dd33911",
     "pathion_kernel_map": "e2253cb52b5db73a7889ba165c07b92757c93c5165c08835feacd49aa58cf718",
     "pathion_parallel_coset": "f0378dd2ffd0ba15908f70ddb8a8208fc92099cea43c0610354fc8f2b3d2a907",
     "pathion_four_term_block": "64f8ac63eefbe7cba69ca7d0250b4569856103b5eb4f52426a50b5b67593033a",
 }
+# Member names, circuit digests, ideal laws and bindings of the four D = 32 groups as built on the Haswell core.
+D32_REFERENCE = Path(__file__).resolve().parents[1] / "data" / "pathion_d32_members.json"
+# Absolute bound of an ideal law entry or a binding angle across arithmetic identities: the eigensolver and
+# state-vector rounding differences measure about 1e-15, and the smallest structural change of a D = 32 member
+# moves a law entry by far more.
+D32_BOUND = 1e-12
 
 
 def _expect(condition: bool, message: str) -> None:
@@ -85,15 +98,122 @@ def _group_digest(members: tuple[Member, ...]) -> str:
     return h.hexdigest()
 
 
-def test_d32_circuits_and_ideal_laws_are_byte_identical() -> None:
-    built = {
+def _snapshot(members: tuple[Member, ...]) -> list[dict[str, Any]]:
+    """Name, circuit digest, ideal law and binding of each member, floats as hexadecimal strings, in member order."""
+    ideal_rows = [np.asarray(member.ideal, dtype=float) for member in members]
+    return [
+        {
+            "name": member.name,
+            "circuit": _circuit_digest(member.circuit),
+            "shape": list(ideal.shape),
+            "ideal": [float(x).hex() for x in ideal.ravel()],
+            "binding": {str(k): float(v).hex() for k, v in sorted((member.binding or {}).items(), key=str)},
+        }
+        for member, ideal in zip(members, ideal_rows, strict=True)
+    ]
+
+
+def _bounded_differences(reference: list[dict[str, Any]], built: list[dict[str, Any]], bound: float) -> list[str]:
+    """Differences between two snapshots: names, member order, circuit digests, shapes and binding keys must be
+    equal; ideal entries and binding angles must be finite and lie within ``bound`` absolute of the reference."""
+    if [row["name"] for row in reference] != [row["name"] for row in built]:
+        return ["member names or order differ"]
+    found: list[str] = []
+    for ref, row in zip(reference, built, strict=True):
+        name = ref["name"]
+        if ref["circuit"] != row["circuit"]:
+            found.append(f"{name}: circuit")
+        if ref["shape"] != row["shape"] or len(ref["ideal"]) != len(row["ideal"]):
+            found.append(f"{name}: ideal shape")
+            continue
+        if sorted(ref["binding"]) != sorted(row["binding"]):
+            found.append(f"{name}: binding keys")
+            continue
+        pairs = [
+            *zip(ref["ideal"], row["ideal"], strict=True),
+            *((ref["binding"][k], row["binding"][k]) for k in ref["binding"]),
+        ]
+        for want, got in pairs:
+            low, high = float.fromhex(want), float.fromhex(got)
+            if not (np.isfinite(low) and np.isfinite(high)) or abs(low - high) > bound:
+                found.append(f"{name}: {want} against {got}")
+                break
+    return found
+
+
+def _is_haswell_identity() -> bool:
+    """True when the OpenBLAS libraries bundled with numpy and scipy, which run np.linalg.eigh and the matrix
+    products of the D = 32 builders, selected the Haswell core, the identity the pinned digests bind. Aer's own
+    OpenBLAS selects Zen on AMD and plays no part in those builders."""
+    cores = [
+        pool.get("architecture")
+        for pool in threadpoolctl.threadpool_info()
+        if pool.get("internal_api") == "openblas" and "scipy_openblas" in Path(pool["filepath"]).name
+    ]
+    return bool(cores) and all(core == "Haswell" for core in cores)
+
+
+def _d32_groups() -> dict[str, tuple[Member, ...]]:
+    return {
         "pathion_coset_map": pcb.coset_map_members(),
         "pathion_kernel_map": pkm.kernel_map_members(),
         "pathion_parallel_coset": ppc.parallel_members(),
         "pathion_four_term_block": pft.four_term_members(),
     }
-    for name, members in built.items():
-        _expect(_group_digest(members) == D32_DIGESTS[name], f"{name}: the D = 32 members changed")
+
+
+def test_d32_circuits_and_ideal_laws_are_byte_identical() -> None:
+    """Exact bytes on the Haswell identity; names, order and circuits exact and floats within D32_BOUND elsewhere."""
+    reference = json.loads(D32_REFERENCE.read_text())
+    haswell = _is_haswell_identity()
+    for name, members in _d32_groups().items():
+        if haswell:
+            _expect(_group_digest(members) == D32_DIGESTS[name], f"{name}: the D = 32 members changed")
+        differences = _bounded_differences(reference[name], _snapshot(members), D32_BOUND)
+        _expect(not differences, f"{name}: the D = 32 members changed beyond {D32_BOUND}: {differences[:3]}")
+
+
+def test_d32_bounded_comparison_rejects_perturbed_members() -> None:
+    """Mutation control: a 1e-9 move of one ideal entry or one binding angle, a rename, a lost member, a NaN and a
+    changed circuit digest each fail the bounded comparison, and a 1e-13 move passes it."""
+    reference = json.loads(D32_REFERENCE.read_text())["pathion_four_term_block"]
+    built = _snapshot(pft.four_term_members())
+    _expect(not _bounded_differences(reference, built, D32_BOUND), "the unperturbed members differ")
+
+    def shift(value: str, delta: float) -> str:
+        return (float.fromhex(value) + delta).hex()
+
+    row = next(
+        i for i, member in enumerate(built) if member["binding"] and any(x != "0x0.0p+0" for x in member["ideal"])
+    )
+    key = sorted(built[row]["binding"])[0]
+    mutants: dict[str, list[dict[str, Any]]] = {}
+    for label, delta in (("ideal", 1e-9), ("binding", 1e-9)):
+        mutant = copy.deepcopy(built)
+        if label == "ideal":
+            mutant[row]["ideal"][0] = shift(mutant[row]["ideal"][0], delta)
+        else:
+            mutant[row]["binding"][key] = shift(mutant[row]["binding"][key], delta)
+        mutants[label] = mutant
+    renamed = copy.deepcopy(built)
+    renamed[row]["name"] += "_renamed"
+    mutants["rename"] = renamed
+    mutants["lost member"] = built[:-1]
+    swapped = copy.deepcopy(built)
+    swapped[0], swapped[1] = swapped[1], swapped[0]
+    mutants["order"] = swapped
+    nan = copy.deepcopy(built)
+    nan[row]["ideal"][0] = float("nan").hex()
+    mutants["nan"] = nan
+    circuit = copy.deepcopy(built)
+    circuit[row]["circuit"] = "0" * 64
+    mutants["circuit"] = circuit
+    for label, mutant in mutants.items():
+        _expect(bool(_bounded_differences(reference, mutant, D32_BOUND)), f"the {label} mutant passes the bound")
+    inside = copy.deepcopy(built)
+    inside[row]["ideal"][0] = shift(inside[row]["ideal"][0], 1e-13)
+    inside[row]["binding"][key] = shift(inside[row]["binding"][key], 1e-13)
+    _expect(not _bounded_differences(reference, inside, D32_BOUND), "a 1e-13 move fails the bound")
 
 
 def test_dimension_defaults_and_rejections() -> None:
