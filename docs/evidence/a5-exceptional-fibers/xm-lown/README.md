@@ -35,3 +35,18 @@ runs: the closing N is floor(7d/2) + 1, the 3.5 steps per degree the trends file
 ladder plateaus for one step before the jump (r_6 = r_7, r_13 = r_14). It predicts that X- degree 6 closes at N = 22
 (target 665, last jump 169 split 49 / 42 / 39 / 39) and plateaus at N = 20 and 21. The ranks 51, 122 and 240 equal the
 certified K2 counts and add no certificate.
+
+## Degree 6, preregistered before the runs finished (2026-11-09)
+
+`../w8-engine-map/classify.py` (engine v11's own `standard_monomials` and the xor block rule of `block_products`), run
+on the canonical header with the X- degree-2 receipt (`../working/distribute/out/a5-xm-d4/xm_p1/d2/receipt-d2.json`)
+and the generator export of a degree-2, N = 5 run, gives the per-block standard-monomial counts of k[y]/K2 in
+[`k2-blocks-xm-p32009.json`](k2-blocks-xm-p32009.json): degree 2: 16 / 15 / 10 / 10, degree 3: 25 / 27 / 35 / 35,
+degree 4: 68 / 66 / 53 / 53, each equal to the measured closing blocks above; degree 5: 93 / 96 / 114 / 114;
+degree 6: 181 / 178 / 153 / 153 (sum 665); degree 7: 230 / 234 / 266 / 266.
+
+Predictions for the laptop runs of degree 6 at N = 22, 21, 20 (`run-xm-d6.sh`, engine v11, raw, p = 32009):
+r_22 = 665 with blocks 181 / 178 / 153 / 153 (the K2 count; A5-244 and the closing-N hypothesis floor(7d/2) + 1 = 22);
+r_21 = r_20 = 496 with blocks 132 / 136 / 114 / 114 (the last jump 169 split 49 / 42 / 39 / 39, and the one-step
+plateau at even d). Falsifiers: r_22 below 665 (closing later), r_21 = 665 (closing earlier), a last jump other than
+169 or a split other than 49 / 42 / 39 / 39, or r_20 differing from r_21.
