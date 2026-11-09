@@ -52,6 +52,7 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
   degrees 1 to 4: 91, 366, 775 and 1,696 elements, integer coefficients, equal at both primes, a corrupted coefficient
   detected (`truncation-xm-nm-n<N>.json`; ledger A5-249). A first revision took m from the producer ring and read
   refuted on a basis of 2,566 elements against 366; its records were overwritten by the fixed run.
+  W8 -> N- survives at N = 4, 7, 10 and 13 (d = 1 to 4): 183, 1,257, 5,009 and 14,761 elements (ledger A5-277).
 - [`quadric_lift.py`](quadric_lift.py) (check 2): the degree-2 relations {q : q(G) in J + m I^2} over Q(i) by the
   computation of the modular degree-2 receipts (`working/distribute/out/*/d2/d2-products.sing`), compared with the
   retained K2 at both primes (ledger A5-248, running). A first run took m from the nine-variable producer ring;
