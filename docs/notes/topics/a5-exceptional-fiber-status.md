@@ -1,7 +1,7 @@
 # A_5 exceptional fibers: goal, status by layer, and what the 2026-11-09 results change
 
 This page walks through what the A_5 fiber program is for, where each layer stands by count of the claim ledger
-([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 283 rows (277 after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md), A5-280 to A5-285 from [a5-vb7-w8-char0](../../archive/reviews/a5-vb7-w8-char0/README.md))), and
+([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 285 rows (277 after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md), A5-280 to A5-287 from [a5-vb7-w8-char0](../../archive/reviews/a5-vb7-w8-char0/README.md))), and
 what the results of 2026-11-09 imply. The measurements and methods live in
 [a5-exceptional-fiber-findings.md](a5-exceptional-fiber-findings.md); this page counts and interprets them.
 
@@ -29,7 +29,7 @@ smaller orbit Z, which 8-dimensional kernels arise as limits. The program answer
 
 ## Status by layer (ledger count, 2026-11-09)
 
-Ledger totals: 90 certified, 39 proved, 61 survives, 50 refuted, 10 superseded, 7 rejected, 20 open, 5 boundary, 1 stalled.
+Ledger totals: 92 certified, 39 proved, 61 survives, 50 refuted, 10 superseded, 7 rejected, 20 open, 5 boundary, 1 stalled.
 
 | Layer | Count | Share | Open items |
 |---|---|---|---|
@@ -45,6 +45,7 @@ remains there. Reproduce the counts with
 
 ## What the 2026-11-09 results change
 
+- **E8-bar -> VB degree 7 certified at both primes** (A5-286, A5-287; `../../evidence/a5-exceptional-fibers/vb-d7/`): r_22 = 624 = HF(k[y]/K2, 7) with r_21 = 609 below it, so the closing order is exactly 22 = 3 * 7 + 1. The last jump is 15 = 2 * 7 + 1, split 7/8/0/0. All four predictions were preregistered before the runs (A5-260, A5-269). Engine v13 (`slimgb` export) ran each N = 22 cell in 4.5 h on the Windows workstation.
 - **E8-bar -> VB degree 6 certified at both primes** (r_20 = r_19 = 420, blocks 138/98/92/92, so the closing order is at most 19; `vb-d6-laptop/`). VB's first
   layer is complete through degree 6, and A5-005 (VB all-degree) survives one more degree. It does not prove A5-005:
   VB's all-degree question is whether its fiber contains the degree-3 component (A5-016).

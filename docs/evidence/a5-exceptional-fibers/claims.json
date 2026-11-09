@@ -189,6 +189,12 @@
      "k2_count": 1666,
      "lower_bounds": [],
      "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 2718,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "E8-bar -> N+",
@@ -332,6 +338,12 @@
     {
      "d": 6,
      "k2_count": 1666,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 2718,
      "lower_bounds": [],
      "status": "open"
     }
@@ -550,6 +562,12 @@
      "k2_count": 1666,
      "lower_bounds": [],
      "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 2718,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "E8-bar -> N-",
@@ -667,6 +685,12 @@
      "k2_count": 1666,
      "lower_bounds": [],
      "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 2718,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "E8-bar -> N-",
@@ -691,7 +715,8 @@
     3,
     4,
     5,
-    6
+    6,
+    7
    ],
    "degrees": [
     {
@@ -834,6 +859,22 @@
       }
      ],
      "status": "certified"
+    },
+    {
+     "d": 7,
+     "k2_count": 624,
+     "lower_bounds": [
+      {
+       "N": 22,
+       "engine": "8e6b8d100b07a687",
+       "header": "4dbcb4676ca0821a",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 624,
+       "source": "vb-d7/out/e8vb_d7_n22_p32009.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "E8-bar -> VB",
@@ -866,7 +907,8 @@
     3,
     4,
     5,
-    6
+    6,
+    7
    ],
    "degrees": [
     {
@@ -973,6 +1015,22 @@
        "mode": "quotient",
        "rank": 420,
        "source": "vb-d6-laptop/e8vb_d6_n20_p32029.json"
+      }
+     ],
+     "status": "certified"
+    },
+    {
+     "d": 7,
+     "k2_count": 624,
+     "lower_bounds": [
+      {
+       "N": 22,
+       "engine": "8e6b8d100b07a687",
+       "header": "6b3cea4923b4e0e2",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 624,
+       "source": "vb-d7/out/e8vb_d7_n22_p32029.json"
       }
      ],
      "status": "certified"
@@ -1137,6 +1195,12 @@
       }
      ],
      "status": "certified"
+    },
+    {
+     "d": 7,
+     "k2_count": 4110,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "Iso",
@@ -1257,6 +1321,12 @@
       }
      ],
      "status": "certified"
+    },
+    {
+     "d": 7,
+     "k2_count": 4110,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "Iso",
@@ -1483,6 +1553,12 @@
      "k2_count": 8624,
      "lower_bounds": [],
      "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 16416,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "W8 -> N+",
@@ -1697,6 +1773,12 @@
     {
      "d": 6,
      "k2_count": 8624,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 16416,
      "lower_bounds": [],
      "status": "open"
     }
@@ -1833,6 +1915,12 @@
      "k2_count": 8624,
      "lower_bounds": [],
      "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 16416,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "W8 -> N-",
@@ -1957,6 +2045,12 @@
     {
      "d": 6,
      "k2_count": 8624,
+     "lower_bounds": [],
+     "status": "open"
+    },
+    {
+     "d": 7,
+     "k2_count": 16416,
      "lower_bounds": [],
      "status": "open"
     }
@@ -2165,6 +2259,12 @@
       ],
       "witness": "witnesses.jsonl"
      }
+    },
+    {
+     "d": 7,
+     "k2_count": 996,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "X+",
@@ -2313,6 +2413,12 @@
       ],
       "witness": "witnesses.jsonl"
      }
+    },
+    {
+     "d": 7,
+     "k2_count": 996,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "X+",
@@ -2516,6 +2622,12 @@
       }
      ],
      "status": "certified"
+    },
+    {
+     "d": 7,
+     "k2_count": 996,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "X-",
@@ -2640,6 +2752,12 @@
       }
      ],
      "status": "certified"
+    },
+    {
+     "d": 7,
+     "k2_count": 996,
+     "lower_bounds": [],
+     "status": "open"
     }
    ],
    "fiber": "X-",
