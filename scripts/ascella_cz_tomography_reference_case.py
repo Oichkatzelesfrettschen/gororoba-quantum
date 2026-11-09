@@ -482,7 +482,8 @@ def preregistered() -> dict[str, Any]:
             "of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
             "record_model": "the same two quantities inverted through the record noise variant at the plan reads: "
             "F(M) and D(M) evaluated at overlaps 0.70 to 1.00 in steps of 0.0375, F fitted linear-fractional and D "
-            "quadratic, each inverted by monotone interpolation on 3001 points",
+            "quadratic, each inverted by monotone interpolation on 3001 points; a value outside the fitted range of "
+            "F or D has no inverse, so an estimate whose point or any bootstrap replicate falls outside is censored",
             "bootstrap": "all on the replicates of the primary bootstrap, so each difference has a joint interval",
         },
         "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock "
@@ -491,8 +492,8 @@ def preregistered() -> dict[str, Any]:
         "verdict_rule": "every interval is the primary bootstrap's 95 % interval; a conjecture is falsified when its "
         "band excludes its prediction (or, for the two overdispersion conjectures, the observed ratio), and survives "
         "otherwise; the model check scatter-matches-acquisition-law decides first, and when it is falsified every "
-        "other verdict is reported as conditional on that failure; a descriptive pool reports each verdict as "
-        "descriptive",
+        "other verdict is reported as conditional on that failure; a conjecture whose band reads a censored "
+        "record-model estimate is undecided; a descriptive pool reports each verdict as descriptive",
         "overdispersion": {
             "statistic": "Pearson chi-squared of the 576 eligible counts about the counts of the unweighted "
             "linear-inversion fit, each over its expected count, one event at least",
@@ -1115,8 +1116,8 @@ RECORD_GRID = tuple(round(0.70 + 0.0375 * k, 4) for k in range(9))
 def record_inversion(perfs: Mapping[str, Any]) -> dict[str, Any]:
     """The record noise variant's process fidelity F(M) and rail ratio D(M) on RECORD_GRID overlaps at the pair's g2,
     transmittance, clock and dark counts, fitted (F linear-fractional, D quadratic) and inverted on a fine grid by
-    monotone interpolation. An observed value outside the fitted range maps to the nearer end, flagged by the fit's
-    range. The fit residuals and ranges are recorded so a reader can see where the inversion is trusted."""
+    monotone interpolation. A value outside the fitted range has no inverse under the model and maps to NaN, which
+    overlap_estimates reports as censored. The fit residuals and ranges are recorded beside the estimates."""
     points = [noise_model_at({**perfs, "HOM (%)": 100.0 * m})[FORECAST_RECORD_VARIANT] for m in RECORD_GRID]
     grid = np.asarray(RECORD_GRID)
     fidelity = np.asarray([p["process_fidelity"] for p in points])
@@ -1129,9 +1130,15 @@ def record_inversion(perfs: Mapping[str, Any]) -> dict[str, Any]:
     d_fine = np.polyval(quadratic, fine)
     require(bool(np.all(np.diff(f_fine) > 0)), "the record F(M) is not increasing over the inversion grid")
     require(bool(np.all(np.diff(d_fine) < 0)), "the record D(M) is not decreasing over the inversion grid")
+
+    def inverse(value: float, values: np.ndarray, overlaps: np.ndarray) -> float:
+        if not values[0] <= value <= values[-1]:
+            return math.nan
+        return float(np.interp(value, values, overlaps))
+
     return {
-        "from_fidelity": lambda value: float(np.interp(value, f_fine, fine)),
-        "from_rail_ratio": lambda value: float(np.interp(value, d_fine[::-1], fine[::-1])),
+        "from_fidelity": lambda value: inverse(value, f_fine, fine),
+        "from_rail_ratio": lambda value: inverse(value, d_fine[::-1], fine[::-1]),
         "fit": {
             "grid": list(RECORD_GRID),
             "fidelity_max_residual": float(np.abs((p0 + q * grid) / (1.0 + r * grid) - fidelity).max()),
@@ -1179,7 +1186,18 @@ def overlap_estimates(
     rf_point, rr_point = inverse["from_fidelity"](f_point), inverse["from_rail_ratio"](d_point)
 
     def summary(point_value: float, replicates: Sequence[float]) -> dict[str, Any]:
-        return {"point": point_value, "interval": tomo.intervals(point_value, replicates, level)[tomo.INTERVAL_KIND]}
+        outside = sum(1 for value in replicates if math.isnan(value))
+        if math.isnan(point_value) or outside:
+            return {
+                "point": None,
+                "interval": None,
+                "censored": {"point_outside": math.isnan(point_value), "replicates_outside": outside},
+            }
+        return {
+            "point": point_value,
+            "interval": tomo.intervals(point_value, replicates, level)[tomo.INTERVAL_KIND],
+            "censored": None,
+        }
 
     record_model = {
         "fit": inverse["fit"],
@@ -1284,13 +1302,13 @@ def conjecture_verdicts(process: Mapping[str, Any], overlaps: Mapping[str, Any],
         low, high = overlaps[key]["interval"]
         return band(low, high)
 
-    def record_interval(key: str) -> dict[str, float | None]:
-        low, high = overlaps["record_model"][key]["interval"]
-        return band(low, high)
+    def record_interval(key: str) -> dict[str, float | None] | None:
+        found = overlaps["record_model"][key]["interval"]
+        return None if found is None else band(*found)
 
     # (prediction, band, observed): a two-sided interval test asks whether the band holds the prediction; a band test
-    # with an observed value asks whether the band holds the observation.
-    tests: dict[str, tuple[float, dict[str, float | None], float | None]] = {
+    # with an observed value asks whether the band holds the observation. A None band reads a censored estimate.
+    tests: dict[str, tuple[float, dict[str, float | None] | None, float | None]] = {
         "overlap-only-law": (overlap_law(v), band(*fidelity), None),
         "g2-corrected-overlap-law": (overlap_law(corrected), band(*fidelity), None),
         "noise-model-record-variant": (record["process_fidelity"], band(*fidelity), None),
@@ -1313,14 +1331,18 @@ def conjecture_verdicts(process: Mapping[str, Any], overlaps: Mapping[str, Any],
     for row in CONJECTURES:
         prediction, limits, observed = tests[row["id"]]
         value = prediction if observed is None else observed
-        lower, upper = limits["lower"], limits["upper"]
-        holds = (lower is None or lower <= value) and (upper is None or value <= upper)
+        if limits is None:
+            verdict = "undecided: the record-model estimate is censored"
+        else:
+            lower, upper = limits["lower"], limits["upper"]
+            holds = (lower is None or lower <= value) and (upper is None or value <= upper)
+            verdict = "survives" if holds else "falsified"
         decided[row["id"]] = {
             "id": row["id"],
             "prediction": prediction,
             "observed": observed,
             "band": limits,
-            "verdict": "survives" if holds else "falsified",
+            "verdict": verdict,
         }
     check_failed = decided[MODEL_CHECK]["verdict"] == "falsified"
     out = []

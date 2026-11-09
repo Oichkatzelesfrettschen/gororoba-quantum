@@ -239,7 +239,11 @@ near-zero cells (they sum to -160 expected events), which is why the reference s
 freedom; the synthetic pairs carry the same bias.
 
 The scatter test is a model check, not a correction. Every conjecture is judged on the primary bootstrap's 95 %
-interval. When the model check fails, every other verdict is reported as conditional on that failure. The
+interval. When the model check fails, every other verdict is reported as conditional on that failure. The record-model
+inversion has an inverse only inside the fitted ranges of F and D over overlaps 0.70 to 1.00; an F above the record
+model's ceiling or a rail ratio outside its range has none. When the point or any bootstrap replicate of a
+record-model estimate falls outside, the estimate is censored and the conjectures that read it
+(`rail-ratio-reads-hom`, `record-overlaps-agree`) are undecided. The
 reference's 95 % range spans a factor of 3.5, so the check catches only gross scatter, and its survival does not
 validate the model. A single
 residual statistic cannot widen intervals soundly, because a systematic error inside the model space moves the fitted
@@ -280,8 +284,11 @@ differences, the control ratio and the Pearson statistic. They are distinct benc
 thirteen independent pieces of evidence. On the retained pair they tell one story. The record noise model fits both
 summaries at a single overlap: M_F = 0.930 (0.912 to 0.946) from the fidelity and M_R = 0.923 (0.904 to 0.942) from
 the rates. That overlap sits about 5 points above the platform's HOM read of 87.56 % and about 7 points below full overlap.
-The measured fidelity, 0.849, sits 8.8 points below the record model's fidelity ceiling of 0.937. Every prediction that feeds the HOM read in as the overlap misses: the record variant (0.788) by 0.04,
-the rail-ratio reading by 3 points. The overlap-only closure fails because it leaves out g2, which the record-model
+The measured fidelity, 0.849, sits 8.8 points below the record model's fidelity ceiling of 0.937. The record-noise-model
+predictions that take the HOM read as the overlap miss: the record variant (0.788) falls 0.04 below the fidelity
+interval, and the record-model rail overlap sits 3 points above the read. The overlap-only law at the read survives
+(0.834 inside 0.828 to 0.869) because it omits g2, loss and dark counts, which lower F; once the record model adds
+them, the read is too low an overlap. The overlap-only closure fails because it leaves out g2, which the record-model
 closure restores. Hypothesis: the dashboard HOM understates the overlap of the photon pair on chip modes 0 and 2. The
 ledger's sources record that pair overlap varies with emission delay and source pair. The new pair carries about six
 times the events per setting and runs at a new HOM read. If the record-model overlap again sits above the read by a

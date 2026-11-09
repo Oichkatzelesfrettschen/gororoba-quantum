@@ -175,6 +175,7 @@
   "rail_rate_ratio": 1.344863990934062,
   "record_model": {
    "difference": {
+    "censored": null,
     "interval": [
      -0.018365091465770852,
      0.03317647139863856
@@ -205,6 +206,7 @@
     ]
    },
    "overlap_from_fidelity": {
+    "censored": null,
     "interval": [
      0.9115961873978536,
      0.9461325076713082
@@ -212,6 +214,7 @@
     "point": 0.9298205797718047
    },
    "overlap_from_rail_rates": {
+    "censored": null,
     "interval": [
      0.9038853788015274,
      0.9419870198655921

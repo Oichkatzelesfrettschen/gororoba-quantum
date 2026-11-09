@@ -3,6 +3,7 @@ fixtures."""
 
 from __future__ import annotations
 
+import copy
 import json
 import math
 from datetime import UTC, datetime, timedelta
@@ -10,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import ascella_cz_tomography_reference_case as case
+import numpy as np
 import pytest
 from qd_schedule import body_digest
 
@@ -414,3 +416,147 @@ def test_plan_reads_take_job_00_whatever_the_run_order() -> None:
     forward, reverse = case.plan_reads([zero, one]), case.plan_reads([one, zero])
     if forward != reverse or forward["Clock (MHz)"] != 13.33 or forward["HOM (%)"] != 88.5:
         raise AssertionError(f"the plan reads depend on run order: {forward} against {reverse}")
+
+
+def retained_counts() -> tuple[Any, Any, Any, Any]:
+    """The retained 2026-10-31 pair's eligible counts, samples, shots and pooling scales in schedule order."""
+    loaded = [case.tomo.load_run(case.ROOT / run) for run in case.TOMOGRAPHY_RUNS]
+    tallies: dict[str, dict[str, Any]] = {}
+    for entry in loaded:
+        tallies.update(entry["tallies"])
+    rows = case.tomo.schedule()
+    pool = case.tomo.pooling(loaded, case.tomo.JOBS)
+    eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
+    samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
+    shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
+    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
+    return eligible, samples, shots, scale
+
+
+def test_the_acquisition_draw_stops_at_the_quota_with_negative_binomial_shots() -> None:
+    """One setting at quota 400, eligible chances (0.1, 0.2, 0.05, 0.15) per sample and 4 shots per sample: every
+    draw holds exactly 400 samples, and over 4000 draws the eligible and shot means match the multinomial and
+    negative-binomial laws within five standard errors."""
+    within = np.asarray([[0.1, 0.2, 0.05, 0.15]])
+    arrays = {"eligible": within, "samples": np.ones(1), "any": np.asarray([4.0])}
+    quota = np.asarray([400])
+    generator = np.random.default_rng(case.seed_plan()["overdispersion"][1])
+    draws = [case.sampled_dataset(arrays, quota, generator) for _ in range(4000)]
+    if any(int(samples[0]) != 400 or int(eligible.sum()) > 400 for eligible, samples, _ in draws):
+        raise AssertionError("a draw leaves its sample quota")
+    eligible_mean = np.mean([eligible[0] for eligible, _, _ in draws], axis=0)
+    eligible_se = np.sqrt(400 * within[0] * (1 - within[0]) / 4000)
+    if np.any(np.abs(eligible_mean - 400 * within[0]) > 5 * eligible_se):
+        raise AssertionError(f"eligible means {eligible_mean} leave the multinomial law")
+    extra = np.asarray([shots[0] - 400 for _, _, shots in draws], dtype=float)
+    # negative_binomial(n=400, p=1/4): mean n (1 - p) / p = 1200, variance n (1 - p) / p^2 = 4800.
+    if abs(extra.mean() - 1200.0) > 5 * math.sqrt(4800.0 / 4000):
+        raise AssertionError(f"extra shots average {extra.mean()}, not the negative-binomial 1200")
+
+
+@pytest.fixture(scope="module")
+def law_and_inflated() -> tuple[dict[str, Any], dict[str, Any]]:
+    """The overdispersion of one pair drawn exactly from the acquisition law under the retained fit, and of the same
+    pair with every count's deviation from its expectation inflated fourfold."""
+    eligible, samples, shots, scale = retained_counts()
+    rates = case.tomo.absolute_rates(eligible, shots, scale)
+    predicted = (case.tomo.design_matrix() @ (case.tomo.design_pseudoinverse() @ rates)).reshape(eligible.shape)
+    per_shot = np.clip(predicted, 0.0, None) / scale[:, None]
+    within = per_shot / (samples / shots)[:, None]
+    within = within / np.maximum(within.sum(axis=1), 1.0)[:, None]
+    arrays = {"eligible": within, "samples": np.ones(len(samples)), "any": shots / samples}
+    generator = np.random.default_rng(case.seed_plan()["overdispersion"][1])
+    drawn, drawn_samples, drawn_shots = case.sampled_dataset(arrays, samples, generator)
+    expected = within * samples[:, None]
+    inflated = np.clip(np.rint(expected + 4.0 * (drawn - expected)), 0, None)
+    seed = case.seed_plan()["overdispersion"][1]
+    kept, spent = drawn_samples.astype(float), drawn_shots.astype(float)
+    # Forty reference draws place the 97.5th percentile well enough for a lawful pair against a sixteenfold one.
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(case, "OVERDISPERSION_DRAWS", 40)
+        return (
+            case.overdispersion(drawn.astype(float), kept, spent, scale, seed),
+            case.overdispersion(inflated, kept, spent, scale, seed),
+        )
+
+
+def test_the_model_check_passes_a_pair_drawn_from_the_acquisition_law(
+    law_and_inflated: tuple[dict[str, Any], dict[str, Any]],
+) -> None:
+    lawful, _ = law_and_inflated
+    if not lawful["pearson"] <= lawful["reference_95"][1]:
+        raise AssertionError(f"a lawful pair fails the model check: {lawful['pearson']} > {lawful['reference_95']}")
+
+
+def test_the_model_check_fails_a_pair_with_fourfold_scatter(
+    law_and_inflated: tuple[dict[str, Any], dict[str, Any]],
+) -> None:
+    _, inflated = law_and_inflated
+    if not inflated["pearson"] > inflated["reference_95"][1]:
+        raise AssertionError(f"fourfold scatter passes the model check: {inflated['pearson']}")
+
+
+def overlap_law_model(perfs: dict[str, Any]) -> dict[str, dict[str, float]]:
+    """The overlap-only laws in place of the noise pipeline: F = (1 + M) / (2 (2 - M)), D = 5 - 4M, r(11)/r(01) = 1."""
+    m = float(perfs["HOM (%)"]) / 100.0
+    rates = {"process_fidelity": case.overlap_law(m), "rail_rate_ratio": 5.0 - 4.0 * m, "control_rate_ratio": 1.0}
+    return {name: dict(rates) for name in (case.FORECAST_RECORD_VARIANT, "g2-corrected overlap, loss and dark counts")}
+
+
+@pytest.fixture
+def law_model(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(case, "noise_model_at", overlap_law_model)
+
+
+def test_the_record_inversion_censors_values_without_an_inverse(law_model: None) -> None:
+    """Under the overlap-only laws F runs 0.65 to 1 and D 1 to 2.2 over overlaps 0.70 to 1.00: F = 1.02 and D = 0.98
+    have no inverse and F = 0.60 none either, while F(0.85) maps back to 0.85."""
+    inverse = case.record_inversion(case.read_perfs())
+    outside = [inverse["from_fidelity"](1.02), inverse["from_fidelity"](0.60), inverse["from_rail_ratio"](0.98)]
+    if not all(math.isnan(value) for value in outside):
+        raise AssertionError(f"an out-of-range value was clamped to an end of the grid: {outside}")
+    if abs(inverse["from_fidelity"](case.overlap_law(0.85)) - 0.85) > 1e-4:
+        raise AssertionError("a fidelity inside the range does not invert to its overlap")
+    if abs(inverse["from_rail_ratio"](5.0 - 4.0 * 0.85) - 0.85) > 1e-4:
+        raise AssertionError("a rail ratio inside the range does not invert to its overlap")
+
+
+def retained_inputs() -> tuple[dict[str, Any], dict[str, Any]]:
+    record = json.loads((case.FAMILY_DIR / case.RETAINED_VERDICTS).read_text(encoding="utf-8"))
+    process = {"status": "decided", "process_fidelity_interval": record["process_fidelity_interval"]}
+    return process, copy.deepcopy(record["overlap_estimates"])
+
+
+@pytest.fixture
+def quick_anchor(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The retained overdispersion anchor from the retained record, so a verdict test does not redraw it."""
+    record = json.loads((case.FAMILY_DIR / case.RETAINED_VERDICTS).read_text(encoding="utf-8"))
+    monkeypatch.setattr(case, "retained_overdispersion", lambda: record["overlap_estimates"]["overdispersion"])
+
+
+def test_a_censored_record_estimate_leaves_its_conjectures_undecided(quick_anchor: None, law_model: None) -> None:
+    process, overlaps = retained_inputs()
+    censored = {"point": None, "interval": None, "censored": {"point_outside": True, "replicates_outside": 3}}
+    overlaps["record_model"]["overlap_from_rail_rates"] = censored
+    overlaps["record_model"]["difference"] = censored
+    verdicts = {row["id"]: row["verdict"] for row in case.conjecture_verdicts(process, overlaps, case.read_perfs())}
+    undecided = "undecided: the record-model estimate is censored"
+    if verdicts["rail-ratio-reads-hom"] != undecided or verdicts["record-overlaps-agree"] != undecided:
+        raise AssertionError(f"censored estimates gave {verdicts}")
+    if verdicts["overlap-only-law"] not in {"survives", "falsified"}:
+        raise AssertionError("censoring reached a conjecture that does not read the record model")
+
+
+def test_a_failed_model_check_conditions_and_a_descriptive_pool_describes(quick_anchor: None, law_model: None) -> None:
+    process, overlaps = retained_inputs()
+    overlaps["overdispersion"]["pearson"] = 2.0 * overlaps["overdispersion"]["reference_95"][1]
+    rows = case.conjecture_verdicts(process, overlaps, case.read_perfs())
+    for row in rows:
+        conditional = row["verdict"].startswith("conditional on a failed model check: ")
+        if (row["id"] == case.MODEL_CHECK) == conditional:
+            raise AssertionError(f"{row['id']}: verdict {row['verdict']!r} after a failed model check")
+    if next(row for row in rows if row["id"] == case.MODEL_CHECK)["verdict"] != "falsified":
+        raise AssertionError("the model check survived a statistic twice its reference bound")
+    rows = case.conjecture_verdicts({**process, "status": "descriptive"}, retained_inputs()[1], case.read_perfs())
+    if not all(row["verdict"].startswith("descriptive: ") for row in rows):
+        raise AssertionError("a descriptive pool reported a decided verdict")

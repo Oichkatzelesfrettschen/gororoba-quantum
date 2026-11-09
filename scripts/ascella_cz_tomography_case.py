@@ -1022,7 +1022,8 @@ def forecast_bytes() -> bytes:
 
 def first_difference(retained: Any, recomputed: Any, path: str = "") -> str | None:
     """The first path where two JSON trees differ: keys, lengths, strings and integers exactly, floats beyond
-    TOLERANCE absolute. Measured with numpy 2.5.4 on an x86-64 host other than the one that built forecast.json:
+    TOLERANCE times the larger of 1 and the retained magnitude, so a statistic in the thousands keeps a last-bit
+    margin. Measured with numpy 2.5.4 on an x86-64 host other than the one that built forecast.json:
     its recomputed floats differ from the retained ones by up to 2e-15, with or without the ci/run_gates.py
     OpenBLAS and numpy caps."""
     if isinstance(retained, dict) and isinstance(recomputed, dict):
@@ -1041,7 +1042,11 @@ def first_difference(retained: Any, recomputed: Any, path: str = "") -> str | No
             if found:
                 return found
         return None
-    if isinstance(retained, float) and isinstance(recomputed, float) and abs(retained - recomputed) <= TOLERANCE:
+    if (
+        isinstance(retained, float)
+        and isinstance(recomputed, float)
+        and abs(retained - recomputed) <= TOLERANCE * max(1.0, abs(retained))
+    ):
         return None
     if type(retained) is not type(recomputed) or retained != recomputed:
         return f"{path}: retained {retained!r}, recomputed {recomputed!r}"

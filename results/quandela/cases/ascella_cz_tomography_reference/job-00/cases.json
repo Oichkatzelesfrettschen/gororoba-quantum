@@ -35812,7 +35812,7 @@
   "overlap_estimators": {
    "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
    "from_rail_rates": "M_R = (5 - D) / 4, D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
-   "record_model": "the same two quantities inverted through the record noise variant at the plan reads: F(M) and D(M) evaluated at overlaps 0.70 to 1.00 in steps of 0.0375, F fitted linear-fractional and D quadratic, each inverted by monotone interpolation on 3001 points",
+   "record_model": "the same two quantities inverted through the record noise variant at the plan reads: F(M) and D(M) evaluated at overlaps 0.70 to 1.00 in steps of 0.0375, F fitted linear-fractional and D quadratic, each inverted by monotone interpolation on 3001 points; a value outside the fitted range of F or D has no inverse, so an estimate whose point or any bootstrap replicate falls outside is censored",
    "bootstrap": "all on the replicates of the primary bootstrap, so each difference has a joint interval"
   },
   "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock come from job-00's perfs_at_plan; the noise pipeline runs at those reads",
@@ -35883,7 +35883,7 @@
     "falsified_when": "the observed ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained, e the mean eligible events per rate"
    }
   ],
-  "verdict_rule": "every interval is the primary bootstrap's 95 % interval; a conjecture is falsified when its band excludes its prediction (or, for the two overdispersion conjectures, the observed ratio), and survives otherwise; the model check scatter-matches-acquisition-law decides first, and when it is falsified every other verdict is reported as conditional on that failure; a descriptive pool reports each verdict as descriptive",
+  "verdict_rule": "every interval is the primary bootstrap's 95 % interval; a conjecture is falsified when its band excludes its prediction (or, for the two overdispersion conjectures, the observed ratio), and survives otherwise; the model check scatter-matches-acquisition-law decides first, and when it is falsified every other verdict is reported as conditional on that failure; a conjecture whose band reads a censored record-model estimate is undecided; a descriptive pool reports each verdict as descriptive",
   "overdispersion": {
    "statistic": "Pearson chi-squared of the 576 eligible counts about the counts of the unweighted linear-inversion fit, each over its expected count, one event at least",
    "reference": "200 synthetic pairs drawn under the fit as the service acquires them: each setting stops at its observed sample count, its eligible outcomes are one multinomial over that quota at the fit's rates per shot over the observed samples per shot (negative predictions set to 0), its shots are the quota plus a negative-binomial count, and each pair is refit and scored like the data",
