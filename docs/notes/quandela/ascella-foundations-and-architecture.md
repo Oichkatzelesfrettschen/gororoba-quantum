@@ -2,7 +2,7 @@
 
 This document synthesizes the physical first principles, mathematical axioms, hardware architecture, and
 software stack governing Quandela's **Ascella** quantum processing unit (`qpu:ascella`), its historical lineage,
-and its Python development ecosystem (`perceval-quandela`, `exqalibur`, `quandela-cloud-client`). It establishes
+and its Python development ecosystem (`perceval-quandela`, `exqalibur`). It establishes
 the formal literature and reference foundation for all Quandela-targeted research in this repository.
 
 ---
@@ -230,8 +230,9 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
 
 ## 4. The Quandela Python Software Stack
 
-Quandela's software architecture separates high-level algorithmic description from compiled high-performance
-simulation and cloud execution:
+Quandela's software architecture organizes quantum computing via linear optics into a layered stack
+comprising high-level circuit and processor abstractions, compiled C++ mathematical engines, and REST-based
+cloud communication:
 
 ```
                       +-----------------------------+
@@ -241,17 +242,20 @@ simulation and cloud execution:
                                      v
                       +-----------------------------+
                       |       Perceval 1.3.1        |
-                      | (pcvl.Circuit, Processor,   |
-                      |   State, Source, Noise)     |
+                      |   (pcvl.Circuit, Processor, |
+                      |    BasicState, StateVector, |
+                      |       Source, NoiseModel)   |
                       +-----------------------------+
                         /                         \
-                       / (C++ extension)           \ (REST / WebSockets)
+                       / (pybind11 C++ engine)     \ (HTTP REST / requests)
                       v                             v
 +-------------------------------+      +---------------------------------+
-|       exqalibur 1.4.2         |      |     quandela-cloud-client       |
-|  - SLOS permanent engine      |      |  - Authentication & token mgmt  |
+|       exqalibur 1.4.2         |      | perceval.providers.quandela     |
+|  - SLOS permanent engines     |      |  - QuandelaCommunicationLayer   |
+|    (SLOS, SLOS_V2, SLOS_V3)   |      |  - RPCHandler (Bearer Auth)     |
 |  - Clifford & Clifford sampler|      |  - Job serialization & dispatch |
-|  - Clements/Reck transpiler   |      |  - QPU / Sim telemetry polling  |
+|  - RectangularDecomposer      |      |  - QPU / Sim telemetry polling  |
+|  - CircuitOptimizer           |      | (packaged in perceval-quandela) |
 +-------------------------------+      +---------------------------------+
                                                         |
                                                         v
@@ -263,40 +267,70 @@ simulation and cloud execution:
 ```
 
 ### 4.1 `exqalibur`: Compiled C++ Engine
-`exqalibur` provides optimized Man-in-the-Middle primitives for linear optics:
-- **Matrix permanents**: Evaluated using Gray-code implementations of Glynn's formula and Ryser's algorithm,
-  enabling exact evaluation of state transition amplitudes.
-- **Clifford & Clifford (2018) sampler**: Polynomial-time exact/approximate sampling from $n$-photon $m$-mode
-  states without explicitly calculating all exponential state vectors.
-- **Circuit transpilation**: Factoring arbitrary matrices $U \in U(m)$ into elementary beam splitter and phase
-  shifter parameter schedules.
+`exqalibur` provides optimized linear optics computational routines bound via pybind11:
+- **Matrix permanents (`permanent_cx`, `permanent_fl`, `permanent_in`)**: Evaluates permanents of square
+  complex matrices. Uses Ryser's formula with Gray-code subset traversal ($O(n 2^n)$) for multi-threaded
+  workloads, and Glynn's formula when thread count is $\le 2$. Thread concurrency is managed via
+  `exqalibur.Config`.
+- **Permanent estimation (`estimate_permanent_cx`, `estimate_permanent_fl`)**: Provides polynomial-time
+  approximations of complex matrix permanents with a 99% confidence interval using Gurvits' algorithm (`ptype="gurvits"`).
+- **Sampling (`Clifford2017`, `SLAPSampler`, `SourceSampler`)**: Implements Clifford & Clifford (2017/2020)
+  polynomial-time sampling from output Fock-state distributions without computing all exponentially many
+  state amplitudes.
+- **Circuit transpilation and optimization**:
+  - `RectangularDecomposer`: Decomposes arbitrary unitary transformations $U \in U(m)$ into the Clements
+    rectangular MZI mesh architecture.
+  - `CircuitOptimizer`: Merges adjacent phase shifts and eliminates identity operations.
+  - *Note*: Triangular Reck decomposition is implemented in pure Python within `perceval.utils.algorithms.decomposition.decompose_triangle`.
 
 ### 4.2 `perceval` Core Library
-- **State management**:
-  ```python
-  import perceval as pcvl
-  # 2 photons in modes 0 and 2 of a 12-mode processor
-  input_state = pcvl.State([1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-  ```
+- **State representations**:
+  - `pcvl.BasicState`: Represents definite Fock states $|n_0, n_1, \dots, n_{m-1}\rangle$.
+    ```python
+    import perceval as pcvl
+    # 2 photons in modes 0 and 2 of a 12-mode processor
+    input_state = pcvl.BasicState([1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    ```
+  - `pcvl.StateVector`: Represents coherent linear superpositions of Fock states $\sum c_i |s_i\rangle$.
+  - `pcvl.SVDistribution`: Represents classical probability mixtures over state vectors.
+  - *Note*: `pcvl.State` does not exist; Fock states are instantiated via `BasicState`.
 - **Circuit composition**:
   ```python
   circuit = pcvl.Circuit(12)
   circuit.add(0, pcvl.BS())          # Beam splitter on modes 0 and 1
   circuit.add(0, pcvl.PS(phi=0.785)) # Phase shift on mode 0
   ```
-- **Processor backends**:
-  - `SLOSBackend`: Strong simulation computing the full probability distribution.
-  - `CliffordClifford2017Backend`: Fast sampling for multi-photon states.
-  - `NaiveBackend`: Brute-force permanent evaluation.
-  - `StepperBackend`: Mode-by-mode state transformation.
+- **Backend hierarchy (`pcvl.BackendFactory`)**:
+  - `SLOS`: Default strong simulation backend instantiated via `SLOSExqaliburBackend` (`perceval.backends._slos_exqalibur`),
+    interfacing with compiled C++ `exqalibur.SLOS`, `SLOS_V2`, and `SLOS_V3`.
+  - `SLOS_LEGACY`: Pure-Python reference implementation (`SLOSBackend` in `perceval.backends._slos`).
+  - `CliffordClifford2017`: Fast sampling backend (`Clifford2017Backend` in `perceval.backends._clifford2017`).
+  - `SamplingStepper`: Step-by-step sampling backend (`StepperBackend` in `perceval.backends._stepper`) calling `SLAPBackend` per step.
+  - `SLAP`: Sub-linear algebra package backend (`SLAPBackend` in `perceval.backends._slap`).
+  - `MPS`: Matrix Product State tensor network backend (`MPSBackend` in `perceval.backends._mps`).
+  - `Naive` / `NaiveApprox`: Brute-force permanent evaluation backends (`NaiveBackend`, `NaiveApproxBackend`).
+- **Noise modeling (`pcvl.NoiseModel`)**:
+  - Constructor parameters: `brightness`, `indistinguishability`, `g2`, `g2_distinguishable`, `transmittance`,
+    `phase_imprecision`, `phase_error`.
+  - Detectors in Perceval model photon loss via system-wide `transmittance`. Perceval's `NoiseModel` does not
+    contain a detector dark count parameter; dark count rates are tracked in hardware performance dictionaries
+    rather than simulated natively in the circuit noise model.
+- **Cloud integration (`perceval-quandela`)**:
+  - Remote execution on physical QPUs (`qpu:ascella`, `qpu:belenos`) or cloud simulators (`sim:ascella`) is mediated
+    by `QuandelaCommunicationLayer` (`perceval.providers.quandela.quandela_communication_layer`), which subclasses
+    `RPCBasedCommunicationLayer`.
+  - Transport uses standard HTTP REST via `requests` with Bearer token authentication and JSON RPC serialization;
+    there is no standalone `quandela-cloud-client` package and no WebSocket connection.
 
 ### 4.3 Error Mitigation Suite
-Quandela Cloud incorporates four native error mitigation layers:
-1. `PhotonRecycling`: Re-bins events with missing photons where losses permit recovery of partial states.
-2. `CompilationAveraging`: Transpiles the target unitary into multiple equivalent MZI mesh configurations
-   (different random transpilation seeds) and averages over hardware imperfections.
-3. `DistinguishablePhoton`: Models and inverts the known $V_{\text{HOM}}$ distinguishing mixture.
-4. `DetectorBalancing`: Scales measured click frequencies by inverse channel detection efficiencies.
+Perceval provides client-side error mitigation managed via `perceval.runtime.error_mitigation.MitigationFactory`.
+Mitigations are chained in an exact canonical order defined by `MitigationFactory.MITIGATION_ORDER`:
+1. `CompilationAveraging`: Transpiles the target unitary into multiple equivalent MZI mesh configurations
+   (using different random transpilation seeds) and averages over hardware phase errors and directional coupler imbalances.
+2. `DistinguishablePhotonMitigation`: Expands and inverts the distinguishing mixture matrix arising from finite HOM visibility
+   ($V_{\text{HOM}} < 1$) up to a specified photon-count expansion order.
+3. `PhotonRecycling`: Re-bins and recovers events with missing photons where partial detection patterns retain projective information.
+4. `DetectorBalancing`: Normalizes measured coincidence frequencies by inverse channel detection efficiencies and spatial mode transmission disparities.
 
 ---
 
