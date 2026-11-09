@@ -205,3 +205,29 @@ def test_read_series_refuses_an_empty_run_list_and_an_incomplete_job(
     )
     with pytest.raises(ValueError, match="a job did not complete"):
         pca.read_series(dirs, None, None, "data", ("batch", "circuits"), load_run)
+
+
+def test_visibility_gap_splits_the_nullity_error_exactly() -> None:
+    # One aligned pair and three misaligned pairs: five bins of ideal sign +1, three of -1, N = 1.
+    sign = np.array([1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0])
+    c = np.array([0.31, 0.27, 0.35, 0.29, 0.33, -0.22, -0.25, -0.19])
+    split = pca.visibility_gap(c, sign)
+    _check(split["nullity_ideal"] == 1.0, "N from the bin signs")
+    _check(math.isclose(split["nullity_estimate"], pca.contrast_vector(c, sign)[17], rel_tol=1e-15), "same N_hat")
+    _check(math.isclose(split["weight"], 15 / 8, rel_tol=1e-15), "weight |B+| |B-| / |B|")
+    error = split["nullity_estimate"] - split["nullity_ideal"]
+    _check(math.isclose(error, split["bias"], rel_tol=1e-12), f"N_hat - N {error} against the split {split['bias']}")
+    _check(not split["fixed_by_signs"], "a block with both signs carries its contrasts")
+
+
+def test_visibility_gap_marks_an_all_aligned_block_as_fixed() -> None:
+    sign = np.ones(8)
+    for c in (np.full(8, 0.8), np.array([0.9, 0.1, 0.5, 0.7, 0.2, 0.6, 0.3, 0.4])):
+        split = pca.visibility_gap(c, sign)
+        _check(split["fixed_by_signs"] and split["weight"] == 0.0, "no dark bin")
+        _check(math.isclose(split["nullity_estimate"], 4.0, rel_tol=1e-15), "N_hat equals 4 for any contrasts")
+
+
+def test_visibility_gap_needs_a_sign_on_every_bin() -> None:
+    with pytest.raises(ValueError, match="ideal sign"):
+        pca.visibility_gap(np.ones(8), np.array([1.0, 1.0, 1.0, 1.0, 0.0, -1.0, -1.0, -1.0]))

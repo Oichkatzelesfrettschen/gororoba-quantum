@@ -91,6 +91,25 @@ m = 19 blocks is 0.064 (Fez) and 0.089 (Marrakesh), and on the very qubits where
 map comes from its depth, not from a broken coupler; (6) the two devices agree on every operand within their
 intervals.
 
+Blocks fixed by their signs. A block whose four XOR pairs are all aligned has ideal sign +1 on all 8 bins, so its
+N_hat = (sum of c) / (2 V) equals 4 for any contrasts with V != 0 (`pathion_coset_analysis.visibility_gap`, which
+splits N_hat - N into the weight |B+| |B-| / |B| and the measured gap between the aligned and misaligned bins'
+visibilities). The records' own `cmap_<operand>_k<coset>_nullity_ideal` values place such blocks as follows, and
+each reads exactly 4.000 on both devices:
+
+| Operand (N) | Block nullities, cosets in record order | Blocks fixed by signs | Informative blocks |
+|---|---|---:|---|
+| e1 + e18 (12), twin e17 - e2 (12) | k0 0, k4 4, k8 4, k12 4 | 3 | k0 |
+| e1 + e10 (8) | k0 0, k4 4, k16 0, k20 4 | 2 | k0, k16 |
+| e1 + e24 (12) | k0 2, k4 4, k8 2, k12 4 | 2 | k0, k8 |
+| e1 + e26 (4), e2 + e27 (4) | k0 2, k4 0, k8 2, k12 0 | 0 | all four |
+| e1 + e17 (0), cocycle-free e1 + e18 (-2) | no block of nullity 4 | 0 | all four |
+
+Ten of the 32 block estimates per device are therefore identities. Rule (2)'s agreement within 0.15 of the integer
+on e1 + e18 and its twin comes from block k0 alone (N_hat 0.018 and 0.025 on Fez, 0.017 and 0.031 on Marrakesh), and
+on e1 + e10 and e1 + e24 from two blocks; rule (3)'s twin difference compares the two k0 blocks. Resolution (rule 1)
+still tests every block, because V > 0 and all 8 bin signs are measured on a block fixed by its signs as on any other.
+
 # Cross-platform runs: Tuna-17 and Ascella (2026-11-07)
 
 This section interprets the acquisitions retained with the Tuna-17 and Ascella runs: the first Tuna-17 series that
