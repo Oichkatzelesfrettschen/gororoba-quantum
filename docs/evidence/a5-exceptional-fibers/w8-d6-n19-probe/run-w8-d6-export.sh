@@ -17,3 +17,4 @@ rc=0
     --k2-receipt w8p1/receipt-d2.json --max-gb 1 \
     > out/w8nm_d6_n19_p32009.json 2> out/w8nm_d6_n19_p32009.err < /dev/null || rc=$?
 echo "$(date -u +%FT%TZ) exit $rc w8 d=6 N=19 export probe" >> "$ev"
+exit "$rc"

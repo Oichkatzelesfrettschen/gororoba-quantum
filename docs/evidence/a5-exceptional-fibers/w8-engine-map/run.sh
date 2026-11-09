@@ -12,11 +12,21 @@ export SINGULAR
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 MALLOC_ARENA_MAX=2
 export GOROROBA_WORKERS=${GOROROBA_WORKERS:-4}
 export FIBER_ENGINE="$root/docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py"
-export PYTHONPATH="$(dirname "$FIBER_ENGINE")"
+PYTHONPATH=$(dirname "$FIBER_ENGINE")
+export PYTHONPATH
+# capped GIB CMD...: a cgroup scope (MemoryMax, no swap) where the user bus answers, else an address-space limit.
+capped() {
+    gib=$1; shift
+    if [ -S "${XDG_RUNTIME_DIR:-/nonexistent}/bus" ]; then
+        systemd-run --user --scope -q -p MemoryMax="${gib}G" -p MemorySwapMax=0 "$@"
+    else
+        prlimit --as=$((gib * 1073741824)) "$@"
+    fi
+}
 mkdir -p "$here/logs"
 cd "$root"
 rc=0
-systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 \
-    timeout -k 10 "$limit" /usr/bin/time -v -o "$here/logs/$tag.time" \
+capped 8 timeout -k 10 "$limit" /usr/bin/time -v -o "$here/logs/$tag.time" \
     "$PYTHON" "$here/wrap.py" "$tag" "$here/logs" "$@" > "$here/logs/$tag.out" 2> "$here/logs/$tag.err" || rc=$?
 echo "exit $rc" > "$here/logs/$tag.exit"
+exit "$rc"

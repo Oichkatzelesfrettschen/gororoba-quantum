@@ -2,7 +2,10 @@
 
 The scripts and logs here are the agent's run files with local paths scrubbed (home and scratch directories replaced),
 otherwise as run; a path inside a script that points at `docs/local/` or a scratch directory names where the run
-wrote, which a clean clone does not hold. The memoized products pickle and the exports are not retained.
+wrote, which a clean clone does not hold. The memoized products pickle and the exports are not retained. `run.sh`
+returns the engine's exit status and falls back to `prlimit --as` where no user bus answers; the Python probes keep
+their bytes as run and sit outside the `lint` and `types` lanes of `ci/pr_checks.sh`, which list the checked files
+outside the code directories.
 
 Engine sha256 `7849cbc7...`, header `w8-nm.sing` `585a946d...`, receipt `6e464db6...`, Singular 4.4.1 (passagemath wheel,
 python3.13 venv), python-flint 0.9.0, numpy 2.5.4, scipy 1.18.1, Python 3.14. E is unedited. Tags: [M] measured, [C]

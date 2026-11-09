@@ -375,24 +375,38 @@ def parse_results(text: str) -> dict[str, str]:
     return out
 
 
+def memory_cap_command() -> tuple[list[str], str]:
+    """The limiter prefix and its log description: a user cgroup scope where the user bus answers, else prlimit --as."""
+    runtime = os.environ.get("XDG_RUNTIME_DIR")
+    if runtime and Path(runtime, "bus").is_socket():
+        prefix = ["systemd-run", "--user", "--scope", "-q", "-p", f"MemoryMax={MEMORY_CAP}", "-p", "MemorySwapMax=0"]
+        return prefix, f"memory cap {MEMORY_CAP} (cgroup MemoryMax, MemorySwapMax=0)"
+    units = {"K": 1 << 10, "M": 1 << 20, "G": 1 << 30, "T": 1 << 40}
+    match = re.fullmatch(r"(\d+)([KMGT]?)", MEMORY_CAP)
+    if match is None:
+        raise CheckError(f"MEM={MEMORY_CAP!r} is not a size such as 8G")
+    limit = int(match.group(1)) * units.get(match.group(2), 1)
+    return ["prlimit", f"--as={limit}"], f"address-space cap {MEMORY_CAP} (prlimit --as; no user bus)"
+
+
 def run_singular(workdir: Path, driver_name: str, log_name: str, label: str) -> dict[str, Any]:
-    """Run one driver in workdir under a cgroup memory cap with /usr/bin/time -v, write the log, parse RESULT lines."""
+    """Run one driver in workdir under a memory cap with /usr/bin/time -v, write the log, parse RESULT lines."""
     binary = singular_binary()
     version = subprocess.run(
         [binary, "-v", "-q", "--execute", "quit;"], capture_output=True, text=True, stdin=subprocess.DEVNULL
     )
     version_line = (version.stdout.splitlines() or ["unknown"])[0]
     started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    prefix, cap_note = memory_cap_command()
     cmd = [
-        "systemd-run", "--user", "--scope", "-q", "-p", f"MemoryMax={MEMORY_CAP}", "-p", "MemorySwapMax=0",
-        "timeout", "-k", "10", str(WALL_LIMIT), "/usr/bin/time", "-v", binary, "-q", "--no-warn", driver_name,
+        *prefix, "timeout", "-k", "10", str(WALL_LIMIT), "/usr/bin/time", "-v", binary, "-q", "--no-warn", driver_name,
     ]  # fmt: skip
     env = dict(os.environ, MALLOC_ARENA_MAX="2")
     done = subprocess.run(cmd, cwd=workdir, capture_output=True, text=True, stdin=subprocess.DEVNULL, env=env)
     finished = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     header = (
         f"driver {driver_name}\nlabel {label}\nbinary Singular (passagemath venv)\n{version_line}\n"
-        f"memory cap {MEMORY_CAP} (cgroup MemoryMax, MemorySwapMax=0), wall cap {WALL_LIMIT} s\n{started}\n"
+        f"{cap_note}, wall cap {WALL_LIMIT} s\n{started}\n"
     )
     footer = f"exit status {done.returncode}\n{finished}\n"
     # Singular writes RESULT lines to stdout and /usr/bin/time -v writes its accounting to stderr.

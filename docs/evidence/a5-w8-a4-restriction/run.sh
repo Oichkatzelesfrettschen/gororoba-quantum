@@ -11,6 +11,15 @@ SINGULAR=${SINGULAR:-$(ls "$HOME"/.cache/gororoba-quantum/venv-passagemath-singu
 MEM=${MEM:-24G}
 LIMIT=${LIMIT:-7200}
 export MALLOC_ARENA_MAX=2
+# capped GIB CMD...: a cgroup scope (MemoryMax, no swap) where the user bus answers, else an address-space limit.
+capped() {
+    gib=${1%G}; shift
+    if [ -S "${XDG_RUNTIME_DIR:-/nonexistent}/bus" ]; then
+        systemd-run --user --scope -q -p MemoryMax="${gib}G" -p MemorySwapMax=0 "$@"
+    else
+        prlimit --as=$((gib * 1073741824)) "$@"
+    fi
+}
 
 run_one() {
   fam=$1
@@ -37,21 +46,27 @@ run_one() {
     date -u +%Y-%m-%dT%H:%M:%SZ
   } > "$log"
   set +e
-  systemd-run --user --scope -q -p MemoryMax="$MEM" -p MemorySwapMax=0 \
-    timeout -k 10 "$LIMIT" /usr/bin/time -v "$SINGULAR" -q --no-warn "$drv" < /dev/null >> "$log" 2>&1
+  capped "$MEM" timeout -k 10 "$LIMIT" /usr/bin/time -v "$SINGULAR" -q --no-warn "$drv" < /dev/null >> "$log" 2>&1
   status=$?
   set -e
   echo "exit status $status" >> "$log"
   date -u +%Y-%m-%dT%H:%M:%SZ >> "$log"
+  return "$status"
 }
 
 if [ $# -ge 3 ]; then
   run_one "$2" "$3"
 else
-  run_one controls 1
+  # Every stage runs even after a failure (the PB stage-4 decomposition is known to reach its wall cap); the runner
+  # then exits with the first nonzero stage status.
+  first=0
+  run_one controls 1 || first=$?
   for fam in PB PA PAp; do
     for stage in 1 2 3 4; do
-      run_one "$fam" "$stage"
+      rc=0
+      run_one "$fam" "$stage" || rc=$?
+      [ "$first" -ne 0 ] || first=$rc
     done
   done
+  exit "$first"
 fi
