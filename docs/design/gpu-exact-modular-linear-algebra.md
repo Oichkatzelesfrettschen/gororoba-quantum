@@ -178,7 +178,12 @@ prefix:
 | `modgemm.py` to `modgemm12t.py` | (12 files) | the earlier product and HMM variants the measurements step through |
 | `int8_modgemm.py`, `gpu_types.py`, `fp8_uvm_probe.py`, `faulttest.py` | 63ea6f8352c711ab, aba1a61885d819f1, a0a7d75aa8334057, 61974f967a02be7a | number-type throughput, FP8 and UVM probes, first-touch fault rate |
 
-The library still needs a home with a test suite against FLINT; the replays then import it as a pinned dependency.
+`gororoba_quantum/modular_echelon.py` carries the Layer 1 product (single-chunk and chunked inner dimension), the Layer 3
+PLUQ with a blocked back substitution to the reduced row echelon form, and a growing echelon basis (`Echelon`) whose
+basis stays on the device as int32 residues; `tests/test_modular_echelon.py` compares every operation with FLINT
+`nmod_mat.rref` and skips without CUDA. Fiber-rank engine v12 selects it with `--echelon gpu`
+(docs/evidence/a5-exceptional-fibers/engine-v12/README.md). The tiled Layer 2 hierarchy and the device-resident
+table products stay in the probe scripts; the library still awaits the owner's decision on a standalone package.
 A Rust port fits `gororoba-open`, which already depends on `cudarc` 0.19 (cuBLAS, cuSOLVER, NVRTC). Publishing to
 PyPI waits for the owner's decision on name, license and contents.
 

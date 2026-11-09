@@ -1317,6 +1317,48 @@
    "value": 53907,
    "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
    "index": 4
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 48017,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1002
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 49253,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1003
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 10309,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1004
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 7251,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1005
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 10621,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1006
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 17687,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1007
   }
  ],
  "runtime": [

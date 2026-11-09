@@ -1,0 +1,7 @@
+902db5bcc78eb1db  1111 bytes  logs/iso-d6n19-v12-gpu.out
+902db5bcc78eb1db  1111 bytes  logs/iso-d6n19-v12-flint.out
+rank fields byte-equal
+727d773a46fd75af  1071 bytes  ../iso-d6-n19-laptop/isonm_d6_n19_p32009.json
+727d773a46fd75af  1071 bytes  logs/iso-d6n19-v12-gpu.out
+727d773a46fd75af  1071 bytes  logs/iso-d6n19-v12-flint.out
+rank fields byte-equal
