@@ -335,6 +335,14 @@ def main() -> int:
     args = sys.argv[1:]
     check = "--check" in args
     roots = [Path(a).resolve() for a in args if a != "--check"]
+    # A missing or misspelled root drops its records from the rebuilt registry, so every argument is checked before
+    # anything is read or written: an option other than --check, an empty root list or an absent root stops the run.
+    unknown = [a for a in args if a.startswith("-") and a != "--check"]
+    if unknown or not roots:
+        raise SystemExit("usage: build_registry.py [--check] ROOT... (the scan roots of README.md); nothing written")
+    missing = [str(r) for r in roots if not r.is_dir()]
+    if missing:
+        raise SystemExit(f"scan root not found: {', '.join(missing)}; nothing written")
     wit = [json.loads(ln) for ln in (HERE / "witnesses.jsonl").read_text().splitlines() if ln.strip()]
     witness_ok = {w["legacy"] for w in wit if w["kind"] == "header-pair" and w["ok"]}
     isos = [fresh(w, ("k2_to", "k2_from")) for w in wit if w["kind"] == "sign-isomorphism" and w["ok"]]
