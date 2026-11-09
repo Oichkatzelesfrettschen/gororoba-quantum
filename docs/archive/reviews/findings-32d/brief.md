@@ -1,6 +1,6 @@
 # Brief: adversarial analysis and synthesis across PRs #788, #789, #790 and the A_5 findings
 
-Read first: /home/eirikr/Projects/gororoba-workspace/AGENTS.md (workspace guide) if reachable, then AGENTS.md here.
+Read first: the workspace AGENTS.md (in the directory above the primary checkout) if reachable, then AGENTS.md here.
 This directory is a detached checkout of origin/main. Change no file except your own report (named at the end); never
 commit, push, stash, submit to a provider, or start a cloud resource; spawn no subagents. Read-only commands, git,
 Python (PYTHON="${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/ci-py3.14.7/bin/python", GLIBC_TUNABLES=

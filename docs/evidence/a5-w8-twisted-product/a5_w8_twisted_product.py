@@ -410,7 +410,9 @@ def run_singular(workdir: Path, driver_name: str, log_name: str, label: str) -> 
     )
     footer = f"exit status {done.returncode}\n{finished}\n"
     # Singular writes RESULT lines to stdout and /usr/bin/time -v writes its accounting to stderr.
-    (workdir / log_name).write_text(header + done.stdout + done.stderr + footer, encoding="utf-8")
+    # The retained log names the binary by role: local absolute paths stay out of committed records.
+    accounting = done.stderr.replace(binary, "Singular (passagemath venv)").replace(str(Path.home()), "~")
+    (workdir / log_name).write_text(header + done.stdout + accounting + footer, encoding="utf-8")
     check(done.returncode == 0, f"Singular driver {driver_name} exited {done.returncode}: {done.stderr[-400:]}")
     rss = re.search(r"Maximum resident set size \(kbytes\): (\d+)", done.stderr)
     wall = re.search(r"Elapsed \(wall clock\) time \(h:mm:ss or m:ss\): (\S+)", done.stderr)

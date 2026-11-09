@@ -3,27 +3,27 @@ label Hilbert series at p = 32003
 binary Singular (passagemath venv)
 Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
 address-space cap 8G (prlimit --as; no user bus), wall cap 3600 s
-2026-11-09T01:06:56Z
+2026-11-09T02:25:35Z
 RESULT generators_W8 8
 RESULT W8_dim 24
 RESULT W8_mult 16
 RESULT W8_hilb1 1, -4, 2, 12, -17, -8, 28, -8, -17, 12, 2, -4, 1, 0
 RESULT W8_hilb2 1, 4, 6, 4, 1, 0
-	Command being timed: "/home/eirikr/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3.13/site-packages/sage_wheels/bin/Singular -q --no-warn driver_32003.sing"
-	User time (seconds): 0.01
-	System time (seconds): 0.01
-	Percent of CPU this job got: 47%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.07
+	Command being timed: "Singular (passagemath venv) -q --no-warn driver_32003.sing"
+	User time (seconds): 0.00
+	System time (seconds): 0.00
+	Percent of CPU this job got: 50%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.00
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 15232
+	Maximum resident set size (kbytes): 15340
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 620
-	Voluntary context switches: 1
-	Involuntary context switches: 14
+	Minor (reclaiming a frame) page faults: 619
+	Voluntary context switches: 0
+	Involuntary context switches: 0
 	Swaps: 0
 	File system inputs: 0
 	File system outputs: 0
@@ -33,4 +33,4 @@ RESULT W8_hilb2 1, 4, 6, 4, 1, 0
 	Page size (bytes): 4096
 	Exit status: 0
 exit status 0
-2026-11-09T01:06:56Z
+2026-11-09T02:25:35Z
