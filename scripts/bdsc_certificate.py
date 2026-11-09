@@ -90,9 +90,9 @@ FILES = (
 )
 CHECK_TOLERANCE = 1e-9
 # A ladder weight at or below this counts as rounding residue in template_params: the weight of one 1e-12 amplitude,
-# the scale below which it assigns a mode no phase. A splitter weight sums several modes, so a splitter can keep
-# weight from amplitudes that each fall below the phase cut; the column then matches to 1e-12 either way. The
-# chip-column residue this floors measured 7.9e-35 on arm64 (issue 776).
+# the scale below which it assigns a mode no phase. A splitter weight sums several modes, so a kept splitter can carry
+# amplitudes that each fall below the phase cut, and such a mode misses its column entry by at most twice its
+# amplitude. The chip-column residue this floors measured 7.9e-35 on arm64 (issue 776).
 LADDER_WEIGHT_FLOOR = 1e-24
 HALF_ROOT: Q2 = (Fraction(0), Fraction(1, 2))
 ALLOCATION = "two-block"

@@ -112,14 +112,15 @@ jobs:
       # ci/pr_checks.sh holds its shared lock with flock, and the scripts under test call GNU timeout and the GNU
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins
       # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macos-15 runner reads
-      # the repository about twice as slowly as the Linux runners (the seed-provenance tests took up to 33.6 s
-      # there), so its call-budget target (tests/conftest.py) is 25 s, failing a call past 37.5 s.
+      # the repository about twice as slowly as the Linux runners (its slowest calls took 35.6 s), so its call-budget
+      # target (tests/conftest.py) is 30 s, failing a call past 45 s; the x64 and Linux arm64 jobs keep the 10 s
+      # target that catches a slowdown.
       - name: Install flock and GNU coreutils
         if: runner.os == 'macOS'
         run: |
           brew install flock coreutils
           echo "$(brew --prefix coreutils)/libexec/gnubin" >> "$GITHUB_PATH"
-          echo "GOROROBA_TEST_CALL_SECONDS=25" >> "$GITHUB_ENV"
+          echo "GOROROBA_TEST_CALL_SECONDS=30" >> "$GITHUB_ENV"
       - name: Fetch main
         run: git fetch --no-tags --depth=1 origin +refs/heads/main:refs/remotes/origin/main
       - name: pytest

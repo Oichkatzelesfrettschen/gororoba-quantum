@@ -42,7 +42,7 @@ EXPECTED: dict[str, tuple[frozenset[str], str]] = {
     "tests/scripts/test_ascella_physical_models.py::test_planted_heater_gain_is_recovered": (
         MACOS,
         "L-BFGS-B stops ABNORMAL in its line search 5.3e-9 from the planted gain (finite-difference gradient 0.19"
-        " at the optimum), and fit_parameters accepts only a reported convergence",
+        " at the optimum), and fit_parameters accepts only a reported convergence (issue 805)",
     ),
     "tests/test_msq_envelope.py::test_batched_brentq_replays_scipy_brentq": (
         MACOS,
@@ -52,8 +52,8 @@ EXPECTED: dict[str, tuple[frozenset[str], str]] = {
     "tests/scripts/test_bdsc_null_calibration.py::"
     "test_a_mutated_batched_path_differs_from_the_scalar_analyse[square-numpy_square]": (
         MACOS,
-        "macOS libm pow(x, 2.0) equals x * x on every value this test squares, so the numpy_square mutant is"
-        " equivalent there; both libms differ from x * x on about 0.1 percent of uniform inputs",
+        "the numpy_square mutant changes 3 of the 4,600 squares this test computes under macOS libm, and the"
+        " batched statistics still read equal to the scalar analysis",
     ),
     "tests/gororoba_quantum/test_readout_actor_family.py::"
     "test_full_width_collection_includes_input_and_parsing_memory": (MACOS, PROC),
