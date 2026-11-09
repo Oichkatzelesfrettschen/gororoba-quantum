@@ -119,7 +119,7 @@ or the dephasing. The 96 such qubit readouts measure preparation and readout err
   the tomography discards. It is independent of the tomography estimator.
 - **Effect of g2:** adding the multiphoton model moves the pattern overlap by 0.033 to 0.038, the same size as
   Ollivier's correction, and lands both pairs at 0.93. That is 4.7 to 5.3 points above the HOM read.
-- **What remains after g2:** Ollivier's correction alone accounts for up to 3.9 points (band) and 3.5 points
+- **What remains after g2:** Ollivier's correction alone accounts for up to 3.9 points (band) and 3.4 points
   (retained), leaving 0.8 to 1.9 points that a pair-dependent visibility (Pont et al. 2022, pub 3c845c21a16f,
   Table S1: about 4 points across pairs and delays) covers.
 - **The rail route:** it agrees on the retained pair and stands 2 points high on the band pair, inside its
