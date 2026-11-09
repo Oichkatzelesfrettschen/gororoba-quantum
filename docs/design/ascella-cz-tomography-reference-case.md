@@ -5,8 +5,8 @@ This is the written case for two qpu:ascella jobs of 72 template iterations that
 lies within 6.8420696 percentage points of 90 %, and preregisters twelve conjectures the pair decides.
 [scripts/ascella_cz_tomography_reference_case.py](../../scripts/ascella_cz_tomography_reference_case.py) builds the frozen requests in
 [results/quandela/cases/ascella_cz_tomography_reference](../../results/quandela/cases/ascella_cz_tomography_reference/job-00/cases.json),
-checks them, forecasts the outcome over the admitted HOM band and gates every submission. Nothing has been sent, and
-the owner's approval names the request digests. The approval rule of gororoba-quantum `AGENTS.md` ("Hardware services") governs the submission.
+checks them, forecasts the outcome over the admitted HOM band and gates every submission. Nothing has been sent;
+the owner's approval of these request digests is pending, and a submission pins the approved digest. The approval rule of gororoba-quantum `AGENTS.md` ("Hardware services") governs the submission.
 
 ## Why the case exists
 
@@ -129,7 +129,8 @@ serve every HOM it admits, because the body needs nothing that HOM changes.
   bunch into output mode k with probability (1 + M) |U_k1|^2 |U_k2|^2 at photon overlap M, so the two-click
   probability falls as M rises, and the estimate at M = 1 bounds the shots per sample at every HOM. The forecast
   confirms it: the setting with the most expected shots stays 1.277 times below the cap at every point from
-  83.16 % to 96.84 %, and a job's expected shots move by 1.8 % across the band.
+  83.16 % to 96.84 %, and a job's expected shots move by at most 2.7 % across the band (1.8 % for job-00,
+  2.7 % for job-01).
 - The forecast follows the same split. The repository forbids guessing hardware figures, so the forecast is a curve
   over the band at the read's other figures, and the plan read at submission picks the point.
 - The preferred HOM is an anchor, not a wait: the forecast includes 90 %, and the analysis reports each job's HOM
@@ -146,7 +147,7 @@ nonzero values in index order, repeats skipped, and none was skipped.
 | 144 compilation seeds, schedule order | 0 to 143 |
 | Bootstrap seed of the analysis | 144 |
 | One synthetic dataset per forecast HOM point | 145 to 156 |
-| Poisson-only reference draws of the overdispersion statistic | 157 |
+| Acquisition-reference draws of the overdispersion statistic | 157 |
 | Owned and unused | 158 to 255 |
 
 The case takes fresh compilation seeds rather than reusing the retained case's. The owner ruled on 2026-11-09 to use
@@ -223,48 +224,57 @@ unprojected process fidelity is F_pro(M) = (1 + M) / (2 (2 - M)), with inverse M
 The same law gives a second overlap estimate that needs no fit. Let r(xy) be the eligible rate of input xy, averaged
 over its nine readouts; a local readout keeps one photon per qubit, so every readout carries the input's success
 probability. Then D = r(10) r(01) / (r(00) r(11)) = 5 - 4M. Each rail's detection efficiency enters D once above and
-once below, and only the pooling scale between the jobs remains. `rail_rate_ratio` computes D and
+once below. Inputs 10 and 01 belong to job-01 and inputs 00 and 11 to job-00, so a job-01 pooling scale s enters
+as s^2. `rail_rate_ratio` computes D and
 `control_rate_ratio` computes r(11) / r(01), which is 1 at every M on balanced rails.
 
 ### Overdispersion and the verdict rule
 
-The retained counts scatter beyond Poisson about one Choi matrix. The Pearson statistic of the 576 counts about the
-linear-inversion fit is 5288. Its Poisson-only reference, 200 Poisson datasets at the fit's expected counts with the
-same shots, refit alike, has mean 2781 and 95 % range 1637 to 4599. The unweighted fit predicts negative rates on
-near-zero cells, so the reference sits far above 320, the degrees of freedom, and the ratio 1.90 is the measure of
-scatter beyond Poisson. Every verdict therefore widens the parametric bootstrap interval about its point by the
-square root of the pair's own ratio (at least 1). The preregistered rule is in each `cases.json` under
-`preregistered.verdict_rule`, and the reference draws take QRNG index 157.
+The Pearson statistic of the retained pair's 576 counts about the unweighted linear-inversion fit is 5288. Its
+acquisition reference draws 200 synthetic pairs under the fit as the service acquires them: each setting stops at
+its observed sample count, its eligible outcomes are one multinomial over that quota, its shots are the quota plus a
+negative-binomial count, and each pair is refit and scored like the data. The reference has mean 3677 and 95 % range
+1986 to 6914, so the observed statistic lies inside it and the ratio is 1.44. The fit predicts negative rates on 29
+near-zero cells (they sum to -160 expected events), which is why the reference sits far above 320, the degrees of
+freedom; the synthetic pairs carry the same bias.
+
+The scatter test is a model check, not a correction. Every conjecture is judged on the primary bootstrap's 95 %
+interval. When the model check fails, every other verdict is reported as conditional on that failure. A single
+residual statistic cannot widen intervals soundly, because a systematic error inside the model space moves the fitted
+Choi matrix and leaves the residual unchanged. Each `cases.json` states the rule under `preregistered.verdict_rule`,
+the reads the predictions use under `preregistered.plan_reads`, and the reference under
+`preregistered.overdispersion`. The reference draws take QRNG index 157.
 
 ### The conjectures and the retained pair's verdicts
 
 `--retained-verdicts` runs the same code on the retained 2026-10-31 pair (HOM 87.56 %, g2 1.8 %, T 5.81 %) and
 writes [retained-conjecture-verdicts.json](../../results/quandela/cases/ascella_cz_tomography_reference/retained-conjecture-verdicts.json);
-`--check` recomputes it. The retained process fidelity is 0.849, widened interval 0.820 to 0.876.
+`--check` recomputes it. The retained process fidelity is 0.849, with interval 0.828 to 0.869.
 
-| Conjecture | Prediction (retained) | Held against (retained, widened) | Retained verdict |
+| Conjecture | Prediction (retained) | Held against (retained) | Retained verdict |
 |---|---|---|---|
-| Overlap is the only error: F = (1 + M)/(2(2 - M)), M = V | 0.834 | F 0.820 to 0.876 | survives |
-| The same law at M = (V + g2)/(1 - g2) | 0.876 | F | survives, at the edge |
+| Overlap is the only error: F = (1 + M)/(2(2 - M)), M = V | 0.834 | F 0.828 to 0.869 | survives |
+| The same law at M = min(1, (V + g2)/(1 - g2)) | 0.876 | F | falsified |
 | Noise pipeline, record variant (source, loss, dark counts) | 0.788 | F | falsified |
-| Noise pipeline, g2-corrected overlap variant | 0.826 | F | survives |
-| The rail ratio reads the platform HOM: M_R = V | 0.8756 | M_R 0.914, 0.890 to 0.938 | falsified |
-| The two overlaps agree: M_F = M_R | 0 | M_F - M_R -0.025, -0.058 to 0.008 | survives |
+| Noise pipeline, g2-corrected overlap variant | 0.826 | F | falsified, by 0.002 |
+| The rail ratio reads the platform HOM: M_R = V | 0.8756 | M_R 0.914, 0.896 to 0.931 | falsified |
+| The two overlaps agree: M_F = M_R | 0 | M_F - M_R -0.025, -0.049 to -0.001 | falsified |
 | No overlap beats M = 1: F at or below the record variant at HOM 100 % | 0.937 | lower end of F | survives |
-| Balanced rails: r(11)/r(01) = 1 | 1 | 1.009, 0.953 to 1.067 | survives |
+| Balanced rails: r(11)/r(01) = 1 | 1 | 1.009, 0.969 to 1.051 | survives |
 | r(11)/r(01) takes the record variant's value (lost-twin multiphoton events) | 1.038 | same | survives |
-| Poisson-only scatter | 5288 | Poisson reference up to 4599 | falsified |
-| Constant variance factor: the ratio stays at the retained 1.90 | 1.90 | 1.43 to 2.38 | survives by construction |
-| Relative systematic per rate: ratio - 1 grows with events per rate | 1.90 | 1.43 to 2.38 | survives by construction |
+| Model check: scatter matches the acquisition law | 5288 | reference up to 6914 | survives |
+| Constant variance factor: the ratio stays at the retained 1.44 | 1.44 | 1.08 to 1.80 | survives by construction |
+| Relative systematic per rate: ratio - 1 grows with events per rate | 1.44 | 1.08 to 1.80 | survives by construction |
 
-Three conjectures already fall on the retained pair. The record variant sits 0.03 below the widened interval. The
-rate-ratio overlap, 0.914, sits 4 points above the platform's HOM read, while agreeing with the fidelity overlap
-M_F = 0.888 within the widened interval. The new pair carries about six times the events per setting, so it splits
-what the retained pair cannot. The overdispersion pair predicts a ratio of 1.90 under a constant factor against
-about 1 + 0.90 x 6.2 = 6.6 under a relative systematic. The overlap-only and g2-corrected laws differ by 0.04 at the
-retained read, about ten widened spreads of the new design. M_F - M_R narrows enough to test whether the platform HOM
-understates the overlap at the CZ coupler, which the photonic ledger's sources leave open: the visibility depends on
-the emission delay and the source pair.
+The twelve verdicts read four observed summaries: the process fidelity, the rail ratio with its joint difference,
+the control ratio and the Pearson statistic. They are distinct benchmarks on those summaries, not twelve independent
+pieces of evidence. Five fall on the retained pair. The overlap-only law survives, and every model that adds g2 to
+the overlap overshoots or undershoots the measured fidelity. The rail overlap, 0.914, sits 3.8 points above the
+platform's HOM read and 2.5 points above the fidelity overlap M_F = 0.888; under overlap-only error the two would
+agree, so an error beyond overlap lowers the fidelity, or the rail rates carry a setting-dependent factor the double
+ratio does not cancel. The new pair carries about six times the events per setting. Its overdispersion ratio
+separates a constant factor (1.44) from a relative systematic per rate (about 1 + 0.44 x 6.2 = 3.7), and its
+narrower intervals test the two overlap estimates again at a new HOM.
 
 The workspace's algebraic lineages (de Marrais box-kites, Hurwitz, Cayley-Dickson, Moreno and the Pfaffian
 reduction, Hilbert-Samuel fibers, Levratti) predict no rate of this measurement: the only matrix functions it reads
@@ -320,7 +330,7 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
 | `ascella_cz_tomography_case.py --check` | passes: the retained requests still rebuild byte for byte after the loader and pooling take a family |
 | `qd_platform.py --self-test` | passes, with budgeted and unbudgeted template cases and three malformed budget lists |
 | `qd_platform.payload` on both ensemble jobs | each body's digest without `process_id` equals its retained `plan-read.json` value, so an unbudgeted template case sends the same bytes |
-| `tests/scripts/test_ascella_cz_tomography_reference_case.py` | 60 pass: the gate's refusals, the band's ends, the floors, the budgets, the overlap law against every forecast point, the rail ratios against the photon model, the interval widening and the retained verdict list |
+| `tests/scripts/test_ascella_cz_tomography_reference_case.py` | 61 pass: the gate's refusals, the band's ends, the floors, the budgets, the overlap law against every forecast point, the rail ratios against the photon model, the seed partition, strict JSON with one-sided bands, and the retained verdict list |
 
 ## Limits
 

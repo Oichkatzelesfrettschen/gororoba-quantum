@@ -119,7 +119,7 @@ CONJECTURES = (
     },
     {
         "id": "g2-corrected-overlap-law",
-        "statement": "the same law with the multiphoton-corrected overlap M = (V + g2) / (1 - g2)",
+        "statement": "the same law with the multiphoton-corrected overlap M = min(1, (V + g2) / (1 - g2))",
         "falsified_when": "the process-fidelity interval excludes the law at the corrected M",
     },
     {
@@ -160,21 +160,22 @@ CONJECTURES = (
         "falsified_when": "the interval of r(11) / r(01) excludes the record variant's ratio",
     },
     {
-        "id": "poisson-only-scatter",
-        "statement": "the counts scatter about one Choi matrix as Poisson draws do",
-        "falsified_when": "the Pearson statistic exceeds the 97.5th percentile of its Poisson-only reference",
+        "id": "scatter-matches-acquisition-law",
+        "statement": "model check: the counts scatter about one Choi matrix as the acquisition law draws them",
+        "falsified_when": "the Pearson statistic exceeds the 97.5th percentile of its acquisition reference",
     },
     {
         "id": "overdispersion-constant-factor",
         "statement": "the scatter beyond Poisson is a constant variance factor: the overdispersion ratio equals the "
         "retained pair's",
-        "falsified_when": "the ratio lies more than 25 % from the retained pair's ratio",
+        "falsified_when": "the observed ratio lies more than 25 % from the retained pair's ratio",
     },
     {
         "id": "overdispersion-relative-systematic",
         "statement": "the scatter beyond Poisson is a relative systematic per rate fixed by the retained pair, so the "
         "ratio minus one grows with the mean eligible events per rate",
-        "falsified_when": "the ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained",
+        "falsified_when": "the observed ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained, e the "
+        "mean eligible events per rate",
     },
 )
 
@@ -471,19 +472,26 @@ def preregistered() -> dict[str, Any]:
         },
         "overlap_estimators": {
             "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
-            "from_rail_rates": "M_R = (5 - D) / 4, D = R(10) R(01) / (R(00) R(11)) over the summed absolute "
-            "eligible rates of the inputs 00, 01, 10 and 11 read out in ZZ, after pooling",
+            "from_rail_rates": "M_R = (5 - D) / 4, D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate "
+            "of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
             "bootstrap": "both on the replicates of the primary bootstrap, so their difference has a joint interval",
         },
+        "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock "
+        "come from job-00's perfs_at_plan; the noise pipeline runs at those reads",
         "conjectures": [dict(row) for row in CONJECTURES],
-        "verdict_rule": "every bootstrap interval is widened about its point by the square root of the pair's "
-        "overdispersion ratio (at least 1), the Pearson statistic over the mean of its Poisson-only reference; a "
-        "conjecture is falsified when the widened 95 % interval excludes its prediction, or its band excludes the "
-        "observed value, and survives otherwise; a descriptive pool reports each verdict as descriptive",
+        "verdict_rule": "every interval is the primary bootstrap's 95 % interval; a conjecture is falsified when its "
+        "band excludes its prediction (or, for the two overdispersion conjectures, the observed ratio), and survives "
+        "otherwise; the model check scatter-matches-acquisition-law decides first, and when it is falsified every "
+        "other verdict is reported as conditional on that failure; a descriptive pool reports each verdict as "
+        "descriptive",
         "overdispersion": {
-            "statistic": "Pearson chi-squared of the 576 eligible counts about the linear-inversion fit's expected "
-            "counts, each over its expected count, one event at least",
-            "reference": f"{OVERDISPERSION_DRAWS} Poisson datasets at the fit's expected counts, negatives clipped",
+            "statistic": "Pearson chi-squared of the 576 eligible counts about the counts of the unweighted "
+            "linear-inversion fit, each over its expected count, one event at least",
+            "reference": f"{OVERDISPERSION_DRAWS} synthetic pairs drawn under the fit as the service acquires them: "
+            "each setting stops at its observed sample count, its eligible outcomes are one multinomial over that "
+            "quota at the fit's rates per shot over the observed samples per shot (negative predictions set to 0), "
+            "its shots are the quota plus a negative-binomial count, and each pair is refit and scored like the data",
+            "ratio": "the observed statistic over the reference mean",
             "seed_draw": DRAW,
             "seed_index": plan["overdispersion"][0],
         },
@@ -695,7 +703,9 @@ def check_job(job: str, rebuild: bool = True) -> None:
 
 def check() -> int:
     plan = seed_plan()
-    values = [value for _, value in [*plan["compilation"], plan["bootstrap"], *plan["forecast"]]]
+    values = [
+        value for _, value in [*plan["compilation"], plan["bootstrap"], *plan["forecast"], plan["overdispersion"]]
+    ]
     require(len(set(values)) == len(values), "a seed value repeats")
     retained_seeds = {value for _, value in tomo.seed_plan()[0]}
     require(not retained_seeds & set(values), "a compilation seed repeats one of the retained case's")
@@ -1015,8 +1025,8 @@ def rail_rate_ratio(rates: np.ndarray) -> float:
     (1-M)/2 det^2), so D = 5 - 4M when overlap is the only error. A local readout keeps one photon per qubit, so
     every readout of an input carries the same success probability, and the average over nine readouts dilutes the
     per-setting systematic that the overdispersion statistic measures. Each rail's detection efficiency appears
-    once above and once below, and the two job-01 inputs (10, 01) over the two job-00 inputs (00, 11) leave only the
-    pooling scale, which tomo.pooling sets."""
+    once above and once below, and the two job-01 inputs (10, 01) over the two job-00 inputs (00, 11) leave the
+    square of the job-01 pooling scale, which tomo.pooling sets."""
     total = dict.fromkeys(RAIL_INPUTS, 0.0)
     for row in tomo.schedule():
         if row["input"] in total:
@@ -1048,16 +1058,28 @@ def pearson(eligible: np.ndarray, shots: np.ndarray, scale: np.ndarray) -> float
     return float((((eligible - expected) ** 2) / np.maximum(expected, 1.0)).sum())
 
 
-def overdispersion(eligible: np.ndarray, shots: np.ndarray, scale: np.ndarray, seed: int) -> dict[str, Any]:
-    """The Pearson statistic over its Poisson-only reference: OVERDISPERSION_DRAWS datasets of Poisson counts at the
-    fit's expected counts (negatives clipped to 0) and the same shots, refit and scored alike. The unweighted fit
-    predicts negative rates on some near-zero cells, so the reference sits well above one per degree of freedom and
-    the ratio, not the statistic, measures scatter beyond Poisson."""
+def overdispersion(
+    eligible: np.ndarray, samples: np.ndarray, shots: np.ndarray, scale: np.ndarray, seed: int
+) -> dict[str, Any]:
+    """The Pearson statistic over its acquisition reference: OVERDISPERSION_DRAWS synthetic pairs drawn as the service
+    acquires them under the fit. Each setting stops at its observed sample count; its four eligible outcomes and the
+    remaining samples are one multinomial over that quota, with per-sample probabilities the fit's eligible rate per
+    shot (negative predictions clipped to 0, the four scaled down together if they pass 1) over the observed samples
+    per shot; its shots are the quota plus a negative-binomial count at the observed samples per shot
+    (sampled_dataset). Each synthetic pair is refit and scored like the data, so the reference carries the bias of
+    the unweighted fit on near-zero cells and the ratio measures scatter beyond the acquisition law."""
     rates = tomo.absolute_rates(eligible, shots, scale)
     predicted = (tomo.design_matrix() @ (tomo.design_pseudoinverse() @ rates)).reshape(eligible.shape)
-    mean = np.clip(predicted * shots[:, None] / scale[:, None], 0.0, None)
+    per_shot = np.clip(predicted, 0.0, None) / scale[:, None]
+    sample_rate = samples / shots
+    within = per_shot / sample_rate[:, None]
+    within = within / np.maximum(within.sum(axis=1), 1.0)[:, None]
+    arrays = {"eligible": within, "samples": np.ones(len(samples)), "any": 1.0 / sample_rate}
     generator = np.random.default_rng(seed)
-    reference = [pearson(generator.poisson(mean).astype(float), shots, scale) for _ in range(OVERDISPERSION_DRAWS)]
+    reference = []
+    for _ in range(OVERDISPERSION_DRAWS):
+        drawn, _, drawn_shots = sampled_dataset(arrays, samples, generator)
+        reference.append(pearson(drawn.astype(float), drawn_shots.astype(float), scale))
     observed = pearson(eligible, shots, scale)
     centre = float(np.mean(reference))
     return {
@@ -1069,12 +1091,6 @@ def overdispersion(eligible: np.ndarray, shots: np.ndarray, scale: np.ndarray, s
         "draws": OVERDISPERSION_DRAWS,
         "seed": seed,
     }
-
-
-def widened(point: float, interval: Sequence[float], ratio: float) -> list[float]:
-    """The interval scaled about its point by sqrt(max(1, ratio)), the quasi-Poisson correction."""
-    factor = math.sqrt(max(1.0, ratio))
-    return [point - factor * (point - interval[0]), point + factor * (interval[1] - point)]
 
 
 def overlap_estimates(
@@ -1127,7 +1143,7 @@ def overlap_estimates(
                 control_rate_ratio(point), [control_rate_ratio(replicate) for replicate in batch], level
             )[tomo.INTERVAL_KIND],
         },
-        "overdispersion": overdispersion(eligible, shots, scale, seed_plan()["overdispersion"][1]),
+        "overdispersion": overdispersion(eligible, samples, shots, scale, seed_plan()["overdispersion"][1]),
     }
 
 
@@ -1168,52 +1184,79 @@ def retained_overdispersion() -> dict[str, float]:
     rows = tomo.schedule()
     pool = tomo.pooling(loaded, tomo.JOBS)
     eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
+    samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
     shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
     scale = np.asarray([pool["scales"][row["job"]] for row in rows])
-    return overdispersion(eligible, shots, scale, seed_plan()["overdispersion"][1])
+    return overdispersion(eligible, samples, shots, scale, seed_plan()["overdispersion"][1])
+
+
+MODEL_CHECK = "scatter-matches-acquisition-law"
 
 
 def conjecture_verdicts(process: Mapping[str, Any], overlaps: Mapping[str, Any], perfs: Mapping[str, Any]) -> list:
-    """Each preregistered conjecture's prediction, the interval or band it is held against and its verdict. Every
-    bootstrap interval is widened by the pair's own overdispersion ratio (widened) before it is compared."""
+    """Each preregistered conjecture's prediction, the band it is held against and its verdict. A band is
+    {"lower", "upper"}, either of which may be None for a one-sided test. The model check MODEL_CHECK decides
+    whether the acquisition bootstrap describes the data; when it is falsified, every other verdict is reported as
+    conditional on that failure rather than as decided."""
     v, g2 = float(perfs["HOM (%)"]) / 100.0, float(perfs["g2 (%)"]) / 100.0
     corrected = min(1.0, (v + g2) / (1.0 - g2))
     model = noise_model_at(perfs)
     ceiling = noise_model_at({**perfs, "HOM (%)": 100.0})[FORECAST_RECORD_VARIANT]["process_fidelity"]
     record, g2_variant = model[FORECAST_RECORD_VARIANT], model["g2-corrected overlap, loss and dark counts"]
     spread = overlaps["overdispersion"]
-    ratio = spread["ratio"]
-    fidelity = widened(process["process_fidelity"], process["process_fidelity_interval"], ratio)
-
-    def wide(key: str) -> list[float]:
-        return widened(overlaps[key]["point"], overlaps[key]["interval"], ratio)
-
+    fidelity = process["process_fidelity_interval"]
     anchor = retained_overdispersion()
     growth = 1.0 + (anchor["ratio"] - 1.0) * spread["mean_events_per_rate"] / anchor["mean_events_per_rate"]
-    tests: dict[str, tuple[float, list[float]]] = {
-        "overlap-only-law": (overlap_law(v), fidelity),
-        "g2-corrected-overlap-law": (overlap_law(corrected), fidelity),
-        "noise-model-record-variant": (record["process_fidelity"], fidelity),
-        "noise-model-g2-corrected-variant": (g2_variant["process_fidelity"], fidelity),
-        "rail-ratio-reads-hom": (v, wide("overlap_from_rail_rates")),
-        "two-overlaps-agree": (0.0, wide("difference")),
-        "noise-model-ceiling": (ceiling, [fidelity[0], math.inf]),
-        "control-ratio-lossless": (1.0, wide("control_rate_ratio")),
-        "control-ratio-noise-model": (record["control_rate_ratio"], wide("control_rate_ratio")),
-        "poisson-only-scatter": (spread["pearson"], [-math.inf, spread["reference_95"][1]]),
-        "overdispersion-constant-factor": (ratio, [0.75 * anchor["ratio"], 1.25 * anchor["ratio"]]),
-        "overdispersion-relative-systematic": (ratio, [0.75 * growth, 1.25 * growth]),
+
+    def band(lower: float | None, upper: float | None) -> dict[str, float | None]:
+        return {"lower": lower, "upper": upper}
+
+    def interval(key: str) -> dict[str, float | None]:
+        low, high = overlaps[key]["interval"]
+        return band(low, high)
+
+    # (prediction, band, observed): a two-sided interval test asks whether the band holds the prediction; a band test
+    # with an observed value asks whether the band holds the observation.
+    tests: dict[str, tuple[float, dict[str, float | None], float | None]] = {
+        "overlap-only-law": (overlap_law(v), band(*fidelity), None),
+        "g2-corrected-overlap-law": (overlap_law(corrected), band(*fidelity), None),
+        "noise-model-record-variant": (record["process_fidelity"], band(*fidelity), None),
+        "noise-model-g2-corrected-variant": (g2_variant["process_fidelity"], band(*fidelity), None),
+        "rail-ratio-reads-hom": (v, interval("overlap_from_rail_rates"), None),
+        "two-overlaps-agree": (0.0, interval("difference"), None),
+        "noise-model-ceiling": (ceiling, band(fidelity[0], None), None),
+        "control-ratio-lossless": (1.0, interval("control_rate_ratio"), None),
+        "control-ratio-noise-model": (record["control_rate_ratio"], interval("control_rate_ratio"), None),
+        MODEL_CHECK: (spread["pearson"], band(None, spread["reference_95"][1]), None),
+        "overdispersion-constant-factor": (
+            anchor["ratio"],
+            band(0.75 * anchor["ratio"], 1.25 * anchor["ratio"]),
+            spread["ratio"],
+        ),
+        "overdispersion-relative-systematic": (growth, band(0.75 * growth, 1.25 * growth), spread["ratio"]),
     }
+    decided = {}
+    for row in CONJECTURES:
+        prediction, limits, observed = tests[row["id"]]
+        value = prediction if observed is None else observed
+        lower, upper = limits["lower"], limits["upper"]
+        holds = (lower is None or lower <= value) and (upper is None or value <= upper)
+        decided[row["id"]] = {
+            "id": row["id"],
+            "prediction": prediction,
+            "observed": observed,
+            "band": limits,
+            "verdict": "survives" if holds else "falsified",
+        }
+    check_failed = decided[MODEL_CHECK]["verdict"] == "falsified"
     out = []
     for row in CONJECTURES:
-        prediction, (low, high) = tests[row["id"]]
-        if row["id"] == "noise-model-ceiling":
-            verdict = "survives" if low <= prediction else "falsified"
-        else:
-            verdict = "survives" if low <= prediction <= high else "falsified"
+        entry = decided[row["id"]]
+        if check_failed and row["id"] != MODEL_CHECK:
+            entry["verdict"] = f"conditional on a failed model check: {entry['verdict']}"
         if process.get("status") != "decided":
-            verdict = f"descriptive: {verdict}"
-        out.append({"id": row["id"], "prediction": prediction, "against": [low, high], "verdict": verdict})
+            entry["verdict"] = f"descriptive: {entry['verdict']}"
+        out.append(entry)
     return out
 
 
@@ -1306,7 +1349,7 @@ def main() -> int:
         return 0
     if args.retained_verdicts:
         (FAMILY_DIR / RETAINED_VERDICTS).write_text(
-            json.dumps(retained_verdicts(), indent=1, sort_keys=True) + "\n", encoding="utf-8"
+            json.dumps(retained_verdicts(), indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8"
         )
         return 0
     if args.analyze:

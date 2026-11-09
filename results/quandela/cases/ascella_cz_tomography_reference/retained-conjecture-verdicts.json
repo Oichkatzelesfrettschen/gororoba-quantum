@@ -1,111 +1,123 @@
 {
  "conjectures": [
   {
-   "against": [
-    0.8202325156032882,
-    0.8761644192204758
-   ],
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
    "id": "overlap-only-law",
+   "observed": null,
    "prediction": 0.8340448239060831,
    "verdict": "survives"
   },
   {
-   "against": [
-    0.8202325156032882,
-    0.8761644192204758
-   ],
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
    "id": "g2-corrected-overlap-law",
+   "observed": null,
    "prediction": 0.8761210762331839,
-   "verdict": "survives"
+   "verdict": "falsified"
   },
   {
-   "against": [
-    0.8202325156032882,
-    0.8761644192204758
-   ],
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
    "id": "noise-model-record-variant",
+   "observed": null,
    "prediction": 0.7884358260892862,
    "verdict": "falsified"
   },
   {
-   "against": [
-    0.8202325156032882,
-    0.8761644192204758
-   ],
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
    "id": "noise-model-g2-corrected-variant",
+   "observed": null,
    "prediction": 0.8263855984410138,
-   "verdict": "survives"
+   "verdict": "falsified"
   },
   {
-   "against": [
-    0.8898619567647975,
-    0.9376908376208734
-   ],
+   "band": {
+    "lower": 0.8964377814633189,
+    "upper": 0.9311191939720981
+   },
    "id": "rail-ratio-reads-hom",
+   "observed": null,
    "prediction": 0.8756,
    "verdict": "falsified"
   },
   {
-   "against": [
-    -0.05791508972667803,
-    0.00825180454397316
-   ],
+   "band": {
+    "lower": -0.04899049447941249,
+    "upper": -0.0010119235082348566
+   },
    "id": "two-overlaps-agree",
+   "observed": null,
    "prediction": 0.0,
-   "verdict": "survives"
+   "verdict": "falsified"
   },
   {
-   "against": [
-    0.8202325156032882,
-    Infinity
-   ],
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": null
+   },
    "id": "noise-model-ceiling",
+   "observed": null,
    "prediction": 0.9372267134864185,
    "verdict": "survives"
   },
   {
-   "against": [
-    0.9529654292485755,
-    1.0664951460708314
-   ],
+   "band": {
+    "lower": 0.9685035554618946,
+    "upper": 1.0508255933319772
+   },
    "id": "control-ratio-lossless",
+   "observed": null,
    "prediction": 1.0,
    "verdict": "survives"
   },
   {
-   "against": [
-    0.9529654292485755,
-    1.0664951460708314
-   ],
+   "band": {
+    "lower": 0.9685035554618946,
+    "upper": 1.0508255933319772
+   },
    "id": "control-ratio-noise-model",
+   "observed": null,
    "prediction": 1.0382769330839434,
    "verdict": "survives"
   },
   {
-   "against": [
-    -Infinity,
-    4599.455297016462
-   ],
-   "id": "poisson-only-scatter",
+   "band": {
+    "lower": null,
+    "upper": 6913.800505019788
+   },
+   "id": "scatter-matches-acquisition-law",
+   "observed": null,
    "prediction": 5288.25067682674,
-   "verdict": "falsified"
-  },
-  {
-   "against": [
-    1.4264223894589791,
-    2.3773706490982986
-   ],
-   "id": "overdispersion-constant-factor",
-   "prediction": 1.9018965192786388,
    "verdict": "survives"
   },
   {
-   "against": [
-    1.426422389458979,
-    2.377370649098298
-   ],
+   "band": {
+    "lower": 1.0785504917723379,
+    "upper": 1.7975841529538963
+   },
+   "id": "overdispersion-constant-factor",
+   "observed": 1.438067322363117,
+   "prediction": 1.438067322363117,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 1.0785504917723379,
+    "upper": 1.7975841529538963
+   },
    "id": "overdispersion-relative-systematic",
-   "prediction": 1.9018965192786388,
+   "observed": 1.438067322363117,
+   "prediction": 1.438067322363117,
    "verdict": "survives"
   }
  ],
@@ -128,12 +140,12 @@
    "draws": 200,
    "mean_events_per_rate": 174.703125,
    "pearson": 5288.25067682674,
-   "ratio": 1.9018965192786388,
+   "ratio": 1.438067322363117,
    "reference_95": [
-    1637.4553942967684,
-    4599.455297016462
+    1986.1947826013638,
+    6913.800505019788
    ],
-   "reference_mean": 2780.5144092868395,
+   "reference_mean": 3677.331787316309,
    "seed": 14845
   },
   "overlap_from_fidelity": {

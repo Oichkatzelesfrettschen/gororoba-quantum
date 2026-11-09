@@ -51,8 +51,9 @@ predicts a rate only through them.
 - The overlap law and its two estimators are derived results checked in the case's tests. Prior art for using the
   rail ratio as an in-situ overlap estimator was not searched; the Ralph-gate mode-mismatch papers are not held.
 - The retained 2026-10-31 pair gives M_F = 0.888 from its fidelity and M_R = 0.914 from its rail rates, both above
-  the platform's HOM read of 0.8756; the rail estimate excludes the read after widening for overdispersion.
-- The retained counts scatter about 1.9 times beyond their Poisson-only reference, so every verdict widens its
-  interval by the square root of the pair's own ratio.
+  the platform's HOM read of 0.8756. The rail estimate excludes the read, and the two estimates disagree, within the
+  primary bootstrap intervals.
+- The retained counts scatter about 1.44 times beyond their acquisition reference, a stopping-aware null under which
+  the observed statistic lies inside the 95 % range, so the model check passes and no interval is widened.
 - Registry flags met on the way: gororoba-open C-004 (a 168-element action on the box-kites) is Refuted and C-1471
   (the automorphism group of the sedenions) is Provisional; neither enters this case.

@@ -379,11 +379,22 @@ def test_the_rail_ratios_follow_the_model(overlap: float) -> None:
         raise AssertionError("the control ratio moved with the overlap")
 
 
-def test_widening_scales_each_side_about_the_point() -> None:
-    if case.widened(1.0, [0.9, 1.2], 4.0) != pytest.approx([0.8, 1.4]):
-        raise AssertionError("a ratio of 4 does not double each side")
-    if case.widened(1.0, [0.9, 1.2], 0.5) != pytest.approx([0.9, 1.2]):
-        raise AssertionError("a ratio below 1 narrowed the interval")
+def test_one_sided_bands_and_strict_json() -> None:
+    """The retained record parses as RFC 8259 JSON (no Infinity) and the ceiling band is one-sided."""
+    text = (case.FAMILY_DIR / case.RETAINED_VERDICTS).read_text(encoding="utf-8")
+    record = json.loads(text, parse_constant=lambda name: (_ for _ in ()).throw(ValueError(name)))
+    ceiling = next(row for row in record["conjectures"] if row["id"] == "noise-model-ceiling")
+    if ceiling["band"]["upper"] is not None or ceiling["band"]["lower"] is None:
+        raise AssertionError(f"the ceiling band is {ceiling['band']}")
+
+
+def test_the_seed_plan_partitions_the_draw() -> None:
+    plan = case.seed_plan()
+    indices = [
+        index for index, _ in [*plan["compilation"], plan["bootstrap"], *plan["forecast"], plan["overdispersion"]]
+    ]
+    if indices != list(range(158)):
+        raise AssertionError(f"the seed plan takes indices {indices[:3]}...{indices[-3:]}, not 0 to 157 in order")
 
 
 def test_the_retained_verdicts_name_every_conjecture_once() -> None:
@@ -391,5 +402,7 @@ def test_the_retained_verdicts_name_every_conjecture_once() -> None:
     ids = [row["id"] for row in record["conjectures"]]
     if ids != [row["id"] for row in case.CONJECTURES]:
         raise AssertionError(f"the retained verdicts list {ids}")
-    if any(row["verdict"] not in ("survives", "falsified") for row in record["conjectures"]):
-        raise AssertionError("a retained verdict is neither survives nor falsified")
+    allowed = {"survives", "falsified"}
+    allowed |= {f"conditional on a failed model check: {verdict}" for verdict in ("survives", "falsified")}
+    if any(row["verdict"] not in allowed for row in record["conjectures"]):
+        raise AssertionError("a retained verdict is outside the preregistered verdict words")

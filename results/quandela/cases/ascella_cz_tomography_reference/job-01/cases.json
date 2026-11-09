@@ -35811,9 +35811,10 @@
   },
   "overlap_estimators": {
    "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
-   "from_rail_rates": "M_R = (5 - D) / 4, D = R(10) R(01) / (R(00) R(11)) over the summed absolute eligible rates of the inputs 00, 01, 10 and 11 read out in ZZ, after pooling",
+   "from_rail_rates": "M_R = (5 - D) / 4, D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
    "bootstrap": "both on the replicates of the primary bootstrap, so their difference has a joint interval"
   },
+  "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock come from job-00's perfs_at_plan; the noise pipeline runs at those reads",
   "conjectures": [
    {
     "id": "overlap-only-law",
@@ -35822,7 +35823,7 @@
    },
    {
     "id": "g2-corrected-overlap-law",
-    "statement": "the same law with the multiphoton-corrected overlap M = (V + g2) / (1 - g2)",
+    "statement": "the same law with the multiphoton-corrected overlap M = min(1, (V + g2) / (1 - g2))",
     "falsified_when": "the process-fidelity interval excludes the law at the corrected M"
    },
    {
@@ -35861,25 +35862,26 @@
     "falsified_when": "the interval of r(11) / r(01) excludes the record variant's ratio"
    },
    {
-    "id": "poisson-only-scatter",
-    "statement": "the counts scatter about one Choi matrix as Poisson draws do",
-    "falsified_when": "the Pearson statistic exceeds the 97.5th percentile of its Poisson-only reference"
+    "id": "scatter-matches-acquisition-law",
+    "statement": "model check: the counts scatter about one Choi matrix as the acquisition law draws them",
+    "falsified_when": "the Pearson statistic exceeds the 97.5th percentile of its acquisition reference"
    },
    {
     "id": "overdispersion-constant-factor",
     "statement": "the scatter beyond Poisson is a constant variance factor: the overdispersion ratio equals the retained pair's",
-    "falsified_when": "the ratio lies more than 25 % from the retained pair's ratio"
+    "falsified_when": "the observed ratio lies more than 25 % from the retained pair's ratio"
    },
    {
     "id": "overdispersion-relative-systematic",
     "statement": "the scatter beyond Poisson is a relative systematic per rate fixed by the retained pair, so the ratio minus one grows with the mean eligible events per rate",
-    "falsified_when": "the ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained"
+    "falsified_when": "the observed ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained, e the mean eligible events per rate"
    }
   ],
-  "verdict_rule": "every bootstrap interval is widened about its point by the square root of the pair's overdispersion ratio (at least 1), the Pearson statistic over the mean of its Poisson-only reference; a conjecture is falsified when the widened 95 % interval excludes its prediction, or its band excludes the observed value, and survives otherwise; a descriptive pool reports each verdict as descriptive",
+  "verdict_rule": "every interval is the primary bootstrap's 95 % interval; a conjecture is falsified when its band excludes its prediction (or, for the two overdispersion conjectures, the observed ratio), and survives otherwise; the model check scatter-matches-acquisition-law decides first, and when it is falsified every other verdict is reported as conditional on that failure; a descriptive pool reports each verdict as descriptive",
   "overdispersion": {
-   "statistic": "Pearson chi-squared of the 576 eligible counts about the linear-inversion fit's expected counts, each over its expected count, one event at least",
-   "reference": "200 Poisson datasets at the fit's expected counts, negatives clipped",
+   "statistic": "Pearson chi-squared of the 576 eligible counts about the counts of the unweighted linear-inversion fit, each over its expected count, one event at least",
+   "reference": "200 synthetic pairs drawn under the fit as the service acquires them: each setting stops at its observed sample count, its eligible outcomes are one multinomial over that quota at the fit's rates per shot over the observed samples per shot (negative predictions set to 0), its shots are the quota plus a negative-binomial count, and each pair is refit and scored like the data",
+   "ratio": "the observed statistic over the reference mean",
    "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-09T020604Z.json",
    "seed_index": 157
   }
