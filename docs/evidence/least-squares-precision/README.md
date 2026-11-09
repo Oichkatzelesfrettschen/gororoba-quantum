@@ -177,11 +177,14 @@ rows.
 
 - Memory cap: `min(8 GiB, 0.6 x physical memory)`. `fp_host.choose_cap` starts a trial `systemd-run --user --scope -p
   MemoryMax=N -p MemorySwapMax=0` and reads `memory.max` and `memory.swap.max` back from the scope's cgroup, because
-  systemd accepts the properties without a delegated memory controller. A host without a working user manager (WSL
-  without systemd, macOS) falls to `RLIMIT_AS` in the child, held at 2 GiB or more because OpenBLAS reserves address
-  space at import (`prlimit --as` runs of the build-host stack fail at 1 GiB and pass at 2 GiB); the probe records
-  whether a mapping above the cap is refused. Native Windows runs uncapped. `--cap auto|systemd|rlimit|none` forces
-  a mechanism.
+  systemd accepts the properties without a delegated memory controller. The record's `enforced` is that trial scope's
+  readback; each measured child starts its own scope with the same properties and no readback of its own. A host
+  without a working user manager falls to `RLIMIT_AS` in the child, held at 2 GiB or more because OpenBLAS reserves
+  address space at import (`prlimit --as` runs of the build-host stack fail at 1 GiB and pass at 2 GiB); the probe
+  records whether a mapping above the cap is refused. Four hosts (build-host, zen4-wsl, aws-sapphire-rapids,
+  oci-a1-neoverse-n1) ran under a systemd scope. The M1's `RLIMIT_AS` probe child failed in `preexec_fn`, so its rows
+  record mechanism `none` and `enforced` false: the M1 ran uncapped. Native Windows runs uncapped.
+  `--cap auto|systemd|rlimit|none` forces a mechanism.
 - Threads: 1, 2, 4, ... up to `min(os.cpu_count(), parallel.workers())`, plus that count when it is not a power of two.
 - Skips: x87 rows need an x86 CPU and `numpy.finfo(numpy.longdouble).nmant == 63`; the quaddtype `longdouble`-backend
   rows are x87 rows under the quad dtype's name; quaddtype rows need the wheel and an enabled QuadBLAS
@@ -204,10 +207,11 @@ rows.
   thread count per family (`min(cpus, 4)`), the three scipy drivers, two refinement steps, arb at 128 bits and one
   repeat.
 
-Interpreter: the new files use no syntax newer than Python 3.10 by inspection and ran on 3.14.9 only; use 3.13 or
-later on remote hosts. The pins below are the build host's versions; PyPI wheel availability of numpy, scipy and
-python-flint on Windows, macOS arm64 and Linux aarch64 is unchecked, and only the numpy-quaddtype 1.0.0 wheels are
-evidenced above. Install into a venv:
+Interpreter: the new files use no syntax newer than Python 3.10 by inspection; the rows record runs on Python 3.14.4,
+3.14.9 and 3.15.2, so use 3.13 or later on remote hosts. The pins below are the build host's versions. The rows record
+numpy 2.5.4, scipy 1.18.1 and python-flint 0.9.0 installed from them on Windows x86-64, macOS arm64 and Linux aarch64,
+and numpy-quaddtype 1.0.0 on Linux x86-64, Windows (QuadBLAS disabled) and macOS arm64; the Linux aarch64 host holds
+no numpy-quaddtype. Install into a venv:
 `numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0`.
 
 ```sh
@@ -253,26 +257,40 @@ Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, p
 | oci-a1-neoverse-n1 | Neoverse N1 | Linux aarch64 on a cloud VM | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
 | m1-macos | Apple M1 | macOS 27.0 | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
 
-- Arithmetic that bypasses the BLAS gives the same error on every host where it runs. The arb normal equations (all
-  six hosts), binary128 through SLEEF (four hosts) and x87 (three x86 hosts under Linux) score identically to the
-  last recorded digit. Every float64 configuration routes through the BLAS, and its error moves with the host.
-  Unrefined float64 pinv scores 0.2 to 14.8 ulp on the process fidelity across the six hosts at one thread, and
-  the scipy drivers 0.2 to 13.2. This measures the reason the producer computes in arb.
-- The macOS difference is the bootstrap replicate array. The design matrix, rate observables, basis, ideal Choi
-  vector and observed rates are identical bit for bit; 41,634 of the 288,000 replicate rates differ, by up to 6.4e-4,
-  so the random-variate stream diverged rather than rounded. Hypothesis: numpy's binomial and Poisson samplers take
-  accept-reject decisions through libm calls, and Apple's libm rounds some of them differently from glibc, which
-  agrees on x86-64 and aarch64. Falsifier: the same numpy wheel drawing the producer's `resampled_rates` stream
-  identically on macOS. Bootstrap intervals are reproducible across Linux hosts and not onto macOS.
+- Arithmetic that bypasses the BLAS gives the same error on every host whose five input digests agree. The five
+  hosts other than the M1 agree on all five digests, and on those five hosts every configuration run on two or more
+  of them scores identically to the last recorded digit: 24 arb normal-equation configurations, 8 binary128
+  configurations through SLEEF (build-host, zen4-wsl, aws-sapphire-rapids) and 5 x87 configurations. The M1 ran a
+  different `observed_rate_columns` array, so its rows answer a different problem: its scores differ from the other
+  hosts' in 12 of its 16 arb configurations (64, 128 and 192 bits; the 256-bit rows agree) and in all 8 of its SLEEF
+  configurations, and the comparison does not measure the host dependence of the arithmetic. Every float64
+  configuration routes through the BLAS. None of the 30 float64 configurations run on two or more hosts has one
+  score on every host; zen4-wsl and aws-sapphire-rapids, which both load the OpenBLAS `SkylakeX` core, agree on 6
+  of the 10 float64 configurations they share (the scipy drivers at one and two threads). Unrefined float64 pinv
+  scores 2.2 to 14.8 ulp on the process fidelity across the five digest-agreeing hosts at one thread (0.2 on the
+  M1), numpy lstsq 2.2 to 13.2 and the scipy drivers 0.2 to 6.8 across the six. This measures the reason the producer computes in arb.
+- The macOS rows differ from the other five hosts in `observed_rate_columns` alone: the design matrix, rate
+  observables, Hermitian basis and ideal Choi vector digests are equal (`inputs_sha256` of the first row of each
+  full file). That digest hashes the point rates stacked with the 500 bootstrap replicate columns, so the rows do
+  not say which entries differ or by how much; a receipt that compares the two npz files (shapes, point-rate
+  equality, count of differing replicate entries, maximum absolute difference) is `not run` because it needs the
+  M1's `fp-inputs.npz`. Hypothesis: numpy's binomial and Poisson samplers take accept-reject decisions through libm
+  calls, and Apple's libm rounds some of them differently from glibc, so the replicate stream diverges. Falsifier:
+  the same numpy wheel drawing the producer's `resampled_rates` stream identically on macOS, or a difference
+  confined to the point rates. Until the receipt exists, bootstrap intervals are comparable across the four hosts
+  that ran `fp_export.py` themselves with equal digests (build-host, zen4-wsl, aws-sapphire-rapids,
+  oci-a1-neoverse-n1) and not onto macOS; zen4-windows ran on the build host's npz and says nothing about its own
+  sampler.
 - numpy-quaddtype is not installed on the Neoverse host (`ModuleNotFoundError`), so its rows skip quaddtype; whether a
   Linux aarch64 wheel exists is unverified. The Windows wheel disables QuadBLAS: the 12 SLEEF configurations (six
   thread counts, two kinds, two repeats each) are error rows there (`NotImplementedError: QuadBLAS is disabled`), a
   capability that `fp_host.quadblas_status` now probes, so a rerun on that wheel records skips. The retained rows
   predate the probe and stay as measured.
-- numpy 2.5.4 dies with SIGILL on the Vostro's Turion 64 X2 (SSE3, no SSSE3, SSE4 or POPCNT), so the K8 host is not
-  run in this sweep: its wheels need an x86-64 baseline that the CPU lacks.
+- The Vostro (Turion 64 X2, SSE3 without SSSE3, SSE4 or POPCNT) is not run in this sweep. Its retained record
+  ([quad-falsification/vostro.json](quad-falsification/vostro.json)) is a numpy 2.5.3 run of the quaddtype matmul
+  test; a numpy 2.5.4 run on that CPU, and with it the expected SIGILL from a baseline above its instruction set, is
+  `not run` and has no retained record.
 - Times rank the hosts only within a row. The build host shared its CPUs with other sessions' Singular jobs (load 1.9
   to 5.7), and its float64 single-thread solves ran 10 to 20 times slower than the two-core cloud hosts. At one
   thread, arb at 128 bits took 0.77 s on the M1, 0.98 to 1.09 s on Zen 4 and Sapphire Rapids, and 2.5 to 3.2 s on the
   build host and the Neoverse N1.
-

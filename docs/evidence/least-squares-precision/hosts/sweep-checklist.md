@@ -7,7 +7,8 @@ Run: `"$PYTHON" fp_sweep.py fp-inputs.npz hosts/LABEL-full.jsonl --host-label LA
    MemoryMax=N -p MemorySwapMax=0` and reads `memory.max` and `memory.swap.max` back from the scope's cgroup; a scope
    that reads back as requested is the cap (cgroup v2, not an address-space cap). Without it, `RLIMIT_AS` on Linux and
    macOS (never below 2 GiB, since OpenBLAS reserves address space at import), and no cap on native Windows. Every
-   row records the mechanism, the bytes and whether the probe saw it enforced.
+   row records the mechanism, the bytes and the probe's enforced result (the readback of a trial scope, not of each
+   measured child).
 2. Wall-time cap: `subprocess` timeout 900 s per run, a process-group kill on expiry (returncode 124), and
    `RuntimeMaxSec=960` on a systemd scope.
 3. Threads: 1, 2, 4, ... up to `min(os.cpu_count(), parallel.workers())`, plus that count when it is not a power of
