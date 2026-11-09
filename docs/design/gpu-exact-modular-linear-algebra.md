@@ -17,7 +17,7 @@ All figures come from probes on the build host (RTX 4070 Ti, compute capability 
 
 | Number type | Throughput | Exact integer use |
 | --- | --- | --- |
-| FP64 | 0.47 TFLOP/s | exact while `k * p^2 < 2^53` |
+| FP64 | 0.47 TFLOP/s | exact while `k * p^2 < 2^53`; for residues in [0, p) the sharp bound is `k (p - 1)^2 < 2^53`, k <= 8,791,696 at p = 32009 and 8,780,720 at p = 32029 |
 | FP32 | 26.3 TFLOP/s | exact while sums stay below `2^24` |
 | TF32 tensor | 33.3 TFLOP/s | 10-bit mantissa; no use |
 | FP16 / BF16 tensor | 68.6 / 71.5 TFLOP/s | 11- and 8-bit significands; no use beyond small digits |

@@ -495,7 +495,8 @@ tests; the ledger row it enters is named where one exists.
 
 ### Cayley-Dickson tower links (2026-11-09)
 
-An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures.
+An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures; the
+[cd-tower reviews](../../archive/reviews/cd-tower/README.md) also hold a verification of two pasted tower analyses.
 Survives, computed: the Klein sign group of every fiber is the stabilizer of its base point in (Z/2)^4 x {+-1} through
 e_a e_b = sigma(a, b) e_(a xor b), reproducing the measured flip sets on 11 headers; nonzero nullities through level 6
 are multiples of 4 and the doubling rule holds in 420 of 420 cases. Hypothesis pending a replay with registered QRNG seeds and
