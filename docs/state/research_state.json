@@ -15440,6 +15440,111 @@
       "superseded_by": null
     },
     {
+      "id": "hw-ibm-pathion-wide-coset",
+      "statement": "The wide coset runs read the whole-operand nullity of two-term operands of the 64- and 128-dimensional Cayley-Dickson algebras in one fused PUB per operand arm (12 PUBs): the targets e1 + e36 (nullity 28 of 64) and e4 + e72 (nullity 60 of 128), the null controls e1 + e33 and e1 + e65 (nullity 0) and the cocycle-free mutations (ideal -2), each nullity certified by the cd_core integer rank. ibm_kingston (job dbnk9ndt7fqc73ajpfl0, 16 placements, 21,888 shots per PUB, 11 s billed) reads the readout-corrected whole-operand nullities 27.995 [27.972, 28.018] and 60.126 [60.088, 60.164], the null controls -0.238 and -0.534, the mutations -2.035 and -1.966, resolves every sign (64 of 64 bins and 128 of 128 for all six operands), keeps its lowest block visibility bound at 0.754, and passes all 23 preregistered rules and the 6 device-agreement rules. ibm_fez (job dbnk9noou4as73b4nn90, 17 placements, 18,816 shots per PUB, 9 s billed) reads 28.071 [28.041, 28.101] and 59.978 [59.819, 60.137] and passes the whole-operand, mutation, null-selector-contrast and device-agreement rules, and fails eight: sign resolution of the 128-dimensional target (127 of 128), both null controls (-0.531 and -1.056 against bands of 0.4 and 0.8), both null-referenced differences (28.602 and 61.034), per-block localization of both null operands (worst deviation 0.277 and 0.742 against 0.25) and the visibility floor (lowest bound 0.141 against 0.5).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The decisions are the preregistered rules of the written case at delta-method 95 percent intervals that propagate the covariance of per-shot values across the placements of one PUB; the per-placement multinomial variant reaches the same verdicts. Arms and operands are separate PUBs taken as independent, so drift between the PUBs of one job is outside what the shot data test; each run is one calibration of one device. Algebra forces 24 of the 28 and 48 of the 60: six of eight and twelve of sixteen blocks have all four XOR pairs aligned and read 4 on any data (ledger A5-229, A5-234), so the whole-operand rule binds the informative 4 and 12, and the ibm_kingston ratio 2.148 (60.126 over 27.995; ibm_fez 2.137) tests the instrument and leaves the nullity law untested. Both targets are mixed-pair operands (i < h <= j), so no operand of the run is a half operand and the doubling kernel identity is not exercised. ibm_kingston's readings sit 0.005 below 28 and 0.126 above 60 (6.5 shot-noise standard errors at the 128-dimensional target), inside the 0.6 and 1.0 bands; its null controls resolve a per-block offset of -0.030 (n64 over 8 blocks) and -0.033 (n128 over 16), the sign and size of the one-CZ null reading of hw-ibm-pathion-parallel-coset, a recurrence and no new result. A null-referenced difference equals target minus null exactly (ibm_fez: 28.602 = 28.071 + 0.531, 61.034 = 59.978 + 1.056), and its cancellation premise needs the target to carry the offset of the null blocks, which blocks that read 4 on any data cannot, so the two ibm_fez difference failures restate its null-control failures beside a passing target and add no evidence of a sign-network departure. The ibm_fez copy-agreement readings (report-only) are z -11.4 (n64) and -5.6 (o64) against the limit 3, placement-to-placement error above shot noise that no shot covariance captures. The ibm_fez loss follows placement 7 (physical qubits 79, 92, 93, 94; mean visibility 0.595) and placement 15 (qubits 10, 11, 12, 18; 0.710) against 0.888 to 0.973 on the other fourteen: an inference from two placements and one block at moderate confidence, falsified by a rerun that moves block k28 to other qubits and keeps the loss. Any link between the positive 128-dimensional ibm_kingston offset and the N_b = 3 bias of ledger A5-239 is a hypothesis, falsified by a wide run whose target offset takes the null controls' sign.",
+      "evidence": [
+        {
+          "path": "results/live/pathion_wide_coset_analysis.json",
+          "sha256": "47f9ad97010928624f52a72ef6c705e21c953b83f385dae52febe31770e6224f"
+        },
+        {
+          "path": "results/live/2026-11-07T153325.440007Z/collect.json",
+          "sha256": "4deb0d1e8106bae177f648e9b742e59c210ac65475312a9bb7eb553b7335869d"
+        },
+        {
+          "path": "results/live/2026-11-07T153325.886771Z/collect.json",
+          "sha256": "ba92b6f56094b2de0c1eaa67f054a7e7213ab30da30fb1df1c03f36d2f32b379"
+        },
+        {
+          "path": "docs/evidence/pathion-kernel-map/census-wide.json",
+          "sha256": "f77966cd6b57fa9d259d9c97f8988c3d0518f695a6200c9fed9271355d9d17a1"
+        },
+        {
+          "path": "docs/evidence/pathion-kernel-map/nhat-bias/result_wide.json",
+          "sha256": "4f8ec1abb8e731a8ad6b40ce31e3717415531c3e348bad3aff9dca9794472800"
+        }
+      ],
+      "documents": [
+        "results/live/2026-11-07T102337.840878Z/CASE.md",
+        "docs/evidence/pathion-kernel-map/README.md",
+        "docs/evidence/pathion-kernel-map/nhat-bias/README.md",
+        "docs/notes/topics/a5-hardware-algebra-synthesis.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "ibm-fez-pathion-wide-coset",
+        "ibm-kingston-pathion-wide-coset"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-ibm-pathion-parallel-coset"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-tuna17-pathion-six-cz-null-blocks",
+      "statement": "The Tuna-17 6-CZ null-block series (qubits 2, 4, 8, 11, 12; 19 batches, 56 jobs, 2,293,760 shots: the null block b0 = e1 + e17 at 21 routed CZ replayed from the coin series, the null blocks k4, k8 and k12 at 6 routed CZ, each as a base circuit and a coin-fixed twin, and eight X-only joint readout preparations of q2, q8 and q12) reads unresolved_batch under the preregistered rule: the two b0 base replicate batches read selector contrast 0.0162 +- 0.0028 and 0.0393 +- 0.0028 (chi-square 34.86 against the bound 10.83), so no mechanism class is decided and ledger row A5-186 stays unchanged. Every other replicate comparison passes (b0 twin 3.66; the base and twin of k4, k8 and k12 at most 3.70) and the three 6-CZ blocks agree within their gates (chi-square 0.78 base and 2.96 twin against 9.21). The pooled readings are b0 base 0.0278 +- 0.0020, b0 twin 0.0158 +- 0.0028, b0 combined 0.0238 +- 0.0016; 6-CZ base -0.0048 +- 0.0023, twin +0.0014 +- 0.0016, combined -0.0007 +- 0.0013; and b0 combined minus 6-CZ combined 0.0245 +- 0.0021. The joint readout calibration classes coin dropout (D +0.0004 +- 0.0013) and q12 correlation (G +0.0010 +- 0.0013 and -0.0004 +- 0.0013) as small. The QX emulator twin passes its control (12 of 12 circuits within a factor 2.0 of their sampling floor).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration window of one device. The decision is the preregistered rule, whose replicate-heterogeneity gate precedes every class, so the near-zero 6-CZ readings and the b0 offset are reported numbers and the rule decides neither a zero class nor an exclusion of the coin-conditioned dropout; the comparison of the 6-CZ readings with the dropout prediction sits in no retained analysis record, and no claim rests on it. The b0 base replicate that reads 0.0393 is batch 15, whose readout bracket records q11's |1> misassignment at 0.434 after 0.095 in batch 14; all five readout shifts above the 0.02 threshold during the series sit on q11, a qubit of the five-qubit region. That the q11 shift explains the replicate disagreement is a hypothesis; a rerun with a per-batch q11 readout admission whose b0 replicates still disagree falsifies it. The 6-CZ blocks cannot separate the coherent over-rotation from a q12 correlation, since both predict zero there. The calibration classes cover the terminal-assignment context, so a correlation that appears only after the template's CZ and X90 schedule stays open. The QX twin establishes the analysis path and no device behavior.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json",
+          "sha256": "e39956c54bd79740a94785712c398ba5fe65b33a9e03c58c2ca179374a0cc693"
+        },
+        {
+          "path": "results/quantum_inspire/pathion_one_cz_null_qx_analysis.json",
+          "sha256": "fd7eb0f578fe110e2779e7213be542147ac68b85654e1d8d9bc23514dfb849ce"
+        },
+        {
+          "path": "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/prediction.json",
+          "sha256": "e0198531e11978a681df30bf90914026b66f2dfa7bc963a32b1d129b01209730"
+        }
+      ],
+      "documents": [
+        "results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/CASE.md",
+        "docs/notes/quantum_inspire/tuna17-pathion-coset-block-case.md",
+        "docs/evidence/pathion-kernel-map/conjectures/mechanisms.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-00",
+        "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-01",
+        "qi-pathion-one-cz-null-qx-2026-11-07t202323-batch-02",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-00",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-01",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-02",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-03",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-04",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-05",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-06",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-07",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-08",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-09",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-10",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-11",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-12",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-13",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-14",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-15",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-16",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-17",
+        "qi-pathion-one-cz-null-tuna-17-2026-11-07t202323-batch-18"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-tuna17-pathion-coset-coin"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "ascella-signed-coherence-long-horizon-persistence",
       "statement": "Job-02's 64 settings of theta2-x-arm0 rerun on qpu:ascella (job fbdd5956, 2026-11-06 19:09 UTC, HOM 88.98 %, g2 2 %, transmittance 5.59 %, 64 iterations of 32,768 samples in 194 s), twelve days after job-03 and after a Quandela software update (job-02's platform catalogue records mosaiq-arcturus 2.1.5.2.post4 and hardware-core 3.9.3, job-08's mosaiq-arcturus 2.1.5.2.post11 and hardware-core-quandela 3.9.11), at job-02's compilation seeds, return job-03's mesh byte for byte in all 64 settings. Against job-03 the 56 perturbed meshes' centered X statistics read persists: slope 0.815 with one-sided 99 % upper bound 0.924 beside the 0.916 a fully persistent error reaches through job-03's counting noise, relabeling p 5e-5 at the floor of 20,000 relabelings; the reproduction correlation is r 0.925 against the ceiling 0.936 (fixed per mesh), the seed-0 anchors stay steady and the perturbed dispersion stays compilation dependent. Against job-02 the slope is 0.810 with upper bound 0.946 beside 0.845, also persists. Each served mesh therefore keeps most of its analyzer error across twelve days and the update; the bound does not exclude full persistence.",
       "domain": "hardware",

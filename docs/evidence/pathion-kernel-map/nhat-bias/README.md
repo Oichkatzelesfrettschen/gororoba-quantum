@@ -152,8 +152,8 @@ exactly (16 forced units per run, including the `cflip` twins and `crep` repeats
 nullity-12 readings read 12.011 and 12.014 for e1 + e18 and 12.118 and 12.143 for e1 + e24.
 
 The wide runs (`result_wide.json`, group `pathion_wide_coset` with its 32-dimensional reference placement) are read
-from the `main` tree at commit 4c4d5bd06 (`NHAT_BIAS_SOURCE`; `pathion_wide_coset.py` and the records are not on this
-branch). The estimator applies per block on raw laws. o64 holds six forced blocks of eight (24 of its 28) and o128
+from the `main` tree at commit 4c4d5bd06 (`NHAT_BIAS_SOURCE`; `pathion_wide_coset.py` and the records reached main
+with PR 788). The estimator applies per block on raw laws. o64 holds six forced blocks of eight (24 of its 28) and o128
 twelve of sixteen (48 of its 60), plus four blocks with N_b = 3; their whole-operand raw readings are 28.121 and 60.384
 (ibm_kingston), 28.247 and 61.291 (ibm_fez). The forced blocks contribute 48 and 24 by algebra (ratio 2.0) and the informative blocks 12 and 4 (ratio 3.0), so the
 ratio 2.148 of the 128- and 64-dimensional readings in the synthesis (27.995 and 60.126 after readout correction)
