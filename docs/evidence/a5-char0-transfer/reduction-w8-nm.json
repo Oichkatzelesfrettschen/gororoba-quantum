@@ -1,0 +1,53 @@
+{
+ "slug": "w8-nm",
+ "conjecture": "good reduction of the presolved germ ideal J at each split prime",
+ "variables": [
+  "t1",
+  "t2",
+  "t4",
+  "t5",
+  "t6",
+  "t7",
+  "t9"
+ ],
+ "qi_basis_size": 1,
+ "qi_terms": 9,
+ "qi_max_denominator": 1,
+ "qi_wall_seconds": 18.1,
+ "qi_peak_rss_kib": 171196,
+ "primes": [
+  {
+   "prime": 32009,
+   "root": 10754,
+   "same_presolve": true,
+   "bad_denominators": [],
+   "fp_basis_size": 1,
+   "reduced_qi_basis_size": 1,
+   "bases_equal": true,
+   "generators_equal": true,
+   "retained_header_equal": true,
+   "generator_count": 24,
+   "mutation_corrupted_coefficient_differs": true,
+   "fp_wall_seconds": 2.3,
+   "fp_peak_rss_kib": 124468
+  },
+  {
+   "prime": 32029,
+   "root": 9115,
+   "same_presolve": true,
+   "bad_denominators": [],
+   "fp_basis_size": 1,
+   "reduced_qi_basis_size": 1,
+   "bases_equal": true,
+   "generators_equal": true,
+   "retained_header_equal": true,
+   "generator_count": 24,
+   "mutation_corrupted_coefficient_differs": true,
+   "fp_wall_seconds": 2.5,
+   "fp_peak_rss_kib": 124544
+  }
+ ],
+ "verdict": "survives",
+ "mutation_detected": true,
+ "j_defined_over_q": true
+}

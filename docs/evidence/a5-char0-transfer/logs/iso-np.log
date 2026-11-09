@@ -1,0 +1,45 @@
+{
+ "slug": "iso-np",
+ "conjecture": "good reduction of the presolved germ ideal J at each split prime",
+ "qi_basis_size": 1,
+ "qi_terms": 5,
+ "qi_max_denominator": 1,
+ "qi_wall_seconds": 2.3,
+ "qi_peak_rss_kib": 62720,
+ "primes": [
+  {
+   "prime": 32009,
+   "root": 10754,
+   "same_presolve": true,
+   "bad_denominators": [],
+   "fp_basis_size": 1,
+   "reduced_qi_basis_size": 1,
+   "bases_equal": true,
+   "generators_equal": true,
+   "retained_header_equal": true,
+   "generator_count": 17,
+   "mutation_corrupted_coefficient_differs": true,
+   "fp_wall_seconds": 0.7,
+   "fp_peak_rss_kib": 42356
+  },
+  {
+   "prime": 32029,
+   "root": 9115,
+   "same_presolve": true,
+   "bad_denominators": [],
+   "fp_basis_size": 1,
+   "reduced_qi_basis_size": 1,
+   "bases_equal": true,
+   "generators_equal": true,
+   "retained_header_equal": true,
+   "generator_count": 17,
+   "mutation_corrupted_coefficient_differs": true,
+   "fp_wall_seconds": 0.8,
+   "fp_peak_rss_kib": 42316
+  }
+ ],
+ "verdict": "survives",
+ "mutation_detected": true,
+ "j_defined_over_q": true
+}
+exit 0

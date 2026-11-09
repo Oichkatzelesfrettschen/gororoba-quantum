@@ -264,8 +264,8 @@ has dimension a and lowers the multiplicity. For E8-bar -> VB, Iso and W8, F(I) 
 when the analytic spread of I is a and the multiplicity of F(I) is e, that is (4, 7), (5, 23) and (6, 50); this route
 does not need K2 radical. The degree-by-degree data cannot decide it, since equal Hilbert functions through degree 5
 leave the multiplicity of F(I) open; the multiplicity is an asymptotic invariant, and computing it is the arc program.
-For E8-bar -> VB the criterion sharpens: the analytic spread is already 4, because the certified degree-4 component lies
-in the fiber, and a Cohen-Macaulay F(I) has multiplicity sum h_i >= 1 + h_1 = 1 + (10 - 4) = 7 while every
+For E8-bar -> VB the criterion sharpens: the analytic spread is already 4, because the degree-4 component lies
+in the fiber (A5-015: an interpolated family over F_32009, not a symbolic lift), and a Cohen-Macaulay F(I) has multiplicity sum h_i >= 1 + h_1 = 1 + (10 - 4) = 7 while every
 4-dimensional quotient of k[y]/K2 has multiplicity at most 7, so F(I) is Cohen-Macaulay exactly when
 F(I) = k[y]/K2.
 For W8 -> N- the criterion becomes geometric. Each certified degree d <= 4 is a sandwich: the truncated rank r_N
@@ -281,11 +281,14 @@ top-dimensional component decide it. At p = 32009 and p = 32029 K2 : P is geomet
 ([structure/w8-kp](../../evidence/a5-exceptional-fibers/structure/w8-kp/README.md)), so the targets are exactly V(P) and
 V(K2 : P).
 
-**The fiber cone F(I) is Cohen-Macaulay.** Falsified for X- and E8-bar -> N+- if their analytic spread equals a. By
+**The fiber cone F(I) is Cohen-Macaulay.** Falsified for E8-bar -> N+-, open for the same-sign X pair. By
 D'Cruz, Raghavan and Verma (arXiv math/0212119, Theorem 2.1) a Cohen-Macaulay F(I) of dimension a has (1 - t)^a
-times its Hilbert series a polynomial with nonnegative coefficients; the certified degrees alone give 1, 11, -3, 4, -1
-for X- at a = 4 and 1, 16, -12, 10 for E8-bar -> N+- at a = 5. Open for E8-bar -> VB, Iso and W8, where the same
-numerators are nonnegative and terminate.
+times its Hilbert series a polynomial with nonnegative coefficients; the certified degrees alone give 1, 16, -12, 10
+for E8-bar -> N+- at a = 5, where the formal-arc certificates (`arcs/`) put L inside sqrt(K2) and K2 inside L, so the
+analytic spread is 5 at both primes (A5-014). For X- the same test gives 1, 11, -3, 4, -1 at a = 4, but the spread is
+4 only if the fiber support is V(K2), which no arc certificate shows (A5-022); the claim stays open (A5-245). The
+opposite-sign X fibers are polynomial rings, hence Cohen-Macaulay (A5-001). Open for E8-bar -> VB, Iso and W8, where
+the same numerators are nonnegative and terminate.
 
 **The fiber cone is reduced.** Falsified for X- and E8-bar -> N+-. Their radicals contain 3 and 5 linear forms
 outside K2, and since F(I) agrees with k[y]/K2 in degree 1, those forms are nilpotent in F(I). This makes the graded
@@ -360,10 +363,10 @@ non-reduced tangent cone; arcs on the normalization replace them.
   and 25/20/18/18). The closing N is 3d + 1 on Iso and W8 and 4, 8, 11, 15, 18 at d = 1 to 5 on X-, which fits
   floor(7d/2) + 1 (hypothesis, predicts N = 22 at d = 6). E8-bar -> N- follows its own law (last jump 81 at d = 5 with
   blocks 18/21/21/21).
-- Coverage (`claims.json`, rank certificates only): every pair is certified through degree 3 at both primes; through
-  degree 4 for W8 and Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes
-  and for X and E8-bar -> VB at 32009; through degree 6 for Iso at both primes. W8 holds in every degree by the C30
-  proof, which the rank registry does not carry. All certificates hold over F_p only.
+- Coverage (`claims.json`, rank certificates only): every pair is certified through degree 5 at both primes, and X,
+  Iso and E8-bar -> VB through degree 6 at both primes (88 of 96 cells). W8 holds in degree 6 and every higher degree
+  by the C30 proof, which the rank registry does not carry, and E8-bar -> N+- degree 6 is open (1526 <= h_6 <= 1666).
+  All certificates hold over F_p only.
 - E8-bar -> N+- (one class by the pair flip): Hilbert function equal to the quadric values through degree 3 at both
   primes (h_3 = 225, by two eliminations at 32009); non-reduced, and V(K2) not equidimensional, with minimal primes
   (4, 11) and (3, 4).
@@ -501,8 +504,8 @@ stabilizer has a rank-3 torus with 9 distinct normal weights and an SL(2) that f
 octonion block under G_2 = Aut(O). Refuted or unsupported: the icosahedral, McKay and E8 readings (here A_5 is the
 32-dimensional algebra and E8 a stratum label), a tensor-square model of the last jump, and the small-number matches
 (the chart dimension 4 holds by construction). Next: an exact torus over Q inside the Klein centralizer, then a
-weighted standard basis of J in that slice, which tests whether the Singular export that holds 97 to 99 percent of the
-E8-bar, X- and VB wall time shrinks.
+weighted standard basis of J in that slice, which tests whether the Singular export, which holds 96 to 99 percent of
+the wall time of E8-bar degree 5 and VB degree 6 and 80 percent of X- degree 6 (A5-246), shrinks.
 
 ### Run plan by host (2026-11-09)
 

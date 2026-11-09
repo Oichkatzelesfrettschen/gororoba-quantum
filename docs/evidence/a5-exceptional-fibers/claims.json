@@ -1252,7 +1252,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -1415,7 +1416,40 @@
      "d": 5,
      "k2_count": 4116,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 6,
@@ -1434,7 +1468,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -1597,7 +1632,40 @@
      "d": 5,
      "k2_count": 4116,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1,
+       1
+      ],
+      "fiber": "W8 -> N-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 6,
@@ -1616,7 +1684,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -1719,8 +1788,18 @@
     {
      "d": 5,
      "k2_count": 4116,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 16,
+       "engine": "7849cbc71ccf1787",
+       "header": "585a946d2d75073e",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 4116,
+       "source": "w8-n16-azure/unreceipted/w8d5-n16.out"
+      }
+     ],
+     "status": "certified"
     },
     {
      "d": 6,
@@ -1749,7 +1828,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -1834,8 +1914,18 @@
     {
      "d": 5,
      "k2_count": 4116,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 16,
+       "engine": "7849cbc71ccf1787",
+       "header": "20d00f15fd8f35c9",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 4116,
+       "source": "w8-n16-azure/p32029/w8d5-n16-p32029.out"
+      }
+     ],
+     "status": "certified"
     },
     {
      "d": 6,

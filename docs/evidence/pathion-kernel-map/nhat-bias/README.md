@@ -221,11 +221,14 @@ assigns the leakage to physical outcome 0.
 **All-aligned blocks are not flat (computed).** Every tensor-product readout channel, symmetric or not, leaves an
 all-aligned block flat across its eight bins. Within-replica deviations from the block mean, tested jointly by
 Hotelling's T^2 on 7 coordinates (`flatness_hotelling_p`; 10 to 16 replicas per run, covariance estimated), reject
-flatness at p < 0.05 on 15 of the 52 forced blocks (2.6 expected; binomial tail 2.3e-8) and at p < 0.001 on 1; the
-Fisher combination per run reads 1e-6 and 2e-6 on the two ibm_fez runs, 0.0018 on ibm_marrakesh and 0.26 on
-ibm_kingston, with a bin spread of 0.007 to 0.011. A bin-dependent contraction that no readout channel produces
-therefore runs through these circuits on three of the four runs, at about a quarter of the N_b = 2 class gap, and the
-forced law hides it from N_hat. The marginal sum `flatness_chi2` is descriptive only: its terms are squared Student t
+flatness at p < 0.05 on 15 of the 52 forced blocks (2.6 expected if the blocks were independent) and at p < 0.001 on 1,
+with a bin spread of 0.007 to 0.011. The binomial tail (2.3e-8) and the per-run Fisher combination (1e-6 and 2e-6 on
+the two ibm_fez runs, 0.0018 on ibm_marrakesh, 0.26 on ibm_kingston) treat the blocks as independent, while the blocks
+of one run share replicas, calibration and compiled circuits; they describe the count and do not calibrate a family
+p-value, which a run-level permutation or replica-block bootstrap that keeps the covariance among blocks would give
+(not run). The per-block tests stand, and a bin-dependent contraction that no readout channel produces then runs
+through these circuits on three of the four runs, at about a quarter of the N_b = 2 class gap, and the forced law hides
+it from N_hat. The marginal sum `flatness_chi2` is descriptive only: its terms are squared Student t
 statistics with correlated residuals, so it carries no chi-square tail.
 
 **The full-map bias survives readout correction, and the orientation qubit's character orders it (open).** On
