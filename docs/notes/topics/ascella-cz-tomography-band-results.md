@@ -43,7 +43,7 @@ section), so it serves only to mark which falsifications depend on the interval 
 | Fidelity at or below the record ceiling | 0.934 | lower end 0.824 | survives | Survives trivially; it constrains nothing at this F |
 | Balanced rails, r(11)/r(01) = 1 | 1 | 1.045 to 1.074 | falsified | Robust. The ZZ-only ratio is 1.123 and the retained pair's 1.139: a stable control-side imbalance that the nine-readout average dilutes |
 | r(11)/r(01) at the record variant's value | 1.040 | same | falsified | Fragile: misses the interval's lower end 1.0446 by 0.005, while the same ratio moves by 0.05 with the readout set; the retained pair's 1.009 survived |
-| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it near the recorded scale the band pair still fails, at 2.3 to 3.4 times its reference (next section) |
+| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it at the recorded scales the band pair still fails, at 2.1 to 3.3 times its reference (`calibrated_reference.py`, next section) |
 | Constant variance factor (1.44) | 1.44 | ratio 5.73 | falsified | Robust |
 | Relative systematic per rate (3.67) | 3.67 | ratio 5.73 | falsified | Robust, and carried by the cells whose expectation the statistic clips to one event; the other cells grow with the events (next section) |
 
@@ -79,9 +79,10 @@ section), so it serves only to mark which falsifications depend on the interval 
   concentration says nothing about the kind of error. Only 11 of those cells are below one event in both pairs. On
   cells in the same class in both pairs, the clipped cells grow 44 times and the rest 5.9 times for 6.1 times the
   events per rate; the two-click pattern misfit, whose 795 cells keep their class, splits the same way (56 and 5.7
-  times for 6.9 times the events). A per-seed error three times larger would grow the excess of the proper cells far
-  faster than the events, so the proper cells and the statistic's sigma match disagree, and which one reads the
-  per-seed scale is open.
+  times for 6.9 times the events). A proper cell's excess scales as N times the squared share error, so a realized
+  share error 1.65 to 2.65 times the retained one would grow it 17 to 43 times for 6.1 times the events; the proper
+  cells grow 5.9 times, counting included. The proper cells and the statistic's sigma match disagree, and which one
+  reads the per-seed scale is open.
 - **Scaling the retained statistic.** About 70 % of the retained statistic is acquisition scatter (its reference
   mean, 3,677), and the clip inflates that scatter too: the reference mean grows 7.9 times between the pairs for
   6.1 times the events. Scaling the whole retained statistic gives 4.5 (clipped cells by the square of the event

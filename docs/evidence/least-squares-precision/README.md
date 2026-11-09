@@ -288,7 +288,7 @@ each label. A host that ran
   thread counts, two kinds, two repeats each) are error rows there (`NotImplementedError: QuadBLAS is disabled`), a
   capability that `fp_host.quadblas_status` now probes, so a rerun on that wheel records skips. The retained rows
   predate the probe and stay as measured.
-- The Vostro (Turion 64 X2, SSE3 without SSSE3, SSE4 or POPCNT) is not run in this sweep. Its retained record
+- turion-linux (Turion 64 X2, SSE3 without SSSE3, SSE4 or POPCNT) is not run in this sweep. Its retained record
   ([quad-falsification/vostro.json](quad-falsification/vostro.json)) is a numpy 2.5.3 run of the quaddtype matmul
   test; a numpy 2.5.4 run on that CPU, and with it the expected SIGILL from a baseline above its instruction set, is
   `not run` and has no retained record.
