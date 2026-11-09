@@ -55,19 +55,17 @@ records read-only, and none has passed an independent check.
    7 holds qubit 94 (T1 rank 8 of 68 from the bottom) and qubit 79 (T2 rank 9). The median T1 is 152.6 us on ibm_fez and
    258.3 us on ibm_kingston. Placement 15 nevertheless reads visibility 0.710, better than placement 7 at 0.595, so the
    snapshot does not rank-order the loss.
-4. **A calibration entry that the raw bits contradict `[R]`.** The execution-time snapshot in
+4. **An extreme calibration entry that the raw bits admit `[R]`.** The execution-time snapshot in
    `results/live/2026-11-07T153325.440007Z/collect.json` lists ibm_fez qubit 90 with a |1>-to-|0> flip of 0.835
    (readout error 0.417, six times the next worst of 68), while the planning record `record.json` of the same job lists
-   the same qubit at readout error 0.0039. Qubit 90 belongs to placement 2 (qubits 89, 78, 88, 90) and is measured into
-   classical bit 3 of that placement's register (`isa.qpy` loaded with qiskit 2.6.2); the docstring of
-   `gororoba_quantum/pathion_coset_block.py` orders data bits first and the selector last, which would make it the
-   selector. The raw bit strings of that bit read a marginal P(1) of 0.082 in the first PUB and 0.919 in the second, the
-   same selector-like polarization as bit 3 of placements 3 and 4 in the same PUB (0.934 and 0.916). A flip of 0.835
-   caps P(1) at 0.165, so the execution-time entry contradicts the data. The corrected readings of placement 2 carry a
-   standard error of 0.078 (o128 block k8) and 0.066 (n128 block k8) on ibm_fez against 0.011 and 0.0083 on ibm_kingston,
-   an inflation of 7 to 8 that a 6-fold readout inverse would produce. Unresolved: which snapshot
-   `scripts/pathion_wide_coset_analysis.py` applied to placement 2, and whether the placement-2 outlier (o128 block k8
-   reads 2.872 against 3) comes from it. The role of each classical bit was inferred from the docstring, not confirmed.
+   the same qubit at readout error 0.0039. Qubit 90 belongs to placement 2 (qubits 89, 78, 88, 90). The routed circuit
+   `isa.qpy` (qiskit 2.6.2) assigns qubit 90 to `g0_r2_c[3]` in the first two PUBs and to `g0_r2_c[1]` in `pub_02`,
+   where qubit 89 writes `g0_r2_c[3]`. The mapped qubit-90 marginals range over P(1) = 0.048 to 0.119 in the twelve
+   PUBs, inside the 0 to 0.165 that a 0.835 flip admits; the 0.919 marginal of `pub_02` bit 3 belongs to qubit 89. The
+   data therefore leave the entry unfalsified. The corrected readings of placement 2 carry a standard error of 0.078
+   (o128 block k8) and 0.066 (n128 block k8) on ibm_fez against 0.011 and 0.0083 on ibm_kingston, the inflation a
+   6-fold readout inverse produces, and the placement-2 outlier (o128 block k8 reads 2.872 against 3) is sensitive to
+   that channel.
 5. **The readout correction is a tensor product `[R]`.** `gororoba_quantum/live_run.py` (`readout_corrected`,
    `readout_factors`) inverts one 2 x 2 channel per classical bit from the backend's `prob_meas1_prep0` and
    `prob_meas0_prep1` and applies them as a Kronecker product. No correlated term enters.
@@ -76,12 +74,12 @@ records read-only, and none has passed an independent check.
 
 | Observation | Explains or predicts | Falsifies or bounds |
 |---|---|---|
-| fez-null, fez-placements | qubit-specific two-level-system (TLS) defects lower T1, T2 and readout fidelity on named qubits for minutes to days (Klimov, Schloer, Thorbeck) and IBM monitors TLS signatures and may pause calibration for affected qubits (IBM guide) | snapshot ranks (check 3) support placement 15 and only weakly placement 7; check 4 shows the execution-time readout entry of qubit 90 contradicts its raw bits, so a readout-only reading of placement 2 stays unsupported |
-| fez-null | a null control and a target in separate PUBs inherit any time-correlated difference (Sarovar p. 15) | the 12 PUBs of one job share one calibration (check 3) and TLS diffusion moves 0.13 MHz in 10 s (Klimov arithmetic below), so between-PUB drift inside one job is bounded small |
+| fez-null, fez-placements | qubit-specific two-level-system (TLS) defects lower T1, T2 and readout fidelity on named qubits for minutes to days (Klimov, Schloer, Thorbeck) and IBM monitors TLS signatures and may pause calibration for affected qubits (IBM guide) | snapshot ranks (check 3) support placement 15 and only weakly placement 7; check 4 shows placement 2's correction rests on an extreme but unfalsified qubit-90 readout channel |
+| fez-null | a null control and a target in separate PUBs inherit any time-correlated difference (Sarovar p. 15) | the 12 PUBs of one job share one calibration snapshot (check 3); drift between them lies outside the shot covariance and stays an unmeasured alternative, since Klimov's diffusion scale is an other-device stochastic scale and telegraphic jumps reach about 60 MHz |
 | fez-copy | context-dependent errors from concurrent gates and from neighbors that run at the same time (Sarovar, Niu note, Seif note) | cosmic-ray bursts cannot hold two placements low across 12 PUBs (McEwen, Harrington) |
 | king-offset | a static assignment asymmetry; the prepare-and-measure matrix is not the readout channel (Geller p. 1) and the tensor-product inverse leaves a correlated remainder (Bravyi p. 7) | a drift reading, since the offset keeps its sign and size across runs |
-| tuna-b0 | replicates 13.5 h apart straddle TLS spectral diffusion of about 9 MHz rms (Klimov) and Quantum Inspire retunes in the background (Last p. 12, tuna-17.md) | monotone slow drift alone, since q11's |1> misassignment switches both ways (check 2) |
-| tuna-q11 | a TLS jump in frequency changes the lifetime during readout within 9 minutes and moves the |1> misassignment only (Thorbeck p. 3) | a discriminator-threshold shift, which moves both misassignments (split in check 2) |
+| tuna-b0 | replicates 13.5 h apart straddle TLS spectral diffusion of a standard deviation of about 18 MHz (Klimov's 2 D t^(1/2) at 13.5 h) and Quantum Inspire retunes in the background (Last p. 12, tuna-17.md) | monotone slow drift alone, since q11's |1> misassignment switches both ways (check 2) |
+| tuna-q11 | a TLS jump in frequency changes the lifetime during readout within 9 minutes and moves the |1> misassignment only (Thorbeck p. 3; mapping that mechanism onto one unchanged assignment channel is a hypothesis) | a discriminator-threshold shift, which moves both misassignments (split in check 2) |
 | 32-dim | the N_b = 2 bias follows a local output-bit channel; the multiplicative test of its characters bounds correlated readout (Bravyi) | the recorded readout flip falls 0.005 to 0.009 per bit short of the fitted 0.020 to 0.023 |
 
 ## Tier one: the five strongest sources
@@ -97,10 +95,12 @@ records read-only, and none has passed an independent check.
   MHz. PDF p. 9 (Fig. 2 caption): 31,278 T1 measurements over 400 MHz and 1200 minutes. PDF p. 5: the authors state that
   defect diffusivity should set how often qubit-frequency selection is rerun. PDF p. 13: the qubit-frequency calibration
   curve stayed within 1 MHz over about 25 hours, so the fluctuations are TLS motion, not qubit-frequency drift.
-- Prediction. The root-time law gives an rms TLS excursion of 1.25 MHz in 15 minutes, 2.5 MHz in 1 hour, 9.2 MHz in 13.5
-  hours (arithmetic from the diffusivity in the diffusive regime only) and 0.13 MHz in 10 seconds. A qubit with a TLS
-  within a few MHz of its transition therefore changes T1, readout and contrast between replicates 13.5 hours apart and
-  does not change between the PUBs of a 9 to 11 second job.
+- Prediction. The law sigma(t) = 2 D t^(1/2) (PDF p. 3) gives a standard deviation of the TLS frequency of 2.50 MHz in
+  15 minutes, 5.00 MHz in 1 hour, 18.4 MHz in 13.5 hours and 0.26 MHz in 10 seconds, in the diffusive regime of a
+  tunable Xmon device, not either device under review. These are empirical stochastic scales, not bounds: telegraphic
+  defects jump by up to about 60 MHz (PDF p. 4) at any time. A qubit with a TLS within a few MHz of its transition
+  plausibly changes T1, readout and contrast between replicates 13.5 hours apart; a change between the PUBs of a 9 to 11
+  second job is less likely but stays possible and unmeasured.
 - Bears on. tuna-b0 (time scale of the replicate disagreement), fez-placements (qubit-specific loss), and the boundary
   statement that drift between PUBs of one job lies outside what the shot data test.
 - Limit. A Google Xmon device with tunable qubits; Heron r2 transmons are fixed-frequency with tunable couplers. Telegraph
@@ -172,8 +172,8 @@ records read-only, and none has passed an independent check.
   for a stable system" (per-qubit readout fidelities 96.4 to 98.4 percent, Table 1). PDF pp. 11 to 12 (Sec. 3.2): the T2*
   series, each point of 4,096 shots, leads the authors to call the device "a rather unstable device".
 - Prediction. On the same platform family (QuTech's Quantum Inspire stack, a different five-qubit chip) readout and
-  coherence metrics scatter between repetitions above shot noise, so a chi-square gate across batch replicates fails at a
-  platform-typical rate and the replicate-heterogeneity gate of the claim is the correct first test. The magnitude does not
+  coherence metrics scatter between repetitions above shot noise, so a chi-square gate across batch replicates can fail
+  from device instability alone (the paper estimates no failure rate) and the replicate-heterogeneity gate of the claim is the correct first test. The magnitude does not
   transfer to Tuna-17.
 - Bears on. tuna-b0, tuna-q11.
 
@@ -396,6 +396,7 @@ the literature above.
    readout circuits.
 4. Rerun ibm_fez with the block of placement 7 on other qubits (the claim's own falsifier) and compare the calibration
    snapshot at that time (IBM guide; check 3).
-5. Resolve check 4: map each wide-group classical bit to its role and compare qubit 90's recorded flip with its observed
-   selector contrast.
+5. Calibrate qubit 90 independently of the execution-time snapshot (resolved part of check 4: the routed writer map
+   shows every qubit-90 marginal inside its recorded channel, so only an independent calibration can test the 0.835
+   flip).
 6. Report the local-channel out-of-sample test with and without the two excluded placements (Efron).

@@ -97,7 +97,7 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 | 125 (for 110) | membership of the 91 degree-5 forms of E8-bar, by a sparse solver | laptop | unmeasured; the degree-2 receipt took 12,678 s |
 | 115 | exact torus over Q in the Klein centralizer, then a weighted dp order | Kaggle CPU or the laptop | symbolic; the weighted std then runs at N = 15 and 18 |
 | 133 | review of the Iso steps of the W8 C30 deduction (A5-284), then A5-007 and A5-067 to proved at F_p | the ultra review of PR 809 and the Advisor | |
-| 132 | `live_run` collector gate: refuse a readout channel that cannot emit the observed marginal (fez qubit 90) | code change with a fixture test | |
+| 132 | withdrawn: the fez qubit-90 channel admits every mapped marginal (second review of the wide-coset write-up); an independent calibration of qubit 90 replaces it | none | |
 | 134 | byte-reproducible serializer for the Tuna-17 one-CZ null analysis, as a versioned successor | code change | regeneration drifts by at most 1.78e-14 today |
 | variable-order screen | fixed dp permutations at N = 15 | Kaggle CPU sessions, one permutation each | about 420 s per permutation; reversed variables measured 1.81 times slower at N = 13 |
 | `degBound` lever | `slimgb` with `degBound = N` at N = 18 | laptop, after the degree-7 cells | byte-identical basis and 12 percent faster at N = 13, 33.5 percent at N = 15 (Codex final review) |
