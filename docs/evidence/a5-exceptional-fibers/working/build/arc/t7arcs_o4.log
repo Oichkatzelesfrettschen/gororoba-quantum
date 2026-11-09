@@ -1,0 +1,32 @@
+point (1, 2, 3) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['6998', '1993', '0', '27873', '8872', '4136', '0', '6621', '1191', '25031']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['3705', '3067', '0', '17800', '23177', '14209', '0', '25352', '833', '28324']
+point (2, 5, 7) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['10723', '26062', '0', '22647', '40', '9362', '0', '31981', '23026', '21326']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['40', '20115', '0', '0', '80', '0', '0', '0', '0', '0']
+point (3, 1, 4) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['6653*a + 12768', '15612*a + 18256', '0', '19515*a + 3717', '22946*a + 20550', '12494*a + 28292', '0', '13883*a + 9071', '14053*a + 19479', '25356*a + 19301']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['25356*a + 19421', '16397*a + 1859', '0', '12494*a + 23232', '9063*a + 11487', '19515*a + 8777', '0', '18126*a + 22954', '17956*a + 1523', '6653*a + 12648']
+point (5, 9, 2) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['15544*a + 13784', '716*a + 2678', '0', '13653*a + 19933', '16359*a + 7987', '18356*a + 12076', '0', '23157*a + 4446', '30398*a + 9220', '16465*a + 18325']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['16465*a + 29328', '31293*a + 3394', '0', '18356*a + 1577', '15650*a + 24346', '13653*a + 30432', '0', '8852*a + 27603', '1611*a + 7609', '15544*a + 2781']
+point (7, 3, 11) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['9804', '20566', '0', '31981', '7117', '28', '0', '7790', '12884', '22345']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['1659', '30921', '0', '29384', '25024', '2625', '0', '24615', '10017', '30490']
+point (4, 6, 1) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['15281', '24965', '0', '24904', '11265', '7105', '0', '8939', '22144', '16808']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['27691', '31082', '0', '1666', '20936', '30343', '0', '23082', '3793', '4398']
+point (11, 13, 17) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['13031*a + 31745', '29733*a + 12139', '0', '56*a + 26419', '3053*a + 14868', '31953*a + 5590', '0', '10614*a + 27280', '4636*a + 13755', '18978*a + 484']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['18978*a + 12767', '2276*a + 9863', '0', '31953*a + 26475', '28956*a + 17921', '56*a + 5534', '0', '21395*a + 5885', '27373*a + 18391', '13031*a + 19462']
+point (6, 2, 9) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['27197', '10162', '0', '19870', '27692', '12139', '0', '30334', '15979', '4932']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['5412', '20198', '0', '23908', '4397', '8101', '0', '1927', '21977', '26717']
+point (1, 1, 1) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['6998', '11334', '0', '27873', '4436', '4136', '0', '2207', '16600', '25031']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['3705', '11692', '0', '17800', '27593', '14209', '0', '29790', '16421', '28324']
+point (9, 4, 5) branches 2
+  branch 0 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['17813*a + 7728', '19245*a + 28015', '0', '25726*a + 28385', '13973*a + 9122', '6283*a + 3624', '0', '4732*a + 29773', '24311*a + 5748', '14196*a + 24461']
+  branch 1 resid_eq_nonzero 0 nu 2 inP1,P2 [False, True] F ['14196*a + 25541', '12764*a + 15251', '0', '6283*a + 22102', '18036*a + 23095', '25726*a + 9907', '0', '27277*a + 2496', '7698*a + 30059', '17813*a + 6648']
+SUMMARY {'arcs': 20, 'inP1': 0, 'inP2': 20, 'neither': 0}
+exit 0

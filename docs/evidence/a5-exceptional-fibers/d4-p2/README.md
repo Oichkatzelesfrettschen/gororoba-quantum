@@ -9,8 +9,16 @@ address-space cap (`prlimit --as`; the build host had no user bus) and a 1,800 s
 |---|---|---|---|---|
 | X- | 14 | 159 | 43 / 46 / 35 / 35 | 40.6 s, 246 MiB |
 | X- | 15 | 240 | 68 / 66 / 53 / 53 | 70.2 s, 313 MiB |
+| E8-bar -> VB | 12 | 146 | 51 / 31 / 32 / 32 | 26.7 s, 137 MiB |
+| E8-bar -> VB | 13 | 155 | 56 / 35 / 32 / 32 | 59.8 s, 179 MiB |
+| E8-bar -> VB | 14 | 155 | 56 / 35 / 32 / 32 | 127.8 s, 241 MiB |
 
 r_15 = 240 = HF(k[y]/K2, 4) certifies h_4 = 240 for X- at 32029 (ledger A5-171), and the X sign isomorphism
 (`../witnesses.jsonl`) carries it to X+ (A5-159); `../build_registry.py` binds the record once `d4-p2` is among its scan
 roots (`../README.md`). The ladder and the block splits equal those at p = 32009 (`../xm-lown/`), including the last
 jump 81 split 25 / 20 / 18 / 18 of ledger row A5-244.
+
+E8-bar -> VB on the laptop (2026-11-09, [`run-cells-laptop.sh`](run-cells-laptop.sh), header
+`../working/build/inputs/p32029-r9115/e8-vb.sing` sha256 6b3cea4923b4e0e2..., `--max-gb 30`): r_13 = 155 =
+HF(k[y]/K2, 4) certifies h_4 = 155 at p = 32029 (A5-111). The ladder closes at N = 13 = 3d + 1, as degree 5 closes by
+N = 16, and its last jump is 9 (146 to 155), not (2d + 1)^2: E8-bar -> VB follows neither last-jump form of A5-244.

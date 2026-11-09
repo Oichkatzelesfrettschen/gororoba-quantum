@@ -104,12 +104,13 @@ marks repository interpretation. Printed page numbers equal PDF page indices.
 | --- | --- | --- |
 | Theorem 7.16 at `n = 4` | count ordered pairs `(e_i + s e_j)(e_k + t e_l) = 0` over all `i < j`, `k < l`, `s, t = +-1` in dimension 16 from `cd_sign` | 336 |
 | Theorem 7.16 at `n = 5` | the same count in dimension 32 | 5040, equal to `336 x [4 choose 3]_2 = 336 x 15` |
+| Theorem 7.16 at `n = 6` and `n = 7` | the same count, restricted to pairs with `i ^ j = k ^ l` (Theorem 3.6 Case A products have four distinct terms and never vanish), by the retained [zd_count.py](../../evidence/cd-zero-divisor-count/zd_count.py) ([zd_count.json](../../evidence/cd-zero-divisor-count/zd_count.json)) | 52080 = `336 x 155` and 468720 = `336 x 1395`, equal to `336 x [n-1 choose 3]_2`; the same script recounts 336 and 5040 at `n = 4, 5` and 0 at `n = 3` |
 | Proposition 7.6 and Theorem 4.9 | `cd_core.sedenion_zero_divisor_corpus()` | 336 rows, 42 distinct supports on each side |
 | Theorem 14.2, weight 2 | rank of `L_a` for the 210 elements `e_i + s e_j`, `1 <= i < j <= 15` | 84 singular, all with `dim ker = 4`; the paper's 168 counts both overall signs of each |
 | Theorem 12.1 | rank of `L_a` for all 3640 elements `s_1 e_i + s_2 e_j + s_3 e_k` with `1 <= i < j < k <= 15` and `s = +-1` | none singular |
 | Theorem 5.17 at `n = 5` | rank of `L_a` for `a = e_1 + e_10` in dimension 32 | `dim ker L_a = 8 = 2^(5-2)` |
 
-[E] Not run: the count at `n >= 6` (dimension 64 needs about 66 million products), Theorems 3.17, 5.16, 5.21, 9.2, 9.6 and
+[E] Not run: the count at `n >= 8`, Theorems 3.17, 5.16, 5.21, 9.2, 9.6 and
 10.2, the weight-4 to weight-12 counts of Theorem 14.2, and Section 13.
 
 ## Mapping to this repository
