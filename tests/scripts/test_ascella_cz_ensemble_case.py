@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 from typing import Any
 
 import ascella_cz_ensemble_case as case
@@ -379,7 +380,7 @@ def planned_fixture(job: str, hom: float, explorer: str = "available", jobs: int
         "expected_seconds": float(policy["expected_seconds"]),
         "perfs_at_plan": {"HOM (%)": hom},
         "status_at_plan": {"explorer": explorer, "processor": "available"},
-        "availability_at_plan": {"num_concurrent_jobs": jobs, "num_jobs_in_queue": 0},
+        "availability_at_plan": {"num_concurrent_jobs": jobs, "num_jobs_in_queue": 0, "num_running_qt_jobs": 0},
     }
 
 
@@ -399,20 +400,47 @@ def test_the_retained_reference_admits_no_hom() -> None:
         case.admit("job-00", planned_fixture("job-00", 88.0), case.reference_hom(), None)
 
 
-@pytest.mark.parametrize(("hom", "admitted"), [(90.0, False), (90.01, True), (91.5, True), (91.51, False)])
-def test_hom_band_is_above_the_floor_and_within_a_point(hom: float, admitted: bool) -> None:
+@pytest.mark.parametrize(
+    ("hom", "reference", "admitted"),
+    [
+        (90.0, 90.5, False),
+        (90.01, 90.5, True),
+        (91.5, 90.5, True),
+        (91.51, 90.5, False),
+        (91.0, 92.0, True),
+        (90.99, 92.0, False),
+        (93.0, 92.0, True),
+        (93.0000001, 92.0, False),
+        (91, 90.5, True),
+    ],
+)
+def test_hom_band_is_above_the_floor_and_within_a_point(hom: float, reference: float, admitted: bool) -> None:
+    """Above 90 % strictly; within one point of the reference with both of those ends inclusive."""
     planned = planned_fixture("job-00", hom)
     if admitted:
-        case.admit("job-00", planned, 90.5, None)
+        case.admit("job-00", planned, reference, None)
     else:
         with pytest.raises(case.qd_platform.PlatformError, match="outside"):
-            case.admit("job-00", planned, 90.5, None)
+            case.admit("job-00", planned, reference, None)
 
 
-def test_running_admits_only_an_idle_token() -> None:
-    case.admit("job-00", planned_fixture("job-00", 91.0, "running"), 90.5, None)
+@pytest.mark.parametrize("hom", [True, "91", float("nan"), float("inf"), None])
+def test_a_non_numeric_hom_is_refused(hom: Any) -> None:
+    with pytest.raises(case.qd_platform.PlatformError, match="reads HOM"):
+        case.admit("job-00", planned_fixture("job-00", hom), 90.5, None)
+
+
+@pytest.mark.parametrize("counter", case.IDLE_COUNTERS)
+@pytest.mark.parametrize("status", ["available", "running"])
+def test_either_status_admits_only_an_idle_token(counter: str, status: str) -> None:
+    case.admit("job-00", planned_fixture("job-00", 91.0, status), 90.5, None)
+    planned = planned_fixture("job-00", 91.0, status)
+    planned["availability_at_plan"][counter] = 1
     with pytest.raises(case.qd_platform.PlatformError, match="holds jobs"):
-        case.admit("job-00", planned_fixture("job-00", 91.0, "running", jobs=1), 90.5, None)
+        case.admit("job-00", planned, 90.5, None)
+
+
+def test_a_maintenance_status_is_refused() -> None:
     with pytest.raises(case.qd_platform.PlatformError, match="status"):
         case.admit("job-00", planned_fixture("job-00", 91.0, "maintenance"), 90.5, None)
 
@@ -442,31 +470,70 @@ def test_job_01_admits_after_a_decisive_job_00() -> None:
     case.admit("job-01", planned_fixture("job-01", 91.0), 90.5, decisive_run())
 
 
-def test_generic_submit_refuses_a_wrapper_case_without_verify(monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.mark.parametrize("verify", [None, lambda _planned: None])
+def test_generic_submit_refuses_a_wrapper_case_without_its_gate(monkeypatch: pytest.MonkeyPatch, verify: Any) -> None:
+    """A verifier of another policy, such as a schedule's, does not stand in for the named wrapper."""
     from pathlib import Path
 
     monkeypatch.setattr(case.qd_platform, "load_case", lambda _: ({"submit_wrapper": case.SUBMIT_WRAPPER}, {}, "x"))
     with pytest.raises(case.qd_platform.PlatformError, match="submits only through"):
-        case.qd_platform.submit(Path("job-00"), case.PLATFORM, "approval", 1.4, 220, 1.0)
+        case.qd_platform.submit(Path("job-00"), case.PLATFORM, "approval", 1.4, 220, 1.0, verify=verify)
+    if case.SubmissionGate.submit_wrapper != case.SUBMIT_WRAPPER:
+        raise AssertionError("the gate does not carry the wrapper capability")
+
+
+def live_processor(perfs: dict[str, Any], modes: list[int] | None = None) -> dict[str, Any]:
+    return {"perfs": perfs, "specs": {"connected_input_modes": list(case.tomo.SOURCES) if modes is None else modes}}
+
+
+def test_the_live_read_must_repeat_the_plan_and_connect_the_sources() -> None:
+    perfs = case.read_perfs()
+    planned = {"perfs_at_plan": case.qd_platform.scrub(perfs)}
+    floor = case.live_accuracy("job-00", planned, live_processor(perfs))
+    retained = json.loads((case.FAMILY_DIR / case.FORECAST).read_text(encoding="utf-8"))["expected_by_setting"]
+    least = min(row["eligible_events_per_iteration"] for row in retained.values())
+    if abs(floor - least) > 1e-6 * least:
+        raise AssertionError(f"the live floor {floor} misses the forecast's {least}")
+    moved = {**perfs, "HOM (%)": perfs["HOM (%)"] + 0.01}
+    with pytest.raises(RuntimeError, match="moved after the plan"):
+        case.live_accuracy("job-00", planned, live_processor(moved))
+    with pytest.raises(RuntimeError, match="are not all in"):
+        case.live_accuracy("job-00", planned, live_processor(perfs, [case.tomo.SOURCES[0]]))
+
+
+def test_low_transmittance_breaks_the_eligible_floor() -> None:
+    """At a tenth of the retained transmittance the max_shots cap ends iterations below the floor."""
+    perfs = case.read_perfs()
+    key = next(k for k in perfs if k.lower().startswith("transmittance"))
+    thin = {**perfs, key: perfs[key] / 10}
+    planned = {"perfs_at_plan": case.qd_platform.scrub(thin)}
+    with pytest.raises(RuntimeError, match="eligible events, below"):
+        case.live_accuracy("job-00", planned, live_processor(thin))
 
 
 def test_submit_binds_the_admitted_preflight() -> None:
     from qd_schedule import body_digest
 
-    planned = {"cases_sha256": "c", "body": {"process_id": "a", "payload": {"x": 1}}}
+    context = {"reference": {"hom": 92.0, "submission_sha256": "r"}, "predecessor": None}
+    planned = {"cases_sha256": "c", "body": {"process_id": "a", "payload": {"x": 1}}, "perfs_at_plan": {"HOM (%)": 92}}
     reviewed = {
         "admission": {"admitted": True},
         "cases_sha256": "c",
         "body_sha256_without_process_id": body_digest({"process_id": "b", "payload": {"x": 1}}),
+        "perfs_at_plan": {"HOM (%)": 92},
+        **context,
     }
-    case.bind_reviewed("job-00", planned, reviewed)
+    case.bind_reviewed("job-00", planned, reviewed, context)
     for change, match in (
         ({"admission": {"admitted": False, "refusal": "HOM"}}, "not admitted"),
         ({"cases_sha256": "d"}, "case changed"),
         ({"body_sha256_without_process_id": body_digest({"payload": {"x": 2}})}, "differs from the preflight"),
+        ({"perfs_at_plan": {"HOM (%)": 91.5}}, "perfs moved"),
+        ({"reference": {"hom": 92.0, "submission_sha256": "s"}}, "reference differs"),
+        ({"predecessor": {"submitted_utc": "t", "sha256": "p"}}, "predecessor differs"),
     ):
         with pytest.raises(RuntimeError, match=match):
-            case.bind_reviewed("job-00", planned, {**reviewed, **change})
+            case.bind_reviewed("job-00", planned, {**reviewed, **change}, context)
 
 
 def test_column_batches_certify_the_same_values() -> None:

@@ -1548,12 +1548,14 @@ def submit(
     written, so a caller's own stop conditions bind the request actually sent;
     a PlatformError from it refuses the submission with nothing written. A
     manifest that names a submit_wrapper holds its policy in that wrapper's
-    verify step, so submit refuses such a case without one.
+    verify step, so submit refuses such a case unless verify carries a
+    submit_wrapper attribute equal to the manifest's: a verifier of another
+    policy does not stand in for it.
     """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
     manifest, _, gated_case_sha256 = load_case(case_dir)
-    if "submit_wrapper" in manifest and verify is None:
+    if "submit_wrapper" in manifest and getattr(verify, "submit_wrapper", None) != manifest["submit_wrapper"]:
         raise PlatformError(f"{case_dir.name} submits only through {manifest['submit_wrapper']}")
     if (reviewed_packet is None) != (reviewed_sha256 is None):
         raise PlatformError("reviewed packet and digest must be supplied together")
