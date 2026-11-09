@@ -19,3 +19,15 @@ the source below; the Advisor reviews last.
 
 The review's degree-7 section proposes a mechanism for the two jump laws, a one-ruling module for E8-bar -> VB and a
 two-ruling module for Iso, W8 and X-; it enters the ledger as the open row A5-278 with codex's mechanism test.
+
+## Advisor verdict
+
+The Advisor reviewed the reconciliation last. Findings 1 and 2 close with the repaired A5-270 record: the
+slice-ring assertion and the cancellation argument (a regular local ring is a domain, w is a non-zero-divisor,
+completion is faithfully flat) carry the proof, so A5-270 stays proved. The refutation of 7b stands. A5-278 stands as
+an open row with codex's mechanism test. The Advisor also corrected two statements made during the work: the check-2
+replacement must avoid the Q(i) standard basis (it now checks modular cofactors as polynomial identities, timed at
+1,565 s per prime), and W8's check 2 and radicality are not cheap (its modular degree-2 receipt took 5,619 s and its
+global radical test 24,548 s), so W8 in characteristic 0 needs a sized plan. Jobs that hit the owner's 3-hour cap are
+recorded as stalled with their cost: check 2 on X- (A5-248), check 3 at X- N = 22 (A5-249) and E8-bar -> VB degree 7
+(A5-279).
