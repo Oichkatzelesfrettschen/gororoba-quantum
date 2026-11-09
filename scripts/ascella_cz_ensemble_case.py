@@ -1696,8 +1696,9 @@ def eligible_floor(job: str, perfs: Mapping[str, Any]) -> float:
     figures = tomo.perf_figures(perfs)
     dark = list(perfs["Dark counts (detection/s)"])
     least = math.inf
-    for row in base_settings():
-        entry = forecast_setting((row, figures, dark))[FALSE_ALARM_VARIANT]
+    bases = base_settings()
+    for computed in ordered_map(forecast_setting, [(row, figures, dark) for row in bases], min_items=1):
+        entry = computed[FALSE_ALARM_VARIANT]
         samples = min(
             float(SAMPLES_PER_ITERATION),
             JOB_SHOTS[job] * entry["sample_probability"] / entry["any_click_probability"],
