@@ -10,11 +10,12 @@ The sectors:
 
 * Pearson split: the case's Pearson statistic (scripts/ascella_cz_tomography_reference_case.py ``pearson``) by
   cells whose linear-inversion prediction is below one event. The case's statistic centers each cell on its
-  expected count E and divides by max(E, 1); no exact throughput/shape split of it exists, because a weighted
-  projection onto each setting's expected vector is dominated by the negative-E cells the clip leaves at weight E^2.
-  Two exact splits of nearby statistics stand in: per-setting event totals against the fit's totals, sum over
-  settings of (T - S)^2 / S with S the unclipped expected total; and the clipped-center statistic, centered and
-  divided by C = max(E, 1), split into throughput (T - sum C)^2 / sum C and within-setting shape.
+  expected count E and divides by D = max(E, 1). Its residual n - E splits exactly, in the D-weighted inner product,
+  into a part along each setting's nonnegative expected vector max(E, 0) (throughput) and the orthogonal rest
+  (shape). Projected on E itself the split reads the clip, since negative-E cells enter at weight E^2. Two nearby
+  quantities stand beside it: per-setting event totals against the fit's totals, sum over settings of (T - S)^2 / S
+  with S the unclipped expected total; and the clipped-center statistic, centered and divided by D, split into
+  throughput (T - sum D)^2 / sum D and within-setting shape.
 * Z sector: CZ is diagonal, so for a two-photon event a qubit read out in Z keeps its prepared Z population whatever
   the photon overlap. Multiphoton emission, loss, threshold postselection and dark clicks admit eligible events that
   are not two-photon events and move those populations, so ``source_model_z`` predicts them per setting through the
@@ -103,6 +104,8 @@ def pearson_split(data: dict[str, np.ndarray]) -> dict[str, Any]:
     within = clipped / clipped_total[:, None]
     throughput = (total - clipped_total) ** 2 / clipped_total
     shape = ((n - total[:, None] * within) ** 2 / clipped).sum(1)
+    direction = np.maximum(expected, 0.0)
+    projection = ((n - expected) * direction / clipped).sum(1) ** 2 / (direction**2 / clipped).sum(1)
     order = np.argsort(cells.sum(1))[::-1]
     return {
         "events": float(n.sum()),
@@ -114,6 +117,8 @@ def pearson_split(data: dict[str, np.ndarray]) -> dict[str, Any]:
         "clipped_throughput_part": float(throughput.sum()),
         "clipped_shape_part": float(shape.sum()),
         "clipped_identity_gap": float(((n - clipped) ** 2 / clipped).sum() - throughput.sum() - shape.sum()),
+        "projection_throughput_part": float(projection.sum()),
+        "projection_shape_part": float(cells.sum() - projection.sum()),
         "total_count_pearson": float(((total - expected.sum(1)) ** 2 / expected.sum(1)).sum()),
         "median_relative_total_deviation": float(np.median(np.abs(total / expected.sum(1) - 1.0))),
         "top_settings": [

@@ -14,6 +14,8 @@
    "clipped_throughput_part": 566.2689777081634,
    "clipped_shape_part": 2567.79505546001,
    "clipped_identity_gap": 0.0,
+   "projection_throughput_part": 563.6446869197644,
+   "projection_shape_part": 4724.605989906976,
    "total_count_pearson": 565.2314990635401,
    "median_relative_total_deviation": 0.05304830771062763,
    "top_settings": [
@@ -1158,6 +1160,8 @@
    "clipped_throughput_part": 2413.763246654584,
    "clipped_shape_part": 26997.68998511922,
    "clipped_identity_gap": 0.0,
+   "projection_throughput_part": 2396.106335681579,
+   "projection_shape_part": 163843.85159335638,
    "total_count_pearson": 2434.131332381719,
    "median_relative_total_deviation": 0.030680767211466786,
    "top_settings": [

@@ -16,7 +16,7 @@ The band pair of the Ascella CZ process tomography reference
   - the post-data decomposition `docs/evidence/ascella-cz-tomography-band/findings.json`, written by `docs/evidence/ascella-cz-tomography-band/analyze.py` (deterministic, about 75 s);
   - the served-mesh record `results/quandela/ascella-cz-tomography-reference-served-mesh.json` (`scripts/ascella_cz_served_mesh.py --pair reference`);
   - the component model of the mesh and its preregistered hold-out, `docs/evidence/ascella-cz-tomography-band/mesh_model.py` and `mesh-model.json`;
-  - the preregistered model-check reference with a per-seed mesh term, `docs/evidence/ascella-cz-tomography-band/mesh_variance_reference.py` and `mesh-variance-reference.json`.
+  - the preregistered model-check reference with a per-seed mesh term, `docs/evidence/ascella-cz-tomography-band/mesh_variance_reference.py` and `mesh-variance-reference.json`, and its post-data cell-share check `reference_low_cell_share.py` and `reference-low-cell-share.json`.
 
 The preregistered analysis decides: process fidelity 0.832 (0.824 to 0.839), average gate fidelity 0.865 (0.859 to
 0.871). The model check fails, so by the preregistered rule every other verdict is conditional on that failure. The
@@ -43,13 +43,13 @@ section), so it serves only to mark which falsifications depend on the interval 
 | Fidelity at or below the record ceiling | 0.934 | lower end 0.824 | survives | Survives trivially; it constrains nothing at this F |
 | Balanced rails, r(11)/r(01) = 1 | 1 | 1.045 to 1.074 | falsified | Robust. The ZZ-only ratio is 1.123 and the retained pair's 1.139: a stable control-side imbalance that the nine-readout average dilutes |
 | r(11)/r(01) at the record variant's value | 1.040 | same | falsified | Fragile: misses the interval's lower end 1.0446 by 0.005, while the same ratio moves by 0.05 with the readout set; the retained pair's 1.009 survived |
-| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it at the recorded scale the retained pair is reproduced and the band pair still fails, at 2.3 to 3.4 times its reference (next section) |
+| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it at the recorded scale the band pair still fails, at 2.3 to 3.4 times its reference (next section) |
 | Constant variance factor (1.44) | 1.44 | ratio 5.73 | falsified | Robust |
 | Relative systematic per rate (3.67) | 3.67 | ratio 5.73 | falsified | Robust, and carried by the cells whose expectation the statistic clips to one event; the other cells grow with the events (next section) |
 
 ## What the decomposition shows
 
-### The failed model check: the per-seed mesh variance accounts for the retained pass and part of the band failure
+### The failed model check: the per-seed mesh variance at its recorded scale does not explain the band failure
 
 - **Missing term.** The preregistered reference (`overdispersion` in
   `scripts/ascella_cz_tomography_reference_case.py`) draws synthetic pairs under the linear-inversion fit and the
@@ -59,20 +59,23 @@ section), so it serves only to mark which falsifications depend on the interval 
   a per-mesh error of about 0.011 that persists across jobs on the same seeds. The reference carries no such term.
 - **The reference with the term (preregistered test).** `mesh_variance_reference.py` adds independent Gaussian
   share errors per setting and synthetic pair to the case's own reference, at sigma 0.011 (Ascella anchors) and
-  0.0177 (Belenos extreme blocks), with its rule fixed before the run (commit 2efbb1e88). Verdict: partial.
-  The retained statistic 5,288 sits inside the reference at both values (mean 5,022 at 0.011), and its mean matches
-  at sigma 0.0106. The band statistic 166,240 stays outside at both (ratio 3.40 at 0.011, 2.34 at 0.0177), and its
-  mean matches only at sigma 0.034, three times the recorded scale. The omitted term explains the retained pass and
-  removes half of the band's excess in ratio; it leaves the rest unexplained.
-- **Where the rest sits.** 153,920 of the band Pearson (93 %) sits in 34 cells where the unweighted linear-inversion
-  fit predicts fewer than one event, mostly negative; the statistic divides those by one event, so each contributes
-  (n - E)^2. Only 11 of those cells are below one event in both pairs. On cells in the same class in both pairs, the
-  clipped cells grow 44 times and the rest 5.9 times for 6.1 times the events per rate; the two-click pattern misfit,
-  whose 795 cells keep their class, splits the same way (56 and 5.7 times for 6.9 times the events). The proper
-  cells show no growth of the per-event error, so the excess beyond the recorded per-seed scale sits in the
-  near-zero cells, which a larger isotropic share error would not confine there. Hypothesis, low confidence: a
-  structured leak into outcomes the gate leaves dark (multiphoton or dark-count events, or a mode-dependent loss)
-  that grew between the dates; it falls if a reference with an output weight per mode and job reproduces the band.
+  0.0177 (Belenos extreme blocks), with its rule fixed before the run (commit 2efbb1e88). Verdict by that rule:
+  partial. The retained statistic 5,288 already passed the reference without the term (95 % range 1,986 to 6,914),
+  so its pass at both values discriminates nothing; the rule's supported and partial levels credit a pair that is
+  inside at sigma 0, a weakness of the rule recorded here and left unrepaired. The retained reference mean matches
+  the statistic at sigma 0.0106, the recorded Ascella scale. The band statistic 166,240 stays outside at both values
+  (ratio 3.40 at 0.011, 2.34 at 0.0177), and its reference mean matches only at sigma 0.034, 1.9 to 3.1 times the
+  recorded values. The omitted term at the recorded scale does not explain the band failure.
+- **Where the statistic sits.** 153,920 of the band Pearson (93 %) sits in 34 cells where the unweighted
+  linear-inversion fit predicts fewer than one event, mostly negative; the statistic divides those by one event, so
+  each contributes (n - E)^2. The clip concentrates any scatter there: the synthetic pairs put 97 % of their
+  statistic in such cells with no per-seed term and 90 % at sigma 0.034 (`reference_low_cell_share.py`), so the
+  concentration says nothing about the kind of error. Only 11 of those cells are below one event in both pairs. On
+  cells in the same class in both pairs, the clipped cells grow 44 times and the rest 5.9 times for 6.1 times the
+  events per rate; the two-click pattern misfit, whose 795 cells keep their class, splits the same way (56 and 5.7
+  times for 6.9 times the events). A per-seed error three times larger would grow the excess of the proper cells far
+  faster than the events, so the proper cells and the statistic's sigma match disagree, and which one reads the
+  per-seed scale is open.
 - **Scaling the retained statistic.** About 70 % of the retained statistic is acquisition scatter (its reference
   mean, 3,677), and the clip inflates that scatter too: the reference mean grows 7.9 times between the pairs for
   6.1 times the events. Scaling the whole retained statistic gives 4.5 (clipped cells by the square of the event
@@ -82,11 +85,11 @@ section), so it serves only to mark which falsifications depend on the interval 
   and 0.016 (band) about the in-sample fit, 0.028 and 0.029 about the physical projection, and 0.032 and 0.031 about
   leave-one-cell-out predictions (`implied_share_error`). The in-sample value absorbs part of what it measures and no
   center is fully out of sample, so these bracket the per-seed scale at 0.013 to 0.032 and identify none.
-- **Throughput versus shape.** The case's statistic has no exact throughput/shape split, because its clip leaves the
-  negative-expectation cells at weight E^2 in any projection. Per-setting event totals deviate from the fit's
-  totals by a median of 3.1 % (band) and 5.3 % (retained), a Pearson of 2,434 and 565 across 144 settings, small
-  beside the full statistics; the clipped-center statistic splits the same way (2,414 throughput, 26,998 shape). A
-  scalar per-setting brightness drift is minor by both measures; a mode-dependent change is not excluded.
+- **Throughput versus shape.** Split exactly along each setting's nonnegative expected vector in the statistic's
+  own weighting, throughput carries 2,396 of the band's 166,240 (1.4 %) and 564 of the retained 5,288 (10.7 %).
+  Projected on the signed expectation instead, the split reads the clip, because negative-expectation cells enter
+  at weight E^2. Per-setting event totals deviate from the fit's totals by a median of 3.1 % (band) and 5.3 %
+  (retained). A scalar per-setting brightness drift is minor; a mode-dependent change is not excluded.
 - **Guard.** `qd_platform.scatter_check_gaps`, run over every retained case by
   `tests/scripts/test_quandela_scatter_checks.py`, refuses a preregistered scatter statistic (overdispersion,
   homogeneity, goodness of fit, Pearson, deviance and kin, at any depth) on qpu:ascella or qpu:belenos unless a typed
@@ -251,7 +254,7 @@ every one of 20 null draws of permuted, sign-flipped component errors.
 | Test | Decides | Cost | Falsifier |
 |---|---|---|---|
 | Component model with output weights per job, then g2 in the pattern law (`mesh_model.py` extended), with nulls that also permute gain and crosstalk and record optimizer status | Whether the transferable content survives per-job output weights (job identity is aliased with input parity), and how much the source carries | none | Held-out Gain over the null median falls below 0.3 with per-job weights |
-| Model-check reference with a per-seed term and an output weight per mode and job | Whether a mode-dependent leak carries the band excess beyond the recorded per-seed scale | none | The band statistic stays outside the reference's central 95 % |
+| Model-check reference with a per-seed term and an output weight per mode and job | Whether per-job output weights carry the band excess beyond the recorded per-seed scale | none | The band statistic stays outside the reference's central 95 % |
 | Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV), with the realized-mesh model as the readout | F with SPAM and mesh error separated | none | The nuisance-free and nuisance fits agree within 0.005 |
 | The CZ compilation ensemble case ([design](../../design/ascella-cz-compilation-ensemble-case.md), built, not sent): ten seeds per setting and same-seed anchors in each job | Per-seed mesh variance of the gate and within-calibration repeatability, the two quantities this pair confounds | per its written case | Its homogeneity and anchor tests, as preregistered there |
 
