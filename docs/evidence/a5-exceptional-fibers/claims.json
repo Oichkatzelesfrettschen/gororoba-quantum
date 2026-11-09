@@ -791,6 +791,15 @@
      "lower_bounds": [
       {
        "N": 16,
+       "engine": "7849cbc71ccf1787",
+       "header": "4dbcb4676ca0821a",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 266,
+       "source": "vb-d6-laptop/e8vb_d5_n16_p32009.json"
+      },
+      {
+       "N": 16,
        "engine": "a197799d97287b78",
        "header": "4dbcb4676ca0821a",
        "method": "truncated rank",
