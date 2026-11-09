@@ -1,0 +1,113 @@
+{
+ "workers": 8,
+ "longdouble": {
+  "nmant": 63
+ },
+ "backends": {
+  "float64 pinv, rate-matrix evaluation": {
+   "seconds": 2.843391775008058,
+   "solve_seconds": 2.7714877359976526,
+   "max_rate_abs_error": 5.7645646075531684e-18,
+   "ZX/F_ulp64": 10.228317227381325,
+   "ZX/F_prime_ulp64": 10.294033295415202,
+   "XZ/F_ulp64": 0.25211230898028536,
+   "XZ/F_prime_ulp64": 0.47187258819530314,
+   "process_fidelity_ulp64": 3.200245314584534,
+   "ZX/F_sd_ulp64": 4.070376865382722,
+   "ZX/p2.5_ulp64": 10.761531296027732,
+   "ZX/p97.5_ulp64": 7.6570110724246545,
+   "XZ/F_sd_ulp64": 0.6512505684952437,
+   "XZ/p2.5_ulp64": 0.06301338020813604,
+   "XZ/p97.5_ulp64": 0.5928225854983029,
+   "max_score_error_ulp64": 10.761531296027732,
+   "bits_correct_on_scores": 48.57218852647452
+  },
+  "float64 QR lstsq": {
+   "seconds": 3.351427651999984,
+   "solve_seconds": 3.33631988200068,
+   "max_rate_abs_error": 7.296000176188943e-18,
+   "ZX/F_ulp64": 8.228317227381325,
+   "ZX/F_prime_ulp64": 8.294033295415202,
+   "XZ/F_ulp64": 6.747887691019715,
+   "XZ/F_prime_ulp64": 6.471872588195303,
+   "process_fidelity_ulp64": 5.200245314584534,
+   "ZX/F_sd_ulp64": 1.9296231346172774,
+   "ZX/p2.5_ulp64": 3.7615312960277327,
+   "ZX/p97.5_ulp64": 5.6570110724246545,
+   "XZ/F_sd_ulp64": 9.348749431504757,
+   "XZ/p2.5_ulp64": 3.936986619791864,
+   "XZ/p97.5_ulp64": 4.407177414501697,
+   "max_score_error_ulp64": 9.348749431504757,
+   "bits_correct_on_scores": 48.77522660929201
+  },
+  "float64 + x87 refinement": {
+   "seconds": 4.478770485002315,
+   "solve_seconds": 4.428381624005851,
+   "max_rate_abs_error": 3.076982505765976e-19,
+   "ZX/F_ulp64": 0.24775699136867557,
+   "ZX/F_prime_ulp64": 0.22696279833479685,
+   "XZ/F_ulp64": 0.07144824648028536,
+   "XZ/F_prime_ulp64": 0.06474850555469687,
+   "process_fidelity_ulp64": 0.2738757791654656,
+   "ZX/F_sd_ulp64": 1.3182950096172774,
+   "ZX/p2.5_ulp64": 0.20819526647226747,
+   "ZX/p97.5_ulp64": 0.23410220882534558,
+   "XZ/F_sd_ulp64": 0.03748103724524365,
+   "XZ/p2.5_ulp64": 0.05026786979186395,
+   "XZ/p97.5_ulp64": 0.10200163325169709,
+   "max_score_error_ulp64": 1.3182950096172774,
+   "bits_correct_on_scores": 51.601326745521504
+  },
+  "x87 80-bit Householder": {
+   "seconds": 0.6580784529942321,
+   "solve_seconds": 0.6136414569918998,
+   "max_rate_abs_error": 5.744585960377468e-21,
+   "ZX/F_ulp64": 0.0017547273813244288,
+   "ZX/F_prime_ulp64": 0.002529389165203152,
+   "XZ/F_ulp64": 0.005041996480285355,
+   "XZ/F_prime_ulp64": 0.004201630554696865,
+   "process_fidelity_ulp64": 0.0014148416654656034,
+   "ZX/F_sd_ulp64": 0.0015292091327226273,
+   "ZX/p2.5_ulp64": 0.001765671027732542,
+   "ZX/p97.5_ulp64": 0.0036907599246544243,
+   "XZ/F_sd_ulp64": 0.004511150254756353,
+   "XZ/p2.5_ulp64": 0.003931348958136051,
+   "XZ/p97.5_ulp64": 0.005420241748302909,
+   "max_score_error_ulp64": 0.005420241748302909,
+   "bits_correct_on_scores": 59.52742708597964
+  },
+  "binary128 quaddtype Householder": {
+   "seconds": 11.069909662997816,
+   "solve_seconds": 10.579319752010633,
+   "max_rate_abs_error": 2.0266717121681742e-35,
+   "ZX/F_ulp64": 9.458925440864358e-18,
+   "ZX/F_prime_ulp64": 9.895725405559421e-18,
+   "XZ/F_ulp64": 8.680726342792028e-18,
+   "XZ/F_prime_ulp64": 7.745522166445805e-18,
+   "process_fidelity_ulp64": 6.003023063498387e-19,
+   "ZX/F_sd_ulp64": 1.303241055740402e-17,
+   "ZX/p2.5_ulp64": 8.868684344821867e-18,
+   "ZX/p97.5_ulp64": 8.819590562750167e-18,
+   "XZ/F_sd_ulp64": 8.27892913149361e-19,
+   "XZ/p2.5_ulp64": 6.531618359776952e-18,
+   "XZ/p97.5_ulp64": 7.597178502808923e-18,
+   "max_score_error_ulp64": 1.303241055740402e-17,
+   "bits_correct_on_scores": 108.090673654462
+  }
+ },
+ "reference": {
+  "backend": "arb 256-bit normal equations",
+  "seconds": 2.335832954995567,
+  "solve_seconds": 2.2044977220066357,
+  "max_radius": 9.440087094259755e-73
+ },
+ "mpmath_certificate": {
+  "columns_checked": 4,
+  "dps": 80,
+  "max_gradient_norm": "7.9351e-78",
+  "max_solution_error_bound": "1.6511e-76",
+  "sigma_min": 0.21922359359558471,
+  "seconds": 3.247415642006672
+ },
+ "replicates": 500
+}
