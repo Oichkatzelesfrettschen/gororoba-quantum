@@ -107,6 +107,11 @@ Each constituent MZI consists of two 50:50 directional couplers ($R_x$ rotations
 and external ($\phi$) phase shifters:
 $$\text{MZI}(\theta, \phi) = R_x\left(\frac{\pi}{2}\right) \begin{pmatrix} e^{i\theta} & 0 \\ 0 & 1 \end{pmatrix} R_x\left(\frac{\pi}{2}\right) \begin{pmatrix} e^{i\phi} & 0 \\ 0 & 1 \end{pmatrix}$$
 
+*Universality vs. Physical Reachability Boundary*: Ideal Clements universality assumes perfectly balanced 50:50 couplers.
+On physical processors (including Ascella), fabrication deviations ($R \approx 56.7\text{--}56.8\%$) contract the reachable
+unitary subspace. Target fidelity is achieved through numerical parameter optimization to an average Haar-ensemble
+fidelity of $F = 99.7 \pm 0.08\%$ (Maring et al. 2024), rather than an unconstrained worst-case algebraic certificate.
+
 ---
 
 ## 3. Ascella Hardware Architecture Dissection
@@ -189,7 +194,7 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
 - Synchronized injection into the 6 physical input modes: **0, 2, 4, 6, 8, 10**.
 - Resulting processor master clock rate:
   $$f_{\text{clock}} = \frac{80\text{ MHz}}{6} = 13.33\text{ MHz}$$
-  matching the live `qpu:ascella` specification field `Clock (MHz): 13.33`.
+  This division accounts for the six spatial demultiplexer channels routing pulses from the 80 MHz pump train, matching the live `qpu:ascella` specification field `Clock (MHz): 13.33` (consistent model timing rather than an explicit causal derivation in the primary text).
 
 ### 3.3 12-Mode Programmable Photonic Chip
 - **Interferometer size**: 12 optical waveguide modes in a folded Clements rectangular mesh topology.
@@ -219,7 +224,7 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
 - **Detectors**: Array of 12 Superconducting Nanowire Single-Photon Detectors (SNSPDs).
   - Average detection efficiency: $92\%$.
   - Dark count rate: under $20\text{ Hz}$ at baseline; live device telemetry shows operational dark counts
-    ranging from $76$ to $281\text{ counts/s}$ (peaking up to $1428\text{--}1885\text{ counts/s}$ on mode 10).
+    ranging from $76$ to $281\text{ counts/s}$ (peaking up to $1,885\text{--}2,169\text{ counts/s}$ on mode 10 in retained telemetry records).
 - **Readout electronics**: Swabian Instruments Time Tagger (time-to-digital converter, TDC).
   - Coincidence integration window: $1\text{ ns}$ (the Supplementary specifies the TDC and the $1\text{ ns}$ coincidence window;
     the underlying hardware implementation details are not stated, making earlier 'sub-nanosecond FPGA' claims unsupported).
@@ -325,7 +330,7 @@ cloud communication:
 
 ### 4.3 Error Mitigation Suite
 Perceval provides client-side error mitigation managed via `perceval.runtime.error_mitigation.MitigationFactory`.
-Mitigations are chained in an exact canonical order defined by `MitigationFactory.MITIGATION_ORDER`:
+The factory defines a standard, recommended mitigation ordering via `MitigationFactory.MITIGATION_ORDER` (though the runtime `Computer.mitigations` accepts and preserves caller-specified orderings):
 1. `CompilationAveraging`: Transpiles the target unitary into multiple equivalent MZI mesh configurations
    (using different random transpilation seeds) and averages over hardware phase errors and directional coupler imbalances.
 2. `DistinguishablePhotonMitigation`: Expands and inverts the distinguishing mixture matrix arising from finite HOM visibility
@@ -375,29 +380,29 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *Demonstrates coherent control and non-linear optical interaction in micropillar-coupled quantum dots (see also their two-photon interference paper, Phys. Rev. B 92, 161302(R), 2015).*
 15. **Senellart, P., Solomon, G., & White, A.** (2017). "High-performance semiconductor quantum-dot single-photon sources". *Nature Nanotechnology* 12, 1026-1039. DOI: 10.1038/nnano.2017.218.
     - *Definitive review of quantum dot microcavity single-photon generation, dephasing mechanisms, and device design.*
-16. **Ollivier, H., et al.** (2020). "Reproducibility of high-indistinguishability single-photon sources". *ACS Photonics* 7, 1050-1059. DOI: 10.1021/acsphotonics.9b01805. arXiv: 1910.14589.
+16. **Ollivier, H., et al.** (2020). "Reproducibility of high-performance quantum dot single-photon sources". *ACS Photonics* 7, 1050-1059. DOI: 10.1021/acsphotonics.9b01805. arXiv: 1910.08863.
     - *Industrial reproducibility and stability study of deterministic micropillar sources feeding Quandela processors.*
 17. **Thomas, S. E., et al.** (2021). "Bright Polarized Single-Photon Source Based on a Linear Dipole". *Phys. Rev. Lett.* 126, 233601. DOI: 10.1103/PhysRevLett.126.233601.
     - *Primary reference for Ascella's optical excitation scheme (Maring et al. ref 26): near-resonant excitation assisted by longitudinal-acoustic (LA) phonons, achieving high photon purity and indistinguishability without cross-polarization filtering losses.*
 
 ### 5.4 Ascella & Belenos Platform Publications
-18. **Maring, N., et al.** (2024). "A versatile single-photon-based quantum computing platform". *Nature Photonics* 18, 603-609. DOI: 10.1038/s41566-024-01402-2. arXiv: 2306.00874 (preprint) and arXiv: 2308.14582 (cloud platform).
+18. **Maring, N., et al.** (2024). "A versatile single-photon-based quantum computing platform". *Nature Photonics* 18, 603-609. DOI: 10.1038/s41566-024-01403-4. arXiv: 2306.00874.
     - *The core peer-reviewed paper detailing Quandela's Ascella hardware architecture, cloud accessibility, 12-mode chip, and error mitigation.*
 19. **Pont, M., et al.** (2022). "Quantifying n-photon indistinguishability with a cyclic integrated interferometer". *Phys. Rev. X* 12, 031033. DOI: 10.1103/PhysRevX.12.031033. arXiv: 2201.13333.
     - *Establishes genuine multi-photon indistinguishability benchmarks for Quandela's optical processors.*
-20. **Pont, M., et al.** (2022). "High-fidelity four-photon GHZ states on a chip". arXiv: 2211.15626.
+20. **Pont, M., et al.** (2022). "High-fidelity generation of four-photon GHZ states on-chip". arXiv: 2211.15626.
     - *Source of Ascella's demultiplexer architecture: an active optical demultiplexer generating a spatial train of synchronized single photons from a high-repetition-rate single-photon source.*
 21. **Taballione, C., et al.** (2021). "A universal fully reconfigurable 12-mode quantum photonic processor". *Mater. Quantum Technol.* 1, 035002. DOI: 10.1088/2633-4356/ac12b4.
     - *The 12-mode stoichiometric silicon nitride (Si3N4 TriPlex) processor chip used in Ascella (Maring et al. ref 28; see also Taballione et al. 2022, arXiv:2203.01801, for the 20-mode scaling benchmark).*
-22. **Mezher, R., et al.** (2022). "Assessing the quality of near-term photonic quantum devices". arXiv: 2202.04735.
+22. **Mezher, R., & Mansfield, S.** (2022). "Assessing the quality of near-term photonic quantum devices". arXiv: 2202.04735.
     - *Quandela diagnostic framework assessing state preparation, circuit fidelity, and non-classicality under experimental imperfections.*
 23. **Tzitrin, I., et al.** (2021). "Fault-tolerant quantum computation with static linear optics". *PRX Quantum* 2, 040353. DOI: 10.1103/PRXQuantum.2.040353.
     - *Theoretical architecture for fault-tolerant linear optical quantum computing via continuous-variable and dual-rail cluster states.*
-24. **Barzaghi, M., et al.** (2025). "Reconfigurable 24-mode universal integrated interferometer in femtosecond-laser-written glass". arXiv: 2505.01609.
+24. **Barzaghi, M., et al.** (2025). "A low-loss, 24-mode laser-written universal photonic processor in a glass-based platform". arXiv: 2505.01609.
     - *Detailed physical and optical characterization of the Belenos 24-mode glass chip.*
-25. **Thomas, S., et al.** (2025). "Efficient estimation of multi-qubit states using classical shadows on a 24-mode photonic processor". arXiv: 2510.07240.
-    - *Hardware execution of randomized Clifford measurements and classical shadows on Quandela Belenos.*
-26. **Franco, C., et al.** (2026). "Interaction-free measurement on Ascella". arXiv: 2604.04691.
+25. **Thomas, H., Chabaud, U., & Emeriau, P.-E.** (2025). "Shedding light on classical shadows: learning photonic quantum states". arXiv: 2510.07240.
+    - *Hardware execution of randomized Clifford measurements and classical shadows on Quandela 12- and 24-mode processors.*
+26. **Franco, S., Camillini, A., & Galvão, E. F.** (2026). "Interaction-free measurement of multiple objects using a universal integrated photonic processor". *Quantum Sci. Technol.* DOI: 10.1088/2058-9565/ae8df9. arXiv: 2604.04691.
     - *Experimental execution of quantum interrogation and interaction-free measurement protocols on the cloud-accessible Ascella QPU.*
 27. **Quandela** (2026). "Technology Roadmap and Platform Scaling (2026-03)".
     - *Hardware scaling trajectories, error correction integration, and quantum networking partnerships (detailed in `docs/notes/quandela/roadmap-2026-03.md`).*
@@ -411,5 +416,5 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *Device-independent certified randomness protocols executed natively on photonic quantum processors.*
 31. **Fyrillas, A., et al.** (2025). "Resource-efficient crosstalk mitigation for the high-fidelity operation of photonic integrated circuits with induced phase shifters". arXiv: 2506.05988.
     - *Demonstrates compensation of thermal crosstalk across universal multiport interferometers by adding virtual control degrees of freedom.*
-32. **Tully, J., et al.** (2026). "Nested Walsh parity-check filters on an eight-mode photonic register". arXiv: 2606.18408.
-    - *Hardware characterization of nested Walsh parity-check filters on an eight-mode single-photon register executed on a cloud-accessible quantum processor.*
+32. **Tully, E., Washburn, J., & Simons, M.** (2026). "Characterization of nested Walsh parity-check filters in a single-photon eight-mode register on a cloud photonic processor". arXiv: 2606.18408.
+    - *Hardware characterization of nested Walsh parity-check filters on an eight-mode single-photon register executed on Quandela Belenos.*
