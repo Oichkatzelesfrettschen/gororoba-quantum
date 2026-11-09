@@ -9,10 +9,14 @@ output is deterministic (no random draw).
 The sectors:
 
 * Pearson split: the case's Pearson statistic (scripts/ascella_cz_tomography_reference_case.py ``pearson``) by
-  cells whose linear-inversion prediction is below one event, and the clipped statistic split into per-setting
-  throughput and within-setting outcome shape.
-* Gate-independent sector: CZ is diagonal, so a qubit read out in Z keeps its prepared Z population whatever the
-  gate, the photon overlap or the dephasing; outcome index is 2 * control + target.
+  cells whose linear-inversion prediction is below one event, and the clipped statistic split exactly into
+  per-setting throughput (T - C)^2 / C and within-setting shape sum (n - T p)^2 / E, with E the clipped expected
+  cells, C their sum, T the observed total and p = E / C; the cross term vanishes because sum (n - T p) = 0.
+* Z sector: CZ is diagonal, so for a two-photon event a qubit read out in Z keeps its prepared Z population whatever
+  the photon overlap. Multiphoton emission, loss, threshold postselection and dark clicks admit eligible events that
+  are not two-photon events and move those populations, so ``source_model_z`` predicts them per setting through the
+  retained noise pipeline (``forecast_setting``, record variant) at the pair's plan read and the g2-aware overlap, and
+  the residual after subtracting the prediction is the part the source model does not explain.
 * Rail ratios: inputs 00, 01 and 11 succeed with 1/9 at every overlap and 10 with (5 - 4M)/9, so r(00)/r(01) is a
   target-rail transmission ratio and r(01)/r(11) a control-rail one; D = r(10) r(01) / (r(00) r(11)) from ZZ
   readouts alone and from all nine readouts.
@@ -41,6 +45,8 @@ ROOT = Path(__file__).resolve().parents[3]
 BAND_GLOB = "2026-11-09T17*ascella_cz_tomography_reference-job-0*"
 PROFILE_DELTA = 1.92  # half the 95 % chi-squared(1) quantile: a profile-likelihood interval
 IDENTIFIED_SENSITIVITY = 0.05
+BAND_ANALYSIS = "results/quandela/ascella-cz-tomography-reference-analysis.json"
+RETAINED_VERDICTS = "results/quandela/cases/ascella_cz_tomography_reference/retained-conjecture-verdicts.json"
 G2_GRID = np.linspace(0.84, 0.98, 15)  # total variation between the M = 0 and M = 1 pattern laws of a setting
 
 
@@ -93,7 +99,7 @@ def pearson_split(data: dict[str, np.ndarray]) -> dict[str, Any]:
     total, clipped_total = n.sum(1), clipped.sum(1)
     within = clipped / clipped_total[:, None]
     throughput = (total - clipped_total) ** 2 / clipped_total
-    shape = ((n - total[:, None] * within) ** 2 / np.maximum(total[:, None] * within, 1.0)).sum(1)
+    shape = ((n - total[:, None] * within) ** 2 / clipped).sum(1)
     order = np.argsort(cells.sum(1))[::-1]
     return {
         "events": float(n.sum()),
@@ -104,6 +110,7 @@ def pearson_split(data: dict[str, np.ndarray]) -> dict[str, Any]:
         "clipped_statistic": float(((n - clipped) ** 2 / clipped).sum()),
         "clipped_throughput_part": float(throughput.sum()),
         "clipped_shape_part": float(shape.sum()),
+        "clipped_identity_gap": float(((n - clipped) ** 2 / clipped).sum() - throughput.sum() - shape.sum()),
         "top_settings": [
             {"setting": ROWS[s]["name"], "pearson": float(cells[s].sum()), "share": float(cells[s].sum() / cells.sum())}
             for s in order[:5]
@@ -141,6 +148,85 @@ def gate_independent(data: dict[str, np.ndarray]) -> dict[str, Any]:
         "bit_flip_max": float(max(abs(e["deviation"]) for e in eigen)),
         "equator_bias_by_state": {k: {"mean": float(np.mean(v)), "sd": float(np.std(v))} for k, v in groups.items()},
     }
+
+
+def z_populations(n: np.ndarray) -> list[dict[str, Any]]:
+    """The Z-readout entries of a (144, 4) table of eligible outcome weights, in schedule order."""
+    entries = []
+    for s, r in enumerate(ROWS):
+        for q in (0, 1):
+            if r["basis"][q] != "Z":
+                continue
+            prepared = r["input"][q]
+            target = {"0": 1.0, "1": 0.0}.get(prepared, 0.5)
+            zero = n[s][[0, 1]].sum() if q == 0 else n[s][[0, 2]].sum()
+            entries.append({"setting": r["name"], "prepared": prepared, "deviation": float(zero / n[s].sum() - target)})
+    return entries
+
+
+def source_model_z(data: dict[str, np.ndarray], perfs: dict[str, Any], overlap: float) -> dict[str, Any]:
+    """The Z-sector deviations the retained noise pipeline predicts per setting (record variant: Perceval source at
+    the plan read's g2, transmittance and dark counts, at ``overlap``), their correlation with the measured ones, and
+    the measured-minus-predicted residuals."""
+    figures = {**TOMO.perf_figures(perfs), "hom": overlap}
+    dark = [float(rate) for rate in perfs["Dark counts (detection/s)"]]
+    predicted = np.array(
+        [
+            TOMO.forecast_setting((r, figures, dark))[CASE.FORECAST_RECORD_VARIANT]["eligible_probabilities"]
+            for r in ROWS
+        ]
+    )
+    model = z_populations(predicted)
+    measured = z_populations(data["eligible"])
+    out: dict[str, Any] = {"overlap": overlap}
+    for kind, keep in (("bit_flip", "01"), ("equator_bias", "+i")):
+        x = np.array([e["deviation"] for e in measured if e["prepared"] in keep])
+        y = np.array([e["deviation"] for e in model if e["prepared"] in keep])
+        out[kind] = {
+            "pearson_r_measured_predicted": float(np.corrcoef(x, y)[0, 1]),
+            "mean_abs_measured": float(np.abs(x).mean()),
+            "mean_abs_predicted": float(np.abs(y).mean()),
+            "mean_abs_residual": float(np.abs(x - y).mean()),
+            "residual": [float(v) for v in x - y],
+        }
+    return out
+
+
+def model_check_forecast(band: dict[str, Any], retained: dict[str, Any], split: dict[str, Any]) -> dict[str, Any]:
+    """The band pair's model-check ratio forecast from the retained pair at a fixed relative error per cell. A cell
+    whose expected count is at least one contributes N delta^2 / p, linear in the events N; a cell whose expectation
+    the statistic clips to one event contributes (n - E)^2, quadratic in N. The linear forecast scales the retained
+    excess over its reference mean by the event ratio; the split forecast scales the retained clipped cells by its
+    square and the rest by the ratio, over the band reference mean."""
+    scale = band["mean_events_per_rate"] / retained["mean_events_per_rate"]
+    reference = band["reference_mean"]
+    excess = retained["pearson"] - retained["reference_mean"]
+    low = split["pearson_in_those_cells"]
+    return {
+        "event_scale": scale,
+        "linear_forecast_ratio": (reference + scale * excess) / reference,
+        "split_forecast_ratio": (scale**2 * low + scale * (split["pearson"] - low)) / reference,
+        "observed_ratio": band["ratio"],
+    }
+
+
+def implied_share_error(data: dict[str, np.ndarray]) -> dict[str, Any]:
+    """The RMS per-setting error of an eligible-outcome share beyond binomial, in the units of the qpu:belenos
+    per-seed share spread (strategy.md section 7): sqrt(mean over cells of (f - q)^2 - q (1 - q) / N), with f the
+    measured conditional share, q the clipped linear-inversion prediction and N the setting's eligible events."""
+    n, shots, scale = data["eligible"], data["shots"], data["scale"]
+    rates = TOMO.absolute_rates(n, shots, scale)
+    predicted = np.clip((TOMO.design_matrix() @ (TOMO.design_pseudoinverse() @ rates)).reshape(n.shape), 0.0, None)
+    q = predicted / predicted.sum(1, keepdims=True)
+    total = n.sum(1, keepdims=True)
+    f = n / total
+    excess = float(np.mean((f - q) ** 2 - q * (1 - q) / total))
+    by_class = {}
+    for name, (lo, hi) in {"extreme": (0.0, 0.15), "middle": (0.15, 0.85), "upper": (0.85, 1.01)}.items():
+        mask = (q >= lo) & (q < hi)
+        value = float(np.mean(((f - q) ** 2 - q * (1 - q) / total)[mask]))
+        by_class[name] = {"cells": int(mask.sum()), "rms": float(np.sqrt(max(value, 0.0)))}
+    return {"rms": float(np.sqrt(max(excess, 0.0))), "by_predicted_share": by_class}
 
 
 def rail_ratios(data: dict[str, np.ndarray]) -> dict[str, Any]:
@@ -221,7 +307,10 @@ def two_click_patterns(laws: tuple[np.ndarray, np.ndarray], runs: list[str]) -> 
         return negative_log_likelihood(counts, pattern_law(laws, overlap, np.concatenate([[1.0], np.exp(x[1:])])))
 
     fit = minimize(objective, np.zeros(TOMO.WINDOW), method="Nelder-Mead", options={"maxiter": 20000})
-    fit = minimize(objective, fit.x, method="BFGS")
+    refined = minimize(objective, fit.x, method="BFGS")
+    status = {"nelder_mead": bool(fit.success), "bfgs": bool(refined.success), "bfgs_message": str(refined.message)}
+    if refined.fun <= fit.fun:
+        fit = refined
     overlap = float(1.0 / (1.0 + np.exp(-fit.x[0])))
     efficiency = np.concatenate([[1.0], np.exp(fit.x[1:])])
     grid = np.linspace(0.5, 0.9999, 4000)
@@ -241,10 +330,12 @@ def two_click_patterns(laws: tuple[np.ndarray, np.ndarray], runs: list[str]) -> 
         "window_two_click_events": float(counts.sum()),
         "two_clicks_outside_window": int(outside),
         "eligible_share_of_window_two_clicks": float(counts[:, rails].sum() / counts.sum()),
+        "optimizer": status,
         "overlap": overlap,
         "overlap_profile_interval": [float(inside.min()), float(inside.max())],
         "efficiency_relative_to_C0": [float(e) for e in efficiency],
         "misfit_pearson": float(((counts - expected) ** 2 / np.maximum(expected, 1.0)).sum()),
+        "misfit_pearson_below_one_expected": float(((counts - expected) ** 2)[expected < 1.0].sum()),
         "misfit_degrees_of_freedom": int(counts.size - len(ROWS) - TOMO.WINDOW),
         "per_setting_overlap": per_setting,
     }
@@ -254,20 +345,22 @@ def g2_pattern_overlap(
     runs: list[str], perfs: dict[str, Any], efficiency: list[float], grid: np.ndarray
 ) -> dict[str, Any]:
     """The two-click pattern overlap under Perceval's source model (``photon_distribution``: distinguishable noise
-    photons at the plan read's g2) through threshold detection at the plan read's transmittance
-    (``detected_clicks``), so three-photon events that lose a photon enter the two-click patterns. The relative
-    efficiencies of the g2-free fit stay fixed; the overlap is the vertex of a parabola through the grid minimum and
-    its neighbors."""
+    photons at the plan read's g2) through threshold detection at the plan read's transmittance and per-mode dark
+    click probabilities (``detected_clicks``), so three-photon events that lose a photon enter the two-click
+    patterns. The relative efficiencies of the g2-free fit stay fixed; the overlap is the vertex of a parabola through
+    the grid minimum and its neighbors."""
     counts, _ = pattern_counts(runs)
     g2 = float(perfs["g2 (%)"]) / 100.0
     transmittance = float(perfs["Transmittance (%)"]) / 100.0
+    clock = float(perfs["Clock (MHz)"]) * 1e6
+    dark = [float(rate) / clock for rate in perfs["Dark counts (detection/s)"]]
     weight = np.array([efficiency[i] * efficiency[j] for i, j in PAIRS])
     profile = []
     for overlap in grid:
         law = np.zeros((len(ROWS), len(PAIRS)))
         for s, r in enumerate(ROWS):
             photons = TOMO.photon_distribution(TOMO.setting_unitary(r), float(overlap), g2)
-            for key, p in TOMO.detected_clicks(photons, transmittance, [0.0] * TOMO.MODES).items():
+            for key, p in TOMO.detected_clicks(photons, transmittance, dark).items():
                 on = [k for k, v in enumerate(key) if v]
                 if len(on) == 2 and max(on) < TOMO.WINDOW:
                     law[s, PAIRS.index((on[0], on[1]))] += p
@@ -276,6 +369,14 @@ def g2_pattern_overlap(
     k = min(max(int(np.argmin(profile)), 1), len(grid) - 2)
     a, b, _ = np.polyfit(grid[k - 1 : k + 2], profile[k - 1 : k + 2], 2)
     return {"g2": g2, "transmittance": transmittance, "overlap": float(-b / (2 * a)), "grid": [float(m) for m in grid]}
+
+
+def seeds_by_setting(runs: list[str]) -> dict[str, int]:
+    out: dict[str, int] = {}
+    for run in runs:
+        for setting in RECORDS.read_run(ROOT / run).manifest["settings"]:
+            out[setting["name"]] = int(setting["compilation_seed"])
+    return out
 
 
 def efficiency_corrected_fidelity(data: dict[str, np.ndarray], efficiency: list[float]) -> float:
@@ -304,11 +405,31 @@ def cross_run(found: dict[str, dict[str, Any]], laws: tuple[np.ndarray, np.ndarr
     }
     ma, mb = found["retained"]["two_click_patterns"], found["band"]["two_click_patterns"]
     events = mb["window_two_click_events"] / ma["window_two_click_events"]
+
+    def parts(m: dict[str, Any]) -> tuple[float, float]:
+        low = m["misfit_pearson_below_one_expected"]
+        return low, m["misfit_pearson"] - low
+
+    (la, ha), (lb, hb) = parts(ma), parts(mb)
     out["pattern_misfit_growth"] = {
         "event_ratio": events,
         "misfit_ratio": mb["misfit_pearson"] / ma["misfit_pearson"],
-        "event_ratio_squared": events**2,
+        "below_one_expected_ratio": lb / la,
+        "at_least_one_expected_ratio": hb / ha,
     }
+    pa_, pb_ = found["retained"]["pearson_split"], found["band"]["pearson_split"]
+    out["tomography_pearson_growth"] = {
+        "below_one_expected_ratio": pb_["pearson_in_those_cells"] / pa_["pearson_in_those_cells"],
+        "at_least_one_expected_ratio": (pb_["pearson"] - pb_["pearson_in_those_cells"])
+        / (pa_["pearson"] - pa_["pearson_in_those_cells"]),
+    }
+    ra, rb = found["retained"]["source_model_z"]["bit_flip"], found["band"]["source_model_z"]["bit_flip"]
+    out["bit_flip_after_source_model"] = {
+        "pearson_r": float(np.corrcoef(ra["residual"], rb["residual"])[0, 1]),
+        "spearman_r": float(spearmanr(ra["residual"], rb["residual"])[0]),
+    }
+    sa, sb = found["retained"]["compilation_seeds"], found["band"]["compilation_seeds"]
+    out["shared_compilation_seeds"] = sum(sa[name] == sb[name] for name in sa)
     return out
 
 
@@ -331,7 +452,15 @@ def main(argv: list[str]) -> int:
             "efficiency_corrected_process_fidelity": efficiency_corrected_fidelity(
                 data, patterns["efficiency_relative_to_C0"]
             ),
+            "source_model_z": source_model_z(data, perfs, patterns["g2_aware"]["overlap"]),
+            "implied_share_error": implied_share_error(data),
+            "compilation_seeds": seeds_by_setting(spec["runs"]),
         }
+    found["model_check_forecast"] = model_check_forecast(
+        json.loads((ROOT / BAND_ANALYSIS).read_text(encoding="utf-8"))["overlap_estimates"]["overdispersion"],
+        json.loads((ROOT / RETAINED_VERDICTS).read_text(encoding="utf-8"))["overlap_estimates"]["overdispersion"],
+        found["retained"]["pearson_split"],
+    )
     found["cross_run"] = cross_run(found, laws)
     Path(argv[0]).write_text(json.dumps(found, indent=1, allow_nan=False) + "\n", encoding="utf-8")
     return 0
