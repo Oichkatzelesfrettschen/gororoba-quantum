@@ -13,7 +13,9 @@ tests replace, so a test's own pools never multiply the outer allocation.
 
 from __future__ import annotations
 
+import importlib.util
 import os
+import platform
 import sys
 from collections.abc import Callable, Generator, Sequence
 from concurrent.futures import ProcessPoolExecutor
@@ -29,9 +31,35 @@ sys.path.insert(2, str(ROOT / "scripts"))
 
 import parallel  # noqa: E402
 
+PLATFORM = f"{sys.platform}-{platform.machine()}"
+
+
+def _platform_expectations() -> dict[str, tuple[frozenset[str], str]]:
+    """EXPECTED of tests/platform_expectations.py, loaded by path: --import-mode=importlib keeps tests/ off sys.path."""
+    spec = importlib.util.spec_from_file_location(
+        "platform_expectations", Path(__file__).with_name("platform_expectations.py")
+    )
+    if spec is None or spec.loader is None:
+        raise ImportError("tests/platform_expectations.py has no loader")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    expected: dict[str, tuple[frozenset[str], str]] = module.EXPECTED
+    return expected
+
+
+EXPECTED = _platform_expectations()
+
 
 def pytest_xdist_auto_num_workers(config: pytest.Config) -> int:
     return parallel.workers()
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Mark each test tests/platform_expectations.py lists for this platform as a strict expected failure."""
+    for item in items:
+        expected = EXPECTED.get(item.nodeid)
+        if expected is not None and PLATFORM in expected[0]:
+            item.add_marker(pytest.mark.xfail(strict=True, reason=f"{PLATFORM}: {expected[1]}"))
 
 
 def pytest_configure(config: pytest.Config) -> None:
