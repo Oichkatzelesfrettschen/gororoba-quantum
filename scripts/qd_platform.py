@@ -925,6 +925,68 @@ def hom_warning(platform: str, perfs: dict[str, Any], photons: int, case: str) -
     )
 
 
+# strategy.md section 7, "Per-seed mesh variance of a share", rule 1: the service compiles every iteration of a QPU job
+# to its own mesh, whose observable moves far beyond binomial error between seeds, so a preregistered scatter check
+# that draws its reference from the acquisition law alone fails by construction once the counts resolve that
+# variance. A preregistered entry whose key names a scatter statistic (SCATTER_CHECK_WORDS, at any nesting depth) and
+# whose value defines it (a mapping or a statement) carries a typed MESH_VARIANCE_KEY mapping, in the entry or at the
+# top of the preregistration, of one MESH_VARIANCE_KINDS kind with the fields that kind requires: replicate seeds
+# with their count per setting and the degrees of freedom of the between-seed variance, same-seed anchors with their
+# count and repeats, or a non-decisional check whose ``gates`` list is empty, so it conditions no verdict.
+PER_ITERATION_COMPILED = ("qpu:ascella", "qpu:belenos")
+SCATTER_CHECK_WORDS = (
+    "overdispersion",
+    "model_check",
+    "scatter",
+    "homogeneity",
+    "goodness_of_fit",
+    "chi_square",
+    "pearson",
+    "deviance",
+)
+MESH_VARIANCE_KEY = "mesh_variance"
+MESH_VARIANCE_KINDS = {
+    "replicate_seeds": {"seeds_per_setting": 2, "degrees_of_freedom": 1},
+    "anchors": {"anchors": 1, "repeats_per_anchor": 2},
+    "non_decisional": {},
+}
+
+
+def mesh_variance_valid(term: Any) -> bool:
+    """True when ``term`` is a typed mesh-variance mapping: a MESH_VARIANCE_KINDS kind whose integer fields reach their
+    minimum, and for a non-decisional check an empty ``gates`` list."""
+    if not isinstance(term, dict) or term.get("kind") not in MESH_VARIANCE_KINDS:
+        return False
+    for field, least in MESH_VARIANCE_KINDS[term["kind"]].items():
+        value = term.get(field)
+        if isinstance(value, bool) or not isinstance(value, int) or value < least:
+            return False
+    return term["kind"] != "non_decisional" or term.get("gates") == []
+
+
+def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: dict[str, Any]) -> list[str]:
+    """The paths of the preregistered scatter checks of a case on a per-iteration-compiled platform that carry no valid
+    typed mesh-variance term (mesh_variance_valid), in the check's own mapping or at the preregistration's top."""
+    if not set(platforms) & set(PER_ITERATION_COMPILED):
+        return []
+    case_term = mesh_variance_valid(preregistered.get(MESH_VARIANCE_KEY))
+    gaps: list[str] = []
+
+    def walk(entries: dict[str, Any], prefix: str) -> None:
+        for key, value in entries.items():
+            path = f"{prefix}{key}"
+            named = key != MESH_VARIANCE_KEY and any(word in key.lower() for word in SCATTER_CHECK_WORDS)
+            if named and isinstance(value, dict | str):
+                own = isinstance(value, dict) and mesh_variance_valid(value.get(MESH_VARIANCE_KEY))
+                if not (own or case_term):
+                    gaps.append(path)
+            if isinstance(value, dict):
+                walk(value, f"{path}/")
+
+    walk(preregistered, "")
+    return gaps
+
+
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str) -> None:
     """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
     import qd_belenos_mesh as mesh
