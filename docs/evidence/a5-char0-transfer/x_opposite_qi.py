@@ -1,0 +1,162 @@
+"""The opposite-sign X fiber cones over Q(i): F(I) = Q(i)[y1, y2, y3] for X+ -> N- and X- -> N+.
+
+The modular certificate (`../a5-exceptional-fibers/arcs-x/README.md`) rests on four polynomial identities, each
+replayed here exactly over Q(i) on the J and G of the Q(i) producer (`reduction_check._run`, the producer whose good
+reduction A5-247 checks):
+
+1. Phi(w, rho, sig, s1), with m = 1 + w, t1 = s1, t4 = (m rho + sig)/2, t5 = (m rho - sig)/2, t6 = (m sig + rho)/2,
+   t7 = (rho - m sig)/2, t9 = s9 * t9xp, t9xp = -w^2/(2m), t2 = w (2 + w)/(2m) (s1 - t9xp + 2), lies on V(J): every
+   generator of J vanishes identically on Phi.
+2. The Jacobian of J at the origin has rank 3, so three generators of J cut out a smooth germ X' of dimension 4 that
+   contains the germ of V(J); the 7 x 4 Jacobian of Phi at the origin has rank 4, so Phi(germ) is all of X', J vanishes
+   on X' and J equals the ideal of X' near the origin: Phi is an isomorphism of formal germs onto the germ of V(J).
+3. h = gcd of the numerators of G_j(Phi) is w times a polynomial with nonzero constant term, and the denominators are
+   powers of 2m, so I = w * (G'') near the origin with G''_j = G_j(Phi) / h.
+4. G''_j vanish at the origin and their linear parts have rank 3 in (w, rho, sig, s1), so (G'') is the ideal of a
+   smooth curve germ, I^d / m I^d is the degree-d part of a polynomial ring in three variables and
+   F(I) = k[y1, y2, y3] in every degree.
+
+Control: replacing s9 by -s9 must break identity 1. Writes x-opposite-qi.json beside this file. Run from the
+repository root: "$PYTHON" docs/evidence/a5-char0-transfer/x_opposite_qi.py
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+from typing import Any
+
+import sympy
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+import reduction_check as rc  # noqa: E402
+
+SIGN9 = {"xp-nm": 1, "xm-np": -1}
+NAMES = ("t1", "t2", "t4", "t5", "t6", "t7", "t9")
+w, rho, sig, s1 = sympy.symbols("w rho sig s1")
+PARAMS = (w, rho, sig, s1)
+
+
+def _phi(s9: int) -> dict[str, sympy.Expr]:
+    m = 1 + w
+    t9xp = -(w**2) / (2 * m)
+    return {
+        "t1": s1,
+        "t2": w * (2 + w) / (2 * m) * (s1 - t9xp + 2),
+        "t4": (m * rho + sig) / 2,
+        "t5": (m * rho - sig) / 2,
+        "t6": (m * sig + rho) / 2,
+        "t7": (rho - m * sig) / 2,
+        "t9": s9 * t9xp,
+    }
+
+
+IMAGES = {
+    "t1": "s1",
+    "t2": "w*(2+w)*u/2*(s1-({t9xp})+2)",
+    "t4": "((1+w)*rho+sig)/2",
+    "t5": "((1+w)*rho-sig)/2",
+    "t6": "((1+w)*sig+rho)/2",
+    "t7": "(rho-(1+w)*sig)/2",
+    "t9": "({s9})*({t9xp})",
+}
+T9XP = "-w^2*u/2"
+
+
+def _images(variables: list[str], s9: int) -> str:
+    return ",".join(IMAGES.get(v, "0").format(t9xp=T9XP, s9=s9) for v in variables)
+
+
+def _singular(slug: str) -> str:
+    """Substitute Phi with u = 1/(1 + w), test J(Phi) in (u (1 + w) - 1), clear u from G(Phi) and take the gcd."""
+    body = rc._script(slug, None, rc.rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
+    return (
+        body
+        + "\n".join(
+            (
+                "def R0=basering;",
+                '"RESULT j_jacobian_rank",rank(jet(jacob(ReducedJ),0));',
+                "ring S=(0,I),(w,rho,sig,s1,u),dp;minpoly=I2+1;",
+                "ideal U=std(u*(1+w)-1);",
+                "@@",
+                "ideal FJ=phi(ReducedJ);ideal FC=phic(ReducedJ);ideal FG=phi(ReducedG);",
+                '"RESULT j_nonzero",size(reduce(FJ,U));"RESULT control_nonzero",size(reduce(FC,U));',
+                "int j;int i;int k;matrix co;poly N;ideal NG;",
+                "for(j=1;j<=ncols(FG);j++){co=coeffs(FG[j],u);k=nrows(co)-1;N=0;",
+                "for(i=1;i<=nrows(co);i++){N=N+co[i,1]*(1+w)^(k-i+1);}NG[j]=N;}",
+                "poly H=NG[1];for(j=2;j<=ncols(NG);j++){H=gcd(H,NG[j]);}",
+                '"RESULT h",H;"RESULT h_divisible_by_w",reduce(H,std(ideal(w)))==0;',
+                'poly Hw=H/w;"RESULT h_over_w_constant",jet(Hw,0);',
+                "list dv;int exact=1;int vanish=1;ideal Lin;",
+                "for(j=1;j<=ncols(NG);j++){dv=division(NG[j],H);if(dv[2][1]!=0){exact=0;}",
+                "if(jet(dv[1][1,1],0)!=0){vanish=0;}Lin[j]=jet(dv[1][1,1],1)-jet(dv[1][1,1],0);",
+                '"RESULT linear_"+string(j),Lin[j];}',
+                '"RESULT quotients_exact",exact;"RESULT quotients_vanish",vanish;',
+                'matrix LM=coeffs(Lin,ideal(w,rho,sig,s1));"RESULT linear_rank",rank(LM);',
+                "quit;",
+            )
+        )
+        + "\n"
+    )
+
+
+def certify(slug: str) -> dict[str, Any]:
+    probe = rc.rees._run_singular(
+        rc._script(slug, None, rc.rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
+        + '"RESULT vs",varstr(basering);\nquit;\n',
+        "x_opposite_vars",
+        rc.TIMEOUT_SECONDS,
+    )
+    variables = probe.results["vs"].split(",")
+    s9 = SIGN9[slug]
+    maps = f"map phi=R0,{_images(variables, s9)};map phic=R0,{_images(variables, -s9)};"
+    outcome = rc.rees._run_singular(_singular(slug).replace("@@", maps), "x_opposite_qi", 4 * rc.TIMEOUT_SECONDS)
+    if outcome.status != "completed":
+        raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")
+    res = outcome.results
+    phi = _phi(s9)
+    origin = dict.fromkeys(PARAMS, 0)
+    jacobian = sympy.Matrix([[sympy.diff(phi[n], p) for p in PARAMS] for n in NAMES]).subs(origin)
+    linear = sorted(k for k in res if k.startswith("linear_") and k != "linear_rank")
+    return {
+        "slug": slug,
+        "ring_variables": variables,
+        "phi_on_v_j_nonzero_numerators": int(res["j_nonzero"]),
+        "control_sign_flip_nonzero_numerators": int(res["control_nonzero"]),
+        "phi_jacobian_rank_at_origin": int(jacobian.rank()),
+        "j_jacobian_rank_at_origin": int(res["j_jacobian_rank"]),
+        "h": res["h"],
+        "h_divisible_by_w": res["h_divisible_by_w"] == "1",
+        "h_over_w_constant_term": res["h_over_w_constant"],
+        "quotients_exact": res["quotients_exact"] == "1",
+        "quotients_vanish_at_origin": res["quotients_vanish"] == "1",
+        "linear_parts": [res[k] for k in linear],
+        "linear_rank": int(res["linear_rank"]),
+        "wall_seconds": round(outcome.wall_nanoseconds / 1e9, 1),
+    }
+
+
+def main() -> None:
+    rows = [certify(slug) for slug in SIGN9]
+    holds = all(
+        r["phi_on_v_j_nonzero_numerators"] == 0
+        and r["control_sign_flip_nonzero_numerators"] > 0
+        and r["phi_jacobian_rank_at_origin"] == 4
+        and r["j_jacobian_rank_at_origin"] == 3
+        and r["h_divisible_by_w"]
+        and r["h_over_w_constant_term"] != "0"
+        and r["quotients_exact"]
+        and r["quotients_vanish_at_origin"]
+        and r["linear_rank"] == 3
+        for r in rows
+    )
+    result = {"field": "Q(i)", "rows": rows, "verdict": "F(I) = Q(i)[y1,y2,y3]" if holds else "not certified"}
+    (HERE / "x-opposite-qi.json").write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+    print(json.dumps(result, indent=1))
+
+
+if __name__ == "__main__":
+    main()

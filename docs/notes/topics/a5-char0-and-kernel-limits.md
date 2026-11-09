@@ -65,7 +65,7 @@ remain.
 2. **The ten blocked rows over Q(i):** check 1 ran on 2026-11-09 and survives on all ten pairs at both primes
    ([`evidence/a5-char0-transfer/`](../../evidence/a5-char0-transfer/README.md), ledger A5-247): J has an
    integer reduced standard basis over Q(i) whose reduction equals the F_p basis, G matches, and a corrupted
-   coefficient breaks the equality. Checks 2 and 3 are next. Conjecture for check 2: the degree-2 relation space
+   coefficient breaks the equality. Check 3 survives for X- -> N- at N = 4, 8 and 11 (A5-249; `truncation_check.py`), and check 2 is running on that pair (A5-248, `quadric_lift.py`). The opposite-sign X incidences need neither check: their arc certificate replays exactly over Q(i) and gives F(I) = Q(i)[y1, y2, y3] in every degree (A5-270, `x_opposite_qi.py`), the first all-degree fiber statement in characteristic 0 on the fiber track. Conjecture for check 2: the degree-2 relation space
    {q : q(G) in J + m I^2} over Q(i) has the dimension of K2 mod p and reduces onto it at both primes; the
    cheapest instance is X- -> N-, falsified by a dimension or a reduced basis that differs.
 3. **The fiber-track open cells:** E8-bar -> N+- degree 6, the VB degree-3 component (A5-016), and the all-degree

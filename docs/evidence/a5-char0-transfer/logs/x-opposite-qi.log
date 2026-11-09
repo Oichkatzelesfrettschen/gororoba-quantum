@@ -1,0 +1,66 @@
+{
+ "field": "Q(i)",
+ "rows": [
+  {
+   "slug": "xp-nm",
+   "ring_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "phi_on_v_j_nonzero_numerators": 0,
+   "control_sign_flip_nonzero_numerators": 11,
+   "phi_jacobian_rank_at_origin": 4,
+   "j_jacobian_rank_at_origin": 3,
+   "h": "-2*w^6*rho*sig*s1-2*w^6*rho*sig-12*w^5*rho*sig*s1+w^6*s1^2+2*w^5*s1^3-12*w^5*rho*sig+2*w^6*s1-30*w^4*rho*sig*s1+12*w^5*s1^2+10*w^4*s1^3+w^6-30*w^4*rho*sig+20*w^5*s1-40*w^3*rho*sig*s1+42*w^4*s1^2+20*w^3*s1^3+10*w^5-40*w^3*rho*sig+64*w^4*s1-28*w^2*rho*sig*s1+68*w^3*s1^2+20*w^2*s1^3+32*w^4-28*w^2*rho*sig+96*w^3*s1-8*w*rho*sig*s1+60*w^2*s1^2+8*w*s1^3+48*w^3-8*w*rho*sig+80*w^2*s1+24*w*s1^2+40*w^2+32*w*s1+16*w",
+   "h_divisible_by_w": true,
+   "h_over_w_constant_term": "16",
+   "quotients_exact": true,
+   "quotients_vanish_at_origin": true,
+   "linear_parts": [
+    "(-I)*w",
+    "-1/2*rho-1/2*sig",
+    "-1/2*rho+1/2*sig"
+   ],
+   "linear_rank": 3,
+   "wall_seconds": 3.9
+  },
+  {
+   "slug": "xm-np",
+   "ring_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "phi_on_v_j_nonzero_numerators": 0,
+   "control_sign_flip_nonzero_numerators": 11,
+   "phi_jacobian_rank_at_origin": 4,
+   "j_jacobian_rank_at_origin": 3,
+   "h": "-2*w^6*rho*sig*s1-2*w^6*rho*sig-12*w^5*rho*sig*s1+w^6*s1^2+2*w^5*s1^3-12*w^5*rho*sig+2*w^6*s1-30*w^4*rho*sig*s1+12*w^5*s1^2+10*w^4*s1^3+w^6-30*w^4*rho*sig+20*w^5*s1-40*w^3*rho*sig*s1+42*w^4*s1^2+20*w^3*s1^3+10*w^5-40*w^3*rho*sig+64*w^4*s1-28*w^2*rho*sig*s1+68*w^3*s1^2+20*w^2*s1^3+32*w^4-28*w^2*rho*sig+96*w^3*s1-8*w*rho*sig*s1+60*w^2*s1^2+8*w*s1^3+48*w^3-8*w*rho*sig+80*w^2*s1+24*w*s1^2+40*w^2+32*w*s1+16*w",
+   "h_divisible_by_w": true,
+   "h_over_w_constant_term": "16",
+   "quotients_exact": true,
+   "quotients_vanish_at_origin": true,
+   "linear_parts": [
+    "(-I)*w",
+    "1/2*rho+1/2*sig",
+    "1/2*rho-1/2*sig"
+   ],
+   "linear_rank": 3,
+   "wall_seconds": 3.9
+  }
+ ],
+ "verdict": "F(I) = Q(i)[y1,y2,y3]"
+}

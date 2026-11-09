@@ -42,5 +42,21 @@ scope.
 Run from the repository root: `"$PYTHON" docs/evidence/a5-char0-transfer/reduction_check.py --slug xm-nm` (slugs as
 in `fiber_inputs.SPECS`).
 
-Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber_inputs` slug `e8-vb`), checks 2 and 3,
-and the radicality and decomposition steps of the W8 all-degree proof over Q(i).
+Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber_inputs` slug `e8-vb`) and the radicality and decomposition steps of the W8 all-degree proof over Q(i).
+
+## Checks 2 and 3, and the opposite-sign X fibers over Q(i)
+
+- [`truncation_check.py`](truncation_check.py) (check 3): the monic reduced standard basis of J + m^N over Q(i), m the
+  ideal of the seven slice variables (the producer's ring still carries the presolve-eliminated t3 and t8), against the
+  same basis from the retained header at both primes. X- -> N- survives at N = 4, 8 and 11, the closing orders of
+  degrees 1 to 3: 91, 366 and 775 elements, integer coefficients, equal at both primes, a corrupted coefficient
+  detected (`truncation-xm-nm-n<N>.json`; ledger A5-249). A first revision took m from the producer ring and read
+  refuted on a basis of 2,566 elements against 366; its records were overwritten by the fixed run.
+- [`quadric_lift.py`](quadric_lift.py) (check 2): the degree-2 relations {q : q(G) in J + m I^2} over Q(i) by the
+  computation of the modular degree-2 receipts (`working/distribute/out/*/d2/d2-products.sing`), compared with the
+  retained K2 at both primes (ledger A5-248, running).
+- [`x_opposite_qi.py`](x_opposite_qi.py): the arc certificate of X+ -> N- and X- -> N+ (`../a5-exceptional-fibers/arcs-x/`)
+  replayed exactly over Q(i) in Singular: J smooth of dimension 4 at the origin, Phi on V(J) and a formal isomorphism,
+  I = w (G'') with (G'') a smooth curve germ, so F(I) = Q(i)[y1, y2, y3] in every degree
+  ([`x-opposite-qi.json`](x-opposite-qi.json); ledger A5-270). The first revision computed the gcd in sympy over
+  Q(i) and stopped at its 20-minute limit; Singular takes 4 s per incidence.
