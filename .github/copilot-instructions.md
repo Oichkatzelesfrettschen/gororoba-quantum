@@ -9,13 +9,15 @@ claim to test, not a fact to summarize.
   repository: callers, tests, gates, ledgers, registry rows and the documents that cite it. Report a defect outside
   the diff when the change exposes it.
 - Check every statement of the pull-request body against the source: each command it says ran, each check it says
-  passes, each number. A validation step that no workflow runs on pull requests is a finding unless the body marks
-  it `not run` with the reason.
+  passes, each number. Hold apart the hosted `pr.yml` checks and the checks the author reports running locally
+  (on-demand replays and digest gates run only that way); a reported local run needs its command and result, and a
+  skipped check needs `not run` with the reason.
 - Mathematics and proofs: confirm that the theorem proved is the one stated (quantifiers, hypotheses, the edge cases
   zero, identity, first and last index), that no `Admitted`, `admit` or new axiom enters, and that each claim's
   status (proved, computed, measured, hypothesis) matches its evidence.
-- Evidence: a file whose sha256 appears elsewhere in the tree keeps its bytes; raw records are never rewritten; every
-  new random seed cites a QRNG draw file and index.
+- Evidence: raw records, approval-hashed records, published replay bundles and pinned producers keep their bytes;
+  a derived analysis record that a ledger or digest binds is corrected in place in the change that refreshes that
+  binding; every new random seed cites a QRNG draw file and index.
 - Code: hunt unchecked exit statuses, silent fallbacks, off-by-one ranges, unit errors, warnings, tests that cannot
   fail and serial loops over independent items.
 - Connections: when the change explains, duplicates or contradicts a result elsewhere in the repository or an open
