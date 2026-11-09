@@ -1,0 +1,4 @@
+RESULT c30-control-emq-p32029 on control: generators of G with a term of degree below 2 (0 required): 0; generators with a nonzero degree-2 part: 21
+RESULT c30-control-emq-p32029 on control: rank of [G_2(u) | dG_2/du] over the exceptional quadric (6: a 5-dimensional image): 6
+RESULT c30-control-emq-p32029 on control: K2 generators nonzero at G_2(u): 0 of 144 (0 required); Lambda forms nonzero: 0 of 9 (0 for C20)
+exit 0

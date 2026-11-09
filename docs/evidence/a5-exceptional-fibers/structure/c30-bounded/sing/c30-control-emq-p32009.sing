@@ -1,0 +1,39 @@
+// c30-control-emq-p32009: on control: the point blowup family, limits [G_2(u)] over the exceptional quadric, prime 32009
+// header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing (sha256 585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760); values: docs/evidence/anu_qrng/draw-2026-11-08T182935Z.json, keys in points.json
+LIB "linalg.lib"; LIB "general.lib"; LIB "matrix.lib"; system("--ticks-per-sec",1); int t0=rtimer;
+proc res(string m) { string l="RESULT c30-control-emq-p32009 "+m; print(l); write(":a docs/evidence/a5-exceptional-fibers/structure/c30-bounded/logs/c30-control-emq-p32009.result", l); }
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing";
+
+ring ru=32009,(u2,u4,u5,u6,u7),dp;
+setring r;
+ideal G2=jet(G,2); int lowTerms=size(jet(G,1)); int nG2=size(G2);
+setring ru;
+number n4=4;
+poly t9=(1/n4)*(-u2^2-u4^2+u5^2+u6^2-u7^2);
+map mu=r,1,u2,u4,u5,u6,u7,t9;
+ideal Gu=mu(G2);
+intvec u0=11372,17997,5102,21091,13876;
+map pt=ru,u0[1],u0[2],u0[3],u0[4],u0[5];
+ideal y0=pt(Gu);
+matrix Jc=jacob(Gu); matrix Jc0=pt(Jc);
+matrix Big[24][6];
+int i; int k;
+for (i=1;i<=24;i++) { Big[i,1]=y0[i]; for (k=1;k<=5;k++) { Big[i,k+1]=Jc0[i,k]; } }
+res("on control: generators of G with a term of degree below 2 (0 required): "+string(lowTerms)+"; generators with a nonzero degree-2 part: "+string(nG2)); res("on control: rank of [G_2(u) | dG_2/du] over the exceptional quadric (6: a 5-dimensional image): "+string(rank(Big)));
+intvec yv; for (i=1;i<=24;i++) { yv[i]=int(leadcoef(y0[i])); }
+
+< "docs/evidence/a5-exceptional-fibers/structure/c30-bounded/sing/kp-p32009.sing";
+execute("ideal Qq="+read("docs/evidence/a5-exceptional-fibers/structure/w8-kp/quotient.txt")+";");
+ideal Lam=y(22),y(19)+y(21),y(18),y(13)-y(23),y(11)+10754*y(23),y(8)+y(24),y(4)+y(12)-y(24),y(3),y(2)+10754*y(24);
+
+int nK=size(K); int nL=size(Lam); int nP=0; int nQ=0;
+if (1) { nP=size(P); nQ=size(Qq); }
+map ev=Y,yv[1],yv[2],yv[3],yv[4],yv[5],yv[6],yv[7],yv[8],yv[9],yv[10],yv[11],yv[12],yv[13],yv[14],yv[15],yv[16],yv[17],yv[18],yv[19],yv[20],yv[21],yv[22],yv[23],yv[24];
+ideal eK=ev(K); ideal eL=ev(Lam);
+res("on control: K2 generators nonzero at G_2(u): "+string(size(eK))+" of "+string(nK)+" (0 required); Lambda forms nonzero: "+string(size(eL))+" of "+string(nL)+" (0 for C20)");
+if (1) {
+  ideal eP=ev(P); ideal eQ=ev(Qq);
+  res("on control: P generators nonzero: "+string(size(eP))+" of "+string(nP)+" (0 for C20); K2:P generators nonzero: "+string(size(eQ))+" of "+string(nQ)+" (positive: the point is off C30)");
+}
+
+quit;

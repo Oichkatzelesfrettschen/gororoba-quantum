@@ -1,0 +1,54 @@
+family PA stage 5
+binary Singular (passagemath venv)
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+memory cap 8G (cgroup MemoryMax, MemorySwapMax=0), wall cap 3000 s
+2026-11-08T15:22:50Z
+RESULT stage 5
+RESULT generators_J 4
+RESULT generators_P 107
+RESULT J_dim 12
+RESULT J_mult 4
+RESULT J_hilb1 1, -2, -1, 4, -1, -2, 1, 0
+RESULT J_hilb2 1, 2, 1, 0
+RESULT J_equals_radical_of_J 1
+RESULT y0_Q_prime 1
+RESULT y0_Q_dim 14
+RESULT y0_Q_mult 2
+RESULT y0_Q_hilb1 1, -1, -1, 1, 0
+RESULT y0_Q_hilb2 1, 1, 0
+RESULT P_in_y0_Q 1
+RESULT J_in_y0_Q 0
+RESULT y0_Q_cap_J_dim 14
+RESULT y0_Q_cap_J_mult 2
+RESULT y0_Q_cap_J_hilb1 1, -1, 0, -1, -1, 4, -1, -2, 1, 0
+RESULT y0_Q_cap_J_hilb2 1, 1, 1, 0, -2, 0, 1, 0
+RESULT P_in_y0_Q_cap_J 1
+RESULT y0_Q_cap_J_equals_P 0
+RESULT Q_times_J_generator_1_power_in_P 3
+RESULT Q_times_J_generator_2_power_in_P 3
+RESULT Q_times_J_generator_3_power_in_P 3
+	Command being timed: "Singular (passagemath venv) -q --no-warn WORKDIR/drv_PA_5.sing"
+	User time (seconds): 8.04
+	System time (seconds): 0.16
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:08.21
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 98444
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 65600
+	Voluntary context switches: 0
+	Involuntary context switches: 21
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+exit status 0
+2026-11-08T15:22:58Z

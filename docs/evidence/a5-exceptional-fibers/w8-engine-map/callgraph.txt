@@ -1,0 +1,126 @@
+     line  function                           callers -> callees (r = passed as value)
+ 102-110   _parallel_dir                      IN: -
+                                              OUT: -
+ 121-127   header_text                        IN: quotient_rank
+                                              OUT: -
+ 130-141   parse_header                       IN: main, quotient_rank
+                                              OUT: -
+ 144-149   term_grammar                       IN: parse_poly
+                                              OUT: -
+ 152-171   parse_poly                         IN: main, read_list
+                                              OUT: term_grammar
+ 174-178   exact_mod_matmul                   IN: Echelon.insert, Echelon.reduce, block_products, quotient_rank, quotient_rank.table_mul
+                                              OUT: -
+ 181-182   is_odd_prime                       IN: main
+                                              OUT: -
+ 185-208   sign_group                         IN: main
+                                              OUT: sign_group.flip, sign_group.rank
+ 188-197   sign_group.rank                    IN: sign_group
+                                              OUT: -
+ 199-200   sign_group.flip                    IN: sign_group
+                                              OUT: -
+ 211-223   independent_generators             IN: main
+                                              OUT: -
+ 229-254   Space.__init__                     IN: -
+                                              OUT: Space.index, exps_of_degree
+ 256-263   Space.index                        IN: Space.__init__, Space.sparse, main, main.generators
+                                              OUT: -
+ 265-272   Space.index_keys                   IN: main
+                                              OUT: -
+ 274-280   Space.sparse                       IN: main
+                                              OUT: Space.index
+ 282-291   Space.dense_rows                   IN: main
+                                              OUT: -
+ 294-301   exps_of_degree                     IN: Space.__init__, main, main.generators
+                                              OUT: -
+ 307-310   Echelon.__init__                   IN: -
+                                              OUT: -
+ 312-315   Echelon.reduce                     IN: Echelon.insert
+                                              OUT: exact_mod_matmul
+ 317-339   Echelon.insert                     IN: main, quotient_rank
+                                              OUT: Echelon.reduce, exact_mod_matmul
+ 349-357   pack                               IN: extend_products, main
+                                              OUT: -
+ 360-362   unpack                             IN: extend_products
+                                              OUT: -
+ 365-373   extend_products                    IN: main
+                                              OUT: pack, unpack
+ 446-448   read_list                          IN: _quotient_data_locked
+                                              OUT: parse_poly
+ 451-452   flat_text                          IN: _quotient_data_locked, _run_singular_locked
+                                              OUT: -
+ 455-460   file_sha256                        IN: _quotient_data_locked, write_sidecar
+                                              OUT: -
+ 463-467   write_sidecar                      IN: _quotient_data_locked, publish
+                                              OUT: file_sha256
+ 470-473   publish                            IN: _quotient_data_locked, _run_singular_locked
+                                              OUT: write_sidecar
+ 476-488   run_singular                       IN: _quotient_data_locked, run_step
+                                              OUT: _run_singular_locked
+ 491-516   _run_singular_locked               IN: run_singular
+                                              OUT: flat_text, publish
+ 519-524   run_step                           IN: _quotient_data_locked
+                                              OUT: run_singular
+ 527-534   export_identity                    IN: _quotient_data_locked
+                                              OUT: -
+ 537-548   adopt_serial_export                IN: _quotient_data_locked
+                                              OUT: -
+ 551-552   identity_sha256                    IN: _quotient_data_locked
+                                              OUT: -
+ 555-558   write_manifest                     IN: _quotient_data_locked
+                                              OUT: -
+ 561-597   quotient_data                      IN: quotient_rank
+                                              OUT: _quotient_data_locked
+ 600-755   _quotient_data_locked              IN: quotient_data
+                                              OUT: _quotient_data_locked.checked, _quotient_data_locked.load, adopt_serial_export, export_identity, file_sha256, flat_text, identity_sha256, publish, quotient_rank.preflight, read_list, run_singular, write_manifest, write_sidecar, run_step (r)
+ 680-681   _quotient_data_locked.load         IN: _quotient_data_locked
+                                              OUT: -
+ 683-685   _quotient_data_locked.checked      IN: _quotient_data_locked
+                                              OUT: -
+ 758-765   sparse_mod_matmul                  IN: generator_blocks, quotient_rank, quotient_rank.table_mul
+                                              OUT: -
+ 779-813   block_tables                       IN: quotient_rank
+                                              OUT: -
+ 816-842   order_walk                         IN: quotient_rank
+                                              OUT: -
+ 845-858   generator_blocks                   IN: block_products
+                                              OUT: sparse_mod_matmul
+ 861-909   block_products                     IN: quotient_rank
+                                              OUT: block_products.keep, exact_mod_matmul, generator_blocks
+ 884-885   block_products.keep                IN: block_products
+                                              OUT: -
+ 919-920   exps_to_tuple                      IN: representatives
+                                              OUT: -
+ 923-940   load_receipt                       IN: representatives
+                                              OUT: -
+ 943-981   standard_monomials                 IN: representatives
+                                              OUT: -
+ 984-992   combo_rank                         IN: representatives
+                                              OUT: -
+ 995-1005  combo_unrank                       IN: representatives
+                                              OUT: -
+1008-1015  nonstandard_at                     IN: representatives
+                                              OUT: -
+1018-1054  representatives                    IN: quotient_rank
+                                              OUT: combo_rank, combo_unrank, exps_to_tuple, load_receipt, nonstandard_at, standard_monomials
+1057-1223  quotient_rank                      IN: main
+                                              OUT: Echelon.insert, block_products, block_tables, exact_mod_matmul, header_text, order_walk, parse_header, quotient_data, quotient_rank.block_layout, quotient_rank.estimate, quotient_rank.preflight, quotient_rank.stack, quotient_rank.table_mul, representatives, sparse_mod_matmul
+1067-1072  quotient_rank.block_layout         IN: quotient_rank, quotient_rank.estimate
+                                              OUT: -
+1074-1089  quotient_rank.estimate             IN: quotient_rank, quotient_rank.preflight
+                                              OUT: quotient_rank.block_layout
+1091-1094  quotient_rank.preflight            IN: _quotient_data_locked, quotient_rank
+                                              OUT: quotient_rank.estimate
+1146-1149  quotient_rank.stack                IN: quotient_rank
+                                              OUT: -
+1163-1164  quotient_rank.table_mul            IN: quotient_rank
+                                              OUT: exact_mod_matmul, sparse_mod_matmul
+1226-1441  main                               IN: -
+                                              OUT: Echelon.insert, Space.dense_rows, Space.index, Space.index_keys, Space.sparse, exps_of_degree, independent_generators, is_odd_prime, main.base_generators, main.generators, pack, parse_header, parse_poly, quotient_rank, sign_group, extend_products (r)
+1348-1355  main.base_generators               IN: main, main.generators
+                                              OUT: -
+1357-1370  main.generators                    IN: main
+                                              OUT: Space.index, exps_of_degree, main.base_generators
+
+61 functions
+module-level calls: ['_parallel_dir', 'main']

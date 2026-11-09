@@ -86,6 +86,12 @@ lies in the fiber over the origin of W8 -> N-, so the analytic spread of I is 6 
 the multiplicity (50 or 20); it records the arc families searched for the Iso V(K2) and the W8 V(K2 : P) without
 reaching them, the base locus L0 that explains the ranks, and the one-chart test that decides the Iso case.
 
+[c30-bounded/](c30-bounded/README.md) decides the W8 multiplicity: at five QRNG points of P(L0), the projectivized
+base locus of the point blowup, the fiber cone of the pullback ideal is a linear 3-space in V(K2 : P) outside V(P), the
+planes sweep a 5-dimensional set (Jacobian rank 6 with dual numbers), so V(K2 : P) lies in the fiber over the origin
+and F(I) = k[y]/K2 for W8 at both primes, with controls and a measured cost of about 50 s per point against the stalled global
+slice.
+
 ## Falsifiers
 
 A basis pair failing the automorphism identity, an orbit representative whose phi-image leaves the predicted closure, a

@@ -1,0 +1,50 @@
+family PB stage 1
+binary Singular (passagemath venv)
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+memory cap 24G (cgroup MemoryMax, MemorySwapMax=0), wall cap 7200 s
+2026-11-08T14:46:26Z
+RESULT stage 1
+RESULT generators_J 4
+RESULT generators_P 16
+RESULT J_dim 12
+RESULT J_mult 4
+RESULT J_hilb1 1, -2, -1, 4, -1, -2, 1, 0
+RESULT J_hilb2 1, 2, 1, 0
+RESULT J_equals_radical_of_J 1
+RESULT P_in_J 1
+RESULT P_dim 12
+RESULT P_mult 4
+RESULT P_hilb1 1, -2, 1, -14, 70, -168, 301, -644, 1736, -4188, 7858, -11370, 12852, -11438, 8008, -4368, 1820, -560, 120, -16, 1, 0
+RESULT P_hilb2 1, 2, 3, -10, 19, -22, 56, -202, 485, -790, 924, -792, 495, -220, 66, -12, 1, 0
+RESULT J_generator_1_in_P 1
+RESULT J_generator_2_in_P 0
+RESULT J_generator_3_in_P 0
+RESULT J_generator_4_in_P 1
+RESULT J_in_P 0
+RESULT P_equals_J 0
+RESULT hilbert_series_equal 0
+	Command being timed: "Singular (passagemath venv) -q --no-warn WORKDIR/drv_PB_1.sing"
+	User time (seconds): 0.02
+	System time (seconds): 0.01
+	Percent of CPU this job got: 91%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.03
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 17880
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 797
+	Voluntary context switches: 0
+	Involuntary context switches: 2
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+exit status 0
+2026-11-08T14:46:26Z

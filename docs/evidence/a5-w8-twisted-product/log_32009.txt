@@ -1,0 +1,53 @@
+driver driver_32009.sing
+label twisted product at p = 32009
+binary Singular (passagemath venv)
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+address-space cap 8G (prlimit --as; no user bus), wall cap 3600 s
+2026-11-09T02:25:35Z
+RESULT c_squared_is_minus_one 1
+RESULT generators_W8 8
+RESULT W8_dim 24
+RESULT W8_mult 16
+RESULT W8_hilb1 1, -4, 2, 12, -17, -8, 28, -8, -17, 12, 2, -4, 1, 0
+RESULT W8_hilb2 1, 4, 6, 4, 1, 0
+RESULT twisted_W_in_T 1
+RESULT twisted_T_in_W 1
+RESULT twisted_reduced_bases_identical 1
+RESULT twisted_dim 24
+RESULT twisted_mult 16
+RESULT twisted_hilb1 1, -4, 2, 12, -17, -8, 28, -8, -17, 12, 2, -4, 1, 0
+RESULT twisted_hilb2 1, 4, 6, 4, 1, 0
+RESULT slice_W8_plus_S_in_JS 1
+RESULT slice_JS_in_W8_plus_S 1
+RESULT slice_reduced_bases_identical 1
+RESULT slice_Jz_equals_JS 1
+RESULT slice_Jzp_equals_JS 1
+RESULT slice_dim 12
+RESULT slice_mult 4
+RESULT slice_hilb1 1, -18, 151, -780, 2755, -6954, 12597, -15504, 9690, 6460, -25194, 33592, -25194, 6460, 9690, -15504, 12597, -6954, 2755, -780, 151, -18, 1, 0
+RESULT slice_hilb2 1, 2, 1, 0
+	Command being timed: "Singular (passagemath venv) -q --no-warn driver_32009.sing"
+	User time (seconds): 0.01
+	System time (seconds): 0.00
+	Percent of CPU this job got: 33%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.03
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 15700
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 2
+	Minor (reclaiming a frame) page faults: 672
+	Voluntary context switches: 4
+	Involuntary context switches: 0
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+exit status 0
+2026-11-09T02:25:35Z

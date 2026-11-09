@@ -48,6 +48,10 @@ error of each served mesh and the simulator's mesh identity), so `scripts/pathio
 name through `pathion_evidence_table.is_ascella_instrument_record` and raises on any unknown record; their readings live
 in the [findings](../../../results/live/PATHION_KERNEL_MAP_FINDINGS.md) section "Ascella mesh persistence".
 
+[nhat-bias/](nhat-bias/README.md) audits the nullity estimator N_hat: its exact bias identity
+N_hat - N = |B+||B-|/|B| (Vbar+ - Vbar-)/V_hat, the blocks it forces to 4 whatever the hardware does, the block-profile
+census against the H-orbits, and the same readings on the parallel and wide runs (ledger A5-228 to A5-234).
+
 The mechanism probes behind the cross-platform findings (Ascella mirror failure, Tuna-17 null offset, Tuna-17 `ba`
 misses) live in [conjectures/](conjectures/README.md) with their logs and a runner.
 

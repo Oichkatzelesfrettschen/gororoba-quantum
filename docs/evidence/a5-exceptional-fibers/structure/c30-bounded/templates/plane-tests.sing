@@ -1,0 +1,36 @@
+int nK=size(K); int nL=size(Lam); int nP=0; int nQ=0;
+if (@HAS_P@) { nP=size(P); nQ=size(Qq); }
+matrix MMy[24][4]; matrix TT[24][6]; matrix Y0m[4][1]; int j; int kk;
+for (j=1;j<=24;j++) { for (kk=1;kk<=4;kk++) { MMy[j,kk]=V1[j,kk]; TT[j,kk]=V1[j,kk]; } }
+for (kk=1;kk<=4;kk++) { Y0m[kk,1]=Y0[kk]; }
+for (j=1;j<=24;j++) {
+  TT[j,5]=D1[j,1]*Y0[1]+D1[j,2]*Y0[2]+D1[j,3]*Y0[3]+D1[j,4]*Y0[4];
+  TT[j,6]=D2[j,1]*Y0[1]+D2[j,2]*Y0[2]+D2[j,3]*Y0[3]+D2[j,4]*Y0[4];
+}
+matrix y0m=MMy*Y0m;
+ideal ycoords; for (j=1;j<=24;j++) { ycoords[j]=y0m[j,1]; }
+map ev=Y,ycoords;
+ring Z=@P@,(Y1,Y2,Y3,Y4),dp;
+ideal im; for (j=1;j<=24;j++) { im[j]=V1[j,1]*Y1+V1[j,2]*Y2+V1[j,3]*Y3+V1[j,4]*Y4; }
+map psi=Y,im;
+ideal iK=psi(K); ideal iL=psi(Lam);
+res("plane: K2 generators nonzero on Pi_p: "+string(size(iK))+" of "+string(nK)+" (0: Pi_p lies in V(K2))");
+res("plane: Lambda forms nonzero on Pi_p: "+string(size(iL))+" of "+string(nL)+" (positive: Pi_p lies outside the span of C20)");
+if (@HAS_P@) {
+  ideal iP=psi(P); ideal iQ=psi(Qq);
+  res("plane: P generators nonzero on Pi_p: "+string(size(iP))+" of "+string(nP)+" (positive: Pi_p is not in C20 = V(P))");
+  res("plane: K2:P generators nonzero on Pi_p: "+string(size(iQ))+" of "+string(nQ)+" (0: Pi_p lies in C30 = V(K2:P))");
+}
+matrix MZ[24][4]; for (j=1;j<=24;j++) { for (kk=1;kk<=4;kk++) { MZ[j,kk]=V1[j,kk]; } }
+res("plane: rank of M(p) (4 required): "+string(rank(MZ)));
+setring Y;
+matrix JKm=jacob(K); matrix JK0=ev(JKm); matrix RK=JK0*TT;
+res("tangent consistency: Jacobian of the K2 generators at y0 = M(p) Y0 against the six tangent vectors, nonzero entries (0 required): "+string(size(ideal(RK)))+"; rank of that Jacobian (18 at a smooth point of the 6-dimensional cone): "+string(rank(JK0)));
+if (@HAS_P@) {
+  matrix JQm=jacob(Qq); matrix JQ0=ev(JQm); matrix RQ=JQ0*TT;
+  res("tangent consistency: Jacobian of the K2:P generators at y0 against the six tangent vectors, nonzero entries (0 required): "+string(size(ideal(RQ)))+"; rank of that Jacobian (18 at a smooth point of C30): "+string(rank(JQ0)));
+  ideal eP0=ev(P); ideal eQ0=ev(Qq); ideal eK0=ev(K);
+  res("point y0 = M(p) Y0: K2 nonzero "+string(size(eK0))+", K2:P nonzero "+string(size(eQ0))+" (0 required), P nonzero "+string(size(eP0))+" (positive: y0 is off C20)");
+}
+matrix TTc[24][6]; for (j=1;j<=24;j++) { for (kk=1;kk<=6;kk++) { TTc[j,kk]=TT[j,kk]; } }
+res("rank of [M(p) | dM/db Y0 | dM/dc Y0] (6: the planes sweep a cone of dimension 6, so a 5-dimensional projective set): "+string(rank(TTc))+", s "+string(rtimer-t0));

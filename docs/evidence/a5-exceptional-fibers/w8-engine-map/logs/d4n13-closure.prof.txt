@@ -1,0 +1,33 @@
+         45653839 function calls (45651399 primitive calls) in 491.825 seconds
+
+   Ordered by: internal time
+   List reduced from 638 to 25 due to restriction <25>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+2128/2126  176.552    0.083  268.147    0.126 {method 'acquire' of '_thread.lock' objects}
+222936/222887   62.846    0.000   66.993    0.000 {built-in method _io.open}
+220093/220034   48.228    0.000   60.059    0.000 {method 'read' of '_io.BufferedReader' objects}
+      203   43.514    0.214   43.514    0.214 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:174(exact_mod_matmul)
+      532   33.080    0.062   33.110    0.062 {built-in method posix.listdir}
+222783/222772   18.958    0.000   22.441    0.000 {method '__exit__' of '_io._IOBase' objects}
+     1336   13.437    0.010   13.437    0.010 {built-in method numpy.array}
+   202475   13.242    0.000   24.743    0.000 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:152(parse_poly)
+      148   12.756    0.086   37.942    0.256 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:317(insert)
+      148    9.323    0.063   33.828    0.229 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:312(reduce)
+      140    8.276    0.059   17.019    0.122 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:758(sparse_mod_matmul)
+      531    7.848    0.015  503.275    0.948 /usr/lib/python3.14/threading.py:337(wait)
+      501    5.843    0.012    5.843    0.012 {method 'ravel' of 'numpy.ndarray' objects}
+      415    5.061    0.012    5.061    0.012 {method 'tolist' of 'numpy.ndarray' objects}
+      140    4.498    0.032    4.498    0.032 {built-in method scipy.sparse._sparsetools.csc_matvecs}
+   530/22    3.940    0.007   54.240    2.465 /usr/lib/python3.14/threading.py:651(wait)
+      531    2.295    0.004   90.986    0.171 /usr/lib/python3.14/site-packages/psutil/_pslinux.py:1562(ppid_map)
+       63    2.083    0.033    2.084    0.033 /usr/lib/python3.14/site-packages/numpy/_core/shape_base.py:218(vstack)
+   202475    1.686    0.000    1.686    0.000 {method 'fullmatch' of 're.Pattern' objects}
+  8911178    1.486    0.000    1.486    0.000 {method 'isdigit' of 'str' objects}
+  7503604    1.454    0.000    1.454    0.000 {method 'partition' of 'str' objects}
+   222264    1.297    0.000    1.297    0.000 {method 'split' of 'bytes' objects}
+  5526529    0.907    0.000    0.907    0.000 {method 'append' of 'list' objects}
+  3575172    0.868    0.000    0.868    0.000 {method 'group' of 're.Match' objects}
+  1995834    0.784    0.000    0.784    0.000 {method 'split' of 'str' objects}
+
+

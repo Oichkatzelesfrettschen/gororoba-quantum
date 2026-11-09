@@ -15107,7 +15107,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "Most deep operands miss the preregistered 31 of 32 sign agreement; N_hat is exact only under a bin-independent contraction; the m-dependent collapse is a device hypothesis until the placements' calibration is read.",
+      "boundary": "Most deep operands miss the preregistered 31 of 32 sign agreement; N_hat is exact only under a bin-independent contraction and carries a bias of |B+||B-|/|B| (Vbar+ - Vbar-)/V_hat otherwise (replica-mean +0.75 on e1 + e18, with Vbar+ above Vbar- on 7 of 8 circuits; ledger A5-228 and A5-231), so the interval, not the point value, carries the resolution; the m-dependent collapse is a device hypothesis until the placements' calibration is read.",
       "evidence": [
         {
           "path": "results/live/2026-11-06T183538.809814Z/collect.json",
@@ -15132,7 +15132,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "N_hat is exact under a bin-independent contraction; the raw values carry a +0.05 to +0.25 bias that the readout correction removes; the matching ibm_marrakesh run is retained as claim hw-pathion-coset-map-marrakesh.",
+      "boundary": "N_hat is exact under a bin-independent contraction; the raw values carry a +0.05 to +0.25 bias that the readout correction removes; the matching ibm_marrakesh run is retained as claim hw-pathion-coset-map-marrakesh; two of four blocks of the nullity-8 operand e1 + e10 and of e1 + e24, and three of four of e1 + e18 and e17 - e2, have all XOR pairs aligned and read 4 whatever the hardware does (ledger A5-229, A5-230), so the integer recovery of those operands rests on the sign map and the informative blocks.",
       "evidence": [
         {
           "path": "results/live/2026-11-06T201037.234804Z/collect.json",
@@ -15159,7 +15159,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "Retained with the account below the inventory's 60 s reserve (account_reserve_met false); N_hat is exact under a bin-independent contraction.",
+      "boundary": "Retained with the account below the inventory's 60 s reserve (account_reserve_met false); N_hat is exact under a bin-independent contraction; the all-aligned blocks of the nullity-8 and nullity-12 operands read 4 by algebra (ledger A5-229).",
       "evidence": [
         {
           "path": "results/live/2026-11-06T200832.558771Z/collect.json",
@@ -15346,7 +15346,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "The decisions are the preregistered rules of the written case with Student t intervals over placements; the runs executed 16,384 shots on ibm_fez (case 14,336) under a 65 s ceiling and the models are the approved dry runs of the record, recorded in the analysis. The null offset of ibm_marrakesh (+0.045) is not reproduced: ibm_kingston excludes it and ibm_fez does not resolve it. That the calibrated readout confusion matrix overstates the in-circuit asymmetry by about 0.09 is a hypothesis at confidence 0.5; the two selector-contrast misses are negative single-block excursions among 16 tests and the ibm_kingston within-arm excess is 2.7 standard errors below the 0.02 band, so none is attributed to a mechanism. The Tuna-17 angle exclusion uses the case's response of 0.57 per rad, which no ibm_kingston compile confirmed.",
+      "boundary": "The decisions are the preregistered rules of the written case with Student t intervals over placements; the runs executed 16,384 shots on ibm_fez (case 14,336) under a 65 s ceiling and the models are the approved dry runs of the record, recorded in the analysis. The null offset of ibm_marrakesh (+0.045) is not reproduced: ibm_kingston excludes it and ibm_fez does not resolve it. That the calibrated readout confusion matrix overstates the in-circuit asymmetry by about 0.09 is a hypothesis at confidence 0.5; the two selector-contrast misses are negative single-block excursions among 16 tests and the ibm_kingston within-arm excess is 2.7 standard errors below the 0.02 band, so none is attributed to a mechanism. The Tuna-17 angle exclusion uses the case's response of 0.57 per rad, which no ibm_kingston compile confirmed. The nullity-8 and nullity-12 N_hat readings hold 8 or 12 by algebra in their all-aligned blocks (ledger A5-229, A5-230), so the 0.5 and 0.15 bands bind the informative blocks and the sign map.",
       "evidence": [
         {
           "path": "results/live/pathion_parallel_coset_analysis.json",

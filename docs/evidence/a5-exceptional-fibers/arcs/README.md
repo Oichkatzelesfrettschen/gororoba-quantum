@@ -38,7 +38,7 @@ At each of the four targets:
 | 2 | 69 | 83 | h_2 = 83 |
 | 3 | 195 | 225 | h_3 = 225 |
 | 4 | 440 | 495 | h_4 = 495 |
-| 5 | 861 | 952 | 861 <= h_5 <= 952; engine v11 at N = 16 gives r_16 = 742 |
+| 5 | 861 | 952 | h_5 = 952: N- by r_18 = 952 (`../n18-laptop/`, A5-183, A5-220), N+ by the t8/t9 sign isomorphism (A5-082, A5-088) |
 | 6 | 1526 | 1666 | open |
 
 The columns come from `k2_primes.log` of each target (`kbase` of the standard bases of K2 and of P1 intersect P2,
@@ -238,6 +238,6 @@ points, three mutations that must fail, and the retained records.
 - The two certified families are dense in the two components by rank and irreducibility. The 15 unclassified
   near-e = -1 families and arcs with several terms per parameter are unexplored and not needed.
 - K2 inside L rests on the degree-2 receipts and the sign-isomorphism row cited under the reduced-fiber statement, not on this package.
-- The truncated rank at N = 16 (742) and the arc bound (861) leave 861 <= h_5 <= 952 open; degree 5 equals the K2
-  count only if a rank computation reaches 952.
+- The arc bound (861) is superseded at degree 5: r_18 = 952 on N- at both primes (`../n18-laptop/`) reaches the K2
+  count, and the sign isomorphism carries it to N+.
 - The fibers over the other points of V(J + G) are untested beyond the 120 survey arcs.

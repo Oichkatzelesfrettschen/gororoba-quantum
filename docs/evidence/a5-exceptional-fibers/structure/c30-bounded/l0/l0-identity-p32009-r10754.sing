@@ -1,0 +1,16 @@
+// L0 identity: J and every generator of I vanish identically on L0 = {t2 = 0, t4 = t6, t5 = t7, t9 = 0} and on the
+// chart curve (s, v2 = v4 = v5 = v9 = 0) of the slice v6 = v7 = 0 for symbolic (b, c); with the nonzero Newton determinant
+// this makes the v2-divisibility of every G_j restricted to the Newton surface exact (README, slice step).
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing";
+ring r2=char(basering),(t1,t2,t4,t5,t6,t7,t9,s,v2,v4,v5,v9,b,c),dp;
+ideal J=imap(r,J); ideal G=imap(r,G);
+map L0=r2,t1,0,t4,t5,t4,t5,0;
+int i; int nz=0; for (i=1;i<=ncols(G);i++) { if (L0(G)[i]!=0) { nz++; } }
+print("RESULT L0 identity, p32009-r10754: J on L0 = "+string(L0(J)[1])+"; G generators nonzero on L0: "+string(nz)+" of "+string(ncols(G)));
+// chart t1=s, t_i = s*u_i on the slice v6=v7=0, curve v2=v4=v5=v9=0 is L0 itself
+map ch=r2,s,s*v2,s*(v4+b),s*(v5+c),s*b,s*c,s*v9;
+ideal Gc=ch(G); poly Jc=ch(J)[1];
+map cur=r2,t1,t2,t4,t5,t6,t7,t9,s,0,0,0,0,b,c;
+nz=0; for (i=1;i<=ncols(Gc);i++) { if (cur(Gc)[i]!=0) { nz++; } }
+print("RESULT curve identity, p32009-r10754: J on the curve = "+string(cur(Jc))+"; G on the curve nonzero: "+string(nz)+" (symbolic b, c)");
+quit;

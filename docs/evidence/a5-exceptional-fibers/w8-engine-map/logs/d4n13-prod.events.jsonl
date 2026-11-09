@@ -1,0 +1,37 @@
+{"stage": {"phase": "start", "start_s": 0.0, "wall_s": 0.56, "self_hwm_kib": 72124, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "representatives", "start_s": 0.56, "wall_s": 0.22, "self_hwm_kib": 72128, "self_rss_sampled_max_kib": 71196, "tree_peak_kib": 71196}}
+{"stage": {"phase": "pre-export", "start_s": 0.78, "wall_s": 0.0, "self_hwm_kib": 72128, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "export", "start_s": 0.78, "wall_s": 10.74, "self_hwm_kib": 411804, "self_rss_sampled_max_kib": 405960, "tree_peak_kib": 405960}}
+{"stage": {"phase": "setup", "start_s": 11.52, "wall_s": 0.02, "self_hwm_kib": 409200, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "block_tables", "start_s": 11.53, "wall_s": 2.35, "self_hwm_kib": 465160, "self_rss_sampled_max_kib": 466136, "tree_peak_kib": 466136}}
+{"stage": {"phase": "gvecs", "start_s": 13.88, "wall_s": 0.19, "self_hwm_kib": 449148, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "order_walk", "start_s": 14.07, "wall_s": 0.14, "self_hwm_kib": 262468, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "pre-products", "start_s": 14.21, "wall_s": 0.0, "self_hwm_kib": 262468, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"gen": {"chi": 2, "s": 6.83, "bytes": 1914565632, "hwm_minus_rss0_mib": 2054.7}}
+{"gen": {"chi": 3, "s": 4.82, "bytes": 1914565632, "hwm_minus_rss0_mib": 2002.1}}
+{"gen": {"chi": 2, "s": 5.72, "bytes": 1914565632, "hwm_minus_rss0_mib": 2003.6}}
+{"gen": {"chi": 3, "s": 5.44, "bytes": 1914565632, "hwm_minus_rss0_mib": 2002.2}}
+{"gen": {"chi": 0, "s": 4.91, "bytes": 1914647168, "hwm_minus_rss0_mib": 2006.1}}
+{"gen": {"chi": 1, "s": 5.31, "bytes": 1914490368, "hwm_minus_rss0_mib": 2003.2}}
+{"gen": {"chi": 0, "s": 4.69, "bytes": 1914647168, "hwm_minus_rss0_mib": 2005.8}}
+{"gen": {"chi": 3, "s": 4.82, "bytes": 1914565632, "hwm_minus_rss0_mib": 2002.5}}
+{"gen": {"chi": 3, "s": 5.0, "bytes": 1914565632, "hwm_minus_rss0_mib": 2002.7}}
+{"gen": {"chi": 2, "s": 5.0, "bytes": 1914565632, "hwm_minus_rss0_mib": 2004.3}}
+{"gen": {"chi": 2, "s": 5.65, "bytes": 1914565632, "hwm_minus_rss0_mib": 2003.7}}
+{"gen": {"chi": 3, "s": 5.5, "bytes": 1914565632, "hwm_minus_rss0_mib": 2002.7}}
+{"gen": {"chi": 2, "s": 5.61, "bytes": 1914565632, "hwm_minus_rss0_mib": 2004.2}}
+{"gen": {"chi": 0, "s": 5.44, "bytes": 1914647168, "hwm_minus_rss0_mib": 2006.2}}
+{"gen": {"chi": 1, "s": 5.4, "bytes": 1914490368, "hwm_minus_rss0_mib": 2003.6}}
+{"gen": {"chi": 2, "s": 5.36, "bytes": 1914565632, "hwm_minus_rss0_mib": 2004.3}}
+{"gen": {"chi": 0, "s": 4.92, "bytes": 1914647168, "hwm_minus_rss0_mib": 2006.4}}
+{"gen": {"chi": 1, "s": 5.41, "bytes": 1914490368, "hwm_minus_rss0_mib": 2003.6}}
+{"gen": {"chi": 0, "s": 5.26, "bytes": 1914647168, "hwm_minus_rss0_mib": 2006.3}}
+{"gen": {"chi": 3, "s": 4.92, "bytes": 1914565632, "hwm_minus_rss0_mib": 2003.2}}
+{"gen": {"chi": 0, "s": 5.34, "bytes": 1914647168, "hwm_minus_rss0_mib": 2006.6}}
+{"gen": {"chi": 1, "s": 5.25, "bytes": 1914490368, "hwm_minus_rss0_mib": 2020.7}}
+{"gen": {"chi": 2, "s": 4.94, "bytes": 1914565632, "hwm_minus_rss0_mib": 2029.0}}
+{"gen": {"chi": 3, "s": 4.97, "bytes": 1914565632, "hwm_minus_rss0_mib": 2051.9}}
+{"stage": {"phase": "products", "start_s": 14.22, "wall_s": 279.34, "self_hwm_kib": 2467036, "self_rss_sampled_max_kib": 2463352, "tree_peak_kib": 2463352}}
+{"stage": {"phase": "products-save", "start_s": 293.56, "wall_s": 0.14, "self_hwm_kib": 420440, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stop_after": "products"}
+{"stage": {"phase": "stack", "start_s": 293.7, "wall_s": 0.02, "self_hwm_kib": 420364, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}

@@ -3357,6 +3357,20 @@
     {
       "suite": "sources",
       "cwd": ".",
+      "cmd": "shellcheck docs/evidence/cd-half-fold/replay_rocq.sh",
+      "name": "sources-416",
+      "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "shellcheck docs/evidence/cd-twisted-product/replay_rocq.sh",
+      "name": "sources-417",
+      "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
       "seconds": 0.1
@@ -5431,6 +5445,37 @@
       "workers": 2,
       "replays": [
         "docs/evidence/a5-photonic-crosschecks/named-source-spectrum-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/pathion-kernel-map/nhat-bias/nhat_bias.py --check docs/evidence/pathion-kernel-map/nhat-bias",
+      "name": "core-nhat-bias-replay",
+      "seconds": 11.6,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/pathion-kernel-map/nhat-bias/result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/pathion-kernel-map/nhat-bias/nhat_bias.py --self-test",
+      "name": "core-nhat-bias-loader-agreement",
+      "seconds": 1.5,
+      "workers": 1,
+      "replays": []
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/pathion-kernel-map/nhat-bias/nhat_spectral.py --check docs/evidence/pathion-kernel-map/nhat-bias",
+      "name": "core-nhat-spectral-replay",
+      "seconds": 13.1,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/pathion-kernel-map/nhat-bias/result_spectral.json"
       ]
     }
   ],

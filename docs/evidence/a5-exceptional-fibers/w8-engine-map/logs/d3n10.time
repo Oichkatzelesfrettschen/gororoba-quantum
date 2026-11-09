@@ -1,0 +1,23 @@
+	Command being timed: "/usr/bin/python docs/local/w8-engine-map/wrap.py d3n10 docs/local/w8-engine-map/logs -- docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing 3 10 --quotient --k2-receipt docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json --export-dir docs/local/w8-engine-map/exports/n10 --export-chunks 5 --dense-tables-gb 0 --singular ~/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3.13/site-packages/sage_wheels/bin/Singular"
+	User time (seconds): 352.35
+	System time (seconds): 34.28
+	Percent of CPU this job got: 241%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:40.21
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 331752
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 35
+	Minor (reclaiming a frame) page faults: 405522
+	Voluntary context switches: 5618
+	Involuntary context switches: 179024
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

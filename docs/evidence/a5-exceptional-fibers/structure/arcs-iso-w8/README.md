@@ -24,6 +24,10 @@ findings-note criterion (K2 radical and Cohen-Macaulay), F(I) = k[y]/K2 in every
 multiplicity alone: e(F(I)) = 50 exactly when V(K2 : P) also lies in E0, and 20 otherwise. The numeric engine
 `arcs_num.py` (exact truncated series over F_p with dual parts, a code path separate from Singular) reproduces this
 family (`num-w8-p32009-basic.txt`: nu 2, rank 6, K2 vanishing, Lambda vanishing, a generator of K2 : P nonzero).
+V(K2 : P) lies in E0 as well, at both primes: the fiber cone of the pullback ideal at points of P(L0) in the point
+blowup gives linear 3-spaces in V(K2 : P) outside V(P) that sweep a 5-dimensional set
+([../c30-bounded/](../c30-bounded/README.md), ledger row A5-066), so e(F(I)) = 50 and F(I) = k[y]/K2 for W8; the
+arc searches below reached rank 4 at most on that component.
 
 ## Searched, not reached: V(K2) of Iso and V(K2 : P) of W8
 

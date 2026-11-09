@@ -6,7 +6,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -150,7 +151,38 @@
      "d": 5,
      "k2_count": 952,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1
+      ],
+      "fiber": "E8-bar -> N-",
+      "flip": [
+       "t8",
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 6,
@@ -174,7 +206,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -263,7 +296,38 @@
      "d": 5,
      "k2_count": 952,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       -1,
+       -1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       1
+      ],
+      "fiber": "E8-bar -> N-",
+      "flip": [
+       "t8",
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 6,
@@ -292,7 +356,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -451,6 +516,15 @@
        "mode": "quotient",
        "rank": 495,
        "source": "n16-laptop/e8nm_d4_n16_p32009.json"
+      },
+      {
+       "N": 18,
+       "engine": "7849cbc71ccf1787",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 495,
+       "source": "n18-laptop/e8nm_d4_n18_p32009.json"
       }
      ],
      "status": "certified"
@@ -458,8 +532,18 @@
     {
      "d": 5,
      "k2_count": 952,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 18,
+       "engine": "7849cbc71ccf1787",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 952,
+       "source": "n18-laptop/e8nm_d5_n18_p32009.json"
+      }
+     ],
+     "status": "certified"
     },
     {
      "d": 6,
@@ -488,7 +572,8 @@
     1,
     2,
     3,
-    4
+    4,
+    5
    ],
    "degrees": [
     {
@@ -548,6 +633,15 @@
        "mode": "quotient",
        "rank": 495,
        "source": "n15-laptop/e8nm_d4_n15_p32029_v9m.json"
+      },
+      {
+       "N": 18,
+       "engine": "7849cbc71ccf1787",
+       "header": "48bdcbe0fa17d04c",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 495,
+       "source": "n18-laptop/e8nm_d4_n18_p32029.json"
       }
      ],
      "status": "certified"
@@ -555,8 +649,18 @@
     {
      "d": 5,
      "k2_count": 952,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 18,
+       "engine": "7849cbc71ccf1787",
+       "header": "48bdcbe0fa17d04c",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 952,
+       "source": "n18-laptop/e8nm_d5_n18_p32029.json"
+      }
+     ],
+     "status": "certified"
     },
     {
      "d": 6,
@@ -826,7 +930,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -951,8 +1056,18 @@
     {
      "d": 6,
      "k2_count": 2422,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 19,
+       "engine": "7849cbc71ccf1787",
+       "header": "1f1757d55751f1e3",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 2422,
+       "source": "iso-d6-n19-laptop/isonm_d6_n19_p32009.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "Iso",
@@ -980,7 +1095,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -1060,8 +1176,18 @@
     {
      "d": 6,
      "k2_count": 2422,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 19,
+       "engine": "7849cbc71ccf1787",
+       "header": "28c3c473369c6eda",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 2422,
+       "source": "iso-d6-n19-laptop/isonm_d6_n19_p32029.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "Iso",
@@ -1697,7 +1823,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -1854,7 +1981,31 @@
      "d": 6,
      "k2_count": 665,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     }
    ],
    "fiber": "X+",
@@ -1867,7 +2018,9 @@
     1,
     2,
     3,
-    5
+    4,
+    5,
+    6
    ],
    "degrees": [
     {
@@ -1916,7 +2069,31 @@
      "d": 4,
      "k2_count": 240,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     },
     {
      "d": 5,
@@ -1952,7 +2129,31 @@
      "d": 6,
      "k2_count": 665,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     }
    ],
    "fiber": "X+",
@@ -1976,7 +2177,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -2022,6 +2224,15 @@
        "path": "working/distribute/out/a5-xm-d4/xm_p1/d2/receipt-d2.json",
        "rank": 51,
        "sha256": "97f9ed40689d130e043b4a9abfec9e40978db77a905f938288a30404e951da97"
+      },
+      {
+       "N": 8,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 51,
+       "source": "xm-lown/xmnm_d2_n8_p32009.json"
       }
      ],
      "status": "certified"
@@ -2035,6 +2246,33 @@
        "path": "working/distribute/out/a5-xm-d4/xm_p1/d3/receipt-d3.json",
        "rank": 122,
        "sha256": "7b9be151f183d9a37b01a175b3ffaf99b15cc3b34ae3ba19ff8f16a103f18590"
+      },
+      {
+       "N": 11,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 122,
+       "source": "xm-lown/xmnm_d3_n11_p32009.json"
+      },
+      {
+       "N": 12,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 122,
+       "source": "xm-lown/xmnm_d3_n12_p32009.json"
+      },
+      {
+       "N": 13,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 122,
+       "source": "xm-lown/xmnm_d3_n13_p32009.json"
       }
      ],
      "status": "certified"
@@ -2048,6 +2286,24 @@
        "path": "working/distribute/out/a5-xm-d4/xm_p1/d4/receipt-d4.json",
        "rank": 240,
        "sha256": "78251b24736055990db27231ff9f1267692245a8d2a0f2cac259ca0295660f15"
+      },
+      {
+       "N": 15,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 240,
+       "source": "xm-lown/xmnm_d4_n15_p32009.json"
+      },
+      {
+       "N": 16,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 240,
+       "source": "xm-lown/xmnm_d4_n16_p32009.json"
       }
      ],
      "status": "certified"
@@ -2089,8 +2345,18 @@
     {
      "d": 6,
      "k2_count": 665,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 22,
+       "engine": "7849cbc71ccf1787",
+       "header": "f437c9ea4f9e8861",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 665,
+       "source": "xm-lown/xmnm_d6_n22_p32009.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "X-",
@@ -2121,7 +2387,9 @@
     1,
     2,
     3,
-    5
+    4,
+    5,
+    6
    ],
    "degrees": [
     {
@@ -2169,8 +2437,18 @@
     {
      "d": 4,
      "k2_count": 240,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 15,
+       "engine": "7849cbc71ccf1787",
+       "header": "98de6225b05399df",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 240,
+       "source": "d4-p2/xmnm_d4_n15_p32029.json"
+      }
+     ],
+     "status": "certified"
     },
     {
      "d": 5,
@@ -2191,8 +2469,18 @@
     {
      "d": 6,
      "k2_count": 665,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 22,
+       "engine": "7849cbc71ccf1787",
+       "header": "98de6225b05399df",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 665,
+       "source": "xm-lown/xmnm_d6_n22_p32029.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "X-",

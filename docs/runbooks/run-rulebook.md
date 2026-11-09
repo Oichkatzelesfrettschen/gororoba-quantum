@@ -169,3 +169,74 @@ the closest entry and say what changed.
   `sat_with_exp` at Iso k = 5, 3,022 s at 382 MiB; the homogenized saturation took 272 s. Iso k = 3 cost less than
   k = 5 (16 s). The a0 cross-check at Iso k = 3 was stopped at 786 s and the junk split of that run's slice proper hit
   its 1,800 s limit; neither is a required control. Rows added to the measured-combinations table; the Iso k = 4 rows are preregistered and unrun.
+
+### W8 -> N- degree 6, N = 19: export probe on the laptop (sizes the cloud case)
+
+- Question and decisive outcome: the preflight memory and the Singular standard-basis cost of the W8 degree-6 rank at
+  N = 19 (the 3d + 1 law), so the cloud case quotes a measured figure; the probe answers no algebra.
+- Formulation: engine v11 quotient mode with the degree-2 receipt; `--max-gb 1` stops it at the preflight gate after
+  the standard basis, keeping the degree-independent export for the full run.
+- Host and tool versions: the laptop (WSL, 32 threads, 54 GiB), passagemath Singular 4.4.1, the engine's venv.
+- Launch line and environment: `run-w8-d6-export.sh` (retained in
+  `docs/evidence/a5-exceptional-fibers/w8-d6-n19-probe/`) under `systemd-run --user --unit a5-v11-w8-d6-export -p
+  MemoryMax=48G -p MemorySwapMax=0`, `GOROROBA_WORKERS=8`, `MALLOC_ARENA_MAX=2`, timeout 43,200 s.
+- Departures from the foundations: none.
+- Parallelism: one job on the laptop; export chunks run through the engine's worker pool.
+- Memory and time limits: the cgroup cap of 48 GiB; the preflight gate ends the run by design (exit 1).
+- Checkpoints: the export directory keeps `s.txt` and `qB.txt` with their hashes.
+- End state: export kept on the laptop for the full run; records retained; the runner logs the engine status but
+  exits 0 on failure (#793 tracks the fix for new runners).
+- Outcome: standard basis and preflight in 2,773.7 s at 486,608 KiB peak; preflight 375.62 GiB (D = 235,543); peak
+  forecast about 160 GiB, at most about 195 GiB, from the degree-5 term-by-term reading. Case:
+  `docs/evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`.
+
+### W8 -> N- degree-30 component C30: fiber-cone planes over the base locus of the point blowup (bounded check)
+
+- Question and decisive outcome: whether C30 = V(K2 : P) lies in the fiber E0 over the origin. A family of limit planes
+  of cone dimension 6 inside V(K2 : P) and outside V(P) decides it positively (F(I) = k[y]/K2, the degree-6 rank run
+  unnecessary); planes inside V(P), planes outside V(K2), or Jacobian rank below 6 would read the other way.
+- Formulation: the local fiber cone of the pullback ideal at a QRNG point of P(L0) in the point blowup, cut by a
+  transversal slice, read from a two-variable ideal (docs/evidence/a5-exceptional-fibers/structure/c30-bounded/README.md); rejected: the global t-space slice of codimension 5
+  (Bezout bound 131,072 for its degree, no standard basis in 900 s) and the Iso-style one-chart saturation (more than
+  23.5 h and 25.7 GiB on W8).
+- Host and tool versions: build host capsule (10 CPUs visible, 47 GiB), Singular 4.4.1 (passagemath-singular 10.8.13),
+  one thread.
+- Launch line and environment: `sh docs/evidence/a5-exceptional-fibers/structure/c30-bounded/run.sh CASE [LIMIT_S]`, which wraps
+  `systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 timeout -k 10 LIMIT /usr/bin/time -v Singular -q --no-rc`,
+  `MALLOC_ARENA_MAX=2`, `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, stdin from `/dev/null`; local ordering `ds`
+  only for the two-variable ideal of step 4, `dp` elsewhere; `option(prot)` on the global slice.
+- Departures from the foundations: none; the user scope that earlier entries record as failing after the capsule start
+  worked on 2026-11-08, so the cgroup cap is the memory limit here.
+- Parallelism: one single-thread process at a time, except the global slice beside the quick cases (under 0.6 GiB each).
+- Memory and time limits: 8 GiB cgroup cap; 300 s per plane or control, 900 s for the global slice; `exit 124` in
+  `logs/CASE.result` means the limit ended the run, an out-of-memory kill would leave a nonzero exit.
+- Checkpoints: `logs/CASE.result` receives each RESULT line when it exists.
+- End state: logs retained beside the scripts; nothing to deallocate.
+- Outcome: five planes (three at 32009, two at 32029) of 45 to 52 s and 26 MiB each, every one inside V(K2), outside V(P) and
+  V(Lambda), inside V(K2 : P) at 32009, Jacobian rank 6; the controls read as predicted; the global slice stalled
+  (`A5-237`). Rows added to the measured-combinations table of compute-flags.md.
+
+### Iso -> N- degree 6, N = 19: truncated rank against the K2 count on the laptop
+
+- Question and decisive outcome: whether h_6 of the Iso fiber reaches HF(k[y]/K2, 6) = 2,422 at p = 32009. r_19 = 2,422
+  certifies h_6 = 2,422 (A5-119) and extends the N = 3d + 1 law to degree 6; r_19 below 2,422 would leave h_6 open or
+  falsify the law at degree 6.
+- Formulation: engine v11 quotient mode at N = 3d + 1 = 19 in raw mode, every product, because the Iso degree-2
+  receipt has never run; rejected: N = 18 first (the law puts the count at 19, and 18 alone decides nothing).
+- Host and tool versions: the laptop WSL host (substrate row in compute-flags.md), passagemath Singular 4.4.1, the
+  laptop's pinned Python environment.
+- Launch line and environment: `docs/evidence/a5-exceptional-fibers/iso-d6-n19-laptop/run-iso-d6.sh` under a
+  `systemd-run --user` unit: `--quotient --export-chunks 5 --dense-tables-gb 0 --max-gb 47`, `MALLOC_ARENA_MAX=2`,
+  `GOROROBA_WORKERS=8`, `timeout 43200`.
+- Departures from the foundations: none.
+- Parallelism: 8 workers on the laptop's physical cores; the laptop carried no other heavy job.
+- Memory and time limits: the engine's `--max-gb 47` preflight (49.5 GB raw estimate) and the 12 h timeout; neither
+  ended the run.
+- Checkpoints: `out/iso6.events` start and exit lines; the json, time and err files at exit.
+- End state: the four files and the runner copied into the evidence directory and hash-checked against the laptop; the
+  export stays on the laptop.
+- Outcome: wall 1,900.6 s, peak RSS 19.6 GiB, r_19 = 2,422 (blocks 632/610/590/590); h_6 certified at p = 32009.
+- Follow-on unit `a5-v11-iso-d6-next` (`run-iso-d6-next.sh`, same flags): N = 18 at 32009, to test the predicted last
+  jump 169 split 49/42/39/39 (r_18 = 2,253 or the law fails at degree 6), then N = 19 at 32029 to certify A5-125.
+  Outcome: r_18 = 2,253 (583/568/551/551) in 1,173.2 s at 15.4 GiB, as predicted; r_19 = 2,422 at 32029
+  (632/610/590/590) in 1,905.6 s at 19.6 GiB, h_6 certified there.

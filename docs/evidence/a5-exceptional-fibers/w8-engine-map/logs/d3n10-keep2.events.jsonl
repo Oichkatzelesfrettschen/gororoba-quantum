@@ -1,0 +1,51 @@
+{"stage": {"phase": "start", "start_s": 0.0, "wall_s": 0.5, "self_hwm_kib": 72648, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "representatives", "start_s": 0.5, "wall_s": 0.07, "self_hwm_kib": 71896, "self_rss_sampled_max_kib": 71620, "tree_peak_kib": 71620}}
+{"stage": {"phase": "pre-export", "start_s": 0.57, "wall_s": 0.0, "self_hwm_kib": 71896, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "export", "start_s": 0.57, "wall_s": 1.39, "self_hwm_kib": 119552, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "setup", "start_s": 1.96, "wall_s": 0.0, "self_hwm_kib": 120080, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "block_tables", "start_s": 1.96, "wall_s": 0.24, "self_hwm_kib": 127520, "self_rss_sampled_max_kib": 123904, "tree_peak_kib": 123904}}
+{"stage": {"phase": "gvecs", "start_s": 2.2, "wall_s": 0.03, "self_hwm_kib": 126980, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "order_walk", "start_s": 2.23, "wall_s": 0.03, "self_hwm_kib": 101580, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"stage": {"phase": "pre-products", "start_s": 2.26, "wall_s": 0.0, "self_hwm_kib": 101580, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"gen": {"chi": 2, "s": 0.43, "bytes": 128256128, "hwm_minus_rss0_mib": 136.8}}
+{"gen": {"chi": 3, "s": 0.26, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 2, "s": 0.25, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 3, "s": 0.23, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 0, "s": 0.28, "bytes": 128275728, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 1, "s": 0.25, "bytes": 128236528, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 0, "s": 0.26, "bytes": 128275728, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 3, "s": 0.28, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 3, "s": 0.25, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 2, "s": 0.24, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 2, "s": 0.24, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 3, "s": 0.26, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 2, "s": 0.26, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 0, "s": 0.26, "bytes": 128275728, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 1, "s": 0.27, "bytes": 128236528, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 2, "s": 0.24, "bytes": 128256128, "hwm_minus_rss0_mib": 136.5}}
+{"gen": {"chi": 0, "s": 0.21, "bytes": 128275728, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 1, "s": 0.22, "bytes": 128236528, "hwm_minus_rss0_mib": 136.2}}
+{"gen": {"chi": 0, "s": 0.2, "bytes": 128275728, "hwm_minus_rss0_mib": 0.2}}
+{"gen": {"chi": 3, "s": 0.23, "bytes": 128256128, "hwm_minus_rss0_mib": 0.7}}
+{"gen": {"chi": 0, "s": 0.21, "bytes": 128275728, "hwm_minus_rss0_mib": 1.8}}
+{"gen": {"chi": 1, "s": 0.22, "bytes": 128236528, "hwm_minus_rss0_mib": 2.6}}
+{"gen": {"chi": 2, "s": 0.22, "bytes": 128256128, "hwm_minus_rss0_mib": 1.7}}
+{"gen": {"chi": 3, "s": 0.22, "bytes": 128256128, "hwm_minus_rss0_mib": 3.2}}
+{"stage": {"phase": "products", "start_s": 2.26, "wall_s": 17.83, "self_hwm_kib": 257016, "self_rss_sampled_max_kib": 257016, "tree_peak_kib": 257016}}
+{"stage": {"phase": "stack", "start_s": 20.09, "wall_s": 0.03, "self_hwm_kib": 256340, "self_rss_sampled_max_kib": 0, "tree_peak_kib": 0}}
+{"ins": [2, 147, 2002, 0, 143, 0.172, 14]}
+{"ins": [2, 147, 2002, 143, 286, 0.189, 6]}
+{"ins": [2, 141, 2002, 286, 417, 0.191, 6]}
+{"ins": [2, 141, 2002, 417, 545, 0.164, 4]}
+{"ins": [2, 156, 2002, 545, 690, 0.276, 18]}
+{"ins": [2, 156, 2002, 690, 833, 0.205, 0]}
+{"ins": [2, 156, 2002, 833, 973, 0.195, 9]}
+{"ins": [2, 973, 2002, 973, 1248, 0.735, 76]}
+{"ins": [2, 973, 2002, 1248, 1248, 0.081, 0]}
+{"ins": [2, 166, 2002, 1248, 1251, 0.136, -1]}
+{"ins": [2, 166, 2002, 1251, 1251, 0.091, 0]}
+{"ins": [2, 3, 2002, 1251, 1251, 0.035, 0]}
+{"ins": [2, 3, 2002, 1251, 1251, 0.032, 0]}
+{"ins": [2, 156, 2002, 1251, 1407, 0.241, 19]}
+{"ins": [2, 70, 2002, 1407, 1408, 0.196, 0]}
+{"stage": {"phase": "closure+final", "start_s": 20.12, "wall_s": 3.26, "self_hwm_kib": 281928, "self_rss_sampled_max_kib": 249332, "tree_peak_kib": 249332}}

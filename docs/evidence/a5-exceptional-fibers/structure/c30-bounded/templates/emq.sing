@@ -1,0 +1,17 @@
+ring ru=@P@,(u2,u4,u5,u6,u7),dp;
+setring r;
+ideal G2=jet(G,2); int lowTerms=size(jet(G,1)); int nG2=size(G2);
+setring ru;
+number n4=4;
+poly t9=(1/n4)*(-u2^2-u4^2+u5^2+u6^2-u7^2);
+map mu=r,1,u2,u4,u5,u6,u7,t9;
+ideal Gu=mu(G2);
+intvec u0=@U@;
+map pt=ru,u0[1],u0[2],u0[3],u0[4],u0[5];
+ideal y0=pt(Gu);
+matrix Jc=jacob(Gu); matrix Jc0=pt(Jc);
+matrix Big[24][6];
+int i; int k;
+for (i=1;i<=24;i++) { Big[i,1]=y0[i]; for (k=1;k<=5;k++) { Big[i,k+1]=Jc0[i,k]; } }
+res("on control: generators of G with a term of degree below 2 (0 required): "+string(lowTerms)+"; generators with a nonzero degree-2 part: "+string(nG2)); res("on control: rank of [G_2(u) | dG_2/du] over the exceptional quadric (6: a 5-dimensional image): "+string(rank(Big)));
+intvec yv; for (i=1;i<=24;i++) { yv[i]=int(leadcoef(y0[i])); }

@@ -1,0 +1,15 @@
+family PA stage 2
+binary Singular (passagemath venv)
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
+memory cap 16G (cgroup MemoryMax, MemorySwapMax=0), wall cap 7200 s
+2026-11-08T14:48:29Z
+RESULT stage 2
+RESULT generators_J 4
+RESULT generators_P 107
+RESULT J_dim 12
+RESULT J_mult 4
+RESULT J_hilb1 1, -2, -1, 4, -1, -2, 1, 0
+RESULT J_hilb2 1, 2, 1, 0
+RESULT J_equals_radical_of_J 1
+exit status 124
+2026-11-08T16:48:29Z

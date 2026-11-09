@@ -1,0 +1,33 @@
+         10047216 function calls (10046136 primitive calls) in 60.600 seconds
+
+   Ordered by: internal time
+   List reduced from 642 to 25 due to restriction <25>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      318   24.798    0.078   24.798    0.078 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:174(exact_mod_matmul)
+      381    8.939    0.023   12.111    0.032 {method 'acquire' of '_thread.lock' objects}
+     4624    3.702    0.001    6.568    0.001 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:758(sparse_mod_matmul)
+      120    3.630    0.030   15.676    0.131 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:317(insert)
+44445/44340    2.470    0.000    2.913    0.000 {built-in method _io.open}
+43430/43406    2.345    0.000    8.249    0.000 {method 'read' of '_io.BufferedReader' objects}
+    47460    1.931    0.000    3.953    0.000 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:152(parse_poly)
+      120    1.031    0.009   12.422    0.104 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:312(reduce)
+     3849    0.970    0.000    0.970    0.000 {built-in method scipy.sparse._sparsetools.csc_matvecs}
+44421/44405    0.906    0.000    1.585    0.000 {method '__exit__' of '_io._IOBase' objects}
+       24    0.786    0.033    4.441    0.185 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:845(generator_blocks)
+     8643    0.768    0.000    0.768    0.000 {method 'ravel' of 'numpy.ndarray' objects}
+    14748    0.764    0.000    0.764    0.000 {built-in method numpy.array}
+       96    0.622    0.006    0.676    0.007 {built-in method posix.listdir}
+       94    0.542    0.006   27.856    0.296 /usr/lib/python3.14/threading.py:337(wait)
+       95    0.503    0.005    4.150    0.044 /usr/lib/python3.14/site-packages/psutil/_pslinux.py:1562(ppid_map)
+    43914    0.312    0.000    0.312    0.000 {method 'split' of 'bytes' objects}
+     4799    0.280    0.000    0.280    0.000 {built-in method numpy.zeros}
+      334    0.265    0.001    0.265    0.001 {method 'tolist' of 'numpy.ndarray' objects}
+    47460    0.241    0.000    0.241    0.000 {method 'fullmatch' of 're.Pattern' objects}
+       94    0.212    0.002   70.550    0.751 /usr/lib/python3.14/threading.py:651(wait)
+      160    0.201    0.001    0.267    0.002 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:188(rank)
+      871    0.196    0.000    0.537    0.001 docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py:199(flip)
+       95    0.196    0.002    8.598    0.091 /usr/lib/python3.14/site-packages/psutil/__init__.py:950(children)
+  1113850    0.189    0.000    0.189    0.000 {method 'isdigit' of 'str' objects}
+
+
