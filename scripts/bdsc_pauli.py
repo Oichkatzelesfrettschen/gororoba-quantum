@@ -40,8 +40,10 @@ at most 4 words, and 28 words need at least 7 settings. The record enumerates th
 count: the fewest CX gates in a circuit of single-qubit Cliffords and CX on q0..q2 after which the
 four words are qubit-wise commuting, so a local rotation then reads all four. A 4-set generates the
 stabilizer group of a three-qubit stabilizer state up to signs, and undoing that state's
-entanglement takes 0 (product), 1 (one Bell pair) or 2 (GHZ class) CX. The chosen cover minimizes
-the total CX over all minimum covers; the counts are logical, before routing on a coupling map.
+entanglement takes 0 (product), 1 (one Bell pair) or 2 (GHZ class) CX. Every 4-set's circuit is
+rebuilt from gate matrices and checked to leave its words diagonal after the readout rotations. The
+chosen cover minimizes the total CX over all minimum covers; the counts are logical, before routing
+on a coupling map.
 """
 
 from __future__ import annotations
@@ -363,11 +365,10 @@ def commuting_cover(words: list[str]) -> dict[str, Any]:
     search(0, ())
     require(bool(covers) and all(len(c) == 7 for c in covers), "exact covers by commuting 4-sets are not all of 7")
     settings = parallel.ordered_map(least_cx, quads, min_items=1)
+    parallel.ordered_map(verify_setting, settings, min_items=1)
     totals = [sum(settings[k]["cx"] for k in c) for c in covers]
     best = min(totals)
     chosen = min(c for c, total in zip(covers, totals, strict=True) if total == best)
-    for k in chosen:
-        verify_setting(settings[k])
     return {
         "word_set": "Y3 (x) Q, Q^T = -Q (odd number of Y letters in Q)",
         "largest_commuting_set": 4,
