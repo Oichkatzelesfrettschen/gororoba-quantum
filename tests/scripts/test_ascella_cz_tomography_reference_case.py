@@ -3,6 +3,7 @@ fixtures."""
 
 from __future__ import annotations
 
+import json
 import math
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -42,6 +43,7 @@ def complete_run(job: str = "job-00", status: str = "completed", missing: int = 
         "tallies": tallies,
         "uncounted": {"error": error},
         "perfs": {"HOM (%)": 91.0, "Transmittance (%)": 5.51},
+        "short": [],
         "submitted_utc": SUBMITTED.isoformat(timespec="seconds"),
     }
 
@@ -235,3 +237,57 @@ def test_the_seed_plan_is_fresh_and_disjoint() -> None:
 @pytest.mark.parametrize("job", case.JOBS)
 def test_the_retained_request_rebuilds(job: str) -> None:
     case.check_job(job)
+
+
+def test_job_01_waits_for_job_00_quotas() -> None:
+    """A job-00 setting that stopped at max_shots before its max_samples cannot authorize job-01."""
+    with pytest.raises(case.qd_platform.PlatformError, match="short of their max_samples"):
+        case.admit("job-01", planned_fixture("job-01", 91.0), {**complete_run(), "short": ["in-00-XX"]}, LATER)
+
+
+def attempt(runs: Path, stamp: str, job: str, iterations: list[dict[str, Any]] | None) -> None:
+    run = runs / f"{stamp}-qpu_ascella-{case.FAMILY}-{job}"
+    run.mkdir()
+    (run / "submission.json").write_text("{}")
+    if iterations is not None:
+        (run / "results.json").write_text(json.dumps({"iterations": iterations}))
+
+
+def test_the_stopping_rule_counts_earlier_attempts(tmp_path: Path) -> None:
+    case.prior_attempts("job-00", tmp_path)
+    (tmp_path / f"0-qpu_ascella-{case.FAMILY}-job-00").mkdir()
+    case.prior_attempts("job-00", tmp_path)
+    attempt(tmp_path, "1", "job-00", [{"error": "x"}])
+    case.prior_attempts("job-00", tmp_path)
+    case.prior_attempts("job-01", tmp_path)
+    attempt(tmp_path, "2", "job-00", [{"error": "x"}])
+    with pytest.raises(RuntimeError, match="2 attempts were posted"):
+        case.prior_attempts("job-00", tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("iterations", "match"), [(None, "is not collected"), ([{"counts": {"|1,0>": 3}}], "returned counts")]
+)
+def test_an_uncollected_or_counted_attempt_ends_the_job(
+    tmp_path: Path, iterations: list[dict[str, Any]] | None, match: str
+) -> None:
+    attempt(tmp_path, "1", "job-00", iterations)
+    with pytest.raises(RuntimeError, match=match):
+        case.prior_attempts("job-00", tmp_path)
+
+
+def test_a_refused_submit_leaves_no_run_directory(tmp_path: Path) -> None:
+    run = tmp_path / "run"
+    run.mkdir()
+    for name in ("cases.json", "circuit.json"):
+        (run / name).write_text("{}")
+    case.discard_unposted(run)
+    if run.exists():
+        raise AssertionError("the unposted run directory remains")
+    kept = tmp_path / "kept"
+    kept.mkdir()
+    (kept / "cases.json").write_text("{}")
+    (kept / "job-body.json").write_text("{}")
+    case.discard_unposted(kept)
+    if not (kept / "job-body.json").exists():
+        raise AssertionError("a run directory with a checkpoint was removed")

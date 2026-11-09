@@ -90,6 +90,10 @@ TOMOGRAPHY_RUNS = (
 SUBMIT_STATUSES = ("available", "running")
 SUBMIT_WRAPPER = "scripts/ascella_cz_tomography_reference_case.py --submit"
 IDLE_COUNTERS = ("num_concurrent_jobs", "num_jobs_in_queue", "num_running_qt_jobs")
+RUNS_DIR = ROOT / "results/quandela/runs"
+# Attempts of one job the stopping rule admits: the first, and one resubmission after a terminal error that returned
+# no counted iteration.
+MAX_ATTEMPTS = 2
 # HOM points of the forecast curve, in percent: the admitted region above qd_platform.HOM_FLOOR.
 FORECAST_HOMS = (90.5, 91.0, 91.5, 92.0, 92.5, 93.0, 94.0)
 FORECAST_RECORD_VARIANT = "source, loss and dark counts"
@@ -321,7 +325,7 @@ def submission_policy(job: str) -> dict[str, Any]:
         "expected_seconds": expected_seconds(job),
         "hom_percent": {"above": qd_platform.HOM_FLOOR},
         "transmittance_percent": {
-            "at_least": round(transmittance_floor(job, clock), 4),
+            "at_least": math.ceil(transmittance_floor(job, clock) * 1e4) / 1e4,
             "rule": f"every iteration at its max_shots stays within max_duration {MAX_DURATION} s at clock "
             f"{clock:g} MHz, iterations taking the retained tomography's recorded seconds",
         },
@@ -666,11 +670,32 @@ def poolable(job: str, figures: Mapping[str, float], predecessor: Mapping[str, A
 
 
 def load_run(run: Path) -> dict[str, Any]:
+    """One collected run through tomo.load_run, with its terminal status and the settings that stopped short of their
+    max_samples (an iteration ends at max_samples or max_shots, whichever comes first)."""
     loaded = tomo.load_run(run, FAMILY, FAMILY_DIR, JOBS)
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
     status = results.get("status")
     loaded["status"] = status.get("status") if isinstance(status, dict) else None
+    quotas = {s["name"]: s["max_samples"] for s in json.loads((run / "cases.json").read_text())["settings"]}
+    loaded["short"] = sorted(name for name, t in loaded["tallies"].items() if t["samples"] < quotas[name])
     return loaded
+
+
+def prior_attempts(job: str, runs_dir: Path = RUNS_DIR) -> None:
+    """Refuse a further attempt of job under the stopping rule: a posted attempt that is not collected, or that
+    returned a counted iteration, ends the job's attempts, and so do MAX_ATTEMPTS posted attempts. A directory with no
+    posting checkpoint (submission.json, submission-state.json or job-body.json) is no attempt."""
+    posted = []
+    for run in sorted(runs_dir.glob(f"*-{PLATFORM.replace(':', '_')}-{FAMILY}-{job}")):
+        if not any((run / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
+            continue
+        posted.append(run)
+        name = run.relative_to(runs_dir)
+        require((run / "results.json").exists(), f"{job}: the earlier attempt {name} is not collected")
+        results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+        counted = [e for e in results.get("iterations") or [] if isinstance(e, dict) and e.get("counts")]
+        require(not counted, f"{job}: the earlier attempt {name} returned counts, so the job is never resubmitted")
+    require(len(posted) < MAX_ATTEMPTS, f"{job}: {len(posted)} attempts were posted, the most the stopping rule admits")
 
 
 def predecessor_complete(loaded: Mapping[str, Any]) -> None:
@@ -683,6 +708,8 @@ def predecessor_complete(loaded: Mapping[str, Any]) -> None:
         len(loaded["tallies"]) == count and uncounted == 0,
         f"{JOBS[0]} counted {len(loaded['tallies'])} of {count} iterations with {uncounted} uncounted",
     )
+    short = loaded.get("short", [])
+    require(not short, f"{JOBS[0]} stopped {len(short)} settings short of their max_samples: {short[:4]}")
 
 
 def live_read(job: str, planned: Mapping[str, Any], processor: Mapping[str, Any]) -> None:
@@ -735,6 +762,10 @@ class PolicyGate:
 
     def check(self, planned: dict[str, Any]) -> None:
         admit(self.job, planned, self.predecessor)
+        try:
+            prior_attempts(self.job)
+        except RuntimeError as error:
+            raise qd_platform.PlatformError(str(error)) from None
         try:
             live_read(self.job, planned, qd_platform.get(qd_platform.platform_route(PLATFORM)))
         except (RuntimeError, KeyError, TypeError, ValueError) as error:
@@ -792,9 +823,25 @@ def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
     reviewed = json.loads((out / "plan-read.json").read_text(encoding="utf-8"))
     verify = SubmissionGate(job, after, reviewed)
     run = run_directory(job)
-    receipt = qd_platform.submit(run, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify)
+    try:
+        receipt = qd_platform.submit(
+            run, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify
+        )
+    except (RuntimeError, qd_platform.PlatformError):
+        discard_unposted(run)
+        raise
     print(f"submitted {job}: {receipt['job_id']} in {run.relative_to(ROOT)}")
     return 0
+
+
+def discard_unposted(run: Path) -> None:
+    """Remove a run directory that holds only the two request copies run_directory wrote: a refused submit posted
+    nothing and wrote no checkpoint, and a directory without submission.json fails qd_records.read_run."""
+    copies = {"cases.json", "circuit.json"}
+    if {entry.name for entry in run.iterdir()} <= copies:
+        for name in copies & {entry.name for entry in run.iterdir()}:
+            (run / name).unlink()
+        run.rmdir()
 
 
 def run_directory(job: str) -> Path:
@@ -840,6 +887,11 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     process = tomo.tomography(eligible, samples, shots, scale, np.random.default_rng(seed))
     process["pooling"] = pool
     process["status"] = pool["status"]
+    short = sorted(name for entry in loaded for name in entry.get("short", []))
+    if short:
+        process["status"] = "descriptive"
+        process["short_settings"] = short
+        pool["reason"] = f"{len(short)} settings stopped at max_shots short of their max_samples"
     record["process"] = process
     return record
 

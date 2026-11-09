@@ -72,7 +72,8 @@ about 301 s, past `max_duration`, so the retained design would no longer fit.
 ## The design
 
 Every iteration shares one shot cap, `SHOT_CAP` = 1,567,000. Each setting takes its own `max_samples`: the largest
-multiple of 100 whose shots, scaled from Perceval's estimate at 4000 samples
+multiple of 100 whose shots, scaled linearly from Perceval's estimate at 4000 samples (Perceval rounds n / p, so the
+scaling holds to under one shot)
 ([shot-estimate.json](../../results/quandela/cases/ascella_cz_tomography_reference/shot-estimate.json), the same
 perfs as the platform read) and multiplied by the retained margin of 1.25, stay within the cap. The retained runs
 measured 0.89 to 1.18 times Perceval's per-setting estimate, so the margin of 1.25 covers them.
@@ -199,6 +200,11 @@ the curve gives a floor for the outcome rather than a prediction of it.
   after the gate passes again. A second error stops the case.
 - A job that returned counts is never resubmitted under this approval.
 - A truncation leaves the pool undecided. Running the missing settings is a new written case.
+- A setting that stops at its `max_shots` before its `max_samples` returns counts, and the analysis reads its actual
+  samples and shots, but the pool is then reported as descriptive and job-01 is not admitted after such a job-00.
+- `--submit` enforces the attempt limit: it refuses while an earlier posted attempt of the job is uncollected or
+  returned counts, and after two posted attempts. A refused `--submit` removes the run directory it created, which
+  holds only the request copies.
 - A plan that reads 90 % or below sends nothing, and the case retries it at a later calibration. The HOM floor is
   never waived.
 - A pool decided by the retained case's tolerances (HOM within 1.0 point, transmittance within 0.3 points,
@@ -221,7 +227,7 @@ CASE=scripts/ascella_cz_tomography_reference_case.py
 "$PYTHON" "$CASE" --submit job-00 --approval "APPROVAL TEXT"
 RUN_00=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-job-00  # printed by --submit
 "$PYTHON" scripts/qd_platform.py collect "$RUN_00" --timeout 3600
-"$PYTHON" "$CASE" --preflight job-01 --after RUN_00
+"$PYTHON" "$CASE" --preflight job-01 --after "$RUN_00"
 "$PYTHON" "$CASE" --submit job-01 --approval "APPROVAL TEXT" --after "$RUN_00"
 RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-job-01  # printed by --submit
 "$PYTHON" scripts/qd_platform.py collect "$RUN_01" --timeout 3600
@@ -248,5 +254,10 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
   `2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12` returned every iteration at its own budget (1500 to 60000
   samples, 9 of 9). No qpu:ascella template job has carried unequal budgets. The analysis reads each iteration's
   actual samples and shots, and the caps bound time and bill whatever the service does with the samples.
-- The rate of 3.069 s per iteration comes from two runs of one template at 4000 samples. Iterations that spend up
+- The rate of 3.069 s per iteration comes from two runs of one template at 4000 samples. The time model adds the
+  shot time on top of it, which overstates the measured clock: the two retained jobs used 13.6 and 15.4 million
+  shots and both recorded 221 s, and the runbook's qpu:ascella row reads about 3.0 s per iteration whatever its
+  shots. The time to reach a cap of 1.5 million shots varies by about 0.1 % (a sum of geometric attempt counts),
+  so the remaining risk is a calibration that moves after the in-lock read. The transmittance floor is rounded up to
+  four decimals. Iterations that spend up
   to 1,567,000 shots assume that acquisition adds to compilation, which is the conservative reading.

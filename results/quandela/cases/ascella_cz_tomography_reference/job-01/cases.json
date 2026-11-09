@@ -35815,7 +35815,7 @@
    "above": 90.0
   },
   "transmittance_percent": {
-   "at_least": 5.5086,
+   "at_least": 5.5087,
    "rule": "every iteration at its max_shots stays within max_duration 300 s at clock 13.33 MHz, iterations taking the retained tomography's recorded seconds"
   },
   "statuses": "Explorer row and processor read available or running, while the token counts no running, no queued and no running quantum-task job",
