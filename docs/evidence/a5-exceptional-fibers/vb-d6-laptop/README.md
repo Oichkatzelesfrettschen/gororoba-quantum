@@ -15,8 +15,10 @@ when it ran, and the workstation budget is now 52.5 GB RAM plus 13.4 GiB GPU mem
 | 32029 | 20 | 420 | 138 / 98 / 92 / 92 | 10,523.5 s | 42.0 s | 125.1 s | 10,696.1 s, 1.65 GiB |
 | 32009 | 19 | 420 | 138 / 98 / 92 / 92 | 7,330.5 s | 19.3 s | 60.4 s | 7,413.8 s, 1.24 GiB |
 | 32029 | 19 | 420 | 138 / 98 / 92 / 92 | 7,113.4 s | 21.1 s | 64.3 s | 7,202.3 s, 1.24 GiB |
+| 32009 | 18 | 407 | 131 / 92 / 92 / 92 | 2,540.8 s | 18.0 s | 43.5 s | 2,605.4 s, 0.97 GiB |
 
 r_20 = 420 = HF(k[y]/K2, 6) certifies h_6 = 420 at p = 32009 (ledger A5-107) and at p = 32029 (A5-113). The export
 takes 98.6 percent of the wall time, so engine v12 and the GPU path leave these cells unchanged. r_19 = 420 at both primes
 (the N = 19 rows, one queue per prime, events in [`cells.events`](cells.events) and [`cells-p2.events`](cells-p2.events)),
-so the closing order is at most 19 = 3d + 1; N = 18 decides whether it equals 19 and fixes the last jump.
+so the closing order is at most 19 = 3d + 1. At p = 32009, r_18 = 407 < 420: the closing order is exactly 19 and the
+last jump is 13, split 7 / 6 / 0 / 0 (ledger A5-260, A5-269); N = 18 at p = 32029 is running.
