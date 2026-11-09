@@ -1,7 +1,7 @@
 # A_5 exceptional fibers: goal, status by layer, and what the 2026-11-09 results change
 
 This page walks through what the A_5 fiber program is for, where each layer stands by count of the claim ledger
-([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 269 rows after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md)), and
+([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 274 rows after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md)), and
 what the results of 2026-11-09 imply. The measurements and methods live in
 [a5-exceptional-fiber-findings.md](a5-exceptional-fiber-findings.md); this page counts and interprets them.
 
@@ -21,7 +21,7 @@ smaller orbit Z, which 8-dimensional kernels arise as limits. The program answer
    degree; it is proved by a structural argument (the C30 argument for W8), not by more ranks.
 3. **Characteristic 0.** Every certificate is a statement over F_32009 or F_32029; the claim over Q(i) needs a
    specialization argument.
-4. **The attaching datum itself.** The limiting kernel 8-planes and the real arcs that realize them (ledger A5-029).
+4. **The attaching datum itself.** The limiting kernel 8-planes and the real arcs that realize them (ledger A5-272 to A5-276, one row per certified arc family; formerly A5-029).
    G is the Pfaffian kernel-coordinate ideal, so Proj F(I) is the complex kernel limit set in Pfaffian coordinates
    (`working/decision-record.md`, section 1), given the holomorphic-kernel identification, which the kernel-attachments
    record establishes on its retained samples only (row 2h); layer 4 adds the two-sided real certificate and the
@@ -29,14 +29,14 @@ smaller orbit Z, which 8-dimensional kernels arise as limits. The program answer
 
 ## Status by layer (ledger count, 2026-11-09)
 
-Ledger totals: 90 certified, 39 proved, 58 survives, 46 refuted, 9 superseded, 7 rejected, 15 open, 5 boundary.
+Ledger totals: 90 certified, 39 proved, 58 survives, 46 refuted, 10 superseded, 7 rejected, 19 open, 5 boundary.
 
 | Layer | Count | Share | Open items |
 |---|---|---|---|
 | Per-degree h_d, degrees 1 to 6, sixteen fiber-and-prime rows (X+, X-, Iso, W8 -> N+-, E8-bar -> N+-, E8-bar -> VB at both primes) | 92 of 96 cells certified or proved (W8 degree 6 by C30) | 96 percent | E8-bar -> N+- degree 6 at both primes (A5-083, A5-089, A5-095, A5-101): 1526 <= h_6 <= 1666 |
 | All-degree F(I) = k[y]/K2, five fiber classes with a claim (A5-005 VB, A5-006 X+ -> N+ and X- -> N-, A5-007 Iso, A5-008 W8, A5-009 E8-bar -> N+-) | 1 proved (W8, A5-066); 4 survive every measured degree | 20 percent | Iso local route (A5-067); E8-bar membership on sqrt(K2)/K2; the VB degree-3 component (A5-016); X+ -> N+ has no route (its K2 ring is not Cohen-Macaulay, A5-019) |
 | Characteristic 0 | the kernel-attachments track proves its completed fibers over Q(i) (14 incidences of nullity 8 to 12 and eight nullity-16 rows); for the ten fiber-track pairs the germ ideal J reduces well at both primes (A5-247); the opposite-sign X fibers are proved over Q(i) in every degree, F(I) = Q(i)[y1, y2, y3] (A5-270); J + m^N reduces well for X- -> N- at N = 4, 8, 11, 15 (A5-249); the degree-2 relations over Q(i) are running (A5-248) | partial | the relations q(G) in J + m I^2 over Q(i) and good reduction of J + m^N; then each certified h_d holds over Q(i) ([a5-char0-and-kernel-limits.md](a5-char0-and-kernel-limits.md)) |
-| Attaching datum: kernel-plane limits along the arcs | complex limit sets computed for 14 incidences of nullity 8 to 12 and eight nullity-16 rows (kernel-attachments track) and for W8 -> N+- modulo p (V(K2) = C20 cup C30, A5-066); A5-036 refuted; no two-sided real certificate for any incidence | complex part started; real part not started | the exact Plucker limit along each certified arc family (A5-029) and the real curve-selection certificate |
+| Attaching datum: kernel-plane limits along the arcs | complex limit sets computed for 14 incidences of nullity 8 to 12 and eight nullity-16 rows (kernel-attachments track) and for W8 -> N+- modulo p (V(K2) = C20 cup C30, A5-066); A5-036 refuted; no two-sided real certificate for any incidence | complex part started; real part not started | the exact Plucker limit along each certified arc family (A5-272 to A5-276, formerly A5-029; A5-250) and the real curve-selection certificate |
 
 Ledger row A5-006 named the 3-generator pair X+ -> N-, X- -> N+ while its basis (h_4 = 240) belongs to the
 15-generator pair X+ -> N+, X- -> N-; this change corrects the row. The counts replace an earlier estimate of 75 to 85 percent for the first layer, which was low: only E8-bar degree 6
@@ -76,7 +76,7 @@ remains there. Reproduce the counts with
 | 2 | Iso local route by plane family on the point blowup | OCI A1 or laptop | A5-067, then A5-007 |
 | 2 | Exact torus over Q, weighted standard basis of J | laptop CPU, OCI | the export wall for E8-bar and X- degree 7 |
 | 3 | Degree-2 K2 over Q(i) by rational reconstruction from both primes, exact membership | laptop | the first characteristic-0 statement |
-| 4 | Kernel-plane limits along the certified arc families (W8, Iso, X, E8-bar -> N+-, VB degree-4 component, whose family is an interpolant of numerical Hensel lifts, A5-015) | laptop | A5-029, the attaching datum |
+| 4 | Kernel-plane limits along the certified arc families (W8, Iso, X, E8-bar -> N+-, VB degree-4 component, whose family is an interpolant of numerical Hensel lifts, A5-015) | laptop | A5-272 to A5-276, the attaching datum |
 
 Layer 4's real certificate has had no computation yet, and it is the part the registry claim needs; the arc families it runs along are
 already certified for most pairs, so it can start without waiting for layers 2 and 3.

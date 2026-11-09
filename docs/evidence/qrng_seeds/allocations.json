@@ -1284,6 +1284,20 @@
    "index": 1000
   },
   {
+   "path": "docs/evidence/a5-exceptional-fibers/engine-v12/gpu-rref-probe/rref_probe.py",
+   "name": "SEED",
+   "value": 36574,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1001
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/engine-v12/gpu-rref-probe/pluq.py",
+   "name": "VERIFY_SEED",
+   "value": 11166,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 2
+  },
+  {
    "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
    "name": "matrix_seed",
    "value": 64823,

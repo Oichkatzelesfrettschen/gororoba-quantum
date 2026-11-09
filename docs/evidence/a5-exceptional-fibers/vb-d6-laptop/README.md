@@ -22,3 +22,12 @@ takes 98.6 percent of the wall time, so engine v12 and the GPU path leave these 
 (the N = 19 rows, one queue per prime, events in [`cells.events`](cells.events) and [`cells-p2.events`](cells-p2.events)),
 so the closing order is at most 19 = 3d + 1. At p = 32009, r_18 = 407 < 420: the closing order is exactly 19 and the
 last jump is 13, split 7 / 6 / 0 / 0 (ledger A5-260, A5-269); N = 18 at p = 32029 is running.
+
+Degree 5, run to test the preregistered jump law A5-269 (`vbp1`/`vbp2` headers as above): r_15 = 255 with blocks
+75 / 50 / 65 / 65 at both primes (444 s and 452 s wall, 0.33 GiB peak), against the retained r_16 = 266 (80 / 56 / 65 / 65,
+`../d5-p2/vb_d5_n16.json`): a last jump of 11 = 2d + 1 split 5 / 6 / 0 / 0, the predicted split. N = 16 at
+p = 32009 is running.
+
+Known runner defect: `run-cells.sh` and `run-cells-p2.sh` write the engine record straight to `out/<tag>.json` and
+skip a cell whose record is nonempty, so an interrupted write would read as finished on retry ([issue 802](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/802)).
+Every retained record here parsed and passed the registry's engine and header digest checks.

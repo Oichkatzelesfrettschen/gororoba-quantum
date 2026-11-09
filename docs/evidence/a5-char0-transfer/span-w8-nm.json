@@ -1,0 +1,10 @@
+{
+ "slug": "w8-nm",
+ "field": "Q(i)",
+ "fullf_count": 126,
+ "g_count": 24,
+ "remainders": 0,
+ "dropped_last_generator_remainders": 2,
+ "wall_seconds": 53.9,
+ "verdict": "G generates (FullF) at the origin"
+}

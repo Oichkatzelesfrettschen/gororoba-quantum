@@ -1,0 +1,10 @@
+{
+ "slug": "xm-nm",
+ "field": "Q(i)",
+ "fullf_count": 126,
+ "g_count": 15,
+ "remainders": 0,
+ "dropped_last_generator_remainders": 4,
+ "wall_seconds": 9.4,
+ "verdict": "G generates (FullF) at the origin"
+}
