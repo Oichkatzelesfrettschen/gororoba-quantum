@@ -1,5 +1,8 @@
 # A_5 exceptional fibers: measured results, tested hypotheses and what survives
 
+The goal, the status of each layer by ledger count and what the latest results change:
+[a5-exceptional-fiber-status.md](a5-exceptional-fiber-status.md).
+
 The open claim `dimension32-global-topology` needs the attaching data of the A_5 zero-divisor strata: how the
 kernel fibers on a nullity-8 orbit closure Y specialize as a point of Y approaches a smaller orbit Z in its closure
 ([kernel-bundles program](../../design/a5-kernel-bundles-nullity8-program.md)). The algebraic object is the
