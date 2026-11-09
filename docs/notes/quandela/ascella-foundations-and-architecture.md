@@ -195,7 +195,7 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
 - **Interferometer size**: 12 optical waveguide modes in a folded Clements rectangular mesh topology.
 - **PIC insertion and transmission**: $45\%$.
 - **Components**: 132 directional couplers and 126 thermo-optic phase shifters ($\phi_0 \dots \phi_{125}$).
-  - Directional coupler reflectivity: $R = (56.8 \pm 0.6)\%$, corresponding to calibrated rotation angles
+  - Directional coupler reflectivity: $R = (56.8 \pm 0.6)\%$ (Supplementary Section 2; the main text states $(56.7 \pm 0.6)\%$), corresponding to calibrated rotation angles
     $\theta = 2 \arccos\sqrt{R} \in [1.4204, 1.4739]\text{ rad}$ (mean $1.4347\text{ rad}$).
   - Static phases: $\mathbf{b} = (0.1 \pm 1.2)\text{ rad}$.
   - Microheater efficiency: diagonal crosstalk element $A_{ii} = (0.034 \pm 0.001)\text{ rad/V}^2$, requiring
@@ -377,7 +377,7 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *Definitive review of quantum dot microcavity single-photon generation, dephasing mechanisms, and device design.*
 16. **Ollivier, H., et al.** (2020). "Reproducibility of high-indistinguishability single-photon sources". *ACS Photonics* 7, 1050-1059. DOI: 10.1021/acsphotonics.9b01805. arXiv: 1910.14589.
     - *Industrial reproducibility and stability study of deterministic micropillar sources feeding Quandela processors.*
-17. **Thomas, S. E., et al.** (2021). "Bright source of indistinguishable single photons in the yellow-green spectral window" / near-resonant acoustic phonon assisted excitation. *Phys. Rev. Lett.* 126, 233601. DOI: 10.1103/PhysRevLett.126.233601.
+17. **Thomas, S. E., et al.** (2021). "Bright Polarized Single-Photon Source Based on a Linear Dipole". *Phys. Rev. Lett.* 126, 233601. DOI: 10.1103/PhysRevLett.126.233601.
     - *Primary reference for Ascella's optical excitation scheme (Maring et al. ref 26): near-resonant excitation assisted by longitudinal-acoustic (LA) phonons, achieving high photon purity and indistinguishability without cross-polarization filtering losses.*
 
 ### 5.4 Ascella & Belenos Platform Publications
@@ -387,8 +387,8 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *Establishes genuine multi-photon indistinguishability benchmarks for Quandela's optical processors.*
 20. **Pont, M., et al.** (2022). "High-fidelity four-photon GHZ states on a chip". arXiv: 2211.15626.
     - *Source of Ascella's demultiplexer architecture: an active optical demultiplexer generating a spatial train of synchronized single photons from a high-repetition-rate single-photon source.*
-21. **Taballione, C., et al.** (2022). "Universal 20-mode quantum photonic processor with low loss". arXiv: 2203.01801.
-    - *Large-scale universal integrated photonic processor benchmark providing loss and scaling comparisons for Ascella and Belenos.*
+21. **Taballione, C., et al.** (2021). "A universal fully reconfigurable 12-mode quantum photonic processor". *Mater. Quantum Technol.* 1, 035002. DOI: 10.1088/2633-4356/ac12b4.
+    - *The 12-mode stoichiometric silicon nitride (Si3N4 TriPlex) processor chip used in Ascella (Maring et al. ref 28; see also Taballione et al. 2022, arXiv:2203.01801, for the 20-mode scaling benchmark).*
 22. **Mezher, R., et al.** (2022). "Assessing the quality of near-term photonic quantum devices". arXiv: 2202.04735.
     - *Quandela diagnostic framework assessing state preparation, circuit fidelity, and non-classicality under experimental imperfections.*
 23. **Tzitrin, I., et al.** (2021). "Fault-tolerant quantum computation with static linear optics". *PRX Quantum* 2, 040353. DOI: 10.1103/PRXQuantum.2.040353.
