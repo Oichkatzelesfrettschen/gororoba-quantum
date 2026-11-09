@@ -195,6 +195,19 @@ def quad_status() -> str | None:
     return None
 
 
+def quadblas_status() -> str | None:
+    """None when numpy-quaddtype's QuadBLAS is enabled, else the reason the quaddtype rows skip. Every quaddtype
+    configuration calls numpy_quaddtype.set_num_threads, which raises NotImplementedError where the wheel disables
+    QuadBLAS (the native Windows wheel); numpy_quaddtype.get_quadblas_version raises the same error."""
+    try:
+        import numpy_quaddtype as nq
+
+        nq.get_quadblas_version()
+    except Exception as exc:  # NotImplementedError where disabled; an import failure is quad_status's reason too
+        return f"numpy-quaddtype QuadBLAS unavailable: {type(exc).__name__}: {scrub(str(exc))[:200]}"
+    return None
+
+
 def scipy_status() -> str | None:
     try:
         import scipy.linalg  # noqa: F401

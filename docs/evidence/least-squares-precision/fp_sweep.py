@@ -5,9 +5,10 @@ configuration, and the fastest solve of the repeats is its time. The cap is a sy
 (`-p MemoryMax=... -p MemorySwapMax=0`) where a probe reads the limits back from the scope's cgroup, otherwise
 RLIMIT_AS on Linux and macOS, and nothing on native Windows; its size is min(8 GiB, 0.6 x physical memory). Thread and
 worker counts follow the host: 1, 2, 4, ... up to the CPU count, plus the CPU count itself, never above it. A
-configuration the host cannot run (x87 rows off x86, quaddtype rows without the wheel) is written as a row with a
-`skipped` reason. Each row carries the host record of fp_host.py, the memory-cap record, the load average before each
-run and the five input digests of the ensemble producer, so rows from different hosts compare.
+configuration the host cannot run (x87 rows off x86, quaddtype rows without the wheel or with QuadBLAS disabled) is
+written as a row with a `skipped` reason. Each row carries the host record of fp_host.py, the memory-cap record, the
+load average before each run and the five input digests of the ensemble producer, so rows from different hosts
+compare.
 
 usage: "$PYTHON" fp_sweep.py fp-inputs.npz sweep.jsonl [REPEATS] --host-label LABEL
            [--quick] [--idle-wait] [--idle-timeout S] [--cap auto|systemd|rlimit|none] [--timeout S]
@@ -43,7 +44,7 @@ class Config(NamedTuple):
     label: str
     selector: str
     env: dict[str, str]
-    needs: str | None  # "x87", "quad", "scipy" or "quad+x87": the capabilities the configuration requires
+    needs: str | None  # "+"-joined capabilities of the configuration: "x87", "quad", "quadblas" or "scipy"
 
 
 def blas_env(threads: int) -> dict[str, str]:
@@ -76,7 +77,7 @@ def configs(cpus: int, quick: bool) -> list[Config]:
     out.append(Config("x87 normal equations (Cholesky)", "x87 80-bit normal", dict(single), "x87"))
     for backend, th in itertools.product(("sleef", "longdouble"), ladder):
         env = {**single, "FP_QUAD_BACKEND": backend, "FP_QUAD_THREADS": str(th)}
-        needs = "quad" if backend == "sleef" else "quad+x87"
+        needs = "quad+quadblas" if backend == "sleef" else "quad+quadblas+x87"
         stem = f"backend {backend}, QuadBLAS threads {th}"
         out.append(Config(f"binary128 Householder, {stem}", "binary128 quaddtype Householder", env, needs))
         out.append(Config(f"binary128 normal equations, {stem}", "binary128 normal", env, needs))
@@ -229,6 +230,7 @@ def main(argv: list[str] | None = None) -> int:
     status: dict[str, str | None] = {
         "x87": fp_host.x87_status(),
         "quad": fp_host.quad_status(),
+        "quadblas": fp_host.quadblas_status(),
         "scipy": fp_host.scipy_status(),
     }
     cap = fp_host.choose_cap(args.cap)

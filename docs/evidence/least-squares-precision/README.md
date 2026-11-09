@@ -184,8 +184,10 @@ rows.
   a mechanism.
 - Threads: 1, 2, 4, ... up to `min(os.cpu_count(), parallel.workers())`, plus that count when it is not a power of two.
 - Skips: x87 rows need an x86 CPU and `numpy.finfo(numpy.longdouble).nmant == 63`; the quaddtype `longdouble`-backend
-  rows are x87 rows under the quad dtype's name; quaddtype rows need the wheel. A skipped configuration is a row with
-  a `skipped` reason, so every host's grid aligns.
+  rows are x87 rows under the quad dtype's name; quaddtype rows need the wheel and an enabled QuadBLAS
+  (`fp_host.quadblas_status` calls `numpy_quaddtype.get_quadblas_version()`, which raises `NotImplementedError` where
+  the wheel disables QuadBLAS, as `numpy_quaddtype.set_num_threads` does in every quaddtype configuration). A skipped
+  configuration is a row with a `skipped` reason, so every host's grid aligns.
 - Row additions: `host` (label, machine, OS family, CPU model, numpy `__cpu_features__` subset, numpy SIMD baseline
   and dispatch lists, BLAS runtime through threadpoolctl, package versions), `cap`, `mode`, `idle_wait`,
   `load_average_before`, `knobs`, `inputs_sha256` and `inputs_provenance`. The old fields keep their names. The host
@@ -246,7 +248,7 @@ Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, p
 |---|---|---|---|---|
 | build-host | Ryzen 5 5600X3D, Zen 3 | Linux on WSL2 | reference | 74 (0) |
 | zen4-wsl | Ryzen 9 7945HX, Zen 4, AVX-512 | Linux on WSL2 | 5 of 5 | 88 (0) |
-| zen4-windows | Ryzen 9 7945HX | Windows 11 | not run: `fp_export.py` needs `fcntl` | 88 (22 x87, 6 QuadBLAS errors) |
+| zen4-windows | Ryzen 9 7945HX | Windows 11 | not run: `fp_export.py` needs `fcntl` | 88 (22 x87 skipped, 12 QuadBLAS errors) |
 | aws-sapphire-rapids | Xeon Platinum 8488C, AVX-512 | Linux on a cloud VM | 5 of 5 | 32 (0) |
 | oci-a1-neoverse-n1 | Neoverse N1 | Linux aarch64 on a cloud VM | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
 | m1-macos | Apple M1 | macOS 27.0 | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
@@ -262,9 +264,11 @@ Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, p
   accept-reject decisions through libm calls, and Apple's libm rounds some of them differently from glibc, which
   agrees on x86-64 and aarch64. Falsifier: the same numpy wheel drawing the producer's `resampled_rates` stream
   identically on macOS. Bootstrap intervals are reproducible across Linux hosts and not onto macOS.
-- numpy-quaddtype publishes no Linux aarch64 wheel at any version, so the Neoverse rows skip quaddtype. Its Windows
-  wheel disables QuadBLAS, so the SLEEF rows raise `NotImplementedError` there instead of skipping; `fp_host` does not
-  yet detect that build.
+- numpy-quaddtype is not installed on the Neoverse host (`ModuleNotFoundError`), so its rows skip quaddtype; whether a
+  Linux aarch64 wheel exists is unverified. The Windows wheel disables QuadBLAS: the 12 SLEEF configurations (six
+  thread counts, two kinds, two repeats each) are error rows there (`NotImplementedError: QuadBLAS is disabled`), a
+  capability that `fp_host.quadblas_status` now probes, so a rerun on that wheel records skips. The retained rows
+  predate the probe and stay as measured.
 - numpy 2.5.4 dies with SIGILL on the Vostro's Turion 64 X2 (SSE3, no SSSE3, SSE4 or POPCNT), so the K8 host is not
   run in this sweep: its wheels need an x86-64 baseline that the CPU lacks.
 - Times rank the hosts only within a row. The build host shared its CPUs with other sessions' Singular jobs (load 1.9
