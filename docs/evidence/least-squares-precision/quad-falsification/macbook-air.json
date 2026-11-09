@@ -2,7 +2,7 @@
  "machine_name": "macbook-air",
  "build": "PyPI wheel",
  "numpy_quaddtype": "1.0.0",
- "python": "3.13.18",
+ "python": "3.14.10",
  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
  "machine": "arm64",
  "cpu": "arm",

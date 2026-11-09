@@ -1,9 +1,10 @@
 """Falsification run for the numpy-quaddtype matmul defects on one machine, printed as one JSON object.
 
 Each case multiplies small-integer matrices, whose products are exact in float64 and in binary128, so the float64
-product is an exact oracle. A case passes when the quad product equals it exactly (or, for an empty inner dimension,
-when it returns the zeros numpy returns). Contiguous copies of the same operands are the control: a defect is a
-failing view case whose contiguous control passes.
+product is an exact oracle. A case passes when the quad product equals it exactly in the quad dtype (or, for an
+empty inner dimension, when it returns the zeros numpy returns); the comparison stays in binary128, since a float64
+rounding of the product would absorb an error below float64 resolution. Contiguous copies of the same operands are
+the control: a defect is a failing view case whose contiguous control passes.
 
 usage: python quad_matmul_falsify.py
 """
@@ -54,8 +55,8 @@ def check(left64: np.ndarray, right64: np.ndarray, left_q: np.ndarray, right_q: 
         "contiguous": (np.ascontiguousarray(left_q), np.ascontiguousarray(right_q)),
     }.items():
         try:
-            got = np.asarray(a @ b, dtype=np.float64)
-            out[label] = bool(np.array_equal(got, truth))
+            got = a @ b
+            out[label] = bool(np.array_equal(got, truth.astype(Q)))
             if not out[label]:
                 out[f"{label}_first"] = [float(v) for v in np.ravel(got)[:3]]
                 out["expected_first"] = [float(v) for v in np.ravel(truth)[:3]]
@@ -98,7 +99,7 @@ def main() -> int:
         expected = np.ones(a) @ np.ones(b)
         try:
             got = np.ones(a, dtype=Q) @ np.ones(b, dtype=Q)
-            empty[label] = bool(np.array_equal(np.asarray(got, dtype=np.float64), expected))
+            empty[label] = bool(np.array_equal(got, expected.astype(Q)))
         except Exception as exc:
             empty[label] = f"{type(exc).__name__}: {exc}"
     report["empty_inner_dimension"] = empty

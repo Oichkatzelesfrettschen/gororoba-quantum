@@ -125,9 +125,9 @@ roughly; the precision column does not depend on load. [sweep.jsonl](sweep.jsonl
 
 - numpy-quaddtype 1.0.0, the only release (2026-01-23), has two matmul defects in its QuadBLAS path.
   [quad_matmul_falsify.py](quad_matmul_falsify.py) multiplies small-integer matrices, whose products are exact in
-  float64 and binary128, so the float64 product is an exact oracle, and runs six non-contiguous view cases (sub-block,
-  transpose, reversed and every-other-row strides), a contiguous control and two empty inner dimensions. Its
-  per-machine records are in [quad-falsification/](quad-falsification/):
+  float64 and binary128, so the float64 product is an exact oracle compared in the quad dtype, and runs six
+  non-contiguous view cases (sub-block, transpose, reversed and every-other-row strides), a contiguous control and two
+  empty inner dimensions. Its per-machine records are in [quad-falsification/](quad-falsification/):
 
   | Machine | OS | CPU | Build | QuadBLAS | View cases | Empty inner dimension |
   |---|---|---|---|---|---|---|
@@ -136,16 +136,19 @@ roughly; the precision column does not depend on load. [sweep.jsonl](sweep.jsonl
   | Vostro | CachyOS | Turion 64 X2 TL-66, SSE3, no AVX | PyPI wheel on CachyOS numpy 2.5.3 | enabled | 6 of 6 wrong | raises |
   | MacBook Air | macOS 27.0 | Apple M1, arm64 | PyPI wheel | enabled | 6 of 6 wrong | raises |
   | ALIENWARE | Windows 11 | Ryzen 9 7945HX | PyPI wheel | disabled | all correct | returns zeros |
+  | build host | CachyOS (capsule) | Ryzen 5 5600X3D | upstream `main` 888042c (QBLAS 1.5.0) | enabled | all correct | returns zeros |
 
-  The contiguous control is correct everywhere. What survives across four CPUs, three operating systems, both
-  builds and both instruction-set families: with QuadBLAS enabled, matmul with any non-C-contiguous operand returns
-  wrong products without an error, and matmul with an empty inner dimension raises
-  `RuntimeError: QBLAS operation failed`; the same inputs are correct on the Windows wheel, which disables QuadBLAS,
-  so both defects belong to the QuadBLAS path, not to the dtype. Upstream issue numpy/numpy-quaddtype#89 reports the
-  non-contiguous case and PR #108 (merged 2026-07-16) fixes it; at `main` 888042c, `src/csrc/umath/matmul.cpp`
-  sends a zero dimension or a stride QuadBLAS cannot take to a naive strided loop and gathers other strided operands
-  into contiguous copies. No release carries those fixes, and a build of `main` has not run here yet, so their effect
-  on these cases is a hypothesis. `fp_backends.mm` multiplies contiguous copies and handles the empty case.
+  The contiguous control is correct everywhere. What survives across four CPUs, three operating systems, both builds
+  and both instruction-set families: with QuadBLAS enabled, matmul with any non-C-contiguous operand returns wrong
+  products without an error, and matmul with an empty inner dimension raises `RuntimeError: QBLAS operation failed`;
+  the same inputs are correct on the Windows wheel, which disables QuadBLAS, so both defects belong to the QuadBLAS
+  path, not to the dtype. Upstream issue numpy/numpy-quaddtype#89 reports the non-contiguous case and PR #108 (merged
+  2026-07-16) fixes it; at `main` 888042c, `src/csrc/umath/matmul.cpp` sends a zero dimension or a stride QuadBLAS
+  cannot take to a naive strided loop and gathers other strided operands into contiguous copies. No release carries
+  those fixes (`main` still declares version 1.0.0 and the repository has no 1.x branch); a source build of `main`
+  passes all six view cases and both empty inner
+  dimensions on the build host, and its own suite passes there (8313 tests). `fp_backends.mm` multiplies contiguous
+  copies and handles the empty case.
 - numpy-flint-arb 1.5.4 maps matmul element by element over object arrays; peak memory grew about tenfold per
   doubling of the matrix side (50 MiB at 12 x 6, 1.1 GiB at 96 x 48; [nfa_scaling.py](nfa_scaling.py)), and an
   uncapped run on the 576 x 256 design reached 29.8 GB before it was stopped. The sweep excludes it.

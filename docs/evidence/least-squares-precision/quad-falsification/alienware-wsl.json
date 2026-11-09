@@ -2,7 +2,7 @@
  "machine_name": "alienware-wsl",
  "build": "PyPI wheel",
  "numpy_quaddtype": "1.0.0",
- "python": "3.14.4",
+ "python": "3.14.9",
  "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
  "machine": "x86_64",
  "cpu": "AMD Ryzen 9 7945HX with Radeon Graphics",
