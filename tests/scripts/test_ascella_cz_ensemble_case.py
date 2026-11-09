@@ -379,6 +379,7 @@ def planned_fixture(job: str, hom: float, explorer: str = "available", jobs: int
         "per_job_credits": policy["per_job_credits"],
         "expected_seconds": float(policy["expected_seconds"]),
         "perfs_at_plan": {"HOM (%)": hom},
+        "perfs_at_estimate": {"HOM (%)": hom},
         "status_at_plan": {"explorer": explorer, "processor": "available"},
         "availability_at_plan": {"num_concurrent_jobs": jobs, "num_jobs_in_queue": 0, "num_running_qt_jobs": 0},
     }
@@ -443,6 +444,14 @@ def test_either_status_admits_only_an_idle_token(counter: str, status: str) -> N
 def test_a_maintenance_status_is_refused() -> None:
     with pytest.raises(case.qd_platform.PlatformError, match="status"):
         case.admit("job-00", planned_fixture("job-00", 91.0, "maintenance"), 90.5, None)
+
+
+def test_an_estimate_on_other_perfs_is_refused() -> None:
+    """The shot estimate's processor read must carry the perfs the policy checked."""
+    planned = planned_fixture("job-00", 91.0)
+    planned["perfs_at_estimate"] = {"HOM (%)": 89.0}
+    with pytest.raises(case.qd_platform.PlatformError, match="shot estimate read other"):
+        case.admit("job-00", planned, 90.5, None)
 
 
 def test_a_plan_off_the_policy_is_refused() -> None:

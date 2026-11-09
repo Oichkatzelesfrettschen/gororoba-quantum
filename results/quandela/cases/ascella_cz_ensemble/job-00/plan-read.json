@@ -1,7 +1,7 @@
 {
  "admission": {
   "admitted": false,
-  "refusal": "job-00: HOM 88.7 % is outside 'none', the band above 90 % and within 1 point of the reference tomography's 87.56 %"
+  "refusal": "job-00: HOM 88.54 % is outside 'none', the band above 90 % and within 1 point of the reference tomography's 87.56 %"
  },
  "admitted_statuses": [
   "available",
@@ -15,15 +15,18 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "3bca292c636e4d44c523e4aa1ed5ee484ae95341b8fb7ed57ca6c26c706c7ba9",
+ "body_sha256": "db98c10713d376a3d3e2bf5ab5a4b7a6ded8dcab5424fc02484a83d8a79c4d3e",
  "body_sha256_without_process_id": "b4d7e1f2d6d3663a7358d115f569e16f0fd6ce8a98f3f32941d4852755b8725e",
  "case": "job-00",
  "cases_sha256": "0a0c2da6209d0688be914c7e7881cc7e52417f19e9a929f07cf8b0e16e858f28",
  "credit_ceiling": 1.4,
- "eligible_floor": null,
  "estimated_credits": 1.4,
  "estimated_shots": 11815890,
  "expected_seconds": 220.0,
+ "live_read": {
+  "eligible_floor": 447.0891439812419,
+  "refusal": null
+ },
  "max_credits": 1.4,
  "max_samples": 240000,
  "max_shots": 24000000,
@@ -32,27 +35,47 @@
  "payload_version": 2,
  "payload_version_basis": "declared",
  "per_job_credits": 1.0,
- "perfs_at_plan": {
+ "perfs_at_estimate": {
   "Clock (MHz)": 13.33,
   "Dark counts (detection/s)": [
-   181.0,
-   95.0,
-   101.0,
-   89.0,
-   86.0,
-   122.0,
-   98.0,
-   135.0,
-   275.0,
-   345.0,
-   119.0,
-   147.0
+   172.0,
+   108.0,
+   88.0,
+   104.0,
+   84.0,
+   111.0,
+   91.0,
+   111.0,
+   257.0,
+   309.0,
+   114.0,
+   150.0
   ],
-  "HOM (%)": 88.7,
+  "HOM (%)": 88.54,
   "Transmittance (%)": 5.53,
   "g2 (%)": 2.0
  },
- "planned_utc": "2026-11-09T00:42:17+00:00",
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   172.0,
+   108.0,
+   88.0,
+   104.0,
+   84.0,
+   111.0,
+   91.0,
+   111.0,
+   257.0,
+   309.0,
+   114.0,
+   150.0
+  ],
+  "HOM (%)": 88.54,
+  "Transmittance (%)": 5.53,
+  "g2 (%)": 2.0
+ },
+ "planned_utc": "2026-11-09T01:09:07+00:00",
  "platform": "qpu:ascella",
  "platform_at_plan": {
   "bookable": true,
@@ -86,7 +109,7 @@
     "availability": 0.0
    },
    "2026-11-09": {
-    "availability": 88.36
+    "availability": 86.35000000000001
    }
   },
   "status": "running",

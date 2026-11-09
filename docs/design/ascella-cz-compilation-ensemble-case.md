@@ -252,11 +252,12 @@ replicate in a second segment, so each appears in every pair of adjacent segment
 - **Shots.** Perceval's estimate for 4000 samples reaches 251 328 shots at most (`shot-estimate.json`); times 1.25,
   rounded up to the 100 000-shot quantum, each iteration's `max_shots` is 400 000, so each job's credit ceiling is
   1.4 and both jobs' 2.8, inside the 6-credit ceiling of this design.
-- **Plan reads** (`plan-read.json`, `ascella_cz_ensemble_case.py --preflight JOB`, read-only): each retains the
-  fresh plan of its job without the body and the submission policy's verdict under `admission`. The reads of
-  2026-11-09 give a ceiling of 1.4 credits per job and HOM 88.7 %, which the policy refuses; the modeled job takes 188 s expected and 197 s with every iteration at its cap. `--check` holds each
-  plan's request fields (case, circuit digest, budgets, ceiling) to the request and prints its verdict; the live
-  fields are a read.
+- **Plan reads** (`plan-read.json`, `ascella_cz_ensemble_case.py --preflight JOB`, read-only): each retains the fresh
+  plan of its job without the body and the submission policy's verdict under `admission`. The reads of 2026-11-09 give
+  a ceiling of 1.4 credits per job and HOM 88.54 %, which the policy refuses, and their live read (`live_read`, run
+  apart from the verdict) forecasts 447 eligible events in the thinnest setting; the modeled job takes 188 s expected
+  and 197 s with every iteration at its cap. `--check` holds each plan's request fields (case, circuit digest,
+  budgets, ceiling) to the request and prints its verdict; the live fields are a read.
 - **Submission policy** (`submission_policy` in each `cases.json`, enforced by `--submit` as the verify step of
   `qd_platform.submit`, which refuses a manifest naming a `submit_wrapper` unless its verifier carries that wrapper's
   `submit_wrapper` attribute, so a schedule's or other caller's verifier does not stand in for it): HOM strictly above
@@ -264,17 +265,18 @@ replicate in a second segment, so each appears in every pair of adjacent segment
   inclusive, so estimate 5 compares the ensemble with a fit taken at the same source quality; Explorer row and
   processor `available` or `running`, while the token counts no running, no queued and no running quantum-task job
   (`qd_platform.require_token_capacity` already refuses a busy token at `available`, so the idle condition holds at
-  both statuses); a processor read taken inside the submit lock after the plan that equals the plan's perfs, so the
-  shot estimate's own read, between the two, saw the calibration the policy checked, connects source modes 0 and 2,
-  and forecasts at least 200 eligible events in every setting's iteration at its 400 000-shot cap (`live_accuracy`; at
-  the read's other figures the floor breaks below 0.861 % transmittance, 6.47 times under the read's 5.57 %); the
-  plan's ceiling, per-job price and expected seconds equal to the case's; and for job-01 a collected job-00 run that
-  completed with 60 bound iterations, none uncounted, each with at least 200 eligible events (`--after RUN`).
-  `--submit` also requires the retained preflight to be admitted and the fresh plan to equal it in case digest, in
-  body digest without `process_id`, in processor perfs (the calibration reviewed), and in the reference tomography
-  submission's digest and the job-00 run's digest it was admitted against, so the request sent is the one the owner
-  reviewed. Against the reference of 87.56 % the HOM band is empty, so neither job submits until a fresh tomography
-  reference taken above 90 % replaces it; the owner set both rules on 2026-11-08.
+  both statuses); a processor read taken inside the submit lock after the plan that equals the plan's perfs, connects
+  source modes 0 and 2, and forecasts at least 200 eligible events in every setting's iteration at its 400 000-shot
+  cap (`live_accuracy`; at the read's other figures the floor breaks below 0.861 % transmittance, 6.47 times under the
+  read's 5.57 %); the shot estimate's own processor read (`perfs_at_estimate`, one read for every estimate because
+  `qd_platform.payload` disables the communication layer's refetch) equal to the plan's perfs; the plan's ceiling,
+  per-job price and expected seconds equal to the case's; and for job-01 a collected job-00 run that completed with 60
+  bound iterations, none uncounted, each with at least 200 eligible events (`--after RUN`). `--submit` also requires
+  the retained preflight to be admitted and the fresh plan to equal it in case digest, in body digest without
+  `process_id`, in processor perfs (the calibration reviewed), and in the reference tomography submission's digest and
+  the job-00 run's digest it was admitted against, so the request sent is the one the owner reviewed. Against the
+  reference of 87.56 % the HOM band is empty, so neither job submits until a fresh tomography reference taken above 90
+  % replaces it; the owner set both rules on 2026-11-08.
 - **Forecast** under Perceval's NoiseModel at the read, with loss and dark counts: F_ZX = F_XZ = 0.8635, F' = 0.8766,
   Hofmann interval [0.727, 0.864]; indistinguishability alone gives 0.900. The thinnest settings expect 447 eligible
   events per iteration, above the floor of 200.

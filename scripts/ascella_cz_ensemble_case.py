@@ -1666,6 +1666,10 @@ def admit(job: str, planned: Mapping[str, Any], reference: float, predecessor: M
             raise RuntimeError(f"{job}: the plan reads HOM {read!r}")
         hom = float(read)
         require(
+            planned.get("perfs_at_estimate") == planned["perfs_at_plan"],
+            f"{job}: the shot estimate read other processor perfs than the plan's",
+        )
+        require(
             hom_admitted(hom, reference),
             f"{job}: HOM {hom:g} % is outside {hom_band_text(reference)!r}, the band above "
             f"{qd_platform.HOM_FLOOR:g} % and within {HOM_READING_POINTS:g} point of the reference tomography's "
@@ -1765,12 +1769,11 @@ class SubmissionGate:
         self.predecessor = None if after is None else load_run(after)
         self.reference = reference_hom()
         self.context = preflight_context(self.predecessor)
-        self.floor: float | None = None
 
     def __call__(self, planned: dict[str, Any]) -> None:
         admit(self.job, planned, self.reference, self.predecessor)
         try:
-            self.floor = live_accuracy(self.job, planned, qd_platform.get(qd_platform.platform_route(PLATFORM)))
+            live_accuracy(self.job, planned, qd_platform.get(qd_platform.platform_route(PLATFORM)))
             if self.reviewed is not None:
                 bind_reviewed(self.job, planned, self.reviewed, self.context)
         except (RuntimeError, KeyError, TypeError, ValueError) as error:
@@ -1793,11 +1796,17 @@ def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
             admission: dict[str, Any] = {"admitted": True}
         except qd_platform.PlatformError as error:
             admission = {"admitted": False, "refusal": str(error)}
+        # The live read runs on its own as well, so a plan refused earlier (at HOM) still records the floor.
+        try:
+            processor = qd_platform.get(qd_platform.platform_route(PLATFORM))
+            live: dict[str, Any] = {"eligible_floor": live_accuracy(job, planned, processor), "refusal": None}
+        except (RuntimeError, KeyError, TypeError, ValueError) as error:
+            live = {"eligible_floor": None, "refusal": str(error)}
         record = {
             **qd_platform.plan_summary(planned),
             "body_sha256_without_process_id": body_digest(planned["body"]),
             "admission": admission,
-            "eligible_floor": verify.floor,
+            "live_read": live,
             **verify.context,
             "planned_utc": qd_platform.now(),
         }
