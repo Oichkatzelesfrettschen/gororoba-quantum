@@ -7,6 +7,11 @@ flow; CLAUDE.md loads this file.
 
 ## Layout and gates
 
+Every `pr.yml` checkout uses a blob-filtered sparse checkout that leaves out the W8 N = 16 export tables
+(`docs/evidence/a5-exceptional-fibers/working/exports/w8nm-n16-rcpt/`, 235 MB of evidence that no check reads), since
+fetching them pushed the `tests` job past its time limit. A check that starts reading a file there adds it back to
+the checkout's pattern list.
+
 The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only.

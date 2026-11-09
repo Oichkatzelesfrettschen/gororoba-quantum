@@ -27,8 +27,9 @@ Findings.
   retained receipt-run export, `.sha256` files beside each table), so
   the export of the receipt run is the export of either run. Its manifest stays in the repository
   ([`working/exports/w8nm-n16-rcpt/`](../working/exports/w8nm-n16-rcpt/export.json): `export.json`, the producing `.sing`
-  scripts, `qG.txt` and the full sha256 of every table); the tables themselves (235 MB) are not retained, because
-  checking them out pushed the `tests` job past its time limit. Regenerate them with
+  scripts, `qG.txt` and the full sha256 of every table). The tables (235 MB; `qM7.txt` split into 45 MB parts listed in
+  `split.txt`) are retained, and each matches its `.sha256`. The `pr.yml` checkouts skip their blobs (sparse checkout,
+  `filter: blob:none`), because checking them out pushed the `tests` job past its time limit. To regenerate them, run
   `"$PYTHON" docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py --quotient --export-only
   --export-dir DIR --singular SINGULAR docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing 5 16`
   (about 12 min of Singular) and check each table against its `.sha256`.
