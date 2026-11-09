@@ -186,9 +186,12 @@ rows.
 - Skips: x87 rows need an x86 CPU and `numpy.finfo(numpy.longdouble).nmant == 63`; the quaddtype `longdouble`-backend
   rows are x87 rows under the quad dtype's name; quaddtype rows need the wheel. A skipped configuration is a row with
   a `skipped` reason, so every host's grid aligns.
-- Row additions: `host` (label, machine, OS, CPU model, numpy `__cpu_features__` subset, numpy SIMD baseline and
-  dispatch lists, BLAS runtime through threadpoolctl, package versions), `cap`, `mode`, `idle_wait`,
-  `load_average_before`, `knobs`, `inputs_sha256` and `inputs_provenance`. The old fields keep their names.
+- Row additions: `host` (label, machine, OS family, CPU model, numpy `__cpu_features__` subset, numpy SIMD baseline
+  and dispatch lists, BLAS runtime through threadpoolctl, package versions), `cap`, `mode`, `idle_wait`,
+  `load_average_before`, `knobs`, `inputs_sha256` and `inputs_provenance`. The old fields keep their names. The host
+  record is a public substrate profile; the exact kernel release, the distribution string and the memory size stay
+  out of the rows, and the infrastructure chart in the private gororoba-infrastructure repository holds the host
+  facts behind each label.
 - Input digests: `fp_host.input_digests` rebuilds the five `arithmetic.inputs_sha256` digests from the arrays;
   `fp_export.py` stores the producer's own digests in the npz, and `matches_producer_digests` compares them. On the
   build host all five equal the digests retained in `results/quandela/cases/ascella_cz_ensemble/forecast.json`. A
@@ -241,11 +244,11 @@ Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, p
 
 | Label | CPU | OS | Own export: digests equal to the build host's | Full rows (skipped) |
 |---|---|---|---|---|
-| build-host | Ryzen 5 5600X3D, Zen 3 | CachyOS on WSL2 | reference | 74 (0) |
-| zen4-wsl | Ryzen 9 7945HX, Zen 4, AVX-512 | Ubuntu 26.04 on WSL2 | 5 of 5 | 88 (0) |
+| build-host | Ryzen 5 5600X3D, Zen 3 | Linux on WSL2 | reference | 74 (0) |
+| zen4-wsl | Ryzen 9 7945HX, Zen 4, AVX-512 | Linux on WSL2 | 5 of 5 | 88 (0) |
 | zen4-windows | Ryzen 9 7945HX | Windows 11 | not run: `fp_export.py` needs `fcntl` | 88 (22 x87, 6 QuadBLAS errors) |
-| aws-sapphire-rapids | Xeon Platinum 8488C, AVX-512 | Ubuntu 26.04 on EC2 c7i-flex.large | 5 of 5 | 32 (0) |
-| oci-a1-neoverse-n1 | Neoverse N1 | Ubuntu 26.04 aarch64 on OCI A1 | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
+| aws-sapphire-rapids | Xeon Platinum 8488C, AVX-512 | Linux on a cloud VM | 5 of 5 | 32 (0) |
+| oci-a1-neoverse-n1 | Neoverse N1 | Linux aarch64 on a cloud VM | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
 | m1-macos | Apple M1 | macOS 27.0 | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
 
 - Arithmetic that bypasses the BLAS gives the same error on every host where it runs. The arb normal equations (all

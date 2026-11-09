@@ -24,8 +24,10 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ascella_cz_ensemble_case as case  # noqa: E402
 import ascella_cz_tomography_case as tomo  # noqa: E402
+import fp_host  # noqa: E402
 
 
 def digest(array: np.ndarray) -> str:
@@ -37,6 +39,10 @@ def main() -> int:
     ap.add_argument("out")
     ap.add_argument("--host-label", default=None, help="hostname-free label of the exporting host")
     args = ap.parse_args()
+    problem = fp_host.label_error(args.host_label) if args.host_label is not None else None
+    if problem:
+        print(problem, file=sys.stderr)
+        return 2
     arrays = case.tomography_arrays()
     _, value = case.seed_plan()["prediction"]
     generator = np.random.default_rng(value)

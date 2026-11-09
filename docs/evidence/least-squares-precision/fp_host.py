@@ -1,7 +1,9 @@
 """Host probe for fp_sweep.py: memory cap, thread ladder, capability checks, load wait and per-row host metadata.
 
-Everything here reads the running host and writes nothing. The host record carries no hostname, user name or path:
-the label comes from the caller, and a library path from threadpoolctl or numpy's build configuration is dropped.
+Everything here reads the running host and writes nothing. The host record is a public substrate profile: machine
+architecture, CPU model, numpy SIMD dispatch, BLAS core and version, package versions and the OS family. It carries no
+hostname, user name, path, kernel release, distribution string or memory size: the label comes from the caller, and a
+library path from threadpoolctl or numpy's build configuration is dropped.
 """
 
 from __future__ import annotations
@@ -296,7 +298,7 @@ def choose_cap(request: str) -> dict:
     scope (probed by readback), then RLIMIT_AS on Linux and macOS, and runs uncapped on native Windows."""
     total = mem_total_bytes()
     nbytes = cap_bytes(total)
-    record: dict[str, Any] = {"requested": request, "bytes": nbytes, "mem_total_bytes": total, "tried": {}}
+    record: dict[str, Any] = {"requested": request, "bytes": nbytes, "tried": {}}
     order = {"auto": ["systemd", "rlimit"], "systemd": ["systemd"], "rlimit": ["rlimit"], "none": []}[request]
     for mech in order:
         limit = max(nbytes, RLIMIT_FLOOR) if mech == "rlimit" else nbytes
@@ -356,19 +358,14 @@ def cpu_model() -> str:
 
 
 def os_info() -> dict:
-    out: dict[str, Any] = {"system": platform.system(), "release": platform.release()}
+    """The OS family: the system name, the WSL flag on Linux, the macOS product version and the Windows release name."""
+    out: dict[str, Any] = {"system": platform.system()}
     if sys.platform.startswith("linux"):
         out["wsl"] = "microsoft" in platform.release().lower()
-        try:
-            for line in Path("/etc/os-release").read_text(encoding="utf-8").splitlines():
-                if line.startswith("PRETTY_NAME="):
-                    out["distribution"] = line.split("=", 1)[1].strip().strip('"')
-        except OSError:
-            pass
     elif sys.platform == "darwin":
         out["mac_ver"] = platform.mac_ver()[0]
     elif sys.platform == "win32":
-        out["win32_ver"] = " ".join(v for v in platform.win32_ver()[:2] if v)
+        out["release"] = platform.release()
     return out
 
 

@@ -16,7 +16,7 @@ Run: `"$PYTHON" fp_sweep.py fp-inputs.npz hosts/LABEL-full.jsonl --host-label LA
 4. Solver options: as in the build-host sweep ([../sweep-checklist.md](../sweep-checklist.md)); quick keeps the three
    scipy drivers, two refinement steps and arb at 128 bits.
 5. Environment: `MALLOC_ARENA_MAX=2` and `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096` on Linux, the `FP_*`
-   knobs per row; every row embeds the host record (machine, OS, CPU model, numpy SIMD lists, OpenBLAS core,
+   knobs per row; every row embeds the host record (machine, OS family, CPU model, numpy SIMD lists, OpenBLAS core,
    package versions) from `fp_host.host_record`.
 6. Exactness: reference arb 256-bit; the five `inputs_sha256` digests of every row must equal the retained
    `results/quandela/cases/ascella_cz_ensemble/forecast.json` digests on the build host (falsifier: any mismatch).
