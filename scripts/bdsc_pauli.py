@@ -342,11 +342,29 @@ def verify_setting(setting: dict[str, Any]) -> None:
         require(np.allclose(conj, np.diag(np.diag(conj)), atol=1e-12), f"{word}: the setting leaves it off-diagonal")
 
 
+def pairwise_commuting(words: tuple[str, ...]) -> bool:
+    """Whether every pair of the words commutes."""
+    return all(commute(a, b) for a, b in itertools.combinations(words, 2))
+
+
+class ExtendsInBank:
+    """Whether a commuting set gains a further bank word that commutes with all of it; a picklable callable."""
+
+    def __init__(self, bank: list[str]) -> None:
+        self.bank = bank
+
+    def __call__(self, words: tuple[str, ...]) -> bool:
+        return any(w not in words and all(commute(w, a) for a in words) for w in self.bank)
+
+
 def commuting_cover(words: list[str]) -> dict[str, Any]:
     """The commuting 4-sets of the bank, the number of exact covers by 7 of them, and a cover of least total CX."""
     require(words == antisymmetric_bank(), "probe words differ from Y3 (x) {Q : Q^T = -Q}")
-    quads = [q for q in itertools.combinations(words, 4) if all(commute(a, b) for a, b in itertools.combinations(q, 2))]
-    extendable = [q for q in quads if any(w not in q and all(commute(w, a) for a in q) for w in words)]
+    candidates = list(itertools.combinations(words, 4))
+    keep = parallel.ordered_map(pairwise_commuting, candidates, min_items=1)
+    quads = [q for q, ok in zip(candidates, keep, strict=True) if ok]
+    extends = parallel.ordered_map(ExtendsInBank(words), quads, min_items=1)
+    extendable = [q for q, more in zip(quads, extends, strict=True) if more]
     require(not extendable, f"commuting 4-sets {extendable[:3]} extend to 5")
     index = {w: k for k, w in enumerate(words)}
     masks = [sum(1 << index[w] for w in q) for q in quads]
