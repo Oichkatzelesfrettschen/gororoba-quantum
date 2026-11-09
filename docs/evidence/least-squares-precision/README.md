@@ -244,18 +244,20 @@ numpy-quaddtype 1.0.0 built `-march=native -O3` (meson release, SLEEF 3.9.0 scal
 
 ## Results across hosts
 
-Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, python-flint 0.9.0, numpy-quaddtype
-1.0.0) in a venv, one configuration at a time; the rows are in [hosts/](hosts/) under each label. A host that ran
+Each host below ran `fp_sweep.py` one configuration at a time with numpy 2.5.4, scipy 1.18.1 and python-flint 0.9.0
+(`host.packages` in each row); numpy-quaddtype is 1.0.0 on the Linux x86-64, Windows and macOS hosts and absent on
+the Neoverse host. The rows record versions, not how a package was installed. The rows are in [hosts/](hosts/) under
+each label. A host that ran
 `fp_export.py` itself compared its five input digests with the build host's.
 
 | Label | CPU | OS | Own export: digests equal to the build host's | Full rows (skipped) |
 |---|---|---|---|---|
 | build-host | Ryzen 5 5600X3D, Zen 3 | Linux on WSL2 | reference | 74 (0) |
 | zen4-wsl | Ryzen 9 7945HX, Zen 4, AVX-512 | Linux on WSL2 | 5 of 5 | 88 (0) |
-| zen4-windows | Ryzen 9 7945HX | Windows 11 | not run: `fp_export.py` needs `fcntl` | 88 (22 x87 skipped, 12 QuadBLAS errors) |
+| zen4-windows | Ryzen 9 7945HX | Windows | not run: `fp_export.py` needs `fcntl` | 88 (22 x87 skipped, 12 QuadBLAS errors) |
 | aws-sapphire-rapids | Xeon Platinum 8488C, AVX-512 | Linux on a cloud VM | 5 of 5 | 32 (0) |
 | oci-a1-neoverse-n1 | Neoverse N1 | Linux aarch64 on a cloud VM | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
-| m1-macos | Apple M1 | macOS 27.0 | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
+| m1-macos | Apple M1 | macOS | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
 
 - Arithmetic that bypasses the BLAS gives the same error on every host whose five input digests agree. The five
   hosts other than the M1 agree on all five digests, and on those five hosts every configuration run on two or more

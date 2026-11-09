@@ -371,14 +371,10 @@ def cpu_model() -> str:
 
 
 def os_info() -> dict:
-    """The OS family: the system name, the WSL flag on Linux, the macOS product version and the Windows release name."""
+    """The OS family: the system name and, on Linux, the WSL flag. Product and kernel releases stay out of the row."""
     out: dict[str, Any] = {"system": platform.system()}
     if sys.platform.startswith("linux"):
         out["wsl"] = "microsoft" in platform.release().lower()
-    elif sys.platform == "darwin":
-        out["mac_ver"] = platform.mac_ver()[0]
-    elif sys.platform == "win32":
-        out["release"] = platform.release()
     return out
 
 
