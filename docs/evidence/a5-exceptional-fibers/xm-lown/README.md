@@ -50,3 +50,16 @@ r_22 = 665 with blocks 181 / 178 / 153 / 153 (the K2 count; A5-244 and the closi
 r_21 = r_20 = 496 with blocks 132 / 136 / 114 / 114 (the last jump 169 split 49 / 42 / 39 / 39, and the one-step
 plateau at even d). Falsifiers: r_22 below 665 (closing later), r_21 = 665 (closing earlier), a last jump other than
 169 or a split other than 49 / 42 / 39 / 39, or r_20 differing from r_21.
+
+Result (2026-11-09, laptop, `run-xm-d6.sh` sha256 f398afb2875f7950..., engine v11 with `parallel.py` sha256
+90a8ad476841cbc9... equal to the repository copy; [`xm6.events`](xm6.events)): every prediction above met.
+
+| d | N | r_N | blocks 0 / 1 / 2 / 3 | wall, peak RSS |
+|---|---|---|---|---|
+| 6 | 20 | 496 | 132 / 136 / 114 / 114 | 676 s, 3.8 GiB |
+| 6 | 21 | 496 | 132 / 136 / 114 / 114 | 1,102 s, 4.7 GiB |
+| 6 | 22 | 665 | 181 / 178 / 153 / 153 | 1,700 s, 5.7 GiB |
+
+r_22 = 665 = HF(k[y]/K2, 6) certifies h_6 = 665 for X- at p = 32009 (A5-167) and, by the X sign isomorphism, for X+
+(A5-155). The last jump 169 splits 49 / 42 / 39 / 39 (A5-244), and the ladder closes at N = 22 = floor(7 * 6 / 2) + 1
+after the plateau r_20 = r_21: the closing-order hypothesis survives its first out-of-sample test.
