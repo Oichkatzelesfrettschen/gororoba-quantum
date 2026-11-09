@@ -30,8 +30,9 @@ count: the prediction came out byte-identical at 1 and 10 FLINT threads and in t
 columns) still come from float64 libm and BLAS calls, so the record carries their SHA-256 digests under
 `arithmetic.inputs_sha256`; the bytes match across hosts whose input digests match. All five digests agree on the
 build host (Zen 3, numpy `X86_V3`, OpenBLAS Haswell core), in the runner image, and under Intel SDE 10.13.1
-emulating Sapphire Rapids (`-spr`) and Ice Lake server (`-icx`) with numpy's AVX-512 loops dispatched; AMD Zen 4
-and Zen 5 have no emulated counterpart and stay untested. `check_forecast` therefore removes the digests before its
+emulating Sapphire Rapids (`-spr`) and Ice Lake server (`-icx`) with numpy's AVX-512 loops dispatched, and on real
+hardware: an Intel Xeon Platinum 8488C (Sapphire Rapids, AVX-512), an AMD Ryzen 9 7945HX (Zen 4, AVX-512) and an Arm
+Neoverse N1, each exporting the inputs itself ("Results across hosts" below). AMD Zen 5 stays untested. `check_forecast` therefore removes the digests before its
 float tolerance comparison and prints the inputs that moved, so an identity whose inputs differ by an ulp reports
 them instead of failing.
 
@@ -159,12 +160,137 @@ The study runs under the system Python, where gororoba-infrastructure `packaging
 numpy-flint-arb; the exporter runs under the repository's `$PYTHON`.
 
 ```sh
-"$PYTHON" docs/evidence/least-squares-precision/fp_export.py docs/local/fp-inputs.npz
+"$PYTHON" docs/evidence/least-squares-precision/fp_export.py docs/local/fp-inputs.npz --host-label build-host
 cd docs/evidence/least-squares-precision
-systemd-run --user --scope -p MemoryMax=8G -p MemorySwapMax=0 python3 -u fp_backends.py ../../local/fp-inputs.npz ../../local/fp-backends.json --mpmath
-python3 -u fp_sweep.py ../../local/fp-inputs.npz ../../local/sweep.jsonl 2
+systemd-run --user --scope -p MemoryMax=8G -p MemorySwapMax=0 "$PYTHON" -u fp_backends.py ../../local/fp-inputs.npz ../../local/fp-backends.json --mpmath
+"$PYTHON" -u fp_sweep.py ../../local/fp-inputs.npz ../../local/sweep.jsonl 2 --host-label build-host
 ```
+
+The `sweep.jsonl` rows above predate the portable sweep and carry no host record; [hosts/](hosts/) holds the portable
+rows.
+
+## Portable sweep across hosts
+
+`fp_sweep.py` runs unchanged on any host that holds `fp_host.py`, `fp_backends.py`, `gororoba_quantum/parallel.py`
+(standard library only) and the inputs file, in the layout of this repository. [hosts/](hosts/) holds the rows;
+[hosts/sweep-checklist.md](hosts/sweep-checklist.md) is the compute-flags checklist.
+
+- Memory cap: `min(8 GiB, 0.6 x physical memory)`. `fp_host.choose_cap` starts a trial `systemd-run --user --scope -p
+  MemoryMax=N -p MemorySwapMax=0` and reads `memory.max` and `memory.swap.max` back from the scope's cgroup, because
+  systemd accepts the properties without a delegated memory controller. The record's `enforced` is that trial scope's
+  readback; each measured child starts its own scope with the same properties and no readback of its own. A host
+  without a working user manager falls to `RLIMIT_AS` in the child, held at 2 GiB or more because OpenBLAS reserves
+  address space at import (`prlimit --as` runs of the build-host stack fail at 1 GiB and pass at 2 GiB); the probe
+  records whether a mapping above the cap is refused. Four hosts (build-host, zen4-wsl, aws-sapphire-rapids,
+  oci-a1-neoverse-n1) ran under a systemd scope. The M1's `RLIMIT_AS` probe child failed in `preexec_fn`, so its rows
+  record mechanism `none` and `enforced` false: the M1 ran uncapped. Native Windows runs uncapped.
+  `--cap auto|systemd|rlimit|none` forces a mechanism.
+- Threads: 1, 2, 4, ... up to `min(os.cpu_count(), parallel.workers())`, plus that count when it is not a power of two.
+- Skips: x87 rows need an x86 CPU and `numpy.finfo(numpy.longdouble).nmant == 63`; the quaddtype `longdouble`-backend
+  rows are x87 rows under the quad dtype's name; quaddtype rows need the wheel and an enabled QuadBLAS
+  (`fp_host.quadblas_status` calls `numpy_quaddtype.get_quadblas_version()`, which raises `NotImplementedError` where
+  the wheel disables QuadBLAS, as `numpy_quaddtype.set_num_threads` does in every quaddtype configuration). A skipped
+  configuration is a row with a `skipped` reason, so every host's grid aligns.
+- Row additions: `host` (label, machine, OS family, CPU model, numpy `__cpu_features__` subset, numpy SIMD baseline
+  and dispatch lists, BLAS runtime through threadpoolctl, package versions), `cap`, `mode`, `idle_wait`,
+  `load_average_before`, `knobs`, `inputs_sha256` and `inputs_provenance`. The old fields keep their names. The host
+  record is a public substrate profile; the exact kernel release, the distribution string and the memory size stay
+  out of the rows, and the infrastructure chart in the private gororoba-infrastructure repository holds the host
+  facts behind each label.
+- Input digests: `fp_host.input_digests` rebuilds the five `arithmetic.inputs_sha256` digests from the arrays;
+  `fp_export.py` stores the producer's own digests in the npz, and `matches_producer_digests` compares them. On the
+  build host all five equal the digests retained in `results/quandela/cases/ascella_cz_ensemble/forecast.json`. A
+  host that receives the npz reports the exporting host's digests; a host that runs `fp_export.py` itself reports
+  digests of its own libm and BLAS results.
+- `--idle-wait` starts each run only when the 1 minute load average is below 0.5 x `os.cpu_count()` (exit 3 after
+  `--idle-timeout` seconds; native Windows has no load average and the wait is a recorded no-op). `--quick` keeps one
+  thread count per family (`min(cpus, 4)`), the three scipy drivers, two refinement steps, arb at 128 bits and one
+  repeat.
+
+Interpreter: the new files use no syntax newer than Python 3.10 by inspection; the rows record runs on Python 3.14.4,
+3.14.9 and 3.15.2, so use 3.13 or later on remote hosts. The pins below are the build host's versions. The rows record
+numpy 2.5.4, scipy 1.18.1 and python-flint 0.9.0 installed from them on Windows x86-64, macOS arm64 and Linux aarch64,
+and numpy-quaddtype 1.0.0 on Linux x86-64, Windows (QuadBLAS disabled) and macOS arm64; the Linux aarch64 host holds
+no numpy-quaddtype. Install into a venv:
+`numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0`.
+
+```sh
+# Linux x86_64, Linux aarch64, macOS arm64 (POSIX sh); run from the directory that holds docs/ and gororoba_quantum/
+PYTHON=${PYTHON:-python3}
+"$PYTHON" -m venv "$HOME/fp-venv" && PYTHON="$HOME/fp-venv/bin/python"
+"$PYTHON" -m pip install numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0
+D=docs/evidence/least-squares-precision
+"$PYTHON" -u $D/fp_sweep.py fp-inputs.npz $D/hosts/LABEL-full.jsonl --host-label LABEL --idle-wait
+"$PYTHON" -u $D/fp_sweep.py fp-inputs.npz $D/hosts/LABEL-quick.jsonl --host-label LABEL --quick   # 1 GiB hosts
+```
+
+```powershell
+# Windows native (PowerShell); fp_export.py cannot run here because the producer imports fcntl, so copy fp-inputs.npz
+$env:PYTHON = "C:\Path\To\python.exe"
+& $env:PYTHON -m venv "$env:USERPROFILE\fp-venv"; $env:PYTHON = "$env:USERPROFILE\fp-venv\Scripts\python.exe"
+& $env:PYTHON -m pip install numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0
+$D = "docs\evidence\least-squares-precision"
+& $env:PYTHON -u "$D\fp_sweep.py" fp-inputs.npz "$D\hosts\LABEL-full.jsonl" --host-label LABEL --cap none
+```
+
+A Linux or macOS host that should put its own libm and BLAS behind the input digests also installs `qiskit==2.6.2
+sympy==1.14.0 rustworkx==0.18.1` and runs `"$PYTHON" $D/fp_export.py fp-inputs.npz --host-label LABEL` from a full
+checkout before the sweep. Whether numpy-quaddtype publishes a Linux aarch64 wheel is unverified here; the sweep
+skips its rows with the import error when none installs.
 
 Host: AMD Ryzen 5 5600X3D capsule (10 CPUs visible, AVX2 and FMA, no AVX-512), OpenBLAS 0.3.34 (`Zen` core,
 OpenMP), numpy 2.5.4 (baseline x86-64-v3), scipy 1.18.1, python-flint 0.9.0 on FLINT 3.6.0, mpmath 1.4.1,
 numpy-quaddtype 1.0.0 built `-march=native -O3` (meson release, SLEEF 3.9.0 scalar FMA quad path, QuadBLAS 1.0.0).
+
+## Results across hosts
+
+Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, python-flint 0.9.0, numpy-quaddtype
+1.0.0) in a venv, one configuration at a time; the rows are in [hosts/](hosts/) under each label. A host that ran
+`fp_export.py` itself compared its five input digests with the build host's.
+
+| Label | CPU | OS | Own export: digests equal to the build host's | Full rows (skipped) |
+|---|---|---|---|---|
+| build-host | Ryzen 5 5600X3D, Zen 3 | Linux on WSL2 | reference | 74 (0) |
+| zen4-wsl | Ryzen 9 7945HX, Zen 4, AVX-512 | Linux on WSL2 | 5 of 5 | 88 (0) |
+| zen4-windows | Ryzen 9 7945HX | Windows 11 | not run: `fp_export.py` needs `fcntl` | 88 (22 x87 skipped, 12 QuadBLAS errors) |
+| aws-sapphire-rapids | Xeon Platinum 8488C, AVX-512 | Linux on a cloud VM | 5 of 5 | 32 (0) |
+| oci-a1-neoverse-n1 | Neoverse N1 | Linux aarch64 on a cloud VM | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
+| m1-macos | Apple M1 | macOS 27.0 | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
+
+- Arithmetic that bypasses the BLAS gives the same error on every host whose five input digests agree. The five
+  hosts other than the M1 agree on all five digests, and on those five hosts every configuration run on two or more
+  of them scores identically to the last recorded digit: 24 arb normal-equation configurations, 8 binary128
+  configurations through SLEEF (build-host, zen4-wsl, aws-sapphire-rapids) and 5 x87 configurations. The M1 ran a
+  different `observed_rate_columns` array, so its rows answer a different problem: its scores differ from the other
+  hosts' in 12 of its 16 arb configurations (64, 128 and 192 bits; the 256-bit rows agree) and in all 8 of its SLEEF
+  configurations, and the comparison does not measure the host dependence of the arithmetic. Every float64
+  configuration routes through the BLAS. None of the 30 float64 configurations run on two or more hosts has one
+  score on every host; zen4-wsl and aws-sapphire-rapids, which both load the OpenBLAS `SkylakeX` core, agree on 6
+  of the 10 float64 configurations they share (the scipy drivers at one and two threads). Unrefined float64 pinv
+  scores 2.2 to 14.8 ulp on the process fidelity across the five digest-agreeing hosts at one thread (0.2 on the
+  M1), numpy lstsq 2.2 to 13.2 and the scipy drivers 0.2 to 6.8 across the six. This measures the reason the producer computes in arb.
+- The macOS rows differ from the other five hosts in `observed_rate_columns` alone: the design matrix, rate
+  observables, Hermitian basis and ideal Choi vector digests are equal (`inputs_sha256` of the first row of each
+  full file). That digest hashes the point rates stacked with the 500 bootstrap replicate columns, so the rows do
+  not say which entries differ or by how much; a receipt that compares the two npz files (shapes, point-rate
+  equality, count of differing replicate entries, maximum absolute difference) is `not run` because it needs the
+  M1's `fp-inputs.npz`. Hypothesis: numpy's binomial and Poisson samplers take accept-reject decisions through libm
+  calls, and Apple's libm rounds some of them differently from glibc, so the replicate stream diverges. Falsifier:
+  the same numpy wheel drawing the producer's `resampled_rates` stream identically on macOS, or a difference
+  confined to the point rates. Until the receipt exists, bootstrap intervals are comparable across the four hosts
+  that ran `fp_export.py` themselves with equal digests (build-host, zen4-wsl, aws-sapphire-rapids,
+  oci-a1-neoverse-n1) and not onto macOS; zen4-windows ran on the build host's npz and says nothing about its own
+  sampler.
+- numpy-quaddtype is not installed on the Neoverse host (`ModuleNotFoundError`), so its rows skip quaddtype; whether a
+  Linux aarch64 wheel exists is unverified. The Windows wheel disables QuadBLAS: the 12 SLEEF configurations (six
+  thread counts, two kinds, two repeats each) are error rows there (`NotImplementedError: QuadBLAS is disabled`), a
+  capability that `fp_host.quadblas_status` now probes, so a rerun on that wheel records skips. The retained rows
+  predate the probe and stay as measured.
+- The Vostro (Turion 64 X2, SSE3 without SSSE3, SSE4 or POPCNT) is not run in this sweep. Its retained record
+  ([quad-falsification/vostro.json](quad-falsification/vostro.json)) is a numpy 2.5.3 run of the quaddtype matmul
+  test; a numpy 2.5.4 run on that CPU, and with it the expected SIGILL from a baseline above its instruction set, is
+  `not run` and has no retained record.
+- Times rank the hosts only within a row. The build host shared its CPUs with other sessions' Singular jobs (load 1.9
+  to 5.7), and its float64 single-thread solves ran 10 to 20 times slower than the two-core cloud hosts. At one
+  thread, arb at 128 bits took 0.77 s on the M1, 0.98 to 1.09 s on Zen 4 and Sapphire Rapids, and 2.5 to 3.2 s on the
+  build host and the Neoverse N1.
