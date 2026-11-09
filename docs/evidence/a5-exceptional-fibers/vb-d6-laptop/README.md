@@ -32,3 +32,7 @@ r_16 = 266 (80 / 56 / 65 / 65, 704 s, 0.45 GiB), so degree 5 closes at exactly N
 Known runner defect: `run-cells.sh` and `run-cells-p2.sh` write the engine record straight to `out/<tag>.json` and
 skip a cell whose record is nonempty, so an interrupted write would read as finished on retry ([issue 802](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/802)).
 Every retained record here parsed and passed the registry's engine and header digest checks.
+
+Degree 7 (target HF(k[y]/K2, 7) = 624, prediction r_21 = 609 and r_22 = 624 in A5-269): the N = 22 cells at both
+primes ran from 2026-11-09T09:23:51Z and were stopped at the 3-hour cap (3:02 wall, still in the Singular export, about
+0.35 GiB each, no record; ledger A5-279). Their empty records and partial exports were moved off the run directory.
