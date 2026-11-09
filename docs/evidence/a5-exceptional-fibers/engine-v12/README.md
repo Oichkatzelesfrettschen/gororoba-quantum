@@ -49,6 +49,18 @@ records of v11, v12 flint and v12 gpu agree, and both Iso v12 records agree with
 [`../iso-d6-n19-laptop/isonm_d6_n19_p32009.json`](../iso-d6-n19-laptop/isonm_d6_n19_p32009.json) (engine v11), whose
 export fields (standard-basis and table file digests, chunking) equal theirs.
 
+## What remains on the host and what v12 does not change
+
+- The host table products `X @ T` bound the closure: about 30 s of the 44.8 s W8 closure and about 185 s of the 276 s
+  Iso closure. Moving them needs device-resident tables (about 3.6 GB of int32 for the dense W8 tables; the Iso tables
+  are sparse).
+- The preflight terms stay those of v11 (`fiber_rank_v12.py`, `walk_temporaries` and `echelon_bases` of the preflight
+  dictionary), which the engine map measures 2.3 to 2.7 times above the peak, and under `--echelon gpu` the host
+  basis term counts memory the device holds. A `--max-gb` launch of W8 degree 6 or Iso degree 7 stops at the
+  preflight until they change. In-place update, streamed L and free-column storage are also not done.
+- An earlier uncapped revision gave a W8 closure of 35.8 s with equal ranks; the Iso v11 baseline was not rerun (the
+  flint backend is v11's code).
+
 ## Memory cap
 
 `GOROROBA_GPU_GIB` limits torch's caching allocator and CuPy's pool and leaves 0.5 GiB for the context. An uncapped

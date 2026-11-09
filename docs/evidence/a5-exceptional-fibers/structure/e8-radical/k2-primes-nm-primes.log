@@ -1,0 +1,13 @@
+K dim 5 deg 11
+radical dim 5 deg 11 radical == K? 0 s 1
+radical h1..h5
+16
+69
+195
+440
+861
+minimal primes 2 s 5
+prime 1 proj dim 4 deg 11 linear gens 9
+per-degree 53 155 360 721
+prime 2 proj dim 3 deg 4 linear gens 14
+per-degree 22 50 95 161

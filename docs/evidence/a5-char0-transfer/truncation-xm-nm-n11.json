@@ -1,0 +1,33 @@
+{
+ "slug": "xm-nm",
+ "order": 11,
+ "conjecture": "good reduction of J + m^N at each split prime",
+ "qi_basis_size": 775,
+ "qi_terms": 14526,
+ "qi_max_denominator": 1,
+ "qi_has_imaginary_part": false,
+ "qi_wall_seconds": 9.8,
+ "primes": [
+  {
+   "prime": 32009,
+   "root": 10754,
+   "same_variables": true,
+   "bad_denominators": [],
+   "header_basis_size": 775,
+   "bases_equal": true,
+   "mutation_detected": true,
+   "header_wall_seconds": 2.7
+  },
+  {
+   "prime": 32029,
+   "root": 9115,
+   "same_variables": true,
+   "bad_denominators": [],
+   "header_basis_size": 775,
+   "bases_equal": true,
+   "mutation_detected": true,
+   "header_wall_seconds": 2.6
+  }
+ ],
+ "verdict": "survives"
+}

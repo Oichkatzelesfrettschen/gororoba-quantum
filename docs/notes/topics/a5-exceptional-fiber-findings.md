@@ -477,8 +477,8 @@ tests; the ledger row it enters is named where one exists.
    r_15 = 495 (`../../evidence/a5-exceptional-fibers/forecasts/trends-2026-11-06.md`, d = 4 row; `n15-laptop/`), and
    degree 5 closes at N = 18 after r_15 = r_16 = 742. E8-bar thus closes at floor(7d/2) + 1 with a one-step plateau at
    even d, the X- pattern, while its last jumps (55 at d = 4, 81 at d = 5) follow neither (2d + 1)^2 nor one law yet.
-   Hypothesis: X- and E8-bar share a generator of order 7/2 per degree. Falsifier: X- degree 6 closing at an N other
-   than 22 (roadmap item 1).
+   Hypothesis: X- and E8-bar share a generator of order 7/2 per degree. Its falsifier, X- degree 6 closing at an N other
+   than 22, did not fire: X- degree 6 closed at N = 22 at both primes (roadmap item 1).
 8. **X- arc certificate inside its P^11**; the three nilpotent linear directions need the scheme-theoretic Rees or
    Grassmannian construction, since arcs over a field cannot see them.
 9. **Kernel-plane limits along the formal arcs**: the limiting 8-planes of ker L_y from `cd_core` along each arc,
@@ -523,13 +523,13 @@ Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 |---|---|---|---|
 | E8-bar -> VB degree 4, p = 32029 | A5-111 | done: r_13 = 155, 60 s, 179 MiB | laptop |
 | E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); r_19 = 420 at both primes (about 2 h, 1.24 GiB each), so N = 18 decides the closing order | laptop, N = 18 at 32009 running |
-| Degree-3 component of E8-bar -> VB: remaining charts (t7 = 1, k^2 + 3 = 0, singular points) | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
+| Degree-3 component of E8-bar -> VB: the t7 = 1 chart is done (prime, 115 s; normalized, 451 s with `isPrim`; 34 order-1 arcs all in the degree-4 component); remaining: the k^2 + 3 = 0 chart, the singular points and jet-parameter arcs on t1 = 0 and the apex | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
 | Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
 | E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101 | pilot cost unmeasured (the degree-2 W8 receipt: 5,619 s, 6.7 GB) | laptop |
 | Characteristic 0: degree-2 K2 by rational reconstruction, then exact membership | roadmap 10 | hours | laptop |
 | Kernel-plane limits along the arcs | A5-029 | one-arc pilot first | laptop |
-| Engine v12: in-place update, streamed L, free-column storage, 2-byte panels, then a GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the products and closure stages, which dominate W8 and Iso, not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance: W8 degree 4 byte-equal, preflight within 1.3x | laptop |
-| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | paid VM (at least 64 GiB) by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
+| Engine v12: the GPU echelon step is accepted (int32 residues on the device; `engine-v12/`); not done: the preflight terms, in-place update, streamed L, free-column storage and 2-byte storage, then the rest of the GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the products and closure stages, which dominate W8 and Iso, not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance of the echelon step: W8 degree 4 and Iso degree 6 byte-equal (met); preflight within 1.3x (open: `fiber_rank_v12.py` keeps the v11 walk and echelon terms) | laptop |
+| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | forecast: N = 22, quotient dimension 184,206, preflight 226 GiB, peak about 230 GiB and a standard basis of about 1.5e6 s (two weeks) (`forecasts/trends-2026-11-06.md`, item 14); a paid VM of at least 256 GiB by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
 | W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
 
 No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.
