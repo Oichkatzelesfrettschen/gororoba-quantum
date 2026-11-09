@@ -3,6 +3,7 @@ per-seed mesh variance (qd_platform.scatter_check_gaps, strategy.md section 7 ru
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -15,14 +16,6 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import qd_platform  # noqa: E402
 
-# Cases whose cases.json bytes the submitted or built request digests pin, written before the typed rule. Each value
-# names where its untyped text carries the mesh-variance term, or that it carries none.
-UNTYPED = {
-    "ascella_cz_tomography_reference": "none: the overdispersion reference draws from the acquisition law alone, and "
-    "docs/notes/topics/ascella-cz-tomography-band-results.md reads its failed check against the rule",
-    "ascella_cz_ensemble": "estimate_2_mesh_variance: homogeneity_test compares ten seed tables per setting",
-    "belenos_mode_swap_interleaved": "mesh_variance: slot_homogeneity adds the per-class per-seed variance sigma_c^2",
-}
 CASES = sorted((ROOT / "results/quandela/cases").glob("*/*/cases.json"))
 
 
@@ -38,11 +31,30 @@ def test_the_rule_reads_retained_cases() -> None:
 @pytest.mark.parametrize("path", CASES, ids=lambda p: f"{p.parent.parent.name}/{p.parent.name}")
 def test_scatter_checks_type_a_mesh_variance_term(path: Path) -> None:
     case = json.loads(path.read_text(encoding="utf-8"))
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
     gaps = qd_platform.scatter_check_gaps(case.get("platforms") or [], case.get("preregistered") or {})
-    if path.parent.parent.name in UNTYPED:
-        require(bool(gaps), "a listed case that now satisfies the typed rule leaves UNTYPED")
+    listed = qd_platform.UNTYPED_SCATTER_CASES.get(digest)
+    if listed is not None:
+        require(listed[0] == f"{path.parent.parent.name}/{path.parent.name}", f"{digest} is listed as {listed[0]}")
+        require(tuple(gaps) == listed[1], f"listed gaps {listed[1]} differ from {gaps}")
         return
-    require(not gaps, f"scatter checks without a typed mesh-variance term: {gaps}")
+    require(qd_platform.scatter_check_refusal(case, digest) is None, f"untyped scatter checks: {gaps}")
+
+
+def test_every_listed_untyped_case_is_retained() -> None:
+    digests = {hashlib.sha256(p.read_bytes()).hexdigest() for p in CASES}
+    missing = sorted(set(qd_platform.UNTYPED_SCATTER_CASES) - digests)
+    require(not missing, f"UNTYPED_SCATTER_CASES lists digests no retained case has: {missing}")
+
+
+def test_plan_refusal_binds_the_digest() -> None:
+    checks: dict[str, Any] = {"overdispersion": {"statistic": "Pearson"}}
+    case: dict[str, Any] = {"platforms": ["qpu:ascella"], "preregistered": checks}
+    legacy = next(d for d, (name, _) in qd_platform.UNTYPED_SCATTER_CASES.items() if name.endswith("reference/job-00"))
+    require(qd_platform.scatter_check_refusal(case, legacy) is None, "the listed digest with its gaps passes")
+    require(qd_platform.scatter_check_refusal(case, "0" * 64) is not None, "an unlisted digest is refused")
+    extra = {**case, "preregistered": {**checks, "homogeneity": "Pearson"}}
+    require(qd_platform.scatter_check_refusal(extra, legacy) is not None, "a listed digest with other gaps is refused")
 
 
 def test_the_rule_reads_kinds_not_wording() -> None:
@@ -65,6 +77,10 @@ def test_the_rule_reads_kinds_not_wording() -> None:
         (["qpu:ascella"], {"homogeneity_alpha": 0.01}, []),
         (["qpu:ascella"], {"overdispersion": {**check, "mesh_variance": "replicate seeds: five"}}, ["overdispersion"]),
         (["qpu:ascella"], {"overdispersion": {**check, "mesh_variance": too_few}}, ["overdispersion"]),
+        (["qpu:ascella"], {"validation": check}, ["validation"]),
+        (["qpu:ascella"], {"checks": [check]}, ["checks/0"]),
+        (["qpu:ascella"], {"checks": [{**check, "mesh_variance": replicate}]}, []),
+        (["qpu:ascella"], {"checks": [check], "mesh_variance": anchors}, []),
     )
     for platforms, preregistered, expected in cases:
         found = qd_platform.scatter_check_gaps(platforms, preregistered)

@@ -928,11 +928,13 @@ def hom_warning(platform: str, perfs: dict[str, Any], photons: int, case: str) -
 # strategy.md section 7, "Per-seed mesh variance of a share", rule 1: the service compiles every iteration of a QPU job
 # to its own mesh, whose observable moves far beyond binomial error between seeds, so a preregistered scatter check
 # that draws its reference from the acquisition law alone fails by construction once the counts resolve that
-# variance. A preregistered entry whose key names a scatter statistic (SCATTER_CHECK_WORDS, at any nesting depth) and
-# whose value defines it (a mapping or a statement) carries a typed MESH_VARIANCE_KEY mapping, in the entry or at the
-# top of the preregistration, of one MESH_VARIANCE_KINDS kind with the fields that kind requires: replicate seeds
-# with their count per setting and the degrees of freedom of the between-seed variance, same-seed anchors with their
-# count and repeats, or a non-decisional check whose ``gates`` list is empty, so it conditions no verdict.
+# variance. A preregistered entry is a scatter check when its key names a scatter statistic (SCATTER_CHECK_WORDS), or
+# when it is a mapping whose ``statistic`` or ``test`` field does, at any depth of mappings and lists. Each carries a
+# typed MESH_VARIANCE_KEY mapping, in the check or at the top of the preregistration, of one MESH_VARIANCE_KINDS kind
+# with the fields that kind requires: replicate seeds with their count per setting and the degrees of freedom of the
+# between-seed variance, same-seed anchors with their count and repeats, or a non-decisional check whose ``gates``
+# list is empty, so it conditions no verdict. ``plan`` refuses a case with a gap unless UNTYPED_SCATTER_CASES lists
+# its cases.json digest with exactly those gaps.
 PER_ITERATION_COMPILED = ("qpu:ascella", "qpu:belenos")
 SCATTER_CHECK_WORDS = (
     "overdispersion",
@@ -944,11 +946,49 @@ SCATTER_CHECK_WORDS = (
     "pearson",
     "deviance",
 )
+SCATTER_NAME_FIELDS = ("statistic", "test")
 MESH_VARIANCE_KEY = "mesh_variance"
 MESH_VARIANCE_KINDS = {
     "replicate_seeds": {"seeds_per_setting": 2, "degrees_of_freedom": 1},
     "anchors": {"anchors": 1, "repeats_per_anchor": 2},
     "non_decisional": {},
+}
+# Cases whose bytes submitted or built request digests pin, written before the typed rule: cases.json sha256 to the
+# case path and the gaps it holds. The overdispersion reference of ascella_cz_tomography_reference carries no
+# mesh-variance term; ascella_cz_ensemble's homogeneity test compares ten seed tables per setting
+# (estimate_2_mesh_variance); belenos_mode_swap_interleaved's slot homogeneity adds the per-class per-seed variance
+# of its untyped mesh_variance statement.
+UNTYPED_SCATTER_CASES: dict[str, tuple[str, tuple[str, ...]]] = {
+    "5f1012629d4accf92d3ee895a523f0c7dedad4203b554256cf1c6da7e46b34a8": (
+        "ascella_cz_tomography_reference/job-00",
+        ("overdispersion",),
+    ),
+    "2b342ec20d6677a4baf315fca0ec5b956479becffaea901a7ae01caffd905d36": (
+        "ascella_cz_tomography_reference/job-01",
+        ("overdispersion",),
+    ),
+    "0a0c2da6209d0688be914c7e7881cc7e52417f19e9a929f07cf8b0e16e858f28": (
+        "ascella_cz_ensemble/job-00",
+        ("homogeneity_test",),
+    ),
+    "6de7229e6d59899fc055bbcd6388de037772aa7657dc5304f42374ddbf2ebe50": (
+        "ascella_cz_ensemble/job-01",
+        ("homogeneity_test",),
+    ),
+    **{
+        digest: (f"belenos_mode_swap_interleaved/job-{job}", ("slot_homogeneity",))
+        for digest, job in (
+            ("95568193475b218206a0163c29594d02fafa439a8b606fc87e21b6c1ad30465a", "00"),
+            ("8d15e00f6d6a0861df04e373b984a3408423cf3137d7e72302b5b64ecfd31390", "03"),
+            ("3d53d0f9185ae2ef5e39adf8861c0a099dccc2eb89bfc7e2a9d4fa3b177d0e47", "04"),
+            ("eb5cfc2743217bd3cdbf21688d06fedb76f771dd61e0118210f69aa6e32101ce", "05"),
+            ("e6b84c1bc5e3fe141cd6979ceb8b82d849eb97312d68e0e207060c35c000c27c", "06"),
+            ("450346da3be39579eb15eb604d451eeed1b4542170df7cf98ade1dc5b2648121", "07"),
+            ("a19b7c1537243c4854017636289d5ac80d91097338f6fc1498b556b7a12ed541", "08"),
+            ("ed3d4d099639e816d7028d7f677b4ec1f4a0eed3b7fa5d9a3cb994913615b9d7", "09"),
+            ("eb67cbf156f5820e84f451722df02d0e16fc4df69600359a49e9585abcea1d93", "10"),
+        )
+    },
 }
 
 
@@ -964,6 +1004,10 @@ def mesh_variance_valid(term: Any) -> bool:
     return term["kind"] != "non_decisional" or term.get("gates") == []
 
 
+def names_scatter(text: Any) -> bool:
+    return isinstance(text, str) and any(word in text.lower().replace(" ", "_") for word in SCATTER_CHECK_WORDS)
+
+
 def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: dict[str, Any]) -> list[str]:
     """The paths of the preregistered scatter checks of a case on a per-iteration-compiled platform that carry no valid
     typed mesh-variance term (mesh_variance_valid), in the check's own mapping or at the preregistration's top."""
@@ -972,19 +1016,36 @@ def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: di
     case_term = mesh_variance_valid(preregistered.get(MESH_VARIANCE_KEY))
     gaps: list[str] = []
 
-    def walk(entries: dict[str, Any], prefix: str) -> None:
-        for key, value in entries.items():
-            path = f"{prefix}{key}"
-            named = key != MESH_VARIANCE_KEY and any(word in key.lower() for word in SCATTER_CHECK_WORDS)
-            if named and isinstance(value, dict | str):
-                own = isinstance(value, dict) and mesh_variance_valid(value.get(MESH_VARIANCE_KEY))
-                if not (own or case_term):
-                    gaps.append(path)
-            if isinstance(value, dict):
-                walk(value, f"{path}/")
+    def visit(key: str, value: Any, path: str) -> None:
+        if key == MESH_VARIANCE_KEY:
+            return
+        by_value = isinstance(value, dict) and any(names_scatter(value.get(f)) for f in SCATTER_NAME_FIELDS)
+        if (names_scatter(key) and isinstance(value, dict | str)) or by_value:
+            own = isinstance(value, dict) and mesh_variance_valid(value.get(MESH_VARIANCE_KEY))
+            if not (own or case_term):
+                gaps.append(path)
+        if isinstance(value, dict):
+            for child, item in value.items():
+                visit(child, item, f"{path}/{child}")
+        elif isinstance(value, list):
+            for index, item in enumerate(value):
+                visit("", item, f"{path}/{index}")
 
-    walk(preregistered, "")
+    for key, value in preregistered.items():
+        visit(key, value, key)
     return gaps
+
+
+def scatter_check_refusal(manifest: dict[str, Any], cases_sha256: str) -> str | None:
+    """The refusal for a case whose scatter checks lack a typed mesh-variance term, or None when it has none or
+    UNTYPED_SCATTER_CASES lists its digest with exactly its gaps."""
+    gaps = scatter_check_gaps(manifest.get("platforms") or [], manifest.get("preregistered") or {})
+    if not gaps or tuple(gaps) == UNTYPED_SCATTER_CASES.get(cases_sha256, ("", ()))[1]:
+        return None
+    return (
+        f"preregistered scatter checks {gaps} name no typed mesh_variance term (strategy.md section 7 rule 1; "
+        "qd_platform.MESH_VARIANCE_KINDS)"
+    )
 
 
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str) -> None:
@@ -1293,6 +1354,9 @@ def plan(
             raise PlatformError(f"--max-credits {max_credits} exceeds or invalidates the case ceiling {case_ceiling!r}")
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
+    refusal = scatter_check_refusal(manifest, cases_sha256)
+    if refusal is not None:
+        raise PlatformError(refusal)
     row = explorer_row(platform)
     if row["status"] not in statuses:
         raise PlatformError(f"{platform} is {row['status']}")
