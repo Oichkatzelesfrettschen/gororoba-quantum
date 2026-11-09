@@ -25,8 +25,9 @@ f437c9ea4f9e8861...) on 2026-11-08, each cell under an 8 GiB memory scope and a 
 Two predictions met these runs. The trends file (`../forecasts/trends-2026-11-06.md`, the X order-law bullet under
 section 1.3) read the measured r_5 = 12 and r_6 = 26 as putting the closing N at 7 (T_X(2) = 6); r_7 = 26 refutes that,
 and the ladder closes at N = 8 after a plateau, as the X- degree-5 ladder plateaus at 201 for N = 15 and 16. The
-last-jump law (ledger row A5-244) predicts a last jump of (2d+1)^2 split by character block like the parity classes of
-the box k[x, y]/(x^{2d+1}, y^{2d+1}): 25 as 9 / 6 / 5 / 5 at d = 2, 49 as 9 / 12 / 14 / 14 at d = 3 and 81 as
+last-jump law (ledger row A5-244) predicts a last jump of (2d+1)^2 split by character block as block 0 (2 floor(d/2) + 1)^2, block 1 d(d + 1)
+and blocks 2 and 3 the rest in halves (the trends closed form; the parity classes of the box k[x, y]/(x^{2d+1},
+y^{2d+1}) have the same total and a different split): 25 as 9 / 6 / 5 / 5 at d = 2, 49 as 9 / 12 / 14 / 14 at d = 3 and 81 as
 25 / 20 / 18 / 18 at d = 4. The measured jumps are 51 - 26 = 25 (9 / 6 / 5 / 5), 122 - 73 = 49 (9 / 12 / 14 / 14) and
 240 - 159 = 81 (25 / 20 / 18 / 18), so the law survives three cells it was not fitted on.
 
@@ -65,5 +66,6 @@ r_22 = 665 = HF(k[y]/K2, 6) certifies h_6 = 665 for X- at p = 32009 (A5-167) and
 after the plateau r_20 = r_21: the closing-order hypothesis survives its first out-of-sample test.
 
 At p = 32029 (`run-xm-d6-p2.sh`, header `../working/build/inputs/p32029-r9115/xm-nm.sing`, [`xm6p2.events`](xm6p2.events)):
-r_21 = 496 (132 / 136 / 114 / 114, 1,108 s, 4.7 GiB) and r_22 = 665 (181 / 178 / 153 / 153, 1,760 s, 5.6 GiB), the same
-ladder; h_6 = 665 for X- (A5-173) and X+ (A5-161) at the second prime.
+r_21 = 496 (132 / 136 / 114 / 114, 1,108 s, 4.7 GiB) and r_22 = 665 (181 / 178 / 153 / 153, 1,760 s, 5.6 GiB), equal to
+the p = 32009 values at those N; h_6 = 665 for X- (A5-173) and X+ (A5-161) at the second prime. N = 20 was not run at
+p = 32029, so the plateau r_20 = r_21 is a p = 32009 measurement.

@@ -350,7 +350,7 @@ non-reduced tangent cone; arcs on the normalization replace them.
   adversarial reviews repaired the Cartier twist and the exact v2-divisibility of the slice step; h_6 = 8,624 and
   h_7 = 16,416 follow without a rank run.
 - Last-jump law (ledger row A5-244): on Iso, W8 -> N- and X- the rank ladder's last jump into the K2 count is
-  (2d+1)^2 and splits by character block like the parity classes of the box k[x, y]/(x^{2d+1}, y^{2d+1}). Fitted on
+  (2d+1)^2 and splits by character block by the closed form of the trends record (block 0 (2 floor(d/2) + 1)^2, block 1 d(d + 1), blocks 2 and 3 the rest in halves); the parity classes of the box k[x, y]/(x^{2d+1}, y^{2d+1}) sum to the same total but split as (d + 1)^2, d(d + 1), d(d + 1), d^2 and do not match the blocks, and no ring is identified. Fitted on
   ten Iso and W8 cells and two X- cells, it met four cells out of sample: Iso d = 6 (r_18 = 2,253, blocks
   583/568/551/551, predicted before the run) and X- d = 2, 3 and 4
   ([xm-lown](../../evidence/a5-exceptional-fibers/xm-lown/README.md): jumps 25, 49 and 81 split 9/6/5/5, 9/12/14/14
@@ -430,8 +430,8 @@ tests; the ledger row it enters is named where one exists.
 
 1. **X- degree 6** (done at both primes, 2026-11-09; `../../evidence/a5-exceptional-fibers/xm-lown/`). The preregistered
    ladder met: r_20 = r_21 = 496, r_22 = 665 with blocks 181/178/153/153, the last jump 169 split 49/42/39/39 (A5-244),
-   closing at N = 22 = floor(7d/2) + 1; h_6 = 665 for X- (A5-167) and X+ (A5-155). The same ladder holds at p = 32029
-   (A5-173, A5-161).
+   closing at N = 22 = floor(7d/2) + 1; h_6 = 665 for X- (A5-167) and X+ (A5-155). At p = 32029, r_21 = 496 and r_22 = 665
+   with the same blocks (A5-173, A5-161); the plateau at N = 20 is measured at p = 32009 only.
 2. **C30 as a family of planes** (minutes per point). Two-plane test rank [M(p) | M(q)] for distinct p, q in U: 8 means
    general planes are disjoint, below 8 means they meet; then the determinant locus of the Newton and (v4, v5) blocks
    over F_p[b, c], one point per component, to test whether every fiber over P(L0) is a linear 3-space. Falsifier of
