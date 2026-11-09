@@ -79,7 +79,10 @@ of the final bytes. Set the variable for every long device run.
 | `accept.sh` | `7486aa4ceb6387fa` |
 | `accept-iso.sh` | `b71ed16962aade82` |
 
-`accept.sh ROOT TAG ENGINE D N [FLAGS]` and `accept-iso.sh ROOT TAG ENGINE [FLAGS]` ran each cell under a 20 GiB (W8)
+`accept.sh ROOT TAG ENGINE D N [FLAGS]` and `accept-iso.sh ROOT TAG ENGINE [FLAGS]` take an absolute ROOT: both export
+`GOROROBA_PARALLEL_DIR="$ROOT/gororoba_quantum"` and then change into ROOT, so a relative ROOT resolves beneath itself
+and the engine cannot import its modules (the retained bytes stay as they ran; every recorded run used a `$HOME` path).
+They ran each cell under a 20 GiB (W8)
 or 40 GiB (Iso) cgroup scope with `/usr/bin/time -v` and the device sampler; the logs hold the home directory as
 `$HOME`. The inputs are `working/build/inputs/p32009-r10754/w8-nm.sing` (sha256 `585a946d...`) with the degree-2
 receipt of `working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/`, and the Iso header of `iso-d6-n19-laptop/`
