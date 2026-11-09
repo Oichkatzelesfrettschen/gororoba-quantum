@@ -59,15 +59,15 @@ def main() -> int:
                 names.append(f"{row['name']}[{outcome}]")
                 observables.append(np.kron(density, tomo.outcome_projector(table, outcome)))
     point = tomo.absolute_rates(arrays["eligible"], arrays["shots"], arrays["scale"])
-    inputs = case.prediction_inputs()
+    prediction = case.prediction_inputs()
     provenance = {
         "exporter_host_label": args.host_label,
         "machine": platform.machine(),
         "python": platform.python_version(),
         "numpy": np.__version__,
         "producer_inputs_sha256": {
-            "design_matrix": digest(inputs["design"]),
-            "rate_observables": digest(inputs["observables"]),
+            "design_matrix": digest(prediction["design"]),
+            "rate_observables": digest(prediction["observables"]),
             "hermitian_basis": digest(tomo.hermitian_stack()),
             "ideal_choi_vector": digest(tomo.ideal_choi_vector()),
             "observed_rate_columns": digest(np.column_stack([point, batch.T])),
