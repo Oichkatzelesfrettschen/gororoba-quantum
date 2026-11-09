@@ -85,7 +85,8 @@ Cliffords, that leave its four words qubit-wise commuting, so one local
 rotation reads them. A 4-set generates the stabilizer group of a three-qubit
 stabilizer state up to signs, so the count is 0 for a product state, 1 for a
 Bell pair beside a single qubit and 2 for the GHZ class. The recorded cover
-uses 0, 0, 0, 1, 1, 1 and 2 CX. The counts are logical: routing on a coupling
+uses 0, 0, 0, 1, 1, 1 and 2 CX; every one of the 216 covers at the 5-CX minimum has that
+composition of three 0-CX, three 1-CX and one 2-CX setting. The counts are logical: routing on a coupling
 map adds SWAPs where a CX pair is not adjacent. Seven settings with 5 CX in
 all against 13 local settings with none is a trade between settings and
 entangling-gate error. Which readout gives the smaller error on the 21 probe

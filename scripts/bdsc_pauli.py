@@ -377,6 +377,14 @@ def commuting_cover(words: list[str]) -> dict[str, Any]:
         "minimum_settings": 7,
         "minimum_covers": len(covers),
         "cover_total_cx_range": [best, max(totals)],
+        "covers_at_least_cx": totals.count(best),
+        "least_cx_cover_compositions": sorted(
+            {
+                ",".join(str(n) for n in sorted(settings[k]["cx"] for k in c))
+                for c, total in zip(covers, totals, strict=True)
+                if total == best
+            }
+        ),
         "chosen_cover": [settings[k] for k in chosen],
     }
 

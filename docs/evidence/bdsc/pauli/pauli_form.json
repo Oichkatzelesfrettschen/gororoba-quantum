@@ -1246,7 +1246,11 @@
    5,
    12
   ],
+  "covers_at_least_cx": 216,
   "largest_commuting_set": 4,
+  "least_cx_cover_compositions": [
+   "0,0,0,1,1,1,2"
+  ],
   "minimum_covers": 6240,
   "minimum_settings": 7,
   "word_set": "Y3 (x) Q, Q^T = -Q (odd number of Y letters in Q)"
