@@ -160,13 +160,13 @@ def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -
     return rows
 
 
-def check(slug: str) -> dict[str, Any]:
+def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict[str, Any]:
     body = reduction_check._script(slug, None, rees.MODULAR_PRIME)
     header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
     ring_line = header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")]
     script = body.replace("\nquit;\n", "\n") + "\n".join(QUADRICS).replace("@SLICE@", slice_vars) + "\nquit;\n"
-    outcome = rees._run_singular(script, "quadrics_qi", 4 * reduction_check.TIMEOUT_SECONDS)
+    outcome = rees._run_singular(script, "quadrics_qi", timeout)
     if outcome.status != "completed":
         raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")
     res = outcome.results
@@ -217,8 +217,11 @@ def check(slug: str) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--slug", required=True, choices=sorted(SOURCES))
+    parser.add_argument(
+        "--timeout", type=int, default=4 * reduction_check.TIMEOUT_SECONDS, help="seconds for the Singular call"
+    )
     arguments = parser.parse_args()
-    result = check(arguments.slug)
+    result = check(arguments.slug, arguments.timeout)
     (HERE / f"quadrics-{arguments.slug}.json").write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=1))
 

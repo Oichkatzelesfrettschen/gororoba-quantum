@@ -12,8 +12,10 @@ The exceptional-fiber computations (ledger `docs/evidence/a5-exceptional-fibers/
 limit sets these deliverables need. Item 7, the finite global model of Z_5 with its homology and cup products,
 consumes the attaching maps. Item 8, the recurrence across the doubling ladder, compares n = 4 with n = 5.
 
-This document lists every open task of the session tracker with its next computation, what blocks it, where it runs
-and its cost estimate from a measured record. [a5-vb-degree7-and-w8-char0-plan.md](a5-vb-degree7-and-w8-char0-plan.md)
+This document lists the open tasks of the session tracker with their next computation, what blocks it, where each runs
+and its cost estimate from a measured record. The exceptional-fiber tasks below supply supports and Hilbert functions;
+they do not by themselves admit item 6, whose four plan steps (`docs/state/plans/a5-kernel-attachments.json`) stay
+open in the section "Item-6 deliverables". [a5-vb-degree7-and-w8-char0-plan.md](a5-vb-degree7-and-w8-char0-plan.md)
 holds the detail for E8-bar -> VB degree 7 and W8 in characteristic 0.
 
 ## Run policy
@@ -60,9 +62,24 @@ all.
 | task | computation | host | measured basis | falsifier |
 |---|---|---|---|---|
 | 118, 119 | `slimgb` against `std` for J + m^N, VB at p = 32009, N = 1 to 20 | laptop (`vbladder`, `vblevers`) | N = 13: same s bytes, kbase and tables, 66 s against 112 s; N = 15: 301 s against 562 s | a basis, kbase or table that differs, or a lost speedup at N = 18 to 20 |
-| 120 | engine v13 (`slimgb` export) on VB: degree 5 at N = 15 to validate (r = 255, 75/50/65/65), degree 7 at N = 21 and 22 at both primes | laptop (`vbd7`, deadline 24 h) | extrapolated std 22,700 to 81,600 s at N = 22 under `std`, divided by the `slimgb` factor (1.7 to 1.9 at N = 13 to 15) | r_21 not 609, r_21 = 624, split not 7/8/0/0, r_22 below 624, or a degree-5 rank that differs from the record |
-| 122 | W8 check 3 at N = 16 over Q(i) | build host | N = 13 took 114 s for the Q(i) basis | a denominator divisible by p, or a basis differing from the header's |
+| 120 | engine v13 (`slimgb` export) on VB: the degree-5 validation at N = 15 passed (r = 255, blocks 75/50/65/65, 416 s); degree 7 at N = 21 and 22 at both primes | laptop (`vbd7`, deadline 24 h) | extrapolated std 22,700 to 81,600 s at N = 22 under `std`, divided by the `slimgb` factor (1.7 to 1.9 at N = 13 to 15) | r_21 not 609, r_21 = 624, split not 7/8/0/0, r_22 below 624, or a degree-5 rank that differs from the record |
+| 122 | W8 check 3 at N = 16 over Q(i) | build host | N = 13 took 21:46 wall for the whole driver (114 s of it the Q(i) basis), 0.36 GiB | a denominator divisible by p, or a basis differing from the header's |
 | 103 | claims for the IBM 64D/128D wide-coset and Tuna 6-CZ acquisitions, and their implications for the Cayley-Dickson tower | own worktree, branch `claims/ibm-wide-coset-and-tuna-6cz` | | a claim citing a statistic no record holds |
+
+### Item-6 deliverables (plan `a5-kernel-attachments`)
+
+| task | plan step | state | depends on |
+|---|---|---|---|
+| 126 | incidence census, real versus complex, all 33 incidences | doing | |
+| 127 | limit sets 8 -> 12, 15 incidences, closed Gauss-graph fibers in Gr(4,6) with two-sided real certificates | todo | 126 |
+| 128 | limit sets 12 -> 16 (8) and 8 -> 16 (10), from a two-approach path-dependence test | todo | 126; the exceptional-fiber supports of task 5 |
+| 129 | compatibility of composed and direct limits | todo | 127, 128 |
+| 130 | attaching maps with homotopy data | todo | 129 |
+| 131 | ledger of questions not yet asked (program section 5) | standing | |
+
+Roadmap item 7 assembles the attaching maps of task 130 as a homotopy colimit over the incidence poset. Item 8 compares
+that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so item 6 stays open until tasks 126 to
+130 hold replayed evidence.
 
 ### Ready, no blocker
 
@@ -73,7 +90,8 @@ all.
 | 125 (for 110) | membership of the 91 degree-5 forms of E8-bar, by a sparse solver | laptop | unmeasured; the degree-2 receipt took 12,678 s |
 | 115 | exact torus over Q in the Klein centralizer, then a weighted dp order | build host | symbolic; the weighted std then runs at N = 15 and 18 |
 | 56 | Iso point-blowup plane pilot modeled on the W8 C30 certificate | `lab-a1` | one W8 plane took 45 to 52 s and 26 MiB |
-| variable-order screen | fixed dp permutations and `groebner` at N = 15 | laptop | about 420 s per permutation |
+| variable-order screen | fixed dp permutations at N = 15 | Kaggle CPU sessions, one permutation each | about 420 s per permutation; reversed variables measured 1.81 times slower at N = 13 |
+| `degBound` lever | `slimgb` with `degBound = N` at N = 18 | laptop, after the degree-7 cells | byte-identical basis and 12 percent faster at N = 13, 33.5 percent at N = 15 (Codex final review) |
 
 ### Blocked on a measurement
 

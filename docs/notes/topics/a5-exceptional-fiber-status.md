@@ -1,7 +1,7 @@
 # A_5 exceptional fibers: goal, status by layer, and what the 2026-11-09 results change
 
 This page walks through what the A_5 fiber program is for, where each layer stands by count of the claim ledger
-([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 277 rows after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md)), and
+([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 281 rows (277 after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md), A5-280 to A5-283 from [a5-vb7-w8-char0](../../archive/reviews/a5-vb7-w8-char0/README.md))), and
 what the results of 2026-11-09 imply. The measurements and methods live in
 [a5-exceptional-fiber-findings.md](a5-exceptional-fiber-findings.md); this page counts and interprets them.
 
@@ -29,7 +29,7 @@ smaller orbit Z, which 8-dimensional kernels arise as limits. The program answer
 
 ## Status by layer (ledger count, 2026-11-09)
 
-Ledger totals: 90 certified, 39 proved, 59 survives, 46 refuted, 10 superseded, 7 rejected, 19 open, 5 boundary, 2 stalled.
+Ledger totals: 90 certified, 39 proved, 60 survives, 48 refuted, 10 superseded, 7 rejected, 20 open, 5 boundary, 2 stalled.
 
 | Layer | Count | Share | Open items |
 |---|---|---|---|

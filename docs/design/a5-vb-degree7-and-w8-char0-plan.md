@@ -1,10 +1,12 @@
 # E8-bar -> VB degree 7 and W8 -> N- in characteristic 0: decomposition and sizing
 
-Two items from the A_5 exceptional-fiber program run past the owner's 3-hour run cap: the degree-7 test of the
-E8-bar -> VB ladder laws (ledger A5-260, A5-269, stalled as A5-279) and the transfer of the W8 -> N- Hilbert function to
-characteristic 0 over Q(i). This document splits each into pieces that fit under the cap and pieces that need a sized
-case. For every piece it states the conjecture, the falsifier, the measured cost behind the estimate and the decision
-the piece feeds. The ledger (`docs/evidence/a5-exceptional-fibers/ledger.tsv`) records statuses, and this document
+Two items from the A_5 exceptional-fiber program were stopped by a 3-hour run cap that the owner replaced the same
+day (2026-11-09) with approval for well-scoped long runs:
+- the degree-7 test of the E8-bar -> VB ladder laws (ledger A5-260, A5-269; stalled as A5-279);
+- the transfer of the W8 -> N- Hilbert function to characteristic 0 over Q(i).
+
+This document splits each into scoped runs. For every run it states the conjecture, the falsifier, the measured cost
+behind the estimate and the decision the run feeds. The ledger (`docs/evidence/a5-exceptional-fibers/ledger.tsv`) records statuses, and this document
 holds the plan.
 
 ## E8-bar -> VB degree 7
@@ -71,8 +73,6 @@ same standard monomials; they do not by themselves show equal tables or normal f
 The N = 18 comparison runs on the Windows workstation (`run-laptop.sh`: the std baseline beside `slimgb` at N = 18,
 19 and 20, each capped at 3 hours).
 
-Fitting N = 22 under the cap means std at most about 10,000 s, against the 22,300 to 89,300 s range. A lever must
-therefore be at least 2.2 to 9 times faster at N = 18, where it is testable in under an hour.
 
 Further levers, not yet run:
 
@@ -92,17 +92,13 @@ Further levers, not yet run:
   local quotient, but the repository canon admits only global orderings for exact replays, so it needs the owner's
   exception.
 
-### Decision for the owner
+### Runs
 
-The recommended order:
-
-1. **Lever at N = 18 first.** The retained N = 18 comparison on the laptop, now running, decides. A lever that wins
-   by 2.2 to 9 times at N = 18, with equal quotient and ranks, brings N = 22 under the cap.
-2. **Then one N = 21 cell at p = 32009,** only if the lever fails that test. Estimated 15,400 to 30,800 s at about
-   2 GiB on one core, so it needs your approval past the cap. It can refute three of the four predictions. It cannot
-   confirm closure at N = 22.
-
-Both N = 22 cells (one per prime) without a lever take 6 to 25 h each and need a sized case.
+The four degree-7 cells (N = 21 and 22 at both primes) run on engine v13 on the Windows workstation from
+2026-11-09T18:05Z under a 24 h deadline. Dividing the `std` extrapolation by the measured `slimgb` factor (1.7 to
+3.9, depending on host and load) gives about 2 to 5 h at N = 21 and 3 to 15 h at N = 22. Each cell's Singular export
+is complete once `s.txt` appears in its export directory, and the cell finishes minutes after that. N = 21 tests three
+of the four predictions; N = 22 tests closure.
 
 ## W8 -> N- in characteristic 0
 
@@ -182,18 +178,18 @@ statement needs the flatness check, the two bridges above, and a sized transfer 
 ## Placement and concurrency
 
 `docs/runbooks/classical-compute-pool.md` holds each substrate's limits, and the infrastructure chart's job memory
-budgets (0.84 x GPU memory + 0.82 x RAM per machine) bound concurrent jobs. Every Kaggle session and every paid VM
-needs an approved written case, and every job stops at 3 h unless the owner approves a sized case. The table
-assigns each open computation by its measured bottleneck:
+budgets (0.84 x GPU memory + 0.82 x RAM per machine) bound concurrent jobs. Under the owner's ruling of 2026-11-09,
+scoped long runs and Kaggle sessions under 12 h are approved; paid VMs keep their written case. The table assigns
+each open computation by its measured bottleneck:
 
 | computation | bottleneck (measured) | placement | runs beside |
 |---|---|---|---|
 | VB std(J + m^N) lever probes at N = 15, 16, 18 | one single-threaded Singular std, under 1 GiB | build host (38.6 GiB budget) or the RTX 4090 laptop (52.5 GB) | everything below; four probes at once |
-| VB N = 21 cell, one prime | std 15,400 to 30,800 s, about 2 GiB, one core | the RTX 4090 laptop, past the cap only by owner case; or a Kaggle CPU session (12 h limit, 30 GB, passagemath Singular 4.4.1) | the other prime's cell on a second Kaggle CPU session (5 at once) |
-| VB N = 22 cells, both primes | std 22,300 to 89,300 s (extrapolated) | Kaggle CPU only if under 12 h; otherwise an Azure FX4mds_v2 (84 GB, Singular slower than the laptop by 1.6x per the placement memory) under a case | the two primes on two sessions or VMs |
+| VB N = 21 cell, one prime | std 15,400 to 30,800 s, about 2 GiB, one core | the RTX 4090 laptop (running on engine v13); or a Kaggle CPU session (12 h limit, 30 GB, passagemath Singular 4.4.1) | the other prime's cell on a second Kaggle CPU session (5 at once) |
+| VB N = 22 cells, both primes | std 22,300 to 89,300 s (extrapolated) | Kaggle CPU only if under 12 h; otherwise the laptop (running on engine v13) | the two primes on two sessions or VMs |
 | GPU work for VB | none: tables, products and closure are under 63 s | none; the GPU (engine v12) pays only where closure dominates | |
 | X- cofactor lift, per prime | lift 1,565 s at 16.5 GB | build host, one prime at a time (two at once exceed 38.6 GiB) | the probes and the W8 truncation check |
-| X- identity check over Q(i), per relation | polynomial products, unmeasured | build host through `parallel.py`; Kaggle CPU if one relation exceeds the cap | |
+| X- identity check over Q(i), per relation | polynomial products, unmeasured | build host through `parallel.py`; Kaggle CPU for relations that run long | |
 | W8 check 3 at N = 16 | Q(i) std, 114 s at N = 13 | build host | everything |
 | W8 check 2 (cofactors) | scale of the X- pilot times the W8 receipt ratio, unmeasured | sized after the X- pilot | |
 | W8 degree 6 at N = 19 (task 113, not needed for F(I) by A5-066) | closure 14 to 19 h CPU, L = 103 GiB dense under v11 | GPU: engine v12 on the RTX 4090 laptop once L streams by degree (efficiency lever 1 and the streaming idea), Kaggle T4 x2 with CPU fallback for the export; an Azure VM otherwise | |

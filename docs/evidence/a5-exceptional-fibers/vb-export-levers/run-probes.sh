@@ -4,6 +4,7 @@
 # non-terminal stdin, so every call takes /dev/null; each child's exit status lands in <tag>.status.
 set -eu
 cd "$(dirname "$0")"
+fail=0
 for N in 15 16; do
   for v in base noredtail slimgb incremental; do
     (
@@ -12,8 +13,12 @@ for N in 15 16; do
         /usr/bin/time -v -o "vb-n$N-$v.time" Singular -q --no-rc "vb-n$N-$v.sing" \
         < /dev/null > "vb-n$N-$v.log" 2>&1 || rc=$?
       echo "$rc" > "vb-n$N-$v.status"
+      exit "$rc"
     ) &
+    pids="${pids:-} $!"
   done
-  wait
+  for pid in $pids; do wait "$pid" || fail=1; done
+  pids=""
 done
 for f in vb-n1[56]-*.status; do printf '%s %s\n' "$f" "$(cat "$f")"; done
+exit "$fail"

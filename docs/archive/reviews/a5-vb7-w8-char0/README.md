@@ -27,3 +27,26 @@ The proposals that survive go into the task list:
 The review's verdict on the thesis: it is false for tasks 37, 42, 56, 75 and 115 and for the VB lever, each of which
 has a bounded next computation. It holds for task 110 under the current algorithm, which needs a new solver, and for
 task 113, which needs a streamed engine.
+
+## Final review
+
+`codex` (gpt-daybreak-blue-latest, high effort) read [brief-final.md](brief-final.md) at 84276830f. At the owner's
+request it ran with approvals and the sandbox bypassed, computing only on the hosts and limits the brief allowed. It
+wrote [review-codex-final.md](review-codex-final.md). The table checks each finding against the source.
+
+| finding | verdict | evidence and resolution |
+|---|---|---|
+| 1. The scope document omits the item-6 deliverables | survives | `docs/state/plans/a5-kernel-attachments.json` marks limit-sets-8-to-12, limit-sets-into-nullity-16, compatibility and attaching-maps `todo`, and no task covered them. Tasks 126 to 131 now carry them, and the scope document gains an "Item-6 deliverables" section. Item 6 stays open |
+| 2. A bare `wait` drops child failures; the degree-7 launcher accepts more cells than the budget | survives | `sh -c '(exit 1)& wait'` prints 0. Every launcher now waits on each PID and exits nonzero on any failure (a three-child test with one failing child exits 1). `run-cells-v13.sh` refuses more than four cells. The live laptop copies predate the fix, and their `.status` files and cell events are read directly |
+| 3. The W8 N = 13 cost quotes the 114 s substage as the whole check | survives | `/usr/bin/time` gives 21:46 wall for the whole driver; the scope document now says so |
+| 4. Engine v13 has no regression gate | survives | the degree-5 laptop validation (r = 255, blocks 75/50/65/65, 416 s) is one cell. Before v13 records enter the ledger, the retained N = 18 comparison and a test pinning the export byte equality at small N are owed (task 119) |
+
+The measurements Codex made enter the plan as provisional pilots:
+- `degBound = N` keeps the basis byte-identical and saves 12 percent at N = 13 and 33.5 percent at N = 15.
+- On the laptop, `slimgb` beats `std` by 3.66 times at N = 13 and 3.87 times at N = 15.
+- `groebner`'s default choice and `option(length)` are slower.
+- Reversed variables are 1.81 times slower.
+
+Its tool survey keeps Singular for the sparse standard basis, saturation and the Q(i) checks. It moves exact rank and
+canonical RREF to FLINT, FFLAS-FFPACK and LinBox, or the GPU. It refutes msolve for J + m^N, and M4RI/M4RIE (F_2
+only) for these primes.
