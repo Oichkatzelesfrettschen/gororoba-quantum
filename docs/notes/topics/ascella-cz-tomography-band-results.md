@@ -105,22 +105,34 @@ or the dephasing. The 96 such qubit readouts measure preparation and readout err
 - **Eligible share:** the eligible share of window two-click events fell from 0.175 to 0.155 at an unchanged pattern
   overlap. More probability leaves the rails, which fits a worse realized mesh and not a worse photon pair.
 
-### Three routes to the photon overlap converge near 0.91 to 0.92; the rail route is the outlier
+### The photon overlap sits near 0.93, and the g2 correction carries most of its distance from the HOM read
 
-| Route | Overlap |
-|---|---|
-| HOM read corrected for g2 = 2 % (Ollivier Eq. 1 and 2: identical to distinguishable noise photons) | 0.904 to 0.923 |
-| Fidelity inverted through the record noise model at the plan read (`record_inversion`) | 0.917 (0.910 to 0.924) |
-| All two-click patterns, eligible and off-rail, one overlap and six detection efficiencies, g2 ignored | 0.893 (0.892 to 0.894) |
-| Rail ratio D through the record model | 0.952 (readout-set dependent: 0.939 to 0.956 overlap-only) |
+| Route | Retained pair (HOM read 87.56 %, g2 1.8 %) | Band pair (HOM read 88.42 %, g2 2.0 %) |
+|---|---|---|
+| HOM read corrected for g2 (Ollivier et al. 2021, priv 1291df4cd86b, Eq. 1 and 2: identical to distinguishable noise photons) | 0.894 to 0.910 | 0.904 to 0.923 |
+| All two-click patterns, eligible and off-rail, Perceval source model at the read's g2 and transmittance (`g2_pattern_overlap`) | 0.929 | 0.931 |
+| All two-click patterns with g2 ignored (`two_click_patterns`) | 0.896 (0.893 to 0.899) | 0.893 (0.892 to 0.894) |
+| Fidelity inverted through the record noise model (`record_inversion`) | 0.930 (0.912 to 0.946) | 0.917 (0.910 to 0.924) |
+| Rail ratio D through the record noise model | 0.923 (0.904 to 0.942) | 0.952 (0.946 to 0.959) |
 
-- **The pattern fit:** it uses the 3.36 million two-click events that the tomography discards as off-rail. It
-  ignores g2, whose noise photons lower apparent visibility, so it reads low by about the g2 correction.
-- **Consequence:** the platform's HOM read understates the photon-pair overlap by 2 to 4 points once g2 is
-  restored, not by the 5 to 7 points that the rail estimator reports.
-- **What would raise or lower this:** confidence is moderate. It rises if a g2-aware pattern fit lands at 0.91 to
-  0.92. It falls if per-setting mesh error, which the pattern fit absorbs into the overlap, shifts that fit by more
-  than 0.01.
+- **The pattern route:** it uses the 3.4 to 4.0 million window two-click events, 85 % of them off-rail events that
+  the tomography discards. It is independent of the tomography estimator.
+- **Effect of g2:** adding the multiphoton model moves the pattern overlap by 0.033 to 0.038, the same size as
+  Ollivier's correction, and lands both pairs at 0.93. That is 4.7 to 5.3 points above the HOM read.
+- **What remains after g2:** Ollivier's correction alone accounts for up to 3.9 points (band) and 3.5 points
+  (retained), leaving 0.8 to 1.9 points that a pair-dependent visibility (Pont et al. 2022, pub 3c845c21a16f,
+  Table S1: about 4 points across pairs and delays) covers.
+- **The rail route:** it agrees on the retained pair and stands 2 points high on the band pair, inside its
+  readout-set dependence of 0.017 to 0.065.
+- **Fidelity route:** on the band pair the fidelity route stands 1.4 points low, matching a gate fidelity lowered by
+  something other than the overlap.
+
+Consequence: the dashboard HOM understates the photon-pair overlap at the CZ coupler by about 5 points in both
+pairs, and the known multiphoton correction explains most of it. The hypothesis of the design doc survives in
+direction; its mechanism is chiefly g2, not a calibration offset. Confidence is moderate to high:
+- It falls if the pattern fit's other omissions (dark counts, coupler reflectivity off 1/3 in the realized mesh,
+  mode-dependent input loss) move it by more than 0.01.
+- It rises if the per-setting mesh calibration below leaves the overlap at 0.93.
 
 ### Per-setting error is fixed inside a calibration and redrawn by recalibration
 
@@ -161,9 +173,8 @@ or the dephasing. The 96 such qubit readouts measure preparation and readout err
 | Test | Decides | Cost | Falsifier |
 |---|---|---|---|
 | Off-rail self-calibration: fit per-setting phase errors of the realized mesh from the 15-pair distributions, then reconstruct the process with the calibrated unitaries | Whether the per-setting systematic is mesh error, and the process fidelity free of it | none (retained counts) | The calibrated fit leaves a misfit that still grows with N squared |
-| g2-aware pattern fit (Perceval `photon_distribution` at g2 = 2 %) | The overlap the off-rail data give with noise photons modeled | none | The fit stays below 0.90 |
 | Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV) | F with SPAM separated | none | The nuisance-free and nuisance fits agree within 0.005 |
 | job-00 twice back to back with its retained seeds | Within-calibration reproducibility of the per-setting pattern | 2 x 2.567 credits | Per-setting outcome differences between repeats exceed counting (Rudinger et al. 2019, priv 8c2599bc077d, Eq. 11 to 13, with Hochberg control) |
 | job-00 at the retained 2026-10-31 compilation seeds, beside a fresh-seed repeat, in one calibration | Seed versus calibration as the source of the redrawn pattern | 2 x 2.567 credits | The per-setting pattern follows neither the seed nor the calibration |
 
-The first three tests run on retained data. The last two need new provider jobs and an approved written case each.
+The first two tests run on retained data. The last two need new provider jobs and an approved written case each.

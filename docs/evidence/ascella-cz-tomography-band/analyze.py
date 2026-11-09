@@ -20,7 +20,8 @@ The sectors:
   |U[i,C0] U[j,T0] + U[j,C0] U[i,T0]|^2 and the distinguishable one |U[i,C0] U[j,T0]|^2 + |U[j,C0] U[i,T0]|^2,
   mixed linearly in the overlap M (exact for two photons, multiphoton emission ignored). A maximum-likelihood fit
   over all 15 window pairs of all 144 settings gives one M and six relative detection efficiencies per pair of
-  runs; a common efficiency cancels in the conditional distribution.
+  runs; a common efficiency cancels in the conditional distribution. A second fit (``g2_pattern_overlap``) adds
+  Perceval's multiphoton source model at the plan read's g2 and transmittance.
 """
 
 from __future__ import annotations
@@ -39,7 +40,8 @@ from scipy.stats import spearmanr
 ROOT = Path(__file__).resolve().parents[3]
 BAND_GLOB = "2026-11-09T17*ascella_cz_tomography_reference-job-0*"
 PROFILE_DELTA = 1.92  # half the 95 % chi-squared(1) quantile: a profile-likelihood interval
-IDENTIFIED_SENSITIVITY = 0.05  # total variation between the M = 0 and M = 1 pattern laws of a setting
+IDENTIFIED_SENSITIVITY = 0.05
+G2_GRID = np.linspace(0.84, 0.98, 15)  # total variation between the M = 0 and M = 1 pattern laws of a setting
 
 
 def modules() -> tuple[Any, Any, Any]:
@@ -248,6 +250,34 @@ def two_click_patterns(laws: tuple[np.ndarray, np.ndarray], runs: list[str]) -> 
     }
 
 
+def g2_pattern_overlap(
+    runs: list[str], perfs: dict[str, Any], efficiency: list[float], grid: np.ndarray
+) -> dict[str, Any]:
+    """The two-click pattern overlap under Perceval's source model (``photon_distribution``: distinguishable noise
+    photons at the plan read's g2) through threshold detection at the plan read's transmittance
+    (``detected_clicks``), so three-photon events that lose a photon enter the two-click patterns. The relative
+    efficiencies of the g2-free fit stay fixed; the overlap is the vertex of a parabola through the grid minimum and
+    its neighbors."""
+    counts, _ = pattern_counts(runs)
+    g2 = float(perfs["g2 (%)"]) / 100.0
+    transmittance = float(perfs["Transmittance (%)"]) / 100.0
+    weight = np.array([efficiency[i] * efficiency[j] for i, j in PAIRS])
+    profile = []
+    for overlap in grid:
+        law = np.zeros((len(ROWS), len(PAIRS)))
+        for s, r in enumerate(ROWS):
+            photons = TOMO.photon_distribution(TOMO.setting_unitary(r), float(overlap), g2)
+            for key, p in TOMO.detected_clicks(photons, transmittance, [0.0] * TOMO.MODES).items():
+                on = [k for k, v in enumerate(key) if v]
+                if len(on) == 2 and max(on) < TOMO.WINDOW:
+                    law[s, PAIRS.index((on[0], on[1]))] += p
+        law = law * weight
+        profile.append(negative_log_likelihood(counts, law / law.sum(1, keepdims=True)))
+    k = min(max(int(np.argmin(profile)), 1), len(grid) - 2)
+    a, b, _ = np.polyfit(grid[k - 1 : k + 2], profile[k - 1 : k + 2], 2)
+    return {"g2": g2, "transmittance": transmittance, "overlap": float(-b / (2 * a)), "grid": [float(m) for m in grid]}
+
+
 def efficiency_corrected_fidelity(data: dict[str, np.ndarray], efficiency: list[float]) -> float:
     pair = np.array([efficiency[TOMO.C0 + a] * efficiency[TOMO.T0 + b] for a in (0, 1) for b in (0, 1)])
     rates = TOMO.absolute_rates(data["eligible"] / pair[None, :], data["shots"], data["scale"])
@@ -290,6 +320,8 @@ def main(argv: list[str]) -> int:
     for name, spec in pairs_of_runs().items():
         data = tallies(spec)
         patterns = two_click_patterns(laws, spec["runs"])
+        perfs = CASE.plan_reads([spec["loader"](ROOT / run) for run in spec["runs"]])
+        patterns["g2_aware"] = g2_pattern_overlap(spec["runs"], perfs, patterns["efficiency_relative_to_C0"], G2_GRID)
         found[name] = {
             "runs": spec["runs"],
             "pearson_split": pearson_split(data),
