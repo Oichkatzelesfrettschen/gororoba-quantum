@@ -254,10 +254,13 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
   `2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12` returned every iteration at its own budget (1500 to 60000
   samples, 9 of 9). No qpu:ascella template job has carried unequal budgets. The analysis reads each iteration's
   actual samples and shots, and the caps bound time and bill whatever the service does with the samples.
-- The rate of 3.069 s per iteration comes from two runs of one template at 4000 samples. The time model adds the
-  shot time on top of it, which overstates the measured clock: the two retained jobs used 13.6 and 15.4 million
-  shots and both recorded 221 s, and the runbook's qpu:ascella row reads about 3.0 s per iteration whatever its
-  shots. The time to reach a cap of 1.5 million shots varies by about 0.1 % (a sum of geometric attempt counts),
-  so the remaining risk is a calibration that moves after the in-lock read. The transmittance floor is rounded up to
-  four decimals. Iterations that spend up
+- The rate of 3.069 s per iteration comes from two runs of one template at 4000 samples, and the time model adds the
+  shot time on top of it. Hypothesis: the model is the right bound. The retained runs cannot tell an additive shot
+  time from an overlapped one: they used 13.6 and 15.4 million shots, which at 1.43 million a second differ by about
+  1.3 s, while qpu:ascella iteration time varies from 2.9 to 3.07 s across retained runs (about 5 s over 72
+  iterations), and this design spends about 90 million shots a job, six times any retained job. The time to reach a
+  cap of 1.5 million shots varies by about 0.1 % (a sum of geometric attempt counts). Falsifier: job-00's recorded
+  duration. The transmittance floor is rounded up to four decimals.
+- With no time margin, a `max_duration` cut of job-00 returns counts, so the stopping rule forbids rerunning it and
+  the pool cannot be decided under this approval. Iterations that spend up
   to 1,567,000 shots assume that acquisition adds to compilation, which is the conservative reading.
