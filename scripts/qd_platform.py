@@ -1039,6 +1039,10 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     import perceval as pcvl
 
     layer = QuandelaCommunicationLayer(platform, token=token())
+    # RPCBasedCommunicationLayer.fetch_data refetches the processor record whenever MINIMUM_FETCH_INTERVAL seconds
+    # have passed, and every estimate_required_shots reads RemoteComputer.performance; an infinite interval holds
+    # every estimate of this body to the constructor's one read, which the plan records as perfs_at_estimate.
+    layer.MINIMUM_FETCH_INTERVAL = math.inf
     # The command set must be in place before RemoteComputer reads it.
     basis = payload_version_basis(layer._specs, platform)
     computer = RemoteComputer(layer)
@@ -1158,7 +1162,13 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         raise PlatformError(f"{manifest['job']}: the job body does not carry the mitigation policy {policy!r}")
     if token() in json.dumps(body):
         raise PlatformError("the job body carries the token")
-    return {"body": body, "estimated_shots": estimate, "versions": found, "payload_version_basis": basis}
+    return {
+        "body": body,
+        "estimated_shots": estimate,
+        "versions": found,
+        "payload_version_basis": basis,
+        "estimate_perfs": scrub(dict(layer.get_performances())),
+    }
 
 
 def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -> None:
@@ -1254,6 +1264,7 @@ def plan(
         "platform": platform,
         "platform_at_plan": row,
         "perfs_at_plan": perfs,
+        "perfs_at_estimate": built.get("estimate_perfs"),
         "availability_at_plan": counters,
         "expected_seconds": expected_seconds,
         "per_job_credits": per_job_credits,
@@ -1546,11 +1557,17 @@ def submit(
 
     verify receives the plan whose body is posted, before the checkpoint is
     written, so a caller's own stop conditions bind the request actually sent;
-    a PlatformError from it refuses the submission with nothing written.
+    a PlatformError from it refuses the submission with nothing written. A
+    manifest that names a submit_wrapper holds its policy in that wrapper's
+    verify step, so submit refuses such a case unless verify carries a
+    submit_wrapper attribute equal to the manifest's: a verifier of another
+    policy does not stand in for it.
     """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
     manifest, _, gated_case_sha256 = load_case(case_dir)
+    if "submit_wrapper" in manifest and getattr(verify, "submit_wrapper", None) != manifest["submit_wrapper"]:
+        raise PlatformError(f"{case_dir.name} submits only through {manifest['submit_wrapper']}")
     if (reviewed_packet is None) != (reviewed_sha256 is None):
         raise PlatformError("reviewed packet and digest must be supplied together")
     if requires_acquisition_review(manifest) and reviewed_packet is None:

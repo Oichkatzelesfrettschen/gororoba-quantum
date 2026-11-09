@@ -1,4 +1,8 @@
 {
+ "admission": {
+  "admitted": false,
+  "refusal": "job-01: HOM 88.54 % is outside 'none', the band above 90 % and within 1 point of the reference tomography's 87.56 %"
+ },
  "admitted_statuses": [
   "available",
   "running"
@@ -11,38 +15,67 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "bd186a444186ecdfb7ae7b875fbc90260c3afa4f9826d07d34fbfb30fb8bfcf5",
+ "body_sha256": "991de1475c460088254228fe30c07cd79d157514fd1804cac5617fdf70b03e7b",
+ "body_sha256_without_process_id": "0cac99a2873d5c6484e0e3c85a7d5d07ad68bcd0322515ca6353ce3c0fc3cc6b",
  "case": "job-01",
- "cases_sha256": "3fb95e77386981d256152654bb7a74334c71f32e6ab0281da580873830ec5580",
+ "cases_sha256": "6de7229e6d59899fc055bbcd6388de037772aa7657dc5304f42374ddbf2ebe50",
  "credit_ceiling": 1.4,
  "estimated_credits": 1.4,
- "estimated_shots": 11793960,
+ "estimated_shots": 11815890,
  "expected_seconds": 220.0,
+ "live_read": {
+  "eligible_floor": 447.0891439812419,
+  "refusal": null
+ },
  "max_credits": 1.4,
  "max_samples": 240000,
  "max_shots": 24000000,
+ "mitigations": [],
+ "mitigations_key": true,
+ "payload_version": 2,
  "payload_version_basis": "declared",
  "per_job_credits": 1.0,
+ "perfs_at_estimate": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   172.0,
+   108.0,
+   88.0,
+   104.0,
+   84.0,
+   111.0,
+   91.0,
+   111.0,
+   257.0,
+   309.0,
+   114.0,
+   150.0
+  ],
+  "HOM (%)": 88.54,
+  "Transmittance (%)": 5.53,
+  "g2 (%)": 2.0
+ },
  "perfs_at_plan": {
   "Clock (MHz)": 13.33,
   "Dark counts (detection/s)": [
-   176.0,
-   99.0,
-   119.0,
-   88.0,
-   84.0,
-   115.0,
-   97.0,
+   172.0,
    108.0,
-   310.0,
-   322.0,
+   88.0,
+   104.0,
+   84.0,
+   111.0,
+   91.0,
+   111.0,
+   257.0,
+   309.0,
    114.0,
-   153.0
+   150.0
   ],
-  "HOM (%)": 88.46,
-  "Transmittance (%)": 5.54,
+  "HOM (%)": 88.54,
+  "Transmittance (%)": 5.53,
   "g2 (%)": 2.0
  },
+ "planned_utc": "2026-11-09T01:09:25+00:00",
  "platform": "qpu:ascella",
  "platform_at_plan": {
   "bookable": true,
@@ -54,12 +87,6 @@
   "name": "qpu:ascella",
   "price_per_shot": 1e-06,
   "statistic": {
-   "2026-10-31": {
-    "availability": 92.2
-   },
-   "2026-11-01": {
-    "availability": 92.03
-   },
    "2026-11-02": {
     "availability": 92.13
    },
@@ -76,16 +103,28 @@
     "availability": 92.33
    },
    "2026-11-07": {
-    "availability": 90.92
+    "availability": 92.28
+   },
+   "2026-11-08": {
+    "availability": 0.0
+   },
+   "2026-11-09": {
+    "availability": 86.39
    }
   },
   "status": "running",
   "type": "qpu"
  },
+ "predecessor": null,
+ "reference": {
+  "hom": 87.56,
+  "submission_sha256": "fbcc6816203f6c28ef781e3cecac5cc37ae4a87d2ea4326bf3e7d97d6346fc10"
+ },
  "status_at_plan": {
   "explorer": "running",
   "processor": "available"
  },
+ "submitted": false,
  "versions": {
   "exqalibur": "1.4.2",
   "perceval-quandela": "1.3.1"
