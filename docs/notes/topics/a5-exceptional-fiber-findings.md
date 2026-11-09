@@ -521,7 +521,7 @@ Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 | Item | Rows | Cost (evidence) | Host |
 |---|---|---|---|
 | E8-bar -> VB degree 4, p = 32029 | A5-111 | done: r_13 = 155, 60 s, 179 MiB | laptop |
-| E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); N = 19 and 18 fix the closing order | laptop, N = 19 and 18 running |
+| E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); r_19 = 420 at both primes (about 2 h, 1.24 GiB each), so N = 18 decides the closing order | laptop, N = 18 at 32009 running |
 | Degree-3 component of E8-bar -> VB: remaining charts (t7 = 1, k^2 + 3 = 0, singular points) | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
 | Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
 | E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101 | pilot cost unmeasured (the degree-2 W8 receipt: 5,619 s, 6.7 GB) | laptop |

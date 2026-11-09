@@ -806,6 +806,15 @@
      "k2_count": 420,
      "lower_bounds": [
       {
+       "N": 19,
+       "engine": "7849cbc71ccf1787",
+       "header": "4dbcb4676ca0821a",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 420,
+       "source": "vb-d6-laptop/e8vb_d6_n19_p32009.json"
+      },
+      {
        "N": 20,
        "engine": "7849cbc71ccf1787",
        "header": "4dbcb4676ca0821a",
@@ -938,6 +947,15 @@
      "d": 6,
      "k2_count": 420,
      "lower_bounds": [
+      {
+       "N": 19,
+       "engine": "7849cbc71ccf1787",
+       "header": "6b3cea4923b4e0e2",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 420,
+       "source": "vb-d6-laptop/e8vb_d6_n19_p32029.json"
+      },
       {
        "N": 20,
        "engine": "7849cbc71ccf1787",

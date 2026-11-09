@@ -45,7 +45,7 @@ remains there. Reproduce the counts with
 
 ## What the 2026-11-09 results change
 
-- **E8-bar -> VB degree 6 certified at both primes** (r_20 = 420, blocks 138/98/92/92; `vb-d6-laptop/`). VB's first
+- **E8-bar -> VB degree 6 certified at both primes** (r_20 = r_19 = 420, blocks 138/98/92/92, so the closing order is at most 19; `vb-d6-laptop/`). VB's first
   layer is complete through degree 6, and A5-005 (VB all-degree) survives one more degree. It does not prove A5-005:
   VB's all-degree question is whether its fiber contains the degree-3 component (A5-016).
 - **The t7 = 1 chart and its arcs** (`working/build/arc/`). The chart ideal is prime of dimension 4: it is radical, and `minAssChar` returns one minimal prime equal to it (`chart_t7_primes.sing`, 115 s and 220 MiB on OCI A1). Its normalization is one
