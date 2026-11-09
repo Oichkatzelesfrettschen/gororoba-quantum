@@ -9,4 +9,5 @@ cd "$(dirname "$0")"
 ls ladder-n*-*.sing | sort -t n -k 2 -n | xargs -P 12 -I{} sh -c '
   t=$(basename {} .sing); rc=0
   /usr/bin/time -v -o "$t.time" "$S" -q --no-rc {} < /dev/null > "$t.log" 2>&1 || rc=$?
+  [ "$rc" -ne 0 ] || grep -q "^RESULT kbase_size" "$t.log" || rc=3
   echo "$rc" > "$t.status"; exit "$rc"'

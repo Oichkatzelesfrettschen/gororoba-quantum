@@ -10,6 +10,8 @@ for p in 32029 32009; do
   systemd-run --user --scope --quiet -p MemoryMax=24G -p MemorySwapMax=0 -p RuntimeMaxSec=3600 \
     /usr/bin/time -v -o "lift-xm-nm-p$p.time" Singular -q --no-rc "lift-xm-nm-p$p.sing" \
     < /dev/null > "lift-xm-nm-p$p.log" 2>&1 || rc=$?
+  # Singular exits 0 on SIGTERM, so a lift without its "written" RESULT line counts as failed (status 3).
+  [ "$rc" -ne 0 ] || grep -q "^RESULT written" "lift-xm-nm-p$p.log" || rc=3
   echo "$rc" > "lift-xm-nm-p$p.status"
   [ "$rc" -eq 0 ] || fail=1
 done

@@ -10,6 +10,8 @@ for t in n18-base n18-slimgb n19-slimgb n20-slimgb; do
     rc=0
     /usr/bin/time -v -o "laptop-vb-$t.time" timeout -k 30 10800 "$S" -q --no-rc "laptop-vb-$t.sing" \
       < /dev/null > "laptop-vb-$t.log" 2>&1 || rc=$?
+    # Singular exits 0 on SIGTERM, so a run without its RESULT line counts as failed (status 3).
+    [ "$rc" -ne 0 ] || grep -q "^RESULT kbase_size" "laptop-vb-$t.log" || rc=3
     echo "$rc" > "laptop-vb-$t.status"
     exit "$rc"
   ) &

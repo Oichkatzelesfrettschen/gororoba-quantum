@@ -1,32 +1,97 @@
-"""a5-char0-xm-truncation-n22"""
-BRANCH = 'integration/gororoba-quantum-ultrareview'
-REPO = 'https://github.com/Oichkatzelesfrettschen/gororoba-quantum'
-SHIM = '#!/bin/sh\nwhile [ "$#" -gt 0 ] && [ "$1" != Singular ]; do shift; done\nexec "$@"\n'
-ARGS = ["docs/evidence/a5-char0-transfer/truncation_check.py", "--slug", "xm-nm", "--order", "22", "--timeout", "20000"]
-RECORD_GLOB = 'truncation-xm-nm-n22.json'
+"""Kaggle CPU kernel body of one characteristic-0 check of X- -> N-.
 
-import json, os, shutil, subprocess, sys, sysconfig, time
+make_kernels.py writes one kernel per check from this file, replacing CONFIG_B64 with the base64 of its configuration
+(branch, repository, driver arguments, record name). The kernel clones the public repository at that branch, installs
+passagemath Singular 4.4.1, sympy and python-flint, puts a `systemd-run` shim on PATH (the drivers wrap Singular in a
+user scope that a Kaggle container lacks; the shim drops the scope options so the session's own RAM bounds Singular)
+and runs the driver unchanged. It copies the driver's record and log to /kaggle/working and exits 1 unless the driver
+exited 0 and wrote a record with a verdict (see `failed`).
+"""
+
+from __future__ import annotations
+
+import base64
+import json
+import os
+import shutil
+import subprocess
+import sys
+import sysconfig
+import time
 from pathlib import Path
-T0 = time.time(); OUT = Path("/kaggle/working"); W = Path("/kaggle/tmp"); W.mkdir(parents=True, exist_ok=True)
-subprocess.run(["git", "clone", "-q", "--depth", "1", "-b", BRANCH, REPO, str(W / "repo")], check=True)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "passagemath-singular==10.8.13", "python-flint==0.9.0",
-                "sympy"], check=True)
-if not Path("/usr/bin/time").exists():
-    subprocess.run(["apt-get", "install", "-y", "-q", "time"], check=False)
-paths = sysconfig.get_paths()
-binary = next(p for p in (Path(paths[k]) / "sage_wheels/bin/Singular" for k in ("purelib", "platlib")) if p.exists())
-BIN = W / "bin"; BIN.mkdir(exist_ok=True)
-(BIN / "Singular").symlink_to(binary)
-(BIN / "systemd-run").write_text(SHIM); (BIN / "systemd-run").chmod(0o755)
-env = dict(os.environ, PATH=f"{BIN}:{os.environ['PATH']}", GLIBC_TUNABLES="glibc.rtld.optional_static_tls=4096")
-repo = W / "repo"
-head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
-s = time.time()
-p = subprocess.run([sys.executable, *ARGS], cwd=repo, env=env, stdin=subprocess.DEVNULL, capture_output=True,
-                   text=True)
-(OUT / "driver.log").write_text(p.stdout + p.stderr)
-for f in (repo / "docs/evidence/a5-char0-transfer").glob(RECORD_GLOB):
-    shutil.copy(f, OUT / f.name)
-rec = {"repo_head": head, "args": ARGS, "rc": p.returncode, "seconds": round(time.time() - s, 1),
-       "total_seconds": round(time.time() - T0, 1), "cpu_count": os.cpu_count()}
-(OUT / "summary.json").write_text(json.dumps(rec, indent=1)); print(json.dumps(rec, indent=1))
+
+CONFIG_B64 = (
+    "eyJicmFuY2giOiAiaW50ZWdyYXRpb24vZ29yb3JvYmEtcXVhbnR1bS11bHRyYXJldmlldyIsICJyZXBvIjogImh0dHBzOi8vZ2l0"
+    "aHViLmNvbS9PaWNoa2F0emVsZXNmcmV0dHNjaGVuL2dvcm9yb2JhLXF1YW50dW0iLCAiYXJncyI6IFsiZG9jcy9ldmlkZW5jZS9h"
+    "NS1jaGFyMC10cmFuc2Zlci90cnVuY2F0aW9uX2NoZWNrLnB5IiwgIi0tc2x1ZyIsICJ4bS1ubSIsICItLW9yZGVyIiwgIjIyIiwg"
+    "Ii0tdGltZW91dCIsICIyMDAwMCJdLCAicmVjb3JkIjogInRydW5jYXRpb24teG0tbm0tbjIyLmpzb24ifQ=="
+)
+OUT = Path("/kaggle/working")
+WORK = Path("/kaggle/tmp")
+SHIM = '#!/bin/sh\nwhile [ "$#" -gt 0 ] && [ "$1" != Singular ]; do shift; done\nexec "$@"\n'
+
+
+def failed(rc: int, record: dict[str, object] | None) -> bool:
+    """A check failed when its driver exited nonzero, wrote no record, or wrote one without a verdict."""
+    return rc != 0 or record is None or "verdict" not in record
+
+
+def _singular() -> Path:
+    paths = sysconfig.get_paths()
+    candidates = (Path(paths[key]) / "sage_wheels" / "bin" / "Singular" for key in ("purelib", "platlib"))
+    return next(path for path in candidates if path.exists())
+
+
+def main() -> None:
+    config = json.loads(base64.b64decode(CONFIG_B64))
+    started = time.time()
+    WORK.mkdir(parents=True, exist_ok=True)
+    repo = WORK / "repo"
+    subprocess.run(
+        ["git", "clone", "-q", "--depth", "1", "-b", config["branch"], config["repo"], str(repo)], check=True
+    )
+    packages = ["passagemath-singular==10.8.13", "python-flint==0.9.0", "sympy"]
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", *packages], check=True)
+    if not Path("/usr/bin/time").exists():
+        subprocess.run(["apt-get", "install", "-y", "-q", "time"], check=False)
+    shims = WORK / "bin"
+    shims.mkdir(exist_ok=True)
+    (shims / "Singular").symlink_to(_singular())
+    (shims / "systemd-run").write_text(SHIM)
+    (shims / "systemd-run").chmod(0o755)
+    env = dict(os.environ, PATH=f"{shims}:{os.environ['PATH']}", GLIBC_TUNABLES="glibc.rtld.optional_static_tls=4096")
+    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True)
+    start = time.time()
+    done = subprocess.run(
+        [sys.executable, *config["args"]],
+        cwd=repo,
+        env=env,
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    (OUT / "driver.log").write_text(done.stdout + done.stderr)
+    source = repo / "docs" / "evidence" / "a5-char0-transfer" / config["record"]
+    record = json.loads(source.read_text()) if source.exists() else None
+    if source.exists():
+        shutil.copy(source, OUT / source.name)
+    summary = {
+        "repo_head": head.stdout.strip(),
+        "args": config["args"],
+        "rc": done.returncode,
+        "verdict": record.get("verdict") if record else None,
+        "failed": failed(done.returncode, record),
+        "seconds": round(time.time() - start, 1),
+        "total_seconds": round(time.time() - started, 1),
+        "cpu_count": os.cpu_count(),
+    }
+    text = json.dumps(summary, indent=1)
+    (OUT / "summary.json").write_text(text)
+    print(text)
+    if summary["failed"]:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

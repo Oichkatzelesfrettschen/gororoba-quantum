@@ -12,6 +12,8 @@ for N in 15 16; do
       systemd-run --user --scope --quiet -p MemoryMax=8G -p MemorySwapMax=0 -p RuntimeMaxSec=3600 \
         /usr/bin/time -v -o "vb-n$N-$v.time" Singular -q --no-rc "vb-n$N-$v.sing" \
         < /dev/null > "vb-n$N-$v.log" 2>&1 || rc=$?
+      # Singular exits 0 on SIGTERM, so a run without its RESULT line counts as failed (status 3).
+      [ "$rc" -ne 0 ] || grep -q "^RESULT kbase_size" "vb-n$N-$v.log" || rc=3
       echo "$rc" > "vb-n$N-$v.status"
       exit "$rc"
     ) &

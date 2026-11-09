@@ -6,6 +6,7 @@ S=${SINGULAR:-Singular}
 cd "$(dirname "$0")"
 for N in 15 16 17 18; do
   ( rc=0; /usr/bin/time -v -o "ds-n$N.time" timeout 14400 "$S" -q --no-rc "ds-n$N.sing" < /dev/null > "ds-n$N.log" 2>&1 || rc=$?
+    [ "$rc" -ne 0 ] || grep -q "^RESULT kbase_size" "ds-n$N.log" || rc=3
     echo "$rc" > "ds-n$N.status"; exit "$rc" ) &
   pids="${pids:-} $!"
 done
