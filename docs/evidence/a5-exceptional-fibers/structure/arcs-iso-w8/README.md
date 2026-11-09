@@ -61,7 +61,7 @@ local failed-runs archive.
 is a unit is A = k[t, z]/((J, a0 z_i - G_i) : a0^infinity), and A/(t) is an affine piece of E0. For Iso, K2 is prime
 with no linear form (h_1 = 17), so V(K2) meets every chart densely: dim A/(t) = 4 gives E0 = V(K2) and F(I) = k[y]/K2
 in every degree; dim A/(t) <= 3 gives dim E0 <= 3, an analytic spread of at most 4, and a relation of L outside K2 in
-some degree of at least 6 (L agrees with K2 through degree 5). No chart saturation has finished, so the test has not
+some degree of at least 7 (L agrees with K2 through degree 6, certified at both primes). No chart saturation has finished, so the test has not
 decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.json`), logs under `chart-runs/`:
 
 | Host | Script | Outcome |
@@ -75,7 +75,8 @@ decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.
 
 `chart-runs/azure/events` lists the two watchdog stops as `exit 0` because Singular exits 0 on the watchdog's SIGTERM;
 the `mem.log` lines before each stop and the absence of any RESULT line in the logs show neither finished. The
-`option(prot)` traces end at standard bases of 20,000-37,000 elements, still growing. The dense a0, a combination of all
+`option(prot)` traces end with pair lists of 20,000-37,000 pairs, still growing (the number `prot` prints after `s`
+is the pair count, not the basis size). The dense a0, a combination of all
 17 generators, makes every a0 z_i a polynomial with hundreds of terms; the next formulation is a coordinate chart
 a0 = G_j, z_j = 1, which decides the case equally (y_j lies outside K2 because K2 contains no linear form, so a
 4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`. The coordinate charts a0 = G_16 and a0 = G_2 (`chart-iso-p32009-coord16.sing`,
