@@ -481,15 +481,15 @@ Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 
 | Item | Rows | Cost (evidence) | Host |
 |---|---|---|---|
-| E8-bar -> VB degree 4, p = 32029 | A5-111 | under 5 GiB (trends line 249) | laptop, running |
+| E8-bar -> VB degree 4, p = 32029 | A5-111 | done: r_13 = 155, 60 s, 179 MiB | laptop |
 | E8-bar -> VB degree 6, both primes | A5-107, A5-113 | 1.4 to 2.1 GiB preflight, hours (trends line 249) | laptop, running |
 | Degree-3 component of E8-bar -> VB: remaining charts (t7 = 1, k^2 + 3 = 0, singular points) | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
 | Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
-| E8-bar local route, one family per component (B9, V) | A5-083/089/095/101 | hours of Singular | laptop |
+| E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101 | pilot cost unmeasured (the degree-2 W8 receipt: 5,619 s, 6.7 GB) | laptop |
 | Characteristic 0: degree-2 K2 by rational reconstruction, then exact membership | roadmap 10 | hours | laptop |
 | Kernel-plane limits along the arcs | A5-029 | one-arc pilot first | laptop |
-| Engine v12: in-place update, streamed L, free-column storage, 2-byte panels, then a GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last) | roadmap 4 | acceptance: W8 degree 4 byte-equal, preflight within 1.3x | laptop |
-| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 33 h; degree 6 unmeasured | paid VM by approved case, only if the local route fails and after engine v12 |
+| Engine v12: in-place update, streamed L, free-column storage, 2-byte panels, then a GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the products and closure stages, which dominate W8 and Iso, not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance: W8 degree 4 byte-equal, preflight within 1.3x | laptop |
+| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | paid VM (at least 64 GiB) by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
 | W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
 
 No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.
