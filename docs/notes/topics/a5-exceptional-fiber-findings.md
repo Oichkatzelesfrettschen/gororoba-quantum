@@ -452,7 +452,8 @@ tests; the ledger row it enters is named where one exists.
    `normal()` returns in 359 s with one ring of 21 variables and 382 relations, and its 14 arcs with finite lead all land
    in the degree-4 component. Chart t7 = 1 (`working/build/arc/chart_t7.sing` and `.log`, OCI A1): the strict
    transform there is prime of dimension 4, and `normal()` returns in 2,298 s with one ring of 12 variables and 284
-   relations (2 h 3 min, 5.2 GiB in all); its arcs are not yet run. Because K2 is globally radical there, containment of the generic point of every component
+   relations (2 h 3 min, 5.2 GiB in all); with primality taken as proved, `normal(S7, "isPrim")` returns the same ring
+   in 7 min 31 s and writes it (`chart_t7_norid_1.txt`: four new elements T(1) to T(4)); its arcs are not yet run. Because K2 is globally radical there, containment of the generic point of every component
    of V(K2) in the fiber gives F(I) = k[y]/K2 in every degree.
 7. **E8-bar -> N- closing order** (no new run). The degree-4 ladder is complete: r_12 = 357, r_13 = r_14 = 440,
    r_15 = 495 (`../../evidence/a5-exceptional-fibers/forecasts/trends-2026-11-06.md`, d = 4 row; `n15-laptop/`), and
