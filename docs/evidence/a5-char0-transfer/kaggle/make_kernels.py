@@ -13,6 +13,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 OWNER = "probablyeric"
 BRANCH = "integration/gororoba-quantum-ultrareview"
+# The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
+COMMIT = "8a2e410ba0ba1c742055e46c3ab1c60266e08dab"
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
 
 JOBS = {
@@ -39,7 +41,7 @@ def kernel(slug: str, args: list[str], record: str, out: Path = HERE) -> None:
     """Write OUT/SLUG/SLUG.py (runner.py with its configuration in CONFIG_B64) and its kernel-metadata.json."""
     d = out / slug
     d.mkdir(parents=True, exist_ok=True)
-    config = {"branch": BRANCH, "repo": REPO, "args": args, "record": record}
+    config = {"branch": BRANCH, "commit": COMMIT, "repo": REPO, "args": args, "record": record}
     blob = base64.b64encode(json.dumps(config).encode()).decode()
     chunks = "".join(f'    "{blob[i : i + 100]}"\n' for i in range(0, len(blob), 100))
     runner = (HERE / "runner.py").read_text()

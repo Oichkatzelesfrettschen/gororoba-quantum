@@ -50,3 +50,20 @@ The measurements Codex made enter the plan as provisional pilots:
 Its tool survey keeps Singular for the sparse standard basis, saturation and the Q(i) checks. It moves exact rank and
 canonical RREF to FLINT, FFLAS-FFPACK and LinBox, or the GPU. It refutes msolve for J + m^N, and M4RI/M4RIE (F_2
 only) for these primes.
+
+## Pull-request review
+
+`codex` (gpt-daybreak-blue-latest, high effort) read [brief-pr.md](brief-pr.md) at 19384c76a and wrote
+[review-codex-pr.md](review-codex-pr.md). It found five defects, and each one is resolved below.
+
+| finding | verdict | resolution |
+|---|---|---|
+| 1. The Kaggle kernel exits 0 after a failed job; the shell launchers trust the exit status alone | survives | Each runner now exits 1 on a nonzero exit, the 124 deadline, a run without its RESULT line or a missing output. Every shell launcher marks a zero exit without its RESULT line as status 3 (437a12a4f). The p32009 lift log, which shows setup only with exit 0, is a run the session stopped, not a completed lift. Boundary: `parallel.py` maps Python callables, and these launchers start independent Singular processes |
+| 2. The generated kernels fail ruff and mypy, and nothing tests v13 | survives | The runners are lint- and type-clean source files that the generators embed, and the CI lint lane checks them. `tests/test_a5_kaggle_kernels.py` pins generator equality and the failure cases. `tests/test_a5_fiber_rank_v13.py` pins v13's export files and ranks to v12's byte for byte (437a12a4f) |
+| 3. The status note schedules the refuted cofactor certificate | survives | the note now names the canonical degree-bounded system with both conjugate roots, citing A5-282 |
+| 4. A5-279 is `stalled` although its own evidence decides it | survives | A5-279 is `refuted`; the v13 degree-7 cells get their own row when they finish |
+| 5. The scope and the plan give different N = 22 bounds | survives | the scope now cites the plan's 22,300 to 89,300 s and labels the `slimgb` division as an extrapolation tied to host and load |
+
+The four Kaggle kernels already running were pushed before these fixes, so their runners exit 0 on failure. Their
+results are read from `summary.json` (each job's rc and RESULT lines) and from the driver record's verdict, never from
+Kaggle's kernel status.

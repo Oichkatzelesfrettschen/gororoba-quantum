@@ -1,8 +1,8 @@
 """Kaggle CPU kernel body of one characteristic-0 check of X- -> N-.
 
 make_kernels.py writes one kernel per check from this file, replacing CONFIG_B64 with the base64 of its configuration
-(branch, repository, driver arguments, record name). The kernel clones the public repository at that branch, installs
-passagemath Singular 4.4.1, sympy and python-flint, puts a `systemd-run` shim on PATH (the drivers wrap Singular in a
+(branch, pinned commit, repository, driver arguments, record name). The kernel fetches that commit of the public
+repository, installs passagemath Singular 4.4.1, sympy and python-flint, puts a `systemd-run` shim on PATH (the drivers wrap Singular in a
 user scope that a Kaggle container lacks; the shim drops the scope options so the session's own RAM bounds Singular)
 and runs the driver unchanged. It copies the driver's record and log to /kaggle/working and exits 1 unless the driver
 exited 0 and wrote a record with a verdict (see `failed`).
@@ -21,10 +21,11 @@ import time
 from pathlib import Path
 
 CONFIG_B64 = (
-    "eyJicmFuY2giOiAiaW50ZWdyYXRpb24vZ29yb3JvYmEtcXVhbnR1bS11bHRyYXJldmlldyIsICJyZXBvIjogImh0dHBzOi8vZ2l0"
-    "aHViLmNvbS9PaWNoa2F0emVsZXNmcmV0dHNjaGVuL2dvcm9yb2JhLXF1YW50dW0iLCAiYXJncyI6IFsiZG9jcy9ldmlkZW5jZS9h"
-    "NS1jaGFyMC10cmFuc2Zlci9xdWFkcmljX2xpZnQucHkiLCAiLS1zbHVnIiwgInhtLW5tIiwgIi0tdGltZW91dCIsICI0MTAwMCJd"
-    "LCAicmVjb3JkIjogInF1YWRyaWNzLXhtLW5tLmpzb24ifQ=="
+    "eyJicmFuY2giOiAiaW50ZWdyYXRpb24vZ29yb3JvYmEtcXVhbnR1bS11bHRyYXJldmlldyIsICJjb21taXQiOiAiOGEyZTQxMGJh"
+    "MGJhMWM3NDIwNTVlNDZjM2FiMWM2MDI2NmUwOGRhYiIsICJyZXBvIjogImh0dHBzOi8vZ2l0aHViLmNvbS9PaWNoa2F0emVsZXNm"
+    "cmV0dHNjaGVuL2dvcm9yb2JhLXF1YW50dW0iLCAiYXJncyI6IFsiZG9jcy9ldmlkZW5jZS9hNS1jaGFyMC10cmFuc2Zlci9xdWFk"
+    "cmljX2xpZnQucHkiLCAiLS1zbHVnIiwgInhtLW5tIiwgIi0tdGltZW91dCIsICI0MTAwMCJdLCAicmVjb3JkIjogInF1YWRyaWNz"
+    "LXhtLW5tLmpzb24ifQ=="
 )
 OUT = Path("/kaggle/working")
 WORK = Path("/kaggle/tmp")
@@ -47,9 +48,14 @@ def main() -> None:
     started = time.time()
     WORK.mkdir(parents=True, exist_ok=True)
     repo = WORK / "repo"
-    subprocess.run(
-        ["git", "clone", "-q", "--depth", "1", "-b", config["branch"], config["repo"], str(repo)], check=True
-    )
+    # Fetch the pinned commit alone (GitHub serves a full sha), so the kernel replays the same drivers after the branch
+    # moves or merges.
+    for command in (
+        ["git", "init", "-q", str(repo)],
+        ["git", "-C", str(repo), "fetch", "-q", "--depth", "1", "--filter=blob:none", config["repo"], config["commit"]],
+        ["git", "-C", str(repo), "checkout", "-q", "FETCH_HEAD"],
+    ):
+        subprocess.run(command, check=True)
     packages = ["passagemath-singular==10.8.13", "python-flint==0.9.0", "sympy"]
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", *packages], check=True)
     if not Path("/usr/bin/time").exists():
