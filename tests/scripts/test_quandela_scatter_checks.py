@@ -38,7 +38,9 @@ def test_scatter_checks_type_a_mesh_variance_term(path: Path) -> None:
         require(listed[0] == f"{path.parent.parent.name}/{path.parent.name}", f"{digest} is listed as {listed[0]}")
         require(tuple(gaps) == listed[1], f"listed gaps {listed[1]} differ from {gaps}")
         return
-    require(qd_platform.scatter_check_refusal(case, digest) is None, f"untyped scatter checks: {gaps}")
+    for platform in case.get("platforms") or []:
+        refusal = qd_platform.scatter_check_refusal(case, digest, platform)
+        require(refusal is None, f"untyped scatter checks on {platform}: {gaps}")
 
 
 def test_every_listed_untyped_case_is_retained() -> None:
@@ -51,10 +53,14 @@ def test_plan_refusal_binds_the_digest() -> None:
     checks: dict[str, Any] = {"overdispersion": {"statistic": "Pearson"}}
     case: dict[str, Any] = {"platforms": ["qpu:ascella"], "preregistered": checks}
     legacy = next(d for d, (name, _) in qd_platform.UNTYPED_SCATTER_CASES.items() if name.endswith("reference/job-00"))
-    require(qd_platform.scatter_check_refusal(case, legacy) is None, "the listed digest with its gaps passes")
-    require(qd_platform.scatter_check_refusal(case, "0" * 64) is not None, "an unlisted digest is refused")
+    refuse = qd_platform.scatter_check_refusal
+    require(refuse(case, legacy, "qpu:ascella") is None, "the listed digest with its gaps passes")
+    require(refuse(case, "0" * 64, "qpu:ascella") is not None, "an unlisted digest is refused")
     extra = {**case, "preregistered": {**checks, "homogeneity": "Pearson"}}
-    require(qd_platform.scatter_check_refusal(extra, legacy) is not None, "a listed digest with other gaps is refused")
+    require(refuse(extra, legacy, "qpu:ascella") is not None, "a listed digest with other gaps is refused")
+    mixed = {**case, "platforms": ["qpu:belenos", "sim:belenos"]}
+    require(refuse(mixed, "0" * 64, "sim:belenos") is None, "a simulator plan of a QPU-admitting case is refused")
+    require(refuse(mixed, "0" * 64, "qpu:belenos") is not None, "the QPU plan of the same case passes")
 
 
 def test_the_rule_reads_kinds_not_wording() -> None:

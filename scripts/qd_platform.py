@@ -1036,10 +1036,10 @@ def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: di
     return gaps
 
 
-def scatter_check_refusal(manifest: dict[str, Any], cases_sha256: str) -> str | None:
-    """The refusal for a case whose scatter checks lack a typed mesh-variance term, or None when it has none or
-    UNTYPED_SCATTER_CASES lists its digest with exactly its gaps."""
-    gaps = scatter_check_gaps(manifest.get("platforms") or [], manifest.get("preregistered") or {})
+def scatter_check_refusal(manifest: dict[str, Any], cases_sha256: str, platform: str) -> str | None:
+    """The refusal for a case planned on ``platform`` whose scatter checks lack a typed mesh-variance term, or None when
+    the platform compiles once, the case has no gap, or UNTYPED_SCATTER_CASES lists its digest with exactly its gaps."""
+    gaps = scatter_check_gaps([platform], manifest.get("preregistered") or {})
     if not gaps or tuple(gaps) == UNTYPED_SCATTER_CASES.get(cases_sha256, ("", ()))[1]:
         return None
     return (
@@ -1354,7 +1354,7 @@ def plan(
             raise PlatformError(f"--max-credits {max_credits} exceeds or invalidates the case ceiling {case_ceiling!r}")
     if platform not in manifest["platforms"]:
         raise PlatformError(f"cases.json admits {manifest['platforms']}, not {platform}")
-    refusal = scatter_check_refusal(manifest, cases_sha256)
+    refusal = scatter_check_refusal(manifest, cases_sha256, platform)
     if refusal is not None:
         raise PlatformError(refusal)
     row = explorer_row(platform)
