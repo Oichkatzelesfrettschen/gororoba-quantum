@@ -1,4 +1,4 @@
-"""Every retained Quandela case on a per-iteration-compiled QPU states how its preregistered scatter check carries the
+"""Every retained Quandela case on a per-iteration-compiled QPU types how its preregistered scatter checks carry the
 per-seed mesh variance (qd_platform.scatter_check_gaps, strategy.md section 7 rule 1)."""
 
 from __future__ import annotations
@@ -14,9 +14,14 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import qd_platform  # noqa: E402
 
-# Cases frozen and run before the rule: their cases.json bytes are pinned by the submitted request digests, and
-# docs/notes/topics/ascella-cz-tomography-band-results.md reads their failed scatter check against it.
-FROZEN = {"ascella_cz_tomography_reference"}
+# Cases whose cases.json bytes the submitted or built request digests pin, written before the typed rule. Each value
+# names where its untyped text carries the mesh-variance term, or that it carries none.
+UNTYPED = {
+    "ascella_cz_tomography_reference": "none: the overdispersion reference draws from the acquisition law alone, and "
+    "docs/notes/topics/ascella-cz-tomography-band-results.md reads its failed check against the rule",
+    "ascella_cz_ensemble": "estimate_2_mesh_variance: homogeneity_test compares ten seed tables per setting",
+    "belenos_mode_swap_interleaved": "mesh_variance: slot_homogeneity adds the per-class per-seed variance sigma_c^2",
+}
 CASES = sorted((ROOT / "results/quandela/cases").glob("*/*/cases.json"))
 
 
@@ -30,25 +35,35 @@ def test_the_rule_reads_retained_cases() -> None:
 
 
 @pytest.mark.parametrize("path", CASES, ids=lambda p: f"{p.parent.parent.name}/{p.parent.name}")
-def test_scatter_checks_name_a_mesh_variance_term(path: Path) -> None:
+def test_scatter_checks_type_a_mesh_variance_term(path: Path) -> None:
     case = json.loads(path.read_text(encoding="utf-8"))
     gaps = qd_platform.scatter_check_gaps(case.get("platforms") or [], case.get("preregistered") or {})
-    if path.parent.parent.name in FROZEN:
-        require(bool(gaps), "a frozen case that now satisfies the rule leaves FROZEN")
+    if path.parent.parent.name in UNTYPED:
+        require(bool(gaps), "a listed case that now satisfies the typed rule leaves UNTYPED")
         return
-    require(not gaps, f"scatter checks without a mesh-variance term: {gaps}")
+    require(not gaps, f"scatter checks without a typed mesh-variance term: {gaps}")
 
 
-def test_the_rule_rejects_an_acquisition_only_reference() -> None:
+def test_the_rule_reads_kinds_not_wording() -> None:
     check = {"statistic": "Pearson", "reference": "multinomial draws under the fit"}
-    replicate = {**check, "mesh_variance": "replicate seeds: five seeds per setting, between-seed spread pooled"}
-    descriptive = {**check, "mesh_variance": "descriptive: every setting runs on its own seed"}
+    replicate = {"kind": "replicate_seeds", "seeds_per_setting": 5, "degrees_of_freedom": 4}
+    anchors = {"kind": "anchors", "anchors": 16, "repeats_per_anchor": 2}
+    quiet = {"kind": "non_decisional", "gates": []}
+    gating = {"kind": "non_decisional", "gates": ["fidelity verdict"]}
+    too_few = {**replicate, "seeds_per_setting": 1}
     cases = (
         (["qpu:ascella"], {"overdispersion": check}, ["overdispersion"]),
         (["sim:ascella"], {"overdispersion": check}, []),
-        (["qpu:belenos"], {"overdispersion": replicate}, []),
-        (["qpu:ascella"], {"model_check": descriptive}, []),
-        (["qpu:ascella"], {"overdispersion": {**check, "mesh_variance": ""}}, ["overdispersion"]),
+        (["qpu:belenos"], {"overdispersion": {**check, "mesh_variance": replicate}}, []),
+        (["qpu:ascella"], {"model_check": {**check, "mesh_variance": anchors}}, []),
+        (["qpu:ascella"], {"model_check": {**check, "mesh_variance": quiet}}, []),
+        (["qpu:ascella"], {"model_check": {**check, "mesh_variance": gating}}, ["model_check"]),
+        (["qpu:ascella"], {"goodness_of_fit": "Pearson against multinomial draws"}, ["goodness_of_fit"]),
+        (["qpu:ascella"], {"goodness_of_fit": "Pearson", "mesh_variance": replicate}, []),
+        (["qpu:ascella"], {"readings": {"homogeneity": check}}, ["readings/homogeneity"]),
+        (["qpu:ascella"], {"homogeneity_alpha": 0.01}, []),
+        (["qpu:ascella"], {"overdispersion": {**check, "mesh_variance": "replicate seeds: five"}}, ["overdispersion"]),
+        (["qpu:ascella"], {"overdispersion": {**check, "mesh_variance": too_few}}, ["overdispersion"]),
     )
     for platforms, preregistered, expected in cases:
         found = qd_platform.scatter_check_gaps(platforms, preregistered)
