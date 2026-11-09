@@ -46,13 +46,14 @@ QUADRICS = (
     "setring R0;ideal P;poly q;intvec ev;",
     "for(i=1;i<=c;i++){setring Y;ev=leadexp(kb[i]);setring R0;q=1;",
     "for(f=1;f<=n;f++){for(e=1;e<=ev[f];e++){q=reduce(q*GG[f],sJ);}}P[i]=q;}",
-    "ideal Q=sJ;for(k=1;k<=nvars(R0);k++){for(i=1;i<=c;i++){Q=Q,var(k)*P[i];}}",
+    # m is the ideal of the slice variables, as in the receipts; the producer ring still carries t3 and t8
+    "ideal SliceM=@SLICE@;ideal Q=sJ;for(k=1;k<=ncols(SliceM);k++){for(i=1;i<=c;i++){Q=Q,SliceM[k]*P[i];}}",
     'ideal sQ=std(Q);"RESULT sq_size",size(sQ);ideal N=reduce(P,sQ);',
     "ideal mons;poly h;for(b=1;b<=c;b++){h=N[b];while(h!=0){mons=mons,leadmonom(h);h=h-lead(h);}}",
     'mons=simplify(mons,6);"RESULT monomials",size(mons);',
     "matrix M=coeffs(N,mons);module S=syz(module(M));",
     '"RESULT targets",c;"RESULT relations",size(S);string row;',
-    'for(j=1;j<=size(S);j++){row=string(S[j][1]);',
+    "for(j=1;j<=size(S);j++){row=string(S[j][1]);",
     'for(b=2;b<=c;b++){row=row+";"+string(S[j][b]);}"RESULT rel_"+string(j),row;}',
 )
 
@@ -161,7 +162,10 @@ def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -
 
 def check(slug: str) -> dict[str, Any]:
     body = reduction_check._script(slug, None, rees.MODULAR_PRIME)
-    script = body.replace("\nquit;\n", "\n") + "\n".join(QUADRICS) + "\nquit;\n"
+    header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
+    ring_line = header.splitlines()[0]
+    slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")]
+    script = body.replace("\nquit;\n", "\n") + "\n".join(QUADRICS).replace("@SLICE@", slice_vars) + "\nquit;\n"
     outcome = rees._run_singular(script, "quadrics_qi", 4 * reduction_check.TIMEOUT_SECONDS)
     if outcome.status != "completed":
         raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")

@@ -48,13 +48,17 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
 
 - [`truncation_check.py`](truncation_check.py) (check 3): the monic reduced standard basis of J + m^N over Q(i), m the
   ideal of the seven slice variables (the producer's ring still carries the presolve-eliminated t3 and t8), against the
-  same basis from the retained header at both primes. X- -> N- survives at N = 4, 8 and 11, the closing orders of
-  degrees 1 to 3: 91, 366 and 775 elements, integer coefficients, equal at both primes, a corrupted coefficient
+  same basis from the retained header at both primes. X- -> N- survives at N = 4, 8, 11 and 15, the closing orders of
+  degrees 1 to 4: 91, 366, 775 and 1,696 elements, integer coefficients, equal at both primes, a corrupted coefficient
   detected (`truncation-xm-nm-n<N>.json`; ledger A5-249). A first revision took m from the producer ring and read
   refuted on a basis of 2,566 elements against 366; its records were overwritten by the fixed run.
 - [`quadric_lift.py`](quadric_lift.py) (check 2): the degree-2 relations {q : q(G) in J + m I^2} over Q(i) by the
   computation of the modular degree-2 receipts (`working/distribute/out/*/d2/d2-products.sing`), compared with the
-  retained K2 at both primes (ledger A5-248, running).
+  retained K2 at both primes (ledger A5-248, running). A first run took m from the nine-variable producer ring;
+  that contracts to the same relation space but added 240 generators, and it was restarted on the slice variables.
+- [`span_check.py`](span_check.py): over Q(i), every one of the 126 Pfaffian kernel coordinates reduces to 0 modulo
+  J + m * FullF + (G), so G generates the kernel-coordinate ideal at the origin (Nakayama) and the fiber cone of (G)
+  is the one the attaching data needs; dropping a generator leaves nonzero remainders (`span-<slug>.json`).
 - [`x_opposite_qi.py`](x_opposite_qi.py): the arc certificate of X+ -> N- and X- -> N+ (`../a5-exceptional-fibers/arcs-x/`)
   replayed exactly over Q(i) in Singular: J smooth of dimension 4 at the origin, Phi on V(J) and a formal isomorphism,
   I = w (G'') with (G'') a smooth curve germ, so F(I) = Q(i)[y1, y2, y3] in every degree

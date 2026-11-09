@@ -1,0 +1,10 @@
+{
+ "slug": "xp-nm",
+ "field": "Q(i)",
+ "fullf_count": 126,
+ "g_count": 3,
+ "remainders": 0,
+ "dropped_last_generator_remainders": 6,
+ "wall_seconds": 6.7,
+ "verdict": "G generates (FullF) at the origin"
+}
