@@ -321,3 +321,14 @@ reads `fails` and its cross-platform rule `fails` with or without them; the reta
   `qx_control.pass` true, so each gate decision holds under the corrected rules.
 - Derived analyses of this series come from the pinned CI interpreter (ci-py3.14.7); against the build host's
   /usr/bin/python every verdict, flag and text field agrees and floats differ by at most 1e-12.
+
+## Successor: the selector offset of the null block
+
+The coin series' null block b0 read a raw selector contrast of +0.0164 +- 0.0039. The successor case
+[pathion_one_cz_null_tuna_17](../../../results/quantum_inspire/cases/pathion_one_cz_null_tuna_17/CASE.md) replays b0 byte
+for byte, adds the three 6-CZ blocks k4, k8 and k12 (selector q8 and coin q2 held) and a joint readout characterization of
+the coin q2, the selector q8 and q12, with preregistered decision rules for the coherent over-rotation of ledger row A5-186
+against a coin-conditioned or q12-correlated selector readout. Its generator is `scripts/qi_pathion_one_cz_null_cases.py`
+and its QX twin `pathion_one_cz_null_qx`; the owner approved both on 2026-11-07, both series are retained under
+`results/quantum_inspire/runs/`, and the Tuna-17 series read `unresolved_batch` under the preregistered rule
+(`results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json`).

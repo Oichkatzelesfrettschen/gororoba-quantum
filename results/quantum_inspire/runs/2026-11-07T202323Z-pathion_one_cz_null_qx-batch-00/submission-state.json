@@ -1,0 +1,89 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-07T20:25:38+00:00",
+ "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "394d77fc2da49b86e637912c0eb4926485c65388e2d0c864c41b0d2b0bd13a06",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "b0.cq",
+   "job": 1692185,
+   "sha256": "9c348677d607b06019b57d7187aae861ecaeebeb36bd90b401527ea2a2723ac1"
+  },
+  {
+   "file": "b0-coin0.cq",
+   "job": 1692186,
+   "sha256": "488bb8b4e5dd0d61f56f9de136b77ae054e1893e331d4f0b93750c8a50d97d0d"
+  },
+  {
+   "file": "b0-coin1.cq",
+   "job": 1692187,
+   "sha256": "e9cac5fb3a0e426122f7aa7d1cd4e4d06cd231f3b39af19bc4dde28e4db95ed4"
+  },
+  {
+   "file": "k4.cq",
+   "job": 1692188,
+   "sha256": "e7c0d06ceb8d088dbc7ddcc1e39dda670b2f980aa650b495e3a468f3faf5acbe"
+  },
+  {
+   "file": "k4-coin0.cq",
+   "job": 1692189,
+   "sha256": "afb7ae5c6ac342ee7c8e58727915c98cfa636bc52b6a53b0452b51ffbfa295e8"
+  }
+ ],
+ "project": 824351,
+ "batch_job": 923916,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-07T20:25:42+00:00",
+  "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "394d77fc2da49b86e637912c0eb4926485c65388e2d0c864c41b0d2b0bd13a06",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 923916,
+  "project": 824351,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "b0.cq",
+    "job": 1692185,
+    "sha256": "9c348677d607b06019b57d7187aae861ecaeebeb36bd90b401527ea2a2723ac1"
+   },
+   {
+    "file": "b0-coin0.cq",
+    "job": 1692186,
+    "sha256": "488bb8b4e5dd0d61f56f9de136b77ae054e1893e331d4f0b93750c8a50d97d0d"
+   },
+   {
+    "file": "b0-coin1.cq",
+    "job": 1692187,
+    "sha256": "e9cac5fb3a0e426122f7aa7d1cd4e4d06cd231f3b39af19bc4dde28e4db95ed4"
+   },
+   {
+    "file": "k4.cq",
+    "job": 1692188,
+    "sha256": "e7c0d06ceb8d088dbc7ddcc1e39dda670b2f980aa650b495e3a468f3faf5acbe"
+   },
+   {
+    "file": "k4-coin0.cq",
+    "job": 1692189,
+    "sha256": "afb7ae5c6ac342ee7c8e58727915c98cfa636bc52b6a53b0452b51ffbfa295e8"
+   }
+  ],
+  "submitted_utc": "2026-11-07T20:25:43+00:00"
+ },
+ "confirmed_utc": "2026-11-07T20:25:43+00:00"
+}

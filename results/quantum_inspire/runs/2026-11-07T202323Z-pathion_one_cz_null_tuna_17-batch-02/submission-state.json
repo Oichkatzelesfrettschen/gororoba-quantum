@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-07T21:52:49+00:00",
+ "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "a07c8ea52701983e2f02fe0b68c5bc8f97397585fe4735b2bf370e659f85da0c",
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1692665,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "k4-coin0.cq",
+   "job": 1692666,
+   "sha256": "8b9c2e79a6deb5f21e31c3de9143ceee9da87fae885affa5e962c6058321b92d"
+  },
+  {
+   "file": "k4-coin1.cq",
+   "job": 1692667,
+   "sha256": "6b00e2e3ddbaffc3215512f90d524aa69379e860ddb6dedb221b237104d51880"
+  }
+ ],
+ "project": 824450,
+ "batch_job": 924015,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-07T21:52:52+00:00",
+  "approval": "Owner approved 2026-11-07 (Submit now): Tuna-17 one-CZ null case, 56 jobs in 19 batches plus the QX twin, 2,293,760 Tuna shots, about 23 to 25 min execution, no metered credits",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "a07c8ea52701983e2f02fe0b68c5bc8f97397585fe4735b2bf370e659f85da0c",
+  "backend_status_at_submit": "executing",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 924015,
+  "project": 824450,
+  "shots": 32768,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1692665,
+    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+   },
+   {
+    "file": "k4-coin0.cq",
+    "job": 1692666,
+    "sha256": "8b9c2e79a6deb5f21e31c3de9143ceee9da87fae885affa5e962c6058321b92d"
+   },
+   {
+    "file": "k4-coin1.cq",
+    "job": 1692667,
+    "sha256": "6b00e2e3ddbaffc3215512f90d524aa69379e860ddb6dedb221b237104d51880"
+   }
+  ],
+  "submitted_utc": "2026-11-07T21:52:52+00:00"
+ },
+ "confirmed_utc": "2026-11-07T21:52:52+00:00"
+}

@@ -1,0 +1,235 @@
+{
+ "schema": "qi-collection-v1",
+ "collected_utc": "2026-11-07T20:26:03+00:00",
+ "jobs": [
+  {
+   "file": "b0.cq",
+   "job": {
+    "id": 1692185,
+    "created_on": "2026-11-07T20:25:39.389374Z",
+    "file_id": 1702928,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 923916,
+    "queued_at": "2026-11-07T20:25:48.108378Z",
+    "finished_at": "2026-11-07T20:25:49.063389Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "4c9f6fd4-7b68-4b15-b701-e7d984ea591b",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1652912,
+     "created_on": "2026-11-07T20:25:48.968497Z",
+     "job_id": 1692185,
+     "execution_time_in_seconds": 0.695109,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 124,
+      "0000000010": 127,
+      "0000000101": 119,
+      "0000000111": 131,
+      "0000001000": 122,
+      "0000001010": 122,
+      "0000001101": 152,
+      "0000001110": 1,
+      "0000001111": 119,
+      "0000010001": 122,
+      "0000010011": 129,
+      "0000010100": 120,
+      "0000010110": 143,
+      "0000011000": 1,
+      "0000011001": 126,
+      "0000011011": 127,
+      "0000011100": 123,
+      "0000011101": 1,
+      "0000011110": 138,
+      "0000011111": 1
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "b0-coin0.cq",
+   "job": {
+    "id": 1692186,
+    "created_on": "2026-11-07T20:25:40.249324Z",
+    "file_id": 1702929,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 923916,
+    "queued_at": "2026-11-07T20:25:49.110448Z",
+    "finished_at": "2026-11-07T20:25:49.709327Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "4c9f6fd4-7b68-4b15-b701-e7d984ea591b",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1652913,
+     "created_on": "2026-11-07T20:25:49.619206Z",
+     "job_id": 1692186,
+     "execution_time_in_seconds": 0.335117,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 244,
+      "0000000010": 253,
+      "0000000100": 1,
+      "0000000110": 1,
+      "0000001000": 260,
+      "0000001010": 224,
+      "0000001110": 2,
+      "0000010000": 1,
+      "0000010010": 1,
+      "0000010100": 245,
+      "0000010110": 272,
+      "0000011010": 1,
+      "0000011100": 270,
+      "0000011110": 273
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "b0-coin1.cq",
+   "job": {
+    "id": 1692187,
+    "created_on": "2026-11-07T20:25:41.008988Z",
+    "file_id": 1702930,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 923916,
+    "queued_at": "2026-11-07T20:25:49.754307Z",
+    "finished_at": "2026-11-07T20:25:50.308349Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "4c9f6fd4-7b68-4b15-b701-e7d984ea591b",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1652914,
+     "created_on": "2026-11-07T20:25:50.216595Z",
+     "job_id": 1692187,
+     "execution_time_in_seconds": 0.309782,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000101": 244,
+      "0000000111": 263,
+      "0000001001": 2,
+      "0000001101": 229,
+      "0000001111": 262,
+      "0000010001": 288,
+      "0000010011": 253,
+      "0000010111": 3,
+      "0000011001": 253,
+      "0000011011": 251
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "k4.cq",
+   "job": {
+    "id": 1692188,
+    "created_on": "2026-11-07T20:25:42.050293Z",
+    "file_id": 1702931,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 923916,
+    "queued_at": "2026-11-07T20:25:50.354025Z",
+    "finished_at": "2026-11-07T20:25:50.771817Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "4c9f6fd4-7b68-4b15-b701-e7d984ea591b",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1652915,
+     "created_on": "2026-11-07T20:25:50.681639Z",
+     "job_id": 1692188,
+     "execution_time_in_seconds": 0.193013,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 141,
+      "0000000011": 131,
+      "0000000101": 122,
+      "0000000110": 125,
+      "0000001000": 120,
+      "0000001011": 127,
+      "0000001101": 130,
+      "0000001110": 124,
+      "0000010000": 125,
+      "0000010011": 146,
+      "0000010101": 120,
+      "0000010110": 129,
+      "0000011000": 113,
+      "0000011011": 139,
+      "0000011101": 122,
+      "0000011110": 134
+     }
+    }
+   ],
+   "logs": null
+  },
+  {
+   "file": "k4-coin0.cq",
+   "job": {
+    "id": 1692189,
+    "created_on": "2026-11-07T20:25:42.875813Z",
+    "file_id": 1702932,
+    "algorithm_type": "quantum",
+    "status": "completed",
+    "batch_job_id": 923916,
+    "queued_at": "2026-11-07T20:25:50.817818Z",
+    "finished_at": "2026-11-07T20:25:51.101310Z",
+    "number_of_shots": 2048,
+    "raw_data_enabled": true,
+    "session_id": "4c9f6fd4-7b68-4b15-b701-e7d984ea591b",
+    "trace_id": "",
+    "message": "",
+    "source": ""
+   },
+   "results": [
+    {
+     "id": 1652916,
+     "created_on": "2026-11-07T20:25:51.046531Z",
+     "job_id": 1692189,
+     "execution_time_in_seconds": 0.1077,
+     "shots_requested": 2048,
+     "shots_done": 2048,
+     "results": {
+      "0000000000": 249,
+      "0000000110": 234,
+      "0000001000": 253,
+      "0000001110": 270,
+      "0000010000": 268,
+      "0000010110": 268,
+      "0000011000": 258,
+      "0000011110": 248
+     }
+    }
+   ],
+   "logs": null
+  }
+ ],
+ "transactions": []
+}

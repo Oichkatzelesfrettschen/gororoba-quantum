@@ -1,0 +1,53 @@
+{
+ "schema": "submitted-circuit-row-v1",
+ "row": {
+  "job_id": "dbnk9ndt7fqc73ajpfl0",
+  "run": "results/live/2026-11-07T153325.886771Z",
+  "retained_file": "results/live/2026-11-07T153325.886771Z/isa.qpy",
+  "retained_sha256": "5f6abec705955f0c27f71ac368f5731182bce55ee5db1786d7899675ebfa9d3c",
+  "order_source": "record.json submission.jobs[].pubs",
+  "expected_pubs": [
+   "ibm_kingston_static_pub_01",
+   "ibm_kingston_static_pub_02",
+   "ibm_kingston_static_pub_03",
+   "ibm_kingston_static_pub_04",
+   "ibm_kingston_static_pub_05",
+   "ibm_kingston_static_pub_06",
+   "ibm_kingston_static_pub_07",
+   "ibm_kingston_static_pub_08",
+   "ibm_kingston_static_pub_09",
+   "ibm_kingston_static_pub_10",
+   "ibm_kingston_static_pub_11",
+   "ibm_kingston_static_pub_12"
+  ],
+  "items": 12,
+  "item_kinds": [
+   "CircuitItem"
+  ],
+  "positional_matches": 12,
+  "submitted_qpy_sha256": [
+   "ec6b2432cd8ed518e973b5fcfd45c3c74e8a5e6daefa3f6f62d404aa015c3186",
+   "680e8566bab544e79ab32406c867b1d450a2a2555b2fbafa0a3120ae04257edd",
+   "8de18ee328f5eb8a4cca2cee4e9d6ae095bf7b4f8029854338e5b37683f3ac1d",
+   "17be20f59e0a77ee2b8e6b045e58d5391f2b7903f45b3200c8b83c6d7a51df1a",
+   "a95824fc01d96efa8e0adf9d6992b333b7084288abcea98258d4d7da03f75fff",
+   "acb16dd7e0e97c0c74bcc029b10b719e4ee04d250f59cfd34fb59181adf22160",
+   "3e06d66705b8a9e690e00f2d7b6471702e9e387ad8813ba0d7602293f34a9f3a",
+   "4e5800364b14644463d75c5a677b2e1073d3998dbfa993462d0e558a67fbfe50",
+   "a8faacde5b6d29529ca49d75f38319d91cb86b4b94b3b6edb9a10ab34b8948de",
+   "fa5e9ca7264a50c6d9a7d5cba0862bbccc33f0c29e3ab5b63de7bc239d7a7bc0",
+   "454725ffdc751fb7b2fb70fa34ea4a61224b5b5eadfa2aec75ae68558f74239d",
+   "b100650cff7a916fd28adbb04554515b5cbbd9aa2f0fe5f5aee8b2bd6772f753"
+  ]
+ },
+ "provenance": {
+  "origin": "service",
+  "retrieved_utc": "2026-11-08T09:29:22.655575+00:00",
+  "operation": "read existing job inputs; submissions and uploads excluded",
+  "runtime_versions": {
+   "qiskit": "2.6.0",
+   "qiskit-ibm-runtime": "0.50.0"
+  },
+  "collector_sha256": "f4a09c11354074974f2268af2e48ec636f832260f9de8f2a1a4db61eb85ce888"
+ }
+}
