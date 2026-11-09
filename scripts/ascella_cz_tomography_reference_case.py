@@ -483,14 +483,12 @@ def sampled_dataset(
     return eligible, quotas.astype(int), shots
 
 
-def forecast_point(item: tuple[float, dict[str, Any], list[float], int]) -> dict[str, Any]:
-    """The forecast at one HOM: per curve variant the estimand, and for the record variant the delta-method spread of
-    this design and of the retained uniform 4000-sample design, and one synthetic dataset of this design analyzed as
-    a run would be."""
-    hom, figures, dark, seed = item
+def forecast_point(item: tuple[float, list[dict[str, Any]], int]) -> dict[str, Any]:
+    """The forecast at one HOM from its 144 setting forecasts in schedule order: per curve variant the estimand, and
+    for the record variant the delta-method spread of this design and of the retained uniform 4000-sample design, and
+    one synthetic dataset of this design analyzed as a run would be."""
+    hom, per_setting, seed = item
     rows = tomo.schedule()
-    at = {**figures, "hom": hom / 100.0}
-    per_setting = [tomo.forecast_setting((row, at, dark)) for row in rows]
     out: dict[str, Any] = {"hom_percent": hom, "seed": seed}
     for name in FORECAST_CURVE_VARIANTS:
         arrays = tomo.variant_arrays(per_setting, name)
@@ -524,7 +522,12 @@ def forecast() -> dict[str, Any]:
     figures = tomo.perf_figures(perfs)
     dark = [float(rate) for rate in perfs["Dark counts (detection/s)"]]
     seeds = seed_plan()["forecast"]
-    items = [(hom, figures, dark, value) for hom, (_, value) in zip(FORECAST_HOMS, seeds, strict=True)]
+    rows = tomo.schedule()
+    # Every (HOM, setting) forecast is independent, so one flat map carries all of them before the per-point summaries.
+    tasks = [(row, {**figures, "hom": hom / 100.0}, dark) for hom in FORECAST_HOMS for row in rows]
+    flat = ordered_map(tomo.forecast_setting, tasks, min_items=1)
+    chunks = [flat[k * len(rows) : (k + 1) * len(rows)] for k in range(len(FORECAST_HOMS))]
+    items = [(hom, chunk, value) for hom, chunk, (_, value) in zip(FORECAST_HOMS, chunks, seeds, strict=True)]
     points = ordered_map(forecast_point, items, min_items=1)
     for point, (index, _) in zip(points, seeds, strict=True):
         point["seed_index"] = index
@@ -618,7 +621,11 @@ def admit(
     qd_platform.PlatformError."""
     try:
         policy = submission_policy(job)
-        require(planned["case"] == job and planned["platform"] == PLATFORM, f"the plan names {planned['case']}")
+        # qd_platform.plan names the case after its directory, a run directory at submission, so the request's
+        # identity is its cases.json digest.
+        retained = qd_platform.sha256_bytes((FAMILY_DIR / job / "cases.json").read_bytes())
+        require(planned["platform"] == PLATFORM, f"{job}: the plan names platform {planned['platform']}")
+        require(planned["cases_sha256"] == retained, f"{job}: the plan's cases.json is not the retained {job}")
         for key in ("credit_ceiling", "per_job_credits", "expected_seconds"):
             require(
                 abs(float(planned[key]) - float(policy[key])) <= TOLERANCE,
@@ -682,8 +689,9 @@ def load_run(run: Path) -> dict[str, Any]:
 
 
 def prior_attempts(job: str, runs_dir: Path = RUNS_DIR) -> None:
-    """Refuse a further attempt of job under the stopping rule: a posted attempt that is not collected, or that
-    returned a counted iteration, ends the job's attempts, and so do MAX_ATTEMPTS posted attempts. A directory with no
+    """Refuse a further attempt of job under the stopping rule: a posted attempt that is not collected, that returned a
+    counted iteration or that ended other than in error ends the job's attempts, and so do MAX_ATTEMPTS posted
+    attempts. A directory with no
     posting checkpoint (submission.json, submission-state.json or job-body.json) is no attempt."""
     posted = []
     for run in sorted(runs_dir.glob(f"*-{PLATFORM.replace(':', '_')}-{FAMILY}-{job}")):
@@ -695,6 +703,9 @@ def prior_attempts(job: str, runs_dir: Path = RUNS_DIR) -> None:
         results = json.loads((run / "results.json").read_text(encoding="utf-8"))
         counted = [e for e in results.get("iterations") or [] if isinstance(e, dict) and e.get("counts")]
         require(not counted, f"{job}: the earlier attempt {name} returned counts, so the job is never resubmitted")
+        status = results.get("status")
+        state = status.get("status") if isinstance(status, dict) else None
+        require(state == "error", f"{job}: the earlier attempt {name} ended {state!r}; only an error admits a retry")
     require(len(posted) < MAX_ATTEMPTS, f"{job}: {len(posted)} attempts were posted, the most the stopping rule admits")
 
 
@@ -860,39 +871,16 @@ def run_directory(job: str) -> Path:
 
 
 def analyze(runs: Sequence[Path]) -> dict[str, Any]:
-    """Pool the two collected runs under the retained case's estimator, with this case's bootstrap seed."""
-    loaded = [load_run(run) for run in runs]
-    jobs = [entry["job"] for entry in loaded]
-    require(sorted(jobs) == sorted(JOBS), f"the runs are not both jobs: {jobs}")
-    tallies: dict[str, dict[str, Any]] = {}
-    for entry in loaded:
-        tallies.update(entry["tallies"])
-    rows = tomo.schedule()
-    record: dict[str, Any] = {
-        "schema": "qd-cz-tomography-reference-analysis-v1",
-        "runs": [{"job": e["job"], "cases_sha256": e["cases_sha256"], "counted": len(e["tallies"])} for e in loaded],
-        "settings_with_counts": len(tallies),
-        "eligible_events_by_setting": {name: sum(t["eligible"]) for name, t in tallies.items()},
-        "uncounted_by_kind": {k: sum(e["uncounted"].get(k, 0) for e in loaded) for k in (*tomo.UNCOUNTED, "uncounted")},
-    }
-    if not all(row["name"] in tallies and sum(tallies[row["name"]]["eligible"]) > 0 for row in rows):
-        record["process"] = "undecided"
-        return record
-    pool = tomo.pooling(loaded, JOBS)
-    eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
-    samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
-    shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
-    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
-    seed = seed_plan()["bootstrap"][1]
-    process = tomo.tomography(eligible, samples, shots, scale, np.random.default_rng(seed))
-    process["pooling"] = pool
-    process["status"] = pool["status"]
-    short = sorted(name for entry in loaded for name in entry.get("short", []))
-    if short:
+    """Pool the two collected runs through tomo.analyze with this case's loader, jobs and bootstrap seed; a setting
+    that stopped at max_shots short of its max_samples leaves the pool descriptive."""
+    record = tomo.analyze(runs, loader=load_run, jobs=JOBS, seed=seed_plan()["bootstrap"][1], forecast_path=None)
+    record["schema"] = "qd-cz-tomography-reference-analysis-v1"
+    short = sorted(name for run in runs for name in load_run(run)["short"])
+    process = record.get("process")
+    if short and isinstance(process, dict):
         process["status"] = "descriptive"
         process["short_settings"] = short
-        pool["reason"] = f"{len(short)} settings stopped at max_shots short of their max_samples"
-    record["process"] = process
+        process["pooling"]["reason"] = f"{len(short)} settings stopped at max_shots short of their max_samples"
     return record
 
 

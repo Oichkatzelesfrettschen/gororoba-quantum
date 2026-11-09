@@ -23,6 +23,7 @@ def planned_fixture(
     perfs = {"HOM (%)": hom, "Transmittance (%)": transmittance}
     return {
         "case": job,
+        "cases_sha256": case.qd_platform.sha256_bytes((case.FAMILY_DIR / job / "cases.json").read_bytes()),
         "platform": case.PLATFORM,
         "credit_ceiling": float(policy["credit_ceiling"]),
         "per_job_credits": float(policy["per_job_credits"]),
@@ -245,12 +246,12 @@ def test_job_01_waits_for_job_00_quotas() -> None:
         case.admit("job-01", planned_fixture("job-01", 91.0), {**complete_run(), "short": ["in-00-XX"]}, LATER)
 
 
-def attempt(runs: Path, stamp: str, job: str, iterations: list[dict[str, Any]] | None) -> None:
+def attempt(runs: Path, stamp: str, job: str, iterations: list[dict[str, Any]] | None, status: str = "error") -> None:
     run = runs / f"{stamp}-qpu_ascella-{case.FAMILY}-{job}"
     run.mkdir()
     (run / "submission.json").write_text("{}")
     if iterations is not None:
-        (run / "results.json").write_text(json.dumps({"iterations": iterations}))
+        (run / "results.json").write_text(json.dumps({"iterations": iterations, "status": {"status": status}}))
 
 
 def test_the_stopping_rule_counts_earlier_attempts(tmp_path: Path) -> None:
@@ -291,3 +292,18 @@ def test_a_refused_submit_leaves_no_run_directory(tmp_path: Path) -> None:
     case.discard_unposted(kept)
     if not (kept / "job-body.json").exists():
         raise AssertionError("a run directory with a checkpoint was removed")
+
+
+def test_a_canceled_attempt_admits_no_retry(tmp_path: Path) -> None:
+    attempt(tmp_path, "1", "job-00", [], status="canceled")
+    with pytest.raises(RuntimeError, match="ended 'canceled'"):
+        case.prior_attempts("job-00", tmp_path)
+
+
+def test_a_plan_from_a_run_directory_keeps_its_identity() -> None:
+    """qd_platform.plan names the case after its directory; the digest carries the job's identity."""
+    planned = planned_fixture("job-00", 91.0)
+    planned["case"] = f"2026-11-10T060000Z-qpu_ascella-{case.FAMILY}-job-00"
+    case.admit("job-00", planned, None)
+    with pytest.raises(case.qd_platform.PlatformError, match="is not the retained job-01"):
+        case.admit("job-01", {**planned, "case": "job-01"}, complete_run(), LATER)

@@ -49,7 +49,7 @@ import itertools
 import json
 import math
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime
 from functools import cache, partial
 from pathlib import Path
@@ -1440,12 +1440,20 @@ def pooling(loaded: Sequence[Mapping[str, Any]], jobs: Sequence[str] = JOBS) -> 
     return out
 
 
-def analyze(runs: Sequence[Path], replicates: int = BOOTSTRAP_REPLICATES) -> dict[str, Any]:
+def analyze(
+    runs: Sequence[Path],
+    replicates: int = BOOTSTRAP_REPLICATES,
+    loader: Callable[[Path], dict[str, Any]] = load_run,
+    jobs: Sequence[str] = JOBS,
+    seed: int | None = None,
+    forecast_path: Path | None = FAMILY_DIR / FORECAST,
+) -> dict[str, Any]:
     """Pool collected runs: the primary process estimate when all 144 settings returned eligible events, else counts
-    only."""
-    loaded = [load_run(run) for run in runs]
-    jobs = [entry["job"] for entry in loaded]
-    require(len(set(jobs)) == len(jobs), f"the runs are not distinct jobs: {jobs}")
+    only. A successor case of the same estimator passes its own loader, job names, bootstrap seed (else the seed the
+    first run's cases.json names) and forecast (None leaves the forecast comparison out)."""
+    loaded = [loader(run) for run in runs]
+    names = [entry["job"] for entry in loaded]
+    require(len(set(names)) == len(names), f"the runs are not distinct jobs: {names}")
     tallies: dict[str, dict[str, Any]] = {}
     for entry in loaded:
         tallies.update(entry["tallies"])
@@ -1463,25 +1471,26 @@ def analyze(runs: Sequence[Path], replicates: int = BOOTSTRAP_REPLICATES) -> dic
         "eligible_events_by_setting": {name: sum(t["eligible"]) for name, t in tallies.items()},
     }
     record["eligible_events"] = sum(record["eligible_events_by_setting"].values())
-    complete = set(jobs) == set(JOBS) and all(
+    complete = set(names) == set(jobs) and all(
         row["name"] in tallies and sum(tallies[row["name"]]["eligible"]) > 0 for row in rows
     )
     if not complete:
         record["process"] = "undecided"
         return record
-    pool = pooling(loaded)
+    pool = pooling(loaded, jobs)
     eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
     samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
     shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
     scale = np.asarray([pool["scales"][row["job"]] for row in rows])
-    seed = bootstrap_seed_of(runs[0])
+    seed = bootstrap_seed_of(runs[0]) if seed is None else seed
     process = tomography(eligible, samples, shots, scale, np.random.default_rng(seed), replicates)
     process["bootstrap"]["seed"] = seed
     process["pooling"] = pool
     process["status"] = pool["status"]
     record["process"] = process
-    forecast_row = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))["variants"]
-    record["forecast_process_fidelity"] = {name: v["estimand_process_fidelity"] for name, v in forecast_row.items()}
+    if forecast_path is not None:
+        forecast_row = json.loads(forecast_path.read_text(encoding="utf-8"))["variants"]
+        record["forecast_process_fidelity"] = {name: v["estimand_process_fidelity"] for name, v in forecast_row.items()}
     return record
 
 
