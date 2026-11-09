@@ -57,7 +57,8 @@ t9 = 0}.
    same three equations at v2 = 0, so by uniqueness x(s, 0) = 0, and G'_j|_S (s, 0) = G'_j(s, 0, 0, 0, 0) = 0: every
    G'_j|_S is divisible by v2 in k[[s, v2]]. Newton iteration to order 10 computes the 2-jets of G'_j|_S exactly
    (orders up to 10 of the composition depend only on orders up to 10 of x), hence the exact 1-jets of the quotients
-   G'_j|_S / v2; their linear parts span m/m^2 for m = (s, v2) (vdim 1 in the local ordering `ds`), and Nakayama gives
+   G'_j|_S / v2; their linear parts span m/m^2 for m = (s, v2) (zero constant terms and a 24 x 2 linear-coefficient matrix of rank 2, read in the global
+   ordering dp), and Nakayama gives
    that the quotients generate m. Modulo (G'_2, G'_11) the image of I' is therefore v2 m = (v2 s, v2^2), so
    I'|_{B_4} = (G'_2, G'_11, v2 s, v2^2) in the coordinates (G'_2, G'_11, s, v2), a monomial ideal whose four
    generators have affinely independent exponents. A product of n generators x^a y^b z^c w^(c+2d) never lies in
@@ -98,14 +99,17 @@ t9 = 0}.
 `c30_gen.py` writes `points.json` (every coefficient as [index, value] of the ANU draw
 `docs/evidence/anu_qrng/draw-2026-11-08T182935Z.json`, values in [1, 32008] in index order) and `sing/*.sing` from the Singular
 templates in `templates/`; `run.sh CASE [LIMIT_S]` runs one script in a cgroup scope with `MemoryMax=8G`,
-`MemorySwapMax=0`, `timeout`, and keeps `logs/CASE.log`, `.result`, `.err`, `.time`, `.rss`. Singular 4.4.1 (passagemath-singular 10.8.13), one thread, on the
-build host. The `sing/c30-plane-pP-ptN.sing` scripts hold the dual-number pipeline of steps 4 to 6 and the tests below;
+`MemorySwapMax=0` (or `prlimit --as` where no user bus answers), `timeout`, keeps `logs/CASE.log`, `.result`, `.err`,
+`.time`, `.rss`, and fails a run whose log carries a Singular error line. Singular 4.4.1, one thread: the control and
+global-slice logs on the build host (passagemath-singular 10.8.13); the five plane logs on the OCI A1 host (aarch64,
+distribution Singular 4.4.1), rerun on 2026-11-09 after the quotient-ideal check moved from the local ordering `ds` to
+the global-order rank test, with every other result line equal to the build-host run. The `sing/c30-plane-pP-ptN.sing` scripts hold the dual-number pipeline of steps 4 to 6 and the tests below;
 `kp-p32009.sing` is the ring Y with K2 and P copied from `../w8-kp/check.sing`; K2 : P is `../w8-kp/quotient.txt`, K2 at
 32029 is `working/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel`, Lambda is the nine linear forms of `check.sing`.
 
 Each plane script reports, in `logs/*.result`: exact divisibility of J and G by s^2; the Newton residual (0);
 divisibility of G'_j|_S by v2; the linear-part consistency of c_jk (the v2 coefficient of every G'_j agrees with
-c_j1 and c_j2); vdim of the quotient ideal (1); the number of K2, Lambda, P and K2 : P generators that do not vanish on
+c_j1 and c_j2); the constant terms (none) and linear-coefficient rank (2) of the quotient ideal; the number of K2, Lambda, P and K2 : P generators that do not vanish on
 Pi_p; the rank of M(p); and the Jacobian rank.
 
 | Prime | Draw indices of b, c and Y0 (four values) | K2 nonzero on Pi_p | Lambda nonzero | P nonzero | K2 : P nonzero | rank M | Jacobian rank | Time, peak |
@@ -160,7 +164,7 @@ from the global variety.
   is a reproduction, not a retained sixth point.
 - Dependence. Steps 1 to 8 are proof steps; two adversarial reviewers read them and the two repaired steps (2 and 4)
   carry the corrected arguments. The computed inputs are the exact divisibilities by s^2, the L0 identities of `l0/`,
-  the nonzero Newton and (v4, v5) determinants, the vdim 1 of the quotient ideal and the Jacobian rank 6, at five
+  the nonzero Newton and (v4, v5) determinants, the rank-2 linear parts of the quotient ideal and the Jacobian rank 6, at five
   points. The vanishing of K2 on the planes, the tangent consistency and the two controls check the pipeline.
 - Falsifiers. (a) A plane that fails any K2 generator at a point where the pipeline reports success. (b) Jacobian rank
   below 6 at every point of a larger sample. (c) A relation of L outside K2 in some degree, for instance a membership

@@ -1,6 +1,6 @@
 RESULT c30-plane-p32009-pt1 J and the generators of G not divisible by s^2 in the chart (0 required): 0; Newton residual terms over both directions (0 required): 0; generators not divisible by v2 (0 required): 0; linear-part consistency failures (0 required): 0
 RESULT c30-plane-p32009-pt1 determinant of the 3x3 Newton block 1120, determinant of the (v4,v5) block -280 (nonzero required)
-RESULT c30-plane-p32009-pt1 I3 = (G_j restricted to S, divided by v2) has vdim 1, so it is the maximal ideal (s, v2) (1 required): 1
+RESULT c30-plane-p32009-pt1 I3 = (G_j restricted to S, divided by v2): zero constant terms and linear parts of rank 2, so it is the maximal ideal (s, v2) (1 required): 1
 RESULT c30-plane-p32009-pt1 values of M(p) agree between the two dual directions (1 required): 1
 RESULT c30-plane-p32009-pt1 plane: K2 generators nonzero on Pi_p: 0 of 144 (0: Pi_p lies in V(K2))
 RESULT c30-plane-p32009-pt1 plane: Lambda forms nonzero on Pi_p: 9 of 9 (positive: Pi_p lies outside the span of C20)
@@ -10,5 +10,5 @@ RESULT c30-plane-p32009-pt1 plane: rank of M(p) (4 required): 4
 RESULT c30-plane-p32009-pt1 tangent consistency: Jacobian of the K2 generators at y0 = M(p) Y0 against the six tangent vectors, nonzero entries (0 required): 0; rank of that Jacobian (18 at a smooth point of the 6-dimensional cone): 18
 RESULT c30-plane-p32009-pt1 tangent consistency: Jacobian of the K2:P generators at y0 against the six tangent vectors, nonzero entries (0 required): 0; rank of that Jacobian (18 at a smooth point of C30): 18
 RESULT c30-plane-p32009-pt1 point y0 = M(p) Y0: K2 nonzero 0, K2:P nonzero 0 (0 required), P nonzero 23 (positive: y0 is off C20)
-RESULT c30-plane-p32009-pt1 rank of [M(p) | dM/db Y0 | dM/dc Y0] (6: the planes sweep a cone of dimension 6, so a 5-dimensional projective set): 6, s 51
+RESULT c30-plane-p32009-pt1 rank of [M(p) | dM/db Y0 | dM/dc Y0] (6: the planes sweep a cone of dimension 6, so a 5-dimensional projective set): 6, s 35
 exit 0

@@ -66,9 +66,15 @@ for (dir=1; dir<=2; dir++) {
  }
  chkTotal=chkTotal+chk;
  if (dir==1) {
-  ring r2=32009,(s,v2),ds;
-  ideal I3=imap(rg,H3); ideal sI3=std(I3);
-  int i3unit=(vdim(sI3)==1);
+  // I3 = (s, v2) in k[[s, v2]] iff every generator vanishes at the origin and the linear parts span (s, v2)/(s, v2)^2
+  // (Nakayama); both are read in the global ordering dp, from constant terms and a 24 x 2 coefficient rank.
+  ring r2=32009,(s,v2),dp;
+  ideal I3=imap(rg,H3); int i3const=0; matrix L3[ncols(I3)][2];
+  for (i=1;i<=ncols(I3);i++) {
+   if (jet(I3[i],0)!=0) { i3const++; }
+   L3[i,1]=diff(jet(I3[i],1),s); L3[i,2]=diff(jet(I3[i],1),v2);
+  }
+  int i3unit=(i3const==0 && rank(L3)==2);
   setring rg;
  }
  planeVal[dir]=V; planeDer[dir]=D;
@@ -76,7 +82,7 @@ for (dir=1; dir<=2; dir++) {
 }
 res("J and the generators of G not divisible by s^2 in the chart (0 required): "+string(divTotal)+"; Newton residual terms over both directions (0 required): "+string(resTotal)+"; generators not divisible by v2 (0 required): "+string(badTotal)+"; linear-part consistency failures (0 required): "+string(chkTotal));
 res("determinant of the 3x3 Newton block "+string(detM)+", determinant of the (v4,v5) block "+string(det2n)+" (nonzero required)");
-res("I3 = (G_j restricted to S, divided by v2) has vdim 1, so it is the maximal ideal (s, v2) (1 required): "+string(i3unit));
+res("I3 = (G_j restricted to S, divided by v2): zero constant terms and linear parts of rank 2, so it is the maximal ideal (s, v2) (1 required): "+string(i3unit));
 intmat V1=planeVal[1]; intmat V2=planeVal[2]; intmat D1=planeDer[1]; intmat D2=planeDer[2];
 res("values of M(p) agree between the two dual directions (1 required): "+string(V1==V2));
 
