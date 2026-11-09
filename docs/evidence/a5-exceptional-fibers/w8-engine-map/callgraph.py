@@ -1,10 +1,13 @@
 """Static call graph of fiber_rank_v11.py: every function (incl. nested), line span, callers, callees."""
+
 import ast
 import sys
 
 src = open(sys.argv[1]).read()
 tree = ast.parse(src)
-funcs = {}  # qualname -> (lineno, endlineno)
+funcs: dict[
+    str, tuple[int, int | None, ast.FunctionDef | ast.AsyncFunctionDef]
+] = {}  # qualname -> (lineno, endlineno, node)
 
 
 def walk(node, prefix=""):
@@ -15,25 +18,24 @@ def walk(node, prefix=""):
             walk(ch, q + ".")
         elif isinstance(ch, ast.ClassDef):
             walk(ch, prefix + ch.name + ".")
-            for m in ch.body:
-                pass
         else:
             walk(ch, prefix)
 
 
 walk(tree)
-short = {}
+short: dict[str, list[str]] = {}
 for q in funcs:
     short.setdefault(q.split(".")[-1], []).append(q)
 
-calls = {q: set() for q in funcs}
-refs = {q: set() for q in funcs}
-for q, (lo, hi, node) in funcs.items():
+calls: dict[str, set[str]] = {q: set() for q in funcs}
+refs: dict[str, set[str]] = {q: set() for q in funcs}
+for q, (_lo, _hi, node) in funcs.items():
     for n in ast.walk(node):
         if isinstance(n, ast.Call):
             f = n.func
             if isinstance(f, ast.Name):
-                name, ok_kind = f.id, "func"
+                name: str | None = f.id
+                ok_kind: str | None = "func"
             elif isinstance(f, ast.Attribute):
                 name, ok_kind = f.attr, "method"
             else:
@@ -51,7 +53,7 @@ for q, (lo, hi, node) in funcs.items():
                     refs[q].add(t)
 # nested function owner: treat as callee of parent if called there (already by walk since ast.walk includes nested defs)
 # module-level (main) is a function here.
-callers = {q: set() for q in funcs}
+callers: dict[str, set[str]] = {q: set() for q in funcs}
 for q in funcs:
     for t in calls[q] | refs[q]:
         callers[t].add(q)

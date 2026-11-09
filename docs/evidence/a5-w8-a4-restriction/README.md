@@ -122,7 +122,8 @@ Host: the build host (WSL2 capsule, AMD Ryzen 5 5600X3D, 10 CPUs visible, 47 GiB
 [compute-flags](../../runbooks/compute-flags.md#pre-run-checklist):
 
 1. Memory: a cgroup `MemoryMax` per stage (`MEM`, 24 GiB default, 16 GiB for the Pfaffian stages of PA and PAp, 8 GiB
-   for the later stages) with `MemorySwapMax=0`; no address-space cap.
+   for the later stages) with `MemorySwapMax=0`; no address-space cap. `run.sh` falls back to `prlimit --as` (each
+   process's virtual address space, not resident memory) where no user bus answers, and each log names the limiter.
 2. Wall time: `timeout -k 10` of `LIMIT` seconds, 7200 by default.
 3. Threads: one per Singular process, at most five processes at once on 10 CPUs, no other job on the host.
 4. Flags: `-q --no-warn`, `option(redSB)`, global order `dp`, default `radical`, `primdecGTZ`, `sat`, `quotient`;

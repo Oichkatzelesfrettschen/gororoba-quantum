@@ -1,6 +1,6 @@
 #!/bin/sh
 # Run the Singular comparisons of the restricted W8 ideal J against each A_4 zero-divisor ideal.
-# usage: sh run.sh WORKDIR [FAMILY STAGE]  (default: the controls, then every family and stage, serially)
+# usage: sh run.sh WORKDIR [FAMILY STAGE]  (default: the controls, then every family and stage, JOBS at a time)
 # The Pfaffian ideals PA and PAp are regenerated into WORKDIR by a5_w8_a4_restriction.py --work WORKDIR.
 set -eu
 
@@ -10,11 +10,19 @@ mkdir -p "$WORK"
 SINGULAR=${SINGULAR:-$(ls "$HOME"/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3*/site-packages/sage_wheels/bin/Singular)}
 MEM=${MEM:-24G}
 LIMIT=${LIMIT:-7200}
+JOBS=${JOBS:-1}
 export MALLOC_ARENA_MAX=2
-# capped GIB CMD...: a cgroup scope (MemoryMax, no swap) where the user bus answers, else an address-space limit.
+have_bus() { [ -S "${XDG_RUNTIME_DIR:-/nonexistent}/bus" ]; }
+if have_bus; then
+    CAP_NOTE="cgroup MemoryMax, MemorySwapMax=0"
+else
+    CAP_NOTE="prlimit --as: per-process address space, not resident memory"
+fi
+# capped GIB CMD...: a cgroup scope (MemoryMax, no swap) where the user bus answers, else prlimit --as, which caps
+# each process's virtual address space; a process pool under it can hold several times GIB of resident memory.
 capped() {
     gib=${1%G}; shift
-    if [ -S "${XDG_RUNTIME_DIR:-/nonexistent}/bus" ]; then
+    if have_bus; then
         systemd-run --user --scope -q -p MemoryMax="${gib}G" -p MemorySwapMax=0 "$@"
     else
         prlimit --as=$((gib * 1073741824)) "$@"
@@ -42,7 +50,7 @@ run_one() {
     echo "family $fam stage $stage"
     echo "binary Singular (passagemath venv)"
     "$SINGULAR" -v -q --execute 'quit;' < /dev/null | head -1
-    echo "memory cap $MEM (cgroup MemoryMax, MemorySwapMax=0), wall cap ${LIMIT} s"
+    echo "memory cap $MEM ($CAP_NOTE), wall cap ${LIMIT} s"
     date -u +%Y-%m-%dT%H:%M:%SZ
   } > "$log"
   set +e
@@ -57,16 +65,19 @@ run_one() {
 if [ $# -ge 3 ]; then
   run_one "$2" "$3"
 else
-  # Every stage runs even after a failure (the PB stage-4 decomposition is known to reach its wall cap); the runner
-  # then exits with the first nonzero stage status.
-  first=0
-  run_one controls 1 || first=$?
-  for fam in PB PA PAp; do
-    for stage in 1 2 3 4; do
-      rc=0
-      run_one "$fam" "$stage" || rc=$?
-      [ "$first" -ne 0 ] || first=$rc
-    done
+  # The stages are independent Singular processes (each recomputes only std(J)); JOBS of them run at once, each under
+  # its own MEM cap, so JOBS x MEM must fit the host. Every stage runs even after a failure (the PB stage-4
+  # decomposition is known to reach its wall cap); the runner then exits with the first nonzero stage status.
+  first=0 pids="" n=0
+  for item in "controls 1" "PB 1" "PB 2" "PB 3" "PB 4" "PA 1" "PA 2" "PA 3" "PA 4" "PAp 1" "PAp 2" "PAp 3" "PAp 4"; do
+    # shellcheck disable=SC2086
+    run_one $item &
+    pids="$pids $!" n=$((n + 1))
+    if [ "$n" -ge "$JOBS" ]; then
+      for pid in $pids; do rc=0; wait "$pid" || rc=$?; [ "$first" -ne 0 ] || first=$rc; done
+      pids="" n=0
+    fi
   done
+  for pid in $pids; do rc=0; wait "$pid" || rc=$?; [ "$first" -ne 0 ] || first=$rc; done
   exit "$first"
 fi

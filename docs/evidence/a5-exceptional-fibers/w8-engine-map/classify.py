@@ -4,15 +4,19 @@ Usage: classify.py QG_FILE DMAX  (QG_FILE: a retained qG.txt export of the heade
 The block of a degree-d product tuple t is the xor of the blocks of its generators, the engine's own rule
 (block_products: beta ^ gchar[f]). Prints JSON.
 """
+
 import importlib.util
 import json
 import os
 import sys
+from typing import Any
 
 import numpy as np
 
 spec = importlib.util.spec_from_file_location("fiber_rank_v11", os.environ["FIBER_ENGINE"])
-E = importlib.util.module_from_spec(spec)
+if spec is None or spec.loader is None:
+    raise SystemExit("FIBER_ENGINE names no loadable module")
+E: Any = importlib.util.module_from_spec(spec)
 sys.modules["fiber_rank_v11"] = E
 spec.loader.exec_module(E)
 qg, dmax = sys.argv[1], int(sys.argv[2])
@@ -36,8 +40,13 @@ for poly in gpolys:
     gchar.append(chars.pop())
 rel, rec = E.load_receipt(receipt, header, p, len(G))
 levels, leads = E.standard_monomials(rel, rec, len(G), p, dmax, os.environ["SINGULAR"])
-out = {"sign_group": [[names[i] for i in fl] for fl in group], "var_char": dict(zip(names, var_char)),
-       "gchar": gchar, "gens_per_block": [gchar.count(b) for b in range(4)], "counts": {}}
+out: dict[str, Any] = {
+    "sign_group": [[names[i] for i in fl] for fl in group],
+    "var_char": dict(zip(names, var_char, strict=True)),
+    "gchar": gchar,
+    "gens_per_block": [gchar.count(b) for b in range(4)],
+    "counts": {},
+}
 for d in range(1, dmax + 1):
     cnt = [0, 0, 0, 0]
     for v in levels[d]:

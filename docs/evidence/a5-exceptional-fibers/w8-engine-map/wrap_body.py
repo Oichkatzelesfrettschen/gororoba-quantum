@@ -7,13 +7,19 @@ peak-RSS counter (VmHWM) at each stage start, and writes OUTDIR/TAG.stages.json,
 engine's stdout JSON to TAG.json.
 --keep-blocks drops rows inserted into every other character block (an invalid computation: a probe of block coupling).
 """
+
+import contextlib
 import importlib.util
+import io
 import json
 import os
+import pickle
+import signal
 import sys
 import threading
 import time
 import tracemalloc
+from typing import Any
 
 import psutil
 
@@ -47,14 +53,16 @@ engine_args = rest[sep + 1 :]
 os.makedirs(outdir, exist_ok=True)
 
 spec = importlib.util.spec_from_file_location("fiber_rank_v11", os.environ["FIBER_ENGINE"])
-E = importlib.util.module_from_spec(spec)
+if spec is None or spec.loader is None:
+    raise SystemExit("FIBER_ENGINE names no loadable module")
+E: Any = importlib.util.module_from_spec(spec)
 sys.modules["fiber_rank_v11"] = E
 spec.loader.exec_module(E)
 
 proc = psutil.Process()
 T0 = time.time()
-state = {"phase": "start", "t": T0, "hwm0": 0}
-stages = []  # dicts
+state: dict[str, Any] = {"phase": "start", "t": T0, "hwm0": 0}
+stages: list[dict[str, Any]] = []
 phase_tree_peak: dict[str, int] = {}
 lock = threading.Lock()
 
@@ -145,7 +153,7 @@ def sampler() -> None:
         with lock:
             phase_tree_peak[ph] = max(phase_tree_peak.get(ph, 0), tr)
             self_rss_max[ph] = max(self_rss_max.get(ph, 0), proc.memory_info().rss // 1024)
-        w = sum(getattr(e, "B").nbytes for e in echelons) // 1024
+        w = sum(e.B.nbytes for e in echelons) // 1024
         rss_log.write(f"{time.time() - T0:.1f}\t{ph}\t{proc.memory_info().rss // 1024}\t{tr // 1024}\t{w}\n")
         rss_log.flush()
         stop.wait(0.5)
@@ -169,7 +177,6 @@ wrap("representatives", "representatives", "pre-export")
 wrap("quotient_data", "export", "setup")
 wrap("block_tables", "block_tables", "gvecs")
 wrap("order_walk", "order_walk", "pre-products")
-import pickle
 
 orig_bp = E.block_products
 
@@ -198,7 +205,7 @@ def bp(gvecs, gchar, one_pos, walk, lay, d, p, wanted=None):
 
 E.block_products = bp
 
-gen_calls = []
+gen_calls: list[Any] = []
 orig_gb = E.generator_blocks
 
 
@@ -207,8 +214,12 @@ def gb(g, chi, one_pos, walk, lay, p):
     reset_hwm()
     r0 = proc.memory_info().rss
     out = orig_gb(g, chi, one_pos, walk, lay, p)
-    rec = {"chi": chi, "s": round(time.time() - t, 2), "bytes": sum(v.nbytes for v in out.values()),
-           "hwm_minus_rss0_mib": round((fold() * 1024 - r0) / 2**20, 1)}
+    rec = {
+        "chi": chi,
+        "s": round(time.time() - t, 2),
+        "bytes": sum(v.nbytes for v in out.values()),
+        "hwm_minus_rss0_mib": round((fold() * 1024 - r0) / 2**20, 1),
+    }
     gen_calls.append(rec)
     events.write(json.dumps({"gen": rec}) + "\n")
     events.flush()
@@ -228,7 +239,7 @@ def init(self, ncols, p):
 
 E.Echelon.__init__ = init
 orig_insert = E.Echelon.insert
-ins_log = []
+ins_log: list[Any] = []
 closure_started = [False]
 
 
@@ -243,8 +254,7 @@ def insert(self, X, chunk):
     r0 = proc.memory_info().rss
     rank0 = len(self.piv)
     out = orig_insert(self, X, chunk)
-    rec = (self.blk, len(X), self.ncols, rank0, len(self.piv), round(time.time() - t, 3),
-           (fold() * 1024 - r0) // 2**20)
+    rec = (self.blk, len(X), self.ncols, rank0, len(self.piv), round(time.time() - t, 3), (fold() * 1024 - r0) // 2**20)
     ins_log.append(rec)
     events.write(json.dumps({"ins": rec}) + "\n")
     events.flush()
@@ -253,8 +263,19 @@ def insert(self, X, chunk):
 
 E.Echelon.insert = insert
 
-split = {"ctor_s": 0.0, "rref_s": 0.0, "entries_s": 0.0, "matmul_s": 0.0, "ctor_entries": 0, "rref_calls": 0,
-         "rref_rows": 0, "rref_cols": 0, "rref_flop_rc2": 0, "matmul_flop": 0, "entries_n": 0}
+split = {
+    "ctor_s": 0.0,
+    "rref_s": 0.0,
+    "entries_s": 0.0,
+    "matmul_s": 0.0,
+    "ctor_entries": 0,
+    "rref_calls": 0,
+    "rref_rows": 0,
+    "rref_cols": 0,
+    "rref_flop_rc2": 0,
+    "matmul_flop": 0,
+    "entries_n": 0,
+}
 if use_split:
     real_flint = E.flint
 
@@ -323,7 +344,6 @@ if use_split:
 if use_tm:
     tracemalloc.start()
 reset_hwm()
-import signal
 
 
 prof = None
@@ -346,8 +366,6 @@ signal.signal(signal.SIGTERM, on_term)
 th = threading.Thread(target=sampler, daemon=True)
 th.start()
 sys.argv = ["fiber_rank_v11.py", *engine_args]
-import contextlib
-import io
 
 buf = io.StringIO()
 rc = 0
@@ -376,9 +394,17 @@ rss_log.close()
 open(os.path.join(outdir, tag + ".json"), "w").write(buf.getvalue())
 final_w = [{"blk": e.blk, "rows": int(e.B.shape[0]), "cols": int(e.ncols), "bytes": int(e.B.nbytes)} for e in echelons]
 rec = {
-    "tag": tag, "args": engine_args, "rc": rc, "tracemalloc": use_tm, "keep_blocks": sorted(keep) if keep else None,
-    "total_wall_s": round(time.time() - T0, 1), "stages": stages, "generator_blocks_calls": gen_calls,
-    "final_echelons": final_w, "n_inserts": len(ins_log), "split": split,
+    "tag": tag,
+    "args": engine_args,
+    "rc": rc,
+    "tracemalloc": use_tm,
+    "keep_blocks": sorted(keep) if keep else None,
+    "total_wall_s": round(time.time() - T0, 1),
+    "stages": stages,
+    "generator_blocks_calls": gen_calls,
+    "final_echelons": final_w,
+    "n_inserts": len(ins_log),
+    "split": split,
     "tree_peak_kib_overall": max(phase_tree_peak.values(), default=0) // 1024,
 }
 open(os.path.join(outdir, tag + ".stages.json"), "w").write(json.dumps(rec, indent=1))

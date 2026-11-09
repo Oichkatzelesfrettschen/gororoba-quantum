@@ -1,4 +1,5 @@
 """Entry stub: runs wrap_body.py only in the parent, so spawned pool workers re-importing __main__ do nothing."""
+
 import os
 import runpy
 import sys

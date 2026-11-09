@@ -14,7 +14,8 @@ export GOROROBA_WORKERS=${GOROROBA_WORKERS:-4}
 export FIBER_ENGINE="$root/docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py"
 PYTHONPATH=$(dirname "$FIBER_ENGINE")
 export PYTHONPATH
-# capped GIB CMD...: a cgroup scope (MemoryMax, no swap) where the user bus answers, else an address-space limit.
+# capped GIB CMD...: a cgroup scope (MemoryMax, no swap) where the user bus answers, else prlimit --as, which caps
+# each process's virtual address space; a process pool under it can hold several times GIB of resident memory.
 capped() {
     gib=$1; shift
     if [ -S "${XDG_RUNTIME_DIR:-/nonexistent}/bus" ]; then

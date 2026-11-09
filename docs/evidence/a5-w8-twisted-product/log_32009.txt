@@ -2,8 +2,8 @@ driver driver_32009.sing
 label twisted product at p = 32009
 binary Singular (passagemath venv)
 Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22
-memory cap 8G (cgroup MemoryMax, MemorySwapMax=0), wall cap 3600 s
-2026-11-08T17:16:19Z
+address-space cap 8G (prlimit --as; no user bus), wall cap 3600 s
+2026-11-09T00:33:17Z
 RESULT c_squared_is_minus_one 1
 RESULT generators_W8 8
 RESULT W8_dim 24
@@ -29,18 +29,18 @@ RESULT slice_hilb2 1, 2, 1, 0
 	Command being timed: "/home/eirikr/.cache/gororoba-quantum/venv-passagemath-singular/lib/python3.13/site-packages/sage_wheels/bin/Singular -q --no-warn driver_32009.sing"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
-	Percent of CPU this job got: 88%
+	Percent of CPU this job got: 69%
 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.01
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 15664
+	Maximum resident set size (kbytes): 15584
 	Average resident set size (kbytes): 0
-	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 670
-	Voluntary context switches: 0
-	Involuntary context switches: 2
+	Major (requiring I/O) page faults: 2
+	Minor (reclaiming a frame) page faults: 668
+	Voluntary context switches: 2
+	Involuntary context switches: 0
 	Swaps: 0
 	File system inputs: 0
 	File system outputs: 0
@@ -50,4 +50,4 @@ RESULT slice_hilb2 1, 2, 1, 0
 	Page size (bytes): 4096
 	Exit status: 0
 exit status 0
-2026-11-08T17:16:19Z
+2026-11-09T00:33:17Z

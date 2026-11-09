@@ -114,12 +114,12 @@
   },
   "singular": {
    "version": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22",
-   "max_rss_kib": 15664,
+   "max_rss_kib": 15584,
    "wall": "0:00.01",
    "log": "log_32009.txt"
   },
   "singular_32003": {
-   "max_rss_kib": 15264,
+   "max_rss_kib": 15176,
    "wall": "0:00.01",
    "log": "log_32003.txt"
   },
@@ -159,8 +159,8 @@
   "U_plus_V_breaks_equality": true,
   "without_pure_equations_breaks_equality": true,
   "singular": {
-   "max_rss_kib": 14584,
-   "wall": "0:00.02",
+   "max_rss_kib": 14712,
+   "wall": "0:00.01",
    "log": "log_controls.txt"
   },
   "pass": true
@@ -4997,20 +4997,6 @@
   ],
   "pass": true
  },
- "stage_seconds": {
-  "twisted_product": 0.12,
-  "mutation_controls": 0.06,
-  "nullity_spectrum": 0.85,
-  "seeded_points": 0.41
- },
- "total_s": 1.45,
- "script_sha256": "fe25c9eb7c4a122e54f258ae82e0e78c884a92c90e657d8284a808053ec1be7a",
- "versions": {
-  "python": "3.14.7",
-  "numpy": "2.5.4",
-  "python-flint": "0.9.0",
-  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22"
- },
  "pair_table": {
   "draw": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
   "seed_indices": [
@@ -5656,9 +5642,24 @@
   },
   "flint_rank_agrees_on_every_point": true,
   "pass": true,
-  "seconds": 6.87,
+  "seconds": 13.12,
   "python": "3.14.7",
   "python_flint": "0.9.0",
-  "script_sha256": "83b3d0045106e2b91c6fc59e1d6200817f1d219f1a2b7704b7c468ebfa946700"
+  "script_sha256": "5b943354b969cfe69a664c86b62850fdf8c384a66ac183625c01fd16215a943c"
+ },
+ "stage_seconds": {
+  "twisted_product": 0.09,
+  "mutation_controls": 0.03,
+  "nullity_spectrum": 0.66,
+  "seeded_points": 0.28,
+  "pair_table": 8.18
+ },
+ "total_s": 9.25,
+ "script_sha256": "5b943354b969cfe69a664c86b62850fdf8c384a66ac183625c01fd16215a943c",
+ "versions": {
+  "python": "3.14.7",
+  "numpy": "2.5.4",
+  "python-flint": "0.9.0",
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22"
  }
 }

@@ -222,10 +222,11 @@ nullity above, and the lower bound has no symbolic rank behind it (A5-227).
 
 One `--out` run takes 1.7 s wall and 58 MiB peak resident set for the driving process (`/usr/bin/time -v`); the three
 Singular runs take at most 0.06 s wall and 15 MiB peak resident set each (the logs hold the figures of the retained
-run), under an 8 GiB cgroup cap. Versions
+run), under an 8 GiB cap: a cgroup `MemoryMax` scope where a user bus answers, else `prlimit --as`, which caps
+each process's virtual address space rather than resident memory (the retained logs name the limiter used). Versions
 are in `result.json` (`versions`): Python, numpy 2.5.4, python-flint 0.9.0, Singular 4.4.1. The pair table alone
 (`--pair-table`, no Singular) takes 7 s wall and 55 CPU seconds on 10 CPUs, with a peak resident set of 68 MiB for the
-largest process (`/usr/bin/time -v`), under an 8 GiB cgroup cap; Python 3.14.7 and python-flint 0.9.0 are recorded in
+largest process (`/usr/bin/time -v`), under the same 8 GiB cap; Python 3.14.7 and python-flint 0.9.0 are recorded in
 `pair_table`. The top-level `script_sha256` of `result.json` names the script that wrote the other keys, and
 `pair_table.script_sha256` names the script that wrote the pair table.
 
