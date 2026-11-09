@@ -42,15 +42,27 @@ remain.
      reduces to the header's J, and G reduced modulo J reduces to the header's G. Ran 2026-11-09 (A5-247).
   2. **Upper bound over Q(i):** the degree-2 fiber relations, the quadrics q with q(G) in J + m I^2 (the membership
      the modular receipts compute; q(G) in J alone is far stronger and would reject correct lifts), computed
-     directly over (0, i) with the same membership driver. J is integral (check 1), so no rational reconstruction is
-     needed; two-prime reconstruction stays a fallback. Rank is lower semicontinuous under reduction, so a Q(i)
+     over (0, i). The direct computation (the receipts' membership driver run over (0, i), `quadric_lift.py`) stalled
+     at the 3-hour cap on X- -> N- (A5-248), so the route is a lift: reconstruct the relation space from several split
+     primes, then verify each lifted quadric over Q(i) by membership in J + m I^2 and its dimension. Rank is lower semicontinuous under reduction, so a Q(i)
      space of relations reducing onto K2 mod p has dimension at least that of K2 mod p, which gives h_d over Q(i)
      at most HF(k[y]/K2 mod p, d), the certified value, in every degree K2 generates.
   3. **Lower bound over Q(i):** the quotient in which the truncated rank is computed, k[t]/(J + m^N) at the closing
      N, reduces well: the reduced standard basis of J + m^N over Q(i) is p-integral and reduces to the modular one.
      Good reduction of J alone does not give this, since membership cofactors can carry p in denominators. With it,
      a set of degree-d classes independent modulo p is independent over Q(i), so h_d over Q(i) is at least r_N.
-  Where checks 2 and 3 both pass, each certified h_d holds over Q(i). W8's all-degree proof additionally needs the
+  Where checks 2 and 3 both pass, each certified h_d holds over Q(i), in the following form.
+
+  **Proposition (one pair, one degree d, one good prime p).** Fix the retained header (its J and G, sha256 recorded in
+  the certificate), the retained relation file K2, and the closing order N of the certificate, with
+  r_N = HF(k[y]/K2 mod p, d). Let R be Z[i] localized at the prime (p, i - r), with residue field F_p. Suppose (a) J and
+  G are defined over R and reduce to the header (check 1), (b) a matrix Q over R whose rows span the Q(i) degree-2
+  relations reduces to a matrix whose rows span K2 mod p (check 2), and (c) the reduced standard basis of J + m^N is
+  defined over R and reduces to the header's (check 3). The degree-d monomial-multiple matrix of Q has rank over
+  Q(i) at least its rank modulo p, so h_d over Q(i) is at most HF(k[y]/K2 mod p, d). The truncated-rank matrix of
+  degree d in R[t]/(J + m^N) reduces to the modular one by (a) and (c), and a nonzero modular minor stays nonzero over
+  Q(i), so h_d over Q(i) is at least r_N. The bounds are equal. The statement covers that d only; every degree needs
+  its own N, radicality and component statements (W8) are separate, and no part of it touches the real limit set. W8's all-degree proof additionally needs the
   radicality of K2 and the decomposition V(K2) = C20 cup C30 over Q(i), each a Singular computation over (0, i) of the
   kind A5-062 ran modulo p.
 - **Falsifier of this route:** a split prime dividing a denominator of the Q(i) basis of J or of J + m^N (bad

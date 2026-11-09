@@ -41,7 +41,8 @@ Results, equal to the retained records:
 - Iso degree 6 at N = 19: r = 2,422; blocks 632 / 610 / 590 / 590; rank_W 7,195 / 7,162 / 7,119 / 7,119
   (`logs/iso-d6n19-*.out`).
 
-Byte equality. `compare_rank_fields.py` serializes every field of each record with sorted keys except `seconds`,
+Equality of the rank-bearing fields (not of the records: the production records hold ranks, not bases or pivots;
+the bases and pivots are compared with flint in `tests/test_modular_echelon.py`). `compare_rank_fields.py` serializes every field of each record with sorted keys except `seconds`,
 `echelon` and, inside `export`, `computed_seconds` and `reused`, and compares the sha256 of the result
 ([`compare-w8d4n13.txt`](compare-w8d4n13.txt), [`compare-iso-d6n19.txt`](compare-iso-d6n19.txt)). The v12 gpu and v12
 flint records agree on every cell. Across engine versions (`--across-engines` also drops `engine_sha256_16`) the W8

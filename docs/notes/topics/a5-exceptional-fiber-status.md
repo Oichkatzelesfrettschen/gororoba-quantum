@@ -1,7 +1,7 @@
 # A_5 exceptional fibers: goal, status by layer, and what the 2026-11-09 results change
 
 This page walks through what the A_5 fiber program is for, where each layer stands by count of the claim ledger
-([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 275 rows after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md)), and
+([`ledger.tsv`](../../evidence/a5-exceptional-fibers/ledger.tsv), 276 rows after the ledger audit and the sweep of session-local findings of [ledger-audit](../../archive/reviews/ledger-audit/README.md)), and
 what the results of 2026-11-09 imply. The measurements and methods live in
 [a5-exceptional-fiber-findings.md](a5-exceptional-fiber-findings.md); this page counts and interprets them.
 
@@ -29,7 +29,7 @@ smaller orbit Z, which 8-dimensional kernels arise as limits. The program answer
 
 ## Status by layer (ledger count, 2026-11-09)
 
-Ledger totals: 90 certified, 39 proved, 59 survives, 46 refuted, 10 superseded, 7 rejected, 18 open, 5 boundary, 1 stalled.
+Ledger totals: 90 certified, 39 proved, 59 survives, 46 refuted, 10 superseded, 7 rejected, 19 open, 5 boundary, 1 stalled.
 
 | Layer | Count | Share | Open items |
 |---|---|---|---|
@@ -75,7 +75,7 @@ remains there. Reproduce the counts with
 | 2 | Order-2 arcs on t1 = 0 and at the apex of the VB blowup (a positive result only: a failed search leaves A5-016 open, and a negative decision needs a degree-7 fiber relation outside P1) | build host (Sage), minutes per chart | A5-016, then A5-005 |
 | 2 | Iso local route by plane family on the point blowup | OCI A1 or laptop | A5-067, then A5-007 |
 | 2 | Exact torus over Q, weighted standard basis of J | laptop CPU, OCI | the export wall for E8-bar and X- degree 7 |
-| 3 | Degree-2 K2 over Q(i) by rational reconstruction from both primes, exact membership | laptop | the first characteristic-0 statement |
+| 3 | Degree-2 K2 over Q(i) by a multi-prime lift with exact Q(i) verification (the direct Q(i) computation stalled at 3 h, A5-248) | build host | the upper half of the characteristic-0 transfer; X- -> N- and W8 first |
 | 4 | Kernel-plane limits along the certified arc families (W8, Iso, X, E8-bar -> N+-, VB degree-4 component, whose family is an interpolant of numerical Hensel lifts, A5-015) | laptop | A5-272 to A5-276, the attaching datum |
 
 Layer 4's real certificate has had no computation yet, and it is the part the registry claim needs; the arc families it runs along are

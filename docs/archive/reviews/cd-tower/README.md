@@ -18,3 +18,7 @@ Corrections the verification establishes, each reproduced by its scripts:
   k <= 8,780,720 at p = 32029.
 - The two Ascella associator contrasts belong to different jobs: +1.6127 (null +0.0001) to e13e5ed0 and +1.5859 (null
   +0.0099, itself nonzero at p = 0.0098) to 7ae2af4b.
+
+Provenance limits of the verification: its scripts ran as `python3` (the repository convention is `"$PYTHON"`), and
+the floating-point associator maxima of script s5 use `random.seed(3)`, not a QRNG draw, so those maxima are
+illustrations; every count and verdict in the claim table is exact and seed-free.

@@ -182,7 +182,7 @@ def vec(D, terms):
         v[i] += c
     return v
 def chi(D, i, j, k, l):
-    s = lambda p, q: cd_sign(D, p, q)  
+    s = lambda p, q: cd_sign(D, p, q)
     return s(i, k) * s(j, l) * s(i, l) * s(j, k)
 def rank_mod(M, p=1000003):
     a = [[int(x) % p for x in r] for r in M]
@@ -269,7 +269,7 @@ def main():
         v[i] = v[j] = 1
         print(f"(e{i}+e{j})^2 in A_4 =", {n: int(c) for n, c in enumerate(cd_multiply_exact(16, v, v)) if c})
     random.seed(3)
-    rv = lambda D: [random.random() for _ in range(D)]  
+    rv = lambda D: [random.random() for _ in range(D)]
     for D in (2, 4, 8, 16):
         print(f"D={D}: max |float associator|, 200 random triples:",
               max(max(abs(t) for t in associator(D, rv(D), rv(D), rv(D))) for _ in range(200)))
