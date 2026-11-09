@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -51,7 +52,7 @@ def test_the_rule_reads_kinds_not_wording() -> None:
     quiet = {"kind": "non_decisional", "gates": []}
     gating = {"kind": "non_decisional", "gates": ["fidelity verdict"]}
     too_few = {**replicate, "seeds_per_setting": 1}
-    cases = (
+    cases: tuple[tuple[list[str], dict[str, Any], list[str]], ...] = (
         (["qpu:ascella"], {"overdispersion": check}, ["overdispersion"]),
         (["sim:ascella"], {"overdispersion": check}, []),
         (["qpu:belenos"], {"overdispersion": {**check, "mesh_variance": replicate}}, []),
