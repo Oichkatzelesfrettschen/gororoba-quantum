@@ -19,8 +19,8 @@ bound rests on no membership receipt.
 ## Checks against the forecast
 
 - N: the law that h_d is reached at N = 3d + 1 (`../forecasts/trends-2026-11-06.md`, item 8, ten cells for d = 1 to
-  5) predicted N = 19; the rank reached the K2 count there, which extends the law to an eleventh cell. Reaching the
-  count at N = 19 shows N = 19 suffices; whether N = 18 already reaches it is not measured.
+  5) predicted N = 19; the rank reached the K2 count there and not at N = 18 (next item), which extends the law to an
+  eleventh cell.
 - Blocks 2 and 3 are equal (590, 590), as in every Iso and W8 run.
 - The last jump: N = 18 at p = 32009 reads r_18 = 2,253 with blocks 583 / 568 / 551 / 551
   ([`isonm_d6_n18_p32009.json`](isonm_d6_n18_p32009.json), sha256 5efb4230edfcec7f...), so r_19 - r_18 = 169 =
