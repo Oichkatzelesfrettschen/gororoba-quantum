@@ -30,8 +30,9 @@ count: the prediction came out byte-identical at 1 and 10 FLINT threads and in t
 columns) still come from float64 libm and BLAS calls, so the record carries their SHA-256 digests under
 `arithmetic.inputs_sha256`; the bytes match across hosts whose input digests match. All five digests agree on the
 build host (Zen 3, numpy `X86_V3`, OpenBLAS Haswell core), in the runner image, and under Intel SDE 10.13.1
-emulating Sapphire Rapids (`-spr`) and Ice Lake server (`-icx`) with numpy's AVX-512 loops dispatched; AMD Zen 4
-and Zen 5 have no emulated counterpart and stay untested. `check_forecast` therefore removes the digests before its
+emulating Sapphire Rapids (`-spr`) and Ice Lake server (`-icx`) with numpy's AVX-512 loops dispatched, and on real
+hardware: an Intel Xeon Platinum 8488C (Sapphire Rapids, AVX-512), an AMD Ryzen 9 7945HX (Zen 4, AVX-512) and an Arm
+Neoverse N1, each exporting the inputs itself ("Results across hosts" below). AMD Zen 5 stays untested. `check_forecast` therefore removes the digests before its
 float tolerance comparison and prints the inputs that moved, so an identity whose inputs differ by an ulp reports
 them instead of failing.
 
@@ -231,3 +232,40 @@ skips its rows with the import error when none installs.
 Host: AMD Ryzen 5 5600X3D capsule (10 CPUs visible, AVX2 and FMA, no AVX-512), OpenBLAS 0.3.34 (`Zen` core,
 OpenMP), numpy 2.5.4 (baseline x86-64-v3), scipy 1.18.1, python-flint 0.9.0 on FLINT 3.6.0, mpmath 1.4.1,
 numpy-quaddtype 1.0.0 built `-march=native -O3` (meson release, SLEEF 3.9.0 scalar FMA quad path, QuadBLAS 1.0.0).
+
+## Results across hosts
+
+Each host below ran `fp_sweep.py` on pinned wheels (numpy 2.5.4, scipy 1.18.1, python-flint 0.9.0, numpy-quaddtype
+1.0.0) in a venv, one configuration at a time; the rows are in [hosts/](hosts/) under each label. A host that ran
+`fp_export.py` itself compared its five input digests with the build host's.
+
+| Label | CPU | OS | Own export: digests equal to the build host's | Full rows (skipped) |
+|---|---|---|---|---|
+| build-host | Ryzen 5 5600X3D, Zen 3 | CachyOS on WSL2 | reference | 74 (0) |
+| zen4-wsl | Ryzen 9 7945HX, Zen 4, AVX-512 | Ubuntu 26.04 on WSL2 | 5 of 5 | 88 (0) |
+| zen4-windows | Ryzen 9 7945HX | Windows 11 | not run: `fp_export.py` needs `fcntl` | 88 (22 x87, 6 QuadBLAS errors) |
+| aws-sapphire-rapids | Xeon Platinum 8488C, AVX-512 | Ubuntu 26.04 on EC2 c7i-flex.large | 5 of 5 | 32 (0) |
+| oci-a1-neoverse-n1 | Neoverse N1 | Ubuntu 26.04 aarch64 on OCI A1 | 5 of 5 | 32 (14: 8 quaddtype, 6 x87) |
+| m1-macos | Apple M1 | macOS 27.0 | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
+
+- Arithmetic that bypasses the BLAS gives the same error on every host where it runs. The arb normal equations (all
+  six hosts), binary128 through SLEEF (four hosts) and x87 (three x86 hosts under Linux) score identically to the
+  last recorded digit. Every float64 configuration routes through the BLAS, and its error moves with the host.
+  Unrefined float64 pinv scores 0.2 to 14.8 ulp on the process fidelity across the six hosts at one thread, and
+  the scipy drivers 0.2 to 13.2. This measures the reason the producer computes in arb.
+- The macOS difference is the bootstrap replicate array. The design matrix, rate observables, basis, ideal Choi
+  vector and observed rates are identical bit for bit; 41,634 of the 288,000 replicate rates differ, by up to 6.4e-4,
+  so the random-variate stream diverged rather than rounded. Hypothesis: numpy's binomial and Poisson samplers take
+  accept-reject decisions through libm calls, and Apple's libm rounds some of them differently from glibc, which
+  agrees on x86-64 and aarch64. Falsifier: the same numpy wheel drawing the producer's `resampled_rates` stream
+  identically on macOS. Bootstrap intervals are reproducible across Linux hosts and not onto macOS.
+- numpy-quaddtype publishes no Linux aarch64 wheel at any version, so the Neoverse rows skip quaddtype. Its Windows
+  wheel disables QuadBLAS, so the SLEEF rows raise `NotImplementedError` there instead of skipping; `fp_host` does not
+  yet detect that build.
+- numpy 2.5.4 dies with SIGILL on the Vostro's Turion 64 X2 (SSE3, no SSSE3, SSE4 or POPCNT), so the K8 host is not
+  run in this sweep: its wheels need an x86-64 baseline that the CPU lacks.
+- Times rank the hosts only within a row. The build host shared its CPUs with other sessions' Singular jobs (load 1.9
+  to 5.7), and its float64 single-thread solves ran 10 to 20 times slower than the two-core cloud hosts. At one
+  thread, arb at 128 bits took 0.77 s on the M1, 0.98 to 1.09 s on Zen 4 and Sapphire Rapids, and 2.5 to 3.2 s on the
+  build host and the Neoverse N1.
+
