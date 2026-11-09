@@ -452,8 +452,12 @@ tests; the ledger row it enters is named where one exists.
    `normal()` returns in 359 s with one ring of 21 variables and 382 relations, and its 14 arcs with finite lead all land
    in the degree-4 component. Because K2 is globally radical there, containment of the generic point of every component
    of V(K2) in the fiber gives F(I) = k[y]/K2 in every degree.
-7. **E8-bar -> N- degree 4** against 495 on engine v7 (r_12 = 357, r_13 = 440; N = 14, 15, 16 queued on Kaggle CPU);
-   E8-bar follows its own last-jump law (81 at d = 5 with blocks 18/21/21/21), which this ladder tests at d = 4.
+7. **E8-bar -> N- closing order** (no new run). The degree-4 ladder is complete: r_12 = 357, r_13 = r_14 = 440,
+   r_15 = 495 (`../../evidence/a5-exceptional-fibers/forecasts/trends-2026-11-06.md`, d = 4 row; `n15-laptop/`), and
+   degree 5 closes at N = 18 after r_15 = r_16 = 742. E8-bar thus closes at floor(7d/2) + 1 with a one-step plateau at
+   even d, the X- pattern, while its last jumps (55 at d = 4, 81 at d = 5) follow neither (2d + 1)^2 nor one law yet.
+   Hypothesis: X- and E8-bar share a generator of order 7/2 per degree. Falsifier: X- degree 6 closing at an N other
+   than 22 (roadmap item 1).
 8. **X- arc certificate inside its P^11**; the three nilpotent linear directions need the scheme-theoretic Rees or
    Grassmannian construction, since arcs over a field cannot see them.
 9. **Kernel-plane limits along the formal arcs**: the limiting 8-planes of ker L_y from `cd_core` along each arc,
