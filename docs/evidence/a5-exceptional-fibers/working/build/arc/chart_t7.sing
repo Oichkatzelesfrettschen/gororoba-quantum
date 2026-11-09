@@ -1,0 +1,15 @@
+LIB "normal.lib";
+// Chart t7 = 1 of the strict transform of the E8-bar -> VB blowup at p = 32009: dimension, primality and normalization
+// (the t5 = 1 chart returned one ring of 21 variables in 359 s and its finite-lead arcs missed the degree-3 component).
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+execute("ideal S="+read("strict_transform.txt")+";");
+ideal S7=subst(S,t7,1); S7=std(S7);
+ring Q=32009,(h,t1,t2,t3,t4,t5,t6,t8),dp;
+ideal S7=imap(R,S7); S7=std(S7);
+"RESULT chart t7=1 dim",dim(S7),"size",size(S7);
+"RESULT prime?",size(reduce(radical(S7),S7))==0;
+int t0=rtimer;
+list nr=normal(S7);
+"RESULT normal list size",size(nr),"seconds",rtimer-t0;
+int k; for (k=1;k<=size(nr[1]);k++) { def Rk=nr[1][k]; setring Rk; "RESULT ring",k,"vars",nvars(Rk),"relations",size(norid); setring Q; kill Rk; }
+quit;
