@@ -475,9 +475,9 @@ tests; the ledger row it enters is named where one exists.
 ### Run plan by host (2026-11-09)
 
 Reviewed by Codex and Grok ([findings-deep](../../archive/reviews/findings-deep/README.md)). The build host runs no
-heavy job (WSL guest of an active desktop) and stays within 36 GB in total. The laptop's concurrent jobs share
-52.5 GB of RAM, and its 16 GiB GPU memory counts in addition to that RAM; OCI A1 takes jobs within 12 GB (owner
-budgets, 2026-11-09). Each sign pair needs one sign per prime: the sign isomorphisms transport
+heavy job (WSL guest of an active desktop). Each machine's concurrent jobs fit 84 percent of its GPU memory plus
+52.5/64 of its RAM, the two added because a GPU job spills into RAM (owner budget, 2026-11-09): the laptop about
+13.4 GiB GPU + 52.5 GB RAM, OCI A1 about 9.5 GiB RAM, the build host about 10.1 GiB GPU + 36 GB RAM. Each sign pair needs one sign per prime: the sign isomorphisms transport
 every certificate. A ladder needs only its closing N and the N below it once the closing order is known (3d + 1 on
 Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 
