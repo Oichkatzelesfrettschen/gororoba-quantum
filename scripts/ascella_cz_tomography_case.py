@@ -49,7 +49,7 @@ import itertools
 import json
 import math
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import datetime
 from functools import cache, partial
 from pathlib import Path
@@ -1346,7 +1346,9 @@ def parse_state(key: str) -> list[int]:
     return [int(part) for part in key.strip("|>").split(",")]
 
 
-def load_run(run: Path) -> dict[str, Any]:
+def load_run(
+    run: Path, family: str = FAMILY, family_dir: Path = FAMILY_DIR, jobs: Sequence[str] = JOBS
+) -> dict[str, Any]:
     """One collected run bound to its retained case. qd_records.read_run binds the receipt (cases.json digest,
     approval, platform), the circuit, the submitted body, the collection and the raw result first. Then cases.json must
     equal the retained bytes of the job it names, and each returned iteration binds to the setting that has its echoed
@@ -1354,8 +1356,8 @@ def load_run(run: Path) -> dict[str, Any]:
     record = qd_records.read_run(run)
     manifest, submission, results = record.manifest, record.submission, record.collected
     job = manifest.get("job")
-    require(manifest.get("family") == FAMILY and job in JOBS, f"{run}: not a run of {FAMILY}")
-    retained = (FAMILY_DIR / str(job) / "cases.json").read_bytes()
+    require(manifest.get("family") == family and job in jobs, f"{run}: not a run of {family}")
+    retained = (family_dir / str(job) / "cases.json").read_bytes()
     require(record.cases_sha256 == sha256_bytes(retained), f"{run}: cases.json differs from the retained {job}")
     entries = results.get("iterations") or []
     require(len(entries) <= len(manifest["settings"]), f"{run}: {len(entries)} iterations for {job}")
@@ -1410,12 +1412,12 @@ def shot_ratio(transmittance_percent: float) -> float:
     return fraction / (2.0 - fraction)
 
 
-def pooling(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """The job scales and the drift status of the pooled runs: job-00 is the reference, job-01's rates are multiplied
-    by g(T_job-00) / g(T_job-01), and the pool is decided only inside the preregistered tolerances."""
+def pooling(loaded: Sequence[Mapping[str, Any]], jobs: Sequence[str] = JOBS) -> dict[str, Any]:
+    """The job scales and the drift status of the pooled runs: the first job is the reference, the second job's rates
+    are multiplied by g(T_first) / g(T_second), and the pool is decided only inside the preregistered tolerances."""
     by_job = {entry["job"]: entry for entry in loaded}
-    reference, other = by_job[JOBS[0]], by_job[JOBS[1]]
-    scales = {JOBS[0]: 1.0, JOBS[1]: 1.0}
+    reference, other = by_job[jobs[0]], by_job[jobs[1]]
+    scales = {jobs[0]: 1.0, jobs[1]: 1.0}
     out: dict[str, Any] = {"scales": scales, "status": "descriptive", "reason": None}
     perfs = [reference["perfs"], other["perfs"]]
     times = [reference["submitted_utc"], other["submitted_utc"]]
@@ -1426,7 +1428,7 @@ def pooling(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         gap = abs((datetime.fromisoformat(times[1]) - datetime.fromisoformat(times[0])).total_seconds()) / 3600.0
         d_hom = abs(perfs[1]["HOM (%)"] - perfs[0]["HOM (%)"])
         d_t = abs(perfs[1]["Transmittance (%)"] - perfs[0]["Transmittance (%)"])
-        scales[JOBS[1]] = shot_ratio(perfs[0]["Transmittance (%)"]) / shot_ratio(perfs[1]["Transmittance (%)"])
+        scales[jobs[1]] = shot_ratio(perfs[0]["Transmittance (%)"]) / shot_ratio(perfs[1]["Transmittance (%)"])
     except (KeyError, TypeError, ValueError) as error:
         out["reason"] = f"the plans' figures are unreadable: {error}"
         return out
@@ -1438,12 +1440,20 @@ def pooling(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     return out
 
 
-def analyze(runs: Sequence[Path], replicates: int = BOOTSTRAP_REPLICATES) -> dict[str, Any]:
+def analyze(
+    runs: Sequence[Path],
+    replicates: int = BOOTSTRAP_REPLICATES,
+    loader: Callable[[Path], dict[str, Any]] = load_run,
+    jobs: Sequence[str] = JOBS,
+    seed: int | None = None,
+    forecast_path: Path | None = FAMILY_DIR / FORECAST,
+) -> dict[str, Any]:
     """Pool collected runs: the primary process estimate when all 144 settings returned eligible events, else counts
-    only."""
-    loaded = [load_run(run) for run in runs]
-    jobs = [entry["job"] for entry in loaded]
-    require(len(set(jobs)) == len(jobs), f"the runs are not distinct jobs: {jobs}")
+    only. A successor case of the same estimator passes its own loader, job names, bootstrap seed (else the seed the
+    first run's cases.json names) and forecast (None leaves the forecast comparison out)."""
+    loaded = [loader(run) for run in runs]
+    names = [entry["job"] for entry in loaded]
+    require(len(set(names)) == len(names), f"the runs are not distinct jobs: {names}")
     tallies: dict[str, dict[str, Any]] = {}
     for entry in loaded:
         tallies.update(entry["tallies"])
@@ -1461,25 +1471,27 @@ def analyze(runs: Sequence[Path], replicates: int = BOOTSTRAP_REPLICATES) -> dic
         "eligible_events_by_setting": {name: sum(t["eligible"]) for name, t in tallies.items()},
     }
     record["eligible_events"] = sum(record["eligible_events_by_setting"].values())
-    complete = set(jobs) == set(JOBS) and all(
+    complete = set(names) == set(jobs) and all(
         row["name"] in tallies and sum(tallies[row["name"]]["eligible"]) > 0 for row in rows
     )
     if not complete:
         record["process"] = "undecided"
         return record
-    pool = pooling(loaded)
+    pool = pooling(loaded, jobs)
     eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
     samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
     shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
-    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
-    seed = bootstrap_seed_of(runs[0])
+    # schedule() labels each row with JOBS by parity; a successor's job names map onto them in order.
+    scale = np.asarray([pool["scales"][jobs[JOBS.index(row["job"])]] for row in rows])
+    seed = bootstrap_seed_of(runs[0]) if seed is None else seed
     process = tomography(eligible, samples, shots, scale, np.random.default_rng(seed), replicates)
     process["bootstrap"]["seed"] = seed
     process["pooling"] = pool
     process["status"] = pool["status"]
     record["process"] = process
-    forecast_row = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))["variants"]
-    record["forecast_process_fidelity"] = {name: v["estimand_process_fidelity"] for name, v in forecast_row.items()}
+    if forecast_path is not None:
+        forecast_row = json.loads(forecast_path.read_text(encoding="utf-8"))["variants"]
+        record["forecast_process_fidelity"] = {name: v["estimand_process_fidelity"] for name, v in forecast_row.items()}
     return record
 
 

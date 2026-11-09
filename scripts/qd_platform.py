@@ -885,10 +885,10 @@ def job_seed(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> int | 
 
 
 def iteration_budgets(manifest: dict[str, Any]) -> list[tuple[int, int]]:
-    """(max_samples, max_shots) of every iteration: a seeded setting's own budgets, else an even split."""
+    """(max_samples, max_shots) of every iteration: a seeded or template setting's own budgets, else an even split."""
     steps = manifest.get("iterations", 1)
     settings = manifest.get("settings") or []
-    if iteration_form(manifest) == "seeded" and "max_samples" in settings[0]:
+    if iteration_form(manifest) in ("seeded", "template") and "max_samples" in settings[0]:
         return [(s["max_samples"], s["max_shots"]) for s in settings]
     return [(manifest["max_samples"] // steps, manifest["max_shots"] // steps)] * steps
 
@@ -1068,7 +1068,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     per_samples, per_shots = manifest["max_samples"] // steps, manifest["max_shots"] // steps
     # pcvlar serialization shares one entry per Python object, so an even split reuses per_samples and per_shots
     # themselves: equal integers computed apart would serialize as separate entries and change the body bytes.
-    budgeted = form == "seeded" and "max_samples" in manifest["settings"][0]
+    budgeted = form in ("seeded", "template") and "max_samples" in manifest["settings"][0]
     budgets = iteration_budgets(manifest) if budgeted else [(per_samples, per_shots)] * steps
     factory = ExecutionFactory(computer, built, max_shots_per_call=max(shots for _, shots in budgets))
     base = factory.build_computation(manifest["command"])
@@ -1081,12 +1081,16 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
         # Each template setting routes the photon to its own column, so each is estimated with its own parameters
         # and must fit its own iteration's shot budget.
         parts = [
-            computer.estimate_required_shots(base, nsamples=per_samples, param_values=setting["circuit_params"])
-            for setting in settings
+            computer.estimate_required_shots(base, nsamples=samples, param_values=setting["circuit_params"])
+            for setting, (samples, _) in zip(settings, budgets, strict=True)
         ]
-        over = [s["name"] for s, part in zip(settings, parts, strict=True) if part is not None and part > per_shots]
+        over = [
+            s["name"]
+            for s, part, (_, shots) in zip(settings, parts, budgets, strict=True)
+            if part is not None and part > shots
+        ]
         if over:
-            raise PlatformError(f"{manifest['job']}: Perceval estimates more than {per_shots} shots for {over}")
+            raise PlatformError(f"{manifest['job']}: Perceval estimates more than the iteration's shots for {over}")
         estimate = None if any(part is None for part in parts) else sum(parts)
     elif len({samples for samples, _ in budgets}) == 1:
         estimate = computer.estimate_required_shots(base, nsamples=per_samples, param_values=params)
@@ -1107,11 +1111,13 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
                 )
                 continue
             if template:
-                # A template iteration binds its state's angles and phases on the job's fixed circuit.
+                # A template iteration binds its state's angles and phases on the job's fixed circuit, under its own
+                # budgets when the settings name them (budgets[k] is then the setting's, else the even split's
+                # shared per_samples and per_shots objects).
                 factory.add_iteration(
                     circuit_params=settings[k]["circuit_params"],
-                    max_samples=per_samples,
-                    max_shots=per_shots,
+                    max_samples=budgets[k][0],
+                    max_shots=budgets[k][1],
                     compilation_seed=settings[k].get("compilation_seed", 0),
                 )
                 continue
@@ -2037,6 +2043,26 @@ def seed_self_test() -> None:
         except PlatformError:
             continue
         raise SystemExit(f"self-test: iteration_form accepted ladder {bad_ladder}")
+    template: list[dict[str, Any]] = [{"name": n, "circuit_params": {}, "column": []} for n in ("a", "b")]
+    budgeted = [
+        {**template[0], "max_samples": 10, "max_shots": 30},
+        {**template[1], "max_samples": 20, "max_shots": 30},
+    ]
+    templated = {**many, "gate_form": "template", "settings": budgeted, "max_samples": 30, "max_shots": 60}
+    if iteration_form(templated) != "template" or iteration_budgets(templated) != [(10, 30), (20, 30)]:
+        raise SystemExit("self-test: a budgeted template case lost its per-iteration budgets")
+    if iteration_budgets({**templated, "settings": template}) != [(15, 30)] * 2:
+        raise SystemExit("self-test: an unbudgeted template case lost its even split")
+    for bad_template in (
+        [budgeted[0], template[1]],
+        [{**budgeted[0], "max_shots": 5}, budgeted[1]],
+        [{**budgeted[0], "max_samples": 11}, budgeted[1]],
+    ):
+        try:
+            iteration_form({**templated, "settings": bad_template})
+        except PlatformError:
+            continue
+        raise SystemExit(f"self-test: iteration_form accepted template budgets {bad_template}")
     if job_seed({**one, "iterator": True, "settings": seeded[1:]}, seeded[1:]) is not None:
         raise SystemExit("self-test: a one-entry iterator carried its seed on the base computation")
     for bad_iterator in (

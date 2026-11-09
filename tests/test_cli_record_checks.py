@@ -71,6 +71,7 @@ RECORD_CHECKS = (
     ("scripts/ascella_coherence_request.py", ".", "--check", 7),
     ("scripts/ascella_cz_tomography_case.py", ".", "--check", 7),
     ("scripts/ascella_cz_ensemble_case.py", ".", "--check", 7),
+    ("scripts/ascella_cz_tomography_reference_case.py", ".", "--check", 7),
     ("scripts/ascella_cz_served_mesh.py", ".", "--check", 8),
     ("scripts/heron_feedforward_latency.py", ".", "--check", 7),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),
