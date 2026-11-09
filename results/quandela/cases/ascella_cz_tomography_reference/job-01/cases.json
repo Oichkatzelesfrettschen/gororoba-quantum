@@ -35803,7 +35803,86 @@
   },
   "reference_role": "the process tomography that the CZ compilation ensemble compares with (scripts/ascella_cz_ensemble_case.py TOMOGRAPHY_RUNS) once its pool is decided",
   "hom_comparison": "the change in process fidelity against the retained 2026-10-31 tomography at HOM 87.56 %, descriptive: two calibrations with other figures moving",
-  "interpretation": "service-compiled average postselected CZ; preparation, readout and gate errors are not separable because every setting compiles to its own mesh"
+  "interpretation": "service-compiled average postselected CZ; preparation, readout and gate errors are not separable because every setting compiles to its own mesh",
+  "hom_band": {
+   "preferred": 90.0,
+   "band_points": 6.8420696,
+   "covariate": "each job's plan HOM minus the preferred HOM, reported beside every estimate"
+  },
+  "overlap_estimators": {
+   "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
+   "from_rail_rates": "M_R = (5 - D) / 4, D = R(10) R(01) / (R(00) R(11)) over the summed absolute eligible rates of the inputs 00, 01, 10 and 11 read out in ZZ, after pooling",
+   "bootstrap": "both on the replicates of the primary bootstrap, so their difference has a joint interval"
+  },
+  "conjectures": [
+   {
+    "id": "overlap-only-law",
+    "statement": "overlap is the only error: F_pro = (1 + M) / (2 (2 - M)) with M = V",
+    "falsified_when": "the process-fidelity interval excludes the law at M = V"
+   },
+   {
+    "id": "g2-corrected-overlap-law",
+    "statement": "the same law with the multiphoton-corrected overlap M = (V + g2) / (1 - g2)",
+    "falsified_when": "the process-fidelity interval excludes the law at the corrected M"
+   },
+   {
+    "id": "noise-model-record-variant",
+    "statement": "the retained noise pipeline's record variant (source, loss and dark counts) at the plan reads",
+    "falsified_when": "the process-fidelity interval excludes the variant's estimand"
+   },
+   {
+    "id": "noise-model-g2-corrected-variant",
+    "statement": "the retained noise pipeline's g2-corrected overlap variant at the plan reads",
+    "falsified_when": "the process-fidelity interval excludes the variant's estimand"
+   },
+   {
+    "id": "rail-ratio-reads-hom",
+    "statement": "the rail-basis double ratio D = R(10) R(01) / (R(00) R(11)) equals 5 - 4V, so M_R = (5 - D) / 4 reads the platform's HOM",
+    "falsified_when": "the M_R interval excludes V"
+   },
+   {
+    "id": "two-overlaps-agree",
+    "statement": "M_F = (4 F - 1) / (2 F + 1) equals M_R, as overlap-only error requires",
+    "falsified_when": "the interval of M_F - M_R on the joint replicates excludes 0"
+   },
+   {
+    "id": "noise-model-ceiling",
+    "statement": "no overlap beats M = 1: F stays at or below the record variant at HOM 100 % with the plan's g2, transmittance and dark counts",
+    "falsified_when": "the lower end of the process-fidelity interval exceeds the ceiling"
+   },
+   {
+    "id": "control-ratio-lossless",
+    "statement": "r(11) / r(01) = 1: the two inputs whose photons never meet succeed equally on balanced rails",
+    "falsified_when": "the interval of r(11) / r(01) excludes 1"
+   },
+   {
+    "id": "control-ratio-noise-model",
+    "statement": "r(11) / r(01) takes the record variant's value at the plan reads (multiphoton lost-twin events)",
+    "falsified_when": "the interval of r(11) / r(01) excludes the record variant's ratio"
+   },
+   {
+    "id": "poisson-only-scatter",
+    "statement": "the counts scatter about one Choi matrix as Poisson draws do",
+    "falsified_when": "the Pearson statistic exceeds the 97.5th percentile of its Poisson-only reference"
+   },
+   {
+    "id": "overdispersion-constant-factor",
+    "statement": "the scatter beyond Poisson is a constant variance factor: the overdispersion ratio equals the retained pair's",
+    "falsified_when": "the ratio lies more than 25 % from the retained pair's ratio"
+   },
+   {
+    "id": "overdispersion-relative-systematic",
+    "statement": "the scatter beyond Poisson is a relative systematic per rate fixed by the retained pair, so the ratio minus one grows with the mean eligible events per rate",
+    "falsified_when": "the ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained"
+   }
+  ],
+  "verdict_rule": "every bootstrap interval is widened about its point by the square root of the pair's overdispersion ratio (at least 1), the Pearson statistic over the mean of its Poisson-only reference; a conjecture is falsified when the widened 95 % interval excludes its prediction, or its band excludes the observed value, and survives otherwise; a descriptive pool reports each verdict as descriptive",
+  "overdispersion": {
+   "statistic": "Pearson chi-squared of the 576 eligible counts about the linear-inversion fit's expected counts, each over its expected count, one event at least",
+   "reference": "200 Poisson datasets at the fit's expected counts, negatives clipped",
+   "seed_draw": "docs/evidence/anu_qrng/draw-2026-11-09T020604Z.json",
+   "seed_index": 157
+  }
  },
  "submit_wrapper": "scripts/ascella_cz_tomography_reference_case.py --submit",
  "submission_policy": {
@@ -35812,7 +35891,11 @@
   "per_job_credits": 1.0,
   "expected_seconds": 285,
   "hom_percent": {
-   "above": 90.0
+   "preferred": 90.0,
+   "band_points": 6.8420696,
+   "at_least": 83.1579304,
+   "at_most": 96.8420696,
+   "applies_to": "both jobs; job-01 also stays within the pooling tolerances of job-00's read"
   },
   "transmittance_percent": {
    "at_least": 5.5087,

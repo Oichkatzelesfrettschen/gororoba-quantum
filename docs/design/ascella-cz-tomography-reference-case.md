@@ -1,12 +1,12 @@
-# Ascella CZ process tomography reference above 90 % HOM
+# Ascella CZ process tomography reference across the HOM band 90 ± 6.84 points
 
 This is the written case for two qpu:ascella jobs of 72 template iterations that repeat the CZ process tomography of
-[ascella-cz-process-tomography-case.md](ascella-cz-process-tomography-case.md) at a calibration whose HOM visibility
-exceeds 90 %. [scripts/ascella_cz_tomography_reference_case.py](../../scripts/ascella_cz_tomography_reference_case.py)
-builds the frozen requests in
+[ascella-cz-process-tomography-case.md](ascella-cz-process-tomography-case.md) at any calibration whose HOM visibility
+lies within 6.8420696 percentage points of 90 %, and preregisters twelve conjectures the pair decides.
+[scripts/ascella_cz_tomography_reference_case.py](../../scripts/ascella_cz_tomography_reference_case.py) builds the frozen requests in
 [results/quandela/cases/ascella_cz_tomography_reference](../../results/quandela/cases/ascella_cz_tomography_reference/job-00/cases.json),
-checks them, forecasts the outcome over the admitted HOM range and gates every submission. Nothing has been sent or
-approved. The approval rule of gororoba-quantum `AGENTS.md` ("Hardware services") governs the submission.
+checks them, forecasts the outcome over the admitted HOM band and gates every submission. Nothing has been sent, and
+the owner's approval names the request digests. The approval rule of gororoba-quantum `AGENTS.md` ("Hardware services") governs the submission.
 
 ## Why the case exists
 
@@ -17,6 +17,12 @@ tomography ran at 87.56 %, so no HOM satisfies both conditions and the ensemble 
 tomography acquired above 90 % gives the ensemble a non-empty band, `max(90, ref - 1) < HOM <= ref + 1`. Paired with
 the retained tomography at 87.56 %, it also measures one change in process fidelity across HOM. That change is
 descriptive, because two calibrations differ in more figures than HOM.
+
+The owner's ruling of 2026-11-09 keeps 90 % as the preferred HOM and admits this tomography at any HOM from
+83.1579304 % to 96.8420696 % (90 ± 6.8420696 percentage points, both ends inclusive). The retained qpu:ascella reads
+of 2026-10-21 to 2026-11-07 ran from 86.86 % to 89.10 % and never reached 90 %, so the band turns a wait with no end
+into a run at the next admitting calibration. A tomography below 90 % still leaves the ensemble's own floor in force:
+moving that floor is a change to the ensemble case, made with its `TOMOGRAPHY_RUNS` once this pool is decided.
 
 The estimand, the 144 settings, the eligibility rule, the estimator, the bootstrap type and the pooling rule are those
 of the retained case, imported by name from
@@ -39,7 +45,7 @@ on 2026-11-09 shows the following.
 | Transmittance | 5.51 % |
 | Clock | 13.33 MHz |
 
-The gate refuses this read at HOM, so the case waits for a calibration above 90 %.
+The gate admits this read's HOM; its transmittance sits at the floor that the caps need (below).
 
 The dark counts of this read would move the retained case's window rule (`tomo.choose_window`, the darkest six-mode
 window whose first and third modes are sources) from chip modes 0..5 to 2..7: 589 against 667 detections per second.
@@ -107,9 +113,10 @@ The cap that keeps the retained ceiling, 990,000 (1.99 credits per job, 3.98 for
 0.0051 and a worst case of 271 s. The chosen cap buys a spread 1.26 times narrower for 1.13 more credits, and it
 leaves no time margin: every plan below the read's 5.51 % transmittance is refused.
 
-## Why the request cannot follow the live HOM
+## How the request meets every HOM in the band
 
-The request is frozen when the case is built, and the gate only admits or refuses it.
+The request is frozen when the case is built, and the gate only admits or refuses it. The band makes one frozen body
+serve every HOM it admits, because the body needs nothing that HOM changes.
 
 - The owner's approval names the frozen request. `qd_platform.submit` binds the receipt to the `cases.json` digest,
   and `bind_reviewed` requires the posted body to equal the admitted preflight's body, minus `process_id`. A body
@@ -117,16 +124,16 @@ The request is frozen when the case is built, and the gate only admits or refuse
 - The token reads HOM and cannot set it. A job queues and runs after the read, so a design keyed to one reading
   describes a calibration the job may no longer run on. The gate's in-lock re-read and the equality of the
   estimate's perfs with the plan's narrow that window, without closing it.
-- The design depends on HOM only weakly. The samples follow the shots per sample, which transmittance sets. HOM
-  moves the bunching of the two photons and so the shots per sample by a few percent, which the margin of 1.25 and
-  the plan's live estimate check cover.
-- The forecast follows the same split. No read above 90 % exists to forecast at, and the repository forbids guessing
-  hardware figures. The forecast is therefore a curve over the admitted HOM range at the read's other figures, and
-  the plan read at submission picks the point.
-
-A family of pre-approved variants, one per HOM bin, would make the request dynamic within its approval. It changes
-nothing measured: the estimand, the settings and the budgets are the same at every HOM above 90 %, because
-transmittance sets the budgets.
+- The budgets hold at both ends of the band. `RemoteComputer.estimate_required_shots` simulates the circuit at
+  indistinguishability 1 and g2 0 (`perceval.runtime.remote_computer._estimate_sample_probability`). Two photons
+  bunch into output mode k with probability (1 + M) |U_k1|^2 |U_k2|^2 at photon overlap M, so the two-click
+  probability falls as M rises, and the estimate at M = 1 bounds the shots per sample at every HOM. The forecast
+  confirms it: the setting with the most expected shots stays 1.277 times below the cap at every point from
+  83.16 % to 96.84 %, and a job's expected shots move by 1.8 % across the band.
+- The forecast follows the same split. The repository forbids guessing hardware figures, so the forecast is a curve
+  over the band at the read's other figures, and the plan read at submission picks the point.
+- The preferred HOM is an anchor, not a wait: the forecast includes 90 %, and the analysis reports each job's HOM
+  minus 90 as a covariate beside every estimate.
 
 ## Seeds
 
@@ -138,8 +145,9 @@ nonzero values in index order, repeats skipped, and none was skipped.
 |---|---|
 | 144 compilation seeds, schedule order | 0 to 143 |
 | Bootstrap seed of the analysis | 144 |
-| One synthetic dataset per forecast HOM point | 145 to 151 |
-| Owned and unused | 152 to 255 |
+| One synthetic dataset per forecast HOM point | 145 to 156 |
+| Poisson-only reference draws of the overdispersion statistic | 157 |
+| Owned and unused | 158 to 255 |
 
 The case takes fresh compilation seeds rather than reusing the retained case's. The owner ruled on 2026-11-09 to use
 QRNG seeds wherever a seed is needed. The case measures a new reference at a new calibration, and the seed rule of
@@ -155,10 +163,10 @@ in the ledger of `ci/seed_provenance.py`.
 its verify step inside the submit lock. The manifest names the wrapper, so the generic runner refuses any other
 verifier. `SubmissionGate` refuses unless all of the following hold:
 
-- the HOM at the plan is strictly above 90 % (`qd_platform.HOM_FLOOR`);
+- the HOM at the plan lies in the band, 83.1579304 % to 96.8420696 % (`HOM_BAND`, both ends inclusive);
 - the transmittance is at or above the floor at which every iteration at its cap still fits 300 s, which is 5.509 %,
-  the read's own figure to rounding, so the case waits for a calibration that holds both HOM above 90 % and the
-  transmittance at the read's level or higher;
+  the read's own figure to rounding, so the case waits for a calibration that holds the transmittance at the read's
+  level or higher;
 - the Explorer row and the processor read `available` or `running`, while the token counts no running, no queued and
   no running quantum-task job;
 - the shot estimate and a processor read taken inside the lock carry the plan's perfs, and source modes 0 and 2
@@ -172,7 +180,7 @@ verifier. `SubmissionGate` refuses unless all of the following hold:
 The credit ceiling per job is 2.567. The expected time is 285 s: the iterations' recorded seconds plus the shots
 the samples need, the cap divided by 1.25, at the read's shot rate.
 
-## Forecast over HOM
+## Forecast over the band
 
 [forecast.json](../../results/quandela/cases/ascella_cz_tomography_reference/forecast.json) evaluates the retained
 case's noise pipeline at each HOM point, holding the read's g2, transmittance, clock and dark counts. Each point
@@ -182,17 +190,86 @@ design, analyzed as a run would be.
 
 | HOM % | Indistinguishability only | Record variant | Spread | Synthetic dataset | 95 % interval |
 |---|---|---|---|---|---|
-| 90.5 | 0.870 | 0.818 | 0.0040 | 0.817 | 0.808 to 0.825 |
-| 91.0 | 0.876 | 0.824 | 0.0040 | 0.820 | 0.812 to 0.829 |
-| 91.5 | 0.882 | 0.829 | 0.0040 | 0.838 | 0.829 to 0.846 |
-| 92.0 | 0.889 | 0.835 | 0.0040 | 0.834 | 0.826 to 0.842 |
-| 92.5 | 0.895 | 0.841 | 0.0041 | 0.841 | 0.834 to 0.850 |
-| 93.0 | 0.902 | 0.847 | 0.0041 | 0.839 | 0.830 to 0.846 |
-| 94.0 | 0.915 | 0.858 | 0.0041 | 0.857 | 0.849 to 0.864 |
+| 83.1579304 | 0.784 | 0.741 | 0.0039 | 0.743 | 0.736 to 0.752 |
+| 84.5 | 0.799 | 0.754 | 0.0039 | 0.752 | 0.745 to 0.760 |
+| 86.0 | 0.816 | 0.769 | 0.0039 | 0.776 | 0.768 to 0.783 |
+| 87.56 | 0.834 | 0.786 | 0.0039 | 0.779 | 0.772 to 0.788 |
+| 88.5 | 0.845 | 0.796 | 0.0040 | 0.797 | 0.790 to 0.805 |
+| 89.25 | 0.854 | 0.804 | 0.0040 | 0.802 | 0.795 to 0.810 |
+| 90.0 | 0.864 | 0.812 | 0.0040 | 0.809 | 0.801 to 0.816 |
+| 91.0 | 0.876 | 0.824 | 0.0040 | 0.827 | 0.819 to 0.834 |
+| 92.5 | 0.895 | 0.841 | 0.0041 | 0.841 | 0.833 to 0.847 |
+| 94.0 | 0.915 | 0.858 | 0.0041 | 0.860 | 0.852 to 0.868 |
+| 95.5 | 0.935 | 0.876 | 0.0041 | 0.871 | 0.863 to 0.879 |
+| 96.8420696 | 0.954 | 0.893 | 0.0042 | 0.887 | 0.879 to 0.894 |
 
-The record variant rises about 0.0115 in process fidelity per point of HOM. The design resolves that step at nearly
-three standard deviations per point. The retained run measured 0.849 at 87.56 %, above every variant at its read, so
-the curve gives a floor for the outcome rather than a prediction of it.
+The indistinguishability-only column is exactly F_pro = (1 + M) / (2 (2 - M)) at M = HOM / 100 (derived in the next
+section; `tests/scripts/test_ascella_cz_tomography_reference_case.py` checks every point to 1e-9). The record variant
+is the same linear-fractional form to 6e-6, and it rises 0.011 per HOM point at the band's center. A straight line
+misses either column by up to 0.003, which a series of HOM points at a spread of 0.004 can resolve and one pair
+cannot.
+
+## Preregistered conjectures
+
+### The overlap law of the postselected CZ
+
+Two photons with internal-state overlap M = Tr(rho_1 rho_2) reach an output pair with probability
+P = (1 + M)/2 |per A|^2 + (1 - M)/2 |det A|^2, A the 2 x 2 submatrix of the interferometer (the Gram expansion;
+equivalently P = M P_indistinguishable + (1 - M) P_distinguishable). In the case's own photon model
+(`tomo.forecast_setting`), the rail inputs 00, 01 and 11 succeed with probability 1/9 at every M, because their
+photons never meet. Input 10 succeeds with probability (5 - 4M)/9, because its photons meet at the 1/3 coupler:
+permanent 1/3, determinant -1. The Choi matrix is therefore affine in M, its trace is (4/9)(2 - M), and the
+unprojected process fidelity is F_pro(M) = (1 + M) / (2 (2 - M)), with inverse M_F = (4F - 1) / (2F + 1).
+The same law gives a second overlap estimate that needs no fit. Let r(xy) be the eligible rate of input xy, averaged
+over its nine readouts; a local readout keeps one photon per qubit, so every readout carries the input's success
+probability. Then D = r(10) r(01) / (r(00) r(11)) = 5 - 4M. Each rail's detection efficiency enters D once above and
+once below, and only the pooling scale between the jobs remains. `rail_rate_ratio` computes D and
+`control_rate_ratio` computes r(11) / r(01), which is 1 at every M on balanced rails.
+
+### Overdispersion and the verdict rule
+
+The retained counts scatter beyond Poisson about one Choi matrix. The Pearson statistic of the 576 counts about the
+linear-inversion fit is 5288. Its Poisson-only reference, 200 Poisson datasets at the fit's expected counts with the
+same shots, refit alike, has mean 2781 and 95 % range 1637 to 4599. The unweighted fit predicts negative rates on
+near-zero cells, so the reference sits far above 320, the degrees of freedom, and the ratio 1.90 is the measure of
+scatter beyond Poisson. Every verdict therefore widens the parametric bootstrap interval about its point by the
+square root of the pair's own ratio (at least 1). The preregistered rule is in each `cases.json` under
+`preregistered.verdict_rule`, and the reference draws take QRNG index 157.
+
+### The conjectures and the retained pair's verdicts
+
+`--retained-verdicts` runs the same code on the retained 2026-10-31 pair (HOM 87.56 %, g2 1.8 %, T 5.81 %) and
+writes [retained-conjecture-verdicts.json](../../results/quandela/cases/ascella_cz_tomography_reference/retained-conjecture-verdicts.json);
+`--check` recomputes it. The retained process fidelity is 0.849, widened interval 0.820 to 0.876.
+
+| Conjecture | Prediction (retained) | Held against (retained, widened) | Retained verdict |
+|---|---|---|---|
+| Overlap is the only error: F = (1 + M)/(2(2 - M)), M = V | 0.834 | F 0.820 to 0.876 | survives |
+| The same law at M = (V + g2)/(1 - g2) | 0.876 | F | survives, at the edge |
+| Noise pipeline, record variant (source, loss, dark counts) | 0.788 | F | falsified |
+| Noise pipeline, g2-corrected overlap variant | 0.826 | F | survives |
+| The rail ratio reads the platform HOM: M_R = V | 0.8756 | M_R 0.914, 0.890 to 0.938 | falsified |
+| The two overlaps agree: M_F = M_R | 0 | M_F - M_R -0.025, -0.058 to 0.008 | survives |
+| No overlap beats M = 1: F at or below the record variant at HOM 100 % | 0.937 | lower end of F | survives |
+| Balanced rails: r(11)/r(01) = 1 | 1 | 1.009, 0.953 to 1.067 | survives |
+| r(11)/r(01) takes the record variant's value (lost-twin multiphoton events) | 1.038 | same | survives |
+| Poisson-only scatter | 5288 | Poisson reference up to 4599 | falsified |
+| Constant variance factor: the ratio stays at the retained 1.90 | 1.90 | 1.43 to 2.38 | survives by construction |
+| Relative systematic per rate: ratio - 1 grows with events per rate | 1.90 | 1.43 to 2.38 | survives by construction |
+
+Three conjectures already fall on the retained pair. The record variant sits 0.03 below the widened interval. The
+rate-ratio overlap, 0.914, sits 4 points above the platform's HOM read, while agreeing with the fidelity overlap
+M_F = 0.888 within the widened interval. The new pair carries about six times the events per setting, so it splits
+what the retained pair cannot. The overdispersion pair predicts a ratio of 1.90 under a constant factor against
+about 1 + 0.90 x 6.2 = 6.6 under a relative systematic. The overlap-only and g2-corrected laws differ by 0.04 at the
+retained read, about ten widened spreads of the new design. M_F - M_R narrows enough to test whether the platform HOM
+understates the overlap at the CZ coupler, which the photonic ledger's sources leave open: the visibility depends on
+the emission delay and the source pair.
+
+The workspace's algebraic lineages (de Marrais box-kites, Hurwitz, Cayley-Dickson, Moreno and the Pfaffian
+reduction, Hilbert-Samuel fibers, Levratti) predict no rate of this measurement: the only matrix functions it reads
+are the 2 x 2 permanent and determinant. [ascella-cz-tomography-ledgers.md](../notes/topics/ascella-cz-tomography-ledgers.md)
+holds both ledgers, the sources by manifest digest and the verdict per lineage.
 
 ## Stopping rule
 
@@ -205,8 +282,8 @@ the curve gives a floor for the outcome rather than a prediction of it.
 - `--submit` enforces the attempt limit: it refuses while an earlier posted attempt of the job is uncollected or
   returned counts, and after two posted attempts. A refused `--submit` removes the run directory it created, which
   holds only the request copies.
-- A plan that reads 90 % or below sends nothing, and the case retries it at a later calibration. The HOM floor is
-  never waived.
+- A plan that reads a HOM outside the band sends nothing, and the case retries it at a later calibration. The band
+  is never widened under this approval.
 - A pool decided by the retained case's tolerances (HOM within 1.0 point, transmittance within 0.3 points,
   submissions within 12 hours) replaces the ensemble's `TOMOGRAPHY_RUNS` in one change. That change regenerates the
   ensemble's prediction, manifests and ledger rows, and the ensemble's preflights are then taken again.
@@ -238,12 +315,12 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
 
 | Check | Result |
 |---|---|
-| `ascella_cz_tomography_reference_case.py --check` | passes: both requests rebuild byte for byte, every iteration's samples fill the cap to one quantum, worst case 300.0 s, ceiling 2.567, fresh disjoint seeds, design spread below the retained design's at every HOM point |
+| `ascella_cz_tomography_reference_case.py --check` | passes: both requests rebuild byte for byte, every iteration's samples fill the cap to one quantum, worst case 300.0 s, ceiling 2.567, fresh disjoint seeds, design spread below the retained design's at every HOM point of the band, and the retained pair's conjecture verdicts recompute |
 | gate `core-record-check-07` (ci/gates.json, on demand on the build host) | runs `--check`, which rebuilds both requests byte for byte; the decomposed mesh floats follow the CPU's numeric path, so the `tests` check runs the budget, bound and identity checks without the rebuild |
 | `ascella_cz_tomography_case.py --check` | passes: the retained requests still rebuild byte for byte after the loader and pooling take a family |
 | `qd_platform.py --self-test` | passes, with budgeted and unbudgeted template cases and three malformed budget lists |
 | `qd_platform.payload` on both ensemble jobs | each body's digest without `process_id` equals its retained `plan-read.json` value, so an unbudgeted template case sends the same bytes |
-| `tests/scripts/test_ascella_cz_tomography_reference_case.py` | the gate's refusals, the floors, the budgets and the rebuild |
+| `tests/scripts/test_ascella_cz_tomography_reference_case.py` | 60 pass: the gate's refusals, the band's ends, the floors, the budgets, the overlap law against every forecast point, the rail ratios against the photon model, the interval widening and the retained verdict list |
 
 ## Limits
 

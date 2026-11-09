@@ -1,53 +1,341 @@
 {
- "basis": "the retained read's g2, transmittance, clock and dark counts at each HOM of the curve; no read above the HOM floor exists, so the plan read at submission picks the point",
+ "basis": "the retained read's g2, transmittance, clock and dark counts at each HOM of the curve across the admitted band; the plan read at submission picks the point",
  "interval": "percentile",
  "points": [
   {
    "design": {
-    "expected_eligible_events": 624985.69480636,
+    "expected_eligible_events": 653711.1939939038,
     "expected_shots_by_job": {
-     "job-00": 86134986.039355,
-     "job-01": 85098236.04078077
+     "job-00": 85302260.1981463,
+     "job-01": 83914649.92442527
     },
     "largest_expected_shots": 1226996.4133923491,
-    "process_fidelity_sd": 0.0040053076661211015,
-    "retained_uniform_design_process_fidelity_sd": 0.010341323000751433
+    "process_fidelity_sd": 0.003853964173011189,
+    "retained_uniform_design_process_fidelity_sd": 0.009872899595313048
    },
-   "hom_percent": 90.5,
+   "hom_percent": 83.1579304,
    "indistinguishability only": {
-    "estimand_average_gate_fidelity": 0.8958904109589035,
-    "estimand_process_fidelity": 0.8698630136986295
+    "estimand_average_gate_fidelity": 0.827027340501678,
+    "estimand_process_fidelity": 0.7837841756270975
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8534532181354184,
+    "average_gate_fidelity": 0.7947998469058422,
     "average_gate_fidelity_interval": [
-     0.8466126298314572,
-     0.8596424165381839
+     0.7889408250499036,
+     0.8017374285722458
     ],
-    "conditional_process_fidelity": 0.8124904205519933,
-    "events": 624517,
-    "process_fidelity": 0.8168165226692728,
-    "process_fidelity_bootstrap_median": 0.8171355497063761,
+    "conditional_process_fidelity": 0.7403526763111257,
+    "events": 653423,
+    "process_fidelity": 0.7434998086323027,
+    "process_fidelity_bootstrap_median": 0.7434421324727059,
     "process_fidelity_interval": [
-     0.8082657872893216,
-     0.8245530206727297
+     0.7361760313123794,
+     0.7521717857153073
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.809080024665816,
-      0.8253672580492241
+      0.7348278315492981,
+      0.750823585952226
      ],
      "percentile": [
-      0.8082657872893216,
-      0.8245530206727297
+      0.7361760313123794,
+      0.7521717857153073
      ]
     },
-    "projected_process_fidelity": 0.807218009586726
+    "projected_process_fidelity": 0.7357827327325247
    },
    "seed_index": 145,
    "source, loss and dark counts": {
-    "estimand_average_gate_fidelity": 0.8543611065010863,
-    "estimand_process_fidelity": 0.8179513831263578
+    "estimand_average_gate_fidelity": 0.7924461810114746,
+    "estimand_process_fidelity": 0.7405577262643432
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 648553.2164430527,
+    "expected_shots_by_job": {
+     "job-00": 85452485.54554115,
+     "job-01": 84123620.0189125
+    },
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.0038794096672865558,
+    "retained_uniform_design_process_fidelity_sd": 0.009951847896020048
+   },
+   "hom_percent": 84.5,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.8389610389610386,
+    "estimand_process_fidelity": 0.7987012987012984
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8017505314556808,
+    "average_gate_fidelity_interval": [
+     0.7959280697266411,
+     0.8080064257470991
+    ],
+    "conditional_process_fidelity": 0.7545626396288457,
+    "events": 647702,
+    "process_fidelity": 0.7521881643196008,
+    "process_fidelity_bootstrap_median": 0.752032607757118,
+    "process_fidelity_interval": [
+     0.7449100871583013,
+     0.7600080321838739
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7443682964553276,
+      0.7594662414809003
+     ],
+     "percentile": [
+      0.7449100871583013,
+      0.7600080321838739
+     ]
+    },
+    "projected_process_fidelity": 0.7435584650739862
+   },
+   "seed_index": 146,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.8032131472066993,
+    "estimand_process_fidelity": 0.7540164340083743
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 642740.396386352,
+    "expected_shots_by_job": {
+     "job-00": 85621361.39347954,
+     "job-01": 84360803.14281124
+    },
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.003908961709943107,
+    "retained_uniform_design_process_fidelity_sd": 0.010043414378323895
+   },
+   "hom_percent": 86.0,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.852631578947368,
+    "estimand_process_fidelity": 0.81578947368421
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8205445697955348,
+    "average_gate_fidelity_interval": [
+     0.8146885416862093,
+     0.8264553105870986
+    ],
+    "conditional_process_fidelity": 0.7671858901848426,
+    "events": 642914,
+    "process_fidelity": 0.7756807122444185,
+    "process_fidelity_bootstrap_median": 0.7756543541828247,
+    "process_fidelity_interval": [
+     0.7683606771077617,
+     0.7830691382338734
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7682922862549636,
+      0.7830007473810753
+     ],
+     "percentile": [
+      0.7683606771077617,
+      0.7830691382338734
+     ]
+    },
+    "projected_process_fidelity": 0.7658504974884389
+   },
+   "seed_index": 147,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.8155269534805247,
+    "estimand_process_fidelity": 0.769408691850656
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 636635.7866456822,
+    "expected_shots_by_job": {
+     "job-00": 85799030.65999044,
+     "job-01": 84612698.08069026
+    },
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.00394105738647487,
+    "retained_uniform_design_process_fidelity_sd": 0.010142721548177422
+   },
+   "hom_percent": 87.56,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.8672358591248661,
+    "estimand_process_fidelity": 0.8340448239060827
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8234924985250371,
+    "average_gate_fidelity_interval": [
+     0.8173945717028055,
+     0.8301066198984611
+    ],
+    "conditional_process_fidelity": 0.7760563800181743,
+    "events": 635640,
+    "process_fidelity": 0.7793656231562964,
+    "process_fidelity_bootstrap_median": 0.7794919923099624,
+    "process_fidelity_interval": [
+     0.7717432146285068,
+     0.7876332748730764
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7710979714395164,
+      0.786988031684086
+     ],
+     "percentile": [
+      0.7717432146285068,
+      0.7876332748730764
+     ]
+    },
+    "projected_process_fidelity": 0.7726456011245639
+   },
+   "seed_index": 148,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.8286702608689698,
+    "estimand_process_fidelity": 0.7858378260862122
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 632933.1719263701,
+    "expected_shots_by_job": {
+     "job-00": 85906002.63947377,
+     "job-01": 84766056.85659829
+    },
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.0039610338827419074,
+    "retained_uniform_design_process_fidelity_sd": 0.010204498702333992
+   },
+   "hom_percent": 88.5,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.8762331838565018,
+    "estimand_process_fidelity": 0.8452914798206274
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8379802936676626,
+    "average_gate_fidelity_interval": [
+     0.8320832104104592,
+     0.8443615624105021
+    ],
+    "conditional_process_fidelity": 0.7875990296958504,
+    "events": 633076,
+    "process_fidelity": 0.7974753670845782,
+    "process_fidelity_bootstrap_median": 0.7972860024083368,
+    "process_fidelity_interval": [
+     0.790104013013074,
+     0.8054519530131276
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7894987811560289,
+      0.8048467211560825
+     ],
+     "percentile": [
+      0.790104013013074,
+      0.8054519530131276
+     ]
+    },
+    "projected_process_fidelity": 0.7894707990798792
+   },
+   "seed_index": 149,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.8367471545287994,
+    "estimand_process_fidelity": 0.7959339431609993
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 629964.0397700146,
+    "expected_shots_by_job": {
+     "job-00": 85991649.90189278,
+     "job-01": 84889663.94250065
+    },
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.00397734879501713,
+    "retained_uniform_design_process_fidelity_sd": 0.010254931082925734
+   },
+   "hom_percent": 89.25,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.8835214446952593,
+    "estimand_process_fidelity": 0.8544018058690741
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.841382951323982,
+    "average_gate_fidelity_interval": [
+     0.836174521670979,
+     0.8476826342738386
+    ],
+    "conditional_process_fidelity": 0.8014589264878699,
+    "events": 631399,
+    "process_fidelity": 0.8017286891549775,
+    "process_fidelity_bootstrap_median": 0.8017176450239591,
+    "process_fidelity_interval": [
+     0.7952181520887237,
+     0.8096032928422983
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.7938540854676568,
+      0.8082392262212313
+     ],
+     "percentile": [
+      0.7952181520887237,
+      0.8096032928422983
+     ]
+    },
+    "projected_process_fidelity": 0.7927688726800355
+   },
+   "seed_index": 150,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.8432830042629493,
+    "estimand_process_fidelity": 0.8041037553286868
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 626981.5299822139,
+    "expected_shots_by_job": {
+     "job-00": 86077562.6439833,
+     "job-01": 85014414.95985365
+    },
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.003994007025095136,
+    "retained_uniform_design_process_fidelity_sd": 0.010306408824649062
+   },
+   "hom_percent": 90.0,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.8909090909090903,
+    "estimand_process_fidelity": 0.863636363636363
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8472089629302125,
+    "average_gate_fidelity_interval": [
+     0.8406693316207297,
+     0.8531088914922442
+    ],
+    "conditional_process_fidelity": 0.8063876494522366,
+    "events": 628531,
+    "process_fidelity": 0.8090112036627656,
+    "process_fidelity_bootstrap_median": 0.8092343383791151,
+    "process_fidelity_interval": [
+     0.8008366645259121,
+     0.8163861143653052
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.801636292960226,
+      0.8171857427996191
+     ],
+     "percentile": [
+      0.8008366645259121,
+      0.8163861143653052
+     ]
+    },
+    "projected_process_fidelity": 0.8031995711953726
+   },
+   "seed_index": 151,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.8499017606514055,
+    "estimand_process_fidelity": 0.8123772008142569
    }
   },
   {
@@ -67,131 +355,35 @@
     "estimand_process_fidelity": 0.8761467889908252
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8561034620738269,
+    "average_gate_fidelity": 0.8612247775030184,
     "average_gate_fidelity_interval": [
-     0.849335810313621,
-     0.8629150406612842
+     0.8550043797635781,
+     0.8673117002700276
     ],
-    "conditional_process_fidelity": 0.8182974870343936,
-    "events": 621400,
-    "process_fidelity": 0.8201293275922837,
-    "process_fidelity_bootstrap_median": 0.8200254416610128,
+    "conditional_process_fidelity": 0.8197030774477633,
+    "events": 623359,
+    "process_fidelity": 0.8265309718787731,
+    "process_fidelity_bootstrap_median": 0.8261493710565107,
     "process_fidelity_interval": [
-     0.8116697628920263,
-     0.8286438008266053
+     0.8187554747044726,
+     0.8341396253375345
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8116148543579622,
-      0.8285888922925412
+      0.8189223184200117,
+      0.8343064690530736
      ],
      "percentile": [
-      0.8116697628920263,
-      0.8286438008266053
+      0.8187554747044726,
+      0.8341396253375345
      ]
     },
-    "projected_process_fidelity": 0.8112605147683147
+    "projected_process_fidelity": 0.818043907404536
    },
-   "seed_index": 146,
+   "seed_index": 152,
    "source, loss and dark counts": {
     "estimand_average_gate_fidelity": 0.8588584849370801,
     "estimand_process_fidelity": 0.8235731061713502
-   }
-  },
-  {
-   "design": {
-    "expected_eligible_events": 620975.8615970892,
-    "expected_shots_by_job": {
-     "job-00": 86250190.62148425,
-     "job-01": 85267499.53949118
-    },
-    "largest_expected_shots": 1226996.4133923491,
-    "process_fidelity_sd": 0.004028389671703916,
-    "retained_uniform_design_process_fidelity_sd": 0.010412622743591263
-   },
-   "hom_percent": 91.5,
-   "indistinguishability only": {
-    "estimand_average_gate_fidelity": 0.9059907834101381,
-    "estimand_process_fidelity": 0.8824884792626726
-   },
-   "sampled_dataset": {
-    "average_gate_fidelity": 0.8706704281105424,
-    "average_gate_fidelity_interval": [
-     0.863559721295076,
-     0.8769584315633199
-    ],
-    "conditional_process_fidelity": 0.8241486465966699,
-    "events": 621893,
-    "process_fidelity": 0.838338035138178,
-    "process_fidelity_bootstrap_median": 0.8382572082148056,
-    "process_fidelity_interval": [
-     0.829449651618845,
-     0.8461980394541497
-    ],
-    "process_fidelity_intervals": {
-     "basic": [
-      0.8304780308222062,
-      0.8472264186575109
-     ],
-     "percentile": [
-      0.829449651618845,
-      0.8461980394541497
-     ]
-    },
-    "projected_process_fidelity": 0.8267323360780999
-   },
-   "seed_index": 147,
-   "source, loss and dark counts": {
-    "estimand_average_gate_fidelity": 0.8633943846105543,
-    "estimand_process_fidelity": 0.8292429807631929
-   }
-  },
-  {
-   "design": {
-    "expected_eligible_events": 618961.7848493818,
-    "expected_shots_by_job": {
-     "job-00": 86307972.71764494,
-     "job-01": 85352966.64060195
-    },
-    "largest_expected_shots": 1226996.4133923491,
-    "process_fidelity_sd": 0.004040176701790688,
-    "retained_uniform_design_process_fidelity_sd": 0.010449027484488633
-   },
-   "hom_percent": 92.0,
-   "indistinguishability only": {
-    "estimand_average_gate_fidelity": 0.9111111111111109,
-    "estimand_process_fidelity": 0.8888888888888886
-   },
-   "sampled_dataset": {
-    "average_gate_fidelity": 0.8670381525443187,
-    "average_gate_fidelity_interval": [
-     0.8605559448259252,
-     0.8736444056972723
-    ],
-    "conditional_process_fidelity": 0.8254158976120402,
-    "events": 618011,
-    "process_fidelity": 0.8337976906803983,
-    "process_fidelity_bootstrap_median": 0.8336667834107825,
-    "process_fidelity_interval": [
-     0.8256949310324065,
-     0.8420555071215904
-    ],
-    "process_fidelity_intervals": {
-     "basic": [
-      0.8255398742392063,
-      0.8419004503283901
-     ],
-     "percentile": [
-      0.8256949310324065,
-      0.8420555071215904
-     ]
-    },
-    "projected_process_fidelity": 0.8260403425104608
-   },
-   "seed_index": 148,
-   "source, loss and dark counts": {
-    "estimand_average_gate_fidelity": 0.8679693025797472,
-    "estimand_process_fidelity": 0.8349616282246841
    }
   },
   {
@@ -211,83 +403,35 @@
     "estimand_process_fidelity": 0.8953488372093019
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8731454383996858,
+    "average_gate_fidelity": 0.8724864317026931,
     "average_gate_fidelity_interval": [
-     0.8670938508185778,
-     0.879747896588765
+     0.8661204112052958,
+     0.8779736011873839
     ],
-    "conditional_process_fidelity": 0.8326696722135105,
-    "events": 617930,
-    "process_fidelity": 0.8414317979996074,
-    "process_fidelity_bootstrap_median": 0.8416792264350386,
+    "conditional_process_fidelity": 0.832656096366068,
+    "events": 616431,
+    "process_fidelity": 0.8406080396283665,
+    "process_fidelity_bootstrap_median": 0.840300097263317,
     "process_fidelity_interval": [
-     0.8338673135232222,
-     0.8496848707359561
+     0.8326505140066196,
+     0.84746700148423
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8331787252632588,
-      0.8489962824759927
+      0.833749077772503,
+      0.8485655652501134
      ],
      "percentile": [
-      0.8338673135232222,
-      0.8496848707359561
+      0.8326505140066196,
+      0.84746700148423
      ]
     },
-    "projected_process_fidelity": 0.8339216312328028
+    "projected_process_fidelity": 0.8321792277421024
    },
-   "seed_index": 149,
+   "seed_index": 153,
    "source, loss and dark counts": {
     "estimand_average_gate_fidelity": 0.8725837444915499,
     "estimand_process_fidelity": 0.8407296806144372
-   }
-  },
-  {
-   "design": {
-    "expected_eligible_events": 614912.4257744907,
-    "expected_shots_by_job": {
-     "job-00": 86424402.8533465,
-     "job-01": 85526221.38156378
-    },
-    "largest_expected_shots": 1226996.611995277,
-    "process_fidelity_sd": 0.004064288744871925,
-    "retained_uniform_design_process_fidelity_sd": 0.01052350805421268
-   },
-   "hom_percent": 93.0,
-   "indistinguishability only": {
-    "estimand_average_gate_fidelity": 0.9214953271028037,
-    "estimand_process_fidelity": 0.9018691588785045
-   },
-   "sampled_dataset": {
-    "average_gate_fidelity": 0.8710937917370465,
-    "average_gate_fidelity_interval": [
-     0.8642173300191902,
-     0.8769117990788277
-    ],
-    "conditional_process_fidelity": 0.8394311833919554,
-    "events": 616065,
-    "process_fidelity": 0.8388672396713082,
-    "process_fidelity_bootstrap_median": 0.8385810709141999,
-    "process_fidelity_interval": [
-     0.8302716625239878,
-     0.8461397488485346
-    ],
-    "process_fidelity_intervals": {
-     "basic": [
-      0.8315947304940817,
-      0.8474628168186286
-     ],
-     "percentile": [
-      0.8302716625239878,
-      0.8461397488485346
-     ]
-    },
-    "projected_process_fidelity": 0.8316468917678601
-   },
-   "seed_index": 150,
-   "source, loss and dark counts": {
-    "estimand_average_gate_fidelity": 0.8772513953082491,
-    "estimand_process_fidelity": 0.8465642441353113
    }
   },
   {
@@ -307,35 +451,131 @@
     "estimand_process_fidelity": 0.915094339622641
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8853522820118715,
+    "average_gate_fidelity": 0.8881790260576562,
     "average_gate_fidelity_interval": [
-     0.8788445306395672,
-     0.8915323972613892
+     0.8813180967746703,
+     0.8943433728466484
     ],
-    "conditional_process_fidelity": 0.852444149020287,
-    "events": 611986,
-    "process_fidelity": 0.8566903525148395,
-    "process_fidelity_bootstrap_median": 0.8566461462825639,
+    "conditional_process_fidelity": 0.8542835022563833,
+    "events": 609066,
+    "process_fidelity": 0.8602237825720702,
+    "process_fidelity_bootstrap_median": 0.8600011062627362,
     "process_fidelity_interval": [
-     0.848555663299459,
-     0.8644154965767366
+     0.851647620968338,
+     0.8679292160583106
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8489652084529424,
-      0.86482504173022
+      0.8525183490858298,
+      0.8687999441758024
      ],
      "percentile": [
-      0.848555663299459,
-      0.8644154965767366
+      0.851647620968338,
+      0.8679292160583106
      ]
     },
-    "projected_process_fidelity": 0.8499538974228098
+    "projected_process_fidelity": 0.8522087717880891
    },
-   "seed_index": 151,
+   "seed_index": 154,
    "source, loss and dark counts": {
     "estimand_average_gate_fidelity": 0.8866809677590766,
     "estimand_process_fidelity": 0.8583512096988457
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 604686.6247529199,
+    "expected_shots_by_job": {
+     "job-00": 86716174.7152437,
+     "job-01": 85968518.34304649
+    },
+    "largest_expected_shots": 1226996.541065645,
+    "process_fidelity_sd": 0.004127582545315583,
+    "retained_uniform_design_process_fidelity_sd": 0.010718986291419907
+   },
+   "hom_percent": 95.5,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.9483253588516745,
+    "estimand_process_fidelity": 0.935406698564593
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.8970599130059183,
+    "average_gate_fidelity_interval": [
+     0.8904068907028457,
+     0.9030393446873249
+    ],
+    "conditional_process_fidelity": 0.8681171756258242,
+    "events": 604005,
+    "process_fidelity": 0.8713248912573979,
+    "process_fidelity_bootstrap_median": 0.8711203968707969,
+    "process_fidelity_interval": [
+     0.863008613378557,
+     0.8787991808591563
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.8638506016556394,
+      0.8796411691362387
+     ],
+     "percentile": [
+      0.863008613378557,
+      0.8787991808591563
+     ]
+    },
+    "projected_process_fidelity": 0.8641963530004669
+   },
+   "seed_index": 155,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.9011388396531455,
+    "estimand_process_fidelity": 0.876423549566432
+   }
+  },
+  {
+   "design": {
+    "expected_eligible_events": 599130.8752953236,
+    "expected_shots_by_job": {
+     "job-00": 86874202.28279105,
+     "job-01": 86212994.20312238
+    },
+    "largest_expected_shots": 1226997.5645986383,
+    "process_fidelity_sd": 0.004163504800063533,
+    "retained_uniform_design_process_fidelity_sd": 0.010829964588727627
+   },
+   "hom_percent": 96.8420696,
+   "indistinguishability only": {
+    "estimand_average_gate_fidelity": 0.9632649039651531,
+    "estimand_process_fidelity": 0.9540811299564413
+   },
+   "sampled_dataset": {
+    "average_gate_fidelity": 0.9098141565838962,
+    "average_gate_fidelity_interval": [
+     0.9033848757171429,
+     0.9155912204411929
+    ],
+    "conditional_process_fidelity": 0.8848915826555357,
+    "events": 598063,
+    "process_fidelity": 0.8872676957298702,
+    "process_fidelity_bootstrap_median": 0.8870177867512302,
+    "process_fidelity_interval": [
+     0.8792310946464285,
+     0.894489025551491
+    ],
+    "process_fidelity_intervals": {
+     "basic": [
+      0.8800463659082494,
+      0.8953042968133119
+     ],
+     "percentile": [
+      0.8792310946464285,
+      0.894489025551491
+     ]
+    },
+    "projected_process_fidelity": 0.8801525655877743
+   },
+   "seed_index": 156,
+   "source, loss and dark counts": {
+    "estimand_average_gate_fidelity": 0.9144052014706,
+    "estimand_process_fidelity": 0.89300650183825
    }
   }
  ],

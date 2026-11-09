@@ -54,15 +54,31 @@ LATER = SUBMITTED + timedelta(minutes=5)
 
 
 @pytest.mark.parametrize(
-    ("hom", "admitted"), [(88.76, False), (90.0, False), (90.000001, True), (91, True), (94.0, True)]
+    ("hom", "admitted"),
+    [
+        (83.1579303, False),
+        (83.1579304, True),
+        (88.76, True),
+        (90.0, True),
+        (94.0, True),
+        (96.8420696, True),
+        (96.8420697, False),
+    ],
 )
-def test_hom_is_admitted_strictly_above_the_floor(hom: float, admitted: bool) -> None:
+def test_hom_is_admitted_inside_the_band_both_ends_inclusive(hom: float, admitted: bool) -> None:
     planned = planned_fixture("job-00", hom)
     if admitted:
         case.admit("job-00", planned, None)
     else:
-        with pytest.raises(case.qd_platform.PlatformError, match="is not above"):
+        with pytest.raises(case.qd_platform.PlatformError, match="outside the admitted band"):
             case.admit("job-00", planned, None)
+
+
+def test_the_band_is_the_owner_ruling_around_the_preferred_hom() -> None:
+    if case.HOM_BAND != (83.1579304, 96.8420696) or case.HOM_PREFERRED != 90.0:
+        raise AssertionError(f"the band reads {case.HOM_BAND} around {case.HOM_PREFERRED}")
+    if case.FORECAST_HOMS[0] != case.HOM_BAND[0] or case.FORECAST_HOMS[-1] != case.HOM_BAND[1]:
+        raise AssertionError("the forecast curve does not reach both ends of the band")
 
 
 @pytest.mark.parametrize("value", [True, "91", float("nan"), float("inf"), None])
@@ -330,3 +346,50 @@ def test_a_refused_post_is_no_attempt(tmp_path: Path) -> None:
     (run / "submission-state.json").write_text(json.dumps({"phase": "post_outcome_unknown"}))
     with pytest.raises(RuntimeError, match="is not collected"):
         case.prior_attempts("job-00", tmp_path)
+
+
+def test_the_forecast_follows_the_overlap_law_and_its_inverse() -> None:
+    """forecast.json's indistinguishability-only estimand is F_pro = (1 + M) / (2 (2 - M)) at every HOM point."""
+    forecast = json.loads((case.FAMILY_DIR / case.FORECAST).read_text(encoding="utf-8"))
+    for point in forecast["points"]:
+        overlap = point["hom_percent"] / 100.0
+        fidelity = point["indistinguishability only"]["estimand_process_fidelity"]
+        if not math.isclose(fidelity, case.overlap_law(overlap), abs_tol=1e-9):
+            raise AssertionError(f"HOM {point['hom_percent']}: {fidelity} is not {case.overlap_law(overlap)}")
+        if not math.isclose(case.overlap_from_fidelity(fidelity), overlap, abs_tol=1e-9):
+            raise AssertionError("M_F does not invert the overlap law")
+
+
+@pytest.mark.parametrize("overlap", [0.5, 0.9])
+def test_the_rail_ratios_follow_the_model(overlap: float) -> None:
+    """Overlap-only rates of the 36 rail-basis settings from the case's photon model: D = 5 - 4M and r(11)/r(01) = 1
+    (the other settings' rates stay zero, which neither ratio reads)."""
+    figures = {"hom": overlap, "g2": 0.0, "transmittance": 1.0, "clock_mhz": 13.33}
+    rates = case.np.zeros(4 * len(tomo.schedule()))
+    for row in tomo.schedule():
+        if row["input"] in case.RAIL_INPUTS:
+            entry = tomo.forecast_setting((row, figures, [0.0] * tomo.MODES))["indistinguishability only"]
+            index = row["schedule_index"]
+            rates[4 * index : 4 * index + 4] = (
+                case.np.asarray(entry["eligible_probabilities"]) / entry["any_click_probability"]
+            )
+    if not math.isclose(case.rail_rate_ratio(rates), 5.0 - 4.0 * overlap, abs_tol=1e-9):
+        raise AssertionError(f"the rail ratio {case.rail_rate_ratio(rates)} is not 5 - 4M")
+    if not math.isclose(case.control_rate_ratio(rates), 1.0, abs_tol=1e-9):
+        raise AssertionError("the control ratio moved with the overlap")
+
+
+def test_widening_scales_each_side_about_the_point() -> None:
+    if case.widened(1.0, [0.9, 1.2], 4.0) != pytest.approx([0.8, 1.4]):
+        raise AssertionError("a ratio of 4 does not double each side")
+    if case.widened(1.0, [0.9, 1.2], 0.5) != pytest.approx([0.9, 1.2]):
+        raise AssertionError("a ratio below 1 narrowed the interval")
+
+
+def test_the_retained_verdicts_name_every_conjecture_once() -> None:
+    record = json.loads((case.FAMILY_DIR / case.RETAINED_VERDICTS).read_text(encoding="utf-8"))
+    ids = [row["id"] for row in record["conjectures"]]
+    if ids != [row["id"] for row in case.CONJECTURES]:
+        raise AssertionError(f"the retained verdicts list {ids}")
+    if any(row["verdict"] not in ("survives", "falsified") for row in record["conjectures"]):
+        raise AssertionError("a retained verdict is neither survives nor falsified")

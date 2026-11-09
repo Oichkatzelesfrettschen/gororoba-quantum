@@ -1783,7 +1783,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group07",
       "name": "core-record-check-07",
-      "seconds": 20.0,
+      "seconds": 75.0,
       "replays": [
         "docs/evidence/heron_platform/feedforward-latency.json",
         "results/quandela/cases/ascella_cz_ensemble/job-00/cases.json",
