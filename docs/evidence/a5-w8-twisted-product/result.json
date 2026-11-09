@@ -114,13 +114,13 @@
   },
   "singular": {
    "version": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Oct 12 2026 04:31:22",
-   "max_rss_kib": 15584,
-   "wall": "0:00.01",
+   "max_rss_kib": 15596,
+   "wall": "0:00.05",
    "log": "log_32009.txt"
   },
   "singular_32003": {
-   "max_rss_kib": 15176,
-   "wall": "0:00.01",
+   "max_rss_kib": 15232,
+   "wall": "0:00.07",
    "log": "log_32003.txt"
   },
   "pass": true
@@ -159,8 +159,8 @@
   "U_plus_V_breaks_equality": true,
   "without_pure_equations_breaks_equality": true,
   "singular": {
-   "max_rss_kib": 14712,
-   "wall": "0:00.01",
+   "max_rss_kib": 14552,
+   "wall": "0:00.09",
    "log": "log_controls.txt"
   },
   "pass": true
@@ -5642,20 +5642,20 @@
   },
   "flint_rank_agrees_on_every_point": true,
   "pass": true,
-  "seconds": 13.12,
+  "seconds": 24.75,
   "python": "3.14.7",
   "python_flint": "0.9.0",
-  "script_sha256": "5b943354b969cfe69a664c86b62850fdf8c384a66ac183625c01fd16215a943c"
+  "script_sha256": "bb292b194e414ca04fed290e59582c6e626c8702125c18364240b691f159dfde"
  },
  "stage_seconds": {
-  "twisted_product": 0.09,
-  "mutation_controls": 0.03,
-  "nullity_spectrum": 0.66,
-  "seeded_points": 0.28,
-  "pair_table": 8.18
+  "twisted_product": 0.87,
+  "mutation_controls": 0.17,
+  "nullity_spectrum": 3.01,
+  "seeded_points": 2.58,
+  "pair_table": 26.01
  },
- "total_s": 9.25,
- "script_sha256": "5b943354b969cfe69a664c86b62850fdf8c384a66ac183625c01fd16215a943c",
+ "total_s": 32.82,
+ "script_sha256": "bb292b194e414ca04fed290e59582c6e626c8702125c18364240b691f159dfde",
  "versions": {
   "python": "3.14.7",
   "numpy": "2.5.4",

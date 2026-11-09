@@ -1229,9 +1229,24 @@ QI_CLASSES = (
 )
 
 
+def q_cross_row(item: tuple[str, Any, Any]) -> tuple[str, tuple[int, int, int], tuple[int, int, int]]:
+    """Exact nullities over Q(i) of one point pair against the F_P nullities of the same pair."""
+    name, z, zb = item
+    x = gauss_x(z, zb)
+    exact = (nullity_qi(32, x), nullity_qi(16, z), nullity_qi(16, zb))
+    zp, zbp = gauss_to_mod(z), gauss_to_mod(zb)
+    modp = (
+        nullity_mod(32, to_x(np.array(zp, dtype=np.int64), np.array(zbp, dtype=np.int64))),
+        nullity_mod(16, zp),
+        nullity_mod(16, zbp),
+    )
+    return name, exact, modp
+
+
 def q_cross_check(rng: np.random.Generator) -> dict[str, Any]:
     """Exact ranks over Q(i) of L_x for Gaussian-rational points, against the F_P ranks of the same points."""
-    rows = []
+    # Every point is drawn first, in the generator's order, then the independent rank checks are mapped.
+    items = []
     for name, first, second in QI_CLASSES:
         for _ in range(8):
             z = qi_point(rng, first)
@@ -1243,15 +1258,8 @@ def q_cross_check(rng: np.random.Generator) -> dict[str, Any]:
                 zb = ([2 * t for t in z[0]], [2 * t for t in z[1]])
             else:
                 zb = qi_point(rng, second)
-            x = gauss_x(z, zb)
-            exact = (nullity_qi(32, x), nullity_qi(16, z), nullity_qi(16, zb))
-            zp, zbp = gauss_to_mod(z), gauss_to_mod(zb)
-            modp = (
-                nullity_mod(32, to_x(np.array(zp, dtype=np.int64), np.array(zbp, dtype=np.int64))),
-                nullity_mod(16, zp),
-                nullity_mod(16, zbp),
-            )
-            rows.append((name, exact, modp))
+            items.append((name, z, zb))
+    rows = parallel.ordered_map(q_cross_row, items)
     classes: dict[str, Any] = {}
     for name, _, _ in QI_CLASSES:
         cls = [r for r in rows if r[0] == name]
