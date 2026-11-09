@@ -479,7 +479,9 @@ tests; the ledger row it enters is named where one exists.
 Reviewed by Codex and Grok ([findings-deep](../../archive/reviews/findings-deep/README.md)). The build host runs no
 heavy job (WSL guest of an active desktop). Each machine's concurrent jobs fit 84 percent of its GPU memory plus
 52.5/64 of its RAM, the two added because a GPU job spills into RAM (owner budget, 2026-11-09): the laptop about
-13.4 GiB GPU + 52.5 GB RAM, OCI A1 about 9.5 GiB RAM, the build host about 10.1 GiB GPU + 36 GB RAM. Each sign pair needs one sign per prime: the sign isomorphisms transport
+13.4 GiB GPU + 52.5 GB RAM, OCI A1 about 9.5 GiB RAM, the build host about 10.1 GiB GPU + 38.6 GiB RAM, a Kaggle session the same shares
+of its own GPU and RAM within its time limit. A GPU-only and a CPU-only job may share a machine, and every host stays
+commissioned after a run until its data is pulled and checked. Each sign pair needs one sign per prime: the sign isomorphisms transport
 every certificate. A ladder needs only its closing N and the N below it once the closing order is known (3d + 1 on
 Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 
