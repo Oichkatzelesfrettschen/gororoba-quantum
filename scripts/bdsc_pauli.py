@@ -357,6 +357,33 @@ class ExtendsInBank:
         return any(w not in words and all(commute(w, a) for a in words) for w in self.bank)
 
 
+class CoverSubtree:
+    """The exact covers of the bank's bits by the set masks whose first choice, covering bit 0, is mask k.
+
+    The search always extends the lowest uncovered bit, so the subtrees of the first-level choices are disjoint and
+    their covers, concatenated in k order, are the whole search's covers in its order; a picklable callable."""
+
+    def __init__(self, masks: list[int], bits: int) -> None:
+        self.masks = masks
+        self.bits = bits
+
+    def __call__(self, first: int) -> list[tuple[int, ...]]:
+        full = (1 << self.bits) - 1
+        covers: list[tuple[int, ...]] = []
+
+        def search(covered: int, chosen: tuple[int, ...]) -> None:
+            if covered == full:
+                covers.append(chosen)
+                return
+            low = next(b for b in range(self.bits) if not covered >> b & 1)
+            for k, mask in enumerate(self.masks):
+                if mask >> low & 1 and not mask & covered:
+                    search(covered | mask, (*chosen, k))
+
+        search(self.masks[first], (first,))
+        return covers
+
+
 def commuting_cover(words: list[str]) -> dict[str, Any]:
     """The commuting 4-sets of the bank, the number of exact covers by 7 of them, and a cover of least total CX."""
     require(words == antisymmetric_bank(), "probe words differ from Y3 (x) {Q : Q^T = -Q}")
@@ -368,19 +395,9 @@ def commuting_cover(words: list[str]) -> dict[str, Any]:
     require(not extendable, f"commuting 4-sets {extendable[:3]} extend to 5")
     index = {w: k for k, w in enumerate(words)}
     masks = [sum(1 << index[w] for w in q) for q in quads]
-    full = (1 << len(words)) - 1
-    covers: list[tuple[int, ...]] = []
-
-    def search(covered: int, chosen: tuple[int, ...]) -> None:
-        if covered == full:
-            covers.append(chosen)
-            return
-        low = next(b for b in range(len(words)) if not covered >> b & 1)
-        for k, mask in enumerate(masks):
-            if mask >> low & 1 and not mask & covered:
-                search(covered | mask, (*chosen, k))
-
-    search(0, ())
+    firsts = [k for k, mask in enumerate(masks) if mask & 1]
+    subtrees = parallel.ordered_map(CoverSubtree(masks, len(words)), firsts, min_items=1)
+    covers = [c for subtree in subtrees for c in subtree]
     require(bool(covers) and all(len(c) == 7 for c in covers), "exact covers by commuting 4-sets are not all of 7")
     settings = parallel.ordered_map(least_cx, quads, min_items=1)
     parallel.ordered_map(verify_setting, settings, min_items=1)
