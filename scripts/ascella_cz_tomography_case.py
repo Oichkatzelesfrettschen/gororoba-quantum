@@ -1346,7 +1346,9 @@ def parse_state(key: str) -> list[int]:
     return [int(part) for part in key.strip("|>").split(",")]
 
 
-def load_run(run: Path) -> dict[str, Any]:
+def load_run(
+    run: Path, family: str = FAMILY, family_dir: Path = FAMILY_DIR, jobs: Sequence[str] = JOBS
+) -> dict[str, Any]:
     """One collected run bound to its retained case. qd_records.read_run binds the receipt (cases.json digest,
     approval, platform), the circuit, the submitted body, the collection and the raw result first. Then cases.json must
     equal the retained bytes of the job it names, and each returned iteration binds to the setting that has its echoed
@@ -1354,8 +1356,8 @@ def load_run(run: Path) -> dict[str, Any]:
     record = qd_records.read_run(run)
     manifest, submission, results = record.manifest, record.submission, record.collected
     job = manifest.get("job")
-    require(manifest.get("family") == FAMILY and job in JOBS, f"{run}: not a run of {FAMILY}")
-    retained = (FAMILY_DIR / str(job) / "cases.json").read_bytes()
+    require(manifest.get("family") == family and job in jobs, f"{run}: not a run of {family}")
+    retained = (family_dir / str(job) / "cases.json").read_bytes()
     require(record.cases_sha256 == sha256_bytes(retained), f"{run}: cases.json differs from the retained {job}")
     entries = results.get("iterations") or []
     require(len(entries) <= len(manifest["settings"]), f"{run}: {len(entries)} iterations for {job}")
@@ -1410,12 +1412,12 @@ def shot_ratio(transmittance_percent: float) -> float:
     return fraction / (2.0 - fraction)
 
 
-def pooling(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """The job scales and the drift status of the pooled runs: job-00 is the reference, job-01's rates are multiplied
-    by g(T_job-00) / g(T_job-01), and the pool is decided only inside the preregistered tolerances."""
+def pooling(loaded: Sequence[Mapping[str, Any]], jobs: Sequence[str] = JOBS) -> dict[str, Any]:
+    """The job scales and the drift status of the pooled runs: the first job is the reference, the second job's rates
+    are multiplied by g(T_first) / g(T_second), and the pool is decided only inside the preregistered tolerances."""
     by_job = {entry["job"]: entry for entry in loaded}
-    reference, other = by_job[JOBS[0]], by_job[JOBS[1]]
-    scales = {JOBS[0]: 1.0, JOBS[1]: 1.0}
+    reference, other = by_job[jobs[0]], by_job[jobs[1]]
+    scales = {jobs[0]: 1.0, jobs[1]: 1.0}
     out: dict[str, Any] = {"scales": scales, "status": "descriptive", "reason": None}
     perfs = [reference["perfs"], other["perfs"]]
     times = [reference["submitted_utc"], other["submitted_utc"]]
@@ -1426,7 +1428,7 @@ def pooling(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         gap = abs((datetime.fromisoformat(times[1]) - datetime.fromisoformat(times[0])).total_seconds()) / 3600.0
         d_hom = abs(perfs[1]["HOM (%)"] - perfs[0]["HOM (%)"])
         d_t = abs(perfs[1]["Transmittance (%)"] - perfs[0]["Transmittance (%)"])
-        scales[JOBS[1]] = shot_ratio(perfs[0]["Transmittance (%)"]) / shot_ratio(perfs[1]["Transmittance (%)"])
+        scales[jobs[1]] = shot_ratio(perfs[0]["Transmittance (%)"]) / shot_ratio(perfs[1]["Transmittance (%)"])
     except (KeyError, TypeError, ValueError) as error:
         out["reason"] = f"the plans' figures are unreadable: {error}"
         return out
