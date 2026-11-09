@@ -1,0 +1,3 @@
+RESULT relations 69 Q_generators 852 setup_ms 6691
+RESULT lift_ms 1496662 cofactor_terms 51611 rows 852 cols 69
+RESULT written

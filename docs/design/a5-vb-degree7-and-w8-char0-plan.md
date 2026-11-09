@@ -26,8 +26,9 @@ can falsify the first three predictions, and it costs less than N = 22.
 ### Where the time goes (measured)
 
 The engine-v11 records of degrees 5 and 6 (`docs/evidence/a5-exceptional-fibers/vb-d6-laptop/*.json`, field
-`export.computed_seconds`) put the cost of a cell into one Singular call, `std(J + maxideal(N))` (the `STD_SCRIPT` of
-`replay/engine/fiber_rank_v11.py`). The multiplication tables and the generator reduction take under 63 s at every N:
+`export.computed_seconds`, against `seconds.total`) put 94.5 to 98.6 percent of a cell's wall time into one Singular
+call, `std(J + maxideal(N))` (the `STD_SCRIPT` of `replay/engine/fiber_rank_v11.py`), the share rising with N. The
+multiplication tables and the generator reduction take under 63 s at every N:
 
 | N | std(J + m^N), p = 32009 | std, p = 32029 | tables and generators |
 |---|---|---|---|
@@ -55,19 +56,31 @@ identity pins the dp standard monomials, so an admitted lever changes no record.
 script still lands as a successor engine, never as an edit to v11, because the v11 digest binds the retained records.
 
 The probes ran on the build host on 2026-11-09, five Singular processes at once, so the baseline (562 s) runs slower
-than the engine record (420 s); the ratios compare runs under the same load.
+than the engine record (420 s); the ratios compare runs under the same load. The values are provisional pilot
+readings: they size the next test, and a lever enters an engine only through a retained N = 18 comparison that binds
+the producer, the Singular build, the s, qB, table and generator digests, and the ranks. Equal kbase bytes show the
+same standard monomials; they do not by themselves show equal tables or normal forms.
 
-| variant | N = 15 | N = 16 | kbase equal |
-|---|---|---|---|
-| baseline `std`, redSB | 562.2 s | running | reference (sha256 6c1172203b181a95...) |
-| `std` without tail reduction | 762.8 s (refuted: slower) | running | equal |
-| `slimgb` | 301.0 s (1.87x) | running | equal |
-| `std(std(J), maxideal(N))` | running | running | pending |
+| variant | N = 15 | kbase equal |
+|---|---|---|
+| baseline `std`, redSB | 562.2 s | reference (sha256 6c1172203b181a95...) |
+| `std` without tail reduction | 762.8 s (refuted: slower) | equal |
+| `slimgb` | 301.0 s (1.87x, provisional) | equal |
+| `std(std(J), maxideal(N))` | stopped at 1,821 s (refuted: slower) | none |
+
+The N = 18 comparison runs on the Windows workstation (`run-laptop.sh`: the std baseline beside `slimgb` at N = 18,
+19 and 20, each capped at 3 hours).
 
 Fitting N = 22 under the cap means std at most about 10,000 s, against the 22,300 to 89,300 s range. A lever must
 therefore be at least 2.2 to 9 times faster at N = 18, where it is testable in under an hour.
 
 Further levers, not yet run:
+
+- **Variable order and `groebner`.** dp depends on the variable order. A deterministic screen of a fixed set of
+  variable permutations at N = 15, together with `standard.lib`'s `groebner` (which picks among direct and conversion
+  methods), may find a faster order. A successor engine then records the order and maps the basis and tables back to
+  the canonical variables. Falsifier: no permutation beats the baseline beyond noise at N = 15, or the winner loses at
+  N = 18.
 
 - **Weighted ordering (A5-258, task 115).** The weights come from the exact torus in the Klein centralizer, which is
   not yet computed. Falsifier: J is not weight-homogeneous for any positive weight in the slice.
@@ -81,11 +94,13 @@ Further levers, not yet run:
 
 ### Decision for the owner
 
-Two options:
+The recommended order:
 
-- **One N = 21 cell at p = 32009.** Estimated 15,400 to 30,800 s at about 2 GiB, one core. It tests three of the four
-  predictions.
-- **Wait for a lever.** A lever that wins by 2.2 to 9 times at N = 18 brings N = 22 under the cap.
+1. **Lever at N = 18 first.** The retained N = 18 comparison on the laptop, now running, decides. A lever that wins
+   by 2.2 to 9 times at N = 18, with equal quotient and ranks, brings N = 22 under the cap.
+2. **Then one N = 21 cell at p = 32009,** only if the lever fails that test. Estimated 15,400 to 30,800 s at about
+   2 GiB on one core, so it needs your approval past the cap. It can refute three of the four predictions. It cannot
+   confirm closure at N = 22.
 
 Both N = 22 cells (one per prime) without a lever take 6 to 25 h each and need a sized case.
 
@@ -99,29 +114,42 @@ three checks. For W8 -> N- the certified degrees are d = 1 to 5 at both primes (
 | check | W8 -> N- status |
 |---|---|
 | 1. good reduction of J and G | survives (A5-247; J has one generator, G has 24) |
-| 3. good reduction of J + m^N at N = 3d + 1 | survives at N = 4, 7, 10, 13 (A5-277); N = 16 (d = 5) @W16@ |
+| 3. good reduction of J + m^N at N = 3d + 1 | survives at N = 4, 7, 10, 13 (A5-277); N = 16 (d = 5) running under the 3-hour cap |
 | 2. degree-2 relations over Q(i), reducing onto K2 | not run; 300 products, 144 relations (h_2 = 156) |
 
 Radicality of K2 does not enter the per-degree proposition. The 24,548 s global radical test belongs only to the
 all-degree statement (h_6 = 8,624 and beyond: A5-143, A5-149, proved modulo p by A5-066, which uses A5-061 radical,
 A5-062 components and A5-010 Cohen-Macaulay).
 
-### Check 2: the cofactor route, piloted on X- -> N-
+### Check 2: a canonical linear system, not `lift`
 
-The direct Q(i) computation stalled at the 3-hour cap on X- (A5-248), and W8's modular degree-2 receipt alone took
-5,619 s at 6.7 GB, so W8 check 2 runs only after the X- pilot finishes end to end. The pilot has three stages:
+The direct Q(i) computation stalled at the 3-hour cap on X- (A5-248). Singular's `lift` has no canonical solution
+rule (A5-248), so its cofactors at different primes need not be images of one Q(i) solution. Equal supports at two
+primes would show neither compatible coefficients nor a reconstruction bound. The modular lifts measured that route's
+size anyway:
+- 32009: 1,565 s at 16.5 GB;
+- 32029: 1,497 s;
+- 51,611 nonzero entries of the 852 x 69 cofactor matrix at each prime;
+- 277 MB of cofactor text per prime at 32029.
 
-1. **Lift modulo two split primes** (`docs/evidence/a5-char0-transfer/cofactors/`). At p = 32009 the lift took
-   1,565 s at 16.5 GB with 51,611 cofactor terms (A5-248). At 32029: @L2@.
-2. **Canonicality.** Reconstruction needs the two primes' cofactor matrices to have the same support. If they
-   differ, lift's output is not the image of one Q(i) computation, and the route switches to a degree-bounded linear
-   system whose reduced row echelon solution is canonical and reconstructs by the Chinese remainder theorem.
-   Result: @CAN@.
-3. **Identity over Q(i).** Check q(G) = sum a_k J_k + sum b x P term by term. The single matrix product timed out
-   modulo p at 30 minutes, so the check runs per relation (69 for X-) through `parallel.py`. Alternatively the
-   identity is checked modulo enough further split primes for their product to exceed twice the coefficient bound of
-   the identity polynomial. That check is exact, because an integer of absolute value below B that vanishes modulo a
-   modulus above 2B is zero.
+The support comparison (`cofactors/cofactor_support.py`) stays a diagnostic only.
+
+The route for check 2 is a degree-bounded coefficient system with a fixed pivot convention:
+1. Build at each prime the matrix of the products of each relation with the standard basis, bounded in degree.
+2. Take its reduced row echelon form, which is canonical.
+3. Reconstruct the coefficients over Z[i] by the Chinese remainder theorem and rational reconstruction.
+4. Verify every reconstructed identity exactly over Q(i), one relation per item, through `parallel.py`.
+
+For W8 the retained receipts already hold the modular standard bases (`working/distribute/out/a5-w8-receipt-p1/` and
+`a5-p2-w8/`, `sq.txt.part*`). Their product and standard-basis stages took 6,559.6 s at 32009 and 9,860.3 s at
+32029, against membership stages of 325.1 s and 575.4 s. The matrix has 53,584 columns and about 2.64 million
+nonzeros (`receipt-d2.json`). The system reuses these bases instead of recomputing them. Acceptance: 144 exact
+identities over Q(i) whose reductions span the retained K2 at both primes.
+
+A modular identity check is exact only with both conjugate roots. A congruence at i -> r shows divisibility by the
+Gaussian prime (p, i - r), not by p. For example, 128 + 125i vanishes modulo 32009 at i -> 10754 while its absolute
+value is below 179, and at i -> -10754 it gives 256. Checking i -> r and i -> -r at every split prime makes p divide
+both integer components, and then the product of the primes must exceed twice the bound on each component.
 
 ### The all-degree statement (hypothesis)
 
@@ -133,6 +161,12 @@ special fiber, where A5-061 and A5-010 prove them, to the generic fiber. The irr
 fiber specialize to effective cycles whose degrees sum to 50. The only splittings are therefore one component of
 degree 50 or components of degrees 20 and 30.
 
+Two bridges are still missing. Reducedness of Proj does not by itself make the affine cone k[y]/K2 reduced. The
+bridge: the generic quotient is a positive-dimensional standard graded Cohen-Macaulay ring, so it has no
+finite-length H^0_m, and a nilradical supported at the irrelevant ideal would lie in that module and vanish. The
+component count also needs its own argument: the reduced special components occur with multiplicity one, so distinct
+generic components specialize to disjoint sets of special components.
+
 Status: hypothesis, confidence medium. It rests on the cited openness theorems applying to this family, which an
 audit should check against the source. Falsifier: the Q(i) Gröbner basis of K2 has a p in a denominator or a
 different leading ideal. Separately, the A5-066 fiber-containment argument (a blowup-chart computation modulo p) needs
@@ -140,9 +174,10 @@ its own transfer, which no record yet sizes.
 
 ### W8 decision for the owner
 
-W8 per-degree transfer for d = 1 to 5 needs check 2 only, once the X- pilot shows the cofactor route works. Its cost
-is sized from the pilot's per-prime lift time scaled by the W8 receipt ratio (5,619 s against X-'s 18 s mod-p
-relation step). The all-degree statement needs the flatness check above and a sized transfer of A5-066.
+Per-degree transfer for d = 1 to 4 needs check 2. Degree 5 also needs check 3 at N = 16. Check 2 runs as the
+canonical linear system above, piloted on X- and then on W8 from the retained W8 standard bases. Scaling the X- lift
+by the W8 receipt ratio gives about 136 h per prime, so a direct W8 `lift` has no bounded case. The all-degree
+statement needs the flatness check, the two bridges above, and a sized transfer of A5-066.
 
 ## Placement and concurrency
 

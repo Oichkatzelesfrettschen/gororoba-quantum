@@ -1,0 +1,5 @@
+RESULT std_ms 112150
+RESULT slimgb_ms 66096
+RESULT kbase_equal 1
+RESULT tables_equal 1
+RESULT sb_sizes 1244 1244
