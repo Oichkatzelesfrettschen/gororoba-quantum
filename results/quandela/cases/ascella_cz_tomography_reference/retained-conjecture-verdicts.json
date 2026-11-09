@@ -1,0 +1,241 @@
+{
+ "conjectures": [
+  {
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
+   "id": "overlap-only-law",
+   "observed": null,
+   "prediction": 0.8340448239060831,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
+   "id": "g2-corrected-overlap-law",
+   "observed": null,
+   "prediction": 0.8761210762331839,
+   "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
+   "id": "noise-model-record-variant",
+   "observed": null,
+   "prediction": 0.7884358260892862,
+   "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": 0.8687874655611454
+   },
+   "id": "noise-model-g2-corrected-variant",
+   "observed": null,
+   "prediction": 0.8263855984410138,
+   "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": 0.9038853788015274,
+    "upper": 0.9419870198655921
+   },
+   "id": "rail-ratio-reads-hom",
+   "observed": null,
+   "prediction": 0.8756,
+   "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": -0.04899049447941249,
+    "upper": -0.0010119235082348566
+   },
+   "id": "two-overlaps-agree",
+   "observed": null,
+   "prediction": 0.0,
+   "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": -0.018365091465770852,
+    "upper": 0.03317647139863856
+   },
+   "id": "record-overlaps-agree",
+   "observed": null,
+   "prediction": 0.0,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 0.8282304341811703,
+    "upper": null
+   },
+   "id": "noise-model-ceiling",
+   "observed": null,
+   "prediction": 0.9372267134864185,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 0.9685035554618946,
+    "upper": 1.0508255933319772
+   },
+   "id": "control-ratio-lossless",
+   "observed": null,
+   "prediction": 1.0,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 0.9685035554618946,
+    "upper": 1.0508255933319772
+   },
+   "id": "control-ratio-noise-model",
+   "observed": null,
+   "prediction": 1.0382769330839434,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": null,
+    "upper": 6913.8005050198035
+   },
+   "id": "scatter-matches-acquisition-law",
+   "observed": null,
+   "prediction": 5288.25067682674,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 1.0785504917723372,
+    "upper": 1.7975841529538952
+   },
+   "id": "overdispersion-constant-factor",
+   "observed": 1.4380673223631162,
+   "prediction": 1.4380673223631162,
+   "verdict": "survives"
+  },
+  {
+   "band": {
+    "lower": 1.0785504917723372,
+    "upper": 1.7975841529538952
+   },
+   "id": "overdispersion-relative-systematic",
+   "observed": 1.4380673223631162,
+   "prediction": 1.4380673223631162,
+   "verdict": "survives"
+  }
+ ],
+ "overlap_estimates": {
+  "control_rate_ratio": {
+   "interval": [
+    0.9685035554618946,
+    1.0508255933319772
+   ],
+   "point": 1.0094912308517652
+  },
+  "difference": {
+   "interval": [
+    -0.04899049447941249,
+    -0.0010119235082348566
+   ],
+   "point": -0.025448504411952122
+  },
+  "overdispersion": {
+   "draws": 200,
+   "mean_events_per_rate": 174.703125,
+   "pearson": 5288.25067682674,
+   "ratio": 1.4380673223631162,
+   "reference_95": [
+    1986.194782601362,
+    6913.8005050198035
+   ],
+   "reference_mean": 3677.3317873163114,
+   "seed": 14845
+  },
+  "overlap_from_fidelity": {
+   "interval": [
+    0.870677883432445,
+    0.904139584485234
+   ],
+   "point": 0.8883354978545324
+  },
+  "overlap_from_rail_rates": {
+   "interval": [
+    0.8964377814633189,
+    0.9311191939720981
+   ],
+   "point": 0.9137840022664845
+  },
+  "rail_rate_ratio": 1.344863990934062,
+  "record_model": {
+   "difference": {
+    "censored": null,
+    "interval": [
+     -0.018365091465770852,
+     0.03317647139863856
+    ],
+    "point": 0.006878567972024796
+   },
+   "fit": {
+    "fidelity_max_residual": 8.011905047955459e-06,
+    "fidelity_range": [
+     0.6241138576803187,
+     0.9372309242425781
+    ],
+    "grid": [
+     0.7,
+     0.7375,
+     0.775,
+     0.8125,
+     0.85,
+     0.8875,
+     0.925,
+     0.9625,
+     1.0
+    ],
+    "rail_ratio_max_residual": 2.6961010416437503e-05,
+    "rail_ratio_range": [
+     1.064315411427565,
+     2.156704276126727
+    ]
+   },
+   "overlap_from_fidelity": {
+    "censored": null,
+    "interval": [
+     0.9115961873978536,
+     0.9461325076713082
+    ],
+    "point": 0.9298205797718047
+   },
+   "overlap_from_rail_rates": {
+    "censored": null,
+    "interval": [
+     0.9038853788015274,
+     0.9419870198655921
+    ],
+    "point": 0.9229420117997799
+   }
+  }
+ },
+ "plan_reads": {
+  "HOM (%)": 87.56,
+  "Transmittance (%)": 5.81,
+  "g2 (%)": 1.8
+ },
+ "process_fidelity": 0.8493279646017845,
+ "process_fidelity_interval": [
+  0.8282304341811703,
+  0.8687874655611454
+ ],
+ "runs": [
+  "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+  "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01"
+ ],
+ "schema": "qd-cz-tomography-reference-retained-verdicts-v1"
+}

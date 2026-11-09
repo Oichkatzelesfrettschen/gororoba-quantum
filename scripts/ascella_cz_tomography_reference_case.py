@@ -1,4 +1,5 @@
-"""Ascella CZ process tomography reference above 90 % HOM: two qpu:ascella jobs of 72 template iterations.
+"""Ascella CZ process tomography reference across the HOM band 90 +- 6.8420696 points: two qpu:ascella jobs of 72
+template iterations.
 
 docs/design/ascella-cz-tomography-reference-case.md fixes the request. The estimand, the 144 settings, the six-mode
 window at chip modes 0..5, the parity split into two jobs, the eligibility rule, the estimator, the bootstrap and the
@@ -11,12 +12,13 @@ pooling rule are those of scripts/ascella_cz_tomography_case.py, imported by nam
   1 credit plus 1e-6 per shot up to its largest iteration's max_shots, so with equal caps every iteration spends
   the shots the bill already pays for, and the worst-case seconds, every iteration at its cap, stay within
   max_duration down to the transmittance floor that submission_policy names.
-- Gate. A submit_wrapper gate admits a plan only at HOM strictly above qd_platform.HOM_FLOOR, at status available or
-  running with the token idle, with the shot estimate and an in-lock processor re-read on the plan's perfs, the
-  transmittance at or above the floor, and, for job-01, a completed job-00 run with every iteration counted. The
-  request is frozen at build: a gate refuses, it never adapts the body to the live read.
-- Forecast. The noise forecast is a curve over HOM at the retained read's g2, transmittance and dark counts, since
-  no read above 90 % exists to forecast at; the plan read at submission picks the point.
+- Gate. A submit_wrapper gate admits a plan at any HOM inside HOM_BAND, at status available or running with the
+  token idle, with the shot estimate and an in-lock processor re-read on the plan's perfs, the transmittance at or
+  above the floor, and, for job-01, a completed job-00 run with every iteration counted. The request is frozen at
+  build: a gate refuses, it never adapts the body to the live read.
+- Forecast. The noise forecast is a curve over the HOM band at the retained read's g2, transmittance and dark counts,
+  anchored at HOM_PREFERRED; the plan read at submission picks the point and its offset from HOM_PREFERRED is a
+  reported covariate.
 
 --check rebuilds both jobs in memory and compares them with the retained files and checks the budgets, the seed
 plan, the time and credit bounds and the design comparison. --read retains the live processor record, --estimate
@@ -38,7 +40,7 @@ import json
 import math
 import sys
 import tempfile
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -94,11 +96,94 @@ RUNS_DIR = ROOT / "results/quandela/runs"
 # Attempts of one job the stopping rule admits: the first, and one resubmission after a terminal error that returned
 # no counted iteration.
 MAX_ATTEMPTS = 2
-# HOM points of the forecast curve, in percent: the admitted region above qd_platform.HOM_FLOOR.
-FORECAST_HOMS = (90.5, 91.0, 91.5, 92.0, 92.5, 93.0, 94.0)
+# The admitted HOM band in percent (owner ruling of 2026-11-09): preferred HOM_PREFERRED, admitted within
+# HOM_BAND_POINTS percentage points of it, both ends inclusive. Perceval's estimate_required_shots simulates at
+# indistinguishability 1 and g2 0 (perceval.runtime.remote_computer._estimate_sample_probability); two photons bunch
+# into mode k with probability (1 + M) |U_k1|^2 |U_k2|^2 at photon overlap M, so the two-click probability falls as M
+# rises and the estimate at M = 1 bounds the shots per sample at every HOM in the band.
+HOM_PREFERRED = qd_platform.HOM_FLOOR
+HOM_BAND_POINTS = 6.8420696
+HOM_BAND = (round(HOM_PREFERRED - HOM_BAND_POINTS, 7), round(HOM_PREFERRED + HOM_BAND_POINTS, 7))
+# HOM points of the forecast curve, in percent: the band's ends, the retained tomography's 87.56 and HOM_PREFERRED.
+FORECAST_HOMS = (83.1579304, 84.5, 86.0, 87.56, 88.5, 89.25, 90.0, 91.0, 92.5, 94.0, 95.5, 96.8420696)
 FORECAST_RECORD_VARIANT = "source, loss and dark counts"
 FORECAST_CURVE_VARIANTS = ("indistinguishability only", FORECAST_RECORD_VARIANT)
 TOLERANCE = tomo.TOLERANCE
+# Preregistered conjectures the pooled pair tests, each against the analysis' 95 % bootstrap interval
+# (tomo.INTERVAL_KIND). M is the photon overlap; V and g2 are the plan reads of job-00 and job-01, averaged, in units.
+CONJECTURES = (
+    {
+        "id": "overlap-only-law",
+        "statement": "overlap is the only error: F_pro = (1 + M) / (2 (2 - M)) with M = V",
+        "falsified_when": "the process-fidelity interval excludes the law at M = V",
+    },
+    {
+        "id": "g2-corrected-overlap-law",
+        "statement": "the same law with the multiphoton-corrected overlap M = min(1, (V + g2) / (1 - g2))",
+        "falsified_when": "the process-fidelity interval excludes the law at the corrected M",
+    },
+    {
+        "id": "noise-model-record-variant",
+        "statement": "the retained noise pipeline's record variant (source, loss and dark counts) at the plan reads",
+        "falsified_when": "the process-fidelity interval excludes the variant's estimand",
+    },
+    {
+        "id": "noise-model-g2-corrected-variant",
+        "statement": "the retained noise pipeline's g2-corrected overlap variant at the plan reads",
+        "falsified_when": "the process-fidelity interval excludes the variant's estimand",
+    },
+    {
+        "id": "rail-ratio-reads-hom",
+        "statement": "the rail overlap inverted through the record noise model at the plan reads equals the "
+        "platform's HOM V",
+        "falsified_when": "the interval of the record-model M_R excludes V",
+    },
+    {
+        "id": "two-overlaps-agree",
+        "statement": "overlap-only closure: M_F = (4 F - 1) / (2 F + 1) equals M_R = (5 - D) / 4",
+        "falsified_when": "the interval of M_F - M_R on the joint replicates excludes 0",
+    },
+    {
+        "id": "record-overlaps-agree",
+        "statement": "record-model closure: the overlaps that the record noise model at the plan reads assigns to the "
+        "measured F and to the measured D agree, so one overlap explains both once g2, loss and dark counts enter",
+        "falsified_when": "the interval of the record-model M_F - M_R on the joint replicates excludes 0",
+    },
+    {
+        "id": "noise-model-ceiling",
+        "statement": "no overlap beats M = 1: F stays at or below the record variant at HOM 100 % with the plan's g2, "
+        "transmittance and dark counts",
+        "falsified_when": "the lower end of the process-fidelity interval exceeds the ceiling",
+    },
+    {
+        "id": "control-ratio-lossless",
+        "statement": "r(11) / r(01) = 1: the two inputs whose photons never meet succeed equally on balanced rails",
+        "falsified_when": "the interval of r(11) / r(01) excludes 1",
+    },
+    {
+        "id": "control-ratio-noise-model",
+        "statement": "r(11) / r(01) takes the record variant's value at the plan reads (multiphoton lost-twin events)",
+        "falsified_when": "the interval of r(11) / r(01) excludes the record variant's ratio",
+    },
+    {
+        "id": "scatter-matches-acquisition-law",
+        "statement": "model check: the counts scatter about one Choi matrix as the acquisition law draws them",
+        "falsified_when": "the Pearson statistic exceeds the 97.5th percentile of its acquisition reference",
+    },
+    {
+        "id": "overdispersion-constant-factor",
+        "statement": "the scatter beyond Poisson is a constant variance factor: the overdispersion ratio equals the "
+        "retained pair's",
+        "falsified_when": "the observed ratio lies more than 25 % from the retained pair's ratio",
+    },
+    {
+        "id": "overdispersion-relative-systematic",
+        "statement": "the scatter beyond Poisson is a relative systematic per rate fixed by the retained pair, so the "
+        "ratio minus one grows with the mean eligible events per rate",
+        "falsified_when": "the observed ratio lies more than 25 % from 1 + (retained ratio - 1) e / e_retained, e the "
+        "mean eligible events per rate",
+    },
+)
 
 
 def require(condition: bool, message: str) -> None:
@@ -133,12 +218,13 @@ def seed_plan() -> dict[str, Any]:
     """(index, value) of the 144 compilation seeds in schedule order, the bootstrap seed and the forecast seeds."""
     usable = usable_draw()
     count = len(tomo.schedule())
-    need = count + 1 + len(FORECAST_HOMS)
+    need = count + 1 + len(FORECAST_HOMS) + 1
     require(len(usable) >= need, f"{DRAW} holds {len(usable)} usable values, not {need}")
     return {
         "compilation": usable[:count],
         "bootstrap": usable[count],
-        "forecast": usable[count + 1 : need],
+        "forecast": usable[count + 1 : need - 1],
+        "overdispersion": usable[need - 1],
     }
 
 
@@ -323,7 +409,13 @@ def submission_policy(job: str) -> dict[str, Any]:
         "credit_ceiling": credit_ceiling(),
         "per_job_credits": PER_JOB_CREDITS,
         "expected_seconds": expected_seconds(job),
-        "hom_percent": {"above": qd_platform.HOM_FLOOR},
+        "hom_percent": {
+            "preferred": HOM_PREFERRED,
+            "band_points": HOM_BAND_POINTS,
+            "at_least": HOM_BAND[0],
+            "at_most": HOM_BAND[1],
+            "applies_to": f"both jobs; {JOBS[1]} also stays within the pooling tolerances of {JOBS[0]}'s read",
+        },
         "transmittance_percent": {
             "at_least": math.ceil(transmittance_floor(job, clock) * 1e4) / 1e4,
             "rule": f"every iteration at its max_shots stays within max_duration {MAX_DURATION} s at clock "
@@ -379,6 +471,40 @@ def preregistered() -> dict[str, Any]:
         "descriptive: two calibrations with other figures moving",
         "interpretation": "service-compiled average postselected CZ; preparation, readout and gate errors are not "
         "separable because every setting compiles to its own mesh",
+        "hom_band": {
+            "preferred": HOM_PREFERRED,
+            "band_points": HOM_BAND_POINTS,
+            "covariate": "each job's plan HOM minus the preferred HOM, reported beside every estimate",
+        },
+        "overlap_estimators": {
+            "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
+            "from_rail_rates": "M_R = (5 - D) / 4, D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate "
+            "of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
+            "record_model": "the same two quantities inverted through the record noise variant at the plan reads: "
+            "F(M) and D(M) evaluated at overlaps 0.70 to 1.00 in steps of 0.0375, F fitted linear-fractional and D "
+            "quadratic, each inverted by monotone interpolation on 3001 points; a value outside the fitted range of "
+            "F or D has no inverse, so an estimate whose point or any bootstrap replicate falls outside is censored",
+            "bootstrap": "all on the replicates of the primary bootstrap, so each difference has a joint interval",
+        },
+        "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock "
+        "come from job-00's perfs_at_plan; the noise pipeline runs at those reads",
+        "conjectures": [dict(row) for row in CONJECTURES],
+        "verdict_rule": "every interval is the primary bootstrap's 95 % interval; a conjecture is falsified when its "
+        "band excludes its prediction (or, for the two overdispersion conjectures, the observed ratio), and survives "
+        "otherwise; the model check scatter-matches-acquisition-law decides first, and when it is falsified every "
+        "other verdict is reported as conditional on that failure; a conjecture whose band reads a censored "
+        "record-model estimate is undecided; a descriptive pool reports each verdict as descriptive",
+        "overdispersion": {
+            "statistic": "Pearson chi-squared of the 576 eligible counts about the counts of the unweighted "
+            "linear-inversion fit, each over its expected count, one event at least",
+            "reference": f"{OVERDISPERSION_DRAWS} synthetic pairs drawn under the fit as the service acquires them: "
+            "each setting stops at its observed sample count, its eligible outcomes are one multinomial over that "
+            "quota at the fit's rates per shot over the observed samples per shot (negative predictions set to 0), "
+            "its shots are the quota plus a negative-binomial count, and each pair is refit and scored like the data",
+            "ratio": "the observed statistic over the reference mean",
+            "seed_draw": DRAW,
+            "seed_index": plan["overdispersion"][0],
+        },
     }
 
 
@@ -477,7 +603,8 @@ def sampled_dataset(
     shots = np.empty(len(quotas), dtype=int)
     for s, quota in enumerate(int(q) for q in quotas):
         within = arrays["eligible"][s] / arrays["samples"][s]
-        draw = generator.multinomial(quota, np.append(within, 1.0 - within.sum()))
+        # Chances renormalized to sum 1 can leave a remainder of -1e-17, which Generator.multinomial refuses.
+        draw = generator.multinomial(quota, np.append(within, max(0.0, 1.0 - within.sum())))
         eligible[s] = draw[:4]
         shots[s] = quota + generator.negative_binomial(quota, arrays["samples"][s] / arrays["any"][s])
     return eligible, quotas.astype(int), shots
@@ -535,8 +662,8 @@ def forecast() -> dict[str, Any]:
     return {
         "schema": "qd-cz-tomography-reference-forecast-v1",
         "read": {"path": READ, "sha256": qd_platform.sha256_bytes((FAMILY_DIR / READ).read_bytes()), **figures},
-        "basis": "the retained read's g2, transmittance, clock and dark counts at each HOM of the curve; no read "
-        "above the HOM floor exists, so the plan read at submission picks the point",
+        "basis": "the retained read's g2, transmittance, clock and dark counts at each HOM of the curve across the "
+        "admitted band; the plan read at submission picks the point",
         "record_variant": FORECAST_RECORD_VARIANT,
         "seed_draw": DRAW,
         "interval": tomo.INTERVAL_KIND,
@@ -587,7 +714,9 @@ def check_job(job: str, rebuild: bool = True) -> None:
 
 def check() -> int:
     plan = seed_plan()
-    values = [value for _, value in [*plan["compilation"], plan["bootstrap"], *plan["forecast"]]]
+    values = [
+        value for _, value in [*plan["compilation"], plan["bootstrap"], *plan["forecast"], plan["overdispersion"]]
+    ]
     require(len(set(values)) == len(values), "a seed value repeats")
     retained_seeds = {value for _, value in tomo.seed_plan()[0]}
     require(not retained_seeds & set(values), "a compilation seed repeats one of the retained case's")
@@ -606,6 +735,9 @@ def check() -> int:
             design["process_fidelity_sd"] < design["retained_uniform_design_process_fidelity_sd"],
             f"HOM {point['hom_percent']}: the design does not narrow the retained design's spread",
         )
+    retained = json.loads((FAMILY_DIR / RETAINED_VERDICTS).read_text(encoding="utf-8"))
+    difference = tomo.first_difference(retained, json.loads(json.dumps(retained_verdicts())))
+    require(difference is None, f"{RETAINED_VERDICTS} differs from the recomputation at {difference}")
     for job in JOBS:
         print(
             f"{job}: worst case {worst_case_seconds(job, read_perfs()):.1f} s, expected {expected_seconds(job)} s, "
@@ -647,7 +779,8 @@ def admit(
             f"{job}: the shot estimate read other processor perfs than the plan's",
         )
         hom = float(figures["HOM (%)"])
-        require(hom > qd_platform.HOM_FLOOR, f"{job}: HOM {hom:g} % is not above {qd_platform.HOM_FLOOR:g} %")
+        low, high = HOM_BAND
+        require(low <= hom <= high, f"{job}: HOM {hom:g} % is outside the admitted band {low:g} to {high:g} %")
         floor = float(policy["transmittance_percent"]["at_least"])
         t = float(figures["Transmittance (%)"])
         require(t >= floor, f"{job}: transmittance {t:g} % is below the {floor:g} % the caps need")
@@ -854,7 +987,7 @@ def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
         receipt = qd_platform.submit(
             run, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify
         )
-    except (RuntimeError, qd_platform.PlatformError):
+    except RuntimeError, qd_platform.PlatformError:
         discard_unposted(run)
         raise
     print(f"submitted {job}: {receipt['job_id']} in {run.relative_to(ROOT)}")
@@ -886,6 +1019,367 @@ def run_directory(job: str) -> Path:
 # ---------------------------------------------------------------- analysis
 
 
+def overlap_from_fidelity(fidelity: float) -> float:
+    """The photon overlap M that the overlap-only law F = (1 + M) / (2 (2 - M)) gives for process fidelity F."""
+    return (4.0 * fidelity - 1.0) / (2.0 * fidelity + 1.0)
+
+
+RAIL_INPUTS = ("00", "01", "10", "11")
+
+
+def rail_rate_ratio(rates: np.ndarray) -> float:
+    """D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate of input xy summed over its outcomes and
+    averaged over its nine readouts.
+
+    Two photons on the postselected CZ succeed with probability 1/9 for inputs 00, 01 and 11 and (5 - 4M)/9 for 10,
+    the only input whose photons meet at the 1/3 coupler (permanent 1/3, determinant -1, P = (1+M)/2 per^2 +
+    (1-M)/2 det^2), so D = 5 - 4M when overlap is the only error. A local readout keeps one photon per qubit, so
+    every readout of an input carries the same success probability, and the average over nine readouts dilutes the
+    per-setting systematic that the overdispersion statistic measures. Each rail's detection efficiency appears
+    once above and once below, and the two job-01 inputs (10, 01) over the two job-00 inputs (00, 11) leave the
+    square of the job-01 pooling scale, which tomo.pooling sets."""
+    total = dict.fromkeys(RAIL_INPUTS, 0.0)
+    for row in tomo.schedule():
+        if row["input"] in total:
+            index = row["schedule_index"]
+            total[row["input"]] += float(rates[4 * index : 4 * index + 4].sum()) / len(tomo.BASES) ** 2
+    require(all(value > 0.0 for value in total.values()), f"a rail-basis input has no eligible rate: {total}")
+    return total["10"] * total["01"] / (total["00"] * total["11"])
+
+
+def control_rate_ratio(rates: np.ndarray) -> float:
+    """r(11) / r(01) over the readout sums: 1 at every overlap when the CZ is lossless and the rails balance."""
+    total = dict.fromkeys(("01", "11"), 0.0)
+    for row in tomo.schedule():
+        if row["input"] in total:
+            index = row["schedule_index"]
+            total[row["input"]] += float(rates[4 * index : 4 * index + 4].sum())
+    return total["11"] / total["01"]
+
+
+OVERDISPERSION_DRAWS = 200
+
+
+def pearson(eligible: np.ndarray, shots: np.ndarray, scale: np.ndarray) -> float:
+    """Pearson chi-squared of the 576 eligible counts about the counts the linear-inversion fit predicts (predicted
+    rate times shots over the pooling scale), each weighted by its expected count, one event at least."""
+    rates = tomo.absolute_rates(eligible, shots, scale)
+    predicted = (tomo.design_matrix() @ (tomo.design_pseudoinverse() @ rates)).reshape(eligible.shape)
+    expected = predicted * shots[:, None] / scale[:, None]
+    return float((((eligible - expected) ** 2) / np.maximum(expected, 1.0)).sum())
+
+
+def pearson_of(item: tuple[np.ndarray, np.ndarray, np.ndarray]) -> float:
+    """pearson over one (eligible, shots, scale) triple, the unit parallel.ordered_map maps."""
+    return pearson(*item)
+
+
+def overdispersion(
+    eligible: np.ndarray, samples: np.ndarray, shots: np.ndarray, scale: np.ndarray, seed: int
+) -> dict[str, Any]:
+    """The Pearson statistic over its acquisition reference: OVERDISPERSION_DRAWS synthetic pairs drawn as the service
+    acquires them under the fit. Each setting stops at its observed sample count; its four eligible outcomes and the
+    remaining samples are one multinomial over that quota, with per-sample probabilities the fit's eligible rate per
+    shot (negative predictions clipped to 0, the four scaled down together if they pass 1) over the observed samples
+    per shot; its shots are the quota plus a negative-binomial count at the observed samples per shot
+    (sampled_dataset). Each synthetic pair is refit and scored like the data, so the reference carries the bias of
+    the unweighted fit on near-zero cells and the ratio measures scatter beyond the acquisition law."""
+    rates = tomo.absolute_rates(eligible, shots, scale)
+    predicted = (tomo.design_matrix() @ (tomo.design_pseudoinverse() @ rates)).reshape(eligible.shape)
+    per_shot = np.clip(predicted, 0.0, None) / scale[:, None]
+    sample_rate = samples / shots
+    within = per_shot / sample_rate[:, None]
+    within = within / np.maximum(within.sum(axis=1), 1.0)[:, None]
+    arrays = {"eligible": within, "samples": np.ones(len(samples)), "any": 1.0 / sample_rate}
+    generator = np.random.default_rng(seed)
+    # Every synthetic pair is drawn first, in the generator's order, so the statistics do not depend on worker count.
+    draws = []
+    for _ in range(OVERDISPERSION_DRAWS):
+        drawn, _, drawn_shots = sampled_dataset(arrays, samples, generator)
+        draws.append((drawn.astype(float), drawn_shots.astype(float), scale))
+    reference = ordered_map(pearson_of, draws, min_items=1)
+    observed = pearson(eligible, shots, scale)
+    centre = float(np.mean(reference))
+    return {
+        "pearson": observed,
+        "reference_mean": centre,
+        "reference_95": [float(v) for v in np.percentile(reference, [2.5, 97.5])],
+        "ratio": observed / centre,
+        "mean_events_per_rate": float(eligible.mean()),
+        "draws": OVERDISPERSION_DRAWS,
+        "seed": seed,
+    }
+
+
+RECORD_GRID = tuple(round(0.70 + 0.0375 * k, 4) for k in range(9))
+
+
+def record_inversion(perfs: Mapping[str, Any]) -> dict[str, Any]:
+    """The record noise variant's process fidelity F(M) and rail ratio D(M) on RECORD_GRID overlaps at the pair's g2,
+    transmittance, clock and dark counts, fitted (F linear-fractional, D quadratic) and inverted on a fine grid by
+    monotone interpolation. A value outside the fitted range has no inverse under the model and maps to NaN, which
+    overlap_estimates reports as censored. The fit residuals and ranges are recorded beside the estimates."""
+    points = [noise_model_at({**perfs, "HOM (%)": 100.0 * m})[FORECAST_RECORD_VARIANT] for m in RECORD_GRID]
+    grid = np.asarray(RECORD_GRID)
+    fidelity = np.asarray([p["process_fidelity"] for p in points])
+    ratio = np.asarray([p["rail_rate_ratio"] for p in points])
+    design = np.column_stack([np.ones_like(grid), grid, -grid * fidelity])
+    p0, q, r = np.linalg.lstsq(design, fidelity, rcond=None)[0]
+    quadratic = np.polyfit(grid, ratio, 2)
+    fine = np.linspace(grid[0], grid[-1], 3001)
+    f_fine = (p0 + q * fine) / (1.0 + r * fine)
+    d_fine = np.polyval(quadratic, fine)
+    require(bool(np.all(np.diff(f_fine) > 0)), "the record F(M) is not increasing over the inversion grid")
+    require(bool(np.all(np.diff(d_fine) < 0)), "the record D(M) is not decreasing over the inversion grid")
+
+    def inverse(value: float, values: np.ndarray, overlaps: np.ndarray) -> float:
+        if not values[0] <= value <= values[-1]:
+            return math.nan
+        return float(np.interp(value, values, overlaps))
+
+    return {
+        "from_fidelity": lambda value: inverse(value, f_fine, fine),
+        "from_rail_ratio": lambda value: inverse(value, d_fine[::-1], fine[::-1]),
+        "fit": {
+            "grid": list(RECORD_GRID),
+            "fidelity_max_residual": float(np.abs((p0 + q * grid) / (1.0 + r * grid) - fidelity).max()),
+            "rail_ratio_max_residual": float(np.abs(np.polyval(quadratic, grid) - ratio).max()),
+            "fidelity_range": [float(f_fine[0]), float(f_fine[-1])],
+            "rail_ratio_range": [float(d_fine[-1]), float(d_fine[0])],
+        },
+    }
+
+
+def overlap_estimates(
+    runs: Sequence[Path],
+    seed: int,
+    perfs: Mapping[str, Any],
+    loader: Callable[[Path], dict[str, Any]] | None = None,
+    jobs: Sequence[str] = JOBS,
+) -> dict[str, Any]:
+    """The preregistered overlap estimates of a complete pool with joint bootstrap intervals, on the replicates
+    tomo.tomography draws from seed: M_F and M_R through the overlap-only laws, and the same two through the record
+    noise model at the pair's plan reads (record_inversion)."""
+    loaded = [(loader or load_run)(run) for run in runs]
+    tallies: dict[str, dict[str, Any]] = {}
+    for entry in loaded:
+        tallies.update(entry["tallies"])
+    rows = tomo.schedule()
+    pool = tomo.pooling(loaded, jobs)
+    eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
+    samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
+    shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
+    scale = np.asarray([pool["scales"][jobs[tomo.JOBS.index(row["job"])]] for row in rows])
+    point = tomo.absolute_rates(eligible, shots, scale)
+    batch = tomo.resampled_rates(
+        eligible, samples, shots, scale, np.random.default_rng(seed), tomo.BOOTSTRAP_REPLICATES
+    )
+    fidelities = tomo.batch_fidelity(batch)
+    m_f = [overlap_from_fidelity(float(f)) for f in fidelities]
+    m_r = [(5.0 - rail_rate_ratio(replicate)) / 4.0 for replicate in batch]
+    m_f_point = overlap_from_fidelity(tomo.estimate_rates(point)["process_fidelity"])
+    m_r_point = (5.0 - rail_rate_ratio(point)) / 4.0
+    level = tomo.BOOTSTRAP_LEVEL
+    inverse = record_inversion(perfs)
+    f_point, d_point = tomo.estimate_rates(point)["process_fidelity"], rail_rate_ratio(point)
+    rf = [inverse["from_fidelity"](float(f)) for f in fidelities]
+    rr = [inverse["from_rail_ratio"](rail_rate_ratio(replicate)) for replicate in batch]
+    rf_point, rr_point = inverse["from_fidelity"](f_point), inverse["from_rail_ratio"](d_point)
+
+    def summary(point_value: float, replicates: Sequence[float]) -> dict[str, Any]:
+        outside = sum(1 for value in replicates if math.isnan(value))
+        if math.isnan(point_value) or outside:
+            return {
+                "point": None,
+                "interval": None,
+                "censored": {"point_outside": math.isnan(point_value), "replicates_outside": outside},
+            }
+        return {
+            "point": point_value,
+            "interval": tomo.intervals(point_value, replicates, level)[tomo.INTERVAL_KIND],
+            "censored": None,
+        }
+
+    record_model = {
+        "fit": inverse["fit"],
+        "overlap_from_fidelity": summary(rf_point, rf),
+        "overlap_from_rail_rates": summary(rr_point, rr),
+        "difference": summary(rf_point - rr_point, [a - b for a, b in zip(rf, rr, strict=True)]),
+    }
+    return {
+        "record_model": record_model,
+        "overlap_from_fidelity": {
+            "point": m_f_point,
+            "interval": tomo.intervals(m_f_point, m_f, level)[tomo.INTERVAL_KIND],
+        },
+        "overlap_from_rail_rates": {
+            "point": m_r_point,
+            "interval": tomo.intervals(m_r_point, m_r, level)[tomo.INTERVAL_KIND],
+        },
+        "difference": {
+            "point": m_f_point - m_r_point,
+            "interval": tomo.intervals(m_f_point - m_r_point, [a - b for a, b in zip(m_f, m_r, strict=True)], level)[
+                tomo.INTERVAL_KIND
+            ],
+        },
+        "rail_rate_ratio": rail_rate_ratio(point),
+        "control_rate_ratio": {
+            "point": control_rate_ratio(point),
+            "interval": tomo.intervals(
+                control_rate_ratio(point), [control_rate_ratio(replicate) for replicate in batch], level
+            )[tomo.INTERVAL_KIND],
+        },
+        "overdispersion": overdispersion(eligible, samples, shots, scale, seed_plan()["overdispersion"][1]),
+    }
+
+
+def overlap_law(overlap: float) -> float:
+    """F_pro of the postselected CZ when photon overlap is the only error (see rail_rate_ratio for the rates)."""
+    return (1.0 + overlap) / (2.0 * (2.0 - overlap))
+
+
+def plan_reads(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """The pooled pair's plan reads: V, g2 and transmittance averaged over the jobs, and the rest of the perfs (dark
+    counts, clock) from the job-00 run, chosen by job name whatever order the runs arrive in."""
+    first = min(loaded, key=lambda entry: str(entry["job"]))
+    perfs = [entry["perfs"] for entry in loaded]
+    mean = {key: sum(float(p[key]) for p in perfs) / len(perfs) for key in ("HOM (%)", "g2 (%)", "Transmittance (%)")}
+    return {**first["perfs"], **mean}
+
+
+def noise_model_at(perfs: Mapping[str, Any]) -> dict[str, dict[str, float]]:
+    """The retained noise pipeline per variant at one read: the process-fidelity estimand and r(11) / r(01)."""
+    figures = tomo.perf_figures(perfs)
+    dark = [float(rate) for rate in perfs["Dark counts (detection/s)"]]
+    per_setting = ordered_map(tomo.forecast_setting, [(row, figures, dark) for row in tomo.schedule()], min_items=1)
+    out = {}
+    for name in (FORECAST_RECORD_VARIANT, "g2-corrected overlap, loss and dark counts"):
+        rates = tomo.exact_rates(tomo.variant_arrays(per_setting, name))
+        out[name] = {
+            "process_fidelity": tomo.estimate_rates(rates)["process_fidelity"],
+            "control_rate_ratio": control_rate_ratio(rates),
+            "rail_rate_ratio": rail_rate_ratio(rates),
+        }
+    return out
+
+
+def retained_overdispersion() -> dict[str, float]:
+    """The overdispersion of the retained 2026-10-31 pair, the anchor of both overdispersion conjectures."""
+    loaded = [tomo.load_run(ROOT / run) for run in TOMOGRAPHY_RUNS]
+    tallies: dict[str, dict[str, Any]] = {}
+    for entry in loaded:
+        tallies.update(entry["tallies"])
+    rows = tomo.schedule()
+    pool = tomo.pooling(loaded, tomo.JOBS)
+    eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
+    samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
+    shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
+    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
+    return overdispersion(eligible, samples, shots, scale, seed_plan()["overdispersion"][1])
+
+
+MODEL_CHECK = "scatter-matches-acquisition-law"
+
+
+def conjecture_verdicts(process: Mapping[str, Any], overlaps: Mapping[str, Any], perfs: Mapping[str, Any]) -> list:
+    """Each preregistered conjecture's prediction, the band it is held against and its verdict. A band is
+    {"lower", "upper"}, either of which may be None for a one-sided test. The model check MODEL_CHECK decides
+    whether the acquisition bootstrap describes the data; when it is falsified, every other verdict is reported as
+    conditional on that failure rather than as decided."""
+    v, g2 = float(perfs["HOM (%)"]) / 100.0, float(perfs["g2 (%)"]) / 100.0
+    corrected = min(1.0, (v + g2) / (1.0 - g2))
+    model = noise_model_at(perfs)
+    ceiling = noise_model_at({**perfs, "HOM (%)": 100.0})[FORECAST_RECORD_VARIANT]["process_fidelity"]
+    record, g2_variant = model[FORECAST_RECORD_VARIANT], model["g2-corrected overlap, loss and dark counts"]
+    spread = overlaps["overdispersion"]
+    fidelity = process["process_fidelity_interval"]
+    anchor = retained_overdispersion()
+    growth = 1.0 + (anchor["ratio"] - 1.0) * spread["mean_events_per_rate"] / anchor["mean_events_per_rate"]
+
+    def band(lower: float | None, upper: float | None) -> dict[str, float | None]:
+        return {"lower": lower, "upper": upper}
+
+    def interval(key: str) -> dict[str, float | None]:
+        low, high = overlaps[key]["interval"]
+        return band(low, high)
+
+    def record_interval(key: str) -> dict[str, float | None] | None:
+        found = overlaps["record_model"][key]["interval"]
+        return None if found is None else band(*found)
+
+    # (prediction, band, observed): a two-sided interval test asks whether the band holds the prediction; a band test
+    # with an observed value asks whether the band holds the observation. A None band reads a censored estimate.
+    tests: dict[str, tuple[float, dict[str, float | None] | None, float | None]] = {
+        "overlap-only-law": (overlap_law(v), band(*fidelity), None),
+        "g2-corrected-overlap-law": (overlap_law(corrected), band(*fidelity), None),
+        "noise-model-record-variant": (record["process_fidelity"], band(*fidelity), None),
+        "noise-model-g2-corrected-variant": (g2_variant["process_fidelity"], band(*fidelity), None),
+        "rail-ratio-reads-hom": (v, record_interval("overlap_from_rail_rates"), None),
+        "two-overlaps-agree": (0.0, interval("difference"), None),
+        "record-overlaps-agree": (0.0, record_interval("difference"), None),
+        "noise-model-ceiling": (ceiling, band(fidelity[0], None), None),
+        "control-ratio-lossless": (1.0, interval("control_rate_ratio"), None),
+        "control-ratio-noise-model": (record["control_rate_ratio"], interval("control_rate_ratio"), None),
+        MODEL_CHECK: (spread["pearson"], band(None, spread["reference_95"][1]), None),
+        "overdispersion-constant-factor": (
+            anchor["ratio"],
+            band(0.75 * anchor["ratio"], 1.25 * anchor["ratio"]),
+            spread["ratio"],
+        ),
+        "overdispersion-relative-systematic": (growth, band(0.75 * growth, 1.25 * growth), spread["ratio"]),
+    }
+    decided = {}
+    for row in CONJECTURES:
+        prediction, limits, observed = tests[row["id"]]
+        value = prediction if observed is None else observed
+        if limits is None:
+            verdict = "undecided: the record-model estimate is censored"
+        else:
+            lower, upper = limits["lower"], limits["upper"]
+            holds = (lower is None or lower <= value) and (upper is None or value <= upper)
+            verdict = "survives" if holds else "falsified"
+        decided[row["id"]] = {
+            "id": row["id"],
+            "prediction": prediction,
+            "observed": observed,
+            "band": limits,
+            "verdict": verdict,
+        }
+    check_failed = decided[MODEL_CHECK]["verdict"] == "falsified"
+    out = []
+    for row in CONJECTURES:
+        entry = decided[row["id"]]
+        if check_failed and row["id"] != MODEL_CHECK:
+            entry["verdict"] = f"conditional on a failed model check: {entry['verdict']}"
+        if process.get("status") != "decided":
+            entry["verdict"] = f"descriptive: {entry['verdict']}"
+        out.append(entry)
+    return out
+
+
+RETAINED_VERDICTS = "retained-conjecture-verdicts.json"
+
+
+def retained_verdicts() -> dict[str, Any]:
+    """The preregistered conjectures held against the retained 2026-10-31 pair through this case's own estimators,
+    with the retained case's loader, pooling and bootstrap seed: the baseline each new verdict is read against."""
+    runs = [ROOT / run for run in TOMOGRAPHY_RUNS]
+    record = tomo.analyze(runs, forecast_path=None)
+    loaded = [tomo.load_run(run) for run in runs]
+    _, bootstrap = tomo.seed_plan()
+    perfs = plan_reads(loaded)
+    overlaps = overlap_estimates(runs, bootstrap[1], perfs, loader=tomo.load_run, jobs=tomo.JOBS)
+    return {
+        "schema": "qd-cz-tomography-reference-retained-verdicts-v1",
+        "runs": list(TOMOGRAPHY_RUNS),
+        "plan_reads": {key: perfs[key] for key in ("HOM (%)", "g2 (%)", "Transmittance (%)")},
+        "process_fidelity": record["process"]["process_fidelity"],
+        "process_fidelity_interval": record["process"]["process_fidelity_interval"],
+        "overlap_estimates": overlaps,
+        "conjectures": conjecture_verdicts(record["process"], overlaps, perfs),
+    }
+
+
 def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     """Pool the two collected runs through tomo.analyze with this case's loader, jobs and bootstrap seed; a setting
     that stopped at max_shots short of its max_samples leaves the pool descriptive."""
@@ -898,6 +1392,15 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
         process["short_settings"] = short
         process["pooling"]["status"] = "descriptive"
         process["pooling"]["reason"] = f"{len(short)} settings stopped at max_shots short of their max_samples"
+    if isinstance(process, dict):
+        loaded = [load_run(run) for run in runs]
+        perfs = plan_reads(loaded)
+        overlaps = overlap_estimates(runs, seed_plan()["bootstrap"][1], perfs)
+        record["overlap_estimates"] = overlaps
+        record["hom_offset_from_preferred"] = {
+            entry["job"]: float(entry["perfs"]["HOM (%)"]) - HOM_PREFERRED for entry in loaded
+        }
+        record["conjectures"] = conjecture_verdicts(process, overlaps, perfs)
     return record
 
 
@@ -914,6 +1417,11 @@ def main() -> int:
     group.add_argument("--build", action="store_true", help="write both jobs' cases.json and circuit.json")
     group.add_argument("--forecast", action="store_true", help="recompute and compare forecast.json")
     group.add_argument("--write-forecast", action="store_true", help="write forecast.json")
+    group.add_argument(
+        "--retained-verdicts",
+        action="store_true",
+        help=f"write {RETAINED_VERDICTS}: the conjectures on the retained pair",
+    )
     group.add_argument("--analyze", nargs="+", metavar=("OUT.json", "RUN"))
     group.add_argument("--preflight", choices=JOBS, help="plan the job read-only and hold it to its policy")
     group.add_argument("--submit", choices=JOBS, help="submit the job once under --approval")
@@ -935,6 +1443,11 @@ def main() -> int:
         return check_forecast()
     if args.write_forecast:
         (FAMILY_DIR / FORECAST).write_bytes(forecast_bytes())
+        return 0
+    if args.retained_verdicts:
+        (FAMILY_DIR / RETAINED_VERDICTS).write_text(
+            json.dumps(retained_verdicts(), indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8"
+        )
         return 0
     if args.analyze:
         out, *runs = args.analyze

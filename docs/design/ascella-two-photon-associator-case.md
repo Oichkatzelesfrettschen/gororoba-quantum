@@ -104,7 +104,7 @@ V = 0.875. Three effects consume the 0.05 tolerance without any device error:
 1. **Calibration drift.** The two retained Ascella HOM reads, 87.28 % and 88.8 %, move Delta_pred by 0.041.
 2. **g2 offset.** HOM visibility is not the photon overlap M: multiphoton emission (g2 1.9 % at the last read)
    lowers the visibility below M. [U] The relation is M ~ (V_HOM + g2)/(1 - g2) to first order (Ollivier et al.,
-   PRL 126, 063602, 2021, not retained here). That correction is near 0.04 in V, or 0.1 in Delta.
+   PRL 126, 063602, 2021; gororoba-documents-private manifest sha256 1291df4cd86b...). That correction is near 0.04 in V, or 0.1 in Delta.
 3. **Different objects.** The HOM figure is measured on Quandela's own two-photon test, not on this compiled mesh,
    which is the same reason strategy rule 1 records ("the HOM figure measures the source's indistinguishability,
    not the mesh").
