@@ -67,7 +67,15 @@ copies of row $j$ of the transfer matrix $U$.
 - **Complexity consequence (Troyansky, Tichy, Aaronson & Arkhipov 2011/2013)**: Computing matrix permanents
   is $\#\mathbf{P}$-hard (Valiant 1979). Simulating non-interacting bosons scattering through a linear network
   (Boson Sampling) cannot be computed efficiently by a classical Turing machine unless the polynomial hierarchy
-  collapses to its third level.
+  collapses to its third level. That theorem covers exact sampling; the approximate case rests on the
+  permanent-of-Gaussians conjectures of Aaronson & Arkhipov.
+- **Additive approximation (Gurvits 2005)**: Glynn's identity
+  $\text{perm}(A) = \mathbb{E}_{x \in \{\pm 1\}^n}\left[\prod_i x_i \prod_i (Ax)_i\right]$ gives an unbiased estimator
+  whose every sample has modulus at most $\lVert A \rVert^n$, so $O(1/\varepsilon^2)$ samples of $O(n^2)$ work each
+  estimate $\text{perm}(A)$ within $\pm\varepsilon \lVert A \rVert^n$. A submatrix of a unitary has
+  $\lVert A \rVert \le 1$, so the error is absolute, while a typical $n$-photon amplitude on $m$ modes is of order
+  $\sqrt{n!/m^n}$: the estimator resolves bunched or otherwise large amplitudes and leaves the typical outcomes
+  that carry the hardness argument below its noise floor. Aaronson & Hance (2014) generalize and derandomize it.
 
 ### Axiom IV: Hong-Ou-Mandel (HOM) Two-Photon Quantum Interference
 When two indistinguishable single photons enter opposite input ports of a balanced 50:50 beam splitter with
@@ -274,19 +282,39 @@ cloud communication:
 
 ### 4.1 `exqalibur`: Compiled C++ Engine
 `exqalibur` provides optimized linear optics computational routines bound via pybind11:
-- **Matrix permanents (`permanent_cx`, `permanent_fl`, `permanent_in`)**: Evaluates permanents of square
-  complex matrices. Uses Ryser's formula with Gray-code subset traversal ($O(n 2^n)$) for multi-threaded
-  workloads, and Glynn's formula when thread count is $\le 2$. Thread concurrency is managed via
-  `exqalibur.Config`.
-- **Permanent estimation (`estimate_permanent_cx`, `estimate_permanent_fl`)**: Provides polynomial-time
-  approximations of complex matrix permanents with a 99% confidence interval using Gurvits' algorithm (`ptype="gurvits"`).
-- **Sampling (`Clifford2017`, `SLAPSampler`, `SourceSampler`)**: Implements Clifford & Clifford (2017/2020)
-  polynomial-time sampling from output Fock-state distributions without computing all exponentially many
-  state amplitudes.
+- **Matrix permanents (`permanent_cx`, `permanent_fl`, `permanent_in`)**: Exact permanents of square
+  matrices by Ryser's or Glynn's formula (`ptype="ryser"` or `"glynn"`). The docstring states the default:
+  Glynn on one or two threads, Ryser otherwise; `exqalibur.Config.compute_max_thread_count` sets the thread
+  count. exqalibur ships no source, so the subset order is inferred from cost: measured single-thread time
+  grows as $n^{k} 2^n$ with $k = 1.18$ (Ryser) and $1.22$ (Glynn) over $n = 14$ to $24$, which matches
+  Gray-code traversal ($k = 1$) and excludes a plain subset sum ($k = 2$); Glynn runs about 7 times faster
+  than Ryser on one thread. Measured on Darwin arm64, exqalibur 1.4.1
+  ([probe](../../evidence/quandela/permanent-estimators/permanent_probe.py),
+  [results](../../evidence/quandela/permanent-estimators/permanent_probe.json)).
+- **Permanent estimation (`estimate_permanent_cx`, `estimate_permanent_fl`; `ptype="gurvits"`, the only
+  accepted value)**: Gurvits' randomized estimator. It returns the permanent of a diagonal matrix exactly with
+  a zero interval, which identifies Glynn's $\pm 1$ sampling distribution. The reported 99% half-width
+  scales as $1/\sqrt{n_\text{iter}}$ and is an empirical (sample-variance) interval, about 19 times narrower
+  than the worst-case Hoeffding bound of Gurvits' analysis; on 300 Ascella-sized $6 \times 6$ blocks of Haar
+  unitaries at $n_\text{iter} = 10^4$ it contained the exact permanent in 99.3% of trials. The docstring warns
+  that the estimate is accurate in modulus and not in phase. Perceval reaches it only through
+  `NaiveApproxBackend(gurvits_iterations=10000)`, which reports amplitudes and probability intervals with it.
+- **Where the estimator pays**: at $10^4$ iterations it overtakes exact Glynn near $n = 19$ on one thread
+  (8 ms against 220 ms at $n = 24$), but on an $n \times n$ Haar unitary its half-width exceeds the modulus of
+  the permanent by 185 times at $n = 20$ and 460 times at $n = 24$. At Ascella's six photons the median
+  $|\text{perm}|$ is $7.3 \times 10^{-3}$ against a half-width of $1.7 \times 10^{-3}$, while the exact
+  $6 \times 6$ permanent costs microseconds; exact backends (`SLOS`, `Naive`) are the right tool for Ascella and
+  Belenos, and the estimator serves large permanents (bunched outputs, near-identity or nonnegative blocks)
+  where $|\text{perm}(A)|$ is comparable to $\lVert A \rVert^n$.
+- **Sampling (`Clifford2017`, `SLAPSampler`, `SourceSampler`)**: `Clifford2017` implements the Clifford &
+  Clifford (2018) sampler, whose cost per sample is $O(n 2^n)$ plus a polynomial in $m$ and $n$: exponential
+  in the photon number, and far below enumerating every output amplitude. `SourceSampler` draws input states
+  from a noisy-source model (`Source.create_sampler`); `SLAPSampler` carries no docstring.
 - **Circuit transpilation and optimization**:
   - `RectangularDecomposer`: Decomposes arbitrary unitary transformations $U \in U(m)$ into the Clements
     rectangular MZI mesh architecture.
-  - `CircuitOptimizer`: Merges adjacent phase shifts and eliminates identity operations.
+  - `CircuitOptimizer`: Fits a target unitary on an interferometer with variable parameters by gradient
+    descent, scoring the fit by fidelity.
   - *Note*: Triangular Reck decomposition is implemented in pure Python within `perceval.utils.algorithms.decomposition.decompose_triangle`.
 
 ### 4.2 `perceval` Core Library
@@ -418,3 +446,11 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *Demonstrates compensation of thermal crosstalk across universal multiport interferometers by adding virtual control degrees of freedom.*
 32. **Tully, E., Washburn, J., & Simons, M.** (2026). "Characterization of nested Walsh parity-check filters in a single-photon eight-mode register on a cloud photonic processor". arXiv: 2606.18408.
     - *Hardware characterization of nested Walsh parity-check filters on an eight-mode single-photon register executed on Quandela Belenos.*
+
+### 5.6 Permanent Computation and Estimation
+33. **Gurvits, L.** (2005). "On the complexity of mixed discriminants and related problems". *MFCS 2005*, Lecture Notes in Computer Science 3618, pp. 447-458. DOI: 10.1007/11549345_39.
+    - *Randomized additive approximation of the permanent within $\pm\varepsilon\lVert A\rVert^n$ from $O(1/\varepsilon^2)$ samples of Glynn's $\pm 1$ estimator; exqalibur's `estimate_permanent_cx`.*
+34. **Glynn, D. G.** (2010). "The permanent of a square matrix". *European Journal of Combinatorics* 31, 1887-1891. DOI: 10.1016/j.ejc.2010.01.010.
+    - *The $\pm 1$ sign-vector formula behind exqalibur's exact `ptype="glynn"` and the Gurvits estimator.*
+35. **Aaronson, S., & Hance, T.** (2014). "Generalizing and derandomizing Gurvits's approximation algorithm for the permanent". *Quantum Information and Computation* 14, 541-559. DOI: 10.26421/QIC14.7-8-1. arXiv: 1212.0025.
+    - *Extends the additive estimator to other matrix functions and gives a deterministic variant.*

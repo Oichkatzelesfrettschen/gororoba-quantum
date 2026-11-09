@@ -1282,6 +1282,41 @@
    "value": 17703,
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
    "index": 1000
+  },
+  {
+   "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
+   "name": "matrix_seed",
+   "value": 64823,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
+   "name": "estimator_seed",
+   "value": 56785,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 1
+  },
+  {
+   "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
+   "name": "timing_seed",
+   "value": 28446,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 2
+  },
+  {
+   "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
+   "name": "crossover_matrix_seed",
+   "value": 4632,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 3
+  },
+  {
+   "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
+   "name": "crossover_estimator_seed",
+   "value": 53907,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 4
   }
  ],
  "runtime": [
