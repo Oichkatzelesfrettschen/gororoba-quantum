@@ -1,0 +1,30 @@
+{
+ "definition": "Levratti 2026, Definition 2.3",
+ "levels": {
+  "3": {
+   "counted": 0,
+   "theorem_7_16": null,
+   "agree": true
+  },
+  "4": {
+   "counted": 336,
+   "theorem_7_16": 336,
+   "agree": true
+  },
+  "5": {
+   "counted": 5040,
+   "theorem_7_16": 5040,
+   "agree": true
+  },
+  "6": {
+   "counted": 52080,
+   "theorem_7_16": 52080,
+   "agree": true
+  },
+  "7": {
+   "counted": 468720,
+   "theorem_7_16": 468720,
+   "agree": true
+  }
+ }
+}
