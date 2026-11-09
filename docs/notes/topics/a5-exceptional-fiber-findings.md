@@ -458,7 +458,7 @@ tests; the ledger row it enters is named where one exists.
    `normal()` returns in 359 s with one ring of 21 variables and 382 relations, and its 14 arcs with finite lead all land
    in the degree-4 component. Chart t7 = 1 (`working/build/arc/chart_t7.sing` and `.log`, OCI A1): the strict
    transform there is radical of dimension 4 (the script's "prime?" line tests reduce(radical(S7), S7) = 0, which
-   is radicality; primality waits on the minimal primes, `chart_t7_primes.sing` on OCI A1), and the default `normal()`
+   is radicality; `chart_t7_primes.sing` on OCI A1 then returns one minimal prime equal to S7, so S7 is prime), and the default `normal()`
    returns in 2,298 s with one ring of 12 variables and 284 relations (2 h 3 min, 5.2 GiB in all); `normal(S7,
    "isPrim")`, valid only if S7 is prime, returns the same ring in 7 min 31 s and writes it (`chart_t7_norid_1.txt`: four new elements T(1) to T(4)); its arcs are not yet run. The exceptional divisor lies
    over P(L), L = V(t2, t8, t5 - t6, t3 + t4) with coordinates (t1 : t3 : t5 : t7) (`working/build/arc/arc-report.md`,
