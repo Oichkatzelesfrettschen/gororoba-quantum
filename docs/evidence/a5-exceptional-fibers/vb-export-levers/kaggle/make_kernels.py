@@ -41,8 +41,11 @@ def job(name: str, ring: str, j: str, n: int) -> dict:
     return {"name": name, "script": SCRIPT.format(ring=ring, J=j, N=n, name=name)}
 
 
-def kernel(slug: str, jobs: list[dict], out: Path = HERE) -> None:
-    """Write OUT/SLUG/SLUG.py (runner.py with its job list as base64 in CONFIG_B64) and its kernel-metadata.json."""
+def kernel(slug: str, jobs: list[dict], out: Path = HERE, gpu: bool = False) -> None:
+    """Write OUT/SLUG/SLUG.py (runner.py with its job list as base64 in CONFIG_B64) and its kernel-metadata.json.
+
+    A GPU kernel runs the same CPU-only Singular jobs on the four cores of a GPU session, which draws on the weekly
+    GPU quota instead of the CPU queue."""
     d = out / slug
     d.mkdir(parents=True, exist_ok=True)
     blob = base64.b64encode(json.dumps({"jobs": jobs, "job_seconds": JOB_SECONDS}).encode()).decode()
@@ -58,7 +61,7 @@ def kernel(slug: str, jobs: list[dict], out: Path = HERE) -> None:
         "language": "python",
         "kernel_type": "script",
         "is_private": True,
-        "enable_gpu": False,
+        "enable_gpu": gpu,
         "enable_internet": True,
         "dataset_sources": [],
         "kernel_sources": [],
@@ -72,10 +75,15 @@ def main(out: Path = HERE) -> None:
         ring, j, names = header(prime, root)
         jobs = [job(f"slimgb-n{n}-p{prime}", ring, j, n) for n in (21, 22)]
         if prime == 32009:
-            jobs.append(job("order-identity-n15", ring, j, 15))
+            order = [job("order-identity-n15", ring, j, 15)]
             for k in range(1, 7):
                 rotated = names[k:] + names[:k]
-                jobs.append(job(f"order-rot{k}-n15", ring.replace(",".join(names), ",".join(rotated)), j, 15))
+                order.append(job(f"order-rot{k}-n15", ring.replace(",".join(names), ",".join(rotated)), j, 15))
+            jobs += order
+            # A GPU-session kernel runs N = 22 and the order jobs again on its own cores, so the export and the order
+            # comparison finish on whichever session starts first, and two sessions that both finish must agree byte
+            # for byte.
+            kernel(f"a5-vb-d7-slimgb-gpu-p{prime}", [jobs[1], *order], out, gpu=True)
         kernel(f"a5-vb-d7-slimgb-p{prime}", jobs, out)
 
 
