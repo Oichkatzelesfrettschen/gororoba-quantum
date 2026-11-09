@@ -393,12 +393,12 @@ def decisive_run(job: str = "job-00", status: str = "completed", short: int = 0)
 
 
 def test_the_retained_reference_admits_no_hom() -> None:
-    """The reference tomography ran at 87.56 %: no HOM is above 90 % and within one point of it."""
-    lower, upper = case.hom_band(case.reference_hom())
-    if lower < upper or case.submission_policy("job-00")["hom_percent"]["admitted"] != "none":
+    """A reference of 87.56 % (the 2026-10-31 tomography's) admits no HOM above 90 % and within one point of it."""
+    lower, upper = case.hom_band(87.56)
+    if lower < upper or case.hom_band_text(87.56) != "none":
         raise AssertionError(f"the band ({lower}, {upper}] admits a HOM")
     with pytest.raises(case.qd_platform.PlatformError, match="outside"):
-        case.admit("job-00", planned_fixture("job-00", 88.0), case.reference_hom(), None)
+        case.admit("job-00", planned_fixture("job-00", 88.0), 87.56, None)
 
 
 @pytest.mark.parametrize(
@@ -489,6 +489,29 @@ def test_generic_submit_refuses_a_wrapper_case_without_its_gate(monkeypatch: pyt
         case.qd_platform.submit(Path("job-00"), case.PLATFORM, "approval", 1.4, 220, 1.0, verify=verify)
     if case.SubmissionGate.submit_wrapper != case.SUBMIT_WRAPPER:
         raise AssertionError("the gate does not carry the wrapper capability")
+
+
+def test_only_the_bound_gate_carries_the_submission_capability() -> None:
+    """A preflight gate has no reviewed record to bind, so it must not satisfy qd_platform.submit."""
+    if "submit_wrapper" in vars(case.PolicyGate):
+        raise AssertionError("the preflight gate carries the submission capability")
+    if case.SubmissionGate.submit_wrapper != case.SUBMIT_WRAPPER:
+        raise AssertionError("the submission gate lacks the capability")
+
+
+def test_a_manifest_policy_other_than_the_generated_one_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    case.require_manifest_policy("job-00")
+    original = case.submission_policy
+    monkeypatch.setattr(case, "submission_policy", lambda job: {**original(job), "expected_seconds": 1})
+    with pytest.raises(RuntimeError, match="another submission policy"):
+        case.require_manifest_policy("job-00")
+
+
+def test_a_non_finite_live_forecast_is_refused() -> None:
+    perfs = case.read_perfs()
+    dark = [float("nan")] * len(perfs["Dark counts (detection/s)"])
+    with pytest.raises(RuntimeError, match="live forecast is"):
+        case.eligible_floor("job-00", {**perfs, "Dark counts (detection/s)": dark})
 
 
 def live_processor(perfs: dict[str, Any], modes: list[int] | None = None) -> dict[str, Any]:

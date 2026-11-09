@@ -1697,13 +1697,17 @@ def eligible_floor(job: str, perfs: Mapping[str, Any]) -> float:
     dark = list(perfs["Dark counts (detection/s)"])
     least = math.inf
     bases = base_settings()
-    for computed in ordered_map(forecast_setting, [(row, figures, dark) for row in bases], min_items=1):
-        entry = computed[FALSE_ALARM_VARIANT]
+    computed = ordered_map(forecast_setting, [(row, figures, dark) for row in bases], min_items=1)
+    for row, result in zip(bases, computed, strict=True):
+        entry = result[FALSE_ALARM_VARIANT]
         samples = min(
             float(SAMPLES_PER_ITERATION),
             JOB_SHOTS[job] * entry["sample_probability"] / entry["any_click_probability"],
         )
-        least = min(least, samples * sum(entry["eligible_probabilities"]) / entry["sample_probability"])
+        events = samples * sum(entry["eligible_probabilities"]) / entry["sample_probability"]
+        # min() keeps its left operand against NaN, so a non-finite forecast is refused rather than skipped.
+        require(math.isfinite(events), f"{row['name']}: the live forecast is {events!r} eligible events")
+        least = min(least, events)
     return least
 
 
@@ -1759,24 +1763,51 @@ def preflight_context(predecessor: Mapping[str, Any] | None) -> dict[str, Any]:
     return {"reference": reference_record(), "predecessor": predecessor_record(predecessor)}
 
 
-class SubmissionGate:
-    """The verify step qd_platform.submit runs, inside the submit lock, on the plan whose body it posts. Its
-    submit_wrapper attribute is the capability qd_platform.submit requires of a case that names this wrapper."""
+def require_manifest_policy(job: str) -> None:
+    """Refuse unless the retained manifest declares the policy the gate enforces: a reference or rule changed in
+    code without rebuilding cases.json would otherwise gate a request whose manifest states another policy."""
+    manifest = json.loads((FAMILY_DIR / job / "cases.json").read_text(encoding="utf-8"))
+    generated = json.loads(json.dumps(submission_policy(job)))
+    require(manifest.get("submission_policy") == generated, f"{job}: cases.json declares another submission policy")
 
-    submit_wrapper = SUBMIT_WRAPPER
 
-    def __init__(self, job: str, after: Path | None, reviewed: Mapping[str, Any] | None = None) -> None:
-        self.job, self.reviewed = job, reviewed
+class PolicyGate:
+    """The policy checks of a plan: admit, then live_accuracy on a fresh processor read. It carries no submission
+    capability, so --preflight uses it and qd_platform.submit refuses it for a submit_wrapper case."""
+
+    def __init__(self, job: str, after: Path | None) -> None:
+        require_manifest_policy(job)
+        self.job = job
         self.predecessor = None if after is None else load_run(after)
         self.reference = reference_hom()
         self.context = preflight_context(self.predecessor)
 
-    def __call__(self, planned: dict[str, Any]) -> None:
+    def check(self, planned: dict[str, Any]) -> None:
         admit(self.job, planned, self.reference, self.predecessor)
         try:
             live_accuracy(self.job, planned, qd_platform.get(qd_platform.platform_route(PLATFORM)))
-            if self.reviewed is not None:
-                bind_reviewed(self.job, planned, self.reviewed, self.context)
+        except (RuntimeError, KeyError, TypeError, ValueError) as error:
+            raise qd_platform.PlatformError(str(error)) from None
+
+    def __call__(self, planned: dict[str, Any]) -> None:
+        self.check(planned)
+
+
+class SubmissionGate(PolicyGate):
+    """The verify step qd_platform.submit runs, inside the submit lock, on the plan whose body it posts: the policy
+    checks and the binding to the admitted preflight, which it always requires. Its submit_wrapper attribute is the
+    capability qd_platform.submit requires of a case that names this wrapper."""
+
+    submit_wrapper = SUBMIT_WRAPPER
+
+    def __init__(self, job: str, after: Path | None, reviewed: Mapping[str, Any]) -> None:
+        super().__init__(job, after)
+        self.reviewed = reviewed
+
+    def __call__(self, planned: dict[str, Any]) -> None:
+        self.check(planned)
+        try:
+            bind_reviewed(self.job, planned, self.reviewed, self.context)
         except (RuntimeError, KeyError, TypeError, ValueError) as error:
             raise qd_platform.PlatformError(str(error)) from None
 
@@ -1790,7 +1821,7 @@ def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
     policy = submission_policy(job)
     ceiling, seconds, statuses = float(policy["credit_ceiling"]), float(EXPECTED_SECONDS), ("running",)
     if not send:
-        verify = SubmissionGate(job, after)
+        verify = PolicyGate(job, after)
         planned = qd_platform.plan(out, PLATFORM, ceiling, seconds, PER_JOB_CREDITS, statuses)
         try:
             verify(planned)
