@@ -120,80 +120,111 @@ nanowire detector array.
 |                                  ASCELLA QPU ARCHITECTURE                               |
 +-----------------------------------------------------------------------------------------+
 |                                                                                         |
-|  [Pulsed Laser 79 MHz]                                                                  |
-|         | (pi-pulse @ 925 nm)                                                           |
+|  [Pulsed Laser 80 MHz]                                                                  |
+|         | (LA-phonon-assisted near-resonant excitation @ 928 nm)                        |
 |         v                                                                               |
 |  +------------------------+                                                             |
-|  | InGaAs/GaAs QD Cavity  |  --> Repetition rate: 79 MHz                                |
-|  | DBR Micropillar (C2N)  |  --> Single-photon purity: 1 - g^(2)(0) >= 98.1%             |
-|  | Cryostat @ 4 Kelvin    |  --> Indistinguishability: V_HOM approx 87.5%               |
-|  +------------------------+                                                             |
+|  | Gated InGaAs QD Cavity |  --> Repetition rate: 80 MHz                                |
+|  | Monolithic Micropillar |  --> Lifetime T_1: 92 ps; First lens brightness: 55%        |
+|  | Cryostat @ 5 Kelvin    |  --> Purity P = 1 - g^(2)(0) > 99% (baseline g2 = 0.0073)   |
+|  +------------------------+  --> Source indistinguishability M_s = 94.38%               |
 |         |                                                                               |
 |         v (Sequential single-photon train)                                              |
 |  +------------------------+                                                             |
-|  | 1-to-6 Electro-Optic   |  --> Demultiplexing clock: 13.33 MHz                        |
-|  | Active Demultiplexer   |  --> Routes photons to input modes 0, 2, 4, 6, 8, 10        |
+|  | Active Optical Demux   |  --> Demultiplexing clock: 80 MHz / 6 = 13.33 MHz            |
+|  | Fiber Delays & Shutters|  --> Injects |1,0,1,0,1,0,1,0,1,0,1,0> into modes 0,2,4,6,8,10  |
 |  +------------------------+                                                             |
-|         | | | | | | (6 spatial optical fibers)                                          |
+|         | | | | | | (6 spatial optical fibers, 70% demux transmission)                  |
 |         v v v v v v                                                                     |
 |  +-----------------------------------------------------------------------------------+  |
-|  |               12-MODE RECONFIGURABLE INTEGRATED PHOTONIC CHIP                     |  |
+|  |           12-MODE UNIVERSAL RECONFIGURABLE PHOTONIC CHIP (CLEMENTS)               |  |
 |  |                                                                                   |  |
-|  |  - 12 Waveguide spatial modes (dielectric waveguide platform)                      |  |
-|  |  - 132 Rx directional couplers (theta in [1.4204, 1.4739] rad)                    |  |
-|  |  - 126 Thermo-optic microheater phase shifters (phi in [0, 2pi))                  |  |
-|  |  - Machine-learning transpilation (thermal diffusion & crosstalk correction)      |  |
+|  |  - 12 Waveguide spatial modes (PIC insertion & transmission: 45%)                 |  |
+|  |  - 132 Directional couplers (theta in [1.4204, 1.4739] rad; R = 56.8 +- 0.6%)   |  |
+|  |  - 126 Thermo-optic microheater phase shifters (phi = A * V^(o2) + b)             |  |
+|  |  - Clear-box physical crosstalk model (Fyrillas et al., Optica 2024; no neural net)|  |
 |  +-----------------------------------------------------------------------------------+  |
 |         | | | | | | | | | | | | (12 output spatial modes)                               |
 |         v v v v v v v v v v v v                                                         |
 |  +-----------------------------------------------------------------------------------+  |
-|  |              SUPERCONDUCTING NANOWIRE DETECTORS (SNSPDs @ < 2.5 K)                |  |
+|  |              SUPERCONDUCTING NANOWIRE DETECTORS (SNSPDs @ 92% Eff)                |  |
 |  |                                                                                   |  |
-|  |  - 12 Threshold single-photon counting channels                                   |  |
-|  |  - Total system transmittance: ~ 5.2%                                             |  |
-|  |  - Coincidence time-tagging unit (FPGA time-to-digital converter)                 |  |
+|  |  - 12 Threshold single-photon counting channels (dark counts < 20 Hz baseline)   |  |
+|  |  - Swabian Instruments Time Tagger (TDC) with 1 ns coincidence integration window |  |
+|  |  - Total optical setup efficiency: 8.4 +- 0.2% (live reported transmittance 5.5%) |  |
 |  +-----------------------------------------------------------------------------------+  |
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
 ```
 
 ### 3.1 Quantum Dot Microcavity Single-Photon Source
-- **Emmiter material**: Self-assembled Indium Gallium Arsenide (InGaAs) quantum dot embedded at the antinode of a
-  GaAs/AlAs distributed Bragg reflector (DBR) micropillar microcavity.
-- **Purcell enhancement**: Strong cavity-QED coupling creates a Purcell factor $F_P > 10$, shortening radiative
-  lifetime to $T_1 \approx 150\text{ ps}$ and overcoming environmental acoustic phonon dephasing ($T_2^*$).
-- **Excitation**: Resonant pulsed optical $\pi$-pulse excitation ($\sim 79\text{ MHz}$ repetition rate, central
-  wavelength $\lambda \approx 925\text{--}930\text{ nm}$).
-- **Performance parameters**:
-  - Raw indistinguishability: $V_{\text{HOM}} \approx 87.5\%$.
-  - Multiphoton suppression: $g^{(2)}(0) \le 0.019$ (purity $> 98.1\%$).
-  - Extraction efficiency into single-mode fiber: $> 50\%$.
+- **Emitter material & structure**: Gated Indium Gallium Arsenide (InGaAs) quantum dot embedded in a monolithic
+  GaAs/AlAs distributed Bragg reflector (DBR) micropillar cavity (Somaschi et al., *Nature Photonics* 2016),
+  operated inside a closed-cycle cryostat at 5 K.
+- **Excitation scheme**: Near-resonant longitudinal-acoustic (LA) phonon-assisted optical excitation (Thomas et al.,
+  *Phys. Rev. Lett.* 126, 233601, 2021). The excitation laser is detuned from the exciton resonance, with lattice
+  phonons absorbing or emitting the energy differential. This bypasses the cross-polarization filtering losses of
+  strictly resonant $\pi$-pulse schemes while suppressing excitation laser leakage.
+- **Spectral parameters**:
+  - Operating wavelength: $\lambda = 928\text{ nm}$.
+  - Emission lifetime: $T_1 = 92\text{ ps}$.
+  - First-lens collection brightness: $55\%$.
+  - Spectral filtering: Free-space bandpass filter module ($\text{FWHM} = 800\text{ pm}$, transmission $75\%$)
+    and single-mode fiber coupling ($70\%$).
+- **Source purity and indistinguishability**:
+  - Normalized second-order correlation at zero delay: $g^{(2)}(0) = (7.32 \pm 0.07) \times 10^{-3} = 0.00732$.
+    Single-photon purity $P = 1 - g^{(2)}(0) > 99\%$. (Note: live calibration on `qpu:ascella` reports drifting
+    operational values, e.g. $g_2 = 2.1\%$).
+  - Hong-Ou-Mandel visibility: $V_{\text{HOM}} = 0.9296 \pm 0.0003$.
+  - Corrected 2-photon source indistinguishability: $M_s = 0.9438 \pm 0.0003$ ($94.38\%$). Pairwise on-chip
+    indistinguishability $M_{ij}$ across all 15 pairs ranges from $91.1\%$ to $94.3\%$. Genuine 4-photon and
+    6-photon indistinguishabilities evaluate to $p_4 = 0.85 \pm 0.02$ and $p_6 = 0.76 \pm 0.02$.
 
-### 3.2 Active Electro-Optic Demultiplexer
-Because photons are emitted sequentially by a single quantum dot, Ascella uses an active, low-loss, fast
-spatial-temporal demultiplexing network:
-- Takes a burst of 6 consecutive optical pulses from the 79 MHz stream.
-- Re-routes each pulse into one of 6 physical fibers with matched optical path delay lines.
-- Injects 6 synchronized photons into the physical input ports: modes **0, 2, 4, 6, 8, 10**.
-- Effective master clock rate: $79\text{ MHz} / 6 = 13.33\text{ MHz}$.
+### 3.2 Active Optical Demultiplexer
+Because photons are emitted sequentially by a single quantum dot, Ascella uses an active optical demultiplexer
+(transmission $70\%$):
+- Optical pump laser repetition rate: Exactly $80\text{ MHz}$ (period $12.5\text{ ns}$).
+- Fiber delay lines of matched graduated lengths route sequential pulses into 6 spatial optical fibers.
+- Active optical shutters select photon inputs, enabling states with $N < 6$ photons.
+- Synchronized injection into the 6 physical input modes: **0, 2, 4, 6, 8, 10**.
+- Resulting processor master clock rate:
+  $$f_{\text{clock}} = \frac{80\text{ MHz}}{6} = 13.33\text{ MHz}$$
+  matching the live `qpu:ascella` specification field `Clock (MHz): 13.33`.
 
 ### 3.3 12-Mode Programmable Photonic Chip
-- **Interferometer size**: 12 optical waveguide modes.
-- **Component count**: 132 directional couplers (calibrated $R_x$ splitters, nominal $\theta \approx 1.42\text{--}1.47\text{ rad}$)
-  and 126 thermo-optic phase shifters ($\phi$).
-- **Heater control and thermal diffusion**: Local thermal microheaters adjust the effective refractive index
-  via $\Delta n \propto \Delta T$. Because heat diffuses into neighboring waveguides, thermal crosstalk is modeled
-  and inverted using clear-box machine learning transpilation (Fyrillas et al. 2023, 2025).
+- **Interferometer size**: 12 optical waveguide modes in a folded Clements rectangular mesh topology.
+- **PIC insertion and transmission**: $45\%$.
+- **Components**: 132 directional couplers and 126 thermo-optic phase shifters ($\phi_0 \dots \phi_{125}$).
+  - Directional coupler reflectivity: $R = (56.8 \pm 0.6)\%$, corresponding to calibrated rotation angles
+    $\theta = 2 \arccos\sqrt{R} \in [1.4204, 1.4739]\text{ rad}$ (mean $1.4347\text{ rad}$).
+  - Static phases: $\mathbf{b} = (0.1 \pm 1.2)\text{ rad}$.
+  - Microheater efficiency: diagonal crosstalk element $A_{ii} = (0.034 \pm 0.001)\text{ rad/V}^2$, requiring
+    approximately $10\text{ V}$ to induce a $\pi$ phase shift.
+  - Spatial loss uniformity: Output mode 10 exhibits a relative transmission of $75\%$ compared to mode 6 due to
+    the compact folded layout of the chip.
+- **Fixed input state and permutation**:
+  The physical chip input is fixed to $|\mathbf{s}_{\text{default}}\rangle = |1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0\rangle$.
+  To execute a target unitary $U$ on an arbitrary input state $|\text{IN}\rangle$, the transpiler computes the
+  permutation matrix $U_{\text{perm}}$ such that $U_{\text{perm}} |\mathbf{s}_{\text{default}}\rangle = |\text{IN}\rangle$,
+  and synthesizes the composite unitary $U' = U \cdot U_{\text{perm}}$.
+- **Clear-box physical crosstalk transpilation (Fyrillas et al., Optica 2024)**:
+  Rather than using black-box neural networks (which lack interpretability and physical error bounds), Quandela
+  implements an exact physical forward model:
+  $$\hat{\boldsymbol{\phi}} = A \cdot \mathbf{V}^{\odot 2} + \mathbf{b}$$
+  where $A$ is the $126 \times 126$ thermal crosstalk matrix and $\mathbf{b}$ is the static phase vector.
+  High-dimensional parameter optimization fits the $\approx 16,000$ physical parameters (crosstalk elements,
+  directional coupler reflectivities, and mode losses) against measured transmission fringes.
 
 ### 3.4 Detection and Readout
-- **Detector technology**: 12 cryogenic Superconducting Nanowire Single-Photon Detectors (SNSPDs) operating at
-  temperatures below $2.5\text{ K}$.
-- **Detection characteristics**:
-  - Detection efficiency: $> 85\%$.
-  - Dark count rate: typically $< 100\text{ Hz}$ across most ports; maximum port 10 reads $1428\text{--}1885\text{ counts/s}$.
-  - System end-to-end transmittance: $\sim 5.25\%$.
-  - Readout type: Threshold detection (presence of $\ge 1$ photon recorded as a click). Coincidence events are
-    registered by hardware time-correlators with sub-nanosecond coincidence windows.
+- **Detectors**: Array of 12 Superconducting Nanowire Single-Photon Detectors (SNSPDs).
+  - Average detection efficiency: $92\%$.
+  - Dark count rate: under $20\text{ Hz}$ at baseline; live device telemetry shows operational dark counts
+    ranging from $76$ to $281\text{ counts/s}$ (peaking up to $1428\text{--}1885\text{ counts/s}$ on mode 10).
+- **Readout electronics**: Swabian Instruments Time Tagger (time-to-digital converter, TDC).
+  - Coincidence window: exactly $1\text{ ns}$.
+  - Post-processing samples $N$-photon ($1 \le N \le 6$) coincidence distributions across all 12 channels.
+  - Overall optical setup efficiency: $(8.4 \pm 0.2)\%$ at publication (live reported transmittance $5.52\%$).
+  - 6-photon coincidence count rate: $4\text{ Hz}$ at $80\text{ MHz}$ pump rate.
 
 ---
 
@@ -329,8 +360,8 @@ quantum computing:
 ### 5.5 Perceval Software Stack, Transpilation, and Algorithms
 23. **Heurtel, N., et al.** (2023). "Perceval: A Software Platform for Discrete Variable Photonic Quantum Computing". *Quantum* 7, 931. DOI: 10.22331/q-2023-02-21-931. arXiv: 2204.00602.
     - *The core software paper introducing Perceval, exqalibur, SLOS, circuit composition, and simulation backends.*
-24. **Fyrillas, A., et al.** (2023). "Clear-box machine-learned compilation for reconfigurable photonic circuits". arXiv: 2310.15349.
-    - *Neural-network-assisted transpilation mitigating thermal crosstalk and phase offset errors in Quandela MZI meshes.*
+24. **Fyrillas, A., Faure, O., Maring, N., Senellart, J., & Belabas, N.** (2024). "Scalable machine learning-assisted clear-box characterization for optimally controlled photonic circuits". *Optica* 11(3), 427-436. DOI: 10.1364/OPTICA.512148. arXiv: 2310.15349.
+    - *Physical forward-model characterization and parameter fitting (thermal crosstalk matrix, directional coupler reflectivities) without black-box neural networks.*
 25. **Fyrillas, A., et al.** (2025). "Induced phase shifters and gauge symmetries in universal multiport interferometers". arXiv: 2506.05988.
     - *Characterizes unobservable phase gauges and parasitic phase shifts in integrated MZI arrays.*
 26. **Bourdoncle, B., et al.** (2023). "Simulating discrete-variable photonic quantum computing with Perceval". *Proc. SPIE* 12518, 125180J.
