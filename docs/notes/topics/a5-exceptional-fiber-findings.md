@@ -459,7 +459,12 @@ tests; the ledger row it enters is named where one exists.
    order-1 arcs there repeat chart t1 and land in V(P2); a family dominant onto the 3-dimensional V(P1) needs a
    2-dimensional stratum such as the plane t1 = 0 plus one jet parameter (order-2 arcs), where chart t3 tested only
    four points. Falsifier of the inference: an order-1 arc of chart t7 with t1 nonzero whose leading vector leaves
-   V(P2). Because K2 is globally radical there, containment of the generic point of every component
+   V(P2). It survives (`working/build/arc/t7arcs.sage`, logs `t7arcs_o4.log`, `t7arcs_plane_o4.log`,
+   `t7arcs_apex_o12.log`; build host, Sage, minutes): 20 order-1 arcs over ten points with t1 nonzero and 14 over
+   seven points of the plane t1 = 0, each with all 284 normalization relations vanishing through s^4, have
+   s-valuation 2 and leading vectors in V(P2) and none in V(P1). At the apex t1 = t3 = t5 = 0 both order-1 arcs
+   keep G at zero through s^13, so that point needs arcs with jet parameters; the plane t1 = 0 and the apex are
+   where a family onto V(P1) can still come from. Because K2 is globally radical there, containment of the generic point of every component
    of V(K2) in the fiber gives F(I) = k[y]/K2 in every degree.
 7. **E8-bar -> N- closing order** (no new run). The degree-4 ladder is complete: r_12 = 357, r_13 = r_14 = 440,
    r_15 = 495 (`../../evidence/a5-exceptional-fibers/forecasts/trends-2026-11-06.md`, d = 4 row; `n15-laptop/`), and
