@@ -603,7 +603,8 @@ def sampled_dataset(
     shots = np.empty(len(quotas), dtype=int)
     for s, quota in enumerate(int(q) for q in quotas):
         within = arrays["eligible"][s] / arrays["samples"][s]
-        draw = generator.multinomial(quota, np.append(within, 1.0 - within.sum()))
+        # Chances renormalized to sum 1 can leave a remainder of -1e-17, which Generator.multinomial refuses.
+        draw = generator.multinomial(quota, np.append(within, max(0.0, 1.0 - within.sum())))
         eligible[s] = draw[:4]
         shots[s] = quota + generator.negative_binomial(quota, arrays["samples"][s] / arrays["any"][s])
     return eligible, quotas.astype(int), shots
