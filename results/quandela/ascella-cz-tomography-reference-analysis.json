@@ -1,0 +1,457 @@
+{
+ "conjectures": [
+  {
+   "band": {
+    "lower": 0.8239996249963667,
+    "upper": 0.8391108803492595
+   },
+   "id": "overlap-only-law",
+   "observed": null,
+   "prediction": 0.8443269403118837,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": 0.8239996249963667,
+    "upper": 0.8391108803492595
+   },
+   "id": "g2-corrected-overlap-law",
+   "observed": null,
+   "prediction": 0.8923091494601251,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": 0.8239996249963667,
+    "upper": 0.8391108803492595
+   },
+   "id": "noise-model-record-variant",
+   "observed": null,
+   "prediction": 0.7950215152056493,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": 0.8239996249963667,
+    "upper": 0.8391108803492595
+   },
+   "id": "noise-model-g2-corrected-variant",
+   "observed": null,
+   "prediction": 0.8379639362006017,
+   "verdict": "conditional on a failed model check: survives"
+  },
+  {
+   "band": {
+    "lower": 0.9457032167605545,
+    "upper": 0.9594023202450996
+   },
+   "id": "rail-ratio-reads-hom",
+   "observed": null,
+   "prediction": 0.8842,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": -0.0745981997596701,
+    "upper": -0.05754404142333647
+   },
+   "id": "two-overlaps-agree",
+   "observed": null,
+   "prediction": 0.0,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": -0.04496964141676939,
+    "upper": -0.026601135230387395
+   },
+   "id": "record-overlaps-agree",
+   "observed": null,
+   "prediction": 0.0,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": 0.8239996249963667,
+    "upper": null
+   },
+   "id": "noise-model-ceiling",
+   "observed": null,
+   "prediction": 0.9335803585448382,
+   "verdict": "conditional on a failed model check: survives"
+  },
+  {
+   "band": {
+    "lower": 1.0445907361235351,
+    "upper": 1.0744261334150775
+   },
+   "id": "control-ratio-lossless",
+   "observed": null,
+   "prediction": 1.0,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": 1.0445907361235351,
+    "upper": 1.0744261334150775
+   },
+   "id": "control-ratio-noise-model",
+   "observed": null,
+   "prediction": 1.0402988993973254,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": null,
+    "upper": 40271.24928257219
+   },
+   "id": "scatter-matches-acquisition-law",
+   "observed": null,
+   "prediction": 166239.95792903795,
+   "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": 1.0785504917723372,
+    "upper": 1.7975841529538952
+   },
+   "id": "overdispersion-constant-factor",
+   "observed": 5.725627730628404,
+   "prediction": 1.4380673223631162,
+   "verdict": "conditional on a failed model check: falsified"
+  },
+  {
+   "band": {
+    "lower": 2.7543738142137264,
+    "upper": 4.590623023689544
+   },
+   "id": "overdispersion-relative-systematic",
+   "observed": 5.725627730628404,
+   "prediction": 3.672498418951635,
+   "verdict": "conditional on a failed model check: falsified"
+  }
+ ],
+ "eligible_events": 613903,
+ "eligible_events_by_setting": {
+  "in-++-XX": 4098,
+  "in-++-XY": 3928,
+  "in-++-XZ": 4216,
+  "in-++-YX": 4175,
+  "in-++-YY": 4293,
+  "in-++-YZ": 4285,
+  "in-++-ZX": 4179,
+  "in-++-ZY": 3944,
+  "in-++-ZZ": 4235,
+  "in-+0-XX": 4803,
+  "in-+0-XY": 5225,
+  "in-+0-XZ": 4475,
+  "in-+0-YX": 4861,
+  "in-+0-YY": 4575,
+  "in-+0-YZ": 4131,
+  "in-+0-ZX": 4851,
+  "in-+0-ZY": 5089,
+  "in-+0-ZZ": 4806,
+  "in-+1-XX": 3919,
+  "in-+1-XY": 4112,
+  "in-+1-XZ": 3502,
+  "in-+1-YX": 4200,
+  "in-+1-YY": 3715,
+  "in-+1-YZ": 3312,
+  "in-+1-ZX": 3775,
+  "in-+1-ZY": 3706,
+  "in-+1-ZZ": 3996,
+  "in-+i-XX": 4298,
+  "in-+i-XY": 4060,
+  "in-+i-XZ": 4090,
+  "in-+i-YX": 4330,
+  "in-+i-YY": 4102,
+  "in-+i-YZ": 4065,
+  "in-+i-ZX": 4107,
+  "in-+i-ZY": 4159,
+  "in-+i-ZZ": 4210,
+  "in-0+-XX": 4286,
+  "in-0+-XY": 4114,
+  "in-0+-XZ": 3994,
+  "in-0+-YX": 4166,
+  "in-0+-YY": 4595,
+  "in-0+-YZ": 3901,
+  "in-0+-ZX": 4291,
+  "in-0+-ZY": 4050,
+  "in-0+-ZZ": 3769,
+  "in-00-XX": 3907,
+  "in-00-XY": 4054,
+  "in-00-XZ": 3824,
+  "in-00-YX": 4043,
+  "in-00-YY": 4042,
+  "in-00-YZ": 4096,
+  "in-00-ZX": 4534,
+  "in-00-ZY": 4623,
+  "in-00-ZZ": 4155,
+  "in-01-XX": 4221,
+  "in-01-XY": 4212,
+  "in-01-XZ": 4101,
+  "in-01-YX": 4070,
+  "in-01-YY": 4150,
+  "in-01-YZ": 3674,
+  "in-01-ZX": 4097,
+  "in-01-ZY": 4242,
+  "in-01-ZZ": 3889,
+  "in-0i-XX": 4013,
+  "in-0i-XY": 3987,
+  "in-0i-XZ": 3929,
+  "in-0i-YX": 4433,
+  "in-0i-YY": 4022,
+  "in-0i-YZ": 3740,
+  "in-0i-ZX": 3685,
+  "in-0i-ZY": 3645,
+  "in-0i-ZZ": 3959,
+  "in-1+-XX": 4844,
+  "in-1+-XY": 4612,
+  "in-1+-XZ": 4521,
+  "in-1+-YX": 4453,
+  "in-1+-YY": 4321,
+  "in-1+-YZ": 4791,
+  "in-1+-ZX": 4462,
+  "in-1+-ZY": 4550,
+  "in-1+-ZZ": 4120,
+  "in-10-XX": 6652,
+  "in-10-XY": 4332,
+  "in-10-XZ": 4857,
+  "in-10-YX": 5185,
+  "in-10-YY": 5261,
+  "in-10-YZ": 4764,
+  "in-10-ZX": 5218,
+  "in-10-ZY": 4823,
+  "in-10-ZZ": 3817,
+  "in-11-XX": 4100,
+  "in-11-XY": 3813,
+  "in-11-XZ": 4285,
+  "in-11-YX": 4198,
+  "in-11-YY": 4282,
+  "in-11-YZ": 4561,
+  "in-11-ZX": 4461,
+  "in-11-ZY": 4397,
+  "in-11-ZZ": 4378,
+  "in-1i-XX": 4350,
+  "in-1i-XY": 4720,
+  "in-1i-XZ": 4630,
+  "in-1i-YX": 4912,
+  "in-1i-YY": 4711,
+  "in-1i-YZ": 4823,
+  "in-1i-ZX": 4343,
+  "in-1i-ZY": 4064,
+  "in-1i-ZZ": 4773,
+  "in-i+-XX": 4131,
+  "in-i+-XY": 3851,
+  "in-i+-XZ": 4218,
+  "in-i+-YX": 4431,
+  "in-i+-YY": 4099,
+  "in-i+-YZ": 4124,
+  "in-i+-ZX": 4488,
+  "in-i+-ZY": 3908,
+  "in-i+-ZZ": 4142,
+  "in-i0-XX": 4501,
+  "in-i0-XY": 4182,
+  "in-i0-XZ": 4215,
+  "in-i0-YX": 4967,
+  "in-i0-YY": 4974,
+  "in-i0-YZ": 4456,
+  "in-i0-ZX": 4446,
+  "in-i0-ZY": 4102,
+  "in-i0-ZZ": 4353,
+  "in-i1-XX": 3834,
+  "in-i1-XY": 3984,
+  "in-i1-XZ": 3639,
+  "in-i1-YX": 3699,
+  "in-i1-YY": 3748,
+  "in-i1-YZ": 3532,
+  "in-i1-ZX": 4430,
+  "in-i1-ZY": 3794,
+  "in-i1-ZZ": 4230,
+  "in-ii-XX": 4193,
+  "in-ii-XY": 4216,
+  "in-ii-XZ": 4325,
+  "in-ii-YX": 4365,
+  "in-ii-YY": 4447,
+  "in-ii-YZ": 4152,
+  "in-ii-ZX": 3986,
+  "in-ii-ZY": 4115,
+  "in-ii-ZZ": 3902
+ },
+ "excluded_by_cause": {
+  "fewer_than_two_clicks": 0,
+  "three_or_more_clicks": 2713,
+  "two_clicks_off_the_rails": 3355384
+ },
+ "hom_offset_from_preferred": {
+  "job-00": -1.5799999999999983,
+  "job-01": -1.5799999999999983
+ },
+ "overlap_estimates": {
+  "control_rate_ratio": {
+   "interval": [
+    1.0445907361235351,
+    1.0744261334150775
+   ],
+   "point": 1.0598309584760452
+  },
+  "difference": {
+   "interval": [
+    -0.0745981997596701,
+    -0.05754404142333647
+   ],
+   "point": -0.06551748673266233
+  },
+  "overdispersion": {
+   "draws": 200,
+   "mean_events_per_rate": 1065.8038194444443,
+   "pearson": 166239.95792903795,
+   "ratio": 5.725627730628404,
+   "reference_95": [
+    18759.642812276157,
+    40271.24928257219
+   ],
+   "reference_mean": 29034.363697758716,
+   "seed": 14845
+  },
+  "overlap_from_fidelity": {
+   "interval": [
+    0.8670691390978639,
+    0.8798537727893667
+   ],
+   "point": 0.8736507478261684
+  },
+  "overlap_from_rail_rates": {
+   "interval": [
+    0.9330172961259138,
+    0.945422412429909
+   ],
+   "point": 0.9391682345588307
+  },
+  "rail_rate_ratio": 1.2433270617646772,
+  "record_model": {
+   "difference": {
+    "censored": null,
+    "interval": [
+     -0.04496964141676939,
+     -0.026601135230387395
+    ],
+    "point": -0.03526554108551505
+   },
+   "fit": {
+    "fidelity_max_residual": 6.5524550909579204e-06,
+    "fidelity_range": [
+     0.6223957207606805,
+     0.9335845521722359
+    ],
+    "grid": [
+     0.7,
+     0.7375,
+     0.775,
+     0.8125,
+     0.85,
+     0.8875,
+     0.925,
+     0.9625,
+     1.0
+    ],
+    "rail_ratio_max_residual": 1.765014203791715e-05,
+    "rail_ratio_range": [
+     1.0712648324294762,
+     2.1580866088495343
+    ]
+   },
+   "overlap_from_fidelity": {
+    "censored": null,
+    "interval": [
+     0.910423092746218,
+     0.9236458111378898
+    ],
+    "point": 0.917230187171651
+   },
+   "overlap_from_rail_rates": {
+    "censored": null,
+    "interval": [
+     0.9457032167605545,
+     0.9594023202450996
+    ],
+    "point": 0.952495728257166
+   }
+  }
+ },
+ "process": {
+  "average_gate_fidelity": 0.8653889081774804,
+  "average_gate_fidelity_interval": [
+   0.8591996999970933,
+   0.8712887042794076
+  ],
+  "average_gate_fidelity_intervals": {
+   "basic": [
+    0.8594891120755531,
+    0.8715781163578674
+   ],
+   "percentile": [
+    0.8591996999970933,
+    0.8712887042794076
+   ]
+  },
+  "bootstrap": {
+   "interval": "percentile",
+   "level": 0.95,
+   "replicates": 500,
+   "seed": 5124
+  },
+  "conditional_process_fidelity": 0.8108093398422491,
+  "events": 613903,
+  "pooling": {
+   "gap_hours": 0.17666666666666667,
+   "hom_difference": 0.0,
+   "reason": null,
+   "scales": {
+    "job-00": 1.0,
+    "job-01": 1.0
+   },
+   "status": "decided",
+   "transmittance_difference": 0.0
+  },
+  "process_fidelity": 0.8317361352218504,
+  "process_fidelity_bootstrap_median": 0.831448145456819,
+  "process_fidelity_interval": [
+   0.8239996249963667,
+   0.8391108803492595
+  ],
+  "process_fidelity_intervals": {
+   "basic": [
+    0.8243613900944413,
+    0.8394726454473341
+   ],
+   "percentile": [
+    0.8239996249963667,
+    0.8391108803492595
+   ]
+  },
+  "projected_process_fidelity": 0.7898301275103637,
+  "status": "decided"
+ },
+ "runs": [
+  {
+   "cases_sha256": "5f1012629d4accf92d3ee895a523f0c7dedad4203b554256cf1c6da7e46b34a8",
+   "counted": 72,
+   "job": "job-00"
+  },
+  {
+   "cases_sha256": "2b342ec20d6677a4baf315fca0ec5b956479becffaea901a7ae01caffd905d36",
+   "counted": 72,
+   "job": "job-01"
+  }
+ ],
+ "schema": "qd-cz-tomography-reference-analysis-v1",
+ "settings_expected": 144,
+ "settings_with_counts": 144,
+ "uncounted_by_kind": {
+  "error": 0,
+  "malformed": 0,
+  "missing": 0,
+  "uncounted": 0
+ }
+}
