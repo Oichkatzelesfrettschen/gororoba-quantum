@@ -4,8 +4,8 @@ make_kernels.py writes one kernel per check from this file, replacing CONFIG_B64
 (branch, pinned commit, repository, driver arguments, record name). The kernel fetches that commit of the public
 repository, installs passagemath Singular 4.4.1, sympy and python-flint, puts a `systemd-run` shim on PATH (the
 drivers wrap Singular in a user scope that a Kaggle container lacks; the shim drops the scope options so the session's
-own RAM bounds Singular) and runs the driver unchanged. It copies the driver's record and log to /kaggle/working and exits 1 unless the driver
-exited 0 and wrote a record with a verdict (see `failed`).
+own RAM bounds Singular) and runs the driver unchanged. It copies the driver's record and log to /kaggle/working and
+exits 1 unless the driver exited 0 and wrote a record with a verdict (see `failed`).
 """
 
 from __future__ import annotations
