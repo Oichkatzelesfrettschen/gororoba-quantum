@@ -33,8 +33,8 @@ bound rests on no membership receipt.
 
 The header is the canonical producer input `working/build/inputs/p32009-r10754/iso-nm.sing`, so `../build_registry.py`
 binds the record: run from `docs/evidence/a5-exceptional-fibers` with the scan roots
-`d5-p2 degree-one n15-laptop n16-laptop ../../local/a5-failed-runs iso-d6-n19-laptop` (in that order, because the first
-root that holds a record names its source), it adds one bound certificate and marks Iso degree 6 at p = 32009
+listed in `../README.md` (the `build_registry.py` row; `n18-laptop` joined them on 2026-11-08 and binds the E8-bar
+degree-5 records), it adds one bound certificate and marks Iso degree 6 at p = 32009
 certified in `../claims.json`; without the last root, `--check` reproduces the previous registry. Singular version:
 [`iso6-singular-version.txt`](iso6-singular-version.txt).
 

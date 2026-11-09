@@ -3,7 +3,7 @@
 Result. At p = 32009 and p = 32029 the degree-30 component C30 of V(K2) for W8 -> N- (C30 = V(K2 : P) at 32009; at
 32029 the component of V(K2) other than C20, `../w8-kp/README.md` steps 5 and 6) lies in the fiber E0 = Proj F(I) over
 the origin. With C20 in E0 (arcs-iso-w8/README.md), E0 = V(K2) set-theoretically. K2 lies in the defining ideal L of
-F(I) (degree-2 receipts) and is radical and saturated (k[y]/K2 is Cohen-Macaulay of dimension 6), so the projective
+F(I) (degree-2 receipts) and is radical (A5-061) and saturated (k[y]/K2 is Cohen-Macaulay of dimension 6), so the projective
 Nullstellensatz gives L = K2 and F(I) = k[y]/K2 in every degree at both primes (step 8 below). The W8 degree-6 rank
 run (N = 19, 17 to 20 h) does not decide the Hilbert function of F(I); it remains an independent test of the rank
 engine and of the convergence rule N = 3d + 1. Two adversarial reviews (Codex and Grok, 2026-11-08,
@@ -89,7 +89,7 @@ t9 = 0}.
    take the same values. A degree-6 element of L outside K2, which a degree-6 membership receipt would show as a
    membership failure, would falsify the reduction. A truncated rank is a lower bound (r_N <= h_6), so no rank value
    below 8,624 contradicts h_6 = 8,624; such a value bounds the engine or the N = 3d + 1 law instead.
-8. The ideal. K2 is radical and, k[y]/K2 being Cohen-Macaulay of positive dimension, saturated; F_p is perfect, so K2
+8. The ideal. K2 is radical (A5-061: eight QRNG sections, each a squarefree eliminant of degree 50) and, k[y]/K2 being Cohen-Macaulay of positive dimension, saturated; F_p is perfect, so K2
    is geometrically radical and K2 = I(V_+(K2)) over an algebraic closure, contracted back. E0 = V_+(L) contains
    V_+(K2) = C20 cup C30, so L lies in I(V_+(K2)) = K2; with K2 in L, L = K2. L need not be assumed radical.
 

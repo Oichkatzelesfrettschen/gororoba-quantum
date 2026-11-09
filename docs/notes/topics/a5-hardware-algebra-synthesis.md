@@ -204,7 +204,7 @@ cited record or recomputed.
   identity into the basis count: a basis of n vectors of ker L_a gives bases of 2n vectors of ker L_(a,0) and
   ker L_(0,a), and the rank 2^k - n doubles (the existence of bases and the invariance of their size are the
   hypotheses of the standard finite-dimensional facts). gororoba-open closes its pure-only gap by showing that an
-  operand with nonzero real part has full rank: its branch `proofs/unconditional-doubling-nullity`, awaiting merge,
+  operand with nonzero real part has full rank: its pull request 266 (merged 2026-11-08, merge commit 58784c60b)
   proves `doubling_nullity` for every operand (`CDUnconditionalDoublingNullity.v`). The twisted-product identities Re f = (f(z) + f(z'))/2 and Im f = (f(z) -
   f(z'))/(2 i) for the W8 equations, with the ideal exchange for every ideal, are
   [CdTwistedProduct.v](../../../proofs/CdTwistedProduct.v) ([replay bundle](../../evidence/cd-twisted-product/README.md)).
@@ -251,8 +251,10 @@ cited record or recomputed.
   with a Hilbert polynomial from degree 1, and proves nothing: with h_0 = 1 the first fourth difference is 10, and
   k[y]/K2 for E8-bar -> N- is not Cohen-Macaulay (generic-section h-vector [1, 16, 3], length 20 against degree 11, at
   both primes, `k2-cm.jsonl`), so no regularity bound supports polynomiality. h_6 = 1666 needs the degree-6 rank.
-- The E8-bar -> N+ value at degree 5 (A5-082, A5-088) stays open. The t8, t9 sign correspondence of A5-024 carries
-  the quadrics, but no record shows it carries F(I).
+- The E8-bar -> N+ value at degree 5 is h_5 = 952 at both primes (A5-082, A5-088). The t8, t9 sign flip
+  carries every J and G generator to plus or minus its N- partner at each producer prime and fixes the origin
+  (`witnesses.jsonl`, sign-isomorphism rows), so F(I+) and F(I-) are isomorphic graded rings and the N- certificates
+  transport; `claims.json` records them as `transported_from` once `build_registry.py` scans `n18-laptop/`.
 
 ## Folding: what it reaches and what it does not (2026-11-08)
 
@@ -262,13 +264,13 @@ their record lands.
 
 | Statement | Class | Evidence |
 |---|---|---|
-| Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, nullity L_(a,0) = 2 nullity L_a whenever ker L_a has a finite basis, and the same for nullity of every operand in gororoba-open (branch `proofs/unconditional-doubling-nullity`, awaiting merge) | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v) (`RealHalfFoldDimension`); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) and pull request 266 (`doubling_nullity`) |
+| Half fold: ker L_(a,0) = ker L_a x ker L_a for every a, nullity L_(a,0) = 2 nullity L_a whenever ker L_a has a finite basis, and the same for nullity of every operand in gororoba-open (pull request 266, merged 2026-11-08) | proved | [CdHalfFold.v](../../../proofs/CdHalfFold.v) (`RealHalfFoldDimension`); gororoba-open `CDPureDoublingKernel.v` (`pure_doubling_nullity`) and pull request 266 (`doubling_nullity`) |
 | Mixed fold on basis pairs: n_2h(e_i +- e_(h+j)) = h - 4 - 2 n_h(e_i +- e_j), 0 when j = 0 or j = i; maximum D/2 - 4 | computed through D = 512 | [singular_sector_dynamics](../singular_sector_dynamics.md) |
 | Twisted product: with z = x + i x' and z' = x - i x', the 32-coordinate W8 ideal is J(z) + J(z'), J the sedenion zero-divisor ideal; dimension 24, degree 16, Hilbert numerator N_J(t)^2 | generator-level ideal equality proved in Rocq (`W8_ideal_exchange` of [CdTwistedProduct.v](../../../proofs/CdTwistedProduct.v): Re f, Im f and f(z), f(z') generate one ideal over any ring holding i and 1/2); the disjoint variables of J(z) and J(z'), the product of varieties, dimension 24, degree 16 and the Hilbert numerator computed at p = 32009 and 32003 | ledger A5-223, [cd-twisted-product](../../evidence/cd-twisted-product/README.md), [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) (mutation controls: one flipped sign of i breaks both containments) |
 | Restriction to the sedenion coordinates is the diagonal z = z' and returns J; J is the radical of the A_4 Pfaffian ideal PB, not PB | computed at p = 32009 | ledger A5-222 (status refuted for the claim that the restricted ideal equals PB; the row records what holds), [a5-w8-a4-restriction](../../evidence/a5-w8-a4-restriction/README.md) |
 | Nullity sum rule n_32(x) = n_16(z) + n_16(z') | refuted: holds at 800 QRNG-seeded random points (200 each on W8, the diagonal, off W8 and generic), fails on 480 of 512 mixed basis pairs | ledger A5-224, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
 | On every mixed basis pair n_16(z) = n_16(z'), and (n_32, n_16) takes four values: (0,0) x32, (0,8) x60, (4,4) x168, (12,8) x252; on the 420 pairs with i, j >= 1 and i != j, n_16(z) = 8 - n_16(e_i +- e_j), so n_32 = 2 n_16(z) - 4; the exceptions are i = 0, j = 0 or i = j (92 pairs), where n_32 = 0 | computed (512 of 512; ranks over Q agree with F_32009) | ledger A5-225, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md) |
-| The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: h_1 = 24 and 144 degree-2 relations give h_2 = 156, so the halves' degree-2 values sum to 12, which caps h_3 at 167 against the measured h_3 >= 551 | ledger A5-235; A5-139 (h_2 = 156) and its receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
+| The twist splits the fiber ring: k[y]/K2 of W8 is a tensor product of two algebras on 12 fiber generators each | refuted by Macaulay's bound: a tensor product A (x) B of two 12-generator algebras has h_2 = h_2(A) + h_2(B) + 144 (the 12 x 12 cross monomials), so h_2 = 156 forces h_2(A) + h_2(B) = 12, which caps h_3 at 167 against the measured h_3 >= 551 | ledger A5-235; A5-139 (h_2 = 156) and its receipt `a5-w8-receipt-p1` (generator and relation counts); findings note "A value below the count" |
 
 What folding reaches. The nullity of every half operand, from one level down; the nullity of every two-term basis
 element, through the mixed rule (a reflection n -> h - 4 - 2n, which is why the support of the spectrum is palindromic); and the
@@ -285,9 +287,11 @@ keep their size; their cost is the export of k[t]/(J + m^N), which folding has n
 
 The twisted-double conjecture after review ([Codex final report](../../archive/reviews/fold-32d/review-codex-final-report.md),
 checked against the records). The W8 closure is the i-twisted double of the sedenion zero-divisor cone: the ideal
-equality, dimension 24, degree 16, the squared Hilbert numerator and the diagonal restriction to J survive, and they
-hold in characteristic 0, since the change of variables is defined over Z[i, 1/2] and faithfully flat base change
-descends dimension, degree and Hilbert series from Q(i) to Q. The strengthening that W8 nullity is a function of the
+equality, dimension 24, degree 16, the squared Hilbert numerator and the diagonal restriction to J survive. The
+generator equality holds over every ring containing i and 1/2 (`W8_ideal_exchange`, proved); dimension, degree, the
+numerator and the restriction are computed at p = 32009 and 32003 and stay F_p statements. Faithfully flat descent
+from Q(i) to Q would carry a Hilbert series known over Q(i), and none is computed there (roadmap item 10 of the
+findings note). The strengthening that W8 nullity is a function of the
 pair (n_16(z), n_16(z')) is refuted on W8 itself: on the real slice a W8 point is a half operand, whose L is block-diagonal
 with blocks L_z and R_z (gororoba-open `zero_upper_half_matrix`, a field-generic identity) and rank R_z = rank L_z for
 pure z, so n_32 = 2 x 8 = 16 when the F_p factor has nullity 8 (ledger A5-226, [a5-w8-twisted-product](../../evidence/a5-w8-twisted-product/README.md#w8-pair-table); exact over Q(i) at the witnesses
@@ -344,7 +348,7 @@ labeled as one.
 |---|---|---|---|
 | Iso degree 6 (rows 119, 125) | receipt-bound truncated rank at d = 6, about N = 19 | forecast 2 to 4 h, 13 to 23 GiB (trends forecast; untested receipt path) | laptop after a pilot; Kaggle fits; FX4 fallback |
 | E8-bar -> N- degree-4 control at p = 32029 | truncated rank at d = 4, N = 18 | hours (the p = 32009 control) | laptop |
-| E8-bar -> N+ degree 5 (rows 082, 088) | the N = 18 rank on N+, or a proof that the A5-024 sign map carries F(I) | 26 h at 35 GiB (the N- run), or a proof | laptop, or none |
+| E8-bar -> N+ degree 5 (rows 082, 088) | done: transported from N- by the t8/t9 sign isomorphism (`witnesses.jsonl`) | none | none |
 | W8 degree 6 | receipt-bound rank at d = 6, N = 19 (the 3d + 1 law), target 8,624 | measured on the laptop 2026-11-08: Singular standard basis 2,774 s at 0.49 GB (export kept, 109 MB), preflight 375.62 GiB (D = 235,543), so `--max-gb` must exceed 375; peak RSS forecast 137 GiB from the W8 fit, about 160 GiB from the degree-5 receipt ratio 24.9/58.9, low confidence; 17 to 20 h. The earlier 40 to 70 GiB figure scaled the product count only and is withdrawn | FX12mds_v2 (252 GB, $1.641/h) with `--max-gb 380` on the forecast, or E48ads_v5 (384 GiB, $3.144/h) clearing the preflight; a proof that C30 lies in the fiber removes the run |
 | E8-bar degree 6, h_6 = 1666 | rank at d = 6, about N = 21 | forecast multi-day, about 50 GB receipt-bound | FX4 with its shutdown schedule moved (A5-205); no other host |
 | Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |

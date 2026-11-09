@@ -36,7 +36,7 @@ The registry and its checks sit beside `working/` and read only from it:
 | File | Content |
 |---|---|
 | [ledger.py](ledger.py) | [ledger.tsv](ledger.tsv): the claim ledger of the program, one row per equation, structural statement, method or operational finding with its status after falsification, basis, evidence paths and falsifier; `--check`, `--summary`, `--open` |
-| [build_registry.py](build_registry.py) | builds [claims.json](claims.json), [certificates.jsonl](certificates.jsonl) and [unbound.jsonl](unbound.jsonl) from the retained records; `--check` rebuilds in memory |
+| [build_registry.py](build_registry.py) | builds [claims.json](claims.json), [certificates.jsonl](certificates.jsonl) and [unbound.jsonl](unbound.jsonl) from the retained records; `--check` rebuilds in memory. Scan roots, run from this directory in this order (the first root holding a record names its source): `d5-p2 degree-one n15-laptop n16-laptop n18-laptop ../../local/a5-failed-runs iso-d6-n19-laptop`; any other list rewrites the registry without `--check` |
 | [witnesses.py](witnesses.py) | [witnesses.jsonl](witnesses.jsonl): header-pair identities, sign isomorphisms between paired fibers, and k2-span identities between each degree-2 receipt and each K2 source |
 | [k2_hilbert.py](k2_hilbert.py) | [k2-hilbert.jsonl](k2-hilbert.jsonl): HF(k[y]/K2, d) for d = 1 to 6 from the 14 retained K2 sources |
 | [k2_cm.py](k2_cm.py) | [k2-cm.jsonl](k2-cm.jsonl): Cohen-Macaulay test of each k[y]/K2 by a general linear system of parameters, and the linearly joined structure of E8-bar -> VB |
