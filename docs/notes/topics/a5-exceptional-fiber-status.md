@@ -13,8 +13,9 @@ form strata by nullity, the dimension of the kernel of left multiplication. The 
 smaller orbit Z, which 8-dimensional kernels arise as limits. The program answers in four layers:
 
 1. **Directions of approach, degree by degree.** The exceptional fiber of the blowup of Y along the kernel-coordinate
-   ideal I at a point of Z has coordinate ring F(I); its Hilbert function h_d counts the independent degree-d
-   relations among the limiting directions. Each h_d is certified when a truncated-rank lower bound meets the upper
+   ideal I at a point of Z has coordinate ring F(I); its Hilbert function h_d = dim_k(I^d / m I^d) counts the independent degree-d
+   classes of F(I), the degree-d forms modulo the relations among the limiting directions (h_1 is the number of
+   independent generators of I). Each h_d is certified when a truncated-rank lower bound meets the upper
    bound HF(k[y]/K2, d) from the quadric relations K2.
 2. **Directions of approach, all degrees at once.** F(I) = k[y]/K2 for a fiber says K2 is the whole story in every
    degree; it is proved by a structural argument (the C30 argument for W8), not by more ranks.
@@ -44,7 +45,8 @@ remains there. Reproduce the counts with
 - **E8-bar -> VB degree 6 certified at both primes** (r_20 = 420, blocks 138/98/92/92; `vb-d6-laptop/`). VB's first
   layer is complete through degree 6, and A5-005 (VB all-degree) survives one more degree. It does not prove A5-005:
   VB's all-degree question is whether its fiber contains the degree-3 component (A5-016).
-- **The t7 = 1 chart and its arcs** (`working/build/arc/`). The chart normalizes to one 12-variable ring; 34 order-1
+- **The t7 = 1 chart and its arcs** (`working/build/arc/`). The chart ideal is radical; its primality is not yet shown (minimal primes on OCI A1). Its normalization is one
+  12-variable ring under the default method; 34 order-1
   arcs land in the degree-4 component and none in the degree-3 component, as chart t1 predicted. A5-016 narrows to
   arcs with jet parameters on the plane t1 = 0 and at the apex t1 = t3 = t5 = 0, where G vanishes through s^13.
 - **E8-bar degree 6 has one route.** K2 is not radical for E8-bar, so a plane-family proof only reproduces the lower
@@ -57,7 +59,8 @@ remains there. Reproduce the counts with
 - **The Cayley-Dickson tower enters through symmetry, not dimension counts**
   ([cd-tower](../../archive/reviews/cd-tower/report.md), one agent, no outside review). The four character blocks are
   the stabilizer of the base point among the sign automorphisms e_a -> +-e_a; the stabilizer also carries a torus and
-  an SL(2) fixing a quaternion subalgebra (floating point). An exact torus would allow a weighted standard basis, the
+  an SL(2) fixing a quaternion subalgebra (hypothesis: floating point on fixed, unregistered seeds whose scripts were
+  not retained, pending a seeded, retained replay). An exact torus would allow a weighted standard basis, the
   one lever found against the export wall. Icosahedral, McKay and E8 readings are refuted.
 
 ## What moves each layer next

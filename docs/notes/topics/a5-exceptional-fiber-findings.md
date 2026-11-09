@@ -454,9 +454,10 @@ tests; the ledger row it enters is named where one exists.
    charts not yet tried (t7 = 1, the locus k^2 + 3 = 0 and the singular points of the normalization). Chart 5 (t5 = 1):
    `normal()` returns in 359 s with one ring of 21 variables and 382 relations, and its 14 arcs with finite lead all land
    in the degree-4 component. Chart t7 = 1 (`working/build/arc/chart_t7.sing` and `.log`, OCI A1): the strict
-   transform there is prime of dimension 4, and `normal()` returns in 2,298 s with one ring of 12 variables and 284
-   relations (2 h 3 min, 5.2 GiB in all); with primality taken as proved, `normal(S7, "isPrim")` returns the same ring
-   in 7 min 31 s and writes it (`chart_t7_norid_1.txt`: four new elements T(1) to T(4)); its arcs are not yet run. The exceptional divisor lies
+   transform there is radical of dimension 4 (the script's "prime?" line tests reduce(radical(S7), S7) = 0, which
+   is radicality; primality waits on the minimal primes, `chart_t7_primes.sing` on OCI A1), and the default `normal()`
+   returns in 2,298 s with one ring of 12 variables and 284 relations (2 h 3 min, 5.2 GiB in all); `normal(S7,
+   "isPrim")`, valid only if S7 is prime, returns the same ring in 7 min 31 s and writes it (`chart_t7_norid_1.txt`: four new elements T(1) to T(4)); its arcs are not yet run. The exceptional divisor lies
    over P(L), L = V(t2, t8, t5 - t6, t3 + t4) with coordinates (t1 : t3 : t5 : t7) (`working/build/arc/arc-report.md`,
    step 2), so chart t7 = 1 adds only the point t1 = t3 = t5 = 0 to the charts t1, t3 and t5 (inference). Generic
    order-1 arcs there repeat chart t1 and land in V(P2); a family dominant onto the 3-dimensional V(P1) needs a
@@ -494,7 +495,8 @@ tests; the ledger row it enters is named where one exists.
 An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures.
 Survives, computed: the Klein sign group of every fiber is the stabilizer of its base point in (Z/2)^4 x {+-1} through
 e_a e_b = sigma(a, b) e_(a xor b), reproducing the measured flip sets on 11 headers; nonzero nullities through level 6
-are multiples of 4 and the doubling rule holds in 420 of 420 cases. Survives in floating point only: the base-point
+are multiples of 4 and the doubling rule holds in 420 of 420 cases. Hypothesis pending a replay with registered QRNG seeds and
+retained scripts (the analysis used fixed seeds and discarded its floating-point scripts): the base-point
 stabilizer has a rank-3 torus with 9 distinct normal weights and an SL(2) that fixes a quaternion subalgebra of each
 octonion block under G_2 = Aut(O). Refuted or unsupported: the icosahedral, McKay and E8 readings (here A_5 is the
 32-dimensional algebra and E8 a stratum label), a tensor-square model of the last jump, and the small-number matches

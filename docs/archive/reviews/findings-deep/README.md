@@ -3,8 +3,9 @@
 Codex (gpt-daybreak-blue, high, read-only, documents repositories readable) and Grok (grok-4.7, high, confined to the
 worktree, literature from the web) read one brief ([brief.md](brief.md)): [review-codex.md](review-codex.md) at
 commit 3d928b1a6 and [review-grok.md](review-grok.md) at d21e9a76e. Local paths are scrubbed; the text is otherwise as
-written. Both replayed the ledger and registry checks, the sign witnesses and the Rocq receipts (Codex) or re-hashed
-every certifying rank record against its canonical header (Grok); neither found a certificate that fails.
+written. Codex replayed the ledger and registry checks, the sign witnesses and the Rocq receipts; Grok ran none of those
+replays (`review-grok.md`, line 3) and instead re-hashed every certifying rank record against its canonical header
+and inspected the rest; neither found a certificate that fails.
 
 Reconciliation, checked against the source:
 
@@ -51,8 +52,8 @@ time.
 
 What survives justification, falsification and the Advisor:
 
-- Every retained certificate: both reviews replay the ledger, registry, sign witnesses and rank-record hashes without
-  a failure, and E8-bar -> VB degree 4 at p = 32029 (A5-111) joins them at r_13 = 155.
+- Every retained certificate: Codex's replays of the ledger, registry and sign witnesses and Grok's re-hash of every
+  certifying rank record against its header find no failure, and E8-bar -> VB degree 4 at p = 32029 (A5-111) joins them at r_13 = 155.
 - The last-jump law A5-244 as numbers: last jump (2d + 1)^2, block split by the trends closed form. The box-parity
   reading is falsified and removed.
 - The X- plateau r_20 = r_21 as a p = 32009 measurement; at p = 32029 it is unmeasured until N = 20 runs there.
