@@ -16,7 +16,7 @@ The band pair of the Ascella CZ process tomography reference
   - the post-data decomposition `docs/evidence/ascella-cz-tomography-band/findings.json`, written by `docs/evidence/ascella-cz-tomography-band/analyze.py` (deterministic, about 75 s);
   - the served-mesh record `results/quandela/ascella-cz-tomography-reference-served-mesh.json` (`scripts/ascella_cz_served_mesh.py --pair reference`);
   - the component model of the mesh and its preregistered hold-out, `docs/evidence/ascella-cz-tomography-band/mesh_model.py` and `mesh-model.json`;
-  - the preregistered model-check reference with a per-seed mesh term, `docs/evidence/ascella-cz-tomography-band/mesh_variance_reference.py` and `mesh-variance-reference.json`, and its post-data cell-share check `reference_low_cell_share.py` and `reference-low-cell-share.json`.
+  - the preregistered model-check reference with a per-seed mesh term, `docs/evidence/ascella-cz-tomography-band/mesh_variance_reference.py` and `mesh-variance-reference.json`, its post-data cell-share check `reference_low_cell_share.py` and `reference-low-cell-share.json`, and the band reference at calibrated inputs `calibrated_reference.py` and `calibrated-reference.json`.
 
 The preregistered analysis decides: process fidelity 0.832 (0.824 to 0.839), average gate fidelity 0.865 (0.859 to
 0.871). The model check fails, so by the preregistered rule every other verdict is conditional on that failure. The
@@ -68,11 +68,10 @@ section), so it serves only to mark which falsifications depend on the interval 
 - **Sigma is an input, not the realized share error.** The perturbation adds sigma before clipping and
   renormalization, so the share error it realizes is smaller: RMS 0.0098 at sigma 0.011, 0.0155 at 0.0177 and 0.0292
   at the band's matching 0.034, the same for both pairs (`reference_low_cell_share.py`). The decision references
-  therefore ran at 0.89 times the recorded scales, and the band's match sits at 1.65 to 2.65 times them. The inputs
-  that realize the recorded scales are 0.0124 and 0.0202. The decision at those inputs is not run (owner ruling: heavy
-  computation stays off the build host). Hypothesis, moderate confidence: the band stays outside, since its grid
-  reference mean at input 0.02 is 82,395, half its statistic; it falls if the 97.5th percentile at input 0.0202
-  reaches 166,240. The retained pass needs no rerun: the pair passes without the term.
+  therefore ran at 0.89 times the recorded scales, and the band's match sits at 1.65 to 2.65 times them. At the
+  inputs that realize the recorded scales, 0.0124 and 0.0202, the band statistic stays outside the reference (ratio
+  3.27, central 95 % up to 77,000; ratio 2.13, up to 118,900; `calibrated_reference.py`, post-data, index 216). The
+  retained pass needs no rerun: the pair passes without the term.
 - **Where the statistic sits.** 153,920 of the band Pearson (93 %) sits in 34 cells where the unweighted
   linear-inversion fit predicts fewer than one event, mostly negative; the statistic divides those by one event, so
   each contributes (n - E)^2. The clip concentrates any scatter there: the synthetic pairs put 97 % of their
