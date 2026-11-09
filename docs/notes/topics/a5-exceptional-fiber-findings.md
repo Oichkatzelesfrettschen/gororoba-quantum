@@ -428,10 +428,10 @@ rank record). E8-bar -> N+ degree 5 is certified by transport from N- once `n18-
 Ordered by information per hour. Each item names its acceptance and the result that would falsify the hypothesis it
 tests; the ledger row it enters is named where one exists.
 
-1. **X- degree 6** (Kaggle CPU or workstation, hours). A5-244 predicts the last jump 169 split 49/42/39/39 into 665,
-   and the closing-N hypothesis floor(7d/2) + 1 (fitted on d = 1 to 5) predicts closing at N = 22 after a plateau at
-   N = 20 and 21. Falsifier: another jump, split or closing N. Extends
-   `../../evidence/a5-exceptional-fibers/xm-lown/`.
+1. **X- degree 6** (done at p = 32009, 2026-11-09; `../../evidence/a5-exceptional-fibers/xm-lown/`). The preregistered
+   ladder met: r_20 = r_21 = 496, r_22 = 665 with blocks 181/178/153/153, the last jump 169 split 49/42/39/39 (A5-244),
+   closing at N = 22 = floor(7d/2) + 1; h_6 = 665 for X- (A5-167) and X+ (A5-155). The p = 32029 cells (A5-173, A5-161)
+   run on the laptop, about 30 minutes at 6 GiB each.
 2. **C30 as a family of planes** (minutes per point). Two-plane test rank [M(p) | M(q)] for distinct p, q in U: 8 means
    general planes are disjoint, below 8 means they meet; then the determinant locus of the Newton and (v4, v5) blocks
    over F_p[b, c], one point per component, to test whether every fiber over P(L0) is a linear 3-space. Falsifier of
