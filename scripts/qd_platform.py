@@ -925,6 +925,32 @@ def hom_warning(platform: str, perfs: dict[str, Any], photons: int, case: str) -
     )
 
 
+# strategy.md section 7, "Per-seed mesh variance of a share", rule 1: the service compiles every iteration of a QPU job
+# to its own mesh, whose observable moves far beyond binomial error between seeds, so a preregistered scatter check
+# that draws its reference from the acquisition law alone fails by construction once the counts resolve that
+# variance. A check named by SCATTER_CHECK_KEYS states in its MESH_VARIANCE_KEY field how its reference carries the
+# per-seed mesh variance (replicate seeds, anchors) or declares the check descriptive.
+PER_ITERATION_COMPILED = ("qpu:ascella", "qpu:belenos")
+SCATTER_CHECK_KEYS = ("overdispersion", "model_check", "scatter_check")
+MESH_VARIANCE_KEY = "mesh_variance"
+
+
+def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: dict[str, Any]) -> list[str]:
+    """The preregistered scatter checks of a case on a per-iteration-compiled platform that name no mesh-variance
+    term: each must carry MESH_VARIANCE_KEY with a nonempty statement that starts with "replicate seeds", "anchors"
+    or "descriptive"."""
+    if not set(platforms) & set(PER_ITERATION_COMPILED):
+        return []
+    gaps = []
+    for key, value in preregistered.items():
+        if not any(word in key for word in SCATTER_CHECK_KEYS) or not isinstance(value, dict):
+            continue
+        statement = str(value.get(MESH_VARIANCE_KEY, "")).strip()
+        if not statement.startswith(("replicate seeds", "anchors", "descriptive")):
+            gaps.append(key)
+    return gaps
+
+
 def live_mesh(processor: dict[str, Any], circuit: dict[str, Any], platform: str) -> None:
     """Refuse a mesh case when the platform's live architecture carries other couplers or symbols than the case."""
     import qd_belenos_mesh as mesh
