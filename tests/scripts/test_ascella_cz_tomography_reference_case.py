@@ -406,3 +406,11 @@ def test_the_retained_verdicts_name_every_conjecture_once() -> None:
     allowed |= {f"conditional on a failed model check: {verdict}" for verdict in ("survives", "falsified")}
     if any(row["verdict"] not in allowed for row in record["conjectures"]):
         raise AssertionError("a retained verdict is outside the preregistered verdict words")
+
+
+def test_plan_reads_take_job_00_whatever_the_run_order() -> None:
+    zero = {"job": "job-00", "perfs": {"HOM (%)": 88.0, "g2 (%)": 2.0, "Transmittance (%)": 5.5, "Clock (MHz)": 13.33}}
+    one = {"job": "job-01", "perfs": {"HOM (%)": 89.0, "g2 (%)": 2.2, "Transmittance (%)": 5.6, "Clock (MHz)": 13.0}}
+    forward, reverse = case.plan_reads([zero, one]), case.plan_reads([one, zero])
+    if forward != reverse or forward["Clock (MHz)"] != 13.33 or forward["HOM (%)"] != 88.5:
+        raise AssertionError(f"the plan reads depend on run order: {forward} against {reverse}")

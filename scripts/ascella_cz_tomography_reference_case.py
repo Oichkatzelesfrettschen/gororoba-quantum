@@ -1067,6 +1067,11 @@ def pearson(eligible: np.ndarray, shots: np.ndarray, scale: np.ndarray) -> float
     return float((((eligible - expected) ** 2) / np.maximum(expected, 1.0)).sum())
 
 
+def pearson_of(item: tuple[np.ndarray, np.ndarray, np.ndarray]) -> float:
+    """pearson over one (eligible, shots, scale) triple, the unit parallel.ordered_map maps."""
+    return pearson(*item)
+
+
 def overdispersion(
     eligible: np.ndarray, samples: np.ndarray, shots: np.ndarray, scale: np.ndarray, seed: int
 ) -> dict[str, Any]:
@@ -1085,10 +1090,12 @@ def overdispersion(
     within = within / np.maximum(within.sum(axis=1), 1.0)[:, None]
     arrays = {"eligible": within, "samples": np.ones(len(samples)), "any": 1.0 / sample_rate}
     generator = np.random.default_rng(seed)
-    reference = []
+    # Every synthetic pair is drawn first, in the generator's order, so the statistics do not depend on worker count.
+    draws = []
     for _ in range(OVERDISPERSION_DRAWS):
         drawn, _, drawn_shots = sampled_dataset(arrays, samples, generator)
-        reference.append(pearson(drawn.astype(float), drawn_shots.astype(float), scale))
+        draws.append((drawn.astype(float), drawn_shots.astype(float), scale))
+    reference = ordered_map(pearson_of, draws, min_items=1)
     observed = pearson(eligible, shots, scale)
     centre = float(np.mean(reference))
     return {
@@ -1213,11 +1220,12 @@ def overlap_law(overlap: float) -> float:
 
 
 def plan_reads(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """The pooled pair's plan reads: V and g2 in units averaged over the jobs, and the perfs the noise pipeline needs
-    (dark counts from job-00's read)."""
+    """The pooled pair's plan reads: V, g2 and transmittance averaged over the jobs, and the rest of the perfs (dark
+    counts, clock) from the job-00 run, chosen by job name whatever order the runs arrive in."""
+    first = min(loaded, key=lambda entry: str(entry["job"]))
     perfs = [entry["perfs"] for entry in loaded]
     mean = {key: sum(float(p[key]) for p in perfs) / len(perfs) for key in ("HOM (%)", "g2 (%)", "Transmittance (%)")}
-    return {**perfs[0], **mean}
+    return {**first["perfs"], **mean}
 
 
 def noise_model_at(perfs: Mapping[str, Any]) -> dict[str, dict[str, float]]:

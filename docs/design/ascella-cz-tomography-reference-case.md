@@ -279,8 +279,8 @@ The thirteen verdicts read four observed summaries: the process fidelity, the ra
 differences, the control ratio and the Pearson statistic. They are distinct benchmarks on those summaries, not
 thirteen independent pieces of evidence. On the retained pair they tell one story. The record noise model fits both
 summaries at a single overlap: M_F = 0.930 (0.912 to 0.946) from the fidelity and M_R = 0.923 (0.904 to 0.942) from
-the rates. That overlap sits about 5 points above the platform's HOM read of 87.56 % and 0.7 points under the model's
-0.937 ceiling. Every prediction that feeds the HOM read in as the overlap misses: the record variant (0.788) by 0.04,
+the rates. That overlap sits about 5 points above the platform's HOM read of 87.56 % and about 7 points below full overlap.
+The measured fidelity, 0.849, sits 8.8 points below the record model's fidelity ceiling of 0.937. Every prediction that feeds the HOM read in as the overlap misses: the record variant (0.788) by 0.04,
 the rail-ratio reading by 3 points. The overlap-only closure fails because it leaves out g2, which the record-model
 closure restores. Hypothesis: the dashboard HOM understates the overlap of the photon pair on chip modes 0 and 2. The
 ledger's sources record that pair overlap varies with emission delay and source pair. The new pair carries about six

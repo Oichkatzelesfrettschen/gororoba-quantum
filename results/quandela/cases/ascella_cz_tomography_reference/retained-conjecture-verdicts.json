@@ -103,7 +103,7 @@
   {
    "band": {
     "lower": null,
-    "upper": 6913.800505019788
+    "upper": 6913.8005050198035
    },
    "id": "scatter-matches-acquisition-law",
    "observed": null,
@@ -112,22 +112,22 @@
   },
   {
    "band": {
-    "lower": 1.0785504917723379,
-    "upper": 1.7975841529538963
+    "lower": 1.0785504917723372,
+    "upper": 1.7975841529538952
    },
    "id": "overdispersion-constant-factor",
-   "observed": 1.438067322363117,
-   "prediction": 1.438067322363117,
+   "observed": 1.4380673223631162,
+   "prediction": 1.4380673223631162,
    "verdict": "survives"
   },
   {
    "band": {
-    "lower": 1.0785504917723379,
-    "upper": 1.7975841529538963
+    "lower": 1.0785504917723372,
+    "upper": 1.7975841529538952
    },
    "id": "overdispersion-relative-systematic",
-   "observed": 1.438067322363117,
-   "prediction": 1.438067322363117,
+   "observed": 1.4380673223631162,
+   "prediction": 1.4380673223631162,
    "verdict": "survives"
   }
  ],
@@ -150,12 +150,12 @@
    "draws": 200,
    "mean_events_per_rate": 174.703125,
    "pearson": 5288.25067682674,
-   "ratio": 1.438067322363117,
+   "ratio": 1.4380673223631162,
    "reference_95": [
-    1986.1947826013638,
-    6913.800505019788
+    1986.194782601362,
+    6913.8005050198035
    ],
-   "reference_mean": 3677.331787316309,
+   "reference_mean": 3677.3317873163114,
    "seed": 14845
   },
   "overlap_from_fidelity": {
