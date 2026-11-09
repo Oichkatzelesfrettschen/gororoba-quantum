@@ -472,5 +472,27 @@ tests; the ledger row it enters is named where one exists.
 12. **A fresh degree-2 replay for Iso and E8-bar**, so the upper bound K2 contained in L rests on a replay rather than
     on retained receipts alone (W8 has one at 32009).
 
+### Run plan by host (2026-11-09)
+
+Reviewed by Codex and Grok ([findings-deep](../../archive/reviews/findings-deep/README.md)). The build host runs no
+heavy job (WSL guest of an active desktop). Each sign pair needs one sign per prime: the sign isomorphisms transport
+every certificate. A ladder needs only its closing N and the N below it once the closing order is known (3d + 1 on
+Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
+
+| Item | Rows | Cost (evidence) | Host |
+|---|---|---|---|
+| E8-bar -> VB degree 4, p = 32029 | A5-111 | under 5 GiB (trends line 249) | laptop, running |
+| E8-bar -> VB degree 6, both primes | A5-107, A5-113 | 1.4 to 2.1 GiB preflight, hours (trends line 249) | laptop, running |
+| Degree-3 component of E8-bar -> VB: remaining charts (t7 = 1, k^2 + 3 = 0, singular points) | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
+| Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
+| E8-bar local route, one family per component (B9, V) | A5-083/089/095/101 | hours of Singular | laptop |
+| Characteristic 0: degree-2 K2 by rational reconstruction, then exact membership | roadmap 10 | hours | laptop |
+| Kernel-plane limits along the arcs | A5-029 | one-arc pilot first | laptop |
+| Engine v12: in-place update, streamed L, free-column storage, 2-byte panels, then a GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last) | roadmap 4 | acceptance: W8 degree 4 byte-equal, preflight within 1.3x | laptop |
+| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 33 h; degree 6 unmeasured | paid VM by approved case, only if the local route fails and after engine v12 |
+| W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
+
+No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.
+
 Retired from this list on 2026-11-08: the W8 -> N- support decomposition (the C30 proof decides W8 without it), the
 W8 degree-6 rank run as a decision run.
