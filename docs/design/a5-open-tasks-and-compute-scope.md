@@ -49,7 +49,7 @@ Kaggle first, then the Windows compute laptop.
 | OCI `lab-a1` | A1.Flex, 2 OCPU aarch64, 12 GB | 9.5 GiB | free |
 | Kaggle CPU session | 4 cores, 30 GB | 0.82 x RAM | 12 h; 5 batch sessions at once; free |
 | Kaggle GPU session | 4 cores, 29 GB, 2 x T4 15 GiB or P100 | 0.84 x GPU + 0.82 x RAM | 12 h; 2 at once; 30 GPU-hours a week |
-| Azure trial | `Standard_FX4mds_v2`, 4 vCPU, 84 GB; one per region under a 4-vCPU regional cap | 0.82 x RAM | 200 USD credit, expires 2026-11-23; Singular 1.6 times slower than the laptop |
+| Azure (pay-as-you-go) | `Standard_FX4ms_v2`, 4 vCPU, 84 GB, for jobs above the laptop's RAM; 8-vCPU D-series for CPU batches; 10 vCPUs per region (14 in westus3); no GPU quota | 0.82 x RAM | sign-up credit lapses 2026-11-23, hourly billing after; sizes, prices and the selection rule in gororoba-infrastructure `clouds/azure/README.md`; Singular speed against the laptop unmeasured |
 | GCP trial | 12 vCPU across all regions, no GPU, no Spot | 0.82 x RAM | 300 USD credit to 2027-01-30; e.g. one n2-highmem-8 (8 vCPU, 64 GB) |
 | AWS free plan | 2 vCPU, 8 GiB largest eligible type (`m7i-flex.large`; `aws-avx512` host) | 6.6 GiB | 199.77 USD credit to 2027-04-24 |
 
