@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scipy import stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -132,6 +133,17 @@ def unit_spectrum(unit: nb.Unit) -> dict[str, Any]:
         row["flatness_chi2"] = r12(chi2)
         row["flatness_spread"] = r12(float(dev.mean(axis=0).std(ddof=1)))
         row["flatness_dof"] = len(unit.sign) - 1
+        # Joint finite-sample test of zero mean deviation: the per-replica residuals sum to zero, so drop one bin and
+        # apply Hotelling's T^2 to the remaining dof coordinates; (n - q) T^2 / (q (n - 1)) ~ F(q, n - q) for Gaussian
+        # replica noise, with the residual covariance estimated, not ignored.
+        y = dev[:, :-1]
+        q = y.shape[1]
+        if reps > q:
+            ybar = y.mean(axis=0)
+            t2 = float(reps * ybar @ np.linalg.solve(np.cov(y, rowvar=False), ybar))
+            fstat = (reps - q) * t2 / (q * (reps - 1))
+            row["flatness_hotelling_t2"] = r12(t2)
+            row["flatness_hotelling_p"] = r12(float(stats.f.sf(fstat, q, reps - q)))
     return row
 
 

@@ -2,13 +2,13 @@
 
 N_hat equals N lambda_0 / lambda_bar on the Walsh spectrum, a symmetric flip channel leaves one-character blocks at 0
 and all-aligned blocks at 4, and every nullity-12 two-term operand has its misaligned pairs on a linear 2-plane, so
-the profile over all 35 admissible tilings is one signature for V, VB, V^a+ and V^a-.
+the profile over all 35 admissible tilings is one signature for V, VB, V^a+ and V^a-. The retained
+result_spectral.json, which holds the 252-operand census, is an on-demand gate (ci/gates.json, nhat-spectral entry).
 """
 
 from __future__ import annotations
 
 import importlib.util
-import json
 import sys
 from pathlib import Path
 
@@ -27,17 +27,6 @@ def test_self_test_passes() -> None:
     lines = nhat_spectral.self_test()
     if len(lines) < 6:
         raise AssertionError(lines)
-
-
-def test_record_orbit_blindness() -> None:
-    record = json.loads((DIRECTORY / "result_spectral.json").read_text())
-    orbit = record["orbit_blindness"]
-    if not (orbit["operands"] == 252 and orbit["signatures"] == 1 and orbit["misaligned_is_subspace"] == 252):
-        raise AssertionError(orbit)
-    if orbit["minus_bins_match_circuit"] != 252:
-        raise AssertionError(orbit)
-    if set(orbit["by_orbit"]) != {"V", "VB", "Vam", "Vap"}:
-        raise AssertionError(orbit["by_orbit"])
 
 
 def test_block_prediction() -> None:

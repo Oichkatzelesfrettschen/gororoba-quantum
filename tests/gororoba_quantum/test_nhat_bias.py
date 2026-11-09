@@ -1,15 +1,13 @@
 """Contracts of the N_hat bias audit (docs/evidence/pathion-kernel-map/nhat-bias/nhat_bias.py).
 
 The estimator obeys N_hat - N = |B+||B-|/|B| (Vbar+ - Vbar-)/V_hat on every contrast vector whose bins are all
-decided, a block whose pairs are all aligned reads |B+|/2 whatever the data, and the retained result.json records the
-identity residual, the forced-block deviation and the headline readings of the audit.
+decided, and a block whose pairs are all aligned reads |B+|/2 whatever the data. The retained result.json and the
+loader agreement on the ibm_fez acquisitions are on-demand gates (ci/gates.json, nhat-bias entries).
 """
 
 from __future__ import annotations
 
 import importlib.util
-import json
-import math
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -70,17 +68,4 @@ def test_undecided_bin_is_refused() -> None:
 
 
 def test_self_test_passes() -> None:
-    _expect(nhat_bias.self_test() == [], "self-test reports a failure")
-
-
-def test_retained_result_records_the_audit() -> None:
-    record = json.loads((DIRECTORY / "result.json").read_text())
-    _expect(record["schema"] == nhat_bias.SCHEMA, "schema differs")
-    _expect(record["identity"]["exact_residual_all_zero"] is True, "the exact identity residual is not zero")
-    _expect(record["identity"]["float_residual_max"] < 1e-12, "the floating-point residual is above 1e-12")
-    _expect(record["forced_blocks"]["max_deviation_from_forced_value"] == 0.0, "a forced block moved")
-    readings = {row["key"]: row for row in record["kernel_map"]["readings"]}
-    null, deep = readings["kmap_e1pe17"], readings["kmap_e1pe26"]
-    _expect(math.isclose(null["n_hat"], 1.399345447032, abs_tol=1e-9), "null operand reading differs")
-    _expect(math.isclose(deep["n_hat"], 10.035692168497, abs_tol=1e-9), "nullity-4 operand reading differs")
-    _expect(math.isclose(deep["bias"], deep["bias_closed_form"], abs_tol=1e-9), "closed form differs from the bias")
+    _expect(nhat_bias.self_test(history=False) == [], "self-test reports a failure")

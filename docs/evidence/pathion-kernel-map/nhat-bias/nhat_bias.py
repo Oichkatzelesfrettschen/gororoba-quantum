@@ -709,8 +709,12 @@ def perturbations(plus: np.ndarray, minus: np.ndarray) -> dict[str, tuple[np.nda
     }
 
 
-def self_test() -> list[str]:
-    """Return the failures; empty means the identity, the forced-block law and the mutation controls hold."""
+def self_test(history: bool = True) -> list[str]:
+    """Return the failures; empty means the identity, the forced-block law and the mutation controls hold.
+
+    history adds the loader-agreement check on the retained ibm_fez acquisitions; the on-demand gate runs it and the
+    pull-request tests call self_test(history=False), which touches synthetic data only.
+    """
     problems: list[str] = []
     # Identity: exact on a grid of class sizes and phases, in rational arithmetic.
     for n_plus, n_minus in ((4, 4), (6, 2), (2, 6), (7, 1), (16, 16), (20, 12), (12, 20), (28, 4)):
@@ -761,7 +765,8 @@ def self_test() -> list[str]:
     if moved < 0.05:
         problems.append(f"the same edits move the informative block by only {moved}: the control has no power")
     # Loader agreement with the code: every replica of a coset run and of the full map through the group's summarize.
-    for name, kind, bound in (("ibm_fez coset map", "cmap", RECORD_ROUNDING), ("ibm_fez kernel map", "kmap", None)):
+    retained = (("ibm_fez coset map", "cmap", RECORD_ROUNDING), ("ibm_fez kernel map", "kmap", None)) if history else ()
+    for name, kind, bound in retained:
         path = ROOT / RUNS[name][0] / "collect.json"
         if not path.exists():
             continue
