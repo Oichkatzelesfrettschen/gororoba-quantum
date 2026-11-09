@@ -132,12 +132,12 @@ roughly; the precision column does not depend on load. [sweep.jsonl](sweep.jsonl
 
   | Machine | OS | CPU | Build | QuadBLAS | View cases | Empty inner dimension |
   |---|---|---|---|---|---|---|
-  | build host | CachyOS (capsule) | Ryzen 5 5600X3D, Zen 3, AVX2 | source build and PyPI wheel | enabled | 6 of 6 wrong | raises |
-  | ALIENWARE | WSL Ubuntu 26.04 | Ryzen 9 7945HX, Zen 4, AVX-512 | PyPI wheel | enabled | 6 of 6 wrong | raises |
-  | Vostro | CachyOS | Turion 64 X2 TL-66, SSE3, no AVX | PyPI wheel on CachyOS numpy 2.5.3 | enabled | 6 of 6 wrong | raises |
-  | MacBook Air | macOS 27.0 | Apple M1, arm64 | PyPI wheel | enabled | 6 of 6 wrong | raises |
-  | ALIENWARE | Windows 11 | Ryzen 9 7945HX | PyPI wheel | disabled | all correct | returns zeros |
-  | build host | CachyOS (capsule) | Ryzen 5 5600X3D | upstream `main` 888042c (QBLAS 1.5.0) | enabled | all correct | returns zeros |
+  | build-host | Linux | Ryzen 5 5600X3D, Zen 3, AVX2 | source build and PyPI wheel | enabled | 6 of 6 wrong | raises |
+  | zen4-wsl | Linux on WSL2 | Ryzen 9 7945HX, Zen 4, AVX-512 | PyPI wheel | enabled | 6 of 6 wrong | raises |
+  | turion-linux | Linux | Turion 64 X2 TL-66, SSE3, no AVX | PyPI wheel on the distribution's numpy 2.5.3 | enabled | 6 of 6 wrong | raises |
+  | m1-macos | macOS | Apple M1, arm64 | PyPI wheel | enabled | 6 of 6 wrong | raises |
+  | zen4-windows | Windows | Ryzen 9 7945HX | PyPI wheel | disabled | all correct | returns zeros |
+  | build-host | Linux | Ryzen 5 5600X3D | upstream `main` 888042c (QBLAS 1.5.0) | enabled | all correct | returns zeros |
 
   The contiguous control is correct everywhere. What survives across four CPUs, three operating systems, both builds
   and both instruction-set families: with QuadBLAS enabled, matmul with any non-C-contiguous operand returns wrong
