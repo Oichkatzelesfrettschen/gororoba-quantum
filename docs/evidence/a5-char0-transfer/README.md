@@ -55,7 +55,9 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
   W8 -> N- survives at N = 4, 7, 10 and 13 (d = 1 to 4): 183, 1,257, 5,009 and 14,761 elements (ledger A5-277).
 - [`quadric_lift.py`](quadric_lift.py) (check 2): the degree-2 relations {q : q(G) in J + m I^2} over Q(i) by the
   computation of the modular degree-2 receipts (`working/distribute/out/*/d2/d2-products.sing`), compared with the
-  retained K2 at both primes (ledger A5-248, running). A first run took m from the nine-variable producer ring;
+  retained K2 at both primes (ledger A5-248). Stopped at the 3-hour cap without finishing (3:00:02, 1.26 GiB peak,
+  `logs/quadrics-xm-nm.time`); the exact standard basis grows with the Gaussian coefficients of G, so the next attempt
+  lifts the 69 quadrics from several split primes and verifies them over Q(i) instead. A first run took m from the nine-variable producer ring;
   that contracts to the same relation space but added 240 generators, and it was restarted on the slice variables.
 - [`span_check.py`](span_check.py): over Q(i), every one of the 126 Pfaffian kernel coordinates reduces to 0 modulo
   J + m * FullF + (G), so G generates the kernel-coordinate ideal at the origin (Nakayama) and the fiber cone of (G)
