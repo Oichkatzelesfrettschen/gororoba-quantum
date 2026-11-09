@@ -4,6 +4,7 @@ fixtures."""
 from __future__ import annotations
 
 import math
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
@@ -35,7 +36,18 @@ def planned_fixture(
 def complete_run(job: str = "job-00", status: str = "completed", missing: int = 0, error: int = 0) -> dict[str, Any]:
     names = [row["name"] for row in tomo.job_rows(job)]
     tallies = {name: {"eligible": [1, 1, 1, 1]} for name in names[missing:]}
-    return {"job": job, "status": status, "tallies": tallies, "uncounted": {"error": error}}
+    return {
+        "job": job,
+        "status": status,
+        "tallies": tallies,
+        "uncounted": {"error": error},
+        "perfs": {"HOM (%)": 91.0, "Transmittance (%)": 5.51},
+        "submitted_utc": SUBMITTED.isoformat(timespec="seconds"),
+    }
+
+
+SUBMITTED = datetime(2026, 11, 10, 6, 0, tzinfo=UTC)
+LATER = SUBMITTED + timedelta(minutes=5)
 
 
 @pytest.mark.parametrize(
@@ -106,11 +118,29 @@ def test_a_plan_off_the_policy_is_refused() -> None:
 )
 def test_job_01_waits_for_a_complete_job_00(predecessor: dict[str, Any] | None, match: str) -> None:
     with pytest.raises(case.qd_platform.PlatformError, match=match):
-        case.admit("job-01", planned_fixture("job-01", 91.0), predecessor)
+        case.admit("job-01", planned_fixture("job-01", 91.0), predecessor, LATER)
 
 
 def test_job_01_admits_after_a_complete_job_00() -> None:
-    case.admit("job-01", planned_fixture("job-01", 91.0), complete_run())
+    case.admit("job-01", planned_fixture("job-01", 91.0), complete_run(), LATER)
+
+
+@pytest.mark.parametrize(
+    ("hom", "transmittance", "at", "match"),
+    [
+        (92.01, 5.51, LATER, "HOM"),
+        (91.0, 5.82, LATER, "Transmittance"),
+        (91.0, 5.51, SUBMITTED + timedelta(hours=12, seconds=1), "h after"),
+        (91.0, 5.51, SUBMITTED - timedelta(seconds=1), "h after"),
+    ],
+)
+def test_job_01_is_refused_outside_the_pooling_tolerances(
+    hom: float, transmittance: float, at: datetime, match: str
+) -> None:
+    """A job-01 plan whose pool with job-00 tomo.pooling would leave descriptive spends no credit."""
+    with pytest.raises(case.qd_platform.PlatformError, match=match):
+        case.admit("job-01", planned_fixture("job-01", hom, transmittance), complete_run(), at)
+    case.admit("job-01", planned_fixture("job-01", 92.0, 5.81), complete_run(), SUBMITTED + timedelta(hours=12))
 
 
 def test_only_the_bound_gate_carries_the_submission_capability(monkeypatch: pytest.MonkeyPatch) -> None:

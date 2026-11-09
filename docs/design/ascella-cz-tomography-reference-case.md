@@ -33,8 +33,8 @@ on 2026-11-09 shows the following.
 
 | Field | Value |
 |---|---|
-| Status | available (the read 20 minutes earlier showed `calibration`) |
-| HOM | 88.76 % (the earlier read: 88.54 %) |
+| Status | available |
+| HOM | 88.76 % |
 | g2 | 2.0 % |
 | Transmittance | 5.51 % |
 | Clock | 13.33 MHz |
@@ -89,7 +89,7 @@ job, 0.99.
 
 | Quantity | Retained design | This design |
 |---|---|---|
-| Samples per iteration | 4000 each | 2400 to 22400 (the four in-10 settings with a Z readout on the target: 7400; in-10-ZZ: 2400) |
+| Samples per iteration | 4000 each | 2400 to 22400 (the four in-10 settings with Z on exactly one qubit: 7400; in-10-ZZ: 2400) |
 | Samples per job | 288,000 | 1,282,800 (job-00), 1,222,800 (job-01) |
 | Largest `max_shots` | 400,000 and 1,600,000 | 990,000 in both jobs |
 | Credits | 1.4 + 2.6 = 4.0 | 1.99 + 1.99 = 3.98 |
@@ -163,7 +163,9 @@ verifier. `SubmissionGate` refuses unless all of the following hold:
   no running quantum-task job;
 - the shot estimate and a processor read taken inside the lock carry the plan's perfs, and source modes 0 and 2
   are connected;
-- for job-01, a collected job-00 run completed with all 72 iterations counted;
+- for job-01, a collected job-00 run completed with all 72 iterations counted, and the job-01 plan lies inside the
+  retained pooling tolerances against it: HOM within 1.0 point, transmittance within 0.3 points, and at most 12 hours
+  after job-00's submission. A job-01 plan outside them would buy a pool that `tomo.pooling` leaves descriptive;
 - the plan equals the admitted preflight: the case digest, the body minus `process_id`, the perfs and the predecessor
   run.
 
@@ -206,6 +208,11 @@ the curve gives a floor for the outcome rather than a prediction of it.
 
 ## Procedure after approval
 
+`--submit` copies the job's `cases.json` and `circuit.json` into a fresh run directory,
+`results/quandela/runs/<UTC stamp>-qpu_ascella-ascella_cz_tomography_reference-<job>`. `qd_platform.submit` writes
+the receipt there, and `qd_platform.py collect` reads it from there. The case directory keeps only the request and
+its admitted preflight.
+
 ```sh
 set -eu
 export PYTHON="${PYTHON:-python3}"
@@ -213,10 +220,13 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 CASE=scripts/ascella_cz_tomography_reference_case.py
 "$PYTHON" "$CASE" --preflight job-00
 "$PYTHON" "$CASE" --submit job-00 --approval "APPROVAL TEXT"
-# collect job-00 into its run directory with scripts/qd_platform.py collect, then:
+RUN_00=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-job-00  # printed by --submit
+"$PYTHON" scripts/qd_platform.py collect "$RUN_00" --timeout 3600
 "$PYTHON" "$CASE" --preflight job-01 --after RUN_00
-"$PYTHON" "$CASE" --submit job-01 --approval "APPROVAL TEXT" --after RUN_00
-"$PYTHON" "$CASE" --analyze results/quandela/ascella-cz-tomography-reference-analysis.json RUN_00 RUN_01
+"$PYTHON" "$CASE" --submit job-01 --approval "APPROVAL TEXT" --after "$RUN_00"
+RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-job-01  # printed by --submit
+"$PYTHON" scripts/qd_platform.py collect "$RUN_01" --timeout 3600
+"$PYTHON" "$CASE" --analyze results/quandela/ascella-cz-tomography-reference-analysis.json "$RUN_00" "$RUN_01"
 ```
 
 ## Checks
@@ -226,6 +236,7 @@ CASE=scripts/ascella_cz_tomography_reference_case.py
 | `ascella_cz_tomography_reference_case.py --check` | passes: both requests rebuild byte for byte, every iteration's samples fill the cap to one quantum, worst case 270.9 s, ceiling 1.99, fresh disjoint seeds, design spread below the retained design's at every HOM point |
 | `ascella_cz_tomography_case.py --check` | passes: the retained requests still rebuild byte for byte after the loader and pooling take a family |
 | `qd_platform.py --self-test` | passes, with budgeted and unbudgeted template cases and three malformed budget lists |
+| `qd_platform.payload` on both ensemble jobs | each body's digest without `process_id` equals its retained `plan-read.json` value, so an unbudgeted template case sends the same bytes |
 | `tests/scripts/test_ascella_cz_tomography_reference_case.py` | the gate's refusals, the floors, the budgets and the rebuild |
 
 ## Limits
@@ -234,5 +245,9 @@ CASE=scripts/ascella_cz_tomography_reference_case.py
   meshes, so the HOM comparison carries compilation variation.
 - Unequal samples per setting leave the estimator's unweighted linear inversion unchanged: the rates divide by each
   iteration's shots. The settings of input |1>|0> carry fewer samples and a wider share of the spread.
+- Unequal per-iteration samples within one job have one hardware precedent: the qpu:belenos mesh run
+  `2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12` returned every iteration at its own budget (1500 to 60000
+  samples, 9 of 9). No qpu:ascella template job has carried unequal budgets. The analysis reads each iteration's
+  actual samples and shots, and the caps bound time and bill whatever the service does with the samples.
 - The rate of 3.069 s per iteration comes from two runs of one template at 4000 samples. Iterations that spend up
   to 990,000 shots assume that acquisition adds to compilation, which is the conservative reading.

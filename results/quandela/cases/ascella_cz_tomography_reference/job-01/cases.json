@@ -35822,7 +35822,7 @@
   "live_read": "the shot estimate and a processor read inside the submit lock, after the plan, carry the plan's perfs and connect source modes [0, 2]",
   "after": {
    "job": "job-00",
-   "requires": "a collected run of job-00 that completed with every one of its 72 iterations counted"
+   "requires": "a collected run of job-00 that completed with every one of its 72 iterations counted, and a plan inside the pooling tolerances against it: HOM within 1 point, transmittance within 0.3 point, at most 12 h after its submission"
   }
  }
 }

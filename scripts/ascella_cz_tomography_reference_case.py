@@ -334,7 +334,9 @@ def submission_policy(job: str) -> dict[str, Any]:
         else {
             "job": JOBS[0],
             "requires": f"a collected run of {JOBS[0]} that completed with every one of its "
-            f"{len(tomo.job_rows(JOBS[0]))} iterations counted",
+            f"{len(tomo.job_rows(JOBS[0]))} iterations counted, and a plan inside the pooling tolerances against it: "
+            f"HOM within {tomo.POOL_HOM_TOLERANCE:g} point, transmittance within {tomo.POOL_T_TOLERANCE:g} point, "
+            f"at most {tomo.POOL_MAX_GAP_HOURS:g} h after its submission",
         },
     }
 
@@ -606,8 +608,11 @@ def check() -> int:
 # ---------------------------------------------------------------- submission gate
 
 
-def admit(job: str, planned: Mapping[str, Any], predecessor: Mapping[str, Any] | None) -> None:
-    """Refuse a fresh plan that leaves the job's submission policy; raises qd_platform.PlatformError."""
+def admit(
+    job: str, planned: Mapping[str, Any], predecessor: Mapping[str, Any] | None, at: datetime | None = None
+) -> None:
+    """Refuse a fresh plan that leaves the job's submission policy, at time at (now when None); raises
+    qd_platform.PlatformError."""
     try:
         policy = submission_policy(job)
         require(planned["case"] == job and planned["platform"] == PLATFORM, f"the plan names {planned['case']}")
@@ -642,8 +647,23 @@ def admit(job: str, planned: Mapping[str, Any], predecessor: Mapping[str, Any] |
         if job != JOBS[0]:
             require(predecessor is not None, f"{job} requires the collected {JOBS[0]} run (--after RUN)")
             predecessor_complete(predecessor or {})
+            poolable(job, figures, predecessor or {}, datetime.now(UTC) if at is None else at)
     except (RuntimeError, ValueError, KeyError, TypeError) as error:
         raise qd_platform.PlatformError(str(error)) from None
+
+
+def poolable(job: str, figures: Mapping[str, float], predecessor: Mapping[str, Any], at: datetime) -> None:
+    """Refuse a job-01 plan whose pool with the job-00 run would be undecided under tomo.pooling: HOM within
+    tomo.POOL_HOM_TOLERANCE points, transmittance within tomo.POOL_T_TOLERANCE points, and at most
+    tomo.POOL_MAX_GAP_HOURS since job-00's submission."""
+    first = predecessor.get("perfs") or {}
+    for key, tolerance in (("HOM (%)", tomo.POOL_HOM_TOLERANCE), ("Transmittance (%)", tomo.POOL_T_TOLERANCE)):
+        difference = abs(figures[key] - float(first[key]))
+        require(difference <= tolerance, f"{job}: {key} differs from {JOBS[0]}'s by {difference:g}, over {tolerance:g}")
+    gap = (at - datetime.fromisoformat(predecessor["submitted_utc"])).total_seconds() / 3600.0
+    require(
+        0 <= gap <= tomo.POOL_MAX_GAP_HOURS, f"{job}: {gap:.2f} h after {JOBS[0]}, over {tomo.POOL_MAX_GAP_HOURS:g}"
+    )
 
 
 def load_run(run: Path) -> dict[str, Any]:
@@ -772,9 +792,22 @@ def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
     require(bool(approval.strip()), "--submit requires the owner's --approval text")
     reviewed = json.loads((out / "plan-read.json").read_text(encoding="utf-8"))
     verify = SubmissionGate(job, after, reviewed)
-    receipt = qd_platform.submit(out, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify)
-    print(f"submitted {job}: {receipt['job_id']}")
+    run = run_directory(job)
+    receipt = qd_platform.submit(run, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify)
+    print(f"submitted {job}: {receipt['job_id']} in {run.relative_to(ROOT)}")
     return 0
+
+
+def run_directory(job: str) -> Path:
+    """A fresh run directory, results/quandela/runs/<UTC stamp>-qpu_ascella-<FAMILY>-<job>, holding copies of the
+    job's cases.json and circuit.json: qd_platform.submit writes its receipt beside them, and the case directory
+    keeps only the request and its preflight."""
+    stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
+    run = ROOT / "results/quandela/runs" / f"{stamp}-{PLATFORM.replace(':', '_')}-{FAMILY}-{job}"
+    run.mkdir(parents=True, exist_ok=False)
+    for name in ("cases.json", "circuit.json"):
+        (run / name).write_bytes((FAMILY_DIR / job / name).read_bytes())
+    return run
 
 
 # ---------------------------------------------------------------- analysis
