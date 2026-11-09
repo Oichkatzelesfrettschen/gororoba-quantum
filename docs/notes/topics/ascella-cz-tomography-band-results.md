@@ -13,7 +13,9 @@ The band pair of the Ascella CZ process tomography reference
 - **Retained records:**
   - the two run directories under `results/quandela/runs/2026-11-09T17*`;
   - the preregistered analysis `results/quandela/ascella-cz-tomography-reference-analysis.json`;
-  - the post-data decomposition `docs/evidence/ascella-cz-tomography-band/findings.json`, written by `docs/evidence/ascella-cz-tomography-band/analyze.py` (deterministic, 47 s).
+  - the post-data decomposition `docs/evidence/ascella-cz-tomography-band/findings.json`, written by `docs/evidence/ascella-cz-tomography-band/analyze.py` (deterministic, about 75 s);
+  - the served-mesh record `results/quandela/ascella-cz-tomography-reference-served-mesh.json` (`scripts/ascella_cz_served_mesh.py --pair reference`);
+  - the component model of the mesh and its preregistered hold-out, `docs/evidence/ascella-cz-tomography-band/mesh_model.py` and `mesh-model.json`.
 
 The preregistered analysis decides: process fidelity 0.832 (0.824 to 0.839), average gate fidelity 0.865 (0.859 to
 0.871). The model check fails, so by the preregistered rule every other verdict is conditional on that failure. The
@@ -39,69 +41,78 @@ section), so it serves only to mark which falsifications depend on the interval 
 | Record-model estimators agree | 0 | -0.045 to -0.027 | falsified | Undecidable with this estimator: the readout-set dependence of M_R is 0.017 to 0.065, as large as the difference |
 | Fidelity at or below the record ceiling | 0.934 | lower end 0.824 | survives | Survives trivially; it constrains nothing at this F |
 | Balanced rails, r(11)/r(01) = 1 | 1 | 1.045 to 1.074 | falsified | Robust. The ZZ-only ratio is 1.123 and the retained pair's 1.139: a stable control-side imbalance that the nine-readout average dilutes |
-| r(11)/r(01) at the record variant's value | 1.040 | same | falsified | Robust but small: 2 % beyond the lost-twin multiphoton term; the retained pair's 1.009 survived |
-| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust, and its content differs from its name (next section) |
+| r(11)/r(01) at the record variant's value | 1.040 | same | falsified | Fragile: misses the interval's lower end 1.0446 by 0.005, while the same ratio moves by 0.05 with the readout set; the retained pair's 1.009 survived |
+| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust, and fixed by the design: the reference omits the per-seed mesh variance, and the retained pair forecasts a ratio of 4.5 (next section) |
 | Constant variance factor (1.44) | 1.44 | ratio 5.73 | falsified | Robust |
-| Relative systematic per rate (3.67) | 3.67 | ratio 5.73 | falsified | Robust: the excess grows faster than in proportion to events (next section) |
+| Relative systematic per rate (3.67) | 3.67 | ratio 5.73 | falsified | Robust, by the statistic's clip: cells whose expectation it clips to one event grow with the square of the events (next section) |
 
 ## What the decomposition shows
 
-### The failed model check reads unphysical predictions, and the misfit grows with N squared
+### The failed model check: a known mesh variance read through a clipped statistic
 
-- **Where the statistic lives:** 153,920 of the band Pearson 166,240 (93 %) sits in 34 cells where the unweighted
-  linear-inversion fit predicts fewer than one event, mostly negative counts near -100, while those cells hold 333
-  observed events. The retained pair shows the same structure: 3,181 of 5,288 in 32 cells.
-- **Why they carry it:** the statistic divides by max(expected, 1), so a cell predicted at -130 with 5 observed
-  contributes about 18,000.
-- **What the residual is:** the residual (I - A A+) r is the part of the rates that no linear map, physical or
-  not, reproduces. These cells measure inconsistency between settings, not shot noise.
-- **Clipped statistic:** with expected counts clipped at one before subtracting, the statistic is 29,411 on the band
-  pair and 3,134 on the retained pair.
-- **Throughput versus shape:** per-setting throughput carries 2,414 of the band's clipped statistic (8 %) and the
-  within-setting outcome shape 25,545 (87 %). So drift of source brightness or coupling across the sequential
-  settings does not explain the scatter. The service's samples-per-shot monitor varies 14 to 23 % across settings,
-  yet it correlates at most 0.17 with the per-setting rate residual.
-- **Misfit scaling:** the two-click pattern fit gives an independent measure. Its misfit grows 49.3 times for 6.90
-  times the events, against N squared = 47.7. A fixed relative error per setting adds variance in N squared and
-  counting adds variance in N, so the misfit is systematic to within the precision of that ratio.
+- **Root cause.** The preregistered reference (`overdispersion` in
+  `scripts/ascella_cz_tomography_reference_case.py`) draws synthetic pairs under the linear-inversion fit and the
+  acquisition law alone. Every setting ran under its own compilation seed, and the service compiles each seed to its
+  own mesh. [strategy.md](../quandela/strategy.md) section 7 ("Per-seed mesh variance of a share") records that
+  per-seed error at 50 to 80 times binomial variance on qpu:belenos, and the Ascella signed-coherence anchors record
+  a per-mesh error of about 0.011 that persists across jobs on the same seeds. The reference carries no such term.
+- **Size of the term here.** Beyond binomial, the eligible-outcome shares scatter about the clipped fit with an RMS
+  of 0.013 on the retained pair and 0.016 on the band pair (`implied_share_error`). That is the Ascella per-mesh
+  scale and the Belenos extreme-block scale (0.0177).
+- **Where the statistic lives.** 153,920 of the band Pearson 166,240 (93 %) sits in 34 cells where the unweighted
+  linear-inversion fit predicts fewer than one event, mostly negative. The statistic divides those cells by one
+  event, so each contributes (n - E)^2, which grows with the square of the events N. Every other cell contributes
+  N delta^2 / p, linear in N. Measured between the pairs: the clipped cells grow 48 times and the rest 5.8 times for
+  6.1 times the events per rate. The two-click pattern misfit splits the same way (56 times and 5.7 times for 6.9
+  times the events), so the per-event systematic in proper cells held constant between the pairs.
+- **Forecast.** Scaling the retained pair's clipped cells by the square of the event ratio and the rest by the ratio
+  forecasts the band ratio at 4.5, against 5.73 observed (`model_check_forecast`). A linear forecast gives 1.34. At
+  the band's counts, the same mesh variance that passed on 2026-10-31 fails the check.
+- **Throughput versus shape.** Split exactly, per-setting throughput carries 2,414 of the band's clipped statistic
+  29,411 (8.2 %) and the within-setting outcome shape 26,998 (91.8 %). A scalar per-setting brightness or coupling
+  drift is minor; a mode-dependent change is not excluded.
+- **Guard.** `qd_platform.scatter_check_gaps`, run over every retained case by
+  `tests/scripts/test_quandela_scatter_checks.py`, refuses a preregistered scatter check on qpu:ascella or
+  qpu:belenos that names no replicate-seed, anchor or descriptive term. This case is listed as frozen before the rule.
 
-The acquisition-law model check therefore fails at any event count large enough for the systematic to exceed counting
-noise. On the retained pair the systematic was already present and the reference's bias hid it.
+### The Z sector: the source model predicts the bit flips
 
-### The gate-independent sector: a static bit-flip fingerprint and stable preparation tilts
+CZ is diagonal, so for a two-photon event a qubit read out in Z keeps its prepared Z population whatever the overlap.
+Multiphoton emission, loss, threshold postselection and dark clicks admit eligible events that are not two-photon
+events, and those move Z populations.
 
-CZ is diagonal. A qubit read out in Z therefore keeps its prepared Z population whatever the gate, the photon overlap
-or the dephasing. The 96 such qubit readouts measure preparation and readout error, free of the gate.
-
-- **Bit flips of computational preparations:** mean 1.37 % in both pairs, largest 5.7 %. The per-setting pattern
-  correlates between the pairs at Pearson 0.91 and Spearman 0.93, and at 0.80 without the six largest. This is the
-  one static per-setting fingerprint the data show.
-- **Not crosstalk from the other qubit:** the flip size does not depend on whether the other qubit is rotated
-  (1.0 to 1.6 % in every group on the band pair). Neighbor thermal crosstalk is not supported, with four settings
-  per group, so the test is weak.
-- **Z-bias of equator preparations, cross-run correlation 0.60:**
-  - control |+> sits at -5.7 % in both pairs;
-  - target |+> and |i> moved from +2.7 % and +1.7 % to +6.8 % and +5.1 %.
+- **Bit flips of computational preparations:** mean 1.36 % (retained) and 1.37 % (band). The retained noise
+  pipeline at the plan read and the g2-aware overlap predicts a mean of 1.04 % and the per-setting pattern at
+  Pearson 0.93 and 0.97 (`source_model_z`).
+- **What is left:** the measured flips correlate 0.91 between the pairs, and the residuals after subtracting the
+  prediction correlate 0.31. The cross-pair correlation reflects the designed settings through the source model,
+  not a static hardware fingerprint; 0 of 144 settings share a compilation seed between the pairs, so no mesh is
+  common to both.
+- **Equator preparations:** the source model predicts their Z-bias pattern at Pearson 0.65 and 0.80 but leaves a
+  mean absolute residual of 0.04, and the target |+> and |i> biases moved from +2.7 % and +1.7 % to +6.8 % and
+  +5.1 % between the pairs.
 
 ### Rail transmission separates loss from preparation
 
 - **Rail ratios:** inputs 00, 01 and 11 succeed with probability 1/9 at every overlap, so r(00)/r(01) is a
   target-rail transmission ratio and r(01)/r(11) a control-rail one.
-- **The target ratio flipped** from 0.905 to 1.108 (ZZ readouts). The two-click pattern fit measures the same change
-  independently, as relative detection efficiencies T0/T1 of 0.913 and 1.098: the target rail-1 detection efficiency
-  fell about 17 % between the calibrations. The control-rail ratio held at 0.878 and 0.890, while the pattern fit
-  finds C1/C0 detection near 1.00, so the control imbalance lies before detection, in the preparation or propagation
-  path.
+- **The target ratio flipped** from 0.905 to 1.108 (ZZ readouts). The two-click pattern fit, on the same counts,
+  gives effective output-mode weights T0/T1 of 0.913 and 1.098, and 0.918 and 1.094 with the four rail outcomes
+  excluded: the target rail-1 output weight fell about 17 % between the pairs. Detection efficiency, output
+  propagation and realized-unitary error are not separated by these routes. Between the pairs the service changed
+  software (mosaiq-arcturus 2.1.5.2.post4 to post11, hardware-core 3.9.3 to 3.9.11) and dark counts on modes 8 to 10
+  fell about tenfold. The control-rail ratio held at 0.878 and 0.890 while the pattern weights C1/C0 sit near 1.00.
 - **Postselected bias:** an equator state p0 then reads eta0/(eta0 + eta1) shifted by its rail loss. Subtracting
   that from the equator Z-biases leaves a preparation tilt near +0.05 on the target and -0.03 on the control in both
   pairs. The target bias that moved between the runs moved with its detection rail, not with its preparation.
 
-### The detector change explains a third of the fidelity drop
+### The output-weight change accounts for a third of the fidelity drop under its own model
 
-- **Corrected F:** dividing each eligible outcome by its fitted detection pair e(C_c) e(T_t) moves F from 0.849 to
-  0.846 on the retained pair and from 0.832 to 0.834 on the band pair.
-- **What remains:** the efficiency-corrected gap is 0.012, against a raw gap of 0.017. The other 0.012 is gate or
-  mesh error.
+- **Corrected F:** dividing each eligible outcome by its fitted output weight pair e(C_c) e(T_t) moves F from 0.849
+  to 0.846 on the retained pair and from 0.832 to 0.834 on the band pair.
+- **What remains:** the corrected gap is 0.012, against a raw gap of 0.017. Attributing the removed 0.005 to the
+  detectors and the remainder to the gate is a hypothesis: source, preparation and readout, and model error are not
+  separated.
 - **Eligible share:** the eligible share of window two-click events fell from 0.175 to 0.155 at an unchanged pattern
   overlap. More probability leaves the rails, which fits a worse realized mesh and not a worse photon pair.
 
@@ -110,15 +121,16 @@ or the dephasing. The 96 such qubit readouts measure preparation and readout err
 | Route | Retained pair (HOM read 87.56 %, g2 1.8 %) | Band pair (HOM read 88.42 %, g2 2.0 %) |
 |---|---|---|
 | HOM read corrected for g2 (Ollivier et al. 2021, priv 1291df4cd86b, Eq. 1 and 2: identical to distinguishable noise photons) | 0.894 to 0.910 | 0.904 to 0.923 |
-| All two-click patterns, eligible and off-rail, Perceval source model at the read's g2 and transmittance (`g2_pattern_overlap`) | 0.929 | 0.931 |
+| All two-click patterns, eligible and off-rail, Perceval source model at the read's g2, transmittance and dark counts (`g2_pattern_overlap`) | 0.931 | 0.933 |
 | All two-click patterns with g2 ignored (`two_click_patterns`) | 0.896 (0.893 to 0.899) | 0.893 (0.892 to 0.894) |
 | Fidelity inverted through the record noise model (`record_inversion`) | 0.930 (0.912 to 0.946) | 0.917 (0.910 to 0.924) |
 | Rail ratio D through the record noise model | 0.923 (0.904 to 0.942) | 0.952 (0.946 to 0.959) |
 
 - **The pattern route:** it uses the 3.4 to 4.0 million window two-click events, 85 % of them off-rail events that
   the tomography discards. It is independent of the tomography estimator.
-- **Effect of g2:** adding the multiphoton model moves the pattern overlap by 0.033 to 0.038, the same size as
-  Ollivier's correction, and lands both pairs at 0.93. That is 4.7 to 5.3 points above the HOM read.
+- **Effect of g2:** adding the multiphoton model and dark counts moves the pattern overlap by 0.035 to 0.040, the
+  same size as Ollivier's correction, and lands both pairs at 0.93. That is 4.9 to 5.5 points above the HOM read and
+  about 1 point above the g2-corrected HOM range.
 - **What remains after g2:** Ollivier's correction alone accounts for up to 3.9 points (band) and 3.4 points
   (retained), leaving 0.8 to 1.9 points that a pair-dependent visibility (Pont et al. 2022, pub 3c845c21a16f,
   Table S1: about 4 points across pairs and delays) covers.
@@ -128,39 +140,78 @@ or the dephasing. The 96 such qubit readouts measure preparation and readout err
   something other than the overlap.
 
 Consequence: the dashboard HOM understates the photon-pair overlap at the CZ coupler by about 5 points in both
-pairs, and the known multiphoton correction explains most of it. The hypothesis of the design doc survives in
-direction; its mechanism is chiefly g2, not a calibration offset. Confidence is moderate to high:
-- It falls if the pattern fit's other omissions (dark counts, coupler reflectivity off 1/3 in the realized mesh,
-  mode-dependent input loss) move it by more than 0.01.
-- It rises if the per-setting mesh calibration below leaves the overlap at 0.93.
+pairs, and the known multiphoton correction explains most of it. The pattern law is misspecified (Pearson per degree
+of freedom 3.7 retained and 17 band with g2 and dark counts), so the quoted intervals are curvature intervals of that
+law and not uncertainties of the physical overlap. Confidence is moderate: it falls if a realized-mesh model moves the
+overlap by more than 0.01, and the component model below reports the overlap it fits beside each hold-out.
 
-### Per-setting error is fixed inside a calibration and redrawn by recalibration
+### Per-setting error: not reproduced across fresh seeds, and its source is the realized mesh
 
-- **The map:** the pattern fit gives an overlap per setting. Settings where the photons never meet leave it
-  unidentified (pinned at 0 or 1); 111 of 144 are identified.
-- **Spread and correlation:** on the identified settings the per-setting overlap spreads with standard deviation
-  0.035 to 0.043 around a median of 0.893 to 0.895, and correlates between the pairs at only 0.11. Counting all 144
-  settings gives 0.98, an artifact of the pinned settings.
-- **Reading:** the setting-to-setting variation is systematic within a run (the N squared misfit) and not
-  reproduced nine days and at least one recalibration later.
-- **Precedent:** Tully, Washburn and Simons 2026 (priv 724460b24428, Sec. V) report the same split on Belenos.
-  Repeats of one circuit inside one calibration agree within counting; separately compiled circuits scatter beyond
-  it.
-- **Mechanism:** Fyrillas et al. 2025 (pub 623fee140d48, Sec. II and V) give one: heat in bare waveguides makes
-  setting-specific phase errors that a crosstalk model of controlled shifters leaves at 7.5 % total variation on
-  random patterns.
-- **The confound:** the band pair used fresh compilation seeds (QRNG indices 0 to 143 of the 2026-11-09 draw), so
-  "redrawn by recalibration" and "redrawn by recompilation" are not separated.
+- **The map:** the pattern fit gives an effective overlap per setting, a coordinate that absorbs mesh, loss and
+  source mismatch. 111 of 144 settings identify it; on those it spreads with standard deviation 0.035 to 0.043 and
+  correlates between the pairs at 0.11 (0.11 to 0.24 under other identifiability thresholds). Counting all 144 gives
+  0.98, an artifact of settings pinned at 0 or 1.
+- **The seed change explains it.** 0 of 144 settings share a compilation seed between the pairs, so every setting
+  ran on a different mesh, and the median largest phase difference between a setting's two meshes is 3.1 rad. A low
+  correlation is what per-mesh error predicts whether or not the chip recalibrated. Whether the error is fixed
+  inside one calibration was not measured: each setting ran once.
+- **The transpiler is faithful.** The served meshes reproduce the designed gates to a nominal total variation of at
+  most 9.1e-4 (band) and 7.6e-4 (retained), so the error enters between the commanded phases and the photons.
+- **Precedent:** Tully, Washburn and Simons 2026 (priv 724460b24428, Sec. V) report repeats inside one calibration
+  agreeing within counting and separately compiled circuits scattering beyond it. Fyrillas et al. 2025 (pub
+  623fee140d48, Sec. II and V) attribute setting-specific phase errors to heat in bare waveguides.
+
+### A static component model of the 12-mode mesh carries the per-setting error across meshes and dates
+
+Every served mesh of the four jobs decodes to one fixed topology: 132 couplers at calibrated angles, identical in all
+288 meshes and on both dates, and 126 heaters whose phases the transpiler sets per iteration. A component error is
+therefore shared by every setting, and the per-setting count of 36 free parameters against 14 constraints does not
+apply: 132 coupler errors, 126 heater offsets, a heater gain and a crosstalk coefficient stand against 66 two-click
+patterns in each of 288 settings. `mesh_model.py` fits them with a ridge penalty, refits the overlap and twelve
+output weights on each held-out set, and fixed its pass rule before the fit to measured counts (commit a67b761ee):
+Gain = (baseline - transfer) / (baseline - in-sample ceiling) of held-out deviance at least 0.3, and transfer below
+every one of 20 null draws of permuted, sign-flipped component errors.
+
+| Hold-out | Gain | Deviance: baseline, transfer, ceiling | Null deviance: min, median | Preregistered rule |
+|---|---|---|---|---|
+| retained job-00 to job-01 | 0.80 | 37,711; 12,380; 6,179 | 15,355; 18,912 | passes |
+| band job-00 to job-01 | 0.84 | 245,543; 57,854; 21,425 | 64,499; 80,973 | passes |
+| retained pair to band pair | 0.90 | 477,466; 102,430; 62,685 | 191,406; 385,758 | passes |
+| band pair to retained pair | 0.88 | 69,859; 21,291; 14,855 | 22,905; 24,694 | passes |
+
+- **Preregistered reading:** within passes and across passes, so static component errors carry the per-setting
+  misfit from 2026-10-31 to 2026-11-09, across a fresh compilation seed for every setting and a service software
+  update. The redrawn per-setting pattern follows the commanded phases through fixed components.
+- **Qualification (post-data):** random component errors of the fitted size also beat the ideal mesh by a wide
+  margin, since any perturbation leaks probability into patterns the ideal mesh puts at zero. Measured from the
+  null median instead of the baseline, the fitted components close 0.51 and 0.39 of the remaining span within the
+  pairs and 0.88 and 0.35 across them; the band-to-retained transfer clears the best null by 7 %. The predicted
+  per-cell shifts correlate with the observed ones at 0.07 to 0.22, the range that element-offset fits reached on
+  unseen meshes in the Ascella pathion persistence runs (0.16 to 0.32). The component-specific content is real and
+  partial.
+- **What the classes say:** the global heater gain and crosstalk fit near zero (|g| at most 0.0044, |k| at most
+  0.0014); the transferable content sits in per-coupler errors (RMS 0.022 to 0.040 rad) and per-heater offsets (RMS
+  0.022 to 0.067 rad). The self-test shows that two photons on modes 0 and 2 identify those components only in part
+  (planted-to-fitted correlation 0.77), so individual values are not readings of single components.
+- **Overlap under the realized mesh:** the component model fits overlaps of 0.889 to 0.899 without g2, within 0.007
+  of the ideal-mesh pattern fit, so the realized-mesh error does not move the overlap reading.
+- **Falsifier of the reading:** the compilation ensemble case's same-seed anchors differing beyond counting inside
+  one calibration, or a component model fitted on one date failing to predict a third date's meshes.
 
 ## Questions the measurement raises that the preregistration did not ask
 
 - **Which error does the 0.832 measure?** Linear inversion of absolute rates mixes each setting's own preparation
-  and readout error into the process. The gate-independent sector shows that error at 1 to 7 %, which is the size of
-  the gap to Maring et al. 2024 (pub 0ee7b47bd723, Table 1): average gate fidelity 0.865 against their 0.938 for the
-  same 1/9 gate class.
-- **What do the off-rail events know?** 85 % of window two-click events are off-rail. They carry 11 constraints per
-  setting beyond the 4 eligible outcomes, enough to fit each setting's realized mesh error.
-- **Does the per-setting error follow the calibration or the compilation seed?** The band pair changed both.
+  and readout error, its mesh error and the source's multiphoton events into the process. The Z sector puts the
+  source part at about 1 % per readout and the per-mesh share error at 0.013 to 0.016, together of the size of the
+  gap to Maring et al. 2024 (pub 0ee7b47bd723, Table 1): average gate fidelity 0.865 against their 0.938 for the same
+  1/9 gate class, a figure measured with hourly recalibration.
+- **Which physical-channel estimator is intended?** Raw linear inversion gives 0.832, the conditional estimate
+  0.811 and the projection onto physical maps 0.790. A comparison with published gate fidelities needs one of them
+  named before the data.
+- **Can a job difference read drift?** `schedule` assigns inputs to jobs by pair, so job identity is aliased with
+  input parity, and a job-00 to job-01 difference does not identify time drift.
+- **Does the per-setting error follow the calibration or the compilation seed?** The band pair changed both; the
+  component model's hold-out within each pair and across them separates the two through the commanded phases.
 - **Is the per-setting error stable inside one run?** Each setting was measured once, so within-run drift and static
   compile error remain inseparable from counts. Proctor et al. 2020 (priv 24b8e9e8f9c6) need chunk order; the
   service returns per-setting totals.
@@ -172,9 +223,10 @@ direction; its mechanism is chiefly g2, not a calibration offset. Confidence is 
 
 | Test | Decides | Cost | Falsifier |
 |---|---|---|---|
-| Off-rail self-calibration: fit per-setting phase errors of the realized mesh from the 15-pair distributions, then reconstruct the process with the calibrated unitaries | Whether the per-setting systematic is mesh error, and the process fidelity free of it | none (retained counts) | The calibrated fit leaves a misfit that still grows with N squared |
-| Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV) | F with SPAM separated | none | The nuisance-free and nuisance fits agree within 0.005 |
-| job-00 twice back to back with its retained seeds | Within-calibration reproducibility of the per-setting pattern | 2 x 2.567 credits | Per-setting outcome differences between repeats exceed counting (Rudinger et al. 2019, priv 8c2599bc077d, Eq. 11 to 13, with Hochberg control) |
-| job-00 at the retained 2026-10-31 compilation seeds, beside a fresh-seed repeat, in one calibration | Seed versus calibration as the source of the redrawn pattern | 2 x 2.567 credits | The per-setting pattern follows neither the seed nor the calibration |
+| Component model with g2 in the pattern law and output weights per job (`mesh_model.py` extended) | How much of the remaining held-out deviance the source and per-job weights carry | none | Held-out Gain over the null median stays below 0.5 |
+| Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV), with the realized-mesh model as the readout | F with SPAM and mesh error separated | none | The nuisance-free and nuisance fits agree within 0.005 |
+| The CZ compilation ensemble case ([design](../../design/ascella-cz-compilation-ensemble-case.md), built, not sent): ten seeds per setting and same-seed anchors in each job | Per-seed mesh variance of the gate and within-calibration repeatability, the two quantities this pair confounds | per its written case | Its homogeneity and anchor tests, as preregistered there |
 
-The first two tests run on retained data. The last two need new provider jobs and an approved written case each.
+The first two run on retained counts. The ensemble case already holds the replicate-seed and same-seed-repeat design
+that a seed-swap or back-to-back repeat of job-00 would duplicate, and it needs the owner's approval of its written
+case.
