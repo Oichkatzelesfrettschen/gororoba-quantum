@@ -121,9 +121,11 @@ def _reduce(poly: Coefficients, prime: int, root: int) -> tuple[dict[tuple[int, 
     bad: list[str] = []
     out: dict[tuple[int, ...], int] = {}
     for monomial, (a, b) in poly.items():
-        for part in (a, b):
-            if part.denominator % prime == 0:
-                bad.append(f"{monomial}: denominator {part.denominator}")
+        flagged = [part for part in (a, b) if part.denominator % prime == 0]
+        if flagged:
+            # a denominator divisible by p has no image modulo p: record it as the falsifier and skip the term
+            bad.extend(f"{monomial}: denominator {part.denominator}" for part in flagged)
+            continue
         value = (
             a.numerator * pow(a.denominator, -1, prime) + b.numerator * pow(b.denominator, -1, prime) * root
         ) % prime

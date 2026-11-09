@@ -39,6 +39,9 @@ sys.path.insert(0, str(HERE))
 
 import reduction_check as rc  # noqa: E402
 
+sys.path.insert(0, str(HERE.parents[2] / "gororoba_quantum"))
+import parallel  # noqa: E402
+
 SIGN9 = {"xp-nm": 1, "xm-np": -1}
 NAMES = ("t1", "t2", "t4", "t5", "t6", "t7", "t9")
 w, rho, sig, s1 = sympy.symbols("w rho sig s1")
@@ -155,7 +158,8 @@ def certify(slug: str) -> dict[str, Any]:
 
 
 def main() -> None:
-    rows = [certify(slug) for slug in SIGN9]
+    # the two incidences are independent Singular runs, each in its own capped scope
+    rows = parallel.ordered_map(certify, list(SIGN9), min_items=2)
     holds = all(
         r["phi_on_v_j_nonzero_numerators"] == 0
         and r["control_sign_flip_nonzero_numerators"] > 0

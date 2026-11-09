@@ -1,10 +1,10 @@
 Traceback (most recent call last):
-  File "/home/eirikr/worktrees/gororoba-quantum/a5/ledger-audit-and-engine-v12/docs/evidence/a5-char0-transfer/quadric_lift.py", line 227, in <module>
+  File "docs/evidence/a5-char0-transfer/quadric_lift.py", line 227, in <module>
     main()
     ~~~~^^
-  File "/home/eirikr/worktrees/gororoba-quantum/a5/ledger-audit-and-engine-v12/docs/evidence/a5-char0-transfer/quadric_lift.py", line 221, in main
+  File "docs/evidence/a5-char0-transfer/quadric_lift.py", line 221, in main
     result = check(arguments.slug)
-  File "/home/eirikr/worktrees/gororoba-quantum/a5/ledger-audit-and-engine-v12/docs/evidence/a5-char0-transfer/quadric_lift.py", line 173, in check
+  File "docs/evidence/a5-char0-transfer/quadric_lift.py", line 173, in check
     count = int(res["targets"])
                 ~~~^^^^^^^^^^^
 KeyError: 'targets'
@@ -18,6 +18,6 @@ Traceback (most recent call last):
     t.join()
   File "/usr/lib/python3.14/threading.py", line 1133, in join
     self._os_thread_handle.join(timeout)
-  File "/home/eirikr/worktrees/gororoba-quantum/a5/ledger-audit-and-engine-v12/docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 152, in _exit_on_term
+  File "docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 152, in _exit_on_term
     raise SystemExit(128 + signum)
 SystemExit: 143

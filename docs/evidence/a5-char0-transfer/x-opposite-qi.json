@@ -43,7 +43,7 @@
     "-1/2*rho+1/2*sig"
    ],
    "linear_rank": 3,
-   "wall_seconds": 9.9
+   "wall_seconds": 4.8
   },
   {
    "slug": "xm-np",
@@ -87,7 +87,7 @@
     "1/2*rho-1/2*sig"
    ],
    "linear_rank": 3,
-   "wall_seconds": 9.7
+   "wall_seconds": 4.7
   }
  ],
  "verdict": "F(I) = Q(i)[y1,y2,y3]"
