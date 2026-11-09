@@ -81,7 +81,7 @@ section), so it serves only to mark which falsifications depend on the interval 
   events per rate; the two-click pattern misfit, whose 795 cells keep their class, splits the same way (56 and 5.7
   times for 6.9 times the events). A proper cell's excess scales as N times the squared share error. The two pairs'
   matching inputs, 0.0106 and 0.034, realize share errors about 3.1 times apart, which would grow that excess about
-  59 times for 6.1 times the events; the proper cells grow 5.9 times, counting included. The proper cells and the statistic's sigma match disagree, and which one
+  58 times for 6.1 times the events; the proper cells grow 5.9 times, counting included. The proper cells and the statistic's sigma match disagree, and which one
   reads the per-seed scale is open.
 - **Scaling the retained statistic.** About 70 % of the retained statistic is acquisition scatter (its reference
   mean, 3,677), and the clip inflates that scatter too: the reference mean grows 7.9 times between the pairs for
