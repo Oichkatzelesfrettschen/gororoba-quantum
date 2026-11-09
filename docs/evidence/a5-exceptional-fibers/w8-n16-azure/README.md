@@ -38,6 +38,8 @@ Findings.
   pruning more products; a py-spy profile of the products stage decides it.
 - Blocks 2 and 3 are equal in both runs, as the block-swap proposition (block-swap proposition, findings note) requires.
 
+The registry (`../build_registry.py`) reads the three `.out` files as truncated-rank records, each one JSON line with the engine and header digests, `d`, `N` and `r_N`, once `w8-n16-azure` is among its scan roots (`../README.md`); the receipt-bound and unreceipted runs share one certificate key, so `claims.json` names one of them as the source and both agree.
+
 Second prime: at p = 32029 the same engine in quotient mode with the receipt (`p32029/w8d5-n16-p32029.out`, digests in
 `p32029/SHA256SUMS`, ledger rows A5-136 and A5-148) reached r_16 = 4116 with per-block ranks 1017 / 1005 / 1047 / 1047, as
 at p = 32009. Not tested: characteristic 0 (the char-0 rank is at least the F_p rank, while the upper bound needs the K2

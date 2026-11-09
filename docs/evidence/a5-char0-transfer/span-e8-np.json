@@ -1,0 +1,10 @@
+{
+ "slug": "e8-np",
+ "field": "Q(i)",
+ "fullf_count": 126,
+ "g_count": 21,
+ "remainders": 0,
+ "dropped_last_generator_remainders": 1,
+ "wall_seconds": 160.0,
+ "verdict": "G generates (FullF) at the origin"
+}

@@ -1,0 +1,45 @@
+{
+ "slug": "xm-nm",
+ "conjecture": "good reduction of the presolved germ ideal J at each split prime",
+ "qi_basis_size": 12,
+ "qi_terms": 78,
+ "qi_max_denominator": 1,
+ "qi_wall_seconds": 4.5,
+ "qi_peak_rss_kib": 109004,
+ "primes": [
+  {
+   "prime": 32009,
+   "root": 10754,
+   "same_presolve": true,
+   "bad_denominators": [],
+   "fp_basis_size": 12,
+   "reduced_qi_basis_size": 12,
+   "bases_equal": true,
+   "generators_equal": true,
+   "retained_header_equal": true,
+   "generator_count": 15,
+   "mutation_corrupted_coefficient_differs": true,
+   "fp_wall_seconds": 1.7,
+   "fp_peak_rss_kib": 82308
+  },
+  {
+   "prime": 32029,
+   "root": 9115,
+   "same_presolve": true,
+   "bad_denominators": [],
+   "fp_basis_size": 12,
+   "reduced_qi_basis_size": 12,
+   "bases_equal": true,
+   "generators_equal": true,
+   "retained_header_equal": true,
+   "generator_count": 15,
+   "mutation_corrupted_coefficient_differs": true,
+   "fp_wall_seconds": 1.5,
+   "fp_peak_rss_kib": 82148
+  }
+ ],
+ "verdict": "survives",
+ "mutation_detected": true,
+ "j_defined_over_q": true
+}
+exit 0

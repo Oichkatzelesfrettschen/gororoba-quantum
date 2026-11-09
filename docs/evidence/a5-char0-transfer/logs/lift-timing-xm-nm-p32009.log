@@ -1,0 +1,6 @@
+RESULT generators 15
+RESULT targets 120
+RESULT products_ms 699
+RESULT relations 69 Q generators 852
+RESULT lift_ms 1565231 cofactor_terms 51611
+rc=124

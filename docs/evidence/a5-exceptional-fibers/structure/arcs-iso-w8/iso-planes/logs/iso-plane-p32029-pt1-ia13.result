@@ -1,0 +1,27 @@
+RESULT iso-plane-p32029-pt1-ia13 signs of the run generators against the header: 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT iso-plane-p32029-pt1-ia13 point [1:0:28176:1840:28176:1840] of P(L0), smooth generator G'_13
+RESULT iso-plane-p32029-pt1-ia13 J and the generators of G not divisible by s^2 in the chart (0 required): 0; Newton residual terms over both directions (0 required): 0; generators not divisible by v2 on S (0 required): 0; linear parts of G' with an s term (0 required): 0; linear-part consistency failures (0 required): 0
+RESULT iso-plane-p32029-pt1-ia13 determinant of the 2x2 Newton block -2410, linear coefficient of G'_13 on the tangent line of {J' = 0} in the slice 10706 (nonzero required)
+RESULT iso-plane-p32029-pt1-ia13 I3 = (G'_j restricted to S, divided by v2): zero constant terms and linear parts of rank 2 (2 required), so it is the maximal ideal (s, v2) (1 required): 1
+RESULT iso-plane-p32029-pt1-ia13 values of M(p) agree between the two dual directions (1 required): 1
+RESULT iso-plane-p32029-pt1-ia13 plane: K2 generators nonzero on Pi_p: 0 of 68 (0: Pi_p lies in V(K2))
+RESULT iso-plane-p32029-pt1-ia13 mutation: K2 generators nonzero on the plane with one coordinate of M(p) shifted by one (positive required): 32 of 68
+RESULT iso-plane-p32029-pt1-ia13 plane: rank of M(p) (3 required): 3
+RESULT iso-plane-p32029-pt1-ia13 tangent consistency: Jacobian of the K2 generators at y0 = M(p) Y0 against the five tangent vectors, nonzero entries (0 required): 0; rank of that Jacobian (12 at a smooth point of the 5-dimensional cone): 12
+RESULT iso-plane-p32029-pt1-ia13 point y0 = M(p) Y0: K2 generators nonzero 0 (0 required)
+RESULT iso-plane-p32029-pt1-ia13 rank of [M(p) | dM/db Y0 | dM/dc Y0] (5: the planes sweep a cone of dimension 5, so a 4-dimensional projective set, which is V(K2)): 5, s 1
+RESULT iso-plane-p32029-pt1-ia13 cross-check: rank of M(p) from G'_9 3, from G'_13 3, of the two side by side (3 required: one column space): 3
+exit 0
+RESULT iso-plane-p32029-pt1-ia13 signs of the run generators against the header: 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT iso-plane-p32029-pt1-ia13 point [1:0:28176:1840:28176:1840] of P(L0), smooth generator G'_13
+RESULT iso-plane-p32029-pt1-ia13 J and the generators of G not divisible by s^2 in the chart (0 required): 0; Newton residual terms over both directions (0 required): 0; generators not divisible by v2 on S (0 required): 0; linear parts of G' with an s term (0 required): 0; linear-part consistency failures (0 required): 0
+RESULT iso-plane-p32029-pt1-ia13 determinant of the 2x2 Newton block -2410, linear coefficient of G'_13 on the tangent line of {J' = 0} in the slice 10706 (nonzero required)
+RESULT iso-plane-p32029-pt1-ia13 I3 = (G'_j restricted to S, divided by v2): zero constant terms and linear parts of rank 2 (2 required), so it is the maximal ideal (s, v2) (1 required): 1
+RESULT iso-plane-p32029-pt1-ia13 values of M(p) agree between the two dual directions (1 required): 1
+RESULT iso-plane-p32029-pt1-ia13 plane: K2 generators nonzero on Pi_p: 0 of 68 (0: Pi_p lies in V(K2))
+RESULT iso-plane-p32029-pt1-ia13 mutation: K2 generators nonzero on the plane with one coordinate of M(p) shifted by one (positive required): 32 of 68
+RESULT iso-plane-p32029-pt1-ia13 plane: rank of M(p) (3 required): 3
+RESULT iso-plane-p32029-pt1-ia13 tangent consistency: Jacobian of the K2 generators at y0 = M(p) Y0 against the five tangent vectors, nonzero entries (0 required): 0; rank of that Jacobian (12 at a smooth point of the 5-dimensional cone): 12
+RESULT iso-plane-p32029-pt1-ia13 point y0 = M(p) Y0: K2 generators nonzero 0 (0 required)
+RESULT iso-plane-p32029-pt1-ia13 rank of [M(p) | dM/db Y0 | dM/dc Y0] (5: the planes sweep a cone of dimension 5, so a 4-dimensional projective set, which is V(K2)): 5, s 1
+RESULT iso-plane-p32029-pt1-ia13 cross-check: rank of M(p) from G'_9 3, from G'_13 3, of the two side by side (3 required: one column space): 3

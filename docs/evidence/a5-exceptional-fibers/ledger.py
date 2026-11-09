@@ -17,7 +17,9 @@ Columns (tab-separated, first line is the header):
 - basis: the deciding evidence in words (the measured numbers, the argument).
 - evidence: repository-relative paths, `;`-separated, each of which must exist.
 - falsifier: the test or observation that would change the status; `none` for a theorem or a closed refutation.
-- supersedes: ids this row replaces, `;`-separated, or empty.
+- supersedes: ids this row replaces, `;`-separated, or empty. Every id named here has status `superseded`, and every
+  `superseded` row is named by a row that is not itself `superseded`, so the pointer runs from the live successor to
+  the row it replaced.
 - updated: the date of the last status change (YYYY-MM-DD).
 
     $PYTHON docs/evidence/a5-exceptional-fibers/ledger.py [--check] [--summary] [--open]
@@ -77,6 +79,7 @@ def check(data: list[dict[str, str]]) -> list[str]:
     for dup in sorted(k for k, v in Counter(ids).items() if v > 1):
         problems.append(f"{dup}: id used more than once")
     known = set(ids)
+    status = {r["id"]: r["status"] for r in data}
     for r in data:
         rid = r["id"]
         if not ID.match(rid):
@@ -100,6 +103,14 @@ def check(data: list[dict[str, str]]) -> list[str]:
         for sup in [x.strip() for x in r["supersedes"].split(";") if x.strip()]:
             if sup not in known:
                 problems.append(f"{rid}: supersedes unknown {sup}")
+            elif sup == rid:
+                problems.append(f"{rid}: supersedes itself")
+            elif status[sup] != "superseded":
+                problems.append(f"{rid}: supersedes {sup}, whose status is {status[sup]}, not superseded")
+    named = {x.strip() for r in data if r["status"] != "superseded" for x in r["supersedes"].split(";") if x.strip()}
+    for r in data:
+        if r["status"] == "superseded" and r["id"] not in named:
+            problems.append(f"{r['id']}: superseded, and no live row names it in supersedes")
     return problems
 
 

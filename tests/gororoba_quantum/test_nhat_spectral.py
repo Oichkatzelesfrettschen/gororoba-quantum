@@ -33,3 +33,19 @@ def test_block_prediction() -> None:
     value = nhat_spectral.block_spectrum_prediction(3, 0.02)
     if abs(value - 3.0909) > 1e-3:
         raise AssertionError(value)
+
+
+def test_same_record_tolerates_the_last_binary_digit_of_a_float_only() -> None:
+    stored = {"t2": 765.317510966224, "rows": [1, {"p": 0.25}], "tag": "x"}
+    near = {"t2": 765.317510966225, "rows": [1, {"p": 0.25}], "tag": "x"}
+    if not nhat_spectral.same_record(stored, near):
+        raise AssertionError("a last-digit difference must read as the same record")
+    for changed in (
+        {"t2": 765.3176, "rows": [1, {"p": 0.25}], "tag": "x"},
+        {"t2": 765.317510966224, "rows": [1, {"p": 0.26}], "tag": "x"},
+        {"t2": 765.317510966224, "rows": [2, {"p": 0.25}], "tag": "x"},
+        {"t2": 765.317510966224, "rows": [1, {"p": 0.25}], "tag": "y"},
+        {"t2": 765.317510966224, "rows": [1], "tag": "x"},
+    ):
+        if nhat_spectral.same_record(stored, changed):
+            raise AssertionError(changed)

@@ -54,6 +54,17 @@ exceed it; a series division that assumed a of order 1 broke J at order 4 and K2
 s^ord(a). A symbolic Singular version of the L0 families grew to 17 GB and was stopped; its record stays in the
 local failed-runs archive.
 
+## Decided by the point-blowup plane family: E0 = V(K2) for Iso -> N- at both primes
+
+[iso-planes/](iso-planes/README.md) carries the W8 C30 certificate (ledger A5-066, A5-236) to Iso. In the chart
+t3 = s of the point blowup the 17 generators divide by s^2 and, on the smooth slice, by v2, and the restricted ideal
+is (x, v2 s, v2^2). Its fiber cone is k[Z1, Z2, Z3]: the minimal generators of its n-th powers number 3, 6, 10, 15, 21
+and 28 for n = 1 to 6. The planes Pi_p over P(L0) sweep a cone of dimension 5 = dim V(K2) at three points per prime,
+and K2 vanishes on every plane (0 of 68). An off control reads rank 2 with K2 nonzero on 8 to 11 forms, and a mutated
+plane makes K2 nonzero on 31 or 32 forms. Computed at 32009 and 32029 in 0.03 to 1.4 s each (ledger A5-284). The
+deduction E0 = V(K2), so L = K2 and F(I) = k[y]/K2, follows the W8 argument. Its Iso steps await review, so A5-007 and
+A5-067 stay `survives` until the review closes.
+
 ## The deciding test: one blowup chart
 
 `chart_test.py` writes `chart-FIBER-pP.sing`: for a0 = l0(G) with QRNG coefficients (draw
@@ -61,7 +72,7 @@ local failed-runs archive.
 is a unit is A = k[t, z]/((J, a0 z_i - G_i) : a0^infinity), and A/(t) is an affine piece of E0. For Iso, K2 is prime
 with no linear form (h_1 = 17), so V(K2) meets every chart densely: dim A/(t) = 4 gives E0 = V(K2) and F(I) = k[y]/K2
 in every degree; dim A/(t) <= 3 gives dim E0 <= 3, an analytic spread of at most 4, and a relation of L outside K2 in
-some degree of at least 6 (L agrees with K2 through degree 5). No chart saturation has finished, so the test has not
+some degree of at least 7 (L agrees with K2 through degree 6, certified at both primes). No chart saturation has finished, so the test has not
 decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.json`), logs under `chart-runs/`:
 
 | Host | Script | Outcome |
@@ -75,7 +86,8 @@ decided the case. Runs, all with the same QRNG form (`chart-iso-pP-coefficients.
 
 `chart-runs/azure/events` lists the two watchdog stops as `exit 0` because Singular exits 0 on the watchdog's SIGTERM;
 the `mem.log` lines before each stop and the absence of any RESULT line in the logs show neither finished. The
-`option(prot)` traces end at standard bases of 20,000-37,000 elements, still growing. The dense a0, a combination of all
+`option(prot)` traces end with pair lists of 20,000-37,000 pairs, still growing (the number `prot` prints after `s`
+is the pair count, not the basis size). The dense a0, a combination of all
 17 generators, makes every a0 z_i a polynomial with hundreds of terms; the next formulation is a coordinate chart
 a0 = G_j, z_j = 1, which decides the case equally (y_j lies outside K2 because K2 contains no linear form, so a
 4-dimensional E0 meets D+(y_j) densely). The flag review of the Azure portfolio is `chart-runs/azure/flags.md`. The coordinate charts a0 = G_16 and a0 = G_2 (`chart-iso-p32009-coord16.sing`,

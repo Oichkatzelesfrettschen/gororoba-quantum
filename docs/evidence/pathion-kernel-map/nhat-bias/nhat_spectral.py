@@ -531,6 +531,21 @@ def build() -> dict[str, Any]:
     }
 
 
+def same_record(stored: Any, fresh: Any) -> bool:
+    """Equality of two decoded records with floats compared to a relative 1e-12.
+
+    The Hotelling and spectral statistics pass through a BLAS-dependent matrix inverse, so the last binary digit of a
+    value near 10^3 differs between platforms; exact text comparison would reject a faithful recomputation.
+    """
+    if isinstance(stored, dict) and isinstance(fresh, dict):
+        return stored.keys() == fresh.keys() and all(same_record(stored[k], fresh[k]) for k in stored)
+    if isinstance(stored, list) and isinstance(fresh, list):
+        return len(stored) == len(fresh) and all(same_record(a, b) for a, b in zip(stored, fresh, strict=True))
+    if isinstance(stored, float) and isinstance(fresh, float):
+        return math.isclose(stored, fresh, rel_tol=1e-12, abs_tol=1e-12)
+    return bool(stored == fresh) and type(stored) is type(fresh)
+
+
 def encode(record: dict[str, Any]) -> str:
     return json.dumps(record, indent=1, sort_keys=True, allow_nan=False) + "\n"
 
@@ -551,7 +566,7 @@ def main() -> int:
         (args.out / "result_spectral.json").write_text(text)
         return 0
     stored = (args.check / "result_spectral.json").read_text()
-    if stored != text:
+    if not same_record(json.loads(stored), json.loads(text)):
         raise SystemExit("result_spectral.json differs from a fresh computation")
     print("ok: result_spectral.json reproduces")
     return 0
