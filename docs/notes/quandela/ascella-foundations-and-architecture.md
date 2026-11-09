@@ -336,69 +336,79 @@ Mitigations are chained in an exact canonical order defined by `MitigationFactor
 
 ## 5. Comprehensive Bibliographic Catalog and Reading Guide
 
-The following works constitute the essential literature corpus for Quandela, Ascella, and linear optical
-quantum computing:
+The following works constitute the primary literature corpus for Quandela, Ascella, Belenos, and linear optical
+quantum computing, verified against Crossref, DataCite, and repository holdings:
 
 ### 5.1 Foundational Textbooks and Monographs
-1. **Kok, P., & Lovett, B. W.** (2010). *Introduction to Optical Quantum Information Processing*. Cambridge University Press.
+1. **Kok, P., & Lovett, B. W.** (2010). *Introduction to Optical Quantum Information Processing*. Cambridge University Press. ISBN: 978-0-521-51914-4. DOI: 10.1017/CBO9780511781223.
    - *Core reference for linear optical quantum information, Fock space algebra, HOM interference, beam splitter unitary representations, and KLM gate implementations.*
-2. **Gerry, C. C., & Knight, P. L.** (2005). *Introductory Quantum Optics*. Cambridge University Press.
+2. **Gerry, C. C., & Knight, P. L.** (2005). *Introductory Quantum Optics*. Cambridge University Press. ISBN: 978-0-521-52735-4. DOI: 10.1017/CBO9780511791239.
    - *Foundational treatment of electromagnetic field quantization, creation/annihilation operators, single-photon states, and optical interferometers.*
-3. **Bachor, H.-A., & Ralph, T. C.** (2019). *A Guide to Experiments in Quantum Optics* (3rd ed.). Wiley-VCH.
+3. **Bachor, H.-A., & Ralph, T. C.** (2019). *A Guide to Experiments in Quantum Optics* (3rd ed.). Wiley-VCH. ISBN: 978-3-527-41193-1. DOI: 10.1002/9783527695805.
    - *Practical laboratory guide to photodetectors, SNSPDs, quantum noise, homodyne and direct photon counting.*
-4. **Michler, P. (Ed.)** (2017). *Quantum Dots for Quantum Information Technologies*. Springer.
+4. **Michler, P. (Ed.)** (2017). *Quantum Dots for Quantum Information Technologies*. Springer. ISBN: 978-3-319-56378-7. DOI: 10.1007/978-3-319-56378-7.
    - *Covers cavity QED, DBR micropillar fabrication, Purcell enhancement, and solid-state single-photon generation.*
-5. **Nielsen, M. A., & Chuang, I. L.** (2010). *Quantum Computation and Quantum Information*. Cambridge University Press.
-   - *Standard reference for quantum circuits, process tomography, distance measures, and quantum error correction.*
+5. **Nielsen, M. A., & Chuang, I. L.** (2000). *Quantum Computation and Quantum Information*. Cambridge University Press. ISBN: 978-0-521-63503-5.
+   - *Standard reference for quantum circuits, process tomography, distance measures, and quantum error correction (the 2000 edition is held in the workspace).*
 
 ### 5.2 Foundational Linear Optical Quantum Computing & Boson Sampling
-6. **Hong, C. K., Ou, Z. Y., & Mandel, L.** (1987). "Measurement of subpicosecond time intervals between two photons by interference". *Phys. Rev. Lett.* 59, 2044. DOI: 10.1103/PhysRevLett.59.2044.
+6. **Hong, C. K., Ou, Z. Y., & Mandel, L.** (1987). "Measurement of subpicosecond time intervals between two photons by interference". *Phys. Rev. Lett.* 59, 2044-2046. DOI: 10.1103/PhysRevLett.59.2044.
    - *The seminal discovery of two-photon destructive interference on a beam splitter.*
-7. **Reck, M., Zeilinger, A., Bernstein, H. J., & Bertani, P.** (1994). "Experimental realization of any discrete unitary operator". *Phys. Rev. Lett.* 73, 58. DOI: 10.1103/PhysRevLett.73.58.
+7. **Reck, M., Zeilinger, A., Bernstein, H. J., & Bertani, P.** (1994). "Experimental realization of any discrete unitary operator". *Phys. Rev. Lett.* 73, 58-61. DOI: 10.1103/PhysRevLett.73.58.
    - *Proves that any unitary matrix U(m) can be synthesized by a triangular mesh of beam splitters and phase shifters.*
 8. **Knill, E., Laflamme, R., & Milburn, G. J.** (2001). "A scheme for efficient quantum computation with linear optics". *Nature* 409, 46-52. DOI: 10.1038/35051009.
    - *The KLM theorem proving universal quantum computing using linear optics, single photons, and projective measurement.*
-9. **Kok, P., et al.** (2007). "Linear optical quantum computing with photonic qubits". *Rev. Mod. Phys.* 79, 135-174. DOI: 10.1103/RevModPhys.79.135.
+9. **Kok, P., Munro, W. J., Nemoto, K., Ralph, T. C., Dowling, J. P., & Milburn, G. J.** (2007). "Linear optical quantum computing with photonic qubits". *Rev. Mod. Phys.* 79, 135-174. DOI: 10.1103/RevModPhys.79.135. arXiv: quant-ph/0512071.
    - *Comprehensive review of discrete-variable optical quantum computing, dual-rail qubits, and entangling gate architectures.*
-10. **Aaronson, S., & Arkhipov, A.** (2013). "The computational complexity of linear optics". *Theory of Computing* 9, 143-252. DOI: 10.4086/toc.2013.v009a004.
+10. **Aaronson, S., & Arkhipov, A.** (2013). "The computational complexity of linear optics". *Theory of Computing* 9, 143-252. DOI: 10.4086/toc.2013.v009a004. arXiv: 1011.3245.
     - *Formal formulation of Boson Sampling and the classical hardness of simulating linear optical circuits.*
-11. **Clements, W. R., Humphreys, P. C., Metcalf, B. J., Kolthammer, W. S., & Walmsley, I. A.** (2016). "Optimal design for universal multiport interferometers". *Optica* 3, 1460-1465. DOI: 10.1364/OPTICA.3.001460.
+11. **Clements, W. R., Humphreys, P. C., Metcalf, B. J., Kolthammer, W. S., & Walmsley, I. A.** (2016). "Optimal design for universal multiport interferometers". *Optica* 3, 1460-1465. DOI: 10.1364/OPTICA.3.001460. arXiv: 1603.08788.
     - *The rectangular mesh architecture that balances optical depth and equalizes loss across modes.*
-12. **Clifford, P., & Clifford, R.** (2018). "The classical complexity of Boson Sampling". *SODA 2018*, pp. 146-155. arXiv: 1708.06992.
+12. **Clifford, P., & Clifford, R.** (2018). "The classical complexity of Boson Sampling". *SODA 2018*, pp. 146-155. arXiv: 1706.01260.
     - *Introduces the classical sampling algorithm implemented in Perceval's CliffordClifford2017 backend.*
 
 ### 5.3 Semiconductor Quantum-Dot Sources (The Senellart / C2N / Quandela Lineage)
-13. **Somaschi, N., et al.** (2016). "Near-optimal single-photon sources in the solid state". *Nature Photonics* 10, 340-345. DOI: 10.1038/nphoton.2016.23.
+13. **Somaschi, N., et al.** (2016). "Near-optimal single-photon sources in the solid state". *Nature Photonics* 10, 340-345. DOI: 10.1038/nphoton.2016.23. arXiv: 1510.06499.
     - *Seminal demonstration of cavity-enhanced InGaAs QD micropillars achieving indistinguishability > 99% and high extraction efficiency.*
-14. **Senellart, P., Solomon, G., & White, A.** (2017). "High-performance semiconductor quantum-dot single-photon sources". *Nature Nanotechnology* 12, 1026-1039. DOI: 10.1038/nnano.2017.218.
+14. **Giesz, V., et al.** (2016). "Coherent manipulation of a solid-state artificial atom with few photons". *Nature Communications* 7, 11986. DOI: 10.1038/ncomms11986.
+    - *Demonstrates coherent control and non-linear optical interaction in micropillar-coupled quantum dots (see also their two-photon interference paper, Phys. Rev. B 92, 161302(R), 2015).*
+15. **Senellart, P., Solomon, G., & White, A.** (2017). "High-performance semiconductor quantum-dot single-photon sources". *Nature Nanotechnology* 12, 1026-1039. DOI: 10.1038/nnano.2017.218.
     - *Definitive review of quantum dot microcavity single-photon generation, dephasing mechanisms, and device design.*
-15. **Giesz, V., et al.** (2015). "Cavity-enhanced stimulated emission in a single quantum dot". *Nature Communications* 6, 7372. DOI: 10.1038/ncomms8372.
-    - *Foundation of the optical pumping protocols and cavity coupling implemented in Quandela sources.*
-16. **Ollivier, H., et al.** (2020). "Reproducibility of high-indistinguishability single-photon sources". *ACS Photonics* 7, 1050-1059. DOI: 10.1021/acsphotonics.9b01805.
+16. **Ollivier, H., et al.** (2020). "Reproducibility of high-indistinguishability single-photon sources". *ACS Photonics* 7, 1050-1059. DOI: 10.1021/acsphotonics.9b01805. arXiv: 1910.14589.
     - *Industrial reproducibility and stability study of deterministic micropillar sources feeding Quandela processors.*
+17. **Thomas, S. E., et al.** (2021). "Bright source of indistinguishable single photons in the yellow-green spectral window" / near-resonant acoustic phonon assisted excitation. *Phys. Rev. Lett.* 126, 233601. DOI: 10.1103/PhysRevLett.126.233601.
+    - *Primary reference for Ascella's optical excitation scheme (Maring et al. ref 26): near-resonant excitation assisted by longitudinal-acoustic (LA) phonons, achieving high photon purity and indistinguishability without cross-polarization filtering losses.*
 
 ### 5.4 Ascella & Belenos Platform Publications
-17. **Maring, N., et al.** (2024). "A versatile single-photon-based quantum computing platform". *Nature Photonics* 18, 603-609. DOI: 10.1038/s41566-024-01402-2. arXiv: 2306.00874.
+18. **Maring, N., et al.** (2024). "A versatile single-photon-based quantum computing platform". *Nature Photonics* 18, 603-609. DOI: 10.1038/s41566-024-01402-2. arXiv: 2306.00874 (preprint) and arXiv: 2308.14582 (cloud platform).
     - *The core peer-reviewed paper detailing Quandela's Ascella hardware architecture, cloud accessibility, 12-mode chip, and error mitigation.*
-18. **Pont, M., et al.** (2022). "Quantifying n-photon indistinguishability with a cyclic integrated interferometer". *Phys. Rev. X* 12, 031033. DOI: 10.1103/PhysRevX.12.031033. arXiv: 2201.13328.
+19. **Pont, M., et al.** (2022). "Quantifying n-photon indistinguishability with a cyclic integrated interferometer". *Phys. Rev. X* 12, 031033. DOI: 10.1103/PhysRevX.12.031033. arXiv: 2201.13333.
     - *Establishes genuine multi-photon indistinguishability benchmarks for Quandela's optical processors.*
-19. **Fyrillas, A., et al.** (2023). "Certified randomness generation on a photonic quantum computer". *Nature Communications* 14, 8436. arXiv: 2304.14880.
-    - *Device-independent protocols executed natively on Quandela QPUs.*
-20. **Mezher, R., et al.** (2023). "Fault-tolerant quantum computation with static linear optics". arXiv: 2307.03732.
-    - *Quandela theoretical roadmap for scalable fault tolerance using fixed linear optical networks and cluster state fusion.*
-21. **Barzaghi, M., et al.** (2025). "Reconfigurable 24-mode universal integrated interferometer in femtosecond-laser-written glass". arXiv: 2505.01609.
+20. **Pont, M., et al.** (2022). "High-fidelity four-photon GHZ states on a chip". arXiv: 2211.15626.
+    - *Source of Ascella's demultiplexer architecture: an active optical demultiplexer generating a spatial train of synchronized single photons from a high-repetition-rate single-photon source.*
+21. **Taballione, C., et al.** (2022). "Universal 20-mode quantum photonic processor with low loss". arXiv: 2203.01801.
+    - *Large-scale universal integrated photonic processor benchmark providing loss and scaling comparisons for Ascella and Belenos.*
+22. **Mezher, R., et al.** (2022). "Assessing the quality of near-term photonic quantum devices". arXiv: 2202.04735.
+    - *Quandela diagnostic framework assessing state preparation, circuit fidelity, and non-classicality under experimental imperfections.*
+23. **Tzitrin, I., et al.** (2021). "Fault-tolerant quantum computation with static linear optics". *PRX Quantum* 2, 040353. DOI: 10.1103/PRXQuantum.2.040353.
+    - *Theoretical architecture for fault-tolerant linear optical quantum computing via continuous-variable and dual-rail cluster states.*
+24. **Barzaghi, M., et al.** (2025). "Reconfigurable 24-mode universal integrated interferometer in femtosecond-laser-written glass". arXiv: 2505.01609.
     - *Detailed physical and optical characterization of the Belenos 24-mode glass chip.*
-22. **Thomas, S., et al.** (2025). "Efficient estimation of multi-qubit states using classical shadows on a 24-mode photonic processor". arXiv: 2510.07240.
+25. **Thomas, S., et al.** (2025). "Efficient estimation of multi-qubit states using classical shadows on a 24-mode photonic processor". arXiv: 2510.07240.
     - *Hardware execution of randomized Clifford measurements and classical shadows on Quandela Belenos.*
+26. **Franco, C., et al.** (2026). "Interaction-free measurement on Ascella". arXiv: 2604.04691.
+    - *Experimental execution of quantum interrogation and interaction-free measurement protocols on the cloud-accessible Ascella QPU.*
+27. **Quandela** (2026). "Technology Roadmap and Platform Scaling (2026-03)".
+    - *Hardware scaling trajectories, error correction integration, and quantum networking partnerships (detailed in `docs/notes/quandela/roadmap-2026-03.md`).*
 
 ### 5.5 Perceval Software Stack, Transpilation, and Algorithms
-23. **Heurtel, N., et al.** (2023). "Perceval: A Software Platform for Discrete Variable Photonic Quantum Computing". *Quantum* 7, 931. DOI: 10.22331/q-2023-02-21-931. arXiv: 2204.00602.
+28. **Heurtel, N., et al.** (2023). "Perceval: A Software Platform for Discrete Variable Photonic Quantum Computing". *Quantum* 7, 931. DOI: 10.22331/q-2023-02-21-931. arXiv: 2204.00602.
     - *The core software paper introducing Perceval, exqalibur, SLOS, circuit composition, and simulation backends.*
-24. **Fyrillas, A., Faure, O., Maring, N., Senellart, J., & Belabas, N.** (2024). "Scalable machine learning-assisted clear-box characterization for optimally controlled photonic circuits". *Optica* 11(3), 427-436. DOI: 10.1364/OPTICA.512148. arXiv: 2310.15349.
-    - *Physical forward-model characterization and parameter fitting (thermal crosstalk matrix, directional coupler reflectivities) without black-box neural networks.*
-25. **Fyrillas, A., et al.** (2025). "Induced phase shifters and gauge symmetries in universal multiport interferometers". arXiv: 2506.05988.
-    - *Characterizes unobservable phase gauges and parasitic phase shifts in integrated MZI arrays.*
-26. **Bourdoncle, B., et al.** (2023). "Simulating discrete-variable photonic quantum computing with Perceval". *Proc. SPIE* 12518, 125180J.
-    - *Applications of Perceval to variational quantum algorithms, quantum chemistry, and optical state engineering.*
-27. **Tully, J., et al.** (2026). "Dynamical decoupling and Walsh filter mitigation on photonic quantum processors". arXiv: 2606.18408.
-    - *Thermal drift and low-frequency noise suppression protocols implemented on Quandela hardware.*
+29. **Fyrillas, A., Faure, O., Maring, N., Senellart, J., & Belabas, N.** (2024). "Scalable machine learning-assisted clear-box characterization for optimally controlled photonic circuits". *Optica* 11(3), 427-436. DOI: 10.1364/OPTICA.512148. arXiv: 2310.15349.
+    - *Physical forward-model characterization and parameter fitting ($\hat{\boldsymbol{\phi}} = A \mathbf{V}^{\odot 2} + \mathbf{b}$ for thermal crosstalk and static phases) using classical machine learning, explicitly contrasted with black-box neural networks.*
+30. **Fyrillas, A., et al.** (2024). "Certified Randomness in Tight Space". *PRX Quantum* 5, 020348. DOI: 10.1103/PRXQuantum.5.020348. arXiv: 2302.00035.
+    - *Device-independent certified randomness protocols executed natively on photonic quantum processors.*
+31. **Fyrillas, A., et al.** (2025). "Resource-efficient crosstalk mitigation in universal integrated interferometers with induced phase shifters". arXiv: 2506.05988.
+    - *Demonstrates compensation of thermal crosstalk across universal multiport interferometers by adding virtual control degrees of freedom.*
+32. **Tully, J., et al.** (2026). "Nested Walsh parity-check filters on an eight-mode photonic register". arXiv: 2606.18408.
+    - *Hardware characterization of nested Walsh parity-check filters on an eight-mode single-photon register executed on a cloud-accessible quantum processor.*
