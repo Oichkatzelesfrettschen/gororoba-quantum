@@ -239,6 +239,7 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
 | Check | Result |
 |---|---|
 | `ascella_cz_tomography_reference_case.py --check` | passes: both requests rebuild byte for byte, every iteration's samples fill the cap to one quantum, worst case 300.0 s, ceiling 2.567, fresh disjoint seeds, design spread below the retained design's at every HOM point |
+| gate `core-record-check-07` (ci/gates.json, on demand on the build host) | runs `--check`, which rebuilds both requests byte for byte; the decomposed mesh floats follow the CPU's numeric path, so the `tests` check runs the budget, bound and identity checks without the rebuild |
 | `ascella_cz_tomography_case.py --check` | passes: the retained requests still rebuild byte for byte after the loader and pooling take a family |
 | `qd_platform.py --self-test` | passes, with budgeted and unbudgeted template cases and three malformed budget lists |
 | `qd_platform.payload` on both ensemble jobs | each body's digest without `process_id` equals its retained `plan-read.json` value, so an unbudgeted template case sends the same bytes |

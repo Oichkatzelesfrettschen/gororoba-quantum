@@ -236,8 +236,9 @@ def test_the_seed_plan_is_fresh_and_disjoint() -> None:
 
 
 @pytest.mark.parametrize("job", case.JOBS)
-def test_the_retained_request_rebuilds(job: str) -> None:
-    case.check_job(job)
+def test_the_retained_request_keeps_its_budgets_and_bounds(job: str) -> None:
+    """The byte-for-byte rebuild follows the CPU's numeric path and runs in core-record-check-07."""
+    case.check_job(job, rebuild=False)
 
 
 def test_job_01_waits_for_job_00_quotas() -> None:

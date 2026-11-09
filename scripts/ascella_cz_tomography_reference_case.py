@@ -559,9 +559,13 @@ def check_forecast() -> int:
 # ---------------------------------------------------------------- checks
 
 
-def check_job(job: str) -> None:
-    retained = {name: (FAMILY_DIR / job / name).read_bytes() for name in ("cases.json", "circuit.json")}
-    require(documents(job) == retained, f"{job}: the retained request differs from the rebuild")
+def check_job(job: str, rebuild: bool = True) -> None:
+    """The retained request's budgets, bounds and identity; with rebuild, also its byte-for-byte rebuild, whose
+    decomposed mesh floats follow the CPU's numeric path, so the on-demand gate core-record-check-07 runs it on the
+    build host (ci/gates.json)."""
+    if rebuild:
+        retained = {name: (FAMILY_DIR / job / name).read_bytes() for name in ("cases.json", "circuit.json")}
+        require(documents(job) == retained, f"{job}: the retained request differs from the rebuild")
     manifest, circuit, _ = qd_platform.load_case(FAMILY_DIR / job)
     require(qd_platform.iteration_form(manifest) == "template", f"{job}: not a template case")
     steps = qd_platform.iteration_budgets(manifest)
