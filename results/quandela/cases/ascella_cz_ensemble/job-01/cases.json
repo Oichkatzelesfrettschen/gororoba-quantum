@@ -30102,5 +30102,25 @@
    "drift_or_recalibration": "the jobs are reported separately and no pooled bound is claimed",
    "hom_moved": "the plan's HOM differs from the tomography's by more than 1.0 point: estimate 5 states the HOM difference beside each comparison"
   }
+ },
+ "submit_wrapper": "scripts/ascella_cz_ensemble_case.py --submit",
+ "submission_policy": {
+  "platform": "qpu:ascella",
+  "credit_ceiling": 1.4,
+  "per_job_credits": 1.0,
+  "expected_seconds": 220,
+  "hom_percent": {
+   "above": 90.0,
+   "reference": 87.56,
+   "reference_source": "HOM at which the tomography's job-00 was submitted (its submission.json perfs_at_plan)",
+   "within_points_of_reference": 1.0,
+   "admitted": "none"
+  },
+  "statuses": "Explorer row and processor read available or running, while the token counts no running, no queued and no running quantum-task job (qd_platform.require_token_capacity refuses a busy token at either status)",
+  "live_read": "a processor read inside the submit lock, after the plan, equals the plan's perfs, connects source modes [0, 2], and forecasts at least 200 eligible events in every setting's iteration at its max_shots",
+  "after": {
+   "job": "job-00",
+   "requires": "a collected run of job-00 that completed with 60 bound iterations, none uncounted, each with at least 200 eligible events"
+  }
  }
 }

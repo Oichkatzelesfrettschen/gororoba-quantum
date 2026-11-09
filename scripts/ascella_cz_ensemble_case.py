@@ -18,27 +18,35 @@ false-alarm simulation come from one ANU QRNG draw that the manifests own whole.
 --check rebuilds both jobs and the forecast inputs and compares them with the retained files, binds every iteration
 through qd_platform.template_experiment, and holds the schedule to the design. --forecast recomputes forecast.json.
 --read and --estimate retain the live platform read and Perceval's shot estimate (read-only platform calls; nothing is
-sent). --analyze OUT.json RUN RUN reduces the two collected runs to the preregistered estimates. Submission uses the
-generic runner, scripts/qd_platform.py plan/submit/collect, under the written case's approval.
+sent). --analyze OUT.json RUN RUN reduces the two collected runs to the preregistered estimates. --preflight JOB plans
+a job read-only and holds the fresh plan to the manifest's submission_policy; --submit JOB --approval TEXT sends it
+through qd_platform.submit with that policy as its verify step, and job-01 also takes --after, the collected job-00
+run. The manifests name this wrapper under submit_wrapper, and qd_platform.submit refuses such a case without a verify
+step. scripts/qd_platform.py collect retrieves each job.
 
 Usage:
   "$PYTHON" scripts/ascella_cz_ensemble_case.py [--check | --build | --forecast | --read | --estimate]
   "$PYTHON" scripts/ascella_cz_ensemble_case.py --analyze OUT.json RUN [RUN]
+  "$PYTHON" scripts/ascella_cz_ensemble_case.py --preflight JOB [--after RUN]
+  "$PYTHON" scripts/ascella_cz_ensemble_case.py --submit JOB --approval TEXT [--after RUN]
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import sys
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
+from fractions import Fraction
 from functools import cache
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+from flint import arb, arb_mat, arf, ctx
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -48,9 +56,10 @@ import ascella_cz_tomography_case as tomo  # noqa: E402
 import billing_rule_v2  # noqa: E402
 import qd_platform  # noqa: E402
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
+from qd_schedule import body_digest  # noqa: E402
 
 import qd_records  # noqa: E402
-from parallel import ordered_map  # noqa: E402
+from parallel import ordered_map, workers  # noqa: E402
 
 PLATFORM = "qpu:ascella"
 FAMILY = "ascella_cz_ensemble"
@@ -118,6 +127,18 @@ TOMOGRAPHY_ANALYSIS = "results/quandela/ascella-cz-tomography-analysis.json"
 HOM_READING_POINTS = 1.0
 TOMOGRAPHY_HOM_LABEL = "HOM at which the tomography's job-00 was submitted (its submission.json perfs_at_plan)"
 PREDICTION_REPLICATES = tomo.BOOTSTRAP_REPLICATES
+# Submission admits a job only when the live HOM is strictly above qd_platform.HOM_FLOOR (strategy.md design rule 1:
+# a block with two photons waits for HOM above 90 %) and within HOM_READING_POINTS of the reference tomography's HOM,
+# so estimate 5 compares the ensemble with a fit taken at the same source quality. Explorer and processor read
+# available, or running while this token holds no running or queued job of its own.
+SUBMIT_STATUSES = ("available", "running")
+SUBMIT_WRAPPER = "scripts/ascella_cz_ensemble_case.py --submit"
+# The availability counters that must all read 0: the token runs and queues no job of its own.
+IDLE_COUNTERS = ("num_concurrent_jobs", "num_jobs_in_queue", "num_running_qt_jobs")
+# arb working precisions tried in order until every float64 of the prediction certifies
+CERTIFIED_PRECISIONS = (128, 256, 512)
+# each worker batch re-solves the normal equations, so a batch takes at least this many columns
+MIN_BATCH_COLUMNS = 32
 BOUND_CHECK_MAPS = 20000
 
 
@@ -449,6 +470,8 @@ def documents(job: str) -> dict[str, bytes]:
         },
         "billing": billing_rule_v2.RULE,
         "preregistered": preregistered(),
+        "submit_wrapper": SUBMIT_WRAPPER,
+        "submission_policy": submission_policy(job),
     }
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
@@ -793,56 +816,208 @@ def tomography_choi() -> tuple[np.ndarray, float]:
     return choi, tomo.trace_normalized_fidelity(choi)
 
 
-def replicate_prediction(rates: np.ndarray) -> dict[str, Any]:
-    """The tables one bootstrap replicate's (576,) rates predict; parallel.py runs it under one BLAS thread, the
-    arithmetic of the runner-image ledger."""
-    return predicted_tables(tomo.linear_inversion(rates))
+def exact_fraction(endpoint: arb) -> Fraction:
+    """The exact rational value of an exact arb (a ball endpoint), from its dyadic mantissa and exponent."""
+    mantissa, exponent = (int(v) for v in endpoint.man_exp())
+    return Fraction(mantissa) * 2**exponent if exponent >= 0 else Fraction(mantissa, 2**-exponent)
 
 
-def predicted_tables(choi: np.ndarray) -> dict[str, Any]:
-    """Rates a Choi matrix predicts for the eight settings, Tr[(rho^T x E) J], and its F and F' per table."""
-    out: dict[str, Any] = {"rates": {}}
+def exact_float(endpoint: arb) -> float:
+    """The float64 nearest an exact arb value: Fraction division rounds to nearest, ties to even."""
+    return float(exact_fraction(endpoint))
+
+
+def certified_float(value: arb) -> float | None:
+    """The float64 every point of the ball rounds to, or None when the ball straddles a rounding boundary. Signed
+    zeros compare equal, so the endpoints must also agree in sign: a ball across 0 rounds to -0.0 and +0.0."""
+    low, high = exact_float(value.lower()), exact_float(value.upper())
+    return low if low == high and math.copysign(1.0, low) == math.copysign(1.0, high) else None
+
+
+def to_arb_mat(rows: np.ndarray) -> arb_mat:
+    return arb_mat([[arb(float(v)) for v in row] for row in np.asarray(rows, dtype=np.float64)])
+
+
+def nonnegative_sqrt(value: arb) -> arb:
+    """The root of a ball whose exact value is a variance: its part below zero holds no admissible value."""
+    return value.nonnegative_part().sqrt()
+
+
+def order_statistic(values: Sequence[arb], k: int) -> arb:
+    """A ball holding the k-th smallest exact value: it lies between the k-th smallest lower and upper endpoints."""
+    return sorted((v.lower() for v in values), key=exact_fraction)[k].union(
+        sorted((v.upper() for v in values), key=exact_fraction)[k]
+    )
+
+
+def percentile_ball(values: Sequence[arb], q: float) -> arb:
+    """numpy.percentile's default linear interpolation of the q-th percentile, enclosed."""
+    h = q / 100 * (len(values) - 1)  # numpy's float64 virtual index, taken exactly
+    low = math.floor(h)
+    weight = arb(h) - low
+    below, above = order_statistic(values, low), order_statistic(values, min(low + 1, len(values) - 1))
+    return below + (above - below) * weight
+
+
+@cache
+def prediction_inputs() -> dict[str, Any]:
+    """The float64 inputs of the certified prediction: the tomography design, the rate observables of the eight
+    settings with their names, and the real and imaginary parts of the Hermitian basis."""
+    rows: list[np.ndarray] = []
+    names: list[tuple[str, str, int]] = []
     for table, inputs in TABLES.items():
-        correct, eligible = [], []
         for control, target in inputs:
             row = {"name": f"in-{control}{target}-{table}", "input": control + target, "basis": table}
+            names.append((table, row["name"], correct_outcome(row)))
             density = input_density(row["input"]).T
-            rates = [
-                float(np.real(np.trace(np.kron(density, tomo.outcome_projector(table, o)) @ choi))) for o in range(4)
-            ]
-            out["rates"][row["name"]] = rates
-            correct.append(rates[correct_outcome(row)])
-            eligible.append(sum(rates))
-        f, f_prime = table_scores(np.asarray(correct), np.asarray(eligible), np.ones(4))
-        out[table] = {"F": f, "F_prime": f_prime}
+            rows.extend(np.kron(density, tomo.outcome_projector(table, o)) for o in range(4))
+    basis = np.transpose(tomo.hermitian_stack(), (0, 2, 1)).reshape(256, -1)
+    return {"design": tomo.design_matrix(), "observables": np.asarray(rows), "basis": basis, "names": names}
+
+
+def ball_parts(value: arb) -> tuple[int, int, int, int]:
+    """The exact dyadic midpoint and radius of a ball as (mantissa, exponent) pairs, which pickle."""
+    mid, rad = value.mid().man_exp(), value.rad().man_exp()
+    return int(mid[0]), int(mid[1]), int(rad[0]), int(rad[1])
+
+
+def from_parts(parts: Sequence[int]) -> arb:
+    """The ball of ball_parts: the midpoint exact, the radius rounded up to arb's radius type, so it still encloses."""
+    return arb(arf((parts[0], parts[1])), arf((parts[2], parts[3])))
+
+
+def solve_columns(columns: np.ndarray) -> arb_mat:
+    """The least-squares coefficients of each column at ctx.prec: pinv(A) b of the full-column-rank design A equals the
+    solution of the normal equations (A^T A) x = A^T b, which arb_mat solves with a rigorous radius on the float64
+    inputs."""
+    a = to_arb_mat(prediction_inputs()["design"])
+    at = a.transpose()
+    return (at * a).solve(at * to_arb_mat(columns))
+
+
+def column_balls(item: tuple[np.ndarray, int]) -> dict[str, Any]:
+    """Rates, F and F' of each column of one batch of observed rates (576 x k) at one working precision, as
+    ball_parts. A rate is Tr[(rho^T x E) J] = sum_k x_k Tr[(rho^T x E) H_k], formed exactly on the doubles."""
+    columns, precision = item
+    ctx.prec = precision
+    inputs = prediction_inputs()
+    observables = inputs["observables"].reshape(len(inputs["observables"]), -1)
+    basis = inputs["basis"]
+    rate_matrix = to_arb_mat(observables.real) * to_arb_mat(basis.real).transpose()
+    rate_matrix -= to_arb_mat(observables.imag) * to_arb_mat(basis.imag).transpose()
+    rates = rate_matrix * solve_columns(columns)
+    out: dict[str, Any] = {"rates": [], "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    for k in range(rates.ncols()):
+        sums: dict[str, list[arb]] = {t: [arb(0), arb(0), arb(0)] for t in TABLES}
+        column = []
+        for i, (table, _, correct_index) in enumerate(inputs["names"]):
+            values = [rates[4 * i + o, k] for o in range(4)]
+            column.append([ball_parts(v) for v in values])
+            eligible = values[0] + values[1] + values[2] + values[3]
+            correct = values[correct_index]
+            sums[table][0] += correct
+            sums[table][1] += eligible
+            sums[table][2] += correct / eligible
+        out["rates"].append(column)
+        for table, (correct, eligible, ratio) in sums.items():
+            out["F"][table].append(ball_parts(correct / eligible))
+            out["F_prime"][table].append(ball_parts(ratio / 4))
     return out
 
 
+def prediction_balls(columns: np.ndarray, precision: int) -> dict[str, Any]:
+    """Rates of the point column, F and F' of each column of observed rates (576 x K), and the point column's process
+    fidelity, as arb balls. The columns are scored in batches through parallel.ordered_map, each worker solving its
+    batch at the same precision; the certified values do not depend on the batching, since each is the correct
+    rounding of an exact value its ball encloses."""
+    ctx.prec, ctx.threads = precision, 1
+    inputs = prediction_inputs()
+    count = max(1, min(4 * workers(), columns.shape[1] // MIN_BATCH_COLUMNS))
+    batches = [columns[:, idx] for idx in np.array_split(np.arange(columns.shape[1]), count)]
+    scored = ordered_map(column_balls, [(batch, precision) for batch in batches], min_items=2)
+    out: dict[str, Any] = {"rates": {}, "F": {t: [] for t in TABLES}, "F_prime": {t: [] for t in TABLES}}
+    for part in scored:
+        for table in TABLES:
+            out["F"][table].extend(from_parts(v) for v in part["F"][table])
+            out["F_prime"][table].extend(from_parts(v) for v in part["F_prime"][table])
+    for (_, name, _), values in zip(inputs["names"], scored[0]["rates"][0], strict=True):
+        out["rates"][name] = [from_parts(v) for v in values]
+    vector = tomo.ideal_choi_vector()
+    require(not np.any(vector.imag), "the ideal CZ Choi vector is not real")
+    weights = np.vstack([np.outer(vector.real, vector.real).reshape(-1), np.eye(16).reshape(-1)])
+    x = solve_columns(columns[:, :1])
+    functional = to_arb_mat(weights) * to_arb_mat(tomo.hermitian_stack().real.reshape(256, -1)).transpose() * x
+    out["process_fidelity"] = functional[0, 0] / (4 * functional[1, 0])
+    # the certificate covers these float64 bits, which float64 libm and BLAS calls produce; their digests let a replay
+    # tell an input that moved from an output that did
+    out["inputs_sha256"] = {
+        name: hashlib.sha256(np.ascontiguousarray(array).tobytes()).hexdigest()
+        for name, array in (
+            ("design_matrix", inputs["design"]),
+            ("rate_observables", inputs["observables"]),
+            ("hermitian_basis", tomo.hermitian_stack()),
+            ("ideal_choi_vector", vector),
+            ("observed_rate_columns", columns),
+        )
+    }
+    return out
+
+
+def certified_prediction(columns: np.ndarray) -> tuple[dict[str, Any], int]:
+    """The prediction record with every float64 certified as the correctly rounded value of its ball, at the first
+    precision of CERTIFIED_PRECISIONS where every value certifies."""
+    for precision in CERTIFIED_PRECISIONS:
+        balls = prediction_balls(columns, precision)
+        record: dict[str, Any] = {"rates": {}, "inputs_sha256": balls["inputs_sha256"]}
+        floats: list[float | None] = []
+        for name, values in balls["rates"].items():
+            record["rates"][name] = [certified_float(v) for v in values]
+            floats.extend(record["rates"][name])
+        record["process_fidelity"] = certified_float(balls["process_fidelity"])
+        floats.append(record["process_fidelity"])
+        for table in TABLES:
+            replicates = balls["F"][table][1:]
+            n = len(replicates)
+            mean = sum(replicates, arb(0)) / n
+            sd = nonnegative_sqrt(sum(((v - mean) ** 2 for v in replicates), arb(0)) / (n - 1))
+            scores = [certified_float(balls["F"][table][0]), certified_float(balls["F_prime"][table][0])]
+            spread = certified_float(sd)
+            percentiles = [certified_float(percentile_ball(replicates, q)) for q in (2.5, 97.5)]
+            floats.extend([*scores, spread, *percentiles])
+            record[table] = {"F": scores[0], "F_prime": scores[1], "F_sd": spread, "F_percentile_95": percentiles}
+        if all(v is not None for v in floats):
+            return record, precision
+    raise RuntimeError(f"a prediction value straddles a float64 rounding boundary at {CERTIFIED_PRECISIONS[-1]} bits")
+
+
 def tomography_prediction() -> dict[str, Any]:
-    """Estimate 5's reference: the rates the retained fit predicts for the eight settings, and its table scores."""
-    choi, fidelity = tomography_choi()
+    """Estimate 5's reference: the rates the retained fit predicts for the eight settings, its table scores, and the
+    bootstrap spread of F, each float64 the certified correct rounding of an arb enclosure computed from the float64
+    inputs whose digests the record carries. The solve and every step after it are independent of the BLAS and its
+    thread count; the inputs come from float64 libm and BLAS calls, so the bytes match across hosts whose input
+    digests match."""
+    _, fidelity = tomography_choi()
     retained = json.loads((ROOT / TOMOGRAPHY_ANALYSIS).read_text(encoding="utf-8"))["process"]["process_fidelity"]
     require(abs(fidelity - retained) <= TOLERANCE, f"the recomputed fit reads {fidelity}, the retained {retained}")
-    point = predicted_tables(choi)
     index, value = seed_plan()["prediction"]
     a = tomography_arrays()
     generator = np.random.default_rng(value)
     batch = tomo.resampled_rates(a["eligible"], a["samples"], a["shots"], a["scale"], generator, PREDICTION_REPLICATES)
-    replicate = ordered_map(replicate_prediction, list(batch))
-    out: dict[str, Any] = {
-        "process_fidelity": fidelity,
+    point = tomo.absolute_rates(a["eligible"], a["shots"], a["scale"])
+    record, precision = certified_prediction(np.column_stack([point, batch.T]))
+    return {
+        "process_fidelity": record["process_fidelity"],
         "retained_analysis": TOMOGRAPHY_ANALYSIS,
-        "rates": point["rates"],
+        "rates": record["rates"],
         "bootstrap": {"replicates": PREDICTION_REPLICATES, "seed": {"draw": DRAW, "index": index}},
+        "arithmetic": {
+            "method": "arb normal equations (python-flint arb_mat)",
+            "precision_bits": precision,
+            "rounding": "each float64 is the correctly rounded value of every point of its arb enclosure",
+            "inputs_sha256": record["inputs_sha256"],
+        },
+        **{table: record[table] for table in TABLES},
     }
-    for table in TABLES:
-        values = [r[table]["F"] for r in replicate]
-        out[table] = {
-            **point[table],
-            "F_sd": float(np.std(values, ddof=1)),
-            "F_percentile_95": [float(q) for q in np.percentile(values, [2.5, 97.5])],
-        }
-    return out
 
 
 def random_trace_non_increasing_map(generator: np.random.Generator) -> list[np.ndarray]:
@@ -1108,7 +1283,9 @@ def check_job(job: str) -> str:
         ("expected_seconds", float(EXPECTED_SECONDS)),
     ):
         require(plan.get(key) == want, f"{job}: plan-read.json {key} reads {plan.get(key)!r}, not {want!r}")
-    require(set(plan["admitted_statuses"]) <= {"available", "running"}, f"{job}: the plan admits other statuses")
+    require(set(plan["admitted_statuses"]) <= set(SUBMIT_STATUSES), f"{job}: the plan admits other statuses")
+    admission = plan.get("admission")
+    require(isinstance(admission, dict) and "admitted" in admission, f"{job}: plan-read.json carries no admission")
     estimate = json.loads((FAMILY_DIR / ESTIMATE).read_text(encoding="utf-8"))["jobs"][job]
     inputs = estimate["inputs"]
     require(sorted(inputs) == sorted(s["name"] for s in settings), f"{job}: {ESTIMATE} names other iterations")
@@ -1125,7 +1302,9 @@ def check_job(job: str) -> str:
     require(expected <= EXPECTED_SECONDS, f"{job}: the modeled {expected:.0f} s pass the {EXPECTED_SECONDS} s bound")
     return (
         f"{FAMILY}/{job}: {ITERATIONS} iterations bound, credit ceiling {ceiling:g}, "
-        f"modeled {expected:.0f} s expected and {worst:.0f} s with every iteration at its cap"
+        f"modeled {expected:.0f} s expected and {worst:.0f} s with every iteration at its cap; the plan read of "
+        f"{plan.get('planned_utc')} "
+        + ("admits it" if admission["admitted"] else f"refuses it: {admission['refusal']}")
     )
 
 
@@ -1184,10 +1363,24 @@ def check() -> int:
     return 0
 
 
+def moved_inputs(retained: dict[str, Any], recomputed: dict[str, Any]) -> list[str]:
+    """Remove the prediction's input digests from both records and name the inputs whose float64 bits differ.
+
+    The digests are exact strings over float64 bits that libm and BLAS produce, so another numeric identity may move
+    them by an ulp; the floats they feed stay inside the tolerance first_difference applies, and the digests report
+    which input moved instead of failing the comparison."""
+    digests = [r["tomography_prediction"]["arithmetic"].pop("inputs_sha256") for r in (retained, recomputed)]
+    return sorted(name for name in digests[0] if digests[0][name] != digests[1].get(name))
+
+
 def check_forecast() -> int:
     retained = json.loads((FAMILY_DIR / FORECAST).read_text(encoding="utf-8"))
-    found = tomo.first_difference(retained, json.loads(forecast_bytes()))
+    recomputed = json.loads(forecast_bytes())
+    moved = moved_inputs(retained, recomputed)
+    found = tomo.first_difference(retained, recomputed)
     require(found is None, f"{FORECAST} differs from the recomputed forecast at {found}")
+    if moved:
+        print(f"tomography prediction inputs moved on this numeric identity: {', '.join(moved)}")
     for name, row in retained["variants"].items():
         print(f"{name}: F_ZX {row['ZX']['F']:.4f} F_XZ {row['XZ']['F']:.4f} Hofmann {row['hofmann_interval']}")
     return 0
@@ -1381,9 +1574,7 @@ def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     prediction = retained["tomography_prediction"]
     record["status"] = "decided"
     record.update(estimates(by_job, seed_plan()["analysis"][1], prediction))
-    tomography_hom = json.loads((ROOT / TOMOGRAPHY_RUNS[0] / "submission.json").read_text(encoding="utf-8"))[
-        "perfs_at_plan"
-    ]["HOM (%)"]
+    tomography_hom = reference_hom()
     homs = {e["job"]: (e["perfs"] or {}).get("HOM (%)") for e in loaded}
     differences = {job: None if hom is None else hom - tomography_hom for job, hom in homs.items()}
     record["hom"] = {
@@ -1392,6 +1583,274 @@ def summarize(loaded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "hom_moved": any(d is None or abs(d) > HOM_READING_POINTS for d in differences.values()),
     }
     return record
+
+
+def reference_hom() -> float:
+    """The HOM visibility in percent at which the reference tomography's job-00 was submitted."""
+    submission = json.loads((ROOT / TOMOGRAPHY_RUNS[0] / "submission.json").read_text(encoding="utf-8"))
+    return float(submission["perfs_at_plan"]["HOM (%)"])
+
+
+def hom_band(reference: float) -> tuple[float, float]:
+    """(lower, upper) HOM percent of the reference band; hom_admitted gives which ends are inclusive."""
+    return max(qd_platform.HOM_FLOOR, reference - HOM_READING_POINTS), reference + HOM_READING_POINTS
+
+
+def hom_admitted(hom: float, reference: float) -> bool:
+    """HOM strictly above qd_platform.HOM_FLOOR and within HOM_READING_POINTS of the reference, both ends inclusive."""
+    return hom > qd_platform.HOM_FLOOR and abs(hom - reference) <= HOM_READING_POINTS
+
+
+def hom_band_text(reference: float) -> str:
+    lower, upper = hom_band(reference)
+    if lower >= upper:
+        return "none"
+    opening = "<" if lower == qd_platform.HOM_FLOOR else "<="
+    return f"{lower:g} {opening} HOM <= {upper:g}"
+
+
+def submission_policy(job: str) -> dict[str, Any]:
+    reference = reference_hom()
+    return {
+        "platform": PLATFORM,
+        "credit_ceiling": round(PER_JOB_CREDITS + PRICE_PER_SHOT * JOB_SHOTS[job], 6),
+        "per_job_credits": PER_JOB_CREDITS,
+        "expected_seconds": EXPECTED_SECONDS,
+        "hom_percent": {
+            "above": qd_platform.HOM_FLOOR,
+            "reference": reference,
+            "reference_source": TOMOGRAPHY_HOM_LABEL,
+            "within_points_of_reference": HOM_READING_POINTS,
+            "admitted": hom_band_text(reference),
+        },
+        "statuses": "Explorer row and processor read available or running, while the token counts no running, no "
+        "queued and no running quantum-task job (qd_platform.require_token_capacity refuses a busy token at either "
+        "status)",
+        "live_read": "a processor read inside the submit lock, after the plan, equals the plan's perfs, connects "
+        f"source modes {list(tomo.SOURCES)}, and forecasts at least {MIN_ELIGIBLE} eligible events in every "
+        "setting's iteration at its max_shots",
+        "after": None
+        if job == JOBS[0]
+        else {
+            "job": JOBS[0],
+            "requires": f"a collected run of {JOBS[0]} that completed with {ITERATIONS} bound iterations, none "
+            f"uncounted, each with at least {MIN_ELIGIBLE} eligible events",
+        },
+    }
+
+
+def predecessor_decisive(loaded: Mapping[str, Any]) -> None:
+    """Refuse unless a loaded job-00 run completed with every iteration bound and above the eligible-event floor."""
+    eligible = [sum(t["eligible"]) for t in loaded["tallies"]]
+    require(loaded["job"] == JOBS[0], f"the predecessor run is {loaded['job']}, not {JOBS[0]}")
+    require(loaded["status"] == "completed", f"{JOBS[0]} reads {loaded['status']!r}, not completed")
+    require(
+        len(eligible) == ITERATIONS and loaded["uncounted"] == 0,
+        f"{JOBS[0]} bound {len(eligible)} of {ITERATIONS} iterations with {loaded['uncounted']} uncounted",
+    )
+    require(min(eligible) >= MIN_ELIGIBLE, f"{JOBS[0]} has an iteration of {min(eligible)} eligible events")
+
+
+def admit(job: str, planned: Mapping[str, Any], reference: float, predecessor: Mapping[str, Any] | None) -> None:
+    """Refuse a fresh plan that leaves the job's submission policy; raises qd_platform.PlatformError."""
+    try:
+        policy = submission_policy(job)
+        require(planned["case"] == job and planned["platform"] == PLATFORM, f"the plan names {planned['case']}")
+        for key in ("credit_ceiling", "per_job_credits", "expected_seconds"):
+            require(
+                abs(float(planned[key]) - float(policy[key])) <= TOLERANCE,
+                f"{job}: the plan's {key} {planned[key]!r} is not {policy[key]!r}",
+            )
+        read = (planned.get("perfs_at_plan") or {}).get("HOM (%)")
+        if isinstance(read, bool) or not isinstance(read, int | float) or not math.isfinite(read):
+            raise RuntimeError(f"{job}: the plan reads HOM {read!r}")
+        hom = float(read)
+        require(
+            planned.get("perfs_at_estimate") == planned["perfs_at_plan"],
+            f"{job}: the shot estimate read other processor perfs than the plan's",
+        )
+        require(
+            hom_admitted(hom, reference),
+            f"{job}: HOM {hom:g} % is outside {hom_band_text(reference)!r}, the band above "
+            f"{qd_platform.HOM_FLOOR:g} % and within {HOM_READING_POINTS:g} point of the reference tomography's "
+            f"{reference:g} %",
+        )
+        statuses = planned["status_at_plan"]
+        require(all(statuses.get(k) in SUBMIT_STATUSES for k in ("explorer", "processor")), f"{job}: status {statuses}")
+        counters = planned["availability_at_plan"]
+        require(
+            all(type(counters.get(key)) is int and counters[key] == 0 for key in IDLE_COUNTERS),
+            f"{job}: this token holds jobs: {counters}",
+        )
+        if job != JOBS[0]:
+            require(predecessor is not None, f"{job} requires the collected {JOBS[0]} run (--after RUN)")
+            predecessor_decisive(predecessor or {})
+    except (RuntimeError, ValueError, KeyError, TypeError) as error:
+        raise qd_platform.PlatformError(str(error)) from None
+
+
+def eligible_floor(job: str, perfs: Mapping[str, Any]) -> float:
+    """The fewest eligible events any setting's iteration of job is forecast to collect under perfs, in the
+    false-alarm variant: an iteration ends at SAMPLES_PER_ITERATION samples or at the job's max_shots, a shot being
+    an attempt with at least one click (the expected_by_setting rule of forecast)."""
+    figures = tomo.perf_figures(perfs)
+    dark = list(perfs["Dark counts (detection/s)"])
+    least = math.inf
+    bases = base_settings()
+    computed = ordered_map(forecast_setting, [(row, figures, dark) for row in bases], min_items=1)
+    for row, result in zip(bases, computed, strict=True):
+        entry = result[FALSE_ALARM_VARIANT]
+        samples = min(
+            float(SAMPLES_PER_ITERATION),
+            JOB_SHOTS[job] * entry["sample_probability"] / entry["any_click_probability"],
+        )
+        events = samples * sum(entry["eligible_probabilities"]) / entry["sample_probability"]
+        # min() keeps its left operand against NaN, so a non-finite forecast is refused rather than skipped.
+        require(math.isfinite(events), f"{row['name']}: the live forecast is {events!r} eligible events")
+        least = min(least, events)
+    return least
+
+
+def live_accuracy(job: str, planned: Mapping[str, Any], processor: Mapping[str, Any]) -> float:
+    """Refuse unless a processor read taken after the plan carries the plan's perfs (so the payload's own read,
+    between the two, saw the calibration the policy checked), connects tomo.SOURCES, and forecasts at least
+    MIN_ELIGIBLE eligible events per iteration; returns that floor."""
+    perfs = qd_platform.scrub(processor.get("perfs") or {})
+    require(perfs == planned["perfs_at_plan"], f"{job}: the processor perfs moved after the plan read")
+    connected = (processor.get("specs") or {}).get("connected_input_modes") or []
+    require(all(mode in connected for mode in tomo.SOURCES), f"{job}: modes {tomo.SOURCES} are not all in {connected}")
+    floor = eligible_floor(job, perfs)
+    require(floor >= MIN_ELIGIBLE, f"{job}: a setting is forecast {floor:.0f} eligible events, below {MIN_ELIGIBLE}")
+    return floor
+
+
+def reference_record() -> dict[str, Any]:
+    path = ROOT / TOMOGRAPHY_RUNS[0] / "submission.json"
+    return {"hom": reference_hom(), "submission_sha256": qd_platform.sha256_bytes(path.read_bytes())}
+
+
+def predecessor_record(loaded: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if loaded is None:
+        return None
+    return {"submitted_utc": loaded["submitted_utc"], "sha256": qd_platform.sha256_bytes(canonical(loaded))}
+
+
+def canonical(value: Any) -> bytes:
+    return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
+
+
+def bind_reviewed(
+    job: str, planned: Mapping[str, Any], reviewed: Mapping[str, Any], context: Mapping[str, Any]
+) -> None:
+    """Refuse a fresh plan that differs from the admitted preflight the owner reviewed: in its case digest, its body
+    beyond the process_id Perceval draws afresh for every job, its processor perfs (the calibration reviewed), or the
+    reference tomography and predecessor run it was admitted against (context, from preflight_context)."""
+    require(
+        (reviewed.get("admission") or {}).get("admitted") is True, f"{job}: the retained preflight was not admitted"
+    )
+    require(reviewed.get("cases_sha256") == planned["cases_sha256"], f"{job}: the case changed since the preflight")
+    fresh, frozen = body_digest(planned["body"]), reviewed.get("body_sha256_without_process_id")
+    require(fresh == frozen, f"{job}: the planned body {fresh} differs from the preflight's {frozen}")
+    require(
+        reviewed.get("perfs_at_plan") == planned["perfs_at_plan"],
+        f"{job}: the processor perfs moved since the preflight",
+    )
+    for key in ("reference", "predecessor"):
+        require(reviewed.get(key) == context[key], f"{job}: the {key} differs from the preflight's")
+
+
+def preflight_context(predecessor: Mapping[str, Any] | None) -> dict[str, Any]:
+    return {"reference": reference_record(), "predecessor": predecessor_record(predecessor)}
+
+
+def require_manifest_policy(job: str) -> None:
+    """Refuse unless the retained manifest declares the policy the gate enforces: a reference or rule changed in
+    code without rebuilding cases.json would otherwise gate a request whose manifest states another policy."""
+    manifest = json.loads((FAMILY_DIR / job / "cases.json").read_text(encoding="utf-8"))
+    generated = json.loads(json.dumps(submission_policy(job)))
+    require(manifest.get("submission_policy") == generated, f"{job}: cases.json declares another submission policy")
+
+
+class PolicyGate:
+    """The policy checks of a plan: admit, then live_accuracy on a fresh processor read. It carries no submission
+    capability, so --preflight uses it and qd_platform.submit refuses it for a submit_wrapper case."""
+
+    def __init__(self, job: str, after: Path | None) -> None:
+        require_manifest_policy(job)
+        self.job = job
+        self.predecessor = None if after is None else load_run(after)
+        self.reference = reference_hom()
+        self.context = preflight_context(self.predecessor)
+
+    def check(self, planned: dict[str, Any]) -> None:
+        admit(self.job, planned, self.reference, self.predecessor)
+        try:
+            live_accuracy(self.job, planned, qd_platform.get(qd_platform.platform_route(PLATFORM)))
+        except (RuntimeError, KeyError, TypeError, ValueError) as error:
+            raise qd_platform.PlatformError(str(error)) from None
+
+    def __call__(self, planned: dict[str, Any]) -> None:
+        self.check(planned)
+
+
+class SubmissionGate(PolicyGate):
+    """The verify step qd_platform.submit runs, inside the submit lock, on the plan whose body it posts: the policy
+    checks and the binding to the admitted preflight, which it always requires. Its submit_wrapper attribute is the
+    capability qd_platform.submit requires of a case that names this wrapper."""
+
+    submit_wrapper = SUBMIT_WRAPPER
+
+    def __init__(self, job: str, after: Path | None, reviewed: Mapping[str, Any]) -> None:
+        super().__init__(job, after)
+        self.reviewed = reviewed
+
+    def __call__(self, planned: dict[str, Any]) -> None:
+        self.check(planned)
+        try:
+            bind_reviewed(self.job, planned, self.reviewed, self.context)
+        except (RuntimeError, KeyError, TypeError, ValueError) as error:
+            raise qd_platform.PlatformError(str(error)) from None
+
+
+def submit_job(job: str, approval: str, after: Path | None, send: bool) -> int:
+    """Without send, plan the job read-only, hold the plan to its policy and retain both as plan-read.json; with
+    send, submit it through qd_platform.submit with the policy and the binding to that admitted preflight as its verify
+    step."""
+    require(job in JOBS, f"{job} is not one of {JOBS}")
+    out = FAMILY_DIR / job
+    policy = submission_policy(job)
+    ceiling, seconds, statuses = float(policy["credit_ceiling"]), float(EXPECTED_SECONDS), ("running",)
+    if not send:
+        verify = PolicyGate(job, after)
+        planned = qd_platform.plan(out, PLATFORM, ceiling, seconds, PER_JOB_CREDITS, statuses)
+        try:
+            verify(planned)
+            admission: dict[str, Any] = {"admitted": True}
+        except qd_platform.PlatformError as error:
+            admission = {"admitted": False, "refusal": str(error)}
+        # The live read runs on its own as well, so a plan refused earlier (at HOM) still records the floor.
+        try:
+            processor = qd_platform.get(qd_platform.platform_route(PLATFORM))
+            live: dict[str, Any] = {"eligible_floor": live_accuracy(job, planned, processor), "refusal": None}
+        except (RuntimeError, KeyError, TypeError, ValueError) as error:
+            live = {"eligible_floor": None, "refusal": str(error)}
+        record = {
+            **qd_platform.plan_summary(planned),
+            "body_sha256_without_process_id": body_digest(planned["body"]),
+            "admission": admission,
+            "live_read": live,
+            **verify.context,
+            "planned_utc": qd_platform.now(),
+        }
+        qd_platform.write_json(out / "plan-read.json", record)
+        print(f"{job}: " + ("admitted" if admission["admitted"] else f"refused: {admission['refusal']}"))
+        return 0 if admission["admitted"] else 1
+    require(bool(approval.strip()), "--submit requires the owner's --approval text")
+    reviewed = json.loads((out / "plan-read.json").read_text(encoding="utf-8"))
+    verify = SubmissionGate(job, after, reviewed)
+    receipt = qd_platform.submit(out, PLATFORM, approval, ceiling, seconds, PER_JOB_CREDITS, statuses, verify=verify)
+    print(f"submitted {job}: {receipt['job_id']}")
+    return 0
 
 
 def build() -> int:
@@ -1404,6 +1863,10 @@ def build() -> int:
 
 
 def main() -> int:
+    # perceval.utils.persistent_data creates its job_group directory at first import without exist_ok; workers of
+    # parallel.ordered_map that import it concurrently in a fresh home race on that mkdir, which -W error raises.
+    import perceval  # noqa: F401
+
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--check", action="store_true")
@@ -1413,7 +1876,16 @@ def main() -> int:
     group.add_argument("--read", action="store_true", help="retain the live platform read")
     group.add_argument("--estimate", action="store_true", help="retain Perceval's shot estimate")
     group.add_argument("--analyze", nargs="+", metavar=("OUT.json", "RUN"))
+    group.add_argument("--preflight", choices=JOBS, help="plan the job read-only and hold it to its policy")
+    group.add_argument("--submit", choices=JOBS, help="submit the job once under --approval")
+    parser.add_argument("--approval", default="", help="the owner's approval text for --submit")
+    parser.add_argument("--after", type=Path, help="the collected job-00 run that job-01 requires")
     args = parser.parse_args()
+    if args.preflight or args.submit:
+        try:
+            return submit_job(args.preflight or args.submit, args.approval, args.after, send=bool(args.submit))
+        except (RuntimeError, qd_platform.PlatformError) as error:
+            raise SystemExit(f"refused: {error}") from None
     if args.build:
         return build()
     if args.forecast:

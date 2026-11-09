@@ -1,0 +1,194 @@
+{
+ "machine_name": "build host",
+ "build": "source build of upstream main 888042c (python-numpy-quaddtype-git)",
+ "numpy_quaddtype": "1.0.0.r111.g888042c",
+ "python": "3.14.9",
+ "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+ "machine": "x86_64",
+ "cpu": "AMD Ryzen 5 5600X3D 6-Core Processor",
+ "numpy": "2.5.4",
+ "quadblas": "QBLAS 1.5.0 (dispatch: avx2)",
+ "threads": 12,
+ "cases": {
+  "column-slice vector @ sub-block (reported)": {
+   "left": [
+    [
+     6
+    ],
+    [
+     96
+    ],
+    false
+   ],
+   "right": [
+    [
+     6,
+     5
+    ],
+    [
+     96,
+     16
+    ],
+    false
+   ],
+   "view": true,
+   "contiguous": true
+  },
+  "sub-block.T @ column-slice vector": {
+   "left": [
+    [
+     5,
+     6
+    ],
+    [
+     16,
+     96
+    ],
+    false
+   ],
+   "right": [
+    [
+     6
+    ],
+    [
+     96
+    ],
+    false
+   ],
+   "view": true,
+   "contiguous": true
+  },
+  "row-reversed matrix @ matrix": {
+   "left": [
+    [
+     8,
+     4
+    ],
+    [
+     -96,
+     16
+    ],
+    false
+   ],
+   "right": [
+    [
+     4,
+     6
+    ],
+    [
+     96,
+     -16
+    ],
+    false
+   ],
+   "view": true,
+   "contiguous": true
+  },
+  "every-other-row vector @ matrix": {
+   "left": [
+    [
+     4
+    ],
+    [
+     192
+    ],
+    false
+   ],
+   "right": [
+    [
+     4,
+     5
+    ],
+    [
+     192,
+     16
+    ],
+    false
+   ],
+   "view": true,
+   "contiguous": true
+  },
+  "transpose @ matrix": {
+   "left": [
+    [
+     6,
+     8
+    ],
+    [
+     16,
+     96
+    ],
+    false
+   ],
+   "right": [
+    [
+     8,
+     6
+    ],
+    [
+     96,
+     16
+    ],
+    true
+   ],
+   "view": true,
+   "contiguous": true
+  },
+  "sub-block @ sub-block.T": {
+   "left": [
+    [
+     4,
+     4
+    ],
+    [
+     96,
+     16
+    ],
+    false
+   ],
+   "right": [
+    [
+     4,
+     4
+    ],
+    [
+     16,
+     96
+    ],
+    false
+   ],
+   "view": true,
+   "contiguous": true
+  },
+  "contiguous rows @ contiguous rows (control)": {
+   "left": [
+    [
+     6,
+     6
+    ],
+    [
+     96,
+     16
+    ],
+    true
+   ],
+   "right": [
+    [
+     6,
+     6
+    ],
+    [
+     96,
+     16
+    ],
+    true
+   ],
+   "view": true,
+   "contiguous": true
+  }
+ },
+ "empty_inner_dimension": {
+  "vector (0,) @ (0, 2)": true,
+  "matrix (3, 0) @ (0, 2)": true
+ }
+}

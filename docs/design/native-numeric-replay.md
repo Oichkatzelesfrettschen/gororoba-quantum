@@ -24,6 +24,9 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
   (Zen 3, no AVX-512) shards, one Intel 8573C and one AMD 9V45; other runs drew Intel 8370C and AMD 9V74.
 - SDE runs about 30 times slower than native (dose decisions 147 s against about 5 s), and its cache
   sizes and core count are the host's.
+- Thread count alone moves native bits: the Ascella CZ ensemble's float64 least-squares prediction took four
+  different values at OpenBLAS threads 1, 2, 4, 6 and 10 on the build host, up to 1.1e-15 apart
+  ([least-squares precision](../evidence/least-squares-precision/README.md)).
 - ci/gates.json declares 101 replay roots across 86 gates, of which three gates run `ci/replay_check.py`;
   634 of the 676 ledger records sit in the quantum-experiment case directory.
 
@@ -48,7 +51,14 @@ contract: exact bytes within an identity, exact decisions and bounded floats acr
    a bound that reaches the margin fails closed.
 6. Each audit reports, per record and identity, the exact, bounded, skipped and stale coverage with
    the last success time; a skip never counts as a pass.
-7. Intel SDE serves as a scheduled transfer check for named Intel identities after a real-chip
+7. A producer may take its computation out of the identity question: when each float it writes is certified as the
+   correct rounding of a rigorous enclosure (an arb ball every point of which rounds to that float64) computed from
+   its inputs, the record replays byte for byte on every identity that produces the same input bits. The record
+   carries digests of those inputs, since float64 libm and BLAS calls still produce them; across identities the
+   replay compares the floats within their bound as item 4 requires and reports a moved digest rather than failing
+   on it. `tomography_prediction` of `scripts/ascella_cz_ensemble_case.py` writes its floats this way
+   ([least-squares precision](../evidence/least-squares-precision/README.md)).
+8. Intel SDE serves as a scheduled transfer check for named Intel identities after a real-chip
    comparison has shown agreement, and as a diagnostic; it stays off the pull-request lane, whose
    affected gates run within 15 measured seconds.
 
