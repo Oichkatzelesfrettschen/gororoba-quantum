@@ -48,6 +48,24 @@ Pooling decomposes into four levels, and only the first three work across these 
    inbound connection to export a block device. A job larger than one machine needs a larger machine, a smaller
    formulation, or a block decomposition of level 3.
 
+## Fitting a computation to one Kaggle session
+
+A Kaggle CPU session ends at 12 hours. A Singular standard basis keeps no usable partial state, so a job that the session
+cuts off loses all of its work. The A_5 kernels (`docs/evidence/a5-exceptional-fibers/vb-export-levers/kaggle/runner.py`,
+`docs/evidence/a5-char0-transfer/kaggle/runner.py`) are scoped in three steps:
+
+1. **Estimate from a measured rate.** Start from the job's time on the Windows workstation laptop and multiply by about 1.6
+   for the Kaggle Xeon at 2.2 GHz, which ran Singular about 1.6 times slower in the passagemath build comparison of the
+   placement memory. Example: the VB degree-7 N = 22 export took 16,146 s on the laptop, so about 26,000 s (7.2 h) on
+   Kaggle. A job whose estimate exceeds about 11 h goes to the laptop, or splits into independent pieces (one prime, one
+   N or one relation block per kernel).
+2. **Pack sessions.** A session holds four cores and 30 GB, and five CPU sessions run at once. The runner keeps four jobs
+   in flight, and every job's memory comes from its laptop peak.
+3. **End inside the limit.** Every job's deadline is the smaller of its own limit and the session time left before
+   12 h less 20 minutes. `summary.json` is rewritten after every finished job, together with the names of the pending
+   ones. The kernel exits 1 when any job failed or is still pending. A session that ends early therefore keeps every
+   finished result, and a cut-off job reads as failed, never as done.
+
 ## Installing the tools on each substrate
 
 | Tool | Build host | Kaggle, GitHub Actions, Azure VM |
