@@ -14,6 +14,8 @@
    "clipped_throughput_part": 566.2689777081634,
    "clipped_shape_part": 2567.79505546001,
    "clipped_identity_gap": 0.0,
+   "total_count_pearson": 565.2314990635401,
+   "median_relative_total_deviation": 0.05304830771062763,
    "top_settings": [
     {
      "setting": "in-11-ZZ",
@@ -977,6 +979,8 @@
   },
   "implied_share_error": {
    "rms": 0.01296114305897812,
+   "rms_projected_center": 0.02750816526589827,
+   "rms_leave_cell_out_center": 0.032134286030245325,
    "by_predicted_share": {
     "extreme": {
      "cells": 154,
@@ -1154,6 +1158,8 @@
    "clipped_throughput_part": 2413.763246654584,
    "clipped_shape_part": 26997.68998511922,
    "clipped_identity_gap": 0.0,
+   "total_count_pearson": 2434.131332381719,
+   "median_relative_total_deviation": 0.030680767211466786,
    "top_settings": [
     {
      "setting": "in-00-ZY",
@@ -2117,6 +2123,8 @@
   },
   "implied_share_error": {
    "rms": 0.01635703089132471,
+   "rms_projected_center": 0.02867047862266111,
+   "rms_leave_cell_out_center": 0.030716367359453094,
    "by_predicted_share": {
     "extreme": {
      "cells": 154,
@@ -2281,8 +2289,11 @@
  },
  "model_check_forecast": {
   "event_scale": 6.100656868298403,
-  "linear_forecast_ratio": 1.3384838562286825,
-  "split_forecast_ratio": 4.520571753779692,
+  "reference_mean_growth": 7.895497435913383,
+  "retained_share_of_reference_mean": 0.6953777368063281,
+  "linear_excess_scaling_ratio": 1.3384838562286825,
+  "split_whole_statistic_scaling_ratio": 4.520571753779692,
+  "clip_aware_whole_statistic_scaling_ratio": 4.310597399811523,
   "observed_ratio": 5.725627730628404
  },
  "cross_run": {
@@ -2313,14 +2324,21 @@
    "below_one_expected_ratio": 55.74180724903959,
    "at_least_one_expected_ratio": 5.728981215365616
   },
-  "tomography_pearson_growth": {
-   "below_one_expected_ratio": 48.384304958682634,
-   "at_least_one_expected_ratio": 5.847213486553997
-  },
   "bit_flip_after_source_model": {
    "pearson_r": 0.30596540894340274,
    "spearman_r": 0.25662876227324766
   },
-  "shared_compilation_seeds": 0
+  "shared_compilation_seeds": 0,
+  "tomography_pearson_growth": {
+   "low_cells": {
+    "retained": 32,
+    "band": 34,
+    "common": 11
+   },
+   "own_class_low_ratio": 48.384304958682634,
+   "own_class_high_ratio": 5.847213486553999,
+   "common_low_ratio": 44.463765722061346,
+   "common_high_ratio": 5.920809955193074
+  }
  }
 }

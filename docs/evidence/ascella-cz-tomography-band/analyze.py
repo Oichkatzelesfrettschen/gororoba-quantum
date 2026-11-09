@@ -9,9 +9,12 @@ output is deterministic (no random draw).
 The sectors:
 
 * Pearson split: the case's Pearson statistic (scripts/ascella_cz_tomography_reference_case.py ``pearson``) by
-  cells whose linear-inversion prediction is below one event, and the clipped statistic split exactly into
-  per-setting throughput (T - C)^2 / C and within-setting shape sum (n - T p)^2 / E, with E the clipped expected
-  cells, C their sum, T the observed total and p = E / C; the cross term vanishes because sum (n - T p) = 0.
+  cells whose linear-inversion prediction is below one event. The case's statistic centers each cell on its
+  expected count E and divides by max(E, 1); no exact throughput/shape split of it exists, because a weighted
+  projection onto each setting's expected vector is dominated by the negative-E cells the clip leaves at weight E^2.
+  Two exact splits of nearby statistics stand in: per-setting event totals against the fit's totals, sum over
+  settings of (T - S)^2 / S with S the unclipped expected total; and the clipped-center statistic, centered and
+  divided by C = max(E, 1), split into throughput (T - sum C)^2 / sum C and within-setting shape.
 * Z sector: CZ is diagonal, so for a two-photon event a qubit read out in Z keeps its prepared Z population whatever
   the photon overlap. Multiphoton emission, loss, threshold postselection and dark clicks admit eligible events that
   are not two-photon events and move those populations, so ``source_model_z`` predicts them per setting through the
@@ -111,6 +114,8 @@ def pearson_split(data: dict[str, np.ndarray]) -> dict[str, Any]:
         "clipped_throughput_part": float(throughput.sum()),
         "clipped_shape_part": float(shape.sum()),
         "clipped_identity_gap": float(((n - clipped) ** 2 / clipped).sum() - throughput.sum() - shape.sum()),
+        "total_count_pearson": float(((total - expected.sum(1)) ** 2 / expected.sum(1)).sum()),
+        "median_relative_total_deviation": float(np.median(np.abs(total / expected.sum(1) - 1.0))),
         "top_settings": [
             {"setting": ROWS[s]["name"], "pearson": float(cells[s].sum()), "share": float(cells[s].sum() / cells.sum())}
             for s in order[:5]
@@ -192,41 +197,96 @@ def source_model_z(data: dict[str, np.ndarray], perfs: dict[str, Any], overlap: 
     return out
 
 
-def model_check_forecast(band: dict[str, Any], retained: dict[str, Any], split: dict[str, Any]) -> dict[str, Any]:
-    """The band pair's model-check ratio forecast from the retained pair at a fixed relative error per cell. A cell
-    whose expected count is at least one contributes N delta^2 / p, linear in the events N; a cell whose expectation
-    the statistic clips to one event contributes (n - E)^2, quadratic in N. The linear forecast scales the retained
-    excess over its reference mean by the event ratio; the split forecast scales the retained clipped cells by its
-    square and the rest by the ratio, over the band reference mean."""
+def model_check_forecast(
+    band: dict[str, Any], retained: dict[str, Any], split: dict[str, Any], data: dict[str, np.ndarray]
+) -> dict[str, Any]:
+    """Scalings of the retained pair's model-check statistic to the band pair's events, each over the band reference
+    mean. None is a calibrated forecast: the retained statistic is mostly acquisition scatter (its reference mean),
+    and every scaling here except the linear one carries that scatter as if it were systematic. The linear scaling
+    multiplies the retained excess over its reference mean by the event ratio; the split scaling multiplies the
+    retained cells below one expected event by its square and the rest by the ratio; the clip-aware scaling
+    multiplies every retained count and expectation by the ratio and rescores them with the case's clip. The
+    reference mean's own growth shows the clip inflating acquisition scatter faster than the events."""
     scale = band["mean_events_per_rate"] / retained["mean_events_per_rate"]
     reference = band["reference_mean"]
     excess = retained["pearson"] - retained["reference_mean"]
     low = split["pearson_in_those_cells"]
+    n, shots, cell_scale = data["eligible"], data["shots"], data["scale"]
+    rates = TOMO.absolute_rates(n, shots, cell_scale)
+    expected = (TOMO.design_matrix() @ (TOMO.design_pseudoinverse() @ rates)).reshape(n.shape)
+    expected = expected * shots[:, None] / cell_scale[:, None]
+    rescored = float(((scale * n - scale * expected) ** 2 / np.maximum(scale * expected, 1.0)).sum())
     return {
         "event_scale": scale,
-        "linear_forecast_ratio": (reference + scale * excess) / reference,
-        "split_forecast_ratio": (scale**2 * low + scale * (split["pearson"] - low)) / reference,
+        "reference_mean_growth": reference / retained["reference_mean"],
+        "retained_share_of_reference_mean": retained["reference_mean"] / retained["pearson"],
+        "linear_excess_scaling_ratio": (reference + scale * excess) / reference,
+        "split_whole_statistic_scaling_ratio": (scale**2 * low + scale * (split["pearson"] - low)) / reference,
+        "clip_aware_whole_statistic_scaling_ratio": rescored / reference,
         "observed_ratio": band["ratio"],
     }
 
 
+def share_excess(n: np.ndarray, q: np.ndarray) -> float:
+    total = n.sum(1, keepdims=True)
+    value = float(np.mean((n / total - q) ** 2 - q * (1 - q) / total))
+    return float(np.sqrt(max(value, 0.0)))
+
+
 def implied_share_error(data: dict[str, np.ndarray]) -> dict[str, Any]:
-    """The RMS per-setting error of an eligible-outcome share beyond binomial, in the units of the qpu:belenos
-    per-seed share spread (strategy.md section 7): sqrt(mean over cells of (f - q)^2 - q (1 - q) / N), with f the
-    measured conditional share, q the clipped linear-inversion prediction and N the setting's eligible events."""
+    """The RMS per-setting error of an eligible-outcome share beyond binomial, sqrt(mean over cells of (f - q)^2 -
+    q (1 - q) / N), with f the measured conditional share and N the setting's eligible events, about three centers q:
+    the in-sample linear-inversion prediction (clipped at zero), which absorbs part of the error it measures; the
+    prediction of the projection onto physical maps; and the leave-one-cell-out prediction of the linear inversion.
+    A setting cannot be left out whole (the design loses rank), so no center is fully out of sample, and the spread
+    over centers bounds what the residual says about a physical per-seed scale."""
     n, shots, scale = data["eligible"], data["shots"], data["scale"]
     rates = TOMO.absolute_rates(n, shots, scale)
-    predicted = np.clip((TOMO.design_matrix() @ (TOMO.design_pseudoinverse() @ rates)).reshape(n.shape), 0.0, None)
-    q = predicted / predicted.sum(1, keepdims=True)
+    design, inverse = TOMO.design_matrix(), TOMO.design_pseudoinverse()
+
+    def shares(prediction: np.ndarray) -> np.ndarray:
+        clipped = np.clip(prediction.reshape(n.shape), 0.0, None)
+        return clipped / clipped.sum(1, keepdims=True)
+
+    fitted = design @ (inverse @ rates)
+    choi = TOMO.estimate_rates(rates)["projected_choi"]
+    projected = design @ np.array([np.real(np.trace(b @ choi)) for b in TOMO.hermitian_basis()])
+    deleted = rates - (rates - fitted) / (1.0 - np.diag(design @ inverse))
+    q = shares(fitted)
     total = n.sum(1, keepdims=True)
-    f = n / total
-    excess = float(np.mean((f - q) ** 2 - q * (1 - q) / total))
     by_class = {}
     for name, (lo, hi) in {"extreme": (0.0, 0.15), "middle": (0.15, 0.85), "upper": (0.85, 1.01)}.items():
         mask = (q >= lo) & (q < hi)
-        value = float(np.mean(((f - q) ** 2 - q * (1 - q) / total)[mask]))
+        value = float(np.mean(((n / total - q) ** 2 - q * (1 - q) / total)[mask]))
         by_class[name] = {"cells": int(mask.sum()), "rms": float(np.sqrt(max(value, 0.0)))}
-    return {"rms": float(np.sqrt(max(excess, 0.0))), "by_predicted_share": by_class}
+    return {
+        "rms": share_excess(n, q),
+        "rms_projected_center": share_excess(n, shares(projected)),
+        "rms_leave_cell_out_center": share_excess(n, shares(deleted)),
+        "by_predicted_share": by_class,
+    }
+
+
+def tomography_cell_growth(retained: dict[str, np.ndarray], band: dict[str, np.ndarray]) -> dict[str, Any]:
+    """Band-over-retained growth of the case's Pearson cells, on each pair's own below-one-expected cells and on the
+    cells in the same class in both pairs (the class is set per pair, so own-class sums compare different cells)."""
+
+    def cells(data: dict[str, np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
+        n, shots, scale = data["eligible"], data["shots"], data["scale"]
+        rates = TOMO.absolute_rates(n, shots, scale)
+        e = (TOMO.design_matrix() @ (TOMO.design_pseudoinverse() @ rates)).reshape(n.shape)
+        e = e * shots[:, None] / scale[:, None]
+        return (n - e) ** 2 / np.maximum(e, 1.0), e < 1.0
+
+    (ca, la), (cb, lb) = cells(retained), cells(band)
+    both_low, both_high = la & lb, ~la & ~lb
+    return {
+        "low_cells": {"retained": int(la.sum()), "band": int(lb.sum()), "common": int(both_low.sum())},
+        "own_class_low_ratio": float(cb[lb].sum() / ca[la].sum()),
+        "own_class_high_ratio": float(cb[~lb].sum() / ca[~la].sum()),
+        "common_low_ratio": float(cb[both_low].sum() / ca[both_low].sum()),
+        "common_high_ratio": float(cb[both_high].sum() / ca[both_high].sum()),
+    }
 
 
 def rail_ratios(data: dict[str, np.ndarray]) -> dict[str, Any]:
@@ -417,12 +477,6 @@ def cross_run(found: dict[str, dict[str, Any]], laws: tuple[np.ndarray, np.ndarr
         "below_one_expected_ratio": lb / la,
         "at_least_one_expected_ratio": hb / ha,
     }
-    pa_, pb_ = found["retained"]["pearson_split"], found["band"]["pearson_split"]
-    out["tomography_pearson_growth"] = {
-        "below_one_expected_ratio": pb_["pearson_in_those_cells"] / pa_["pearson_in_those_cells"],
-        "at_least_one_expected_ratio": (pb_["pearson"] - pb_["pearson_in_those_cells"])
-        / (pa_["pearson"] - pa_["pearson_in_those_cells"]),
-    }
     ra, rb = found["retained"]["source_model_z"]["bit_flip"], found["band"]["source_model_z"]["bit_flip"]
     out["bit_flip_after_source_model"] = {
         "pearson_r": float(np.corrcoef(ra["residual"], rb["residual"])[0, 1]),
@@ -438,8 +492,9 @@ def main(argv: list[str]) -> int:
         raise SystemExit("usage: analyze.py OUT.json")
     laws = pattern_laws()
     found: dict[str, dict[str, Any]] = {}
+    datasets: dict[str, dict[str, np.ndarray]] = {}
     for name, spec in pairs_of_runs().items():
-        data = tallies(spec)
+        data = datasets[name] = tallies(spec)
         patterns = two_click_patterns(laws, spec["runs"])
         perfs = CASE.plan_reads([spec["loader"](ROOT / run) for run in spec["runs"]])
         patterns["g2_aware"] = g2_pattern_overlap(spec["runs"], perfs, patterns["efficiency_relative_to_C0"], G2_GRID)
@@ -460,8 +515,10 @@ def main(argv: list[str]) -> int:
         json.loads((ROOT / BAND_ANALYSIS).read_text(encoding="utf-8"))["overlap_estimates"]["overdispersion"],
         json.loads((ROOT / RETAINED_VERDICTS).read_text(encoding="utf-8"))["overlap_estimates"]["overdispersion"],
         found["retained"]["pearson_split"],
+        datasets["retained"],
     )
     found["cross_run"] = cross_run(found, laws)
+    found["cross_run"]["tomography_pearson_growth"] = tomography_cell_growth(datasets["retained"], datasets["band"])
     Path(argv[0]).write_text(json.dumps(found, indent=1, allow_nan=False) + "\n", encoding="utf-8")
     return 0
 
