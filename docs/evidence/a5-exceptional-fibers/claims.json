@@ -2019,7 +2019,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -2128,7 +2129,31 @@
      "d": 6,
      "k2_count": 665,
      "lower_bounds": [],
-     "status": "open"
+     "status": "certified",
+     "transported_from": {
+      "G_signs": [
+       1,
+       1,
+       1,
+       1,
+       1,
+       1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1,
+       -1
+      ],
+      "fiber": "X-",
+      "flip": [
+       "t9"
+      ],
+      "witness": "witnesses.jsonl"
+     }
     }
    ],
    "fiber": "X+",
@@ -2363,7 +2388,8 @@
     2,
     3,
     4,
-    5
+    5,
+    6
    ],
    "degrees": [
     {
@@ -2443,8 +2469,18 @@
     {
      "d": 6,
      "k2_count": 665,
-     "lower_bounds": [],
-     "status": "open"
+     "lower_bounds": [
+      {
+       "N": 22,
+       "engine": "7849cbc71ccf1787",
+       "header": "98de6225b05399df",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 665,
+       "source": "xm-lown/xmnm_d6_n22_p32029.json"
+      }
+     ],
+     "status": "certified"
     }
    ],
    "fiber": "X-",

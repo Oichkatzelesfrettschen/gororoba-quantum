@@ -63,3 +63,7 @@ Result (2026-11-09, laptop, `run-xm-d6.sh` sha256 f398afb2875f7950..., engine v1
 r_22 = 665 = HF(k[y]/K2, 6) certifies h_6 = 665 for X- at p = 32009 (A5-167) and, by the X sign isomorphism, for X+
 (A5-155). The last jump 169 splits 49 / 42 / 39 / 39 (A5-244), and the ladder closes at N = 22 = floor(7 * 6 / 2) + 1
 after the plateau r_20 = r_21: the closing-order hypothesis survives its first out-of-sample test.
+
+At p = 32029 (`run-xm-d6-p2.sh`, header `../working/build/inputs/p32029-r9115/xm-nm.sing`, [`xm6p2.events`](xm6p2.events)):
+r_21 = 496 (132 / 136 / 114 / 114, 1,108 s, 4.7 GiB) and r_22 = 665 (181 / 178 / 153 / 153, 1,760 s, 5.6 GiB), the same
+ladder; h_6 = 665 for X- (A5-173) and X+ (A5-161) at the second prime.
