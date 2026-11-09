@@ -1,9 +1,9 @@
 {
- "machine_name": "vostro",
- "build": "PyPI wheel on CachyOS python-numpy 2.5.3",
+ "machine_name": "turion-linux",
+ "build": "PyPI wheel on the distribution's python-numpy 2.5.3",
  "numpy_quaddtype": "1.0.0",
  "python": "3.14.7",
- "platform": "Linux-7.2.5-1-cachyos-x86_64-with-glibc2.44",
+ "platform": "Linux",
  "machine": "x86_64",
  "cpu": "AMD Turion(tm) 64 X2 Mobile Technology TL-66",
  "numpy": "2.5.3",

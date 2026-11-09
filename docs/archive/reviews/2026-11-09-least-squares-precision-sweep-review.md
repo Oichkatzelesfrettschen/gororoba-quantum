@@ -17,5 +17,5 @@ host rows in `docs/evidence/least-squares-precision/hosts/`, then the Advisor la
 | Nemotron: RLIMIT probe imports numpy before the map | Refuted | An enforced RLIMIT_AS refuses the cap plus 256 MiB map whatever numpy reserved |
 
 Owner ruling: `cap.bytes` stays, as the limit the run applied. Not run: the M1 npz receipt, a numpy 2.5.4 probe on the
-Turion host and a Windows rerun (remote hosts), and a per-child cgroup readback. Open for the owner: the
-`quad-falsification/` records on main carry machine names in file names and contents.
+Turion host and a Windows rerun (remote hosts), and a per-child cgroup readback. The four machine-named
+`quad-falsification/` records give way to successors under the sweep labels with the OS family only (owner ruling).

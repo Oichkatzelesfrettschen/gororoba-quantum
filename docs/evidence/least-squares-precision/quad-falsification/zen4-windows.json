@@ -1,9 +1,9 @@
 {
- "machine_name": "alienware-windows",
+ "machine_name": "zen4-windows",
  "build": "PyPI wheel",
  "numpy_quaddtype": "1.0.0",
  "python": "3.14.9",
- "platform": "Windows-11-10.0.26300-SP0",
+ "platform": "Windows",
  "machine": "AMD64",
  "cpu": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
  "numpy": "2.5.4",

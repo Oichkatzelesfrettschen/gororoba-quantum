@@ -289,7 +289,7 @@ each label. A host that ran
   capability that `fp_host.quadblas_status` now probes, so a rerun on that wheel records skips. The retained rows
   predate the probe and stay as measured.
 - turion-linux (Turion 64 X2, SSE3 without SSSE3, SSE4 or POPCNT) is not run in this sweep. Its retained record
-  ([quad-falsification/vostro.json](quad-falsification/vostro.json)) is a numpy 2.5.3 run of the quaddtype matmul
+  ([quad-falsification/turion-linux.json](quad-falsification/turion-linux.json)) is a numpy 2.5.3 run of the quaddtype matmul
   test; a numpy 2.5.4 run on that CPU, and with it the expected SIGILL from a baseline above its instruction set, is
   `not run` and has no retained record.
 - Times rank the hosts only within a row. The build host shared its CPUs with other sessions' Singular jobs (load 1.9
