@@ -32,12 +32,17 @@ for its daily limit on 2026-11-09.
 
 | review finding | verdict | evidence and resolution |
 |---|---|---|
-| FATAL: the 0.919 marginal belongs to qubit 89, not qubit 90 | survives | `isa.qpy` maps qubit 90 to `g0_r2_c[1]` and qubit 89 to `g0_r2_c[3]` in `pub_02`; the raw `pub_02.json` gives P(1) 0.0831 and 0.9191 on those bits (recomputed). analysis-claude.md and check 4 of the literature report now state the channel as extreme and unfalsified; the reconciliation row above is marked refuted |
-| SERIOUS: Klimov's law is sigma(t) = 2 D t^(1/2), and a stochastic scale is no bound | survives | PDF p. 3 reads `σ(t) = 2Dt^½`. The scales are now 2.50, 5.00 and 18.4 MHz at 15 min, 1 h and 13.5 h, and 0.26 MHz at 10 s; the "bounded small" and "bounds drift" statements now leave inter-PUB drift an unmeasured alternative |
+| FATAL: the 0.919 marginal belongs to qubit 89, not qubit 90 | survives | `isa.qpy` maps qubit 90 to `g0_r2_c[1]` and qubit 89 to `g0_r2_c[3]` in `pub_02`; the raw `pub_02.json` gives P(1) 0.0831 and 0.9191 on those bits, and a per-PUB writer join over all twelve PUBs reproduces the review's qubit-90 marginals 0.048 to 0.119 (recomputed). analysis-claude.md and check 4 of the literature report now state the channel as extreme and unfalsified; the reconciliation row above is marked refuted |
+| SERIOUS: Klimov's law is sigma(t) = 2 D t^(1/2), and a stochastic scale is no bound | survives | PDF p. 3 gives the law sigma(t) = 2 D t^(1/2). The scales are now 2.50, 5.00 and 18.4 MHz at 15 min, 1 h and 13.5 h, and 0.26 MHz at 10 s; the "bounded small" and "bounds drift" statements now leave inter-PUB drift an unmeasured alternative |
 | SLOPPY: placement 2 enters the n64 decision total with weight 1/2 | survives | `block_weights` averages the two copies of each n64 block. analysis-claude.md now reports -0.057 of -0.531, -0.474 without placement 2 and -0.505 with its twin; at n128 -1.056 moves to -0.988. All stay outside their bands; no verdict changes |
 | SLOPPY: the file table overstated source inspection | survives | the table now distinguishes source-opened, note-only and unopened entries |
 | van der Schoot gives no platform-typical failure rate; the Thorbeck mapping is a hypothesis | survives | both sentences now say so |
 | SOUND: verdicts, rule counts, Tuna decision and 64D/128D evidence classes | survives | no claim in `docs/state/research_state.json` or `docs/evidence/pathion-kernel-map/README.md` changes |
+
+The Advisor confirmed every row of the second review: the Klimov arithmetic (2.50, 5.00, 18.37 and 0.2635 MHz) and the
+n64 weights (-0.474, -0.505; n128 -1.056 to -0.988) recompute, and it required the twelve-PUB writer join above, the
+paraphrased PDF locator and the removal of the withdrawn finding from the open-task table and the pull-request text,
+all done.
 
 The conjectures carried forward, each with its falsifier in review-codex.md and analysis-claude.md:
 - fez loss follows the qubits of placements 7 and 15, not block k28;

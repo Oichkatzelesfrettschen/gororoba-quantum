@@ -59,8 +59,8 @@ records read-only, and none has passed an independent check.
    `results/live/2026-11-07T153325.440007Z/collect.json` lists ibm_fez qubit 90 with a |1>-to-|0> flip of 0.835
    (readout error 0.417, six times the next worst of 68), while the planning record `record.json` of the same job lists
    the same qubit at readout error 0.0039. Qubit 90 belongs to placement 2 (qubits 89, 78, 88, 90). The routed circuit
-   `isa.qpy` (qiskit 2.6.2) assigns qubit 90 to `g0_r2_c[3]` in the first two PUBs and to `g0_r2_c[1]` in `pub_02`,
-   where qubit 89 writes `g0_r2_c[3]`. The mapped qubit-90 marginals range over P(1) = 0.048 to 0.119 in the twelve
+   `isa.qpy` (qiskit 2.6.2) assigns qubit 90 to `g0_r2_c[1]` in PUBs 2, 3, 8 and 9 and to `g0_r2_c[3]` in the other
+   eight; in `pub_02` qubit 89 writes `g0_r2_c[3]`. The mapped qubit-90 marginals range over P(1) = 0.048 to 0.119 in the twelve
    PUBs, inside the 0 to 0.165 that a 0.835 flip admits; the 0.919 marginal of `pub_02` bit 3 belongs to qubit 89. The
    data therefore leave the entry unfalsified. The corrected readings of placement 2 carry a standard error of 0.078
    (o128 block k8) and 0.066 (n128 block k8) on ibm_fez against 0.011 and 0.0083 on ibm_kingston, the inflation a
