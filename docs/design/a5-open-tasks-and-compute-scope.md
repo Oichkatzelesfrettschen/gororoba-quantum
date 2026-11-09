@@ -60,12 +60,18 @@ all.
 
 ### Running now
 
-| task | computation | host | measured basis | falsifier |
+| task | computation | host | state | falsifier |
 |---|---|---|---|---|
-| 118, 119 | `slimgb` against `std` for J + m^N, VB at p = 32009, N = 1 to 20 | laptop (`vbladder`, `vblevers`) | N = 13: same s bytes, kbase and tables, 66 s against 112 s; N = 15: 301 s against 562 s | a basis, kbase or table that differs, or a lost speedup at N = 18 to 20 |
-| 120 | engine v13 (`slimgb` export) on VB: the degree-5 validation at N = 15 passed (r = 255, blocks 75/50/65/65, 416 s); degree 7 at N = 21 and 22 at both primes | laptop (`vbd7`, deadline 24 h) | `std` at N = 22 extrapolated to 22,300 to 89,300 s ([plan](a5-vb-degree7-and-w8-char0-plan.md#where-the-time-goes-measured)), divided by the measured `slimgb` factor, which depends on host and load (2.9 to 3.9 on the laptop at N = 13 to 18, A5-280): an extrapolation | r_21 not 609, r_21 = 624, split not 7/8/0/0, r_22 below 624, or a degree-5 rank that differs from the record |
-| 122 | W8 check 3 at N = 16 over Q(i) | build host | N = 13 took 21:46 wall for the whole driver (114 s of it the Q(i) basis), 0.36 GiB | a denominator divisible by p, or a basis differing from the header's |
-| 103 | claims for the IBM 64D/128D wide-coset and Tuna 6-CZ acquisitions, and their implications for the Cayley-Dickson tower | own worktree, branch `claims/ibm-wide-coset-and-tuna-6cz` | | a claim citing a statistic no record holds |
+| 120 | engine v13 (`slimgb` export) on VB, degree 7 at N = 21 and 22, both primes | Windows workstation laptop (tmux `vbd7`, 24 h deadline) | the degree-5 validation at N = 15 passed (r = 255, blocks 75/50/65/65, 416 s); `std` at N = 22 extrapolates to 22,300 to 89,300 s ([plan](a5-vb-degree7-and-w8-char0-plan.md#where-the-time-goes-measured)), divided by the measured `slimgb` factor (2.9 to 3.9 on the laptop at N = 13 to 18, A5-280) | r_21 not 609, r_21 = 624, split not 7/8/0/0, or r_22 below 624 |
+| 120 (cross-check) | the same `slimgb` exports at N = 21 and 22, plus six variable rotations at N = 15 | Kaggle CPU, kernels `a5-vb-d7-slimgb-p32009` and `-p32029` | pushed before the runner exited 1 on failure: read `summary.json` (rc and RESULT lines) | a reduced basis whose sha256 differs from the laptop export |
+| 75, 121 | X- check 2 over Q(i), the direct `quadric_lift.py` | Kaggle CPU, kernel `a5-char0-xm-quadrics` | stopped on the build host at 2:11; the direct computation never finished in 3 h before | a Q(i) relation space whose dimension or reduction differs from K2 mod p |
+| 42 (X- degree 6) | X- check 3 at N = 22, `truncation_check.py` | Kaggle CPU, kernel `a5-char0-xm-truncation-n22` | stopped on the build host at 2:11 | a denominator divisible by p, or a basis differing from the header's |
+
+Done since the scope was first written:
+- 118 and 119: the `slimgb` ladder at N = 1 to 20 (A5-280), with a local `ds` ordering refuted (A5-285).
+- 122 (check 3 part): W8 J + m^16 reduces well (A5-277).
+- 56: the Iso planes sweep V(K2) at both primes (A5-284, pending review in task 133).
+- 103: the wide-coset and Tuna claims, reviewed.
 
 ### Item-6 deliverables (plan `a5-kernel-attachments`)
 
@@ -86,19 +92,21 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 
 | task | computation | host | estimate |
 |---|---|---|---|
-| 123 | linear-algebra export of k[t]/(J + m^N) at N = 15 | build host | unmeasured; compare against 420 s |
-| 124 (for 37) | jet-parameter arcs at the plane t1 = 0 and the apex of chart t7 | `lab-a1` or build host | chart t7 normalization took 451 s |
+| 123 | linear-algebra export of k[t]/(J + m^N) at N = 15 | Kaggle CPU | unmeasured; compare against 420 s |
+| 124 (for 37) | jet-parameter arcs at the plane t1 = 0 and the apex of chart t7 | `lab-a1` or Kaggle CPU | chart t7 normalization took 451 s |
 | 125 (for 110) | membership of the 91 degree-5 forms of E8-bar, by a sparse solver | laptop | unmeasured; the degree-2 receipt took 12,678 s |
-| 115 | exact torus over Q in the Klein centralizer, then a weighted dp order | build host | symbolic; the weighted std then runs at N = 15 and 18 |
-| 56 | Iso point-blowup plane pilot modeled on the W8 C30 certificate | `lab-a1` | one W8 plane took 45 to 52 s and 26 MiB |
+| 115 | exact torus over Q in the Klein centralizer, then a weighted dp order | Kaggle CPU or the laptop | symbolic; the weighted std then runs at N = 15 and 18 |
+| 133 | review of the Iso steps of the W8 C30 deduction (A5-284), then A5-007 and A5-067 to proved at F_p | the ultra review of PR 809 and the Advisor | |
+| 132 | `live_run` collector gate: refuse a readout channel that cannot emit the observed marginal (fez qubit 90) | code change with a fixture test | |
+| 134 | byte-reproducible serializer for the Tuna-17 one-CZ null analysis, as a versioned successor | code change | regeneration drifts by at most 1.78e-14 today |
 | variable-order screen | fixed dp permutations at N = 15 | Kaggle CPU sessions, one permutation each | about 420 s per permutation; reversed variables measured 1.81 times slower at N = 13 |
 | `degBound` lever | `slimgb` with `degBound = N` at N = 18 | laptop, after the degree-7 cells | byte-identical basis and 12 percent faster at N = 13, 33.5 percent at N = 15 (Codex final review) |
 
 ### Blocked on a measurement
 
-- 121, 75: the canonical degree-bounded system for check 2 on X-. It needs a sizing of its unknowns first, from the
-  maximum cofactor degree of the 32029 lift (277 MB of cofactor text).
-- 122: W8 check 2 waits on 121's route. The all-degree statement waits on the flatness of K2 over Z[i]_(p), the
+- 121, 75: if the direct Kaggle run does not finish, the canonical degree-bounded system for check 2 on X-, sized
+  first from the maximum cofactor degree of the 32029 lift (277 MB of cofactor text).
+- 122: W8 check 2 waits on the X- route. The all-degree statement waits on the flatness of K2 over Z[i]_(p), the
   affine-cone bridge and a transfer of A5-066.
 - 42: waits on 75 and 122.
 - 37: decided in favor only by a dominant arc family onto V(P1) (124). It is decided against by a degree >= 7 element
@@ -116,7 +124,6 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 
 ## Questions for the owner
 
-- Which paid-credit runs to place:
-  - the Azure credit, which lapses on 2026-11-23;
-  - the GCP credit, with its 12-vCPU cap.
-- Whether to duplicate the laptop's degree-7 cells on Kaggle CPU sessions as a cross-host check.
+- The Azure credit (lapses 2026-11-23): no recommended route needs more than 52 GB. Its candidate use is an FX4 (84 GB)
+  for a characteristic-0 check that hits Kaggle's 12-hour limit.
+- The GCP credit (12 vCPU across regions, to 2027-01-30): independent CPU batches.
