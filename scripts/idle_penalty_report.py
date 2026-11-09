@@ -727,11 +727,14 @@ def compare(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
             continue
         x = np.array([first["qubits"][q][key] for q in common])
         y = np.array([second["qubits"][q][key] for q in common])
-        r = float(np.corrcoef(x, y)[0, 1])
+        # A series with one repeated value has no correlation. np.ptp reads that exactly, where corrcoef divides
+        # the rounding residue of its centered values: 0/0 on one CPU's summation order, a spurious r on another's.
+        r = float(np.corrcoef(x, y)[0, 1]) if np.ptp(x) > 0 and np.ptp(y) > 0 else None
         band = median_interval(list(y / x))
         inside = STABLE_RATIO[0] <= band["low"] and band["high"] <= STABLE_RATIO[1]
         outside = band["high"] < STABLE_RATIO[0] or band["low"] > STABLE_RATIO[1]
-        verdict = "stable" if inside and r >= STABLE_CORRELATION else "drifted" if outside else "unresolved"
+        correlated = r is not None and r >= STABLE_CORRELATION
+        verdict = "stable" if inside and correlated else "drifted" if outside else "unresolved"
         out[key] = {"n": len(common), "pearson_r": r, "ratio": band, "verdict": verdict}
     return out
 
