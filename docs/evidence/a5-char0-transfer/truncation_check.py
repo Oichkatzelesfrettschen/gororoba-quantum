@@ -39,27 +39,27 @@ def _extra(order: int, slice_vars: list[str]) -> str:
     )
 
 
-def _basis(script: str, label: str) -> tuple[list[str], float]:
-    outcome = rees._run_singular(script, label, rc.TIMEOUT_SECONDS)
+def _basis(script: str, label: str, timeout: int) -> tuple[list[str], float]:
+    outcome = rees._run_singular(script, label, timeout)
     if outcome.status != "completed":
         raise SystemExit(f"{label}: {outcome.status} {outcome.diagnostic}")
     res = outcome.results
     return [res[f"rj_{i}"] for i in range(1, int(res["rj_count"]) + 1)], round(outcome.wall_nanoseconds / 1e9, 1)
 
 
-def check(slug: str, order: int) -> dict[str, Any]:
+def check(slug: str, order: int, timeout: int = rc.TIMEOUT_SECONDS) -> dict[str, Any]:
     body = rc._script(slug, None, rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
     first_header = (rc.HEADERS / f"p{rc.PRIMES[0][0]}-r{rc.PRIMES[0][1]}" / f"{slug}.sing").read_text(encoding="utf-8")
     ring_line = first_header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")].split(",")
-    qi_text, qi_wall = _basis(body + _extra(order, slice_vars) + "\nquit;\n", "truncation_qi")
+    qi_text, qi_wall = _basis(body + _extra(order, slice_vars) + "\nquit;\n", "truncation_qi", timeout)
     rows = []
     names: list[str] = []
     qi_polys: list[rc.Coefficients] = []
     for prime, root in rc.PRIMES:
         header = (rc.HEADERS / f"p{prime}-r{root}" / f"{slug}.sing").read_text(encoding="utf-8").replace("quit;", "")
         hd_text, hd_wall = _basis(
-            header + "\nideal ReducedJ=J;\n" + _extra(order, slice_vars) + "\nquit;\n", f"truncation_{prime}"
+            header + "\nideal ReducedJ=J;\n" + _extra(order, slice_vars) + "\nquit;\n", f"truncation_{prime}", timeout
         )
         if not names:
             names = rc.fiber_inputs._variables(qi_text)
@@ -105,8 +105,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--slug", required=True, choices=[spec.slug for spec in rc.fiber_inputs.SPECS])
     parser.add_argument("--order", required=True, type=int)
+    parser.add_argument("--timeout", type=int, default=rc.TIMEOUT_SECONDS, help="seconds per Singular call")
     arguments = parser.parse_args()
-    result = check(arguments.slug, arguments.order)
+    result = check(arguments.slug, arguments.order, arguments.timeout)
     out = HERE / f"truncation-{arguments.slug}-n{arguments.order}.json"
     out.write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=1))

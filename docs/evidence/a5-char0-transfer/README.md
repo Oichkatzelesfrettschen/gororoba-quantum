@@ -48,8 +48,8 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
 
 - [`truncation_check.py`](truncation_check.py) (check 3): the monic reduced standard basis of J + m^N over Q(i), m the
   ideal of the seven slice variables (the producer's ring still carries the presolve-eliminated t3 and t8), against the
-  same basis from the retained header at both primes. X- -> N- survives at N = 4, 8, 11 and 15, the closing orders of
-  degrees 1 to 4: 91, 366, 775 and 1,696 elements, integer coefficients, equal at both primes, a corrupted coefficient
+  same basis from the retained header at both primes. X- -> N- survives at N = 4, 8, 11, 15 and 18, the closing orders of
+  degrees 1 to 5: 91, 366, 775, 1,696 and 2,743 elements, integer coefficients, equal at both primes, a corrupted coefficient
   detected (`truncation-xm-nm-n<N>.json`; ledger A5-249). A first revision took m from the producer ring and read
   refuted on a basis of 2,566 elements against 366; its records were overwritten by the fixed run.
   W8 -> N- survives at N = 4, 7, 10 and 13 (d = 1 to 4): 183, 1,257, 5,009 and 14,761 elements (ledger A5-277).
