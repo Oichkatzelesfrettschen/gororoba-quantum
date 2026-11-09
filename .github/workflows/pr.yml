@@ -113,7 +113,7 @@ jobs:
       # forms of the coreutils; macOS ships neither, so Homebrew's flock and coreutils supply them. gnubin joins
       # PATH after pins-venv, because setup-python's macOS installer needs the BSD chmod. The macos-15 runner reads
       # the repository about twice as slowly as the Linux runners (the seed-provenance tests took up to 33.6 s
-      # there), so its call budget (tests/conftest.py) is 25 s.
+      # there), so its call-budget target (tests/conftest.py) is 25 s, failing a call past 37.5 s.
       - name: Install flock and GNU coreutils
         if: runner.os == 'macOS'
         run: |

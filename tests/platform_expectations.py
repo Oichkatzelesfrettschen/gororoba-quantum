@@ -35,23 +35,25 @@ EXPECTED: dict[str, tuple[frozenset[str], str]] = {
         MACOS,
         IDENTITY,
     ),
-    "tests/scripts/test_iqm_cancellation_probe.py::test_retained_garnet_analysis_replays": (MACOS, IDENTITY),
     "tests/gororoba_quantum/test_composite_placement.py::"
     "test_groups_without_per_placement_laws_plan_byte_identically[design_a]": (MACOS, IDENTITY),
     "tests/gororoba_quantum/test_composite_placement.py::"
     "test_groups_without_per_placement_laws_plan_byte_identically[design_c_8_1_4]": (MACOS, IDENTITY),
     "tests/scripts/test_ascella_physical_models.py::test_planted_heater_gain_is_recovered": (
         MACOS,
-        "L-BFGS-B ends ABNORMAL on the planted heater-gain fit under Accelerate",
+        "L-BFGS-B stops ABNORMAL in its line search 5.3e-9 from the planted gain (finite-difference gradient 0.19"
+        " at the optimum), and fit_parameters accepts only a reported convergence",
     ),
     "tests/test_msq_envelope.py::test_batched_brentq_replays_scipy_brentq": (
         MACOS,
-        "the batched root finder's points depart from SciPy's brentq sequence under Accelerate",
+        "after equal objective values the batched interpolation step and SciPy's compiled brentq step differ by 2 ulp"
+        " (row 15, point 3); hypothesis: the macOS arm64 SciPy build contracts that step into fused multiply-adds",
     ),
     "tests/scripts/test_bdsc_null_calibration.py::"
     "test_a_mutated_batched_path_differs_from_the_scalar_analyse[square-numpy_square]": (
         MACOS,
-        "under Accelerate the numpy_square mutant computes the same bits as the scalar analysis, so it goes unseen",
+        "macOS libm pow(x, 2.0) equals x * x on every value this test squares, so the numpy_square mutant is"
+        " equivalent there; both libms differ from x * x on about 0.1 percent of uniform inputs",
     ),
     "tests/gororoba_quantum/test_readout_actor_family.py::"
     "test_full_width_collection_includes_input_and_parsing_memory": (MACOS, PROC),

@@ -54,8 +54,19 @@ def pytest_xdist_auto_num_workers(config: pytest.Config) -> int:
     return parallel.workers()
 
 
+@pytest.hookimpl(tryfirst=True)
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    """Mark each test tests/platform_expectations.py lists for this platform as a strict expected failure."""
+    """Mark each test tests/platform_expectations.py lists for this platform as a strict expected failure.
+
+    The hook runs before -k and -m deselect anything, so a listed ID whose file was collected but which names no
+    collected test (renamed, removed or mistyped) stops the session instead of losing its marker in silence. A run
+    that names single tests (an argument holding "::") collects part of a file and skips that check."""
+    collected = {item.nodeid for item in items}
+    if not any("::" in str(argument) for argument in config.args):
+        files = {nodeid.partition("::")[0] for nodeid in collected}
+        stale = sorted(n for n in EXPECTED if n.partition("::")[0] in files and n not in collected)
+        if stale:
+            raise pytest.UsageError(f"tests/platform_expectations.py names tests that do not exist: {stale}")
     for item in items:
         expected = EXPECTED.get(item.nodeid)
         if expected is not None and PLATFORM in expected[0]:
