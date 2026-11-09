@@ -3,7 +3,13 @@ linear-inversion fit predicts below one event, measured and under mesh_variance_
 sigma 0, 0.011 and 0.034 (30 pairs each). It asks whether an isotropic per-seed share error already concentrates
 the statistic in those cells, as the measured pairs do.
 
-Random draws take their seed from docs/evidence/anu_qrng/draw-2026-11-09T020604Z.json index 214. Run from the
+It also reads the realized per-cell share error of mesh_variance_reference.py's perturbation: sigma is added before
+clipping and renormalization, so the RMS share error it produces differs from sigma. For each pair it reports the
+realized RMS at the decision values and at the band's matching value 0.034, and the input sigma whose realized RMS
+equals the recorded scales 0.011 and 0.0177 (bisection, 200 perturbations per evaluation, no refit).
+
+Random draws take their seeds from docs/evidence/anu_qrng/draw-2026-11-09T020604Z.json index 214 (cell shares) and
+index 215 (realized share error). Run from the
 repository root: ``"$PYTHON" docs/evidence/ascella-cz-tomography-band/reference_low_cell_share.py OUT.json``.
 """
 
@@ -20,6 +26,9 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 SIGMAS = (0.0, 0.011, 0.034)
 DRAWS = 30
+RMS_SIGMAS = (0.011, 0.0177, 0.034)
+RECORDED = (0.011, 0.0177)
+RMS_DRAWS = 200
 
 
 def reference_module() -> Any:
@@ -46,6 +55,22 @@ def low_share(n: np.ndarray, shots: np.ndarray, scale: np.ndarray) -> float:
     return float(cells[e < 1.0].sum() / cells.sum())
 
 
+def realized_rms(within: np.ndarray, sigma: float, seed: int) -> float:
+    generator = np.random.default_rng(seed)
+    total = within.sum(axis=1, keepdims=True)
+    shares = within / total
+    errors = [REF.perturbed(within, sigma, generator) / total - shares for _ in range(RMS_DRAWS)]
+    return float(np.sqrt(np.mean(np.square(errors))))
+
+
+def input_for(within: np.ndarray, target: float, seed: int) -> float:
+    low, high = 0.5 * target, 3.0 * target
+    for _ in range(30):
+        middle = 0.5 * (low + high)
+        low, high = (middle, high) if realized_rms(within, middle, seed) < target else (low, middle)
+    return 0.5 * (low + high)
+
+
 def main(argv: list[str]) -> int:
     if len(argv) != 1:
         raise SystemExit("usage: reference_low_cell_share.py OUT.json")
@@ -66,6 +91,9 @@ def main(argv: list[str]) -> int:
                 drawn, _, drawn_shots = CASE.sampled_dataset(arrays, data["samples"], generator)
                 shares.append(low_share(drawn.astype(float), drawn_shots.astype(float), data["scale"]))
             entry[str(sigma)] = {"mean": float(np.mean(shares)), "min": float(min(shares)), "max": float(max(shares))}
+        seed = REF.draw_seed(215)
+        entry["realized_share_rms"] = {str(s): realized_rms(within, s, seed) for s in RMS_SIGMAS}
+        entry["input_sigma_for_recorded_rms"] = {str(t): input_for(within, t, seed) for t in RECORDED}
         out[name] = entry
     Path(argv[0]).write_text(json.dumps(out, indent=1, allow_nan=False) + "\n", encoding="utf-8")
     return 0

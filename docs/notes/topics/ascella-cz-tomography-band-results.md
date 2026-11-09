@@ -43,7 +43,7 @@ section), so it serves only to mark which falsifications depend on the interval 
 | Fidelity at or below the record ceiling | 0.934 | lower end 0.824 | survives | Survives trivially; it constrains nothing at this F |
 | Balanced rails, r(11)/r(01) = 1 | 1 | 1.045 to 1.074 | falsified | Robust. The ZZ-only ratio is 1.123 and the retained pair's 1.139: a stable control-side imbalance that the nine-readout average dilutes |
 | r(11)/r(01) at the record variant's value | 1.040 | same | falsified | Fragile: misses the interval's lower end 1.0446 by 0.005, while the same ratio moves by 0.05 with the readout set; the retained pair's 1.009 survived |
-| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it at the recorded scale the band pair still fails, at 2.3 to 3.4 times its reference (next section) |
+| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it near the recorded scale the band pair still fails, at 2.3 to 3.4 times its reference (next section) |
 | Constant variance factor (1.44) | 1.44 | ratio 5.73 | falsified | Robust |
 | Relative systematic per rate (3.67) | 3.67 | ratio 5.73 | falsified | Robust, and carried by the cells whose expectation the statistic clips to one event; the other cells grow with the events (next section) |
 
@@ -63,9 +63,16 @@ section), so it serves only to mark which falsifications depend on the interval 
   partial. The retained statistic 5,288 already passed the reference without the term (95 % range 1,986 to 6,914),
   so its pass at both values discriminates nothing; the rule's supported and partial levels credit a pair that is
   inside at sigma 0, a weakness of the rule recorded here and left unrepaired. The retained reference mean matches
-  the statistic at sigma 0.0106, the recorded Ascella scale. The band statistic 166,240 stays outside at both values
-  (ratio 3.40 at 0.011, 2.34 at 0.0177), and its reference mean matches only at sigma 0.034, 1.9 to 3.1 times the
-  recorded values. The omitted term at the recorded scale does not explain the band failure.
+  the statistic at sigma 0.0106. The band statistic 166,240 stays outside at both values (ratio 3.40 at 0.011, 2.34
+  at 0.0177), and its reference mean matches only at sigma 0.034.
+- **Sigma is an input, not the realized share error.** The perturbation adds sigma before clipping and
+  renormalization, so the share error it realizes is smaller: RMS 0.0098 at sigma 0.011, 0.0155 at 0.0177 and 0.0292
+  at the band's matching 0.034, the same for both pairs (`reference_low_cell_share.py`). The decision references
+  therefore ran at 0.89 times the recorded scales, and the band's match sits at 1.65 to 2.65 times them. The inputs
+  that realize the recorded scales are 0.0124 and 0.0202. The decision at those inputs is not run (owner ruling: heavy
+  computation stays off the build host). Hypothesis, moderate confidence: the band stays outside, since its grid
+  reference mean at input 0.02 is 82,395, half its statistic; it falls if the 97.5th percentile at input 0.0202
+  reaches 166,240. The retained pass needs no rerun: the pair passes without the term.
 - **Where the statistic sits.** 153,920 of the band Pearson (93 %) sits in 34 cells where the unweighted
   linear-inversion fit predicts fewer than one event, mostly negative; the statistic divides those by one event, so
   each contributes (n - E)^2. The clip concentrates any scatter there: the synthetic pairs put 97 % of their
@@ -174,10 +181,12 @@ overlap by more than 0.01, and the component model below reports the overlap it 
   source mismatch. 111 of 144 settings identify it; on those it spreads with standard deviation 0.035 to 0.043 and
   correlates between the pairs at 0.11 (0.11 to 0.24 under other identifiability thresholds). Counting all 144 gives
   0.98, an artifact of settings pinned at 0 or 1.
-- **The seed change explains it.** 0 of 144 settings share a compilation seed between the pairs, so every setting
-  ran on a different mesh, and the median largest phase difference between a setting's two meshes is 3.1 rad. A low
-  correlation is what per-mesh error predicts whether or not the chip recalibrated. Whether the error is fixed
-  inside one calibration was not measured: each setting ran once.
+- **Fresh meshes predict it.** 0 of 144 settings share a compilation seed between the pairs, so every setting ran
+  on a different mesh, and the median largest phase difference between a setting's two meshes is 3.1 rad. A low
+  correlation is what per-mesh error predicts, and the observation is consistent with it. Calibration, service
+  version, source and detection changed too, so the seed change is not established as the cause; the ensemble
+  case's same-calibration replicate seeds and same-seed anchors attribute it. Whether the error is fixed inside one
+  calibration was not measured: each setting ran once.
 - **The transpiler is faithful.** The served meshes reproduce the designed gates to a nominal total variation of at
   most 9.1e-4 (band) and 7.6e-4 (retained), so the error enters after compilation: in the realized mesh, the
   source, or detection.
