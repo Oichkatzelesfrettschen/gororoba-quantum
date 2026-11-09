@@ -4,13 +4,13 @@
  "points": [
   {
    "design": {
-    "expected_eligible_events": 394096.1028825644,
+    "expected_eligible_events": 624985.69480636,
     "expected_shots_by_job": {
-     "job-00": 54335737.73403249,
-     "job-01": 53653583.21963389
+     "job-00": 86134986.039355,
+     "job-01": 85098236.04078077
     },
-    "largest_expected_shots": 774217.4552109472,
-    "process_fidelity_sd": 0.005044477578255411,
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.0040053076661211015,
     "retained_uniform_design_process_fidelity_sd": 0.010341323000751433
    },
    "hom_percent": 90.5,
@@ -19,30 +19,30 @@
     "estimand_process_fidelity": 0.8698630136986295
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8515192318799414,
+    "average_gate_fidelity": 0.8534532181354184,
     "average_gate_fidelity_interval": [
-     0.8439995679587787,
-     0.8594057382481364
+     0.8466126298314572,
+     0.8596424165381839
     ],
-    "conditional_process_fidelity": 0.8069794015967946,
-    "events": 394605,
-    "process_fidelity": 0.8143990398499269,
-    "process_fidelity_bootstrap_median": 0.8145470479440184,
+    "conditional_process_fidelity": 0.8124904205519933,
+    "events": 624517,
+    "process_fidelity": 0.8168165226692728,
+    "process_fidelity_bootstrap_median": 0.8171355497063761,
     "process_fidelity_interval": [
-     0.8049994599484732,
-     0.8242571728101704
+     0.8082657872893216,
+     0.8245530206727297
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8045409068896834,
-      0.8237986197513806
+      0.809080024665816,
+      0.8253672580492241
      ],
      "percentile": [
-      0.8049994599484732,
-      0.8242571728101704
+      0.8082657872893216,
+      0.8245530206727297
      ]
     },
-    "projected_process_fidelity": 0.8041177815464658
+    "projected_process_fidelity": 0.807218009586726
    },
    "seed_index": 145,
    "source, loss and dark counts": {
@@ -52,13 +52,13 @@
   },
   {
    "design": {
-    "expected_eligible_events": 392834.58062439796,
+    "expected_eligible_events": 622983.8183813379,
     "expected_shots_by_job": {
-     "job-00": 54372022.72415262,
-     "job-01": 53706554.69191175
+     "job-00": 86192528.54739682,
+     "job-01": 85182593.54235059
     },
-    "largest_expected_shots": 774217.4552109472,
-    "process_fidelity_sd": 0.005058896714918297,
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.004016767614902041,
     "retained_uniform_design_process_fidelity_sd": 0.01037672448279259
    },
    "hom_percent": 91.0,
@@ -67,30 +67,30 @@
     "estimand_process_fidelity": 0.8761467889908252
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8488412635054228,
+    "average_gate_fidelity": 0.8561034620738269,
     "average_gate_fidelity_interval": [
-     0.841974478128146,
-     0.8569840879123622
+     0.849335810313621,
+     0.8629150406612842
     ],
-    "conditional_process_fidelity": 0.8083340011396078,
-    "events": 392554,
-    "process_fidelity": 0.8110515793817786,
-    "process_fidelity_bootstrap_median": 0.8112679474322092,
+    "conditional_process_fidelity": 0.8182974870343936,
+    "events": 621400,
+    "process_fidelity": 0.8201293275922837,
+    "process_fidelity_bootstrap_median": 0.8200254416610128,
     "process_fidelity_interval": [
-     0.8024680976601825,
-     0.8212301098904528
+     0.8116697628920263,
+     0.8286438008266053
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8008730488731045,
-      0.8196350611033748
+      0.8116148543579622,
+      0.8285888922925412
      ],
      "percentile": [
-      0.8024680976601825,
-      0.8212301098904528
+      0.8116697628920263,
+      0.8286438008266053
      ]
     },
-    "projected_process_fidelity": 0.8004384200347537
+    "projected_process_fidelity": 0.8112605147683147
    },
    "seed_index": 146,
    "source, loss and dark counts": {
@@ -100,13 +100,13 @@
   },
   {
    "design": {
-    "expected_eligible_events": 391569.2310456263,
+    "expected_eligible_events": 620975.8615970892,
     "expected_shots_by_job": {
-     "job-00": 54408383.08530564,
-     "job-01": 53759867.544652805
+     "job-00": 86250190.62148425,
+     "job-01": 85267499.53949118
     },
-    "largest_expected_shots": 774217.4552109472,
-    "process_fidelity_sd": 0.005073520018386397,
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.004028389671703916,
     "retained_uniform_design_process_fidelity_sd": 0.010412622743591263
    },
    "hom_percent": 91.5,
@@ -115,30 +115,30 @@
     "estimand_process_fidelity": 0.8824884792626726
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.866343776241069,
+    "average_gate_fidelity": 0.8706704281105424,
     "average_gate_fidelity_interval": [
-     0.8582723119828609,
-     0.8737875719206359
+     0.863559721295076,
+     0.8769584315633199
     ],
-    "conditional_process_fidelity": 0.8177725448138057,
-    "events": 391372,
-    "process_fidelity": 0.8329297203013362,
-    "process_fidelity_bootstrap_median": 0.832845920063561,
+    "conditional_process_fidelity": 0.8241486465966699,
+    "events": 621893,
+    "process_fidelity": 0.838338035138178,
+    "process_fidelity_bootstrap_median": 0.8382572082148056,
     "process_fidelity_interval": [
-     0.8228403899785762,
-     0.8422344649007949
+     0.829449651618845,
+     0.8461980394541497
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8236249757018774,
-      0.8430190506240961
+      0.8304780308222062,
+      0.8472264186575109
      ],
      "percentile": [
-      0.8228403899785762,
-      0.8422344649007949
+      0.829449651618845,
+      0.8461980394541497
      ]
     },
-    "projected_process_fidelity": 0.8213534582644464
+    "projected_process_fidelity": 0.8267323360780999
    },
    "seed_index": 147,
    "source, loss and dark counts": {
@@ -148,13 +148,13 @@
   },
   {
    "design": {
-    "expected_eligible_events": 390300.0292638225,
+    "expected_eligible_events": 618961.7848493818,
     "expected_shots_by_job": {
-     "job-00": 54444819.10485953,
-     "job-01": 53813529.56896816
+     "job-00": 86307972.71764494,
+     "job-01": 85352966.64060195
     },
-    "largest_expected_shots": 774217.4552109472,
-    "process_fidelity_sd": 0.005088351090165268,
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.004040176701790688,
     "retained_uniform_design_process_fidelity_sd": 0.010449027484488633
    },
    "hom_percent": 92.0,
@@ -163,30 +163,30 @@
     "estimand_process_fidelity": 0.8888888888888886
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8698818205751098,
+    "average_gate_fidelity": 0.8670381525443187,
     "average_gate_fidelity_interval": [
-     0.8626969089810194,
-     0.8778232988548588
+     0.8605559448259252,
+     0.8736444056972723
     ],
-    "conditional_process_fidelity": 0.8229363754812837,
-    "events": 389820,
-    "process_fidelity": 0.8373522757188872,
-    "process_fidelity_bootstrap_median": 0.8371193008840916,
+    "conditional_process_fidelity": 0.8254158976120402,
+    "events": 618011,
+    "process_fidelity": 0.8337976906803983,
+    "process_fidelity_bootstrap_median": 0.8336667834107825,
     "process_fidelity_interval": [
-     0.8283711362262742,
-     0.8472791235685735
+     0.8256949310324065,
+     0.8420555071215904
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8274254278692008,
-      0.8463334152115001
+      0.8255398742392063,
+      0.8419004503283901
      ],
      "percentile": [
-      0.8283711362262742,
-      0.8472791235685735
+      0.8256949310324065,
+      0.8420555071215904
      ]
     },
-    "projected_process_fidelity": 0.8258579207508125
+    "projected_process_fidelity": 0.8260403425104608
    },
    "seed_index": 148,
    "source, loss and dark counts": {
@@ -196,13 +196,13 @@
   },
   {
    "design": {
-    "expected_eligible_events": 389026.9500798941,
+    "expected_eligible_events": 616941.5480286083,
     "expected_shots_by_job": {
-     "job-00": 54481331.07186619,
-     "job-01": 53867548.90532615
+     "job-00": 86365875.29457967,
+     "job-01": 85439008.02104364
     },
-    "largest_expected_shots": 774217.4552109472,
-    "process_fidelity_sd": 0.005103393615771907,
+    "largest_expected_shots": 1226996.4133923491,
+    "process_fidelity_sd": 0.0040521316373220975,
     "retained_uniform_design_process_fidelity_sd": 0.010485948641763857
    },
    "hom_percent": 92.5,
@@ -211,30 +211,30 @@
     "estimand_process_fidelity": 0.8953488372093019
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8699613941283733,
+    "average_gate_fidelity": 0.8731454383996858,
     "average_gate_fidelity_interval": [
-     0.8623423233016317,
-     0.8780115721318903
+     0.8670938508185778,
+     0.879747896588765
     ],
-    "conditional_process_fidelity": 0.8287639828597118,
-    "events": 389641,
-    "process_fidelity": 0.8374517426604665,
-    "process_fidelity_bootstrap_median": 0.8372571255543764,
+    "conditional_process_fidelity": 0.8326696722135105,
+    "events": 617930,
+    "process_fidelity": 0.8414317979996074,
+    "process_fidelity_bootstrap_median": 0.8416792264350386,
     "process_fidelity_interval": [
-     0.8279279041270398,
-     0.8475144651648628
+     0.8338673135232222,
+     0.8496848707359561
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8273890201560702,
-      0.8469755811938933
+      0.8331787252632588,
+      0.8489962824759927
      ],
      "percentile": [
-      0.8279279041270398,
-      0.8475144651648628
+      0.8338673135232222,
+      0.8496848707359561
      ]
     },
-    "projected_process_fidelity": 0.8281030430027582
+    "projected_process_fidelity": 0.8339216312328028
    },
    "seed_index": 149,
    "source, loss and dark counts": {
@@ -244,13 +244,13 @@
   },
   {
    "design": {
-    "expected_eligible_events": 387748.2788940824,
+    "expected_eligible_events": 614912.4257744907,
     "expected_shots_by_job": {
-     "job-00": 54518237.08271494,
-     "job-01": 53922301.77855114
+     "job-00": 86424402.8533465,
+     "job-01": 85526221.38156378
     },
-    "largest_expected_shots": 774217.5805265974,
-    "process_fidelity_sd": 0.005118690636253005,
+    "largest_expected_shots": 1226996.611995277,
+    "process_fidelity_sd": 0.004064288744871925,
     "retained_uniform_design_process_fidelity_sd": 0.01052350805421268
    },
    "hom_percent": 93.0,
@@ -259,30 +259,30 @@
     "estimand_process_fidelity": 0.9018691588785045
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8800796316253165,
+    "average_gate_fidelity": 0.8710937917370465,
     "average_gate_fidelity_interval": [
-     0.8719407535653431,
-     0.8882033947339883
+     0.8642173300191902,
+     0.8769117990788277
     ],
-    "conditional_process_fidelity": 0.8357449304113074,
-    "events": 387598,
-    "process_fidelity": 0.8500995395316457,
-    "process_fidelity_bootstrap_median": 0.8503572443206235,
+    "conditional_process_fidelity": 0.8394311833919554,
+    "events": 616065,
+    "process_fidelity": 0.8388672396713082,
+    "process_fidelity_bootstrap_median": 0.8385810709141999,
     "process_fidelity_interval": [
-     0.8399259419566789,
-     0.8602542434174854
+     0.8302716625239878,
+     0.8461397488485346
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8399448356458061,
-      0.8602731371066126
+      0.8315947304940817,
+      0.8474628168186286
      ],
      "percentile": [
-      0.8399259419566789,
-      0.8602542434174854
+      0.8302716625239878,
+      0.8461397488485346
      ]
     },
-    "projected_process_fidelity": 0.8379423688966068
+    "projected_process_fidelity": 0.8316468917678601
    },
    "seed_index": 150,
    "source, loss and dark counts": {
@@ -292,13 +292,13 @@
   },
   {
    "design": {
-    "expected_eligible_events": 385182.70963478845,
+    "expected_eligible_events": 610841.1132683476,
     "expected_shots_by_job": {
-     "job-00": 54591599.24974351,
-     "job-01": 54032155.66440929
+     "job-00": 86540744.58911614,
+     "job-01": 85701223.47218949
     },
-    "largest_expected_shots": 774217.5626243566,
-    "process_fidelity_sd": 0.0051498630710104425,
+    "largest_expected_shots": 1226996.583623422,
+    "process_fidelity_sd": 0.004089062098097779,
     "retained_uniform_design_process_fidelity_sd": 0.010600012672067964
    },
    "hom_percent": 94.0,
@@ -307,30 +307,30 @@
     "estimand_process_fidelity": 0.915094339622641
    },
    "sampled_dataset": {
-    "average_gate_fidelity": 0.8828128067479228,
+    "average_gate_fidelity": 0.8853522820118715,
     "average_gate_fidelity_interval": [
-     0.8751666811473212,
-     0.8910022014819214
+     0.8788445306395672,
+     0.8915323972613892
     ],
-    "conditional_process_fidelity": 0.8460004150990537,
-    "events": 384993,
-    "process_fidelity": 0.8535160084349036,
-    "process_fidelity_bootstrap_median": 0.8533148364684144,
+    "conditional_process_fidelity": 0.852444149020287,
+    "events": 611986,
+    "process_fidelity": 0.8566903525148395,
+    "process_fidelity_bootstrap_median": 0.8566461462825639,
     "process_fidelity_interval": [
-     0.8439583514341515,
-     0.8637527518524017
+     0.848555663299459,
+     0.8644154965767366
     ],
     "process_fidelity_intervals": {
      "basic": [
-      0.8432792650174055,
-      0.8630736654356557
+      0.8489652084529424,
+      0.86482504173022
      ],
      "percentile": [
-      0.8439583514341515,
-      0.8637527518524017
+      0.848555663299459,
+      0.8644154965767366
      ]
     },
-    "projected_process_fidelity": 0.8408789632076743
+    "projected_process_fidelity": 0.8499538974228098
    },
    "seed_index": 151,
    "source, loss and dark counts": {

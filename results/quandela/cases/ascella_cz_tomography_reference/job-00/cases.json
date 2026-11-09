@@ -9,10 +9,10 @@
  "gate_form": "template",
  "iterations": 72,
  "min_detected_photons": 2,
- "max_samples": 1282800,
- "max_shots": 71280000,
+ "max_samples": 2033400,
+ "max_shots": 112824000,
  "max_duration": 300,
- "max_credits": 1.99,
+ "max_credits": 2.567,
  "mitigations": [],
  "output_modes": 12,
  "logical_modes": [
@@ -545,8 +545,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-XY",
@@ -1040,8 +1040,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-XZ",
@@ -1535,8 +1535,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-YX",
@@ -2030,8 +2030,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-YY",
@@ -2525,8 +2525,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-YZ",
@@ -3020,8 +3020,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-ZX",
@@ -3515,8 +3515,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-ZY",
@@ -4010,8 +4010,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-00-ZZ",
@@ -4505,8 +4505,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-XX",
@@ -5000,8 +5000,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-XY",
@@ -5495,8 +5495,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-XZ",
@@ -5990,8 +5990,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-YX",
@@ -6485,8 +6485,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-YY",
@@ -6980,8 +6980,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-YZ",
@@ -7475,8 +7475,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-ZX",
@@ -7970,8 +7970,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-ZY",
@@ -8465,8 +8465,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-0+-ZZ",
@@ -8960,8 +8960,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-XX",
@@ -9455,8 +9455,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-XY",
@@ -9950,8 +9950,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-XZ",
@@ -10445,8 +10445,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-YX",
@@ -10940,8 +10940,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-YY",
@@ -11435,8 +11435,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-YZ",
@@ -11930,8 +11930,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-ZX",
@@ -12425,8 +12425,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-ZY",
@@ -12920,8 +12920,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-11-ZZ",
@@ -13415,8 +13415,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-XX",
@@ -13910,8 +13910,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-XY",
@@ -14405,8 +14405,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-XZ",
@@ -14900,8 +14900,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-YX",
@@ -15395,8 +15395,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-YY",
@@ -15890,8 +15890,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-YZ",
@@ -16385,8 +16385,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-ZX",
@@ -16880,8 +16880,8 @@
      ]
     ]
    },
-   "max_samples": 12400,
-   "max_shots": 990000
+   "max_samples": 19700,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-ZY",
@@ -17375,8 +17375,8 @@
      ]
     ]
    },
-   "max_samples": 12400,
-   "max_shots": 990000
+   "max_samples": 19700,
+   "max_shots": 1567000
   },
   {
    "name": "in-1i-ZZ",
@@ -17870,8 +17870,8 @@
      ]
     ]
    },
-   "max_samples": 12400,
-   "max_shots": 990000
+   "max_samples": 19700,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-XX",
@@ -18365,8 +18365,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-XY",
@@ -18860,8 +18860,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-XZ",
@@ -19355,8 +19355,8 @@
      ]
     ]
    },
-   "max_samples": 12400,
-   "max_shots": 990000
+   "max_samples": 19700,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-YX",
@@ -19850,8 +19850,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-YY",
@@ -20345,8 +20345,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-YZ",
@@ -20840,8 +20840,8 @@
      ]
     ]
    },
-   "max_samples": 12400,
-   "max_shots": 990000
+   "max_samples": 19700,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-ZX",
@@ -21335,8 +21335,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-ZY",
@@ -21830,8 +21830,8 @@
      ]
     ]
    },
-   "max_samples": 14900,
-   "max_shots": 990000
+   "max_samples": 23600,
+   "max_shots": 1567000
   },
   {
    "name": "in-+0-ZZ",
@@ -22325,8 +22325,8 @@
      ]
     ]
    },
-   "max_samples": 12400,
-   "max_shots": 990000
+   "max_samples": 19700,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-XX",
@@ -22820,8 +22820,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-XY",
@@ -23315,8 +23315,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-XZ",
@@ -23810,8 +23810,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-YX",
@@ -24305,8 +24305,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-YY",
@@ -24800,8 +24800,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-YZ",
@@ -25295,8 +25295,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-ZX",
@@ -25790,8 +25790,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-ZY",
@@ -26285,8 +26285,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-++-ZZ",
@@ -26780,8 +26780,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-XX",
@@ -27275,8 +27275,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-XY",
@@ -27770,8 +27770,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-XZ",
@@ -28265,8 +28265,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-YX",
@@ -28760,8 +28760,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-YY",
@@ -29255,8 +29255,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-YZ",
@@ -29750,8 +29750,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-ZX",
@@ -30245,8 +30245,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-ZY",
@@ -30740,8 +30740,8 @@
      ]
     ]
    },
-   "max_samples": 19900,
-   "max_shots": 990000
+   "max_samples": 31500,
+   "max_shots": 1567000
   },
   {
    "name": "in-i1-ZZ",
@@ -31235,8 +31235,8 @@
      ]
     ]
    },
-   "max_samples": 22400,
-   "max_shots": 990000
+   "max_samples": 35500,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-XX",
@@ -31730,8 +31730,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-XY",
@@ -32225,8 +32225,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-XZ",
@@ -32720,8 +32720,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-YX",
@@ -33215,8 +33215,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-YY",
@@ -33710,8 +33710,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-YZ",
@@ -34205,8 +34205,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-ZX",
@@ -34700,8 +34700,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-ZY",
@@ -35195,8 +35195,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   },
   {
    "name": "in-ii-ZZ",
@@ -35690,8 +35690,8 @@
      ]
     ]
    },
-   "max_samples": 17400,
-   "max_shots": 990000
+   "max_samples": 27600,
+   "max_shots": 1567000
   }
  ],
  "circuit": {
@@ -35777,8 +35777,8 @@
   "rule": "nonzero draw values in index order, repeats skipped; 144 compilation seeds in schedule order, then the bootstrap seed, then one seed per forecast HOM point"
  },
  "budgets": {
-  "shot_cap": 990000,
-  "rule": "every iteration's max_shots is 990000; its max_samples is the largest multiple of 100 whose shots, scaled from Perceval's estimate at 4000 samples (shot-estimate.json) and times 1.25, stay within it"
+  "shot_cap": 1567000,
+  "rule": "every iteration's max_shots is 1567000; its max_samples is the largest multiple of 100 whose shots, scaled from Perceval's estimate at 4000 samples (shot-estimate.json) and times 1.25, stay within it"
  },
  "billing": "a completed job bills 1 credit plus the platform's price per billed shot (1e-6 on qpu:ascella and qpu:belenos), and a completed iterated job bills the smaller of the shots it used and its largest iteration's max_shots; an isolated usage report gives the charge where one exists, a job canceled before its start bills nothing, and the cap bills in full only when neither a usage report nor a shots-used figure gives the charge (qd_platform.job_billing and qd_platform.charged, docs/runbooks/quandela-credit-optimization.md section 'The billing rule'); a credit figure computed at max_shots is the job's ceiling",
  "preregistered": {
@@ -35808,14 +35808,14 @@
  "submit_wrapper": "scripts/ascella_cz_tomography_reference_case.py --submit",
  "submission_policy": {
   "platform": "qpu:ascella",
-  "credit_ceiling": 1.99,
+  "credit_ceiling": 2.567,
   "per_job_credits": 1.0,
-  "expected_seconds": 261,
+  "expected_seconds": 285,
   "hom_percent": {
    "above": 90.0
   },
   "transmittance_percent": {
-   "at_least": 3.4437,
+   "at_least": 5.5086,
    "rule": "every iteration at its max_shots stays within max_duration 300 s at clock 13.33 MHz, iterations taking the retained tomography's recorded seconds"
   },
   "statuses": "Explorer row and processor read available or running, while the token counts no running, no queued and no running quantum-task job",

@@ -72,9 +72,9 @@ SEED_RULE = (
     "bootstrap seed, then one seed per forecast HOM point"
 )
 # One shot cap for every iteration: the bill of an iterated job is 1 credit plus 1e-6 per shot up to the largest
-# iteration's max_shots (docs/runbooks/quandela-credit-optimization.md), so this cap keeps the per-shot term of each
-# job below one credit.
-SHOT_CAP = 990_000
+# iteration's max_shots (docs/runbooks/quandela-credit-optimization.md). The owner chose (2026-11-09) the largest cap
+# whose every-iteration-at-cap worst case fits max_duration at the retained read's transmittance, 2.567 credits per job.
+SHOT_CAP = 1_567_000
 PROBE_SAMPLES = 4000
 PROBE_SHOTS = 2_000_000
 SAMPLE_QUANTUM = 100
@@ -569,7 +569,6 @@ def check_job(job: str) -> None:
     worst = worst_case_seconds(job, read_perfs())
     require(worst <= MAX_DURATION, f"{job}: every iteration at its cap takes {worst:.0f} s")
     require(manifest["max_credits"] == credit_ceiling(), f"{job}: max_credits {manifest['max_credits']}")
-    require(credit_ceiling() - PER_JOB_CREDITS < 1, f"the per-shot term {credit_ceiling() - PER_JOB_CREDITS} is 1+")
     names = {row["name"] for row in tomo.job_rows(job)}
     require({s["name"] for s in manifest["settings"]} == names, f"{job}: the settings are not its parity half")
     require(circuit["input_state"] == tomo.source_state(), f"{job}: the photons do not enter modes {tomo.SOURCES}")

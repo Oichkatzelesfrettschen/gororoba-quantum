@@ -212,9 +212,9 @@ def test_the_transmittance_floor_puts_the_worst_case_on_max_duration() -> None:
             raise AssertionError(f"{job}: the worst case at the read passes max_duration")
 
 
-def test_the_shot_term_of_each_job_stays_below_one_credit() -> None:
+def test_the_job_ceiling_bills_one_cap() -> None:
     ceiling = case.credit_ceiling()
-    if not 0 < ceiling - case.PER_JOB_CREDITS < 1 or not math.isclose(ceiling, 1 + case.SHOT_CAP * 1e-6):
+    if not math.isclose(ceiling, case.PER_JOB_CREDITS + case.SHOT_CAP * case.PRICE_PER_SHOT):
         raise AssertionError(f"the job ceiling reads {ceiling}")
 
 

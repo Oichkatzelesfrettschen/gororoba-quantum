@@ -71,7 +71,7 @@ about 301 s, past `max_duration`, so the retained design would no longer fit.
 
 ## The design
 
-Every iteration shares one shot cap, `SHOT_CAP` = 990,000. Each setting takes its own `max_samples`: the largest
+Every iteration shares one shot cap, `SHOT_CAP` = 1,567,000. Each setting takes its own `max_samples`: the largest
 multiple of 100 whose shots, scaled from Perceval's estimate at 4000 samples
 ([shot-estimate.json](../../results/quandela/cases/ascella_cz_tomography_reference/shot-estimate.json), the same
 perfs as the platform read) and multiplied by the retained margin of 1.25, stay within the cap. The retained runs
@@ -80,33 +80,31 @@ measured 0.89 to 1.18 times Perceval's per-setting estimate, so the margin of 1.
 `qd_records.iteration_form` validates them: positive integers, `max_shots >= max_samples`, summing to the manifest's
 totals.
 
-The objective follows from the bill and the clock: maximize the precision of the process fidelity for a given credit
-ceiling, within 300 s. The bill rises with the largest cap and the time with the sum of the caps. With 72 equal
-caps of 990,000, the summed caps take 50 s of the 79 s shot budget, so the time constraint has slack and the bill
-binds. Lowering any one iteration's cap would save nothing and lose precision. Raising one would raise the bill of
-the whole job. Equal caps are therefore optimal at this ceiling, and the per-shot term stays below one credit per
-job, 0.99.
+The design maximizes the precision of the process fidelity within the bill and the clock. The bill rises with the
+largest cap, the time with the sum of the caps. Equal caps give every iteration the most shots for a given largest
+cap, so for any ceiling the cap is shared. Its size is the owner's choice (2026-11-09): the largest cap whose worst
+case, every iteration at its cap, fits 300 s at the read's transmittance, (300 - 221) s x 1.43 million / 72 =
+1.567 million. Both constraints then bind, and any other allocation either raises the bill or passes 300 s.
 
 | Quantity | Retained design | This design |
 |---|---|---|
-| Samples per iteration | 4000 each | 2400 to 22400 (the four in-10 settings with Z on exactly one qubit: 7400; in-10-ZZ: 2400) |
-| Samples per job | 288,000 | 1,282,800 (job-00), 1,222,800 (job-01) |
-| Largest `max_shots` | 400,000 and 1,600,000 | 990,000 in both jobs |
-| Credits | 1.4 + 2.6 = 4.0 | 1.99 + 1.99 = 3.98 |
-| Expected eligible events | about 99,000 | about 390,000 |
-| Process-fidelity spread (delta method) | 0.0104 | 0.0051 |
-| Worst case, every iteration at its cap | 301 s at T = 5.51 % | 271 s at T = 5.51 % |
+| Samples per iteration | 4000 each | 3900 to 35500 (the four in-10 settings with Z on exactly one qubit: 11800; in-10-ZZ: 3900) |
+| Samples per job | 288,000 | 2,033,400 (job-00), 1,938,600 (job-01) |
+| Largest `max_shots` | 400,000 and 1,600,000 | 1,567,000 in both jobs |
+| Credits | 1.4 + 2.6 = 4.0 | 2.567 + 2.567 = 5.134 |
+| Expected eligible events | about 99,000 | about 620,000 |
+| Process-fidelity spread (delta method) | 0.0104 | 0.0040 |
+| Worst case, every iteration at its cap | 301 s at T = 5.51 % | 300 s at T = 5.51 % |
 
 The spread is the delta-method standard deviation of the unprojected fidelity, F = (r . a) / (r . b), under the
-record forecast variant at each HOM of the curve below (`fidelity_sd`). It is 2.05 times smaller than the retained
+record forecast variant at each HOM of the curve below (`fidelity_sd`). It is 2.58 times smaller than the retained
 design's at every HOM point. The two designs differ only in where the shots go, so the spread scales with how the
 budget is spent. The same expression reproduces the retained run's interval: 0.0104 against the measured 95 %
 interval of 0.828 to 0.869, which corresponds to a standard deviation of about 0.0105.
 
-The cap is the owner's credit choice. With the transmittance at 5.51 %, the largest cap whose worst case fits
-300 s is (300 - 221) s x 1.43 million / 72 = 1.567 million. That costs 2.57 credits per job (5.13 for the pair) and
-narrows the spread by a further factor of sqrt(1.567 / 0.99) = 1.26. At 990,000 the case keeps the retained ceiling
-of 4.0 credits.
+The cap that keeps the retained ceiling, 990,000 (1.99 credits per job, 3.98 for the pair), gives a spread of
+0.0051 and a worst case of 271 s. The chosen cap buys a spread 1.26 times narrower for 1.13 more credits, and it
+leaves no time margin: every plan below the read's 5.51 % transmittance is refused.
 
 ## Why the request cannot follow the live HOM
 
@@ -157,8 +155,9 @@ its verify step inside the submit lock. The manifest names the wrapper, so the g
 verifier. `SubmissionGate` refuses unless all of the following hold:
 
 - the HOM at the plan is strictly above 90 % (`qd_platform.HOM_FLOOR`);
-- the transmittance is at or above the floor at which every iteration at its cap still fits 300 s, which is 3.444 %;
-  below about 4.4 %, the plan's own check of Perceval's live estimate against each cap refuses first;
+- the transmittance is at or above the floor at which every iteration at its cap still fits 300 s, which is 5.509 %,
+  the read's own figure to rounding, so the case waits for a calibration that holds both HOM above 90 % and the
+  transmittance at the read's level or higher;
 - the Explorer row and the processor read `available` or `running`, while the token counts no running, no queued and
   no running quantum-task job;
 - the shot estimate and a processor read taken inside the lock carry the plan's perfs, and source modes 0 and 2
@@ -169,7 +168,7 @@ verifier. `SubmissionGate` refuses unless all of the following hold:
 - the plan equals the admitted preflight: the case digest, the body minus `process_id`, the perfs and the predecessor
   run.
 
-The credit ceiling per job is 1.99. The expected time is 261 s: the iterations' recorded seconds plus the shots
+The credit ceiling per job is 2.567. The expected time is 285 s: the iterations' recorded seconds plus the shots
 the samples need, the cap divided by 1.25, at the read's shot rate.
 
 ## Forecast over HOM
@@ -182,16 +181,16 @@ design, analyzed as a run would be.
 
 | HOM % | Indistinguishability only | Record variant | Spread | Synthetic dataset | 95 % interval |
 |---|---|---|---|---|---|
-| 90.5 | 0.870 | 0.818 | 0.0050 | 0.814 | 0.805 to 0.824 |
-| 91.0 | 0.876 | 0.824 | 0.0051 | 0.811 | 0.803 to 0.821 |
-| 91.5 | 0.883 | 0.829 | 0.0051 | 0.833 | 0.823 to 0.842 |
-| 92.0 | 0.889 | 0.835 | 0.0051 | 0.837 | 0.828 to 0.847 |
-| 92.5 | 0.895 | 0.841 | 0.0051 | 0.838 | 0.828 to 0.848 |
-| 93.0 | 0.902 | 0.847 | 0.0051 | 0.850 | 0.840 to 0.860 |
-| 94.0 | 0.915 | 0.858 | 0.0051 | 0.854 | 0.844 to 0.864 |
+| 90.5 | 0.870 | 0.818 | 0.0040 | 0.817 | 0.808 to 0.825 |
+| 91.0 | 0.876 | 0.824 | 0.0040 | 0.820 | 0.812 to 0.829 |
+| 91.5 | 0.882 | 0.829 | 0.0040 | 0.838 | 0.829 to 0.846 |
+| 92.0 | 0.889 | 0.835 | 0.0040 | 0.834 | 0.826 to 0.842 |
+| 92.5 | 0.895 | 0.841 | 0.0041 | 0.841 | 0.834 to 0.850 |
+| 93.0 | 0.902 | 0.847 | 0.0041 | 0.839 | 0.830 to 0.846 |
+| 94.0 | 0.915 | 0.858 | 0.0041 | 0.857 | 0.849 to 0.864 |
 
-The record variant rises about 0.0115 in process fidelity per point of HOM. The design resolves that step at about
-two standard deviations per point. The retained run measured 0.849 at 87.56 %, above every variant at its read, so
+The record variant rises about 0.0115 in process fidelity per point of HOM. The design resolves that step at nearly
+three standard deviations per point. The retained run measured 0.849 at 87.56 %, above every variant at its read, so
 the curve gives a floor for the outcome rather than a prediction of it.
 
 ## Stopping rule
@@ -233,7 +232,7 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
 
 | Check | Result |
 |---|---|
-| `ascella_cz_tomography_reference_case.py --check` | passes: both requests rebuild byte for byte, every iteration's samples fill the cap to one quantum, worst case 270.9 s, ceiling 1.99, fresh disjoint seeds, design spread below the retained design's at every HOM point |
+| `ascella_cz_tomography_reference_case.py --check` | passes: both requests rebuild byte for byte, every iteration's samples fill the cap to one quantum, worst case 300.0 s, ceiling 2.567, fresh disjoint seeds, design spread below the retained design's at every HOM point |
 | `ascella_cz_tomography_case.py --check` | passes: the retained requests still rebuild byte for byte after the loader and pooling take a family |
 | `qd_platform.py --self-test` | passes, with budgeted and unbudgeted template cases and three malformed budget lists |
 | `qd_platform.payload` on both ensemble jobs | each body's digest without `process_id` equals its retained `plan-read.json` value, so an unbudgeted template case sends the same bytes |
@@ -250,4 +249,4 @@ RUN_01=results/quandela/runs/STAMP-qpu_ascella-ascella_cz_tomography_reference-j
   samples, 9 of 9). No qpu:ascella template job has carried unequal budgets. The analysis reads each iteration's
   actual samples and shots, and the caps bound time and bill whatever the service does with the samples.
 - The rate of 3.069 s per iteration comes from two runs of one template at 4000 samples. Iterations that spend up
-  to 990,000 shots assume that acquisition adds to compilation, which is the conservative reading.
+  to 1,567,000 shots assume that acquisition adds to compilation, which is the conservative reading.
