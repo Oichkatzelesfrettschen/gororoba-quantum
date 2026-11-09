@@ -61,6 +61,37 @@ over local product-basis readouts. It is no bound on entangled or collective
 measurements. Probes sharing a basis share its shots, so a joint analysis
 carries their covariance.
 
+## Commuting settings for the same bank
+
+The 28 words are exactly Y3 (x) Q for the three-qubit words Q with an odd
+number of Y letters, the Q with Q^T = -Q. Y3 commutes with itself, and the
+product of two commuting antisymmetric words is symmetric, so the antisymmetric
+members of an abelian group of three-qubit words form one coset of an
+index-two subgroup: at most 4 of a maximal group's 8. A setting that measures
+commuting words with an entangling readout therefore reads at most 4 of the
+bank, and 7 settings is the minimum. `scripts/bdsc_pauli.py` derives the
+following and records it under `commuting_cover` in
+[pauli_form.json](../../evidence/bdsc/pauli/pauli_form.json):
+
+| quantity | value |
+|---|---:|
+| commuting 4-word sets (none extends to 5) | 105 |
+| sets read with 0, 1 and 2 CX | 19, 42, 44 |
+| exact covers by 7 sets | 6,240 |
+| total CX of a cover, least and most | 5, 12 |
+
+A set's CX count is exact: the fewest CX on q0..q2, after single-qubit
+Cliffords, that leave its four words qubit-wise commuting, so one local
+rotation reads them. A 4-set generates the stabilizer group of a three-qubit
+stabilizer state up to signs, so the count is 0 for a product state, 1 for a
+Bell pair beside a single qubit and 2 for the GHZ class. The recorded cover
+uses 0, 0, 0, 1, 1, 1 and 2 CX; every one of the 216 covers at the 5-CX minimum has that
+composition of three 0-CX, three 1-CX and one 2-CX setting. The counts are logical: routing on a coupling
+map adds SWAPs where a CX pair is not adjacent. Seven settings with 5 CX in
+all against 13 local settings with none is a trade between settings and
+entangling-gate error. Which readout gives the smaller error on the 21 probe
+expectations awaits a noise model of a named device at its calibration.
+
 ## Scope
 
 The identities concern the ideal effect under an exact encoding. A transmon

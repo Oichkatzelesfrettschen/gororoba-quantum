@@ -104,6 +104,26 @@ all four XOR pairs aligned, which read 4 whatever the device did (A5-229, A5-230
 the coset map (e1 + e10, e1 + e18, e1 + e24), 8, 12 and 8 come from algebra and the informative blocks read 0.05 against
 0, 0.02 against 0 and 4.14 against 4 ([audit](../../docs/evidence/pathion-kernel-map/nhat-bias/README.md)).
 
+Blocks fixed by their signs. A block whose four XOR pairs are all aligned has ideal sign +1 on all 8 bins, so its
+N_hat = (sum of c) / (2 V) equals 4 for any contrasts with V != 0 (`pathion_coset_analysis.visibility_gap`, which
+writes N_hat - N as the weight |B+| |B-| / |B| times (V+ - V-) / V, with V+ and V- the visibilities of the bins
+whose ideal sign is +1 and -1; a misaligned pair puts one bin in each group). The records' own `cmap_<operand>_k<coset>_nullity_ideal` values place such blocks as follows, and
+each reads exactly 4.000 on both devices:
+
+| Operand (N) | Block nullities, cosets in record order | Blocks fixed by signs | Informative blocks |
+|---|---|---:|---|
+| e1 + e18 (12), twin e17 - e2 (12) | k0 0, k4 4, k8 4, k12 4 | 3 | k0 |
+| e1 + e10 (8) | k0 0, k4 4, k16 0, k20 4 | 2 | k0, k16 |
+| e1 + e24 (12) | k0 2, k4 4, k8 2, k12 4 | 2 | k0, k8 |
+| e1 + e26 (4), e2 + e27 (4) | k0 2, k4 0, k8 2, k12 0 | 0 | all four |
+| e1 + e17 (0), cocycle-free e1 + e18 (-2) | no block of nullity 4 | 0 | all four |
+
+Ten of the 32 block estimates per device are therefore identities, in the raw and in the readout-corrected summaries
+alike. Rule (2)'s agreement within 0.15 of the integer on e1 + e18 and its twin comes from block k0 alone
+(readout-corrected N_hat -0.020 and -0.011 on Fez, -0.010 and 0.005 on Marrakesh; raw 0.018 and 0.025, 0.017 and
+0.031), and on e1 + e10 and e1 + e24 from two blocks; rule (3)'s twin difference compares the two k0 blocks. Resolution (rule 1)
+still tests every block, because V > 0 and all 8 bin signs are measured on a block fixed by its signs as on any other.
+
 # Cross-platform runs: Tuna-17 and Ascella (2026-11-07)
 
 This section interprets the acquisitions retained with the Tuna-17 and Ascella runs: the first Tuna-17 series that
