@@ -186,9 +186,9 @@ def iteration_form(manifest: dict[str, Any]) -> str:
     seeded setting as a ComputationIterator holding one entry, the payload class of every iterated job.
 
     A non-mesh iterated case with settings is seeded only when every setting names a valid compilation_seed and
-    nothing else but its name, and the settings count its iterations. A seeded case names per-iteration
+    nothing else but its name, and the settings count its iterations. A seeded or template case names per-iteration
     max_samples and max_shots on every setting or on none; named budgets are positive integers with
-    max_shots >= max_samples that sum to the manifest's. Any other settings list raises.
+    max_shots >= max_samples that sum to the manifest's (check_budgets). Any other settings list raises.
     """
     owner = manifest["job"]
     steps = manifest.get("iterations", 1)
@@ -209,6 +209,11 @@ def iteration_form(manifest: dict[str, Any]) -> str:
             if not isinstance(setting.get("circuit_params"), dict) or "column" not in setting:
                 raise RecordError(f"{owner}/{setting.get('name')}: a template setting binds circuit_params and column")
             seed_value(setting.get("compilation_seed", 0), f"{owner}/{setting.get('name')}")
+        named = {"max_samples" in setting or "max_shots" in setting for setting in template_settings}
+        if named == {True}:
+            check_budgets(manifest, template_settings)
+        elif True in named:
+            raise RecordError(f"{owner}: every template iteration names its budgets, or none does")
         return "template"
     settings = manifest.get("settings")
     if settings is None:
@@ -224,14 +229,21 @@ def iteration_form(manifest: dict[str, Any]) -> str:
     for setting in settings:
         seed_value(setting["compilation_seed"], f"{owner}/{setting['name']}")
     if keys == {frozenset(budgeted)}:
-        for setting in settings:
-            samples, shots = setting["max_samples"], setting["max_shots"]
-            if any(isinstance(v, bool) or not isinstance(v, int) or v < 1 for v in (samples, shots)) or shots < samples:
-                raise RecordError(f"{owner}/{setting['name']}: budgets {samples!r} samples, {shots!r} shots")
-        for key in ("max_samples", "max_shots"):
-            if sum(setting[key] for setting in settings) != manifest[key]:
-                raise RecordError(f"{owner}: per-iteration {key} do not sum to the manifest's {manifest[key]}")
+        check_budgets(manifest, settings)
     return "seeded"
+
+
+def check_budgets(manifest: dict[str, Any], settings: list[dict[str, Any]]) -> None:
+    """Raise unless every setting names positive integer max_samples and max_shots, max_shots >= max_samples, that
+    sum to the manifest's."""
+    owner = manifest["job"]
+    for setting in settings:
+        samples, shots = setting.get("max_samples"), setting.get("max_shots")
+        if type(samples) is not int or type(shots) is not int or samples < 1 or shots < samples:
+            raise RecordError(f"{owner}/{setting.get('name')}: budgets {samples!r} samples, {shots!r} shots")
+    for key in ("max_samples", "max_shots"):
+        if sum(setting[key] for setting in settings) != manifest[key]:
+            raise RecordError(f"{owner}: per-iteration {key} do not sum to the manifest's {manifest[key]}")
 
 
 def expected_iterations(manifest: dict[str, Any]) -> int | None:
