@@ -93,8 +93,8 @@ intervals.
 
 Blocks fixed by their signs. A block whose four XOR pairs are all aligned has ideal sign +1 on all 8 bins, so its
 N_hat = (sum of c) / (2 V) equals 4 for any contrasts with V != 0 (`pathion_coset_analysis.visibility_gap`, which
-splits N_hat - N into the weight |B+| |B-| / |B| and the measured gap between the aligned and misaligned bins'
-visibilities). The records' own `cmap_<operand>_k<coset>_nullity_ideal` values place such blocks as follows, and
+writes N_hat - N as the weight |B+| |B-| / |B| times (V+ - V-) / V, with V+ and V- the visibilities of the bins
+whose ideal sign is +1 and -1; a misaligned pair puts one bin in each group). The records' own `cmap_<operand>_k<coset>_nullity_ideal` values place such blocks as follows, and
 each reads exactly 4.000 on both devices:
 
 | Operand (N) | Block nullities, cosets in record order | Blocks fixed by signs | Informative blocks |

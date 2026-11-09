@@ -73,8 +73,9 @@ def visibility_gap(c: np.ndarray, sign: np.ndarray) -> dict[str, Any]:
     With B+ and B- the bins whose ideal sign is +1 and -1, V+ the mean of c over B+, V- the mean of -c over B-, and
     V the signed mean of c, N_hat - N = (|B+| |B-| / |B|) (V+ - V-) / V exactly for any c with V != 0, where
     N = (|B+| - |B-|) / 2 is the ideal half-sum. The gap V+ - V- is the measured difference between the visibilities
-    of the bins whose pairs are aligned and those whose pairs are not. A block whose bins all carry one sign (every
-    pair aligned, |B-| = 0) has weight 0, so its N_hat equals N whatever the device returned, and only its V and bin
+    of the positive-sign and the negative-sign bins; B+ holds both bins of every aligned pair and one bin of every
+    misaligned pair, B- the other bin of each misaligned pair. A block whose bins all carry one sign (every pair
+    aligned, |B-| = 0) has weight 0, so its N_hat equals N whatever the device returned, and only its V and bin
     signs carry measurement."""
     if sign.size == 0 or c.shape != sign.shape:
         raise ValueError("contrasts and ideal signs need one entry per bin and at least one bin")
