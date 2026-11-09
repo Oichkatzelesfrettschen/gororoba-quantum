@@ -159,11 +159,74 @@ The study runs under the system Python, where gororoba-infrastructure `packaging
 numpy-flint-arb; the exporter runs under the repository's `$PYTHON`.
 
 ```sh
-"$PYTHON" docs/evidence/least-squares-precision/fp_export.py docs/local/fp-inputs.npz
+"$PYTHON" docs/evidence/least-squares-precision/fp_export.py docs/local/fp-inputs.npz --host-label build-host
 cd docs/evidence/least-squares-precision
-systemd-run --user --scope -p MemoryMax=8G -p MemorySwapMax=0 python3 -u fp_backends.py ../../local/fp-inputs.npz ../../local/fp-backends.json --mpmath
-python3 -u fp_sweep.py ../../local/fp-inputs.npz ../../local/sweep.jsonl 2
+systemd-run --user --scope -p MemoryMax=8G -p MemorySwapMax=0 "$PYTHON" -u fp_backends.py ../../local/fp-inputs.npz ../../local/fp-backends.json --mpmath
+"$PYTHON" -u fp_sweep.py ../../local/fp-inputs.npz ../../local/sweep.jsonl 2 --host-label build-host
 ```
+
+The `sweep.jsonl` rows above predate the portable sweep and carry no host record; [hosts/](hosts/) holds the portable
+rows.
+
+## Portable sweep across hosts
+
+`fp_sweep.py` runs unchanged on any host that holds `fp_host.py`, `fp_backends.py`, `gororoba_quantum/parallel.py`
+(standard library only) and the inputs file, in the layout of this repository. [hosts/](hosts/) holds the rows;
+[hosts/sweep-checklist.md](hosts/sweep-checklist.md) is the compute-flags checklist.
+
+- Memory cap: `min(8 GiB, 0.6 x physical memory)`. `fp_host.choose_cap` starts a trial `systemd-run --user --scope -p
+  MemoryMax=N -p MemorySwapMax=0` and reads `memory.max` and `memory.swap.max` back from the scope's cgroup, because
+  systemd accepts the properties without a delegated memory controller. A host without a working user manager (WSL
+  without systemd, macOS) falls to `RLIMIT_AS` in the child, held at 2 GiB or more because OpenBLAS reserves address
+  space at import (`prlimit --as` runs of the build-host stack fail at 1 GiB and pass at 2 GiB); the probe records
+  whether a mapping above the cap is refused. Native Windows runs uncapped. `--cap auto|systemd|rlimit|none` forces
+  a mechanism.
+- Threads: 1, 2, 4, ... up to `min(os.cpu_count(), parallel.workers())`, plus that count when it is not a power of two.
+- Skips: x87 rows need an x86 CPU and `numpy.finfo(numpy.longdouble).nmant == 63`; the quaddtype `longdouble`-backend
+  rows are x87 rows under the quad dtype's name; quaddtype rows need the wheel. A skipped configuration is a row with
+  a `skipped` reason, so every host's grid aligns.
+- Row additions: `host` (label, machine, OS, CPU model, numpy `__cpu_features__` subset, numpy SIMD baseline and
+  dispatch lists, BLAS runtime through threadpoolctl, package versions), `cap`, `mode`, `idle_wait`,
+  `load_average_before`, `knobs`, `inputs_sha256` and `inputs_provenance`. The old fields keep their names.
+- Input digests: `fp_host.input_digests` rebuilds the five `arithmetic.inputs_sha256` digests from the arrays;
+  `fp_export.py` stores the producer's own digests in the npz, and `matches_producer_digests` compares them. On the
+  build host all five equal the digests retained in `results/quandela/cases/ascella_cz_ensemble/forecast.json`. A
+  host that receives the npz reports the exporting host's digests; a host that runs `fp_export.py` itself reports
+  digests of its own libm and BLAS results.
+- `--idle-wait` starts each run only when the 1 minute load average is below 0.5 x `os.cpu_count()` (exit 3 after
+  `--idle-timeout` seconds; native Windows has no load average and the wait is a recorded no-op). `--quick` keeps one
+  thread count per family (`min(cpus, 4)`), the three scipy drivers, two refinement steps, arb at 128 bits and one
+  repeat.
+
+Interpreter: the new files use no syntax newer than Python 3.10 by inspection and ran on 3.14.9 only; use 3.13 or
+later on remote hosts. The pins below are the build host's versions; PyPI wheel availability of numpy, scipy and
+python-flint on Windows, macOS arm64 and Linux aarch64 is unchecked, and only the numpy-quaddtype 1.0.0 wheels are
+evidenced above. Install into a venv:
+`numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0`.
+
+```sh
+# Linux x86_64, Linux aarch64, macOS arm64 (POSIX sh); run from the directory that holds docs/ and gororoba_quantum/
+PYTHON=${PYTHON:-python3}
+"$PYTHON" -m venv "$HOME/fp-venv" && PYTHON="$HOME/fp-venv/bin/python"
+"$PYTHON" -m pip install numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0
+D=docs/evidence/least-squares-precision
+"$PYTHON" -u $D/fp_sweep.py fp-inputs.npz $D/hosts/LABEL-full.jsonl --host-label LABEL --idle-wait
+"$PYTHON" -u $D/fp_sweep.py fp-inputs.npz $D/hosts/LABEL-quick.jsonl --host-label LABEL --quick   # 1 GiB hosts
+```
+
+```powershell
+# Windows native (PowerShell); fp_export.py cannot run here because the producer imports fcntl, so copy fp-inputs.npz
+$env:PYTHON = "C:\Path\To\python.exe"
+& $env:PYTHON -m venv "$env:USERPROFILE\fp-venv"; $env:PYTHON = "$env:USERPROFILE\fp-venv\Scripts\python.exe"
+& $env:PYTHON -m pip install numpy==2.5.4 scipy==1.18.1 python-flint==0.9.0 numpy-quaddtype==1.0.0 threadpoolctl==3.7.0
+$D = "docs\evidence\least-squares-precision"
+& $env:PYTHON -u "$D\fp_sweep.py" fp-inputs.npz "$D\hosts\LABEL-full.jsonl" --host-label LABEL --cap none
+```
+
+A Linux or macOS host that should put its own libm and BLAS behind the input digests also installs `qiskit==2.6.2
+sympy==1.14.0 rustworkx==0.18.1` and runs `"$PYTHON" $D/fp_export.py fp-inputs.npz --host-label LABEL` from a full
+checkout before the sweep. Whether numpy-quaddtype publishes a Linux aarch64 wheel is unverified here; the sweep
+skips its rows with the import error when none installs.
 
 Host: AMD Ryzen 5 5600X3D capsule (10 CPUs visible, AVX2 and FMA, no AVX-512), OpenBLAS 0.3.34 (`Zen` core,
 OpenMP), numpy 2.5.4 (baseline x86-64-v3), scipy 1.18.1, python-flint 0.9.0 on FLINT 3.6.0, mpmath 1.4.1,
