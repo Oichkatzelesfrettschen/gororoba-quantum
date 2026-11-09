@@ -114,7 +114,9 @@ def test_check_names_records_after_the_digest_moves() -> None:
 
 def test_add_rebinds_only_the_complete_record_set() -> None:
     with TemporaryDirectory() as directory:
-        root = Path(directory)
+        # records.ROOT is a resolved path and main resolves the names it adds; macOS keeps the temporary directory
+        # behind the /var -> /private/var link, so the stand-in root is resolved the same way.
+        root = Path(directory).resolve()
         (root / "ci").mkdir()
         first, second = root / "first.json", root / "second.json"
         first.write_text("{}\n")

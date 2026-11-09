@@ -1093,6 +1093,168 @@
    }
   }
  ],
+ "commuting_cover": {
+  "chosen_cover": [
+   {
+    "cx": 0,
+    "cx_control_target": [],
+    "local_gates_q0_q1_q2": [
+     [],
+     [],
+     []
+    ],
+    "readout_basis_q3q2q1q0": "YXXY",
+    "words": [
+     "YIIY",
+     "YIXY",
+     "YXIY",
+     "YXXY"
+    ]
+   },
+   {
+    "cx": 0,
+    "cx_control_target": [],
+    "local_gates_q0_q1_q2": [
+     [],
+     [],
+     []
+    ],
+    "readout_basis_q3q2q1q0": "YXYX",
+    "words": [
+     "YIYI",
+     "YIYX",
+     "YXYI",
+     "YXYX"
+    ]
+   },
+   {
+    "cx": 1,
+    "cx_control_target": [
+     [
+      0,
+      1
+     ]
+    ],
+    "local_gates_q0_q1_q2": [
+     [],
+     [],
+     []
+    ],
+    "readout_basis_q3q2q1q0": "YXYX",
+    "words": [
+     "YIYZ",
+     "YIZY",
+     "YXYZ",
+     "YXZY"
+    ]
+   },
+   {
+    "cx": 0,
+    "cx_control_target": [],
+    "local_gates_q0_q1_q2": [
+     [],
+     [],
+     []
+    ],
+    "readout_basis_q3q2q1q0": "YYXX",
+    "words": [
+     "YYII",
+     "YYIX",
+     "YYXI",
+     "YYXX"
+    ]
+   },
+   {
+    "cx": 1,
+    "cx_control_target": [
+     [
+      0,
+      2
+     ]
+    ],
+    "local_gates_q0_q1_q2": [
+     [],
+     [],
+     []
+    ],
+    "readout_basis_q3q2q1q0": "YYXX",
+    "words": [
+     "YYIZ",
+     "YYXZ",
+     "YZIY",
+     "YZXY"
+    ]
+   },
+   {
+    "cx": 2,
+    "cx_control_target": [
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "local_gates_q0_q1_q2": [
+     [],
+     [
+      "h"
+     ],
+     [
+      "h"
+     ]
+    ],
+    "readout_basis_q3q2q1q0": "YZZY",
+    "words": [
+     "YYYY",
+     "YYZX",
+     "YZYX",
+     "YZZY"
+    ]
+   },
+   {
+    "cx": 1,
+    "cx_control_target": [
+     [
+      1,
+      2
+     ]
+    ],
+    "local_gates_q0_q1_q2": [
+     [],
+     [],
+     []
+    ],
+    "readout_basis_q3q2q1q0": "YYXZ",
+    "words": [
+     "YYZI",
+     "YYZZ",
+     "YZYI",
+     "YZYZ"
+    ]
+   }
+  ],
+  "commuting_sets": 105,
+  "commuting_sets_by_cx": {
+   "0": 19,
+   "1": 42,
+   "2": 44
+  },
+  "cover_total_cx_range": [
+   5,
+   12
+  ],
+  "covers_at_least_cx": 216,
+  "largest_commuting_set": 4,
+  "least_cx_cover_compositions": [
+   "0,0,0,1,1,1,2"
+  ],
+  "minimum_covers": 6240,
+  "minimum_settings": 7,
+  "word_set": "Y3 (x) Q, Q^T = -Q (odd number of Y letters in Q)"
+ },
  "encoding": "e_j -> |j3 j2 j1 j0>, word letters q3 q2 q1 q0",
  "probe_cover": {
   "basis_for_word": {

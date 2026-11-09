@@ -61,9 +61,11 @@ t9 = 0}.
    ordering dp), and Nakayama gives
    that the quotients generate m. Modulo (G'_2, G'_11) the image of I' is therefore v2 m = (v2 s, v2^2), so
    I'|_{B_4} = (G'_2, G'_11, v2 s, v2^2) in the coordinates (G'_2, G'_11, s, v2), a monomial ideal whose four
-   generators have affinely independent exponents. A product of n generators x^a y^b z^c w^(c+2d) never lies in
-   m I^n (the w-exponent minus the z-exponent stays even), so dim I^n / m I^n = binom(n + 3, 3) and the fiber cone is
-   the polynomial ring k[Z1, Z2, Z3, Z4].
+   generators have affinely independent exponents. The products x^a y^b (v2 s)^c (v2^2)^e with a + b + c + e = n are
+   therefore distinct monomials and a basis of I^n / m I^n: a monomial of I^n is a product of n generators times a
+   monomial, and it lies in m I^n exactly when that cofactor is not 1, so dim I^n / m I^n = binom(n + 3, 3) and the
+   fiber cone is the polynomial ring k[Z1, Z2, Z3, Z4]. A Singular recomputation of the minimal basis of
+   (x, y, s v, v^2)^n in dp gives 4, 10, 20, 35, 56, 84 for n = 1 to 6 (Grok review, 2026-11-09).
 5. The plane. Write G'_j = c_j1 G'_2 + c_j2 G'_11 + v2 (alpha_j s + beta_j v2) modulo m I'. The 24 x 4 matrix
    M(p) with rows (c_j1, c_j2, alpha_j, beta_j) (rows 2 and 11 are unit vectors) maps Proj k[Z] to a linear 3-space
    Pi_p = column space of M(p) in P^23, and Pi_p lies in E0. The coefficients c_jk(p) come from the linear parts of

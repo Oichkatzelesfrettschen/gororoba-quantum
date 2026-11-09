@@ -67,6 +67,39 @@ def contrast_vector(c: np.ndarray, sign: np.ndarray) -> np.ndarray:
         return np.concatenate([c, c / v, [v, c.sum() / 2.0 / v]])
 
 
+def visibility_gap(c: np.ndarray, sign: np.ndarray) -> dict[str, Any]:
+    """Split N_hat - N of contrast_vector's estimator into a bin-count weight and a measured visibility gap.
+
+    With B+ and B- the bins whose ideal sign is +1 and -1, V+ the mean of c over B+, V- the mean of -c over B-, and
+    V the signed mean of c, N_hat - N = (|B+| |B-| / |B|) (V+ - V-) / V exactly for any c with V != 0, where
+    N = (|B+| - |B-|) / 2 is the ideal half-sum. The gap V+ - V- is the measured difference between the visibilities
+    of the positive-sign and the negative-sign bins; B+ holds both bins of every aligned pair and one bin of every
+    misaligned pair, B- the other bin of each misaligned pair. A block whose bins all carry one sign (every pair
+    aligned, |B-| = 0) has weight 0, so its N_hat equals N whatever the device returned, and only its V and bin
+    signs carry measurement."""
+    if sign.size == 0 or c.shape != sign.shape:
+        raise ValueError("contrasts and ideal signs need one entry per bin and at least one bin")
+    if not np.all(np.abs(sign) == 1.0):
+        raise ValueError("every bin needs an ideal sign of +1 or -1")
+    plus, minus = sign > 0, sign < 0
+    n_plus, n_minus = int(plus.sum()), int(minus.sum())
+    v = float(np.mean(c * sign))
+    v_plus = float(np.mean(c[plus])) if n_plus else math.nan
+    v_minus = float(np.mean(-c[minus])) if n_minus else math.nan
+    weight = n_plus * n_minus / sign.size
+    gap = v_plus - v_minus if n_plus and n_minus else 0.0
+    return {
+        "nullity_ideal": (n_plus - n_minus) / 2.0,
+        "nullity_estimate": float(c.sum()) / 2.0 / v if v else math.nan,
+        "visibility": v,
+        "visibility_bright": v_plus,
+        "visibility_dark": v_minus,
+        "weight": weight,
+        "bias": weight * gap / v if v else math.nan,
+        "fixed_by_signs": n_plus == 0 or n_minus == 0,
+    }
+
+
 def pile_vector(plus: np.ndarray, minus: np.ndarray, sign: np.ndarray) -> np.ndarray:
     """contrast_vector of two 16-outcome piles of counts; an empty pile leaves every statistic undefined."""
     with np.errstate(divide="ignore", invalid="ignore"):

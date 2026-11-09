@@ -22,6 +22,7 @@ change; the captures below record what they said when read.
 | `pypi/` | release metadata and file sha256 of perceval-quandela, exqalibur, perceval-interop and scmver (`--pypi`) |
 | `../../evidence/quandela/catalogue.json` | the account snapshot: Explorer platforms, processor records, job limits, token usage (`scripts/qd_platform.py snapshot`) |
 | `platform-specifications.md` | each QPU and simulator: modes, photons, inputs, commands, performance figures at the snapshot and live, the chip architecture, the contradictions in the record, the vendor product pages and the Perceval constraint checker |
+| [ascella-foundations-and-architecture.md](ascella-foundations-and-architecture.md) | Ascella QPU hardware dissection, foundational axioms of LOQC, quantum dot microcavity source physics, Perceval/exqalibur Python stack, and comprehensive literature catalog |
 | [roadmap-2026-03.md](roadmap-2026-03.md) | the March 2026 Quandela roadmap and the Quandela-Welinq interconnect announcement: every networking, interconnect and modular-system statement with its page and target year |
 | `calibration.md` | each QPU's calibration state, the Belenos history from the QPU run records, the gating rules and their enforcement, open items |
 | `setup-verification.md` | installed versions, token and MCP configuration, the approval policy, the verification record and what was not run |

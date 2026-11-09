@@ -1,5 +1,8 @@
 # A_5 exceptional fibers: measured results, tested hypotheses and what survives
 
+The goal, the status of each layer by ledger count and what the latest results change:
+[a5-exceptional-fiber-status.md](a5-exceptional-fiber-status.md).
+
 The open claim `dimension32-global-topology` needs the attaching data of the A_5 zero-divisor strata: how the
 kernel fibers on a nullity-8 orbit closure Y specialize as a point of Y approaches a smaller orbit Z in its closure
 ([kernel-bundles program](../../design/a5-kernel-bundles-nullity8-program.md)). The algebraic object is the
@@ -350,7 +353,7 @@ non-reduced tangent cone; arcs on the normalization replace them.
   adversarial reviews repaired the Cartier twist and the exact v2-divisibility of the slice step; h_6 = 8,624 and
   h_7 = 16,416 follow without a rank run.
 - Last-jump law (ledger row A5-244): on Iso, W8 -> N- and X- the rank ladder's last jump into the K2 count is
-  (2d+1)^2 and splits by character block like the parity classes of the box k[x, y]/(x^{2d+1}, y^{2d+1}). Fitted on
+  (2d+1)^2 and splits by character block by the closed form of the trends record (block 0 (2 floor(d/2) + 1)^2, block 1 d(d + 1), blocks 2 and 3 the rest in halves); the parity classes of the box k[x, y]/(x^{2d+1}, y^{2d+1}) sum to the same total but split as (d + 1)^2, d(d + 1), d(d + 1), d^2 and do not match the blocks, and no ring is identified. Fitted on
   ten Iso and W8 cells and two X- cells, it met four cells out of sample: Iso d = 6 (r_18 = 2,253, blocks
   583/568/551/551, predicted before the run) and X- d = 2, 3 and 4
   ([xm-lown](../../evidence/a5-exceptional-fibers/xm-lown/README.md): jumps 25, 49 and 81 split 9/6/5/5, 9/12/14/14
@@ -430,8 +433,8 @@ tests; the ledger row it enters is named where one exists.
 
 1. **X- degree 6** (done at both primes, 2026-11-09; `../../evidence/a5-exceptional-fibers/xm-lown/`). The preregistered
    ladder met: r_20 = r_21 = 496, r_22 = 665 with blocks 181/178/153/153, the last jump 169 split 49/42/39/39 (A5-244),
-   closing at N = 22 = floor(7d/2) + 1; h_6 = 665 for X- (A5-167) and X+ (A5-155). The same ladder holds at p = 32029
-   (A5-173, A5-161).
+   closing at N = 22 = floor(7d/2) + 1; h_6 = 665 for X- (A5-167) and X+ (A5-155). At p = 32029, r_21 = 496 and r_22 = 665
+   with the same blocks (A5-173, A5-161); the plateau at N = 20 is measured at p = 32009 only.
 2. **C30 as a family of planes** (minutes per point). Two-plane test rank [M(p) | M(q)] for distinct p, q in U: 8 means
    general planes are disjoint, below 8 means they meet; then the determinant locus of the Newton and (v4, v5) blocks
    over F_p[b, c], one point per component, to test whether every fiber over P(L0) is a linear 3-space. Falsifier of
@@ -450,7 +453,22 @@ tests; the ledger row it enters is named where one exists.
 6. **E8-bar -> VB degree-3 component**: the search for a dominant (generic rank 3) arc family into it continues on the
    charts not yet tried (t7 = 1, the locus k^2 + 3 = 0 and the singular points of the normalization). Chart 5 (t5 = 1):
    `normal()` returns in 359 s with one ring of 21 variables and 382 relations, and its 14 arcs with finite lead all land
-   in the degree-4 component. Because K2 is globally radical there, containment of the generic point of every component
+   in the degree-4 component. Chart t7 = 1 (`working/build/arc/chart_t7.sing` and `.log`, OCI A1): the strict
+   transform there is radical of dimension 4 (the script's "prime?" line tests reduce(radical(S7), S7) = 0, which
+   is radicality; primality waits on the minimal primes, `chart_t7_primes.sing` on OCI A1), and the default `normal()`
+   returns in 2,298 s with one ring of 12 variables and 284 relations (2 h 3 min, 5.2 GiB in all); `normal(S7,
+   "isPrim")`, valid only if S7 is prime, returns the same ring in 7 min 31 s and writes it (`chart_t7_norid_1.txt`: four new elements T(1) to T(4)); its arcs are not yet run. The exceptional divisor lies
+   over P(L), L = V(t2, t8, t5 - t6, t3 + t4) with coordinates (t1 : t3 : t5 : t7) (`working/build/arc/arc-report.md`,
+   step 2), so chart t7 = 1 adds only the point t1 = t3 = t5 = 0 to the charts t1, t3 and t5 (inference). Generic
+   order-1 arcs there repeat chart t1 and land in V(P2); a family dominant onto the 3-dimensional V(P1) needs a
+   2-dimensional stratum such as the plane t1 = 0 plus one jet parameter (order-2 arcs), where chart t3 tested only
+   four points. Falsifier of the inference: an order-1 arc of chart t7 with t1 nonzero whose leading vector leaves
+   V(P2). It survives (`working/build/arc/t7arcs.sage`, logs `t7arcs_o4.log`, `t7arcs_plane_o4.log`,
+   `t7arcs_apex_o12.log`; build host, Sage, minutes): 20 order-1 arcs over ten points with t1 nonzero and 14 over
+   seven points of the plane t1 = 0, each with all 284 normalization relations vanishing through s^4, have
+   s-valuation 2 and leading vectors in V(P2) and none in V(P1). At the apex t1 = t3 = t5 = 0 both order-1 arcs
+   keep G at zero through s^13, so that point needs arcs with jet parameters; the plane t1 = 0 and the apex are
+   where a family onto V(P1) can still come from. Because K2 is globally radical there, containment of the generic point of every component
    of V(K2) in the fiber gives F(I) = k[y]/K2 in every degree.
 7. **E8-bar -> N- closing order** (no new run). The degree-4 ladder is complete: r_12 = 357, r_13 = r_14 = 440,
    r_15 = 495 (`../../evidence/a5-exceptional-fibers/forecasts/trends-2026-11-06.md`, d = 4 row; `n15-laptop/`), and
@@ -471,6 +489,46 @@ tests; the ledger row it enters is named where one exists.
     tested by exact rank at orders 4 and 5.
 12. **A fresh degree-2 replay for Iso and E8-bar**, so the upper bound K2 contained in L rests on a replay rather than
     on retained receipts alone (W8 has one at 32009).
+
+### Cayley-Dickson tower links (2026-11-09)
+
+An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures.
+Survives, computed: the Klein sign group of every fiber is the stabilizer of its base point in (Z/2)^4 x {+-1} through
+e_a e_b = sigma(a, b) e_(a xor b), reproducing the measured flip sets on 11 headers; nonzero nullities through level 6
+are multiples of 4 and the doubling rule holds in 420 of 420 cases. Hypothesis pending a replay with registered QRNG seeds and
+retained scripts (the analysis used fixed seeds and discarded its floating-point scripts): the base-point
+stabilizer has a rank-3 torus with 9 distinct normal weights and an SL(2) that fixes a quaternion subalgebra of each
+octonion block under G_2 = Aut(O). Refuted or unsupported: the icosahedral, McKay and E8 readings (here A_5 is the
+32-dimensional algebra and E8 a stratum label), a tensor-square model of the last jump, and the small-number matches
+(the chart dimension 4 holds by construction). Next: an exact torus over Q inside the Klein centralizer, then a
+weighted standard basis of J in that slice, which tests whether the Singular export that holds 97 to 99 percent of the
+E8-bar, X- and VB wall time shrinks.
+
+### Run plan by host (2026-11-09)
+
+Reviewed by Codex and Grok ([findings-deep](../../archive/reviews/findings-deep/README.md)). The build host runs no
+heavy job (WSL guest of an active desktop). Each machine's concurrent jobs fit 84 percent of its GPU memory plus
+52.5/64 of its RAM, the two added because a GPU job spills into RAM (owner budget, 2026-11-09): the laptop about
+13.4 GiB GPU + 52.5 GB RAM, OCI A1 about 9.5 GiB RAM, the build host about 10.1 GiB GPU + 38.6 GiB RAM, a Kaggle session the same shares
+of its own GPU and RAM within its time limit. A GPU-only and a CPU-only job may share a machine, and every host stays
+commissioned after a run until its data is pulled and checked. Each sign pair needs one sign per prime: the sign isomorphisms transport
+every certificate. A ladder needs only its closing N and the N below it once the closing order is known (3d + 1 on
+Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
+
+| Item | Rows | Cost (evidence) | Host |
+|---|---|---|---|
+| E8-bar -> VB degree 4, p = 32029 | A5-111 | done: r_13 = 155, 60 s, 179 MiB | laptop |
+| E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); N = 19 and 18 fix the closing order | laptop, N = 19 and 18 running |
+| Degree-3 component of E8-bar -> VB: remaining charts (t7 = 1, k^2 + 3 = 0, singular points) | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
+| Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
+| E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101 | pilot cost unmeasured (the degree-2 W8 receipt: 5,619 s, 6.7 GB) | laptop |
+| Characteristic 0: degree-2 K2 by rational reconstruction, then exact membership | roadmap 10 | hours | laptop |
+| Kernel-plane limits along the arcs | A5-029 | one-arc pilot first | laptop |
+| Engine v12: in-place update, streamed L, free-column storage, 2-byte panels, then a GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the products and closure stages, which dominate W8 and Iso, not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance: W8 degree 4 byte-equal, preflight within 1.3x | laptop |
+| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | paid VM (at least 64 GiB) by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
+| W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
+
+No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.
 
 Retired from this list on 2026-11-08: the W8 -> N- support decomposition (the C30 proof decides W8 without it), the
 W8 degree-6 rank run as a decision run.
