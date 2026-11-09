@@ -186,7 +186,7 @@ differs from it only in the `cd_core.py` digest.
 | Algebra and proofs | `gororoba_quantum/cd_core.py`, [algebra_circuit_rules.md](notes/algebra_circuit_rules.md), [formal_certificates](evidence/formal_certificates/README.md) |
 | Sources and papers | [INDEX.md](INDEX.md), [SOURCES.json](SOURCES.json), `verify_sources.py` |
 | CI and gates | [ci/AGENTS.md](../ci/AGENTS.md), [ci-runtime.md](runbooks/ci-runtime.md) |
-| Pull-request reviews | [AGENTS.md](../AGENTS.md) "Reviews and merges", [codex-review-loop.md](runbooks/codex-review-loop.md), [codex-review-stalls.md](runbooks/codex-review-stalls.md), `scripts/codex_review_wait.sh` |
+| Pull-request reviews | [AGENTS.md](../AGENTS.md) "Reviews and merges", [copilot-instructions.md](../.github/copilot-instructions.md), [codex-review-loop.md](runbooks/codex-review-loop.md), [codex-review-stalls.md](runbooks/codex-review-stalls.md), `scripts/codex_review_wait.sh` |
 | State and records | [research_state.json](state/research_state.json), [QPU_RUN_CENSUS.md](state/QPU_RUN_CENSUS.md), [AGENTS.md](../AGENTS.md) "Records" |
 
 ## Files by area
