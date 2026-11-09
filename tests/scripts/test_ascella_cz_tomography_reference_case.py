@@ -20,7 +20,7 @@ def planned_fixture(
     job: str, hom: Any, transmittance: Any = 5.51, status: str = "available", jobs: int = 0
 ) -> dict[str, Any]:
     policy = case.submission_policy(job)
-    perfs = {"HOM (%)": hom, "Transmittance (%)": transmittance}
+    perfs = {"HOM (%)": hom, "Transmittance (%)": transmittance, "Clock (MHz)": 13.33}
     return {
         "case": job,
         "cases_sha256": case.qd_platform.sha256_bytes((case.FAMILY_DIR / job / "cases.json").read_bytes()),
@@ -307,3 +307,25 @@ def test_a_plan_from_a_run_directory_keeps_its_identity() -> None:
     case.admit("job-00", planned, None)
     with pytest.raises(case.qd_platform.PlatformError, match="is not the retained job-01"):
         case.admit("job-01", {**planned, "case": "job-01"}, complete_run(), LATER)
+
+
+def test_a_slower_clock_that_passes_max_duration_is_refused() -> None:
+    planned = planned_fixture("job-00", 91.0)
+    for key in ("perfs_at_plan", "perfs_at_estimate"):
+        planned[key] = {**planned[key], "Clock (MHz)": 12.0}
+    with pytest.raises(case.qd_platform.PlatformError, match="at the plan's figures"):
+        case.admit("job-00", planned, None)
+    planned["perfs_at_plan"] = planned["perfs_at_estimate"] = {**planned["perfs_at_plan"], "Clock (MHz)": None}
+    with pytest.raises(case.qd_platform.PlatformError, match="reads Clock"):
+        case.admit("job-00", planned, None)
+
+
+def test_a_refused_post_is_no_attempt(tmp_path: Path) -> None:
+    run = tmp_path / f"1-qpu_ascella-{case.FAMILY}-job-00"
+    run.mkdir()
+    (run / "job-body.json").write_text("{}")
+    (run / "submission-state.json").write_text(json.dumps({"phase": "refused"}))
+    case.prior_attempts("job-00", tmp_path)
+    (run / "submission-state.json").write_text(json.dumps({"phase": "post_outcome_unknown"}))
+    with pytest.raises(RuntimeError, match="is not collected"):
+        case.prior_attempts("job-00", tmp_path)

@@ -1481,7 +1481,8 @@ def analyze(
     eligible = np.asarray([tallies[row["name"]]["eligible"] for row in rows], dtype=float)
     samples = np.asarray([tallies[row["name"]]["samples"] for row in rows], dtype=float)
     shots = np.asarray([tallies[row["name"]]["shots"] for row in rows], dtype=float)
-    scale = np.asarray([pool["scales"][row["job"]] for row in rows])
+    # schedule() labels each row with JOBS by parity; a successor's job names map onto them in order.
+    scale = np.asarray([pool["scales"][jobs[JOBS.index(row["job"])]] for row in rows])
     seed = bootstrap_seed_of(runs[0]) if seed is None else seed
     process = tomography(eligible, samples, shots, scale, np.random.default_rng(seed), replicates)
     process["bootstrap"]["seed"] = seed

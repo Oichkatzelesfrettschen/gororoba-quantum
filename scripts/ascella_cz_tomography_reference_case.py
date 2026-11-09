@@ -647,6 +647,12 @@ def admit(
         floor = float(policy["transmittance_percent"]["at_least"])
         t = float(figures["Transmittance (%)"])
         require(t >= floor, f"{job}: transmittance {t:g} % is below the {floor:g} % the caps need")
+        clock = perfs.get("Clock (MHz)")
+        if isinstance(clock, bool) or not isinstance(clock, int | float) or not math.isfinite(clock) or clock <= 0:
+            raise RuntimeError(f"{job}: the plan reads Clock (MHz) {clock!r}")
+        # The floor assumes the read's clock; the plan's own clock and transmittance bound the time.
+        worst = worst_case_seconds(job, {"Clock (MHz)": float(clock), "Transmittance (%)": t})
+        require(worst <= MAX_DURATION, f"{job}: every iteration at its cap takes {worst:.2f} s at the plan's figures")
         statuses = planned["status_at_plan"]
         require(all(statuses.get(k) in SUBMIT_STATUSES for k in ("explorer", "processor")), f"{job}: status {statuses}")
         counters = planned["availability_at_plan"]
@@ -697,6 +703,12 @@ def prior_attempts(job: str, runs_dir: Path = RUNS_DIR) -> None:
     for run in sorted(runs_dir.glob(f"*-{PLATFORM.replace(':', '_')}-{FAMILY}-{job}")):
         if not any((run / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             continue
+        state_path = run / "submission-state.json"
+        if not (run / "submission.json").exists() and state_path.exists():
+            # qd_platform.submit records phase "refused" when the service definitively rejected the POST: no job
+            # exists, so the directory is an audit record and no attempt.
+            if json.loads(state_path.read_text(encoding="utf-8")).get("phase") == "refused":
+                continue
         posted.append(run)
         name = run.relative_to(runs_dir)
         require((run / "results.json").exists(), f"{job}: the earlier attempt {name} is not collected")
@@ -880,6 +892,7 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     if short and isinstance(process, dict):
         process["status"] = "descriptive"
         process["short_settings"] = short
+        process["pooling"]["status"] = "descriptive"
         process["pooling"]["reason"] = f"{len(short)} settings stopped at max_shots short of their max_samples"
     return record
 
