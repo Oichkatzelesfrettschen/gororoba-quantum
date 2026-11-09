@@ -105,9 +105,10 @@ each reads exactly 4.000 on both devices:
 | e1 + e26 (4), e2 + e27 (4) | k0 2, k4 0, k8 2, k12 0 | 0 | all four |
 | e1 + e17 (0), cocycle-free e1 + e18 (-2) | no block of nullity 4 | 0 | all four |
 
-Ten of the 32 block estimates per device are therefore identities. Rule (2)'s agreement within 0.15 of the integer
-on e1 + e18 and its twin comes from block k0 alone (N_hat 0.018 and 0.025 on Fez, 0.017 and 0.031 on Marrakesh), and
-on e1 + e10 and e1 + e24 from two blocks; rule (3)'s twin difference compares the two k0 blocks. Resolution (rule 1)
+Ten of the 32 block estimates per device are therefore identities, in the raw and in the readout-corrected summaries
+alike. Rule (2)'s agreement within 0.15 of the integer on e1 + e18 and its twin comes from block k0 alone
+(readout-corrected N_hat -0.020 and -0.011 on Fez, -0.010 and 0.005 on Marrakesh; raw 0.018 and 0.025, 0.017 and
+0.031), and on e1 + e10 and e1 + e24 from two blocks; rule (3)'s twin difference compares the two k0 blocks. Resolution (rule 1)
 still tests every block, because V > 0 and all 8 bin signs are measured on a block fixed by its signs as on any other.
 
 # Cross-platform runs: Tuna-17 and Ascella (2026-11-07)

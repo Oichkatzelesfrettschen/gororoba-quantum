@@ -243,7 +243,7 @@ def test_visibility_gap_reports_zero_visibility_as_undefined() -> None:
     _check(math.isnan(split["nullity_estimate"]) and math.isnan(split["bias"]), "N_hat and bias are undefined")
 
 
-def test_visibility_gap_marks_an_all_misaligned_sign_pattern_as_fixed() -> None:
+def test_visibility_gap_marks_an_all_minus_block_as_fixed() -> None:
     split = pca.visibility_gap(np.array([-0.4, -0.2, -0.6, -0.1]), -np.ones(4))
     _check(split["fixed_by_signs"] and split["weight"] == 0.0, "no bin of sign +1")
     _check(math.isclose(split["nullity_estimate"], -2.0, rel_tol=1e-15), "N_hat equals the ideal -2")
