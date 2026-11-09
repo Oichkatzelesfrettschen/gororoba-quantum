@@ -207,7 +207,7 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
   To execute a target unitary $U$ on an arbitrary input state $|\text{IN}\rangle$, the transpiler computes the
   permutation matrix $U_{\text{perm}}$ such that $U_{\text{perm}} |\mathbf{s}_{\text{default}}\rangle = |\text{IN}\rangle$,
   and synthesizes the composite unitary $U' = U \cdot U_{\text{perm}}$.
-- **Clear-box physical crosstalk transpilation (Fyrillas et al., Optica 2024)**:
+- **Clear-box physical chip characterization (Fyrillas et al., Optica 2024)**:
   Rather than using black-box neural networks (which lack interpretability and physical error bounds), Quandela
   implements an exact physical forward model:
   $$\hat{\boldsymbol{\phi}} = A \cdot \mathbf{V}^{\odot 2} + \mathbf{b}$$
@@ -221,7 +221,8 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
   - Dark count rate: under $20\text{ Hz}$ at baseline; live device telemetry shows operational dark counts
     ranging from $76$ to $281\text{ counts/s}$ (peaking up to $1428\text{--}1885\text{ counts/s}$ on mode 10).
 - **Readout electronics**: Swabian Instruments Time Tagger (time-to-digital converter, TDC).
-  - Coincidence window: exactly $1\text{ ns}$.
+  - Coincidence integration window: $1\text{ ns}$ (the Supplementary specifies the TDC and the $1\text{ ns}$ coincidence window;
+    the underlying hardware implementation details are not stated, making earlier 'sub-nanosecond FPGA' claims unsupported).
   - Post-processing samples $N$-photon ($1 \le N \le 6$) coincidence distributions across all 12 channels.
   - Overall optical setup efficiency: $(8.4 \pm 0.2)\%$ at publication (live reported transmittance $5.52\%$).
   - 6-photon coincidence count rate: $4\text{ Hz}$ at $80\text{ MHz}$ pump rate.
@@ -340,7 +341,7 @@ The following works constitute the primary literature corpus for Quandela, Ascel
 quantum computing, verified against Crossref, DataCite, and repository holdings:
 
 ### 5.1 Foundational Textbooks and Monographs
-1. **Kok, P., & Lovett, B. W.** (2010). *Introduction to Optical Quantum Information Processing*. Cambridge University Press. ISBN: 978-0-521-51914-4. DOI: 10.1017/CBO9780511781223.
+1. **Kok, P., & Lovett, B. W.** (2010). *Introduction to Optical Quantum Information Processing*. Cambridge University Press. ISBN: 978-0-521-51914-4. DOI: 10.1017/CBO9781139193658.
    - *Core reference for linear optical quantum information, Fock space algebra, HOM interference, beam splitter unitary representations, and KLM gate implementations.*
 2. **Gerry, C. C., & Knight, P. L.** (2005). *Introductory Quantum Optics*. Cambridge University Press. ISBN: 978-0-521-52735-4. DOI: 10.1017/CBO9780511791239.
    - *Foundational treatment of electromagnetic field quantization, creation/annihilation operators, single-photon states, and optical interferometers.*
@@ -406,9 +407,9 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *The core software paper introducing Perceval, exqalibur, SLOS, circuit composition, and simulation backends.*
 29. **Fyrillas, A., Faure, O., Maring, N., Senellart, J., & Belabas, N.** (2024). "Scalable machine learning-assisted clear-box characterization for optimally controlled photonic circuits". *Optica* 11(3), 427-436. DOI: 10.1364/OPTICA.512148. arXiv: 2310.15349.
     - *Physical forward-model characterization and parameter fitting ($\hat{\boldsymbol{\phi}} = A \mathbf{V}^{\odot 2} + \mathbf{b}$ for thermal crosstalk and static phases) using classical machine learning, explicitly contrasted with black-box neural networks.*
-30. **Fyrillas, A., et al.** (2024). "Certified Randomness in Tight Space". *PRX Quantum* 5, 020348. DOI: 10.1103/PRXQuantum.5.020348. arXiv: 2302.00035.
+30. **Fyrillas, A., et al.** (2024). "Certified Randomness in Tight Space". *PRX Quantum* 5, 020348. DOI: 10.1103/PRXQuantum.5.020348. arXiv: 2301.03536.
     - *Device-independent certified randomness protocols executed natively on photonic quantum processors.*
-31. **Fyrillas, A., et al.** (2025). "Resource-efficient crosstalk mitigation in universal integrated interferometers with induced phase shifters". arXiv: 2506.05988.
+31. **Fyrillas, A., et al.** (2025). "Resource-efficient crosstalk mitigation for the high-fidelity operation of photonic integrated circuits with induced phase shifters". arXiv: 2506.05988.
     - *Demonstrates compensation of thermal crosstalk across universal multiport interferometers by adding virtual control degrees of freedom.*
 32. **Tully, J., et al.** (2026). "Nested Walsh parity-check filters on an eight-mode photonic register". arXiv: 2606.18408.
     - *Hardware characterization of nested Walsh parity-check filters on an eight-mode single-photon register executed on a cloud-accessible quantum processor.*
