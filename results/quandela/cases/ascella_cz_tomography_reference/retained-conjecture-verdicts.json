@@ -42,8 +42,8 @@
   },
   {
    "band": {
-    "lower": 0.8964377814633189,
-    "upper": 0.9311191939720981
+    "lower": 0.9038853788015274,
+    "upper": 0.9419870198655921
    },
    "id": "rail-ratio-reads-hom",
    "observed": null,
@@ -59,6 +59,16 @@
    "observed": null,
    "prediction": 0.0,
    "verdict": "falsified"
+  },
+  {
+   "band": {
+    "lower": -0.018365091465770852,
+    "upper": 0.03317647139863856
+   },
+   "id": "record-overlaps-agree",
+   "observed": null,
+   "prediction": 0.0,
+   "verdict": "survives"
   },
   {
    "band": {
@@ -162,7 +172,53 @@
    ],
    "point": 0.9137840022664845
   },
-  "rail_rate_ratio": 1.344863990934062
+  "rail_rate_ratio": 1.344863990934062,
+  "record_model": {
+   "difference": {
+    "interval": [
+     -0.018365091465770852,
+     0.03317647139863856
+    ],
+    "point": 0.006878567972024796
+   },
+   "fit": {
+    "fidelity_max_residual": 8.011905047955459e-06,
+    "fidelity_range": [
+     0.6241138576803187,
+     0.9372309242425781
+    ],
+    "grid": [
+     0.7,
+     0.7375,
+     0.775,
+     0.8125,
+     0.85,
+     0.8875,
+     0.925,
+     0.9625,
+     1.0
+    ],
+    "rail_ratio_max_residual": 2.6961010416437503e-05,
+    "rail_ratio_range": [
+     1.064315411427565,
+     2.156704276126727
+    ]
+   },
+   "overlap_from_fidelity": {
+    "interval": [
+     0.9115961873978536,
+     0.9461325076713082
+    ],
+    "point": 0.9298205797718047
+   },
+   "overlap_from_rail_rates": {
+    "interval": [
+     0.9038853788015274,
+     0.9419870198655921
+    ],
+    "point": 0.9229420117997799
+   }
+  }
  },
  "plan_reads": {
   "HOM (%)": 87.56,

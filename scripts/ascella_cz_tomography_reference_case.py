@@ -134,14 +134,20 @@ CONJECTURES = (
     },
     {
         "id": "rail-ratio-reads-hom",
-        "statement": "the rail-basis double ratio D = R(10) R(01) / (R(00) R(11)) equals 5 - 4V, so M_R = (5 - D) / 4 "
-        "reads the platform's HOM",
-        "falsified_when": "the M_R interval excludes V",
+        "statement": "the rail overlap inverted through the record noise model at the plan reads equals the "
+        "platform's HOM V",
+        "falsified_when": "the interval of the record-model M_R excludes V",
     },
     {
         "id": "two-overlaps-agree",
-        "statement": "M_F = (4 F - 1) / (2 F + 1) equals M_R, as overlap-only error requires",
+        "statement": "overlap-only closure: M_F = (4 F - 1) / (2 F + 1) equals M_R = (5 - D) / 4",
         "falsified_when": "the interval of M_F - M_R on the joint replicates excludes 0",
+    },
+    {
+        "id": "record-overlaps-agree",
+        "statement": "record-model closure: the overlaps that the record noise model at the plan reads assigns to the "
+        "measured F and to the measured D agree, so one overlap explains both once g2, loss and dark counts enter",
+        "falsified_when": "the interval of the record-model M_F - M_R on the joint replicates excludes 0",
     },
     {
         "id": "noise-model-ceiling",
@@ -474,7 +480,10 @@ def preregistered() -> dict[str, Any]:
             "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
             "from_rail_rates": "M_R = (5 - D) / 4, D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate "
             "of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
-            "bootstrap": "both on the replicates of the primary bootstrap, so their difference has a joint interval",
+            "record_model": "the same two quantities inverted through the record noise variant at the plan reads: "
+            "F(M) and D(M) evaluated at overlaps 0.70 to 1.00 in steps of 0.0375, F fitted linear-fractional and D "
+            "quadratic, each inverted by monotone interpolation on 3001 points",
+            "bootstrap": "all on the replicates of the primary bootstrap, so each difference has a joint interval",
         },
         "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock "
         "come from job-00's perfs_at_plan; the noise pipeline runs at those reads",
@@ -1093,14 +1102,49 @@ def overdispersion(
     }
 
 
+RECORD_GRID = tuple(round(0.70 + 0.0375 * k, 4) for k in range(9))
+
+
+def record_inversion(perfs: Mapping[str, Any]) -> dict[str, Any]:
+    """The record noise variant's process fidelity F(M) and rail ratio D(M) on RECORD_GRID overlaps at the pair's g2,
+    transmittance, clock and dark counts, fitted (F linear-fractional, D quadratic) and inverted on a fine grid by
+    monotone interpolation. An observed value outside the fitted range maps to the nearer end, flagged by the fit's
+    range. The fit residuals and ranges are recorded so a reader can see where the inversion is trusted."""
+    points = [noise_model_at({**perfs, "HOM (%)": 100.0 * m})[FORECAST_RECORD_VARIANT] for m in RECORD_GRID]
+    grid = np.asarray(RECORD_GRID)
+    fidelity = np.asarray([p["process_fidelity"] for p in points])
+    ratio = np.asarray([p["rail_rate_ratio"] for p in points])
+    design = np.column_stack([np.ones_like(grid), grid, -grid * fidelity])
+    p0, q, r = np.linalg.lstsq(design, fidelity, rcond=None)[0]
+    quadratic = np.polyfit(grid, ratio, 2)
+    fine = np.linspace(grid[0], grid[-1], 3001)
+    f_fine = (p0 + q * fine) / (1.0 + r * fine)
+    d_fine = np.polyval(quadratic, fine)
+    require(bool(np.all(np.diff(f_fine) > 0)), "the record F(M) is not increasing over the inversion grid")
+    require(bool(np.all(np.diff(d_fine) < 0)), "the record D(M) is not decreasing over the inversion grid")
+    return {
+        "from_fidelity": lambda value: float(np.interp(value, f_fine, fine)),
+        "from_rail_ratio": lambda value: float(np.interp(value, d_fine[::-1], fine[::-1])),
+        "fit": {
+            "grid": list(RECORD_GRID),
+            "fidelity_max_residual": float(np.abs((p0 + q * grid) / (1.0 + r * grid) - fidelity).max()),
+            "rail_ratio_max_residual": float(np.abs(np.polyval(quadratic, grid) - ratio).max()),
+            "fidelity_range": [float(f_fine[0]), float(f_fine[-1])],
+            "rail_ratio_range": [float(d_fine[-1]), float(d_fine[0])],
+        },
+    }
+
+
 def overlap_estimates(
     runs: Sequence[Path],
     seed: int,
+    perfs: Mapping[str, Any],
     loader: Callable[[Path], dict[str, Any]] | None = None,
     jobs: Sequence[str] = JOBS,
 ) -> dict[str, Any]:
-    """The two preregistered overlap estimates of a complete pool with joint bootstrap intervals: M_F from the process
-    fidelity and M_R = (5 - D) / 4 from rail_rate_ratio, on the same replicates tomo.tomography draws from seed."""
+    """The preregistered overlap estimates of a complete pool with joint bootstrap intervals, on the replicates
+    tomo.tomography draws from seed: M_F and M_R through the overlap-only laws, and the same two through the record
+    noise model at the pair's plan reads (record_inversion)."""
     loaded = [(loader or load_run)(run) for run in runs]
     tallies: dict[str, dict[str, Any]] = {}
     for entry in loaded:
@@ -1121,7 +1165,23 @@ def overlap_estimates(
     m_f_point = overlap_from_fidelity(tomo.estimate_rates(point)["process_fidelity"])
     m_r_point = (5.0 - rail_rate_ratio(point)) / 4.0
     level = tomo.BOOTSTRAP_LEVEL
+    inverse = record_inversion(perfs)
+    f_point, d_point = tomo.estimate_rates(point)["process_fidelity"], rail_rate_ratio(point)
+    rf = [inverse["from_fidelity"](float(f)) for f in fidelities]
+    rr = [inverse["from_rail_ratio"](rail_rate_ratio(replicate)) for replicate in batch]
+    rf_point, rr_point = inverse["from_fidelity"](f_point), inverse["from_rail_ratio"](d_point)
+
+    def summary(point_value: float, replicates: Sequence[float]) -> dict[str, Any]:
+        return {"point": point_value, "interval": tomo.intervals(point_value, replicates, level)[tomo.INTERVAL_KIND]}
+
+    record_model = {
+        "fit": inverse["fit"],
+        "overlap_from_fidelity": summary(rf_point, rf),
+        "overlap_from_rail_rates": summary(rr_point, rr),
+        "difference": summary(rf_point - rr_point, [a - b for a, b in zip(rf, rr, strict=True)]),
+    }
     return {
+        "record_model": record_model,
         "overlap_from_fidelity": {
             "point": m_f_point,
             "interval": tomo.intervals(m_f_point, m_f, level)[tomo.INTERVAL_KIND],
@@ -1171,6 +1231,7 @@ def noise_model_at(perfs: Mapping[str, Any]) -> dict[str, dict[str, float]]:
         out[name] = {
             "process_fidelity": tomo.estimate_rates(rates)["process_fidelity"],
             "control_rate_ratio": control_rate_ratio(rates),
+            "rail_rate_ratio": rail_rate_ratio(rates),
         }
     return out
 
@@ -1215,6 +1276,10 @@ def conjecture_verdicts(process: Mapping[str, Any], overlaps: Mapping[str, Any],
         low, high = overlaps[key]["interval"]
         return band(low, high)
 
+    def record_interval(key: str) -> dict[str, float | None]:
+        low, high = overlaps["record_model"][key]["interval"]
+        return band(low, high)
+
     # (prediction, band, observed): a two-sided interval test asks whether the band holds the prediction; a band test
     # with an observed value asks whether the band holds the observation.
     tests: dict[str, tuple[float, dict[str, float | None], float | None]] = {
@@ -1222,8 +1287,9 @@ def conjecture_verdicts(process: Mapping[str, Any], overlaps: Mapping[str, Any],
         "g2-corrected-overlap-law": (overlap_law(corrected), band(*fidelity), None),
         "noise-model-record-variant": (record["process_fidelity"], band(*fidelity), None),
         "noise-model-g2-corrected-variant": (g2_variant["process_fidelity"], band(*fidelity), None),
-        "rail-ratio-reads-hom": (v, interval("overlap_from_rail_rates"), None),
+        "rail-ratio-reads-hom": (v, record_interval("overlap_from_rail_rates"), None),
         "two-overlaps-agree": (0.0, interval("difference"), None),
+        "record-overlaps-agree": (0.0, record_interval("difference"), None),
         "noise-model-ceiling": (ceiling, band(fidelity[0], None), None),
         "control-ratio-lossless": (1.0, interval("control_rate_ratio"), None),
         "control-ratio-noise-model": (record["control_rate_ratio"], interval("control_rate_ratio"), None),
@@ -1270,8 +1336,8 @@ def retained_verdicts() -> dict[str, Any]:
     record = tomo.analyze(runs, forecast_path=None)
     loaded = [tomo.load_run(run) for run in runs]
     _, bootstrap = tomo.seed_plan()
-    overlaps = overlap_estimates(runs, bootstrap[1], loader=tomo.load_run, jobs=tomo.JOBS)
     perfs = plan_reads(loaded)
+    overlaps = overlap_estimates(runs, bootstrap[1], perfs, loader=tomo.load_run, jobs=tomo.JOBS)
     return {
         "schema": "qd-cz-tomography-reference-retained-verdicts-v1",
         "runs": list(TOMOGRAPHY_RUNS),
@@ -1298,7 +1364,7 @@ def analyze(runs: Sequence[Path]) -> dict[str, Any]:
     if isinstance(process, dict):
         loaded = [load_run(run) for run in runs]
         perfs = plan_reads(loaded)
-        overlaps = overlap_estimates(runs, seed_plan()["bootstrap"][1])
+        overlaps = overlap_estimates(runs, seed_plan()["bootstrap"][1], perfs)
         record["overlap_estimates"] = overlaps
         record["hom_offset_from_preferred"] = {
             entry["job"]: float(entry["perfs"]["HOM (%)"]) - HOM_PREFERRED for entry in loaded

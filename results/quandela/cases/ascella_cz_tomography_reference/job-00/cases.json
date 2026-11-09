@@ -35812,7 +35812,8 @@
   "overlap_estimators": {
    "from_fidelity": "M_F = (4 F - 1) / (2 F + 1), the inverse of F_pro = (1 + M) / (2 (2 - M))",
    "from_rail_rates": "M_R = (5 - D) / 4, D = r(10) r(01) / (r(00) r(11)), r(xy) the absolute eligible rate of input xy summed over its four outcomes and averaged over all nine readout bases, after pooling",
-   "bootstrap": "both on the replicates of the primary bootstrap, so their difference has a joint interval"
+   "record_model": "the same two quantities inverted through the record noise variant at the plan reads: F(M) and D(M) evaluated at overlaps 0.70 to 1.00 in steps of 0.0375, F fitted linear-fractional and D quadratic, each inverted by monotone interpolation on 3001 points",
+   "bootstrap": "all on the replicates of the primary bootstrap, so each difference has a joint interval"
   },
   "plan_reads": "V, g2 and transmittance are the means of the two jobs' perfs_at_plan; dark counts and clock come from job-00's perfs_at_plan; the noise pipeline runs at those reads",
   "conjectures": [
@@ -35838,13 +35839,18 @@
    },
    {
     "id": "rail-ratio-reads-hom",
-    "statement": "the rail-basis double ratio D = R(10) R(01) / (R(00) R(11)) equals 5 - 4V, so M_R = (5 - D) / 4 reads the platform's HOM",
-    "falsified_when": "the M_R interval excludes V"
+    "statement": "the rail overlap inverted through the record noise model at the plan reads equals the platform's HOM V",
+    "falsified_when": "the interval of the record-model M_R excludes V"
    },
    {
     "id": "two-overlaps-agree",
-    "statement": "M_F = (4 F - 1) / (2 F + 1) equals M_R, as overlap-only error requires",
+    "statement": "overlap-only closure: M_F = (4 F - 1) / (2 F + 1) equals M_R = (5 - D) / 4",
     "falsified_when": "the interval of M_F - M_R on the joint replicates excludes 0"
+   },
+   {
+    "id": "record-overlaps-agree",
+    "statement": "record-model closure: the overlaps that the record noise model at the plan reads assigns to the measured F and to the measured D agree, so one overlap explains both once g2, loss and dark counts enter",
+    "falsified_when": "the interval of the record-model M_F - M_R on the joint replicates excludes 0"
    },
    {
     "id": "noise-model-ceiling",

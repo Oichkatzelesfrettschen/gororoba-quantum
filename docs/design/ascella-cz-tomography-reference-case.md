@@ -2,7 +2,7 @@
 
 This is the written case for two qpu:ascella jobs of 72 template iterations that repeat the CZ process tomography of
 [ascella-cz-process-tomography-case.md](ascella-cz-process-tomography-case.md) at any calibration whose HOM visibility
-lies within 6.8420696 percentage points of 90 %, and preregisters twelve conjectures the pair decides.
+lies within 6.8420696 percentage points of 90 %, and preregisters thirteen conjectures the pair decides.
 [scripts/ascella_cz_tomography_reference_case.py](../../scripts/ascella_cz_tomography_reference_case.py) builds the frozen requests in
 [results/quandela/cases/ascella_cz_tomography_reference](../../results/quandela/cases/ascella_cz_tomography_reference/job-00/cases.json),
 checks them, forecasts the outcome over the admitted HOM band and gates every submission. Nothing has been sent;
@@ -239,7 +239,9 @@ near-zero cells (they sum to -160 expected events), which is why the reference s
 freedom; the synthetic pairs carry the same bias.
 
 The scatter test is a model check, not a correction. Every conjecture is judged on the primary bootstrap's 95 %
-interval. When the model check fails, every other verdict is reported as conditional on that failure. A single
+interval. When the model check fails, every other verdict is reported as conditional on that failure. The
+reference's 95 % range spans a factor of 3.5, so the check catches only gross scatter, and its survival does not
+validate the model. A single
 residual statistic cannot widen intervals soundly, because a systematic error inside the model space moves the fitted
 Choi matrix and leaves the residual unchanged. Each `cases.json` states the rule under `preregistered.verdict_rule`,
 the reads the predictions use under `preregistered.plan_reads`, and the reference under
@@ -251,14 +253,21 @@ the reads the predictions use under `preregistered.plan_reads`, and the referenc
 writes [retained-conjecture-verdicts.json](../../results/quandela/cases/ascella_cz_tomography_reference/retained-conjecture-verdicts.json);
 `--check` recomputes it. The retained process fidelity is 0.849, with interval 0.828 to 0.869.
 
+The two overlap estimates come in two forms. The overlap-only form inverts the laws above, which hold at g2 = 0 and no
+loss. The record-model form inverts the record noise variant at the pair's own plan reads. That variant's F(M) and
+D(M) are evaluated at overlaps 0.70 to 1.00, fitted (F linear-fractional to 8e-6, D quadratic to 3e-5) and inverted
+on each bootstrap replicate. Multiphoton emission alone pulls the overlap-only forms apart, so only the record-model
+form tests whether one overlap explains both the fidelity and the rates.
+
 | Conjecture | Prediction (retained) | Held against (retained) | Retained verdict |
 |---|---|---|---|
 | Overlap is the only error: F = (1 + M)/(2(2 - M)), M = V | 0.834 | F 0.828 to 0.869 | survives |
 | The same law at M = min(1, (V + g2)/(1 - g2)) | 0.876 | F | falsified |
 | Noise pipeline, record variant (source, loss, dark counts) | 0.788 | F | falsified |
 | Noise pipeline, g2-corrected overlap variant | 0.826 | F | falsified, by 0.002 |
-| The rail ratio reads the platform HOM: M_R = V | 0.8756 | M_R 0.914, 0.896 to 0.931 | falsified |
-| The two overlaps agree: M_F = M_R | 0 | M_F - M_R -0.025, -0.049 to -0.001 | falsified |
+| The rail ratio reads the platform HOM: record-model M_R = V | 0.8756 | M_R 0.923, 0.904 to 0.942 | falsified |
+| Overlap-only closure: M_F = M_R through the g2 = 0 laws | 0 | M_F - M_R -0.025, -0.049 to -0.001 | falsified |
+| Record-model closure: M_F = M_R through the record variant | 0 | M_F - M_R 0.007, -0.018 to 0.033 | survives |
 | No overlap beats M = 1: F at or below the record variant at HOM 100 % | 0.937 | lower end of F | survives |
 | Balanced rails: r(11)/r(01) = 1 | 1 | 1.009, 0.969 to 1.051 | survives |
 | r(11)/r(01) takes the record variant's value (lost-twin multiphoton events) | 1.038 | same | survives |
@@ -266,15 +275,19 @@ writes [retained-conjecture-verdicts.json](../../results/quandela/cases/ascella_
 | Constant variance factor: the ratio stays at the retained 1.44 | 1.44 | 1.08 to 1.80 | survives by construction |
 | Relative systematic per rate: ratio - 1 grows with events per rate | 1.44 | 1.08 to 1.80 | survives by construction |
 
-The twelve verdicts read four observed summaries: the process fidelity, the rail ratio with its joint difference,
-the control ratio and the Pearson statistic. They are distinct benchmarks on those summaries, not twelve independent
-pieces of evidence. Five fall on the retained pair. The overlap-only law survives, and every model that adds g2 to
-the overlap overshoots or undershoots the measured fidelity. The rail overlap, 0.914, sits 3.8 points above the
-platform's HOM read and 2.5 points above the fidelity overlap M_F = 0.888; under overlap-only error the two would
-agree, so an error beyond overlap lowers the fidelity, or the rail rates carry a setting-dependent factor the double
-ratio does not cancel. The new pair carries about six times the events per setting. Its overdispersion ratio
-separates a constant factor (1.44) from a relative systematic per rate (about 1 + 0.44 x 6.2 = 3.7), and its
-narrower intervals test the two overlap estimates again at a new HOM.
+The thirteen verdicts read four observed summaries: the process fidelity, the rail ratio with its joint
+differences, the control ratio and the Pearson statistic. They are distinct benchmarks on those summaries, not
+thirteen independent pieces of evidence. On the retained pair they tell one story. The record noise model fits both
+summaries at a single overlap: M_F = 0.930 (0.912 to 0.946) from the fidelity and M_R = 0.923 (0.904 to 0.942) from
+the rates. That overlap sits about 5 points above the platform's HOM read of 87.56 % and 0.7 points under the model's
+0.937 ceiling. Every prediction that feeds the HOM read in as the overlap misses: the record variant (0.788) by 0.04,
+the rail-ratio reading by 3 points. The overlap-only closure fails because it leaves out g2, which the record-model
+closure restores. Hypothesis: the dashboard HOM understates the overlap of the photon pair on chip modes 0 and 2. The
+ledger's sources record that pair overlap varies with emission delay and source pair. The new pair carries about six
+times the events per setting and runs at a new HOM read. If the record-model overlap again sits above the read by a
+similar margin, the offset belongs to the platform's HOM figure; if it tracks the read, the retained offset belonged
+to that calibration. Its overdispersion ratio separates a constant factor (1.44) from a relative systematic per rate
+(about 1 + 0.44 x 6.2 = 3.7).
 
 The workspace's algebraic lineages (de Marrais box-kites, Hurwitz, Cayley-Dickson, Moreno and the Pfaffian
 reduction, Hilbert-Samuel fibers, Levratti) predict no rate of this measurement: the only matrix functions it reads
