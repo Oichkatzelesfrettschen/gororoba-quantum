@@ -333,9 +333,12 @@ probe with a known ideal value and a mutation that changes it.
 5. Close the running acquisitions:
    - the Tuna-17 6-CZ null-block case ran (PR #789) and its preregistered rule read unresolved_batch, so row 186 stays
      a hypothesis; a rerun needs the q11 guard below. Its design separates dropout from the bounded over-rotation, with a
-     post-schedule q12 correlation left open;
-   - the IBM 64D/128D wide case (PR #788) reads the doubling ladder's top elements on two devices; its verdicts wait
-     for the covariance-aware reanalysis.
+     post-schedule q12 correlation left open; the registry claim `hw-tuna17-pathion-six-cz-null-blocks` holds the
+     decision and its numbers;
+   - the IBM 64D/128D wide case (PR #788) reads the doubling ladder's top elements on two devices; the covariance-aware
+     reanalysis is retained and the registry claim `hw-ibm-pathion-wide-coset` holds the verdicts (ibm_kingston passes
+     every rule, ibm_fez fails eight), with the implications for the tower and the A_5 program classified in the
+     [pathion kernel map](../../evidence/pathion-kernel-map/README.md#what-the-64--and-128-dimensional-readings-imply).
 
 ### Remaining computations by host (2026-11-08)
 
@@ -353,7 +356,7 @@ labeled as one.
 | E8-bar degree 6, h_6 = 1666 | rank at d = 6, about N = 21 | forecast multi-day, about 50 GB receipt-bound | FX4 with its shutdown schedule moved (A5-205); no other host |
 | Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |
 | Scheme-theoretic A_4 restriction of W8 | done: refuted for ideals, holds for radicals (A5-222); PB primary decomposition stalled at 3600 s | seconds for the decisive checks | laptop |
-| PR #788 reanalysis | covariance-aware intervals from the retained per-shot records | minutes | laptop |
+| PR #788 reanalysis | done: covariance-aware intervals from the retained per-shot records (`results/live/pathion_wide_coset_analysis.json`) | none | none |
 | Tuna-17 rerun of row 186 | the same 19-batch design with a per-batch q11 readout admission | about 25 min execution plus queue; owner approval | Tuna-17 only |
 | Characteristic zero | good-reduction argument for J, K2 and the receipts | proof work | none needed |
 
