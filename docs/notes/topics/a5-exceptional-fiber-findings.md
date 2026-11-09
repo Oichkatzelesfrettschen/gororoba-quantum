@@ -486,6 +486,19 @@ tests; the ledger row it enters is named where one exists.
 12. **A fresh degree-2 replay for Iso and E8-bar**, so the upper bound K2 contained in L rests on a replay rather than
     on retained receipts alone (W8 has one at 32009).
 
+### Cayley-Dickson tower links (2026-11-09)
+
+An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures.
+Survives, computed: the Klein sign group of every fiber is the stabilizer of its base point in (Z/2)^4 x {+-1} through
+e_a e_b = sigma(a, b) e_(a xor b), reproducing the measured flip sets on 11 headers; nonzero nullities through level 6
+are multiples of 4 and the doubling rule holds in 420 of 420 cases. Survives in floating point only: the base-point
+stabilizer has a rank-3 torus with 9 distinct normal weights and an SL(2) that fixes a quaternion subalgebra of each
+octonion block under G_2 = Aut(O). Refuted or unsupported: the icosahedral, McKay and E8 readings (here A_5 is the
+32-dimensional algebra and E8 a stratum label), a tensor-square model of the last jump, and the small-number matches
+(the chart dimension 4 holds by construction). Next: an exact torus over Q inside the Klein centralizer, then a
+weighted standard basis of J in that slice, which tests whether the Singular export that holds 97 to 99 percent of the
+E8-bar, X- and VB wall time shrinks.
+
 ### Run plan by host (2026-11-09)
 
 Reviewed by Codex and Grok ([findings-deep](../../archive/reviews/findings-deep/README.md)). The build host runs no
