@@ -90,6 +90,14 @@ def unit_spectrum(unit: nb.Unit) -> dict[str, Any]:
         }
         for a in support
     ]
+    if 0 in lam:
+        # Paired over replicas: lambda_a - lambda_0 per replica, its mean and its one-sample t on reps - 1 dof.
+        for a, c in zip(support, chars, strict=True):
+            if a != 0:
+                diff = lam[a] - lam[0]
+                sd = float(diff.std(ddof=1))
+                c["minus_zero"] = r12(float(diff.mean()))
+                c["minus_zero_t"] = r12(float(diff.mean()) / (sd / math.sqrt(reps))) if sd > 0 else None
     row: dict[str, Any] = {
         "key": unit.key,
         "control": unit.control,
@@ -137,7 +145,13 @@ def tensor_fit(row: dict[str, Any]) -> dict[str, Any] | None:
         return None
     a, b = singles
     lam0, la, lb, lab = (chars[x]["lambda"] for x in (0, a, b, a ^ b))
-    se = math.hypot(chars[a ^ b]["lambda_se"] * lam0, chars[a]["lambda_se"] * lb)
+    # First-order error of lab lam0 - la lb from the four replica standard errors, covariances neglected.
+    se = math.hypot(
+        chars[a ^ b]["lambda_se"] * lam0,
+        chars[0]["lambda_se"] * lab,
+        chars[a]["lambda_se"] * lb,
+        chars[b]["lambda_se"] * la,
+    )
     return {
         "flip_rate": {str(a): r12((1.0 - la / lam0) / 2.0), str(b): r12((1.0 - lb / lam0) / 2.0)},
         "multiplicativity_residual": r12(lab * lam0 - la * lb),

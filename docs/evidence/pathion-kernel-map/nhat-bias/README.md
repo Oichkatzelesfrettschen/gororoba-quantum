@@ -189,7 +189,8 @@ block (the self-test reads -0.200 for flip rates 0.01 and 0.06).
 **The coset-block bias follows a local output-bit channel (survives).** The N_b = 2 blocks carry the characters
 {0, a, b, a ^ b} with a and b of weight 1. Their contractions fall with weight and multiply,
 lambda_(a^b) lambda_0 = lambda_a lambda_b, within 1.7 standard errors on 25 of 28 block fits; the three misses are one
-block, the cocycle-free `xor_e1pe18_k0` (z 2.5, 2.5 and 3.0), which reads z 1.4 on the fourth run. The fitted flip rate
+block, the cocycle-free `xor_e1pe18_k0` (z 1.8, 1.8 and 2.4), which reads z 0.9 on the fourth run; z divides the
+residual by its first-order error from all four replica standard errors, covariances neglected. The fitted flip rate
 per output bit averages 0.020 to 0.023 per run. The recorded readout flip (e10 + e01)/2 of the very qubits that carry
 each output bit, read through the measure map of `isa.qpy` and the PUB's `placed_qubit_calibration`, averages 0.012 to
 0.018, an excess of 0.005 to 0.009 per bit (2.2 to 3.8 standard errors per run, 14 bit fits per run), and the per-bit
@@ -228,7 +229,8 @@ pooled laws, the aggregation both the raw and the corrected collector summaries 
 nullity-4 readings from 34.08 to 31.79 (e1 + e26) and 8.25 to 8.00 (e2 + e27) and the twin from 10.41 to 11.14, so
 readout does not produce the bias. In the spectral split the character 16 (bit 4, the upper bit h of m = i XOR j for
 every operand here, the qubit of the orientation phase) contracts faster than the zero character on the three
-nullity-4 units and slower on the three nullity-12 units; paired over the five replicas, lambda_16 - lambda_0 reads
+nullity-4 units and slower on the three nullity-12 units; paired over the five replicas (`minus_zero` and
+`minus_zero_t` of each character in `result_spectral.json`, one-sample t on 4 degrees of freedom), lambda_16 - lambda_0 reads
 -0.155 (t -3.8), -0.118 (t -5.4) and -0.066 (t -2.1) at nullity 4 and +0.103 (t 2.9), +0.081 (t 1.5) and +0.059
 (t 4.7) at nullity 12. Character 16 holds 0.5625 of the ideal power at nullity 4, so its 61 to 63 percent share of
 the bias there largely restates where the power sits. The alternative that the dominant-power character contracts
