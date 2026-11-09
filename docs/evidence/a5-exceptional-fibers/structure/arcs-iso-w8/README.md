@@ -54,6 +54,17 @@ exceed it; a series division that assumed a of order 1 broke J at order 4 and K2
 s^ord(a). A symbolic Singular version of the L0 families grew to 17 GB and was stopped; its record stays in the
 local failed-runs archive.
 
+## Decided by the point-blowup plane family: E0 = V(K2) for Iso -> N- at both primes
+
+[iso-planes/](iso-planes/README.md) carries the W8 C30 certificate (ledger A5-066, A5-236) to Iso. In the chart
+t3 = s of the point blowup the 17 generators divide by s^2 and, on the smooth slice, by v2, and the restricted ideal
+is (x, v2 s, v2^2). Its fiber cone is k[Z1, Z2, Z3]: the minimal generators of its n-th powers number 3, 6, 10, 15, 21
+and 28 for n = 1 to 6. The planes Pi_p over P(L0) sweep a cone of dimension 5 = dim V(K2) at three points per prime,
+and K2 vanishes on every plane (0 of 68). An off control reads rank 2 with K2 nonzero on 8 to 11 forms, and a mutated
+plane makes K2 nonzero on 31 or 32 forms. Computed at 32009 and 32029 in 0.03 to 1.4 s each (ledger A5-284). The
+deduction E0 = V(K2), so L = K2 and F(I) = k[y]/K2, follows the W8 argument. Its Iso steps await review, so A5-007 and
+A5-067 stay `survives` until the review closes.
+
 ## The deciding test: one blowup chart
 
 `chart_test.py` writes `chart-FIBER-pP.sing`: for a0 = l0(G) with QRNG coefficients (draw

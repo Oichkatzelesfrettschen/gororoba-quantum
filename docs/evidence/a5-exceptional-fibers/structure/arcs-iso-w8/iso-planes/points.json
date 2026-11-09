@@ -1,0 +1,60 @@
+{
+ "draw": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+ "rule": "uint16 values in [1, 32008] at zero-based index >= 5, in index order; [index, value] per coefficient; the same integers serve both primes",
+ "points": {
+  "plane-pt1": [
+   [
+    5,
+    28176
+   ],
+   [
+    7,
+    1840
+   ],
+   [
+    9,
+    11447
+   ],
+   [
+    10,
+    3841
+   ],
+   [
+    11,
+    7421
+   ]
+  ],
+  "base": [
+   [
+    13,
+    29214
+   ],
+   [
+    14,
+    507
+   ],
+   [
+    15,
+    9044
+   ]
+  ]
+ },
+ "fixed": {
+  "plane-pt2": {
+   "b": 17,
+   "c": 29,
+   "y0": [
+    3,
+    5,
+    7
+   ]
+  },
+  "on-control": {
+   "a": 3,
+   "c": 5,
+   "d": 7,
+   "t": 11
+  },
+  "note": "hand-chosen points: a rank at any point of the family bounds the generic rank from below, so these need no random draw"
+ }
+}

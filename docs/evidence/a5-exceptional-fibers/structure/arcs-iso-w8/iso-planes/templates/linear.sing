@@ -1,0 +1,18 @@
+// the 18 x 3 matrix of linear coefficients of J' and G'_1..G'_17 in (v2, v4, v5) on the slice v6 = v7 = 0, with b and c
+// as variables: rank 2 over k(b, c) and every 3 x 3 minor identically zero say that dG' has rank 1 on the tangent
+// space of {J' = 0, v6 = v7 = 0} at every point of P(L0) where dJ' is nonzero
+ring rs=@P@,(s,v2,v4,v5,v6,v7,b,c),dp;
+map phi=r,s*v2,s,s*(v4+b),s*(v5+c),s*(v6+b),s*(v7+c);
+ideal Gs=phi(G); ideal Js=phi(J);
+int i; int dv=0; ideal Fp; poly q;
+q=Js[1]/s^2; if (q*s^2!=Js[1]) { dv++; } Fp[1]=q;
+for (i=1;i<=ncols(Gs);i++) { q=Gs[i]/s^2; if (q*s^2!=Gs[i]) { dv++; } Fp[i+1]=q; }
+ideal Fq=subst(subst(Fp,v6,0),v7,0);
+matrix Lm[@NGEN1@][3];
+for (i=1;i<=ncols(Fq);i++) {
+  Lm[i,1]=subst(subst(subst(subst(diff(Fq[i],v2),s,0),v2,0),v4,0),v5,0);
+  Lm[i,2]=subst(subst(subst(subst(diff(Fq[i],v4),s,0),v2,0),v4,0),v5,0);
+  Lm[i,3]=subst(subst(subst(subst(diff(Fq[i],v5),s,0),v2,0),v4,0),v5,0);
+}
+ideal M3=minor(Lm,3); ideal M2=minor(Lm,2);
+res("symbolic linear parts in b, c: J and G not divisible by s^2 (0 required): "+string(dv)+"; nonzero 3x3 minors "+string(size(M3))+" of "+string(binomial(@NGEN1@,3))+" (0 required); nonzero 2x2 minors "+string(size(M2))+" (positive: rank 2 over k(b, c)); first row (dJ') "+string(Lm[1,1])+", "+string(Lm[1,2])+", "+string(Lm[1,3]));

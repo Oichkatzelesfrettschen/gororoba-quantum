@@ -1,0 +1,9 @@
+RESULT iso-control-base-p32029 signs of the run generators against the header: 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT iso-control-base-p32029 off control: J and G not divisible by s^2 (0 required) 0; J' at the point (0 required) 0; generators of G' nonzero at the point (0 required) 0
+RESULT iso-control-base-p32029 off control: rank of the gradient of G' on the tangent space of {J' = 0} at the point: 2
+RESULT iso-control-base-p32029 off control: K2 generators nonzero on the image of the tangent space: 8 of 68 (positive: the first-order fiber over a point off the origin is not in V(K2))
+exit 0
+RESULT iso-control-base-p32029 signs of the run generators against the header: 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT iso-control-base-p32029 off control: J and G not divisible by s^2 (0 required) 0; J' at the point (0 required) 0; generators of G' nonzero at the point (0 required) 0
+RESULT iso-control-base-p32029 off control: rank of the gradient of G' on the tangent space of {J' = 0} at the point: 2
+RESULT iso-control-base-p32029 off control: K2 generators nonzero on the image of the tangent space: 8 of 68 (positive: the first-order fiber over a point off the origin is not in V(K2))

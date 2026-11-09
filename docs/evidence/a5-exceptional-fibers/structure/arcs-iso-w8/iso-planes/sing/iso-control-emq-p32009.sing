@@ -1,0 +1,49 @@
+// iso-control-emq-p32009: on control: limits [G_2(u)] over the exceptional divisor, prime 32009
+// header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing (sha256 1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170); values: docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json, keys in points.json
+LIB "linalg.lib"; LIB "general.lib"; LIB "matrix.lib"; system("--ticks-per-sec",1); int t0=rtimer;
+proc res(string m) { string l="RESULT iso-control-emq-p32009 "+m; print(l); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/logs/iso-control-emq-p32009.result", l); }
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing";
+execute("ideal Grun="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/gens.txt")+";");
+intvec eps; int jj; for (jj=1;jj<=ncols(G);jj++) { if (Grun[jj]==G[jj]) { eps[jj]=1; } else { if (Grun[jj]==-G[jj]) { eps[jj]=-1; } else { ERROR("generator "+string(jj)+" is not +-G"); } } }
+res("signs of the run generators against the header: "+string(eps));
+
+// on control: the limits [G_2(u)] over the exceptional divisor {J'(u) = 0} of the point blowup, u in the chart t3 = 1
+ring ru=32009,(u2,u4,u5,u6,u7),dp;
+setring r;
+int lowTerms=size(jet(G,1)); ideal G2=jet(G,2); int nG2=0; int ig; for (ig=1;ig<=ncols(G2);ig++) { if (G2[ig]!=0) { nG2++; } }
+setring ru;
+number Iu=10754; number cA=3; number cC=5; number cD=7; number cT=11;
+number cB=(cC*cD-cT^2)/cA;
+number n2=2;
+number w2=(cA+cB)/n2; number w4=(cA-cB)/(n2*Iu); number w5=(cC+cD)/n2; number w6=(cC-cD)/(n2*Iu);
+map mu=r,u2,1,u4,u5,u6,u7;
+ideal Gu=mu(G2);
+intvec u0=int(w2),int(w4),int(w5),int(w6),int(cT);
+map pt=ru,u0[1],u0[2],u0[3],u0[4],u0[5];
+poly Jc=u2^2+u4^2-u5^2-u6^2+u7^2;
+ideal y0=pt(Gu); matrix JgM=jacob(Gu); matrix Jg0=pt(JgM); ideal Jid=Jc; matrix dJM=jacob(Jid); matrix dJ0=pt(dJM);
+poly Jat=pt(Jc); int onQuadric=(Jat==0);
+int a0=0; int k; int i; int m; poly acc;
+for (k=1;k<=5;k++) { if (dJ0[1,k]!=0 && a0==0) { a0=k; } }
+number den=leadcoef(dJ0[1,a0]);
+matrix Kv[4][5]; int row=0;
+for (k=1;k<=5;k++) { if (k!=a0) { row++; Kv[row,k]=1; Kv[row,a0]=-leadcoef(dJ0[1,k])/den; } }
+matrix Big[17][5];
+for (i=1;i<=17;i++) {
+  Big[i,1]=y0[i];
+  for (k=1;k<=4;k++) { acc=0; for (m=1;m<=5;m++) { acc=acc+Jg0[i,m]*Kv[k,m]; } Big[i,k+1]=acc; }
+}
+res("on control: point on J' = 0 (1 required): "+string(onQuadric)+"; generators of G with a term of degree below 2 (0 required): "+string(lowTerms)+"; generators with a nonzero degree-2 part: "+string(nG2));
+res("on control: rank of [G_2(u) | dG_2/du along the tangent space of J' = 0] (4: a cone of dimension 4, the generic-direction arcs of the scan): "+string(rank(Big)));
+intvec yv; for (i=1;i<=17;i++) { yv[i]=int(leadcoef(y0[i])); }
+
+execute("ring Y=32009,(y(1..17)),dp;");
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel")+";");
+
+int nK=size(K);
+ideal yr; int je; for (je=1;je<=17;je++) { yr[je]=eps[je]*yv[je]; }
+map ev=Y,yr;
+ideal eK=ev(K);
+res("on control: K2 generators nonzero at G_2(u) (0 required): "+string(size(eK))+" of "+string(nK));
+
+quit;

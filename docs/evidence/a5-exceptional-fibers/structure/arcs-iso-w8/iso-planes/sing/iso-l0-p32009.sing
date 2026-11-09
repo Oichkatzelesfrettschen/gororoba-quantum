@@ -1,0 +1,13 @@
+// iso-l0-p32009: G and J vanish identically on L0, prime 32009
+// header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing (sha256 1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170); values: docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json, keys in points.json
+LIB "linalg.lib"; LIB "general.lib"; LIB "matrix.lib"; system("--ticks-per-sec",1); int t0=rtimer;
+proc res(string m) { string l="RESULT iso-l0-p32009 "+m; print(l); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/logs/iso-l0-p32009.result", l); }
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing";
+
+// G and J vanish identically on L0 = {t2 = 0, t4 = t6, t5 = t7}, symbolically in s = t3, b and c
+ring rl=32009,(s,b,c),dp;
+map ml=r,0,s,s*b,s*c,s*b,s*c;
+ideal Gl=ml(G); ideal Jl=ml(J);
+res("G_j on the points (0, s, s b, s c, s b, s c) of L0: nonzero generators "+string(size(Gl))+" of 17 (0 required); J nonzero "+string(size(Jl))+" (0 required)");
+
+quit;
