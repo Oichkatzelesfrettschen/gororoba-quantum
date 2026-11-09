@@ -31,13 +31,14 @@ It launches with a deadline equal to the estimate plus margin and a watcher that
 Paid cloud time (Azure, AWS, GCP credit) and QPU jobs keep their written-case rule. A real choice between alternatives
 goes to the owner as a question with the estimates.
 
-The three-hour cap of the morning of 2026-11-09 stopped three runs that had no other defect:
+On 2026-11-09 the session generalized a limit the owner had given for one run into a 3-hour cap on every run. That
+policy never existed, and it stopped three runs that had no other defect:
 - check 2 on X- (A5-248);
 - check 3 at X- N = 22 (A5-249);
 - VB degree 7 (A5-279).
 
-It also left an approval gap in front of every longer run. The ruling removes that cap. The cleanup half of the earlier
-rule stands.
+Heavy computation stays off the build host, the owner's interactive workstation, unless the owner authorizes that run:
+Kaggle first, then the Windows compute laptop.
 
 ## Hardware (sources: `docs/runbooks/classical-compute-pool.md`, gororoba-infrastructure `hosts/README.md`, `clouds/`)
 

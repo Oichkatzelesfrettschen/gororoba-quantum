@@ -1,7 +1,7 @@
 # E8-bar -> VB degree 7 and W8 -> N- in characteristic 0: decomposition and sizing
 
-Two items from the A_5 exceptional-fiber program were stopped by a 3-hour run cap that the owner replaced the same
-day (2026-11-09) with approval for well-scoped long runs:
+Two items from the A_5 exceptional-fiber program were stopped at 3 hours on 2026-11-09. The owner had given that limit
+for one run, and the session wrongly applied it to every run. No run-time cap exists:
 - the degree-7 test of the E8-bar -> VB ladder laws (ledger A5-260, A5-269; stalled as A5-279);
 - the transfer of the W8 -> N- Hilbert function to characteristic 0 over Q(i).
 
