@@ -1275,6 +1275,13 @@
    "value": 59536,
    "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
    "index": 8
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/w8-engine-map/microbench.py",
+   "name": "default_rng",
+   "value": 17703,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1000
   }
  ],
  "runtime": [

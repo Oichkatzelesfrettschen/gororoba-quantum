@@ -1,0 +1,4 @@
+# laptop rerun 2026-11-09 (Ryzen 9 7945HX), registered QRNG seed 17703; the build-host lines above used the literal 12345
+{'rows': 1000, 'free': 3000, 'rank': 1000, 'entries': 3000000, 'astype_s': 0.0, 'tolist_s': 0.07, 'nmod_mat_s': 0.23, 'rref_s': 0.62, 'entries_s': 0.26, 'int_list_s': 0.11, 'np_array_s': 0.05, 'maxrss_mib': 380}
+{'rows': 1000, 'free': 20000, 'rank': 1000, 'entries': 20000000, 'astype_s': 0.02, 'tolist_s': 0.5, 'nmod_mat_s': 1.62, 'rref_s': 5.37, 'entries_s': 1.94, 'int_list_s': 1.12, 'np_array_s': 0.39, 'maxrss_mib': 2491}
+{'rows': 2000, 'free': 20000, 'rank': 2000, 'entries': 40000000, 'astype_s': 0.03, 'tolist_s': 0.88, 'nmod_mat_s': 3.07, 'rref_s': 18.12, 'entries_s': 3.9, 'int_list_s': 2.15, 'np_array_s': 0.71, 'maxrss_mib': 4833}

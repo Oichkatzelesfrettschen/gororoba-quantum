@@ -14,7 +14,8 @@ import flint
 import numpy as np
 
 rows, free, p = int(sys.argv[1]), int(sys.argv[2]), 32009
-rng = np.random.default_rng(12345)
+# Seed: ANU QRNG draw-2026-11-08T170257Z.json index 1000; the residue values do not affect the timings.
+rng = np.random.default_rng(17703)
 Y = rng.integers(0, p, size=(rows, free)).astype(np.float64)
 t = time.time()
 Z = Y.astype(np.int64)

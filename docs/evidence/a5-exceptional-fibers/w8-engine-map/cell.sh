@@ -3,7 +3,7 @@
 set -eu
 tag=$1; limit=$2; d=$3; n=$4; shift 4
 here=$(cd "$(dirname "$0")" && pwd)
-root=$(cd "$here/../../.." && pwd)
+root=$(cd "$here/../../../.." && pwd)
 E=docs/evidence/a5-exceptional-fibers
 H=$E/working/build/inputs/p32009-r10754/w8-nm.sing
 REC=$E/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json

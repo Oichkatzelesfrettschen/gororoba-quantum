@@ -4,7 +4,8 @@ The scripts and logs here are the agent's run files with local paths scrubbed (h
 a path inside a script that points at `docs/local/` or a scratch directory names where the run wrote, which a clean
 clone does not hold. The memoized products pickle and the exports are not retained. After the runs the Python probes
 were formatted (`ruff format`, AST-equal to the bytes that ran) and given type annotations, an import order, a loader
-check and `zip(strict=True)` to pass the repository's ruff and mypy; `wrap.py` reproduces r_7 = 156 at W8 degree 2
+check, `zip(strict=True)` and, in `microbench.py`, a registered QRNG seed in place of the literal 12345 its retained
+timings used (residue values do not change the timed operations), to pass the repository's ruff, mypy and seed ledger; `wrap.py` reproduces r_7 = 156 at W8 degree 2
 afterwards. `run.sh` returns the engine's exit status and falls back to `prlimit --as` (per-process address space,
 not resident memory of the tree) where no user bus answers.
 
