@@ -28,9 +28,11 @@ Reconciliation, checked against the source:
 - E8-bar -> VB rows A5-111, A5-107, A5-113 "unsized" (Grok run plan): refuted. The trends record (line 249) forecasts
   a 1.4 to 2.1 GiB preflight and under 5 GiB at degree 6; the cells run on the laptop under a 30 GiB cap.
 - E8-bar degree 6 (A5-083/089/095/101): Grok places it on a paid VM (degree 5 already took 35.4 GiB and 33 h), Codex
-  on a local proof. Both hold together: by the sign isomorphism one sign per prime suffices; the local route comes
-  first (hours of Singular), and a paid VM follows only if it fails and only after the engine passes its acceptance
-  rerun. Neither review can place the cell on a free host.
+  on a local proof. By the sign isomorphism one sign per prime suffices. The local proof cannot take the C30 form
+  (A5-066), which rests on K2 being radical for W8 (A5-061): E8-bar's K2 is not radical, so arcs and plane families
+  bound L only by sqrt(K2) and reproduce h_6 >= 1526. The cell is decided in the 140-dimensional space
+  sqrt(K2)_6 / K2_6 by a membership receipt on those forms, piloted first on the 91-dimensional sqrt(K2)_5 / K2_5,
+  where h_5 = 952 fixes the answer (no form lies in L). A paid VM follows only if that route fails.
 - Engine levers: both rank in-place update, streamed L and free-column storage ahead of 2-byte storage and GPU, with
   the W8 degree-4 byte-equal rerun as acceptance. The zero-row share measured on the W8 N = 19 export (28 to 45
   percent of quotient monomials have degree 16 or more) is disputed by Grok, who reads the truncation as already in
@@ -38,3 +40,11 @@ Reconciliation, checked against the source:
   claim.
 - Quantum hardware: both find that no QPU measurement certifies an F_p rank or a fiber Hilbert function that exact
   CPU/GPU elimination does not already compute (A5-076); no provider case follows from this review.
+
+Advisor verdict on the reconciliation and the run plan (2026-11-09): every item above confirmed, with two
+corrections now in the run plan of `docs/notes/topics/a5-exceptional-fiber-findings.md`. The E8-bar degree-6 route is
+the sqrt(K2)/K2 membership receipt, not a C30-style local proof (the bullet above). The E8-bar wall is the Singular
+export: at degree 5 the standard basis of k[t]/(J + m^18) took 114,755 of 118,427 s (97 percent), so engine v12 and
+the GPU path, which shorten the products and closure stages, speed up W8 and Iso (Iso degree 6 at N = 19: closure
+1,405 s and products 312 s of 1,900 s) and leave E8-bar and X- (X- degree 6: export 1,356 of 1,700 s) at their export
+time.
