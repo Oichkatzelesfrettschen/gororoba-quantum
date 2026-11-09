@@ -76,10 +76,12 @@ def visibility_gap(c: np.ndarray, sign: np.ndarray) -> dict[str, Any]:
     of the bins whose pairs are aligned and those whose pairs are not. A block whose bins all carry one sign (every
     pair aligned, |B-| = 0) has weight 0, so its N_hat equals N whatever the device returned, and only its V and bin
     signs carry measurement."""
+    if sign.size == 0 or c.shape != sign.shape:
+        raise ValueError("contrasts and ideal signs need one entry per bin and at least one bin")
+    if not np.all(np.abs(sign) == 1.0):
+        raise ValueError("every bin needs an ideal sign of +1 or -1")
     plus, minus = sign > 0, sign < 0
     n_plus, n_minus = int(plus.sum()), int(minus.sum())
-    if n_plus + n_minus != sign.size:
-        raise ValueError("every bin needs an ideal sign of +1 or -1")
     v = float(np.mean(c * sign))
     v_plus = float(np.mean(c[plus])) if n_plus else math.nan
     v_minus = float(np.mean(-c[minus])) if n_minus else math.nan
