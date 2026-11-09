@@ -48,3 +48,18 @@ export: at degree 5 the standard basis of k[t]/(J + m^18) took 114,755 of 118,42
 the GPU path, which shorten the products and closure stages, speed up W8 and Iso (Iso degree 6 at N = 19: closure
 1,405 s and products 312 s of 1,900 s) and leave E8-bar and X- (X- degree 6: export 1,356 of 1,700 s) at their export
 time.
+
+What survives justification, falsification and the Advisor:
+
+- Every retained certificate: both reviews replay the ledger, registry, sign witnesses and rank-record hashes without
+  a failure, and E8-bar -> VB degree 4 at p = 32029 (A5-111) joins them at r_13 = 155.
+- The last-jump law A5-244 as numbers: last jump (2d + 1)^2, block split by the trends closed form. The box-parity
+  reading is falsified and removed.
+- The X- plateau r_20 = r_21 as a p = 32009 measurement; at p = 32029 it is unmeasured until N = 20 runs there.
+- The flatness claim A5-241 in its narrowed form: Hotelling T^2 at p < 0.05 on 15 of 52 blocks (Fisher 3e-11) on three
+  of four runs.
+- C30 (A5-066) with step 4's basis argument stated, and with it A5-012 proved; A5-073 and A5-237 superseded.
+- The run plan: the E8-bar -> VB ladders first, the sqrt(K2)/K2 membership receipt for E8-bar degree 6, engine v12
+  with its byte-equal W8 degree-4 acceptance for W8 and Iso, a paid VM only if membership fails.
+- Bounded, not refuted: the engine v8 handle leak (digest-pinned engine) and the zero-row lever (unmeasured until the
+  degree-4 count). Refuted: "VB unsized" (trends line 249). No QPU job certifies a rank (A5-076).
