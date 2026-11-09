@@ -26,6 +26,22 @@ every non-identity letter, so a full-support word is measured only by the basis 
 13 full-support words force 13 bases into every cover, and those 13 cover all 28 words. Thirteen
 is therefore the minimum number of local product bases from whose outcomes all 21 probe
 expectations are linear functions; it bounds nothing about entangled measurements.
+
+Word set. Every word is Y3 (x) Q with Q a three-qubit word holding an odd number of Y letters, so
+Q^T = -Q: 27 words with one Y and the one word YYY, 28 in all, 13 of them without an identity
+letter. The record derives the set from the blades and compares it with this description.
+
+Commuting cover. Y3 commutes with itself, so two words commute exactly when their Q parts do. For
+commuting antisymmetric Q and Q', (Q Q')^T = Q'^T Q^T = Q' Q = Q Q' is symmetric, so the
+antisymmetric members of an abelian group of three-qubit words form one coset of a subgroup of
+index two. A maximal abelian group holds 8 words up to sign, so a commuting set of the bank holds
+at most 4 words, and 28 words need at least 7 settings. The record enumerates the commuting 4-sets
+(none extends to 5), counts the exact covers by 7 of them, and gives each 4-set its least CNOT
+count: the fewest CX gates in a circuit of single-qubit Cliffords and CX on q0..q2 after which the
+four words are qubit-wise commuting, so a local rotation then reads all four. A 4-set generates the
+stabilizer group of a three-qubit stabilizer state up to signs, and undoing that state's
+entanglement takes 0 (product), 1 (one Bell pair) or 2 (GHZ class) CX. The chosen cover minimizes
+the total CX over all minimum covers; the counts are logical, before routing on a coupling map.
 """
 
 from __future__ import annotations
@@ -215,9 +231,159 @@ def probe_cover(entries: dict[tuple[int, int, int], dict[str, Any]]) -> dict[str
     }
 
 
+def antisymmetric_bank() -> list[str]:
+    """Y3 (x) Q for every three-qubit word Q with an odd number of Y letters (Q^T = -Q), sorted."""
+    return sorted(
+        "Y" + "".join(q) for q in itertools.product("IXYZ", repeat=QUBITS - 1) if "".join(q).count("Y") % 2 == 1
+    )
+
+
+# Single-qubit Clifford conjugations modulo Paulis, each a gate list applied in order; local_images() derives the
+# letter map P -> U P U^dagger of each from the gate matrices.
+LOCAL_GATES: tuple[tuple[str, ...], ...] = ((), ("h",), ("s",), ("h", "s"), ("s", "h"), ("h", "s", "h"))
+CLIFFORD_GATES = {**GATES, "s": np.diag([1, 1j])}
+CX_PAIRS = tuple((c, t) for c in range(QUBITS - 1) for t in range(QUBITS - 1) if c != t)
+
+
+def local_images() -> list[dict[str, str]]:
+    """The letter map P -> U P U^dagger (sign dropped) of each LOCAL_GATES entry, from the gate matrices."""
+    images = []
+    for gates in LOCAL_GATES:
+        u = np.eye(2, dtype=complex)
+        for gate in gates:
+            u = CLIFFORD_GATES[gate] @ u
+        image = {}
+        for letter in "XYZ":
+            conj = u @ PAULI[letter] @ u.conj().T
+            hits = [m for m in "XYZ" if np.allclose(conj, PAULI[m]) or np.allclose(conj, -PAULI[m])]
+            require(len(hits) == 1, f"{gates}: {letter} maps to no single Pauli")
+            image[letter] = hits[0]
+        images.append(image)
+    require(len({tuple(sorted(m.items())) for m in images}) == 6, "local gates do not give six letter maps")
+    return images
+
+
+def _bits(letter: str) -> tuple[int, int]:
+    return {"I": (0, 0), "X": (1, 0), "Y": (1, 1), "Z": (0, 1)}[letter]
+
+
+def _letter(x: int, z: int) -> str:
+    return {(0, 0): "I", (1, 0): "X", (1, 1): "Y", (0, 1): "Z"}[(x, z)]
+
+
+def conjugate(word: str, local: tuple[int, ...], cx: tuple[tuple[int, int], ...], images: list[dict[str, str]]) -> str:
+    """Letters of U P U^dagger (sign dropped) for U = the CX list after the local layer; qubit q is word[-1 - q].
+
+    CX(c, t) maps X_c to X_c X_t and Z_t to Z_c Z_t, so x_t gains x_c and z_c gains z_t."""
+    letters = [word[-1 - q] for q in range(len(word))]
+    letters = [images[local[q]][a] if a != "I" else "I" for q, a in enumerate(letters)]
+    x = [_bits(a)[0] for a in letters]
+    z = [_bits(a)[1] for a in letters]
+    for c, t in cx:
+        x[t] ^= x[c]
+        z[c] ^= z[t]
+    return "".join(_letter(x[q], z[q]) for q in reversed(range(len(word))))
+
+
+def least_cx(words: tuple[str, ...]) -> dict[str, Any]:
+    """Fewest CX on q0..q2 (after one single-qubit Clifford per qubit) that leave the words qubit-wise commuting.
+
+    With at most one CX every circuit has this local-CX form up to a final local layer, so a count of 0 or 1 is
+    exact, and a set that no one-CX circuit settles and some two-CX circuit does needs exactly 2. q3 carries Y on
+    every word and takes only its local rotation."""
+    require(all(w[0] == "Y" for w in words), f"{words}: a word lacks Y on q3")
+    images = local_images()
+    for count in range(3):
+        for cx in itertools.product(CX_PAIRS, repeat=count):
+            for local in itertools.product(range(len(LOCAL_GATES)), repeat=QUBITS - 1):
+                image = [conjugate(w[1:], local, cx, images) for w in words]
+                if all(qubitwise(a, b) for a, b in itertools.combinations(image, 2)):
+                    basis = "Y" + "".join(next((w[q] for w in image if w[q] != "I"), "Z") for q in range(QUBITS - 1))
+                    return {
+                        "words": list(words),
+                        "cx": count,
+                        "local_gates_q0_q1_q2": [list(LOCAL_GATES[k]) for k in local],
+                        "cx_control_target": [list(p) for p in cx],
+                        "readout_basis_q3q2q1q0": basis,
+                    }
+    raise ValueError(f"{words}: no circuit with at most two CX makes them qubit-wise commuting")
+
+
+def embed(one: np.ndarray, qubit: int) -> np.ndarray:
+    """The single-qubit matrix on `qubit` (qubit 0 the rightmost tensor factor) in the four-qubit register."""
+    out = np.eye(1, dtype=complex)
+    for q in reversed(range(QUBITS)):
+        out = np.kron(out, one if q == qubit else np.eye(2, dtype=complex))
+    return out
+
+
+def cx_matrix(control: int, target: int) -> np.ndarray:
+    p0 = embed(np.diag([1, 0]).astype(complex), control)
+    p1 = embed(np.diag([0, 1]).astype(complex), control)
+    return p0 + p1 @ embed(PAULI["X"], target)
+
+
+def verify_setting(setting: dict[str, Any]) -> None:
+    """Rebuild the setting's circuit from gate matrices and require each word diagonal after it and the readout
+    rotations, so one computational-basis measurement reads all four words."""
+    total = np.eye(DIM, dtype=complex)
+    for q, gates in enumerate(setting["local_gates_q0_q1_q2"]):
+        for gate in gates:
+            total = embed(CLIFFORD_GATES[gate], q) @ total
+    for c, t in setting["cx_control_target"]:
+        total = cx_matrix(c, t) @ total
+    for q, letter in enumerate(reversed(setting["readout_basis_q3q2q1q0"])):
+        for gate in ROTATIONS[letter]:
+            total = embed(GATES[gate], q) @ total
+    for word in setting["words"]:
+        conj = total @ word_matrix(word) @ total.conj().T
+        require(np.allclose(conj, np.diag(np.diag(conj)), atol=1e-12), f"{word}: the setting leaves it off-diagonal")
+
+
+def commuting_cover(words: list[str]) -> dict[str, Any]:
+    """The commuting 4-sets of the bank, the number of exact covers by 7 of them, and a cover of least total CX."""
+    require(words == antisymmetric_bank(), "probe words differ from Y3 (x) {Q : Q^T = -Q}")
+    quads = [q for q in itertools.combinations(words, 4) if all(commute(a, b) for a, b in itertools.combinations(q, 2))]
+    extendable = [q for q in quads if any(w not in q and all(commute(w, a) for a in q) for w in words)]
+    require(not extendable, f"commuting 4-sets {extendable[:3]} extend to 5")
+    index = {w: k for k, w in enumerate(words)}
+    masks = [sum(1 << index[w] for w in q) for q in quads]
+    full = (1 << len(words)) - 1
+    covers: list[tuple[int, ...]] = []
+
+    def search(covered: int, chosen: tuple[int, ...]) -> None:
+        if covered == full:
+            covers.append(chosen)
+            return
+        low = next(b for b in range(len(words)) if not covered >> b & 1)
+        for k, mask in enumerate(masks):
+            if mask >> low & 1 and not mask & covered:
+                search(covered | mask, (*chosen, k))
+
+    search(0, ())
+    require(bool(covers) and all(len(c) == 7 for c in covers), "exact covers by commuting 4-sets are not all of 7")
+    settings = parallel.ordered_map(least_cx, quads, min_items=1)
+    totals = [sum(settings[k]["cx"] for k in c) for c in covers]
+    best = min(totals)
+    chosen = min(c for c, total in zip(covers, totals, strict=True) if total == best)
+    for k in chosen:
+        verify_setting(settings[k])
+    return {
+        "word_set": "Y3 (x) Q, Q^T = -Q (odd number of Y letters in Q)",
+        "largest_commuting_set": 4,
+        "commuting_sets": len(quads),
+        "commuting_sets_by_cx": {str(n): sum(s["cx"] == n for s in settings) for n in range(3)},
+        "minimum_settings": 7,
+        "minimum_covers": len(covers),
+        "cover_total_cx_range": [best, max(totals)],
+        "chosen_cover": [settings[k] for k in chosen],
+    }
+
+
 def record() -> dict[str, Any]:
     keys = blades()
     entries = dict(zip(keys, parallel.ordered_map(blade_entry, keys, min_items=1), strict=True))
+    cover = probe_cover(entries)
     target = entries[TARGET_BLADE]["terms"]
     require(target == {"IIII": "1/2", "YIXY": "-1/4", "YZXY": "1/4"}, f"E0 terms {target}")
     return {
@@ -226,7 +392,8 @@ def record() -> dict[str, Any]:
         "encoding": "e_j -> |j3 j2 j1 j0>, word letters q3 q2 q1 q0",
         "target": {"blade": list(TARGET_BLADE), "terms": target, "readout": score_identity()},
         "blades": [entries[b] for b in sorted(entries)],
-        "probe_cover": probe_cover(entries),
+        "probe_cover": cover,
+        "commuting_cover": commuting_cover(cover["distinct_words"]),
     }
 
 
@@ -246,7 +413,9 @@ def check(out: Path) -> None:
         f"bdsc pauli: {len(data['blades'])} blade effects with three commuting terms; E0 = "
         f"{' '.join(f'{c}*{w}' for w, c in sorted(data['target']['terms'].items()))} read in "
         f"{data['target']['readout']['basis_q3q2q1q0']}; {len(cover['probes'])} probes, "
-        f"{len(cover['distinct_words'])} words, {len(cover['minimum_bases'])} bases"
+        f"{len(cover['distinct_words'])} words, {len(cover['minimum_bases'])} bases; "
+        f"{data['commuting_cover']['minimum_settings']} commuting settings at "
+        f"{data['commuting_cover']['cover_total_cx_range'][0]} CX"
     )
 
 
