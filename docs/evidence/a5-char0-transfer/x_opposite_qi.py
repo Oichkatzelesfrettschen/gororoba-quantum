@@ -80,7 +80,7 @@ def _images(variables: list[str], s9: int) -> str:
 
 def _singular(slug: str) -> str:
     """Substitute Phi with u = 1/(1 + w), test J(Phi) in (u (1 + w) - 1), clear u from G(Phi) and take the gcd."""
-    body = rc._script(slug, None, rc.rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
+    body = rc._script(slug, None, rc.rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
     return (
         body
         + "\n".join(
@@ -114,7 +114,7 @@ def _singular(slug: str) -> str:
 
 def certify(slug: str) -> dict[str, Any]:
     probe = rc.rees._run_singular(
-        rc._script(slug, None, rc.rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
+        rc._script(slug, None, rc.rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
         + '"RESULT vs",varstr(basering);\nquit;\n',
         "x_opposite_vars",
         rc.TIMEOUT_SECONDS,

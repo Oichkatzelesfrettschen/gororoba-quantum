@@ -51,14 +51,16 @@ def _require(condition: bool, message: str) -> None:
         raise SystemExit(message)
 
 
-def _script(slug: str, root: int | None, prime: int) -> str:
+def _script(slug: str, root: int | None, prime: int, extra: bool = True) -> str:
+    """The phase-one Singular script of a fiber; ``extra`` appends the standard basis of J and the reduction of G
+    that ``_run`` reads, which a caller with its own computation leaves out."""
     spec = fiber_inputs.SPEC_BY_SLUG[slug]
     task = fiber_inputs._task(spec.incidence)
     data = basepoints._schur_coordinates(rees._base_task(task))
     cache = fiber_inputs.primary_checkout() / fiber_inputs.LOCAL_BASE / "build" / "inputs" / "survivors"
     candidates = fiber_inputs._candidates(task, data, cache)
     body = rees._phase_one_script(root, task, data, tuple(candidates), prime=prime, embedding=False)
-    return body.replace("\nquit;", "") + "\n" + "\n".join(EXTRA) + "\nquit;\n"
+    return body.replace("\nquit;", "") + "\n" + ("\n".join(EXTRA) if extra else "") + "\nquit;\n"
 
 
 def _run(slug: str, root: int | None, prime: int) -> dict[str, Any]:
@@ -165,9 +167,11 @@ def check(slug: str) -> dict[str, Any]:
         gens, gbad = _image(qi_gens, prime, root, monic=False)
         bad.extend(gbad)
         corrupted = [dict(poly) for poly in qi_polys]
-        first = next(iter(corrupted[0]))
-        a, b = corrupted[0][first]
-        corrupted[0][first] = (a + 1, b)
+        # A one-term element is unchanged by the corruption once it is made monic.
+        target = next(i for i, poly in enumerate(corrupted) if len(poly) > 1)
+        first = next(iter(corrupted[target]))
+        a, b = corrupted[target][first]
+        corrupted[target][first] = (a + 1, b)
         mutated, _ = _image(corrupted, prime, root, monic=True)
         fp_basis = (
             sorted(sorted(_monic(_poly_fp(t, names, prime), prime).items()) for t in fp["basis"]) if same_vars else []

@@ -161,7 +161,7 @@ def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -
 
 
 def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict[str, Any]:
-    body = reduction_check._script(slug, None, rees.MODULAR_PRIME)
+    body = reduction_check._script(slug, None, rees.MODULAR_PRIME, extra=False)
     header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
     ring_line = header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")]

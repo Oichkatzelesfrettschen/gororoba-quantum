@@ -48,7 +48,7 @@ def _basis(script: str, label: str, timeout: int) -> tuple[list[str], float]:
 
 
 def check(slug: str, order: int, timeout: int = rc.TIMEOUT_SECONDS) -> dict[str, Any]:
-    body = rc._script(slug, None, rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
+    body = rc._script(slug, None, rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
     first_header = (rc.HEADERS / f"p{rc.PRIMES[0][0]}-r{rc.PRIMES[0][1]}" / f"{slug}.sing").read_text(encoding="utf-8")
     ring_line = first_header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")].split(",")

@@ -35,7 +35,7 @@ SPAN = (
 
 
 def check(slug: str) -> dict[str, Any]:
-    body = rc._script(slug, None, rc.rees.MODULAR_PRIME).replace("\nquit;\n", "\n")
+    body = rc._script(slug, None, rc.rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
     outcome = rc.rees._run_singular(body + "\n".join(SPAN) + "\nquit;\n", "span_qi", 4 * rc.TIMEOUT_SECONDS)
     if outcome.status != "completed":
         raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")
