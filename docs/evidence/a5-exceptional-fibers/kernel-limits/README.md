@@ -184,8 +184,9 @@ unique up to one scalar, every c_s is nonzero and T is injective on the degree-2
 on each sampled family the kernel plane is the image of the fiber point under the second Veronese map followed by a
 linear injection into Plucker space. On W8 one matrix T serves both components. Scope: a fit on samples with held-out
 validation at two primes. The Iso sample spans all 17 coordinates and its 85 equals the degree-2 Hilbert function of
-the fiber; the same-sign X arcs span 12 of the 15 coordinates and 45 of the 51 quadrics, so that row describes the
-part of the fiber the weighted arc family reaches. Runs took 1 to 23 minutes each on the 32-thread laptop with a
+the fiber; the same-sign X arcs span 12 of the 15 coordinates and 45 of the 51 quadrics of k[y]/K2, the Hilbert function of
+the reduced fiber, whose prime contains y1, y5 and y6 ([arcs-x-same](../arcs-x-same/README.md), A5-297), so that row
+covers the whole reduced fiber. Runs took 1 to 23 minutes each on the 32-thread laptop with a
 peak of 1.9 GB.
 
 ## Replay
