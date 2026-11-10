@@ -63,6 +63,7 @@ def modules() -> tuple[Any, Any, Any]:
 
 
 CASE, TOMO, RECORDS = modules()
+ordered_map = importlib.import_module("parallel").ordered_map
 ROWS = TOMO.schedule()
 PAIRS = list(itertools.combinations(range(TOMO.WINDOW), 2))
 
@@ -130,23 +131,7 @@ def pearson_split(data: dict[str, np.ndarray]) -> dict[str, Any]:
 
 
 def gate_independent(data: dict[str, np.ndarray]) -> dict[str, Any]:
-    n = data["eligible"]
-    entries = []
-    for s, r in enumerate(ROWS):
-        for q in (0, 1):
-            if r["basis"][q] != "Z":
-                continue
-            prepared = r["input"][q]
-            target = {"0": 1.0, "1": 0.0}.get(prepared, 0.5)
-            zero = n[s][[0, 1]].sum() if q == 0 else n[s][[0, 2]].sum()
-            entries.append(
-                {
-                    "setting": r["name"],
-                    "qubit": ("control", "target")[q],
-                    "prepared": prepared,
-                    "deviation": float(zero / n[s].sum() - target),
-                }
-            )
+    entries = z_populations(data["eligible"])
     eigen = [e for e in entries if e["prepared"] in "01"]
     equator = [e for e in entries if e["prepared"] not in "01"]
     groups: dict[str, list[float]] = {}
@@ -170,7 +155,14 @@ def z_populations(n: np.ndarray) -> list[dict[str, Any]]:
             prepared = r["input"][q]
             target = {"0": 1.0, "1": 0.0}.get(prepared, 0.5)
             zero = n[s][[0, 1]].sum() if q == 0 else n[s][[0, 2]].sum()
-            entries.append({"setting": r["name"], "prepared": prepared, "deviation": float(zero / n[s].sum() - target)})
+            entries.append(
+                {
+                    "setting": r["name"],
+                    "qubit": ("control", "target")[q],
+                    "prepared": prepared,
+                    "deviation": float(zero / n[s].sum() - target),
+                }
+            )
     return entries
 
 
@@ -180,12 +172,8 @@ def source_model_z(data: dict[str, np.ndarray], perfs: dict[str, Any], overlap: 
     the measured-minus-predicted residuals."""
     figures = {**TOMO.perf_figures(perfs), "hom": overlap}
     dark = [float(rate) for rate in perfs["Dark counts (detection/s)"]]
-    predicted = np.array(
-        [
-            TOMO.forecast_setting((r, figures, dark))[CASE.FORECAST_RECORD_VARIANT]["eligible_probabilities"]
-            for r in ROWS
-        ]
-    )
+    forecasts = ordered_map(TOMO.forecast_setting, [(r, figures, dark) for r in ROWS], min_items=1)
+    predicted = np.array([f[CASE.FORECAST_RECORD_VARIANT]["eligible_probabilities"] for f in forecasts])
     model = z_populations(predicted)
     measured = z_populations(data["eligible"])
     out: dict[str, Any] = {"overlap": overlap}
@@ -364,6 +352,18 @@ def negative_log_likelihood(counts: np.ndarray, law: np.ndarray) -> float:
     return -float((counts * np.log(np.maximum(law, 1e-300))).sum())
 
 
+def setting_overlap(item: tuple[int, np.ndarray, tuple[np.ndarray, np.ndarray], np.ndarray]) -> float:
+    """The overlap that maximizes one setting's two-click likelihood at fixed efficiencies. The unit
+    parallel.ordered_map maps."""
+    s, row, laws, efficiency = item
+    best = minimize_scalar(
+        lambda m: -float((row * np.log(np.maximum(pattern_law(laws, m, efficiency)[s], 1e-300))).sum()),
+        bounds=(0.0, 1.0),
+        method="bounded",
+    )
+    return float(best.x)
+
+
 def two_click_patterns(laws: tuple[np.ndarray, np.ndarray], runs: list[str]) -> dict[str, Any]:
     counts, outside = pattern_counts(runs)
 
@@ -382,14 +382,9 @@ def two_click_patterns(laws: tuple[np.ndarray, np.ndarray], runs: list[str]) -> 
     profile = np.array([negative_log_likelihood(counts, pattern_law(laws, m, efficiency)) for m in grid]) - fit.fun
     inside = grid[profile <= PROFILE_DELTA]
     expected = pattern_law(laws, overlap, efficiency) * counts.sum(1, keepdims=True)
-    per_setting = []
-    for s in range(len(ROWS)):
-        best = minimize_scalar(
-            lambda m, s=s: -float((counts[s] * np.log(np.maximum(pattern_law(laws, m, efficiency)[s], 1e-300))).sum()),
-            bounds=(0.0, 1.0),
-            method="bounded",
-        )
-        per_setting.append(float(best.x))
+    per_setting = ordered_map(
+        setting_overlap, [(s, counts[s], laws, efficiency) for s in range(len(ROWS))], min_items=1
+    )
     rails = [PAIRS.index((TOMO.C0 + a, TOMO.T0 + b)) for a in (0, 1) for b in (0, 1)]
     return {
         "window_two_click_events": float(counts.sum()),
@@ -406,6 +401,21 @@ def two_click_patterns(laws: tuple[np.ndarray, np.ndarray], runs: list[str]) -> 
     }
 
 
+def g2_profile_point(item: tuple[float, float, float, list[float], np.ndarray, np.ndarray]) -> float:
+    """The negative log-likelihood of the two-click patterns at one overlap of the g2-aware law. The unit
+    parallel.ordered_map maps."""
+    overlap, g2, transmittance, dark, weight, counts = item
+    law = np.zeros((len(ROWS), len(PAIRS)))
+    for s, r in enumerate(ROWS):
+        photons = TOMO.photon_distribution(TOMO.setting_unitary(r), float(overlap), g2)
+        for key, p in TOMO.detected_clicks(photons, transmittance, dark).items():
+            on = [k for k, v in enumerate(key) if v]
+            if len(on) == 2 and max(on) < TOMO.WINDOW:
+                law[s, PAIRS.index((on[0], on[1]))] += p
+    law = law * weight
+    return negative_log_likelihood(counts, law / law.sum(1, keepdims=True))
+
+
 def g2_pattern_overlap(
     runs: list[str], perfs: dict[str, Any], efficiency: list[float], grid: np.ndarray
 ) -> dict[str, Any]:
@@ -420,17 +430,9 @@ def g2_pattern_overlap(
     clock = float(perfs["Clock (MHz)"]) * 1e6
     dark = [float(rate) / clock for rate in perfs["Dark counts (detection/s)"]]
     weight = np.array([efficiency[i] * efficiency[j] for i, j in PAIRS])
-    profile = []
-    for overlap in grid:
-        law = np.zeros((len(ROWS), len(PAIRS)))
-        for s, r in enumerate(ROWS):
-            photons = TOMO.photon_distribution(TOMO.setting_unitary(r), float(overlap), g2)
-            for key, p in TOMO.detected_clicks(photons, transmittance, dark).items():
-                on = [k for k, v in enumerate(key) if v]
-                if len(on) == 2 and max(on) < TOMO.WINDOW:
-                    law[s, PAIRS.index((on[0], on[1]))] += p
-        law = law * weight
-        profile.append(negative_log_likelihood(counts, law / law.sum(1, keepdims=True)))
+    profile = ordered_map(
+        g2_profile_point, [(float(m), g2, transmittance, dark, weight, counts) for m in grid], min_items=1
+    )
     k = min(max(int(np.argmin(profile)), 1), len(grid) - 2)
     a, b, _ = np.polyfit(grid[k - 1 : k + 2], profile[k - 1 : k + 2], 2)
     return {"g2": g2, "transmittance": transmittance, "overlap": float(-b / (2 * a)), "grid": [float(m) for m in grid]}

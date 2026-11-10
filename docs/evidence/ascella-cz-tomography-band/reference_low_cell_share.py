@@ -81,6 +81,9 @@ def main(argv: list[str]) -> int:
         within, sample_rate = REF.per_sample_law(data)
         entry: dict[str, Any] = {"measured": low_share(data["eligible"], data["shots"], data["scale"])}
         for sigma in SIGMAS:
+            # Serial by measurement: the whole script takes 4 s on a 10-thread host, and mapping these 30 evaluations
+            # through parallel.ordered_map took 18 s and moved the shares by 1e-13 relative (single-thread BLAS in
+            # the workers).
             shares = []
             for _ in range(DRAWS):
                 arrays = {
