@@ -84,6 +84,12 @@ unmeasured for these fibers; the product count predicts that Iso is near the X- 
 in which case its record is a `blocked_timeout` and the run moves to a host without the limit. The Iso relation file
 uses the run's generators, ten of which are the negatives of the header's (`NEGATED`).
 
+Result for Iso -> N- (ledger A5-294): the kernel `a5-char0-iso-quadrics` finished in 1,507 s at 0.39 GiB peak on 4
+cores ([`quadrics-iso-nm.json`](quadrics-iso-nm.json)). The Q(i) relation space has dimension 68, so h_2 = 85, with
+integer coefficients and a nonzero imaginary part; its reduced row echelon form reduces to the retained K2 at
+(32009, i = 10754) and (32029, i = 9115), and the mutation arm is detected. The runtime prediction from the product
+count was wrong by a factor of 20: the X- run took 30,481 s for 120 products and Iso took 1,507 s for 153.
+
 ## Arc families over Q(i) (ledger A5-293)
 
 [arcs_qi.py](arcs_qi.py) replays the arc families of the Iso, W8 and same-sign X slices
