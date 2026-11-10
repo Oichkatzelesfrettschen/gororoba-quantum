@@ -3,7 +3,8 @@
 # scripts/kaggle_run.py collect returns, for .github/workflows/kaggle-collect.yml.
 #
 #   kaggle_collect.sh watch BUDGET_SECONDS   poll until the version ends, the
-#                                            pull time passes or BUDGET runs out
+#                                            pull time passes or BUDGET runs out;
+#                                            a run holding collect.json is skipped
 #   kaggle_collect.sh collect                collect, verify, commit, notify
 #
 # Environment: RUN_DIR (a results/kaggle run directory whose submission.json
@@ -73,6 +74,12 @@ poll() {
 
 watch() {
 	budget=$1
+	# A run with its primary receipt is collected; a later push to the branch leaves it alone.
+	if [ -f "$RUN_DIR/collect.json" ]; then
+		echo "state=collected" >>"$GITHUB_OUTPUT"
+		echo "watch ended: $RUN_DIR is already collected"
+		return 0
+	fi
 	pull_epoch=$(($(pushed_epoch) + PULL_AFTER))
 	stop=$(($(date +%s) + budget))
 	until_epoch=$((stop < pull_epoch ? stop : pull_epoch))

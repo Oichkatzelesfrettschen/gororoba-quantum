@@ -74,7 +74,7 @@ jobs:
   collect:
     needs: [watch-early, watch-late]
     if: >-
-      always() && needs.watch-early.result == 'success' &&
+      always() && needs.watch-early.result == 'success' && needs.watch-early.outputs.state != 'collected' &&
       (needs.watch-late.result == 'success' || needs.watch-late.result == 'skipped')
     runs-on: ubuntu-26.04
     environment: kaggle
