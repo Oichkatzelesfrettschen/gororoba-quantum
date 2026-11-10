@@ -1,0 +1,98 @@
+Initial seed for pseudo-random number generator is 1793645142
+
+--------------- INPUT DATA ---------------
+#variables                       9
+#equations                    6451
+#invalid equations               0
+field characteristic         32009
+homogeneous input?               0
+signature-based computation      0
+monomial order                 DRL
+basis hash table resetting     OFF
+linear algebra option            2
+initial hash table size     131072 (2^17)
+max pair selection             ALL
+reduce gb                        1
+#threads                         4
+info level                       2
+generate pbm files               0
+------------------------------------------
+
+Legend for f4 information
+--------------------------------------------------------
+deg       current degree of pairs selected in this round
+sel       number of pairs selected in this round
+pairs     total number of pairs in pair list
+mat       matrix dimensions (# rows x # columns)
+density   density of the matrix
+new data  # new elements for basis in this round
+          # zero reductions during linear algebra
+time(rd)  time of the current f4 round in seconds given
+          for real and cpu time
+--------------------------------------------------------
+
+deg     sel   pairs        mat          density            new data         time(rd) in sec (real|cpu)
+------------------------------------------------------------------------------------------------------
+  4      24   20452      90 x 204         3.50%        0 new      24 zero         0.00 | 0.01         
+  5      11   20428     106 x 308         2.84%        0 new      11 zero         0.00 | 0.01         
+  7    4252   20417   12815 x 11058       0.04%     1380 new    2872 zero         2.27 | 8.32         
+  5     126   11745     787 x 1396        1.51%        0 new     126 zero         0.01 | 0.02         
+  6    2544   11619    5544 x 4115        0.59%        0 new    2544 zero         0.02 | 0.04         
+  7    5024    9075   10707 x 6796        0.22%        0 new    5024 zero         0.04 | 0.07         
+  8    4051    4051    8765 x 5730        0.10%        0 new    4051 zero         0.02 | 0.04         
+------------------------------------------------------------------------------------------------------
+reduce final basis      916 x 2008        0.81%      916 new       0 zero         0.00 | 0.01         
+------------------------------------------------------------------------------------------------------
+
+---------------- TIMINGS ----------------
+overall(elapsed)        8.49 sec
+overall(cpu)           29.11 sec
+select                  0.02 sec   0.2%
+symbolic prep.          0.08 sec   0.9%
+update                  8.34 sec  98.3%
+convert                 0.00 sec   0.1%
+linear algebra          0.03 sec   0.4%
+reduce gb               0.00 sec   0.0%
+-----------------------------------------
+
+---------- COMPUTATIONAL DATA -----------
+size of basis                   916
+#terms in basis               14899
+#pairs reduced                16032
+#GM criterion              30642333
+#redundant elements            6915
+#rows reduced                 32980
+#zero reductions              14652
+max. matrix data              12815 x 11058 (0.036%)
+max. symbolic hash table size  2^14
+max. basis hash table size     2^20
+-----------------------------------------
+
+
+
+------------------------------------------------------------------------------------
+msolve overall time           8.52 sec (elapsed) / 29.16 sec (cpu)
+------------------------------------------------------------------------------------
+	Command being timed: "msolve -t 4 -g 1 -v 2 -f jm7.ms -o msolve7.lead"
+	User time (seconds): 28.99
+	System time (seconds): 0.17
+	Percent of CPU this job got: 342%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:08.52
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 468720
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 116064
+	Voluntary context switches: 51
+	Involuntary context switches: 8958
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 48
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

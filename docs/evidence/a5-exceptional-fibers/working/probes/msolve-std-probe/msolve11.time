@@ -1,0 +1,19 @@
+Initial seed for pseudo-random number generator is 1793645094
+
+--------------- INPUT DATA ---------------
+#variables                       9
+#equations                   75598
+#invalid equations               0
+field characteristic         32009
+homogeneous input?               0
+signature-based computation      0
+monomial order                 DRL
+basis hash table resetting     OFF
+linear algebra option            2
+initial hash table size     131072 (2^17)
+max pair selection             ALL
+reduce gb                        1
+#threads                         4
+info level                       2
+generate pbm files               0
+------------------------------------------

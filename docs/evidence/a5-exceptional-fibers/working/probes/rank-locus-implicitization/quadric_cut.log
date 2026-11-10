@@ -1,0 +1,47 @@
+quadrics 127 rank 401
+jacobian rank of quadrics at x 16 codim of M 16
+quadrics failing at order 48 on 6 fresh directions: 21
+support sizes [1, 4, 15, 130] ... [4, 15, 130]
+quadrics 107 rank 421
+jacobian rank of quadrics at x 16 codim of M 16
+quadrics failing at order 48 on 6 fresh directions: 0
+support sizes [1, 4, 15, 30] ... [4, 15, 30]
+quadrics 107 rank 421
+jacobian rank of quadrics at x 16 codim of M 16
+quadrics failing at order 48 on 6 fresh directions: 0
+support sizes [1, 4, 15, 30] ... [4, 15, 30]
+block types {('pp',): 16, ('pq',): 53, ('qq',): 16, ('pp', 'qq'): 22}
+x support [1, 25]
+linear rank 30 pivots-free coords [0, 16]
+== witness 4
+quadrics 65 rank 463
+jacobian rank of quadrics at x 4 codim of M 10
+quadrics failing at order 48 on 6 fresh directions: 0
+support sizes [1, 15, 30] ... [1, 15, 30]
+block types {('pp',): 16, ('pq',): 32, ('qq',): 16, ('pp', 'qq'): 1}
+x support [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31]
+linear rank 30 pivots-free coords [0, 16]
+== witness 2
+quadrics 142 rank 386
+jacobian rank of quadrics at x 14 codim of M 14
+quadrics failing at order 48 on 6 fresh directions: 0
+support sizes [1, 7, 12, 14] ... [7, 12, 14]
+block types {('pp',): 31, ('pq',): 70, ('qq',): 31, ('pp', 'qq'): 10}
+x support [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31]
+linear rank 28 pivots-free coords [0, 8, 16, 24]
+== witness 3
+quadrics 126 rank 402
+jacobian rank of quadrics at x 8 codim of M 8
+quadrics failing at order 48 on 6 fresh directions: 0
+support sizes [1, 14, 28] ... [1, 14, 28]
+block types {('pp',): 31, ('pq',): 62, ('qq',): 31, ('pp', 'qq'): 2}
+x support [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31]
+linear rank 28 pivots-free coords [0, 8, 16, 24]
+== witness 21
+quadrics 107 rank 421
+jacobian rank of quadrics at x 16 codim of M 16
+quadrics failing at order 48 on 6 fresh directions: 0
+support sizes [1, 4, 15, 30] ... [4, 15, 30]
+block types {('pp',): 16, ('pq',): 53, ('qq',): 16, ('pp', 'qq'): 22}
+x support [8, 17]
+linear rank 30 pivots-free coords [0, 16]
