@@ -13,7 +13,26 @@ when it ran, and the workstation budget is now 52.5 GB RAM plus 13.4 GiB GPU mem
 |---|---|---|---|---|---|---|---|
 | 32009 | 20 | 420 | 138 / 98 / 92 / 92 | 10,646.7 s | 31.6 s | 112.8 s | 10,795.8 s, 1.71 GiB |
 | 32029 | 20 | 420 | 138 / 98 / 92 / 92 | 10,523.5 s | 42.0 s | 125.1 s | 10,696.1 s, 1.65 GiB |
+| 32009 | 19 | 420 | 138 / 98 / 92 / 92 | 7,330.5 s | 19.3 s | 60.4 s | 7,413.8 s, 1.24 GiB |
+| 32029 | 19 | 420 | 138 / 98 / 92 / 92 | 7,113.4 s | 21.1 s | 64.3 s | 7,202.3 s, 1.24 GiB |
+| 32009 | 18 | 407 | 131 / 92 / 92 / 92 | 2,540.8 s | 18.0 s | 43.5 s | 2,605.4 s, 0.97 GiB |
+| 32029 | 18 | 407 | 131 / 92 / 92 / 92 | 2,667.4 s | 10.0 s | 35.2 s | 2,715.3 s, 0.96 GiB |
 
 r_20 = 420 = HF(k[y]/K2, 6) certifies h_6 = 420 at p = 32009 (ledger A5-107) and at p = 32029 (A5-113). The export
-takes 98.6 percent of the wall time, so engine v12 and the GPU path leave these cells unchanged. N = 19 and N = 18 run
-next at both primes and fix the closing order (3d + 1 = 19 if r_19 = 420 and r_18 < 420) and the last jump.
+takes 98.6 percent of the wall time, so engine v12 and the GPU path leave these cells unchanged. r_19 = 420 at both primes
+(the N = 19 rows, one queue per prime, events in [`cells.events`](cells.events) and [`cells-p2.events`](cells-p2.events)),
+so the closing order is at most 19 = 3d + 1. At both primes r_18 = 407 < 420: the closing order is exactly 19 and the
+last jump is 13, split 7 / 6 / 0 / 0 (ledger A5-260, A5-269).
+
+Degree 5, run to test the preregistered jump law A5-269 (`vbp1`/`vbp2` headers as above): r_15 = 255 with blocks
+75 / 50 / 65 / 65 at both primes (444 s and 452 s wall, 0.33 GiB peak), against the retained r_16 = 266 (80 / 56 / 65 / 65,
+`../d5-p2/vb_d5_n16.json`): a last jump of 11 = 2d + 1 split 5 / 6 / 0 / 0, the predicted split. At p = 32009,
+r_16 = 266 (80 / 56 / 65 / 65, 704 s, 0.45 GiB), so degree 5 closes at exactly N = 16 at both primes.
+
+Known runner defect: `run-cells.sh` and `run-cells-p2.sh` write the engine record straight to `out/<tag>.json` and
+skip a cell whose record is nonempty, so an interrupted write would read as finished on retry ([issue 802](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/802)).
+Every retained record here parsed and passed the registry's engine and header digest checks.
+
+Degree 7 (target HF(k[y]/K2, 7) = 624, prediction r_21 = 609 and r_22 = 624 in A5-269): the N = 22 cells at both
+primes ran from 2026-11-09T09:23:51Z and were stopped at the 3-hour cap (3:02 wall, still in the Singular export, about
+0.35 GiB each, no record; ledger A5-279). Their empty records and partial exports were moved off the run directory.

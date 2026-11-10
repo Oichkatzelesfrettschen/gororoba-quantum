@@ -193,7 +193,8 @@ probe and the result, and run the cheap ones. Seeds:
   eliminations already proved) plus 15 Plucker variables, then `s = 0`. Use a polynomial parameterization of the slice
   germ where the regularity record gives one (quadric cones, smooth sheets), so the base ring is a polynomial ring.
   Singular's `reesclos.lib` or a direct elimination in global orderings both fit. A single Singular process may use up
-  to 16 GiB (`prlimit --as=17179869184`) for this item, one such process at a time; the 15-minute stop rule stands.
+  to 16 GiB (`prlimit --as=17179869184`) for this item, one such process at a time. The owner's ruling of 2026-11-09 replaces the 15-minute stop rule: a
+  scoped run carries a deadline from its measured-rate estimate.
 - Memory rule (supersedes the Singular-only cap): an inline `python3 -c` probe for item 2f reached 44 GB resident on
   the shared 62 GiB host and pushed the system into memory pressure. Run every Python, Singular or sympy computation,
   inline probes and background terminals included, under `prlimit --as=17179869184` (16 GiB) or less. A computation
@@ -361,8 +362,9 @@ about a thousand generators.
      mutation. Every Singular call under `prlimit --as=4294967296` with the 300 s timeout; a row that still times
      out stays blocked with its stage. No wall-clock values in the record.
 
-- **Long runs (owner decision).** One elimination at a time may run under a 24 GiB address-space cap with a 12-hour
-  ceiling, ending when the engine finishes. It runs with the engine's progress output on (Singular `option(prot)`,
+- **Long runs (owner decision).** One elimination at a time may run under a 24 GiB address-space cap with a deadline
+  from its measured-rate estimate (the owner's ruling of 2026-11-09 removed the 12-hour ceiling), ending when the
+  engine finishes. It runs with the engine's progress output on (Singular `option(prot)`,
   msolve `-v 2`), streamed to a log beside a 10 s memory and CPU sample trace, and stops when host `MemAvailable`
   falls below 4 GiB. A job ends early only on a measured stall (no degree advance and no pair-count decrease over a
   sustained window), never on a fixed short timeout; the progress log is the evidence for either outcome.

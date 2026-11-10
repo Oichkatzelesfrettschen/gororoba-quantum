@@ -57,8 +57,8 @@ the closest entry and say what changed.
   checkpoints, compares sha256, unpacks it, then `az vm deallocate` (the disk and its results stay; compute billing
   stops). A guest OS shutdown would leave the VM allocated and billed.
 - Outcome: no saturation finished. Elimination: stopped by the watchdog at 29.7 GB after 3 h 21 min (32029) and
-  52.1 GB after 7 h 29 min (32009). sat: 8 h limit at 15.1 and 15.8 GB. The `prot` traces show standard bases of
-  20,000-37,000 elements still growing. The dense a0 = l0(G) makes every a0 z_i a polynomial with hundreds of terms;
+  52.1 GB after 7 h 29 min (32009). sat: 8 h limit at 15.1 and 15.8 GB. The `prot` traces show pair lists of
+  20,000-37,000 pairs still growing (the number after `s` is the pair count, not the basis size). The dense a0 = l0(G) makes every a0 z_i a polynomial with hundreds of terms;
   the next formulation takes a0 = a single generator G_j (a coordinate chart, equally decisive because K2 contains no
   linear form). Results copied with sha256 verification; VM deallocated, disk kept.
 
@@ -128,7 +128,7 @@ the closest entry and say what changed.
   bring the sliced chart under the 11 GB lab host; the next attempt needs a host above that ceiling and a written
   case.
 - FX4 outcome (2026-11-07): on an FX4mds_v2 under a 55 GB scope the first std(C) ran 23.5 h (22 h limit, then an
-  orphaned extension) to degree 15 with 37,018 elements and 25.7 GB resident, still growing, and ended when the VM's
+  orphaned extension) to degree 15 with a pair list of 37,018 and 25.7 GB resident, still growing, and ended when the VM's
   `az vm auto-shutdown` schedule deallocated it at 21:00Z. That schedule recurs daily and had ended the first attempt
   a day earlier; a run past its first day reads `az resource list -g RG --resource-type
   Microsoft.DevTestLab/schedules` first and moves the schedule past the run's own deadline. Logs:

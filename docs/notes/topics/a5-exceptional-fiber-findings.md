@@ -264,8 +264,8 @@ has dimension a and lowers the multiplicity. For E8-bar -> VB, Iso and W8, F(I) 
 when the analytic spread of I is a and the multiplicity of F(I) is e, that is (4, 7), (5, 23) and (6, 50); this route
 does not need K2 radical. The degree-by-degree data cannot decide it, since equal Hilbert functions through degree 5
 leave the multiplicity of F(I) open; the multiplicity is an asymptotic invariant, and computing it is the arc program.
-For E8-bar -> VB the criterion sharpens: the analytic spread is already 4, because the certified degree-4 component lies
-in the fiber, and a Cohen-Macaulay F(I) has multiplicity sum h_i >= 1 + h_1 = 1 + (10 - 4) = 7 while every
+For E8-bar -> VB the criterion sharpens: the analytic spread is already 4, because the degree-4 component lies
+in the fiber (A5-015: an interpolated family over F_32009, not a symbolic lift), and a Cohen-Macaulay F(I) has multiplicity sum h_i >= 1 + h_1 = 1 + (10 - 4) = 7 while every
 4-dimensional quotient of k[y]/K2 has multiplicity at most 7, so F(I) is Cohen-Macaulay exactly when
 F(I) = k[y]/K2.
 For W8 -> N- the criterion becomes geometric. Each certified degree d <= 4 is a sandwich: the truncated rank r_N
@@ -281,11 +281,14 @@ top-dimensional component decide it. At p = 32009 and p = 32029 K2 : P is geomet
 ([structure/w8-kp](../../evidence/a5-exceptional-fibers/structure/w8-kp/README.md)), so the targets are exactly V(P) and
 V(K2 : P).
 
-**The fiber cone F(I) is Cohen-Macaulay.** Falsified for X- and E8-bar -> N+- if their analytic spread equals a. By
+**The fiber cone F(I) is Cohen-Macaulay.** Falsified for E8-bar -> N+-, open for the same-sign X pair. By
 D'Cruz, Raghavan and Verma (arXiv math/0212119, Theorem 2.1) a Cohen-Macaulay F(I) of dimension a has (1 - t)^a
-times its Hilbert series a polynomial with nonnegative coefficients; the certified degrees alone give 1, 11, -3, 4, -1
-for X- at a = 4 and 1, 16, -12, 10 for E8-bar -> N+- at a = 5. Open for E8-bar -> VB, Iso and W8, where the same
-numerators are nonnegative and terminate.
+times its Hilbert series a polynomial with nonnegative coefficients; the certified degrees alone give 1, 16, -12, 10
+for E8-bar -> N+- at a = 5, where the formal-arc certificates (`arcs/`) put L inside sqrt(K2) and K2 inside L, so the
+analytic spread is 5 at both primes (A5-014). For X- the same test gives 1, 11, -3, 4, -1 at a = 4, but the spread is
+4 only if the fiber support is V(K2), which no arc certificate shows (A5-022); the claim stays open (A5-245). The
+opposite-sign X fibers are polynomial rings, hence Cohen-Macaulay (A5-001). Open for E8-bar -> VB, Iso and W8, where
+the same numerators are nonnegative and terminate.
 
 **The fiber cone is reduced.** Falsified for X- and E8-bar -> N+-. Their radicals contain 3 and 5 linear forms
 outside K2, and since F(I) agrees with k[y]/K2 in degree 1, those forms are nilpotent in F(I). This makes the graded
@@ -360,10 +363,10 @@ non-reduced tangent cone; arcs on the normalization replace them.
   and 25/20/18/18). The closing N is 3d + 1 on Iso and W8 and 4, 8, 11, 15, 18 at d = 1 to 5 on X-, which fits
   floor(7d/2) + 1 (hypothesis, predicts N = 22 at d = 6). E8-bar -> N- follows its own law (last jump 81 at d = 5 with
   blocks 18/21/21/21).
-- Coverage (`claims.json`, rank certificates only): every pair is certified through degree 3 at both primes; through
-  degree 4 for W8 and Iso at both primes and for X and E8-bar -> VB at 32009; through degree 5 for Iso at both primes
-  and for X and E8-bar -> VB at 32009; through degree 6 for Iso at both primes. W8 holds in every degree by the C30
-  proof, which the rank registry does not carry. All certificates hold over F_p only.
+- Coverage (`claims.json`, rank certificates only): every pair is certified through degree 5 at both primes, and X,
+  Iso and E8-bar -> VB through degree 6 at both primes (88 of 96 cells). W8 holds in degree 6 and every higher degree
+  by the C30 proof, which the rank registry does not carry, and E8-bar -> N+- degree 6 is open (1526 <= h_6 <= 1666).
+  All certificates hold over F_p only.
 - E8-bar -> N+- (one class by the pair flip): Hilbert function equal to the quadric values through degree 3 at both
   primes (h_3 = 225, by two eliminations at 32009); non-reduced, and V(K2) not equidimensional, with minimal primes
   (4, 11) and (3, 4).
@@ -434,7 +437,7 @@ tests; the ledger row it enters is named where one exists.
 1. **X- degree 6** (done at both primes, 2026-11-09; `../../evidence/a5-exceptional-fibers/xm-lown/`). The preregistered
    ladder met: r_20 = r_21 = 496, r_22 = 665 with blocks 181/178/153/153, the last jump 169 split 49/42/39/39 (A5-244),
    closing at N = 22 = floor(7d/2) + 1; h_6 = 665 for X- (A5-167) and X+ (A5-155). At p = 32029, r_21 = 496 and r_22 = 665
-   with the same blocks (A5-173, A5-161); the plateau at N = 20 is measured at p = 32009 only.
+   with the same blocks (A5-173, A5-161); the plateau r_20 = r_21 = 496 holds at both primes (`xm-lown/xmnm_d6_n20_p32029.json`).
 2. **C30 as a family of planes** (minutes per point). Two-plane test rank [M(p) | M(q)] for distinct p, q in U: 8 means
    general planes are disjoint, below 8 means they meet; then the determinant locus of the Newton and (v4, v5) blocks
    over F_p[b, c], one point per component, to test whether every fiber over P(L0) is a linear 3-space. Falsifier of
@@ -455,7 +458,7 @@ tests; the ledger row it enters is named where one exists.
    `normal()` returns in 359 s with one ring of 21 variables and 382 relations, and its 14 arcs with finite lead all land
    in the degree-4 component. Chart t7 = 1 (`working/build/arc/chart_t7.sing` and `.log`, OCI A1): the strict
    transform there is radical of dimension 4 (the script's "prime?" line tests reduce(radical(S7), S7) = 0, which
-   is radicality; primality waits on the minimal primes, `chart_t7_primes.sing` on OCI A1), and the default `normal()`
+   is radicality; `chart_t7_primes.sing` on OCI A1 then returns one minimal prime equal to S7, so S7 is prime), and the default `normal()`
    returns in 2,298 s with one ring of 12 variables and 284 relations (2 h 3 min, 5.2 GiB in all); `normal(S7,
    "isPrim")`, valid only if S7 is prime, returns the same ring in 7 min 31 s and writes it (`chart_t7_norid_1.txt`: four new elements T(1) to T(4)); its arcs are not yet run. The exceptional divisor lies
    over P(L), L = V(t2, t8, t5 - t6, t3 + t4) with coordinates (t1 : t3 : t5 : t7) (`working/build/arc/arc-report.md`,
@@ -474,8 +477,8 @@ tests; the ledger row it enters is named where one exists.
    r_15 = 495 (`../../evidence/a5-exceptional-fibers/forecasts/trends-2026-11-06.md`, d = 4 row; `n15-laptop/`), and
    degree 5 closes at N = 18 after r_15 = r_16 = 742. E8-bar thus closes at floor(7d/2) + 1 with a one-step plateau at
    even d, the X- pattern, while its last jumps (55 at d = 4, 81 at d = 5) follow neither (2d + 1)^2 nor one law yet.
-   Hypothesis: X- and E8-bar share a generator of order 7/2 per degree. Falsifier: X- degree 6 closing at an N other
-   than 22 (roadmap item 1).
+   Hypothesis: X- and E8-bar share a generator of order 7/2 per degree. Its falsifier, X- degree 6 closing at an N other
+   than 22, did not fire: X- degree 6 closed at N = 22 at both primes (roadmap item 1).
 8. **X- arc certificate inside its P^11**; the three nilpotent linear directions need the scheme-theoretic Rees or
    Grassmannian construction, since arcs over a field cannot see them.
 9. **Kernel-plane limits along the formal arcs**: the limiting 8-planes of ker L_y from `cd_core` along each arc,
@@ -492,7 +495,8 @@ tests; the ledger row it enters is named where one exists.
 
 ### Cayley-Dickson tower links (2026-11-09)
 
-An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures.
+An agent analysis ([cd-tower](../../archive/reviews/cd-tower/report.md), no outside review yet) tested 13 conjectures; the
+[cd-tower reviews](../../archive/reviews/cd-tower/README.md) also hold a verification of two pasted tower analyses.
 Survives, computed: the Klein sign group of every fiber is the stabilizer of its base point in (Z/2)^4 x {+-1} through
 e_a e_b = sigma(a, b) e_(a xor b), reproducing the measured flip sets on 11 headers; nonzero nullities through level 6
 are multiples of 4 and the doubling rule holds in 420 of 420 cases. Hypothesis pending a replay with registered QRNG seeds and
@@ -501,8 +505,8 @@ stabilizer has a rank-3 torus with 9 distinct normal weights and an SL(2) that f
 octonion block under G_2 = Aut(O). Refuted or unsupported: the icosahedral, McKay and E8 readings (here A_5 is the
 32-dimensional algebra and E8 a stratum label), a tensor-square model of the last jump, and the small-number matches
 (the chart dimension 4 holds by construction). Next: an exact torus over Q inside the Klein centralizer, then a
-weighted standard basis of J in that slice, which tests whether the Singular export that holds 97 to 99 percent of the
-E8-bar, X- and VB wall time shrinks.
+weighted standard basis of J in that slice, which tests whether the Singular export, which holds 96 to 99 percent of
+the wall time of E8-bar degree 5 and VB degree 6 and 80 percent of X- degree 6 (A5-246), shrinks.
 
 ### Run plan by host (2026-11-09)
 
@@ -518,14 +522,14 @@ Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 | Item | Rows | Cost (evidence) | Host |
 |---|---|---|---|
 | E8-bar -> VB degree 4, p = 32029 | A5-111 | done: r_13 = 155, 60 s, 179 MiB | laptop |
-| E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); N = 19 and 18 fix the closing order | laptop, N = 19 and 18 running |
-| Degree-3 component of E8-bar -> VB: remaining charts (t7 = 1, k^2 + 3 = 0, singular points) | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
+| E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); r_19 = 420 and r_18 = 407 at both primes, so the closing order is exactly 19 = 3d + 1 with a last jump of 13 (7/6/0/0); degree 5 closes at 16 with a jump of 11 (5/6/0/0), as A5-269 preregistered | done |
+| Degree-3 component of E8-bar -> VB: the t7 = 1 chart is done (prime, 115 s; normalized, 451 s with `isPrim`; 34 order-1 arcs all in the degree-4 component); remaining: the k^2 + 3 = 0 chart, the singular points and jet-parameter arcs on t1 = 0 and the apex | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
 | Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
-| E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101 | pilot cost unmeasured (the degree-2 W8 receipt: 5,619 s, 6.7 GB) | laptop |
+| E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101, A5-251 | the degree-d receipt (`fiber_cone_driver.py`) needs std(J + m P_d): for E8-bar -> N- degree 2 that stage took 12,678 s under a 28 GiB cap (`working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json`), a degree-3 attempt ran past 51 min without a receipt, and a 1,200 s degree-2 rerun on the workstation timed out (2026-11-09); degrees 5 and 6 face the same standard-basis wall as the truncated-rank export, so the route needs a membership test that avoids std(J + m P_d) before a pilot | none until then |
 | Characteristic 0: degree-2 K2 by rational reconstruction, then exact membership | roadmap 10 | hours | laptop |
-| Kernel-plane limits along the arcs | A5-029 | one-arc pilot first | laptop |
-| Engine v12: in-place update, streamed L, free-column storage, 2-byte panels, then a GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the products and closure stages, which dominate W8 and Iso, not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance: W8 degree 4 byte-equal, preflight within 1.3x | laptop |
-| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | paid VM (at least 64 GiB) by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
+| Kernel-plane limits along the arcs | A5-272 to A5-276 (formerly A5-029) | one-arc pilot first | laptop |
+| Engine v12: the GPU echelon step is accepted (int32 residues on the device; `engine-v12/`); not done: the preflight terms, in-place update, streamed L, free-column storage and 2-byte storage, then the rest of the GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the echelon work inside the closure, which dominates W8 and Iso (the host table products and the export stay on the host; device-resident tables are separate work), not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance of the echelon step: W8 degree 4 and Iso degree 6 byte-equal (met); preflight within 1.3x (open: `fiber_rank_v12.py` keeps the v11 walk and echelon terms) | laptop |
+| E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | forecast: N = 22, quotient dimension 184,206, preflight 226 GiB, peak about 230 GiB and a standard basis of about 1.5e6 s (two weeks) (`forecasts/trends-2026-11-06.md`, item 14); a paid VM of at least 256 GiB by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
 | W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
 
 No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.

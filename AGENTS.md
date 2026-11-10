@@ -126,8 +126,7 @@ registered repository artifact (`docs/notes/ibm_quantum/`,
   and stays the same for a case's dry run, `--submit` and `--collect`.
 - Routing. A simulation of 14 qubits or fewer runs on Kaggle kernels through
   `scripts/kaggle_run.py` ([docs/notes/kaggle/README.md](docs/notes/kaggle/README.md)),
-  each notebook session under an approved written case (see Hardware
-  services). A 15-qubit run waits for the user's approval of a written case
+  each notebook session with a written case (see Hardware services). A 15-qubit run waits for the user's approval of a written case
   naming its substrate (an optimized Aer run on the build host or a Kaggle
   T4 x2, or Tuna-17 through Quantum Inspire) and why that one answers the
   question. IBM hardware serves 16 or more qubits, or a smaller run whose
@@ -147,9 +146,18 @@ registered repository artifact (`docs/notes/ibm_quantum/`,
 
 ## Hardware services
 
-- Every job on a provider (QPU, emulator, simulator or mock), every Kaggle or
-  other provider notebook session, every upload, every timeslot booking and
-  every provider QRNG read waits for the user's approval of a written case:
+- A Kaggle CPU or GPU session that finishes inside Kaggle's 12-hour session
+  limit runs under the owner's standing approval (2026-11-09: "Kaggle is free,
+  run it if UNDER 12 HOURS"); its written case is still recorded before the
+  push, and every push carries `--timeout`. Well-scoped long computations on
+  the owned hosts (the Windows workstation, the build host, the OCI lab) are
+  approved the same way: each states its falsifier, host, measured-rate
+  runtime estimate and memory budget, and runs to a deadline from that
+  estimate rather than to a fixed short cap.
+- Every other job on a provider (QPU, emulator, simulator or mock), every
+  other provider notebook session, every paid cloud machine, every upload,
+  every timeslot booking and every provider QRNG read waits for the user's
+  approval of a written case:
   what it measures, why a simulation cannot answer it, the backend, shots,
   expected seconds and expected credits. The free ANU and Outshift QRNG draws
   need none, per the QRNG guide above; a local noise simulation needs none. A

@@ -67,5 +67,7 @@ after the plateau r_20 = r_21: the closing-order hypothesis survives its first o
 
 At p = 32029 (`run-xm-d6-p2.sh`, header `../working/build/inputs/p32029-r9115/xm-nm.sing`, [`xm6p2.events`](xm6p2.events)):
 r_21 = 496 (132 / 136 / 114 / 114, 1,108 s, 4.7 GiB) and r_22 = 665 (181 / 178 / 153 / 153, 1,760 s, 5.6 GiB), equal to
-the p = 32009 values at those N; h_6 = 665 for X- (A5-173) and X+ (A5-161) at the second prime. N = 20 was not run at
-p = 32029, so the plateau r_20 = r_21 is a p = 32009 measurement.
+the p = 32009 values at those N; h_6 = 665 for X- (A5-173) and X+ (A5-161) at the second prime. N = 20 ran later on the
+workstation (engine v11, header `../working/build/inputs/p32029-r9115/xm-nm.sing`, queued after the VB cells of the
+p = 32029 queue; start and exit in `../vb-d6-laptop/cells-p2.events`): r_20 = 496
+(132 / 136 / 114 / 114, 801 s, 3.7 GiB), so the plateau r_20 = r_21 = 496 holds at both primes.
