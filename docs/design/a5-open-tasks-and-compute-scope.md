@@ -39,7 +39,7 @@ containment, blowup planes), never from a rung. The export cost grows about 1.36
 `slimgb` (12,150 s at N = 21, 16,500 s at N = 22 on the laptop), so N = 31, degree 10, extrapolates to about three
 days per prime for a value K2 already predicts. E8-bar -> N+- degree 6 is the one cell whose value is unknown.
 The ladder therefore stops at its present rungs except for that cell, and task 113 (W8 degree 6 at N = 19, a value
-A5-066 already proves, 129 to 223 GiB) is a candidate for withdrawal.
+A5-066 already proves, 129 to 223 GiB) is withdrawn (owner decision of 2026-11-10, ledger row A5-291).
 
 Three gaps separate the fiber record from item 6:
 - field: every fiber statement except A5-270 holds at p = 32009 and p = 32029. Check 1 of the characteristic-0
@@ -148,9 +148,10 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 
 ### Blocked on an engine change
 
-- 113, W8 degree 6 at N = 19, an engine test (A5-066 already proves h_6 = 8,624). Under v11 it needs 129 to 223 GiB
-  and 18 to 27 h, beyond every substrate above. It runs after the multiplication matrix L streams by degree, which
-  removes the 103 GiB residency, together with uint16 storage and engine v12's GPU echelon.
+- 113, W8 degree 6 at N = 19, an engine test (A5-066 already proves h_6 = 8,624): withdrawn on 2026-11-10 by the
+  owner's decision (ledger row A5-291). Under v11 it needs 129 to 223 GiB and 18 to 27 h, beyond every substrate
+  above, and its only output would be a check of the rank engine and the closing law. A later engine test would
+  first need the multiplication matrix L streamed by degree, uint16 storage and engine v12's GPU echelon.
 
 ### Separate changes
 

@@ -192,7 +192,7 @@ each open computation by its measured bottleneck:
 | X- identity check over Q(i), per relation | polynomial products, unmeasured | build host through `parallel.py`; Kaggle CPU for relations that run long | |
 | W8 check 3 at N = 16 | Q(i) std, 114 s at N = 13 | build host | everything |
 | W8 check 2 (cofactors) | scale of the X- pilot times the W8 receipt ratio, unmeasured | sized after the X- pilot | |
-| W8 degree 6 at N = 19 (task 113, not needed for F(I) by A5-066) | closure 14 to 19 h CPU, L = 103 GiB dense under v11 | GPU: engine v12 on the RTX 4090 laptop once L streams by degree (efficiency lever 1 and the streaming idea), Kaggle T4 x2 with CPU fallback for the export; an Azure VM otherwise | |
+| W8 degree 6 at N = 19 (task 113, not needed for F(I) by A5-066; withdrawn 2026-11-10, A5-291) | closure 14 to 19 h CPU, L = 103 GiB dense under v11 | GPU: engine v12 on the RTX 4090 laptop once L streams by degree (efficiency lever 1 and the streaming idea), Kaggle T4 x2 with CPU fallback for the export; an Azure VM otherwise | |
 | Exact torus and weighted std (task 115) | symbolic linear algebra, small | build host | everything |
 
 The Singular std behind the VB ladder runs on one core and has no GPU form, so GPU instances buy nothing for VB

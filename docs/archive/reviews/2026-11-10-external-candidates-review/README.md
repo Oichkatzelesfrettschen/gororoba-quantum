@@ -151,7 +151,7 @@ cones of I' at the base points; arcs in generic directions reach only the first 
 
 | Cell | Decision route | Cost |
 |---|---|---|
-| W8 -> N-, every degree | proved (A5-066); the degree-6 rank at order 19 would test only the engine | none; withdrawal is the owner's decision |
+| W8 -> N-, every degree | proved (A5-066); the degree-6 rank at order 19 would test only the engine | none; the run is withdrawn (A5-291) |
 | Iso -> N-, every degree | review of A5-284; then h_d = C(d+4, 4) + 12 C(d+3, 4) + 10 C(d+2, 4) | reviewer time |
 | E8-bar -> VB support | base locus on charts t3 and t5 of the normalized point blowup | chart t7 took 2 s, 3 s and 111 s; the degree-10 rung it replaces extrapolates to about three days per prime |
 | X same-sign support | the same decomposition; one rank of 4 on limits satisfying K2 decides | unmeasured, expected minutes |
