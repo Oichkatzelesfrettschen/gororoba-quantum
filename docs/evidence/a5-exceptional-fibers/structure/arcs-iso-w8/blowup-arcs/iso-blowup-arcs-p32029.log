@@ -1,0 +1,7 @@
+RESULT signs of the run generators against the header 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT K2 generators 68
+RESULT J on the arc 1
+RESULT nu 4 nonzero limit entries 17
+RESULT K2 nonzero on the limit 0
+RESULT rank of [dF | F] at two points 5 5
+exit 0
