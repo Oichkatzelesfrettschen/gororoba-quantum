@@ -291,8 +291,9 @@ baseline and transfer deviance.
   fitted components predict nothing on held-out meshes beyond the ideal mesh, and within the pairs they predict
   worse than it, though they still beat random components of their size. Reading: the transferable fingerprint
   the two-photon model found is carried by multiphoton emission and dark clicks that the two-photon law cannot
-  express; a static component error that transfers is not established. Confidence is moderate: it falls if a g2
-  law with free source figures recovers a transfer, and it rises if a third date reproduces the null transfer.
+  express; a static component error that transfers is not established. Confidence is moderate to high: a g2 law
+  with free source figures recovers no transfer either (the diagnostic below), and a third date reproducing the
+  null transfer would raise it further.
 - **Optimizer status:** baseline, transfer and null fits stopped on L-BFGS's own tolerance. Under the two-photon
   law every component and ceiling fit except those of the retained job-00 to job-01 hold-out reached the cap of
   3,000 iterations, with largest gradient entries up to 165, and their three starts span 2.2 to 8.4 % of deviance;
@@ -301,8 +302,29 @@ baseline and transfer deviance.
   converged components, sit above their baselines.
 - **The earlier qualification** (20 nulls, no optimizer status) applies to the first table; this run measures
   what it named unmeasured.
+- **Free source figures (post-data diagnostic, `g2_free_source.py`, `g2-free-source.json`).** The same hold-outs,
+  nulls (index 224), starts (index 225) and rule under the g2 law, with the multiphoton probability and one
+  dark-rate multiplier per mode fitted in every fit and T held at the plan read (a free T trades with the dark
+  rates; the script's self-test measured it). Its reading, stated before the run: the null transfer stands if none
+  survives with the within-pair transfers at or above their baselines.
 
-### Separating preparation, readout and mesh error raises F by a term the counts disfavor
+  | Hold-out | Gain | Gain over null median | Deviance: baseline, transfer, ceiling | Null deviance: min, median |
+  |---|---|---|---|---|
+  | retained job-00 to job-01 | -0.64 | 0.38 | 4,626; 5,339; 3,520 | 5,563; 6,473 |
+  | band job-00 to job-01 | -0.47 | 0.46 | 16,023; 19,056; 9,545 | 20,513; 27,289 |
+  | retained pair to band pair | 0.09 | 0.73 | 35,005; 34,017; 23,729 | 46,302; 61,264 |
+  | band pair to retained pair | 0.04 | 0.68 | 9,384; 9,318; 7,708 | 10,653; 12,683 |
+
+  None survives and the within-pair transfers sit above their baselines, so the null transfer stands with the
+  source figures free. Fitting the figures lowers the ideal-mesh baselines by 5 to 9 %. The fitted g2 is 0.019 to
+  0.022 against plan reads of 0.018 (retained) and 0.020 (band), and the effective dark rates of the six window
+  modes are 0.3 to 10 times the plan read. The raw figures carry a degeneracy: mode 6, which holds none of the
+  two-click events, takes a dark probability near 1 with its output weight near 0, and that sets a common scale
+  of the window modes' dark-to-photon ratio. Every component and ceiling fit reached the 3,000-iteration cap;
+  the baselines and transfers stopped on tolerance except one baseline, and 7 of 400 null fits reached the cap.
+  The run cost 10,585 CPU-seconds on the build host.
+
+### Separating preparation, readout and mesh error moves F by about 0.001 once the counts set the mesh shift's scale
 
 `spam_separated_fit.py` fits one positive Choi matrix to all 576 eligible rates by Poisson maximum likelihood,
 beside three nuisance terms that one Choi matrix at ideal readouts does not hold (the nuisance-parameter fit of van
@@ -338,11 +360,20 @@ NLL is the Poisson negative log-likelihood of the eligible counts, lower is bett
   (retained), inside the margin. The one mesh shift the counts favor, the g2 law's in-sample components (descriptive, fitted on the same
   pair), lowers
   the band F by 0.0026. The terms the counts support leave F where the positive process-only fit puts it.
-- **Hypothesis:** the admitted shift comes from two-photon-law components, which under the g2 law transfer nothing
-  beyond the ideal mesh (previous section), so it carries multiphoton and dark-click content as mesh error, and the
-  0.865 counts that content as process.
-- **Against the published gate:** F 0.865 is an average gate fidelity of 0.892 and the process-only 0.853 one
-  of 0.882, against 0.938 in Maring et al. 2024 (pub 0ee7b47bd723, Table 1); the terms the counts support close none of
+- **Free scale on the shift (post-data diagnostic, `mesh_shift_scale.py`, `mesh-shift-scale.json`).** Profiling
+  the NLL over a scale kappa on the shift, with every other term refitted at each point, puts the admitted shift
+  with all terms at kappa 0.018 (-0.007 to 0.042) on the band pair, an interval that holds 0, and at 0.088 (0.034
+  to 0.143, and -0.041 to 0.218 at 5.73 times the NLL threshold) on the retained pair. At those scales F is
+  0.8542 (band) and 0.8519 (retained), 0.0015 and 0.0004 above the process-only fit, inside the margin. Across
+  all eight component sets and variants of each pair, every scale the counts support leaves the band F at 0.851
+  to 0.855 and the retained F at 0.852 to 0.862; the in-sample shifts take scales of 0.3 to 0.9, as components
+  fitted to the same counts should.
+- **Reading:** the separated terms move F by about 0.001 once the counts set the scale of the mesh shift; the
+  0.865 of the preregistered verdict is the fixed unit scale of a shift the counts put near zero. Hypothesis,
+  consistent with the component model's g2 results: the admitted two-photon components carry multiphoton and
+  dark-click content as mesh error, so the shift they predict for the eligible outcomes is mostly absent.
+- **Against the published gate:** F 0.865 is an average gate fidelity of 0.892, and the 0.853 to 0.854 that
+  the supported terms give is one of 0.882 to 0.883, against 0.938 in Maring et al. 2024 (pub 0ee7b47bd723, Table 1); the terms the counts support close none of
   that gap.
 
 ## Questions the measurement raises that the preregistration did not ask
@@ -352,8 +383,8 @@ NLL is the Poisson negative log-likelihood of the eligible counts, lower is bett
   source part at about 1 % per readout and the per-seed share error at 0.013 to 0.032; neither has a demonstrated
   map to process fidelity, so their sum does not measure the gap to Maring et al. 2024 (pub 0ee7b47bd723, Table 1):
   average gate fidelity 0.865 against their 0.938 for the same 1/9 gate class, a figure measured with hourly
-  recalibration. The SPAM-separated fit (above) separates them: the terms the counts support leave F at 0.853,
-  and the term that raises it to 0.865 is one the counts disfavor.
+  recalibration. The SPAM-separated fit (above) separates them: the terms the counts support leave F at 0.853
+  to 0.854, and the fixed-scale term that raises it to 0.865 takes a scale near zero when the counts fit it.
 - **Which physical-channel estimator is intended?** Raw linear inversion gives 0.832, the conditional estimate
   0.811, the projection onto physical maps 0.790 and the positive maximum-likelihood fit 0.853, the one estimator
   under which the pairs agree. A comparison with published gate fidelities needs one of them
@@ -376,9 +407,9 @@ NLL is the Poisson negative log-likelihood of the eligible counts, lower is bett
 | Component model with output weights per job, then g2 in the pattern law (`mesh_model_jobs.py`), with nulls that also permute gain and crosstalk and record optimizer status | Whether the transferable content survives per-job output weights (job identity is aliased with input parity), and how much the source carries | none; run | A hold-out fails Gain >= 0.3, Gain over the null median >= 0.3 or rank p <= 0.05 (the script's rule). Two-photon survives on all four, g2 on none |
 | Model-check reference with a per-seed term and an output weight per mode and job (`job_weight_reference.py`) | Whether per-job output weights carry the band excess beyond the recorded per-seed scale | none; run | The band statistic stays outside the reference's central 95 % at both recorded scales. Carried at 0.0177, not at 0.011 |
 | Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV), with the realized-mesh model as the readout (`spam_separated_fit.py`) | F with SPAM and mesh error separated | none; run | The nuisance-free and nuisance fits agree within 0.005. Differ on both pairs, carried by a term the counts disfavor |
-| The SPAM-separated fit with a free scale on the mesh shift, and the g2 component model with free source figures (post-data diagnostics) | Whether any scale of the realized-mesh shift is supported, and whether a source law that fits its own figures leaves a transferable component error | none | The free scale fits near zero, or the g2 transfer stays at or above its baseline |
+| The SPAM-separated fit with a free scale on the mesh shift, and the g2 component model with free source figures (post-data diagnostics) | Whether any scale of the realized-mesh shift is supported, and whether a source law that fits its own figures leaves a transferable component error | none; run | The free scale fits near zero, or the g2 transfer stays at or above its baseline. Both met: the admitted shift's scale is 0.018 (-0.007 to 0.042) on the band pair, and no free-source g2 hold-out survives |
 | The CZ compilation ensemble case ([design](../../design/ascella-cz-compilation-ensemble-case.md), built, not sent): ten seeds per setting and same-seed anchors in each job | Per-seed mesh variance of the gate and within-calibration repeatability, the two quantities this pair confounds | per its written case | Its homogeneity and anchor tests, as preregistered there |
 
-The first three ran on retained counts; the fourth row is post-data and unrun. The ensemble case already holds the replicate-seed and same-seed-repeat design
+The first four ran on retained counts, the fourth as post-data diagnostics. The ensemble case already holds the replicate-seed and same-seed-repeat design
 that a seed-swap or back-to-back repeat of job-00 would duplicate, and it needs the owner's approval of its written
 case.
