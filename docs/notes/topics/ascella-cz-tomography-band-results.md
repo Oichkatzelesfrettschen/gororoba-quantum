@@ -16,7 +16,8 @@ The band pair of the Ascella CZ process tomography reference
   - the post-data decomposition `docs/evidence/ascella-cz-tomography-band/findings.json`, written by `docs/evidence/ascella-cz-tomography-band/analyze.py` (deterministic, about 75 s);
   - the served-mesh record `results/quandela/ascella-cz-tomography-reference-served-mesh.json` (`scripts/ascella_cz_served_mesh.py --pair reference`);
   - the component model of the mesh and its preregistered hold-out, `docs/evidence/ascella-cz-tomography-band/mesh_model.py` and `mesh-model.json`;
-  - the preregistered model-check reference with a per-seed mesh term, `docs/evidence/ascella-cz-tomography-band/mesh_variance_reference.py` and `mesh-variance-reference.json`, its post-data cell-share check `reference_low_cell_share.py` and `reference-low-cell-share.json`, and the band reference at calibrated inputs `calibrated_reference.py` and `calibrated-reference.json`.
+  - the preregistered model-check reference with a per-seed mesh term, `docs/evidence/ascella-cz-tomography-band/mesh_variance_reference.py` and `mesh-variance-reference.json`, its post-data cell-share check `reference_low_cell_share.py` and `reference-low-cell-share.json`, and the band reference at calibrated inputs `calibrated_reference.py` and `calibrated-reference.json`;
+  - three preregistered tests on the retained counts (commit 9525631f6 precedes every output): the component model with per-job output weights under the two-photon and the g2 pattern laws, `mesh_model_jobs.py` and `mesh-model-jobs.json` (Kaggle run `results/kaggle/2026-11-10T005038Z-gororoba-ascella-mesh-model-jobs`, replayed on the build host to a largest relative deviance difference of 3.1e-11 in `mesh-model-jobs-check.txt`); the model-check reference with per-job output weights, `job_weight_reference.py` and `job-weight-reference.json`; and the SPAM-separated constrained process fit, `spam_separated_fit.py` and `spam-separated-fit.json`.
 
 The preregistered analysis decides: process fidelity 0.832 (0.824 to 0.839), average gate fidelity 0.865 (0.859 to
 0.871). The model check fails, so by the preregistered rule every other verdict is conditional on that failure. The
@@ -43,13 +44,13 @@ section), so it serves only to mark which falsifications depend on the interval 
 | Fidelity at or below the record ceiling | 0.934 | lower end 0.824 | survives | Survives trivially; it constrains nothing at this F |
 | Balanced rails, r(11)/r(01) = 1 | 1 | 1.045 to 1.074 | falsified | Robust. The ZZ-only ratio is 1.123 and the retained pair's 1.139: a stable control-side imbalance that the nine-readout average dilutes |
 | r(11)/r(01) at the record variant's value | 1.040 | same | falsified | Fragile: misses the interval's lower end 1.0446 by 0.005, while the same ratio moves by 0.05 with the readout set; the retained pair's 1.009 survived |
-| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it at the recorded scales the band pair still fails, at 2.1 to 3.3 times its reference (`calibrated_reference.py`, next section) |
+| Model check: scatter matches the acquisition law | Pearson 166,240 | reference up to 40,271 | falsified | Robust. The reference omits the per-seed mesh variance; with it at the recorded scales the band pair still fails, at 2.1 to 3.3 times its reference (`calibrated_reference.py`, next section). Adding an output weight per mode and job, the reference carries it at the input that realizes 0.0177 and not at 0.011 (`job_weight_reference.py`) |
 | Constant variance factor (1.44) | 1.44 | ratio 5.73 | falsified | Robust |
 | Relative systematic per rate (3.67) | 3.67 | ratio 5.73 | falsified | Robust, and carried by the cells whose expectation the statistic clips to one event; the other cells grow with the events (next section) |
 
 ## What the decomposition shows
 
-### The failed model check: the per-seed mesh variance at its recorded scale does not explain the band failure
+### The failed model check: the per-seed mesh variance explains the band failure only with output weights, at the upper recorded scale
 
 - **Missing term.** The preregistered reference (`overdispersion` in
   `scripts/ascella_cz_tomography_reference_case.py`) draws synthetic pairs under the linear-inversion fit and the
@@ -72,6 +73,18 @@ section), so it serves only to mark which falsifications depend on the interval 
   inputs that realize the recorded scales, 0.0124 and 0.0202, the band statistic stays outside the reference (ratio
   3.27, central 95 % up to 77,000; ratio 2.13, up to 118,900; `calibrated_reference.py`, post-data, index 216). The
   retained pass needs no rerun: the pair passes without the term.
+- **Output weights per mode and job (preregistered test).** An output weight on a rail mode multiplies every
+  outcome that clicks on it in every readout basis, which one Choi matrix at ideal readouts does not hold.
+  `job_weight_reference.py` fits one overlap and five relative mode weights per job to the eleven off-rail window
+  patterns, so the eligible counts the statistic scores do not enter them, and draws the reference with those
+  weights and the per-seed term. Verdict by its rule: carried. At the input that realizes 0.0177 the band statistic
+  sits inside the reference (mean 113,368, central 95 % 67,720 to 176,211, ratio 1.47); at the input that realizes
+  0.011 it stays outside (mean 81,419, up to 113,518, ratio 2.04). The weights alone lift the reference mean from
+  29,412 to 51,269 (ratio 5.65 to 3.24). The fitted band weights are common to both jobs, target rail-1 mode T1 near
+  0.91 in each and outcome weights 0.94 to 1.07, so the test reads the output-weight change between the dates, not
+  a difference between the jobs. The retained statistic sits inside every reference. Reading: output weights and
+  the per-seed term together carry the band scatter at the upper recorded scale and not at the lower one; a
+  per-seed scale near 0.011 leaves it unexplained.
 - **Where the statistic sits.** 153,920 of the band Pearson (93 %) sits in 34 cells where the unweighted
   linear-inversion fit predicts fewer than one event, mostly negative; the statistic divides those by one event, so
   each contributes (n - E)^2. The clip concentrates any scatter there: the synthetic pairs put 97 % of their
@@ -135,13 +148,19 @@ events, and those move Z populations.
   that from the equator Z-biases leaves a preparation tilt near +0.05 on the target and -0.03 on the control in both
   pairs. The target bias that moved between the runs moved with its detection rail, not with its preparation.
 
-### The output-weight change accounts for a third of the fidelity drop under its own model
+### Under linear inversion the output-weight change accounts for a third of the fidelity drop; the positive fit shows no drop
 
 - **Corrected F:** dividing each eligible outcome by its fitted output weight pair e(C_c) e(T_t) moves F from 0.849
   to 0.846 on the retained pair and from 0.832 to 0.834 on the band pair.
 - **What remains:** the corrected gap is 0.012, against a raw gap of 0.017. Attributing the removed 0.005 to the
   detectors and the remainder to the gate is a hypothesis: source, preparation and readout, and model error are not
   separated.
+- **The gap belongs to the linear estimator.** The positive maximum-likelihood fit of the same rates
+  (`spam_separated_fit.py`, process-only) gives 0.8515 (retained) and 0.8527 (band): the band pair sits at the
+  retained pair's value, its resample interval 0.850 to 0.856 overlapping the retained 0.844 to 0.858. The 0.017 drop
+  appears under unconstrained linear inversion and not under the positive fit, so it is no measured change of the
+  process. Hypothesis: the band's negative-expectation cells (the model-check section), which a positive Choi
+  matrix cannot produce, carry it.
 - **Eligible share:** the eligible share of window two-click events fell from 0.175 to 0.155 at an unchanged pattern
   overlap. More probability leaves the rails. A worse realized mesh fits that; the conditional pattern law is
   misspecified and blind to absolute success, so a source change is not excluded.
@@ -194,7 +213,7 @@ overlap by more than 0.01, and the component model below reports the overlap it 
   agreeing within counting and separately compiled circuits scattering beyond it. Fyrillas et al. 2025 (pub
   623fee140d48, Sec. II and V) attribute setting-specific phase errors to heat in bare waveguides.
 
-### A static model of the commanded phases predicts part of the per-setting error on held-out meshes and dates
+### A static model of the commanded phases predicts part of the per-setting error under the two-photon law, and none once the source terms enter
 
 Every served mesh of the four jobs decodes to one fixed topology: 132 couplers at calibrated angles, identical in all
 288 meshes and on both dates, and 126 heaters whose phases the transpiler sets per iteration. A component error is
@@ -232,9 +251,140 @@ every one of 20 null draws of permuted, sign-flipped component errors.
   classes nor any single value reads a physical component. The neighborhood of the crosstalk term follows the ASAP
   column order, whose match to the chip's thermal layout is a hypothesis.
 - **Overlap under the realized mesh:** the component model fits overlaps of 0.889 to 0.899 without g2, within 0.007
-  of the ideal-mesh pattern fit, so the realized-mesh error does not move the overlap reading.
+  of the ideal-mesh pattern fit, and 0.933 to 0.937 with g2, the pattern route's 0.93, so the realized-mesh error
+  does not move the overlap reading under either law.
 - **Falsifier of the reading:** the compilation ensemble case's same-seed anchors differing beyond counting inside
   one calibration, or a component model fitted on one date failing to predict a third date's meshes.
+
+**Per-job output weights and the g2 law (preregistered test).** `mesh_model_jobs.py` repeats the four hold-outs
+with the twelve output weights fitted per job, under the two-photon law above and under the g2 law (Perceval's
+source model at the plan read's g2 and transmittance, threshold detection and first-order dark clicks), with 100
+null draws that permute and sign-flip the coupler and heater errors, flip the sign of the gain and crosstalk and
+apply them through a permuted heater order, three starts per component fit and the optimizer status of every fit. Its rule, fixed before the fit to
+measured counts: a hold-out survives when Gain >= 0.3, Gain over the null median >= 0.3 and the rank of the
+transfer among the nulls gives p <= 0.05. Before that rule's commit (9525631f6), a timing run fitted the band
+pair's ideal-mesh baselines under both laws (deviance 477,207 two-photon and 36,964 g2) and twenty iterations of
+one component fit, the script's docstring records; it computed no transfer, null or Gain, and the rule's
+thresholds do not depend on it. The contrast between the two laws' baselines, on which the reading below rests,
+was therefore seen before the rule was fixed.
+
+| Law | Hold-out | Gain | Gain over null median | Deviance: baseline, transfer, ceiling | Null deviance: min, median | Rule |
+|---|---|---|---|---|---|---|
+| two-photon | retained job-00 to job-01 | 0.81 | 0.54 | 37,711; 12,086; 6,077 | 12,292; 19,002 | survives |
+| two-photon | band job-00 to job-01 | 0.84 | 0.56 | 245,543; 56,057; 21,293 | 67,269; 100,648 | survives |
+| two-photon | retained pair to band pair | 0.89 | 0.75 | 477,207; 107,239; 59,190 | 132,242; 251,032 | survives |
+| two-photon | band pair to retained pair | 0.84 | 0.39 | 69,838; 22,995; 14,237 | 24,713; 28,514 | survives |
+| g2 | retained job-00 to job-01 | -0.39 | 0.61 | 5,026; 5,546; 3,709 | 5,742; 8,471 | fails |
+| g2 | band job-00 to job-01 | -0.36 | 0.73 | 17,573; 20,265; 10,083 | 30,116; 48,230 | fails |
+| g2 | retained pair to band pair | 0.04 | 0.81 | 36,964; 36,480; 24,798 | 51,603; 85,231 | fails |
+| g2 | band pair to retained pair | 0.03 | 0.88 | 10,017; 9,951; 8,034 | 14,729; 23,720 | fails |
+
+Every transfer sits below all 100 nulls (rank p 0.0099, the floor of 100 draws), and the build host replays every
+baseline and transfer deviance.
+
+- **Preregistered reading:** with per-job weights the two-photon transfer survives on all four hold-outs, and the
+  g2 transfer on none. Under the g2 law the fails come from Gain alone, since the gain over the null median stays
+  at 0.61 to 0.88; the falsifier this note listed for the test (that ratio below 0.3) is not met, and the
+  committed three-part rule governs.
+- **What the source terms take.** At the ideal mesh the g2 law alone removes 0.86 to 0.93 of the two-photon
+  baseline deviance, more than the two-photon transfer's 0.67 to 0.78. Once those terms are in the law, the
+  fitted components predict nothing on held-out meshes beyond the ideal mesh, and within the pairs they predict
+  worse than it, though they still beat random components of their size. Reading: the transferable fingerprint
+  the two-photon model found is carried by multiphoton emission and dark clicks that the two-photon law cannot
+  express; a static component error that transfers is not established. Confidence is moderate to high: a g2 law
+  with free source figures recovers no transfer either (the diagnostic below), and a third date reproducing the
+  null transfer would raise it further.
+- **Optimizer status:** baseline, transfer and null fits stopped on L-BFGS's own tolerance. Under the two-photon
+  law every component and ceiling fit except those of the retained job-00 to job-01 hold-out reached the cap of
+  3,000 iterations, with largest gradient entries up to 165, and their three starts span 2.2 to 8.4 % of deviance;
+  an unconverged ceiling raises Gain, which the two-photon margins absorb. Under the g2 law every within-pair component fit converged, and two of the three
+  starts on the whole band pair reached the cap. The g2 failure rests on neither: the within-pair transfers, from
+  converged components, sit above their baselines.
+- **The earlier qualification** (20 nulls, no optimizer status) applies to the first table; this run measures
+  what it named unmeasured.
+- **Free source figures (post-data diagnostic, `g2_free_source.py`, `g2-free-source.json`).** The same hold-outs,
+  nulls (index 224), starts (index 225) and rule under the g2 law, with the multiphoton probability and one
+  dark-rate multiplier per mode fitted in every fit and T held at the plan read (a free T trades with the dark
+  rates; the script's self-test measured it). Its reading, stated before the run: the null transfer stands if none
+  survives with the within-pair transfers at or above their baselines.
+
+  | Hold-out | Gain | Gain over null median | Deviance: baseline, transfer, ceiling | Null deviance: min, median |
+  |---|---|---|---|---|
+  | retained job-00 to job-01 | -0.64 | 0.38 | 4,626; 5,339; 3,520 | 5,563; 6,473 |
+  | band job-00 to job-01 | -0.47 | 0.46 | 16,023; 19,056; 9,545 | 20,513; 27,289 |
+  | retained pair to band pair | 0.09 | 0.73 | 35,005; 34,017; 23,729 | 46,302; 61,264 |
+  | band pair to retained pair | 0.04 | 0.68 | 9,384; 9,318; 7,708 | 10,653; 12,683 |
+
+  None survives and the within-pair transfers sit above their baselines, so the null transfer stands with the
+  source figures free. Fitting the figures lowers the ideal-mesh baselines by 5 to 9 %. The fitted g2 is 0.019 to
+  0.022 against plan reads of 0.018 (retained) and 0.020 (band). The raw fitted dark figures carry a degeneracy:
+  mode 6, which holds 0.02 to 0.04 % of the two-click events, takes a dark probability near 1 with its output
+  weight near 0, which shrinks every window pattern's no-dark factor about 1,000-fold and so sets a common scale
+  of the window modes' dark-to-photon ratio; the raw window multipliers in `g2-free-source.json` read 0.0006 to
+  0.035. Pinning the dark rates of the six modes outside the window at the plan read (`--pin-empty-modes`,
+  `g2-free-source-pinned.json`) returns the same g2, puts the window dark rates at 0.3 to 10 times the plan read,
+  and raises the ideal-mesh deviance by 0.3 to 68 (at most 1.5 %), so the ridge nearly reparametrizes the law.
+  The hold-outs were not rerun pinned. Hypothesis, by margin: a shift of at most 68 in deviance moves no verdict,
+  since band-to-retained needs a baseline-minus-transfer gap of about 503 for Gain 0.3 against 65 now, and the
+  within-pair transfers sit 713 and 3,032 above their baselines, provided transfer and ceiling move no more than
+  the baseline. Every component and ceiling fit reached the 3,000-iteration cap;
+  the baselines and transfers stopped on tolerance except one baseline, and 7 of 400 null fits reached the cap.
+  The run cost 10,585 CPU-seconds on the build host.
+
+### Separating preparation, readout and mesh error moves F by about 0.001 once the counts set the mesh shift's scale
+
+`spam_separated_fit.py` fits one positive Choi matrix to all 576 eligible rates by Poisson maximum likelihood,
+beside three nuisance terms that one Choi matrix at ideal readouts does not hold (the nuisance-parameter fit of van
+Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV): the per-job outcome weights of the reference above
+(fixed), a realized-mesh shift of each outcome's coincidence probability from the component model, cross-fitted
+from the other pair (fixed), and a free throughput per setting over the nine readouts of each input. The mesh
+shift enters from the g2 law first and the two-photon law second, each only when its cross-pair hold-out onto the
+pair survives; the g2 hold-outs fail, so both pairs take the two-photon components. Its rule, fixed before the fit to
+measured counts, decides on d = F(nuisance) - F(process-only) over 100 parametric resamples against a margin of
+0.005.
+
+| Fit | Retained F | Retained NLL change | Band F | Band NLL change |
+|---|---|---|---|---|
+| Case's linear inversion | 0.8493 | | 0.8317 | |
+| Process only, positive | 0.8515 (0.844 to 0.858) | 0 | 0.8527 (0.850 to 0.856) | 0 |
+| Outcome weights alone | 0.8527 | -29 | 0.8529 | +53 |
+| Throughput alone (128 free) | 0.8476 | -278 | 0.8533 | -1,204 |
+| Two-photon mesh shift, cross-fitted (admitted) | 0.8740 | +1,277 | 0.8640 | +4,229 |
+| g2 mesh shift, cross-fitted | 0.8688 | +285 | 0.8559 | +594 |
+| g2 mesh shift, in-sample (descriptive) | 0.8659 | -84 | 0.8501 | -827 |
+| Every admitted term | 0.8695 (0.862 to 0.875) | +251 | 0.8653 (0.862 to 0.868) | +1,849 |
+
+NLL is the Poisson negative log-likelihood of the eligible counts, lower is better; the intervals are the central
+95 % of the resamples, and every fit and resample stopped on its own tolerance.
+
+- **Preregistered verdict:** differ on both pairs. d is 0.0126 (0.0111 to 0.0139) on the band pair and 0.0180
+  (0.0154 to 0.0206) on the retained pair, and F with the terms separated is 0.865 (band). The resamples follow the
+  acquisition law the model check rejects; scaled by the band's 2.39, the band interval 0.009 to 0.016 still lies
+  outside the margin.
+- **Qualification (post-data):** the admitted mesh shift carries the difference, and it raises the NLL by 4,229
+  (band) and 1,277 (retained) at its fixed scale, so the counts disfavor it. Among the cross-fitted and free terms,
+  throughput alone buys likelihood beyond what 128 free parameters gain by chance (about 64), and it moves F by +0.0006 (band) and -0.0039
+  (retained), inside the margin. The one mesh shift the counts favor, the g2 law's in-sample components (descriptive, fitted on the same
+  pair), lowers
+  the band F by 0.0026. The terms the counts support leave F where the positive process-only fit puts it.
+- **Free scale on the shift (post-data diagnostic, `mesh_shift_scale.py`, `mesh-shift-scale.json`).** Profiling
+  the NLL over a scale kappa on the shift, with every other term refitted at each point, puts the admitted shift
+  with all terms at kappa 0.018 (-0.007 to 0.042) on the band pair, which the counts do not support (the NLL at
+  that scale lies 0.5 below kappa 0), and at 0.088 (0.034 to 0.143) on the retained pair, which they support by
+  the script's rule (5 below kappa 0); widened by the retained pair's own Pearson ratio of about 1.44 (5,288
+  against a reference mean of 3,677), the retained interval is about 0.023 to 0.153 and still excludes 0. At
+  those scales F is 0.8542 (band) and 0.8519 (retained), 0.0015 and 0.0004 above the process-only fit, inside the
+  margin. Across
+  all eight component sets and variants of each pair, every scale the counts support leaves the band F at 0.851
+  to 0.855 and the retained F at 0.852 to 0.862; the in-sample shifts take scales of 0.3 to 0.9, as components
+  fitted to the same counts should.
+- **Reading:** the separated terms move F by about 0.001 once the counts set the scale of the mesh shift; the
+  0.865 of the preregistered verdict is the fixed unit scale of a shift the counts put near zero. Hypothesis,
+  consistent with the component model's g2 results: the admitted two-photon components carry multiphoton and
+  dark-click content as mesh error, so the shift they predict for the eligible outcomes is mostly absent.
+- **Against the published gate:** F 0.865 is an average gate fidelity of 0.892, and the 0.853 to 0.854 that
+  the supported terms give is one of 0.882 to 0.883, against 0.938 in Maring et al. 2024 (pub 0ee7b47bd723, Table 1); the terms the counts support close none of
+  that gap.
 
 ## Questions the measurement raises that the preregistration did not ask
 
@@ -243,9 +393,11 @@ every one of 20 null draws of permuted, sign-flipped component errors.
   source part at about 1 % per readout and the per-seed share error at 0.013 to 0.032; neither has a demonstrated
   map to process fidelity, so their sum does not measure the gap to Maring et al. 2024 (pub 0ee7b47bd723, Table 1):
   average gate fidelity 0.865 against their 0.938 for the same 1/9 gate class, a figure measured with hourly
-  recalibration. The constrained fit below separates them.
+  recalibration. The SPAM-separated fit (above) separates them: the terms the counts support leave F at 0.853
+  to 0.854, and the fixed-scale term that raises it to 0.865 takes a scale near zero when the counts fit it.
 - **Which physical-channel estimator is intended?** Raw linear inversion gives 0.832, the conditional estimate
-  0.811 and the projection onto physical maps 0.790. A comparison with published gate fidelities needs one of them
+  0.811, the projection onto physical maps 0.790 and the positive maximum-likelihood fit 0.853, the one estimator
+  under which the pairs agree. A comparison with published gate fidelities needs one of them
   named before the data.
 - **Can a job difference read drift?** `schedule` assigns inputs to jobs by pair, so job identity is aliased with
   input parity, and a job-00 to job-01 difference does not identify time drift.
@@ -262,11 +414,12 @@ every one of 20 null draws of permuted, sign-flipped component errors.
 
 | Test | Decides | Cost | Falsifier |
 |---|---|---|---|
-| Component model with output weights per job, then g2 in the pattern law (`mesh_model.py` extended), with nulls that also permute gain and crosstalk and record optimizer status | Whether the transferable content survives per-job output weights (job identity is aliased with input parity), and how much the source carries | none | Held-out Gain over the null median falls below 0.3 with per-job weights |
-| Model-check reference with a per-seed term and an output weight per mode and job | Whether per-job output weights carry the band excess beyond the recorded per-seed scale | none | The band statistic stays outside the reference's central 95 % |
-| Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV), with the realized-mesh model as the readout | F with SPAM and mesh error separated | none | The nuisance-free and nuisance fits agree within 0.005 |
+| Component model with output weights per job, then g2 in the pattern law (`mesh_model_jobs.py`), with nulls that also permute gain and crosstalk and record optimizer status | Whether the transferable content survives per-job output weights (job identity is aliased with input parity), and how much the source carries | none; run | A hold-out fails Gain >= 0.3, Gain over the null median >= 0.3 or rank p <= 0.05 (the script's rule). Two-photon survives on all four, g2 on none |
+| Model-check reference with a per-seed term and an output weight per mode and job (`job_weight_reference.py`) | Whether per-job output weights carry the band excess beyond the recorded per-seed scale | none; run | The band statistic stays outside the reference's central 95 % at both recorded scales. Carried at 0.0177, not at 0.011 |
+| Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV), with the realized-mesh model as the readout (`spam_separated_fit.py`) | F with SPAM and mesh error separated | none; run | The nuisance-free and nuisance fits agree within 0.005. Differ on both pairs, carried by a term the counts disfavor |
+| The SPAM-separated fit with a free scale on the mesh shift, and the g2 component model with free source figures (post-data diagnostics) | Whether any scale of the realized-mesh shift is supported, and whether a source law that fits its own figures leaves a transferable component error | none; run | The free scale fits near zero, or the g2 transfer stays at or above its baseline. Met on the band pair, where the admitted shift's scale is 0.018 (-0.007 to 0.042); on the retained pair it is a supported 0.088 that moves F by 0.0004; no free-source g2 hold-out survives |
 | The CZ compilation ensemble case ([design](../../design/ascella-cz-compilation-ensemble-case.md), built, not sent): ten seeds per setting and same-seed anchors in each job | Per-seed mesh variance of the gate and within-calibration repeatability, the two quantities this pair confounds | per its written case | Its homogeneity and anchor tests, as preregistered there |
 
-The first three run on retained counts. The ensemble case already holds the replicate-seed and same-seed-repeat design
+The first four ran on retained counts, the fourth as post-data diagnostics. The ensemble case already holds the replicate-seed and same-seed-repeat design
 that a seed-swap or back-to-back repeat of job-00 would duplicate, and it needs the owner's approval of its written
 case.

@@ -21,7 +21,9 @@ AGENTS.md, "Hardware services").
 - **Runtime estimate.** Measured on the build host at one thread: 0.11 s per L-BFGS iteration of a 144-setting
   component fit, 1,443 CPU-seconds for the self-test's 6 component fits and 66 fixed-component fits. Scaled: 2 to
   5 core-hours, 0.5 to 1.3 h on 4 cores, 2 h if every component fit runs its ten rounds on slower cores.
-  `--timeout 14400`.
+  `--timeout 14400`, the four-hour ceiling `scripts/kaggle_run.py` then held (`MAX_ACCELERATOR_SECONDS`) and no
+  choice of the owner, whose approval covers the 12-hour session limit; the ceiling now equals that limit.
+  `.github/workflows/kaggle-collect.yml` collects the run when it ends, or 11 h 52 min after the push.
 - **Memory.** 0.98 GB peak resident in the self-test with three workers; under 2 GB with four, against 30 GB.
 - **Admission of the output.** `mesh_model_jobs.py --check` refits every baseline and transfer on the build host
   from the recorded components and requires each deviance within 1e-5 of the kernel's.

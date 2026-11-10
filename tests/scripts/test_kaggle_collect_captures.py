@@ -198,3 +198,46 @@ def test_empty_unreceipted_output_yields_to_the_next_complete_capture(
     if (run_dir / "captures").exists() or (run_dir / kaggle_run.RECEIPT_STAGING).exists():
         raise RuntimeError("an empty tree and a staging receipt carry no bytes and leave no capture")
     kaggle_run.verify(argparse.Namespace())
+
+
+def test_verify_of_one_run_ignores_another_runs_broken_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    results = tmp_path / "results"
+    run_dir = _run_dir(results)
+    _serve(monkeypatch, results, [_complete(b"done")])
+    _collect(run_dir)
+    other = results / "2026-01-02T000000Z-owner-other"
+    other.mkdir()
+    (other / "submission.json").write_text(json.dumps({"kernel": "owner/other", "kernel_version": 1}))
+    (other / "collect.json").write_text(
+        json.dumps({"kernel": "owner/other/1", "files": {"output/exit.json": "0" * 64}})
+    )
+    _expect_exit(lambda: kaggle_run.verify(argparse.Namespace()), "output files differ")
+    kaggle_run.verify(argparse.Namespace(run_dir=str(run_dir)))
+
+
+def test_status_of_a_versioned_run_reads_that_version(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    results = tmp_path / "results"
+    run_dir = _run_dir(results)
+    monkeypatch.setattr(kaggle_run, "ROOT", results.parent)
+    monkeypatch.setattr(kaggle_run, "kaggle", lambda *args: 'owner/slug has status "KernelWorkerStatus.COMPLETE"')
+    asked: list[tuple[str, str, int]] = []
+
+    def state(owner: str, slug: str, version: int) -> str:
+        asked.append((owner, slug, version))
+        return "RUNNING"
+
+    monkeypatch.setattr(kaggle_run, "version_state", state)
+    kaggle_run.status(argparse.Namespace(run_dir=str(run_dir)))
+    if asked != [("owner", "slug", 3)] or "KernelWorkerStatus.RUNNING" not in capsys.readouterr().out:
+        raise RuntimeError(f"status read the slug's latest version instead of version 3: {asked}")
+
+
+def test_verify_of_one_run_accepts_partial_captures_only(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    results = tmp_path / "results"
+    run_dir = _run_dir(results)
+    _serve(monkeypatch, results, [{"slug.log": b"partial"}])
+    _expect_exit(lambda: _collect(run_dir), "returned no exit.json")
+    kaggle_run.verify(argparse.Namespace(run_dir=str(run_dir)))
+    _expect_exit(lambda: kaggle_run.verify(argparse.Namespace()), "no collect.json")

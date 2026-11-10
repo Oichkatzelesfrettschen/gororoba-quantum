@@ -1,0 +1,103 @@
+name: kaggle-collect
+
+# Watches the Kaggle kernel version that RUN_DIR's submission.json names and
+# commits what scripts/kaggle_run.py collect returns to the pushed branch, so
+# the collection needs no open session (ci/kaggle_collect.sh holds the steps).
+# The version is read every POLL_SECONDS. It is collected when it reaches a
+# terminal state, or at PULL_AFTER (11 h 52 min after its push) when it is
+# still live, and once more after its terminal state up to HARD_AFTER, past
+# Kaggle's 12-hour session limit. A hosted job ends at six hours, so two
+# chained watch jobs cover the twelve. The result goes to the open pull
+# request whose head is the branch as one comment per state that mentions
+# the repository owner.
+# KAGGLE_API_TOKEN lives only in the kaggle environment, whose deployment
+# branches are restricted to kaggle-collect/*.
+on:
+  push:
+    branches: ["kaggle-collect/**"]
+
+concurrency:
+  group: kaggle-collect-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  RUN_DIR: results/kaggle/2026-11-10T005038Z-gororoba-ascella-mesh-model-jobs
+  RESULT_PATH: docs/evidence/ascella-cz-tomography-band/mesh-model-jobs.json
+  PULL_AFTER: "42720"
+  HARD_AFTER: "44100"
+  POLL_SECONDS: "120"
+  PYTHON: python3
+  BRANCH: ${{ github.ref_name }}
+
+jobs:
+  watch-early:
+    runs-on: ubuntu-26.04
+    environment: kaggle
+    timeout-minutes: 355
+    outputs:
+      state: ${{ steps.watch.outputs.state }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        with:
+          python-version: "3.14.7"
+      # The build host's kaggle and kagglesdk versions (docs/notes/kaggle/workflow.md, "Workflow"), and six,
+      # which the kaggle 2.2.5 CLI imports without declaring it.
+      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38 six==1.17.0
+      - id: watch
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: sh ci/kaggle_collect.sh watch 20400
+
+  watch-late:
+    needs: watch-early
+    if: needs.watch-early.outputs.state == 'waiting'
+    runs-on: ubuntu-26.04
+    environment: kaggle
+    timeout-minutes: 355
+    outputs:
+      state: ${{ steps.watch.outputs.state }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        with:
+          python-version: "3.14.7"
+      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38 six==1.17.0
+      - id: watch
+        env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+        run: sh ci/kaggle_collect.sh watch 20400
+
+  collect:
+    needs: [watch-early, watch-late]
+    if: >-
+      always() && needs.watch-early.result == 'success' && needs.watch-early.outputs.state != 'collected' &&
+      (needs.watch-late.result == 'success' || needs.watch-late.result == 'skipped')
+    runs-on: ubuntu-26.04
+    environment: kaggle
+    # Up to 32 minutes of watching to the pull time, 23 to the hard deadline, then four collects 5 minutes apart.
+    timeout-minutes: 150
+    # contents: write pushes the collected run; actions: write dispatches pr.yml on it; issues: write posts the
+    # notice; gh pr list reads the pull request.
+    permissions:
+      actions: write
+      contents: write
+      issues: write
+      pull-requests: read
+    steps:
+      # The full history lets a rejected push rebase onto the branch's newer head.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        with:
+          python-version: "3.14.7"
+      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38 six==1.17.0
+      - env:
+          KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: sh ci/kaggle_collect.sh collect
