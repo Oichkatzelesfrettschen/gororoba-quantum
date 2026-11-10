@@ -5,6 +5,7 @@
 | [report.md](report.md) | one agent's analysis of the A_5 exceptional fibers against the Cayley-Dickson tower: 13 conjectures with falsifiers and survivors; no outside review |
 | [pasted-analyses.md](pasted-analyses.md) | two unreviewed model analyses of the tower (associators, zero divisors, INT/FLOAT bit widths, GPU exact arithmetic, Ascella), pasted by the owner on 2026-11-09, verbatim |
 | [pasted-analyses-verification.md](pasted-analyses-verification.md) | every factual statement of the pasted analyses checked against `gororoba_quantum/cd_core.py` and the repository records: 58 claims, 28 hold, 16 partly, 9 wrong, 4 hypothesis, 1 cannot check, with the scripts that decide them |
+| [twisted-tower-verification.md](twisted-tower-verification.md) | a second pasted audit of the tower and the `cd_kernel` twisted-tower module it committed to gororoba-open: 19 claims checked by exact enumeration (12 hold, 4 partly, 2 wrong, 1 hypothesis), and the corrections to the module |
 
 Corrections the verification establishes, each reproduced by its scripts:
 - Ordered distinct imaginary basis triples associate in 6/0, 42/168, 882/1848, 11010/15960 cases at D = 4, 8, 16, 32
