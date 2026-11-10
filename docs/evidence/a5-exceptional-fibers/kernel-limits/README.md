@@ -117,8 +117,8 @@ share J, so one arc formula serves both signs. A variant adds coefficients above
 On every family the kernel limit is therefore 8-dimensional, lies in the kernel of the base point and is a function
 of the fiber point on the sample. The mutated arcs (the quadric term reversed on Iso and W8, t9 reversed on X) leave
 the slice and keep fewer than 8 columns without a pivot. Scope: 6 or 9 fiber points per family; the degree-20
-component of W8 has no rational arc here, so no real arc is exhibited on it; the image of a whole fiber in the
-Grassmannian is not computed.
+component of W8 has no rational arc here, so no real arc is exhibited on it; the section on the fiber-to-Grassmannian
+map below fits the image of each fiber on several hundred arcs.
 
 ## Arcs through a VB point on which e tends to 0 or infinity (A5-016)
 
@@ -158,6 +158,36 @@ slice's header: the mirror is the control that fixes the sign. Scope: the arcs o
 a line (`vb_limit_span.coefficient` is affine in the arc index), which bounds a single pattern's span from below
 only; the record computes no fiber coordinate y, so it does not show that the plane is a function of y.
 
+## The map from a fiber to the Grassmannian is quadratic on four families (A5-296)
+
+`fiber_plucker_map.py` samples arcs with distinct leading parameters on one family, takes from `plucker_limits.py`
+the fiber point y (the normalized leading vector of G) and the Plucker vector Pl of the limiting 8-plane of each arc,
+and tests whether Pl is a vector of forms of one degree delta in y: scalars c_s and one matrix T with
+c_s Pl_s = v_delta(y_s) T, v_delta the monomials of degree delta. With N the left kernel of the sample matrix of
+v_delta, the scalars solve N diag(Pl[:, j]) c = 0 over every Plucker coordinate j. The arc parameters come from a
+SHA-256 of the arc index, so the sample lies on no line of the parameter space. Each run fits 320 arcs per case and
+tests 40 further arcs against the fitted T; prediction stated before the run: delta = 2, since the Plucker ranks of
+the earlier sections equal the Hilbert function of the fiber in degree 2. The runs use the headers of X+ -> N-,
+X- -> N-, Iso -> N- and W8 -> N-.
+
+| family (record at F_32009, F_32029) | linear span of y | rank of v_2(y) | Plucker rank | least delta | solution space | rank of T | held-out arcs proportional |
+|---|---|---|---|---|---|---|---|
+| opposite-sign X ([32009](fiber-plucker-map-x-p32009.json), [32029](fiber-plucker-map-x-p32029.json)) | 3 | 6 | 6 | 2 | 1 | 6 | 40 of 40 |
+| same-sign X ([32009](fiber-plucker-map-x-same-p32009.json), [32029](fiber-plucker-map-x-same-p32029.json)) | 12 | 45 | 45 | 2 | 1 | 45 | 40 of 40 |
+| Iso ([32009](fiber-plucker-map-iso-p32009.json), [32029](fiber-plucker-map-iso-p32029.json)) | 17 | 85 | 85 | 2 | 1 | 85 | 40 of 40 |
+| W8, degree-30 component ([32009](fiber-plucker-map-w8-p32009.json), [32029](fiber-plucker-map-w8-p32029.json)) | 20 | 120 | 120 | 2 | 1 | 120 | 40 of 40 |
+| W8, degree-20 component (same records) | 15 | 84 | 84 | 2 | 1 | 84 | 40 of 40 |
+| W8, both components (same records) | 24 | 156 | 156 | 2 | 1 | 156 | 80 of 80 |
+
+Every row is identical at the two primes. No linear fit exists (delta = 1 has no solution), the quadratic fit is
+unique up to one scalar, every c_s is nonzero and T is injective on the degree-2 piece of the sampled fiber ring, so
+on each sampled family the kernel plane is the image of the fiber point under the second Veronese map followed by a
+linear injection into Plucker space. On W8 one matrix T serves both components. Scope: a fit on samples with held-out
+validation at two primes. The Iso sample spans all 17 coordinates and its 85 equals the degree-2 Hilbert function of
+the fiber; the same-sign X arcs span 12 of the 15 coordinates and 45 of the 51 quadrics, so that row describes the
+part of the fiber the weighted arc family reaches. Runs took 1 to 23 minutes each on the 32-thread laptop with a
+peak of 1.9 GB.
+
 ## Replay
 
 From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the retained records ran under Python
@@ -172,3 +202,5 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_limit_span.py)
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_pole_arcs.py)
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_special_arcs.py)
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" fiber_plucker_map.py iso --prime 32009 \
+        --fit 320 --held-out 40 --out fiber-plucker-map-iso-p32009.json)

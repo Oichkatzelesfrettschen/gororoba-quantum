@@ -1,0 +1,61 @@
+{
+ "schema": "a5-fiber-plucker-map-v1",
+ "family": "w8",
+ "slug": "w8-nm",
+ "prime": 32029,
+ "order": 32,
+ "base_nullity": 16,
+ "generators": 24,
+ "arcs_requested": 720,
+ "arcs_with_limit": 720,
+ "cases": {
+  "c30": {
+   "samples": 320,
+   "plucker_rank": 120,
+   "veronese_ranks": {
+    "1": 20,
+    "2": 120,
+    "3": 320
+   },
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 120,
+   "fit_exact_on_all_samples": true,
+   "held_out": 40,
+   "held_out_proportional": 40
+  },
+  "c20": {
+   "samples": 320,
+   "plucker_rank": 84,
+   "veronese_ranks": {
+    "1": 15,
+    "2": 84,
+    "3": 300
+   },
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 84,
+   "fit_exact_on_all_samples": true,
+   "held_out": 40,
+   "held_out_proportional": 40
+  },
+  "all": {
+   "samples": 640,
+   "plucker_rank": 156,
+   "veronese_ranks": {
+    "1": 24,
+    "2": 156,
+    "3": 600
+   },
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 156,
+   "fit_exact_on_all_samples": true,
+   "held_out": 80,
+   "held_out_proportional": 80
+  }
+ }
+}
