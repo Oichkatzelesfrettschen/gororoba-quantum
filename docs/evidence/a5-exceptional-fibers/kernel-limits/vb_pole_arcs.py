@@ -81,30 +81,38 @@ def one_arc(item: tuple[dict[str, Any], tuple[int, ...], int, bool]) -> dict[str
     return record
 
 
+def ranks(item: tuple[list[list[int]], list[list[int]], int]) -> tuple[int, int]:
+    """Span rank of one pattern's Plucker vectors and of every vector through that pattern."""
+    own, prefix, prime = item
+    return span.rank(own, prime), span.rank(prefix, prime)
+
+
 def build(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
     prime, data = item
     patterns = [(p, False) for p in BASE_PATTERNS] + [(p, True) for p in POLE_PATTERNS]
     items = [(data, pattern, arc, pole) for pattern, pole in patterns for arc in range(span.ARCS_PER_PATTERN)]
     results = parallel.ordered_map(one_arc, items, min_items=1)
-    seen: list[list[int]] = []
+    groups = [
+        results[index * span.ARCS_PER_PATTERN : (index + 1) * span.ARCS_PER_PATTERN] for index in range(len(patterns))
+    ]
+    vectors = [[a["plucker"] for a in arcs if a["plucker"] is not None] for arcs in groups]
+    prefixes = list(itertools.accumulate(vectors, lambda seen, new: seen + new))
+    # Each pattern's own span and the span of every pattern through it are independent rank computations.
+    spans = parallel.ordered_map(ranks, [(own, prefix, prime) for own, prefix in zip(vectors, prefixes, strict=True)])
     rows = []
-    for index, (pattern, pole) in enumerate(patterns):
-        arcs = results[index * span.ARCS_PER_PATTERN : (index + 1) * span.ARCS_PER_PATTERN]
-        vectors = [a["plucker"] for a in arcs if a["plucker"] is not None]
-        before = span.rank(seen, prime)
-        seen.extend(vectors)
+    for index, ((pattern, pole), arcs) in enumerate(zip(patterns, groups, strict=True)):
         rows.append(
             {
                 "pole": pole,
                 "pattern": list(pattern),
-                "arcs_with_limit": len(vectors),
+                "arcs_with_limit": len(vectors[index]),
                 "base_nullities": sorted({a["base_nullity"] for a in arcs}),
                 "arc_nullities": sorted({a["arc_nullity"] for a in arcs}),
                 "j_nonzero": sorted({a["j_nonzero"] for a in arcs}) if pole else None,
                 "distinct_planes": len({a["plane_sha256"] for a in arcs if a["plucker"] is not None}),
-                "span_rank": span.rank(vectors, prime),
-                "rank_before": before,
-                "rank_after": span.rank(seen, prime),
+                "span_rank": spans[index][0],
+                "rank_before": spans[index - 1][1] if index else 0,
+                "rank_after": spans[index][1],
             }
         )
     return {
@@ -113,7 +121,7 @@ def build(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
         "order": span.ORDER,
         "arcs_per_pattern": span.ARCS_PER_PATTERN,
         "finite_e_rank": rows[len(BASE_PATTERNS) - 1]["rank_after"],
-        "total_rank": span.rank(seen, prime),
+        "total_rank": spans[-1][1],
         "patterns": rows,
     }
 
