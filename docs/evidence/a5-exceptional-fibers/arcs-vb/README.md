@@ -73,3 +73,7 @@ unexamined stratum, give limits in V(P2) only (probe at 32029, where -3 is a squ
 
 Scope: both primes; no statement in characteristic 0; the kernel-plane limits along the special family are not
 computed (A5-276 covers arcs through a VB point with finite e0).
+
+Independent check: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
+dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order
+of G and the vanishing of J ([arc-rank-check.json](../arc-rank-check.json)).

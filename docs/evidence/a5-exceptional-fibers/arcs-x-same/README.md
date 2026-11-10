@@ -63,3 +63,7 @@ arc through order 39 and G has order 5.
 
 Scope: irreducibility of V(K2) is recorded at 32009 for X- only; at 32029 and for X+ the statement is "a component of
 dimension 4". Characteristic 0 is not addressed.
+
+Independent check: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
+dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order
+of G and the vanishing of J ([arc-rank-check.json](../arc-rank-check.json)).
