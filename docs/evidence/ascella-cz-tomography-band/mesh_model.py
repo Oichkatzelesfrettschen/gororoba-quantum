@@ -68,6 +68,7 @@ for _path in ("scripts", "gororoba_quantum"):
 AUDIT = importlib.import_module("photonic_compilation_audit")
 RECORDS = importlib.import_module("qd_records")
 TOMO = importlib.import_module("ascella_cz_tomography_case")
+ordered_map = importlib.import_module("parallel").ordered_map
 
 RUNS = {
     "retained-00": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
@@ -264,17 +265,22 @@ def null_components(fitted: dict[str, torch.Tensor], rng: np.random.Generator) -
     return out
 
 
+def null_deviance(item: tuple[Mesh, np.ndarray, np.ndarray, dict[str, torch.Tensor]]) -> float:
+    """The held-out deviance of one null draw of component errors, scored like the transfer fit. The unit
+    parallel.ordered_map maps."""
+    mesh, phases, counts, components = item
+    return float(fit(mesh, phases, counts, components, free_components=False)["deviance"])
+
+
 def holdout(mesh: Mesh, train: dict[str, Any], test: dict[str, Any], rng: np.random.Generator) -> dict[str, Any]:
     trained = fit(mesh, train["phases"], train["counts"])
     baseline = fit(mesh, test["phases"], test["counts"], free_components=False)
     transfer = fit(mesh, test["phases"], test["counts"], trained["components"], free_components=False)
     ceiling = fit(mesh, test["phases"], test["counts"])
-    nulls = [
-        fit(mesh, test["phases"], test["counts"], null_components(trained["components"], rng), free_components=False)[
-            "deviance"
-        ]
-        for _ in range(NULL_DRAWS)
-    ]
+    # The shared generator draws every null in order; the refits then map. The four hold-outs of main stay in
+    # sequence because each one's draws follow its own trained fit.
+    draws = [null_components(trained["components"], rng) for _ in range(NULL_DRAWS)]
+    nulls = ordered_map(null_deviance, [(mesh, test["phases"], test["counts"], d) for d in draws], min_items=1)
     span = baseline["deviance"] - ceiling["deviance"]
     gain = (baseline["deviance"] - transfer["deviance"]) / span if span > 0 else float("nan")
     resid = {}
