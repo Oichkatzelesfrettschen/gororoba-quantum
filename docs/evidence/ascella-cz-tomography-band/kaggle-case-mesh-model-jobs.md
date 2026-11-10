@@ -1,6 +1,6 @@
 # Kaggle case: the per-job component model of the Ascella CZ tomography pairs
 
-Written before the push, under the standing approval of Kaggle CPU sessions inside the 12-hour limit (root
+Written before the push, under the standing approval of Kaggle CPU and GPU sessions inside the 12-hour limit (root
 AGENTS.md, "Hardware services").
 
 - **What it computes.** `mesh_model_jobs.py --input mesh-model-jobs-input.json mesh-model-jobs.json`: the chip-level
@@ -12,8 +12,11 @@ AGENTS.md, "Hardware services").
   when Gain >= 0.3, Gain over the null median >= 0.3 and the rank p <= 0.05.
 - **Why a kernel.** The fits are retained-count analysis, not a simulation of a device; the run needs 2 to 5
   core-hours, which the build host's routing rule sends to Kaggle.
-- **Substrate.** Kaggle CPU kernel, 4 cores, private, pushed by `scripts/kaggle_run.py push`; the image's numpy
-  and torch, recorded in the output's `versions`. Inputs: the bundled extract (the phases, counts and plan reads
+- **Substrate.** Kaggle `NvidiaTeslaT4` machine, private, pushed by `scripts/kaggle_run.py push`. The fits run on
+  its 4 CPU cores and leave the GPUs idle: the CPU push of 2026-11-10 was refused ("Maximum batch CPU session
+  count of 5 reached", five kernels of other sessions), the GPU pool held a free session, and the owner chose it
+  over waiting for a CPU slot, at 1 to 2 h of the weekly GPU quota (28.64 h remaining before the push). The
+  image's numpy and torch are recorded in the output's `versions`. Inputs: the bundled extract (the phases, counts and plan reads
   of the retained records, and three seed values), `mesh_model.py` and `gororoba_quantum/parallel.py`.
 - **Runtime estimate.** Measured on the build host at one thread: 0.11 s per L-BFGS iteration of a 144-setting
   component fit, 1,443 CPU-seconds for the self-test's 6 component fits and 66 fixed-component fits. Scaled: 2 to
