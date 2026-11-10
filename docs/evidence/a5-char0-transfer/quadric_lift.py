@@ -35,7 +35,13 @@ FIBERS = HERE.parent / "a5-exceptional-fibers" / "working" / "distribute" / "out
 # slug -> ((prime, root, relation directory under FIBERS), ...); each directory holds the K2 source k2_hilbert.py reads
 SOURCES = {
     "xm-nm": ((32009, 10754, "a5-xm-d4/xm_p1/d2"), (32029, 9115, "a5-p2-small/xm_p2/d2")),
+    "iso-nm": ((32009, 10754, "a5-iso-d4/iso_p1/d2"), (32029, 9115, "a5-p2-iso/iso_p2/d2")),
+    "w8-nm": ((32009, 10754, "a5-w8-receipt-p1/w8_p1/d2"), (32029, 9115, "a5-p2-w8/w8_p2/d2")),
 }
+# Generators of a K2 run that are the negatives of the header's (one-based): the run's y_j stands for -G_j, so a
+# monomial of the relation file changes sign once per such factor. Read from the `signs of the run generators` lines
+# of ../a5-exceptional-fibers/structure/arcs-iso-w8 (the same at both primes).
+NEGATED = {"iso-nm": frozenset(range(6, 16))}
 
 QUADRICS = (
     "option(redSB);def R0=basering;ideal sJ=std(ReducedJ);ideal GG=ReducedG;",
@@ -141,7 +147,9 @@ def _monomial(text: str) -> tuple[int, ...]:
     return tuple(sorted(factors))
 
 
-def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -> list[list[int]]:
+def _modular_rows(
+    path: Path, columns: dict[tuple[int, ...], int], prime: int, negated: frozenset[int] = frozenset()
+) -> list[list[int]]:
     rows = []
     for relation in path.read_text(encoding="utf-8").replace("\n", "").split(","):
         if not relation.strip():
@@ -154,8 +162,10 @@ def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -
             if match is None:
                 raise SystemExit(f"unparsed term {term!r} in {path}")
             sign, number, monomial = match.groups()
-            coefficient = int(number or 1) * (-1 if sign == "-" else 1)
-            row[columns[_monomial(monomial)]] = (row[columns[_monomial(monomial)]] + coefficient) % prime
+            factors = _monomial(monomial)
+            flips = sum(index in negated for index in factors)
+            coefficient = int(number or 1) * (-1 if sign == "-" else 1) * (-1) ** flips
+            row[columns[factors]] = (row[columns[factors]] + coefficient) % prime
         rows.append(row)
     return rows
 
@@ -177,7 +187,8 @@ def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict
     echelon, pivots = _rref_qi(relations)
     rows = []
     for prime, root, directory in SOURCES[slug]:
-        modular = _rref_fp(_modular_rows(FIBERS / directory / "relations-upto-d2.rel", columns, prime), prime)
+        relation_file = FIBERS / directory / "relations-upto-d2.rel"
+        modular = _rref_fp(_modular_rows(relation_file, columns, prime, NEGATED.get(slug, frozenset())), prime)
         reduced, bad = _reduce(echelon, prime, root)
         mutated = [list(r) for r in echelon]
         free = next(c for c in range(count) if c not in pivots)

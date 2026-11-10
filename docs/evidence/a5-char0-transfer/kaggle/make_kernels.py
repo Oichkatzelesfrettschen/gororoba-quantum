@@ -12,7 +12,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OWNER = "probablyeric"
-BRANCH = "integration/gororoba-quantum-ultrareview"
+BRANCH = "a5-char0-quadrics-iso-w8"
 # The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
 COMMIT = "8a2e410ba0ba1c742055e46c3ab1c60266e08dab"
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
@@ -21,6 +21,14 @@ JOBS = {
     "a5-char0-xm-quadrics": (
         ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "xm-nm", "--timeout", "41000"],
         "quadrics-xm-nm.json",
+    ),
+    "a5-char0-iso-quadrics": (
+        ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "iso-nm", "--timeout", "41000"],
+        "quadrics-iso-nm.json",
+    ),
+    "a5-char0-w8-quadrics": (
+        ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "w8-nm", "--timeout", "41000"],
+        "quadrics-w8-nm.json",
     ),
     "a5-char0-xm-truncation-n22": (
         [

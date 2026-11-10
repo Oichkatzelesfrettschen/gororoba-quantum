@@ -70,3 +70,16 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
   I = w (G'') with (G'') a smooth curve germ, so F(I) = Q(i)[y1, y2, y3] in every degree
   ([`x-opposite-qi.json`](x-opposite-qi.json); ledger A5-270). The first revision computed the gcd in sympy over
   Q(i) and stopped at its 20-minute limit; Singular takes 4 s per incidence.
+
+## Check 2 for Iso -> N- and W8 -> N- (written case, 2026-11-10)
+
+`quadric_lift.py --slug iso-nm` and `--slug w8-nm` compute the Q(i) degree-2 relation space of Iso (153 products of
+17 generators, 6 slice variables) and of W8 (300 products of 24 generators, 7 slice variables) and compare its
+reduction with the retained K2 at both primes, as the run of X- -> N- did (A5-248; 30,481 s and 1.98 GiB on a 4-core
+Kaggle CPU kernel for 120 products). A simulation cannot answer it: the question is the exact standard basis over
+Q(i). Falsifier: a relation space whose dimension differs from 68 (Iso) or 144 (W8), a denominator divisible by a
+prime, or a reduced echelon form that differs from K2. Host: one Kaggle CPU kernel each (`a5-char0-iso-quadrics`,
+`a5-char0-w8-quadrics`), free, inside the 12-hour session limit with the driver's timeout at 41,000 s. Runtime is
+unmeasured for these fibers; the product count predicts that Iso is near the X- time and that W8 exceeds the session,
+in which case its record is a `blocked_timeout` and the run moves to a host without the limit. The Iso relation file
+uses the run's generators, ten of which are the negatives of the header's (`NEGATED`).
