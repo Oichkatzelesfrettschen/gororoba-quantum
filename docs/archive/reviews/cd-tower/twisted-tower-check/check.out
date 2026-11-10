@@ -1,0 +1,17 @@
+D=4 N_enum=0 N_closed=0 dependent_nonassoc=0
+D=8 N_enum=168 N_closed=168 dependent_nonassoc=0
+D=16 N_enum=1848 N_closed=1848 dependent_nonassoc=0
+D=32 N_enum=15960 N_closed=15960 dependent_nonassoc=0
+D=64 N_enum=130200 N_closed=130200 dependent_nonassoc=0
+D=8 omega-vs-associator mismatches=0
+D=16 omega-vs-associator mismatches=0
+D=32 omega-vs-associator mismatches=0
+n=3 ANF degree of c->omega over (a,b): [-1, 1]
+n=4 ANF degree of c->omega over (a,b): [-1, 1, 2]
+n=5 ANF degree of c->omega over (a,b): [-1, 1, 2, 3]
+n=6 ANF degree of c->omega over (a,b): [-1, 1, 2, 3, 4]
+sedenion two-blade zero products 336 pairs 42 signed elements 84 cd_core corpus 336
+A5 two-blade zero products 5040 index pairs 294 signed elements 588
+x*xbar/2==1 True True
+x*z [] z*x []
+second inverse two-sided True True

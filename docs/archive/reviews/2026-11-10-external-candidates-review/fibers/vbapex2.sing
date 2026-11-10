@@ -1,0 +1,26 @@
+LIB "primdec.lib";
+< "../../../../evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-vb.sing";
+ring N=32009,(T(1..4),h,t1,t2,t3,t4,t5,t6,t8),dp;
+execute("ideal NI="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/chart_t7_norid_1.txt")+";");
+int t0=rtimer; ideal sNI=std(NI);
+map f=r,h*t1,h*t2,h*t3,h*t4,h*t5,h*t6,h,h*t8;
+ideal Gh=f(G); ideal Hb=h^2,NI; matrix M=lift(Hb,Gh); ideal Gp; int j; for(j=1;j<=ncols(M);j++){Gp[j]=M[1,j];}
+int bad=0; for(j=1;j<=ncols(M);j++){ if(reduce(h^2*Gp[j]-Gh[j],sNI)!=0){bad++;} } "RESULT division defects",bad;
+ideal BL=std(sNI+ideal(h)+Gp); list mp=minAssGTZ(BL); ideal Q=std(mp[1]); "RESULT apex prime deg",mult(Q);
+ring Yr=32009,(y(1..10)),dp; execute("ideal P1="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/primeP1.txt")+";"); execute("ideal P2="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/primeP2.txt")+";");
+intvec d1; intvec d2; for(j=1;j<=ncols(P1);j++){d1[j]=deg(P1[j]);} for(j=1;j<=ncols(P2);j++){d2[j]=deg(P2[j]);}
+setring N; map g=Yr,Gp; ideal P1g=g(P1); ideal P2g=g(P2);
+int Nn; int n; ideal Ip=Gp;
+for(Nn=3;Nn<=6;Nn=Nn+3){
+  ideal QN=std(Q^Nn+sNI);
+  string s="RESULT N "+string(Nn)+" HF(fiber cone at apex, n)=";
+  for(n=1;n<=3;n++){ ideal In=Ip^n; int a=vdim(std(QN+Q*In)); int b=vdim(std(QN+In)); s=s+" "+string(a-b); kill In; kill a; kill b;}
+  s; 
+  int c1=0; int c2=0; ideal Z;
+  for(j=1;j<=ncols(P1g);j++){ Z=std(QN+Q*Ip^d1[j]); if(reduce(P1g[j],Z)!=0){c1++;} }
+  for(j=1;j<=ncols(P2g);j++){ Z=std(QN+Q*Ip^d2[j]); if(reduce(P2g[j],Z)!=0){c2++;} }
+  "RESULT N",Nn,"P1 generators not in Q I'^e",c1,"of",ncols(P1g),"; P2 generators not in Q I'^e",c2,"of",ncols(P2g);
+  "RESULT seconds",rtimer-t0;
+  kill QN; kill s; kill c1; kill c2; kill Z;
+}
+quit;

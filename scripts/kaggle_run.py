@@ -190,7 +190,7 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
     # needs it runs on the image's Python, never under --ci-env.
     "qx-emulator": ("qxelarator==0.10.0",),
 }
-MAX_ACCELERATOR_SECONDS = 4 * 3600
+MAX_ACCELERATOR_SECONDS = 12 * 3600
 SMOKE_TIMEOUT_SECONDS = 1800
 # A TPU VM session carries no docker image on Kaggle's backend, and a
 # docker_image in kernel-metadata.json or a dockerImageVersionId in the
@@ -580,7 +580,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
 
 def kaggle_api() -> Any:
     """An authenticated KaggleApi. The kaggle and kagglesdk distributions sit in the operator's interpreter, outside
-    the CI pins: CI never contacts Kaggle, and `verify` reads retained receipts offline."""
+    the CI pins: no gate contacts Kaggle, `verify` reads receipts offline, and kaggle-collect.yml installs both."""
     try:
         from kaggle.api.kaggle_api_extended import KaggleApi
     except ModuleNotFoundError as error:
@@ -663,10 +663,10 @@ def push(args: argparse.Namespace) -> int:
         args.machine = GPU_MACHINE
     if args.smoke and not args.timeout:
         args.timeout = SMOKE_TIMEOUT_SECONDS
-    # An accelerator session bills its whole wall time against the weekly
-    # quota and runs to the 12-hour limit unless it ends or is cancelled by
-    # its session id (scripts/kaggle_sessions.py), so a GPU or TPU push states
-    # its ceiling; Kaggle ends the session at --timeout.
+    # An accelerator session bills its wall time against the weekly quota and
+    # runs to Kaggle's 12-hour session limit, the ceiling of --timeout and of
+    # the owner's standing approval, unless it ends, is cancelled by its session
+    # id (scripts/kaggle_sessions.py) or reaches --timeout, which a push states.
     require(
         args.machine == "cpu" or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
         f"a {args.machine} push needs --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
@@ -1571,8 +1571,30 @@ def kernel_ref(submission: dict[str, Any]) -> str:
     return f"{submission['kernel']}/{version}" if version is not None else submission["kernel"]
 
 
+def version_state(owner: str, slug: str, version: int) -> str:
+    """The KernelWorkerStatus name of one kernel version: GetKernelSessionStatus with version_label "vN", which
+    answers a version that does not exist with HTTP 404, where the CLI's `kernels status` reports the latest one."""
+    api = kaggle_api()
+    from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelSessionStatusRequest
+
+    request = ApiGetKernelSessionStatusRequest()
+    request.user_name = owner
+    request.kernel_slug = slug
+    request.version_label = f"v{version}"
+    with api.build_kaggle_client() as client:
+        return str(client.kernels.kernels_api_client.get_kernel_session_status(request).status.name)
+
+
 def status(args: argparse.Namespace) -> int:
-    print(kaggle("kernels", "status", kernel_ref(submission_of(Path(args.run_dir)))).strip())
+    """The run's own version's status when submission.json records a version (through the SDK), else the
+    CLI's status of the slug; both print `REF has status "KernelWorkerStatus.STATE"`."""
+    submission = submission_of(Path(args.run_dir))
+    if "kernel_version" not in submission:
+        print(kaggle("kernels", "status", kernel_ref(submission)).strip())
+        return 0
+    owner, slug = submission["kernel"].split("/")
+    state = version_state(owner, slug, int(submission["kernel_version"]))
+    print(f'{kernel_ref(submission)} has status "KernelWorkerStatus.{state}"')
     return 0
 
 
@@ -1832,8 +1854,11 @@ def verify(args: argparse.Namespace) -> int:
     collection required; an earlier, unversioned run keeps the status Kaggle
     reported then. Each v2 receipt binds the run's submission.json and the
     receipt written before it, so the chain of a run holds every attempt.
+    With RUN_DIR, only that run's receipts are checked.
     """
-    runs = sorted(RESULTS.glob("*/collect.json"))
+    selected = getattr(args, "run_dir", None)
+    pattern = Path(selected).resolve().name if selected else "*"
+    runs = sorted(RESULTS.glob(f"{pattern}/collect.json"))
     captured = 0
     for path in runs:
         run_dir = path.parent
@@ -1850,7 +1875,7 @@ def verify(args: argparse.Namespace) -> int:
         )
         for ref, digest in submission.get("datasets", {}).items():
             require_dataset_version(run_dir.name, ref, digest, dataset_record(ref.split("/")[1]))
-    for captures in sorted(RESULTS.glob("*/captures")):
+    for captures in sorted(RESULTS.glob(f"{pattern}/captures")):
         run_dir = captures.parent
         submission = submission_of(run_dir)
         for directory in sorted(captures.iterdir()):
@@ -1863,7 +1888,7 @@ def verify(args: argparse.Namespace) -> int:
                 require("output/exit.json" in record["files"], f"{name}: a {record['state']} capture lacks exit.json")
             _verify_tree(name, record, directory / "output")
             captured += 1
-    for run_dir in sorted({p.parent for p in runs} | {c.parent for c in RESULTS.glob("*/captures")}):
+    for run_dir in sorted({p.parent for p in runs} | {c.parent for c in RESULTS.glob(f"{pattern}/captures")}):
         submission_digest = sha256((run_dir / "submission.json").read_bytes())
         previous: str | None = None
         for path in receipt_chain(run_dir):
@@ -1875,7 +1900,8 @@ def verify(args: argparse.Namespace) -> int:
                     record["predecessor_sha256"] == previous, f"{name}: predecessor differs from the receipt before it"
                 )
             previous = sha256(path.read_bytes())
-    require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
+    # A selected run that holds only PARTIAL captures passes on those captures; the whole tree needs a primary one.
+    require(bool(runs) or bool(selected and captured), f"no collect.json under {RESULTS.relative_to(ROOT)}")
     print(
         f"kaggle runs: {len(runs)} collected outputs and {captured} further captures match their sha256 ledgers, "
         "receipt chains and recorded dataset versions"
@@ -1937,7 +1963,9 @@ def main() -> int:
     artifact_parser.add_argument("--file", required=True, help="the one file the dataset holds")
     artifact_parser.add_argument("--sha256", required=True, help="the file's expected sha256")
     artifact_parser.set_defaults(func=artifact)
-    sub.add_parser("verify").set_defaults(func=verify)
+    verify_parser = sub.add_parser("verify")
+    verify_parser.add_argument("run_dir", nargs="?", help="check only this run's receipts")
+    verify_parser.set_defaults(func=verify)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)
         sub_parser.add_argument("run_dir")

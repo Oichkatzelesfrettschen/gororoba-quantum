@@ -27,7 +27,7 @@ fabrication, and optical engineering:
    quantum computer based on deterministic single-photon generation. Features a 12-mode universal linear-optical
    interferometer operating with up to 6 demultiplexed single photons.
 3. **Belenos (MOSAIQ-12, 2024-2025)**: Successor commercial QPU featuring a 24-mode programmable MZI mesh
-   (552 directional couplers, 574 phase elements) driven by a 12-channel demultiplexer, enabling 12-photon
+   (552 directional couplers; the cloud's compiled circuit carries 574 phase elements) driven by a 12-channel demultiplexer, enabling 12-photon
    entanglement and variational processing.
 4. **Altair / MosaiQ On-Premise Systems (2025-2026)**: Rack-mounted, air-cooled photonic quantum computing units
    integrated into high-performance computing centers (including OVHcloud and the EuroHPC Jules Verne consortium).
@@ -86,7 +86,9 @@ $$|1, 1\rangle = a_0^\dagger a_1^\dagger |0,0\rangle \xrightarrow{B} \frac{1}{2}
   indistinguishable photons (weight $V_{\text{HOM}}$) and distinguishable photons (weight $1 - V_{\text{HOM}}$).
   The measured coincidence probability evaluates to:
   $$P_{\text{coinc}}(V_{\text{HOM}}) = \frac{1 - V_{\text{HOM}}}{2}$$
-  yielding the direct calibration relation: $V_{\text{HOM}} = 1 - 2 P_{\text{coinc}}$.
+  yielding the direct calibration relation: $V_{\text{HOM}} = 1 - 2 P_{\text{coinc}}$. The relation assumes an
+  exactly 50:50 splitter and no multiphoton component; a coupler of reflectivity $R$ gives coincidence
+  $R^2 + T^2$ for distinguishable and $(R - T)^2$ for indistinguishable photons.
 
 ### Axiom V: Measurement-Induced Nonlinearity (The KLM Theorem)
 Photons do not exhibit direct optical nonlinear interactions at single-quantum energies in linear media.
@@ -101,14 +103,15 @@ Dual-rail qubit encoding maps logical states to path modes:
 $$|0\rangle_L \equiv |1, 0\rangle, \quad |1\rangle_L \equiv |0, 1\rangle$$
 Entangling gates (such as CZ and CNOT) succeed non-deterministically (e.g. $P_{\text{succ}} = 1/9$ or $1/16$ in
 basic post-selected arrangements), scaled to near-deterministic fault-tolerance via optical cluster states
-(Raussendorf-Briegel, Browne-Rudolph 2005) and static linear optics (Mezher et al. 2023).
+(Raussendorf-Briegel, Browne-Rudolph 2005) and static linear optics (Tzitrin et al. 2021).
 
 ### Axiom VI: Universal Unitary Mesh Synthesis (Reck and Clements Decompositions)
 Any discrete $m$-mode unitary transformation $U \in U(m)$ can be decomposed exactly into a mesh of balanced
 beam splitters and phase shifters:
-1. **Reck et al. (1994, PRL)**: Triangular mesh topology using $m(m-1)/2$ Mach-Zehnder Interferometers (MZIs).
+1. **Reck et al. (1994, PRL)**: Triangular mesh topology using $m(m-1)/2$ Mach-Zehnder Interferometers (MZIs)
+   plus $m$ output phases.
    Optical depth scales as $2m - 3$; transmission loss is unbalanced across modes.
-2. **Clements et al. (2016, Optica)**: Rectangular mesh topology using $m(m-1)/2$ MZIs. Optical depth is balanced
+2. **Clements et al. (2016, Optica)**: Rectangular mesh topology using $m(m-1)/2$ MZIs plus $m$ output phases. Optical depth is balanced
    at exactly $m$, equalizing optical loss and dispersion across all paths.
 
 Each constituent MZI consists of two 50:50 directional couplers ($R_x$ rotations) enclosing internal ($\theta$)
@@ -153,7 +156,7 @@ nanowire detector array.
 |  |           12-MODE UNIVERSAL RECONFIGURABLE PHOTONIC CHIP (CLEMENTS)               |  |
 |  |                                                                                   |  |
 |  |  - 12 Waveguide spatial modes (PIC insertion & transmission: 45%)                 |  |
-|  |  - 132 Directional couplers (theta in [1.4204, 1.4739] rad; R = 56.8 +- 0.6%)   |  |
+|  |  - 132 Directional couplers (live theta in [1.4204, 1.4739] rad; R = 56.8 +- 0.6%)|  |
 |  |  - 126 Thermo-optic microheater phase shifters (phi = A * V^(o2) + b)             |  |
 |  |  - Clear-box physical crosstalk model (Fyrillas et al., Optica 2024; no neural net)|  |
 |  +-----------------------------------------------------------------------------------+  |
@@ -164,7 +167,7 @@ nanowire detector array.
 |  |                                                                                   |  |
 |  |  - 12 Threshold single-photon counting channels (dark counts < 20 Hz baseline)   |  |
 |  |  - Swabian Instruments Time Tagger (TDC) with 1 ns coincidence integration window |  |
-|  |  - Total optical setup efficiency: 8.4 +- 0.2% (live reported transmittance 5.5%) |  |
+|  |  - Total optical setup efficiency: 8.4 +- 0.2% (live reported transmittance 5.25%)|  |
 |  +-----------------------------------------------------------------------------------+  |
 |                                                                                         |
 +-----------------------------------------------------------------------------------------+
@@ -202,14 +205,15 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
 - Synchronized injection into the 6 physical input modes: **0, 2, 4, 6, 8, 10**.
 - Resulting processor master clock rate:
   $$f_{\text{clock}} = \frac{80\text{ MHz}}{6} = 13.33\text{ MHz}$$
-  This division accounts for the six spatial demultiplexer channels routing pulses from the 80 MHz pump train, matching the live `qpu:ascella` specification field `Clock (MHz): 13.33` (consistent model timing rather than an explicit causal derivation in the primary text).
+  This division accounts for the six spatial demultiplexer channels routing pulses from the 80 MHz pump train, matching the live `qpu:ascella` specification field `Clock (MHz): 13.33`; the primary text gives the two rates and no derivation of the ratio.
 
 ### 3.3 12-Mode Programmable Photonic Chip
 - **Interferometer size**: 12 optical waveguide modes in a folded Clements rectangular mesh topology.
 - **PIC insertion and transmission**: $45\%$.
 - **Components**: 132 directional couplers and 126 thermo-optic phase shifters ($\phi_0 \dots \phi_{125}$).
-  - Directional coupler reflectivity: $R = (56.8 \pm 0.6)\%$ (Supplementary Section 2; the main text states $(56.7 \pm 0.6)\%$), corresponding to calibrated rotation angles
-    $\theta = 2 \arccos\sqrt{R} \in [1.4204, 1.4739]\text{ rad}$ (mean $1.4347\text{ rad}$).
+  - Directional coupler reflectivity: $R = (56.8 \pm 0.6)\%$ (Supplementary Section 2; the main text states $(56.7 \pm 0.6)\%$), which maps to
+    $\theta = 2 \arccos\sqrt{R} \in [1.4223, 1.4465]\text{ rad}$. The 132 live couplers of the cloud specification span
+    $[1.4204, 1.4739]\text{ rad}$ (mean $1.4347\text{ rad}$).
   - Static phases: $\mathbf{b} = (0.1 \pm 1.2)\text{ rad}$.
   - Microheater efficiency: diagonal crosstalk element $A_{ii} = (0.034 \pm 0.001)\text{ rad/V}^2$, requiring
     approximately $10\text{ V}$ to induce a $\pi$ phase shift.
@@ -231,13 +235,14 @@ Because photons are emitted sequentially by a single quantum dot, Ascella uses a
 ### 3.4 Detection and Readout
 - **Detectors**: Array of 12 Superconducting Nanowire Single-Photon Detectors (SNSPDs).
   - Average detection efficiency: $92\%$.
-  - Dark count rate: under $20\text{ Hz}$ at baseline; live device telemetry shows operational dark counts
-    ranging from $76$ to $281\text{ counts/s}$ (peaking up to $1,885\text{--}2,169\text{ counts/s}$ on mode 10 in retained telemetry records).
+  - Dark count rate: under $20\text{ Hz}$ at baseline; the retained live reading of 2026-10-20 reports per-detector dark
+    counts from $105$ to $1,885\text{ counts/s}$
+    (`docs/evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json`).
 - **Readout electronics**: Swabian Instruments Time Tagger (time-to-digital converter, TDC).
   - Coincidence integration window: $1\text{ ns}$ (the Supplementary specifies the TDC and the $1\text{ ns}$ coincidence window;
-    the underlying hardware implementation details are not stated, making earlier 'sub-nanosecond FPGA' claims unsupported).
+    it gives no further detail of the readout hardware).
   - Post-processing samples $N$-photon ($1 \le N \le 6$) coincidence distributions across all 12 channels.
-  - Overall optical setup efficiency: $(8.4 \pm 0.2)\%$ at publication (live reported transmittance $5.52\%$).
+  - Overall optical setup efficiency: $(8.4 \pm 0.2)\%$ at publication (live reported transmittance $5.25\%$ on 2026-10-20).
   - 6-photon coincidence count rate: $4\text{ Hz}$ at $80\text{ MHz}$ pump rate.
 
 ---
@@ -420,14 +425,14 @@ quantum computing, verified against Crossref, DataCite, and repository holdings:
     - *Establishes genuine multi-photon indistinguishability benchmarks for Quandela's optical processors.*
 20. **Pont, M., et al.** (2022). "High-fidelity generation of four-photon GHZ states on-chip". arXiv: 2211.15626.
     - *Source of Ascella's demultiplexer architecture: an active optical demultiplexer generating a spatial train of synchronized single photons from a high-repetition-rate single-photon source.*
-21. **Taballione, C., et al.** (2021). "A universal fully reconfigurable 12-mode quantum photonic processor". *Mater. Quantum Technol.* 1, 035002. DOI: 10.1088/2633-4356/ac12b4.
-    - *The 12-mode stoichiometric silicon nitride (Si3N4 TriPlex) processor chip used in Ascella (Maring et al. ref 28; see also Taballione et al. 2022, arXiv:2203.01801, for the 20-mode scaling benchmark).*
+21. **Taballione, C., et al.** (2021). "A universal fully reconfigurable 12-mode quantum photonic processor". *Mater. Quantum Technol.* 1, 035002. DOI: 10.1088/2633-4356/ac168c.
+    - *The 12-mode stoichiometric silicon nitride (Si3N4 TriPlex) processor chip used in Ascella (Maring et al. ref 28; see also Taballione et al., *Quantum* 7, 1071 (2023), arXiv:2203.01801, for the 20-mode scaling benchmark).*
 22. **Mezher, R., & Mansfield, S.** (2022). "Assessing the quality of near-term photonic quantum devices". arXiv: 2202.04735.
     - *Quandela diagnostic framework assessing state preparation, circuit fidelity, and non-classicality under experimental imperfections.*
 23. **Tzitrin, I., et al.** (2021). "Fault-tolerant quantum computation with static linear optics". *PRX Quantum* 2, 040353. DOI: 10.1103/PRXQuantum.2.040353.
     - *Theoretical architecture for fault-tolerant linear optical quantum computing via continuous-variable and dual-rail cluster states.*
 24. **Barzaghi, M., et al.** (2025). "A low-loss, 24-mode laser-written universal photonic processor in a glass-based platform". arXiv: 2505.01609.
-    - *Detailed physical and optical characterization of the Belenos 24-mode glass chip.*
+    - *Characterization of a 24-mode glass chip by Ephos and CNR-IFN authors; the paper names neither Quandela nor Belenos, and the link to Belenos is the citation in Thomas et al. (item 25).*
 25. **Thomas, H., Chabaud, U., & Emeriau, P.-E.** (2025). "Shedding light on classical shadows: learning photonic quantum states". arXiv: 2510.07240.
     - *Hardware execution of randomized Clifford measurements and classical shadows on Quandela 12- and 24-mode processors.*
 26. **Franco, S., Camillini, A., & Galvão, E. F.** (2026). "Interaction-free measurement of multiple objects using a universal integrated photonic processor". *Quantum Sci. Technol.* DOI: 10.1088/2058-9565/ae8df9. arXiv: 2604.04691.

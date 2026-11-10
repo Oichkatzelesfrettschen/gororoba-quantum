@@ -54,8 +54,10 @@ GPU matters for sweeps and batched trials, not for single circuits.
 
 `scripts/kaggle_run.py` is the path from the repository to Kaggle. It runs under the operator's interpreter that
 holds the kaggle and kagglesdk distributions (the build host's system `python3`, from the `kaggle-api` and
-`python-kagglesdk` packages); the CI pins carry neither, since CI never contacts Kaggle and `verify` reads receipts
-offline. A CPU `push` and `status` need only the `kaggle` CLI, while `collect` and an accelerator push import the SDK
+`python-kagglesdk` packages); the CI pins carry neither, since the gates never contact Kaggle and `verify` reads
+receipts offline. `.github/workflows/kaggle-collect.yml` (section "Collection from GitHub Actions") installs both
+itself. A CPU `push` needs only the `kaggle` CLI, while `collect`, an accelerator push and `status` of a versioned
+run import the SDK
 and stop with a named error under an interpreter that lacks it:
 
 - `push ENTRY --slug SLUG [--include FILE] [-- ARGS]` bundles ENTRY with
@@ -78,7 +80,7 @@ and stop with a named error under an interpreter that lacks it:
   archive digest, commit and file count into the record's `history`;
   `verify` requires every retained run's attached archive to be the current
   version or one in that history. A GPU or TPU push needs
-  `--timeout SECONDS` (at most four hours) and refuses while any version
+  `--timeout SECONDS` (at most twelve hours, Kaggle's session limit) and refuses while any version
   of the slug is still running or queued (next section). `--with GROUP` adds an
   opt-in package group from `PIN_GROUPS` (`quantum-tools`,
   `exact-arithmetic`, and `qx-emulator`, qxelarator at the Quantum Inspire
@@ -91,7 +93,8 @@ and stop with a named error under an interpreter that lacks it:
   `recipes/`, which the kernel never reads (`KERNEL_DOC_CAPTURES`). A `Tpu*` machine is pushed as a notebook with latest image
   pinning, no `docker_image` and no notebook `kaggle` block, with the CPU
   build of Aer; batch pushes have not reached a TPU (next section).
-- `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
+- `status RUN_DIR` reads the run's own version through `GetKernelSessionStatus` with `version_label vN` when
+  submission.json records one. `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
   run's own version with a sha256 manifest; `collect` reads that version
   through kagglesdk's `ListKernelSessionOutput` with `version_label vN`,
   because the CLI's `kernels output OWNER/SLUG/N` returns the latest
@@ -110,7 +113,7 @@ and stop with a named error under an interpreter that lacks it:
   written before it by sha256, and records the digest of each discarded
   file of the repository bundle that Kaggle echoes back from
   `/kaggle/working`.
-- `verify` checks every retained receipt, primary and capture, against its
+- `verify [RUN_DIR]` checks every retained receipt (or one run's), primary and capture, against its
   output files and each run's receipt chain offline (gate core-290). Runs pushed before kernel versions were recorded
   also predate exit.json and keep the status Kaggle reported; the substrate
   probes of 2026-10-16T025230Z and T025231Z ended in ERROR because a
@@ -167,6 +170,21 @@ needs a replay gate that re-derives it in CI, so a Kaggle result becomes a
 claim only once a reduced case reproduces it on the CPU under a gate. Until
 then it informs a design as a retained artifact.
 
+## Collection from GitHub Actions
+
+`.github/workflows/kaggle-collect.yml` collects a pushed run with no session open. A push to a branch named
+`kaggle-collect/*` that holds the run directory starts it; the workflow's `RUN_DIR` names the directory and
+`RESULT_PATH` the entry's output file. `ci/kaggle_collect.sh` reads the version's status every two minutes, collects
+when the version reaches a terminal state, or at 11 h 52 min after `pushed_utc` while it is still live, and then
+watches to 12 h 15 min for the terminal state and collects again. Kaggle serves a version's output only after its
+session ends, and a session ended at `--timeout` or at the 12-hour limit returns `/kaggle/working/output` without
+`exit.json`, so such a run lands as a `PARTIAL` capture. Each collection runs `verify RUN_DIR`, which checks that
+run's receipts alone (the repository-wide replay stays on demand), commits the run directory and the copied result
+to the branch, dispatches `pr.yml` on it, since a `GITHUB_TOKEN` push starts no workflow, and comments once per
+state on the open pull request whose head is the branch.
+`KAGGLE_API_TOKEN` sits only in the repository's `kaggle` environment, whose deployment branches are
+`kaggle-collect/*`; the collecting branch is the only collector, so no other host runs `collect` on the same run.
+
 ## Accelerator sessions: budget, finding and stopping a run
 
 A GPU or TPU batch session bills its whole wall time against the weekly
@@ -178,8 +196,8 @@ shared with every other session on the account.
 
 **Prevention, enforced by `scripts/kaggle_run.py push`:**
 
-- A non-CPU push needs `--timeout SECONDS`, at most four hours; Kaggle ends
-  the session there. Without it a session runs to the 12-hour notebook
+- A non-CPU push needs `--timeout SECONDS`, at most twelve hours; Kaggle
+  ends the session there. Without it a session runs to the 12-hour notebook
   limit.
 - A non-CPU push refuses while any version of the slug is RUNNING, QUEUED
   or NEW_SCRIPT, because a new version leaves every older session running.

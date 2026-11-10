@@ -1,0 +1,13 @@
+{
+ "id": "probablyeric/a5-vb-d7-slimgb-gpu-p32009",
+ "title": "a5-vb-d7-slimgb-gpu-p32009",
+ "code_file": "a5-vb-d7-slimgb-gpu-p32009.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": []
+}

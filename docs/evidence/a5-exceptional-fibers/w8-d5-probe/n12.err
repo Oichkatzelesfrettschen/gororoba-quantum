@@ -1,0 +1,23 @@
+	Command being timed: "timeout 3600 /usr/bin/python docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py --quotient --max-gb 20 docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing 5 12"
+	User time (seconds): 1546.92
+	System time (seconds): 181.70
+	Percent of CPU this job got: 244%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 11:47.32
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 8522388
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 34345
+	Minor (reclaiming a frame) page faults: 12912380
+	Voluntary context switches: 41389
+	Involuntary context switches: 485676
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

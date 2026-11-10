@@ -1,9 +1,9 @@
 {
- "machine_name": "build-host-source",
+ "machine_name": "build-host",
  "build": "source build (gororoba-infrastructure packaging, -march=native -O3)",
  "numpy_quaddtype": "1.0.0",
  "python": "3.14.9",
- "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.44",
+ "platform": "Linux on WSL2",
  "machine": "x86_64",
  "cpu": "AMD Ryzen 5 5600X3D 6-Core Processor",
  "numpy": "2.5.4",

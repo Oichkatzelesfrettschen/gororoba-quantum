@@ -1,0 +1,2 @@
+p=32009 300x700 rank=200 gpu_rank=200 equal=True gpu={'pluq': 2.0228376388549805, 'backsub': 0.19807672500610352} flint=0.06s
+p=32009 2000x15037 rank=1800 gpu_rank=1800 equal=True gpu={'pluq': 0.9088883399963379, 'backsub': 1.212418556213379} flint=19.94s

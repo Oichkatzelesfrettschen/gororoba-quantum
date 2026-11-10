@@ -1,0 +1,29 @@
+// on control: the limits [G_2(u)] over the exceptional divisor {J'(u) = 0} of the point blowup, u in the chart t3 = 1
+ring ru=@P@,(u2,u4,u5,u6,u7),dp;
+setring r;
+int lowTerms=size(jet(G,1)); ideal G2=jet(G,2); int nG2=0; int ig; for (ig=1;ig<=ncols(G2);ig++) { if (G2[ig]!=0) { nG2++; } }
+setring ru;
+number Iu=@I@; number cA=@UA@; number cC=@UC@; number cD=@UD@; number cT=@UT@;
+number cB=(cC*cD-cT^2)/cA;
+number n2=2;
+number w2=(cA+cB)/n2; number w4=(cA-cB)/(n2*Iu); number w5=(cC+cD)/n2; number w6=(cC-cD)/(n2*Iu);
+map mu=r,u2,1,u4,u5,u6,u7;
+ideal Gu=mu(G2);
+intvec u0=int(w2),int(w4),int(w5),int(w6),int(cT);
+map pt=ru,u0[1],u0[2],u0[3],u0[4],u0[5];
+poly Jc=u2^2+u4^2-u5^2-u6^2+u7^2;
+ideal y0=pt(Gu); matrix JgM=jacob(Gu); matrix Jg0=pt(JgM); ideal Jid=Jc; matrix dJM=jacob(Jid); matrix dJ0=pt(dJM);
+poly Jat=pt(Jc); int onQuadric=(Jat==0);
+int a0=0; int k; int i; int m; poly acc;
+for (k=1;k<=5;k++) { if (dJ0[1,k]!=0 && a0==0) { a0=k; } }
+number den=leadcoef(dJ0[1,a0]);
+matrix Kv[4][5]; int row=0;
+for (k=1;k<=5;k++) { if (k!=a0) { row++; Kv[row,k]=1; Kv[row,a0]=-leadcoef(dJ0[1,k])/den; } }
+matrix Big[@NGEN@][5];
+for (i=1;i<=@NGEN@;i++) {
+  Big[i,1]=y0[i];
+  for (k=1;k<=4;k++) { acc=0; for (m=1;m<=5;m++) { acc=acc+Jg0[i,m]*Kv[k,m]; } Big[i,k+1]=acc; }
+}
+res("on control: point on J' = 0 (1 required): "+string(onQuadric)+"; generators of G with a term of degree below 2 (0 required): "+string(lowTerms)+"; generators with a nonzero degree-2 part: "+string(nG2));
+res("on control: rank of [G_2(u) | dG_2/du along the tangent space of J' = 0] (4: a cone of dimension 4, the generic-direction arcs of the scan): "+string(rank(Big)));
+intvec yv; for (i=1;i<=@NGEN@;i++) { yv[i]=int(leadcoef(y0[i])); }

@@ -1,0 +1,6 @@
+// the monomial ideal N = (x, v2 s, v2^2) of I'|B_3: the minimal generators of N^n number binomial(n + 2, 2), the
+// dimension of I^n / m I^n for a polynomial ring in three variables (exponents (1,0,0), (0,1,1), (0,0,2) are affinely independent)
+ring Rc=@P@,(x,s,v2),dp;
+ideal Nc=x,v2*s,v2^2; ideal Np=Nc; int nn; string cnt="";
+for (nn=1;nn<=6;nn++) { if (nn>1) { Np=Np*Nc; } ideal Mb=interred(Np); cnt=cnt+string(size(Mb))+" "; kill Mb; }
+res("minimal generators of N^n for n = 1 to 6 (3 6 10 15 21 28 required): "+cnt);

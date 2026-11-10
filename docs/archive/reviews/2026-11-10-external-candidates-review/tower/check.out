@@ -1,0 +1,9 @@
+D=4: N(2D)=168 pasted recurrence=0 corrected recurrence=168
+D=8: N(2D)=1848 pasted recurrence=1344 corrected recurrence=1848
+D=16: N(2D)=15960 pasted recurrence=16128 corrected recurrence=15960
+D=32: N(2D)=130200 pasted recurrence=147840 corrected recurrence=130200
+u=2^-53: (1+u/2)+u/2=1.0 1+(u/2+u/2)=1.0
+u=2^-52: (1+u/2)+u/2=1.0 1+(u/2+u/2)=1.0000000000000002
+ordered disjoint pairs with equal XOR: 630; with chi=+1: 168; unordered: 84
+signed zero products per XOR class: {9: 48, 10: 48, 11: 48, 12: 48, 13: 48, 14: 48, 15: 48}; total 336
+e1+e10: dim ker L_x=4; kernel basis shifts of conj(x)/2 that invert on both sides: 4

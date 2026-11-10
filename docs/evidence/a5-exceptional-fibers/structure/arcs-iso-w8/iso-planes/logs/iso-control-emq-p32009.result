@@ -1,0 +1,9 @@
+RESULT iso-control-emq-p32009 signs of the run generators against the header: 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT iso-control-emq-p32009 on control: point on J' = 0 (1 required): 1; generators of G with a term of degree below 2 (0 required): 0; generators with a nonzero degree-2 part: 14
+RESULT iso-control-emq-p32009 on control: rank of [G_2(u) | dG_2/du along the tangent space of J' = 0] (4: a cone of dimension 4, the generic-direction arcs of the scan): 4
+RESULT iso-control-emq-p32009 on control: K2 generators nonzero at G_2(u) (0 required): 0 of 68
+exit 0
+RESULT iso-control-emq-p32009 signs of the run generators against the header: 1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1
+RESULT iso-control-emq-p32009 on control: point on J' = 0 (1 required): 1; generators of G with a term of degree below 2 (0 required): 0; generators with a nonzero degree-2 part: 14
+RESULT iso-control-emq-p32009 on control: rank of [G_2(u) | dG_2/du along the tangent space of J' = 0] (4: a cone of dimension 4, the generic-direction arcs of the scan): 4
+RESULT iso-control-emq-p32009 on control: K2 generators nonzero at G_2(u) (0 required): 0 of 68

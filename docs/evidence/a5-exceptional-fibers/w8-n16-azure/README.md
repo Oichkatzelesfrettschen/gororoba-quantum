@@ -27,8 +27,9 @@ Findings.
   retained receipt-run export, `.sha256` files beside each table), so
   the export of the receipt run is the export of either run. Its manifest stays in the repository
   ([`working/exports/w8nm-n16-rcpt/`](../working/exports/w8nm-n16-rcpt/export.json): `export.json`, the producing `.sing`
-  scripts, `qG.txt` and the full sha256 of every table); the tables themselves (235 MB) are not retained, because
-  checking them out pushed the `tests` job past its time limit. Regenerate them with
+  scripts, `qG.txt` and the full sha256 of every table). The tables (235 MB; `qM7.txt` split into 45 MB parts listed in
+  `split.txt`) are retained, and each matches its `.sha256`. The `pr.yml` checkouts skip their blobs (sparse checkout,
+  `filter: blob:none`), because checking them out pushed the `tests` job past its time limit. To regenerate them, run
   `"$PYTHON" docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v11.py --quotient --export-only
   --export-dir DIR --singular SINGULAR docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing 5 16`
   (about 12 min of Singular) and check each table against its `.sha256`.
@@ -38,8 +39,14 @@ Findings.
   pruning more products; a py-spy profile of the products stage decides it.
 - Blocks 2 and 3 are equal in both runs, as the block-swap proposition (block-swap proposition, findings note) requires.
 
+The registry (`../build_registry.py`) reads the three `.out` files as truncated-rank records, each one JSON line with the engine and header digests, `d`, `N` and `r_N`, once `w8-n16-azure` is among its scan roots (`../README.md`); the receipt-bound and unreceipted runs share one certificate key, so `claims.json` names one of them as the source and both agree.
+
 Second prime: at p = 32029 the same engine in quotient mode with the receipt (`p32029/w8d5-n16-p32029.out`, digests in
 `p32029/SHA256SUMS`, ledger rows A5-136 and A5-148) reached r_16 = 4116 with per-block ranks 1017 / 1005 / 1047 / 1047, as
-at p = 32009. Not tested: characteristic 0 (the char-0 rank is at least the F_p rank, while the upper bound needs the K2
+at p = 32009. Its export (`s.txt`, the `qM` and `qG` tables, `export.json`) is retained in
+[`working/exports/w8nm-n16-p32029/`](../working/exports/w8nm-n16-p32029/export.json): every table matches its
+`.sha256` and the digest `export.json` lists, `qB.txt` is byte-identical to the 32009 kbase table, and `qM7.txt` is split
+into 45 MB parts (`split.txt`). The tables came off the VM before its deletion on 2026-11-09; `p32029/run.sh` is the
+launcher. Not tested: characteristic 0 (the char-0 rank is at least the F_p rank, while the upper bound needs the K2
 Hilbert function over Q). The stack dump in `unreceipted/snapshot.txt` was taken seconds before the engine exited
 (closure total already 9,263.5 s), not 30-40 min before, as first estimated.

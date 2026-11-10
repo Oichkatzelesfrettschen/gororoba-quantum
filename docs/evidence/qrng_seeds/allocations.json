@@ -1284,6 +1284,20 @@
    "index": 1000
   },
   {
+   "path": "docs/evidence/a5-exceptional-fibers/engine-v12/gpu-rref-probe/rref_probe.py",
+   "name": "SEED",
+   "value": 36574,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1001
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/engine-v12/gpu-rref-probe/pluq.py",
+   "name": "VERIFY_SEED",
+   "value": 11166,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 2
+  },
+  {
    "path": "docs/evidence/quandela/permanent-estimators/permanent_probe.py",
    "name": "matrix_seed",
    "value": 64823,
@@ -1317,6 +1331,48 @@
    "value": 53907,
    "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
    "index": 4
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 48017,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1002
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 49253,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1003
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 10309,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1004
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 7251,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1005
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 10621,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1006
+  },
+  {
+   "path": "tests/test_modular_echelon.py",
+   "name": "TEST_SEEDS",
+   "value": 17687,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-08T170257Z.json",
+   "index": 1007
   }
  ],
  "runtime": [
@@ -2559,6 +2615,62 @@
    "record": "docs/evidence/anu_qrng/draw-2026-11-01T054809Z.json",
    "index": 2,
    "reason": "seeded the power record of the mesh-persistence case at commit 2bb86624c, under a Student-t slope bound that the review replaced before the pull request merged; the script cites the value so that it stays consumed"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 28176,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 5,
+   "reason": "b of the plane point in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 1840,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 7,
+   "reason": "c of the plane point in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 11447,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 9,
+   "reason": "first coordinate of Y0 in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 3841,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 10,
+   "reason": "second coordinate of Y0 in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 7421,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 11,
+   "reason": "third coordinate of Y0 in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 29214,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 13,
+   "reason": "s0 of the off control in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 507,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 14,
+   "reason": "b of the off control in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
+  },
+  {
+   "path": "docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/points.json",
+   "value": 9044,
+   "record": "docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json",
+   "index": 15,
+   "reason": "c of the off control in the Iso -> N- point-blowup plane certificate (iso_planes_gen.py reads points.json by index); a JSON ledger the seed scan does not key"
   }
  ],
  "owned": [

@@ -1,0 +1,14 @@
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=1 monomials=32 equations=1200 rank=30 vanishing_forms=2
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=2 monomials=528 equations=1200 rank=127 vanishing_forms=401
+witness 1 nonzd-axis k=12 dimT=16 deg=1 monomials=32 equations=1200 rank=30 vanishing_forms=2
+witness 1 nonzd-axis k=12 dimT=16 deg=2 monomials=528 equations=1200 rank=296 vanishing_forms=232
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=1 monomials=32 equations=2400 rank=30 vanishing_forms=2
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=2 monomials=528 equations=2400 rank=167 vanishing_forms=361
+witness 1 nonzd-axis k=12 dimT=16 deg=1 monomials=32 equations=2400 rank=30 vanishing_forms=2
+witness 1 nonzd-axis k=12 dimT=16 deg=2 monomials=528 equations=2400 rank=381 vanishing_forms=147
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=2 monomials=528 equations=900 rank=237 vanishing_forms=291
+witness 1 nonzd-axis k=12 dimT=16 deg=2 monomials=528 equations=900 rank=343 vanishing_forms=185
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=2 monomials=528 equations=1800 rank=387 vanishing_forms=141
+witness 1 nonzd-axis k=12 dimT=16 deg=2 monomials=528 equations=1800 rank=343 vanishing_forms=185
+witness 5 zd-nonzd-generic k=4 dimT=28 deg=2 monomials=528 equations=3600 rank=465 vanishing_forms=63
+witness 1 nonzd-axis k=12 dimT=16 deg=2 monomials=528 equations=3600 rank=343 vanishing_forms=185

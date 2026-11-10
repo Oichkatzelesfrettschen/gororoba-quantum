@@ -1,0 +1,18 @@
+// iso-k2-p32009: dimension and degree of K2, minimal generators of the powers of (x, v2 s, v2^2), prime 32009
+// header docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing (sha256 1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170); values: docs/evidence/anu_qrng/draw-2026-11-09T060635Z.json, keys in points.json
+LIB "linalg.lib"; LIB "general.lib"; LIB "matrix.lib"; system("--ticks-per-sec",1); int t0=rtimer;
+proc res(string m) { string l="RESULT iso-k2-p32009 "+m; print(l); write(":a docs/evidence/a5-exceptional-fibers/structure/arcs-iso-w8/iso-planes/logs/iso-k2-p32009.result", l); }
+< "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing";
+execute("ring Y=32009,(y(1..17)),dp;");
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/runs/s3/iso_k2.rel")+";");
+ideal Ks=std(K);
+res("K2: generators "+string(size(K))+", affine dimension "+string(dim(Ks))+", degree "+string(mult(Ks))+" (5 and 23 required), s "+string(rtimer-t0));
+
+// the monomial ideal N = (x, v2 s, v2^2) of I'|B_3: the minimal generators of N^n number binomial(n + 2, 2), the
+// dimension of I^n / m I^n for a polynomial ring in three variables (exponents (1,0,0), (0,1,1), (0,0,2) are affinely independent)
+ring Rc=32009,(x,s,v2),dp;
+ideal Nc=x,v2*s,v2^2; ideal Np=Nc; int nn; string cnt="";
+for (nn=1;nn<=6;nn++) { if (nn>1) { Np=Np*Nc; } ideal Mb=interred(Np); cnt=cnt+string(size(Mb))+" "; kill Mb; }
+res("minimal generators of N^n for n = 1 to 6 (3 6 10 15 21 28 required): "+cnt);
+
+quit;

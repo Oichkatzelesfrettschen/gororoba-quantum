@@ -1,0 +1,7 @@
+2aff3a202143ad1f  1619 bytes  w8d4n13-v12-gpu.out
+2aff3a202143ad1f  1619 bytes  w8d4n13-v12-flint.out
+rank fields byte-equal
+2c5ee070d1dbab2a  1579 bytes  w8d4n13-v11.out
+2c5ee070d1dbab2a  1579 bytes  w8d4n13-v12-flint.out
+2c5ee070d1dbab2a  1579 bytes  w8d4n13-v12-gpu.out
+rank fields byte-equal

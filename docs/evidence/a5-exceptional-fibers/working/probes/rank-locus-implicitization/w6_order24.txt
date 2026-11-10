@@ -1,0 +1,1 @@
+witness 6 nonzd-nonzd-locus k=4 dimT=28 deg=2 monomials=528 equations=16800 rank=463 vanishing_forms=65

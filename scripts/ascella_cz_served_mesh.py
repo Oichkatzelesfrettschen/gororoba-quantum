@@ -23,11 +23,15 @@ The measured side of the same settings is the eligible events of the retained an
 iteration, as a ratio to its mean over the 144 settings (eligible_per_shot_ratio), with the mean ratio of each of the
 16 inputs over its nine readouts. The ensemble design's input-independence condition is a rule on this ratio.
 
+Two pairs of runs carry a record: the retained 2026-10-31 pair (ascella-cz-served-mesh.json) and the reference
+pair of scripts/ascella_cz_tomography_reference_case.py (ascella-cz-tomography-reference-served-mesh.json); --pair
+names one, and both run by default.
+
 --write retains the record; --check recomputes it and requires every key, name and count to match and every float to
 agree within TOLERANCE, the comparison of ascella_cz_tomography_case.first_difference.
 
 Usage:
-  "$PYTHON" scripts/ascella_cz_served_mesh.py --check | --write
+  "$PYTHON" scripts/ascella_cz_served_mesh.py --check | --write [--pair retained|reference]
 """
 
 from __future__ import annotations
@@ -54,6 +58,17 @@ RUNS = (
     "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
 )
 ANALYSIS = "results/quandela/ascella-cz-tomography-analysis.json"
+BAND_RECORD = ROOT / "results/quandela/ascella-cz-tomography-reference-served-mesh.json"
+BAND_RUNS = (
+    "results/quandela/runs/2026-11-09T174125Z-qpu_ascella-ascella_cz_tomography_reference-job-00",
+    "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
+)
+BAND_ANALYSIS = "results/quandela/ascella-cz-tomography-reference-analysis.json"
+# Each pair of tomography runs with its preregistered analysis, its served-mesh record and its design document.
+PAIRS = {
+    "retained": (RUNS, ANALYSIS, RECORD, case.DESIGN),
+    "reference": (BAND_RUNS, BAND_ANALYSIS, BAND_RECORD, "docs/design/ascella-cz-tomography-reference-case.md"),
+}
 SCHEMA = "ascella-cz-served-mesh-v1"
 SOURCES = (case.C0, case.T0)
 ELIGIBLE = ((case.C0, case.T0), (case.C0, case.T1), (case.C1, case.T0), (case.C1, case.T1))
@@ -101,11 +116,11 @@ def summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
-def record() -> dict[str, Any]:
+def record(runs: tuple[str, ...] = RUNS, analysis: str = ANALYSIS, design: str = case.DESIGN) -> dict[str, Any]:
     jobs: dict[str, Any] = {}
     every: list[dict[str, Any]] = []
-    eligible = json.loads((ROOT / ANALYSIS).read_text(encoding="utf-8"))["eligible_events_by_setting"]
-    for job, run in zip(case.JOBS, RUNS, strict=True):
+    eligible = json.loads((ROOT / analysis).read_text(encoding="utf-8"))["eligible_events_by_setting"]
+    for job, run in zip(case.JOBS, runs, strict=True):
         settings = json.loads((ROOT / run / "cases.json").read_text(encoding="utf-8"))["settings"]
         raw = json.loads((ROOT / run / "raw/result.json").read_text(encoding="utf-8"))
         entries = json.loads(raw["results"])["results_list"]
@@ -124,7 +139,7 @@ def record() -> dict[str, Any]:
     ratios = [row["eligible_per_shot_ratio"] for row in every]
     return {
         "schema": SCHEMA,
-        "case": case.DESIGN,
+        "case": design,
         "metrics": {
             "nominal_tvd": "total variation distance between served and designed eligible-outcome distributions",
             "success_ratio": "served over designed probability of one photon on each rail pair, modes 4..11 empty",
@@ -132,7 +147,7 @@ def record() -> dict[str, Any]:
         },
         "summary": summary(every),
         "eligible_per_shot": {
-            "analysis": ANALYSIS,
+            "analysis": analysis,
             "mean": mean_rate,
             "setting_ratio": {"min": min(ratios), "max": max(ratios)},
             "input_mean_ratio": {label: sum(values) / len(values) for label, values in sorted(by_input.items())},
@@ -146,19 +161,22 @@ def main() -> int:
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--check", action="store_true")
     group.add_argument("--write", action="store_true")
+    parser.add_argument("--pair", choices=sorted(PAIRS), action="append", help="default: every pair")
     args = parser.parse_args()
-    built = record()
-    if args.write:
-        RECORD.write_text(json.dumps(built, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    else:
-        retained = json.loads(RECORD.read_text(encoding="utf-8"))
-        difference = case.first_difference(retained, built)
-        case.require(difference is None, f"{RECORD.name} differs from the recomputed record at {difference}")
-    s = built["summary"]
-    print(
-        f"{s['settings']} settings: nominal TVD max {s['nominal_tvd']['max']:.2e}, success ratio "
-        f"{s['success_ratio']['min']:.5f} to {s['success_ratio']['max']:.5f}"
-    )
+    for name in args.pair or sorted(PAIRS):
+        runs, analysis, path, design = PAIRS[name]
+        built = record(runs, analysis, design)
+        if args.write:
+            path.write_text(json.dumps(built, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        else:
+            retained = json.loads(path.read_text(encoding="utf-8"))
+            difference = case.first_difference(retained, built)
+            case.require(difference is None, f"{path.name} differs from the recomputed record at {difference}")
+        s = built["summary"]
+        print(
+            f"{name}: {s['settings']} settings: nominal TVD max {s['nominal_tvd']['max']:.2e}, success ratio "
+            f"{s['success_ratio']['min']:.5f} to {s['success_ratio']['max']:.5f}"
+        )
     return 0
 
 

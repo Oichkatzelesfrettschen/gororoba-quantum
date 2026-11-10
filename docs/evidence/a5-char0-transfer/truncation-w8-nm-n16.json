@@ -1,0 +1,33 @@
+{
+ "slug": "w8-nm",
+ "order": 16,
+ "conjecture": "good reduction of J + m^N at each split prime",
+ "qi_basis_size": 35858,
+ "qi_terms": 1154850,
+ "qi_max_denominator": 1,
+ "qi_has_imaginary_part": false,
+ "qi_wall_seconds": 1002.5,
+ "primes": [
+  {
+   "prime": 32009,
+   "root": 10754,
+   "same_variables": true,
+   "bad_denominators": [],
+   "header_basis_size": 35858,
+   "bases_equal": true,
+   "mutation_detected": true,
+   "header_wall_seconds": 759.6
+  },
+  {
+   "prime": 32029,
+   "root": 9115,
+   "same_variables": true,
+   "bad_denominators": [],
+   "header_basis_size": 35858,
+   "bases_equal": true,
+   "mutation_detected": true,
+   "header_wall_seconds": 698.4
+  }
+ ],
+ "verdict": "survives"
+}

@@ -1,0 +1,5 @@
+int nK=size(K);
+ideal yr; int je; for (je=1;je<=@NGEN@;je++) { yr[je]=eps[je]*yv[je]; }
+map ev=Y,yr;
+ideal eK=ev(K);
+res("on control: K2 generators nonzero at G_2(u) (0 required): "+string(size(eK))+" of "+string(nK));

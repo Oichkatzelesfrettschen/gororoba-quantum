@@ -1,0 +1,5 @@
+// G and J vanish identically on L0 = {t2 = 0, t4 = t6, t5 = t7}, symbolically in s = t3, b and c
+ring rl=@P@,(s,b,c),dp;
+map ml=r,0,s,s*b,s*c,s*b,s*c;
+ideal Gl=ml(G); ideal Jl=ml(J);
+res("G_j on the points (0, s, s b, s c, s b, s c) of L0: nonzero generators "+string(size(Gl))+" of @NGEN@ (0 required); J nonzero "+string(size(Jl))+" (0 required)");

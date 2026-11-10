@@ -1,0 +1,18 @@
+< "@HEADER@";
+option(redSB); system("--ticks-per-sec",1000); int t0=rtimer;
+ideal sJ=std(J); int n=ncols(G); int i; int k;
+for(i=1;i<=n;i++){G[i]=reduce(G[i],sJ);}
+ring Y=@P@,(y(1..n)),dp;
+execute("ideal RelY=" + read("@REL@") + ";");
+ideal kb=kbase(std(ideal(0)),2); int c=ncols(kb);
+setring r; ideal P; map phi=Y,G;
+P=reduce(phi(kb),sJ);
+ideal Rel=reduce(phi(RelY),sJ);
+ideal SliceM=maxideal(1); ideal Q=sJ;
+for(k=1;k<=ncols(SliceM);k++){for(i=1;i<=c;i++){Q=Q,SliceM[k]*P[i];}}
+"RESULT relations",ncols(Rel),"Q_generators",ncols(Q),"setup_ms",rtimer-t0;
+int tl=rtimer; matrix T=lift(Q,Rel);
+"RESULT lift_ms",rtimer-tl,"cofactor_terms",size(ideal(T)),"rows",nrows(T),"cols",ncols(T);
+short=0; write(":w @OUT@",T);
+"RESULT written";
+quit;

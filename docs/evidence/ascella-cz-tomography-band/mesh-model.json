@@ -1,0 +1,169 @@
+{
+ "schema": "ascella-mesh-component-model-v1",
+ "architecture": {
+  "couplers": 132,
+  "heaters": 126,
+  "crosstalk_links": 58
+ },
+ "within_retained": {
+  "train_settings": 72,
+  "test_settings": 72,
+  "train": {
+   "overlap": 0.8954137465188227,
+   "deviance": 5926.141919488072,
+   "coupler_rms": 0.029006053975987784,
+   "heater_offset_rms": 0.05559482197293549,
+   "heater_gain": 0.00033827331235663393,
+   "crosstalk": 0.00035271409007774985
+  },
+  "deviance_baseline": 37711.05249813356,
+  "deviance_transfer": 12380.384721036411,
+  "deviance_in_sample_ceiling": 6178.8647791522935,
+  "deviance_null": {
+   "min": 15354.90489602291,
+   "median": 18911.747250206226,
+   "max": 38548.82737309436
+  },
+  "gain": 0.803327317560303,
+  "passes": true,
+  "overlap": {
+   "baseline": 0.8921097413009397,
+   "transfer": 0.8884601936698967,
+   "ceiling": 0.8993090654357045
+  },
+  "ceiling_components": {
+   "coupler_rms": 0.030438892923192455,
+   "heater_offset_rms": 0.047859411173469674,
+   "heater_gain": 0.0026980601517136377,
+   "crosstalk": -0.0008564675415510178
+  },
+  "shift_correlation": 0.08092998210540142,
+  "pearson": {
+   "baseline": 20138.083705457677,
+   "transfer": 13183.1618672544,
+   "ceiling": 4986.270679472762
+  },
+  "cells": 4752
+ },
+ "within_band": {
+  "train_settings": 72,
+  "test_settings": 72,
+  "train": {
+   "overlap": 0.8909174425409491,
+   "deviance": 22391.609404366725,
+   "coupler_rms": 0.030590851438149828,
+   "heater_offset_rms": 0.03329067781742575,
+   "heater_gain": 0.004419018064642477,
+   "crosstalk": 0.0003336343146157668
+  },
+  "deviance_baseline": 245543.4172650111,
+  "deviance_transfer": 57853.52552360037,
+  "deviance_in_sample_ceiling": 21425.384090248088,
+  "deviance_null": {
+   "min": 64498.857219480444,
+   "median": 80972.92723960537,
+   "max": 104857.18363041722
+  },
+  "gain": 0.8374600164148938,
+  "passes": true,
+  "overlap": {
+   "baseline": 0.8995621994740634,
+   "transfer": 0.8909058196461219,
+   "ceiling": 0.8979526801549949
+  },
+  "ceiling_components": {
+   "coupler_rms": 0.022167993950855523,
+   "heater_offset_rms": 0.04045842937856992,
+   "heater_gain": 0.0032983661932147403,
+   "crosstalk": 0.001393800412176898
+  },
+  "shift_correlation": 0.06847173148068864,
+  "pearson": {
+   "baseline": 879912.3594800571,
+   "transfer": 157209.51301844165,
+   "ceiling": 24577.374960294397
+  },
+  "cells": 4752
+ },
+ "retained_to_band": {
+  "train_settings": 144,
+  "test_settings": 144,
+  "train": {
+   "overlap": 0.8971671193223161,
+   "deviance": 14855.249654756315,
+   "coupler_rms": 0.039539933691904824,
+   "heater_offset_rms": 0.06665347187158412,
+   "heater_gain": 0.0007578198480341133,
+   "crosstalk": -0.0002804454907207883
+  },
+  "deviance_baseline": 477465.95532868686,
+  "deviance_transfer": 102429.96885017512,
+  "deviance_in_sample_ceiling": 62684.99782340723,
+  "deviance_null": {
+   "min": 191405.7589331847,
+   "median": 385757.8895115643,
+   "max": 675523.9916029964
+  },
+  "gain": 0.9041784095735349,
+  "passes": true,
+  "overlap": {
+   "baseline": 0.8899873075637723,
+   "transfer": 0.8893395944429769,
+   "ceiling": 0.891320035973674
+  },
+  "ceiling_components": {
+   "coupler_rms": 0.024461117844369367,
+   "heater_offset_rms": 0.022376903091345494,
+   "heater_gain": 0.0034357211611923074,
+   "crosstalk": -0.00135457102672119
+  },
+  "shift_correlation": 0.21686912918489976,
+  "pearson": {
+   "baseline": 1709716.1479335418,
+   "transfer": 244132.41771739532,
+   "ceiling": 80462.64057801297
+  },
+  "cells": 9504
+ },
+ "band_to_retained": {
+  "train_settings": 144,
+  "test_settings": 144,
+  "train": {
+   "overlap": 0.891320035973674,
+   "deviance": 62684.99782340723,
+   "coupler_rms": 0.024461117844369367,
+   "heater_offset_rms": 0.022376903091345494,
+   "heater_gain": 0.0034357211611923074,
+   "crosstalk": -0.00135457102672119
+  },
+  "deviance_baseline": 69858.69089192184,
+  "deviance_transfer": 21290.799619332578,
+  "deviance_in_sample_ceiling": 14855.249654756315,
+  "deviance_null": {
+   "min": 22904.622097881453,
+   "median": 24693.749775110475,
+   "max": 28136.53170997114
+  },
+  "gain": 0.8829973212616413,
+  "passes": true,
+  "overlap": {
+   "baseline": 0.8911319444698719,
+   "transfer": 0.8921772133491127,
+   "ceiling": 0.8971671193223161
+  },
+  "ceiling_components": {
+   "coupler_rms": 0.039539933691904824,
+   "heater_offset_rms": 0.06665347187158412,
+   "heater_gain": 0.0007578198480341133,
+   "crosstalk": -0.0002804454907207883
+  },
+  "shift_correlation": 0.1994012578864428,
+  "pearson": {
+   "baseline": 36438.742588069734,
+   "transfer": 23086.014635805048,
+   "ceiling": 13248.937366817558
+  },
+  "cells": 9504
+ },
+ "seeds": 6303
+}

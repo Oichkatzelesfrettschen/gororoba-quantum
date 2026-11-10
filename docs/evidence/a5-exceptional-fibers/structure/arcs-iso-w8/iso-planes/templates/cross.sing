@@ -1,0 +1,6 @@
+// cross-check: the column space of M(p) does not depend on the choice of the smooth generator
+execute(read("@MFILE0@"));
+intmat MQ[@NGEN@][3]=MP;
+matrix MA[@NGEN@][3]; matrix MB[@NGEN@][3]; matrix MAB[@NGEN@][6]; int jc; int kc;
+for (jc=1;jc<=@NGEN@;jc++) { for (kc=1;kc<=3;kc++) { MA[jc,kc]=MQ[jc,kc]; MB[jc,kc]=V1[jc,kc]; MAB[jc,kc]=MQ[jc,kc]; MAB[jc,kc+3]=V1[jc,kc]; } }
+res("cross-check: rank of M(p) from G'_@IA0@ "+string(rank(MA))+", from G'_@IA1@ "+string(rank(MB))+", of the two side by side (3 required: one column space): "+string(rank(MAB)));

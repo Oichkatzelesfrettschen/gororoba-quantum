@@ -1,0 +1,118 @@
+{
+ "b0": {
+  "P00": 0.5,
+  "P11": 0.5,
+  "pass": true
+ },
+ "b1_ev_bombFalse": {
+  "explode": 0.0,
+  "D1": 1.0,
+  "D2": 0.0
+ },
+ "b1_ev_bombTrue": {
+  "explode": 0.49939,
+  "D1": 0.250615,
+  "D2": 0.249995
+ },
+ "b1_check": {
+  "P_D2_is_quarter": true,
+  "P_explode_is_half": true,
+  "D2_implies_bomb_no_interaction": true
+ },
+ "b1_zeno": {
+  "1": {
+   "sim": 0.0,
+   "theory": 3.749399456654644e-33
+  },
+  "2": {
+   "sim": 0.25225,
+   "theory": 0.25000000000000006
+  },
+  "5": {
+   "sim": 0.60935,
+   "theory": 0.6054290497131063
+  },
+  "10": {
+   "sim": 0.7832,
+   "theory": 0.7805460697811408
+  },
+  "50": {
+   "sim": 0.9474,
+   "theory": 0.9518420787977816
+  }
+ },
+ "b1_zeno_check": {
+  "monotone_increasing": true,
+  "approaches_one": true,
+  "matches_theory": true
+ },
+ "b2_spoof": {
+  "0.0": {
+   "D1": 1.0,
+   "D2": 0.0,
+   "lost": 0.0
+  },
+  "0.1": {
+   "D1": 0.9,
+   "D2": 0.0,
+   "lost": 0.1
+  },
+  "0.5": {
+   "D1": 0.5,
+   "D2": 0.0,
+   "lost": 0.5
+  },
+  "0.9": {
+   "D1": 0.09999999999999998,
+   "D2": 0.0,
+   "lost": 0.9
+  }
+ },
+ "b2_check": {
+  "dark_port_perfect_despite_loss": true,
+  "total_counts_expose_spoof": true,
+  "true_null_needs_full_counts": true
+ },
+ "b3_clean": {
+  "theta_0.0000": {
+   "P_q0_0": 0.4999999999999999,
+   "XX": 0.9999999999999998
+  },
+  "theta_0.7854": {
+   "P_q0_0": 0.4999999999999999,
+   "XX": 0.7071067811865475
+  },
+  "theta_1.5708": {
+   "P_q0_0": 0.4999999999999999,
+   "XX": 6.123233995736765e-17
+  },
+  "theta_3.1416": {
+   "P_q0_0": 0.4999999999999999,
+   "XX": -0.9999999999999998
+  }
+ },
+ "b3_check_clean": {
+  "incoherent_blind": true,
+  "coherent_resolves": true
+ },
+ "b3_fragility": {
+  "0.0": 0.5,
+  "0.2": 0.4,
+  "0.5": 0.25,
+  "0.8": 0.09999999999999998,
+  "1.0": 0.0
+ },
+ "b3_check_fragility": {
+  "dead_at_full_dephasing": true
+ },
+ "b4_n_states": 60,
+ "b4_null_counts": {
+  "min": 3,
+  "max": 3,
+  "all_three": true
+ },
+ "b4_check": {
+  "unique_null_search_failed_as_predicted": true,
+  "structural_reason": "stabilizer group law: exact nulls come in groups of 3, never alone"
+ }
+}

@@ -1,0 +1,21 @@
+{
+ "schema": "kaggle-aer-collect-v2",
+ "kernel": "probablyeric/gororoba-ascella-mesh-model-jobs/1",
+ "capture": "2026-11-10T021743.872515Z",
+ "state": "COMPLETE",
+ "collected_utc": "2026-11-10T021746Z",
+ "submission_sha256": "e6eb7b3ad7833dd3bd89f0b688764d5a0545c4829f720823f924931f4babb8f7",
+ "predecessor_sha256": null,
+ "files": {
+  "gororoba-ascella-mesh-model-jobs.log": "31bcfccc8374880d4a340500ff5b8e3cb05f593e3b4866e2875d7ec2f9c8ad2f",
+  "output/environment.json": "27b2c5c1a170230ddf51164c5f7dd3a77bec8c8897ced8b5b63a42ef56c69705",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "df4aae16c92a8d0786821c8682fbd1eeceadc38a273a0667732e4a2820d47bdb",
+  "output/pip.txt": "a341bb6e07db2f9e7750e12511db8d2453a45832cfe2c5055ec886bda24dc5a6",
+  "output/repo/docs/evidence/ascella-cz-tomography-band/mesh-model-jobs.json": "f040675c955ed10e7a284fc879b10ba7d17d86c1ea2c37326549bedeae770526",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ "reported_status": "probablyeric/gororoba-ascella-mesh-model-jobs/1 has status \"KernelWorkerStatus.COMPLETE\"",
+ "discarded": {}
+}

@@ -1,0 +1,200 @@
+# E8-bar -> VB degree 7 and W8 -> N- in characteristic 0: decomposition and sizing
+
+Two items from the A_5 exceptional-fiber program were stopped at 3 hours on 2026-11-09. The owner had given that limit
+for one run, and the session wrongly applied it to every run. No run-time cap exists:
+- the degree-7 test of the E8-bar -> VB ladder laws (ledger A5-260, A5-269; stalled as A5-279);
+- the transfer of the W8 -> N- Hilbert function to characteristic 0 over Q(i).
+
+This document splits each into scoped runs. For every run it states the conjecture, the falsifier, the measured cost
+behind the estimate and the decision the run feeds. The ledger (`docs/evidence/a5-exceptional-fibers/ledger.tsv`) records statuses, and this document
+holds the plan.
+
+## E8-bar -> VB degree 7
+
+### Preregistered predictions
+
+The rows below are written before any degree-7 cell runs, from A5-260 (closing order 3d + 1) and A5-269 (last jump
+2d + 1 on character blocks 0 and 1, block 0 taking d and block 1 taking d + 1 at odd d):
+
+- the target is HF(k[y]/K2, 7) = 624 (A5-279);
+- r_22 = 624, so the ladder closes at N = 22;
+- r_21 = 609, so the last jump is 15 = 2 * 7 + 1;
+- the r_21 -> r_22 block split is 7 / 8 / 0 / 0, with blocks 2 and 3 already at their K2 counts at N = 21.
+
+Each prediction has its own falsifier. r_21 = 624 refutes closure at exactly 22. r_21 other than 609 refutes the jump
+law. A split other than 7 / 8 / 0 / 0 refutes the parity rule. r_22 below 624 refutes closure at 3d + 1. N = 21 alone
+can falsify the first three predictions, and it costs less than N = 22.
+
+### Where the time goes (measured)
+
+The engine-v11 records of degrees 5 and 6 (`docs/evidence/a5-exceptional-fibers/vb-d6-laptop/*.json`, field
+`export.computed_seconds`, against `seconds.total`) put 94.5 to 98.6 percent of a cell's wall time into one Singular
+call, `std(J + maxideal(N))` (the `STD_SCRIPT` of `replay/engine/fiber_rank_v11.py`), the share rising with N. The
+multiplication tables and the generator reduction take under 63 s at every N:
+
+| N | std(J + m^N), p = 32009 | std, p = 32029 | tables and generators |
+|---|---|---|---|
+| 15 | 420.5 s | 426.7 s | 7 to 11 s |
+| 16 | 676.4 s | (not run) | 11 s |
+| 18 | 2,527.1 s | 2,655.5 s | 23 to 25 s |
+| 19 | 7,313.3 s | 7,095.9 s | 35 s |
+| 20 | 10,619.8 s | 10,493.3 s | 59 to 63 s |
+
+The step ratios are 1.61 (15 to 16), 1.93 per step on average (16 to 18), 2.90 (18 to 19) and 1.45 (19 to 20). They
+support no clean fit. Bracketing each step from N = 20 by the smallest and largest observed ratio puts std at N = 21
+in 15,400 to 30,800 s and at N = 22 in 22,300 to 89,300 s (6 to 25 h). This range is an extrapolation, not a
+measurement. A measured N = 21 cell narrows it. Peak memory stays small: 1.71 GiB at N = 20.
+
+The standard basis of J alone in dp has 17 elements and takes under 1 ms (`vb-export-levers/vb-n15-incremental.log`).
+The whole cost therefore sits in adding m^N. In dp the leading term of each element of J is its highest-degree term,
+so truncation at degree N releases the lower-order parts as new elements, and the work tracks the local structure at
+the origin.
+
+### Levers (each a global-ordering computation, per `docs/runbooks/computer-algebra.md`)
+
+The probes in `docs/evidence/a5-exceptional-fibers/vb-export-levers/` time one variant of the std call at a time
+against the baseline, at N = 15 and 16, p = 32009. Each variant's kbase must equal the baseline's. The engine's export
+identity pins the dp standard monomials, so an admitted lever changes no record. A lever that changes the Singular
+script still lands as a successor engine, never as an edit to v11, because the v11 digest binds the retained records.
+
+The probes ran on the build host on 2026-11-09, five Singular processes at once, so the baseline (562 s) runs slower
+than the engine record (420 s); the ratios compare runs under the same load. The values are provisional pilot
+readings: they size the next test, and a lever enters an engine only through a retained N = 18 comparison that binds
+the producer, the Singular build, the s, qB, table and generator digests, and the ranks. Equal kbase bytes show the
+same standard monomials; they do not by themselves show equal tables or normal forms.
+
+| variant | N = 15 | kbase equal |
+|---|---|---|
+| baseline `std`, redSB | 562.2 s | reference (sha256 6c1172203b181a95...) |
+| `std` without tail reduction | 762.8 s (refuted: slower) | equal |
+| `slimgb` | 301.0 s (1.87x, provisional) | equal |
+| `std(std(J), maxideal(N))` | stopped at 1,821 s (refuted: slower) | none |
+
+The N = 18 comparison runs on the Windows workstation (`run-laptop.sh`: the std baseline beside `slimgb` at N = 18,
+19 and 20, each capped at 3 hours).
+
+
+Further levers, not yet run:
+
+- **Variable order and `groebner`.** dp depends on the variable order. A deterministic screen of a fixed set of
+  variable permutations at N = 15, together with `standard.lib`'s `groebner` (which picks among direct and conversion
+  methods), may find a faster order. A successor engine then records the order and maps the basis and tables back to
+  the canonical variables. Falsifier: no permutation beats the baseline beyond noise at N = 15, or the winner loses at
+  N = 18.
+
+- **Weighted ordering (A5-258, task 115).** The weights come from the exact torus in the Klein centralizer, which is
+  not yet computed. Falsifier: J is not weight-homogeneous for any positive weight in the slice.
+- **Linear algebra on k[t]/m^N.** (J + m^N)/m^N is the span of t^a f_i truncated below degree N. Its row echelon
+  form over F_p gives the quotient and the multiplication tables without a Buchberger run. At N = 22 there are
+  C(29, 8) = 4,292,145 columns, so the cost depends on fill-in of a sparse elimination that is unmeasured. Cheapest
+  test: N = 15 against the 420 s baseline, comparing the quotient dimension and the table ranks.
+- **Local ordering with a Noether bound** (`ds` with highcorner m^N). This is the natural algorithm for an Artinian
+  local quotient, but the repository canon admits only global orderings for exact replays, so it needs the owner's
+  exception.
+
+### Runs
+
+The four degree-7 cells (N = 21 and 22 at both primes) run on engine v13 on the Windows workstation from
+2026-11-09T18:05Z under a 24 h deadline. Dividing the `std` extrapolation by the measured `slimgb` factor (1.7 to
+3.9, depending on host and load) gives about 2 to 5 h at N = 21 and 3 to 15 h at N = 22. Each cell's Singular export
+is complete once `s.txt` appears in its export directory, and the cell finishes minutes after that. N = 21 tests three
+of the four predictions; N = 22 tests closure.
+
+## W8 -> N- in characteristic 0
+
+### What the transfer needs
+
+The proposition in `docs/notes/topics/a5-char0-and-kernel-limits.md` transfers one certified h_d to Q(i) under
+three checks. For W8 -> N- the certified degrees are d = 1 to 5 at both primes (A5-138 to A5-142, A5-144 to A5-148):
+
+| check | W8 -> N- status |
+|---|---|
+| 1. good reduction of J and G | survives (A5-247; J has one generator, G has 24) |
+| 3. good reduction of J + m^N at N = 3d + 1 | survives at N = 4, 7, 10, 13 (A5-277); N = 16 (d = 5) running under the 3-hour cap |
+| 2. degree-2 relations over Q(i), reducing onto K2 | not run; 300 products, 144 relations (h_2 = 156) |
+
+Radicality of K2 does not enter the per-degree proposition. The 24,548 s global radical test belongs only to the
+all-degree statement (h_6 = 8,624 and beyond: A5-143, A5-149, proved modulo p by A5-066, which uses A5-061 radical,
+A5-062 components and A5-010 Cohen-Macaulay).
+
+### Check 2: a canonical linear system, not `lift`
+
+The direct Q(i) computation stalled at the 3-hour cap on X- (A5-248). Singular's `lift` has no canonical solution
+rule (A5-248), so its cofactors at different primes need not be images of one Q(i) solution. Equal supports at two
+primes would show neither compatible coefficients nor a reconstruction bound. The modular lifts measured that route's
+size anyway:
+- 32009: 1,565 s at 16.5 GB;
+- 32029: 1,497 s;
+- 51,611 nonzero entries of the 852 x 69 cofactor matrix at each prime;
+- 277 MB of cofactor text per prime at 32029.
+
+The support comparison (`cofactors/cofactor_support.py`) stays a diagnostic only.
+
+The route for check 2 is a degree-bounded coefficient system with a fixed pivot convention:
+1. Build at each prime the matrix of the products of each relation with the standard basis, bounded in degree.
+2. Take its reduced row echelon form, which is canonical.
+3. Reconstruct the coefficients over Z[i] by the Chinese remainder theorem and rational reconstruction.
+4. Verify every reconstructed identity exactly over Q(i), one relation per item, through `parallel.py`.
+
+For W8 the retained receipts already hold the modular standard bases (`working/distribute/out/a5-w8-receipt-p1/` and
+`a5-p2-w8/`, `sq.txt.part*`). Their product and standard-basis stages took 6,559.6 s at 32009 and 9,860.3 s at
+32029, against membership stages of 325.1 s and 575.4 s. The matrix has 53,584 columns and about 2.64 million
+nonzeros (`receipt-d2.json`). The system reuses these bases instead of recomputing them. Acceptance: 144 exact
+identities over Q(i) whose reductions span the retained K2 at both primes.
+
+A modular identity check is exact only with both conjugate roots. A congruence at i -> r shows divisibility by the
+Gaussian prime (p, i - r), not by p. For example, 128 + 125i vanishes modulo 32009 at i -> 10754 while its absolute
+value is below 179, and at i -> -10754 it gives 256. Checking i -> r and i -> -r at every split prime makes p divide
+both integer components, and then the product of the primes must exceed twice the bound on each component.
+
+### The all-degree statement (hypothesis)
+
+The all-degree statement over Q(i) may avoid a second radical test. Suppose the reduced Gröbner basis of the Q(i)
+relation ideal K2 (from check 2) is p-integral and reduces to that of K2 mod p. Then k[y]/K2 is flat over the local
+ring R of the proposition, and Proj k[y]/K2 is proper over it. Geometric reducedness and the Cohen-Macaulay property
+of fibers are open on the base for a proper flat morphism (EGA IV_3, 12.2.4 and 12.1.6), so both pass from the
+special fiber, where A5-061 and A5-010 prove them, to the generic fiber. The irreducible components of the generic
+fiber specialize to effective cycles whose degrees sum to 50. The only splittings are therefore one component of
+degree 50 or components of degrees 20 and 30.
+
+Two bridges are still missing. Reducedness of Proj does not by itself make the affine cone k[y]/K2 reduced. The
+bridge: the generic quotient is a positive-dimensional standard graded Cohen-Macaulay ring, so it has no
+finite-length H^0_m, and a nilradical supported at the irrelevant ideal would lie in that module and vanish. The
+component count also needs its own argument: the reduced special components occur with multiplicity one, so distinct
+generic components specialize to disjoint sets of special components.
+
+Status: hypothesis, confidence medium. It rests on the cited openness theorems applying to this family, which an
+audit should check against the source. Falsifier: the Q(i) Gröbner basis of K2 has a p in a denominator or a
+different leading ideal. Separately, the A5-066 fiber-containment argument (a blowup-chart computation modulo p) needs
+its own transfer, which no record yet sizes.
+
+### W8 decision for the owner
+
+Per-degree transfer for d = 1 to 4 needs check 2. Degree 5 also needs check 3 at N = 16. Check 2 runs as the
+canonical linear system above, piloted on X- and then on W8 from the retained W8 standard bases. Scaling the X- lift
+by the W8 receipt ratio gives about 136 h per prime, so a direct W8 `lift` has no bounded case. The all-degree
+statement needs the flatness check, the two bridges above, and a sized transfer of A5-066.
+
+## Placement and concurrency
+
+`docs/runbooks/classical-compute-pool.md` holds each substrate's limits, and the infrastructure chart's job memory
+budgets (0.84 x GPU memory + 0.82 x RAM per machine) bound concurrent jobs. Under the owner's ruling of 2026-11-09,
+scoped long runs and Kaggle sessions under 12 h are approved; paid VMs keep their written case. The table assigns
+each open computation by its measured bottleneck:
+
+| computation | bottleneck (measured) | placement | runs beside |
+|---|---|---|---|
+| VB std(J + m^N) lever probes at N = 15, 16, 18 | one single-threaded Singular std, under 1 GiB | build host (38.6 GiB budget) or the RTX 4090 laptop (52.5 GB) | everything below; four probes at once |
+| VB N = 21 cell, one prime | std 15,400 to 30,800 s, about 2 GiB, one core | the RTX 4090 laptop (running on engine v13); or a Kaggle CPU session (12 h limit, 30 GB, passagemath Singular 4.4.1) | the other prime's cell on a second Kaggle CPU session (5 at once) |
+| VB N = 22 cells, both primes | std 22,300 to 89,300 s (extrapolated) | Kaggle CPU only if under 12 h; otherwise the laptop (running on engine v13) | the two primes on two sessions or VMs |
+| GPU work for VB | none: tables, products and closure are under 63 s | none; the GPU (engine v12) pays only where closure dominates | |
+| X- cofactor lift, per prime | lift 1,565 s at 16.5 GB | build host, one prime at a time (two at once exceed 38.6 GiB) | the probes and the W8 truncation check |
+| X- identity check over Q(i), per relation | polynomial products, unmeasured | build host through `parallel.py`; Kaggle CPU for relations that run long | |
+| W8 check 3 at N = 16 | Q(i) std, 114 s at N = 13 | build host | everything |
+| W8 check 2 (cofactors) | scale of the X- pilot times the W8 receipt ratio, unmeasured | sized after the X- pilot | |
+| W8 degree 6 at N = 19 (task 113, not needed for F(I) by A5-066; withdrawn 2026-11-10, A5-291) | closure 14 to 19 h CPU, L = 103 GiB dense under v11 | GPU: engine v12 on the RTX 4090 laptop once L streams by degree (efficiency lever 1 and the streaming idea), Kaggle T4 x2 with CPU fallback for the export; an Azure VM otherwise | |
+| Exact torus and weighted std (task 115) | symbolic linear algebra, small | build host | everything |
+
+The Singular std behind the VB ladder runs on one core and has no GPU form, so GPU instances buy nothing for VB
+degree 7. They pay for the dense closure of W8 and Iso at degree 6 and above. Google Cloud has no row in the compute
+pool, and AWS's free plan offers 8 GiB machines, below every heavy job here.

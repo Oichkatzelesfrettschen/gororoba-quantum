@@ -1,0 +1,8 @@
+int nK=size(K); int jj; int kk;
+ring Z=@P@,(Y1,Y2,Y3,Y4,Y5),dp;
+matrix PM[@NGEN@][5]; for (jj=1;jj<=@NGEN@;jj++) { for (kk=1;kk<=5;kk++) { PM[jj,kk]=PLi[jj,kk]; } }
+res("off control: rank of the gradient of G' on the tangent space of {J' = 0} at the point: "+string(rank(PM)));
+ideal im; for (jj=1;jj<=@NGEN@;jj++) { im[jj]=eps[jj]*(PLi[jj,1]*Y1+PLi[jj,2]*Y2+PLi[jj,3]*Y3+PLi[jj,4]*Y4+PLi[jj,5]*Y5); }
+map psi=Y,im;
+ideal iK=psi(K);
+res("off control: K2 generators nonzero on the image of the tangent space: "+string(size(iK))+" of "+string(nK)+" (positive: the first-order fiber over a point off the origin is not in V(K2))");

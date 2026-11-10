@@ -1,0 +1,35 @@
+LIB "primdec.lib"; LIB "matrix.lib";
+< "../../../../evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-vb.sing";
+ring N=32009,(T(1..4),h,t1,t2,t3,t4,t5,t6,t8),dp;
+execute("ideal NI="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/chart_t7_norid_1.txt")+";"); ideal sNI=std(NI);
+map f=r,h*t1,h*t2,h*t3,h*t4,h*t5,h*t6,h,h*t8;
+ideal Gh=f(G); ideal Hb=h^2,NI; matrix M=lift(Hb,Gh); ideal Gp; int j; for(j=1;j<=ncols(M);j++){Gp[j]=M[1,j];}
+ideal D=std(sNI+ideal(h));
+list pts=list(list(17,29,5),list(3,7,11),list(2,13,19),list(23,31,37),list(41,43,47),list(53,59,61));
+int k; int found=0; int i; int rk;
+for(k=1;k<=size(pts) && found<2;k++){
+  ideal P=std(D+ideal(t1-pts[k][1],t3-pts[k][2],t5-pts[k][3]));
+  if(dim(P)==0){
+    list mp=minAssGTZ(P);
+    for(i=1;i<=size(mp) && found<2;i++){
+      ideal Pt=std(mp[i]);
+      if(vdim(Pt)==1){
+        found++;
+        matrix JD=jacob(sNI+ideal(h)); matrix JG=jacob(Gp);
+        // tangent space of D at the point: kernel of JD evaluated there
+        matrix JDp=reduce(JD,Pt); matrix JGp=reduce(JG,Pt); matrix Gv=reduce(matrix(Gp),Pt);
+        module Tk=syz(module(JDp));
+        matrix Tm=matrix(Tk); matrix dG=JGp*Tm;
+        matrix C=concat(transpose(Gv),dG);
+        rk=rank(C);
+        "RESULT point",pts[k][1],pts[k][2],pts[k][3],"tangent dim of D",ncols(Tm),"affine-cone rank of [G'] on D",rk;
+        kill JD; kill JG; kill JDp; kill JGp; kill Gv; kill Tk; kill Tm; kill dG; kill C;
+      }
+      kill Pt;
+    }
+    kill mp;
+  }
+  kill P;
+}
+"RESULT points found",found;
+quit;

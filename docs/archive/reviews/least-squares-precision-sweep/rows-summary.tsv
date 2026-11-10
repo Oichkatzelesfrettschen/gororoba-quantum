@@ -1,0 +1,440 @@
+file	line	config	status	mechanism	enforced	cpus_used	bits_correct_on_scores	process_fidelity_ulp64	skipped_or_error
+aws-sapphire-rapids-full.jsonl	1	float64 pinv, OpenBLAS threads 1	ok	systemd	True	2	47.99366814315355	14.799754685415465	
+aws-sapphire-rapids-full.jsonl	2	float64 numpy lstsq, OpenBLAS threads 1	ok	systemd	True	2	47.96889162155862	10.799754685415465	
+aws-sapphire-rapids-full.jsonl	3	float64 pinv, OpenBLAS threads 2	ok	systemd	True	2	47.99366814315355	14.799754685415465	
+aws-sapphire-rapids-full.jsonl	4	float64 numpy lstsq, OpenBLAS threads 2	ok	systemd	True	2	47.88324023389362	10.799754685415465	
+aws-sapphire-rapids-full.jsonl	5	float64 scipy lstsq gelsd, OpenBLAS threads 1	ok	systemd	True	2	48.44567052633446	5.200245314584534	
+aws-sapphire-rapids-full.jsonl	6	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	systemd	True	2	48.44567052633446	5.200245314584534	
+aws-sapphire-rapids-full.jsonl	7	float64 scipy lstsq gelsy, OpenBLAS threads 1	ok	systemd	True	2	49.50142984232586	0.2002453145845344	
+aws-sapphire-rapids-full.jsonl	8	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	systemd	True	2	49.50142984232586	0.2002453145845344	
+aws-sapphire-rapids-full.jsonl	9	float64 scipy lstsq gelss, OpenBLAS threads 1	ok	systemd	True	2	48.0599507910458	4.799754685415466	
+aws-sapphire-rapids-full.jsonl	10	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	systemd	True	2	47.88324023389362	4.799754685415466	
+aws-sapphire-rapids-full.jsonl	11	float64 pinv + 1 x87 refinement steps	ok	systemd	True	2	51.430505663191674	0.2045398416654656	
+aws-sapphire-rapids-full.jsonl	12	float64 pinv + 2 x87 refinement steps	ok	systemd	True	2	51.4130481984702	0.1757312479154656	
+aws-sapphire-rapids-full.jsonl	13	float64 pinv + 3 x87 refinement steps	ok	systemd	True	2	51.432881065629715	0.1801257791654656	
+aws-sapphire-rapids-full.jsonl	14	x87 Householder, 1 worker processes	ok	systemd	True	2	59.52742708597964	0.0014148416654656034	
+aws-sapphire-rapids-full.jsonl	15	x87 Householder, 2 worker processes	ok	systemd	True	2	59.52742708597964	0.0014148416654656034	
+aws-sapphire-rapids-full.jsonl	16	x87 normal equations (Cholesky)	ok	systemd	True	2	57.24159500238924	0.008739060415465603	
+aws-sapphire-rapids-full.jsonl	17	binary128 Householder, backend sleef, QuadBLAS threads 1	ok	systemd	True	2	108.090673654462	6.003023063498387e-19	
+aws-sapphire-rapids-full.jsonl	18	binary128 normal equations, backend sleef, QuadBLAS threads 1	ok	systemd	True	2	109.68540392667818	2.670594316385649e-19	
+aws-sapphire-rapids-full.jsonl	19	binary128 Householder, backend sleef, QuadBLAS threads 2	ok	systemd	True	2	108.090673654462	6.003023063498387e-19	
+aws-sapphire-rapids-full.jsonl	20	binary128 normal equations, backend sleef, QuadBLAS threads 2	ok	systemd	True	2	109.68540392667818	2.670594316385649e-19	
+aws-sapphire-rapids-full.jsonl	21	binary128 Householder, backend longdouble, QuadBLAS threads 1	ok	systemd	True	2	59.79228894536125	0.002491408334534397	
+aws-sapphire-rapids-full.jsonl	22	binary128 normal equations, backend longdouble, QuadBLAS threads 1	ok	systemd	True	2	57.24159500238924	0.008739060415465603	
+aws-sapphire-rapids-full.jsonl	23	binary128 Householder, backend longdouble, QuadBLAS threads 2	ok	systemd	True	2	59.79228894536125	0.002491408334534397	
+aws-sapphire-rapids-full.jsonl	24	binary128 normal equations, backend longdouble, QuadBLAS threads 2	ok	systemd	True	2	57.24159500238924	0.008739060415465603	
+aws-sapphire-rapids-full.jsonl	25	arb normal equations, 64 bits, FLINT threads 1	ok	systemd	True	2	56.72874548747257	5.000208453439662e-05	
+aws-sapphire-rapids-full.jsonl	26	arb normal equations, 64 bits, FLINT threads 2	ok	systemd	True	2	56.72874548747257	5.000208453439662e-05	
+aws-sapphire-rapids-full.jsonl	27	arb normal equations, 128 bits, FLINT threads 1	ok	systemd	True	2	120.734901543572	1.265236609634834e-22	
+aws-sapphire-rapids-full.jsonl	28	arb normal equations, 128 bits, FLINT threads 2	ok	systemd	True	2	120.734901543572	1.265236609634834e-22	
+aws-sapphire-rapids-full.jsonl	29	arb normal equations, 192 bits, FLINT threads 1	ok	systemd	True	2	184.80295766805293	1.1519318911563044e-41	
+aws-sapphire-rapids-full.jsonl	30	arb normal equations, 192 bits, FLINT threads 2	ok	systemd	True	2	184.80295766805293	1.1519318911563044e-41	
+aws-sapphire-rapids-full.jsonl	31	arb normal equations, 256 bits, FLINT threads 1	ok	systemd	True	2	>=106	0.0	
+aws-sapphire-rapids-full.jsonl	32	arb normal equations, 256 bits, FLINT threads 2	ok	systemd	True	2	>=106	0.0	
+aws-sapphire-rapids-quick.jsonl	1	float64 pinv, OpenBLAS threads 2	ok	systemd	True	2	47.99366814315355	14.799754685415465	
+aws-sapphire-rapids-quick.jsonl	2	float64 numpy lstsq, OpenBLAS threads 2	ok	systemd	True	2	47.88324023389362	10.799754685415465	
+aws-sapphire-rapids-quick.jsonl	3	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	systemd	True	2	48.44567052633446	5.200245314584534	
+aws-sapphire-rapids-quick.jsonl	4	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	systemd	True	2	49.50142984232586	0.2002453145845344	
+aws-sapphire-rapids-quick.jsonl	5	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	systemd	True	2	47.88324023389362	4.799754685415466	
+aws-sapphire-rapids-quick.jsonl	6	float64 pinv + 2 x87 refinement steps	ok	systemd	True	2	51.4130481984702	0.1757312479154656	
+aws-sapphire-rapids-quick.jsonl	7	x87 Householder, 2 worker processes	ok	systemd	True	2	59.52742708597964	0.0014148416654656034	
+aws-sapphire-rapids-quick.jsonl	8	x87 normal equations (Cholesky)	ok	systemd	True	2	57.24159500238924	0.008739060415465603	
+aws-sapphire-rapids-quick.jsonl	9	binary128 Householder, backend sleef, QuadBLAS threads 2	ok	systemd	True	2	108.090673654462	6.003023063498387e-19	
+aws-sapphire-rapids-quick.jsonl	10	binary128 normal equations, backend sleef, QuadBLAS threads 2	ok	systemd	True	2	109.68540392667818	2.670594316385649e-19	
+aws-sapphire-rapids-quick.jsonl	11	binary128 Householder, backend longdouble, QuadBLAS threads 2	ok	systemd	True	2	59.79228894536125	0.002491408334534397	
+aws-sapphire-rapids-quick.jsonl	12	binary128 normal equations, backend longdouble, QuadBLAS threads 2	ok	systemd	True	2	57.24159500238924	0.008739060415465603	
+aws-sapphire-rapids-quick.jsonl	13	arb normal equations, 128 bits, FLINT threads 2	ok	systemd	True	2	120.734901543572	1.265236609634834e-22	
+build-host-full.jsonl	1	float64 pinv, OpenBLAS threads 1	ok	systemd	True	10	48.57218852647452	3.200245314584534	
+build-host-full.jsonl	2	float64 numpy lstsq, OpenBLAS threads 1	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	3	float64 pinv, OpenBLAS threads 2	ok	systemd	True	10	48.57218852647452	3.200245314584534	
+build-host-full.jsonl	4	float64 numpy lstsq, OpenBLAS threads 2	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	5	float64 pinv, OpenBLAS threads 4	ok	systemd	True	10	48.57218852647452	3.200245314584534	
+build-host-full.jsonl	6	float64 numpy lstsq, OpenBLAS threads 4	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	7	float64 pinv, OpenBLAS threads 8	ok	systemd	True	10	48.57218852647452	3.200245314584534	
+build-host-full.jsonl	8	float64 numpy lstsq, OpenBLAS threads 8	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	9	float64 pinv, OpenBLAS threads 10	ok	systemd	True	10	48.57218852647452	3.200245314584534	
+build-host-full.jsonl	10	float64 numpy lstsq, OpenBLAS threads 10	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	11	float64 scipy lstsq gelsd, OpenBLAS threads 1	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	12	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	13	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	14	float64 scipy lstsq gelsd, OpenBLAS threads 8	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	15	float64 scipy lstsq gelsd, OpenBLAS threads 10	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-full.jsonl	16	float64 scipy lstsq gelsy, OpenBLAS threads 1	ok	systemd	True	10	49.87939941475278	3.799754685415466	
+build-host-full.jsonl	17	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	systemd	True	10	49.87939941475278	3.799754685415466	
+build-host-full.jsonl	18	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	systemd	True	10	49.87939941475278	3.799754685415466	
+build-host-full.jsonl	19	float64 scipy lstsq gelsy, OpenBLAS threads 8	ok	systemd	True	10	49.87939941475278	3.799754685415466	
+build-host-full.jsonl	20	float64 scipy lstsq gelsy, OpenBLAS threads 10	ok	systemd	True	10	49.87939941475278	3.799754685415466	
+build-host-full.jsonl	21	float64 scipy lstsq gelss, OpenBLAS threads 1	ok	systemd	True	10	47.19627579821468	5.200245314584534	
+build-host-full.jsonl	22	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	systemd	True	10	47.19627579821468	5.200245314584534	
+build-host-full.jsonl	23	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	systemd	True	10	47.19627579821468	5.200245314584534	
+build-host-full.jsonl	24	float64 scipy lstsq gelss, OpenBLAS threads 8	ok	systemd	True	10	47.19627579821468	5.200245314584534	
+build-host-full.jsonl	25	float64 scipy lstsq gelss, OpenBLAS threads 10	ok	systemd	True	10	47.19627579821468	5.200245314584534	
+build-host-full.jsonl	26	float64 pinv + 1 x87 refinement steps	ok	systemd	True	10	51.51373403543897	0.2597156229154656	
+build-host-full.jsonl	27	float64 pinv + 2 x87 refinement steps	ok	systemd	True	10	51.601326745521504	0.2738757791654656	
+build-host-full.jsonl	28	float64 pinv + 3 x87 refinement steps	ok	systemd	True	10	51.54217377056112	0.2699695291654656	
+build-host-full.jsonl	29	x87 Householder, 1 worker processes	ok	systemd	True	10	59.52742708597964	0.0014148416654656034	
+build-host-full.jsonl	30	x87 Householder, 2 worker processes	ok	systemd	True	10	59.52742708597964	0.0014148416654656034	
+build-host-full.jsonl	31	x87 Householder, 4 worker processes	ok	systemd	True	10	59.52742708597964	0.0014148416654656034	
+build-host-full.jsonl	32	x87 Householder, 8 worker processes	ok	systemd	True	10	59.52742708597964	0.0014148416654656034	
+build-host-full.jsonl	33	x87 Householder, 10 worker processes	ok	systemd	True	10	59.52742708597964	0.0014148416654656034	
+build-host-full.jsonl	34	x87 normal equations (Cholesky)	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-full.jsonl	35	binary128 Householder, backend sleef, QuadBLAS threads 1	ok	systemd	True	10	108.090673654462	6.003023063498387e-19	
+build-host-full.jsonl	36	binary128 normal equations, backend sleef, QuadBLAS threads 1	ok	systemd	True	10	109.68540392667818	2.670594316385649e-19	
+build-host-full.jsonl	37	binary128 Householder, backend sleef, QuadBLAS threads 2	ok	systemd	True	10	108.090673654462	6.003023063498387e-19	
+build-host-full.jsonl	38	binary128 normal equations, backend sleef, QuadBLAS threads 2	ok	systemd	True	10	109.68540392667818	2.670594316385649e-19	
+build-host-full.jsonl	39	binary128 Householder, backend sleef, QuadBLAS threads 4	ok	systemd	True	10	108.090673654462	6.003023063498387e-19	
+build-host-full.jsonl	40	binary128 normal equations, backend sleef, QuadBLAS threads 4	ok	systemd	True	10	109.68540392667818	2.670594316385649e-19	
+build-host-full.jsonl	41	binary128 Householder, backend sleef, QuadBLAS threads 8	ok	systemd	True	10	108.090673654462	6.003023063498387e-19	
+build-host-full.jsonl	42	binary128 normal equations, backend sleef, QuadBLAS threads 8	ok	systemd	True	10	109.68540392667818	2.670594316385649e-19	
+build-host-full.jsonl	43	binary128 Householder, backend sleef, QuadBLAS threads 10	ok	systemd	True	10	108.090673654462	6.003023063498387e-19	
+build-host-full.jsonl	44	binary128 normal equations, backend sleef, QuadBLAS threads 10	ok	systemd	True	10	109.68540392667818	2.670594316385649e-19	
+build-host-full.jsonl	45	binary128 Householder, backend longdouble, QuadBLAS threads 1	ok	systemd	True	10	59.79228894536125	0.002491408334534397	
+build-host-full.jsonl	46	binary128 normal equations, backend longdouble, QuadBLAS threads 1	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-full.jsonl	47	binary128 Householder, backend longdouble, QuadBLAS threads 2	ok	systemd	True	10	59.79228894536125	0.002491408334534397	
+build-host-full.jsonl	48	binary128 normal equations, backend longdouble, QuadBLAS threads 2	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-full.jsonl	49	binary128 Householder, backend longdouble, QuadBLAS threads 4	ok	systemd	True	10	59.79228894536125	0.002491408334534397	
+build-host-full.jsonl	50	binary128 normal equations, backend longdouble, QuadBLAS threads 4	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-full.jsonl	51	binary128 Householder, backend longdouble, QuadBLAS threads 8	ok	systemd	True	10	59.79228894536125	0.002491408334534397	
+build-host-full.jsonl	52	binary128 normal equations, backend longdouble, QuadBLAS threads 8	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-full.jsonl	53	binary128 Householder, backend longdouble, QuadBLAS threads 10	ok	systemd	True	10	59.79228894536125	0.002491408334534397	
+build-host-full.jsonl	54	binary128 normal equations, backend longdouble, QuadBLAS threads 10	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-full.jsonl	55	arb normal equations, 64 bits, FLINT threads 1	ok	systemd	True	10	56.72874548747257	5.000208453439662e-05	
+build-host-full.jsonl	56	arb normal equations, 64 bits, FLINT threads 2	ok	systemd	True	10	56.72874548747257	5.000208453439662e-05	
+build-host-full.jsonl	57	arb normal equations, 64 bits, FLINT threads 4	ok	systemd	True	10	56.72874548747257	5.000208453439662e-05	
+build-host-full.jsonl	58	arb normal equations, 64 bits, FLINT threads 8	ok	systemd	True	10	56.72874548747257	5.000208453439662e-05	
+build-host-full.jsonl	59	arb normal equations, 64 bits, FLINT threads 10	ok	systemd	True	10	56.72874548747257	5.000208453439662e-05	
+build-host-full.jsonl	60	arb normal equations, 128 bits, FLINT threads 1	ok	systemd	True	10	120.734901543572	1.265236609634834e-22	
+build-host-full.jsonl	61	arb normal equations, 128 bits, FLINT threads 2	ok	systemd	True	10	120.734901543572	1.265236609634834e-22	
+build-host-full.jsonl	62	arb normal equations, 128 bits, FLINT threads 4	ok	systemd	True	10	120.734901543572	1.265236609634834e-22	
+build-host-full.jsonl	63	arb normal equations, 128 bits, FLINT threads 8	ok	systemd	True	10	120.734901543572	1.265236609634834e-22	
+build-host-full.jsonl	64	arb normal equations, 128 bits, FLINT threads 10	ok	systemd	True	10	120.734901543572	1.265236609634834e-22	
+build-host-full.jsonl	65	arb normal equations, 192 bits, FLINT threads 1	ok	systemd	True	10	184.80295766805293	1.1519318911563044e-41	
+build-host-full.jsonl	66	arb normal equations, 192 bits, FLINT threads 2	ok	systemd	True	10	184.80295766805293	1.1519318911563044e-41	
+build-host-full.jsonl	67	arb normal equations, 192 bits, FLINT threads 4	ok	systemd	True	10	184.80295766805293	1.1519318911563044e-41	
+build-host-full.jsonl	68	arb normal equations, 192 bits, FLINT threads 8	ok	systemd	True	10	184.80295766805293	1.1519318911563044e-41	
+build-host-full.jsonl	69	arb normal equations, 192 bits, FLINT threads 10	ok	systemd	True	10	184.80295766805293	1.1519318911563044e-41	
+build-host-full.jsonl	70	arb normal equations, 256 bits, FLINT threads 1	ok	systemd	True	10	>=106	0.0	
+build-host-full.jsonl	71	arb normal equations, 256 bits, FLINT threads 2	ok	systemd	True	10	>=106	0.0	
+build-host-full.jsonl	72	arb normal equations, 256 bits, FLINT threads 4	ok	systemd	True	10	>=106	0.0	
+build-host-full.jsonl	73	arb normal equations, 256 bits, FLINT threads 8	ok	systemd	True	10	>=106	0.0	
+build-host-full.jsonl	74	arb normal equations, 256 bits, FLINT threads 10	ok	systemd	True	10	>=106	0.0	
+build-host-quick.jsonl	1	float64 pinv, OpenBLAS threads 4	ok	systemd	True	10	48.57218852647452	3.200245314584534	
+build-host-quick.jsonl	2	float64 numpy lstsq, OpenBLAS threads 4	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-quick.jsonl	3	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	systemd	True	10	48.77522660929201	5.200245314584534	
+build-host-quick.jsonl	4	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	systemd	True	10	49.87939941475278	3.799754685415466	
+build-host-quick.jsonl	5	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	systemd	True	10	47.19627579821468	5.200245314584534	
+build-host-quick.jsonl	6	float64 pinv + 2 x87 refinement steps	ok	systemd	True	10	51.601326745521504	0.2738757791654656	
+build-host-quick.jsonl	7	x87 Householder, 4 worker processes	ok	systemd	True	10	59.52742708597964	0.0014148416654656034	
+build-host-quick.jsonl	8	x87 normal equations (Cholesky)	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-quick.jsonl	9	binary128 Householder, backend sleef, QuadBLAS threads 4	ok	systemd	True	10	108.090673654462	6.003023063498387e-19	
+build-host-quick.jsonl	10	binary128 normal equations, backend sleef, QuadBLAS threads 4	ok	systemd	True	10	109.68540392667818	2.670594316385649e-19	
+build-host-quick.jsonl	11	binary128 Householder, backend longdouble, QuadBLAS threads 4	ok	systemd	True	10	59.79228894536125	0.002491408334534397	
+build-host-quick.jsonl	12	binary128 normal equations, backend longdouble, QuadBLAS threads 4	ok	systemd	True	10	57.24159500238924	0.008739060415465603	
+build-host-quick.jsonl	13	arb normal equations, 128 bits, FLINT threads 4	ok	systemd	True	10	120.734901543572	1.265236609634834e-22	
+m1-macos-full.jsonl	1	float64 pinv, OpenBLAS threads 1	ok	none	False	8	49.26251146988733	0.2002453145845344	
+m1-macos-full.jsonl	2	float64 numpy lstsq, OpenBLAS threads 1	ok	none	False	8	47.11121685914206	6.799754685415466	
+m1-macos-full.jsonl	3	float64 pinv, OpenBLAS threads 2	ok	none	False	8	49.26251146988733	0.2002453145845344	
+m1-macos-full.jsonl	4	float64 numpy lstsq, OpenBLAS threads 2	ok	none	False	8	47.11121685914206	6.799754685415466	
+m1-macos-full.jsonl	5	float64 pinv, OpenBLAS threads 4	ok	none	False	8	49.26251146988733	0.2002453145845344	
+m1-macos-full.jsonl	6	float64 numpy lstsq, OpenBLAS threads 4	ok	none	False	8	47.11121685914206	6.799754685415466	
+m1-macos-full.jsonl	7	float64 pinv, OpenBLAS threads 8	ok	none	False	8	49.26251146988733	0.2002453145845344	
+m1-macos-full.jsonl	8	float64 numpy lstsq, OpenBLAS threads 8	ok	none	False	8	47.11121685914206	6.799754685415466	
+m1-macos-full.jsonl	9	float64 scipy lstsq gelsd, OpenBLAS threads 1	ok	none	False	8	47.849825806157426	4.200245314584534	
+m1-macos-full.jsonl	10	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	none	False	8	47.849825806157426	4.200245314584534	
+m1-macos-full.jsonl	11	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	none	False	8	47.849825806157426	4.200245314584534	
+m1-macos-full.jsonl	12	float64 scipy lstsq gelsd, OpenBLAS threads 8	ok	none	False	8	47.849825806157426	4.200245314584534	
+m1-macos-full.jsonl	13	float64 scipy lstsq gelsy, OpenBLAS threads 1	ok	none	False	8	49.11751720572754	0.7997546854154656	
+m1-macos-full.jsonl	14	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	none	False	8	49.11751720572754	0.7997546854154656	
+m1-macos-full.jsonl	15	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	none	False	8	49.327760052786374	0.7997546854154656	
+m1-macos-full.jsonl	16	float64 scipy lstsq gelsy, OpenBLAS threads 8	ok	none	False	8	49.11751720572754	0.7997546854154656	
+m1-macos-full.jsonl	17	float64 scipy lstsq gelss, OpenBLAS threads 1	ok	none	False	8	46.84514871755681	1.2002453145845344	
+m1-macos-full.jsonl	18	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	none	False	8	46.84514871755681	1.2002453145845344	
+m1-macos-full.jsonl	19	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	none	False	8	46.84514871755681	1.2002453145845344	
+m1-macos-full.jsonl	20	float64 scipy lstsq gelss, OpenBLAS threads 8	ok	none	False	8	46.84514871755681	1.2002453145845344	
+m1-macos-full.jsonl	21	float64 pinv + 1 x87 refinement steps	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	22	float64 pinv + 2 x87 refinement steps	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	23	float64 pinv + 3 x87 refinement steps	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	24	x87 Householder, 1 worker processes	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	25	x87 Householder, 2 worker processes	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	26	x87 Householder, 4 worker processes	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	27	x87 Householder, 8 worker processes	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	28	x87 normal equations (Cholesky)	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	29	binary128 Householder, backend sleef, QuadBLAS threads 1	ok	none	False	8	108.48790024014956	6.003023063498387e-19	
+m1-macos-full.jsonl	30	binary128 normal equations, backend sleef, QuadBLAS threads 1	ok	none	False	8	110.09875170978421	2.670594316385649e-19	
+m1-macos-full.jsonl	31	binary128 Householder, backend sleef, QuadBLAS threads 2	ok	none	False	8	108.48790024014956	6.003023063498387e-19	
+m1-macos-full.jsonl	32	binary128 normal equations, backend sleef, QuadBLAS threads 2	ok	none	False	8	110.09875170978421	2.670594316385649e-19	
+m1-macos-full.jsonl	33	binary128 Householder, backend sleef, QuadBLAS threads 4	ok	none	False	8	108.48790024014956	6.003023063498387e-19	
+m1-macos-full.jsonl	34	binary128 normal equations, backend sleef, QuadBLAS threads 4	ok	none	False	8	110.09875170978421	2.670594316385649e-19	
+m1-macos-full.jsonl	35	binary128 Householder, backend sleef, QuadBLAS threads 8	ok	none	False	8	108.48790024014956	6.003023063498387e-19	
+m1-macos-full.jsonl	36	binary128 normal equations, backend sleef, QuadBLAS threads 8	ok	none	False	8	110.09875170978421	2.670594316385649e-19	
+m1-macos-full.jsonl	37	binary128 Householder, backend longdouble, QuadBLAS threads 1	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	38	binary128 normal equations, backend longdouble, QuadBLAS threads 1	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	39	binary128 Householder, backend longdouble, QuadBLAS threads 2	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	40	binary128 normal equations, backend longdouble, QuadBLAS threads 2	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	41	binary128 Householder, backend longdouble, QuadBLAS threads 4	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	42	binary128 normal equations, backend longdouble, QuadBLAS threads 4	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	43	binary128 Householder, backend longdouble, QuadBLAS threads 8	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	44	binary128 normal equations, backend longdouble, QuadBLAS threads 8	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-full.jsonl	45	arb normal equations, 64 bits, FLINT threads 1	ok	none	False	8	56.5458625337443	5.000208453439662e-05	
+m1-macos-full.jsonl	46	arb normal equations, 64 bits, FLINT threads 2	ok	none	False	8	56.5458625337443	5.000208453439662e-05	
+m1-macos-full.jsonl	47	arb normal equations, 64 bits, FLINT threads 4	ok	none	False	8	56.5458625337443	5.000208453439662e-05	
+m1-macos-full.jsonl	48	arb normal equations, 64 bits, FLINT threads 8	ok	none	False	8	56.5458625337443	5.000208453439662e-05	
+m1-macos-full.jsonl	49	arb normal equations, 128 bits, FLINT threads 1	ok	none	False	8	120.67179354384993	1.265236609634834e-22	
+m1-macos-full.jsonl	50	arb normal equations, 128 bits, FLINT threads 2	ok	none	False	8	120.67179354384993	1.265236609634834e-22	
+m1-macos-full.jsonl	51	arb normal equations, 128 bits, FLINT threads 4	ok	none	False	8	120.67179354384993	1.265236609634834e-22	
+m1-macos-full.jsonl	52	arb normal equations, 128 bits, FLINT threads 8	ok	none	False	8	120.67179354384993	1.265236609634834e-22	
+m1-macos-full.jsonl	53	arb normal equations, 192 bits, FLINT threads 1	ok	none	False	8	184.687856796149	1.1519318911563044e-41	
+m1-macos-full.jsonl	54	arb normal equations, 192 bits, FLINT threads 2	ok	none	False	8	184.687856796149	1.1519318911563044e-41	
+m1-macos-full.jsonl	55	arb normal equations, 192 bits, FLINT threads 4	ok	none	False	8	184.687856796149	1.1519318911563044e-41	
+m1-macos-full.jsonl	56	arb normal equations, 192 bits, FLINT threads 8	ok	none	False	8	184.687856796149	1.1519318911563044e-41	
+m1-macos-full.jsonl	57	arb normal equations, 256 bits, FLINT threads 1	ok	none	False	8	>=106	0.0	
+m1-macos-full.jsonl	58	arb normal equations, 256 bits, FLINT threads 2	ok	none	False	8	>=106	0.0	
+m1-macos-full.jsonl	59	arb normal equations, 256 bits, FLINT threads 4	ok	none	False	8	>=106	0.0	
+m1-macos-full.jsonl	60	arb normal equations, 256 bits, FLINT threads 8	ok	none	False	8	>=106	0.0	
+m1-macos-quick.jsonl	1	float64 pinv, OpenBLAS threads 4	ok	none	False	8	49.26251146988733	0.2002453145845344	
+m1-macos-quick.jsonl	2	float64 numpy lstsq, OpenBLAS threads 4	ok	none	False	8	47.11121685914206	6.799754685415466	
+m1-macos-quick.jsonl	3	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	none	False	8	47.849825806157426	4.200245314584534	
+m1-macos-quick.jsonl	4	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	none	False	8	49.327760052786374	0.7997546854154656	
+m1-macos-quick.jsonl	5	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	none	False	8	46.84514871755681	1.2002453145845344	
+m1-macos-quick.jsonl	6	float64 pinv + 2 x87 refinement steps	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-quick.jsonl	7	x87 Householder, 4 worker processes	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-quick.jsonl	8	x87 normal equations (Cholesky)	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-quick.jsonl	9	binary128 Householder, backend sleef, QuadBLAS threads 4	ok	none	False	8	108.48790024014956	6.003023063498387e-19	
+m1-macos-quick.jsonl	10	binary128 normal equations, backend sleef, QuadBLAS threads 4	ok	none	False	8	110.09875170978421	2.670594316385649e-19	
+m1-macos-quick.jsonl	11	binary128 Householder, backend longdouble, QuadBLAS threads 4	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-quick.jsonl	12	binary128 normal equations, backend longdouble, QuadBLAS threads 4	skipped	none	False	8			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is arm64
+m1-macos-quick.jsonl	13	arb normal equations, 128 bits, FLINT threads 4	ok	none	False	8	120.67179354384993	1.265236609634834e-22	
+oci-a1-neoverse-n1-full.jsonl	1	float64 pinv, OpenBLAS threads 1	ok	systemd	True	2	47.75742621605892	6.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	2	float64 numpy lstsq, OpenBLAS threads 1	ok	systemd	True	2	47.83572674080667	2.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	3	float64 pinv, OpenBLAS threads 2	ok	systemd	True	2	47.75742621605892	6.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	4	float64 numpy lstsq, OpenBLAS threads 2	ok	systemd	True	2	47.83572674080667	2.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	5	float64 scipy lstsq gelsd, OpenBLAS threads 1	ok	systemd	True	2	48.11756357002242	5.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	6	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	systemd	True	2	48.11756357002242	5.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	7	float64 scipy lstsq gelsy, OpenBLAS threads 1	ok	systemd	True	2	50.802113669334226	2.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	8	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	systemd	True	2	50.59332697489379	2.200245314584534	
+oci-a1-neoverse-n1-full.jsonl	9	float64 scipy lstsq gelss, OpenBLAS threads 1	ok	systemd	True	2	48.423523437134534	4.799754685415466	
+oci-a1-neoverse-n1-full.jsonl	10	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	systemd	True	2	48.423523437134534	4.799754685415466	
+oci-a1-neoverse-n1-full.jsonl	11	float64 pinv + 1 x87 refinement steps	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-full.jsonl	12	float64 pinv + 2 x87 refinement steps	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-full.jsonl	13	float64 pinv + 3 x87 refinement steps	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-full.jsonl	14	x87 Householder, 1 worker processes	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-full.jsonl	15	x87 Householder, 2 worker processes	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-full.jsonl	16	x87 normal equations (Cholesky)	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-full.jsonl	17	binary128 Householder, backend sleef, QuadBLAS threads 1	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	18	binary128 normal equations, backend sleef, QuadBLAS threads 1	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	19	binary128 Householder, backend sleef, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	20	binary128 normal equations, backend sleef, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	21	binary128 Householder, backend longdouble, QuadBLAS threads 1	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	22	binary128 normal equations, backend longdouble, QuadBLAS threads 1	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	23	binary128 Householder, backend longdouble, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	24	binary128 normal equations, backend longdouble, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-full.jsonl	25	arb normal equations, 64 bits, FLINT threads 1	ok	systemd	True	2	56.72874548747257	5.000208453439662e-05	
+oci-a1-neoverse-n1-full.jsonl	26	arb normal equations, 64 bits, FLINT threads 2	ok	systemd	True	2	56.72874548747257	5.000208453439662e-05	
+oci-a1-neoverse-n1-full.jsonl	27	arb normal equations, 128 bits, FLINT threads 1	ok	systemd	True	2	120.734901543572	1.265236609634834e-22	
+oci-a1-neoverse-n1-full.jsonl	28	arb normal equations, 128 bits, FLINT threads 2	ok	systemd	True	2	120.734901543572	1.265236609634834e-22	
+oci-a1-neoverse-n1-full.jsonl	29	arb normal equations, 192 bits, FLINT threads 1	ok	systemd	True	2	184.80295766805293	1.1519318911563044e-41	
+oci-a1-neoverse-n1-full.jsonl	30	arb normal equations, 192 bits, FLINT threads 2	ok	systemd	True	2	184.80295766805293	1.1519318911563044e-41	
+oci-a1-neoverse-n1-full.jsonl	31	arb normal equations, 256 bits, FLINT threads 1	ok	systemd	True	2	>=106	0.0	
+oci-a1-neoverse-n1-full.jsonl	32	arb normal equations, 256 bits, FLINT threads 2	ok	systemd	True	2	>=106	0.0	
+oci-a1-neoverse-n1-quick.jsonl	1	float64 pinv, OpenBLAS threads 2	ok	systemd	True	2	47.75742621605892	6.200245314584534	
+oci-a1-neoverse-n1-quick.jsonl	2	float64 numpy lstsq, OpenBLAS threads 2	ok	systemd	True	2	47.83572674080667	2.200245314584534	
+oci-a1-neoverse-n1-quick.jsonl	3	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	systemd	True	2	48.11756357002242	5.200245314584534	
+oci-a1-neoverse-n1-quick.jsonl	4	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	systemd	True	2	50.59332697489379	2.200245314584534	
+oci-a1-neoverse-n1-quick.jsonl	5	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	systemd	True	2	48.423523437134534	4.799754685415466	
+oci-a1-neoverse-n1-quick.jsonl	6	float64 pinv + 2 x87 refinement steps	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-quick.jsonl	7	x87 Householder, 2 worker processes	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-quick.jsonl	8	x87 normal equations (Cholesky)	skipped	systemd	True	2			x87 80-bit arithmetic needs an x86 CPU; platform.machine() is aarch64
+oci-a1-neoverse-n1-quick.jsonl	9	binary128 Householder, backend sleef, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-quick.jsonl	10	binary128 normal equations, backend sleef, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-quick.jsonl	11	binary128 Householder, backend longdouble, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-quick.jsonl	12	binary128 normal equations, backend longdouble, QuadBLAS threads 2	skipped	systemd	True	2			numpy-quaddtype unavailable: ModuleNotFoundError: No module named 'numpy_quaddtype'
+oci-a1-neoverse-n1-quick.jsonl	13	arb normal equations, 128 bits, FLINT threads 2	ok	systemd	True	2	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	1	float64 pinv, OpenBLAS threads 1	ok	none	False	32	49.59563273169118	4.200245314584534	
+zen4-windows-full.jsonl	2	float64 numpy lstsq, OpenBLAS threads 1	ok	none	False	32	48.006359769338566	13.200245314584535	
+zen4-windows-full.jsonl	3	float64 pinv, OpenBLAS threads 2	ok	none	False	32	49.59563273169118	4.200245314584534	
+zen4-windows-full.jsonl	4	float64 numpy lstsq, OpenBLAS threads 2	ok	none	False	32	48.006359769338566	13.200245314584535	
+zen4-windows-full.jsonl	5	float64 pinv, OpenBLAS threads 4	ok	none	False	32	49.59563273169118	4.200245314584534	
+zen4-windows-full.jsonl	6	float64 numpy lstsq, OpenBLAS threads 4	ok	none	False	32	48.006359769338566	13.200245314584535	
+zen4-windows-full.jsonl	7	float64 pinv, OpenBLAS threads 8	ok	none	False	32	49.59563273169118	4.200245314584534	
+zen4-windows-full.jsonl	8	float64 numpy lstsq, OpenBLAS threads 8	ok	none	False	32	47.83572674080667	12.200245314584535	
+zen4-windows-full.jsonl	9	float64 pinv, OpenBLAS threads 16	ok	none	False	32	49.59563273169118	4.200245314584534	
+zen4-windows-full.jsonl	10	float64 numpy lstsq, OpenBLAS threads 16	ok	none	False	32	48.006359769338566	13.200245314584535	
+zen4-windows-full.jsonl	11	float64 pinv, OpenBLAS threads 32	ok	none	False	32	49.59563273169118	4.200245314584534	
+zen4-windows-full.jsonl	12	float64 numpy lstsq, OpenBLAS threads 32	ok	none	False	32	48.006359769338566	13.200245314584535	
+zen4-windows-full.jsonl	13	float64 scipy lstsq gelsd, OpenBLAS threads 1	ok	none	False	32	48.0599507910458	0.2002453145845344	
+zen4-windows-full.jsonl	14	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	none	False	32	48.15714690114452	0.2002453145845344	
+zen4-windows-full.jsonl	15	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	none	False	32	48.261367314771036	0.2002453145845344	
+zen4-windows-full.jsonl	16	float64 scipy lstsq gelsd, OpenBLAS threads 8	ok	none	False	32	48.08706149275203	2.200245314584534	
+zen4-windows-full.jsonl	17	float64 scipy lstsq gelsd, OpenBLAS threads 16	ok	none	False	32	48.08706149275203	2.200245314584534	
+zen4-windows-full.jsonl	18	float64 scipy lstsq gelsd, OpenBLAS threads 32	ok	none	False	32	48.166896147810675	2.200245314584534	
+zen4-windows-full.jsonl	19	float64 scipy lstsq gelsy, OpenBLAS threads 1	ok	none	False	32	49.58079837948899	2.200245314584534	
+zen4-windows-full.jsonl	20	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	none	False	32	50.541676959060865	1.2002453145845344	
+zen4-windows-full.jsonl	21	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	none	False	32	50.093922278069215	1.2002453145845344	
+zen4-windows-full.jsonl	22	float64 scipy lstsq gelsy, OpenBLAS threads 8	ok	none	False	32	50.69439561805063	0.2002453145845344	
+zen4-windows-full.jsonl	23	float64 scipy lstsq gelsy, OpenBLAS threads 16	ok	none	False	32	50.541676959060865	1.2002453145845344	
+zen4-windows-full.jsonl	24	float64 scipy lstsq gelsy, OpenBLAS threads 32	ok	none	False	32	50.093922278069215	1.2002453145845344	
+zen4-windows-full.jsonl	25	float64 scipy lstsq gelss, OpenBLAS threads 1	ok	none	False	32	46.95868590410953	6.799754685415466	
+zen4-windows-full.jsonl	26	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	none	False	32	46.95868590410953	6.799754685415466	
+zen4-windows-full.jsonl	27	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	none	False	32	47.00317638023555	6.799754685415466	
+zen4-windows-full.jsonl	28	float64 scipy lstsq gelss, OpenBLAS threads 8	ok	none	False	32	47.45472662444031	3.799754685415466	
+zen4-windows-full.jsonl	29	float64 scipy lstsq gelss, OpenBLAS threads 16	ok	none	False	32	47.45472662444031	3.799754685415466	
+zen4-windows-full.jsonl	30	float64 scipy lstsq gelss, OpenBLAS threads 32	ok	none	False	32	47.336157330801974	3.799754685415466	
+zen4-windows-full.jsonl	31	float64 pinv + 1 x87 refinement steps	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	32	float64 pinv + 2 x87 refinement steps	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	33	float64 pinv + 3 x87 refinement steps	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	34	x87 Householder, 1 worker processes	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	35	x87 Householder, 2 worker processes	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	36	x87 Householder, 4 worker processes	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	37	x87 Householder, 8 worker processes	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	38	x87 Householder, 16 worker processes	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	39	x87 Householder, 32 worker processes	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	40	x87 normal equations (Cholesky)	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	41	binary128 Householder, backend sleef, QuadBLAS threads 1	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	42	binary128 normal equations, backend sleef, QuadBLAS threads 1	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	43	binary128 Householder, backend sleef, QuadBLAS threads 2	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	44	binary128 normal equations, backend sleef, QuadBLAS threads 2	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	45	binary128 Householder, backend sleef, QuadBLAS threads 4	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	46	binary128 normal equations, backend sleef, QuadBLAS threads 4	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	47	binary128 Householder, backend sleef, QuadBLAS threads 8	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	48	binary128 normal equations, backend sleef, QuadBLAS threads 8	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	49	binary128 Householder, backend sleef, QuadBLAS threads 16	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	50	binary128 normal equations, backend sleef, QuadBLAS threads 16	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	51	binary128 Householder, backend sleef, QuadBLAS threads 32	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	52	binary128 normal equations, backend sleef, QuadBLAS threads 32	error	none	False	32			NotImplementedError: QuadBLAS is disabled
+zen4-windows-full.jsonl	53	binary128 Householder, backend longdouble, QuadBLAS threads 1	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	54	binary128 normal equations, backend longdouble, QuadBLAS threads 1	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	55	binary128 Householder, backend longdouble, QuadBLAS threads 2	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	56	binary128 normal equations, backend longdouble, QuadBLAS threads 2	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	57	binary128 Householder, backend longdouble, QuadBLAS threads 4	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	58	binary128 normal equations, backend longdouble, QuadBLAS threads 4	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	59	binary128 Householder, backend longdouble, QuadBLAS threads 8	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	60	binary128 normal equations, backend longdouble, QuadBLAS threads 8	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	61	binary128 Householder, backend longdouble, QuadBLAS threads 16	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	62	binary128 normal equations, backend longdouble, QuadBLAS threads 16	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	63	binary128 Householder, backend longdouble, QuadBLAS threads 32	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	64	binary128 normal equations, backend longdouble, QuadBLAS threads 32	skipped	none	False	32			numpy.longdouble is not 80-bit x87 (nmant 52, expected 63)
+zen4-windows-full.jsonl	65	arb normal equations, 64 bits, FLINT threads 1	ok	none	False	32	56.72874548747257	5.000208453439662e-05	
+zen4-windows-full.jsonl	66	arb normal equations, 64 bits, FLINT threads 2	ok	none	False	32	56.72874548747257	5.000208453439662e-05	
+zen4-windows-full.jsonl	67	arb normal equations, 64 bits, FLINT threads 4	ok	none	False	32	56.72874548747257	5.000208453439662e-05	
+zen4-windows-full.jsonl	68	arb normal equations, 64 bits, FLINT threads 8	ok	none	False	32	56.72874548747257	5.000208453439662e-05	
+zen4-windows-full.jsonl	69	arb normal equations, 64 bits, FLINT threads 16	ok	none	False	32	56.72874548747257	5.000208453439662e-05	
+zen4-windows-full.jsonl	70	arb normal equations, 64 bits, FLINT threads 32	ok	none	False	32	56.72874548747257	5.000208453439662e-05	
+zen4-windows-full.jsonl	71	arb normal equations, 128 bits, FLINT threads 1	ok	none	False	32	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	72	arb normal equations, 128 bits, FLINT threads 2	ok	none	False	32	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	73	arb normal equations, 128 bits, FLINT threads 4	ok	none	False	32	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	74	arb normal equations, 128 bits, FLINT threads 8	ok	none	False	32	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	75	arb normal equations, 128 bits, FLINT threads 16	ok	none	False	32	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	76	arb normal equations, 128 bits, FLINT threads 32	ok	none	False	32	120.734901543572	1.265236609634834e-22	
+zen4-windows-full.jsonl	77	arb normal equations, 192 bits, FLINT threads 1	ok	none	False	32	184.80295766805293	1.1519318911563044e-41	
+zen4-windows-full.jsonl	78	arb normal equations, 192 bits, FLINT threads 2	ok	none	False	32	184.80295766805293	1.1519318911563044e-41	
+zen4-windows-full.jsonl	79	arb normal equations, 192 bits, FLINT threads 4	ok	none	False	32	184.80295766805293	1.1519318911563044e-41	
+zen4-windows-full.jsonl	80	arb normal equations, 192 bits, FLINT threads 8	ok	none	False	32	184.80295766805293	1.1519318911563044e-41	
+zen4-windows-full.jsonl	81	arb normal equations, 192 bits, FLINT threads 16	ok	none	False	32	184.80295766805293	1.1519318911563044e-41	
+zen4-windows-full.jsonl	82	arb normal equations, 192 bits, FLINT threads 32	ok	none	False	32	184.80295766805293	1.1519318911563044e-41	
+zen4-windows-full.jsonl	83	arb normal equations, 256 bits, FLINT threads 1	ok	none	False	32	>=106	0.0	
+zen4-windows-full.jsonl	84	arb normal equations, 256 bits, FLINT threads 2	ok	none	False	32	>=106	0.0	
+zen4-windows-full.jsonl	85	arb normal equations, 256 bits, FLINT threads 4	ok	none	False	32	>=106	0.0	
+zen4-windows-full.jsonl	86	arb normal equations, 256 bits, FLINT threads 8	ok	none	False	32	>=106	0.0	
+zen4-windows-full.jsonl	87	arb normal equations, 256 bits, FLINT threads 16	ok	none	False	32	>=106	0.0	
+zen4-windows-full.jsonl	88	arb normal equations, 256 bits, FLINT threads 32	ok	none	False	32	>=106	0.0	
+zen4-wsl-full.jsonl	1	float64 pinv, OpenBLAS threads 1	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-full.jsonl	2	float64 numpy lstsq, OpenBLAS threads 1	ok	systemd	True	32	47.878389617128356	10.200245314584535	
+zen4-wsl-full.jsonl	3	float64 pinv, OpenBLAS threads 2	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-full.jsonl	4	float64 numpy lstsq, OpenBLAS threads 2	ok	systemd	True	32	47.878389617128356	10.200245314584535	
+zen4-wsl-full.jsonl	5	float64 pinv, OpenBLAS threads 4	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-full.jsonl	6	float64 numpy lstsq, OpenBLAS threads 4	ok	systemd	True	32	47.878389617128356	10.200245314584535	
+zen4-wsl-full.jsonl	7	float64 pinv, OpenBLAS threads 8	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-full.jsonl	8	float64 numpy lstsq, OpenBLAS threads 8	ok	systemd	True	32	47.878389617128356	7.200245314584534	
+zen4-wsl-full.jsonl	9	float64 pinv, OpenBLAS threads 16	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-full.jsonl	10	float64 numpy lstsq, OpenBLAS threads 16	ok	systemd	True	32	47.878389617128356	10.200245314584535	
+zen4-wsl-full.jsonl	11	float64 pinv, OpenBLAS threads 32	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-full.jsonl	12	float64 numpy lstsq, OpenBLAS threads 32	ok	systemd	True	32	47.878389617128356	10.200245314584535	
+zen4-wsl-full.jsonl	13	float64 scipy lstsq gelsd, OpenBLAS threads 1	ok	systemd	True	32	48.44567052633446	5.200245314584534	
+zen4-wsl-full.jsonl	14	float64 scipy lstsq gelsd, OpenBLAS threads 2	ok	systemd	True	32	48.44567052633446	5.200245314584534	
+zen4-wsl-full.jsonl	15	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	systemd	True	32	48.44567052633446	5.200245314584534	
+zen4-wsl-full.jsonl	16	float64 scipy lstsq gelsd, OpenBLAS threads 8	ok	systemd	True	32	48.86253669432593	8.799754685415465	
+zen4-wsl-full.jsonl	17	float64 scipy lstsq gelsd, OpenBLAS threads 16	ok	systemd	True	32	48.86253669432593	8.799754685415465	
+zen4-wsl-full.jsonl	18	float64 scipy lstsq gelsd, OpenBLAS threads 32	ok	systemd	True	32	49.33352756034325	5.799754685415466	
+zen4-wsl-full.jsonl	19	float64 scipy lstsq gelsy, OpenBLAS threads 1	ok	systemd	True	32	49.50142984232586	0.2002453145845344	
+zen4-wsl-full.jsonl	20	float64 scipy lstsq gelsy, OpenBLAS threads 2	ok	systemd	True	32	49.50142984232586	0.2002453145845344	
+zen4-wsl-full.jsonl	21	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	systemd	True	32	49.012747698350516	0.2002453145845344	
+zen4-wsl-full.jsonl	22	float64 scipy lstsq gelsy, OpenBLAS threads 8	ok	systemd	True	32	48.887091305567495	0.2002453145845344	
+zen4-wsl-full.jsonl	23	float64 scipy lstsq gelsy, OpenBLAS threads 16	ok	systemd	True	32	49.20722310602178	0.2002453145845344	
+zen4-wsl-full.jsonl	24	float64 scipy lstsq gelsy, OpenBLAS threads 32	ok	systemd	True	32	49.432059584789634	0.2002453145845344	
+zen4-wsl-full.jsonl	25	float64 scipy lstsq gelss, OpenBLAS threads 1	ok	systemd	True	32	48.0599507910458	4.799754685415466	
+zen4-wsl-full.jsonl	26	float64 scipy lstsq gelss, OpenBLAS threads 2	ok	systemd	True	32	47.88324023389362	4.799754685415466	
+zen4-wsl-full.jsonl	27	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	systemd	True	32	48.0599507910458	4.799754685415466	
+zen4-wsl-full.jsonl	28	float64 scipy lstsq gelss, OpenBLAS threads 8	ok	systemd	True	32	48.62861546569464	7.799754685415466	
+zen4-wsl-full.jsonl	29	float64 scipy lstsq gelss, OpenBLAS threads 16	ok	systemd	True	32	48.62861546569464	7.799754685415466	
+zen4-wsl-full.jsonl	30	float64 scipy lstsq gelss, OpenBLAS threads 32	ok	systemd	True	32	48.93843988913012	5.799754685415466	
+zen4-wsl-full.jsonl	31	float64 pinv + 1 x87 refinement steps	ok	systemd	True	32	51.58466023790795	0.2128406229154656	
+zen4-wsl-full.jsonl	32	float64 pinv + 2 x87 refinement steps	ok	systemd	True	32	51.58783304434294	0.2118640604154656	
+zen4-wsl-full.jsonl	33	float64 pinv + 3 x87 refinement steps	ok	systemd	True	32	51.57361004465823	0.2416492166654656	
+zen4-wsl-full.jsonl	34	x87 Householder, 1 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-full.jsonl	35	x87 Householder, 2 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-full.jsonl	36	x87 Householder, 4 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-full.jsonl	37	x87 Householder, 8 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-full.jsonl	38	x87 Householder, 16 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-full.jsonl	39	x87 Householder, 32 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-full.jsonl	40	x87 normal equations (Cholesky)	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	41	binary128 Householder, backend sleef, QuadBLAS threads 1	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-full.jsonl	42	binary128 normal equations, backend sleef, QuadBLAS threads 1	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-full.jsonl	43	binary128 Householder, backend sleef, QuadBLAS threads 2	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-full.jsonl	44	binary128 normal equations, backend sleef, QuadBLAS threads 2	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-full.jsonl	45	binary128 Householder, backend sleef, QuadBLAS threads 4	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-full.jsonl	46	binary128 normal equations, backend sleef, QuadBLAS threads 4	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-full.jsonl	47	binary128 Householder, backend sleef, QuadBLAS threads 8	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-full.jsonl	48	binary128 normal equations, backend sleef, QuadBLAS threads 8	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-full.jsonl	49	binary128 Householder, backend sleef, QuadBLAS threads 16	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-full.jsonl	50	binary128 normal equations, backend sleef, QuadBLAS threads 16	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-full.jsonl	51	binary128 Householder, backend sleef, QuadBLAS threads 32	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-full.jsonl	52	binary128 normal equations, backend sleef, QuadBLAS threads 32	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-full.jsonl	53	binary128 Householder, backend longdouble, QuadBLAS threads 1	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-full.jsonl	54	binary128 normal equations, backend longdouble, QuadBLAS threads 1	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	55	binary128 Householder, backend longdouble, QuadBLAS threads 2	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-full.jsonl	56	binary128 normal equations, backend longdouble, QuadBLAS threads 2	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	57	binary128 Householder, backend longdouble, QuadBLAS threads 4	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-full.jsonl	58	binary128 normal equations, backend longdouble, QuadBLAS threads 4	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	59	binary128 Householder, backend longdouble, QuadBLAS threads 8	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-full.jsonl	60	binary128 normal equations, backend longdouble, QuadBLAS threads 8	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	61	binary128 Householder, backend longdouble, QuadBLAS threads 16	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-full.jsonl	62	binary128 normal equations, backend longdouble, QuadBLAS threads 16	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	63	binary128 Householder, backend longdouble, QuadBLAS threads 32	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-full.jsonl	64	binary128 normal equations, backend longdouble, QuadBLAS threads 32	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-full.jsonl	65	arb normal equations, 64 bits, FLINT threads 1	ok	systemd	True	32	56.72874548747257	5.000208453439662e-05	
+zen4-wsl-full.jsonl	66	arb normal equations, 64 bits, FLINT threads 2	ok	systemd	True	32	56.72874548747257	5.000208453439662e-05	
+zen4-wsl-full.jsonl	67	arb normal equations, 64 bits, FLINT threads 4	ok	systemd	True	32	56.72874548747257	5.000208453439662e-05	
+zen4-wsl-full.jsonl	68	arb normal equations, 64 bits, FLINT threads 8	ok	systemd	True	32	56.72874548747257	5.000208453439662e-05	
+zen4-wsl-full.jsonl	69	arb normal equations, 64 bits, FLINT threads 16	ok	systemd	True	32	56.72874548747257	5.000208453439662e-05	
+zen4-wsl-full.jsonl	70	arb normal equations, 64 bits, FLINT threads 32	ok	systemd	True	32	56.72874548747257	5.000208453439662e-05	
+zen4-wsl-full.jsonl	71	arb normal equations, 128 bits, FLINT threads 1	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	
+zen4-wsl-full.jsonl	72	arb normal equations, 128 bits, FLINT threads 2	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	
+zen4-wsl-full.jsonl	73	arb normal equations, 128 bits, FLINT threads 4	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	
+zen4-wsl-full.jsonl	74	arb normal equations, 128 bits, FLINT threads 8	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	
+zen4-wsl-full.jsonl	75	arb normal equations, 128 bits, FLINT threads 16	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	
+zen4-wsl-full.jsonl	76	arb normal equations, 128 bits, FLINT threads 32	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	
+zen4-wsl-full.jsonl	77	arb normal equations, 192 bits, FLINT threads 1	ok	systemd	True	32	184.80295766805293	1.1519318911563044e-41	
+zen4-wsl-full.jsonl	78	arb normal equations, 192 bits, FLINT threads 2	ok	systemd	True	32	184.80295766805293	1.1519318911563044e-41	
+zen4-wsl-full.jsonl	79	arb normal equations, 192 bits, FLINT threads 4	ok	systemd	True	32	184.80295766805293	1.1519318911563044e-41	
+zen4-wsl-full.jsonl	80	arb normal equations, 192 bits, FLINT threads 8	ok	systemd	True	32	184.80295766805293	1.1519318911563044e-41	
+zen4-wsl-full.jsonl	81	arb normal equations, 192 bits, FLINT threads 16	ok	systemd	True	32	184.80295766805293	1.1519318911563044e-41	
+zen4-wsl-full.jsonl	82	arb normal equations, 192 bits, FLINT threads 32	ok	systemd	True	32	184.80295766805293	1.1519318911563044e-41	
+zen4-wsl-full.jsonl	83	arb normal equations, 256 bits, FLINT threads 1	ok	systemd	True	32	>=106	0.0	
+zen4-wsl-full.jsonl	84	arb normal equations, 256 bits, FLINT threads 2	ok	systemd	True	32	>=106	0.0	
+zen4-wsl-full.jsonl	85	arb normal equations, 256 bits, FLINT threads 4	ok	systemd	True	32	>=106	0.0	
+zen4-wsl-full.jsonl	86	arb normal equations, 256 bits, FLINT threads 8	ok	systemd	True	32	>=106	0.0	
+zen4-wsl-full.jsonl	87	arb normal equations, 256 bits, FLINT threads 16	ok	systemd	True	32	>=106	0.0	
+zen4-wsl-full.jsonl	88	arb normal equations, 256 bits, FLINT threads 32	ok	systemd	True	32	>=106	0.0	
+zen4-wsl-quick.jsonl	1	float64 pinv, OpenBLAS threads 4	ok	systemd	True	32	47.58392034307991	2.200245314584534	
+zen4-wsl-quick.jsonl	2	float64 numpy lstsq, OpenBLAS threads 4	ok	systemd	True	32	47.878389617128356	10.200245314584535	
+zen4-wsl-quick.jsonl	3	float64 scipy lstsq gelsd, OpenBLAS threads 4	ok	systemd	True	32	48.44567052633446	5.200245314584534	
+zen4-wsl-quick.jsonl	4	float64 scipy lstsq gelsy, OpenBLAS threads 4	ok	systemd	True	32	49.012747698350516	0.2002453145845344	
+zen4-wsl-quick.jsonl	5	float64 scipy lstsq gelss, OpenBLAS threads 4	ok	systemd	True	32	48.0599507910458	4.799754685415466	
+zen4-wsl-quick.jsonl	6	float64 pinv + 2 x87 refinement steps	ok	systemd	True	32	51.58783304434294	0.2118640604154656	
+zen4-wsl-quick.jsonl	7	x87 Householder, 4 worker processes	ok	systemd	True	32	59.52742708597964	0.0014148416654656034	
+zen4-wsl-quick.jsonl	8	x87 normal equations (Cholesky)	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-quick.jsonl	9	binary128 Householder, backend sleef, QuadBLAS threads 4	ok	systemd	True	32	108.090673654462	6.003023063498387e-19	
+zen4-wsl-quick.jsonl	10	binary128 normal equations, backend sleef, QuadBLAS threads 4	ok	systemd	True	32	109.68540392667818	2.670594316385649e-19	
+zen4-wsl-quick.jsonl	11	binary128 Householder, backend longdouble, QuadBLAS threads 4	ok	systemd	True	32	59.79228894536125	0.002491408334534397	
+zen4-wsl-quick.jsonl	12	binary128 normal equations, backend longdouble, QuadBLAS threads 4	ok	systemd	True	32	57.24159500238924	0.008739060415465603	
+zen4-wsl-quick.jsonl	13	arb normal equations, 128 bits, FLINT threads 4	ok	systemd	True	32	120.734901543572	1.265236609634834e-22	

@@ -1,0 +1,23 @@
+RESULT X- dim 4 deg 12
+RESULT X- numerator2
+1,11,-3,4,-1,0
+RESULT VB dim 4 deg 7
+RESULT VB numerator2
+1,6,0
+RESULT Iso dim 5 deg 23
+RESULT Iso numerator2
+1,12,10,0
+RESULT E8N- dim 5 deg 11
+RESULT E8N- numerator2
+1,16,-12,10,-5,1,0
+RESULT W8 dim 6 deg 50
+RESULT W8 numerator2
+1,18,27,4,0
+RESULT VB betti
+           0     1     2     3     4     5     6
+------------------------------------------------
+    0:     1     -     -     -     -     -     -
+    1:     -    21    70   105    84    35     6
+------------------------------------------------
+total:     1    21    70   105    84    35     6
+

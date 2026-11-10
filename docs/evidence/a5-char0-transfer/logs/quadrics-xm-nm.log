@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "docs/evidence/a5-char0-transfer/quadric_lift.py", line 227, in <module>
+    main()
+    ~~~~^^
+  File "docs/evidence/a5-char0-transfer/quadric_lift.py", line 221, in main
+    result = check(arguments.slug)
+  File "docs/evidence/a5-char0-transfer/quadric_lift.py", line 173, in check
+    count = int(res["targets"])
+                ~~~^^^^^^^^^^^
+KeyError: 'targets'
+Exception ignored on threading shutdown:
+Traceback (most recent call last):
+  File "/usr/lib/python3.14/threading.py", line 1577, in _shutdown
+    atexit_call()
+  File "/usr/lib/python3.14/threading.py", line 1548, in <lambda>
+    _threading_atexits.append(lambda: func(*arg, **kwargs))
+  File "/usr/lib/python3.14/concurrent/futures/process.py", line 106, in _python_exit
+    t.join()
+  File "/usr/lib/python3.14/threading.py", line 1133, in join
+    self._os_thread_handle.join(timeout)
+  File "docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py", line 152, in _exit_on_term
+    raise SystemExit(128 + signum)
+SystemExit: 143

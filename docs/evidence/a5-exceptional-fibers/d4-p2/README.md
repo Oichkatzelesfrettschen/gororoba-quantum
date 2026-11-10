@@ -22,3 +22,6 @@ E8-bar -> VB on the laptop (2026-11-09, [`run-cells-laptop.sh`](run-cells-laptop
 `../working/build/inputs/p32029-r9115/e8-vb.sing` sha256 6b3cea4923b4e0e2..., `--max-gb 30`): r_13 = 155 =
 HF(k[y]/K2, 4) certifies h_4 = 155 at p = 32029 (A5-111). The ladder closes at N = 13 = 3d + 1, as degree 5 closes by
 N = 16, and its last jump is 9 (146 to 155), not (2d + 1)^2: E8-bar -> VB follows neither last-jump form of A5-244.
+
+Known runner defect: `run-cells-laptop.sh` writes the engine record straight to its final path and skips a cell whose
+record is nonempty ([issue 802](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/802)); the retained records parsed and passed the registry's digest checks.
