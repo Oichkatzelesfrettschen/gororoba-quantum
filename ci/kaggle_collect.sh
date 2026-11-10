@@ -168,6 +168,11 @@ notify() {
 collect() {
 	pushed=$(pushed_epoch)
 	state=$(read_state 2>/dev/null)
+	# The two watch jobs cover less than PULL_AFTER after a branch pushed with the version, so a live version is
+	# watched here up to the pull time before its live pull.
+	if [ "$state" != terminal ]; then
+		state=$(poll $((pushed + PULL_AFTER)))
+	fi
 	if [ "$state" != terminal ]; then
 		# The pull time passed with the version still live: take what it serves now.
 		collect_attempts 1
