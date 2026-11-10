@@ -7,3 +7,6 @@ consistently across primes. No tracked note cites these counts; the open questio
 [complex_skew_rank_geometry.md](../../../../../notes/complex_skew_rank_geometry.md). The
 [Kaggle and local-run audit](../../../../../archive/reviews/kaggle-audit-2026-11-09/README.md) lists this directory as
 undecided: no claim rests on it.
+
+`quadric_q.py`, the producer of `quadrics_w1.json`, is not retained: it seeds its generator with a literal integer
+that predates the QRNG rule, and the reproduction-seed ledger (`ci/reproduction_seeds.json`) admits no new row.
