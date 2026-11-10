@@ -1,0 +1,12 @@
+ring r=32029,(t1,t2,t4,t5,t6,t7,t9),dp;
+option(redSB);
+execute("ideal s=" + read("~/a5/exports/w8nm-n16-p32029/s.txt") + ";");
+attrib(s,"isSB",1);
+ideal B=kbase(s);
+short=0; write(":w ~/a5/exports/w8nm-n16-p32029/qM4.kbase.part",B);
+ideal Bh=B[1..93024];
+ideal Mk=reduce(var(4)*Bh,s);
+if(ncols(Mk)!=93024-1+1){ "? table length", ncols(Mk); quit; }
+short=0; write(":w ~/a5/exports/w8nm-n16-p32029/qM4.txt.part",Mk);
+"RESULT table";
+quit;

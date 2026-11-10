@@ -43,6 +43,10 @@ The registry (`../build_registry.py`) reads the three `.out` files as truncated-
 
 Second prime: at p = 32029 the same engine in quotient mode with the receipt (`p32029/w8d5-n16-p32029.out`, digests in
 `p32029/SHA256SUMS`, ledger rows A5-136 and A5-148) reached r_16 = 4116 with per-block ranks 1017 / 1005 / 1047 / 1047, as
-at p = 32009. Not tested: characteristic 0 (the char-0 rank is at least the F_p rank, while the upper bound needs the K2
+at p = 32009. Its export (`s.txt`, the `qM` and `qG` tables, `export.json`) is retained in
+[`working/exports/w8nm-n16-p32029/`](../working/exports/w8nm-n16-p32029/export.json): every table matches its
+`.sha256` and the digest `export.json` lists, `qB.txt` is byte-identical to the 32009 kbase table, and `qM7.txt` is split
+into 45 MB parts (`split.txt`). The tables came off the VM before its deletion on 2026-11-09; `p32029/run.sh` is the
+launcher. Not tested: characteristic 0 (the char-0 rank is at least the F_p rank, while the upper bound needs the K2
 Hilbert function over Q). The stack dump in `unreceipted/snapshot.txt` was taken seconds before the engine exited
 (closure total already 9,263.5 s), not 30-40 min before, as first estimated.
