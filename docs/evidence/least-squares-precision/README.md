@@ -260,17 +260,20 @@ each label. A host that ran
 | m1-macos | Apple M1 | macOS | 4 of 5: `observed_rate_columns` differs | 60 (16 x87) |
 
 - Arithmetic that bypasses the BLAS gives the same error on every host whose five input digests agree. The five
-  hosts other than the M1 agree on all five digests, and on those five hosts every configuration run on two or more
-  of them scores identically to the last recorded digit: 24 arb normal-equation configurations, 8 binary128
-  configurations through SLEEF (build-host, zen4-wsl, aws-sapphire-rapids) and 5 x87 configurations. The M1 ran a
-  different `observed_rate_columns` array, so its rows answer a different problem: its scores differ from the other
-  hosts' in 12 of its 16 arb configurations (64, 128 and 192 bits; the 256-bit rows agree) and in all 8 of its SLEEF
-  configurations, and the comparison does not measure the host dependence of the arithmetic. Every float64
-  configuration routes through the BLAS. None of the 30 float64 configurations run on two or more hosts has one
-  score on every host; zen4-wsl and aws-sapphire-rapids, which both load the OpenBLAS `SkylakeX` core, agree on 6
-  of the 10 float64 configurations they share (the scipy drivers at one and two threads). Unrefined float64 pinv
-  scores 2.2 to 14.8 ulp on the process fidelity across the five digest-agreeing hosts at one thread (0.2 on the
-  M1), numpy lstsq 2.2 to 13.2 and the scipy drivers 0.2 to 6.8 across the six. This measures the reason the producer computes in arb.
+  hosts other than the M1 agree on all five digests, and on those five hosts every BLAS-free configuration run on
+  two or more of them scores identically to the last recorded digit: 24 arb normal-equation configurations, 16
+  binary128 configurations (8 through SLEEF, 8 through the `longdouble` backend; build-host, zen4-wsl,
+  aws-sapphire-rapids) and 5 x87 configurations. The M1 ran a different `observed_rate_columns` array, so its rows
+  answer a different problem: its scores differ from the other hosts' in 12 of its 16 arb configurations (64, 128
+  and 192 bits; the 256-bit rows agree) and in all 8 of its SLEEF configurations, and the comparison does not
+  measure the host dependence of the arithmetic. Every float64 configuration routes through the BLAS, and so does
+  x87 refinement, which starts from the BLAS pinv. None of the 30 unrefined float64 configurations run on two or
+  more hosts has one score on every host, and none of the 3 x87-refined pinv configurations does either (worst score
+  error 1.3 to 1.5 ulp on build-host, zen4-wsl and aws-sapphire-rapids); zen4-wsl and aws-sapphire-rapids, which
+  both load the OpenBLAS `SkylakeX` core, agree on 6 of the 10 unrefined float64 configurations they share (the
+  scipy drivers at one and two threads) and on none of the 3 refined ones. Unrefined float64 pinv scores 2.2 to 14.8
+  ulp on the process fidelity across the five digest-agreeing hosts at one thread (0.2 on the M1), numpy lstsq 2.2
+  to 13.2 and the scipy drivers 0.2 to 6.8 across the six. This measures the reason the producer computes in arb.
 - The macOS rows differ from the other five hosts in `observed_rate_columns` alone: the design matrix, rate
   observables, Hermitian basis and ideal Choi vector digests are equal (`inputs_sha256` of the first row of each
   full file). That digest hashes the point rates stacked with the 500 bootstrap replicate columns, so the rows do
