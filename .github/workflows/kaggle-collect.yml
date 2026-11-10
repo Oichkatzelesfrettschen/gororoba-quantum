@@ -44,8 +44,9 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
-      # The build host's kaggle and kagglesdk versions (docs/notes/kaggle/workflow.md, "Workflow").
-      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38
+      # The build host's kaggle and kagglesdk versions (docs/notes/kaggle/workflow.md, "Workflow"), and six,
+      # which the kaggle 2.2.5 CLI imports without declaring it.
+      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38 six==1.17.0
       - id: watch
         env:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
@@ -64,7 +65,7 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
-      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38
+      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38 six==1.17.0
       - id: watch
         env:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
@@ -92,7 +93,7 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         with:
           python-version: "3.14.7"
-      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38
+      - run: python3 -m pip install --disable-pip-version-check -q kaggle==2.2.5 kagglesdk==0.1.38 six==1.17.0
       - env:
           KAGGLE_API_TOKEN: ${{ secrets.KAGGLE_API_TOKEN }}
           GH_TOKEN: ${{ github.token }}
