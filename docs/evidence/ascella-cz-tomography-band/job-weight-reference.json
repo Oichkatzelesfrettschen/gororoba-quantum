@@ -1,0 +1,248 @@
+{
+ "draws": 200,
+ "decision_inputs": {
+  "0.011": 0.0124,
+  "0.0177": 0.0202
+ },
+ "retained": {
+  "observed_pearson": 5288.25067682674,
+  "job_weights": [
+   {
+    "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+    "off_rail_events": 241644.0,
+    "overlap": 0.8903486552880683,
+    "mode_weights_relative_to_C0": [
+     1.0,
+     1.0113163880131952,
+     0.985966172982391,
+     1.0749370846435666,
+     1.0105875228437216,
+     0.9709337715214399
+    ],
+    "outcome_weights": [
+     0.9523486316933303,
+     1.0382859876623793,
+     0.9631257783334076,
+     1.0500356347674304
+    ],
+    "optimizer": {
+     "nelder_mead": true,
+     "bfgs": false,
+     "kept": true
+    }
+   },
+   {
+    "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
+    "off_rail_events": 232372.0,
+    "overlap": 0.8670881327069581,
+    "mode_weights_relative_to_C0": [
+     1.0,
+     1.01308373363624,
+     0.9844173790954104,
+     1.0720456300155523,
+     1.0165199042670225,
+     0.9722368803721212
+    ],
+    "outcome_weights": [
+     0.9520512543424802,
+     1.036798423557453,
+     0.9645076393623453,
+     1.050363617965752
+    ],
+    "optimizer": {
+     "nelder_mead": true,
+     "bfgs": false,
+     "kept": true
+    }
+   }
+  ],
+  "descriptive": {
+   "per_job_weights": {
+    "0.0": {
+     "input_sigma": 0.0,
+     "reference_mean": 3407.127686507036,
+     "reference_95": [
+      1863.7094251856624,
+      6561.660558352729
+     ],
+     "ratio": 1.552114027827416,
+     "inside": true
+    },
+    "0.0124": {
+     "input_sigma": 0.0124,
+     "reference_mean": 5224.681900306874,
+     "reference_95": [
+      2151.330216929634,
+      13990.39874283342
+     ],
+     "ratio": 1.012167013749896,
+     "inside": true
+    },
+    "0.0202": {
+     "input_sigma": 0.0202,
+     "reference_mean": 7060.079607637632,
+     "reference_95": [
+      2804.253818818981,
+      24264.210434307723
+     ],
+     "ratio": 0.749035559189146,
+     "inside": true
+    }
+   },
+   "weights_of_one": {
+    "0.0": {
+     "input_sigma": 0.0,
+     "reference_mean": 3741.6000542812185,
+     "reference_95": [
+      1875.1027228153105,
+      7283.690862073726
+     ],
+     "ratio": 1.4133661000928763,
+     "inside": true
+    },
+    "0.0124": {
+     "input_sigma": 0.0124,
+     "reference_mean": 5731.144200316444,
+     "reference_95": [
+      2257.6942574400014,
+      15444.72962426404
+     ],
+     "ratio": 0.9227216227668379,
+     "inside": true
+    },
+    "0.0202": {
+     "input_sigma": 0.0202,
+     "reference_mean": 7182.841175416118,
+     "reference_95": [
+      2912.7845693609447,
+      27756.62308603909
+     ],
+     "ratio": 0.7362338311093702,
+     "inside": true
+    }
+   }
+  }
+ },
+ "verdict": "carried",
+ "band": {
+  "observed_pearson": 166239.95792903795,
+  "job_weights": [
+   {
+    "run": "results/quandela/runs/2026-11-09T174125Z-qpu_ascella-ascella_cz_tomography_reference-job-00",
+    "off_rail_events": 1723510.0,
+    "overlap": 0.8845290442859388,
+    "mode_weights_relative_to_C0": [
+     1.0,
+     0.9951187933304352,
+     0.9806385167846381,
+     0.9113229870579818,
+     1.0116768290252585,
+     0.9776756641657601
+    ],
+    "outcome_weights": [
+     1.0398743048495243,
+     0.966371748039783,
+     1.0347984634571836,
+     0.9616546878179721
+    ],
+    "optimizer": {
+     "nelder_mead": true,
+     "bfgs": false,
+     "kept": true
+    }
+   },
+   {
+    "run": "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
+    "off_rail_events": 1629411.0,
+    "overlap": 0.8772437624376141,
+    "mode_weights_relative_to_C0": [
+     1.0,
+     1.0155723285437155,
+     1.0097417267123554,
+     0.9046001193107446,
+     1.0186488515459147,
+     1.0016066054646315
+    ],
+    "outcome_weights": [
+     1.0483864563696685,
+     0.9392208803766041,
+     1.0647122747090385,
+     0.9538467365009464
+    ],
+    "optimizer": {
+     "nelder_mead": true,
+     "bfgs": false,
+     "kept": true
+    }
+   }
+  ],
+  "decision": {
+   "0.011": {
+    "input_sigma": 0.0124,
+    "reference_mean": 81419.18201128313,
+    "reference_95": [
+     49826.78538517551,
+     113518.30552137693
+    ],
+    "ratio": 2.0417787777086764,
+    "inside": false
+   },
+   "0.0177": {
+    "input_sigma": 0.0202,
+    "reference_mean": 113367.65329190984,
+    "reference_95": [
+     67720.43741696588,
+     176210.54618254263
+    ],
+    "ratio": 1.4663791046374353,
+    "inside": true
+   }
+  },
+  "descriptive": {
+   "per_job_weights": {
+    "0.0": {
+     "input_sigma": 0.0,
+     "reference_mean": 51268.78124612503,
+     "reference_95": [
+      35929.287420358145,
+      70262.89314118568
+     ],
+     "ratio": 3.242518232118159,
+     "inside": false
+    }
+   },
+   "weights_of_one": {
+    "0.0": {
+     "input_sigma": 0.0,
+     "reference_mean": 29412.126808684385,
+     "reference_95": [
+      19579.266676831336,
+      41477.42319376083
+     ],
+     "ratio": 5.652088983920504,
+     "inside": false
+    },
+    "0.0124": {
+     "input_sigma": 0.0124,
+     "reference_mean": 52701.98087449944,
+     "reference_95": [
+      29448.310076395777,
+      80749.42739219227
+     ],
+     "ratio": 3.1543398401837943,
+     "inside": false
+    },
+    "0.0202": {
+     "input_sigma": 0.0202,
+     "reference_mean": 76480.09644462705,
+     "reference_95": [
+      41271.47754227335,
+      128145.59615642931
+     ],
+     "ratio": 2.1736368762217584,
+     "inside": false
+    }
+   }
+  }
+ }
+}
