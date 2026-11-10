@@ -55,9 +55,11 @@ cuts off loses all of its work. The A_5 kernels (`docs/evidence/a5-exceptional-f
 `docs/evidence/a5-char0-transfer/kaggle/runner.py`) are scoped in three steps:
 
 1. **Estimate from a measured rate.** Start from the job's time on the Windows workstation laptop and multiply by a
-   planning factor of 1.6 for the Kaggle Xeon at 2.2 GHz. No tracked timing supports the factor yet: the degree-7
-   replays of `vb-export-levers/kaggle/` run the laptop's exact Singular scripts, and their `summary.json` wall times
-   divided by the laptop's `vb-d7/out/*.time` give the first measured ratio, which replaces 1.6 here. Example: the VB degree-7 N = 22 export took 16,146 s on the laptop, so about 26,000 s (7.2 h) on
+   planning factor of 1.6 for the Kaggle Xeon at 2.2 GHz. The 1.6 is measured on an Azure FX4, not on Kaggle
+   (`docs/evidence/a5-exceptional-fibers/forecasts/std13-bench/`: one std at 1,792 s against 1,100 s on the laptop).
+   The degree-7 replays of `vb-export-levers/kaggle/` run the laptop's exact Singular scripts, and their
+   `summary.json` wall times divided by the laptop's `vb-d7/out/*.time` give the first Kaggle ratio, which replaces
+   1.6 here. Example: the VB degree-7 N = 22 export took 16,146 s on the laptop, so about 26,000 s (7.2 h) on
    Kaggle. A job whose estimate exceeds about 11 h goes to the laptop, or splits into independent pieces (one prime, one
    N or one relation block per kernel).
 2. **Pack sessions.** A session holds four cores and 30 GB, and five CPU sessions run at once. The runner keeps four jobs
