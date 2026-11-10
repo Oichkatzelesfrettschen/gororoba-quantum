@@ -83,8 +83,8 @@ section), so it serves only to mark which falsifications depend on the interval 
   29,412 to 51,269 (ratio 5.65 to 3.24). The fitted band weights are common to both jobs, target rail-1 mode T1 near
   0.91 in each and outcome weights 0.94 to 1.07, so the test reads the output-weight change between the dates, not
   a difference between the jobs. The retained statistic sits inside every reference. Reading: output weights and
-  the per-seed term together reach the band scatter only at the upper recorded scale, so the failed model check
-  needs both at that scale and no further term; a per-seed scale near 0.011 leaves it unexplained.
+  the per-seed term together carry the band scatter at the upper recorded scale and not at the lower one; a
+  per-seed scale near 0.011 leaves it unexplained.
 - **Where the statistic sits.** 153,920 of the band Pearson (93 %) sits in 34 cells where the unweighted
   linear-inversion fit predicts fewer than one event, mostly negative; the statistic divides those by one event, so
   each contributes (n - E)^2. The clip concentrates any scatter there: the synthetic pairs put 97 % of their
@@ -148,7 +148,7 @@ events, and those move Z populations.
   that from the equator Z-biases leaves a preparation tilt near +0.05 on the target and -0.03 on the control in both
   pairs. The target bias that moved between the runs moved with its detection rail, not with its preparation.
 
-### The output-weight change accounts for a third of the fidelity drop under its own model
+### Under linear inversion the output-weight change accounts for a third of the fidelity drop; the positive fit shows no drop
 
 - **Corrected F:** dividing each eligible outcome by its fitted output weight pair e(C_c) e(T_t) moves F from 0.849
   to 0.846 on the retained pair and from 0.832 to 0.834 on the band pair.
@@ -262,7 +262,11 @@ source model at the plan read's g2 and transmittance, threshold detection and fi
 null draws that permute and sign-flip the coupler and heater errors, flip the sign of the gain and crosstalk and
 apply them through a permuted heater order, three starts per component fit and the optimizer status of every fit. Its rule, fixed before the fit to
 measured counts: a hold-out survives when Gain >= 0.3, Gain over the null median >= 0.3 and the rank of the
-transfer among the nulls gives p <= 0.05.
+transfer among the nulls gives p <= 0.05. Before that rule's commit (9525631f6), a timing run fitted the band
+pair's ideal-mesh baselines under both laws (deviance 477,207 two-photon and 36,964 g2) and twenty iterations of
+one component fit, the script's docstring records; it computed no transfer, null or Gain, and the rule's
+thresholds do not depend on it. The contrast between the two laws' baselines, on which the reading below rests,
+was therefore seen before the rule was fixed.
 
 | Law | Hold-out | Gain | Gain over null median | Deviance: baseline, transfer, ceiling | Null deviance: min, median | Rule |
 |---|---|---|---|---|---|---|
@@ -290,9 +294,9 @@ baseline and transfer deviance.
   express; a static component error that transfers is not established. Confidence is moderate: it falls if a g2
   law with free source figures recovers a transfer, and it rises if a third date reproduces the null transfer.
 - **Optimizer status:** baseline, transfer and null fits stopped on L-BFGS's own tolerance. Under the two-photon
-  law the component and ceiling fits on band data reached the cap of 3,000 iterations with largest gradient
-  entries up to 165, and their three starts span 3 to 5 % of deviance; an unconverged ceiling raises Gain, which
-  the two-photon margins absorb. Under the g2 law every within-pair component fit converged, and two of the three
+  law every component and ceiling fit except those of the retained job-00 to job-01 hold-out reached the cap of
+  3,000 iterations, with largest gradient entries up to 165, and their three starts span 2.2 to 8.4 % of deviance;
+  an unconverged ceiling raises Gain, which the two-photon margins absorb. Under the g2 law every within-pair component fit converged, and two of the three
   starts on the whole band pair reached the cap. The g2 failure rests on neither: the within-pair transfers, from
   converged components, sit above their baselines.
 - **The earlier qualification** (20 nulls, no optimizer status) applies to the first table; this run measures
@@ -329,9 +333,10 @@ NLL is the Poisson negative log-likelihood of the eligible counts, lower is bett
   acquisition law the model check rejects; scaled by the band's 2.39, the band interval 0.009 to 0.016 still lies
   outside the margin.
 - **Qualification (post-data):** the admitted mesh shift carries the difference, and it raises the NLL by 4,229
-  (band) and 1,277 (retained) at its fixed scale, so the counts disfavor it. Throughput, the one term that buys
-  likelihood beyond what 128 free parameters gain by chance (about 64), moves F by +0.0006 (band) and -0.0039
-  (retained), inside the margin. The one mesh shift the counts favor, the g2 law's in-sample components, lowers
+  (band) and 1,277 (retained) at its fixed scale, so the counts disfavor it. Among the cross-fitted and free terms,
+  throughput alone buys likelihood beyond what 128 free parameters gain by chance (about 64), and it moves F by +0.0006 (band) and -0.0039
+  (retained), inside the margin. The one mesh shift the counts favor, the g2 law's in-sample components (descriptive, fitted on the same
+  pair), lowers
   the band F by 0.0026. The terms the counts support leave F where the positive process-only fit puts it.
 - **Hypothesis:** the admitted shift comes from two-photon-law components, which under the g2 law transfer nothing
   beyond the ideal mesh (previous section), so it carries multiphoton and dark-click content as mesh error, and the
