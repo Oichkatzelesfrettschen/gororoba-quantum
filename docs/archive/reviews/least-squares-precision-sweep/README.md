@@ -33,17 +33,22 @@ are the files listed here.
 Left out of the public record, each listed with its reason; the files stay in the ignored
 `docs/local/archive/least-squares-precision-portable-sweep/` of the primary checkout:
 
-- the codex session logs `codex-sweep.log` and `codex-pr808.log`, the claude-free run log `claude-free.log`, and the
-  harness stderr and exit-code files of the three nemotron launches: command transcripts;
+- the codex session logs `codex-sweep.log` and `codex-pr808.log`: command transcripts whose interim messages restate
+  the final reports and add no finding (read in full for this record); the claude-free run log `claude-free.log` and
+  the harness stderr and exit-code files of the three nemotron launches, whose two warnings `llm/README.md` in
+  gororoba-infrastructure documents;
 - `codex-pr808.done`: an empty completion marker;
 - the nemotron input bundle's `diff-full.patch`, `diff-code-and-docs.patch`, `diff-stat.txt` and `git-log.txt`: the
   branch history reproduces them;
-- its `host-records.json`: the full host profiles, with the kernel release, distribution and memory size the owner
-  ruled out of public rows;
+- its `host-records.json`: the first-row host record of each host file at 5ba6b3791, which the committed rows carry,
+  plus the macOS product version and Windows release that 314874c8d removed. The full profiles (kernel release,
+  distribution, memory) appear only in the rows of 315d929bb; their private home is the infrastructure chart
+  (`hosts/README.md` in gororoba-infrastructure, "Public sweep labels");
 - `briefs/sweep-review.md` and `briefs/sweep-claude-free.md`: the round-one brief with only its report line changed;
 - `pr-body.md` and `pr-body-808.md`: drafts of the PR 808 description, whose final text stays on that pull request;
-- `run-sweeps.sh`, `sweep-full.log`, `sweep-quick.log`, and the CI logs `runs/ci-lint.log` and `runs/ci-types.log`:
-  the README's command block reproduces the build-host run, and the rows hold its results;
+- `run-sweeps.sh`, `sweep-full.log` and `sweep-quick.log`: the README's portable command block runs the same two
+  sweeps (the build-host quick run added `--idle-wait`), and the rows hold their results; the CI logs
+  `runs/ci-lint.log` and `runs/ci-types.log`, whose results the reconciliation states;
 - the build-host `fp-inputs.npz` and the remote-host tarball `bundle/gq-sweep.tar.gz` with its `bundle/paths.txt`:
   `fp_export.py` and the tracked sweep files rebuild them, and each row records the input digests;
 - a first nemotron report that could not read its brief outside its working directory and summarized the README

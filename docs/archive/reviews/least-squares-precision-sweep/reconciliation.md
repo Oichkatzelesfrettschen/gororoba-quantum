@@ -170,3 +170,12 @@ source on the integration branch.
 | `label_error` checks hostname substrings of 3 or more characters only | Bounded | A 1- or 2-character hostname would reject almost every label; the label regex still bars paths, and the six retained labels were chosen by hand |
 | Cap size implies memory on the two small hosts | Owner ruling | `cap.bytes` stays as the limit the run applied (2026-11-09) |
 | Conjecture: float64 scores follow the OpenBLAS build, MAX_THREADS 64 on zen4-wsl and aws-sapphire-rapids against 24 on zen4-windows | Premise refuted; hypothesis open | No host record carries a MAX_THREADS field; the values the report reads are threadpoolctl's runtime `num_threads` (32, 2 and 24), which contradict its 64 for aws-sapphire-rapids. A dependence on the OpenBLAS build stays a hypothesis with the falsifier listed above (`OPENBLAS_CORETYPE` forced on both SkylakeX hosts) |
+
+## Addendum: the tool versions of the PR-round codex review
+
+The PR-round codex review ran the installed ruff 0.17.3 and mypy 2.4.0 and marked the pinned ruff 0.17.4 and mypy
+2.4.1 not run, because its sandbox had no network to fetch them. The deviation sits in that brief
+([brief-pr.md](brief-pr.md)), which named `/usr/bin/python`; `workspace/review-brief-template.md` in
+gororoba-infrastructure names the pinned interpreter, which `ci/AGENTS.md` ("Host environments") builds as
+`ci-py3.14.7` with ruff and mypy at their pins. The pinned lint and types lanes, run by the orchestrator, reported every
+check passed, 944 files formatted and no mypy issue in 915 source files.
