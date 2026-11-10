@@ -15,3 +15,4 @@ rc=0
   inputs/w8-nm.sing 5 16 > out/w8d5-n16-p32029.out 2> out/w8d5-n16-p32029.err < /dev/null || rc=$?
 kill "$sampler" 2>/dev/null || true
 echo "$(date -u +%FT%TZ) w8 p32029 n16 exit $rc" >> out/events
+exit "$rc"
