@@ -190,7 +190,7 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
     # needs it runs on the image's Python, never under --ci-env.
     "qx-emulator": ("qxelarator==0.10.0",),
 }
-MAX_ACCELERATOR_SECONDS = 4 * 3600
+MAX_ACCELERATOR_SECONDS = 12 * 3600
 SMOKE_TIMEOUT_SECONDS = 1800
 # A TPU VM session carries no docker image on Kaggle's backend, and a
 # docker_image in kernel-metadata.json or a dockerImageVersionId in the
@@ -580,7 +580,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
 
 def kaggle_api() -> Any:
     """An authenticated KaggleApi. The kaggle and kagglesdk distributions sit in the operator's interpreter, outside
-    the CI pins: CI never contacts Kaggle, and `verify` reads retained receipts offline."""
+    the CI pins: no gate contacts Kaggle, `verify` reads receipts offline, and kaggle-collect.yml installs both."""
     try:
         from kaggle.api.kaggle_api_extended import KaggleApi
     except ModuleNotFoundError as error:
@@ -663,10 +663,10 @@ def push(args: argparse.Namespace) -> int:
         args.machine = GPU_MACHINE
     if args.smoke and not args.timeout:
         args.timeout = SMOKE_TIMEOUT_SECONDS
-    # An accelerator session bills its whole wall time against the weekly
-    # quota and runs to the 12-hour limit unless it ends or is cancelled by
-    # its session id (scripts/kaggle_sessions.py), so a GPU or TPU push states
-    # its ceiling; Kaggle ends the session at --timeout.
+    # An accelerator session bills its wall time against the weekly quota and
+    # runs to Kaggle's 12-hour session limit, the ceiling of --timeout and of
+    # the owner's standing approval, unless it ends, is cancelled by its session
+    # id (scripts/kaggle_sessions.py) or reaches --timeout, which a push states.
     require(
         args.machine == "cpu" or 0 < args.timeout <= MAX_ACCELERATOR_SECONDS,
         f"a {args.machine} push needs --timeout SECONDS (at most {MAX_ACCELERATOR_SECONDS})",
