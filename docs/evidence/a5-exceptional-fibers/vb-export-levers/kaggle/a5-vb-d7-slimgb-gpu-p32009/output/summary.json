@@ -1,0 +1,105 @@
+{
+ "cpu_count": 4,
+ "singular": "4.4.1",
+ "jobs": {
+  "order-identity-n15": {
+   "rc": 0,
+   "seconds": 538.0,
+   "sha256": {
+    "s.txt": "65270acb0733cd2a90b825f29e037aabc0655d5a0c0bb64d546b660f6e059cb5",
+    "kbase.txt": "6c1172203b181a950a84976358cf7c8d616f7b4525309af23dec1410b6c9e765"
+   },
+   "results": [
+    "RESULT ms 537908 sb_size 1797",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "order-rot2-n15": {
+   "rc": 0,
+   "seconds": 553.2,
+   "sha256": {
+    "s.txt": "ac86a102d2ae7b5c4112e81c75f13adfbe5278d3860b2e602e137d4d61dda6f8",
+    "kbase.txt": "0acad7f38866dfb5dd5fdbe0d3226850cc94a1b693aa9097734e8264f458a9e2"
+   },
+   "results": [
+    "RESULT ms 553057 sb_size 1792",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "order-rot1-n15": {
+   "rc": 0,
+   "seconds": 565.9,
+   "sha256": {
+    "s.txt": "8105b181870513cd1d856ab525b2468160158071b12acbd18ee4e93cbb250857",
+    "kbase.txt": "6623ec790e3f5d2d78c26a70ce0d8b44f0154c2d34f59739153d22b05820d09d"
+   },
+   "results": [
+    "RESULT ms 565751 sb_size 1786",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "order-rot3-n15": {
+   "rc": 0,
+   "seconds": 674.8,
+   "sha256": {
+    "s.txt": "04fd41292aaec77c4cd8920bb12905f58ffaa4313a62c78a5c41416134c6c2d0",
+    "kbase.txt": "82ee258a6b22236b695f18f7fcdac470e1429edbb5d5cbf817675f8a164ae490"
+   },
+   "results": [
+    "RESULT ms 674564 sb_size 1765",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "order-rot5-n15": {
+   "rc": 0,
+   "seconds": 719.6,
+   "sha256": {
+    "s.txt": "f7921472c8f521302dd404dfb92c6bc592fd7bf6c279a3d92c314ffcb6d62dbc",
+    "kbase.txt": "58536c7a76fcf782eb8381b920ee8e5bde167446bd4fc3b544bd3857ad214b2e"
+   },
+   "results": [
+    "RESULT ms 719457 sb_size 1761",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "order-rot4-n15": {
+   "rc": 0,
+   "seconds": 747.1,
+   "sha256": {
+    "s.txt": "fdc982dece8bf64666056e504649238dede651c9529469e7158e8818c05da14f",
+    "kbase.txt": "09379854e00e78f81caac8c77b1dd3858f16a65ebb73adb5303593da13bdf41d"
+   },
+   "results": [
+    "RESULT ms 746970 sb_size 1769",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "order-rot6-n15": {
+   "rc": 0,
+   "seconds": 458.0,
+   "sha256": {
+    "s.txt": "00892c80339b5538f7d6f81612040de5ab3fe3611d37a104839db085e9f0b852",
+    "kbase.txt": "744b78633e64b5b8a3d20426848f848c7cde3e73e69b288d2c74bd2c69fe2a12"
+   },
+   "results": [
+    "RESULT ms 457890 sb_size 1769",
+    "RESULT kbase_size 6105"
+   ]
+  },
+  "slimgb-n22-p32009": {
+   "rc": 0,
+   "seconds": 26923.9,
+   "sha256": {
+    "s.txt": "e38021208734824d6e5df0e1624f7a747b8b97034b558e4437f625dd9b7cba82",
+    "kbase.txt": "8142261e6035743aaa290454fc87860b0849ce3865cd9a82960901f063a09ec1"
+   },
+   "results": [
+    "RESULT ms 26923396 sb_size 4989",
+    "RESULT kbase_size 25278"
+   ]
+  }
+ },
+ "pending": [],
+ "failed": [],
+ "total_seconds": 27013.3
+}
