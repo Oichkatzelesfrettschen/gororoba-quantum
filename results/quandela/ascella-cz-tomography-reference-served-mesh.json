@@ -1,5 +1,5 @@
 {
- "case": "docs/design/ascella-cz-process-tomography-case.md",
+ "case": "docs/design/ascella-cz-tomography-reference-case.md",
  "eligible_per_shot": {
   "analysis": "results/quandela/ascella-cz-tomography-reference-analysis.json",
   "input_mean_ratio": {

@@ -64,8 +64,11 @@ BAND_RUNS = (
     "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
 )
 BAND_ANALYSIS = "results/quandela/ascella-cz-tomography-reference-analysis.json"
-# Each pair of tomography runs with its preregistered analysis and its served-mesh record.
-PAIRS = {"retained": (RUNS, ANALYSIS, RECORD), "reference": (BAND_RUNS, BAND_ANALYSIS, BAND_RECORD)}
+# Each pair of tomography runs with its preregistered analysis, its served-mesh record and its design document.
+PAIRS = {
+    "retained": (RUNS, ANALYSIS, RECORD, case.DESIGN),
+    "reference": (BAND_RUNS, BAND_ANALYSIS, BAND_RECORD, "docs/design/ascella-cz-tomography-reference-case.md"),
+}
 SCHEMA = "ascella-cz-served-mesh-v1"
 SOURCES = (case.C0, case.T0)
 ELIGIBLE = ((case.C0, case.T0), (case.C0, case.T1), (case.C1, case.T0), (case.C1, case.T1))
@@ -113,7 +116,7 @@ def summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
-def record(runs: tuple[str, ...] = RUNS, analysis: str = ANALYSIS) -> dict[str, Any]:
+def record(runs: tuple[str, ...] = RUNS, analysis: str = ANALYSIS, design: str = case.DESIGN) -> dict[str, Any]:
     jobs: dict[str, Any] = {}
     every: list[dict[str, Any]] = []
     eligible = json.loads((ROOT / analysis).read_text(encoding="utf-8"))["eligible_events_by_setting"]
@@ -136,7 +139,7 @@ def record(runs: tuple[str, ...] = RUNS, analysis: str = ANALYSIS) -> dict[str, 
     ratios = [row["eligible_per_shot_ratio"] for row in every]
     return {
         "schema": SCHEMA,
-        "case": case.DESIGN,
+        "case": design,
         "metrics": {
             "nominal_tvd": "total variation distance between served and designed eligible-outcome distributions",
             "success_ratio": "served over designed probability of one photon on each rail pair, modes 4..11 empty",
@@ -161,8 +164,8 @@ def main() -> int:
     parser.add_argument("--pair", choices=sorted(PAIRS), action="append", help="default: every pair")
     args = parser.parse_args()
     for name in args.pair or sorted(PAIRS):
-        runs, analysis, path = PAIRS[name]
-        built = record(runs, analysis)
+        runs, analysis, path, design = PAIRS[name]
+        built = record(runs, analysis, design)
         if args.write:
             path.write_text(json.dumps(built, indent=1, sort_keys=True) + "\n", encoding="utf-8")
         else:
