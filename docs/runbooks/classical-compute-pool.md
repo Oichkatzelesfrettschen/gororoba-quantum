@@ -65,7 +65,10 @@ cuts off loses all of its work. The A_5 kernels (`docs/evidence/a5-exceptional-f
    against 16,029 s at N = 22, ratios 1.50 and 1.89, so plan with 1.9 when two such jobs share a session. At p = 32009 the same pair took
    18,858 s and 32,335 s against whole-cell laptop times of 12,155 s and 16,538 s (1.55 and 1.96, kernel
    `a5-vb-d7-slimgb-p32009`), and N = 22 without an N = 21 job beside it took 26,924 s (1.63, kernel
-   `a5-vb-d7-slimgb-gpu-p32009`). A job whose estimate exceeds about 11 h goes to the laptop, or splits into independent pieces (one prime, one
+   `a5-vb-d7-slimgb-gpu-p32009`). These factors hold for the slimgb export only: the infrastructure chart's
+   `std(J + m^K)` benchmark (one job per session, identical bases) measured Kaggle at 3.57, 3.19 and 3.15 times the
+   laptop at K = 9, 11 and 13. Measure the factor on the workload a plan depends on, and record the session's
+   `/proc/cpuinfo` with each Kaggle timing, since the session CPU varies. A job whose estimate exceeds about 11 h goes to the laptop, or splits into independent pieces (one prime, one
    N or one relation block per kernel).
 2. **Pack sessions.** A session holds four cores and 30 GB, and five CPU sessions run at once. The runner keeps four jobs
    in flight, and every job's memory comes from its laptop peak.
