@@ -17,7 +17,8 @@
     4
    ],
    "rank": 5,
-   "singular_rank": 5
+   "singular_rank": 5,
+   "singular_order_of_G": 4
   },
   {
    "family": "iso",
@@ -33,7 +34,8 @@
     4
    ],
    "rank": 5,
-   "singular_rank": 5
+   "singular_rank": 5,
+   "singular_order_of_G": 4
   },
   {
    "family": "iso",
@@ -49,7 +51,8 @@
     4
    ],
    "rank": 5,
-   "singular_rank": 5
+   "singular_rank": 5,
+   "singular_order_of_G": 4
   },
   {
    "family": "iso",
@@ -65,7 +68,8 @@
     4
    ],
    "rank": 5,
-   "singular_rank": 5
+   "singular_rank": 5,
+   "singular_order_of_G": 4
   },
   {
    "family": "w8-c30",
@@ -82,7 +86,8 @@
     4
    ],
    "rank": 6,
-   "singular_rank": 6
+   "singular_rank": 6,
+   "singular_order_of_G": 4
   },
   {
    "family": "w8-c30",
@@ -99,7 +104,8 @@
     4
    ],
    "rank": 6,
-   "singular_rank": 6
+   "singular_rank": 6,
+   "singular_order_of_G": 4
   },
   {
    "family": "w8-c30",
@@ -116,7 +122,8 @@
     4
    ],
    "rank": 6,
-   "singular_rank": 6
+   "singular_rank": 6,
+   "singular_order_of_G": 4
   },
   {
    "family": "w8-c30",
@@ -133,7 +140,8 @@
     4
    ],
    "rank": 6,
-   "singular_rank": 6
+   "singular_rank": 6,
+   "singular_order_of_G": 4
   },
   {
    "family": "xm-nm",
@@ -149,7 +157,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xm-nm",
@@ -165,7 +174,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xm-nm",
@@ -181,7 +191,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xm-nm",
@@ -197,7 +208,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xp-np",
@@ -213,7 +225,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xp-np",
@@ -229,7 +242,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xp-np",
@@ -245,7 +259,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "xp-np",
@@ -261,7 +276,8 @@
     5
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 5
   },
   {
    "family": "vb-generic",
@@ -277,7 +293,8 @@
     2
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 2
   },
   {
    "family": "vb-generic",
@@ -293,7 +310,8 @@
     2
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 2
   },
   {
    "family": "vb-generic",
@@ -309,7 +327,8 @@
     2
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 2
   },
   {
    "family": "vb-generic",
@@ -325,7 +344,8 @@
     2
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 2
   },
   {
    "family": "vb-special",
@@ -341,7 +361,8 @@
     4
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 4
   },
   {
    "family": "vb-special",
@@ -357,7 +378,8 @@
     4
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 4
   },
   {
    "family": "vb-special",
@@ -373,7 +395,8 @@
     4
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 4
   },
   {
    "family": "vb-special",
@@ -389,7 +412,8 @@
     4
    ],
    "rank": 4,
-   "singular_rank": 4
+   "singular_rank": 4,
+   "singular_order_of_G": 4
   }
  ]
 }

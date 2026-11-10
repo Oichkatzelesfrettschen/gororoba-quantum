@@ -55,8 +55,9 @@ with rank 4, and the scans agree across the four cases.
 1. Phi(arc) lies on V(J) and passes through the origin.
 2. The coefficients of s^0 to s^4 of every G_j vanish identically in (W, R, S, A) and the coefficient F of s^5 is a
    nonzero polynomial vector, so F is the limit vector on a dense open set and lies in the affine cone over E0.
-3. The closure of the image of F is an irreducible cone of dimension at least 4, the rank of [dF, F] at a point, and
-   it lies in V(K2) because K2 lies in L. dim V(K2) = 4, so the cone is a component of V(K2) and dim F(I) = 4.
+3. The cone over the image of F, the closure of the image of (lambda, u) -> lambda F(u), is irreducible of dimension
+   at least 4, the rank at a point of [dF, F], the Jacobian of that map at lambda = 1, and it lies in V(K2) because
+   K2 lies in L. dim V(K2) = 4, so the cone is a component of V(K2) and dim F(I) = 4.
 4. At p = 32009 V(K2) of X- is irreducible (A5-022), so E0 = V_+(K2) there.
 
 The arcs have rational coefficients, so they are real arcs. The Python series engine of

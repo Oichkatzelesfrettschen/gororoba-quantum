@@ -31,7 +31,7 @@ the value K2 predicted before the run.
 | W8 -> N+- | d = 1 to 5; h_6 = 8,624 proved | proved mod p: F(I) = k[y]/K2, V(K2) = C20 cup C30 (A5-066) | characteristic 0 (task 122) |
 | Iso -> N+- | d = 1 to 6 | proved mod p: an explicit arc family is dense in V(K2), so F(I) = k[y]/K2 (A5-067, A5-007) | characteristic 0 |
 | E8-bar -> VB | d = 1 to 7 | proved mod p: arcs are dense in both components of V(K2), so F(I) = k[y]/K2 (A5-005, A5-015, A5-016) | characteristic 0 |
-| X+ -> N+, X- -> N- | d = 1 to 6 | support decided: weighted arcs have limit rank 4, so the support is a 4-dimensional component of V(K2), all of it at 32009 (A5-022); F(I) is not Cohen-Macaulay (A5-245 refuted); K2 is not radical, so L = K2 beyond degree 6 is open | a relation of L outside K2, or a proof that none exists |
+| X+ -> N+, X- -> N- | d = 1 to 6 | dimension decided at both primes: weighted arcs have limit rank 4, so the support contains a 4-dimensional component of V(K2) and dim F(I) = 4; the support equals V(K2) only where V(K2) is known irreducible, X- at 32009 (A5-022); F(I) is not Cohen-Macaulay (A5-245 refuted); K2 is not radical, so L = K2 beyond degree 6 is open | a relation of L outside K2, or a proof that none exists |
 | E8-bar -> N+- | d = 1 to 5 | open: K2 is not radical; 1,526 <= h_6 <= 1,666 (A5-251) | membership of degree-6 forms (tasks 110, 125) |
 
 Three findings bound the ladder's value. Every all-degree statement above came from geometry (arcs, component
@@ -45,8 +45,10 @@ Three gaps separate the fiber record from item 6:
 - field: every fiber statement except A5-270 holds at p = 32009 and p = 32029. Check 1 of the characteristic-0
   transfer covers all ten pairs (A5-247), check 3 covers X- and W8 (A5-249, A5-277), check 2 has no result (A5-248);
 - kernels: F(I) describes limits of the generator vector G, and item 6 needs limits of ker L_a in a Grassmannian.
-  The exact limit along sampled arcs is computed on every family (A5-272 to A5-276, A5-292): dimension 8, inside the
-  base kernel, one plane per fiber point. The image of a whole fiber in the Grassmannian is not computed;
+  The exact limit along sampled arcs is computed on every family except the VB arcs through k = -9 (A5-272 to
+  A5-276, A5-292): dimension 8, inside the base kernel. The limit is one plane per fiber point on the families whose
+  fiber coordinates y are computed; on E8-bar -> VB the dependence on the fiber point is untested, since y is not
+  computed there (A5-276). The image of a whole fiber in the Grassmannian is not computed;
 - reality: item 6 admits limits along real arcs with two-sided certificates. Real arcs now exist on the opposite-sign
   and same-sign X incidences, on Iso and on the degree-30 component of W8 (rational arcs); the degree-20 component of
   W8 and both E8-bar families have arcs over the prime fields only, and no incidence has the excluded side (A5-250).

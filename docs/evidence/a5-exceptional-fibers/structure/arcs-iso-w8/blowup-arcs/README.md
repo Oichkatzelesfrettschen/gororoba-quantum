@@ -64,8 +64,9 @@ the K2 test discriminates arcs on the slice from arcs beside it. The two rank po
 2. The coefficients of s^0 to s^3 of every G_j vanish identically in the parameters and the coefficient F of s^4 is
    a nonzero polynomial vector, so for parameters in a dense open set F is the limit vector and lies in the affine
    cone over E0.
-3. The closure of the image of F is an irreducible cone whose dimension is at least the rank of [dF, F] at a point:
-   5 on Iso, 6 on W8.
+3. The cone over the image of F, the closure of the image of (lambda, u) -> lambda F(u), is irreducible, and it lies
+   in the cone over E0 because that cone is closed under scaling. The Jacobian of this map at lambda = 1 is
+   [dF, F], so the dimension of the cone is at least its rank at a point: 5 on Iso, 6 on W8.
 4. Iso: the cone lies in V(K2), irreducible of dimension 5, so it is V(K2), and E0 = V_+(K2). With K2 radical and
    k[y]/K2 Cohen-Macaulay of positive dimension (A5-058, A5-059), L = K2 and F(I) = k[y]/K2 in every degree, as in
    step 7 of [../iso-planes/](../iso-planes/README.md).

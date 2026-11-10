@@ -59,7 +59,8 @@ neighbor case shows that the same weights at k0 = -8 stay in V(P2) with rank 2, 
 1. Each arc is Phi of an arc through a point of l, so it lies on V(J) and passes through the origin.
 2. The coefficients of G below order nu vanish identically in the parameters and the coefficient F of s^nu is a
    nonzero polynomial vector, so F is the limit vector on a dense open set and lies in the affine cone over E0.
-3. The closure of the image of F is an irreducible cone of dimension at least 4, the rank of [dF, F] at a point.
+3. The cone over the image of F, the closure of the image of (lambda, u) -> lambda F(u), is irreducible of dimension
+   at least 4, the rank at a point of [dF, F], the Jacobian of that map at lambda = 1.
 4. The generic family lies in V(P2) and the special family in V(P1); both primes have dimension 4, so each family is
    dense in its component.
 5. E0 lies in V_+(K2) and contains both components, so E0 = V_+(K2); L lies in I(E0) = K2 and contains K2.

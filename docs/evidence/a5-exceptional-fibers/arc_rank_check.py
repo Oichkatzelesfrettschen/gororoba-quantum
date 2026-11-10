@@ -8,7 +8,8 @@ kernel-limits/plucker_limits.py, and the eps-part of the coefficient of s^nu is 
 parameter. The header parser, the Series class and the polynomial evaluator are those of plucker_limits.py, so the
 check is independent of Singular and of the arc formulas in the generators, not of that Python evaluator. The record
 holds, per family, prime and point: the least order of J on the arc (the truncation order when
-J vanishes), the order nu of G, and the rank of [dF | F] over F_p, beside the rank the Singular log reports.
+J vanishes), the order nu of G, and the rank of [dF | F] over F_p, beside the order and the rank the Singular log
+reports; the verdict requires both to match.
 
     $PYTHON docs/evidence/a5-exceptional-fibers/arc_rank_check.py
 """
@@ -211,6 +212,15 @@ def singular_ranks(family: str, prime: int) -> list[int]:
     return [int(match.group(1)), int(match.group(2))]
 
 
+def singular_order(family: str, prime: int) -> int:
+    """The order nu of G on the certified arc, from the first nu line of the Singular log outside its weight scan."""
+    text = (HERE / FAMILIES[family][3].format(prime=prime)).read_text(encoding="utf-8")
+    match = re.search(r"^RESULT (?!scan)[^\n]*\bnu (\d+)", text, flags=re.MULTILINE)
+    if match is None:
+        raise RuntimeError(f"{family} {prime}: no order line in the Singular log")
+    return int(match.group(1))
+
+
 def one(item: tuple[str, int, int]) -> dict[str, Any]:
     family, prime, index = item
     slug, arc, count, _ = FAMILIES[family]
@@ -239,6 +249,7 @@ def one(item: tuple[str, int, int]) -> dict[str, Any]:
         "order_of_G": sorted(orders),
         "rank": int(matrix.rank()),
         "singular_rank": singular_ranks(family, prime)[index],
+        "singular_order_of_G": singular_order(family, prime),
     }
 
 
@@ -247,7 +258,9 @@ def main() -> None:
     rows = parallel.ordered_map(one, items, min_items=1)
     # The W8 arc solves J = 0 by iteration, exact to the truncation order; the other arcs are exact identities.
     verdict = all(
-        row["rank"] == row["singular_rank"] and len(row["order_of_G"]) == 1 and row["least_order_of_J"] >= ORDER - 2
+        row["rank"] == row["singular_rank"]
+        and row["order_of_G"] == [row["singular_order_of_G"]]
+        and row["least_order_of_J"] >= ORDER - 2
         for row in rows
     )
     record = {"schema": SCHEMA, "order": ORDER, "verdict": "agrees" if verdict else "differs", "rows": rows}
