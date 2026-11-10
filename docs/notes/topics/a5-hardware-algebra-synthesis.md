@@ -109,7 +109,7 @@ The Iso -> N- question is whether F(I) = k[y]/K2 (row 007). It reduces to one nu
 
 So F(I) = k[y]/K2 holds exactly when the analytic spread is 5, and the multiplicity condition of row 011 is
 redundant. The 23-variable blowup chart that tried to decide it failed six times (rows 070, 071, 174, 176, 181, 205;
-the last ran 23.5 h to degree 15 with 37,018 basis elements at 25.7 GB).
+the last ran 23.5 h to degree 15 with a pair list of 37,018 at 25.7 GB).
 
 The successor works in the six t-variables alone
 ([tslice](../../evidence/a5-exceptional-fibers/structure/arcs-iso-w8/tslice/README.md)):

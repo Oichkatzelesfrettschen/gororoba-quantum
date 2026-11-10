@@ -128,7 +128,7 @@ the closest entry and say what changed.
   bring the sliced chart under the 11 GB lab host; the next attempt needs a host above that ceiling and a written
   case.
 - FX4 outcome (2026-11-07): on an FX4mds_v2 under a 55 GB scope the first std(C) ran 23.5 h (22 h limit, then an
-  orphaned extension) to degree 15 with 37,018 elements and 25.7 GB resident, still growing, and ended when the VM's
+  orphaned extension) to degree 15 with a pair list of 37,018 and 25.7 GB resident, still growing, and ended when the VM's
   `az vm auto-shutdown` schedule deallocated it at 21:00Z. That schedule recurs daily and had ended the first attempt
   a day earlier; a run past its first day reads `az resource list -g RG --resource-type
   Microsoft.DevTestLab/schedules` first and moves the schedule past the run's own deadline. Logs:

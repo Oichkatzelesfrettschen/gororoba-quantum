@@ -1,0 +1,9 @@
+RESULT division defects 0
+RESULT apex prime deg 2
+RESULT N 3 HF(fiber cone at apex, n)= 6 12 0
+RESULT N 3 P1 generators not in Q I'^e 7 of 7 ; P2 generators not in Q I'^e 0 of 9
+RESULT seconds 6
+RESULT N 6 HF(fiber cone at apex, n)= 6 12 20
+RESULT N 6 P1 generators not in Q I'^e 7 of 7 ; P2 generators not in Q I'^e 0 of 9
+RESULT seconds 111
+111.48 s 970164 KiB

@@ -1,0 +1,16 @@
+{
+ "repo_head": "8a2e410ba0ba1c742055e46c3ab1c60266e08dab",
+ "args": [
+  "docs/evidence/a5-char0-transfer/truncation_check.py",
+  "--slug",
+  "xm-nm",
+  "--order",
+  "22",
+  "--timeout",
+  "20000"
+ ],
+ "rc": 1,
+ "seconds": 20013.6,
+ "total_seconds": 20299.4,
+ "cpu_count": 4
+}

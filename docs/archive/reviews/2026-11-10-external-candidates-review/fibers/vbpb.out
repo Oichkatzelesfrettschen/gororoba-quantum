@@ -1,0 +1,21 @@
+RESULT norid dim 4 std size 314 s 2
+RESULT Gh in (h^2)+norid 1
+RESULT check h^2 Gp - Gh in norid 1
+RESULT D dim 3 base locus on D dim 0
+RESULT on D: K2 nonzero 0 P2 nonzero 0 P1 nonzero 7
+RESULT seconds 2
+RESULT base locus primes 1
+RESULT prime 1 dim 0 deg 2
+t8,
+t6,
+t5,
+t4,
+t3,
+t2,
+t1,
+h,
+T(4),
+T(3),
+T(1)-16004*T(2),
+T(2)^2+10671
+RESULT seconds 2

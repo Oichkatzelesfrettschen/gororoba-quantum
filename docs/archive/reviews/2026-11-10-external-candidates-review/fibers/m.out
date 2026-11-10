@@ -1,0 +1,6 @@
+RESULT HF(M) d=1..8 5 14 30 55 91 140 204 285
+RESULT HF(rad) d=1..8 16 69 195 440 861 1526 2514 3915
+RESULT ann(M)=K2:rad dim 4 deg 2
+RESULT HF(k[y]/ann)  5 14 30 55 91
+RESULT rad(ann) dim 4 deg 2 linear 16
+3.38 s 48848 KiB

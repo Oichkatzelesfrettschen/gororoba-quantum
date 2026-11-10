@@ -1,0 +1,3 @@
+ring r=32009,(y(1..15)),dp; execute("ideal K="+read("../../../../evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel")+";");
+resolution rs=mres(K,0); "RESULT X- projdim "+string(size(rs)); print(betti(rs),"betti");
+quit;
