@@ -26,8 +26,10 @@ ideal-mesh law at shifted figures (g2 0.03, dark 2 times the band read), requiri
 NLL at the drawn figures and its g2 within 0.005 of 0.03.
 
 Seeds, docs/evidence/anu_qrng/draw-2026-11-09T020604Z.json: index 224 the null draws, 225 the restarts, 226 the
-self-test. Run from the repository root: ``"$PYTHON" docs/evidence/ascella-cz-tomography-band/g2_free_source.py
---self-test`` or ``... g2_free_source.py INPUT.json OUT.json`` with INPUT.json mesh-model-jobs-input.json.
+self-test. ``--pin-empty-modes INPUT.json OUT.json`` refits every set's ideal-mesh baseline with the dark rates of
+the six modes outside the window pinned at the plan read, beside the unpinned fit. Run from the repository root:
+``"$PYTHON" docs/evidence/ascella-cz-tomography-band/g2_free_source.py --self-test`` or ``... g2_free_source.py
+INPUT.json OUT.json`` with INPUT.json mesh-model-jobs-input.json.
 """
 
 from __future__ import annotations
@@ -47,6 +49,7 @@ NULL_INDEX = 224
 RESTART_INDEX = 225
 SELF_TEST_INDEX = 226
 P2_CEILING = 0.4
+OUTER_FROM = 6
 
 
 def sibling(name: str) -> Any:
@@ -107,7 +110,9 @@ def free_law(
 def figures(raw: dict[str, torch.Tensor], plan: dict[str, Any]) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     t = torch.tensor(float(plan["transmittance"]))
     p2 = P2_CEILING * torch.sigmoid(raw["p2"])
-    dark = torch.tensor(plan["dark"]) * torch.exp(raw["dark"])
+    # A mode named in ``pinned`` keeps its plan-read dark rate (--pin-empty-modes).
+    free = torch.tensor([0.0 if mode in plan.get("pinned", ()) else 1.0 for mode in range(MM.MODES)])
+    dark = torch.tensor(plan["dark"]) * torch.exp(raw["dark"] * free)
     return t, p2, dark
 
 
@@ -129,7 +134,7 @@ def free_fit(item: dict[str, Any]) -> dict[str, Any]:
     ph, n = torch.tensor(data["phases"]), torch.tensor(data["counts"])
     job = torch.as_tensor(data["job"])
     jobs = int(job.max()) + 1
-    plan = data["source"]
+    plan = {**data["source"], "pinned": tuple(item.get("pinned", ()))}
     given = item.get("start") if free else item.get("components")
     zero = {"d": np.zeros(mesh.nb), "o": np.zeros(mesh.np_), "g": 0.0, "k": 0.0}
     comp = {key: torch.tensor((given or zero)[key], dtype=torch.float64).requires_grad_(free) for key in zero}
@@ -264,11 +269,52 @@ def self_test() -> int:
     return 0
 
 
+def pin_empty_modes(source: Path, target: Path) -> int:
+    """The ideal-mesh fit of every set with the dark rates of the six modes outside the window (modes 6 to 11,
+    which hold 0.01 to 0.05 % of the two-click events) pinned at the plan read, beside the unpinned fit. Equal
+    deviances show that those modes' dark rates only reparametrize the window modes' dark-to-photon ratio, so the
+    free fit's raw dark figures carry no measurement of them."""
+    found = json.loads(source.read_text(encoding="utf-8"))
+    arch, sets = MJ.assemble(found)
+    names = sorted(sets)
+    first, second = np.asarray(MJ.I_IDX), np.asarray(MJ.J_IDX)
+    outer = list(range(OUTER_FROM, MM.MODES))
+    shares = {
+        name: [
+            float(sets[name]["counts"][:, (first == m) | (second == m)].sum() / sets[name]["counts"].sum())
+            for m in outer
+        ]
+        for name in names
+    }
+    empty = {name: outer for name in names}
+    items = [{"arch": arch, "data": sets[name], "law": "g2", "free": False} for name in names]
+    items += [{**item, "pinned": empty[name]} for item, name in zip(items, names, strict=True)]
+    fits = MJ.ordered_map(free_fit, items, min_items=1)
+    out = {}
+    for k, name in enumerate(names):
+        free_entry, pinned_entry = fits[k], fits[len(names) + k]
+        plan = sets[name]["source"]["dark"]
+        out[name] = {
+            "pinned_modes": empty[name],
+            "event_share_of_pinned_modes": shares[name],
+            "deviance": {"free": free_entry["deviance"], "pinned": pinned_entry["deviance"]},
+            "g2": {"free": free_entry["source_fit"]["g2"], "pinned": pinned_entry["source_fit"]["g2"]},
+            "window_dark_over_plan_pinned": [pinned_entry["source_fit"]["dark"][m] / plan[m] for m in range(6)],
+            "status_pinned": pinned_entry["status"],
+        }
+    target.write_text(json.dumps(out, indent=1, allow_nan=False) + "\n", encoding="utf-8")
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if argv == ["--self-test"]:
         return self_test()
+    if len(argv) == 3 and argv[0] == "--pin-empty-modes":
+        return pin_empty_modes(Path(argv[1]), Path(argv[2]))
     if len(argv) != 2:
-        raise SystemExit("usage: g2_free_source.py --self-test | INPUT.json OUT.json")
+        raise SystemExit(
+            "usage: g2_free_source.py --self-test | --pin-empty-modes INPUT.json OUT.json | INPUT.json OUT.json"
+        )
     content = Path(argv[0]).read_bytes()
     found = json.loads(content)
     arch, sets = MJ.assemble(found)

@@ -317,10 +317,14 @@ baseline and transfer deviance.
 
   None survives and the within-pair transfers sit above their baselines, so the null transfer stands with the
   source figures free. Fitting the figures lowers the ideal-mesh baselines by 5 to 9 %. The fitted g2 is 0.019 to
-  0.022 against plan reads of 0.018 (retained) and 0.020 (band), and the effective dark rates of the six window
-  modes are 0.3 to 10 times the plan read. The raw figures carry a degeneracy: mode 6, which holds none of the
-  two-click events, takes a dark probability near 1 with its output weight near 0, and that sets a common scale
-  of the window modes' dark-to-photon ratio. Every component and ceiling fit reached the 3,000-iteration cap;
+  0.022 against plan reads of 0.018 (retained) and 0.020 (band), and the dark rates of the six window modes are 0.3
+  to 10 times the plan read. The raw fitted figures carry a degeneracy: mode 6, which holds 0.02 to 0.04 % of the
+  two-click events, takes a dark probability near 1 with its output weight near 0, which divides every window
+  pattern's no-dark factor by about 1,000 and so sets a common scale of the window modes' dark-to-photon ratio.
+  Pinning the dark rates of the six modes outside the window at the plan read (`--pin-empty-modes`,
+  `g2-free-source-pinned.json`) returns the same g2, puts the window dark rates directly at 0.3 to 10 times the
+  plan read, and raises the ideal-mesh deviance by 0.3 to 68 (at most 1.5 %), so the ridge reparametrizes the law
+  rather than changing it. Every component and ceiling fit reached the 3,000-iteration cap;
   the baselines and transfers stopped on tolerance except one baseline, and 7 of 400 null fits reached the cap.
   The run cost 10,585 CPU-seconds on the build host.
 
