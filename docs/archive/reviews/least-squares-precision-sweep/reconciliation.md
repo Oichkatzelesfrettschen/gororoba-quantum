@@ -30,8 +30,8 @@ pull request.
    byte values over `hosts/*.jsonl` returns 0. The second half also survives: `fp_export.py` accepted any
    `--host-label` while `fp_sweep.py:213-216` validated it; `fp_export.py` now calls `fp_host.label_error`
    (verified: a label containing this machine's hostname exits 2). Residual, bounded: `cap.bytes` is
-   `min(8 GiB, 0.6 x memory)`, so on the two hosts under 13.3 GB (aws-sapphire-rapids 2397044736,
-   oci-a1-neoverse-n1 7501512704) the cap size still implies the memory size; the cap is the limit that applied and
+   `min(8 GiB, 0.6 x memory)`, so on the two hosts under 13.3 GB (aws-sapphire-rapids and
+   oci-a1-neoverse-n1) the cap size still implies the memory size; the cap is the limit that applied and
    cannot be rewritten without falsifying the record. The README table no longer names the EC2 instance class. The
    owner decides whether the cap size on those two hosts is acceptable.
 3. **Cap prose -- SURVIVES.** `m1-macos-full.jsonl:1` has `cap.mechanism="none"`, `enforced=false`, and
@@ -142,8 +142,7 @@ SkylakeX conjecture stays a hypothesis. The `cap.bytes` residual went to the own
 Advisor pass on this round, applied: README quaddtype table rows relabeled by sweep label and OS family (e721896cd);
 the former quaddtype record names named machines in the infrastructure chart. Residual for the owner: the four
 `quad-falsification/` records on main carried machine names in file names and contents, and renaming or rewriting
-them may break pins. Resolved by owner ruling: successor records under the sweep labels with the OS family only
-(ee7cdd9a3), and the three build-host records relabeled the same way (c47a7a976).
+them may break pins.
 
 Final Advisor verdicts (PR rounds): every disposition confirmed. Vocabulary miss and Pearson-correlation refusal
 bounded (the guard catches an omitted term, not a deliberate rename; typed preregistration schema is the full fix).
@@ -153,16 +152,21 @@ modules). Host-name files on main go to the owner. Later commits: dada2f71a, 886
 
 ## Addendum: the second nemotron report on 5ba6b3791
 
+Since the verdicts above, the owner ruled on the quaddtype residual: successor records under the sweep labels with
+the OS family only (ee7cdd9a3), and the three build-host records relabeled the same way (c47a7a976).
+
 A second claude-free launch on the same nemotron brief, filed locally as an aborted start, went on to write a full
-report ([review-nemotron-second.md](review-nemotron-second.md)) that the reconciliation above never read. Each
+report ([review-nemotron-second.md](review-nemotron-second.md)) that the reconciliation above never read. The report
+records no head; its README citations (lines 260-268) fit 5ba6b3791, the head its brief names, so that head is
+inferred. Each
 finding was checked against the retained rows in `docs/evidence/least-squares-precision/hosts/*-full.jsonl` and the
 source on the integration branch.
 
 | Finding | Disposition | Evidence |
 |---|---|---|
-| README "every configuration run on two or more of them scores identically" is false: the x87 refinement steps differ | Bounded, fixed | The 3 `float64 pinv + k x87 refinement steps` configurations differ on build-host, zen4-wsl and aws-sapphire-rapids (worst score error 1.32 to 1.50 ulp). They start from the BLAS pinv, so they belong with the float64 configurations, yet the README's count of 30 float64 configurations left them out (33 float64 configurations run on two or more hosts; none has one score on every host). The README paragraph now scopes the equality to BLAS-free configurations, counts all 45 of them (24 arb, 16 binary128 including the 8 `longdouble`-backend configurations it had omitted, 5 x87; none differs), and states the 3 refined configurations separately, including that zen4-wsl and aws-sapphire-rapids agree on none of them |
+| README "every configuration run on two or more of them scores identically" is false: the x87 refinement steps differ | Bounded, fixed | The 3 `float64 pinv + k x87 refinement steps` configurations differ on build-host, zen4-wsl and aws-sapphire-rapids (worst score error 1.32 to 1.50 ulp). They start from the OpenBLAS pinv, so they belong with the float64 configurations, yet the README's count of 30 float64 configurations left them out (33 float64 configurations run on two or more hosts; none has one score on every host). The README paragraph now scopes the equality to configurations that bypass OpenBLAS, counts all 45 of them (24 arb, 16 binary128 including the 8 `longdouble`-backend configurations it had omitted, 5 x87; none differs), and states the 3 refined configurations separately, including that zen4-wsl and aws-sapphire-rapids agree on none of them |
 | Only 2 of the 5 x87 configurations score identically | Refuted | The 5 shared pure-x87 configurations (Householder at 1, 2, 4 and 8 workers, normal equations) each have one score on every host that ran them; the report counted the refinement configurations as x87 |
-| `wait_for_idle` takes `os.cpu_count()` rather than the admitted worker count | Refuted | README.md documents the threshold as 0.5 x `os.cpu_count()`; the 1 minute load average is system-wide, so the logical CPU count is its scale, and each row records the threshold and the load at release |
+| `wait_for_idle` takes `os.cpu_count()` rather than the admitted worker count | Bounded, by design | README.md documents the threshold as 0.5 x `os.cpu_count()`; the 1 minute load average is system-wide, so the logical CPU count is its scale, and each row records the threshold and the load at release |
 | `label_error` checks hostname substrings of 3 or more characters only | Bounded | A 1- or 2-character hostname would reject almost every label; the label regex still bars paths, and the six retained labels were chosen by hand |
 | Cap size implies memory on the two small hosts | Owner ruling | `cap.bytes` stays as the limit the run applied (2026-11-09) |
 | Conjecture: float64 scores follow the OpenBLAS build, MAX_THREADS 64 on zen4-wsl and aws-sapphire-rapids against 24 on zen4-windows | Premise refuted; hypothesis open | No host record carries a MAX_THREADS field; the values the report reads are threadpoolctl's runtime `num_threads` (32, 2 and 24), which contradict its 64 for aws-sapphire-rapids. A dependence on the OpenBLAS build stays a hypothesis with the falsifier listed above (`OPENBLAS_CORETYPE` forced on both SkylakeX hosts) |

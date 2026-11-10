@@ -65,8 +65,8 @@ No row shows cap differing from applied; no path fails on its named OS.
 - No hostname, username, local path, kernel release, distribution string in hosts/*.jsonl or host-records.json
 - `fp_export.py` validates `--host-label` via `fp_host.label_error()` (fp_export.py:42-45), same as fp_sweep.py
 - **Gap**: `cap.bytes = min(8 GiB, 0.6 × physical memory)` implies memory size on hosts with cap < 8 GiB:
-  - aws-sapphire-rapids: 2.23 GiB cap → physical ~3.7 GiB
-  - oci-a1-neoverse-n1: 6.99 GiB cap → physical ~11.6 GiB
+  - aws-sapphire-rapids: cap below 8 GiB → physical memory implied
+  - oci-a1-neoverse-n1: cap below 8 GiB → physical memory implied
   - Acknowledged in brief as "known gap for you to judge"
 
 ---
