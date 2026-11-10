@@ -1,0 +1,13 @@
+#!/bin/sh
+# E8-bar -> VB, p = 32009: std and slimgb of J + m^N for N = 1 to 17, twelve Singular processes at a time on the
+# Windows workstation; each writes its reduced basis (.s), kbase and exit status, stdin from /dev/null.
+set -eu
+# xargs exits 123 when any child exits nonzero, and set -e carries that out of the script.
+S=${SINGULAR:-Singular}
+export S
+cd "$(dirname "$0")"
+ls ladder-n*-*.sing | sort -t n -k 2 -n | xargs -P 12 -I{} sh -c '
+  t=$(basename {} .sing); rc=0
+  /usr/bin/time -v -o "$t.time" "$S" -q --no-rc {} < /dev/null > "$t.log" 2>&1 || rc=$?
+  [ "$rc" -ne 0 ] || grep -q "^RESULT kbase_size" "$t.log" || rc=3
+  echo "$rc" > "$t.status"; exit "$rc"'
