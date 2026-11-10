@@ -258,6 +258,13 @@ def e8_arc(field: Field, sign: int, parameters: tuple[Any, ...]) -> dict[str, Se
         sigma = monomials(field, big_r - big_s, *extra[2]) * Fraction(1, 2)
         zeta = monomials(field, big_z, *extra[3])
         e = Series((-1, 0, big_e, *extra[4]), field)
+    return e8_phi(field, sign, w, rho, sigma, zeta, e)
+
+
+def e8_phi(
+    field: Field, sign: int, w: Series, rho: Series, sigma: Series, zeta: Series, e: Series
+) -> dict[str, Series]:
+    """The slice coordinates of Phi(m = 1 + w, rho, sigma, e, zeta) of ../arcs, with t9 carrying the incidence sign."""
     half = Fraction(1, 2)
     m = w + 1
     m_inverse = m.inverse()
@@ -278,6 +285,11 @@ def e8_arc(field: Field, sign: int, parameters: tuple[Any, ...]) -> dict[str, Se
         "t8": -(below * omega * m_inverse * PRIMES[field.prime or 0]),
         "t9": -(w * w) * m_inverse * half * sign,
     }
+
+
+def slice_of(item: tuple[str, Field]) -> dict[str, Any]:
+    """slice_data of one (slug, field). The unit parallel.ordered_map maps."""
+    return slice_data(*item)
 
 
 def operand(split: list[Series], field: Field) -> list[Series]:
@@ -410,7 +422,8 @@ def summarize(data: dict[str, Any], arcs: list[dict[str, Any]]) -> dict[str, Any
         "g_order": sorted({a["g_order"] for a in kept if "g_order" in a}),
         "largest_pivot_valuation_sum": max(sum(a["pivot_valuations"]) for a in kept),
         "limit_in_base_kernel": all(a["limit_in_base_kernel"] for a in kept),
-        "on_slice": all(a.get("j_nonzero", 0) == 0 for a in kept),
+        # None over Q: J is evaluated only modulo a prime, where the headers exist.
+        "on_slice": all(a["j_nonzero"] == 0 for a in kept) if all("j_nonzero" in a for a in kept) else None,
         "groups": len(groups),
         "groups_with_several_arcs": sum(size > 1 for size in sizes.values()),
         "one_plane_per_group": all(len(planes) == 1 for planes in groups.values()),
@@ -452,7 +465,9 @@ def build(family: str) -> dict[str, Any]:
     slugs = X_INCIDENCES if family == "x" else E8_INCIDENCES
     order = X_ORDER if family == "x" else E8_ORDER
     fields = (*PRIMES, None) if family == "x" else tuple(PRIMES)
-    slices = [slice_data(slug, Field(prime, order)) for slug, prime in itertools.product(slugs, fields)]
+    slices = parallel.ordered_map(
+        slice_of, [(slug, Field(prime, order)) for slug, prime in itertools.product(slugs, fields)], min_items=1
+    )
     sets = parameter_sets(family)
     items = [(data, parameters, mutate) for data in slices for parameters, mutate in sets]
     results = parallel.ordered_map(one_arc, items, min_items=1)
@@ -469,7 +484,7 @@ def build(family: str) -> dict[str, Any]:
         and s["arc_nullity"] == [SOURCE_NULLITY]
         and s["limit_dimension"] == [SOURCE_NULLITY]
         and s["limit_in_base_kernel"]
-        and s["on_slice"]
+        and s["on_slice"] is not False
         and s["one_plane_per_group"]
         and s["mutation_columns_without_pivot"] != [SOURCE_NULLITY]
         for s in summaries

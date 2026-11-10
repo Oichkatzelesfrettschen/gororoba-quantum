@@ -41,6 +41,7 @@ LEADING_ORDERS = tuple(itertools.product((1, 2, 3), repeat=3))
 ARCS_PER_PATTERN = 24
 TERMS = 3
 KERNEL_AT_VB = 12
+SLUG = "e8-nm"
 
 
 def coefficient(arc: int, series: int, term: int) -> int:
@@ -57,25 +58,7 @@ def arc_values(field: limits.Field, pattern: tuple[int, int, int, int], arc: int
     )
     zeta = zeta + ZETA0
     e = limits.Series((e0, *(coefficient(arc, 4, k) for k in range(TERMS))), field)
-    half = Fraction(1, 2)
-    m = w + 1
-    m_inverse = m.inverse()
-    below, above = m * m - 1, m * m + 1
-    e_inverse = (e * 4).inverse()
-    nu = (e + 1) * (e + 1) * e_inverse
-    omega = (e * e - 1) * e_inverse
-    t2 = (below * nu * 2 + below * zeta) * above.inverse()
-    return {
-        "t1": (-below * t2 + above * zeta + w * w) * m_inverse * half,
-        "t2": t2,
-        "t3": zeta,
-        "t4": (m * rho + sigma) * half,
-        "t5": (m * rho - sigma) * half,
-        "t6": (m * sigma + rho) * half,
-        "t7": (rho - m * sigma) * half,
-        "t8": -(below * omega * m_inverse * limits.PRIMES[field.prime or 0]),
-        "t9": -(w * w) * m_inverse * half,
-    }
+    return limits.e8_phi(field, limits.INCIDENCES[SLUG][1], w, rho, sigma, zeta, e)
 
 
 def plucker(plane: list[limits.Vector], basis: list[limits.Vector], prime: int) -> list[int]:
@@ -126,8 +109,8 @@ def rank(vectors: list[list[int]], prime: int) -> int:
     return int(nmod_mat(vectors, prime).rank()) if vectors else 0
 
 
-def build(prime: int) -> dict[str, Any]:
-    data = limits.slice_data("e8-nm", limits.Field(prime, ORDER))
+def build(item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
+    prime, data = item
     patterns = [(*orders, e0) for e0 in E0_VALUES for orders in LEADING_ORDERS]
     items = [(data, pattern, arc) for pattern in patterns for arc in range(ARCS_PER_PATTERN)]
     results = parallel.ordered_map(one_arc, items, min_items=1)
@@ -166,7 +149,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("--out", type=Path, default=HERE / "vb-limit-span-result.json")
     args = parser.parse_args()
-    cases = [build(prime) for prime in PRIMES]
+    slices = parallel.ordered_map(
+        limits.slice_of, [(SLUG, limits.Field(prime, ORDER)) for prime in PRIMES], min_items=1
+    )
+    cases = [build(item) for item in zip(PRIMES, slices, strict=True)]
     record = {"schema": SCHEMA, "cases": cases}
     args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     for case in cases:
