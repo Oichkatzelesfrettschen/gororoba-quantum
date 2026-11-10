@@ -55,6 +55,12 @@ def low_share(n: np.ndarray, shots: np.ndarray, scale: np.ndarray) -> float:
     return float(cells[e < 1.0].sum() / cells.sum())
 
 
+def drawn_low_share(item: tuple[np.ndarray, np.ndarray, np.ndarray]) -> float:
+    """low_share of one drawn dataset. The unit parallel.ordered_map maps."""
+    drawn, drawn_shots, scale = item
+    return low_share(drawn.astype(float), drawn_shots.astype(float), scale)
+
+
 def realized_rms(within: np.ndarray, sigma: float, seed: int) -> float:
     generator = np.random.default_rng(seed)
     total = within.sum(axis=1, keepdims=True)
@@ -81,10 +87,10 @@ def main(argv: list[str]) -> int:
         within, sample_rate = REF.per_sample_law(data)
         entry: dict[str, Any] = {"measured": low_share(data["eligible"], data["shots"], data["scale"])}
         for sigma in SIGMAS:
-            # Serial by measurement: the whole script takes 4 s on a 10-thread host, and mapping these 30 evaluations
-            # through parallel.ordered_map took 18 s and moved the shares by 1e-13 relative (single-thread BLAS in
-            # the workers).
-            shares = []
+            # The shared generator draws every dataset in order; the evaluations then map. DRAWS sits below
+            # parallel.MIN_PARALLEL_ITEMS, so the map runs them in this process: measured on a 10-thread host, the
+            # script takes 4 s that way against 18 s over the pool.
+            items = []
             for _ in range(DRAWS):
                 arrays = {
                     "eligible": REF.perturbed(within, sigma, generator),
@@ -92,7 +98,8 @@ def main(argv: list[str]) -> int:
                     "any": 1.0 / sample_rate,
                 }
                 drawn, _, drawn_shots = CASE.sampled_dataset(arrays, data["samples"], generator)
-                shares.append(low_share(drawn.astype(float), drawn_shots.astype(float), data["scale"]))
+                items.append((drawn, drawn_shots, data["scale"]))
+            shares = CASE.ordered_map(drawn_low_share, items)
             entry[str(sigma)] = {"mean": float(np.mean(shares)), "min": float(min(shares)), "max": float(max(shares))}
         seed = REF.draw_seed(215)
         entry["realized_share_rms"] = {str(s): realized_rms(within, s, seed) for s in RMS_SIGMAS}
