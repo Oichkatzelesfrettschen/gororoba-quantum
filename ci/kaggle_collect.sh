@@ -134,13 +134,19 @@ commit_and_push() {
 		echo "nothing new to commit"
 		return 0
 	fi
-	git -c user.name='github-actions[bot]' \
-		-c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
-		commit -q -m "results/kaggle: collect $(basename "$RUN_DIR") ($label)" \
+	# The checkout's own config carries the identity, so a rebase after a rejected push recreates the commit.
+	git config user.name 'github-actions[bot]'
+	git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+	git commit -q -m "results/kaggle: collect $(basename "$RUN_DIR") ($label)" \
 		-m "kaggle_run.py collect wrote the receipt and kaggle_run.py verify
-accepted every retained receipt in workflow run $GITHUB_RUN_ID."
+accepted the run's receipts in workflow run $GITHUB_RUN_ID."
 	for _ in 1 2 3; do
-		git push -q origin "HEAD:$BRANCH" && return 0
+		if git push -q origin "HEAD:$BRANCH"; then
+			# A push made with GITHUB_TOKEN starts no workflow, so the checks the pull request needs run by dispatch.
+			gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/pr.yml/dispatches" -f ref="$BRANCH" ||
+				echo "::warning::dispatching pr.yml on $BRANCH failed; dispatch it by hand"
+			return 0
+		fi
 		git pull -q --rebase origin "$BRANCH"
 	done
 	echo "::error::push to $BRANCH failed three times"
@@ -176,7 +182,7 @@ collect() {
 	if [ "$state" != terminal ]; then
 		# The pull time passed with the version still live: take what it serves now.
 		collect_attempts 1
-		"$PYTHON" scripts/kaggle_run.py verify
+		"$PYTHON" scripts/kaggle_run.py verify "$RUN_DIR"
 		commit_and_push "pull at $(date -u +%H:%MZ), $(receipt_state)"
 		notify "pull-$(receipt_state)"
 		[ "$(poll $((pushed + HARD_AFTER)))" = terminal ] || {
@@ -187,7 +193,7 @@ collect() {
 	# A session's output files appear a short while after its terminal status.
 	sleep 180
 	collect_attempts 4
-	"$PYTHON" scripts/kaggle_run.py verify
+	"$PYTHON" scripts/kaggle_run.py verify "$RUN_DIR"
 	final=$(receipt_state)
 	commit_and_push "$final"
 	notify "$final"

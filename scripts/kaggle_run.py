@@ -1571,8 +1571,30 @@ def kernel_ref(submission: dict[str, Any]) -> str:
     return f"{submission['kernel']}/{version}" if version is not None else submission["kernel"]
 
 
+def version_state(owner: str, slug: str, version: int) -> str:
+    """The KernelWorkerStatus name of one kernel version: GetKernelSessionStatus with version_label "vN", which
+    answers a version that does not exist with HTTP 404, where the CLI's `kernels status` reports the latest one."""
+    api = kaggle_api()
+    from kagglesdk.kernels.types.kernels_api_service import ApiGetKernelSessionStatusRequest
+
+    request = ApiGetKernelSessionStatusRequest()
+    request.user_name = owner
+    request.kernel_slug = slug
+    request.version_label = f"v{version}"
+    with api.build_kaggle_client() as client:
+        return str(client.kernels.kernels_api_client.get_kernel_session_status(request).status.name)
+
+
 def status(args: argparse.Namespace) -> int:
-    print(kaggle("kernels", "status", kernel_ref(submission_of(Path(args.run_dir)))).strip())
+    """The run's own version's status when submission.json records a version (through the SDK), else the
+    CLI's status of the slug; both print `REF has status "KernelWorkerStatus.STATE"`."""
+    submission = submission_of(Path(args.run_dir))
+    if "kernel_version" not in submission:
+        print(kaggle("kernels", "status", kernel_ref(submission)).strip())
+        return 0
+    owner, slug = submission["kernel"].split("/")
+    state = version_state(owner, slug, int(submission["kernel_version"]))
+    print(f'{kernel_ref(submission)} has status "KernelWorkerStatus.{state}"')
     return 0
 
 
@@ -1832,8 +1854,11 @@ def verify(args: argparse.Namespace) -> int:
     collection required; an earlier, unversioned run keeps the status Kaggle
     reported then. Each v2 receipt binds the run's submission.json and the
     receipt written before it, so the chain of a run holds every attempt.
+    With RUN_DIR, only that run's receipts are checked.
     """
-    runs = sorted(RESULTS.glob("*/collect.json"))
+    selected = getattr(args, "run_dir", None)
+    pattern = Path(selected).resolve().name if selected else "*"
+    runs = sorted(RESULTS.glob(f"{pattern}/collect.json"))
     captured = 0
     for path in runs:
         run_dir = path.parent
@@ -1850,7 +1875,7 @@ def verify(args: argparse.Namespace) -> int:
         )
         for ref, digest in submission.get("datasets", {}).items():
             require_dataset_version(run_dir.name, ref, digest, dataset_record(ref.split("/")[1]))
-    for captures in sorted(RESULTS.glob("*/captures")):
+    for captures in sorted(RESULTS.glob(f"{pattern}/captures")):
         run_dir = captures.parent
         submission = submission_of(run_dir)
         for directory in sorted(captures.iterdir()):
@@ -1863,7 +1888,7 @@ def verify(args: argparse.Namespace) -> int:
                 require("output/exit.json" in record["files"], f"{name}: a {record['state']} capture lacks exit.json")
             _verify_tree(name, record, directory / "output")
             captured += 1
-    for run_dir in sorted({p.parent for p in runs} | {c.parent for c in RESULTS.glob("*/captures")}):
+    for run_dir in sorted({p.parent for p in runs} | {c.parent for c in RESULTS.glob(f"{pattern}/captures")}):
         submission_digest = sha256((run_dir / "submission.json").read_bytes())
         previous: str | None = None
         for path in receipt_chain(run_dir):
@@ -1937,7 +1962,9 @@ def main() -> int:
     artifact_parser.add_argument("--file", required=True, help="the one file the dataset holds")
     artifact_parser.add_argument("--sha256", required=True, help="the file's expected sha256")
     artifact_parser.set_defaults(func=artifact)
-    sub.add_parser("verify").set_defaults(func=verify)
+    verify_parser = sub.add_parser("verify")
+    verify_parser.add_argument("run_dir", nargs="?", help="check only this run's receipts")
+    verify_parser.set_defaults(func=verify)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)
         sub_parser.add_argument("run_dir")

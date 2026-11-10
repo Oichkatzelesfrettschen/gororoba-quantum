@@ -80,8 +80,10 @@ jobs:
     environment: kaggle
     # Up to 32 minutes of watching to the pull time, 23 to the hard deadline, then four collects 5 minutes apart.
     timeout-minutes: 150
-    # contents: write pushes the collected run; issues: write posts the notice; gh pr list reads the pull request.
+    # contents: write pushes the collected run; actions: write dispatches pr.yml on it; issues: write posts the
+    # notice; gh pr list reads the pull request.
     permissions:
+      actions: write
       contents: write
       issues: write
       pull-requests: read
