@@ -1,0 +1,8 @@
+RESULT signs of the run generators against the header 1,1,1,1,1,1,1,1,1,1
+RESULT K2 generators 21 P1 dimension degree generators 4 3 7 P2 4 4 9
+RESULT generators of J nonzero on Phi modulo the unit relations 0 of 17
+RESULT generators of J nonzero on the arc through order 12 13
+RESULT k = -9 + K s, w = W s^2, rho = R s, sig = S s: nu 4 nonzero limit entries 10
+RESULT K2 nonzero on the limit 16 P1 5 of 7 P2 8 of 9
+RESULT rank of [dF | F] at two points 4 4
+exit 0

@@ -120,6 +120,18 @@ the slice and keep fewer than 8 columns without a pivot. Scope: 6 or 9 fiber poi
 component of W8 has no rational arc here, so no real arc is exhibited on it; the image of a whole fiber in the
 Grassmannian is not computed.
 
+## Arcs through a VB point on which e tends to 0 or infinity (A5-016)
+
+`vb_pole_arcs.py` extends the sample above to arcs with e = E s^k (1 + ...), k = 1 or 2, and w of order above k, on
+which Phi stays finite because nu and omega enter only multiplied by m^2 - 1; e -> 1/e reverses omega, so the arcs
+with e -> infinity are the same arcs with omega reversed. [vb-pole-arcs-result.json](vb-pole-arcs-result.json), 72
+pole patterns of 24 arcs at each prime, truncation order 24: every arc has J = 0 to order 22, base nullity 12 and an
+8-dimensional limit, and the Plucker span of the finite-e patterns with leading orders 1 and 2 (rank 22) does not
+grow when the pole patterns join it. These arcs also stay in the span of the degree-4 component. The degree-3
+component is reached elsewhere: [arcs-vb](../arcs-vb/README.md) finds it over one point of the contracted line of
+the VB slice's own parametrization, with the limit of the header's G computed directly, so A5-016 is decided there
+and the Plucker-span reading of this section is not needed for it.
+
 ## Replay
 
 From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the retained records ran under Python
@@ -132,3 +144,4 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py w8-c20
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py x-same
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_limit_span.py)
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_pole_arcs.py)

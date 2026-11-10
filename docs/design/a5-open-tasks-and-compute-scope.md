@@ -30,7 +30,7 @@ the value K2 predicted before the run.
 | X+ -> N-, X- -> N+ | C(d + 2, 2) | proved over Q(i): F(I) = Q(i)[y1, y2, y3] (A5-270) | closed |
 | W8 -> N+- | d = 1 to 5; h_6 = 8,624 proved | proved mod p: F(I) = k[y]/K2, V(K2) = C20 cup C30 (A5-066) | characteristic 0 (task 122) |
 | Iso -> N+- | d = 1 to 6 | proved mod p: an explicit arc family is dense in V(K2), so F(I) = k[y]/K2 (A5-067, A5-007) | characteristic 0 |
-| E8-bar -> VB | d = 1 to 7 | open: the degree-3 component of V(K2) has no arc (A5-016) | jet-parameter arcs (task 124) |
+| E8-bar -> VB | d = 1 to 7 | proved mod p: arcs are dense in both components of V(K2), so F(I) = k[y]/K2 (A5-005, A5-015, A5-016) | characteristic 0 |
 | X+ -> N+, X- -> N- | d = 1 to 6 | support decided: weighted arcs have limit rank 4, so the support is a 4-dimensional component of V(K2), all of it at 32009 (A5-022); F(I) is not Cohen-Macaulay (A5-245 refuted); K2 is not radical, so L = K2 beyond degree 6 is open | a relation of L outside K2, or a proof that none exists |
 | E8-bar -> N+- | d = 1 to 5 | open: K2 is not radical; 1,526 <= h_6 <= 1,666 (A5-251) | membership of degree-6 forms (tasks 110, 125) |
 
@@ -51,8 +51,8 @@ Three gaps separate the fiber record from item 6:
   and same-sign X incidences, on Iso and on the degree-30 component of W8 (rational arcs); the degree-20 component of
   W8 and both E8-bar families have arcs over the prime fields only, and no incidence has the excluded side (A5-250).
 
-The order of work that follows: the VB degree-3 component (task 124), the E8-bar -> N+- degree-6 membership (tasks
-110 and 125), the real certificates (tasks 126 and 127), then check 2 on W8. None of these needs more than the laptop's 52 GB, so no paid-cloud case is open.
+The order of work that follows: the E8-bar -> N+- degree-6 membership (tasks 110 and 125), the same-sign X relations
+beyond degree 6, the real certificates (tasks 126 and 127), then check 2 on W8. None of these needs more than the laptop's 52 GB, so no paid-cloud case is open.
 
 ## Run policy
 
@@ -129,7 +129,7 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 | task | computation | host | estimate |
 |---|---|---|---|
 | 123 | linear-algebra export of k[t]/(J + m^N) at N = 15 | Kaggle CPU | unmeasured; compare against 420 s |
-| 124 (for 37) | jet-parameter arcs at the plane t1 = 0 and the apex of chart t7 | `lab-a1` or Kaggle CPU | chart t7 normalization took 451 s |
+| 124 (for 37) | done: arcs through the point k = -9 of the contracted line of the slice parametrization are dense in the degree-3 component (`arcs-vb`, A5-016 proved at both primes) | | |
 | 125 (for 110) | membership of the 91 degree-5 forms of E8-bar, by a sparse solver | laptop | unmeasured; the degree-2 receipt took 12,678 s |
 | 115 | exact torus over Q in the Klein centralizer, then a weighted dp order | Kaggle CPU or the laptop | symbolic; the weighted std then runs at N = 15 and 18 |
 | 133 | done by a second route: the arc family of `structure/arcs-iso-w8/blowup-arcs` decides A5-007 and A5-067 at both primes without the fiber-cone deduction | | |
@@ -145,8 +145,7 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 - 122: W8 check 2 waits on the X- route. The all-degree statement waits on the flatness of K2 over Z[i]_(p), the
   affine-cone bridge and a transfer of A5-066.
 - 42: waits on 75 and 122.
-- 37: decided in favor only by a dominant arc family onto V(P1) (124). It is decided against by a degree >= 7 element
-  of L outside I(V(P1)), which the degree-7 rank exposes if r_22 < 624 (120).
+- 37: decided in favor by the dominant arc family onto V(P1) of `arcs-vb` (A5-016).
 
 ### Blocked on an engine change
 

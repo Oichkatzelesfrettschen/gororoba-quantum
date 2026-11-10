@@ -1,0 +1,3985 @@
+{
+ "schema": "a5-vb-pole-arcs-v1",
+ "cases": [
+  {
+   "schema": "a5-vb-pole-arcs-v1",
+   "prime": 32009,
+   "order": 24,
+   "arcs_per_pattern": 24,
+   "finite_e_rank": 22,
+   "total_rank": 22,
+   "patterns": [
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      2
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 0,
+     "rank_after": 6
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      2
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 6,
+     "rank_after": 6
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      -1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 6,
+     "rank_after": 12
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      -1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 12,
+     "rank_after": 12
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 12,
+     "rank_after": 18
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 18,
+     "rank_after": 18
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      3
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 18,
+     "rank_after": 21
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      3
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 21,
+     "rank_after": 21
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      5
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 21,
+     "rank_after": 22
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      5
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      7
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      7
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    }
+   ]
+  },
+  {
+   "schema": "a5-vb-pole-arcs-v1",
+   "prime": 32029,
+   "order": 24,
+   "arcs_per_pattern": 24,
+   "finite_e_rank": 22,
+   "total_rank": 22,
+   "patterns": [
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      2
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 0,
+     "rank_after": 6
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      2
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 6,
+     "rank_after": 6
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      -1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 6,
+     "rank_after": 12
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      -1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 12,
+     "rank_after": 12
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 12,
+     "rank_after": 18
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 18,
+     "rank_after": 18
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      3
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 18,
+     "rank_after": 21
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      3
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 21,
+     "rank_after": 21
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      5
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 21,
+     "rank_after": 22
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      5
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": false,
+     "pattern": [
+      1,
+      1,
+      1,
+      7
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": false,
+     "pattern": [
+      2,
+      2,
+      2,
+      7
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": null,
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      1,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      1,
+      2,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      1,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      1,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 6,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      2,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      1,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      1,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      2,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      2,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 24,
+     "span_rank": 3,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      3,
+      0
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    },
+    {
+     "pole": true,
+     "pattern": [
+      2,
+      2,
+      3,
+      3,
+      1
+     ],
+     "arcs_with_limit": 24,
+     "base_nullities": [
+      12
+     ],
+     "arc_nullities": [
+      8
+     ],
+     "j_nonzero": [
+      0
+     ],
+     "distinct_planes": 1,
+     "span_rank": 1,
+     "rank_before": 22,
+     "rank_after": 22
+    }
+   ]
+  }
+ ]
+}
