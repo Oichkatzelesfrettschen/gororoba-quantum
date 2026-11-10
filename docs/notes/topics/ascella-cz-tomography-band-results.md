@@ -317,14 +317,17 @@ baseline and transfer deviance.
 
   None survives and the within-pair transfers sit above their baselines, so the null transfer stands with the
   source figures free. Fitting the figures lowers the ideal-mesh baselines by 5 to 9 %. The fitted g2 is 0.019 to
-  0.022 against plan reads of 0.018 (retained) and 0.020 (band), and the dark rates of the six window modes are 0.3
-  to 10 times the plan read. The raw fitted figures carry a degeneracy: mode 6, which holds 0.02 to 0.04 % of the
-  two-click events, takes a dark probability near 1 with its output weight near 0, which divides every window
-  pattern's no-dark factor by about 1,000 and so sets a common scale of the window modes' dark-to-photon ratio.
-  Pinning the dark rates of the six modes outside the window at the plan read (`--pin-empty-modes`,
-  `g2-free-source-pinned.json`) returns the same g2, puts the window dark rates directly at 0.3 to 10 times the
-  plan read, and raises the ideal-mesh deviance by 0.3 to 68 (at most 1.5 %), so the ridge reparametrizes the law
-  rather than changing it. Every component and ceiling fit reached the 3,000-iteration cap;
+  0.022 against plan reads of 0.018 (retained) and 0.020 (band). The raw fitted dark figures carry a degeneracy:
+  mode 6, which holds 0.02 to 0.04 % of the two-click events, takes a dark probability near 1 with its output
+  weight near 0, which shrinks every window pattern's no-dark factor about 1,000-fold and so sets a common scale
+  of the window modes' dark-to-photon ratio; the raw window multipliers in `g2-free-source.json` read 0.0006 to
+  0.035. Pinning the dark rates of the six modes outside the window at the plan read (`--pin-empty-modes`,
+  `g2-free-source-pinned.json`) returns the same g2, puts the window dark rates at 0.3 to 10 times the plan read,
+  and raises the ideal-mesh deviance by 0.3 to 68 (at most 1.5 %), so the ridge nearly reparametrizes the law.
+  The hold-outs were not rerun pinned. Hypothesis, by margin: a shift of at most 68 in deviance moves no verdict,
+  since band-to-retained needs a baseline-minus-transfer gap of about 503 for Gain 0.3 against 65 now, and the
+  within-pair transfers sit 713 and 3,032 above their baselines, provided transfer and ceiling move no more than
+  the baseline. Every component and ceiling fit reached the 3,000-iteration cap;
   the baselines and transfers stopped on tolerance except one baseline, and 7 of 400 null fits reached the cap.
   The run cost 10,585 CPU-seconds on the build host.
 
@@ -366,9 +369,12 @@ NLL is the Poisson negative log-likelihood of the eligible counts, lower is bett
   the band F by 0.0026. The terms the counts support leave F where the positive process-only fit puts it.
 - **Free scale on the shift (post-data diagnostic, `mesh_shift_scale.py`, `mesh-shift-scale.json`).** Profiling
   the NLL over a scale kappa on the shift, with every other term refitted at each point, puts the admitted shift
-  with all terms at kappa 0.018 (-0.007 to 0.042) on the band pair, an interval that holds 0, and at 0.088 (0.034
-  to 0.143, and -0.041 to 0.218 at 5.73 times the NLL threshold) on the retained pair. At those scales F is
-  0.8542 (band) and 0.8519 (retained), 0.0015 and 0.0004 above the process-only fit, inside the margin. Across
+  with all terms at kappa 0.018 (-0.007 to 0.042) on the band pair, which the counts do not support (the NLL at
+  that scale lies 0.5 below kappa 0), and at 0.088 (0.034 to 0.143) on the retained pair, which they support by
+  the script's rule (5 below kappa 0); widened by the retained pair's own Pearson ratio of about 1.44 (5,288
+  against a reference mean of 3,677), the retained interval is about 0.023 to 0.153 and still excludes 0. At
+  those scales F is 0.8542 (band) and 0.8519 (retained), 0.0015 and 0.0004 above the process-only fit, inside the
+  margin. Across
   all eight component sets and variants of each pair, every scale the counts support leaves the band F at 0.851
   to 0.855 and the retained F at 0.852 to 0.862; the in-sample shifts take scales of 0.3 to 0.9, as components
   fitted to the same counts should.
@@ -411,7 +417,7 @@ NLL is the Poisson negative log-likelihood of the eligible counts, lower is bett
 | Component model with output weights per job, then g2 in the pattern law (`mesh_model_jobs.py`), with nulls that also permute gain and crosstalk and record optimizer status | Whether the transferable content survives per-job output weights (job identity is aliased with input parity), and how much the source carries | none; run | A hold-out fails Gain >= 0.3, Gain over the null median >= 0.3 or rank p <= 0.05 (the script's rule). Two-photon survives on all four, g2 on none |
 | Model-check reference with a per-seed term and an output weight per mode and job (`job_weight_reference.py`) | Whether per-job output weights carry the band excess beyond the recorded per-seed scale | none; run | The band statistic stays outside the reference's central 95 % at both recorded scales. Carried at 0.0177, not at 0.011 |
 | Constrained process fit with a per-setting preparation-and-readout nuisance (gate-set style, van Enk and Blume-Kohout 2013, priv 01508c79f85b, Sec. IV), with the realized-mesh model as the readout (`spam_separated_fit.py`) | F with SPAM and mesh error separated | none; run | The nuisance-free and nuisance fits agree within 0.005. Differ on both pairs, carried by a term the counts disfavor |
-| The SPAM-separated fit with a free scale on the mesh shift, and the g2 component model with free source figures (post-data diagnostics) | Whether any scale of the realized-mesh shift is supported, and whether a source law that fits its own figures leaves a transferable component error | none; run | The free scale fits near zero, or the g2 transfer stays at or above its baseline. Both met: the admitted shift's scale is 0.018 (-0.007 to 0.042) on the band pair, and no free-source g2 hold-out survives |
+| The SPAM-separated fit with a free scale on the mesh shift, and the g2 component model with free source figures (post-data diagnostics) | Whether any scale of the realized-mesh shift is supported, and whether a source law that fits its own figures leaves a transferable component error | none; run | The free scale fits near zero, or the g2 transfer stays at or above its baseline. Met on the band pair, where the admitted shift's scale is 0.018 (-0.007 to 0.042); on the retained pair it is a supported 0.088 that moves F by 0.0004; no free-source g2 hold-out survives |
 | The CZ compilation ensemble case ([design](../../design/ascella-cz-compilation-ensemble-case.md), built, not sent): ten seeds per setting and same-seed anchors in each job | Per-seed mesh variance of the gate and within-calibration repeatability, the two quantities this pair confounds | per its written case | Its homogeneity and anchor tests, as preregistered there |
 
 The first four ran on retained counts, the fourth as post-data diagnostics. The ensemble case already holds the replicate-seed and same-seed-repeat design
