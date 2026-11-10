@@ -1900,7 +1900,8 @@ def verify(args: argparse.Namespace) -> int:
                     record["predecessor_sha256"] == previous, f"{name}: predecessor differs from the receipt before it"
                 )
             previous = sha256(path.read_bytes())
-    require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
+    # A selected run that holds only PARTIAL captures passes on those captures; the whole tree needs a primary one.
+    require(bool(runs) or bool(selected and captured), f"no collect.json under {RESULTS.relative_to(ROOT)}")
     print(
         f"kaggle runs: {len(runs)} collected outputs and {captured} further captures match their sha256 ledgers, "
         "receipt chains and recorded dataset versions"

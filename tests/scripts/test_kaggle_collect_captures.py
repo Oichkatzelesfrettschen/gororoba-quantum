@@ -232,3 +232,12 @@ def test_status_of_a_versioned_run_reads_that_version(
     kaggle_run.status(argparse.Namespace(run_dir=str(run_dir)))
     if asked != [("owner", "slug", 3)] or "KernelWorkerStatus.RUNNING" not in capsys.readouterr().out:
         raise RuntimeError(f"status read the slug's latest version instead of version 3: {asked}")
+
+
+def test_verify_of_one_run_accepts_partial_captures_only(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    results = tmp_path / "results"
+    run_dir = _run_dir(results)
+    _serve(monkeypatch, results, [{"slug.log": b"partial"}])
+    _expect_exit(lambda: _collect(run_dir), "returned no exit.json")
+    kaggle_run.verify(argparse.Namespace(run_dir=str(run_dir)))
+    _expect_exit(lambda: kaggle_run.verify(argparse.Namespace()), "no collect.json")
