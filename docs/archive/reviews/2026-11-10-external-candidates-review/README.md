@@ -99,8 +99,9 @@ Cohen-Macaulay for E8-bar -> N± (A5-014).
 Recomputed with `cd_core` in exact arithmetic (`tower/check.py`, output in `tower/check.out`):
 
 - The report's closed form N(D) = (D - 2)(D - 4)(D + 6)/2 satisfies N(2D) = 4 N(D) + 2 (D - 2)(D^2 + 2D + 18),
-  an identity of polynomials; the recurrence the report prints beside it disagrees with it at every D checked. This
-  record does not re-enumerate the count the closed form stands for beyond the sedenion figures below.
+  an identity of polynomials; the recurrence the report prints beside it disagrees with it at every D checked. The
+  closed form equals the enumerated count at D = 4, 8, 16, 32 and 64
+  ([twisted-tower-check/check.out](../cd-tower/twisted-tower-check/check.out)).
 - The sedenions carry 168 ordered (84 unordered) disjoint index-pair pairs with equal XOR and sign character +1, and
   336 signed zero products, 48 in each of the seven XOR classes 9 to 15.
 - e1 + e10 has a 4-dimensional left kernel and every kernel shift of conj(x)/2 inverts it on both sides, so it has

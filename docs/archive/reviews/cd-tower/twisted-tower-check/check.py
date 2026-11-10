@@ -61,7 +61,7 @@ def main():
     x=[Fraction(0)]*16; x[1]=1; x[10]=1
     xb=[-v if k else v for k,v in enumerate(x)]
     inv=[Fraction(v)/2 for v in xb]
-    one=[Fraction(int(k==0)) for k in range(16)]
+    one=tuple(Fraction(int(k==0)) for k in range(16))
     print("x*xbar/2==1", mul(16,x,inv)==one, mul(16,inv,x)==one)
     z=[Fraction(0)]*16; z[4]=Fraction(1); z[15]=Fraction(-1)
     print("x*z", [v for v in mul(16,x,z) if v], "z*x", [v for v in mul(16,z,x) if v])
