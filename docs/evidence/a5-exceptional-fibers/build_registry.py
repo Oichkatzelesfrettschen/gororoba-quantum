@@ -9,9 +9,10 @@ which a validated degree-2 membership receipt for the same fiber and prime carri
 the same generator order. Lower bounds:
 - degree-by-degree membership rank: a `receipt-dD.json` under working/ whose own prime, status `degree-certified`,
   zero membership failures and input sha256 check out against a known header of that fiber and prime;
-- truncated rank r_N <= h_d: a JSON record whose engine sha256 matches engine bytes found under the scan roots, whose
-  header sha256 matches a canonical producer header or a legacy input with a `header-pair` witness, and whose header
-  ring prime and generator count agree with the fiber.
+- truncated rank r_N <= h_d: a JSON record (a `.json` or `.jsonl` file, or the `.out` stdout of an engine run) whose
+  engine sha256 matches engine bytes found under the scan roots, whose header sha256 matches a canonical producer
+  header or a legacy input with a `header-pair` witness, and whose header ring prime and generator count agree with
+  the fiber.
 A record that fails a binding check is listed in `unbound.jsonl` and certifies nothing. A degree whose lower bound
 meets the K2 count without a verified upper bound reads `lower bound equals candidate count`. An ok
 `sign-isomorphism` row of `witnesses.jsonl` makes the two fiber cones isomorphic graded rings at that prime, so a degree
@@ -196,7 +197,8 @@ def scan(roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, s
             # The data-review directory holds reviewers' deliberately mutated records and receipts.
             dn[:] = [x for x in dn if x != "data-review"]
             for f in sorted(fn):
-                if not (f.endswith(".jsonl") or f.endswith(".json")):
+                # `.out` is the stdout of an engine run, one JSON record per line (the W8 degree-5 Azure runs).
+                if not f.endswith((".jsonl", ".json", ".out")):
                     continue
                 p = Path(dp, f)
                 for ln in p.read_text(errors="replace").splitlines():

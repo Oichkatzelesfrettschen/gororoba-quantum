@@ -1,0 +1,12 @@
+proc num(string rel, int n, string nm) {
+  ring r=32009,(y(1..n)),dp; execute("ideal K="+read(rel)+";"); ideal sK=std(K);
+  "RESULT "+nm+" dim "+string(dim(sK))+" deg "+string(mult(sK)); "RESULT "+nm+" numerator2"; print(hilb(sK,2));
+}
+num("../../../../evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel",15,"X-");
+num("../../../../evidence/a5-exceptional-fibers/working/runs/e8vb_a2/k2.rel",10,"VB");
+num("../../../../evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/relations-upto-d2.rel",17,"Iso");
+num("../../../../evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel",21,"E8N-");
+num("../../../../evidence/a5-exceptional-fibers/working/runs/w8_a2/w8_k2.rel",24,"W8");
+ring v=32009,(y(1..10)),dp; execute("ideal K="+read("../../../../evidence/a5-exceptional-fibers/working/runs/e8vb_a2/k2.rel")+";");
+resolution rs=mres(K,0); "RESULT VB betti"; print(betti(rs),"betti");
+quit;

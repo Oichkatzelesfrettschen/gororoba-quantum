@@ -1,0 +1,22 @@
+LIB "primdec.lib";
+< "../../../../evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-vb.sing";
+ring N=32009,(T(1..4),h,t1,t2,t3,t4,t5,t6,t8),dp;
+execute("ideal NI="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/chart_t7_norid_1.txt")+";");
+int t0=rtimer; ideal sNI=std(NI); "RESULT norid dim",dim(sNI),"std size",size(sNI),"s",rtimer-t0;
+map f=r,h*t1,h*t2,h*t3,h*t4,h*t5,h*t6,h,h*t8;
+ideal Gh=f(G);
+ideal H2=std(sNI+ideal(h^2));
+"RESULT Gh in (h^2)+norid",size(reduce(Gh,H2))==0;
+ideal Hb=h^2,NI; matrix M=lift(Hb,Gh); ideal Gp; int j; for(j=1;j<=ncols(M);j++){Gp[j]=M[1,j];}
+"RESULT check h^2 Gp - Gh in norid",size(reduce(ideal(h^2*matrix(Gp)-matrix(Gh)),sNI))==0;
+ideal D=std(sNI+ideal(h));
+ideal BL=std(sNI+ideal(h)+Gp); "RESULT D dim",dim(D),"base locus on D dim",dim(BL);
+ring Yr=32009,(y(1..10)),dp; execute("ideal P1="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/primeP1.txt")+";"); execute("ideal P2="+read("../../../../evidence/a5-exceptional-fibers/working/build/arc/primeP2.txt")+";");
+execute("ideal K="+read("../../../../evidence/a5-exceptional-fibers/working/runs/e8vb_a2/k2.rel")+";");
+setring N; map g=Yr,Gp; ideal P1g=g(P1); ideal P2g=g(P2); ideal Kg=g(K);
+"RESULT on D: K2 nonzero",size(reduce(Kg,D)),"P2 nonzero",size(reduce(P2g,D)),"P1 nonzero",size(reduce(P1g,D));
+"RESULT seconds",rtimer-t0;
+list mp=minAssGTZ(BL); "RESULT base locus primes",size(mp);
+int k; for(k=1;k<=size(mp);k++){ ideal Q=std(mp[k]); "RESULT prime",k,"dim",dim(Q),"deg",mult(Q); print(Q); kill Q;}
+"RESULT seconds",rtimer-t0;
+quit;

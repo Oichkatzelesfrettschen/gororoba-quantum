@@ -1,0 +1,9 @@
+LIB "primdec.lib";
+ring Y=32009,(y(1..21)),dp; execute("ideal K="+read("../../../../evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel")+";"); ideal sK=std(K);
+ideal R=std(radical(K)); int d; string s="";
+for(d=1;d<=8;d++){ s=s+" "+string(size(kbase(sK,d))-size(kbase(R,d))); } "RESULT HF(M) d=1..8"+s;
+s=""; for(d=1;d<=8;d++){ s=s+" "+string(size(kbase(R,d))); } "RESULT HF(rad) d=1..8"+s;
+ideal A=std(quotient(K,R)); "RESULT ann(M)=K2:rad dim "+string(dim(A))+" deg "+string(mult(A));
+s=""; for(d=1;d<=5;d++){ s=s+" "+string(size(kbase(A,d))); } "RESULT HF(k[y]/ann) "+s;
+ideal Ar=std(radical(A)); "RESULT rad(ann) dim "+string(dim(Ar))+" deg "+string(mult(Ar))+" linear "+string(21-size(kbase(Ar,1)));
+quit;

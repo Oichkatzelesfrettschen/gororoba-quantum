@@ -1,6 +1,7 @@
 """The A_5 exceptional-fiber claim ledger stays well formed: every row passes `ledger.py`'s check."""
 
 import importlib.util
+import json
 from pathlib import Path
 from types import ModuleType
 
@@ -30,3 +31,38 @@ def test_a_row_with_a_missing_evidence_path_or_unknown_status_is_reported() -> N
     problems = mod.check([good, bad])
     if not any("status 'maybe'" in p for p in problems) or not any("does not exist" in p for p in problems):
         raise AssertionError(problems)
+
+
+def test_a_supersedes_pointer_runs_from_a_live_successor_to_a_superseded_row() -> None:
+    mod = load()
+    old = dict(mod.rows()[0], id="A5-901", status="superseded", supersedes="")
+    live = dict(old, id="A5-902", status="survives", supersedes="A5-901")
+    if mod.check([old, live]):
+        raise AssertionError(mod.check([old, live]))
+    backward = dict(old, supersedes="A5-902")
+    problems = mod.check([backward, live])
+    if not any("whose status is survives" in p for p in problems):
+        raise AssertionError(problems)
+    orphan = mod.check([old])
+    if not any("no live row names it" in p for p in orphan):
+        raise AssertionError(orphan)
+    own = mod.check([dict(old, status="survives", supersedes="A5-901")])
+    if not any("supersedes itself" in p for p in own):
+        raise AssertionError(own)
+
+
+def test_registry_binds_the_w8_degree_5_engine_stdout_records() -> None:
+    claims = json.loads((LEDGER_PY.parent / "claims.json").read_text())
+    cells = {
+        (f["fiber"], f["prime"]): next(g for g in f["degrees"] if g["d"] == 5)
+        for f in claims["fibers"]
+        if f["fiber"].startswith("W8")
+    }
+    if len(cells) != 4:
+        raise AssertionError(sorted(cells))
+    for key, cell in cells.items():
+        if cell["status"] != "certified" or cell["k2_count"] != 4116:
+            raise AssertionError((key, cell["status"], cell["k2_count"]))
+    sources = {lb["source"] for (fiber, _), cell in cells.items() if fiber == "W8 -> N-" for lb in cell["lower_bounds"]}
+    if not sources or not all(s.startswith("w8-n16-azure/") and s.endswith(".out") for s in sources):
+        raise AssertionError(sources)
