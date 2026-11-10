@@ -12,4 +12,6 @@ an Azure Standard_FX4mds_v2; the workstation ran the same script once.
 
 On this one computation the FX4 with passagemath 4.4.1 ran 1.63 times slower than the workstation, and passagemath
 4.4.1 ran 1.55 times faster than Ubuntu 4.3.2 on the same VM. The two Azure builds ran concurrently on the VM's four
-vCPUs. No Kaggle timing of the same script exists.
+vCPUs. Each Singular process is single-threaded and had a vCPU to itself, but the two shared memory bandwidth and
+cache, so 1.63 is an upper estimate of a solo FX4 run; a passagemath run alone on an FX4 decides it. No Kaggle timing
+of the same script exists.
