@@ -3360,6 +3360,20 @@
       "run": "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-18",
       "family": "pathion coset-block null offset, 6-CZ null blocks and coin-fixed twins (A_5, dimension 32)",
       "question": "On Tuna-17, does the null selector offset of b0 follow the coin (coin-conditioned dropout) or read zero on the 6-CZ null blocks in both the base and coin-fixed-twin contexts (bounded over-rotation), with replicate and block heterogeneity gates and per-batch readout brackets?"
+    },
+    {
+      "id": "qd-qpu-ascella-cz-tomography-reference-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-09T174125Z-qpu_ascella-ascella_cz_tomography_reference-job-00",
+      "family": "postselected CZ process tomography reference on qpu:ascella across the HOM band",
+      "question": "With both jobs taken inside the Hong-Ou-Mandel band 90 +- 6.84 points, what process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella under the preregistered linear-inversion fit of 144 settings, and do the two jobs pool within the case's tolerances?"
+    },
+    {
+      "id": "qd-qpu-ascella-cz-tomography-reference-job-01",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
+      "family": "postselected CZ process tomography reference on qpu:ascella across the HOM band",
+      "question": "With both jobs taken inside the Hong-Ou-Mandel band 90 +- 6.84 points, what process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella under the preregistered linear-inversion fit of 144 settings, and do the two jobs pool within the case's tolerances?"
     }
   ],
   "claims": [

@@ -1,4 +1,4 @@
-"""Exact limits of ker L_a along the arcs of the fiber track (ledger A5-272 and A5-275).
+"""Exact limits of ker L_a along the arcs of the fiber track (ledger A5-272 to A5-275 and A5-292).
 
 An arc x(s) of the slice of an incidence is completed by the producer's eliminated slice variables, mapped to the 32
 coordinates of A_5 and fed to the left-multiplication matrix of cd_core. The kernel of L_x(s) over the field of
@@ -12,8 +12,11 @@ by the 24 pivots.
 
 Families: the arcs Phi of ../arcs-x on X+ -> N- and X- -> N+ over F_32009, F_32029 and Q (an arc with rational
 coefficients is a real arc), and the first-order and order-5 families of ../arcs on E8-bar -> N- and E8-bar -> N+
-over the two prime fields (their t8 coordinate carries the square root of -1). Arcs are grouped by the projective
-limit y of the header's G (by the first-order direction over Q, where no header exists); the record states whether
+over the two prime fields (their t8 coordinate carries the square root of -1); the blowup arcs of
+../structure/arcs-iso-w8/blowup-arcs on Iso and on the degree-30 component of W8, and the weighted arcs of
+../arcs-x-same on X- -> N- and X+ -> N+, over both prime fields and Q; the linear family of ../structure/arcs-iso-w8
+on the degree-20 component of W8 over the two prime fields. Arcs are grouped by the projective
+limit y of the header's G (by the parameter point over Q, where no header exists); the record states whether
 each group has one limiting plane and how many planes the groups give.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py FAMILY
@@ -53,9 +56,15 @@ PRIMES = {32009: 10754, 32029: 9115}
 # slug: (incidence, sign s9 of the t9 coordinate of the parametrization)
 X_INCIDENCES = {"xp-nm": ("X+->N-", 1), "xm-np": ("X-->N+", -1)}
 E8_INCIDENCES = {"e8-nm": ("E8bar->N-", 1), "e8-np": ("E8bar->N+", -1)}
-INCIDENCES = X_INCIDENCES | E8_INCIDENCES
+ISO_INCIDENCES = {"iso-nm": ("Iso->N-", 1), "iso-np": ("Iso->N+", 1)}
+W8_INCIDENCES = {"w8-nm": ("W8->N-", 1), "w8-np": ("W8->N+", -1)}
+XS_INCIDENCES = {"xm-nm": ("X-->N-", 1), "xp-np": ("X+->N+", -1)}
+INCIDENCES = X_INCIDENCES | E8_INCIDENCES | ISO_INCIDENCES | W8_INCIDENCES | XS_INCIDENCES
 X_ORDER = 12
 E8_ORDER = 48
+ISO_ORDER = 32
+W8_ORDER = 32
+XS_ORDER = 40
 # X arcs: w = W s + W2 s^2, rho = R s + R2 s^2, sig = S s + S2 s^2, s1 = K s + K2 s^2, as (W, R, S) and
 # (K, W2, R2, S2, K2).
 X_DIRECTIONS = ((1, 0, 0), (1, 1, 0), (1, 0, 1), (1, 2, 3), (1, -1, 2), (2, 1, 1), (2, 3, -1), (3, 1, 5), (1, 4, -3))
@@ -77,6 +86,47 @@ E8_VARIANTS = (
     ((0, 0, 0, 0, 0), (4, 1, -2, 3, 6)),
     ((-3, 2, 1, -1, 2), (1, 5, 2, -4, 3)),
 )
+
+# Iso arcs of ../structure/arcs-iso-w8/blowup-arcs: the point (b, c) of P(L0), the contact parameters (V, A), and a
+# variant (r3, r4) that adds r3 s^3 + r4 s^4 to R and keeps the limit of G.
+ISO_POINTS = (
+    (2, 3, 5, 7),
+    (13, 4, 9, 6),
+    (2, 3, 5, -4),
+    (2, 3, 1, 7),
+    (5, 3, 5, 7),
+    (2, -7, 5, 7),
+    (1, 1, 1, 1),
+    (3, -2, 4, 11),
+    (7, 5, -3, 2),
+)
+ISO_VARIANTS = ((0, 0), (5, 0), (0, -3), (2, 9))
+
+# W8 arcs. "c30": the blowup arcs of ../structure/arcs-iso-w8/blowup-arcs at (b, c, V, A, B), which sweep the
+# degree-30 component and have rational coefficients; a variant adds (r3, p3) s^3 to the chart coordinates R and P.
+# "c20": the linear family a = s, c = C s, d = D s, t7 = T s, t1 = U s, t9 = V s of ../structure/arcs-iso-w8 at
+# (C, D, T, U, V), which sweeps the degree-20 component and carries the square root of -1; a variant adds
+# (c2, d2) s^2 to c and d.
+W8_POINTS = {
+    "c30": ((2, 3, 5, 7, 11), (13, 4, 9, 6, 17), (2, 3, 5, -4, 1), (5, 3, 1, 7, 2), (2, -7, 5, 7, 3), (1, 1, 1, 1, 1)),
+    "c20": ((2, 3, 5, 7, 11), (13, 4, 9, 6, 17), (1, 2, 3, 4, 5), (3, -2, 4, 11, 7), (7, 5, -3, 2, 1), (1, 1, 1, 1, 1)),
+}
+W8_VARIANTS = ((0, 0), (5, 0), (0, -3), (2, 9))
+
+# Same-sign X arcs of ../arcs-x-same: w = W s^2, rho = R s, sig = S s, a = A s at (W, R, S, A); a variant adds
+# (w', r', s', a') two orders above each leading term.
+XS_POINTS = (
+    (2, 3, 5, 7),
+    (13, 4, 9, 6),
+    (1, 1, 1, 1),
+    (1, 2, -3, 4),
+    (3, -1, 2, 5),
+    (2, 3, 5, -4),
+    (5, 3, 1, 7),
+    (2, -7, 5, 3),
+    (7, 5, -3, 2),
+)
+XS_VARIANTS = ((0, 0, 0, 0), (5, 0, 0, 0), (0, 2, -3, 1), (2, 9, 4, -1))
 
 Scalar = Any  # int modulo a prime, or Fraction
 Vector = tuple[Scalar, ...]
@@ -261,6 +311,83 @@ def e8_arc(field: Field, sign: int, parameters: tuple[Any, ...]) -> dict[str, Se
     return e8_phi(field, sign, w, rho, sigma, zeta, e)
 
 
+def iso_arc(field: Field, sign: int, parameters: tuple[tuple[int, ...], ...]) -> dict[str, Series]:
+    """The blowup arcs of the Iso slice: Q = t4 + t6 = 2 b s, T = t5 + t7 = 2 c s, t2 = b V s^2,
+    R = t5 - t7 = s (b^2 V s + b A s^2 + r3 s^3 + r4 s^4) and P = t4 - t6 = (R T - t2^2) / Q, which solves
+    J = t2^2 + P Q - R T. sign = -1 reverses the t2^2 term, so the mutated arc leaves V(J)."""
+    (b, c, big_v, big_a), (r3, r4) = parameters
+    half = Fraction(1, 2)
+    s = monomials(field, 1)
+    t2 = monomials(field, b * big_v, start=2)
+    q, t = s * (2 * b), s * (2 * c)
+    r = monomials(field, b * b * big_v, b * big_a, r3, r4, start=2)
+    p = (r * (2 * c) - t2.shift(1) * t2 * sign) * Fraction(1, 2 * b)
+    return {"t2": t2, "t3": s, "t4": (q + p) * half, "t5": (t + r) * half, "t6": (q - p) * half, "t7": (t - r) * half}
+
+
+def w8_arc(field: Field, sign: int, parameters: tuple[Any, ...]) -> dict[str, Series]:
+    """An arc of the W8 slice J = g(t1, s9 t9) - t2^2 - P Q + R T, g = t1^2 t9^2 - 2 t1^2 t9 + 2 t1 t9^2 - 4 t1 t9,
+    with sign = s9 (the header of W8 -> N+ is that of W8 -> N- at -t9)."""
+    kind, point, (first, second) = parameters
+    half = Fraction(1, 2)
+    s = monomials(field, 1)
+    if kind == "c30":
+        b, c, big_v, big_a, big_b = point
+        u2 = monomials(field, big_v)
+        r = monomials(field, b * big_v, big_a, first)
+        p = monomials(field, c * big_v, big_b, second)
+        n = r * (2 * c) - p * (2 * b) - u2 * u2
+        u9 = Series((), field)
+        for _ in range(field.order):
+            u9 = (n - s * u9 * 2 + s * u9 * u9 * 2 + s * s * u9 * u9) * Fraction(1, 4)
+        return {
+            "t1": s,
+            "t2": s * u2,
+            "t4": s * (p + 2 * b) * half,
+            "t5": s * (r + 2 * c) * half,
+            "t6": s * (-p + 2 * b) * half,
+            "t7": s * (-r + 2 * c) * half,
+            "t9": s * u9 * sign,
+        }
+    _require(field.prime is not None, "the degree-20 arcs carry the square root of -1")
+    big_c, big_d, big_t, big_u, big_w = point
+    root = PRIMES[field.prime or 0]
+    c, d = monomials(field, big_c, first), monomials(field, big_d, second)
+    t7, t1, t9 = monomials(field, big_t), monomials(field, big_u), monomials(field, big_w)
+    g = t1 * t1 * t9 * t9 - t1 * t1 * t9 * 2 + t1 * t9 * t9 * 2 - t1 * t9 * 4
+    b = (g + c * d - t7 * t7).shift(1)
+    inverse = Fraction(1, 2 * root)
+    return {
+        "t1": t1,
+        "t2": (s + b) * half,
+        "t4": (s - b) * inverse,
+        "t5": (c + d) * half,
+        "t6": (c - d) * inverse,
+        "t7": t7,
+        "t9": t9 * sign,
+    }
+
+
+def x_same_arc(field: Field, sign: int, parameters: tuple[tuple[int, ...], ...]) -> dict[str, Series]:
+    """Phi of ../arcs-x-same on its weighted arc; sign = s9."""
+    (big_w, big_r, big_s, big_a), (w2, r2, s2, a2) = parameters
+    half = Fraction(1, 2)
+    w = monomials(field, big_w, 0, w2, start=2)
+    rho, sig, a = (monomials(field, lead, 0, extra) for lead, extra in ((big_r, r2), (big_s, s2), (big_a, a2)))
+    m = w + 1
+    u = m.inverse()
+    t9 = -(w * w) * u * half
+    return {
+        "t1": a - t9,
+        "t2": a * w * (w + 2) * u * half,
+        "t4": (m * rho + sig) * half,
+        "t5": (m * rho - sig) * half,
+        "t6": (m * sig + rho) * half,
+        "t7": (rho - m * sig) * half,
+        "t9": t9 * sign,
+    }
+
+
 def e8_phi(
     field: Field, sign: int, w: Series, rho: Series, sigma: Series, zeta: Series, e: Series
 ) -> dict[str, Series]:
@@ -358,7 +485,18 @@ def one_arc(item: tuple[dict[str, Any], tuple[Any, ...], bool]) -> dict[str, Any
     slug = data["slug"]
     field = Field(data["prime"], data["order"])
     sign = -INCIDENCES[slug][1] if mutate else INCIDENCES[slug][1]
-    values = (x_arc if slug in X_INCIDENCES else e8_arc)(field, sign, parameters)
+    arc = (
+        x_arc
+        if slug in X_INCIDENCES
+        else iso_arc
+        if slug in ISO_INCIDENCES
+        else w8_arc
+        if slug in W8_INCIDENCES
+        else x_same_arc
+        if slug in XS_INCIDENCES
+        else e8_arc
+    )
+    values = arc(field, sign, parameters)
     full = dict(values)
     for name in data["slice_names"]:
         if name not in full:
@@ -385,7 +523,8 @@ def one_arc(item: tuple[dict[str, Any], tuple[Any, ...], bool]) -> dict[str, Any
         "limit_in_base_kernel": len(rref([*base_kernel, *plane], field)) == len(base_kernel),
         "plane": plane_text(plane),
         "plane_sha256": hashlib.sha256(json.dumps(plane_text(plane)).encode()).hexdigest(),
-        "group": json.dumps(parameters[0]),
+        # Over Q the arcs of one parameter point form a group: every entry but the trailing variant.
+        "group": json.dumps(parameters[0] if len(parameters) == 2 else parameters[:-1]),
     }
     if field.prime:
         _, ideal_j, ideal_g = header(slug, field.prime)
@@ -446,12 +585,50 @@ def reduces(rational: dict[str, Any], modular: dict[str, Any]) -> bool:
     return True
 
 
+# family: (incidences, truncation order, whether the arcs have rational coefficients)
+FAMILIES: dict[str, tuple[dict[str, tuple[str, int]], int, bool]] = {
+    "x": (X_INCIDENCES, X_ORDER, True),
+    "e8": (E8_INCIDENCES, E8_ORDER, False),
+    "iso": (ISO_INCIDENCES, ISO_ORDER, True),
+    "w8-c30": (W8_INCIDENCES, W8_ORDER, True),
+    "w8-c20": (W8_INCIDENCES, W8_ORDER, False),
+    "x-same": (XS_INCIDENCES, XS_ORDER, True),
+}
+RESULTS = {
+    "x": "x-opposite-result.json",
+    "e8": "e8-result.json",
+    "iso": "iso-result.json",
+    "w8-c30": "w8-c30-result.json",
+    "w8-c20": "w8-c20-result.json",
+    "x-same": "x-same-result.json",
+}
+
+
 def parameter_sets(family: str) -> list[tuple[tuple[Any, ...], bool]]:
     if family == "x":
         return [
             ((direction, variant), mutate)
             for direction in X_DIRECTIONS
             for variant, mutate in (*((v, False) for v in X_VARIANTS), (X_VARIANTS[1], True))
+        ]
+    if family == "iso":
+        return [
+            ((point, variant), mutate)
+            for point in ISO_POINTS
+            for variant, mutate in (*((v, False) for v in ISO_VARIANTS), (ISO_VARIANTS[0], True))
+        ]
+    if family == "x-same":
+        return [
+            ((point, variant), mutate)
+            for point in XS_POINTS
+            for variant, mutate in (*((v, False) for v in XS_VARIANTS), (XS_VARIANTS[0], True))
+        ]
+    if family.startswith("w8-"):
+        kind = family.removeprefix("w8-")
+        return [
+            ((kind, point, variant), mutate)
+            for point in W8_POINTS[kind]
+            for variant, mutate in (*((v, False) for v in W8_VARIANTS), (W8_VARIANTS[0], True))
         ]
     return [
         ((kind, point, variant), mutate)
@@ -462,9 +639,8 @@ def parameter_sets(family: str) -> list[tuple[tuple[Any, ...], bool]]:
 
 
 def build(family: str) -> dict[str, Any]:
-    slugs = X_INCIDENCES if family == "x" else E8_INCIDENCES
-    order = X_ORDER if family == "x" else E8_ORDER
-    fields = (*PRIMES, None) if family == "x" else tuple(PRIMES)
+    slugs, order, rational = FAMILIES[family]
+    fields = (*PRIMES, None) if rational else tuple(PRIMES)
     slices = parallel.ordered_map(
         slice_of, [(slug, Field(prime, order)) for slug, prime in itertools.product(slugs, fields)], min_items=1
     )
@@ -501,11 +677,11 @@ def build(family: str) -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
-    parser.add_argument("family", choices=("x", "e8"))
+    parser.add_argument("family", choices=tuple(FAMILIES))
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     record = build(args.family)
-    out = args.out or HERE / {"x": "x-opposite-result.json", "e8": "e8-result.json"}[args.family]
+    out = args.out or HERE / RESULTS[args.family]
     out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     for case in record["cases"]:
         print(

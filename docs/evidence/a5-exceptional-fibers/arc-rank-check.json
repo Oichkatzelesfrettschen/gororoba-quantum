@@ -1,0 +1,419 @@
+{
+ "schema": "a5-arc-rank-check-v1",
+ "order": 14,
+ "verdict": "agrees",
+ "rows": [
+  {
+   "family": "iso",
+   "prime": 32009,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 5,
+   "singular_rank": 5,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "iso",
+   "prime": 32009,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 5,
+   "singular_rank": 5,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "iso",
+   "prime": 32029,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 5,
+   "singular_rank": 5,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "iso",
+   "prime": 32029,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 5,
+   "singular_rank": 5,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "w8-c30",
+   "prime": 32009,
+   "point": [
+    2,
+    3,
+    5,
+    7,
+    11
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 6,
+   "singular_rank": 6,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "w8-c30",
+   "prime": 32009,
+   "point": [
+    13,
+    4,
+    9,
+    6,
+    17
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 6,
+   "singular_rank": 6,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "w8-c30",
+   "prime": 32029,
+   "point": [
+    2,
+    3,
+    5,
+    7,
+    11
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 6,
+   "singular_rank": 6,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "w8-c30",
+   "prime": 32029,
+   "point": [
+    13,
+    4,
+    9,
+    6,
+    17
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 6,
+   "singular_rank": 6,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "xm-nm",
+   "prime": 32009,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xm-nm",
+   "prime": 32009,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xm-nm",
+   "prime": 32029,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xm-nm",
+   "prime": 32029,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xp-np",
+   "prime": 32009,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xp-np",
+   "prime": 32009,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xp-np",
+   "prime": 32029,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "xp-np",
+   "prime": 32029,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    5
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 5
+  },
+  {
+   "family": "vb-generic",
+   "prime": 32009,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    2
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 2
+  },
+  {
+   "family": "vb-generic",
+   "prime": 32009,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    2
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 2
+  },
+  {
+   "family": "vb-generic",
+   "prime": 32029,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    2
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 2
+  },
+  {
+   "family": "vb-generic",
+   "prime": 32029,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    2
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 2
+  },
+  {
+   "family": "vb-special",
+   "prime": 32009,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "vb-special",
+   "prime": 32009,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "vb-special",
+   "prime": 32029,
+   "point": [
+    2,
+    3,
+    5,
+    7
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 4
+  },
+  {
+   "family": "vb-special",
+   "prime": 32029,
+   "point": [
+    13,
+    4,
+    9,
+    6
+   ],
+   "least_order_of_J": 14,
+   "order_of_G": [
+    4
+   ],
+   "rank": 4,
+   "singular_rank": 4,
+   "singular_order_of_G": 4
+  }
+ ]
+}

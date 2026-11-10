@@ -1,0 +1,7 @@
+RESULT signs of the run generators against the header 1,1,1,1,1,1,1,1,1,1
+RESULT K2 generators 21 P1 dimension degree generators 4 3 7 P2 4 4 9
+RESULT generators of J nonzero on Phi modulo the unit relations 0 of 17
+RESULT weights 1 1 1 with K constant: nu 2 nonzero limit entries 8
+RESULT K2 nonzero on the limit 0 P1 7 of 7 P2 0 of 9
+RESULT rank of [dF | F] at two points 4 4
+exit 0

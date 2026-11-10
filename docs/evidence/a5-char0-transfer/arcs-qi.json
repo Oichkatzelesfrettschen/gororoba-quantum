@@ -1,0 +1,229 @@
+{
+ "field": "Q(i)",
+ "order": 12,
+ "points": [
+  [
+   2,
+   3,
+   5,
+   7,
+   11
+  ],
+  [
+   13,
+   4,
+   9,
+   6,
+   17
+  ]
+ ],
+ "rows": [
+  {
+   "slug": "iso-nm",
+   "parameters": [
+    "b",
+    "c",
+    "V",
+    "A"
+   ],
+   "j_is_identity": true,
+   "arc": {
+    "j_nonzero": 0,
+    "order_of_G": 4,
+    "generators": 17,
+    "limit_nonzero": 17,
+    "ranks": [
+     5,
+     5
+    ],
+    "wall_seconds": 2.7,
+    "peak_rss_kib": 62872
+   },
+   "mutated": {
+    "j_nonzero": 1,
+    "order_of_G": 4,
+    "generators": 17,
+    "limit_nonzero": 17,
+    "ranks": [
+     5,
+     5
+    ],
+    "wall_seconds": 2.5,
+    "peak_rss_kib": 62808
+   }
+  },
+  {
+   "slug": "iso-np",
+   "parameters": [
+    "b",
+    "c",
+    "V",
+    "A"
+   ],
+   "j_is_identity": true,
+   "arc": {
+    "j_nonzero": 0,
+    "order_of_G": 4,
+    "generators": 17,
+    "limit_nonzero": 17,
+    "ranks": [
+     5,
+     5
+    ],
+    "wall_seconds": 2.6,
+    "peak_rss_kib": 62712
+   },
+   "mutated": {
+    "j_nonzero": 1,
+    "order_of_G": 4,
+    "generators": 17,
+    "limit_nonzero": 17,
+    "ranks": [
+     5,
+     5
+    ],
+    "wall_seconds": 2.6,
+    "peak_rss_kib": 62800
+   }
+  },
+  {
+   "slug": "w8-nm",
+   "parameters": [
+    "b",
+    "c",
+    "V",
+    "A",
+    "B"
+   ],
+   "j_is_identity": false,
+   "arc": {
+    "j_nonzero": 0,
+    "order_of_G": 4,
+    "generators": 24,
+    "limit_nonzero": 23,
+    "ranks": [
+     6,
+     6
+    ],
+    "wall_seconds": 1014.5,
+    "peak_rss_kib": 1757288
+   },
+   "mutated": {
+    "j_nonzero": 1,
+    "order_of_G": 4,
+    "generators": 24,
+    "limit_nonzero": 23,
+    "ranks": [
+     6,
+     6
+    ],
+    "wall_seconds": 110.8,
+    "peak_rss_kib": 476552
+   }
+  },
+  {
+   "slug": "w8-np",
+   "parameters": [
+    "b",
+    "c",
+    "V",
+    "A",
+    "B"
+   ],
+   "j_is_identity": false,
+   "arc": {
+    "j_nonzero": 0,
+    "order_of_G": 4,
+    "generators": 24,
+    "limit_nonzero": 23,
+    "ranks": [
+     6,
+     6
+    ],
+    "wall_seconds": 1006.8,
+    "peak_rss_kib": 1757296
+   },
+   "mutated": {
+    "j_nonzero": 1,
+    "order_of_G": 4,
+    "generators": 24,
+    "limit_nonzero": 23,
+    "ranks": [
+     6,
+     6
+    ],
+    "wall_seconds": 108.6,
+    "peak_rss_kib": 476516
+   }
+  },
+  {
+   "slug": "xm-nm",
+   "parameters": [
+    "W",
+    "Rh",
+    "Sg",
+    "A"
+   ],
+   "j_is_identity": false,
+   "arc": {
+    "j_nonzero": 0,
+    "order_of_G": 5,
+    "generators": 15,
+    "limit_nonzero": 12,
+    "ranks": [
+     4,
+     4
+    ],
+    "wall_seconds": 3.4,
+    "peak_rss_kib": 109360
+   },
+   "mutated": {
+    "j_nonzero": 8,
+    "order_of_G": 5,
+    "generators": 15,
+    "limit_nonzero": 12,
+    "ranks": [
+     4,
+     4
+    ],
+    "wall_seconds": 3.6,
+    "peak_rss_kib": 109420
+   }
+  },
+  {
+   "slug": "xp-np",
+   "parameters": [
+    "W",
+    "Rh",
+    "Sg",
+    "A"
+   ],
+   "j_is_identity": false,
+   "arc": {
+    "j_nonzero": 0,
+    "order_of_G": 5,
+    "generators": 15,
+    "limit_nonzero": 12,
+    "ranks": [
+     4,
+     4
+    ],
+    "wall_seconds": 3.3,
+    "peak_rss_kib": 109480
+   },
+   "mutated": {
+    "j_nonzero": 8,
+    "order_of_G": 5,
+    "generators": 15,
+    "limit_nonzero": 12,
+    "ranks": [
+     4,
+     4
+    ],
+    "wall_seconds": 3.3,
+    "peak_rss_kib": 109424
+   }
+  }
+ ],
+ "verdict": "survives"
+}

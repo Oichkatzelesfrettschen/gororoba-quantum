@@ -83,3 +83,14 @@ prime, or a reduced echelon form that differs from K2. Host: one Kaggle CPU kern
 unmeasured for these fibers; the product count predicts that Iso is near the X- time and that W8 exceeds the session,
 in which case its record is a `blocked_timeout` and the run moves to a host without the limit. The Iso relation file
 uses the run's generators, ten of which are the negatives of the header's (`NEGATED`).
+
+## Arc families over Q(i) (ledger A5-293)
+
+[arcs_qi.py](arcs_qi.py) replays the arc families of the Iso, W8 and same-sign X slices
+([blowup-arcs](../a5-exceptional-fibers/structure/arcs-iso-w8/blowup-arcs/README.md),
+[arcs-x-same](../a5-exceptional-fibers/arcs-x-same/README.md)) on the J and G of the Q(i) producer. The arcs have
+rational coefficients, and over Q(i) they keep J = 0, the order of G (4, 4, 5) and the rank of the limit map (5 on
+Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points of the modular certificates
+([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
+record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
+(A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.

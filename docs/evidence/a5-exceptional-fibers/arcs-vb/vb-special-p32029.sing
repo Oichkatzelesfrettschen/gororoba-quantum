@@ -1,0 +1,34 @@
+// arcs through the point k = -9 of the line on the E8-bar -> VB slice at p = 32029
+option(redSB);
+LIB "matrix.lib"; LIB "primdec.lib";
+ring r=32029,(t1,t2,t3,t4,t5,t6,t7,t8),dp;
+number I=9115;
+ideal J=t3^2-t4^2-t5^2+t6^2,t1^2-t2^2+t7^2-t8^2+4*t2+2*t8,t4*t5*t8-t3*t6*t8-t3*t5-t4*t5+t3*t6+t4*t6,t4^2*t8-t6^2*t8-t3*t4-t4^2-t5*t6+t6^2,t3*t4*t8-t5*t6*t8-t3*t4-t4^2-t5^2+t5*t6,t2*t4*t8+t1*t6*t8-t2*t4+t1*t5-t1*t6-2*t4*t8,t1*t4*t8+t2*t6*t8-t1*t3-t1*t4-t2*t6-2*t6*t8,t2*t3*t8+t1*t5*t8-t2*t3-t1*t5+t1*t6-2*t3*t8,t1*t3*t8+t2*t5*t8-t1*t3-t1*t4-t2*t5-2*t5*t8,t2*t3*t5+t1*t5^2-t2*t4*t6-t1*t6^2-2*t3*t5-2*t4*t5+2*t3*t6+2*t4*t6,t2*t4^2+t1*t3*t5+t2*t5^2+t1*t4*t6-2*t3*t4-2*t4^2-2*t5^2+2*t5*t6,t2*t3*t4+t1*t4*t5+t1*t3*t6+t2*t5*t6-2*t3*t4-2*t4^2-2*t5*t6+2*t6^2,t7^2*t8^2-t8^4-2*t7^2*t8+4*t8^3+t2^2-4*t2*t8,t6*t7^2*t8-t6*t8^3-t1*t2*t3-t2^2*t5+t5*t7^2-t6*t7^2-t5*t8^2+3*t6*t8^2+2*t1*t3+2*t1*t4+4*t2*t5-2*t2*t6+2*t5*t8+2*t6*t8,t5*t7^2*t8-t5*t8^3-t1*t2*t4-t2^2*t6-t5*t7^2+t6*t7^2+3*t5*t8^2-t6*t8^2+2*t1*t3+2*t1*t4-2*t2*t5+4*t2*t6+2*t5*t8+2*t6*t8,t4*t7^2*t8-t4*t8^3+t2^2*t3+t1*t2*t5-t3*t7^2-t4*t7^2+t3*t8^2+3*t4*t8^2-4*t2*t3-2*t2*t4-2*t1*t5+2*t1*t6-2*t3*t8+2*t4*t8,t3*t7^2*t8-t3*t8^3+t2^2*t4+t1*t2*t6-t3*t7^2-t4*t7^2+3*t3*t8^2+t4*t8^2-2*t2*t3-4*t2*t4+2*t1*t5-2*t1*t6+2*t3*t8-2*t4*t8;
+ideal G=2*t2*t4*t5*t7+2*t2*t3*t6*t7-4*t2*t5*t6*t8-2*t2*t5^2+4*t2*t5*t6-2*t2*t6^2-4*t1*t2*t7-4*t4*t5*t7-4*t3*t6*t7-4*t2^2*t8+8*t5*t6*t8-2*t1*t7*t8-2*t2*t8^2+4*t2^2+4*t5^2-8*t5*t6+4*t6^2+10*t1*t7+20*t2*t8+4*t8^2-10*t2-20*t8,13799*t1*t4^2*t6-13799*t1*t6^3+13799*t1*t6*t7^2-13799*t1*t6*t8^2-4431*t2^2*t3-4431*t1*t2*t5-4431*t4*t5*t6-4431*t3*t6^2-4431*t1*t6*t8-14305*t2*t3+8862*t2*t4+8862*t1*t5-13799*t1*t6+8862*t6*t7-4431*t4*t8-13293*t3-13293*t4,4*t2^2*t4*t6+4*t1*t2*t6^2-8*t2*t3*t6-16*t2*t4*t6-8*t1*t6^2-4*t5*t6*t7+4*t3*t6*t8+12*t3*t6+12*t4*t6,13799*t5^2*t7^2-13799*t6^2*t7^2-4431*t2*t7^2*t8-13799*t5^2*t8^2+13799*t6^2*t8^2+4431*t2*t8^3-4431*t1*t4*t5+4431*t1*t3*t6+4431*t3*t6*t7+4431*t2*t7^2-4431*t5^2*t8-4431*t5*t6*t8+4431*t6^2*t8+8862*t7^2*t8-13293*t2*t8^2-8862*t8^3-4937*t2^2-8862*t5^2+4431*t5*t6+4431*t6^2+4937*t7^2-13293*t2*t8+12787*t8^2+9874*t2-9874*t8,2*t1*t4^3-2*t1*t4*t6^2+2*t1*t4*t7^2+2*t2*t6*t8^2-4*t1*t2*t3-4*t2^2*t5+4*t4^2*t5+4*t3*t4*t6+2*t2*t5*t8-4*t2*t6*t8-4*t6*t8^2+8*t1*t3-2*t1*t4+14*t2*t5-6*t2*t6-8*t4*t7-4*t5*t8+8*t6*t8-12*t5+12*t6,13799*t5^2*t7^2-13799*t6^2*t7^2+4431*t2*t7^2*t8-13799*t5^2*t8^2+13799*t6^2*t8^2-4431*t2*t8^3-4431*t1*t4*t5+4431*t1*t3*t6-4431*t4*t5*t7-4431*t2*t7^2-4431*t5^2*t8+4431*t5*t6*t8+4431*t6^2*t8-8862*t7^2*t8+13293*t2*t8^2+8862*t8^3+4937*t2^2-4431*t5^2-4431*t5*t6+8862*t6^2-4937*t7^2+13293*t2*t8-12787*t8^2-9874*t2+9874*t8,4*t2^2*t4*t6+4*t1*t2*t6^2-4*t3*t5*t7^2-4*t4*t6*t7^2+4*t3*t5*t8^2+4*t4*t6*t8^2-8*t1*t3*t4-8*t2*t3*t6-16*t2*t4*t6+8*t1*t5*t6-8*t1*t6^2-4*t3*t4*t7-8*t3*t5*t8+4*t3*t6*t8-8*t4*t6*t8-12*t3*t5+12*t3*t6,-2*t1*t2*t3*t7-2*t2^2*t5*t7-2*t3*t4*t6*t7-2*t5*t6^2*t7+2*t5*t7^3-4*t3*t6^2*t8-2*t5*t7*t8^2-2*t1*t2*t6-2*t3*t5*t6+4*t3*t6^2+2*t4*t6^2+4*t1*t3*t7+4*t1*t4*t7+8*t2*t5*t7+4*t2*t6*t7+4*t5*t7*t8+2*t6*t7*t8+2*t4*t8^2+4*t2*t3+4*t1*t5+4*t1*t6-10*t6*t7-2*t3*t8-4*t4*t8-6*t3-6*t4,-13799*t2^2*t3*t7+13799*t3*t4^2*t7-13799*t1*t2*t5*t7+13799*t4*t5*t6*t7+13799*t3*t7^3-4431*t5*t6^2*t8-13799*t3*t7*t8^2+13799*t1*t2*t4+13799*t3*t4*t5+13799*t4^2*t6-4431*t5^2*t6+4431*t5*t6^2-8862*t2*t3*t7+4431*t2*t4*t7-4431*t1*t5*t7+4431*t1*t6*t7-4431*t3*t7*t8-13799*t4*t7*t8-13799*t6*t8^2-4431*t1*t3+4431*t1*t4-4431*t2*t5+4937*t4*t7-13799*t5*t8-4431*t6*t8-9368*t5+9368*t6,-2*t2*t4*t5*t7-2*t2*t3*t6*t7-4*t2*t5*t6*t8+4*t1*t3*t5+2*t2*t5^2+4*t1*t4*t6+4*t2*t5*t6+2*t2*t6^2-4*t1*t2*t7+4*t4*t5*t7+4*t3*t6*t7+4*t2^2*t8+8*t5*t6*t8-2*t1*t7*t8+2*t2*t8^2-4*t2^2-4*t5^2+8*t5*t6-4*t6^2+10*t1*t7-20*t2*t8-4*t8^2+10*t2+20*t8;
+execute("ideal Grun="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/vb_p2/d2/gens.txt")+";");
+intvec eps; int jj; for (jj=1;jj<=ncols(G);jj++) { if (Grun[jj]==G[jj]) { eps[jj]=1; } else { if (Grun[jj]==-G[jj]) { eps[jj]=-1; } else { ERROR("generator "+string(jj)+" is not +-G"); } } }
+"RESULT signs of the run generators against the header", eps;
+execute("ring Y=32029,(y(1..10)),dp;");
+execute("ideal K2="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/vb_p2/d2/relations-upto-d2.rel")+";");
+list L=minAssGTZ(K2); if (size(L)!=2) { ERROR("K2 has "+string(size(L))+" minimal primes"); }
+ideal P1; ideal P2; int ii; for (ii=1;ii<=2;ii++) { if (mult(std(L[ii]))==3) { P1=L[ii]; } else { P2=L[ii]; } }
+if (dim(std(P1))!=4 or mult(std(P1))!=3 or dim(std(P2))!=4 or mult(std(P2))!=4) { ERROR("the minimal primes of K2 are not of dimension 4 and degrees 3 and 4"); }
+"RESULT K2 generators", size(K2), "P1 dimension degree generators", dim(std(P1)), mult(std(P1)), size(P1), "P2", dim(std(P2)), mult(std(P2)), size(P2);
+ring E=32029,(w,rho,sig,k,u,v,z),dp;
+poly m=1+w; poly a1=w^4-6*w^2-4*w; poly a2=w^4+8*w^3+18*w^2+12*w;
+poly T1=(k^2*a1-a2)*(u^2)*v/4; poly T2=(T1*w*(w+2)+2*w^2)*z; poly T7=k*w*(w+2)*u*v; poly T8=-(w^2)*u/2;
+map phiE=r,T1,T2,-(m*rho+sig)/2,(m*sig+rho)/2,(m*rho-sig)/2,(rho-m*sig)/2,1*T7,T8;
+"RESULT generators of J nonzero on Phi modulo the unit relations", size(simplify(reduce(phiE(J),std(ideal(u*m-1,v*(1+k^2)-1,z*(m^2+1)-1))),2)), "of", ncols(phiE(J));
+ring S=32029,(s,W,R,Sg,K),dp;
+intvec sw=1,0,0,0,0;
+proc inv(poly f, int n) { poly c=jet(f,0,sw); poly g=1/c; poly q=1-f*g; poly acc=1; poly pw=1; int i; for (i=1;i<=n;i++) { pw=jet(pw*q,n,sw); acc=acc+pw; } return(jet(acc*g,n,sw)); }
+proc lowest(ideal Gs) { int j; int k; for (k=0;k<=11;k++) { for (j=1;j<=ncols(Gs);j++) { if (jet(Gs[j],k,sw)!=0) { return(k); } } } return(-1); }
+proc limit(ideal Gs, int nu) { ideal F; int j; for (j=1;j<=ncols(Gs);j++) { F[j]=eps[j]*subst(jet(Gs[j],nu,sw)-jet(Gs[j],nu-1,sw),s,1); } return(F); }
+proc arc(int d, int ew, int er, int es) { int n=14; poly k=-9+K*s^d; poly w=W*s^ew; poly rho=R*s^er; poly sig=Sg*s^es; poly m=1+w; poly u=inv(m,n); poly z=inv(m^2+1,n); poly v=inv(1+k^2,n); poly a1=w^4-6*w^2-4*w; poly a2=w^4+8*w^3+18*w^2+12*w; poly T1=jet((k^2*a1-a2)*(u^2)*v/4,n,sw); poly T2=jet((T1*w*(w+2)+2*w^2)*z,n,sw); poly T7=jet(k*w*(w+2)*u*v,n,sw); poly T8=jet(-(w^2)*u/2,n,sw); map phi=r,T1,T2,-(m*rho+sig)/2,(m*sig+rho)/2,(m*rho-sig)/2,(rho-m*sig)/2,1*T7,T8; "RESULT generators of J nonzero on the arc through order", n-2, size(simplify(jet(phi(J),n-2,sw),2)); return(jet(phi(G),n-3,sw)); }
+map p1=S,0,2,3,5,7; map p2=S,0,13,4,9,6;
+ideal Gs=arc(1,2,1,1); int nu=lowest(Gs); ideal F=limit(Gs,nu);
+matrix M=concat(jacob(F),transpose(matrix(F))); map back=Y,F;
+"RESULT k = -9 + K s, w = W s^2, rho = R s, sig = S s: nu", nu, "nonzero limit entries", size(simplify(F,2));
+"RESULT K2 nonzero on the limit", size(simplify((back(K2)),2)), "P1", size(simplify((back(P1)),2)), "of", ncols(back(P1)), "P2", size(simplify((back(P2)),2)), "of", ncols(back(P2));
+"RESULT rank of [dF | F] at two points", rank(p1(M)), rank(p2(M));
+quit;
