@@ -1,0 +1,19 @@
+# GOROROBA_WORKERS=3 "$PYTHON" docs/evidence/ascella-cz-tomography-band/mesh_model_jobs.py --check docs/evidence/ascella-cz-tomography-band/mesh-model-jobs-input.json docs/evidence/ascella-cz-tomography-band/mesh-model-jobs.json
+# build host, 2026-11-10 UTC, numpy 2.5.4, torch 2.15.0; 25.3 s user + 4.5 s system, 0.86 GB peak resident; exit 0
+two-photon within_retained deviance_baseline: recorded 37711.052498, refit 37711.052498
+two-photon within_retained deviance_transfer: recorded 12086.262410, refit 12086.262410
+two-photon within_band deviance_baseline: recorded 245543.417265, refit 245543.417265
+two-photon within_band deviance_transfer: recorded 56057.241997, refit 56057.241997
+two-photon retained_to_band deviance_baseline: recorded 477206.603288, refit 477206.603288
+two-photon retained_to_band deviance_transfer: recorded 107238.720120, refit 107238.720120
+two-photon band_to_retained deviance_baseline: recorded 69837.617369, refit 69837.617369
+two-photon band_to_retained deviance_transfer: recorded 22995.436609, refit 22995.436609
+g2 within_retained deviance_baseline: recorded 5026.451927, refit 5026.451927
+g2 within_retained deviance_transfer: recorded 5545.523946, refit 5545.523946
+g2 within_band deviance_baseline: recorded 17572.766484, refit 17572.766484
+g2 within_band deviance_transfer: recorded 20265.132623, refit 20265.132623
+g2 retained_to_band deviance_baseline: recorded 36964.232161, refit 36964.232161
+g2 retained_to_band deviance_transfer: recorded 36480.375234, refit 36480.375235
+g2 band_to_retained deviance_baseline: recorded 10016.671027, refit 10016.671027
+g2 band_to_retained deviance_transfer: recorded 9951.139308, refit 9951.139308
+largest relative difference 3.141e-11
