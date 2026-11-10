@@ -103,12 +103,20 @@ def main(argv: list[str]) -> int:
         omega = np.array([fitted[job]["outcome_weights"] for job in SPAM.JOB])
         base = {"eligible": data["eligible"], "shots": data["shots"], "scale": data["scale"], "omega": omega}
         variants = {"shift": {"weights": False, "throughput": False}, "all": {"weights": True, "throughput": True}}
+        # Every point starts from the Choi factor of its profile's kappa = 0 fit: at a large |kappa| the shifted
+        # rates of a setting can sum below zero, and the linear-inversion start of spam_separated_fit.fit is then
+        # undefined. The linear companion at such a point is undefined too, and is not reported.
+        meshes = meshes_of(model, pair)
+        anchors_in = [
+            {**base, **switches, **mesh, "kappa": 0.0} for mesh in meshes.values() for switches in variants.values()
+        ]
+        anchors = SPAM.CASE.ordered_map(SPAM.fit, anchors_in, min_items=1)
         items, keys = [], []
-        for label, mesh in meshes_of(model, pair).items():
-            for variant, switches in variants.items():
-                for kappa in KAPPAS:
-                    items.append({**base, **switches, **mesh, "kappa": kappa})
-                    keys.append((label, variant))
+        profiles = [(label, variant) for label in meshes for variant in variants]
+        for (label, variant), anchor_item, anchor in zip(profiles, anchors_in, anchors, strict=True):
+            for kappa in KAPPAS:
+                items.append({**anchor_item, "kappa": kappa, "start": anchor["factor"]})
+                keys.append((label, variant))
         grid = SPAM.CASE.ordered_map(SPAM.fit, items, min_items=1)
         # A worker that fitted without scaled_prepared would ignore kappa and return one NLL per profile.
         for position in range(0, len(items), len(KAPPAS)):
