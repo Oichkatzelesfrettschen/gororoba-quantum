@@ -266,10 +266,17 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    # A row counts as finished only for its own host and mode, and a skipped row is measured again once its
+    # capability is present.
+    key = (host["label"], common["mode"])
     done = set()
     if out_path.exists():
-        lines = out_path.read_text(encoding="utf-8").splitlines()
-        done = {json.loads(line)["config"] for line in lines if line.strip()}
+        rows = [json.loads(line) for line in out_path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        done = {
+            row["config"]
+            for row in rows
+            if "skipped" not in row and ((row.get("host") or {}).get("label"), row.get("mode")) == key
+        }
     with tempfile.TemporaryDirectory(prefix="fp-sweep-") as tmp, out_path.open("a", encoding="utf-8") as sink:
         for config in grid:
             if config.label in done:
