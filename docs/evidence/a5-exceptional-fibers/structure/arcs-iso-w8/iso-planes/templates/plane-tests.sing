@@ -1,0 +1,29 @@
+int nK=size(K); int j; int kk;
+matrix TT[@NGEN@][5]; matrix MMy[@NGEN@][3]; matrix Y0m[3][1];
+for (kk=1;kk<=3;kk++) { Y0m[kk,1]=Y0[kk]; }
+for (j=1;j<=@NGEN@;j++) {
+  for (kk=1;kk<=3;kk++) { TT[j,kk]=eps[j]*V1[j,kk]; MMy[j,kk]=eps[j]*V1[j,kk]; }
+  TT[j,4]=eps[j]*(D1[j,1]*Y0[1]+D1[j,2]*Y0[2]+D1[j,3]*Y0[3]);
+  TT[j,5]=eps[j]*(D2[j,1]*Y0[1]+D2[j,2]*Y0[2]+D2[j,3]*Y0[3]);
+}
+matrix y0m=MMy*Y0m;
+ideal ycoords; for (j=1;j<=@NGEN@;j++) { ycoords[j]=y0m[j,1]; }
+map ev=Y,ycoords;
+ring Z=@P@,(Y1,Y2,Y3),dp;
+ideal im; for (j=1;j<=@NGEN@;j++) { im[j]=eps[j]*(V1[j,1]*Y1+V1[j,2]*Y2+V1[j,3]*Y3); }
+map psi=Y,im;
+ideal iK=psi(K);
+res("plane: K2 generators nonzero on Pi_p: "+string(size(iK))+" of "+string(nK)+" (0: Pi_p lies in V(K2))");
+ideal im2=im; im2[1]=im[1]+eps[1]*Y1; map psi2=Y,im2; ideal iK2=psi2(K);
+res("mutation: K2 generators nonzero on the plane with one coordinate of M(p) shifted by one (positive required): "+string(size(iK2))+" of "+string(nK));
+matrix MZ[@NGEN@][3]; for (j=1;j<=@NGEN@;j++) { for (kk=1;kk<=3;kk++) { MZ[j,kk]=V1[j,kk]; } }
+res("plane: rank of M(p) (3 required): "+string(rank(MZ)));
+setring Y;
+matrix JKm=jacob(K); matrix JK0=ev(JKm); matrix RK=JK0*TT;
+res("tangent consistency: Jacobian of the K2 generators at y0 = M(p) Y0 against the five tangent vectors, nonzero entries (0 required): "+string(size(ideal(RK)))+"; rank of that Jacobian (12 at a smooth point of the 5-dimensional cone): "+string(rank(JK0)));
+ideal eK0=ev(K);
+res("point y0 = M(p) Y0: K2 generators nonzero "+string(size(eK0))+" (0 required)");
+matrix TTc[@NGEN@][5]; for (j=1;j<=@NGEN@;j++) { for (kk=1;kk<=5;kk++) { TTc[j,kk]=TT[j,kk]; } }
+res("rank of [M(p) | dM/db Y0 | dM/dc Y0] (5: the planes sweep a cone of dimension 5, so a 4-dimensional projective set, which is V(K2)): "+string(rank(TTc))+", s "+string(rtimer-t0));
+// the M(p) of this script, in header order, for the cross-check case
+write(":w @MFILE@", "intmat MP[@NGEN@][3]="+string(V1)+";");

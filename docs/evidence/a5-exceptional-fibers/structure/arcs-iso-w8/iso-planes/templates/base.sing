@@ -1,0 +1,19 @@
+// off control: the point (s0, 0, b, c, b, c) of the strict transform of L0, away from the exceptional divisor
+ring rg=@P@,(s,v2,v4,v5,v6,v7),dp;
+int pb=@B@; int pc=@C@; int s0=@S0@;
+map phi=r,s*v2,s,s*(v4+pb),s*(v5+pc),s*(v6+pb),s*(v7+pc);
+ideal Gs=phi(G); ideal Jsi=phi(J); poly Js=Jsi[1];
+int i; int k; int m; poly acc; ideal Gp; poly q; int divBad=0;
+for (i=1;i<=ncols(Gs);i++) { q=Gs[i]/s^2; if (q*s^2!=Gs[i]) { divBad++; } Gp[i]=q; }
+poly Jp=Js/s^2; if (Jp*s^2!=Js) { divBad++; }
+map sh=rg,s+s0,v2,v4,v5,v6,v7;
+ideal Gc=sh(Gp); ideal Jc=sh(Jp);
+map zero=rg,0,0,0,0,0,0;
+res("off control: J and G not divisible by s^2 (0 required) "+string(divBad)+"; J' at the point (0 required) "+string(zero(Jc)[1])+"; generators of G' nonzero at the point (0 required) "+string(size(zero(Gc))));
+matrix JG=jacob(Gc); matrix JG0=zero(JG); matrix dJ=jacob(Jc); matrix dJ0=zero(dJ);
+int a0=0; for (k=1;k<=6;k++) { if (dJ0[1,k]!=0 && a0==0) { a0=k; } }
+number den=leadcoef(dJ0[1,a0]);
+matrix Kv[5][6]; int row=0;
+for (k=1;k<=6;k++) { if (k!=a0) { row++; Kv[row,k]=1; Kv[row,a0]=-leadcoef(dJ0[1,k])/den; } }
+intmat PLi[@NGEN@][5];
+for (k=1;k<=5;k++) { for (i=1;i<=@NGEN@;i++) { acc=0; for (m=1;m<=6;m++) { acc=acc+JG0[i,m]*Kv[k,m]; } PLi[i,k]=int(leadcoef(acc)); } }

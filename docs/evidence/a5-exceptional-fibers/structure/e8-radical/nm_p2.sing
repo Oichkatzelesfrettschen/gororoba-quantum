@@ -1,0 +1,19 @@
+LIB "primdec.lib";
+option(redSB);
+ring Y=32029,(y(1..21)),dp; execute("ideal K="+read("../../working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-upto-d2.rel")+";"); ideal sK=std(K);
+proc hf(ideal I, string nm) { int d; string s=nm; for(d=1;d<=6;d++){ s=s+" "+string(size(kbase(I,d))); } "RESULT HF "+s; }
+ideal R=std(radical(K)); hf(sK,"K2"); hf(R,"rad");
+ideal S=std(sat(K,maxideal(1))); hf(S,"K2:m^inf");
+// Candidate: K2 in degrees <= 3, the radical from degree 4 on. R is homogeneous, so its degree-4 part is spanned by
+// each generator g of degree e <= 4 times the monomials of degree 4 - e.
+ideal R4; int gi; for(gi=1;gi<=size(R);gi++){ int e=deg(R[gi]); if(e<=4){ if(e==4){R4=R4,R[gi];} else {R4=R4,R[gi]*maxideal(4-e);} } kill e; }
+R4=simplify(R4,2); ideal Q=std(K+R4); hf(Q,"K2+rad>=4");
+list P=minAssChar(K); int c; for(c=1;c<=size(P);c++){ ideal q=std(P[c]); hf(q,"prime"+string(c)+" dim"+string(dim(q)-1)+" deg"+string(mult(q))); ideal sq=std(sat(K,P[c])); hf(sq,"K2:prime"+string(c)+"^inf"); kill q,sq; }
+ideal N=std(reduce(R,sK)); "RESULT nilpotent_gens_outside_K2", size(N), "linear", size(jet(N,1))-size(jet(N,0));
+// Smallest k with (rad)^k in K2, tested on the products of the radical's generators.
+int k; for(k=2;k<=3;k++){ if(size(reduce(std(R^k),sK))==0){ "RESULT rad^k_in_K2 k",k; break; } }
+// The 55 candidate quartic relations: a basis of rad_4 modulo K2_4.
+ideal C=simplify(reduce(R4,sK),2); ideal Cs=std(C+sK);
+"RESULT candidates_deg4_span", size(kbase(sK,4))-size(kbase(Cs,4));
+write(":w nm_p2-candidates-d4.txt", string(C));
+quit;

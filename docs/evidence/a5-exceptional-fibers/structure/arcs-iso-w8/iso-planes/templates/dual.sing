@@ -1,0 +1,80 @@
+ring rg=@P@,(s,v2,v4,v5,v6,v7,ep),dp;
+intvec wt=1,1,1,1,1,1,0; intvec wep=0,0,0,0,0,0,1;
+proc tr(poly f, int n) { return(jet(jet(f,n,wt),1,wep)); }
+proc dd(poly x, poly d) {
+  number x0=leadcoef(subst(x,ep,0)); number x1=leadcoef(subst(diff(x,ep),ep,0));
+  number d0=leadcoef(subst(d,ep,0)); number d1=leadcoef(subst(diff(d,ep),ep,0));
+  poly r=(x0/d0) + ep*((x1*d0-x0*d1)/(d0*d0));
+  return(r);
+}
+int dir; list planeVal; list planeDer; int divTotal=0; int chkTotal=0; int badTotal=0; int resTotal=0; int sTotal=0;
+number detM; number detA;
+for (dir=1; dir<=2; dir++) {
+ setring rg;
+ poly pb=pb0; poly pc=pc0; if (dir==1) { pb=pb0+ep; } else { pc=pc0+ep; }
+ map phi=r,s*v2,s,s*(v4+pb),s*(v5+pc),s*(v6+pb),s*(v7+pc);
+ ideal Gs=phi(G); ideal Jsi=phi(J); poly Js=Jsi[1];
+ int i; ideal Gp; poly q;
+ for (i=1;i<=ncols(Gs);i++) { q=Gs[i]/s^2; if (q*s^2!=Gs[i]) { divTotal++; } Gp[i]=q; }
+ poly Jp=Js/s^2; if (Jp*s^2!=Js) { divTotal++; }
+ ideal Gq=subst(subst(Gp,v6,0),v7,0); poly Jq=subst(subst(Jp,v6,0),v7,0);
+ poly Jlin=jet(Jq,1,wt);
+ matrix M[2][2];
+ M[1,1]=diff(Gq[ia],v4); M[1,2]=diff(Gq[ia],v5);
+ M[2,1]=diff(Jq,v4); M[2,2]=diff(Jq,v5);
+ M=subst(subst(subst(subst(M,s,0),v2,0),v4,0),v5,0);
+ matrix M0=subst(M,ep,0); matrix M1=subst(diff(M,ep),ep,0);
+ if (dir==1) { detM=leadcoef(det(M0)); }
+ matrix Mi0=inverse(M0); matrix Mi=Mi0-ep*(Mi0*M1*Mi0);
+ poly x4=0; poly x5=0; poly Fa; poly FJ; poly d4; poly d5;
+ for (i=1;i<=NN+2;i++) {
+  Fa=tr(subst(subst(Gq[ia],v4,x4),v5,x5),NN);
+  FJ=tr(subst(subst(Jq,v4,x4),v5,x5),NN);
+  d4=tr(Mi[1,1]*Fa+Mi[1,2]*FJ,NN); d5=tr(Mi[2,1]*Fa+Mi[2,2]*FJ,NN);
+  x4=tr(x4-d4,NN); x5=tr(x5-d5,NN);
+ }
+ resTotal=resTotal+size(Fa)+size(FJ);
+ ideal H3; poly h; int bad=0;
+ for (i=1;i<=@NGEN@;i++) { h=tr(subst(subst(Gq[i],v4,x4),v5,x5),NN); if (subst(h,v2,0)!=0) { bad++; } H3[i]=h/v2; }
+ badTotal=badTotal+bad;
+ poly a4=diff(Jlin,v4); poly a5=diff(Jlin,v5);
+ poly r4=dd(-a4,a5);
+ poly v5sol=r4*v4;
+ poly lj; poly l2; poly l4; poly A2; poly A4; poly c1; poly al; poly be; int chk=0; int sc=0;
+ lj=subst(jet(Gq[ia],1,wt)-jet(Gq[ia],0,wt),v5,v5sol); A2=diff(lj,v2); A4=diff(lj,v4);
+ if (dir==1) { detA=leadcoef(subst(A4,ep,0)); }
+ intmat V[@NGEN@][3]; intmat D[@NGEN@][3];
+ for (i=1;i<=@NGEN@;i++) {
+  lj=jet(Gq[i],1,wt)-jet(Gq[i],0,wt);
+  if (diff(lj,s)!=0) { sc++; }
+  lj=subst(lj,v5,v5sol); l2=diff(lj,v2); l4=diff(lj,v4);
+  c1=dd(l4,A4);
+  if (size(tr(l2-c1*A2,1))!=0) { chk++; }
+  al=diff(jet(H3[i],1,wt),s); be=diff(jet(H3[i],1,wt),v2);
+  if (i==ia) { c1=1; al=0; be=0; }
+  V[i,1]=int(leadcoef(subst(c1,ep,0))); V[i,2]=int(leadcoef(subst(al,ep,0))); V[i,3]=int(leadcoef(subst(be,ep,0)));
+  D[i,1]=int(leadcoef(subst(diff(c1,ep),ep,0))); D[i,2]=int(leadcoef(subst(diff(al,ep),ep,0))); D[i,3]=int(leadcoef(subst(diff(be,ep),ep,0)));
+ }
+ chkTotal=chkTotal+chk; sTotal=sTotal+sc;
+ if (dir==1) {
+  // I3 = (s, v2) in k[[s, v2]] iff every generator vanishes at the origin and the linear parts span (s, v2)/(s, v2)^2
+  // (Nakayama); both are read in the global ordering dp, from constant terms and a @NGEN@ x 2 coefficient rank.
+  ring r2=@P@,(s,v2),dp;
+  ideal I3=imap(rg,H3); int i3const=0; matrix L3[ncols(I3)][2];
+  for (i=1;i<=ncols(I3);i++) {
+   if (jet(I3[i],0)!=0) { i3const++; }
+   L3[i,1]=diff(jet(I3[i],1),s); L3[i,2]=diff(jet(I3[i],1),v2);
+  }
+  int i3rank=rank(L3);
+  int i3unit=(i3const==0 && i3rank==2);
+  setring rg;
+ }
+ planeVal[dir]=V; planeDer[dir]=D;
+ kill Gs,Jsi,Js,Gp,q,Jp,Gq,Jq,Jlin,M,M0,M1,Mi0,Mi,x4,x5,Fa,FJ,d4,d5,H3,h,a4,a5,r4,v5sol,lj,l2,l4,A2,A4,c1,al,be,phi,pb,pc,V,D,bad,chk,sc,i;
+}
+res("point [1:0:"+string(pb0)+":"+string(pc0)+":"+string(pb0)+":"+string(pc0)+"] of P(L0), smooth generator G'_"+string(ia));
+res("J and the generators of G not divisible by s^2 in the chart (0 required): "+string(divTotal)+"; Newton residual terms over both directions (0 required): "+string(resTotal)+"; generators not divisible by v2 on S (0 required): "+string(badTotal)+"; linear parts of G' with an s term (0 required): "+string(sTotal)+"; linear-part consistency failures (0 required): "+string(chkTotal));
+res("determinant of the 2x2 Newton block "+string(detM)+", linear coefficient of G'_"+string(ia)+" on the tangent line of {J' = 0} in the slice "+string(detA)+" (nonzero required)");
+res("I3 = (G'_j restricted to S, divided by v2): zero constant terms and linear parts of rank "+string(i3rank)+" (2 required), so it is the maximal ideal (s, v2) (1 required): "+string(i3unit));
+intmat V1=planeVal[1]; intmat V2=planeVal[2]; intmat D1=planeDer[1]; intmat D2=planeDer[2];
+res("values of M(p) agree between the two dual directions (1 required): "+string(V1==V2));
