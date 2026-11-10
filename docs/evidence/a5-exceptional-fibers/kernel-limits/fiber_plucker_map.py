@@ -46,12 +46,15 @@ FAMILIES: dict[str, tuple[str, int, tuple[str, ...]]] = {
     "w8": ("w8-nm", limits.FAMILIES["w8-c30"][1], ("c30", "c20")),
     "e8": ("e8-nm", limits.FAMILIES["e8"][1], ("p2", "p1")),
 }
+# family: the slug of the N+ header, on which the same arc formulas run with the sign of the incidence table
+PLUS = {"x": "xm-np", "x-same": "xp-np", "iso": "iso-np", "w8": "w8-np", "e8": "e8-np"}
 SHAPES = {"x": (3, 5), "x-same": (4, 4), "iso": (4, 2), "c30": (5, 2), "c20": (5, 2), "p2": (5, 10), "p1": (5, 10)}
 
 
 def value(arc: int, index: int) -> int:
-    """A fixed integer in 1..101 for each arc and parameter index, from a hash, so that the parameter points of the
-    arcs satisfy no common relation of low degree; a formula affine in the arc index puts them on a line."""
+    """A fixed integer in 1..101 for each arc and parameter index, from a hash; a formula affine in the arc index puts
+    the parameter points on a line. The ranks of the Veronese sample matrices in the record are the evidence that
+    the sampled fiber points satisfy no relation beyond those of the fiber."""
     digest = hashlib.sha256(f"fiber-plucker-map:{arc}:{index}".encode()).digest()
     return int.from_bytes(digest[:8], "big") % 101 + 1
 
@@ -104,6 +107,23 @@ def veronese(y: list[int], delta: int, prime: int) -> list[int]:
     return out
 
 
+def scalar_system(left_rows: list[list[int]], pr: list[list[int]], prime: int) -> nmod_mat:
+    """The equations N diag(Pl[:, j]) c = 0 over the pivot Plucker coordinates j, with N the rows of left_rows."""
+    return nmod_mat(
+        [[row[s] * pr[s][j] % prime for s in range(len(pr))] for j in range(len(pr[0])) for row in left_rows],
+        prime,
+    )
+
+
+def normalized_digest(t: nmod_mat, prime: int) -> str:
+    """SHA-256 of T scaled so that its first nonzero entry in row-major order is 1; T is defined up to one scalar."""
+    entries = [int(t[i, j]) for i in range(t.nrows()) for j in range(t.ncols())]
+    lead = next((v for v in entries if v), 1)
+    inverse = pow(lead, -1, prime)
+    text = ",".join(str(v * inverse % prime) for v in entries)
+    return hashlib.sha256(f"{t.nrows()}x{t.ncols()}:{text}".encode()).hexdigest()
+
+
 def pivot_columns(matrix: nmod_mat) -> list[int]:
     reduced, rank = matrix.rref()
     out = []
@@ -127,17 +147,12 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
         vr = nmod_mat([[row[j] for j in v_pivots] for row in rows], prime)
         left = vr.transpose().nullspace()[0].transpose()
         left_rows = [[int(left[i, s]) for s in range(len(samples))] for i in range(len(samples) - len(v_pivots))]
-        system = nmod_mat(
-            [
-                [row[s] * pr[s][j] % prime for s in range(len(samples))]
-                for j in range(len(plucker_pivots))
-                for row in left_rows
-            ],
-            prime,
-        )
-        kernel, nullity = system.nullspace()
+        kernel, nullity = scalar_system(left_rows, pr, prime).nullspace()
         if not nullity:
             continue
+        # Mutation: each Plucker vector paired with the fiber point of the next arc; a real fit has no solution.
+        shifted = scalar_system(left_rows, pr[1:] + pr[:1], prime)
+        out["mutation_solution_dimension"] = int(shifted.nullspace()[1])
         c = [int(kernel[s, 0]) for s in range(len(samples))]
         out.update({"delta": delta, "solution_dimension": int(nullity), "scalars_all_nonzero": all(c)})
         if nullity != 1 or not all(c):
@@ -148,6 +163,7 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
         full = [[c[s] * p % prime for p in samples[s]["plucker"]] for s in rows_used]
         t = square.inv() * nmod_mat(full, prime)
         out["t_rank"] = int(t.rank())
+        out["t_sha256"] = normalized_digest(t, prime)
         residual = vr * t - nmod_mat(
             [[c[s] * p % prime for p in samples[s]["plucker"]] for s in range(len(samples))], prime
         )
@@ -159,11 +175,26 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
             agree += int(pair.rank() == 1)
         out["held_out"] = len(held)
         out["held_out_proportional"] = agree
+        points = {tuple(s["y"]) for s in (*samples, *held)}
+        out["distinct_fiber_points"] = len(points)
+        validated = (
+            out["solution_dimension"] == 1
+            and out["scalars_all_nonzero"]
+            and out["t_rank"] == len(v_pivots)
+            and out["fit_exact_on_all_samples"]
+            and agree == len(held)
+            and out["mutation_solution_dimension"] == 0
+            and len(points) == len(samples) + len(held)
+        )
+        out["verdict"] = f"degree_{delta}_fit_validated" if validated else "fit_not_validated"
+    out.setdefault("verdict", "no_fit")
     return out
 
 
-def build(family: str, prime: int, count: int, held_out: int, max_delta: int) -> dict[str, Any]:
+def build(family: str, prime: int, count: int, held_out: int, max_delta: int, plus: bool = False) -> dict[str, Any]:
     slug, order, kinds = FAMILIES[family]
+    if plus:
+        slug = PLUS[family]
     data = limits.slice_data(slug, limits.Field(prime, order))
     basis = base_kernel(data)
     total = count + held_out
@@ -195,12 +226,17 @@ def main() -> None:
     parser.add_argument("--fit", type=int, default=240)
     parser.add_argument("--held-out", type=int, default=40)
     parser.add_argument("--max-delta", type=int, default=3)
+    parser.add_argument("--plus", action="store_true", help="use the N+ header of the family")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
-    record = build(args.family, args.prime, args.fit, args.held_out, args.max_delta)
-    out = args.out or HERE / f"fiber-plucker-map-{args.family}-p{args.prime}.json"
+    record = build(args.family, args.prime, args.fit, args.held_out, args.max_delta, args.plus)
+    suffix = "-plus" if args.plus else ""
+    out = args.out or HERE / f"fiber-plucker-map-{args.family}{suffix}-p{args.prime}.json"
     out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(record))
+    failed = [name for name, case in record["cases"].items() if case["verdict"] != "degree_2_fit_validated"]
+    if failed:
+        raise SystemExit(f"{record['slug']} p={args.prime}: no validated quadratic fit on {', '.join(failed)}")
 
 
 if __name__ == "__main__":

@@ -1,15 +1,16 @@
 """Limits of ker L_a along arcs of the closure of E8-bar through the VB point that carries the degree-3 component.
 
 Phi(w, rho, sigma, e, zeta) of ../arcs and Phi(w, rho, sigma, k) of ../arcs-vb describe the same slice: the conic
-coordinate of the second is k / (1 + k^2) = i omega with omega = (e^2 - 1) / (4 e), so e = (1 + i k) / (1 - i k) up to
-the sign convention of the two headers. The degree-3 component V(P1) of the fiber of E8-bar -> VB is reached only by
+coordinate of the second is k / (1 + k^2) = i omega with omega = (e^2 - 1) / (4 e). With e = (1 + i kappa) /
+(1 - i kappa), i omega = -kappa / (1 + kappa^2), so the VB coordinate is k = -kappa: the VB point k0 = -9 is
+kappa0 = 9 here. The degree-3 component V(P1) of the fiber of E8-bar -> VB is reached only by
 arcs through k0 = -9 with w of order 2 against order 1 for rho and sigma (../arcs-vb). vb_limit_span.py and
 vb_pole_arcs.py sample other points of the line w = rho = sigma = 0 and reach Plucker span 22.
 
 If the Plucker vector of the limiting plane is quadratic in the fiber coordinates y, the span over the degree-4
 component has rank HF(k[y]/P2, 2) = 22, over the degree-3 component 18, and over the whole fiber 34 (A5-020). The
 record holds the span of the finite-e family of vb_pole_arcs.py, then the rank after each pattern through
-e0 = (1 + i k0) / (1 - i k0) joins, for k0 = 9 (the special point in this header's sign convention), its mirror
+e0 = (1 + i k0) / (1 - i k0) joins, for k0 = 9 (kappa0 = 9, the special VB point k = -9), its mirror
 k0 = -9 and the neighbor k0 = 8: a rank of 34 after the special patterns, with no growth from the mirror and the
 neighbor, shows limits over the degree-3 component and a span equal to the quadratic prediction.
 

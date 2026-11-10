@@ -135,8 +135,8 @@ and the Plucker-span reading of this section is not needed for it.
 ## Arcs through the VB point that carries the degree-3 component (A5-295)
 
 `vb_special_arcs.py` samples the point the two sections above leave out. The conic coordinate of the VB slice's
-parametrization is k / (1 + k^2) = i omega, so k0 corresponds to e0 = (1 + i k0) / (1 - i k0) up to the sign
-convention of the two headers, and the degree-3 component V(P1) needs w of order 2 against order 1 for rho and sigma
+parametrization is k / (1 + k^2) = i omega with omega = (e^2 - 1) / (4 e); with e = (1 + i kappa) / (1 - i kappa),
+i omega = -kappa / (1 + kappa^2), so k = -kappa and the VB point k0 = -9 is e0 = (1 + 9i) / (1 - 9i), and the degree-3 component V(P1) needs w of order 2 against order 1 for rho and sigma
 ([arcs-vb](../arcs-vb/README.md)). The prediction was fixed before the run: if the Plucker vector of the limiting
 plane is quadratic in the fiber coordinates, its span has rank HF(k[y]/P2, 2) = 22 over the degree-4 component, 18
 over the degree-3 component and 34 over the fiber (A5-020: 22 + 18 - 6, the two components meet in a plane).
