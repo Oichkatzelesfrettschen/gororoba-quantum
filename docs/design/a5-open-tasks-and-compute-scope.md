@@ -18,6 +18,40 @@ they do not by themselves admit item 6, whose four plan steps (`docs/state/plans
 open in the section "Item-6 deliverables". [a5-vb-degree7-and-w8-char0-plan.md](a5-vb-degree7-and-w8-char0-plan.md)
 holds the detail for E8-bar -> VB degree 7 and W8 in characteristic 0.
 
+## Where the campaign stands (2026-11-10)
+
+The truncated-rank ladder computes h_d = HF(F(I), d) one degree at a time: degree d closes at truncation order
+N = 3d + 1 on E8-bar -> VB (A5-260) and at N = 4, 8, 11, 15, 18, 22 for d = 1 to 6 on X- (A5-249). The highest
+closed order is N = 22 (VB degree 7, A5-286 and A5-287; X- degree 6). Every certified value equals HF(k[y]/K2, d),
+the value K2 predicted before the run.
+
+| fiber pair | certified h_d (both primes) | all-degree statement | what closes it |
+|---|---|---|---|
+| X+ -> N-, X- -> N+ | C(d + 2, 2) | proved over Q(i): F(I) = Q(i)[y1, y2, y3] (A5-270) | closed |
+| W8 -> N+- | d = 1 to 5; h_6 = 8,624 proved | proved mod p: F(I) = k[y]/K2, V(K2) = C20 cup C30 (A5-066) | characteristic 0 (task 122) |
+| Iso -> N+- | d = 1 to 6 | survives: the blowup planes sweep V(K2) (A5-284) | review (task 133) |
+| E8-bar -> VB | d = 1 to 7 | open: the degree-3 component of V(K2) has no arc (A5-016) | jet-parameter arcs (task 124) |
+| X+ -> N+, X- -> N- | d = 1 to 6 | open: no arc shows the support is V(K2) (A5-022, A5-245) | an arc family dense in V(K2) |
+| E8-bar -> N+- | d = 1 to 5 | open: K2 is not radical; 1,526 <= h_6 <= 1,666 (A5-251) | membership of degree-6 forms (tasks 110, 125) |
+
+Three findings bound the ladder's value. Every all-degree statement above came from geometry (arcs, component
+containment, blowup planes), never from a rung. The export cost grows about 1.36 times per order on VB with
+`slimgb` (12,150 s at N = 21, 16,500 s at N = 22 on the laptop), so N = 31, degree 10, extrapolates to about three
+days per prime for a value K2 already predicts. E8-bar -> N+- degree 6 is the one cell whose value is unknown.
+The ladder therefore stops at its present rungs except for that cell, and task 113 (W8 degree 6 at N = 19, a value
+A5-066 already proves, 129 to 223 GiB) is a candidate for withdrawal.
+
+Three gaps separate the fiber record from item 6:
+- field: every fiber statement except A5-270 holds at p = 32009 and p = 32029. Check 1 of the characteristic-0
+  transfer covers all ten pairs (A5-247), check 3 covers X- and W8 (A5-249, A5-277), check 2 has no result (A5-248);
+- kernels: F(I) describes limits of the generator vector G, and item 6 needs limits of ker L_a in a Grassmannian.
+  The exact Plucker limit along each arc family is open on all five families (A5-272 to A5-276);
+- reality: item 6 admits limits along real arcs with two-sided certificates, and no incidence has one (A5-250).
+
+The order of work that follows: the Plucker limits on the families that already hold arcs (X, E8-bar -> N+-, Iso),
+the VB jet arcs (task 124), the X same-sign arcs, the real certificates (tasks 126 and 127), then check 2 as the
+Kaggle run reports. None of these needs more than the laptop's 52 GB, so no paid-cloud case is open.
+
 ## Run policy
 
 The owner's ruling of 2026-11-09 approves well-scoped long runs and any Kaggle session that finishes under 12 hours;
@@ -62,7 +96,7 @@ all.
 
 | task | computation | host | state | falsifier |
 |---|---|---|---|---|
-| 120 | engine v13 (`slimgb` export) on VB, degree 7 at N = 21 and 22, both primes | Windows workstation laptop (tmux `vbd7`, 24 h deadline) | the degree-5 validation at N = 15 passed (r = 255, blocks 75/50/65/65, 416 s); `std` at N = 22 extrapolates to 22,300 to 89,300 s ([plan](a5-vb-degree7-and-w8-char0-plan.md#where-the-time-goes-measured)), divided by the measured `slimgb` factor (2.9 to 3.9 on the laptop at N = 13 to 18, A5-280) | r_21 not 609, r_21 = 624, split not 7/8/0/0, or r_22 below 624 |
+| 120 | engine v13 (`slimgb` export) on VB, degree 7 at N = 21 and 22, both primes | Windows workstation laptop | done: r_21 = 609, r_22 = 624 at both primes (A5-286, A5-287) | passed |
 | 120 (cross-check) | the same `slimgb` exports at N = 21 and 22, plus six variable rotations at N = 15 | Kaggle CPU, kernels `a5-vb-d7-slimgb-p32009` and `-p32029` | pushed before the runner exited 1 on failure: read `summary.json` (rc and RESULT lines) | a reduced basis whose sha256 differs from the laptop export |
 | 75, 121 | X- check 2 over Q(i), the direct `quadric_lift.py` | Kaggle CPU, kernel `a5-char0-xm-quadrics` | stopped on the build host at 2:11; the direct computation never finished in 3 h before | a Q(i) relation space whose dimension or reduction differs from K2 mod p |
 | 42 (X- degree 6) | X- check 3 at N = 22, `truncation_check.py` | Kaggle CPU, kernel `a5-char0-xm-truncation-n22` | stopped on the build host at 2:11 | a denominator divisible by p, or a basis differing from the header's |
