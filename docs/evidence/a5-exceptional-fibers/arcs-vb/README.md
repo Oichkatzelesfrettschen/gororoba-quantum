@@ -74,8 +74,9 @@ the second blowup over one point of l: it needs arcs through k0 = -9 with w of o
 three parameters. The points k0^2 = -3 of l, where the w^2 coefficients vanish and which the arc report named as an
 unexamined stratum, give limits in V(P2) only (probe at 32029, where -3 is a square; not retained).
 
-Scope: both primes; no statement in characteristic 0; the kernel-plane limits along the special family are not
-computed (A5-276 covers arcs through a VB point with finite e0).
+Scope: both primes; no statement in characteristic 0. The kernel-plane limits along the special family are in
+[../kernel-limits](../kernel-limits/README.md) (A5-295): Plucker span 18 on the special patterns and 34 with the
+other families, the ranks a quadratic dependence on the fiber point predicts.
 
 Check without Singular: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
 dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order

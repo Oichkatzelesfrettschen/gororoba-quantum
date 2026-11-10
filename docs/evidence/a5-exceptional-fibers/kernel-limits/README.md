@@ -132,6 +132,32 @@ component is reached elsewhere: [arcs-vb](../arcs-vb/README.md) finds it over on
 the VB slice's own parametrization, with the limit of the header's G computed directly, so A5-016 is decided there
 and the Plucker-span reading of this section is not needed for it.
 
+## Arcs through the VB point that carries the degree-3 component (A5-295)
+
+`vb_special_arcs.py` samples the point the two sections above leave out. The conic coordinate of the VB slice's
+parametrization is k / (1 + k^2) = i omega, so k0 corresponds to e0 = (1 + i k0) / (1 - i k0) up to the sign
+convention of the two headers, and the degree-3 component V(P1) needs w of order 2 against order 1 for rho and sigma
+([arcs-vb](../arcs-vb/README.md)). The prediction was fixed before the run: if the Plucker vector of the limiting
+plane is quadratic in the fiber coordinates, its span has rank HF(k[y]/P2, 2) = 22 over the degree-4 component, 18
+over the degree-3 component and 34 over the fiber (A5-020: 22 + 18 - 6, the two components meet in a plane).
+[vb-special-arcs-result.json](vb-special-arcs-result.json), truncation order 24, 96 arcs per pattern, five patterns
+of leading orders at each of e0(-9), e0(8) and e0(9), both primes:
+
+| patterns | arcs with an 8-dimensional limit in the base kernel | span rank of the group | rank of all vectors so far |
+|---|---|---|---|
+| finite-e family of `vb_pole_arcs.py` | 288 of 288 | 22 | 22 |
+| mirror point e0(-9), five patterns | 480 of 480 | at most 6 per pattern | 22 |
+| neighbor e0(8), five patterns | 480 of 480 | at most 6 per pattern | 22 |
+| special point e0(9), five patterns | 480 of 480 | 18 | 34 |
+
+The pattern with leading orders (2, 1, 1) at e0(9) alone raises the rank from 22 to 34 and has pivot valuation sum 16
+against 12 at the mirror and the neighbor. The three predicted ranks hold at both primes, so the limits along the
+special family lie outside the span of every other sampled family, and the whole sample spans exactly what a
+quadratic dependence on the fiber point allows. The special point is e0(9) in this header and k0 = -9 in the VB
+slice's header: the mirror is the control that fixes the sign. Scope: the arcs of one pattern have coefficients on
+a line (`vb_limit_span.coefficient` is affine in the arc index), which bounds a single pattern's span from below
+only; the record computes no fiber coordinate y, so it does not show that the plane is a function of y.
+
 ## Replay
 
 From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the retained records ran under Python
@@ -145,3 +171,4 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py x-same
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_limit_span.py)
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_pole_arcs.py)
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_special_arcs.py)
