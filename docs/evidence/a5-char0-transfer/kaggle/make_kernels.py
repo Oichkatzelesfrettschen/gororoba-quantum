@@ -14,7 +14,7 @@ HERE = Path(__file__).resolve().parent
 OWNER = "probablyeric"
 BRANCH = "a5-char0-quadrics-iso-w8"
 # The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
-COMMIT = "8a2e410ba0ba1c742055e46c3ab1c60266e08dab"
+COMMIT = "00b7d63c261535d328f73369fba54ae7d512d64d"
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
 
 JOBS = {
