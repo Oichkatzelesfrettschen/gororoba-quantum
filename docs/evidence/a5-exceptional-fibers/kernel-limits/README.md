@@ -87,6 +87,51 @@ no arc of this family reaches the degree-3 component. The quadratic reading is a
 22; the fiber coordinates y of the VB header are not computed at this base point, so the identification of the
 rank-22 span with the degree-4 component is not checked against the header's G.
 
+## Iso, both components of W8, and the same-sign X incidences (A5-273, A5-274, A5-292)
+
+`plucker_limits.py` takes four more families. Three have rational coefficients, so they run over F_32009, F_32029
+and Q and each plane over Q is a limit that a real arc realizes: the blowup arcs of
+[blowup-arcs](../structure/arcs-iso-w8/blowup-arcs/README.md) on Iso -> N- and Iso -> N+ (`iso`, dense in V(K2)) and
+on the degree-30 component of W8 -> N- and W8 -> N+ (`w8-c30`), and the weighted arcs of
+[arcs-x-same](../arcs-x-same/README.md) on X- -> N- and X+ -> N+ (`x-same`). The linear family of
+[arcs-iso-w8](../structure/arcs-iso-w8/README.md) on the degree-20 component of W8 (`w8-c20`) carries the square root
+of -1 and runs over the two prime fields. The header of W8 -> N+ is that of W8 -> N- at -t9, and the Iso headers
+share J, so one arc formula serves both signs. A variant adds coefficients above the jet that fixes the limit of G.
+
+| quantity | `iso` | `w8-c30` | `w8-c20` | `x-same` |
+|---|---|---|---|---|
+| record | [iso-result.json](iso-result.json) | [w8-c30-result.json](w8-c30-result.json) | [w8-c20-result.json](w8-c20-result.json) | [x-same-result.json](x-same-result.json) |
+| cases (incidences x fields) | 6 | 6 | 4 | 6 |
+| parameter points, arcs per case | 9, 36 | 6, 24 | 6, 24 | 9, 36 |
+| truncation order | 32 | 32 | 32 | 40 |
+| nullity at the base point | 16 | 16 | 16 | 16 |
+| pivots along the arc, largest valuation sum | 24, 16 | 24, 16 | 24, 8 | 24, 20 |
+| limiting plane | dimension 8, inside the base kernel | the same | the same | the same |
+| order of G on the arc (prime fields) | 4 | 4 | 2 | 5 |
+| the header's J on the arc (prime fields) | 0 to the truncation order | the same | the same | the same |
+| arcs sharing the limit y of G | one plane per group | one plane per group | one plane per group | one plane per group |
+| distinct planes | 9 of 9 points | 6 of 6 | 6 of 6 | 9 of 9 |
+| each plane over Q reduced modulo both primes | equals the modular plane | equals the modular plane | no rational arc | equals the modular plane |
+| columns without a pivot on the mutated arc | 4 | 4 | 0 | 5 |
+
+On every family the kernel limit is therefore 8-dimensional, lies in the kernel of the base point and is a function
+of the fiber point on the sample. The mutated arcs (the quadric term reversed on Iso and W8, t9 reversed on X) leave
+the slice and keep fewer than 8 columns without a pivot. Scope: 6 or 9 fiber points per family; the degree-20
+component of W8 has no rational arc here, so no real arc is exhibited on it; the image of a whole fiber in the
+Grassmannian is not computed.
+
+## Arcs through a VB point on which e tends to 0 or infinity (A5-016)
+
+`vb_pole_arcs.py` extends the sample above to arcs with e = E s^k (1 + ...), k = 1 or 2, and w of order above k, on
+which Phi stays finite because nu and omega enter only multiplied by m^2 - 1; e -> 1/e reverses omega, so the arcs
+with e -> infinity are the same arcs with omega reversed. [vb-pole-arcs-result.json](vb-pole-arcs-result.json), 72
+pole patterns of 24 arcs at each prime, truncation order 24: every arc has J = 0 to order 22, base nullity 12 and an
+8-dimensional limit, and the Plucker span of the finite-e patterns with leading orders 1 and 2 (rank 22) does not
+grow when the pole patterns join it. These arcs also stay in the span of the degree-4 component. The degree-3
+component is reached elsewhere: [arcs-vb](../arcs-vb/README.md) finds it over one point of the contracted line of
+the VB slice's own parametrization, with the limit of the header's G computed directly, so A5-016 is decided there
+and the Plucker-span reading of this section is not needed for it.
+
 ## Replay
 
 From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the retained records ran under Python
@@ -94,4 +139,9 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
 
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py x
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py e8
+    "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py iso
+    "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py w8-c30
+    "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py w8-c20
+    "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py x-same
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_limit_span.py)
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_pole_arcs.py)

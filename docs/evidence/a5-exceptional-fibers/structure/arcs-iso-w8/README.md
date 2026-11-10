@@ -65,6 +65,15 @@ plane makes K2 nonzero on 31 or 32 forms. Computed at 32009 and 32029 in 0.03 to
 deduction E0 = V(K2), so L = K2 and F(I) = k[y]/K2, follows the W8 argument. Its Iso steps await review, so A5-007 and
 A5-067 stay `survives` until the review closes.
 
+## Decided again by arcs through the base locus of the point blowup
+
+[blowup-arcs/](blowup-arcs/README.md) holds explicit arcs that leave a point (b, c) of P(L0) along the one direction
+on which the common linear parts of the pulled-back generators vanish. On Iso the family is polynomial with
+parameters (b, c, V, A), G has order 4 on it, K2 vanishes on the limit identically and the limit map has rank 5, so
+the limits are dense in V(K2) (ledger A5-067, A5-007, now `proved` at both primes). On W8 the family has parameters
+(b, c, V, A, B), limit rank 6, and limits outside the degree-20 component, so it is dense in C30 (a second route to
+A5-066). These are the arcs the searches of the table above did not contain: their contact with L0 is not monomial.
+
 ## The deciding test: one blowup chart
 
 `chart_test.py` writes `chart-FIBER-pP.sing`: for a0 = l0(G) with QRNG coefficients (draw

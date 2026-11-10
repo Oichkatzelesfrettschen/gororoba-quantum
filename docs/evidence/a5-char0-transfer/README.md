@@ -70,3 +70,14 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
   I = w (G'') with (G'') a smooth curve germ, so F(I) = Q(i)[y1, y2, y3] in every degree
   ([`x-opposite-qi.json`](x-opposite-qi.json); ledger A5-270). The first revision computed the gcd in sympy over
   Q(i) and stopped at its 20-minute limit; Singular takes 4 s per incidence.
+
+## Arc families over Q(i) (ledger A5-293)
+
+[arcs_qi.py](arcs_qi.py) replays the arc families of the Iso, W8 and same-sign X slices
+([blowup-arcs](../a5-exceptional-fibers/structure/arcs-iso-w8/blowup-arcs/README.md),
+[arcs-x-same](../a5-exceptional-fibers/arcs-x-same/README.md)) on the J and G of the Q(i) producer. The arcs have
+rational coefficients, and over Q(i) they keep J = 0, the order of G (4, 4, 5) and the rank of the limit map (5 on
+Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points of the modular certificates
+([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
+record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
+(A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
