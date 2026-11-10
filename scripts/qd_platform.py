@@ -946,6 +946,7 @@ SCATTER_CHECK_WORDS = (
     "pearson",
     "deviance",
 )
+CORRELATION_TOKENS = ("r", "rho", "correlation", "coefficient")
 SCATTER_NAME_FIELDS = ("statistic", "test")
 MESH_VARIANCE_KEY = "mesh_variance"
 MESH_VARIANCE_KINDS = {
@@ -1005,7 +1006,21 @@ def mesh_variance_valid(term: Any) -> bool:
 
 
 def names_scatter(text: Any) -> bool:
-    return isinstance(text, str) and any(word in text.lower().replace(" ", "_") for word in SCATTER_CHECK_WORDS)
+    """Whether a key or a statistic name reads as a scatter check: one of SCATTER_CHECK_WORDS as a run of whole
+    tokens. A Pearson correlation (``pearson`` followed by a CORRELATION_TOKENS token) is a correlation coefficient,
+    which carries no dispersion model."""
+    if not isinstance(text, str):
+        return False
+    tokens = [token for token in re.split(r"[^a-z0-9]+", text.lower()) if token]
+    for word in SCATTER_CHECK_WORDS:
+        parts = word.split("_")
+        for start in range(len(tokens) - len(parts) + 1):
+            if tokens[start : start + len(parts)] != parts:
+                continue
+            following = tokens[start + len(parts) : start + len(parts) + 1]
+            if word != "pearson" or not set(following) & set(CORRELATION_TOKENS):
+                return True
+    return False
 
 
 def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: dict[str, Any]) -> list[str]:
