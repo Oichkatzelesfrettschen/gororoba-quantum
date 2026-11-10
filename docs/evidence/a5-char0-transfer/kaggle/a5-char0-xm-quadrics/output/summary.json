@@ -1,0 +1,14 @@
+{
+ "repo_head": "8a2e410ba0ba1c742055e46c3ab1c60266e08dab",
+ "args": [
+  "docs/evidence/a5-char0-transfer/quadric_lift.py",
+  "--slug",
+  "xm-nm",
+  "--timeout",
+  "41000"
+ ],
+ "rc": 0,
+ "seconds": 30497.4,
+ "total_seconds": 30731.7,
+ "cpu_count": 4
+}

@@ -1,0 +1,31 @@
+{
+ "cpu_count": 4,
+ "singular": "4.4.1",
+ "jobs": {
+  "slimgb-n21-p32029": {
+   "rc": 0,
+   "seconds": 17734.4,
+   "sha256": {
+    "s.txt": "969be672a6ce6a070dc22be4c00b30d2a1be137dc4fdd8791d5e22f7d4f5aa91",
+    "kbase.txt": "f2ce7bfa31ff334dd1ba20d6a3177007230221650ef5251e0b9ba1d754aee1eb"
+   },
+   "results": [
+    "RESULT ms 17733932 sb_size 4380",
+    "RESULT kbase_size 21231"
+   ]
+  },
+  "slimgb-n22-p32029": {
+   "rc": 0,
+   "seconds": 30351.6,
+   "sha256": {
+    "s.txt": "a6d05eb13e4bb0347b82d1988a8d508b874f1fc054da84d769af2e7b5d08b333",
+    "kbase.txt": "8142261e6035743aaa290454fc87860b0849ce3865cd9a82960901f063a09ec1"
+   },
+   "results": [
+    "RESULT ms 30351036 sb_size 4989",
+    "RESULT kbase_size 25278"
+   ]
+  }
+ },
+ "total_seconds": 30405.5
+}

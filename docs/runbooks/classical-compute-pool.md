@@ -60,7 +60,9 @@ cuts off loses all of its work. The A_5 kernels (`docs/evidence/a5-exceptional-f
    The degree-7 replays of `vb-export-levers/kaggle/` run the laptop's exact Singular scripts, and their
    `summary.json` wall times divided by the laptop's `vb-d7/out/*.time` give the first Kaggle ratio, which replaces
    1.6 here. Example: the VB degree-7 N = 22 export took 16,146 s on the laptop, so about 26,000 s (7.2 h) on
-   Kaggle. A job whose estimate exceeds about 11 h goes to the laptop, or splits into independent pieces (one prime, one
+   Kaggle. Measured (kernel `a5-vb-d7-slimgb-p32029`, N = 21 and N = 22 running side by side in one session, digests
+   of `s.txt` equal to the laptop's): the slimgb standard basis took 17,734 s against 11,826 s at N = 21 and 30,352 s
+   against 16,029 s at N = 22, ratios 1.50 and 1.89, so plan with 1.9 when two such jobs share a session. A job whose estimate exceeds about 11 h goes to the laptop, or splits into independent pieces (one prime, one
    N or one relation block per kernel).
 2. **Pack sessions.** A session holds four cores and 30 GB, and five CPU sessions run at once. The runner keeps four jobs
    in flight, and every job's memory comes from its laptop peak.

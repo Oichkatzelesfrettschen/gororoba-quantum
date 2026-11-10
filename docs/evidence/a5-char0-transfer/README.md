@@ -55,7 +55,9 @@ Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber
   W8 -> N- survives at N = 4, 7, 10 and 13 (d = 1 to 4): 183, 1,257, 5,009 and 14,761 elements (ledger A5-277).
 - [`quadric_lift.py`](quadric_lift.py) (check 2): the degree-2 relations {q : q(G) in J + m I^2} over Q(i) by the
   computation of the modular degree-2 receipts (`working/distribute/out/*/d2/d2-products.sing`), compared with the
-  retained K2 at both primes (ledger A5-248). Stopped at the 3-hour cap without finishing (3:00:02, 1.26 GiB peak,
+  retained K2 at both primes (ledger A5-248). The run finished on a 4-core Kaggle CPU kernel in 30,481 s at 1.98 GiB peak
+  ([`quadrics-xm-nm.json`](quadrics-xm-nm.json)): dimension 69, largest denominator 2, echelon form equal to K2 at
+  both primes, mutation detected, so check 2 survives for X- -> N-. The build-host attempt stopped at the 3-hour cap without finishing (3:00:02, 1.26 GiB peak,
   `logs/quadrics-xm-nm.time`); the exact standard basis grows with the Gaussian coefficients of G. The upper bound needs only that the lifted
   quadrics are relations over Q(i) and reduce to K2, so the next route checks cofactor identities reconstructed from
   modular `lift` runs instead of a Q(i) standard basis, after it is timed against the cap. A first run took m from the nine-variable producer ring;
