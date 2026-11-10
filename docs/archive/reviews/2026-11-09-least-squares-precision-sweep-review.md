@@ -19,3 +19,6 @@ host rows in `docs/evidence/least-squares-precision/hosts/`, then the Advisor la
 Owner ruling: `cap.bytes` stays, as the limit the run applied. Not run: the M1 npz receipt, a numpy 2.5.4 probe on the
 Turion host and a Windows rerun (remote hosts), and a per-child cgroup readback. The four machine-named
 `quad-falsification/` records give way to successors under the sweep labels with the OS family only (owner ruling).
+
+The briefs, every reviewer report and the full reconciliation, with its addendum on a second nemotron report, are
+in [least-squares-precision-sweep/](least-squares-precision-sweep/README.md).
