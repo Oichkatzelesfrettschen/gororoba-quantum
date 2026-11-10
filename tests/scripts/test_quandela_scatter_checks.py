@@ -87,6 +87,11 @@ def test_the_rule_reads_kinds_not_wording() -> None:
         (["qpu:ascella"], {"checks": [check]}, ["checks/0"]),
         (["qpu:ascella"], {"checks": [{**check, "mesh_variance": replicate}]}, []),
         (["qpu:ascella"], {"checks": [check], "mesh_variance": anchors}, []),
+        (
+            ["qpu:ascella"],
+            {"overdispersion": {**check, "mesh_variance": replicate, "chi_square_rule": "reject above 0.95"}},
+            [],
+        ),
     )
     for platforms, preregistered, expected in cases:
         found = qd_platform.scatter_check_gaps(platforms, preregistered)

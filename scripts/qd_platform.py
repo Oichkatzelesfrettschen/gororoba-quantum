@@ -1016,23 +1016,23 @@ def scatter_check_gaps(platforms: list[str] | tuple[str, ...], preregistered: di
     case_term = mesh_variance_valid(preregistered.get(MESH_VARIANCE_KEY))
     gaps: list[str] = []
 
-    def visit(key: str, value: Any, path: str) -> None:
+    def visit(key: str, value: Any, path: str, covered: bool) -> None:
         if key == MESH_VARIANCE_KEY:
             return
+        # A valid term on a mapping types every field nested in it.
+        covered = covered or (isinstance(value, dict) and mesh_variance_valid(value.get(MESH_VARIANCE_KEY)))
         by_value = isinstance(value, dict) and any(names_scatter(value.get(f)) for f in SCATTER_NAME_FIELDS)
-        if (names_scatter(key) and isinstance(value, dict | str)) or by_value:
-            own = isinstance(value, dict) and mesh_variance_valid(value.get(MESH_VARIANCE_KEY))
-            if not (own or case_term):
-                gaps.append(path)
+        if ((names_scatter(key) and isinstance(value, dict | str)) or by_value) and not covered:
+            gaps.append(path)
         if isinstance(value, dict):
             for child, item in value.items():
-                visit(child, item, f"{path}/{child}")
+                visit(child, item, f"{path}/{child}", covered)
         elif isinstance(value, list):
             for index, item in enumerate(value):
-                visit("", item, f"{path}/{index}")
+                visit("", item, f"{path}/{index}", covered)
 
     for key, value in preregistered.items():
-        visit(key, value, key)
+        visit(key, value, key, case_term)
     return gaps
 
 
