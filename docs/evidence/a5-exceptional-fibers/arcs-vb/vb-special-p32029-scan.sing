@@ -12,6 +12,7 @@ execute("ring Y=32029,(y(1..10)),dp;");
 execute("ideal K2="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/vb_p2/d2/relations-upto-d2.rel")+";");
 list L=minAssGTZ(K2); if (size(L)!=2) { ERROR("K2 has "+string(size(L))+" minimal primes"); }
 ideal P1; ideal P2; int ii; for (ii=1;ii<=2;ii++) { if (mult(std(L[ii]))==3) { P1=L[ii]; } else { P2=L[ii]; } }
+if (dim(std(P1))!=4 or mult(std(P1))!=3 or dim(std(P2))!=4 or mult(std(P2))!=4) { ERROR("the minimal primes of K2 are not of dimension 4 and degrees 3 and 4"); }
 "RESULT K2 generators", size(K2), "P1 dimension degree generators", dim(std(P1)), mult(std(P1)), size(P1), "P2", dim(std(P2)), mult(std(P2)), size(P2);
 ring E=32029,(w,rho,sig,k,u,v,z),dp;
 poly m=1+w; poly a1=w^4-6*w^2-4*w; poly a2=w^4+8*w^3+18*w^2+12*w;

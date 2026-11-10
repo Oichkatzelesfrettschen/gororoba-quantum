@@ -12,8 +12,8 @@ u m = 1, then takes the weighted arc w = W s^2, rho = R s, sig = S s, a = A s wi
 reports: the order nu of G on the arc, with every lower coefficient identically zero; the number of K2 quadrics that
 do not vanish identically on the limit vector F (the coefficient of s^nu); the rank of [dF | F] at two parameter
 points, a lower bound for the dimension of the cone of limits. The mutated arc doubles t2, leaves V(J) and is the
-off control (t9 has order 4 on this arc and does not enter F, so a reversed t9 is no control). The scan cases list nu
-and the rank for the weights 1 to 3 of w, of (rho, sig) and of a.
+off control (a reversed t9 changes F and leaves V(J), but K2 still vanishes on the new limit, so it is no control for
+K2). The scan cases list nu and the rank for the weights 1 to 3 of w, of (rho, sig) and of a.
 
     $PYTHON docs/evidence/a5-exceptional-fibers/arcs-x-same/x_same_arcs.py [--check]
 """

@@ -81,4 +81,3 @@ Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points 
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
 record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
 (A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
-

@@ -123,6 +123,8 @@ def certify(slug: str) -> dict[str, Any]:
         "arcs_qi_vars",
         rc.TIMEOUT_SECONDS,
     )
+    if probe.status != "completed":
+        raise SystemExit(f"{slug} variable probe: {probe.status} {probe.diagnostic}")
     variables = probe.results["vs"].split(",")
     row: dict[str, Any] = {"slug": slug, "parameters": list(CASES[slug][1]), "j_is_identity": CASES[slug][3]}
     for label, mutate in (("arc", False), ("mutated", True)):

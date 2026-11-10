@@ -37,9 +37,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[3]
 W = "docs/evidence/a5-exceptional-fibers/working"
 ROOTS = {32009: 10754, 32029: 9115}
-# prime: (K2 relation file, generator list of its run or None when the run kept none)
+# prime: (K2 relation file, generator list of its run; a .sing source holds the list as its `ideal G=` line)
 K2 = {
-    32009: (f"{W}/runs/e8vb_a2/k2.rel", None),
+    32009: (f"{W}/runs/e8vb_a2/k2.rel", f"{W}/runs/e8vb_a2/input.sing"),
     32029: (
         f"{W}/distribute/out/a5-p2-small/vb_p2/d2/relations-upto-d2.rel",
         f"{W}/distribute/out/a5-p2-small/vb_p2/d2/gens.txt",
@@ -53,9 +53,17 @@ SIGNS = (
     "intvec eps; int jj; for (jj=1;jj<=ncols(G);jj++) { if (Grun[jj]==G[jj]) { eps[jj]=1; } else {"
     ' if (Grun[jj]==-G[jj]) { eps[jj]=-1; } else { ERROR("generator "+string(jj)+" is not +-G"); } } }'
 )
+# The run input lists its generators before reduction, so they equal the header's only modulo J.
+SIGNS_MODULO_J = (
+    "ideal sJ=std(J); intvec eps; int jj; for (jj=1;jj<=ncols(G);jj++) {"
+    " if (reduce(Grun[jj]-G[jj],sJ)==0) { eps[jj]=1; } else { if (reduce(Grun[jj]+G[jj],sJ)==0) { eps[jj]=-1; }"
+    ' else { ERROR("generator "+string(jj)+" is not +-G modulo J"); } } }'
+)
 PRIMES_OF_K2 = (
     'list L=minAssGTZ(K2); if (size(L)!=2) { ERROR("K2 has "+string(size(L))+" minimal primes"); }',
     "ideal P1; ideal P2; int ii; for (ii=1;ii<=2;ii++) { if (mult(std(L[ii]))==3) { P1=L[ii]; } else { P2=L[ii]; } }",
+    "if (dim(std(P1))!=4 or mult(std(P1))!=3 or dim(std(P2))!=4 or mult(std(P2))!=4) {"
+    ' ERROR("the minimal primes of K2 are not of dimension 4 and degrees 3 and 4"); }',
     '"RESULT K2 generators", size(K2), "P1 dimension degree generators", dim(std(P1)), mult(std(P1)), size(P1),'
     ' "P2", dim(std(P2)), mult(std(P2)), size(P2);',
 )
@@ -80,11 +88,12 @@ TESTS = (
 def head(prime: int, title: str) -> list[str]:
     header = (ROOT / W / "build" / "inputs" / f"p{prime}-r{ROOTS[prime]}" / "e8-vb.sing").read_text().strip()
     relations, generators = K2[prime]
-    signs = (
-        [f'execute("ideal Grun="+read("{generators}")+";");', SIGNS]
-        if generators
-        else ["intvec eps=1,1,1,1,1,1,1,1,1,1;"]
-    )
+    if generators.endswith(".sing"):
+        lines = (ROOT / generators).read_text().splitlines()
+        (run_line,) = [line for line in lines if line.startswith("ideal G=")]
+        signs = [run_line.replace("ideal G=", "ideal Grun=", 1), SIGNS_MODULO_J]
+    else:
+        signs = [f'execute("ideal Grun="+read("{generators}")+";");', SIGNS]
     return [
         f"// {title} on the E8-bar -> VB slice at p = {prime}",
         "option(redSB);",

@@ -1,11 +1,13 @@
-"""Independent recomputation of the limit-map ranks of the arc certificates, by dual-number power series.
+"""Recomputation of the limit-map ranks of the arc certificates without Singular, by dual-number power series.
 
 The certificates of structure/arcs-iso-w8/blowup-arcs, arcs-x-same and arcs-vb compute the limit vector F of an arc
 family symbolically in Singular and take the rank of [dF | F] at two parameter points. This script recomputes those
-ranks with separate code: the arc is written here from its formula, evaluated at the same two parameter points over
+ranks without Singular: the arc is written here from its formula, evaluated at the same two parameter points over
 F_p[eps]/(eps^2) with one parameter carrying eps, pushed through the header's J and G by the truncated series of
 kernel-limits/plucker_limits.py, and the eps-part of the coefficient of s^nu is the derivative of F in that
-parameter. The record holds, per family, prime and point: the least order of J on the arc (the truncation order when
+parameter. The header parser, the Series class and the polynomial evaluator are those of plucker_limits.py, so the
+check is independent of Singular and of the arc formulas in the generators, not of that Python evaluator. The record
+holds, per family, prime and point: the least order of J on the arc (the truncation order when
 J vanishes), the order nu of G, and the rank of [dF | F] over F_p, beside the rank the Singular log reports.
 
     $PYTHON docs/evidence/a5-exceptional-fibers/arc_rank_check.py

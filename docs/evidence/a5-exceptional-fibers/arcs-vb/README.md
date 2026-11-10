@@ -36,7 +36,9 @@ w rho and w sig and coefficients depending on k.
 `vb_arcs.py` writes the scripts (`--check` requires every file to match); each runs from the repository root as
 `Singular -q --no-warn < CASE.sing > CASE.log` in the global ordering `dp` with the arc parameters as ring variables
 (Singular 4.4.1 on the build host, under 1 s and 26 MB per case). P1 and P2 are the two minimal primes of K2,
-computed in each script by `minAssGTZ` and told apart by degree (3 and 4; 7 and 9 generators).
+computed in each script by `minAssGTZ` and told apart by degree (3 and 4; 7 and 9 generators). Each script checks that
+the generators of the run that produced its K2 file equal the header's up to sign (literally at 32029; modulo J at
+32009, where the run input lists them before reduction) and reads every sign as +1.
 
 | Case | J | order of G | K2 quadrics nonzero on the limit | P1 nonzero | P2 nonzero | rank of [dF, F] at two points |
 |---|---|---|---|---|---|---|
@@ -74,6 +76,7 @@ unexamined stratum, give limits in V(P2) only (probe at 32029, where -3 is a squ
 Scope: both primes; no statement in characteristic 0; the kernel-plane limits along the special family are not
 computed (A5-276 covers arcs through a VB point with finite e0).
 
-Independent check: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
+Check without Singular: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
 dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order
-of G and the vanishing of J ([arc-rank-check.json](../arc-rank-check.json)).
+of G and the vanishing of J; it shares no code with Singular and shares the series arithmetic and polynomial
+evaluator of `kernel-limits/plucker_limits.py` ([arc-rank-check.json](../arc-rank-check.json)).

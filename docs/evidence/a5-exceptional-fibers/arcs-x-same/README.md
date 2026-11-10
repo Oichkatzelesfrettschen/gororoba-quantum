@@ -43,8 +43,10 @@ control; each runs from the repository root in the global ordering `dp` with W, 
 | `xp-np-arcs-p32029` | 0 of 12 | 5, all zero identically | 0 of 69 | 4, 4 |
 | `*-mutated` (t2 doubled) | 8 of 12 nonzero | 5 | 24 of 69 where a K2 file exists | 4, 4 |
 
-The mutated arc doubles t2 and leaves V(J); K2 then fails on 24 quadrics. A reversed t9 is no control on this arc,
-because t9 has order 4 and does not enter the coefficient of s^5. Each unmutated log also holds the scan of the 27
+The mutated arc doubles t2 and leaves V(J); K2 then fails on 24 quadrics. A reversed t9 is no control for K2 on this
+arc: t9 has order 4 and enters the coefficient of s^5 through its products with the order-1 coordinates, so the
+reversal changes 5 entries of F and takes the arc off V(J), yet all 69 quadrics still vanish on the new limit (the
+reversed arc is the arc of the other same-sign incidence, whose header is this one at -t9). Each unmutated log also holds the scan of the 27
 weight vectors with weights 1 to 3 for w, for (rho, sig) and for a (`RESULT scan weights`): (2, 1, 1) is the only one
 with rank 4, and the scans agree across the four cases.
 
@@ -64,6 +66,7 @@ arc through order 39 and G has order 5.
 Scope: irreducibility of V(K2) is recorded at 32009 for X- only; at 32029 and for X+ the statement is "a component of
 dimension 4". Characteristic 0 is not addressed.
 
-Independent check: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
+Check without Singular: [arc_rank_check.py](../arc_rank_check.py) recomputes the ranks of [dF, F] at the same parameter points by
 dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order
-of G and the vanishing of J ([arc-rank-check.json](../arc-rank-check.json)).
+of G and the vanishing of J; it shares no code with Singular and shares the series arithmetic and polynomial
+evaluator of `kernel-limits/plucker_limits.py` ([arc-rank-check.json](../arc-rank-check.json)).
