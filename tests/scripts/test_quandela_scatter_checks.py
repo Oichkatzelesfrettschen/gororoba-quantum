@@ -1,5 +1,6 @@
 """Every retained Quandela case on a per-iteration-compiled QPU types how its preregistered scatter checks carry the
-per-seed mesh variance (qd_platform.scatter_check_gaps, strategy.md section 7 rule 1)."""
+per-seed mesh variance (qd_platform.scatter_check_gaps, strategy.md section 7 rule 1). The tests that read the
+retained cases carry the audit marker and run on demand; the synthetic cases run in the pull-request lane."""
 
 from __future__ import annotations
 
@@ -24,10 +25,12 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
+@pytest.mark.audit
 def test_the_rule_reads_retained_cases() -> None:
     require(len(CASES) > 100, f"only {len(CASES)} retained cases found")
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("path", CASES, ids=lambda p: f"{p.parent.parent.name}/{p.parent.name}")
 def test_scatter_checks_type_a_mesh_variance_term(path: Path) -> None:
     case = json.loads(path.read_text(encoding="utf-8"))
@@ -43,6 +46,7 @@ def test_scatter_checks_type_a_mesh_variance_term(path: Path) -> None:
         require(refusal is None, f"untyped scatter checks on {platform}: {gaps}")
 
 
+@pytest.mark.audit
 def test_every_listed_untyped_case_is_retained() -> None:
     digests = {hashlib.sha256(p.read_bytes()).hexdigest() for p in CASES}
     missing = sorted(set(qd_platform.UNTYPED_SCATTER_CASES) - digests)
