@@ -60,6 +60,33 @@ On both components of the reduced fiber the limiting kernel is therefore a funct
 samples, including under perturbations that change the arc and keep y. Scope: 6 fiber points per component; no arc
 over Q or Q(i), so no statement about real arcs.
 
+## Arcs of E8-bar through a point of VB (A5-016, A5-276)
+
+`vb_limit_span.py` uses the same parametrization Phi of the E8-bar slice at N-. Phi meets the orbit VB on the curve
+w = rho = sigma = 0, zeta nonzero (orbit read by `hardware-orbits/hardware_orbits.py`; with rho or sigma nonzero the
+point lies in B9), and e drops out of Phi there. An arc with w, rho and sigma of leading orders 1 to 3, zeta = 1 + ...
+and e = e0 + ... therefore runs in the closure of E8-bar through one VB point with free coefficients at three
+orders, and e0 is a parameter the base point does not see. Each limiting 8-plane is written in a basis of the
+12-dimensional kernel of the VB point and sent to its 495 Plucker coordinates.
+[vb-limit-span-result.json](vb-limit-span-result.json), 24 arcs for each of 27 leading-order patterns and 6 values
+of e0, truncation order 24, the same at both primes:
+
+| quantity | value |
+|---|---|
+| nullity at the base point, kernel dimension along the arc | 12 and 8 on 156 of 162 patterns |
+| the pattern with w, rho and sigma all of leading order 3 | 23 pivots at truncation order 24, no limit taken |
+| span of the Plucker vectors of one pattern | 6 on leading orders (1, 1, 1) and (2, 2, 2); 3 on 54 patterns; 1 on 90 |
+| cumulative span as e0 runs through 2, -1, 1, 3, 5, 7 | 6, 12, 18, 21, 22, 22 |
+| span of all 3,744 limits | 22 |
+
+Reading: a plane of limits has Plucker span 6 = HF(P^2, 2), so on this sample the Plucker vector is quadratic in
+the fiber coordinates y. The two components of V(K2) of E8-bar -> VB have HF(2) = 22 (the degree-4 threefold in a
+P^6) and 18 (the degree-3 threefold in a P^5), and their union has 34 (A5-020, `k2-hilbert.jsonl`). The sample
+saturates at 22: every pattern, at leading orders up to 3 in three parameters, lands in the degree-4 component, and
+no arc of this family reaches the degree-3 component. The quadratic reading is an inference from the ranks 6 and
+22; the fiber coordinates y of the VB header are not computed at this base point, so the identification of the
+rank-22 span with the degree-4 component is not checked against the header's G.
+
 ## Replay
 
 From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the retained records ran under Python
@@ -67,3 +94,4 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
 
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py x
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py e8
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_limit_span.py)
