@@ -674,6 +674,7 @@ def cmd_bench(args):
     flint_on = args[4] == "flint"
     w = int(args[5]) if len(args) > 5 else 256
     tb = int(args[6]) if len(args) > 6 else 256
+    # 7 + n is the seed of the retained timing table (README.md), kept so the table's matrices reproduce.
     rng = np.random.default_rng(7 + n)
     print(versions(), flush=True)
     gpu_factor(rng.integers(0, p, (1024, 1024), dtype=np.int32), p, w=w, tb=tb)
