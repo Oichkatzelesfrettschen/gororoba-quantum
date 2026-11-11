@@ -144,14 +144,18 @@ existing A5 header and row checks and reject duplicate JSON names, including
 nested objects and equivalent escaped names. Synthetic mutations exercise both
 rejection boundaries. The review's pytest attempt cannot run because its
 read-only sandbox supplies no writable temporary directory; the author's
-selected suite supplies the test observation separately.
+selected suite supplies the test observation separately. The selected locked
+suite passes 36 tests in 29.28 seconds after both corrections, including the
+retained-tree audit and nine new mutation cases. The corrected ledger rebuild
+retains the census above. Ruff format and check, touched-file mypy and the
+1,159-file Markdown link check pass.
 
 The first hosted run on that revision passes lint, types, tests, contracts and
 Linux ARM. macOS ARM validates all 92 retained QRNG references but fails the
 test's 45-second budget at 49.36 seconds. The corresponding main run passes at
 31.84 seconds. The provenance scanner, its retained result inputs and its seed
-ledger match main. A failed-job rerun tests timing variability; the observed
-budget failure remains distinct from a provenance mismatch.
+ledger match main. Subsequent CI runs retain the same runtime budget; the
+observed budget failure remains distinct from a provenance mismatch.
 
 ## Remaining scientific scope
 
