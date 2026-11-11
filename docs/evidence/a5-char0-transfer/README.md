@@ -112,6 +112,10 @@ record before any verdict. Host: one Kaggle CPU kernel (`a5-char0-e8-quadrics`),
 limit with the driver's timeout at 41,000 s. Runtime is unmeasured: the Q(i) producer alone takes 64 s on the build
 host, X- -> N- with a J of 12 generators and 120 products took 30,481 s, so this run may exceed the session, in which
 case its record is a `blocked_timeout` and the question moves to the certificate route of
-`../a5-exceptional-fibers/monomial-ladder`. E8-bar -> VB has no Q(i) run: `reduction_check._script("e8-vb", ...)`
-fails with `KeyError: 'VB:canonical'`, so its producer needs a Q(i) path first.
+`../a5-exceptional-fibers/monomial-ladder`. E8-bar -> VB runs through the same driver
+(`--slug e8-vb`, 55 products of 10 generators, 8 slice variables, a J of 17 generators): its row and Schur data come
+from `nakayama_rees_fibers` (`fiber_inputs._nakayama_inputs`), which `reduction_check._script` now uses for that
+slice; the Q(i) producer takes 97 s and 1.3 GiB on the build host. It is compared with the retained K2 at 32029
+only, the prime whose relation file sits with the other fibers' files; it runs on the owned workstation, which has
+no session limit.
 
