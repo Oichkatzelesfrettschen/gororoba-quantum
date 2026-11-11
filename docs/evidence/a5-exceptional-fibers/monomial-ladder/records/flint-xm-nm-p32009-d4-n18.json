@@ -1,0 +1,37 @@
+{
+ "slug": "xm-nm",
+ "prime": 32009,
+ "order": 18,
+ "generator_order": 3,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 9,
+   "A": 308,
+   "B": 293,
+   "r": 15
+  },
+  {
+   "degree": 2,
+   "order": 12,
+   "A": 593,
+   "B": 542,
+   "r": 51
+  },
+  {
+   "degree": 3,
+   "order": 15,
+   "A": 971,
+   "B": 849,
+   "r": 122
+  },
+  {
+   "degree": 4,
+   "order": 18,
+   "A": 1410,
+   "B": 1170,
+   "r": 240
+  }
+ ],
+ "seconds": 24.8
+}
