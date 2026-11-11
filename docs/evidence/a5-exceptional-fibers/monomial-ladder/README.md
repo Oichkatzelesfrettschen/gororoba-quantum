@@ -45,8 +45,11 @@ for those cells. `float64-xm-nm-p32009-d6-n28.json`, `-d7-n31.json` and `-d8-n34
 version and carry no source digest; the order-34 replay
 with the hashed engine reproduced degrees 3 to 7 (122, 240, 417, 665, 996 at orders 19 to 31) and was killed in
 the degree-8 cell twice: at a 20 GB cap, and under a 40 GB cap by the host's own out-of-memory killer at 24.7 GB
-resident while other jobs filled the 54 GB machine. The order-34 record keeps its earlier-version provenance until
-`fast_ladder_blocks.py` replays it.
+resident while other jobs filled the 54 GB machine. `fast_ladder_blocks.py` then replayed the order-34 cell:
+`float64-blocks-xm-nm-p32009-d8-n34.json` carries the source digests and gives every row of the earlier record
+(15, 51, 122, 240, 417, 665, 996, 1,422 for degrees 1 to 8; A = 12,507 and B = 11,085 at degree 8) at 13.0 GB peak
+in 3,690 s on an 8-vCPU, 32 GB Azure D8ds_v6 (torch 2.15.0, 8 threads), with its step log and `time -v` output
+beside it.
 
 `fast_ladder_blocks.py` is the same arithmetic with block storage: the echelon form grows by row blocks and never
 copies itself, a finished space is held as uint16, every step prints its rank and peak memory, the record is

@@ -282,4 +282,7 @@ the closest entry and say what changed.
   second kill came from the host's global out-of-memory killer at 24.7 GB resident (kernel log), with the other
   jobs holding the rest of the 54 GB: read the kernel log before blaming a cap. The engine held the echelon buffer
   twice while it grew and the two previous spaces in float64; `fast_ladder_blocks.py` removes both.
+  The replay with it on an Azure D8ds_v6 (8 vCPU, 32 GB, westus3; D8ds_v5 has no quota in the subscription) gave
+  the retained rows through degree 8 (1,422) at 13.0 GB peak in 3,690 s; the machine and its resource group were
+  deleted after the record and logs were copied and their sha256 compared.
 
