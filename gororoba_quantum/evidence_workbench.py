@@ -275,7 +275,7 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
     ordered_map(_validate_member, [(name, member, family) for name, member in members.items()])
     seen: set[tuple[str, str]] = set()
     covered: set[str] = set()
-    diagnostics = []
+    tasks: list[tuple[dict[str, Any], dict[str, Any]]] = []
     for pub in pubs:
         key = (pub["job_id"], pub["name"])
         require(all(isinstance(k, str) and k for k in key) and key not in seen, "duplicate or invalid PUB identity")
@@ -283,17 +283,30 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
         selected = {name for name, member in members.items() if (member["job_id"], member["pub"]) == key}
         require(bool(selected) and not covered.intersection(selected), "invalid PUB membership")
         covered.update(selected)
-        event = validate_dependence(pub["event_zero"], pub, members, "event_zero")
-        require(set(event["members"]) == selected, "event moments omit PUB members")
-        errors = validate_dependence(pub["deterministic_error"], pub, members, "deterministic_error")
-        expected_errors = {name for name in selected if 1.0 in members[name]["ideal_probabilities"]}
-        require(set(errors["members"]) == expected_errors, "deterministic-error coverage differs")
-        diagnostics.append({"job_id": key[0], "pub": key[1], "event_zero": event, "deterministic_error": errors})
+        for group in (pub["event_zero"], pub["deterministic_error"]):
+            names = group["members"]
+            require(isinstance(names, list) and len(names) <= 128, "invalid moment members")
+            for name in names:
+                require(isinstance(name, str) and name in members, "unknown moment member")
+                require(name in selected, "cross-PUB moment pairing")
+        tasks.append((pub, {name: members[name] for name in sorted(selected)}))
     require(covered == set(members), "orphaned acquisition member")
+    diagnostics = ordered_map(_pub_dependence, tasks)
     for relative, expected in value.get("source_files", {}).items():
         require(isinstance(relative, str) and bool(relative), "invalid source identity")
         _digest(expected)
     return {"payload": value, "dependence": diagnostics, "verification": "payload_digest_and_internal_consistency"}
+
+
+def _pub_dependence(task: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    """Check both moment groups of one PUB against its own members; PUBs are independent."""
+    pub, selected = task
+    event = validate_dependence(pub["event_zero"], pub, selected, "event_zero")
+    require(set(event["members"]) == set(selected), "event moments omit PUB members")
+    errors = validate_dependence(pub["deterministic_error"], pub, selected, "deterministic_error")
+    expected_errors = {name for name, member in selected.items() if 1.0 in member["ideal_probabilities"]}
+    require(set(errors["members"]) == expected_errors, "deterministic-error coverage differs")
+    return {"job_id": pub["job_id"], "pub": pub["name"], "event_zero": event, "deterministic_error": errors}
 
 
 def _raw_pub(task: tuple[dict[str, Any], dict[str, Any], str]) -> dict[str, Any]:

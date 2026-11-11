@@ -99,9 +99,13 @@ def main() -> int:
             page.click("#play")
             check("Reduced motion" in page.locator("#status").inner_text(), "reduced_motion_prevents_playback")
             page.emulate_media(reduced_motion="no-preference")
-        for color in ("condition", "qubit", "monochrome"):
-            page.select_option("#color", color)
-            check(page.locator("#error").is_hidden(), "color_" + color)
+        # A view without color controls hides the selector, and a bundle without acquisitions disables an option.
+        if page.locator("#color").is_visible():
+            for color in ("condition", "qubit", "monochrome"):
+                if page.locator(f'#color option[value="{color}"]').is_disabled():
+                    continue
+                page.select_option("#color", color)
+                check(page.locator("#error").is_hidden(), "color_" + color)
         rejected = page.evaluate("""() => {const v=EvidenceWorkbench.saveState();v.bundle_sha256='wrong';
             try {EvidenceWorkbench.restore(v);return false;} catch {return true;}}""")
         check(rejected, "foreign_saved_view_rejected")
