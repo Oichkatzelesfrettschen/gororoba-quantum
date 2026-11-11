@@ -15,6 +15,8 @@ OWNER = "probablyeric"
 BRANCH = "a5-char0-quadrics-iso-w8"
 # The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
 COMMIT = "00b7d63c261535d328f73369fba54ae7d512d64d"
+# Kernels added after COMMIT check out the commit that first holds their driver arguments.
+COMMITS = {"a5-char0-e8-quadrics": "81257432375ff8f4dde636a5ce6c58cda74bf135"}
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
 
 JOBS = {
@@ -29,6 +31,10 @@ JOBS = {
     "a5-char0-w8-quadrics": (
         ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "w8-nm", "--timeout", "41000"],
         "quadrics-w8-nm.json",
+    ),
+    "a5-char0-e8-quadrics": (
+        ["docs/evidence/a5-char0-transfer/quadric_lift.py", "--slug", "e8-nm", "--timeout", "41000"],
+        "quadrics-e8-nm.json",
     ),
     "a5-char0-xm-truncation-n22": (
         [
@@ -49,7 +55,7 @@ def kernel(slug: str, args: list[str], record: str, out: Path = HERE) -> None:
     """Write OUT/SLUG/SLUG.py (runner.py with its configuration in CONFIG_B64) and its kernel-metadata.json."""
     d = out / slug
     d.mkdir(parents=True, exist_ok=True)
-    config = {"branch": BRANCH, "commit": COMMIT, "repo": REPO, "args": args, "record": record}
+    config = {"branch": BRANCH, "commit": COMMITS.get(slug, COMMIT), "repo": REPO, "args": args, "record": record}
     blob = base64.b64encode(json.dumps(config).encode()).decode()
     chunks = "".join(f'    "{blob[i : i + 100]}"\n' for i in range(0, len(blob), 100))
     runner = (HERE / "runner.py").read_text()

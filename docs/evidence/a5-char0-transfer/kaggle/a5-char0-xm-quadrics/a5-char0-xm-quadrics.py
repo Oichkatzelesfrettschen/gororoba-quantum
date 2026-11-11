@@ -25,11 +25,10 @@ import time
 from pathlib import Path
 
 CONFIG_B64 = (
-    "eyJicmFuY2giOiAiaW50ZWdyYXRpb24vZ29yb3JvYmEtcXVhbnR1bS11bHRyYXJldmlldyIsICJjb21taXQiOiAiOGEyZTQxMGJh"
-    "MGJhMWM3NDIwNTVlNDZjM2FiMWM2MDI2NmUwOGRhYiIsICJyZXBvIjogImh0dHBzOi8vZ2l0aHViLmNvbS9PaWNoa2F0emVsZXNm"
-    "cmV0dHNjaGVuL2dvcm9yb2JhLXF1YW50dW0iLCAiYXJncyI6IFsiZG9jcy9ldmlkZW5jZS9hNS1jaGFyMC10cmFuc2Zlci9xdWFk"
-    "cmljX2xpZnQucHkiLCAiLS1zbHVnIiwgInhtLW5tIiwgIi0tdGltZW91dCIsICI0MTAwMCJdLCAicmVjb3JkIjogInF1YWRyaWNz"
-    "LXhtLW5tLmpzb24ifQ=="
+    "eyJicmFuY2giOiAiYTUtY2hhcjAtcXVhZHJpY3MtaXNvLXc4IiwgImNvbW1pdCI6ICIwMGI3ZDYzYzI2MTUzNWQzMjhmNzMzNjlm"
+    "YmE1NGFlN2Q1MTJkNjRkIiwgInJlcG8iOiAiaHR0cHM6Ly9naXRodWIuY29tL09pY2hrYXR6ZWxlc2ZyZXR0c2NoZW4vZ29yb3Jv"
+    "YmEtcXVhbnR1bSIsICJhcmdzIjogWyJkb2NzL2V2aWRlbmNlL2E1LWNoYXIwLXRyYW5zZmVyL3F1YWRyaWNfbGlmdC5weSIsICIt"
+    "LXNsdWciLCAieG0tbm0iLCAiLS10aW1lb3V0IiwgIjQxMDAwIl0sICJyZWNvcmQiOiAicXVhZHJpY3MteG0tbm0uanNvbiJ9"
 )
 OUT = Path("/kaggle/working")
 WORK = Path("/kaggle/tmp")
