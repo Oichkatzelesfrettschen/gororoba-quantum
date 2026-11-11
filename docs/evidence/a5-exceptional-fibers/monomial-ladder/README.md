@@ -152,6 +152,6 @@ S[I T] / (m_R S) S[I T], the Rees algebra of an ideal of a hypersurface ring red
 That is a finite presentation: `records/e8-fiber-cone-e8-nm-p32009.sing` computes its kernel L in k[y_1..y_21] by
 two eliminations and compares it with K2. That run has not finished; until it does, h_6 of E8-bar → N− stays
 between 1,526 and 1,666, and nothing here says whether L has generators above degree 2. The truncated ranks of I and
-I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817), consistent with the exact result. Not checked for E8-bar:
-the identification of the completed slice ring with R (the kernel of the parametrization against J), the second
-prime, the N+ header and Q(i).
+I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
+`records/slice-ring-e8-*.log` show that the kernel of the parametrization equals the header's J (one component)
+in all four cases. Not checked for E8-bar: Q(i).
