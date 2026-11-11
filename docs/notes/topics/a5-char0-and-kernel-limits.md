@@ -164,9 +164,10 @@ Each statement below is checked against the cited source and marked documented (
   measurement (`evidence/quandela/permanent-estimators/permanent_probe.json`) confirms it on 6 x 6 unitary blocks
   (99.3 percent coverage at 10^4 iterations) and shows its half-width exceeding |perm| by 185 times at n = 20
   (computed). Alignment:
-  - It supports A5-076 (no QPU measurement certifies an F_p rank): a photonic estimate of any amplitude that is a
-    permanent of a norm-bounded matrix is matched classically to the same additive error in polynomial time, and
-    every fiber invariant here is an exact rank, which sampling cannot certify (documented plus inference).
+  - It supports the statement that no retained QPU measurement certifies an F_p rank (the workload row is
+    A5-320): a photonic estimate of any amplitude that is a permanent of a norm-bounded matrix is matched
+    classically to the same additive error in polynomial time, and every fiber invariant here is an exact rank,
+    which sampling cannot certify (documented plus inference).
   - The fiber computations themselves use Pfaffians and exact ranks over F_p, both polynomial time; the
     permanent's #P-hardness and Gurvits's estimator do not enter them (documented).
   - Shared structure, hypothesis without a mechanism: Glynn's estimator averages over the characters of

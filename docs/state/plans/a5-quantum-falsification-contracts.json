@@ -1,0 +1,148 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-quantum-falsification-contracts",
+  "kind": "implementation",
+  "summary": "Make the A5 quantum-claim audit executable and bind retained photonic scope to its actual requests.",
+  "sources": [
+    "docs/evidence/a5-quantum-contracts/README.md",
+    "docs/notes/topics/quantum-linear-algebra-fit-a5.md"
+  ],
+  "state": "closed",
+  "scope": "Exact algebra and circuit-conformance checks, retained optical-request and event-denominator checks, corrected workload claims and focused local validation. E8 target-rank development belongs to PR 818; hosted review, merge and provider acquisition are separate.",
+  "owner": "A5 falsification implementation",
+  "next_action": "Use the draft pull request for hosted admission and the repository-required review selection.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Current main already closes E8 degree five and the Iso, W8 and E8-to-VB finite-prime fibers. This plan implements the missing quantum-claim checks without duplicating existing SELECT, Rust or Rocq machinery."
+  },
+  "steps": [
+    {
+      "id": "exact-algebra",
+      "action": "Implement natural LCU, complete kernel projectors, isotropy and modular-rank counterexamples.",
+      "acceptance": "Exact receipts replay and bounded tests reject wrong signs, normalization, incomplete roots and field confusion; both existing two-term SELECT circuits agree with the exact block.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "7aaa97cf79d6b65138284234741611730caa24034483f17309d98c0b4518b782",
+          "result": "The stated acceptance passed; source hashes bind the observed implementation and receipts.",
+          "observed_at": "2026-11-11T21:17:48.685609+00:00",
+          "revision": "f1ada208acfe77bf7156ca65cbad69342385f812",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-quantum-contracts/exact-contracts.json",
+              "sha256": "0c80d41125df5ad14dec7ffd4f94c307ea1783ec369364462c8c7437aac12f8e"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_cd_quantum_contracts.py",
+              "sha256": "0df1a52264c8647f845163a312c3a976b89103356dd2a5b5dfa0892a8261e7ab"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "photonic-scope",
+      "action": "Bind retained optical requests to exact selected actions and report both returned-event denominators.",
+      "acceptance": "Both retained runs replay; same-name operator and unprobed-column mutations expose their distinct boundaries; zero denominators remain undefined.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "395b389efdd02b801b0a6283af0e573bcc2bbaeedb8d4bbfb8a91df5d5c9ffa8",
+          "result": "The stated acceptance passed; source hashes bind the observed implementation and receipts.",
+          "observed_at": "2026-11-11T21:17:48.685609+00:00",
+          "revision": "f1ada208acfe77bf7156ca65cbad69342385f812",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json",
+              "sha256": "7576d65d23e7600d4f44b6597caa875541923660e254d80f415653102e14c7b9"
+            },
+            {
+              "ref": "docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json",
+              "sha256": "c6b6268b11b79303ba7143febd8b21de9b3942b5e3f387279e61632b9451581c"
+            },
+            {
+              "ref": "tests/test_a5_photonic_scope.py",
+              "sha256": "bd948c93e5da44458aeee7a3cd383644d96b67edfc0fc54e13cb081962eb09cd"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-claims",
+      "action": "Correct the workload verdicts and register the finite-ring ideal source.",
+      "acceptance": "The notes distinguish models, outputs and proven bounds; the claim ledger no longer treats Pauli counts or singularity as universal obstructions.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "23d3f7e0be84e3f0465c598bbd704a34256a5f198a1046af6d999c513183b59f",
+          "result": "The stated acceptance passed; source hashes bind the observed implementation and receipts.",
+          "observed_at": "2026-11-11T21:17:48.685609+00:00",
+          "revision": "f1ada208acfe77bf7156ca65cbad69342385f812",
+          "evidence": [
+            {
+              "ref": "docs/notes/topics/quantum-linear-algebra-fit-a5.md",
+              "sha256": "00fbe1c52091892553657975094fb46312c6cf35ae9eb70e29c17e9e84e88ba8"
+            },
+            {
+              "ref": "docs/evidence/a5-exceptional-fibers/ledger.tsv",
+              "sha256": "f355ac07ade6c1c61e85bee0694d4ec50f559a00b26162320c07645a87a663f3"
+            },
+            {
+              "ref": "docs/SOURCES.json#external_pdfs/sha256=bee79f6c25ebd54049935591742ccdcbcc1c7fc5ca5b4776a8395187a3631e7c",
+              "sha256": "08762d42dd52c5a6182b6df5f6308f640daf36c1d376ec60dc6f70d9c86859fa"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "validate",
+      "action": "Run the focused tests, pinned tools and retained-record replay gates.",
+      "acceptance": "87 focused tests, three replays, pinned Ruff and bounded-import mypy pass under the complete pinned runtime.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "7d08e4c50b100a3b9d5f87697e9a9519fe3e9ee1bf757a01c528445396a125d4",
+          "result": "The stated acceptance passed; source hashes bind the observed implementation and receipts.",
+          "observed_at": "2026-11-11T21:17:48.685609+00:00",
+          "revision": "f1ada208acfe77bf7156ca65cbad69342385f812",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-quantum-contracts/validation.json",
+              "sha256": "d71b86d27619b9950b83bd3f10fd8c01d6b8d240446e2b1321e8c0abe1792367"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-a5-quantum-exact-contracts",
+              "sha256": "9dcef6e6a753bb4213b5258922eccc52233555e704b16c32449e4182d1ae1570"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-ascella-a5-scope-hardware",
+              "sha256": "c56c5820e8543b314871265b19dfac9fb17b7a25c5fb51412460a3ee8a81171b"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-ascella-a5-scope-simulator",
+              "sha256": "7e55527d9cf6e6c6e3d475fafabf07d0cb05e1bd7ff219138843e695f5f8d013"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The offline implementation and focused validation are complete. This closes the executable falsification work, not the E8 degree-six theorem or a quantum-speedup question. Hosted admission and review remain separate.",
+  "receipts": [
+    {
+      "scope_sha256": "f4906b31875b0b3a6aabd3e149a3a084758d5642a5b9ecb7079035ec2cf277f1",
+      "result": "The stated acceptance passed; source hashes bind the observed implementation and receipts.",
+      "observed_at": "2026-11-11T21:17:48.685609+00:00",
+      "revision": "f1ada208acfe77bf7156ca65cbad69342385f812",
+      "evidence": [
+        {
+          "ref": "docs/evidence/a5-quantum-contracts/validation.json",
+          "sha256": "d71b86d27619b9950b83bd3f10fd8c01d6b8d240446e2b1321e8c0abe1792367"
+        }
+      ]
+    }
+  ]
+}
