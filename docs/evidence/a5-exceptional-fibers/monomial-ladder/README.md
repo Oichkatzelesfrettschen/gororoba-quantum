@@ -94,8 +94,7 @@ in the coordinates y_j of the header it is K2.
 
 What the certificate rests on, and what it does not cover:
 
-- the identification of the completed local ring of the slice with R = k[[t]] + (a, ρ, σ) P, argued in the
-  docstring of `x_same_ladder.py` from the parametrization of [arcs-x-same](../arcs-x-same/README.md);
+- the identification of the completed local ring of the slice with R, proved in the next section;
 - the field: the checks above are over F_32009 and F_32029; the same certificate over Q(i), with the G of the
   Q(i) producer, is `../../a5-char0-transfer/monomial_certificate_qi.py` (A5-305): I = M, L is 69 quadrics that
   reduce to K2 at both primes;
@@ -103,6 +102,27 @@ What the certificate rests on, and what it does not cover:
   structure of Proj F(I) = V_+(K2) are those of K2, recorded with the saturation of K2 in `arcs-x-same`;
 - nothing here transfers to another incidence. The E8-bar slice ideal is not a span of monomials in any of the
   five coordinate systems tried at order 7, and no certificate of this kind exists for it.
+
+## The slice ring is R (A5-306)
+
+The certificate uses the completed local ring of the slice V(J) at the base point in the form
+R = k[[t]] + (a, ρ, σ) P. Three facts give it.
+
+1. The kernel of the parametrization is J. `records/slice-ring-*.sing` eliminate a, ρ, σ, w and u = 1/(1 + w)
+   from the graph of the parametrization: the kernel has 12 generators, dimension 4 and multiplicity 6, and it
+   equals the header's J in both directions (J has one component). So k[t_1, ..., t_9]/J is the image ring
+   A_0 inside B = k[a, ρ, σ, w]_(1 + w), at both primes and both incidences.
+2. B is finite over A_0, with one point over the origin. The coordinates give a, ρ and σ in A_0
+   (t4 + t5 = (1 + w) ρ, t6 + t7 = ρ, t6 − t7 = (1 + w) σ, t4 − t5 = σ, and a = t1 ± t9), and
+   t = w²/(1 + w) = −2 s t9 lies in A_0 with w² = t (1 + w), which the same Singular run confirms; so
+   B = A_0 + w A_0 locally, and modulo the maximal ideal of A_0 the equation w² = t (1 + w) leaves only w = 0.
+   The completion of A_0 is therefore its closure in P = k[[a, ρ, σ, w]].
+3. That closure is R. It contains k[[t, a, ρ, σ]], w ρ, w σ and t2 = a w (w + 2)/(2 (1 + w)); writing
+   (w + 2)/(2 (1 + w)) = α + β w with α a unit and β in k[[t]] gives a w (α + β t) = t2 − a β t, so a w lies in
+   it, and with P = k[[t, a, ρ, σ]] ⊕ w k[[t, a, ρ, σ]] it contains (a, ρ, σ) P. Conversely every coordinate
+   lies in R and R is closed.
+
+Steps 2 and 3 are arguments, checked by Singular only at the equation w² = t (1 + w); step 1 is computed.
 
 ## E8-bar → N− at p = 32009
 
