@@ -184,8 +184,12 @@ the closest entry and say what changed.
 - Parallelism: one job on the laptop; export chunks run through the engine's worker pool.
 - Memory and time limits: the cgroup cap of 48 GiB; the preflight gate ends the run by design (exit 1).
 - Checkpoints: the export directory keeps `s.txt` and `qB.txt` with their hashes.
-- End state: export kept on the laptop for the full run; records retained; the runner logs the engine status but
-  exits 0 on failure (#793 tracks the fix for new runners).
+- End state: export kept on the laptop for the full run; records retained. That executed runner logs the engine
+  status but exits 0 on failure and writes stdout directly to the final record, so its bytes remain retained as
+  historical evidence only. New cells use `docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py`: it exits
+  with the engine status, writes JSON to `.part`, validates the engine/header/field/degree/order identity and a
+  nonnegative integral `r_N`, then atomically renames only after exit 0. Existing final JSON is skipped only after the
+  same validation; failures retain `.part`, stderr and process-group resource evidence (#793, #802).
 - Outcome: standard basis and preflight in 2,773.7 s at 486,608 KiB peak; preflight 375.62 GiB (D = 235,543); peak
   forecast about 160 GiB, at most about 195 GiB, from the degree-5 term-by-term reading. Case:
   `docs/evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`.

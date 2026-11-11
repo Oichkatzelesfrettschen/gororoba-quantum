@@ -101,6 +101,34 @@ def test_echelon_flint_invariants() -> None:
     _equal(fresh, ech.rows(np.arange(len(ech) - 3, len(ech))))
 
 
+def test_echelon_compact_equals_flint_insertion_sequence() -> None:
+    rng = np.random.default_rng(TEST_SEEDS[5])
+    cpu = me.Echelon(173, P)
+    compact = me.Echelon(173, P, "compact")
+    for k, count in ((13, 47), (29, 61), (17, 38), (70, 83)):
+        x = _low_rank(rng, count, 173, k, P, 0.17).astype(np.float64)
+        _equal(compact.insert(x, chunk=19), cpu.insert(x, chunk=19))
+        _equal(compact.piv, cpu.piv)
+        _equal(compact.B, cpu.B)
+        _equal(compact.reduce(x[:11]), cpu.reduce(x[:11]))
+    start = {int(c) for c in cpu.piv[: len(cpu) // 2]}
+    _equal(compact.new_indices(start), cpu.new_indices(start))
+    _equal(compact.new_rows(start), cpu.new_rows(start))
+    _check(compact.insert(cpu.B[:23], chunk=7).size == 0)
+
+
+def test_echelon_compact_crosses_storage_panels() -> None:
+    rng = np.random.default_rng(TEST_SEEDS[1])
+    ncols = me.COMPACT_COLS + 37
+    a = _low_rank(rng, 42, ncols, 31, P, 0.2).astype(np.float64)
+    want = me.Echelon(ncols, P)
+    got = me.Echelon(ncols, P, "compact")
+    want.insert(a, chunk=11)
+    got.insert(a, chunk=11)
+    _equal(got.piv, want.piv)
+    _equal(got.B, want.B)
+
+
 def test_echelon_rejects_unknown_backend() -> None:
     with pytest.raises(ValueError, match="unknown backend"):
         me.Echelon(4, P, "tpu")  # type: ignore[arg-type]
