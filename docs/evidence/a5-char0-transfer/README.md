@@ -119,3 +119,9 @@ slice; the Q(i) producer takes 97 s and 1.3 GiB on the build host. It is compare
 only, the prime whose relation file sits with the other fibers' files; it runs on the owned workstation, which has
 no session limit.
 
+Result for E8-bar -> VB (ledger A5-315): `quadric_lift.py --slug e8-vb` finished on the workstation in 650 s at
+1.24 GiB peak ([`quadrics-e8-vb.json`](quadrics-e8-vb.json)). The Q(i) relation space has dimension 21, so
+h_2 = 34, with largest denominator 25 and a nonzero imaginary part; no denominator is divisible by 32029, its
+reduced row echelon form reduces to the retained K2 at (32029, i = 9115), and the mutation arm is detected. The
+comparison at 32009 is not run: that relation file is retained outside the directory the driver reads.
+
