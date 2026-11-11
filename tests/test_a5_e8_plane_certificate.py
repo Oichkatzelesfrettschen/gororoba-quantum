@@ -1,4 +1,5 @@
 """Source-bound E8 intersection certificate generator tests (no Singular needed)."""
+
 from __future__ import annotations
 
 import importlib.util
@@ -8,7 +9,8 @@ from pathlib import Path
 
 SOURCE = Path(__file__).resolve().parents[1] / "scripts" / "a5_e8_plane_certificate.py"
 SPEC = importlib.util.spec_from_file_location("a5_e8_plane_certificate", SOURCE)
-assert SPEC and SPEC.loader
+if SPEC is None or SPEC.loader is None:
+    raise ImportError(f"cannot load {SOURCE}")
 tool = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(tool)
 

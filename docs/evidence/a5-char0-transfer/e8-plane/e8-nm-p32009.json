@@ -1,0 +1,11 @@
+{
+  "header": "nm",
+  "prime": 32009,
+  "source": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel",
+  "source_sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6",
+  "script_sha256": "2eba8586aeb23c4f079bc74dc87370bb2433f71447ca9096c58d30784f3d4c59",
+  "singular_returncode": 0,
+  "verified": true,
+  "stdout": "RESULT intersection_dim 3\nRESULT intersection_mult 1\nRESULT linear_dim 3\nRESULT linear_mult 1\nRESULT independent_linear_generators 18\nRESULT inclusion_intersection_in_linear 1\nRESULT inclusion_linear_in_intersection 1\nRESULT E8_EXACT_PROJECTIVE_PLANE_PASS\n",
+  "stderr": ""
+}

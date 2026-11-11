@@ -5,6 +5,7 @@ The input relation file must be the retained E8 quadric K2 file. The
 certificate checks that the two minimal primes of K2 + nilradical generators
 meet in an EXACT linear P^2, not just a degree-one top-dimensional cycle.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -19,13 +20,17 @@ HEADERS = ("nm", "np")
 NILPOTENT_COORDINATES = (4, 6, 7, 12, 14)
 
 
-def make_script(prime: int, relation_file: Path) -> str:
+def make_script(prime: int, relation_file: Path, base: Path | None = None) -> str:
+    """The Singular script; `relation_file` is embedded as given and read relative to `base` when one is named.
+
+    A path relative to the repository root keeps the script text, and so its sha256, the same on every host.
+    """
     if prime not in PRIMES.values():
         raise ValueError("Unsupported prime")
-    if not relation_file.is_file():
+    if not (base / relation_file if base else relation_file).is_file():
         raise FileNotFoundError(relation_file)
     # Singular requires a quoted path; reject its quoting/control syntax.
-    path = relation_file.resolve().as_posix()
+    path = relation_file.as_posix()
     if any(ch in path for ch in ('"', "\\", "\n", "\r")):
         raise ValueError("Unsafe Singular file path")
     nilradical = ",".join(f"y({i})" for i in NILPOTENT_COORDINATES)
@@ -80,11 +85,12 @@ def main() -> int:
         parser.error("--record requires --run")
     repo = args.repo.resolve()
     name = f"e8{args.header}_{args.prime_id}"
-    path = (repo / "docs/evidence/a5-exceptional-fibers/working/distribute/out"
-            / "a5-e8-d2" / name / "d2" / "relations-upto-d2.rel")
+    path = (
+        Path("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2") / name / "d2/relations-upto-d2.rel"
+    )
     try:
-        source = path.read_bytes()
-        script = make_script(PRIMES[args.prime_id], path)
+        source = (repo / path).read_bytes()
+        script = make_script(PRIMES[args.prime_id], path, repo)
         if args.script_out:
             args.script_out.write_text(script, encoding="utf-8")
         if not args.run:
@@ -93,18 +99,28 @@ def main() -> int:
             return 0
         process = subprocess.run(
             [args.singular, "-q"],
-            input=script, text=True, capture_output=True, check=False,
+            input=script,
+            text=True,
+            capture_output=True,
+            check=False,
             timeout=3600,
+            cwd=repo,
         )
-        ok = (process.returncode == 0
-              and "RESULT E8_EXACT_PROJECTIVE_PLANE_PASS" in process.stdout
-              and "RESULT E8_EXACT_PROJECTIVE_PLANE_FAIL" not in process.stdout)
+        ok = (
+            process.returncode == 0
+            and "RESULT E8_EXACT_PROJECTIVE_PLANE_PASS" in process.stdout
+            and "RESULT E8_EXACT_PROJECTIVE_PLANE_FAIL" not in process.stdout
+        )
         result = {
-            "header": args.header, "prime": PRIMES[args.prime_id],
+            "header": args.header,
+            "prime": PRIMES[args.prime_id],
+            "source": path.as_posix(),
             "source_sha256": hashlib.sha256(source).hexdigest(),
             "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
             "singular_returncode": process.returncode,
-            "verified": ok, "stdout": process.stdout, "stderr": process.stderr,
+            "verified": ok,
+            "stdout": process.stdout,
+            "stderr": process.stderr,
         }
         if args.record:
             args.record.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

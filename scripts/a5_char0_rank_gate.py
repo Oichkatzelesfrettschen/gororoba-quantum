@@ -9,6 +9,7 @@ P represents the appended product columns. Reduction uses i -> root mod p.
 This is a finite matrix checker, not a certificate of ambient good reduction,
 header identity, or identification of the supplied columns with the source ideal.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -141,7 +142,7 @@ def check(data: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("W and P must have equal row counts")
     if not w:
         raise ValueError("Supply at least one row; encode zero columns as empty rows")
-    combined = [a + b for a, b in zip(w, p)]
+    combined = [a + b for a, b in zip(w, p, strict=True)]
     wm = [[reduce_entry(x, prime, root) for x in row] for row in w]
     cm = [[reduce_entry(x, prime, root) for x in row] for row in combined]
     rank_w_q = rank_qi(w)
