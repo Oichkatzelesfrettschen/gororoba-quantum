@@ -40,7 +40,7 @@ def test_instrument_and_dilation_have_identical_system_laws() -> None:
     _close(v.conj().T @ v, np.eye(2))
 
 
-def test_coherent_record_can_be_uncomputed_but_a_classical_record_cannot() -> None:
+def test_inverse_coupling_restores_the_coherent_record_and_not_the_classical_one() -> None:
     # Environment is first, system second; flip environment conditioned on system.
     undo = np.eye(4)[[0, 3, 2, 1]]
     measurement = z_measurement()
@@ -134,3 +134,23 @@ def test_instrument_requires_completeness_and_valid_labels() -> None:
 def test_huge_outcome_label_is_refused_before_allocating() -> None:
     with pytest.raises(ValueError, match="consecutive"):
         Instrument(np.eye(2)[None, :, :], (10**100,))
+
+
+def test_partial_trace_and_dephasing_keep_imaginary_coherences() -> None:
+    plus_i = np.array([[0.5, -0.5j], [0.5j, 0.5]], dtype=np.complex128)
+    zero = np.array([[1, 0], [0, 0]], dtype=np.complex128)
+    joint = np.kron(zero, plus_i)
+    _close(partial_trace(joint, (2, 2), (1,)), plus_i)
+    _close(partial_trace(np.kron(plus_i, zero), (2, 2), (0,)), plus_i)
+    _close(dephasing_channel(0.25).nonselective_state(plus_i), np.array([[0.5, -0.375j], [0.375j, 0.5]]))
+
+
+def test_trace_preservation_is_bounded_in_spectral_norm() -> None:
+    dimension = 200
+    defect = np.eye(dimension) + 0.9e-10 * np.ones((dimension, dimension))
+    kraus = np.linalg.cholesky(defect).conj().T[None, :, :]
+    try:
+        Instrument(kraus, (0,))
+    except ValueError:
+        return
+    raise AssertionError("a Kraus set whose completeness defect has norm 1.8e-8 was accepted")

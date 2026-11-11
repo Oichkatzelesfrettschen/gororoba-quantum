@@ -119,7 +119,8 @@ class Instrument:
         if max(labels) >= len(labels) or set(labels) != set(range(max(labels) + 1)):
             raise ValueError("outcome labels must be consecutive starting at zero")
         completeness = np.einsum("kai,kaj->ij", operators.conj(), operators)
-        if not np.allclose(completeness, np.eye(operators.shape[2]), atol=TOLERANCE, rtol=0):
+        # The spectral norm of the defect bounds the trace error of every input state, in any dimension.
+        if np.linalg.norm(completeness - np.eye(operators.shape[2]), 2) > TOLERANCE:
             raise ValueError("Kraus maps are not trace preserving")
         operators.setflags(write=False)
         object.__setattr__(self, "operators", operators)

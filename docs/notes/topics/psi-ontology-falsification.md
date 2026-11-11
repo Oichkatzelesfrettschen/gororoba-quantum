@@ -11,9 +11,11 @@ phase space. The ontology of the quantum state is interpretation-dependent.
 
 `gororoba_quantum/psi_foundations.py` enumerates all 16 deterministic
 local CHSH assignments, obtaining S in {-2,2}. It separately evaluates the
-singlet prediction |S|=2 sqrt(2). This excludes the conjunction of local
-response factorization, measurement independence, and the other usual Bell
-assumptions when experiment supports the quantum correlations; it does not
+singlet prediction |S|=2 sqrt(2). When experiment supports the quantum
+correlations, this excludes the conjunction of three assumptions: outcomes
+fixed by a shared variable and the local setting alone (local response
+factorization), settings statistically independent of that variable
+(measurement independence), and one definite outcome per run. It does not
 exclude every physical ontology or imply superluminal signalling.
 
 The module also computes the classical overlap omega=sum min(p,q) of two
@@ -23,6 +25,11 @@ or proof of the Pusey-Barrett-Rudolph theorem. The theorem additionally
 requires a measurement with quantum-forbidden outcomes and carefully stated
 preparation-independence assumptions. No inference from overlap alone to
 psi-ontology is permitted.
+
+The Bell, Clauser-Horne-Shimony-Holt and Pusey-Barrett-Rudolph papers are
+not registered in `docs/SOURCES.json`, and no statement here rests on a
+reading of them: the sentences above summarize the standard hypotheses, and
+the computations are self-contained.
 
 Run: `python -m unittest discover -s tests -p 'test_psi_foundations.py'`.
 
