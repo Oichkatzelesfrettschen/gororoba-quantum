@@ -32,7 +32,7 @@ not the scientific validity of a paper or a claim that every section was read.
 | Schafer, Huet and Gies arXiv v1 HTML | 694775 | `80ea88392586cced398ed5461d7698cb1b639f6fbd67b2e15a53df42e3ded89b` | 2026-11-11T20:44:06.380202+00:00 |
 
 The unchanged White 2021 PDF already lives in
-[gororoba-documents-public](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/3df9ed549a3e94e831f988e2794e02b570d57c61/physics/field-theory/White_2021_Casimir_Warp.pdf).
+[gororoba-documents-public](https://github.com/Oichkatzelesfrettschen/gororoba-documents-public/blob/12ce560fbd70e1922f2df91c83a4ab57c01a52e4/physics/field-theory/White_2021_Casimir_Warp.pdf).
 This audit fetched that copy and independently obtained SHA-256
 `1580be671a957993b796344cb55cfd9b99ea2dbdb37cb57327c4205f005732b5`,
 2,024,021 bytes, matching its existing document manifest. Its CC BY 4.0

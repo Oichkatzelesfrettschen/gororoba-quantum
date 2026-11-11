@@ -1,6 +1,6 @@
 # Casimir geometry and the nanoscale warp claim
 
-The 2021 result behind the nanoscale warp-bubble reports is a numerical
+White et al. 2021, the paper that descriptions of a nanoscale warp bubble refer to, presents a numerical
 Casimir-geometry calculation and a proposed experiment. The inspected
 paper does not report a measured spacetime bubble. Its fabrication images,
 modeled scalar contours and proposed transit-time test are different
@@ -54,9 +54,11 @@ interaction and returns a nonnegative standard error. It also separates
 the scalar and electromagnetic parallel-plate benchmarks. Those corrected
 defects are not a new backlog. The historical handoff bytes remain intact.
 
-[E] The owner-tool receipt at Rust path
+[I] Reported by the Rust workspace's operator and not retained here: a receipt at Rust path
 `data/output/audit/casimir-warp-evidence/registry_mutation_receipt.json`
-records a subsequent canonical database correction. The binary registry
+describes a subsequent canonical database correction, and neither that file nor the
+mutated registry is published at the pinned revision, so the values in this paragraph are
+that report and are verified by no record in either repository. The binary registry
 retains its 393 entries and adds `casimir-warp-audit`, with no removals or
 owner changes. Claim `C-871` is narrowed to the analytic electromagnetic
 ideal-plate oracle; its statement, locator and interpretation revisions
