@@ -1,5 +1,185 @@
 {
-  "boundary": "Registry validation and Quandela raw readers pass. Acquisition registration does not establish a scientific claim. Census precedes tracking of reconciliation evidence files.",
+  "boundary": "Registry validation and Quandela raw readers pass. Acquisition registration does not establish a scientific claim. The census includes the three tracked reconciliation evidence files.",
+  "candidate_scope": "Every execution candidate other than explicit planning-only or infeasible-before-dispatch records; the initial observation retains the complete original census.",
+  "execution_candidates": [
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T165944+0000/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "422067b2789d8beb33f29d4816ff5998c7a736000ac63dd5cf25efa477d5b461",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T171827+0000/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3fe90ccf9893aedf4aa67130417b92f989a956a00e4f7550988954006d02863c",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T172316+0000/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ee4a9f31f60b2f672d2d8f7c29f4df6a27206ed71332df48665ebc13e4e84c49",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T173416.028543Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0bdb560ea06102608804229f07e177acc357c22c9b8ace177068b1a1a3fe73a9",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T174036.860138Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3faedc850ab24c06757cdebe5e9b0fd1d39d8599bbc467b1185fe50d4f7c6c40",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T174235.045010Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fa66c1e7e3fcf6fc06e5f86bc4dd2200f99bc0271401ae1dd5134afbdcbf0cfe",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T175925.891919Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5f3b34e3ca01d1123a5fb9bf575d9661909d222e4e0f659ca44e5fc728040408",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T183023.567277Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "89a3edeb0a29fe1dd0ddd1824e8fe8e2417f3da12027f27301133ac016f7b0ab",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T183325.225102Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "892ac44d1c2517128a200bfb2bf76ba7310e25e5ef063f8c516be5ba5ca5ec52",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T183549.443333Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a0ae8d166ab8ff30f9103cd87e2779da7c5f13362fcd48dd41e377aee89a5e6d",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T193949.352436Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1eacca6b2c9081ca6bd81528a4f4df293efabbe488792c4a718c7da8dceb57ef",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T194700.095769Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b54b7dfcd19ba8c5dfde6ec37ae3f739374a33dc096501115ac7c580076d09e7",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T195204.086678Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2a3ad5b1fe611eba7ef02631457ad11784255c016f69c11b85c90627150b4df3",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "account_jobs": [],
+      "classification": "ambiguously dispatched",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T041541.662284Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "53eb27b3bc8ea9953e11c5522a653c9636b67b496806a6fe8bf75d3c6c3e1e60",
+      "state": "submission_started",
+      "submission_field_present": true
+    },
+    {
+      "account_jobs": [],
+      "classification": "ambiguously dispatched",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T044116.003197Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "c08ea3c45ba75ddd80a52133bdda5d50fd7a340b78ba2ccb3ce1e298e2227c0d",
+      "state": "approval_required",
+      "submission_field_present": true
+    },
+    {
+      "account_jobs": [
+        {
+          "final_qpu_charge_seconds": 0,
+          "job_id": "dbhkprlep8hs73amc680",
+          "provenance": "unexecuted_cancellation",
+          "provider": "ibm",
+          "status": "CANCELLED"
+        }
+      ],
+      "classification": "audited unexecuted cancellation",
+      "job_ids": [
+        "dbhkprlep8hs73amc680"
+      ],
+      "path": "results/live/2026-10-29T133453.165309Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e4570a4d769d85ee86efc081ad0e6c616a4b84442166e07a96bca0a32380cc16",
+      "state": "submitted",
+      "submission_field_present": true
+    },
+    {
+      "account_jobs": [],
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/local_compute/aer_delay_sentinels/record.json",
+      "sha256": "a562797e27ddbbc21a16cc18b2619fef0a2f312f7e2da2250fe9c0f899af9e14",
+      "state": null
+    }
+  ],
   "execution_classifications": {
     "ambiguously dispatched": 2,
     "audited unexecuted cancellation": 1,
@@ -8,7 +188,14 @@
     "schema requires a provider-specific reader": 1,
     "unresolved": 13
   },
-  "observed_at": "2026-11-11T07:57:28.143386+00:00",
+  "observed_at": "2026-11-11T08:01:32.438122+00:00",
+  "producer_revision": "bbc463cdf1301e02608116e279c06117ff243b60",
+  "producer_sha256": {
+    "gororoba_quantum/quantum_ledger.py": "b546e86211b1430a7d05527f77c6f61c16fb589d562bfb99c92c116fec9f8c16",
+    "scripts/evidence_closure.py": "0f5e21ed51aa1a34b1b0aad3705290d855856c6d856ae400b8d6899526a60222",
+    "scripts/research_state.py": "6ea0384101e29fba1c2096ccbce6c592df465c076bec7224a650e863caec202d",
+    "scripts/results_index.py": "7109f1bba1220eb45a47ad399829e86c0a99f24621c13f2d13cd6ae791faaede"
+  },
   "registered_case_runs": [
     {
       "facts": {
@@ -96,7 +283,7 @@
   "summary": {
     "acquisitions": 487,
     "algebra_findings": 295,
-    "artifacts": 29068,
+    "artifacts": 29071,
     "claims": 340,
     "evidence_classes": {
       "circuit-conformance check": 8,
@@ -119,7 +306,7 @@
       "unresolved": 13
     },
     "gap_counts": {
-      "artifacts_without_claim_or_run_link": 19334,
+      "artifacts_without_claim_or_run_link": 19337,
       "claims_without_pinned_evidence": 44,
       "claims_without_replay_gate": 141,
       "execution_records_outside_indexed_runs": 305,

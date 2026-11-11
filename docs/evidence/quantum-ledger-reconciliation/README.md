@@ -63,6 +63,10 @@ The five acquisitions remain uninterpreted in the claim registry. The eight
 unclaimed acquisitions therefore consist of the initial three and the five
 recovered records. Registration repairs discoverability and integrity coverage;
 a scientific claim still needs its actual analysis and inference boundary.
+The reconciled view holds 590 run directories or compute sessions and 29,071
+artifacts, including the three reconciliation evidence files. Direct claim or
+run ownership now covers 47 additional preexisting artifacts; 19,337 artifacts
+remain outside those two relations, including the three new report files.
 
 The IBM candidate with job ID `dbhkprlep8hs73amc680` resolves against
 `results/live/qpu-job-retention-audit.f59f9992321c.json`: the audit records
@@ -108,8 +112,25 @@ job identifiers.
 
 The broad host type check stops with 16 syntax errors in the installed
 `PyQt6/QtGui.pyi` stubs. The touched-file type check passes. The repository's
-locked CI environment is the authority for the full type lane; its result is
-recorded separately from the workstation-stub failure.
+locked CI environment uses Python 3.14.7 and passes the full type lane across
+931 source files. Its selected test run passes 27 tests, including the
+retained-tree join audit, in 28.56 seconds. The audit records identical Git
+worktree status before and after constructing the validated index. The
+following commands reproduce those two checks:
+
+```sh
+env -u PYTHON GOROROBA_WORKERS=2 sh ci/pr_checks.sh types
+env -u PYTHON GOROROBA_WORKERS=2 sh ci/pr_checks.sh tests \
+  tests/scripts/test_results_index.py \
+  tests/scripts/test_research_state_add_acquisitions.py \
+  tests/scripts/test_research_state_unexecuted.py \
+  tests/gororoba_quantum/test_quantum_ledger.py -m 'audit or not audit'
+```
+
+The Markdown checker resolves every relative link and anchor in 1,159 tracked
+Markdown files. Ruff check and format checks pass for the six touched Python
+files. The remaining pull-request suite and contract lane run through hosted CI;
+the local selected run makes no claim about tests outside its selection.
 
 ## Remaining scientific scope
 
