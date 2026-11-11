@@ -100,3 +100,18 @@ Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points 
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
 record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
 (A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
+
+## Check 2 for E8-bar -> N- (written case, 2026-11-10)
+
+`quadric_lift.py --slug e8-nm` computes the Q(i) degree-2 relation space of E8-bar -> N- (231 products of 21
+generators, 9 slice variables, a J of 16 generators) and compares its reduction with the retained K2 (148 quadrics,
+h_2 = 83) at both primes. A simulation cannot answer it: the question is the exact standard basis over Q(i).
+Falsifier: a relation space whose dimension differs from 148, a denominator divisible by a prime, or a reduced echelon
+form that differs from K2; a difference that a sign convention of the run's generators explains is read from the
+record before any verdict. Host: one Kaggle CPU kernel (`a5-char0-e8-quadrics`), free, inside the 12-hour session
+limit with the driver's timeout at 41,000 s. Runtime is unmeasured: the Q(i) producer alone takes 64 s on the build
+host, X- -> N- with a J of 12 generators and 120 products took 30,481 s, so this run may exceed the session, in which
+case its record is a `blocked_timeout` and the question moves to the certificate route of
+`../a5-exceptional-fibers/monomial-ladder`. E8-bar -> VB has no Q(i) run: `reduction_check._script("e8-vb", ...)`
+fails with `KeyError: 'VB:canonical'`, so its producer needs a Q(i) path first.
+

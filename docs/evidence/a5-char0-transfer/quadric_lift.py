@@ -37,6 +37,7 @@ SOURCES = {
     "xm-nm": ((32009, 10754, "a5-xm-d4/xm_p1/d2"), (32029, 9115, "a5-p2-small/xm_p2/d2")),
     "iso-nm": ((32009, 10754, "a5-iso-d4/iso_p1/d2"), (32029, 9115, "a5-p2-iso/iso_p2/d2")),
     "w8-nm": ((32009, 10754, "a5-w8-receipt-p1/w8_p1/d2"), (32029, 9115, "a5-p2-w8/w8_p2/d2")),
+    "e8-nm": ((32009, 10754, "a5-e8-d2/e8nm_p1/d2"), (32029, 9115, "a5-e8-d2/e8nm_p2/d2")),
 }
 # Generators of a K2 run that are the negatives of the header's (one-based): the run's y_j stands for -G_j, so a
 # monomial of the relation file changes sign once per such factor. Read from the `signs of the run generators` lines
