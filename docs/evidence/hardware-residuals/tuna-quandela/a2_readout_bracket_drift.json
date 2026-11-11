@@ -1011,7 +1011,7 @@
       "effective_dof": 730.929,
       "largest_weight": 1.038,
       "null_mean": 731.0,
-      "saddlepoint": -2823.63,
+      "saddlepoint": -2824.19,
       "weights": 182
      }
     },
@@ -1037,7 +1037,7 @@
       "effective_dof": 181.971,
       "largest_weight": 1.038,
       "null_mean": 182.0,
-      "saddlepoint": -355.238,
+      "saddlepoint": -355.677,
       "weights": 182
      },
      "sum_z2": 2270.0,
@@ -1092,7 +1092,7 @@
       "effective_dof": 369.895,
       "largest_weight": 1.073,
       "null_mean": 370.0,
-      "saddlepoint": -20254.4,
+      "saddlepoint": -20256.7,
       "weights": 143
      }
     },
@@ -1118,7 +1118,7 @@
       "effective_dof": 142.942,
       "largest_weight": 1.073,
       "null_mean": 143.0,
-      "saddlepoint": -784.74,
+      "saddlepoint": -786.096,
       "weights": 143
      },
      "sum_z2": 4290.1,

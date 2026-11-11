@@ -6,6 +6,8 @@ anywhere in the pass: nulls are analytic (binomial, chi-square, normal) or deter
 
 Run as: GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHONDONTWRITEBYTECODE=1 GOROROBA_WORKERS=4
         systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 "$PYTHON" -B SCRIPT.py
+Self-test of the weighted chi-square tail (`weighted_chi2_log10_sf` against scipy.stats.chi2.logsf), from this
+directory: `"$PYTHON" -B common.py --self-test` (exit 0 on success, a message and exit 1 on failure).
 """
 
 from __future__ import annotations
@@ -26,6 +28,7 @@ QI_RUNS = ROOT / "results" / "quantum_inspire" / "runs"
 QD_RUNS = ROOT / "results" / "quandela" / "runs"
 Z95 = 1.959963984540054
 ALPHA = 0.05
+SADDLEPOINT_TOLERANCE_LOG10 = 0.07
 
 
 def rel(path: Path) -> str:
@@ -171,6 +174,14 @@ def weighted_chi2_log10_sf(x: float, weights: list[float], dofs: list[int]) -> d
     p-value; the Lugannani-Rice saddlepoint approximation (`saddlepoint`) is the accurate reading. Both use the
     cumulant K(t) = -1/2 sum_i dofs[i] ln(1 - 2 t weights[i]) solved at K'(t) = x. A value at or below the mean
     returns 0 for both.
+
+    The saddlepoint tail is P = 1 - Phi(w) + phi(w) (1/u - 1/w) with w = sqrt(2 (t x - K(t))) and
+    u = t sqrt(K''(t)). The correction 1/u - 1/w takes either sign: a positive one is added and a negative one
+    subtracted, both in log space. When the subtraction would leave no positive tail (the correction at least as
+    large as 1 - Phi(w)), `saddlepoint` falls back to the Chernoff bound. For equal weights the value agrees with
+    scipy.stats.chi2.logsf of x / weight to 0.06 in log10 (measured maximum 0.058, at dof 1 and x = 1000, over
+    dofs 1 to 10 and x from the mean to 1000; the error grows with x and shrinks with the dof), and `self_test`
+    raises beyond 0.07.
     """
     from scipy.optimize import brentq
     from scipy.special import log_ndtr
@@ -202,6 +213,12 @@ def weighted_chi2_log10_sf(x: float, weights: list[float], dofs: list[int]) -> d
         log_extra = log_phi + math.log(correction)
         high, low = max(log_p, log_extra), min(log_p, log_extra)
         log_p = high + math.log1p(math.exp(low - high))
+    elif correction < 0:
+        log_extra = log_phi + math.log(-correction)
+        if log_extra < log_p:
+            log_p += math.log1p(-math.exp(log_extra - log_p))
+        else:
+            log_p = log_chernoff
     ln10 = math.log(10.0)
     return {"chernoff": min(0.0, log_chernoff / ln10), "saddlepoint": min(0.0, log_p / ln10)}
 
@@ -235,3 +252,46 @@ def chi2_log10_sf(x: float, dof: int) -> float:
         term *= (a - j) / y
         series += term
     return float((-y + (a - 1) * math.log(y) - math.lgamma(a) + math.log(series)) / math.log(10.0))
+
+
+def self_test() -> None:
+    """Check `weighted_chi2_log10_sf` against scipy's chi-square tail; raises on a failure.
+
+    Equal weights reduce the weighted sum to w * chi2(sum dofs), whose tail scipy.stats.chi2.logsf supplies to
+    double precision. The saddlepoint value must lie within SADDLEPOINT_TOLERANCE_LOG10 of it and not above the
+    Chernoff bound, and the Chernoff bound must not fall below the exact tail.
+    """
+    from scipy.stats import chi2
+
+    cases: list[tuple[list[float], list[int], float]] = [
+        ([1.0], [1], 20.0),
+        ([1.0], [1], 1000.0),
+        ([1.0], [2], 20.0),
+        ([1.0], [2], 1000.0),
+        ([1.0], [4], 60.0),
+        ([1.0], [10], 200.0),
+        ([2.0], [2], 40.0),
+        ([0.5], [4], 12.0),
+        ([3.0, 3.0], [1, 1], 45.0),
+        ([1.0, 0.0], [2, 5], 20.0),
+    ]
+    ln10 = math.log(10.0)
+    for weights, dofs, x in cases:
+        live = [(w, d) for w, d in zip(weights, dofs, strict=True) if w > 0]
+        scale = live[0][0]
+        exact = float(chi2.logsf(x / scale, sum(d for _, d in live))) / ln10
+        got = weighted_chi2_log10_sf(x, weights, dofs)
+        error = got["saddlepoint"] - exact
+        if abs(error) > SADDLEPOINT_TOLERANCE_LOG10:
+            raise SystemExit(f"saddlepoint {got['saddlepoint']} against exact {exact}: {weights} {dofs} {x}")
+        if got["saddlepoint"] > got["chernoff"] + 1e-12 or got["chernoff"] < exact - 1e-12:
+            raise SystemExit(f"Chernoff bound ordering fails: {got} against exact {exact}: {weights} {dofs} {x}")
+    if weighted_chi2_log10_sf(1.0, [1.0], [2]) != {"chernoff": 0.0, "saddlepoint": 0.0}:
+        raise SystemExit("a value at or below the mean must return 0 for both readings")
+    print(f"weighted_chi2_log10_sf self-test passed ({len(cases)} cases, tolerance {SADDLEPOINT_TOLERANCE_LOG10})")
+
+
+if __name__ == "__main__":
+    if sys.argv[1:] != ["--self-test"]:
+        raise SystemExit("usage: common.py --self-test")
+    self_test()

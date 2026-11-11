@@ -6,7 +6,7 @@
 
 1. **High: the “exact Poisson” claim is false.**
 
-   [proved] [IBM REPORT.md:3](docs/evidence/hardware-residuals/ibm/REPORT.md:3) calls the laws exact. The same-shot pair count uses a Poisson tail at `a3_coupler_distance.py:17-19`, although conditioning on fixed margins gives a hypergeometric law per PUB and a convolution across PUBs.
+   [proved] [IBM REPORT.md:3](../../../evidence/hardware-residuals/ibm/REPORT.md) calls the laws exact. The same-shot pair count uses a Poisson tail at `a3_coupler_distance.py:17-19`, although conditioning on fixed margins gives a hypergeometric law per PUB and a convolution across PUBs.
 
    [proved] The lag count has overlapping adjacency indicators and only a Poisson approximation; its docstring itself says “close to Poisson” before calling the test exact at `a4_lag1_memory.py:9-16`. Run counts likewise overlap and are compared with Poisson at `a5_run_length.py:9-16`.
 

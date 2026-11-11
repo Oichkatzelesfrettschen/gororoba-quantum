@@ -1,9 +1,7 @@
 """Independent check of the Belenos per-mode share shift on 2026-10-23: raw single-click counts per output mode of
 two runs that return identical compiled circuits, summed over the 24 settings, and the per-mode share ratio."""
 
-import sys
-
-sys.path.insert(0, "gororoba_quantum")
+import common  # noqa: F401  (puts the repository's gororoba_quantum/ and scripts/ on sys.path for qd_records)
 import numpy as np
 
 import qd_records as qd

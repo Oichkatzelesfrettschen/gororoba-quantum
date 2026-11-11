@@ -76,6 +76,8 @@ def scan_matrix(chan: np.ndarray, binary: bool) -> dict[str, np.ndarray]:
     local = c[idx] / np.maximum((left + right) / (2 * HALF), 1e-300)
     loc_arg = local.argmax(axis=0)
     loc_max = local.max(axis=0)
+    # white-normalized ordinate at the narrow-line bin: E c = 1 + N a^2 / (4 p q) holds for it, not for the ratio
+    c_loc = c[idx[loc_arg], np.arange(c.shape[1])]
     kmin = np.minimum(chan.sum(axis=0), n - chan.sum(axis=0)) if binary else np.full(chan.shape[1], np.nan)
     cons = power[LOW:].max(axis=0) / np.maximum(kmin, 1) if binary else np.full(chan.shape[1], np.nan)
     qq = np.array([(line >= t).sum(axis=0) for t in THRESH])  # (3, C)
@@ -86,6 +88,7 @@ def scan_matrix(chan: np.ndarray, binary: bool) -> dict[str, np.ndarray]:
         "kmax": k_rel + LOW + 1,
         "loc_max": loc_max,
         "loc_k": idx[loc_arg] + 1,
+        "c_loc": c_loc,
         "m_loc": np.full(chan.shape[1], idx.size),
         "low": low,
         "cons": cons,
@@ -162,6 +165,7 @@ def scan_pub(task: dict[str, Any]) -> dict[str, Any]:
                     float(stats["loc_max"][j]),
                     int(stats["loc_k"][j]),
                     float(stats["low"][j]),
+                    float(stats["c_loc"][j]),
                 ]
             )
     return {
@@ -260,6 +264,7 @@ def main() -> None:
                     "ratio_local": ch[11],
                     "k_local": ch[12],
                     "s_low": ch[13],
+                    "c_local": ch[14],
                     "slot_s": job["slot_s"],
                     "pub_period_s": pub_period,
                 }
@@ -306,7 +311,8 @@ def main() -> None:
         )
         if c["chan"] != "sum" and family != "drift":
             p = c["p_hat"]
-            row["amplitude_effect_size_prob"] = 2 * math.sqrt(max(stat - 1, 0) * p * (1 - p) / c["n"])
+            ordinate = c["c_local"] if family == "narrow_line" else c["cmax"]
+            row["amplitude_effect_size_prob"] = 2 * math.sqrt(max(ordinate - 1, 0) * p * (1 - p) / c["n"])
         if c["chan"] != "sum":
             p = c["p_hat"]
             row["drift_band_rms_modulation_prob"] = math.sqrt(max(c["s_low"] - LOW, 0) * 2 * p * (1 - p) / c["n"])

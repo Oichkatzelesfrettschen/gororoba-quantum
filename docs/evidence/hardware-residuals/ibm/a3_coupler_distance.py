@@ -99,12 +99,19 @@ def analyze(ds: dict[str, Any]) -> dict[str, Any]:
 
 
 def _t_summary(values: np.ndarray) -> dict[str, Any]:
-    """Mean, t interval and two-sided t test of the mean of independent replicate values."""
+    """Mean, t interval and two-sided t test of the mean of independent replicate values.
+
+    A zero standard error leaves the t statistic undefined. A zero mean with zero variance is no evidence against
+    the null (t = 0, log10 p = 0); a nonzero constant is certain deviation, kept at t = inf and the -300 floor.
+    """
     mean = float(values.mean())
     se = float(values.std(ddof=1) / math.sqrt(values.size))
     dof = values.size - 1
     tcrit = float(tdist.ppf(0.975, dof))
-    t_stat = mean / se if se > 0 else float("inf")
+    if se > 0:
+        t_stat = mean / se
+    else:
+        t_stat = 0.0 if mean == 0 else math.copysign(float("inf"), mean)
     lp = float(math.log10(max(2 * tdist.sf(abs(t_stat), dof), 1e-300)))
     return {
         "mean": mean,
