@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate and optionally run an exact Singular certificate for the E8 plane.
 
-The input relation file must be the retained E8 quadric K2 file. The
+The input relation file must be the retained E8 quadric K2 file; its text is embedded in the script. The
 certificate checks that the two minimal primes of K2 + nilradical generators
 meet in an EXACT linear P^2, not just a degree-one top-dimensional cycle.
 """
@@ -20,24 +20,20 @@ HEADERS = ("nm", "np")
 NILPOTENT_COORDINATES = (4, 6, 7, 12, 14)
 
 
-def make_script(prime: int, relation_file: Path, base: Path | None = None) -> str:
-    """The Singular script; `relation_file` is embedded as given and read relative to `base` when one is named.
-
-    A path relative to the repository root keeps the script text, and so its sha256, the same on every host.
-    """
+def make_script(prime: int, relations: str) -> str:
+    """The Singular script with the relation text embedded, so its sha256 binds the bytes Singular reads."""
     if prime not in PRIMES.values():
         raise ValueError("Unsupported prime")
-    if not (base / relation_file if base else relation_file).is_file():
-        raise FileNotFoundError(relation_file)
-    # Singular requires a quoted path; reject its quoting/control syntax.
-    path = relation_file.as_posix()
-    if any(ch in path for ch in ('"', "\\", "\n", "\r")):
-        raise ValueError("Unsafe Singular file path")
+    body = relations.strip().rstrip(";")
+    # The text enters a Singular ideal definition; reject anything outside polynomial syntax in y(1..21).
+    if not body or not set(body) <= set("0123456789y()+-*^, \n\t"):
+        raise ValueError("Relation text holds characters outside polynomial syntax")
     nilradical = ",".join(f"y({i})" for i in NILPOTENT_COORDINATES)
-    return f'''LIB "primdec.lib";
+    return f"""LIB "primdec.lib";
 option(redSB);
 ring Y={prime},(y(1..21)),dp;
-execute("ideal K="+read("{path}")+";");
+ideal K=
+{body};
 ideal N=ideal({nilradical});
 list P=minAssChar(std(K+N));
 if (size(P)!=2) {{ "RESULT FAIL: expected exactly two minimal primes"; quit; }}
@@ -55,6 +51,7 @@ int reverse=(size(simplify(b,2))==0);
 int degreeOne=1;
 int j;
 for(j=1;j<=size(H);j++) {{ if(deg(H[j])!=1) {{degreeOne=0;}} }}
+"RESULT singular_version",system("version");
 "RESULT intersection_dim",dimT;
 "RESULT intersection_mult",multT;
 "RESULT linear_dim",dimH;
@@ -67,7 +64,7 @@ if(dimT==3 && multT==1 && dimH==3 && multH==1 &&
 {{ "RESULT E8_EXACT_PROJECTIVE_PLANE_PASS"; }}
 else {{ "RESULT E8_EXACT_PROJECTIVE_PLANE_FAIL"; }}
 quit;
-'''
+"""
 
 
 def main() -> int:
@@ -90,7 +87,7 @@ def main() -> int:
     )
     try:
         source = (repo / path).read_bytes()
-        script = make_script(PRIMES[args.prime_id], path, repo)
+        script = make_script(PRIMES[args.prime_id], source.decode("ascii"))
         if args.script_out:
             args.script_out.write_text(script, encoding="utf-8")
         if not args.run:
@@ -127,7 +124,7 @@ def main() -> int:
         else:
             print(json.dumps(result, indent=2))
         return 0 if ok else 1
-    except (OSError, ValueError, subprocess.TimeoutExpired) as exc:
+    except (OSError, ValueError, UnicodeDecodeError, subprocess.TimeoutExpired) as exc:
         print(f"E8 plane certificate: {exc}", file=sys.stderr)
         return 2
 

@@ -71,6 +71,11 @@ class RankGateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "i_root"):
             gate.check({"prime": 32009, "i_root": 1, "W": [[1]], "P": [[1]]})
 
+    def test_reject_ramified_or_inert_prime_and_boolean_root(self) -> None:
+        for prime, root in ((2, 1), (2, True), (3, 1), (32009, True)):
+            with self.assertRaises(ValueError):
+                gate.check({"prime": prime, "i_root": root, "W": [[1]], "P": [[0]]})
+
     def test_reject_nonrectangular_input(self) -> None:
         with self.assertRaisesRegex(ValueError, "rectangular"):
             gate.check(

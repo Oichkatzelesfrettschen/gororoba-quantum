@@ -47,14 +47,14 @@ remain.
      several primes, reconstruct them over Q(i), and check q(G) = sum a_k J_k + sum b x P as a polynomial identity. Rank is lower semicontinuous under reduction, so a Q(i)
      space of relations reducing onto K2 mod p has dimension at least that of K2 mod p, which gives h_d over Q(i)
      at most HF(k[y]/K2 mod p, d), the certified value, in every degree K2 generates.
-  3. **Lower bound over Q(i), repaired criterion (A5-316):** good reduction of the
+  3. **Lower bound over Q(i), repaired criterion:** good reduction of the
      ambient quotient J + m^N does NOT by itself transfer truncated fiber ranks.
      The computed quantity is a rank difference
      r_N(d) = rank([W_N | P_d]) - rank(W_N), where W_N is the image of
      m I^d in the truncated ambient space, and P_d denotes the columns from
      I^d. Specialization can lower BOTH ranks; their difference need not be
-     lower semicontinuous. A5-316 gives an exact counterexample at BOTH
-     32009 and 32029 with the same degree-2 relation space.
+     lower semicontinuous. The ideal under "Failure mode" below is an exact
+     counterexample at both 32009 and 32029 with the same degree-2 relation space.
 
      **Correct finite-matrix transfer gate.** Establish a common integral
      truncated ambient matrix model, compatible source-generator and column
@@ -92,11 +92,13 @@ remain.
   equals that common value. Claims about radicality, components, real
   arcs, or all degrees require independent certificates.
 
-  **Failure mode retained (A5-316).** For I =
+  **Failure mode.** For I =
   (x^7, y^7, x^4*y^2*(c+x)), with c = 32009*32029,
   the degree-3 order-22 difference is 9 over Q but 10 at both
-  primes. Good ambient reduction and unchanged quadratic relations
-  do not prevent the discrepancy. No unverified modular lower bound
+  primes: (c + x)^3 g1^2 g2 = x^2 y g3^3 puts c^3 g1^2 g2 into m I^3 over Z,
+  so that class dies wherever c is a unit and survives modulo a prime dividing c.
+  Good ambient reduction and unchanged quadratic relations
+  do not prevent the discrepancy. This tree holds no producer or record of that computation. No unverified modular lower bound
   may be labeled a characteristic-zero result.
 
 ## What stays open

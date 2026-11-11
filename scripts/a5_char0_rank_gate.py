@@ -134,8 +134,10 @@ def check(data: dict[str, Any]) -> dict[str, Any]:
     prime, root = data["prime"], data["i_root"]
     if not isinstance(prime, int) or isinstance(prime, bool) or not is_prime(prime):
         raise ValueError("prime must be a prime integer")
-    if not isinstance(root, int) or root * root % prime != (prime - 1) % prime:
-        raise ValueError("i_root must square to -1 modulo prime")
+    if prime % 4 != 1:
+        raise ValueError("prime must split in Z[i]: an odd prime congruent to 1 modulo 4")
+    if type(root) is not int or root * root % prime != prime - 1:
+        raise ValueError("i_root must be an integer that squares to -1 modulo prime")
     w = read_matrix(data["W"], "W")
     p = read_matrix(data["P"], "P")
     if len(w) != len(p):

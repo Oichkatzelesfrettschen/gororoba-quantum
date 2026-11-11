@@ -3,9 +3,9 @@
   "prime": 32029,
   "source": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/relations-upto-d2.rel",
   "source_sha256": "3c2294f7dee43a1471cec20a7af5c259741b50a02216bbe92074d127dc34694a",
-  "script_sha256": "fdda7758f944b807551bea5d02f64eaebbc7d5036f238cc757e652d93f55fa33",
+  "script_sha256": "ea10f9246bd63789d61d7642df8ec8b5c82e82bf7effd671271451e59ac5ec1c",
   "singular_returncode": 0,
   "verified": true,
-  "stdout": "RESULT intersection_dim 3\nRESULT intersection_mult 1\nRESULT linear_dim 3\nRESULT linear_mult 1\nRESULT independent_linear_generators 18\nRESULT inclusion_intersection_in_linear 1\nRESULT inclusion_linear_in_intersection 1\nRESULT E8_EXACT_PROJECTIVE_PLANE_PASS\n",
+  "stdout": "RESULT singular_version 44105\nRESULT intersection_dim 3\nRESULT intersection_mult 1\nRESULT linear_dim 3\nRESULT linear_mult 1\nRESULT independent_linear_generators 18\nRESULT inclusion_intersection_in_linear 1\nRESULT inclusion_linear_in_intersection 1\nRESULT E8_EXACT_PROJECTIVE_PLANE_PASS\n",
   "stderr": ""
 }
