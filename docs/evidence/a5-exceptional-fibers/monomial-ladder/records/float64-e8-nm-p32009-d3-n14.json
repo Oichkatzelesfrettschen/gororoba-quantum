@@ -5,8 +5,17 @@
  "generators": 21,
  "generator_order": 2,
  "engine": "float64-batched-echelon",
+ "source_sha256": {
+  "fast_ladder.py": "48d99e9eae2ceaa3f942ece05b2c0fb09d869aa47f26852ad26a4fb552eed849",
+  "e8_ladder.py": "ff0df04d529c25752239c4fa9f770742cf5002d5c7199433937bdd449791c254"
+ },
+ "versions": {
+  "torch": "2.15.0+cpu",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1"
+ },
  "batch": 1024,
- "threads": 28,
+ "threads": 16,
  "rows": [
   {
    "degree": 1,
@@ -16,7 +25,7 @@
    "A": 2951,
    "B": 2930,
    "r": 21,
-   "seconds": 16.1
+   "seconds": 521.9
   },
   {
    "degree": 2,
@@ -26,7 +35,7 @@
    "A": 5536,
    "B": 5453,
    "r": 83,
-   "seconds": 54.7
+   "seconds": 686.9
   },
   {
    "degree": 3,
@@ -36,14 +45,14 @@
    "A": 9104,
    "B": 8879,
    "r": 225,
-   "seconds": 265.2
+   "seconds": 1095.3
   }
  ],
  "timing": {
-  "generators": 10.0,
-  "maps": 2.1,
-  "products": 61.3,
-  "echelon": 191.2
+  "generators": 23.7,
+  "maps": 6.3,
+  "products": 127.0,
+  "echelon": 936.8
  },
- "seconds": 265.2
+ "seconds": 1095.3
 }

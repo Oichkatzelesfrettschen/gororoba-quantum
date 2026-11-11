@@ -17,7 +17,7 @@ A cell is exact when r_N(d) meets HF(k[y]/K2, d).
 | `monomial_probe.py` | test of whether the truncated I and m_R I of the same-sign X slice are spans of monomials |
 | `monomial_certificate.py` | exact check that I equals the monomial ideal M (membership of every G_j and a rank over M / q M, then Nakayama) and the Singular script for the kernel L of k[y] → P[M T] / q P[M T] |
 | `monomial_model.py` | Hilbert function of ⊕ M^d / q M^d for the monomial ideal M = w² (a, ρ, σ) + w (ρ, σ) (a, ρ, σ)² of P and q = (w², a, ρ, σ) P |
-| `records/` | one JSON record per run; `flint-*` from the python-flint ladders, `float64-*` and `e8-nm-*` from `fast_ladder.py`, `monomial-probe-*` from the probe |
+| `records/` | one JSON record per run; `flint-*` from the python-flint ladders, `float64-*` from `fast_ladder.py`, `monomial-probe-*` from the probe, `monomial-certificate-*`, `slice-ring-*`, `e8-ideal-closure-*` and `e8-fiber-cone-*` from the certificates |
 
 ## Same-sign X at p = 32009
 
@@ -35,6 +35,13 @@ Each row gives r_N(d) at the orders run; the last column is HF(k[y]/K2, d) of `.
 Degrees 1 to 6 reproduce the certified values (ledger A5-167 and its neighbors). Degrees 7 and 8 meet
 HF(k[y]/K2, d) = 996 and 1,422 (`records/x-same-k2-hilbert-d10.jsonl`); the certificate below proves
 h_d = HF(k[y]/K2, d) in every degree, so these cells check the ladder against it.
+
+Provenance of the float64 records. `float64-xm-nm-p32009-d8-n32.json` (degrees 1 to 8 at orders 11 to 32) and
+`float64-e8-nm-p32009-d3-n14.json` carry the SHA-256 of `fast_ladder.py` and of the ring module in this directory
+and the torch, numpy and scipy versions; they reproduce every value an earlier version of the engine had given
+for those cells. `float64-xm-nm-p32009-d6-n28.json`, `-d7-n31.json` and `-d8-n34.json` come from that earlier
+version and carry no source digest; the order-34 replay needs more than 20 GB and is queued under a 40 GB cap.
+None of the certified statements rests on a float64 record: h_d comes from the certificate below.
 
 The python-flint ladder and the float64 echelon agree on dim A, dim B and r of the cell both ran (degree 6,
 order 26: 4,879, 4,214, 665).
