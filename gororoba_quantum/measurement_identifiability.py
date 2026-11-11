@@ -122,6 +122,8 @@ def nuisance_geometry(
         return Geometry(basis.shape[1], singular, t, t.copy(), 0.0, None, None)
     scaled = t / magnitude
     projected = scaled - basis @ (basis.T @ scaled)
+    # A second pass removes the roundoff the first leaves along the nuisance span when the target nearly lies in it.
+    projected -= basis @ (basis.T @ projected)
     residual = projected * magnitude
     norm = float(np.linalg.norm(scaled))
     fraction = min(1.0, float(np.linalg.norm(projected)) / norm)
@@ -157,8 +159,12 @@ def fit_linear_amplitude(
     if geometry.identifiable_fraction is None or geometry.identifiable_fraction <= tolerance:
         raise ValueError("target is unidentifiable against the nuisance design")
     whitened_y, whitened_n = _whiten(covariance, y, nuisance)
-    amplitude = float(np.dot(geometry.residual, whitened_y) / geometry.fisher_information)
     basis, _ = _nuisance_basis(whitened_n, relative_cutoff)
+    # The observation leaves the nuisance span before it meets the residual, so a nuisance-only observation gives
+    # an amplitude at roundoff however small the Fisher information is.
+    cleared = whitened_y - basis @ (basis.T @ whitened_y)
+    cleared -= basis @ (basis.T @ cleared)
+    amplitude = float(np.dot(geometry.residual, cleared) / geometry.fisher_information)
     remainder = whitened_y - amplitude * geometry.whitened_target
     remainder -= basis @ (basis.T @ remainder)
     squared = float(np.dot(remainder, remainder))

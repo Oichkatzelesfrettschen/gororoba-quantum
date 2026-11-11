@@ -35,7 +35,10 @@ def quantum_chsh():
 
 
 def product_probability(p, q):
-    """Independent preparations: P(lambda1,lambda2)=P1*P2."""
+    """Independent preparations: P(lambda1,lambda2)=P1*P2.
+
+    A finite toy witness on supports of a few points: len(p) * len(q) exact products, cheaper than starting a worker.
+    """
     return {(i, j): p[i] * q[j] for i in p for j in q}
 
 

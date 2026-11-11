@@ -136,3 +136,14 @@ def test_singular_simplex_covariance_requires_explicit_contrasts() -> None:
 def test_ramsey_overflow_is_a_validation_error() -> None:
     with pytest.raises(ValueError, match="representable"):
         ramsey_decay_design(np.array([1e300]), amplitude=1.0, phase=0.0, angular_frequency=1e300, decay_rate=0.0)
+
+
+def test_nuisance_only_observation_gives_zero_amplitude_near_degeneracy() -> None:
+    target = np.array([1.0, 1.0 + 1e-8, 1.0 - 2e-8])
+    nuisance = np.ones((3, 1))
+    fit = fit_linear_amplitude(7.0 * nuisance[:, 0], target, nuisance, np.eye(3))
+    if abs(fit.amplitude) > 1e-6:
+        raise AssertionError(f"a nuisance-only observation gave amplitude {fit.amplitude}")
+    shifted = fit_linear_amplitude(7.0 * nuisance[:, 0] + 3.0 * target, target, nuisance, np.eye(3))
+    if abs(shifted.amplitude - 3.0) > 1e-6:
+        raise AssertionError(f"amplitude 3 was recovered as {shifted.amplitude}")
