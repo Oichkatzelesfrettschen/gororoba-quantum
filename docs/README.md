@@ -14,6 +14,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [reading-copy-locations.tsv](sources/reading-copy-locations.tsv) |
 | Algebra and proofs | Cayley-Dickson conventions, rank strata, Rocq certificates | [algebra_circuit_rules.md](notes/algebra_circuit_rules.md) |
 | A5 and photonic candidates | Exact rank witnesses, heralding limits and retained Ascella and Belenos results | [A5 photonic cross-checks](evidence/a5-photonic-crosschecks/README.md) |
+| Hardware residuals | exploratory offline passes for residual structure in retained IBM, Tuna-17 and Quandela records | [hardware-residuals/README.md](evidence/hardware-residuals/README.md) |
 | Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
 | IBM Heron r2 | Targets, transpilation, dynamic circuits, submission | [ibm_quantum/README.md](notes/ibm_quantum/README.md) |
 | Quantum Inspire | Tuna devices, QX and Ry emulators | [quantum_inspire/README.md](notes/quantum_inspire/README.md) |

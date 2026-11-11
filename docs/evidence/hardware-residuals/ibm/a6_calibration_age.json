@@ -1,0 +1,453 @@
+{
+ "age_slope": {
+  "age_h_by_cluster": {
+   "2026-10-18T01:02:58-07:00|ibm_kingston": 0.835005401736111,
+   "2026-10-18T14:27:34-07:00|ibm_kingston": 0.45969264666666665,
+   "2026-10-26T11:06:06-07:00|ibm_kingston": 3.695150670694445,
+   "2026-10-26T17:47:10-07:00|ibm_kingston": 0.38433695270833335,
+   "2026-10-27T13:21:35-07:00|ibm_kingston": 0.41264867499999996
+  },
+  "age_range_h": [
+   0.30490334361111116,
+   3.6952441472222226
+  ],
+  "ci95": [
+   0.0010668931918670105,
+   0.00210446921395447
+  ],
+  "dof": 4,
+  "log10_p": -2.9758796693660385,
+  "mean_excess_overall": 0.0021215091255503446,
+  "n_clusters_plan_stamps": 5,
+  "n_rows_qubit_run": 1306,
+  "n_runs": 14,
+  "se": 0.00018685332912669688,
+  "slope_excess_per_hour": 0.0015856812029107403,
+  "strata_arm_rep_delay_us": [
+   [
+    "prep0",
+    20
+   ],
+   [
+    "prep0",
+    50
+   ],
+   [
+    "prep0",
+    250
+   ],
+   [
+    "remeasure",
+    20
+   ],
+   [
+    "x_history",
+    20
+   ],
+   [
+    "x_history",
+    50
+   ],
+   [
+    "x_history",
+    250
+   ]
+  ],
+  "t": 8.486234686434518
+ },
+ "analysis": "a6_calibration_age",
+ "corrections": {
+  "alpha": 0.05,
+  "bonferroni_log10_threshold": -1.3010299956639813,
+  "n_bh": 1,
+  "n_bonferroni": 1,
+  "n_tests": 1
+ },
+ "leave_one_stamp_out": [
+  {
+   "age_range_h": [
+    0.30490334361111116,
+    3.6952441472222226
+   ],
+   "ci95": [
+    0.0003081521477093388,
+    0.0023869789110695467
+   ],
+   "left_out": "2026-10-18T01:02:58-07:00|ibm_kingston",
+   "log10_p": -1.5880808472652586,
+   "n_clusters": 4,
+   "slope_excess_per_hour": 0.0013475655293894427
+  },
+  {
+   "age_range_h": [
+    0.35155338111111106,
+    3.6952441472222226
+   ],
+   "ci95": [
+    0.0003759974756804233,
+    0.002403245440047751
+   ],
+   "left_out": "2026-10-18T14:27:34-07:00|ibm_kingston",
+   "log10_p": -1.6524620962507819,
+   "n_clusters": 4,
+   "slope_excess_per_hour": 0.001389621457864087
+  },
+  {
+   "age_range_h": [
+    0.30490334361111116,
+    0.8386071544444444
+   ],
+   "ci95": [
+    0.0040957853781317735,
+    0.006740597726532632
+   ],
+   "left_out": "2026-10-26T11:06:06-07:00|ibm_kingston",
+   "log10_p": -3.011401057101412,
+   "n_clusters": 4,
+   "slope_excess_per_hour": 0.005418191552332203
+  },
+  {
+   "age_range_h": [
+    0.30490334361111116,
+    3.6952441472222226
+   ],
+   "ci95": [
+    0.001394255635348059,
+    0.00210732951595572
+   ],
+   "left_out": "2026-10-26T17:47:10-07:00|ibm_kingston",
+   "log10_p": -3.244568049969616,
+   "n_clusters": 4,
+   "slope_excess_per_hour": 0.0017507925756518894
+  },
+  {
+   "age_range_h": [
+    0.30490334361111116,
+    3.6952441472222226
+   ],
+   "ci95": [
+    0.0009603788735071553,
+    0.0022184212779198954
+   ],
+   "left_out": "2026-10-27T13:21:35-07:00|ibm_kingston",
+   "log10_p": -2.3961813595878896,
+   "n_clusters": 4,
+   "slope_excess_per_hour": 0.0015894000757135254
+  }
+ ],
+ "n_tests": 1,
+ "not_run": {
+  "actor pilot": "retains calibration medians only (record.json backends.ibm_fez.medians), snapshot age 0.23-0.24 h in all three jobs",
+  "idle_ground and baseline_ground PUBs": "no validated bit-to-qubit map (idle_ground) or a single 6-qubit run (baseline_ground)",
+  "pathion maps with 18 h old snapshots (2026-11-07T153325.*)": "no ground-prepared column with a recorded preparation"
+ },
+ "plan_versus_execution_e10_in_sidecar_runs": [
+  {
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083402.386701Z:prep0",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-18T01:02:58-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083403.945334Z:x_history",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-18T01:02:58-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083404.226285Z:x_history",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-18T01:02:58-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083404.414317Z:prep0",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-18T01:02:58-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-18T14:27:34-07:00",
+   "id": "state_prep:e/2026-10-18T214519.655411Z:x_history",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-18T14:27:34-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-18T14:27:34-07:00",
+   "id": "state_prep:e/2026-10-18T220218.089776Z:prep0",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-18T14:27:34-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-26T14:25:32-07:00",
+   "id": "state_prep:e/2026-10-26T190449.023973Z:prep0",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-26T11:06:06-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-26T14:25:32-07:00",
+   "id": "state_prep:e/2026-10-26T190506.325237Z:x_history",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-26T11:06:06-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T010741.272123Z:prep0",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-26T17:47:10-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T010917.104805Z:x_history",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-26T17:47:10-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T011025.944327Z:x_history",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-26T17:47:10-07:00"
+  },
+  {
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T011140.821404Z:prep0",
+   "max_abs_e10_plan_minus_exec": 0.0,
+   "plan_stamp": "2026-10-26T17:47:10-07:00"
+  }
+ ],
+ "rank_agreement": {},
+ "runs": [
+  {
+   "age_exec_h": 0.24993377444444442,
+   "age_plan_h": 0.8386071544444444,
+   "arm": "prep0",
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083402.386701Z:prep0",
+   "mean_e10_exec": 0.009601772231543624,
+   "mean_e10_plan": 0.009601772231543624,
+   "mean_excess_plan": 3.46138973364094e-05,
+   "mean_excess_plan_se": 0.0001314133923204691,
+   "mean_f": 0.009636386128880034,
+   "n_qubits": 149,
+   "plan_stamp": "2026-10-18T01:02:58-07:00",
+   "rep_delay_us": 50.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.2478949063888889,
+   "age_plan_h": 0.8362008000000001,
+   "arm": "x_history",
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083403.945334Z:x_history",
+   "mean_e10_exec": 0.009601772231543624,
+   "mean_e10_plan": 0.009601772231543624,
+   "mean_excess_plan": -0.0006660615037751678,
+   "mean_excess_plan_se": 0.00013757181726534236,
+   "mean_f": 0.008935710727768456,
+   "n_qubits": 149,
+   "plan_stamp": "2026-10-18T01:02:58-07:00",
+   "rep_delay_us": 250.0,
+   "shots": 16384
+  },
+  {
+   "age_exec_h": 0.2426000088888889,
+   "age_plan_h": 0.8306818611111111,
+   "arm": "x_history",
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083404.226285Z:x_history",
+   "mean_e10_exec": 0.009601772231543624,
+   "mean_e10_plan": 0.009601772231543624,
+   "mean_excess_plan": 0.0011477886430369128,
+   "mean_excess_plan_se": 0.00013224559432162007,
+   "mean_f": 0.010749560874580536,
+   "n_qubits": 149,
+   "plan_stamp": "2026-10-18T01:02:58-07:00",
+   "rep_delay_us": 50.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.24581004111111113,
+   "age_plan_h": 0.8345317913888889,
+   "arm": "prep0",
+   "exec_stamp": "2026-10-18T01:38:20-07:00",
+   "id": "state_prep:e/2026-10-18T083404.414317Z:prep0",
+   "mean_e10_exec": 0.009601772231543624,
+   "mean_e10_plan": 0.009601772231543624,
+   "mean_excess_plan": -0.0006971935297818792,
+   "mean_excess_plan_se": 0.0001375243595585965,
+   "mean_f": 0.008904578701761746,
+   "n_qubits": 149,
+   "plan_stamp": "2026-10-18T01:02:58-07:00",
+   "rep_delay_us": 250.0,
+   "shots": 16384
+  },
+  {
+   "age_exec_h": 0.3073128352777778,
+   "age_plan_h": 0.30490334361111116,
+   "arm": "x_history",
+   "exec_stamp": "2026-10-18T14:27:34-07:00",
+   "id": "state_prep:e/2026-10-18T214519.655411Z:x_history",
+   "mean_e10_exec": 0.008498733108108109,
+   "mean_e10_plan": 0.008498733108108109,
+   "mean_excess_plan": 0.002242423392630912,
+   "mean_excess_plan_se": 0.0001262067751923309,
+   "mean_f": 0.01074115650073902,
+   "n_qubits": 148,
+   "plan_stamp": "2026-10-18T14:27:34-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.615087425,
+   "age_plan_h": 0.6144819497222221,
+   "arm": "prep0",
+   "exec_stamp": "2026-10-18T14:27:34-07:00",
+   "id": "state_prep:e/2026-10-18T220218.089776Z:prep0",
+   "mean_e10_exec": 0.008498733108108109,
+   "mean_e10_plan": 0.008498733108108109,
+   "mean_excess_plan": 0.0024618200353673987,
+   "mean_excess_plan_se": 0.0001263865061941605,
+   "mean_f": 0.010960553143475507,
+   "n_qubits": 148,
+   "plan_stamp": "2026-10-18T14:27:34-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.37152541083333335,
+   "age_plan_h": 3.695057194166667,
+   "arm": "prep0",
+   "exec_stamp": "2026-10-26T14:25:32-07:00",
+   "id": "state_prep:e/2026-10-26T190449.023973Z:prep0",
+   "mean_e10_exec": 0.011725826539855072,
+   "mean_e10_plan": 0.011725826539855072,
+   "mean_excess_plan": 0.007389234459918478,
+   "mean_excess_plan_se": 0.00021836543374348542,
+   "mean_f": 0.019115060999773552,
+   "n_qubits": 69,
+   "plan_stamp": "2026-10-26T11:06:06-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.3721453638888889,
+   "age_plan_h": 3.6952441472222226,
+   "arm": "x_history",
+   "exec_stamp": "2026-10-26T14:25:32-07:00",
+   "id": "state_prep:e/2026-10-26T190506.325237Z:x_history",
+   "mean_e10_exec": 0.011725826539855072,
+   "mean_e10_plan": 0.011725826539855072,
+   "mean_excess_plan": 0.009586500084918478,
+   "mean_excess_plan_se": 0.00022041760788757373,
+   "mean_f": 0.021312326624773552,
+   "n_qubits": 69,
+   "plan_stamp": "2026-10-26T11:06:06-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.35205842138888893,
+   "age_plan_h": 0.35155338111111106,
+   "arm": "prep0",
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T010741.272123Z:prep0",
+   "mean_e10_exec": 0.010819868607954546,
+   "mean_e10_plan": 0.010819868607954546,
+   "mean_excess_plan": 0.0022911302971117425,
+   "mean_excess_plan_se": 0.00021093050613749158,
+   "mean_f": 0.013110998905066288,
+   "n_qubits": 66,
+   "plan_stamp": "2026-10-26T17:47:10-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.3756684836111111,
+   "age_plan_h": 0.3752606566666667,
+   "arm": "x_history",
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T010917.104805Z:x_history",
+   "mean_e10_exec": 0.010819868607954546,
+   "mean_e10_plan": 0.010819868607954546,
+   "mean_excess_plan": 0.004593357895359848,
+   "mean_excess_plan_se": 0.00021333674427712016,
+   "mean_f": 0.015413226503314394,
+   "n_qubits": 66,
+   "plan_stamp": "2026-10-26T17:47:10-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.3945625061111111,
+   "age_plan_h": 0.3936625719444445,
+   "arm": "x_history",
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T011025.944327Z:x_history",
+   "mean_e10_exec": 0.010819868607954546,
+   "mean_e10_plan": 0.010819868607954546,
+   "mean_excess_plan": 0.0038475267814867425,
+   "mean_excess_plan_se": 0.0002125768817754172,
+   "mean_f": 0.014667395389441288,
+   "n_qubits": 66,
+   "plan_stamp": "2026-10-26T17:47:10-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": 0.41728654861111114,
+   "age_plan_h": 0.4168712011111111,
+   "arm": "prep0",
+   "exec_stamp": "2026-10-26T17:47:10-07:00",
+   "id": "state_prep:e/2026-10-27T011140.821404Z:prep0",
+   "mean_e10_exec": 0.010819868607954546,
+   "mean_e10_plan": 0.010819868607954546,
+   "mean_excess_plan": 0.0018204197739109848,
+   "mean_excess_plan_se": 0.00021048524102339357,
+   "mean_f": 0.01264028838186553,
+   "n_qubits": 66,
+   "plan_stamp": "2026-10-26T17:47:10-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": null,
+   "age_plan_h": 0.41264867499999996,
+   "arm": "prep0",
+   "exec_stamp": null,
+   "id": "state_prep:e/2026-10-27T204605.871056Z:prep0",
+   "mean_e10_exec": null,
+   "mean_e10_plan": 0.008341471354166666,
+   "mean_excess_plan": 0.004694620768229167,
+   "mean_excess_plan_se": 0.0006290262417918304,
+   "mean_f": 0.013036092122395834,
+   "n_qubits": 6,
+   "plan_stamp": "2026-10-27T13:21:35-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  },
+  {
+   "age_exec_h": null,
+   "age_plan_h": 0.41264867499999996,
+   "arm": "remeasure",
+   "exec_stamp": null,
+   "id": "state_prep:e/2026-10-27T204605.871056Z:remeasure",
+   "mean_e10_exec": null,
+   "mean_e10_plan": 0.008341471354166666,
+   "mean_excess_plan": 0.012242635091145834,
+   "mean_excess_plan_se": 0.000656067113550411,
+   "mean_f": 0.0205841064453125,
+   "n_qubits": 6,
+   "plan_stamp": "2026-10-27T13:21:35-07:00",
+   "rep_delay_us": 20.0,
+   "shots": 32768
+  }
+ ],
+ "snapshot_skill": {
+  "log10_p_one_sided_distinct_pairs": 0.0,
+  "n_distinct_stamp_pairs": 0,
+  "n_runs_with_distinct_exec_snapshot": 0,
+  "per_run": [],
+  "stouffer_z_over_distinct_pairs": null,
+  "stouffer_z_over_runs": 0.0
+ }
+}

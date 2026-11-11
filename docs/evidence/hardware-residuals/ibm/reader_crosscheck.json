@@ -1,0 +1,18 @@
+{
+ "results/live/2026-10-12T055624.091217Z": {
+  "identical_to_retained_registers": 16,
+  "registers_compared": 16
+ },
+ "results/live/2026-10-13T201757.782152Z": {
+  "identical_to_retained_registers": 46,
+  "registers_compared": 46
+ },
+ "results/live/2026-10-27T204605.871056Z": {
+  "identical_to_retained_registers": 18,
+  "registers_compared": 18
+ },
+ "results/live/2026-10-29T191606.826758Z": {
+  "identical_to_retained_registers": 24,
+  "registers_compared": 24
+ }
+}
