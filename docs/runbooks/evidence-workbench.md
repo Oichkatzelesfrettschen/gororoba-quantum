@@ -22,7 +22,7 @@ standard library; source/raw replay additionally uses the repository's existing
 parallel mapper. Browser use requires neither Python nor a server.
 
 ```sh
-python -B scripts/render_evidence_workbench.py \
+"$PYTHON" -B scripts/render_evidence_workbench.py \
   --ramsey results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data/ramsey_observations.csv \
   --acquisition results/ripple/measured-ripple.json \
   --acquisition results/ripple/measured-rank-sector.json \
@@ -123,10 +123,10 @@ object embedding and form submission are denied by the standalone CSP.
 ## Validation commands
 
 ```sh
-python -B -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
-python -B -O -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
+"$PYTHON" -B -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
+"$PYTHON" -B -O -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
 node tests/visualizations/test_evidence_math.cjs
-python -B scripts/check_evidence_workbench_browser.py \
+"$PYTHON" -B scripts/check_evidence_workbench_browser.py \
   --html /tmp/gororoba-evidence-workbench.html \
   --out /tmp/gororoba-evidence-browser-check
 ```

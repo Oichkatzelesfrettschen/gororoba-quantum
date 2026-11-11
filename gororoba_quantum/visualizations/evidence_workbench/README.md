@@ -24,12 +24,11 @@ standalone HTML file with all selected data embedded.
 Run bounded numerical checks without any retained acquisition or provider:
 
 ```sh
-python -B -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
-python -B -O -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
+"$PYTHON" -B -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
+"$PYTHON" -B -O -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
 node tests/visualizations/test_evidence_math.cjs
 ```
 
 Normal repository CI remains the code-admission authority. Behavioral fixtures
-remain visibly synthetic. The optional input-packaging workflow copies public
-retained files into a short-lived artifact; it does not execute or adjudicate
-their scientific analyses.
+remain visibly synthetic. `tests/visualizations/test_evidence_math_node.py` runs
+the Node checks inside the pytest suite where Node is installed.
