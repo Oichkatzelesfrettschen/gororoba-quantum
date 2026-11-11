@@ -3,7 +3,7 @@
 ## Scope
 
 The wavefunction is a mathematical representation of a quantum state. The
-existence of a Hilbert or configuration space does **not** establish a
+existence of a Hilbert or configuration space does not establish a
 nonphysical realm. Classical N-body mechanics already uses a 6N-dimensional
 phase space. The ontology of the quantum state is interpretation-dependent.
 
@@ -18,7 +18,7 @@ exclude every physical ontology or imply superluminal signalling.
 
 The module also computes the classical overlap omega=sum min(p,q) of two
 finite ontic distributions and omega squared under independent product
-preparation. This is a **preparatory toy calculation**, not an implementation
+preparation. This is a preparatory toy calculation, not an implementation
 or proof of the Pusey-Barrett-Rudolph theorem. The theorem additionally
 requires a measurement with quantum-forbidden outcomes and carefully stated
 preparation-independence assumptions. No inference from overlap alone to
