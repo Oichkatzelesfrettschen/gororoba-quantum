@@ -1,8 +1,23 @@
 """Exact conditional laws of the order statistics used by the IBM residual-structure analyses.
 
 Every law conditions on the margins of the data and treats the order of the shots as a uniform arrangement.
-The module holds closed forms or integer arithmetic only; no random draw enters. `python exact_laws.py` checks
-each law against enumeration of every arrangement at small sizes and prints the result.
+The module holds closed forms or integer arithmetic only; no random draw enters. `python exact_laws.py` runs
+the self-test and prints the result.
+
+Self-test coverage. Each check counts a statistic over every arrangement with Python integers and compares:
+- the adjacency law, n 2..10, every k; the runs-of-length-at-least-L law (pmf, tail, mean), n 3..12, every k,
+  L in 1, 2, 3, 5; the mean closed form E_L at four large sizes;
+- the same-shot hypergeometric law, n 1..8, every (K_i, K_j), pmf and two-sided log10 p at every observed count,
+  and one far tail (n 16384) against an exact integer sum;
+- the pooled convolution of two units, n 1..6, every k (k = 0, 1 and n included), for the adjacency law and for
+  the run law at L in 1, 2, 3, with the pmf and the upper, lower and two-sided log10 tails at every observed count
+  from 0 beyond the largest attainable count;
+- the cross-lag mean and variance, n 2..5 for every margin triple (K_j, K_i, J) and n 8 for six margin sets;
+- the Chernoff bound at least the exact pooled tail at every count of five small cases (one with zero
+  binomial-moment numerators) and at three (L, count) pairs of one larger column set;
+- the support cap of the run-count pmf (the dropped mass stays below 1e-300).
+The circular-shift law of `a2_burst.py`, the Poisson tails, the periodogram laws and the t tests are outside it.
+The run exits non-zero when a check reads `holds: false` or `bound_holds: false`.
 
 Laws.
 
@@ -77,8 +92,14 @@ def convolve(pmfs: list[np.ndarray]) -> np.ndarray:
     return heap[0][2]
 
 
+def _require_finite(pmf: np.ndarray) -> None:
+    if not bool(np.all(np.isfinite(pmf))):
+        raise ValueError("pmf holds a non-finite entry")
+
+
 def log10_upper(pmf: np.ndarray, obs: int) -> float:
-    """log10 P(X >= obs)."""
+    """log10 P(X >= obs); FLOOR where the tail is exactly zero (obs beyond the support)."""
+    _require_finite(pmf)
     if obs <= 0:
         return 0.0
     tail = float(np.sum(pmf[obs:][::-1])) if obs < pmf.size else 0.0
@@ -86,7 +107,8 @@ def log10_upper(pmf: np.ndarray, obs: int) -> float:
 
 
 def log10_lower(pmf: np.ndarray, obs: int) -> float:
-    """log10 P(X <= obs)."""
+    """log10 P(X <= obs); FLOOR where the head is exactly zero."""
+    _require_finite(pmf)
     head = float(np.sum(pmf[: obs + 1])) if obs >= 0 else 0.0
     return math.log10(min(head, 1.0)) if head > 0 else FLOOR
 
@@ -202,7 +224,8 @@ def _log_binomial_moments(n: int, k: int, big_l: int) -> np.ndarray:
     g = n - k + 1
     nums = _binomial_moment_numerators(n, k, big_l, k // big_l)
     log_denominator = math.log(math.comb(k + g - 1, g - 1))
-    return np.array([math.log(v) - log_denominator for v in nums])
+    # A numerator is zero where t exceeds the gap count g (C(g, t) = 0); that term of the pgf vanishes.
+    return np.array([math.log(v) - log_denominator if v > 0 else -math.inf for v in nums])
 
 
 def pooled_mode(columns: list[tuple[int, int]], big_l: int) -> str:
@@ -499,6 +522,226 @@ def _check_support_cap() -> dict[str, Any]:
     return {"cases": rows}
 
 
+# Enumeration references. Each statistic is counted over every arrangement with Python integers, so the
+# reference carries no floating-point error and shares no code with the laws under test.
+
+ENUM_TOL = 1e-9  # tolerance on a log10 p-value or a probability; the laws carry about 1e-13 relative error
+
+
+def _arrangements(n: int, k: int) -> list[np.ndarray]:
+    out = []
+    for ones in itertools.combinations(range(n), k):
+        col = np.zeros(n, dtype=np.int64)
+        col[list(ones)] = 1
+        out.append(col)
+    return out
+
+
+def _adjacency_counts(n: int, k: int) -> dict[int, int]:
+    counts: dict[int, int] = {}
+    for col in _arrangements(n, k):
+        value = int((col[:-1] * col[1:]).sum())
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+
+
+def _runs_counts(n: int, k: int, big_l: int) -> dict[int, int]:
+    counts: dict[int, int] = {}
+    for col in _arrangements(n, k):
+        padded = np.concatenate([[0], col, [0]])
+        d = np.diff(padded)
+        lengths = np.where(d == -1)[0] - np.where(d == 1)[0]
+        value = int((lengths >= big_l).sum())
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+
+
+def _convolve_counts(a: dict[int, int], b: dict[int, int]) -> dict[int, int]:
+    out: dict[int, int] = {}
+    for x, cx in a.items():
+        for y, cy in b.items():
+            out[x + y] = out.get(x + y, 0) + cx * cy
+    return out
+
+
+def _exact_log10(num: int, den: int) -> float:
+    return max(FLOOR, math.log10(num / den)) if num > 0 else FLOOR
+
+
+def _tail_errors(counts: dict[int, int], pmf: np.ndarray, upper_fn: Any = None) -> tuple[float, float]:
+    """Worst absolute differences of the pmf and of the upper, lower and two-sided log10 tails against counts.
+
+    The observed count runs over 0 ... top + 2, so it covers the lowest count (0), the next (1), the largest
+    attainable count and counts beyond the support. `upper_fn` replaces `log10_upper(pmf, obs)` where the law
+    under test is a dedicated tail function.
+    """
+    total = sum(counts.values())
+    top = max(counts)
+    worst_pmf = 0.0
+    for x in range(max(pmf.size, top + 1)):
+        got = float(pmf[x]) if x < pmf.size else 0.0
+        worst_pmf = max(worst_pmf, abs(counts.get(x, 0) / total - got))
+    worst_tail = 0.0
+    for obs in range(0, top + 3):
+        num_up = sum(v for x, v in counts.items() if x >= obs)
+        num_low = sum(v for x, v in counts.items() if x <= obs)
+        exact_up = 0.0 if obs <= 0 else _exact_log10(num_up, total)
+        exact_low = min(0.0, _exact_log10(num_low, total))
+        exact_two = min(0.0, math.log10(2.0) + min(exact_up, exact_low))
+        got_up = upper_fn(obs) if upper_fn is not None else log10_upper(pmf, obs)
+        got_low = log10_lower(pmf, obs)
+        got_two = min(0.0, math.log10(2.0) + min(got_up, got_low))
+        worst_tail = max(worst_tail, abs(exact_up - got_up), abs(exact_low - got_low), abs(exact_two - got_two))
+        if obs <= top + 1:
+            two_sided = log10_two_sided(pmf, obs)
+            worst_tail = max(worst_tail, abs(exact_two - two_sided))
+    return worst_pmf, worst_tail
+
+
+def _check_hypergeom_enumeration() -> dict[str, Any]:
+    """Joint count of two columns over every arrangement of the second against the hypergeometric (n, K_i, K_j)."""
+    worst_pmf = 0.0
+    worst_tail = 0.0
+    cases = 0
+    for n in range(1, 9):
+        for k_i in range(0, n + 1):
+            for k_j in range(0, n + 1):
+                counts: dict[int, int] = {}
+                first = np.zeros(n, dtype=np.int64)
+                first[:k_i] = 1
+                for col in _arrangements(n, k_j):
+                    value = int((first * col).sum())
+                    counts[value] = counts.get(value, 0) + 1
+                total = math.comb(n, k_j)
+                width = min(k_i, k_j) + 1
+                grid = hypergeom_pmf_grid(n, np.array([k_i]), np.array([k_j]), width)[0]
+                for x in range(width):
+                    worst_pmf = max(worst_pmf, abs(counts.get(x, 0) / total - float(grid[x])))
+                top = max(counts)
+                for obs in range(0, top + 2):
+                    num_up = sum(v for x, v in counts.items() if x >= obs)
+                    num_low = sum(v for x, v in counts.items() if x <= obs)
+                    exact = min(
+                        0.0, math.log10(2.0) + min(_exact_log10(num_up, total), min(0.0, _exact_log10(num_low, total)))
+                    )
+                    got = float(hypergeom_log10_two_sided(np.array([obs]), n, np.array([k_i]), np.array([k_j]))[0])
+                    # scipy reports -inf for a tail of exactly zero; the reference writes FLOOR there
+                    if not math.isfinite(got):
+                        got = math.log10(2.0) + FLOOR
+                    worst_tail = max(worst_tail, abs(exact - got))
+                cases += 1
+    return {
+        "cases": f"n 1..8, every (K_i, K_j): {cases} margin pairs, every arrangement of one column",
+        "max_abs_error_pmf": worst_pmf,
+        "max_abs_error_log10_two_sided": worst_tail,
+        "holds": worst_pmf < ENUM_TOL and worst_tail < ENUM_TOL,
+    }
+
+
+def _check_pooled_adjacency() -> dict[str, Any]:
+    """Convolution of two units' adjacency laws against the pooled count over every pair of arrangements."""
+    units = [(n, k) for n in range(1, 7) for k in range(0, n + 1)]
+    per_unit = {u: _adjacency_counts(*u) for u in units}
+    worst_pmf = 0.0
+    worst_tail = 0.0
+    for a, b in itertools.combinations_with_replacement(units, 2):
+        counts = _convolve_counts(per_unit[a], per_unit[b])
+        pmf = convolve([adjacency_pmf(*a), adjacency_pmf(*b)])
+        e_pmf, e_tail = _tail_errors(counts, pmf)
+        worst_pmf = max(worst_pmf, e_pmf)
+        worst_tail = max(worst_tail, e_tail)
+    return {
+        "cases": "two units, n 1..6, every k each (k = 0, 1 and n included), every observed count 0 .. top + 2",
+        "max_abs_error_pmf": worst_pmf,
+        "max_abs_error_log10_tails": worst_tail,
+        "holds": worst_pmf < ENUM_TOL and worst_tail < ENUM_TOL,
+    }
+
+
+def _check_pooled_runs() -> dict[str, Any]:
+    """Convolution of two units' runs-of-length-at-least-L laws against the pooled count over every pair."""
+    worst_pmf = 0.0
+    worst_tail = 0.0
+    for big_l in (1, 2, 3):
+        units = [(n, k) for n in range(1, 7) for k in range(0, n + 1)]
+        per_unit = {u: _runs_counts(u[0], u[1], big_l) for u in units}
+        for a, b in itertools.combinations_with_replacement(units, 2):
+            counts = _convolve_counts(per_unit[a], per_unit[b])
+            pmf = convolve([runs_ge_l_pmf(a[0], a[1], big_l), runs_ge_l_pmf(b[0], b[1], big_l)])
+
+            def upper(obs: int, a: tuple[int, int] = a, b: tuple[int, int] = b, big_l: int = big_l) -> float:
+                return runs_ge_l_log10_upper([a, b], big_l, obs)
+
+            e_pmf, e_tail = _tail_errors(counts, pmf, upper)
+            worst_pmf = max(worst_pmf, e_pmf)
+            worst_tail = max(worst_tail, e_tail)
+    return {
+        "cases": "two units, n 1..6, every k each (k = 0, 1 and n included), L in 1, 2, 3, every observed count",
+        "max_abs_error_pmf": worst_pmf,
+        "max_abs_error_log10_tails": worst_tail,
+        "holds": worst_pmf < ENUM_TOL and worst_tail < ENUM_TOL,
+    }
+
+
+def _check_cross_moments_small() -> dict[str, Any]:
+    """Mean and variance of the lag-1 cross count against every distinct row order, n = 2 ... 5, every margin triple."""
+    worst_mean = 0.0
+    worst_var = 0.0
+    cases = 0
+    for n in range(2, 6):
+        for joint in range(0, n + 1):
+            for k_j in range(joint, n + 1):
+                for k_i in range(joint, n + 1):
+                    if k_j + k_i - joint > n:
+                        continue
+                    rows = [(1, 1)] * joint + [(1, 0)] * (k_j - joint) + [(0, 1)] * (k_i - joint)
+                    rows += [(0, 0)] * (n - len(rows))
+                    values = [
+                        sum(perm[m][0] * perm[m + 1][1] for m in range(n - 1))
+                        for perm in sorted(set(itertools.permutations(rows)))
+                    ]
+                    count = len(values)
+                    mean_b = Fraction(sum(values), count)
+                    var_b = Fraction(sum(v * v for v in values), count) - mean_b * mean_b
+                    mean_f, var_f = lag1_cross_moments(n, k_j, k_i, joint)
+                    worst_mean = max(worst_mean, abs(float(mean_b) - float(mean_f)))
+                    worst_var = max(worst_var, abs(float(var_b) - float(var_f)))
+                    cases += 1
+    return {
+        "cases": f"n 2..5, every margin triple (K_j, K_i, J): {cases} triples, all distinct row orders",
+        "max_abs_mean": worst_mean,
+        "max_abs_var": worst_var,
+        "holds": worst_mean < ENUM_TOL and worst_var < ENUM_TOL,
+    }
+
+
+def _check_chernoff_every_count() -> dict[str, Any]:
+    """The Chernoff bound of a pooled tail is at least the exact tail at every count of small cases.
+
+    The case (6, 6), (6, 6) with L = 2 has binomial-moment numerators of zero (one gap, so C(g, t) = 0 for t > 1).
+    """
+    cases = [
+        ([(6, 6), (6, 6)], 2),
+        ([(8, 4), (8, 3)], 2),
+        ([(10, 5), (9, 4), (7, 3)], 2),
+        ([(10, 6), (8, 5)], 3),
+        ([(12, 5), (12, 6), (6, 2)], 1),
+    ]
+    rows = []
+    for columns, big_l in cases:
+        pmf = convolve([runs_ge_l_pmf(n, k, big_l) for n, k in columns])
+        holds = True
+        worst_gap = math.inf
+        for obs in range(0, pmf.size + 2):
+            exact = log10_upper(pmf, obs)
+            bound = chernoff_log10_upper(columns, big_l, obs)
+            holds = holds and bound >= exact - ENUM_TOL
+            worst_gap = min(worst_gap, bound - exact)
+        rows.append({"columns": columns, "L": big_l, "counts": pmf.size + 2, "min_bound_minus_exact": worst_gap})
+        rows[-1]["holds"] = holds
+    return {"cases": rows, "holds": all(r["holds"] for r in rows)}
+
+
 def self_test() -> dict[str, Any]:
     return {
         "adjacency_law": _check_adjacency(),
@@ -508,10 +751,34 @@ def self_test() -> dict[str, Any]:
         "lag1_cross_moments": _check_cross_moments(),
         "chernoff_bound": _check_chernoff(),
         "support_cap": _check_support_cap(),
+        "hypergeometric_same_shot_enumeration": _check_hypergeom_enumeration(),
+        "adjacency_pooled_two_units": _check_pooled_adjacency(),
+        "runs_pooled_two_units": _check_pooled_runs(),
+        "lag1_cross_moments_n2_to_5": _check_cross_moments_small(),
+        "chernoff_bound_every_count": _check_chernoff_every_count(),
     }
+
+
+def failed_checks(report: Any, path: str = "") -> list[str]:
+    """Paths of every `holds` or `bound_holds` flag that reads False in a self-test report."""
+    found: list[str] = []
+    if isinstance(report, dict):
+        for key, value in report.items():
+            if key in ("holds", "bound_holds") and value is False:
+                found.append(path or key)
+            else:
+                found += failed_checks(value, f"{path}/{key}")
+    elif isinstance(report, list):
+        for index, value in enumerate(report):
+            found += failed_checks(value, f"{path}[{index}]")
+    return found
 
 
 if __name__ == "__main__":
     import json
 
-    print(json.dumps(self_test(), indent=1))
+    result = self_test()
+    print(json.dumps(result, indent=1))
+    failures = failed_checks(result)
+    if failures:
+        raise SystemExit(f"self-test failed: {failures}")

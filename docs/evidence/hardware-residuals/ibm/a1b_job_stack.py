@@ -4,20 +4,25 @@ Follow-up to a1_line_scan.py, whose per-column narrow-line hits cluster at one p
 across jobs with different slot periods. All PUBs of a job share the shot count N and the column-wise slot
 period, so one list-position bin k is one physical frequency f = k / (N slot) for every column of the job.
 
-Falsifier, fixed before the run. For each job, S_k = sum over its tested binary columns (at least 30 minority
+Falsifier. The statistic was fixed before the first run; the Gamma and F reference laws stay as descriptive
+p-values, and the bin-enumeration, cross-unit and job-level calibrations below were added after the review of
+2026-11-10. For each job, S_k = sum over its tested binary columns (at least 30 minority
 shots) of the normalized ordinate c_k is Gamma(C, 1) under independent shots, and the ratio of S_k to the mean
 of its 64 neighbors (guard 1 bin) is F(2C, 128C). "No structure" means every job's stacked narrow-line p-value
 stays above 0.05 / (74 jobs x 2 families = 148 tests) after the union bound over bins, and the targeted
-60 Hz bins (within 0.15 Hz of 60 Hz) of every job stay above 0.05 / 74. The 60 Hz targeted family is
-post-hoc (suggested by a1_line_scan.json), so it is labeled exploratory and counted in the multiplicity.
+60 Hz bins (within 0.15 Hz of 60 Hz) of every job stay above 0.05 / 74. The centre of the 60 Hz window comes
+from the mains frequency; its 0.15 Hz half-width and the decision to test it came after the column scan
+(a1_line_scan.json), and the jobs that suggested the window sit inside its counts, so the family is labeled
+exploratory and counted in the multiplicity.
 
 Calibration of the stacked p-values. Columns of one PUB share circuit structure and a noise source, so C counts
 correlated channels. Positive correlation between columns raises the variance of the stacked sum S_k above that of
 Gamma(C, 1) and fattens its upper tail, so the Gamma and F p-values of the stack are anti-conservative; nothing
 bounds how much, and the stacked p-values (down to 10^-128) are descriptive. Three calibrations that need no
 independence between columns sit beside them in `calibrated`:
-- Bin-enumeration null of a preregistered window. For the 60 Hz window (physical prior: US mains frequency) and
-  the 29.70 Hz window (found in these records by a1_line_scan.py, so post hoc), the statistic is the maximum of
+- Bin-enumeration null of a window. For the 60 Hz window (centre from the US mains frequency; half-width and
+  test chosen after the column scan) and the 29.70 Hz window (centre found in these records by
+  a1_line_scan.py), the statistic is the maximum of
   the neighbor-normalized ordinate over the window's bins. The null is the same statistic on every other
   non-overlapping tile of the same width over the bins that have a full neighbor window, taken from the same
   spectrum; p = (tiles with a statistic at least the window's) / (tiles). The tiles are exchangeable with the
@@ -55,8 +60,11 @@ GUARD = 1
 ALPHA = 0.05
 MAINS = 60.0
 WINDOW = 0.15
-# preregistered windows: (name, centre in Hz, basis); the 29.70 Hz centre comes from a1_line_scan.py
-TARGETS = (("mains_60hz", MAINS, "physical prior"), ("line_29_7hz", 29.70, "post hoc"))
+# windows: (name, centre in Hz, basis); the 29.70 Hz centre comes from a1_line_scan.py
+TARGETS = (
+    ("mains_60hz", MAINS, "centre from the mains frequency; half-width and test chosen after the column scan"),
+    ("line_29_7hz", 29.70, "centre and half-width found in the column scan; test chosen after it"),
+)
 RANK_LEVELS = (0.01, 0.05)
 A1_LINE_LOG10 = -6.843708558971848  # Bonferroni line of a1_line_scan.py over its 348,882 tests
 
@@ -188,7 +196,7 @@ def design_of(row: dict[str, Any], n_pubs: int) -> str:
 
 
 def calibrated_tails(cat: dict[str, Any], results: list[dict[str, Any]], rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Bin-enumeration ranks of the preregistered windows, their combination, and job-level Bonferroni minima."""
+    """Bin-enumeration ranks of the two windows, their combination, and job-level Bonferroni minima."""
     import gzip
     import json
 

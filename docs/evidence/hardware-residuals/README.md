@@ -7,7 +7,7 @@ claim, and `docs/state/research_state.json` cites none of them.
 
 | Pass | Records | Report |
 |---|---|---|
-| IBM Heron r2 shot-ordered records | 64 acquisitions on ibm_fez and ibm_kingston under `results/live/` | [ibm/REPORT.md](ibm/REPORT.md) |
+| IBM Heron r2 shot-ordered records | 64 acquisitions under `results/live/` (74 jobs: ibm_kingston 49, ibm_fez 23, ibm_marrakesh 2, per `ibm/catalog.json`) | [ibm/REPORT.md](ibm/REPORT.md) |
 | Tuna-17 and Quandela (Belenos, Ascella) records | Quantum Inspire and Quandela records read through `qi_records.py` and `qd_records.py` | [tuna-quandela/REPORT.md](tuna-quandela/REPORT.md) |
 
 Each directory holds its scripts, the JSON every script writes, the run logs and, for the IBM pass, the full
@@ -18,8 +18,14 @@ below 1e-8 against 0.0; `tuna-quandela/REPORT.md`, "Dependence and corrections")
 `a4_photon_number_trend.py`, `combine_ledger.py` and `ibm/reader_crosscheck.py` reproduce their retained JSON
 byte for byte. The IBM analyses `a1b`, `a2`, `a3`, `a4` and `a5` ran under those versions with their exact-law,
 calibration-epoch and shift-null code, `ibm/aggregate.py` ran over their p-value lists, and
-`ibm/exact_laws.py` checks its laws against enumeration (`ibm/exact_laws_run.log`); a second run reproduces `a1b` byte for
-byte and `a3` to 1e-13 relative (floating-point summation order); `ibm/a1_line_scan.py`,
+the self-test of `ibm/exact_laws.py` checks the adjacency, run-count, same-shot hypergeometric and cross-lag moment
+laws, the two-unit convolutions of the adjacency and run-count laws and the Chernoff bound against enumeration of every arrangement at small sizes
+(`ibm/exact_laws_run.log`; the module docstring lists the cases, and the circular-shift law of `ibm/a2_burst.py` is
+outside it). A second run reproduces `a1b` byte for byte (the rerun after the label change differs from the retained
+file in the two `basis` strings only) and `a3` to 1e-13 relative (cause not tested); `a2` has no second run;
+`a4` and `a5` have one each (`a4` after its Poisson tails gained the -300 floor, `a5` after its empty-law and
+zero-mean guards), and each reproduced its JSON and log byte for byte and its p-value list in content (a rerun writes a new gzip
+header time). `ibm/a1_line_scan.py`,
 `ibm/a6_calibration_age.py` and `ibm/a0_catalog.py` were not rerun, and their retained files come from their
 original run (`ibm/REPORT.md`, "Scope").
 

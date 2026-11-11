@@ -1,14 +1,15 @@
 """Analysis 3: Belenos per-mode efficiency across plan-time calibration sessions.
 
-Falsifier, fixed before computing. "No structure" is: (a) between runs that returned byte-identical compiled
-circuits for every iteration (the frozen BDSC request), the per-mode single-click shares differ only by
-multinomial noise, so the generalized Cochran-Mantel-Haenszel statistic of run against detector mode, stratified by
-setting, has no excess over its chi-square null; (b) in the model-based fits (scripts/qd_belenos_mesh.fit_efficiency
-on the ideal-mesh prediction of each returned circuit) the log-efficiencies of different plan-time sessions agree
-within the Fisher interval, widened by the sessions' own delete-one-setting jackknife spread added in quadrature
-(a second column scales the Fisher covariance by the session's Pearson overdispersion instead); (c) the
-DetectorBalancing contrast, the default-mitigation and mitigation-none runs on one plan-time record, differ by no
-more than binomial noise.
+Falsifier. The statistics were fixed before the first computation; the jackknife unit of the model-based intervals (b)
+was replaced by the delete-one-setting jackknife after the review of 2026-11-10. "No structure" is: (a) between runs
+that returned byte-identical compiled circuits for every iteration (the frozen BDSC request), the per-mode
+single-click shares differ only by multinomial noise, so the generalized Cochran-Mantel-Haenszel statistic of run
+against detector mode, stratified by setting, has no excess over its chi-square null; (b) in the model-based fits
+(scripts/qd_belenos_mesh.fit_efficiency on the ideal-mesh prediction of each returned circuit) the log-efficiencies of
+different plan-time sessions agree within the Fisher interval, widened by the sessions' own delete-one-setting
+jackknife spread added in quadrature (a second column scales the Fisher covariance by the session's Pearson
+overdispersion instead); (c) the DetectorBalancing contrast, the default-mitigation and mitigation-none runs on one
+plan-time record, differ by no more than binomial noise.
 
 What the counts identify. Quandela returns click counts per output mode. A multiplicative per-mode factor common
 to every setting (detector efficiency, output transmission, mode-dependent loss) is identifiable only up to one

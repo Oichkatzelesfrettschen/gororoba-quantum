@@ -2,8 +2,10 @@
 
 Run every script from the repository root with the repository interpreter:
 
-    GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=4 \
-      systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 "$PYTHON" SCRIPT
+    GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 GOROROBA_WORKERS=N OPENBLAS_NUM_THREADS=1 \
+      OMP_NUM_THREADS=1 systemd-run --user --scope -q -p MemoryMax=12G -p MemorySwapMax=0 "$PYTHON" SCRIPT
+
+with N between 4 and 10 workers and a 12 GiB memory scope (ibm/REPORT.md, "Scope", records the runs).
 
 Reader contract (the retained raw layout `results/live/<run>/raw/<job>/`):
 

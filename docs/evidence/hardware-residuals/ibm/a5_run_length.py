@@ -6,14 +6,18 @@ list positions are consecutive shots in the single-PUB runs). Raw outcomes are t
 classified): the analysis measures run lengths of 1 outcomes and cannot name a hidden state such as |2>; a
 slow drift of the marginal lengthens runs too, so an excess is a temporal dependence of unidentified origin.
 
-Falsifier, fixed before the run. A column of N reads with K ones, in uniformly random order, has the exact
-law of the count M_L of runs of at least L ones: the N-K zeros cut it into g = N-K+1 gaps filled by the K ones as
-a uniform weak composition, the binomial moments are S_t = C(g, t) C(K - L t + g - 1, g - 1) / C(K + g - 1, g - 1)
-and P(M_L >= m) = sum_t (-1)^(t-m) C(t-1, m-1) S_t, evaluated in Python integers (`exact_laws`). Its mean is
+Falsifier. The statistic was fixed before the first run; the Poisson reference law was replaced by the exact
+conditional law after the review of 2026-11-10. A column of N reads with K ones, in uniformly random order, has
+the exact law of the count M_L of runs of at least L ones: the N-K zeros cut it into g = N-K+1 gaps filled by the
+K ones as a uniform weak composition, the binomial moments are
+S_t = C(g, t) C(K - L t + g - 1, g - 1) / C(K + g - 1, g - 1) and
+P(M_L >= m) = sum_t (-1)^(t-m) C(t-1, m-1) S_t, evaluated in Python integers (`exact_laws`). Its mean is
 E_L = (N-L+1) F_L - (N-L) F_{L+1}, F_L = K(K-1)...(K-L+1) / (N(N-1)...(N-L+1)), because a run of length l >= L
 holds l-L+1 windows of L ones and l-L windows of L+1. The observed count is compared with that law (one-sided,
-excess); the pooled count of independent columns follows the convolution of their laws (the pilot's PUBs per
-qubit, and every column of a group). A pooled p-value below 1e-300 is written as -300. Family 1: per column
+excess); the pooled count of independently arranged columns follows the convolution of their laws (the pilot's
+PUBs per qubit, and every column of a group). The group law is exact for independently arranged columns; the
+columns of one PUB share shots, so a group p-value measures the excess over that reference and states no
+calibrated significance. A pooled p-value below 1e-300 is written as -300. Family 1: per column
 (qubit pooled over the pilot's PUBs, or one state-prep PUB), L in {2, 3, 5}. Family 2: per (dataset group, L in
 {2, 3, 4, 5}) the pooled count against the pooled law. Family 3, the memory-free continuation test: per group, the
 number of runs of at least 3 against sum_runs>=2 (R2 R2 / R1) (a run that reached 2 continues at the rate a run
@@ -205,8 +209,10 @@ def main() -> None:
             obs, mean = pooled["runs"][big_l], pooled["exp"][big_l]
             lo, hi = common.garwood(obs)
             law, laws = group_laws[(key, big_l)]
-            if law == "exact":
-                lp = exact_laws.pooled_exact_log10_upper(laws, obs) if laws else exact_laws.FLOOR
+            if obs <= 0 or not laws:
+                lp = 0.0  # P(count >= 0) = 1; an empty law list holds no column long enough for a run
+            elif law == "exact":
+                lp = exact_laws.pooled_exact_log10_upper(laws, obs)
             else:
                 lp = exact_laws.pooled_chernoff_log10_upper(laws, obs)
             law = "exact" if law == "exact" else "chernoff_upper_bound"
@@ -214,8 +220,8 @@ def main() -> None:
             entry["by_L"][big_l] = {
                 "observed": obs,
                 "expected": mean,
-                "ratio": obs / mean,
-                "ratio_ci95": [lo / mean, hi / mean],
+                "ratio": obs / mean if mean > 0 else None,
+                "ratio_ci95": [lo / mean, hi / mean] if mean > 0 else None,
                 "log10_p": lp,
                 "law": law,
             }
@@ -277,7 +283,10 @@ def main() -> None:
         print(
             k,
             v["n_columns"],
-            {length: (round(b["ratio"], 3), round(b["log10_p"], 1)) for length, b in v["by_L"].items()},
+            {
+                length: (None if b["ratio"] is None else round(b["ratio"], 3), round(b["log10_p"], 1))
+                for length, b in v["by_L"].items()
+            },
             v["continuation"],
         )
     print(n_by_group)

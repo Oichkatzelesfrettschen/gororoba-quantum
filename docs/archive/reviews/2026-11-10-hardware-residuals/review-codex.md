@@ -132,5 +132,5 @@
 
 [measured] `git diff --check origin/main...HEAD` passed. Tracked worktree diff and index diff remained empty; HEAD remained `c079ce0db9fb72bfcfa2b8488190a5a5f789e9a2`. The pre-existing untracked `docs/archive/reviews/2026-11-10-hardware-residuals/` remained present and untouched.
 
-[measured] Review goal completed in 759 seconds; tracker usage was 308,220 tokens.
+[measured] Review goal completed in 759 seconds.
 

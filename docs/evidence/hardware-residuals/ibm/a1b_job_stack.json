@@ -1263,7 +1263,7 @@
   },
   "targets": {
    "line_29_7hz": {
-    "basis": "post hoc",
+    "basis": "centre and half-width found in the column scan; test chosen after it",
     "centre_hz": 29.7,
     "columns_rank_p_at_most_0.01": {
      "expected": 713.386319663516,
@@ -4820,7 +4820,7 @@
     }
    },
    "mains_60hz": {
-    "basis": "physical prior",
+    "basis": "centre from the mains frequency; half-width and test chosen after the column scan",
     "centre_hz": 60.0,
     "columns_rank_p_at_most_0.01": {
      "expected": 719.1424937587121,

@@ -6,13 +6,13 @@ a1b_job_stack.json.
 
 Law of each family. a1 white-line, narrow-line and drift: asymptotic laws of independent stationary shots.
 a1b stacks: Gamma and F laws of independent columns, anti-conservative under positive column correlation, so
-the tally is also given without them. a2 dispersion: exact circular-shift distribution (normal law for the PUBs
-without an admissible shift); a2 tails, adjacency and window: Poisson approximations. a3 bins, trend and contrast:
+the tally is also given without them. a2 dispersion: the circular-shift distribution over the full group of
+shifts; a2 tails, adjacency and window: Poisson approximations. a3 bins, trend and contrast:
 t tests over PUBs (the units of one calibration epoch share a device state; the epoch-level tests sit in
 a3_coupler_distance.json and enter no count); a3 pairs: exact hypergeometric laws. a4 diagonal: exact adjacency
-law; a4 cross: Poisson approximation at the exact mean, conservative by the exact variance. a5 columns: exact
-run-count law; a5 groups: exact where the cost allows, otherwise a Chernoff upper bound of the exact law; a5
-continuation: normal approximation.
+law; a4 cross: Poisson approximation; the exact variance is below the mean, which does not prove a tail bound.
+a5 columns: exact run-count law; a5 groups: exact for independently arranged columns where the cost allows,
+otherwise a Chernoff upper bound of the exact law; a5 continuation: normal approximation.
 """
 
 from __future__ import annotations

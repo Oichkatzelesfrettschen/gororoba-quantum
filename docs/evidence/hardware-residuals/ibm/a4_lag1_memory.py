@@ -7,17 +7,19 @@ after a 0). Data: the 153 sensors of the 24 readout-actor pilot PUBs, pooled per
 PUBs (list positions of one PUB lie one job slot, 8 circuits, apart); and the 12 wide single-PUB state-prep
 runs on ibm_kingston, one PUB per job, where the next list position is the next physical shot.
 
-Falsifier, fixed before the run. For the error indicator matrix E, the count C_ji = sum_n e_j[n] e_i[n+1]
-has, under shots that are exchangeable (a uniformly random reordering of whole shot rows), the exact mean
-(K_j K_i - J_ji) / N, where J_ji is the same-shot joint count. Each ordered pair (153 x 153 = 23,409 for the
-pilot; Q^2 per state-prep PUB) gets one two-sided test.
+Falsifier. The statistic was fixed before the first run; the Poisson reference law of the diagonal was replaced by the
+exact adjacency law after the review of 2026-11-10. For the error indicator matrix E, the count C_ji = sum_n e_j[n]
+e_i[n+1] has, under shots that are exchangeable (a uniformly random reordering of whole shot rows), the exact mean
+(K_j K_i - J_ji) / N, where J_ji is the same-shot joint count. Each ordered pair (153 x 153 = 23,409 for the pilot;
+Q^2 per state-prep PUB) gets one two-sided test.
 - Diagonal (j = i, the per-qubit adjacency of ones): the law of the adjacent (1, 1) count given (N, K) is exact,
   P(R = r) = C(K-1, r-1) C(N-K+1, r) / C(N, K) for R runs of ones and C = K - R; the pilot's pooled count follows
   the convolution of its 24 PUB laws (`exact_laws.adjacency_pmf`).
 - Off-diagonal (j != i): the exact joint law of C_ji over arrangements of rows is not computed; a Poisson law at the
   exact mean stands in as an approximation. The exact variance of C_ji (`exact_laws.lag1_cross_moments`) is
-  reported beside the p-values: a variance above the mean makes the Poisson upper tail anti-conservative, a
-  variance below it makes the tail conservative.
+  reported beside the p-values: a variance above the mean raises the upper tail over the Poisson law and one
+  below it lowers it. The exact variance gives the direction of the approximation error and does not prove a
+  tail bound.
 Slow drift also raises lag-1 counts, so every survivor is re-evaluated at lags 2 and 3 with the Poisson law at
 the exact mean: a dependence confined to one shot decays at once, drift does not. A drift-robust variant of the diagonal
 test permutes shots only inside consecutive blocks of 512 shots (the block length of a2_burst.py), excluding
@@ -55,8 +57,8 @@ def lag_counts(e: np.ndarray, lag: int) -> np.ndarray:
 
 def log10_two_sided(obs: np.ndarray, mean: np.ndarray) -> np.ndarray:
     mean = np.maximum(mean, 1e-12)
-    upper = poisson.logsf(obs - 1, mean) / math.log(10)
-    lower = poisson.logcdf(obs, mean) / math.log(10)
+    upper = np.maximum(poisson.logsf(obs - 1, mean) / math.log(10), exact_laws.FLOOR)
+    lower = np.maximum(poisson.logcdf(obs, mean) / math.log(10), exact_laws.FLOOR)
     return np.minimum(0.0, math.log10(2) + np.minimum(upper, lower))
 
 

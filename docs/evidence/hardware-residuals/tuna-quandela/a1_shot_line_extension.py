@@ -160,7 +160,7 @@ def main() -> None:
             try:
                 qi_records.read_run(directory)
                 status = "read_run ok"
-            except Exception as error:  # reported, never dropped
+            except (OSError, ValueError, KeyError, TypeError, IndexError) as error:  # reported, never dropped
                 status = f"read_run failed: {str(error)[:160]}"
         else:
             status = "no cases/submission/results at this level (nested prepared-run directory or incomplete record)"

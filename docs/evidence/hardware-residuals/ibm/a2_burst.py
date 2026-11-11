@@ -5,9 +5,10 @@ the ground-prepared first read of the 66-149 qubits of each of the 13 wide state
 narrow PUBs of the three-PUB state-prep run are below the 24-column floor. The 156-bit and 58-bit PUBs of
 `results/live/kingston-wide-control-result` hold 512 shots and no record of their prepared state: not run.
 
-Falsifier, fixed before the run. Per PUB, let M_n be the number of errors in shot n over Q columns. Blocks of
-512 shots carry their own marginals p_i (block-local plug-in), so slow drift sets the null and not the
-alternative. Under independent errors, M_n is Poisson-binomial with those marginals. Five tests per PUB:
+Falsifier. The statistics were fixed before the first run; the reference law of test (1), a normal law, was replaced
+by the circular-shift law after the review of 2026-11-10. Per PUB, let M_n be the number of errors in shot n over Q
+columns. Blocks of 512 shots carry their own marginals p_i (block-local plug-in), so slow drift sets the null and not
+the alternative. Under independent errors, M_n is Poisson-binomial with those marginals. Five tests per PUB:
 (1) dispersion z of sum_n (M_n - mu_b)^2 against sum_n sigma_b^2, with variance sum_n (kappa4_b + 2 sigma_b^4)
 (positive correlation raises it); (2) and (3) the count of shots with M >= t against Poisson with the
 Poisson-binomial tail mass, at the two thresholds t_a and t_b where the expected count first falls to 5 and
@@ -25,7 +26,7 @@ separates the two.
 The p-value of test (1) is the circular-shift law of the same statistic over the full group of shifts: column i
 rotates by i s mod N shots for every s = 1 ... N-1 (the rotations T_s compose as T_s T_s' = T_(s+s'), so the
 observation ranks among N equally likely points when shots are exchangeable inside independent columns, and the
-rank p-value is exact there), the z statistic of the preregistered form is recomputed on every rotated copy with
+rank p-value is exact there), the z statistic of test (1) is recomputed on every rotated copy with
 block-local marginals of the rotated columns, and p = min(1, 2 min(P(z_s >= z), P(z_s <= z))) over the N-1 shifts
 and the observation. Under drift of a column the rotation moves its time structure, so the shift law then serves as
 a reference that keeps each column's own structure and no Poisson-binomial assumption. Its resolution

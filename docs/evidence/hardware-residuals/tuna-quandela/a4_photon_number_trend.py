@@ -27,6 +27,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import zlib
 from collections import defaultdict
 from typing import Any
 
@@ -222,19 +223,19 @@ def job_task(directory: Any) -> dict[str, Any]:
     result: dict[str, Any] = {"analysis": None, "yield": None, "problems": []}
     try:
         run = qd.read_run(directory)
-    except Exception as error:  # reported as a problem row, never dropped
+    except (qd.RecordError, OSError, ValueError, KeyError, TypeError, zlib.error) as error:  # reported, never dropped
         result["problems"].append({"run": c.rel(directory), "problem": str(error)[:160]})
         if "qpu_" in directory.name:
             result["problems"].append({"run": c.rel(directory), "yield_problem": str(error)[:160]})
         return result
     try:
         result["analysis"] = analyze_job(directory, run)
-    except Exception as error:  # reported as a problem row, never dropped
+    except (KeyError, TypeError, ValueError, ZeroDivisionError) as error:  # reported, never dropped
         result["problems"].append({"run": c.rel(directory), "problem": str(error)[:160]})
     if "qpu_" in directory.name:
         try:
             result["yield"] = yield_job(directory, run)
-        except Exception as error:  # reported as a problem row, never dropped
+        except (KeyError, TypeError, ValueError, ZeroDivisionError) as error:  # reported, never dropped
             result["problems"].append({"run": c.rel(directory), "yield_problem": str(error)[:160]})
     return result
 
