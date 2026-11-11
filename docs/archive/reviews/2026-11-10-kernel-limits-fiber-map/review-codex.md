@@ -8,7 +8,7 @@ A concurrent uncommitted `--plus` edit appeared in `fiber_plucker_map.py` during
 
 1. **SERIOUS — computed evidence is summarized beyond independent auditability.**
 
-   The result writer retains ranks and counts but omits the fitted matrix `T`, row scalars `c`, pivot indices, sample identifiers, fiber points, Plücker vectors, and their digests (`HEAD:docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py:119-161`). For example, [fiber-plucker-map-iso-p32009.json](docs/evidence/a5-exceptional-fibers/kernel-limits/fiber-plucker-map-iso-p32009.json:12) ends with aggregate fields at line 26.
+   The result writer retains ranks and counts but omits the fitted matrix `T`, row scalars `c`, pivot indices, sample identifiers, fiber points, Plücker vectors, and their digests (`HEAD:docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py:119-161`). For example, `fiber-plucker-map-iso-p32009.json` ends with aggregate fields at line 26.
 
    Consequently, the retained JSON cannot independently establish that fitted and held-out fiber points differ, reproduce `T`, or run a pairing mutation. The complete generator remains deterministic, but replaying a 1–23 minute computation is the only route back to the witnesses.
 
@@ -16,7 +16,7 @@ A concurrent uncommitted `--plus` edit appeared in `fiber_plucker_map.py` during
 
 2. **SLOPPY — the parametrization identity has the wrong sign as written.**
 
-   [vb_special_arcs.py](docs/evidence/a5-exceptional-fibers/kernel-limits/vb_special_arcs.py:3) lines 3–5 and [README.md](docs/evidence/a5-exceptional-fibers/kernel-limits/README.md:137) lines 137–139 state
+   `vb_special_arcs.py` lines 3–5 and `README.md` lines 137–139 state
    `k/(1+k²)=iω` and `e=(1+ik)/(1-ik)`. Direct substitution gives
    `ω=ik/(1+k²)`, hence `iω=-k/(1+k²)`.
 
@@ -45,7 +45,7 @@ A concurrent uncommitted `--plus` edit appeared in `fiber_plucker_map.py` during
 
 5. **SLOPPY — ledger A5-295 exceeds its retained record on execution provenance.**
 
-   [ledger.tsv](docs/evidence/a5-exceptional-fibers/ledger.tsv:293) asserts “6.5 minutes on the 32-thread laptop.” Neither `vb-special-arcs-result.json` nor `vb_special_arcs.py` records elapsed time, worker count, or host. The mathematical fields are supported; that measured provenance is not.
+   `ledger.tsv` asserts “6.5 minutes on the 32-thread laptop.” Neither `vb-special-arcs-result.json` nor `vb_special_arcs.py` records elapsed time, worker count, or host. The mathematical fields are supported; that measured provenance is not.
 
 ## Is claim 2 a real test?
 
@@ -79,7 +79,7 @@ Thus a Plücker permutation is detected. The code reports the failure through mi
 
 2. **COMPUTED, survives only as a sample statement.** The exact linear system is equivalent to the claimed fit, the two-prime records report the stated ranks, degree one has no solution, degree two has a one-dimensional nonzero-scalar solution, and all retained held-out counts pass. The evidence does not prove a global morphism on the full fibers.
 
-3. **HYPOTHESIS, accurately bounded.** [README.md](docs/evidence/a5-exceptional-fibers/kernel-limits/README.md:182) lines 182–188 say “on each sampled family” and immediately state the sample scope. Same-sign X reports rank 12 of 15 in degree one and 45 of the certified 51-dimensional degree-two fiber piece. The sentence does not claim coverage of the missing directions.
+3. **HYPOTHESIS, accurately bounded.** `README.md` lines 182–188 say “on each sampled family” and immediately state the sample scope. Same-sign X reports rank 12 of 15 in degree one and 45 of the certified 51-dimensional degree-two fiber piece. The sentence does not claim coverage of the missing directions.
 
 4. **PARTLY FALSIFIED.** A5-296 states no more than the committed source and aggregate records. A5-295’s mathematical content is supported, but its laptop runtime and worker-count assertion lacks a retained measurement.
 
