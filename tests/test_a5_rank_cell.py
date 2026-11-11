@@ -1,3 +1,4 @@
+# ruff: noqa: S101
 """Atomic fiber-rank cell publication and validation."""
 
 from __future__ import annotations
@@ -11,7 +12,8 @@ import pytest
 
 RUNNER = Path(__file__).parents[1] / "docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py"
 SPEC = importlib.util.spec_from_file_location("a5_rank_cell_test", RUNNER)
-assert SPEC is not None and SPEC.loader is not None
+if SPEC is None or SPEC.loader is None:
+    raise RuntimeError(f"cannot load {RUNNER}")
 rank_cell = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = rank_cell
 SPEC.loader.exec_module(rank_cell)

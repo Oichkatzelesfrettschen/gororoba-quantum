@@ -42,7 +42,8 @@ when its kbase equals the existing qB.txt. --adopt-export admits files without a
 serial export, after checking its script, recomputing every adopted table at 64 evenly spaced rows and recomputing
 the adopted generator normal forms; a byte change outside those rows passes adoption, so copy only files the producer
 has closed. --export-only stops after the export, the barrier before a products stage. The --max-gb preflight (block
-generator matrices, walk temporaries, product rows, echelon bases) runs once the basis is known, before any table.
+generator matrices, walk temporaries, product rows, echelon bases) runs once the basis is known, before any table. On
+the streamed/compact route it admits against the maximum products or closure stage, not their nonresident sum.
 
 Representatives (--k2-receipt, quotient mode). A degree-2 membership receipt of the fiber-cone driver certifies that
 every quadric q of its relation file K2 satisfies q(G) in J + m * P_2 for this header and prime. Then y^b * q(y)
@@ -66,7 +67,8 @@ Memory-bounded quotient mode. `--stream-products` forms each generator multiplic
 layer at a time as uint16 residues and immediately contracts that layer with the product prefixes that need it. The
 full dense operator is never resident. The `compact` echelon backend stores only nonpivot coefficients in uint16
 column panels and treats pivot columns as implicit unit vectors; closure frontiers are row indices and materialize in
-`--chunk` batches. These are exact representations of the same insertion sequence used by v13.
+`--chunk` batches. They preserve the exact closure fixed point. Lazy frontier rows reflect intervening RREF updates,
+so the representatives and operational round count can differ from v13 while the final row space is unchanged.
 
 Exactness: entries live in [0, p); every product X @ B, dense or sparse, runs in float64 and checks its own inner
 dimension k against k * (p - 1)^2 < 2^53 before it runs, so BLAS returns the exact integer before the reduction
@@ -194,6 +196,18 @@ def exact_mod_matmul(A: np.ndarray, B: np.ndarray, p: int) -> np.ndarray:
     if A.shape[1] * (p - 1) ** 2 >= 2**53:
         raise RuntimeError(f"inner dimension {A.shape[1]} leaves the exact float64 range at p = {p}")
     return np.mod(A @ B, p)
+
+
+def compact_stage_peaks(terms: dict[str, int]) -> dict[str, int]:
+    """Stage-local selected-array bounds; generator operators are released before closure bases exist."""
+    operator = terms.get("uint16_generator_operator", terms.get("streamed_operator_layers"))
+    if operator is None:
+        raise ValueError("compact memory terms have no generator operator")
+    products = terms["uint16_product_rows"]
+    return {
+        "products": operator + products,
+        "closure": products + terms["compact_echelon_ceiling"] + terms["closure_chunk_temporaries"],
+    }
 
 
 def is_odd_prime(p: int) -> bool:
@@ -847,9 +861,7 @@ def generator_blocks(
     return L
 
 
-def order_walk_levels(
-    basis: list[Monomial], lay: Blocks
-) -> list[list[tuple[int, int, np.ndarray, np.ndarray]]]:
+def order_walk_levels(basis: list[Monomial], lay: Blocks) -> list[list[tuple[int, int, np.ndarray, np.ndarray]]]:
     """The generator-operator walk grouped by total degree for two-level residency."""
     idx = {m: i for i, m in enumerate(basis)}
     levels: dict[int, list[int]] = {}
@@ -895,9 +907,7 @@ def tiled_mod_product(
             for k0 in range(0, left.shape[1], 4096):
                 k1 = min(k0 + 4096, left.shape[1])
                 tile = np.mod(
-                    tile
-                    + left[r0:r1, k0:k1].astype(np.float64)
-                    @ right[k0:k1, c0:c1].astype(np.float64),
+                    tile + left[r0:r1, k0:k1].astype(np.float64) @ right[k0:k1, c0:c1].astype(np.float64),
                     p,
                 )
             out[r0:r1, c0:c1] = tile.astype(np.uint16)
@@ -921,12 +931,9 @@ def streamed_generator_product(
     immediately, so the complete dense operator is never resident.
     """
     outputs = {
-        block: np.zeros((len(rows), len(lay.cols[block ^ chi])), dtype=np.uint16)
-        for block, rows in inputs.items()
+        block: np.zeros((len(rows), len(lay.cols[block ^ chi])), dtype=np.uint16) for block, rows in inputs.items()
     }
-    previous: dict[int, np.ndarray] = {
-        0: generator[lay.cols[chi]][None].astype(np.uint16)
-    }
+    previous: dict[int, np.ndarray] = {0: generator[lay.cols[chi]][None].astype(np.uint16)}
     previous_map = {block: np.full(len(lay.cols[block]), -1, dtype=np.int64) for block in lay.cols}
     previous_map[0][one_pos] = 0
     if 0 in inputs and len(inputs[0]):
@@ -940,8 +947,7 @@ def streamed_generator_product(
             positions[block] = np.concatenate(pieces) if pieces else np.zeros(0, dtype=np.int64)
             current_map[block][positions[block]] = np.arange(len(positions[block]))
         current = {
-            block: np.zeros((len(positions[block]), len(lay.cols[block ^ chi])), dtype=np.uint16)
-            for block in lay.cols
+            block: np.zeros((len(positions[block]), len(lay.cols[block ^ chi])), dtype=np.uint16) for block in lay.cols
         }
         for k, block, kids, parents in groups:
             parent_block = block ^ lay.var_char[k]
@@ -974,8 +980,7 @@ def compact_generator_blocks(
 ) -> dict[int, np.ndarray]:
     """Full generator operator in uint16, built by bounded row panels for reuse across product degrees."""
     operator = {
-        block: np.zeros((len(lay.cols[block]), len(lay.cols[block ^ chi])), dtype=np.uint16)
-        for block in lay.cols
+        block: np.zeros((len(lay.cols[block]), len(lay.cols[block ^ chi])), dtype=np.uint16) for block in lay.cols
     }
     operator[0][one_pos] = generator[lay.cols[chi]].astype(np.uint16)
     for groups in levels:
@@ -1074,12 +1079,9 @@ def block_products_streamed(
             for t in prefixes:
                 by_block.setdefault(rows[t][0], []).append(t)
             inputs = {
-                block: np.asarray([rows[t][1] for t in tuples], dtype=np.uint16)
-                for block, tuples in by_block.items()
+                block: np.asarray([rows[t][1] for t in tuples], dtype=np.uint16) for block, tuples in by_block.items()
             }
-            products = streamed_generator_product(
-                inputs, gvecs[f], gchar[f], one_pos, levels, lay, p, chunk
-            )
+            products = streamed_generator_product(inputs, gvecs[f], gchar[f], one_pos, levels, lay, p, chunk)
             for block, tuples in by_block.items():
                 for t, row in zip(tuples, products[block], strict=True):
                     rows[t + (f,)] = (block ^ gchar[f], row.copy())
@@ -1316,17 +1318,13 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         widest = int(sizes.max())
         exponents = np.asarray(basis, dtype=np.int64)
         degree_sizes = [
-            np.bincount(layout[exponents.sum(axis=1) == degree], minlength=len(blocks))
-            for degree in range(a.N)
+            np.bincount(layout[exponents.sum(axis=1) == degree], minlength=len(blocks)) for degree in range(a.N)
         ]
         layer_bytes = []
         full_operator_bytes = []
         for chi in blocks:
             full_operator_bytes.append(2 * sum(int(sizes[b]) * int(sizes[b ^ chi]) for b in blocks))
-            per_degree = [
-                2 * sum(int(counts[b]) * int(sizes[b ^ chi]) for b in blocks)
-                for counts in degree_sizes
-            ]
+            per_degree = [2 * sum(int(counts[b]) * int(sizes[b ^ chi]) for b in blocks) for counts in degree_sizes]
             adjacent = [per_degree[i] + per_degree[i + 1] for i in range(max(0, len(per_degree) - 1))]
             layer_bytes.append(max(adjacent, default=max(per_degree, default=0)))
         if rset:
@@ -1345,9 +1343,14 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         }
 
     def preflight(basis: list[Monomial], m: int = ngens) -> None:
-        est = compact_estimate(basis) if a.stream_products and a.echelon == "compact" else estimate(basis, m)
-        if a.max_gb and sum(est.values()) > a.max_gb * 2**30:
-            raise SystemExit(f"preflight {sum(est.values()) / 2**30:.2f} GiB exceeds --max-gb {a.max_gb}: {est}")
+        compact_route = a.stream_products and a.echelon == "compact"
+        est = compact_estimate(basis) if compact_route else estimate(basis, m)
+        stages = compact_stage_peaks(est) if compact_route else {"simultaneous": sum(est.values())}
+        peak = max(stages.values(), default=0)
+        if a.max_gb and peak > a.max_gb * 2**30:
+            raise SystemExit(
+                f"preflight {peak / 2**30:.2f} GiB exceeds --max-gb {a.max_gb}: terms={est}, stages={stages}"
+            )
 
     t_s0 = time.time()
     basis, tables, gpolys, export = quotient_data(
@@ -1393,19 +1396,20 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
     gvecs = np.array([v for v, _ in comps])
     gchar = [c for _, c in comps]
     preflight(basis, len(gchar))
-    selected_estimate = compact_estimate(basis) if a.stream_products and a.echelon == "compact" else estimate(
-        basis, len(gchar)
+    compact_route = a.stream_products and a.echelon == "compact"
+    selected_estimate = compact_estimate(basis) if compact_route else estimate(basis, len(gchar))
+    selected_stages = (
+        compact_stage_peaks(selected_estimate) if compact_route else {"simultaneous": sum(selected_estimate.values())}
     )
-    preflight_bytes = sum(selected_estimate.values())
+    preflight_bytes = max(selected_stages.values(), default=0)
     one_pos = int(lay.pos[bidx[tuple(0 for _ in basis[0])]])
     compact_operator_bytes = max(
-        (
-            2 * sum(len(cols[b]) * len(cols[b ^ chi]) for b in blocks)
-            for chi in blocks
-        ),
+        (2 * sum(len(cols[b]) * len(cols[b ^ chi]) for b in blocks) for chi in blocks),
         default=0,
     )
-    cache_operator = bool(a.stream_products and a.operator_cache_gb and compact_operator_bytes <= a.operator_cache_gb * 2**30)
+    cache_operator = bool(
+        a.stream_products and a.operator_cache_gb and compact_operator_bytes <= a.operator_cache_gb * 2**30
+    )
     if cache_operator:
         levels = order_walk_levels(basis, lay)
         built = block_products_compact_operator(
@@ -1422,6 +1426,7 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         walk = order_walk(basis, lay)
         built = block_products(gvecs, gchar, one_pos, walk, lay, a.d, p, rset.wanted if rset else None)
         del walk
+    print(f"products built in {time.time() - t_p0:.1f} s: {len(built)} retained rows", file=sys.stderr, flush=True)
 
     def stack(built: dict[tuple[int, ...], tuple[int, np.ndarray]], ts: list[tuple[int, ...]], b: int) -> np.ndarray:
         picked = [built[t][1] for t in ts if built[t][0] == b]
@@ -1467,6 +1472,11 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
                     if len(X):
                         W[tb].insert(X, a.chunk)
         new = {b: W[b].new_indices(start[b]) for b in blocks}
+        print(
+            f"closure round {rounds}: ranks {[len(W[b]) for b in blocks]}, frontier {[len(new[b]) for b in blocks]}",
+            file=sys.stderr,
+            flush=True,
+        )
     t_close = time.time() - t0
     print(f"echelon insert seconds in the closure: {sum(w.insert_seconds for w in W.values()):.1f}", file=sys.stderr)
     per_block = {}
@@ -1496,8 +1506,11 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         "generator_components": len(gchar),
         "preflight_bytes": preflight_bytes,
         "preflight_terms": selected_estimate,
+        "preflight_stages": selected_stages,
         "stream_products": a.stream_products,
-        "product_operator": "uint16-cached" if cache_operator else ("uint16-streamed" if a.stream_products else "float64"),
+        "product_operator": "uint16-cached"
+        if cache_operator
+        else ("uint16-streamed" if a.stream_products else "float64"),
         "blocks": len(blocks),
         "closure_rounds": rounds,
         "closure_tables": "dense" if dense_closure else "sparse",

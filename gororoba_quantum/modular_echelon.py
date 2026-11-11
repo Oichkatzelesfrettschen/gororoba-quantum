@@ -558,7 +558,7 @@ class Echelon:
 
     Invariant: basis row i has a one in column piv[i] and zeros in every other pivot column. `insert` reduces the
     incoming rows by the basis, takes the reduced row echelon form of what remains on the non-pivot columns and then
-    clears the new pivot columns from the old rows, so the basis stays fully reduced. Both backends produce the same
+    clears the new pivot columns from the old rows, so the basis stays fully reduced. All backends produce the same
     basis and pivot list for the same insertion sequence.
     """
 
@@ -576,8 +576,7 @@ class Echelon:
         self._arith: DeviceArithmetic | None = None
         if backend == "compact":
             self._compact_cols = [
-                np.arange(i, min(i + COMPACT_COLS, ncols), dtype=np.int64)
-                for i in range(0, ncols, COMPACT_COLS)
+                np.arange(i, min(i + COMPACT_COLS, ncols), dtype=np.int64) for i in range(0, ncols, COMPACT_COLS)
             ]
             self._compact_parts = [np.zeros((0, len(cols)), dtype=np.uint16) for cols in self._compact_cols]
         if backend == "gpu":
@@ -693,13 +692,9 @@ class Echelon:
                 for k0 in range(0, a.shape[1], COMPACT_INNER):
                     k1 = min(k0 + COMPACT_INNER, a.shape[1])
                     if not modular_matmul_exact_bound(k1 - k0, self.p):
-                        raise RuntimeError(
-                            f"inner tile {k1 - k0} leaves the exact float64 range at p = {self.p}"
-                        )
+                        raise RuntimeError(f"inner tile {k1 - k0} leaves the exact float64 range at p = {self.p}")
                     z = np.mod(
-                        z
-                        - a[r0:r1, k0:k1].astype(np.float64)
-                        @ b[k0:k1, c0:c1].astype(np.float64),
+                        z - a[r0:r1, k0:k1].astype(np.float64) @ b[k0:k1, c0:c1].astype(np.float64),
                         self.p,
                     )
                 out[r0:r1, c0:c1] = z.astype(np.uint16)
