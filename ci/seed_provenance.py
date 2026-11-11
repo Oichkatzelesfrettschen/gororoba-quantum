@@ -250,8 +250,11 @@ def draw_text(path: str) -> str | None:
 
     DRAW_NAME and qrng_seeds.REF both contain the literal `draw-`, so a file without those bytes holds no claim and
     no reference; the retained tree is several gigabytes of raw provider records, and the byte search spares their
-    decoding and both pattern scans."""
+    decoding and both pattern scans. UTF-16 text hides the marker between NUL bytes, so a file that opens with a
+    UTF-16 byte-order mark is rejected; any other file without the marker is skipped undecoded."""
     data = Path(path).read_bytes()
+    if data.startswith((b"\xff\xfe", b"\xfe\xff")):
+        raise SeedError(f"{path} is UTF-16; a retained record is UTF-8")
     return data.decode("utf-8") if DRAW_MARK in data else None
 
 
@@ -341,6 +344,7 @@ def consumption(
     paths: list[str],
     references: list[tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]],
 ) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
+    """runtime_consumption from the per-file references of paths, in the order of paths."""
     consumed: dict[tuple[str, int], set[Consumer]] = {}
     mentions: dict[str, set[tuple[str, int]]] = {}
     for path, (found, declared) in zip(paths, references, strict=True):
