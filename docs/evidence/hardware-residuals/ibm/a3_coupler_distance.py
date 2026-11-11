@@ -14,9 +14,18 @@ slope of the bin means on the bin index (bins with d >= 1). Together that is 9 b
 near-minus-far contrast (d = 1 against d >= 6) per dataset, plus the same 11 on a variant that drops every pair
 whose joint count is individually significant (own Bonferroni line over the PUB's pairs), 22 tests per dataset.
 "No spatial structure" means every one stays above 0.05 / 22 and the trend and contrast are consistent with 0. A
-pair scan adds one exact
-two-sided Poisson test per qubit pair on the pooled joint-error count against the pooled independence mean
-sum_PUB K_i K_j / N (pilot: 11,628 pairs; each state-prep PUB: its own pairs), Bonferroni over all pair tests.
+pair scan adds one exact two-sided test per qubit pair on the pooled joint-error count: with the margins K_i, K_j
+of each PUB fixed, the joint count of a pair is hypergeometric (N, K_i, K_j), and the pooled count over the
+pilot's 24 PUBs follows the convolution of the 24 laws (each state-prep PUB is scanned alone). Bonferroni runs over
+all pair tests (pilot: 11,628 pairs; each state-prep PUB: its own pairs).
+
+Unit of replication. The PUB-level t tests answer whether the mean correlation of a bin differs from 0 across the
+PUBs; the PUBs of a dataset are disjoint shot sets, but those of one calibration epoch share one device state, so a
+PUB-level p-value does not speak for other device states. The same statistics are therefore also aggregated within
+each calibration epoch (the plan-snapshot stamp of the run record; the UTC date of the run is a coarser second
+grouping) and tested across epochs with (epochs - 1) degrees of freedom. The epoch-level results sit beside the
+PUB-level ones in the JSON and enter no multiplicity ledger. The pilot is one session, one epoch: it has no
+epoch-level test.
 """
 
 from __future__ import annotations
@@ -25,8 +34,8 @@ import math
 from typing import Any
 
 import common
+import exact_laws
 import numpy as np
-from scipy.stats import poisson
 from scipy.stats import t as tdist
 
 ALPHA = 0.05
@@ -61,10 +70,8 @@ def analyze(ds: dict[str, Any]) -> dict[str, Any]:
     rbin = []
     # robust variant: drop the pairs whose joint count is individually significant (own Bonferroni line over the
     # PUB's pairs)
-    expected = np.outer(k, k) / n
-    upper_tail = poisson.logsf(joint - 1, np.maximum(expected, 1e-12)) / math.log(10)
-    lower_tail = poisson.logcdf(joint, np.maximum(expected, 1e-12)) / math.log(10)
-    pair_lp = np.minimum(0.0, math.log10(2) + np.minimum(upper_tail, lower_tail))
+    k_int = k.astype(np.int64)
+    pair_lp = exact_laws.hypergeom_log10_two_sided(joint.astype(np.int64), n, k_int[:, None], k_int[None, :])
     n_pairs = int(upper.sum())
     outlier = pair_lp <= math.log10(ALPHA) - math.log10(max(n_pairs, 1))
     rbin_trim = []
@@ -91,11 +98,28 @@ def analyze(ds: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def replicate_tests(
-    results: list[dict[str, Any]], label: str, key: str = "rbin"
-) -> tuple[dict[str, Any], list[tuple[str, str, float]]]:
-    tests: list[tuple[str, str, float]] = []
-    rows = []
+def _t_summary(values: np.ndarray) -> dict[str, Any]:
+    """Mean, t interval and two-sided t test of the mean of independent replicate values."""
+    mean = float(values.mean())
+    se = float(values.std(ddof=1) / math.sqrt(values.size))
+    dof = values.size - 1
+    tcrit = float(tdist.ppf(0.975, dof))
+    t_stat = mean / se if se > 0 else float("inf")
+    lp = float(math.log10(max(2 * tdist.sf(abs(t_stat), dof), 1e-300)))
+    return {
+        "mean": mean,
+        "se": se,
+        "dof": dof,
+        "ci95": [mean - tcrit * se, mean + tcrit * se],
+        "t": t_stat,
+        "log10_p": lp,
+    }
+
+
+def pub_statistics(
+    results: list[dict[str, Any]], key: str
+) -> tuple[np.ndarray, np.ndarray, list[float | None], list[float | None]]:
+    """Per-PUB bin means, pair counts, trend slope and near-minus-far contrast."""
     mat = np.full((len(results), len(BINS)), np.nan)
     pairs = np.zeros((len(results), len(BINS)))
     for i, r in enumerate(results):
@@ -103,17 +127,37 @@ def replicate_tests(
             if v is not None:
                 mat[i, k] = v
                 pairs[i, k] = c
+    slopes: list[float | None] = []
+    contrasts: list[float | None] = []
+    for i in range(len(results)):
+        xs = np.array([k for k in range(len(BINS)) if not np.isnan(mat[i, k])], dtype=float)
+        ys = np.array([mat[i, int(k)] for k in xs])
+        slopes.append(float(np.polyfit(xs, ys, 1)[0]) if xs.size >= 4 else None)
+        near = mat[i, 0]
+        far_w = pairs[i, 5:]
+        far_v = mat[i, 5:]
+        good = ~np.isnan(far_v) & (far_w > 0)
+        if not np.isnan(near) and good.any():
+            contrasts.append(float(near - np.average(far_v[good], weights=far_w[good])))
+        else:
+            contrasts.append(None)
+    return mat, pairs, slopes, contrasts
+
+
+def replicate_tests(
+    results: list[dict[str, Any]], label: str, key: str = "rbin"
+) -> tuple[dict[str, Any], list[tuple[str, str, float]]]:
+    """PUB-level replicate tests (one replicate per PUB), the tests of the multiplicity ledger."""
+    tests: list[tuple[str, str, float]] = []
+    rows = []
+    mat, pairs, slopes, contrasts = pub_statistics(results, key)
     for k, (lo, hi) in enumerate(BINS):
         col = mat[:, k]
         col = col[~np.isnan(col)]
         if col.size < 3:
             rows.append({"bin": f"{lo}-{hi}", "n_pubs": int(col.size), "note": "fewer than 3 replicates"})
             continue
-        mean = float(col.mean())
-        se = float(col.std(ddof=1) / math.sqrt(col.size))
-        tcrit = float(tdist.ppf(0.975, col.size - 1))
-        t_stat = mean / se if se > 0 else float("inf")
-        lp = float(math.log10(max(2 * tdist.sf(abs(t_stat), col.size - 1), 1e-300)))
+        summary = _t_summary(col)
         null_se = float(
             np.nanmean(
                 [
@@ -129,85 +173,124 @@ def replicate_tests(
                 "bin": f"{lo}-{hi}",
                 "n_pubs": int(col.size),
                 "mean_pairs_per_pub": float(pairs[:, k][pairs[:, k] > 0].mean()),
-                "mean_r": mean,
-                "ci95": [mean - tcrit * se, mean + tcrit * se],
-                "t": t_stat,
-                "log10_p": lp,
+                "mean_r": summary["mean"],
+                "ci95": summary["ci95"],
+                "t": summary["t"],
+                "log10_p": summary["log10_p"],
                 "independence_null_se": null_se,
             }
         )
-        tests.append((f"{label}|bin{lo}-{hi}", f"{label}_bin", lp))
-    # trend: per-PUB slope across bins (positions 0..8) over available bins
-    slopes = []
-    for i in range(len(results)):
-        xs = np.array([k for k in range(len(BINS)) if not np.isnan(mat[i, k])], dtype=float)
-        ys = np.array([mat[i, int(k)] for k in xs])
-        if xs.size >= 4:
-            slopes.append(float(np.polyfit(xs, ys, 1)[0]))
-    trend: dict[str, Any] = {"n_pubs": len(slopes)}
-    if len(slopes) >= 3:
-        sl = np.array(slopes)
-        se = float(sl.std(ddof=1) / math.sqrt(sl.size))
-        t_stat = float(sl.mean() / se) if se > 0 else float("inf")
-        lp = float(math.log10(max(2 * tdist.sf(abs(t_stat), sl.size - 1), 1e-300)))
-        tcrit = float(tdist.ppf(0.975, sl.size - 1))
+        tests.append((f"{label}|bin{lo}-{hi}", f"{label}_bin", summary["log10_p"]))
+    sl = np.array([v for v in slopes if v is not None])
+    trend: dict[str, Any] = {"n_pubs": int(sl.size)}
+    if sl.size >= 3:
+        summary = _t_summary(sl)
         trend.update(
             {
-                "mean_slope_r_per_bin": float(sl.mean()),
-                "ci95": [float(sl.mean() - tcrit * se), float(sl.mean() + tcrit * se)],
-                "t": t_stat,
-                "log10_p": lp,
+                "mean_slope_r_per_bin": summary["mean"],
+                "ci95": summary["ci95"],
+                "t": summary["t"],
+                "log10_p": summary["log10_p"],
             }
         )
-        tests.append((f"{label}|trend", f"{label}_trend", lp))
-    # near minus far: d = 1 against pooled d >= 6 (pair-count weighted per PUB)
-    contrast = []
-    for i in range(len(results)):
-        near = mat[i, 0]
-        far_w = pairs[i, 5:]
-        far_v = mat[i, 5:]
-        good = ~np.isnan(far_v) & (far_w > 0)
-        if not np.isnan(near) and good.any():
-            contrast.append(float(near - np.average(far_v[good], weights=far_w[good])))
-    cont: dict[str, Any] = {"n_pubs": len(contrast)}
-    if len(contrast) >= 3:
-        c_arr = np.array(contrast)
-        se = float(c_arr.std(ddof=1) / math.sqrt(c_arr.size))
-        t_stat = float(c_arr.mean() / se) if se > 0 else float("inf")
-        lp = float(math.log10(max(2 * tdist.sf(abs(t_stat), c_arr.size - 1), 1e-300)))
-        tcrit = float(tdist.ppf(0.975, c_arr.size - 1))
+        tests.append((f"{label}|trend", f"{label}_trend", summary["log10_p"]))
+    c_arr = np.array([v for v in contrasts if v is not None])
+    cont: dict[str, Any] = {"n_pubs": int(c_arr.size)}
+    if c_arr.size >= 3:
+        summary = _t_summary(c_arr)
         cont.update(
             {
-                "mean_r_near_minus_far": float(c_arr.mean()),
-                "ci95": [float(c_arr.mean() - tcrit * se), float(c_arr.mean() + tcrit * se)],
-                "t": t_stat,
-                "log10_p": lp,
+                "mean_r_near_minus_far": summary["mean"],
+                "ci95": summary["ci95"],
+                "t": summary["t"],
+                "log10_p": summary["log10_p"],
             }
         )
-        tests.append((f"{label}|near_minus_far", f"{label}_contrast", lp))
-    return {"bins": rows, "trend": trend, "near_minus_far": cont}, tests
+        tests.append((f"{label}|near_minus_far", f"{label}_contrast", summary["log10_p"]))
+    return {
+        "unit": "PUB (disjoint shot sets that share the device state of their calibration epoch)",
+        "bins": rows,
+        "trend": trend,
+        "near_minus_far": cont,
+    }, tests
+
+
+def epoch_tests(results: list[dict[str, Any]], groups: list[str], key: str = "rbin") -> dict[str, Any]:
+    """Statistics aggregated within each calibration epoch and tested across epochs.
+
+    groups[i] names the epoch of PUB i. Each epoch value is the unweighted mean of its PUBs' values (bin means,
+    trend slopes, near-minus-far contrasts); the test is the t test of the epoch values.
+    """
+    mat, _pairs, slopes, contrasts = pub_statistics(results, key)
+    epochs = sorted(set(groups))
+    members = {e: [i for i, g in enumerate(groups) if g == e] for e in epochs}
+
+    def per_epoch(values: list[float | None]) -> dict[str, float]:
+        out = {}
+        for e in epochs:
+            vals = [float(v) for v in (values[i] for i in members[e]) if v is not None]
+            if vals:
+                out[e] = float(np.mean(vals))
+        return out
+
+    def block(values: dict[str, float]) -> dict[str, Any]:
+        entry: dict[str, Any] = {"epoch_values": values}
+        if len(values) >= 3:
+            entry.update(_t_summary(np.array(list(values.values()))))
+        else:
+            entry["note"] = "fewer than 3 epochs"
+        return entry
+
+    bins = []
+    for k, (lo, hi) in enumerate(BINS):
+        bins.append({"bin": f"{lo}-{hi}"} | block(per_epoch([None if np.isnan(v) else float(v) for v in mat[:, k]])))
+    return {
+        "epochs": {e: len(members[e]) for e in epochs},
+        "unit": "calibration epoch (mean of the PUBs inside it)",
+        "bins": bins,
+        "trend": block(per_epoch(slopes)),
+        "near_minus_far": block(per_epoch(contrasts)),
+    }
+
+
+def _pair_task(task: tuple[list[tuple[int, np.ndarray, np.ndarray]], np.ndarray]) -> np.ndarray:
+    units, joint = task
+    return exact_laws.pooled_hypergeom_log10_two_sided(units, joint)
 
 
 def pair_scan(
     results: list[dict[str, Any]], label: str, backend: str
 ) -> tuple[dict[str, Any], list[tuple[str, str, float]]]:
-    """Pooled joint-error count per pair against the pooled independence mean (same qubit set in every PUB)."""
+    """Pooled joint-error count per pair against the exact hypergeometric law (same qubit set in every PUB)."""
     qubits = results[0]["qubits"]
     q = len(qubits)
     dist = common.graph_distances(common.coupling_graph(backend))
     obs = np.zeros((q, q))
     exp = np.zeros((q, q))
+    var = np.zeros((q, q))
     for r in results:
         if r["qubits"] != qubits:
             raise ValueError("pair scan pools PUBs with one qubit set")
         k = np.array(r["k"], dtype=np.float64)
+        n = r["n"]
         obs += r["joint"]
-        exp += np.outer(k, k) / r["n"]
+        exp += np.outer(k, k) / n
+        var += np.outer(k * (n - k), k * (n - k)) / (n * n * (n - 1))
     iu = np.triu_indices(q, 1)
     o, m = obs[iu].astype(int), exp[iu]
-    upper = poisson.logsf(o - 1, m) / math.log(10)
-    lower = poisson.logcdf(o, m) / math.log(10)
-    lp = np.minimum(0.0, math.log10(2) + np.minimum(upper, lower))
+    if len(results) == 1:
+        k_int = np.array(results[0]["k"], dtype=np.int64)
+        lp = exact_laws.hypergeom_log10_two_sided(o, results[0]["n"], k_int[iu[0]], k_int[iu[1]])
+    else:
+        units = [
+            (r["n"], np.array(r["k"], dtype=np.int64)[iu[0]], np.array(r["k"], dtype=np.int64)[iu[1]]) for r in results
+        ]
+        size = -(-o.size // 48)
+        tasks = [
+            ([(n, ki[s : s + size], kj[s : s + size]) for n, ki, kj in units], o[s : s + size])
+            for s in range(0, o.size, size)
+        ]
+        lp = np.concatenate(common.ordered_map(_pair_task, tasks, min_items=1))
     tests = [
         (f"{label}|pair{qubits[a]}-{qubits[b]}", f"{label}_pair", float(v))
         for a, b, v in zip(iu[0], iu[1], lp, strict=True)
@@ -223,8 +306,9 @@ def pair_scan(
         }
         for i in order
     ]
-    z = (o - m) / np.sqrt(np.maximum(m, 1e-9))
+    z = (o - m) / np.sqrt(np.maximum(var[iu], 1e-12))
     summary = {
+        "law": "hypergeometric per PUB, convolved over PUBs",
         "n_pairs": int(len(o)),
         "pooled_observed": int(o.sum()),
         "pooled_expected": float(m.sum()),
@@ -261,6 +345,18 @@ def main() -> None:
             "replicate_tests_pair_outliers_removed": rep_trim,
             "n_outlier_pairs_removed_per_pub": [r["n_outlier_pairs_removed"] for r in rs],
         }
+        labels = [common.epoch_labels(cat, r["run"], r["backend"]) for r in rs]
+        entry["epoch_of_pub"] = [{"id": r["id"]} | lab for r, lab in zip(rs, labels, strict=True)]
+        if len({lab["stamp"] for lab in labels}) < 3:
+            entry["epoch_level"] = {"note": "fewer than 3 calibration epochs: no epoch-level test"}
+        else:
+            entry["epoch_level"] = {
+                "by_calibration_stamp": epoch_tests(rs, [lab["stamp"] for lab in labels]),
+                "by_calibration_stamp_pair_outliers_removed": epoch_tests(
+                    rs, [lab["stamp"] for lab in labels], key="rbin_trim"
+                ),
+                "by_utc_date": epoch_tests(rs, [lab["date"] for lab in labels]),
+            }
         if kind == "pilot":
             summ, pair_tests = pair_scan(rs, label, backend)
             entry["pair_scan"] = summ
@@ -305,6 +401,15 @@ def main() -> None:
         out["datasets"]["pilot"]["pair_scan"]["top10"][:3],
     )
     print(out["survivors_bonferroni"][:10], out["bh_survivors_non_pair"])
+    epoch = out["datasets"]["state_prep"]["epoch_level"]
+    for grouping, block in epoch.items():
+        if not isinstance(block, dict) or "epochs" not in block:
+            continue
+        print("epoch level", grouping, block["epochs"])
+        for name in ("trend", "near_minus_far"):
+            print("  ", name, block[name])
+        for b in block["bins"]:
+            print("  ", b["bin"], b["epoch_values"], b.get("log10_p"))
 
 
 if __name__ == "__main__":

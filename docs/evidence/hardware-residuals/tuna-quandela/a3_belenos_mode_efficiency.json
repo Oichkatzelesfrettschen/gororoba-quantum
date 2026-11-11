@@ -65,15 +65,18 @@
   ],
   "single_photon_completed_qpu_belenos_runs": 32
  },
- "falsifier": "Analysis 3: Belenos per-mode efficiency across plan-time calibration sessions.\n\nFalsifier, fixed before computing. \"No structure\" is: (a) between runs that returned byte-identical compiled\ncircuits for every iteration (the frozen BDSC request), the per-mode single-click shares differ only by\nmultinomial noise, so the generalized Cochran-Mantel-Haenszel statistic of run against detector mode, stratified by\nsetting, has no excess over its chi-square null; (b) in the model-based fits (scripts/qd_belenos_mesh.fit_efficiency\non the ideal-mesh prediction of each returned circuit) the log-efficiencies of different plan-time sessions agree\nwithin the Fisher interval, widened by the sessions' own jackknife spread; (c) the DetectorBalancing contrast, the\ndefault-mitigation and mitigation-none runs on one plan-time record, differ by no more than binomial noise.\n\nWhat the counts identify. Quandela returns click counts per output mode. A multiplicative per-mode factor common\nto every setting (detector efficiency, output transmission, mode-dependent loss) is identifiable only up to one\noverall scale and only relative to the other modes; it is not separable from a static routing offset of the mesh\n(the repository's own held-out fits reject the ideal mesh model, strategy.md section 2) or from dark and stray\nclicks, which load modes 0, 1 and 5. An absolute efficiency is not identified, because every setting carries a\nfree scale. Counts passed the service's default DetectorBalancing correction, which uses detector and output-loss\nmodels of its own, so fitted efficiencies describe what remains after that correction.\nThe frozen-request design separates the two readings: a change in detector efficiency predicts one factor per mode\nshared by all 24 settings, a change in mesh phases predicts setting-specific changes.\n\nNulls are analytic (chi-square, normal). No random draw.\n",
+ "falsifier": "Analysis 3: Belenos per-mode efficiency across plan-time calibration sessions.\n\nFalsifier, fixed before computing. \"No structure\" is: (a) between runs that returned byte-identical compiled\ncircuits for every iteration (the frozen BDSC request), the per-mode single-click shares differ only by\nmultinomial noise, so the generalized Cochran-Mantel-Haenszel statistic of run against detector mode, stratified by\nsetting, has no excess over its chi-square null; (b) in the model-based fits (scripts/qd_belenos_mesh.fit_efficiency\non the ideal-mesh prediction of each returned circuit) the log-efficiencies of different plan-time sessions agree\nwithin the Fisher interval, widened by the sessions' own delete-one-setting jackknife spread added in quadrature\n(a second column scales the Fisher covariance by the session's Pearson overdispersion instead); (c) the\nDetectorBalancing contrast, the default-mitigation and mitigation-none runs on one plan-time record, differ by no\nmore than binomial noise.\n\nWhat the counts identify. Quandela returns click counts per output mode. A multiplicative per-mode factor common\nto every setting (detector efficiency, output transmission, mode-dependent loss) is identifiable only up to one\noverall scale and only relative to the other modes; it is not separable from a static routing offset of the mesh\n(the repository's own held-out fits reject the ideal mesh model, strategy.md section 2) or from dark and stray\nclicks, which load modes 0, 1 and 5. An absolute efficiency is not identified, because every setting carries a\nfree scale. Counts passed the service's default DetectorBalancing correction, which uses detector and output-loss\nmodels of its own, so fitted efficiencies describe what remains after that correction.\nThe frozen-request design separates the two readings: a change in detector efficiency predicts one factor per mode\nshared by all 24 settings, a change in mesh phases predicts setting-specific changes.\n\nNulls are analytic (chi-square, normal). No random draw. The setting-specific change between two runs is judged by\nthree statistics of one table (the difference of the Pearson totals, the deviance of the nested log-linear\ncommon-factor fit, and its Pearson statistic); the ledger carries the largest of the three p-values, so a row\nsurvives only when every reading crosses the cutoff. The plan-time relation combines the per-pair rank\ncorrelations with the covariance that runs shared by consecutive pairs induce.\n",
  "ledger": {
   "bonferroni_alpha": 0.00081967,
   "rows": [
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -85,25 +88,39 @@
     "test_id": "A3.cmh[all_modes].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -374.093,
+     "loglinear_pearson": -276.018,
+     "pearson_difference": -276.881,
+     "prior_method": -276.881
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 199,
+     "loglinear_deviance": 2486.8,
+     "loglinear_dof": 229,
+     "loglinear_pearson": 1983.9,
      "q_over_dof": 9.617,
      "q_residual": 1913.8
     },
-    "log10_p": -276.881,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -276.018,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -115,25 +132,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -187.21,
+     "loglinear_pearson": -141.008,
+     "pearson_difference": -138.23,
+     "prior_method": -138.23
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 158,
+     "loglinear_deviance": 1396.6,
+     "loglinear_dof": 178,
+     "loglinear_pearson": 1149.7,
      "q_over_dof": 6.8984,
      "q_residual": 1090.0
     },
     "log10_p": -138.23,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -145,25 +176,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -488.265,
+     "loglinear_pearson": -444.462,
+     "pearson_difference": -436.414,
+     "prior_method": -436.414
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 398,
+     "loglinear_deviance": 3811.1,
+     "loglinear_dof": 529,
+     "loglinear_pearson": 3575.8,
      "q_over_dof": 8.1157,
      "q_residual": 3230.0
     },
     "log10_p": -436.414,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -175,25 +220,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -3.50886,
+     "loglinear_pearson": -2.60058,
+     "pearson_difference": -3.14226,
+     "prior_method": -3.14226
+    },
     "analysis": 3,
     "bh_significant": true,
-    "bonferroni_significant": true,
+    "bonferroni_significant": false,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 312,
+     "loglinear_deviance": 526.4,
+     "loglinear_dof": 420,
+     "loglinear_pearson": 505.91,
      "q_over_dof": 1.2748,
      "q_residual": 397.73
     },
-    "log10_p": -3.14226,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -2.60058,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -205,25 +264,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -1506.31,
+     "loglinear_pearson": -1994.81,
+     "pearson_difference": -428.141,
+     "prior_method": -428.141
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 313,
+     "loglinear_deviance": 8946.0,
+     "loglinear_dof": 528,
+     "loglinear_pearson": 11319.0,
      "q_over_dof": 9.5166,
      "q_residual": 2978.7
     },
     "log10_p": -428.141,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -235,25 +308,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -32.3248,
+     "loglinear_pearson": -27.0731,
+     "pearson_difference": -11.1624,
+     "prior_method": -11.1624
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 241,
+     "loglinear_deviance": 863.56,
+     "loglinear_dof": 419,
+     "loglinear_pearson": 815.72,
      "q_over_dof": 1.7445,
      "q_residual": 420.42
     },
     "log10_p": -11.1624,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -265,25 +352,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -59581.8,
+     "loglinear_pearson": -62289.0,
+     "pearson_difference": -50315.1,
+     "prior_method": -50315.1
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 340,
+     "loglinear_deviance": 277840.0,
+     "loglinear_dof": 471,
+     "loglinear_pearson": 290330.0,
      "q_over_dof": 688.97,
      "q_residual": 234250.0
     },
     "log10_p": -50315.1,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -295,25 +396,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -7.15283,
+     "loglinear_pearson": -4.60466,
+     "pearson_difference": -6.36464,
+     "prior_method": -6.36464
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 259,
+     "loglinear_deviance": 554.05,
+     "loglinear_dof": 389,
+     "loglinear_pearson": 512.61,
      "q_over_dof": 1.4936,
      "q_residual": 386.84
     },
-    "log10_p": -6.36464,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -4.60466,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -325,25 +440,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -31563.7,
+     "loglinear_pearson": -39540.3,
+     "pearson_difference": -23400.0,
+     "prior_method": -23400.0
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 337,
+     "loglinear_deviance": 148500.0,
+     "loglinear_dof": 467,
+     "loglinear_pearson": 185330.0,
      "q_over_dof": 326.5,
      "q_residual": 110030.0
     },
     "log10_p": -23400.0,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -355,25 +484,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -2.9861,
+     "loglinear_pearson": -1.55275,
+     "pearson_difference": -2.19682,
+     "prior_method": -2.19682
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 259,
+     "loglinear_deviance": 476.17,
+     "loglinear_dof": 385,
+     "loglinear_pearson": 439.77,
      "q_over_dof": 1.2323,
      "q_residual": 319.17
     },
-    "log10_p": -2.19682,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -1.55275,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -385,25 +528,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -18609.0,
+     "loglinear_pearson": -17294.9,
+     "pearson_difference": -15975.8,
+     "prior_method": -15975.8
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 344,
+     "loglinear_deviance": 88633.0,
+     "loglinear_dof": 474,
+     "loglinear_pearson": 82548.0,
      "q_over_dof": 220.21,
      "q_residual": 75753.0
     },
     "log10_p": -15975.8,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -415,25 +572,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -5.71033,
+     "loglinear_pearson": -3.53354,
+     "pearson_difference": -4.62919,
+     "prior_method": -4.62919
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 276,
+     "loglinear_deviance": 550.18,
+     "loglinear_dof": 405,
+     "loglinear_pearson": 510.13,
      "q_over_dof": 1.3847,
      "q_residual": 382.17
     },
-    "log10_p": -4.62919,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -3.53354,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -445,25 +616,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -38087.2,
+     "loglinear_pearson": -34874.8,
+     "pearson_difference": -33787.8,
+     "prior_method": -33787.8
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 339,
+     "loglinear_deviance": 178680.0,
+     "loglinear_dof": 477,
+     "loglinear_pearson": 163850.0,
      "q_over_dof": 466.08,
      "q_residual": 158000.0
     },
     "log10_p": -33787.8,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -475,25 +660,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -7.49284,
+     "loglinear_pearson": -4.57734,
+     "pearson_difference": -5.18911,
+     "prior_method": -5.18911
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 270,
+     "loglinear_deviance": 581.69,
+     "loglinear_dof": 408,
+     "loglinear_pearson": 533.83,
      "q_over_dof": 1.4207,
      "q_residual": 383.59
     },
-    "log10_p": -5.18911,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -4.57734,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -505,25 +704,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -21606.7,
+     "loglinear_pearson": -22045.0,
+     "pearson_difference": -15720.3,
+     "prior_method": -15720.3
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 338,
+     "loglinear_deviance": 102540.0,
+     "loglinear_dof": 481,
+     "loglinear_pearson": 104570.0,
      "q_over_dof": 220.53,
      "q_residual": 74539.0
     },
     "log10_p": -15720.3,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": false,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -535,25 +748,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -3.30976,
+     "loglinear_pearson": -1.47196,
+     "pearson_difference": -1.95968,
+     "prior_method": -1.95968
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 267,
+     "loglinear_deviance": 513.24,
+     "loglinear_dof": 412,
+     "loglinear_pearson": 466.03,
      "q_over_dof": 1.2088,
      "q_residual": 322.76
     },
-    "log10_p": -1.95968,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -1.47196,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -565,25 +792,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -10025.9,
+     "loglinear_pearson": -9789.83,
+     "pearson_difference": -8769.09,
+     "prior_method": -8769.09
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 343,
+     "loglinear_deviance": 48853.0,
+     "loglinear_dof": 480,
+     "loglinear_pearson": 47755.0,
      "q_over_dof": 123.5,
      "q_residual": 42362.0
     },
     "log10_p": -8769.09,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -595,25 +836,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -3.14017,
+     "loglinear_pearson": -1.33078,
+     "pearson_difference": -1.33385,
+     "prior_method": -1.33385
+    },
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 274,
+     "loglinear_deviance": 508.44,
+     "loglinear_dof": 411,
+     "loglinear_pearson": 460.29,
      "q_over_dof": 1.148,
      "q_residual": 314.54
     },
-    "log10_p": -1.33385,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -1.33078,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -625,25 +880,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -13887.8,
+     "loglinear_pearson": -14154.5,
+     "pearson_difference": -11267.4,
+     "prior_method": -11267.4
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 345,
+     "loglinear_deviance": 66758.0,
+     "loglinear_dof": 474,
+     "loglinear_pearson": 67995.0,
      "q_over_dof": 156.4,
      "q_residual": 53959.0
     },
     "log10_p": -11267.4,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -655,25 +924,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -3.47838,
+     "loglinear_pearson": -1.77003,
+     "pearson_difference": -2.17946,
+     "prior_method": -2.17946
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 277,
+     "loglinear_deviance": 508.98,
+     "loglinear_dof": 405,
+     "loglinear_pearson": 467.66,
      "q_over_dof": 1.2228,
      "q_residual": 338.73
     },
-    "log10_p": -2.17946,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -1.77003,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -685,25 +968,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -14989.0,
+     "loglinear_pearson": -16016.7,
+     "pearson_difference": -10849.8,
+     "prior_method": -10849.8
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 341,
+     "loglinear_deviance": 71884.0,
+     "loglinear_dof": 478,
+     "loglinear_pearson": 76647.0,
      "q_over_dof": 152.5,
      "q_residual": 52003.0
     },
     "log10_p": -10849.8,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -715,25 +1012,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -12.1677,
+     "loglinear_pearson": -8.1267,
+     "pearson_difference": -9.60727,
+     "prior_method": -9.60727
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 272,
+     "loglinear_deviance": 645.65,
+     "loglinear_dof": 409,
+     "loglinear_pearson": 592.17,
      "q_over_dof": 1.629,
      "q_residual": 443.09
     },
-    "log10_p": -9.60727,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -8.1267,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -745,25 +1056,39 @@
     "test_id": "A3.cmh[all_modes].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -28142.6,
+     "loglinear_pearson": -26145.2,
+     "pearson_difference": -26241.0,
+     "prior_method": -26241.0
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 335,
+     "loglinear_deviance": 132650.0,
+     "loglinear_dof": 461,
+     "loglinear_pearson": 123420.0,
      "q_over_dof": 367.58,
      "q_residual": 123140.0
     },
-    "log10_p": -26241.0,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -26145.2,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -775,25 +1100,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -5.5833,
+     "loglinear_pearson": -3.40572,
+     "pearson_difference": -4.01582,
+     "prior_method": -4.01582
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 267,
+     "loglinear_deviance": 532.96,
+     "loglinear_dof": 392,
+     "loglinear_pearson": 492.92,
      "q_over_dof": 1.3553,
      "q_residual": 361.86
     },
-    "log10_p": -4.01582,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "log10_p": -3.40572,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -805,25 +1144,39 @@
     "test_id": "A3.cmh[all_modes].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -609.186,
+     "loglinear_pearson": -589.617,
+     "pearson_difference": -527.496,
+     "prior_method": -527.496
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 420,
+     "loglinear_deviance": 4449.5,
+     "loglinear_dof": 529,
+     "loglinear_pearson": 4347.1,
      "q_over_dof": 8.9483,
      "q_residual": 3758.3
     },
     "log10_p": -527.496,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -835,25 +1188,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -2.22334,
+     "loglinear_pearson": -1.31831,
+     "pearson_difference": -1.25429,
+     "prior_method": -1.25429
+    },
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 344,
+     "loglinear_deviance": 518.09,
+     "loglinear_dof": 440,
+     "loglinear_pearson": 490.52,
      "q_over_dof": 1.1243,
      "q_residual": 386.75
     },
     "log10_p": -1.25429,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -865,25 +1232,39 @@
     "test_id": "A3.cmh[all_modes].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -1607.25,
+     "loglinear_pearson": -2465.81,
+     "pearson_difference": -1030.78,
+     "prior_method": -1030.78
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 332,
+     "loglinear_deviance": 9442.2,
+     "loglinear_dof": 529,
+     "loglinear_pearson": 13588.0,
      "q_over_dof": 18.159,
      "q_residual": 6028.8
     },
     "log10_p": -1030.78,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -895,25 +1276,39 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -41.0739,
+     "loglinear_pearson": -39.1961,
+     "pearson_difference": -26.0357,
+     "prior_method": -26.0357
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
     "effect": {
      "dof": 288,
+     "loglinear_deviance": 997.69,
+     "loglinear_dof": 460,
+     "loglinear_pearson": 981.64,
      "q_over_dof": 2.1631,
      "q_residual": 622.97
     },
     "log10_p": -26.0357,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 23,
@@ -925,25 +1320,39 @@
     "test_id": "A3.cmh[all_modes].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
    },
    {
+    "alternatives": {
+     "loglinear_deviance": -23856.3,
+     "loglinear_pearson": -24375.5,
+     "pearson_difference": -16650.8,
+     "prior_method": -16650.8
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
     "effect": {
      "dof": 341,
+     "loglinear_deviance": 112880.0,
+     "loglinear_dof": 468,
+     "loglinear_pearson": 115280.0,
      "q_over_dof": 231.26,
      "q_residual": 78859.0
     },
     "log10_p": -16650.8,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
     "test_id": "A3.res[all_modes].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
    },
    {
+    "alternatives": {},
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
     "effect": {
      "dof": 20,
@@ -955,32 +1364,51 @@
     "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
    },
    {
-    "analysis": 3,
-    "bh_significant": true,
-    "bonferroni_significant": true,
-    "ci95": null,
-    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
-    "effect": {
-     "dof": 267,
-     "q_over_dof": 1.3147,
-     "q_residual": 351.02
+    "alternatives": {
+     "loglinear_deviance": -4.71118,
+     "loglinear_pearson": -2.60397,
+     "pearson_difference": -3.37852,
+     "prior_method": -3.37852
     },
-    "log10_p": -3.37852,
-    "note": "approximate: difference of Pearson statistics; phase or mixing change",
-    "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
-   },
-   {
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": false,
+    "by_significant": true,
     "ci95": null,
-    "description": "centered fitted per-mode shift against the change of the plan-time t_out, Stouffer over between-epoch identical-circuit pairs",
+    "dependent": "",
+    "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+    "effect": {
+     "dof": 267,
+     "loglinear_deviance": 525.98,
+     "loglinear_dof": 399,
+     "loglinear_pearson": 482.93,
+     "q_over_dof": 1.3147,
+     "q_residual": 351.02
+    },
+    "log10_p": -2.60397,
+    "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+    "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+   },
+   {
+    "alternatives": {
+     "prior_method": -2.28701
+    },
+    "analysis": 3,
+    "bh_significant": true,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": null,
+    "dependent": "",
+    "description": "centered fitted per-mode shift against the change of the plan-time t_out, Stouffer over between-epoch identical-circuit pairs, with the covariance of pairs that share a run",
     "effect": {
      "pairs": 12,
-     "stouffer_z": 2.7966
+     "shared_run_pairs": 9,
+     "stouffer_z_corrected": 2.5568,
+     "stouffer_z_independent": 2.7966,
+     "variance_factor": 1.1963
     },
-    "log10_p": -2.28701,
-    "note": "consecutive pairs share runs, so the pairs are dependent; the Stouffer z is optimistic",
+    "log10_p": -1.97623,
+    "note": "pairs sharing a run are correlated by rho(x) * rho(y) over their common modes under mode exchangeability; per-pair Spearman p-values are asymptotic",
     "test_id": "A3.plan_t_out"
    }
   ],
@@ -1019,14 +1447,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 2486.8,
+      "dof": 229,
+      "homogeneity_dof": 252,
+      "modes": 24,
+      "pearson": 1983.9,
+      "settings": 16,
+      "sweeps": 59
+     },
      "q_cmh": 144.08,
      "q_residual": 1913.8,
      "q_total": 2057.9,
      "residual_dof": 199,
+     "residual_log10_p": {
+      "loglinear_deviance": -374.093,
+      "loglinear_pearson": -276.018,
+      "pearson_difference": -276.881
+     },
      "strata": 16,
      "total_dof": 222
     },
     "left": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+    "pair": "set0:2026-10-18T030133Z->2026-10-18T033702Z-",
     "right": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03",
     "same_plan_epoch": true,
     "samples_each": [
@@ -1036,10 +1479,24 @@
     "set": 0,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 1396.6,
+      "dof": 178,
+      "homogeneity_dof": 198,
+      "modes": 21,
+      "pearson": 1149.7,
+      "settings": 15,
+      "sweeps": 50
+     },
      "q_cmh": 144.35,
      "q_residual": 1090.0,
      "q_total": 1234.3,
      "residual_dof": 158,
+     "residual_log10_p": {
+      "loglinear_deviance": -187.21,
+      "loglinear_pearson": -141.008,
+      "pearson_difference": -138.23
+     },
      "strata": 15,
      "total_dof": 178
     }
@@ -1047,14 +1504,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 3811.1,
+      "dof": 529,
+      "homogeneity_dof": 552,
+      "modes": 24,
+      "pearson": 3575.8,
+      "settings": 24,
+      "sweeps": 20
+     },
      "q_cmh": 1549.5,
      "q_residual": 3230.0,
      "q_total": 4779.5,
      "residual_dof": 398,
+     "residual_log10_p": {
+      "loglinear_deviance": -488.265,
+      "loglinear_pearson": -444.462,
+      "pearson_difference": -436.414
+     },
      "strata": 24,
      "total_dof": 421
     },
     "left": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+    "pair": "set1:2026-10-22T160023Z->2026-10-23T081314Z-",
     "right": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1064,10 +1536,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 526.4,
+      "dof": 420,
+      "homogeneity_dof": 440,
+      "modes": 21,
+      "pearson": 505.91,
+      "settings": 22,
+      "sweeps": 15
+     },
      "q_cmh": 107.1,
      "q_residual": 397.73,
      "q_total": 504.83,
      "residual_dof": 312,
+     "residual_log10_p": {
+      "loglinear_deviance": -3.50886,
+      "loglinear_pearson": -2.60058,
+      "pearson_difference": -3.14226
+     },
      "strata": 22,
      "total_dof": 332
     }
@@ -1075,14 +1561,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 8946.0,
+      "dof": 528,
+      "homogeneity_dof": 551,
+      "modes": 24,
+      "pearson": 11319.0,
+      "settings": 24,
+      "sweeps": 23
+     },
      "q_cmh": 84227.0,
      "q_residual": 2978.7,
      "q_total": 87206.0,
      "residual_dof": 313,
+     "residual_log10_p": {
+      "loglinear_deviance": -1506.31,
+      "loglinear_pearson": -1994.81,
+      "pearson_difference": -428.141
+     },
      "strata": 24,
      "total_dof": 336
     },
     "left": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2",
+    "pair": "set1:2026-10-23T081314Z->2026-10-23T195000Z-",
     "right": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1092,10 +1593,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 863.56,
+      "dof": 419,
+      "homogeneity_dof": 439,
+      "modes": 21,
+      "pearson": 815.72,
+      "settings": 22,
+      "sweeps": 15
+     },
      "q_cmh": 1368.9,
      "q_residual": 420.42,
      "q_total": 1789.3,
      "residual_dof": 241,
+     "residual_log10_p": {
+      "loglinear_deviance": -32.3248,
+      "loglinear_pearson": -27.0731,
+      "pearson_difference": -11.1624
+     },
      "strata": 22,
      "total_dof": 261
     }
@@ -1103,14 +1618,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 277840.0,
+      "dof": 471,
+      "homogeneity_dof": 494,
+      "modes": 24,
+      "pearson": 290330.0,
+      "settings": 24,
+      "sweeps": 22
+     },
      "q_cmh": 229270.0,
      "q_residual": 234250.0,
      "q_total": 463520.0,
      "residual_dof": 340,
+     "residual_log10_p": {
+      "loglinear_deviance": -59581.8,
+      "loglinear_pearson": -62289.0,
+      "pearson_difference": -50315.1
+     },
      "strata": 24,
      "total_dof": 363
     },
     "left": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+    "pair": "set1:2026-10-23T195000Z->2026-10-23T201808Z-",
     "right": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1120,10 +1650,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 554.05,
+      "dof": 389,
+      "homogeneity_dof": 409,
+      "modes": 21,
+      "pearson": 512.61,
+      "settings": 23,
+      "sweeps": 15
+     },
      "q_cmh": 71.668,
      "q_residual": 386.84,
      "q_total": 458.51,
      "residual_dof": 259,
+     "residual_log10_p": {
+      "loglinear_deviance": -7.15283,
+      "loglinear_pearson": -4.60466,
+      "pearson_difference": -6.36464
+     },
      "strata": 23,
      "total_dof": 279
     }
@@ -1131,14 +1675,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 148500.0,
+      "dof": 467,
+      "homogeneity_dof": 490,
+      "modes": 24,
+      "pearson": 185330.0,
+      "settings": 24,
+      "sweeps": 24
+     },
      "q_cmh": 400230.0,
      "q_residual": 110030.0,
      "q_total": 510260.0,
      "residual_dof": 337,
+     "residual_log10_p": {
+      "loglinear_deviance": -31563.7,
+      "loglinear_pearson": -39540.3,
+      "pearson_difference": -23400.0
+     },
      "strata": 24,
      "total_dof": 360
     },
     "left": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+    "pair": "set1:2026-10-23T201808Z->2026-10-23T213450Z-",
     "right": "results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
     "same_plan_epoch": true,
     "samples_each": [
@@ -1148,10 +1707,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 476.17,
+      "dof": 385,
+      "homogeneity_dof": 405,
+      "modes": 21,
+      "pearson": 439.77,
+      "settings": 23,
+      "sweeps": 13
+     },
      "q_cmh": 15.855,
      "q_residual": 319.17,
      "q_total": 335.03,
      "residual_dof": 259,
+     "residual_log10_p": {
+      "loglinear_deviance": -2.9861,
+      "loglinear_pearson": -1.55275,
+      "pearson_difference": -2.19682
+     },
      "strata": 23,
      "total_dof": 279
     }
@@ -1159,14 +1732,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 88633.0,
+      "dof": 474,
+      "homogeneity_dof": 497,
+      "modes": 24,
+      "pearson": 82548.0,
+      "settings": 24,
+      "sweeps": 20
+     },
      "q_cmh": 34463.0,
      "q_residual": 75753.0,
      "q_total": 110220.0,
      "residual_dof": 344,
+     "residual_log10_p": {
+      "loglinear_deviance": -18609.0,
+      "loglinear_pearson": -17294.9,
+      "pearson_difference": -15975.8
+     },
      "strata": 24,
      "total_dof": 367
     },
     "left": "results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
+    "pair": "set1:2026-10-23T213450Z->2026-10-24T070006Z-",
     "right": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1176,10 +1764,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 550.18,
+      "dof": 405,
+      "homogeneity_dof": 425,
+      "modes": 21,
+      "pearson": 510.13,
+      "settings": 24,
+      "sweeps": 13
+     },
      "q_cmh": 21.736,
      "q_residual": 382.17,
      "q_total": 403.91,
      "residual_dof": 276,
+     "residual_log10_p": {
+      "loglinear_deviance": -5.71033,
+      "loglinear_pearson": -3.53354,
+      "pearson_difference": -4.62919
+     },
      "strata": 24,
      "total_dof": 296
     }
@@ -1187,14 +1789,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 178680.0,
+      "dof": 477,
+      "homogeneity_dof": 500,
+      "modes": 24,
+      "pearson": 163850.0,
+      "settings": 24,
+      "sweeps": 20
+     },
      "q_cmh": 28724.0,
      "q_residual": 158000.0,
      "q_total": 186720.0,
      "residual_dof": 339,
+     "residual_log10_p": {
+      "loglinear_deviance": -38087.2,
+      "loglinear_pearson": -34874.8,
+      "pearson_difference": -33787.8
+     },
      "strata": 24,
      "total_dof": 362
     },
     "left": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+    "pair": "set1:2026-10-24T070006Z->2026-10-24T090005Z-",
     "right": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1204,10 +1821,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 581.69,
+      "dof": 408,
+      "homogeneity_dof": 428,
+      "modes": 21,
+      "pearson": 533.83,
+      "settings": 24,
+      "sweeps": 15
+     },
      "q_cmh": 46.085,
      "q_residual": 383.59,
      "q_total": 429.67,
      "residual_dof": 270,
+     "residual_log10_p": {
+      "loglinear_deviance": -7.49284,
+      "loglinear_pearson": -4.57734,
+      "pearson_difference": -5.18911
+     },
      "strata": 24,
      "total_dof": 290
     }
@@ -1215,14 +1846,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 102540.0,
+      "dof": 481,
+      "homogeneity_dof": 504,
+      "modes": 24,
+      "pearson": 104570.0,
+      "settings": 24,
+      "sweeps": 23
+     },
      "q_cmh": 155870.0,
      "q_residual": 74539.0,
      "q_total": 230410.0,
      "residual_dof": 338,
+     "residual_log10_p": {
+      "loglinear_deviance": -21606.7,
+      "loglinear_pearson": -22045.0,
+      "pearson_difference": -15720.3
+     },
      "strata": 24,
      "total_dof": 361
     },
     "left": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+    "pair": "set1:2026-10-24T090005Z->2026-10-24T110005Z-",
     "right": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1232,10 +1878,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 513.24,
+      "dof": 412,
+      "homogeneity_dof": 432,
+      "modes": 21,
+      "pearson": 466.03,
+      "settings": 24,
+      "sweeps": 14
+     },
      "q_cmh": 39.88,
      "q_residual": 322.76,
      "q_total": 362.64,
      "residual_dof": 267,
+     "residual_log10_p": {
+      "loglinear_deviance": -3.30976,
+      "loglinear_pearson": -1.47196,
+      "pearson_difference": -1.95968
+     },
      "strata": 24,
      "total_dof": 287
     }
@@ -1243,14 +1903,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 48853.0,
+      "dof": 480,
+      "homogeneity_dof": 503,
+      "modes": 24,
+      "pearson": 47755.0,
+      "settings": 24,
+      "sweeps": 19
+     },
      "q_cmh": 38264.0,
      "q_residual": 42362.0,
      "q_total": 80625.0,
      "residual_dof": 343,
+     "residual_log10_p": {
+      "loglinear_deviance": -10025.9,
+      "loglinear_pearson": -9789.83,
+      "pearson_difference": -8769.09
+     },
      "strata": 24,
      "total_dof": 366
     },
     "left": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+    "pair": "set1:2026-10-24T110005Z->2026-10-24T130006Z-",
     "right": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1260,10 +1935,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 508.44,
+      "dof": 411,
+      "homogeneity_dof": 431,
+      "modes": 21,
+      "pearson": 460.29,
+      "settings": 24,
+      "sweeps": 14
+     },
      "q_cmh": 18.722,
      "q_residual": 314.54,
      "q_total": 333.26,
      "residual_dof": 274,
+     "residual_log10_p": {
+      "loglinear_deviance": -3.14017,
+      "loglinear_pearson": -1.33078,
+      "pearson_difference": -1.33385
+     },
      "strata": 24,
      "total_dof": 294
     }
@@ -1271,14 +1960,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 66758.0,
+      "dof": 474,
+      "homogeneity_dof": 497,
+      "modes": 24,
+      "pearson": 67995.0,
+      "settings": 24,
+      "sweeps": 21
+     },
      "q_cmh": 65042.0,
      "q_residual": 53959.0,
      "q_total": 119000.0,
      "residual_dof": 345,
+     "residual_log10_p": {
+      "loglinear_deviance": -13887.8,
+      "loglinear_pearson": -14154.5,
+      "pearson_difference": -11267.4
+     },
      "strata": 24,
      "total_dof": 368
     },
     "left": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+    "pair": "set1:2026-10-24T130006Z->2026-10-24T150006Z-",
     "right": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1288,10 +1992,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 508.98,
+      "dof": 405,
+      "homogeneity_dof": 425,
+      "modes": 21,
+      "pearson": 467.66,
+      "settings": 24,
+      "sweeps": 15
+     },
      "q_cmh": 26.17,
      "q_residual": 338.73,
      "q_total": 364.9,
      "residual_dof": 277,
+     "residual_log10_p": {
+      "loglinear_deviance": -3.47838,
+      "loglinear_pearson": -1.77003,
+      "pearson_difference": -2.17946
+     },
      "strata": 24,
      "total_dof": 297
     }
@@ -1299,14 +2017,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 71884.0,
+      "dof": 478,
+      "homogeneity_dof": 501,
+      "modes": 24,
+      "pearson": 76647.0,
+      "settings": 24,
+      "sweeps": 22
+     },
      "q_cmh": 129450.0,
      "q_residual": 52003.0,
      "q_total": 181450.0,
      "residual_dof": 341,
+     "residual_log10_p": {
+      "loglinear_deviance": -14989.0,
+      "loglinear_pearson": -16016.7,
+      "pearson_difference": -10849.8
+     },
      "strata": 24,
      "total_dof": 364
     },
     "left": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+    "pair": "set1:2026-10-24T150006Z->2026-10-24T170006Z-",
     "right": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1316,10 +2049,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 645.65,
+      "dof": 409,
+      "homogeneity_dof": 429,
+      "modes": 21,
+      "pearson": 592.17,
+      "settings": 24,
+      "sweeps": 15
+     },
      "q_cmh": 78.557,
      "q_residual": 443.09,
      "q_total": 521.65,
      "residual_dof": 272,
+     "residual_log10_p": {
+      "loglinear_deviance": -12.1677,
+      "loglinear_pearson": -8.1267,
+      "pearson_difference": -9.60727
+     },
      "strata": 24,
      "total_dof": 292
     }
@@ -1327,14 +2074,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 132650.0,
+      "dof": 461,
+      "homogeneity_dof": 484,
+      "modes": 24,
+      "pearson": 123420.0,
+      "settings": 24,
+      "sweeps": 20
+     },
      "q_cmh": 2560.1,
      "q_residual": 123140.0,
      "q_total": 125700.0,
      "residual_dof": 335,
+     "residual_log10_p": {
+      "loglinear_deviance": -28142.6,
+      "loglinear_pearson": -26145.2,
+      "pearson_difference": -26241.0
+     },
      "strata": 24,
      "total_dof": 358
     },
     "left": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+    "pair": "set1:2026-10-24T170006Z->2026-10-24T190006Z-",
     "right": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1344,10 +2106,24 @@
     "set": 1,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 532.96,
+      "dof": 392,
+      "homogeneity_dof": 412,
+      "modes": 21,
+      "pearson": 492.92,
+      "settings": 24,
+      "sweeps": 15
+     },
      "q_cmh": 52.305,
      "q_residual": 361.86,
      "q_total": 414.17,
      "residual_dof": 267,
+     "residual_log10_p": {
+      "loglinear_deviance": -5.5833,
+      "loglinear_pearson": -3.40572,
+      "pearson_difference": -4.01582
+     },
      "strata": 24,
      "total_dof": 287
     }
@@ -1355,14 +2131,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 4449.5,
+      "dof": 529,
+      "homogeneity_dof": 552,
+      "modes": 24,
+      "pearson": 4347.1,
+      "settings": 24,
+      "sweeps": 21
+     },
      "q_cmh": 3314.0,
      "q_residual": 3758.3,
      "q_total": 7072.3,
      "residual_dof": 420,
+     "residual_log10_p": {
+      "loglinear_deviance": -609.186,
+      "loglinear_pearson": -589.617,
+      "pearson_difference": -527.496
+     },
      "strata": 24,
      "total_dof": 443
     },
     "left": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+    "pair": "set2:2026-10-22T160340Z->2026-10-23T073329Z-",
     "right": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1372,10 +2163,24 @@
     "set": 2,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 518.09,
+      "dof": 440,
+      "homogeneity_dof": 460,
+      "modes": 21,
+      "pearson": 490.52,
+      "settings": 23,
+      "sweeps": 15
+     },
      "q_cmh": 221.32,
      "q_residual": 386.75,
      "q_total": 608.07,
      "residual_dof": 344,
+     "residual_log10_p": {
+      "loglinear_deviance": -2.22334,
+      "loglinear_pearson": -1.31831,
+      "pearson_difference": -1.25429
+     },
      "strata": 23,
      "total_dof": 364
     }
@@ -1383,14 +2188,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 9442.2,
+      "dof": 529,
+      "homogeneity_dof": 552,
+      "modes": 24,
+      "pearson": 13588.0,
+      "settings": 24,
+      "sweeps": 26
+     },
      "q_cmh": 279870.0,
      "q_residual": 6028.8,
      "q_total": 285900.0,
      "residual_dof": 332,
+     "residual_log10_p": {
+      "loglinear_deviance": -1607.25,
+      "loglinear_pearson": -2465.81,
+      "pearson_difference": -1030.78
+     },
      "strata": 24,
      "total_dof": 355
     },
     "left": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+    "pair": "set2:2026-10-23T073329Z->2026-10-23T202212Z-",
     "right": "results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
     "same_plan_epoch": false,
     "samples_each": [
@@ -1400,10 +2220,24 @@
     "set": 2,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 997.69,
+      "dof": 460,
+      "homogeneity_dof": 480,
+      "modes": 21,
+      "pearson": 981.64,
+      "settings": 24,
+      "sweeps": 16
+     },
      "q_cmh": 2156.4,
      "q_residual": 622.97,
      "q_total": 2779.3,
      "residual_dof": 288,
+     "residual_log10_p": {
+      "loglinear_deviance": -41.0739,
+      "loglinear_pearson": -39.1961,
+      "pearson_difference": -26.0357
+     },
      "strata": 24,
      "total_dof": 308
     }
@@ -1411,14 +2245,29 @@
    {
     "all_modes": {
      "cmh_dof": 23,
+     "loglinear": {
+      "deviance": 112880.0,
+      "dof": 468,
+      "homogeneity_dof": 491,
+      "modes": 24,
+      "pearson": 115280.0,
+      "settings": 24,
+      "sweeps": 24
+     },
      "q_cmh": 311630.0,
      "q_residual": 78859.0,
      "q_total": 390480.0,
      "residual_dof": 341,
+     "residual_log10_p": {
+      "loglinear_deviance": -23856.3,
+      "loglinear_pearson": -24375.5,
+      "pearson_difference": -16650.8
+     },
      "strata": 24,
      "total_dof": 364
     },
     "left": "results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
+    "pair": "set2:2026-10-23T202212Z->2026-10-23T213050Z-",
     "right": "results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1",
     "same_plan_epoch": true,
     "samples_each": [
@@ -1428,15 +2277,36 @@
     "set": 2,
     "stray_modes_0_1_5_excluded": {
      "cmh_dof": 20,
+     "loglinear": {
+      "deviance": 525.98,
+      "dof": 399,
+      "homogeneity_dof": 419,
+      "modes": 21,
+      "pearson": 482.93,
+      "settings": 24,
+      "sweeps": 14
+     },
      "q_cmh": 25.722,
      "q_residual": 351.02,
      "q_total": 376.74,
      "residual_dof": 267,
+     "residual_log10_p": {
+      "loglinear_deviance": -4.71118,
+      "loglinear_pearson": -2.60397,
+      "pearson_difference": -3.37852
+     },
      "strata": 24,
      "total_dof": 287
     }
    }
   ],
+  "t_out_combination": {
+   "corrected_z": 2.556843230345517,
+   "naive_z": 2.796618229646276,
+   "shared_run_pairs": 9,
+   "smallest_eigenvalue": 0.5101909685885141,
+   "variance_factor": 1.196349761309753
+  },
   "t_out_relation": [
    {
     "modes": 21,
@@ -5165,10 +6035,12 @@
        -9.619
       ],
       "log10_p_binomial": -0.0673,
-      "log10_p_inflated": -0.001654,
+      "log10_p_jackknife_widened": -0.003173,
+      "log10_p_overdispersion_scaled": -0.001654,
       "mode": 0,
       "q_binomial_fisher": 0.03272,
-      "q_overdispersion_inflated": 2.27e-05
+      "q_jackknife_widened": 8.324e-05,
+      "q_overdispersion_scaled": 2.27e-05
      },
      {
       "dof": 1,
@@ -5177,10 +6049,12 @@
        2.995
       ],
       "log10_p_binomial": -18.63,
-      "log10_p_inflated": -0.09048,
+      "log10_p_jackknife_widened": -0.1211,
+      "log10_p_overdispersion_scaled": -0.09048,
       "mode": 1,
       "q_binomial_fisher": 80.92,
-      "q_overdispersion_inflated": 0.05661
+      "q_jackknife_widened": 0.09608,
+      "q_overdispersion_scaled": 0.05661
      },
      {
       "dof": 1,
@@ -5189,10 +6063,12 @@
        2.807
       ],
       "log10_p_binomial": -5.22,
-      "log10_p_inflated": -0.04345,
+      "log10_p_jackknife_widened": -0.06435,
+      "log10_p_overdispersion_scaled": -0.04345,
       "mode": 2,
       "q_binomial_fisher": 20.48,
-      "q_overdispersion_inflated": 0.01431
+      "q_jackknife_widened": 0.03009,
+      "q_overdispersion_scaled": 0.01431
      },
      {
       "dof": 1,
@@ -5201,10 +6077,12 @@
        2.816
       ],
       "log10_p_binomial": -3.186,
-      "log10_p_inflated": -0.03233,
+      "log10_p_jackknife_widened": -0.04333,
+      "log10_p_overdispersion_scaled": -0.03233,
       "mode": 3,
       "q_binomial_fisher": 11.62,
-      "q_overdispersion_inflated": 0.008108
+      "q_jackknife_widened": 0.01423,
+      "q_overdispersion_scaled": 0.008108
      },
      {
       "dof": 1,
@@ -5213,10 +6091,12 @@
        2.192
       ],
       "log10_p_binomial": -2.244,
-      "log10_p_inflated": -0.02605,
+      "log10_p_jackknife_widened": -0.0387,
+      "log10_p_overdispersion_scaled": -0.02605,
       "mode": 4,
       "q_binomial_fisher": 7.643,
-      "q_overdispersion_inflated": 0.005333
+      "q_jackknife_widened": 0.01146,
+      "q_overdispersion_scaled": 0.005333
      },
      {
       "dof": 1,
@@ -5225,10 +6105,12 @@
        4.234
       ],
       "log10_p_binomial": -627.1,
-      "log10_p_inflated": -0.8149,
+      "log10_p_jackknife_widened": -1.227,
+      "log10_p_overdispersion_scaled": -0.8149,
       "mode": 5,
       "q_binomial_fisher": 2879.0,
-      "q_overdispersion_inflated": 2.04
+      "q_jackknife_widened": 3.557,
+      "q_overdispersion_scaled": 2.04
      },
      {
       "dof": 1,
@@ -5237,10 +6119,12 @@
        1.201
       ],
       "log10_p_binomial": -0.2078,
-      "log10_p_inflated": -0.004561,
+      "log10_p_jackknife_widened": -0.01839,
+      "log10_p_overdispersion_scaled": -0.004561,
       "mode": 6,
       "q_binomial_fisher": 0.2462,
-      "q_overdispersion_inflated": 0.0001715
+      "q_jackknife_widened": 0.002703,
+      "q_overdispersion_scaled": 0.0001715
      },
      {
       "dof": 1,
@@ -5249,10 +6133,12 @@
        1.099
       ],
       "log10_p_binomial": -0.8842,
-      "log10_p_inflated": -0.01404,
+      "log10_p_jackknife_widened": -0.09028,
+      "log10_p_overdispersion_scaled": -0.01404,
       "mode": 7,
       "q_binomial_fisher": 2.286,
-      "q_overdispersion_inflated": 0.00159
+      "q_jackknife_widened": 0.05638,
+      "q_overdispersion_scaled": 0.00159
      },
      {
       "dof": 1,
@@ -5261,10 +6147,12 @@
        1.82
       ],
       "log10_p_binomial": -1.007,
-      "log10_p_inflated": -0.01536,
+      "log10_p_jackknife_widened": -0.03935,
+      "log10_p_overdispersion_scaled": -0.01536,
       "mode": 8,
       "q_binomial_fisher": 2.73,
-      "q_overdispersion_inflated": 0.001899
+      "q_jackknife_widened": 0.01183,
+      "q_overdispersion_scaled": 0.001899
      },
      {
       "dof": 1,
@@ -5273,10 +6161,12 @@
        1.258
       ],
       "log10_p_binomial": -0.1828,
-      "log10_p_inflated": -0.004087,
+      "log10_p_jackknife_widened": -0.01409,
+      "log10_p_overdispersion_scaled": -0.004087,
       "mode": 9,
       "q_binomial_fisher": 0.1978,
-      "q_overdispersion_inflated": 0.0001378
+      "q_jackknife_widened": 0.001601,
+      "q_overdispersion_scaled": 0.0001378
      },
      {
       "dof": 1,
@@ -5285,10 +6175,12 @@
        2.019
       ],
       "log10_p_binomial": -9.282,
-      "log10_p_inflated": -0.06037,
+      "log10_p_jackknife_widened": -0.2608,
+      "log10_p_overdispersion_scaled": -0.06037,
       "mode": 10,
       "q_binomial_fisher": 38.59,
-      "q_overdispersion_inflated": 0.02669
+      "q_jackknife_widened": 0.3601,
+      "q_overdispersion_scaled": 0.02669
      },
      {
       "dof": 1,
@@ -5297,10 +6189,12 @@
        1.613
       ],
       "log10_p_binomial": -5.703,
-      "log10_p_inflated": -0.04552,
+      "log10_p_jackknife_widened": -0.2302,
+      "log10_p_overdispersion_scaled": -0.04552,
       "mode": 11,
       "q_binomial_fisher": 22.61,
-      "q_overdispersion_inflated": 0.01563
+      "q_jackknife_widened": 0.2925,
+      "q_overdispersion_scaled": 0.01563
      },
      {
       "dof": 1,
@@ -5309,10 +6203,12 @@
        -9.942
       ],
       "log10_p_binomial": -2.876,
-      "log10_p_inflated": -0.03029,
+      "log10_p_jackknife_widened": -0.05814,
+      "log10_p_overdispersion_scaled": -0.03029,
       "mode": 12,
       "q_binomial_fisher": 10.3,
-      "q_overdispersion_inflated": 0.007147
+      "q_jackknife_widened": 0.02487,
+      "q_overdispersion_scaled": 0.007147
      },
      {
       "dof": 1,
@@ -5321,10 +6217,12 @@
        0.9872
       ],
       "log10_p_binomial": -3.317,
-      "log10_p_inflated": -0.03323,
+      "log10_p_jackknife_widened": -0.11,
+      "log10_p_overdispersion_scaled": -0.03323,
       "mode": 13,
       "q_binomial_fisher": 12.18,
-      "q_overdispersion_inflated": 0.008547
+      "q_jackknife_widened": 0.08073,
+      "q_overdispersion_scaled": 0.008547
      },
      {
       "dof": 1,
@@ -5333,10 +6231,12 @@
        -1.168
       ],
       "log10_p_binomial": -0.17,
-      "log10_p_inflated": -0.003838,
+      "log10_p_jackknife_widened": -0.0151,
+      "log10_p_overdispersion_scaled": -0.003838,
       "mode": 14,
       "q_binomial_fisher": 0.1746,
-      "q_overdispersion_inflated": 0.0001216
+      "q_jackknife_widened": 0.001834,
+      "q_overdispersion_scaled": 0.0001216
      },
      {
       "dof": 1,
@@ -5345,10 +6245,12 @@
        -0.4227
       ],
       "log10_p_binomial": -0.4923,
-      "log10_p_inflated": -0.009148,
+      "log10_p_jackknife_widened": -0.04045,
+      "log10_p_overdispersion_scaled": -0.009148,
       "mode": 15,
       "q_binomial_fisher": 0.9814,
-      "q_overdispersion_inflated": 0.0006826
+      "q_jackknife_widened": 0.01247,
+      "q_overdispersion_scaled": 0.0006826
      },
      {
       "dof": 1,
@@ -5357,10 +6259,12 @@
        -0.7928
       ],
       "log10_p_binomial": -4.24,
-      "log10_p_inflated": -0.03815,
+      "log10_p_jackknife_widened": -0.4808,
+      "log10_p_overdispersion_scaled": -0.03815,
       "mode": 16,
       "q_binomial_fisher": 16.18,
-      "q_overdispersion_inflated": 0.01115
+      "q_jackknife_widened": 0.9467,
+      "q_overdispersion_scaled": 0.01115
      },
      {
       "dof": 1,
@@ -5369,10 +6273,12 @@
        -1.006
       ],
       "log10_p_binomial": -1.318,
-      "log10_p_inflated": -0.01842,
+      "log10_p_jackknife_widened": -0.1295,
+      "log10_p_overdispersion_scaled": -0.01842,
       "mode": 17,
       "q_binomial_fisher": 3.908,
-      "q_overdispersion_inflated": 0.00271
+      "q_jackknife_widened": 0.1082,
+      "q_overdispersion_scaled": 0.00271
      },
      {
       "dof": 1,
@@ -5381,10 +6287,12 @@
        -0.878
       ],
       "log10_p_binomial": -6.896,
-      "log10_p_inflated": -0.05069,
+      "log10_p_jackknife_widened": -0.3467,
+      "log10_p_overdispersion_scaled": -0.05069,
       "mode": 20,
       "q_binomial_fisher": 27.91,
-      "q_overdispersion_inflated": 0.01919
+      "q_jackknife_widened": 0.5705,
+      "q_overdispersion_scaled": 0.01919
      }
     ],
     "sessions": 2
@@ -5413,10 +6321,12 @@
        -0.994
       ],
       "log10_p_binomial": -18240.0,
-      "log10_p_inflated": -4.1,
+      "log10_p_jackknife_widened": -39.47,
+      "log10_p_overdispersion_scaled": -4.1,
       "mode": 0,
       "q_binomial_fisher": 84020.0,
-      "q_overdispersion_inflated": 18.88
+      "q_jackknife_widened": 181.8,
+      "q_overdispersion_scaled": 18.88
      },
      {
       "dof": 2,
@@ -5425,10 +6335,12 @@
        4.003
       ],
       "log10_p_binomial": -6890.0,
-      "log10_p_inflated": -1.18,
+      "log10_p_jackknife_widened": -4.582,
+      "log10_p_overdispersion_scaled": -1.18,
       "mode": 2,
       "q_binomial_fisher": 31730.0,
-      "q_overdispersion_inflated": 5.433
+      "q_jackknife_widened": 21.1,
+      "q_overdispersion_scaled": 5.433
      },
      {
       "dof": 2,
@@ -5437,10 +6349,12 @@
        2.901
       ],
       "log10_p_binomial": -2663.0,
-      "log10_p_inflated": -0.5368,
+      "log10_p_jackknife_widened": -2.073,
+      "log10_p_overdispersion_scaled": -0.5368,
       "mode": 3,
       "q_binomial_fisher": 12270.0,
-      "q_overdispersion_inflated": 2.472
+      "q_jackknife_widened": 9.548,
+      "q_overdispersion_scaled": 2.472
      },
      {
       "dof": 2,
@@ -5449,10 +6363,12 @@
        2.14
       ],
       "log10_p_binomial": -556.1,
-      "log10_p_inflated": -0.1033,
+      "log10_p_jackknife_widened": -0.6016,
+      "log10_p_overdispersion_scaled": -0.1033,
       "mode": 4,
       "q_binomial_fisher": 2561.0,
-      "q_overdispersion_inflated": 0.4758
+      "q_jackknife_widened": 2.771,
+      "q_overdispersion_scaled": 0.4758
      },
      {
       "dof": 2,
@@ -5461,10 +6377,12 @@
        3.956
       ],
       "log10_p_binomial": -3834.0,
-      "log10_p_inflated": -0.4415,
+      "log10_p_jackknife_widened": -0.8689,
+      "log10_p_overdispersion_scaled": -0.4415,
       "mode": 5,
       "q_binomial_fisher": 17660.0,
-      "q_overdispersion_inflated": 2.033
+      "q_jackknife_widened": 4.001,
+      "q_overdispersion_scaled": 2.033
      },
      {
       "dof": 2,
@@ -5473,10 +6391,12 @@
        2.222
       ],
       "log10_p_binomial": -677.9,
-      "log10_p_inflated": -0.1025,
+      "log10_p_jackknife_widened": -0.3119,
+      "log10_p_overdispersion_scaled": -0.1025,
       "mode": 6,
       "q_binomial_fisher": 3122.0,
-      "q_overdispersion_inflated": 0.4721
+      "q_jackknife_widened": 1.436,
+      "q_overdispersion_scaled": 0.4721
      },
      {
       "dof": 2,
@@ -5485,10 +6405,12 @@
        3.171
       ],
       "log10_p_binomial": -2631.0,
-      "log10_p_inflated": -0.3538,
+      "log10_p_jackknife_widened": -4.233,
+      "log10_p_overdispersion_scaled": -0.3538,
       "mode": 7,
       "q_binomial_fisher": 12120.0,
-      "q_overdispersion_inflated": 1.63
+      "q_jackknife_widened": 19.49,
+      "q_overdispersion_scaled": 1.63
      },
      {
       "dof": 2,
@@ -5497,10 +6419,12 @@
        2.182
       ],
       "log10_p_binomial": -176800.0,
-      "log10_p_inflated": -22.21,
+      "log10_p_jackknife_widened": -166.0,
+      "log10_p_overdispersion_scaled": -22.21,
       "mode": 8,
       "q_binomial_fisher": 814400.0,
-      "q_overdispersion_inflated": 102.3
+      "q_jackknife_widened": 764.6,
+      "q_overdispersion_scaled": 102.3
      },
      {
       "dof": 2,
@@ -5509,10 +6433,12 @@
        1.801
       ],
       "log10_p_binomial": -175100.0,
-      "log10_p_inflated": -20.41,
+      "log10_p_jackknife_widened": -174.1,
+      "log10_p_overdispersion_scaled": -20.41,
       "mode": 9,
       "q_binomial_fisher": 806200.0,
-      "q_overdispersion_inflated": 93.99
+      "q_jackknife_widened": 801.8,
+      "q_overdispersion_scaled": 93.99
      },
      {
       "dof": 2,
@@ -5521,10 +6447,12 @@
        2.858
       ],
       "log10_p_binomial": -2733.0,
-      "log10_p_inflated": -0.4003,
+      "log10_p_jackknife_widened": -2.725,
+      "log10_p_overdispersion_scaled": -0.4003,
       "mode": 10,
       "q_binomial_fisher": 12580.0,
-      "q_overdispersion_inflated": 1.844
+      "q_jackknife_widened": 12.55,
+      "q_overdispersion_scaled": 1.844
      },
      {
       "dof": 2,
@@ -5533,10 +6461,12 @@
        2.755
       ],
       "log10_p_binomial": -1202.0,
-      "log10_p_inflated": -0.1787,
+      "log10_p_jackknife_widened": -0.8576,
+      "log10_p_overdispersion_scaled": -0.1787,
       "mode": 11,
       "q_binomial_fisher": 5537.0,
-      "q_overdispersion_inflated": 0.8231
+      "q_jackknife_widened": 3.95,
+      "q_overdispersion_scaled": 0.8231
      },
      {
       "dof": 2,
@@ -5545,10 +6475,12 @@
        2.532
       ],
       "log10_p_binomial": -96640.0,
-      "log10_p_inflated": -21.3,
+      "log10_p_jackknife_widened": -103.7,
+      "log10_p_overdispersion_scaled": -21.3,
       "mode": 12,
       "q_binomial_fisher": 445000.0,
-      "q_overdispersion_inflated": 98.11
+      "q_jackknife_widened": 477.7,
+      "q_overdispersion_scaled": 98.11
      },
      {
       "dof": 2,
@@ -5557,10 +6489,12 @@
        2.22
       ],
       "log10_p_binomial": -1676.0,
-      "log10_p_inflated": -0.2609,
+      "log10_p_jackknife_widened": -1.481,
+      "log10_p_overdispersion_scaled": -0.2609,
       "mode": 13,
       "q_binomial_fisher": 7720.0,
-      "q_overdispersion_inflated": 1.202
+      "q_jackknife_widened": 6.818,
+      "q_overdispersion_scaled": 1.202
      }
     ],
     "sessions": 3
@@ -5594,10 +6528,12 @@
        0.0481
       ],
       "log10_p_binomial": -29310.0,
-      "log10_p_inflated": -5.716,
+      "log10_p_jackknife_widened": -31.78,
+      "log10_p_overdispersion_scaled": -5.716,
       "mode": 0,
       "q_binomial_fisher": 134900.0,
-      "q_overdispersion_inflated": 22.67
+      "q_jackknife_widened": 140.9,
+      "q_overdispersion_scaled": 22.67
      },
      {
       "dof": 1,
@@ -5606,10 +6542,12 @@
        3.143
       ],
       "log10_p_binomial": -2116.0,
-      "log10_p_inflated": -0.7022,
+      "log10_p_jackknife_widened": -1.152,
+      "log10_p_overdispersion_scaled": -0.7022,
       "mode": 1,
       "q_binomial_fisher": 9735.0,
-      "q_overdispersion_inflated": 1.653
+      "q_jackknife_widened": 3.274,
+      "q_overdispersion_scaled": 1.653
      },
      {
       "dof": 1,
@@ -5618,10 +6556,12 @@
        2.542
       ],
       "log10_p_binomial": -1110.0,
-      "log10_p_inflated": -0.4523,
+      "log10_p_jackknife_widened": -1.393,
+      "log10_p_overdispersion_scaled": -0.4523,
       "mode": 2,
       "q_binomial_fisher": 5102.0,
-      "q_overdispersion_inflated": 0.8628
+      "q_jackknife_widened": 4.198,
+      "q_overdispersion_scaled": 0.8628
      },
      {
       "dof": 1,
@@ -5630,10 +6570,12 @@
        3.497
       ],
       "log10_p_binomial": -1751.0,
-      "log10_p_inflated": -0.6141,
+      "log10_p_jackknife_widened": -1.56,
+      "log10_p_overdispersion_scaled": -0.6141,
       "mode": 3,
       "q_binomial_fisher": 8054.0,
-      "q_overdispersion_inflated": 1.362
+      "q_jackknife_widened": 4.857,
+      "q_overdispersion_scaled": 1.362
      },
      {
       "dof": 1,
@@ -5642,10 +6584,12 @@
        2.123
       ],
       "log10_p_binomial": -0.4108,
-      "log10_p_inflated": -0.003983,
+      "log10_p_jackknife_widened": -0.005004,
+      "log10_p_overdispersion_scaled": -0.003983,
       "mode": 4,
       "q_binomial_fisher": 0.7441,
-      "q_overdispersion_inflated": 0.0001309
+      "q_jackknife_widened": 0.0002062,
+      "q_overdispersion_scaled": 0.0001309
      },
      {
       "dof": 1,
@@ -5654,10 +6598,12 @@
        3.995
       ],
       "log10_p_binomial": -77.88,
-      "log10_p_inflated": -0.09469,
+      "log10_p_jackknife_widened": -0.1049,
+      "log10_p_overdispersion_scaled": -0.09469,
       "mode": 5,
       "q_binomial_fisher": 352.3,
-      "q_overdispersion_inflated": 0.06153
+      "q_jackknife_widened": 0.07408,
+      "q_overdispersion_scaled": 0.06153
      },
      {
       "dof": 1,
@@ -5666,10 +6612,12 @@
        3.719
       ],
       "log10_p_binomial": -1500.0,
-      "log10_p_inflated": -0.5719,
+      "log10_p_jackknife_widened": -0.4238,
+      "log10_p_overdispersion_scaled": -0.5719,
       "mode": 6,
       "q_binomial_fisher": 6899.0,
-      "q_overdispersion_inflated": 1.227
+      "q_jackknife_widened": 0.7808,
+      "q_overdispersion_scaled": 1.227
      },
      {
       "dof": 1,
@@ -5678,10 +6626,12 @@
        4.508
       ],
       "log10_p_binomial": -3659.0,
-      "log10_p_inflated": -1.077,
+      "log10_p_jackknife_widened": -5.879,
+      "log10_p_overdispersion_scaled": -1.077,
       "mode": 7,
       "q_binomial_fisher": 16840.0,
-      "q_overdispersion_inflated": 2.99
+      "q_jackknife_widened": 23.39,
+      "q_overdispersion_scaled": 2.99
      },
      {
       "dof": 1,
@@ -5690,10 +6640,12 @@
        1.993
       ],
       "log10_p_binomial": -59710.0,
-      "log10_p_inflated": -11.84,
+      "log10_p_jackknife_widened": -104.6,
+      "log10_p_overdispersion_scaled": -11.84,
       "mode": 8,
       "q_binomial_fisher": 274900.0,
-      "q_overdispersion_inflated": 50.14
+      "q_jackknife_widened": 475.0,
+      "q_overdispersion_scaled": 50.14
      },
      {
       "dof": 1,
@@ -5702,10 +6654,12 @@
        1.244
       ],
       "log10_p_binomial": -88980.0,
-      "log10_p_inflated": -17.21,
+      "log10_p_jackknife_widened": -44.73,
+      "log10_p_overdispersion_scaled": -17.21,
       "mode": 9,
       "q_binomial_fisher": 409800.0,
-      "q_overdispersion_inflated": 74.46
+      "q_jackknife_widened": 200.2,
+      "q_overdispersion_scaled": 74.46
      },
      {
       "dof": 1,
@@ -5714,10 +6668,12 @@
        1.874
       ],
       "log10_p_binomial": -20.62,
-      "log10_p_inflated": -0.04589,
+      "log10_p_jackknife_widened": -0.1283,
+      "log10_p_overdispersion_scaled": -0.04589,
       "mode": 10,
       "q_binomial_fisher": 89.99,
-      "q_overdispersion_inflated": 0.01588
+      "q_jackknife_widened": 0.1064,
+      "q_overdispersion_scaled": 0.01588
      },
      {
       "dof": 1,
@@ -5726,10 +6682,12 @@
        2.9
       ],
       "log10_p_binomial": -2180.0,
-      "log10_p_inflated": -0.7441,
+      "log10_p_jackknife_widened": -3.295,
+      "log10_p_overdispersion_scaled": -0.7441,
       "mode": 11,
       "q_binomial_fisher": 10030.0,
-      "q_overdispersion_inflated": 1.796
+      "q_jackknife_widened": 12.09,
+      "q_overdispersion_scaled": 1.796
      },
      {
       "dof": 1,
@@ -5738,10 +6696,12 @@
        1.232
       ],
       "log10_p_binomial": -34500.0,
-      "log10_p_inflated": -6.619,
+      "log10_p_jackknife_widened": -57.95,
+      "log10_p_overdispersion_scaled": -6.619,
       "mode": 12,
       "q_binomial_fisher": 158900.0,
-      "q_overdispersion_inflated": 26.68
+      "q_jackknife_widened": 260.8,
+      "q_overdispersion_scaled": 26.68
      },
      {
       "dof": 1,
@@ -5750,10 +6710,12 @@
        1.158
       ],
       "log10_p_binomial": -134.8,
-      "log10_p_inflated": -0.1293,
+      "log10_p_jackknife_widened": -0.5365,
+      "log10_p_overdispersion_scaled": -0.1293,
       "mode": 13,
       "q_binomial_fisher": 613.7,
-      "q_overdispersion_inflated": 0.1079
+      "q_jackknife_widened": 1.116,
+      "q_overdispersion_scaled": 0.1079
      },
      {
       "dof": 1,
@@ -5762,10 +6724,12 @@
        1.324
       ],
       "log10_p_binomial": -739.2,
-      "log10_p_inflated": -0.3593,
+      "log10_p_jackknife_widened": -1.271,
+      "log10_p_overdispersion_scaled": -0.3593,
       "mode": 15,
       "q_binomial_fisher": 3396.0,
-      "q_overdispersion_inflated": 0.6036
+      "q_jackknife_widened": 3.725,
+      "q_overdispersion_scaled": 0.6036
      },
      {
       "dof": 1,
@@ -5774,10 +6738,12 @@
        1.43
       ],
       "log10_p_binomial": -878.9,
-      "log10_p_inflated": -0.3998,
+      "log10_p_jackknife_widened": -3.401,
+      "log10_p_overdispersion_scaled": -0.3998,
       "mode": 16,
       "q_binomial_fisher": 4039.0,
-      "q_overdispersion_inflated": 0.7136
+      "q_jackknife_widened": 12.55,
+      "q_overdispersion_scaled": 0.7136
      },
      {
       "dof": 1,
@@ -5786,10 +6752,12 @@
        1.678
       ],
       "log10_p_binomial": -1564.0,
-      "log10_p_inflated": -0.5839,
+      "log10_p_jackknife_widened": -5.265,
+      "log10_p_overdispersion_scaled": -0.5839,
       "mode": 17,
       "q_binomial_fisher": 7193.0,
-      "q_overdispersion_inflated": 1.265
+      "q_jackknife_widened": 20.68,
+      "q_overdispersion_scaled": 1.265
      },
      {
       "dof": 1,
@@ -5798,10 +6766,12 @@
        -1.025
       ],
       "log10_p_binomial": -14190.0,
-      "log10_p_inflated": -3.262,
+      "log10_p_jackknife_widened": -61.86,
+      "log10_p_overdispersion_scaled": -3.262,
       "mode": 20,
       "q_binomial_fisher": 65330.0,
-      "q_overdispersion_inflated": 11.95
+      "q_jackknife_widened": 278.8,
+      "q_overdispersion_scaled": 11.95
      }
     ],
     "sessions": 2
@@ -5833,10 +6803,12 @@
        -9.836
       ],
       "log10_p_binomial": -549.7,
-      "log10_p_inflated": -1.128e-06,
+      "log10_p_jackknife_widened": -0.00414,
+      "log10_p_overdispersion_scaled": -1.128e-06,
       "mode": 0,
       "q_binomial_fisher": 2571.0,
-      "q_overdispersion_inflated": 0.181
+      "q_jackknife_widened": 1.621,
+      "q_overdispersion_scaled": 0.181
      },
      {
       "dof": 8,
@@ -5845,10 +6817,12 @@
        2.777
       ],
       "log10_p_binomial": -40.04,
-      "log10_p_inflated": -5.789e-13,
+      "log10_p_jackknife_widened": -1.399e-07,
+      "log10_p_overdispersion_scaled": -5.789e-13,
       "mode": 1,
       "q_binomial_fisher": 208.7,
-      "q_overdispersion_inflated": 0.004759
+      "q_jackknife_widened": 0.1066,
+      "q_overdispersion_scaled": 0.004759
      },
      {
       "dof": 8,
@@ -5857,10 +6831,12 @@
        2.571
       ],
       "log10_p_binomial": -6.008,
-      "log10_p_inflated": -7.172e-14,
+      "log10_p_jackknife_widened": -3.396e-10,
+      "log10_p_overdispersion_scaled": -7.172e-14,
       "mode": 2,
       "q_binomial_fisher": 42.74,
-      "q_overdispersion_inflated": 0.002823
+      "q_jackknife_widened": 0.02346,
+      "q_overdispersion_scaled": 0.002823
      },
      {
       "dof": 8,
@@ -5869,10 +6845,12 @@
        2.723
       ],
       "log10_p_binomial": -22.97,
-      "log10_p_inflated": -1.241e-13,
+      "log10_p_jackknife_widened": -2.088e-08,
+      "log10_p_overdispersion_scaled": -1.241e-13,
       "mode": 3,
       "q_binomial_fisher": 127.2,
-      "q_overdispersion_inflated": 0.003238
+      "q_jackknife_widened": 0.06599,
+      "q_overdispersion_scaled": 0.003238
      },
      {
       "dof": 8,
@@ -5881,10 +6859,12 @@
        2.027
       ],
       "log10_p_binomial": -22.65,
-      "log10_p_inflated": -1.437e-12,
+      "log10_p_jackknife_widened": -3.861e-08,
+      "log10_p_overdispersion_scaled": -1.437e-12,
       "mode": 4,
       "q_binomial_fisher": 125.7,
-      "q_overdispersion_inflated": 0.005973
+      "q_jackknife_widened": 0.07703,
+      "q_overdispersion_scaled": 0.005973
      },
      {
       "dof": 8,
@@ -5893,10 +6873,12 @@
        6.656
       ],
       "log10_p_binomial": -24200.0,
-      "log10_p_inflated": -0.3263,
+      "log10_p_jackknife_widened": -4.456,
+      "log10_p_overdispersion_scaled": -0.3263,
       "mode": 5,
       "q_binomial_fisher": 111500.0,
-      "q_overdispersion_inflated": 7.617
+      "q_jackknife_widened": 34.36,
+      "q_overdispersion_scaled": 7.617
      },
      {
       "dof": 8,
@@ -5905,10 +6887,12 @@
        0.9986
       ],
       "log10_p_binomial": -23.37,
-      "log10_p_inflated": -5.722e-13,
+      "log10_p_jackknife_widened": -0.000293,
+      "log10_p_overdispersion_scaled": -5.722e-13,
       "mode": 6,
       "q_binomial_fisher": 129.1,
-      "q_overdispersion_inflated": 0.004745
+      "q_jackknife_widened": 0.7701,
+      "q_overdispersion_scaled": 0.004745
      },
      {
       "dof": 8,
@@ -5917,10 +6901,12 @@
        0.807
       ],
       "log10_p_binomial": -11.32,
-      "log10_p_inflated": -1.863e-13,
+      "log10_p_jackknife_widened": -0.0005187,
+      "log10_p_overdispersion_scaled": -1.863e-13,
       "mode": 7,
       "q_binomial_fisher": 70.07,
-      "q_overdispersion_inflated": 0.003584
+      "q_jackknife_widened": 0.8997,
+      "q_overdispersion_scaled": 0.003584
      },
      {
       "dof": 8,
@@ -5929,10 +6915,12 @@
        1.649
       ],
       "log10_p_binomial": -37.42,
-      "log10_p_inflated": -5.854e-12,
+      "log10_p_jackknife_widened": -1.008e-05,
+      "log10_p_overdispersion_scaled": -5.854e-12,
       "mode": 8,
       "q_binomial_fisher": 196.3,
-      "q_overdispersion_inflated": 0.008489
+      "q_jackknife_widened": 0.3171,
+      "q_overdispersion_scaled": 0.008489
      },
      {
       "dof": 8,
@@ -5941,10 +6929,12 @@
        0.6399
       ],
       "log10_p_binomial": -9.066,
-      "log10_p_inflated": -3.412e-14,
+      "log10_p_jackknife_widened": -3.41e-06,
+      "log10_p_overdispersion_scaled": -3.412e-14,
       "mode": 9,
       "q_binomial_fisher": 58.65,
-      "q_overdispersion_inflated": 0.002344
+      "q_jackknife_widened": 0.24,
+      "q_overdispersion_scaled": 0.002344
      },
      {
       "dof": 8,
@@ -5953,10 +6943,12 @@
        1.751
       ],
       "log10_p_binomial": -41.57,
-      "log10_p_inflated": -6.76e-12,
+      "log10_p_jackknife_widened": -0.0002383,
+      "log10_p_overdispersion_scaled": -6.76e-12,
       "mode": 10,
       "q_binomial_fisher": 216.0,
-      "q_overdispersion_inflated": 0.0088
+      "q_jackknife_widened": 0.7283,
+      "q_overdispersion_scaled": 0.0088
      },
      {
       "dof": 8,
@@ -5965,10 +6957,12 @@
        1.277
       ],
       "log10_p_binomial": -13.73,
-      "log10_p_inflated": -3.682e-14,
+      "log10_p_jackknife_widened": -2.287e-05,
+      "log10_p_overdispersion_scaled": -3.682e-14,
       "mode": 11,
       "q_binomial_fisher": 82.06,
-      "q_overdispersion_inflated": 0.002389
+      "q_jackknife_widened": 0.3921,
+      "q_overdispersion_scaled": 0.002389
      },
      {
       "dof": 8,
@@ -5977,10 +6971,12 @@
        -10.18
       ],
       "log10_p_binomial": -418.0,
-      "log10_p_inflated": -8.116e-08,
+      "log10_p_jackknife_widened": -0.001006,
+      "log10_p_overdispersion_scaled": -8.116e-08,
       "mode": 12,
       "q_binomial_fisher": 1963.0,
-      "q_overdispersion_inflated": 0.0929
+      "q_jackknife_widened": 1.081,
+      "q_overdispersion_scaled": 0.0929
      },
      {
       "dof": 8,
@@ -5989,10 +6985,12 @@
        0.6697
       ],
       "log10_p_binomial": -9.55,
-      "log10_p_inflated": -2.573e-14,
+      "log10_p_jackknife_widened": -7.447e-07,
+      "log10_p_overdispersion_scaled": -2.573e-14,
       "mode": 13,
       "q_binomial_fisher": 61.11,
-      "q_overdispersion_inflated": 0.002184
+      "q_jackknife_widened": 0.1628,
+      "q_overdispersion_scaled": 0.002184
      },
      {
       "dof": 8,
@@ -6001,10 +6999,12 @@
        -1.591
       ],
       "log10_p_binomial": -12.87,
-      "log10_p_inflated": -1.907e-12,
+      "log10_p_jackknife_widened": -9.889e-06,
+      "log10_p_overdispersion_scaled": -1.907e-12,
       "mode": 14,
       "q_binomial_fisher": 77.83,
-      "q_overdispersion_inflated": 0.006412
+      "q_jackknife_widened": 0.3156,
+      "q_overdispersion_scaled": 0.006412
      },
      {
       "dof": 8,
@@ -6013,10 +7013,12 @@
        -0.7188
       ],
       "log10_p_binomial": -12.96,
-      "log10_p_inflated": -2.751e-13,
+      "log10_p_jackknife_widened": -1.125e-05,
+      "log10_p_overdispersion_scaled": -2.751e-13,
       "mode": 15,
       "q_binomial_fisher": 78.25,
-      "q_overdispersion_inflated": 0.003951
+      "q_jackknife_widened": 0.3263,
+      "q_overdispersion_scaled": 0.003951
      }
     ],
     "sessions": 9
@@ -6046,10 +7048,12 @@
        9.181
       ],
       "log10_p_binomial": -11510.0,
-      "log10_p_inflated": -58.76,
+      "log10_p_jackknife_widened": -60.63,
+      "log10_p_overdispersion_scaled": -58.76,
       "mode": 0,
       "q_binomial_fisher": 53010.0,
-      "q_overdispersion_inflated": 280.5
+      "q_jackknife_widened": 289.2,
+      "q_overdispersion_scaled": 280.5
      },
      {
       "dof": 4,
@@ -6058,10 +7062,12 @@
        7.841
       ],
       "log10_p_binomial": -3023.0,
-      "log10_p_inflated": -15.27,
+      "log10_p_jackknife_widened": -15.62,
+      "log10_p_overdispersion_scaled": -15.27,
       "mode": 1,
       "q_binomial_fisher": 13940.0,
-      "q_overdispersion_inflated": 77.68
+      "q_jackknife_widened": 79.37,
+      "q_overdispersion_scaled": 77.68
      },
      {
       "dof": 4,
@@ -6070,10 +7076,12 @@
        7.208
       ],
       "log10_p_binomial": -10330.0,
-      "log10_p_inflated": -83.75,
+      "log10_p_jackknife_widened": -10.44,
+      "log10_p_overdispersion_scaled": -83.75,
       "mode": 5,
       "q_binomial_fisher": 47580.0,
-      "q_overdispersion_inflated": 396.3
+      "q_jackknife_widened": 54.76,
+      "q_overdispersion_scaled": 396.3
      },
      {
       "dof": 4,
@@ -6082,10 +7090,12 @@
        1.06
       ],
       "log10_p_binomial": -108.5,
-      "log10_p_inflated": -0.06182,
+      "log10_p_jackknife_widened": -1.225,
+      "log10_p_overdispersion_scaled": -0.06182,
       "mode": 8,
       "q_binomial_fisher": 510.7,
-      "q_overdispersion_inflated": 1.265
+      "q_jackknife_widened": 9.063,
+      "q_overdispersion_scaled": 1.265
      },
      {
       "dof": 4,
@@ -6094,10 +7104,12 @@
        2.262
       ],
       "log10_p_binomial": -357.1,
-      "log10_p_inflated": -1.135,
+      "log10_p_jackknife_widened": -3.258,
+      "log10_p_overdispersion_scaled": -1.135,
       "mode": 9,
       "q_binomial_fisher": 1658.0,
-      "q_overdispersion_inflated": 8.555
+      "q_jackknife_widened": 19.78,
+      "q_overdispersion_scaled": 8.555
      },
      {
       "dof": 4,
@@ -6106,10 +7118,12 @@
        2.356
       ],
       "log10_p_binomial": -902.8,
-      "log10_p_inflated": -4.599,
+      "log10_p_jackknife_widened": -5.571,
+      "log10_p_overdispersion_scaled": -4.599,
       "mode": 14,
       "q_binomial_fisher": 4173.0,
-      "q_overdispersion_inflated": 26.49
+      "q_jackknife_widened": 31.28,
+      "q_overdispersion_scaled": 26.49
      },
      {
       "dof": 4,
@@ -6118,10 +7132,12 @@
        2.305
       ],
       "log10_p_binomial": -447.5,
-      "log10_p_inflated": -2.662,
+      "log10_p_jackknife_widened": -0.3818,
+      "log10_p_overdispersion_scaled": -2.662,
       "mode": 15,
       "q_binomial_fisher": 2074.0,
-      "q_overdispersion_inflated": 16.73
+      "q_jackknife_widened": 3.933,
+      "q_overdispersion_scaled": 16.73
      },
      {
       "dof": 4,
@@ -6130,10 +7146,12 @@
        3.075
       ],
       "log10_p_binomial": -682.6,
-      "log10_p_inflated": -5.847,
+      "log10_p_jackknife_widened": -0.9545,
+      "log10_p_overdispersion_scaled": -5.847,
       "mode": 16,
       "q_binomial_fisher": 3158.0,
-      "q_overdispersion_inflated": 32.63
+      "q_jackknife_widened": 7.515,
+      "q_overdispersion_scaled": 32.63
      },
      {
       "dof": 4,
@@ -6142,10 +7160,12 @@
        4.059
       ],
       "log10_p_binomial": -1985.0,
-      "log10_p_inflated": -24.0,
+      "log10_p_jackknife_widened": -0.7913,
+      "log10_p_overdispersion_scaled": -24.0,
       "mode": 18,
       "q_binomial_fisher": 9156.0,
-      "q_overdispersion_inflated": 118.7
+      "q_jackknife_widened": 6.55,
+      "q_overdispersion_scaled": 118.7
      },
      {
       "dof": 4,
@@ -6154,10 +7174,12 @@
        2.602
       ],
       "log10_p_binomial": -6237.0,
-      "log10_p_inflated": -35.86,
+      "log10_p_jackknife_widened": -7.26,
+      "log10_p_overdispersion_scaled": -35.86,
       "mode": 19,
       "q_binomial_fisher": 28740.0,
-      "q_overdispersion_inflated": 174.1
+      "q_jackknife_widened": 39.5,
+      "q_overdispersion_scaled": 174.1
      },
      {
       "dof": 4,
@@ -6166,10 +7188,12 @@
        -0.5256
       ],
       "log10_p_binomial": -101000.0,
-      "log10_p_inflated": -903.8,
+      "log10_p_jackknife_widened": -287.6,
+      "log10_p_overdispersion_scaled": -903.8,
       "mode": 20,
       "q_binomial_fisher": 465200.0,
-      "q_overdispersion_inflated": 4177.0
+      "q_jackknife_widened": 1337.0,
+      "q_overdispersion_scaled": 4177.0
      },
      {
       "dof": 4,
@@ -6178,10 +7202,12 @@
        -0.4246
       ],
       "log10_p_binomial": -115700.0,
-      "log10_p_inflated": -951.2,
+      "log10_p_jackknife_widened": -264.1,
+      "log10_p_overdispersion_scaled": -951.2,
       "mode": 21,
       "q_binomial_fisher": 532900.0,
-      "q_overdispersion_inflated": 4396.0
+      "q_jackknife_widened": 1229.0,
+      "q_overdispersion_scaled": 4396.0
      },
      {
       "dof": 4,
@@ -6190,10 +7216,12 @@
        5.58
       ],
       "log10_p_binomial": -40840.0,
-      "log10_p_inflated": -237.1,
+      "log10_p_jackknife_widened": -137.8,
+      "log10_p_overdispersion_scaled": -237.1,
       "mode": 22,
       "q_binomial_fisher": 188100.0,
-      "q_overdispersion_inflated": 1104.0
+      "q_jackknife_widened": 646.3,
+      "q_overdispersion_scaled": 1104.0
      },
      {
       "dof": 4,
@@ -6202,10 +7230,12 @@
        3.625
       ],
       "log10_p_binomial": -21000.0,
-      "log10_p_inflated": -177.0,
+      "log10_p_jackknife_widened": -32.35,
+      "log10_p_overdispersion_scaled": -177.0,
       "mode": 23,
       "q_binomial_fisher": 96740.0,
-      "q_overdispersion_inflated": 827.0
+      "q_jackknife_widened": 157.7,
+      "q_overdispersion_scaled": 827.0
      }
     ],
     "sessions": 5
@@ -6380,6 +7410,32 @@
      0.0171,
      0.0169
     ],
+    "setting_jackknife_se": [
+     0.0955,
+     0.083,
+     0.0875,
+     0.0859,
+     0.0886,
+     0.0855,
+     0.0762,
+     0.082,
+     0.102,
+     0.078,
+     0.0795,
+     0.0749,
+     0.0514,
+     0.0541,
+     0.0653,
+     0.0483,
+     0.0706,
+     0.0752,
+     0.0986,
+     0.076,
+     0.133,
+     0.141,
+     0.173,
+     0.178
+    ],
     "settings": 96
    },
    {
@@ -6421,12 +7477,12 @@
     "se_fisher": [
      0.0874,
      0.13,
-     0.0,
-     0.0,
-     0.0,
+     1.56e-10,
+     1.45e-10,
+     1.56e-10,
      0.0366,
-     0.0,
-     0.0,
+     1.33e-10,
+     1.2e-10,
      0.143,
      0.0923,
      0.146,
@@ -6443,6 +7499,32 @@
      0.0293,
      0.0352,
      0.0353
+    ],
+    "setting_jackknife_se": [
+     2.34,
+     29.6,
+     2.41,
+     2.42,
+     2.49,
+     2.5,
+     2.45,
+     2.45,
+     29.3,
+     2.64,
+     29.3,
+     29.3,
+     2.45,
+     2.55,
+     2.48,
+     2.49,
+     2.46,
+     2.56,
+     2.53,
+     2.51,
+     2.5,
+     2.52,
+     2.53,
+     2.52
     ],
     "settings": 32
    },
@@ -6485,16 +7567,16 @@
     "se_fisher": [
      0.0758,
      0.127,
-     0.0,
-     0.0,
-     0.0,
+     8.09e-11,
+     9.39e-11,
+     1.77e-10,
      0.0524,
-     0.0,
+     1.15e-10,
      0.11,
      0.0965,
      0.12,
-     7.19e-11,
      0.0,
+     1.42e-10,
      0.165,
      0.546,
      0.19,
@@ -6507,6 +7589,32 @@
      0.0425,
      0.0585,
      0.0546
+    ],
+    "setting_jackknife_se": [
+     2.5,
+     29.2,
+     2.11,
+     2.05,
+     2.17,
+     2.27,
+     2.09,
+     29.7,
+     2.43,
+     29.5,
+     2.12,
+     2.13,
+     2.28,
+     2.47,
+     2.22,
+     2.17,
+     2.27,
+     2.2,
+     2.0,
+     2.27,
+     2.14,
+     2.11,
+     2.13,
+     2.15
     ],
     "settings": 24
    },
@@ -6554,10 +7662,10 @@
      0.148,
      0.0267,
      0.146,
-     2.55e-11,
+     1.48e-10,
      0.138,
      0.0721,
-     8.28e-11,
+     1.65e-10,
      0.106,
      0.161,
      0.189,
@@ -6571,6 +7679,32 @@
      0.0252,
      0.029,
      0.0322
+    ],
+    "setting_jackknife_se": [
+     2.99,
+     3.02,
+     25.9,
+     26.1,
+     26.2,
+     3.36,
+     25.9,
+     3.32,
+     27.6,
+     2.76,
+     3.41,
+     2.86,
+     3.17,
+     3.14,
+     2.99,
+     3.0,
+     2.97,
+     2.87,
+     2.88,
+     2.83,
+     2.99,
+     2.99,
+     2.87,
+     3.2
     ],
     "settings": 9
    },
@@ -6623,7 +7757,7 @@
      0.0664,
      0.0348,
      0.0514,
-     2.35e-11,
+     3.32e-11,
      0.0631,
      0.0552,
      0.0207,
@@ -6636,6 +7770,32 @@
      0.0136,
      0.0163,
      0.0178
+    ],
+    "setting_jackknife_se": [
+     1.68,
+     1.83,
+     1.76,
+     29.4,
+     2.06,
+     1.74,
+     2.0,
+     29.2,
+     1.85,
+     1.79,
+     1.73,
+     1.76,
+     1.81,
+     1.81,
+     1.8,
+     1.88,
+     1.84,
+     1.88,
+     1.76,
+     1.85,
+     1.75,
+     1.75,
+     1.76,
+     1.76
     ],
     "settings": 25
    },
@@ -6701,6 +7861,32 @@
      0.0575,
      0.0551
     ],
+    "setting_jackknife_se": [
+     0.173,
+     0.586,
+     0.771,
+     0.583,
+     0.722,
+     1.25,
+     0.707,
+     0.533,
+     0.612,
+     0.479,
+     0.822,
+     0.589,
+     0.197,
+     0.569,
+     0.461,
+     0.55,
+     0.409,
+     0.41,
+     0.264,
+     0.29,
+     0.474,
+     0.414,
+     0.728,
+     0.895
+    ],
     "settings": 12
    },
    {
@@ -6764,6 +7950,32 @@
      0.056,
      0.0547,
      0.0536
+    ],
+    "setting_jackknife_se": [
+     0.173,
+     0.825,
+     0.692,
+     1.04,
+     0.834,
+     0.563,
+     0.726,
+     0.34,
+     0.36,
+     0.697,
+     0.542,
+     0.422,
+     0.196,
+     0.413,
+     0.361,
+     0.552,
+     0.372,
+     0.607,
+     0.423,
+     0.401,
+     0.356,
+     0.516,
+     0.269,
+     0.563
     ],
     "settings": 12
    },
@@ -6829,6 +8041,32 @@
      0.0383,
      0.0372
     ],
+    "setting_jackknife_se": [
+     0.6,
+     0.476,
+     0.605,
+     0.62,
+     0.505,
+     0.562,
+     0.752,
+     0.357,
+     0.118,
+     0.105,
+     0.333,
+     0.63,
+     0.56,
+     0.752,
+     0.428,
+     0.52,
+     0.283,
+     0.69,
+     0.602,
+     0.333,
+     0.109,
+     0.0901,
+     0.744,
+     1.01
+    ],
     "settings": 12
    },
    {
@@ -6893,6 +8131,32 @@
      0.0326,
      0.0394
     ],
+    "setting_jackknife_se": [
+     0.846,
+     0.973,
+     0.95,
+     0.643,
+     1.05,
+     0.556,
+     1.62,
+     0.528,
+     0.266,
+     0.212,
+     0.574,
+     0.656,
+     0.651,
+     0.539,
+     0.616,
+     1.07,
+     0.543,
+     0.318,
+     0.746,
+     0.543,
+     0.239,
+     0.225,
+     0.709,
+     0.682
+    ],
     "settings": 12
    },
    {
@@ -6956,6 +8220,32 @@
      0.113,
      0.148,
      0.185
+    ],
+    "setting_jackknife_se": [
+     0.224,
+     1.06,
+     0.699,
+     0.885,
+     0.35,
+     0.329,
+     0.91,
+     0.437,
+     0.541,
+     0.407,
+     0.885,
+     0.667,
+     0.219,
+     0.565,
+     0.711,
+     0.56,
+     0.855,
+     0.48,
+     0.285,
+     0.504,
+     0.533,
+     1.16,
+     0.624,
+     1.07
     ],
     "settings": 12
    },
@@ -7022,6 +8312,32 @@
      0.0757,
      0.0752
     ],
+    "setting_jackknife_se": [
+     0.0933,
+     0.351,
+     0.364,
+     0.391,
+     0.397,
+     0.278,
+     0.254,
+     0.163,
+     0.335,
+     0.269,
+     0.205,
+     0.223,
+     0.0971,
+     0.32,
+     0.369,
+     0.328,
+     0.166,
+     0.228,
+     0.24,
+     0.196,
+     0.248,
+     0.199,
+     0.209,
+     0.217
+    ],
     "settings": 48
    },
    {
@@ -7087,6 +8403,32 @@
      0.0629,
      0.0639
     ],
+    "setting_jackknife_se": [
+     0.101,
+     0.356,
+     0.362,
+     0.398,
+     0.398,
+     0.271,
+     0.245,
+     0.165,
+     0.321,
+     0.26,
+     0.205,
+     0.222,
+     0.102,
+     0.318,
+     0.331,
+     0.333,
+     0.154,
+     0.241,
+     0.216,
+     0.19,
+     0.258,
+     0.208,
+     0.207,
+     0.218
+    ],
     "settings": 48
    },
    {
@@ -7150,6 +8492,32 @@
      0.159,
      0.215,
      0.21
+    ],
+    "setting_jackknife_se": [
+     0.225,
+     0.557,
+     0.596,
+     0.606,
+     0.601,
+     0.416,
+     0.305,
+     0.238,
+     0.513,
+     0.411,
+     0.299,
+     0.374,
+     0.24,
+     0.459,
+     0.647,
+     0.521,
+     0.32,
+     0.565,
+     0.407,
+     0.453,
+     0.443,
+     0.512,
+     0.327,
+     0.399
     ],
     "settings": 24
    },
@@ -7243,6 +8611,32 @@
      0.0958,
      0.128
     ],
+    "setting_jackknife_se": [
+     0.102,
+     0.262,
+     0.27,
+     0.275,
+     0.274,
+     0.199,
+     0.153,
+     0.125,
+     0.242,
+     0.193,
+     0.146,
+     0.177,
+     0.107,
+     0.22,
+     0.279,
+     0.247,
+     0.161,
+     0.265,
+     0.204,
+     0.177,
+     0.231,
+     0.177,
+     0.196,
+     0.214
+    ],
     "settings": 96
    },
    {
@@ -7306,6 +8700,32 @@
      0.157,
      0.201,
      0.24
+    ],
+    "setting_jackknife_se": [
+     0.228,
+     0.564,
+     0.59,
+     0.604,
+     0.591,
+     0.421,
+     0.302,
+     0.256,
+     0.504,
+     0.414,
+     0.318,
+     0.371,
+     0.25,
+     0.454,
+     0.638,
+     0.498,
+     0.357,
+     0.632,
+     0.439,
+     0.35,
+     0.504,
+     0.351,
+     0.492,
+     0.333
     ],
     "settings": 24
    },
@@ -7371,6 +8791,32 @@
      0.205,
      0.248
     ],
+    "setting_jackknife_se": [
+     0.203,
+     0.555,
+     0.571,
+     0.608,
+     0.606,
+     0.392,
+     0.326,
+     0.261,
+     0.551,
+     0.433,
+     0.313,
+     0.363,
+     0.239,
+     0.47,
+     0.556,
+     0.57,
+     0.314,
+     0.518,
+     0.51,
+     0.396,
+     0.481,
+     0.415,
+     0.411,
+     0.483
+    ],
     "settings": 24
    },
    {
@@ -7434,6 +8880,32 @@
      0.134,
      0.215,
      0.24
+    ],
+    "setting_jackknife_se": [
+     0.202,
+     0.557,
+     0.565,
+     0.608,
+     0.593,
+     0.384,
+     0.318,
+     0.242,
+     0.514,
+     0.429,
+     0.299,
+     0.365,
+     0.213,
+     0.47,
+     0.56,
+     0.505,
+     0.34,
+     0.568,
+     0.437,
+     0.291,
+     0.484,
+     0.373,
+     0.376,
+     0.351
     ],
     "settings": 24
    },
@@ -7499,6 +8971,32 @@
      0.193,
      0.266
     ],
+    "setting_jackknife_se": [
+     0.217,
+     0.567,
+     0.594,
+     0.605,
+     0.596,
+     0.462,
+     0.304,
+     0.261,
+     0.513,
+     0.425,
+     0.303,
+     0.372,
+     0.239,
+     0.462,
+     0.658,
+     0.519,
+     0.348,
+     0.613,
+     0.407,
+     0.369,
+     0.429,
+     0.408,
+     0.401,
+     0.673
+    ],
     "settings": 24
    },
    {
@@ -7562,6 +9060,32 @@
      0.138,
      0.215,
      0.277
+    ],
+    "setting_jackknife_se": [
+     0.216,
+     0.553,
+     0.583,
+     0.609,
+     0.594,
+     0.393,
+     0.296,
+     0.25,
+     0.503,
+     0.42,
+     0.297,
+     0.345,
+     0.221,
+     0.504,
+     0.614,
+     0.528,
+     0.357,
+     0.567,
+     0.474,
+     0.414,
+     0.557,
+     0.348,
+     0.371,
+     0.394
     ],
     "settings": 24
    },
@@ -7627,6 +9151,32 @@
      0.201,
      0.24
     ],
+    "setting_jackknife_se": [
+     0.202,
+     0.557,
+     0.593,
+     0.608,
+     0.603,
+     0.384,
+     0.323,
+     0.269,
+     0.528,
+     0.424,
+     0.3,
+     0.333,
+     0.233,
+     0.492,
+     0.584,
+     0.58,
+     0.382,
+     0.538,
+     0.47,
+     0.422,
+     0.481,
+     0.356,
+     0.467,
+     0.411
+    ],
     "settings": 24
    },
    {
@@ -7691,6 +9241,32 @@
      0.189,
      0.266
     ],
+    "setting_jackknife_se": [
+     0.224,
+     0.583,
+     0.591,
+     0.626,
+     0.605,
+     0.369,
+     0.301,
+     0.246,
+     0.529,
+     0.41,
+     0.289,
+     0.34,
+     0.238,
+     0.484,
+     0.566,
+     0.522,
+     0.362,
+     0.655,
+     0.454,
+     0.367,
+     0.587,
+     0.369,
+     0.401,
+     0.419
+    ],
     "settings": 24
    }
   ]
@@ -7700,85 +9276,118 @@
   "reason": "model-based comparisons inherit the ideal-mesh misfit (Pearson/dof 19 to 1e5, strategy.md section 2 held-out rejection) and the mitigation contrast compares different compiled circuits; the quasi-likelihood intervals are not a well-posed null, so these rows stay out of the corrected ledger",
   "rows": [
    {
+    "alternatives": {
+     "overdispersion_scaled": -950.054
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "smallest per-mode p of the across-session heterogeneity of ln efficiency, 5 plan-time sessions of belenos_mesh|default, Bonferroni over the modes every session identifies",
     "effect": {
      "mean_overdispersion": 270.4,
-     "modes_below_bonferroni_0.05": 12,
+     "modes_below_bonferroni_0.05": 10,
+     "modes_below_bonferroni_0.05_overdispersion_scaled": 12,
      "sessions": 5
     },
-    "log10_p": -950.054,
-    "note": "intervals inflated by the session's Pearson/dof because the ideal-mesh model is rejected by the retained held-out fits",
+    "log10_p": -286.454,
+    "note": "intervals widened by the delete-one-setting jackknife because the ideal-mesh model is rejected by the retained held-out fits; the overdispersion-scaled reading is kept in the alternatives",
     "test_id": "A3.model.belenos_mesh|default"
    },
    {
+    "alternatives": {
+     "overdispersion_scaled": -21.0961
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "smallest per-mode p of the across-session heterogeneity of ln efficiency, 3 plan-time sessions of bdsc_qualification|default, Bonferroni over the modes every session identifies",
     "effect": {
      "mean_overdispersion": 7876.0,
-     "modes_below_bonferroni_0.05": 4,
+     "modes_below_bonferroni_0.05": 7,
+     "modes_below_bonferroni_0.05_overdispersion_scaled": 4,
      "sessions": 3
     },
-    "log10_p": -21.0961,
-    "note": "intervals inflated by the session's Pearson/dof because the ideal-mesh model is rejected by the retained held-out fits",
+    "log10_p": -172.986,
+    "note": "intervals widened by the delete-one-setting jackknife because the ideal-mesh model is rejected by the retained held-out fits; the overdispersion-scaled reading is kept in the alternatives",
     "test_id": "A3.model.bdsc_qualification|default"
    },
    {
+    "alternatives": {
+     "overdispersion_scaled": -15.9547
+    },
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
     "description": "smallest per-mode p of the across-session heterogeneity of ln efficiency, 2 plan-time sessions of bdsc_qualification|none, Bonferroni over the modes every session identifies",
     "effect": {
      "mean_overdispersion": 5714.0,
-     "modes_below_bonferroni_0.05": 5,
+     "modes_below_bonferroni_0.05": 9,
+     "modes_below_bonferroni_0.05_overdispersion_scaled": 5,
      "sessions": 2
     },
-    "log10_p": -15.9547,
-    "note": "intervals inflated by the session's Pearson/dof because the ideal-mesh model is rejected by the retained held-out fits",
+    "log10_p": -103.345,
+    "note": "intervals widened by the delete-one-setting jackknife because the ideal-mesh model is rejected by the retained held-out fits; the overdispersion-scaled reading is kept in the alternatives",
     "test_id": "A3.model.bdsc_qualification|none"
    },
    {
+    "alternatives": {
+     "overdispersion_scaled": 0.0
+    },
     "analysis": 3,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "smallest per-mode p of the across-session heterogeneity of ln efficiency, 2 plan-time sessions of bdsc_diagnostic|default, Bonferroni over the modes every session identifies",
     "effect": {
      "mean_overdispersion": 1432.0,
      "modes_below_bonferroni_0.05": 0,
+     "modes_below_bonferroni_0.05_overdispersion_scaled": 0,
      "sessions": 2
     },
     "log10_p": 0.0,
-    "note": "intervals inflated by the session's Pearson/dof because the ideal-mesh model is rejected by the retained held-out fits",
+    "note": "intervals widened by the delete-one-setting jackknife because the ideal-mesh model is rejected by the retained held-out fits; the overdispersion-scaled reading is kept in the alternatives",
     "test_id": "A3.model.bdsc_diagnostic|default"
    },
    {
-    "analysis": 3,
-    "bh_significant": false,
-    "bonferroni_significant": false,
-    "ci95": null,
-    "description": "smallest per-mode p of the across-session heterogeneity of ln efficiency, 9 plan-time sessions of bdsc_stationarity|default, Bonferroni over the modes every session identifies",
-    "effect": {
-     "mean_overdispersion": 47260.0,
-     "modes_below_bonferroni_0.05": 0,
-     "sessions": 9
+    "alternatives": {
+     "overdispersion_scaled": 0.0
     },
-    "log10_p": 0.0,
-    "note": "intervals inflated by the session's Pearson/dof because the ideal-mesh model is rejected by the retained held-out fits",
-    "test_id": "A3.model.bdsc_stationarity|default"
-   },
-   {
     "analysis": 3,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "",
+    "description": "smallest per-mode p of the across-session heterogeneity of ln efficiency, 9 plan-time sessions of bdsc_stationarity|default, Bonferroni over the modes every session identifies",
+    "effect": {
+     "mean_overdispersion": 47260.0,
+     "modes_below_bonferroni_0.05": 1,
+     "modes_below_bonferroni_0.05_overdispersion_scaled": 0,
+     "sessions": 9
+    },
+    "log10_p": -3.25188,
+    "note": "intervals widened by the delete-one-setting jackknife because the ideal-mesh model is rejected by the retained held-out fits; the overdispersion-scaled reading is kept in the alternatives",
+    "test_id": "A3.model.bdsc_stationarity|default"
+   },
+   {
+    "alternatives": {},
+    "analysis": 3,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
     "description": "DetectorBalancing contrast: fitted ln efficiency of the default-mitigation run against the none run on one plan-time record (different compiled circuits)",
     "effect": {
      "chi2": 29352.0,

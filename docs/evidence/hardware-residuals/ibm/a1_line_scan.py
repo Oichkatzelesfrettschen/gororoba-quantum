@@ -21,6 +21,12 @@ without replacement of unit phasors, so Hoeffding's lemma bounds each projection
 directions p_cons(k) <= 8 exp(-0.427 |X_k|^2 / K) per frequency. A survivor must also pass the same
 threshold under that bound to count as structure found.
 
+Calibration limit. The exponential, Fisher, Gamma and neighbor-ratio laws hold for independent shots with a
+locally flat spectrum. Slow drift and short-lag dependence of the same records (analyses 4 and 5) color the
+spectrum, so the tails of the maximum and of the local ratio are asymptotic under independence; the bulk
+fractions above validate the marginal exponential law only. The calibrated tails of the windows near 60 Hz
+and 29.70 Hz (bin enumeration over the same spectrum) sit in a1b_job_stack.py.
+
 Caveats carried into the result: IBM documents shot order as unguaranteed and the raw records carry chunk
 start and stop times only, so a null bounds structure that survives the service's ordering; a frequency
 in Hz converts a list-position frequency with the documented column-wise period (see common.py).

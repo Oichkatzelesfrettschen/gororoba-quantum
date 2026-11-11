@@ -474,7 +474,7 @@
    "verdict": "not run as a test of time of day: only one cluster spans more than 6 h, the harmonic is collinear with its elapsed time, and the residual dispersion is far above binomial"
   }
  ],
- "falsifier": "Analysis 2: Tuna-17 readout-bracket drift against elapsed time and time of day.\n\nFalsifier, fixed before computing. \"No structure\" is: within a cluster of readout jobs (jobs of any series\nwhose consecutive start times are at most 6 h apart, so no documented platform recalibration separates them\nunless it falls inside the cluster) each qubit's flip probability is constant, i.e. (a) the binomial\nhomogeneity chi-square over a cluster's jobs of one (qubit, prepared state) holds at its nominal level, (b)\nthe pooled within-cluster relative slope per hour of the flip probability has a 95 percent interval containing\nzero, separately for prepared |0> (e0, P(1|0)) and prepared |1> (e1, P(0|1)), and (c) a 24 h harmonic of the\nwithin-cluster residuals is absent. Binomial counting noise is the only null; no random draw is used.\n\nGroups are keyed by (qubit, prepared state, full prepared X-set), so a qubit's readout is compared only between jobs with the same neighbor excitation.\n\nData. Every retained Tuna-17 circuit that holds only X gates and a full-register measurement (a pure readout\nbracket), read through qi_records.read_run. Time is the job midpoint, finished_at minus half the execution time.\nBrackets of one payload series are the readout jobs of its cluster; the series' payload jobs lie between them.\n\nLimits stated before computing. Most clusters span under 1.1 h; one (pathion one-CZ null) spans 14 h. Time of\nday is therefore collinear with elapsed time inside the only long cluster and confounded with calibration\nepoch (documented at docs/notes/quantum_inspire/tuna-17.md, \"Readout calibration drift\") across clusters.\n",
+ "falsifier": "Analysis 2: Tuna-17 readout-bracket drift against elapsed time and time of day.\n\nFalsifier, fixed before computing. \"No structure\" is: within a cluster of readout jobs (jobs of any series\nwhose consecutive start times are at most 6 h apart, so no documented platform recalibration separates them\nunless it falls inside the cluster) each qubit's flip probability is constant, i.e. (a) the binomial\nhomogeneity chi-square over a cluster's jobs of one (qubit, prepared state) holds at its nominal level, (b)\nthe pooled within-cluster relative slope per hour of the flip probability has a 95 percent interval containing\nzero, separately for prepared |0> (e0, P(1|0)) and prepared |1> (e1, P(0|1)), and (c) a 24 h harmonic of the\nwithin-cluster residuals is absent. Binomial counting noise is the only null; no random draw is used.\n\nThe qubits of one job measure the same shots, so a sum of per-qubit statistics has the null of a weighted\nchi-square: each (cluster, prepared X-set) block contributes the eigenvalues of the shot-level correlation matrix\nof its qubits' flip indicators (pooled within jobs, so drift does not enter it) as weights. The ledger carries the\nChernoff bound of that law, a guaranteed upper bound on the tail. Shots inside a job are taken as exchangeable;\nthe shot-order line of analysis 1 is a counterexample, so the bound is conditional on that assumption.\n\nGroups are keyed by (qubit, prepared state, full prepared X-set), so a qubit's readout is compared only between jobs with the same neighbor excitation.\n\nData. Every retained Tuna-17 circuit that holds only X gates and a full-register measurement (a pure readout\nbracket), read through qi_records.read_run. Time is the job midpoint, finished_at minus half the execution time.\nBrackets of one payload series are the readout jobs of its cluster; the series' payload jobs lie between them.\n\nLimits stated before computing. Most clusters span under 1.1 h; one (pathion one-CZ null) spans 14 h. Time of\nday is therefore collinear with elapsed time inside the only long cluster and confounded with calibration\nepoch (documented at docs/notes/quantum_inspire/tuna-17.md, \"Readout calibration drift\") across clusters.\n",
  "groups_with_largest_homogeneity_Q": [
   {
    "Q": 93070.0,
@@ -992,43 +992,72 @@
   "bonferroni_alpha": 0.0071429,
   "rows": [
    {
+    "alternatives": {
+     "prior_method": -2827.79
+    },
     "analysis": 2,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "within-cluster binomial homogeneity of e0 (prepared |0>, P(1|0)) over all readout clusters (summed chi-square)",
+    "dependent": "",
+    "description": "within-cluster binomial homogeneity of e0 (prepared |0>, P(1|0)) over all readout clusters (summed chi-square), null weighted by the shot-level qubit correlation",
     "effect": {
      "Q": 15995.0,
      "Q_over_dof": 21.881,
-     "dof": 731
+     "dof": 731,
+     "shared_shot_null": {
+      "chernoff": -2821.17,
+      "effective_dof": 730.929,
+      "largest_weight": 1.038,
+      "null_mean": 731.0,
+      "saddlepoint": -2823.63,
+      "weights": 182
+     }
     },
-    "log10_p": -2827.79,
-    "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion",
+    "log10_p": -2821.17,
+    "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; ledger p is the Chernoff bound of the weighted chi-square null",
     "test_id": "A2.1"
    },
    {
+    "alternatives": {
+     "prior_method": -356.102
+    },
     "analysis": 2,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "any within-cluster linear drift in e0 (prepared |0>, P(1|0)): sum of squared per-group slope z over all (cluster, qubit) groups",
+    "dependent": "",
+    "description": "any within-cluster linear drift in e0 (prepared |0>, P(1|0)): sum of squared per-group slope z over all (cluster, qubit) groups, null weighted by the shot-level qubit correlation",
     "effect": {
      "groups": 182,
+     "shared_shot_null": {
+      "chernoff": -353.233,
+      "effective_dof": 181.971,
+      "largest_weight": 1.038,
+      "null_mean": 182.0,
+      "saddlepoint": -355.238,
+      "weights": 182
+     },
      "sum_z2": 2270.0,
      "z2_over_groups": 12.472
     },
-    "log10_p": -356.102,
-    "note": "binomial null; qubits of one job share shots, so the groups are not strictly independent",
+    "log10_p": -353.233,
+    "note": "the qubits of one job share shots, so the per-group z values correlate as the flip indicators do; ledger p is the Chernoff bound of the weighted chi-square null",
     "test_id": "A2.3"
    },
    {
+    "alternatives": {},
     "analysis": 2,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      0.42274,
      0.5665
     ],
+    "dependent": "the groups of one job share shots, so the signs of their slopes are not independent",
     "description": "common direction of the linear drift in e0 (prepared |0>, P(1|0)): groups with a negative slope against 0.5 (sign test)",
     "effect": {
      "groups": 182,
@@ -1044,43 +1073,72 @@
     "test_id": "A2.5"
    },
    {
+    "alternatives": {
+     "prior_method": -21437.4
+    },
     "analysis": 2,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "within-cluster binomial homogeneity of e1 (prepared |1>, P(0|1)) over all readout clusters (summed chi-square)",
+    "dependent": "",
+    "description": "within-cluster binomial homogeneity of e1 (prepared |1>, P(0|1)) over all readout clusters (summed chi-square), null weighted by the shot-level qubit correlation",
     "effect": {
      "Q": 101150.0,
      "Q_over_dof": 273.38,
-     "dof": 370
+     "dof": 370,
+     "shared_shot_null": {
+      "chernoff": -20251.5,
+      "effective_dof": 369.895,
+      "largest_weight": 1.073,
+      "null_mean": 370.0,
+      "saddlepoint": -20254.4,
+      "weights": 143
+     }
     },
-    "log10_p": -21437.4,
-    "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion",
+    "log10_p": -20251.5,
+    "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; ledger p is the Chernoff bound of the weighted chi-square null",
     "test_id": "A2.2"
    },
    {
+    "alternatives": {
+     "prior_method": -797.705
+    },
     "analysis": 2,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
-    "description": "any within-cluster linear drift in e1 (prepared |1>, P(0|1)): sum of squared per-group slope z over all (cluster, qubit) groups",
+    "dependent": "",
+    "description": "any within-cluster linear drift in e1 (prepared |1>, P(0|1)): sum of squared per-group slope z over all (cluster, qubit) groups, null weighted by the shot-level qubit correlation",
     "effect": {
      "groups": 143,
+     "shared_shot_null": {
+      "chernoff": -782.562,
+      "effective_dof": 142.942,
+      "largest_weight": 1.073,
+      "null_mean": 143.0,
+      "saddlepoint": -784.74,
+      "weights": 143
+     },
      "sum_z2": 4290.1,
      "z2_over_groups": 30.001
     },
-    "log10_p": -797.705,
-    "note": "binomial null; qubits of one job share shots, so the groups are not strictly independent",
+    "log10_p": -782.562,
+    "note": "the qubits of one job share shots, so the per-group z values correlate as the flip indicators do; ledger p is the Chernoff bound of the weighted chi-square null",
     "test_id": "A2.4"
    },
    {
+    "alternatives": {},
     "analysis": 2,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      0.36849,
      0.52936
     ],
+    "dependent": "the groups of one job share shots, so the signs of their slopes are not independent",
     "description": "common direction of the linear drift in e1 (prepared |1>, P(0|1)): groups with a negative slope against 0.5 (sign test)",
     "effect": {
      "groups": 143,
@@ -1096,10 +1154,13 @@
     "test_id": "A2.6"
    },
    {
+    "alternatives": {},
     "analysis": 2,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "",
     "description": "first-to-last bracket chi-square per qubit against elapsed hours (Spearman across bracket pairs)",
     "effect": {
      "pairs": 20,

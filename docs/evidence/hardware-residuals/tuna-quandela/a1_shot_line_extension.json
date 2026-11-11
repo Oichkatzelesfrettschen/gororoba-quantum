@@ -1276,7 +1276,7 @@
    "shots": 131072
   }
  ],
- "falsifier": "Analysis 1: the Tuna-17 shot-order 50 Hz line scan extended past the 2026-10-18 corpus cutoff.\n\nFalsifier, fixed before computing. \"No structure\" is any of: (a) no later Tuna-17 job crosses the corpus\nthreshold (band-corrected p < 1e-6 in the whitened zoom-FFT of scripts/qi_shot_record_line.py over the band\n0.019 to 0.021 cycles per shot), (b) the later detected fraction is statistically indistinguishable from the\nearlier 72 of 159 jobs, (c) the later detected jobs' first-harmonic amplitudes and peak frequencies are\nindistinguishable from the earlier detected jobs. A miscalibrated scanner would also detect lines in the QX\ntwins (independent draws) or in the readout circuits (which carried no line in the earlier corpus); either\ndetection invalidates every Tuna reading below.\n\nMethod. The statistic, band, threshold and lock-in are the repository's own (qi_shot_record_line.scan, reached\nthrough job_row). Added: a declared wider secondary band 0.010 to 0.040 cycles per shot, because the shot\nperiod grows with circuit length and a longer circuit moves a 50 Hz line out of the primary band. Nulls are the\nanalytic Gamma(rank, 1) law of the whitened periodogram (already in the statistic), binomial tail for counts,\nFisher exact for two fractions, Mann-Whitney (asymptotic, deterministic) for amplitude and frequency.\nNo random draw anywhere.\n",
+ "falsifier": "Analysis 1: the Tuna-17 shot-order 50 Hz line scan extended past the 2026-10-18 corpus cutoff.\n\nFalsifier, fixed before computing. \"No structure\" is any of: (a) no later Tuna-17 job crosses the corpus\nthreshold (band-corrected p < 1e-6 in the whitened zoom-FFT of scripts/qi_shot_record_line.py over the band\n0.019 to 0.021 cycles per shot), (b) the later detected fraction is statistically indistinguishable from the\nearlier 72 of 159 jobs, (c) the later detected jobs' first-harmonic amplitudes and peak frequencies are\nindistinguishable from the earlier detected jobs. A miscalibrated scanner would also detect lines in the QX\ntwins (independent draws) or in the readout circuits (which carried no line in the earlier corpus); either\ndetection invalidates every Tuna reading below.\n\nMethod. The statistic, band, threshold and lock-in are the repository's own (qi_shot_record_line.scan, reached\nthrough job_row). Added: a declared wider secondary band 0.010 to 0.040 cycles per shot, because the shot\nperiod grows with circuit length and a longer circuit moves a 50 Hz line out of the primary band. Nulls are the\nanalytic Gamma(rank, 1) law of the whitened periodogram (already in the statistic), binomial tail for counts,\nFisher exact for two fractions, Mann-Whitney (asymptotic, deterministic) for amplitude and frequency.\nNo random draw anywhere.\n\nDependence. Jobs of one acquisition series share a circuit family, a calibration epoch and a submission window,\nso the job-level binomial, Fisher and Mann-Whitney p-values count more independent observations than the records\nhold; each such ledger row is marked dependent. Beside every job-level test the ledger carries a series-level\ntest with one unit per acquisition series (the run directory name without its timestamp and batch suffix): a\nPoisson-binomial union bound for the detection counts (a series is hit when any of its jobs is, with null\nprobability at most n_jobs * DETECTION_P, valid under any dependence among its jobs), Mann-Whitney over per-series\ndetected fractions, medians and frequencies for the later-against-earlier comparisons. The heterogeneity across\nfamilies has no series-level form, since each family is one series; a Kruskal-Wallis test over per-batch detected\nfractions is carried as a dependent, bounded reading.\n",
  "families": {
   "bdsc_pauli_tuna_17": {
    "cycles_per_shot_range": [
@@ -13874,16 +13874,19 @@
   }
  ],
  "ledger": {
-  "bonferroni_alpha": 0.0055556,
+  "bonferroni_alpha": 0.0027778,
   "rows": [
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": [
      0.084772,
      0.18673
     ],
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "later Tuna-17 jobs with a band-corrected line p < 1e-6, against detection probability 1e-6 per job",
     "effect": {
      "detected": 21,
@@ -13895,10 +13898,13 @@
     "test_id": "A1.1"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "fraction of later Tuna-17 jobs with the line against the earlier 72 of 159 (Fisher exact, all jobs)",
     "effect": {
      "earlier": 0.45283,
@@ -13910,10 +13916,13 @@
     "test_id": "A1.2"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "fraction of later non-readout Tuna-17 jobs with the line against the earlier non-readout jobs (Fisher exact)",
     "effect": {
      "earlier": 0.66667,
@@ -13924,10 +13933,13 @@
     "test_id": "A1.3"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "per-job maximum first-harmonic amplitude of detected jobs, later against earlier (Mann-Whitney)",
     "effect": {
      "earlier_median": 0.14585,
@@ -13938,10 +13950,13 @@
     "test_id": "A1.4"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": null,
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "peak frequency in cycles per shot of detected jobs, later against earlier (Mann-Whitney)",
     "effect": {
      "earlier_median": 0.02014001,
@@ -13952,13 +13967,16 @@
     "test_id": "A1.5"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": [
      0.015823,
      0.09932
     ],
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "later non-readout Tuna-17 jobs detected only in the wider secondary band 0.010-0.040 (band-corrected p < 1e-6)",
     "effect": {
      "jobs": 4,
@@ -13969,13 +13987,16 @@
     "test_id": "A1.6"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": [
      0.30869,
      0.6355
     ],
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "later readout-1 circuits (X-prepared qubits) with a secondary-band line, outside the primary band",
     "effect": {
      "detected": 15,
@@ -13988,13 +14009,16 @@
     "test_id": "A1.7"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": [
      0.10123,
      0.4344
     ],
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "earlier-corpus Tuna-17 readout-1 circuits with a secondary-band line (rescan of the 2026-10-18 corpus)",
     "effect": {
      "detected": 5,
@@ -14005,10 +14029,13 @@
     "test_id": "A1.8"
    },
    {
+    "alternatives": {},
     "analysis": 1,
     "bh_significant": true,
     "bonferroni_significant": true,
+    "by_significant": true,
     "ci95": null,
+    "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
     "description": "heterogeneity of the primary-band detected fraction across later payload families (chi-square contingency)",
     "effect": {
      "bdsc_pauli_tuna_17": "2/19",
@@ -14022,9 +14049,200 @@
     "log10_p": -6.74444,
     "note": "families differ in circuit and phase sensitivity",
     "test_id": "A1.9"
+   },
+   {
+    "alternatives": {
+     "job_level": -99.7184
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "later Tuna-17 acquisition series with at least one job at band-corrected p < 1e-6, against a hit probability of at most n_jobs * 1e-6 per series (Poisson-binomial)",
+    "effect": {
+     "jobs_per_series": {
+      "bdsc_pauli_tuna_17": 27,
+      "demarrais_tuna17_8192d": 9,
+      "kernel_cancellation_tuna_17": 18,
+      "pathion_coset_block_tuna_17": 12,
+      "pathion_coset_coin_tuna_17": 10,
+      "pathion_one_cz_null_tuna_17": 56,
+      "projector-geometry-tuna": 3,
+      "tuna-destination-one-response": 3,
+      "tuna-destination-response": 3,
+      "tuna17-quaternion-order-noise": 24
+     },
+     "series": 10,
+     "series_hit": 7
+    },
+    "log10_p": -32.2799,
+    "note": "union bound per series, valid under any dependence among the jobs of a series",
+    "test_id": "A1.1.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -10.1475
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": null,
+    "dependent": "",
+    "description": "per-series detected fraction of later against earlier Tuna-17 series, all jobs (Mann-Whitney over series)",
+    "effect": {
+     "earlier_median_fraction": 0.41071,
+     "earlier_series": 10,
+     "later_median_fraction": 0.05787,
+     "later_series": 10
+    },
+    "log10_p": -1.8199,
+    "note": "series are the units; the exact attainable p is bounded below by the number of series",
+    "test_id": "A1.2.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -10.5064
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": null,
+    "dependent": "",
+    "description": "per-series detected fraction of later against earlier Tuna-17 series, non-readout jobs (Mann-Whitney over series)",
+    "effect": {
+     "earlier_median_fraction": 0.775,
+     "earlier_series": 10,
+     "later_median_fraction": 0.11513,
+     "later_series": 10
+    },
+    "log10_p": -1.87593,
+    "note": "series are the units; the exact attainable p is bounded below by the number of series",
+    "test_id": "A1.3.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -1.09298
+    },
+    "analysis": 1,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": null,
+    "dependent": "",
+    "description": "per-series median of the maximum first-harmonic amplitude of detected jobs, later against earlier Tuna-17 series (Mann-Whitney over series)",
+    "effect": {
+     "earlier_median": 0.145,
+     "earlier_series": 9,
+     "later_median": 0.03086,
+     "later_series": 7
+    },
+    "log10_p": -0.942483,
+    "note": "series with at least one detected job are the units",
+    "test_id": "A1.4.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -0.546062
+    },
+    "analysis": 1,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": null,
+    "dependent": "",
+    "description": "per-series median peak frequency in cycles per shot of detected jobs, later against earlier Tuna-17 series (Mann-Whitney over series)",
+    "effect": {
+     "earlier_median": 0.02005957,
+     "earlier_series": 9,
+     "later_median": 0.02011036,
+     "later_series": 7
+    },
+    "log10_p": -0.0772419,
+    "note": "series with at least one detected job are the units",
+    "test_id": "A1.5.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -16.5262
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "later non-readout Tuna-17 series with a job detected only in the secondary band (Poisson-binomial over series)",
+    "effect": {
+     "series": 10,
+     "series_hit": 1
+    },
+    "log10_p": -4.00438,
+    "note": "union bound per series, valid under any dependence among the jobs of a series; exploratory band declared after the primary scan",
+    "test_id": "A1.6.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -81.2474
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "later readout-1 series with a secondary-band line in at least one readout-1 job (Poisson-binomial over series)",
+    "effect": {
+     "series": 6,
+     "series_hit": 3
+    },
+    "log10_p": -14.6356,
+    "note": "union bound per series, valid under any dependence among the jobs of a series; exploratory band declared after the primary scan",
+    "test_id": "A1.7.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -25.5795
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "earlier-corpus readout-1 series with a secondary-band line in at least one readout-1 job (Poisson-binomial over series)",
+    "effect": {
+     "series": 9,
+     "series_hit": 2
+    },
+    "log10_p": -9.67572,
+    "note": "union bound per series, valid under any dependence among the jobs of a series; exploratory band declared after the primary scan",
+    "test_id": "A1.8.series"
+   },
+   {
+    "alternatives": {
+     "job_level": -6.74444
+    },
+    "analysis": 1,
+    "bh_significant": true,
+    "bonferroni_significant": false,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "batches of one family share a circuit, a calibration epoch and a submission window",
+    "description": "heterogeneity of the per-batch primary-band detected fraction across later payload families (Kruskal-Wallis, one unit per submitted batch)",
+    "effect": {
+     "batches": 53,
+     "families": 7
+    },
+    "log10_p": -2.23479,
+    "note": "bounded: the family is the acquisition series, so no replicate series exists inside a family and the batches of one family share circuit, epoch and submission window",
+    "test_id": "A1.9.batch"
    }
   ],
-  "tests": 9
+  "tests": 18
  },
  "secondary_only_jobs": [
   {
@@ -14161,6 +14379,92 @@
    "shots": 131072
   }
  ],
+ "series": {
+  "earlier": {
+   "box_kite_tuna_follow": {
+    "detected": 6,
+    "jobs": 21
+   },
+   "box_kite_tuna_ladder": {
+    "detected": 12,
+    "jobs": 21
+   },
+   "box_kite_tuna_pre": {
+    "detected": 0,
+    "jobs": 3
+   },
+   "box_kite_tuna_t0": {
+    "detected": 3,
+    "jobs": 9
+   },
+   "coupler_zz_tuna_17": {
+    "detected": 8,
+    "jobs": 10
+   },
+   "readout_ringdown_tuna_17_P": {
+    "detected": 18,
+    "jobs": 36
+   },
+   "readout_ringdown_tuna_17_Q": {
+    "detected": 13,
+    "jobs": 28
+   },
+   "tuna_17": {
+    "detected": 4,
+    "jobs": 5
+   },
+   "walsh_exemplar_tuna_17": {
+    "detected": 3,
+    "jobs": 12
+   },
+   "zero_divisor_tuna_17": {
+    "detected": 5,
+    "jobs": 14
+   }
+  },
+  "later": {
+   "bdsc_pauli_tuna_17": {
+    "detected": 2,
+    "jobs": 27
+   },
+   "demarrais_tuna17_8192d": {
+    "detected": 9,
+    "jobs": 9
+   },
+   "kernel_cancellation_tuna_17": {
+    "detected": 4,
+    "jobs": 18
+   },
+   "pathion_coset_block_tuna_17": {
+    "detected": 2,
+    "jobs": 12
+   },
+   "pathion_coset_coin_tuna_17": {
+    "detected": 2,
+    "jobs": 10
+   },
+   "pathion_one_cz_null_tuna_17": {
+    "detected": 1,
+    "jobs": 56
+   },
+   "projector-geometry-tuna": {
+    "detected": 0,
+    "jobs": 3
+   },
+   "tuna-destination-one-response": {
+    "detected": 0,
+    "jobs": 3
+   },
+   "tuna-destination-response": {
+    "detected": 0,
+    "jobs": 3
+   },
+   "tuna17-quaternion-order-noise": {
+    "detected": 1,
+    "jobs": 24
+   }
+  }
+ },
  "threshold": {
   "band": [
    0.019,

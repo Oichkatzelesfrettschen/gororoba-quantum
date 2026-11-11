@@ -10,9 +10,31 @@ of its 64 neighbors (guard 1 bin) is F(2C, 128C). "No structure" means every job
 stays above 0.05 / (74 jobs x 2 families = 148 tests) after the union bound over bins, and the targeted
 60 Hz bins (within 0.15 Hz of 60 Hz) of every job stay above 0.05 / 74. The 60 Hz targeted family is
 post-hoc (suggested by a1_line_scan.json), so it is labeled exploratory and counted in the multiplicity.
-Columns of one PUB share circuit structure, so C counts correlated channels; the p-values are
-conservative only if column correlations are positive. The per-column counts of exceedances carry the
-unstacked evidence.
+
+Calibration of the stacked p-values. Columns of one PUB share circuit structure and a noise source, so C counts
+correlated channels. Positive correlation between columns raises the variance of the stacked sum S_k above that of
+Gamma(C, 1) and fattens its upper tail, so the Gamma and F p-values of the stack are anti-conservative; nothing
+bounds how much, and the stacked p-values (down to 10^-128) are descriptive. Three calibrations that need no
+independence between columns sit beside them in `calibrated`:
+- Bin-enumeration null of a preregistered window. For the 60 Hz window (physical prior: US mains frequency) and
+  the 29.70 Hz window (found in these records by a1_line_scan.py, so post hoc), the statistic is the maximum of
+  the neighbor-normalized ordinate over the window's bins. The null is the same statistic on every other
+  non-overlapping tile of the same width over the bins that have a full neighbor window, taken from the same
+  spectrum; p = (tiles with a statistic at least the window's) / (tiles). The tiles are exchangeable with the
+  window only if the neighbor normalization removes the spectral color; spectral color that it leaves uneven
+  inflates the null tiles near the drift band and no proof covers the rest, so the calibration is an inference
+  that the windows lie in a flat region of the spectrum. Applied to the stack it shifts all
+  columns of the job together, so column correlation and drift carry into the null; applied to one column or one
+  PUB stack it keeps that unit's own coloring. The enumeration is exact, draws no random number, and has the
+  resolution 1 / (tiles).
+- Combination across units. Over the 74 jobs the number with a window rank p at or below 0.01 (and 0.05) is
+  tested against the Poisson-binomial law of independent units at the attainable thresholds; the same count over
+  the PUBs of each job (one unit per PUB) and over its columns is listed. Jobs that share one design (slot,
+  shots, PUB count) share a list-position period, so the independent unit is the design: the passing jobs are
+  grouped by design.
+- Job-level Bonferroni minimum. The smallest column-level p-value of a job from a1_line_scan.py multiplied by
+  the job's number of columns is valid under any dependence between the columns, and is the evidence the
+  per-column hits already carry.
 """
 
 from __future__ import annotations
@@ -21,6 +43,7 @@ import math
 from typing import Any
 
 import common
+import exact_laws
 import numpy as np
 from scipy.stats import f as fdist
 from scipy.stats import gamma
@@ -32,6 +55,51 @@ GUARD = 1
 ALPHA = 0.05
 MAINS = 60.0
 WINDOW = 0.15
+# preregistered windows: (name, centre in Hz, basis); the 29.70 Hz centre comes from a1_line_scan.py
+TARGETS = (("mains_60hz", MAINS, "physical prior"), ("line_29_7hz", 29.70, "post hoc"))
+RANK_LEVELS = (0.01, 0.05)
+A1_LINE_LOG10 = -6.843708558971848  # Bonferroni line of a1_line_scan.py over its 348,882 tests
+
+
+def local_ratio_matrix(c: np.ndarray) -> np.ndarray:
+    """Neighbor-normalized ordinates for bins h+1 ... m-h (rows), per column; c holds bins 1 ... m."""
+    h = HALF + GUARD
+    m = c.shape[0]
+    csum = np.concatenate([np.zeros((1,) + c.shape[1:]), np.cumsum(c, axis=0)], axis=0)
+    idx = np.arange(h, m - h)
+    nb = (csum[idx - GUARD] - csum[idx - h] + csum[idx + h + 1] - csum[idx + GUARD + 1]) / (2 * HALF)
+    return c[idx] / np.maximum(nb, 1e-300)
+
+
+def window_bins(centre: float, slot: float, n: int, m: int) -> tuple[int, int]:
+    lo = max(int(math.floor((centre - WINDOW) * slot * n)), 1)
+    hi = min(int(math.ceil((centre + WINDOW) * slot * n)), m)
+    return lo, hi
+
+
+def window_rank(ratio: np.ndarray, m: int, lo: int, hi: int) -> tuple[np.ndarray, np.ndarray, int] | None:
+    """Window statistic and its bin-enumeration rank p per column (or for one series), and the tile count.
+
+    ratio holds the neighbor-normalized ordinates of bins h+1 ... m-h. Tiles have the window's width, start at
+    the window's phase and cover the bins with a full neighbor window; the window is one tile.
+    """
+    h = HALF + GUARD
+    width = hi - lo + 1
+    if lo < h + 1 or hi > m - h or width < 1:
+        return None
+    first = lo - width * ((lo - (h + 1)) // width)
+    starts = np.arange(first, m - h - width + 2, width)
+    rows = starts - (h + 1)
+    block = ratio[rows[0] : rows[-1] + width]
+    stats = np.maximum.reduceat(block, rows - rows[0], axis=0)
+    obs = stats[(lo - first) // width]
+    rank = (stats >= obs).sum(axis=0) / starts.size
+    return obs, rank, int(starts.size)
+
+
+def asymptotic_window_log10_p(stat: np.ndarray, width: int) -> np.ndarray:
+    """Union bound over the window's bins of the locally flat law (1 + r / 64)^-64 of a1_line_scan.py."""
+    return np.minimum(0.0, math.log10(width) - 2 * HALF * np.log10(1 + stat / (2 * HALF)))
 
 
 def stack_job(task: dict[str, Any]) -> dict[str, Any]:
@@ -42,6 +110,10 @@ def stack_job(task: dict[str, Any]) -> dict[str, Any]:
     count = 0
     per_pub: dict[str, Any] = {}
     slot = job["slot_s"]
+    columns: dict[str, Any] = {}
+    for name, centre, _ in TARGETS:
+        lo, hi = window_bins(centre, slot, n, m)
+        columns[name] = {"lo": lo, "hi": hi, "n": 0, "rank_le": [0] * len(RANK_LEVELS), "hits": []}
     for pub in job["pubs"]:
         loaded = common.load_pub(pub["file"])
         cols = []
@@ -60,8 +132,46 @@ def stack_job(task: dict[str, Any]) -> dict[str, Any]:
         s = c.sum(axis=1)
         total += s
         count += c.shape[1]
-        per_pub[loaded["name"]] = {"columns": c.shape[1], "stack": s.astype(np.float32)}
-    return {"job": job["job"], "run": job["run"], "n": n, "slot_s": slot, "C": count, "S": total, "per_pub": per_pub}
+        ratio = local_ratio_matrix(c)
+        for name, _, _ in TARGETS:
+            slot_info = columns[name]
+            ranked = window_rank(ratio, m, slot_info["lo"], slot_info["hi"])
+            if ranked is None:
+                continue
+            stat, rank, tiles = ranked
+            slot_info["tiles"] = tiles
+            slot_info["n"] += int(rank.size)
+            for j, level in enumerate(RANK_LEVELS):
+                slot_info["rank_le"][j] += int((rank <= math.floor(level * tiles) / tiles).sum())
+            lp_win = asymptotic_window_log10_p(stat, slot_info["hi"] - slot_info["lo"] + 1)
+            for col in np.flatnonzero(lp_win <= A1_LINE_LOG10):
+                slot_info["hits"].append(
+                    {
+                        "pub": loaded["name"],
+                        "column": int(col),
+                        "log10_p_asymptotic": float(lp_win[col]),
+                        "rank_p": float(rank[col]),
+                    }
+                )
+        per_pub_ratio = local_ratio_matrix(s)
+        per_pub_rank = {
+            name: window_rank(per_pub_ratio, m, columns[name]["lo"], columns[name]["hi"]) for name, _, _ in TARGETS
+        }
+        per_pub[loaded["name"]] = {
+            "columns": c.shape[1],
+            "stack": s.astype(np.float32),
+            "rank": {k: (None if v is None else float(v[1])) for k, v in per_pub_rank.items()},
+        }
+    return {
+        "job": job["job"],
+        "run": job["run"],
+        "n": n,
+        "slot_s": slot,
+        "C": count,
+        "S": total,
+        "per_pub": per_pub,
+        "columns": columns,
+    }
 
 
 def local_ratio(stack: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -71,6 +181,111 @@ def local_ratio(stack: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     idx = np.arange(h, m - h)
     nb = (csum[idx - GUARD] - csum[idx - h] + csum[idx + h + 1] - csum[idx + GUARD + 1]) / (2 * HALF)
     return idx, stack[idx] / np.maximum(nb, 1e-300)
+
+
+def design_of(row: dict[str, Any], n_pubs: int) -> str:
+    return f"slot {row['slot_ms']:.3f} ms, {row['n']} shots, {n_pubs} PUBs"
+
+
+def calibrated_tails(cat: dict[str, Any], results: list[dict[str, Any]], rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Bin-enumeration ranks of the preregistered windows, their combination, and job-level Bonferroni minima."""
+    import gzip
+    import json
+
+    n_pubs = {j["job"]: len(j["pubs"]) for j in cat["jobs"]}
+    by_job = {r["job"]: r for r in results if r["C"] > 0}
+    row_of = {r["job"]: r for r in rows}
+    out: dict[str, Any] = {"targets": {}}
+    for name, centre, basis in TARGETS:
+        jobs = []
+        for job, r in by_job.items():
+            info = r["columns"][name]
+            m = r["S"].size
+            ranked = window_rank(local_ratio_matrix(r["S"]), m, info["lo"], info["hi"])
+            if ranked is None:
+                continue
+            stat, rank, tiles = ranked
+            pub_ranks = [v["rank"][name] for v in r["per_pub"].values() if v["rank"][name] is not None]
+            jobs.append(
+                {
+                    "job": job,
+                    "run": r["run"],
+                    "design": design_of(row_of[job], n_pubs[job]),
+                    "tiles": tiles,
+                    "window_bins": [info["lo"], info["hi"]],
+                    "stack_statistic": float(stat),
+                    "stack_rank_p": float(rank),
+                    "n_pubs": len(pub_ranks),
+                    "pub_rank_p": pub_ranks,
+                    "n_columns": info["n"],
+                    "column_rank_counts": dict(zip(map(str, RANK_LEVELS), info["rank_le"], strict=True)),
+                    "column_hits_at_a1_line": info["hits"],
+                }
+            )
+        entry: dict[str, Any] = {"centre_hz": centre, "half_width_hz": WINDOW, "basis": basis, "n_jobs": len(jobs)}
+        for level in RANK_LEVELS:
+            q = [math.floor(level * j["tiles"]) / j["tiles"] for j in jobs]
+            passing = [j for j, qj in zip(jobs, q, strict=True) if j["stack_rank_p"] <= qj]
+            entry[f"jobs_rank_p_at_most_{level}"] = {
+                "observed": len(passing),
+                "expected": float(sum(q)),
+                "log10_p_poisson_binomial": exact_laws.poisson_binomial_log10_upper(q, len(passing)),
+                "designs": sorted({j["design"] for j in passing}),
+                "jobs": [j["job"] for j in passing],
+            }
+            by_design: dict[str, list[tuple[float, bool]]] = {}
+            for j, qj in zip(jobs, q, strict=True):
+                by_design.setdefault(j["design"], []).append((qj, j["stack_rank_p"] <= qj))
+            design_q = [1.0 - math.prod(1.0 - qj for qj, _ in members) for members in by_design.values()]
+            design_hit = sum(1 for members in by_design.values() if any(hit for _, hit in members))
+            entry[f"designs_rank_p_at_most_{level}"] = {
+                "n_designs": len(by_design),
+                "observed": design_hit,
+                "expected": float(sum(design_q)),
+                "log10_p_poisson_binomial": exact_laws.poisson_binomial_log10_upper(design_q, design_hit),
+                "note": "a design counts once; its chance of one passing job assumes independent jobs inside it",
+            }
+            pub_q = [(math.floor(level * j["tiles"]) / j["tiles"], r_) for j in jobs for r_ in j["pub_rank_p"]]
+            k_pub = sum(1 for qj, r_ in pub_q if r_ <= qj)
+            entry[f"pubs_rank_p_at_most_{level}"] = {
+                "n_pubs": len(pub_q),
+                "observed": k_pub,
+                "expected": float(sum(qj for qj, _ in pub_q)),
+                "log10_p_poisson_binomial": exact_laws.poisson_binomial_log10_upper([qj for qj, _ in pub_q], k_pub),
+            }
+            cols = [
+                (j["n_columns"], j["column_rank_counts"][str(level)], math.floor(level * j["tiles"]) / j["tiles"])
+                for j in jobs
+            ]
+            entry[f"columns_rank_p_at_most_{level}"] = {
+                "n_columns": sum(c[0] for c in cols),
+                "observed": sum(c[1] for c in cols),
+                "expected": float(sum(c[0] * c[2] for c in cols)),
+            }
+        entry["jobs"] = jobs
+        out["targets"][name] = entry
+    # job-level Bonferroni minimum of the per-column p-values of a1_line_scan.py (any dependence between columns)
+    file_job = {p["file"]: j["job"] for j in cat["jobs"] for p in j["pubs"]}
+    with gzip.open(common.OUT / "a1_pvalues.json.gz", "rt") as handle:
+        a1_rows = json.load(handle)["tests"]
+    best: dict[str, dict[str, list[float]]] = {}
+    for test_id, family, lp in a1_rows:
+        job = file_job[test_id.split("|", 1)[0]]
+        fam_best = best.setdefault(job, {}).setdefault(family, [0.0, 0.0])
+        fam_best[0] = min(fam_best[0], float(lp))
+        fam_best[1] += 1
+    bonferroni_min = {}
+    for job, fams in best.items():
+        bonferroni_min[job] = {
+            fam: {
+                "n_tests": int(v[1]),
+                "min_log10_p": v[0],
+                "bonferroni_min_log10_p": min(0.0, v[0] + math.log10(v[1])),
+            }
+            for fam, v in fams.items()
+        }
+    out["job_bonferroni_min_a1_columns"] = bonferroni_min
+    return out
 
 
 def main() -> None:
@@ -178,6 +393,7 @@ def main() -> None:
                     }
                 )
     pub_rows.sort(key=lambda x: x["log10_p_bin"])
+    calibrated = calibrated_tails(cat, results, rows)
     out = {
         "analysis": "a1b_job_stack",
         "n_jobs_stacked": len(rows),
@@ -190,6 +406,11 @@ def main() -> None:
         "n_jobs_white_bonferroni": sum(r["white_bonferroni"] for r in rows),
         "pub_rows_at_flagged_bins": pub_rows,
         "n_pub_rows_at_flagged_bins": len(pub_rows),
+        "calibrated": calibrated,
+        "stack_p_values_note": (
+            "Gamma and F stack p-values assume independent columns; positive column correlation makes them "
+            "anti-conservative. `calibrated` holds the bin-enumeration, cross-unit and job-level Bonferroni results."
+        ),
     }
     common.write_json(common.OUT / "a1b_job_stack.json", out)
     common.write_json_gz(common.OUT / "a1b_pvalues.json.gz", {"tests": [[t[0], t[1], round(t[2], 4)] for t in tests]})
@@ -200,6 +421,11 @@ def main() -> None:
         out["n_jobs_narrow_bonferroni"],
         out["n_jobs_white_bonferroni"],
     )
+    for name, entry in calibrated["targets"].items():
+        print(
+            name,
+            {k: v for k, v in entry.items() if k != "jobs"},
+        )
     for r in out["mains_jobs"]:
         print(
             r["run"][-27:],

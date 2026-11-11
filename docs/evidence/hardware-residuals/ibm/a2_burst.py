@@ -11,14 +11,29 @@ alternative. Under independent errors, M_n is Poisson-binomial with those margin
 (1) dispersion z of sum_n (M_n - mu_b)^2 against sum_n sigma_b^2, with variance sum_n (kappa4_b + 2 sigma_b^4)
 (positive correlation raises it); (2) and (3) the count of shots with M >= t against Poisson with the
 Poisson-binomial tail mass, at the two thresholds t_a and t_b where the expected count first falls to 5 and
-to 0.5 (both fixed from the marginals alone); (4) adjacency of the highest-scoring 1 percent of shots (score
-z_n = (M_n - mu_b) / sigma_b, ties kept) in shot index, and (5) the same for pairs separated by 1..16 shots,
-each against a deterministic circular-shift null: column i is rotated by i * round(g N) shots (g in the
-golden-ratio powers 0.381966, 0.236068, 0.145898, 0.090170), which keeps every column's marginal and its own
-time structure (per-qubit memory) and removes only the cross-column alignment; the null mean is the larger of the
-mean count over the four rotated copies and the exact permutation mean and the p-value is the Poisson upper tail at
-that mean. The exact permutation expectation |B|(|B|-1)/N is reported beside it as a diagnostic: per-qubit memory
-raises adjacency above the permutation mean without any burst, and only the shift null separates the two.
+to 0.5 (both fixed from the marginals alone; a Poisson approximation); (4) adjacency of the highest-scoring 1
+percent of shots (score z_n = (M_n - mu_b) / sigma_b, ties kept) in shot index, and (5) the same for pairs
+separated by 1..16 shots, each against a deterministic circular-shift null: column i is rotated by
+i * round(g N) shots (g in the golden-ratio powers 0.381966, 0.236068, 0.145898, 0.090170), which keeps every
+column's marginal and its own time structure (per-qubit temporal dependence) and removes only the cross-column
+alignment; the
+null mean is the larger of the mean count over the four rotated copies and the exact permutation mean and the
+p-value is the Poisson upper tail at that mean (an approximation: four shifted copies estimate a mean and no
+distribution). The exact permutation expectation |B|(|B|-1)/N is reported beside it as a diagnostic: per-qubit
+temporal dependence raises adjacency above the permutation mean without any burst, and only the shift null
+separates the two.
+The p-value of test (1) is the circular-shift law of the same statistic over the full group of shifts: column i
+rotates by i s mod N shots for every s = 1 ... N-1 (the rotations T_s compose as T_s T_s' = T_(s+s'), so the
+observation ranks among N equally likely points when shots are exchangeable inside independent columns, and the
+rank p-value is exact there), the z statistic of the preregistered form is recomputed on every rotated copy with
+block-local marginals of the rotated columns, and p = min(1, 2 min(P(z_s >= z), P(z_s <= z))) over the N-1 shifts
+and the observation. Under drift of a column the rotation moves its time structure, so the shift law then serves as
+a reference that keeps each column's own structure and no Poisson-binomial assumption. Its resolution
+1 / N sets a floor of 2 / N on every p-value (`dispersion.shift.full_group`). As a sensitivity, the same test over
+the shifts whose column offsets stay at least 16 shots apart (the per-qubit dependence of analysis 4 falls by
+0.55 to 0.7 per lag, so a 16-shot separation leaves under 0.4 percent of the lag-1 excess) sits beside it
+(`dispersion.shift.admissible_gap_16`; a PUB with fewer shots than 16 times its columns has none). The normal-law
+p-value stays in the record as `lp_normal_approximation`.
 "No structure" means every one of the 5 x (number of PUBs) p-values stays above 0.05 / that count (Bonferroni) and
 above the Benjamini-Hochberg line. Plug-in marginals absorb part of any burst, so the tests lean conservative.
 """
@@ -35,6 +50,8 @@ from scipy.stats import norm
 BLOCK = 512
 ALPHA = 0.05
 WINDOW = 16
+SHIFT_GAP = 16
+SHIFT_CHUNK = 128
 GOLDEN = (0.381966, 0.236068, 0.145898, 0.090170)
 
 
@@ -69,6 +86,91 @@ def pb_pmf(p: np.ndarray) -> np.ndarray:
     return pmf
 
 
+def _block_stats(counts: np.ndarray, sizes: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Block-local (mu, sigma^2, kappa4) of the error count from per-block column counts (..., q, blocks)."""
+    p = counts / sizes
+    mu = p.sum(axis=-2)
+    pq = p * (1 - p)
+    return mu, pq.sum(axis=-2), (pq * (1 - 6 * pq)).sum(axis=-2)
+
+
+def _dispersion_z(sum_m2: np.ndarray, sizes: np.ndarray, counts: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(ratio, z) of the dispersion statistic from sum_n M_n^2 and the block counts of the (rotated) columns.
+
+    Inside a block sum_n (M_n - mu_b)^2 = sum_n M_n^2 - n_b mu_b^2, because the block mean of M_n is mu_b.
+    """
+    mu, sig2, kap4 = _block_stats(counts, sizes)
+    stat = sum_m2 - (sizes * mu**2).sum(axis=-1)
+    ref = (sizes * sig2).sum(axis=-1)
+    var = (sizes * (kap4 + 2 * sig2**2)).sum(axis=-1)
+    return stat / ref, (stat - ref) / np.sqrt(var)
+
+
+def _rotated_block_counts(
+    cumulative: np.ndarray, shifts: np.ndarray, starts: np.ndarray, sizes: np.ndarray
+) -> np.ndarray:
+    """Per-block counts (shifts, q, blocks) of the columns rotated by i s mod n, from circular prefix sums."""
+    q, n_plus = cumulative.shape
+    n = n_plus - 1
+    offsets = (np.arange(q)[None, :] * shifts[:, None]) % n  # (shifts, q)
+    lo = (starts[None, None, :] - offsets[:, :, None]) % n
+    hi = lo + sizes.astype(np.int64)[None, None, :]
+    cols = np.arange(q)[None, :, None]
+    wrapped = hi > n
+    head = cumulative[cols, np.minimum(hi, n)] - cumulative[cols, lo]
+    tail = cumulative[cols, np.where(wrapped, hi - n, 0)]
+    return (head + np.where(wrapped, tail, 0.0)).astype(np.float64)
+
+
+def shift_distribution(e: np.ndarray, blocks: list[np.ndarray]) -> dict[str, Any]:
+    """Exact circular-shift law of the dispersion z (see the module docstring)."""
+    n, q = e.shape
+    starts = np.array([b[0] for b in blocks])
+    sizes = np.array([b.size for b in blocks], dtype=np.float64)
+    ef = e.astype(np.float64)
+    cumulative = np.vstack([np.zeros((1, q)), np.cumsum(ef, axis=0)]).T.copy()  # (q, n + 1)
+    # sum_n M_n^2 at every shift s: sum_i K_i + 2 sum_(i<j) corr_ij((i - j) s mod n), exact in integers
+    spectrum = np.fft.rfft(ef, axis=0)
+    shifts_all = np.arange(n)
+    pair_sum = np.zeros(n)
+    for i in range(q - 1):
+        corr = np.fft.irfft(np.conj(spectrum[:, i])[None, :] * spectrum[:, i + 1 :].T, n=n, axis=1)
+        corr = np.rint(corr)
+        lag = ((i - np.arange(i + 1, q))[:, None] * shifts_all[None, :]) % n
+        pair_sum += np.take_along_axis(corr, lag, axis=1).sum(axis=0)
+    sum_m2 = ef.sum() + 2 * pair_sum
+    ratio = np.empty(n)
+    z = np.empty(n)
+    admissible = np.zeros(n, dtype=bool)
+    for lo in range(0, n, SHIFT_CHUNK):
+        shifts = shifts_all[lo : lo + SHIFT_CHUNK]
+        counts = _rotated_block_counts(cumulative, shifts, starts, sizes)
+        ratio[lo : lo + SHIFT_CHUNK], z[lo : lo + SHIFT_CHUNK] = _dispersion_z(
+            sum_m2[lo : lo + SHIFT_CHUNK], sizes, counts
+        )
+        offsets = np.sort((np.arange(q)[None, :] * shifts[:, None]) % n, axis=1)
+        gaps = np.diff(np.concatenate([offsets, offsets[:, :1] + n], axis=1), axis=1)
+        admissible[lo : lo + SHIFT_CHUNK] = gaps.min(axis=1) >= SHIFT_GAP
+    admissible[0] = False
+    # direct check of one nonzero shift by gathering the rotated columns
+    check_shift = n // 3
+    rolled = np.stack([np.roll(e[:, i], (i * check_shift) % n) for i in range(q)], axis=1)
+    m_direct = rolled.sum(axis=1).astype(np.float64)
+    counts_direct = np.stack([rolled[idx].sum(axis=0) for idx in blocks], axis=1).astype(np.float64)
+    ratio_direct, z_direct = _dispersion_z(np.array(float((m_direct**2).sum())), sizes, counts_direct)
+    return {
+        "z0": float(z[0]),
+        "ratio0": float(ratio[0]),
+        "z_all": z[1:],
+        "admissible": admissible[1:],
+        "selfcheck": {
+            "direct_shift": check_shift,
+            "max_abs_diff_ratio": float(abs(ratio[check_shift] - ratio_direct)),
+            "max_abs_diff_z": float(abs(z[check_shift] - z_direct)),
+        },
+    }
+
+
 def analyze(ds: dict[str, Any]) -> dict[str, Any]:
     e, qubits = common.load_errors(ds)
     n, q = e.shape
@@ -93,6 +195,34 @@ def analyze(ds: dict[str, Any]) -> dict[str, Any]:
     z_disp = (stat - ref) / math.sqrt(var_stat)
     lp_disp = float(math.log10(max(2 * norm.sf(abs(z_disp)), 1e-300)))
     ratio = stat / ref
+    law = shift_distribution(e, blocks)
+    if abs(law["z0"] - z_disp) > 1e-9 or abs(law["ratio0"] - ratio) > 1e-12:
+        raise ValueError("shift 0 of the fast path differs from the direct dispersion statistic")
+    z_all = law.pop("z_all")
+    admissible = law.pop("admissible")
+    law.pop("z0")
+    law.pop("ratio0")
+
+    def shift_summary(z_shift: np.ndarray) -> dict[str, Any]:
+        if not z_shift.size:
+            return {"n_shifts": 0}
+        total = z_shift.size + 1
+        upper = (int((z_shift >= z_disp).sum()) + 1) / total
+        lower = (int((z_shift <= z_disp).sum()) + 1) / total
+        return {
+            "n_shifts": int(z_shift.size),
+            "lp": math.log10(min(1.0, 2 * min(upper, lower))),
+            "p_floor_log10": math.log10(2 / total),
+            "z_shift_mean": float(z_shift.mean()),
+            "z_shift_sd": float(z_shift.std()),
+            "z_observed_in_shift_sd": float((z_disp - z_shift.mean()) / z_shift.std()),
+            "upper_tail_count": int((z_shift >= z_disp).sum()),
+            "lower_tail_count": int((z_shift <= z_disp).sum()),
+        }
+
+    law["full_group"] = shift_summary(z_all)
+    law["admissible_gap_16"] = shift_summary(z_all[admissible]) | {"min_offset_gap": SHIFT_GAP}
+    lp_dispersion = law["full_group"]["lp"]
 
     # expected count of shots with M >= t from the block-local Poisson-binomial tails
     tails = np.zeros(q + 2)
@@ -149,7 +279,15 @@ def analyze(ds: dict[str, Any]) -> dict[str, Any]:
         "n_columns": q,
         "slot_us": ds["slot_s"] * 1e6,
         "mean_errors_per_shot": float(m.mean()),
-        "dispersion": {"ratio": ratio, "z": z_disp, "ratio_se": math.sqrt(var_stat) / ref, "lp": lp_disp},
+        "dispersion": {
+            "ratio": ratio,
+            "z": z_disp,
+            "ratio_se": math.sqrt(var_stat) / ref,
+            "lp": lp_dispersion,
+            "law": "circular-shift distribution over all N-1 shifts (exact for exchangeable independent columns)",
+            "lp_normal_approximation": lp_disp,
+            "shift": law,
+        },
         "tail": out_tail,
         "burst_set": {"size": b, "score_cut": float(cut)},
         "adjacent_pairs": {

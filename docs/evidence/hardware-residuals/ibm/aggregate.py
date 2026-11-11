@@ -3,6 +3,16 @@
 Reads the a*_pvalues.json.gz side files (id, family, log10 p). The follow-up job stack (a1b) re-uses the
 data of the column scan (a1), so counting both is conservative. The 60 Hz and 29.7 Hz category table reads
 a1b_job_stack.json.
+
+Law of each family. a1 white-line, narrow-line and drift: asymptotic laws of independent stationary shots.
+a1b stacks: Gamma and F laws of independent columns, anti-conservative under positive column correlation, so
+the tally is also given without them. a2 dispersion: exact circular-shift distribution (normal law for the PUBs
+without an admissible shift); a2 tails, adjacency and window: Poisson approximations. a3 bins, trend and contrast:
+t tests over PUBs (the units of one calibration epoch share a device state; the epoch-level tests sit in
+a3_coupler_distance.json and enter no count); a3 pairs: exact hypergeometric laws. a4 diagonal: exact adjacency
+law; a4 cross: Poisson approximation at the exact mean, conservative by the exact variance. a5 columns: exact
+run-count law; a5 groups: exact where the cost allows, otherwise a Chernoff upper bound of the exact law; a5
+continuation: normal approximation.
 """
 
 from __future__ import annotations
@@ -120,8 +130,14 @@ def main() -> None:
             slope["slope_excess_per_hour"] + tcrit * slope["se"],
         ],
     }
+    without_stack = {
+        "n_global_bonferroni_without_a1b_stacks": sum(v["global_bonferroni"] for t, v in per_tag.items() if t != "a1b"),
+        "n_global_bh_without_a1b_stacks": sum(v["global_bh"] for t, v in per_tag.items() if t != "a1b"),
+        "note": "same global lines as above; the a1b stack tests keep their counts in the line but drop from the tally",
+    }
     out = {
         "a6_globally_corrected_slope_interval": a6_global,
+        "tally_without_anti_conservative_stacks": without_stack,
         "analysis_own_correction": own,
         "global_by_analysis": per_tag,
         "global_by_group": rollup,

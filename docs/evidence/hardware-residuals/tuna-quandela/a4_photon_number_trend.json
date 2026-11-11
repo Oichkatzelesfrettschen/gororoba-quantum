@@ -5,13 +5,16 @@
   "bonferroni_alpha": 0.0038462,
   "rows": [
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -1.4542e-05,
      1.1074e-05
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mesh",
     "effect": {
      "relative_slope_per_iteration": -1.7329e-06,
@@ -26,13 +29,16 @@
     "test_id": "A4.2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -6.8766e-06,
      9.0678e-06
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
     "effect": {
      "relative_slope_per_iteration": 1.0954e-06,
@@ -47,13 +53,16 @@
     "test_id": "A4.2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -3.5563e-06,
      1.6766e-06
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
     "effect": {
      "relative_slope_per_iteration": -9.3965e-07,
@@ -68,13 +77,16 @@
     "test_id": "A4.2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -8.1521e-07,
      1.5782e-06
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
     "effect": {
      "relative_slope_per_iteration": 3.8143e-07,
@@ -89,13 +101,16 @@
     "test_id": "A4.2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -1.6612e-06,
      3.8073e-07
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
     "effect": {
      "relative_slope_per_iteration": -6.4016e-07,
@@ -110,13 +125,16 @@
     "test_id": "A4.2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -2.1567e-06,
      1.8262e-07
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
     "effect": {
      "relative_slope_per_iteration": -9.8692e-07,
@@ -131,13 +149,16 @@
     "test_id": "A4.2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -9.8081e-06,
      2.2367e-05
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_predecessor",
     "effect": {
      "relative_slope_per_iteration": 6.2787e-06,
@@ -152,13 +173,16 @@
     "test_id": "A4.2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-s"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -8.9727e-07,
      1.1662e-05
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_target_slot_drift",
     "effect": {
      "relative_slope_per_iteration": 5.3813e-06,
@@ -173,13 +197,16 @@
     "test_id": "A4.2026-10-30T200600Z-qpu_ascella-target-slot-drift"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -0.0035672,
      0.00079435
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mode_swap_interleaved",
     "effect": {
      "relative_slope_per_iteration": -0.0012404,
@@ -194,13 +221,16 @@
     "test_id": "A4.2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -8.652e-07,
      2.1151e-06
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_four_term_blocks",
     "effect": {
      "relative_slope_per_iteration": 6.2473e-07,
@@ -215,13 +245,16 @@
     "test_id": "A4.2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blo"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -3.8022e-06,
      2.7927e-07
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_coset_block_pairs",
     "effect": {
      "relative_slope_per_iteration": -1.761e-06,
@@ -236,13 +269,16 @@
     "test_id": "A4.2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_p"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -3.0391e-07,
      2.1781e-07
     ],
+    "dependent": "",
     "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_mesh_persistence",
     "effect": {
      "relative_slope_per_iteration": -4.3037e-08,
@@ -257,13 +293,16 @@
     "test_id": "A4.2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persiste"
    },
    {
+    "alternatives": {},
     "analysis": 4,
     "bh_significant": false,
     "bonferroni_significant": false,
+    "by_significant": false,
     "ci95": [
      -0.021101,
      0.0064492
     ],
+    "dependent": "",
     "description": "stratified logit slope of detected-sample yield per optical trial against iteration index, qpu:ascella",
     "effect": {
      "iterations": 8,

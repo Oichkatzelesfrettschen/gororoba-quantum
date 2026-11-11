@@ -31,20 +31,20 @@
   },
   "a3": {
    "log10_line": -6.259134975679173,
-   "n_bh": 94,
-   "n_bonferroni": 60,
+   "n_bh": 102,
+   "n_bonferroni": 65,
    "tests": 90804
   },
   "a4": {
    "log10_line": -6.563402762933961,
-   "n_bh": 539,
-   "n_bonferroni": 424,
+   "n_bh": 545,
+   "n_bonferroni": 430,
    "tests": 182967
   },
   "a5": {
    "log10_line": -4.944186461283687,
-   "n_bh": 1439,
-   "n_bonferroni": 1033,
+   "n_bh": 1450,
+   "n_bonferroni": 1040,
    "tests": 4397
   },
   "a6": {
@@ -99,8 +99,8 @@
   },
   "a2:dispersion": {
    "bh": 8,
-   "bonferroni": 5,
-   "min_log10_p": -10.7035,
+   "bonferroni": 0,
+   "min_log10_p": -4.2144,
    "tests": 36
   },
   "a2:tail": {
@@ -124,7 +124,7 @@
   "a3:pilot_fez_pair": {
    "bh": 2,
    "bonferroni": 1,
-   "min_log10_p": -12.7141,
+   "min_log10_p": -13.1602,
    "tests": 11628
   },
   "a3:pilot_fez_trend": {
@@ -152,75 +152,75 @@
    "tests": 1
   },
   "a3:state_prep_kingston:026-10-18T083403.945334Z:x_history_pair": {
-   "bh": 11,
+   "bh": 13,
    "bonferroni": 6,
-   "min_log10_p": -23.0146,
+   "min_log10_p": -25.9885,
    "tests": 11026
   },
   "a3:state_prep_kingston:026-10-18T083404.226285Z:x_history_pair": {
    "bh": 21,
    "bonferroni": 9,
-   "min_log10_p": -25.9043,
+   "min_log10_p": -29.5924,
    "tests": 11026
   },
   "a3:state_prep_kingston:026-10-18T214519.655411Z:x_history_pair": {
    "bh": 24,
    "bonferroni": 9,
-   "min_log10_p": -38.808,
+   "min_log10_p": -46.5784,
    "tests": 10878
   },
   "a3:state_prep_kingston:026-10-26T190506.325237Z:x_history_pair": {
    "bh": 9,
    "bonferroni": 2,
-   "min_log10_p": -31.2496,
+   "min_log10_p": -37.7612,
    "tests": 2346
   },
   "a3:state_prep_kingston:026-10-27T010917.104805Z:x_history_pair": {
    "bh": 8,
    "bonferroni": 2,
-   "min_log10_p": -21.5452,
+   "min_log10_p": -25.6877,
    "tests": 2145
   },
   "a3:state_prep_kingston:026-10-27T011025.944327Z:x_history_pair": {
    "bh": 3,
    "bonferroni": 1,
-   "min_log10_p": -29.8231,
+   "min_log10_p": -36.032,
    "tests": 2145
   },
   "a3:state_prep_kingston::e/2026-10-18T083402.386701Z:prep0_pair": {
-   "bh": 17,
-   "bonferroni": 6,
-   "min_log10_p": -34.6351,
+   "bh": 19,
+   "bonferroni": 8,
+   "min_log10_p": -41.5717,
    "tests": 11026
   },
   "a3:state_prep_kingston::e/2026-10-18T083404.414317Z:prep0_pair": {
    "bh": 8,
    "bonferroni": 2,
-   "min_log10_p": -8.7142,
+   "min_log10_p": -9.4101,
    "tests": 11026
   },
   "a3:state_prep_kingston::e/2026-10-18T220218.089776Z:prep0_pair": {
    "bh": 19,
-   "bonferroni": 8,
-   "min_log10_p": -20.6655,
+   "bonferroni": 9,
+   "min_log10_p": -23.9624,
    "tests": 10878
   },
   "a3:state_prep_kingston::e/2026-10-26T190449.023973Z:prep0_pair": {
    "bh": 3,
    "bonferroni": 1,
-   "min_log10_p": -21.0439,
+   "min_log10_p": -24.3705,
    "tests": 2346
   },
   "a3:state_prep_kingston::e/2026-10-27T010741.272123Z:prep0_pair": {
    "bh": 2,
    "bonferroni": 1,
-   "min_log10_p": -18.6785,
+   "min_log10_p": -22.9621,
    "tests": 2145
   },
   "a3:state_prep_kingston::e/2026-10-27T011140.821404Z:prep0_pair": {
    "bh": 3,
    "bonferroni": 1,
-   "min_log10_p": -20.924,
+   "min_log10_p": -24.6241,
    "tests": 2145
   },
   "a3:state_prep_kingston_bin": {
@@ -244,19 +244,19 @@
   "a3:state_prep_kingston_trimmed_bin": {
    "bh": 4,
    "bonferroni": 0,
-   "min_log10_p": -6.2316,
+   "min_log10_p": -6.3458,
    "tests": 9
   },
   "a3:state_prep_kingston_trimmed_contrast": {
    "bh": 1,
    "bonferroni": 0,
-   "min_log10_p": -5.8545,
+   "min_log10_p": -5.9896,
    "tests": 1
   },
   "a3:state_prep_kingston_trimmed_trend": {
    "bh": 1,
    "bonferroni": 1,
-   "min_log10_p": -7.2417,
+   "min_log10_p": -7.273,
    "tests": 1
   },
   "a4:pilot_fez_cross": {
@@ -268,7 +268,7 @@
   "a4:pilot_fez_diag": {
    "bh": 0,
    "bonferroni": 0,
-   "min_log10_p": -1.644,
+   "min_log10_p": -1.69,
    "tests": 153
   },
   "a4:sp:026-10-18T083403.945334Z:x_history_cross": {
@@ -280,7 +280,7 @@
   "a4:sp:026-10-18T083403.945334Z:x_history_diag": {
    "bh": 8,
    "bonferroni": 6,
-   "min_log10_p": -52.729,
+   "min_log10_p": -61.122,
    "tests": 149
   },
   "a4:sp:026-10-18T083404.226285Z:x_history_cross": {
@@ -290,9 +290,9 @@
    "tests": 22052
   },
   "a4:sp:026-10-18T083404.226285Z:x_history_diag": {
-   "bh": 64,
+   "bh": 65,
    "bonferroni": 52,
-   "min_log10_p": -300.0,
+   "min_log10_p": -299.699,
    "tests": 149
   },
   "a4:sp:026-10-18T214519.655411Z:x_history_cross": {
@@ -302,9 +302,9 @@
    "tests": 21756
   },
   "a4:sp:026-10-18T214519.655411Z:x_history_diag": {
-   "bh": 114,
-   "bonferroni": 97,
-   "min_log10_p": -300.0,
+   "bh": 115,
+   "bonferroni": 98,
+   "min_log10_p": -299.699,
    "tests": 148
   },
   "a4:sp:026-10-26T190506.325237Z:x_history_cross": {
@@ -314,9 +314,9 @@
    "tests": 4692
   },
   "a4:sp:026-10-26T190506.325237Z:x_history_diag": {
-   "bh": 45,
-   "bonferroni": 34,
-   "min_log10_p": -300.0,
+   "bh": 47,
+   "bonferroni": 35,
+   "min_log10_p": -320.675,
    "tests": 69
   },
   "a4:sp:026-10-27T010917.104805Z:x_history_cross": {
@@ -327,8 +327,8 @@
   },
   "a4:sp:026-10-27T010917.104805Z:x_history_diag": {
    "bh": 46,
-   "bonferroni": 37,
-   "min_log10_p": -300.0,
+   "bonferroni": 38,
+   "min_log10_p": -299.699,
    "tests": 66
   },
   "a4:sp:026-10-27T011025.944327Z:x_history_cross": {
@@ -340,7 +340,7 @@
   "a4:sp:026-10-27T011025.944327Z:x_history_diag": {
    "bh": 45,
    "bonferroni": 37,
-   "min_log10_p": -300.0,
+   "min_log10_p": -308.737,
    "tests": 66
   },
   "a4:sp::e/2026-10-18T083402.386701Z:prep0_cross": {
@@ -351,8 +351,8 @@
   },
   "a4:sp::e/2026-10-18T083402.386701Z:prep0_diag": {
    "bh": 33,
-   "bonferroni": 25,
-   "min_log10_p": -300.0,
+   "bonferroni": 26,
+   "min_log10_p": -299.699,
    "tests": 149
   },
   "a4:sp::e/2026-10-18T083404.414317Z:prep0_cross": {
@@ -362,9 +362,9 @@
    "tests": 22052
   },
   "a4:sp::e/2026-10-18T083404.414317Z:prep0_diag": {
-   "bh": 7,
+   "bh": 8,
    "bonferroni": 7,
-   "min_log10_p": -59.565,
+   "min_log10_p": -69.309,
    "tests": 149
   },
   "a4:sp::e/2026-10-18T220218.089776Z:prep0_cross": {
@@ -374,9 +374,9 @@
    "tests": 21756
   },
   "a4:sp::e/2026-10-18T220218.089776Z:prep0_diag": {
-   "bh": 39,
-   "bonferroni": 29,
-   "min_log10_p": -300.0,
+   "bh": 40,
+   "bonferroni": 30,
+   "min_log10_p": -299.699,
    "tests": 148
   },
   "a4:sp::e/2026-10-26T190449.023973Z:prep0_cross": {
@@ -386,9 +386,9 @@
    "tests": 4692
   },
   "a4:sp::e/2026-10-26T190449.023973Z:prep0_diag": {
-   "bh": 18,
+   "bh": 19,
    "bonferroni": 15,
-   "min_log10_p": -300.0,
+   "min_log10_p": -299.699,
    "tests": 69
   },
   "a4:sp::e/2026-10-27T010741.272123Z:prep0_cross": {
@@ -399,8 +399,8 @@
   },
   "a4:sp::e/2026-10-27T010741.272123Z:prep0_diag": {
    "bh": 17,
-   "bonferroni": 11,
-   "min_log10_p": -300.0,
+   "bonferroni": 12,
+   "min_log10_p": -299.699,
    "tests": 66
   },
   "a4:sp::e/2026-10-27T011140.821404Z:prep0_cross": {
@@ -412,13 +412,13 @@
   "a4:sp::e/2026-10-27T011140.821404Z:prep0_diag": {
    "bh": 19,
    "bonferroni": 14,
-   "min_log10_p": -300.0,
+   "min_log10_p": -299.699,
    "tests": 66
   },
   "a5:column": {
-   "bh": 1170,
-   "bonferroni": 869,
-   "min_log10_p": -309.706,
+   "bh": 1177,
+   "bonferroni": 884,
+   "min_log10_p": -300.0,
    "tests": 4377
   },
   "a5:continuation": {
@@ -478,22 +478,22 @@
   },
   "a2": {
    "global_bh": 9,
-   "global_bonferroni": 5,
+   "global_bonferroni": 0,
    "tests": 180
   },
   "a3": {
-   "global_bh": 142,
-   "global_bonferroni": 51,
+   "global_bh": 146,
+   "global_bonferroni": 54,
    "tests": 90804
   },
   "a4": {
-   "global_bh": 593,
-   "global_bonferroni": 409,
+   "global_bh": 600,
+   "global_bonferroni": 415,
    "tests": 182967
   },
   "a5": {
-   "global_bh": 1182,
-   "global_bonferroni": 879,
+   "global_bh": 1189,
+   "global_bonferroni": 894,
    "tests": 4397
   },
   "a6": {
@@ -540,7 +540,7 @@
   },
   "a2:dispersion": {
    "global_bh": 8,
-   "global_bonferroni": 5,
+   "global_bonferroni": 0,
    "tests": 36
   },
   "a2:tail": {
@@ -604,8 +604,8 @@
    "tests": 1
   },
   "a3:state_prep_pair": {
-   "global_bh": 128,
-   "global_bonferroni": 48,
+   "global_bh": 132,
+   "global_bonferroni": 51,
    "tests": 79132
   },
   "a3:state_prep_trend": {
@@ -634,13 +634,13 @@
    "tests": 158264
   },
   "a4:state_prep_diag": {
-   "global_bh": 455,
-   "global_bonferroni": 364,
+   "global_bh": 462,
+   "global_bonferroni": 370,
    "tests": 1294
   },
   "a5:column": {
-   "global_bh": 1170,
-   "global_bonferroni": 869,
+   "global_bh": 1177,
+   "global_bonferroni": 884,
    "tests": 4377
   },
   "a5:continuation": {
@@ -659,9 +659,14 @@
    "tests": 1
   }
  },
- "n_global_bh": 5247,
- "n_global_bonferroni": 3023,
+ "n_global_bh": 5265,
+ "n_global_bonferroni": 3042,
  "n_tests_total": 627453,
+ "tally_without_anti_conservative_stacks": {
+  "n_global_bh_without_a1b_stacks": 5206,
+  "n_global_bonferroni_without_a1b_stacks": 2994,
+  "note": "same global lines as above; the a1b stack tests keep their counts in the line but drop from the tally"
+ },
  "tests_per_analysis_file": {
   "a1": 348882,
   "a1b": 222,

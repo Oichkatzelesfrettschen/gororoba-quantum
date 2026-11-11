@@ -3,8 +3,8 @@
  "corrections": {
   "alpha": 0.05,
   "bonferroni_log10_threshold": -6.563402762933961,
-  "n_bh": 539,
-  "n_bonferroni": 424,
+  "n_bh": 545,
+  "n_bonferroni": 430,
   "n_tests": 182967
  },
  "datasets": {
@@ -12,13 +12,15 @@
    "bonferroni_log10_threshold_own_family": -5.670412857299179,
    "cross_coupled_chain_over_expected": 0.9991860138611949,
    "cross_coupled_observed_over_chain": 0.9968216200722047,
+   "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
    "cross_n_bonferroni": 1,
+   "cross_n_pairs_variance_above_mean": 0,
    "cross_n_positive": 1,
    "cross_pooled_ratio_coupled_pairs": 0.9960102210906046,
    "cross_pooled_ratio_uncoupled_pairs": 0.9984608195952125,
    "cross_survivors_top25": [
     {
-     "chain_prediction_same_shot_times_memory": 0.6993239107072411,
+     "chain_prediction_same_shot_times_dependence": 0.6993239107072411,
      "expected": 0.708984375,
      "from": 123,
      "graph_distance": 9,
@@ -37,11 +39,29 @@
      "to": 86
     }
    ],
+   "cross_variance_over_mean": {
+    "fraction_above_1": 0.0,
+    "median": 0.9783104163749959,
+    "pairs_with_expected_at_least_0.5": 20146,
+    "pooled_variance_over_pooled_mean": 0.9206904624442195
+   },
    "cross_z_mean": 0.004271805072354298,
    "cross_z_sd": 0.993021945881164,
+   "diag_block_local": {
+    "block_shots": 512,
+    "n_bonferroni": 0,
+    "n_bonferroni_in_both_global_and_block": 0,
+    "n_negative": 0,
+    "n_positive": 0,
+    "pooled_observed_over_expected": 0.9851803962136823,
+    "z_mean": -0.004459190157680146,
+    "z_sd": 1.00712813169231
+   },
    "diag_decay_at_lags": {},
+   "diag_law": "exact adjacency law, convolved over the pooled PUBs",
    "diag_median_ratio_cond_to_marginal": 0.9017660778211724,
    "diag_n_bonferroni": 0,
+   "diag_n_bonferroni_poisson_approximation": 0,
    "diag_n_negative": 0,
    "diag_n_positive": 0,
    "diag_ratio_interquartile": [
@@ -51,7 +71,7 @@
    "diag_top5": [
     {
      "expected": 25.18701171875,
-     "log10_p": -1.6444796902230043,
+     "log10_p": -1.6899943680231952,
      "marginal": 0.018446180555555556,
      "observed": 14,
      "p_next_given_error": 0.010294117647058823,
@@ -59,25 +79,12 @@
      "ratio": 0.5580622837370242,
      "ratio_ci95": [
       0.305097843539733,
-      0.9363336862406432
-     ]
-    },
-    {
-     "expected": 0.20947265625,
-     "log10_p": -1.4178596628593232,
-     "marginal": 0.0017225477430555555,
-     "observed": 2,
-     "p_next_given_error": 0.015748031496062992,
-     "qubit": 57,
-     "ratio": 9.14229028458057,
-     "ratio_ci95": [
-      1.10717376703388,
-      33.0250959368809
+      0.936333686240643
      ]
     },
     {
      "expected": 1.001953125,
-     "log10_p": -1.4177515155318066,
+     "log10_p": -1.4288705640762913,
      "marginal": 0.003729926215277778,
      "observed": 4,
      "p_next_given_error": 0.014545454545454545,
@@ -85,25 +92,38 @@
      "ratio": 3.899662809917355,
      "ratio_ci95": [
       1.0625268663368155,
-      9.984685617985635
+      9.984685617985633
+     ]
+    },
+    {
+     "expected": 0.20947265625,
+     "log10_p": -1.4235584622286388,
+     "marginal": 0.0017225477430555555,
+     "observed": 2,
+     "p_next_given_error": 0.015748031496062992,
+     "qubit": 57,
+     "ratio": 9.14229028458057,
+     "ratio_ci95": [
+      1.10717376703388,
+      33.02509593688091
      ]
     },
     {
      "expected": 0.6005859375,
-     "log10_p": -1.3339838108205393,
+     "log10_p": -1.342723765523999,
      "marginal": 0.0028483072916666665,
      "observed": 3,
      "p_next_given_error": 0.014285714285714285,
      "qubit": 150,
      "ratio": 5.015510204081632,
      "ratio_ci95": [
-      1.0343187817879114,
+      1.0343187817879116,
       14.657449181087575
      ]
     },
     {
      "expected": 5.03857421875,
-     "log10_p": -1.1771959240380716,
+     "log10_p": -1.1938797045832215,
      "marginal": 0.00830078125,
      "observed": 10,
      "p_next_given_error": 0.016339869281045753,
@@ -115,8 +135,8 @@
      ]
     }
    ],
-   "diag_z_mean": 0.0006870460597583005,
-   "diag_z_sd": 0.9819852042098672,
+   "diag_z_mean": -0.0013182554901386364,
+   "diag_z_sd": 0.9926325211414964,
    "n_pubs": 24,
    "n_qubits": 153,
    "n_shots_total": 73728,
@@ -128,13 +148,15 @@
     "bonferroni_log10_threshold_own_family": -5.647402532488529,
     "cross_coupled_chain_over_expected": 1.185374824935259,
     "cross_coupled_observed_over_chain": 1.0605821682520824,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 5,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 5,
     "cross_pooled_ratio_coupled_pairs": 1.2571874020212694,
     "cross_pooled_ratio_uncoupled_pairs": 1.0042789552107498,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 69.77059454817979,
+      "chain_prediction_same_shot_times_dependence": 69.77059454817979,
       "expected": 20.481353759765625,
       "from": 71,
       "graph_distance": 1,
@@ -153,7 +175,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 43.04988927165355,
+      "chain_prediction_same_shot_times_dependence": 43.04988927165355,
       "expected": 20.481353759765625,
       "from": 58,
       "graph_distance": 1,
@@ -172,7 +194,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 9.883152587977426,
+      "chain_prediction_same_shot_times_dependence": 9.883152587977426,
       "expected": 2.498077392578125,
       "from": 62,
       "graph_distance": 1,
@@ -191,7 +213,7 @@
       "to": 61
      },
      {
-      "chain_prediction_same_shot_times_memory": 5.273687696079529,
+      "chain_prediction_same_shot_times_dependence": 5.273687696079529,
       "expected": 2.788665771484375,
       "from": 102,
       "graph_distance": 6,
@@ -210,7 +232,7 @@
       "to": 80
      },
      {
-      "chain_prediction_same_shot_times_memory": 3.434223253112323,
+      "chain_prediction_same_shot_times_dependence": 3.434223253112323,
       "expected": 2.788665771484375,
       "from": 80,
       "graph_distance": 6,
@@ -222,27 +244,45 @@
        15,
        2.78849555963883
       ],
-      "log10_p": -7.027423185287789,
+      "log10_p": -7.027423185287791,
       "observed": 16,
       "observed_over_chain": 4.65898656573935,
       "ratio": 5.737510806640476,
       "to": 102
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9808363713873621,
+     "pairs_with_expected_at_least_0.5": 14186,
+     "pooled_variance_over_pooled_mean": 0.9486029731855514
+    },
     "cross_z_mean": 0.011276998100146143,
     "cross_z_sd": 1.0166719514750417,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 26,
+     "n_bonferroni_in_both_global_and_block": 26,
+     "n_negative": 0,
+     "n_positive": 26,
+     "pooled_observed_over_expected": 4.111309268293103,
+     "z_mean": 7.648837463775097,
+     "z_sd": 18.03208507277704
+    },
     "diag_decay_at_lags": {
      "positive": {
-      "lag1_excess_over_mean": 9.614488092166681,
-      "lag2_excess_over_mean": 5.432023652738249,
-      "lag3_excess_over_mean": 3.0867287095630194,
-      "n_qubits": 26
+      "lag1_excess_over_mean": 9.621367064799232,
+      "lag2_excess_over_mean": 5.434175156898974,
+      "lag3_excess_over_mean": 3.086528794841355,
+      "n_qubits": 27
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 1.2641975308641975,
-    "diag_n_bonferroni": 26,
+    "diag_n_bonferroni": 27,
+    "diag_n_bonferroni_poisson_approximation": 26,
     "diag_n_negative": 0,
-    "diag_n_positive": 26,
+    "diag_n_positive": 27,
     "diag_ratio_interquartile": [
      0.0,
      5.30650815424478
@@ -250,7 +290,7 @@
     "diag_top5": [
      {
       "expected": 93.727294921875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.053497314453125,
       "observed": 829,
       "p_next_given_error": 0.47290359383913294,
@@ -263,7 +303,7 @@
      },
      {
       "expected": 209.72479248046875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.08001708984375,
       "observed": 1724,
       "p_next_given_error": 0.6575133485888635,
@@ -276,7 +316,7 @@
      },
      {
       "expected": 23.12530517578125,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.026580810546875,
       "observed": 449,
       "p_next_given_error": 0.5154994259471871,
@@ -289,7 +329,7 @@
      },
      {
       "expected": 23.0191650390625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.026519775390625,
       "observed": 402,
       "p_next_given_error": 0.4626006904487917,
@@ -302,7 +342,7 @@
      },
      {
       "expected": 6.52789306640625,
-      "log10_p": -176.55488600418084,
+      "log10_p": -207.31327362722945,
       "marginal": 0.014129638671875,
       "observed": 174,
       "p_next_given_error": 0.3758099352051836,
@@ -314,8 +354,8 @@
       ]
      }
     ],
-    "diag_z_mean": 9.512029783618893,
-    "diag_z_sd": 22.13539219695359,
+    "diag_z_mean": 9.670833551597111,
+    "diag_z_sd": 22.653230019018498,
     "n_pubs": 1,
     "n_qubits": 149,
     "n_shots_total": 32768,
@@ -327,13 +367,31 @@
     "bonferroni_log10_threshold_own_family": -5.647402532488529,
     "cross_coupled_chain_over_expected": 1.046246024984291,
     "cross_coupled_observed_over_chain": 0.8708005202990567,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 0,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 0,
     "cross_pooled_ratio_coupled_pairs": 0.9110715829171406,
     "cross_pooled_ratio_uncoupled_pairs": 0.9965889823541475,
     "cross_survivors_top25": [],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.977534234229079,
+     "pairs_with_expected_at_least_0.5": 10158,
+     "pooled_variance_over_pooled_mean": 0.9561324344723922
+    },
     "cross_z_mean": -0.004975631345291945,
     "cross_z_sd": 0.9919791239447104,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 6,
+     "n_bonferroni_in_both_global_and_block": 6,
+     "n_negative": 0,
+     "n_positive": 6,
+     "pooled_observed_over_expected": 1.5312004714873688,
+     "z_mean": 1.1779451215777925,
+     "z_sd": 3.4550786577669124
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 5.643978631327776,
@@ -342,8 +400,10 @@
       "n_qubits": 6
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 0.7948921966271421,
     "diag_n_bonferroni": 6,
+    "diag_n_bonferroni_poisson_approximation": 6,
     "diag_n_negative": 0,
     "diag_n_positive": 6,
     "diag_ratio_interquartile": [
@@ -353,7 +413,7 @@
     "diag_top5": [
      {
       "expected": 15.8441162109375,
-      "log10_p": -52.7286372671447,
+      "log10_p": -61.122427507219314,
       "marginal": 0.0311279296875,
       "observed": 110,
       "p_next_given_error": 0.21568627450980393,
@@ -366,46 +426,46 @@
      },
      {
       "expected": 4.3348388671875,
-      "log10_p": -27.935472013217147,
+      "log10_p": -30.640763335617738,
       "marginal": 0.01629638671875,
       "observed": 44,
       "p_next_given_error": 0.1647940074906367,
       "qubit": 62,
       "ratio": 10.112303440923563,
       "ratio_ci95": [
-       7.347615160765851,
-       13.575295373151006
+       7.3476151607658515,
+       13.575295373151002
       ]
      },
      {
       "expected": 6.3087158203125,
-      "log10_p": -12.890934771477669,
+      "log10_p": -13.880470276114162,
       "marginal": 0.0196533203125,
       "observed": 33,
       "p_next_given_error": 0.10248447204968944,
       "qubit": 80,
       "ratio": 5.214613633733267,
       "ratio_ci95": [
-       3.5895000857181976,
+       3.5895000857181985,
        7.323256314436843
       ]
      },
      {
       "expected": 1.5140380859375,
-      "log10_p": -12.884482982601174,
+      "log10_p": -13.628069561013456,
       "marginal": 0.0096435546875,
       "observed": 18,
       "p_next_given_error": 0.11392405063291139,
       "qubit": 35,
       "ratio": 11.813491427655824,
       "ratio_ci95": [
-       7.001423719999436,
-       18.67040955869166
+       7.001423719999433,
+       18.670409558691656
       ]
      },
      {
       "expected": 2.6026611328125,
-      "log10_p": -11.75951661909148,
+      "log10_p": -12.471384522039346,
       "marginal": 0.01263427734375,
       "observed": 21,
       "p_next_given_error": 0.10144927536231885,
@@ -413,12 +473,12 @@
       "ratio": 8.029685640271651,
       "ratio_ci95": [
        4.970501968379758,
-       12.274227458314362
+       12.274227458314376
       ]
      }
     ],
-    "diag_z_mean": 1.2744092645149057,
-    "diag_z_sd": 3.6253189021106342,
+    "diag_z_mean": 1.2883784215483978,
+    "diag_z_sd": 3.683107068845817,
     "n_pubs": 1,
     "n_qubits": 149,
     "n_shots_total": 16384,
@@ -430,13 +490,15 @@
     "bonferroni_log10_threshold_own_family": -5.647402532488529,
     "cross_coupled_chain_over_expected": 1.1836261705200792,
     "cross_coupled_observed_over_chain": 1.1465251843093245,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 7,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 7,
     "cross_pooled_ratio_coupled_pairs": 1.3570572133088739,
     "cross_pooled_ratio_uncoupled_pairs": 1.0095262753889256,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 12.364824364546433,
+      "chain_prediction_same_shot_times_dependence": 12.364824364546433,
       "expected": 5.352813720703125,
       "from": 145,
       "graph_distance": 2,
@@ -455,7 +517,7 @@
       "to": 147
      },
      {
-      "chain_prediction_same_shot_times_memory": 6.5419060086461185,
+      "chain_prediction_same_shot_times_dependence": 6.5419060086461185,
       "expected": 6.250244140625,
       "from": 80,
       "graph_distance": 6,
@@ -474,7 +536,7 @@
       "to": 102
      },
      {
-      "chain_prediction_same_shot_times_memory": 33.698224218195946,
+      "chain_prediction_same_shot_times_dependence": 33.698224218195946,
       "expected": 12.606048583984375,
       "from": 62,
       "graph_distance": 1,
@@ -493,7 +555,7 @@
       "to": 61
      },
      {
-      "chain_prediction_same_shot_times_memory": 11.794309104106784,
+      "chain_prediction_same_shot_times_dependence": 11.794309104106784,
       "expected": 6.250244140625,
       "from": 102,
       "graph_distance": 6,
@@ -512,7 +574,7 @@
       "to": 80
      },
      {
-      "chain_prediction_same_shot_times_memory": 1.4468781076848212,
+      "chain_prediction_same_shot_times_dependence": 1.4468781076848212,
       "expected": 0.79241943359375,
       "from": 61,
       "graph_distance": 1,
@@ -531,7 +593,7 @@
       "to": 60
      },
      {
-      "chain_prediction_same_shot_times_memory": 12.626032841666099,
+      "chain_prediction_same_shot_times_dependence": 12.626032841666099,
       "expected": 3.522125244140625,
       "from": 63,
       "graph_distance": 2,
@@ -550,7 +612,7 @@
       "to": 61
      },
      {
-      "chain_prediction_same_shot_times_memory": 40.25812903514413,
+      "chain_prediction_same_shot_times_dependence": 40.25812903514413,
       "expected": 12.606048583984375,
       "from": 61,
       "graph_distance": 1,
@@ -569,8 +631,24 @@
       "to": 62
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9805469230980914,
+     "pairs_with_expected_at_least_0.5": 16296,
+     "pooled_variance_over_pooled_mean": 0.9462872435344323
+    },
     "cross_z_mean": 0.030741537863107623,
     "cross_z_sd": 1.044433796460141,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 55,
+     "n_bonferroni_in_both_global_and_block": 55,
+     "n_negative": 0,
+     "n_positive": 55,
+     "pooled_observed_over_expected": 4.572034746588341,
+     "z_mean": 12.740107333410217,
+     "z_sd": 19.011562208889625
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 9.255067993039853,
@@ -579,8 +657,10 @@
       "n_qubits": 55
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 4.32923768001057,
     "diag_n_bonferroni": 55,
+    "diag_n_bonferroni_poisson_approximation": 55,
     "diag_n_negative": 0,
     "diag_n_positive": 55,
     "diag_ratio_interquartile": [
@@ -590,7 +670,7 @@
     "diag_top5": [
      {
       "expected": 85.05950927734375,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.05096435546875,
       "observed": 872,
       "p_next_given_error": 0.5221556886227545,
@@ -603,7 +683,7 @@
      },
      {
       "expected": 208.1278076171875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.0797119140625,
       "observed": 1607,
       "p_next_given_error": 0.6152373660030628,
@@ -616,7 +696,7 @@
      },
      {
       "expected": 105.6353759765625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.056793212890625,
       "observed": 998,
       "p_next_given_error": 0.5362708221386352,
@@ -624,12 +704,12 @@
       "ratio": 9.442516012809671,
       "ratio_ci95": [
        8.865699714784975,
-       10.047008771585954
+       10.047008771585952
       ]
      },
      {
       "expected": 8.58856201171875,
-      "log10_p": -213.68546837331533,
+      "log10_p": -255.5554373218439,
       "marginal": 0.016204833984375,
       "observed": 216,
       "p_next_given_error": 0.4067796610169492,
@@ -642,7 +722,7 @@
      },
      {
       "expected": 13.55657958984375,
-      "log10_p": -194.99304393468265,
+      "log10_p": -231.8916993514281,
       "marginal": 0.020355224609375,
       "observed": 234,
       "p_next_given_error": 0.35082458770614694,
@@ -654,8 +734,8 @@
       ]
      }
     ],
-    "diag_z_mean": 15.155776821767885,
-    "diag_z_sd": 22.40054634430082,
+    "diag_z_mean": 15.36639233186099,
+    "diag_z_sd": 22.924968927905024,
     "n_pubs": 1,
     "n_qubits": 149,
     "n_shots_total": 32768,
@@ -667,13 +747,31 @@
     "bonferroni_log10_threshold_own_family": -5.647402532488529,
     "cross_coupled_chain_over_expected": 1.0277808547085665,
     "cross_coupled_observed_over_chain": 0.9822336618550656,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 0,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 0,
     "cross_pooled_ratio_coupled_pairs": 1.0095209525049242,
     "cross_pooled_ratio_uncoupled_pairs": 0.9916958802055811,
     "cross_survivors_top25": [],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9768337922474027,
+     "pairs_with_expected_at_least_0.5": 9982,
+     "pooled_variance_over_pooled_mean": 0.9558300659680955
+    },
     "cross_z_mean": 0.0006759833026985976,
     "cross_z_sd": 0.9961994564135289,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 7,
+     "n_bonferroni_in_both_global_and_block": 7,
+     "n_negative": 0,
+     "n_positive": 7,
+     "pooled_observed_over_expected": 1.5592831175420803,
+     "z_mean": 1.274444140632628,
+     "z_sd": 3.7670799458708304
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 6.2245146942460465,
@@ -682,8 +780,10 @@
       "n_qubits": 7
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 0.6480756299197026,
     "diag_n_bonferroni": 7,
+    "diag_n_bonferroni_poisson_approximation": 7,
     "diag_n_negative": 0,
     "diag_n_positive": 7,
     "diag_ratio_interquartile": [
@@ -693,7 +793,7 @@
     "diag_top5": [
      {
       "expected": 14.327392578125,
-      "log10_p": -59.56467402528148,
+      "log10_p": -69.3087090676651,
       "marginal": 0.02960205078125,
       "observed": 113,
       "p_next_given_error": 0.2329896907216495,
@@ -706,7 +806,7 @@
      },
      {
       "expected": 2.145751953125,
-      "log10_p": -20.797479039075643,
+      "log10_p": -22.39022204911402,
       "marginal": 0.011474609375,
       "observed": 28,
       "p_next_given_error": 0.14893617021276595,
@@ -719,7 +819,7 @@
      },
      {
       "expected": 2.168701171875,
-      "log10_p": -15.279763011156211,
+      "log10_p": -16.289866284429735,
       "marginal": 0.01153564453125,
       "observed": 23,
       "p_next_given_error": 0.12169312169312169,
@@ -732,7 +832,7 @@
      },
      {
       "expected": 7.412841796875,
-      "log10_p": -14.486455832159333,
+      "log10_p": -15.695393108864769,
       "marginal": 0.02130126953125,
       "observed": 38,
       "p_next_given_error": 0.10888252148997135,
@@ -740,12 +840,12 @@
       "ratio": 5.111550808285647,
       "ratio_ci95": [
        3.6172375760042508,
-       7.016002847046817
+       7.016002847046818
       ]
      },
      {
       "expected": 7.24365234375,
-      "log10_p": -9.35540839488378,
+      "log10_p": -10.022616464808191,
       "marginal": 0.02105712890625,
       "observed": 30,
       "p_next_given_error": 0.0872093023255814,
@@ -757,8 +857,8 @@
       ]
      }
     ],
-    "diag_z_mean": 1.312867604149122,
-    "diag_z_sd": 3.86471964791756,
+    "diag_z_mean": 1.327430939036148,
+    "diag_z_sd": 3.921029016709823,
     "n_pubs": 1,
     "n_qubits": 149,
     "n_shots_total": 16384,
@@ -770,13 +870,15 @@
     "bonferroni_log10_threshold_own_family": -5.641553426453896,
     "cross_coupled_chain_over_expected": 1.4150820684666086,
     "cross_coupled_observed_over_chain": 1.1627317663438033,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 19,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 19,
     "cross_pooled_ratio_coupled_pairs": 1.6453608729896225,
     "cross_pooled_ratio_uncoupled_pairs": 1.0038785544634043,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 36.5396325494673,
+      "chain_prediction_same_shot_times_dependence": 36.5396325494673,
       "expected": 11.4046630859375,
       "from": 145,
       "graph_distance": 2,
@@ -795,7 +897,7 @@
       "to": 147
      },
      {
-      "chain_prediction_same_shot_times_memory": 70.80686353559847,
+      "chain_prediction_same_shot_times_dependence": 70.80686353559847,
       "expected": 25.005157470703125,
       "from": 58,
       "graph_distance": 1,
@@ -814,7 +916,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 162.41616081133253,
+      "chain_prediction_same_shot_times_dependence": 162.41616081133253,
       "expected": 96.59552001953125,
       "from": 62,
       "graph_distance": 1,
@@ -826,14 +928,14 @@
        146,
        96.58962411694515
       ],
-      "log10_p": -21.55829263083618,
+      "log10_p": -21.55829263083613,
       "observed": 207,
       "observed_over_chain": 1.2745037129676855,
       "ratio": 2.142956525914922,
       "to": 63
      },
      {
-      "chain_prediction_same_shot_times_memory": 9.624679729423942,
+      "chain_prediction_same_shot_times_dependence": 9.624679729423942,
       "expected": 1.12652587890625,
       "from": 154,
       "graph_distance": 1,
@@ -845,14 +947,14 @@
        8,
        1.1264571191248294
       ],
-      "log10_p": -20.078912291070807,
+      "log10_p": -20.078912291070804,
       "observed": 22,
       "observed_over_chain": 2.285790345079539,
       "ratio": 19.529067562442435,
       "to": 155
      },
      {
-      "chain_prediction_same_shot_times_memory": 89.45111786827921,
+      "chain_prediction_same_shot_times_dependence": 89.45111786827921,
       "expected": 25.005157470703125,
       "from": 71,
       "graph_distance": 1,
@@ -864,14 +966,14 @@
        52,
        25.00363123043269
       ],
-      "log10_p": -18.965651016531663,
+      "log10_p": -18.965651016531677,
       "observed": 83,
       "observed_over_chain": 0.9278810816229399,
       "ratio": 3.319315229158047,
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 16.83345364778223,
+      "chain_prediction_same_shot_times_dependence": 16.83345364778223,
       "expected": 1.12652587890625,
       "from": 155,
       "graph_distance": 1,
@@ -890,7 +992,7 @@
       "to": 154
      },
      {
-      "chain_prediction_same_shot_times_memory": 52.64200207906962,
+      "chain_prediction_same_shot_times_dependence": 52.64200207906962,
       "expected": 19.130157470703125,
       "from": 61,
       "graph_distance": 2,
@@ -909,7 +1011,7 @@
       "to": 63
      },
      {
-      "chain_prediction_same_shot_times_memory": 58.09288057401613,
+      "chain_prediction_same_shot_times_dependence": 58.09288057401613,
       "expected": 19.130157470703125,
       "from": 63,
       "graph_distance": 2,
@@ -928,7 +1030,7 @@
       "to": 61
      },
      {
-      "chain_prediction_same_shot_times_memory": 18.942714370682957,
+      "chain_prediction_same_shot_times_dependence": 18.942714370682957,
       "expected": 5.8218994140625,
       "from": 66,
       "graph_distance": 1,
@@ -947,7 +1049,7 @@
       "to": 67
      },
      {
-      "chain_prediction_same_shot_times_memory": 2.525920785082086,
+      "chain_prediction_same_shot_times_dependence": 2.525920785082086,
       "expected": 2.267303466796875,
       "from": 37,
       "graph_distance": 1,
@@ -966,7 +1068,7 @@
       "to": 25
      },
      {
-      "chain_prediction_same_shot_times_memory": 113.43641511366718,
+      "chain_prediction_same_shot_times_dependence": 113.43641511366718,
       "expected": 61.54052734375,
       "from": 62,
       "graph_distance": 1,
@@ -978,14 +1080,14 @@
        102,
        61.536771093416206
       ],
-      "log10_p": -10.543936707124825,
+      "log10_p": -10.54393670712485,
       "observed": 121,
       "observed_over_chain": 1.0666768680829155,
       "ratio": 1.9661839965089063,
       "to": 61
      },
      {
-      "chain_prediction_same_shot_times_memory": 10.5389758465274,
+      "chain_prediction_same_shot_times_dependence": 10.5389758465274,
       "expected": 7.49658203125,
       "from": 71,
       "graph_distance": 2,
@@ -1004,7 +1106,7 @@
       "to": 51
      },
      {
-      "chain_prediction_same_shot_times_memory": 4.093996982276907,
+      "chain_prediction_same_shot_times_dependence": 4.093996982276907,
       "expected": 1.748504638671875,
       "from": 102,
       "graph_distance": 6,
@@ -1023,7 +1125,7 @@
       "to": 80
      },
      {
-      "chain_prediction_same_shot_times_memory": 2.7314168887540466,
+      "chain_prediction_same_shot_times_dependence": 2.7314168887540466,
       "expected": 1.748504638671875,
       "from": 80,
       "graph_distance": 6,
@@ -1042,7 +1144,7 @@
       "to": 102
      },
      {
-      "chain_prediction_same_shot_times_memory": 181.83432297706653,
+      "chain_prediction_same_shot_times_dependence": 181.83432297706653,
       "expected": 96.59552001953125,
       "from": 63,
       "graph_distance": 1,
@@ -1061,7 +1163,7 @@
       "to": 62
      },
      {
-      "chain_prediction_same_shot_times_memory": 24.8636396193549,
+      "chain_prediction_same_shot_times_dependence": 24.8636396193549,
       "expected": 7.49658203125,
       "from": 51,
       "graph_distance": 2,
@@ -1080,7 +1182,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 7.463337228528997,
+      "chain_prediction_same_shot_times_dependence": 7.463337228528997,
       "expected": 1.89019775390625,
       "from": 17,
       "graph_distance": 25,
@@ -1092,14 +1194,14 @@
        12,
        1.8900823818701218
       ],
-      "log10_p": -6.657244758759119,
+      "log10_p": -6.657244758759117,
       "observed": 13,
       "observed_over_chain": 1.741848130660212,
       "ratio": 6.877587264684039,
       "to": 147
      },
      {
-      "chain_prediction_same_shot_times_memory": 15.843441786493486,
+      "chain_prediction_same_shot_times_dependence": 15.843441786493486,
       "expected": 12.98065185546875,
       "from": 16,
       "graph_distance": 1,
@@ -1118,7 +1220,7 @@
       "to": 3
      },
      {
-      "chain_prediction_same_shot_times_memory": 32.02729479090644,
+      "chain_prediction_same_shot_times_dependence": 32.02729479090644,
       "expected": 11.4046630859375,
       "from": 147,
       "graph_distance": 2,
@@ -1137,20 +1239,38 @@
       "to": 145
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9804709266094734,
+     "pairs_with_expected_at_least_0.5": 17742,
+     "pooled_variance_over_pooled_mean": 0.9492846176021035
+    },
     "cross_z_mean": 0.022120148103270384,
     "cross_z_sd": 1.1310992911430493,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 106,
+     "n_bonferroni_in_both_global_and_block": 105,
+     "n_negative": 0,
+     "n_positive": 106,
+     "pooled_observed_over_expected": 7.502570303014505,
+     "z_mean": 23.152187763411426,
+     "z_sd": 23.817015002920694
+    },
     "diag_decay_at_lags": {
      "positive": {
-      "lag1_excess_over_mean": 10.40781935262752,
-      "lag2_excess_over_mean": 7.04424837216597,
-      "lag3_excess_over_mean": 4.823051554741765,
-      "n_qubits": 105
+      "lag1_excess_over_mean": 8.826623090747253,
+      "lag2_excess_over_mean": 5.974913774614524,
+      "lag3_excess_over_mean": 4.089195055293942,
+      "n_qubits": 106
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 13.827548233652319,
-    "diag_n_bonferroni": 105,
+    "diag_n_bonferroni": 106,
+    "diag_n_bonferroni_poisson_approximation": 105,
     "diag_n_negative": 0,
-    "diag_n_positive": 105,
+    "diag_n_positive": 106,
     "diag_ratio_interquartile": [
      4.363870609468278,
      45.89338712632356
@@ -1158,7 +1278,7 @@
     "diag_top5": [
      {
       "expected": 46.35791015625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.037628173828125,
       "observed": 712,
       "p_next_given_error": 0.5774533657745337,
@@ -1171,7 +1291,7 @@
      },
      {
       "expected": 310.64727783203125,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.097381591796875,
       "observed": 2150,
       "p_next_given_error": 0.6739811912225705,
@@ -1184,7 +1304,7 @@
      },
      {
       "expected": 30.0009765625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.0302734375,
       "observed": 505,
       "p_next_given_error": 0.5090725806451613,
@@ -1197,7 +1317,7 @@
      },
      {
       "expected": 211.80999755859375,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.080413818359375,
       "observed": 1928,
       "p_next_given_error": 0.7316888045540797,
@@ -1210,7 +1330,7 @@
      },
      {
       "expected": 12.170166015625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.019287109375,
       "observed": 368,
       "p_next_given_error": 0.5822784810126582,
@@ -1222,8 +1342,8 @@
       ]
      }
     ],
-    "diag_z_mean": 28.659959377967027,
-    "diag_z_sd": 29.998202451494087,
+    "diag_z_mean": 29.04755511186789,
+    "diag_z_sd": 30.695539511278938,
     "n_pubs": 1,
     "n_qubits": 148,
     "n_shots_total": 32768,
@@ -1235,13 +1355,15 @@
     "bonferroni_log10_threshold_own_family": -5.641553426453896,
     "cross_coupled_chain_over_expected": 1.1950041966957201,
     "cross_coupled_observed_over_chain": 1.0678734987046132,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 9,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 9,
     "cross_pooled_ratio_coupled_pairs": 1.2761133124921544,
     "cross_pooled_ratio_uncoupled_pairs": 1.0076062959535095,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 47.53731763279175,
+      "chain_prediction_same_shot_times_dependence": 47.53731763279175,
       "expected": 13.206451416015625,
       "from": 71,
       "graph_distance": 1,
@@ -1260,7 +1382,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 34.54936628603715,
+      "chain_prediction_same_shot_times_dependence": 34.54936628603715,
       "expected": 13.206451416015625,
       "from": 58,
       "graph_distance": 1,
@@ -1279,7 +1401,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 1.477408533276598,
+      "chain_prediction_same_shot_times_dependence": 1.477408533276598,
       "expected": 1.165130615234375,
       "from": 80,
       "graph_distance": 6,
@@ -1291,14 +1413,14 @@
        11,
        1.1650594991349315
       ],
-      "log10_p": -9.098886637603755,
+      "log10_p": -9.09888663760375,
       "observed": 13,
       "observed_over_chain": 8.799191088444973,
       "ratio": 11.157547342780063,
       "to": 102
      },
      {
-      "chain_prediction_same_shot_times_memory": 2.457907576169656,
+      "chain_prediction_same_shot_times_dependence": 2.457907576169656,
       "expected": 1.165130615234375,
       "from": 102,
       "graph_distance": 6,
@@ -1310,14 +1432,14 @@
        13,
        1.1650594991349315
       ],
-      "log10_p": -9.098886637603755,
+      "log10_p": -9.09888663760375,
       "observed": 13,
       "observed_over_chain": 5.289051600654117,
       "ratio": 11.157547342780063,
       "to": 80
      },
      {
-      "chain_prediction_same_shot_times_memory": 85.79769930690934,
+      "chain_prediction_same_shot_times_dependence": 85.79769930690934,
       "expected": 47.029693603515625,
       "from": 51,
       "graph_distance": 1,
@@ -1336,7 +1458,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 44.40699495498562,
+      "chain_prediction_same_shot_times_dependence": 44.40699495498562,
       "expected": 28.369140625,
       "from": 62,
       "graph_distance": 1,
@@ -1355,7 +1477,7 @@
       "to": 63
      },
      {
-      "chain_prediction_same_shot_times_memory": 52.04142655984843,
+      "chain_prediction_same_shot_times_dependence": 52.04142655984843,
       "expected": 47.029693603515625,
       "from": 58,
       "graph_distance": 1,
@@ -1374,7 +1496,7 @@
       "to": 51
      },
      {
-      "chain_prediction_same_shot_times_memory": 10.764185464468214,
+      "chain_prediction_same_shot_times_dependence": 10.764185464468214,
       "expected": 3.740966796875,
       "from": 63,
       "graph_distance": 2,
@@ -1393,7 +1515,7 @@
       "to": 61
      },
      {
-      "chain_prediction_same_shot_times_memory": 16.436065953556025,
+      "chain_prediction_same_shot_times_dependence": 16.436065953556025,
       "expected": 8.707977294921875,
       "from": 62,
       "graph_distance": 1,
@@ -1412,8 +1534,24 @@
       "to": 61
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9776922010898168,
+     "pairs_with_expected_at_least_0.5": 15708,
+     "pooled_variance_over_pooled_mean": 0.9500108108344898
+    },
     "cross_z_mean": 0.011112785775983892,
     "cross_z_sd": 1.0157229351147419,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 31,
+     "n_bonferroni_in_both_global_and_block": 31,
+     "n_negative": 0,
+     "n_positive": 31,
+     "pooled_observed_over_expected": 5.039642576999252,
+     "z_mean": 9.579176335628082,
+     "z_sd": 21.35644121346321
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 10.1414393564404,
@@ -1422,8 +1560,10 @@
       "n_qubits": 32
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 1.6965063356321608,
     "diag_n_bonferroni": 32,
+    "diag_n_bonferroni_poisson_approximation": 32,
     "diag_n_negative": 0,
     "diag_n_positive": 32,
     "diag_ratio_interquartile": [
@@ -1433,7 +1573,7 @@
     "diag_top5": [
      {
       "expected": 65.63177490234375,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.044769287109375,
       "observed": 936,
       "p_next_given_error": 0.6380368098159509,
@@ -1446,7 +1586,7 @@
      },
      {
       "expected": 159.96734619140625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.06988525390625,
       "observed": 1690,
       "p_next_given_error": 0.7379912663755459,
@@ -1459,7 +1599,7 @@
      },
      {
       "expected": 65.99029541015625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.044891357421875,
       "observed": 1005,
       "p_next_given_error": 0.6832087015635622,
@@ -1472,7 +1612,7 @@
      },
      {
       "expected": 41.9542236328125,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.035797119140625,
       "observed": 572,
       "p_next_given_error": 0.4876385336743393,
@@ -1484,21 +1624,21 @@
       ]
      },
      {
-      "expected": 45.4595947265625,
-      "log10_p": -300.0,
-      "marginal": 0.037261962890625,
-      "observed": 631,
-      "p_next_given_error": 0.5167895167895168,
-      "qubit": 145,
-      "ratio": 13.869089996854125,
+      "expected": 10.142578125,
+      "log10_p": -299.69897000433605,
+      "marginal": 0.017608642578125,
+      "observed": 281,
+      "p_next_given_error": 0.48700173310225303,
+      "qubit": 85,
+      "ratio": 27.656971906923097,
       "ratio_ci95": [
-       12.807921191941347,
-       14.994726827285902
+       24.517480212616125,
+       31.087033899620753
       ]
      }
     ],
-    "diag_z_mean": 11.81478939109239,
-    "diag_z_sd": 25.56069166312653,
+    "diag_z_mean": 12.048667219862267,
+    "diag_z_sd": 26.312726161484303,
     "n_pubs": 1,
     "n_qubits": 148,
     "n_shots_total": 32768,
@@ -1510,13 +1650,15 @@
     "bonferroni_log10_threshold_own_family": -4.978728177138492,
     "cross_coupled_chain_over_expected": 1.1183932210107264,
     "cross_coupled_observed_over_chain": 1.0030273638720497,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 2,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 2,
     "cross_pooled_ratio_coupled_pairs": 1.1217790042427596,
     "cross_pooled_ratio_uncoupled_pairs": 0.9998459527343642,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 68.68714843479796,
+      "chain_prediction_same_shot_times_dependence": 68.68714843479796,
       "expected": 45.8189697265625,
       "from": 58,
       "graph_distance": 1,
@@ -1535,7 +1677,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 98.38870099086745,
+      "chain_prediction_same_shot_times_dependence": 98.38870099086745,
       "expected": 45.8189697265625,
       "from": 71,
       "graph_distance": 1,
@@ -1554,20 +1696,38 @@
       "to": 58
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9665744182919997,
+     "pairs_with_expected_at_least_0.5": 3444,
+     "pooled_variance_over_pooled_mean": 0.8456149785765958
+    },
     "cross_z_mean": -0.012489897591480049,
     "cross_z_sd": 1.0155034313626046,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 16,
+     "n_bonferroni_in_both_global_and_block": 16,
+     "n_negative": 0,
+     "n_positive": 16,
+     "pooled_observed_over_expected": 1.8796479719271901,
+     "z_mean": 9.23867319471035,
+     "z_sd": 21.172400972628292
+    },
     "diag_decay_at_lags": {
      "positive": {
-      "lag1_excess_over_mean": 6.64212225650502,
-      "lag2_excess_over_mean": 4.420036210997532,
-      "lag3_excess_over_mean": 2.9748145305152778,
-      "n_qubits": 16
+      "lag1_excess_over_mean": 6.302813917235929,
+      "lag2_excess_over_mean": 4.181790309016311,
+      "lag3_excess_over_mean": 2.8062272481558614,
+      "n_qubits": 18
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 1.5192148852278573,
-    "diag_n_bonferroni": 16,
+    "diag_n_bonferroni": 18,
+    "diag_n_bonferroni_poisson_approximation": 16,
     "diag_n_negative": 0,
-    "diag_n_positive": 16,
+    "diag_n_positive": 18,
     "diag_ratio_interquartile": [
      0.9231054135432931,
      7.604231560206283
@@ -1575,7 +1735,7 @@
     "diag_top5": [
      {
       "expected": 216.98675537109375,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.081390380859375,
       "observed": 1849,
       "p_next_given_error": 0.6932883389576303,
@@ -1588,7 +1748,7 @@
      },
      {
       "expected": 75.4625244140625,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.048004150390625,
       "observed": 970,
       "p_next_given_error": 0.6166560712015258,
@@ -1601,7 +1761,7 @@
      },
      {
       "expected": 1.9302978515625,
-      "log10_p": -168.67879007934786,
+      "log10_p": -198.99012472258352,
       "marginal": 0.0076904296875,
       "observed": 122,
       "p_next_given_error": 0.48412698412698413,
@@ -1614,7 +1774,7 @@
      },
      {
       "expected": 9.65594482421875,
-      "log10_p": -142.06712271809354,
+      "log10_p": -164.29749888881906,
       "marginal": 0.017181396484375,
       "observed": 169,
       "p_next_given_error": 0.30071174377224197,
@@ -1627,7 +1787,7 @@
      },
      {
       "expected": 0.07781982421875,
-      "log10_p": -42.726676781050315,
+      "log10_p": -46.93648031623558,
       "marginal": 0.001556396484375,
       "observed": 21,
       "p_next_given_error": 0.4117647058823529,
@@ -1635,12 +1795,12 @@
       "ratio": 264.56286043829294,
       "ratio_ci95": [
        163.76858042530122,
-       404.4124354950496
+       404.41243549505015
       ]
      }
     ],
-    "diag_z_mean": 12.496220791895814,
-    "diag_z_sd": 28.257468191705694,
+    "diag_z_mean": 12.793509483462095,
+    "diag_z_sd": 29.06072305099316,
     "n_pubs": 1,
     "n_qubits": 69,
     "n_shots_total": 32768,
@@ -1652,13 +1812,15 @@
     "bonferroni_log10_threshold_own_family": -4.978728177138492,
     "cross_coupled_chain_over_expected": 1.1780674700890927,
     "cross_coupled_observed_over_chain": 1.0657301915933772,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 5,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 5,
     "cross_pooled_ratio_coupled_pairs": 1.255502070607974,
     "cross_pooled_ratio_uncoupled_pairs": 1.0055335996334085,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 14.026012572431034,
+      "chain_prediction_same_shot_times_dependence": 14.026012572431034,
       "expected": 2.03375244140625,
       "from": 66,
       "graph_distance": 1,
@@ -1677,7 +1839,7 @@
       "to": 67
      },
      {
-      "chain_prediction_same_shot_times_memory": 123.83169370891129,
+      "chain_prediction_same_shot_times_dependence": 123.83169370891129,
       "expected": 80.14895629882812,
       "from": 58,
       "graph_distance": 1,
@@ -1696,7 +1858,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 164.23223877535753,
+      "chain_prediction_same_shot_times_dependence": 164.23223877535753,
       "expected": 80.14895629882812,
       "from": 71,
       "graph_distance": 1,
@@ -1715,7 +1877,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 2.635507128861646,
+      "chain_prediction_same_shot_times_dependence": 2.635507128861646,
       "expected": 0.152191162109375,
       "from": 129,
       "graph_distance": 22,
@@ -1734,7 +1896,7 @@
       "to": 11
      },
      {
-      "chain_prediction_same_shot_times_memory": 1.80625,
+      "chain_prediction_same_shot_times_dependence": 1.80625,
       "expected": 0.152191162109375,
       "from": 11,
       "graph_distance": 22,
@@ -1753,8 +1915,24 @@
       "to": 129
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9663864903024716,
+     "pairs_with_expected_at_least_0.5": 4014,
+     "pooled_variance_over_pooled_mean": 0.8464978956157411
+    },
     "cross_z_mean": 0.03403282501973532,
     "cross_z_sd": 1.0977316988978025,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 41,
+     "n_bonferroni_in_both_global_and_block": 41,
+     "n_negative": 0,
+     "n_positive": 41,
+     "pooled_observed_over_expected": 2.199691073214833,
+     "z_mean": 18.306741873463466,
+     "z_sd": 23.35077506450959
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 5.664448944773057,
@@ -1763,8 +1941,10 @@
       "n_qubits": 41
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 4.985192097042477,
     "diag_n_bonferroni": 41,
+    "diag_n_bonferroni_poisson_approximation": 41,
     "diag_n_negative": 0,
     "diag_n_positive": 41,
     "diag_ratio_interquartile": [
@@ -1773,47 +1953,8 @@
     ],
     "diag_top5": [
      {
-      "expected": 347.71728515625,
-      "log10_p": -300.0,
-      "marginal": 0.10302734375,
-      "observed": 2355,
-      "p_next_given_error": 0.6975710900473934,
-      "qubit": 58,
-      "ratio": 6.770737404820197,
-      "ratio_ci95": [
-       6.500013895087086,
-       7.049840070592224
-      ]
-     },
-     {
-      "expected": 52.1715087890625,
-      "log10_p": -300.0,
-      "marginal": 0.0399169921875,
-      "observed": 791,
-      "p_next_given_error": 0.6047400611620795,
-      "qubit": 16,
-      "ratio": 15.149940614800474,
-      "ratio_ci95": [
-       14.112423207481731,
-       16.243556293376425
-      ]
-     },
-     {
-      "expected": 4.65362548828125,
-      "log10_p": -282.87362559465686,
-      "marginal": 0.011932373046875,
-      "observed": 224,
-      "p_next_given_error": 0.5728900255754475,
-      "qubit": 62,
-      "ratio": 48.011407565361296,
-      "ratio_ci95": [
-       41.92944954533312,
-       54.72761527162505
-      ]
-     },
-     {
       "expected": 5.092529296875,
-      "log10_p": -261.20355777423504,
+      "log10_p": -320.67477157410264,
       "marginal": 0.012481689453125,
       "observed": 216,
       "p_next_given_error": 0.5281173594132029,
@@ -1825,8 +1966,47 @@
       ]
      },
      {
+      "expected": 347.71728515625,
+      "log10_p": -299.69897000433605,
+      "marginal": 0.10302734375,
+      "observed": 2355,
+      "p_next_given_error": 0.6975710900473934,
+      "qubit": 58,
+      "ratio": 6.770737404820197,
+      "ratio_ci95": [
+       6.500013895087086,
+       7.049840070592224
+      ]
+     },
+     {
+      "expected": 4.65362548828125,
+      "log10_p": -299.69897000433605,
+      "marginal": 0.011932373046875,
+      "observed": 224,
+      "p_next_given_error": 0.5728900255754475,
+      "qubit": 62,
+      "ratio": 48.011407565361296,
+      "ratio_ci95": [
+       41.92944954533312,
+       54.72761527162505
+      ]
+     },
+     {
+      "expected": 52.1715087890625,
+      "log10_p": -299.69897000433605,
+      "marginal": 0.0399169921875,
+      "observed": 791,
+      "p_next_given_error": 0.6047400611620795,
+      "qubit": 16,
+      "ratio": 15.149940614800474,
+      "ratio_ci95": [
+       14.112423207481731,
+       16.243556293376425
+      ]
+     },
+     {
       "expected": 18.44805908203125,
-      "log10_p": -218.4397781886127,
+      "log10_p": -263.35935588315704,
       "marginal": 0.02374267578125,
       "observed": 280,
       "p_next_given_error": 0.35989717223650386,
@@ -1838,8 +2018,8 @@
       ]
      }
     ],
-    "diag_z_mean": 22.973706537849477,
-    "diag_z_sd": 29.594116163009573,
+    "diag_z_mean": 23.419584652619424,
+    "diag_z_sd": 30.42272633897713,
     "n_pubs": 1,
     "n_qubits": 69,
     "n_shots_total": 32768,
@@ -1851,13 +2031,15 @@
     "bonferroni_log10_threshold_own_family": -4.940117866747719,
     "cross_coupled_chain_over_expected": 1.1760513847102736,
     "cross_coupled_observed_over_chain": 1.1294203421159228,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 3,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 3,
     "cross_pooled_ratio_coupled_pairs": 1.3282563572653818,
     "cross_pooled_ratio_uncoupled_pairs": 0.996378302266109,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 42.279057353210206,
+      "chain_prediction_same_shot_times_dependence": 42.279057353210206,
       "expected": 10.66802978515625,
       "from": 71,
       "graph_distance": 1,
@@ -1876,7 +2058,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 18.601064223316165,
+      "chain_prediction_same_shot_times_dependence": 18.601064223316165,
       "expected": 10.66802978515625,
       "from": 58,
       "graph_distance": 1,
@@ -1895,7 +2077,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 1.2419434655158923,
+      "chain_prediction_same_shot_times_dependence": 1.2419434655158923,
       "expected": 0.201568603515625,
       "from": 106,
       "graph_distance": 1,
@@ -1914,8 +2096,24 @@
       "to": 105
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9704942767526766,
+     "pairs_with_expected_at_least_0.5": 2766,
+     "pooled_variance_over_pooled_mean": 0.922138780587935
+    },
     "cross_z_mean": -0.004187056436933958,
     "cross_z_sd": 1.0069617323541549,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 13,
+     "n_bonferroni_in_both_global_and_block": 13,
+     "n_negative": 0,
+     "n_positive": 13,
+     "pooled_observed_over_expected": 3.93208515000375,
+     "z_mean": 9.456149067336359,
+     "z_sd": 22.263666741001717
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 8.203906110707832,
@@ -1924,8 +2122,10 @@
       "n_qubits": 15
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 1.9216147541353636,
     "diag_n_bonferroni": 15,
+    "diag_n_bonferroni_poisson_approximation": 15,
     "diag_n_negative": 0,
     "diag_n_positive": 15,
     "diag_ratio_interquartile": [
@@ -1935,7 +2135,7 @@
     "diag_top5": [
      {
       "expected": 292.04534912109375,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.09442138671875,
       "observed": 2435,
       "p_next_given_error": 0.7870071105365223,
@@ -1948,7 +2148,7 @@
      },
      {
       "expected": 81.53045654296875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.049896240234375,
       "observed": 1042,
       "p_next_given_error": 0.637308868501529,
@@ -1961,7 +2161,7 @@
      },
      {
       "expected": 0.97235107421875,
-      "log10_p": -110.42354475170755,
+      "log10_p": -126.02239388562317,
       "marginal": 0.005462646484375,
       "observed": 75,
       "p_next_given_error": 0.41899441340782123,
@@ -1974,7 +2174,7 @@
      },
      {
       "expected": 42.31280517578125,
-      "log10_p": -74.44361642834082,
+      "log10_p": -85.9191294052329,
       "marginal": 0.03594970703125,
       "observed": 210,
       "p_next_given_error": 0.17826825127334464,
@@ -1987,7 +2187,7 @@
      },
      {
       "expected": 0.10443115234375,
-      "log10_p": -42.37885290293238,
+      "log10_p": -46.29956454918571,
       "marginal": 0.001800537109375,
       "observed": 22,
       "p_next_given_error": 0.3728813559322034,
@@ -1995,12 +2195,12 @@
       "ratio": 207.09451307095662,
       "ratio_ci95": [
        129.78502877254235,
-       313.54358156774475
+       313.5435815677448
       ]
      }
     ],
-    "diag_z_mean": 11.353001240738285,
-    "diag_z_sd": 25.088176176064763,
+    "diag_z_mean": 11.681831996280952,
+    "diag_z_sd": 26.367608685963017,
     "n_pubs": 1,
     "n_qubits": 66,
     "n_shots_total": 32768,
@@ -2012,13 +2212,15 @@
     "bonferroni_log10_threshold_own_family": -4.940117866747719,
     "cross_coupled_chain_over_expected": 1.2787816648402468,
     "cross_coupled_observed_over_chain": 1.0490309211730158,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 4,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 4,
     "cross_pooled_ratio_coupled_pairs": 1.3414815078465265,
     "cross_pooled_ratio_uncoupled_pairs": 1.00138661909824,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 69.25552699300195,
+      "chain_prediction_same_shot_times_dependence": 69.25552699300195,
       "expected": 32.363983154296875,
       "from": 58,
       "graph_distance": 1,
@@ -2037,7 +2239,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 84.22503097609359,
+      "chain_prediction_same_shot_times_dependence": 84.22503097609359,
       "expected": 32.363983154296875,
       "from": 71,
       "graph_distance": 1,
@@ -2049,14 +2251,14 @@
        75,
        32.362007753243724
       ],
-      "log10_p": -11.986779877614401,
+      "log10_p": -11.986779877614413,
       "observed": 81,
       "observed_over_chain": 0.9617093524488108,
       "ratio": 2.502782170347467,
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 6.425569067557826,
+      "chain_prediction_same_shot_times_dependence": 6.425569067557826,
       "expected": 1.74774169921875,
       "from": 66,
       "graph_distance": 1,
@@ -2068,14 +2270,14 @@
        7,
        1.7476350222755317
       ],
-      "log10_p": -9.852182382922797,
+      "log10_p": -9.852182382922798,
       "observed": 16,
       "observed_over_chain": 2.4900518275934025,
       "ratio": 9.154670857342413,
       "to": 67
      },
      {
-      "chain_prediction_same_shot_times_memory": 3.3236484001471127,
+      "chain_prediction_same_shot_times_dependence": 3.3236484001471127,
       "expected": 0.593658447265625,
       "from": 17,
       "graph_distance": 5,
@@ -2094,8 +2296,24 @@
       "to": 23
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.975207067694853,
+     "pairs_with_expected_at_least_0.5": 3518,
+     "pooled_variance_over_pooled_mean": 0.9217836321484802
+    },
     "cross_z_mean": 0.058247730201021614,
     "cross_z_sd": 1.1124998810597626,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 42,
+     "n_bonferroni_in_both_global_and_block": 42,
+     "n_negative": 0,
+     "n_positive": 42,
+     "pooled_observed_over_expected": 4.330234426305763,
+     "z_mean": 20.46579465939831,
+     "z_sd": 23.895536643348574
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 5.829287762397014,
@@ -2104,8 +2322,10 @@
       "n_qubits": 43
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 10.135510204081633,
     "diag_n_bonferroni": 43,
+    "diag_n_bonferroni_poisson_approximation": 43,
     "diag_n_negative": 0,
     "diag_n_positive": 43,
     "diag_ratio_interquartile": [
@@ -2115,7 +2335,7 @@
     "diag_top5": [
      {
       "expected": 309.47998046875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.097198486328125,
       "observed": 2451,
       "p_next_given_error": 0.7695447409733124,
@@ -2128,7 +2348,7 @@
      },
      {
       "expected": 67.8885498046875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.0455322265625,
       "observed": 960,
       "p_next_given_error": 0.6434316353887399,
@@ -2141,7 +2361,7 @@
      },
      {
       "expected": 3.3739013671875,
-      "log10_p": -231.9432555117495,
+      "log10_p": -282.01659978012304,
       "marginal": 0.010162353515625,
       "observed": 178,
       "p_next_given_error": 0.5345345345345346,
@@ -2154,7 +2374,7 @@
      },
      {
       "expected": 5.73492431640625,
-      "log10_p": -122.01670645331942,
+      "log10_p": -139.14463302543606,
       "marginal": 0.01324462890625,
       "observed": 129,
       "p_next_given_error": 0.29723502304147464,
@@ -2167,7 +2387,7 @@
      },
      {
       "expected": 50.74493408203125,
-      "log10_p": -113.09903767315267,
+      "log10_p": -133.99770494113812,
       "marginal": 0.03936767578125,
       "observed": 285,
       "p_next_given_error": 0.22093023255813954,
@@ -2179,8 +2399,8 @@
       ]
      }
     ],
-    "diag_z_mean": 26.013356104332075,
-    "diag_z_sd": 30.000225436440534,
+    "diag_z_mean": 26.458125355044956,
+    "diag_z_sd": 30.96992956335479,
     "n_pubs": 1,
     "n_qubits": 66,
     "n_shots_total": 32768,
@@ -2192,13 +2412,15 @@
     "bonferroni_log10_threshold_own_family": -4.940117866747719,
     "cross_coupled_chain_over_expected": 1.323174931033917,
     "cross_coupled_observed_over_chain": 1.0913990480434432,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 5,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 5,
     "cross_pooled_ratio_coupled_pairs": 1.4441118601253655,
     "cross_pooled_ratio_uncoupled_pairs": 0.9992645031883164,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 83.55277505229719,
+      "chain_prediction_same_shot_times_dependence": 83.55277505229719,
       "expected": 36.090789794921875,
       "from": 58,
       "graph_distance": 1,
@@ -2217,7 +2439,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 102.2935672819727,
+      "chain_prediction_same_shot_times_dependence": 102.2935672819727,
       "expected": 36.090789794921875,
       "from": 71,
       "graph_distance": 1,
@@ -2236,7 +2458,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 2.6131031277434458,
+      "chain_prediction_same_shot_times_dependence": 2.6131031277434458,
       "expected": 1.343536376953125,
       "from": 66,
       "graph_distance": 1,
@@ -2255,7 +2477,7 @@
       "to": 67
      },
      {
-      "chain_prediction_same_shot_times_memory": 5.850044765550568,
+      "chain_prediction_same_shot_times_dependence": 5.850044765550568,
       "expected": 1.097930908203125,
       "from": 44,
       "graph_distance": 9,
@@ -2274,7 +2496,7 @@
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 3.372887522494649,
+      "chain_prediction_same_shot_times_dependence": 3.372887522494649,
       "expected": 1.097930908203125,
       "from": 71,
       "graph_distance": 9,
@@ -2293,8 +2515,24 @@
       "to": 44
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9762122694983513,
+     "pairs_with_expected_at_least_0.5": 3440,
+     "pooled_variance_over_pooled_mean": 0.9238991901036889
+    },
     "cross_z_mean": 0.016139016319995387,
     "cross_z_sd": 1.0720819184169978,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 42,
+     "n_bonferroni_in_both_global_and_block": 42,
+     "n_negative": 0,
+     "n_positive": 42,
+     "pooled_observed_over_expected": 4.3211648477604,
+     "z_mean": 19.679274092857174,
+     "z_sd": 23.24342591199474
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 6.405482476962783,
@@ -2303,8 +2541,10 @@
       "n_qubits": 43
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 11.945978047494574,
     "diag_n_bonferroni": 43,
+    "diag_n_bonferroni_poisson_approximation": 43,
     "diag_n_negative": 0,
     "diag_n_positive": 43,
     "diag_ratio_interquartile": [
@@ -2313,8 +2553,21 @@
     ],
     "diag_top5": [
      {
+      "expected": 4.18914794921875,
+      "log10_p": -308.73654288992276,
+      "marginal": 0.011322021484375,
+      "observed": 200,
+      "p_next_given_error": 0.5390835579514824,
+      "qubit": 71,
+      "ratio": 47.61371974920263,
+      "ratio_ci95": [
+       41.243214185497,
+       54.68959027625099
+      ]
+     },
+     {
       "expected": 310.0633544921875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.0972900390625,
       "observed": 2453,
       "p_next_given_error": 0.7694479297365119,
@@ -2327,7 +2580,7 @@
      },
      {
       "expected": 50.9813232421875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.039459228515625,
       "observed": 799,
       "p_next_given_error": 0.6179427687548337,
@@ -2339,21 +2592,8 @@
       ]
      },
      {
-      "expected": 4.18914794921875,
-      "log10_p": -251.98089669589422,
-      "marginal": 0.011322021484375,
-      "observed": 200,
-      "p_next_given_error": 0.5390835579514824,
-      "qubit": 71,
-      "ratio": 47.61371974920263,
-      "ratio_ci95": [
-       41.243214185497,
-       54.68959027625099
-      ]
-     },
-     {
       "expected": 0.87677001953125,
-      "log10_p": -131.39322987321972,
+      "log10_p": -152.91013247112687,
       "marginal": 0.00518798828125,
       "observed": 84,
       "p_next_given_error": 0.49411764705882355,
@@ -2366,7 +2606,7 @@
      },
      {
       "expected": 1.130859375,
-      "log10_p": -118.48166028393328,
+      "log10_p": -135.8208002628589,
       "marginal": 0.005889892578125,
       "observed": 82,
       "p_next_given_error": 0.42487046632124353,
@@ -2378,8 +2618,8 @@
       ]
      }
     ],
-    "diag_z_mean": 24.964547115375034,
-    "diag_z_sd": 28.878359684025057,
+    "diag_z_mean": 25.37321996644992,
+    "diag_z_sd": 29.83811204946153,
     "n_pubs": 1,
     "n_qubits": 66,
     "n_shots_total": 32768,
@@ -2391,13 +2631,15 @@
     "bonferroni_log10_threshold_own_family": -4.940117866747719,
     "cross_coupled_chain_over_expected": 1.221673285243962,
     "cross_coupled_observed_over_chain": 1.062972241054163,
+    "cross_law": "Poisson at the exact mean (approximation; see cross_variance_over_mean)",
     "cross_n_bonferroni": 3,
+    "cross_n_pairs_variance_above_mean": 0,
     "cross_n_positive": 3,
     "cross_pooled_ratio_coupled_pairs": 1.298604789851776,
     "cross_pooled_ratio_uncoupled_pairs": 0.9995527357376626,
     "cross_survivors_top25": [
      {
-      "chain_prediction_same_shot_times_memory": 22.009017362012187,
+      "chain_prediction_same_shot_times_dependence": 22.009017362012187,
       "expected": 10.598114013671875,
       "from": 58,
       "graph_distance": 1,
@@ -2409,14 +2651,14 @@
        18,
        10.597467136385967
       ],
-      "log10_p": -11.666545920558873,
+      "log10_p": -11.666545920558866,
       "observed": 41,
       "observed_over_chain": 1.8628728091589615,
       "ratio": 3.868612844427679,
       "to": 71
      },
      {
-      "chain_prediction_same_shot_times_memory": 43.69005743945284,
+      "chain_prediction_same_shot_times_dependence": 43.69005743945284,
       "expected": 10.598114013671875,
       "from": 71,
       "graph_distance": 1,
@@ -2435,7 +2677,7 @@
       "to": 58
      },
      {
-      "chain_prediction_same_shot_times_memory": 6.587544455625919,
+      "chain_prediction_same_shot_times_dependence": 6.587544455625919,
       "expected": 3.3470458984375,
       "from": 16,
       "graph_distance": 1,
@@ -2454,8 +2696,24 @@
       "to": 23
      }
     ],
+    "cross_variance_over_mean": {
+     "fraction_above_1": 0.0,
+     "median": 0.9705368764478319,
+     "pairs_with_expected_at_least_0.5": 2752,
+     "pooled_variance_over_pooled_mean": 0.9286077164474407
+    },
     "cross_z_mean": 0.031914771070798965,
     "cross_z_sd": 1.0539786794147146,
+    "diag_block_local": {
+     "block_shots": 512,
+     "n_bonferroni": 15,
+     "n_bonferroni_in_both_global_and_block": 15,
+     "n_negative": 0,
+     "n_positive": 15,
+     "pooled_observed_over_expected": 3.9316196278538986,
+     "z_mean": 9.89794740058398,
+     "z_sd": 22.091058420173685
+    },
     "diag_decay_at_lags": {
      "positive": {
       "lag1_excess_over_mean": 8.740356682073807,
@@ -2464,8 +2722,10 @@
       "n_qubits": 16
      }
     },
+    "diag_law": "exact adjacency law, convolved over the pooled PUBs",
     "diag_median_ratio_cond_to_marginal": 1.3648220040332526,
     "diag_n_bonferroni": 16,
+    "diag_n_bonferroni_poisson_approximation": 16,
     "diag_n_negative": 0,
     "diag_n_positive": 16,
     "diag_ratio_interquartile": [
@@ -2475,7 +2735,7 @@
     "diag_top5": [
      {
       "expected": 172.64593505859375,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.072601318359375,
       "observed": 1817,
       "p_next_given_error": 0.7637662883564523,
@@ -2488,7 +2748,7 @@
      },
      {
       "expected": 84.24627685546875,
-      "log10_p": -300.0,
+      "log10_p": -299.69897000433605,
       "marginal": 0.05072021484375,
       "observed": 1089,
       "p_next_given_error": 0.6552346570397112,
@@ -2501,7 +2761,7 @@
      },
      {
       "expected": 0.84600830078125,
-      "log10_p": -99.48879982813682,
+      "log10_p": -112.70512037449363,
       "marginal": 0.005096435546875,
       "observed": 67,
       "p_next_given_error": 0.40119760479041916,
@@ -2514,7 +2774,7 @@
      },
      {
       "expected": 0.40008544921875,
-      "log10_p": -86.3502254936866,
+      "log10_p": -97.74231760601279,
       "marginal": 0.003509521484375,
       "observed": 51,
       "p_next_given_error": 0.4434782608695652,
@@ -2527,7 +2787,7 @@
      },
      {
       "expected": 43.6893310546875,
-      "log10_p": -60.159877827085516,
+      "log10_p": -68.93834314145863,
       "marginal": 0.036529541015625,
       "observed": 192,
       "p_next_given_error": 0.16040100250626566,
@@ -2539,8 +2799,8 @@
       ]
      }
     ],
-    "diag_z_mean": 13.393871164522707,
-    "diag_z_sd": 29.015028175323437,
+    "diag_z_mean": 13.683119566942455,
+    "diag_z_sd": 29.93417019187393,
     "n_pubs": 1,
     "n_qubits": 66,
     "n_shots_total": 32768,

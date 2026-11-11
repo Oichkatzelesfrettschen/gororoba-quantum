@@ -5,8 +5,10 @@ circuits for every iteration (the frozen BDSC request), the per-mode single-clic
 multinomial noise, so the generalized Cochran-Mantel-Haenszel statistic of run against detector mode, stratified by
 setting, has no excess over its chi-square null; (b) in the model-based fits (scripts/qd_belenos_mesh.fit_efficiency
 on the ideal-mesh prediction of each returned circuit) the log-efficiencies of different plan-time sessions agree
-within the Fisher interval, widened by the sessions' own jackknife spread; (c) the DetectorBalancing contrast, the
-default-mitigation and mitigation-none runs on one plan-time record, differ by no more than binomial noise.
+within the Fisher interval, widened by the sessions' own delete-one-setting jackknife spread added in quadrature
+(a second column scales the Fisher covariance by the session's Pearson overdispersion instead); (c) the
+DetectorBalancing contrast, the default-mitigation and mitigation-none runs on one plan-time record, differ by no
+more than binomial noise.
 
 What the counts identify. Quandela returns click counts per output mode. A multiplicative per-mode factor common
 to every setting (detector efficiency, output transmission, mode-dependent loss) is identifiable only up to one
@@ -18,7 +20,11 @@ models of its own, so fitted efficiencies describe what remains after that corre
 The frozen-request design separates the two readings: a change in detector efficiency predicts one factor per mode
 shared by all 24 settings, a change in mesh phases predicts setting-specific changes.
 
-Nulls are analytic (chi-square, normal). No random draw.
+Nulls are analytic (chi-square, normal). No random draw. The setting-specific change between two runs is judged by
+three statistics of one table (the difference of the Pearson totals, the deviance of the nested log-linear
+common-factor fit, and its Pearson statistic); the ledger carries the largest of the three p-values, so a row
+survives only when every reading crosses the cutoff. The plan-time relation combines the per-pair rank
+correlations with the covariance that runs shared by consecutive pairs induce.
 """
 
 from __future__ import annotations
@@ -27,13 +33,16 @@ import hashlib
 import json
 import math
 from collections import defaultdict
+from pathlib import Path
 from typing import Any
 
 import common as c
+import loglinear
 import numpy as np
 import qd_belenos_mesh as mesh
 from scipy import stats
 
+import parallel
 import qd_records as qd
 
 MODES = 24
@@ -47,55 +56,61 @@ def plan_vectors(submission: dict[str, Any]) -> tuple[list[float], list[float]]:
     return list(map(float, t_out)), list(map(float, dark))
 
 
+def read_one(directory: Path) -> dict[str, Any] | None:
+    """One completed single-photon Belenos run with its click counts and ideal-mesh detection probabilities."""
+    if "qpu_belenos" not in directory.name:
+        return None
+    run = qd.read_run(directory)
+    its = [i for i in (run.collected.get("iterations") or []) if "counts" in i and i.get("result_fields")]
+    if not its or run.collected["status"]["status"] != "completed":
+        return None
+    inputs = [i["result_fields"]["computed_input"] for i in its]
+    if any(sum(int(x) for x in s.split("|")[1].rstrip(">").split(",")) != 1 for s in inputs):
+        return None
+    circuits = [i["result_fields"]["computed_circuit"] for i in its]
+    arch = mesh.run_architecture(mesh.decode(circuits[0]))
+    singles = np.zeros((len(its), MODES))
+    other = np.zeros(len(its))
+    probs = np.zeros((len(its), MODES))
+    for k, it in enumerate(its):
+        for state, n in it["counts"].items():
+            v = [int(x) for x in state.split(",")]
+            if sum(v) == 1:
+                singles[k, v.index(1)] += n
+            else:
+                other[k] += n
+        src = [int(x) for x in inputs[k].split("|")[1].rstrip(">").split(",")].index(1)
+        phases = mesh.mesh_phases(arch, mesh.decode(circuits[k]))
+        probs[k] = mesh.propagate(arch, phases, src)[0]
+    t_out, dark = plan_vectors(run.submission)
+    key = hashlib.sha256(json.dumps([t_out, dark]).encode()).hexdigest()[:6]
+    return {
+        "run": c.rel(directory),
+        "name": directory.name,
+        "family": run.manifest.get("family"),
+        "submitted": run.submission["submitted_utc"],
+        "plan_key": key,
+        "t_out": t_out,
+        "dark": dark,
+        "circuit_hashes": [
+            hashlib.sha256((circuits[k] + inputs[k]).encode()).hexdigest()[:10] for k in range(len(its))
+        ],
+        "singles": singles,
+        "other": other,
+        "probs": probs,
+        "mitigation": "none" if "-none-" in directory.name else "default",
+        "architecture": arch,
+    }
+
+
 def read_runs() -> list[dict[str, Any]]:
-    runs = []
-    arch_ref = None
-    for directory in qd.run_directories():
-        if "qpu_belenos" not in directory.name:
-            continue
-        run = qd.read_run(directory)
-        its = [i for i in (run.collected.get("iterations") or []) if "counts" in i and i.get("result_fields")]
-        if not its or run.collected["status"]["status"] != "completed":
-            continue
-        inputs = [i["result_fields"]["computed_input"] for i in its]
-        if any(sum(int(x) for x in s.split("|")[1].rstrip(">").split(",")) != 1 for s in inputs):
-            continue
-        circuits = [i["result_fields"]["computed_circuit"] for i in its]
-        arch = mesh.run_architecture(mesh.decode(circuits[0]))
-        arch_ref = arch_ref or arch
-        singles = np.zeros((len(its), MODES))
-        other = np.zeros(len(its))
-        probs = np.zeros((len(its), MODES))
-        for k, it in enumerate(its):
-            for state, n in it["counts"].items():
-                v = [int(x) for x in state.split(",")]
-                if sum(v) == 1:
-                    singles[k, v.index(1)] += n
-                else:
-                    other[k] += n
-            src = [int(x) for x in inputs[k].split("|")[1].rstrip(">").split(",")].index(1)
-            phases = mesh.mesh_phases(arch_ref, mesh.decode(circuits[k]))
-            probs[k] = mesh.propagate(arch_ref, phases, src)[0]
-        t_out, dark = plan_vectors(run.submission)
-        key = hashlib.sha256(json.dumps([t_out, dark]).encode()).hexdigest()[:6]
-        runs.append(
-            {
-                "run": c.rel(directory),
-                "name": directory.name,
-                "family": run.manifest.get("family"),
-                "submitted": run.submission["submitted_utc"],
-                "plan_key": key,
-                "t_out": t_out,
-                "dark": dark,
-                "circuit_hashes": [
-                    hashlib.sha256((circuits[k] + inputs[k]).encode()).hexdigest()[:10] for k in range(len(its))
-                ],
-                "singles": singles,
-                "other": other,
-                "probs": probs,
-                "mitigation": "none" if "-none-" in directory.name else "default",
-            }
-        )
+    """Every completed single-photon Belenos run in submission order; the runs share one mesh architecture."""
+    runs = [r for r in parallel.ordered_map(read_one, qd.run_directories(), min_items=2) if r is not None]
+    reference = runs[0]["architecture"]
+    for run in runs:
+        if run["architecture"] != reference:
+            raise ValueError(f"{run['name']}: the compiled architecture differs from {runs[0]['name']}")
+        del run["architecture"]
     runs.sort(key=lambda r: r["submitted"])
     return runs
 
@@ -174,97 +189,137 @@ def cmh_pair(a: np.ndarray, b: np.ndarray, min_total: int = 200, exclude: tuple[
     }
 
 
+def pair_task(item: tuple[np.ndarray, np.ndarray]) -> dict[str, Any]:
+    """Every statistic of one pair of identical-circuit runs: CMH and Pearson totals, then the nested log-linear fit."""
+    left, right = item
+    return {
+        "all_modes": cmh_pair(left, right),
+        "stray_modes_0_1_5_excluded": cmh_pair(left, right, exclude=STRAY_MODES),
+        "nested_all_modes": loglinear.nested_residual(left, right),
+        "nested_stray_modes_0_1_5_excluded": loglinear.nested_residual(left, right, exclude=STRAY_MODES),
+    }
+
+
 def part1(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     sets: dict[tuple[str, ...], list[dict[str, Any]]] = defaultdict(list)
     for r in runs:
         sets[tuple(r["circuit_hashes"])].append(r)
-    ledger, details, mode_rows = [], [], []
+    pairs: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
     for index, (_, members) in enumerate(s for s in sets.items() if len(s[1]) >= 2):
         members.sort(key=lambda r: r["submitted"])
-        for left, right in zip(members[:-1], members[1:], strict=True):
-            res = cmh_pair(left["singles"], right["singles"])
-            res_ex = cmh_pair(left["singles"], right["singles"], exclude=STRAY_MODES)
-            same_epoch = left["plan_key"] == right["plan_key"]
-            tag = f"set{index}:{left['name'][:19]}>{right['name'][:19]}"
-            detail = {
-                "set": index,
-                "left": left["run"],
-                "right": right["run"],
-                "same_plan_epoch": same_epoch,
-                "samples_each": [c.sig(res["samples_a"]), c.sig(res["samples_b"])],
+        pairs += [(index, left, right) for left, right in zip(members[:-1], members[1:], strict=True)]
+    stats_per_pair = parallel.ordered_map(
+        pair_task, [(left["singles"], right["singles"]) for _, left, right in pairs], 2
+    )
+    ledger, details, mode_rows = [], [], []
+    for (index, left, right), pair_stats in zip(pairs, stats_per_pair, strict=True):
+        res = pair_stats["all_modes"]
+        same_epoch = left["plan_key"] == right["plan_key"]
+        tag = f"set{index}:{left['name'][:19]}>{right['name'][:19]}"
+        detail = {
+            "set": index,
+            "pair": tag,
+            "left": left["run"],
+            "right": right["run"],
+            "same_plan_epoch": same_epoch,
+            "samples_each": [c.sig(res["samples_a"]), c.sig(res["samples_b"])],
+        }
+        for label in ("all_modes", "stray_modes_0_1_5_excluded"):
+            r_ = pair_stats[label]
+            nested = pair_stats["nested_" + label]
+            log10_cmh = c.chi2_log10_sf(r_["q_cmh"], r_["cmh_dof"]) if r_["cmh_dof"] else 0.0
+            resid_q = r_["q_total"] - r_["q_cmh"]
+            resid_dof = r_["total_dof"] - r_["cmh_dof"]
+            log10_difference = c.chi2_log10_sf(resid_q, resid_dof) if resid_dof > 0 else 0.0
+            log10_deviance = c.chi2_log10_sf(nested["deviance"], nested["dof"]) if nested["dof"] > 0 else 0.0
+            log10_pearson = c.chi2_log10_sf(nested["pearson"], nested["dof"]) if nested["dof"] > 0 else 0.0
+            readings = {
+                "pearson_difference": log10_difference,
+                "loglinear_deviance": log10_deviance,
+                "loglinear_pearson": log10_pearson,
             }
-            for label, r_ in (("all_modes", res), ("stray_modes_0_1_5_excluded", res_ex)):
-                log10_cmh = c.chi2_log10_sf(r_["q_cmh"], r_["cmh_dof"]) if r_["cmh_dof"] else 0.0
-                resid_q = r_["q_total"] - r_["q_cmh"]
-                resid_dof = r_["total_dof"] - r_["cmh_dof"]
-                log10_res = c.chi2_log10_sf(resid_q, resid_dof) if resid_dof > 0 else 0.0
-                detail[label] = {
-                    "strata": r_["strata"],
-                    "q_cmh": c.sig(r_["q_cmh"]),
-                    "cmh_dof": r_["cmh_dof"],
-                    "q_residual": c.sig(resid_q),
-                    "residual_dof": resid_dof,
-                    "q_total": c.sig(r_["q_total"]),
-                    "total_dof": r_["total_dof"],
-                }
-                ledger.append(
-                    c.ledger_row(
-                        f"A3.cmh[{label}]." + tag,
-                        3,
-                        "common per-mode factor between two runs of identical circuits "
-                        f"({'same' if same_epoch else 'different'} plan epoch, {label}): generalized CMH, run against "
-                        "mode over settings",
-                        log10_cmh,
-                        {
-                            "q_cmh": c.sig(r_["q_cmh"]),
-                            "dof": r_["cmh_dof"],
-                            "q_over_dof": c.sig(r_["q_cmh"] / max(r_["cmh_dof"], 1)),
-                        },
-                        None,
-                        "chi-square null; efficiency-type change",
-                    )
-                )
-                ledger.append(
-                    c.ledger_row(
-                        f"A3.res[{label}]." + tag,
-                        3,
-                        f"setting-specific change between the same runs ({label}): total homogeneity chi-square minus "
-                        "the CMH common-factor part",
-                        log10_res,
-                        {
-                            "q_residual": c.sig(resid_q),
-                            "dof": resid_dof,
-                            "q_over_dof": c.sig(resid_q / max(resid_dof, 1)),
-                        },
-                        None,
-                        "approximate: difference of Pearson statistics; phase or mixing change",
-                    )
-                )
-            details.append(detail)
-            # per-mode reading
-            mh = res["mh"]
-            lor = {m_: v[0] for m_, v in mh.items()}
-            centre = (
-                float(np.median([lor[m_] for m_ in lor if mh[m_][1] < 0.1]))
-                if any(v[1] < 0.1 for v in mh.values())
-                else 0.0
-            )
-            dt = np.array(right["t_out"]) / np.array(left["t_out"])
-            for m_, (val, se) in sorted(mh.items()):
-                mode_rows.append(
+            detail[label] = {
+                "strata": r_["strata"],
+                "q_cmh": c.sig(r_["q_cmh"]),
+                "cmh_dof": r_["cmh_dof"],
+                "q_residual": c.sig(resid_q),
+                "residual_dof": resid_dof,
+                "q_total": c.sig(r_["q_total"]),
+                "total_dof": r_["total_dof"],
+                "loglinear": {
+                    "deviance": c.sig(nested["deviance"]),
+                    "pearson": c.sig(nested["pearson"]),
+                    "dof": nested["dof"],
+                    "homogeneity_dof": nested["homogeneity_dof"],
+                    "settings": nested["settings"],
+                    "modes": nested["modes"],
+                    "sweeps": nested["sweeps"],
+                },
+                "residual_log10_p": {k: c.sig(v, 6) for k, v in readings.items()},
+            }
+            ledger.append(
+                c.ledger_row(
+                    f"A3.cmh[{label}]." + tag,
+                    3,
+                    "common per-mode factor between two runs of identical circuits "
+                    f"({'same' if same_epoch else 'different'} plan epoch, {label}): generalized CMH, run against "
+                    "mode over settings",
+                    log10_cmh,
                     {
-                        "pair": tag,
-                        "same_plan_epoch": same_epoch,
-                        "mode": m_,
-                        "ln_odds_ratio_B_over_A": c.sig(val, 4),
-                        "se": c.sig(se, 3),
-                        "z_raw": c.sig(val / se, 4),
-                        "ln_odds_ratio_centered": c.sig(val - centre, 4),
-                        "ln_plan_t_out_ratio": c.sig(float(math.log(dt[m_])), 4)
-                        if np.isfinite(dt[m_]) and dt[m_] > 0
-                        else None,
-                    }
+                        "q_cmh": c.sig(r_["q_cmh"]),
+                        "dof": r_["cmh_dof"],
+                        "q_over_dof": c.sig(r_["q_cmh"] / max(r_["cmh_dof"], 1)),
+                    },
+                    None,
+                    "chi-square null; efficiency-type change",
                 )
+            )
+            ledger.append(
+                c.ledger_row(
+                    f"A3.res[{label}]." + tag,
+                    3,
+                    f"setting-specific change between the same runs ({label}): the common-factor model against the "
+                    "saturated table",
+                    max(readings.values()),
+                    {
+                        "q_residual": c.sig(resid_q),
+                        "dof": resid_dof,
+                        "q_over_dof": c.sig(resid_q / max(resid_dof, 1)),
+                        "loglinear_deviance": c.sig(nested["deviance"]),
+                        "loglinear_pearson": c.sig(nested["pearson"]),
+                        "loglinear_dof": nested["dof"],
+                    },
+                    None,
+                    "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its "
+                    "Pearson p; cell counts are sparse, so each is an asymptotic reading",
+                    alternatives={"prior_method": log10_difference} | readings,
+                )
+            )
+        details.append(detail)
+        # per-mode reading
+        mh = res["mh"]
+        lor = {m_: v[0] for m_, v in mh.items()}
+        centre = (
+            float(np.median([lor[m_] for m_ in lor if mh[m_][1] < 0.1]))
+            if any(v[1] < 0.1 for v in mh.values())
+            else 0.0
+        )
+        dt = np.array(right["t_out"]) / np.array(left["t_out"])
+        for m_, (val, se) in sorted(mh.items()):
+            mode_rows.append(
+                {
+                    "pair": tag,
+                    "same_plan_epoch": same_epoch,
+                    "mode": m_,
+                    "ln_odds_ratio_B_over_A": c.sig(val, 4),
+                    "se": c.sig(se, 3),
+                    "z_raw": c.sig(val / se, 4),
+                    "ln_odds_ratio_centered": c.sig(val - centre, 4),
+                    "ln_plan_t_out_ratio": c.sig(float(math.log(dt[m_])), 4)
+                    if np.isfinite(dt[m_]) and dt[m_] > 0
+                    else None,
+                }
+            )
     return ledger, details, mode_rows
 
 
@@ -306,6 +361,13 @@ def session_fit(rows: list[dict[str, Any]]) -> dict[str, Any]:
         logs = np.array(log_list)
         m = len(rows)
         jack = np.sqrt((m - 1) / m * ((logs - logs.mean(axis=0)) ** 2).sum(axis=0))
+    # delete-one-setting jackknife of ln eta: the settings are the session's independent circuit replicates, so the
+    # spread carries the model misfit that varies from setting to setting, and it exists for a one-run session
+    setting_logs = None
+    if len(p) >= 3:
+        setting_logs = np.array(
+            [np.log(mesh.fit_efficiency(np.delete(p, i, axis=0), np.delete(n, i, axis=0))) for i in range(len(p))]
+        )
     light = (p * (n.sum(axis=1, keepdims=True) > 0)).sum(axis=0)
     return {
         "eta": eta,
@@ -316,10 +378,24 @@ def session_fit(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "dof": dof,
         "overdispersion": pearson / max(dof, 1),
         "jackknife_se": jack,
+        "setting_jackknife_logs": setting_logs,
         "model_light": light,
         "runs": [r["name"] for r in rows],
         "settings": len(p),
     }
+
+
+def setting_jackknife_se(logs: np.ndarray) -> np.ndarray:
+    """Delete-one-setting jackknife standard error of each ln eta from its leave-one-out fits (rows)."""
+    m = len(logs)
+    return np.asarray(np.sqrt((m - 1) / m * ((logs - logs.mean(axis=0)) ** 2).sum(axis=0)))
+
+
+def heterogeneity(log_eta: np.ndarray, column: int, spread: np.ndarray) -> float:
+    """Precision-weighted heterogeneity chi-square of one mode's ln eta across sessions (rows)."""
+    w = 1 / spread[:, column] ** 2
+    mean = float((w * log_eta[:, column]).sum() / w.sum())
+    return float((w * (log_eta[:, column] - mean) ** 2).sum())
 
 
 def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -337,15 +413,13 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
             sessions[-1].append(r)
         else:
             sessions.append([r])
-    fits = []
-    for s in sessions:
-        f = session_fit(s)
+    fits = parallel.ordered_map(session_fit, sessions, 2)
+    for s, f in zip(sessions, fits, strict=True):
         f["family"] = s[0]["family"]
         f["plan_key"] = s[0]["plan_key"]
         f["mitigation"] = s[0]["mitigation"]
         f["first_submitted"] = s[0]["submitted"]
         f["t_out"] = s[0]["t_out"]
-        fits.append(f)
     out["sessions"] = [
         {
             "family": f["family"],
@@ -358,6 +432,11 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
             "ln_eta": [c.sig(float(v), 4) for v in f["log_eta"]],
             "se_fisher": [c.sig(float(v), 3) for v in f["se_fisher"]],
             "jackknife_se": [c.sig(float(v), 3) for v in f["jackknife_se"]] if f["jackknife_se"] is not None else None,
+            "setting_jackknife_se": (
+                [c.sig(float(v), 3) for v in setting_jackknife_se(f["setting_jackknife_logs"])]
+                if f["setting_jackknife_logs"] is not None
+                else None
+            ),
         }
         for f in fits
     ]
@@ -386,7 +465,8 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
     for fam, group in by_family.items():
         if len(group) < 2:
             continue
-        # intervals: Fisher se inflated by sqrt(overdispersion) of the session's fit; per-mode precision-weighted mean
+        # intervals: Fisher se widened by the delete-one-setting jackknife in quadrature (primary), and Fisher se
+        # scaled by sqrt(overdispersion) of the session's fit (second column); per-mode precision-weighted mean
         info_ok = [
             set(
                 np.flatnonzero(
@@ -397,7 +477,7 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
             for g in group
         ]
         common = sorted(set.intersection(*info_ok))
-        if len(common) < 4:
+        if len(common) < 4 or any(g["setting_jackknife_logs"] is None for g in group):
             continue
         # common gauge: centre ln eta over the modes every session identifies; covariance projected the same way
         proj = np.zeros((MODES, MODES))
@@ -405,37 +485,36 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
             proj[m_, common] = -1.0 / len(common)
             proj[m_, m_] += 1.0
         L = np.array([proj @ g["log_eta"] for g in group])
-        S = np.array(
-            [
-                np.sqrt(np.maximum(np.diag(proj @ g["cov"] @ proj.T), 0)) * math.sqrt(max(1.0, g["overdispersion"]))
-                for g in group
-            ]
-        )
         S_binom = np.array([np.sqrt(np.maximum(np.diag(proj @ g["cov"] @ proj.T), 0)) for g in group])
-        S = np.maximum(S, 1e-6)
+        S_jack = np.array([setting_jackknife_se(g["setting_jackknife_logs"] @ proj.T) for g in group])
+        S_widened = np.maximum(np.sqrt(S_binom**2 + S_jack**2), 1e-6)
+        S_overdispersion = np.maximum(
+            S_binom * np.array([math.sqrt(max(1.0, g["overdispersion"])) for g in group])[:, None], 1e-6
+        )
         S_binom = np.maximum(S_binom, 1e-6)
+
         rows: list[dict[str, Any]] = []
         for m_ in common:
-            w = 1 / S[:, m_] ** 2
-            wb = 1 / S_binom[:, m_] ** 2
-            mean = float((w * L[:, m_]).sum() / w.sum())
-            q_infl = float((w * (L[:, m_] - mean) ** 2).sum())
-            meanb = float((wb * L[:, m_]).sum() / wb.sum())
-            q_binom = float((wb * (L[:, m_] - meanb) ** 2).sum())
+            q_binom = heterogeneity(L, int(m_), S_binom)
+            q_wide = heterogeneity(L, int(m_), S_widened)
+            q_infl = heterogeneity(L, int(m_), S_overdispersion)
             rows.append(
                 {
                     "mode": int(m_),
                     "q_binomial_fisher": c.sig(q_binom, 4),
-                    "q_overdispersion_inflated": c.sig(q_infl, 4),
+                    "q_jackknife_widened": c.sig(q_wide, 4),
+                    "q_overdispersion_scaled": c.sig(q_infl, 4),
                     "dof": len(group) - 1,
                     "log10_p_binomial": c.sig(c.chi2_log10_sf(q_binom, len(group) - 1), 4),
-                    "log10_p_inflated": c.sig(c.chi2_log10_sf(q_infl, len(group) - 1), 4),
+                    "log10_p_jackknife_widened": c.sig(c.chi2_log10_sf(q_wide, len(group) - 1), 4),
+                    "log10_p_overdispersion_scaled": c.sig(c.chi2_log10_sf(q_infl, len(group) - 1), 4),
                     "ln_eta_range": [c.sig(float(L[:, m_].min()), 4), c.sig(float(L[:, m_].max()), 4)],
                 }
             )
         hetero[fam] = {"sessions": len(group), "common_identified_modes": [int(m_) for m_ in common], "modes": rows}
-        ledger_ps = [r["log10_p_inflated"] for r in rows]
-        # family-level test: Bonferroni over modes, reported as the smallest inflated p
+        ledger_ps = [r["log10_p_jackknife_widened"] for r in rows]
+        scaled_ps = [r["log10_p_overdispersion_scaled"] for r in rows]
+        # family-level test: Bonferroni over modes, reported as the smallest jackknife-widened p
         ledger.append(
             c.ledger_row(
                 f"A3.model.{fam}",
@@ -446,11 +525,15 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
                 {
                     "sessions": len(group),
                     "modes_below_bonferroni_0.05": int(sum(p <= math.log10(0.05 / len(common)) for p in ledger_ps)),
+                    "modes_below_bonferroni_0.05_overdispersion_scaled": int(
+                        sum(p <= math.log10(0.05 / len(common)) for p in scaled_ps)
+                    ),
                     "mean_overdispersion": c.sig(float(np.mean([g["overdispersion"] for g in group])), 4),
                 },
                 None,
-                "intervals inflated by the session's Pearson/dof because the ideal-mesh model is rejected by the "
-                "retained held-out fits",
+                "intervals widened by the delete-one-setting jackknife because the ideal-mesh model is rejected by the "
+                "retained held-out fits; the overdispersion-scaled reading is kept in the alternatives",
+                alternatives={"overdispersion_scaled": min(0.0, min(scaled_ps) + math.log10(len(common)))},
             )
         )
     out["family_heterogeneity"] = hetero
@@ -497,6 +580,51 @@ def part2(runs: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, A
     return ledger, out
 
 
+def rank_correlation(u: np.ndarray, v: np.ndarray) -> float:
+    """Spearman correlation of two vectors, 0 where either is constant."""
+    if np.ptp(u) == 0 or np.ptp(v) == 0:
+        return 0.0
+    return float(stats.spearmanr(u, v).statistic)
+
+
+def corrected_stouffer(
+    zs: list[float], vectors: list[tuple[list[int], np.ndarray, np.ndarray]], runs: list[set[str]]
+) -> dict[str, float]:
+    """Stouffer combination of per-pair rank-correlation z values whose pairs may share runs.
+
+    Under exchangeability of the modes, the linear rank statistics T_i = sum_m rank(x_i)_m rank(y_i)_m of two pairs
+    have correlation rho(x_i, x_j) * rho(y_i, y_j) over the modes both use, where x is the plan-time ln t_out change
+    and y the centered shift. Pairs with no run in common are independent; pairs sharing a run carry that
+    correlation. The combined z divides the sum by sqrt(1' R 1).
+    """
+    k = len(zs)
+    corr = np.eye(k)
+    for i in range(k):
+        for j in range(i + 1, k):
+            if not runs[i] & runs[j]:
+                continue
+            modes_i, x_i, y_i = vectors[i]
+            modes_j, x_j, y_j = vectors[j]
+            common = sorted(set(modes_i) & set(modes_j))
+            if len(common) < 5:
+                continue
+            pick_i = [modes_i.index(m_) for m_ in common]
+            pick_j = [modes_j.index(m_) for m_ in common]
+            value = rank_correlation(x_i[pick_i], x_j[pick_j]) * rank_correlation(y_i[pick_i], y_j[pick_j])
+            corr[i, j] = corr[j, i] = value
+    variance = float(np.ones(k) @ corr @ np.ones(k))
+    if variance <= 0:
+        raise ValueError("the pair correlation matrix leaves no variance for the combined z")
+    total = float(np.sum(zs))
+    return {
+        "naive_z": total / math.sqrt(k),
+        "corrected_z": total / math.sqrt(variance),
+        "variance_factor": variance / k,
+        "shared_run_pairs": int(np.count_nonzero(np.triu(corr, 1))),
+        "smallest_eigenvalue": float(np.linalg.eigvalsh(corr).min()),
+    }
+
+
 def main() -> None:
     runs = read_runs()
     ledger1, details1, mode_rows = part1(runs)
@@ -535,6 +663,9 @@ def main() -> None:
         spread["threshold_ln_odds_ratio"] = c.sig(threshold, 4)
     # relation of the centered mode shift to the plan-time t_out ratio, between-epoch pairs
     rel = []
+    rel_vectors: list[tuple[list[int], np.ndarray, np.ndarray]] = []
+    pair_runs = {d["pair"]: {d["left"], d["right"]} for d in details1}
+    rel_runs: list[set[str]] = []
     for pair in sorted({r["pair"] for r in z_rows}):
         rows = [
             r
@@ -548,28 +679,40 @@ def main() -> None:
             x = [r["ln_plan_t_out_ratio"] for r in rows]
             y = [r["ln_odds_ratio_centered"] for r in rows]
             rho = stats.spearmanr(x, y)
-            rel.append(
-                {
-                    "pair": pair,
-                    "modes": len(rows),
-                    "spearman": c.sig(float(rho.statistic), 4),
-                    "p": c.sig(float(rho.pvalue), 4),
-                }
-            )
+            entry = {
+                "pair": pair,
+                "modes": len(rows),
+                "spearman": c.sig(float(rho.statistic), 4),
+                "p": c.sig(float(rho.pvalue), 4),
+            }
+            rel.append(entry)
+            if entry["p"] > 0:
+                rel_vectors.append(([r["mode"] for r in rows], np.array(x), np.array(y)))
+                rel_runs.append(pair_runs[pair])
     zs = [stats.norm.isf(r["p"] / 2) * np.sign(r["spearman"]) for r in rel if r["p"] > 0]
     ledger3 = []
+    combination: dict[str, float] = {}
     if zs:
-        zc = float(np.sum(zs) / math.sqrt(len(zs)))
+        combination = corrected_stouffer(zs, rel_vectors, rel_runs)
+        zc = combination["corrected_z"]
         ledger3.append(
             c.ledger_row(
                 "A3.plan_t_out",
                 3,
                 "centered fitted per-mode shift against the change of the plan-time t_out, Stouffer over "
-                "between-epoch identical-circuit pairs",
+                "between-epoch identical-circuit pairs, with the covariance of pairs that share a run",
                 c.normal_two_sided_log10(zc),
-                {"pairs": len(zs), "stouffer_z": c.sig(zc)},
+                {
+                    "pairs": len(zs),
+                    "stouffer_z_corrected": c.sig(zc),
+                    "stouffer_z_independent": c.sig(combination["naive_z"]),
+                    "variance_factor": c.sig(combination["variance_factor"]),
+                    "shared_run_pairs": combination["shared_run_pairs"],
+                },
                 None,
-                "consecutive pairs share runs, so the pairs are dependent; the Stouffer z is optimistic",
+                "pairs sharing a run are correlated by rho(x) * rho(y) over their common modes under mode "
+                "exchangeability; per-pair Spearman p-values are asymptotic",
+                alternatives={"prior_method": c.normal_two_sided_log10(combination["naive_z"])},
             )
         )
     all_rows = ledger1 + ledger3
@@ -594,6 +737,7 @@ def main() -> None:
             "mode_tests": len(z_rows),
             "bonferroni_alpha": c.sig(bonf),
             "t_out_relation": rel,
+            "t_out_combination": combination,
             "within_vs_between_epoch_spread": spread,
         },
         "part1_mode_rows": mode_rows,

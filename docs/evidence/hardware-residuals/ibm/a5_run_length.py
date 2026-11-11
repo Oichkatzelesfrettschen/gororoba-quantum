@@ -1,21 +1,27 @@
-"""Run-length structure of ground-prepared reads as a leakage proxy.
+"""Run-length structure of ground-prepared reads: temporal dependence of the 1 outcomes.
 
 Data: the 153 sensors of the 24 readout-actor PUBs (pooled per qubit; list positions 8 circuits apart) and the
 ground-prepared first read of every qubit of the 14 state-prep-control PUBs (prep0, x_history, remeasure arms;
 list positions are consecutive shots in the single-PUB runs). Raw outcomes are two-level (`meas_type`
-classified), so a hidden state outside the qubit subspace is visible only through a sticky 1 outcome: this
-analysis bounds a long-lived hidden state, and cannot name it |2>.
+classified): the analysis measures run lengths of 1 outcomes and cannot name a hidden state such as |2>; a
+slow drift of the marginal lengthens runs too, so an excess is a temporal dependence of unidentified origin.
 
-Falsifier, fixed before the run. A column of N reads with K ones, in random order, has an exact expected count
-of runs of at least L ones, E_L = (N-L+1) F_L - (N-L) F_{L+1}, F_L = K(K-1)...(K-L+1) / (N(N-1)...(N-L+1)),
-because a run of length l >= L holds l-L+1 windows of L ones and l-L windows of L+1. The observed count is
-compared with a Poisson law at that mean (one-sided, excess). Family 1: per column (qubit pooled over the
-pilot's PUBs, or one state-prep PUB), L in {2, 3, 5}. Family 2: per (dataset group, L in {2, 3, 4, 5}) the pooled
-count against the pooled mean. Family 3, the memory-free continuation test: per group, the number of runs of at
-least 3 against sum_runs>=2 (R2 R2 / R1) (a run that reached 2 continues at the rate a run that reached 1 did)
-with binomial variance, one z test per group. "No sticky state" means family 1 and 2 stay above the Bonferroni
-line, and family 3 stays consistent with 0. Controls (deterministic): a hash-order scramble of a prep0 PUB reads
-uniform p-values; six runs of 20 ones inserted into a scrambled column are flagged.
+Falsifier, fixed before the run. A column of N reads with K ones, in uniformly random order, has the exact
+law of the count M_L of runs of at least L ones: the N-K zeros cut it into g = N-K+1 gaps filled by the K ones as
+a uniform weak composition, the binomial moments are S_t = C(g, t) C(K - L t + g - 1, g - 1) / C(K + g - 1, g - 1)
+and P(M_L >= m) = sum_t (-1)^(t-m) C(t-1, m-1) S_t, evaluated in Python integers (`exact_laws`). Its mean is
+E_L = (N-L+1) F_L - (N-L) F_{L+1}, F_L = K(K-1)...(K-L+1) / (N(N-1)...(N-L+1)), because a run of length l >= L
+holds l-L+1 windows of L ones and l-L windows of L+1. The observed count is compared with that law (one-sided,
+excess); the pooled count of independent columns follows the convolution of their laws (the pilot's PUBs per
+qubit, and every column of a group). A pooled p-value below 1e-300 is written as -300. Family 1: per column
+(qubit pooled over the pilot's PUBs, or one state-prep PUB), L in {2, 3, 5}. Family 2: per (dataset group, L in
+{2, 3, 4, 5}) the pooled count against the pooled law. Family 3, the memory-free continuation test: per group, the
+number of runs of at least 3 against sum_runs>=2 (R2 R2 / R1) (a run that reached 2 continues at the rate a run
+that reached 1 did) with binomial variance, one z test per group (a normal approximation). "No temporal
+dependence" means family 1 and 2 stay above the Bonferroni line, and family 3 stays consistent with 0. The law
+is stationary: a slow drift of the marginal lengthens runs and is not separated from dependence at short lags.
+Controls (deterministic): a hash-order scramble of a prep0 PUB reads uniform p-values; six runs of 20 ones
+inserted into a scrambled column are flagged.
 """
 
 from __future__ import annotations
@@ -24,6 +30,7 @@ import math
 from typing import Any
 
 import common
+import exact_laws
 import numpy as np
 from scipy.stats import norm
 
@@ -89,8 +96,10 @@ def pool_cols(recs: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def log10_up(obs: int, mean: float) -> float:
-    return common.log10_poisson_upper(obs, mean)
+def exact_task(task: tuple[list[tuple[int, int]], int, int]) -> float:
+    """log10 P(total run count >= observed) over independent columns (n, k) at run length L."""
+    units, big_l, obs = task
+    return exact_laws.runs_ge_l_log10_upper(units, big_l, obs)
 
 
 def controls() -> dict[str, Any]:
@@ -106,27 +115,32 @@ def controls() -> dict[str, Any]:
     n = e.shape[0]
     perm = hash_order(n)
     scr = e[perm]
-    lps: list[float] = []
-    raw_lps: list[float] = []
+    tasks: list[tuple[list[tuple[int, int]], int, int]] = []
+    kinds: list[str] = []
     for i in range(e.shape[1]):
-        for data, store in ((scr, lps), (e, raw_lps)):
+        for data, kind in ((scr, "scrambled"), (e, "raw")):
             rec = column_record(data[:, i])
             if rec["k"] >= 5:
-                store.append(log10_up(rec["runs"][2], rec["exp"][2]))
+                tasks.append(([(rec["n"], rec["k"])], 2, rec["runs"][2]))
+                kinds.append(kind)
     col = scr[:, int(np.argmax(e.sum(axis=0)))].copy()
     for j in range(6):
         col[1000 + 5000 * j : 1020 + 5000 * j] = 1
     inj = column_record(col)
     base = column_record(scr[:, int(np.argmax(e.sum(axis=0)))])
+    tasks.append(([(inj["n"], inj["k"])], 5, inj["runs"][5]))
+    lps = common.ordered_map(exact_task, tasks, min_items=1)
+    scrambled = np.array([lp for lp, kind in zip(lps[:-1], kinds, strict=True) if kind == "scrambled"])
+    raw = np.array([lp for lp, kind in zip(lps[:-1], kinds, strict=True) if kind == "raw"])
     return {
         "dataset": ds["id"],
-        "scrambled_fraction_L2_p_below_0.05": float(np.mean(np.array(lps) < math.log10(0.05))),
-        "raw_fraction_L2_p_below_0.05": float(np.mean(np.array(raw_lps) < math.log10(0.05))),
-        "n_columns_scored": len(lps),
+        "scrambled_fraction_L2_p_below_0.05": float(np.mean(scrambled < math.log10(0.05))),
+        "raw_fraction_L2_p_below_0.05": float(np.mean(raw < math.log10(0.05))),
+        "n_columns_scored": int(scrambled.size),
         "injected_six_runs_of_20": {
             "observed_runs_ge_5": inj["runs"][5],
             "expected": inj["exp"][5],
-            "log10_p": log10_up(inj["runs"][5], inj["exp"][5]),
+            "log10_p": lps[-1],
             "unmodified_observed_runs_ge_5": base["runs"][5],
         },
     }
@@ -142,17 +156,24 @@ def main() -> None:
     col_rows = []
     pilot = [r for r in results if r["kind"] == "pilot"]
     for qi, qubit in enumerate(pilot[0]["qubits"]):
-        pooled = pool_cols([r["cols"][qi] for r in pilot])
-        col_rows.append(("pilot", f"pilot|q{qubit}", pooled))
+        recs = [r["cols"][qi] for r in pilot]
+        col_rows.append(("pilot", f"pilot|q{qubit}", pool_cols(recs), recs))
     for r in results:
         if r["kind"] == "state_prep":
             for qi, qubit in enumerate(r["qubits"]):
-                col_rows.append((f"state_prep:{r['arm']}", f"{r['id'][-34:]}|q{qubit}", pool_cols([r["cols"][qi]])))
+                recs = [r["cols"][qi]]
+                col_rows.append((f"state_prep:{r['arm']}", f"{r['id'][-34:]}|q{qubit}", pool_cols(recs), recs))
+    col_tasks = [
+        ([(c["n"], c["k"]) for c in recs], big_l, pooled["runs"][big_l])
+        for _, _, pooled, recs in col_rows
+        for big_l in L_COL
+    ]
+    col_lps = iter(common.ordered_map(exact_task, col_tasks, min_items=1))
     col_out = []
-    for group, label, pooled in col_rows:
+    for group, label, pooled, _recs in col_rows:
         for big_l in L_COL:
             obs, mean = pooled["runs"][big_l], pooled["exp"][big_l]
-            lp = log10_up(obs, mean)
+            lp = next(col_lps)
             tests.append((f"{label}|L{big_l}", "column", lp))
             col_out.append({"group": group, "id": label, "L": big_l, "observed": obs, "expected": mean, "log10_p": lp})
 
@@ -162,13 +183,33 @@ def main() -> None:
         key = "pilot" if r["kind"] == "pilot" else f"state_prep:{r['arm']}"
         groups.setdefault(key, []).extend(r["cols"])
     group_out = {}
+    # one law per live column of every (group, L); the reduction over columns runs in this process
+    plan = []
+    column_tasks: list[tuple[int, int, int, str]] = []
+    for key, recs in sorted(groups.items()):
+        for big_l in L_GROUP:
+            units = [(c["n"], c["k"]) for c in recs if c["k"] >= big_l]
+            mode = exact_laws.pooled_mode(units, big_l)
+            plan.append((key, big_l, mode, len(units)))
+            column_tasks += [(n, k, big_l, mode) for n, k in units]
+    column_laws = common.ordered_map(exact_laws.column_law, column_tasks, min_items=1)
+    group_laws: dict[tuple[str, int], tuple[str, list[Any]]] = {}
+    offset = 0
+    for key, big_l, mode, count in plan:
+        group_laws[(key, big_l)] = (mode, column_laws[offset : offset + count])
+        offset += count
     for key, recs in sorted(groups.items()):
         pooled = pool_cols(recs)
         entry: dict[str, Any] = {"n_columns": len(recs), "reads": pooled["n"], "ones": pooled["k"], "by_L": {}}
         for big_l in L_GROUP:
             obs, mean = pooled["runs"][big_l], pooled["exp"][big_l]
             lo, hi = common.garwood(obs)
-            lp = log10_up(obs, mean)
+            law, laws = group_laws[(key, big_l)]
+            if law == "exact":
+                lp = exact_laws.pooled_exact_log10_upper(laws, obs) if laws else exact_laws.FLOOR
+            else:
+                lp = exact_laws.pooled_chernoff_log10_upper(laws, obs)
+            law = "exact" if law == "exact" else "chernoff_upper_bound"
             tests.append((f"{key}|pooled_L{big_l}", "group", lp))
             entry["by_L"][big_l] = {
                 "observed": obs,
@@ -176,6 +217,7 @@ def main() -> None:
                 "ratio": obs / mean,
                 "ratio_ci95": [lo / mean, hi / mean],
                 "log10_p": lp,
+                "law": law,
             }
         r1 = np.array([c["runs"][1] for c in recs], dtype=float)
         r2 = np.array([c["runs"][2] for c in recs], dtype=float)

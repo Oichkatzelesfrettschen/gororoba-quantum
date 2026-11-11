@@ -8,6 +8,12 @@ the pooled within-cluster relative slope per hour of the flip probability has a 
 zero, separately for prepared |0> (e0, P(1|0)) and prepared |1> (e1, P(0|1)), and (c) a 24 h harmonic of the
 within-cluster residuals is absent. Binomial counting noise is the only null; no random draw is used.
 
+The qubits of one job measure the same shots, so a sum of per-qubit statistics has the null of a weighted
+chi-square: each (cluster, prepared X-set) block contributes the eigenvalues of the shot-level correlation matrix
+of its qubits' flip indicators (pooled within jobs, so drift does not enter it) as weights. The ledger carries the
+Chernoff bound of that law, a guaranteed upper bound on the tail. Shots inside a job are taken as exchangeable;
+the shot-order line of analysis 1 is a counterexample, so the bound is conditional on that assumption.
+
 Groups are keyed by (qubit, prepared state, full prepared X-set), so a qubit's readout is compared only between jobs \
 with the same neighbor excitation.
 
@@ -58,6 +64,32 @@ def group_points(cluster: list[dict[str, Any]]) -> dict[tuple[int, int, tuple[in
     return points
 
 
+def outcome_correlation(jobs: list[dict[str, Any]]) -> np.ndarray:
+    """Within-job shot-level correlation matrix of the qubits' flip indicators over the jobs of one prepared set.
+
+    Each job contributes its centered cross-product matrix; the sum over jobs divided by the shots left after
+    centering gives the covariance, so a mean shift between jobs adds nothing to it. Jobs of different register
+    widths enter the entries of the qubits they hold.
+    """
+    width = max(job["width"] for job in jobs)
+    scatter = np.zeros((width, width))
+    dof = np.zeros((width, width))
+    for job in jobs:
+        w = job["width"]
+        flips = np.array(job["flips"], float)
+        scatter[:w, :w] += np.array(job["cross"], float) - np.outer(flips, flips) / job["shots"]
+        dof[:w, :w] += job["shots"] - 1
+    cov = scatter / np.maximum(dof, 1.0)
+    scale = np.sqrt(np.maximum(np.diag(cov), 1e-300))
+    return np.asarray(cov / np.outer(scale, scale))
+
+
+def block_weights(corr: np.ndarray, qubits: list[int]) -> list[float]:
+    """Eigenvalues of the correlation sub-matrix of the tested qubits: the weights of the null chi-square sum."""
+    sub = corr[np.ix_(qubits, qubits)]
+    return [float(v) for v in np.clip(np.linalg.eigvalsh(sub), 0.0, None)]
+
+
 def weighted_fit(points: list[tuple[float, int, int]]) -> dict[str, Any] | None:
     k = np.array([p[1] for p in points], float)
     n = np.array([p[2] for p in points], float)
@@ -84,6 +116,23 @@ def weighted_fit(points: list[tuple[float, int, int]]) -> dict[str, Any] | None:
     return out
 
 
+def shared_shot_tail(value: float, null: list[tuple[float, int]]) -> dict[str, float]:
+    """Upper-tail log10 p of the weighted chi-square null of a sum over qubits that share shots."""
+    weights = [w for w, _ in null]
+    dofs = [d for _, d in null]
+    tail = c.weighted_chi2_log10_sf(value, weights, dofs)
+    mean = sum(w * d for w, d in null)
+    second = sum(w * w * d for w, d in null)
+    return {
+        "chernoff": c.sig(tail["chernoff"], 6),
+        "saddlepoint": c.sig(tail["saddlepoint"], 6),
+        "null_mean": c.sig(mean, 6),
+        "effective_dof": c.sig(mean * mean / second, 6),
+        "largest_weight": c.sig(max(weights), 4),
+        "weights": len(null),
+    }
+
+
 def main() -> None:
     rows, problems = readout_data.collect()
     cl = clusters(rows)
@@ -93,8 +142,19 @@ def main() -> None:
     cluster_table: list[dict[str, Any]] = []
     group_table = []
     harmonic_rows: dict[int, list[tuple[float, float, float]]] = {0: [], 1: []}
+    # null weights of the summed statistics: (eigenvalue, chi-square dof) pairs per prepared class
+    null_q: dict[int, list[tuple[float, int]]] = {0: [], 1: []}
+    null_z: dict[int, list[tuple[float, int]]] = {0: [], 1: []}
     for index, cluster in enumerate(cl):
         points = group_points(cluster)
+        contexts = {tuple(row["prepared_one"]) for row in cluster}
+        corr = {
+            context: outcome_correlation([row for row in cluster if tuple(row["prepared_one"]) == context])
+            for context in contexts
+        }
+        # blocks of qubits tested on the same jobs: (prepared X-set, class, chi-square dof)
+        homogeneity_qubits: defaultdict[tuple[tuple[int, ...], int, int], list[int]] = defaultdict(list)
+        slope_qubits: defaultdict[tuple[tuple[int, ...], int, int], list[int]] = defaultdict(list)
         q_sum = {0: 0.0, 1: 0.0}
         d_sum = {0: 0, 1: 0}
         slope_zs: list[float] = []
@@ -105,6 +165,9 @@ def main() -> None:
                 continue
             q_sum[s] += fit["Q"]
             d_sum[s] += fit["dof"]
+            homogeneity_qubits[(context, s, fit["dof"])].append(q)
+            if "slope_per_h" in fit:
+                slope_qubits[(context, s, fit["points"])].append(q)
             per_class[s]["Q"] += fit["Q"]
             per_class[s]["dof"] += fit["dof"]
             if "slope_per_h" in fit:
@@ -135,6 +198,10 @@ def main() -> None:
                 resid = (k / n - fit["fbar"]) / math.sqrt(fit["fbar"] * (1 - fit["fbar"]) / n[0])
                 for tt, rr in zip(t_h, resid, strict=True):
                     harmonic_rows[s].append((float(tt), float(rr), index))
+        for (context, s, block_dof), q_list in homogeneity_qubits.items():
+            null_q[s] += [(w, block_dof) for w in block_weights(corr[context], q_list)]
+        for (context, s, _), z_list_q in slope_qubits.items():
+            null_z[s] += [(w, 1) for w in block_weights(corr[context], z_list_q)]
         dof_total = d_sum[0] + d_sum[1]
         cluster_table.append(
             {
@@ -155,32 +222,49 @@ def main() -> None:
     cls_summary = {}
     for s, name in ((0, "e0 (prepared |0>, P(1|0))"), (1, "e1 (prepared |1>, P(0|1))")):
         q_total, dof_total = per_class[s]["Q"], int(per_class[s]["dof"])
-        log10_p = c.chi2_log10_sf(q_total, dof_total) if dof_total else 0.0
+        naive_q = c.chi2_log10_sf(q_total, dof_total) if dof_total else 0.0
+        tail_q = shared_shot_tail(q_total, null_q[s]) if dof_total else None
         phi = q_total / dof_total if dof_total else float("nan")
         ledger.append(
             c.ledger_row(
                 f"A2.{1 + s}",
                 2,
-                f"within-cluster binomial homogeneity of {name} over all readout clusters (summed chi-square)",
-                log10_p,
-                {"Q": c.sig(q_total), "dof": dof_total, "Q_over_dof": c.sig(phi)},
+                f"within-cluster binomial homogeneity of {name} over all readout clusters (summed chi-square), null "
+                "weighted by the shot-level qubit correlation",
+                tail_q["chernoff"] if tail_q else 0.0,
+                {
+                    "Q": c.sig(q_total),
+                    "dof": dof_total,
+                    "Q_over_dof": c.sig(phi),
+                    "shared_shot_null": tail_q,
+                },
                 None,
-                "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion",
+                "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; "
+                "ledger p is the Chernoff bound of the weighted chi-square null",
+                alternatives={"prior_method": naive_q},
             )
         )
         z_all = np.array(z_list[s])
         if len(z_all) >= 5:
             chi_slope = float((z_all**2).sum())
+            tail_z = shared_shot_tail(chi_slope, null_z[s])
             ledger.append(
                 c.ledger_row(
                     f"A2.{3 + s}",
                     2,
                     f"any within-cluster linear drift in {name}: sum of squared per-group slope z over all (cluster, "
-                    "qubit) groups",
-                    c.chi2_log10_sf(chi_slope, len(z_all)),
-                    {"sum_z2": c.sig(chi_slope), "groups": len(z_all), "z2_over_groups": c.sig(chi_slope / len(z_all))},
+                    "qubit) groups, null weighted by the shot-level qubit correlation",
+                    tail_z["chernoff"],
+                    {
+                        "sum_z2": c.sig(chi_slope),
+                        "groups": len(z_all),
+                        "z2_over_groups": c.sig(chi_slope / len(z_all)),
+                        "shared_shot_null": tail_z,
+                    },
                     None,
-                    "binomial null; qubits of one job share shots, so the groups are not strictly independent",
+                    "the qubits of one job share shots, so the per-group z values correlate as the flip indicators "
+                    "do; ledger p is the Chernoff bound of the weighted chi-square null",
+                    alternatives={"prior_method": c.chi2_log10_sf(chi_slope, len(z_all))},
                 )
             )
             neg = int((z_all < 0).sum())
@@ -204,6 +288,7 @@ def main() -> None:
                     },
                     c.wilson(neg, len(z_all)),
                     "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+                    dependent="the groups of one job share shots, so the signs of their slopes are not independent",
                 )
             )
         cls_summary[name] = {"Q": q_total, "dof": dof_total, "Q_over_dof": phi}

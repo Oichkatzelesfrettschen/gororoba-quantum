@@ -6,6 +6,8 @@ agreement are enforced; a run that fails validation is listed, never silently dr
 
 from __future__ import annotations
 
+import collections
+import json
 import re
 from datetime import datetime
 from pathlib import Path
@@ -52,16 +54,17 @@ def collect() -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
             if sub is None or sub.get("backend_type_id") != 7:
                 continue
             acquisition = qi_records.validate_run(record, relative)
-        except Exception as error:
-            sub = None
+        except (OSError, ValueError, KeyError, TypeError) as error:  # reported as a problem row, never dropped
+            problem = {"run": relative, "problem": str(error)[:200]}
             try:
-                import json
-
-                sub = json.loads((directory / "submission.json").read_text())
-            except Exception:
-                pass
-            if sub is not None and sub.get("backend_type_id") == 7:
-                problems.append({"run": relative, "problem": str(error)[:200]})
+                fallback = json.loads((directory / "submission.json").read_text())
+            except (OSError, ValueError) as identity_error:
+                # a record whose backend identity cannot be recovered is listed, so it cannot vanish unread
+                problem["backend_identity"] = f"submission.json unreadable: {str(identity_error)[:120]}"
+                problems.append(problem)
+                continue
+            if not isinstance(fallback, dict) or fallback.get("backend_type_id") == 7:
+                problems.append(problem)
             continue
         collected = {row["file"]: row for row in record["results"]["jobs"]}
         for job in acquisition.jobs:
@@ -82,7 +85,11 @@ def collect() -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
             ] == ord("1")
             prepared = np.zeros(width, dtype=bool)
             prepared[ones] = True
-            flips = (shots != prepared[None, :]).sum(axis=0)
+            flipped = shots != prepared[None, :]
+            flips = flipped.sum(axis=0)
+            # shot-level flip co-occurrence of the qubits of this job: the null covariance of any statistic that
+            # sums per-qubit tests over shared shots
+            cross = flipped.T.astype(np.int64) @ flipped.astype(np.int64)
             rows.append(
                 {
                     "run": relative,
@@ -95,6 +102,7 @@ def collect() -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
                     "shots": len(job.raw),
                     "prepared_one": ones,
                     "flips": flips.astype(int).tolist(),
+                    "cross": cross.tolist(),
                     "width": width,
                 }
             )
@@ -107,6 +115,4 @@ if __name__ == "__main__":
     print(len(rows), "readout jobs;", len(problems), "problems")
     for r in rows[:5]:
         print({k: r[k] for k in ("run", "file", "series", "t", "shots", "prepared_one")})
-    import collections
-
     print(collections.Counter((r["series"], tuple(r["prepared_one"])) for r in rows).most_common(40))

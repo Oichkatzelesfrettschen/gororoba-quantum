@@ -1,0 +1,80 @@
+{
+ "adjacency_law": {
+  "cases": "n 2..10, every k",
+  "max_abs_error": 9.992007221626409e-16
+ },
+ "runs_at_least_L_law": {
+  "cases": "n 3..12, every k, L in 1,2,3,5",
+  "max_abs_error_pmf_and_tail": 0.0,
+  "max_abs_error_mean": 0.0
+ },
+ "runs_mean_equals_E_L": {
+  "max_relative_difference": 2.2634695452235653e-16
+ },
+ "hypergeometric_far_tail": {
+  "log10_tail_exact": -104.43487317843346,
+  "log10_tail_scipy": -104.43487317844998,
+  "log10_tail_grid": -104.4348731784476
+ },
+ "lag1_cross_moments": {
+  "cases": "n 8, six margin sets, all distinct row orders",
+  "max_abs_mean": 0.0,
+  "max_abs_var": 2.220446049250313e-16
+ },
+ "chernoff_bound": {
+  "cases": [
+   {
+    "L": 2,
+    "obs": 9,
+    "log10_exact": -0.009605766016351377,
+    "log10_bound": 0.0,
+    "bound_holds": true
+   },
+   {
+    "L": 2,
+    "obs": 14,
+    "log10_exact": -0.5577267233346788,
+    "log10_bound": -0.1534081785322901,
+    "bound_holds": true
+   },
+   {
+    "L": 3,
+    "obs": 5,
+    "log10_exact": -0.47947985680953054,
+    "log10_bound": -0.11771143947121984,
+    "bound_holds": true
+   }
+  ]
+ },
+ "support_cap": {
+  "cases": [
+   {
+    "n": 32768,
+    "k": 400,
+    "L": 2,
+    "cap": 173,
+    "mean": 4.8114453083275475,
+    "log10_dropped_mass": -300.0,
+    "log10_tail_at_cap": -297.6616778665518
+   },
+   {
+    "n": 32768,
+    "k": 3000,
+    "L": 3,
+    "cap": 318,
+    "mean": 22.82356871259974,
+    "log10_dropped_mass": -300.0,
+    "log10_tail_at_cap": -299.47859888360836
+   },
+   {
+    "n": 4096,
+    "k": 40,
+    "L": 2,
+    "cap": 20,
+    "mean": 0.37732514880952384,
+    "log10_dropped_mass": null,
+    "log10_tail_at_cap": -42.74217943304576
+   }
+  ]
+ }
+}

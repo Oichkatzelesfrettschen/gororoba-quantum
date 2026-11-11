@@ -254,6 +254,14 @@ def job_of(cat: dict[str, Any], pub_file: str) -> dict[str, Any]:
 ACTOR_RUN = "results/live/2026-10-29T191606.826758Z"
 
 
+def epoch_labels(cat: dict[str, Any], run: str, backend: str) -> dict[str, str]:
+    """Calibration epoch of a run: the plan-snapshot stamp of its backend and the UTC date of its directory name."""
+    stamp = cat["runs"][run]["backends"][backend]
+    if not stamp:
+        raise ValueError(f"{run} records no calibration stamp for {backend}")
+    return {"stamp": str(stamp), "date": Path(run).name[:10]}
+
+
 def record_of(run: str) -> dict[str, Any] | None:
     path = ROOT / run / "record.json"
     return json.loads(path.read_text()) if path.exists() else None

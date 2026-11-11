@@ -88,8 +88,17 @@ def ledger_row(
     effect: Any,
     ci: Any = None,
     note: str = "",
+    dependent: str = "",
+    alternatives: dict[str, float] | None = None,
 ) -> dict[str, Any]:
-    """One hypothesis test in the pass-wide ledger; p enters as log10 so astronomically small tails stay finite."""
+    """One hypothesis test in the pass-wide ledger; p enters as log10 so astronomically small tails stay finite.
+
+    `dependent` is empty when the p-value rests on independent units and otherwise names the shared structure
+    (shots, jobs of one series, overlapping runs) that makes the p-value a statement about a larger effective sample
+    than the data hold; such a row stays in the ledger and is excluded from the dependence-safe survivor family.
+    `alternatives` maps a method name to the log10 p-value another method gave for the same test; the key
+    `prior_method` holds the value the ledger carried before the method of this row replaced it.
+    """
     return {
         "test_id": test_id,
         "analysis": analysis,
@@ -98,6 +107,8 @@ def ledger_row(
         "effect": effect,
         "ci95": ci,
         "note": note,
+        "dependent": dependent,
+        "alternatives": {k: sig(min(0.0, v), 6) for k, v in (alternatives or {}).items()},
     }
 
 
@@ -116,24 +127,98 @@ def benjamini_hochberg(log10_ps: list[float], q: float = ALPHA) -> list[bool]:
     return keep
 
 
+def benjamini_yekutieli(log10_ps: list[float], q: float = ALPHA) -> list[bool]:
+    """BY step-up decisions at FDR q: BH at q / sum_{i<=m} 1/i, valid under any dependence among the p-values."""
+    m = len(log10_ps)
+    harmonic = sum(1.0 / i for i in range(1, m + 1))
+    return benjamini_hochberg(log10_ps, q / harmonic) if m else []
+
+
 def bonferroni(log10_ps: list[float], q: float = ALPHA) -> list[bool]:
+    """Bonferroni decisions: valid under any dependence when each p-value is valid."""
     m = len(log10_ps)
     return [p <= math.log10(q / m) for p in log10_ps]
 
 
+def survivors(log10_ps: list[float]) -> dict[str, list[bool]]:
+    """Bonferroni, BH and BY decisions over one family of tests."""
+    return {
+        "bonferroni": bonferroni(log10_ps),
+        "bh": benjamini_hochberg(log10_ps),
+        "by": benjamini_yekutieli(log10_ps),
+    }
+
+
 def summarize_ledger(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Within-analysis BH and Bonferroni over the ledger rows of one script."""
+    """Within-analysis Bonferroni, BH and BY over the ledger rows of one script."""
     ps = [row["log10_p"] for row in rows]
-    bh = benjamini_hochberg(ps)
-    bf = bonferroni(ps)
+    decisions = survivors(ps)
     m = len(rows)
     return {
         "tests": m,
         "bonferroni_alpha": sig(ALPHA / m) if m else None,
         "rows": [
-            {**row, "bh_significant": a, "bonferroni_significant": b} for row, a, b in zip(rows, bh, bf, strict=True)
+            {**row, "bh_significant": a, "bonferroni_significant": b, "by_significant": y}
+            for row, a, b, y in zip(rows, decisions["bh"], decisions["bonferroni"], decisions["by"], strict=True)
         ],
     }
+
+
+def weighted_chi2_log10_sf(x: float, weights: list[float], dofs: list[int]) -> dict[str, float]:
+    """Upper tail of sum_i weights[i] * chi2(dofs[i]) at x, as log10 p, in the far tail.
+
+    The Chernoff bound (`chernoff`) is a guaranteed upper bound on the tail, so it is a valid conservative
+    p-value; the Lugannani-Rice saddlepoint approximation (`saddlepoint`) is the accurate reading. Both use the
+    cumulant K(t) = -1/2 sum_i dofs[i] ln(1 - 2 t weights[i]) solved at K'(t) = x. A value at or below the mean
+    returns 0 for both.
+    """
+    from scipy.optimize import brentq
+    from scipy.special import log_ndtr
+
+    lam = [w for w in weights if w > 0]
+    dof = [d for w, d in zip(weights, dofs, strict=True) if w > 0]
+    mean = sum(w * d for w, d in zip(lam, dof, strict=True))
+    if x <= mean:
+        return {"chernoff": 0.0, "saddlepoint": 0.0}
+    top = 1.0 / (2.0 * max(lam))
+
+    def k0(t: float) -> float:
+        return -0.5 * sum(d * math.log1p(-2.0 * t * w) for w, d in zip(lam, dof, strict=True))
+
+    def k1(t: float) -> float:
+        return sum(d * w / (1.0 - 2.0 * t * w) for w, d in zip(lam, dof, strict=True))
+
+    def k2(t: float) -> float:
+        return 2.0 * sum(d * w * w / (1.0 - 2.0 * t * w) ** 2 for w, d in zip(lam, dof, strict=True))
+
+    t_hat = float(brentq(lambda t: k1(t) - x, 0.0, top * (1.0 - 1e-15), xtol=1e-18, rtol=1e-14, maxiter=500))
+    log_chernoff = k0(t_hat) - t_hat * x
+    w_stat = math.sqrt(2.0 * (t_hat * x - k0(t_hat)))
+    u_stat = t_hat * math.sqrt(k2(t_hat))
+    log_phi = -0.5 * w_stat * w_stat - 0.5 * math.log(2.0 * math.pi)
+    correction = 1.0 / u_stat - 1.0 / w_stat
+    log_p = float(log_ndtr(-w_stat))
+    if correction > 0:
+        log_extra = log_phi + math.log(correction)
+        high, low = max(log_p, log_extra), min(log_p, log_extra)
+        log_p = high + math.log1p(math.exp(low - high))
+    ln10 = math.log(10.0)
+    return {"chernoff": min(0.0, log_chernoff / ln10), "saddlepoint": min(0.0, log_p / ln10)}
+
+
+def poisson_binomial_log10_sf(k: int, probs: list[float]) -> float:
+    """log10 P(at least k of independent Bernoulli(probs[i]) events), by exact dynamic programming."""
+    if k <= 0:
+        return 0.0
+    dist = [1.0]
+    for p in probs:
+        nxt = [0.0] * (len(dist) + 1)
+        for j, mass in enumerate(dist):
+            nxt[j] += mass * (1.0 - p)
+            nxt[j + 1] += mass * p
+        dist = nxt
+    tail = math.fsum(dist[k:])
+    return math.log10(max(tail, 1e-300))
 
 
 def chi2_log10_sf(x: float, dof: int) -> float:

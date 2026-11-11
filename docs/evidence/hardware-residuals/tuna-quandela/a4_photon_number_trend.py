@@ -34,6 +34,7 @@ import common as c
 import numpy as np
 from scipy import stats
 
+import parallel
 import qd_records as qd
 
 
@@ -55,8 +56,7 @@ def group_key(it: dict[str, Any]) -> str:
     return "p" + hashlib.sha256(json.dumps(params, sort_keys=True).encode()).hexdigest()[:11]
 
 
-def analyze_job(directory: Any) -> dict[str, Any]:
-    run = qd.read_run(directory)
+def analyze_job(directory: Any, run: Any) -> dict[str, Any]:
     its = [i for i in (run.collected.get("iterations") or []) if "counts" in i and i["counts"]]
     out: dict[str, Any] = {
         "run": c.rel(directory),
@@ -164,9 +164,8 @@ def analyze_job(directory: Any) -> dict[str, Any]:
     return out
 
 
-def yield_job(directory: Any) -> dict[str, Any] | None:
+def yield_job(directory: Any, run: Any) -> dict[str, Any] | None:
     """Detected-sample yield per optical trial where nb_shots_used exceeds the samples; stratified by circuit."""
-    run = qd.read_run(directory)
     its = [i for i in (run.collected.get("iterations") or []) if "counts" in i and i.get("result_fields")]
     rows: list[dict[str, Any]] = []
     for index, it in enumerate(its):
@@ -218,18 +217,41 @@ def yield_job(directory: Any) -> dict[str, Any] | None:
     }
 
 
+def job_task(directory: Any) -> dict[str, Any]:
+    """One run directory: its trend analysis and, for a QPU job, its yield analysis; a failure becomes a problem row."""
+    result: dict[str, Any] = {"analysis": None, "yield": None, "problems": []}
+    try:
+        run = qd.read_run(directory)
+    except Exception as error:  # reported as a problem row, never dropped
+        result["problems"].append({"run": c.rel(directory), "problem": str(error)[:160]})
+        if "qpu_" in directory.name:
+            result["problems"].append({"run": c.rel(directory), "yield_problem": str(error)[:160]})
+        return result
+    try:
+        result["analysis"] = analyze_job(directory, run)
+    except Exception as error:  # reported as a problem row, never dropped
+        result["problems"].append({"run": c.rel(directory), "problem": str(error)[:160]})
+    if "qpu_" in directory.name:
+        try:
+            result["yield"] = yield_job(directory, run)
+        except Exception as error:  # reported as a problem row, never dropped
+            result["problems"].append({"run": c.rel(directory), "yield_problem": str(error)[:160]})
+    return result
+
+
 def main() -> None:
     directories = [p for p in qd.run_directories() if "qpu_" in p.name or "sim_" in p.name]
     qpu: list[dict[str, Any]] = []
     sim: list[dict[str, Any]] = []
+    yields: list[dict[str, Any]] = []
     problems: list[dict[str, str]] = []
-    for d in directories:
-        try:
-            r = analyze_job(d)
-        except Exception as error:
-            problems.append({"run": c.rel(d), "problem": str(error)[:160]})
-            continue
-        (qpu if "qpu_" in d.name else sim).append(r)
+    results = parallel.ordered_map(job_task, directories, min_items=2)
+    for d, task in zip(directories, results, strict=True):
+        problems += task["problems"]
+        if task["analysis"] is not None:
+            (qpu if "qpu_" in d.name else sim).append(task["analysis"])
+        if task["yield"]:
+            yields.append(task["yield"])
     ledger = []
     for r in qpu:
         if r.get("status") == "tested":
@@ -250,33 +272,23 @@ def main() -> None:
                 )
             )
     # yield per shot where identifiable
-    yields = []
-    for d in directories:
-        if "qpu_" not in d.name:
-            continue
-        try:
-            y = yield_job(d)
-        except Exception as error:
-            problems.append({"run": c.rel(d), "yield_problem": str(error)[:160]})
-            continue
-        if y:
-            yields.append(y)
-            if y.get("status") == "tested" and math.isfinite(y["z"]):
-                ledger.append(
-                    c.ledger_row(
-                        "A4y." + y["run"].split("/")[-1][:58],
-                        4,
-                        "stratified logit slope of detected-sample yield per optical trial against iteration index, "
-                        f"{y['platform']}",
-                        c.normal_two_sided_log10(y["z"]),
-                        {
-                            "logit_slope_per_iteration": c.sig(y["logit_slope_per_iteration"]),
-                            "iterations": y["iterations"],
-                        },
-                        [c.sig(v) for v in y["ci95"]],
-                        "yield per Perceval shot = samples / nb_shots_used",
-                    )
+    for y in yields:
+        if y.get("status") == "tested" and math.isfinite(y["z"]):
+            ledger.append(
+                c.ledger_row(
+                    "A4y." + y["run"].split("/")[-1][:58],
+                    4,
+                    "stratified logit slope of detected-sample yield per optical trial against iteration index, "
+                    f"{y['platform']}",
+                    c.normal_two_sided_log10(y["z"]),
+                    {
+                        "logit_slope_per_iteration": c.sig(y["logit_slope_per_iteration"]),
+                        "iterations": y["iterations"],
+                    },
+                    [c.sig(v) for v in y["ci95"]],
+                    "yield per Perceval shot = samples / nb_shots_used",
                 )
+            )
     # control: sim jobs, same statistic
     sim_tested = [r for r in sim if r.get("status") == "tested"]
     sim_p = [math.exp(c.normal_two_sided_log10(r["z"]) * math.log(10)) for r in sim_tested]
