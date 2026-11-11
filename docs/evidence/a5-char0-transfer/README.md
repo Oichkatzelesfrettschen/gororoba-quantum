@@ -102,3 +102,20 @@ saturated and y1, y5, y6 are nilpotent. Falsifier: an element of the completed l
 R = Q(i)[[t]] + (a, rho, sig) P, the one identification the certificate takes from the parametrization. The record is
 `monomial-certificate-qi.json`.
 
+## The slice rings over Q(i): kernel of the parametrization (A5-314)
+
+[`slice_rings_qi.py`](slice_rings_qi.py) eliminates the parameters from the graph of each slice parametrization over
+Q(i) and compares the kernel with the J of the Q(i) producer (together with the variables its presolve removed, which
+J does not involve and which vanish on the slice):
+
+| Pair | kernel: generators, dimension, multiplicity | equals J | run |
+|---|---|---|---|
+| X- -> N- | 14, 4, 6 | yes | 3.6 s |
+| X+ -> N+ | 14, 4, 6 | yes | 3.5 s |
+| E8-bar -> N- | 16, 5, 12 | yes | 59 s |
+| E8-bar -> N+ | 16, 5, 12 | yes | 60 s |
+
+So the coordinate ring of each slice is the image ring of its parametrization in characteristic 0 as well, the
+input of the certificates of `../a5-exceptional-fibers/monomial-ladder`. Records: `slice-rings-qi-kernel-*.json`.
+The same script holds the E8-bar closure check over Q(i) (I = I S); its two cases have not finished.
+

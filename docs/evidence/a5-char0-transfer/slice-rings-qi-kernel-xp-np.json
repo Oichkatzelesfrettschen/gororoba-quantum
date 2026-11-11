@@ -1,0 +1,18 @@
+{
+ "kernel_generators": 14,
+ "kernel_dim": 4,
+ "kernel_mult": 6,
+ "j_dim": 4,
+ "j_mult": 6,
+ "check": "kernel",
+ "slug": "xp-np",
+ "j_in_kernel": true,
+ "kernel_in_j": true,
+ "unused_variables": [
+  "t3",
+  "t8"
+ ],
+ "wall_seconds": 3.5,
+ "peak_rss_kib": 109508,
+ "verdict": "kernel_equals_j"
+}
