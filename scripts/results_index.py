@@ -15,6 +15,10 @@ Subcommands:
 - ``claim ID``: a claim's acquisitions, their runs and job ids, its evidence
   files, documents and gates.
 - ``path PATH``: the run, acquisition and claims a repository file belongs to.
+- ``ledger``: the complete claim qualifications, artifact census, source metadata,
+  A5 findings and unresolved links; ``--markdown`` renders the claim table.
+- ``observation FILE --pointer /path``: an exact JSON value with its byte identity
+  and citing claims; the command performs no statistical reanalysis.
 - ``sqlite OUT``: the same relations as SQLite tables at OUT, a path outside
   the repository (default under ``${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum``),
   for ad hoc joins; the database is a cache rebuilt by this command.
@@ -27,18 +31,25 @@ hold, and Kaggle submissions without a collection receipt.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import importlib.util
 import json
 import os
 import sqlite3
+import subprocess
 import sys
 from collections.abc import Iterable
 from contextlib import closing
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
+import evidence_closure
 import kaggle_run
 import research_state
+
+import quantum_ledger
+from parallel import ordered_map
 
 ROOT = research_state.ROOT
 KAGGLE = kaggle_run.RESULTS
@@ -110,12 +121,40 @@ def _kaggle_runs() -> list[Run]:
     return runs
 
 
+def _execution_candidate(item: tuple[Path, str]) -> dict[str, Any]:
+    root, reference = item
+    path = quantum_ledger.local_file(root, reference)
+    content = path.read_bytes()
+    record = json.loads(content)
+    if reference.startswith("results/live/") and path.name == "record.json" and isinstance(record, dict):
+        classification = evidence_closure.classify_record(record, (path.parent / "collect.json").is_file())
+    else:
+        classification = {
+            "classification": "schema requires a provider-specific reader",
+            "state": record.get("state") if isinstance(record, dict) else None,
+        }
+    return {"path": reference, "sha256": hashlib.sha256(content).hexdigest(), **classification}
+
+
 class Index:
     """Runs, acquisitions and claims joined by run path and job id."""
 
     def __init__(self) -> None:
         self.registry: dict[str, Any] = _json(research_state.REGISTRY)
         context = research_state.Context()
+        research_state.validate(self.registry, context)
+        self.gates = context.gates
+        self.account_only_jobs = [
+            {
+                "provider": "ibm",
+                "job_id": job["job_id"],
+                "status": job["status"],
+                "provenance": job.get("provenance"),
+                "final_qpu_charge_seconds": job.get("final_qpu_charge_seconds"),
+            }
+            for job in cast(research_state.IbmRuns, context.providers["ibm"]).jobs
+            if job.get("run") is None
+        ]
         self.runs: dict[str, Run] = {}
         for name, provider in context.providers.items():
             for path, facts in provider.runs().items():
@@ -164,6 +203,11 @@ class Index:
         return {
             "claims": len(self.claims),
             "acquisitions": len(self.acquisitions),
+            "unclaimed_acquisitions": sorted(
+                acquisition
+                for acquisition in self.acquisitions
+                if not any(acquisition in claim["acquisitions"] for claim in self.claims.values())
+            ),
             "providers": providers,
             "unregistered_runs": sorted(
                 run.path for run in self.runs.values() if run.acquisition is None and run.provider != "kaggle"
@@ -174,8 +218,12 @@ class Index:
             ),
         }
 
-    def job(self, job_id: str) -> list[dict[str, Any]]:
-        return [self.runs[path].row() for path in self.job_runs.get(job_id, [])]
+    def job(self, job_id: str, provider: str | None = None) -> list[dict[str, Any]]:
+        return [
+            self.runs[path].row()
+            for path in self.job_runs.get(job_id, [])
+            if provider is None or self.runs[path].provider == provider
+        ]
 
     def claim(self, claim_id: str) -> dict[str, Any]:
         claim = self.claims.get(claim_id)
@@ -187,11 +235,13 @@ class Index:
             raise SystemExit(f"claim {claim_id} cites runs the tree does not hold: {'; '.join(missing)}")
         runs = [self.runs[path].row() for path in paths.values()]
         return {
+            **claim,
             "id": claim_id,
             "status": claim["status"],
             "evidence_class": claim["evidence_class"],
             "statement": claim["statement"],
             "evidence": [entry["path"] for entry in claim["evidence"]],
+            "evidence_bindings": claim["evidence"],
             "documents": claim["documents"],
             "gates": claim["gates"],
             "runs": runs,
@@ -211,6 +261,87 @@ class Index:
         )
         return {"path": rel, "runs": owners, "claims_citing": citing}
 
+    def ledger(self) -> dict[str, Any]:
+        paths = (
+            subprocess.run(
+                ["git", "ls-files", "-z"],
+                cwd=ROOT,
+                check=True,
+                capture_output=True,
+            )
+            .stdout.decode("utf-8")
+            .split("\0")
+        )
+        view = quantum_ledger.build(
+            ROOT,
+            list(self.claims.values()),
+            list(self.acquisitions.values()),
+            [run.row() for run in self.runs.values()],
+            self.gates,
+            [path for path in paths if path],
+        )
+        findings_path = ROOT / "docs/evidence/a5-exceptional-fibers/ledger.tsv"
+        specification = importlib.util.spec_from_file_location("a5_findings_ledger", findings_path.with_suffix(".py"))
+        if specification is None or specification.loader is None:
+            raise ValueError("the A5 ledger validator cannot be loaded")
+        validator = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(validator)
+        findings = validator.rows()
+        if any(set(row) != set(validator.COLUMNS) or any(value is None for value in row.values()) for row in findings):
+            raise ValueError("invalid A5 ledger: row width differs from its header")
+        problems = validator.check(findings)
+        if problems:
+            raise ValueError("invalid A5 ledger: " + "; ".join(problems))
+        view["algebra_findings"] = {
+            "path": findings_path.relative_to(ROOT).as_posix(),
+            "sha256": research_state.digest(findings_path),
+            "rows": findings,
+            "boundary": (
+                "A5 statuses and field restrictions retain the algebra ledger's meanings. "
+                "A shared evidence path does not establish a physical claim or an equivalence of claims."
+            ),
+        }
+        view["summary"]["algebra_findings"] = len(findings)
+        candidates = ordered_map(
+            _execution_candidate,
+            [(ROOT, reference) for reference in view["gaps"]["execution_records_outside_indexed_runs"]],
+        )
+        for candidate in candidates:
+            matched = [job for job in self.account_only_jobs if job["job_id"] in candidate.get("job_ids", [])]
+            candidate["account_jobs"] = matched
+            if (
+                matched
+                and len(matched) == len(candidate.get("job_ids", []))
+                and all(job["provenance"] == "unexecuted_cancellation" for job in matched)
+            ):
+                candidate["classification"] = "audited unexecuted cancellation"
+        view["execution_candidates"] = candidates
+        view["account_only_jobs"] = self.account_only_jobs
+        view["summary"]["execution_classifications"] = {
+            category: sum(row["classification"] == category for row in candidates)
+            for category in sorted({row["classification"] for row in candidates})
+        }
+        return view
+
+    def observation(self, reference: str, pointer: str) -> dict[str, Any]:
+        if "#" in reference:
+            raise ValueError("observation takes a file path and a separate JSON Pointer")
+        reference = quantum_ledger.local_file(ROOT, reference).relative_to(ROOT.resolve()).as_posix()
+        observed = quantum_ledger.inspect(ROOT, reference, pointer)
+        citing = [
+            claim
+            for claim in self.claims.values()
+            if any(entry["path"].partition("#")[0] == reference for entry in claim["evidence"])
+        ]
+        observed["claims_citing_file"] = [self.claim(claim["id"]) for claim in citing]
+        observed["runs_holding_file"] = [
+            run.row() for run in self.runs.values() if reference.startswith(run.path + "/")
+        ]
+        observed["citation_boundary"] = (
+            "A file citation locates potentially relevant claims; it does not establish that a claim uses this field."
+        )
+        return observed
+
     def write_sqlite(self, out: Path) -> dict[str, int]:
         """Write every relation to a new SQLite file at OUT; OUT must lie outside the repository."""
         out = out.resolve()
@@ -227,7 +358,10 @@ class Index:
                     for r in self.runs.values()
                 ),
             ),
-            "jobs": ("job TEXT, run TEXT", ((job, r.path) for r in self.runs.values() for job in r.jobs)),
+            "jobs": (
+                "job TEXT, run TEXT, provider TEXT",
+                ((job, run.path, run.provider) for run in self.runs.values() for job in run.jobs),
+            ),
             "acquisitions": (
                 "id TEXT PRIMARY KEY, provider TEXT, run TEXT, family TEXT, question TEXT",
                 ((a["id"], a["provider"], a["run"], a["family"], a["question"]) for a in self.acquisitions.values()),
@@ -254,6 +388,22 @@ class Index:
             "claim_dependencies": (
                 "claim TEXT, depends_on TEXT",
                 ((c["id"], d) for c in self.claims.values() for d in c["depends_on"]),
+            ),
+            "claim_qualifications": (
+                "claim TEXT PRIMARY KEY, boundary TEXT, assumptions TEXT, supersedes TEXT, "
+                "superseded_by TEXT, related_claims TEXT, numerical_replay TEXT",
+                (
+                    (
+                        claim["id"],
+                        claim["boundary"],
+                        json.dumps(claim["assumptions"]),
+                        json.dumps(claim["supersedes"]),
+                        claim.get("superseded_by"),
+                        json.dumps(claim["related_claims"]),
+                        "not-run-by-ledger",
+                    )
+                    for claim in self.claims.values()
+                ),
             ),
         }
         counts = {}
@@ -298,10 +448,19 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("summary")
     runs = sub.add_parser("runs")
     runs.add_argument("--provider", choices=[*research_state.PROVIDERS, "kaggle"])
-    sub.add_parser("job").add_argument("job_id")
+    job = sub.add_parser("job")
+    job.add_argument("job_id")
+    job.add_argument("--provider", choices=[*research_state.PROVIDERS, "kaggle"])
     sub.add_parser("claim").add_argument("claim_id")
     sub.add_parser("path").add_argument("target")
     sub.add_parser("sqlite").add_argument("out", nargs="?", type=Path, default=None)
+    ledger = sub.add_parser("ledger")
+    projection = ledger.add_mutually_exclusive_group()
+    projection.add_argument("--summary", action="store_true")
+    projection.add_argument("--markdown", action="store_true")
+    observation = sub.add_parser("observation")
+    observation.add_argument("reference", help="repository-relative JSON file")
+    observation.add_argument("--pointer", default="", help="RFC 6901 pointer, e.g. /conditions/0")
     args = parser.parse_args(argv)
     index = Index()
     if args.command == "summary":
@@ -310,7 +469,7 @@ def main(argv: list[str] | None = None) -> int:
         rows = [r.row() for r in index.runs.values() if args.provider in (None, r.provider)]
         _print(sorted(rows, key=lambda row: row["path"]), args.json)
     elif args.command == "job":
-        found = index.job(args.job_id)
+        found = index.job(args.job_id, args.provider)
         if not found:
             raise SystemExit(f"no retained run holds job {args.job_id}")
         _print(found, args.json)
@@ -318,6 +477,14 @@ def main(argv: list[str] | None = None) -> int:
         _print(index.claim(args.claim_id), args.json)
     elif args.command == "path":
         _print(index.path(args.target), args.json)
+    elif args.command == "ledger":
+        view = index.ledger()
+        if args.markdown:
+            print(quantum_ledger.markdown(view), end="")
+        else:
+            _print(view["summary"] if args.summary else view, args.json)
+    elif args.command == "observation":
+        _print(index.observation(args.reference, args.pointer), args.json)
     else:
         out = args.out or default_sqlite()
         _print({"database": str(out), "rows": index.write_sqlite(out)}, args.json)

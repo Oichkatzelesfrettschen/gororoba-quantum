@@ -1,0 +1,20 @@
+RESULT K2 saturated at the irrelevant ideal 1
+RESULT squares of y1 y5 y6 in K2 1 N^2 in K2 1 N^3 in K2 1
+RESULT annihilator of P/K2: dim 3 mult 1 h 1,0
+RESULT minimal primes of the annihilator 1
+RESULT embedded locus 1 dim 3 mult 1 linear forms 12 generators 12
+RESULT chart y1 : K2 sat equals P 1 dim -1
+RESULT chart y2 : K2 sat equals P 0 dim 4
+RESULT chart y3 : K2 sat equals P 0 dim 4
+RESULT chart y4 : K2 sat equals P 0 dim 4
+RESULT chart y5 : K2 sat equals P 1 dim -1
+RESULT chart y6 : K2 sat equals P 1 dim -1
+RESULT chart y7 : K2 sat equals P 1 dim 4
+RESULT chart y8 : K2 sat equals P 1 dim 4
+RESULT chart y9 : K2 sat equals P 1 dim 4
+RESULT chart y10 : K2 sat equals P 0 dim 4
+RESULT chart y11 : K2 sat equals P 1 dim 4
+RESULT chart y12 : K2 sat equals P 1 dim 4
+RESULT chart y13 : K2 sat equals P 1 dim 4
+RESULT chart y14 : K2 sat equals P 1 dim 4
+RESULT chart y15 : K2 sat equals P 0 dim 4

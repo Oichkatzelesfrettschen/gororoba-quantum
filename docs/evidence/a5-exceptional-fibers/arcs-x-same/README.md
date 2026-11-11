@@ -71,3 +71,52 @@ Check without Singular: [arc_rank_check.py](../arc_rank_check.py) recomputes the
 dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order
 of G and the vanishing of J; it shares no code with Singular and shares the series arithmetic and polynomial
 evaluator of `kernel-limits/plucker_limits.py` ([arc-rank-check.json](../arc-rank-check.json)).
+
+## Census of the quadric ideal: one minimal prime, not radical (A5-297)
+
+`xm-nm-quadric-census-p32009.sing` and `xm-nm-quadric-census-p32029.sing` read the 69 quadrics K2 of X- -> N- from
+the retained degree-2 relations and compute, in Singular 4.4.1, the Hilbert series, the minimal free resolution and
+the minimal primes (`minAssChar`). The two logs agree line for line, and so does the log of
+`xp-np-quadric-census-p32029.sing` on the 69 quadrics of X+ -> N+ at F_32029.
+
+| quantity | k[y]/K2 | k[y]/P, P the minimal prime |
+|---|---|---|
+| minimal generators | 69 quadrics | 3 linear forms (y1, y5, y6) and 33 quadrics |
+| dimension, multiplicity | 4, 12 | 4, 12 |
+| numerator of the Hilbert series over (1 - t)^4 | 1, 11, -3, 4, -1 | 1, 8, 3 |
+| Hilbert function in degrees 1, 2, 3 | 15, 51, 122 | 12, 45, 112 |
+| projective dimension, depth | 14, 1 | 11, 4 (Cohen-Macaulay) |
+| rows of the Betti table | 1 and 2 (regularity of the quotient 2) | 0, 1 and 2 |
+
+K2 has exactly one minimal prime P, K2 lies in P and P does not lie in K2. The quadric locus V(K2) is therefore
+irreducible of dimension 3 and degree 12 in the linear space y1 = y5 = y6 = 0, and K2 differs from P by embedded
+structure: y1, y5 and y6 are nilpotent modulo K2. The weighted arcs of this directory span 12 coordinates and 45
+quadrics in the fiber-to-Grassmannian fit of [kernel-limits](../kernel-limits/README.md), the Hilbert function of
+k[y]/P, so those arcs sample the whole reduced fiber. Scope: two primes for X- -> N-, one for X+ -> N+; the embedded
+primes of K2 and the equality of K2 with the ideal L of the fiber cone in every degree stay open. Each run takes
+280 s and 0.5 GB:
+
+    Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/arcs-x-same/xm-nm-quadric-census-p32009.sing
+
+## Saturation and projective charts: the quadric scheme is nonreduced along one plane (A5-303)
+
+The census above is a statement about the affine cone k[y]/K2. `xm-nm-quadric-saturation-p32009.sing` and
+`xm-nm-quadric-saturation-p32029.sing` carry it to the projective scheme V_+(K2); the two logs agree line for line
+(0.5 s each).
+
+- K2 equals its saturation at the irrelevant ideal, so V_+(K2) is nonreduced, and its nilpotents are y1, y5 and
+  y6 with (y1, y5, y6)^2 inside K2.
+- The annihilator K2 : P of the nilpotent module P / K2 is the ideal of the plane
+  y1 = y5 = y6 = y7 = y8 = y9 = y11 = y12 = y13 = y14 = 0, y3 = y10, y2 = y15, which lies in V(P). V_+(K2) is
+  reduced off this plane and carries one embedded component on it; the multiplicity 12 of K2 equals that of P.
+- By chart: the saturation of K2 at y_j equals P for j = 7, 8, 9, 11, 12, 13, 14 (reduced charts) and differs from P
+  for j = 2, 3, 4, 10, 15 (the charts that meet the plane); the charts y1, y5, y6 are empty.
+
+Scope. These are properties of the quadric scheme V_+(K2), which contains the exceptional fiber
+E0 = Proj F(I) = V_+(L), L the full ideal of the fiber cone, K2 its degree-2 part. For the fiber cone itself: L
+holds no linear form (h_1 = 15) and contains K2, so y1, y5, y6 are nonzero nilpotents of F(I), and the affine fiber
+cone is nonreduced at both primes. Nonreducedness of the projective fiber E0 needs more: y1 y_j^k outside L for
+every k on a chart y_j that meets the plane. That holds as far as L = K2 is known degree by degree, and no record
+decides it in every degree, so the nonreducedness of E0 is open.
+
+    Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/arcs-x-same/xm-nm-quadric-saturation-p32009.sing
