@@ -228,6 +228,9 @@ def _number(value: str) -> float:
     return float(match.group(1))
 
 
+OPAQUE_FILL = re.compile(r"#[0-9a-fA-F]{6}")
+
+
 def require_visible(node: ET.Element) -> None:
     """Refuse presentation attributes that keep a node in the document while removing it from the rendering."""
     for key in ("opacity", "fill-opacity", "font-size"):
@@ -236,9 +239,12 @@ def require_visible(node: ET.Element) -> None:
     for key, hidden in (
         ("visibility", {"hidden", "collapse"}),
         ("display", {"none"}),
-        ("fill", {"none", "transparent"}),
     ):
         require((node.get(key) or "").strip().lower() not in hidden, f"SVG node has {key}={node.get(key)!r}")
+    # The masters paint with six-digit hex colors, which carry no alpha channel; any other paint syntax could.
+    if (fill := node.get("fill")) is not None:
+        require(OPAQUE_FILL.fullmatch(fill) is not None, f"SVG node has fill={fill!r}")
+    require(node.get("transform") is None, "SVG node carries a transform")
 
 
 def validate_display(data: bytes, expected: Mapping[str, str]) -> None:

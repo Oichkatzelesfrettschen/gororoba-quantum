@@ -197,7 +197,7 @@ class PublicationTests(unittest.TestCase):
             return (SVG_OPEN.format(root=root) + f'<text id="metric"{text}>{inner}</text></svg>').encode()
 
         validate_display(page(), {"metric": "80.0%"})
-        validate_display(page(' fill-opacity="1"', ' font-size="22" fill="#fff"'), {"metric": "80.0%"})
+        validate_display(page(' fill-opacity="1"', ' font-size="22" fill="#f8fbff"'), {"metric": "80.0%"})
         mutations = {
             "visibility hidden": page(text=' visibility="hidden"'),
             "visibility collapse": page(text=' visibility="collapse"'),
@@ -210,6 +210,14 @@ class PublicationTests(unittest.TestCase):
             "fill none": page(text=' fill="none"'),
             "fill transparent": page(text=' fill="transparent"'),
             "unparseable opacity": page(text=' opacity="clear"'),
+            "fill rgba zero alpha": page(text=' fill="rgba(255,255,255,0)"'),
+            "fill hex zero alpha": page(text=' fill="#ffffff00"'),
+            "fill short hex": page(text=' fill="#fff"'),
+            "transform scale zero": page(text=' transform="scale(0)"'),
+            "ancestor fill zero alpha": page(root=' fill="#ffffff00"'),
+            "ancestor transform": page(root=' transform="scale(0)"'),
+            "span fill zero alpha": page(inner='80.0%<tspan fill="rgba(0,0,0,0)"/>'),
+            "span transform": page(inner='80.0%<tspan transform="scale(0)"/>'),
             "ancestor visibility hidden": page(root=' visibility="hidden"'),
             "ancestor display none": page(root=' display="none"'),
             "ancestor opacity zero": page(root=' opacity="0"'),
