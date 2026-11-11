@@ -99,7 +99,7 @@ What the certificate rests on, and what it does not cover:
   Q(i) producer, is `../../a5-char0-transfer/monomial_certificate_qi.py` (A5-305): I = M, L is 69 quadrics that
   reduce to K2 at both primes;
 - the fiber cone of a monomial ideal need not be reduced, and this one is not: the nilpotents and the scheme
-  structure of Proj F(I) = V_+(K2) are those of K2, recorded with the saturation of K2 in `arcs-x-same`;
+  structure of Proj F(I) = V_+(K2) are those of K2: saturated, nonreduced along one embedded plane ([arcs-x-same](../arcs-x-same/README.md), A5-303);
 - nothing here transfers to another incidence. The E8-bar slice ideal is not a span of monomials in any of the
   five coordinate systems tried at order 7, and no certificate of this kind exists for it.
 
