@@ -92,10 +92,10 @@ def structure(source: tuple[str, int, str]) -> dict[str, Any]:
 
     # Unknowns A[i][j]; the derivation sends y_a y_b to sum_j A[a][j] y_j y_b + A[b][j] y_a y_j.
     rows: list[dict[int, int]] = []
-    for q in basis:
+    for relation in basis:
         images: dict[int, dict[int, int]] = {}
-        for k, c in q.items():
-            a, b = monomials[k]
+        for index, c in relation.items():
+            a, b = monomials[index]
             for source_index, other in ((a, b), (b, a)):
                 for j in range(n):
                     target = column[(min(j, other), max(j, other))]
@@ -103,9 +103,9 @@ def structure(source: tuple[str, int, str]) -> dict[str, Any]:
                     images[source_index * n + j][target] = (images[source_index * n + j].get(target, 0) + c) % PRIME
         equations: dict[int, dict[int, int]] = {}
         for unknown, image in images.items():
-            for k, c in normal_form(image).items():
-                if c:
-                    equations.setdefault(k, {})[unknown] = c
+            for free_index, value in normal_form(image).items():
+                if value:
+                    equations.setdefault(free_index, {})[unknown] = value
         rows.extend(equations.values())
     system = nmod_mat(len(rows), n * n, PRIME)
     for i, row in enumerate(rows):
