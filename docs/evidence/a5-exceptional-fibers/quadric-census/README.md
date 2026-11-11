@@ -56,8 +56,9 @@ holds the radical.
 
 ## Binomial form and linear symmetries (A5-310)
 
-`quadric_structure.py` asks two questions of each K2 at p = 32009 (2 s for all five; record
-`quadric-structure-p32009.jsonl`).
+`quadric_structure.py` asks two questions of each of the fourteen retained K2 (both primes, both headers where
+retained; 4 s in all; record `quadric-structure.jsonl`). Every number in the table is the same on each file of its
+fiber.
 
 Is K2 spanned by monomials and binomials in the header's coordinates y? The reduced row echelon basis of K2 on the
 quadratic monomials answers it for these coordinates only. Which linear changes of coordinates could make it so?
@@ -68,10 +69,10 @@ dimension bounds the rank of every torus of linear symmetries from above.
 
 | Fiber | dim of the cone | supports 1, 2, 3, more | dim g | diagonal torus | torus rank at most |
 |---|---|---|---|---|---|
-| X− → N− | 4 | 27, 5, 3, 34 | 23 | 1 | 5 |
+| X− → N−, X+ → N+ | 4 | 27, 5, 3, 34 | 23 | 1 | 5 |
 | E8-bar → VB | 4 | 0, 6, 9, 6 | 15 | 3 | 5 |
 | Iso | 5 | 0, 1, 3, 64 | 17 | 1 | 4 |
-| E8-bar → N− | 5 | 25, 20, 16, 87 | 34 | 2 | 6 |
+| E8-bar → N−, N+ | 5 | 25, 20, 16, 87 | 34 | 2 | 6 |
 | W8 → N− | 6 | 3, 12, 16, 113 | 26 | 2 | 5 |
 
 Readings. No K2 is monomial-binomial in the coordinates y; for X− → N− that is a matter of coordinates, since the
