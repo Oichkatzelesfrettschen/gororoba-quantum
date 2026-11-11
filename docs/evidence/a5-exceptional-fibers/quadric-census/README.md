@@ -49,8 +49,19 @@ N = (y4, y6, y7, y12, y14):
 Scope: this describes V_+(K2). For the exceptional fiber V_+(L) of E8-bar → N−, L contains K2 and holds no linear
 form (h_1 = 21), so y4, y6, y7, y12, y14 are nonzero nilpotents of the affine fiber cone F(I); whether they survive
 on the projective fiber depends on L in every degree, which is open until the elimination of
-[monomial-ladder](../monomial-ladder/README.md) finishes. K2 + N is not shown to be the radical here; ledger A5-252
-holds the radical.
+[monomial-ladder](../monomial-ladder/README.md) finishes. The radical is K2 + N (next section).
+
+## Components and connectedness of the E8-bar quadric scheme (A5-313)
+
+`e8nm-components-p32009.sing` (7 s): K2 + N is radical, with two minimal primes, a fourfold of degree 11 and a
+threefold of degree 4 (projective dimensions; ledger A5-252 has the same split). The two components meet in a
+plane (affine dimension 3, multiplicity 1), so V_+(K2) is connected and its structure sheaf has only the trivial
+idempotents. The embedded quadric threefold of the previous section lies in the fourfold of degree 11 and not in the
+threefold of degree 4.
+
+Connectedness of the other fibers needs no run: the reduced same-sign X and Iso fibers are irreducible, and
+k[y]/K2 is Cohen-Macaulay of dimension at least 4 for E8-bar → VB, Iso and W8 → N− (ledger A5-010, A5-307), which
+makes V_+(K2) connected in codimension 1.
 
     Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/vb-radical.sing
 
