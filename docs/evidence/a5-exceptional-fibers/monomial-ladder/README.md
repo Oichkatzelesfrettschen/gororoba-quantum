@@ -134,3 +134,24 @@ Steps 2 and 3 are arguments, checked by Singular only at the equation w² = t (1
 
 These equal the certified values of the Gröbner-basis engine (A5-078 to A5-080 on the N+ header, the
 same values on N−). The order-14 cell takes 265 s on 28 threads.
+
+### The E8-bar slice ideal is an ideal of the larger ring (A5-309)
+
+Write S = P + P b for the quadratic algebra that contains the slice ring R = R0 + R0 b; S = R + w R is finite
+over R. `records/e8-ideal-closure-e8-nm-p32009.sing` works in the polynomial model of S (variables w, ρ, σ, ζ, a,
+b and u = 1/(1 + w), modulo u (1 + w) = 1 and b² = F) at p = 32009:
+
+- the header's J vanishes on the parametrization;
+- m_R S is primary to the origin, with S / m_R S = k[w]/(w²) (colength 2), so quotients by it are local;
+- I S / (m_R S) I S has dimension 21, and the 21 generators G_j span it over k (`e8_closure_rank.py`: the 21 normal
+  forms have rank 21). Nakayama's lemma over R gives I = I S: the slice ideal is closed under multiplication by w;
+- I S needs 16 generators over S.
+
+Consequence: I^d = (I S)^d and m_R I^d = (m_R S)(I S)^d, so F(I) is the part of degree at least 1 of
+S[I T] / (m_R S) S[I T], the Rees algebra of an ideal of a hypersurface ring reduced modulo an ideal of colength 2.
+That is a finite presentation: `records/e8-fiber-cone-e8-nm-p32009.sing` computes its kernel L in k[y_1..y_21] by
+two eliminations and compares it with K2. That run has not finished; until it does, h_6 of E8-bar → N− stays
+between 1,526 and 1,666, and nothing here says whether L has generators above degree 2. The truncated ranks of I and
+I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817), consistent with the exact result. Not checked for E8-bar:
+the identification of the completed slice ring with R (the kernel of the parametrization against J), the second
+prime, the N+ header and Q(i).
