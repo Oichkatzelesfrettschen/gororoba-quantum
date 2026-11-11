@@ -132,7 +132,7 @@ def pivot_columns(matrix: nmod_mat) -> list[int]:
     return out
 
 
-def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, max_delta: int) -> dict[str, Any]:
+def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, max_delta: int, retain_map: bool = False) -> dict[str, Any]:
     plucker = nmod_mat([s["plucker"] for s in samples], prime)
     plucker_pivots = pivot_columns(plucker)
     pr = [[s["plucker"][j] for j in plucker_pivots] for s in samples]
@@ -164,6 +164,20 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
         t = square.inv() * nmod_mat(full, prime)
         out["t_rank"] = int(t.rank())
         out["t_sha256"] = normalized_digest(t, prime)
+        if retain_map:
+            # Columns use the same Plucker ordering as span.plucker().
+            # Rows use veronese()'s combinations_with_replacement ordering.
+            entries = [[int(t[i, j]) for j in range(t.ncols())] for i in range(t.nrows())]
+            lead = next((value for row in entries for value in row if value), 1)
+            scale = pow(lead, -1, prime)
+            out["map"] = {
+                "field_prime": prime,
+                "degree": delta,
+                "monomial_indices": v_pivots,
+                "plucker_coordinate_count": t.ncols(),
+                "matrix_rows": [[value * scale % prime for value in row] for row in entries],
+                "convention": "v_delta(y)[monomial_indices] times matrix_rows",
+            }
         residual = vr * t - nmod_mat(
             [[c[s] * p % prime for p in samples[s]["plucker"]] for s in range(len(samples))], prime
         )
@@ -193,11 +207,11 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
     return out
 
 
-def fit_case(job: tuple[list[dict[str, Any]], list[dict[str, Any]], int, int]) -> dict[str, Any]:
+def fit_case(job: tuple[list[dict[str, Any]], list[dict[str, Any]], int, int, bool]) -> dict[str, Any]:
     return fit(*job)
 
 
-def build(family: str, prime: int, count: int, held_out: int, max_delta: int, plus: bool = False) -> dict[str, Any]:
+def build(family: str, prime: int, count: int, held_out: int, max_delta: int, plus: bool = False, retain_map: bool = False) -> dict[str, Any]:
     slug, order, kinds = FAMILIES[family]
     if plus:
         slug = PLUS[family]
@@ -210,7 +224,7 @@ def build(family: str, prime: int, count: int, held_out: int, max_delta: int, pl
     groups = (*by_kind.items(), *((("all", results),) if len(kinds) > 1 else ()))
     # Arcs below count are fitted and the rest are held out, by arc index, so a rejected arc never shifts the split.
     jobs = [
-        ([r for r in rows if r["arc"] < count], [r for r in rows if r["arc"] >= count], prime, max_delta)
+        ([r for r in rows if r["arc"] < count], [r for r in rows if r["arc"] >= count], prime, max_delta, retain_map)
         for _, rows in groups
     ]
     cases = dict(zip((name for name, _ in groups), parallel.ordered_map(fit_case, jobs, min_items=2), strict=True))
@@ -236,9 +250,10 @@ def main() -> None:
     parser.add_argument("--held-out", type=int, default=40)
     parser.add_argument("--max-delta", type=int, default=3)
     parser.add_argument("--plus", action="store_true", help="use the N+ header of the family")
+    parser.add_argument("--retain-map", action="store_true", help="retain the complete normalized fitted matrix (large JSON)")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
-    record = build(args.family, args.prime, args.fit, args.held_out, args.max_delta, args.plus)
+    record = build(args.family, args.prime, args.fit, args.held_out, args.max_delta, args.plus, args.retain_map)
     suffix = "-plus" if args.plus else ""
     out = args.out or HERE / f"fiber-plucker-map-{args.family}{suffix}-p{args.prime}.json"
     out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
