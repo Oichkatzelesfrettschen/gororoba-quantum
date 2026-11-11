@@ -13,9 +13,9 @@ Its producer, output and QRNG allocations remain unchanged. The
 [Ascella foundations](../quandela/ascella-foundations-and-architecture.md)
 already contain the Fock/permanent convention and Hong-Ou-Mandel example.
 
-Reusable code belongs in `gororoba_quantum/`. This change does not duplicate it
-in the Rust workspace, modify private infrastructure, or redistribute paper
-bytes into a documents repository. Existing historical callers retain their
+The estimators live in `gororoba_quantum/`. The Rust workspace holds no copy,
+the note touches no private infrastructure, and no paper bytes enter a
+documents repository. Existing historical callers retain their
 implementations until an individual, digest-aware migration is validated.
 
 | Module | New surface | Boundary |
@@ -114,7 +114,7 @@ from the bivariate product
 
 \[
  \prod_{i=1}^{n}(1+(L_i\cdot x)(R_i\cdot y)),\qquad
- \operatorname{Per}(I+LR^T)=\sum_\alpha \alpha!\,[x^\alpha y^\alpha](\cdots).
+ \operatorname{Per}(I+LR^T)=\sum_\alpha \alpha!\,\left[x^\alpha y^\alpha\right]\left(\cdots\right).
 \]
 
 It expands `(z_a-1)^alpha_a` to recover number probabilities. It does not sum
@@ -205,26 +205,33 @@ resource profiles.
 
 Run the repository's pinned format, lint and type tools on the three modules
 and test file, then run `"$PYTHON" -B -m pytest -q tests/test_photonic_gurvits.py`.
-The patch's isolated regression receipt is not a substitute for `lint`,
-`types`, `tests` and `contracts` on its eventual PR head.
+The `lint`, `types`, `tests` and `contracts` checks of the pull-request
+workflow admit a change to these modules.
 
-No hardware job, provider upload, QRNG call or retained-acquisition rewrite is
-part of this change. The native pinned checks, hosted reviews, call-site
-migration, empirical iid coverage and formal proofs remain distinct work.
+The modules make no hardware job, provider upload, QRNG call or
+retained-acquisition rewrite. Call-site migration, empirical iid coverage and
+formal proofs remain open work.
 
 ## Primary references
 
-- Aaronson and Hance, *Generalizing and Derandomizing Gurvits's Algorithm*,
-  QIC 14 (2014), 541-559; [arXiv:1212.0025](https://arxiv.org/abs/1212.0025).
+Citation status: the three sources marked "cited by identifier" below are not
+registered in [SOURCES.json](../../SOURCES.json) and have no reading copy or
+paper note in this repository, so their section and theorem locators are
+unverified. The registered Aaronson and Arkhipov note records a reading scope
+of the title page, abstract and contents only, so its locator is unverified too.
+
+- Aaronson and Hance, *Generalizing and derandomizing Gurvits's approximation
+  algorithm for the permanent*, QIC 14 (2014), 541-559;
+  [arXiv:1212.0025](https://arxiv.org/abs/1212.0025) (cited by identifier).
   Repeated rows/columns and the roots-of-unity estimator.
 - Aaronson and Arkhipov, *The Computational Complexity of Linear Optics*,
-  Theory of Computing 9 (2013), 143-252;
-  [published article](https://theoryofcomputing.org/articles/v009a004/).
+  Theory of Computing 9 (2013), 143-252; the preprint is registered as
+  [arXiv 1011.3245](../papers/1011.3245.md).
   Section 12's Gurvits results, low-rank identity and fixed-mode marginals.
 - Lim and Oh, *Classical algorithms for estimating expectation values in
-  linear optical circuits*, [arXiv:2502.12882v3](https://arxiv.org/html/2502.12882v3).
-  Theorem 2 and Supplement S4 for coherent-state overlap estimation.
+  linear optical circuits*, [arXiv:2502.12882v3](https://arxiv.org/html/2502.12882v3)
+  (cited by identifier). Theorem 2 and Supplement S4 for coherent-state overlap estimation.
   This implementation does not claim to implement every hafnian or adaptive extension.
 - Hamilton et al., *Gaussian Boson Sampling*, PRL 119, 170501 (2017);
-  [arXiv:1612.01199](https://arxiv.org/abs/1612.01199).
+  [arXiv:1612.01199](https://arxiv.org/abs/1612.01199) (cited by identifier).
   Gaussian photon-count probabilities and hafnians.

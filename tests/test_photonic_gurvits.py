@@ -101,6 +101,43 @@ class DeterministicDraws:
         return np.full(size, (low + high) / 3)
 
 
+class RecordingDraws:
+    """Records the arguments of each draw and returns fixed values that expose the sampling law.
+
+    gamma returns its mean, shape * scale. uniform returns low + (high - low) * f_j in column j, so a change of
+    either bound moves the relative phase of the modes. These are controlled inputs, not random draws.
+    """
+
+    fractions = (0.25, 0.5, 0.75)
+
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, tuple[Any, ...], dict[str, Any]]] = []
+
+    def gamma(self, *args: Any, **kwargs: Any) -> np.ndarray:
+        self.calls.append(("gamma", args, kwargs))
+        shape, scale = args
+        return np.broadcast_to(shape * scale, kwargs["size"]).copy()
+
+    def uniform(self, *args: Any, **kwargs: Any) -> np.ndarray:
+        self.calls.append(("uniform", args, kwargs))
+        low, high = args
+        columns = np.asarray(self.fractions[: kwargs["size"][1]])
+        return np.broadcast_to(low + (high - low) * columns, kwargs["size"]).copy()
+
+
+def husimi_closed_form(u: np.ndarray, t: tuple[int, ...], s: tuple[int, ...], phases: np.ndarray) -> complex:
+    """<s|U alpha> / <t|alpha> for alpha_i = sqrt(t_i + 1) exp(i phase_i), from the coherent-state overlaps.
+
+    The overlap <n|alpha> carries alpha^n / sqrt(n!) and a factor exp(-|alpha|^2 / 2); the factors of the numerator
+    and denominator cancel because U is unitary, so |U alpha| = |alpha|.
+    """
+    alpha = np.sqrt(np.asarray(t, dtype=float) + 1) * np.exp(1j * phases)
+    beta = u @ alpha
+    numerator = np.prod([beta[i] ** s[i] / math.sqrt(math.factorial(s[i])) for i in range(len(s))])
+    denominator = np.prod([alpha[i] ** t[i] / math.sqrt(math.factorial(t[i])) for i in range(len(t))])
+    return complex(numerator / denominator)
+
+
 def fake_rng() -> tuple[DeterministicDraws, np.random.Generator]:
     draws = DeterministicDraws()
     return draws, cast(np.random.Generator, draws)
@@ -289,6 +326,32 @@ def test_husimi_identity_and_selection() -> None:
     close(estimate_fock_husimi(np.eye(2), [1, 0], [0, 0], rng=rng, epsilon=0.5).value, 0)
     close(estimate_fock_husimi(np.eye(2), [0, 0], [0, 0], rng=rng, epsilon=0.5).value, 1)
     require(draws.calls == 2)
+
+
+@pytest.mark.parametrize(
+    "inputs,outputs",
+    [((1, 1), (2, 0)), ((2, 1), (1, 2)), ((1, 0), (0, 1))],
+)
+def test_husimi_sampling_law_and_value(inputs: tuple[int, ...], outputs: tuple[int, ...]) -> None:
+    """Gamma(t + 1, 1) radii and Uniform[0, 2 pi) phases, with the value known from the fixed draws."""
+    epsilon, delta = 0.5, 0.01
+    block_size, groups = median_of_means_plan(epsilon, delta)
+    count = block_size * groups
+    u = optical_matrix(2)
+    draws = RecordingDraws()
+    result = estimate_fock_husimi(
+        u, inputs, outputs, rng=cast(np.random.Generator, draws), epsilon=epsilon, delta=delta
+    )
+    require([name for name, _, _ in draws.calls] == ["gamma", "uniform"], "draw order or count differs")
+    (_, gamma_args, gamma_kwargs), (_, uniform_args, uniform_kwargs) = draws.calls
+    require(len(gamma_args) == 2 and gamma_args[1] == 1, "gamma scale must be 1")
+    np.testing.assert_array_equal(gamma_args[0], np.asarray(inputs) + 1)
+    require(set(gamma_kwargs) == {"size"} and gamma_kwargs["size"] == (count, 2), "gamma size differs")
+    require(uniform_args == (0, 2 * math.pi), "phase range must be [0, 2 pi)")
+    require(set(uniform_kwargs) == {"size"} and uniform_kwargs["size"] == (count, 2), "uniform size differs")
+    phases = 2 * math.pi * np.asarray(RecordingDraws.fractions[:2])
+    close(result.value, husimi_closed_form(u, inputs, outputs, phases))
+    require(result.samples == count, "sample count differs from the plan")
 
 
 @pytest.mark.parametrize("epsilon,delta", [(0.5, 0.1), (0.2, 0.01), (0.1, 0.001)])
