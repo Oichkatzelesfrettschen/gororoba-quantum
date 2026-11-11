@@ -195,7 +195,8 @@ two primes. The Iso sample spans all 17 coordinates and its 85 equals the degree
 same-sign X arcs span 12 of the 15 coordinates and 45 of the 51 quadrics of k[y]/K2, the Hilbert function of the
 reduced fiber, whose prime contains y1, y5 and y6 ([arcs-x-same](../arcs-x-same/README.md), A5-297), so that row
 covers the whole reduced fiber. The E8-bar arcs span 16 of the 21 coordinates and 69 of the 83 quadrics of the fiber
-of E8-bar -> N+- (A5-026); whether 16 and 69 are the Hilbert function of its reduced fiber is not computed. Runs took
+of E8-bar -> N+- (A5-026); 16 and 69 are the Hilbert function of its reduced fiber in degrees 1 and 2
+([e8-radical](../structure/e8-radical/README.md)), so that row covers the whole reduced fiber as well. Runs took
 1 to 27 minutes each on the 32-thread laptop with a peak of 1.6 GB.
 
 ## Replay

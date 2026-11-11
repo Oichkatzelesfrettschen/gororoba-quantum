@@ -119,3 +119,15 @@ So the coordinate ring of each slice is the image ring of its parametrization in
 input of the certificates of `../a5-exceptional-fibers/monomial-ladder`. Records: `slice-rings-qi-kernel-*.json`.
 The same script holds the E8-bar closure check over Q(i) (I = I S); its two cases have not finished.
 
+
+## The lower-bound step of the transfer is refuted as a criterion (ledger A5-316)
+
+[transfer_counterexample.py](transfer_counterexample.py) replays the exact counterexample of an outside review
+(2026-11-11) to the claim that good reduction of the ambient truncation k[t]/(J + m^N) turns a truncated rank computed
+modulo p into a lower bound for h_d in characteristic 0. With J = 0 and I = (x^7, y^7, x^4 y^2 (c + x)),
+c = 32009 * 32029, the degree-2 relation space is 0 over Q and modulo both primes, and the truncated rank of degree 3
+at order 22 is 10 modulo each prime and 9 over Q ([transfer-counterexample.json](transfer-counterexample.json)): the
+image W of m I^3 has rank 23 over Q and 0 modulo p, and a difference of ranks is not semicontinuous. The repaired
+criterion and the rows it leaves standing are in
+[a5-char0-and-kernel-limits.md](../../notes/topics/a5-char0-and-kernel-limits.md); `truncation_check.py` (A5-249)
+remains a good-reduction computation and no longer stands for a lower bound.
