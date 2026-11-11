@@ -215,3 +215,13 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_special_arcs.py)
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" fiber_plucker_map.py iso --prime 32009 \
         --fit 320 --held-out 40 --out fiber-plucker-map-iso-p32009.json)
+
+## Retaining a fitted coordinate map
+
+The default `fiber_plucker_map.py` output holds ranks, validation counts, and a digest; these are insufficient to reconstruct the fitted map. Re-run a specific family with `--retain-map` to add `cases[...].map` to its JSON record:
+
+```sh
+"$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py iso --fit 240 --held-out 40 --retain-map --out /tmp/a5-iso-plucker-map.json
+```
+
+The optional `map` contains the prime, degree, selected degree-`delta` monomial indices (in `itertools.combinations_with_replacement` order), the full normalized Plucker-coordinate matrix, and the column count. It uses the same canonical normalization as `t_sha256`. The full matrices can be large and are not retained in historical records until this replay is executed; `--retain-map` is opt-in for that reason. The result remains a finite-field *fit* until symbolic Plucker identities, a base-locus analysis, and agreement with the kernel-limit construction are certified.
