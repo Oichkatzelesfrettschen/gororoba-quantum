@@ -195,7 +195,7 @@ def scan(roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, s
     for root in roots:
         for dp, dn, fn in os.walk(root):
             # The data-review directory holds reviewers' deliberately mutated records and receipts.
-            dn[:] = [x for x in dn if x != "data-review"]
+            dn[:] = sorted(x for x in dn if x != "data-review")
             for f in sorted(fn):
                 # `.out` is the stdout of an engine run, one JSON record per line (the W8 degree-5 Azure runs).
                 if not f.endswith((".jsonl", ".json", ".out")):
