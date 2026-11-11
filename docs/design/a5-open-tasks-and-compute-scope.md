@@ -31,8 +31,8 @@ the value K2 predicted before the run.
 | W8 -> N+- | d = 1 to 5; h_6 = 8,624 proved | proved mod p: F(I) = k[y]/K2, V(K2) = C20 cup C30 (A5-066) | characteristic 0 (task 122) |
 | Iso -> N+- | d = 1 to 6 | proved mod p: an explicit arc family is dense in V(K2), so F(I) = k[y]/K2 (A5-067, A5-007) | characteristic 0 |
 | E8-bar -> VB | d = 1 to 7 | proved mod p: arcs are dense in both components of V(K2), so F(I) = k[y]/K2 (A5-005, A5-015, A5-016) | characteristic 0 |
-| X+ -> N+, X- -> N- | d = 1 to 6 | dimension decided at both primes: weighted arcs have limit rank 4, so the support contains a 4-dimensional component of V(K2) and dim F(I) = 4; the support equals V(K2) only where V(K2) is known irreducible, X- at 32009 (A5-022); F(I) is not Cohen-Macaulay (A5-245 refuted); K2 is not radical, so L = K2 beyond degree 6 is open | a relation of L outside K2, or a proof that none exists |
-| E8-bar -> N+- | d = 1 to 5 | open: K2 is not radical; 1,526 <= h_6 <= 1,666 (A5-251) | membership of degree-6 forms (tasks 110, 125) |
+| X+ -> N+, X- -> N- | every degree | proved at both primes and over Q(i): the slice ideal is a monomial ideal M, F(I) is the positive part of P[M T] / q P[M T], and its defining ideal is the 69 quadrics K2 (A5-304, A5-305, A5-306, A5-314); K2 is saturated and nonreduced along one embedded plane (A5-303); F(I) is not Cohen-Macaulay (A5-245 refuted) | closed |
+| E8-bar -> N+- | d = 1 to 5 | open: K2 is saturated and nonreduced on an embedded quadric threefold (A5-312, A5-313); 1,526 <= h_6 <= 1,666 (A5-251); the slice ideal is an ideal of S = P + P b, so F(I) is the positive part of S[I T] / (m_R S) S[I T] (A5-309) | the elimination of that presentation (task 110), or membership of degree-6 forms (task 125) |
 
 Three findings bound the ladder's value. Every all-degree statement above came from geometry (arcs, component
 containment, blowup planes), never from a rung. The export cost grows about 1.36 times per order on VB with
