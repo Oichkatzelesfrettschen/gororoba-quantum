@@ -81,3 +81,24 @@ Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points 
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
 record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
 (A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
+
+## The same-sign X fiber cone over Q(i): I = M and L is 69 quadrics
+
+[`monomial_certificate_qi.py`](monomial_certificate_qi.py) repeats over Q(i) the exact certificate of
+[monomial-ladder](../a5-exceptional-fibers/monomial-ladder/README.md) with the G of the Q(i) producer. In one
+Singular run per incidence (5 s, 0.1 GB) the producer's J vanishes on the parametrization, every term of
+(1 + w)^8 G_j lies in the monomial ideal M = w^2 (a, rho, sig) + w (rho, sig) (a, rho, sig)^2, and the classes of the
+15 generators in M / q M (dimension 15, q = (w^2, a, rho, sig) P) have rank 15. Nakayama's lemma gives I = M over
+Q(i), so F(I) = Q(i) + sum_(d >= 1) M^d / q M^d, and elimination gives its defining ideal L:
+
+| Pair | L over Q(i) | dimension, multiplicity | saturated | y1, y5, y6 | reduction at (p, i -> r) |
+|---|---|---|---|---|---|
+| X- -> N- | 69 quadrics, no higher generator | 4, 12 | yes | outside L, squares inside L | equals the retained K2 at 32009 and 32029 |
+| X+ -> N+ | 69 quadrics, no higher generator | 4, 12 | yes | outside L, squares inside L | equals the retained K2 at 32029 |
+
+The Hilbert series numerator is 1, 11, -3, 4, -1 over (1 - t)^4, that of k[y]/K2 modulo p, so every h_d of the
+same-sign X incidences holds in characteristic 0, and the projective fiber V_+(L) is nonreduced over Q(i): L is
+saturated and y1, y5, y6 are nilpotent. Falsifier: an element of the completed local ring of the slice outside
+R = Q(i)[[t]] + (a, rho, sig) P, the one identification the certificate takes from the parametrization. The record is
+`monomial-certificate-qi.json`.
+

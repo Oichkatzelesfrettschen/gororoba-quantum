@@ -96,8 +96,9 @@ What the certificate rests on, and what it does not cover:
 
 - the identification of the completed local ring of the slice with R = k[[t]] + (a, ρ, σ) P, argued in the
   docstring of `x_same_ladder.py` from the parametrization of [arcs-x-same](../arcs-x-same/README.md);
-- the field: both checks and the elimination are over F_32009 and F_32029. M is defined over Z, so the same three
-  steps over Q need only the header's G over Q; that run is not in this change;
+- the field: the checks above are over F_32009 and F_32029; the same certificate over Q(i), with the G of the
+  Q(i) producer, is `../../a5-char0-transfer/monomial_certificate_qi.py` (A5-305): I = M, L is 69 quadrics that
+  reduce to K2 at both primes;
 - the fiber cone of a monomial ideal need not be reduced, and this one is not: the nilpotents and the scheme
   structure of Proj F(I) = V_+(K2) are those of K2, recorded with the saturation of K2 in `arcs-x-same`;
 - nothing here transfers to another incidence. The E8-bar slice ideal is not a span of monomials in any of the
