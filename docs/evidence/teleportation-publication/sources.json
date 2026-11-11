@@ -1,0 +1,37 @@
+{
+  "schema": "teleportation-publication-sources-v1",
+  "source_revision": "6721a8b5bef4847d898eded220a9b145ee916bf8",
+  "original_archive_sha256": "298a5a15d988ee6eb4433ef49e8745a5fbe80972c9dc62dad2b0db857e18f4bd",
+  "sources": [
+    {
+      "role": "tuna_analysis",
+      "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/analysis.json",
+      "git_blob_sha1": "abcf6f85dec68961f6c4d7d86e08a8fada0a626e"
+    },
+    {
+      "role": "tuna_cases",
+      "path": "results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/cases.json",
+      "git_blob_sha1": "8bee98ed6380f4ac991a76a2285313af8ddc797a"
+    },
+    {
+      "role": "kingston_collect",
+      "path": "results/live/2026-10-25T233207.284563Z/collect.json",
+      "git_blob_sha1": "de61ecd6232e91589dfd50ca84d2045e9646d2fa"
+    }
+  ],
+  "qualification": "Source consistency is not raw-acquisition replay or experimental certification.",
+  "masters": {
+    "tuna17.svg": {
+      "original_filename": "teleportation_tuna17_audited_v6.svg",
+      "original_sha256": "35a9fd5e922f0dc3b7f059b1eb7778fb8c80cd2a6f2411d06a4a9d078b86c4f7",
+      "sha256": "1e9a2fafeeb7f8af7170747fb8174d5ac7ba45930ccb966ed60a43008be550d9",
+      "change": "Stable data-binding IDs only; visible content and geometry preserved."
+    },
+    "kingston.svg": {
+      "original_filename": "kingston_qet_audited_v6.svg",
+      "original_sha256": "3d6d860b65c18a977a7e8b976b4f8f4085d278a0e2874242f6f045ba223334b2",
+      "sha256": "b4e2bec5095cacc11692bfb3f91b71d98cc3517ef03d65eb99919c3072603857",
+      "change": "Stable data-binding IDs only; visible content and geometry preserved."
+    }
+  }
+}
