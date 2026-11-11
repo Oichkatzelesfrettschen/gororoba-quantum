@@ -176,12 +176,26 @@ def _modular_rows(
     return rows
 
 
-def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict[str, Any]:
+def singular_script(slug: str, cores: int = 0) -> str:
+    """The Singular script of the check. With cores > 0 the two standard bases over Q(i) come from nfmodStd
+    (nfmodstd.lib: standard bases modulo primes on `cores` processes, Chinese remaindering and rational
+    reconstruction, then the final test that the input reduces to zero and the result is a standard basis)."""
     body = reduction_check._script(slug, None, rees.MODULAR_PRIME, extra=False)
     header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
     ring_line = header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")]
-    script = body.replace("\nquit;\n", "\n") + "\n".join(QUADRICS).replace("@SLICE@", slice_vars) + "\nquit;\n"
+    quadrics = "\n".join(QUADRICS).replace("@SLICE@", slice_vars)
+    if cores:
+        for direct, modular in (("std(ReducedJ)", "nfmodStd(ReducedJ)"), ("ideal sQ=std(Q)", "ideal sQ=nfmodStd(Q)")):
+            if quadrics.count(direct) != 1:
+                raise SystemExit(f"the script holds {quadrics.count(direct)} copies of {direct}")
+            quadrics = quadrics.replace(direct, modular)
+        quadrics = f'LIB "nfmodstd.lib";setcores({cores});\n' + quadrics
+    return body.replace("\nquit;\n", "\n") + quadrics + "\nquit;\n"
+
+
+def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS, cores: int = 0) -> dict[str, Any]:
+    script = singular_script(slug, cores)
     outcome = rees._run_singular(script, "quadrics_qi", timeout)
     if outcome.status != "completed":
         raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")
@@ -222,6 +236,7 @@ def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict
         "qi_has_imaginary_part": any(b != 0 for r in echelon for _, b in r),
         "sq_size": int(res["sq_size"]),
         "monomials": int(res["monomials"]),
+        "engine": f"nfmodStd on {cores} processes" if cores else "std",
         "wall_seconds": round(outcome.wall_nanoseconds / 1e9, 1),
         "peak_rss_kib": outcome.peak_rss_kib,
         "primes": rows,
@@ -237,9 +252,15 @@ def main() -> None:
     parser.add_argument(
         "--timeout", type=int, default=4 * reduction_check.TIMEOUT_SECONDS, help="seconds for the Singular call"
     )
+    parser.add_argument("--cores", type=int, default=0, help="processes of nfmodStd; 0 runs std over Q(i)")
+    parser.add_argument("--dump-script", type=Path, help="write the Singular script there and exit")
     arguments = parser.parse_args()
-    result = check(arguments.slug, arguments.timeout)
-    (HERE / f"quadrics-{arguments.slug}.json").write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+    if arguments.dump_script:
+        arguments.dump_script.write_text(singular_script(arguments.slug, arguments.cores), encoding="utf-8")
+        return
+    result = check(arguments.slug, arguments.timeout, arguments.cores)
+    name = f"quadrics-{arguments.slug}-modular.json" if arguments.cores else f"quadrics-{arguments.slug}.json"
+    (HERE / name).write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=1))
 
 

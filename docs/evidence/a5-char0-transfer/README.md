@@ -100,6 +100,27 @@ limits (driver, outer `timeout`, the 41,400 s push limit), streams the driver's 
 line per step; `a5-char0-e8-quadrics` was cancelled 2.5 hours in and pushed again with that runner. The W8 check
 continues on the workstation, which has no session limit.
 
+### Where the direct Q(i) computation stops, and the modular engine (2026-11-11)
+
+The STAGE lines locate the cost. On E8-bar -> N- the re-pushed kernel `a5-char0-e8-quadrics` (version 2, the runner
+with ordered limits) kept its logs ([summary](kaggle/a5-char0-e8-quadrics/output/summary.json),
+[Singular log](kaggle/a5-char0-e8-quadrics/output/singular.log)): the standard basis of J took 70 s, the 231
+products were done at 823 s, and Singular was killed (exit 137, the session's memory) 27,718 s into the standard
+basis of the relation ideal J + m * products (2,095 generators). On the workstation the same check and the W8 check
+were each killed at the 16 GB cap of their Singular scope, in the same step (kernel log, memory cgroup). The direct
+standard basis over Q(i) is therefore out of reach for W8 and E8-bar on a 16 to 30 GB host; no verdict on either
+relation space follows.
+
+`quadric_lift.py --cores N` replaces the two standard bases by `nfmodStd` (Singular `nfmodstd.lib`): standard bases
+modulo primes on N processes, Chinese remaindering and rational reconstruction, then the library's final test, which
+reduces the input by the result and checks that the result is a standard basis. On Iso -> N- with 8 processes it
+gives the record of the direct run ([`quadrics-iso-nm-modular.json`](quadrics-iso-nm-modular.json): dimension 68,
+both reductions equal, mutation detected) with stages at 3 s (J), 573 s (relation ideal), 578 s (normal forms) and
+2,174 s (syzygies of the coefficient matrix,
+[log](quadrics-iso-nm-modular.singular.log)). The syzygy step, a nullspace over Q(i) that Singular computes as a
+module standard basis, takes 73 percent of that run and is the next step to move to exact linear algebra. The W8 and
+E8-bar checks run with `--cores 12` on the workstation from 2026-11-11.
+
 ## Arc families over Q(i) (ledger A5-293)
 
 [arcs_qi.py](arcs_qi.py) replays the arc families of the Iso, W8 and same-sign X slices
