@@ -48,10 +48,13 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export GOROROBA_WORKERS=2 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 "$PYTHON" -B -W error scripts/check_a5_quantum_contracts.py \
   --check docs/evidence/a5-quantum-contracts/exact-contracts.json
-"$PYTHON" -B -m pytest tests/gororoba_quantum/test_cd_quantum_contracts.py
+"$PYTHON" -B -m pytest tests/gororoba_quantum/test_cd_quantum_contracts.py \
+  tests/test_a5_photonic_scope.py \
+  "tests/gororoba_quantum/test_contract_suites.py::test_contract_unit[cd_quantum_contracts:verify]" \
+  "tests/gororoba_quantum/test_contract_suites.py::test_every_suite_is_accounted"
 ```
 
-[validation.json](validation.json) records 87 focused tests, pinned Ruff and bounded-import mypy checks, and all three exact retained-record replays under the complete pinned runtime. Full hosted admission remains a separate integration check.
+[validation.json](validation.json) records the 87 tests this command selects, pinned Ruff and bounded-import mypy checks, and all three exact retained-record replays under the complete pinned runtime. Full hosted admission remains a separate integration check.
 
 The producer binds `cd_core.py`, the contract module and its own source bytes. A changed source or scientific
 field requires a new receipt. The replay gate declares this float-free JSON under `replays` in `ci/gates.json`.
