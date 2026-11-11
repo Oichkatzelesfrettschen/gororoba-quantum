@@ -210,13 +210,15 @@ the following coordinate orders with the coefficient matrix itself:
 - quadratic monomials in the lexicographic order emitted by
   `combinations_with_replacement(range(len(G)), 2)`, together with the selected pivot columns;
 - the boundary-kernel basis as the reduced row-echelon basis returned by `base_kernel`;
-- Plucker coordinates in the lexicographic order of the eight-element subsets of that 16-vector basis.
+- Plucker coordinates as `vb_limit_span.plucker` emits them: the maximal minors of the annihilator of the plane in
+  the coordinates of that basis, over the column subsets of size (basis length minus plane dimension) in the
+  lexicographic order of `itertools.combinations`.
 
 | Obligation | What the retained records establish | Certificate still required |
 |---|---|---|
 | Coefficient matrix and conventions | A normalized SHA-256 of the fitted modular matrix and its rank | Every normalized coefficient of `T`, the four coordinate orders above, the header and input digests |
 | Construction from the kernel map | Exact arcwise limits are computed from `L_x(s)` | Derive the coordinate functions from the Pfaffian/kernel construction, independently of interpolation |
-| Coordinate-ring identity | The equation holds on 320 fitted and 40 held-out arcs per case | Reduce every kernel and Plucker equation modulo the full defining ideal of each intended fiber component, with exact remainders or cofactor witnesses |
+| Coordinate-ring identity | The equation holds on 320 fitted and 40 held-out arcs per arc family (640 and 80 in a pooled case) | Reduce every kernel and Plucker equation modulo the full defining ideal of each intended fiber component, with exact remainders or cofactor witnesses |
 | Projective base locus | The fitted image is nonzero at every sampled point and `T` has the sampled degree-two rank | Determine the common-zero locus of all projective coordinate forms on the full fiber support |
 | Component intersections | One fitted matrix serves both sampled W8 families and both sampled E8-bar families | Verify that the componentwise morphisms agree scheme-theoretically on their complete intersections |
 | Characteristic zero | Some source arc families and their planes lift from `Q` to both retained primes | Construct the map over `Q(i)` and prove that both modular matrices are its compatible reductions |
