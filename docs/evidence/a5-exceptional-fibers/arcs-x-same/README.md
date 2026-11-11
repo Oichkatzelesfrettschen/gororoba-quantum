@@ -97,3 +97,26 @@ primes of K2 and the equality of K2 with the ideal L of the fiber cone in every 
 280 s and 0.5 GB:
 
     Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/arcs-x-same/xm-nm-quadric-census-p32009.sing
+
+## Saturation and projective charts: the quadric scheme is nonreduced along one plane (A5-303)
+
+The census above is a statement about the affine cone k[y]/K2. `xm-nm-quadric-saturation-p32009.sing` and
+`xm-nm-quadric-saturation-p32029.sing` carry it to the projective scheme V_+(K2); the two logs agree line for line
+(0.5 s each).
+
+- K2 equals its saturation at the irrelevant ideal, so V_+(K2) is nonreduced, and its nilpotents are y1, y5 and
+  y6 with (y1, y5, y6)^2 inside K2.
+- The annihilator K2 : P of the nilpotent module P / K2 is the ideal of the plane
+  y1 = y5 = y6 = y7 = y8 = y9 = y11 = y12 = y13 = y14 = 0, y3 = y10, y2 = y15, which lies in V(P). V_+(K2) is
+  reduced off this plane and carries one embedded component on it; the multiplicity 12 of K2 equals that of P.
+- By chart: the saturation of K2 at y_j equals P for j = 7, 8, 9, 11, 12, 13, 14 (reduced charts) and differs from P
+  for j = 2, 3, 4, 10, 15 (the charts that meet the plane); the charts y1, y5, y6 are empty.
+
+Scope. These are properties of the quadric scheme V_+(K2), which contains the exceptional fiber
+E0 = Proj F(I) = V_+(L), L the full ideal of the fiber cone, K2 its degree-2 part. For the fiber cone itself: L
+holds no linear form (h_1 = 15) and contains K2, so y1, y5, y6 are nonzero nilpotents of F(I), and the affine fiber
+cone is nonreduced at both primes. Nonreducedness of the projective fiber E0 needs more: y1 y_j^k outside L for
+every k on a chart y_j that meets the plane. That holds as far as L = K2 is known degree by degree, and no record
+decides it in every degree, so the nonreducedness of E0 is open.
+
+    Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/arcs-x-same/xm-nm-quadric-saturation-p32009.sing

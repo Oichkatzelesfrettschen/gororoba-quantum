@@ -1,0 +1,21 @@
+// Saturation and embedded locus of k[y]/K2 on the fiber of X- -> N-, p = 32029.
+option(redSB);
+LIB "primdec.lib";
+LIB "elim.lib";
+ring Y=32029,(y(1..15)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel")+";");
+ideal S=std(K);
+ideal M=maxideal(1);
+ideal T=std(sat_with_exp(S,M)[1]);
+"RESULT K2 saturated at the irrelevant ideal", size(simplify(reduce(T,S),2))==0;
+list L=minAssChar(K);
+ideal P=std(L[1]);
+ideal N=y(1),y(5),y(6);
+"RESULT squares of y1 y5 y6 in K2", size(simplify(reduce(ideal(y(1)^2,y(5)^2,y(6)^2),S),2))==0, "N^2 in K2", size(simplify(reduce(N^2,S),2))==0, "N^3 in K2", size(simplify(reduce(N^3,S),2))==0;
+ideal Q=std(quotient(S,P));
+"RESULT annihilator of P/K2: dim", dim(Q), "mult", mult(Q), "h", hilb(Q,2);
+list E=minAssChar(Q);
+"RESULT minimal primes of the annihilator", size(E);
+int i; for(i=1;i<=size(E);i++){ ideal F=std(E[i]); "RESULT embedded locus", i, "dim", dim(F), "mult", mult(F), "linear forms", size(simplify(jet(F,1),2)), "generators", size(minbase(F)); }
+int j; ideal C; for(j=1;j<=15;j++){ C=std(sat_with_exp(S,ideal(y(j)))[1]); "RESULT chart y"+string(j)+" : K2 sat equals P", size(simplify(reduce(P,C),2))==0, "dim", dim(C); }
+quit;
