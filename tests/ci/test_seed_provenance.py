@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 import seed_provenance
 
@@ -97,3 +100,19 @@ def test_base_allocated_literal_stays_out_of_the_baseline() -> None:
     held = seed_provenance.unaccounted({key[0]: seed_provenance.Counter({key: 1})}, seed_provenance.Counter({key: 1}))
     if not seed_provenance.shrink_problems([], head, held):
         raise AssertionError("a QRNG literal allocated on the base entered the reproduction baseline")
+
+
+def test_manifest_scan_equals_the_two_scans(tmp_path: Path) -> None:
+    root = tmp_path / "results"
+    root.mkdir()
+    (root / "claims.json").write_text(json.dumps({"draw": RECORD.rsplit("/", 1)[1]}), encoding="utf-8")
+    (root / "indexed.json").write_text(json.dumps({"args": [f"qrng:{RECORD}#1"]}), encoding="utf-8")
+    # A file without the marker bytes is never decoded, so bytes that are no UTF-8 text pass through.
+    (root / "raw.json").write_bytes(b"\xff\xfe no marker here")
+    consumed, stray, claimed = seed_provenance.manifest_scan(root)
+    if (consumed, stray) != seed_provenance.runtime_consumption(root):
+        raise AssertionError("manifest_scan and runtime_consumption disagree")
+    if claimed != seed_provenance.claimed_records(root) or claimed != {RECORD.rsplit("/", 1)[1]}:
+        raise AssertionError(f"claims {claimed}")
+    if stray != ["results/indexed.json"]:
+        raise AssertionError(f"stray {stray}")

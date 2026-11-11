@@ -90,6 +90,8 @@ PLAIN_SEED_FLAGS = frozenset(
 # The shrink-only comparison reads the baseline main holds; pr.yml fetches this ref before the tests.
 BASE_REF = "origin/main"
 DRAW_NAME = qrng_seeds.DRAW_NAME
+# The bytes every DRAW_NAME and qrng_seeds.REF match contains.
+DRAW_MARK = b"draw-"
 ARGUMENT_CALLS = ("add_argument", "add_seed_argument")
 # A seed_ name with one of these suffixes counts or spaces seeds rather than seeding.
 NOT_SEED_SUFFIXES = ("count", "stride", "offset", "step")
@@ -243,13 +245,27 @@ def baseline_counts(rows: list[dict[str, Any]]) -> Counter[Key]:
     return counts
 
 
-def file_claims(path: str) -> list[str]:
-    """Draw file names one retained file names without an index. A file that references a draw by index (a run
+def draw_text(path: str) -> str | None:
+    """The text of a retained file that names a draw record, None for a file that names none.
+
+    DRAW_NAME and qrng_seeds.REF both contain the literal `draw-`, so a file without those bytes holds no claim and
+    no reference; the retained tree is several gigabytes of raw provider records, and the byte search spares their
+    decoding and both pattern scans."""
+    data = Path(path).read_bytes()
+    return data.decode("utf-8") if DRAW_MARK in data else None
+
+
+def text_claims(text: str) -> list[str]:
+    """Draw file names a retained file names without an index. A file that references a draw by index (a run
     record, or a scripts/kaggle_run.py manifest whose bundle inventory also names the draw file) consumes indices,
     not the whole draw."""
-    text = Path(path).read_text(encoding="utf-8")
     indexed = {Path(match.group(1)).name for match in qrng_seeds.REF.finditer(text)}
     return sorted(set(DRAW_NAME.findall(qrng_seeds.REF.sub("", text))) - indexed)
+
+
+def file_claims(path: str) -> list[str]:
+    text = draw_text(path)
+    return [] if text is None else text_claims(text)
 
 
 def manifest_files(manifest_root: Path) -> list[str]:
@@ -277,9 +293,8 @@ def seed_sources(node: Any) -> Iterator[dict[str, Any]]:
 Consumer = tuple[str, str, str]
 
 
-def file_references(path: str) -> tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]:
-    """One retained file's qrng references, and the (record, index, consumer) its seed_source entries declare."""
-    text = Path(path).read_text(encoding="utf-8")
+def text_references(text: str) -> tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]:
+    """A retained file's qrng references, and the (record, index, consumer) its seed_source entries declare."""
     found = sorted({(match.group(1), int(match.group(2))) for match in qrng_seeds.REF.finditer(text)})
     if not found:
         return [], []
@@ -292,13 +307,43 @@ def file_references(path: str) -> tuple[list[tuple[str, int]], list[tuple[str, i
     return found, declared
 
 
+def file_references(path: str) -> tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]:
+    text = draw_text(path)
+    return ([], []) if text is None else text_references(text)
+
+
+Scan = tuple[list[str], list[tuple[str, int]], list[tuple[str, int, Consumer]]]
+
+
+def file_scan(path: str) -> Scan:
+    """The claims and the references of one retained file, from one read."""
+    text = draw_text(path)
+    return ([], [], []) if text is None else (text_claims(text), *text_references(text))
+
+
+def manifest_scan(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str], set[str]]:
+    """runtime_consumption and claimed_records of the root from one pass over its files."""
+    paths = manifest_files(manifest_root)
+    scans = parallel.ordered_map(file_scan, paths)
+    references = [(found, declared) for _, found, declared in scans]
+    return (*consumption(manifest_root, paths, references), {name for names, _, _ in scans for name in names})
+
+
 def runtime_consumption(manifest_root: Path) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
     """(record, index) -> the (script, flag, experiment) keys of every retained qrng reference, and the
     files that carry a qrng reference no seed_source entry under the root declares."""
     paths = manifest_files(manifest_root)
+    return consumption(manifest_root, paths, parallel.ordered_map(file_references, paths))
+
+
+def consumption(
+    manifest_root: Path,
+    paths: list[str],
+    references: list[tuple[list[tuple[str, int]], list[tuple[str, int, Consumer]]]],
+) -> tuple[dict[tuple[str, int], set[Consumer]], list[str]]:
     consumed: dict[tuple[str, int], set[Consumer]] = {}
     mentions: dict[str, set[tuple[str, int]]] = {}
-    for path, (found, declared) in zip(paths, parallel.ordered_map(file_references, paths), strict=True):
+    for path, (found, declared) in zip(paths, references, strict=True):
         if found:
             mentions[Path(path).relative_to(manifest_root.parent).as_posix()] = set(found)
         for record_path, index, consumer in declared:
@@ -657,11 +702,11 @@ def check_tree_once() -> None:
 
 
 def check_runtime_tree() -> int:
-    consumed, stray = runtime_consumption(MANIFEST_ROOT)
+    consumed, stray, manifest_claimed = manifest_scan(MANIFEST_ROOT)
     allocations = load(ALLOCATIONS, "allocations")
     runtime = load(ALLOCATIONS, "runtime")
     allocations = allocations + load(ALLOCATIONS, "reserved")
-    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=False)
+    claimed = manifest_claimed | owned_records(validate=False)
     check_runtime(consumed, stray, runtime, allocations, claimed, read_tree_record)
     print(f"seed provenance: {len(consumed)} retained qrng references match the runtime ledger")
     return 0
