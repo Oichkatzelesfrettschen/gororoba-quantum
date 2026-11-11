@@ -171,8 +171,9 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
         agree = 0
         for h in held:
             image = nmod_mat([[veronese(h["y"], delta, prime)[j] for j in v_pivots]], prime) * t
-            pair = nmod_mat([[int(image[0, j]) for j in range(image.ncols())], h["plucker"]], prime)
-            agree += int(pair.rank() == 1)
+            fitted = [int(image[0, j]) for j in range(image.ncols())]
+            # A zero fitted vector names no point of Plucker space, so it never counts as agreement.
+            agree += int(any(fitted) and nmod_mat([fitted, h["plucker"]], prime).rank() == 1)
         out["held_out"] = len(held)
         out["held_out_proportional"] = agree
         points = {tuple(s["y"]) for s in (*samples, *held)}
@@ -191,6 +192,10 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
     return out
 
 
+def fit_case(job: tuple[list[dict[str, Any]], list[dict[str, Any]], int, int]) -> dict[str, Any]:
+    return fit(*job)
+
+
 def build(family: str, prime: int, count: int, held_out: int, max_delta: int, plus: bool = False) -> dict[str, Any]:
     slug, order, kinds = FAMILIES[family]
     if plus:
@@ -201,10 +206,11 @@ def build(family: str, prime: int, count: int, held_out: int, max_delta: int, pl
     items = [(data, basis, kind, arc) for arc in range(total) for kind in kinds]
     results = [r for r in parallel.ordered_map(sample, items, min_items=1) if r is not None]
     by_kind = {kind: [r for r in results if r["kind"] == kind] for kind in kinds}
-    cases = {}
-    for name, rows in (*by_kind.items(), *((("all", results),) if len(kinds) > 1 else ())):
-        cut = len(rows) * count // total
-        cases[name] = fit(rows[:cut], rows[cut:], prime, max_delta)
+    groups = (*by_kind.items(), *((("all", results),) if len(kinds) > 1 else ()))
+    jobs = [
+        (rows[: len(rows) * count // total], rows[len(rows) * count // total :], prime, max_delta) for _, rows in groups
+    ]
+    cases = dict(zip((name for name, _ in groups), parallel.ordered_map(fit_case, jobs, min_items=2), strict=True))
     return {
         "schema": SCHEMA,
         "family": family,
