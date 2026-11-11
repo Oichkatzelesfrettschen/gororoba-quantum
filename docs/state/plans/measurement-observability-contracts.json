@@ -1,0 +1,445 @@
+{
+  "schema": "work-plan-v1",
+  "id": "measurement-observability-contracts",
+  "kind": "implementation",
+  "summary": "Implement reusable measurement covariance, acceptance, predictive support, normal-herald and Hermitian-completion contracts with a strict offline interface and native score primitive.",
+  "sources": [
+    "docs/design/measurement-observability.md",
+    "docs/evidence/measurement-observability/validation.json",
+    "https://github.com/Oichkatzelesfrettschen/gororoba-open/pull/269"
+  ],
+  "state": "closed",
+  "scope": "Close the reusable software gaps identified in the algebra/device synthesis without duplicating existing QET, passivity, identifiability, archived atlas certificates, or the independent hardware-residuals analysis. Completion covers implementation and local validation, not provider acquisition, physical discoveries, hosted review, or merge.",
+  "owner": "measurement-observability implementation",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The source audit distinguishes existing implementations and archived certificates from the missing reusable APIs. Analytic fixtures carry explicit observation laws and never enter the measured research ledger."
+  },
+  "disposition": "completed",
+  "resolution": "The bounded implementation provides three Python modules, five offline analysis kinds, full native score covariance, 163 new Python tests, 25 existing counter regressions, 13 Rust tests, and passing scoped lint/type checks. Physical data collection and repository review remain separate obligations.",
+  "steps": [
+    {
+      "id": "covariance",
+      "action": "Implement full vector-score covariance, joint predictive covariance and residual-support admission.",
+      "acceptance": "Independent covariance oracles, zero-score populations, shared-data cross terms, impossible joint covariance and numerical boundary regressions pass.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "e0b8cf9da8303dad61d2db792465d386379cf25fd03faaa13fcaa11b48f703ed",
+          "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+          "observed_at": "2026-11-11T21:06:11.230752+00:00",
+          "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "acceptance",
+      "action": "Bind six-state conditional and unconditional contrasts to observed attempted-population counters.",
+      "acceptance": "Missing or capped denominators remain unavailable; stopping cannot silently admit fixed-N covariance; shared controls retain their covariance.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "68a3315dbc15a72c609daef3ff774939d8e76b5e4ab30df1738919e2c6749982",
+          "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+          "observed_at": "2026-11-11T21:06:11.230752+00:00",
+          "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "algebra",
+      "action": "Certify the normal-herald spectral model through cd_core and construct a complete Hermitian coefficient bank.",
+      "acceptance": "Exact dimensions 8, 16 and 32, direct Kraus powers, nested indicator covariance, 49+56+91 dimensions and norm-correct reconstruction pass.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "935d63844d3b8c6c7a43661ade54d536dc75f77293282d14736a8cf363e06bba",
+          "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+          "observed_at": "2026-11-11T21:06:11.230752+00:00",
+          "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offline-interface",
+      "action": "Expose the contracts through strict provenance-bound offline JSON input and atomic output.",
+      "acceptance": "All five analysis kinds execute; duplicate, unknown, nonfinite and oversized requests reject; input bytes remain intact and unavailable outputs stay null.",
+      "state": "done",
+      "depends_on": [
+        "covariance",
+        "acceptance",
+        "algebra"
+      ],
+      "receipts": [
+        {
+          "scope_sha256": "471705a6ef38a59a95b097f64bdbd82d69ce94e744432017952a13406c9bdf59",
+          "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+          "observed_at": "2026-11-11T21:06:11.230752+00:00",
+          "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "native-scores",
+      "action": "Implement the common full multinomial covariance primitive in gororoba-open stats_core.",
+      "acceptance": "Thirteen deterministic tests including the independent pairwise oracle and adjacent-float regression pass; scoped Clippy and formatting pass on the published tree.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "517379d30e4a6c8ccb3c6f8a8bcb3a389e6c5fa7f5a525d0e84d8aa6bd98035e",
+          "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+          "observed_at": "2026-11-11T21:06:11.230752+00:00",
+          "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "action": "Retain scope, limitations, analytic output and validation provenance without modifying historical producers.",
+      "acceptance": "Python style and type checks pass, existing counter regressions pass, the documented source boundaries hold, and completion receipts bind the inspected inputs.",
+      "state": "done",
+      "depends_on": [
+        "offline-interface",
+        "native-scores"
+      ],
+      "receipts": [
+        {
+          "scope_sha256": "a8b6891431e48d7ac2fb495738051aa9431e73923faa81319975f9f610b9b501",
+          "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+          "observed_at": "2026-11-11T21:06:11.230752+00:00",
+          "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "scope_sha256": "60e2db8e8da7e7db779c2f410073e1b837a0e3e404dd1e9a839295a6f5ed562d",
+      "result": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference. Local checks pass as recorded in validation.json.",
+      "observed_at": "2026-11-11T21:06:11.230752+00:00",
+      "revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+      "evidence": [
+        {
+          "ref": "docs/evidence/measurement-observability/validation.json",
+          "sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d"
+        },
+        {
+          "ref": "docs/evidence/measurement-observability/analytic-result.json",
+          "sha256": "eb7e83906178c04dd88f7cafe9bc8f5def46a55b96547a7fe5bb7b49347a48f6"
+        },
+        {
+          "ref": "gororoba_quantum/measurement_statistics.py",
+          "sha256": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2"
+        },
+        {
+          "ref": "gororoba_quantum/acceptance_statistics.py",
+          "sha256": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65"
+        },
+        {
+          "ref": "gororoba_quantum/kernel_observability.py",
+          "sha256": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511"
+        },
+        {
+          "ref": "scripts/measurement_observability.py",
+          "sha256": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+          "sha256": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+          "sha256": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+          "sha256": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5"
+        },
+        {
+          "ref": "tests/scripts/test_measurement_observability.py",
+          "sha256": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652"
+        },
+        {
+          "ref": "tests/fixtures/measurement-observability.json",
+          "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+        }
+      ]
+    }
+  ]
+}

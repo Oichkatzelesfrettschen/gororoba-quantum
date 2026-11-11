@@ -203,3 +203,8 @@ covariance oracles. Boundary tests cover singular support, mismatched provenance
 offsets, nonfinite arithmetic, stopping rules and impossible joint covariance. Existing specialized retained-data
 producers retain their source-bound historical bytes; a later analysis selects the new API deliberately and names
 its changed estimand and statistical assumptions.
+
+The [validation record](../evidence/measurement-observability/validation.json) binds the checked source revision,
+commands, versions and scope. The [analytic result](../evidence/measurement-observability/analytic-result.json)
+retains the five-kind fixture output. The [completion record](../state/plans/measurement-observability-contracts.json)
+closes the bounded software obligation and leaves physical acquisition, hosted review and merge separate.
