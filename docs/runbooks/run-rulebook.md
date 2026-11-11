@@ -277,6 +277,7 @@ the closest entry and say what changed.
 - Checkpoints: one JSON line per degree in the log.
 - End state: the records copied into `monomial-ladder/records/`.
 - Outcome: order 32 in 1,835 s (ranks 665, 996, 1,133 at degrees 6 to 8); the E8-bar cell in 1,095 s (225); the two
-  p = 32029 cells in 890 s and 1,904 s (996); the order-34 cell was killed at the 20 GB cap (exit 137) and is rerun
-  under 40 GB with 24 threads.
+  p = 32029 cells in 890 s and 1,904 s (996); the order-34 cell was killed at the 20 GB cap (exit 137) and again
+  under 40 GB with 24 threads after reproducing degrees 3 to 7 (1,590 s for degree 7 at order 31); the degree-8
+  cell at order 34 needs a host with more than 40 GB for this engine.
 
