@@ -212,3 +212,14 @@ def test_uncertainty_contract_rejects_ambiguous_or_invalid_covariance() -> None:
 def test_contrast_covariance_rejects_overflow_without_a_nonfinite_output() -> None:
     with pytest.raises(AcceptanceError, match="overflows"):
         analyze_six_state(_lawful_cell(), rate_covariance=np.eye(6) * 1e308)
+
+
+def test_contrast_covariance_rejects_nonfinite_blas_output(monkeypatch: pytest.MonkeyPatch) -> None:
+    original_errstate = np.errstate
+
+    def ignore_floating_exceptions(**_kwargs: str) -> np.errstate:
+        return original_errstate(all="ignore")
+
+    monkeypatch.setattr(np, "errstate", ignore_floating_exceptions)
+    with pytest.raises(AcceptanceError, match="overflows"):
+        analyze_six_state(_lawful_cell(), rate_covariance=np.eye(6) * 1e308)

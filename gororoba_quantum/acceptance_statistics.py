@@ -254,9 +254,10 @@ def analyze_six_state(
         coefficients = np.asarray(CONTRAST_COEFFICIENTS, dtype=float)
         try:
             with np.errstate(over="raise", invalid="raise"):
-                contrast_covariance = covariance_matrix(
-                    coefficients @ covariance @ coefficients.T, dimension=2, name="contrast covariance"
-                )
+                projected_covariance = coefficients @ covariance @ coefficients.T
+                if not np.isfinite(projected_covariance).all():
+                    raise AcceptanceError("contrast covariance arithmetic overflows float64")
+                contrast_covariance = covariance_matrix(projected_covariance, dimension=2, name="contrast covariance")
         except FloatingPointError as error:
             raise AcceptanceError("contrast covariance arithmetic overflows float64") from error
         diagonal = np.maximum(np.diag(contrast_covariance), 0.0)
