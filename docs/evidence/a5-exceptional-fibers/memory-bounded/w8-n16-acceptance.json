@@ -1,0 +1,56 @@
+{
+ "schema": "a5-fiber-rank-v14-memory-acceptance-v1",
+ "case": {
+  "fiber": "W8 -> N-",
+  "prime": 32009,
+  "degree": 5,
+  "order": 16,
+  "header_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+  "engine_sha256": "0c006242b544c0cb2a5cf604e43fefa071088f7e177d4bec4126b3a8939392f5",
+  "engine_commit": "f8092f967"
+ },
+ "configuration": {
+  "workers": 4,
+  "openblas_threads": 4,
+  "omp_threads": 1,
+  "chunk": 64,
+  "max_gib": 12,
+  "product_operator": "uint16-cached",
+  "operator_cache_gib": 6,
+  "echelon": "compact",
+  "dense_tables_gib": 0,
+  "receipt_sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+ },
+ "result": {
+  "r_N": 4116,
+  "dim_quotient": 93024,
+  "products": 4116,
+  "nonstandard_checks": 265,
+  "nonstandard_rank_growth": {},
+  "closure_rounds": 4,
+  "per_block": {
+   "0": {"cols": 23376, "rank_W": 15364, "r_N": 1017},
+   "1": {"cols": 23136, "rank_W": 15264, "r_N": 1005},
+   "2": {"cols": 23256, "rank_W": 15315, "r_N": 1047},
+   "3": {"cols": 23256, "rank_W": 15315, "r_N": 1047}
+  }
+ },
+ "resources": {
+  "elapsed_seconds": 5993.557,
+  "max_process_group_rss_bytes": 5345472512,
+  "max_processes": 7,
+  "swap_bytes": 0,
+  "oom_kills": 0,
+  "seconds": {"singular_and_export": 98.4, "products": 1239.2, "closure": 4515.6, "total": 5992.8},
+  "preflight_selected_array_bytes": 6110515392
+ },
+ "retained_v11_comparator": {
+  "path": "docs/evidence/a5-exceptional-fibers/w8-n16-azure/receipt-bound/w8d5-n16-rcpt.out",
+  "r_N": 4116,
+  "per_block_r_N": [1017, 1005, 1047, 1047],
+  "per_block_rank_W": [15364, 15264, 15315, 15315],
+  "elapsed_seconds": 7841.2,
+  "max_rss_kib": 26119936
+ },
+ "verdict": "exact rank, every block rank and every receipt control agree; the dense v11 RAM requirement is falsified"
+}

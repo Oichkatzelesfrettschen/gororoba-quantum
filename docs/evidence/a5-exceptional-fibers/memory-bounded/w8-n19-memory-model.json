@@ -1,0 +1,48 @@
+{
+ "schema": "a5-w8-n19-memory-model-v1",
+ "inputs": {
+  "quotient_dimension": 235543,
+  "blocks": 4,
+  "sum_block_squares": 13870201081,
+  "degree_counts": [
+   1,
+   7,
+   28,
+   84,
+   209,
+   455,
+   896,
+   1632,
+   2793,
+   4543,
+   7084,
+   10652,
+   15457,
+   21560,
+   28609,
+   35448,
+   39922,
+   38752,
+   27411
+  ],
+  "v11_generator_block_bytes": 110961608648,
+  "v11_product_row_bytes": 14953585152,
+  "chunk": 64
+ },
+ "derived": {
+  "maximum_block_size_upper_bound": 59123,
+  "maximum_adjacent_degree_rows": 78674,
+  "full_uint16_generator_operator_bytes": 27740402162,
+  "streamed_operator_layers_bytes": 9302885804,
+  "uint16_product_rows_bytes": 3738396288,
+  "compact_echelon_ceiling_bytes": 6935100540,
+  "closure_chunk_temporaries_bytes": 90812928
+ },
+ "stage_peaks": {
+  "products_selected_arrays_bytes": 13041282092,
+  "closure_selected_arrays_bytes": 10764309756,
+  "selected_array_peak_bytes": 13041282092,
+  "selected_array_headroom_at_16_gib_bytes": 4138587092
+ },
+ "boundary": "Exact upper bounds for the named dense arrays only; sparse tables, Python objects, allocator state and file cache require an instrumented acceptance run. A nonpositive headroom or measured process-group RSS above 16 GiB falsifies this host route."
+}
