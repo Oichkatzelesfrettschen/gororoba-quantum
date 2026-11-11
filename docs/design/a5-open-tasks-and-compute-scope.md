@@ -45,8 +45,8 @@ Three gaps separate the fiber record from item 6:
 - field: every fiber statement except A5-270 holds at p = 32009 and p = 32029. Check 1 of the characteristic-0
   transfer covers all ten pairs (A5-247), check 3 covers X- and W8 (A5-249, A5-277), check 2 has no result (A5-248);
 - kernels: F(I) describes limits of the generator vector G, and item 6 needs limits of ker L_a in a Grassmannian.
-  The exact limit along sampled arcs is computed on every family except the VB arcs through k = -9 (A5-272 to
-  A5-276, A5-292): dimension 8, inside the base kernel. The limit is one plane per fiber point on the families whose
+  The exact limit along sampled arcs is computed on every family, the VB arcs through k = -9 included (A5-272 to
+  A5-276, A5-292, A5-295): dimension 8, inside the base kernel. The limit is one plane per fiber point on the families whose
   fiber coordinates y are computed; on E8-bar -> VB the dependence on the fiber point is untested, since y is not
   computed there (A5-276). The image of a whole fiber in the Grassmannian is not computed;
 - reality: item 6 admits limits along real arcs with two-sided certificates. Real arcs now exist on the opposite-sign

@@ -117,8 +117,8 @@ share J, so one arc formula serves both signs. A variant adds coefficients above
 On every family the kernel limit is therefore 8-dimensional, lies in the kernel of the base point and is a function
 of the fiber point on the sample. The mutated arcs (the quadric term reversed on Iso and W8, t9 reversed on X) leave
 the slice and keep fewer than 8 columns without a pivot. Scope: 6 or 9 fiber points per family; the degree-20
-component of W8 has no rational arc here, so no real arc is exhibited on it; the image of a whole fiber in the
-Grassmannian is not computed.
+component of W8 has no rational arc here, so no real arc is exhibited on it; the section on the fiber-to-Grassmannian
+map below fits the image of each fiber on several hundred arcs.
 
 ## Arcs through a VB point on which e tends to 0 or infinity (A5-016)
 
@@ -131,6 +131,72 @@ grow when the pole patterns join it. These arcs also stay in the span of the deg
 component is reached elsewhere: [arcs-vb](../arcs-vb/README.md) finds it over one point of the contracted line of
 the VB slice's own parametrization, with the limit of the header's G computed directly, so A5-016 is decided there
 and the Plucker-span reading of this section is not needed for it.
+
+## Arcs through the VB point that carries the degree-3 component (A5-295)
+
+`vb_special_arcs.py` samples the point the two sections above leave out. The conic coordinate of the VB slice's
+parametrization is k / (1 + k^2) = i omega with omega = (e^2 - 1) / (4 e); with e = (1 + i kappa) / (1 - i kappa),
+i omega = -kappa / (1 + kappa^2), so k = -kappa and the VB point k0 = -9 is e0 = (1 + 9i) / (1 - 9i), and the degree-3 component V(P1) needs w of order 2 against order 1 for rho and sigma
+([arcs-vb](../arcs-vb/README.md)). The prediction was fixed before the run: if the Plucker vector of the limiting
+plane is quadratic in the fiber coordinates, its span has rank HF(k[y]/P2, 2) = 22 over the degree-4 component, 18
+over the degree-3 component and 34 over the fiber (A5-020: 22 + 18 - 6, the two components meet in a plane).
+[vb-special-arcs-result.json](vb-special-arcs-result.json), truncation order 24, 96 arcs per pattern, five patterns
+of leading orders at each of e0(-9), e0(8) and e0(9), both primes:
+
+| patterns | arcs with an 8-dimensional limit in the base kernel | span rank of the group | rank of all vectors so far |
+|---|---|---|---|
+| finite-e family of `vb_pole_arcs.py` | 288 of 288 | 22 | 22 |
+| mirror point e0(-9), five patterns | 480 of 480 | at most 6 per pattern | 22 |
+| neighbor e0(8), five patterns | 480 of 480 | at most 6 per pattern | 22 |
+| special point e0(9), five patterns | 480 of 480 | 18 | 34 |
+
+The pattern with leading orders (2, 1, 1) at e0(9) alone raises the rank from 22 to 34 and has pivot valuation sum 16
+against 12 at the mirror and the neighbor. The three predicted ranks hold at both primes, so the limits along the
+special family lie outside the span of every other sampled family, and the whole sample spans exactly what a
+quadratic dependence on the fiber point allows. The special point is e0(9) in this header and k0 = -9 in the VB
+slice's header: the mirror is the control that fixes the sign. Scope: the arcs of one pattern have coefficients on
+a line (`vb_limit_span.coefficient` is affine in the arc index), which bounds a single pattern's span from below
+only; the record computes no fiber coordinate y, so it does not show that the plane is a function of y.
+
+## The map from a fiber to the Grassmannian is quadratic on five families (A5-296)
+
+`fiber_plucker_map.py` samples arcs with distinct leading parameters on one family, takes from `plucker_limits.py`
+the fiber point y (the normalized leading vector of G) and the Plucker vector Pl of the limiting 8-plane of each arc,
+and tests whether Pl is a vector of forms of one degree delta in y: scalars c_s and one matrix T with
+c_s Pl_s = v_delta(y_s) T, v_delta the monomials of degree delta. With N the left kernel of the sample matrix of
+v_delta, the scalars solve N diag(Pl[:, j]) c = 0 over every Plucker coordinate j. The arc parameters come from a
+SHA-256 of the arc index, which avoids the line that parameters affine in the index lie on; the ranks of v_1, v_2
+and v_3 on the sample are the evidence of genericity. Each run fits 320 arcs per case, tests 40 further arcs against
+the fitted T, and repeats the scalar system with each Plucker vector paired to the next arc's fiber point (the
+mutation arm, which a real fit must fail). The record keeps a SHA-256 of the normalized T, the count of distinct
+fiber points and a verdict, and the script exits nonzero without a validated quadratic fit. Prediction stated before
+the run: delta = 2, since the Plucker ranks of the earlier sections equal the Hilbert function of the fiber in
+degree 2. Each family runs on its N- header and, with `--plus`, on its N+ header (X+ -> N- and X- -> N+, X- -> N-
+and X+ -> N+, Iso, W8 and E8-bar -> N- and N+), at F_32009 and F_32029: 20 records.
+
+| family (records on the N- and N+ headers) | linear span of y | rank of v_2(y) = Plucker rank = rank of T | least delta | solution space | held-out arcs proportional | mutation arm |
+|---|---|---|---|---|---|---|
+| opposite-sign X ([32009](fiber-plucker-map-x-p32009.json), [32029](fiber-plucker-map-x-p32029.json); N+: [32009](fiber-plucker-map-x-plus-p32009.json), [32029](fiber-plucker-map-x-plus-p32029.json)) | 3 | 6 | 2 | 1 | 40 of 40 | no solution |
+| same-sign X ([32009](fiber-plucker-map-x-same-p32009.json), [32029](fiber-plucker-map-x-same-p32029.json); N+: [32009](fiber-plucker-map-x-same-plus-p32009.json), [32029](fiber-plucker-map-x-same-plus-p32029.json)) | 12 | 45 | 2 | 1 | 40 of 40 | no solution |
+| Iso ([32009](fiber-plucker-map-iso-p32009.json), [32029](fiber-plucker-map-iso-p32029.json); N+: [32009](fiber-plucker-map-iso-plus-p32009.json), [32029](fiber-plucker-map-iso-plus-p32029.json)) | 17 | 85 | 2 | 1 | 40 of 40 | no solution |
+| W8, degree-30 component ([32009](fiber-plucker-map-w8-p32009.json), [32029](fiber-plucker-map-w8-p32029.json); N+: [32009](fiber-plucker-map-w8-plus-p32009.json), [32029](fiber-plucker-map-w8-plus-p32029.json)) | 20 | 120 | 2 | 1 | 40 of 40 | no solution |
+| W8, degree-20 component (same records) | 15 | 84 | 2 | 1 | 40 of 40 | no solution |
+| W8, both components (same records) | 24 | 156 | 2 | 1 | 80 of 80 | no solution |
+| E8-bar, arcs of kind `p2` ([32009](fiber-plucker-map-e8-p32009.json), [32029](fiber-plucker-map-e8-p32029.json); N+: [32009](fiber-plucker-map-e8-plus-p32009.json), [32029](fiber-plucker-map-e8-plus-p32029.json)) | 7 | 22 | 2 | 1 | 40 of 40 | no solution |
+| E8-bar, arcs of kind `p1` (same records) | 12 | 53 | 2 | 1 | 40 of 40 | no solution |
+| E8-bar, both kinds (same records) | 16 | 69 | 2 | 1 | 80 of 80 | no solution |
+
+All 20 records carry the verdict `degree_2_fit_validated`, and each row reads the same on both headers and both
+primes. No linear fit exists (delta = 1 has no solution), the quadratic fit is unique up to one scalar, every c_s is
+nonzero and T is injective on the degree-2 piece of the sampled fiber ring, so on each sampled family the kernel
+plane is the image of the fiber point under the second Veronese map followed by a linear injection into Plucker
+space. On W8 and on E8-bar one matrix T serves both kinds of arc. Scope: a fit on samples with held-out validation at
+two primes. The Iso sample spans all 17 coordinates and its 85 equals the degree-2 Hilbert function of the fiber. The
+same-sign X arcs span 12 of the 15 coordinates and 45 of the 51 quadrics of k[y]/K2, the Hilbert function of the
+reduced fiber, whose prime contains y1, y5 and y6 ([arcs-x-same](../arcs-x-same/README.md), A5-297), so that row
+covers the whole reduced fiber. The E8-bar arcs span 16 of the 21 coordinates and 69 of the 83 quadrics of the fiber
+of E8-bar -> N+- (A5-026); whether 16 and 69 are the Hilbert function of its reduced fiber is not computed. Runs took
+1 to 27 minutes each on the 32-thread laptop with a peak of 1.6 GB.
 
 ## Replay
 
@@ -145,3 +211,6 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
     "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py x-same
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_limit_span.py)
     (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_pole_arcs.py)
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" vb_special_arcs.py)
+    (cd docs/evidence/a5-exceptional-fibers/kernel-limits && "$PYTHON" fiber_plucker_map.py iso --prime 32009 \
+        --fit 320 --held-out 40 --out fiber-plucker-map-iso-p32009.json)

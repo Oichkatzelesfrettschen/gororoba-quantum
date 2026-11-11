@@ -1,0 +1,18 @@
+// Census of k[y]/K2 on the fiber of X- -> N-, p = 32009: Hilbert series, Betti table, minimal primes.
+option(redSB);
+LIB "primdec.lib";
+ring Y=32009,(y(1..15)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel")+";");
+ideal S=std(K);
+"RESULT K2 generators", size(K), "dim", dim(S), "mult", mult(S), "h", hilb(S,2);
+resolution R=mres(K,0);
+"RESULT betti of K2"; print(betti(R),"betti");
+list L=minAssChar(K);
+"RESULT minimal primes", size(L);
+ideal P=std(L[1]);
+"RESULT prime dim", dim(P), "mult", mult(P), "minimal generators", size(minbase(P)), "h", hilb(P,2);
+"RESULT linear forms in the prime", simplify(jet(P,1),2);
+"RESULT K2 inside the prime", size(simplify(reduce(K,P),2))==0, "prime inside K2", size(simplify(reduce(P,S),2))==0;
+resolution Q=mres(P,0);
+"RESULT betti of the prime"; print(betti(Q),"betti");
+quit;
