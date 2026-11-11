@@ -401,20 +401,20 @@
       {
        "N": 8,
        "engine": "130f35904d21f5b4",
-       "header": "7d3521d0e8026e6f",
-       "method": "truncated rank",
-       "mode": "quotient",
-       "rank": 83,
-       "source": "a5-failed-runs/reviews/codex-reaudit/e8-control-N8.jsonl"
-      },
-      {
-       "N": 8,
-       "engine": "130f35904d21f5b4",
        "header": "f6ad8f9c7cc69b3f",
        "method": "truncated rank",
        "mode": "quotient",
        "rank": 83,
        "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 8,
+       "engine": "130f35904d21f5b4",
+       "header": "7d3521d0e8026e6f",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 83,
+       "source": "a5-failed-runs/reviews/codex-reaudit/e8-control-N8.jsonl"
       },
       {
        "N": 8,
@@ -1833,20 +1833,20 @@
       {
        "N": 10,
        "engine": "130f35904d21f5b4",
-       "header": "585a946d2d75073e",
-       "method": "truncated rank",
-       "mode": "quotient",
-       "rank": 600,
-       "source": "a5-failed-runs/reviews/codex-reaudit/w8-fresh.jsonl"
-      },
-      {
-       "N": 10,
-       "engine": "130f35904d21f5b4",
        "header": "59c26c9143dab52f",
        "method": "truncated rank",
        "mode": "quotient",
        "rank": 600,
        "source": "a5-failed-runs/falsify/receipts-v6.jsonl"
+      },
+      {
+       "N": 10,
+       "engine": "130f35904d21f5b4",
+       "header": "585a946d2d75073e",
+       "method": "truncated rank",
+       "mode": "quotient",
+       "rank": 600,
+       "source": "a5-failed-runs/reviews/codex-reaudit/w8-fresh.jsonl"
       },
       {
        "N": 10,

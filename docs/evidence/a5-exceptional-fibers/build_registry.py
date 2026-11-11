@@ -188,14 +188,41 @@ def engines(roots: list[Path]) -> dict[str, str]:
     return found
 
 
-def scan(roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, str]) -> tuple[list[dict], list[dict]]:
+def scan(
+    roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, str]
+) -> tuple[list[dict], list[dict]]:
     by_prefix = {k[:16]: v for k, v in headers.items()}
     bound: dict[tuple, dict] = {}
     unbound: dict[tuple, dict] = {}
-    for root in roots:
+    bound_root: dict[tuple, int] = {}
+    unbound_root: dict[tuple, int] = {}
+
+    def retain(
+        target: dict[tuple, dict],
+        owners: dict[tuple, int],
+        key: tuple,
+        entry: dict,
+        root_index: int,
+    ) -> None:
+        """Keep the first scan root, then the most complete deterministic record within that root."""
+        prior = target.get(key)
+        if prior is None:
+            target[key], owners[key] = entry, root_index
+            return
+        if owners[key] != root_index:
+            return
+        # Receipt and all-products runs can have the same certificate key. Prefer the record that actually ranked
+        # more products, then use its source path as a stable tie-breaker instead of os.walk's directory order.
+        priority = (int(entry["record"].get("products", -1)), entry["source"])
+        prior_priority = (int(prior["record"].get("products", -1)), prior["source"])
+        if priority > prior_priority:
+            target[key] = entry
+
+    for root_index, root in enumerate(roots):
         for dp, dn, fn in os.walk(root):
             # The data-review directory holds reviewers' deliberately mutated records and receipts.
             dn[:] = [x for x in dn if x != "data-review"]
+            dn.sort()
             for f in sorted(fn):
                 # `.out` is the stdout of an engine run, one JSON record per line (the W8 degree-5 Azure runs).
                 if not f.endswith((".jsonl", ".json", ".out")):
@@ -230,9 +257,21 @@ def scan(roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, s
                     if r.get("generators") not in (None, GENERATORS[h["fiber"]]):
                         reasons.append(f"generators {r.get('generators')}")
                     if reasons:
-                        unbound.setdefault(key, {**entry, "reason": "; ".join(reasons)})
+                        retain(
+                            unbound,
+                            unbound_root,
+                            key,
+                            {**entry, "reason": "; ".join(reasons)},
+                            root_index,
+                        )
                     else:
-                        bound.setdefault(key, {**entry, "engine_file": eng[r["engine_sha256_16"]]})
+                        retain(
+                            bound,
+                            bound_root,
+                            key,
+                            {**entry, "engine_file": eng[r["engine_sha256_16"]]},
+                            root_index,
+                        )
 
     def order(c: dict) -> tuple:
         r = c["record"]
