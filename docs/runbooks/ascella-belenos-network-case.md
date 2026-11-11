@@ -10,7 +10,14 @@ an available Quandela joint-device endpoint.
 The [design](../design/ascella-belenos-entanglement-teleportation.md) owns
 the physical claim levels, apparatus gates and protocol. The
 [dated provider assessment](../evidence/quandela/remote-result-contract/provider-assessment.json)
-records the later response about calibration and result semantics. The
+records the later response about calibration and result semantics. Its
+`body_sha256` identifies the provider's comment body as read at the
+assessment's `observed_at`; the body bytes are not retained in the
+repository, and the six `provider_statements` are the assessor's paraphrases
+recorded on that date. Neither the digest nor a paraphrase can be checked
+offline. A reader who fetches the comment compares its UTF-8 bytes with the
+digest, and a mismatch means the provider edited the comment after the
+assessment (the comment was already updated once, on 2026-11-03). The
 [plan record](../state/plans/ascella-belenos-entanglement-teleportation.json)
 owns implementation status. None establishes a qualified Ascella–Belenos
 physical route.

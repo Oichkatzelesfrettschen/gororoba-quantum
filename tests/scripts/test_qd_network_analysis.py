@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 from pathlib import Path
 from typing import Any
@@ -177,3 +178,63 @@ def test_joint_binding_mismatch_preserves_an_existing_output(tmp_path: Path, bin
     arguments = [str(path), "--case", str(case), "--raw-result", str(raw), "--out", str(destination)]
     if cli.main(arguments) != 2 or destination.read_bytes() != previous:
         raise AssertionError("mismatched source bytes must refuse the analysis and preserve prior output")
+
+
+class RecordingStream(io.BytesIO):
+    """A byte stream that remembers the size argument of every read."""
+
+    sizes: list[int | None]
+
+    def __init__(self, content: bytes) -> None:
+        super().__init__(content)
+        self.sizes = []
+
+    def read(self, size: int | None = -1) -> bytes:
+        self.sizes.append(size)
+        return super().read(size)
+
+
+@pytest.mark.parametrize("reader", ["cli", "records"])
+def test_inputs_are_read_with_a_size_bound_not_whole(
+    reader: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "large.json"
+    path.write_bytes(b" " * 64)
+    monkeypatch.setattr(records, "MAX_JSON_BYTES", 16)
+    stream = RecordingStream(path.read_bytes())
+    monkeypatch.setattr(Path, "open", lambda _self, _mode="r": stream)
+    with pytest.raises(records.NetworkRecordError, match="exceeds"):
+        cli.bounded_bytes(path) if reader == "cli" else records.load_json(path)
+    if stream.sizes != [17]:
+        raise AssertionError(f"the reader must request at most the limit plus one byte: {stream.sizes}")
+
+
+def test_report_replacement_is_one_atomic_rename(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = write_case(tmp_path)
+    destination = tmp_path / "report.json"
+    previous = b"previous derived result\n"
+    destination.write_bytes(previous)
+
+    def failing_replace(_source: object, _target: object) -> None:
+        raise OSError("rename refused")
+
+    monkeypatch.setattr(cli.os, "replace", failing_replace)
+    if cli.main([str(path), "--out", str(destination)]) != 2:
+        raise AssertionError("an unwritable report is a refusal")
+    if destination.read_bytes() != previous or list(tmp_path.glob(".report.json.*")):
+        raise AssertionError("the previous report survives and no temporary file remains")
+
+
+def test_report_hash_binds_the_snapshot_that_was_parsed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    path = write_case(tmp_path)
+    expected = hashlib.sha256(path.read_bytes()).hexdigest()
+
+    def forbidden(_self: Path) -> bytes:
+        raise AssertionError("the input is read once; a second read could bind different bytes")
+
+    monkeypatch.setattr(Path, "read_bytes", forbidden)
+    destination = tmp_path / "report.json"
+    if cli.main([str(path), "--out", str(destination)]) != 0:
+        raise AssertionError("a pending case must produce a report")
+    if json.loads(destination.read_text())["input_sha256"] != expected:
+        raise AssertionError("the report must bind the parsed bytes")

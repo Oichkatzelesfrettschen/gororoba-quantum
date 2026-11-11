@@ -709,10 +709,13 @@ result contract and went to Quandela on 2026-10-25 at 18:33 UTC as
 with the papers, Perceval sources and retained measurements behind each
 question cited inline. Items 1 and 4 concern the installations and go through
 the Quandela contact form under the Research Collaboration subject, which the
-owner submits under their own name; the plan record dates that submission.
+owner submits under their own name; the plan record carries no date for that
+submission.
 The [provider assessment](../evidence/quandela/remote-result-contract/provider-assessment.json)
-retains the response to items 2 and 3, created 2026-10-29T13:18:58Z and updated
-2026-11-03T15:17:09Z, with its current-body digest and bounded interpretation.
+records paraphrases of the response to items 2 and 3, created 2026-10-29T13:18:58Z and
+updated 2026-11-03T15:17:09Z, with the digest of the body as read and a bounded
+interpretation; the body bytes are not retained, and the runbook states the offline
+limit.
 The response clarifies result terminology but supplies no version-bound applied
 configuration or cross-device apparatus. G1 and G2 remain open. Retain later
 answers with the platform, access route, date and software version they cover;

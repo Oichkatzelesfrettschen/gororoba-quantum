@@ -12,6 +12,11 @@ Quandela response adapter. A raw-source digest match establishes identity
 only: this module does not prove that normalized counts were derived from
 those bytes. It performs no provider operation, inference certificate,
 tomographic fit, coincidence reconstruction, or sequential-transfer analysis.
+
+The module imports qd_network_protocol from scripts/ and so runs with both
+gororoba_quantum/ and scripts/ on the import path, which scripts/qd_network_analysis.py
+and the pytest configuration provide; qrng_seeds and readout_actor_family likewise
+import from scripts/. qd_network_protocol is a digest-pinned producer and stays there.
 """
 
 from __future__ import annotations
@@ -522,10 +527,11 @@ def parse_joint_record(record: Mapping[str, Any]) -> JointRecord:
     if not blocks:
         raise NetworkRecordError("block_ids must declare at least one acquisition block")
     cells = tuple(ordered_map(_cell, _list(item["cells"], "cells")))
+    declared = set(blocks)
     identities: set[tuple[str, str, str]] = set()
     settings: set[str] = set()
     for cell in cells:
-        if cell.block_id not in blocks:
+        if cell.block_id not in declared:
             raise NetworkRecordError(f"cell {cell.setting_id}: undeclared block {cell.block_id}")
         identity = (cell.block_id, cell.input_label, cell.analyzer_basis)
         if identity in identities or cell.setting_id in settings:
@@ -686,8 +692,11 @@ def analyze_joint(record: Mapping[str, Any]) -> dict[str, Any]:
     block_reports: dict[str, Any] = {}
     issues: list[str] = []
     complete = True
+    by_block: dict[str, list[dict[str, Any]]] = {block: [] for block in blocks}
+    for row in scores:
+        by_block[row["block_id"]].append(row)
     for block in blocks:
-        selected = [row for row in scores if row["block_id"] == block]
+        selected = by_block[block]
         present = {(row["input_label"], row["analyzer_basis"]) for row in selected}
         missing = [
             {"input_label": label, "analyzer_basis": axis}

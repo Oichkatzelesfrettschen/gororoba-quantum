@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -308,6 +309,8 @@ def test_raw_byte_binding_verifies_identity_but_not_normalized_data_derivation()
         ("protocol", "teleportation_B_to_A"),
         ("joint_platform_id", "other-joint-platform"),
         ("output_capability", "O1"),
+        ("claim_level", "C6"),
+        ("payload_sha256", "3" * 64),
     ],
 )
 def test_byte_bound_case_must_match_the_declared_protocol_scope(field: str, bad: str) -> None:
@@ -358,7 +361,7 @@ def test_case_template_preserves_unknowns_and_requires_exact_evidence_values() -
         records.assess_case(case)
 
 
-def test_complete_case_declarations_allow_review_only() -> None:
+def complete_case() -> dict[str, Any]:
     case = records.case_template(REVISION)
     for name in records._CASE_EVIDENCE:
         case[name] = evidence()
@@ -374,12 +377,152 @@ def test_complete_case_declarations_allow_review_only() -> None:
         "block_ids": ["b0"],
     }
     case.update(max_jobs=1, max_seconds=300, max_credits=1.0, payload_sha256="2" * 64)
+    return case
+
+
+def test_complete_case_declarations_allow_review_only() -> None:
+    case = complete_case()
     report = records.assess_case(case)
     check(report["review_ready"], "complete declarations can enter physical review")
+    check(report["missing_or_unresolved"] == [] and report["unsupported_scope"] == [], "nothing is outstanding")
     check(not report["execution_admitted"] and not report["physical_claim_admitted"], "review is not authorization")
     case["max_jobs"] = True
     with pytest.raises(records.NetworkRecordError):
         records.assess_case(case)
+
+
+@pytest.mark.parametrize(
+    "change,fragment",
+    [
+        ({"claim_level": "C6"}, "C3 case only"),
+        ({"claim_level": "C0"}, "C3 case only"),
+        ({"output_capability": "O1"}, "surviving, heralded"),
+        ({"output_capability": "O3"}, "surviving, heralded"),
+    ],
+)
+def test_a_documented_case_outside_the_terminal_c3_scope_is_not_review_ready(
+    change: dict[str, str], fragment: str
+) -> None:
+    case = complete_case()
+    case.update(change)
+    report = records.assess_case(case)
+    check(not report["review_ready"], "version 1 reviews a terminal single-hop C3 case only")
+    check(report["missing_or_unresolved"] == [], "every declaration is present")
+    check(len(report["unsupported_scope"]) == 1 and fragment in report["unsupported_scope"][0], "scope reason")
+
+
+def test_each_missing_case_field_blocks_review_readiness_by_name() -> None:
+    expectations: dict[str, Any] = {
+        "joint_platform_id": None,
+        "statistical_case": None,
+        "max_jobs": None,
+        "max_seconds": None,
+        "max_credits": None,
+        "payload_sha256": None,
+        "physical_route_evidence": evidence("unknown"),
+        "approval_record": None,
+    }
+    for name, absent in expectations.items():
+        case = complete_case()
+        case[name] = absent
+        report = records.assess_case(case)
+        check(not report["review_ready"] and report["missing_or_unresolved"] == [name], f"{name} is required")
+    case = complete_case()
+    case["input_ensemble"]["accepted_multiphoton_bound"] = None
+    report = records.assess_case(case)
+    check(not report["review_ready"], "the multiphoton bound is required")
+    check(report["missing_or_unresolved"] == ["accepted_multiphoton_bound"], "the bound is named")
+    case = complete_case()
+    case["input_ensemble"]["physical_preparation_evidence"] = None
+    report = records.assess_case(case)
+    check(report["missing_or_unresolved"] == ["physical_preparation_evidence"], "preparation evidence is required")
+
+
+def _case_change(path: str, value: object) -> dict[str, Any]:
+    case = complete_case()
+    target: Any = case
+    *parents, leaf = path.split(".")
+    for key in parents:
+        target = target[key]
+    target[leaf] = value
+    return case
+
+
+@pytest.mark.parametrize(
+    "path,value,fragment",
+    [
+        ("schema", "qd-network-case-v2", "case.schema"),
+        ("status", "approved", "case.status"),
+        ("admission", "open", "case.admission"),
+        ("protocol", "teleportation_C_to_D", "case.protocol"),
+        ("claim_level", "C7", "case.claim_level"),
+        ("local_platforms", ["qpu:ascella"], "Ascella and Belenos"),
+        ("local_platforms", ["qpu:ascella", "qpu:ascella"], "duplicate"),
+        ("output_measurements", ["X", "Y"], "['X', 'Y', 'Z']"),
+        ("base_setting_cells", 17, "18 base setting cells"),
+        ("logical_frame_convention", "other", "case.logical_frame_convention"),
+        ("output_capability", "O9", "case.output_capability"),
+        ("input_ensemble.name", "uniform_pauli_four", "case.input_ensemble.name"),
+        ("input_ensemble.probabilities", ["1/6"] * 5 + ["1/7"], "'1/6' strings"),
+        ("input_ensemble.probabilities", [1 / 6] * 6, "'1/6' strings"),
+        ("input_ensemble.accepted_multiphoton_bound", 1.5, "accepted_multiphoton_bound"),
+        ("input_ensemble.accepted_multiphoton_bound", -0.1, "accepted_multiphoton_bound"),
+        ("input_ensemble.accepted_multiphoton_bound", float("nan"), "accepted_multiphoton_bound"),
+        ("input_ensemble.accepted_multiphoton_bound", True, "accepted_multiphoton_bound"),
+        ("max_jobs", 0, "case.max_jobs must be positive"),
+        ("max_jobs", -1, "case.max_jobs"),
+        ("max_seconds", 0, "case.max_seconds must be positive"),
+        ("max_seconds", -1.0, "case.max_seconds"),
+        ("max_seconds", float("inf"), "case.max_seconds"),
+        ("max_credits", -0.5, "case.max_credits"),
+        ("max_credits", "1", "case.max_credits"),
+        ("payload_sha256", "ABC", "case.payload_sha256"),
+        ("statistical_case.estimand", "pooled_fidelity", "estimand"),
+        ("statistical_case.alpha", 0.0, "alpha"),
+        ("statistical_case.alpha", 1.0, "alpha"),
+        ("statistical_case.alpha", 2.0, "alpha"),
+        ("statistical_case.systematic_allowance", 1.5, "systematic_allowance"),
+        ("statistical_case.systematic_allowance", -0.01, "systematic_allowance"),
+        ("statistical_case.stopping_rule", "sequential", "stopping_rule"),
+        ("statistical_case.attempts_per_cell", 0, "attempts_per_cell must be positive"),
+        ("statistical_case.attempts_per_cell", 1.5, "attempts_per_cell"),
+        ("statistical_case.block_ids", [], "at least one block"),
+        ("statistical_case.block_ids", ["b0", "b0"], "duplicate"),
+        ("statistical_case.block_ids", ["b0", ""], "nonempty strings"),
+        (
+            "physical_route_evidence",
+            {"status": "documented", "reference": "r", "sha256": None, "reason": None},
+            "together",
+        ),
+        (
+            "physical_route_evidence",
+            {"status": "documented", "reference": None, "sha256": "1" * 64, "reason": None},
+            "together",
+        ),
+        (
+            "physical_route_evidence",
+            {"status": "documented", "reference": None, "sha256": None, "reason": None},
+            "needs a reference",
+        ),
+        (
+            "physical_route_evidence",
+            {"status": "unavailable", "reference": None, "sha256": None, "reason": None},
+            "needs a reason",
+        ),
+        ("physical_route_evidence", {"status": "unknown", "reference": None, "sha256": None, "reason": "  "}, "reason"),
+        ("physical_route_evidence", {"status": "assumed", "reference": None, "sha256": None, "reason": "x"}, "status"),
+        (
+            "physical_route_evidence",
+            {"status": "documented", "reference": "r", "sha256": "xyz", "reason": None},
+            "sha256",
+        ),
+        ("physical_route_evidence", {"status": "documented", "reference": "r", "sha256": "1" * 64}, "missing keys"),
+        ("calibration_bundle", "documented", "must be an object"),
+    ],
+)
+def test_case_fields_outside_the_version_one_domain_are_rejected(path: str, value: object, fragment: str) -> None:
+    with pytest.raises(records.NetworkRecordError, match=re.escape(fragment)):
+        records.assess_case(_case_change(path, value))
 
 
 @pytest.mark.parametrize(
@@ -392,6 +535,7 @@ def test_complete_case_declarations_allow_review_only() -> None:
         b'{"x":1e999}',
         b"[]",
         '{"x":1}'.encode("utf-16"),
+        b'{"x":"\xff"}',
         b'{"x":' + b"[" * 3000 + b"0" + b"]" * 3000 + b"}",
     ],
 )
@@ -402,3 +546,292 @@ def test_json_boundary_rejects_ambiguous_or_nonfinite_input(data: bytes, tmp_pat
         records.load_json(path)
     with pytest.raises(records.NetworkRecordError):
         records.decode_json(data)
+
+
+def _first(value: dict[str, Any], label: str, basis: str) -> dict[str, Any]:
+    return next(row for row in value["cells"] if row["input_label"] == label and row["analyzer_basis"] == basis)
+
+
+def _set_outcomes(row: dict[str, Any], outcomes: list[tuple[str, list[int], bool, int]], attempts: int = 80) -> None:
+    row["outcomes"] = [
+        {"bell_pattern": pattern, "receiver_pattern": receiver, "resource_herald": herald, "count": count}
+        for pattern, receiver, herald, count in outcomes
+    ]
+    row["reported_count"] = sum(item[3] for item in outcomes)
+    row["attempts"]["value"] = attempts
+
+
+def test_every_rejection_category_counts_only_its_own_outcomes() -> None:
+    value, _, _, _ = fixture()
+    row = _first(value, "+Z", "Z")
+    _set_outcomes(
+        row,
+        [
+            ("1100", [1, 0], False, 3),  # resource herald failed, otherwise a valid accepted pattern
+            ("1100", [0, 0], True, 4),  # Bell pattern accepted, receiver silent
+            ("0000", [1, 0], True, 5),  # receiver click behind a pattern outside the partial analyzer
+            ("1100", [1, 1], True, 6),  # two photons in two modes
+            ("0011", [2, 0], True, 7),  # two photons in one mode
+            ("1100", [1, 0], True, 8),  # accepted; frame (1, 0) decodes Z bit 0 xor 1, wrong for +Z
+            ("1001", [0, 1], True, 9),  # accepted; frame (1, 1) decodes Z bit 1 xor 1 = 0, correct for +Z
+            ("0000", [0, 0], False, 10),  # a failed herald outranks the Bell-pattern rejection
+        ],
+    )
+    cell_report = next(
+        item for item in records.analyze_joint(value)["cells"] if item["setting_id"] == row["setting_id"]
+    )
+    check(
+        cell_report["rejection_counts"]
+        == {
+            "resource_herald_failed": 13,
+            "bell_pattern_rejected": 5,
+            "receiver_no_click": 4,
+            "receiver_multiple_occupation": 13,
+        },
+        f"each outcome lands in exactly one rejection category: {cell_report['rejection_counts']}",
+    )
+    check(cell_report["eligible_outputs"] == 17, "only the accepted rows enter the matching denominator")
+    check(cell_report["bell_branches"]["1100"] == {"recorded": 21, "accepted": 8, "correct": 0}, "frame 1100")
+    check(cell_report["bell_branches"]["1001"] == {"recorded": 9, "accepted": 9, "correct": 9}, "frame 1001")
+    check(cell_report["bell_branches"]["0000"] == {"recorded": 15, "accepted": 0, "correct": 0}, "outside the analyzer")
+    check(cell_report["conditional_fidelity"] == 9 / 17, "wrong-frame outcomes count as incorrect")
+
+
+def test_a_failed_resource_herald_removes_the_cell_from_the_accepted_branch() -> None:
+    value, _, _, _ = fixture()
+    for row in value["cells"]:
+        if row["input_label"] in ("+Z", "-Z"):
+            for outcome in row["outcomes"]:
+                outcome["resource_herald"] = False
+    report = records.analyze_joint(value)
+    for row in report["cells"]:
+        if row["input_label"] in ("+Z", "-Z"):
+            check(row["eligible_outputs"] == 0, "no output is accepted without the resource herald")
+            check(row["rejection_counts"]["resource_herald_failed"] == row["reported_count"], "all rows fail")
+    scores = report["scores"]
+    check(scores["per_input"]["+Z"]["accepted"] == 0, "the failed input has no accepted output")
+    check(scores["equal_prior_success_weighted_fidelity"] == 1.0, "remaining inputs keep fidelity one")
+    check(scores["equal_prior_success_probability"] == 4 * 0.5 / 6, "two inputs contribute zero success")
+    check(scores["mean_conditional_fidelity"] is None, "an input without accepted outputs has no conditional fidelity")
+
+
+def test_nonmatching_analyzer_cells_report_no_fidelity_and_no_correct_counts() -> None:
+    value, _, _, _ = fixture()
+    report = records.analyze_joint(value)
+    for row in report["cells"]:
+        matching = row["analyzer_basis"] == row["input_label"][1]
+        check(row["matching_basis"] == matching, "matching basis")
+        if matching:
+            check(row["conditional_fidelity"] == 1.0 and row["correct_outputs"] == 20 + 20, "matching cell")
+            check(all(branch["correct"] is not None for branch in row["bell_branches"].values()), "branch counts")
+        else:
+            check(row["conditional_fidelity"] is None and row["correct_outputs"] is None, "no fidelity off axis")
+            check(all(branch["correct"] is None for branch in row["bell_branches"].values()), "no branch score")
+
+
+def test_measured_records_cannot_take_a_per_attempt_rate_from_modeled_attempts() -> None:
+    value, _, _, _ = fixture()
+    synthetic = records.analyze_joint(value)
+    value["data_origin"] = "measured"
+    report = records.analyze_joint(value)
+    row = next(item for item in report["cells"] if item["setting_id"] == "b0:+Z:Z")
+    check(row["success_per_attempt"] is None, "a modeled denominator gives no measured per-attempt rate")
+    check("modeled attempts do not establish a measured" in row["success_per_attempt_reason"], "cell reason")
+    scores = report["scores"]
+    check(scores["equal_prior_success_weighted_fidelity"] is None, "no measured success weighting")
+    check(scores["equal_prior_success_probability"] is None, "no measured success probability")
+    check(
+        "modeled attempts cannot establish measured success weighting" in scores["equal_prior_success_weighted_reason"],
+        "reason",
+    )
+    check(scores["per_input"]["+Z"]["matching_attempts"] is None, "matching attempts stay unresolved")
+    synthetic_row = next(item for item in synthetic["cells"] if item["setting_id"] == "b0:+Z:Z")
+    check(synthetic_row["success_per_attempt"] == 0.5, "the same counts keep their modeled rate when synthetic")
+    check(synthetic["scores"]["equal_prior_success_weighted_fidelity"] == 1.0, "synthetic weighting")
+
+
+def test_mixed_attempt_statuses_leave_the_weighted_estimand_undefined() -> None:
+    value, _, _, _ = fixture()
+    second = copy.deepcopy(value["cells"])
+    for row in second:
+        row["setting_id"] = row["setting_id"].replace("b0:", "b1:")
+        row["block_id"] = "b1"
+    value["block_ids"].append("b1")
+    value["cells"].extend(second)
+    check(records.analyze_joint(value)["scores"]["equal_prior_success_weighted_fidelity"] == 1.0, "uniform statuses")
+    _first(value, "+Z", "Z")["attempts"].update(status="observed", reason=None)
+    scores = records.analyze_joint(value)["scores"]
+    check(scores["equal_prior_success_weighted_fidelity"] is None, "one observed cell among modeled ones")
+    reason = scores["equal_prior_success_weighted_reason"]
+    check("+Z: matching cells mix observed, modeled, or unavailable attempt statuses" in reason, reason)
+    check(scores["per_input"]["+Z"]["matching_attempts"] is None, "no pooled attempts across statuses")
+    check(scores["per_input"]["-Z"]["matching_attempts"] == 160, "unaffected inputs keep their attempts")
+
+
+@pytest.mark.parametrize(
+    "fault,match",
+    [
+        ("count", "conserve reported_count"),
+        ("attempts", "exceed source triggers"),
+        ("blocks", "undeclared block"),
+        ("apparatus", "apparatus_ids"),
+        ("apparatus-extra", "apparatus_ids"),
+        ("setting", "duplicate setting"),
+        ("identity", "duplicate setting or block/input/analyzer"),
+        ("empty-blocks", "at least one acquisition block"),
+        ("origin", "data_origin"),
+        ("digest", "case_sha256"),
+        ("payload", "payload_sha256"),
+        ("frame", "frame_convention"),
+        ("processing", "processing_status"),
+        ("job", "joint_job_id"),
+        ("evidence", "evidence"),
+        ("anomaly", "cell.anomalies.missing"),
+        ("anomaly-key", "cell.anomalies"),
+        ("input", "cell.input_label"),
+        ("basis", "cell.analyzer_basis"),
+        ("attempt-reason", "unavailable attempts need value null"),
+        ("modeled-reason", "modeled attempts need their assumptions"),
+        ("attempt-status", "cell b0:+Z:X.attempts.status"),
+        ("pattern", "bell_pattern"),
+        ("receiver", "receiver_pattern needs two"),
+    ],
+)
+def test_joint_record_faults_are_rejected_with_their_own_diagnostic(fault: str, match: str) -> None:
+    value, _, _, _ = fixture()
+    row = value["cells"][0]
+    if fault == "count":
+        row["reported_count"] -= 1
+    elif fault == "attempts":
+        row["attempts"]["value"] = row["reported_count"] - 1
+    elif fault == "blocks":
+        row["block_id"] = "undeclared"
+    elif fault == "apparatus":
+        value["apparatus_ids"] = ["qpu:ascella"]
+    elif fault == "apparatus-extra":
+        value["apparatus_ids"] = ["qpu:ascella", "qpu:belenos", "qpu:other"]
+    elif fault == "setting":
+        value["cells"][1]["setting_id"] = row["setting_id"]
+    elif fault == "identity":
+        value["cells"][1].update(input_label=row["input_label"], analyzer_basis=row["analyzer_basis"])
+    elif fault == "empty-blocks":
+        value["block_ids"] = []
+    elif fault == "origin":
+        value["data_origin"] = "simulated"
+    elif fault == "digest":
+        value["case_sha256"] = "G" * 64
+    elif fault == "payload":
+        value["payload_sha256"] = "abc"
+    elif fault == "frame":
+        value["frame_convention"] = "sender_byproduct"
+    elif fault == "processing":
+        value["processing_status"] = "calibrated"
+    elif fault == "job":
+        value["joint_job_id"] = " "
+    elif fault == "evidence":
+        value["evidence"] = {"fixed_channel": None}
+    elif fault == "anomaly":
+        row["anomalies"]["missing"] = -1
+    elif fault == "anomaly-key":
+        row["anomalies"] = {"duplicates": 0, "unmatched": 0}
+    elif fault == "input":
+        row["input_label"] = "+W"
+    elif fault == "basis":
+        row["analyzer_basis"] = "W"
+    elif fault == "attempt-reason":
+        row["attempts"].update(status="unavailable", reason=None)
+    elif fault == "modeled-reason":
+        row["attempts"]["reason"] = None
+    elif fault == "attempt-status":
+        row["attempts"]["status"] = "estimated"
+    elif fault == "pattern":
+        row["outcomes"][0]["bell_pattern"] = "1100x"
+    else:
+        row["outcomes"][0]["receiver_pattern"] = [1, 0, 0]
+    with pytest.raises(records.NetworkRecordError, match=re.escape(match)):
+        records.parse_joint_record(value)
+
+
+def test_a_repeated_outcome_key_is_rejected_even_when_the_counts_conserve() -> None:
+    value, _, _, _ = fixture()
+    row = value["cells"][0]
+    _set_outcomes(row, [("1100", [1, 0], True, 5), ("1100", [1, 0], True, 5)])
+    with pytest.raises(records.NetworkRecordError, match="duplicate joint outcome key"):
+        records.parse_joint_record(value)
+    row["outcomes"][1]["receiver_pattern"] = [0, 1]
+    records.parse_joint_record(value)
+
+
+def test_unavailable_identities_and_scope_limits_are_named_as_integrity_issues() -> None:
+    value, _, _, _ = fixture()
+    clean = records.analyze_joint(value)["integrity_and_scope_issues"]
+    check(clean == ["synthetic counts are calculations, not measured evidence"], f"synthetic fixture issues: {clean}")
+    value["data_origin"] = "measured"
+    for row in value["cells"]:
+        row["attempts"].update(status="observed", reason=None)
+    check(records.analyze_joint(value)["integrity_and_scope_issues"] == [], "a complete measured record has no issue")
+    _first(value, "+Z", "Z")["calibration_id"] = None
+    _first(value, "-Z", "Z")["applied_configuration_id"] = None
+    value["route_id"] = None
+    issues = records.analyze_joint(value)["integrity_and_scope_issues"]
+    check(
+        issues
+        == [
+            "b0: calibration identity unavailable",
+            "b0:-Z:Z: applied configuration is unknown",
+            "the declared physical route or joint platform is unavailable",
+        ],
+        f"issues: {issues}",
+    )
+    value["route_id"] = "synthetic-route"
+    value["joint_platform_id"] = None
+    check(
+        "the declared physical route or joint platform is unavailable"
+        in records.analyze_joint(value)["integrity_and_scope_issues"],
+        "joint platform",
+    )
+    value["block_ids"].append("empty-block")
+    check(
+        "empty-block: calibration identity unavailable" in records.analyze_joint(value)["integrity_and_scope_issues"],
+        "a planned block without cells has no calibration identity",
+    )
+
+
+def test_a_cell_with_a_different_declared_configuration_is_named() -> None:
+    value, _, _, _ = fixture()
+    value["data_origin"] = "measured"
+    for row in value["cells"]:
+        row["attempts"].update(status="observed", reason=None)
+    _first(value, "+X", "Y")["applied_configuration_id"] = "predecessor"
+    issues = records.analyze_joint(value)["integrity_and_scope_issues"]
+    check(issues == ["b0:+X:Y: frozen and applied configuration identities differ"], f"issues: {issues}")
+
+
+def test_unresolved_assumptions_list_only_undocumented_evidence() -> None:
+    value, _, _, _ = fixture()
+    value["evidence"] = {name: evidence() for name in records.ASSUMPTIONS}
+    value["evidence"]["fixed_channel"] = None
+    value["evidence"]["raw_event_provenance"] = evidence("unknown")
+    check(records.analyze_joint(value)["unresolved_assumptions"] == ["fixed_channel", "raw_event_provenance"], "names")
+
+
+def test_block_summary_lists_each_missing_cell_and_distinct_calibrations() -> None:
+    value, _, _, _ = fixture()
+    value["cells"] = [row for row in value["cells"] if (row["input_label"], row["analyzer_basis"]) != ("-Y", "X")]
+    _first(value, "+X", "X")["calibration_id"] = "calibration-9"
+    report = records.analyze_joint(value)
+    block = report["blocks"]["b0"]
+    check(block["missing_cells"] == [{"input_label": "-Y", "analyzer_basis": "X"}], "one named missing cell")
+    check(block["calibration_ids"] == ["calibration-0", "calibration-9"], "sorted distinct calibrations")
+    check(not block["complete_18_cells"] and report["partial"], "partial")
+    check(report["blocks"]["b0"]["scores"] == report["scores"], "a single block reports the same scores")
+
+
+def test_binding_scope_rejects_a_case_that_names_other_blocks_or_disagrees_in_payload() -> None:
+    value, case_bytes, _, _ = fixture()
+    case = records.decode_json(case_bytes)
+    case["payload_sha256"] = "3" * 64
+    altered = encoded(case)
+    value["case_sha256"] = hashlib.sha256(altered).hexdigest()
+    with pytest.raises(records.NetworkRecordError, match="payload_sha256 differs"):
+        records.verify_bindings(value, case_bytes=altered)
