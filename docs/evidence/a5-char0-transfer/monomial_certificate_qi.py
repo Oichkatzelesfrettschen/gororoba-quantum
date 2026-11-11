@@ -190,9 +190,28 @@ def certify(slug: str) -> dict[str, Any]:
     )
     jobs = [(slug, prime, root, rel, generators, row["generators"]) for prime, (root, rel) in K2[slug].items()]
     row["reductions"] = parallel.ordered_map(reduce_at, jobs, min_items=2)
+    # Every invariant asserted by the certificate must participate in its verdict.
+    # The Hilbert numerator is Singular's numerator for the 4-dimensional graded ring.
+    expected = {
+        "l_generators": 69,
+        "l_degrees": [2, 2],
+        "l_dim": 4,
+        "l_mult": 12,
+        "l_hilbert_numerator": "1,11,-3,4,-1,0",
+        "l_saturated": True,
+        "y1_y5_y6_outside_l": 3,
+        "y1_y5_y6_squared_in_l": True,
+    }
+    row["invariant_failures"] = {
+        key: {"expected": value, "observed": row[key]}
+        for key, value in expected.items()
+        if row[key] != value
+    }
+    row["l_polynomials"] = generators
     row["verdict"] = (
         "certified"
         if row["i_equals_m"]
+        and not row["invariant_failures"]
         and all(r["l_in_k2"] and r["k2_in_l"] and r["nonzero_generators"] == count for r in row["reductions"])
         else "failed"
     )
