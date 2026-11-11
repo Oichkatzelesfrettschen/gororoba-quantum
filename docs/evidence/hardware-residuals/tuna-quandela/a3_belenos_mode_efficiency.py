@@ -350,7 +350,8 @@ def session_fit(rows: list[dict[str, Any]]) -> dict[str, Any]:
     expected = n.sum(axis=1, keepdims=True) * q
     ok = expected >= 5
     pearson = float((((n - expected) ** 2 / np.maximum(expected, 1e-300))[ok]).sum())
-    dof = int(ok.sum() - len(rows) - (MODES - 1))
+    # dof = cells with expected >= 5, less one free total per such histogram, less the efficiency rank (modes - 1)
+    dof = int(ok.sum() - ok.any(axis=1).sum() - max(int(ok.any(axis=0).sum()) - 1, 0))
     jack = None
     if len(rows) >= 3:
         # jackknife over runs: refit leaving one run out, in log scale
@@ -746,7 +747,7 @@ def main() -> None:
         "part2_secondary_tests_not_in_ledger": c.summarize_ledger(ledger2)
         | {
             "reason": (
-                "model-based comparisons inherit the ideal-mesh misfit (Pearson/dof 19 to 1e5, strategy.md section 2 "
+                "model-based comparisons inherit the ideal-mesh misfit (Pearson/dof 21 to 1.6e5, strategy.md section 2 "
                 "held-out rejection) and the mitigation contrast compares different compiled circuits; the "
                 "quasi-likelihood intervals are not a well-posed null, so these rows stay out of the corrected ledger"
             )

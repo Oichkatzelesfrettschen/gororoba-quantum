@@ -11,10 +11,6 @@ ep:e/2026-10-27T010741.272123Z:prep0 N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,run
 /2026-10-27T010917.104805Z:x_history N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (46, 0, 567, 0.46) control (0, 0, 0, 0.46) | lag ratios [6.83, 5.35, 4.23] | r at 1,2,11+ hops [0.00588, 0.00232, 0.00035] | drift cols p<1e-7: 5 of 64
 /2026-10-27T011025.944327Z:x_history N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (46, 0, 509, 0.43) control (0, 0, 0, 0.43) | lag ratios [6.98, 5.41, 4.28] | r at 1,2,11+ hops [0.00602, 0.00216, 2e-05] | drift cols p<1e-7: 5 of 65
 ep:e/2026-10-27T011140.821404Z:prep0 N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (19, 0, 377, 0.2) control (0, 0, 0, 0.2) | lag ratios [9.72, 7.44, 5.74] | r at 1,2,11+ hops [0.00476, 0.00198, 1e-05] | drift cols p<1e-7: 1 of 58
-docs/evidence/hardware-residuals/ibm/verify_leads.py:71: RuntimeWarning: Mean of empty slice
-  means = [round(float(r[iu][d[iu] == h].mean()), 5) for h in (1, 2)] + [round(float(r[iu][d[iu] >= 11].mean()), 5)]
-site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
-  ret = ret.dtype.type(ret / rcount)
 ep:e/2026-10-27T204605.871056Z:prep0 N 32768 Q 6 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (1, 0, 1, 0.0) control (0, 0, 0, 0.0) | lag ratios [50.57, 0.0, 0.0] | r at 1,2,11+ hops [-0.00042, 0.00445, nan] | drift cols p<1e-7: 0 of 4
 /2026-10-27T204605.871056Z:remeasure N 32768 Q 6 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (3, 0, 1, 0.05) control (0, 0, 0, 0.05) | lag ratios [1.52, 1.11, 0.96] | r at 1,2,11+ hops [0.00016, -0.00124, nan] | drift cols p<1e-7: 0 of 3
 drift total {'drift_cols': 1170, 'drift_hit': 32}
