@@ -63,6 +63,9 @@ Connectedness of the other fibers needs no run: the reduced same-sign X and Iso 
 k[y]/K2 is Cohen-Macaulay of dimension at least 4 for E8-bar → VB, Iso and W8 → N− (ledger A5-010, A5-307), which
 makes V_+(K2) connected in codimension 1.
 
+`vb-census-p32029.sing` gives the same two components at p = 32029 (dimension 4 with multiplicities 3 and 4,
+4 and 3 linear forms, meeting in dimension 3 with multiplicity 1); its log was produced on the 2-core lab host.
+
     Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/vb-radical.sing
 
 ## Binomial form and linear symmetries (A5-310)

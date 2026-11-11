@@ -536,3 +536,30 @@ No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202
 
 Retired from this list on 2026-11-08: the W8 -> N- support decomposition (the C30 proof decides W8 without it), the
 W8 degree-6 rank run as a decision run.
+
+## Exact presentations and scheme structure of the fibers (2026-11-10)
+
+Ledger rows A5-298 to A5-314; evidence in
+[monomial-ladder](../../evidence/a5-exceptional-fibers/monomial-ladder/README.md),
+[quadric-census](../../evidence/a5-exceptional-fibers/quadric-census/README.md),
+[arcs-x-same](../../evidence/a5-exceptional-fibers/arcs-x-same/README.md) and
+[a5-char0-transfer](../../evidence/a5-char0-transfer/README.md).
+
+- Same-sign X (X- -> N-, X+ -> N+): the slice ideal equals a monomial ideal M of the parameter ring (membership
+  of every generator plus a rank over M / q M, then Nakayama), the fiber cone is the positive part of
+  P[M T] / q P[M T], and its defining ideal, computed by elimination, is the 69 quadrics K2 with no generator of
+  higher degree. This holds at both primes and over Q(i), so F(I) = k[y]/K2 in every degree and every h_d holds in
+  characteristic 0. K2 is saturated and nonreduced: the projective fiber is generically reduced of degree 12 with
+  nilpotents y1, y5, y6 on one embedded plane.
+- The fiber cone is now k[y]/K2 on every pair except E8-bar -> N+-: opposite-sign X (a plane), same-sign X,
+  E8-bar -> VB, Iso and W8.
+- E8-bar -> N+-: the slice ideal is an ideal of the quadratic algebra S = P + P b at both primes and headers, so the
+  fiber cone is the positive part of S[I T] / (m_R S) S[I T]; the elimination that would give its defining ideal has
+  not finished, and h_6 stays between 1,526 and 1,666. The quadric scheme V_+(K2) is saturated, generically reduced
+  of degree 11 plus a second component of degree 4 meeting it in a plane, with nilpotents y4, y6, y7, y12, y14 on an
+  embedded quadric threefold.
+- Every retained K2 is saturated at the irrelevant ideal. The Lie algebra of linear vector fields preserving K2 has
+  dimension 23, 15, 17, 34, 26 (same-sign X, VB, Iso, E8-bar -> N+-, W8); its torus rank excludes a toric K2 on
+  Iso and W8 in any linear coordinates.
+- A truncated rank r_N(d) never exceeds h_d, and the batched float64 echelon reproduces the python-flint ranks.
+

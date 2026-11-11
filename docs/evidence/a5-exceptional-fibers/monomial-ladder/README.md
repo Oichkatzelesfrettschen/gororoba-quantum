@@ -16,6 +16,8 @@ A cell is exact when r_N(d) meets HF(k[y]/K2, d).
 | `fast_ladder.py` | the same spaces with a batched float64 echelon over F_p (torch on CPU), exact for p < 2^15 |
 | `monomial_probe.py` | test of whether the truncated I and m_R I of the same-sign X slice are spans of monomials |
 | `monomial_certificate.py` | exact check that I equals the monomial ideal M (membership of every G_j and a rank over M / q M, then Nakayama) and the Singular script for the kernel L of k[y] → P[M T] / q P[M T] |
+| `e8_monomial_probe.py` | the monomial-span test on the E8-bar slice in five coordinate systems (negative at order 7) |
+| `e8_closure_probe.py`, `e8_closure_rank.py` | truncated and exact tests that the E8-bar slice ideal is an ideal of P + P b |
 | `monomial_model.py` | Hilbert function of ⊕ M^d / q M^d for the monomial ideal M = w² (a, ρ, σ) + w (ρ, σ) (a, ρ, σ)² of P and q = (w², a, ρ, σ) P |
 | `records/` | one JSON record per run; `flint-*` from the python-flint ladders, `float64-*` from `fast_ladder.py`, `monomial-probe-*` from the probe, `monomial-certificate-*`, `slice-ring-*`, `e8-ideal-closure-*` and `e8-fiber-cone-*` from the certificates |
 
@@ -109,7 +111,9 @@ What the certificate rests on, and what it does not cover:
 - the fiber cone of a monomial ideal need not be reduced, and this one is not: the nilpotents and the scheme
   structure of Proj F(I) = V_+(K2) are those of K2: saturated, nonreduced along one embedded plane ([arcs-x-same](../arcs-x-same/README.md), A5-303);
 - nothing here transfers to another incidence. The E8-bar slice ideal is not a span of monomials in any of the
-  five coordinate systems tried at order 7, and no certificate of this kind exists for it.
+  five coordinate systems of `e8_monomial_probe.py` at order 7 (`records/e8-monomial-probe-e8-nm-p32009-n7.log`:
+  rank 569 with 555 single-monomial rows in the original coordinates and 531 in the four others, rows of support up
+  to 5), and no certificate of this kind exists for it.
 
 ## The slice ring is R (A5-306)
 
@@ -160,6 +164,7 @@ S[I T] / (m_R S) S[I T], the Rees algebra of an ideal of a hypersurface ring red
 That is a finite presentation: `records/e8-fiber-cone-e8-nm-p32009.sing` computes its kernel L in k[y_1..y_21] by
 two eliminations and compares it with K2. That run has not finished; until it does, h_6 of E8-bar → N− stays
 between 1,526 and 1,666, and nothing here says whether L has generators above degree 2. The truncated ranks of I and
-I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
+I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817; `e8_closure_probe.py`,
+`records/e8-closure-probe-e8-nm-p32009.jsonl`), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
 `records/slice-ring-e8-*.log` show that the kernel of the parametrization equals the header's J (one component)
 in all four cases. Not checked for E8-bar: Q(i).
