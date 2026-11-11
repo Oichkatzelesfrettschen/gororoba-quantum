@@ -1,0 +1,3350 @@
+{
+ "analysis": 4,
+ "falsifier": "Analysis 4: within-job trend of the detected-photon number across iterations, Belenos and Ascella QPU jobs.\n\nFalsifier, fixed before computing. \"No structure\" is: in every QPU job whose iterations repeat an identical\ncircuit and input, the setting-stratified weighted slope of the mean detected photon number per sample against\nthe iteration index has a 95 percent interval containing zero. A positive result is a slope whose interval\nexcludes zero after Benjamini-Hochberg correction over every job tested, with the same sign in at least three\nquarters of the job's repeated-circuit groups (monotone, not one outlier group). The retained sim:* jobs run the\nsame statistic as the type-I control: their p-values must be uniform and about 5 percent below 0.05.\n\nWhat the counts identify. Quandela returns counts per iteration, so the iteration index is the only clock: no\niteration timestamp exists. Perceval's nb_shots_used equals the sample budget in most jobs (docs/notes/quandela/\ncalibration.md, strategy.md), so optical trials per iteration are unknown there and a loss rate per shot is\nidentifiable only where nb_shots_used exceeds samples (the yield analysis below). physical_perf is a model value\n(docs/notes/quandela/literature.md section 31) and is not trended. Samples already passed the service's\ndefault DetectorBalancing mitigation. The mean detected photon number reads loss for multiphoton inputs and the\nmulti-click share (g2 and dark coincidences, not loss) for single-photon inputs; the output labels each job.\nWhere an iteration's position is aliased with its setting (no repeated circuit inside the job) the trend is\nnot identifiable and the job is listed as such.\n\nNulls: iterations of one repeated circuit are exchangeable draws of one multinomial; the weighted slope with the\ngroup-pooled variance is asymptotically normal (applied only when at least 30 off-mode samples exist in the\ngroups used). No random draw anywhere.\n",
+ "ledger": {
+  "bonferroni_alpha": 0.0038462,
+  "rows": [
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -1.4542e-05,
+     1.1074e-05
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mesh",
+    "effect": {
+     "relative_slope_per_iteration": -1.7329e-06,
+     "same_sign_groups": [
+      1,
+      2
+     ],
+     "slope_per_iteration": -1.7339e-06
+    },
+    "log10_p": -0.101961,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -6.8766e-06,
+     9.0678e-06
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+    "effect": {
+     "relative_slope_per_iteration": 1.0954e-06,
+     "same_sign_groups": [
+      12,
+      26
+     ],
+     "slope_per_iteration": 1.0956e-06
+    },
+    "log10_p": -0.103663,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -3.5563e-06,
+     1.6766e-06
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+    "effect": {
+     "relative_slope_per_iteration": -9.3965e-07,
+     "same_sign_groups": [
+      9,
+      30
+     ],
+     "slope_per_iteration": -9.3989e-07
+    },
+    "log10_p": -0.317503,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -8.1521e-07,
+     1.5782e-06
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+    "effect": {
+     "relative_slope_per_iteration": 3.8143e-07,
+     "same_sign_groups": [
+      1,
+      1
+     ],
+     "slope_per_iteration": 3.8147e-07
+    },
+    "log10_p": -0.273996,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -1.6612e-06,
+     3.8073e-07
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+    "effect": {
+     "relative_slope_per_iteration": -6.4016e-07,
+     "same_sign_groups": [
+      1,
+      1
+     ],
+     "slope_per_iteration": -6.4023e-07
+    },
+    "log10_p": -0.659464,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -2.1567e-06,
+     1.8262e-07
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+    "effect": {
+     "relative_slope_per_iteration": -9.8692e-07,
+     "same_sign_groups": [
+      1,
+      1
+     ],
+     "slope_per_iteration": -9.8702e-07
+    },
+    "log10_p": -1.00816,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -9.8081e-06,
+     2.2367e-05
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_predecessor",
+    "effect": {
+     "relative_slope_per_iteration": 6.2787e-06,
+     "same_sign_groups": [
+      2,
+      3
+     ],
+     "slope_per_iteration": 6.2795e-06
+    },
+    "log10_p": -0.352373,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-s"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -8.9727e-07,
+     1.1662e-05
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_target_slot_drift",
+    "effect": {
+     "relative_slope_per_iteration": 5.3813e-06,
+     "same_sign_groups": [
+      3,
+      3
+     ],
+     "slope_per_iteration": 5.3822e-06
+    },
+    "log10_p": -1.03163,
+    "note": "single-photon input",
+    "test_id": "A4.2026-10-30T200600Z-qpu_ascella-target-slot-drift"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -0.0035672,
+     0.00079435
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mode_swap_interleaved",
+    "effect": {
+     "relative_slope_per_iteration": -0.0012404,
+     "same_sign_groups": [
+      1,
+      2
+     ],
+     "slope_per_iteration": -0.0013864
+    },
+    "log10_p": -0.672129,
+    "note": "multiphoton input or broad detected-number distribution",
+    "test_id": "A4.2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -8.652e-07,
+     2.1151e-06
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_four_term_blocks",
+    "effect": {
+     "relative_slope_per_iteration": 6.2473e-07,
+     "same_sign_groups": [
+      18,
+      42
+     ],
+     "slope_per_iteration": 6.2497e-07
+    },
+    "log10_p": -0.386076,
+    "note": "single-photon input",
+    "test_id": "A4.2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blo"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -3.8022e-06,
+     2.7927e-07
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_coset_block_pairs",
+    "effect": {
+     "relative_slope_per_iteration": -1.761e-06,
+     "same_sign_groups": [
+      2,
+      2
+     ],
+     "slope_per_iteration": -1.7615e-06
+    },
+    "log10_p": -1.04242,
+    "note": "single-photon input",
+    "test_id": "A4.2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_p"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -3.0391e-07,
+     2.1781e-07
+    ],
+    "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_mesh_persistence",
+    "effect": {
+     "relative_slope_per_iteration": -4.3037e-08,
+     "same_sign_groups": [
+      2,
+      4
+     ],
+     "slope_per_iteration": -4.3051e-08
+    },
+    "log10_p": -0.127061,
+    "note": "single-photon input",
+    "test_id": "A4.2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persiste"
+   },
+   {
+    "analysis": 4,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "ci95": [
+     -0.021101,
+     0.0064492
+    ],
+    "description": "stratified logit slope of detected-sample yield per optical trial against iteration index, qpu:ascella",
+    "effect": {
+     "iterations": 8,
+     "logit_slope_per_iteration": -0.0073261
+    },
+    "log10_p": -0.526891,
+    "note": "yield per Perceval shot = samples / nb_shots_used",
+    "test_id": "A4y.2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associat"
+   }
+  ],
+  "tests": 13
+ },
+ "qpu_jobs": 99,
+ "qpu_jobs_detail": [
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 23998,
+    "2": 2
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 23994,
+    "2": 6
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T030428Z-qpu_belenos-belenos_mesh-job-04",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 23998,
+    "2": 2
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T030731Z-qpu_belenos-belenos_mesh-job-05",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 23998,
+    "2": 2
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T031025Z-qpu_belenos-belenos_mesh-job-06",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 23989,
+    "2": 11
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T033336Z-qpu_belenos-belenos_mesh-job-02",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 23997,
+    "2": 3
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T033702Z-qpu_belenos-belenos_mesh-job-03",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 32,
+   "input_kind": "single-photon input",
+   "iterations": 32,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 47990,
+    "2": 10
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T042456Z-qpu_belenos-belenos_mesh-job-07",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 22,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 35994,
+    "2": 6
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 2,
+   "run": "results/quandela/runs/2026-10-18T074524Z-qpu_belenos-belenos_mesh-job-09",
+   "status": "no group with variance and spread of positions"
+  },
+  {
+   "family": "belenos_mesh",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_mesh",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+   "status": "no iterations with counts"
+  },
+  {
+   "ci95": [
+    0.0006034519181400001,
+    0.0008996803904830436
+   ],
+   "family": "belenos_mesh",
+   "group_info": [
+    {
+     "mean_n": 1.00198,
+     "members": 6,
+     "samples": 114500,
+     "slope": 0.0010821821257400663,
+     "span": 5
+    },
+    {
+     "mean_n": 1.00019,
+     "members": 3,
+     "samples": 51500,
+     "slope": 0.00019847328244281437,
+     "span": 2
+    }
+   ],
+   "groups": 2,
+   "input_kind": "single-photon input",
+   "iterations": 9,
+   "mean_detected_photons": 1.0014277108433736,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 237,
+   "photon_number_histogram": {
+    "1": 165763,
+    "2": 237
+   },
+   "platform": "qpu:belenos",
+   "relative_slope_per_iteration": 0.0007504946649404923,
+   "repeated_groups": 2,
+   "run": "results/quandela/runs/2026-10-18T090534Z-qpu_belenos-belenos_mesh-job-12",
+   "same_sign_groups": [
+    2,
+    2
+   ],
+   "se": 7.556987645682673e-05,
+   "slope_per_iteration": 0.0007515661543115218,
+   "status": "confounded: the sample budget varies inside a repeated-circuit group (dwell ladder), so the iteration index aliases the budget",
+   "z": 9.945314053026056
+  },
+  {
+   "family": "belenos_mesh",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 1,
+   "input_kind": "single-photon input",
+   "iterations": 1,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 9999,
+    "2": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T190504Z-qpu_belenos-belenos_mesh-job-14",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -1.4541623669191268e-05,
+    1.107384355103667e-05
+   ],
+   "family": "belenos_mesh",
+   "group_info": [
+    {
+     "mean_n": 1.00039,
+     "members": 13,
+     "samples": 130000,
+     "slope": 6.962025316453645e-06,
+     "span": 23
+    },
+    {
+     "mean_n": 1.00081,
+     "members": 11,
+     "samples": 110000,
+     "slope": -3.045454545454614e-05,
+     "span": 20
+    }
+   ],
+   "groups": 2,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "mean_detected_photons": 1.0005833333333334,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 140,
+   "photon_number_histogram": {
+    "1": 239860,
+    "2": 140
+   },
+   "platform": "qpu:belenos",
+   "relative_slope_per_iteration": -1.7328792128697903e-06,
+   "repeated_groups": 2,
+   "run": "results/quandela/runs/2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16",
+   "same_sign_groups": [
+    1,
+    2
+   ],
+   "se": 6.534678040586327e-06,
+   "slope_per_iteration": -1.7338900590772978e-06,
+   "status": "tested",
+   "z": -0.26533672329505065
+  },
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-21T062113Z-qpu_belenos-box_kite_photonic_single-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 3599100,
+    "2": 900
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-21T122531Z-qpu_belenos-bdsc_qualification-tc-def-e1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 501,
+    "1": 3598777,
+    "2": 722
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-21T162332Z-qpu_belenos-bdsc_qualification-tc-none-e1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 3598561,
+    "2": 1439
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-21T162656Z-qpu_belenos-bdsc_qualification-mm-def-e1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 3598911,
+    "2": 1089
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-21T165036Z-qpu_belenos-bdsc_qualification-mm-none-e1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_ascella_control",
+   "iterations": 0,
+   "platform": "qpu:ascella",
+   "run": "results/quandela/runs/2026-10-21T203428Z-qpu_ascella-bdsc_ascella_control-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 3599214,
+    "2": 786
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-22T013357Z-qpu_belenos-bdsc_qualification-tc-def-e2",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-22T110643Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-22T111537Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-22T111720Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 130,
+    "1": 959697,
+    "2": 173
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-22T160023Z-qpu_belenos-bdsc_diagnostic-b1-j1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 132,
+    "1": 959646,
+    "2": 222
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-22T160340Z-qpu_belenos-bdsc_diagnostic-b1-j2",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-22T170900Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 137,
+    "1": 959707,
+    "2": 156
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T073329Z-qpu_belenos-bdsc_diagnostic-b2-j1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_diagnostic",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 145,
+    "1": 959669,
+    "2": 186
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T081314Z-qpu_belenos-bdsc_diagnostic-b2-j2",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 271,
+    "1": 2398042,
+    "2": 1686,
+    "3": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 218,
+    "1": 2395672,
+    "2": 4110
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 214,
+    "1": 2395853,
+    "2": 3933
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 274,
+    "1": 2398538,
+    "2": 1188
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 274,
+    "1": 2398639,
+    "2": 1087
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 279,
+    "1": 2398004,
+    "2": 1717
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 300,
+    "1": 2397002,
+    "2": 2698
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -6.876558630389039e-06,
+    9.06775821310266e-06
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00043,
+     "members": 2,
+     "samples": 16384,
+     "slope": -0.00012207031250000003,
+     "span": 3
+    },
+    {
+     "mean_n": 1.00012,
+     "members": 2,
+     "samples": 16384,
+     "slope": -0.000244140625,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00024,
+     "members": 4,
+     "samples": 32768,
+     "slope": 3.906250000000001e-05,
+     "span": 7
+    },
+    {
+     "mean_n": 1.00043,
+     "members": 2,
+     "samples": 16384,
+     "slope": -0.0003662109375,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00018,
+     "members": 2,
+     "samples": 16384,
+     "slope": 0.0001220703125,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00034,
+     "members": 4,
+     "samples": 32768,
+     "slope": 1.3457816553177692e-06,
+     "span": 51
+    },
+    {
+     "mean_n": 1.00024,
+     "members": 2,
+     "samples": 16384,
+     "slope": 0.000244140625,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00012,
+     "members": 2,
+     "samples": 16384,
+     "slope": 8.138020833333333e-05,
+     "span": 3
+    },
+    {
+     "mean_n": 1.00024,
+     "members": 2,
+     "samples": 16384,
+     "slope": 0.0,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00024,
+     "members": 2,
+     "samples": 16384,
+     "slope": 0.00016276041666666666,
+     "span": 3
+    },
+    {
+     "mean_n": 1.00043,
+     "members": 2,
+     "samples": 16384,
+     "slope": -0.0003662109375,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00006,
+     "members": 2,
+     "samples": 16384,
+     "slope": -4.0690104166666664e-05,
+     "span": 3
+    }
+   ],
+   "groups": 30,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.0002155303955078,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 113,
+   "photon_number_histogram": {
+    "1": 524175,
+    "2": 113
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 1.0953637071837757e-06,
+   "repeated_groups": 30,
+   "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+   "same_sign_groups": [
+    12,
+    26
+   ],
+   "se": 4.067502507509943e-06,
+   "slope_per_iteration": 1.09559979135681e-06,
+   "status": "tested",
+   "z": 0.2693544230972135
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 329,
+    "1": 2398706,
+    "2": 964,
+    "3": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 295,
+    "1": 2398080,
+    "2": 1625
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 337,
+    "1": 2398948,
+    "2": 715
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -3.5563432145975385e-06,
+    1.6765549711727591e-06
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00024,
+     "members": 2,
+     "samples": 32768,
+     "slope": 0.0,
+     "span": 24
+    },
+    {
+     "mean_n": 1.00015,
+     "members": 2,
+     "samples": 32768,
+     "slope": -3.814697265625e-06,
+     "span": 16
+    },
+    {
+     "mean_n": 1.00031,
+     "members": 4,
+     "samples": 65536,
+     "slope": 2.3357417425968105e-06,
+     "span": 32
+    },
+    {
+     "mean_n": 1.00031,
+     "members": 2,
+     "samples": 32768,
+     "slope": 2.3475060096153843e-06,
+     "span": 52
+    },
+    {
+     "mean_n": 1.00018,
+     "members": 2,
+     "samples": 32768,
+     "slope": 4.8828124999999996e-05,
+     "span": 5
+    },
+    {
+     "mean_n": 1.00034,
+     "members": 2,
+     "samples": 32768,
+     "slope": -6.781684027777778e-06,
+     "span": 45
+    },
+    {
+     "mean_n": 1.00027,
+     "members": 2,
+     "samples": 32768,
+     "slope": -9.637129934210527e-06,
+     "span": 19
+    },
+    {
+     "mean_n": 1.00006,
+     "members": 2,
+     "samples": 32768,
+     "slope": 0.0,
+     "span": 12
+    },
+    {
+     "mean_n": 1.00027,
+     "members": 2,
+     "samples": 32768,
+     "slope": -5.868765024038462e-06,
+     "span": 52
+    },
+    {
+     "mean_n": 1.00021,
+     "members": 2,
+     "samples": 32768,
+     "slope": -2.9064360119047617e-06,
+     "span": 21
+    },
+    {
+     "mean_n": 1.00003,
+     "members": 2,
+     "samples": 32768,
+     "slope": -3.814697265625e-06,
+     "span": 16
+    },
+    {
+     "mean_n": 1.00052,
+     "members": 2,
+     "samples": 32768,
+     "slope": -1.2946851325757574e-05,
+     "span": 33
+    }
+   ],
+   "groups": 30,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.0002622604370117,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 275,
+   "photon_number_histogram": {
+    "1": 1048301,
+    "2": 275
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -9.396476892987572e-07,
+   "repeated_groups": 30,
+   "run": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01",
+   "same_sign_groups": [
+    9,
+    30
+   ],
+   "se": 1.3349475365483069e-06,
+   "slope_per_iteration": -9.398941217123897e-07,
+   "status": "tested",
+   "z": -0.7040682094089009
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 308,
+    "1": 2397706,
+    "2": 1986
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_stationarity",
+   "groups": 24,
+   "input_kind": "single-photon input",
+   "iterations": 24,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 320,
+    "1": 2397594,
+    "2": 2086
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -1.8164683530605181e-06,
+    6.176122370917661e-06
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00009,
+     "members": 8,
+     "samples": 65536,
+     "slope": 2.1798270089285713e-06,
+     "span": 56
+    }
+   ],
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.0001029968261719,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 6,
+   "photon_number_histogram": {
+    "1": 524234,
+    "2": 54
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 2.179602516787026e-06,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 2.0389636715324148e-06,
+   "slope_per_iteration": 2.1798270089285713e-06,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": 1.0690857514348397
+  },
+  {
+   "family": "teleportation_rehearsal",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "ci95": [
+    -4.305463368447235e-06,
+    3.0911385207818664e-07
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00006,
+     "members": 8,
+     "samples": 131072,
+     "slope": -1.998174758184524e-06,
+     "span": 56
+    }
+   ],
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.0001096725463867,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 8,
+   "photon_number_histogram": {
+    "1": 1048461,
+    "2": 115
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -1.9979556373022134e-06,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 1.1772096979650181e-06,
+   "slope_per_iteration": -1.998174758184524e-06,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -1.6973821755280014
+  },
+  {
+   "ci95": [
+    -2.118421885663125e-06,
+    6.850204888828225e-07
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00009,
+     "members": 10,
+     "samples": 327680,
+     "slope": -7.167006983901514e-07,
+     "span": 72
+    }
+   ],
+   "groups": 71,
+   "input_kind": "single-photon input",
+   "iterations": 80,
+   "mean_detected_photons": 1.0000972747802734,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 29,
+   "photon_number_histogram": {
+    "1": 2621185,
+    "2": 255
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -7.166309882682305e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 7.151770126030742e-07,
+   "slope_per_iteration": -7.167006983901514e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -1.00213050162439
+  },
+  {
+   "ci95": [
+    -8.152108910594022e-07,
+    1.5781503441844023e-06
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00009,
+     "members": 11,
+     "samples": 360448,
+     "slope": 3.814697265625e-07,
+     "span": 80
+    }
+   ],
+   "groups": 78,
+   "input_kind": "single-photon input",
+   "iterations": 88,
+   "mean_detected_photons": 1.0001019564541904,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 31,
+   "photon_number_histogram": {
+    "1": 2883290,
+    "2": 294
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 3.814308372268175e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 6.105625547516006e-07,
+   "slope_per_iteration": 3.814697265625e-07,
+   "status": "tested",
+   "z": 0.6247840185969085
+  },
+  {
+   "ci95": [
+    -1.6611857832620627e-06,
+    3.8072795983548916e-07
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00008,
+     "members": 12,
+     "samples": 393216,
+     "slope": -6.402289117132867e-07,
+     "span": 88
+    }
+   ],
+   "groups": 85,
+   "input_kind": "single-photon input",
+   "iterations": 96,
+   "mean_detected_photons": 1.0001039505004883,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 32,
+   "photon_number_histogram": {
+    "1": 3145401,
+    "2": 327
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -6.401623665148937e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 5.209059348038808e-07,
+   "slope_per_iteration": -6.402289117132867e-07,
+   "status": "tested",
+   "z": -1.2290681847468883
+  },
+  {
+   "ci95": [
+    -2.156657734300835e-06,
+    1.8261858985153466e-07
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00011,
+     "members": 12,
+     "samples": 393216,
+     "slope": -9.870195722246502e-07,
+     "span": 88
+    }
+   ],
+   "groups": 85,
+   "input_kind": "single-photon input",
+   "iterations": 96,
+   "mean_detected_photons": 1.0001017252604167,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 42,
+   "photon_number_histogram": {
+    "1": 3145408,
+    "2": 320
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -9.869191776142971e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 5.96765130023889e-07,
+   "slope_per_iteration": -9.870195722246502e-07,
+   "status": "tested",
+   "z": -1.6539498080009116
+  },
+  {
+   "family": "mub-six",
+   "groups": 5,
+   "input_kind": "single-photon input",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 327603,
+    "2": 77
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-29T093948Z-qpu_ascella-transition-matched-mesh-day-repeat",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -0.0001892688489569496,
+    0.0004210115766592954
+   ],
+   "family": "ascella_two_photon_associator",
+   "group_info": [
+    {
+     "mean_n": 2.00049,
+     "members": 2,
+     "samples": 4096,
+     "slope": 0.0,
+     "span": 3
+    },
+    {
+     "mean_n": 2.00073,
+     "members": 2,
+     "samples": 4096,
+     "slope": 0.00048828125,
+     "span": 1
+    },
+    {
+     "mean_n": 2.00049,
+     "members": 4,
+     "samples": 8192,
+     "slope": 0.0001953125,
+     "span": 3
+    }
+   ],
+   "groups": 3,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 8,
+   "mean_detected_photons": 2.00054931640625,
+   "modal_photon_number": 2,
+   "off_mode_samples_in_groups": 9,
+   "photon_number_histogram": {
+    "2": 16375,
+    "3": 9
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 5.791977378459336e-05,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00",
+   "same_sign_groups": [
+    2,
+    3
+   ],
+   "se": 0.00015568664282355674,
+   "slope_per_iteration": 0.00011587136385117288,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": 0.7442601481393145
+  },
+  {
+   "ci95": [
+    -1.8456531757199936e-05,
+    3.45653175720159e-06
+   ],
+   "family": "ascella_associator_character",
+   "group_info": [
+    {
+     "mean_n": 1.00002,
+     "members": 4,
+     "samples": 40000,
+     "slope": -7.4999999999991735e-06,
+     "span": 12
+    }
+   ],
+   "groups": 6,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "mean_detected_photons": 1.00000625,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 1,
+   "photon_number_histogram": {
+    "1": 159999,
+    "2": 1
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -7.49995312529214e-06,
+   "repeated_groups": 6,
+   "run": "results/quandela/runs/2026-10-29T210336Z-qpu_ascella-ascella_associator_character-job-00",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 5.590169943746155e-06,
+   "slope_per_iteration": -7.4999999999991735e-06,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -1.3416407865005227
+  },
+  {
+   "ci95": [
+    -6.082606484096548e-07,
+    3.5357691879838563e-07
+   ],
+   "family": "ascella_associator_character",
+   "group_info": [
+    {
+     "mean_n": 1.00005,
+     "members": 6,
+     "samples": 60000,
+     "slope": -8.150160533464156e-07,
+     "span": 27
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 21,
+     "samples": 210000,
+     "slope": -1.2987012987011554e-06,
+     "span": 80
+    },
+    {
+     "mean_n": 1.00001,
+     "members": 21,
+     "samples": 210000,
+     "slope": -9.74025974025867e-08,
+     "span": 80
+    },
+    {
+     "mean_n": 1.00002,
+     "members": 6,
+     "samples": 60000,
+     "slope": -5.104822322445788e-07,
+     "span": 55
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 6,
+     "samples": 60000,
+     "slope": 2.4346082964205667e-06,
+     "span": 67
+    },
+    {
+     "mean_n": 1.00003,
+     "members": 6,
+     "samples": 60000,
+     "slope": 3.1650687305067555e-06,
+     "span": 39
+    },
+    {
+     "mean_n": 1.00002,
+     "members": 6,
+     "samples": 60000,
+     "slope": -8.518658122878824e-07,
+     "span": 47
+    },
+    {
+     "mean_n": 1.00002,
+     "members": 6,
+     "samples": 60000,
+     "slope": 2.2900763358776097e-06,
+     "span": 27
+    },
+    {
+     "mean_n": 1.00007,
+     "members": 6,
+     "samples": 60000,
+     "slope": -3.309459125709687e-06,
+     "span": 27
+    }
+   ],
+   "groups": 9,
+   "input_kind": "single-photon input",
+   "iterations": 84,
+   "mean_detected_photons": 1.0000333333333333,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 28,
+   "photon_number_histogram": {
+    "1": 839972,
+    "2": 28
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -1.2733762021829397e-07,
+   "repeated_groups": 9,
+   "run": "results/quandela/runs/2026-10-29T221537Z-qpu_ascella-ascella_associator_character-job-01",
+   "same_sign_groups": [
+    6,
+    9
+   ],
+   "se": 2.4537123508260674e-07,
+   "slope_per_iteration": -1.2734186480563457e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -0.518976337070495
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T050544Z-qpu_belenos-box_kite_photonic_packed-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T050812Z-qpu_belenos-box_kite_photonic_packed-job-01",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T051102Z-qpu_belenos-box_kite_photonic_packed-job-02",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T051319Z-qpu_belenos-box_kite_photonic_packed-job-03",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T051558Z-qpu_belenos-box_kite_photonic_packed-job-04",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T051818Z-qpu_belenos-box_kite_photonic_packed-job-05",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed_swapped",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T054727Z-qpu_belenos-box_kite_photonic_packed_swapped-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed_swapped",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T060255Z-qpu_belenos-box_kite_photonic_packed_swapped-job-01",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed_swapped",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T060813Z-qpu_belenos-box_kite_photonic_packed_swapped-job-02",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed_swapped",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T061151Z-qpu_belenos-box_kite_photonic_packed_swapped-job-03",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed_swapped",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T061942Z-qpu_belenos-box_kite_photonic_packed_swapped-job-04",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed_swapped",
+   "iterations": 0,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T062649Z-qpu_belenos-box_kite_photonic_packed_swapped-job-05",
+   "status": "no iterations with counts"
+  },
+  {
+   "ci95": [
+    -9.808111590871392e-06,
+    2.2367154895093037e-05
+   ],
+   "family": "ascella_predecessor",
+   "group_info": [
+    {
+     "mean_n": 1.00015,
+     "members": 2,
+     "samples": 65536,
+     "slope": -3.0517578125e-05,
+     "span": 6
+    },
+    {
+     "mean_n": 1.00006,
+     "members": 4,
+     "samples": 131072,
+     "slope": 1.8310546875e-05,
+     "span": 6
+    },
+    {
+     "mean_n": 1.00027,
+     "members": 2,
+     "samples": 65536,
+     "slope": 6.103515625e-05,
+     "span": 2
+    }
+   ],
+   "groups": 3,
+   "input_kind": "single-photon input",
+   "iterations": 8,
+   "mean_detected_photons": 1.0001373291015625,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 36,
+   "photon_number_histogram": {
+    "1": 262108,
+    "2": 36
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 6.278659409455105e-06,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema",
+   "same_sign_groups": [
+    2,
+    3
+   ],
+   "se": 8.208126970637937e-06,
+   "slope_per_iteration": 6.279521652110822e-06,
+   "status": "tested",
+   "z": 0.7650370997639157
+  },
+  {
+   "family": "ascella_a5_kernel_slice",
+   "groups": 6,
+   "input_kind": "single-photon input",
+   "iterations": 6,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 59982,
+    "2": 18
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "mub-six",
+   "groups": 5,
+   "input_kind": "single-photon input",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 327612,
+    "2": 68
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-30T195355Z-qpu_ascella-transition-matched-mesh-third-acquisition",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -8.97274945621717e-07,
+    1.166166915815724e-05
+   ],
+   "family": "ascella_target_slot_drift",
+   "group_info": [
+    {
+     "mean_n": 1.00015,
+     "members": 4,
+     "samples": 131072,
+     "slope": 1.4532180059523813e-06,
+     "span": 12
+    },
+    {
+     "mean_n": 1.00008,
+     "members": 8,
+     "samples": 262144,
+     "slope": 6.539481026785714e-06,
+     "span": 14
+    },
+    {
+     "mean_n": 1.00038,
+     "members": 4,
+     "samples": 131072,
+     "slope": 3.633045014880952e-06,
+     "span": 12
+    }
+   ],
+   "groups": 3,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "mean_detected_photons": 1.0001716613769531,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 90,
+   "photon_number_histogram": {
+    "1": 524198,
+    "2": 90
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 5.38127334947483e-06,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-10-30T200600Z-qpu_ascella-target-slot-drift",
+   "same_sign_groups": [
+    3,
+    3
+   ],
+   "se": 3.203871143256281e-06,
+   "slope_per_iteration": 5.382197106267762e-06,
+   "status": "tested",
+   "z": 1.6799043611964748
+  },
+  {
+   "family": "teleportation_rehearsal",
+   "groups": 11,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 11,
+   "modal_photon_number": 3,
+   "photon_number_histogram": {
+    "3": 13194,
+    "4": 6
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "teleportation_rehearsal",
+   "groups": 6,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 6,
+   "modal_photon_number": 3,
+   "photon_number_histogram": {
+    "3": 7193,
+    "4": 7
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "teleportation_rehearsal",
+   "groups": 6,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 6,
+   "modal_photon_number": 3,
+   "photon_number_histogram": {
+    "3": 7121,
+    "4": 6
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "teleportation_rehearsal",
+   "groups": 6,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 6,
+   "modal_photon_number": 3,
+   "photon_number_histogram": {
+    "3": 7195,
+    "4": 5
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_associator_visibility",
+   "groups": 8,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 8,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 16376,
+    "3": 8
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_associator_visibility",
+   "groups": 8,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 8,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 16382,
+    "3": 2
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "ascella_cz_tomography",
+   "groups": 72,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 72,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 287806,
+    "3": 194
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "ascella_cz_tomography",
+   "groups": 72,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 72,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 287814,
+    "3": 186
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_suppression_law",
+   "groups": 4,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 4,
+   "modal_photon_number": 3,
+   "photon_number_histogram": {
+    "3": 1597,
+    "4": 3
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_suppression_law",
+   "groups": 4,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 4,
+   "modal_photon_number": 3,
+   "photon_number_histogram": {
+    "3": 1600
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -0.003567162523378257,
+    0.0007943511280465241
+   ],
+   "family": "belenos_mode_swap_interleaved",
+   "group_info": [
+    {
+     "mean_n": 1.11492,
+     "members": 2,
+     "samples": 12000,
+     "slope": -0.0034583333333332855,
+     "span": 4
+    },
+    {
+     "mean_n": 1.12033,
+     "members": 2,
+     "samples": 12000,
+     "slope": 0.0007499999999999729,
+     "span": 4
+    }
+   ],
+   "groups": 4,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 6,
+   "mean_detected_photons": 1.11775,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 2645,
+   "photon_number_histogram": {
+    "0": 3,
+    "1": 32031,
+    "2": 3695,
+    "3": 266,
+    "4": 5
+   },
+   "platform": "qpu:belenos",
+   "relative_slope_per_iteration": -0.0012403540126735553,
+   "repeated_groups": 2,
+   "run": "results/quandela/runs/2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved-job-00",
+   "same_sign_groups": [
+    1,
+    2
+   ],
+   "se": 0.0011126514787587539,
+   "slope_per_iteration": -0.0013864056976658665,
+   "status": "tested",
+   "z": -1.2460377073443574
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 13,
+    "1": 132214,
+    "2": 16516,
+    "3": 1213,
+    "4": 43,
+    "5": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T095141Z-qpu_belenos-belenos_mode_swap_interleaved-job-03",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 4,
+    "1": 132168,
+    "2": 16641,
+    "3": 1133,
+    "4": 53,
+    "5": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T095657Z-qpu_belenos-belenos_mode_swap_interleaved-job-04",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 9,
+    "1": 131938,
+    "2": 16888,
+    "3": 1139,
+    "4": 25,
+    "5": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T100240Z-qpu_belenos-belenos_mode_swap_interleaved-job-05",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 6,
+    "1": 132287,
+    "2": 16527,
+    "3": 1145,
+    "4": 34,
+    "5": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T100724Z-qpu_belenos-belenos_mode_swap_interleaved-job-06",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 3,
+    "1": 131816,
+    "2": 16963,
+    "3": 1167,
+    "4": 51
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T101311Z-qpu_belenos-belenos_mode_swap_interleaved-job-07",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "0": 9,
+    "1": 131897,
+    "2": 16895,
+    "3": 1145,
+    "4": 53,
+    "5": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T101805Z-qpu_belenos-belenos_mode_swap_interleaved-job-08",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 131282,
+    "2": 17381,
+    "3": 1274,
+    "4": 63
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T102354Z-qpu_belenos-belenos_mode_swap_interleaved-job-09",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mode_swap_interleaved",
+   "groups": 5,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 5,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 131261,
+    "2": 17461,
+    "3": 1242,
+    "4": 35,
+    "5": 1
+   },
+   "platform": "qpu:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-31T102907Z-qpu_belenos-belenos_mode_swap_interleaved-job-10",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -2.1873589118398477e-06,
+    1.4607499088636577e-06
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00008,
+     "members": 8,
+     "samples": 262144,
+     "slope": -3.633045014880951e-07,
+     "span": 56
+    }
+   ],
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.000077247619629,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 20,
+   "photon_number_histogram": {
+    "1": 2096990,
+    "2": 162
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -3.6327643924789595e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-11-06T183602Z-qpu_ascella-ascella_signed_coherence-job-08",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 9.30657106324229e-07,
+   "slope_per_iteration": -3.633045014880951e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -0.3903741765031174
+  },
+  {
+   "ci95": [
+    -8.651978649929724e-07,
+    2.115131088964056e-06
+   ],
+   "family": "ascella_pathion_four_term_blocks",
+   "group_info": [
+    {
+     "mean_n": 1.00028,
+     "members": 4,
+     "samples": 131072,
+     "slope": 6.284936471602973e-07,
+     "span": 87
+    },
+    {
+     "mean_n": 1.00027,
+     "members": 4,
+     "samples": 131072,
+     "slope": 9.016458890551934e-07,
+     "span": 85
+    },
+    {
+     "mean_n": 1.00049,
+     "members": 2,
+     "samples": 65536,
+     "slope": 1.2207031249999999e-05,
+     "span": 5
+    },
+    {
+     "mean_n": 1.00018,
+     "members": 2,
+     "samples": 65536,
+     "slope": 0.0,
+     "span": 3
+    },
+    {
+     "mean_n": 1.0002,
+     "members": 2,
+     "samples": 65536,
+     "slope": -9.1552734375e-05,
+     "span": 1
+    },
+    {
+     "mean_n": 1.0004,
+     "members": 2,
+     "samples": 65536,
+     "slope": 0.0,
+     "span": 9
+    },
+    {
+     "mean_n": 1.0002,
+     "members": 2,
+     "samples": 65536,
+     "slope": 1.3078962053571431e-05,
+     "span": 7
+    },
+    {
+     "mean_n": 1.0004,
+     "members": 2,
+     "samples": 65536,
+     "slope": 3.662109375e-05,
+     "span": 5
+    },
+    {
+     "mean_n": 1.00035,
+     "members": 2,
+     "samples": 65536,
+     "slope": 3.0517578125e-05,
+     "span": 3
+    },
+    {
+     "mean_n": 1.00044,
+     "members": 2,
+     "samples": 65536,
+     "slope": -0.000274658203125,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00056,
+     "members": 2,
+     "samples": 65536,
+     "slope": -1.6954210069444445e-05,
+     "span": 9
+    },
+    {
+     "mean_n": 1.0004,
+     "members": 2,
+     "samples": 65536,
+     "slope": 8.719308035714285e-06,
+     "span": 7
+    }
+   ],
+   "groups": 42,
+   "input_kind": "single-photon input",
+   "iterations": 88,
+   "mean_detected_photons": 1.000383203679865,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 1105,
+   "photon_number_histogram": {
+    "1": 2882479,
+    "2": 1105
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": 6.247272142181415e-07,
+   "repeated_groups": 42,
+   "run": "results/quandela/runs/2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blocks-job-00",
+   "same_sign_groups": [
+    18,
+    42
+   ],
+   "se": 7.603019691855266e-07,
+   "slope_per_iteration": 6.249666119855417e-07,
+   "status": "tested",
+   "z": 0.8219978867804817
+  },
+  {
+   "ci95": [
+    -3.8022421163456404e-06,
+    2.7927486674515575e-07
+   ],
+   "family": "ascella_pathion_coset_block_pairs",
+   "group_info": [
+    {
+     "mean_n": 1.00039,
+     "members": 2,
+     "samples": 262144,
+     "slope": -1.6455556832107844e-06,
+     "span": 51
+    },
+    {
+     "mean_n": 1.00033,
+     "members": 2,
+     "samples": 262144,
+     "slope": -1.868423150510204e-06,
+     "span": 49
+    }
+   ],
+   "groups": 49,
+   "input_kind": "single-photon input",
+   "iterations": 52,
+   "mean_detected_photons": 1.0002855154184194,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 187,
+   "photon_number_histogram": {
+    "1": 6813798,
+    "2": 1946
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -1.7609808376195608e-06,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_pairs-job-00",
+   "same_sign_groups": [
+    2,
+    2
+   ],
+   "se": 1.0412224447197196e-06,
+   "slope_per_iteration": -1.7614836248002423e-06,
+   "status": "tested",
+   "z": -1.6917457299668617
+  },
+  {
+   "ci95": [
+    -1.988410087479571e-06,
+    1.1709749591313566e-06
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00006,
+     "members": 8,
+     "samples": 262144,
+     "slope": -4.087175641741072e-07,
+     "span": 56
+    }
+   ],
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.0000677108764648,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 15,
+   "photon_number_histogram": {
+    "1": 2097010,
+    "2": 142
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -4.086898914233566e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-11-07T042228Z-qpu_ascella-ascella_signed_coherence-job-09",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 8.059803831937102e-07,
+   "slope_per_iteration": -4.087175641741072e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -0.5071060942631845
+  },
+  {
+   "ci95": [
+    -3.039084368317121e-07,
+    2.1780681181770498e-07
+   ],
+   "family": "ascella_pathion_mesh_persistence",
+   "group_info": [
+    {
+     "mean_n": 1.00035,
+     "members": 2,
+     "samples": 262144,
+     "slope": 4.5960208019578313e-07,
+     "span": 83
+    },
+    {
+     "mean_n": 1.00027,
+     "members": 2,
+     "samples": 262144,
+     "slope": -1.8838011188271602e-06,
+     "span": 81
+    },
+    {
+     "mean_n": 1.00001,
+     "members": 2,
+     "samples": 262144,
+     "slope": 0.0,
+     "span": 79
+    },
+    {
+     "mean_n": 1.00002,
+     "members": 2,
+     "samples": 262144,
+     "slope": -1.52587890625e-05,
+     "span": 1
+    }
+   ],
+   "groups": 80,
+   "input_kind": "single-photon input",
+   "iterations": 84,
+   "mean_detected_photons": 1.0003169831775485,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 171,
+   "photon_number_histogram": {
+    "1": 11006560,
+    "2": 3486,
+    "3": 2
+   },
+   "platform": "qpu:ascella",
+   "relative_slope_per_iteration": -4.303717044796226e-08,
+   "repeated_groups": 4,
+   "run": "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00",
+   "same_sign_groups": [
+    2,
+    4
+   ],
+   "se": 1.3309307027186224e-07,
+   "slope_per_iteration": -4.305081250700355e-08,
+   "status": "tested",
+   "z": -0.3234639671251547
+  },
+  {
+   "family": "ascella_cz_tomography_reference",
+   "groups": 72,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 72,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 2031973,
+    "3": 1427
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-11-09T174125Z-qpu_ascella-ascella_cz_tomography_reference-job-00",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "ascella_cz_tomography_reference",
+   "groups": 72,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 72,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 1937314,
+    "3": 1285,
+    "4": 1
+   },
+   "platform": "qpu:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  }
+ ],
+ "qpu_jobs_not_identifiable": 52,
+ "qpu_jobs_tested": 12,
+ "qpu_jobs_underpowered": 8,
+ "read_run_problems": [],
+ "sim_control": {
+  "sim_jobs_tested": 2,
+  "sim_jobs_with_iterations": 37
+ },
+ "sim_jobs_detail": [
+  {
+   "family": "box_kite_photonic_pairs",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_pairs",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_pairs-job-02",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-04",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-05",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_single",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T213306Z-sim_belenos-box_kite_photonic_single-job-33",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_diagnostics",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-01",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_diagnostics",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-02",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_diagnostics",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_diagnostics-job-03",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_fringe",
+   "groups": 8,
+   "input_kind": "single-photon input",
+   "iterations": 8,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 20000
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-00",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_fringe",
+   "groups": 8,
+   "input_kind": "single-photon input",
+   "iterations": 8,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 20000
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-17T220939Z-sim_belenos-belenos_fringe-job-01",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 24000
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-17T232626Z-sim_belenos-belenos_mesh-job-00",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "belenos_mesh",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-17T233527Z-sim_belenos-belenos_mesh-job-01",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "belenos_mesh",
+   "groups": 16,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 24000
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-18T002932Z-sim_belenos-belenos_mesh-job-02",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_qualification",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-def-e1",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 3599698,
+    "2": 302
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-21T063940Z-sim_belenos-bdsc_qualification-tc-none-e1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "bdsc_qualification",
+   "groups": 12,
+   "input_kind": "single-photon input",
+   "iterations": 12,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 3599634,
+    "2": 366
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-21T071011Z-sim_belenos-bdsc_qualification-tc-def-e1",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -0.00036047913588295444,
+    6.751038588295448e-05
+   ],
+   "family": "ascella_two_photon_associator",
+   "group_info": [
+    {
+     "mean_n": 2.00012,
+     "members": 4,
+     "samples": 8192,
+     "slope": -0.000146484375,
+     "span": 3
+    }
+   ],
+   "groups": 3,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 8,
+   "mean_detected_photons": 2.00006103515625,
+   "modal_photon_number": 2,
+   "off_mode_samples_in_groups": 1,
+   "photon_number_histogram": {
+    "2": 16383,
+    "3": 1
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": -7.323995239403094e-05,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-10-29T160920Z-sim_ascella-ascella_two_photon_associator-job-00",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 0.00010918300671385692,
+   "slope_per_iteration": -0.000146484375,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -1.3416407864998738
+  },
+  {
+   "family": "ascella_associator_character",
+   "groups": 6,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 160000
+   },
+   "platform": "sim:ascella",
+   "repeated_groups": 6,
+   "run": "results/quandela/runs/2026-10-29T161356Z-sim_ascella-ascella_associator_character-job-00",
+   "status": "no group with variance and spread of positions"
+  },
+  {
+   "family": "ascella_associator_character",
+   "groups": 9,
+   "input_kind": "single-photon input",
+   "iterations": 84,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 840000
+   },
+   "platform": "sim:ascella",
+   "repeated_groups": 9,
+   "run": "results/quandela/runs/2026-10-29T192313Z-sim_ascella-ascella_associator_character-sim-01",
+   "status": "no group with variance and spread of positions"
+  },
+  {
+   "family": "ascella_two_photon_character",
+   "groups": 9,
+   "input_kind": "multiphoton input or broad detected-number distribution",
+   "iterations": 84,
+   "modal_photon_number": 2,
+   "photon_number_histogram": {
+    "2": 170520
+   },
+   "platform": "sim:ascella",
+   "repeated_groups": 9,
+   "run": "results/quandela/runs/2026-10-29T230547Z-sim_ascella-ascella_two_photon_character-sim-01",
+   "status": "no group with variance and spread of positions"
+  },
+  {
+   "ci95": [
+    -3.654030458311176e-05,
+    6.705788270811177e-05
+   ],
+   "family": "ascella_predecessor",
+   "group_info": [
+    {
+     "mean_n": 1.00005,
+     "members": 2,
+     "samples": 65536,
+     "slope": 1.52587890625e-05,
+     "span": 2
+    }
+   ],
+   "groups": 3,
+   "input_kind": "single-photon input",
+   "iterations": 8,
+   "mean_detected_photons": 1.0000114440917969,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 3,
+   "photon_number_histogram": {
+    "1": 262141,
+    "2": 3
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": 1.5258614441515639e-05,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 2.6428594634491452e-05,
+   "slope_per_iteration": 1.52587890625e-05,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": 0.577359079191674
+  },
+  {
+   "family": "demarrais_tower_8192d_belenos",
+   "groups": 9,
+   "input_kind": "single-photon input",
+   "iterations": 9,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 89994,
+    "2": 6
+   },
+   "platform": "sim:belenos",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-30T044809Z-sim_belenos-demarrais_tower_8192d-job-dm4",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-30T045729Z-sim_belenos-box_kite_photonic_packed-job-00",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-30T045904Z-sim_belenos-box_kite_photonic_packed-job-01",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-30T050025Z-sim_belenos-box_kite_photonic_packed-job-02",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-30T050137Z-sim_belenos-box_kite_photonic_packed-job-03",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-30T050247Z-sim_belenos-box_kite_photonic_packed-job-04",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "box_kite_photonic_packed",
+   "iterations": 0,
+   "platform": "sim:belenos",
+   "run": "results/quandela/runs/2026-10-30T050354Z-sim_belenos-box_kite_photonic_packed-job-05",
+   "status": "no iterations with counts"
+  },
+  {
+   "family": "ascella_a5_kernel_slice",
+   "groups": 6,
+   "input_kind": "single-photon input",
+   "iterations": 6,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 59999,
+    "2": 1
+   },
+   "platform": "sim:ascella",
+   "repeated_groups": 0,
+   "run": "results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice",
+   "status": "not identifiable: no circuit repeats inside the job, so iteration position is aliased with setting"
+  },
+  {
+   "ci95": [
+    -3.7746196276211957e-06,
+    2.397761872235842e-07
+   ],
+   "family": "ascella_target_slot_drift",
+   "group_info": [
+    {
+     "mean_n": 1.00002,
+     "members": 4,
+     "samples": 131072,
+     "slope": -7.266090029761905e-07,
+     "span": 12
+    },
+    {
+     "mean_n": 1.00001,
+     "members": 8,
+     "samples": 262144,
+     "slope": -2.1798270089285713e-06,
+     "span": 14
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 4,
+     "samples": 131072,
+     "slope": 3.6330450148809554e-07,
+     "span": 12
+    }
+   ],
+   "groups": 3,
+   "input_kind": "single-photon input",
+   "iterations": 16,
+   "mean_detected_photons": 1.000020980834961,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 11,
+   "photon_number_histogram": {
+    "1": 524277,
+    "2": 11
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": -1.7673846389933826e-06,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-10-30T200500Z-sim_ascella-target-slot-drift",
+   "same_sign_groups": [
+    2,
+    3
+   ],
+   "se": 1.024099383077909e-06,
+   "slope_per_iteration": -1.7674217201988059e-06,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -1.7258302752676768
+  },
+  {
+   "family": "ascella_signed_coherence",
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "modal_photon_number": 1,
+   "photon_number_histogram": {
+    "1": 524286,
+    "2": 2
+   },
+   "platform": "sim:ascella",
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-11-06T175319Z-sim_ascella-ascella_signed_coherence-job-02-sim-replay",
+   "status": "no group with variance and spread of positions"
+  },
+  {
+   "ci95": [
+    -7.58488706621873e-07,
+    3.9518420513377777e-07
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00001,
+     "members": 8,
+     "samples": 262144,
+     "slope": -1.816522507440476e-07,
+     "span": 56
+    }
+   ],
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.000011920928955,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 2,
+   "photon_number_histogram": {
+    "1": 2097127,
+    "2": 25
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": -1.8165008530628598e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-11-06T175944Z-sim_ascella-ascella_signed_coherence-job-08-sim",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 2.943097222335909e-07,
+   "slope_per_iteration": -1.816522507440476e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -0.617214577097361
+  },
+  {
+   "ci95": [
+    -5.416704715130782e-07,
+    8.904406429716691e-07
+   ],
+   "family": "ascella_pathion_four_term_blocks",
+   "group_info": [
+    {
+     "mean_n": 1.00011,
+     "members": 4,
+     "samples": 131072,
+     "slope": 0.0,
+     "span": 87
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 4,
+     "samples": 131072,
+     "slope": 3.6325302005101316e-07,
+     "span": 85
+    },
+    {
+     "mean_n": 1.00009,
+     "members": 2,
+     "samples": 65536,
+     "slope": 1.220703125e-05,
+     "span": 5
+    },
+    {
+     "mean_n": 1.00002,
+     "members": 2,
+     "samples": 65536,
+     "slope": -1.0172526041666666e-05,
+     "span": 3
+    },
+    {
+     "mean_n": 1.00006,
+     "members": 2,
+     "samples": 65536,
+     "slope": 6.103515625e-05,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00011,
+     "members": 2,
+     "samples": 65536,
+     "slope": 3.3908420138888887e-06,
+     "span": 9
+    },
+    {
+     "mean_n": 1.00008,
+     "members": 2,
+     "samples": 65536,
+     "slope": -4.359654017857143e-06,
+     "span": 7
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 2,
+     "samples": 65536,
+     "slope": 6.103515625e-06,
+     "span": 5
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 2,
+     "samples": 65536,
+     "slope": 1.0172526041666666e-05,
+     "span": 3
+    },
+    {
+     "mean_n": 1.00014,
+     "members": 2,
+     "samples": 65536,
+     "slope": -3.0517578125e-05,
+     "span": 1
+    },
+    {
+     "mean_n": 1.00009,
+     "members": 2,
+     "samples": 65536,
+     "slope": 6.781684027777777e-06,
+     "span": 9
+    },
+    {
+     "mean_n": 1.00005,
+     "members": 2,
+     "samples": 65536,
+     "slope": -4.359654017857143e-06,
+     "span": 7
+    }
+   ],
+   "groups": 42,
+   "input_kind": "single-photon input",
+   "iterations": 88,
+   "mean_detected_photons": 1.0000672773881392,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 194,
+   "photon_number_histogram": {
+    "1": 2883390,
+    "2": 194
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": 1.74373354345454e-07,
+   "repeated_groups": 42,
+   "run": "results/quandela/runs/2026-11-06T215025Z-sim_ascella-ascella_pathion_four_term_blocks-sim-00",
+   "same_sign_groups": [
+    18,
+    41
+   ],
+   "se": 3.653411812107409e-07,
+   "slope_per_iteration": 1.7438508572929542e-07,
+   "status": "tested",
+   "z": 0.4773211855049659
+  },
+  {
+   "ci95": [
+    -6.46556124855491e-07,
+    1.24446149395785e-06
+   ],
+   "family": "ascella_pathion_coset_block_pairs",
+   "group_info": [
+    {
+     "mean_n": 1.00008,
+     "members": 2,
+     "samples": 262144,
+     "slope": 0.0,
+     "span": 51
+    },
+    {
+     "mean_n": 1.00008,
+     "members": 2,
+     "samples": 262144,
+     "slope": 6.228077168367346e-07,
+     "span": 49
+    }
+   ],
+   "groups": 49,
+   "input_kind": "single-photon input",
+   "iterations": 52,
+   "mean_detected_photons": 1.000055899986854,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 40,
+   "photon_number_histogram": {
+    "1": 6815363,
+    "2": 381
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": 2.989359740341608e-07,
+   "repeated_groups": 3,
+   "run": "results/quandela/runs/2026-11-07T002936Z-sim_ascella-ascella_pathion_coset_block_pairs-sim-00",
+   "same_sign_groups": [
+    1,
+    2
+   ],
+   "se": 4.824113182000911e-07,
+   "slope_per_iteration": 2.989526845511795e-07,
+   "status": "tested",
+   "z": 0.6197049556519361
+  },
+  {
+   "ci95": [
+    -1.1391186135311785e-06,
+    6.849879866710594e-07
+   ],
+   "family": "ascella_signed_coherence",
+   "group_info": [
+    {
+     "mean_n": 1.00002,
+     "members": 8,
+     "samples": 262144,
+     "slope": -2.270653134300595e-07,
+     "span": 56
+    }
+   ],
+   "groups": 57,
+   "input_kind": "single-photon input",
+   "iterations": 64,
+   "mean_detected_photons": 1.0000152587890625,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 5,
+   "photon_number_histogram": {
+    "1": 2097120,
+    "2": 32
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": -2.2706184874120542e-07,
+   "repeated_groups": 1,
+   "run": "results/quandela/runs/2026-11-07T042004Z-sim_ascella-ascella_signed_coherence-job-09-sim",
+   "same_sign_groups": [
+    1,
+    1
+   ],
+   "se": 4.653418671441307e-07,
+   "slope_per_iteration": -2.270653134300595e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -0.4879537592944122
+  },
+  {
+   "ci95": [
+    -7.403323459131329e-07,
+    2.2486523048438191e-07
+   ],
+   "family": "ascella_pathion_mesh_persistence",
+   "group_info": [
+    {
+     "mean_n": 1.00005,
+     "members": 2,
+     "samples": 262144,
+     "slope": -3.676816641566265e-07,
+     "span": 83
+    },
+    {
+     "mean_n": 1.00006,
+     "members": 2,
+     "samples": 262144,
+     "slope": -9.419005594135802e-08,
+     "span": 81
+    }
+   ],
+   "groups": 80,
+   "input_kind": "single-photon input",
+   "iterations": 84,
+   "mean_detected_photons": 1.000063033331008,
+   "modal_photon_number": 1,
+   "off_mode_samples_in_groups": 29,
+   "photon_number_histogram": {
+    "1": 11009354,
+    "2": 694
+   },
+   "platform": "sim:ascella",
+   "relative_slope_per_iteration": -2.577173129336829e-07,
+   "repeated_groups": 4,
+   "run": "results/quandela/runs/2026-11-07T181127Z-sim_ascella-ascella_pathion_mesh_persistence-sim-00",
+   "same_sign_groups": [
+    2,
+    2
+   ],
+   "se": 2.4622839603453693e-07,
+   "slope_per_iteration": -2.577335577143755e-07,
+   "status": "underpowered: fewer than 30 off-mode samples in the groups used",
+   "z": -1.0467255680706495
+  }
+ ],
+ "yield_jobs": [
+  {
+   "groups": 6,
+   "iterations": 6,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "ci95": [
+    -0.021101336647150148,
+    0.006449153397156717
+   ],
+   "groups": 3,
+   "groups_used": 3,
+   "iterations": 8,
+   "logit_slope_per_iteration": -0.007326091624996715,
+   "platform": "qpu:ascella",
+   "run": "results/quandela/runs/2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associator-job-00",
+   "se": 0.007028315382737033,
+   "status": "tested",
+   "z": -1.0423680819718308
+  },
+  {
+   "groups": 11,
+   "iterations": 11,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.00044983,
+    0.00060372
+   ]
+  },
+  {
+   "groups": 6,
+   "iterations": 6,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T035736Z-qpu_belenos-teleportation_rehearsal-job-02",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.00044194,
+    0.00057423
+   ]
+  },
+  {
+   "groups": 6,
+   "iterations": 6,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.00037567,
+    0.00058715
+   ]
+  },
+  {
+   "groups": 6,
+   "iterations": 6,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.00040907,
+    0.00056616
+   ]
+  },
+  {
+   "groups": 8,
+   "iterations": 8,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T050044Z-qpu_belenos-belenos_associator_visibility-job-00",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.01276,
+    0.01588
+   ]
+  },
+  {
+   "groups": 8,
+   "iterations": 8,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T050537Z-qpu_belenos-belenos_associator_visibility-job-01",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.01225,
+    0.015875
+   ]
+  },
+  {
+   "groups": 72,
+   "iterations": 72,
+   "platform": "qpu:ascella",
+   "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-00",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.014816,
+    0.027148
+   ]
+  },
+  {
+   "groups": 72,
+   "iterations": 72,
+   "platform": "qpu:ascella",
+   "run": "results/quandela/runs/2026-10-31T050944Z-qpu_ascella-ascella_cz_tomography-job-01",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.0037336,
+    0.027423
+   ]
+  },
+  {
+   "groups": 4,
+   "iterations": 4,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T051045Z-qpu_belenos-belenos_suppression_law-job-00",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.0002686,
+    0.00031902
+   ]
+  },
+  {
+   "groups": 4,
+   "iterations": 4,
+   "platform": "qpu:belenos",
+   "run": "results/quandela/runs/2026-10-31T051710Z-qpu_belenos-belenos_suppression_law-job-01",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.00027048,
+    0.00030878
+   ]
+  },
+  {
+   "groups": 72,
+   "iterations": 72,
+   "platform": "qpu:ascella",
+   "run": "results/quandela/runs/2026-11-09T174125Z-qpu_ascella-ascella_cz_tomography_reference-job-00",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.015065,
+    0.026415
+   ]
+  },
+  {
+   "groups": 72,
+   "iterations": 72,
+   "platform": "qpu:ascella",
+   "run": "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
+   "status": "not identifiable: no circuit repeats inside the job (position aliased with setting)",
+   "yield_range": [
+    0.0040695,
+    0.026142
+   ]
+  }
+ ]
+}

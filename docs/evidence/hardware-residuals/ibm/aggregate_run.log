@@ -1,0 +1,321 @@
+{
+ "a6_globally_corrected_slope_interval": {
+  "slope_per_hour": 0.0015856812029107403,
+  "se": 0.00018685332912669688,
+  "dof": 4,
+  "t_critical_at_global_alpha": 93.13376961296919,
+  "interval_at_global_alpha": [
+   -0.015816673703391355,
+   0.018988036109212833
+  ]
+ },
+ "analysis_own_correction": {
+  "a1": {
+   "tests": 348882,
+   "log10_line": -6.843708558971848,
+   "n_bonferroni": 1686,
+   "n_bh": 3315
+  },
+  "a1b": {
+   "tests": 222,
+   "log10_line": -3.64738297011462,
+   "n_bonferroni": 58,
+   "n_bh": 77
+  },
+  "a2": {
+   "tests": 180,
+   "log10_line": -3.5563025007672873,
+   "n_bonferroni": 9,
+   "n_bh": 12
+  },
+  "a3": {
+   "tests": 90804,
+   "log10_line": -6.259134975679173,
+   "n_bonferroni": 60,
+   "n_bh": 94
+  },
+  "a4": {
+   "tests": 182967,
+   "log10_line": -6.563402762933961,
+   "n_bonferroni": 424,
+   "n_bh": 539
+  },
+  "a5": {
+   "tests": 4397,
+   "log10_line": -4.944186461283687,
+   "n_bonferroni": 1033,
+   "n_bh": 1439
+  },
+  "a6": {
+   "tests": 1,
+   "log10_line": -1.3010299956639813,
+   "n_bonferroni": 1,
+   "n_bh": 1
+  }
+ },
+ "global_by_analysis": {
+  "a1": {
+   "tests": 348882,
+   "global_bonferroni": 1631,
+   "global_bh": 3262
+  },
+  "a1b": {
+   "tests": 222,
+   "global_bonferroni": 48,
+   "global_bh": 59
+  },
+  "a2": {
+   "tests": 180,
+   "global_bonferroni": 5,
+   "global_bh": 9
+  },
+  "a3": {
+   "tests": 90804,
+   "global_bonferroni": 51,
+   "global_bh": 142
+  },
+  "a4": {
+   "tests": 182967,
+   "global_bonferroni": 409,
+   "global_bh": 593
+  },
+  "a5": {
+   "tests": 4397,
+   "global_bonferroni": 879,
+   "global_bh": 1182
+  },
+  "a6": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  }
+ },
+ "global_by_group": {
+  "a1:white_line": {
+   "tests": 116294,
+   "global_bonferroni": 321,
+   "global_bh": 696
+  },
+  "a1:narrow_line": {
+   "tests": 116294,
+   "global_bonferroni": 118,
+   "global_bh": 296
+  },
+  "a1:drift": {
+   "tests": 116294,
+   "global_bonferroni": 1192,
+   "global_bh": 2270
+  },
+  "a1b:stack_white": {
+   "tests": 74,
+   "global_bonferroni": 27,
+   "global_bh": 31
+  },
+  "a1b:stack_narrow": {
+   "tests": 74,
+   "global_bonferroni": 16,
+   "global_bh": 21
+  },
+  "a1b:stack_60hz": {
+   "tests": 74,
+   "global_bonferroni": 5,
+   "global_bh": 7
+  },
+  "a2:dispersion": {
+   "tests": 36,
+   "global_bonferroni": 5,
+   "global_bh": 8
+  },
+  "a2:tail": {
+   "tests": 72,
+   "global_bonferroni": 0,
+   "global_bh": 1
+  },
+  "a2:cluster": {
+   "tests": 72,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_bin": {
+   "tests": 9,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_trend": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_contrast": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_bin_trimmed": {
+   "tests": 9,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_trend_trimmed": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_contrast_trimmed": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a3:pilot_pair": {
+   "tests": 11628,
+   "global_bonferroni": 1,
+   "global_bh": 2
+  },
+  "a3:state_prep_bin": {
+   "tests": 9,
+   "global_bonferroni": 1,
+   "global_bh": 4
+  },
+  "a3:state_prep_trend": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 1
+  },
+  "a3:state_prep_contrast": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 1
+  },
+  "a3:state_prep_bin_trimmed": {
+   "tests": 9,
+   "global_bonferroni": 0,
+   "global_bh": 4
+  },
+  "a3:state_prep_trend_trimmed": {
+   "tests": 1,
+   "global_bonferroni": 1,
+   "global_bh": 1
+  },
+  "a3:state_prep_contrast_trimmed": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 1
+  },
+  "a3:state_prep_pair": {
+   "tests": 79132,
+   "global_bonferroni": 48,
+   "global_bh": 128
+  },
+  "a4:pilot_diag": {
+   "tests": 153,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  },
+  "a4:pilot_cross": {
+   "tests": 23256,
+   "global_bonferroni": 0,
+   "global_bh": 5
+  },
+  "a4:state_prep_diag": {
+   "tests": 1294,
+   "global_bonferroni": 364,
+   "global_bh": 455
+  },
+  "a4:state_prep_cross": {
+   "tests": 158264,
+   "global_bonferroni": 45,
+   "global_bh": 133
+  },
+  "a5:column": {
+   "tests": 4377,
+   "global_bonferroni": 869,
+   "global_bh": 1170
+  },
+  "a5:group": {
+   "tests": 16,
+   "global_bonferroni": 8,
+   "global_bh": 9
+  },
+  "a5:continuation": {
+   "tests": 4,
+   "global_bonferroni": 2,
+   "global_bh": 3
+  },
+  "a6:age": {
+   "tests": 1,
+   "global_bonferroni": 0,
+   "global_bh": 0
+  }
+ },
+ "n_tests_total": 627453,
+ "tests_per_analysis_file": {
+  "a1": 348882,
+  "a1b": 222,
+  "a2": 180,
+  "a3": 90804,
+  "a4": 182967,
+  "a5": 4397,
+  "a6": 1
+ },
+ "alpha": 0.05,
+ "global_bonferroni_log10_threshold": -7.098611195769065,
+ "n_global_bonferroni": 3023,
+ "n_global_bh": 5247,
+ "category_table": {
+  "60hz_window": {
+   "population_only_pubs": [
+    33,
+    0
+   ],
+   "phase_or_other_pubs": [
+    298,
+    46
+   ],
+   "format": "[n PUB rows, n with log10 p < -3 at the bin]"
+  },
+  "29.7hz_peak": {
+   "population_only_pubs": [
+    30,
+    13
+   ],
+   "phase_or_other_pubs": [
+    216,
+    37
+   ],
+   "format": "[n PUB rows, n with log10 p < -3 at the bin]"
+  }
+ }
+}
+own correction {"a1": {"tests": 348882, "log10_line": -6.843708558971848, "n_bonferroni": 1686, "n_bh": 3315}, "a1b": {"tests": 222, "log10_line": -3.64738297011462, "n_bonferroni": 58, "n_bh": 77}, "a2": {"tests": 180, "log10_line": -3.5563025007672873, "n_bonferroni": 9, "n_bh": 12}, "a3": {"tests": 90804, "log10_line": -6.259134975679173, "n_bonferroni": 60, "n_bh": 94}, "a4": {"tests": 182967, "log10_line": -6.563402762933961, "n_bonferroni": 424, "n_bh": 539}, "a5": {"tests": 4397, "log10_line": -4.944186461283687, "n_bonferroni": 1033, "n_bh": 1439}, "a6": {"tests": 1, "log10_line": -1.3010299956639813, "n_bonferroni": 1, "n_bh": 1}}
+global by analysis {"a1": {"tests": 348882, "global_bonferroni": 1631, "global_bh": 3262}, "a1b": {"tests": 222, "global_bonferroni": 48, "global_bh": 59}, "a2": {"tests": 180, "global_bonferroni": 5, "global_bh": 9}, "a3": {"tests": 90804, "global_bonferroni": 51, "global_bh": 142}, "a4": {"tests": 182967, "global_bonferroni": 409, "global_bh": 593}, "a5": {"tests": 4397, "global_bonferroni": 879, "global_bh": 1182}, "a6": {"tests": 1, "global_bonferroni": 0, "global_bh": 0}}
+a1:drift {'tests': 116294, 'global_bonferroni': 1192, 'global_bh': 2270}
+a1:narrow_line {'tests': 116294, 'global_bonferroni': 118, 'global_bh': 296}
+a1:white_line {'tests': 116294, 'global_bonferroni': 321, 'global_bh': 696}
+a1b:stack_60hz {'tests': 74, 'global_bonferroni': 5, 'global_bh': 7}
+a1b:stack_narrow {'tests': 74, 'global_bonferroni': 16, 'global_bh': 21}
+a1b:stack_white {'tests': 74, 'global_bonferroni': 27, 'global_bh': 31}
+a2:cluster {'tests': 72, 'global_bonferroni': 0, 'global_bh': 0}
+a2:dispersion {'tests': 36, 'global_bonferroni': 5, 'global_bh': 8}
+a2:tail {'tests': 72, 'global_bonferroni': 0, 'global_bh': 1}
+a3:pilot_bin {'tests': 9, 'global_bonferroni': 0, 'global_bh': 0}
+a3:pilot_bin_trimmed {'tests': 9, 'global_bonferroni': 0, 'global_bh': 0}
+a3:pilot_contrast {'tests': 1, 'global_bonferroni': 0, 'global_bh': 0}
+a3:pilot_contrast_trimmed {'tests': 1, 'global_bonferroni': 0, 'global_bh': 0}
+a3:pilot_pair {'tests': 11628, 'global_bonferroni': 1, 'global_bh': 2}
+a3:pilot_trend {'tests': 1, 'global_bonferroni': 0, 'global_bh': 0}
+a3:pilot_trend_trimmed {'tests': 1, 'global_bonferroni': 0, 'global_bh': 0}
+a3:state_prep_bin {'tests': 9, 'global_bonferroni': 1, 'global_bh': 4}
+a3:state_prep_bin_trimmed {'tests': 9, 'global_bonferroni': 0, 'global_bh': 4}
+a3:state_prep_contrast {'tests': 1, 'global_bonferroni': 0, 'global_bh': 1}
+a3:state_prep_contrast_trimmed {'tests': 1, 'global_bonferroni': 0, 'global_bh': 1}
+a3:state_prep_pair {'tests': 79132, 'global_bonferroni': 48, 'global_bh': 128}
+a3:state_prep_trend {'tests': 1, 'global_bonferroni': 0, 'global_bh': 1}
+a3:state_prep_trend_trimmed {'tests': 1, 'global_bonferroni': 1, 'global_bh': 1}
+a4:pilot_cross {'tests': 23256, 'global_bonferroni': 0, 'global_bh': 5}
+a4:pilot_diag {'tests': 153, 'global_bonferroni': 0, 'global_bh': 0}
+a4:state_prep_cross {'tests': 158264, 'global_bonferroni': 45, 'global_bh': 133}
+a4:state_prep_diag {'tests': 1294, 'global_bonferroni': 364, 'global_bh': 455}
+a5:column {'tests': 4377, 'global_bonferroni': 869, 'global_bh': 1170}
+a5:continuation {'tests': 4, 'global_bonferroni': 2, 'global_bh': 3}
+a5:group {'tests': 16, 'global_bonferroni': 8, 'global_bh': 9}
+a6:age {'tests': 1, 'global_bonferroni': 0, 'global_bh': 0}

@@ -1,0 +1,23 @@
+90804 {'n_tests': 90804, 'alpha': 0.05, 'bonferroni_log10_threshold': -6.259134975679173, 'n_bonferroni': 60, 'n_bh': 94}
+pilot 24 {'n_pubs': 24, 'mean_slope_r_per_bin': -0.00010108086853104183, 'ci95': [-0.00015656963980662455, -4.559209725545911e-05], 't': -3.768360753854359, 'log10_p': -3.0007863118103137} {'n_pubs': 24, 'mean_r_near_minus_far': 0.001155803871977993, 'ci95': [0.0005310067703242297, 0.0017806009736317562], 't': 3.8267822779434906, 'log10_p': -3.0634397158730073}
+   {'bin': '1-1', 'n_pubs': 24, 'mean_r': 0.00119, 't': 3.7862, 'log10_p': -3.01991, 'independence_null_se': 0.00034}
+   {'bin': '2-2', 'n_pubs': 24, 'mean_r': 0.00041, 't': 1.36462, 'log10_p': -0.73148, 'independence_null_se': 0.00029}
+   {'bin': '3-3', 'n_pubs': 24, 'mean_r': 0.00019, 't': 0.65332, 'log10_p': -0.28397, 'independence_null_se': 0.00025}
+   {'bin': '4-4', 'n_pubs': 24, 'mean_r': 0.00033, 't': 1.4818, 'log10_p': -0.81825, 'independence_null_se': 0.00022}
+   {'bin': '5-5', 'n_pubs': 24, 'mean_r': -0.00028, 't': -1.26482, 'log10_p': -0.66035, 'independence_null_se': 0.00019}
+   {'bin': '6-6', 'n_pubs': 24, 'mean_r': -3e-05, 't': -0.13605, 'log10_p': -0.04917, 'independence_null_se': 0.00018}
+   {'bin': '7-7', 'n_pubs': 24, 'mean_r': 0.0002, 't': 0.97433, 'log10_p': -0.46849, 'independence_null_se': 0.00018}
+   {'bin': '8-10', 'n_pubs': 24, 'mean_r': 7e-05, 't': 0.68905, 'log10_p': -0.30304, 'independence_null_se': 0.0001}
+   {'bin': '11-99', 'n_pubs': 24, 'mean_r': 2e-05, 't': 0.3303, 'log10_p': -0.12833, 'independence_null_se': 5e-05}
+state_prep 12 {'n_pubs': 12, 'mean_slope_r_per_bin': -0.00045770080832299953, 'ci95': [-0.0005389128873670436, -0.0003764887292789555], 't': -12.40446863002395, 'log10_p': -7.082612019345335} {'n_pubs': 12, 'mean_r_near_minus_far': 0.0048854739098135955, 'ci95': [0.003991115716252335, 0.005779832103374856], 't': 12.022985480456793, 'log10_p': -6.942857804436587}
+   {'bin': '1-1', 'n_pubs': 12, 'mean_r': 0.00507, 't': 12.56803, 'log10_p': -7.14138, 'independence_null_se': 0.00019}
+   {'bin': '2-2', 'n_pubs': 12, 'mean_r': 0.00242, 't': 10.04247, 'log10_p': -6.14958, 'independence_null_se': 0.00019}
+   {'bin': '3-3', 'n_pubs': 12, 'mean_r': 0.00078, 't': 5.79717, 'log10_p': -3.92159, 'independence_null_se': 0.00017}
+   {'bin': '4-4', 'n_pubs': 12, 'mean_r': 0.00084, 't': 5.4997, 'log10_p': -3.72974, 'independence_null_se': 0.00013}
+   {'bin': '5-5', 'n_pubs': 12, 'mean_r': 0.0006, 't': 3.93496, 'log10_p': -2.63225, 'independence_null_se': 0.00011}
+   {'bin': '6-6', 'n_pubs': 12, 'mean_r': 0.00065, 't': 4.92517, 'log10_p': -3.34378, 'independence_null_se': 0.00011}
+   {'bin': '7-7', 'n_pubs': 12, 'mean_r': 0.00039, 't': 3.09437, 'log10_p': -1.99114, 'independence_null_se': 0.00012}
+   {'bin': '8-10', 'n_pubs': 12, 'mean_r': 0.00018, 't': 3.15727, 'log10_p': -2.03985, 'independence_null_se': 6e-05}
+   {'bin': '11-99', 'n_pubs': 12, 'mean_r': 0.00012, 't': 2.61299, 'log10_p': -1.61747, 'independence_null_se': 3e-05}
+1.0039018396708395 1.0045577711973859 [{'qubits': [7, 8], 'graph_distance': 1, 'observed': 24, 'expected': 3.194580078125, 'log10_p': -12.71410826689854}, {'qubits': [132, 133], 'graph_distance': 1, 'observed': 8, 'expected': 0.911376953125, 'log10_p': -4.9768729837072065}, {'qubits': [7, 120], 'graph_distance': 23, 'observed': 31, 'expected': 15.686279296875, 'log10_p': -3.083199766792005}]
+[{'id': 'state_prep_kingston:026-10-18T214519.655411Z:x_history|pair58-71', 'log10_p': -38.80797262816747}, {'id': 'state_prep_kingston::e/2026-10-18T083402.386701Z:prep0|pair58-71', 'log10_p': -34.63511019638112}, {'id': 'state_prep_kingston:026-10-26T190506.325237Z:x_history|pair58-71', 'log10_p': -31.24959508392386}, {'id': 'state_prep_kingston:026-10-27T011025.944327Z:x_history|pair58-71', 'log10_p': -29.823105465760396}, {'id': 'state_prep_kingston:026-10-18T214519.655411Z:x_history|pair62-63', 'log10_p': -29.76106724663115}, {'id': 'state_prep_kingston:026-10-18T214519.655411Z:x_history|pair61-63', 'log10_p': -28.71120954102471}, {'id': 'state_prep_kingston:026-10-18T214519.655411Z:x_history|pair154-155', 'log10_p': -28.197556116633645}, {'id': 'state_prep_kingston:026-10-18T083404.226285Z:x_history|pair61-62', 'log10_p': -25.90429245164979}, {'id': 'state_prep_kingston:026-10-18T083403.945334Z:x_history|pair58-71', 'log10_p': -23.01457117596976}, {'id': 'state_prep_kingston:026-10-18T083404.226285Z:x_history|pair62-63', 'log10_p': -22.783813482110414}] ['state_prep_kingston_trimmed|bin1-1', 'state_prep_kingston_trimmed|bin2-2', 'state_prep_kingston_trimmed|near_minus_far', 'state_prep_kingston_trimmed|trend', 'state_prep_kingston|bin1-1', 'state_prep_kingston|bin2-2', 'state_prep_kingston|near_minus_far', 'state_prep_kingston|trend']

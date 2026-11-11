@@ -1,0 +1,22 @@
+== ibm_kingston state-prep PUBs
+ep:e/2026-10-18T083402.386701Z:prep0 N 32768 Q 149 rep_us 50 | lag1 sig+,sig-,runs>=5 obs,exp: data (33, 0, 357, 0.19) control (0, 0, 0, 0.19) | lag ratios [10.53, 6.38, 4.06] | r at 1,2,11+ hops [0.00443, 0.00323, 0.00016] | drift cols p<1e-7: 3 of 139
+/2026-10-18T083403.945334Z:x_history N 16384 Q 149 rep_us 250 | lag1 sig+,sig-,runs>=5 obs,exp: data (8, 0, 1, 0.05) control (0, 0, 0, 0.05) | lag ratios [6.76, 2.03, 1.65] | r at 1,2,11+ hops [0.00541, 0.00221, 0.00016] | drift cols p<1e-7: 0 of 114
+/2026-10-18T083404.226285Z:x_history N 32768 Q 149 rep_us 50 | lag1 sig+,sig-,runs>=5 obs,exp: data (64, 0, 424, 0.23) control (0, 0, 0, 0.23) | lag ratios [9.92, 5.95, 3.77] | r at 1,2,11+ hops [0.00601, 0.00165, 4e-05] | drift cols p<1e-7: 2 of 142
+ep:e/2026-10-18T083404.414317Z:prep0 N 16384 Q 149 rep_us 250 | lag1 sig+,sig-,runs>=5 obs,exp: data (7, 0, 0, 0.05) control (0, 0, 0, 0.05) | lag ratios [7.2, 2.59, 1.68] | r at 1,2,11+ hops [0.00341, 0.00194, 0.0003] | drift cols p<1e-7: 0 of 110
+/2026-10-18T214519.655411Z:x_history N 32768 Q 148 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (113, 0, 1018, 0.43) control (0, 0, 1, 0.43) | lag ratios [9.43, 6.7, 4.89] | r at 1,2,11+ hops [0.00785, 0.00284, 6e-05] | drift cols p<1e-7: 6 of 146
+ep:e/2026-10-18T220218.089776Z:prep0 N 32768 Q 148 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (39, 0, 638, 0.14) control (0, 0, 0, 0.14) | lag ratios [11.03, 8.09, 6.06] | r at 1,2,11+ hops [0.00371, 0.00207, 1e-05] | drift cols p<1e-7: 5 of 137
+ep:e/2026-10-26T190449.023973Z:prep0 N 32768 Q 69 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (19, 0, 427, 41.39) control (0, 0, 39, 41.39) | lag ratios [6.87, 4.89, 3.61] | r at 1,2,11+ hops [0.00395, 0.00243, 0.00018] | drift cols p<1e-7: 1 of 61
+/2026-10-26T190506.325237Z:x_history N 32768 Q 69 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (46, 0, 600, 45.2) control (0, 1, 43, 45.2) | lag ratios [6.28, 4.61, 3.49] | r at 1,2,11+ hops [0.00619, 0.00463, 0.00033] | drift cols p<1e-7: 3 of 67
+ep:e/2026-10-27T010741.272123Z:prep0 N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (18, 0, 447, 0.38) control (0, 0, 0, 0.38) | lag ratios [8.36, 6.53, 5.07] | r at 1,2,11+ hops [0.00319, 0.00158, -0.00018] | drift cols p<1e-7: 1 of 60
+/2026-10-27T010917.104805Z:x_history N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (46, 0, 567, 0.46) control (0, 0, 0, 0.46) | lag ratios [6.83, 5.35, 4.23] | r at 1,2,11+ hops [0.00588, 0.00232, 0.00035] | drift cols p<1e-7: 5 of 64
+/2026-10-27T011025.944327Z:x_history N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (46, 0, 509, 0.43) control (0, 0, 0, 0.43) | lag ratios [6.98, 5.41, 4.28] | r at 1,2,11+ hops [0.00602, 0.00216, 2e-05] | drift cols p<1e-7: 5 of 65
+ep:e/2026-10-27T011140.821404Z:prep0 N 32768 Q 66 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (19, 0, 377, 0.2) control (0, 0, 0, 0.2) | lag ratios [9.72, 7.44, 5.74] | r at 1,2,11+ hops [0.00476, 0.00198, 1e-05] | drift cols p<1e-7: 1 of 58
+docs/evidence/hardware-residuals/ibm/verify_leads.py:71: RuntimeWarning: Mean of empty slice
+  means = [round(float(r[iu][d[iu] == h].mean()), 5) for h in (1, 2)] + [round(float(r[iu][d[iu] >= 11].mean()), 5)]
+site-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+ep:e/2026-10-27T204605.871056Z:prep0 N 32768 Q 6 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (1, 0, 1, 0.0) control (0, 0, 0, 0.0) | lag ratios [50.57, 0.0, 0.0] | r at 1,2,11+ hops [-0.00042, 0.00445, nan] | drift cols p<1e-7: 0 of 4
+/2026-10-27T204605.871056Z:remeasure N 32768 Q 6 rep_us 20 | lag1 sig+,sig-,runs>=5 obs,exp: data (3, 0, 1, 0.05) control (0, 0, 0, 0.05) | lag ratios [1.52, 1.11, 0.96] | r at 1,2,11+ hops [0.00016, -0.00124, nan] | drift cols p<1e-7: 0 of 3
+drift total {'drift_cols': 1170, 'drift_hit': 32}
+== ibm_fez actor pilot, pair (7, 8)
+shots 73728 joint 24.0 expected 3.19 log10 p -13.0

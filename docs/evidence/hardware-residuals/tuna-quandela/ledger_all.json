@@ -1,0 +1,1748 @@
+{
+ "bh_survivors": 65,
+ "bonferroni_survivors": 58,
+ "by_analysis": {
+  "1": {
+   "bh": 7,
+   "bonferroni": 7,
+   "tests": 9
+  },
+  "2": {
+   "bh": 4,
+   "bonferroni": 4,
+   "tests": 7
+  },
+  "3": {
+   "bh": 54,
+   "bonferroni": 47,
+   "tests": 61
+  },
+  "4": {
+   "bh": 0,
+   "bonferroni": 0,
+   "tests": 13
+  }
+ },
+ "pooled_bonferroni_alpha": 0.00055556,
+ "rows": [
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 400230.0,
+    "q_over_dof": 17401.0
+   },
+   "log10_p": -86859.6,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 311630.0,
+    "q_over_dof": 13549.0
+   },
+   "log10_p": -67621.1,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 279870.0,
+    "q_over_dof": 12168.0
+   },
+   "log10_p": -60725.8,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 340,
+    "q_over_dof": 688.97,
+    "q_residual": 234250.0
+   },
+   "log10_p": -50315.1,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 229270.0,
+    "q_over_dof": 9968.2
+   },
+   "log10_p": -49739.1,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 155870.0,
+    "q_over_dof": 6777.0
+   },
+   "log10_p": -33802.5,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 339,
+    "q_over_dof": 466.08,
+    "q_residual": 158000.0
+   },
+   "log10_p": -33787.8,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 129450.0,
+    "q_over_dof": 5628.3
+   },
+   "log10_p": -28066.5,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 335,
+    "q_over_dof": 367.58,
+    "q_residual": 123140.0
+   },
+   "log10_p": -26241.0,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 337,
+    "q_over_dof": 326.5,
+    "q_residual": 110030.0
+   },
+   "log10_p": -23400.0,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "within-cluster binomial homogeneity of e1 (prepared |1>, P(0|1)) over all readout clusters (summed chi-square)",
+   "effect": {
+    "Q": 101150.0,
+    "Q_over_dof": 273.38,
+    "dof": 370
+   },
+   "log10_p": -21437.4,
+   "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.2"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 84227.0,
+    "q_over_dof": 3662.0
+   },
+   "log10_p": -18248.2,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 341,
+    "q_over_dof": 231.26,
+    "q_residual": 78859.0
+   },
+   "log10_p": -16650.8,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 344,
+    "q_over_dof": 220.21,
+    "q_residual": 75753.0
+   },
+   "log10_p": -15975.8,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 338,
+    "q_over_dof": 220.53,
+    "q_residual": 74539.0
+   },
+   "log10_p": -15720.3,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 65042.0,
+    "q_over_dof": 2827.9
+   },
+   "log10_p": -14083.5,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 345,
+    "q_over_dof": 156.4,
+    "q_residual": 53959.0
+   },
+   "log10_p": -11267.4,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 341,
+    "q_over_dof": 152.5,
+    "q_residual": 52003.0
+   },
+   "log10_p": -10849.8,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 343,
+    "q_over_dof": 123.5,
+    "q_residual": 42362.0
+   },
+   "log10_p": -8769.09,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 38264.0,
+    "q_over_dof": 1663.6
+   },
+   "log10_p": -8271.01,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 34463.0,
+    "q_over_dof": 1498.4
+   },
+   "log10_p": -7446.08,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 28724.0,
+    "q_over_dof": 1248.9
+   },
+   "log10_p": -6200.68,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "within-cluster binomial homogeneity of e0 (prepared |0>, P(1|0)) over all readout clusters (summed chi-square)",
+   "effect": {
+    "Q": 15995.0,
+    "Q_over_dof": 21.881,
+    "dof": 731
+   },
+   "log10_p": -2827.79,
+   "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.1"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 332,
+    "q_over_dof": 18.159,
+    "q_residual": 6028.8
+   },
+   "log10_p": -1030.78,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "any within-cluster linear drift in e1 (prepared |1>, P(0|1)): sum of squared per-group slope z over all (cluster, qubit) groups",
+   "effect": {
+    "groups": 143,
+    "sum_z2": 4290.1,
+    "z2_over_groups": 30.001
+   },
+   "log10_p": -797.705,
+   "note": "binomial null; qubits of one job share shots, so the groups are not strictly independent",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.4"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 3314.0,
+    "q_over_dof": 144.09
+   },
+   "log10_p": -692.896,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 2560.1,
+    "q_over_dof": 111.31
+   },
+   "log10_p": -530.359,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 420,
+    "q_over_dof": 8.9483,
+    "q_residual": 3758.3
+   },
+   "log10_p": -527.496,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 2156.4,
+    "q_over_dof": 107.82
+   },
+   "log10_p": -446.512,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 398,
+    "q_over_dof": 8.1157,
+    "q_residual": 3230.0
+   },
+   "log10_p": -436.414,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 313,
+    "q_over_dof": 9.5166,
+    "q_residual": 2978.7
+   },
+   "log10_p": -428.141,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "any within-cluster linear drift in e0 (prepared |0>, P(1|0)): sum of squared per-group slope z over all (cluster, qubit) groups",
+   "effect": {
+    "groups": 182,
+    "sum_z2": 2270.0,
+    "z2_over_groups": 12.472
+   },
+   "log10_p": -356.102,
+   "note": "binomial null; qubits of one job share shots, so the groups are not strictly independent",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.3"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 1549.5,
+    "q_over_dof": 67.367
+   },
+   "log10_p": -313.192,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 1368.9,
+    "q_over_dof": 68.443
+   },
+   "log10_p": -277.279,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (all_modes): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 199,
+    "q_over_dof": 9.617,
+    "q_residual": 1913.8
+   },
+   "log10_p": -276.881,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 158,
+    "q_over_dof": 6.8984,
+    "q_residual": 1090.0
+   },
+   "log10_p": -138.23,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": [
+    0.084772,
+    0.18673
+   ],
+   "description": "later Tuna-17 jobs with a band-corrected line p < 1e-6, against detection probability 1e-6 per job",
+   "effect": {
+    "detected": 21,
+    "fraction": 0.12727,
+    "jobs": 165
+   },
+   "log10_p": -99.7184,
+   "note": "",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.1"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": [
+    0.30869,
+    0.6355
+   ],
+   "description": "later readout-1 circuits (X-prepared qubits) with a secondary-band line, outside the primary band",
+   "effect": {
+    "detected": 15,
+    "readout_0_detected": 0,
+    "readout_0_jobs": 32,
+    "readout_1_jobs": 32
+   },
+   "log10_p": -81.2474,
+   "note": "the earlier corpus scanned readouts in the primary band only",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.7"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 221.32,
+    "q_over_dof": 11.066
+   },
+   "log10_p": -35.1855,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 288,
+    "q_over_dof": 2.1631,
+    "q_residual": 622.97
+   },
+   "log10_p": -26.0357,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": [
+    0.10123,
+    0.4344
+   ],
+   "description": "earlier-corpus Tuna-17 readout-1 circuits with a secondary-band line (rescan of the 2026-10-18 corpus)",
+   "effect": {
+    "detected": 5,
+    "jobs": 22
+   },
+   "log10_p": -25.5795,
+   "note": "",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.8"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 144.35,
+    "q_over_dof": 7.2174
+   },
+   "log10_p": -20.1223,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 144.08,
+    "q_over_dof": 6.2644
+   },
+   "log10_p": -18.7904,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": [
+    0.015823,
+    0.09932
+   ],
+   "description": "later non-readout Tuna-17 jobs detected only in the wider secondary band 0.010-0.040 (band-corrected p < 1e-6)",
+   "effect": {
+    "jobs": 4,
+    "of": 99
+   },
+   "log10_p": -16.5262,
+   "note": "exploratory band declared after the primary scan; the later QX twins give 0 detections in the same band",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.6"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 107.1,
+    "q_over_dof": 5.355
+   },
+   "log10_p": -13.1793,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 241,
+    "q_over_dof": 1.7445,
+    "q_residual": 420.42
+   },
+   "log10_p": -11.1624,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "fraction of later non-readout Tuna-17 jobs with the line against the earlier non-readout jobs (Fisher exact)",
+   "effect": {
+    "earlier": 0.66667,
+    "later": 0.21212
+   },
+   "log10_p": -10.5064,
+   "note": "",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.3"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "fraction of later Tuna-17 jobs with the line against the earlier 72 of 159 (Fisher exact, all jobs)",
+   "effect": {
+    "earlier": 0.45283,
+    "later": 0.12727,
+    "odds_ratio": 0.17622
+   },
+   "log10_p": -10.1475,
+   "note": "circuit mix differs between corpora; readout circuits (no line) are 51 earlier and 66 later jobs",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.2"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 272,
+    "q_over_dof": 1.629,
+    "q_residual": 443.09
+   },
+   "log10_p": -9.60727,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 78.557,
+    "q_over_dof": 3.9278
+   },
+   "log10_p": -8.16171,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 71.668,
+    "q_over_dof": 3.5834
+   },
+   "log10_p": -7.01291,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "heterogeneity of the primary-band detected fraction across later payload families (chi-square contingency)",
+   "effect": {
+    "bdsc_pauli_tuna_17": "2/19",
+    "demarrais_tuna17_8192d": "9/9",
+    "kernel_cancellation_tuna_17": "4/12",
+    "pathion_coset_block_tuna_17": "2/8",
+    "pathion_coset_coin_tuna_17": "2/4",
+    "pathion_one_cz_null_tuna_17": "1/32",
+    "tuna17-quaternion-order-noise": "1/8"
+   },
+   "log10_p": -6.74444,
+   "note": "families differ in circuit and phase sensitivity",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.9"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 259,
+    "q_over_dof": 1.4936,
+    "q_residual": 386.84
+   },
+   "log10_p": -6.36464,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 270,
+    "q_over_dof": 1.4207,
+    "q_residual": 383.59
+   },
+   "log10_p": -5.18911,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 276,
+    "q_over_dof": 1.3847,
+    "q_residual": 382.17
+   },
+   "log10_p": -4.62919,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 267,
+    "q_over_dof": 1.3553,
+    "q_residual": 361.86
+   },
+   "log10_p": -4.01582,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 52.305,
+    "q_over_dof": 2.6152
+   },
+   "log10_p": -3.98812,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 267,
+    "q_over_dof": 1.3147,
+    "q_residual": 351.02
+   },
+   "log10_p": -3.37852,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 312,
+    "q_over_dof": 1.2748,
+    "q_residual": 397.73
+   },
+   "log10_p": -3.14226,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 46.085,
+    "q_over_dof": 2.3042
+   },
+   "log10_p": -3.10532,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "centered fitted per-mode shift against the change of the plan-time t_out, Stouffer over between-epoch identical-circuit pairs",
+   "effect": {
+    "pairs": 12,
+    "stouffer_z": 2.7966
+   },
+   "log10_p": -2.28701,
+   "note": "consecutive pairs share runs, so the pairs are dependent; the Stouffer z is optimistic",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.plan_t_out"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 39.88,
+    "q_over_dof": 1.994
+   },
+   "log10_p": -2.28624,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 259,
+    "q_over_dof": 1.2323,
+    "q_residual": 319.17
+   },
+   "log10_p": -2.19682,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 277,
+    "q_over_dof": 1.2228,
+    "q_residual": 338.73
+   },
+   "log10_p": -2.17946,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 267,
+    "q_over_dof": 1.2088,
+    "q_residual": 322.76
+   },
+   "log10_p": -1.95968,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 274,
+    "q_over_dof": 1.148,
+    "q_residual": 314.54
+   },
+   "log10_p": -1.33385,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): total homogeneity chi-square minus the CMH common-factor part",
+   "effect": {
+    "dof": 344,
+    "q_over_dof": 1.1243,
+    "q_residual": 386.75
+   },
+   "log10_p": -1.25429,
+   "note": "approximate: difference of Pearson statistics; phase or mixing change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "per-job maximum first-harmonic amplitude of detected jobs, later against earlier (Mann-Whitney)",
+   "effect": {
+    "earlier_median": 0.14585,
+    "later_median": 0.055085
+   },
+   "log10_p": -1.09298,
+   "note": "class-level comparison: later and earlier jobs run different circuits",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.4"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -3.8022e-06,
+    2.7927e-07
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_coset_block_pairs",
+   "effect": {
+    "relative_slope_per_iteration": -1.761e-06,
+    "same_sign_groups": [
+     2,
+     2
+    ],
+    "slope_per_iteration": -1.7615e-06
+   },
+   "log10_p": -1.04242,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_p"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -8.9727e-07,
+    1.1662e-05
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_target_slot_drift",
+   "effect": {
+    "relative_slope_per_iteration": 5.3813e-06,
+    "same_sign_groups": [
+     3,
+     3
+    ],
+    "slope_per_iteration": 5.3822e-06
+   },
+   "log10_p": -1.03163,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-30T200600Z-qpu_ascella-target-slot-drift"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -2.1567e-06,
+    1.8262e-07
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": -9.8692e-07,
+    "same_sign_groups": [
+     1,
+     1
+    ],
+    "slope_per_iteration": -9.8702e-07
+   },
+   "log10_p": -1.00816,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 26.17,
+    "q_over_dof": 1.3085
+   },
+   "log10_p": -0.795174,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 25.722,
+    "q_over_dof": 1.2861
+   },
+   "log10_p": -0.756477,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -0.0035672,
+    0.00079435
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mode_swap_interleaved",
+   "effect": {
+    "relative_slope_per_iteration": -0.0012404,
+    "same_sign_groups": [
+     1,
+     2
+    ],
+    "slope_per_iteration": -0.0013864
+   },
+   "log10_p": -0.672129,
+   "note": "multiphoton input or broad detected-number distribution",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -1.6612e-06,
+    3.8073e-07
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": -6.4016e-07,
+    "same_sign_groups": [
+     1,
+     1
+    ],
+    "slope_per_iteration": -6.4023e-07
+   },
+   "log10_p": -0.659464,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    0.36849,
+    0.52936
+   ],
+   "description": "common direction of the linear drift in e1 (prepared |1>, P(0|1)): groups with a negative slope against 0.5 (sign test)",
+   "effect": {
+    "groups": 143,
+    "iqr_relative_slope_per_hour": [
+     -0.11579,
+     0.18236
+    ],
+    "median_relative_slope_per_hour": 0.0046447,
+    "negative_slopes": 64
+   },
+   "log10_p": -0.616896,
+   "note": "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.6"
+  },
+  {
+   "analysis": 1,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "peak frequency in cycles per shot of detected jobs, later against earlier (Mann-Whitney)",
+   "effect": {
+    "earlier_median": 0.02014001,
+    "later_median": 0.02007853
+   },
+   "log10_p": -0.546062,
+   "note": "a different shot period at fixed wall-clock frequency moves the cycles-per-shot value",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.5"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -0.021101,
+    0.0064492
+   ],
+   "description": "stratified logit slope of detected-sample yield per optical trial against iteration index, qpu:ascella",
+   "effect": {
+    "iterations": 8,
+    "logit_slope_per_iteration": -0.0073261
+   },
+   "log10_p": -0.526891,
+   "note": "yield per Perceval shot = samples / nb_shots_used",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4y.2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associat"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 21.736,
+    "q_over_dof": 1.0868
+   },
+   "log10_p": -0.449779,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -8.652e-07,
+    2.1151e-06
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_four_term_blocks",
+   "effect": {
+    "relative_slope_per_iteration": 6.2473e-07,
+    "same_sign_groups": [
+     18,
+     42
+    ],
+    "slope_per_iteration": 6.2497e-07
+   },
+   "log10_p": -0.386076,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blo"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -9.8081e-06,
+    2.2367e-05
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_predecessor",
+   "effect": {
+    "relative_slope_per_iteration": 6.2787e-06,
+    "same_sign_groups": [
+     2,
+     3
+    ],
+    "slope_per_iteration": 6.2795e-06
+   },
+   "log10_p": -0.352373,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-s"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -3.5563e-06,
+    1.6766e-06
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": -9.3965e-07,
+    "same_sign_groups": [
+     9,
+     30
+    ],
+    "slope_per_iteration": -9.3989e-07
+   },
+   "log10_p": -0.317503,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -8.1521e-07,
+    1.5782e-06
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": 3.8143e-07,
+    "same_sign_groups": [
+     1,
+     1
+    ],
+    "slope_per_iteration": 3.8147e-07
+   },
+   "log10_p": -0.273996,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 18.722,
+    "q_over_dof": 0.93612
+   },
+   "log10_p": -0.26766,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 15.855,
+    "q_over_dof": 0.79277
+   },
+   "log10_p": -0.139334,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -3.0391e-07,
+    2.1781e-07
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_mesh_persistence",
+   "effect": {
+    "relative_slope_per_iteration": -4.3037e-08,
+    "same_sign_groups": [
+     2,
+     4
+    ],
+    "slope_per_iteration": -4.3051e-08
+   },
+   "log10_p": -0.127061,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persiste"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -6.8766e-06,
+    9.0678e-06
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": 1.0954e-06,
+    "same_sign_groups": [
+     12,
+     26
+    ],
+    "slope_per_iteration": 1.0956e-06
+   },
+   "log10_p": -0.103663,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    -1.4542e-05,
+    1.1074e-05
+   ],
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mesh",
+   "effect": {
+    "relative_slope_per_iteration": -1.7329e-06,
+    "same_sign_groups": [
+     1,
+     2
+    ],
+    "slope_per_iteration": -1.7339e-06
+   },
+   "log10_p": -0.101961,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": null,
+   "description": "first-to-last bracket chi-square per qubit against elapsed hours (Spearman across bracket pairs)",
+   "effect": {
+    "pairs": 20,
+    "rho": 0.063158
+   },
+   "log10_p": -0.101619,
+   "note": "a positive rho says the bracket difference grows with elapsed time; clusters are confounded with series",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.7"
+  },
+  {
+   "analysis": 2,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "ci95": [
+    0.42274,
+    0.5665
+   ],
+   "description": "common direction of the linear drift in e0 (prepared |0>, P(1|0)): groups with a negative slope against 0.5 (sign test)",
+   "effect": {
+    "groups": 182,
+    "iqr_relative_slope_per_hour": [
+     -0.056984,
+     0.053845
+    ],
+    "median_relative_slope_per_hour": 0.00066229,
+    "negative_slopes": 90
+   },
+   "log10_p": -0.026439,
+   "note": "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.5"
+  }
+ ],
+ "tests": 90
+}

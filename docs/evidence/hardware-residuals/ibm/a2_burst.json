@@ -1,0 +1,4575 @@
+{
+ "analysis": "a2_burst",
+ "bonferroni_flagged": [
+  {
+   "id": "state_prep:e/2026-10-18T083402.386701Z:prep0|dispersion",
+   "log10_p": -10.703450089236412
+  },
+  {
+   "id": "state_prep:e/2026-10-18T083404.226285Z:x_history|dispersion",
+   "log10_p": -10.323234142422232
+  },
+  {
+   "id": "state_prep:e/2026-10-18T220218.089776Z:prep0|dispersion",
+   "log10_p": -8.190842791658527
+  },
+  {
+   "id": "state_prep:e/2026-10-18T083404.414317Z:prep0|dispersion",
+   "log10_p": -8.142819855657882
+  },
+  {
+   "id": "state_prep:e/2026-10-18T214519.655411Z:x_history|dispersion",
+   "log10_p": -7.619956829203142
+  },
+  {
+   "id": "state_prep:e/2026-10-18T083403.945334Z:x_history|dispersion",
+   "log10_p": -5.889613601018828
+  },
+  {
+   "id": "state_prep:e/2026-10-26T190449.023973Z:prep0|dispersion",
+   "log10_p": -5.7765914828957134
+  },
+  {
+   "id": "state_prep:e/2026-10-26T190506.325237Z:x_history|dispersion",
+   "log10_p": -4.857486192955537
+  },
+  {
+   "id": "state_prep:e/2026-10-18T083404.414317Z:prep0|tail_a",
+   "log10_p": -4.485717314429482
+  }
+ ],
+ "by_kind": {
+  "pilot": {
+   "dispersion_ratio_range": [
+    0.8783030591817348,
+    1.074700087138666
+   ],
+   "median_dispersion_ratio": 1.003790754204013,
+   "n_adjacent_p_below_0.05": 0,
+   "n_dispersion_p_below_0.05": 1,
+   "n_pubs": 24,
+   "n_tail_b_p_below_0.05": 0,
+   "n_window_p_below_0.05": 3,
+   "pooled_adjacent_ratio_to_permutation": 1.2726707798837054,
+   "pooled_adjacent_ratio_to_shift_null": 0.8540195990825962,
+   "pooled_tail_a_ratio": 1.180456741427704,
+   "pooled_window_ratio_to_permutation": 1.3913434575457342,
+   "pooled_window_ratio_to_shift_null": 1.1443701136573967
+  },
+  "state_prep": {
+   "dispersion_ratio_range": [
+    1.014399557464842,
+    1.07383413890842
+   ],
+   "median_dispersion_ratio": 1.0455937011040484,
+   "n_adjacent_p_below_0.05": 2,
+   "n_dispersion_p_below_0.05": 11,
+   "n_pubs": 12,
+   "n_tail_b_p_below_0.05": 0,
+   "n_window_p_below_0.05": 0,
+   "pooled_adjacent_ratio_to_permutation": 3.7873761832661033,
+   "pooled_adjacent_ratio_to_shift_null": 1.4321472656174392,
+   "pooled_tail_a_ratio": 2.177956541268123,
+   "pooled_window_ratio_to_permutation": 1.613419163543696,
+   "pooled_window_ratio_to_shift_null": 1.0423381589729581
+  }
+ },
+ "corrections": {
+  "alpha": 0.05,
+  "bonferroni_log10_threshold": -3.5563025007672873,
+  "n_bh": 12,
+  "n_bonferroni": 9,
+  "n_tests": 180
+ },
+ "n_pubs_analyzed": 36,
+ "n_tests": 180,
+ "not_run": {
+  "kingston-wide-control-result": "512 shots; no record of the prepared state, so no ideal outcome"
+ },
+ "pubs": [
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.400390625,
+    "expected_shift_null": 0.75,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     4.918505938818581
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-30us-idle-input-0",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.7357094545293874,
+    "size": 41
+   },
+   "dispersion": {
+    "lp": -0.3404377200990148,
+    "ratio": 0.9820332292675925,
+    "ratio_se": 0.024135545042746676,
+    "z": -0.7444112283599315
+   },
+   "id": "pilot:delay-30us-idle-input-0",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.08447265625,
+   "multiplicity_expected_0_to_11": [
+    486.44097097462134,
+    1060.1727648531191,
+    1130.1717717547883,
+    786.0580283139604,
+    401.4397818620772,
+    160.62492522531616,
+    52.46713774482415,
+    14.394303068172357,
+    3.3867083917545338,
+    0.6943487000288359,
+    0.1256217376365615,
+    0.02026166281708245
+   ],
+   "multiplicity_observed_0_to_11": [
+    487,
+    1039,
+    1137,
+    829,
+    367,
+    174,
+    44,
+    16,
+    3,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     42,
+     0,
+     8
+    ],
+    [
+     44,
+     0,
+     5
+    ],
+    [
+     44,
+     1,
+     14
+    ],
+    [
+     44,
+     2,
+     18
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.230316203121161,
+     "lp": -0.10032177322893282,
+     "observed": 3,
+     "ratio": 0.7091668461536224,
+     "ratio_ci95": [
+      0.1462472527323466,
+      2.0724864640789167
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.14925911133779124,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      24.714601480947852
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.394516941391942,
+    "expected_shift_null": 11.25,
+    "lp": -0.16368014256965666,
+    "lp_permutation": -0.9440524371266172,
+    "observed": 10,
+    "ratio_ci95_shift": [
+     0.4262567729895496,
+     1.6346983148460248
+    ],
+    "ratio_to_permutation": 1.5638397851868426,
+    "ratio_to_shift_null": 0.8888888888888888,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.55078125,
+    "expected_shift_null": 0.55078125,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     6.697540001795515
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-30us-idle-input-1",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.7434508237338973,
+    "size": 48
+   },
+   "dispersion": {
+    "lp": -0.1654341142138903,
+    "ratio": 0.9901724460655869,
+    "ratio_se": 0.024083498630194163,
+    "z": -0.40806172248130584
+   },
+   "id": "pilot:delay-30us-idle-input-1",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.140380859375,
+   "multiplicity_expected_0_to_11": [
+    459.6117163074741,
+    1028.2158661955364,
+    1125.8809049470974,
+    804.9286046567724,
+    422.87437228042154,
+    174.19763648919889,
+    58.62991061860404,
+    16.58824076165495,
+    4.028549249269102,
+    0.8532926587947445,
+    0.15963380493703344,
+    0.02664794931715926
+   ],
+   "multiplicity_observed_0_to_11": [
+    463,
+    1012,
+    1139,
+    806,
+    417,
+    185,
+    60,
+    6,
+    8,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     41,
+     0,
+     7
+    ],
+    [
+     45,
+     2,
+     15
+    ],
+    [
+     42,
+     0,
+     7
+    ],
+    [
+     42,
+     0,
+     2
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 1.044198493971853,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      3.532737765290602
+     ],
+     "threshold": 9
+    },
+    "t_b": {
+     "expected": 0.19090583517710846,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      19.32303143427577
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 8.79635989010989,
+    "expected_shift_null": 8.79635989010989,
+    "lp": -0.958943071306696,
+    "lp_permutation": -0.958943071306696,
+    "observed": 13,
+    "ratio_ci95_shift": [
+     0.7869110151787263,
+     2.527226738773322
+    ],
+    "ratio_to_permutation": 1.4778840523130978,
+    "ratio_to_shift_null": 1.4778840523130978,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.42041015625,
+    "expected_shift_null": 1.0,
+    "lp": -0.5779996023832056,
+    "lp_permutation": -1.173233894084599,
+    "observed": 2,
+    "ratio_ci95_shift": [
+     0.24220927854396496,
+     7.224687667723959
+    ],
+    "ratio_to_permutation": 4.75725900116144,
+    "ratio_to_shift_null": 2.0
+   },
+   "arm": "delay-30us-idle-input-2",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8179655201602896,
+    "size": 42
+   },
+   "dispersion": {
+    "lp": -0.5033078954480472,
+    "ratio": 1.0243520464688927,
+    "ratio_se": 0.024177446864621553,
+    "z": 1.0072215898249617
+   },
+   "id": "pilot:delay-30us-idle-input-2",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.05322265625,
+   "multiplicity_expected_0_to_11": [
+    502.9344606954844,
+    1078.1251505215157,
+    1131.0182712844655,
+    774.4210359777212,
+    389.4545221347219,
+    153.4751981179638,
+    49.37888267386079,
+    13.34389202469505,
+    3.0923675379276445,
+    0.6244155137419765,
+    0.11124645767277201,
+    0.017666421382481697
+   ],
+   "multiplicity_observed_0_to_11": [
+    520,
+    1081,
+    1084,
+    808,
+    379,
+    148,
+    58,
+    12,
+    5,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     47,
+     1,
+     13
+    ],
+    [
+     42,
+     2,
+     12
+    ],
+    [
+     42,
+     0,
+     8
+    ],
+    [
+     42,
+     1,
+     9
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.8485865695713337,
+     "lp": -0.7174346349076965,
+     "observed": 6,
+     "ratio": 1.559013911091078,
+     "ratio_ci95": [
+      0.5721306286572901,
+      3.393316945439864
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.13180351790171319,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      27.987716206973772
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.714242788461538,
+    "expected_shift_null": 10.5,
+    "lp": -0.21977819946678356,
+    "lp_permutation": -0.8484839207753213,
+    "observed": 10,
+    "ratio_ci95_shift": [
+     0.456703685345946,
+     1.7514624801921694
+    ],
+    "ratio_to_permutation": 1.4893712239874692,
+    "ratio_to_shift_null": 0.9523809523809523,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.4833984375,
+    "expected_shift_null": 1.0,
+    "lp": -0.19920008462778144,
+    "lp_permutation": -0.4164431253931495,
+    "observed": 1,
+    "ratio_ci95_shift": [
+     0.025317807984289876,
+     5.571643390938898
+    ],
+    "ratio_to_permutation": 2.0686868686868687,
+    "ratio_to_shift_null": 1.0
+   },
+   "arm": "delay-30us-idle-input-3",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.772928656303799,
+    "size": 45
+   },
+   "dispersion": {
+    "lp": -0.3756877327886543,
+    "ratio": 1.0194216707844856,
+    "ratio_se": 0.02413718668569721,
+    "z": 0.8046368881918705
+   },
+   "id": "pilot:delay-30us-idle-input-3",
+   "kind": "pilot",
+   "max_multiplicity": 10,
+   "mean_errors_per_shot": 2.089599609375,
+   "multiplicity_expected_0_to_11": [
+    484.5412111283021,
+    1057.246723850647,
+    1129.1967256483115,
+    787.4109650405298,
+    403.423749469603,
+    162.0323782698743,
+    53.15725263391744,
+    14.654748501658755,
+    3.466526877032743,
+    0.7148781339030474,
+    0.13015447248729778,
+    0.02113521500338903
+   ],
+   "multiplicity_observed_0_to_11": [
+    474,
+    1101,
+    1100,
+    774,
+    405,
+    169,
+    49,
+    17,
+    6,
+    0,
+    1,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     42,
+     1,
+     3
+    ],
+    [
+     45,
+     0,
+     11
+    ],
+    [
+     49,
+     1,
+     11
+    ],
+    [
+     45,
+     2,
+     9
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.336245457156685,
+     "lp": -0.8281021396116468,
+     "observed": 7,
+     "ratio": 1.6142997598180162,
+     "ratio_ci95": [
+      0.6490322283013169,
+      3.326074481761338
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.15484044622089363,
+     "lp": -0.8433049958365448,
+     "observed": 1,
+     "ratio": 6.4582609027967495,
+     "ratio_ci95": [
+      0.16350900944945468,
+      35.983126676026586
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 7.720209478021978,
+    "expected_shift_null": 8.5,
+    "lp": -0.21154674438034224,
+    "lp_permutation": -0.2946911528241653,
+    "observed": 8,
+    "ratio_ci95_shift": [
+     0.4063331972645296,
+     1.8544928494345077
+    ],
+    "ratio_to_permutation": 1.036241312204615,
+    "ratio_to_shift_null": 0.9411764705882353,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.400390625,
+    "expected_shift_null": 1.0,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     3.688879454113936
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-30us-active-input-0",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.745645393711298,
+    "size": 41
+   },
+   "dispersion": {
+    "lp": -0.036654746002909216,
+    "ratio": 0.9975495694166386,
+    "ratio_se": 0.024115050395793158,
+    "z": -0.10161415975265295
+   },
+   "id": "pilot:delay-30us-active-input-0",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.124755859375,
+   "multiplicity_expected_0_to_11": [
+    468.2126430897737,
+    1037.2259632537014,
+    1125.9347302235203,
+    798.8399203079373,
+    416.87468640141844,
+    170.72752800546067,
+    57.17333283173885,
+    16.106798159979377,
+    3.8975789652819897,
+    0.8231345634016123,
+    0.1536403498871489,
+    0.02560529827589275
+   ],
+   "multiplicity_observed_0_to_11": [
+    464,
+    1038,
+    1125,
+    814,
+    411,
+    171,
+    46,
+    19,
+    7,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     49,
+     1,
+     14
+    ],
+    [
+     42,
+     0,
+     11
+    ],
+    [
+     43,
+     1,
+     10
+    ],
+    [
+     41,
+     2,
+     14
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.904397726470459,
+     "lp": -0.9080546381164943,
+     "observed": 8,
+     "ratio": 1.6311890768608908,
+     "ratio_ci95": [
+      0.7042316650028536,
+      3.214092759058835
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.18368419778685738,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      20.08272621466557
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.394516941391942,
+    "expected_shift_null": 12.25,
+    "lp": -0.03580570422734417,
+    "lp_permutation": -0.5060066909379363,
+    "observed": 8,
+    "ratio_ci95_shift": [
+     0.2819454838162042,
+     1.2867909567504747
+    ],
+    "ratio_to_permutation": 1.2510718281494742,
+    "ratio_to_shift_null": 0.6530612244897959,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.52783203125,
+    "expected_shift_null": 0.52783203125,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     6.988737393177928
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-30us-active-input-1",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.7263852912444473,
+    "size": 47
+   },
+   "dispersion": {
+    "lp": -0.013190188912612599,
+    "ratio": 1.0009042909859962,
+    "ratio_se": 0.024113384685054407,
+    "z": 0.03750161985997498
+   },
+   "id": "pilot:delay-30us-active-input-1",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.110107421875,
+   "multiplicity_expected_0_to_11": [
+    474.02972290426925,
+    1045.4159144893372,
+    1128.31442491101,
+    794.8919588595861,
+    411.3366790251094,
+    166.81432988443854,
+    55.238040961265966,
+    15.364889552505334,
+    3.6655174278158333,
+    0.762010253100599,
+    0.1397847116985555,
+    0.022858575442170292
+   ],
+   "multiplicity_observed_0_to_11": [
+    481,
+    1011,
+    1165,
+    816,
+    371,
+    168,
+    64,
+    15,
+    4,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     48,
+     0,
+     5
+    ],
+    [
+     49,
+     0,
+     14
+    ],
+    [
+     41,
+     0,
+     8
+    ],
+    [
+     43,
+     0,
+     5
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.594039412477991,
+     "lp": -0.31367858282945854,
+     "observed": 5,
+     "ratio": 1.0883668055653526,
+     "ratio_ci95": [
+      0.3533897392584022,
+      2.5398850622896285
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.16651173156155818,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      22.153871198860145
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 8.429844894688644,
+    "expected_shift_null": 8.429844894688644,
+    "lp": -0.2180524489122294,
+    "lp_permutation": -0.2180524489122294,
+    "observed": 8,
+    "ratio_ci95_shift": [
+     0.4097147954554469,
+     1.8699263648522357
+    ],
+    "ratio_to_permutation": 0.9490091573381766,
+    "ratio_to_shift_null": 0.9490091573381766,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.42041015625,
+    "expected_shift_null": 0.75,
+    "lp": -0.2776676818527495,
+    "lp_permutation": -0.46442410187978667,
+    "observed": 1,
+    "ratio_ci95_shift": [
+     0.0337570773123865,
+     7.428857854585197
+    ],
+    "ratio_to_permutation": 2.37862950058072,
+    "ratio_to_shift_null": 1.3333333333333333
+   },
+   "arm": "delay-30us-active-input-2",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8465154683252685,
+    "size": 42
+   },
+   "dispersion": {
+    "lp": -0.42580280732735454,
+    "ratio": 1.0213872094835383,
+    "ratio_se": 0.024115100114108074,
+    "z": 0.8868803937092573
+   },
+   "id": "pilot:delay-30us-active-input-2",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.11865234375,
+   "multiplicity_expected_0_to_11": [
+    471.24894270780277,
+    1040.8213041985232,
+    1126.2972631284654,
+    796.5976531524523,
+    414.4622038160685,
+    169.27753181347472,
+    56.55544377801474,
+    15.903523131590905,
+    3.8436693668710897,
+    0.8113238900331481,
+    0.15147589136281978,
+    0.025273044492302905
+   ],
+   "multiplicity_observed_0_to_11": [
+    484,
+    1035,
+    1135,
+    763,
+    418,
+    183,
+    55,
+    17,
+    6,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     45,
+     1,
+     6
+    ],
+    [
+     46,
+     1,
+     13
+    ],
+    [
+     43,
+     1,
+     8
+    ],
+    [
+     42,
+     0,
+     4
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.836134273607493,
+     "lp": -0.4493896336916627,
+     "observed": 6,
+     "ratio": 1.2406603416170923,
+     "ratio_ci95": [
+      0.45530047945677854,
+      2.7003952503529285
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.18114101670325655,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      20.364683390051972
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.714242788461538,
+    "expected_shift_null": 7.75,
+    "lp": -0.29104155243125385,
+    "lp_permutation": -0.44515735968594694,
+    "observed": 8,
+    "ratio_ci95_shift": [
+     0.4456557647417421,
+     2.0339598993797825
+    ],
+    "ratio_to_permutation": 1.1914969791899754,
+    "ratio_to_shift_null": 1.032258064516129,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.4833984375,
+    "expected_shift_null": 0.75,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     4.918505938818581
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-30us-active-input-3",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8286643065388755,
+    "size": 45
+   },
+   "dispersion": {
+    "lp": -1.0692099282743852,
+    "ratio": 1.0415714211302147,
+    "ratio_se": 0.024156776230317343,
+    "z": 1.7209010314067328
+   },
+   "id": "pilot:delay-30us-active-input-3",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.074462890625,
+   "multiplicity_expected_0_to_11": [
+    491.9324636255942,
+    1065.9953284813448,
+    1130.225644443544,
+    782.116866631291,
+    397.56178355007836,
+    158.39884133076438,
+    51.5448842556998,
+    14.095106126068425,
+    3.3072776905319334,
+    0.6766054571395932,
+    0.12222232917163839,
+    0.01969533056875653
+   ],
+   "multiplicity_observed_0_to_11": [
+    535,
+    1040,
+    1097,
+    775,
+    401,
+    177,
+    54,
+    12,
+    4,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     48,
+     1,
+     8
+    ],
+    [
+     42,
+     1,
+     5
+    ],
+    [
+     45,
+     1,
+     10
+    ],
+    [
+     41,
+     0,
+     7
+    ]
+   ],
+   "slot_us": 308.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.129081555614514,
+     "lp": -0.40190569110584073,
+     "observed": 5,
+     "ratio": 1.2109230424865927,
+     "ratio_ci95": [
+      0.3931834157915546,
+      2.8258904364474637
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.1451984079429874,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      25.405784446082805
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 7.720209478021978,
+    "expected_shift_null": 7.720209478021978,
+    "lp": -0.4336068175891799,
+    "lp_permutation": -0.4336068175891799,
+    "observed": 9,
+    "ratio_ci95_shift": [
+     0.533064952329862,
+     2.212997393407067
+    ],
+    "ratio_to_permutation": 1.1657714762301918,
+    "ratio_to_shift_null": 1.1657714762301918,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.400390625,
+    "expected_shift_null": 0.400390625,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     9.213201368323586
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-50us-idle-input-0",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.861862805217222,
+    "size": 41
+   },
+   "dispersion": {
+    "lp": -0.016168526192517917,
+    "ratio": 1.001108969930553,
+    "ratio_se": 0.02420365528216497,
+    "z": 0.04581828313222594
+   },
+   "id": "pilot:delay-50us-idle-input-0",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.0263671875,
+   "multiplicity_expected_0_to_11": [
+    516.5622725010738,
+    1093.6746754377739,
+    1132.3048847048512,
+    764.6580962563456,
+    379.06078041877424,
+    147.18161535491316,
+    46.63913320646841,
+    12.409099808685735,
+    2.8305578429444602,
+    0.5624305567493548,
+    0.09858265337214994,
+    0.015399197462603126
+   ],
+   "multiplicity_observed_0_to_11": [
+    526,
+    1080,
+    1139,
+    752,
+    381,
+    163,
+    42,
+    9,
+    4,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     46,
+     0,
+     4
+    ],
+    [
+     43,
+     0,
+     6
+    ],
+    [
+     45,
+     0,
+     7
+    ],
+    [
+     42,
+     0,
+     14
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 3.509442311113804,
+     "lp": -0.332170387975354,
+     "observed": 4,
+     "ratio": 1.1397822347250683,
+     "ratio_ci95": [
+      0.310552297775321,
+      2.9182952068966443
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.11645391141998913,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      31.676732959273924
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.394516941391942,
+    "expected_shift_null": 7.75,
+    "lp": -0.42875466400421686,
+    "lp_permutation": -0.7076339594352175,
+    "observed": 9,
+    "ratio_ci95_shift": [
+     0.5310158835326882,
+     2.204490767925054
+    ],
+    "ratio_to_permutation": 1.4074558066681584,
+    "ratio_to_shift_null": 1.1612903225806452,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.52783203125,
+    "expected_shift_null": 0.52783203125,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     6.988737393177928
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-50us-idle-input-1",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.784900657914774,
+    "size": 47
+   },
+   "dispersion": {
+    "lp": -0.5447317949358645,
+    "ratio": 1.0258202915977754,
+    "ratio_se": 0.024164133000408667,
+    "z": 1.0685378861860577
+   },
+   "id": "pilot:delay-50us-idle-input-1",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.072998046875,
+   "multiplicity_expected_0_to_11": [
+    494.302854962988,
+    1066.8383322275,
+    1128.6003082122145,
+    780.5086696214648,
+    397.06787577935086,
+    158.5310695621772,
+    51.75191519450518,
+    14.210042085264739,
+    3.3506347034082617,
+    0.6892941699020045,
+    0.12527383760348404,
+    0.02031849086576158
+   ],
+   "multiplicity_observed_0_to_11": [
+    505,
+    1072,
+    1104,
+    794,
+    392,
+    139,
+    71,
+    14,
+    3,
+    2,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     44,
+     0,
+     9
+    ],
+    [
+     46,
+     0,
+     12
+    ],
+    [
+     42,
+     0,
+     13
+    ],
+    [
+     41,
+     1,
+     9
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 4.188932354535218,
+     "lp": -0.38931789975357084,
+     "observed": 5,
+     "ratio": 1.1936215667428158,
+     "ratio_ci95": [
+      0.3875656737117575,
+      2.785514563559317
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.14900348122495224,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      24.757001808197977
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 8.429844894688644,
+    "expected_shift_null": 10.75,
+    "lp": -0.5462498851380606,
+    "lp_permutation": -1.0617833479354308,
+    "observed": 13,
+    "ratio_ci95_shift": [
+     0.6439025573026793,
+     2.0679438063403603
+    ],
+    "ratio_to_permutation": 1.542139880674537,
+    "ratio_to_shift_null": 1.2093023255813953,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.52783203125,
+    "expected_shift_null": 0.52783203125,
+    "lp": -0.38709162571366906,
+    "lp_permutation": -0.38709162571366906,
+    "observed": 1,
+    "ratio_ci95_shift": [
+     0.04796565286940395,
+     10.555712918263518
+    ],
+    "ratio_to_permutation": 1.8945420906567993,
+    "ratio_to_shift_null": 1.8945420906567993
+   },
+   "arm": "delay-50us-idle-input-2",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8595407515405475,
+    "size": 47
+   },
+   "dispersion": {
+    "lp": -0.08874582685784424,
+    "ratio": 1.0056559891223025,
+    "ratio_se": 0.02419703358966434,
+    "z": 0.2337472112580935
+   },
+   "id": "pilot:delay-50us-idle-input-2",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.025146484375,
+   "multiplicity_expected_0_to_11": [
+    517.0496711958982,
+    1094.3983808104363,
+    1132.4989127408508,
+    764.2845340674667,
+    378.57360575939083,
+    146.85892433705882,
+    46.49033352326674,
+    12.356171792204206,
+    2.8152490632638227,
+    0.5587094611570385,
+    0.09780496817022286,
+    0.015257066307437861
+   ],
+   "multiplicity_observed_0_to_11": [
+    502,
+    1089,
+    1199,
+    737,
+    352,
+    142,
+    53,
+    16,
+    5,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     46,
+     0,
+     5
+    ],
+    [
+     43,
+     1,
+     6
+    ],
+    [
+     46,
+     0,
+     10
+    ],
+    [
+     41,
+     0,
+     4
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 3.489465773428038,
+     "lp": -0.8507891988733534,
+     "observed": 6,
+     "ratio": 1.7194609116643154,
+     "ratio_ci95": [
+      0.6310118500826326,
+      3.742542518102737
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.11550724900717682,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      31.93634586418671
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 8.429844894688644,
+    "expected_shift_null": 8.429844894688644,
+    "lp": -0.03504629769343749,
+    "lp_permutation": -0.03504629769343749,
+    "observed": 5,
+    "ratio_ci95_shift": [
+     0.19258793137953503,
+     1.3841692492675026
+    ],
+    "ratio_to_permutation": 0.5931307233363604,
+    "ratio_to_shift_null": 0.5931307233363604,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.50537109375,
+    "expected_shift_null": 0.50537109375,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     7.299347943985836
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-50us-idle-input-3",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.7987811811070387,
+    "size": 46
+   },
+   "dispersion": {
+    "lp": -0.07316078327112033,
+    "ratio": 0.9952662936308219,
+    "ratio_se": 0.02420770492305384,
+    "z": -0.19554544242110686
+   },
+   "id": "pilot:delay-50us-idle-input-3",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.03173828125,
+   "multiplicity_expected_0_to_11": [
+    514.7509104910437,
+    1090.55323162608,
+    1131.0979572008337,
+    766.0147209268499,
+    381.1832096229847,
+    148.70569480371122,
+    47.38526415775494,
+    12.688206613772477,
+    2.91493366890876,
+    0.5837612499943861,
+    0.10319892004999354,
+    0.016269232905320136
+   ],
+   "multiplicity_observed_0_to_11": [
+    505,
+    1110,
+    1127,
+    739,
+    419,
+    134,
+    43,
+    15,
+    4,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     41,
+     1,
+     10
+    ],
+    [
+     43,
+     0,
+     5
+    ],
+    [
+     42,
+     1,
+     9
+    ],
+    [
+     49,
+     0,
+     10
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 3.6208045569685923,
+     "lp": -0.31051666740248984,
+     "observed": 4,
+     "ratio": 1.1047268464964808,
+     "ratio_ci95": [
+      0.30100088432797967,
+      2.8285394901231986
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.12210963806544621,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      30.20956832364726
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 8.071128090659341,
+    "expected_shift_null": 8.5,
+    "lp": -0.8200521400644231,
+    "lp_permutation": -0.9313426485411366,
+    "observed": 12,
+    "ratio_ci95_shift": [
+     0.7294794245555549,
+     2.466068829197287
+    ],
+    "ratio_to_permutation": 1.4867810131631432,
+    "ratio_to_shift_null": 1.411764705882353,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.50537109375,
+    "expected_shift_null": 0.50537109375,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     7.299347943985836
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-50us-active-input-0",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.7382651879398145,
+    "size": 46
+   },
+   "dispersion": {
+    "lp": -0.280495198347363,
+    "ratio": 0.9845954870303523,
+    "ratio_se": 0.02418783769840249,
+    "z": -0.6368701973994635
+   },
+   "id": "pilot:delay-50us-active-input-0",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.043701171875,
+   "multiplicity_expected_0_to_11": [
+    508.0669803772879,
+    1083.8146411268713,
+    1131.1478401850638,
+    770.5775678278958,
+    385.6784671773319,
+    151.3462925642174,
+    48.52386848278109,
+    13.078561137834212,
+    3.0260104040796385,
+    0.6107161834539804,
+    0.10888301292237362,
+    0.017325338613075746
+   ],
+   "multiplicity_observed_0_to_11": [
+    506,
+    1071,
+    1136,
+    795,
+    378,
+    153,
+    39,
+    12,
+    6,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     43,
+     0,
+     5
+    ],
+    [
+     43,
+     0,
+     9
+    ],
+    [
+     43,
+     0,
+     9
+    ],
+    [
+     42,
+     0,
+     6
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 3.765781120716242,
+     "lp": -0.7461370524483287,
+     "observed": 6,
+     "ratio": 1.5932949387294224,
+     "ratio_ci95": [
+      0.5847111616173953,
+      3.4679323104245645
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.12905453318262355,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      28.583881272065398
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 8.071128090659341,
+    "expected_shift_null": 8.071128090659341,
+    "lp": -0.37946821927298807,
+    "lp_permutation": -0.37946821927298807,
+    "observed": 9,
+    "ratio_ci95_shift": [
+     0.5098882152720418,
+     2.1167801154328463
+    ],
+    "ratio_to_permutation": 1.1150857598723574,
+    "ratio_to_shift_null": 1.1150857598723574,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.400390625,
+    "expected_shift_null": 1.25,
+    "lp": -0.1466089423207623,
+    "lp_permutation": -0.48156273092341534,
+    "observed": 1,
+    "ratio_ci95_shift": [
+     0.020254246387431903,
+     4.457314712751119
+    ],
+    "ratio_to_permutation": 2.497560975609756,
+    "ratio_to_shift_null": 0.8
+   },
+   "arm": "delay-50us-active-input-1",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.848481807255571,
+    "size": 41
+   },
+   "dispersion": {
+    "lp": -0.7118864523628902,
+    "ratio": 1.031398532716985,
+    "ratio_se": 0.024181906808216046,
+    "z": 1.2984308047336015
+   },
+   "id": "pilot:delay-50us-active-input-1",
+   "kind": "pilot",
+   "max_multiplicity": 10,
+   "mean_errors_per_shot": 2.046875,
+   "multiplicity_expected_0_to_11": [
+    505.95583651816645,
+    1081.88327969772,
+    1131.5211881762757,
+    772.161125630673,
+    386.94381702380105,
+    151.9376916470949,
+    48.71052319996725,
+    13.118064565451382,
+    3.0301335197582295,
+    0.6099941803087294,
+    0.10837589894776122,
+    0.017167768340711487
+   ],
+   "multiplicity_observed_0_to_11": [
+    508,
+    1122,
+    1100,
+    725,
+    410,
+    161,
+    52,
+    16,
+    1,
+    0,
+    1,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     43,
+     2,
+     14
+    ],
+    [
+     45,
+     1,
+     8
+    ],
+    [
+     48,
+     1,
+     4
+    ],
+    [
+     44,
+     1,
+     15
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 3.7684735408513608,
+     "lp": -0.05065443770614066,
+     "observed": 2,
+     "ratio": 0.5307188648983234,
+     "ratio_ci95": [
+      0.06427251668834746,
+      1.9171390191296878
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.12834584078440192,
+     "lp": -0.9191901041402175,
+     "observed": 1,
+     "ratio": 7.7914484325193,
+     "ratio_ci95": [
+      0.19726239533401999,
+      43.4111721648874
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.394516941391942,
+    "expected_shift_null": 10.25,
+    "lp": -0.3485227129111218,
+    "lp_permutation": -1.2138045161174589,
+    "observed": 11,
+    "ratio_ci95_shift": [
+     0.5357229626572525,
+     1.920198879346532
+    ],
+    "ratio_to_permutation": 1.7202237637055269,
+    "ratio_to_shift_null": 1.0731707317073171,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.400390625,
+    "expected_shift_null": 0.75,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     4.918505938818581
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-50us-active-input-2",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8540588504142965,
+    "size": 41
+   },
+   "dispersion": {
+    "lp": -1.2908556344747792,
+    "ratio": 1.04704250623731,
+    "ratio_se": 0.02412530423541414,
+    "z": 1.9499238549810818
+   },
+   "id": "pilot:delay-50us-active-input-2",
+   "kind": "pilot",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 2.091796875,
+   "multiplicity_expected_0_to_11": [
+    482.41213935994443,
+    1055.9429278229127,
+    1130.142998074561,
+    788.9170248218214,
+    404.25706621565314,
+    162.25227235008222,
+    53.14852781696575,
+    14.618719478305586,
+    3.4474825618770577,
+    0.7082702753965159,
+    0.1283732850588488,
+    0.020737855430994136
+   ],
+   "multiplicity_observed_0_to_11": [
+    507,
+    1067,
+    1097,
+    746,
+    436,
+    167,
+    47,
+    25,
+    3,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     49,
+     1,
+     10
+    ],
+    [
+     45,
+     1,
+     9
+    ],
+    [
+     48,
+     1,
+     17
+    ],
+    [
+     48,
+     0,
+     7
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 4.308324059754008,
+     "lp": -0.2045782504814395,
+     "observed": 4,
+     "ratio": 0.9284352672924023,
+     "ratio_ci95": [
+      0.2529673623688727,
+      2.377163029836818
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.15257122248043398,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      24.178081515909756
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 6.394516941391942,
+    "expected_shift_null": 10.75,
+    "lp": -0.1278096410765981,
+    "lp_permutation": -0.7076339594352175,
+    "observed": 9,
+    "ratio_ci95_shift": [
+     0.38282540440728685,
+     1.589284041992481
+    ],
+    "ratio_to_permutation": 1.4074558066681584,
+    "ratio_to_shift_null": 0.8372093023255814,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.4619140625,
+    "expected_shift_null": 0.75,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     4.918505938818581
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-50us-active-input-3",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.9028720674073107,
+    "size": 44
+   },
+   "dispersion": {
+    "lp": -0.028445904641150616,
+    "ratio": 1.0019255192857235,
+    "ratio_se": 0.024206947544556556,
+    "z": 0.07954407643422862
+   },
+   "id": "pilot:delay-50us-active-input-3",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.029052734375,
+   "multiplicity_expected_0_to_11": [
+    515.7720541109803,
+    1092.1534515124022,
+    1131.5806267414007,
+    765.2183602999716,
+    380.10121171306054,
+    147.97959591028973,
+    47.04921812923091,
+    12.569038627532505,
+    2.8807773416079905,
+    0.5755821572947337,
+    0.1015247750791496,
+    0.015971325060750018
+   ],
+   "multiplicity_observed_0_to_11": [
+    523,
+    1057,
+    1178,
+    756,
+    377,
+    131,
+    57,
+    11,
+    6,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 4096,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     42,
+     1,
+     6
+    ],
+    [
+     42,
+     0,
+     6
+    ],
+    [
+     43,
+     1,
+     10
+    ],
+    [
+     41,
+     1,
+     8
+    ]
+   ],
+   "slot_us": 468.41600000000005,
+   "tail": {
+    "t_a": {
+     "expected": 3.576442955131636,
+     "lp": -0.8162944956072753,
+     "observed": 6,
+     "ratio": 1.6776445410350915,
+     "ratio_ci95": [
+      0.6156659790509106,
+      3.6515258837780094
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.12008345622891246,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      30.71929781136467
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 7.377089056776557,
+    "expected_shift_null": 7.5,
+    "lp": -0.12000803012201294,
+    "lp_permutation": -0.12793458669498511,
+    "observed": 6,
+    "ratio_ci95_shift": [
+     0.29358590046544675,
+     1.741263203002491
+    ],
+    "ratio_to_permutation": 0.813328936904785,
+    "ratio_to_shift_null": 0.8,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.177734375,
+    "expected_shift_null": 0.25,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     14.755517816455743
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-250us-idle-input-0",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8197573458017295,
+    "size": 14
+   },
+   "dispersion": {
+    "lp": -0.20595520978842743,
+    "ratio": 0.9761914128578959,
+    "ratio_se": 0.048342107039050036,
+    "z": -0.4925020567033174
+   },
+   "id": "pilot:delay-250us-idle-input-0",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.03125,
+   "multiplicity_expected_0_to_11": [
+    127.93760145821203,
+    272.7393240376765,
+    283.62492683851497,
+    191.96750322434053,
+    95.19533573027903,
+    36.91250573577399,
+    11.663869095379024,
+    3.0906499199164985,
+    0.7013340726347655,
+    0.13850562277860456,
+    0.02411120681681738,
+    0.0037383438646444275
+   ],
+   "multiplicity_observed_0_to_11": [
+    122,
+    287,
+    266,
+    197,
+    109,
+    29,
+    10,
+    3,
+    1,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     11,
+     0,
+     2
+    ],
+    [
+     11,
+     0,
+     4
+    ],
+    [
+     14,
+     1,
+     1
+    ],
+    [
+     16,
+     0,
+     4
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.958933879823677,
+     "lp": -0.2530032421903439,
+     "observed": 4,
+     "ratio": 1.0103730250170664,
+     "ratio_ci95": [
+      0.2752926436030463,
+      2.5869562327370406
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.16694988727241278,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      22.09572893029138
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 2.8229013929618767,
+    "expected_shift_null": 2.8229013929618767,
+    "lp": -0.2708453350836672,
+    "lp_permutation": -0.2708453350836672,
+    "observed": 3,
+    "ratio_ci95_shift": [
+     0.2191617902198387,
+     3.10576667382045
+    ],
+    "ratio_to_permutation": 1.0627363773597156,
+    "ratio_to_shift_null": 1.0627363773597156,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.79296875,
+    "expected_shift_null": 1.0,
+    "lp": -1.0952768988667823,
+    "lp_permutation": -1.3333234509555887,
+    "observed": 3,
+    "ratio_ci95_shift": [
+     0.6186721228956013,
+     8.767273069742323
+    ],
+    "ratio_to_permutation": 3.7832512315270934,
+    "ratio_to_shift_null": 3.0
+   },
+   "arm": "delay-250us-idle-input-1",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.2444238520593323,
+    "size": 29
+   },
+   "dispersion": {
+    "lp": -1.9140618785066432,
+    "ratio": 0.8783030591817348,
+    "ratio_se": 0.04854964900112428,
+    "z": -2.506649240974885
+   },
+   "id": "pilot:delay-250us-idle-input-1",
+   "kind": "pilot",
+   "max_multiplicity": 6,
+   "mean_errors_per_shot": 1.9697265625,
+   "multiplicity_expected_0_to_11": [
+    136.97004920978856,
+    281.61960551432,
+    283.0858315673808,
+    185.58622888129256,
+    89.30879497323059,
+    33.6644254113732,
+    10.357841210780443,
+    2.6765357716441303,
+    0.5931647359492006,
+    0.11456235247108479,
+    0.019529163215997968,
+    0.0029687317011494714
+   ],
+   "multiplicity_observed_0_to_11": [
+    116,
+    290,
+    293,
+    211,
+    72,
+    32,
+    10,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     26,
+     3,
+     13
+    ],
+    [
+     11,
+     1,
+     6
+    ],
+    [
+     14,
+     0,
+     3
+    ],
+    [
+     11,
+     0,
+     2
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.407223231833113,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      1.082664446417645
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.13752272423978149,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      26.82378112058113
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 12.594483137829911,
+    "expected_shift_null": 12.594483137829911,
+    "lp": -2.2719327527972712,
+    "lp_permutation": -2.2719327527972712,
+    "observed": 23,
+    "ratio_ci95_shift": [
+     1.157651876419669,
+     2.7401912819408873
+    ],
+    "ratio_to_permutation": 1.826196418566408,
+    "ratio_to_shift_null": 1.826196418566408,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.205078125,
+    "expected_shift_null": 0.5,
+    "lp": -1.0447741534851462,
+    "lp_permutation": -1.7360555903638457,
+    "observed": 2,
+    "ratio_ci95_shift": [
+     0.4844185570879299,
+     14.449375335447918
+    ],
+    "ratio_to_permutation": 9.752380952380953,
+    "ratio_to_shift_null": 4.0
+   },
+   "arm": "delay-250us-idle-input-2",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8573869671158807,
+    "size": 15
+   },
+   "dispersion": {
+    "lp": -0.9242727650304902,
+    "ratio": 0.9243577970141764,
+    "ratio_se": 0.048526666437812005,
+    "z": -1.5587759996405433
+   },
+   "id": "pilot:delay-250us-idle-input-2",
+   "kind": "pilot",
+   "max_multiplicity": 7,
+   "mean_errors_per_shot": 1.9814453125,
+   "multiplicity_expected_0_to_11": [
+    135.41786615818086,
+    279.9046060679442,
+    283.01458388075764,
+    186.71432743840285,
+    90.4513793377599,
+    34.330436336024725,
+    10.636864646481856,
+    2.7679307819112204,
+    0.617662276067839,
+    0.12009462633477216,
+    0.020603576902343303,
+    0.0031509440548786
+   ],
+   "multiplicity_observed_0_to_11": [
+    116,
+    298,
+    289,
+    186,
+    97,
+    23,
+    13,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     15,
+     0,
+     3
+    ],
+    [
+     11,
+     1,
+     1
+    ],
+    [
+     13,
+     1,
+     3
+    ],
+    [
+     17,
+     0,
+     6
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.5299361344476354,
+     "lp": -0.06185963542721046,
+     "observed": 2,
+     "ratio": 0.566582488697904,
+     "ratio_ci95": [
+      0.06861576791158175,
+      2.046690759422048
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.14434307646857625,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      25.556331099240577
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 3.257193914956012,
+    "expected_shift_null": 3.257193914956012,
+    "lp": -0.6389443126536943,
+    "lp_permutation": -0.6389443126536943,
+    "observed": 5,
+    "ratio_ci95_shift": [
+     0.4984309907567617,
+     3.582326500656087
+    ],
+    "ratio_to_permutation": 1.5350636561862558,
+    "ratio_to_shift_null": 1.5350636561862558,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 1.162109375,
+    "expected_shift_null": 1.162109375,
+    "lp": -0.949227576494025,
+    "lp_permutation": -0.949227576494025,
+    "observed": 3,
+    "ratio_ci95_shift": [
+     0.5323699612143661,
+     7.544275313795075
+    ],
+    "ratio_to_permutation": 2.581512605042017,
+    "ratio_to_shift_null": 2.581512605042017
+   },
+   "arm": "delay-250us-idle-input-3",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.2140284614735997,
+    "size": 35
+   },
+   "dispersion": {
+    "lp": -0.38433012727212545,
+    "ratio": 1.039688795832806,
+    "ratio_se": 0.04845459601909408,
+    "z": 0.8190924926330243
+   },
+   "id": "pilot:delay-250us-idle-input-3",
+   "kind": "pilot",
+   "max_multiplicity": 7,
+   "mean_errors_per_shot": 1.9990234375,
+   "multiplicity_expected_0_to_11": [
+    132.72208107126997,
+    277.37618751093225,
+    283.28834208119935,
+    188.60475035003657,
+    92.12270300243748,
+    35.225404518705616,
+    10.987296311283348,
+    2.8762975798357058,
+    0.645291487423784,
+    0.1260671706182104,
+    0.02172014387285634,
+    0.0033341844639167323
+   ],
+   "multiplicity_observed_0_to_11": [
+    140,
+    280,
+    273,
+    175,
+    99,
+    47,
+    5,
+    5,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     13,
+     0,
+     3
+    ],
+    [
+     15,
+     0,
+     2
+    ],
+    [
+     20,
+     0,
+     8
+    ],
+    [
+     12,
+     0,
+     6
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.673235154135144,
+     "lp": -0.511986797173079,
+     "observed": 5,
+     "ratio": 1.361197905985205,
+     "ratio_ci95": [
+      0.4419772549249347,
+      3.176581838542803
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.1516460868756534,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      24.325582875994286
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 18.457432184750733,
+    "expected_shift_null": 18.457432184750733,
+    "lp": -2.3257053371651013,
+    "lp_permutation": -2.3257053371651013,
+    "observed": 31,
+    "ratio_ci95_shift": [
+     1.1411661041639258,
+     2.383973299362985
+    ],
+    "ratio_to_permutation": 1.6795402355920213,
+    "ratio_to_shift_null": 1.6795402355920213,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.177734375,
+    "expected_shift_null": 0.25,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     14.755517816455743
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-250us-active-input-0",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8810962393551773,
+    "size": 14
+   },
+   "dispersion": {
+    "lp": -0.9110908480503057,
+    "ratio": 1.074700087138666,
+    "ratio_se": 0.04839768851634181,
+    "z": 1.5434639427757617
+   },
+   "id": "pilot:delay-250us-active-input-0",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 2.0302734375,
+   "multiplicity_expected_0_to_11": [
+    128.66053943552384,
+    272.83919072091953,
+    283.01499283161763,
+    191.52361171502446,
+    95.15136665233237,
+    37.02729319115555,
+    11.758920318563078,
+    3.135252077035555,
+    0.7165892438236017,
+    0.14264988887236557,
+    0.02504582812089083,
+    0.003918188380000015
+   ],
+   "multiplicity_observed_0_to_11": [
+    130,
+    286,
+    284,
+    164,
+    94,
+    44,
+    19,
+    1,
+    2,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     11,
+     0,
+     1
+    ],
+    [
+     11,
+     0,
+     2
+    ],
+    [
+     11,
+     0,
+     1
+    ],
+    [
+     30,
+     1,
+     16
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 4.024085134863509,
+     "lp": -0.11610895199102125,
+     "observed": 3,
+     "ratio": 0.7455110663561434,
+     "ratio_ci95": [
+      0.15374230468823957,
+      2.1786996984196993
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.17224381400435224,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      21.416615020036225
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 2.8229013929618767,
+    "expected_shift_null": 5.0,
+    "lp": -0.6237579491711157,
+    "lp_permutation": -1.5959374014252268,
+    "observed": 7,
+    "ratio_ci95_shift": [
+     0.5628726103039732,
+     2.8845350723404755
+    ],
+    "ratio_to_permutation": 2.4797182138393365,
+    "ratio_to_shift_null": 1.4,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.205078125,
+    "expected_shift_null": 0.75,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     4.918505938818581
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-250us-active-input-1",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.981035044788643,
+    "size": 15
+   },
+   "dispersion": {
+    "lp": -0.12750764820593055,
+    "ratio": 1.015748893099221,
+    "ratio_se": 0.048536200950232346,
+    "z": 0.32447725184279125
+   },
+   "id": "pilot:delay-250us-active-input-1",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 1.96484375,
+   "multiplicity_expected_0_to_11": [
+    137.48566715121962,
+    282.3309426795512,
+    283.2522367275534,
+    185.20679741295325,
+    88.82916298316059,
+    33.348285198711665,
+    10.211739341693008,
+    2.624315517812703,
+    0.577981322154665,
+    0.11085607844114367,
+    0.01875284447819676,
+    0.0028269185907652
+   ],
+   "multiplicity_observed_0_to_11": [
+    139,
+    267,
+    307,
+    189,
+    75,
+    28,
+    10,
+    8,
+    1,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     20,
+     1,
+     5
+    ],
+    [
+     12,
+     0,
+     2
+    ],
+    [
+     11,
+     0,
+     1
+    ],
+    [
+     21,
+     2,
+     8
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.335168505157629,
+     "lp": -2.132195753554303,
+     "observed": 9,
+     "ratio": 2.69851432876092,
+     "ratio_ci95": [
+      1.2339325857191825,
+      5.1226207686354055
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.13287166519026106,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      27.762724647363832
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 3.257193914956012,
+    "expected_shift_null": 4.0,
+    "lp": -0.6678249984347631,
+    "lp_permutation": -0.9506607535248685,
+    "observed": 6,
+    "ratio_ci95_shift": [
+     0.5504735633727127,
+     3.264868505629671
+    ],
+    "ratio_to_permutation": 1.842076387423507,
+    "ratio_to_shift_null": 1.5,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.177734375,
+    "expected_shift_null": 0.25,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     14.755517816455743
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-250us-active-input-2",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.84551045213567,
+    "size": 14
+   },
+   "dispersion": {
+    "lp": -0.14826573073162094,
+    "ratio": 1.0179716018654423,
+    "ratio_se": 0.04846569535085576,
+    "z": 0.3708107711101877
+   },
+   "id": "pilot:delay-250us-active-input-2",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 1.990234375,
+   "multiplicity_expected_0_to_11": [
+    133.95813398927734,
+    278.6257431491564,
+    283.27024626010586,
+    187.74885465920312,
+    91.28969478301921,
+    34.743374683354276,
+    10.783424993962921,
+    2.8080324682169504,
+    0.6263936138168211,
+    0.12162115258369599,
+    0.02081390326204522,
+    0.003171833812918694
+   ],
+   "multiplicity_observed_0_to_11": [
+    129,
+    296,
+    275,
+    177,
+    92,
+    41,
+    11,
+    2,
+    1,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     14,
+     1,
+     3
+    ],
+    [
+     31,
+     0,
+     14
+    ],
+    [
+     17,
+     0,
+     3
+    ],
+    [
+     28,
+     0,
+     16
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 3.5805274819205906,
+     "lp": -0.15877167175359952,
+     "observed": 3,
+     "ratio": 0.8378653746265351,
+     "ratio_ci95": [
+      0.17278798334030557,
+      2.448598178344261
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.14610139988681872,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      25.248761866564063
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 2.8229013929618767,
+    "expected_shift_null": 9.0,
+    "lp": -5.359950434778936e-05,
+    "lp_permutation": -0.026610379499948954,
+    "observed": 1,
+    "ratio_ci95_shift": [
+     0.0028130897760322085,
+     0.6190714878820998
+    ],
+    "ratio_to_permutation": 0.35424545911990524,
+    "ratio_to_shift_null": 0.1111111111111111,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 0.685546875,
+    "expected_shift_null": 0.685546875,
+    "lp": 0.0,
+    "lp_permutation": 0.0,
+    "observed": 0,
+    "ratio_ci95_shift": [
+     0.0,
+     5.380929574092123
+    ],
+    "ratio_to_permutation": 0.0,
+    "ratio_to_shift_null": 0.0
+   },
+   "arm": "delay-250us-active-input-3",
+   "backend": "ibm_fez",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.269880334122478,
+    "size": 27
+   },
+   "dispersion": {
+    "lp": -0.6519752174046709,
+    "ratio": 0.9407250158233893,
+    "ratio_se": 0.04862717521191175,
+    "z": -1.2189682809724605
+   },
+   "id": "pilot:delay-250us-active-input-3",
+   "kind": "pilot",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 1.9267578125,
+   "multiplicity_expected_0_to_11": [
+    143.00018429350493,
+    287.83204278590165,
+    282.9982470554586,
+    181.30377473706628,
+    85.17982115044524,
+    31.315475029460245,
+    9.387349783057104,
+    2.360746813445707,
+    0.5085652848604363,
+    0.09536230628682459,
+    0.015762566649739698,
+    0.002320306887309751
+   ],
+   "multiplicity_observed_0_to_11": [
+    126,
+    297,
+    303,
+    177,
+    82,
+    29,
+    6,
+    2,
+    2,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 153,
+   "n_shots": 1024,
+   "run": "results/live/2026-10-29T191606.826758Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     12,
+     0,
+     4
+    ],
+    [
+     22,
+     1,
+     6
+    ],
+    [
+     15,
+     0,
+     4
+    ],
+    [
+     20,
+     1,
+     12
+    ]
+   ],
+   "slot_us": 2068.416,
+   "tail": {
+    "t_a": {
+     "expected": 2.9831051651056084,
+     "lp": -0.4571957008491056,
+     "observed": 4,
+     "ratio": 1.340884675065886,
+     "ratio_ci95": [
+      0.36534594434512374,
+      3.4331973257942856
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.1137930667994649,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      32.41743594638125
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 10.888333944281525,
+    "expected_shift_null": 10.888333944281525,
+    "lp": -2.076282263923571,
+    "lp_permutation": -2.076282263923571,
+    "observed": 20,
+    "ratio_ci95_shift": [
+     1.1219824490981902,
+     2.836832343748691
+    ],
+    "ratio_to_permutation": 1.8368283065476565,
+    "ratio_to_shift_null": 1.8368283065476565,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.31329345703125,
+    "expected_shift_null": 3.31329345703125,
+    "lp": -2.646280667206476,
+    "lp_permutation": -2.646280667206476,
+    "observed": 10,
+    "ratio_ci95_shift": [
+     1.447317829924174,
+     5.550476068755997
+    ],
+    "ratio_to_permutation": 3.018144975591784,
+    "ratio_to_shift_null": 3.018144975591784
+   },
+   "arm": "prep0",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion",
+    "tail_a",
+    "adjacent"
+   ],
+   "burst_set": {
+    "score_cut": 3.0263158666172654,
+    "size": 330
+   },
+   "dispersion": {
+    "lp": -10.703450089236412,
+    "ratio": 1.059793278870876,
+    "ratio_se": 0.008914352465947328,
+    "z": 6.7075291334154805
+   },
+   "id": "state_prep:e/2026-10-18T083402.386701Z:prep0",
+   "kind": "state_prep",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 1.435821533203125,
+   "multiplicity_expected_0_to_11": [
+    7644.07069502238,
+    11281.676385469686,
+    8164.391799080665,
+    3863.809034166808,
+    1345.5416963580878,
+    367.86392767327396,
+    82.26208753452111,
+    15.479244946165942,
+    2.5024673923838856,
+    0.35315646280926033,
+    0.0440563901576503,
+    0.004908200166033707
+   ],
+   "multiplicity_observed_0_to_11": [
+    7955,
+    11121,
+    7931,
+    3705,
+    1504,
+    416,
+    108,
+    19,
+    7,
+    2,
+    0,
+    0
+   ],
+   "n_columns": 149,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-18T083402.386701Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     330,
+     2,
+     67
+    ],
+    [
+     335,
+     3,
+     73
+    ],
+    [
+     329,
+     3,
+     72
+    ],
+    [
+     330,
+     5,
+     67
+    ]
+   ],
+   "slot_us": 61.160000000000004,
+   "tail": {
+    "t_a": {
+     "expected": 2.9051297484172567,
+     "lp": -2.5096190129308176,
+     "observed": 9,
+     "ratio": 3.0979683454425015,
+     "ratio_ci95": [
+      1.4165883983737488,
+      5.880908920067043
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.40266235603337014,
+     "lp": -1.2057405944504462,
+     "observed": 2,
+     "ratio": 4.966940589386142,
+     "ratio_ci95": [
+      0.6015195483629767,
+      17.942297211227817
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 53.00056129916818,
+    "expected_shift_null": 69.75,
+    "lp": -0.9109102153414904,
+    "lp_permutation": -3.4849328623497526,
+    "observed": 80,
+    "ratio_ci95_shift": [
+     0.9094627181503994,
+     1.4274827952320928
+    ],
+    "ratio_to_permutation": 1.5094179766970799,
+    "ratio_to_shift_null": 1.146953405017921,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 1.651611328125,
+    "expected_shift_null": 2.25,
+    "lp": -0.4082002393964132,
+    "lp_permutation": -0.6381567663137548,
+    "observed": 3,
+    "ratio_ci95_shift": [
+     0.27496538795360054,
+     3.896565808774366
+    ],
+    "ratio_to_permutation": 1.8164079822616408,
+    "ratio_to_shift_null": 1.3333333333333333
+   },
+   "arm": "x_history",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion"
+   ],
+   "burst_set": {
+    "score_cut": 3.166904074311121,
+    "size": 165
+   },
+   "dispersion": {
+    "lp": -5.889613601018828,
+    "ratio": 1.061768917960953,
+    "ratio_se": 0.01275853168294417,
+    "z": 4.841381398419611
+   },
+   "id": "state_prep:e/2026-10-18T083403.945334Z:x_history",
+   "kind": "state_prep",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 1.3314208984375,
+   "multiplicity_expected_0_to_11": [
+    4263.0936782391445,
+    5804.5073703111375,
+    3884.920794928117,
+    1704.354043633156,
+    551.4337323138228,
+    140.36241750545165,
+    29.281790404815883,
+    5.149937687084745,
+    0.7795609003256442,
+    0.10318350696490405,
+    0.012092179118558389,
+    0.0012674258803291184
+   ],
+   "multiplicity_observed_0_to_11": [
+    4423,
+    5706,
+    3759,
+    1692,
+    579,
+    167,
+    45,
+    11,
+    2,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 149,
+   "n_shots": 16384,
+   "run": "results/live/2026-10-18T083403.945334Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     170,
+     4,
+     27
+    ],
+    [
+     166,
+     0,
+     31
+    ],
+    [
+     166,
+     3,
+     24
+    ],
+    [
+     172,
+     2,
+     32
+    ]
+   ],
+   "slot_us": 261.192,
+   "tail": {
+    "t_a": {
+     "expected": 0.8962349772676457,
+     "lp": -0.6456220954991964,
+     "observed": 2,
+     "ratio": 2.2315576279977445,
+     "ratio_ci95": [
+      0.27025198155330776,
+      8.061153437405318
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.1166740769420009,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      31.616958546393224
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 26.41368374896997,
+    "expected_shift_null": 28.5,
+    "lp": -0.2500058078459417,
+    "lp_permutation": -0.39332138735946415,
+    "observed": 28,
+    "ratio_ci95_shift": [
+     0.652834970380966,
+     1.419922664676077
+    ],
+    "ratio_to_permutation": 1.0600566080106828,
+    "ratio_to_shift_null": 0.9824561403508771,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.293212890625,
+    "expected_shift_null": 8.0,
+    "lp": -0.9510767732374018,
+    "lp_permutation": -3.775492089837051,
+    "observed": 12,
+    "ratio_ci95_shift": [
+     0.7750718885902771,
+     2.620198131022118
+    ],
+    "ratio_to_permutation": 3.6438579583364223,
+    "ratio_to_shift_null": 1.5
+   },
+   "arm": "x_history",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion"
+   ],
+   "burst_set": {
+    "score_cut": 2.868901421586908,
+    "size": 329
+   },
+   "dispersion": {
+    "lp": -10.323234142422232,
+    "ratio": 1.0579200124314312,
+    "ratio_se": 0.008804382429622467,
+    "z": 6.578543457694258
+   },
+   "id": "state_prep:e/2026-10-18T083404.226285Z:x_history",
+   "kind": "state_prep",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 1.6016845703125,
+   "multiplicity_expected_0_to_11": [
+    6466.738683024238,
+    10634.7223012835,
+    8599.528339865697,
+    4559.64792000129,
+    1783.6426926934682,
+    549.1481448900421,
+    138.63056669339178,
+    29.519035479676493,
+    5.412810181680998,
+    0.8683740203407215,
+    0.12342221109685456,
+    0.01569960359774835
+   ],
+   "multiplicity_observed_0_to_11": [
+    6723,
+    10604,
+    8272,
+    4504,
+    1818,
+    602,
+    187,
+    45,
+    12,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 149,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-18T083404.226285Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     336,
+     8,
+     96
+    ],
+    [
+     330,
+     5,
+     73
+    ],
+    [
+     329,
+     10,
+     100
+    ],
+    [
+     337,
+     9,
+     87
+    ]
+   ],
+   "slot_us": 61.19200000000001,
+   "tail": {
+    "t_a": {
+     "expected": 1.009505887017316,
+     "lp": -0.19681542091702595,
+     "observed": 1,
+     "ratio": 0.9905836239891558,
+     "ratio_ci95": [
+      0.02507940598453945,
+      5.519178701771482
+     ],
+     "threshold": 9
+    },
+    "t_b": {
+     "expected": 0.14113186667659391,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      26.137820897438182
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 52.67934577614292,
+    "expected_shift_null": 89.0,
+    "lp": -0.007228503583997731,
+    "lp_permutation": -1.8904079634837903,
+    "observed": 70,
+    "ratio_ci95_shift": [
+     0.613128473122983,
+     0.9937167284498758
+    ],
+    "ratio_to_permutation": 1.328794026741713,
+    "ratio_to_shift_null": 0.7865168539325843,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 1.6920166015625,
+    "expected_shift_null": 1.6920166015625,
+    "lp": -0.6185765027094003,
+    "lp_permutation": -0.6185765027094003,
+    "observed": 3,
+    "ratio_ci95_shift": [
+     0.36564187509997587,
+     5.1815526287662586
+    ],
+    "ratio_to_permutation": 1.773032248755501,
+    "ratio_to_shift_null": 1.773032248755501
+   },
+   "arm": "prep0",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion",
+    "tail_a"
+   ],
+   "burst_set": {
+    "score_cut": 3.1710032038472504,
+    "size": 167
+   },
+   "dispersion": {
+    "lp": -8.142819855657882,
+    "ratio": 1.07383413890842,
+    "ratio_se": 0.01276027292061065,
+    "z": 5.786250761859625
+   },
+   "id": "state_prep:e/2026-10-18T083404.414317Z:prep0",
+   "kind": "state_prep",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 1.3267822265625,
+   "multiplicity_expected_0_to_11": [
+    4279.9738403291185,
+    5813.705821479253,
+    3878.224195916471,
+    1694.2643042386499,
+    545.3868678536355,
+    138.00018349314163,
+    28.5940696215413,
+    4.990719589244932,
+    0.7490756282932487,
+    0.09822618735698183,
+    0.011394169022050982,
+    0.0011810593506388302
+   ],
+   "multiplicity_observed_0_to_11": [
+    4469,
+    5682,
+    3747,
+    1701,
+    553,
+    170,
+    44,
+    11,
+    7,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 149,
+   "n_shots": 16384,
+   "run": "results/live/2026-10-18T083404.414317Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     167,
+     0,
+     36
+    ],
+    [
+     164,
+     3,
+     30
+    ],
+    [
+     173,
+     1,
+     24
+    ],
+    [
+     168,
+     2,
+     32
+    ]
+   ],
+   "slot_us": 261.16,
+   "tail": {
+    "t_a": {
+     "expected": 0.8599974789428266,
+     "lp": -4.485717314429482,
+     "observed": 7,
+     "ratio": 8.139558744526699,
+     "ratio_ci95": [
+      3.2725247694673385,
+      16.770601908544908
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.1109218506495779,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      33.256562458264156
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 27.059872168844993,
+    "expected_shift_null": 30.5,
+    "lp": -0.7423944448060963,
+    "lp_permutation": -1.2421558918031734,
+    "observed": 36,
+    "ratio_ci95_shift": [
+     0.8266871284365649,
+     1.6340712947290554
+    ],
+    "ratio_to_permutation": 1.3303832248493803,
+    "ratio_to_shift_null": 1.180327868852459,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.3536376953125,
+    "expected_shift_null": 12.5,
+    "lp": -2.3092368345835554,
+    "lp_permutation": -11.717168070669066,
+    "observed": 23,
+    "ratio_ci95_shift": [
+     1.1664021629635741,
+     2.7609034315866428
+    ],
+    "ratio_to_permutation": 6.858224438539657,
+    "ratio_to_shift_null": 1.84
+   },
+   "arm": "x_history",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion"
+   ],
+   "burst_set": {
+    "score_cut": 2.8570802879544392,
+    "size": 332
+   },
+   "dispersion": {
+    "lp": -7.619956829203142,
+    "ratio": 1.0492048324190673,
+    "ratio_se": 0.00881737073745146,
+    "z": 5.580442728813876
+   },
+   "id": "state_prep:e/2026-10-18T214519.655411Z:x_history",
+   "kind": "state_prep",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 1.589691162109375,
+   "multiplicity_expected_0_to_11": [
+    6547.831619258631,
+    10685.490059139416,
+    8570.696279810338,
+    4508.290945945151,
+    1750.6896171376475,
+    535.6474449469563,
+    134.57482376253265,
+    28.56832727787234,
+    5.233100523696353,
+    0.8405532829038229,
+    0.11989910063899288,
+    0.015345216557905867
+   ],
+   "multiplicity_observed_0_to_11": [
+    6775,
+    10625,
+    8334,
+    4447,
+    1764,
+    607,
+    156,
+    51,
+    8,
+    1,
+    0,
+    0
+   ],
+   "n_columns": 148,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-18T214519.655411Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     334,
+     19,
+     98
+    ],
+    [
+     330,
+     9,
+     102
+    ],
+    [
+     328,
+     10,
+     89
+    ],
+    [
+     329,
+     12,
+     115
+    ]
+   ],
+   "slot_us": 31.192000000000004,
+   "tail": {
+    "t_a": {
+     "expected": 0.9777821977580882,
+     "lp": -0.20491591402946474,
+     "observed": 1,
+     "ratio": 1.0227226495766173,
+     "ratio_ci95": [
+      0.025893095663164983,
+      5.698245891277079
+     ],
+     "threshold": 9
+    },
+    "t_b": {
+     "expected": 0.13722891485426458,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      26.88121128139416
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 53.645921362145984,
+    "expected_shift_null": 101.0,
+    "lp": -0.6468362733574682,
+    "lp_permutation": -10.651053671241339,
+    "observed": 109,
+    "ratio_ci95_shift": [
+     0.8861419994621763,
+     1.3018459562122295
+    ],
+    "ratio_to_permutation": 2.0318413260940535,
+    "ratio_to_shift_null": 1.0792079207920793,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.33343505859375,
+    "expected_shift_null": 10.5,
+    "lp": -0.7578290336150284,
+    "lp_permutation": -4.960524594459214,
+    "observed": 14,
+    "ratio_ci95_shift": [
+     0.7289457406000567,
+     2.2371067735081502
+    ],
+    "ratio_to_permutation": 4.19987183008331,
+    "ratio_to_shift_null": 1.3333333333333333
+   },
+   "arm": "prep0",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion",
+    "tail_a"
+   ],
+   "burst_set": {
+    "score_cut": 2.802174755297742,
+    "size": 331
+   },
+   "dispersion": {
+    "lp": -8.190842791658527,
+    "ratio": 1.0510717382295165,
+    "ratio_se": 0.008798180478905612,
+    "z": 5.8048068406831845
+   },
+   "id": "state_prep:e/2026-10-18T220218.089776Z:prep0",
+   "kind": "state_prep",
+   "max_multiplicity": 9,
+   "mean_errors_per_shot": 1.622161865234375,
+   "multiplicity_expected_0_to_11": [
+    6340.802923989386,
+    10546.523862757298,
+    8635.21370441643,
+    4640.868082946846,
+    1841.8890630280994,
+    575.8583368401036,
+    147.74177062870086,
+    31.99462290086125,
+    5.970421133861714,
+    0.9752974854568496,
+    0.1412134017466385,
+    0.018305880505785264
+   ],
+   "multiplicity_observed_0_to_11": [
+    6586,
+    10469,
+    8414,
+    4512,
+    1920,
+    641,
+    166,
+    45,
+    9,
+    6,
+    0,
+    0
+   ],
+   "n_columns": 148,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-18T220218.089776Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     334,
+     12,
+     102
+    ],
+    [
+     332,
+     10,
+     100
+    ],
+    [
+     330,
+     10,
+     86
+    ],
+    [
+     336,
+     10,
+     75
+    ]
+   ],
+   "slot_us": 31.16,
+   "tail": {
+    "t_a": {
+     "expected": 1.137211358409443,
+     "lp": -2.941046472702014,
+     "observed": 6,
+     "ratio": 5.276064080464233,
+     "ratio_ci95": [
+      1.9362225299706144,
+      11.48377029999443
+     ],
+     "threshold": 9
+    },
+    "t_b": {
+     "expected": 0.1619138729525933,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      22.782973360127095
+     ],
+     "threshold": 10
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 53.3227531611692,
+    "expected_shift_null": 90.75,
+    "lp": -0.13024320566546138,
+    "lp_permutation": -4.41145717540785,
+    "observed": 85,
+    "ratio_ci95_shift": [
+     0.7481540606588925,
+     1.1581687748639005
+    ],
+    "ratio_to_permutation": 1.5940662280337554,
+    "ratio_to_shift_null": 0.9366391184573003,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.41461181640625,
+    "expected_shift_null": 7.25,
+    "lp": -0.7083373187183793,
+    "lp_permutation": -2.5541915098071155,
+    "observed": 10,
+    "ratio_ci95_shift": [
+     0.6614329236044736,
+     2.5366008333817627
+    ],
+    "ratio_to_permutation": 2.928590580033962,
+    "ratio_to_shift_null": 1.3793103448275863
+   },
+   "arm": "prep0",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion"
+   ],
+   "burst_set": {
+    "score_cut": 2.7598607603882757,
+    "size": 335
+   },
+   "dispersion": {
+    "lp": -5.7765914828957134,
+    "ratio": 1.0419825697890297,
+    "ratio_se": 0.00876569471263415,
+    "z": 4.789417286974353
+   },
+   "id": "state_prep:e/2026-10-26T190449.023973Z:prep0",
+   "kind": "state_prep",
+   "max_multiplicity": 7,
+   "mean_errors_per_shot": 1.318939208984375,
+   "multiplicity_expected_0_to_11": [
+    8186.681379407089,
+    12013.957537254959,
+    8025.377053315843,
+    3319.3198391122105,
+    966.7522738806522,
+    212.87939971037656,
+    37.072855758675736,
+    5.266702667060338,
+    0.6242794505870862,
+    0.06280654816921713,
+    0.00543529004881543,
+    0.0004089582072373019
+   ],
+   "multiplicity_observed_0_to_11": [
+    8477,
+    11766,
+    7815,
+    3370,
+    1030,
+    271,
+    35,
+    4,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 69,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-26T190449.023973Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     344,
+     6,
+     89
+    ],
+    [
+     329,
+     8,
+     73
+    ],
+    [
+     332,
+     10,
+     77
+    ],
+    [
+     330,
+     5,
+     73
+    ]
+   ],
+   "slot_us": 31.16,
+   "tail": {
+    "t_a": {
+     "expected": 0.6929588931376833,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      5.323374143321653
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.06867944255059727,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      53.711552061539784
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 54.6212839989309,
+    "expected_shift_null": 78.0,
+    "lp": -0.3712197094517131,
+    "lp_permutation": -3.119184975623749,
+    "observed": 80,
+    "ratio_ci95_shift": [
+     0.8132695460383379,
+     1.2764990380440828
+    ],
+    "ratio_to_permutation": 1.46463052757174,
+    "ratio_to_shift_null": 1.0256410256410255,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.273193359375,
+    "expected_shift_null": 10.5,
+    "lp": -0.5883195867233294,
+    "lp_permutation": -4.40800265158859,
+    "observed": 13,
+    "ratio_ci95_shift": [
+     0.6592335705717908,
+     2.1171805636341783
+    ],
+    "ratio_to_permutation": 3.971656597299918,
+    "ratio_to_shift_null": 1.2380952380952381
+   },
+   "arm": "x_history",
+   "backend": "ibm_kingston",
+   "bh_members": [
+    "dispersion"
+   ],
+   "burst_set": {
+    "score_cut": 3.022581868492359,
+    "size": 328
+   },
+   "dispersion": {
+    "lp": -4.857486192955537,
+    "ratio": 1.0376938026321116,
+    "ratio_se": 0.008673839882751496,
+    "z": 4.345688085281392
+   },
+   "id": "state_prep:e/2026-10-26T190506.325237Z:x_history",
+   "kind": "state_prep",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 1.470550537109375,
+   "multiplicity_expected_0_to_11": [
+    6985.944470338087,
+    11417.803421346049,
+    8586.813525754373,
+    4025.38738136216,
+    1335.5492219739115,
+    336.4626073048058,
+    67.30499903995096,
+    11.025301825384592,
+    1.5126861813632595,
+    0.17683085964937773,
+    0.017850221972175267,
+    0.0015728149838836157
+   ],
+   "multiplicity_observed_0_to_11": [
+    7160,
+    11301,
+    8551,
+    3875,
+    1380,
+    387,
+    96,
+    16,
+    2,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 69,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-26T190506.325237Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     329,
+     10,
+     69
+    ],
+    [
+     333,
+     15,
+     87
+    ],
+    [
+     330,
+     7,
+     58
+    ],
+    [
+     329,
+     10,
+     90
+    ]
+   ],
+   "slot_us": 31.192000000000004,
+   "tail": {
+    "t_a": {
+     "expected": 1.7090710552865371,
+     "lp": -0.29279926575026655,
+     "observed": 2,
+     "ratio": 1.1702263599945448,
+     "ratio_ci95": [
+      0.14171984119370448,
+      4.227259975749043
+     ],
+     "threshold": 8
+    },
+    "t_b": {
+     "expected": 0.19638487392327791,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      18.78392862148374
+     ],
+     "threshold": 9
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 52.35910659209342,
+    "expected_shift_null": 76.0,
+    "lp": -1.1958478165724236,
+    "lp_permutation": -5.837789757787861,
+    "observed": 90,
+    "ratio_ci95_shift": [
+     0.9522451069882365,
+     1.455595786709295
+    ],
+    "ratio_to_permutation": 1.71889869514295,
+    "ratio_to_shift_null": 1.1842105263157894,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.45556640625,
+    "expected_shift_null": 7.75,
+    "lp": -1.2797678858991393,
+    "lp_permutation": -4.174002652931565,
+    "observed": 13,
+    "ratio_ci95_shift": [
+     0.893155160129523,
+     2.8684381829882417
+    ],
+    "ratio_to_permutation": 3.762046064716688,
+    "ratio_to_shift_null": 1.6774193548387097
+   },
+   "arm": "prep0",
+   "backend": "ibm_kingston",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.8701291785825522,
+    "size": 337
+   },
+   "dispersion": {
+    "lp": -0.8948817757123333,
+    "ratio": 1.014399557464842,
+    "ratio_se": 0.009445457511646426,
+    "z": 1.524495499247859
+   },
+   "id": "state_prep:e/2026-10-27T010741.272123Z:prep0",
+   "kind": "state_prep",
+   "max_multiplicity": 7,
+   "mean_errors_per_shot": 0.865325927734375,
+   "multiplicity_expected_0_to_11": [
+    13540.394948908692,
+    12227.087151415291,
+    5248.973729021241,
+    1428.2250653996493,
+    277.12605783341945,
+    40.90984711602831,
+    4.787344034649416,
+    0.4569362526322649,
+    0.03632686444220522,
+    0.0024447094138849543,
+    0.00014107031496109264,
+    7.053641147582684e-06
+   ],
+   "multiplicity_observed_0_to_11": [
+    13636,
+    12090,
+    5254,
+    1464,
+    270,
+    41,
+    11,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 66,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-27T010741.272123Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     336,
+     12,
+     89
+    ],
+    [
+     330,
+     2,
+     72
+    ],
+    [
+     337,
+     9,
+     84
+    ],
+    [
+     333,
+     8,
+     73
+    ]
+   ],
+   "slot_us": 31.16,
+   "tail": {
+    "t_a": {
+     "expected": 0.49585627102405705,
+     "lp": -1.050854167147779,
+     "observed": 2,
+     "ratio": 4.033426855466687,
+     "ratio_ci95": [
+      0.4884667043612198,
+      14.570124630678402
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.49585627102405705,
+     "lp": -1.050854167147779,
+     "observed": 2,
+     "ratio": 4.033426855466687,
+     "ratio_ci95": [
+      0.4884667043612198,
+      14.570124630678402
+     ],
+     "threshold": 7
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 55.27640745166631,
+    "expected_shift_null": 79.5,
+    "lp": -0.7357952126800789,
+    "lp_permutation": -4.521025630766212,
+    "observed": 88,
+    "ratio_ci95_shift": [
+     0.8877807958628529,
+     1.3637542294648337
+    ],
+    "ratio_to_permutation": 1.591999264368749,
+    "ratio_to_shift_null": 1.1069182389937107,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.273193359375,
+    "expected_shift_null": 12.75,
+    "lp": -1.0162787713231962,
+    "lp_permutation": -7.877169217400812,
+    "observed": 18,
+    "ratio_ci95_shift": [
+     0.8367012376783947,
+     2.231196883727685
+    ],
+    "ratio_to_permutation": 5.499216827030656,
+    "ratio_to_shift_null": 1.411764705882353
+   },
+   "arm": "x_history",
+   "backend": "ibm_kingston",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 3.004175322386958,
+    "size": 328
+   },
+   "dispersion": {
+    "lp": -1.8816979637337838,
+    "ratio": 1.0228534984715445,
+    "ratio_se": 0.009214403209325223,
+    "z": 2.4801930143903603
+   },
+   "id": "state_prep:e/2026-10-27T010917.104805Z:x_history",
+   "kind": "state_prep",
+   "max_multiplicity": 7,
+   "mean_errors_per_shot": 1.01727294921875,
+   "multiplicity_expected_0_to_11": [
+    11589.32789967887,
+    12313.166096280489,
+    6261.2833632879765,
+    2032.2323905161338,
+    473.7402693013434,
+    84.61975870366847,
+    12.066081252286152,
+    1.4129261950827348,
+    0.13872054778593138,
+    0.011601629306026625,
+    0.0008369413240763026,
+    5.2611122761085655e-05
+   ],
+   "multiplicity_observed_0_to_11": [
+    11759,
+    12107,
+    6225,
+    2046,
+    531,
+    86,
+    13,
+    1,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 66,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-27T010917.104805Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     329,
+     11,
+     91
+    ],
+    [
+     328,
+     11,
+     91
+    ],
+    [
+     334,
+     12,
+     108
+    ],
+    [
+     329,
+     17,
+     117
+    ]
+   ],
+   "slot_us": 31.192000000000004,
+   "tail": {
+    "t_a": {
+     "expected": 1.5641409792327814,
+     "lp": -0.10197052139354881,
+     "observed": 1,
+     "ratio": 0.6393285600704003,
+     "ratio_ci95": [
+      0.01618639772273493,
+      3.562110746354728
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.15121478415004636,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      24.394965577264987
+     ],
+     "threshold": 8
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 52.35910659209342,
+    "expected_shift_null": 101.75,
+    "lp": -0.9097812975434597,
+    "lp_permutation": -12.918269045814663,
+    "observed": 114,
+    "ratio_ci95_shift": [
+     0.9241861637538613,
+     1.3459343841379399
+    ],
+    "ratio_to_permutation": 2.1772716805144032,
+    "ratio_to_shift_null": 1.1203931203931203,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.45556640625,
+    "expected_shift_null": 11.75,
+    "lp": -0.2928267353397221,
+    "lp_permutation": -3.5883062567959403,
+    "observed": 12,
+    "ratio_ci95_shift": [
+     0.5277085198912524,
+     1.7839646849512292
+    ],
+    "ratio_to_permutation": 3.4726579058923273,
+    "ratio_to_shift_null": 1.0212765957446808
+   },
+   "arm": "x_history",
+   "backend": "ibm_kingston",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 3.1105540175036968,
+    "size": 337
+   },
+   "dispersion": {
+    "lp": -1.8467303008620342,
+    "ratio": 1.02278473948076,
+    "ratio_se": 0.009294769586656463,
+    "z": 2.4513506513889163
+   },
+   "id": "state_prep:e/2026-10-27T011025.944327Z:x_history",
+   "kind": "state_prep",
+   "max_multiplicity": 8,
+   "mean_errors_per_shot": 0.968048095703125,
+   "multiplicity_expected_0_to_11": [
+    12203.93543073544,
+    12303.196002951514,
+    5942.016431223282,
+    1832.9828325434278,
+    406.3093193189676,
+    69.04027130179624,
+    9.36902265021075,
+    1.0446152067586005,
+    0.09771207541383828,
+    0.007791571536387805,
+    0.0005364195588946442,
+    3.221645459615585e-05
+   ],
+   "multiplicity_observed_0_to_11": [
+    12327,
+    12136,
+    5994,
+    1780,
+    420,
+    94,
+    13,
+    3,
+    1,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 66,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-27T011025.944327Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     337,
+     11,
+     85
+    ],
+    [
+     334,
+     14,
+     75
+    ],
+    [
+     334,
+     17,
+     109
+    ],
+    [
+     332,
+     5,
+     88
+    ]
+   ],
+   "slot_us": 31.192000000000004,
+   "tail": {
+    "t_a": {
+     "expected": 1.150689275364297,
+     "lp": -1.5279839424778348,
+     "observed": 4,
+     "ratio": 3.4761773535550153,
+     "ratio_ci95": [
+      0.9471413325559014,
+      8.900394654465957
+     ],
+     "threshold": 7
+    },
+    "t_b": {
+     "expected": 0.10607406860569579,
+     "lp": -0.9972208768877119,
+     "observed": 1,
+     "ratio": 9.427374787680234,
+     "ratio_ci95": [
+      0.23868046467042373,
+      52.52597042968257
+     ],
+     "threshold": 8
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 55.27640745166631,
+    "expected_shift_null": 89.25,
+    "lp": -0.39853555157206755,
+    "lp_permutation": -5.4044131012939,
+    "observed": 92,
+    "ratio_ci95_shift": [
+     0.8309802214707271,
+     1.2641998095425893
+    ],
+    "ratio_to_permutation": 1.6643628672946011,
+    "ratio_to_shift_null": 1.0308123249299719,
+    "window": 16
+   }
+  },
+  {
+   "adjacent_pairs": {
+    "expected_permutation": 3.45556640625,
+    "expected_shift_null": 9.5,
+    "lp": -0.21597035258480318,
+    "lp_permutation": -2.0387957326765025,
+    "observed": 9,
+    "ratio_ci95_shift": [
+     0.43319716814508774,
+     1.798400363307281
+    ],
+    "ratio_to_permutation": 2.6044934294192457,
+    "ratio_to_shift_null": 0.9473684210526315
+   },
+   "arm": "prep0",
+   "backend": "ibm_kingston",
+   "bh_members": [],
+   "burst_set": {
+    "score_cut": 2.808011965173403,
+    "size": 337
+   },
+   "dispersion": {
+    "lp": -1.3433193818882496,
+    "ratio": 1.0190712973195466,
+    "ratio_se": 0.009529486396656418,
+    "z": 2.0012933043524828
+   },
+   "id": "state_prep:e/2026-10-27T011140.821404Z:prep0",
+   "kind": "state_prep",
+   "max_multiplicity": 6,
+   "mean_errors_per_shot": 0.834259033203125,
+   "multiplicity_expected_0_to_11": [
+    14003.40478386035,
+    12136.045389387029,
+    5018.9422604609235,
+    1320.5984073038417,
+    248.72868090956277,
+    35.77236281071875,
+    4.092805275831448,
+    0.38321811009132983,
+    0.02998102141280342,
+    0.0019912689723376787,
+    0.00011369849650104526,
+    5.638194711864148e-06
+   ],
+   "multiplicity_observed_0_to_11": [
+    14107,
+    12024,
+    4976,
+    1337,
+    274,
+    46,
+    4,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "n_columns": 66,
+   "n_shots": 32768,
+   "run": "results/live/2026-10-27T011140.821404Z",
+   "shifted_copies_burst_size_adj_win": [
+    [
+     340,
+     9,
+     100
+    ],
+    [
+     328,
+     8,
+     74
+    ],
+    [
+     343,
+     10,
+     75
+    ],
+    [
+     338,
+     11,
+     76
+    ]
+   ],
+   "slot_us": 31.16,
+   "tail": {
+    "t_a": {
+     "expected": 4.508115267575865,
+     "lp": -0.18106754542339998,
+     "observed": 4,
+     "ratio": 0.8872887587346249,
+     "ratio_ci95": [
+      0.24175632363818747,
+      2.2718116258173837
+     ],
+     "threshold": 6
+    },
+    "t_b": {
+     "expected": 0.4153099917444154,
+     "lp": 0.0,
+     "observed": 0,
+     "ratio": 0.0,
+     "ratio_ci95": [
+      0.0,
+      8.882231411335987
+     ],
+     "threshold": 7
+    }
+   },
+   "window_pairs": {
+    "expected_permutation": 55.27640745166631,
+    "expected_shift_null": 81.25,
+    "lp": -0.31734580716195343,
+    "lp_permutation": -3.336103233954848,
+    "observed": 82,
+    "ratio_ci95_shift": [
+     0.8026711811434383,
+     1.252721490905454
+    ],
+    "ratio_to_permutation": 1.4834538599799707,
+    "ratio_to_shift_null": 1.0092307692307692,
+    "window": 16
+   }
+  }
+ ]
+}
