@@ -13,6 +13,7 @@ on:
       - 'scripts/check_evidence_workbench_browser.py'
       - 'tests/gororoba_quantum/test_evidence_workbench.py'
       - 'tests/visualizations/test_evidence_math.cjs'
+      - 'tests/visualizations/check_transverse_mle.py'
   workflow_dispatch:
 
 permissions:
@@ -58,16 +59,23 @@ jobs:
         with:
           filter: blob:none
           sparse-checkout: |
+            ci
+            gororoba_quantum
             results/ripple
+            results/live/2026-10-13T025444.603480Z
+            results/live/2026-10-13T032011.664435Z
             results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data
             docs/evidence/ascella-order-coefficients
       - name: Retain input identity
         shell: bash
         run: |
           set -eu
-          mkdir -p "$RUNNER_TEMP/evidence-workbench-inputs"
-          git rev-parse HEAD > "$RUNNER_TEMP/evidence-workbench-inputs/COMMIT"
+          destination="$RUNNER_TEMP/evidence-workbench-inputs"
+          mkdir -p "$destination"
+          git rev-parse HEAD > "$destination/COMMIT"
           for file in \
+            ci/requirements-ci.txt \
+            gororoba_quantum/parallel.py \
             results/ripple/measured-ripple.json \
             results/ripple/measured-rank-sector.json \
             results/ripple/folded-job-review.json \
@@ -76,10 +84,18 @@ jobs:
             docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json \
             docs/evidence/ascella-order-coefficients/new-seed-score.json \
             docs/evidence/ascella-order-coefficients/replication-score.json; do
-            install -D "$file" "$RUNNER_TEMP/evidence-workbench-inputs/$file"
+            install -D "$file" "$destination/$file"
           done
-          cd "$RUNNER_TEMP/evidence-workbench-inputs"
-          find results docs -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+          for run in \
+            results/live/2026-10-13T025444.603480Z \
+            results/live/2026-10-13T032011.664435Z; do
+            mkdir -p "$destination/$run"
+            cp -a "$run/." "$destination/$run/"
+          done
+          python3 -m pip download --only-binary=:all: --no-deps \
+            "$(grep '^ruff==' ci/requirements-ci.txt)" --dest "$destination/formatter-wheel"
+          cd "$destination"
+          find results docs ci gororoba_quantum formatter-wheel -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: evidence-workbench-inputs
