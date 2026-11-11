@@ -20,6 +20,7 @@ and b of weight 1 and n^N the elements of weight at least N,
 from __future__ import annotations
 
 import argparse
+import functools
 import itertools
 import json
 import sys
@@ -35,6 +36,8 @@ sys.path.insert(0, str(HERE.parent / "kernel-limits"))
 sys.path.insert(0, str(HERE.parents[3] / "gororoba_quantum"))
 
 import plucker_limits as limits  # noqa: E402
+
+import parallel  # noqa: E402
 
 SIGN = {"e8-nm": 1, "e8-np": -1}
 NAMES = ("w", "rho", "sig", "zeta", "a")
@@ -68,6 +71,39 @@ class Ring:
 
     def add(self, x: Element, y: Element) -> Element:
         return x[0] + y[0], x[1] + y[1]
+
+
+def plain(poly: Any) -> dict[tuple[int, ...], int]:
+    """The terms of a polynomial as plain integers, the form that crosses the process pool."""
+    return {tuple(int(v) for v in e): int(c) for e, c in poly.to_dict().items()}
+
+
+@functools.cache
+def shared_ring(prime: int, order: int) -> Ring:
+    return Ring(prime, order)
+
+
+Terms = tuple[dict[tuple[int, ...], int], dict[tuple[int, ...], int]]
+
+
+def products(job: tuple[int, int, int, Terms, list[Terms]]) -> list[Terms]:
+    """The products of one generator with every basis element, modulo n^current, as plain terms."""
+    prime, order, current, generator, basis = job
+    ring = shared_ring(prime, order)
+    g = (ring.ctx.from_dict(generator[0]), ring.ctx.from_dict(generator[1]))
+    out = []
+    for b in basis:
+        p, q = ring.mul(g, (ring.ctx.from_dict(b[0]), ring.ctx.from_dict(b[1])), current)
+        out.append((plain(p), plain(q)))
+    return out
+
+
+def span(ring: Ring, gens: list[Element], basis: list[Element], current: int) -> list[Element]:
+    """[g b modulo n^current for g in gens for b in basis], one pool item per generator."""
+    terms = [(plain(b[0]), plain(b[1])) for b in basis]
+    jobs = [(ring.prime, ring.order, current, (plain(g[0]), plain(g[1])), terms) for g in gens]
+    parts = parallel.ordered_map(products, jobs, min_items=2)
+    return [(ring.ctx.from_dict(p), ring.ctx.from_dict(q)) for part in parts for p, q in part]
 
 
 def generators(slug: str, ring: Ring) -> list[Element]:
@@ -192,8 +228,7 @@ def ladder(slug: str, prime: int, degree: int, order: int) -> dict[str, Any]:
         current = start + low * d
         row = {"degree": d, "order": current}
         for key in ("A", "B"):
-            products = [ring.mul(g, b, current) for g in gens for b in spaces[key]]
-            row[key], spaces[key] = rank_and_basis(ring, products, current)
+            row[key], spaces[key] = rank_and_basis(ring, span(ring, gens, spaces[key], current), current)
         row["r"] = row["A"] - row["B"]
         rows.append(row)
     return {

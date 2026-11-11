@@ -35,12 +35,34 @@ sys.path.insert(0, str(HERE.parents[3] / "gororoba_quantum"))
 
 import plucker_limits as limits  # noqa: E402
 
+import parallel  # noqa: E402
+
 SIGN = {"xm-nm": 1, "xp-np": -1}
 NAMES = ("a", "rho", "sig", "w")
 
 
 def truncate(ctx: Any, poly: Any, order: int) -> Any:
     return ctx.from_dict({e: c for e, c in poly.to_dict().items() if sum(e) < order})
+
+
+def plain(poly: Any) -> dict[tuple[int, ...], int]:
+    """The terms of a polynomial as plain integers, the form that crosses the process pool."""
+    return {tuple(int(v) for v in e): int(c) for e, c in poly.to_dict().items()}
+
+
+def products(job: tuple[int, int, dict[tuple[int, ...], int], list[dict[tuple[int, ...], int]]]) -> list[Any]:
+    """The products of one generator with every basis element, modulo n^order, as plain terms."""
+    prime, order, generator, basis = job
+    ctx = nmod_mpoly_ctx.get(NAMES, ordering=Ordering.degrevlex, modulus=prime)
+    g = ctx.from_dict(generator)
+    return [{e: c for e, c in plain(g * ctx.from_dict(b)).items() if sum(e) < order} for b in basis]
+
+
+def span(ctx: Any, gens: list[Any], basis: list[Any], order: int, prime: int) -> list[Any]:
+    """[g b modulo n^order for g in gens for b in basis], one pool item per generator."""
+    terms = [plain(b) for b in basis]
+    jobs = [(prime, order, plain(g), terms) for g in gens]
+    return [ctx.from_dict(d) for part in parallel.ordered_map(products, jobs, min_items=2) for d in part]
 
 
 def generators(slug: str, prime: int, order: int) -> list[Any]:
@@ -143,8 +165,7 @@ def ladder(slug: str, prime: int, degree: int, order: int) -> dict[str, Any]:
         current = start + low * d
         row = {"degree": d, "order": current}
         for key in ("A", "B"):
-            products = [truncate(ctx, g * b, current) for g in gens for b in spaces[key]]
-            rank, spaces[key] = rank_and_basis(ctx, products, current, prime)
+            rank, spaces[key] = rank_and_basis(ctx, span(ctx, gens, spaces[key], current, prime), current, prime)
             row[key] = rank
         row["r"] = row["A"] - row["B"]
         ranks.append(row)

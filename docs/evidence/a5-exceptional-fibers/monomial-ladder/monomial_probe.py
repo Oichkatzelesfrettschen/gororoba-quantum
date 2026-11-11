@@ -46,7 +46,7 @@ def probe(slug: str, prime: int, order: int) -> dict[str, Any]:
     ctx = gens[0].context()
     spaces = {}
     for name, maximal in (("I", False), ("m_R I", True)):
-        polys = [ladder.truncate(ctx, g * b, order) for g in gens for b in ladder.ring_basis(ctx, order, maximal)]
+        polys = ladder.span(ctx, gens, ladder.ring_basis(ctx, order, maximal), order, prime)
         rank, single = single_rows(polys, order, prime)
         spaces[name] = {"rank": rank, "single_monomial_rows": single}
     monomial = all(s["rank"] == s["single_monomial_rows"] for s in spaces.values())

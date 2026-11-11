@@ -19,6 +19,7 @@ leaves of 64 rows, and E is updated by E - E[:, P_new] X_new. Entries are intege
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.util
 import json
 import sys
@@ -27,8 +28,18 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import scipy
 import scipy.sparse as sp
 import torch
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parents[3] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
+# A row of the echelon form has at most one entry per column, so a sum of products has fewer terms than columns;
+# below 2^17 columns and for p < 2^15 every such sum stays under 2^47, inside the exact integers of float64.
+EXACT_COLUMNS = 1 << 17
 
 
 def load(root: Path, name: str) -> Any:
@@ -74,12 +85,12 @@ class Space:
         return out
 
 
-def block(poly: Any, source: Monomials, target: Monomials) -> sp.coo_matrix:
+def block(poly: dict[tuple[int, ...], int], source: Monomials, target: Monomials) -> sp.coo_matrix:
     """Rows on the target, columns on the source: the matrix of x -> x * poly truncated to the target order."""
     rows, cols, vals = [], [], []
     base = np.arange(len(source))
     degrees = source.exponents.sum(axis=1)
-    for exponents, coefficient in poly.to_dict().items():
+    for exponents, coefficient in poly.items():
         shift = np.array([int(v) for v in exponents], dtype=np.int64)
         keep = degrees + int(shift.sum()) < target.order
         if not keep.any():
@@ -95,8 +106,9 @@ def block(poly: Any, source: Monomials, target: Monomials) -> sp.coo_matrix:
     )
 
 
-def multiplication(blocks: dict[tuple[int, int], Any], source: Space, target: Space) -> torch.Tensor:
-    """blocks[i, k] is the polynomial that carries part i of the element into part k of the product."""
+def sparse_map(job: tuple[dict[tuple[int, int], dict[tuple[int, ...], int]], Space, Space]) -> sp.csr_matrix:
+    """blocks[i, k] holds the terms of the polynomial that carries part i of the element into part k of the product."""
+    blocks, source, target = job
     n = len(source.parts)
     grid = [[None] * n for _ in range(n)]
     for (i, k), poly in blocks.items():
@@ -105,7 +117,10 @@ def multiplication(blocks: dict[tuple[int, int], Any], source: Space, target: Sp
         for i in range(n):
             if grid[k][i] is None:
                 grid[k][i] = sp.coo_matrix((len(target.parts[k]), len(source.parts[i])))
-    matrix = sp.bmat(grid, format="csr")
+    return sp.bmat(grid, format="csr")
+
+
+def tensor(matrix: sp.csr_matrix) -> torch.Tensor:
     return torch.sparse_csr_tensor(
         torch.from_numpy(matrix.indptr.astype(np.int64)),
         torch.from_numpy(matrix.indices.astype(np.int64)),
@@ -183,8 +198,7 @@ class Echelon:
         self.append(local.rows, local.pivots)
 
 
-def x_model(root: Path, slug: str, prime: int, order: int) -> dict[str, Any]:
-    lad = load(root, "x_same_ladder")
+def x_model(lad: Any, slug: str, prime: int, order: int) -> dict[str, Any]:
     ctx = lad.nmod_mpoly_ctx.get(lad.NAMES, ordering=lad.Ordering.degrevlex, modulus=prime)
     gens = lad.generators(slug, prime, order)
     return {
@@ -197,8 +211,7 @@ def x_model(root: Path, slug: str, prime: int, order: int) -> dict[str, Any]:
     }
 
 
-def e8_model(root: Path, slug: str, prime: int, order: int) -> dict[str, Any]:
-    lad = load(root, "e8_ladder")
+def e8_model(lad: Any, slug: str, prime: int, order: int) -> dict[str, Any]:
     ring = lad.Ring(prime, order)
     gens = lad.generators(slug, ring)
 
@@ -232,7 +245,11 @@ def e8_model(root: Path, slug: str, prime: int, order: int) -> dict[str, Any]:
 def ladder(root: Path, slug: str, prime: int, degree: int, order: int, batch: int) -> dict[str, Any]:
     started = time.time()
     timing = {"generators": 0.0, "maps": 0.0, "products": 0.0, "echelon": 0.0}
-    model = (e8_model if slug.startswith("e8") else x_model)(root, slug, prime, order)
+    if prime >= 1 << 15:
+        raise SystemExit(f"p = {prime}: the float64 bound holds for p < 2^15")
+    name = "e8_ladder" if slug.startswith("e8") else "x_same_ladder"
+    lad = load(root, name)
+    model = (e8_model if slug.startswith("e8") else x_model)(lad, slug, prime, order)
     timing["generators"] = time.time() - started
     low = model["low"]
     start = order - low * degree
@@ -248,7 +265,13 @@ def ladder(root: Path, slug: str, prime: int, degree: int, order: int, batch: in
         current = start + low * d
         target = Space(model["nvars"], current, model["offsets"])
         clock = time.time()
-        maps = [multiplication(blocks, source, target) for blocks in model["blocks"](current)]
+        if target.size >= EXACT_COLUMNS:
+            raise SystemExit(f"{target.size} columns at order {current}: the float64 bound holds below {EXACT_COLUMNS}")
+        jobs = [
+            ({key: lad.plain(poly) for key, poly in blocks.items()}, source, target)
+            for blocks in model["blocks"](current)
+        ]
+        maps = [tensor(m) for m in parallel.ordered_map(sparse_map, jobs, min_items=2)]
         timing["maps"] += time.time() - clock
         row = {"degree": d, "order": current, "columns": target.size, "map_nnz": int(sum(m._nnz() for m in maps))}
         for key in ("A", "B"):
@@ -277,6 +300,10 @@ def ladder(root: Path, slug: str, prime: int, degree: int, order: int, batch: in
         "generators": model["count"],
         "generator_order": low,
         "engine": "float64-batched-echelon",
+        "source_sha256": {
+            f"{n}.py": hashlib.sha256((HERE / f"{n}.py").read_bytes()).hexdigest() for n in ("fast_ladder", name)
+        },
+        "versions": {"torch": torch.__version__, "numpy": np.__version__, "scipy": scipy.__version__},
         "batch": batch,
         "threads": torch.get_num_threads(),
         "rows": ranks,
