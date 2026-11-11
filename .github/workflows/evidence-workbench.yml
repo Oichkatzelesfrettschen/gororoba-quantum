@@ -1,8 +1,8 @@
 name: evidence-workbench
 
-# This artifact copies existing public inputs; it neither replays historical
-# evidence nor contacts a provider. Behavioral tests are independent of these
-# retained inputs and remain in the ordinary pull-request test suite.
+# Bounded behavioral tests use constructed fixtures only. The input artifact
+# copies existing public bytes; it neither replays acquisitions nor contacts
+# a provider. Historical scientific replay remains an on-demand operation.
 on:
   pull_request:
     paths:
@@ -10,7 +10,9 @@ on:
       - 'gororoba_quantum/evidence_workbench.py'
       - 'gororoba_quantum/visualizations/evidence_workbench/**'
       - 'scripts/render_evidence_workbench.py'
+      - 'scripts/check_evidence_workbench_browser.py'
       - 'tests/gororoba_quantum/test_evidence_workbench.py'
+      - 'tests/visualizations/test_evidence_math.cjs'
   workflow_dispatch:
 
 permissions:
@@ -21,6 +23,33 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  behavioral-contracts:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /gororoba_quantum/evidence_workbench.py
+            /gororoba_quantum/visualizations/evidence_workbench/
+            /scripts/render_evidence_workbench.py
+            /tests/gororoba_quantum/test_evidence_workbench.py
+            /tests/visualizations/test_evidence_math.cjs
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.14.7'
+      - name: Python and JavaScript contracts
+        shell: bash
+        run: |
+          set -eu
+          python --version
+          node --version
+          python -B -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
+          python -B -O -m unittest discover -s tests/gororoba_quantum -p test_evidence_workbench.py
+          node tests/visualizations/test_evidence_math.cjs
+
   portable-inputs:
     runs-on: ubuntu-26.04
     timeout-minutes: 8
