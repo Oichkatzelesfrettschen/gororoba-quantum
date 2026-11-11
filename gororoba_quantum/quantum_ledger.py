@@ -113,7 +113,7 @@ def build(
     census = {path for path in tracked if path.startswith(("results/", "docs/evidence/", "proofs/"))}
     paths = sorted(census | set(pinned) | set(documented))
     runs_by_path = {run["path"]: run for run in runs}
-    artifacts = []
+    artifacts: list[dict[str, Any]] = []
     for path in paths:
         owners = []
         ancestor = Path(path).parent

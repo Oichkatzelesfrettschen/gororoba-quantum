@@ -215,6 +215,14 @@ def test_complete_ledger_keeps_algebra_scope_and_tracked_denominator(
     algebra.parent.mkdir(parents=True)
     algebra.write_text("id\tstatus\tprimes\tclaim\nA5-001\tproved\t32009\tfinite-field identity\n")
     _write(root / "results/live/unindexed/record.json", {"state": "planned"})
+    _write(root / "results/live/canceled/record.json", {"submission": {"jobs": [{"job_id": "canceled"}]}})
+    _write(
+        root / "results/live/mixed/record.json",
+        {"submission": {"jobs": [{"job_id": "canceled"}, {"job_id": "unknown"}]}},
+    )
+    index.account_only_jobs = [
+        {"provider": "ibm", "job_id": "canceled", "status": "CANCELLED", "provenance": "unexecuted_cancellation"}
+    ]
     subprocess.run(["git", "init", "-q", str(root)], check=True)
     subprocess.run(["git", "add", "results", "docs"], cwd=root, check=True)
     _write(root / "results/scratch.json", {"status": "untracked"})
@@ -225,10 +233,15 @@ def test_complete_ledger_keeps_algebra_scope_and_tracked_denominator(
         raise RuntimeError("untracked scratch enters the artifact denominator")
     if view["gaps"]["untracked_claim_artifacts"]:
         raise RuntimeError("tracked claim documents outside evidence roots are incorrectly labeled untracked")
-    if view["gaps"]["execution_records_outside_indexed_runs"] != ["results/live/unindexed/record.json"]:
+    if len(view["gaps"]["execution_records_outside_indexed_runs"]) != 3:
         raise RuntimeError("a planned record outside the adapters disappears")
-    if view["execution_candidates"][0]["classification"] != "planning-only":
+    classifications = {row["path"]: row["classification"] for row in view["execution_candidates"]}
+    if classifications["results/live/unindexed/record.json"] != "planning-only":
         raise RuntimeError("explicit planning state becomes an execution")
+    if classifications["results/live/canceled/record.json"] != "audited unexecuted cancellation":
+        raise RuntimeError("the audited cancellation loses its terminal observation")
+    if classifications["results/live/mixed/record.json"] != "dispatched with a provider identity":
+        raise RuntimeError("one canceled job erases another job's unresolved execution")
     monkeypatch.setattr(results_index, "Index", lambda: index)
     capsys.readouterr()
     if results_index.main(["--json", "ledger", "--summary"]) != 0:
