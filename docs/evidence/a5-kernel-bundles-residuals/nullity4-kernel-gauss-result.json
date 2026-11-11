@@ -12145,7 +12145,7 @@
   ],
   "schema": "a5-nullity-four-kernel-gauss-fixtures-v1",
   "scope": "exact principal-Pfaffian frames and kernel-Gauss coordinates on the retained 66-point integer grid; not a global atlas, moduli classification, transition-function classification, or bundle class",
-  "script_sha256": "4281ae90a4f4a69c0bb50b114c3f0876f879ec79821d258417b8cb66ceaccbc7",
+  "script_sha256": "35760407651338797386af254d2d5f9348415abca0d9f33ad55df55c561023ce",
   "stratum_counts": {
     "V(G) minus V(Q)": 52,
     "V(Q) intersect V(G)": 2,

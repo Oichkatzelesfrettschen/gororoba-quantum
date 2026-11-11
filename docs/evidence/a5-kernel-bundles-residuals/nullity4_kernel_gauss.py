@@ -59,16 +59,13 @@ def _fixtures() -> tuple[tuple[Fraction, ...], ...]:
     points = [frames.regularity.split_point({1: 1}, 3, {1: 5, 3: 3})]
     for a, mu, b, c, d in itertools.product(range(0, 3), range(0, 4), range(-2, 4), range(0, 4), range(0, 3)):
         points.append(frames.regularity.split_point({1: 1, 2: a}, mu, {1: b, 3: c, 5: d}))
-    rows: list[tuple[Fraction, ...]] = []
-    seen: set[tuple[Fraction, ...]] = set()
-    for point in points:
-        exact_point = tuple(Fraction(value) for value in point)
-        if exact_point in seen:
-            continue
-        seen.add(exact_point)
-        if frames.regularity.eq.point_nullity([value.numerator for value in exact_point]) == 4:
-            rows.append(exact_point)
-    return tuple(rows)
+    unique = tuple(dict.fromkeys(tuple(Fraction(value) for value in point) for point in points))
+    nullities = parallel.ordered_map(_point_nullity, unique, min_items=2)
+    return tuple(point for point, nullity in zip(unique, nullities, strict=True) if nullity == 4)
+
+
+def _point_nullity(point: tuple[Fraction, ...]) -> int:
+    return int(frames.regularity.eq.point_nullity([value.numerator for value in point]))
 
 
 def _stratum(point: Sequence[Fraction]) -> str:
