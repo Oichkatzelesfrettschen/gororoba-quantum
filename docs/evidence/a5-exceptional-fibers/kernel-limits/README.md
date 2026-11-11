@@ -224,15 +224,17 @@ the following coordinate orders with the coefficient matrix itself:
 | Characteristic zero | Some source arc families and their planes lift from `Q` to both retained primes | Construct the map over `Q(i)` and prove that both modular matrices are its compatible reductions |
 | Physical-limit transfer | Rational arcs exhibit physical limits at their sampled points | Prove the general projection lemma, identify the source stratum and graph closure, and apply real curve selection so every admitted holomorphic limit is a physical limit |
 | Coverage | The samples cover the stated arc families; same-sign X covers its known reduced support in degree two | Determine every limiting plane over every boundary modulus, including the unsampled E8-bar coordinates and all blocked Rees fibers |
+| Boundary-orbit variation and equivariance | Each fit sits at one boundary point of its header | Compute the limit set at moved points over every compact boundary modulus and classify it under the stabilizer `K_p` of the boundary point (requirement A3 and deliverable 1 of the [attachment program](../../../design/a5-kernel-attachments-program.md)) |
 | Attaching maps | No retained fit supplies link or sphere-bundle data | Construct the link-to-limit-set map and the union of partner spheres inside the boundary sphere |
 | Specialization compatibility | No retained fit compares a composite specialization with a direct one | Compare every 8-to-12-to-16 composite with the corresponding direct 8-to-16 specialization in the same coordinates |
 
 The first bounded next step is retention, not another interpolation run: revise the producer so a replay writes the
 candidate coefficients and coordinate metadata above. The identity check then works component by component over a
 split prime before any `Q(i)` lift. A failed identity, a projective basepoint or disagreement on a component
-intersection rejects the candidate matrix even when all held-out arcs remain proportional. The retained performance
-measurement (1 to 27 minutes and 1.6 GB on the named 32-thread laptop) applies only to interpolation; there is no
-measured runtime or memory bound for the all-point coordinate-ring checks.
+intersection rejects the candidate matrix even when all held-out arcs remain proportional. The run times and peak
+memory quoted above (1 to 27 minutes and 1.6 GB on the 32-thread laptop) are reported in this README and held by no
+record, and they apply only to interpolation; there is no measured runtime or memory bound for the all-point
+coordinate-ring checks.
 
 ## Replay
 
