@@ -78,7 +78,7 @@
         },
         {
           "scope_sha256": "e0b8cf9da8303dad61d2db792465d386379cf25fd03faaa13fcaa11b48f703ed",
-          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
           "observed_at": "2026-11-11T21:21:14.793879+00:00",
           "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
           "evidence": [
@@ -127,6 +127,58 @@
               "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
             }
           ]
+        },
+        {
+          "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-11T23:28:55.569738+00:00",
+          "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "e0b8cf9da8303dad61d2db792465d386379cf25fd03faaa13fcaa11b48f703ed"
         }
       ]
     },
@@ -190,7 +242,7 @@
         },
         {
           "scope_sha256": "68a3315dbc15a72c609daef3ff774939d8e76b5e4ab30df1738919e2c6749982",
-          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
           "observed_at": "2026-11-11T21:21:14.793879+00:00",
           "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
           "evidence": [
@@ -239,6 +291,58 @@
               "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
             }
           ]
+        },
+        {
+          "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-11T23:28:55.569738+00:00",
+          "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "68a3315dbc15a72c609daef3ff774939d8e76b5e4ab30df1738919e2c6749982"
         }
       ]
     },
@@ -302,7 +406,7 @@
         },
         {
           "scope_sha256": "935d63844d3b8c6c7a43661ade54d536dc75f77293282d14736a8cf363e06bba",
-          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
           "observed_at": "2026-11-11T21:21:14.793879+00:00",
           "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
           "evidence": [
@@ -351,6 +455,58 @@
               "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
             }
           ]
+        },
+        {
+          "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-11T23:28:55.569738+00:00",
+          "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "935d63844d3b8c6c7a43661ade54d536dc75f77293282d14736a8cf363e06bba"
         }
       ]
     },
@@ -419,7 +575,7 @@
         },
         {
           "scope_sha256": "471705a6ef38a59a95b097f64bdbd82d69ce94e744432017952a13406c9bdf59",
-          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
           "observed_at": "2026-11-11T21:21:14.793879+00:00",
           "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
           "evidence": [
@@ -468,6 +624,58 @@
               "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
             }
           ]
+        },
+        {
+          "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-11T23:28:55.569738+00:00",
+          "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "471705a6ef38a59a95b097f64bdbd82d69ce94e744432017952a13406c9bdf59"
         }
       ]
     },
@@ -531,7 +739,7 @@
         },
         {
           "scope_sha256": "517379d30e4a6c8ccb3c6f8a8bcb3a389e6c5fa7f5a525d0e84d8aa6bd98035e",
-          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
           "observed_at": "2026-11-11T21:21:14.793879+00:00",
           "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
           "evidence": [
@@ -580,6 +788,58 @@
               "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
             }
           ]
+        },
+        {
+          "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-11T23:28:55.569738+00:00",
+          "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "517379d30e4a6c8ccb3c6f8a8bcb3a389e6c5fa7f5a525d0e84d8aa6bd98035e"
         }
       ]
     },
@@ -647,7 +907,7 @@
         },
         {
           "scope_sha256": "a8b6891431e48d7ac2fb495738051aa9431e73923faa81319975f9f610b9b501",
-          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+          "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
           "observed_at": "2026-11-11T21:21:14.793879+00:00",
           "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
           "evidence": [
@@ -696,6 +956,58 @@
               "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
             }
           ]
+        },
+        {
+          "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-11T23:28:55.569738+00:00",
+          "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "a8b6891431e48d7ac2fb495738051aa9431e73923faa81319975f9f610b9b501"
         }
       ]
     }
@@ -755,7 +1067,7 @@
     },
     {
       "scope_sha256": "60e2db8e8da7e7db779c2f410073e1b837a0e3e404dd1e9a839295a6f5ed562d",
-      "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. Python hosted revalidation remains pending.",
+      "result": "The portability correction passes 164 new Python tests and pinned style/type checks. Existing counter regressions remain retained at their observed revision; full native hosted CI passes. As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, Python hosted revalidation remains pending.",
       "observed_at": "2026-11-11T21:21:14.793879+00:00",
       "revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
       "evidence": [
@@ -804,6 +1116,58 @@
           "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
         }
       ]
+    },
+    {
+      "result": "First-pass review fixes: the predictive-residual covariance is admitted to the roundoff bound of its congruence, the tomography completion refuses an allocation above its entry budget, the row sums reach the process pool only above a size threshold, the analytic result replays byte for byte under the on-demand gate core-measurement-observability, and 198 Python tests (164 before) pass with pinned Ruff and mypy. The observation is of the uncommitted tree on top of the revision named here. Hosted revalidation of the resulting head is not observed.",
+      "observed_at": "2026-11-11T23:28:55.569738+00:00",
+      "revision": "863290f0cab5ad09c97b82829fb2291841096b62",
+      "evidence": [
+        {
+          "ref": "docs/evidence/measurement-observability/validation.json",
+          "sha256": "bcad1d1cda45697ba8c17f469bf73039192d6f92a4ed2e84c245cab2aff5e10a"
+        },
+        {
+          "ref": "docs/evidence/measurement-observability/analytic-result.json",
+          "sha256": "1cb4cff7331e049fdb76739a741ec0d323f1b5c95f104c82857433c0ec924438"
+        },
+        {
+          "ref": "gororoba_quantum/measurement_statistics.py",
+          "sha256": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e"
+        },
+        {
+          "ref": "gororoba_quantum/acceptance_statistics.py",
+          "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+        },
+        {
+          "ref": "gororoba_quantum/kernel_observability.py",
+          "sha256": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c"
+        },
+        {
+          "ref": "scripts/measurement_observability.py",
+          "sha256": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+          "sha256": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+          "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+          "sha256": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09"
+        },
+        {
+          "ref": "tests/scripts/test_measurement_observability.py",
+          "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+        },
+        {
+          "ref": "tests/fixtures/measurement-observability.json",
+          "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+        }
+      ],
+      "scope_sha256": "60e2db8e8da7e7db779c2f410073e1b837a0e3e404dd1e9a839295a6f5ed562d"
     }
   ]
 }

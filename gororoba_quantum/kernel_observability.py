@@ -21,6 +21,10 @@ from cd_core import left_mult_matrix_exact
 from measurement_statistics import multinomial_scores
 from provider_counters import Counter, Population, Status
 
+# tomography_completion stores 32 * m**4 int64 coefficients; the default admits m up to 13 (0.9 million entries,
+# 7 MB) and a caller that has checked its memory passes a larger entry_budget.
+DEFAULT_COEFFICIENT_ENTRY_BUDGET = 1_000_000
+
 
 @dataclass(frozen=True)
 class EqualWeightPairCertificate:
@@ -264,15 +268,30 @@ def _blocks(a: np.ndarray, b: np.ndarray, c: np.ndarray, d: np.ndarray) -> np.nd
     return np.concatenate((np.concatenate((a, b), axis=2), np.concatenate((c, d), axis=2)), axis=1)
 
 
-def tomography_completion(half_dimension: int = 7) -> TomographyCompletion:
+def completion_entries(half_dimension: int) -> int:
+    """Integer coefficient entries of the completion on dimension 2m: 4m**2 observables of (2m)**2 entries, twice."""
+    return 32 * half_dimension**4
+
+
+def tomography_completion(
+    half_dimension: int = 7, *, entry_budget: int = DEFAULT_COEFFICIENT_ENTRY_BUDGET
+) -> TomographyCompletion:
     """Construct the completion without floating ranks or a census replay.
 
     At m=7 the direct-sum dimensions are 49+56+91=196 on the support
     ordered as e1..e7,e9..e15. This constructs the complement of the full
     real J commutant; it does not re-prove that a particular acquired bank
     spans that commutant or that the instrument implements these effects.
+    The arrays hold ``completion_entries(m)`` = 32*m**4 int64 coefficients
+    (m=100 needs about 12.8 GB), so a request above ``entry_budget`` raises
+    before any allocation.
     """
     m = _integer(half_dimension, "half_dimension", minimum=1)
+    budget = _integer(entry_budget, "entry_budget", minimum=1)
+    if completion_entries(m) > budget:
+        raise ValueError(
+            f"the completion needs {completion_entries(m)} coefficient entries, above entry_budget={budget}"
+        )
     symmetric_indices, symmetric = _units(m, skew=False)
     skew_indices, skew = _units(m, skew=True)
     full_indices, full_skew = _units(2 * m, skew=True)

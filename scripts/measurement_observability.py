@@ -29,13 +29,17 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import parallel  # noqa: E402
 from acceptance_statistics import AcceptanceCounts, analyze_six_state  # noqa: E402
-from kernel_observability import nested_herald_statistics, tomography_completion  # noqa: E402
+from kernel_observability import (  # noqa: E402
+    DEFAULT_COEFFICIENT_ENTRY_BUDGET,
+    completion_entries,
+    nested_herald_statistics,
+    tomography_completion,
+)
 from measurement_statistics import multinomial_scores, predictive_residual  # noqa: E402
 from provider_counters import Counter, Population, Status  # noqa: E402
 
 INPUT_SCHEMA = "measurement-observability-input-v1"
 OUTPUT_SCHEMA = "measurement-observability-result-v1"
-DEFAULT_COEFFICIENT_ENTRY_BUDGET = 1_000_000
 PRODUCERS = (
     "scripts/measurement_observability.py",
     "gororoba_quantum/acceptance_statistics.py",
@@ -151,13 +155,13 @@ def _tomography(value: Any) -> dict[str, Any]:
     for name, number in (("half_dimension", dimension), ("coefficient_entry_budget", budget)):
         if isinstance(number, bool) or not isinstance(number, int) or number < 1:
             raise ValueError(f"{name} must be a positive integer")
-    entries = 32 * dimension**4
+    entries = completion_entries(dimension)
     if entries > budget:
         raise ValueError(
             f"tomography needs {entries} integer coefficient entries (at least {8 * entries} array bytes), "
             f"above coefficient_entry_budget={budget}; increase the budget only after checking available memory"
         )
-    result = tomography_completion(dimension)
+    result = tomography_completion(dimension, entry_budget=budget)
     return {
         "dimension": 2 * result.half_dimension,
         "observables": len(result.names),

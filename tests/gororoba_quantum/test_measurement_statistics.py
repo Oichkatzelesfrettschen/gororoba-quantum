@@ -9,6 +9,7 @@ from measurement_statistics import (
     MAX_EXACT_COUNT,
     QuadraticScore,
     StatisticsError,
+    _snap_congruence,
     covariance_matrix,
     covariance_score,
     multinomial_scores,
@@ -205,3 +206,153 @@ def test_unrepresentable_prediction_variance_does_not_become_certainty() -> None
 def test_nearconstant_scores_keep_variance_below_mean_rounding() -> None:
     result = multinomial_scores([1, 1], [[1.0, np.nextafter(1.0, math.inf)]])
     np.testing.assert_allclose(result.covariance_of_means, [[2.0**-107]], rtol=2e-15, atol=0)
+
+
+@pytest.mark.parametrize("delta", [1e-2, 1e-3, 1e-5])
+def test_small_residual_covariance_survives_cancellation_of_large_terms(delta: float) -> None:
+    # S_y = J C J^T + delta I with cross covariance J C: the joint covariance is PSD by its Schur
+    # complement and the exact residual covariance is delta I, a difference of terms near 30.
+    jacobian = np.array([[3.0], [7.0]])
+    parameter = np.array([[0.5]])
+    observation = jacobian @ parameter @ jacobian.T + delta * np.eye(2)
+    result = predictive_residual(
+        [1, 2],
+        [0, 0],
+        observation,
+        jacobian,
+        parameter,
+        dependence="supplied_cross_covariance",
+        cross_covariance=jacobian @ parameter,
+    )
+    np.testing.assert_allclose(result.covariance, delta * np.eye(2), rtol=0, atol=1e-13)
+    if result.covariance[0, 1] != 0 or result.covariance[1, 0] != 0:
+        raise AssertionError("roundoff-sized covariance between the residuals is not snapped to zero")
+    np.testing.assert_allclose(finite_score(result.score), 5 / delta, rtol=1e-6)
+
+
+@pytest.mark.parametrize("parameter_variance", [0.1, 0.5])
+@pytest.mark.parametrize("jacobian", [[[3.0], [7.0]], [[1.0], [1.0]], [[2.0], [-5.0]]])
+def test_exact_reuse_with_a_cross_block_gives_zero_residual_covariance(
+    parameter_variance: float, jacobian: list[list[float]]
+) -> None:
+    # delta = 0: the residual covariance is exactly zero, so the API admits it as the zero matrix
+    # (the documented exact cancellation) and the score then tests residual support alone.
+    gradient = np.array(jacobian)
+    parameter = np.array([[parameter_variance]])
+    arguments = {
+        "dependence": "supplied_cross_covariance",
+        "cross_covariance": gradient @ parameter,
+    }
+    observation = gradient @ parameter @ gradient.T
+    consistent = predictive_residual([0, 0], [0, 0], observation, gradient, parameter, **arguments)
+    np.testing.assert_array_equal(consistent.covariance, np.zeros((2, 2)))
+    if consistent.score.value != 0 or not consistent.score.supported:
+        raise AssertionError(consistent)
+    disagreeing = predictive_residual([1, 2], [0, 0], observation, gradient, parameter, **arguments)
+    if disagreeing.score.supported or disagreeing.score.value is not None:
+        raise AssertionError("a deterministic disagreement must remain unsupported")
+
+
+def test_indefinite_joint_covariance_is_rejected_although_the_residual_variance_is_positive() -> None:
+    # Eigenvalue -0.8 of the joint matrix; both residual variances (0.2 and 3.8) are positive.
+    with pytest.raises(StatisticsError, match="joint covariance: covariance must be positive semidefinite"):
+        predictive_residual(
+            [1, 2],
+            [0, 0],
+            [[1, 0.9], [0.9, 1]],
+            [[1], [1]],
+            [[1]],
+            dependence="supplied_cross_covariance",
+            cross_covariance=[[0.9], [-0.9]],
+        )
+
+
+def test_psd_check_rejects_an_indefinite_matrix_that_satisfies_cauchy_schwarz() -> None:
+    indefinite = [[1, 0.9, 0.9], [0.9, 1, -0.9], [0.9, -0.9, 1]]
+    if np.linalg.eigvalsh(indefinite)[0] > -0.5 or np.max(np.abs(indefinite)) > 1:
+        raise AssertionError("the fixture must be indefinite with every correlation bounded by one")
+    with pytest.raises(StatisticsError, match="positive semidefinite"):
+        covariance_matrix(indefinite)
+    with pytest.raises(StatisticsError, match="positive semidefinite"):
+        covariance_score([1, 0, 0], indefinite)
+
+
+def test_residual_on_a_zero_variance_coordinate_is_never_supported() -> None:
+    covariance: list[list[float]] = [[1, 1 - 2e-14, 0], [1 - 2e-14, 1, 0], [0, 0, 0]]
+    result = covariance_score([0, 0, 1], covariance)
+    if result.supported or result.value is not None or result.unsupported_norm is not None:
+        raise AssertionError(result)
+    if not covariance_score([1, 1, 0], covariance).supported:
+        raise AssertionError("a residual inside the support of a rank-deficient block stays supported")
+
+
+@pytest.mark.parametrize("matrix", [[[1, 1e-11], [0, 1]], [[1, 1 + 1e-11], [1 + 1e-11, 1]], [[1, 1e-8], [-1e-8, 1]]])
+def test_covariance_tolerance_is_machine_scale_not_nine_digits(matrix: list[list[float]]) -> None:
+    with pytest.raises(StatisticsError):
+        covariance_matrix(matrix)
+
+
+def test_numerical_rank_and_support_thresholds_keep_small_directions() -> None:
+    # Correlation eigenvalues 2 - 1e-11 and 1e-11 lie far above 64 eps * n yet below 1e-9.
+    near = [[1, 1 - 1e-11], [1 - 1e-11, 1]]
+    score = covariance_score([1, -1], near)
+    if score.rank != 2 or not score.supported:
+        raise AssertionError(score)
+    np.testing.assert_allclose(finite_score(score), 2 / 1e-11, rtol=1e-3)
+    # A relative discrepancy of 1e-6 outside the support of an exactly singular matrix is a violation.
+    singular = covariance_score([1, 1 + 1e-6], [[1, 1], [1, 1]])
+    if singular.supported or singular.value is not None or not 1e-7 < (singular.unsupported_norm or 0) < 1e-6:
+        raise AssertionError(singular)
+
+
+def test_count_bound_is_two_to_the_fifty_third() -> None:
+    if MAX_EXACT_COUNT != 2**53:
+        raise AssertionError("the exact integer bound of float64 changes")
+    accepted = multinomial_scores([2**53], [[1.0]])
+    if accepted.total_count != 2**53:
+        raise AssertionError(accepted)
+    with pytest.raises(StatisticsError, match="2"):
+        multinomial_scores([2**53, 1], [[0.0, 1.0]])
+
+
+def test_mean_offsets_use_exactly_rounded_sums() -> None:
+    # Weighted offsets 2**54, 0.25 and -2**54 sum to 0.25 exactly; a naive left-to-right sum loses the 0.25.
+    estimate = multinomial_scores([1, 1, 1, 1], [[0.0, 2.0**56, 1.0, -(2.0**56)]])
+    if estimate.means[0] != 0.25:
+        raise AssertionError(estimate.means)
+
+
+def test_row_sums_go_to_the_pool_only_above_the_entry_threshold(monkeypatch: pytest.MonkeyPatch) -> None:
+    import measurement_statistics as module
+
+    seen: list[tuple[int, int]] = []
+    real_map = module.parallel.ordered_map
+
+    def spy(function, items, min_items=module.parallel.MIN_PARALLEL_ITEMS):
+        seen.append((len(items), min_items))
+        return real_map(function, items, min_items=min_items)
+
+    monkeypatch.setattr(module.parallel, "ordered_map", spy)
+    scores = np.sin(np.arange(80 * 5, dtype=float)).reshape(80, 5)
+    counts = [1, 2, 3, 4, 5]
+    small = multinomial_scores(counts, scores)
+    monkeypatch.setattr(module, "POOLED_SUM_ENTRIES", 1)
+    large = multinomial_scores(counts, scores)
+    if seen[0][1] <= seen[0][0] or seen[1][1] != module.parallel.MIN_PARALLEL_ITEMS or seen[1][0] < seen[1][1]:
+        raise AssertionError(seen)
+    np.testing.assert_array_equal(small.means, large.means)
+    np.testing.assert_array_equal(small.covariance_of_means, large.covariance_of_means)
+
+
+def test_congruence_roundoff_bound_snaps_noise_and_keeps_real_covariance() -> None:
+    magnitude = np.ones((2, 2))
+    snapped = _snap_congruence(np.array([[1.0, 1e-15], [-1e-15, 1.0]]), magnitude, 1)
+    np.testing.assert_array_equal(snapped, np.eye(2))
+    kept = _snap_congruence(np.array([[1.0, 1e-9], [1e-9, 1.0]]), magnitude, 1)
+    np.testing.assert_array_equal(kept, [[1.0, 1e-9], [1e-9, 1.0]])
+    deterministic = _snap_congruence(np.array([[1e-15, 1e-9], [1e-9, 1.0]]), magnitude, 1)
+    np.testing.assert_array_equal(deterministic, [[0.0, 0.0], [0.0, 1.0]])
+    with pytest.raises(StatisticsError, match="not symmetric"):
+        _snap_congruence(np.array([[1.0, 0.5], [0.1, 1.0]]), magnitude, 1)
+    with pytest.raises(StatisticsError, match="negative variance"):
+        _snap_congruence(np.array([[-1e-3, 0.0], [0.0, 1.0]]), magnitude, 1)

@@ -27,6 +27,9 @@ import parallel
 
 MAX_EXACT_COUNT = 2**53
 RELATIVE_TOLERANCE = 64 * np.finfo(float).eps
+# Below this many entries a serial compensated sum finishes before the first pooled map has started
+# its workers (measured on x86-64 with two workers: about 60 ns per entry against 0.1 to 0.3 s).
+POOLED_SUM_ENTRIES = 2**22
 Estimator = Literal["plugin", "unbiased"]
 Dependence = Literal["independent", "supplied_cross_covariance"]
 
@@ -138,7 +141,13 @@ def multinomial_scores(counts: Sequence[int], scores: ArrayLike, *, estimator: E
         with np.errstate(over="raise", invalid="raise"):
             offsets = score[:, positive] - anchor[:, None]
             weights = probabilities[positive]
-            mean_offsets = np.array(parallel.ordered_map(math.fsum, list(offsets * weights)))
+            terms = offsets * weights
+            pooled = terms.size >= POOLED_SUM_ENTRIES
+            mean_offsets = np.array(
+                parallel.ordered_map(
+                    math.fsum, list(terms), min_items=parallel.MIN_PARALLEL_ITEMS if pooled else len(terms) + 1
+                )
+            )
             means = anchor + mean_offsets
             centered = offsets - mean_offsets[:, None]
             weighted = centered * np.sqrt(weights / denominator)
@@ -233,6 +242,31 @@ class PredictiveResidual:
         }
 
 
+def _snap_congruence(product: np.ndarray, magnitude: np.ndarray, terms: int) -> np.ndarray:
+    """Admit a congruence product up to its roundoff bound and snap roundoff to zero.
+
+    Each entry of S C S.T sums `terms` products twice, so floating-point evaluation
+    perturbs it by at most about terms * eps * (|S| |C| |S|.T), the magnitude of the
+    terms rather than of their sum; RELATIVE_TOLERANCE carries the 64-fold margin
+    of every other tolerance in this module. A small residual covariance that is a
+    difference of large terms therefore keeps its sign and symmetry tests at the
+    scale of the cancellation. Entries within the bound become exactly zero, and a
+    coordinate whose variance is within its bound is treated as deterministic, so
+    an exactly cancelling shared-data prediction yields the zero covariance.
+    """
+    bound = RELATIVE_TOLERANCE * max(terms, 1) * (magnitude + (magnitude.T - magnitude) / 2)
+    if np.any(np.abs(product - product.T) > bound + bound.T):
+        raise StatisticsError("residual covariance: congruence is not symmetric beyond its roundoff bound")
+    if np.any(np.diag(product) < -np.diag(bound)):
+        raise StatisticsError("residual covariance: negative variance beyond the congruence roundoff bound")
+    snapped = product + (product.T - product) / 2
+    snapped[np.abs(snapped) <= bound] = 0.0
+    deterministic = np.diag(snapped) == 0
+    snapped[deterministic, :] = 0.0
+    snapped[:, deterministic] = 0.0
+    return snapped
+
+
 def predictive_residual(
     observed: ArrayLike,
     predicted: ArrayLike,
@@ -249,6 +283,14 @@ def predictive_residual(
     full joint covariance must be PSD: a cross block cannot be admitted merely
     because the final residual covariance happens to be positive. Missing fitted
     parameter covariance is an error. This API does not fit or select the model.
+
+    The residual covariance is admitted to the roundoff of its congruence, a bound
+    built from the magnitudes of the terms (see _snap_congruence), so a small
+    residual covariance that is a difference of large terms is accepted. Entries
+    within the bound become zero: exact reuse of an observation by the fit yields
+    the zero covariance, and the score then reports whether the residual is
+    supported. A rank-deficient nonzero residual covariance is still held to the
+    correlation tolerance of covariance_matrix.
     """
     y = real_array(observed, ndim=1, name="observed")
     prediction = real_array(predicted, ndim=1, name="predicted")
@@ -285,12 +327,17 @@ def predictive_residual(
             # for y == theta_hat with an identity predictor and exact covariance.
             projected_transform = scaled_transform @ correlation
             residual_covariance = projected_transform @ scaled_transform.T
-            if np.any((np.diag(residual_covariance) == 0) & np.any(projected_transform != 0, axis=1)):
+            magnitude = np.abs(scaled_transform) @ np.abs(correlation) @ np.abs(scaled_transform).T
+            if np.any((np.diag(magnitude) == 0) & np.any(projected_transform != 0, axis=1)):
                 raise StatisticsError("nonzero predictive variance underflows float64")
             residual = y - prediction
     except FloatingPointError as error:
         raise StatisticsError("predictive covariance arithmetic overflows float64") from error
-    residual_covariance = covariance_matrix(residual_covariance, dimension=len(y), name="residual covariance")
+    residual_covariance = covariance_matrix(
+        _snap_congruence(residual_covariance, magnitude, int(np.count_nonzero(active))),
+        dimension=len(y),
+        name="residual covariance",
+    )
     return PredictiveResidual(
         residual, residual_covariance, dependence, covariance_score(residual, residual_covariance)
     )

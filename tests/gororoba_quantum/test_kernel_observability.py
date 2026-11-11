@@ -9,7 +9,9 @@ import pytest
 
 from cd_core import left_mult_matrix_exact
 from kernel_observability import (
+    DEFAULT_COEFFICIENT_ENTRY_BUDGET,
     certify_equal_weight_pair,
+    completion_entries,
     exact_herald_moments,
     nested_herald_statistics,
     reconstruct_hermitian,
@@ -193,13 +195,20 @@ def test_completion_resolves_the_commutant_invisible_population_pair() -> None:
 
 
 def test_complex_state_reconstruction_uses_actual_hilbert_schmidt_norms() -> None:
-    basis = tomography_completion(2)
-    factor = np.diag([2, 3, 4, 5]) + 1j * np.roll(np.eye(4), 1, axis=1)
-    density = factor @ factor.conj().T
-    density /= np.trace(density)
+    # The squared Hilbert-Schmidt norms take the values 2 and 4, and this Hermitian matrix
+    # carries weight on off-diagonal entries, so a reconstruction that assumes one common norm fails.
+    m = 3
+    basis = tomography_completion(m)
+    if set(basis.hs_norm_squared.tolist()) != {2, 4}:
+        raise AssertionError("the completion must have squared Hilbert-Schmidt norms 2 and 4 at m = 3")
+    index = np.arange(2 * m)
+    seed = np.sin(1 + index[:, None] * 2 + index[None, :]) + 1j * np.cos(1 + index[:, None] + 3 * index[None, :])
+    hermitian = seed + seed.conj().T
+    if np.max(np.abs(np.triu(hermitian, 1))) < 0.5 or np.max(np.abs(hermitian.imag)) < 0.5:
+        raise AssertionError("the fixture needs off-diagonal and imaginary weight")
     operators = basis.real + 1j * basis.imaginary
-    expectations = np.einsum("kij,ji->k", operators, density).real
-    np.testing.assert_allclose(reconstruct_hermitian(expectations, 2), density, atol=1e-15, rtol=0)
+    expectations = np.einsum("kij,ji->k", operators, hermitian).real
+    np.testing.assert_allclose(reconstruct_hermitian(expectations, m), hermitian, atol=1e-14, rtol=0)
 
 
 def test_linear_inversion_preserves_nonpositive_and_unnormalized_estimates() -> None:
@@ -219,3 +228,61 @@ def test_invalid_completion_dimension_is_rejected(dimension: int) -> None:
 def test_invalid_reconstruction_coefficients_are_rejected(values: list[float]) -> None:
     with pytest.raises(ValueError):
         reconstruct_hermitian(values, 1)
+
+
+@pytest.mark.parametrize(
+    ("matrix", "message"),
+    [
+        ([[0, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], "not normal"),
+        ([[1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], "Gram spectrum"),
+        ([[2, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]], "Gram trace"),
+    ],
+)
+def test_certificate_rejects_a_matrix_failing_each_exact_identity(
+    matrix: list[list[int]], message: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Each fixture satisfies the checks before its own: the second is normal, the third has the
+    # spectrum {0, 4}, so deleting a check lets the case through or surfaces another message.
+    import kernel_observability as module
+
+    monkeypatch.setattr(module, "left_mult_matrix_exact", lambda _dimension, _vector: matrix)
+    with pytest.raises(ValueError, match=message):
+        certify_equal_weight_pair(4, 1, 2)
+
+
+def test_second_moment_above_first_is_rejected() -> None:
+    with pytest.raises(ValueError, match="must not exceed"):
+        uniform_retention_nullity(Fraction(1, 3), Fraction(1, 2), 16)
+    if uniform_retention_nullity(Fraction(1, 2), Fraction(1, 2), 16) != 8:
+        raise AssertionError("equal first and second moments give D/2 * (1/q - 1)")
+
+
+@pytest.mark.parametrize("retention", [1.5, 2.0, -0.1])
+def test_float_retention_outside_the_unit_interval_is_rejected(retention: float) -> None:
+    with pytest.raises(ValueError, match="retention"):
+        nested_herald_statistics(attempts(10), [4, 2], sampling="fixed_independent_attempts", retention=retention)
+
+
+def test_completion_refuses_an_allocation_above_its_entry_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    import kernel_observability as module
+
+    def forbidden(*_arguments: object, **_keywords: object) -> None:
+        raise AssertionError("an over-budget request reaches the allocator")
+
+    monkeypatch.setattr(module, "_units", forbidden)
+    if completion_entries(7) != 32 * 7**4 or completion_entries(7) > DEFAULT_COEFFICIENT_ENTRY_BUDGET:
+        raise AssertionError("the default completion must fit the default budget")
+    with pytest.raises(ValueError, match="entry_budget"):
+        tomography_completion(100)
+    with pytest.raises(ValueError, match="entry_budget"):
+        tomography_completion(2, entry_budget=completion_entries(2) - 1)
+    for budget in (0, True, 1.5):
+        with pytest.raises(ValueError, match="entry_budget"):
+            tomography_completion(2, entry_budget=budget)  # type: ignore[arg-type]
+
+
+def test_completion_entry_count_matches_the_allocated_coefficients() -> None:
+    basis = tomography_completion(3)
+    if basis.real.size + basis.imaginary.size != completion_entries(3):
+        raise AssertionError("the budgeted entry count differs from the allocated coefficients")
+    tomography_completion(2, entry_budget=completion_entries(2))

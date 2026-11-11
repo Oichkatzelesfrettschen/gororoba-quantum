@@ -84,8 +84,8 @@ before producing the binomial plug-in covariance. Alternatively, the caller supp
 six unconditional rate estimates in canonical `f,g,+,-,+i,-i` order. Absent statistical qualification produces
 `None` and a reason. Shared `f,g` controls retain their covariance across the two contrasts.
 
-The bounded counterexample uses ten attempts per state, with `(k,a)` equal to `(4,4)`, `(0,6)` and `(2,5)` for each
-superposition. Both conditional contrasts are `-0.2`; both unconditional contrasts are zero. The contrast covariance
+The bounded counterexample uses ten attempts per state. Here `k` is the selected count and `a` the accepted count:
+`(k,a)=(4,4)` for `f`, `(0,6)` for `g`, and `(2,5)` for each of `+`, `-`, `+i` and `-i`. Both conditional contrasts are `-0.2`; both unconditional contrasts are zero. The contrast covariance
 is `[[0.056,0.024],[0.024,0.056]]`. A conditional residual alone therefore fails as a fixed-effect linearity test.
 
 ## Predictive residuals and support
@@ -103,7 +103,13 @@ This is exact for an affine predictor and a first-order delta approximation othe
 `measurement_statistics.predictive_residual` requires either `dependence="independent"` or
 `dependence="supplied_cross_covariance"` with the cross block. Missing parameter covariance never becomes zero.
 The full joint covariance receives a positive-semidefinite admission check; positivity of the final residual
-covariance alone does not establish a possible joint observation law.
+covariance alone does not establish a possible joint observation law. The residual covariance itself is the congruence
+of that joint covariance and is admitted to its floating-point roundoff, bounded entry by entry by
+`64 * eps * n * |S||C||S|^T`, where `S` is `(I,-J)` scaled by the joint standard deviations, `C` the joint correlation
+and `n` the number of coordinates with positive variance, so a small residual covariance that is a difference of large
+terms keeps its sign and symmetry tests at the scale of the cancellation. Entries within the bound become zero, and a
+coordinate whose variance lies within it is deterministic: a fit that reuses an observation exactly yields the zero
+residual covariance, and `covariance_score` then decides support from the residual alone.
 
 Covariance admission standardizes by positive diagonal scales before checking symmetry and eigenvalues. Large
 units cannot hide an invalid small-unit block. A zero diagonal requires an exactly zero row and column. The
@@ -185,6 +191,11 @@ as JSON null, uses order-preserving batch dispatch and cannot overwrite its inpu
 Tomography checks its `32*m**4` real/imaginary integer entries before allocation. The default
 `coefficient_entry_budget` is one million entries; a larger explicit budget requires accounting for at least eight
 bytes per entry, intermediate arrays and substantially larger JSON output. The output retains the chosen budget.
+`kernel_observability.tomography_completion` applies the same budget through its `entry_budget` argument before
+allocating, so a library caller cannot request an unbounded bank.
+The on-demand gate `core-measurement-observability` of `ci/gates.json` replays the retained
+[analytic result](../evidence/measurement-observability/analytic-result.json) byte for byte on a CPU that takes the
+same native numeric path as the record's producer; the record names Python and NumPy versions but not that path.
 
 ```sh
 export PYTHON=/path/to/pinned/python

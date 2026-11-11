@@ -133,3 +133,29 @@ def test_cli_stdout_and_failure_preserve_existing_files(tmp_path: Path, capsys) 
     output.write_text("retained output")
     if main([str(invalid), "--output", str(output)]) != 2 or output.read_text() != "retained output":
         raise AssertionError("failed analysis replaces existing output")
+
+
+def test_cli_refuses_to_overwrite_a_valid_input_document(tmp_path: Path) -> None:
+    copy = tmp_path / "input.json"
+    copy.write_bytes(FIXTURE.read_bytes())
+    if main([str(copy), "--output", str(copy)]) != 2 or copy.read_bytes() != FIXTURE.read_bytes():
+        raise AssertionError("a valid analysis overwrites its own input")
+    alias = tmp_path / "alias.json"
+    alias.symlink_to(copy)
+    if main([str(copy), "--output", str(alias)]) != 2 or copy.read_bytes() != FIXTURE.read_bytes():
+        raise AssertionError("a symbolic link to the input bypasses the overwrite guard")
+
+
+def test_multinomial_scores_require_the_declared_sampling_value() -> None:
+    value = document()
+    value["items"][0]["input"]["sampling"] = "other"
+    with pytest.raises(ValueError, match="independent_fixed_trials"):
+        analyze_document(value)
+
+
+@pytest.mark.parametrize("field", ["id", "source", "kind"])
+def test_item_text_must_be_a_single_line(field: str) -> None:
+    value = document()
+    value["items"][0][field] = value["items"][0][field] + "\nsecond line"
+    with pytest.raises(ValueError):
+        analyze_document(value)
