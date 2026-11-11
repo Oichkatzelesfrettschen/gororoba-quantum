@@ -15,6 +15,7 @@ Writes quadrics-<slug>.json beside this file. Run from the repository root:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -179,7 +180,9 @@ def _modular_rows(
 def singular_script(slug: str, cores: int = 0) -> str:
     """The Singular script of the check. With cores > 0 the two standard bases over Q(i) come from nfmodStd
     (nfmodstd.lib: standard bases modulo primes on `cores` processes, Chinese remaindering and rational
-    reconstruction, then the final test that the input reduces to zero and the result is a standard basis)."""
+    reconstruction, then the final test that the input reduces to zero and the result is a standard basis). The
+    final test proves that the result generates an ideal containing the input; equality holds with high probability
+    for these inhomogeneous inputs, so the relation space of a modular run contains the true one."""
     body = reduction_check._script(slug, None, rees.MODULAR_PRIME, extra=False)
     header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
     ring_line = header.splitlines()[0]
@@ -234,9 +237,13 @@ def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS, cores: 
         "qi_rank_h2": count - len(echelon),
         "qi_max_denominator": max((max(a.denominator, b.denominator) for r in echelon for a, b in r), default=1),
         "qi_has_imaginary_part": any(b != 0 for r in echelon for _, b in r),
+        "qi_echelon_sha256": hashlib.sha256(
+            json.dumps([[[str(a), str(b)] for a, b in r] for r in echelon]).encode()
+        ).hexdigest(),
         "sq_size": int(res["sq_size"]),
         "monomials": int(res["monomials"]),
         "engine": f"nfmodStd on {cores} processes" if cores else "std",
+        "relation_ideal": "contained in the ideal of the standard basis (nfmodStd final test)" if cores else "exact",
         "wall_seconds": round(outcome.wall_nanoseconds / 1e9, 1),
         "peak_rss_kib": outcome.peak_rss_kib,
         "primes": rows,

@@ -105,21 +105,41 @@ continues on the workstation, which has no session limit.
 The STAGE lines locate the cost. On E8-bar -> N- the re-pushed kernel `a5-char0-e8-quadrics` (version 2, the runner
 with ordered limits) kept its logs ([summary](kaggle/a5-char0-e8-quadrics/output/summary.json),
 [Singular log](kaggle/a5-char0-e8-quadrics/output/singular.log)): the standard basis of J took 70 s, the 231
-products were done at 823 s, and Singular was killed (exit 137, the session's memory) 27,718 s into the standard
-basis of the relation ideal J + m * products (2,095 generators). On the workstation the same check and the W8 check
-were each killed at the 16 GB cap of their Singular scope, in the same step (kernel log, memory cgroup). The direct
-standard basis over Q(i) is therefore out of reach for W8 and E8-bar on a 16 to 30 GB host; no verdict on either
-relation space follows.
+products were done at 823 s, and Singular exited with status 137 (a SIGKILL) 27,718 s into the standard basis of
+the relation ideal J + m * products (2,095 generators). The retained files name no sender and hold no memory
+reading; hypothesis: the session's memory limit. On the workstation the same check and the W8 check each stopped in
+the same step under a 16 GB cap on their Singular scope; the systemd journal of that host reported an out-of-memory
+kill of each scope, and no file of this directory retains those lines. The direct standard basis over Q(i) did not
+finish for W8 or E8-bar on a 16 to 30 GB host; no verdict on either relation space follows.
 
 `quadric_lift.py --cores N` replaces the two standard bases by `nfmodStd` (Singular `nfmodstd.lib`): standard bases
-modulo primes on N processes, Chinese remaindering and rational reconstruction, then the library's final test, which
-reduces the input by the result and checks that the result is a standard basis. On Iso -> N- with 8 processes it
+modulo primes on N processes, Chinese remaindering and rational reconstruction, then the library's final test
+(`final_Test` in the installed `nfmodstd.lib`), which in characteristic 0 reduces every input generator to zero by
+the result G and checks that G is a standard basis of the ideal it generates. That test proves input ⊆ <G>; it does
+not prove <G> ⊆ input. For a homogeneous input the two tests and one prime at which G reduces to the standard basis
+of the reduced input give equality by comparison of Hilbert functions; the relation ideals here are inhomogeneous in
+the global ordering `dp`, where `modstd.lib` states its result holds "with high probability". A modular record of
+this directory is therefore a standard basis of an ideal that contains the relation ideal, and equal to it up to
+that probability: a relation space read from it contains the true one, so its dimension is an upper bound on the
+number of degree-2 relations until the reverse inclusion is certified. On Iso -> N- with 8 processes it
 gives the record of the direct run ([`quadrics-iso-nm-modular.json`](quadrics-iso-nm-modular.json): dimension 68,
 both reductions equal, mutation detected) with stages at 3 s (J), 573 s (relation ideal), 578 s (normal forms) and
 2,174 s (syzygies of the coefficient matrix,
 [log](quadrics-iso-nm-modular.singular.log)). The syzygy step, a nullspace over Q(i) that Singular computes as a
-module standard basis, takes 73 percent of that run and is the next step to move to exact linear algebra. The W8 and
-E8-bar checks run with `--cores 12` on the workstation from 2026-11-11.
+module standard basis, takes 73 percent of that run and is the next step to move to exact linear algebra.
+
+The direct and the modular Iso -> N- records hold the same Q(i) relation space. The modular ideal contains the
+relation ideal (the final test), so its relation space contains the one of the direct run; both have dimension 68,
+so they are equal. The two records retain neither the Q(i) rows nor a digest, and the equal reductions at the two
+primes alone would not show it: two echelon forms that differ by a multiple of 32009 * 32029 in one entry reduce
+alike at both. A record written from now on carries `qi_echelon_sha256`, the digest of its reduced row echelon form
+over Q(i).
+
+On the workstation (54 GB) the modular engine ran out of memory on the 2,095-generator relation ideal of E8-bar and
+the 2,101-generator one of W8, since each `nfmodStd` process holds the input and its own standard basis: E8-bar with
+12 processes at a 22 GB cap after 14 minutes, W8 with 12 processes at a 44 GB cap within a minute of the start of
+the relation ideal, and E8-bar with 4 processes at a 46 GB cap after 26 minutes (out-of-memory kills in the systemd
+journal of that host, 2026-11-11; the journal lines are not retained here). Neither check has a verdict.
 
 ## Arc families over Q(i) (ledger A5-293)
 
@@ -155,4 +175,3 @@ Result for E8-bar -> VB (ledger A5-315): `quadric_lift.py --slug e8-vb` finished
 h_2 = 34, with largest denominator 25 and a nonzero imaginary part; no denominator is divisible by 32029, its
 reduced row echelon form reduces to the retained K2 at (32029, i = 9115), and the mutation arm is detected. The
 comparison at 32009 is not run: that relation file is retained outside the directory the driver reads.
-

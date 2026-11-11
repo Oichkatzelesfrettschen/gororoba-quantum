@@ -43,11 +43,27 @@ SESSION_SECONDS = 41400
 STOP_MARGIN = 600
 DRIVER_MARGIN = 300
 HEARTBEAT_SECONDS = 60
-SHIM = (
-    "#!/bin/bash\n"
-    'while [ "$#" -gt 0 ] && [ "$1" != Singular ]; do shift; done\n'
-    'exec stdbuf -oL "$@" > >(tee -a /kaggle/working/singular.log)\n'
-)
+
+
+def shim(out: Path) -> str:
+    """The systemd-run stand-in: it runs the Singular command with stdout and stderr appended to logs under OUT.
+
+    Both streams reach their file as Singular writes them, so a kill of the driver, whose pipes hold the only other
+    copy, leaves every line written before it.
+    """
+    return (
+        "#!/bin/bash\n"
+        'while [ "$#" -gt 0 ] && [ "$1" != Singular ]; do shift; done\n'
+        f'exec stdbuf -oL -eL "$@" > >(tee -a {out}/singular.log) 2> >(tee -a {out}/singular.stderr.log >&2)\n'
+    )
+
+
+def run_logged(command: list[str], log: Path, check: bool = True) -> None:
+    """Runs a setup command with its output appended to LOG, so a failed fetch or install leaves its message."""
+    with log.open("a") as handle:
+        handle.write("+ " + " ".join(command) + "\n")
+        handle.flush()
+        subprocess.run(command, check=check, stdout=handle, stderr=subprocess.STDOUT)  # noqa: S603
 
 
 def last_line(path: Path) -> str:
@@ -92,15 +108,15 @@ def main() -> None:
         ["git", "-C", str(repo), "fetch", "-q", "--depth", "1", "--filter=blob:none", config["repo"], config["commit"]],
         ["git", "-C", str(repo), "checkout", "-q", "FETCH_HEAD"],
     ):
-        subprocess.run(command, check=True)
+        run_logged(command, OUT / "setup.log")
     packages = ["passagemath-singular==10.8.13", "python-flint==0.9.0", "sympy"]
-    subprocess.run([sys.executable, "-m", "pip", "install", "-q", *packages], check=True)
+    run_logged([sys.executable, "-m", "pip", "install", "-q", *packages], OUT / "setup.log")
     if not Path("/usr/bin/time").exists():
-        subprocess.run(["apt-get", "install", "-y", "-q", "time"], check=False)
+        run_logged(["apt-get", "install", "-y", "-q", "time"], OUT / "setup.log", check=False)
     shims = WORK / "bin"
     shims.mkdir(exist_ok=True)
     (shims / "Singular").symlink_to(_singular())
-    (shims / "systemd-run").write_text(SHIM)
+    (shims / "systemd-run").write_text(shim(OUT))
     (shims / "systemd-run").chmod(0o755)
     env = dict(os.environ, PATH=f"{shims}:{os.environ['PATH']}", GLIBC_TUNABLES="glibc.rtld.optional_static_tls=4096")
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True)

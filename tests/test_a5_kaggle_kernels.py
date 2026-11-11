@@ -2,7 +2,10 @@
 nonzero exit, a deadline, a zero-exit run without a result, or a missing output."""
 
 import importlib.util
+import os
+import subprocess
 import sys
+import time
 from pathlib import Path
 from types import ModuleType
 
@@ -69,3 +72,33 @@ def test_char0_runner_orders_its_limits(tmp_path: Path) -> None:
     _check(runner.last_line(log) == "")
     log.write_text("STAGE product 3 of 300 17\n\n")
     _check(runner.last_line(log) == "STAGE product 3 of 300 17")
+
+
+def test_char0_shim_keeps_output_of_a_killed_singular(tmp_path: Path) -> None:
+    runner = _load(CHAR0 / "runner.py", "char0_kaggle_runner_shim")
+    fake = tmp_path / "bin"
+    fake.mkdir()
+    (fake / "Singular").write_text("#!/bin/bash\necho STAGE one\necho warning text >&2\nkill -KILL $$\n")
+    (fake / "Singular").chmod(0o755)
+    (tmp_path / "systemd-run").write_text(runner.shim(tmp_path))
+    (tmp_path / "systemd-run").chmod(0o755)
+    env = dict(os.environ, PATH=f"{fake}:{os.environ['PATH']}")
+    command = [str(tmp_path / "systemd-run"), "--user", "--scope", "Singular", "-q"]
+    done = subprocess.run(command, env=env, capture_output=True, text=True, check=False)
+    _check(done.returncode == -9)
+    # The tee processes outlive the killed command by the time they need to drain their pipes.
+    for name, text in (("singular.log", "STAGE one"), ("singular.stderr.log", "warning text")):
+        deadline = time.time() + 10
+        while time.time() < deadline and text not in (tmp_path / name).read_text():
+            time.sleep(0.05)
+        _check(text in (tmp_path / name).read_text())
+
+
+def test_char0_setup_commands_keep_their_output(tmp_path: Path) -> None:
+    runner = _load(CHAR0 / "runner.py", "char0_kaggle_runner_setup")
+    log = tmp_path / "setup.log"
+    runner.run_logged(["sh", "-c", "echo fetched; echo refused >&2"], log)
+    with pytest.raises(subprocess.CalledProcessError):
+        runner.run_logged(["sh", "-c", "echo broke >&2; exit 3"], log)
+    text = log.read_text()
+    _check(all(part in text for part in ("fetched", "refused", "broke", "+ sh -c")))
