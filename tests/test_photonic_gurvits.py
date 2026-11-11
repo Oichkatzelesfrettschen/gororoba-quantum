@@ -125,13 +125,36 @@ class RecordingDraws:
         return np.broadcast_to(low + (high - low) * columns, kwargs["size"]).copy()
 
 
+class RowVaryingDraws:
+    """Fixed radii and phases that differ in every row, so a kernel that reuses one row changes the estimate.
+
+    Row r, column j of gamma is shape_j * scale * (1 + j * r / rows), and of uniform is
+    low + (high - low) * frac(f_j + (j + 1) * r / rows). The row dependence differs between columns because the
+    ratio of a photon-number-conserving pair is invariant under a common rescaling or phase of all modes. These are
+    controlled inputs, not random draws.
+    """
+
+    def gamma(self, shape: np.ndarray, scale: float, *, size: tuple[int, int]) -> np.ndarray:
+        rows = np.arange(size[0], dtype=float)[:, None] / size[0]
+        return np.asarray(shape, dtype=float)[None, :] * scale * (1 + rows * np.arange(size[1])[None, :])
+
+    def uniform(self, low: float, high: float, *, size: tuple[int, int]) -> np.ndarray:
+        rows = np.arange(size[0], dtype=float)[:, None] / size[0]
+        columns = np.asarray(RecordingDraws.fractions[: size[1]])[None, :]
+        return low + (high - low) * np.mod(columns + rows * (np.arange(size[1])[None, :] + 1), 1.0)
+
+
 def husimi_closed_form(u: np.ndarray, t: tuple[int, ...], s: tuple[int, ...], phases: np.ndarray) -> complex:
     """<s|U alpha> / <t|alpha> for alpha_i = sqrt(t_i + 1) exp(i phase_i), from the coherent-state overlaps.
 
     The overlap <n|alpha> carries alpha^n / sqrt(n!) and a factor exp(-|alpha|^2 / 2); the factors of the numerator
     and denominator cancel because U is unitary, so |U alpha| = |alpha|.
     """
-    alpha = np.sqrt(np.asarray(t, dtype=float) + 1) * np.exp(1j * phases)
+    return husimi_ratio(u, t, s, np.sqrt(np.asarray(t, dtype=float) + 1) * np.exp(1j * phases))
+
+
+def husimi_ratio(u: np.ndarray, t: tuple[int, ...], s: tuple[int, ...], alpha: np.ndarray) -> complex:
+    """<s|U alpha> / <t|alpha> for one coherent amplitude vector alpha."""
     beta = u @ alpha
     numerator = np.prod([beta[i] ** s[i] / math.sqrt(math.factorial(s[i])) for i in range(len(s))])
     denominator = np.prod([alpha[i] ** t[i] / math.sqrt(math.factorial(t[i])) for i in range(len(t))])
@@ -352,6 +375,26 @@ def test_husimi_sampling_law_and_value(inputs: tuple[int, ...], outputs: tuple[i
     phases = 2 * math.pi * np.asarray(RecordingDraws.fractions[:2])
     close(result.value, husimi_closed_form(u, inputs, outputs, phases))
     require(result.samples == count, "sample count differs from the plan")
+
+
+def test_husimi_uses_every_row_of_the_draws() -> None:
+    """The estimate is the median of block means of the per-row ratios, each row with its own radius and phase."""
+    epsilon, delta = 0.5, 0.01
+    block_size, groups = median_of_means_plan(epsilon, delta)
+    count = block_size * groups
+    u = optical_matrix(2)
+    inputs, outputs = (1, 1), (2, 0)
+    draws = RowVaryingDraws()
+    result = estimate_fock_husimi(
+        u, inputs, outputs, rng=cast(np.random.Generator, draws), epsilon=epsilon, delta=delta
+    )
+    radii = np.sqrt(draws.gamma(np.asarray(inputs, dtype=float) + 1, 1, size=(count, 2)))
+    alpha = radii * np.exp(1j * draws.uniform(0, 2 * math.pi, size=(count, 2)))
+    ratios = np.asarray([husimi_ratio(u, inputs, outputs, row) for row in alpha])
+    means = ratios.reshape(groups, block_size).mean(axis=1)
+    close(result.value, complex(float(np.median(means.real)), float(np.median(means.imag))))
+    first = husimi_ratio(u, inputs, outputs, alpha[0])
+    require(abs(result.value - first) > 1e-3, "the fixture does not separate a repeated first row")
 
 
 @pytest.mark.parametrize("epsilon,delta", [(0.5, 0.1), (0.2, 0.01), (0.1, 0.001)])

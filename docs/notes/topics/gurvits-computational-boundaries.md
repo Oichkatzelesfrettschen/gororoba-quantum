@@ -227,10 +227,10 @@ of the title page, abstract and contents only, so its locator is unverified too.
 - Aaronson and Arkhipov, *The Computational Complexity of Linear Optics*,
   Theory of Computing 9 (2013), 143-252; the preprint is registered as
   [arXiv 1011.3245](../papers/1011.3245.md).
-  Section 12's Gurvits results, low-rank identity and fixed-mode marginals.
+  Gurvits results, low-rank identity and fixed-mode marginals (hypothesis: Section 12; the locator is unread).
 - Lim and Oh, *Classical algorithms for estimating expectation values in
   linear optical circuits*, [arXiv:2502.12882v3](https://arxiv.org/html/2502.12882v3)
-  (cited by identifier). Theorem 2 and Supplement S4 for coherent-state overlap estimation.
+  (cited by identifier). Coherent-state overlap estimation (hypothesis: Theorem 2 and Supplement S4; unread).
   This implementation does not claim to implement every hafnian or adaptive extension.
 - Hamilton et al., *Gaussian Boson Sampling*, PRL 119, 170501 (2017);
   [arXiv:1612.01199](https://arxiv.org/abs/1612.01199) (cited by identifier).

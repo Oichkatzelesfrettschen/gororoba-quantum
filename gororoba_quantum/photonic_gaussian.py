@@ -1,8 +1,10 @@
 """Hafnian references and product-Fock Husimi amplitude estimation.
 
-The coherent-state estimator is the Fock specialization of Lim and Oh,
-arXiv:2502.12882, Theorem 2 and supplement S4. Its second moment is at most
-one for normalised input/output states and an exactly unitary transfer.
+The coherent-state estimator samples the Husimi function of a product Fock
+input, the construction of Lim and Oh, arXiv:2502.12882 (hypothesis: their
+Theorem 2 and supplement S4; the locator is unread). Its second moment is at
+most one for normalised input/output states and an exactly unitary transfer,
+which tests/test_photonic_gurvits.py checks by quadrature.
 Median-of-means handles unbounded samples; a bounded-sample Hoeffding
 interval does not. Exact pairings and pure Gaussian probabilities serve as
 independent normalisation checks, not a Gaussian boson sampler.
