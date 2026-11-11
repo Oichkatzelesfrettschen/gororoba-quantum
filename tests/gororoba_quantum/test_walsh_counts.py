@@ -32,6 +32,10 @@ def test_large_histogram_needs_no_dense_sign_matrix() -> None:
     counts = np.zeros(1 << 16, dtype=np.int64)
     counts[0] = 7
     _check(np.all(parity_numerators(counts) == 7), "zero-coordinate point mass has nonconstant parities")
+    counts[0], counts[0x8001] = 0, 3
+    masks = np.arange(1 << 16, dtype=np.uint64)
+    expected = 3 * (1 - 2 * (np.bitwise_count(masks & np.uint64(0x8001)) & 1).astype(np.int64))
+    _check(np.array_equal(parity_numerators(counts), expected), "point mass at 0x8001 has the wrong parities")
 
 
 def test_int64_boundary_and_unsigned_input() -> None:
@@ -41,9 +45,14 @@ def test_int64_boundary_and_unsigned_input() -> None:
         parity_numerators([INT64_MAX, 1])
     with pytest.raises(OverflowError):
         parity_numerators(np.array([1 << 63, 0], dtype=np.uint64))
+    with pytest.raises(OverflowError):
+        parity_numerators([1 << 100, 0])
+    _check(parity_numerators([1, 2, 3, 4]).tolist() == [10, -2, -4, 0], "length-four coefficients changed")
 
 
-@pytest.mark.parametrize("counts", [[], [1, 2, 3], [[1, 2]], [-1, 2], [1.0, 2.0], [True, False]])
+@pytest.mark.parametrize(
+    "counts", [[], [1, 2, 3], [[1, 2]], [-1, 2], [1.0, 2.0], [True, False], [1, "2"], [1 << 100, -1]]
+)
 def test_invalid_histograms_are_refused(counts: object) -> None:
     with pytest.raises(ValueError):
         parity_numerators(counts)  # type: ignore[arg-type]

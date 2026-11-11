@@ -29,13 +29,14 @@ def parity_numerators(counts: Sequence[int] | np.ndarray) -> np.ndarray:
     raw = np.asarray(counts)
     if raw.ndim != 1 or raw.size == 0 or raw.size & (raw.size - 1):
         raise ValueError("counts need a nonempty power-of-two length")
-    if raw.dtype.kind not in "iu" or np.any(raw < 0):
+    # Python integers beyond uint64 arrive as an object array; each entry is checked as an exact integer.
+    entries = raw.tolist()
+    if raw.dtype.kind not in "iuO" or any(type(v) is not int or v < 0 for v in entries):
         raise ValueError("counts need nonnegative integers, not floats or booleans")
-    # Python's integer reduction is exact even when the source is uint64.
-    total = sum(raw.tolist())
+    total = sum(entries)
     if total > INT64_MAX:
         raise OverflowError("histogram total exceeds signed int64")
-    values = raw.astype(np.int64, copy=True)
+    values = np.array(entries, dtype=np.int64)
     half = 1
     while half < values.size:
         blocks = values.reshape(-1, 2 * half)
