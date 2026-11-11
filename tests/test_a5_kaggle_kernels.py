@@ -57,3 +57,15 @@ def test_char0_runner_failed() -> None:
     _check(runner.failed(1, {"verdict": "survives"}))
     _check(runner.failed(0, None))
     _check(runner.failed(0, {"slug": "xm-nm"}))
+
+
+def test_char0_runner_orders_its_limits(tmp_path: Path) -> None:
+    runner = _load(CHAR0 / "runner.py", "char0_kaggle_runner_limits")
+    _check(runner.driver_args(["d.py", "--slug", "w8-nm", "--timeout", "41000"], 123)[-1] == "123")
+    _check(runner.driver_args(["d.py"], 123) == ["d.py"])
+    # The driver's limit, the outer timeout and the Kaggle run-time limit fire in that order.
+    _check(0 < runner.DRIVER_MARGIN and 0 < runner.STOP_MARGIN and runner.SESSION_SECONDS == 41400)
+    log = tmp_path / "singular.log"
+    _check(runner.last_line(log) == "")
+    log.write_text("STAGE product 3 of 300 17\n\n")
+    _check(runner.last_line(log) == "STAGE product 3 of 300 17")

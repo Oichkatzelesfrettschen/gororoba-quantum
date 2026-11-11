@@ -90,6 +90,16 @@ integer coefficients and a nonzero imaginary part; its reduced row echelon form 
 (32009, i = 10754) and (32029, i = 9115), and the mutation arm is detected. The runtime prediction from the product
 count was wrong by a factor of 20: the X- run took 30,481 s for 120 products and Iso took 1,507 s for 153.
 
+Result for W8 -> N- on Kaggle: no record. The kernel `a5-char0-w8-quadrics` was pushed with
+`kaggle kernels push --timeout 41000`, the driver's own 41,000 s limit counted from its start 370 s into the session,
+and the runner held the driver's output in memory until the driver returned. The Kaggle limit therefore fired first
+and cancelled the session with the setup-stage `summary.json` as its only output: the W8 computation exceeds 40,600 s
+on a 4-core Kaggle CPU kernel, and its position at the stop is unknown. `kaggle/runner.py` now orders the three
+limits (driver, outer `timeout`, the 41,400 s push limit), streams the driver's and Singular's output into
+`/kaggle/working` as it is produced and rewrites `summary.json` every minute, and `quadric_lift.py` prints a STAGE
+line per step; `a5-char0-e8-quadrics` was cancelled 2.5 hours in and pushed again with that runner. The W8 check
+continues on the workstation, which has no session limit.
+
 ## Arc families over Q(i) (ledger A5-293)
 
 [arcs_qi.py](arcs_qi.py) replays the arc families of the Iso, W8 and same-sign X slices

@@ -1,9 +1,12 @@
 """Write the Kaggle CPU kernels that run the characteristic-0 checks of X- -> N- off the build host.
 
 Each kernel is runner.py with its configuration in CONFIG_B64: it clones the public repository at the integration
-branch, runs quadric_lift.py or truncation_check.py at N = 22 unchanged inside a 12-hour CPU session, copies the
+branch, runs quadric_lift.py or truncation_check.py at N = 22 unchanged inside an 11.5-hour CPU session, copies the
 driver's record and exits 1 unless the driver exited 0 with a verdict. Run from the repository root:
 "$PYTHON" docs/evidence/a5-char0-transfer/kaggle/make_kernels.py
+
+Push with `kaggle kernels push -p DIR --timeout 41400`: runner.py orders the driver's own timeout and its outer
+`timeout` before that 11.5-hour limit and rewrites the driver's --timeout to the time left.
 """
 
 import base64
@@ -16,7 +19,7 @@ BRANCH = "a5-char0-quadrics-iso-w8"
 # The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
 COMMIT = "00b7d63c261535d328f73369fba54ae7d512d64d"
 # Kernels added after COMMIT check out the commit that first holds their driver arguments.
-COMMITS = {"a5-char0-e8-quadrics": "81257432375ff8f4dde636a5ce6c58cda74bf135"}
+COMMITS = {"a5-char0-e8-quadrics": "07ecf27ee6e68b5e038bdb9ab6afbb99f6781561"}
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
 
 JOBS = {
