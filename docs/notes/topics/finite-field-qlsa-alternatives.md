@@ -1,25 +1,35 @@
 # Finite-field quantum linear algebra for the fiber program: proposal and its falsification
 
-Status: refuted (2026-11-05). The proposal below arrived as an untracked draft; this header records the checks that
-decide it. The draft text follows unchanged under "Proposal as received". Companion record:
+Status: this proposed algorithm is refuted; scope corrected 2026-11-11. The proposal below arrived as an untracked
+draft. Its rejection does not establish a lower bound for all quantum algorithms over finite fields. The draft text
+follows unchanged under "Proposal as received". Companion record:
 [the HHL/QSVT falsification](../../evidence/hhl-qsvt-falsify/README.md) (the real-amplitude pipeline; the proposal below
 cites its scratch location, `docs/local/hhl-falsify/verdict.md`).
 
 | Claim | Verdict | Check |
 |---|---|---|
 | The program computes exact ranks of 32 x 32 left-multiplication matrices over F_p | wrong premise | the 32 x 32 ranks cost microseconds classically; the expensive objects are truncated-rank matrices of the fiber cones (dim of k[t]/(J + m^N) = 93,024 with about 2.3 x 10^4 columns per character block and 98,280 products at N = 16 for W8 -> N-, [w8-n16-azure](../../evidence/a5-exceptional-fibers/w8-n16-azure/README.md)) and Singular standard bases, which dominate the run times |
-| Rank detection: superpose random v, test <v, A v> = 0, amplitude ~ 1/p^r flags kernel vectors | refuted | <v, A v> = 0 marks isotropic vectors of the bilinear form v^T A v, a quadric of p^(N-1) points for generic A, not ker A. With r the kernel dimension (nullity), the kernel fraction of F_p^N is p^(r - N) = p^(-rank), so amplitude-amplification counting needs order p^((N - r)/2) = p^(rank/2) queries, exponential in the rank (N = 32, rank 24, r = 8, p = 32009: p^12, about 1.2 x 10^54), against O(N^3) field operations for Gaussian elimination. The draft's O(sqrt(p^r)) puts the nullity where the rank belongs and is exponential either way |
+| Rank detection: superpose random v, test <v, A v> = 0, amplitude ~ 1/p^r flags kernel vectors | refuted | For every pure Cayley-Dickson element over an odd field, L_a is skew-symmetric, so v^T L_a v = 0 for every v. The invertible L_e1 already falsifies the predicate: it marks the entire space although its kernel contains only zero. For a corrected predicate A v = 0, the fraction in F_p^N is p^(-rank), and uniform amplitude amplification has the search scale p^(rank/2). At N = 32, rank 24 and p = 32009 this is p^12, about 1.2 x 10^54. This is a cost of the proposed search strategy, not a lower bound for quantum rank algorithms. Searching for a nonzero vector uses (p^(N-rank)-1)/(p^N-1) instead and requires positive nullity |
 | Phase estimation on U = exp(2 pi i O_A / p) isolates eigenvalue 0 and yields solutions of A x = b | refuted | x -> A x is not injective when A is singular (the case of interest), so no in-place unitary O_A exists; the reversible out-of-place map (x, y) -> (x, y + A x) is a permutation whose eigenphases are additive characters, which encode Fourier data of A rather than ker A, and the draft gives no analysis showing they solve A x = b. Classical exact solving over F_p is polynomial: Gaussian elimination O(N^3), Wiedemann O(N nnz) for sparse A |
-| Register cost fits Heron r2 (156 qubits) | refuted | N registers of 15 qubits: 480 data qubits at N = 32 before ancillas; 3 x 10^5 at the W8 truncation size; Heron r2 has 156 physical qubits without error correction |
+| Register cost fits Heron r2 (156 qubits) | refuted for the specified representation | N simultaneous 15-qubit field registers need 480 data qubits at N = 32 before ancillas. This rules out this explicit full-vector representation on the recorded 156-qubit target; it is not a universal qubit lower bound for every access model or space-time tradeoff |
 | Citation "Van Apeldoorn, Gilyen, Brandao et al., Quantum algorithm for the rank problem (2021)" | attribution not found | the matching title is Belovs, "Span-program-based quantum algorithm for the rank problem", arXiv 1103.0842 (2011; record in [arxiv-receipts.json](../../evidence/hhl-qsvt-falsify/arxiv-receipts.json)), a query-complexity span program; no time-efficient F_p solver |
 | Citation "Childs, Kothari, Somma, Quantum algorithm for linear systems of equations (2015)" | wrong title | arXiv 1511.02306, "Quantum algorithm for systems of linear equations with exponentially improved dependence on precision", real-amplitude output, not F_p |
 | Citation "Modular arithmetic on near-term quantum computers (2023)" | unidentifiable | no author or identifier given |
 | "For p not a prime power, embed into GF(p^k)" | ill-posed | p = 32009 and 32029 are primes; F_p is already a field |
 | Novel synthesis | unsupported | the components do not compose into a correct algorithm (rows above), so there is no synthesis to be novel |
 
-Consequence: no QPU, Aer or Kaggle run follows from this proposal, and no `finite_field_qlsa.py` module or roadmap
-entry is added. A future proposal reopens the question only with a polynomial-time quantum algorithm for exact rank
-over F_p together with a proven speedup over O(N^omega) at N >= 10^4, which no source in the workspace provides.
+The exact [quantum-contract replay](../../evidence/a5-quantum-contracts/README.md) now checks the skew predicate,
+invertible counterexample, natural signed-permutation LCU and selected kernel projectors. These are executable
+falsification checks, not an implementation of the rejected solver. The real-amplitude objections in the received
+draft also need correction: a generic A5 natural LCU uses at most 32 basis terms, and singularity permits kernel
+filtering and thresholded pseudoinverses when the relevant spectral promise is supplied.
+
+The surviving conclusion is workload-specific: this proposal supplies no correct speedup for the exact modular
+fiber computations. A replacement must specify the input/access model, promised structure, output, error criterion,
+and complete cost including preparation and readout, then compare with the strongest applicable classical method.
+Matrix-product verification already supplies a finite-field-compatible polynomial quantum speedup in its stated
+access model ([Buhrman and Spalek, quant-ph/0409035](https://arxiv.org/abs/quant-ph/0409035)); it does not compute
+the fiber ranks. The absence of a suitable current replacement is not an impossibility theorem.
 
 ## Proposal as received
 

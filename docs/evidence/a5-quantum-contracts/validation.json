@@ -1,0 +1,74 @@
+{
+  "adversarial_review": [
+    "Incorrect signed or normalized SELECT block rejected; both existing SELECT circuit constructions checked.",
+    "Incomplete Gram roots rejected; complete projector identity checked.",
+    "Invertible isotropic witness and rational/modular rank mismatch verified.",
+    "Changed retained optical operator with the same setting name rejected.",
+    "Mutation outside the selected input span passes the slice check and fails the fixed-operator check.",
+    "Invalid, excluded and eligible events retain separate populations and zero denominators remain undefined."
+  ],
+  "base_revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+  "boundary": "Local deterministic algebra, circuit conformance, event accounting and retained-file replay. No provider acquisition, compiled QSVT budget, quantum speedup or full A5 hardware nullity claim.",
+  "environment": {
+    "blas_threads": 1,
+    "dispatch": "native CPU",
+    "mpmath": "1.4.1",
+    "mypy": "2.4.1",
+    "pins": "requirements.txt, ci/requirements-ci.txt and ci/install_pins.sh overrides/patches verified by ci/pins.py",
+    "pytest": "9.2.0",
+    "python": "3.14.7",
+    "python_flint": "0.9.0",
+    "qiskit": "2.6.2",
+    "ruff": "0.17.4",
+    "sympy": "1.14.0 with repository mpmath compatibility patch",
+    "workers": 2
+  },
+  "focused_tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 87
+  },
+  "mypy": {
+    "boundary": "Full repository dependency traversal and hosted admission are separate.",
+    "files": 9,
+    "import_policy": "--follow-imports=skip; cd_core.py and parallel.py checked explicitly",
+    "status": "passed"
+  },
+  "observed_at": "2026-11-11T21:01:03Z",
+  "replays": [
+    {
+      "elapsed_milliseconds": 1509,
+      "exit_status": 0,
+      "name": "core-a5-quantum-exact-contracts"
+    },
+    {
+      "elapsed_milliseconds": 9881,
+      "exit_status": 0,
+      "name": "sources-ascella-a5-scope-hardware"
+    },
+    {
+      "elapsed_milliseconds": 9702,
+      "exit_status": 0,
+      "name": "sources-ascella-a5-scope-simulator"
+    }
+  ],
+  "ruff": {
+    "check": "passed",
+    "files": 7,
+    "format": "passed"
+  },
+  "schema": "a5-quantum-contracts-validation-v1",
+  "source_sha256": {
+    "docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json": "7576d65d23e7600d4f44b6597caa875541923660e254d80f415653102e14c7b9",
+    "docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json": "c6b6268b11b79303ba7143febd8b21de9b3942b5e3f387279e61632b9451581c",
+    "docs/evidence/a5-quantum-contracts/exact-contracts.json": "0c80d41125df5ad14dec7ffd4f94c307ea1783ec369364462c8c7437aac12f8e",
+    "gororoba_quantum/a5_photonic_scope.py": "a78d69cb7591e269ded24d7b8b3373b2fa5a3ff9eb27723b5c74a98ac5df79bd",
+    "gororoba_quantum/cd_quantum_contracts.py": "82b5d5b3b221489d94a6f0aa76b4f870b8de84acaf907c2b2090e55197396839",
+    "scripts/ascella_a5_kernel_scope_analysis.py": "ec2787c043667d8739572a5998e0c25da4284b78e63d1b650d531cff8ef5d83f",
+    "scripts/check_a5_quantum_contracts.py": "049df23474a2f01fb958311cf3e1c35982c5932f085290969bc0a367c3ea64f2",
+    "tests/gororoba_quantum/test_cd_quantum_contracts.py": "0df1a52264c8647f845163a312c3a976b89103356dd2a5b5dfa0892a8261e7ab",
+    "tests/gororoba_quantum/test_contract_suites.py": "4ff6b5c702f489d191f5c5f83498889269b246726f867ed33baa4f818277d342",
+    "tests/test_a5_photonic_scope.py": "bd948c93e5da44458aeee7a3cd383644d96b67edfc0fc54e13cb081962eb09cd"
+  }
+}

@@ -5481,6 +5481,39 @@
       "replays": [
         "docs/evidence/pathion-kernel-map/nhat-bias/result_spectral.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/check_a5_quantum_contracts.py --check docs/evidence/a5-quantum-contracts/exact-contracts.json",
+      "name": "core-a5-quantum-exact-contracts",
+      "seconds": 5.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-quantum-contracts/exact-contracts.json"
+      ]
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_a5_kernel_scope_analysis.py results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice --out docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json --check",
+      "name": "sources-ascella-a5-scope-hardware",
+      "seconds": 12.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json"
+      ]
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_a5_kernel_scope_analysis.py results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice --out docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json --check",
+      "name": "sources-ascella-a5-scope-simulator",
+      "seconds": 12.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json"
+      ]
     }
   ],
   "excluded": [
