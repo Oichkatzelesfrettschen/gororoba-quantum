@@ -118,7 +118,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true", help="validate the ledger; exit 1 on any problem")
     ap.add_argument("--summary", action="store_true", help="counts by status and kind")
-    ap.add_argument("--open", action="store_true", help="list the rows still to decide (open, stalled, boundary)")
+    ap.add_argument("--open", action="store_true", help="list all rows with outstanding falsifiers (survives, open, stalled, boundary)")
     a = ap.parse_args()
     data = rows()
     problems = check(data)
@@ -131,7 +131,7 @@ def main() -> int:
         print("by kind", dict(sorted(Counter(r["kind"] for r in data).items())))
     if a.open:
         for r in data:
-            if r["status"] in {"open", "stalled", "boundary"}:
+            if r["status"] in {"survives", "open", "stalled", "boundary"}:
                 print(f"{r['id']}\t{r['status']}\t{r['fibers']}\t{r['claim'][:110]}")
     return 1 if problems else 0
 
