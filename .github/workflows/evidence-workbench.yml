@@ -1,0 +1,59 @@
+name: evidence-workbench
+
+# This artifact copies existing public inputs; it neither replays historical
+# evidence nor contacts a provider. Behavioral tests are independent of these
+# retained inputs and remain in the ordinary pull-request test suite.
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/evidence-workbench.yml'
+      - 'gororoba_quantum/evidence_workbench.py'
+      - 'gororoba_quantum/visualizations/evidence_workbench/**'
+      - 'scripts/render_evidence_workbench.py'
+      - 'tests/gororoba_quantum/test_evidence_workbench.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evidence-workbench-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable-inputs:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            results/ripple
+            results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data
+            docs/evidence/ascella-order-coefficients
+      - name: Retain input identity
+        shell: bash
+        run: |
+          set -eu
+          mkdir -p "$RUNNER_TEMP/evidence-workbench-inputs"
+          git rev-parse HEAD > "$RUNNER_TEMP/evidence-workbench-inputs/COMMIT"
+          for file in \
+            results/ripple/measured-ripple.json \
+            results/ripple/measured-rank-sector.json \
+            results/ripple/folded-job-review.json \
+            results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data/ramsey_observations.csv \
+            results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data/ramsey_fits_model_dependent.csv \
+            docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json \
+            docs/evidence/ascella-order-coefficients/new-seed-score.json \
+            docs/evidence/ascella-order-coefficients/replication-score.json; do
+            install -D "$file" "$RUNNER_TEMP/evidence-workbench-inputs/$file"
+          done
+          cd "$RUNNER_TEMP/evidence-workbench-inputs"
+          find results docs -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: evidence-workbench-inputs
+          path: ${{ runner.temp }}/evidence-workbench-inputs
+          retention-days: 7
+          if-no-files-found: error
