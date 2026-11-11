@@ -17,13 +17,17 @@
     "2": 45,
     "3": 112
    },
+   "mutation_solution_dimension": 0,
    "delta": 2,
    "solution_dimension": 1,
    "scalars_all_nonzero": true,
    "t_rank": 45,
+   "t_sha256": "28c29f26921edc54e811c0aa9bb559290552967ad57ea3ce2340786c18e1f334",
    "fit_exact_on_all_samples": true,
    "held_out": 40,
-   "held_out_proportional": 40
+   "held_out_proportional": 40,
+   "distinct_fiber_points": 360,
+   "verdict": "degree_2_fit_validated"
   }
  }
 }

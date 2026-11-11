@@ -17,13 +17,17 @@
     "2": 120,
     "3": 320
    },
+   "mutation_solution_dimension": 0,
    "delta": 2,
    "solution_dimension": 1,
    "scalars_all_nonzero": true,
    "t_rank": 120,
+   "t_sha256": "fd476ef02ea50ffbdc6b64980dee8a79ef75ba0be80eae730d653c2da13b123b",
    "fit_exact_on_all_samples": true,
    "held_out": 40,
-   "held_out_proportional": 40
+   "held_out_proportional": 40,
+   "distinct_fiber_points": 360,
+   "verdict": "degree_2_fit_validated"
   },
   "c20": {
    "samples": 320,
@@ -33,13 +37,17 @@
     "2": 84,
     "3": 300
    },
+   "mutation_solution_dimension": 0,
    "delta": 2,
    "solution_dimension": 1,
    "scalars_all_nonzero": true,
    "t_rank": 84,
+   "t_sha256": "1eb701083958a723b5092320173dd696a39831e2d7ef4e5bfd049122047c4983",
    "fit_exact_on_all_samples": true,
    "held_out": 40,
-   "held_out_proportional": 40
+   "held_out_proportional": 40,
+   "distinct_fiber_points": 360,
+   "verdict": "degree_2_fit_validated"
   },
   "all": {
    "samples": 640,
@@ -49,13 +57,17 @@
     "2": 156,
     "3": 600
    },
+   "mutation_solution_dimension": 0,
    "delta": 2,
    "solution_dimension": 1,
    "scalars_all_nonzero": true,
    "t_rank": 156,
+   "t_sha256": "052702f73e4900d46a3bbbf70053fac8c4919c2be5657dc0159133a3bba9fc85",
    "fit_exact_on_all_samples": true,
    "held_out": 80,
-   "held_out_proportional": 80
+   "held_out_proportional": 80,
+   "distinct_fiber_points": 720,
+   "verdict": "degree_2_fit_validated"
   }
  }
 }
