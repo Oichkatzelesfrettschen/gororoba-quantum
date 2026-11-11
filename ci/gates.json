@@ -5481,6 +5481,14 @@
       "replays": [
         "docs/evidence/pathion-kernel-map/nhat-bias/result_spectral.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/publication_plates.py --check",
+      "name": "core-teleportation-publication-source-bound-release",
+      "seconds": 0.2,
+      "workers": 1
     }
   ],
   "excluded": [

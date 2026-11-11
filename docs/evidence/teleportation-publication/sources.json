@@ -24,14 +24,14 @@
     "tuna17.svg": {
       "original_filename": "teleportation_tuna17_audited_v6.svg",
       "original_sha256": "35a9fd5e922f0dc3b7f059b1eb7778fb8c80cd2a6f2411d06a4a9d078b86c4f7",
-      "sha256": "58d40dd7b4f94b4235e521fa54fa2dfd7b2c4d8dee34caea62e27e8ef17adc47",
-      "change": "Stable data-binding IDs added; the original is not held in this tree, so preservation of visible content and geometry is an operator assertion."
+      "sha256": "de7c23551ac267e6458f6d91ef3d660666041f0c3bb4dc7ae326ae02059c06e9",
+      "change": "Stable data-binding IDs added, and the displayed fidelity range corrected from 11.6 to 11.7 points (the retained values differ by 11.66). Preservation of the remaining visible content and geometry is asserted by the author; the original bytes are not retained here."
     },
     "kingston.svg": {
       "original_filename": "kingston_qet_audited_v6.svg",
       "original_sha256": "3d6d860b65c18a977a7e8b976b4f8f4085d278a0e2874242f6f045ba223334b2",
       "sha256": "c7b5c612d2315f356acd28767695a42743fdd871f571685a9bfbcc269f667541",
-      "change": "Stable data-binding IDs added; the original is not held in this tree, so preservation of visible content and geometry is an operator assertion."
+      "change": "Stable data-binding IDs added. Preservation of visible content and geometry is asserted by the author; the original bytes are not retained here."
     }
   }
 }

@@ -10,6 +10,8 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
+import subprocess
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping
 from pathlib import Path
@@ -21,6 +23,13 @@ SVG = "{http://www.w3.org/2000/svg}"
 SAFE_TAGS = {
     SVG + name for name in ("svg", "defs", "circle", "line", "path", "polygon", "polyline", "rect", "text", "tspan")
 }
+
+
+class _NoProcessingInstructions(ET.TreeBuilder):
+    """Builder that refuses `<?target ...?>`, which ElementTree otherwise drops silently (`xml-stylesheet`)."""
+
+    def pi(self, target: str, text: str | None = None, /) -> ET.Element:
+        raise ValueError(f"SVG processing instruction is forbidden: {target}")
 
 
 def _object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -75,6 +84,40 @@ def source_documents(root: Path, manifest: Mapping[str, Any]) -> tuple[dict[str,
     return documents, receipts
 
 
+def _git(root: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True, timeout=30, check=False)
+
+
+def verify_source_revision(root: Path, manifest: Mapping[str, Any]) -> str:
+    """Check each declared blob id against `git rev-parse REVISION:PATH` at the manifest's source revision.
+
+    Returns `verified`, or `unverified: REASON` when no git metadata can answer (git missing, `root` not the top
+    of a checkout, or a shallow clone without the revision). A blob that differs, or a revision that a complete
+    repository does not hold, raises.
+    """
+    revision = manifest["source_revision"]
+    require(
+        isinstance(revision, str) and re.fullmatch(r"[0-9a-f]{40}", revision), "source_revision must be a commit id"
+    )
+    try:
+        top = _git(root, "rev-parse", "--show-toplevel")
+        if top.returncode != 0 or Path(top.stdout.strip()).resolve() != root.resolve():
+            return "unverified: the source root is not a git checkout"
+        if _git(root, "cat-file", "-e", f"{revision}^{{commit}}").returncode != 0:
+            shallow = _git(root, "rev-parse", "--is-shallow-repository").stdout.strip() == "true"
+            require(shallow, f"source_revision is not a commit of this repository: {revision}")
+            return "unverified: the revision is absent from a shallow clone"
+        for item in manifest["sources"]:
+            found = _git(root, "rev-parse", f"{revision}:{within(root, item['path']).relative_to(root.resolve())}")
+            require(
+                found.returncode == 0 and found.stdout.strip() == item["git_blob_sha1"],
+                f"source blob differs at source_revision: {item['path']}",
+            )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return "unverified: git is unavailable"
+    return "verified"
+
+
 def _finite(value: Any) -> float:
     require(type(value) in (int, float) and math.isfinite(value), "endpoint must be a finite real number")
     return float(value)
@@ -125,11 +168,13 @@ def display_values(documents: Mapping[str, Any]) -> dict[str, dict[str, str]]:
     rows = analysis["teleport"]
     require(len(rows) == 4 and {r["input"] for r in rows} == {"0", "1", "+", "+i"}, "unexpected historical input rows")
     tuna: dict[str, str] = {}
+    scores: list[float] = []
     for index, label in enumerate(("0", "1", "+", "+i")):
         row = next(r for r in rows if r["input"] == label)
         score = _finite(row["corrected_fidelity"])
         lo, hi = map(_finite, row["corrected_ci95"])
         require(0 <= lo <= score <= hi <= 1, "invalid probability interval")
+        scores.append(score)
         route = [row[key] for key in ("I", "P1", "P2", "D")]
         require(
             all(type(q) is int and 0 <= q < cases["nqubits"] for q in route) and len(set(route)) == 4,
@@ -138,6 +183,7 @@ def display_values(documents: Mapping[str, Any]) -> dict[str, dict[str, str]]:
         tuna[f"tuna_row_{index}_route"] = "\u2013".join(map(str, route))
         tuna[f"tuna_row_{index}_match"] = f"{100 * score:.1f}%"
         tuna[f"tuna_row_{index}_interval"] = f"{100 * lo:.1f}\u2013{100 * hi:.1f}%"
+    tuna["tuna_range"] = f"The {100 * (max(scores) - min(scores)):.1f}-point range cannot isolate input sensitivity"
     shots = cases["shots"]
     require(type(shots) is int and shots > 0, "invalid shot count")
     tuna["tuna_shots"] = f"{shots:,} shots per circuit  \u00b7  four routes, not one channel."
@@ -156,7 +202,7 @@ def svg_nodes(data: bytes) -> tuple[ET.Element, dict[str, ET.Element]]:
     require(
         b"<!DOCTYPE" not in data.upper() and b"<!ENTITY" not in data.upper(), "SVG document declarations are forbidden"
     )
-    root = ET.fromstring(data)
+    root = ET.fromstring(data, parser=ET.XMLParser(target=_NoProcessingInstructions()))
     require(root.tag == SVG + "svg" and root.get("viewBox") == "0 0 2560 1440", "unexpected SVG root or viewBox")
     nodes: dict[str, ET.Element] = {}
     for node in root.iter():
@@ -175,17 +221,41 @@ def svg_nodes(data: bytes) -> tuple[ET.Element, dict[str, ET.Element]]:
     return root, nodes
 
 
+def _number(value: str) -> float:
+    match = re.match(r"\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)", value)
+    if match is None:
+        raise ValueError(f"unparseable SVG numeric attribute: {value!r}")
+    return float(match.group(1))
+
+
+def require_visible(node: ET.Element) -> None:
+    """Refuse presentation attributes that keep a node in the document while removing it from the rendering."""
+    for key in ("opacity", "fill-opacity", "font-size"):
+        if (value := node.get(key)) is not None:
+            require(_number(value) > 0, f"SVG node has {key}={value!r}")
+    for key, hidden in (
+        ("visibility", {"hidden", "collapse"}),
+        ("display", {"none"}),
+        ("fill", {"none", "transparent"}),
+    ):
+        require((node.get(key) or "").strip().lower() not in hidden, f"SVG node has {key}={node.get(key)!r}")
+
+
 def validate_display(data: bytes, expected: Mapping[str, str]) -> None:
     root, nodes = svg_nodes(data)
-    require(float(root.get("opacity", "1")) > 0 and root.get("display") != "none", "hidden SVG root")
+    parents = {child: parent for parent in root.iter() for child in parent}
     for ident, text in expected.items():
         require(ident in nodes and nodes[ident].tag == SVG + "text", f"missing endpoint node: {ident}")
         require(nodes[ident] in list(root), f"endpoint must be direct text: {ident}")
         require("".join(nodes[ident].itertext()) == text, f"display/source mismatch: {ident}")
-        require(
-            float(nodes[ident].get("opacity", "1")) > 0 and nodes[ident].get("display") != "none",
-            f"hidden endpoint node: {ident}",
-        )
+        # The bound text, every span inside it and every ancestor must stay visible.
+        checked = list(nodes[ident].iter())
+        ancestor = nodes[ident]
+        while ancestor in parents:
+            ancestor = parents[ancestor]
+            checked.append(ancestor)
+        for node in checked:
+            require_visible(node)
 
 
 def validate_layout(data: bytes, plate: str) -> None:

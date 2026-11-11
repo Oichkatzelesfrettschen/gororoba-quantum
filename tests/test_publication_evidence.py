@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import copy
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 from publication_evidence import (
     blob_id,
@@ -14,8 +17,27 @@ from publication_evidence import (
     source_documents,
     svg_nodes,
     validate_display,
+    validate_layout,
+    verify_source_revision,
     within,
 )
+
+ASSETS = Path(__file__).resolve().parents[1] / "docs/evidence/teleportation-publication"
+SVG_OPEN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440"{root}>'
+GIT_ENV = {
+    **os.environ,
+    "GIT_CONFIG_GLOBAL": os.devnull,
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "GIT_AUTHOR_NAME": "fixture",
+    "GIT_AUTHOR_EMAIL": "fixture@example.invalid",
+    "GIT_COMMITTER_NAME": "fixture",
+    "GIT_COMMITTER_EMAIL": "fixture@example.invalid",
+}
+
+
+def git(root: Path, *args: str) -> str:
+    done = subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True, check=True, env=GIT_ENV)
+    return done.stdout.strip()
 
 
 def sources() -> dict:
@@ -169,6 +191,114 @@ class PublicationTests(unittest.TestCase):
                 svg_nodes(base.format(content).encode())
         with self.assertRaises(ValueError):
             svg_nodes(b"<!DOCTYPE svg><svg/>")
+
+    def test_invisible_presentation_of_a_bound_endpoint_fails(self) -> None:
+        def page(root: str = "", text: str = "", inner: str = "80.0%") -> bytes:
+            return (SVG_OPEN.format(root=root) + f'<text id="metric"{text}>{inner}</text></svg>').encode()
+
+        validate_display(page(), {"metric": "80.0%"})
+        validate_display(page(' fill-opacity="1"', ' font-size="22" fill="#fff"'), {"metric": "80.0%"})
+        mutations = {
+            "visibility hidden": page(text=' visibility="hidden"'),
+            "visibility collapse": page(text=' visibility="collapse"'),
+            "display none": page(text=' display="none"'),
+            "opacity zero": page(text=' opacity="0"'),
+            "fill-opacity zero": page(text=' fill-opacity="0"'),
+            "fill-opacity zero percent": page(text=' fill-opacity="0%"'),
+            "font-size zero": page(text=' font-size="0"'),
+            "font-size zero px": page(text=' font-size="0px"'),
+            "fill none": page(text=' fill="none"'),
+            "fill transparent": page(text=' fill="transparent"'),
+            "unparseable opacity": page(text=' opacity="clear"'),
+            "ancestor visibility hidden": page(root=' visibility="hidden"'),
+            "ancestor display none": page(root=' display="none"'),
+            "ancestor opacity zero": page(root=' opacity="0"'),
+            "ancestor fill-opacity zero": page(root=' fill-opacity="0"'),
+            "ancestor font-size zero": page(root=' font-size="0"'),
+            "span visibility hidden": page(inner='80.0%<tspan visibility="hidden"/>'),
+            "span font-size zero": page(inner='80.0%<tspan font-size="0"/>'),
+            "style display none": page(text=' style="display:none"'),
+            "style visibility hidden": page(text=' style="visibility:hidden"'),
+            "style opacity zero": page(text=' style="opacity:0"'),
+            "style fill-opacity zero": page(text=' style="fill-opacity:0"'),
+            "style font-size zero": page(text=' style="font-size:0"'),
+        }
+        for label, data in mutations.items():
+            with self.subTest(label), self.assertRaises(ValueError):
+                validate_display(data, {"metric": "80.0%"})
+
+    def test_processing_instructions_fail_in_prolog_and_body(self) -> None:
+        body = SVG_OPEN.format(root="") + '<text id="metric">80.0%</text></svg>'
+        sheet = '<?xml-stylesheet type="text/css" href="https://example.invalid/hide.css"?>'
+        for label, document in {
+            "prolog stylesheet": sheet + body,
+            "body stylesheet": body.replace("<text", sheet + "<text", 1),
+            "prolog other target": "<?other data?>" + body,
+            "trailing": body + sheet,
+        }.items():
+            with self.subTest(label), self.assertRaises(ValueError):
+                svg_nodes(document.encode())
+        svg_nodes(("<?xml version='1.0' encoding='utf-8'?>\n" + body).encode())
+
+    def test_committed_masters_pass_layout_and_visibility(self) -> None:
+        for name in ("tuna17.svg", "kingston.svg"):
+            data = (ASSETS / name).read_bytes()
+            validate_layout(data, name)
+            root, nodes = svg_nodes(data)
+            bound = {
+                ident: node
+                for ident, node in nodes.items()
+                if ident.startswith(("tuna_", "kingston_")) and node.tag.endswith("}text")
+            }
+            self.assertTrue(bound)
+            validate_display(data, {ident: "".join(node.itertext()) for ident, node in bound.items()})
+
+    def test_tuna_range_is_derived_from_unrounded_fidelities(self) -> None:
+        document = sources()
+        rows = document["tuna_analysis"]["teleport"]
+        self.assertEqual(display_values(document)["tuna17.svg"]["tuna_range"].split("-")[0], "The 0.0")
+        for row, score in zip(rows, (0.74560546875, 0.8265380859375, 0.84442138671875, 0.86224365234375), strict=True):
+            row["corrected_fidelity"] = score
+        # The difference of the rounded percentages (86.2 - 74.6) would read 11.6.
+        self.assertEqual(
+            display_values(document)["tuna17.svg"]["tuna_range"],
+            "The 11.7-point range cannot isolate input sensitivity",
+        )
+
+    def test_source_revision_blob_ids_are_checked_against_git(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp).resolve()
+            git(root, "init", "-q")
+            data = b'{"value":1}\n'
+            (root / "fixture.json").write_bytes(data)
+            git(root, "add", "fixture.json")
+            git(root, "-c", "commit.gpgsign=false", "commit", "-q", "-m", "fixture")
+            revision = git(root, "rev-parse", "HEAD")
+            manifest: dict[str, Any] = {
+                "schema": "teleportation-publication-sources-v1",
+                "source_revision": revision,
+                "sources": [{"role": "fixture", "path": "fixture.json", "git_blob_sha1": blob_id(data)}],
+            }
+            self.assertEqual(verify_source_revision(root, manifest), "verified")
+            wrong_blob = copy.deepcopy(manifest)
+            wrong_blob["sources"][0]["git_blob_sha1"] = blob_id(b'{"value":2}\n')
+            with self.assertRaises(ValueError):
+                verify_source_revision(root, wrong_blob)
+            wrong_path = copy.deepcopy(manifest)
+            wrong_path["sources"][0]["path"] = "absent.json"
+            with self.assertRaises(ValueError):
+                verify_source_revision(root, wrong_path)
+            for bad in ("0" * 40, "HEAD", "--help", revision[:12]):
+                with self.subTest(bad), self.assertRaises(ValueError):
+                    verify_source_revision(root, {**manifest, "source_revision": bad})
+            # A working-tree edit leaves the committed blob, which the manifest names, as the verified one.
+            (root / "fixture.json").write_bytes(b'{"value":2}\n')
+            self.assertEqual(verify_source_revision(root, manifest), "verified")
+
+    def test_source_revision_is_unverified_outside_a_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest = {"source_revision": "0" * 40, "sources": []}
+            self.assertTrue(verify_source_revision(Path(tmp), manifest).startswith("unverified: "))
 
 
 if __name__ == "__main__":

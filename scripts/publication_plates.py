@@ -13,6 +13,7 @@ import json
 import shutil
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +26,7 @@ from publication_evidence import (  # noqa: E402
     source_documents,
     validate_display,
     validate_layout,
+    verify_source_revision,
 )
 from teleportation_contract import require  # noqa: E402
 
@@ -47,8 +49,10 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
     manifest = read_json((ASSETS / "sources.json").read_bytes())
     receipts: list[dict[str, Any]] = []
     values = None
+    revision_check = "not checked: layout only"
     if not layout_only:
         documents, receipts = source_documents(source_root, manifest)
+        revision_check = verify_source_revision(source_root, manifest)
         values = display_values(documents)
     require(not out.exists(), "release directory exists; do not overwrite a retained release")
     # Validate all inputs before creating any release file.
@@ -69,6 +73,7 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
         report: dict[str, Any] = {
             "schema": "teleportation-publication-release-v1",
             "source_revision": manifest["source_revision"],
+            "source_revision_check": revision_check,
             "evidence_bound": not layout_only,
             "source_receipts": receipts,
             "hardware_replayed": False,
@@ -116,18 +121,52 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
         raise
 
 
+def check(source_root: Path) -> dict[str, Any]:
+    """Build the full source-bound release in temporary storage and check its receipt against the manifest."""
+    manifest = read_json((ASSETS / "sources.json").read_bytes())
+    with tempfile.TemporaryDirectory() as scratch:
+        out = Path(scratch) / "release"
+        report = build(source_root, out)
+        require(read_json((out / "release.json").read_bytes()) == report, "release.json differs from the receipt")
+        require(report["evidence_bound"] is True and report["hardware_replayed"] is False, "receipt scope flags")
+        require(report["source_revision"] == manifest["source_revision"], "receipt source_revision")
+        require(report["source_revision_check"] == "verified", f"source_revision: {report['source_revision_check']}")
+        require(
+            [(r["role"], r["path"], r["git_blob_sha1"]) for r in report["source_receipts"]]
+            == [(s["role"], s["path"], s["git_blob_sha1"]) for s in manifest["sources"]],
+            "receipt sources differ from the manifest",
+        )
+        require(
+            {name: entry["sha256"] for name, entry in report["files"].items()}
+            == {name: entry["sha256"] for name, entry in manifest["masters"].items()},
+            "receipt masters differ from the manifest",
+        )
+    return report
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path, default=ROOT)
-    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", action="store_true", help="build the source-bound release in a temporary directory")
     parser.add_argument("--layout-only", action="store_true")
     parser.add_argument("--render", action="store_true")
     args = parser.parse_args()
+    if args.check == (args.out is not None) or (args.check and (args.layout_only or args.render)):
+        parser.error("give exactly one of --out or --check; --check takes no other mode flag")
     try:
-        report = build(args.source_root, args.out, args.layout_only, args.render)
+        report = (
+            check(args.source_root) if args.check else build(args.source_root, args.out, args.layout_only, args.render)
+        )
     except (ValueError, KeyError, OSError, subprocess.SubprocessError) as error:
         parser.error(str(error))
-    print(json.dumps(report, sort_keys=True, indent=2))
+    if args.check:
+        print(
+            f"source-bound release verified: {len(report['source_receipts'])} sources, "
+            f"{len(report['files'])} masters, source_revision {report['source_revision_check']}"
+        )
+    else:
+        print(json.dumps(report, sort_keys=True, indent=2))
     return 0
 
 
