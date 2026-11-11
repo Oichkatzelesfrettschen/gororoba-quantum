@@ -278,6 +278,8 @@ the closest entry and say what changed.
 - End state: the records copied into `monomial-ladder/records/`.
 - Outcome: order 32 in 1,835 s (ranks 665, 996, 1,133 at degrees 6 to 8); the E8-bar cell in 1,095 s (225); the two
   p = 32029 cells in 890 s and 1,904 s (996); the order-34 cell was killed at the 20 GB cap (exit 137) and again
-  under 40 GB with 24 threads after reproducing degrees 3 to 7 (1,590 s for degree 7 at order 31); the degree-8
-  cell at order 34 needs a host with more than 40 GB for this engine.
+  under a 40 GB cap with 24 threads after reproducing degrees 3 to 7 (1,590 s for degree 7 at order 31). The
+  second kill came from the host's global out-of-memory killer at 24.7 GB resident (kernel log), with the other
+  jobs holding the rest of the 54 GB: read the kernel log before blaming a cap. The engine held the echelon buffer
+  twice while it grew and the two previous spaces in float64; `fast_ladder_blocks.py` removes both.
 
