@@ -5285,6 +5285,23 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --check",
+      "name": "core-nullity4-kernel-gauss",
+      "seconds": 12.91,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --self-test",
+      "name": "core-nullity4-kernel-gauss-self-test",
+      "seconds": 20.40
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,

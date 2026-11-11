@@ -52,11 +52,16 @@ def cap_assignments(root: Path = ROOT) -> list[str]:
     for name in tracked:
         if name in ALLOWED:
             continue
-        path = root / name
+        if not name.endswith((".py", ".sh", ".yml", ".yaml")):
+            continue
+        text = (root / name).read_text(encoding="utf-8")
+        # Parsing every module costs the pull-request call budget; a module is parsed only when its text spells a
+        # cap. A name assembled from pieces (adjacent literals, an escape) passes unparsed.
+        if not any(cap in text for cap in CAPS):
+            continue
         if name.endswith(".py"):
-            found += [f"{name}:{line}" for line in python_assignments(path.read_text(encoding="utf-8"))]
-        elif name.endswith((".sh", ".yml", ".yaml")):
-            text = path.read_text(encoding="utf-8")
+            found += [f"{name}:{line}" for line in python_assignments(text)]
+        else:
             found += [f"{name}:{text.count(chr(10), 0, m.start()) + 1}" for m in TEXT_ASSIGNMENT.finditer(text)]
     return found
 
@@ -89,3 +94,15 @@ def test_the_scan_catches_each_assignment_form(tmp_path: Path) -> None:
             raise AssertionError(f"flagged a read: {line!r}")
     if TEXT_ASSIGNMENT.search("# no lane sets OPENBLAS_CORETYPE or NPY_DISABLE_CPU_FEATURES"):
         raise AssertionError("flagged a comment that names the caps")
+
+
+def test_the_tree_scan_reports_an_assignment_and_skips_a_module_without_the_name(tmp_path: Path) -> None:
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "sets.py").write_text('import os\nos.environ["OPENBLAS_CORETYPE"] = "Haswell"\n')
+    (tmp_path / "scripts" / "lane.sh").write_text("export NPY_DISABLE_CPU_FEATURES=X86_V4\n")
+    # A module without the name is never parsed, so text that is no Python passes.
+    (tmp_path / "scripts" / "plain.py").write_text("this is not python (\n")
+    for command in (["git", "init", "-q"], ["git", "add", "-A"]):
+        subprocess.run(command, cwd=tmp_path, check=True)
+    if cap_assignments(tmp_path) != ["scripts/lane.sh:1", "scripts/sets.py:2"]:
+        raise AssertionError(cap_assignments(tmp_path))

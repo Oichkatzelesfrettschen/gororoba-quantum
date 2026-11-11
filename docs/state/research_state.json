@@ -3374,6 +3374,41 @@
       "run": "results/quandela/runs/2026-11-09T175201Z-qpu_ascella-ascella_cz_tomography_reference-job-01",
       "family": "postselected CZ process tomography reference on qpu:ascella across the HOM band",
       "question": "With both jobs taken inside the Hong-Ou-Mandel band 90 +- 6.84 points, what process fidelity and average gate fidelity does the postselected CZ gate reach on qpu:ascella under the preregistered linear-inversion fit of 144 settings, and do the two jobs pool within the case's tolerances?"
+    },
+    {
+      "id": "qd-ascella-associator-character-qpu",
+      "provider": "quandela",
+      "run": "results/quandela/cases/ascella_associator_character/job-00",
+      "family": "ascella_associator_character",
+      "question": "Measure the associator character contrast and its Clifford and diagonal controls on Ascella."
+    },
+    {
+      "id": "qd-ascella-associator-character-simulator",
+      "provider": "quandela",
+      "run": "results/quandela/cases/ascella_associator_character/sim-00",
+      "family": "ascella_associator_character",
+      "question": "Retain the Ascella simulator control for the associator character contrast."
+    },
+    {
+      "id": "qd-ascella-associator-predecessor-first",
+      "provider": "quandela",
+      "run": "results/quandela/cases/ascella_associator_predecessor/job-00",
+      "family": "ascella_associator_predecessor_seismograph",
+      "question": "Measure associator and control contrasts with hot and wrapped predecessor settings."
+    },
+    {
+      "id": "qd-ascella-associator-predecessor-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/cases/ascella_associator_predecessor/job-01",
+      "family": "ascella_associator_predecessor_seismograph",
+      "question": "Repeat the associator and control contrasts with the declared predecessor and drift model."
+    },
+    {
+      "id": "qd-ascella-two-photon-character-canceled",
+      "provider": "quandela",
+      "run": "results/quandela/cases/ascella_two_photon_character/job-01",
+      "family": "ascella_two_photon_character",
+      "question": "Retain the canceled two-photon character job and its zero returned samples as an operational outcome."
     }
   ],
   "claims": [
