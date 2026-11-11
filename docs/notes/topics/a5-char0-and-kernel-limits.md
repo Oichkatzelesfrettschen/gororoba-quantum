@@ -174,3 +174,44 @@ Each statement below is checked against the cited source and marked documented (
   gororoba-documents-public manifest sha256 ecad36c4cccf71b71a54ed0023d85bfade2f3bd2f5330db65a7cea7fb7b282e8). Documented: a composition algebra exists only in dimensions 1, 2, 4 and 8. The
   Cayley-Dickson algebras of dimension 16 and up therefore carry zero divisors, and the A_5 zero-divisor strata whose
   attaching data this program computes exist because of that theorem.
+
+
+## Exact physical-kernel projection lemma
+
+Let z be a nonzero physical complex vector, with zbar its actual complex
+conjugate, and let C_z be the kernel matrix satisfying C_z z = 0 and
+z^T C_z = 0. Consider the bordered matrix
+
+    A(z,zbar) = [ 0       -zbar^T ]
+                [ zbar      C_z   ].
+
+Write q = zbar^T z = ||z||^2 > 0. Then
+
+    ker A(z,zbar) = {0} x (ker C_z intersect ker zbar^T)
+
+and the following decomposition is canonical:
+
+    ker C_z = C z direct-sum (ker C_z intersect ker zbar^T).
+
+**Proof.** If A(a,u)=0, the lower block says a zbar+C_z u=0.
+Multiplication by z^T and z^T C_z=0 gives a q=0. Thus a=0,
+C_z u=0; the upper equation gives zbar^T u=0. Conversely those
+conditions clearly imply A(0,u)=0. Define
+
+    Pi_z(v) = v - z (zbar^T v)/q.
+
+Since C_z z=0, Pi_z maps ker C_z into ker C_z, and its image lies
+in ker zbar^T. Every v in ker C_z decomposes as
+v=z (zbar^T v)/q+Pi_z(v); the intersection of the two summands
+is zero because q != 0. QED.
+
+**Domain and limitation.** This is an exact pointwise statement for
+actual conjugate coordinates and z != 0. It is continuous where q
+stays nonzero, so it supplies the algebraic transport in a sufficiently
+small neighborhood of a nonzero physical base point. It does not
+establish the source-stratum graph closure, curve selection, or
+realizability of every complex fiber point by a physical real arc.
+If z and zbar are treated as independent formal variables, q may be
+zero and the division is not available. Prove those separate conditions
+before identifying complex exceptional-fiber points with physical
+limiting kernel planes.
