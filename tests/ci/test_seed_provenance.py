@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 import seed_provenance
+
+import qrng_seeds
 
 
 def test_seed_provenance_self_test() -> None:
@@ -97,3 +102,39 @@ def test_base_allocated_literal_stays_out_of_the_baseline() -> None:
     held = seed_provenance.unaccounted({key[0]: seed_provenance.Counter({key: 1})}, seed_provenance.Counter({key: 1}))
     if not seed_provenance.shrink_problems([], head, held):
         raise AssertionError("a QRNG literal allocated on the base entered the reproduction baseline")
+
+
+def test_manifest_scan_equals_the_two_scans(tmp_path: Path) -> None:
+    root = tmp_path / "results"
+    root.mkdir()
+    name = RECORD.rsplit("/", 1)[1]
+    ref = f"qrng:{RECORD}#1"
+    declared = {"seed_source": qrng_seeds.seed_record("gororoba_quantum/compile_evidence.py", "--seeds", "x", [ref])}
+    files = {
+        "claims.json": json.dumps({"draw": name}).encode(),
+        "declared.json": json.dumps(declared).encode(),
+        "indexed.json": json.dumps({"args": [f"qrng:{RECORD}#2"]}).encode(),
+        # An escaped hyphen hides the name from the text patterns and from the byte marker alike.
+        "escaped.json": json.dumps({"draw": name}).replace("draw-", "draw\\u002d").encode(),
+        # A file without the marker bytes is never decoded, so bytes that are no UTF-8 text pass through.
+        "raw.json": b"\x80\x81 no marker here",
+    }
+    for file, data in files.items():
+        (root / file).write_bytes(data)
+    for file in files:
+        path = str(root / file)
+        single = (seed_provenance.file_claims(path), *seed_provenance.file_references(path))
+        if seed_provenance.file_scan(path) != single:
+            raise AssertionError(f"file_scan differs from the two scans on {file}")
+    if seed_provenance.file_scan(str(root / "escaped.json")) != ([], [], []):
+        raise AssertionError("an escaped draw name matched")
+    consumed, stray, claimed = seed_provenance.manifest_scan(root)
+    if (consumed, stray) != seed_provenance.runtime_consumption(root) or claimed != seed_provenance.claimed_records(
+        root
+    ):
+        raise AssertionError("manifest_scan and the two scans disagree")
+    if set(consumed) != {(RECORD, 1)} or claimed != {name} or stray != ["results/indexed.json"]:
+        raise AssertionError(f"consumed {consumed}, claimed {claimed}, stray {stray}")
+    (root / "wide.json").write_bytes(json.dumps({"draw": name}).encode("utf-16"))
+    with pytest.raises(seed_provenance.SeedError):
+        seed_provenance.claimed_records(root)
