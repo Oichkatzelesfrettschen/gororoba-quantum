@@ -40,6 +40,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Operating rules | the six failures the rules prevent, the operating data, the forty-line contract, checks that replace text, falsifiers, what the CI is for | [operating rules contract](design/operating-rules-contract.md) |
 | State and records | claim registry, run census, roadmap, on-demand renders | [research_state.json](state/research_state.json), [generated views](runbooks/generated-views.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
+| Measurement observability | attempted-population contracts, full score and prediction covariance, nested heralds and Hermitian completion | [measurement contracts](design/measurement-observability.md) |
 | Results index and archive copies | run, job, acquisition and claim lookups; Software Heritage and git bundle copies | [results index](runbooks/results-index.md), [archive copies](runbooks/repository-archive.md), [archive observations](evidence/repository-archive/README.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
