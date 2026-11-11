@@ -41,7 +41,8 @@ Provenance of the float64 records. `float64-xm-nm-p32009-d8-n32.json` (degrees 1
 and the torch, numpy and scipy versions; they reproduce every value an earlier version of the engine had given
 for those cells. `float64-xm-nm-p32009-d6-n28.json`, `-d7-n31.json` and `-d8-n34.json` come from that earlier
 version and carry no source digest; the order-34 replay needs more than 20 GB and is queued under a 40 GB cap.
-None of the certified statements rests on a float64 record: h_d comes from the certificate below.
+At p = 32029 the source-hashed records `float64-xm-nm-p32029-d7-n29.json` and `-d7-n31.json` give the same
+ladder as p = 32009 through degree 7 (15, 51, 122, 240, 417, 665, 996, the last at orders 29 and 31). None of the certified statements rests on a float64 record: h_d comes from the certificate below.
 
 The python-flint ladder and the float64 echelon agree on dim A, dim B and r of the cell both ran (degree 6,
 order 26: 4,879, 4,214, 665).

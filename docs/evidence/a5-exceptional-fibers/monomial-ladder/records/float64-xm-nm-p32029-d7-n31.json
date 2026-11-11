@@ -1,0 +1,98 @@
+{
+ "slug": "xm-nm",
+ "prime": 32029,
+ "order": 31,
+ "generators": 15,
+ "generator_order": 3,
+ "engine": "float64-batched-echelon",
+ "source_sha256": {
+  "fast_ladder.py": "48d99e9eae2ceaa3f942ece05b2c0fb09d869aa47f26852ad26a4fb552eed849",
+  "x_same_ladder.py": "b2b55f7ee83483bd29464dd80a8ba0d0ef426d258493e447dabb0e2f175b0cb1"
+ },
+ "versions": {
+  "torch": "2.15.0+cpu",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1"
+ },
+ "batch": 1024,
+ "threads": 16,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 13,
+   "columns": 1820,
+   "map_nnz": 221306,
+   "A": 1335,
+   "B": 1320,
+   "r": 15,
+   "seconds": 5.5
+  },
+  {
+   "degree": 2,
+   "order": 16,
+   "columns": 3876,
+   "map_nnz": 871394,
+   "A": 2226,
+   "B": 2175,
+   "r": 51,
+   "seconds": 94.2
+  },
+  {
+   "degree": 3,
+   "order": 19,
+   "columns": 7315,
+   "map_nnz": 2574794,
+   "A": 3402,
+   "B": 3280,
+   "r": 122,
+   "seconds": 112.8
+  },
+  {
+   "degree": 4,
+   "order": 22,
+   "columns": 12650,
+   "map_nnz": 6294056,
+   "A": 4855,
+   "B": 4615,
+   "r": 240,
+   "seconds": 172.7
+  },
+  {
+   "degree": 5,
+   "order": 25,
+   "columns": 20475,
+   "map_nnz": 13457399,
+   "A": 6555,
+   "B": 6138,
+   "r": 417,
+   "seconds": 348.3
+  },
+  {
+   "degree": 6,
+   "order": 28,
+   "columns": 31465,
+   "map_nnz": 26051537,
+   "A": 8450,
+   "B": 7785,
+   "r": 665,
+   "seconds": 921.8
+  },
+  {
+   "degree": 7,
+   "order": 31,
+   "columns": 46376,
+   "map_nnz": 46714505,
+   "A": 10466,
+   "B": 9470,
+   "r": 996,
+   "seconds": 1904.3
+  }
+ ],
+ "timing": {
+  "generators": 1.9,
+  "maps": 6.4,
+  "products": 461.7,
+  "echelon": 1426.0
+ },
+ "seconds": 1904.3
+}
