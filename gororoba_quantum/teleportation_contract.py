@@ -79,7 +79,7 @@ def validate_route(route: Sequence[int], nqubits: int, edges: Sequence[Sequence[
         pair = tuple(integer(q, "edge qubit") for q in edge)
         require(pair[0] != pair[1] and max(pair) < nqubits, "invalid coupling endpoint")
         graph.add(frozenset(pair))
-    require(all(frozenset(pair) in graph for pair in zip(r, r[1:])), "route has an absent coupling")
+    require(all(frozenset(pair) in graph for pair in zip(r, r[1:], strict=False)), "route has an absent coupling")
     return r
 
 
@@ -90,23 +90,36 @@ def circuit(nqubits: int, route: Sequence[int], label: str) -> str:
     compiler/native-channel conformance still needs its own receipt.
     """
     require(label in BY_LABEL, "unknown six-state input")
-    r = validate_route(route, nqubits, list(zip(route, route[1:])))
+    r = validate_route(route, nqubits, list(zip(route, route[1:], strict=False)))
     i, p1, p2, d = r
     state = BY_LABEL[label]
     lines = ["version 3.0", "", f"qubit[{nqubits}] q", f"bit[{nqubits}] b", ""]
     lines.extend(f"{gate} q[{i}]" for gate in state.prepare)
-    lines.extend([
-        "barrier q", f"H q[{p1}]", f"CNOT q[{p1}], q[{p2}]",
-        f"SWAP q[{p2}], q[{d}]", f"CNOT q[{i}], q[{p1}]", f"H q[{i}]", "barrier q",
-    ])
+    lines.extend(
+        [
+            "barrier q",
+            f"H q[{p1}]",
+            f"CNOT q[{p1}], q[{p2}]",
+            f"SWAP q[{p2}], q[{d}]",
+            f"CNOT q[{i}], q[{p1}]",
+            f"H q[{i}]",
+            "barrier q",
+        ]
+    )
     lines.extend(f"{gate} q[{d}]" for gate in ALIGN[state.basis])
     lines.extend(["barrier q", "b = measure q", ""])
     return "\n".join(lines)
 
 
 def make_plan(
-    backend: str, backend_type_id: int, nqubits: int, edges: Sequence[Sequence[int]],
-    routes: Sequence[Sequence[int]], shots: int, orders: Sequence[Sequence[int]], batch_size: int,
+    backend: str,
+    backend_type_id: int,
+    nqubits: int,
+    edges: Sequence[Sequence[int]],
+    routes: Sequence[Sequence[int]],
+    shots: int,
+    orders: Sequence[Sequence[int]],
+    batch_size: int,
 ) -> tuple[dict[str, Any], dict[str, str]]:
     """Cross all six inputs with each route in each supplied complete block.
 
@@ -132,23 +145,39 @@ def make_plan(
     for offset in range(0, len(ordered), batch_size):
         name = f"batch-{offset // batch_size:04d}"
         rows = []
-        for block, route_index, label in ordered[offset:offset + batch_size]:
+        for block, route_index, label in ordered[offset : offset + batch_size]:
             state_index = tuple(BY_LABEL).index(label)
             filename = f"block-{block:04d}-route-{route_index:03d}-state-{state_index}.cq"
             text = circuit(nqubits, checked[route_index], label)
             files[f"{name}/{filename}"] = text
-            rows.append({"file": filename, "sha256": hashlib.sha256(text.encode()).hexdigest(),
-                         "kind": "fixed-route-teleport", "block": block, "route_index": route_index,
-                         "input": label, "basis": BY_LABEL[label].basis,
-                         "expected": BY_LABEL[label].expected})
+            rows.append(
+                {
+                    "file": filename,
+                    "sha256": hashlib.sha256(text.encode()).hexdigest(),
+                    "kind": "fixed-route-teleport",
+                    "block": block,
+                    "route_index": route_index,
+                    "input": label,
+                    "basis": BY_LABEL[label].basis,
+                    "expected": BY_LABEL[label].expected,
+                }
+            )
         batches.append({"batch": name, "circuits": rows})
     plan = {
-        "schema": SCHEMA, "backend": backend, "backend_type_id": backend_type_id,
-        "nqubits": nqubits, "topology": [list(e) for e in edges],
-        "routes": [list(r) for r in checked], "shots": shots,
-        "orders": [list(o) for o in orders], "batch_size": batch_size, "batches": batches,
-        "status": "prospective_unsubmitted", "readout": "full_register_terminal",
-        "correction": "all_shot_basis_dependent_pauli_frame", "postselection": False,
+        "schema": SCHEMA,
+        "backend": backend,
+        "backend_type_id": backend_type_id,
+        "nqubits": nqubits,
+        "topology": [list(e) for e in edges],
+        "routes": [list(r) for r in checked],
+        "shots": shots,
+        "orders": [list(o) for o in orders],
+        "batch_size": batch_size,
+        "batches": batches,
+        "status": "prospective_unsubmitted",
+        "readout": "full_register_terminal",
+        "correction": "all_shot_basis_dependent_pauli_frame",
+        "postselection": False,
         "live_output_demonstrated": False,
     }
     return plan, files
@@ -158,25 +187,38 @@ def validate_plan(plan: Mapping[str, Any]) -> dict[str, str]:
     """Regenerate every circuit and structural field; extra provenance is retained."""
     require(plan.get("schema") == SCHEMA, "unsupported plan schema")
     expected, files = make_plan(
-        plan["backend"], plan["backend_type_id"], plan["nqubits"], plan["topology"],
-        plan["routes"], plan["shots"], plan["orders"], plan["batch_size"],
+        plan["backend"],
+        plan["backend_type_id"],
+        plan["nqubits"],
+        plan["topology"],
+        plan["routes"],
+        plan["shots"],
+        plan["orders"],
+        plan["batch_size"],
     )
-    require(all(plan.get(key) == value for key, value in expected.items()), "plan disagrees with its regenerated design")
+    require(
+        all(plan.get(key) == value for key, value in expected.items()), "plan disagrees with its regenerated design"
+    )
     return files
 
 
 def score_histogram(
-    counts: Mapping[str, int], nqubits: int, route: Sequence[int], label: str,
+    counts: Mapping[str, int],
+    nqubits: int,
+    route: Sequence[int],
+    label: str,
 ) -> dict[str, Any]:
     """Score full-register strings with Q0 rightmost; retain branch denominators."""
     integer(nqubits, "nqubits", 4)
-    r = validate_route(route, nqubits, list(zip(route, route[1:])))
+    r = validate_route(route, nqubits, list(zip(route, route[1:], strict=False)))
     require(label in BY_LABEL, "unknown six-state input")
     state = BY_LABEL[label]
     branches = {f"{a}{b}": {"shots": 0, "correct": 0} for a in range(2) for b in range(2)}
     for outcome, count in counts.items():
-        require(isinstance(outcome, str) and len(outcome) == nqubits and set(outcome) <= {"0", "1"},
-                "outcome must be a full-width binary register string")
+        require(
+            isinstance(outcome, str) and len(outcome) == nqubits and set(outcome) <= {"0", "1"},
+            "outcome must be a full-width binary register string",
+        )
         count = integer(count, "histogram count")
         a, b, d = (int(outcome[-1 - q]) for q in (r[0], r[1], r[3]))
         row = branches[f"{a}{b}"]
@@ -185,8 +227,15 @@ def score_histogram(
     n = sum(row["shots"] for row in branches.values())
     correct = sum(row["correct"] for row in branches.values())
     require(n > 0, "empty acquisition has no fidelity")
-    return {"input": label, "basis": state.basis, "expected": state.expected,
-            "shots": n, "correct": correct, "match": correct / n, "branches": branches}
+    return {
+        "input": label,
+        "basis": state.basis,
+        "expected": state.expected,
+        "shots": n,
+        "correct": correct,
+        "match": correct / n,
+        "branches": branches,
+    }
 
 
 def six_state_estimate(rows: Sequence[Mapping[str, Any]], alpha: float = 0.05) -> dict[str, Any]:
@@ -204,8 +253,15 @@ def six_state_estimate(rows: Sequence[Mapping[str, Any]], alpha: float = 0.05) -
     channels = {row["channel_id"] for row in rows}
     epochs = {row["calibration_id"] for row in rows}
     require(len(routes) == len(channels) == len(epochs) == 1, "cannot pool routes, channels or calibration epochs")
-    require(all(isinstance(v, str) and v.strip() for v in channels | epochs), "channel and calibration identities are required")
-    validate_route(next(iter(routes)), max(next(iter(routes))) + 1, list(zip(next(iter(routes)), next(iter(routes))[1:])))
+    require(
+        all(isinstance(v, str) and v.strip() for v in channels | epochs),
+        "channel and calibration identities are required",
+    )
+    validate_route(
+        next(iter(routes)),
+        max(next(iter(routes))) + 1,
+        list(zip(next(iter(routes)), next(iter(routes))[1:], strict=False)),
+    )
     sizes: list[int] = []
     matches: list[float] = []
     for row in rows:
@@ -219,9 +275,13 @@ def six_state_estimate(rows: Sequence[Mapping[str, Any]], alpha: float = 0.05) -
     radius = math.sqrt(-math.log(alpha) * math.fsum(1 / n for n in sizes) / 72)
     lower = max(0.0, mean - radius)
     return {
-        "mean": mean, "lower": lower, "alpha": alpha, "sampling_radius": radius,
+        "mean": mean,
+        "lower": lower,
+        "alpha": alpha,
+        "sampling_radius": radius,
         "method": "equal_weight_six_state_one_sided_fixed_horizon_hoeffding",
-        "classical_bound": 2 / 3, "lower_exceeds_classical_bound": lower > 2 / 3,
+        "classical_bound": 2 / 3,
+        "lower_exceeds_classical_bound": lower > 2 / 3,
         "benchmark_status": "conditional_on_common_instrument_and_sampling_assumptions",
         "live_output_demonstrated": False,
     }

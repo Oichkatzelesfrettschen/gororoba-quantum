@@ -7,22 +7,42 @@ import unittest
 from pathlib import Path
 
 from publication_evidence import (
-    blob_id, display_values, read_json, source_documents, svg_nodes, validate_display, within,
+    blob_id,
+    display_values,
+    read_json,
+    source_documents,
+    svg_nodes,
+    validate_display,
+    within,
 )
 
 
 def sources() -> dict:
     return {
-        "tuna_analysis": {"backend": "tuna_17", "teleport": [
-            {"input": label, "I": 0, "P1": 1, "P2": 2, "D": 3,
-             "corrected_fidelity": 0.8, "corrected_ci95": [0.7, 0.9]}
-            for label in ("0", "1", "+", "+i")
-        ]},
+        "tuna_analysis": {
+            "backend": "tuna_17",
+            "teleport": [
+                {
+                    "input": label,
+                    "I": 0,
+                    "P1": 1,
+                    "P2": 2,
+                    "D": 3,
+                    "corrected_fidelity": 0.8,
+                    "corrected_ci95": [0.7, 0.9],
+                }
+                for label in ("0", "1", "+", "+i")
+            ],
+        },
         "tuna_cases": {"backend": "tuna_17", "shots": 1000, "nqubits": 4},
-        "kingston_collect": [{"summary_interval": {
-            "selected_excess": {"lo": 0.1, "mean": 0.2, "hi": 0.3, "method": "student_t_over_14_replicas"},
-            "selected_margin": {"lo": -0.3, "mean": -0.2, "hi": -0.1, "method": "student_t_over_14_replicas"},
-        }}],
+        "kingston_collect": [
+            {
+                "summary_interval": {
+                    "selected_excess": {"lo": 0.1, "mean": 0.2, "hi": 0.3, "method": "student_t_over_14_replicas"},
+                    "selected_margin": {"lo": -0.3, "mean": -0.2, "hi": -0.1, "method": "student_t_over_14_replicas"},
+                }
+            }
+        ],
     }
 
 
@@ -64,9 +84,12 @@ class PublicationTests(unittest.TestCase):
             root = Path(tmp)
             data = b'{"value":1}\n'
             (root / "fixture.json").write_bytes(data)
-            manifest = {"schema": "teleportation-publication-sources-v1", "sources": [
-                {"role": "fixture", "path": "fixture.json", "git_blob_sha1": blob_id(data)},
-            ]}
+            manifest = {
+                "schema": "teleportation-publication-sources-v1",
+                "sources": [
+                    {"role": "fixture", "path": "fixture.json", "git_blob_sha1": blob_id(data)},
+                ],
+            }
             documents, receipts = source_documents(root, manifest)
             self.assertEqual(documents["fixture"], {"value": 1})
             self.assertEqual(receipts[0]["bytes"], len(data))
@@ -90,20 +113,30 @@ class PublicationTests(unittest.TestCase):
     def test_endpoint_node_binding(self) -> None:
         data = b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440"><text id="metric">80.0%</text></svg>'
         validate_display(data, {"metric": "80.0%"})
-        for changed in (data.replace(b"80.0", b"99.9"), data.replace(b'id="metric"', b'id="other"'),
-                        data.replace(b'id="metric"', b'id="metric" opacity="0"')):
+        for changed in (
+            data.replace(b"80.0", b"99.9"),
+            data.replace(b'id="metric"', b'id="other"'),
+            data.replace(b'id="metric"', b'id="metric" opacity="0"'),
+        ):
             with self.assertRaises(ValueError):
                 validate_display(changed, {"metric": "80.0%"})
 
     def test_active_svg_content_and_duplicate_ids_fail(self) -> None:
         base = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440">{}</svg>'
-        for content in ('<script/>', '<image/>', '<text onclick="x()"/>', '<text href="remote"/>',
-                        '<text id="a"/><text id="a"/>', '<script xmlns="urn:foreign"/>',
-                        '<text style="display:none"/>', '<rect fill="url(remote)"/>'):
+        for content in (
+            "<script/>",
+            "<image/>",
+            '<text onclick="x()"/>',
+            '<text href="remote"/>',
+            '<text id="a"/><text id="a"/>',
+            '<script xmlns="urn:foreign"/>',
+            '<text style="display:none"/>',
+            '<rect fill="url(remote)"/>',
+        ):
             with self.assertRaises(ValueError):
                 svg_nodes(base.format(content).encode())
         with self.assertRaises(ValueError):
-            svg_nodes(b'<!DOCTYPE svg><svg/>')
+            svg_nodes(b"<!DOCTYPE svg><svg/>")
 
 
 if __name__ == "__main__":

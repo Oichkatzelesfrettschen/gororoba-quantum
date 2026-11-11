@@ -22,7 +22,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 from teleportation_contract import (  # noqa: E402
-    SCHEMA, make_plan, require, score_histogram, six_state_estimate, validate_plan,
+    SCHEMA,
+    make_plan,
+    require,
+    score_histogram,
+    six_state_estimate,
+    validate_plan,
 )
 
 
@@ -45,8 +50,7 @@ def write_bundle(out: Path, plan: dict[str, Any], files: dict[str, str]) -> None
             directory = stage / batch["batch"]
             directory.mkdir()
             manifest = {key: plan[key] for key in ("backend", "backend_type_id", "nqubits", "shots")}
-            manifest.update(schema=SCHEMA, batch=batch["batch"], series_sha256=plan_digest,
-                            circuits=batch["circuits"])
+            manifest.update(schema=SCHEMA, batch=batch["batch"], series_sha256=plan_digest, circuits=batch["circuits"])
             (directory / "cases.json").write_text(serialized(manifest), encoding="utf-8")
             for row in batch["circuits"]:
                 (directory / row["file"]).write_text(files[f"{batch['batch']}/{row['file']}"], encoding="utf-8")
@@ -56,14 +60,17 @@ def write_bundle(out: Path, plan: dict[str, Any], files: dict[str, str]) -> None
 
 def prepare(args: argparse.Namespace) -> None:
     from qi_platform import HARDWARE_BATCH_CIRCUITS
+
     from qrng_seeds import seed_record
 
     catalogue_bytes = args.catalogue.read_bytes()
     catalogue = json.loads(catalogue_bytes)
     selected = [b for b in catalogue["backend_types"] if b["identifier"] == args.backend]
     require(len(selected) == 1, "backend must resolve uniquely in the supplied catalogue")
-    require(args.backend in {"tuna_17", "tuna_9", "tuna_5", "QXsinglenodesimulator"},
-            "unsupported result-order/dialect contract")
+    require(
+        args.backend in {"tuna_17", "tuna_9", "tuna_5", "QXsinglenodesimulator"},
+        "unsupported result-order/dialect contract",
+    )
     backend = selected[0]
     require(args.blocks > 0 and args.shots > 0, "blocks and shots must be positive")
     rng = random.Random(args.seed)
@@ -72,15 +79,26 @@ def prepare(args: argparse.Namespace) -> None:
         order = list(range(6 * len(args.route)))
         rng.shuffle(order)
         orders.append(order)
-    plan, files = make_plan(args.backend, backend["id"], backend["nqubits"], backend["topology"],
-                            args.route, args.shots, orders, HARDWARE_BATCH_CIRCUITS)
+    plan, files = make_plan(
+        args.backend,
+        backend["id"],
+        backend["nqubits"],
+        backend["topology"],
+        args.route,
+        args.shots,
+        orders,
+        HARDWARE_BATCH_CIRCUITS,
+    )
     plan["ordering"] = "randomized_complete_blocks"
     plan["seed_source"] = seed_record("scripts/qi_teleportation_design.py", "--seed", args.experiment, args.seed_source)
     plan["catalogue_sha256"] = hashlib.sha256(catalogue_bytes).hexdigest()
     plan["admission"] = {
-        "hardware_approval": "required", "fresh_provider_configuration": "required",
-        "native_common_channel_receipt": "required", "input_side_information_audit": "required",
-        "calibration_and_readout_controls": "required", "public_network_link_claim": False,
+        "hardware_approval": "required",
+        "fresh_provider_configuration": "required",
+        "native_common_channel_receipt": "required",
+        "input_side_information_audit": "required",
+        "calibration_and_readout_controls": "required",
+        "public_network_link_claim": False,
     }
     write_bundle(args.out, plan, files)
 
@@ -110,8 +128,10 @@ def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: 
         require(name in expected and name not in seen, "unknown or duplicate acquisition batch")
         require(cases.get("series_sha256") == plan_digest, "acquisition is not bound to this plan")
         require(cases.get("circuits") == expected[name]["circuits"], "acquisition circuit rows differ from plan")
-        require(all(cases.get(key) == plan[key] for key in ("backend", "backend_type_id", "shots", "nqubits")),
-                "acquisition configuration differs from plan")
+        require(
+            all(cases.get(key) == plan[key] for key in ("backend", "backend_type_id", "shots", "nqubits")),
+            "acquisition configuration differs from plan",
+        )
         require(acquisition.completed, "incomplete acquisition cannot be scored")
         seen.add(name)
         for spec, job in zip(cases["circuits"], acquisition.jobs, strict=True):
@@ -124,8 +144,13 @@ def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: 
             route = plan["routes"][spec["route_index"]]
             score = score_histogram(job.histogram, plan["nqubits"], route, spec["input"])
             require(score["shots"] == plan["shots"], "histogram denominator differs from plan")
-            score.update(route=route, selection="all_shots", calibration_id=epoch,
-                         channel_id=f"{plan_digest}:route-{spec['route_index']}", job_id=str(job.job_id))
+            score.update(
+                route=route,
+                selection="all_shots",
+                calibration_id=epoch,
+                channel_id=f"{plan_digest}:route-{spec['route_index']}",
+                job_id=str(job.job_id),
+            )
             rows[(spec["block"], spec["route_index"])].append(score)
         provenance.append({"batch": name, "digests": record["digests"]})
     require(seen == set(expected), "every scheduled batch must be present")
@@ -138,12 +163,19 @@ def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: 
         groups.append({"block": block, "route_index": route_index, "rows": scores, "estimate": estimate})
     require(len(groups) == family_size, "incomplete crossed design")
     return {
-        "schema": "qi-fixed-route-six-state-analysis-v1", "plan_sha256": plan_digest,
-        "calibration_record_sha256": epoch, "family_alpha": alpha, "groups": groups,
+        "schema": "qi-fixed-route-six-state-analysis-v1",
+        "plan_sha256": plan_digest,
+        "calibration_record_sha256": epoch,
+        "family_alpha": alpha,
+        "groups": groups,
         "acquisition_provenance": sorted(provenance, key=lambda p: p["batch"]),
         "instrument_admission": "not_independently_certified_by_this_analysis",
-        "limits": ["independent-shot, fixed-stopping bounds only", "no drift or SPAM correction",
-                   "no cross-block/channel pooling", "no surviving-output or cross-device claim"],
+        "limits": [
+            "independent-shot, fixed-stopping bounds only",
+            "no drift or SPAM correction",
+            "no cross-block/channel pooling",
+            "no surviving-output or cross-device claim",
+        ],
     }
 
 

@@ -20,7 +20,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 from publication_evidence import (  # noqa: E402
-    display_values, read_json, source_documents, validate_display, validate_layout,
+    display_values,
+    read_json,
+    source_documents,
+    validate_display,
+    validate_layout,
 )
 from teleportation_contract import require  # noqa: E402
 
@@ -28,7 +32,9 @@ ASSETS = ROOT / "docs/evidence/teleportation-publication"
 
 
 def rendered_bounds(svg: Path) -> dict[str, tuple[float, ...]]:
-    result = subprocess.run(["inkscape", str(svg), "--query-all"], capture_output=True, text=True, check=True, timeout=60)
+    result = subprocess.run(
+        ["inkscape", str(svg), "--query-all"], capture_output=True, text=True, check=True, timeout=60
+    )
     bounds = {}
     for line in result.stdout.splitlines():
         parts = line.split(",")
@@ -39,7 +45,7 @@ def rendered_bounds(svg: Path) -> dict[str, tuple[float, ...]]:
 
 def build(source_root: Path, out: Path, layout_only: bool = False, render: bool = False) -> dict[str, Any]:
     manifest = read_json((ASSETS / "sources.json").read_bytes())
-    receipts = []
+    receipts: list[dict[str, Any]] = []
     values = None
     if not layout_only:
         documents, receipts = source_documents(source_root, manifest)
@@ -49,8 +55,7 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
     masters = {}
     for name in ("tuna17.svg", "kingston.svg"):
         data = (ASSETS / name).read_bytes()
-        require(hashlib.sha256(data).hexdigest() == manifest["masters"][name]["sha256"],
-                f"master drift: {name}")
+        require(hashlib.sha256(data).hexdigest() == manifest["masters"][name]["sha256"], f"master drift: {name}")
         validate_layout(data, name)
         if values is not None:
             validate_display(data, values[name])
@@ -62,9 +67,13 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
         for name, data in masters.items():
             (out / name).write_bytes(data)
         report: dict[str, Any] = {
-            "schema": "teleportation-publication-release-v1", "source_revision": manifest["source_revision"],
-            "evidence_bound": not layout_only, "source_receipts": receipts,
-            "hardware_replayed": False, "renderer": None, "text_bounds": {},
+            "schema": "teleportation-publication-release-v1",
+            "source_revision": manifest["source_revision"],
+            "evidence_bound": not layout_only,
+            "source_receipts": receipts,
+            "hardware_replayed": False,
+            "renderer": None,
+            "text_bounds": {},
             "scope": "historical display/source consistency and layout, not an independent hardware certification",
         }
         if render:
@@ -72,9 +81,19 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
             report["renderer"] = version.stdout.strip()
             for name in masters:
                 svg = out / name
-                subprocess.run(["inkscape", str(svg), f"--export-filename={svg.with_suffix('.png')}",
-                                "--export-width=2560", "--export-height=1440"],
-                               capture_output=True, text=True, check=True, timeout=60)
+                subprocess.run(
+                    [
+                        "inkscape",
+                        str(svg),
+                        f"--export-filename={svg.with_suffix('.png')}",
+                        "--export-width=2560",
+                        "--export-height=1440",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                    timeout=60,
+                )
             bounds = rendered_bounds(out / "tuna17.svg")
             x, y, width, height = bounds["tuna_decoder_box"]
             for ident in ("tuna_decoder_ideal", "tuna_decoder_note"):
@@ -82,9 +101,14 @@ def build(source_root: Path, out: Path, layout_only: bool = False, render: bool 
                 require(tx >= x + 12 and tx + tw <= x + width - 12, f"decoder horizontal overflow: {ident}")
                 require(ty >= y and ty + th <= y + height, f"decoder vertical overflow: {ident}")
                 report["text_bounds"][ident] = {"right_clearance_px": x + width - tx - tw}
-        report["files"] = {path.name: {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "bytes": path.stat().st_size}
-                           for path in sorted(out.iterdir()) if path.is_file()}
-        (out / "release.json").write_text(json.dumps(report, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8")
+        report["files"] = {
+            path.name: {"sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "bytes": path.stat().st_size}
+            for path in sorted(out.iterdir())
+            if path.is_file()
+        }
+        (out / "release.json").write_text(
+            json.dumps(report, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+        )
         return report
     except BaseException:
         # Only the directory created by this invocation is removed.

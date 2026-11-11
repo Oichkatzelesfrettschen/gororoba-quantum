@@ -10,12 +10,21 @@ from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
+from qi_teleportation_design import analyze, write_bundle
 
 from teleportation_contract import (
-    ALIGN, BY_LABEL, STATES, Basis, circuit, decode, make_plan, score_histogram,
-    six_state_estimate, validate_plan, validate_route,
+    ALIGN,
+    BY_LABEL,
+    STATES,
+    Basis,
+    circuit,
+    decode,
+    make_plan,
+    score_histogram,
+    six_state_estimate,
+    validate_plan,
+    validate_route,
 )
-from qi_teleportation_design import analyze, write_bundle
 
 H = np.array([[1, 1], [1, -1]], complex) / math.sqrt(2)
 X = np.array([[0, 1], [1, 0]], complex)
@@ -27,8 +36,11 @@ GATES = {"H": H, "X": X, "S": S, "Sdag": S.conj().T}
 def logical_state(label: str, reverse_bell: bool = False) -> np.ndarray:
     """Independent 16-amplitude reference with logical qubit zero least significant."""
     initial = {
-        "0": [1, 0], "1": [0, 1], "+": np.array([1, 1]) / math.sqrt(2),
-        "-": np.array([1, -1]) / math.sqrt(2), "+i": np.array([1, 1j]) / math.sqrt(2),
+        "0": [1, 0],
+        "1": [0, 1],
+        "+": np.array([1, 1]) / math.sqrt(2),
+        "-": np.array([1, -1]) / math.sqrt(2),
+        "+i": np.array([1, 1j]) / math.sqrt(2),
         "-i": np.array([1, -1j]) / math.sqrt(2),
     }
     state = np.zeros(16, complex)
@@ -67,15 +79,29 @@ def logical_state(label: str, reverse_bell: bool = False) -> np.ndarray:
 
 
 def row(label: str, fraction: float = 1.0, n: int = 1000) -> dict:
-    return {"input": label, "shots": n, "correct": round(n * fraction), "route": [0, 1, 2, 3],
-            "channel_id": "fixture-channel", "calibration_id": "fixture-epoch", "selection": "all_shots"}
+    return {
+        "input": label,
+        "shots": n,
+        "correct": round(n * fraction),
+        "route": [0, 1, 2, 3],
+        "channel_id": "fixture-channel",
+        "calibration_id": "fixture-epoch",
+        "selection": "all_shots",
+    }
 
 
 def fixture_plan() -> tuple[dict, dict[str, str]]:
     # Deliberate counterbalanced fixture, not a sampled or acquired record.
-    return make_plan("fixture", 1, 8, [[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 7]],
-                     [[0, 1, 2, 3], [4, 5, 6, 7]], 16,
-                     [list(range(12)), list(reversed(range(12)))], 3)
+    return make_plan(
+        "fixture",
+        1,
+        8,
+        [[0, 1], [1, 2], [2, 3], [4, 5], [5, 6], [6, 7]],
+        [[0, 1, 2, 3], [4, 5, 6, 7]],
+        16,
+        [list(range(12)), list(reversed(range(12)))],
+        3,
+    )
 
 
 class FrameTests(unittest.TestCase):
@@ -164,8 +190,13 @@ class DesignTests(unittest.TestCase):
 
     def test_plan_mutations_fail_closed(self) -> None:
         plan, _ = fixture_plan()
-        mutations = [("shots", 0), ("orders", [[0] * 12]), ("postselection", True),
-                     ("routes", [[0, 0, 2, 3]]), ("readout", "postselected")]
+        mutations = [
+            ("shots", 0),
+            ("orders", [[0] * 12]),
+            ("postselection", True),
+            ("routes", [[0, 0, 2, 3]]),
+            ("readout", "postselected"),
+        ]
         for key, value in mutations:
             bad = copy.deepcopy(plan)
             bad[key] = value
@@ -212,13 +243,16 @@ class StatisticsTests(unittest.TestCase):
         self.assertFalse(result["lower_exceeds_classical_bound"])
 
     def test_equal_input_weights_not_shot_weights(self) -> None:
-        rows = [row(s.label, 1 if index == 0 else 0, 10000 if index == 0 else 10)
-                for index, s in enumerate(STATES)]
+        rows = [row(s.label, 1 if index == 0 else 0, 10000 if index == 0 else 10) for index, s in enumerate(STATES)]
         self.assertAlmostEqual(six_state_estimate(rows)["mean"], 1 / 6)
 
     def test_no_cross_route_epoch_or_selection_pooling(self) -> None:
-        for key, value in (("route", [4, 5, 6, 7]), ("channel_id", "other"),
-                           ("calibration_id", "other"), ("selection", "postselected")):
+        for key, value in (
+            ("route", [4, 5, 6, 7]),
+            ("channel_id", "other"),
+            ("calibration_id", "other"),
+            ("selection", "postselected"),
+        ):
             rows = [row(s.label) for s in STATES]
             rows[0][key] = value
             with self.assertRaises(ValueError):
