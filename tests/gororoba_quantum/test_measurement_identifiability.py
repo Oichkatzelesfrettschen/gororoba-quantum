@@ -25,9 +25,10 @@ def test_correlated_covariance_matches_schur_complement() -> None:
     target = np.array([1.0, 0.5, -1.0])
     nuisance = np.ones((3, 1))
     precision = np.linalg.inv(covariance)
-    expected = target @ precision @ target - (target @ precision @ nuisance).item() ** 2 / (
-        nuisance.T @ precision @ nuisance
-    ).item()
+    expected = (
+        target @ precision @ target
+        - (target @ precision @ nuisance).item() ** 2 / (nuisance.T @ precision @ nuisance).item()
+    )
     result = nuisance_geometry(target, nuisance, covariance)
     _close(result.fisher_information, expected)
     fit = fit_linear_amplitude(2.5 * target + 4 * nuisance[:, 0], target, nuisance, covariance)
@@ -134,6 +135,4 @@ def test_singular_simplex_covariance_requires_explicit_contrasts() -> None:
 
 def test_ramsey_overflow_is_a_validation_error() -> None:
     with pytest.raises(ValueError, match="representable"):
-        ramsey_decay_design(
-            np.array([1e300]), amplitude=1.0, phase=0.0, angular_frequency=1e300, decay_rate=0.0
-        )
+        ramsey_decay_design(np.array([1e300]), amplitude=1.0, phase=0.0, angular_frequency=1e300, decay_rate=0.0)

@@ -132,9 +132,7 @@ def nuisance_geometry(
             raise ValueError("Fisher information is not representable in float64") from error
     if not math.isfinite(information) or (information == 0 and np.any(residual != 0)):
         raise ValueError("Fisher information is not representable in float64")
-    return Geometry(
-        basis.shape[1], singular, t, residual, information, fraction, math.degrees(math.asin(fraction))
-    )
+    return Geometry(basis.shape[1], singular, t, residual, information, fraction, math.degrees(math.asin(fraction)))
 
 
 def fit_linear_amplitude(
