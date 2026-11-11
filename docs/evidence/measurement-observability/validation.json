@@ -1,8 +1,8 @@
 {
   "schema": "measurement-observability-validation-v1",
   "scope": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference.",
-  "observed_at": "2026-11-11T21:06:11.230752+00:00",
-  "source_revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+  "observed_at": "2026-11-11T21:21:14.793879+00:00",
+  "source_revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
   "environment": {
     "python": "3.14.7",
     "packages": {
@@ -20,14 +20,16 @@
     {
       "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
       "exit_code": 0,
-      "result": "163 passed in 2.16s",
+      "result": "164 passed in 0.77s",
       "evidence_class": "bounded deterministic tests"
     },
     {
       "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_provider_counters.py -m \"not audit\"",
       "exit_code": 0,
       "result": "25 passed, 5 deselected in 3.35s",
-      "evidence_class": "existing provider-counter regression tests"
+      "evidence_class": "existing provider-counter regression tests",
+      "observed_source_revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+      "qualification": "Existing provider-counter implementation and tests remain byte-identical; this check is the earlier retained regression observation."
     },
     {
       "command": "\"$PYTHON\" ci/pinned_tool.py ruff format --check gororoba_quantum/measurement_statistics.py gororoba_quantum/acceptance_statistics.py gororoba_quantum/kernel_observability.py scripts/measurement_observability.py tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
@@ -53,11 +55,11 @@
   ],
   "source_sha256": {
     "gororoba_quantum/measurement_statistics.py": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2",
-    "gororoba_quantum/acceptance_statistics.py": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65",
+    "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
     "gororoba_quantum/kernel_observability.py": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511",
     "scripts/measurement_observability.py": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca",
     "tests/gororoba_quantum/test_measurement_statistics.py": "6c8e3c0a475cd9bb229c215660e51f21594057af4dd6604ab7437dfcd510fbb6",
-    "tests/gororoba_quantum/test_acceptance_statistics.py": "0de5dc6c877a0296102744050284c69b7d694dece6e44b289b141005be771c48",
+    "tests/gororoba_quantum/test_acceptance_statistics.py": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d",
     "tests/gororoba_quantum/test_kernel_observability.py": "e20e67851d17b8086dfbfeb2507bce673018371cd80b688b9536936b4d31b9a5",
     "tests/scripts/test_measurement_observability.py": "b55dae58b39f56ea2403e037ca07cbd8018d36a742145bd96f5f021c95192652",
     "tests/fixtures/measurement-observability.json": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
@@ -97,7 +99,14 @@
       "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "cc",
       "CARGO_TARGET_DIR": "isolated temporary build directory"
     },
-    "qualification": "The published tree equals the locally tested tree. Existing optional glslc absence selects the CPU fallback; stable rustfmt reports existing nightly-only configuration options."
+    "qualification": "The published tree equals the locally tested tree. Existing optional glslc absence selects the CPU fallback; stable rustfmt reports existing nightly-only configuration options.",
+    "hosted_validation": {
+      "workflow": "https://github.com/Oichkatzelesfrettschen/gororoba-open/actions/runs/43099457497",
+      "head": "e4a095f664667e94cea1883b201ec55a401d7bb8",
+      "status": "completed",
+      "conclusion": "success",
+      "observed_at": "2026-11-11T21:21:14.793879+00:00"
+    }
   },
   "boundaries": [
     "Whole-repository hosted admission checks remain separate from these local diagnostics.",
@@ -105,5 +114,27 @@
     "The Hermitian completion does not re-certify the original acquired atlas bank or replace the archived 28/49 span and Lie-envelope checks.",
     "Unknown attempted populations, physical timestamps, calibration, fit covariance, and energy measurements remain unknown.",
     "GitHub review and merge remain outside this bounded implementation completion."
-  ]
+  ],
+  "prior_observations": [
+    {
+      "source_revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+      "observed_at": "2026-11-11T21:06:11.230752+00:00",
+      "validation_sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d",
+      "record": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/a0fba04a426d20fc84d8156d3aba04311bcd141a/docs/evidence/measurement-observability/validation.json",
+      "qualification": "The original local checks pass. Subsequent hosted macOS ARM validation exposes the exception-type portability regression described below."
+    }
+  ],
+  "portability_regression": {
+    "original_head": "a0fba04a426d20fc84d8156d3aba04311bcd141a",
+    "workflow": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/actions/runs/43100380140",
+    "failed_job": "arm (macos-15)",
+    "failed_step": "pytest",
+    "failed_test": "tests/gororoba_quantum/test_acceptance_statistics.py::test_contrast_covariance_rejects_overflow_without_a_nonfinite_output",
+    "observation": "macOS ARM matrix multiplication returns an infinite contrast covariance without raising FloatingPointError. The subsequent validator rejects it with StatisticsError, violating the AcceptanceError overflow contract. The other five hosted jobs pass.",
+    "correction": "An explicit finite-entry check follows covariance projection and raises the same AcceptanceError overflow diagnostic before covariance_matrix.",
+    "regression": "test_contrast_covariance_rejects_nonfinite_blas_output suppresses floating exceptions through captured-original errstate and verifies the silent nonfinite-return path.",
+    "source_revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
+    "local_result": "46 acceptance tests and all 164 new Python tests pass; pinned Ruff and mypy pass.",
+    "hosted_revalidation": "Pending publication of the corrected head; no macOS success is inferred from local tests."
+  }
 }

@@ -1273,7 +1273,7 @@
     "input_sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b",
     "producer_sha256": {
       "scripts/measurement_observability.py": "e3aaad712d90fec69cd80bb57dc6c729687f0ba00c8361d70f78ab8938fdecca",
-      "gororoba_quantum/acceptance_statistics.py": "756566be6d3fa3ec78482b29ccedbe125988f3e485088e18409074189d25ca65",
+      "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
       "gororoba_quantum/kernel_observability.py": "b9efe80f3f46d884bf29b9184287e1958bc7681419470d1f4dbb83326a661511",
       "gororoba_quantum/measurement_statistics.py": "785fe1053b27b0932afc53c39c25b521a0b9138e874c18553ab0bba1085c9ea2",
       "gororoba_quantum/provider_counters.py": "184240f314ed7cb4689d933697e99b8d2216e58b5fe8169e1880ac62166d5125",
