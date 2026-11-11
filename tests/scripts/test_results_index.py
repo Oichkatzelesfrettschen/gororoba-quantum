@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sqlite3
 import subprocess
@@ -21,6 +22,9 @@ KAGGLE_OPEN = "2026-01-04T000000Z-owner-open"
 
 
 class _Provider:
+    absent = "is absent from the fixture"
+    source = "the fixture"
+
     def __init__(self, runs: dict[str, dict[str, Any]], jobs: list[dict[str, str]] | None = None) -> None:
         self._runs = runs
         self.jobs = jobs or []
@@ -36,6 +40,8 @@ class _Context:
             "ibm": _Provider({IBM_RUN: facts}, [{"job_id": "ibm-job", "run": IBM_RUN}]),
             "quandela": _Provider({QD_RUN: facts}),
         }
+        self.gates = {"core-1": '"$PYTHON" scripts/replay.py'}
+        self.digest = research_state.digest
 
 
 def _write(path: Path, value: object) -> None:
@@ -55,13 +61,15 @@ def index(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> results_index.Inde
         "evidence_class": "preregistered hardware inference",
         "domain": "hardware",
         "statement": "s",
-        "evidence": [{"path": "docs/evidence/x.json", "sha256": "0" * 64}],
+        "boundary": "The fixture establishes a descriptive result on its named runs.",
+        "evidence": [{"path": "results/analysis.json", "sha256": hashlib.sha256(b"{}").hexdigest()}],
         "documents": ["docs/x.md"],
         "gates": {"core-1": "replay"},
         "acquisitions": ["acq-ibm", "acq-qd"],
         "depends_on": [],
     }
     registry = {
+        "schema": research_state.SCHEMA,
         "acquisitions": [
             {"id": "acq-ibm", "provider": "ibm", "run": IBM_RUN, "family": "f", "question": "q"},
             {"id": "acq-qd", "provider": "quandela", "run": QD_RUN, "family": "f", "question": "q"},
@@ -71,12 +79,16 @@ def index(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> results_index.Inde
             {
                 "id": "claim-bare",
                 "status": "proposed",
-                "evidence_class": "mathematical claim",
+                "evidence_class": "proposed experiment",
                 "domain": "algebra",
                 "statement": "s",
+                "boundary": "A proposed design has no measured outcome.",
             },
         ],
     }
+    _write(root / "results/analysis.json", {})
+    (root / "docs").mkdir(exist_ok=True)
+    (root / "docs/x.md").write_text("Fixture documentation.")
     _write(root / "docs/state/research_state.json", registry)
     kaggle = root / "results/kaggle"
     for name in (KAGGLE_DONE, KAGGLE_OPEN):
@@ -86,6 +98,7 @@ def index(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> results_index.Inde
     monkeypatch.setattr(results_index, "ROOT", root)
     monkeypatch.setattr(results_index, "KAGGLE", kaggle)
     monkeypatch.setattr(research_state, "REGISTRY", root / "docs/state/research_state.json")
+    monkeypatch.setattr(research_state, "ROOT", root)
     monkeypatch.setattr(research_state, "Context", _Context)
     monkeypatch.chdir(root)
     return results_index.Index()
@@ -121,7 +134,7 @@ def test_claim_names_missing_runs_and_unknown_acquisitions(index: results_index.
     registry = json.loads(research_state.REGISTRY.read_text(encoding="utf-8"))
     registry["claims"][0]["acquisitions"].append("acq-ghost")
     _write(research_state.REGISTRY, registry)
-    with pytest.raises(SystemExit, match="claim claim-a cites acquisition acq-ghost, which the registry lacks"):
+    with pytest.raises(ValueError, match="claim claim-a: acquisition acq-ghost is not registered"):
         results_index.Index()
 
 
@@ -129,7 +142,7 @@ def test_path_lookup_names_owner_and_citing_claims(index: results_index.Index) -
     owner = index.path(f"{IBM_RUN}/raw/ibm-job/pub_00.json")
     if [row["path"] for row in owner["runs"]] != [IBM_RUN] or owner["runs"][0]["claims"] != ["claim-a"]:
         raise RuntimeError(f"raw file owner: {owner}")
-    if index.path("docs/evidence/x.json")["claims_citing"] != ["claim-a"]:
+    if index.path("results/analysis.json")["claims_citing"] != ["claim-a"]:
         raise RuntimeError("an evidence file names the claim citing it")
     with pytest.raises(SystemExit, match="outside the repository"):
         index.path("/")
@@ -148,6 +161,81 @@ def test_sqlite_is_a_cache_outside_the_tree(index: results_index.Index, tmp_path
         ).fetchone()[0]
     if joined != 2 or counts["runs"] != 4 or counts["jobs"] != 4:
         raise RuntimeError(f"sqlite rows {counts}, joined acquisitions {joined}")
+    with closing(sqlite3.connect(out)) as db:
+        boundary, replay = db.execute(
+            "SELECT boundary, numerical_replay FROM claim_qualifications WHERE claim='claim-a'"
+        ).fetchone()
+    if boundary != index.claims["claim-a"]["boundary"] or replay != "not-run-by-ledger":
+        raise RuntimeError("SQLite drops the inference boundary or invents a replay")
+
+
+@pytest.mark.parametrize("mutation", ["bytes", "class", "cycle"])
+def test_index_refuses_invalid_registry(index: results_index.Index, mutation: str) -> None:
+    registry = json.loads(research_state.REGISTRY.read_text(encoding="utf-8"))
+    if mutation == "bytes":
+        (results_index.ROOT / "results/analysis.json").write_text('{"changed": true}')
+    elif mutation == "class":
+        registry["claims"][0]["status"] = "exploratory"
+    else:
+        registry["claims"][0]["depends_on"] = ["claim-a"]
+    _write(research_state.REGISTRY, registry)
+    with pytest.raises(ValueError):
+        results_index.Index()
+
+
+def test_provider_qualifies_colliding_job_ids(index: results_index.Index) -> None:
+    index.runs[QD_RUN].jobs = ["ibm-job"]
+    index.job_runs["ibm-job"].append(QD_RUN)
+    if len(index.job("ibm-job")) != 2:
+        raise RuntimeError("an unqualified lookup loses a provider occurrence")
+    if [row["path"] for row in index.job("ibm-job", "ibm")] != [IBM_RUN]:
+        raise RuntimeError("a provider-qualified lookup mixes providers")
+
+
+def test_claim_preserves_qualifications_and_observation_scope(index: results_index.Index) -> None:
+    claim = index.claim("claim-a")
+    if claim["boundary"] != index.claims["claim-a"]["boundary"]:
+        raise RuntimeError("claim lookup loses its inference boundary")
+    if claim["evidence_bindings"] != index.claims["claim-a"]["evidence"]:
+        raise RuntimeError("claim lookup loses pinned evidence digests")
+    observed = index.observation("results/analysis.json", "")
+    if observed["value"] != {} or observed["claims_citing_file"][0]["id"] != "claim-a":
+        raise RuntimeError("the source value loses its claim context")
+    if observed["runs_holding_file"]:
+        raise RuntimeError("an external analysis is incorrectly assigned to an acquisition directory")
+    with pytest.raises(ValueError, match="separate JSON Pointer"):
+        index.observation("results/analysis.json#rows/id=first", "")
+
+
+def test_complete_ledger_keeps_algebra_scope_and_tracked_denominator(
+    index: results_index.Index, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    root = results_index.ROOT
+    algebra = root / "docs/evidence/a5-exceptional-fibers/ledger.tsv"
+    algebra.parent.mkdir(parents=True)
+    algebra.write_text("id\tstatus\tprimes\tclaim\nA5-001\tproved\t32009\tfinite-field identity\n")
+    _write(root / "results/live/unindexed/record.json", {"state": "planned"})
+    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    subprocess.run(["git", "add", "results", "docs"], cwd=root, check=True)
+    _write(root / "results/scratch.json", {"status": "untracked"})
+    view = index.ledger()
+    if view["algebra_findings"]["rows"][0]["primes"] != "32009":
+        raise RuntimeError("a finite-field finding loses its field restriction")
+    if any(row["path"] == "results/scratch.json" for row in view["artifacts"]):
+        raise RuntimeError("untracked scratch enters the artifact denominator")
+    if view["gaps"]["untracked_claim_artifacts"]:
+        raise RuntimeError("tracked claim documents outside evidence roots are incorrectly labeled untracked")
+    if view["gaps"]["execution_records_outside_indexed_runs"] != ["results/live/unindexed/record.json"]:
+        raise RuntimeError("a planned record outside the adapters disappears")
+    if view["execution_candidates"][0]["classification"] != "planning-only":
+        raise RuntimeError("explicit planning state becomes an execution")
+    monkeypatch.setattr(results_index, "Index", lambda: index)
+    capsys.readouterr()
+    if results_index.main(["--json", "ledger", "--summary"]) != 0:
+        raise RuntimeError("the ledger command failed")
+    summary = json.loads(capsys.readouterr().out)
+    if summary != view["summary"]:
+        raise RuntimeError("CLI summary differs from the complete ledger's denominator")
 
 
 @pytest.mark.audit

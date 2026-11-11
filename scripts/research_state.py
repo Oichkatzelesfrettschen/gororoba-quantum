@@ -35,7 +35,8 @@ adapter's run set agree exactly.
   declared passes (the run landed after the snapshot). A failed job is part of
   its run's acquisition.
 
-- quandela: every results/quandela/runs/*/ directory is one job. Its
+- quandela: every results/quandela/runs/*/ directory and every case directory
+  under results/quandela/cases/ with a submission.json is one job. Its
   circuit matches its cases.json sha256, submission.json records the
   approval, the platform and the cases digest, job-body.json is the body it
   sent, results.json names the same job with a terminal status and no token
@@ -99,6 +100,7 @@ QI_RUNS = ROOT / "results/quantum_inspire/runs"
 QI_LEDGER = ROOT / "docs/evidence/quantum_inspire/usage.json"
 QI_CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 QD_RUNS = ROOT / "results/quandela/runs"
+QD_CASES = ROOT / "results/quandela/cases"
 QD_CATALOGUE = ROOT / "docs/evidence/quandela/catalogue.json"
 IQM_RUNS = ROOT / "results/iqm/runs"
 IQM_CREDIT = ROOT / "docs/evidence/iqm/account/credit.json"
@@ -521,7 +523,10 @@ class QuandelaRuns:
     absent = "is not a retained Quandela run"
 
     def __init__(self) -> None:
-        self.directories = qd_platform.run_directories(QD_RUNS)
+        self.directories = sorted(
+            set(qd_platform.run_directories(QD_RUNS))
+            | {receipt.parent for receipt in QD_CASES.rglob("submission.json")}
+        )
         self.catalogue: dict[str, Any] = load_json(QD_CATALOGUE)
 
     def runs(self) -> dict[str, dict[str, Any]]:
