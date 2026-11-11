@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -59,10 +60,32 @@ def validate_record(path: Path, identity: dict[str, Any]) -> dict[str, Any]:
 
 
 def process_group_rss(pgid: int) -> tuple[int, int]:
-    """Resident bytes and process count in Linux process group `pgid`; vanished or unreadable members are skipped."""
+    """Resident bytes and process count in process group `pgid`; vanished or unreadable members are skipped."""
+    proc = Path("/proc")
+    if not proc.is_dir():
+        ps = shutil.which("ps")
+        if ps is None:
+            return 0, 0
+        snapshot = subprocess.run(  # noqa: S603 -- resolved system utility, fixed arguments
+            [ps, "-axo", "pgid=,rss="],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        resident_kib = count = 0
+        for line in snapshot.stdout.splitlines():
+            try:
+                member_pgid, rss_kib = (int(value) for value in line.split())
+            except ValueError, TypeError:
+                continue
+            if member_pgid == pgid:
+                resident_kib += rss_kib
+                count += 1
+        return resident_kib * 1024, count
+
     pages = os.sysconf("SC_PAGE_SIZE")
     resident = count = 0
-    for entry in Path("/proc").iterdir():
+    for entry in proc.iterdir():
         if not entry.name.isdigit():
             continue
         try:
@@ -71,7 +94,7 @@ def process_group_rss(pgid: int) -> tuple[int, int]:
             if int(fields[2]) != pgid:
                 continue
             rss_pages = int((entry / "statm").read_text().split()[1])
-        except (FileNotFoundError, PermissionError, ValueError, IndexError):
+        except FileNotFoundError, PermissionError, ValueError, IndexError:
             continue
         resident += rss_pages * pages
         count += 1

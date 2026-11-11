@@ -71,3 +71,15 @@ def test_nonempty_stale_record_is_not_skipped(tmp_path: Path) -> None:
     output.write_text("{}\n")
     with pytest.raises(ValueError, match="identity mismatch"):
         rank_cell.run_cell(args)
+
+
+def test_process_group_rss_uses_ps_without_proc(monkeypatch: pytest.MonkeyPatch) -> None:
+    class Snapshot:
+        stdout = " 41 100\n 42 200\n 42 300\nmalformed\n"
+
+    original_is_dir = rank_cell.Path.is_dir
+    monkeypatch.setattr(rank_cell.Path, "is_dir", lambda path: False if str(path) == "/proc" else original_is_dir(path))
+    monkeypatch.setattr(rank_cell.shutil, "which", lambda command: "/bin/ps" if command == "ps" else None)
+    monkeypatch.setattr(rank_cell.subprocess, "run", lambda *args, **kwargs: Snapshot())
+
+    assert rank_cell.process_group_rss(42) == (500 * 1024, 2)
