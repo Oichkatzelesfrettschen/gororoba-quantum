@@ -183,6 +183,7 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
             and out["scalars_all_nonzero"]
             and out["t_rank"] == len(v_pivots)
             and out["fit_exact_on_all_samples"]
+            and held
             and agree == len(held)
             and out["mutation_solution_dimension"] == 0
             and len(points) == len(samples) + len(held)
@@ -207,8 +208,10 @@ def build(family: str, prime: int, count: int, held_out: int, max_delta: int, pl
     results = [r for r in parallel.ordered_map(sample, items, min_items=1) if r is not None]
     by_kind = {kind: [r for r in results if r["kind"] == kind] for kind in kinds}
     groups = (*by_kind.items(), *((("all", results),) if len(kinds) > 1 else ()))
+    # Arcs below count are fitted and the rest are held out, by arc index, so a rejected arc never shifts the split.
     jobs = [
-        (rows[: len(rows) * count // total], rows[len(rows) * count // total :], prime, max_delta) for _, rows in groups
+        ([r for r in rows if r["arc"] < count], [r for r in rows if r["arc"] >= count], prime, max_delta)
+        for _, rows in groups
     ]
     cases = dict(zip((name for name, _ in groups), parallel.ordered_map(fit_case, jobs, min_items=2), strict=True))
     return {
@@ -241,6 +244,9 @@ def main() -> None:
     out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(record))
     failed = [name for name, case in record["cases"].items() if case["verdict"] != "degree_2_fit_validated"]
+    if record["arcs_with_limit"] != record["arcs_requested"]:
+        missing = record["arcs_requested"] - record["arcs_with_limit"]
+        raise SystemExit(f"{record['slug']} p={args.prime}: {missing} requested arcs have no validated limit")
     if failed:
         raise SystemExit(f"{record['slug']} p={args.prime}: no validated quadratic fit on {', '.join(failed)}")
 
