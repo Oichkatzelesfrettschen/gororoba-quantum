@@ -11,8 +11,11 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 from playwright.sync_api import sync_playwright
+
+LOCAL_SCHEMES = ("about:", "blob:", "data:")
 
 
 def main() -> int:
@@ -29,6 +32,7 @@ def main() -> int:
     checks: list[str] = []
     errors: list[str] = []
     requests: list[str] = []
+    sockets: list[str] = []
 
     def check(condition: bool, name: str) -> None:
         if not condition:
@@ -38,9 +42,23 @@ def main() -> int:
     with sync_playwright() as p:
         engine = getattr(p, args.engine)
         browser = engine.launch(executable_path=str(args.executable) if args.executable else None, headless=True)
-        page = browser.new_page(viewport={"width": 1440, "height": 1050}, accept_downloads=True)
+        # The context is offline and aborts every routed request before the document loads, so a document that
+        # weakens its own CSP still transmits nothing; attempts are recorded and fail the run afterwards.
+        context = browser.new_context(
+            viewport={"width": 1440, "height": 1050}, accept_downloads=True, offline=True, service_workers="block"
+        )
+
+        def refuse(route: Any) -> None:
+            if route.request.url.startswith(LOCAL_SCHEMES):
+                route.fallback()
+            else:
+                route.abort()
+
+        context.route("**/*", refuse)
+        page = context.new_page()
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.on("request", lambda r: requests.append(r.url))
+        page.on("websocket", lambda w: sockets.append(w.url))
         page.set_content(source.decode(), wait_until="load")
         check(page.evaluate("window.__workbenchReady === true"), "document_ready")
         check(page.locator("#error").is_hidden(), "no_initial_error")
@@ -127,8 +145,9 @@ def main() -> int:
             if width in (390, 1440):
                 page.locator("#plot").scroll_into_view_if_needed()
                 page.screenshot(path=str(args.out / f"viewport-{width}.png"), full_page=False)
-        external = [url for url in requests if url.startswith(("http://", "https://"))]
-        check(not external, "zero_external_network_requests")
+        external = [url for url in requests if not url.startswith(LOCAL_SCHEMES)]
+        check(not external, "zero_network_request_attempts")
+        check(not sockets, "zero_websocket_attempts")
         check(not errors, "zero_uncaught_errors")
         report = {
             "passed": True,
@@ -137,7 +156,8 @@ def main() -> int:
             "html_sha256": hashlib.sha256(source).hexdigest(),
             "checks": checks,
             "document_requests": requests,
-            "external_network_requests": external,
+            "network_request_attempts": external,
+            "websocket_attempts": sockets,
             "page_errors": errors,
             "boundary": "document-content tests; no native file-handler, screenreader, or physical-touch certification",
         }

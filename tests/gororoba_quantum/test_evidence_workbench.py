@@ -34,6 +34,7 @@ def fixture(family: str = "ripple") -> tuple[dict[str, Any], bytes]:
             metadata = {
                 "kind": "rank-sector",
                 "role": "packed",
+                "execution_row": i,
                 "sector": 0,
                 "probe": name,
                 "parameter_exact": "0",
@@ -182,6 +183,32 @@ class WorkbenchTests(unittest.TestCase):
         seal(value)
         with self.assertRaisesRegex(ValueError, "unit-probe factor"):
             ew.validate_acquisition(value)
+
+    def test_rank_identity_required(self) -> None:
+        for field in ("kind", "role", "sector", "probe", "execution_row"):
+            value, _ = fixture("rank-sector")
+            del value["members"]["alpha"]["metadata"][field]
+            seal(value)
+            with self.assertRaises(ValueError, msg=field):
+                ew.validate_acquisition(value)
+        for field, bad in (("role", "other"), ("sector", 8), ("parameter_exact", "1/3")):
+            value, _ = fixture("rank-sector")
+            value["members"]["alpha"]["metadata"][field] = bad
+            seal(value)
+            with self.assertRaises(ValueError, msg=field):
+                ew.validate_acquisition(value)
+
+    def test_wide_mass_rejected(self) -> None:
+        width = 65536
+        with self.assertRaisesRegex(ValueError, "mass exceeds"):
+            ew._probabilities([1.03 / width] * width, width, "wide")
+        ew._probabilities([1.0 / width] * width, width, "wide")
+        rounded = [1 / 32] * 32
+        rounded[0] += 3e-6
+        ew._probabilities(rounded, 32, "retained-scale rounding")
+        rounded[0] += 2e-5
+        with self.assertRaisesRegex(ValueError, "mass exceeds"):
+            ew._probabilities(rounded, 32, "excess")
 
     def test_strict_decode(self) -> None:
         for text in (b'{"a":1,"a":2}', b'{"a":NaN}', b'{"a":Infinity}'):

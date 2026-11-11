@@ -20,11 +20,22 @@ from fractions import Fraction
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from parallel import ordered_map
+
 EXTRACTION_SCHEMA = "measured-static-algebra-extraction-v1"
 SCHEMA = "gororoba-evidence-workbench-v1"
 MAX_BYTES = 64 * 1024 * 1024
 MAX_INTEGER = 2**53 - 1
 MAX_RAW_SHOTS = 2_000_000
+# The extractor rounds preparation probabilities to six decimals, so each entry moves by at most
+# PROBABILITY_ROUNDING. Accumulated rounding is capped at MAX_MASS_ERROR whatever the histogram width: a wider vector
+# whose mass leaves 1 by more than the cap is rejected, never renormalized. The retained records stay within 3e-6.
+# Rank-sector members carry the acquired path parameters t in {0, 1/2, 1, 3/2, 2} and eight sectors; the viewer selects
+# members by role, sector and probe, so each must be present.
+RANK_PARAMETERS = frozenset(Fraction(v) for v in ("0", "1/2", "1", "3/2", "2"))
+RANK_SECTORS = 8
+PROBABILITY_ROUNDING = 0.5e-6
+MAX_MASS_ERROR = 1e-5
 
 
 def require(ok: bool, message: str) -> None:
@@ -105,7 +116,8 @@ def _probabilities(values: Any, width: int, label: str) -> list[float]:
     require(isinstance(values, list) and len(values) == width, f"{label}: wrong histogram width")
     result = [number(value, label) for value in values]
     require(all(0 <= value <= 1 for value in result), f"{label}: value outside probability support")
-    require(abs(math.fsum(result) - 1) <= width * 0.5e-6 + 1e-12, f"{label}: mass exceeds rounding envelope")
+    envelope = min(width * PROBABILITY_ROUNDING, MAX_MASS_ERROR) + 1e-12
+    require(abs(math.fsum(result) - 1) <= envelope, f"{label}: mass exceeds rounding envelope")
     return result
 
 
@@ -181,6 +193,73 @@ def validate_dependence(
     return {"members": names, "joint_counts": joint_counts, "correlation": correlation}
 
 
+def _validate_member(task: tuple[str, Any, str]) -> None:
+    """Check one member's histogram, probability vectors, rank identity and shot blocks."""
+    name, member, family = task
+    require(isinstance(name, str) and 0 < len(name) <= 512 and isinstance(member, dict), "invalid member identity")
+    n = integer(member["shots"], "member shots", 1)
+    counts = member["counts"]
+    require(isinstance(counts, list) and 1 <= len(counts) <= 65536, "invalid histogram width")
+    require(len(counts) & (len(counts) - 1) == 0, "register histogram width is not a power of two")
+    require(sum(integer(c, "histogram count") for c in counts) == n, "histogram mass differs from shots")
+    observed = _probabilities(member["probabilities"], len(counts), "observations")
+    require(
+        all(abs(p - k / n) <= 1e-12 for p, k in zip(observed, counts, strict=True)),
+        "counts and probabilities differ",
+    )
+    _probabilities(member["ideal_probabilities"], len(counts), "ideal")
+    prep = member.get("preparation_model", {})
+    _probabilities(prep.get("probabilities"), len(counts), "preparation")
+    replay = member.get("execution_replay", {})
+    if replay.get("probabilities") is not None:
+        require(replay.get("status") == "calibration_bound", "unqualified replay probabilities")
+        _probabilities(replay["probabilities"], len(counts), "execution replay")
+    require(isinstance(member.get("metadata"), dict), "missing member metadata")
+    metadata = member["metadata"]
+    if family == "rank-sector":
+        for field in (
+            "parameter_exact",
+            "alpha_exact",
+            "unit_probe_norm_factor_exact",
+            "unnormalized_probe_norm_factor_exact",
+            "ideal_success_exact",
+        ):
+            require(isinstance(metadata.get(field), str) and len(metadata[field]) <= 128, "invalid exact norm metadata")
+        require(metadata.get("kind") == family, "invalid rank kind")
+        require(metadata.get("role") in ("packed", "isolated"), "invalid rank role")
+        integer(metadata.get("execution_row"), "execution row")
+        require(integer(metadata.get("sector"), "sector") < RANK_SECTORS, "invalid rank sector")
+        probe = metadata.get("probe")
+        require(isinstance(probe, str) and 0 < len(probe) <= 2048, "invalid rank probe label")
+        parameter = Fraction(metadata["parameter_exact"])
+        require(parameter in RANK_PARAMETERS, "rank parameter outside the acquired path set")
+        alpha = Fraction(2) if parameter <= 1 else parameter * parameter - parameter + 2
+        coordinates = metadata.get("probe_coordinates")
+        require(isinstance(coordinates, list) and len(coordinates) == 4, "invalid rank probe")
+        require(all(type(c) is int and abs(c) <= MAX_INTEGER for c in coordinates), "invalid probe coefficient")
+        norm = sum(c * c for c in coordinates)
+        require(norm > 0, "zero rank probe")
+        require(Fraction(metadata["alpha_exact"]) == alpha, "rank LCU normalization differs")
+        require(Fraction(metadata["unit_probe_norm_factor_exact"]) == alpha * alpha, "unit-probe factor differs")
+        require(
+            Fraction(metadata["unnormalized_probe_norm_factor_exact"]) == alpha * alpha * norm,
+            "unnormalized-probe factor differs",
+        )
+        ideal = Fraction(metadata["ideal_success_exact"])
+        require(0 <= ideal <= 1 and abs(float(ideal) - member["ideal_probabilities"][0]) <= 1e-12, "rank ideal differs")
+    blocks = member.get("shot_order_blocks")
+    require(isinstance(blocks, list) and bool(blocks), "missing shot-order blocks")
+    cursor, zero_count = 0, 0
+    for block in blocks:
+        start = integer(block["start_shot"], "block start")
+        stop = integer(block["stop_shot_exclusive"], "block stop", 1)
+        require(start == cursor and start < stop <= n, "block gap, overlap, or out-of-range stop")
+        require(integer(block["shots"], "block shots", 1) == stop - start, "block denominator differs")
+        zero_count += _count(block["event_zero_probability"], stop - start)
+        cursor = stop
+    require(cursor == n and zero_count == counts[0], "block totals differ from full histogram")
+
+
 def validate_acquisition(value: Any) -> dict[str, Any]:
     require(isinstance(value, dict) and value.get("schema") == EXTRACTION_SCHEMA, "unsupported extraction schema")
     expected = _digest(value.get("payload_sha256"))
@@ -192,67 +271,8 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
     members, pubs = value.get("members"), value.get("pubs")
     require(isinstance(members, dict) and 0 < len(members) <= 6000, "invalid member dictionary")
     require(isinstance(pubs, list) and 0 < len(pubs) <= 4096, "invalid PUB list")
-    for name, member in members.items():
-        require(isinstance(name, str) and 0 < len(name) <= 512 and isinstance(member, dict), "invalid member identity")
-        n = integer(member["shots"], "member shots", 1)
-        counts = member["counts"]
-        require(isinstance(counts, list) and 1 <= len(counts) <= 65536, "invalid histogram width")
-        require(len(counts) & (len(counts) - 1) == 0, "register histogram width is not a power of two")
-        require(sum(integer(c, "histogram count") for c in counts) == n, "histogram mass differs from shots")
-        observed = _probabilities(member["probabilities"], len(counts), "observations")
-        require(
-            all(abs(p - k / n) <= 1e-12 for p, k in zip(observed, counts, strict=True)),
-            "counts and probabilities differ",
-        )
-        _probabilities(member["ideal_probabilities"], len(counts), "ideal")
-        prep = member.get("preparation_model", {})
-        _probabilities(prep.get("probabilities"), len(counts), "preparation")
-        replay = member.get("execution_replay", {})
-        if replay.get("probabilities") is not None:
-            require(replay.get("status") == "calibration_bound", "unqualified replay probabilities")
-            _probabilities(replay["probabilities"], len(counts), "execution replay")
-        require(isinstance(member.get("metadata"), dict), "missing member metadata")
-        metadata = member["metadata"]
-        if value["family"] == "rank-sector":
-            for field in (
-                "parameter_exact",
-                "alpha_exact",
-                "unit_probe_norm_factor_exact",
-                "unnormalized_probe_norm_factor_exact",
-                "ideal_success_exact",
-            ):
-                require(
-                    isinstance(metadata.get(field), str) and len(metadata[field]) <= 128, "invalid exact norm metadata"
-                )
-            parameter = Fraction(metadata["parameter_exact"])
-            require(0 <= parameter <= 2, "rank parameter outside qualified path")
-            alpha = Fraction(2) if parameter <= 1 else parameter * parameter - parameter + 2
-            coordinates = metadata.get("probe_coordinates")
-            require(isinstance(coordinates, list) and len(coordinates) == 4, "invalid rank probe")
-            require(all(type(c) is int and abs(c) <= MAX_INTEGER for c in coordinates), "invalid probe coefficient")
-            norm = sum(c * c for c in coordinates)
-            require(norm > 0, "zero rank probe")
-            require(Fraction(metadata["alpha_exact"]) == alpha, "rank LCU normalization differs")
-            require(Fraction(metadata["unit_probe_norm_factor_exact"]) == alpha * alpha, "unit-probe factor differs")
-            require(
-                Fraction(metadata["unnormalized_probe_norm_factor_exact"]) == alpha * alpha * norm,
-                "unnormalized-probe factor differs",
-            )
-            ideal = Fraction(metadata["ideal_success_exact"])
-            require(
-                0 <= ideal <= 1 and abs(float(ideal) - member["ideal_probabilities"][0]) <= 1e-12, "rank ideal differs"
-            )
-        blocks = member.get("shot_order_blocks")
-        require(isinstance(blocks, list) and bool(blocks), "missing shot-order blocks")
-        cursor, zero_count = 0, 0
-        for block in blocks:
-            start = integer(block["start_shot"], "block start")
-            stop = integer(block["stop_shot_exclusive"], "block stop", 1)
-            require(start == cursor and start < stop <= n, "block gap, overlap, or out-of-range stop")
-            require(integer(block["shots"], "block shots", 1) == stop - start, "block denominator differs")
-            zero_count += _count(block["event_zero_probability"], stop - start)
-            cursor = stop
-        require(cursor == n and zero_count == counts[0], "block totals differ from full histogram")
+    family = value["family"]
+    ordered_map(_validate_member, [(name, member, family) for name, member in members.items()])
     seen: set[tuple[str, str]] = set()
     covered: set[str] = set()
     diagnostics = []
@@ -312,19 +332,19 @@ def _raw_pub(task: tuple[dict[str, Any], dict[str, Any], str]) -> dict[str, Any]
             offset += width
         require(1 << offset == len(member["counts"]), "register width differs from histogram")
         histogram = [0] * (1 << offset)
-        zero_mask, error_mask = 0, 0
+        zero_bits, error_bits = bytearray((n + 7) // 8), bytearray((n + 7) // 8)
         ideal = member["ideal_probabilities"]
         target = ideal.index(1.0) if 1.0 in ideal else None
         for i, value in enumerate(values):
             histogram[value] += 1
             if value == 0:
-                zero_mask |= 1 << i
+                zero_bits[i >> 3] |= 1 << (i & 7)
             if target is not None and value != target:
-                error_mask |= 1 << i
+                error_bits[i >> 3] |= 1 << (i & 7)
         require(histogram == member["counts"], "raw histogram differs")
-        events[name] = zero_mask
+        events[name] = int.from_bytes(zero_bits, "little")
         if target is not None:
-            errors[name] = error_mask
+            errors[name] = int.from_bytes(error_bits, "little")
         for block in member["shot_order_blocks"]:
             start, stop = block["start_shot"], block["stop_shot_exclusive"]
             require(

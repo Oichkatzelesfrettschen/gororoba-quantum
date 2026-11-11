@@ -116,9 +116,14 @@ alternative to small scatterplot or matrix targets.
 SVG carries visible context and structured metadata. PNG retains the visible
 context but is not claimed to preserve SVG metadata. CSV string fields are
 escaped against spreadsheet formula interpretation; numeric negatives remain
-numeric. Saved views bind to the exact bundle identity and cannot relabel a
-foreign dataset as the current one. External scripts, fonts, connections,
-object embedding and form submission are denied by the standalone CSP.
+numeric. A saved view records the digest the page declares for its embedded
+payload, and restoration compares only against that declared digest, which
+sits in the same editable HTML as the payload. A view from another bundle is
+rejected, while an edited payload under an unchanged declared digest is not
+detected in the page. Byte integrity of the page is established by the
+renderer's `--check` against the retained inputs. External scripts, fonts,
+connections, object embedding and form submission are denied by the standalone
+CSP.
 
 ## Validation commands
 
@@ -131,7 +136,9 @@ node tests/visualizations/test_evidence_math.cjs
   --out /tmp/gororoba-evidence-browser-check
 ```
 
-The browser checker supports `--engine chromium`, `firefox`, or `webkit` and
+The browser checker loads the page in an offline context that aborts every
+routed request, and fails when the page attempts any network request or
+WebSocket. It supports `--engine chromium`, `firefox`, or `webkit` and
 an optional `--executable`; an engine is tested only when its actual runtime
 is installed and successfully invoked. A document-content harness is not a
 native `file://` handler, screen-reader, Safari, or physical-touch test.
