@@ -324,8 +324,10 @@ the sign-isomorphism witness. W8 -> N+ and X+ at 32009 and E8-bar -> N+ in degre
 **Results at 32009 hold in characteristic zero.** Two primes agree on every degree computed at both (listed under
 Second prime); agreement at two primes is a stability check, and a characteristic-zero statement needs a modular
 argument with controlled bad primes. Neither bound transfers by itself: rank over F_p is at most the rank over Q(i)
-only for one fixed matrix, the truncated-rank matrices are assembled from normal forms modulo J, and the upper bound
-rests on membership identities checked mod p, so the lower bound also needs J's standard basis to specialize at p.
+only for one fixed matrix, while the truncated rank is the difference
+rank [W_N; P_d] - rank W_N. A common integral ambient model and compatible matrix reduction are required, and the
+lower bound additionally needs rank_Q(i) W_N = rank_F_p W_N; good reduction of J + m^N alone does not control the
+subtracted rank. The upper bound separately rests on exact characteristic-zero membership identities.
 Falsifier: any h_d at 32029
 that differs from 32009; a mismatch alone shows instability, and naming the exceptional prime needs a third.
 

@@ -1,11 +1,13 @@
 """Good reduction of the truncated germ ideal J + m^N of an A_5 fiber pair at the closing order of a degree.
 
-Conjecture (check 3 of the characteristic-0 transfer): the monic reduced standard basis of J + m^N over Q(i) (dp, the
-producer's presolved slice ring, m the ideal of the slice variables) has every coefficient integral at the prime
-(i -> r) of Z[i] over p, and its reduction equals the monic reduced standard basis of J + m^N computed from the retained
-header at (p, r). The truncated rank r_N lives in k[t]/(J + m^N), so with this and check 2 a set of degree-d classes
-independent modulo p stays independent over Q(i). Falsifier: a denominator divisible by p, or a reduced basis that
-differs. Mutation: adding 1 to one coefficient of the Q(i) basis must break the equality.
+Conjecture (the ambient good-reduction part of check 3): the monic reduced standard basis of J + m^N over Q(i)
+(dp, the producer's presolved slice ring, m the ideal of the slice variables) has every coefficient integral at the
+prime (i -> r) of Z[i] over p, and its reduction equals the monic reduced standard basis of J + m^N computed from
+the retained header at (p, r). This does not by itself transfer a truncated-rank lower bound: that rank is
+rank [W_N; P_d] - rank W_N, so the corrected criterion also requires a common integral ambient model, compatible
+matrix reduction and rank_Q(i) W_N = rank_F_p W_N. Falsifier of the conjecture tested here: a denominator divisible
+by p, or a reduced basis that differs. Mutation: adding 1 to one coefficient of the Q(i) basis must break the
+equality.
 
 Writes truncation-<slug>-n<N>.json beside this file. Run from the repository root:
 "$PYTHON" docs/evidence/a5-char0-transfer/truncation_check.py --slug xm-nm --order 8

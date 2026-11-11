@@ -10,9 +10,10 @@ and compares. It also computes the same basis and reduction of G from the retain
 (`../a5-exceptional-fibers/working/build/inputs/p<prime>-r<root>/<slug>.sing`) and requires an identical result
 (`retained_header_equal` in each record).
 
-Why it matters: [a5-char0-and-kernel-limits.md](../../notes/topics/a5-char0-and-kernel-limits.md) states three checks
-under which every h_d certified modulo p holds over Q(i). This is check 1; it makes J over Z[i] localized at p
-specialize to the header's J, which checks 2 (the degree-2 relations q(G) in J + m I^2 over Q(i)) and 3 (good reduction of J + m^N) build on.
+Why it matters: [a5-char0-and-kernel-limits.md](../../notes/topics/a5-char0-and-kernel-limits.md) states the corrected
+checks under which an h_d certified modulo p holds over Q(i). This is check 1; it makes J over Z[i] localized at p
+specialize to the header's J, which check 2 (the degree-2 relations q(G) in J + m I^2 over Q(i)) and the common
+integral model of check 3 build on. It does not compare the ranks of the subspace W_N used by check 3.
 
 Falsifier: a coefficient whose denominator is divisible by p, a presolve that eliminates different variables, or an
 F_p basis of J (or list of G) that differs from the reduction of the Q(i) one. Mutation: adding 1 to one coefficient
@@ -44,15 +45,21 @@ in `fiber_inputs.SPECS`).
 
 Not covered here: E8-bar -> VB (its header comes from the Nakayama route, `fiber_inputs` slug `e8-vb`) and the radicality and decomposition steps of the W8 all-degree proof over Q(i).
 
-## Checks 2 and 3, and the opposite-sign X fibers over Q(i)
+## Check 2, the good-reduction part of check 3, and the opposite-sign X fibers over Q(i)
 
-- [`truncation_check.py`](truncation_check.py) (check 3): the monic reduced standard basis of J + m^N over Q(i), m the
+- [`truncation_check.py`](truncation_check.py) (the ambient good-reduction part of check 3): the monic reduced standard basis of J + m^N over Q(i), m the
   ideal of the seven slice variables (the producer's ring still carries the presolve-eliminated t3 and t8), against the
   same basis from the retained header at both primes. X- -> N- survives at N = 4, 8, 11, 15 and 18, the closing orders of
   degrees 1 to 5 (N = 22, degree 6, stopped at the 3-hour cap without a result): 91, 366, 775, 1,696 and 2,743 elements, integer coefficients, equal at both primes, a corrupted coefficient
   detected (`truncation-xm-nm-n<N>.json`; ledger A5-249). A first revision took m from the producer ring and read
   refuted on a basis of 2,566 elements against 366; its records were overwritten by the fixed run.
-  W8 -> N- survives at N = 4, 7, 10 and 13 (d = 1 to 4): 183, 1,257, 5,009 and 14,761 elements (ledger A5-277).
+  W8 -> N- survives at N = 4, 7, 10, 13 and 16 (d = 1 to 5): 183, 1,257, 5,009, 14,761 and 35,858 elements
+  (ledger A5-277). These are good-reduction results only. If P_d is the degree-d product matrix and W_N is the image
+  of m I^d in the truncation, the computed rank is rank [W_N; P_d] - rank W_N. Ambient good reduction does not
+  compare this difference across characteristics. The corrected lower-bound criterion additionally requires a
+  common integral ambient model, compatible matrix reduction in the retained coordinate order, and
+  rank_Q(i) W_N = rank_F_p W_N. Neither A5-249 nor A5-277 computes that equality, so neither supplies a
+  characteristic-zero lower bound by itself.
 - [`quadric_lift.py`](quadric_lift.py) (check 2): the degree-2 relations {q : q(G) in J + m I^2} over Q(i) by the
   computation of the modular degree-2 receipts (`working/distribute/out/*/d2/d2-products.sing`), compared with the
   retained K2 at both primes (ledger A5-248). The run finished on a 4-core Kaggle CPU kernel in 30,481 s at 1.98 GiB peak
@@ -127,6 +134,14 @@ both reductions equal, mutation detected) with stages at 3 s (J), 573 s (relatio
 2,174 s (syzygies of the coefficient matrix,
 [log](quadrics-iso-nm-modular.singular.log)). The syzygy step, a nullspace over Q(i) that Singular computes as a
 module standard basis, takes 73 percent of that run and is the next step to move to exact linear algebra.
+
+A modular reconstruction becomes an exact certificate only after the missing reverse membership is verified. One
+sufficient record checks both ideal inclusions for the entire reconstructed standard basis. Another retains, for
+enough independent reconstructed quadrics q, exact cofactor identities
+q(G) = sum_j a_j J_j + sum_(ell,u,v) b_(ell,u,v) x_ell G_u G_v over Q(i). The record must keep the q coefficients,
+coordinate and generator order, field and root convention, header and input hashes, and the membership witnesses.
+Agreement after reduction at the retained primes and `final_Test` alone does not replace these identities for the
+global inhomogeneous inputs used here.
 
 The direct and the modular Iso -> N- records hold the same Q(i) relation space. The modular ideal contains the
 relation ideal (the final test), so its relation space contains the one of the direct run; both have dimension 68,
