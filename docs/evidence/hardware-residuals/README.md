@@ -30,3 +30,25 @@ header time). `ibm/a1_line_scan.py`,
 original run (`ibm/REPORT.md`, "Scope").
 
 Both directories hold a module named `common.py`, so mypy runs once per directory.
+
+## Admission contract for another acquisition
+
+The retained reports select leads; they do not authorize another provider run or turn a lead into a claim. Before an
+acquisition is proposed, its written case names one claim, the contrast that can refute it, the independent unit, the
+null that preserves the dependence already observed, and the decision threshold including every planned comparison.
+An acquisition that cannot separate the alternatives below remains exploratory.
+
+| Lead | Claim a prospective run could identify | Required discriminating design and decision |
+|---|---|---|
+| IBM 60 Hz returned-array line | A wall-clock disturbance near 60 Hz modulates the measured channel, rather than a fixed position in the submitted or returned shot list. | Freeze the band at 59.85 to 60.15 Hz before acquisition. Interleave at least two independently justified shot-slot periods while holding the circuit family fixed. A wall-clock effect keeps frequency in the frozen band and changes cycles per shot; a list-position effect keeps cycles per shot and moves in Hz. Calibrate the band with a shared moving-block or phase-preserving surrogate applied to every column of a job, and take jobs or independently scheduled acquisition blocks, not columns, as inferential units. |
+| IBM 29.70 Hz returned-array line | A recurring wall-clock disturbance near 29.70 Hz is present outside the design in which the band was found. | Freeze the band at 29.55 to 29.85 Hz and the same slot-period intervention before collection. The primary endpoint is the preregistered band statistic in new designs; no recentering on the new maximum is allowed. Use the same dependence-preserving job-level null and correction family as the 60 Hz test. |
+| Tuna-17 line or drift lead | The feature repeats across acquisition series rather than across dependent jobs or qubits of one series. | Freeze the band and statistic from the retained lead. Randomize or interleave the planned settings within each new series, use acquisition series as the independent unit, and preserve within-job shot and cross-qubit dependence in the null. A job-level or qubit-level p-value alone cannot admit the claim. |
+| Belenos or Ascella efficiency residual | One named mechanism--uniform loss, detector imbalance, programmed-mesh offset, or mitigation--changes the result. | Run an interleaved factorial comparison with photon number, a balanced logical-output permutation, programmed mesh (target plus signed offset or inverse control), and mitigation (none versus the named method) fixed before collection. Record total detected-photon yield separately from the conditional output distribution. Uniform loss changes yield without a detector- or logical-mode pattern; detector imbalance follows the physical detector under logical permutations; a mesh offset follows the programmed logical transformation and reverses under the signed mesh control; mitigation is identified only by its randomized within-mesh contrast and interaction terms. A design missing one of these controls reports an exploratory association only. |
+
+Frequency in hertz additionally requires an ordering bridge. The retained IBM records supply equal shots per PUB, one
+executor chunk per job, chunk start and stop times, and a slot-duration model that reproduces aggregate execution
+time, but IBM does not guarantee returned shot order and the records contain no per-shot timestamps. Those facts
+establish frequency only conditional on consecutive returned rows being consecutive physical shots with the modeled
+slot. A prospective physical-frequency claim therefore also requires provider documentation or retained timestamps
+that establish this correspondence. Without that bridge, even a successful slot-period intervention is reported as a
+periodicity of the returned array, not as a physical wall-clock frequency.
