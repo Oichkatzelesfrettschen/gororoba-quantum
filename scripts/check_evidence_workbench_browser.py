@@ -71,8 +71,12 @@ def main() -> int:
             after = page.evaluate("EvidenceWorkbench.state.index")
             check(after != before, "keyboard_record_selection")
             page.click("#nextDelay")
-            check(page.evaluate("EvidenceWorkbench.ramseyRows().every(p => String(p.t) === EvidenceWorkbench.state.delay)"),
-                  "acquired_setting_filter")
+            check(
+                page.evaluate(
+                    "EvidenceWorkbench.ramseyRows().every(p => String(p.t) === EvidenceWorkbench.state.delay)"
+                ),
+                "acquired_setting_filter",
+            )
             page.emulate_media(reduced_motion="reduce")
             page.click("#play")
             check("Reduced motion" in page.locator("#status").inner_text(), "reduced_motion_prevents_playback")
@@ -126,10 +130,17 @@ def main() -> int:
         external = [url for url in requests if url.startswith(("http://", "https://"))]
         check(not external, "zero_external_network_requests")
         check(not errors, "zero_uncaught_errors")
-        report = {"passed": True, "engine": args.engine, "browser_version": browser.version,
-                  "html_sha256": hashlib.sha256(source).hexdigest(), "checks": checks,
-                  "document_requests": requests, "external_network_requests": external, "page_errors": errors,
-                  "boundary": "document-content tests; no native file-handler, screenreader, or physical-touch certification"}
+        report = {
+            "passed": True,
+            "engine": args.engine,
+            "browser_version": browser.version,
+            "html_sha256": hashlib.sha256(source).hexdigest(),
+            "checks": checks,
+            "document_requests": requests,
+            "external_network_requests": external,
+            "page_errors": errors,
+            "boundary": "document-content tests; no native file-handler, screenreader, or physical-touch certification",
+        }
         (args.out / "report.json").write_text(json.dumps(report, indent=2) + "\n")
         browser.close()
     print(json.dumps({"passed": True, "checks": len(checks), "report": str(args.out / "report.json")}))

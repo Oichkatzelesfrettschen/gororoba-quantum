@@ -12,6 +12,7 @@ import json
 import math
 import platform
 import subprocess
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -30,6 +31,13 @@ def log_likelihood(zeros: int, shots: int, expectation: float) -> float:
     return positive + negative
 
 
+def boundary_objective(angle: float, *, counts: tuple[int, int, int, int]) -> float:
+    kx, nx, ky, ny = counts
+    sx = math.copysign(1, 2 * kx / nx - 1)
+    sy = math.copysign(1, 2 * ky / ny - 1)
+    return -(log_likelihood(kx, nx, sx * math.cos(angle)) + log_likelihood(ky, ny, sy * math.sin(angle)))
+
+
 def check(math_source: Path) -> dict[str, Any]:
     cases = []
     for nx, ny in ((16, 16), (128, 8), (1024, 1024), (7, 193)):
@@ -40,9 +48,7 @@ def check(math_source: Path) -> dict[str, Any]:
         f"const M=require({json.dumps(str(math_source.resolve()))});"
         f"console.log(JSON.stringify({json.dumps(cases)}.map(c=>M.constrainedXY(...c))));"
     )
-    completed = subprocess.run(
-        ["node", "-e", code], check=True, capture_output=True, text=True, timeout=30
-    )
+    completed = subprocess.run(["node", "-e", code], check=True, capture_output=True, text=True, timeout=30)
     values = json.loads(completed.stdout)
     if len(values) != len(cases):
         raise ValueError("estimator result coverage differs")
@@ -58,13 +64,7 @@ def check(math_source: Path) -> dict[str, Any]:
                 raise ValueError("interior raw estimate moved")
             continue
         outside += 1
-        sx, sy = math.copysign(1, rx), math.copysign(1, ry)
-
-        def objective(angle: float) -> float:
-            return -(
-                log_likelihood(kx, nx, sx * math.cos(angle))
-                + log_likelihood(ky, ny, sy * math.sin(angle))
-            )
+        objective = partial(boundary_objective, counts=(kx, nx, ky, ny))
 
         optimum = minimize_scalar(
             objective,

@@ -15,7 +15,7 @@ import math
 import os
 import re
 import tempfile
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Sequence
 from fractions import Fraction
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -86,7 +86,10 @@ def read_bytes(path: Path) -> bytes:
 def source_path(root: Path, relative: str) -> Path:
     require(isinstance(relative, str) and "\\" not in relative, "invalid source path")
     part = PurePosixPath(relative)
-    require(not part.is_absolute() and bool(part.parts) and all(p not in (".", "..") for p in part.parts), "unsafe source path")
+    require(
+        not part.is_absolute() and bool(part.parts) and all(p not in (".", "..") for p in part.parts),
+        "unsafe source path",
+    )
     base = root.resolve(strict=True)
     path = base.joinpath(*part.parts).resolve(strict=True)
     require(path.is_relative_to(base) and path.is_file(), "source escapes its retained root")
@@ -135,7 +138,7 @@ def positive_semidefinite(matrix: list[list[int]]) -> bool:
 def validate_dependence(
     group: dict[str, Any], pub: dict[str, Any], members: dict[str, Any], event: str
 ) -> dict[str, Any]:
-    names = group.get("members")
+    names = group["members"]
     require(isinstance(names, list) and len(names) <= 128 and len(set(names)) == len(names), "invalid moment members")
     n = integer(pub["shots"], "PUB shots", 1)
     means: list[int] = []
@@ -150,7 +153,7 @@ def validate_dependence(
             certain = [i for i, p in enumerate(member["ideal_probabilities"]) if p == 1.0]
             require(len(certain) == 1, "error event requires a deterministic ideal outcome")
             means.append(n - member["counts"][certain[0]])
-    joint, covariance = group.get("joint_probabilities"), group.get("covariance")
+    joint, covariance = group["joint_probabilities"], group["covariance"]
     size = len(names)
     for value in (joint, covariance):
         require(isinstance(value, list) and len(value) == size, "invalid moment matrix size")
@@ -181,7 +184,9 @@ def validate_dependence(
 def validate_acquisition(value: Any) -> dict[str, Any]:
     require(isinstance(value, dict) and value.get("schema") == EXTRACTION_SCHEMA, "unsupported extraction schema")
     expected = _digest(value.get("payload_sha256"))
-    require(sha256(canonical({k: v for k, v in value.items() if k != "payload_sha256"})) == expected, "payload hash differs")
+    require(
+        sha256(canonical({k: v for k, v in value.items() if k != "payload_sha256"})) == expected, "payload hash differs"
+    )
     require(value.get("evidence_kind") in ("collected_hardware", "synthetic_fixture"), "unsupported evidence kind")
     require(value.get("family") in ("ripple", "rank-sector"), "unsupported acquisition family")
     members, pubs = value.get("members"), value.get("pubs")
@@ -195,7 +200,10 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
         require(len(counts) & (len(counts) - 1) == 0, "register histogram width is not a power of two")
         require(sum(integer(c, "histogram count") for c in counts) == n, "histogram mass differs from shots")
         observed = _probabilities(member["probabilities"], len(counts), "observations")
-        require(all(abs(p - k / n) <= 1e-12 for p, k in zip(observed, counts, strict=True)), "counts and probabilities differ")
+        require(
+            all(abs(p - k / n) <= 1e-12 for p, k in zip(observed, counts, strict=True)),
+            "counts and probabilities differ",
+        )
         _probabilities(member["ideal_probabilities"], len(counts), "ideal")
         prep = member.get("preparation_model", {})
         _probabilities(prep.get("probabilities"), len(counts), "preparation")
@@ -207,10 +215,15 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
         metadata = member["metadata"]
         if value["family"] == "rank-sector":
             for field in (
-                "parameter_exact", "alpha_exact", "unit_probe_norm_factor_exact",
-                "unnormalized_probe_norm_factor_exact", "ideal_success_exact",
+                "parameter_exact",
+                "alpha_exact",
+                "unit_probe_norm_factor_exact",
+                "unnormalized_probe_norm_factor_exact",
+                "ideal_success_exact",
             ):
-                require(isinstance(metadata.get(field), str) and len(metadata[field]) <= 128, "invalid exact norm metadata")
+                require(
+                    isinstance(metadata.get(field), str) and len(metadata[field]) <= 128, "invalid exact norm metadata"
+                )
             parameter = Fraction(metadata["parameter_exact"])
             require(0 <= parameter <= 2, "rank parameter outside qualified path")
             alpha = Fraction(2) if parameter <= 1 else parameter * parameter - parameter + 2
@@ -226,9 +239,11 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
                 "unnormalized-probe factor differs",
             )
             ideal = Fraction(metadata["ideal_success_exact"])
-            require(0 <= ideal <= 1 and abs(float(ideal) - member["ideal_probabilities"][0]) <= 1e-12, "rank ideal differs")
+            require(
+                0 <= ideal <= 1 and abs(float(ideal) - member["ideal_probabilities"][0]) <= 1e-12, "rank ideal differs"
+            )
         blocks = member.get("shot_order_blocks")
-        require(isinstance(blocks, list) and blocks, "missing shot-order blocks")
+        require(isinstance(blocks, list) and bool(blocks), "missing shot-order blocks")
         cursor, zero_count = 0, 0
         for block in blocks:
             start = integer(block["start_shot"], "block start")
@@ -256,7 +271,7 @@ def validate_acquisition(value: Any) -> dict[str, Any]:
         diagnostics.append({"job_id": key[0], "pub": key[1], "event_zero": event, "deterministic_error": errors})
     require(covered == set(members), "orphaned acquisition member")
     for relative, expected in value.get("source_files", {}).items():
-        require(isinstance(relative, str) and relative, "invalid source identity")
+        require(isinstance(relative, str) and bool(relative), "invalid source identity")
         _digest(expected)
     return {"payload": value, "dependence": diagnostics, "verification": "payload_digest_and_internal_consistency"}
 
@@ -279,7 +294,10 @@ def _raw_pub(task: tuple[dict[str, Any], dict[str, Any], str]) -> dict[str, Any]
         require(member["pub_index"] == index, "member PUB index differs")
         values, offset = [0] * n, 0
         registers = member["registers"]
-        require(isinstance(registers, list) and registers and len(set(registers)) == len(registers), "invalid register list")
+        require(
+            isinstance(registers, list) and bool(registers) and len(set(registers)) == len(registers),
+            "invalid register list",
+        )
         for register_name in registers:
             register = raw["registers"][register_name]
             width = integer(register["num_bits"], "register width", 1)
@@ -287,7 +305,9 @@ def _raw_pub(task: tuple[dict[str, Any], dict[str, Any], str]) -> dict[str, Any]
             bits = register["bitstrings"]
             require(isinstance(bits, list) and len(bits) == n, "raw vector length differs")
             for i, text in enumerate(bits):
-                require(isinstance(text, str) and re.fullmatch(rf"[01]{{{width}}}", text) is not None, "invalid bitstring")
+                require(
+                    isinstance(text, str) and re.fullmatch(rf"[01]{{{width}}}", text) is not None, "invalid bitstring"
+                )
                 values[i] |= int(text, 2) << offset
             offset += width
         require(1 << offset == len(member["counts"]), "register width differs from histogram")
@@ -307,7 +327,10 @@ def _raw_pub(task: tuple[dict[str, Any], dict[str, Any], str]) -> dict[str, Any]
             errors[name] = error_mask
         for block in member["shot_order_blocks"]:
             start, stop = block["start_shot"], block["stop_shot_exclusive"]
-            require(values[start:stop].count(0) == _count(block["event_zero_probability"], stop - start), "raw block differs")
+            require(
+                values[start:stop].count(0) == _count(block["event_zero_probability"], stop - start),
+                "raw block differs",
+            )
     for event, masks in (("event_zero", events), ("deterministic_error", errors)):
         group = pub[event]
         for i, left in enumerate(group["members"]):
@@ -326,9 +349,11 @@ def verify_sources(
 ) -> dict[str, Any]:
     payload = checked["payload"]
     bindings = payload.get("source_files")
-    require(isinstance(bindings, dict) and bindings, "no bound source files")
+    require(isinstance(bindings, dict) and bool(bindings), "no bound source files")
     for relative, expected in bindings.items():
-        require(sha256(read_bytes(source_path(root, relative))) == _digest(expected), f"source hash differs: {relative}")
+        require(
+            sha256(read_bytes(source_path(root, relative))) == _digest(expected), f"source hash differs: {relative}"
+        )
     tasks = []
     for pub in payload["pubs"]:
         members = {
@@ -348,17 +373,22 @@ def verify_sources(
         "verification": "source_files_and_raw_statistics",
         "source_files_checked": len(bindings),
         "raw_replays": replays,
-        "boundary": "QPY bytes are hash-checked when bound; circuit semantics, approval and physical shot chronology are not re-adjudicated.",
+        "boundary": (
+            "QPY bytes are hash-checked when bound; circuit semantics, approval and physical shot chronology "
+            "are not re-adjudicated."
+        ),
     }
 
 
-def bloch_region(x: list[float], y: list[float]) -> dict[str, Any]:
+def bloch_region(x: Sequence[float], y: Sequence[float]) -> dict[str, Any]:
     """Project a rectangular X/Y set intersected with the physical Bloch ball."""
     for interval in (x, y):
         require(len(interval) == 2 and all(math.isfinite(v) for v in interval), "invalid coordinate interval")
         require(-1 <= interval[0] <= interval[1] <= 1, "coordinate interval outside expectation support")
-    def nearest(interval: list[float]) -> float:
+
+    def nearest(interval: Sequence[float]) -> float:
         return max(interval[0], min(0.0, interval[1]))
+
     rmin = math.hypot(nearest(x), nearest(y))
     if rmin > 1:
         return {"empty": True, "z": None, "minimum_transverse_radius": rmin}
@@ -386,18 +416,33 @@ def load_ramsey(contents: bytes) -> dict[str, Any]:
             require(0 <= k <= n, "count outside support")
         x, y = 2 * kx / nx - 1, 2 * ky / ny - 1
         for value, field in (
-            (x, "x_exp"), (y, "y_exp"),
+            (x, "x_exp"),
+            (y, "y_exp"),
             (math.hypot(x, y), "observed_radius"),
             (math.atan2(y, x), "observed_principal_phase_rad"),
         ):
             require(abs(value - float(row[field])) <= 1e-12, "Ramsey count-coordinate mismatch")
         hx, hy = (math.sqrt(2 * math.log(2 * family_size / 0.05) / n) for n in (nx, ny))
         bx, by = [max(-1, x - hx), min(1, x + hx)], [max(-1, y - hy), min(1, y + hy)]
-        out.append({
-            "condition": key[0], "qubit": q, "t": t, "kx": kx, "nx": nx, "ky": ky, "ny": ny,
-            "x": x, "y": y, "r": math.hypot(x, y), "phi": math.atan2(y, x), "z": None,
-            "simultaneous_x": bx, "simultaneous_y": by, "compatible_region": bloch_region(bx, by),
-        })
+        out.append(
+            {
+                "condition": key[0],
+                "qubit": q,
+                "t": t,
+                "kx": kx,
+                "nx": nx,
+                "ky": ky,
+                "ny": ny,
+                "x": x,
+                "y": y,
+                "r": math.hypot(x, y),
+                "phi": math.atan2(y, x),
+                "z": None,
+                "simultaneous_x": bx,
+                "simultaneous_y": by,
+                "compatible_region": bloch_region(bx, by),
+            }
+        )
     return {"rows": out, "coordinate_family_size": family_size, "alpha": 0.05, "source_sha256": sha256(contents)}
 
 
@@ -421,8 +466,11 @@ def load_ascella(value: Any, label: str) -> dict[str, Any]:
     kind = value.get("evidence_kind", "retained_analysis")
     require(kind in ("synthetic_fixture", "retained_analysis"), "unsupported optical evidence marker")
     return {
-        "label": label, "prediction_fields": sorted(predictions), "payload": value,
-        "evidence_kind": kind, "scope": "retained_frozen_predictions_no_refit",
+        "label": label,
+        "prediction_fields": sorted(predictions),
+        "payload": value,
+        "evidence_kind": kind,
+        "scope": "retained_frozen_predictions_no_refit",
     }
 
 
@@ -430,7 +478,10 @@ def write_new(output: Path, contents: bytes, protected: list[Path]) -> None:
     destination = output.resolve()
     for source in protected:
         path = source.resolve()
-        require(destination != path and not (source.is_dir() and destination.is_relative_to(path)), "output aliases protected input")
+        require(
+            destination != path and not (source.is_dir() and destination.is_relative_to(path)),
+            "output aliases protected input",
+        )
         if output.exists() and source.is_file():
             require(not output.samefile(source), "hard-link output alias")
     require(not output.exists() and not output.is_symlink(), "output already exists; choose a successor path")

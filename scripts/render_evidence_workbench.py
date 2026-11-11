@@ -22,12 +22,15 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import evidence_workbench as evidence  # noqa: E402
 
 ASSETS = ROOT / "gororoba_quantum" / "visualizations" / "evidence_workbench"
+INPUT_ERRORS = (ValueError, TypeError, KeyError, IndexError, OSError, ArithmeticError)
 
 
 def build_bundle(args: argparse.Namespace) -> tuple[dict[str, Any], list[Path]]:
     paths = list(args.acquisition) + list(args.optical) + ([args.ramsey] if args.ramsey else [])
     evidence.require(bool(paths), "at least one input is required")
-    evidence.require(not args.run_root or len(args.run_root) == len(args.acquisition), "provide one run root per acquisition")
+    evidence.require(
+        not args.run_root or len(args.run_root) == len(args.acquisition), "provide one run root per acquisition"
+    )
     bundle: dict[str, Any] = {
         "schema": evidence.SCHEMA,
         "revision": args.revision,
@@ -45,7 +48,9 @@ def build_bundle(args: argparse.Namespace) -> tuple[dict[str, Any], list[Path]]:
 
     def read(path: Path, kind: str) -> bytes:
         contents = evidence.read_bytes(path)
-        bundle["sources"].append({"name": path.name, "kind": kind, "sha256": evidence.sha256(contents), "bytes": len(contents)})
+        bundle["sources"].append(
+            {"name": path.name, "kind": kind, "sha256": evidence.sha256(contents), "bytes": len(contents)}
+        )
         return contents
 
     if args.ramsey:
@@ -68,9 +73,15 @@ def render(bundle: dict[str, Any]) -> bytes:
     serialized = payload.decode().replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
     math_js = (ASSETS / "math.js").read_text(encoding="utf-8")
     app_js = (ASSETS / "app.js").read_text(encoding="utf-8")
-    hashes = " ".join("'sha256-" + base64.b64encode(hashlib.sha256(code.encode()).digest()).decode() + "'" for code in (math_js, app_js))
+    hashes = " ".join(
+        "'sha256-" + base64.b64encode(hashlib.sha256(code.encode()).digest()).decode() + "'"
+        for code in (math_js, app_js)
+    )
     rows = (bundle.get("ramsey") or {}).get("rows", [])
-    static = "<table><caption>Embedded Ramsey count records</caption><tr><th>Condition</th><th>Qubit</th><th>Delay (us)</th><th>X zeros / shots</th><th>Y zeros / shots</th></tr>"
+    static = (
+        "<table><caption>Embedded Ramsey count records</caption><tr><th>Condition</th><th>Qubit</th>"
+        "<th>Delay (us)</th><th>X zeros / shots</th><th>Y zeros / shots</th></tr>"
+    )
     for row in rows:
         values = [row["condition"], row["qubit"], row["t"], f"{row['kx']}/{row['nx']}", f"{row['ky']}/{row['ny']}"]
         static += "<tr>" + "".join("<td>" + html.escape(str(v)) + "</td>" for v in values) + "</tr>"
@@ -95,9 +106,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ramsey", type=Path)
     parser.add_argument("--acquisition", action="append", type=Path, default=[])
-    parser.add_argument("--run-root", action="append", type=Path, default=[], help="Verify source hashes and replay raw statistics, in acquisition order")
+    parser.add_argument(
+        "--run-root",
+        action="append",
+        type=Path,
+        default=[],
+        help="Verify source hashes and replay raw statistics, in acquisition order",
+    )
     parser.add_argument("--optical", action="append", type=Path, default=[])
-    parser.add_argument("--revision", default="unavailable", help="Source checkout commit; unavailable is retained rather than guessed")
+    parser.add_argument(
+        "--revision", default="unavailable", help="Source checkout commit; unavailable is retained rather than guessed"
+    )
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--check", action="store_true", help="Compare existing HTML without writing")
     args = parser.parse_args()
@@ -108,9 +127,21 @@ def main() -> int:
             evidence.require(evidence.read_bytes(args.out) == result, "rendered output differs")
         else:
             evidence.write_new(args.out, result, protected)
-        print(json.dumps({"schema": evidence.SCHEMA, "html_sha256": evidence.sha256(result), "sources": bundle["sources"], "acquisitions": len(bundle["acquisitions"]), "optical_cohorts": len(bundle["optical"]), "check_only": args.check}, indent=2))
+        print(
+            json.dumps(
+                {
+                    "schema": evidence.SCHEMA,
+                    "html_sha256": evidence.sha256(result),
+                    "sources": bundle["sources"],
+                    "acquisitions": len(bundle["acquisitions"]),
+                    "optical_cohorts": len(bundle["optical"]),
+                    "check_only": args.check,
+                },
+                indent=2,
+            )
+        )
         return 0
-    except (ValueError, TypeError, KeyError, IndexError, OSError, ArithmeticError) as error:
+    except INPUT_ERRORS as error:
         print(f"evidence workbench: {error}", file=sys.stderr)
         return 1
 

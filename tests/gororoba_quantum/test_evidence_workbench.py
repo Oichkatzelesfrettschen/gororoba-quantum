@@ -32,39 +32,82 @@ def fixture(family: str = "ripple") -> tuple[dict[str, Any], bytes]:
         metadata: dict[str, Any] = {"kind": "atlas", "role": "atlas", "kite": 1, "edge_index": i}
         if family == "rank-sector":
             metadata = {
-                "kind": "rank-sector", "role": "packed", "sector": 0, "probe": name,
-                "parameter_exact": "0", "alpha_exact": "2", "unit_probe_norm_factor_exact": "4",
-                "unnormalized_probe_norm_factor_exact": "8", "ideal_success_exact": "1",
+                "kind": "rank-sector",
+                "role": "packed",
+                "sector": 0,
+                "probe": name,
+                "parameter_exact": "0",
+                "alpha_exact": "2",
+                "unit_probe_norm_factor_exact": "4",
+                "unnormalized_probe_norm_factor_exact": "8",
+                "ideal_success_exact": "1",
                 "probe_coordinates": [1, 1, 0, 0],
             }
         members[name] = {
-            "job_id": "synthetic-job", "pub": "synthetic-pub", "pub_index": 0, "shots": 8,
-            "registers": [name], "physical_qubits": [i], "counts": [sequence.count(0), sequence.count(1)],
-            "probabilities": [p, 1-p], "ideal_probabilities": [1.0, 0.0], "metadata": metadata,
-            "preparation_model": {"probabilities": [.9, .1], "calibration": "synthetic"},
-            "execution_replay": {"status": "calibration_bound", "probabilities": [.8, .2]},
+            "job_id": "synthetic-job",
+            "pub": "synthetic-pub",
+            "pub_index": 0,
+            "shots": 8,
+            "registers": [name],
+            "physical_qubits": [i],
+            "counts": [sequence.count(0), sequence.count(1)],
+            "probabilities": [p, 1 - p],
+            "ideal_probabilities": [1.0, 0.0],
+            "metadata": metadata,
+            "preparation_model": {"probabilities": [0.9, 0.1], "calibration": "synthetic"},
+            "execution_replay": {"status": "calibration_bound", "probabilities": [0.8, 0.2]},
             "shot_order_blocks": [
-                {"start_shot": start, "stop_shot_exclusive": start+4, "shots": 4,
-                 "event_zero_probability": sequence[start:start+4].count(0)/4}
+                {
+                    "start_shot": start,
+                    "stop_shot_exclusive": start + 4,
+                    "shots": 4,
+                    "event_zero_probability": sequence[start : start + 4].count(0) / 4,
+                }
                 for start in (0, 4)
             ],
         }
+
     def moments(error: bool) -> dict[str, Any]:
         sequences = [[int(v != 0) if error else int(v == 0) for v in sequence] for sequence in values.values()]
-        means = [sum(s)/8 for s in sequences]
-        joint = [[sum(a*b for a,b in zip(left, right, strict=True))/8 for right in sequences] for left in sequences]
-        return {"members": list(values), "joint_probabilities": joint,
-                "covariance": [[joint[i][j]-means[i]*means[j] for j in range(3)] for i in range(3)]}
-    raw = ew.canonical({"pub_name": "synthetic-pub", "pub_index": 0,
-                        "registers": {name: {"num_bits": 1, "num_shots": 8, "bitstrings": list(map(str, sequence))}
-                                      for name, sequence in values.items()}})
+        means = [sum(s) / 8 for s in sequences]
+        joint = [
+            [sum(a * b for a, b in zip(left, right, strict=True)) / 8 for right in sequences] for left in sequences
+        ]
+        return {
+            "members": list(values),
+            "joint_probabilities": joint,
+            "covariance": [[joint[i][j] - means[i] * means[j] for j in range(3)] for i in range(3)],
+        }
+
+    raw = ew.canonical(
+        {
+            "pub_name": "synthetic-pub",
+            "pub_index": 0,
+            "registers": {
+                name: {"num_bits": 1, "num_shots": 8, "bitstrings": list(map(str, sequence))}
+                for name, sequence in values.items()
+            },
+        }
+    )
     relative = "raw/synthetic-job/pub_00.json"
     value = {
-        "schema": ew.EXTRACTION_SCHEMA, "family": family, "evidence_kind": "synthetic_fixture",
-        "source_commit": "synthetic", "experiment_digest": "0"*64,
-        "source_files": {relative: ew.sha256(raw)}, "members": members,
-        "pubs": [{"job_id": "synthetic-job", "name": "synthetic-pub", "shots": 8,
-                  "raw_sha256": ew.sha256(raw), "event_zero": moments(False), "deterministic_error": moments(True)}],
+        "schema": ew.EXTRACTION_SCHEMA,
+        "family": family,
+        "evidence_kind": "synthetic_fixture",
+        "source_commit": "synthetic",
+        "experiment_digest": "0" * 64,
+        "source_files": {relative: ew.sha256(raw)},
+        "members": members,
+        "pubs": [
+            {
+                "job_id": "synthetic-job",
+                "name": "synthetic-pub",
+                "shots": 8,
+                "raw_sha256": ew.sha256(raw),
+                "event_zero": moments(False),
+                "deterministic_error": moments(True),
+            }
+        ],
         "endpoint_analysis": {"withheld": "synthetic behavioral fixture"},
     }
     return seal(value), raw
@@ -102,10 +145,14 @@ class WorkbenchTests(unittest.TestCase):
         self.reject(lambda v: v["members"]["alpha"]["shot_order_blocks"][1].update(start_shot=5), "block gap")
 
     def test_blocks_integer(self) -> None:
-        self.reject(lambda v: v["members"]["alpha"]["shot_order_blocks"][0].update(event_zero_probability=.3), "integer count")
+        self.reject(
+            lambda v: v["members"]["alpha"]["shot_order_blocks"][0].update(event_zero_probability=0.3), "integer count"
+        )
 
     def test_blocks_totals(self) -> None:
-        self.reject(lambda v: v["members"]["alpha"]["shot_order_blocks"][0].update(event_zero_probability=.25), "block totals")
+        self.reject(
+            lambda v: v["members"]["alpha"]["shot_order_blocks"][0].update(event_zero_probability=0.25), "block totals"
+        )
 
     def test_cross_pub_pairing(self) -> None:
         self.reject(lambda v: v["members"]["alpha"].update(pub="another-pub"), "cross-PUB")
@@ -114,15 +161,19 @@ class WorkbenchTests(unittest.TestCase):
         self.reject(lambda v: v["pubs"][0]["event_zero"]["covariance"][0].__setitem__(1, 0), "covariance identity")
 
     def test_noninteger_joint(self) -> None:
-        self.reject(lambda v: v["pubs"][0]["event_zero"]["joint_probabilities"][0].__setitem__(1, .01), "integer count")
+        self.reject(
+            lambda v: v["pubs"][0]["event_zero"]["joint_probabilities"][0].__setitem__(1, 0.01), "integer count"
+        )
 
     def test_unqualified_replay(self) -> None:
-        self.reject(lambda v: v["members"]["alpha"]["execution_replay"].update(status="unavailable"), "unqualified replay")
+        self.reject(
+            lambda v: v["members"]["alpha"]["execution_replay"].update(status="unavailable"), "unqualified replay"
+        )
 
     def test_exact_psd(self) -> None:
-        self.assertTrue(ew.positive_semidefinite([[1,-1,0],[-1,1,0],[0,0,0]]))
-        self.assertFalse(ew.positive_semidefinite([[1,-1,-1],[-1,1,-1],[-1,-1,1]]))
-        self.assertFalse(ew.positive_semidefinite([[0,1],[1,1]]))
+        self.assertTrue(ew.positive_semidefinite([[1, -1, 0], [-1, 1, 0], [0, 0, 0]]))
+        self.assertFalse(ew.positive_semidefinite([[1, -1, -1], [-1, 1, -1], [-1, -1, 1]]))
+        self.assertFalse(ew.positive_semidefinite([[0, 1], [1, 1]]))
 
     def test_rank_factor_validation(self) -> None:
         value, _ = fixture("rank-sector")
@@ -188,37 +239,52 @@ class WorkbenchTests(unittest.TestCase):
                 ew.source_path(root, "/etc/passwd")
 
     def test_bloch_set(self) -> None:
-        self.assertEqual(ew.bloch_region([0,0],[0,0])["z"], [-1,1])
-        self.assertEqual(ew.bloch_region([1,1],[0,0])["z"], [-0.0,0.0])
-        self.assertTrue(ew.bloch_region([.9,1],[.9,1])["empty"])
-        result = ew.bloch_region([.3,.8],[.4,.9])
-        self.assertAlmostEqual(result["z"][1], math.sqrt(.75))
+        self.assertEqual(ew.bloch_region([0, 0], [0, 0])["z"], [-1, 1])
+        self.assertEqual(ew.bloch_region([1, 1], [0, 0])["z"], [-0.0, 0.0])
+        self.assertTrue(ew.bloch_region([0.9, 1], [0.9, 1])["empty"])
+        result = ew.bloch_region([0.3, 0.8], [0.4, 0.9])
+        self.assertAlmostEqual(result["z"][1], math.sqrt(0.75))
 
     def test_bloch_invalid(self) -> None:
-        for x in ([math.nan, 1], [-2,0], [.5,.4]):
+        for x in ([math.nan, 1], [-2, 0], [0.5, 0.4]):
             with self.assertRaises(ValueError):
-                ew.bloch_region(x, [0,0])
+                ew.bloch_region(x, [0, 0])
 
     def test_optical_cohorts(self) -> None:
-        for schema in ("ascella-fixed-mesh-confirmation-v1", "ascella-new-mesh-score-v1", "ascella-replication-score-v1"):
-            value = {"schema": schema, "primary": {"reading": "not carried"},
-                     "rows": [{"observed": .8, "predicted": .85, "counting_variance": .001}]}
+        for schema in (
+            "ascella-fixed-mesh-confirmation-v1",
+            "ascella-new-mesh-score-v1",
+            "ascella-replication-score-v1",
+        ):
+            value = {
+                "schema": schema,
+                "primary": {"reading": "not carried"},
+                "rows": [{"observed": 0.8, "predicted": 0.85, "counting_variance": 0.001}],
+            }
             result = ew.load_ascella(value, schema)
             self.assertEqual(result["payload"]["primary"], value["primary"])
             self.assertEqual(result["prediction_fields"], ["predicted"])
 
     def test_optical_missing_prediction(self) -> None:
         with self.assertRaises(ValueError):
-            ew.load_ascella({"schema":"ascella-fixed-mesh-confirmation-v1", "rows":[{"observed":.5}]}, "bad")
+            ew.load_ascella({"schema": "ascella-fixed-mesh-confirmation-v1", "rows": [{"observed": 0.5}]}, "bad")
 
     def test_static_build_escapes_labels(self) -> None:
-        spec = importlib.util.spec_from_file_location("workbench_builder", ROOT / "scripts/render_evidence_workbench.py")
+        spec = importlib.util.spec_from_file_location(
+            "workbench_builder", ROOT / "scripts/render_evidence_workbench.py"
+        )
         if spec is None or spec.loader is None:
             self.fail("builder module unavailable")
         builder = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(builder)
-        bundle = {"schema":ew.SCHEMA,"sources":[],"ramsey":None,"acquisitions":[],"optical":[],
-                  "boundaries":["</script><img src=x onerror=alert(1)>"]}
+        bundle = {
+            "schema": ew.SCHEMA,
+            "sources": [],
+            "ramsey": None,
+            "acquisitions": [],
+            "optical": [],
+            "boundaries": ["</script><img src=x onerror=alert(1)>"],
+        }
         rendered = builder.render(bundle).decode()
         self.assertNotIn("</script><img", rendered)
         self.assertIn("\\u003c/script\\u003e", rendered)
