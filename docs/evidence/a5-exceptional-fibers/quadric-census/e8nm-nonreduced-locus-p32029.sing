@@ -1,0 +1,17 @@
+// E8-bar -> N-, p = 32029: nilpotent coordinates of k[y]/K2, their annihilator and the charts where V_+(K2) is reduced.
+option(redSB); LIB "elim.lib";
+ring Y=32029,(y(1..21)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-upto-d2.rel")+";");
+ideal S=std(K);
+ideal N=y(4),y(6),y(7),y(12),y(14);
+ideal P=std(K+N);
+"RESULT K2 dim", dim(S), "mult", mult(S), "K2 + N dim", dim(P), "mult", mult(P), "hilbert numerator", hilb(P,2);
+"RESULT N squared in K2", size(simplify(reduce(N^2,S),2))==0, "linear forms of K2 + N", size(simplify(jet(P,1),2));
+ideal Q=std(quotient(S,P));
+"RESULT annihilator of (K2 + N)/K2: dim", dim(Q), "mult", mult(Q), "linear forms", size(simplify(jet(Q,1),2)), "generators", size(minbase(Q));
+"RESULT annihilator plus K2 + N: dim", dim(std(Q+P));
+int j; ideal C; string red=""; string non="";
+for(j=1;j<=21;j++){ C=std(sat_with_exp(S,ideal(y(j)))[1]); if(dim(C)<0){ j=j; } else { if(size(simplify(reduce(N,C),2))==0){ red=red+string(j)+" "; } else { non=non+string(j)+" "; } } }
+"RESULT charts where N vanishes after saturation:", red;
+"RESULT charts where N survives:", non;
+quit;

@@ -7,15 +7,50 @@ check first. The same-sign X incidences are in [arcs-x-same](../arcs-x-same/READ
 
 | Fiber | K2 | dimension, multiplicity | K2 : m = K2 | reducedness of V_+(K2) |
 |---|---|---|---|---|
-| E8-bar → VB | 21 quadrics in 10 variables | 4, 7 | yes | reduced: K2 equals the intersection of its two minimal primes (degrees 3 and 4); Cohen-Macaulay with a linear resolution (Betti numbers 21, 70, 105, 84, 35, 6) |
-| Iso | 68 quadrics in 17 variables | 5, 23 | yes | not computed here |
-| E8-bar → N− | 148 quadrics in 21 variables | 5, 11 | yes | not computed here |
-| W8 → N− | 144 quadrics in 24 variables | 6, 50 | yes | not computed here |
+| E8-bar → VB | 21 quadrics in 10 variables | 4, 7 | yes | reduced: K2 equals the intersection of its two minimal primes (degrees 3 and 4); Cohen-Macaulay with a linear resolution (Betti numbers 21, 70, 105, 84, 35, 6) (A5-307) |
+| Iso | 68 quadrics in 17 variables | 5, 23 | yes | reduced and irreducible: K2 is radical and geometrically prime (ledger A5-058, A5-060) |
+| E8-bar → N− | 148 quadrics in 21 variables | 5, 11 | yes | nonreduced along one embedded quadric threefold, reduced off it (A5-312, below) |
+| W8 → N− | 144 quadrics in 24 variables | 6, 50 | yes | reduced: K2 is radical with components of degree 20 and 30 (ledger A5-012) |
 
 "Saturated" means the irrelevant ideal is not an associated prime, so k[y]/K2 has no nilpotent or zero divisor
 supported at the vertex alone, and nonreducedness of the cone, where it occurs, is nonreducedness of V_+(K2).
-The minimal primes of the Iso, E8-bar → N− and W8 → N− ideals are a longer computation and are not in this
-directory.
+
+## Every retained K2: saturation, initial ideal, nilpotent coordinates (A5-311)
+
+`k2_scheme_census.py` runs the same three checks on all fourteen retained relation files (five fibers, both primes,
+both headers where retained; record `k2-scheme-census.jsonl`, 2.5 s in all).
+
+| Fiber | sources | saturated | in_dp(K2) squarefree | coordinates with y_i² in K2 |
+|---|---|---|---|---|
+| X− → N−, X+ → N+ | 3 | yes | no (72 generators, degree up to 3) | y1, y5, y6, with N² in K2 |
+| E8-bar → VB | 2 | yes | no (25, up to 3) | none |
+| Iso | 3 | yes | no (81, up to 3) | none |
+| E8-bar → N−, N+ | 4 | yes | no (172, up to 4) | y4, y6, y7, y12, y14, with N² in K2 |
+| W8 → N− | 2 | yes | no (202, up to 4) | none |
+
+The initial ideal is a flat degeneration that keeps the Hilbert function, dimension and multiplicity of K2. A
+squarefree initial ideal would prove K2 radical; none is squarefree in the header coordinates and the dp ordering,
+which decides nothing (the Iso, W8 and VB ideals are radical by other proofs). The nilpotent coordinates of the
+E8-bar ideals number 5 = 21 − 16, the 16 being the coordinates that the fiber-to-Grassmannian fit of
+[kernel-limits](../kernel-limits/README.md) spans.
+
+## The nonreduced locus of the E8-bar quadric scheme (A5-312)
+
+`e8nm-nonreduced-locus-p32009.sing` and `e8nm-nonreduced-locus-p32029.sing` (5 s each, identical logs), with
+N = (y4, y6, y7, y12, y14):
+
+- K2 + N has dimension 5 and multiplicity 11, those of K2, with Hilbert numerator 1, 11, −1, so V_+(K2) is
+  generically reduced and its nilpotents are embedded;
+- the annihilator K2 : (K2 + N) has 16 linear forms and one further generator, dimension 4 and multiplicity 2: a
+  quadric threefold in a P^4, lying in V(K2 + N);
+- after saturation at y_j the coordinates N vanish for j = 2 and 19 and survive for the fourteen other nonempty
+  charts.
+
+Scope: this describes V_+(K2). For the exceptional fiber V_+(L) of E8-bar → N−, L contains K2 and holds no linear
+form (h_1 = 21), so y4, y6, y7, y12, y14 are nonzero nilpotents of the affine fiber cone F(I); whether they survive
+on the projective fiber depends on L in every degree, which is open until the elimination of
+[monomial-ladder](../monomial-ladder/README.md) finishes. K2 + N is not shown to be the radical here; ledger A5-252
+holds the radical.
 
     Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/vb-radical.sing
 
