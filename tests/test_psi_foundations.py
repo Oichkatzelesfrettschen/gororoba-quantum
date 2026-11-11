@@ -1,9 +1,13 @@
 import math
 import unittest
 from fractions import Fraction
+
 from gororoba_quantum.psi_foundations import (
-    classical_chsh_bound, quantum_chsh, product_probability,
-    overlap, independent_common_overlap,
+    classical_chsh_bound,
+    independent_common_overlap,
+    overlap,
+    product_probability,
+    quantum_chsh,
 )
 
 
