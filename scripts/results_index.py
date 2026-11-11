@@ -31,8 +31,8 @@ hold, and Kaggle submissions without a collection receipt.
 from __future__ import annotations
 
 import argparse
-import csv
 import hashlib
+import importlib.util
 import json
 import os
 import sqlite3
@@ -281,8 +281,17 @@ class Index:
             [path for path in paths if path],
         )
         findings_path = ROOT / "docs/evidence/a5-exceptional-fibers/ledger.tsv"
-        with findings_path.open(encoding="utf-8", newline="") as stream:
-            findings = list(csv.DictReader(stream, delimiter="\t"))
+        specification = importlib.util.spec_from_file_location("a5_findings_ledger", findings_path.with_suffix(".py"))
+        if specification is None or specification.loader is None:
+            raise ValueError("the A5 ledger validator cannot be loaded")
+        validator = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(validator)
+        findings = validator.rows()
+        if any(set(row) != set(validator.COLUMNS) or any(value is None for value in row.values()) for row in findings):
+            raise ValueError("invalid A5 ledger: row width differs from its header")
+        problems = validator.check(findings)
+        if problems:
+            raise ValueError("invalid A5 ledger: " + "; ".join(problems))
         view["algebra_findings"] = {
             "path": findings_path.relative_to(ROOT).as_posix(),
             "sha256": research_state.digest(findings_path),

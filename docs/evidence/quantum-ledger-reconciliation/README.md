@@ -132,6 +132,27 @@ Markdown files. Ruff check and format checks pass for the six touched Python
 files. The remaining pull-request suite and contract lane run through hosted CI;
 the local selected run makes no claim about tests outside its selection.
 
+## Local review reconciliation
+
+The selected Codex review (`gpt-daybreak-blue-latest`, high effort) examines
+revision `465828e294e9e1ad2a9c58396e80365db85236d5`, reproduces the corrected
+census and checks all five recovered cases with the frozen reader. Two
+findings survive source inspection. The combined ledger parsed A5 rows without
+running their validator, and Python's default JSON decoding silently discarded
+duplicate object members before observation lookup. The corrections invoke the
+existing A5 header and row checks and reject duplicate JSON names, including
+nested objects and equivalent escaped names. Synthetic mutations exercise both
+rejection boundaries. The review's pytest attempt cannot run because its
+read-only sandbox supplies no writable temporary directory; the author's
+selected suite supplies the test observation separately.
+
+The first hosted run on that revision passes lint, types, tests, contracts and
+Linux ARM. macOS ARM validates all 92 retained QRNG references but fails the
+test's 45-second budget at 49.36 seconds. The corresponding main run passes at
+31.84 seconds. The provenance scanner, its retained result inputs and its seed
+ledger match main. A failed-job rerun tests timing variability; the observed
+budget failure remains distinct from a provenance mismatch.
+
 ## Remaining scientific scope
 
 The ledger performs integrity validation and exposes the registered replay

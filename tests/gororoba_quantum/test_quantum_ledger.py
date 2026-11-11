@@ -47,6 +47,15 @@ def test_inspection_binds_exact_bytes_and_refuses_escape(tmp_path: Path) -> None
             quantum_ledger.inspect(root, path, "")
 
 
+@pytest.mark.parametrize(
+    "content", [b'{"field":0,"field":1}', b'{"rows":[{"field":0,"field":1}]}', b'{"field":0,"fi\\u0065ld":1}']
+)
+def test_inspection_rejects_duplicate_field_names(tmp_path: Path, content: bytes) -> None:
+    (tmp_path / "analysis.json").write_bytes(content)
+    with pytest.raises(ValueError, match="duplicate JSON object name"):
+        quantum_ledger.inspect(tmp_path, "analysis.json", "")
+
+
 def test_ledger_census_exposes_gaps_without_inventing_support(tmp_path: Path) -> None:
     source = tmp_path / "analysis.json"
     source.write_text(json.dumps({"schema": "test-analysis-v1", "numpy_version": "test", "n": 0}))

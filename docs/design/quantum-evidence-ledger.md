@@ -46,6 +46,9 @@ objects and remain separate. Historical producer hashes stay observations of
 the historical source, while current file hashes identify the queried bytes.
 
 The A5 rows retain their field scopes, status vocabulary, basis and falsifier.
+The combined view invokes the A5 ledger's own header and row validator before
+publishing those rows. Schema, evidence-path and supersession checks retain
+their integrity scope; they establish no new mathematical result.
 An exact finite-field rank, a characteristic-zero theorem, an ideal circuit
 check, a noisy simulation and a physical observation keep separate meanings.
 An evidence-path overlap supplies a navigation link, never an algebra-to-device
@@ -57,8 +60,10 @@ admitted measurement interpretation.
 `observation FILE --pointer /path` selects the retained JSON value without
 rewriting its meaning. A pointer can name a whole condition, count table,
 denominator, uncertainty object, calibration record or source-hash map. Array
-order, integer precision, null and zero survive. Provider schemas and analysis
-schemas remain source-native; the ledger does not guess that every field named
+order, integer precision, null and zero survive. JSON objects with duplicate
+member names are rejected before pointer selection,
+including nested objects and names whose escape sequences decode identically.
+Provider and analysis schemas remain source-native; the ledger does not guess that every field named
 `shots` is an estimator's denominator.
 
 | Scientific operation | Existing mechanism | Ledger responsibility |

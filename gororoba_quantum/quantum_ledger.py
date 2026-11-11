@@ -19,6 +19,16 @@ from typing import Any
 from parallel import ordered_map
 
 
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Refuse ambiguous field identities before JSON decoding discards a member."""
+    result: dict[str, Any] = {}
+    for name, value in pairs:
+        if name in result:
+            raise ValueError(f"duplicate JSON object name: {name!r}")
+        result[name] = value
+    return result
+
+
 def local_file(root: Path, reference: str) -> Path:
     """Resolve a repository-relative evidence file, refusing escapes and symlinks outside ROOT."""
     name = reference.partition("#")[0]
@@ -60,7 +70,7 @@ def _describe_source(item: tuple[Path, str]) -> dict[str, Any]:
     if path.suffix != ".json":
         result.update(schema=None, metadata_status="non-json")
         return result
-    document = json.loads(path.read_text(encoding="utf-8"))
+    document = json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=_unique_object)
     result.update(schema=document.get("schema") if isinstance(document, dict) else None, metadata_status="decoded")
     # Metadata remains source-native: a version label names an environment,
     # whereas an estimator's statistical assumptions live in its own record.
@@ -226,7 +236,7 @@ def inspect(root: Path, reference: str, pointer: str) -> dict[str, Any]:
         raise ValueError("inspect takes a file path and a separate JSON Pointer")
     path = local_file(root, reference)
     content = path.read_bytes()
-    document = json.loads(content)
+    document = json.loads(content, object_pairs_hook=_unique_object)
     return {
         "source_file": reference,
         "file_sha256": hashlib.sha256(content).hexdigest(),

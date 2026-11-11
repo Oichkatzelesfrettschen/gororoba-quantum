@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import sqlite3
 import subprocess
 from collections import Counter
@@ -19,6 +20,19 @@ IBM_RUN = "results/live/2026-01-01T000000Z"
 QD_RUN = "results/quandela/runs/2026-01-02T000000Z-case"
 KAGGLE_DONE = "2026-01-03T000000Z-owner-done"
 KAGGLE_OPEN = "2026-01-04T000000Z-owner-open"
+ALGEBRA_VALIDATOR = Path(__file__).resolve().parents[2] / "docs/evidence/a5-exceptional-fibers/ledger.py"
+
+
+def _algebra_fixture(root: Path) -> Path:
+    ledger = root / "docs/evidence/a5-exceptional-fibers/ledger.tsv"
+    ledger.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ALGEBRA_VALIDATOR, ledger.with_suffix(".py"))
+    ledger.write_text(
+        "id\tkind\tfibers\tprimes\tclaim\tstatus\tbasis\tevidence\tfalsifier\tsupersedes\tupdated\n"
+        "A5-001\tequation\tall\t32009\tfinite-field identity\tproved\texact computation\t"
+        "docs/x.md\tnone\t\t2026-01-01\n"
+    )
+    return ledger
 
 
 class _Provider:
@@ -211,9 +225,7 @@ def test_complete_ledger_keeps_algebra_scope_and_tracked_denominator(
     index: results_index.Index, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     root = results_index.ROOT
-    algebra = root / "docs/evidence/a5-exceptional-fibers/ledger.tsv"
-    algebra.parent.mkdir(parents=True)
-    algebra.write_text("id\tstatus\tprimes\tclaim\nA5-001\tproved\t32009\tfinite-field identity\n")
+    _algebra_fixture(root)
     _write(root / "results/live/unindexed/record.json", {"state": "planned"})
     _write(root / "results/live/canceled/record.json", {"submission": {"jobs": [{"job_id": "canceled"}]}})
     _write(
@@ -249,6 +261,30 @@ def test_complete_ledger_keeps_algebra_scope_and_tracked_denominator(
     summary = json.loads(capsys.readouterr().out)
     if summary != view["summary"]:
         raise RuntimeError("CLI summary differs from the complete ledger's denominator")
+
+
+@pytest.mark.parametrize("mutation", ["status", "duplicate", "evidence", "supersedes", "header", "width"])
+def test_complete_ledger_rejects_invalid_algebra(index: results_index.Index, mutation: str) -> None:
+    root = results_index.ROOT
+    ledger = _algebra_fixture(root)
+    content = ledger.read_text()
+    if mutation == "status":
+        content = content.replace("\tproved\t", "\tinvalid\t")
+    elif mutation == "duplicate":
+        content += content.splitlines(keepends=True)[1]
+    elif mutation == "evidence":
+        content = content.replace("docs/x.md", "docs/missing.md")
+    elif mutation == "supersedes":
+        content = content.replace("\tnone\t\t", "\tnone\tA5-001\t")
+    elif mutation == "header":
+        content = content.replace("id\tkind", "identifier\tkind")
+    else:
+        content = content.replace("\t2026-01-01", "")
+    ledger.write_text(content)
+    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    subprocess.run(["git", "add", "results", "docs"], cwd=root, check=True)
+    with pytest.raises((ValueError, SystemExit), match="invalid A5 ledger|header"):
+        index.ledger()
 
 
 @pytest.mark.audit
