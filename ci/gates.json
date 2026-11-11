@@ -5481,6 +5481,70 @@
       "replays": [
         "docs/evidence/pathion-kernel-map/nhat-bias/result_spectral.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 180 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-n12.json --timeout 60 && timeout -k 10 60 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json --timeout 60",
+      "name": "core-a5-e8-target-rank",
+      "seconds": 120.0,
+      "workers": 1,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-n12.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n14.json --timeout 60 && timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-n14.json --timeout 60",
+      "name": "core-a5-e8-target-frontier",
+      "seconds": 120.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n14.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-n14.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 180 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-n12.json --timeout 60 && timeout -k 10 60 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json --timeout 60",
+      "name": "core-a5-e8-target-second-prime",
+      "seconds": 60.0,
+      "workers": 1,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-n12.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n15.json --timeout 60",
+      "name": "core-a5-e8-target-n15",
+      "seconds": 240.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n15.json"
+      ]
     }
   ],
   "excluded": [

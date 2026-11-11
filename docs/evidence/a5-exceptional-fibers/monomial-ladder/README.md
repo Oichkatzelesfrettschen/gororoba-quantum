@@ -13,6 +13,7 @@ A cell is exact when r_N(d) meets HF(k[y]/K2, d).
 |---|---|
 | `x_same_ladder.py` | the slice ring of the same-sign incidences X− → N− (`xm-nm`) and X+ → N+ (`xp-np`), R = k[[t]] + (a, ρ, σ) k[[a, ρ, σ, w]], and the ladder on python-flint |
 | `e8_ladder.py` | the slice ring R0 + R0 b of E8-bar → N− (`e8-nm`) and E8-bar → N+ (`e8-np`) inside the quadratic algebra P + P b, b² = X (X − s), with R0 = k[[t, ζ]] + (ρ, σ, a) P, and the ladder on python-flint |
+| [e8_target_rank.py](e8_target_rank.py) | prepares an exact basis of (sqrt(K2)/K2)_d and computes its truncated image modulo the full m_R I^d closure; degree 5 is the 91-dimensional positive control and degree 6 the 140-dimensional frontier |
 | `fast_ladder.py` | the same spaces with a batched float64 echelon over F_p (torch on CPU), exact for p < 2^15 |
 | `monomial_probe.py` | test of whether the truncated I and m_R I of the same-sign X slice are spans of monomials |
 | `monomial_certificate.py` | exact check that I equals the monomial ideal M (membership of every G_j and a rank over M / q M, then Nakayama) and the Singular script for the kernel L of k[y] → P[M T] / q P[M T] |
@@ -160,6 +161,145 @@ Steps 2 and 3 are arguments, checked by Singular only at the equation w² = t (1
 These equal the certified values of the Gröbner-basis engine (A5-078 to A5-080 on the N+ header, the
 same values on N−). The order-14 cell takes 265 s on 28 threads.
 
+### Restrict the target, retain the complete denominator
+
+Let C = k[y_1, ..., y_21], let L define F(I), and put H = sqrt(K2). The
+[exact arc certificates](../arcs/README.md) and the retained quadratic membership
+receipts give K2 ⊆ L ⊆ H. In each degree the exact sequence
+
+    0 → (H/L)_d → (C/L)_d → (C/H)_d → 0
+
+gives h_d = HF(C/H, d) + rank(phi), where
+phi: (H/K2)_d → I^d/m_R I^d sends f to f(G). Its truncated image phi_N in
+(P + P b)/(image(m_R I^d) + n^N) therefore gives
+
+    HF(C/H, d) + rank(phi_N) ≤ h_d ≤ HF(C/K2, d).
+
+This bound applies even when the full truncated rank r_N(d) is less than
+HF(C/H, d). Only rank(phi_N) is added to that base dimension. The target dimensions
+are 952 − 861 = 91 in degree 5 and 1,666 − 1,526 = 140 in degree 6. Degree 5
+already has h_5 = 952 at both registered primes (A5-183/A5-220); it is a positive
+control for this computation. The N14 target ranks below strengthen the
+degree-six lower bound to 1,554 at both registered primes; the exact h_6 remains open.
+
+`e8_target_rank.py prepare` computes a global `dp` standard basis of K2 and of
+P1 ∩ P2, exports the degree-d standard monomials modulo K2 and their normal forms
+modulo P1 ∩ P2, and takes the coefficient kernel over F_p with python-flint. It
+verifies K2 ⊆ P1 ∩ P2, the two Hilbert dimensions, independence of the target rows,
+and their joint annihilation of the normal-form matrix. The targets are linear
+combinations of standard monomials, not independent membership questions.
+
+`run` first repeats the exact Singular export and compares the standard monomials
+and radical normal forms with the prepared basis. A payload digest and a
+self-consistent coefficient kernel alone cannot certify that algebraic map.
+It then reuses the unchanged quadratic algebra and propagation of `e8_ladder.py`.
+It propagates m_R by **all 21 original G** through degree d, then reduces the
+91 or 140 target images against that complete denominator. Restricting the
+denominator to those images changes the quotient and can produce a false lower
+bound. Reaching target rank 91 or 140 proves equality with the K2 upper bound
+in that degree. A zero target image or a plateau in N proves no exact membership
+and provides no improved upper bound.
+
+Target evaluation extracts common monomial factors and groups the remaining
+terms by a variable's exponent before substituting G. A remaining factor of
+y-degree c has order at least c times the minimum order of G, so its coefficient
+needs only that much less precision. Each restored factor raises the cutoff
+accordingly. This avoids expanding all standard-monomial products independently
+and permits cancellations before the larger products form. The full denominator
+propagation is unchanged.
+
+After the [compute-flags review](../../../runbooks/compute-flags.md), prepare a
+basis and run an order selected for the available memory and time budget:
+
+```sh
+E8_TARGET=docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py
+"$PYTHON" "$E8_TARGET" prepare --target e8nm-p32009 --degree 5 \
+  --singular Singular --timeout 300 --out docs/local/e8nm-p32009-d5-basis.json
+"$PYTHON" "$E8_TARGET" run docs/local/e8nm-p32009-d5-basis.json \
+  --order 12 --max-matrix-mib 768 --out docs/local/e8nm-p32009-d5-n12.json
+```
+
+Use `--degree 6` for the frontier basis; `--target` also admits N+ and the second
+registered prime. Each basis binds the field, root of −1, ordered G, K2 relation
+bytes, degree-two membership receipt, component ideals, and retained dominant
+arc certificates. A sign transport binds the N+ receipt where needed. A run
+rejects changed inputs and records its own producer and ring-module digests,
+Singular version, and fresh export's source and log digests. `--singular` selects
+the binary in both commands; `--verification-timeout` bounds the run's export.
+These retained proof premises are checked for identity and success, not replayed
+by the target runner. Its output concerns only the selected finite field.
+
+The matrix guard bounds the selected input and RREF arrays using the complete
+ambient monomial count. It is a conservative preflight check, not a process RSS
+limit; retain the external memory watchdog and wall-time limit. Every completed
+denominator stage is printed to stderr, and preparation preserves its Singular
+source and log. The bounded synthetic tests in
+[`test_a5_e8_target_rank.py`](../../../../tests/test_a5_e8_target_rank.py) test the
+quotient semantics, joint kernel, provenance failures and incomplete-run rules
+without replaying retained research records.
+
+`replay BASIS [RANK]` re-establishes the basis from the retained ideals; with a
+rank record it also reruns the complete closure and compares ranks, bounds,
+source identities, field and resource allowance. Only elapsed milliseconds
+are excluded from the comparison. The retained record's own payload digest
+and producer digest must match before replay. Omitting RANK checks a frontier
+basis without launching its larger closure computation.
+
+The retained exact target ranks are:
+
+| Prime | Degree | Ambient order N | Target dimension | Target rank | Certified bound | Receipt |
+|---|---|---|---|---|---|---|
+| 32009 | 5 | 12 | 91 | 21 | 882 ≤ h_5 ≤ 952 | [rank](target-records/e8nm-p32009-d5-n12.json) |
+| 32029 | 5 | 12 | 91 | 21 | 882 ≤ h_5 ≤ 952 | [rank](target-records/e8nm-p32029-d5-n12.json) |
+| 32009 | 6 | 14 | 140 | 28 | 1,554 ≤ h_6 ≤ 1,666 | [rank](target-records/e8nm-p32009-d6-n14.json) |
+| 32029 | 6 | 14 | 140 | 28 | 1,554 ≤ h_6 ≤ 1,666 | [rank](target-records/e8nm-p32029-d6-n14.json) |
+| 32009 | 6 | 15 | 140 | 55 | 1,581 ≤ h_6 ≤ 1,666 | [rank](target-records/e8nm-p32009-d6-n15.json) |
+
+Every row has status `lower_bound_only`. Here N uses weight one on w, ρ, σ,
+ζ, a and b in the quadratic model; comparison with an order in the original
+slice coordinates requires the explicit substitution. The full denominator
+dimensions are 385 in the degree-five rows, 588 at degree six/order 14 and
+1,738 at degree six/order 15. The stronger order-15 bound is specific to 32009;
+that order has not been run at 32029.
+The existing exact h_5 = 952 proves that all 91 degree-five directions survive
+in the untruncated quotient. Thus the 70-dimensional kernel of phi_12 is an
+actual positive-control example of truncation losing directions; it does not
+give exact relations. The 112-dimensional kernel of the degree-six N14 map
+and the 85-dimensional kernel at N15 likewise supply no membership certificate.
+
+The bases at both primes are retained beside the rank records:
+[32009 degree 5](target-records/e8nm-p32009-d5-basis.json),
+[32009 degree 6](target-records/e8nm-p32009-d6-basis.json),
+[32029 degree 5](target-records/e8nm-p32029-d5-basis.json), and
+[32029 degree 6](target-records/e8nm-p32029-d6-basis.json). Their Singular exports
+and verification logs are retained in the same directory. The on-demand gates
+`core-a5-e8-target-rank`, `core-a5-e8-target-frontier`,
+`core-a5-e8-target-second-prime` and `core-a5-e8-target-n15` bind these bases
+and ranks to the producer.
+The [validation record](target-records/validation.json) records successful
+executions of the first three gates: both degree-five controls, both N14
+degree-six ranks and all four bases. The N15 calculation completed under the
+frozen producer and passed independent static provenance review; its on-demand
+replay gate was not rerun because the original calculation approached the
+1 GiB RSS limit. The validation also records 23 passing semantic tests,
+Ruff, mypy and the focused ledger check.
+The common finite-field bound is ledger A5-251; its transfer to N+ uses the
+retained sign isomorphisms, and it makes no characteristic-zero claim.
+
+[Operational costs](target-records/costs.json) retain the completed runs and
+resource stops. Both N14 runs use two workers and finish in 51–62 seconds at
+about 355 MiB sampled peak process-tree RSS. The N15 run finishes in 211 seconds
+at 939 MiB under the 1 GiB RSS watchdog. An earlier one-worker N14 attempt hit
+its 180-second wall limit after completing the denominator. These shared-host
+observations are not a controlled performance comparison. The one higher-order
+attempt stops the present resource study at N15.
+
+The [four-target loader check](target-records/loader-check.json) independently
+checks both signs and both primes: the root, sign, ordered J and G, successful
+input receipts, all 21 substituted G and vanishing of all 16 J at order 4.
+It verifies loader compatibility and leaves the retained sign-isomorphism
+proof as the premise for transferring a bound from N− to N+.
+
 ### The E8-bar slice ideal is an ideal of the larger ring (A5-309)
 
 Write S = P + P b for the quadratic algebra that contains the slice ring R = R0 + R0 b; S = R + w R is finite
@@ -175,8 +315,9 @@ b and u = 1/(1 + w), modulo u (1 + w) = 1 and b² = F) at p = 32009:
 Consequence: I^d = (I S)^d and m_R I^d = (m_R S)(I S)^d, so F(I) is the part of degree at least 1 of
 S[I T] / (m_R S) S[I T], the Rees algebra of an ideal of a hypersurface ring reduced modulo an ideal of colength 2.
 That is a finite presentation: `records/e8-fiber-cone-e8-nm-p32009.sing` computes its kernel L in k[y_1..y_21] by
-two eliminations and compares it with K2. That run has not finished; until it does, h_6 of E8-bar → N− stays
-between 1,526 and 1,666, and nothing here says whether L has generators above degree 2. The truncated ranks of I and
+two eliminations and compares it with K2. That run has not finished. The target ranks above give
+1,581 ≤ h_6 ≤ 1,666 at p = 32009 and 1,554 ≤ h_6 ≤ 1,666 at p = 32029; the exact value and the existence of
+generators of L above degree 2 remain open. The truncated ranks of I and
 I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817; `e8_closure_probe.py`,
 `records/e8-closure-probe-e8-nm-p32009.jsonl`), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
 `records/slice-ring-e8-*.log` show that the kernel of the parametrization equals the header's J (one component)

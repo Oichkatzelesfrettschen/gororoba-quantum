@@ -1,0 +1,121 @@
+{
+ "checks": [
+  {
+   "command": "\"$PYTHON\" -B -m pytest -q tests/test_a5_e8_target_rank.py",
+   "name": "semantic-tests",
+   "status": "passed",
+   "tests": 23
+  },
+  {
+   "command": "\"$PYTHON\" ci/pinned_tool.py ruff check docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py tests/test_a5_e8_target_rank.py",
+   "name": "ruff",
+   "status": "passed"
+  },
+  {
+   "command": "\"$PYTHON\" ci/pinned_tool.py ruff format --check --target-version py313 docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py tests/test_a5_e8_target_rank.py",
+   "name": "ruff-format",
+   "status": "passed"
+  },
+  {
+   "command": "\"$PYTHON\" ci/pinned_tool.py mypy docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py tests/test_a5_e8_target_rank.py",
+   "name": "mypy",
+   "source_files": 2,
+   "status": "passed"
+  },
+  {
+   "command": "git diff --check",
+   "name": "git-diff-check",
+   "status": "passed"
+  },
+  {
+   "declared_records": 9,
+   "gate_names_unique": true,
+   "gates": 4,
+   "name": "replay-declarations",
+   "scope": "runner_image_records.replay_problems over the four new gates with an empty ledger and no exemptions; all nine scientific records are float-free JSON.",
+   "status": "passed"
+  },
+  {
+   "name": "new-artifact-links-and-paths",
+   "private_workspace_paths": 0,
+   "readme_target_record_links": 12,
+   "status": "passed",
+   "target_record_files": 30
+  }
+ ],
+ "environment": {
+  "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
+  "MALLOC_ARENA_MAX": "2",
+  "native_threads_per_worker": 1,
+  "worker_policy": "One worker for control replays, two for degree-six N14/N15."
+ },
+ "focused_ledger_check": {
+  "logical_tracked_evidence": [
+   "docs/evidence/a5-exceptional-fibers/structure/e8-radical/README.md"
+  ],
+  "materialized_evidence": 6,
+  "row": "A5-251",
+  "scope": "Focused row; unrelated sparse evidence was not validated.",
+  "status": "passed"
+ },
+ "independent_review": {
+  "closed_issue": "Fresh global-order Singular export prevents a forged but internally consistent normal-form/kernel payload from being accepted.",
+  "loader_record": "loader-check.json",
+  "loader_targets": 4,
+  "scientific_payloads_checked": 9,
+  "scope": [
+   "Basis/rank payload digests and source digests",
+   "Retained Singular export and verification script/log digests",
+   "Full denominator closure and target evaluation precision",
+   "Field/root/sign and ordered J/G loader agreement",
+   "Lower-bound-only semantics and prime-specific N15 scope"
+  ],
+  "status": "passed"
+ },
+ "limitations": [
+  "Full repository tests and unrelated sparse-checkout ledger evidence were not replayed.",
+  "The N15 source-bound replay gate is registered but was not executed after the original completed computation.",
+  "All retained ranks are finite-field lower bounds; truncated kernels do not certify exact ideal membership.",
+  "The common h6 lower bound is 1554 at both primes; 1581 is proved only at 32009. Exact h6 and characteristic-zero transfer remain open."
+ ],
+ "producer_sha256": "0e9d3b4ceac05608546adf075d420838c5a27ded08ab9291333d92000b219a04",
+ "replays": [
+  {
+   "command": "\"$PYTHON\" -B ci/run_gates.py --gates core-a5-e8-target-rank",
+   "gate_wall_ms": 41100,
+   "name": "core-a5-e8-target-rank",
+   "sampled_peak_process_tree_rss_kib": 192188,
+   "status": "passed",
+   "wrapper_wall_ms": 42588
+  },
+  {
+   "command": "\"$PYTHON\" -B ci/run_gates.py --gates core-a5-e8-target-frontier",
+   "gate_wall_ms": 283200,
+   "name": "core-a5-e8-target-frontier",
+   "sampled_peak_process_tree_rss_kib": 411688,
+   "status": "passed",
+   "wrapper_wall_ms": 352523
+  },
+  {
+   "command": "\"$PYTHON\" -B ci/run_gates.py --gates core-a5-e8-target-second-prime",
+   "gate_wall_ms": 226322,
+   "name": "core-a5-e8-target-second-prime",
+   "sampled_peak_process_tree_rss_kib": 183648,
+   "status": "passed",
+   "wrapper_wall_ms": 228304
+  },
+  {
+   "command": "\"$PYTHON\" -B ci/run_gates.py --gates core-a5-e8-target-n15",
+   "name": "core-a5-e8-target-n15",
+   "reason": "The original frozen-producer N15 computation completed and its payload, source, basis and Singular script/log bindings passed independent review. A second execution was not launched after N14 replays passed at both primes; the original N15 run reached 939 MiB sampled process-tree RSS under the 1 GiB limit.",
+   "status": "not_rerun"
+  }
+ ],
+ "schema": "a5-e8-target-validation-v1",
+ "tools": {
+  "python": "3.14.7",
+  "python-flint": "0.9.0",
+  "singular": "4.4.1",
+  "sympy": "1.14.0"
+ }
+}

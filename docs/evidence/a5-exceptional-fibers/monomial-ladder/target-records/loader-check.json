@@ -1,0 +1,120 @@
+{
+  "cases": [
+    {
+      "G_count": 21,
+      "J_count": 16,
+      "J_vanishes_on_shifted_parametrization_modulo_n_order": true,
+      "bound_input_count": 13,
+      "minimum_G_valuation_at_precision": 2,
+      "nonzero_G_count_at_precision": 21,
+      "order": 4,
+      "prime": 32009,
+      "root": 10754,
+      "root_sign_ordered_header_agree": true,
+      "sign9": 1,
+      "slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8",
+        "t9"
+      ],
+      "slug": "e8-nm",
+      "status": "passed",
+      "target": "e8nm-p32009"
+    },
+    {
+      "G_count": 21,
+      "J_count": 16,
+      "J_vanishes_on_shifted_parametrization_modulo_n_order": true,
+      "bound_input_count": 13,
+      "minimum_G_valuation_at_precision": 2,
+      "nonzero_G_count_at_precision": 21,
+      "order": 4,
+      "prime": 32029,
+      "root": 9115,
+      "root_sign_ordered_header_agree": true,
+      "sign9": 1,
+      "slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8",
+        "t9"
+      ],
+      "slug": "e8-nm",
+      "status": "passed",
+      "target": "e8nm-p32029"
+    },
+    {
+      "G_count": 21,
+      "J_count": 16,
+      "J_vanishes_on_shifted_parametrization_modulo_n_order": true,
+      "bound_input_count": 16,
+      "minimum_G_valuation_at_precision": 2,
+      "nonzero_G_count_at_precision": 21,
+      "order": 4,
+      "prime": 32009,
+      "root": 10754,
+      "root_sign_ordered_header_agree": true,
+      "sign9": -1,
+      "slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8",
+        "t9"
+      ],
+      "slug": "e8-np",
+      "status": "passed",
+      "target": "e8np-p32009"
+    },
+    {
+      "G_count": 21,
+      "J_count": 16,
+      "J_vanishes_on_shifted_parametrization_modulo_n_order": true,
+      "bound_input_count": 13,
+      "minimum_G_valuation_at_precision": 2,
+      "nonzero_G_count_at_precision": 21,
+      "order": 4,
+      "prime": 32029,
+      "root": 9115,
+      "root_sign_ordered_header_agree": true,
+      "sign9": -1,
+      "slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8",
+        "t9"
+      ],
+      "slug": "e8-np",
+      "status": "passed",
+      "target": "e8np-p32029"
+    }
+  ],
+  "python": "3.14.7",
+  "scope": "Positive source/loader agreement and shifted generators at order 4; no full rank run.",
+  "source_sha256": {
+    "docs/evidence/a5-exceptional-fibers/arcs/arc_targets.py": "bcbb56e16a66e0922d806d7cd0d80299bfe7c832c8a5aedf6e27f4dd3aecb387",
+    "docs/evidence/a5-exceptional-fibers/kernel-limits/plucker_limits.py": "a184d37f1107a9f8088ae61be1d9eb23a1a8e4e3438c433b60b270eb1097b433",
+    "docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_ladder.py": "ff0df04d529c25752239c4fa9f770742cf5002d5c7199433937bdd449791c254",
+    "docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py": "0e9d3b4ceac05608546adf075d420838c5a27ded08ab9291333d92000b219a04"
+  }
+}
