@@ -97,8 +97,9 @@ kernel Gauss map into `Gr(2, C^16)` (real nullity 4, complex rank 2) over those 
 collapsing the continuous moduli. On all 66 retained exact grid points, `nullity4_kernel_gauss.py` constructs an
 order-fourteen principal-Pfaffian Schur frame of `ker A(z, conjugate(z))`, realifies it to a four-frame of
 `ker L_y`, and records the 120 normalized Plucker coordinates of the resulting point of `Gr(2,C^16)`. Every frame
-identity, Pfaffian-square identity, real kernel identity, and Plucker quadric holds exactly. Altering one Plucker
-coordinate is detected. The general principal-rank theorem supplies 120 local charts, indexed by the two free rows;
+identity, Pfaffian-square identity, real kernel identity, and Plucker quadric holds exactly, and the coordinates equal
+those of an independently computed nullspace. On the first fixture of each stratum that comparison rejects all 120
+single-coordinate shifts and the vector (1, 0, ..., 0), which satisfies every Plucker quadric and names another plane. The general principal-rank theorem supplies 120 local charts, indexed by the two free rows;
 on a double overlap the transition is the target frame restricted to the source free rows.
 
 This is a fixture-level chart and coordinate certificate, not the requested nullity-four classification. It does not

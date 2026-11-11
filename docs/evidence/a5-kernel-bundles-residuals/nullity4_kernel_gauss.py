@@ -142,6 +142,13 @@ def _plucker_relations_hold(coordinates: Sequence[sp.Expr]) -> bool:
     return True
 
 
+def _nullspace_plucker(bordered: sp.Matrix) -> tuple[sp.Expr, ...]:
+    """Normalized Plucker coordinates of ker(bordered) from sympy's nullspace, independent of the Schur frame."""
+    basis = bordered.nullspace()
+    _require(len(basis) == KERNEL_RANK, "bordered kernel is not two-dimensional")
+    return _plucker_coordinates(sp.Matrix.hstack(*basis))
+
+
 def _fixture_row(point: tuple[Fraction, ...]) -> dict[str, Any]:
     z = frames._original_z_from_split(point)
     bordered = frames._bordered_matrix(z)
@@ -163,6 +170,7 @@ def _fixture_row(point: tuple[Fraction, ...]) -> dict[str, Any]:
         "left_nullity_is_4": left_nullity == 4,
         "realified_frame_spans_left_kernel": left_matrix * real_frame == sp.zeros(32, 4) and real_frame.rank() == 4,
         "plucker_relations_hold": _plucker_relations_hold(coordinates),
+        "plucker_equals_independent_nullspace": coordinates == _nullspace_plucker(bordered),
     }
     return {
         "split_point": [str(value) for value in point],
@@ -177,20 +185,55 @@ def _fixture_row(point: tuple[Fraction, ...]) -> dict[str, Any]:
     }
 
 
-def _mutation_detected(row: dict[str, Any]) -> bool:
+def _mutations_rejected(point: tuple[Fraction, ...], row: dict[str, Any]) -> dict[str, int]:
+    """Counts of wrong coordinate vectors that the comparison with the independent nullspace rejects.
+
+    The vectors are the 120 single-coordinate shifts by one and the decomposable vector (1, 0, ..., 0), which
+    satisfies every Plucker quadric and names a different plane.
+    """
+    reference = _nullspace_plucker(frames._bordered_matrix(frames._original_z_from_split(point)))
     coordinates = [sp.sympify(value) for value in row["normalized_plucker_coordinates"]]
+    shifted = 0
     for index in range(len(coordinates)):
         mutated = coordinates.copy()
         mutated[index] += 1
-        if not _plucker_relations_hold(mutated):
-            return True
-    return False
+        shifted += tuple(mutated) != reference
+    constant = (sp.Integer(1),) + (sp.Integer(0),) * (len(coordinates) - 1)
+    return {
+        "single_coordinate_shifts": len(coordinates),
+        "single_coordinate_shifts_rejected": shifted,
+        "constant_decomposable_vector_satisfies_quadrics": int(_plucker_relations_hold(constant)),
+        "constant_decomposable_vector_rejected": int(constant != reference),
+    }
+
+
+def _mutation_task(item: tuple[tuple[Fraction, ...], dict[str, Any]]) -> dict[str, int]:
+    return _mutations_rejected(*item)
 
 
 def build_result() -> dict[str, Any]:
     fixtures = _fixtures()
     rows = parallel.ordered_map(_fixture_row, fixtures, min_items=1)
     stratum_counts = Counter(row["stratum"] for row in rows)
+    # One fixture per stratum, the first in grid order, carries the mutation control.
+    first = {row["stratum"]: index for index, row in reversed(list(enumerate(rows)))}
+    chosen = [first[name] for name in sorted(first)]
+    controls = parallel.ordered_map(_mutation_task, [(fixtures[i], rows[i]) for i in chosen], min_items=1)
+    mutation_control = {
+        "mutation": (
+            "each of the 120 single-coordinate shifts by one, and the decomposable vector (1, 0, ..., 0), "
+            "compared with the Plucker coordinates of an independently computed nullspace"
+        ),
+        "fixtures": [
+            {"fixture_index": i, "stratum": rows[i]["stratum"], **c} for i, c in zip(chosen, controls, strict=True)
+        ],
+        "detected": bool(controls)
+        and all(
+            c["single_coordinate_shifts_rejected"] == c["single_coordinate_shifts"]
+            and c["constant_decomposable_vector_rejected"] == 1
+            for c in controls
+        ),
+    }
     result: dict[str, Any] = {
         "schema": "a5-nullity-four-kernel-gauss-fixtures-v1",
         "scope": (
@@ -206,14 +249,19 @@ def build_result() -> dict[str, Any]:
         "plucker_coordinate_order": [list(pair) for pair in PLUCKER_ORDER],
         "fixture_count": len(rows),
         "stratum_counts": dict(sorted(stratum_counts.items())),
-        "mutation_control": {
-            "mutation": "add one to one normalized Plucker coordinate",
-            "detected": bool(rows) and _mutation_detected(rows[0]),
-        },
+        "mutation_control": mutation_control,
         "fixtures": rows,
         "input_sha256": {
             "kernel_frames.py": hashlib.sha256((BUNDLES / "kernel_frames.py").read_bytes()).hexdigest(),
             "nullity4_orbit_ranks.py": hashlib.sha256(PROBE.read_bytes()).hexdigest(),
+            **{
+                path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in (
+                    ROOT / "gororoba_quantum" / "cd_core.py",
+                    ROOT / "docs/evidence/a5-strata-regularity/strata_regularity.py",
+                    ROOT / "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+                )
+            },
         },
     }
     result["pass"] = len(rows) == 66 and all(row["pass"] for row in rows) and result["mutation_control"]["detected"]
