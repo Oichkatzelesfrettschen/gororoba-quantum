@@ -1,0 +1,124 @@
+{
+  "schema": "qd-provider-assessment-v1",
+  "id": "quandela-remote-result-contract-2026-11-11",
+  "assessed_at": "2026-11-11T20:41:09.916793+00:00",
+  "repository_revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+  "scope": "Dated assessment of Quandela's remote result and calibration statements against the Ascella-Belenos observation and physical-route gates; no service read, acquisition, or provider capability qualification is performed.",
+  "predecessor": {
+    "ref": "docs/evidence/bdsc/provider_contract.json",
+    "sha256": "862e91a098f67262f45b1febb3fc221f356d17f63dc1a0ea44b60c177ee5d7af",
+    "relation": "Preserve the producer-bound historical contract and replay evidence. This assessment supplies the later provider response without rewriting historical capability findings."
+  },
+  "sources": [
+    {
+      "id": "quandela-perceval-798-comment-6497777211",
+      "url": "https://github.com/Quandela/Perceval/issues/798#issuecomment-6497777211",
+      "author": "Aubaert",
+      "created_at": "2026-10-29T13:18:58Z",
+      "updated_at": "2026-11-03T15:17:09Z",
+      "observed_at": "2026-11-11T20:41:09.916793+00:00",
+      "body_sha256": "2f56936ab6008c2caf491ae351e649987846bbb5ed98280369f891984665b869",
+      "digest_basis": "UTF-8 encoding of the current GitHub comment body, without the API envelope or an appended newline.",
+      "evidence_type": "provider-statement",
+      "software_version": "Not pinned by the response."
+    }
+  ],
+  "provider_statements": [
+    {
+      "id": "computed-experiment",
+      "source": "quandela-perceval-798-comment-6497777211",
+      "status": "clarified",
+      "statement": "computed_experiment carries measured coupler calibration and phases fitted to the requested circuit; it excludes the phase-to-voltage model.",
+      "limit": "This description does not bind an acquisition to applied voltages or establish preservation of the requested full transform."
+    },
+    {
+      "id": "iterator-calibration",
+      "source": "quandela-perceval-798-comment-6497777211",
+      "status": "clarified",
+      "statement": "Calibration does not run between ComputationIterator subjobs. Execution.starting_time, launch performance snapshots, and returned noise are suggested references.",
+      "limit": "Published snapshots and a no-recalibration statement do not provide a complete configuration identity or exclude within-job drift."
+    },
+    {
+      "id": "qpu-counters",
+      "source": "quandela-perceval-798-comment-6497777211",
+      "status": "partly-clarified",
+      "statement": "For a QPU or its simulator, a shot detects at least one photon; a sample meets min_photons_filter + n_heralds. nb_shots_used counts acquired shots for billing. The response acknowledges flaws in probs_to_sample_count.",
+      "limit": "The definitions do not establish optical-attempt counts, acquisition order, or direct event aggregation for each retained histogram. Pure-simulator semantics require separate qualification."
+    },
+    {
+      "id": "mitigation-and-selection",
+      "source": "quandela-perceval-798-comment-6497777211",
+      "status": "clarified",
+      "statement": "Mitigations change requests and results. Disabling them leaves physical and logical selections active.",
+      "limit": "An explicit empty mitigation list cannot by itself establish unfiltered observations or complete processing-version provenance."
+    },
+    {
+      "id": "output-transmission",
+      "source": "quandela-perceval-798-comment-6497777211",
+      "status": "clarified",
+      "statement": "t_out gives relative measured output transmission and detector response, with median normalized to one.",
+      "limit": "The values do not give absolute detector efficiency or detector live exposure."
+    },
+    {
+      "id": "processor-fields",
+      "source": "quandela-perceval-798-comment-6497777211",
+      "status": "provider-identified-bug",
+      "statement": "Missing processor fields are a known cloud bug; the fields are intended to be present.",
+      "limit": "The response does not establish their presence, freshness, or correctness in every later acquisition. Inspect the retained record for each run."
+    }
+  ],
+  "gate_assessments": [
+    {
+      "gate": "G1",
+      "state": "open",
+      "reason": "Result terminology is partly clarified. Event provenance, setting identity, and independent preparation/analyzer control remain unqualified for a network witness or teleportation benchmark.",
+      "required_evidence": [
+        "Bind each acquisition to applied settings and calibration identity.",
+        "Specify raw-event aggregation, filtering, acquisition order, processing versions, and the optical-attempt or exposure denominator.",
+        "Establish input preparation and analyzer control independently, or retain the narrower composite-family claim boundary."
+      ]
+    },
+    {
+      "gate": "G2",
+      "state": "blocked",
+      "reason": "No retained source binds Ascella and Belenos to an accessible physical quantum route or shared entangled resource.",
+      "required_evidence": [
+        "Identify the source, optical route, endpoint partition, access route, and supported joint measurement configuration.",
+        "Bind timing, losses, heralds, and receiver output to the same physical attempt."
+      ]
+    },
+    {
+      "gate": "G7",
+      "state": "blocked",
+      "reason": "The response supplies no surviving-output capability or timing evidence.",
+      "required_evidence": [
+        "Bind a surviving receiver quantum output, feed-forward or frame handling, and a downstream quantum operation to one acquisition."
+      ]
+    },
+    {
+      "gate": "G8",
+      "state": "blocked",
+      "reason": "No coherent intermediate quantum state or two-resource physical route is established.",
+      "required_evidence": [
+        "Identify two physical resources and Bell measurements and show that the intermediate state survives into the second operation."
+      ]
+    }
+  ],
+  "unresolved_capabilities": [
+    "full_transform_preservation",
+    "native_configuration_replay",
+    "preparation_control",
+    "uncorrected_observations",
+    "count_provenance",
+    "processing_versions",
+    "acceptance_calibration",
+    "optical_attempt_denominator",
+    "detector_live_exposure",
+    "acquisition_order",
+    "cross_device_quantum_route",
+    "surviving_quantum_output",
+    "sequential_quantum_state"
+  ],
+  "claim_boundary": "The provider response refines remote-result interpretation. It does not turn independently submitted API jobs, retained histograms, workstation coordination, or offline protocol simulations into shared physical entanglement or teleportation.",
+  "follow_up": "Retain a versioned provider or apparatus contract and per-acquisition evidence for the unresolved requirements before evaluating physical claim gates. A statement about planned capability remains development evidence."
+}

@@ -13,19 +13,23 @@
     "scripts/qd_teleportation_rehearsal.py",
     "tests/scripts/test_qd_teleportation_rehearsal.py",
     "scripts/qd_rehearsal_secondary.py",
-    "tests/scripts/test_qd_rehearsal_secondary.py"
+    "tests/scripts/test_qd_rehearsal_secondary.py",
+    "docs/evidence/quandela/remote-result-contract/provider-assessment.json",
+    "docs/state/research_state.json",
+    "docs/runbooks/ascella-belenos-network-case.md"
   ],
   "state": "paused",
   "reconciliation": {
     "status": "verified",
-    "note": "Premises checked against main: Ascella outside-block decomposition, permuted repeat and Belenos drift series already retained; the 2026-10-24 catalogues carry the Belenos fields again; the protocol tables follow from the bosonic transform."
+    "note": "Reconciled at d5ff68e on 2026-11-11: the provider response created 2026-10-29 and updated 2026-11-03 partly clarifies result semantics; retained job-01, split blocks and replay are complete investigations with descriptive, partial or vetoed outcomes. G1 acquisition qualifications and G2 physical access remain unresolved; historical contract and replay bytes stay unchanged. The offline normalized-record reader, declaration assessment, source-byte binding, CLI and consequential negative controls are implemented and tested; provider normalization and physical gates remain unresolved."
   },
   "scope": "Claim levels C0 to C6 for Ascella-Belenos shared entanglement, terminal teleportation, reference preservation, surviving output and Ascella-Belenos-Ascella sequential teleportation; the ideal dual-rail instrument and decision statistics; acquisition only through separately admitted written cases after a provider-bound physical route exists.",
   "owner": "Quandela experiment operator",
-  "next_action": "Owner submits request items 1 and 4 through the Quandela contact form; the operator records the date and retains each answer in the design.",
+  "next_action": "Obtain the unresolved acquisition and control contracts and a provider-bound physical route before admitting a network acquisition; record any owner-submitted apparatus and output request with its dated response.",
   "related": [
     "ascella-signed-coherence-conformance",
-    "ascella-instrument-readiness-and-packed-tests"
+    "ascella-instrument-readiness-and-packed-tests",
+    "native-numeric-replay"
   ],
   "steps": [
     {
@@ -125,19 +129,96 @@
       ]
     },
     {
+      "id": "offline-network-records",
+      "action": "Implement a strict offline case and normalized joint-record boundary with explicit provenance, source-trigger denominators, partial-block handling, separate fidelity estimands, byte binding and a non-executing CLI.",
+      "acceptance": "Validate the terminal single-hop schemas and planned block/attempt targets; retain zero-success and rejected outcomes; reject malformed counts, duplicate identities and mismatched source bytes; pass bounded reader, CLI, physical-counterexample and existing protocol/benchmark tests; preserve physical and execution holds and historical producer bytes.",
+      "state": "done",
+      "depends_on": [
+        "protocol-model",
+        "classical-benchmark"
+      ],
+      "receipts": [
+        {
+          "scope_sha256": "251fa45a5f8eadd2623946d447173757c950405704a8c72618c407c6b00f1676",
+          "result": "The pinned Python 3.14.7 test lane passes 123 focused tests, including 68 new tests (47 reader, 14 CLI, 7 protocol-boundary controls). The expanded regression passes 231 of 233 tests; two unchanged job-00 regeneration checks select x18=-1.9634954084936207 against the retained 1.1780972450961724, a pi gauge difference, and are not reported as passes. Pinned Ruff checks and formatting pass across 975 files; mypy passes all five changed Python files. The whole-repository type process exits 247 without a diagnostic and is not qualified by the focused pass. The global plan and Markdown checks pass for 144 plans and 793 materialized Markdown files. Historical protocol/contract producers and retained records remain byte-identical; no QPU job or physical claim is admitted. An isolated producer-only reproduction loads no new network module and matches all 20 loaded repository modules to the input revision; retained and regenerated requests both pass complete-operator validation. The native-numeric-replay workstream owns cross-identity comparison; these observations do not establish identical physical compilation.",
+          "observed_at": "2026-11-11T21:15:34.251365+00:00",
+          "revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/qd_network_records.py",
+              "sha256": "d8250fb4fa14c70ac3251b20981accad70a61471ed005ed6471ec27c0dd81640"
+            },
+            {
+              "ref": "scripts/qd_network_analysis.py",
+              "sha256": "e02bda26623fb32cddad830f038fb5d2c0bf5c89ac207f6fed81656dc843b3f2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_qd_network_records.py",
+              "sha256": "f3b597d3771409291d55e3f959723e3ff937e1793a4a07fe8290d8f00a9615fa"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_analysis.py",
+              "sha256": "db0b5e98309f6b1f1dcbf268cda6dcca13b22712fb0e58af769cdb0cf80253de"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol_boundaries.py",
+              "sha256": "9870ab6cdd4d274ad34f1f4e1f0b01440655fc3e097271ef801b67e54d89f95a"
+            },
+            {
+              "ref": "docs/evidence/quandela/network-records/pending-case.json",
+              "sha256": "9c882a86b148264622460ed7d33e47cf57c5d7660320991605892b2e16ec9720"
+            },
+            {
+              "ref": "docs/runbooks/ascella-belenos-network-case.md",
+              "sha256": "6e1a4fea78bbacde1c82ad793df1ab8e73dfd867aee2d912699b038d2a475522"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "provider-response-assessment",
+      "action": "Retain the dated response to Perceval issue 798 as a bounded successor assessment of the historical provider contract.",
+      "acceptance": "Record source identity, creation/update/observation times and current comment-body digest; distinguish clarified definitions from unresolved acquisition and physical capabilities; preserve the historical provider contract bytes and keep G1 and G2 unqualified.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Inspected the provider response created 2026-10-29T13:18:58Z and updated 2026-11-03T15:17:09Z; retained its current-body digest and bounded six-topic assessment. Historical provider_contract.json remains byte-identical. G1 remains open and G2 remains blocked; no provider job or capability qualification was performed.",
+          "observed_at": "2026-11-11T20:49:13.486213+00:00",
+          "revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quandela/remote-result-contract/provider-assessment.json",
+              "sha256": "860b2a9c485af6236ae9d9187bf421281d4b57daa006e15a10c8e3ea6af8803b"
+            },
+            {
+              "ref": "docs/evidence/bdsc/provider_contract.json",
+              "sha256": "862e91a098f67262f45b1febb3fc221f356d17f63dc1a0ea44b60c177ee5d7af"
+            }
+          ],
+          "scope_sha256": "b85a02fb843dac73135c2f5a48b2dab5b6226d86a9976b39bd18dc2428e02207"
+        }
+      ]
+    },
+    {
       "id": "provider-capability-response",
-      "action": "Send the design's provider request and retain the dated answer: items 2 and 3 as Quandela/Perceval issue 798 (sent 2026-10-25T18:33Z), items 1 and 4 through the Quandela contact form, which the owner submits.",
+      "action": "Resolve the unanswered parts of the provider request: bind acquisition settings, event processing and independent preparation/analyzer control to a versioned contract, and identify a physical route and surviving output for request items 1 and 4. Preserve the assessed response to items 2 and 3.",
       "acceptance": "Each request item reads supported, unsupported or unresolved with platform, access route, date and software version; a roadmap answer is recorded as development evidence.",
-      "state": "doing"
+      "state": "doing",
+      "reason": "Perceval issue 798 received a response, but it does not resolve the full observation contract or provide a cross-QPU apparatus; its existence alone does not close this step.",
+      "depends_on": [
+        "provider-response-assessment"
+      ]
     },
     {
       "id": "observation-contract",
-      "action": "Resolve the provider_contract rows the witness and benchmark depend on from the provider answer or a qualification run.",
+      "action": "Resolve the acquisition-bound capabilities left open by provider-assessment.json, using a versioned provider contract or an independently admitted qualification run.",
       "acceptance": "Event provenance, setting identity and preparation/analyzer scope read supported, or the narrower composite-family limitation is recorded (G1).",
       "state": "todo",
       "depends_on": [
         "provider-capability-response"
-      ]
+      ],
+      "reason": "Detection-based counters, returned calibration-model semantics and disabled mitigation do not establish raw optical attempts, applied settings, acquisition order or independently controlled preparation."
     },
     {
       "id": "local-path-qualification",
@@ -224,14 +305,82 @@
     },
     {
       "id": "recovered-chip-rehearsal",
-      "state": "todo",
+      "state": "done",
       "action": "Write and retain teleportation_rehearsal/job-01 for a recovered qpu:belenos as the descriptive rule (descriptive-v2): twelve iterations in two blocks, block B mirrored, JOB_01_COMPILATION_SEEDS (Outshift 2026-10-26T204106Z and ANU 2026-10-26T230602Z, indices 0 to 5 each), 1200 samples per iteration, preregistered at its own fresh read by --prepare job-01, admitted while the live record keeps the layout dark-rate rule and the expected seconds within max_duration. The design section Recovered-chip rehearsal (job-01) and docs/archive/handoffs/belenos-recovery-watch.md hold the procedure.",
-      "acceptance": "The owner approves job-01's written case after the qpu:belenos performance record changes from its 2026-10-25 18:47 UTC state; a fresh plan admits it; the run is collected and both analyzers record their preregistered outputs: the pooled correctness with its anytime-valid lower bound, the block homogeneity test, and the two labeled comparisons."
+      "acceptance": "The owner approves job-01's written case after the qpu:belenos performance record changes from its 2026-10-25 18:47 UTC state; a fresh plan admits it; the run is collected and both analyzers record their preregistered outputs: the pooled correctness with its anytime-valid lower bound, the block homogeneity test, and the two labeled comparisons.",
+      "receipts": [
+        {
+          "result": "Inspected the retained job-01 submission, primary/secondary analyses and claim: the owner-approved 4.2-credit case ran under an unreviewed budget-admission branch and returned 11 of 12 iterations before the service limit. Counts are descriptive: 1012 correct of 1262 accepted, lower bound 0.7591746821598057; both classical comparisons are not evaluated and four inputs flag block differences. Both analyzers retained their outputs. This reconciliation does not rerun the producers or establish C1, cross-device entanglement or teleportation.",
+          "observed_at": "2026-11-11T20:49:13.486213+00:00",
+          "revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/submission.json",
+              "sha256": "83c0d53ee9b1dd5a3d229d0d826c30c75dd8f3355f3885d76aee60485d1a5af8"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/analysis.json",
+              "sha256": "2e98222575669288a61227ed053c22d3b310d08bb3d0e89c3c85e78f5c7275a3"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-30T202246Z-qpu_belenos-teleportation_rehearsal-job-01/secondary-analysis.json",
+              "sha256": "f589f2d582b4e5126b3c32ce2e3c0b4d2159fa734544c05ac9d91ade1a523bd3"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qd-belenos-teleportation-rehearsal-job-01",
+              "sha256": "184b764a25a581ecbafa7a5b477ff7c38a1e8c86efc95adc33304d2ef98fcdcb"
+            }
+          ],
+          "scope_sha256": "793793ec4b5ab4b381a460ee4ad9f2240fbca213dcfa87a372f359ac6492ffe4"
+        }
+      ]
+    },
+    {
+      "id": "split-rehearsal-and-replay",
+      "action": "Reconcile the retained split-block job-02/job-03 acquisitions and the fixed-seed block-A replay with the plan.",
+      "acceptance": "Bind the pair and replay analyses and their registered claim; preserve the block-homogeneity veto, the descriptive status of the comparisons, and the remaining possibility of a transient change confined to block B.",
+      "state": "done",
+      "depends_on": [
+        "recovered-chip-rehearsal"
+      ],
+      "receipts": [
+        {
+          "result": "Inspected the retained pair and replay: split blocks give 1495 correct of 1816 accepted, lower bound 0.7874736334325737; +Z and -Z homogeneity failures veto both classical comparisons. The fixed-seed replay retains all six computed meshes and no homogeneity flags against block A. The exploratory comparison supports a mesh-dependent explanation while leaving a transient block-B change unresolved; it supplies no cross-device claim. Producer replay was not run during this reconciliation.",
+          "observed_at": "2026-11-11T20:49:13.486213+00:00",
+          "revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-31T040337Z-qpu_belenos-teleportation_rehearsal-job-03/pair-analysis.json",
+              "sha256": "3e846a449707a89dab5d6a1915dd62ad35d64b59a1654f7ef6cd0dd8a7447f39"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-31T042633Z-qpu_belenos-teleportation_rehearsal-job-02-replay/replay-analysis.json",
+              "sha256": "9525a18efe75daf732062dce425baf74a4cc4ef116035a3639fef9440aeb255c"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qd-belenos-teleportation-split-blocks-mesh-error",
+              "sha256": "39c3dfe9b0e1717073a8f0dff9827d137f0e99b0a306211cfee5d57b50c1861d"
+            }
+          ],
+          "scope_sha256": "a9a5da1249187c460b2e8c6a16c48cb0867b41177bcd5709afdf3c16ca27b3e8"
+        }
+      ]
     }
   ],
   "pause": {
-    "last_result": "Request items 2 and 3 are Quandela/Perceval issue 798, opened 2026-10-25T18:33Z; the contact-form text for items 1 and 4 is drafted for the owner.",
-    "next_action": "Owner submits request items 1 and 4 through the Quandela contact form; the operator records the date and retains each answer in the design.",
-    "resume_when": "A dated provider answer names an accessible joint apparatus or research configuration, or answers the result-contract questions of Perceval issue 798"
-  }
+    "last_result": "The dated provider response is assessed. Recovered-chip job-01 ended partial and descriptive; split-block and replay investigations completed with the classical comparisons vetoed. These retained results do not qualify a network acquisition. The offline record boundary is implemented with explicit missing-data and byte-identity limits; its reports retain execution and physical-claim holds.",
+    "next_action": "Obtain the unresolved acquisition and control contracts and a provider-bound physical route before admitting a network acquisition; record any owner-submitted apparatus and output request with its dated response.",
+    "resume_when": "A dated, versioned provider or apparatus record resolves the remaining G1 observation requirements or identifies an accessible physical joint apparatus for G2; an already assessed terminology response alone does not satisfy either gate."
+  },
+  "claims": [
+    "qd-belenos-teleportation-rehearsal-job-00",
+    "qd-belenos-teleportation-rehearsal-job-01",
+    "qd-belenos-teleportation-split-blocks-mesh-error"
+  ],
+  "acquisitions": [
+    "qd-qpu-belenos-teleportation-rehearsal-job-01",
+    "qd-qpu-belenos-teleportation-rehearsal-job-02",
+    "qd-qpu-belenos-teleportation-rehearsal-job-03",
+    "qd-qpu-belenos-teleportation-rehearsal-job-02-replay"
+  ]
 }
