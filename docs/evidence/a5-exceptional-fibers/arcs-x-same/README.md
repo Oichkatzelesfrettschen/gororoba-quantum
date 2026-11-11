@@ -76,7 +76,8 @@ evaluator of `kernel-limits/plucker_limits.py` ([arc-rank-check.json](../arc-ran
 
 `xm-nm-quadric-census-p32009.sing` and `xm-nm-quadric-census-p32029.sing` read the 69 quadrics K2 of X- -> N- from
 the retained degree-2 relations and compute, in Singular 4.4.1, the Hilbert series, the minimal free resolution and
-the minimal primes (`minAssChar`). The two logs agree line for line.
+the minimal primes (`minAssChar`). The two logs agree line for line, and so does the log of
+`xp-np-quadric-census-p32029.sing` on the 69 quadrics of X+ -> N+ at F_32029.
 
 | quantity | k[y]/K2 | k[y]/P, P the minimal prime |
 |---|---|---|
@@ -91,7 +92,7 @@ K2 has exactly one minimal prime P, K2 lies in P and P does not lie in K2. The q
 irreducible of dimension 3 and degree 12 in the linear space y1 = y5 = y6 = 0, and K2 differs from P by embedded
 structure: y1, y5 and y6 are nilpotent modulo K2. The weighted arcs of this directory span 12 coordinates and 45
 quadrics in the fiber-to-Grassmannian fit of [kernel-limits](../kernel-limits/README.md), the Hilbert function of
-k[y]/P, so those arcs sample the whole reduced fiber. Scope: two primes; X+ -> N+ is not computed; the embedded
+k[y]/P, so those arcs sample the whole reduced fiber. Scope: two primes for X- -> N-, one for X+ -> N+; the embedded
 primes of K2 and the equality of K2 with the ideal L of the fiber cone in every degree stay open. Each run takes
 280 s and 0.5 GB:
 
