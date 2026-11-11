@@ -24,14 +24,14 @@
     "tuna17.svg": {
       "original_filename": "teleportation_tuna17_audited_v6.svg",
       "original_sha256": "35a9fd5e922f0dc3b7f059b1eb7778fb8c80cd2a6f2411d06a4a9d078b86c4f7",
-      "sha256": "1e9a2fafeeb7f8af7170747fb8174d5ac7ba45930ccb966ed60a43008be550d9",
-      "change": "Stable data-binding IDs only; visible content and geometry preserved."
+      "sha256": "58d40dd7b4f94b4235e521fa54fa2dfd7b2c4d8dee34caea62e27e8ef17adc47",
+      "change": "Stable data-binding IDs added; the original is not held in this tree, so preservation of visible content and geometry is an operator assertion."
     },
     "kingston.svg": {
       "original_filename": "kingston_qet_audited_v6.svg",
       "original_sha256": "3d6d860b65c18a977a7e8b976b4f8f4085d278a0e2874242f6f045ba223334b2",
-      "sha256": "b4e2bec5095cacc11692bfb3f91b71d98cc3517ef03d65eb99919c3072603857",
-      "change": "Stable data-binding IDs only; visible content and geometry preserved."
+      "sha256": "c7b5c612d2315f356acd28767695a42743fdd871f571685a9bfbcc269f667541",
+      "change": "Stable data-binding IDs added; the original is not held in this tree, so preservation of visible content and geometry is an operator assertion."
     }
   }
 }

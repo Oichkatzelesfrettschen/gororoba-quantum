@@ -4,8 +4,12 @@ The two editable SVG masters retain the audited October evidence snapshot.
 They are not a report of a new experiment. [sources.json](sources.json)
 binds the original v6 archive, each master and three historical repository
 records. New XML IDs identify every displayed Tuna route, match rate and
-interval, its shot denominator, and both Kingston endpoint cards. Adding
-these IDs changes no visible element or geometry.
+interval, its shot denominator, and both Kingston endpoint cards. The
+v6 originals are not held in this tree, so the claim that the IDs leave
+every visible element and all geometry unchanged is an operator assertion
+that no check here verifies. The Kingston plate displays the measured-statistics summary
+of the collect record; the replayed-statistics summary of the same record is
+never displayed.
 
 - [Tuna-17 master](tuna17.svg): four different input/route cells, terminal
   readout, basis-dependent all-shot decoding, no common-channel average.
@@ -20,7 +24,7 @@ these IDs changes no visible element or geometry.
 [publication_plates.py](../../../scripts/publication_plates.py) uses the
 [shared validator](../../../gororoba_quantum/publication_evidence.py) to
 check record identities before deriving displayed strings. A changed or
-missing source is an error, not permission to reuse yesterday's label.
+missing source is an error.
 Git blob SHA-1 pins repository identity; every release also records SHA-256
 of every source read and every emitted asset. No archive Python is executed.
 
@@ -48,20 +52,18 @@ digest drift, duplicate keys, nonfinite values, hidden or missing endpoints,
 source ambiguity and path escape. The checks raise under `python -O` too;
 publication validation does not depend on stripped assertions.
 
-## Discussion closure and remaining evidence
+## Scope and remaining evidence
 
-The conversation produced layouts and standalone checks; it did not land a
-repository-owned source binding or common-route experiment. This change
-adds those interfaces and their bounded regressions. The
+The builder and validator bind each plate to a repository-owned source
+manifest, and bounded regressions cover them. The
 [fixed-route six-state design](../../design/fixed-route-teleportation-benchmark.md)
 addresses the state/topology confound prospectively, without relabelling
 the historical data as a completed benchmark. Its acquisition and the
-live-output/reference-output tests remain unperformed here.
+live-output/reference-output tests are not performed.
 
-The Rust consumer in gororoba-open's `quantum_core::teleportation_frame`
-contains only reusable phase-quotiented Clifford/Pauli-frame algebra, with
-exact matrix-oracle tests. It holds no hardware data, channel-fidelity claim
-or duplicate publication history. Documents and infrastructure repositories
-receive no copied scientific records or operational changes from this work.
+External reference, unverified: the gororoba-open repository may carry a
+module named `quantum_core::teleportation_frame`. This tree holds no copy of
+it, no local gororoba-open ref names it, and nothing here asserts or relies on
+its behavior.
 
 Work status and acquisition holds: [plan record](../../state/plans/teleportation-publication-and-fixed-route.json).

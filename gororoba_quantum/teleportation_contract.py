@@ -67,12 +67,24 @@ def decode(basis: Basis, raw: int, a: int, b: int) -> int:
     return raw ^ flip
 
 
+def validate_roles(route: Sequence[int], nqubits: int | None = None) -> tuple[int, ...]:
+    """Check that a route names four distinct qubits for the roles I,P1,P2,D.
+
+    The range check against the register width runs only when `nqubits` is
+    given. No coupling graph enters, so adjacency stays unchecked.
+    """
+    require(len(route) == 4, "a route has four roles I,P1,P2,D")
+    r = tuple(integer(q, "route qubit") for q in route)
+    require(len(set(r)) == 4, "route qubits must be distinct")
+    if nqubits is not None:
+        require(max(r) < integer(nqubits, "nqubits", 4), "route qubits must be in range")
+    return r
+
+
 def validate_route(route: Sequence[int], nqubits: int, edges: Sequence[Sequence[int]]) -> tuple[int, ...]:
     """Check ordered roles I,P1,P2,D against an undirected coupling graph."""
     nqubits = integer(nqubits, "nqubits", 4)
-    require(len(route) == 4, "a route has four roles I,P1,P2,D")
-    r = tuple(integer(q, "route qubit") for q in route)
-    require(len(set(r)) == 4 and max(r) < nqubits, "route qubits must be distinct and in range")
+    r = validate_roles(route, nqubits)
     graph: set[frozenset[int]] = set()
     for edge in edges:
         require(len(edge) == 2, "each coupling has two endpoints")
@@ -83,14 +95,16 @@ def validate_route(route: Sequence[int], nqubits: int, edges: Sequence[Sequence[
     return r
 
 
-def circuit(nqubits: int, route: Sequence[int], label: str) -> str:
+def circuit(nqubits: int, route: Sequence[int], label: str, edges: Sequence[Sequence[int]] | None = None) -> str:
     """Emit logical cQASM, with barriers separating preparation/channel/readout.
 
-    The caller validates topology. Barriers mark the logical boundary;
-    compiler/native-channel conformance still needs its own receipt.
+    With `edges` the route is checked against that coupling graph; without
+    it only the role shape and register range are checked, so the caller owns
+    topology. Barriers mark the logical boundary; compiler/native-channel
+    conformance still needs its own receipt.
     """
     require(label in BY_LABEL, "unknown six-state input")
-    r = validate_route(route, nqubits, list(zip(route, route[1:], strict=False)))
+    r = validate_roles(route, nqubits) if edges is None else validate_route(route, nqubits, edges)
     i, p1, p2, d = r
     state = BY_LABEL[label]
     lines = ["version 3.0", "", f"qubit[{nqubits}] q", f"bit[{nqubits}] b", ""]
@@ -148,7 +162,7 @@ def make_plan(
         for block, route_index, label in ordered[offset : offset + batch_size]:
             state_index = tuple(BY_LABEL).index(label)
             filename = f"block-{block:04d}-route-{route_index:03d}-state-{state_index}.cq"
-            text = circuit(nqubits, checked[route_index], label)
+            text = circuit(nqubits, checked[route_index], label, edges)
             files[f"{name}/{filename}"] = text
             rows.append(
                 {
@@ -207,10 +221,16 @@ def score_histogram(
     nqubits: int,
     route: Sequence[int],
     label: str,
+    edges: Sequence[Sequence[int]] | None = None,
 ) -> dict[str, Any]:
-    """Score full-register strings with Q0 rightmost; retain branch denominators."""
+    """Score full-register strings with Q0 rightmost; retain branch denominators.
+
+    The roles I, P1, D read register qubits `route[0]`, `route[1]`, `route[3]`.
+    With `edges` the route is checked against that coupling graph; without it
+    only the role shape and register range are checked.
+    """
     integer(nqubits, "nqubits", 4)
-    r = validate_route(route, nqubits, list(zip(route, route[1:], strict=False)))
+    r = validate_roles(route, nqubits) if edges is None else validate_route(route, nqubits, edges)
     require(label in BY_LABEL, "unknown six-state input")
     state = BY_LABEL[label]
     branches = {f"{a}{b}": {"shots": 0, "correct": 0} for a in range(2) for b in range(2)}
@@ -257,11 +277,8 @@ def six_state_estimate(rows: Sequence[Mapping[str, Any]], alpha: float = 0.05) -
         all(isinstance(v, str) and v.strip() for v in channels | epochs),
         "channel and calibration identities are required",
     )
-    validate_route(
-        next(iter(routes)),
-        max(next(iter(routes))) + 1,
-        list(zip(next(iter(routes)), next(iter(routes))[1:], strict=False)),
-    )
+    # Rows carry a route but no coupling graph or register width: only the role shape is checkable here.
+    validate_roles(next(iter(routes)))
     sizes: list[int] = []
     matches: list[float] = []
     for row in rows:

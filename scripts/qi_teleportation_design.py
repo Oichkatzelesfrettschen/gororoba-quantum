@@ -142,7 +142,7 @@ def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: 
             if job.histogram is None:
                 raise ValueError("completed job has no histogram")
             route = plan["routes"][spec["route_index"]]
-            score = score_histogram(job.histogram, plan["nqubits"], route, spec["input"])
+            score = score_histogram(job.histogram, plan["nqubits"], route, spec["input"], plan["topology"])
             require(score["shots"] == plan["shots"], "histogram denominator differs from plan")
             score.update(
                 route=route,

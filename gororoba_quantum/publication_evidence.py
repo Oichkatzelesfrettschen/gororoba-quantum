@@ -86,19 +86,36 @@ def _interval(value: Mapping[str, Any]) -> tuple[float, float, float]:
     return lo, mean, hi
 
 
-def _summaries(value: Any) -> list[dict[str, Any]]:
-    found = []
+MEASURED_SUMMARY = ("measured_statistics", "summary_interval")
+
+
+def _summaries(value: Any, path: tuple[str, ...] = ()) -> list[tuple[tuple[str, ...], dict[str, Any]]]:
+    """Every selected-endpoint summary node with its key path from the record root."""
+    found: list[tuple[tuple[str, ...], dict[str, Any]]] = []
     if isinstance(value, dict):
         if all(
             isinstance(value.get(key), dict) and "mean" in value[key] for key in ("selected_excess", "selected_margin")
         ):
-            found.append(value)
-        for child in value.values():
-            found.extend(_summaries(child))
+            found.append((path, value))
+        for key, child in value.items():
+            found.extend(_summaries(child, (*path, str(key))))
     elif isinstance(value, list):
-        for child in value:
-            found.extend(_summaries(child))
+        for index, child in enumerate(value):
+            found.extend(_summaries(child, (*path, str(index))))
     return found
+
+
+def measured_summary(collect: Any) -> dict[str, Any]:
+    """The measured-statistics summary node; replayed statistics are never displayed.
+
+    The collect record carries one summary per measured and per replayed
+    statistics block. The plate shows the measured block, so the node is
+    selected by its `measured_statistics/summary_interval` key path and must
+    occur exactly once.
+    """
+    chosen = [node for path, node in _summaries(collect) if path[-len(MEASURED_SUMMARY) :] == MEASURED_SUMMARY]
+    require(len(chosen) == 1, "Kingston measured-statistics summary must resolve uniquely")
+    return chosen[0]
 
 
 def display_values(documents: Mapping[str, Any]) -> dict[str, dict[str, str]]:
@@ -124,11 +141,10 @@ def display_values(documents: Mapping[str, Any]) -> dict[str, dict[str, str]]:
     shots = cases["shots"]
     require(type(shots) is int and shots > 0, "invalid shot count")
     tuna["tuna_shots"] = f"{shots:,} shots per circuit  \u00b7  four routes, not one channel."
-    summaries = _summaries(documents["kingston_collect"])
-    require(len(summaries) == 1, "Kingston selected-endpoint summary must resolve uniquely")
+    summary = measured_summary(documents["kingston_collect"])
     king: dict[str, str] = {}
     for key, prefix in (("selected_excess", "kingston_information"), ("selected_margin", "kingston_margin")):
-        item = summaries[0][key]
+        item = summary[key]
         require(item.get("method") == "student_t_over_14_replicas", "Kingston interval definition changed")
         lo, mean, hi = _interval(item)
         king[f"{prefix}_mean"] = f"{mean:+.3f}".replace("-", "\u2212")

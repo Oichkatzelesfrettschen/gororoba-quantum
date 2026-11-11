@@ -1,8 +1,8 @@
 # Fixed-route six-state teleportation benchmark
 
 This is a prospective, unsubmitted design. Its generator and estimator are
-implemented; no new QPU acquisition, compiled-native-channel certificate or
-surviving-output demonstration is reported by this change.
+implemented; the design reports no new QPU acquisition, compiled-native-channel
+certificate or surviving-output demonstration.
 
 ## Question and falsifier
 
@@ -47,7 +47,8 @@ introduced as another varying factor. Batches respect the provider module's
 `HARDWARE_BATCH_CIRCUITS`, and partial final batches remain valid.
 
 Before submission, retain a written approved case, fresh provider admission,
-native core-circuit/timing comparison, preparation/analyzer controls and a
+native core-circuit/timing comparison (including provider-compiler acceptance of
+the barriers between preparation, channel and readout), preparation/analyzer controls and a
 calibration receipt. Conceal input labels from the candidate channel and
 account for compiler optimizations or other label side information. A
 matching route identifier is necessary, not sufficient, to establish a
@@ -63,14 +64,16 @@ For six input rows on one route and one declared calibration, report
     epsilon = sqrt(log(1/alpha) sum_i(1/n_i) / 72)
     lower = max(0, F_hat - epsilon)
 
-The bound follows Hoeffding's inequality for fixed, independent bounded
+The bound follows [Hoeffding's inequality](../notes/papers/hoeffding-1963.md) for fixed, independent bounded
 trials with weights 1/(6 n_i). It is one-sided and sampling-only. The CLI
 allocates family alpha by Bonferroni over every preplanned block/route
 report. It reports all groups and does not select the best path or pool
 blocks. Increasing n_i cannot certify stationarity, eliminate drift, or
 remove SPAM and label leakage.
 
-The 2/3 comparison is conditional on a common input-independent instrument,
+The 2/3 comparison (the classical bound for six input states, as used in
+[Anderson et al.](../notes/papers/1901.02260.md) and
+[Ma et al.](../notes/papers/1210.1282.md)) is conditional on a common input-independent instrument,
 trusted six-state preparation/readout, fixed stopping and the stated
 sampling assumptions. A `lower_exceeds_classical_bound` field records only
 that numerical comparison; `instrument_admission` remains uncertified by

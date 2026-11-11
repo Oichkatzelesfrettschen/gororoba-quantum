@@ -2,14 +2,20 @@
 
 from __future__ import annotations
 
+import contextlib
 import copy
+import hashlib
+import io
+import json
 import math
 import tempfile
 import unittest
 from pathlib import Path
 from typing import Any, cast
+from unittest import mock
 
 import numpy as np
+import qi_teleportation_design
 from qi_teleportation_design import analyze, write_bundle
 
 from teleportation_contract import (
@@ -23,6 +29,7 @@ from teleportation_contract import (
     score_histogram,
     six_state_estimate,
     validate_plan,
+    validate_roles,
     validate_route,
 )
 
@@ -170,6 +177,74 @@ class FrameTests(unittest.TestCase):
                 score_histogram(cast(Any, counts), 4, [0, 1, 2, 3], "0")
 
 
+def placed_counts(label: str, route: list[int], nqubits: int, shots: int, reverse_bell: bool = False) -> dict[str, int]:
+    """Full-register histogram of the ideal circuit with logical qubit q on register qubit route[q].
+
+    Register qubits outside the route read zero; Q0 is the rightmost character.
+    """
+    counts: dict[str, int] = {}
+    probability = abs(logical_state(label, reverse_bell)) ** 2
+    for index, p in enumerate(probability):
+        if p < 1e-12:
+            continue
+        bits = ["0"] * nqubits
+        for logical, physical in enumerate(route):
+            bits[nqubits - 1 - physical] = str((index >> logical) & 1)
+        counts["".join(bits)] = round(p * shots)
+    return counts
+
+
+class RouteScoringTests(unittest.TestCase):
+    def test_score_reads_the_roles_from_the_route(self) -> None:
+        # A route-ignoring parser reads register qubits 0, 1, 3 and sees only zeros on these routes.
+        for route in ([5, 4, 3, 2], [7, 0, 6, 2], [3, 6, 1, 5]):
+            for spec in STATES:
+                counts = placed_counts(spec.label, route, 8, 1600)
+                self.assertEqual(sum(counts.values()), 1600)
+                score = score_histogram(counts, 8, route, spec.label)
+                self.assertEqual((score["shots"], score["correct"]), (1600, 1600))
+                self.assertEqual(
+                    {k: v["shots"] for k, v in score["branches"].items()}, dict.fromkeys(score["branches"], 400)
+                )
+                self.assertEqual(
+                    {k: v["correct"] for k, v in score["branches"].items()}, dict.fromkeys(score["branches"], 400)
+                )
+
+    def test_a_wrong_route_scores_the_wrong_qubits(self) -> None:
+        counts = placed_counts("1", [5, 4, 3, 2], 8, 1600)
+        for wrong in ([0, 1, 2, 3], [4, 5, 3, 2], [5, 4, 2, 3]):
+            score = score_histogram(counts, 8, wrong, "1")
+            self.assertLess(score["correct"], score["shots"])
+
+    def test_branch_labels_follow_the_route_roles(self) -> None:
+        # One shot with I=1, P1=0, D=0 on route [5, 4, 3, 2] lands in branch "10" and decodes Z as d xor b = 0.
+        outcome = "00100000"
+        score = score_histogram({outcome: 3}, 8, [5, 4, 3, 2], "0")
+        self.assertEqual(score["branches"]["10"], {"shots": 3, "correct": 3})
+        self.assertEqual(score["branches"]["00"], {"shots": 0, "correct": 0})
+
+    def test_coupling_graph_is_checked_when_supplied(self) -> None:
+        edges = [[0, 1], [1, 2], [2, 3]]
+        counts = {"0000": 1}
+        score_histogram(counts, 4, [0, 1, 2, 3], "0", edges)
+        with self.assertRaises(ValueError):
+            score_histogram(counts, 4, [0, 1, 3, 2], "0", edges)
+        with self.assertRaises(ValueError):
+            circuit(4, [0, 1, 3, 2], "0", edges)
+        self.assertIn("CNOT q[1], q[2]", circuit(4, [0, 1, 2, 3], "0", edges))
+
+    def test_role_check_claims_only_shape_and_range(self) -> None:
+        self.assertEqual(validate_roles([3, 1, 2, 0]), (3, 1, 2, 0))
+        self.assertEqual(validate_roles([3, 1, 2, 0], 4), (3, 1, 2, 0))
+        for route, width in (([0, 0, 1, 2], None), ([0, 1, 2], None), ([0, 1, 2, 4], 4), ([0, 1, 2, True], None)):
+            with self.assertRaises(ValueError):
+                validate_roles(cast(Any, route), width)
+        # Distinct in-range qubits pass although no coupling joins them.
+        self.assertEqual(validate_roles([0, 2, 1, 3], 4), (0, 2, 1, 3))
+        with self.assertRaises(ValueError):
+            validate_route([0, 2, 1, 3], 4, [[0, 1], [1, 2], [2, 3]])
+
+
 class DesignTests(unittest.TestCase):
     def test_every_input_crosses_every_route_and_block(self) -> None:
         plan, files = fixture_plan()
@@ -226,6 +301,208 @@ class DesignTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 write_bundle(target, plan, files)
             self.assertEqual((target / "plan.json").read_bytes(), before)
+
+
+def sha(data: str) -> str:
+    return hashlib.sha256(data.encode()).hexdigest()
+
+
+def collect_case(
+    case: Path,
+    plan: dict,
+    *,
+    skip_batches: tuple[str, ...] = (),
+    shots_done: int | None = None,
+    failed_job: bool = False,
+) -> list[Path]:
+    """Add the submission receipt, collection and raw shots that qi_records reads to each prepared batch.
+
+    Every circuit returns its ideal histogram on its own route, so a faithful analysis scores every group
+    perfectly. The synthetic job identifiers and receipts stand for no provider job.
+    """
+    shots = plan["shots"]
+    directories = []
+    job_id = 100
+    for batch in plan["batches"]:
+        directory = case / batch["batch"]
+        if batch["batch"] in skip_batches:
+            continue
+        directory.mkdir(exist_ok=True)
+        (directory / "raw").mkdir()
+        cases_text = (directory / "cases.json").read_text()
+        receipt_jobs: list[dict[str, Any]] = []
+        collected: list[dict[str, Any]] = []
+        for row in batch["circuits"]:
+            job_id += 1
+            route = plan["routes"][row["route_index"]]
+            histogram = placed_counts(row["input"], route, plan["nqubits"], shots)
+            if shots_done is not None:
+                histogram = {key: value * shots_done // shots for key, value in histogram.items()}
+            done = sum(histogram.values())
+            failed = failed_job and not collected
+            receipt_jobs.append({"file": row["file"], "job": job_id, "sha256": row["sha256"]})
+            collected.append(
+                {
+                    "file": row["file"],
+                    "job": {
+                        "id": job_id,
+                        "batch_job_id": 7,
+                        "created_on": "2026-01-01T00:00:00Z",
+                        "number_of_shots": shots,
+                        "status": "failed" if failed else "completed",
+                    },
+                    "results": []
+                    if failed
+                    else [{"job_id": job_id, "shots_requested": shots, "shots_done": done, "results": histogram}],
+                }
+            )
+            if not failed:
+                raw = [key for key, count in histogram.items() for _ in range(count)]
+                (directory / "raw" / f"{row['file']}.json").write_text(json.dumps(raw))
+        receipt = {
+            "schema": "qi-submission-v2",
+            "state": "enqueued",
+            "approval": "synthetic fixture",
+            "batch_job": 7,
+            "backend": plan["backend"],
+            "backend_type_id": plan["backend_type_id"],
+            "shots": shots,
+            "cases_sha256": sha(cases_text),
+            "jobs": receipt_jobs,
+        }
+        (directory / "submission.json").write_text(json.dumps(receipt))
+        (directory / "results.json").write_text(
+            json.dumps({"schema": "qi-collection-v1", "transactions": [], "jobs": collected})
+        )
+        directories.append(directory)
+    return directories
+
+
+class AnalyzeCliTests(unittest.TestCase):
+    """The analyze path on a constructed run: no seed, provider call or retained record."""
+
+    def setUp(self) -> None:
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.root = Path(self._tmp.name)
+        self.plan, files = fixture_plan()
+        self.case = self.root / "case"
+        write_bundle(self.case, self.plan, files)
+        self.plan_path = self.case / "plan.json"
+        self.calibration = self.root / "calibration.json"
+        self.calibration.write_text("{}\n")
+
+    def collect(self, **options: Any) -> list[Path]:
+        return collect_case(self.case, self.plan, **options)
+
+    def test_complete_run_reports_every_group_with_family_alpha(self) -> None:
+        result = analyze(self.plan_path, self.collect(), self.calibration, 0.05)
+        self.assertEqual(result["family_alpha"], 0.05)
+        self.assertEqual(result["plan_sha256"], hashlib.sha256(self.plan_path.read_bytes()).hexdigest())
+        self.assertEqual([(g["block"], g["route_index"]) for g in result["groups"]], [(0, 0), (0, 1), (1, 0), (1, 1)])
+        # Bonferroni over the 2 blocks x 2 routes planned groups: alpha / 4 enters the radius.
+        radius = math.sqrt(-math.log(0.05 / 4) * math.fsum([1 / 16] * 6) / 72)
+        for group in result["groups"]:
+            self.assertEqual(len(group["rows"]), 6)
+            self.assertEqual(group["estimate"]["mean"], 1)
+            self.assertAlmostEqual(group["estimate"]["sampling_radius"], radius)
+            self.assertEqual({r["selection"] for r in group["rows"]}, {"all_shots"})
+        self.assertEqual(result["instrument_admission"], "not_independently_certified_by_this_analysis")
+        self.assertEqual(
+            [p["batch"] for p in result["acquisition_provenance"]], [b["batch"] for b in self.plan["batches"]]
+        )
+
+    def test_group_rows_carry_their_own_route_and_channel(self) -> None:
+        result = analyze(self.plan_path, self.collect(), self.calibration, 0.05)
+        for group in result["groups"]:
+            route = self.plan["routes"][group["route_index"]]
+            self.assertEqual({tuple(r["route"]) for r in group["rows"]}, {tuple(route)})
+            self.assertEqual(
+                {r["channel_id"].rsplit(":", 1)[1] for r in group["rows"]}, {f"route-{group['route_index']}"}
+            )
+
+    def test_cli_main_prints_the_analysis_and_rejects_through_the_parser(self) -> None:
+        directories = [str(path) for path in self.collect()]
+        argv = ["qi_teleportation_design.py", "analyze", "--plan", str(self.plan_path)]
+        argv += ["--calibration-record", str(self.calibration), *directories]
+        out = io.StringIO()
+        with mock.patch("sys.argv", argv), contextlib.redirect_stdout(out):
+            self.assertEqual(qi_teleportation_design.main(), 0)
+        self.assertEqual(json.loads(out.getvalue())["schema"], "qi-fixed-route-six-state-analysis-v1")
+        with (
+            mock.patch("sys.argv", [*argv, directories[0]]),
+            contextlib.redirect_stderr(io.StringIO()),
+            self.assertRaises(SystemExit) as raised,
+        ):
+            qi_teleportation_design.main()
+        self.assertEqual(raised.exception.code, 2)
+
+    def rejected(self, message: str, directories: list[Path], plan_path: Path | None = None) -> None:
+        with self.assertRaisesRegex(ValueError, message):
+            analyze(plan_path or self.plan_path, directories, self.calibration, 0.05)
+
+    def test_missing_batch_is_rejected(self) -> None:
+        directories = self.collect(skip_batches=("batch-0007",))
+        self.rejected("every scheduled batch must be present", directories)
+
+    def test_repeated_batch_directory_is_rejected(self) -> None:
+        directories = self.collect()
+        self.rejected("unknown or duplicate acquisition batch", [*directories, directories[0]])
+
+    def test_repeated_job_identifiers_are_rejected(self) -> None:
+        # qi_records rejects a repeat inside one batch; the same id across batches reaches the analyzer's own check.
+        directories = self.collect()
+        first = json.loads((directories[1] / "submission.json").read_text())
+        results = json.loads((directories[1] / "results.json").read_text())
+        for index, (row, collected) in enumerate(zip(first["jobs"], results["jobs"], strict=True)):
+            row["job"] = collected["job"]["id"] = collected["results"][0]["job_id"] = 101 + index
+        (directories[1] / "submission.json").write_text(json.dumps(first))
+        (directories[1] / "results.json").write_text(json.dumps(results))
+        self.rejected("same provider job appears twice", directories)
+
+    def test_run_bound_to_another_plan_is_rejected(self) -> None:
+        directories = self.collect()
+        other = self.root / "other-plan.json"
+        other.write_text(self.plan_path.read_text() + "\n")
+        self.rejected("acquisition is not bound to this plan", directories, other)
+
+    def test_short_shot_count_is_rejected_not_renormalized(self) -> None:
+        self.rejected("missing shots", self.collect(shots_done=12))
+
+    def test_incomplete_job_is_rejected(self) -> None:
+        self.rejected("incomplete acquisition cannot be scored", self.collect(failed_job=True))
+
+    def test_circuit_rows_that_differ_from_the_plan_are_rejected(self) -> None:
+        directories = self.collect()
+        cases = json.loads((directories[0] / "cases.json").read_text())
+        cases["circuits"][0]["input"] = "1" if cases["circuits"][0]["input"] == "0" else "0"
+        text = json.dumps(cases)
+        (directories[0] / "cases.json").write_text(text)
+        receipt = json.loads((directories[0] / "submission.json").read_text())
+        receipt["cases_sha256"] = sha(text)
+        (directories[0] / "submission.json").write_text(json.dumps(receipt))
+        self.rejected("acquisition circuit rows differ from plan", directories)
+
+    def test_histogram_laid_out_on_another_route_scores_below_perfect(self) -> None:
+        # The other route's qubits read zero on this route, so an input whose expected bit is 1 mismatches.
+        directories = self.collect()
+        directory = directories[0]
+        index, spec = next(
+            (i, r) for i, r in enumerate(self.plan["batches"][0]["circuits"]) if BY_LABEL[r["input"]].expected
+        )
+        results = json.loads((directory / "results.json").read_text())
+        histogram = placed_counts(spec["input"], self.plan["routes"][1 - spec["route_index"]], 8, self.plan["shots"])
+        results["jobs"][index]["results"][0]["results"] = histogram
+        (directory / "results.json").write_text(json.dumps(results))
+        raw = [key for key, count in histogram.items() for _ in range(count)]
+        (directory / "raw" / f"{spec['file']}.json").write_text(json.dumps(raw))
+        result = analyze(self.plan_path, directories, self.calibration, 0.05)
+        group = next(
+            g for g in result["groups"] if (g["block"], g["route_index"]) == (spec["block"], spec["route_index"])
+        )
+        scored = next(r for r in group["rows"] if r["input"] == spec["input"])
+        self.assertLess(scored["match"], 1)
+        self.assertLess(group["estimate"]["mean"], 1)
 
 
 class StatisticsTests(unittest.TestCase):

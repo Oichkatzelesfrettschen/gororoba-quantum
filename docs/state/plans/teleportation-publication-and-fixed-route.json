@@ -14,7 +14,7 @@
   "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "The historical four-input decoder and QET reference already exist. This successor adds reusable contracts, bounded regressions, crossed-route cases and source-bound SVG checks without editing their retained producers or observations."
+    "note": "The historical four-input decoder and QET reference already exist. The reusable contracts, bounded regressions, crossed-route cases and source-bound SVG checks leave the retained producers and observations unedited."
   },
   "scope": "Software admission, historical publication binding and prospective fixed-route design. No provider execution, resource purchase, new acquisition, live-output demonstration or cross-device claim is authorized.",
   "owner": "teleportation evidence maintainer",
@@ -25,8 +25,8 @@
   "steps": [
     {
       "id": "implementation-admission",
-      "action": "Admit the bounded Python tests, source-bound renderer and companion Rust frame implementation through their repository checks.",
-      "acceptance": "Pinned style/type/behavior checks and quantum_core validation pass; the source-bound render checks actual historical bytes; local-only checks remain labelled.",
+      "action": "Admit the bounded Python tests and the source-bound renderer through their repository checks. A gororoba-open frame module is an external, unverified reference that this tree does not hold, and no acceptance here depends on it.",
+      "acceptance": "Pinned style/type/behavior checks pass; the source-bound render checks actual historical bytes; local-only checks remain labelled.",
       "state": "doing"
     },
     {

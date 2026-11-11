@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -36,13 +37,20 @@ def sources() -> dict:
         },
         "tuna_cases": {"backend": "tuna_17", "shots": 1000, "nqubits": 4},
         "kingston_collect": [
+            {"jobs": []},
             {
-                "summary_interval": {
-                    "selected_excess": {"lo": 0.1, "mean": 0.2, "hi": 0.3, "method": "student_t_over_14_replicas"},
-                    "selected_margin": {"lo": -0.3, "mean": -0.2, "hi": -0.1, "method": "student_t_over_14_replicas"},
-                }
-            }
+                "measured_statistics": {"summary_interval": summary(0.1, 0.2, 0.3, -0.3, -0.2, -0.1)},
+                "replayed_statistics": {"summary_interval": summary(0.6, 0.7, 0.8, 0.4, 0.5, 0.6)},
+            },
         ],
+    }
+
+
+def summary(lo: float, mean: float, hi: float, margin_lo: float, margin_mean: float, margin_hi: float) -> dict:
+    method = "student_t_over_14_replicas"
+    return {
+        "selected_excess": {"lo": lo, "mean": mean, "hi": hi, "method": method},
+        "selected_margin": {"lo": margin_lo, "mean": margin_mean, "hi": margin_hi, "method": method},
     }
 
 
@@ -53,11 +61,35 @@ class PublicationTests(unittest.TestCase):
         self.assertEqual(values["kingston.svg"]["kingston_information_mean"], "+0.200")
         self.assertEqual(values["kingston.svg"]["kingston_margin_interval"], "\u22120.300 to \u22120.100")
 
-    def test_unique_summary_and_input_contract(self) -> None:
+    def test_measured_node_is_selected_and_replayed_values_are_not_displayed(self) -> None:
         document = sources()
-        document["kingston_collect"] *= 2
+        shown = display_values(document)["kingston.svg"]
+        self.assertEqual(shown["kingston_information_mean"], "+0.200")
+        self.assertEqual(shown["kingston_margin_mean"], "\u22120.200")
+        self.assertNotIn("0.7", "".join(shown.values()))
+        self.assertNotIn("0.5", "".join(shown.values()))
+        # Swapping the two nodes swaps the displayed values: selection follows the key path, not the order.
+        measured = document["kingston_collect"][1]
+        measured["measured_statistics"], measured["replayed_statistics"] = (
+            measured["replayed_statistics"],
+            measured["measured_statistics"],
+        )
+        self.assertEqual(display_values(document)["kingston.svg"]["kingston_information_mean"], "+0.700")
+        # Dropping the replayed node leaves the measured selection unchanged.
+        del document["kingston_collect"][1]["replayed_statistics"]
+        self.assertEqual(display_values(document)["kingston.svg"]["kingston_information_mean"], "+0.700")
+
+    def test_measured_node_must_exist_exactly_once(self) -> None:
+        absent = sources()
+        del absent["kingston_collect"][1]["measured_statistics"]
         with self.assertRaises(ValueError):
-            display_values(document)
+            display_values(absent)
+        duplicated = sources()
+        duplicated["kingston_collect"].append(copy.deepcopy(duplicated["kingston_collect"][1]))
+        with self.assertRaises(ValueError):
+            display_values(duplicated)
+
+    def test_unique_input_contract(self) -> None:
         document = sources()
         document["tuna_analysis"]["teleport"][0]["input"] = "1"
         with self.assertRaises(ValueError):
@@ -70,7 +102,7 @@ class PublicationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 display_values(document)
         document = sources()
-        document["kingston_collect"][0]["summary_interval"]["selected_excess"]["lo"] = 0.9
+        document["kingston_collect"][1]["measured_statistics"]["summary_interval"]["selected_excess"]["lo"] = 0.9
         with self.assertRaises(ValueError):
             display_values(document)
 
