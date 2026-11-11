@@ -1,0 +1,73 @@
+{
+ "schema": "a5-fiber-plucker-map-v1",
+ "family": "e8",
+ "slug": "e8-np",
+ "prime": 32029,
+ "order": 48,
+ "base_nullity": 16,
+ "generators": 21,
+ "arcs_requested": 720,
+ "arcs_with_limit": 720,
+ "cases": {
+  "p2": {
+   "samples": 320,
+   "plucker_rank": 22,
+   "veronese_ranks": {
+    "1": 7,
+    "2": 22,
+    "3": 50
+   },
+   "mutation_solution_dimension": 0,
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 22,
+   "t_sha256": "e651be939ecbddd2a477978d5731d5f7ee34e86e93eb9a05e75358f70b210029",
+   "fit_exact_on_all_samples": true,
+   "held_out": 40,
+   "held_out_proportional": 40,
+   "distinct_fiber_points": 360,
+   "verdict": "degree_2_fit_validated"
+  },
+  "p1": {
+   "samples": 320,
+   "plucker_rank": 53,
+   "veronese_ranks": {
+    "1": 12,
+    "2": 53,
+    "3": 155
+   },
+   "mutation_solution_dimension": 0,
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 53,
+   "t_sha256": "47ca32b4bb7dde1fec0d3c2a18bf6ba2cdad430b540ed217840118704cb4d4f3",
+   "fit_exact_on_all_samples": true,
+   "held_out": 40,
+   "held_out_proportional": 40,
+   "distinct_fiber_points": 360,
+   "verdict": "degree_2_fit_validated"
+  },
+  "all": {
+   "samples": 640,
+   "plucker_rank": 69,
+   "veronese_ranks": {
+    "1": 16,
+    "2": 69,
+    "3": 195
+   },
+   "mutation_solution_dimension": 0,
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 69,
+   "t_sha256": "60999b998fb5750bbe293e6e93efdbfb260f1aca16f0afb9eed831da3752d370",
+   "fit_exact_on_all_samples": true,
+   "held_out": 80,
+   "held_out_proportional": 80,
+   "distinct_fiber_points": 720,
+   "verdict": "degree_2_fit_validated"
+  }
+ }
+}

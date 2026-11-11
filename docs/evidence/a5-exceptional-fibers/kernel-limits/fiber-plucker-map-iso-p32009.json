@@ -1,0 +1,33 @@
+{
+ "schema": "a5-fiber-plucker-map-v1",
+ "family": "iso",
+ "slug": "iso-nm",
+ "prime": 32009,
+ "order": 32,
+ "base_nullity": 16,
+ "generators": 17,
+ "arcs_requested": 360,
+ "arcs_with_limit": 360,
+ "cases": {
+  "iso": {
+   "samples": 320,
+   "plucker_rank": 85,
+   "veronese_ranks": {
+    "1": 17,
+    "2": 85,
+    "3": 265
+   },
+   "mutation_solution_dimension": 0,
+   "delta": 2,
+   "solution_dimension": 1,
+   "scalars_all_nonzero": true,
+   "t_rank": 85,
+   "t_sha256": "ce23ea9ba21387e4505fcb792ad26c7688f33fccd28af7e3e85787c532e53acc",
+   "fit_exact_on_all_samples": true,
+   "held_out": 40,
+   "held_out_proportional": 40,
+   "distinct_fiber_points": 360,
+   "verdict": "degree_2_fit_validated"
+  }
+ }
+}
