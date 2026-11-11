@@ -21,6 +21,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+from parallel import ordered_map  # noqa: E402
 from teleportation_contract import (  # noqa: E402
     SCHEMA,
     make_plan,
@@ -103,6 +104,12 @@ def prepare(args: argparse.Namespace) -> None:
     write_bundle(args.out, plan, files)
 
 
+def _score(task: tuple[dict[str, int], int, Any, str, Any]) -> dict[str, Any]:
+    """Score one circuit's histogram; the circuits of an acquisition are independent."""
+    histogram, nqubits, route, state, topology = task
+    return score_histogram(histogram, nqubits, route, state, topology)
+
+
 def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: float) -> dict[str, Any]:
     require(
         type(alpha) in (int, float) and math.isfinite(alpha) and 0 < alpha < 1,
@@ -119,6 +126,8 @@ def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: 
     seen: set[str] = set()
     job_ids: set[tuple[str, str]] = set()
     rows: dict[tuple[int, int], list[dict[str, Any]]] = defaultdict(list)
+    tasks: list[tuple[dict[str, int], int, Any, str, Any]] = []
+    labels: list[tuple[int, int, str]] = []
     provenance = []
     for directory in directories:
         record = load_run(directory)
@@ -142,18 +151,20 @@ def analyze(plan_path: Path, directories: list[Path], calibration: Path, alpha: 
             if job.histogram is None:
                 raise ValueError("completed job has no histogram")
             route = plan["routes"][spec["route_index"]]
-            score = score_histogram(job.histogram, plan["nqubits"], route, spec["input"], plan["topology"])
-            require(score["shots"] == plan["shots"], "histogram denominator differs from plan")
-            score.update(
-                route=route,
-                selection="all_shots",
-                calibration_id=epoch,
-                channel_id=f"{plan_digest}:route-{spec['route_index']}",
-                job_id=str(job.job_id),
-            )
-            rows[(spec["block"], spec["route_index"])].append(score)
+            tasks.append((dict(job.histogram), plan["nqubits"], route, spec["input"], plan["topology"]))
+            labels.append((spec["block"], spec["route_index"], str(job.job_id)))
         provenance.append({"batch": name, "digests": record["digests"]})
     require(seen == set(expected), "every scheduled batch must be present")
+    for (block, route_index, job_id), score in zip(labels, ordered_map(_score, tasks), strict=True):
+        require(score["shots"] == plan["shots"], "histogram denominator differs from plan")
+        score.update(
+            route=plan["routes"][route_index],
+            selection="all_shots",
+            calibration_id=epoch,
+            channel_id=f"{plan_digest}:route-{route_index}",
+            job_id=job_id,
+        )
+        rows[(block, route_index)].append(score)
     groups = []
     # Bonferroni covers reporting every planned block/route together, rather
     # than presenting only the best-looking hardware location.
