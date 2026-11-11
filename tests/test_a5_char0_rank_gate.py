@@ -76,6 +76,19 @@ class RankGateTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 gate.check({"prime": prime, "i_root": root, "W": [[1]], "P": [[0]]})
 
+    def test_worker_path_gives_the_serial_ranks(self) -> None:
+        size = 70  # 70 x 140 joined entries exceed PARALLEL_ENTRIES
+        w = [[(3 * i + 5 * j + i * j) % 11 - 5 for j in range(size)] for i in range(size)]
+        p = [[32009 if i == j else 0 for j in range(size)] for i in range(size)]
+        result = gate.check({"prime": 32009, "i_root": 10754, "W": w, "P": p})
+        serial = (
+            gate.rank_qi(gate.read_matrix(w, "W")),
+            gate.rank_mod([[x % 32009 for x in row] for row in w], 32009),
+        )
+        self.assertEqual((result["rank_W_Qi"], result["rank_W_Fp"]), serial)
+        self.assertEqual(result["rank_joined_Qi"], size)
+        self.assertEqual(result["rank_joined_Fp"], result["rank_W_Fp"])
+
     def test_reject_nonrectangular_input(self) -> None:
         with self.assertRaisesRegex(ValueError, "rectangular"):
             gate.check(

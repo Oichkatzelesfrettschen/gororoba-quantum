@@ -19,7 +19,13 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+
+from parallel import ordered_map  # noqa: E402
+
 Gaussian = tuple[Fraction, Fraction]
+# Below this many entries per matrix the four ranks cost less than starting workers.
+PARALLEL_ENTRIES = 4096
 
 
 def gaussian(value: Any) -> Gaussian:
@@ -119,6 +125,11 @@ def rank_mod(matrix: list[list[int]], prime: int) -> int:
     return pivot_row
 
 
+def _rank_job(job: tuple[Any, int]) -> int:
+    matrix, prime = job
+    return rank_mod(matrix, prime) if prime else rank_qi(matrix)
+
+
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
@@ -147,10 +158,12 @@ def check(data: dict[str, Any]) -> dict[str, Any]:
     combined = [a + b for a, b in zip(w, p, strict=True)]
     wm = [[reduce_entry(x, prime, root) for x in row] for row in w]
     cm = [[reduce_entry(x, prime, root) for x in row] for row in combined]
-    rank_w_q = rank_qi(w)
-    rank_w_p = rank_mod(wm, prime)
-    rank_c_q = rank_qi(combined)
-    rank_c_p = rank_mod(cm, prime)
+    # The four eliminations are independent; inside one, each pivot depends on the rows the previous pivot left.
+    jobs: list[tuple[Any, int]] = [(w, 0), (wm, prime), (combined, 0), (cm, prime)]
+    entries = len(combined) * len(combined[0])
+    rank_w_q, rank_w_p, rank_c_q, rank_c_p = ordered_map(
+        _rank_job, jobs, min_items=2 if entries >= PARALLEL_ENTRIES else len(jobs) + 1
+    )
     stable = rank_w_q == rank_w_p
     return {
         "prime": prime,
