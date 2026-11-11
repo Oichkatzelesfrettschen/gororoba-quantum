@@ -161,9 +161,7 @@ def block_mean(samples: Sequence[complex]) -> complex:
     return complex_sum(samples) / len(samples)
 
 
-def median_of_means_plan(
-    epsilon: float, delta: float, *, max_samples: int = 1_000_000
-) -> tuple[int, int]:
+def median_of_means_plan(epsilon: float, delta: float, *, max_samples: int = 1_000_000) -> tuple[int, int]:
     """Block size >= 8/epsilon**2, odd block count >= 8 log(2/delta).
 
     Chebyshev bounds either coordinate's bad-block probability by 1/4

@@ -284,9 +284,7 @@ def repeated_kernel(
     if norm == 0:
         return RootKernel(b, counts), 0.0
     log_bound = (
-        n * math.log(norm)
-        + math.fsum(math.lgamma(s + 1) - s * math.log(s) / 2 for s in counts)
-        - log_normalisation
+        n * math.log(norm) + math.fsum(math.lgamma(s + 1) - s * math.log(s) / 2 for s in counts) - log_normalisation
     )
     # Real-component division avoids forming the overflowing reciprocal
     # that complex division may use for a subnormal but nonzero norm.

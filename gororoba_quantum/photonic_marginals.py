@@ -44,9 +44,7 @@ class CoefficientStep:
         return result
 
 
-def low_rank_coefficients(
-    left: ArrayLike, right: ArrayLike, *, max_work: int = 2_000_000
-) -> dict[Index, complex]:
+def low_rank_coefficients(left: ArrayLike, right: ArrayLike, *, max_work: int = 2_000_000) -> dict[Index, complex]:
     """Diagonal coefficients of prod_i (1 + (L_i.x)(R_i.y)).
 
     Per(I + L R.T) = sum_alpha alpha! * returned[alpha].
@@ -146,8 +144,7 @@ def collision_free_marginal(
         for key, contribution in piece.items():
             terms.setdefault(key, []).append(contribution)
     values = {
-        key: complex(math.fsum(v.real for v in parts), math.fsum(v.imag for v in parts))
-        for key, parts in terms.items()
+        key: complex(math.fsum(v.real for v in parts), math.fsum(v.imag for v in parts)) for key, parts in terms.items()
     }
     if not all(math.isfinite(v.real) and math.isfinite(v.imag) for v in values.values()):
         raise ArithmeticError("marginal coefficients overflow; use higher precision")

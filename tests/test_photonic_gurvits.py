@@ -5,11 +5,10 @@ from __future__ import annotations
 import itertools
 import math
 from collections.abc import Iterator
-from typing import cast
+from typing import Any, cast
 
 import numpy as np
 import pytest
-from numpy.typing import ArrayLike
 
 import parallel
 from photonic_gaussian import (
@@ -34,7 +33,7 @@ from photonic_permanents import (
 )
 
 
-def close(actual: ArrayLike, expected: ArrayLike, atol: float = 1e-10) -> None:
+def close(actual: Any, expected: Any, atol: float = 1e-10) -> None:
     np.testing.assert_allclose(actual, expected, atol=atol, rtol=atol)
 
 
@@ -45,8 +44,7 @@ def require(condition: bool, message: str = "invariant failed") -> None:
 
 def direct_permanent(a: np.ndarray) -> complex:
     """Permutation definition independent of Gray-code inclusion/exclusion."""
-    terms = (math.prod(a[i, j] for i, j in enumerate(perm))
-             for perm in itertools.permutations(range(len(a))))
+    terms = (math.prod(a[i, j] for i, j in enumerate(perm)) for perm in itertools.permutations(range(len(a))))
     return complex(sum(terms))
 
 
@@ -110,8 +108,9 @@ def fake_rng() -> tuple[DeterministicDraws, np.random.Generator]:
 
 @pytest.mark.parametrize("n", range(6))
 def test_ryser_against_permutation(n: int) -> None:
-    a = np.asarray([complex(((i + 2) * (j + 3)) % 7 - 3, (i - j) % 4 - 2) / 5
-                    for i in range(n) for j in range(n)]).reshape(n, n)
+    a = np.asarray(
+        [complex(((i + 2) * (j + 3)) % 7 - 3, (i - j) % 4 - 2) / 5 for i in range(n) for j in range(n)]
+    ).reshape(n, n)
     close(permanent_ryser(a), direct_permanent(a))
 
 
@@ -273,8 +272,10 @@ def test_husimi_phase_quadrature(inputs: tuple[int, ...], outputs: tuple[int, ..
     u = optical_matrix(2)
     kernel = FockHusimiKernel(u, inputs, outputs)
     order = sum(inputs) + 1
-    points = [np.array([1.2, 0.7]) * np.exp(2j * math.pi * np.asarray(indices) / order)
-              for indices in itertools.product(range(order), repeat=2)]
+    points = [
+        np.array([1.2, 0.7]) * np.exp(2j * math.pi * np.asarray(indices) / order)
+        for indices in itertools.product(range(order), repeat=2)
+    ]
     values = parallel.ordered_map(kernel, points)
     close(sum(values) / len(values), fock_amplitude(u, inputs, outputs))
 
@@ -355,7 +356,7 @@ def test_gaussian_contract_rejected() -> None:
     with pytest.raises(ValueError, match="contraction"):
         pure_gaussian_probability(np.eye(2), [0, 0])
     with pytest.raises(ValueError, match="sampling density"):
-        FockHusimiKernel(np.eye(1), (1,), (1,))(np.array([0]))
+        FockHusimiKernel(np.eye(1, dtype=np.complex128), (1,), (1,))(np.array([0]))
 
 
 def test_resource_budgets_fail_before_draws() -> None:
@@ -399,8 +400,14 @@ def test_husimi_second_moment_quadrature(inputs: tuple[int, ...], outputs: tuple
     order = 2 * sum(inputs) + 1
     points, probabilities = [], []
     for i, j in itertools.product(range(len(radii)), repeat=2):
-        weight = (weights[i] * weights[j] * radii[i] ** inputs[0] * radii[j] ** inputs[1]
-                  / math.prod(math.factorial(v) for v in inputs) / order**2)
+        weight = (
+            weights[i]
+            * weights[j]
+            * radii[i] ** inputs[0]
+            * radii[j] ** inputs[1]
+            / math.prod(math.factorial(v) for v in inputs)
+            / order**2
+        )
         for phases in itertools.product(range(order), repeat=2):
             points.append(np.sqrt([radii[i], radii[j]]) * np.exp(2j * math.pi * np.asarray(phases) / order))
             probabilities.append(weight)
@@ -425,17 +432,19 @@ def test_empty_block_mean_rejected() -> None:
         block_mean([])
 
 
-@pytest.mark.parametrize("field,value", [
-    ("value", complex(float("nan"), 0)),
-    ("radius", -1.0),
-    ("radius", float("inf")),
-    ("delta", 0.0),
-    ("samples", True),
-    ("scale", -1.0),
-    ("method", ""),
-])
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("value", complex(float("nan"), 0)),
+        ("radius", -1.0),
+        ("radius", float("inf")),
+        ("delta", 0.0),
+        ("samples", True),
+        ("scale", -1.0),
+        ("method", ""),
+    ],
+)
 def test_estimate_record_rejects_invalid_fields(field: str, value: object) -> None:
-    from typing import Any
 
     fields: dict[str, Any] = dict(value=0j, radius=0.1, delta=0.01, samples=10, method="test", scale=1.0)
     fields[field] = value
@@ -453,7 +462,7 @@ def test_complex_hoeffding_constant_against_union_bound() -> None:
 
 def test_subnormal_one_by_one_kernel_normalises_without_reciprocal_overflow() -> None:
     kernel, scale = repeated_kernel([[1e-310]], [1])
-    require(np.isfinite(kernel.normalised).all())
+    require(bool(np.isfinite(kernel.normalised).all()))
     close(kernel.normalised, [[1]])
     require(scale > 0)
     close(scale / 1e-310, 1)
