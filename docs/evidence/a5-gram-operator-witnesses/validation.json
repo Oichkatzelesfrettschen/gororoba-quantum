@@ -1,0 +1,52 @@
+{
+  "bounded_tests": {
+    "command": "sh ci/pr_checks.sh tests tests/test_a5_gram_operator_witnesses.py tests/ci/test_runner_image_records.py",
+    "passed": 35,
+    "seconds": 7.22
+  },
+  "completed_at_utc": "2026-11-12T20:54:25.691387+00:00",
+  "execution": {
+    "check_deadline_seconds": 120,
+    "memory_max_gib": 8,
+    "memory_swap_max_gib": 0,
+    "native_threads": 1,
+    "workers": 2,
+    "write_deadline_seconds": 120
+  },
+  "hosted_admission_checks": "not run",
+  "markdown_links": {
+    "broken": 0,
+    "files_checked": 1195
+  },
+  "measurements": {
+    "check": {
+      "cgroup_memory_peak": 186724352,
+      "exit_code": 0,
+      "max_reported_process_rss_kib": 82244,
+      "system_cpu_seconds": 0.13,
+      "user_cpu_seconds": 56.32,
+      "wall_seconds": 58.64
+    },
+    "write": {
+      "cgroup_memory_peak": 189423616,
+      "exit_code": 0,
+      "max_reported_process_rss_kib": 82024,
+      "system_cpu_seconds": 0.16,
+      "user_cpu_seconds": 56.35,
+      "wall_seconds": 50.43
+    }
+  },
+  "pinned_format": "passed",
+  "pinned_lint": "passed",
+  "pinned_mypy": "passed",
+  "schema": "a5-gram-operator-validation/1",
+  "tools": {
+    "mypy": "2.4.1",
+    "pytest": "9.2.0",
+    "python": "3.14.7",
+    "python-flint": "0.9.0",
+    "ruff": "0.17.4",
+    "sympy": "1.14.0"
+  },
+  "witnesses_sha256": "8fbdb1e7882dc30146af71d60c34add9257b8987195f2f71715f58bb10cb0539"
+}

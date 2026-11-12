@@ -1,0 +1,34 @@
+{
+ "slug": "iso-nm",
+ "conjecture": "the Q(i) degree-2 relation space {q : q(G) in J + m I^2} reduces onto K2 mod p",
+ "targets": 153,
+ "qi_dimension": 68,
+ "qi_rank_h2": 85,
+ "qi_max_denominator": 1,
+ "qi_has_imaginary_part": true,
+ "sq_size": 274,
+ "monomials": 6140,
+ "wall_seconds": 1506.6,
+ "peak_rss_kib": 407492,
+ "primes": [
+  {
+   "prime": 32009,
+   "root": 10754,
+   "k2_source": "working/distribute/out/a5-iso-d4/iso_p1/d2/relations-upto-d2.rel",
+   "modular_dimension": 68,
+   "bad_denominators": 0,
+   "echelon_equal": true,
+   "mutation_detected": true
+  },
+  {
+   "prime": 32029,
+   "root": 9115,
+   "k2_source": "working/distribute/out/a5-p2-iso/iso_p2/d2/relations-upto-d2.rel",
+   "modular_dimension": 68,
+   "bad_denominators": 0,
+   "echelon_equal": true,
+   "mutation_detected": true
+  }
+ ],
+ "verdict": "survives"
+}

@@ -1,0 +1,345 @@
+{
+  "schema": "a5-gram-claim-definitions/1",
+  "provenance": "Numbered propositions reconstructed from the coefficient/Gram reconciliation review and its 42-row arithmetic handback. Corrections describe rejected predecessor predictions; source locators name the tracked artifact that owns each proposition or its stated boundary.",
+  "claims": [
+    {
+      "claim": "0.1",
+      "proposition": "C_z is 15x15; bordered A(z,t) is 16x16",
+      "source": {
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md",
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)"
+      }
+    },
+    {
+      "claim": "0.2",
+      "proposition": "C_z^T = -C_z; C_z^dagger = -C_{conj z}; skew-Hermitian only for real z",
+      "source": {
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md",
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)"
+      }
+    },
+    {
+      "claim": "0.3",
+      "proposition": "The note states 16x16 and skew-Hermitian",
+      "source": {
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md",
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)"
+      }
+    },
+    {
+      "claim": "1.1",
+      "proposition": "The possible nullities of a nonzero real operand are {0} through dimension 8, {0,4} in dimension 16, and {0,4,8,12,16} in dimension 32.",
+      "source": {
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md",
+        "locator": "Primary statements used; Deductions used by the repository"
+      }
+    },
+    {
+      "claim": "1.2",
+      "proposition": "L_{(a,0)} = diag(L_a, R_a)",
+      "source": {
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md",
+        "locator": "Primary statements used; Deductions used by the repository"
+      }
+    },
+    {
+      "claim": "1.3",
+      "proposition": "L_a and R_a have identical Gram spectra, so k -> 2k",
+      "source": {
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md",
+        "locator": "Primary statements used; Deductions used by the repository"
+      }
+    },
+    {
+      "claim": "1.4",
+      "proposition": "(a, ±i_n a) gives k + 2^n - 4; the sedenion nullity-4 element gives 8 by embedding and 16 by the special lift",
+      "source": {
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md",
+        "locator": "Primary statements used; Deductions used by the repository"
+      }
+    },
+    {
+      "claim": "1.5",
+      "proposition": "The 930-element two-support census gives {0,4,8,12} only and a larger census cannot repair that",
+      "source": {
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md",
+        "locator": "Primary statements used; Deductions used by the repository"
+      }
+    },
+    {
+      "claim": "1.6",
+      "proposition": "The maximal locus is two copies of V_2(R^7); the partner sphere goes S^3 -> S^15",
+      "source": {
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md",
+        "locator": "Primary statements used; Deductions used by the repository"
+      }
+    },
+    {
+      "claim": "2.1",
+      "proposition": "Inverse set = conj(a)/N + ker L_a, with a = e1+e10, x = e4-e15, ax = 0, and -a/2 and -a/2+x both two-sided inverses",
+      "source": {
+        "path": "docs/notes/topics/cd-one-sided-inverses.md",
+        "locator": "Results; Proofs"
+      }
+    },
+    {
+      "claim": "2.2",
+      "proposition": "Real CD algebras have no nonzero nilpotents; complex C_z does",
+      "source": {
+        "path": "docs/notes/topics/cd-one-sided-inverses.md",
+        "locator": "Results; Proofs"
+      }
+    },
+    {
+      "claim": "3.1",
+      "proposition": "Eligible xor patterns 42/630/6510; sign-cancelling 0/168/2520",
+      "source": {
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md",
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries"
+      }
+    },
+    {
+      "claim": "3.2",
+      "proposition": "chi survives every re-signing",
+      "source": {
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md",
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries"
+      }
+    },
+    {
+      "claim": "3.3",
+      "proposition": "Mod 2 the table erases sigma, leaving F2[(Z/2)^n]; the Fano incidence omits signs",
+      "source": {
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md",
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries"
+      }
+    },
+    {
+      "claim": "3.4",
+      "proposition": "The math/ torsion-free group-algebra theorem does not transfer; the Lean build exists",
+      "source": {
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md",
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries"
+      }
+    },
+    {
+      "claim": "4.1",
+      "proposition": "(M_a)_jj = ‖a‖^2 and tr M = D‖a‖^2",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      }
+    },
+    {
+      "claim": "4.2",
+      "proposition": "M = ‖a‖^2 I + sum a_i a_j (L_i^T L_j + L_j^T L_i)",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      }
+    },
+    {
+      "claim": "4.3",
+      "proposition": "For real a=alpha*e_i+beta*e_j, s=alpha^2+beta^2 and n symmetric two-dimensional blocks, spec(M)={(alpha+beta)^2 [n], (alpha-beta)^2 [n], s [D-2n]} and tr(M^2)=D*s^2+8*n*alpha^2*beta^2. For raw coefficients alpha=1,beta=+/-1, n=(tr(M_raw^2)-4*D)/8. For the unit-norm operand (e_i+/-e_j)/sqrt(2), M_unit=M_raw/2 and n=(tr(M_unit^2)-D)/2.",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      },
+      "correction": "The block-count formula with denominator 2 requires the unit-norm Gram operator; applying it directly to the raw equal-weight Gram operator gives an incorrect block count."
+    },
+    {
+      "claim": "4.4",
+      "proposition": "e1+e9 has nullity 0 and e1+e10 has nullity 8, and both have herald success 1/2 on every basis input",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      }
+    },
+    {
+      "claim": "5.1",
+      "proposition": "P = I - 3M/2 + M^2/2 on spectrum {0,1,2}",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      }
+    },
+    {
+      "claim": "5.2",
+      "proposition": "The 32D witness has spectrum {0^16, 1^8, 2^4, 4^4}, traces 32/88/296, quadratic trace 28, cubic projector trace 16, P^2 = P, L P = 0",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      }
+    },
+    {
+      "claim": "5.3",
+      "proposition": "Degree = number of distinct positive eigenvalues",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      }
+    },
+    {
+      "claim": "5.4",
+      "proposition": "The square of tr(rho M) can differ from tr(rho M^2); the four-support Gram operand gives an exact counterexample at rho=|e1><e1|.",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Gram moments and complete projectors"
+      },
+      "correction": "The predecessor proposed the identity input e0; e0 has equal moments and supplies no counterexample. The retained witness uses e1."
+    },
+    {
+      "claim": "6.1",
+      "proposition": "rank C_z, C_z^2, C_z^3 = 8, 1, 0 for e1+e18 (z_1 = 1, z_2 = i) and 6, 1, 0 for e1-e10+e18+e25 (z_1 = 1, z_10 = -1, z_2 = z_9 = i)",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Reduced ranks and congruence; Scope"
+      }
+    },
+    {
+      "claim": "6.2",
+      "proposition": "chi_C = lambda (lambda^2 + Q)^3 (lambda^4 + 2Q lambda^2 + F)^2, with F = Q^2 - 4 Delta",
+      "source": {
+        "path": "docs/evidence/a5-zero-divisor-strata/README.md",
+        "locator": "Theorem 2; Theorem 4"
+      }
+    },
+    {
+      "claim": "6.3",
+      "proposition": "For a nonzero doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
+      "source": {
+        "path": "docs/evidence/a5-zero-divisor-strata/README.md",
+        "locator": "Theorem 2; Theorem 4"
+      },
+      "correction": "The signed doubly pure two-support corpus has 2*binomial(30,2)=870 elements; the predecessor count 812 is incorrect."
+    },
+    {
+      "claim": "6.4",
+      "proposition": "Split-coordinate congruence preserves rank but not Jordan structure",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Reduced ranks and congruence; Scope"
+      }
+    },
+    {
+      "claim": "6.5",
+      "proposition": "The missing invariant is the kernel filtration",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Reduced ranks and congruence; Scope"
+      }
+    },
+    {
+      "claim": "7.1",
+      "proposition": "M_{r+p} = r^2 I + M_p for p pure",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Coefficients, embeddings and phase"
+      }
+    },
+    {
+      "claim": "7.2",
+      "proposition": "With a coefficient phase, symmetric blocks give s ± 2ab cos(theta) and skew blocks s ± 2ab sin(theta)",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Coefficients, embeddings and phase"
+      }
+    },
+    {
+      "claim": "7.3",
+      "proposition": "Changing the second coefficient from 1 to i changes nullity from 0 to 4 for the octonion pair (e1,e2), from 12 to 4 for the pathion pair (e1,e18), and from 4 to 12 for the pathion pair (e1,e26).",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Coefficients, embeddings and phase"
+      }
+    },
+    {
+      "claim": "7.4",
+      "proposition": "An external coefficient phase differs from an input-state phase",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Coefficients, embeddings and phase"
+      }
+    },
+    {
+      "claim": "7.5",
+      "proposition": "Encoding scale: (L/k)^T (L/k) = M/k^2",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Coefficients, embeddings and phase"
+      }
+    },
+    {
+      "claim": "8.1",
+      "proposition": "Kernel bundle xi + R^4 = R^8 and xi is nontrivial; a global projector exists while a global basis is obstructed",
+      "source": {
+        "path": "docs/notes/annihilator_kernel_limits.md",
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification"
+      }
+    },
+    {
+      "claim": "8.2",
+      "proposition": "At e1+e18 the endpoint nullity is 12. Same-derivative paths give three pairwise-orthogonal 4-planes spanning the kernel. The paths x_A..x_D give 8-planes meeting in 4-planes, with tr(P_A P_B) = 9/2",
+      "source": {
+        "path": "docs/notes/annihilator_kernel_limits.md",
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification"
+      }
+    },
+    {
+      "claim": "8.3",
+      "proposition": "Transport and Berry holonomy are not established",
+      "source": {
+        "path": "docs/notes/annihilator_kernel_limits.md",
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification"
+      }
+    },
+    {
+      "claim": "9.1",
+      "proposition": "p(psi) = psi^dagger B^dagger B psi / 16; bright levels 3/4 for (1,10,20,31) and (3+sqrt5)/8 for (1,8,18,27)",
+      "source": {
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md",
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor"
+      }
+    },
+    {
+      "claim": "9.2",
+      "proposition": "Retained readings 0.727/0.726/0.7495 and 0.649/0.658/0.642",
+      "source": {
+        "path": "results/live/PATHION_KERNEL_MAP_FINDINGS.md",
+        "locator": "Retained B12/C8 Gram-block success readings: 0.727/0.726/0.7495 and 0.649/0.658/0.642"
+      }
+    },
+    {
+      "claim": "9.3",
+      "proposition": "Ascella kernel slice 1/2 -> 0.513568, 0 -> 0.002622, 1 -> 0.998198; 26 successes, 9891 failures, 83 sentinel of 10000",
+      "source": {
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md",
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor"
+      }
+    },
+    {
+      "claim": "9.4",
+      "proposition": "B -> UB leaves p unchanged; L_a L_b - L_ab = -[a,b,.]",
+      "source": {
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md",
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor"
+      }
+    },
+    {
+      "claim": "9.5",
+      "proposition": "Belenos variance 50 and 80 times binomial; 23 of 30 against 1; Ascella r = 0.9966",
+      "source": {
+        "path": "docs/state/research_state.json",
+        "locator": "Claims describing Belenos variance and Ascella frozen-mesh repeat correlation; raw analysis remains separate"
+      }
+    },
+    {
+      "claim": "9.6",
+      "proposition": "The source citations and line numbers supplied by the reconciliation review are accurate.",
+      "source": {
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
+        "locator": "Scope: citation-line auditing lies outside the exact arithmetic replay"
+      }
+    }
+  ]
+}

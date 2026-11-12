@@ -43,7 +43,10 @@ A5-066 already proves, 129 to 223 GiB) is withdrawn (owner decision of 2026-11-1
 
 Three gaps separate the fiber record from item 6:
 - field: every fiber statement except A5-270 holds at p = 32009 and p = 32029. Check 1 of the characteristic-0
-  transfer covers all ten pairs (A5-247), check 3 covers X- and W8 (A5-249, A5-277), check 2 has no result (A5-248);
+  transfer covers all ten pairs (A5-247). A5-249 and A5-277 certify ambient good reduction for X- and W8 but do not
+  compare rank_Q(i) W_N with rank_F_p W_N, so they supply no characteristic-zero lower bound by themselves. Direct
+  check-2 results exist for X- (A5-248), Iso -> N- (A5-294) and E8-bar -> VB at 32029 (A5-315); the remaining rows
+  need exact relations and either the W_N rank equality or a direct characteristic-zero lower bound;
 - kernels: F(I) describes limits of the generator vector G, and item 6 needs limits of ker L_a in a Grassmannian.
   The exact limit along sampled arcs is computed on every family, the VB arcs through k = -9 included (A5-272 to
   A5-276, A5-292, A5-295): dimension 8, inside the base kernel. The limit is one plane per fiber point on the families whose
@@ -72,7 +75,7 @@ goes to the owner as a question with the estimates.
 On 2026-11-09 the session generalized a limit the owner had given for one run into a 3-hour cap on every run. That
 policy never existed, and it stopped three runs that had no other defect:
 - check 2 on X- (A5-248);
-- check 3 at X- N = 22 (A5-249);
+- the ambient good-reduction check at X- N = 22 (A5-249), which cannot replace the missing W_N rank comparison;
 - VB degree 7 (A5-279).
 
 Heavy computation stays off the build host, the owner's interactive workstation, unless the owner authorizes that run:
@@ -103,11 +106,11 @@ all.
 | 120 | engine v13 (`slimgb` export) on VB, degree 7 at N = 21 and 22, both primes | Windows workstation laptop | done: r_21 = 609, r_22 = 624 at both primes (A5-286, A5-287) | passed |
 | 120 (cross-check) | the same `slimgb` exports at N = 21 and 22, plus six variable rotations at N = 15 | Kaggle CPU, kernels `a5-vb-d7-slimgb-p32009` and `-p32029` | pushed before the runner exited 1 on failure: read `summary.json` (rc and RESULT lines) | a reduced basis whose sha256 differs from the laptop export |
 | 75, 121 | X- check 2 over Q(i), the direct `quadric_lift.py` | Kaggle CPU, kernel `a5-char0-xm-quadrics` | stopped on the build host at 2:11; the direct computation never finished in 3 h before | a Q(i) relation space whose dimension or reduction differs from K2 mod p |
-| 42 (X- degree 6) | X- check 3 at N = 22, `truncation_check.py` | Kaggle CPU, kernel `a5-char0-xm-truncation-n22` | stopped on the build host at 2:11 | a denominator divisible by p, or a basis differing from the header's |
+| 42 (X- degree 6) | X- ambient good reduction at N = 22, `truncation_check.py` | Kaggle CPU, kernel `a5-char0-xm-truncation-n22` | stopped on the build host at 2:11; even a pass does not prove the lower bound | a denominator divisible by p, or a basis differing from the header's |
 
 Done since the scope was first written:
 - 118 and 119: the `slimgb` ladder at N = 1 to 20 (A5-280), with a local `ds` ordering refuted (A5-285).
-- 122 (check 3 part): W8 J + m^16 reduces well (A5-277).
+- 122 (ambient part only): W8 J + m^16 reduces well (A5-277); rank_Q(i) W_N = rank_F_p W_N remains untested.
 - 56: the Iso planes sweep V(K2) at both primes (A5-284, pending review in task 133).
 - 103: the wide-coset and Tuna claims, reviewed.
 
@@ -144,9 +147,11 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 
 - 121, 75: if the direct Kaggle run does not finish, the canonical degree-bounded system for check 2 on X-, sized
   first from the maximum cofactor degree of the 32029 lift (277 MB of cofactor text).
-- 122: W8 check 2 waits on the X- route. The all-degree statement waits on the flatness of K2 over Z[i]_(p), the
+- 122: W8 check 2 waits on the X- route. The per-degree lower bounds also wait on exact W_N rank comparisons or
+  independent direct lower bounds. The all-degree statement waits on the flatness of K2 over Z[i]_(p), the
   affine-cone bridge and a transfer of A5-066.
-- 42: waits on 75 and 122.
+- 42: its ambient-good-reduction computation is independent, but a characteristic-zero degree-6 conclusion also
+  waits on the W_N rank equality and the degree-2 upper bound.
 - 37: decided in favor by the dominant arc family onto V(P1) of `arcs-vb` (A5-016).
 
 ### Blocked on an engine change
