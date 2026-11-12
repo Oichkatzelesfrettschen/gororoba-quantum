@@ -21,7 +21,7 @@ if SPEC is None or SPEC.loader is None:
 memory_model = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(memory_model)
 
-ENGINE = EVIDENCE / "replay/engine/fiber_rank_v14.py"
+ENGINE = EVIDENCE / "replay/engine/fiber_rank_v15.py"
 
 
 def _check(condition: bool) -> None:
@@ -33,14 +33,18 @@ def test_stage_bounds_fit_16_gib_but_full_operator_does_not() -> None:
     record = cast(dict[str, Any], memory_model.model())
     derived = cast(dict[str, int], record["derived"])
     stages = cast(dict[str, int], record["stage_peaks"])
+    _check(record["schema"] == "a5-w8-n19-memory-model-v2")
+    _check(record["inputs"]["engine"] == "fiber_rank_v15.py")
+    _check(record["inputs"]["uint16_product_row_copies"] == 3)
+    _check(derived["uint16_product_rows_bytes"] == 5_607_594_432)
     _check(derived["maximum_block_size_upper_bound"] == 59_123)
     _check(derived["maximum_adjacent_degree_rows"] == 78_674)
     _check(derived["full_uint16_generator_operator_bytes"] > 16 * 2**30)
-    _check(stages["products_selected_arrays_bytes"] == 13_199_590_444)
-    _check(stages["closure_selected_arrays_bytes"] == 11_183_722_492)
-    _check(stages["selected_array_peak_bytes"] == 13_199_590_444)
-    _check(stages["selected_array_headroom_at_16_gib_bytes"] == 3_980_278_740)
-    _check(derived["max_prefix_rows_that_fit"] == 6_732)
+    _check(stages["products_selected_arrays_bytes"] == 15_068_788_588)
+    _check(stages["closure_selected_arrays_bytes"] == 13_052_920_636)
+    _check(stages["selected_array_peak_bytes"] == 15_068_788_588)
+    _check(stages["selected_array_headroom_at_16_gib_bytes"] == 2_111_080_596)
+    _check(derived["max_prefix_rows_that_fit"] == 3_570)
 
 
 @pytest.mark.parametrize("altered", [False, True])

@@ -5,9 +5,10 @@ the model. It is an upper bound for the named dense arrays, derived from the ret
 retained standard-monomial degree counts. Product and closure stages are reported separately because the streamed
 generator operator is released before the echelon bases are constructed.
 
-The products stage counts the two adjacent operator layers, the retained uint16 product rows and the walk and tile
-temporaries (`streamed_chunk_bytes` of fiber_rank_v14.py). The accumulate line of `streamed_generator_product` adds
-10 bytes per prefix row element, `10 * prefix_rows * block_max`, where `prefix_rows` is the largest row count of one
+The v15 products stage counts the two adjacent operator layers, three copies of uint16 product rows and the walk
+and tile temporaries (`streamed_chunk_bytes` of fiber_rank_v15.py). The accumulate line of
+`streamed_generator_product` adds 10 bytes per prefix row element, `10 * prefix_rows * block_max`, where `prefix_rows`
+is the largest row count of one
 generator call; that count comes from the receipt's wanted tuples (`streamed_prefix_peak`), which the retained v11
 terms do not carry, so `model(prefix_peak_rows=None)` leaves the term out and reports the largest count under which
 the stage still fits. The closure stage adds the panel transient of one compact insertion
@@ -46,11 +47,12 @@ DEGREE_COUNTS = [
 ]
 
 # Exact terms printed by the retained v11 preflight. Its generator blocks use float64, so dividing by eight gives
-# sum_b c_b^2. Its product-row term is four times the compact route's two uint16 copies.
+# sum_b c_b^2. Its product-row term counts two float64 copies (16 bytes per element); v15 counts three uint16
+# copies (6 bytes per element) for the retained rows, the stacked array and its boolean-indexed result.
 V11_GENERATOR_BLOCK_BYTES = 110_961_608_648
 V11_PRODUCT_ROW_BYTES = 14_953_585_152
 CHUNK = 64
-# Constants of modular_echelon_compact.py and fiber_rank_v14.py that the transient terms use.
+# Constants of modular_echelon_compact.py and fiber_rank_v15.py that the transient terms use.
 COMPACT_COLS = 1024
 COMPACT_INNER = 4096
 ROW_TILE = 128
@@ -63,7 +65,7 @@ def insert_panel_bytes(block_size: int, chunk: int) -> int:
 
 
 def streamed_chunk_bytes(chunk: int, widest: int) -> int:
-    """`fiber_rank_v14.streamed_chunk_bytes`: walk temporaries and the float64 tiles of one tiled product."""
+    """`fiber_rank_v15.streamed_chunk_bytes`: walk temporaries and the float64 tiles of one tiled product."""
     return 4 * 8 * chunk * widest + 8 * (chunk * 4096 + 4096 * 1024 + 3 * chunk * 1024)
 
 
@@ -76,7 +78,7 @@ def model(prefix_peak_rows: int | None = None) -> dict[str, object]:
     block_max = math.ceil(mean + math.sqrt(3 * squared_deviation / 4))
     adjacent_rows = max(a + b for a, b in zip(DEGREE_COUNTS[:-1], DEGREE_COUNTS[1:], strict=True))
     streamed_operator = 2 * adjacent_rows * block_max
-    product_rows = V11_PRODUCT_ROW_BYTES // 4
+    product_rows = V11_PRODUCT_ROW_BYTES * 3 // 8
     compact_echelon = sum_squares // 2
     closure_temporaries = 3 * 8 * CHUNK * block_max
     insert_panels = insert_panel_bytes(block_max, CHUNK)
@@ -90,8 +92,10 @@ def model(prefix_peak_rows: int | None = None) -> dict[str, object]:
     # Largest prefix row count whose accumulate-line arrays still leave the products stage inside the limit.
     fit_rows = max(0, (memory_limit - (product_stage - (loop_arrays or 0))) // (10 * block_max))
     return {
-        "schema": "a5-w8-n19-memory-model-v1",
+        "schema": "a5-w8-n19-memory-model-v2",
         "inputs": {
+            "engine": "fiber_rank_v15.py",
+            "uint16_product_row_copies": 3,
             "quotient_dimension": QUOTIENT_DIMENSION,
             "blocks": BLOCKS,
             "sum_block_squares": sum_squares,
@@ -126,7 +130,7 @@ def model(prefix_peak_rows: int | None = None) -> dict[str, object]:
             else "hypothesis: the products stage omits the accumulate-line arrays of streamed_generator_product, "
             "10 * prefix_rows * block_max bytes (contribution plus two uint32 temporaries per element); the figure "
             "fits 16 GiB only when the largest per-call prefix row count of the N = 19 receipt is at most "
-            "max_prefix_rows_that_fit. fiber_rank_v14.py reports the term streamed_loop_arrays "
+            "max_prefix_rows_that_fit. fiber_rank_v15.py reports the term streamed_loop_arrays "
             "(10 * prefix_rows * block size) in preflight_terms once the receipt is loaded and refuses a run whose "
             "stage exceeds --max-gb; "
             "that preflight, or an instrumented run, settles it."
