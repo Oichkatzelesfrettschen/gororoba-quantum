@@ -1,0 +1,3319 @@
+{
+ "before": {
+  "bh_survivors": 65,
+  "bonferroni_alpha": 0.00055556,
+  "bonferroni_survivors": 58,
+  "by_analysis": {
+   "1": {
+    "bh": 7,
+    "bonferroni": 7,
+    "by": 7,
+    "tests": 9
+   },
+   "2": {
+    "bh": 4,
+    "bonferroni": 4,
+    "by": 4,
+    "tests": 7
+   },
+   "3": {
+    "bh": 54,
+    "bonferroni": 47,
+    "by": 53,
+    "tests": 61
+   },
+   "4": {
+    "bh": 0,
+    "bonferroni": 0,
+    "by": 0,
+    "tests": 13
+   }
+  },
+  "by_survivors": 64,
+  "tests": 90
+ },
+ "bh_survivors": 72,
+ "bonferroni_survivors": 61,
+ "by_analysis": {
+  "1": {
+   "bh": 14,
+   "bonferroni": 11,
+   "by": 12,
+   "tests": 18
+  },
+  "2": {
+   "bh": 4,
+   "bonferroni": 4,
+   "by": 4,
+   "tests": 7
+  },
+  "3": {
+   "bh": 54,
+   "bonferroni": 46,
+   "by": 50,
+   "tests": 61
+  },
+  "4": {
+   "bh": 0,
+   "bonferroni": 0,
+   "by": 0,
+   "tests": 13
+  }
+ },
+ "by_survivors": 66,
+ "cutoffs_log10_p": {
+  "bh_last_rank": -1.301,
+  "bonferroni": -3.2967,
+  "by_last_rank": -2.0151
+ },
+ "dependence_safe_family": {
+  "bh_survivors": 64,
+  "bonferroni_alpha": 0.00057471,
+  "bonferroni_survivors": 54,
+  "by_analysis": {
+   "1": {
+    "bh": 6,
+    "bonferroni": 4,
+    "by": 4,
+    "tests": 8
+   },
+   "2": {
+    "bh": 4,
+    "bonferroni": 4,
+    "by": 4,
+    "tests": 5
+   },
+   "3": {
+    "bh": 54,
+    "bonferroni": 46,
+    "by": 50,
+    "tests": 61
+   },
+   "4": {
+    "bh": 0,
+    "bonferroni": 0,
+    "by": 0,
+    "tests": 13
+   }
+  },
+  "by_survivors": 58,
+  "tests": 87
+ },
+ "pooled_bonferroni_alpha": 0.00050505,
+ "residual_checks": [
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": false,
+    "by": true
+   },
+   "readings_log10_p": {
+    "ledger": -2.60058,
+    "loglinear_deviance": -3.50886,
+    "loglinear_pearson": -2.60058,
+    "pearson_difference": -3.14226
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": false,
+    "by": false
+   },
+   "readings_log10_p": {
+    "ledger": -1.55275,
+    "loglinear_deviance": -2.9861,
+    "loglinear_pearson": -1.55275,
+    "pearson_difference": -2.19682
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": true,
+    "by": true
+   },
+   "readings_log10_p": {
+    "ledger": -3.53354,
+    "loglinear_deviance": -5.71033,
+    "loglinear_pearson": -3.53354,
+    "pearson_difference": -4.62919
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": false,
+    "by": false
+   },
+   "readings_log10_p": {
+    "ledger": -1.47196,
+    "loglinear_deviance": -3.30976,
+    "loglinear_pearson": -1.47196,
+    "pearson_difference": -1.95968
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": false,
+    "bonferroni": false,
+    "by": false
+   },
+   "readings_log10_p": {
+    "ledger": -1.33078,
+    "loglinear_deviance": -3.14017,
+    "loglinear_pearson": -1.33078,
+    "pearson_difference": -1.33385
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": false,
+     "bonferroni": false,
+     "by": false
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": false,
+     "bonferroni": false,
+     "by": false
+    },
+    "pearson_difference": {
+     "bh": false,
+     "bonferroni": false,
+     "by": false
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": false,
+    "by": false
+   },
+   "readings_log10_p": {
+    "ledger": -1.77003,
+    "loglinear_deviance": -3.47838,
+    "loglinear_pearson": -1.77003,
+    "pearson_difference": -2.17946
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": false,
+     "by": false
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": true,
+    "by": true
+   },
+   "readings_log10_p": {
+    "ledger": -3.40572,
+    "loglinear_deviance": -5.5833,
+    "loglinear_pearson": -3.40572,
+    "pearson_difference": -4.01582
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": false,
+    "bonferroni": false,
+    "by": false
+   },
+   "readings_log10_p": {
+    "ledger": -1.25429,
+    "loglinear_deviance": -2.22334,
+    "loglinear_pearson": -1.31831,
+    "pearson_difference": -1.25429
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": false,
+     "bonferroni": false,
+     "by": false
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": false,
+     "bonferroni": false,
+     "by": false
+    },
+    "pearson_difference": {
+     "bh": false,
+     "bonferroni": false,
+     "by": false
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "ledger_survives": {
+    "bh": true,
+    "bonferroni": false,
+    "by": true
+   },
+   "readings_log10_p": {
+    "ledger": -2.60397,
+    "loglinear_deviance": -4.71118,
+    "loglinear_pearson": -2.60397,
+    "pearson_difference": -3.37852
+   },
+   "survives_if_this_reading_alone": {
+    "ledger": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "loglinear_deviance": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    },
+    "loglinear_pearson": {
+     "bh": true,
+     "bonferroni": false,
+     "by": true
+    },
+    "pearson_difference": {
+     "bh": true,
+     "bonferroni": true,
+     "by": true
+    }
+   },
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  }
+ ],
+ "rows": [
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 400230.0,
+    "q_over_dof": 17401.0
+   },
+   "log10_p": -86859.6,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 311630.0,
+    "q_over_dof": 13549.0
+   },
+   "log10_p": -67621.1,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 279870.0,
+    "q_over_dof": 12168.0
+   },
+   "log10_p": -60725.8,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -59581.8,
+    "loglinear_pearson": -62289.0,
+    "pearson_difference": -50315.1,
+    "prior_method": -50315.1
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 340,
+    "loglinear_deviance": 277840.0,
+    "loglinear_dof": 471,
+    "loglinear_pearson": 290330.0,
+    "q_over_dof": 688.97,
+    "q_residual": 234250.0
+   },
+   "log10_p": -50315.1,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 229270.0,
+    "q_over_dof": 9968.2
+   },
+   "log10_p": -49739.1,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 155870.0,
+    "q_over_dof": 6777.0
+   },
+   "log10_p": -33802.5,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -38087.2,
+    "loglinear_pearson": -34874.8,
+    "pearson_difference": -33787.8,
+    "prior_method": -33787.8
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 339,
+    "loglinear_deviance": 178680.0,
+    "loglinear_dof": 477,
+    "loglinear_pearson": 163850.0,
+    "q_over_dof": 466.08,
+    "q_residual": 158000.0
+   },
+   "log10_p": -33787.8,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 129450.0,
+    "q_over_dof": 5628.3
+   },
+   "log10_p": -28066.5,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -28142.6,
+    "loglinear_pearson": -26145.2,
+    "pearson_difference": -26241.0,
+    "prior_method": -26241.0
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 335,
+    "loglinear_deviance": 132650.0,
+    "loglinear_dof": 461,
+    "loglinear_pearson": 123420.0,
+    "q_over_dof": 367.58,
+    "q_residual": 123140.0
+   },
+   "log10_p": -26145.2,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -31563.7,
+    "loglinear_pearson": -39540.3,
+    "pearson_difference": -23400.0,
+    "prior_method": -23400.0
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 337,
+    "loglinear_deviance": 148500.0,
+    "loglinear_dof": 467,
+    "loglinear_pearson": 185330.0,
+    "q_over_dof": 326.5,
+    "q_residual": 110030.0
+   },
+   "log10_p": -23400.0,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "alternatives": {
+    "prior_method": -21437.4
+   },
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "within-cluster binomial homogeneity of e1 (prepared |1>, P(0|1)) over all readout clusters (summed chi-square), null weighted by the shot-level qubit correlation",
+   "effect": {
+    "Q": 101150.0,
+    "Q_over_dof": 273.38,
+    "dof": 370,
+    "shared_shot_null": {
+     "chernoff": -20251.5,
+     "effective_dof": 369.895,
+     "largest_weight": 1.073,
+     "null_mean": 370.0,
+     "saddlepoint": -20256.7,
+     "weights": 143
+    }
+   },
+   "log10_p": -20251.5,
+   "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; ledger p is the Chernoff bound of the weighted chi-square null",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.2"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 84227.0,
+    "q_over_dof": 3662.0
+   },
+   "log10_p": -18248.2,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -23856.3,
+    "loglinear_pearson": -24375.5,
+    "pearson_difference": -16650.8,
+    "prior_method": -16650.8
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 341,
+    "loglinear_deviance": 112880.0,
+    "loglinear_dof": 468,
+    "loglinear_pearson": 115280.0,
+    "q_over_dof": 231.26,
+    "q_residual": 78859.0
+   },
+   "log10_p": -16650.8,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -18609.0,
+    "loglinear_pearson": -17294.9,
+    "pearson_difference": -15975.8,
+    "prior_method": -15975.8
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 344,
+    "loglinear_deviance": 88633.0,
+    "loglinear_dof": 474,
+    "loglinear_pearson": 82548.0,
+    "q_over_dof": 220.21,
+    "q_residual": 75753.0
+   },
+   "log10_p": -15975.8,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -21606.7,
+    "loglinear_pearson": -22045.0,
+    "pearson_difference": -15720.3,
+    "prior_method": -15720.3
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 338,
+    "loglinear_deviance": 102540.0,
+    "loglinear_dof": 481,
+    "loglinear_pearson": 104570.0,
+    "q_over_dof": 220.53,
+    "q_residual": 74539.0
+   },
+   "log10_p": -15720.3,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 65042.0,
+    "q_over_dof": 2827.9
+   },
+   "log10_p": -14083.5,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -13887.8,
+    "loglinear_pearson": -14154.5,
+    "pearson_difference": -11267.4,
+    "prior_method": -11267.4
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 345,
+    "loglinear_deviance": 66758.0,
+    "loglinear_dof": 474,
+    "loglinear_pearson": 67995.0,
+    "q_over_dof": 156.4,
+    "q_residual": 53959.0
+   },
+   "log10_p": -11267.4,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -14989.0,
+    "loglinear_pearson": -16016.7,
+    "pearson_difference": -10849.8,
+    "prior_method": -10849.8
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 341,
+    "loglinear_deviance": 71884.0,
+    "loglinear_dof": 478,
+    "loglinear_pearson": 76647.0,
+    "q_over_dof": 152.5,
+    "q_residual": 52003.0
+   },
+   "log10_p": -10849.8,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -10025.9,
+    "loglinear_pearson": -9789.83,
+    "pearson_difference": -8769.09,
+    "prior_method": -8769.09
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 343,
+    "loglinear_deviance": 48853.0,
+    "loglinear_dof": 480,
+    "loglinear_pearson": 47755.0,
+    "q_over_dof": 123.5,
+    "q_residual": 42362.0
+   },
+   "log10_p": -8769.09,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 38264.0,
+    "q_over_dof": 1663.6
+   },
+   "log10_p": -8271.01,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 34463.0,
+    "q_over_dof": 1498.4
+   },
+   "log10_p": -7446.08,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 28724.0,
+    "q_over_dof": 1248.9
+   },
+   "log10_p": -6200.68,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "alternatives": {
+    "prior_method": -2827.79
+   },
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "within-cluster binomial homogeneity of e0 (prepared |0>, P(1|0)) over all readout clusters (summed chi-square), null weighted by the shot-level qubit correlation",
+   "effect": {
+    "Q": 15995.0,
+    "Q_over_dof": 21.881,
+    "dof": 731,
+    "shared_shot_null": {
+     "chernoff": -2821.17,
+     "effective_dof": 730.929,
+     "largest_weight": 1.038,
+     "null_mean": 731.0,
+     "saddlepoint": -2824.19,
+     "weights": 182
+    }
+   },
+   "log10_p": -2821.17,
+   "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; ledger p is the Chernoff bound of the weighted chi-square null",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.1"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -1607.25,
+    "loglinear_pearson": -2465.81,
+    "pearson_difference": -1030.78,
+    "prior_method": -1030.78
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 332,
+    "loglinear_deviance": 9442.2,
+    "loglinear_dof": 529,
+    "loglinear_pearson": 13588.0,
+    "q_over_dof": 18.159,
+    "q_residual": 6028.8
+   },
+   "log10_p": -1030.78,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "alternatives": {
+    "prior_method": -797.705
+   },
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "any within-cluster linear drift in e1 (prepared |1>, P(0|1)): sum of squared per-group slope z over all (cluster, qubit) groups, null weighted by the shot-level qubit correlation",
+   "effect": {
+    "groups": 143,
+    "shared_shot_null": {
+     "chernoff": -782.562,
+     "effective_dof": 142.942,
+     "largest_weight": 1.073,
+     "null_mean": 143.0,
+     "saddlepoint": -786.096,
+     "weights": 143
+    },
+    "sum_z2": 4290.1,
+    "z2_over_groups": 30.001
+   },
+   "log10_p": -782.562,
+   "note": "the qubits of one job share shots, so the per-group z values correlate as the flip indicators do; ledger p is the Chernoff bound of the weighted chi-square null",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.4"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 3314.0,
+    "q_over_dof": 144.09
+   },
+   "log10_p": -692.896,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 2560.1,
+    "q_over_dof": 111.31
+   },
+   "log10_p": -530.359,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -609.186,
+    "loglinear_pearson": -589.617,
+    "pearson_difference": -527.496,
+    "prior_method": -527.496
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 420,
+    "loglinear_deviance": 4449.5,
+    "loglinear_dof": 529,
+    "loglinear_pearson": 4347.1,
+    "q_over_dof": 8.9483,
+    "q_residual": 3758.3
+   },
+   "log10_p": -527.496,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 2156.4,
+    "q_over_dof": 107.82
+   },
+   "log10_p": -446.512,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -488.265,
+    "loglinear_pearson": -444.462,
+    "pearson_difference": -436.414,
+    "prior_method": -436.414
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 398,
+    "loglinear_deviance": 3811.1,
+    "loglinear_dof": 529,
+    "loglinear_pearson": 3575.8,
+    "q_over_dof": 8.1157,
+    "q_residual": 3230.0
+   },
+   "log10_p": -436.414,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -1506.31,
+    "loglinear_pearson": -1994.81,
+    "pearson_difference": -428.141,
+    "prior_method": -428.141
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 313,
+    "loglinear_deviance": 8946.0,
+    "loglinear_dof": 528,
+    "loglinear_pearson": 11319.0,
+    "q_over_dof": 9.5166,
+    "q_residual": 2978.7
+   },
+   "log10_p": -428.141,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "alternatives": {
+    "prior_method": -356.102
+   },
+   "analysis": 2,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "any within-cluster linear drift in e0 (prepared |0>, P(1|0)): sum of squared per-group slope z over all (cluster, qubit) groups, null weighted by the shot-level qubit correlation",
+   "effect": {
+    "groups": 182,
+    "shared_shot_null": {
+     "chernoff": -353.233,
+     "effective_dof": 181.971,
+     "largest_weight": 1.038,
+     "null_mean": 182.0,
+     "saddlepoint": -355.677,
+     "weights": 182
+    },
+    "sum_z2": 2270.0,
+    "z2_over_groups": 12.472
+   },
+   "log10_p": -353.233,
+   "note": "the qubits of one job share shots, so the per-group z values correlate as the flip indicators do; ledger p is the Chernoff bound of the weighted chi-square null",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.3"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 1549.5,
+    "q_over_dof": 67.367
+   },
+   "log10_p": -313.192,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 1368.9,
+    "q_over_dof": 68.443
+   },
+   "log10_p": -277.279,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -374.093,
+    "loglinear_pearson": -276.018,
+    "pearson_difference": -276.881,
+    "prior_method": -276.881
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (all_modes): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 199,
+    "loglinear_deviance": 2486.8,
+    "loglinear_dof": 229,
+    "loglinear_pearson": 1983.9,
+    "q_over_dof": 9.617,
+    "q_residual": 1913.8
+   },
+   "log10_p": -276.018,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[all_modes].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -187.21,
+    "loglinear_pearson": -141.008,
+    "pearson_difference": -138.23,
+    "prior_method": -138.23
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 158,
+    "loglinear_deviance": 1396.6,
+    "loglinear_dof": 178,
+    "loglinear_pearson": 1149.7,
+    "q_over_dof": 6.8984,
+    "q_residual": 1090.0
+   },
+   "log10_p": -138.23,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": [
+    0.084772,
+    0.18673
+   ],
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "later Tuna-17 jobs with a band-corrected line p < 1e-6, against detection probability 1e-6 per job",
+   "effect": {
+    "detected": 21,
+    "fraction": 0.12727,
+    "jobs": 165
+   },
+   "log10_p": -99.7184,
+   "note": "",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.1"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": [
+    0.30869,
+    0.6355
+   ],
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "later readout-1 circuits (X-prepared qubits) with a secondary-band line, outside the primary band",
+   "effect": {
+    "detected": 15,
+    "readout_0_detected": 0,
+    "readout_0_jobs": 32,
+    "readout_1_jobs": 32
+   },
+   "log10_p": -81.2474,
+   "note": "the earlier corpus scanned readouts in the primary band only",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.7"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 221.32,
+    "q_over_dof": 11.066
+   },
+   "log10_p": -35.1855,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "alternatives": {
+    "job_level": -99.7184
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "later Tuna-17 acquisition series with at least one job at band-corrected p < 1e-6, against a hit probability of at most n_jobs * 1e-6 per series (Poisson-binomial)",
+   "effect": {
+    "jobs_per_series": {
+     "bdsc_pauli_tuna_17": 27,
+     "demarrais_tuna17_8192d": 9,
+     "kernel_cancellation_tuna_17": 18,
+     "pathion_coset_block_tuna_17": 12,
+     "pathion_coset_coin_tuna_17": 10,
+     "pathion_one_cz_null_tuna_17": 56,
+     "projector-geometry-tuna": 3,
+     "tuna-destination-one-response": 3,
+     "tuna-destination-response": 3,
+     "tuna17-quaternion-order-noise": 24
+    },
+    "series": 10,
+    "series_hit": 7
+   },
+   "log10_p": -32.2799,
+   "note": "union bound per series, valid under any dependence among the jobs of a series",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.1.series"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -41.0739,
+    "loglinear_pearson": -39.1961,
+    "pearson_difference": -26.0357,
+    "prior_method": -26.0357
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 288,
+    "loglinear_deviance": 997.69,
+    "loglinear_dof": 460,
+    "loglinear_pearson": 981.64,
+    "q_over_dof": 2.1631,
+    "q_residual": 622.97
+   },
+   "log10_p": -26.0357,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T073329Z->2026-10-23T202212Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": [
+    0.10123,
+    0.4344
+   ],
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "earlier-corpus Tuna-17 readout-1 circuits with a secondary-band line (rescan of the 2026-10-18 corpus)",
+   "effect": {
+    "detected": 5,
+    "jobs": 22
+   },
+   "log10_p": -25.5795,
+   "note": "",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.8"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 144.35,
+    "q_over_dof": 7.2174
+   },
+   "log10_p": -20.1223,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, all_modes): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 23,
+    "q_cmh": 144.08,
+    "q_over_dof": 6.2644
+   },
+   "log10_p": -18.7904,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[all_modes].set0:2026-10-18T030133Z->2026-10-18T033702Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": [
+    0.015823,
+    0.09932
+   ],
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "later non-readout Tuna-17 jobs detected only in the wider secondary band 0.010-0.040 (band-corrected p < 1e-6)",
+   "effect": {
+    "jobs": 4,
+    "of": 99
+   },
+   "log10_p": -16.5262,
+   "note": "exploratory band declared after the primary scan; the later QX twins give 0 detections in the same band",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.6"
+  },
+  {
+   "alternatives": {
+    "job_level": -81.2474
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "later readout-1 series with a secondary-band line in at least one readout-1 job (Poisson-binomial over series)",
+   "effect": {
+    "series": 6,
+    "series_hit": 3
+   },
+   "log10_p": -14.6356,
+   "note": "union bound per series, valid under any dependence among the jobs of a series; exploratory band declared after the primary scan",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.7.series"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 107.1,
+    "q_over_dof": 5.355
+   },
+   "log10_p": -13.1793,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -32.3248,
+    "loglinear_pearson": -27.0731,
+    "pearson_difference": -11.1624,
+    "prior_method": -11.1624
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 241,
+    "loglinear_deviance": 863.56,
+    "loglinear_dof": 419,
+    "loglinear_pearson": 815.72,
+    "q_over_dof": 1.7445,
+    "q_residual": 420.42
+   },
+   "log10_p": -11.1624,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T081314Z->2026-10-23T195000Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "fraction of later non-readout Tuna-17 jobs with the line against the earlier non-readout jobs (Fisher exact)",
+   "effect": {
+    "earlier": 0.66667,
+    "later": 0.21212
+   },
+   "log10_p": -10.5064,
+   "note": "",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.3"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "fraction of later Tuna-17 jobs with the line against the earlier 72 of 159 (Fisher exact, all jobs)",
+   "effect": {
+    "earlier": 0.45283,
+    "later": 0.12727,
+    "odds_ratio": 0.17622
+   },
+   "log10_p": -10.1475,
+   "note": "circuit mix differs between corpora; readout circuits (no line) are 51 earlier and 66 later jobs",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.2"
+  },
+  {
+   "alternatives": {
+    "job_level": -25.5795
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "earlier-corpus readout-1 series with a secondary-band line in at least one readout-1 job (Poisson-binomial over series)",
+   "effect": {
+    "series": 9,
+    "series_hit": 2
+   },
+   "log10_p": -9.67572,
+   "note": "union bound per series, valid under any dependence among the jobs of a series; exploratory band declared after the primary scan",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.8.series"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 78.557,
+    "q_over_dof": 3.9278
+   },
+   "log10_p": -8.16171,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -12.1677,
+    "loglinear_pearson": -8.1267,
+    "pearson_difference": -9.60727,
+    "prior_method": -9.60727
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 272,
+    "loglinear_deviance": 645.65,
+    "loglinear_dof": 409,
+    "loglinear_pearson": 592.17,
+    "q_over_dof": 1.629,
+    "q_residual": 443.09
+   },
+   "log10_p": -8.1267,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T150006Z->2026-10-24T170006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 71.668,
+    "q_over_dof": 3.5834
+   },
+   "log10_p": -7.01291,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "heterogeneity of the primary-band detected fraction across later payload families (chi-square contingency)",
+   "effect": {
+    "bdsc_pauli_tuna_17": "2/19",
+    "demarrais_tuna17_8192d": "9/9",
+    "kernel_cancellation_tuna_17": "4/12",
+    "pathion_coset_block_tuna_17": "2/8",
+    "pathion_coset_coin_tuna_17": "2/4",
+    "pathion_one_cz_null_tuna_17": "1/32",
+    "tuna17-quaternion-order-noise": "1/8"
+   },
+   "log10_p": -6.74444,
+   "note": "families differ in circuit and phase sensitivity",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.9"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -7.15283,
+    "loglinear_pearson": -4.60466,
+    "pearson_difference": -6.36464,
+    "prior_method": -6.36464
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 259,
+    "loglinear_deviance": 554.05,
+    "loglinear_dof": 389,
+    "loglinear_pearson": 512.61,
+    "q_over_dof": 1.4936,
+    "q_residual": 386.84
+   },
+   "log10_p": -4.60466,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T195000Z->2026-10-23T201808Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -7.49284,
+    "loglinear_pearson": -4.57734,
+    "pearson_difference": -5.18911,
+    "prior_method": -5.18911
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 270,
+    "loglinear_deviance": 581.69,
+    "loglinear_dof": 408,
+    "loglinear_pearson": 533.83,
+    "q_over_dof": 1.4207,
+    "q_residual": 383.59
+   },
+   "log10_p": -4.57734,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "alternatives": {
+    "job_level": -16.5262
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "later non-readout Tuna-17 series with a job detected only in the secondary band (Poisson-binomial over series)",
+   "effect": {
+    "series": 10,
+    "series_hit": 1
+   },
+   "log10_p": -4.00438,
+   "note": "union bound per series, valid under any dependence among the jobs of a series; exploratory band declared after the primary scan",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.6.series"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 52.305,
+    "q_over_dof": 2.6152
+   },
+   "log10_p": -3.98812,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -5.71033,
+    "loglinear_pearson": -3.53354,
+    "pearson_difference": -4.62919,
+    "prior_method": -4.62919
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 276,
+    "loglinear_deviance": 550.18,
+    "loglinear_dof": 405,
+    "loglinear_pearson": 510.13,
+    "q_over_dof": 1.3847,
+    "q_residual": 382.17
+   },
+   "log10_p": -3.53354,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -5.5833,
+    "loglinear_pearson": -3.40572,
+    "pearson_difference": -4.01582,
+    "prior_method": -4.01582
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 267,
+    "loglinear_deviance": 532.96,
+    "loglinear_dof": 392,
+    "loglinear_pearson": 492.92,
+    "q_over_dof": 1.3553,
+    "q_residual": 361.86
+   },
+   "log10_p": -3.40572,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": true,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": true,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T170006Z->2026-10-24T190006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": true,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 46.085,
+    "q_over_dof": 2.3042
+   },
+   "log10_p": -3.10532,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T070006Z->2026-10-24T090005Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -4.71118,
+    "loglinear_pearson": -2.60397,
+    "pearson_difference": -3.37852,
+    "prior_method": -3.37852
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 267,
+    "loglinear_deviance": 525.98,
+    "loglinear_dof": 399,
+    "loglinear_pearson": 482.93,
+    "q_over_dof": 1.3147,
+    "q_residual": 351.02
+   },
+   "log10_p": -2.60397,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -3.50886,
+    "loglinear_pearson": -2.60058,
+    "pearson_difference": -3.14226,
+    "prior_method": -3.14226
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 312,
+    "loglinear_deviance": 526.4,
+    "loglinear_dof": 420,
+    "loglinear_pearson": 505.91,
+    "q_over_dof": 1.2748,
+    "q_residual": 397.73
+   },
+   "log10_p": -2.60058,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-22T160023Z->2026-10-23T081314Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 39.88,
+    "q_over_dof": 1.994
+   },
+   "log10_p": -2.28624,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": true,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": true,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "alternatives": {
+    "job_level": -6.74444
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": true,
+   "ci95": null,
+   "dependent": "batches of one family share a circuit, a calibration epoch and a submission window",
+   "description": "heterogeneity of the per-batch primary-band detected fraction across later payload families (Kruskal-Wallis, one unit per submitted batch)",
+   "effect": {
+    "batches": 53,
+    "families": 7
+   },
+   "log10_p": -2.23479,
+   "note": "bounded: the family is the acquisition series, so no replicate series exists inside a family and the batches of one family share circuit, epoch and submission window",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": true,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.9.batch"
+  },
+  {
+   "alternatives": {
+    "prior_method": -2.28701
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "centered fitted per-mode shift against the change of the plan-time t_out, Stouffer over between-epoch identical-circuit pairs, with the covariance of pairs that share a run",
+   "effect": {
+    "pairs": 12,
+    "shared_run_pairs": 9,
+    "stouffer_z_corrected": 2.5568,
+    "stouffer_z_independent": 2.7966,
+    "variance_factor": 1.1963
+   },
+   "log10_p": -1.97623,
+   "note": "pairs sharing a run are correlated by rho(x) * rho(y) over their common modes under mode exchangeability; per-pair Spearman p-values are asymptotic",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.plan_t_out"
+  },
+  {
+   "alternatives": {
+    "job_level": -10.5064
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "per-series detected fraction of later against earlier Tuna-17 series, non-readout jobs (Mann-Whitney over series)",
+   "effect": {
+    "earlier_median_fraction": 0.775,
+    "earlier_series": 10,
+    "later_median_fraction": 0.11513,
+    "later_series": 10
+   },
+   "log10_p": -1.87593,
+   "note": "series are the units; the exact attainable p is bounded below by the number of series",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.3.series"
+  },
+  {
+   "alternatives": {
+    "job_level": -10.1475
+   },
+   "analysis": 1,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "per-series detected fraction of later against earlier Tuna-17 series, all jobs (Mann-Whitney over series)",
+   "effect": {
+    "earlier_median_fraction": 0.41071,
+    "earlier_series": 10,
+    "later_median_fraction": 0.05787,
+    "later_series": 10
+   },
+   "log10_p": -1.8199,
+   "note": "series are the units; the exact attainable p is bounded below by the number of series",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.2.series"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -3.47838,
+    "loglinear_pearson": -1.77003,
+    "pearson_difference": -2.17946,
+    "prior_method": -2.17946
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 277,
+    "loglinear_deviance": 508.98,
+    "loglinear_dof": 405,
+    "loglinear_pearson": 467.66,
+    "q_over_dof": 1.2228,
+    "q_residual": 338.73
+   },
+   "log10_p": -1.77003,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -2.9861,
+    "loglinear_pearson": -1.55275,
+    "pearson_difference": -2.19682,
+    "prior_method": -2.19682
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 259,
+    "loglinear_deviance": 476.17,
+    "loglinear_dof": 385,
+    "loglinear_pearson": 439.77,
+    "q_over_dof": 1.2323,
+    "q_residual": 319.17
+   },
+   "log10_p": -1.55275,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -3.30976,
+    "loglinear_pearson": -1.47196,
+    "pearson_difference": -1.95968,
+    "prior_method": -1.95968
+   },
+   "analysis": 3,
+   "bh_significant": true,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 267,
+    "loglinear_deviance": 513.24,
+    "loglinear_dof": 412,
+    "loglinear_pearson": 466.03,
+    "q_over_dof": 1.2088,
+    "q_residual": 322.76
+   },
+   "log10_p": -1.47196,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": true,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": true,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T090005Z->2026-10-24T110005Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -3.14017,
+    "loglinear_pearson": -1.33078,
+    "pearson_difference": -1.33385,
+    "prior_method": -1.33385
+   },
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 274,
+    "loglinear_deviance": 508.44,
+    "loglinear_dof": 411,
+    "loglinear_pearson": 460.29,
+    "q_over_dof": 1.148,
+    "q_residual": 314.54
+   },
+   "log10_p": -1.33078,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "alternatives": {
+    "loglinear_deviance": -2.22334,
+    "loglinear_pearson": -1.31831,
+    "pearson_difference": -1.25429,
+    "prior_method": -1.25429
+   },
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "setting-specific change between the same runs (stray_modes_0_1_5_excluded): the common-factor model against the saturated table",
+   "effect": {
+    "dof": 344,
+    "loglinear_deviance": 518.09,
+    "loglinear_dof": 440,
+    "loglinear_pearson": 490.52,
+    "q_over_dof": 1.1243,
+    "q_residual": 386.75
+   },
+   "log10_p": -1.25429,
+   "note": "ledger p is the largest of the Pearson-difference p, the nested log-linear deviance p and its Pearson p; cell counts are sparse, so each is an asymptotic reading",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.res[stray_modes_0_1_5_excluded].set2:2026-10-22T160340Z->2026-10-23T073329Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "per-job maximum first-harmonic amplitude of detected jobs, later against earlier (Mann-Whitney)",
+   "effect": {
+    "earlier_median": 0.14585,
+    "later_median": 0.055085
+   },
+   "log10_p": -1.09298,
+   "note": "class-level comparison: later and earlier jobs run different circuits",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.4"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -3.8022e-06,
+    2.7927e-07
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_coset_block_pairs",
+   "effect": {
+    "relative_slope_per_iteration": -1.761e-06,
+    "same_sign_groups": [
+     2,
+     2
+    ],
+    "slope_per_iteration": -1.7615e-06
+   },
+   "log10_p": -1.04242,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-11-07T003204Z-qpu_ascella-ascella_pathion_coset_block_p"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -8.9727e-07,
+    1.1662e-05
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_target_slot_drift",
+   "effect": {
+    "relative_slope_per_iteration": 5.3813e-06,
+    "same_sign_groups": [
+     3,
+     3
+    ],
+    "slope_per_iteration": 5.3822e-06
+   },
+   "log10_p": -1.03163,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-30T200600Z-qpu_ascella-target-slot-drift"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -2.1567e-06,
+    1.8262e-07
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": -9.8692e-07,
+    "same_sign_groups": [
+     1,
+     1
+    ],
+    "slope_per_iteration": -9.8702e-07
+   },
+   "log10_p": -1.00816,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "alternatives": {
+    "job_level": -1.09298
+   },
+   "analysis": 1,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "per-series median of the maximum first-harmonic amplitude of detected jobs, later against earlier Tuna-17 series (Mann-Whitney over series)",
+   "effect": {
+    "earlier_median": 0.145,
+    "earlier_series": 9,
+    "later_median": 0.03086,
+    "later_series": 7
+   },
+   "log10_p": -0.942483,
+   "note": "series with at least one detected job are the units",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.4.series"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 26.17,
+    "q_over_dof": 1.3085
+   },
+   "log10_p": -0.795174,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T130006Z->2026-10-24T150006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 25.722,
+    "q_over_dof": 1.2861
+   },
+   "log10_p": -0.756477,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set2:2026-10-23T202212Z->2026-10-23T213050Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -0.0035672,
+    0.00079435
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mode_swap_interleaved",
+   "effect": {
+    "relative_slope_per_iteration": -0.0012404,
+    "same_sign_groups": [
+     1,
+     2
+    ],
+    "slope_per_iteration": -0.0013864
+   },
+   "log10_p": -0.672129,
+   "note": "multiphoton input or broad detected-number distribution",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-31T060538Z-qpu_belenos-belenos_mode_swap_interleaved"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -1.6612e-06,
+    3.8073e-07
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": -6.4016e-07,
+    "same_sign_groups": [
+     1,
+     1
+    ],
+    "slope_per_iteration": -6.4023e-07
+   },
+   "log10_p": -0.659464,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 2,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    0.36849,
+    0.52936
+   ],
+   "dependent": "the groups of one job share shots, so the signs of their slopes are not independent",
+   "description": "common direction of the linear drift in e1 (prepared |1>, P(0|1)): groups with a negative slope against 0.5 (sign test)",
+   "effect": {
+    "groups": 143,
+    "iqr_relative_slope_per_hour": [
+     -0.11579,
+     0.18236
+    ],
+    "median_relative_slope_per_hour": 0.0046447,
+    "negative_slopes": 64
+   },
+   "log10_p": -0.616896,
+   "note": "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.6"
+  },
+  {
+   "alternatives": {},
+   "analysis": 1,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "jobs of one acquisition series share a circuit family, a calibration epoch and a submission window, so the job-level p-value counts more independent observations than the records hold",
+   "description": "peak frequency in cycles per shot of detected jobs, later against earlier (Mann-Whitney)",
+   "effect": {
+    "earlier_median": 0.02014001,
+    "later_median": 0.02007853
+   },
+   "log10_p": -0.546062,
+   "note": "a different shot period at fixed wall-clock frequency moves the cycles-per-shot value",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.5"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -0.021101,
+    0.0064492
+   ],
+   "dependent": "",
+   "description": "stratified logit slope of detected-sample yield per optical trial against iteration index, qpu:ascella",
+   "effect": {
+    "iterations": 8,
+    "logit_slope_per_iteration": -0.0073261
+   },
+   "log10_p": -0.526891,
+   "note": "yield per Perceval shot = samples / nb_shots_used",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4y.2026-10-29T192905Z-qpu_ascella-ascella_two_photon_associat"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 21.736,
+    "q_over_dof": 1.0868
+   },
+   "log10_p": -0.449779,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T213450Z->2026-10-24T070006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -8.652e-07,
+    2.1151e-06
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_four_term_blocks",
+   "effect": {
+    "relative_slope_per_iteration": 6.2473e-07,
+    "same_sign_groups": [
+     18,
+     42
+    ],
+    "slope_per_iteration": 6.2497e-07
+   },
+   "log10_p": -0.386076,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-11-06T215343Z-qpu_ascella-ascella_pathion_four_term_blo"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -9.8081e-06,
+    2.2367e-05
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_predecessor",
+   "effect": {
+    "relative_slope_per_iteration": 6.2787e-06,
+    "same_sign_groups": [
+     2,
+     3
+    ],
+    "slope_per_iteration": 6.2795e-06
+   },
+   "log10_p": -0.352373,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-s"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -3.5563e-06,
+    1.6766e-06
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": -9.3965e-07,
+    "same_sign_groups": [
+     9,
+     30
+    ],
+    "slope_per_iteration": -9.3989e-07
+   },
+   "log10_p": -0.317503,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -8.1521e-07,
+    1.5782e-06
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": 3.8143e-07,
+    "same_sign_groups": [
+     1,
+     1
+    ],
+    "slope_per_iteration": 3.8147e-07
+   },
+   "log10_p": -0.273996,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (different plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 18.722,
+    "q_over_dof": 0.93612
+   },
+   "log10_p": -0.26766,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-24T110005Z->2026-10-24T130006Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 3,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "common per-mode factor between two runs of identical circuits (same plan epoch, stray_modes_0_1_5_excluded): generalized CMH, run against mode over settings",
+   "effect": {
+    "dof": 20,
+    "q_cmh": 15.855,
+    "q_over_dof": 0.79277
+   },
+   "log10_p": -0.139334,
+   "note": "chi-square null; efficiency-type change",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a3_belenos_mode_efficiency.json",
+   "test_id": "A3.cmh[stray_modes_0_1_5_excluded].set1:2026-10-23T201808Z->2026-10-23T213450Z-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -3.0391e-07,
+    2.1781e-07
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_pathion_mesh_persistence",
+   "effect": {
+    "relative_slope_per_iteration": -4.3037e-08,
+    "same_sign_groups": [
+     2,
+     4
+    ],
+    "slope_per_iteration": -4.3051e-08
+   },
+   "log10_p": -0.127061,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persiste"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -6.8766e-06,
+    9.0678e-06
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:ascella ascella_signed_coherence",
+   "effect": {
+    "relative_slope_per_iteration": 1.0954e-06,
+    "same_sign_groups": [
+     12,
+     26
+    ],
+    "slope_per_iteration": 1.0956e-06
+   },
+   "log10_p": -0.103663,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-"
+  },
+  {
+   "alternatives": {},
+   "analysis": 4,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    -1.4542e-05,
+    1.1074e-05
+   ],
+   "dependent": "",
+   "description": "setting-stratified slope of mean detected photons against iteration index, qpu:belenos belenos_mesh",
+   "effect": {
+    "relative_slope_per_iteration": -1.7329e-06,
+    "same_sign_groups": [
+     1,
+     2
+    ],
+    "slope_per_iteration": -1.7339e-06
+   },
+   "log10_p": -0.101961,
+   "note": "single-photon input",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a4_photon_number_trend.json",
+   "test_id": "A4.2026-10-18T193509Z-qpu_belenos-belenos_mesh-job-16"
+  },
+  {
+   "alternatives": {},
+   "analysis": 2,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "first-to-last bracket chi-square per qubit against elapsed hours (Spearman across bracket pairs)",
+   "effect": {
+    "pairs": 20,
+    "rho": 0.063158
+   },
+   "log10_p": -0.101619,
+   "note": "a positive rho says the bracket difference grows with elapsed time; clusters are confounded with series",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.7"
+  },
+  {
+   "alternatives": {
+    "job_level": -0.546062
+   },
+   "analysis": 1,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": null,
+   "dependent": "",
+   "description": "per-series median peak frequency in cycles per shot of detected jobs, later against earlier Tuna-17 series (Mann-Whitney over series)",
+   "effect": {
+    "earlier_median": 0.02005957,
+    "earlier_series": 9,
+    "later_median": 0.02011036,
+    "later_series": 7
+   },
+   "log10_p": -0.0772419,
+   "note": "series with at least one detected job are the units",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": false,
+   "safe_bonferroni_significant": false,
+   "safe_by_significant": false,
+   "source": "a1_shot_line_extension.json",
+   "test_id": "A1.5.series"
+  },
+  {
+   "alternatives": {},
+   "analysis": 2,
+   "bh_significant": false,
+   "bonferroni_significant": false,
+   "by_significant": false,
+   "ci95": [
+    0.42274,
+    0.5665
+   ],
+   "dependent": "the groups of one job share shots, so the signs of their slopes are not independent",
+   "description": "common direction of the linear drift in e0 (prepared |0>, P(1|0)): groups with a negative slope against 0.5 (sign test)",
+   "effect": {
+    "groups": 182,
+    "iqr_relative_slope_per_hour": [
+     -0.056984,
+     0.053845
+    ],
+    "median_relative_slope_per_hour": 0.00066229,
+    "negative_slopes": 90
+   },
+   "log10_p": -0.026439,
+   "note": "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+   "pooled_bh_significant": false,
+   "pooled_bonferroni_significant": false,
+   "pooled_by_significant": false,
+   "safe_bh_significant": null,
+   "safe_bonferroni_significant": null,
+   "safe_by_significant": null,
+   "source": "a2_readout_bracket_drift.json",
+   "test_id": "A2.5"
+  }
+ ],
+ "tests": 99
+}

@@ -1,0 +1,1176 @@
+{
+ "analysis": 2,
+ "bracket_pairs": [
+  {
+   "chi2_over_dof": 2.832,
+   "cluster": 0,
+   "elapsed_h": 0.668,
+   "max_abs_difference": 0.008118,
+   "max_abs_z": 4.962,
+   "mean_signed_z": 0.2028,
+   "median_abs_difference": 0.001221,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 15.27,
+   "cluster": 0,
+   "elapsed_h": 0.6679,
+   "max_abs_difference": 0.04303,
+   "max_abs_z": 14.33,
+   "mean_signed_z": -1.438,
+   "median_abs_difference": 0.001953,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 12.91,
+   "cluster": 1,
+   "elapsed_h": 0.1193,
+   "max_abs_difference": 0.03973,
+   "max_abs_z": 13.59,
+   "mean_signed_z": -0.04065,
+   "median_abs_difference": 0.001648,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 1.627,
+   "cluster": 1,
+   "elapsed_h": 0.1093,
+   "max_abs_difference": 0.007568,
+   "max_abs_z": 2.287,
+   "mean_signed_z": 0.2819,
+   "median_abs_difference": 0.001587,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 3.816,
+   "cluster": 2,
+   "elapsed_h": 0.1496,
+   "max_abs_difference": 0.02142,
+   "max_abs_z": 6.315,
+   "mean_signed_z": -0.3935,
+   "median_abs_difference": 0.001648,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 2.803,
+   "cluster": 2,
+   "elapsed_h": 0.1518,
+   "max_abs_difference": 0.02515,
+   "max_abs_z": 5.932,
+   "mean_signed_z": 0.3209,
+   "median_abs_difference": 0.002441,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 3.472,
+   "cluster": 3,
+   "elapsed_h": 3.826,
+   "max_abs_difference": 0.007378,
+   "max_abs_z": 5.224,
+   "mean_signed_z": 0.1873,
+   "median_abs_difference": 0.001373,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 2.549,
+   "cluster": 3,
+   "elapsed_h": 3.844,
+   "max_abs_difference": 0.005905,
+   "max_abs_z": 3.128,
+   "mean_signed_z": 0.04918,
+   "median_abs_difference": 0.001808,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 4.891,
+   "cluster": 4,
+   "elapsed_h": 0.3599,
+   "max_abs_difference": 0.003677,
+   "max_abs_z": 4.701,
+   "mean_signed_z": 0.515,
+   "median_abs_difference": 0.0008545,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 11.77,
+   "cluster": 4,
+   "elapsed_h": 0.3598,
+   "max_abs_difference": 0.01608,
+   "max_abs_z": 12.53,
+   "mean_signed_z": 1.169,
+   "median_abs_difference": 0.000946,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 191.1,
+   "cluster": 5,
+   "elapsed_h": 0.7843,
+   "max_abs_difference": 0.05487,
+   "max_abs_z": 19.51,
+   "mean_signed_z": -10.42,
+   "median_abs_difference": 0.02838,
+   "prepared_one_count": 2,
+   "qubits": 2
+  },
+  {
+   "chi2_over_dof": 6.5,
+   "cluster": 5,
+   "elapsed_h": 5.22,
+   "max_abs_difference": 0.003265,
+   "max_abs_z": 3.529,
+   "mean_signed_z": 1.395,
+   "median_abs_difference": 0.002304,
+   "prepared_one_count": 0,
+   "qubits": 2
+  },
+  {
+   "chi2_over_dof": 15.54,
+   "cluster": 5,
+   "elapsed_h": 0.9989,
+   "max_abs_difference": 0.02231,
+   "max_abs_z": 12.38,
+   "mean_signed_z": -2.013,
+   "median_abs_difference": 0.003052,
+   "prepared_one_count": 12,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 12.63,
+   "cluster": 6,
+   "elapsed_h": 0.334,
+   "max_abs_difference": 0.02368,
+   "max_abs_z": 10.86,
+   "mean_signed_z": -0.9552,
+   "median_abs_difference": 0.001343,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 5.092,
+   "cluster": 6,
+   "elapsed_h": 0.2821,
+   "max_abs_difference": 0.01355,
+   "max_abs_z": 5.76,
+   "mean_signed_z": 0.6243,
+   "median_abs_difference": 0.002197,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 2.031,
+   "cluster": 7,
+   "elapsed_h": 2.029,
+   "max_abs_difference": 0.005875,
+   "max_abs_z": 3.299,
+   "mean_signed_z": -0.3681,
+   "median_abs_difference": 0.001495,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 94.93,
+   "cluster": 7,
+   "elapsed_h": 0.0534,
+   "max_abs_difference": 0.1696,
+   "max_abs_z": 39.01,
+   "mean_signed_z": -1.329,
+   "median_abs_difference": 0.002625,
+   "prepared_one_count": 17,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 13.14,
+   "cluster": 7,
+   "elapsed_h": 0.1092,
+   "max_abs_difference": 0.01143,
+   "max_abs_z": 13.04,
+   "mean_signed_z": -0.9647,
+   "median_abs_difference": 0.0009155,
+   "prepared_one_count": 5,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 40.86,
+   "cluster": 8,
+   "elapsed_h": 13.99,
+   "max_abs_difference": 0.01684,
+   "max_abs_z": 22.45,
+   "mean_signed_z": -1.438,
+   "median_abs_difference": 0.002167,
+   "prepared_one_count": 0,
+   "qubits": 17
+  },
+  {
+   "chi2_over_dof": 77.14,
+   "cluster": 8,
+   "elapsed_h": 13.93,
+   "max_abs_difference": 0.05358,
+   "max_abs_z": 27.92,
+   "mean_signed_z": 0.5942,
+   "median_abs_difference": 0.002159,
+   "prepared_one_count": 5,
+   "qubits": 17
+  }
+ ],
+ "class_summary": {
+  "e0 (prepared |0>, P(1|0))": {
+   "Q": 15995.210427506412,
+   "Q_over_dof": 21.881272814646255,
+   "dof": 731
+  },
+  "e1 (prepared |1>, P(0|1))": {
+   "Q": 101150.71901608552,
+   "Q_over_dof": 273.380321665096,
+   "dof": 370
+  }
+ },
+ "clusters": [
+  {
+   "Q_over_dof_e0": 2.83,
+   "Q_over_dof_e1": 15.27,
+   "cluster": 0,
+   "groups_tested": 34,
+   "log10_p_cluster": -45.09,
+   "mean_signed_z_slope": -0.6174,
+   "readout_jobs": 4,
+   "series": [
+    "coupler_zz_tuna_17",
+    "zero_divisor_tuna_17"
+   ],
+   "span_h": 0.671,
+   "start_utc": "2026-10-16T22:12Z"
+  },
+  {
+   "Q_over_dof_e0": 1.258,
+   "Q_over_dof_e1": 8.387,
+   "cluster": 1,
+   "groups_tested": 68,
+   "log10_p_cluster": -34.96,
+   "mean_signed_z_slope": 0.1158,
+   "readout_jobs": 6,
+   "series": [
+    "zero_divisor_tuna_17"
+   ],
+   "span_h": 0.1193,
+   "start_utc": "2026-10-17T05:26Z"
+  },
+  {
+   "Q_over_dof_e0": 2.254,
+   "Q_over_dof_e1": 3.878,
+   "cluster": 2,
+   "groups_tested": 102,
+   "log10_p_cluster": -22.52,
+   "mean_signed_z_slope": 0.03273,
+   "readout_jobs": 8,
+   "series": [
+    "box_kite_tuna_pre",
+    "box_kite_tuna_t0"
+   ],
+   "span_h": 0.1532,
+   "start_utc": "2026-10-17T15:38Z"
+  },
+  {
+   "Q_over_dof_e0": 10.89,
+   "Q_over_dof_e1": 3.866,
+   "cluster": 3,
+   "groups_tested": 170,
+   "log10_p_cluster": -163.8,
+   "mean_signed_z_slope": 0.4267,
+   "readout_jobs": 12,
+   "series": [
+    "box_kite_tuna_follow",
+    "box_kite_tuna_ladder"
+   ],
+   "span_h": 3.847,
+   "start_utc": "2026-10-17T23:08Z"
+  },
+  {
+   "Q_over_dof_e0": 4.891,
+   "Q_over_dof_e1": 11.77,
+   "cluster": 4,
+   "groups_tested": 34,
+   "log10_p_cluster": -40.34,
+   "mean_signed_z_slope": 0.8419,
+   "readout_jobs": 4,
+   "series": [
+    "walsh_exemplar_tuna_17"
+   ],
+   "span_h": 0.3804,
+   "start_utc": "2026-10-18T17:06Z"
+  },
+  {
+   "Q_over_dof_e0": 7.117,
+   "Q_over_dof_e1": 93.78,
+   "cluster": 5,
+   "groups_tested": 132,
+   "log10_p_cluster": -1013.0,
+   "mean_signed_z_slope": -1.535,
+   "readout_jobs": 26,
+   "series": [
+    "bdsc_pauli_tuna_17",
+    "tuna17-quaternion-order-noise/order"
+   ],
+   "span_h": 5.353,
+   "start_utc": "2026-10-22T06:27Z"
+  },
+  {
+   "Q_over_dof_e0": 10.6,
+   "Q_over_dof_e1": 3.424,
+   "cluster": 6,
+   "groups_tested": 68,
+   "log10_p_cluster": -61.93,
+   "mean_signed_z_slope": -0.1171,
+   "readout_jobs": 6,
+   "series": [
+    "kernel_cancellation_tuna_17"
+   ],
+   "span_h": 0.3862,
+   "start_utc": "2026-10-23T07:59Z"
+  },
+  {
+   "Q_over_dof_e0": 5.361,
+   "Q_over_dof_e1": 61.73,
+   "cluster": 7,
+   "groups_tested": 119,
+   "log10_p_cluster": -370.8,
+   "mean_signed_z_slope": -0.8395,
+   "readout_jobs": 10,
+   "series": [
+    "pathion_coset_block_tuna_17",
+    "pathion_coset_coin_tuna_17"
+   ],
+   "span_h": 2.05,
+   "start_utc": "2026-11-06T22:17Z"
+  },
+  {
+   "Q_over_dof_e0": 41.83,
+   "Q_over_dof_e1": 1698.0,
+   "cluster": 8,
+   "groups_tested": 374,
+   "log10_p_cluster": -22640.0,
+   "mean_signed_z_slope": -2.292,
+   "readout_jobs": 24,
+   "series": [
+    "pathion_one_cz_null_tuna_17"
+   ],
+   "span_h": 13.99,
+   "start_utc": "2026-11-07T21:08Z"
+  }
+ ],
+ "data": {
+  "clusters": 9,
+  "clusters_spanning_6h_or_more": 1,
+  "read_run_problems": [],
+  "readout_jobs": 100,
+  "runs": [
+   "2026-10-16T221133Z-zero_divisor_tuna_17",
+   "2026-10-16T224924Z-coupler_zz_tuna_17-batch-00",
+   "2026-10-17T052547Z-zero_divisor_tuna_17-batch-00",
+   "2026-10-17T052915Z-zero_divisor_tuna_17-batch-01",
+   "2026-10-17T053226Z-zero_divisor_tuna_17-batch-02",
+   "2026-10-17T152324Z-box_kite_tuna_pre-batch-00",
+   "2026-10-17T152324Z-box_kite_tuna_t0-batch-00",
+   "2026-10-17T152324Z-box_kite_tuna_t0-batch-01",
+   "2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+   "2026-10-17T230513Z-box_kite_tuna_follow-batch-00",
+   "2026-10-17T230513Z-box_kite_tuna_follow-batch-03",
+   "2026-10-17T230513Z-box_kite_tuna_follow-batch-06",
+   "2026-10-18T015435Z-box_kite_tuna_ladder-batch-00",
+   "2026-10-18T015435Z-box_kite_tuna_ladder-batch-03",
+   "2026-10-18T015435Z-box_kite_tuna_ladder-batch-06",
+   "2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-00",
+   "2026-10-18T165957Z-walsh_exemplar_tuna_17-batch-03",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-00",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-01",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-02",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-03",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-05",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-06",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-07",
+   "2026-10-22T104158Z-bdsc_pauli_tuna_17-batch-08",
+   "2026-10-23T075543Z-kernel_cancellation_tuna_17-batch-00",
+   "2026-10-23T080006Z-kernel_cancellation_tuna_17-batch-01",
+   "2026-10-23T080624Z-kernel_cancellation_tuna_17-batch-02",
+   "2026-10-23T081101Z-kernel_cancellation_tuna_17-batch-03",
+   "2026-10-23T081536Z-kernel_cancellation_tuna_17-batch-04",
+   "2026-10-23T082011Z-kernel_cancellation_tuna_17-batch-05",
+   "2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-00",
+   "2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-01",
+   "2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-02",
+   "2026-11-06T221626Z-pathion_coset_block_tuna_17-batch-03",
+   "2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-00",
+   "2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-01",
+   "2026-11-07T001031Z-pathion_coset_coin_tuna_17-batch-02",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-00",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-01",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-02",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-03",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-04",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-05",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-06",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-07",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-08",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-09",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-10",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-11",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-12",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-13",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-14",
+   "2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-15",
+   "tuna17-quaternion-order-noise/order-batch-00",
+   "tuna17-quaternion-order-noise/order-batch-01",
+   "tuna17-quaternion-order-noise/order-batch-02",
+   "tuna17-quaternion-order-noise/order-batch-03",
+   "tuna17-quaternion-order-noise/order-batch-04",
+   "tuna17-quaternion-order-noise/order-batch-05",
+   "tuna17-quaternion-order-noise/order-batch-06",
+   "tuna17-quaternion-order-noise/order-batch-07"
+  ],
+  "series": [
+   "bdsc_pauli_tuna_17",
+   "box_kite_tuna_follow",
+   "box_kite_tuna_ladder",
+   "box_kite_tuna_pre",
+   "box_kite_tuna_t0",
+   "coupler_zz_tuna_17",
+   "kernel_cancellation_tuna_17",
+   "pathion_coset_block_tuna_17",
+   "pathion_coset_coin_tuna_17",
+   "pathion_one_cz_null_tuna_17",
+   "tuna17-quaternion-order-noise/order",
+   "walsh_exemplar_tuna_17",
+   "zero_divisor_tuna_17"
+  ],
+  "span_utc": [
+   "2026-10-16T22:12Z",
+   "2026-11-08T11:08Z"
+  ]
+ },
+ "exploratory_time_of_day": [
+  {
+   "amplitude_z_units": 1.4169,
+   "chi2_2dof_binomial_null": 97.543,
+   "log10_p_binomial_null": -21.181,
+   "rows": 554,
+   "test": "24 h harmonic of e0 residuals after removing each cluster's linear trend (clusters spanning at least 3 h)",
+   "verdict": "not run as a test of time of day: only one cluster spans more than 6 h, the harmonic is collinear with its elapsed time, and the residual dispersion is far above binomial"
+  },
+  {
+   "amplitude_z_units": 48.494,
+   "chi2_2dof_binomial_null": 19630.0,
+   "log10_p_binomial_null": -4262.7,
+   "rows": 226,
+   "test": "24 h harmonic of e1 residuals after removing each cluster's linear trend (clusters spanning at least 3 h)",
+   "verdict": "not run as a test of time of day: only one cluster spans more than 6 h, the harmonic is collinear with its elapsed time, and the residual dispersion is far above binomial"
+  }
+ ],
+ "falsifier": "Analysis 2: Tuna-17 readout-bracket drift against elapsed time and time of day.\n\nFalsifier, fixed before computing. \"No structure\" is: within a cluster of readout jobs (jobs of any series\nwhose consecutive start times are at most 6 h apart, so no documented platform recalibration separates them\nunless it falls inside the cluster) each qubit's flip probability is constant, i.e. (a) the binomial\nhomogeneity chi-square over a cluster's jobs of one (qubit, prepared state) holds at its nominal level, (b)\nthe pooled within-cluster relative slope per hour of the flip probability has a 95 percent interval containing\nzero, separately for prepared |0> (e0, P(1|0)) and prepared |1> (e1, P(0|1)), and (c) a 24 h harmonic of the\nwithin-cluster residuals is absent. Binomial counting noise is the only null; no random draw is used.\n\nThe qubits of one job measure the same shots, so a sum of per-qubit statistics has the null of a weighted\nchi-square: each (cluster, prepared X-set) block contributes the eigenvalues of the shot-level correlation matrix\nof its qubits' flip indicators (pooled within jobs, so drift does not enter it) as weights. The ledger carries the\nChernoff bound of that law, a guaranteed upper bound on the tail. Shots inside a job are taken as exchangeable;\nthe shot-order line of analysis 1 is a counterexample, so the bound is conditional on that assumption.\n\nGroups are keyed by (qubit, prepared state, full prepared X-set), so a qubit's readout is compared only between jobs with the same neighbor excitation.\n\nData. Every retained Tuna-17 circuit that holds only X gates and a full-register measurement (a pure readout\nbracket), read through qi_records.read_run. Time is the job midpoint, finished_at minus half the execution time.\nBrackets of one payload series are the readout jobs of its cluster; the series' payload jobs lie between them.\n\nLimits stated before computing. Most clusters span under 1.1 h; one (pathion one-CZ null) spans 14 h. Time of\nday is therefore collinear with elapsed time inside the only long cluster and confounded with calibration\nepoch (documented at docs/notes/quantum_inspire/tuna-17.md, \"Readout calibration drift\") across clusters.\n",
+ "groups_with_largest_homogeneity_Q": [
+  {
+   "Q": 93070.0,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -20190.0,
+   "mean_flip": 0.2356,
+   "points": 12,
+   "prepared": 1,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 11,
+   "slope_rel_per_h": -0.01521,
+   "span_h": 13.93,
+   "z_slope": -34.93
+  },
+  {
+   "Q": 7758.0,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -1670.0,
+   "mean_flip": 0.03666,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 11,
+   "slope_rel_per_h": -0.01645,
+   "span_h": 13.99,
+   "z_slope": -13.48
+  },
+  {
+   "Q": 4265.0,
+   "cluster": 5,
+   "dof": 7,
+   "log10_p_homogeneity": -918.3,
+   "mean_flip": 0.1019,
+   "points": 8,
+   "prepared": 1,
+   "prepared_x_set": [
+    0,
+    1
+   ],
+   "qubit": 1,
+   "slope_rel_per_h": -0.4527,
+   "span_h": 0.7843,
+   "z_slope": -12.34
+  },
+  {
+   "Q": 1974.0,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -416.9,
+   "mean_flip": 0.0375,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 7,
+   "slope_rel_per_h": -0.02109,
+   "span_h": 13.99,
+   "z_slope": -17.49
+  },
+  {
+   "Q": 1522.0,
+   "cluster": 7,
+   "dof": 1,
+   "log10_p_homogeneity": -332.1,
+   "mean_flip": 0.1914,
+   "points": 2,
+   "prepared": 1,
+   "prepared_x_set": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 11,
+   "slope_rel_per_h": -16.59,
+   "span_h": 0.0534,
+   "z_slope": -39.01
+  },
+  {
+   "Q": 695.3,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -141.3,
+   "mean_flip": 0.03333,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 7,
+   "slope_rel_per_h": -0.02634,
+   "span_h": 13.93,
+   "z_slope": -20.23
+  },
+  {
+   "Q": 637.6,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -128.9,
+   "mean_flip": 0.02376,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 13,
+   "slope_rel_per_h": -0.00252,
+   "span_h": 13.99,
+   "z_slope": -1.651
+  },
+  {
+   "Q": 620.0,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -125.1,
+   "mean_flip": 0.02331,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 13,
+   "slope_rel_per_h": 0.002814,
+   "span_h": 13.93,
+   "z_slope": 1.798
+  },
+  {
+   "Q": 506.9,
+   "cluster": 3,
+   "dof": 5,
+   "log10_p_homogeneity": -106.6,
+   "mean_flip": 0.03718,
+   "points": 6,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 7,
+   "slope_rel_per_h": -0.08827,
+   "span_h": 3.826,
+   "z_slope": -12.12
+  },
+  {
+   "Q": 279.9,
+   "cluster": 5,
+   "dof": 3,
+   "log10_p_homogeneity": -59.65,
+   "mean_flip": 0.06029,
+   "points": 4,
+   "prepared": 1,
+   "prepared_x_set": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 1,
+   "slope_rel_per_h": -0.247,
+   "span_h": 0.9989,
+   "z_slope": -8.323
+  },
+  {
+   "Q": 263.7,
+   "cluster": 5,
+   "dof": 3,
+   "log10_p_homogeneity": -56.15,
+   "mean_flip": 0.08672,
+   "points": 4,
+   "prepared": 0,
+   "prepared_x_set": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 7,
+   "slope_rel_per_h": -0.0982,
+   "span_h": 0.9989,
+   "z_slope": -4.026
+  },
+  {
+   "Q": 253.0,
+   "cluster": 3,
+   "dof": 5,
+   "log10_p_homogeneity": -51.9,
+   "mean_flip": 0.02978,
+   "points": 6,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 13,
+   "slope_rel_per_h": 0.02981,
+   "span_h": 3.826,
+   "z_slope": 3.649
+  },
+  {
+   "Q": 233.0,
+   "cluster": 1,
+   "dof": 2,
+   "log10_p_homogeneity": -50.6,
+   "mean_flip": 0.07079,
+   "points": 3,
+   "prepared": 1,
+   "prepared_x_set": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 7,
+   "slope_rel_per_h": -4.654,
+   "span_h": 0.1193,
+   "z_slope": -13.88
+  },
+  {
+   "Q": 205.2,
+   "cluster": 0,
+   "dof": 1,
+   "log10_p_homogeneity": -45.82,
+   "mean_flip": 0.08037,
+   "points": 2,
+   "prepared": 1,
+   "prepared_x_set": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 7,
+   "slope_rel_per_h": -0.8016,
+   "span_h": 0.6679,
+   "z_slope": -14.33
+  },
+  {
+   "Q": 193.4,
+   "cluster": 7,
+   "dof": 2,
+   "log10_p_homogeneity": -41.99,
+   "mean_flip": 0.02732,
+   "points": 3,
+   "prepared": 0,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 13,
+   "slope_rel_per_h": -3.719,
+   "span_h": 0.1092,
+   "z_slope": -12.34
+  },
+  {
+   "Q": 208.2,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -37.83,
+   "mean_flip": 0.04673,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 15,
+   "slope_rel_per_h": -0.004495,
+   "span_h": 13.99,
+   "z_slope": -4.181
+  },
+  {
+   "Q": 166.9,
+   "cluster": 6,
+   "dof": 2,
+   "log10_p_homogeneity": -36.25,
+   "mean_flip": 0.04585,
+   "points": 3,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 7,
+   "slope_rel_per_h": -1.491,
+   "span_h": 0.334,
+   "z_slope": -9.888
+  },
+  {
+   "Q": 157.1,
+   "cluster": 4,
+   "dof": 1,
+   "log10_p_homogeneity": -35.31,
+   "mean_flip": 0.1231,
+   "points": 2,
+   "prepared": 1,
+   "prepared_x_set": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 9,
+   "slope_rel_per_h": 0.3632,
+   "span_h": 0.3598,
+   "z_slope": 12.53
+  },
+  {
+   "Q": 189.3,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -33.9,
+   "mean_flip": 0.04493,
+   "points": 12,
+   "prepared": 1,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 4,
+   "slope_rel_per_h": -0.01318,
+   "span_h": 13.93,
+   "z_slope": -11.82
+  },
+  {
+   "Q": 146.5,
+   "cluster": 6,
+   "dof": 2,
+   "log10_p_homogeneity": -31.8,
+   "mean_flip": 0.02878,
+   "points": 3,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 13,
+   "slope_rel_per_h": -1.403,
+   "span_h": 0.334,
+   "z_slope": -7.31
+  },
+  {
+   "Q": 147.2,
+   "cluster": 7,
+   "dof": 4,
+   "log10_p_homogeneity": -30.1,
+   "mean_flip": 0.02883,
+   "points": 5,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 13,
+   "slope_rel_per_h": 0.0374,
+   "span_h": 2.029,
+   "z_slope": 2.055
+  },
+  {
+   "Q": 162.7,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -28.44,
+   "mean_flip": 0.05202,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 15,
+   "slope_rel_per_h": 0.0007689,
+   "span_h": 13.93,
+   "z_slope": 0.745
+  },
+  {
+   "Q": 123.1,
+   "cluster": 5,
+   "dof": 3,
+   "log10_p_homogeneity": -25.78,
+   "mean_flip": 0.07988,
+   "points": 4,
+   "prepared": 0,
+   "prepared_x_set": [],
+   "qubit": 7,
+   "slope_rel_per_h": -0.2894,
+   "span_h": 0.8735,
+   "z_slope": -10.02
+  },
+  {
+   "Q": 115.9,
+   "cluster": 2,
+   "dof": 3,
+   "log10_p_homogeneity": -24.22,
+   "mean_flip": 0.05239,
+   "points": 4,
+   "prepared": 1,
+   "prepared_x_set": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "qubit": 6,
+   "slope_rel_per_h": 3.601,
+   "span_h": 0.1518,
+   "z_slope": 9.36
+  },
+  {
+   "Q": 138.2,
+   "cluster": 8,
+   "dof": 11,
+   "log10_p_homogeneity": -23.42,
+   "mean_flip": 0.1526,
+   "points": 12,
+   "prepared": 0,
+   "prepared_x_set": [
+    2,
+    4,
+    8,
+    11,
+    12
+   ],
+   "qubit": 6,
+   "slope_rel_per_h": 0.003799,
+   "span_h": 13.93,
+   "z_slope": 6.668
+  }
+ ],
+ "ledger": {
+  "bonferroni_alpha": 0.0071429,
+  "rows": [
+   {
+    "alternatives": {
+     "prior_method": -2827.79
+    },
+    "analysis": 2,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "within-cluster binomial homogeneity of e0 (prepared |0>, P(1|0)) over all readout clusters (summed chi-square), null weighted by the shot-level qubit correlation",
+    "effect": {
+     "Q": 15995.0,
+     "Q_over_dof": 21.881,
+     "dof": 731,
+     "shared_shot_null": {
+      "chernoff": -2821.17,
+      "effective_dof": 730.929,
+      "largest_weight": 1.038,
+      "null_mean": 731.0,
+      "saddlepoint": -2824.19,
+      "weights": 182
+     }
+    },
+    "log10_p": -2821.17,
+    "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; ledger p is the Chernoff bound of the weighted chi-square null",
+    "test_id": "A2.1"
+   },
+   {
+    "alternatives": {
+     "prior_method": -356.102
+    },
+    "analysis": 2,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "any within-cluster linear drift in e0 (prepared |0>, P(1|0)): sum of squared per-group slope z over all (cluster, qubit) groups, null weighted by the shot-level qubit correlation",
+    "effect": {
+     "groups": 182,
+     "shared_shot_null": {
+      "chernoff": -353.233,
+      "effective_dof": 181.971,
+      "largest_weight": 1.038,
+      "null_mean": 182.0,
+      "saddlepoint": -355.677,
+      "weights": 182
+     },
+     "sum_z2": 2270.0,
+     "z2_over_groups": 12.472
+    },
+    "log10_p": -353.233,
+    "note": "the qubits of one job share shots, so the per-group z values correlate as the flip indicators do; ledger p is the Chernoff bound of the weighted chi-square null",
+    "test_id": "A2.3"
+   },
+   {
+    "alternatives": {},
+    "analysis": 2,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": [
+     0.42274,
+     0.5665
+    ],
+    "dependent": "the groups of one job share shots, so the signs of their slopes are not independent",
+    "description": "common direction of the linear drift in e0 (prepared |0>, P(1|0)): groups with a negative slope against 0.5 (sign test)",
+    "effect": {
+     "groups": 182,
+     "iqr_relative_slope_per_hour": [
+      -0.056984,
+      0.053845
+     ],
+     "median_relative_slope_per_hour": 0.00066229,
+     "negative_slopes": 90
+    },
+    "log10_p": -0.026439,
+    "note": "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+    "test_id": "A2.5"
+   },
+   {
+    "alternatives": {
+     "prior_method": -21437.4
+    },
+    "analysis": 2,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "within-cluster binomial homogeneity of e1 (prepared |1>, P(0|1)) over all readout clusters (summed chi-square), null weighted by the shot-level qubit correlation",
+    "effect": {
+     "Q": 101150.0,
+     "Q_over_dof": 273.38,
+     "dof": 370,
+     "shared_shot_null": {
+      "chernoff": -20251.5,
+      "effective_dof": 369.895,
+      "largest_weight": 1.073,
+      "null_mean": 370.0,
+      "saddlepoint": -20256.7,
+      "weights": 143
+     }
+    },
+    "log10_p": -20251.5,
+    "note": "a value far above 1 is drift or a recalibration inside a cluster, or counting-noise overdispersion; ledger p is the Chernoff bound of the weighted chi-square null",
+    "test_id": "A2.2"
+   },
+   {
+    "alternatives": {
+     "prior_method": -797.705
+    },
+    "analysis": 2,
+    "bh_significant": true,
+    "bonferroni_significant": true,
+    "by_significant": true,
+    "ci95": null,
+    "dependent": "",
+    "description": "any within-cluster linear drift in e1 (prepared |1>, P(0|1)): sum of squared per-group slope z over all (cluster, qubit) groups, null weighted by the shot-level qubit correlation",
+    "effect": {
+     "groups": 143,
+     "shared_shot_null": {
+      "chernoff": -782.562,
+      "effective_dof": 142.942,
+      "largest_weight": 1.073,
+      "null_mean": 143.0,
+      "saddlepoint": -786.096,
+      "weights": 143
+     },
+     "sum_z2": 4290.1,
+     "z2_over_groups": 30.001
+    },
+    "log10_p": -782.562,
+    "note": "the qubits of one job share shots, so the per-group z values correlate as the flip indicators do; ledger p is the Chernoff bound of the weighted chi-square null",
+    "test_id": "A2.4"
+   },
+   {
+    "alternatives": {},
+    "analysis": 2,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": [
+     0.36849,
+     0.52936
+    ],
+    "dependent": "the groups of one job share shots, so the signs of their slopes are not independent",
+    "description": "common direction of the linear drift in e1 (prepared |1>, P(0|1)): groups with a negative slope against 0.5 (sign test)",
+    "effect": {
+     "groups": 143,
+     "iqr_relative_slope_per_hour": [
+      -0.11579,
+      0.18236
+     ],
+     "median_relative_slope_per_hour": 0.0046447,
+     "negative_slopes": 64
+    },
+    "log10_p": -0.616896,
+    "note": "a common sign would mean one monotone platform drift; mixed signs mean qubit-specific fluctuation",
+    "test_id": "A2.6"
+   },
+   {
+    "alternatives": {},
+    "analysis": 2,
+    "bh_significant": false,
+    "bonferroni_significant": false,
+    "by_significant": false,
+    "ci95": null,
+    "dependent": "",
+    "description": "first-to-last bracket chi-square per qubit against elapsed hours (Spearman across bracket pairs)",
+    "effect": {
+     "pairs": 20,
+     "rho": 0.063158
+    },
+    "log10_p": -0.101619,
+    "note": "a positive rho says the bracket difference grows with elapsed time; clusters are confounded with series",
+    "test_id": "A2.7"
+   }
+  ],
+  "tests": 7
+ }
+}

@@ -81,3 +81,22 @@ Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points 
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
 record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
 (A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
+
+## The plane where the two components of the reduced E8-bar quadric scheme meet
+
+`scripts/a5_e8_plane_certificate.py HEADER PRIME_ID --repo . --run --record FILE` writes a Singular script (global
+ordering `dp`) that adds the five nilpotent coordinates y4, y6, y7, y12, y14 to the retained degree-2 relations of an
+E8-bar fiber, takes the two minimal primes, and tests their sum T against the ideal H of its linear forms: both
+inclusions T in H and H in T, 18 independent linear generators, dimension 3 and multiplicity 1 for both. The script
+embeds the relation text, so its sha256 binds the bytes Singular reads. The records in [`e8-plane/`](e8-plane/) hold
+the verdict, the sha256 of the relation file and of the script, the Singular version and Singular's output, for the
+three relation files this tree holds (Singular 4.4.1; 5 to 6 s of CPU and 27 MB each):
+
+| Fiber | Prime | Record | Verdict |
+|---|---|---|---|
+| E8-bar -> N- | 32009 | [e8-nm-p32009.json](e8-plane/e8-nm-p32009.json) | the two components meet in a linear P^2 |
+| E8-bar -> N- | 32029 | [e8-nm-p32029.json](e8-plane/e8-nm-p32029.json) | the same |
+| E8-bar -> N+ | 32029 | [e8-np-p32029.json](e8-plane/e8-np-p32029.json) | the same |
+
+E8-bar -> N- passes at both primes and E8-bar -> N+ at 32029; E8-bar -> N+ at 32009 is not run, because its relation
+file (`e8np_p1`) is not retained. Each verdict holds modulo its prime; no characteristic-0 form is computed.
