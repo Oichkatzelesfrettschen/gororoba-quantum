@@ -94,6 +94,11 @@ def _exact_probability(value: Fraction, name: str) -> Fraction:
     return result
 
 
+# The denominator of a depth-m survival probability is 2**m times the dimension, so the depth is the bit length
+# of an exact result; no acquisition in this tree repeats a herald more than a few dozen times.
+MAX_HERALD_DEPTH = 4096
+
+
 def exact_herald_moments(
     certificate: EqualWeightPairCertificate,
     depths: Sequence[int],
@@ -116,7 +121,9 @@ def exact_herald_moments(
         raise ValueError("the certificate does not match the cd_core pair")
     eta = _exact_probability(retention, "retention")
     checked = [_integer(depth, "depth") for depth in depths]
-    # These are scalar exact coefficients, not circuit simulations.
+    if any(depth > MAX_HERALD_DEPTH for depth in checked):
+        raise ValueError(f"depth exceeds the exact-denominator budget of {MAX_HERALD_DEPTH} bits")
+    # Each value is one bounded exact coefficient, not a circuit simulation.
     return tuple(
         Fraction(1)
         if depth == 0
@@ -283,7 +290,7 @@ def tomography_completion(
     real J commutant; it does not re-prove that a particular acquired bank
     spans that commutant or that the instrument implements these effects.
     The arrays hold ``completion_entries(m)`` = 32*m**4 int64 coefficients
-    (m=100 needs about 12.8 GB), so a request above ``entry_budget`` raises
+    (m=100 needs about 25.6 GB), so a request above ``entry_budget`` raises
     before any allocation.
     """
     m = _integer(half_dimension, "half_dimension", minimum=1)

@@ -243,12 +243,14 @@ class PredictiveResidual:
 
 
 def _snap_congruence(product: np.ndarray, magnitude: np.ndarray, terms: int) -> np.ndarray:
-    """Admit a congruence product up to its roundoff bound and snap roundoff to zero.
+    """Admit a congruence product up to a roundoff tolerance and snap roundoff to zero.
 
-    Each entry of S C S.T sums `terms` products twice, so floating-point evaluation
-    perturbs it by at most about terms * eps * (|S| |C| |S|.T), the magnitude of the
-    terms rather than of their sum; RELATIVE_TOLERANCE carries the 64-fold margin
-    of every other tolerance in this module. A small residual covariance that is a
+    Each entry of S C S.T sums `terms` products twice, so its floating-point error
+    scales with terms * eps * (|S| |C| |S|.T), the magnitude of the terms rather than
+    of their sum. The tolerance is RELATIVE_TOLERANCE (64 eps, the margin of every
+    other tolerance in this module) times that quantity. hypothesis: it dominates
+    the roundoff of the two matrix products; no error analysis is retained, and the
+    tests exercise it on residual scales from 1e-1 down to exact cancellation. A small residual covariance that is a
     difference of large terms therefore keeps its sign and symmetry tests at the
     scale of the cancellation. Entries within the bound become exactly zero, and a
     coordinate whose variance is within its bound is treated as deterministic, so

@@ -60,7 +60,12 @@ def _object(value: Any, required: set[str], optional: set[str], name: str) -> di
 
 
 def _text(value: Any, name: str) -> str:
-    if not isinstance(value, str) or not value.strip() or any(ord(char) < 32 for char in value):
+    if (
+        not isinstance(value, str)
+        or not value.strip()
+        or any(ord(c) < 32 for c in value)
+        or value.splitlines() != [value]
+    ):
         raise ValueError(f"{name}: nonempty single-line text is required")
     return value
 

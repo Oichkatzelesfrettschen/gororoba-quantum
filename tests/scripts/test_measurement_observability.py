@@ -156,6 +156,8 @@ def test_multinomial_scores_require_the_declared_sampling_value() -> None:
 @pytest.mark.parametrize("field", ["id", "source", "kind"])
 def test_item_text_must_be_a_single_line(field: str) -> None:
     value = document()
-    value["items"][0][field] = value["items"][0][field] + "\nsecond line"
-    with pytest.raises(ValueError):
-        analyze_document(value)
+    original = value["items"][0][field]
+    for separator in ("\n", "\u2028", "\u2029", "\x85"):
+        value["items"][0][field] = original + separator + "second line"
+        with pytest.raises(ValueError):
+            analyze_document(value)

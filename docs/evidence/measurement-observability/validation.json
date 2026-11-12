@@ -21,7 +21,7 @@
     {
       "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
       "exit_code": 0,
-      "result": "198 passed in 0.55s",
+      "result": "200 passed",
       "evidence_class": "bounded deterministic tests"
     },
     {
@@ -68,14 +68,14 @@
     }
   ],
   "source_sha256": {
-    "gororoba_quantum/measurement_statistics.py": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e",
+    "gororoba_quantum/measurement_statistics.py": "a83f6543e8ee31f2d82c43261804a08d320c3fad79a0945a9dfff0efedea897c",
     "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
-    "gororoba_quantum/kernel_observability.py": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c",
-    "scripts/measurement_observability.py": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142",
+    "gororoba_quantum/kernel_observability.py": "04b2a95bc8c7b05fa56c47b45c8017f7bbf75e27f4af2ce22221d3f4fb98050d",
+    "scripts/measurement_observability.py": "45f9d5dab2957975cb3fe9fb9748762b688f2f66d23125c2395060f0ee3d3da9",
     "tests/gororoba_quantum/test_measurement_statistics.py": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562",
     "tests/gororoba_quantum/test_acceptance_statistics.py": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d",
-    "tests/gororoba_quantum/test_kernel_observability.py": "c45afd9c646a0fc0dfb37544ab8310888e4986e1c668f0e8c2f7f09180a0fb09",
-    "tests/scripts/test_measurement_observability.py": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b",
+    "tests/gororoba_quantum/test_kernel_observability.py": "daed0215af2147d2ef26d6c53b1efa42da78b9aecde5df8ef8fac89ebb88c0c6",
+    "tests/scripts/test_measurement_observability.py": "ac8f0baba0e9e4d9b1ae22a14ef685976c26a3975dbbda923f89b91bdd0a3b8b",
     "tests/fixtures/measurement-observability.json": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
   },
   "native_counterpart": {

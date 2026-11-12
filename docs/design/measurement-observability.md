@@ -101,15 +101,16 @@ V_r=V_y+JC_\theta J^T-C_{y\theta}J^T-JC_{y\theta}^T
 
 This is exact for an affine predictor and a first-order delta approximation otherwise.
 `measurement_statistics.predictive_residual` requires either `dependence="independent"` or
-`dependence="supplied_cross_covariance"` with the cross block. Missing parameter covariance never becomes zero.
-The full joint covariance receives a positive-semidefinite admission check; positivity of the final residual
-covariance alone does not establish a possible joint observation law. The residual covariance itself is the congruence
-of that joint covariance and is admitted to its floating-point roundoff, bounded entry by entry by
-`64 * eps * n * |S||C||S|^T`, where `S` is `(I,-J)` scaled by the joint standard deviations, `C` the joint correlation
-and `n` the number of coordinates with positive variance, so a small residual covariance that is a difference of large
-terms keeps its sign and symmetry tests at the scale of the cancellation. Entries within the bound become zero, and a
-coordinate whose variance lies within it is deterministic: a fit that reuses an observation exactly yields the zero
-residual covariance, and `covariance_score` then decides support from the residual alone.
+`dependence="supplied_cross_covariance"` with the cross block. Missing parameter covariance never becomes zero. The
+full joint covariance receives a positive-semidefinite admission check; positivity of the final residual covariance
+alone does not establish a possible joint observation law. The residual covariance itself is the congruence of that
+joint covariance and is admitted to an entrywise tolerance of `64 * eps * n * |S||C||S|^T` (hypothesis: this dominates
+the roundoff of the two products; no error analysis is retained), where `S` is `(I,-J)` scaled by the joint standard
+deviations, `C` the joint correlation and `n` the number of coordinates with positive variance, so a small residual
+covariance that is a difference of large terms keeps its sign and symmetry tests at the scale of the cancellation.
+Entries within the tolerance become zero, and a coordinate whose variance lies within it is deterministic: a fit that
+reuses an observation exactly yields the zero residual covariance, and `covariance_score` then decides support from
+the residual alone.
 
 Covariance admission standardizes by positive diagonal scales before checking symmetry and eigenvalues. Large
 units cannot hide an invalid small-unit block. A zero diagonal requires an exactly zero row and column. The

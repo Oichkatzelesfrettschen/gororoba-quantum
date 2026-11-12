@@ -48,6 +48,16 @@ def test_normal_herald_moments_match_exact_kraus_words(
         raise AssertionError("depth-zero normalization or first herald moment differs")
 
 
+def test_herald_depth_is_bounded_before_exponentiation() -> None:
+    certificate = certify_equal_weight_pair(16, 1, 10, 1)
+    if len(exact_herald_moments(certificate, [4096])) != 1:
+        raise AssertionError("the largest admitted depth must return one value")
+    with pytest.raises(ValueError, match="exact-denominator budget"):
+        exact_herald_moments(certificate, [4097])
+    with pytest.raises(ValueError, match="exact-denominator budget"):
+        exact_herald_moments(certificate, [10**9])
+
+
 @pytest.mark.parametrize("eta", [Fraction(1), Fraction(3, 4), Fraction(1, 1000)])
 def test_uniform_retention_cancels_from_nullity_ratio(eta: Fraction) -> None:
     certificate = certify_equal_weight_pair(16, 1, 10)

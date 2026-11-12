@@ -1272,10 +1272,10 @@
   "provenance": {
     "input_sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b",
     "producer_sha256": {
-      "scripts/measurement_observability.py": "a33053fc28571ba8938e0c11da2eae96986389fce11ec33292d3be14135b4142",
+      "scripts/measurement_observability.py": "45f9d5dab2957975cb3fe9fb9748762b688f2f66d23125c2395060f0ee3d3da9",
       "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
-      "gororoba_quantum/kernel_observability.py": "d49ac64859fb68a72eac544be275b71d2a36d35eca2927990c8e9cb21cce3c2c",
-      "gororoba_quantum/measurement_statistics.py": "5cac95679b62279fe2f1c6097a19c0d05f0898180b36dd8535b6a344945b410e",
+      "gororoba_quantum/kernel_observability.py": "04b2a95bc8c7b05fa56c47b45c8017f7bbf75e27f4af2ce22221d3f4fb98050d",
+      "gororoba_quantum/measurement_statistics.py": "a83f6543e8ee31f2d82c43261804a08d320c3fad79a0945a9dfff0efedea897c",
       "gororoba_quantum/provider_counters.py": "184240f314ed7cb4689d933697e99b8d2216e58b5fe8169e1880ac62166d5125",
       "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
     },
