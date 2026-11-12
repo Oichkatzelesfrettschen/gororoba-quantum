@@ -5664,6 +5664,16 @@
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d5.json",
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d6.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-associator-observables/associator_observables.py --check",
+      "name": "core-a5-associator-observables",
+      "seconds": 22.0,
+      "replays": [
+        "docs/evidence/a5-associator-observables/associator-observables.json"
+      ]
     }
   ],
   "excluded": [
