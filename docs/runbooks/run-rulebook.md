@@ -188,8 +188,10 @@ the closest entry and say what changed.
   status but exits 0 on failure and writes stdout directly to the final record, so its bytes remain retained as
   historical evidence only. New cells use `docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py`: it exits
   with the engine status, writes JSON to `.part`, validates the engine/header/field/degree/order identity and a
-  nonnegative integral `r_N`, then atomically renames only after exit 0. Existing final JSON is skipped only after the
-  same validation; failures retain `.part`, stderr and process-group resource evidence (#793, #802).
+  nonnegative integral `r_N`, then flushes and atomically renames only after exit 0. Existing final JSON is skipped
+  only after the same validation and a match of the engine-argument digest in the resource record; failures retain
+  `.part`, stderr and process-group resource evidence. Engine arguments follow `--`; SIGTERM, SIGINT and
+  `--timeout SECONDS` terminate the engine's process group and exit 128 + signal or 124 (#793, #802).
 - Outcome: standard basis and preflight in 2,773.7 s at 486,608 KiB peak; preflight 375.62 GiB (D = 235,543); peak
   forecast about 160 GiB, at most about 195 GiB, from the degree-5 term-by-term reading. Case:
   `docs/evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`.

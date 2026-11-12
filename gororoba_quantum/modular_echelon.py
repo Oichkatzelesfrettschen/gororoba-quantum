@@ -14,7 +14,10 @@ With `backend="compact"`, pivot columns are implicit unit vectors and only nonpi
 uint16 column panels. Insertions update one panel at a time, so neither removing newly promoted pivot columns nor
 growing the row count copies the whole basis. Arithmetic is tiled through float64 products whose inner dimension is
 checked against the exact-integer bound. This representation is intended for CPU closures whose full float64 RREF
-bases exceed memory; it changes storage, not the row space or insertion order.
+bases exceed memory; it changes storage, not the row space or insertion order. Its prime range is the device range
+below: uint16 residues need p <= 2^16 and each float64 tile of COMPACT_INNER columns needs
+COMPACT_INNER (p - 1)^2 < 2^53 (p <= 1,482,911 at 4,096), both wider than the shared bound p < PMAX = 2^15 that the
+constructor enforces.
 
 Exactness. Residues are int32 in [0, p) with an odd prime p < 2^15. A modular product splits each operand into signed
 base-256 digits (a = 256 a1 + a0, a0 in [-128, 127], a1 in [-64, 64]) and runs four INT8 tensor-core products with
@@ -565,6 +568,8 @@ class Echelon:
     def __init__(self, ncols: int, p: int, backend: Backend = "flint"):
         if backend not in ("flint", "compact", "gpu"):
             raise ValueError(f"unknown backend {backend!r}")
+        if backend == "compact":
+            check_modulus(p)
         self.p, self.ncols, self.backend = p, ncols, backend
         self.piv = np.zeros(0, dtype=np.int64)
         self.insert_seconds = 0.0

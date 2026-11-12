@@ -72,7 +72,10 @@ so the representatives and operational round count can differ from v13 while the
 
 Exactness: entries live in [0, p); every product X @ B, dense or sparse, runs in float64 and checks its own inner
 dimension k against k * (p - 1)^2 < 2^53 before it runs, so BLAS returns the exact integer before the reduction
-modulo p. The modulus must be an odd prime, because the character projectors divide by the group order.
+modulo p. The modulus must be an odd prime, because the character projectors divide by the group order. The uint16
+routes (--stream-products, --echelon compact) store residues in [0, p) as uint16, which needs p <= 2^16, and tile every
+float64 product at 4,096 inner terms, which needs 4,096 (p - 1)^2 < 2^53 (p <= 1,482,911); both are wider than the bound
+p < PMAX = 2^15 of modular_echelon.py that main enforces for these routes, so one prime range governs every backend.
 
 Echelon backend (--echelon). The per-block echelon basis is gororoba_quantum/modular_echelon.py's Echelon. With
 --echelon flint (the default) the basis is a float64 host array, the reduction and the update of the basis run as
@@ -133,7 +136,7 @@ sys.path.insert(0, _parallel_dir())
 import scipy.sparse as sp  # noqa: E402
 
 import parallel  # noqa: E402
-from modular_echelon import Echelon  # noqa: E402
+from modular_echelon import PMAX, Echelon, modular_matmul_exact_bound  # noqa: E402
 
 ENGINE_SHA = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()[:16]
 
@@ -893,19 +896,28 @@ def order_walk_levels(basis: list[Monomial], lay: Blocks) -> list[list[tuple[int
 
 
 def tiled_mod_product(
-    left: np.ndarray, right: np.ndarray, p: int, row_chunk: int, column_chunk: int = 1024
+    left: np.ndarray, right: np.ndarray, p: int, row_chunk: int, column_chunk: int = 1024, inner_tile: int = 4096
 ) -> np.ndarray:
-    """Exact left @ right mod p as uint16, with peak temporaries bounded by the two output tile dimensions."""
+    """Exact left @ right mod p as uint16, with peak temporaries bounded by the two output tile dimensions.
+
+    Each float64 tile sums at most `inner_tile` products below (p - 1)^2 and is refused unless that sum stays below
+    2^53; the tile is reduced modulo p before the next accumulates. The uint16 result needs p < PMAX."""
     if left.shape[1] != right.shape[0]:
         raise ValueError("tiled product shape mismatch")
+    if inner_tile < 1:
+        raise ValueError("inner_tile must be positive")
+    if not modular_matmul_exact_bound(min(inner_tile, left.shape[1]), p):
+        raise RuntimeError(f"inner tile {min(inner_tile, left.shape[1])} leaves the exact float64 range at p = {p}")
+    if p >= PMAX:
+        raise ValueError(f"modulus {p} does not fit the uint16 residues of a tiled product (p < {PMAX})")
     out = np.zeros((left.shape[0], right.shape[1]), dtype=np.uint16)
     for r0 in range(0, len(left), row_chunk):
         r1 = min(r0 + row_chunk, len(left))
         for c0 in range(0, right.shape[1], column_chunk):
             c1 = min(c0 + column_chunk, right.shape[1])
             tile = np.zeros((r1 - r0, c1 - c0), dtype=np.float64)
-            for k0 in range(0, left.shape[1], 4096):
-                k1 = min(k0 + 4096, left.shape[1])
+            for k0 in range(0, left.shape[1], inner_tile):
+                k1 = min(k0 + inner_tile, left.shape[1])
                 tile = np.mod(
                     tile + left[r0:r1, k0:k1].astype(np.float64) @ right[k0:k1, c0:c1].astype(np.float64),
                     p,
@@ -1612,6 +1624,8 @@ def main() -> None:
     n = len(names)
     if not is_odd_prime(p):
         raise SystemExit(f"modulus {p} is not an odd prime: the character projectors need an invertible 2")
+    if (a.stream_products or a.echelon in ("compact", "gpu")) and p >= PMAX:
+        raise SystemExit(f"--stream-products and --echelon compact|gpu need an odd prime below {PMAX}, not {p}")
     if a.d < 0 or a.N < 1 or a.chunk < 1 or a.export_chunks < 1 or a.operator_cache_gb < 0:
         raise SystemExit("need d >= 0, N >= 1, --chunk >= 1, --export-chunks >= 1 and --operator-cache-gb >= 0")
     if (a.export_dir or a.adopt_export or a.export_chunks > 1 or a.export_only) and not a.quotient:
