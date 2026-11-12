@@ -175,29 +175,35 @@ def portable_path(value: str, root: Path | None) -> str:
     return prefix + path.name
 
 
-def process_group_rss(pgid: int) -> tuple[int, int]:
-    """Resident bytes and process count in process group `pgid`; vanished or unreadable members are skipped."""
+def process_group_rss(pgid: int) -> tuple[int | None, int | None]:
+    """Sample resident bytes and member count; an unavailable ps snapshot returns unknown values."""
     proc = Path("/proc")
     if not proc.is_dir():
         ps = shutil.which("ps")
         if ps is None:
-            return 0, 0
-        snapshot = subprocess.run(  # noqa: S603 -- resolved system utility, fixed arguments
-            [ps, "-axo", "pgid=,rss="],
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        resident_kib = count = 0
+            return None, None
+        try:
+            snapshot = subprocess.run(  # noqa: S603 -- resolved system utility, fixed arguments
+                [ps, "-axo", "pgid=,rss="],
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        except OSError:
+            return None, None
+        if snapshot.returncode or not snapshot.stdout.strip():
+            return None, None
+        resident_kib = count = valid_rows = 0
         for line in snapshot.stdout.splitlines():
             try:
                 member_pgid, rss_kib = (int(value) for value in line.split())
             except (ValueError, TypeError):
                 continue
+            valid_rows += 1
             if member_pgid == pgid:
                 resident_kib += rss_kib
                 count += 1
-        return resident_kib * 1024, count
+        return (resident_kib * 1024, count) if valid_rows else (None, None)
 
     pages = os.sysconf("SC_PAGE_SIZE")
     resident = count = 0
@@ -216,6 +222,17 @@ def process_group_rss(pgid: int) -> tuple[int, int]:
         resident += rss_pages * pages
         count += 1
     return resident, count
+
+
+def process_group_alive(pgid: int) -> bool:
+    """Probe POSIX group liveness independently of resident-memory sampling."""
+    try:
+        os.killpg(pgid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
 
 
 def fsync_path(path: Path) -> None:
@@ -253,7 +270,7 @@ def stop_group(process: subprocess.Popen[bytes], grace: float) -> None:
         pass
     deadline = time.monotonic() + grace
     while time.monotonic() < deadline:
-        if process.poll() is not None and process_group_rss(pgid)[1] == 0:
+        if process.poll() is not None and not process_group_alive(pgid):
             return
         time.sleep(0.02)
     try:
@@ -270,15 +287,19 @@ def exit_status(returncode: int) -> int:
 
 def supervise(
     process: subprocess.Popen[bytes], args: argparse.Namespace, received: list[int], started: float
-) -> tuple[str, int, int]:
+) -> tuple[str, int, int, int]:
     """Poll the engine's process group until it exits or a signal or the timeout ends it, then stop any member that
-    outlives the engine: the termination cause, the peak group resident bytes and the peak process count."""
+    outlives the engine: cause, maximum sampled RSS and member count, and unavailable-sample count."""
     cause = "exited"
     peak_rss = peak_processes = 0
+    unavailable_samples = 0
     while process.poll() is None:
         rss, processes = process_group_rss(process.pid)
-        peak_rss = max(peak_rss, rss)
-        peak_processes = max(peak_processes, processes)
+        if rss is None or processes is None:
+            unavailable_samples += 1
+        else:
+            peak_rss = max(peak_rss, rss)
+            peak_processes = max(peak_processes, processes)
         if received:
             cause = signal.Signals(received[0]).name
         elif args.timeout is not None and time.time() - started >= args.timeout:
@@ -288,11 +309,16 @@ def supervise(
             break
         time.sleep(args.poll_seconds)
     rss, processes = process_group_rss(process.pid)
-    if cause == "exited" and processes:
+    if rss is None or processes is None:
+        unavailable_samples += 1
+    else:
+        peak_rss = max(peak_rss, rss)
+        peak_processes = max(peak_processes, processes)
+    if cause == "exited" and process_group_alive(process.pid):
         # A worker or Singular child can outlive the engine, whatever its exit status; it stays in the group, so
         # the group is stopped here and `--timeout` need not reach it.
         stop_group(process, args.grace_seconds)
-    return cause, max(peak_rss, rss), max(peak_processes, processes)
+    return cause, peak_rss, peak_processes, unavailable_samples
 
 
 def launch_status(error: OSError) -> int:
@@ -373,7 +399,7 @@ def run_locked_cell(args: argparse.Namespace) -> int:
             break
     started = time.time()
     cause = "exited"
-    peak_rss = peak_processes = 0
+    peak_rss = peak_processes = unavailable_samples = 0
     process: subprocess.Popen[bytes] | None = None
     launch_error: str | None = None
     launch_exit = 0
@@ -389,7 +415,7 @@ def run_locked_cell(args: argparse.Namespace) -> int:
                 err.write(f"cannot launch the engine: {launch_error}\n")
                 cause = "launch_error"
             else:
-                cause, peak_rss, peak_processes = supervise(process, args, received, started)
+                cause, peak_rss, peak_processes, unavailable_samples = supervise(process, args, received, started)
     finally:
         for number, handler in previous.items():
             signal.signal(number, handler)
@@ -423,8 +449,10 @@ def run_locked_cell(args: argparse.Namespace) -> int:
             "timeout_seconds": args.timeout,
             "runner_exit": status,
             "validation_error": validation_error,
-            "max_process_group_rss_bytes": peak_rss,
-            "max_processes": peak_processes,
+            "max_sampled_process_group_rss_bytes": peak_rss,
+            "max_sampled_processes": peak_processes,
+            "rss_poll_seconds": args.poll_seconds,
+            "rss_unavailable_samples": unavailable_samples,
             "engine_sha256": sha256(engine),
             "header_sha256": sha256(header),
             "stdout_part_sha256": sha256(part),

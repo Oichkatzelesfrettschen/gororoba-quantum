@@ -1,6 +1,6 @@
 """Regenerate w8-n16-acceptance.json from the three records of the W8 N = 16 acceptance run and the retained v11 run.
 
-The summary (schema v2) takes every number from `w8-n16-acceptance/` (the engine's stdout record, its stderr and the
+The summary (schema v3) takes every number from `w8-n16-acceptance/` (the engine's stdout record, its stderr and the
 runner's resource file) and from the retained v11 receipt run (`w8-n16-azure/receipt-bound/`). The launcher settings
 that no record holds (worker count, BLAS and OpenMP threads, the memory scope) are the constants `LAUNCHER` below.
 
@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "a5-fiber-rank-v14-memory-acceptance-v2"
+SCHEMA = "a5-fiber-rank-v14-memory-acceptance-v3"
 FIBER = "docs/evidence/a5-exceptional-fibers"
 ENGINE = f"{FIBER}/replay/engine/fiber_rank_v14.py"
 RECORD_DIRECTORY = f"{FIBER}/memory-bounded/w8-n16-acceptance"
@@ -34,7 +34,7 @@ SUMMARY = "w8-n16-acceptance.json"
 
 LAUNCHER: dict[str, Any] = {
     "workers": 4,
-    "openblas_threads": 4,
+    "openblas_threads": 2,
     "omp_threads": 1,
     "memory_scope": "systemd user scope, MemoryMax=16G, MemorySwapMax=0",
     "host": "the build host",
@@ -143,8 +143,8 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
 
     comparator_err = comparator_err_path.read_text()
     v11_rss_kib = int(log_match(comparator_err, r"^\s*Maximum resident set size \(kbytes\): (\d+)$").group(1))
-    v14_gib, v11_gib = resources["max_process_group_rss_bytes"] / 2**30, v11_rss_kib / 2**20
-    require(v14_gib < v11_gib, "the v14 peak does not lie below the v11 peak")
+    v14_gib, v11_gib = resources["max_sampled_process_group_rss_bytes"] / 2**30, v11_rss_kib / 2**20
+    require(resources["rss_poll_seconds"] > 0, "the RSS sample interval must be positive")
 
     def entry(role: str, path: Path) -> dict[str, str]:
         return {"role": role, "path": str(path.relative_to(root)), "sha256": sha256(path)}
@@ -192,8 +192,12 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
         },
         "resources": {
             "elapsed_seconds": resources["elapsed_seconds"],
-            "max_process_group_rss_bytes": resources["max_process_group_rss_bytes"],
-            "max_processes": resources["max_processes"],
+            "max_sampled_process_group_rss_bytes": resources["max_sampled_process_group_rss_bytes"],
+            "max_sampled_processes": resources["max_sampled_processes"],
+            "rss_poll_seconds": resources["rss_poll_seconds"],
+            "rss_unavailable_samples": resources["rss_unavailable_samples"],
+            "rss_statistic": "maximum observed sum of process-group RSS at polling times; allocations between "
+            "samples are unobserved, so this statistic is not a process-group high-water mark",
             "seconds": {
                 "singular_and_export": record["seconds"]["singular"],
                 "products": record["seconds"]["products"],
@@ -229,8 +233,9 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
             "max_rss_kib": v11_rss_kib,
         },
         "verdict": "r_N, every block rank and every nonstandard control agree with the retained v11 receipt run; the "
-        f"v14 process-group resident-set peak ({v14_gib:.2f} GiB, summed over the group) lies below the v11 "
-        f"single-process maximum ({v11_gib:.1f} GiB) on different machines",
+        f"v14 maximum sampled process-group RSS is {v14_gib:.2f} GiB at a "
+        f"{resources['rss_poll_seconds']}-second interval, while the v11 single-process high-water mark is "
+        f"{v11_gib:.1f} GiB on another machine; these distinct statistics establish no true-peak ratio",
     }
 
 

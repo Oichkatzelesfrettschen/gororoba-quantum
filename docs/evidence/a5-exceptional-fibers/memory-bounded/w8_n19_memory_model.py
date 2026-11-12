@@ -126,8 +126,9 @@ def model(prefix_peak_rows: int | None = None) -> dict[str, object]:
             else "hypothesis: the products stage omits the accumulate-line arrays of streamed_generator_product, "
             "10 * prefix_rows * block_max bytes (contribution plus two uint32 temporaries per element); the figure "
             "fits 16 GiB only when the largest per-call prefix row count of the N = 19 receipt is at most "
-            "max_prefix_rows_that_fit. fiber_rank_v14.py reports the term streamed_loop_arrays (10 * prefix_rows * block "
-            "size) in preflight_terms once the receipt is loaded and refuses a run whose stage exceeds --max-gb; "
+            "max_prefix_rows_that_fit. fiber_rank_v14.py reports the term streamed_loop_arrays "
+            "(10 * prefix_rows * block size) in preflight_terms once the receipt is loaded and refuses a run whose "
+            "stage exceeds --max-gb; "
             "that preflight, or an instrumented run, settles it."
         ),
         "boundary": (

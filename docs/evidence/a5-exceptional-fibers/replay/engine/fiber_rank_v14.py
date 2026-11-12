@@ -1035,6 +1035,7 @@ def streamed_generator_product(
                     previous[parent_block][parent_rows[start:stop]], lay.Mb[k][parent_block ^ chi], p
                 )
                 current[block][child_rows[start:stop]] = product.astype(np.uint16)
+                del product
         for block, rows in inputs.items():
             if len(rows) and len(positions[block]):
                 contribution = tiled_mod_product(rows[:, positions[block]], current[block], p, chunk)
@@ -1066,6 +1067,7 @@ def compact_generator_blocks(
                     operator[parent_block][parents[start:stop]], lay.Mb[k][parent_block ^ chi], p
                 )
                 operator[block][kids[start:stop]] = product.astype(np.uint16)
+                del product
     return operator
 
 

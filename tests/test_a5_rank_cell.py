@@ -100,6 +100,7 @@ def test_nonempty_stale_record_is_not_skipped(tmp_path: Path) -> None:
 def test_process_group_rss_uses_ps_without_proc(monkeypatch: pytest.MonkeyPatch) -> None:
     class Snapshot:
         stdout = " 41 100\n 42 200\n 42 300\nmalformed\n"
+        returncode = 0
 
     original_is_dir = rank_cell.Path.is_dir
     monkeypatch.setattr(rank_cell.Path, "is_dir", lambda path: False if str(path) == "/proc" else original_is_dir(path))
@@ -107,6 +108,70 @@ def test_process_group_rss_uses_ps_without_proc(monkeypatch: pytest.MonkeyPatch)
     monkeypatch.setattr(rank_cell.subprocess, "run", lambda *args, **kwargs: Snapshot())
 
     assert rank_cell.process_group_rss(42) == (500 * 1024, 2)
+
+
+def test_process_group_liveness_uses_posix_signals_even_when_rss_is_unavailable(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[int, int]] = []
+    monkeypatch.setattr(rank_cell.os, "killpg", lambda pgid, number: calls.append((pgid, number)))
+    assert rank_cell.process_group_alive(42)
+    assert calls == [(42, 0)]
+
+    def missing_group(pgid: int, number: int) -> None:
+        raise ProcessLookupError
+
+    monkeypatch.setattr(rank_cell.os, "killpg", missing_group)
+    assert not rank_cell.process_group_alive(42)
+
+    def denied_group(pgid: int, number: int) -> None:
+        raise PermissionError
+
+    monkeypatch.setattr(rank_cell.os, "killpg", denied_group)
+    assert rank_cell.process_group_alive(42)
+
+
+@pytest.mark.parametrize("mode", ["missing", "failure", "empty", "malformed"])
+def test_a_missing_or_failed_ps_sample_is_unknown(monkeypatch: pytest.MonkeyPatch, mode: str) -> None:
+    class Snapshot:
+        stdout = "bad row" if mode == "malformed" else ""
+        returncode = 1 if mode == "failure" else 0
+
+    original_is_dir = rank_cell.Path.is_dir
+    monkeypatch.setattr(rank_cell.Path, "is_dir", lambda path: False if str(path) == "/proc" else original_is_dir(path))
+    monkeypatch.setattr(rank_cell.shutil, "which", lambda _command: None if mode == "missing" else "/bin/ps")
+    monkeypatch.setattr(rank_cell.subprocess, "run", lambda *args, **kwargs: Snapshot())
+    assert rank_cell.process_group_rss(42) == (None, None)
+
+
+def test_resource_record_labels_the_polling_statistic(tmp_path: Path) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    args = _args(tmp_path, engine, output)
+    assert rank_cell.run_cell(args) == 0
+    resources = json.loads(output.with_suffix(".resources.json").read_text())
+    assert resources["rss_poll_seconds"] == args.poll_seconds
+    assert resources["max_sampled_process_group_rss_bytes"] >= 0
+    assert "max_process_group_rss_bytes" not in resources
+
+
+@pytest.mark.parametrize("alive", [False, True])
+def test_finished_engine_cleanup_uses_liveness_when_rss_is_unknown(
+    monkeypatch: pytest.MonkeyPatch, alive: bool
+) -> None:
+    class Finished:
+        pid = 42
+
+        def poll(self) -> int:
+            return 0
+
+    stopped: list[int] = []
+    monkeypatch.setattr(rank_cell, "process_group_rss", lambda _pgid: (None, None))
+    monkeypatch.setattr(rank_cell, "process_group_alive", lambda _pgid: alive)
+    monkeypatch.setattr(rank_cell, "stop_group", lambda process, _grace: stopped.append(process.pid))
+    result = rank_cell.supervise(Finished(), Namespace(grace_seconds=0.01), [], time.time())
+    assert stopped == ([42] if alive else [])
+    assert result == ("exited", 0, 0, 1)
 
 
 def test_nonzero_status_with_empty_record_fails_validation(tmp_path: Path) -> None:

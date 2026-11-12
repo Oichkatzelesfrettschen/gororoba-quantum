@@ -11,6 +11,7 @@ import json
 import math
 import shutil
 import sys
+import weakref
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -84,6 +85,34 @@ def test_streamed_products_respect_a_restricted_prefix_order_ideal() -> None:
     _check(dense.keys() == streamed.keys())
     for key in dense:
         _check(np.array_equal(dense[key][1], streamed[key][1]))
+
+
+@pytest.mark.parametrize("cached", [False, True])
+def test_sparse_operator_panels_are_released_before_the_next_chunk(
+    monkeypatch: pytest.MonkeyPatch, cached: bool
+) -> None:
+    basis = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    index = {monomial: position for position, monomial in enumerate(basis)}
+    tables = [[{(1, 0): 1}, {}, {(1, 1): 1}, {}], [{(0, 1): 1}, {(1, 1): 1}, {}, {}]]
+    layout = v14.block_tables(tables, index, np.zeros(len(basis), dtype=np.int64), [0, 0], [0])
+    generator = np.array([0, 1, 1, 0], dtype=np.float64)
+    original = v14.sparse_mod_matmul
+    panels: list[weakref.ReferenceType[Any]] = []
+
+    def tracked_product(*args: Any, **kwargs: Any) -> Any:
+        _check(all(reference() is None for reference in panels))
+        panel = original(*args, **kwargs)
+        panels.append(weakref.ref(panel))
+        return panel
+
+    monkeypatch.setattr(v14, "sparse_mod_matmul", tracked_product)
+    levels = v14.order_walk_levels(basis, layout)
+    if cached:
+        result = v14.compact_generator_blocks(generator, 0, 0, levels, layout, P, 1)
+    else:
+        result = v14.streamed_generator_product({0: np.eye(4, dtype=np.uint16)}, generator, 0, 0, levels, layout, P, 1)
+    _check(len(panels) > 1 and all(reference() is None for reference in panels))
+    _check(result[0].dtype == np.uint16)
 
 
 def test_sign_mask_checks_run_in_the_process_pool(monkeypatch: pytest.MonkeyPatch, forced_pool: Any) -> None:
