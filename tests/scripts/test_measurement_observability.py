@@ -64,6 +64,18 @@ def test_strict_json_rejects_ambiguous_or_nonfinite_input(text: str) -> None:
         read_document(text.encode())
 
 
+@pytest.mark.parametrize("text", ['{"a":1e-400}', '{"a":-1E-400}', '{"a":-0.00000001e-330}', '{"a":[0.5e-999]}'])
+def test_strict_json_rejects_a_literal_that_underflows_to_zero(text: str) -> None:
+    with pytest.raises(ValueError, match="underflows"):
+        read_document(text.encode())
+
+
+@pytest.mark.parametrize("text", ['{"a":0.0}', '{"a":0e5}', '{"a":-0.0}', '{"a":0.000E-999}', '{"a":5e-324}'])
+def test_strict_json_keeps_a_zero_or_subnormal_literal(text: str) -> None:
+    if not isinstance(read_document(text.encode())["a"], float):
+        raise AssertionError(text)
+
+
 @pytest.mark.parametrize("mutation", ["schema", "duplicate", "extra", "kind", "sampling", "source"])
 def test_document_contract_rejects_omissions_and_typos(mutation: str) -> None:
     value = document()

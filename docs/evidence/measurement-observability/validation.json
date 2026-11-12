@@ -1,9 +1,9 @@
 {
   "schema": "measurement-observability-validation-v1",
   "scope": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference.",
-  "observed_at": "2026-11-11T23:28:23.564175+00:00",
-  "source_revision": "863290f0cab5ad09c97b82829fb2291841096b62",
-  "source_qualification": "source_sha256 holds the digests of the files after the first-pass review fixes (a roundoff-bounded predictive-residual covariance, a budgeted completion allocation, a size-gated row-sum pool and the tests that exercise each guard), applied on top of source_revision; the commit that lands them holds exactly these bytes.",
+  "observed_at": "2026-11-12T00:41:04.778461+00:00",
+  "source_revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+  "source_qualification": "source_sha256 holds the digests of the files after the second-pass review fixes (scalar-type admission of real arrays and Hermitian expectations, exact power-of-two scaling of overflowing score rows, one pooled worker for both compensated row reductions, scale-aware covariance standardization and a strict JSON underflow check), applied on top of source_revision; the commit that lands them holds exactly these bytes.",
   "environment": {
     "python": "3.14.7",
     "packages": {
@@ -21,7 +21,7 @@
     {
       "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
       "exit_code": 0,
-      "result": "202 passed",
+      "result": "226 passed",
       "evidence_class": "bounded deterministic tests"
     },
     {
@@ -68,14 +68,14 @@
     }
   ],
   "source_sha256": {
-    "gororoba_quantum/measurement_statistics.py": "8beb606789b4f7d734aedd7e4245dcc538a694a9b8b41b24c0d2e1ed74e94840",
+    "gororoba_quantum/measurement_statistics.py": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170",
     "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
-    "gororoba_quantum/kernel_observability.py": "46b387b3ecb981dd8dcf66a0a837a977d3e4ced01c19464f0aad612dd28bdc85",
-    "scripts/measurement_observability.py": "45f9d5dab2957975cb3fe9fb9748762b688f2f66d23125c2395060f0ee3d3da9",
-    "tests/gororoba_quantum/test_measurement_statistics.py": "e283e80f30e8bbd0baca1093bac0a2a38e75db3c847543693d56bad480d8423d",
+    "gororoba_quantum/kernel_observability.py": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc",
+    "scripts/measurement_observability.py": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507",
+    "tests/gororoba_quantum/test_measurement_statistics.py": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2",
     "tests/gororoba_quantum/test_acceptance_statistics.py": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d",
-    "tests/gororoba_quantum/test_kernel_observability.py": "5e27d603874abf820a31dde89e7edfb1f4c227aac3982de022f9064cad9c8cbe",
-    "tests/scripts/test_measurement_observability.py": "ac8f0baba0e9e4d9b1ae22a14ef685976c26a3975dbbda923f89b91bdd0a3b8b",
+    "tests/gororoba_quantum/test_kernel_observability.py": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2",
+    "tests/scripts/test_measurement_observability.py": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c",
     "tests/fixtures/measurement-observability.json": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
   },
   "native_counterpart": {

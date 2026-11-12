@@ -19,7 +19,7 @@ import numpy as np
 
 import parallel
 from cd_core import left_mult_matrix_exact
-from measurement_statistics import multinomial_scores
+from measurement_statistics import multinomial_scores, reject_nonreal_elements
 from provider_counters import Counter, Population, Status
 
 # tomography_completion stores 32 * m**4 int64 coefficients; the default admits m up to 13 (0.9 million entries,
@@ -331,7 +331,7 @@ def tomography_completion(
     return TomographyCompletion(m, names, families, real, imaginary, norms)
 
 
-def reconstruct_hermitian(expectations: Sequence[float], half_dimension: int = 7) -> np.ndarray:
+def reconstruct_hermitian(expectations: Sequence[float] | np.ndarray, half_dimension: int = 7) -> np.ndarray:
     """Linear inversion in the completion basis, with its actual HS norms.
 
     This returns a Hermitian estimate; finite-shot expectations need not
@@ -339,6 +339,7 @@ def reconstruct_hermitian(expectations: Sequence[float], half_dimension: int = 7
     renormalization silently changes the measured coefficients.
     """
     completion = tomography_completion(half_dimension)
+    reject_nonreal_elements(expectations, name="expectations")
     values = np.asarray(expectations)
     if values.dtype.kind not in {"i", "u", "f"} or values.shape != completion.hs_norm_squared.shape:
         raise ValueError("expectations must be one real coefficient per completion observable")

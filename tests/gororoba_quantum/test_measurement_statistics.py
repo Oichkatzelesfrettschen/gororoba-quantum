@@ -1,6 +1,7 @@
 """Independent finite-outcome and affine-model oracles for measurement statistics."""
 
 import math
+from typing import Any
 
 import numpy as np
 import pytest
@@ -14,6 +15,7 @@ from measurement_statistics import (
     covariance_score,
     multinomial_scores,
     predictive_residual,
+    reject_nonreal_elements,
 )
 
 
@@ -338,7 +340,10 @@ def test_row_sums_go_to_the_pool_only_above_the_entry_threshold(monkeypatch: pyt
     small = multinomial_scores(counts, scores)
     monkeypatch.setattr(module, "POOLED_SUM_ENTRIES", 1)
     large = multinomial_scores(counts, scores)
-    if seen[0][1] <= seen[0][0] or seen[1][1] != module.parallel.MIN_PARALLEL_ITEMS or seen[1][0] < seen[1][1]:
+    # One map per call carries both compensated reductions, so the offset sums never run in a second serial pass.
+    if len(seen) != 2 or seen[0][1] <= seen[0][0] or seen[1][1] != module.parallel.MIN_PARALLEL_ITEMS:
+        raise AssertionError(seen)
+    if seen[1][0] < seen[1][1]:
         raise AssertionError(seen)
     np.testing.assert_array_equal(small.means, large.means)
     np.testing.assert_array_equal(small.covariance_of_means, large.covariance_of_means)
@@ -379,3 +384,98 @@ def test_correlated_residual_survives_cancellation_of_shared_uncertainty() -> No
     np.testing.assert_allclose(result.covariance, residual, atol=1e-3)
     if np.linalg.eigvalsh(result.covariance)[0] <= 0:
         raise AssertionError("the residual covariance must stay positive definite")
+
+
+def test_both_row_reductions_come_from_the_pool(monkeypatch: pytest.MonkeyPatch, forced_pool: Any) -> None:
+    import measurement_statistics as module
+
+    scores = np.sin(np.arange(80 * 5, dtype=float)).reshape(80, 5) * 1e8
+    counts = [1, 2, 3, 4, 5]
+    monkeypatch.setattr(module, "POOLED_SUM_ENTRIES", 1)
+
+    def boom(parts: object) -> float:
+        raise AssertionError("a compensated reduction ran in the parent process")
+
+    # The spawned workers keep the real math.fsum, so a parent-side reduction beside the map fails here.
+    with monkeypatch.context() as patch:
+        patch.setattr(module.math, "fsum", boom)
+        pooled = multinomial_scores(counts, scores)
+    if forced_pool.maps != [("function", 80)] or forced_pool.pools != [2]:
+        raise AssertionError((forced_pool.maps, forced_pool.pools))
+    monkeypatch.setattr(module, "POOLED_SUM_ENTRIES", 2**22)
+    monkeypatch.setattr(
+        module.parallel, "ordered_map", lambda function, items, min_items=1: [function(i) for i in items]
+    )
+    serial = multinomial_scores(counts, scores)
+    np.testing.assert_array_equal(pooled.means, serial.means)
+    np.testing.assert_array_equal(pooled.covariance_of_means, serial.covariance_of_means)
+
+
+@pytest.mark.parametrize(
+    "scores",
+    [
+        [[True, 0.0]],
+        [[0.0, np.bool_(True)]],
+        [[1, "2"]],
+        [[1.0, 1j]],
+        [[1.0, b"2"]],
+        [np.array([True, False])],
+        np.array([[True, False]]),
+    ],
+)
+def test_scores_reject_a_boolean_string_or_complex_entry_before_promotion(scores: object) -> None:
+    with pytest.raises(StatisticsError, match="real integers or floats"):
+        multinomial_scores([1, 1], scores)  # type: ignore[arg-type]
+
+
+def test_admission_keeps_plain_numbers_and_numeric_arrays() -> None:
+    for scores in (
+        [[1, 2]],
+        [[1.5, np.float32(2.0)]],
+        [[np.int64(1), 2]],
+        ((1.0, 2.0),),
+        np.array([[1, 2]]),
+        np.array([[1.0, 2.0]]),
+    ):
+        estimate = multinomial_scores([1, 1], scores)  # type: ignore[arg-type]
+        if not np.isfinite(estimate.means).all():
+            raise AssertionError(scores)
+    reject_nonreal_elements(np.ones((1000, 1000)), name="array")
+    with pytest.raises(StatisticsError, match="real integers or floats"):
+        reject_nonreal_elements(np.ones((2, 2), dtype=complex), name="array")
+
+
+def test_score_mean_scales_a_row_whose_products_overflow() -> None:
+    estimate = multinomial_scores([10**9], [[1e300]])
+    np.testing.assert_array_equal(estimate.means, [1e300])
+    np.testing.assert_array_equal(estimate.covariance_of_means, [[0.0]])
+    # Each product fits, their sum does not, and the mean is the common value.
+    wide = multinomial_scores([1, 1], [[1.7e308, 1.7e308]])
+    np.testing.assert_array_equal(wide.means, [1.7e308])
+    # A cancelling pair keeps its exact small term through the scaling (the covariance of such a row overflows, so
+    # the mean is read from the worker).
+    from measurement_statistics import _weighted_mean
+
+    mean = _weighted_mean(np.array([1e300, -1e300, 1.0]), np.array([1e9, 1e9, 3.0]), 2e9 + 3.0)
+    if mean != 3 / (2e9 + 3.0):
+        raise AssertionError(mean)
+    # Score differences that exceed float64 still raise.
+    with pytest.raises(StatisticsError, match="overflows"):
+        multinomial_scores([1, 1], [[1.7e308, -1.7e308]])
+
+
+def test_covariance_score_keeps_a_residual_direction_below_the_standardized_underflow() -> None:
+    huge = [[1e308, 1e308], [1e308, 1e308]]
+    # The residual lies in the nullspace of the rank-one covariance; its standardized entries are 1e-354.
+    score = covariance_score([1e-200, -1e-200], huge)
+    if score.supported or score.value is not None:
+        raise AssertionError(score)
+    if not 1.4 < (score.unsupported_norm or 0) < 1.5:
+        raise AssertionError(score)
+    # A supported direction whose score is below the subnormal range reports the correctly rounded zero.
+    supported = covariance_score([1e-200, 1e-200], huge)
+    if not supported.supported or supported.value != 0.0:
+        raise AssertionError(supported)
+    # A coordinate far below the largest one is not flushed silently.
+    with pytest.raises(StatisticsError, match="underflows"):
+        covariance_score([1e300, 1e-300], [[1.0, 0.0], [0.0, 1.0]])

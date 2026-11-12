@@ -240,6 +240,9 @@ def _finite_float(value: str) -> float:
     number = float(value)
     if not math.isfinite(number):
         raise ValueError(f"nonfinite JSON number: {value}")
+    # A literal with a nonzero mantissa digit that rounds to 0.0 (1e-400) is a value float64 cannot hold.
+    if number == 0.0 and any(digit in "123456789" for digit in value.lower().split("e")[0]):
+        raise ValueError(f"JSON number underflows float64: {value}")
     return number
 
 

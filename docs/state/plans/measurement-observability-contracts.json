@@ -179,6 +179,58 @@
             }
           ],
           "scope_sha256": "e0b8cf9da8303dad61d2db792465d386379cf25fd03faaa13fcaa11b48f703ed"
+        },
+        {
+          "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:41:20.600420+00:00",
+          "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "e0b8cf9da8303dad61d2db792465d386379cf25fd03faaa13fcaa11b48f703ed"
         }
       ]
     },
@@ -343,6 +395,58 @@
             }
           ],
           "scope_sha256": "68a3315dbc15a72c609daef3ff774939d8e76b5e4ab30df1738919e2c6749982"
+        },
+        {
+          "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:41:20.600420+00:00",
+          "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "68a3315dbc15a72c609daef3ff774939d8e76b5e4ab30df1738919e2c6749982"
         }
       ]
     },
@@ -500,6 +604,58 @@
             {
               "ref": "tests/scripts/test_measurement_observability.py",
               "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "935d63844d3b8c6c7a43661ade54d536dc75f77293282d14736a8cf363e06bba"
+        },
+        {
+          "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:41:20.600420+00:00",
+          "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
             },
             {
               "ref": "tests/fixtures/measurement-observability.json",
@@ -676,6 +832,58 @@
             }
           ],
           "scope_sha256": "471705a6ef38a59a95b097f64bdbd82d69ce94e744432017952a13406c9bdf59"
+        },
+        {
+          "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:41:20.600420+00:00",
+          "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "471705a6ef38a59a95b097f64bdbd82d69ce94e744432017952a13406c9bdf59"
         }
       ]
     },
@@ -833,6 +1041,58 @@
             {
               "ref": "tests/scripts/test_measurement_observability.py",
               "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "517379d30e4a6c8ccb3c6f8a8bcb3a389e6c5fa7f5a525d0e84d8aa6bd98035e"
+        },
+        {
+          "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:41:20.600420+00:00",
+          "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
             },
             {
               "ref": "tests/fixtures/measurement-observability.json",
@@ -1008,6 +1268,58 @@
             }
           ],
           "scope_sha256": "a8b6891431e48d7ac2fb495738051aa9431e73923faa81319975f9f610b9b501"
+        },
+        {
+          "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:41:20.600420+00:00",
+          "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement-observability/validation.json",
+              "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+            },
+            {
+              "ref": "docs/evidence/measurement-observability/analytic-result.json",
+              "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+            },
+            {
+              "ref": "gororoba_quantum/measurement_statistics.py",
+              "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+            },
+            {
+              "ref": "gororoba_quantum/acceptance_statistics.py",
+              "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+            },
+            {
+              "ref": "gororoba_quantum/kernel_observability.py",
+              "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+            },
+            {
+              "ref": "scripts/measurement_observability.py",
+              "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+              "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+              "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+              "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+            },
+            {
+              "ref": "tests/scripts/test_measurement_observability.py",
+              "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
+            },
+            {
+              "ref": "tests/fixtures/measurement-observability.json",
+              "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+            }
+          ],
+          "scope_sha256": "a8b6891431e48d7ac2fb495738051aa9431e73923faa81319975f9f610b9b501"
         }
       ]
     }
@@ -1161,6 +1473,58 @@
         {
           "ref": "tests/scripts/test_measurement_observability.py",
           "sha256": "b5745b071f2cb4fbcb3ebcee9c65c8772e3fab14dc55c647354e00ccc2e4be7b"
+        },
+        {
+          "ref": "tests/fixtures/measurement-observability.json",
+          "sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+        }
+      ],
+      "scope_sha256": "60e2db8e8da7e7db779c2f410073e1b837a0e3e404dd1e9a839295a6f5ed562d"
+    },
+    {
+      "result": "Second-pass review fixes: real arrays and Hermitian expectations are admitted by scalar type before promotion, score rows whose products overflow are summed under one exact power-of-two scale, the exact weighted mean and the offset sum come from one pooled row worker, the covariance score standardizes under a common power of two, and the strict JSON reader rejects a literal that underflows to zero. Observed commands: ci/pr_checks.sh lint, types and tests on the four measurement test files (226 passed), pytest of the same four files (226 passed), ci/pr_checks.sh gates --gates core-measurement-observability (pass after the analytic result was regenerated with its gate command; only the three producer digests changed). The observation is of the working tree on top of revision 114e61ddc5e3c616df978f9842ac45090aacdff7. Hosted revalidation of the resulting head is not observed.",
+      "observed_at": "2026-11-12T00:41:20.600420+00:00",
+      "revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+      "evidence": [
+        {
+          "ref": "docs/evidence/measurement-observability/validation.json",
+          "sha256": "575137c669c3e1286886a50e2c67d84fec72ef24348626d1ef0b5fea6b5d18e3"
+        },
+        {
+          "ref": "docs/evidence/measurement-observability/analytic-result.json",
+          "sha256": "04ad75631a64478477bcbe490ab97750c0961e1ef23171b0c4da3c7a63a7a9ab"
+        },
+        {
+          "ref": "gororoba_quantum/measurement_statistics.py",
+          "sha256": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170"
+        },
+        {
+          "ref": "gororoba_quantum/acceptance_statistics.py",
+          "sha256": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94"
+        },
+        {
+          "ref": "gororoba_quantum/kernel_observability.py",
+          "sha256": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc"
+        },
+        {
+          "ref": "scripts/measurement_observability.py",
+          "sha256": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_measurement_statistics.py",
+          "sha256": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_acceptance_statistics.py",
+          "sha256": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d"
+        },
+        {
+          "ref": "tests/gororoba_quantum/test_kernel_observability.py",
+          "sha256": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2"
+        },
+        {
+          "ref": "tests/scripts/test_measurement_observability.py",
+          "sha256": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c"
         },
         {
           "ref": "tests/fixtures/measurement-observability.json",

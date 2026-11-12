@@ -38,8 +38,33 @@ class StatisticsError(ValueError):
     """The supplied data do not define the requested finite statistic."""
 
 
+_NONREAL_SCALARS = (bool, np.bool_, str, bytes, complex, np.complexfloating)
+
+
+def reject_nonreal_elements(value: object, *, name: str) -> None:
+    """Raise StatisticsError unless every element of a nested sequence is a real integer or float scalar.
+
+    NumPy promotes a boolean beside a float to 1.0 and a numeric string beside a number to text, so the dtype of the
+    converted array no longer shows what the caller supplied. A list or tuple is therefore judged element by element
+    before conversion. An ndarray is judged by its dtype alone (integer, unsigned or float kind), which costs no
+    per-element Python work; any other object reaches the dtype check of the caller after np.asarray.
+    """
+    if isinstance(value, np.ndarray):
+        if value.dtype.kind not in "iuf":
+            raise StatisticsError(f"{name}: entries must be real integers or floats, not {value.dtype}")
+    elif isinstance(value, (list, tuple)):
+        try:
+            for item in value:
+                reject_nonreal_elements(item, name=name)
+        except RecursionError as error:
+            raise StatisticsError(f"{name}: the nesting is too deep for a numerical array") from error
+    elif isinstance(value, _NONREAL_SCALARS):
+        raise StatisticsError(f"{name}: entries must be real integers or floats, not {type(value).__name__}")
+
+
 def real_array(value: ArrayLike, *, ndim: int, name: str) -> np.ndarray:
     """Copy a finite real numerical array; reject coercions from strings/bools/complex."""
+    reject_nonreal_elements(value, name=name)
     try:
         raw = np.asarray(value)
         if raw.dtype.kind not in "iuf" or raw.ndim != ndim or any(n == 0 for n in raw.shape):
@@ -113,21 +138,68 @@ class ScoreEstimate:
         }
 
 
-def _weighted_mean(task: tuple[np.ndarray, np.ndarray, float]) -> float:
+# A scaled product stays below 2**_SCALED_EXPONENT, and at most 2**53 products (the total count bound) sum to a value
+# below 2**1013, inside float64.
+_SCALED_EXPONENT = 960
+
+
+def _exact_parts(row: list[float], counts: list[float], shift: int) -> list[float] | None:
+    """Each product n_j s_j 2**shift as its rounded value and its fma remainder; None when a product overflows."""
+    parts: list[float] = []
+    for value, count in zip(row, counts, strict=True):
+        scaled = math.ldexp(value, shift) if shift else value
+        product = scaled * count
+        if not math.isfinite(product):
+            return None
+        parts.append(product)
+        parts.append(math.fma(scaled, count, -product))
+    return parts
+
+
+def _fsum(parts: list[float] | None) -> float | None:
+    """The correctly rounded sum of the parts, or None when a part or the sum overflows float64."""
+    if parts is None:
+        return None
+    try:
+        return math.fsum(parts)
+    except OverflowError:
+        return None
+
+
+def _weighted_mean(row: np.ndarray, occupied: np.ndarray, total: float) -> float:
     """sum_j n_j s_j / N with the sum exact: each product enters as its rounded value and its fma remainder.
 
     math.fsum then returns the correctly rounded sum of the exact products, so the mean does not depend on the
-    order of the outcome categories and keeps a small term beside large cancelling ones.
+    order of the outcome categories and keeps a small term beside large cancelling ones. A row whose products or
+    sum overflow is redone with every value scaled by one exact power of two that puts the largest product near
+    2**_SCALED_EXPONENT; the scaling is exact except for terms that fall below the subnormal range of the scaled
+    row. The mean is a convex combination of the scores, so it stays finite, and the scale is removed after the
+    division by N.
     """
-    row, occupied, total = task
-    parts: list[float] = []
-    for value, count in zip(row.tolist(), occupied.tolist(), strict=True):
-        product = value * count
-        if not math.isfinite(product):
-            raise OverflowError("score times count overflows float64")
-        parts.append(product)
-        parts.append(math.fma(value, count, -product))
-    return math.fsum(parts) / total
+    values, counts = row.tolist(), occupied.tolist()
+    exact = _fsum(_exact_parts(values, counts, 0))
+    if exact is not None:
+        return exact / total
+    shift = _SCALED_EXPONENT - math.frexp(max(abs(value) for value in values))[1] - math.frexp(max(counts))[1]
+    scaled = _fsum(_exact_parts(values, counts, shift))
+    if scaled is None:
+        raise OverflowError("score times count overflows float64")
+    try:
+        return math.ldexp(scaled, -shift) / total
+    except OverflowError:
+        # N times the mean exceeds float64 while the mean fits; dividing before removing the scale keeps it finite.
+        return math.ldexp(scaled / total, -shift)
+
+
+def _row_reductions(task: tuple[np.ndarray, np.ndarray, float, np.ndarray, np.ndarray]) -> tuple[float, float]:
+    """The two compensated reductions of one score row: its exact weighted mean and the sum of its weighted offsets.
+
+    The offsets are the scores minus the anchor entry and the weights are the outcome probabilities, so the
+    second value is the mean of the offsets that centering subtracts. Serial and pooled dispatch run this one
+    function, which makes their results bit-identical.
+    """
+    row, occupied, total, offsets, weights = task
+    return _weighted_mean(row, occupied, total), math.fsum((offsets * weights).tolist())
 
 
 def multinomial_scores(counts: Sequence[int], scores: ArrayLike, *, estimator: Estimator = "plugin") -> ScoreEstimate:
@@ -159,15 +231,17 @@ def multinomial_scores(counts: Sequence[int], scores: ArrayLike, *, estimator: E
             offsets = score[:, positive] - anchor[:, None]
             weights = probabilities[positive]
             occupied = np.asarray(counts, dtype=float)[positive]
-            rows = [(row, occupied, float(total)) for row in score[:, positive]]
+            rows = [
+                (row, occupied, float(total), offset, weights)
+                for row, offset in zip(score[:, positive], offsets, strict=True)
+            ]
             pooled = offsets.size >= POOLED_SUM_ENTRIES
-            means = np.array(
-                parallel.ordered_map(
-                    _weighted_mean, rows, min_items=parallel.MIN_PARALLEL_ITEMS if pooled else len(rows) + 1
-                )
+            reductions = parallel.ordered_map(
+                _row_reductions, rows, min_items=parallel.MIN_PARALLEL_ITEMS if pooled else len(rows) + 1
             )
+            means = np.array([mean for mean, _ in reductions])
             # Centering uses the mean of the offsets, which keeps a spread far below the rounding of the mean.
-            mean_offsets = np.array([math.fsum(row) for row in offsets * weights])
+            mean_offsets = np.array([offset_sum for _, offset_sum in reductions])
             centered = offsets - mean_offsets[:, None]
             weighted = centered * np.sqrt(weights / denominator)
             covariance = weighted @ weighted.T
@@ -222,22 +296,32 @@ def covariance_score(residual: ArrayLike, covariance: ArrayLike) -> QuadraticSco
     rank = int(np.count_nonzero(positive))
     if np.any(vector[~active] != 0):
         return QuadraticScore(None, rank, False, None, tolerance)
+    # The residual is scaled by the exact power of two 2**-exponent that brings its largest entry to [0.5, 1), so the
+    # quotient by a large scale keeps its direction; the unscaled standardized residual is `standardized` * 2**exponent.
+    exponent = int(np.frexp(np.max(np.abs(vector)))[1]) if np.any(vector != 0) else 0
+    active_vector = vector[active]
     with np.errstate(over="raise", invalid="raise", divide="raise"):
         try:
-            standardized = vector[active] / scales
+            standardized = np.ldexp(active_vector, -exponent) / scales
         except FloatingPointError as error:
             raise StatisticsError("standardized residual is not representable") from error
+    if np.any((active_vector != 0) & (standardized == 0)):
+        raise StatisticsError("a nonzero standardized residual coordinate underflows float64")
     scale = float(np.max(np.abs(standardized)))
-    coordinates = eigenvectors.T @ (standardized / scale if scale else standardized)
+    direction = standardized / scale if scale else standardized
+    if np.any((standardized != 0) & (direction == 0)):
+        raise StatisticsError("a nonzero standardized residual coordinate underflows float64")
+    coordinates = eigenvectors.T @ direction
     unsupported = float(np.linalg.norm(coordinates[~positive]))
     supported = bool(unsupported <= RELATIVE_TOLERANCE * len(vector))
     value: float | None = None
     if supported:
         with np.errstate(over="raise", invalid="raise", divide="raise"):
             try:
-                whitened = (coordinates[positive] / np.sqrt(eigenvalues[positive])) * scale
-                value = float(whitened @ whitened)
-            except FloatingPointError as error:
+                mantissa, scale_exponent = math.frexp(scale)
+                whitened = (coordinates[positive] / np.sqrt(eigenvalues[positive])) * mantissa
+                value = math.ldexp(float(whitened @ whitened), 2 * (exponent + scale_exponent))
+            except (FloatingPointError, OverflowError) as error:
                 raise StatisticsError("quadratic score is not representable") from error
         if not math.isfinite(value):
             raise StatisticsError("quadratic score is not finite")

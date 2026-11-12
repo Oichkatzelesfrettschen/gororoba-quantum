@@ -298,6 +298,16 @@ def test_completion_entry_count_matches_the_allocated_coefficients() -> None:
     tomography_completion(2, entry_budget=completion_entries(2))
 
 
+@pytest.mark.parametrize("head", [True, np.bool_(True), "1", 1j])
+def test_reconstruction_rejects_a_boolean_string_or_complex_entry_before_promotion(head: object) -> None:
+    count = tomography_completion(1).hs_norm_squared.shape[0]
+    values: list[object] = [head] + [0] * (count - 1)
+    with pytest.raises(ValueError, match="real integers or floats"):
+        reconstruct_hermitian(values, 1)  # type: ignore[arg-type]
+    reconstruct_hermitian([1, *([0.0] * (count - 1))], 1)
+    reconstruct_hermitian(np.zeros(count), 1)
+
+
 def test_herald_moments_keep_their_order_through_the_pool(forced_pool: None) -> None:
     certificate = certify_equal_weight_pair(16, 1, 10, 1)
     depths = list(range(40, -1, -1))
