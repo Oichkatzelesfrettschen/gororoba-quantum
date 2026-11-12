@@ -88,10 +88,14 @@ V₋ = span{e'_2 - e'_3, e'_4 - e'_5, -e'_6 - e'_7}
 (bases computed by the local review of this note with the split-octonion product of the tree; the three-dimensional
 eigenspaces are the statement of [a5-rank-strata-equations](../../evidence/a5-rank-strata-equations/README.md)).
 
-The displayed representative (3e'_1, 4, 5e'_1) is the collinear endpoint of V: its stabilizer has dimension 8, Lie
-algebra 𝔰𝔲(3), acting on the normal slice as 3 + conjugate(3)
-([v-topology-representation-result.json](../../evidence/a5-kernel-bundles/v-topology-representation-result.json)).
-A generic point of V has stabilizer SU(2), and SU(2) × U(1) belongs to the boundary row VB of the same record.
+The displayed representative (3e'_1, 4, 5e'_1) is the collinear endpoint of V. Two groups act and their stabilizers
+differ. In the complex group H = G₂(ℂ) × SO(2, ℂ) × ℂ* of section 4.1, the stabilizer of e'_1 in G₂(ℂ) has Lie algebra
+𝔰𝔩(3, ℂ) and acts on V₊ and V₋ as the standard representation and its dual
+([a5-rank-strata-equations](../../evidence/a5-rank-strata-equations/README.md)); a complex Gauss-map classification
+uses this action. The compact computation of
+[v-topology-representation-result.json](../../evidence/a5-kernel-bundles/v-topology-representation-result.json)
+gives the compact forms: 𝔰𝔲(3) of dimension 8 at this endpoint, acting on the normal slice as 3 + conjugate(3),
+SU(2) at a generic point of V, and SU(2) × U(1) on the boundary row VB.
 The normal null directions n_± satisfying e'_1 × n_± = ± n_± and η(n_±) = 0 lie in V_±; μ' is a singlet.
 
 ---
