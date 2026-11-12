@@ -63,6 +63,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py docs/evidence/a5-char0-transfer/transfer_counterexample.py docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
 	checked_files="$checked_files docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_closure_certificate.py docs/evidence/a5-char0-transfer/e8_closure_validation.py"
+	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py"
 	checked_files="$checked_files docs/evidence/a5-associator-observables/associator_observables.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	# shellcheck disable=SC2086
@@ -78,6 +79,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py ../docs/evidence/a5-char0-transfer/transfer_counterexample.py ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
 	typed_files="$typed_files ../docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_closure_certificate.py ../docs/evidence/a5-char0-transfer/e8_closure_validation.py"
+	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py"
 	typed_files="$typed_files ../docs/evidence/a5-associator-observables/associator_observables.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	cd gororoba_quantum
