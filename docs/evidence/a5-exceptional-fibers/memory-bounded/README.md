@@ -106,7 +106,10 @@ timings vary with the host.
   does not exist inside the checkout by its repository-relative path; `--option=VALUE` is split at the first `=` for
   both rules and for the path stored in the resource record). It publishes JSON by flush and
   atomic rename only after engine exit 0 and record validation, and it terminates the engine's process group on
-  SIGTERM, SIGINT or `--timeout`, and any group member still alive when the engine exits, successfully or not.
+  SIGTERM, SIGINT or `--timeout`, and any group member still alive when the engine exits, successfully or not. Each
+  output holds an exclusive `flock` on `OUTPUT.lock` from the existing-record check through publication, so two
+  invocations never share a `.part`, stderr or resource file; the second prints a message, touches no record file and
+  exits 75. A record or resource file whose JSON is not an object fails validation like any other malformed record.
 
 Small exact tests compare streamed and cached uint16 operators with engine v13's dense operator on a two-block
 fixture with a nonzero variable character, compare v14's closure with v13's on a four-round, four-block cell, and
@@ -159,6 +162,13 @@ N = 19 receipt keeps `prefix_rows` small enough); the model reports that the sta
 `prefix_rows <= 6,732`. The engine's preflight computes the term from the receipt before any product is built, lists it
 as `streamed_loop_arrays` in `preflight_terms` and refuses a run whose stage exceeds `--max-gb`, which settles the
 hypothesis for the N = 19 cell. Walk temporaries (`streamed_walk_temporaries_bytes`, 0.147 GiB) are in the figure.
+
+Cached-operator route. Building the cached uint16 operator (`compact_generator_blocks`) holds, per slice of `chunk`
+rows and per element of a chunk x widest array, the gathered parent rows (2 bytes), the contiguous copy of their
+transposition that scipy flattens (2), its float64 cast (8), the float64 sparse product (8), its modulo (8) and the
+uint16 result (2): 30 bytes, bounded by 32 (`sparse_row_chunk_bytes`). The engine lists the bound as
+`operator_build_temporaries`; the operator is complete before any tiled product runs, so the products stage adds the
+larger of it and `tiled_product_temporaries` beside the operator and the product rows.
 
 The W8 degree-6 rank itself is a diagnostic, not a missing theorem: A5-066 already gives the all-degree presentation,
 and A5-291 rejected the old 129--223 GiB v11 rerun as mathematically redundant. The memory-bounded route remains useful

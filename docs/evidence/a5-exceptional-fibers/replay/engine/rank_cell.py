@@ -10,16 +10,20 @@ terminate that group (SIGTERM, then SIGKILL after `--grace-seconds`) and still w
 termination cause; a group member that outlives the engine's own exit, successful or not, is terminated the same way
 before the runner returns. Failures retain `.part`, stderr and the resource record. `--timeout` replaces an outer
 `timeout`; an outer `timeout -k` must exceed `--grace-seconds`, or its SIGKILL reaches the runner before the runner
-reaches the engine group. The exit status is 0 on success, 2 when validation fails, 124 on timeout, 126 when the
-interpreter or engine cannot be executed (a permission or other operating-system error at launch), 127 when it does
-not exist, 128 + n when signal n ended the runner or the engine, and the engine's own status otherwise. A launch
-failure still writes the resource record, with the error class and errno in `launch_error`, and keeps the stderr
-file.
+reaches the engine group. The exit status is 0 on success, 2 when validation fails, 124 on timeout, 75 when another
+invocation holds the output's lock, 126 when the interpreter or engine cannot be executed (a permission or other
+operating-system error at launch), 127 when it does not exist, 128 + n when signal n ended the runner or the engine,
+and the engine's own status otherwise. A launch failure still writes the resource record, with the error class and
+errno in `launch_error`, and keeps the stderr file.
+Each output holds an exclusive `flock` on `OUTPUT.lock` from the existing-record check through publication, so two
+invocations for one output never share its `.part`, stderr and resource files; an invocation that finds the lock held
+prints a message, touches no record file and exits 75.
 """
 
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -32,6 +36,7 @@ from pathlib import Path
 from typing import Any
 
 TIMEOUT_STATUS = 124
+LOCKED_STATUS = 75
 
 
 def sha256(path: Path) -> str:
@@ -119,6 +124,8 @@ def validate_record(path: Path, identity: dict[str, Any]) -> dict[str, Any]:
         record = json.loads(path.read_text())
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError(f"{path}: invalid JSON: {error}") from error
+    if not isinstance(record, dict):
+        raise ValueError(f"{path}: the record is not a JSON object")
     mismatch = {key: (record.get(key), value) for key, value in identity.items() if record.get(key) != value}
     if mismatch:
         raise ValueError(f"{path}: identity mismatch: {mismatch}")
@@ -134,6 +141,8 @@ def validate_arguments_binding(resources: Path, record: Path, digest: str) -> No
         evidence = json.loads(resources.read_text())
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError(f"{resources}: cannot read the engine-argument binding: {error}") from error
+    if not isinstance(evidence, dict):
+        raise ValueError(f"{resources}: the engine-argument binding is not a JSON object")
     if evidence.get("runner_exit") != 0 or evidence.get("stdout_part_sha256") != sha256(record):
         raise ValueError(f"{resources}: does not describe a successful run that wrote {record.name}")
     if evidence.get("engine_args_sha256_16") != digest:
@@ -291,7 +300,51 @@ def launch_status(error: OSError) -> int:
     return 127 if isinstance(error, FileNotFoundError) else 126
 
 
+def acquire_output_lock(path: Path) -> int | None:
+    """Exclusive non-blocking `flock` on the lock file `path`: its descriptor, or None while another holder has it.
+
+    The holder unlinks the file on release, so after locking the descriptor is accepted only while `path` still names
+    the same inode; a file replaced in between belongs to a later holder and the acquisition restarts."""
+    while True:
+        descriptor = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
+        try:
+            fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            os.close(descriptor)
+            return None
+        try:
+            if os.fstat(descriptor).st_ino == os.stat(path).st_ino:
+                return descriptor
+        except FileNotFoundError:
+            pass
+        os.close(descriptor)
+
+
+def release_output_lock(descriptor: int, path: Path) -> None:
+    """Unlink the lock file while its lock is still held, then drop the lock."""
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        pass
+    os.close(descriptor)
+
+
 def run_cell(args: argparse.Namespace) -> int:
+    """Run or validate one cell while holding the output's lock; exit 75 when another invocation holds it."""
+    output = Path(args.output).resolve()
+    output.parent.mkdir(parents=True, exist_ok=True)
+    lock = output.with_name(output.name + ".lock")
+    descriptor = acquire_output_lock(lock)
+    if descriptor is None:
+        print(f"{output}: another invocation holds {lock.name}; no file was touched", file=sys.stderr)
+        return LOCKED_STATUS
+    try:
+        return run_locked_cell(args)
+    finally:
+        release_output_lock(descriptor, lock)
+
+
+def run_locked_cell(args: argparse.Namespace) -> int:
     engine, header, output = Path(args.engine).resolve(), Path(args.header).resolve(), Path(args.output).resolve()
     engine_args = list(args.engine_args)
     identity = expected_identity(engine, header, args.degree, args.order)
@@ -303,7 +356,6 @@ def run_cell(args: argparse.Namespace) -> int:
         validate_arguments_binding(resources, output, arguments_digest)
         print(f"validated existing {output}")
         return 0
-    output.parent.mkdir(parents=True, exist_ok=True)
     part = output.with_suffix(output.suffix + ".part")
     stderr = output.with_suffix(".err")
     command = [args.python, str(engine), str(header), str(args.degree), str(args.order), *engine_args]

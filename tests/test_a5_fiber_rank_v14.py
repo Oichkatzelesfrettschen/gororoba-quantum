@@ -386,3 +386,38 @@ def test_compact_preflight_counts_the_character_components(
     assert terms["streamed_loop_arrays"] == v14.streamed_loop_bytes(
         v14.streamed_prefix_peak(2, components, None), widest
     )
+
+
+def test_cached_route_stage_bound_takes_the_larger_of_build_and_tiled_scratch() -> None:
+    """The operator is built before any tiled product runs, so only the larger of the two scratch terms counts."""
+    cached = {"uint16_generator_operator": 9, "uint16_product_rows": 4, "compact_echelon_ceiling": 7}
+    cached |= {"closure_chunk_temporaries": 1, "tiled_product_temporaries": 5}
+    _check(v14.compact_stage_peaks(cached | {"operator_build_temporaries": 50}) == {"products": 63, "closure": 12})
+    _check(v14.compact_stage_peaks(cached | {"operator_build_temporaries": 3}) == {"products": 18, "closure": 12})
+    _check(v14.sparse_row_chunk_bytes(64, 1000) == 4 * 8 * 64 * 1000)
+    _check(v14.streamed_chunk_bytes(64, 1000) == v14.sparse_row_chunk_bytes(64, 1000) + v14.tiled_product_bytes(64))
+
+
+def test_wide_chunk_of_the_cached_operator_route_is_refused_by_max_gb(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Building the cached operator gathers uint16 rows and holds float64 sparse-product arrays that scale with
+    chunk x widest; with the other chunk terms removed, the products stage is the operator, the product rows and that
+    scratch, and `--max-gb` refuses a chunk whose stage does not fit."""
+    run = _in_memory_cell(tmp_path, monkeypatch)
+    monkeypatch.setattr(v14, "tiled_product_bytes", lambda chunk: 0)
+    monkeypatch.setattr(v14, "insert_panel_bytes", lambda block, chunk: 0)
+    chunk = 100_000
+    options = ["--stream-products", "--echelon", "compact", "--operator-cache-gb", "1", "--chunk", str(chunk)]
+    got = run(options)
+    terms, stages = got["preflight_terms"], got["preflight_stages"]
+    widest = max(block["cols"] for block in got["per_block"].values())
+    _check(terms["operator_build_temporaries"] == 32 * chunk * widest)
+    _check(
+        stages["products"]
+        == terms["uint16_generator_operator"] + terms["uint16_product_rows"] + terms["operator_build_temporaries"]
+    )
+    _check(stages["products"] > stages["closure"])
+    with pytest.raises(SystemExit, match="preflight .* exceeds --max-gb"):
+        run([*options, "--max-gb", str((stages["products"] - 1) / 2**30)])
+    run([*options, "--max-gb", str(stages["products"] / 2**30 + 1e-6)])

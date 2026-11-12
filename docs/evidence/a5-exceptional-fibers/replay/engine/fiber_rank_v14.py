@@ -210,10 +210,12 @@ def compact_stage_peaks(terms: dict[str, int]) -> dict[str, int]:
     if operator is None:
         raise ValueError("compact memory terms have no generator operator")
     products = terms["uint16_product_rows"]
+    # The cached route builds its operator first and multiplies afterwards, so the construction scratch and the tiled
+    # contraction scratch are never live together.
     loop = (
         terms.get("streamed_loop_arrays", 0)
         + terms.get("streamed_chunk_temporaries", 0)
-        + terms.get("tiled_product_temporaries", 0)
+        + max(terms.get("operator_build_temporaries", 0), terms.get("tiled_product_temporaries", 0))
     )
     return {
         "products": operator + products + loop,
@@ -259,11 +261,18 @@ def tiled_product_bytes(chunk: int) -> int:
     return 8 * (chunk * 4096 + 4096 * 1024 + 3 * chunk * 1024)
 
 
+def sparse_row_chunk_bytes(chunk: int, widest: int) -> int:
+    """Arrays one `sparse_mod_matmul` of a `chunk`-row slice holds at its peak, per element of a chunk x widest array:
+    the gathered parent rows (uint16, 2 bytes), the contiguous copy of their transpose that scipy flattens (2), its
+    float64 cast (8), the float64 product (8), its modulo (8) and the uint16 result stored into the operator or the
+    next layer (2). The 30 bytes are bounded by 4 x 8 bytes."""
+    return 4 * 8 * chunk * widest
+
+
 def streamed_chunk_bytes(chunk: int, widest: int) -> int:
-    """Walk temporaries of `streamed_generator_product` per `chunk` rows: the gathered parent rows (uint16), the
-    float64 transpose, the sparse product and its modulo (3 x 8 bytes) and the uint16 result, bounded by
-    4 x 8 bytes per element, plus the tiles of `tiled_product_bytes`."""
-    return 4 * 8 * chunk * widest + tiled_product_bytes(chunk)
+    """Walk temporaries of `streamed_generator_product` per `chunk` rows (`sparse_row_chunk_bytes`) plus the tiles of
+    `tiled_product_bytes`."""
+    return sparse_row_chunk_bytes(chunk, widest) + tiled_product_bytes(chunk)
 
 
 def is_odd_prime(p: int) -> bool:
@@ -1410,6 +1419,7 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         }
         if cache:
             terms["tiled_product_temporaries"] = tiled_product_bytes(a.chunk)
+            terms["operator_build_temporaries"] = sparse_row_chunk_bytes(a.chunk, widest)
         else:
             prefixes = streamed_prefix_peak(a.d, m, rset.wanted if rset else None)
             terms["streamed_loop_arrays"] = streamed_loop_bytes(prefixes, widest)

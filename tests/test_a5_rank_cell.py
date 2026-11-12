@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pytest
 
+HAS_PROC = Path("/proc/self/stat").exists()
 RUNNER = Path(__file__).parents[1] / "docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py"
 SPEC = importlib.util.spec_from_file_location("a5_rank_cell_test", RUNNER)
 if SPEC is None or SPEC.loader is None:
@@ -342,10 +343,14 @@ Launch = Callable[..., tuple[subprocess.Popen[bytes], Path, list[int]]]
 
 
 def _alive(pid: int) -> bool:
-    try:
-        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0] != "Z"
-    except FileNotFoundError, ProcessLookupError:
-        return False
+    """True while `pid` runs; a zombie counts as gone. procfs where it exists, `ps` elsewhere (macOS has no /proc)."""
+    if HAS_PROC:
+        try:
+            return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0] != "Z"
+        except FileNotFoundError, ProcessLookupError:
+            return False
+    state = subprocess.run(["ps", "-o", "stat=", "-p", str(pid)], capture_output=True, text=True, check=False)  # noqa: S607
+    return bool(state.stdout.strip()) and not state.stdout.strip().startswith("Z")
 
 
 @pytest.fixture
@@ -408,6 +413,7 @@ def test_timeout_exits_124_and_terminates_the_group(launch: Launch, ignore_term:
     assert (record["termination"], record["timeout_seconds"], record["runner_exit"]) == ("timeout", 0.5, 124)
 
 
+@pytest.mark.skipif(not HAS_PROC, reason="the ESRCH skip belongs to the /proc scan; the ps path has no such read")
 def test_process_group_rss_skips_a_member_that_exits_during_the_scan(monkeypatch: pytest.MonkeyPatch) -> None:
     """procfs raises ESRCH on a read of a process that exited after the directory listing named it."""
     own = f"/proc/{os.getpid()}/stat"
@@ -514,3 +520,61 @@ def test_one_existing_file_binds_equally_through_every_spelling_inside_the_check
     }
     assert len(identities) == 1 and identities.pop().startswith("file-sha256:")
     assert rank_cell.argument_identity("--k2-receipt=parallel.py", root).startswith("--k2-receipt=file-sha256:")
+
+
+def test_a_second_invocation_for_a_locked_output_touches_no_file(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    args = _args(tmp_path, engine, output)
+    lock = tmp_path / "cell.json.lock"
+    holder = rank_cell.acquire_output_lock(lock)
+    assert holder is not None
+    try:
+        assert rank_cell.acquire_output_lock(lock) is None
+        assert rank_cell.run_cell(args) == rank_cell.LOCKED_STATUS == 75
+        assert "another invocation holds cell.json.lock" in capsys.readouterr().err
+        assert sorted(path.name for path in tmp_path.iterdir()) == ["cell.json.lock", "engine.py", "header.sing"]
+    finally:
+        rank_cell.release_output_lock(holder, lock)
+    assert not lock.exists()
+    assert rank_cell.run_cell(args) == 0
+    assert not lock.exists() and output.exists()
+
+
+def test_the_lock_is_released_when_validation_of_an_existing_record_raises(tmp_path: Path) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    output.write_text("{}\n")
+    with pytest.raises(ValueError, match="identity mismatch"):
+        rank_cell.run_cell(_args(tmp_path, engine, output))
+    assert not (tmp_path / "cell.json.lock").exists()
+
+
+@pytest.mark.parametrize("text", ["[]", "null", "3", '"record"'])
+def test_a_json_value_that_is_not_an_object_is_a_validation_error(tmp_path: Path, text: str) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    args = _args(tmp_path, engine, output)
+    identity = rank_cell.expected_identity(engine.resolve(), Path(args.header).resolve(), args.degree, args.order)
+    output.write_text(text + "\n")
+    with pytest.raises(ValueError, match="not a JSON object"):
+        rank_cell.validate_record(output, identity)
+    with pytest.raises(ValueError, match="not a JSON object"):
+        rank_cell.run_cell(args)
+    resources = tmp_path / "cell.resources.json"
+    output.write_text('{"r_N": 1}\n')
+    resources.write_text(text + "\n")
+    with pytest.raises(ValueError, match="not a JSON object"):
+        rank_cell.validate_arguments_binding(resources, output, "0" * 16)
+
+
+@pytest.mark.parametrize("text", ["[]", "null"])
+def test_an_engine_that_prints_a_non_object_fails_validation_and_keeps_its_records(tmp_path: Path, text: str) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    engine.write_text(f"print({text!r})\n")
+    assert rank_cell.run_cell(_args(tmp_path, engine, output)) == 2
+    record = json.loads(output.with_suffix(".resources.json").read_text())
+    assert record["runner_exit"] == 2 and "not a JSON object" in record["validation_error"]
+    assert not output.exists() and output.with_suffix(".json.part").exists()
