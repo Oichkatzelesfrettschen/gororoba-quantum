@@ -110,8 +110,9 @@ continues on the workstation, which has no session limit.
 `truncation_check.py` counts its `--timeout` over its three Singular calls together: it fixes one deadline at the
 start, passes each call the seconds left, and reports a call with none left as `blocked_timeout` without starting it.
 The runner's rewritten `--timeout` therefore bounds the driver, where per-call allowances (39,500 s and 600 s under a
-39,700 s limit) could sum past the outer `timeout`. The kernel `a5-char0-xm-truncation-n22` pins an earlier commit, so a rerun takes this deadline only after its pin in
-`kaggle/make_kernels.py` moves to a commit that holds it; the run that ledger row A5-290 records used the per-call form.
+39,700 s limit) could sum past the outer `timeout`. The kernel `a5-char0-xm-truncation-n22` pins
+`7e22f6d5b7813407ca14e17ddb03114176ddfa59`, which holds the shared deadline. The retained output that ledger row
+A5-290 records used the per-call form.
 
 ### Where the direct Q(i) computation stops, and the modular engine (2026-11-11)
 
@@ -237,14 +238,14 @@ the Q(i) solution. Both roots of -1 at each split prime give real and imaginary 
 boxes leave a measured gap: weight 9 with the m-range [-7, 9] or [-8, 10] gives qw-relation rank 20 over Q(i), and
 weight 10 with [-6, 8] gives rank 16 modulo 32009. `--check` first compares the sha256 of `e8_closure_certificate.py`,
 `slice_rings_qi.py` and `reduction_check.py` with the record, so an edit of any of the three makes it fail until
-`--write` regenerates the records (about 40 minutes for both signs); it then reruns the exact identities from the
-cofactor file and two mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities, one coefficient of G_1
-doubled breaks 42.
+`--write` regenerates the records (about 65 minutes for both signs in the retained runs); it then reruns the exact
+identities from the cofactor file and two mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities,
+one coefficient of G_1 doubled breaks 42.
 
-| Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search | exact check | mutations fail |
+| Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search and full-run cost | exact check | mutations fail |
 |---|---|---|---|---|---|
-| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 186-244 s, 22 min wall, 4.1 GiB peak per worker | 17 s | 1 of 42, 42 of 42 |
-| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 178-191 s, 19 min wall, 4.1 GiB peak per worker | 17 s | 1 of 42, 42 of 42 |
+| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 259.8-354.1 s, 1,982.8 s total wall, 4.1 GiB peak per worker | 26.9 s | 1 of 42, 42 of 42 |
+| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 236.0-396.2 s, 1,878.9 s total wall, 4.1 GiB peak per worker | 18.1 s | 1 of 42, 42 of 42 |
 
 Records: `e8-closure-certificate-SLUG.json` (primes, box, counts, digests of the producer script, the Q(i) J and G,
 this producer, `slice_rings_qi.py`, `reduction_check.py` and the cofactor file, stage times, verdict),

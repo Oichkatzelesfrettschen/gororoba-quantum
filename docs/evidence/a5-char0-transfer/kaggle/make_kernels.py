@@ -18,8 +18,11 @@ OWNER = "probablyeric"
 BRANCH = "a5-char0-quadrics-iso-w8"
 # The commit each kernel checks out, so a kernel replays the same drivers after the branch merges or moves.
 COMMIT = "00b7d63c261535d328f73369fba54ae7d512d64d"
-# Kernels added after COMMIT check out the commit that first holds their driver arguments.
-COMMITS = {"a5-char0-e8-quadrics": "07ecf27ee6e68b5e038bdb9ab6afbb99f6781561"}
+# Per-kernel pins bind the driver arguments and deadline contract to their implementation.
+COMMITS = {
+    "a5-char0-e8-quadrics": "07ecf27ee6e68b5e038bdb9ab6afbb99f6781561",
+    "a5-char0-xm-truncation-n22": "7e22f6d5b7813407ca14e17ddb03114176ddfa59",
+}
 REPO = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum"
 
 JOBS = {
