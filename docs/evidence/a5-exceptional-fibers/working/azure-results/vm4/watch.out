@@ -1,0 +1,8 @@
+copied ~/Projects/gororoba-workspace/gororoba-quantum/docs/local/a5-failed-runs/azure-results/vm4/results/e8nm_d3-work-20261101T094931Z.tgz sha256 b153c8a4fa3223d67d35e01d2c8b0bb20d9fcf4680de74c2d1012fe21a90bd8a job_exit 124
+deallocated gororoba-a5-fiber-4
+2026-11-01T09:24:19Z run 49419468  fails=0
+2026-11-01T09:29:22Z run 49495244  fails=0
+2026-11-01T09:34:24Z run 49581184  fails=0
+2026-11-01T09:39:26Z run 49676532  fails=0
+2026-11-01T09:44:29Z run 49742392  fails=0
+2026-11-01T09:49:31Z done 0  fails=0

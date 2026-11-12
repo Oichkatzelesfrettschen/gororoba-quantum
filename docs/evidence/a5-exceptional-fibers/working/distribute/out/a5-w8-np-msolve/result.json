@@ -1,0 +1,25 @@
+{
+ "label": "W8->N+ Rees elimination",
+ "wheel": "passagemath-msolve==10.8.13",
+ "command": [
+  "-v",
+  "2",
+  "-t",
+  "4",
+  "-e",
+  "1",
+  "-g",
+  "2",
+  "-f",
+  "/kaggle/working/input.ms",
+  "-o",
+  "/kaggle/working/gb.out"
+ ],
+ "return_code": -9,
+ "wall_seconds": 3839.7,
+ "peak_child_rss_kib": 31347320,
+ "mem_total_kib": 32869296,
+ "cpu_count": 4,
+ "machine": "x86_64",
+ "python": "3.13.15"
+}

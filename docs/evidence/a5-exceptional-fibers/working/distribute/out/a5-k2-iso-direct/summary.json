@@ -1,0 +1,26 @@
+{
+ "cpu_count": 4,
+ "meminfo_kib": {
+  "MemTotal": "32869296",
+  "MemAvailable": "31808576"
+ },
+ "python": "3.13.15",
+ "singular": "4.4.1",
+ "jobs": {
+  "iso_k2_minAssChar": {
+   "rc": 124,
+   "seconds": 41000.1,
+   "results": []
+  },
+  "iso_k2_minAssGTZ": {
+   "rc": 124,
+   "seconds": 41000.1,
+   "results": []
+  }
+ },
+ "meminfo_end_kib": {
+  "MemTotal": "32869296",
+  "MemAvailable": "31956848"
+ },
+ "total_seconds": 41047.1
+}

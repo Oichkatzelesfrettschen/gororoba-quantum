@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/kaggle/tmp/arc/chart.py", line 129, in <module>
+    nu, Fv = lead(x)
+             ^^^^^^^
+  File "/kaggle/tmp/arc/chart.py", line 113, in lead
+    nu = min(f.valuation() for f in ser if f != 0)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: min() iterable argument is empty
