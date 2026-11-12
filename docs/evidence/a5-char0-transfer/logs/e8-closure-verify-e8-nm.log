@@ -1,0 +1,8 @@
+RESULT j_nonzero 0
+RESULT generators 21
+RESULT colength 2
+RESULT kbase qu,1
+RESULT am_outside_n 0
+RESULT n_outside_am 0
+RESULT bad_identities 0
+STAGE verified 17

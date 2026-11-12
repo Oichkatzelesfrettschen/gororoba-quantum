@@ -202,7 +202,44 @@ J does not involve and which vanish on the slice):
 
 So the coordinate ring of each slice is the image ring of its parametrization in characteristic 0 as well, the
 input of the certificates of `../a5-exceptional-fibers/monomial-ladder`. Records: `slice-rings-qi-kernel-*.json`.
-The same script holds the E8-bar closure check over Q(i) (I = I S); its two cases have not finished.
+The same script holds a standard-basis form of the E8-bar closure check over Q(i) (I = I S); its two `nfmodStd`
+cases ended at their 40,000 s timeout without a result, and the certificate below takes their place.
+
+## The E8-bar slice ideal is an ideal of S over Q(i)
+
+[`e8_closure_certificate.py`](e8_closure_certificate.py) proves over Q(i) the statement that A5-309 records at the
+split primes: the slice ideal I of the E8-bar fiber is an ideal of S = P + P b, I = I S. In the polynomial model of S
+(qw, qr, qs, qz, qa, qb, qu modulo qu (1 + qw) = 1 and qb^2 = EA (EA - qw (qw + 2)) qu^2) let It_k be the image of the
+k-th generator of the Q(i) producer and n = (qa, qz, qr, qs, qb, qw^2) S. For each of the 42 targets t = qw It_j and
+t = (qu - 1) It_j the cofactor file holds Gaussian rationals alpha_k, beta_k and polynomials D_xk with
+
+    t = sum_k (alpha_k + beta_k (qu - 1)) It_k + sum_(x, k) D_xk x It_k    in S,
+
+and one Singular run in characteristic 0 (minpoly I^2 + 1, ordering dp) reduces each of the 42 differences to zero
+modulo the relations of S. The same run shows n = m_R S (every coordinate image reduces to zero modulo n, every
+generator of n to zero modulo the coordinate images), S / n = Q(i) + Q(i) qw (colength 2) and J = 0 on the
+parametrization. Since qu - 1 = -qw modulo n, the 42 identities are linear relations in I S / n I S whose qw-parts
+have exact rank 21 over Q(i); so every qw It_j lies in sum_k Q(i) It_k + n I S, and with S = R + R qw and
+n I S = m_R (I S), Nakayama's lemma over R gives I S = I.
+
+Linear algebra found the cofactors, not a standard basis: 13,830 monomial multiples qb^b m^e qr^i qs^j qz^k qa^l x It_k
+(m = 1 + qw, weight at most 10, m-exponent in [-7, 9]), the 42 class columns It_k and (qu - 1) It_k and the 42
+targets form a 23,903 x 13,914 matrix whose reduced row echelon form gives one solution per prime, the reduction of
+the Q(i) solution. Both roots of -1 at each split prime give real and imaginary parts, and rational reconstruction stabilizes over the primes listed in the table. Smaller
+boxes leave a measured gap: weight 9 with the m-range [-7, 9] or [-8, 10] gives qw-relation rank 20 over Q(i), and
+weight 10 with [-6, 8] gives rank 16 modulo 32009. `--check` reruns the exact identities from the cofactor file and two
+mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities, one coefficient of G_1 doubled breaks 42.
+
+| Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search | exact check | mutations fail |
+|---|---|---|---|---|---|
+| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 180-196 s, 20 min wall, 4.3 GB peak per worker | 17 s | 1 of 42, 42 of 42 |
+| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 177-181 s, 19 min wall, 4.3 GB peak per worker | 17 s | 1 of 42, 42 of 42 |
+
+Records: `e8-closure-certificate-SLUG.json` (primes, box, counts, digests of the producer script, the Q(i) J and G,
+this producer, `slice_rings_qi.py`, `reduction_check.py` and the cofactor file, stage times, verdict),
+`cofactors/e8-closure-SLUG.json.xz`, and the Singular logs `logs/e8-closure-*`. Not covered: the premises that S is
+finite over R and that S = R + R qw (A5-306 and A5-309 argue them; the certificate checks only S / n = Q(i) + Q(i) qw),
+the fiber cone and its defining ideal L over Q(i), the Rees ideal in every degree, and E8-bar -> VB.
 
 
 ## The lower-bound step of the transfer is refuted as a criterion (ledger A5-316)

@@ -333,4 +333,5 @@ generators of L above degree 2 remain open. The truncated ranks of I and
 I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817; `e8_closure_probe.py`,
 `records/e8-closure-probe-e8-nm-p32009.jsonl`), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
 `records/slice-ring-e8-*.log` show that the kernel of the parametrization equals the header's J (one component)
-in all four cases. Not checked for E8-bar: Q(i).
+in all four cases. Over Q(i) the closure I = I S is proved for both signs by the cofactor
+certificate of [a5-char0-transfer](../../a5-char0-transfer/README.md#the-e8-bar-slice-ideal-is-an-ideal-of-s-over-qi) (A5-334).
