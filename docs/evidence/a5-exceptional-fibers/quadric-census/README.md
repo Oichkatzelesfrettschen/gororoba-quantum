@@ -78,8 +78,8 @@ Is K2 spanned by monomials and binomials in the header's coordinates y? The redu
 quadratic monomials answers it for these coordinates only. Which linear changes of coordinates could make it so?
 A monomial-binomial presentation of a d-dimensional toric variety has a diagonal torus of rank at least d among
 its linear symmetries, so the script computes the Lie algebra g of matrices whose derivation preserves K2, its
-diagonal part, and the centralizer of one fixed element of g; that centralizer contains a Cartan subalgebra, so its
-dimension bounds the rank of every torus of linear symmetries from above.
+diagonal part, and the centralizer of one fixed element of g; a maximal torus is conjugate into that centralizer, so
+its dimension bounds the rank of every torus of linear symmetries from above.
 
 | Fiber | dim of the cone | supports 1, 2, 3, more | dim g | diagonal torus | torus rank at most |
 |---|---|---|---|---|---|
@@ -95,5 +95,45 @@ basis of M / q M. For Iso (4 < 5) and W8 → N− (5 < 6) the bound excludes a t
 symmetries of K2, so neither K2 is the ideal of a toric variety in any linear coordinates; a torus of rank 4 on Iso
 or 5 on W8 would still make them varieties with a torus action of complexity one, which is untested. For
 E8-bar → VB and E8-bar → N− the bound leaves a full-rank torus possible and decides nothing. Trinomial rows
-(support 3) occur in every K2 and carry no known structure here. hypothesis: the symmetry algebras come from the
-stabilizer of the base point in the automorphism group of the algebra; no record tests that.
+(support 3) occur in every K2 and carry no known structure here.
+
+## Levi structure and torus rank of the symmetry algebras (A5-347, A5-348)
+
+`symmetry_algebra.py --write` recomputes each g by a second route (the action of every matrix unit on the quadratic
+monomials, projected to the quotient by K2) and decomposes it; the record is
+[symmetry-algebra.json](symmetry-algebra.json), 57 s and 0.5 GB on four workers. The dimensions 23, 15, 17, 34
+and 26 of the table above reappear on all fourteen files, and the same number of quadrics with coefficients from a
+fixed hash stream keeps the Euler field alone (dimension 1) on every file.
+
+| Fiber | dim g | derived series | radical | nilpotent ideal | central torus | Levi factor | Cartan subalgebra | torus rank |
+|---|---|---|---|---|---|---|---|---|
+| X− → N−, X+ → N+ | 23 | 23, 19, 18 | 20 | 16 | 4 | sl2 | 5, abelian | 5 |
+| E8-bar → VB | 15 | 15, 11, 10 | 12 | 8 | 4 | sl2 | 5, abelian | 5 |
+| Iso | 17 | 17, 14, 13 | 14 | 11 | 3 | sl2 | 4, abelian | 4 |
+| E8-bar → N−, N+ | 34 | 34, 29, 26, 23 | 31 | 26 | 5 | sl2 | 6, abelian | 6 |
+| W8 → N− | 26 | 26, 22 | 23 | 19 | 4 | sl2 | 5, abelian | 5 |
+
+The radical is the orthogonal complement of [g, g] under the Killing form, the nilpotent ideal is the part of the
+radical orthogonal to g under the trace form of the defining representation, the Cartan subalgebra is the Fitting
+null component of ad x for one fixed x, and the torus rank is the rank of the trace form on it. Each is a theorem
+for an algebraic Lie algebra in characteristic 0 and a computation over F_p here; the script returns the known
+numbers for so(4) with scalars, a parabolic subalgebra of gl(3) and gl(3) (`tests/test_a5_symmetry_algebra.py`).
+The center is the line of the Euler field on every fiber.
+
+Readings. Every g is sl2 plus a solvable radical: a torus of rank 3 to 5 that commutes with sl2, and a nilpotent
+ideal that carries most of the dimension. The Cartan subalgebra is a torus, so the upper bounds of the table above
+are attained: the linear symmetries of K2 hold a torus of rank exactly 5, 5, 4, 6 and 5. The Levi factor has the
+dimension of the stabilizer in G_2 of an orthogonal equal-norm pair of imaginary octonions, the base point of the
+two N headers (ledger A5-338), which is SU(2); no record builds the map from that stabilizer into g, so the
+identification is a hypothesis, and the dimension of g (15 to 34) exceeds dim G_2 = 14 on every fiber, so the
+automorphisms of the algebra account for the Levi factor at most, never for the radical.
+
+Iso. K2 is geometrically prime of projective dimension 4 with no linear form (ledger A5-060), so its cone is a
+5-dimensional variety that spans the 17 coordinates and the torus of rank 4 acts on it effectively: the Iso cone
+is a variety with a torus action of complexity one, and by the bound above it is not toric. W8 → N−.
+V(K2) is the union of two 6-dimensional components of degrees 20 and 30 (ledger A5-062); a connected torus
+preserves each, and the torus of rank 5 acts on a component with complexity one exactly when that component spans
+the 24 coordinates, which no record decides. X, E8-bar → VB and E8-bar → N have torus rank above the dimension
+of the cone (5 > 4, 5 > 4, 6 > 5), so a subtorus of positive dimension fixes every point of each irreducible
+component: these K2 have components inside proper coordinate subspaces or nilpotent coordinates, as the monomial
+quadrics of their echelon bases (27, 0 and 25 rows of support 1) and the non-reduced E8-bar schemes already show.
