@@ -5535,6 +5535,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/measurement_observability.py tests/fixtures/measurement-observability.json | cmp - docs/evidence/measurement-observability/analytic-result.json",
+      "name": "core-measurement-observability",
+      "seconds": 0.2,
+      "replays": [
+        "docs/evidence/measurement-observability/analytic-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/publication_plates.py --check",
       "name": "core-teleportation-publication-source-bound-release",
       "seconds": 0.2,
