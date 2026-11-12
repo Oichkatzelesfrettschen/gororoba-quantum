@@ -475,6 +475,10 @@ the closest entry and say what changed.
   samples. All six source/input hashes match the launch case. The preceding canonical bytes were copied and
   hash-verified before the three fresh records replaced them; the regenerated acceptance summary and selected-array
   model both pass their read-only checks. The observed cached N = 16 route supplies no N = 19 fit guarantee.
+  The retained v14 preflight omits the third product-stack copy; its numerical estimate remains historical.
+  The [versioned successor](../evidence/a5-exceptional-fibers/memory-bounded/README.md#product-row-admission) counts
+  that copy and preserves the executable arithmetic, with bounded cached/streamed controls; its full-scale
+  acceptance is not run. The tracked launch manifest binds the six original inputs and completed resource record.
 
 ### E8-bar degree-seven fiber-cone ranks from arc jets
 

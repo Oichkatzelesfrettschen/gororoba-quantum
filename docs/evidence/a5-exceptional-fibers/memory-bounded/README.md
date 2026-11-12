@@ -2,8 +2,23 @@
 
 This directory separates mathematical size from representation size. The retained W8 degree-6, N = 19 v11
 preflight is a correct forecast for that engine's simultaneous float64 arrays, but it is not a lower bound on memory
-for the rank problem. Engine v14 instead uses exact uint16 residues, streams generator operators by total degree,
+for the rank problem. The retained engine v14 uses exact uint16 residues, streams generator operators by total degree,
 stores only nonpivot echelon coefficients and materializes closure rows one chunk at a time.
+
+## Product-row admission
+
+[`fiber_rank_v15.py`](../replay/engine/fiber_rank_v15.py) succeeds the digest-bound v14 producer with conservative
+three-copy product-row accounting. The final stack holds the retained row dictionary, its stacked uint16 matrix and
+the boolean-indexed result together. The selected-array term reserves `6 * rows * widest` bytes for those three
+copies, where `rows` counts every retained degree level and `widest` bounds a character block. The v14 term reserves
+two copies and can admit a limit below this transient; its recorded preflight values remain historical estimates.
+
+The successor preserves v14's executable arithmetic after normalizing that single accounting coefficient.
+[`test_a5_fiber_rank_v15.py`](../../../../tests/test_a5_fiber_rank_v15.py) checks source equivalence, cached and
+streamed ranks and nonstandard controls, and limits between the two admission estimates. A control that omits an
+independent product fails, and an unrelated arithmetic mutation fails the source comparison. The full-scale v15
+acceptance is not run; the W8 measurement below belongs to the retained v14 source and launch manifest. New
+selected-array admission uses v15, while the historical reproduction command preserves v14's identity.
 
 ## Run configuration and tool versions
 
@@ -59,7 +74,7 @@ Provenance of the summary:
 | products | 2,201.4 s | 914.5 s |
 | closure | 4,751.3 s | 5,578.7 s |
 | memory statistic | 24.9 GiB (largest single-process RSS, GNU `time`) | 5.03 GiB (maximum sampled process-group RSS at 0.1 s) |
-| preflight selected arrays | 58.9 GiB (sum of every term) | 4.69 GiB (larger of the products and closure stages; the seven terms sum to 5.95 GiB) |
+| recorded preflight estimate | 58.9 GiB (sum of every term) | 4.69 GiB (larger of the products and closure stages; the seven terms sum to 5.95 GiB; the final stack copy is omitted) |
 
 The v14 statistic samples a process-group sum that counts pages shared by forked workers once per process;
 allocations between polls remain unobserved. The v11 statistic is a single-process high-water mark. The runs use
@@ -158,7 +173,9 @@ basis, which fails when old panels are retained; one audit test crosses the defa
 
 [`w8_n19_memory_model.py`](w8_n19_memory_model.py) regenerates
 [`w8-n19-memory-model.json`](w8-n19-memory-model.json) from the retained v11 terms and quotient degree counts. The
-block-size bound does not assume equal character blocks: from D = sum c_b and Q = sum c_b^2, Cauchy gives
+model describes v15's three-copy admission; it corrects the preceding two-copy forecast while preserving the v14
+run records. The block-size bound does not assume equal character blocks: from D = sum c_b and Q = sum c_b^2,
+Cauchy gives
 `max c_b <= ceil(D/4 + sqrt(3 (Q - D^2/4) / 4)) = 59,123`.
 The model's target memory limit is 16 GiB, the `memory_limit` of the script.
 
@@ -167,12 +184,12 @@ The model's target memory limit is 16 GiB, the `memory_limit` of the script.
 | v11 float64 generator blocks | 103.34 GiB |
 | one full uint16 generator operator | 25.84 GiB (does not fit) |
 | two adjacent streamed operator layers | at most 8.664 GiB |
-| v14 products stage (layers, retained uint16 rows, walk and tile temporaries) | at most 12.293 GiB, plus the accumulate-line arrays below |
-| v14 closure stage (compact basis, rows, chunk temporaries, one insertion's panels) | at most 10.416 GiB |
-| selected-array headroom inside 16 GiB | at least 3.707 GiB before the accumulate-line arrays |
+| v15 products stage (layers, three uint16 row copies, walk and tile temporaries) | at most 14.034 GiB, plus the accumulate-line arrays below |
+| v15 closure stage (compact basis, conservative three-copy rows, chunk temporaries, one insertion's panels) | at most 12.157 GiB |
+| selected-array headroom inside 16 GiB | at least 1.966 GiB before the accumulate-line arrays |
 
 The last three bounds are stage-local. Summing the operator and echelon terms would count arrays that are never live
-together. Conversely, the 3.707 GiB is not guaranteed RSS headroom: sparse tables, Python objects, the FLINT entry
+together. Conversely, the 1.966 GiB is not guaranteed RSS headroom: sparse tables, Python objects, the FLINT entry
 lists of each insertion and allocator state are outside the model. A cgroup memory-limit stop falsifies successful
 execution under the 16 GiB cap. Sampled process-group RSS counts shared pages once per process and supplies neither
 a cgroup peak nor guaranteed headroom. The model is arithmetic on named arrays under the Cauchy block-size bound;
@@ -186,9 +203,10 @@ pivots and n columns), and the float64 tiles of the update: 0.391 GiB in all (`i
 panel until the last replacement is built would have added one block copy, at most 1.628 GiB at the 59,123-column
 bound.
 
-Products stage. The retained rows dictionary and the stacked inputs are the two uint16 copies of the product-row term:
-prefix rows and new rows are distinct dictionary entries, so the dictionary, the inputs and the outputs of one call stay
-inside two copies of the wanted rows. The accumulate line of `streamed_generator_product`,
+Products stage. The product-row term reserves three uint16 copies for the retained dictionary, the final stack and
+its boolean-indexed result. Earlier operator construction needs two row copies: prefix rows and new rows occupy
+distinct dictionary entries, so the dictionary, inputs and outputs of one call fit inside that allowance. The
+accumulate line of `streamed_generator_product`,
 `((outputs.astype(uint32) + contribution) % p).astype(uint16)`, holds per element of one call's contribution the
 contribution (2 bytes) and two uint32 temporaries (4 + 4 bytes) beside the old output; the gathered input and the
 contribution under construction in `tiled_mod_product` need 4 bytes per element and lie below that maximum. The term
@@ -196,7 +214,7 @@ is `10 x prefix_rows x block_size` bytes, where `prefix_rows` is the largest row
 (`streamed_prefix_peak` of the engine: the wanted tuples of a level whose extension is wanted one level up, taken from
 the receipt). The retained v11 terms do not carry that count, so the figure above omits the term (hypothesis: the
 N = 19 receipt keeps `prefix_rows` small enough); the model reports that the stage stays inside 16 GiB for
-`prefix_rows <= 6,732`. The engine's preflight computes the term from the receipt before any product is built, lists it
+`prefix_rows <= 3,570`. The v15 preflight computes the term from the receipt before any product is built, lists it
 as `streamed_loop_arrays` in `preflight_terms` and refuses a run whose stage exceeds `--max-gb`, which settles the
 hypothesis for the N = 19 cell. Walk temporaries (`streamed_walk_temporaries_bytes`, 0.147 GiB) are in the figure.
 

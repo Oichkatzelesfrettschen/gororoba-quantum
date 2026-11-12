@@ -1389,8 +1389,7 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         }
 
     def compact_estimate(basis: list[Monomial], m: int = ngens) -> dict[str, int]:
-        """Peak selected arrays of the streamed/compact route for m generators (the character components once known);
-        no full generator operator is resident."""
+        """Selected-array bounds for m character components with a fitting cached operator or streamed layers."""
         layout = block_layout(basis)
         sizes = np.bincount(layout, minlength=len(blocks))
         widest = int(sizes.max())
