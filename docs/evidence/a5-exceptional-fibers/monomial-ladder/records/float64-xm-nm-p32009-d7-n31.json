@@ -1,0 +1,75 @@
+{
+ "slug": "xm-nm",
+ "prime": 32009,
+ "order": 31,
+ "generator_order": 3,
+ "engine": "float64-batched-echelon",
+ "batch": 1024,
+ "device": "cpu",
+ "threads": 24,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 13,
+   "A": 1335,
+   "B": 1320,
+   "r": 15,
+   "seconds": 2.2
+  },
+  {
+   "degree": 2,
+   "order": 16,
+   "A": 2226,
+   "B": 2175,
+   "r": 51,
+   "seconds": 8.0
+  },
+  {
+   "degree": 3,
+   "order": 19,
+   "A": 3402,
+   "B": 3280,
+   "r": 122,
+   "seconds": 27.5
+  },
+  {
+   "degree": 4,
+   "order": 22,
+   "A": 4855,
+   "B": 4615,
+   "r": 240,
+   "seconds": 89.3
+  },
+  {
+   "degree": 5,
+   "order": 25,
+   "A": 6555,
+   "B": 6138,
+   "r": 417,
+   "seconds": 856.0
+  },
+  {
+   "degree": 6,
+   "order": 28,
+   "A": 8450,
+   "B": 7785,
+   "r": 665,
+   "seconds": 1758.9
+  },
+  {
+   "degree": 7,
+   "order": 31,
+   "A": 10466,
+   "B": 9470,
+   "r": 996,
+   "seconds": 3469.1
+  }
+ ],
+ "timing": {
+  "generators": 0.9,
+  "maps": 23.5,
+  "products": 654.4,
+  "echelon": 2789.7
+ },
+ "seconds": 3469.1
+}

@@ -1,0 +1,5 @@
+RESULT J dim 5 mult 12
+RESULT kernel generators 16 dim 5 mult 12
+RESULT J inside kernel 1 kernel inside J 1
+RESULT components of J 1
+RESULT component 1 dim 5 equals kernel 1

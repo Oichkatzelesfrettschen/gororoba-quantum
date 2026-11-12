@@ -1,0 +1,6 @@
+RESULT minimal primes of K2 + N 2
+RESULT prime 1 dim 5 mult 11
+RESULT prime 2 dim 4 mult 4
+RESULT K2 + N radical 1
+RESULT intersection of the two components: dim 3 mult 1
+RESULT embedded quadric inside prime 1 1 inside prime 2 0

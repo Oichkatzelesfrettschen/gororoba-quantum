@@ -1,0 +1,17 @@
+// Census of k[y]/K2, case vb-p32029: Hilbert series, minimal primes, then the minimal resolution.
+option(redSB);
+LIB "primdec.lib";
+ring Y=32029,(y(1..10)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/vb_p2/d2/relations-upto-d2.rel")+";");
+ideal S=std(K);
+"RESULT K2 generators", size(K), "variables", 10, "dim", dim(S), "mult", mult(S), "h", hilb(S,2);
+list L=minAssChar(K);
+"RESULT minimal primes", size(L);
+int i; ideal P;
+for (i=1;i<=size(L);i++) { P=std(L[i]);
+  "RESULT prime", i, "dim", dim(P), "mult", mult(P), "linear forms", size(simplify(jet(P,1),2)), "minimal generators", size(minbase(P)), "h", hilb(P,2);
+  "RESULT prime", i, "inside K2", size(simplify(reduce(P,S),2))==0; }
+if (size(L)>1) { for (i=1;i<size(L);i++) { int j; for (j=i+1;j<=size(L);j++) { P=std(L[i]+L[j]); "RESULT intersection", i, j, "dim", dim(P), "mult", mult(P); } } }
+resolution R=mres(K,0);
+"RESULT betti of K2"; print(betti(R),"betti");
+quit;

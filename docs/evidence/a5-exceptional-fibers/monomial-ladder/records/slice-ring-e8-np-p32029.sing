@@ -1,0 +1,19 @@
+// Kernel of the parametrization of the E8-bar slice e8-np at p = 32029, compared with the header's J.
+ring r=32029,(t1,t2,t3,t4,t5,t6,t7,t8,t9),dp;
+number I=9115;
+ideal J=t4^2-t5^2-t6^2+t7^2,t1^2+t2^2-t3^2+t8^2-t9^2+2*t1-2*t3-2*t9,t6^2*t9-t7^2*t9-t4*t6+t6^2+t5*t7-t7^2,t5*t6*t9+t4*t7*t9-t4*t5+t5*t6+t4*t7-t6*t7,t4*t6*t9+t5*t7*t9-t5^2+t4*t6-t6^2+t5*t7,t3*t6*t9+t2*t7*t9-t2*t5-t1*t6+t3*t6+t2*t7+t6*t9,t2*t6*t9+t3*t7*t9-t2*t4+t2*t6-t1*t7+t3*t7+t7*t9,t3*t4*t9-t2*t5*t9-t1*t4+t3*t4-t2*t5+t2*t7+t4*t9,t2*t4*t9-t3*t5*t9+t2*t4+t1*t5-t3*t5-t2*t6-t5*t9,t3*t4*t6-t2*t5*t6-t1*t6^2+t2*t4*t7-t3*t5*t7+t1*t7^2+t4*t6-t6^2-t5*t7+t7^2,t3*t4*t5-t2*t5^2-t1*t5*t6-t1*t4*t7+t3*t6*t7+t2*t7^2+t4*t5-t5*t6-t4*t7+t6*t7,t2*t4*t5-t3*t5^2+t1*t4*t6-t3*t6^2+t1*t5*t7-t2*t6*t7-t5^2+t4*t6-t6^2+t5*t7,t2^2*t9^2-t3^2*t9^2+2*t2^2*t9+2*t1*t3*t9-2*t3^2*t9-2*t3*t9^2+t2^2+2*t1*t3-2*t3^2+t8^2+2*t1*t9-2*t3*t9-2*t9^2+2*t1-2*t3-2*t9,t2^2*t7*t9-t3^2*t7*t9+t2*t3*t4-t2^2*t5-t1*t2*t6+t2^2*t7+t1*t3*t7-t3^2*t7-2*t3*t7*t9+t2*t4-t2*t6+t1*t7-t3*t7-t7*t9,t2^2*t5*t9-t3^2*t5*t9+t1*t2*t4+t2^2*t5+t1*t3*t5-t3^2*t5-t2*t3*t6-t2^2*t7-2*t3*t5*t9+t2*t4+t1*t5-t3*t5-t2*t6-t5*t9,t2^2*t5^2-t3^2*t5^2+2*t1*t2*t5*t6-t2^2*t6^2+2*t1*t3*t5*t7-2*t2*t3*t6*t7-t3^2*t7^2-t6^2*t8^2+t7^2*t8^2-2*t3*t5^2+2*t2*t5*t6+2*t1*t5*t7+2*t3*t5*t7-2*t2*t6*t7-2*t3*t7^2-2*t5*t7*t9;
+LIB "primdec.lib";
+def R0=basering; ideal SJ=std(J);
+"RESULT J dim", dim(SJ), "mult", mult(SJ);
+ring G=32029,(qw,qr,qs,qz,qa,qb,qu,t1,t2,t3,t4,t5,t6,t7,t8,t9),(dp(7),dp(9));
+number I=9115; poly m=1+qw; poly A=((m^2+1)*qa-(m^2-1)*qz)/2;
+ideal Z=qu*m-1, qb^2-A*(A-qw*(qw+2))*qu^2, t1-(-(qw*(qw+2))*qa+(m^2+1)*qz+qw^2)*qu/2, t2-qa, t3-qz, t4-(m*qr+qs)/2, t5-(m*qr-qs)/2, t6-(m*qs+qr)/2, t7-(qr-m*qs)/2, t8+I*qb, t9+(-1)*qw^2*qu/2;
+ideal E=eliminate(Z,qw*qr*qs*qz*qa*qb*qu);
+setring R0;
+ideal K=std(imap(G,E));
+"RESULT kernel generators", size(K), "dim", dim(K), "mult", mult(K);
+"RESULT J inside kernel", size(simplify(reduce(J,K),2))==0, "kernel inside J", size(simplify(reduce(K,SJ),2))==0;
+list L=minAssGTZ(J);
+"RESULT components of J", size(L);
+int i; for(i=1;i<=size(L);i++){ "RESULT component", i, "dim", dim(std(L[i])), "equals kernel", size(simplify(reduce(L[i],K),2))==0 and size(simplify(reduce(K,std(L[i])),2))==0; }
+quit;

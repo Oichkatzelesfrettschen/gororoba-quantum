@@ -1,0 +1,12 @@
+option(redSB); LIB "primdec.lib";
+ring Y=32009,(y(1..10)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/runs/e8vb_a2/k2.rel")+";");
+ideal S=std(K);
+list L=minAssChar(K);
+ideal R=L[1]; int i; for(i=2;i<=size(L);i++){ R=intersect(R,L[i]); }
+R=std(R);
+"RESULT vb minimal primes", size(L), "radical inside K2", size(simplify(reduce(R,S),2))==0, "K2 inside radical", size(simplify(reduce(K,R),2))==0;
+"RESULT vb radical hilbert", hilb(R,2), "K2 hilbert", hilb(S,2);
+resolution F=mres(K,0); "RESULT vb projective dimension", size(F)-1;
+print(betti(F),"betti");
+quit;

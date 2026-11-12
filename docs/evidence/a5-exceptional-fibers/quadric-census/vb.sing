@@ -1,0 +1,10 @@
+option(redSB);
+ring Y=32009,(y(1..10)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/runs/e8vb_a2/k2.rel")+";");
+ideal S=std(K);
+"RESULT vb generators", size(K), "dim", dim(S), "mult", mult(S);
+ideal Q=std(quotient(S,maxideal(1)));
+"RESULT vb K2 : m equals K2 (saturated)", size(simplify(reduce(Q,S),2))==0;
+ideal Lin=maxideal(1); int j; ideal N;
+"RESULT vb hilbert numerator", hilb(S,2);
+quit;

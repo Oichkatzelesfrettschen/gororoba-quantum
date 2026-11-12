@@ -112,11 +112,9 @@ The census above is a statement about the affine cone k[y]/K2. `xm-nm-quadric-sa
 - By chart: the saturation of K2 at y_j equals P for j = 7, 8, 9, 11, 12, 13, 14 (reduced charts) and differs from P
   for j = 2, 3, 4, 10, 15 (the charts that meet the plane); the charts y1, y5, y6 are empty.
 
-Scope. These are properties of the quadric scheme V_+(K2), which contains the exceptional fiber
-E0 = Proj F(I) = V_+(L), L the full ideal of the fiber cone, K2 its degree-2 part. For the fiber cone itself: L
-holds no linear form (h_1 = 15) and contains K2, so y1, y5, y6 are nonzero nilpotents of F(I), and the affine fiber
-cone is nonreduced at both primes. Nonreducedness of the projective fiber E0 needs more: y1 y_j^k outside L for
-every k on a chart y_j that meets the plane. That holds as far as L = K2 is known degree by degree, and no record
-decides it in every degree, so the nonreducedness of E0 is open.
+From the quadric scheme to the exceptional fiber. The exact certificate of
+[monomial-ladder](../monomial-ladder/README.md) (A5-304, and A5-305 over Q(i)) gives L = K2 for the full ideal L of
+the fiber cone, so E0 = Proj F(I) = V_+(K2): the projective exceptional fiber is nonreduced along the plane above,
+reduced off it, and generically reduced of degree 12.
 
     Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/arcs-x-same/xm-nm-quadric-saturation-p32009.sing

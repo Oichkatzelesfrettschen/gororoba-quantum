@@ -1,0 +1,15 @@
+{
+ "kernel_generators": 16,
+ "kernel_dim": 5,
+ "kernel_mult": 12,
+ "j_dim": 5,
+ "j_mult": 12,
+ "check": "kernel",
+ "slug": "e8-nm",
+ "j_in_kernel": true,
+ "kernel_in_j": true,
+ "unused_variables": [],
+ "wall_seconds": 59.2,
+ "peak_rss_kib": 168732,
+ "verdict": "kernel_equals_j"
+}
