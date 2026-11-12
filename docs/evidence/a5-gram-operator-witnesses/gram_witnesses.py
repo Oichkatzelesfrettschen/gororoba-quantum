@@ -49,6 +49,7 @@ SOURCE_FILES = (
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
     "docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
     "docs/notes/topics/strata-gauss-bottleneck.md",
+    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json",
 )
 
 
@@ -664,7 +665,42 @@ def hardware_block_witness(case: tuple[tuple[int, int, int, int], int]) -> dict[
     }
 
 
-def claim_rows() -> list[dict[str, str]]:
+def validate_claim_definitions(definitions: Any, expected: set[str]) -> dict[str, Any]:
+    require(isinstance(definitions, list), "claim definitions must be a list")
+    mapping: dict[str, Any] = {}
+    for definition in definitions:
+        require(isinstance(definition, dict), "claim definition must be an object")
+        claim = definition.get("claim")
+        require(isinstance(claim, str), "claim definition needs a string ID")
+        require(claim not in mapping, f"duplicate claim definition: {claim}")
+        proposition = definition.get("proposition")
+        require(isinstance(proposition, str) and bool(proposition.strip()), f"claim definition {claim}: proposition")
+        source = definition.get("source")
+        require(isinstance(source, dict), f"claim definition {claim}: source")
+        for field in ("path", "locator"):
+            require(
+                isinstance(source.get(field), str) and bool(source[field].strip()),
+                f"claim definition {claim}: source {field}",
+            )
+        require((ROOT / source["path"]).is_file(), f"claim definition {claim}: source file absent")
+        mapping[claim] = definition
+    require(set(mapping) == expected, "claim definition coverage differs from the numbered verdicts")
+    return mapping
+
+
+def validate_validation_receipt(receipt: Path, witnesses: Path, expected_sha256: str) -> None:
+    payload = receipt.read_bytes()
+    require(hashlib.sha256(payload).hexdigest() == expected_sha256, "validation receipt SHA-256 differs")
+    record = json.loads(payload)
+    require(isinstance(record, dict), "validation receipt must be an object")
+    require(record.get("schema") == "a5-gram-operator-validation/1", "validation receipt schema differs")
+    require(
+        record.get("witnesses_sha256") == hashlib.sha256(witnesses.read_bytes()).hexdigest(),
+        "validation receipt names a stale witness digest",
+    )
+
+
+def claim_rows() -> list[dict[str, Any]]:
     families = {
         "basis": ("1.2", "2.2", "4.1"),
         "reduced_structure": ("0.1", "0.2"),
@@ -681,7 +717,7 @@ def claim_rows() -> list[dict[str, str]]:
         "hardware_blocks": ("9.1",),
         "associator": ("9.4",),
     }
-    rows = [
+    rows: list[dict[str, Any]] = [
         {
             "claim": claim,
             "verdict": "confirmed",
@@ -716,6 +752,11 @@ def claim_rows() -> list[dict[str, str]]:
         {"claim": claim, "verdict": "not_checked", "evidence": "README.md#scope", "scope": reason}
         for claim, reason in skipped.items()
     )
+    definitions = json.loads((HERE / "claim_definitions.json").read_text())
+    require(definitions.get("schema") == "a5-gram-claim-definitions/1", "claim definition schema differs")
+    mapping = validate_claim_definitions(definitions.get("claims"), {row["claim"] for row in rows})
+    for row in rows:
+        row.update(mapping[row["claim"]])
     return sorted(rows, key=lambda row: tuple(int(part) for part in row["claim"].split(".")))
 
 
@@ -823,8 +864,15 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    parser.add_argument("--validation-sha256", help="full validation receipt digest recorded by the replay gate")
     arguments = parser.parse_args()
     destination = HERE / "witnesses.json"
+    if arguments.check:
+        if arguments.validation_sha256 is None:
+            parser.error("--check requires --validation-sha256 from the replay gate")
+        validate_validation_receipt(HERE / "validation.json", destination, arguments.validation_sha256)
+    elif arguments.validation_sha256 is not None:
+        parser.error("--validation-sha256 applies to --check")
     encoded = json.dumps(build_result(), indent=2, sort_keys=True) + "\n"
     if arguments.write:
         destination.write_text(encoded)

@@ -5668,12 +5668,13 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check --validation-sha256 8b5153588821d80b6aba4b14478db566e75df91e4beb40182b58fff5b013ec48",
       "name": "core-a5-gram-operator-witnesses",
-      "seconds": 44.94,
+      "seconds": 31.16,
       "workers": "all",
       "replays": [
-        "docs/evidence/a5-gram-operator-witnesses/witnesses.json"
+        "docs/evidence/a5-gram-operator-witnesses/witnesses.json",
+        "docs/evidence/a5-gram-operator-witnesses/validation.json"
       ]
     }
   ],

@@ -398,3 +398,22 @@ the closest entry and say what changed.
 - Checkpoints: `summary.json`, `a5-k2-iso-direct.log`, an empty `out.log` per job.
 - End state: the kernel output pulled and kept under `working/distribute/out/`.
 - Outcome: both jobs timed out at 41,000.1 s with no result.
+
+### Exact Gram claim definitions and validation receipt
+
+- Question and falsifier: the 42 numbered Gram propositions receive tracked definitions and source locators while
+  retaining their exact arithmetic verdicts. A changed rank, spectrum, moment or attachment witness falsifies
+  arithmetic equivalence; a changed receipt or stale witness hash must fail receipt admission.
+- Formulation and host: the build host runs the pinned Python 3.14.7, FLINT rational matrices and SymPy Gaussian
+  arithmetic. Deterministic corpora and named operands consume no new random seed.
+- Parallelism and limits: two repository workers, native threads one, a separate 8 GiB scope with zero swap and
+  unlimited address space. The prior four-worker writer/checker walls of 33.81/26.01 seconds give two-worker
+  estimates 67.62/52.02 seconds. Writer/checker deadlines are 300/180 seconds, with 330/210-second scope backstops.
+  The existing acceptance scope uses 16 GiB; the combined caps fit the build host's physical memory.
+- Command and checkpoints: `gram_witnesses.py --write`, then `--check --validation-sha256 DIGEST`; the gate stores
+  the expected whole-receipt digest, the receipt binds the witness, and the witness binds its producer and claim
+  definitions. The exact witness stays float-free; receipt timings receive a metadata exemption because their
+  bytes are digest-checked rather than numerically replayed. GNU time retains per-process RSS and wall/CPU costs.
+- Outcome: the two-worker writer and checker exit 0 in 23.88/23.32 seconds, with GNU time maximum process RSS
+  81,680/81,632 KiB. The 15 bounded tests, pinned Ruff format/check, strict mypy, ledger check and all 1,194 Markdown
+  link checks pass. Historical timings remain separate from the exact witness arithmetic.

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import sys
 from pathlib import Path
 
@@ -66,3 +68,49 @@ def test_characteristic_polynomial_checks_gaussian_coefficients_before_realifica
     require(row["Q"] == "1 + 4*I")
     require(len(row["complex_characteristic_coefficients"]) == 16)
     require(row["quartic_coefficient_mutation_detected"] is True)
+
+
+def test_every_numbered_claim_carries_its_proposition_and_tracked_source() -> None:
+    rows = gram.claim_rows()
+    require(len(rows) == len({row["claim"] for row in rows}) == 42)
+    for row in rows:
+        require(bool(row["proposition"].strip()))
+        require(bool(row["source"]["locator"].strip()))
+        require((ROOT / row["source"]["path"]).is_file())
+
+
+@pytest.mark.parametrize("mutation", ["missing", "duplicate"])
+def test_claim_definitions_reject_incomplete_or_ambiguous_coverage(mutation: str) -> None:
+    definitions = json.loads((gram.HERE / "claim_definitions.json").read_text())["claims"]
+    expected = {row["claim"] for row in definitions}
+    if mutation == "missing":
+        definitions.pop()
+    else:
+        definitions.append(definitions[0])
+    with pytest.raises(ValueError, match="claim definition"):
+        gram.validate_claim_definitions(definitions, expected)
+
+
+@pytest.mark.parametrize("mutation", ["receipt", "witness", "schema", "valid"])
+def test_validation_receipt_binds_whole_bytes_schema_and_witness(tmp_path: Path, mutation: str) -> None:
+    witness = tmp_path / "witnesses.json"
+    witness.write_text("{}\n")
+    receipt = tmp_path / "validation.json"
+    record = {
+        "schema": "a5-gram-operator-validation/1",
+        "witnesses_sha256": hashlib.sha256(witness.read_bytes()).hexdigest(),
+        "measurements": {"check": {"wall_seconds": 1.25}},
+    }
+    if mutation == "schema":
+        record["schema"] = "unrecognized"
+    receipt.write_text(json.dumps(record))
+    expected_digest = hashlib.sha256(receipt.read_bytes()).hexdigest()
+    if mutation == "receipt":
+        receipt.write_text(receipt.read_text() + "\n")
+    elif mutation == "witness":
+        witness.write_text('{"changed":true}\n')
+    if mutation == "valid":
+        gram.validate_validation_receipt(receipt, witness, expected_digest)
+    else:
+        with pytest.raises(ValueError, match="validation receipt"):
+            gram.validate_validation_receipt(receipt, witness, expected_digest)

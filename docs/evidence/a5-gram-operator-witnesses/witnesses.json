@@ -1278,259 +1278,472 @@
     {
       "claim": "0.1",
       "evidence": "reduced_structure",
+      "proposition": "C_z is 15x15; bordered A(z,t) is 16x16",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)",
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "0.2",
       "evidence": "reduced_structure",
+      "proposition": "C_z^T = -C_z; C_z^dagger = -C_{conj z}; skew-Hermitian only for real z",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)",
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "0.3",
       "evidence": "reduced_structure.note_already_corrected",
+      "proposition": "The note states 16x16 and skew-Hermitian",
       "scope": "The tracked note already has the correct matrix dimension and transpose-skew domain.",
+      "source": {
+        "locator": "2. The 15 x 15 complex matrix C_z and the bordered matrix A(z,t)",
+        "path": "docs/notes/topics/strata-gauss-bottleneck.md"
+      },
       "verdict": "refuted"
     },
     {
       "claim": "1.1",
       "evidence": "README.md#scope",
+      "proposition": "The possible nullities of a nonzero real operand are {0} through dimension 8, {0,4} in dimension 16, and {0,4,8,12,16} in dimension 32.",
       "scope": "Complete real nullity classification is a published theorem; named attainment witnesses are computed.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "1.2",
       "evidence": "basis",
+      "proposition": "L_{(a,0)} = diag(L_a, R_a)",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "1.3",
       "evidence": "inverses",
+      "proposition": "L_a and R_a have identical Gram spectra, so k -> 2k",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "1.4",
       "evidence": "special_lifts",
+      "proposition": "(a, \u00b1i_n a) gives k + 2^n - 4; the sedenion nullity-4 element gives 8 by embedding and 16 by the special lift",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "1.5",
       "evidence": "two_support",
+      "proposition": "The 930-element two-support census gives {0,4,8,12} only and a larger census cannot repair that",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "1.6",
       "evidence": "README.md#scope",
+      "proposition": "The maximal locus is two copies of V_2(R^7); the partner sphere goes S^3 -> S^15",
       "scope": "Maximal-locus topology and partner spheres require the published geometric proofs.",
+      "source": {
+        "locator": "Primary statements used; Deductions used by the repository",
+        "path": "docs/notes/cayley_dickson_rank_topology_sources.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "2.1",
       "evidence": "inverses",
+      "proposition": "Inverse set = conj(a)/N + ker L_a, with a = e1+e10, x = e4-e15, ax = 0, and -a/2 and -a/2+x both two-sided inverses",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Results; Proofs",
+        "path": "docs/notes/topics/cd-one-sided-inverses.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "2.2",
       "evidence": "basis",
+      "proposition": "Real CD algebras have no nonzero nilpotents; complex C_z does",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Results; Proofs",
+        "path": "docs/notes/topics/cd-one-sided-inverses.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "3.1",
       "evidence": "cancellation",
+      "proposition": "Eligible xor patterns 42/630/6510; sign-cancelling 0/168/2520",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "3.2",
       "evidence": "cancellation",
+      "proposition": "chi survives every re-signing",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "3.3",
       "evidence": "cancellation",
+      "proposition": "Mod 2 the table erases sigma, leaving F2[(Z/2)^n]; the Fano incidence omits signs",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "3.4",
       "evidence": "README.md#scope",
+      "proposition": "The math/ torsion-free group-algebra theorem does not transfer; the Lean build exists",
       "scope": "The separate Lean project and the group-algebra theorem are outside this arithmetic replay.",
+      "source": {
+        "locator": "Zero products as fiber cancellation; The Fano plane on both sides; Boundaries",
+        "path": "docs/notes/topics/kaplansky-mechanisms-cayley-dickson.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "4.1",
       "evidence": "basis",
+      "proposition": "(M_a)_jj = \u2016a\u2016^2 and tr M = D\u2016a\u2016^2",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "4.2",
       "evidence": "gram_expansion",
+      "proposition": "M = \u2016a\u2016^2 I + sum a_i a_j (L_i^T L_j + L_j^T L_i)",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "4.3",
       "evidence": "two_support",
+      "proposition": "Spectrum of alpha e_i + beta e_j is {(a+b)^2 [n], (a-b)^2 [n], s [D-2n]}; tr M^2 = D s^2 + 8 n a^2 b^2; n = (tr M^2 - D)/2 at equal weights",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "4.4",
       "evidence": "two_support",
+      "proposition": "e1+e9 has nullity 0 and e1+e10 has nullity 8, and both have herald success 1/2 on every basis input",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "5.1",
       "evidence": "two_support",
+      "proposition": "P = I - 3M/2 + M^2/2 on spectrum {0,1,2}",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "5.2",
       "evidence": "projector",
+      "proposition": "The 32D witness has spectrum {0^16, 1^8, 2^4, 4^4}, traces 32/88/296, quadratic trace 28, cubic projector trace 16, P^2 = P, L P = 0",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "5.3",
       "evidence": "projector",
+      "proposition": "Degree = number of distinct positive eigenvalues",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "5.4",
+      "correction": "The predecessor proposed the identity input e0; e0 has equal moments and supplies no counterexample. The retained witness uses e1.",
       "evidence": "projector",
+      "proposition": "The square of tr(rho M) can differ from tr(rho M^2); the four-support Gram operand gives an exact counterexample at rho=|e1><e1|.",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Gram moments and complete projectors",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "6.1",
       "evidence": "reduced",
+      "proposition": "rank C_z, C_z^2, C_z^3 = 8, 1, 0 for e1+e18 (z_1 = 1, z_2 = i) and 6, 1, 0 for e1-e10+e18+e25 (z_1 = 1, z_10 = -1, z_2 = z_9 = i)",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Reduced ranks and congruence; Scope",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "6.2",
       "evidence": "reduced",
+      "proposition": "chi_C = lambda (lambda^2 + Q)^3 (lambda^4 + 2Q lambda^2 + F)^2, with F = Q^2 - 4 Delta",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Theorem 2; Theorem 4",
+        "path": "docs/evidence/a5-zero-divisor-strata/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "6.3",
+      "correction": "The signed doubly pure two-support corpus has 2*binomial(30,2)=870 elements; the predecessor count 812 is incorrect.",
       "evidence": "reduced",
+      "proposition": "For a doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Theorem 2; Theorem 4",
+        "path": "docs/evidence/a5-zero-divisor-strata/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "6.4",
       "evidence": "reduced",
+      "proposition": "Split-coordinate congruence preserves rank but not Jordan structure",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Reduced ranks and congruence; Scope",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "6.5",
       "evidence": "README.md#scope",
+      "proposition": "The missing invariant is the kernel filtration",
       "scope": "Selecting a complete invariant for attachments requires a classification beyond these power ranks.",
+      "source": {
+        "locator": "Reduced ranks and congruence; Scope",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "7.1",
       "evidence": "scalar",
+      "proposition": "M_{r+p} = r^2 I + M_p for p pure",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "7.2",
       "evidence": "phase",
+      "proposition": "With a coefficient phase, symmetric blocks give s \u00b1 2ab cos(theta) and skew blocks s \u00b1 2ab sin(theta)",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "7.3",
       "evidence": "phase",
+      "proposition": "Changing the second coefficient from 1 to i changes nullity from 0 to 4 for the octonion pair (e1,e2), from 12 to 4 for the pathion pair (e1,e18), and from 4 to 12 for the pathion pair (e1,e26).",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "7.4",
       "evidence": "README.md#scope",
+      "proposition": "An external coefficient phase differs from an input-state phase",
       "scope": "The experimental distinction between operator and input phase needs its declared encoding.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "7.5",
       "evidence": "gram_expansion",
+      "proposition": "Encoding scale: (L/k)^T (L/k) = M/k^2",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Coefficients, embeddings and phase",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "8.1",
       "evidence": "README.md#scope",
+      "proposition": "Kernel bundle xi + R^4 = R^8 and xi is nontrivial; a global projector exists while a global basis is obstructed",
       "scope": "Stable bundle equivalence and nontriviality require the cited topology argument.",
+      "source": {
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification",
+        "path": "docs/notes/annihilator_kernel_limits.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "8.2",
       "evidence": "kernel_limits",
+      "proposition": "At e1+e18 the endpoint nullity is 12. Same-derivative paths give three pairwise-orthogonal 4-planes spanning the kernel. The paths x_A..x_D give 8-planes meeting in 4-planes, with tr(P_A P_B) = 9/2",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification",
+        "path": "docs/notes/annihilator_kernel_limits.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "8.3",
       "evidence": "README.md#scope",
+      "proposition": "Transport and Berry holonomy are not established",
       "scope": "The retained acquisitions establish neither Berry transport nor holonomy.",
+      "source": {
+        "locator": "Same derivative and different limiting fibers; Complete kernel bundles and their transition maps; All-stage transport and remaining classification",
+        "path": "docs/notes/annihilator_kernel_limits.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "9.1",
       "evidence": "hardware_blocks",
+      "proposition": "p(psi) = psi^dagger B^dagger B psi / 16; bright levels 3/4 for (1,10,20,31) and (3+sqrt5)/8 for (1,8,18,27)",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor",
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "9.2",
       "evidence": "README.md#scope",
+      "proposition": "Retained readings 0.727/0.726/0.7495 and 0.649/0.658/0.642",
       "scope": "Calibrated provider readings are owned by their retained analyses; raw acquisitions are not replayed.",
+      "source": {
+        "locator": "Retained B12/C8 Gram-block success readings: 0.727/0.726/0.7495 and 0.649/0.658/0.642",
+        "path": "results/live/PATHION_KERNEL_MAP_FINDINGS.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "9.3",
       "evidence": "README.md#scope",
+      "proposition": "Ascella kernel slice 1/2 -> 0.513568, 0 -> 0.002622, 1 -> 0.998198; 26 successes, 9891 failures, 83 sentinel of 10000",
       "scope": "The Ascella acquisition and denominators belong to a5_photonic_scope; that analysis is not duplicated.",
+      "source": {
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor",
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "9.4",
       "evidence": "associator",
+      "proposition": "B -> UB leaves p unchanged; L_a L_b - L_ab = -[a,b,.]",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "source": {
+        "locator": "Existing photonic evidence; A5 coefficient and spectral decomposition; Scope and denominator successor",
+        "path": "docs/evidence/a5-photonic-crosschecks/README.md"
+      },
       "verdict": "confirmed"
     },
     {
       "claim": "9.5",
       "evidence": "README.md#scope",
+      "proposition": "Belenos variance 50 and 80 times binomial; 23 of 30 against 1; Ascella r = 0.9966",
       "scope": "Mesh variance and repeat correlations require the existing acquisition-level analyses.",
+      "source": {
+        "locator": "Claims describing Belenos variance and Ascella frozen-mesh repeat correlation; raw analysis remains separate",
+        "path": "docs/state/research_state.json"
+      },
       "verdict": "not_checked"
     },
     {
       "claim": "9.6",
       "evidence": "README.md#scope",
+      "proposition": "The source citations and line numbers supplied by the reconciliation review are accurate.",
       "scope": "External review citation line numbers are not scientific evidence or an input to the calculation.",
+      "source": {
+        "locator": "Scope: citation-line auditing lies outside the exact arithmetic replay",
+        "path": "docs/evidence/a5-gram-operator-witnesses/README.md"
+      },
       "verdict": "not_checked"
     }
   ],
-  "producer_sha256": "43301aef860366c0bf813fcfb40431b7f167c17d2a7df6f2afc96d7f57f83164",
+  "producer_sha256": "5d8f65541d7723a04382ff5a731d8054f6a929e9eb4f106d89a8f76d56ac29ce",
   "schema": "a5-gram-operator-witnesses/1",
   "sources_sha256": {
+    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "43e1ddaa8e8c41740e9bcb27ada275511bd8488391996041f6027910b4d4af8d",
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
     "docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py": "b23919697c9adfa9ccbd1ab5929af206d48ff604195c511699f3ff8dc3fd6cbb",
     "docs/notes/topics/strata-gauss-bottleneck.md": "91568d079ad628b64d42c48526b3762f4cf9d56306c19ed9edfa1acaf5b8e84f",

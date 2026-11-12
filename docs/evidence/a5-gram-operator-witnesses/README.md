@@ -154,6 +154,10 @@ matrix; scaling the output fails that control. The 32,768 ordered pathion basis 
 
 The JSON classifies 42 numbered claims: 30 confirmed with the stated coefficient identities or bounded witnesses,
 one refuted description of the tracked note, and eleven `not_checked` entries with reasons. The matrix checks
+carry their propositions and source locators from [claim_definitions.json](claim_definitions.json), whose digest
+the witness binds. Exact ID coverage and uniqueness are checked before the definitions join the verdicts.
+The definitions preserve the 870-element doubly pure corpus and the `e1` mixed-moment counterexample; the
+predecessor's 812-element count and `e0` prediction remain explicit corrections. The checks
 establish neither a new classification theorem nor a new physical primitive. The
 [rank and topology source ledger](../../notes/cayley_dickson_rank_topology_sources.md) already records the
 published nullity and maximal-locus results. Kernel-bundle nontriviality, stable equivalence, a separate Lean
@@ -165,8 +169,13 @@ ideal operator arithmetic and leaves those physical claims `not_checked`; it dup
 analysis nor provider calls. The exact input domain, coefficient choice, failed mutation and source binding in
 each record field determine the available inference.
 
-[validation.json](validation.json) binds the witness receipt to the pinned tool versions, bounded tests and measured
-writer/replay costs. Its RSS readings are maximum process readings; the total cgroup peak remains unmeasured.
+[validation.json](validation.json) records the witness digest, pinned tool versions, bounded tests and measured
+writer/replay costs. The on-demand gate pins the entire validation file by a literal SHA-256, and the checker
+validates that digest, the validation schema and the witness digest before recomputing the exact witnesses.
+The witness binds the producer and arithmetic sources; the validation file binds the witness; the gate binds the
+validation file. Platform timing floats receive a declared metadata exemption because the gate checks their bytes
+rather than recomputing historical timings. The RSS readings are maximum process readings; the total cgroup peak
+remains unmeasured.
 
 ## Replay
 
@@ -175,13 +184,15 @@ operands and finite enumerations, so the replay requires no random draw.
 
 ```sh
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHONDONTWRITEBYTECODE=1
-export GOROROBA_WORKERS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MALLOC_ARENA_MAX=2
+export GOROROBA_WORKERS=2 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MALLOC_ARENA_MAX=2
 systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 \
-  "$PYTHON" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check
+  timeout -k 10 180 "$PYTHON" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check \
+  --validation-sha256 8b5153588821d80b6aba4b14478db566e75df91e4beb40182b58fff5b013ec48 </dev/null
 sh ci/pr_checks.sh tests tests/test_a5_gram_operator_witnesses.py
 ```
 
 The bounded tests check the cubic filter, Gaussian Jordan partitions, phase swap, scalar shift, split-congruence
-counterexample and a genuinely Gaussian characteristic polynomial. Retained-record replay belongs to an
+counterexample, a genuinely Gaussian characteristic polynomial, complete claim definitions, and altered/stale
+validation-receipt rejection. The two-worker writer/checker measured 23.88/23.32 seconds. Retained-record replay belongs to an
 on-demand gate. A new checkable input that violates an asserted identity, an accepted missing-root filter or a
 changed source digest falsifies the corresponding record.
