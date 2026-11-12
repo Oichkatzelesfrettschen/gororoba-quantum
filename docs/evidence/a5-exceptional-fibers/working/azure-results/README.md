@@ -38,6 +38,8 @@ generators against 225 targets (`e8nm_d3/input.sing`, `gens.txt`, `targets.txt`,
 starts from in `previous-relations.rel`), run by `cg-run.sh` in a cgroup scope with no swap. It started
 2026-10-30T21:46:10Z and ended at its 129,600 s timeout (`e8nm_d3/exit` = 124, `all.done` 2026-11-01T09:46:11Z), so
 the tree carries inputs, the kernel log and a 30 s memory trace (`samples.tsv`, peak Singular RSS 49,760,004 KiB) and no
-normal forms; `out.log` records only the generator count, the target count and the products' build time (1,825 s).
+normal forms; `out.log` records only the generator count, the target count and the products' build time (1,825 s). `vm4/watch.log`
+and `vm4/watch.out` are the five-minute poll of the job and the copy, checksum and deallocation record that ended it
+(ledger A5-327).
 
 Each regenerates from the retained inputs in hours; the archives are the audit record of the runs as executed.

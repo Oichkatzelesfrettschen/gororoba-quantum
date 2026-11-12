@@ -1,0 +1,26 @@
+[{"stream_name":"stderr","time":0.707333729,"data":"/kaggle/src/script.py:8: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.707382744,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":37905.485964192,"data":"{\n"}
+,{"stream_name":"stdout","time":37905.486531348,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":37905.486547434,"data":" \"install\": {\n"}
+,{"stream_name":"stdout","time":37905.48655326,"data":"  \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":37905.48655892,"data":"  \"seconds\": 103.1\n"}
+,{"stream_name":"stdout","time":37905.486564474,"data":" },\n"}
+,{"stream_name":"stdout","time":37905.48656941,"data":" \"versions\": \"10.9\\n4.4.1\\n\",\n"}
+,{"stream_name":"stdout","time":37905.48657485,"data":" \"charts\": {\n"}
+,{"stream_name":"stdout","time":37905.486580278,"data":"  \"5\": {\n"}
+,{"stream_name":"stdout","time":37905.48658605,"data":"   \"normal\": {\n"}
+,{"stream_name":"stdout","time":37905.486591085,"data":"    \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":37905.486595937,"data":"    \"seconds\": 37800.0\n"}
+,{"stream_name":"stdout","time":37905.486600858,"data":"   }\n"}
+,{"stream_name":"stdout","time":37905.486605805,"data":"  }\n"}
+,{"stream_name":"stdout","time":37905.486611076,"data":" },\n"}
+,{"stream_name":"stdout","time":37905.486616808,"data":" \"total_seconds\": 37904.8\n"}
+,{"stream_name":"stdout","time":37905.486622238,"data":"}\n"}
+,{"stream_name":"stderr","time":37908.952003152,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":37908.952042517,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":37909.439882528,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":37909.439913917,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":37911.407743082,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":37912.850326793,"data":"[NbConvertApp] Writing 298849 bytes to __results__.html\n"}
+]

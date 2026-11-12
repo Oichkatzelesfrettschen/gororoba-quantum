@@ -1,0 +1,8 @@
+[{"stream_name":"stdout","time":3840.962006817,"data":"{\"label\": \"W8-\u003eN+ Rees elimination\", \"wheel\": \"passagemath-msolve==10.8.13\", \"command\": [\"-v\", \"2\", \"-t\", \"4\", \"-e\", \"1\", \"-g\", \"2\", \"-f\", \"/kaggle/working/input.ms\", \"-o\", \"/kaggle/working/gb.out\"], \"return_code\": -9, \"wall_seconds\": 3839.7, \"peak_child_rss_kib\": 31347320, \"mem_total_kib\": 32869296, \"cpu_count\": 4, \"machine\": \"x86_64\", \"python\": \"3.13.15\"}\n"}
+,{"stream_name":"stderr","time":3844.721053099,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3844.721094724,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3845.30609956,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3845.306145413,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3847.851470878,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3849.387233248,"data":"[NbConvertApp] Writing 484848 bytes to __results__.html\n"}
+]

@@ -82,3 +82,54 @@ Check without Singular: [arc_rank_check.py](../arc_rank_check.py) recomputes the
 dual-number power series in Python, with the arc rewritten from its formula, and reproduces every rank, the order
 of G and the vanishing of J; it shares no code with Singular and shares the series arithmetic and polynomial
 evaluator of `kernel-limits/plucker_limits.py` ([arc-rank-check.json](../arc-rank-check.json)).
+
+## Exact derivative of the normalization arc family (dominance witness, p = 32009)
+
+The first arc certificate of E8-bar -> VB used an interpolant of numerical Hensel lifts of the normalization (A5-015,
+`../working/build/arc/arc-report.md`). `../working/reviews/codex-reaudit/arc_derivative.py` replaces the interpolant by the lift
+itself, carried exactly in the dual numbers over F_32009 (three tangent directions, order s^2). At the parameter point
+(u1, u2, k) = (5, 7, 4) it selects 16 of the 303 normalization relations (`sel.pkl`), solves them for 16 dependent
+coordinates by Newton steps, and reports for each of the two Hensel branches (`tbase_branches.txt`):
+
+| branch | determinant of the 16 x 16 Jacobian | relations nonzero through s^2 | rank of the projective derivative of F | generators of P1, P2 nonzero at F |
+|---:|---:|---:|---:|---|
+| 0 | 13,369 | 0 of 303 | 3 | 7 of 7, 0 of 9 |
+| 1 | 6,976 | 0 of 303 | 3 | 7 of 7, 0 of 9 |
+
+Both determinants are nonzero modulo 32009, so the lift is unique at each branch. The rank 3 of the derivative of the
+limit vector F(u1, u2, k) with respect to (u1, u2, k) equals the number of parameters, so the image of the parameter
+space has dimension at least 3 at this point; F lies in V(P2) and outside V(P1) there, and V_+(P2) is irreducible of
+projective dimension 3, so the family is dominant onto it, as A5-015 states for the interpolant. The ideal of the 303
+relations in the 20 variables T(1) to T(12), h, t2 to t8 has dimension 4 (`normalization-dimension.json`, Singular,
+`dp`, 3.09 s recorded). This is a one-prime, one-point witness; it says nothing about characteristic 0. The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md)
+lists the witness as a result-missing record (section 3A, item 3).
+
+| File | Content |
+|---|---|
+| `dominance-witness/arc-derivative.jsonl` | one line per branch: determinant, residual count, F at the point, derivative rank, incidence counts |
+| `dominance-witness/normalization-dimension.json` | return code, seconds and Singular output of the dimension computation |
+| `../working/reviews/codex-reaudit/arc_derivative.py`, `normalization_dimension.py`, `audit.py` | the producers as run, with the scrub of `retain_working.sh` applied; both import `parse` and `rank` from `audit.py` beside them |
+
+Replay from the tracked inputs. The scrub of `retain_working.sh` left `ROOT` in `audit.py` as the relative path
+`~/Projects/gororoba-workspace/gororoba-quantum`, and both producers read `ROOT / 'docs/local/a5-failed-runs/build/arc'`
+(`norid.txt`, `G.txt`, `sel.pkl`, `tbase_branches.txt`, `primeP1.txt`, `primeP2.txt`), a tree that is not tracked. The
+same six files are tracked under `../working/build/arc/`. A working directory that holds a subdirectory of that literal
+name, with the `arc` leaf a link to the tracked directory, resolves every read without a change to the producers:
+
+```sh
+REPO=$PWD A5=docs/evidence/a5-exceptional-fibers      # from the repository root, with PYTHON and Singular set
+R=$(mktemp -d)
+mkdir -p "$R/~/Projects/gororoba-workspace/gororoba-quantum/docs/local/a5-failed-runs/build"
+ln -s "$REPO/$A5/working/build/arc" "$R/~/Projects/gororoba-workspace/gororoba-quantum/docs/local/a5-failed-runs/build/arc"
+cd "$R"
+"$PYTHON" "$REPO/$A5/working/reviews/codex-reaudit/arc_derivative.py" > arc-derivative.jsonl
+cmp arc-derivative.jsonl "$REPO/$A5/arcs-vb/dominance-witness/arc-derivative.jsonl"
+"$PYTHON" "$REPO/$A5/working/reviews/codex-reaudit/normalization_dimension.py"
+```
+
+With python-flint 0.9.0, `arc_derivative.py` wrote `arc-derivative.jsonl` byte for byte in 0.9 s, and
+`normalization_dimension.py` (Singular 4.4.1) printed `rc` 0 and `normalization_dim 4` in 0.7 s; its `seconds` field is
+a wall time and differs from the retained 3.09 s, so `normalization-dimension.json` reproduces in every field except
+that one. `normalization_dimension.py` writes `normalization-dimension.sing` into the working directory. The scripts
+are retained as run, in their compact style, under `working/`, which the `sources` gate of `ci/gates.json` leaves out of
+ruff and mypy.
