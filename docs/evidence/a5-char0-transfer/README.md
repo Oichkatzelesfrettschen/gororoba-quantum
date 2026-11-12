@@ -134,6 +134,51 @@ criterion and the rows it leaves standing are in
 [a5-char0-and-kernel-limits.md](../../notes/topics/a5-char0-and-kernel-limits.md); `truncation_check.py` (A5-249)
 remains a good-reduction computation and no longer stands for a lower bound.
 
+## The E8-bar fiber cones over Q(i): the arc-jet ranks are lower bounds (ledger A5-346)
+
+Over Q(i) the fiber cone F(I) of E8-bar -> N- and of E8-bar -> N+ satisfies h_d >= 21, 83, 225, 495, 952, 1666 and
+2718 for d = 1 to 7, the values that the arc-jet ranks prove modulo 32009 and 32029
+([arc-jets](../a5-exceptional-fibers/arc-jets/README.md), A5-335 and A5-339). [arc_jets_qi.py](arc_jets_qi.py)
+lifts the modular computation arc by arc instead of transferring a truncated rank, which is the step A5-316 refutes.
+
+The arcs of `jet_rank.py` are Phi(w, rho, sigma, e, zeta) with parameters that are polynomials in s with integer
+coefficients, and Phi divides only by 2, 1 + w, (1 + w)^2 + 1 and e, whose constant terms are prime to p. The same
+integers and formulas define an arc over Q(i) with coefficients in the localization of Z[i] at P = (p, i - r), and
+reduction modulo P carries it to the modular arc. Reduction can raise a valuation, and then the functionals over
+Q(i) differ from the modular ones; the counterexample of A5-316 has that shape (a coefficient divisible by both
+primes). The record excludes it exactly:
+
+1. J(Phi) = 0 over Q(i) as an identity in the five parameters: Singular substitutes Phi into the 16 generators of J
+   of the Q(i) producer (the one whose good reduction A5-247 checks) and reduces modulo the three inverse relations;
+   0 of 16 remain. The mutated map t9 + w leaves 15 of 16 nonzero. Every arc therefore lies on V(J) over Q(i) and
+   its functionals vanish on L_d.
+2. For each of the 3,000 arcs of each target (every arc of every retained record), exact arithmetic over Q(i) to
+   order v + e: every coefficient is P-integral and reduces to the modular one, e = min val t_i equals its modular
+   value, every coefficient of every G_j(t(s)) below s^v is exactly zero, and the coefficients of s^v to
+   s^(v + e - 1) reduce to the modular ones. The valuations are (v, e) = (4, 2) on 2,000 arcs and (10, 2) on
+   1,000, as in the modular records. The argument uses e and v alone. One coordinate does lose valuation: on arc
+   2996 of both headers at 32009 the coefficient of s^3 in t2 is nonzero over Q(i) and divisible by P, so t2 has
+   valuation 3 over Q(i) and 4 modulo p; e = 2 and v stand, each record lists the arc under
+   `coordinate_valuation_drops`, and the bound is unchanged. A drop of e or v would void the arc's functionals,
+   and the record's verdict fails on one.
+3. The matrix of functionals over Q(i) then has P-integral entries and reduces entry by entry to the modular
+   matrix, so its rank over Q(i) is at least the modular rank.
+
+| Fiber | Record | Primes | Arcs checked per prime | Lower bounds over Q(i) |
+|---|---|---|---|---|
+| E8-bar -> N- | [arc-jets-qi-e8-nm.json](arc-jets-qi-e8-nm.json) | 32009, 32029 | 3,000 | h_1..h_7 >= 21, 83, 225, 495, 952, 1666, 2718 |
+| E8-bar -> N+ | [arc-jets-qi-e8-np.json](arc-jets-qi-e8-np.json) | 32009, 32029 | 3,000 | the same |
+
+One prime suffices for each bound; the second is a replicate on other arc coefficients. The bound h_2 >= 83 says
+that the degree-2 relations of the cone over Q(i) span at most 231 - 83 = 148 dimensions, the number of quadrics of
+K2 modulo p. Equality h_d = HF(k[y]/K2, d) over Q(i) needs the converse, 148 quadrics in L over Q(i) that reduce to
+K2, which no record holds for E8-bar -> N+-; the lower bounds stand without it. Falsifier: an arc of a retained
+record whose exact e or v differs from the modular one, or a generator of J over Q(i) that Phi leaves nonzero.
+
+`arc_jets_qi.py --slug SLUG --write` produces a record and `--check` replays it (gate `core-a5-e8-arc-jets-qi`); one
+header takes 23 minutes of wall time on five workers with 170 MB of peak resident memory, measured on the build
+host with Singular 4.4.1.
+
 ## The plane where the two components of the reduced E8-bar quadric scheme meet
 
 `scripts/a5_e8_plane_certificate.py HEADER PRIME_ID --repo . --run --record FILE` writes a Singular script (global
