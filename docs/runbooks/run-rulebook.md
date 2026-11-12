@@ -475,3 +475,55 @@ the closest entry and say what changed.
   samples. All six source/input hashes match the launch case. The preceding canonical bytes were copied and
   hash-verified before the three fresh records replaced them; the regenerated acceptance summary and selected-array
   model both pass their read-only checks. The observed cached N = 16 route supplies no N = 19 fit guarantee.
+
+### E8-bar degree-seven fiber-cone ranks from arc jets
+
+- Question and decisive outcome: whether the degree-seven fiber-cone Hilbert function reaches 2,718 on the N- and
+  N+ headers over each of F_32009 and F_32029. Arc-jet rank 2,718 and the retained K2 membership establish equality
+  over that prime field. A lower plateau supplies a lower bound alone.
+- Formulation: reuse the certified arc parametrization and compute exact jet functionals on the 2,718 standard
+  monomials of K2. This avoids increasing the whole truncated local ideal. The degree-seven radical image has
+  dimension 2,514, leaving 204 nilpotent classes to test.
+- Host and tools: build host; Python 3.14.7, python-flint 0.9.0, Singular 4.4.1 for the basis exports. The retained
+  degree-six producer keeps its bytes; `jet_rank_v2.py` and `e8_target_basis_v2.py` import the retained arithmetic.
+- Launch and environment: `jet_rank_v2.py --target TARGET --degree 7 --arcs 6000 --step 100 --stall-steps 5 --write
+  RECORD`, under `systemd-run --user --scope -q -p MemoryMax=12G -p MemorySwapMax=0`, GNU `time -v` and
+  `timeout -k 10 3430`. `GOROROBA_WORKERS=4`, `MALLOC_ARENA_MAX=2` and all BLAS/OpenMP thread controls are 1;
+  `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`. Four independent header/prime cells run serially, with each
+  cell's arcs mapped through `parallel.py`.
+- Calibration: four fresh Singular exports and their replays agree in dimension and monomials. The successor
+  reproduces a retained degree-six record across 25 fields, reaching rank 1,666 from 1,800 arcs. A 200-arc
+  degree-seven slice reaches rank 400 in 26.08 s wall, at 92,944 kB maximum resident set and zero swaps.
+- Limits: the 6,000-arc budget extrapolates to 782.4 s before dense-rank growth; four times that estimate plus
+  300 s gives the 3,430-second deadline. The multiplier is a scheduling allowance, not a measured complexity
+  bound. The 12 GiB cgroup caps resident memory and page cache without constraining virtual address space.
+  Exit 124 or a cgroup kill marks execution failure and retains the last checkpoint; neither refutes a
+  mathematical equality. Five consecutive 100-arc steps with zero rank gain stop the cell as a lower bound.
+- Checkpoints and end state: each 100-arc step rewrites its target-specific JSON under
+  `docs/evidence/a5-exceptional-fibers/arc-jets/records/`; every arc carries J and K2 checks. The runner retains
+  per-cell resource receipts and terminal markers in local scratch. [The arc-jet evidence](../evidence/a5-exceptional-fibers/arc-jets/README.md)
+  carries the terminal ranks and sanitized resource table; provider jobs and uploads are outside this run.
+- Outcome: all four cells reach rank 2,718 from 3,000 arcs / 6,000 rows with every J and K2 check passing.
+  The terminal wall times and largest-process RSS values are in the linked evidence table; the equality is
+  finite-field evidence through degree seven, with characteristic zero and higher degrees open.
+
+### Exact Gram claim definitions and validation receipt
+
+- Question and falsifier: the 42 numbered Gram propositions receive tracked definitions and source locators while
+  retaining their exact arithmetic verdicts. A changed rank, spectrum, moment or attachment witness falsifies
+  arithmetic equivalence; a changed receipt or stale witness hash must fail receipt admission. The equal-weight
+  block-count check distinguishes the raw formula `(tr(M^2)-4*D)/8` from the unit-norm formula `(tr(M^2)-D)/2` on
+  both signs of all 591 pairs and rejects application of the normalized expression to the raw operator.
+- Formulation and host: the build host runs the pinned Python 3.14.7, FLINT rational matrices and SymPy Gaussian
+  arithmetic. Deterministic corpora and named operands consume no new random seed.
+- Parallelism and limits: two repository workers, native threads one, a separate 8 GiB scope with zero swap and
+  unlimited address space. The prior four-worker writer/checker walls of 33.81/26.01 seconds give two-worker
+  estimates 67.62/52.02 seconds. Writer/checker deadlines are 300/180 seconds, with 330/210-second scope backstops.
+  The existing acceptance scope uses 16 GiB; the combined caps fit the build host's physical memory.
+- Command and checkpoints: `gram_witnesses.py --write`, then `--check --validation-sha256 DIGEST`; the gate stores
+  the expected whole-receipt digest, the receipt binds the witness, and the witness binds its producer and claim
+  definitions. The exact witness stays float-free; receipt timings receive a metadata exemption because their
+  bytes are digest-checked rather than numerically replayed. GNU time retains per-process RSS and wall/CPU costs.
+- Outcome: the two-worker writer and checker exit 0 in 31.75/31.75 seconds, with GNU time maximum process RSS
+  81,876/82,032 KiB. The 32 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,195 Markdown
+  link checks pass. Historical timings remain separate from the exact witness arithmetic.

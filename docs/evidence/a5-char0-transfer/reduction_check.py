@@ -55,11 +55,15 @@ def _script(slug: str, root: int | None, prime: int, extra: bool = True) -> str:
     """The phase-one Singular script of a fiber; ``extra`` appends the standard basis of J and the reduction of G
     that ``_run`` reads, which a caller with its own computation leaves out."""
     spec = fiber_inputs.SPEC_BY_SLUG[slug]
-    task = fiber_inputs._task(spec.incidence)
-    data = basepoints._schur_coordinates(rees._base_task(task))
-    cache = fiber_inputs.primary_checkout() / fiber_inputs.LOCAL_BASE / "build" / "inputs" / "survivors"
-    candidates = fiber_inputs._candidates(task, data, cache)
-    body = rees._phase_one_script(root, task, data, tuple(candidates), prime=prime, embedding=False)
+    if spec.route == "nakayama":
+        # A nullity-12 boundary (E8-bar -> VB) takes its row and Schur data from nakayama_rees_fibers.
+        task, data, selected = fiber_inputs._nakayama_inputs(spec)
+    else:
+        task = fiber_inputs._task(spec.incidence)
+        data = basepoints._schur_coordinates(rees._base_task(task))
+        cache = fiber_inputs.primary_checkout() / fiber_inputs.LOCAL_BASE / "build" / "inputs" / "survivors"
+        selected = tuple(fiber_inputs._candidates(task, data, cache))
+    body = rees._phase_one_script(root, task, data, selected, prime=prime, embedding=False)
     return body.replace("\nquit;", "") + "\n" + ("\n".join(EXTRA) if extra else "") + "\nquit;\n"
 
 

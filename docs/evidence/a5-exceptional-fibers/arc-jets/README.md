@@ -1,12 +1,19 @@
-# Jets of formal arcs: h_6 of E8-bar -> N- and E8-bar -> N+
+# Jets of formal arcs: E8-bar fiber-cone ranks through degree seven
 
-[jet_rank.py](jet_rank.py) bounds the Hilbert function h_d of the fiber cone F(I) = k[y]/L of E8-bar -> N- and of
-E8-bar -> N+ from below by exact linear functionals that come from jets of formal arcs, and the rank of those
-functionals meets the upper bound HF(k[y]/K2, d) on each header in every degree from 1 to 6 at p = 32009 and in
-degrees 5 and 6 at p = 32029. With K2 inside L this gives h_6 = 1,666 and L_6 = (K2)_6 at both primes: the defining
-ideal of the exceptional fiber has no generator of degree 3 to 6 beyond the 148 quadrics, and all 140 nilpotent
-classes of (sqrt(K2)/K2)_6 survive in F(I). The N+ header carries its own arcs, its own K2 relation file and its own
-column bases, so the N+ ranks are measured on the N+ slice and not transported from N-.
+The exact arc-jet ranks of the exceptional fiber from the E8-bar stratum of the 32-dimensional Cayley-Dickson
+zero-divisor variety to the two signed boundary headers N- and N+ reach the quadratic-ideal upper bound in
+degrees one to seven at 32009 and degrees five to seven at 32029. [jet_rank.py](jet_rank.py) retains degrees one
+to six; its versioned successor
+[jet_rank_v2.py](jet_rank_v2.py) adds degree seven. Both headers reach rank 2,718 from 3,000 arcs at each of the
+primes 32009 and 32029, with every arc passing the slice-ideal and quadratic-relation checks. With K2 inside L,
+this gives h_7 = HF(k[y]/K2, 7) = 2,718 and L_7 = (K2)_7. All 204 degree-seven classes of sqrt(K2)/K2 survive in
+the fiber cone F(I) = k[y]/L. Together with the retained lower degrees, the defining ideal has no additional
+homogeneous generator in degrees three to seven beyond the 148 quadrics.
+
+Each header carries its own arcs, quadratic relation file and column bases. The N+ ranks are measured directly
+on N+; the N+ upper bound at 32009 uses the retained sign transport of the N- degree-two membership receipt
+(described below). Every equality holds over its named prime field. Characteristic zero and degrees eight and
+above remain open.
 
 ## Method
 
@@ -53,9 +60,12 @@ lists), and a rule exponential in the index alone puts all parameter points on o
 reweighted list reaches rank 722 at 600 arcs in degree 5 where the periodic rule had stopped at 516, and 952 at
 1,000 arcs.
 
-Columns are all monomials of degree d for d <= 4, and for d = 5 and 6 the standard monomials of K2 from the retained
-bases [../monomial-ladder/target-records/](../monomial-ladder/README.md) (sha256 in each record; the `e8np-*` bases
-come from `e8_target_rank.py prepare` on the N+ header and its K2 file). The functionals
+Columns are all monomials of degree d for d <= 4, and for d = 5, 6 and 7 the standard monomials of K2 from the retained
+bases [../monomial-ladder/target-records/](../monomial-ladder/README.md) (sha256 in each record; the degree-five and degree-six `e8np-*` bases
+come from `e8_target_rank.py prepare` on the N+ header and its K2 file). Degree-seven bases come from
+[the basis successor](../monomial-ladder/e8_target_basis_v2.py), which computes the radical dimension as the exact
+rank of the radical normal forms; four fresh Singular exports and their replays each give 2,718 standard
+monomials, radical dimension 2,514 and nilpotent dimension 204. The functionals
 vanish on K2_d, so their rank on a basis of k[y]_d / K2_d equals their rank on all of k[y]_d. A run adds arcs in
 steps, takes the rank over F_p with python-flint `nmod_mat`, rewrites the record after every step and stops at the
 first step whose rank reaches HF(k[y]/K2, d).
@@ -80,8 +90,13 @@ first step whose rank reaches HF(k[y]/K2, d).
 | E8-bar -> N+, p = 32009 | 6 | 1,800 | 3,600 | 1,666 | 1,526 | 1,666 | h_6 = 1,666 | [d6](records/e8np-p32009-d6.json) |
 | E8-bar -> N+, p = 32029 | 5 | 1,000 | 2,000 | 952 | 861 | 952 | h_5 = 952 | [d5](records/e8np-p32029-d5.json) |
 | E8-bar -> N+, p = 32029 | 6 | 1,800 | 3,600 | 1,666 | 1,526 | 1,666 | h_6 = 1,666 | [d6](records/e8np-p32029-d6.json) |
+| E8-bar -> N-, p = 32009 | 7 | 3,000 | 6,000 | 2,718 | 2,514 | 2,718 | h_7 = 2,718 | [d7](records/e8nm-p32009-d7.json) |
+| E8-bar -> N-, p = 32029 | 7 | 3,000 | 6,000 | 2,718 | 2,514 | 2,718 | h_7 = 2,718 | [d7](records/e8nm-p32029-d7.json) |
+| E8-bar -> N+, p = 32009 | 7 | 3,000 | 6,000 | 2,718 | 2,514 | 2,718 | h_7 = 2,718 | [d7](records/e8np-p32009-d7.json) |
+| E8-bar -> N+, p = 32029 | 7 | 3,000 | 6,000 | 2,718 | 2,514 | 2,718 | h_7 = 2,718 | [d7](records/e8np-p32029-d7.json) |
 
-The radical column is the fixed table `RADICAL_HF` that every record carries as `hf_radical`; the sign isomorphism
+For degrees one to six, the radical column is the fixed table `RADICAL_HF`; degree seven reads the measured
+radical-normal-form rank 2,514 from its basis. Every record carries the value as `hf_radical`. The sign isomorphism
 carries sqrt(K2) of N- onto sqrt(K2) of N+, so the table holds for both headers. The N+ records use the same
 SHA-256 coefficient rule as the N- records, so their arc parameters, step counts and checkpoint ranks coincide
 with the N- records, and the statement column of an N+ row at p = 32009 rests on K2 inside L by transport (above).
@@ -115,10 +130,46 @@ which four busy workers give. The degree-5 `--check` replay of the N- record at 
 The arc count needed grows with h_d: the rows at the stopping step are 1.78 to 2.41 per unit of rank in the N-
 records (about two). The wall time per arc is 155 to 189 ms in the N- records, nearly constant from degree 1 to degree 6 at four workers,
 and 148 to 261 ms in the N+ records (`elapsed_ms` divided by the arcs of each record), whose spread sits in the
-degree-6 cells run under the host load noted above (hypothesis). That is an observation over these sixteen records
+degree-6 cells run under the host load noted above (hypothesis). That is an observation over these sixteen v1 records
 and no law of the arc count: `compute` re-ranks the whole accumulated
 matrix after every step, so the rank part of the time grows faster than linearly in the arcs, and no record
 separates the arc generation from the rank computation.
+
+## Degree-seven controls and costs
+
+The digest-bound [basis producer](../monomial-ladder/e8_target_basis_v2.py) and its predecessor retain their bytes.
+The producer's `replay` subcommand is a historical interface; current basis admission uses
+[e8_target_basis_verify.py](../monomial-ladder/e8_target_basis_verify.py). The verifier checks the complete payload,
+registered field and coordinates, both producer digests and every bound data source before replaying the exact
+Singular export. The separate admission boundary preserves the basis-file identities that the arc records bind.
+
+The successor preserves the coefficient enumeration, arc parametrization, functionals and finite-field rank of
+`jet_rank.py`. Its `--control` replay reproduces the retained N- degree-six record at 32009 across 25 fields,
+including every arc and checkpoint: 1,800 arcs and rank 1,666. The four degree-seven records share all arc entries
+and checkpoint ranks between the two signs at the same prime, as the sign isomorphism predicts.
+
+Each degree-seven cell stops at the first 100-arc checkpoint that reaches 2,718. The 6,000-arc budget and the
+five-consecutive-zero-gain stall criterion remain unreached. A stalled record reports a lower bound, never a
+proof of an additional relation. The 200-arc calibration measures rank 400 in 26.08 s, with 92,944 kB maximum
+resident set. Its measured rate, a fourfold rank-growth allowance and 300 s of margin set a 3,430-second
+per-cell deadline. The exact launch review is in [the run rulebook](../../../runbooks/run-rulebook.md#e8-bar-degree-seven-fiber-cone-ranks-from-arc-jets).
+
+Four workers run each cell inside a 12 GiB resident-memory cgroup with swap disabled. Cells run serially on the
+shared build host. Python 3.14.7, python-flint 0.9.0 and Singular 4.4.1 serve the ranks and basis exports.
+The table reports the largest resident set of one process from GNU `time -v`, not the cgroup peak or the sum of
+all workers:
+
+| Header and prime | wall seconds | CPU seconds | maximum RSS kB | arcs | rank |
+|---|---|---|---|---|---|
+| N-, 32009 | 466.11 | 1451.40 | 887,368 | 3,000 | 2,718 |
+| N-, 32029 | 476.71 | 1502.60 | 887,980 | 3,000 | 2,718 |
+| N+, 32009 | 516.29 | 1623.77 | 887,564 | 3,000 | 2,718 |
+| N+, 32029 | 502.16 | 1588.34 | 887,096 | 3,000 | 2,718 |
+
+Every cell exits zero with all J and K2 checks passing. [resource-use.tsv](resource-use.tsv) retains the
+sanitized receipts for the eight basis export/replay runs, the degree-six control, calibration and four writes.
+The complete degree-seven `--check` replays are on-demand checks; the bounded tests exercise the successor's
+stopping rules, failed premises, record mutations and v1 control comparison without replaying a retained matrix.
 
 ## Replay
 
@@ -134,17 +185,33 @@ PYTHON=${PYTHON:-python3}
 `elapsed_ms`, the digests of the producer, the arc library, the header, the K2 relation file, `k2-hilbert.jsonl` and
 the column basis included. Start Python with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`.
 
+For degree seven, the versioned successor reuses the same exact arithmetic:
+
+```sh
+"$PYTHON" docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py \
+  docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d7-basis.json
+"$PYTHON" docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --target e8nm-p32009 --degree 7 \
+  --arcs 6000 --step 100 --stall-steps 5 \
+  --write docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d7.json
+"$PYTHON" docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py \
+  --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d7.json
+```
+
+The v2 record binds both rank producers and its own degree-seven basis. Its check compares every field except
+the elapsed time. The retained v1 producers and records keep their bytes.
+The optional-Singular basis gate skips unless `GOROROBA_SINGULAR_REQUIRED=1`; an opted-in verifier failure fails
+the gate. The direct verifier command above always requests the exact export replay.
+
 ## Falsifiers and what remains
 
 - A rank above HF(k[y]/K2, d), or an arc whose jet violates a quadric of K2 modulo s^2, refutes K2 inside L or the
   code; neither occurs.
 - An error in the valuation argument, for instance an arc with gamma(m_R) not inside (s^e); `jet_rows` takes e as
   the minimum valuation of the nine coordinates t_i, which generate m_R.
-- The equality h_6 = 1,666 rests on K2 inside L at each prime. The jets bound h_d from below only and cannot prove
+- The equalities through degree seven rest on K2 inside L at each prime. The jets bound h_d from below only and cannot prove
   h_d < HF(k[y]/K2, d); a plateau below the K2 value would have been a lower bound alone.
-- Open: generators of L in degree 7 and above (HF(k[y]/K2, 7) from `../k2-hilbert.jsonl` is the target of the same
-  run at d = 7, which needs the degree-7 standard monomials of K2), characteristic 0, and a degree-two receipt of
-  the N+ header at p = 32009 (the equality there rests on the N- receipt and the sign isomorphism).
+- Open: generators of L in degree eight and above, characteristic zero, and a direct degree-two membership
+  receipt of the N+ header at p = 32009 (the upper bound there rests on the N- receipt and the sign isomorphism).
 
 ## Routes that did not close degree 6
 

@@ -1,0 +1,13 @@
+{
+ "id": "probablyeric/a5-char0-w8-quadrics",
+ "title": "a5-char0-w8-quadrics",
+ "code_file": "a5-char0-w8-quadrics.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_internet": true,
+ "dataset_sources": [],
+ "kernel_sources": [],
+ "competition_sources": []
+}
