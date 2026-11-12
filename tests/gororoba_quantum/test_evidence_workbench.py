@@ -8,6 +8,7 @@ import math
 import sys
 import tempfile
 import unittest
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -196,6 +197,15 @@ class WorkbenchTests(unittest.TestCase):
             value["members"]["alpha"]["metadata"][field] = bad
             seal(value)
             with self.assertRaises(ValueError, msg=field):
+                ew.validate_acquisition(value)
+
+    def test_rank_exact_metadata_uses_the_page_grammar(self) -> None:
+        for field in ("parameter_exact", "alpha_exact", "unit_probe_norm_factor_exact"):
+            value, _ = fixture("rank-sector")
+            metadata = value["members"]["alpha"]["metadata"]
+            metadata[field] = str(float(Fraction(metadata[field])))
+            seal(value)
+            with self.assertRaisesRegex(ValueError, "not an integer or a/b", msg=field):
                 ew.validate_acquisition(value)
 
     def test_wide_mass_rejected(self) -> None:

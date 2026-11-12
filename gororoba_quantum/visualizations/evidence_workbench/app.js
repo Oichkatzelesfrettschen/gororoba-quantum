@@ -118,10 +118,10 @@
         note(sourceLabel()+' / outcome distribution',`${m.job_id} / ${m.pub} / ${state.member}; n=${m.shots}.`,
             'Observed counts use filled circles. Exact, preparation and execution-calibration predictions use separate markers. Model residual uncertainty is not supplied.');
         const width=m.counts.length,ax=axes([-.5,width-.5],[0,1.04],'Classical outcome index (retained register order)','Probability');
-        const layers=[['Observed',m.probabilities,0,false],...($('exact').checked?[['Exact',m.ideal_probabilities,1,true]]:[]),...($('preparation').checked?[['Preparation',m.preparation_model.probabilities,2,true]]:[]),...($('replay').checked&&m.execution_replay.status==='calibration_bound'?[['Execution replay',m.execution_replay.probabilities,3,true]]:[])];
+        const layers=[['Observed',m.probabilities,0,false],...($('exact').checked?[['Exact',m.ideal_probabilities,1,true]]:[]),...($('preparation').checked?[['Preparation',m.preparation_model.probabilities,2,true]]:[]),...($('replay').checked&&m.execution_replay?.status==='calibration_bound'&&Array.isArray(m.execution_replay.probabilities)?[['Execution replay',m.execution_replay.probabilities,3,true]]:[])];
         state.index=Math.min(state.index,width-1);for(const [label,values,shape,open] of layers)values.forEach((p,i)=>{const e=marker(ax.px(i),ax.py(p),palette().colors[shape],shape,open,label==='Observed'&&i===state.index,()=>selectIndex(i));e.append(make('title',{},`${label}; outcome ${i}; ${p}`));});
         renderedRows=m.counts.map((k,i)=>({outcome:i,count:k,probability:k/m.shots}));
-        table(['Outcome bits','Count','Observed','Exact','Preparation','Execution replay'],m.counts.map((k,i)=>[i.toString(2).padStart(Math.log2(width),'0'),k,k/m.shots,m.ideal_probabilities[i],m.preparation_model.probabilities[i],m.execution_replay.probabilities?.[i]??null]),selectIndex);
+        table(['Outcome bits','Count','Observed','Exact','Preparation','Execution replay'],m.counts.map((k,i)=>[i.toString(2).padStart(Math.log2(width),'0'),k,k/m.shots,m.ideal_probabilities[i],m.preparation_model.probabilities[i],m.execution_replay?.probabilities?.[i]??null]),selectIndex);
         inspect(state.member,{...m,selected_outcome:state.index,selected_count:m.counts[state.index],verification:a.verification});
     }
     function blocks(){

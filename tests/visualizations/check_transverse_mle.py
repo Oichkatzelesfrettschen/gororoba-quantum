@@ -75,7 +75,11 @@ def check(math_source: Path) -> dict[str, Any]:
         if not optimum.success:
             raise ValueError("independent optimizer did not converge")
         best = min(float(optimum.fun), objective(0), objective(math.pi / 2))
-        discrepancy = abs(value["logLikelihood"] + best)
+        # The likelihood is evaluated at the returned coordinates; the reported field must agree with it.
+        attained = log_likelihood(kx, nx, value["x"]) + log_likelihood(ky, ny, value["y"])
+        if abs(value["logLikelihood"] - attained) > 1e-8:
+            raise ValueError(f"reported likelihood differs from the returned coordinates for counts {counts}")
+        discrepancy = abs(attained + best)
         maximum = max(maximum, discrepancy)
         if discrepancy > 1e-8 or math.hypot(value["x"], value["y"]) > 1 + 1e-14:
             raise ValueError(f"likelihood or positivity mismatch for counts {counts}")

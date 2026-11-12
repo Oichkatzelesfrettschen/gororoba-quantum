@@ -34,6 +34,8 @@ MAX_RAW_SHOTS = 2_000_000
 # members by role, sector and probe, so each must be present.
 RANK_PARAMETERS = frozenset(Fraction(v) for v in ("0", "1/2", "1", "3/2", "2"))
 RANK_SECTORS = 8
+# The page parses exact metadata as an integer or numerator/denominator; Fraction also reads decimals, which it rejects.
+EXACT_RATIONAL = re.compile(r"[+-]?[0-9]+(?:/[0-9]+)?")
 PROBABILITY_ROUNDING = 0.5e-6
 MAX_MASS_ERROR = 1e-5
 
@@ -224,7 +226,9 @@ def _validate_member(task: tuple[str, Any, str]) -> None:
             "unnormalized_probe_norm_factor_exact",
             "ideal_success_exact",
         ):
-            require(isinstance(metadata.get(field), str) and len(metadata[field]) <= 128, "invalid exact norm metadata")
+            text = metadata.get(field)
+            require(isinstance(text, str) and len(text) <= 128, "invalid exact norm metadata")
+            require(EXACT_RATIONAL.fullmatch(text) is not None, "exact norm metadata is not an integer or a/b")
         require(metadata.get("kind") == family, "invalid rank kind")
         require(metadata.get("role") in ("packed", "isolated"), "invalid rank role")
         integer(metadata.get("execution_row"), "execution row")

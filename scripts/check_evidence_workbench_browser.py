@@ -87,7 +87,9 @@ def main() -> int:
             before = page.evaluate("EvidenceWorkbench.state.index")
             page.keyboard.press("ArrowRight")
             after = page.evaluate("EvidenceWorkbench.state.index")
-            check(after != before, "keyboard_record_selection")
+            # With one record the selection wraps onto itself.
+            single = page.evaluate("EvidenceWorkbench.ramseyRows().length") == 1
+            check(after == before if single else after != before, "keyboard_record_selection")
             page.click("#nextDelay")
             check(
                 page.evaluate(
