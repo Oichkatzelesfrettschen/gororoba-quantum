@@ -2,7 +2,7 @@ F.FF                                                                     [100%]
 =================================== FAILURES ===================================
 _________ test_capture_rejects_private_source_names_before_publication _________
 
-tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-303/test_capture_rejects_private_s0')
+tmp_path = PosixPath('${TEMP}/pytest-of-${USER}/pytest-303/test_capture_rejects_private_s0')
 
     def test_capture_rejects_private_source_names_before_publication(tmp_path: Path) -> None:
         source = tmp_path / "research"
@@ -18,7 +18,7 @@ tests/scripts/test_quantum_artifact_retention.py:250: Failed
 artifact retention: 1 source identities, 1 unique retained captures
 ______________ test_capture_rejects_private_archive_member_names _______________
 
-tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-303/test_capture_rejects_private_a0')
+tmp_path = PosixPath('${TEMP}/pytest-of-${USER}/pytest-303/test_capture_rejects_private_a0')
 
     def test_capture_rejects_private_archive_member_names(tmp_path: Path) -> None:
         source = tmp_path / "research.tar"
@@ -36,7 +36,7 @@ tests/scripts/test_quantum_artifact_retention.py:273: Failed
 artifact retention: 2 source identities, 1 unique retained captures
 __ test_verifier_rejects_private_source_metadata_with_matching_inventory_hash __
 
-tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-303/test_verifier_rejects_private_0')
+tmp_path = PosixPath('${TEMP}/pytest-of-${USER}/pytest-303/test_verifier_rejects_private_0')
 
     def test_verifier_rejects_private_source_metadata_with_matching_inventory_hash(tmp_path: Path) -> None:
         source = tmp_path / "result.txt"

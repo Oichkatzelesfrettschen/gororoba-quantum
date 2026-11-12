@@ -11,6 +11,17 @@ from pathlib import Path
 import pytest
 from quantum_artifact_retention import PRIVATE_KEYS, ROOT, capture, check, check_tree, digest, sanitize
 
+# Built from its segments so that no tracked file spells a home path.
+HOME_PROJECT = "/".join(("", "home", "alice", "project"))
+
+
+def test_sanitizer_replaces_the_pytest_temporary_directory_user() -> None:
+    result = sanitize(b"tmp_path = PosixPath('/tmp/pytest-of-alice/pytest-3/test_x0')\n")
+    if b"alice" in result or b"pytest-of-${USER}/pytest-3" not in result:
+        raise AssertionError("the pytest temporary directory still names its user")
+    if sanitize(result) != result:
+        raise AssertionError("the pytest directory rule is not idempotent")
+
 
 def test_sanitizer_removes_identifiers_and_local_paths() -> None:
     value = json.dumps(
@@ -18,7 +29,7 @@ def test_sanitizer_removes_identifiers_and_local_paths() -> None:
             "token_value": "secret-value",
             "user_id": 42,
             "job_id": "public-job",
-            "text": "/home/alice/project /tmp/example Bearer secret-token alice@example.org",
+            "text": f"{HOME_PROJECT} /tmp/example Bearer secret-token alice@example.org",
         }
     )
     result = sanitize(value.encode())

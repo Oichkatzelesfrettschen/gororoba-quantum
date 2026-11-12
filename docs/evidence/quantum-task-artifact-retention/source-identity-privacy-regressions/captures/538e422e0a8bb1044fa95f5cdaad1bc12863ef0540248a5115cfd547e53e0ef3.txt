@@ -2,7 +2,7 @@ F.                                                                       [100%]
 =================================== FAILURES ===================================
 _________ test_capture_rejects_private_source_names_before_publication _________
 
-tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-301/test_capture_rejects_private_s0')
+tmp_path = PosixPath('${TEMP}/pytest-of-${USER}/pytest-301/test_capture_rejects_private_s0')
 
     def test_capture_rejects_private_source_names_before_publication(tmp_path: Path) -> None:
         source = tmp_path / "research"
