@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import contextlib
+import errno
 import importlib.util
 import json
 import os
@@ -400,3 +401,23 @@ def test_timeout_exits_124_and_terminates_the_group(launch: Launch, ignore_term:
     assert not any(_alive(pid) for pid in pids)
     record = json.loads(output.with_suffix(".resources.json").read_text())
     assert (record["termination"], record["timeout_seconds"], record["runner_exit"]) == ("timeout", 0.5, 124)
+
+
+def test_process_group_rss_skips_a_member_that_exits_during_the_scan(monkeypatch: pytest.MonkeyPatch) -> None:
+    """procfs raises ESRCH on a read of a process that exited after the directory listing named it."""
+    own = f"/proc/{os.getpid()}/stat"
+    original_read_text = rank_cell.Path.read_text
+    refused: list[str] = []
+
+    def read_text(path: Path, *args: object, **kwargs: object) -> str:
+        if str(path) == own:
+            refused.append(own)
+            raise ProcessLookupError(errno.ESRCH, "No such process")
+        return original_read_text(path, *args, **kwargs)
+
+    monkeypatch.setattr(rank_cell.Path, "read_text", read_text)
+    resident, count = rank_cell.process_group_rss(os.getpgid(0))
+
+    assert refused == [own]
+    assert resident >= 0
+    assert count >= 0

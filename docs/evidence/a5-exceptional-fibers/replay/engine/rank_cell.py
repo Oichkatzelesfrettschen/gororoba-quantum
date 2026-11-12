@@ -189,7 +189,8 @@ def process_group_rss(pgid: int) -> tuple[int, int]:
             if int(fields[2]) != pgid:
                 continue
             rss_pages = int((entry / "statm").read_text().split()[1])
-        except (FileNotFoundError, PermissionError, ValueError, IndexError):
+        except (FileNotFoundError, ProcessLookupError, PermissionError, ValueError, IndexError):
+            # procfs answers ESRCH when the process exits between the directory listing and the read.
             continue
         resident += rss_pages * pages
         count += 1
