@@ -3819,6 +3819,51 @@
       "retrieved_at_utc": "2026-11-07T17:23:53+00:00",
       "reading_scope": "Hofmann 2005, Physical Review Letters 94, 160504: bibliographic identity",
       "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/casimir-warp-primary-sources.md",
+      "url": "https://link.springer.com/article/10.1140/epjc/s10052-021-09484-z",
+      "retrieved_at_utc": "2026-11-11T20:46:24.882213+00:00",
+      "sha256": "7212d7a1f4d2d07c708d7254625a4feadcb47bd43271248d6e60495800efd6a9",
+      "bytes": 355078,
+      "reading_scope": "Publisher article: abstract; sections 1, 3 and 4; figures 2, 7, 9 and 10; conclusion and data statement. Numerical contour comparison and proposed experiment, not measured spacetime curvature.",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/casimir-warp-primary-sources.md",
+      "url": "https://api.crossref.org/works/10.1088/1361-6382/ae237a",
+      "retrieved_at_utc": "2026-11-11T20:44:53.909933+00:00",
+      "sha256": "5a84d285ce4c6bf9a5b79cf15d40355a3439819f149bf2b6abc163e6a5128fc0",
+      "bytes": 14708,
+      "reading_scope": "Publisher-deposited Crossref bibliographic metadata, publication dates, license metadata and abstract only; the receipt does not bind the full article body.",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/casimir-warp-primary-sources.md",
+      "url": "https://arxiv.org/html/gr-qc/0009013v1",
+      "retrieved_at_utc": "2026-11-11T20:44:05.956220+00:00",
+      "sha256": "7e61f9ec3c638caf7a7618b7d276ad3b62b2cc2153a026edc0ea0565b74b2ebd",
+      "bytes": 92784,
+      "reading_scope": "Exact arXiv v1 HTML: abstract, ADM metric equations (1)-(8), Eulerian observer and energy-density equations (18)-(19), and concluding energy-condition discussion. Journal year 1994 differs from arXiv posting year 2000.",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/casimir-warp-primary-sources.md",
+      "url": "https://arxiv.org/html/quant-ph/0605141v1",
+      "retrieved_at_utc": "2026-11-11T20:44:06.568194+00:00",
+      "sha256": "4523e8eb599c6ef7fe08b3b71bb7e3b8d9b2a08b23ce0a53cb218d613e7eaf72",
+      "bytes": 302002,
+      "reading_scope": "Exact arXiv v1 HTML: abstract; sections 2.1 and 2.2, equations (11)-(15), footnote 3 on static effective-action versus local interaction density; section 3.1.2 two-body intersection criterion.",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/casimir-warp-primary-sources.md",
+      "url": "https://arxiv.org/html/1509.03509v1",
+      "retrieved_at_utc": "2026-11-11T20:44:06.380202+00:00",
+      "sha256": "80ea88392586cced398ed5461d7698cb1b639f6fbd67b2e15a53df42e3ded89b",
+      "bytes": 694775,
+      "reading_scope": "Exact arXiv v1 HTML: abstract; section II point-split Green-function and common-point worldline construction; section V local-operator conclusions and statistical versus discretization errors. Later HTML conversion dates are not publication dates.",
+      "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -15527,6 +15572,34 @@
       "local_cache_path": "docs/local_source_cache/quant-ph-0409083v3.pdf",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/0908.0022v2",
+      "note": "docs/notes/papers/0908.0022.md",
+      "audited_at_utc": "2026-11-11T21:07:03+00:00",
+      "status": "external_only",
+      "sha256": "bee79f6c25ebd54049935591742ccdcbcc1c7fc5ca5b4776a8395187a3631e7c",
+      "bytes": 139566,
+      "pages": 10,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "bee79f6c25ebd54049935591742ccdcbcc1c7fc5ca5b4776a8395187a3631e7c",
+        "verified_at_utc": "2026-11-11T21:07:03+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/0908.0022v2",
+        "evidence_sha256": "2f60a9b2cdb5a153c564892d8a37e785e0ed24a90a08adbd9e07ae8c923c816d",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page; hash of the raw response, without retaining its abstract text",
+        "reading_scope": "Exact-version identity and license metadata; operative grant names arXiv as recipient. The paper note records the mathematical reading scope.",
+        "evidence_summary": "Manual external-only audit: the exact-version page links the arXiv nonexclusive distribution grant. That grant supplies no downstream rehosting permission. No reading copy, transcription or abstract-page capture is admitted."
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/0908.0022v2.pdf",
+      "local_cache_path": "docs/local_source_cache/0908.0022v2.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The inspected grant authorizes arXiv distribution and supplies no downstream rehosting permission."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",

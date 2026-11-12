@@ -1,0 +1,24 @@
+'use strict';
+const assert=require('node:assert/strict');
+const M=require('../../gororoba_quantum/visualizations/evidence_workbench/math.js');
+let checks=0;
+function test(name,fn){fn();checks++;console.log('PASS '+name);}
+test('zero transverse interval leaves Z unidentified',()=>assert.deepEqual(M.blochRegion([0,0],[0,0]).z,[-1,1]));
+test('empty positivity intersection',()=>assert.equal(M.blochRegion([.9,1],[.9,1]).empty,true));
+test('outside disk raw point is not clipped',()=>assert.equal(M.completions(1,-.025390625),null));
+test('invalid count types',()=>assert.throws(()=>M.simultaneous(true,10,2)));
+test('finite safe counts',()=>assert.throws(()=>M.simultaneous(1,Infinity,2)));
+test('simultaneous fixed family',()=>assert.ok(Math.abs(M.simultaneous(512,1024,52)[1]-.1221561114790031)<1e-14));
+test('invalid interval',()=>assert.throws(()=>M.blochRegion([.5,.2],[0,0])));
+test('MLE unchanged interior',()=>assert.deepEqual([M.constrainedXY(6,10,7,10).x,M.constrainedXY(6,10,7,10).y,M.constrainedXY(6,10,7,10).z],[.2-5.551115123125783e-17,.4-1.1102230246251565e-16,null]));
+test('symmetric boundary MLE',()=>{const q=M.constrainedXY(10,10,10,10);assert.ok(Math.abs(q.x-Math.SQRT1_2)<1e-14);assert.ok(Math.abs(q.y-Math.SQRT1_2)<1e-14);assert.equal(q.z,null);});
+test('raw boundary remains valid',()=>assert.equal(M.constrainedXY(10,10,5,10).changed,false));
+test('raw above disk preserved separately',()=>{const q=M.constrainedXY(1024,1024,499,1024);assert.equal(q.changed,true);assert.ok(Math.hypot(q.x,q.y)<=1+1e-15);assert.equal(q.z,null);});
+test('unequal-shot optimum is not radial clipping',()=>{const q=M.constrainedXY(100,100,10,10);assert.ok(q.x>q.y);assert.ok(Math.abs(Math.hypot(q.x,q.y)-1)<1e-14);});
+test('quadrant symmetry',()=>{const a=M.constrainedXY(20,20,10,10),b=M.constrainedXY(0,20,0,10);assert.ok(Math.abs(a.x+b.x)<1e-14);assert.ok(Math.abs(a.y+b.y)<1e-14);});
+test('exact rational norm',()=>assert.equal(M.normFactor({unit_probe_norm_factor_exact:'25/4'},'unit'),6.25));
+test('rational bad denominator',()=>assert.throws(()=>M.fraction('1/0')));
+test('CSV formula text escaped',()=>assert.equal(M.safeCSV('=1+1'),'"\'=1+1"'));
+test('CSV numerical negative not escaped',()=>assert.equal(M.safeCSV(-.5),'"-0.5"'));
+test('orthographic rotation preserves norm',()=>{const v=M.rotate([.2,.4,.7],.5,-.7);assert.ok(Math.abs(Math.hypot(...v)-Math.hypot(.2,.4,.7))<1e-14);});
+console.log(JSON.stringify({checks,status:'passed'}));

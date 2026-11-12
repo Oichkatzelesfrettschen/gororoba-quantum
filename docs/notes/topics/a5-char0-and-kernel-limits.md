@@ -47,27 +47,59 @@ remain.
      several primes, reconstruct them over Q(i), and check q(G) = sum a_k J_k + sum b x P as a polynomial identity. Rank is lower semicontinuous under reduction, so a Q(i)
      space of relations reducing onto K2 mod p has dimension at least that of K2 mod p, which gives h_d over Q(i)
      at most HF(k[y]/K2 mod p, d), the certified value, in every degree K2 generates.
-  3. **Lower bound over Q(i):** the quotient in which the truncated rank is computed, k[t]/(J + m^N) at the closing
-     N, reduces well: the reduced standard basis of J + m^N over Q(i) is p-integral and reduces to the modular one.
-     Good reduction of J alone does not give this, since membership cofactors can carry p in denominators. With it,
-     a set of degree-d classes independent modulo p is independent over Q(i), so h_d over Q(i) is at least r_N.
-  Where checks 2 and 3 both pass, each certified h_d holds over Q(i), in the following form.
+  3. **Lower bound over Q(i), repaired criterion:** good reduction of the
+     ambient quotient J + m^N does NOT by itself transfer truncated fiber ranks.
+     The computed quantity is a rank difference
+     r_N(d) = rank([W_N | P_d]) - rank(W_N), where W_N is the image of
+     m I^d in the truncated ambient space, and P_d denotes the columns from
+     I^d. Specialization can lower BOTH ranks; their difference need not be
+     lower semicontinuous. The ideal under "Failure mode" below is an exact
+     counterexample at both 32009 and 32029 with the same degree-2 relation space.
 
-  **Proposition (one pair, one degree d, one good prime p).** Fix the retained header (its J and G, sha256 recorded in
-  the certificate), the retained relation file K2, and the closing order N of the certificate, with
-  r_N = HF(k[y]/K2 mod p, d). Let R be Z[i] localized at the prime (p, i - r), with residue field F_p. Suppose (a) J and
-  G are defined over R and reduce to the header (check 1), (b) a matrix Q over R whose rows span the Q(i) degree-2
-  relations reduces to a matrix whose rows span K2 mod p (check 2), and (c) the reduced standard basis of J + m^N is
-  defined over R and reduces to the header's (check 3). The degree-d monomial-multiple matrix of Q has rank over
-  Q(i) at least its rank modulo p, so h_d over Q(i) is at most HF(k[y]/K2 mod p, d). The truncated-rank matrix of
-  degree d in R[t]/(J + m^N) reduces to the modular one by (a) and (c), and a nonzero modular minor stays nonzero over
-  Q(i), so h_d over Q(i) is at least r_N. The bounds are equal. The statement covers that d only; every degree needs
-  its own N, radicality and component statements (W8) are separate, and no part of it touches the real limit set. W8's all-degree proof additionally needs the
-  radicality of K2 and the decomposition V(K2) = C20 cup C30 over Q(i), each a Singular computation over (0, i) of the
-  kind A5-062 ran modulo p.
-- **Falsifier of this route:** a split prime dividing a denominator of the Q(i) basis of J or of J + m^N (bad
-  reduction; a third split prime then replaces it), a Q(i) relation space of degree 2 whose dimension differs from
-  that of K2 mod p, or one whose reduction differs from K2 mod p.
+     **Correct finite-matrix transfer gate.** Establish a common integral
+     truncated ambient matrix model, compatible source-generator and column
+     reduction, and the equality
+
+         rank_Q(i)(W_N) = rank_Fp(W_N).
+
+     Then rank_Q(i)([W_N | P_d]) >= rank_Fp([W_N | P_d]),
+     so r_N,Q(i)(d) >= r_N,Fp(d). The bound on the full fiber dimension
+     follows from the truncated-fiber lower-bound construction.
+     This is a sufficient, not necessary, condition. It must be checked
+     separately for each pair, degree, order, and prime used.
+
+     **Implementation.** Run scripts/a5_char0_rank_gate.py with a JSON
+     object containing 'prime', 'i_root', 'W', and 'P'. Rows represent
+     common ambient coordinates; matrices share their row count.
+     Coefficients are integers, rational strings, or [real, imaginary]
+     Gaussian-rational pairs. The checker reduces the same exact matrices
+     modulo the requested split prime, rejects noninvertible denominators,
+     and reports both ranks and both differences. Use --require-stable to
+     reject unverified subtracted-rank equality. The checker does NOT
+     establish that supplied matrices represent the original ideal,
+     or certify the common integral ambient model: retain those witnesses
+     separately. The regression test reproduces the two-prime rank-loss
+     mechanism and a stable positive instance.
+
+  **Repaired proposition (one pair, one degree d, one split prime p).**
+  Suppose (a) the retained original J and G admit compatible integral
+  specializations in a common truncated ambient R-module, (b) exact
+  characteristic-zero quadratic relations reduce to enough rows to prove
+  the desired upper bound, (c) W_N and P_d are represented by common
+  integral matrices in the same ambient basis, and (d) the rank of W_N
+  is unchanged at p. If the modular truncated lower bound equals the
+  modular quadratic upper bound, the characteristic-zero fiber dimension
+  equals that common value. Claims about radicality, components, real
+  arcs, or all degrees require independent certificates.
+
+  **Failure mode.** For I =
+  (x^7, y^7, x^4*y^2*(c+x)), with c = 32009*32029,
+  the degree-3 order-22 difference is 9 over Q but 10 at both
+  primes: (c + x)^3 g1^2 g2 = x^2 y g3^3 puts c^3 g1^2 g2 into m I^3 over Z,
+  so that class dies wherever c is a unit and survives modulo a prime dividing c.
+  Good ambient reduction and unchanged quadratic relations
+  do not prevent the discrepancy. This tree holds no producer or record of that computation. No unverified modular lower bound
+  may be labeled a characteristic-zero result.
 
 ## What stays open
 
@@ -77,7 +109,7 @@ remain.
 2. **The ten blocked rows over Q(i):** check 1 ran on 2026-11-09 and survives on all ten pairs at both primes
    ([`evidence/a5-char0-transfer/`](../../evidence/a5-char0-transfer/README.md), ledger A5-247): J has an
    integer reduced standard basis over Q(i) whose reduction equals the F_p basis, G matches, and a corrupted
-   coefficient breaks the equality. Check 3 survives for X- -> N- at N = 4, 8, 11, 15 and 18 (A5-249; `truncation_check.py`), and check 2 stalled on that pair at the 3-hour cap (A5-248, `quadric_lift.py`; the next attempt checks modular cofactors reconstructed over Q(i) as polynomial identities, avoiding the Q(i) standard basis). The opposite-sign X incidences need neither check: their arc certificate replays exactly over Q(i) and gives F(I) = Q(i)[y1, y2, y3] in every degree (A5-270, `x_opposite_qi.py`), the first all-degree fiber statement in characteristic 0 on the fiber track. Conjecture for check 2: the degree-2 relation space
+   coefficient breaks the equality. The ambient good-reduction component of check 3 survives for X- -> N- at N = 4, 8, 11, 15 and 18 (A5-249; `truncation_check.py`), but the subtracted-rank equality remains unproved; check 2 stalled on that pair at the 3-hour cap (A5-248, `quadric_lift.py`; the next attempt checks modular cofactors reconstructed over Q(i) as polynomial identities, avoiding the Q(i) standard basis). The opposite-sign X incidences need neither check: their arc certificate replays exactly over Q(i) and gives F(I) = Q(i)[y1, y2, y3] in every degree (A5-270, `x_opposite_qi.py`), the first all-degree fiber statement in characteristic 0 on the fiber track. Conjecture for check 2: the degree-2 relation space
    {q : q(G) in J + m I^2} over Q(i) has the dimension of K2 mod p and reduces onto it at both primes; the
    cheapest instance is X- -> N-, falsified by a dimension or a reduced basis that differs.
 3. **The fiber-track open cells:** E8-bar -> N+- degree 6, the VB degree-3 component (A5-016), and the all-degree
@@ -132,9 +164,10 @@ Each statement below is checked against the cited source and marked documented (
   measurement (`evidence/quandela/permanent-estimators/permanent_probe.json`) confirms it on 6 x 6 unitary blocks
   (99.3 percent coverage at 10^4 iterations) and shows its half-width exceeding |perm| by 185 times at n = 20
   (computed). Alignment:
-  - It supports A5-076 (no QPU measurement certifies an F_p rank): a photonic estimate of any amplitude that is a
-    permanent of a norm-bounded matrix is matched classically to the same additive error in polynomial time, and
-    every fiber invariant here is an exact rank, which sampling cannot certify (documented plus inference).
+  - It supports the statement that no retained QPU measurement certifies an F_p rank (the workload row is
+    A5-320): a photonic estimate of any amplitude that is a permanent of a norm-bounded matrix is matched
+    classically to the same additive error in polynomial time, and every fiber invariant here is an exact rank,
+    which sampling cannot certify (documented plus inference).
   - The fiber computations themselves use Pfaffians and exact ranks over F_p, both polynomial time; the
     permanent's #P-hardness and Gurvits's estimator do not enter them (documented).
   - Shared structure, hypothesis without a mechanism: Glynn's estimator averages over the characters of
@@ -144,3 +177,44 @@ Each statement below is checked against the cited source and marked documented (
   gororoba-documents-public manifest sha256 ecad36c4cccf71b71a54ed0023d85bfade2f3bd2f5330db65a7cea7fb7b282e8). Documented: a composition algebra exists only in dimensions 1, 2, 4 and 8. The
   Cayley-Dickson algebras of dimension 16 and up therefore carry zero divisors, and the A_5 zero-divisor strata whose
   attaching data this program computes exist because of that theorem.
+
+
+## Exact physical-kernel projection lemma
+
+Let z be a nonzero physical complex vector, with zbar its actual complex
+conjugate, and let C_z be the kernel matrix satisfying C_z z = 0 and
+z^T C_z = 0. Consider the bordered matrix
+
+    A(z,zbar) = [ 0       -zbar^T ]
+                [ zbar      C_z   ].
+
+Write q = zbar^T z = ||z||^2 > 0. Then
+
+    ker A(z,zbar) = {0} x (ker C_z intersect ker zbar^T)
+
+and the following decomposition is canonical:
+
+    ker C_z = C z direct-sum (ker C_z intersect ker zbar^T).
+
+**Proof.** If A(a,u)=0, the lower block says a zbar+C_z u=0.
+Multiplication by z^T and z^T C_z=0 gives a q=0. Thus a=0,
+C_z u=0; the upper equation gives zbar^T u=0. Conversely those
+conditions clearly imply A(0,u)=0. Define
+
+    Pi_z(v) = v - z (zbar^T v)/q.
+
+Since C_z z=0, Pi_z maps ker C_z into ker C_z, and its image lies
+in ker zbar^T. Every v in ker C_z decomposes as
+v=z (zbar^T v)/q+Pi_z(v); the intersection of the two summands
+is zero because q != 0. QED.
+
+**Domain and limitation.** This is an exact pointwise statement for
+actual conjugate coordinates and z != 0. It is continuous where q
+stays nonzero, so it supplies the algebraic transport in a sufficiently
+small neighborhood of a nonzero physical base point. It does not
+establish the source-stratum graph closure, curve selection, or
+realizability of every complex fiber point by a physical real arc.
+If z and zbar are treated as independent formal variables, q may be
+zero and the division is not available. Prove those separate conditions
+before identifying complex exceptional-fiber points with physical
+limiting kernel planes.

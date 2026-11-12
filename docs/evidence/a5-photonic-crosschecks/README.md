@@ -53,7 +53,11 @@ For an LCU herald implementing `L_y / alpha`, with `alpha=sum_i |c_i|`, every ba
 
 ## A5 computation frontier
 
-The separate A5 attachment worktree, branch `geometry/a5-kernel-attachments` at commit `da8e95994f24d8c7b0c508861e714c6883f6f6cd`, has local edits in its producer and compute runbook; this note reads its retained `docs/evidence/a5-kernel-attachments/README.md` and does not treat those edits as a finished result. That record reports 33 nullity-changing incidence rows and a structural partner-purity argument; its Rees-fiber result completes eight nullity-16 incidences and times out on ten modular-fiber rows. It explicitly leaves real fibers and attaching maps unresolved. A larger compute budget alone does not establish those missing objects.
+The [exceptional-fiber ledger](../a5-exceptional-fibers/ledger.tsv) owns the current algebraic status. As of
+2026-11-11, E8 degree five has h5=952 at both retained primes, and the Iso, W8 and E8-to-VB full fiber equalities
+are established at both primes. E8 degree six remains bounded by 1526 <= h6 <= 1666 (A5-251). Its 140-dimensional
+target space belongs to the [monomial-ladder computation](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/5a8b151c5edeafbd9e6f17fa38610ed5467497b3/docs/evidence/a5-exceptional-fibers/monomial-ladder/README.md).
+These finite-field results do not establish characteristic-zero transfer, real attaching maps or a hardware speedup.
 
 ## Math-source connection and bounded next cases
 
@@ -61,7 +65,7 @@ The local `openai/math` checkout is at `7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a
 
 The following are design candidates, not approved submissions:
 
-1. **A5 kernel-sensitive encoding.** The [Ascella two-dimensional slice case](../../design/ascella-a5-kernel-slice.md) encodes selected kernel and bright superpositions, plus a sign mutation, in eight optical modes. A5 has 32 algebra basis coordinates; that slice does not test the full 32-dimensional nullity. Neither a 12-mode Ascella nor a 24-mode Belenos single-photon encoding directly holds all 32. A full-space compression, multi-photon encoding or five-qubit circuit needs an exact operator map and resource budget.
+1. **A5 kernel-sensitive encoding.** The [Ascella two-dimensional slice case](../../design/ascella-a5-kernel-slice.md) encodes selected kernel and bright superpositions, plus a sign mutation, in eight optical modes. Its selected actions already occur in embedded A4, as the scope replay below checks. A5 has 32 algebra basis coordinates; this slice does not test full nullity or distinguish A5 from A4. Neither a 12-mode Ascella nor a 24-mode Belenos single-photon encoding directly holds all 32. A full-space compression, multi-photon encoding or five-qubit circuit needs an exact operator map and resource budget.
 2. **Target-slot drift discrimination.** Develop the eight-target predecessor-label sequence `A,B,B,A,B,A,A,B`, randomized repetitions, target-sensitive references and a carryover model. The signed contrast cancels constant, linear and quadratic drift in equally spaced observation indices. Provider-supported physical chronology and actual timing remain separate requirements; a changed schedule is a new case.
 3. **Atlas acceptance accounting.** Reanalyze the retained 21-pair data with unconditional predicted-mode probability, excluded-mode mass and conditional contrast reported together. Use the same declared denominators and a simultaneous uncertainty policy before comparing settings. Hardware follow-up needs a decision margin and a power and cost calculation rather than selecting the lowest observed-fidelity settings after the fact.
 4. **Belenos slot-versus-time control.** Design a balanced, randomized slot-assignment and same-layout reference schedule for the packed-mode swap. Freeze the block-level effect, practical margin, acquisition order evidence and cost before collecting. A successful design needs provider-supported chronology and enough repetition to separate slot assignment from drift; the earlier six-job contrast does not supply that separation.
@@ -70,7 +74,54 @@ The following are design candidates, not approved submissions:
 
 With system Python selected as `PYTHON`, the project TLS setting and the recorded two-worker, single-BLAS-thread limits, run `"$PYTHON" docs/evidence/a5-photonic-crosschecks/a5_photonic_replay.py --check` and `"$PYTHON" docs/evidence/a5-photonic-crosschecks/spectrum.py --check`. The records bind the producer and `cd_core` source digests. The mutation removes the qutrit phase and must fail the exact basis-overlap check.
 
-The [Ascella kernel-slice case](../../design/ascella-a5-kernel-slice.md) retains a [simulator analysis](ascella-simulator-kernel-slice.json) and a [hardware analysis](ascella-hardware-kernel-slice.json). Both jobs return 60,000 events. The six hardware conditional branch fractions are 0.513568, 0.002622, 0.998198, 0.001953, 0.999700 and 0.518652 in request order. The analysis records sentinel and invalid events separately. The slice does not establish full operator nullity or physical nonassociativity.
+The [Ascella kernel-slice case](../../design/ascella-a5-kernel-slice.md) retains a [simulator analysis](ascella-simulator-kernel-slice.json) and a [hardware analysis](ascella-hardware-kernel-slice.json). Both jobs return 60,000 events. The six hardware conditional branch fractions are 0.513568, 0.002622, 0.998198, 0.001953, 0.999700 and 0.518652 in request order. The original analyses and raw provider files retain their bytes.
+
+### Scope and denominator successor
+
+The versioned [simulator scope report](ascella-simulator-kernel-scope.json) and
+[hardware scope report](ascella-hardware-kernel-scope.json) add exact count fractions and operator checks.
+The reusable implementation is [a5_photonic_scope.py](../../../gororoba_quantum/a5_photonic_scope.py), with the
+retained-run wrapper [ascella_a5_kernel_scope_analysis.py](../../../scripts/ascella_a5_kernel_scope_analysis.py).
+
+For each setting, let S be success-branch events, F failure-branch events and E all other returned events,
+including sentinel modes and invalid occupations. The two reported fractions are S/(S+F) and S/(S+F+E).
+The report stores their integer numerators and denominators and an explicit defined flag; zero eligible events
+do not produce a fabricated conditional success. These are descriptive fractions of returned events, not
+probabilities per emitted photon or confidence bounds under an assumed independent-shot model.
+
+| Setting order | Success events | Eligible events | All returned events | Excluded events | Success per returned event |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 | 5129 | 9987 | 10000 | 13 | 0.5129 |
+| 2 | 26 | 9917 | 10000 | 83 | 0.0026 |
+| 3 | 9969 | 9987 | 10000 | 13 | 0.9969 |
+| 4 | 19 | 9727 | 10000 | 273 | 0.0019 |
+| 5 | 9982 | 9985 | 10000 | 15 | 0.9982 |
+| 6 | 5047 | 9731 | 10000 | 269 | 0.5047 |
+
+For all six settings, the wrapper binds the saved 12-mode request and compares its decimal components to the
+exact algebraic optical matrix with rational tolerance 1/10^12. It then removes the two-input preparation and
+checks every entry of both selected success columns exactly against L_a/2. A same-name operator mutation and
+a change in the otherwise unprobed input column are separate negative controls. Thus matching a setting name
+or a single prepared column is insufficient.
+
+For a=e1+e10, the inputs e4 and e15 map into outputs e5,e6,e13,e14. All lie in A4, and the complete selected
+A4 and A5 actions agree. The other settings also satisfy the exact embedded restriction check. The measurement
+therefore establishes the programmed slice contrast, with its declared conditioning, but does not discriminate
+A5 from A4 or establish full operator nullity, physical nonassociativity or a computational speedup.
+
+```sh
+"$PYTHON" -B -W error scripts/ascella_a5_kernel_scope_analysis.py \
+  results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice \
+  --out docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json --check
+"$PYTHON" -B -W error scripts/ascella_a5_kernel_scope_analysis.py \
+  results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice \
+  --out docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json --check
+```
+
+These two float-free, source-bound records have on-demand replay gates. Bounded
+[semantic tests](../../../tests/test_a5_photonic_scope.py) construct their own cases and exercise mutations;
+they do not depend on retained jobs or contact a provider. The [exact LCU and filter contracts](../a5-quantum-contracts/README.md)
+cover the separate algebraic construction.
 
 The [pooled replay record](pooled-result.json) preserves the [serial replay record](result.json); their scientific fields match while their producer digests identify different implementations. The serial producer remains available in the parent commit.
 

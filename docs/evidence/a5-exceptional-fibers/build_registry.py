@@ -1,6 +1,6 @@
 """Build the A_5 exceptional-fiber claim registry from retained records.
 
-Usage: build_registry.py [--check] SCAN_DIR...
+Usage: build_registry.py --check | [--check] SCAN_DIR...
 
 h_d = dim I^d / m I^d of the fiber cone F(I) is certified at a prime when a bound lower bound equals a verified upper
 bound. Upper bounds: h_1 <= #G always; for d >= 2, h_d <= HF(k[y]/K2, d) (`k2-hilbert.jsonl`) once K2 lies in L,
@@ -17,7 +17,8 @@ A record that fails a binding check is listed in `unbound.jsonl` and certifies n
 meets the K2 count without a verified upper bound reads `lower bound equals candidate count`. An ok
 `sign-isomorphism` row of `witnesses.jsonl` makes the two fiber cones isomorphic graded rings at that prime, so a degree
 certified for either fiber is certified for both, with the K2 counts required equal and the transport recorded.
---check rebuilds the outputs in memory and exits 1 when any differs from the retained copy.
+--check rebuilds the outputs in memory and exits 1 when any differs from the retained copy; without a root it scans
+the documented roots (`ROOTS`).
 """
 
 import hashlib
@@ -28,6 +29,21 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+# The scan roots of the retained registry, in precedence order (README.md repeats the list).
+ROOTS = (
+    "d5-p2",
+    "degree-one",
+    "n15-laptop",
+    "n16-laptop",
+    "n18-laptop",
+    "d4-p2",
+    "xm-lown",
+    "a5-failed-runs",
+    "iso-d6-n19-laptop",
+    "vb-d6-laptop",
+    "w8-n16-azure",
+    "vb-d7",
+)
 W = HERE / "working"
 CANON_DIRS = {32009: "build/inputs/p32009-r10754", 32029: "build/inputs/p32029-r9115"}
 STEM_FIBER = {
@@ -188,14 +204,41 @@ def engines(roots: list[Path]) -> dict[str, str]:
     return found
 
 
+def ranked_products(record: dict) -> int:
+    """The number of products a record reports as ranked; -1 when the field is absent or not a nonnegative integer."""
+    value = record.get("products")
+    return value if type(value) is int and value >= 0 else -1
+
+
+def retain(target: dict[tuple, dict], owners: dict[tuple, int], key: tuple, entry: dict, root_index: int) -> None:
+    """Keep the record of the first scan root that holds the key, then the most complete record within that root.
+
+    `owners` is shared by the bound and the unbound table, so the first root that holds a key owns it whichever table
+    its record enters, and a later root never certifies a key an earlier root left unbound. Within the owning root a
+    receipt run and an all-products run can share a key: the record that ranked more products wins, then the greater
+    source path, so the choice does not depend on the order in which the directory is read.
+    """
+    if owners.setdefault(key, root_index) != root_index:
+        return
+    prior = target.get(key)
+    if prior is None or (ranked_products(entry["record"]), entry["source"]) > (
+        ranked_products(prior["record"]),
+        prior["source"],
+    ):
+        target[key] = entry
+
+
 def scan(roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, str]) -> tuple[list[dict], list[dict]]:
     by_prefix = {k[:16]: v for k, v in headers.items()}
     bound: dict[tuple, dict] = {}
     unbound: dict[tuple, dict] = {}
-    for root in roots:
+    owners: dict[tuple, int] = {}
+
+    for root_index, root in enumerate(roots):
         for dp, dn, fn in os.walk(root):
             # The data-review directory holds reviewers' deliberately mutated records and receipts.
             dn[:] = [x for x in dn if x != "data-review"]
+            dn.sort()
             for f in sorted(fn):
                 # `.out` is the stdout of an engine run, one JSON record per line (the W8 degree-5 Azure runs).
                 if not f.endswith((".jsonl", ".json", ".out")):
@@ -230,9 +273,9 @@ def scan(roots: list[Path], k2: dict, headers: dict[str, dict], eng: dict[str, s
                     if r.get("generators") not in (None, GENERATORS[h["fiber"]]):
                         reasons.append(f"generators {r.get('generators')}")
                     if reasons:
-                        unbound.setdefault(key, {**entry, "reason": "; ".join(reasons)})
+                        retain(unbound, owners, key, {**entry, "reason": "; ".join(reasons)}, root_index)
                     else:
-                        bound.setdefault(key, {**entry, "engine_file": eng[r["engine_sha256_16"]]})
+                        retain(bound, owners, key, {**entry, "engine_file": eng[r["engine_sha256_16"]]}, root_index)
 
     def order(c: dict) -> tuple:
         r = c["record"]
@@ -336,7 +379,10 @@ def claims(k2: dict, certs: list[dict], recs: list[dict], isos: list[dict], span
 def main() -> int:
     args = sys.argv[1:]
     check = "--check" in args
-    roots = [Path(a).resolve() for a in args if a != "--check"]
+    named = [a for a in args if a != "--check"]
+    # --check alone compares against the documented roots; a rewrite names its roots, since any other list changes
+    # the registry.
+    roots = [(HERE / a if check and not named else Path(a)).resolve() for a in (named or (ROOTS if check else ()))]
     # A missing or misspelled root drops its records from the rebuilt registry, so every argument is checked before
     # anything is read or written: an option other than --check, an empty root list or an absent root stops the run.
     unknown = [a for a in args if a.startswith("-") and a != "--check"]
