@@ -195,8 +195,47 @@ two primes. The Iso sample spans all 17 coordinates and its 85 equals the degree
 same-sign X arcs span 12 of the 15 coordinates and 45 of the 51 quadrics of k[y]/K2, the Hilbert function of the
 reduced fiber, whose prime contains y1, y5 and y6 ([arcs-x-same](../arcs-x-same/README.md), A5-297), so that row
 covers the whole reduced fiber. The E8-bar arcs span 16 of the 21 coordinates and 69 of the 83 quadrics of the fiber
-of E8-bar -> N+- (A5-026); whether 16 and 69 are the Hilbert function of its reduced fiber is not computed. Runs took
+of E8-bar -> N+- (A5-026); 16 and 69 are the Hilbert function of its reduced fiber in degrees 1 and 2
+([e8-radical](../structure/e8-radical/README.md)), so that row covers the whole reduced fiber as well. Runs took
 1 to 27 minutes each on the 32-thread laptop with a peak of 1.6 GB.
+
+### Certification boundary of the quadratic fits
+
+The retained records certify sampled interpolation, not a morphism on a fiber scheme and not an attaching map. In
+particular, each record retains only `t_sha256`; it does not retain the coefficients of `T`, the pivot-monomial basis
+used for its rows, or a characteristic-zero lift. The following obligations are therefore the admission boundary for
+using these fits in the attachment program. A later certificate must keep its field, header slug, input digests and
+the following coordinate orders with the coefficient matrix itself:
+
+- fiber coordinates in the order of the selected header's `G` list;
+- quadratic monomials in the lexicographic order emitted by
+  `combinations_with_replacement(range(len(G)), 2)`, together with the selected pivot columns;
+- the boundary-kernel basis as the reduced row-echelon basis returned by `base_kernel`;
+- Plucker coordinates as `vb_limit_span.plucker` emits them: the maximal minors of the annihilator of the plane in
+  the coordinates of that basis, over the column subsets of size (basis length minus plane dimension) in the
+  lexicographic order of `itertools.combinations`.
+
+| Obligation | What the retained records establish | Certificate still required |
+|---|---|---|
+| Coefficient matrix and conventions | A normalized SHA-256 of the fitted modular matrix and its rank | Every normalized coefficient of `T`, the four coordinate orders above, the header and input digests |
+| Construction from the kernel map | Exact arcwise limits are computed from `L_x(s)` | Derive the coordinate functions from the Pfaffian/kernel construction, independently of interpolation |
+| Coordinate-ring identity | The equation holds on 320 fitted and 40 held-out arcs per arc family (640 and 80 in a pooled case) | Reduce every kernel and Plucker equation modulo the full defining ideal of each intended fiber component, with exact remainders or cofactor witnesses |
+| Projective base locus | The fitted image is nonzero at every sampled point and `T` has the sampled degree-two rank | Determine the common-zero locus of all projective coordinate forms on the full fiber support |
+| Component intersections | One fitted matrix serves both sampled W8 families and both sampled E8-bar families | Verify that the componentwise morphisms agree scheme-theoretically on their complete intersections |
+| Characteristic zero | Some source arc families and their planes lift from `Q` to both retained primes | Construct the map over `Q(i)` and prove that both modular matrices are its compatible reductions |
+| Physical-limit transfer | Rational arcs exhibit physical limits at their sampled points | Prove the general projection lemma, identify the source stratum and graph closure, and apply real curve selection so every admitted holomorphic limit is a physical limit |
+| Coverage | The samples cover the stated arc families; same-sign X covers its known reduced support in degree two | Determine every limiting plane over every boundary modulus, including the unsampled E8-bar coordinates and all blocked Rees fibers |
+| Boundary-orbit variation and equivariance | Each fit sits at one boundary point of its header | Compute the limit set at moved points over every compact boundary modulus and classify it under the stabilizer `K_p` of the boundary point (requirement A3 and deliverable 1 of the [attachment program](../../../design/a5-kernel-attachments-program.md)) |
+| Attaching maps | No retained fit supplies link or sphere-bundle data | Construct the link-to-limit-set map and the union of partner spheres inside the boundary sphere |
+| Specialization compatibility | No retained fit compares a composite specialization with a direct one | Compare every 8-to-12-to-16 composite with the corresponding direct 8-to-16 specialization in the same coordinates |
+
+The first bounded next step is retention, not another interpolation run: revise the producer so a replay writes the
+candidate coefficients and coordinate metadata above. The identity check then works component by component over a
+split prime before any `Q(i)` lift. A failed identity, a projective basepoint or disagreement on a component
+intersection rejects the candidate matrix even when all held-out arcs remain proportional. The run times and peak
+memory quoted above (1 to 27 minutes and 1.6 GB on the 32-thread laptop) are reported in this README and held by no
+record, and they apply only to interpolation; there is no measured runtime or memory bound for the all-point
+coordinate-ring checks.
 
 ## Replay
 

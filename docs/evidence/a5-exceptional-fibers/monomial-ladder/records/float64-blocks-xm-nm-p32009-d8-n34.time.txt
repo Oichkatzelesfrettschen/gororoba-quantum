@@ -1,0 +1,27 @@
+~/gq/docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder.py:124: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/Context.cpp:916.)
+  return torch.sparse_csr_tensor(
+~/gq/docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder.py:124: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:49.)
+  return torch.sparse_csr_tensor(
+	Command being timed: "systemd-run --user --scope -q -p MemoryMax=28G -p MemorySwapMax=0 ~/env/bin/python -u docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks.py --slug xm-nm --prime 32009 --degree 8 --order 34 --threads 8 --out ~/run/float64-blocks-xm-nm-p32009-d8-n34.json --checkpoint ~/run/ckpt"
+	User time (seconds): 26076.46
+	System time (seconds): 639.29
+	Percent of CPU this job got: 723%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:01:31
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 13655624
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 28
+	Minor (reclaiming a frame) page faults: 311805452
+	Voluntary context switches: 81335
+	Involuntary context switches: 221529
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 13453912
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

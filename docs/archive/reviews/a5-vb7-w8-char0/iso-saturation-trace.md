@@ -14,9 +14,10 @@ computations of this review (labeled "scratch") are not retained and use non-QRN
 - [measured] `git log -S'28800'`: first in git is 2e4689b74 (2026-11-05 18:23 -0800, rulebook), then 102d92acd /
   cc40016cc (2026-11-06 01:45, outcome record) and 9243e9c24 / 21001701d (01:48, `jobs.sh` and `flags.md` retained).
   The run started 2026-11-06T01:40:12Z (first `mem.log` line) = 17:40 -0800, so the commit carrying the rulebook text
-  post-dates the launch by 43 minutes and the scripts reached git after the run ended (09:40Z). Author eirikr in all.
-- [measured] Who decided and when: the quantum session transcript
-  (`~/.claude/projects/-home-eirikr-Projects-gororoba-workspace-gororoba-quantum/8591a309-47e6-4168-bc23-a3a08c784490.jsonl`,
+  post-dates the launch by 43 minutes and the scripts reached git after the run ended (09:40Z). One author in all.
+- [operator-local; the transcript is outside the repository, so this entry cannot be replayed from the checkout] Who
+  decided and when: the quantum session transcript
+  (`<home>/.claude/projects/<workspace>/8591a309-47e6-4168-bc23-a3a08c784490.jsonl`,
   lines 59840-59841). At 2026-11-06T01:10:38Z the operator put an AskUserQuestion case: FX4mds_v2 in westus3, both
   primes in parallel, "8 h timeout (<= ~$4.40)", option "Approve FX4, <= 8 h (Recommended)"; the same text records
   "p=32029 died at 5 GB after 57 min, p=32009 is at 6 GB and climbing". At 01:33:51Z the owner answered "Approve FX4"

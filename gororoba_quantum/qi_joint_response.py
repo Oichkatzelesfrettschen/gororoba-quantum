@@ -28,6 +28,7 @@ import numpy as np
 import qi_records
 from parallel import ordered_map
 from qi_records import require
+from walsh_counts import parity_numerators
 
 
 @dataclass(frozen=True)
@@ -61,14 +62,6 @@ TUNA_DESTINATION = Layout(
 )
 
 
-def _parity_signs(n: int) -> np.ndarray:
-    """(-1)^(popcount(coordinate & mask)) over all 2^n coordinates and masks."""
-    size = 1 << n
-    overlap = np.arange(size, dtype=np.int64)[:, None] & np.arange(size, dtype=np.int64)[None, :]
-    parity = ((overlap[:, :, None] >> np.arange(n, dtype=np.int64)) & 1).sum(axis=2) & 1
-    return 1 - 2 * parity
-
-
 def decode(
     shots: Sequence[str], early_bits: Sequence[int], terminal_qubits: Sequence[int], layout: Layout
 ) -> dict[str, Any]:
@@ -90,7 +83,7 @@ def decode(
         "early_classical_bits": list(early_bits),
         "joint_counts": joint.tolist(),
         "disagreement_counts": np.bincount(mismatch, minlength=1 << k).tolist(),
-        "parity_numerators": (joint @ _parity_signs(2 * k)).tolist(),
+        "parity_numerators": parity_numerators(joint).tolist(),
     }
 
 

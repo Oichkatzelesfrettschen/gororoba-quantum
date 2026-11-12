@@ -1,0 +1,6 @@
+RESULT K2 dim 5 mult 11 K2 + N dim 5 mult 11 hilbert numerator 1,11,-1,0
+RESULT N squared in K2 1 linear forms of K2 + N 5
+RESULT annihilator of (K2 + N)/K2: dim 4 mult 2 linear forms 16 generators 17
+RESULT annihilator plus K2 + N: dim 4
+RESULT charts where N vanishes after saturation: 2 19 
+RESULT charts where N survives: 1 3 5 8 9 10 11 13 15 16 17 18 20 21 

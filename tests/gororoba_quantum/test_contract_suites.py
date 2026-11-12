@@ -131,6 +131,7 @@ ON_DEMAND_RUNTIME_CASES: Mapping[str, str] = {
 }
 
 UNITS: tuple[Unit, ...] = (
+    Unit("cd_quantum_contracts", "verify"),
     *(Unit("complex_skew_contracts", "coefficient_control", f"coefficient_control_{d}", (d,)) for d in (4, 8, 16)),
     *(
         Unit("complex_skew_contracts", "point_control", f"point_control_{task[0]}", (task,))

@@ -1,0 +1,5 @@
+RESULT L generators 69 maximal degree 2 dim 4 mult 12
+RESULT degrees of the minimal generators of L 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+RESULT K2 inside L 1 L inside K2 1
+RESULT hilbert numerator of L 1,11,-3,4,-1,0
+RESULT hilbert numerator of K2 1,11,-3,4,-1,0

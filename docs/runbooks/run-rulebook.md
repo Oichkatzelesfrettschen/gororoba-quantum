@@ -240,3 +240,48 @@ the closest entry and say what changed.
   jump 169 split 49/42/39/39 (r_18 = 2,253 or the law fails at degree 6), then N = 19 at 32029 to certify A5-125.
   Outcome: r_18 = 2,253 (583/568/551/551) in 1,173.2 s at 15.4 GiB, as predicted; r_19 = 2,422 at 32029
   (632/610/590/590) in 1,905.6 s at 19.6 GiB, h_6 certified there.
+
+### E8-bar -> N+-: the defining ideal of the fiber cone by elimination from S[I T] / (m_R S) S[I T]
+
+- Question and decisive outcome: the kernel L of k[y_1..y_21] -> S[I T] / (m_R S) S[I T] for the E8-bar slice, where
+  I = I S is proved (A5-309). L = K2 closes A5-009 and gives h_6 = 1,666; a generator of L above degree 2 gives the
+  true h_6 between 1,526 and 1,666. A run that does not finish proves nothing.
+- Formulation: one elimination of T from (y_j - T G_j) over the polynomial model of S (variables w, rho, sigma, zeta,
+  a, b, u with u (1 + w) = 1 and b^2 = F), then elimination of the seven S variables from the result plus m_R S, in a
+  block dp ordering; local at the origin because S / m_R S has colength 2. Rejected: the truncated ladder at degree 6
+  (the order-18 degree-3 cell alone held 30 GB) and a degree-bounded standard basis (no bigraded bound is set up).
+- Host and tool versions: the laptop WSL host, passagemath Singular 4.4.1 (`~/a5env/bin/Singular`).
+- Launch line and environment: `Singular -q --no-warn < records/e8-fiber-cone-e8-nm-p32009.sing` under
+  `systemd-run --user --scope -p MemoryMax=24G -p MemorySwapMax=0` and `timeout 43000`, in tmux; the same script at
+  p = 32029 and on the N+ header under `MemoryMax=10G` and `timeout 86000`.
+- Departures from the foundations: none (global orderings; the localization is carried by the quotient).
+- Parallelism: Singular is single-threaded; three independent cases run side by side.
+- Memory and time limits: the cgroup caps above; a cap or the timeout ends the run with no result.
+- Checkpoints: the log prints one RESULT line when J is checked and one when the Rees ideal is found; nothing between.
+- End state: the logs and the generators of L (`e8-fiber-cone-L*.txt`) copied into `monomial-ladder/records/`.
+- Outcome: not finished when this entry was written.
+
+### Same-sign X ladder replays with the source-hashing float64 engine
+
+- Question and decisive outcome: whether the committed `fast_ladder.py` reproduces the ranks an earlier version
+  gave, so that each retained float64 record names its producer. Equal ranks close the provenance finding of the
+  local review; a different rank would be an engine defect.
+- Formulation: `fast_ladder.py --slug xm-nm --degree 8 --order 32` and `--order 34` at p = 32009,
+  `--degree 7 --order 29` and `--order 31` at p = 32029, `--slug e8-nm --degree 3 --order 14`.
+- Host and tool versions: the laptop WSL host, torch 2.15.0+cpu, numpy 2.5.4, scipy 1.18.1, python-flint 0.9.0.
+- Launch line and environment: each under `systemd-run --user --scope -p MemoryMax=20G -p MemorySwapMax=0`,
+  `--threads 16`, one after another in tmux.
+- Departures from the foundations: none.
+- Parallelism: torch threads inside one process; the products and maps go through the process pool.
+- Memory and time limits: 20 GB per run.
+- Checkpoints: one JSON line per degree in the log.
+- End state: the records copied into `monomial-ladder/records/`.
+- Outcome: order 32 in 1,835 s (ranks 665, 996, 1,133 at degrees 6 to 8); the E8-bar cell in 1,095 s (225); the two
+  p = 32029 cells in 890 s and 1,904 s (996); the order-34 cell was killed at the 20 GB cap (exit 137) and again
+  under a 40 GB cap with 24 threads after reproducing degrees 3 to 7 (1,590 s for degree 7 at order 31). The
+  second kill came from the host's global out-of-memory killer at 24.7 GB resident (kernel log), with the other
+  jobs holding the rest of the 54 GB: read the kernel log before blaming a cap. The engine held the echelon buffer
+  twice while it grew and the two previous spaces in float64; `fast_ladder_blocks.py` removes both.
+  The replay with it on an Azure D8ds_v6 (8 vCPU, 32 GB, westus3; D8ds_v5 has no quota in the subscription) gave
+  the retained rows through degree 8 (1,422) at 13.0 GB peak in 3,690 s; the machine and its resource group were
+  deleted after the record and logs were copied and their sha256 compared.

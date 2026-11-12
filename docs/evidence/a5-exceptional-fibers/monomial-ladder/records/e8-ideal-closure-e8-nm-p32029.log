@@ -1,0 +1,27 @@
+RESULT J nonzero on the parametrization 0
+RESULT m_R S: dim 0 vdim 2 m_S^4 inside 1
+RESULT generators 21
+RESULT relation module of I~ / (m_R S) I~: vdim 21
+RESULT relations inside m_S S^n 0 m_S S^n inside relations 0
+RESULT minimal number of generators of I~ over S 16
+RESULT nf_1_1 1
+RESULT nf_2_2 1
+RESULT nf_3_3 1
+RESULT nf_4_4 1
+RESULT nf_5_5 1
+RESULT nf_6_6 1
+RESULT nf_7_7 1
+RESULT nf_8_8 1
+RESULT nf_9_9 1
+RESULT nf_10_10 1
+RESULT nf_11_11 1
+RESULT nf_12_12 1
+RESULT nf_13_13 1
+RESULT nf_14_14 1
+RESULT nf_15_15 1
+RESULT nf_16_16 1
+RESULT nf_17_17 1
+RESULT nf_18_18 1
+RESULT nf_19_19 1
+RESULT nf_20_20 1
+RESULT nf_21_21 1
