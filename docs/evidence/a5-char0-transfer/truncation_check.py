@@ -9,6 +9,11 @@ matrix reduction and rank_Q(i) W_N = rank_F_p W_N. Falsifier of the conjecture t
 by p, or a reduced basis that differs. Mutation: adding 1 to one coefficient of the Q(i) basis must break the
 equality.
 
+--timeout bounds the Singular calls together (the Q(i) basis, then one header basis per prime): check() fixes one
+deadline when it starts, each call receives the seconds left until it, and a call that finds none left is reported as
+`blocked_timeout` without starting. The Singular time of the driver therefore ends inside its --timeout, so the outer
+limit that `kaggle/runner.py` places after it is not reached by a sum of per-call allowances.
+
 Writes truncation-<slug>-n<N>.json beside this file. Run from the repository root:
 "$PYTHON" docs/evidence/a5-char0-transfer/truncation_check.py --slug xm-nm --order 8
 """
@@ -17,7 +22,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -41,8 +48,22 @@ def _extra(order: int, slice_vars: list[str]) -> str:
     )
 
 
-def _basis(script: str, label: str, timeout: int) -> tuple[list[str], float]:
-    outcome = rees._run_singular(script, label, timeout)
+def _now() -> float:
+    return time.monotonic()
+
+
+def _basis(script: str, label: str, deadline: float) -> tuple[list[str], float]:
+    """The reduced standard basis Singular prints for SCRIPT, run with the seconds left until DEADLINE (`_now` clock).
+
+    A call with less than one second left is not started and counts as `blocked_timeout`.
+    """
+    allowance = math.floor(deadline - _now())
+    if allowance < 1:
+        outcome = rees.SingularOutcome(
+            "blocked_timeout", label, {}, 0, None, "the shared --timeout deadline passed before the call started"
+        )
+    else:
+        outcome = rees._run_singular(script, label, allowance)
     if outcome.status != "completed":
         raise SystemExit(f"{label}: {outcome.status} {outcome.diagnostic}")
     res = outcome.results
@@ -50,18 +71,20 @@ def _basis(script: str, label: str, timeout: int) -> tuple[list[str], float]:
 
 
 def check(slug: str, order: int, timeout: int = rc.TIMEOUT_SECONDS) -> dict[str, Any]:
+    """The check of SLUG at ORDER; TIMEOUT is the total seconds of every Singular call, counted from this call."""
+    deadline = _now() + timeout
     body = rc._script(slug, None, rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
     first_header = (rc.HEADERS / f"p{rc.PRIMES[0][0]}-r{rc.PRIMES[0][1]}" / f"{slug}.sing").read_text(encoding="utf-8")
     ring_line = first_header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")].split(",")
-    qi_text, qi_wall = _basis(body + _extra(order, slice_vars) + "\nquit;\n", "truncation_qi", timeout)
+    qi_text, qi_wall = _basis(body + _extra(order, slice_vars) + "\nquit;\n", "truncation_qi", deadline)
     rows = []
     names: list[str] = []
     qi_polys: list[rc.Coefficients] = []
     for prime, root in rc.PRIMES:
         header = (rc.HEADERS / f"p{prime}-r{root}" / f"{slug}.sing").read_text(encoding="utf-8").replace("quit;", "")
         hd_text, hd_wall = _basis(
-            header + "\nideal ReducedJ=J;\n" + _extra(order, slice_vars) + "\nquit;\n", f"truncation_{prime}", timeout
+            header + "\nideal ReducedJ=J;\n" + _extra(order, slice_vars) + "\nquit;\n", f"truncation_{prime}", deadline
         )
         if not names:
             names = rc.fiber_inputs._variables(qi_text)
@@ -107,7 +130,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--slug", required=True, choices=[spec.slug for spec in rc.fiber_inputs.SPECS])
     parser.add_argument("--order", required=True, type=int)
-    parser.add_argument("--timeout", type=int, default=rc.TIMEOUT_SECONDS, help="seconds per Singular call")
+    parser.add_argument(
+        "--timeout", type=int, default=rc.TIMEOUT_SECONDS, help="seconds for all Singular calls together"
+    )
     arguments = parser.parse_args()
     result = check(arguments.slug, arguments.order, arguments.timeout)
     out = HERE / f"truncation-{arguments.slug}-n{arguments.order}.json"

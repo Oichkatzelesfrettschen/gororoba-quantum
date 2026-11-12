@@ -107,6 +107,12 @@ limits (driver, outer `timeout`, the 41,400 s push limit), streams the driver's 
 line per step; `a5-char0-e8-quadrics` was cancelled 2.5 hours in and pushed again with that runner. The W8 check
 continues on the workstation, which has no session limit.
 
+`truncation_check.py` counts its `--timeout` over its three Singular calls together: it fixes one deadline at the
+start, passes each call the seconds left, and reports a call with none left as `blocked_timeout` without starting it.
+The runner's rewritten `--timeout` therefore bounds the driver, where per-call allowances (39,500 s and 600 s under a
+39,700 s limit) could sum past the outer `timeout`. The kernel `a5-char0-xm-truncation-n22` pins an earlier commit, so a rerun takes this deadline only after its pin in
+`kaggle/make_kernels.py` moves to a commit that holds it; the run that ledger row A5-290 records used the per-call form.
+
 ### Where the direct Q(i) computation stops, and the modular engine (2026-11-11)
 
 The STAGE lines locate the cost. On E8-bar -> N- the re-pushed kernel `a5-char0-e8-quadrics` (version 2, the runner
@@ -229,8 +235,11 @@ Linear algebra found the cofactors, not a standard basis: 13,830 monomial multip
 targets form a 23,903 x 13,914 matrix whose reduced row echelon form gives one solution per prime, the reduction of
 the Q(i) solution. Both roots of -1 at each split prime give real and imaginary parts, and rational reconstruction stabilizes over the primes listed in the table. Smaller
 boxes leave a measured gap: weight 9 with the m-range [-7, 9] or [-8, 10] gives qw-relation rank 20 over Q(i), and
-weight 10 with [-6, 8] gives rank 16 modulo 32009. `--check` reruns the exact identities from the cofactor file and two
-mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities, one coefficient of G_1 doubled breaks 42.
+weight 10 with [-6, 8] gives rank 16 modulo 32009. `--check` first compares the sha256 of `e8_closure_certificate.py`,
+`slice_rings_qi.py` and `reduction_check.py` with the record, so an edit of any of the three makes it fail until
+`--write` regenerates the records (about 40 minutes for both signs); it then reruns the exact identities from the
+cofactor file and two mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities, one coefficient of G_1
+doubled breaks 42.
 
 | Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search | exact check | mutations fail |
 |---|---|---|---|---|---|

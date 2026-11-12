@@ -33,7 +33,11 @@ reconstructions agree. The modular work only finds the certificate; the exact ch
 
 `--write` writes `e8-closure-certificate-SLUG.json` and the cofactor file `cofactors/e8-closure-SLUG.json.xz`;
 `--check` verifies the recorded digests, reruns the exact check from the cofactor file, and runs two mutations that
-must fail it: one cofactor coefficient changed, and one coefficient of the generator G_1 changed.
+must fail it: one cofactor coefficient changed, and one coefficient of the generator G_1 changed. The digests cover the
+cofactor file, the Q(i) producer script, its J and G, and the sources of this script, `slice_rings_qi.py` and
+`reduction_check.py`, so an edit of any of those three Python files makes `--check` fail with a request to regenerate
+the records with `--write` (about 40 minutes for both signs); a replay never runs with sources that differ from the
+ones that wrote the record.
 """
 
 from __future__ import annotations
@@ -43,6 +47,7 @@ import hashlib
 import itertools
 import json
 import lzma
+import math
 import os
 import re
 import resource
@@ -409,7 +414,12 @@ def modular_run(job: tuple[str, dict[str, Any], int, int]) -> dict[str, Any]:
 
 
 def _ratrec(value: int, modulus: int) -> Fraction | None:
-    """The fraction a/b with |a|, b <= sqrt(modulus/2) congruent to value, or None."""
+    """The fraction a/b with |a|, b <= sqrt(modulus/2) and a = value b (mod modulus), or None.
+
+    The extended Euclidean sequence yields a candidate (r1, s1) for every value; the candidate is kept only when its
+    reduced form a/b has b invertible modulo `modulus` and satisfies the congruence, so a value with no such fraction
+    (for example 32009 * 32029 modulo 32009 * 32029 * 32749) is None and never a spurious zero.
+    """
     bound = int((modulus // 2) ** 0.5)
     r0, r1, s0, s1 = modulus, value % modulus, 0, 1
     while r1 > bound:
@@ -417,7 +427,12 @@ def _ratrec(value: int, modulus: int) -> Fraction | None:
         r0, r1, s0, s1 = r1, r0 - q * r1, s1, s0 - q * s1
     if s1 == 0 or abs(s1) > bound:
         return None
-    return Fraction(r1, s1)
+    fraction = Fraction(r1, s1)
+    if math.gcd(fraction.denominator, modulus) != 1:
+        return None
+    if (fraction.numerator - value * fraction.denominator) % modulus != 0:
+        return None
+    return fraction
 
 
 def reconstruct(runs: dict[tuple[int, int], dict[str, Any]], primes: list[tuple[int, int]]) -> dict[Any, Any] | None:
@@ -509,6 +524,32 @@ def nakayama_rank(cofactors: dict[str, Any], n: int) -> dict[str, int]:
     return {"qw_relation_rank": int(rows.rank()), "size": n}
 
 
+def verdict(row: dict[str, Any]) -> str:
+    """`i_equals_is` when every premise of the closure holds in the parsed result fields of ROW, else `failed`.
+
+    The premises: J vanishes in S, S / n has colength 2, m_R S and n contain each other, every cofactor identity
+    reduces to zero, and the 2n relations in I S / n I S have rank n (the number of generators).
+    """
+    closed = (
+        row["j_nonzero"] == 0
+        and row["colength_of_n"] == 2
+        and row["am_outside_n"] == 0
+        and row["n_outside_am"] == 0
+        and row["bad_identities"] == 0
+        and row["qw_relation_rank"] == row["generators"]
+    )
+    return "i_equals_is" if closed else "failed"
+
+
+def mutation_detected(row: dict[str, Any]) -> bool:
+    """True when the mutated check ran to completion, counted a failed cofactor identity and gave no closure verdict."""
+    return (
+        row.get("status") == "completed"
+        and (row.get("bad_identities") or 0) > 0
+        and row.get("verdict") != "i_equals_is"
+    )
+
+
 def verify(slug: str, inputs: dict[str, Any], cofactors: dict[str, Any], mutate: str | None = None) -> dict[str, Any]:
     tag = f"e8-closure-verify-{slug}" + (f"-mutate-{mutate}" if mutate else "")
     run = _singular(verify_script(slug, inputs, cofactors, mutate), tag)
@@ -534,15 +575,7 @@ def verify(slug: str, inputs: dict[str, Any], cofactors: dict[str, Any], mutate:
             **nakayama_rank(cofactors, n),
         }
     )
-    closed = (
-        row["j_nonzero"] == 0
-        and row["colength_of_n"] == 2
-        and row["am_outside_n"] == 0
-        and row["n_outside_am"] == 0
-        and row["bad_identities"] == 0
-        and row["qw_relation_rank"] == n
-    )
-    row["verdict"] = "i_equals_is" if closed else "failed"
+    row["verdict"] = verdict(row)
     return row
 
 
@@ -664,6 +697,15 @@ def write(slug: str) -> dict[str, Any]:
 def check(slug: str) -> dict[str, Any]:
     record = json.loads(_record_path(slug).read_text(encoding="utf-8"))
     digests = record["sha256"]
+    for key, name in (
+        ("certificate_producer", Path(__file__).name),
+        ("slice_rings_qi", "slice_rings_qi.py"),
+        ("reduction_check", "reduction_check.py"),
+    ):
+        _require(
+            _sha256_file(HERE / name) == digests[key],
+            f"{slug}: {name} differs from the digest in {_record_path(slug).name}; regenerate the record with --write",
+        )
     _require(_sha256_file(_cofactor_path(slug)) == digests["cofactor_file"], f"{slug}: cofactor file digest")
     inputs = producer(slug)
     _require(inputs["script_sha256"] == digests["producer_script"], f"{slug}: producer script changed")
@@ -675,8 +717,7 @@ def check(slug: str) -> dict[str, Any]:
     for kind in ("cofactor", "generator"):
         row = verify(slug, inputs, cofactors, kind)
         mutations[kind] = {k: row.get(k) for k in ("status", "bad_identities", "verdict")}
-        detected = row.get("status") == "completed" and (row.get("bad_identities") or 0) > 0
-        _require(detected and row["verdict"] != "i_equals_is", f"{slug}: mutation {kind} was not detected: {row}")
+        _require(mutation_detected(row), f"{slug}: mutation {kind} was not detected: {row}")
     return {"slug": slug, "verdict": exact["verdict"], "mutations": mutations, "wall_seconds": exact["wall_seconds"]}
 
 

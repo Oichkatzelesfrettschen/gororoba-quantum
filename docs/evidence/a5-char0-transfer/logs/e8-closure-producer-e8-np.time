@@ -1,18 +1,18 @@
 	Command being timed: "Singular -q --no-warn e8-closure-producer-e8-np.sing"
-	User time (seconds): 43.95
-	System time (seconds): 0.08
+	User time (seconds): 53.80
+	System time (seconds): 0.10
 	Percent of CPU this job got: 99%
-	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:44.13
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:54.13
 	Average shared text size (kbytes): 0
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 166752
+	Maximum resident set size (kbytes): 167532
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 112647
-	Voluntary context switches: 6
-	Involuntary context switches: 574
+	Minor (reclaiming a frame) page faults: 112735
+	Voluntary context switches: 1
+	Involuntary context switches: 6668
 	Swaps: 0
 	File system inputs: 0
 	File system outputs: 264
