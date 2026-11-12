@@ -293,7 +293,7 @@ the closest entry and say what changed.
   h_3 (ledger A5-327).
 - Formulation: the untruncated standard basis in one process; the jet-truncated rank (A5-031) was the cheaper route
   and decided h_3 = 225 (A5-092).
-- Host and tool versions: Azure VM `gororoba-a5-fiber-4` (84 GB, `hv_balloon` maximum 86,016 MB), Singular from a sage
+- Host and tool versions: the fourth Azure VM of the program (84 GB, `hv_balloon` maximum 86,016 MB), Singular from a sage
   wheel, p = 32009.
 - Launch line and environment: `cg-run.sh e8nm_d3 78G 129600 Singular -q --no-rc --cpus=1 input.sing` with
   `MALLOC_ARENA_MAX=2`, a transient cgroup scope with `MemoryMax=78G` and `MemorySwapMax=0`, and `timeout -k 30`.

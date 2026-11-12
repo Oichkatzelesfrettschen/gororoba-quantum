@@ -10,12 +10,18 @@ summary line per pair.
 
 from __future__ import annotations
 
+import functools
 import itertools
 import json
 import re
 import sys
 from collections import Counter
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[5]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
 
 
 def field(pattern: str, text: str) -> str:
@@ -87,64 +93,93 @@ def profile(J: list[dict], i: int, p: int) -> tuple:
     return tuple(sorted(Counter((sum(m), m[i], min(c, p - c)) for g in J for m, c in g.items()).items()))
 
 
-def sweep(a: Path, b: Path) -> None:
-    p, na, Ja, Ga = load(a)
-    pb, nb, Jb, Gb = load(b)
+Context = tuple[int, list[str], list[dict], list[dict], list[dict], list[dict], int, int]
+
+
+@functools.cache
+def context(a: str, b: str) -> Context | None:
+    """The headers of one ordered pair with the ranks of J_b and G_b, or None when the pair is not comparable."""
+    p, na, Ja, Ga = load(Path(a))
+    pb, nb, Jb, Gb = load(Path(b))
     if p != pb or len(na) != len(nb):
-        return
+        return None
+    return p, nb, Ja, Ga, Jb, Gb, rank(Jb, p), rank(Gb, p)
+
+
+def permutations(ctx: Context) -> tuple[list[list[int]], list[tuple[int, ...]]]:
+    """The profile choices of each variable and the permutations they admit."""
+    p, na, Ja, _Ga, Jb, _Gb, _rJb, _rGb = ctx
     n = len(na)
     pa = [profile(Ja, i, p) for i in range(n)]
     pbp = [profile(Jb, i, p) for i in range(n)]
     choices = [[j for j in range(n) if pbp[j] == pa[i]] for i in range(n)]
-    rJb, rGb = rank(Jb, p), rank(Gb, p)
-    hits = 0
-    perms = 0
-    for perm in itertools.product(*choices):
-        if len(set(perm)) != n:
+    return choices, [perm for perm in itertools.product(*choices) if len(set(perm)) == n]
+
+
+def hits(item: tuple[str, str, tuple[int, ...]]) -> list[str]:
+    """The JSON lines of every J-preserving sign vector of one permutation."""
+    a, b, perm = item
+    ctx = context(a, b)
+    if ctx is None:
+        raise ValueError("pair is not comparable")
+    p, nb, Ja, Ga, Jb, Gb, rJb, rGb = ctx
+    n = len(nb)
+    out = []
+    for signs in itertools.product((1, -1), repeat=n):
+        Js = [apply(g, perm, signs, p) for g in Ja]
+        if len(Ja) == 1 == len(Jb) and Js[0].keys() != Jb[0].keys():
             continue
-        perms += 1
-        for signs in itertools.product((1, -1), repeat=n):
-            Js = [apply(g, perm, signs, p) for g in Ja]
-            if len(Ja) == 1 == len(Jb) and Js[0].keys() != Jb[0].keys():
-                continue
-            if rank(Jb + Js, p) != rJb or rank(Js, p) != rJb:
-                continue
-            Gs = [apply(g, perm, signs, p) for g in Ga]
-            rGs, rU = rank(Gs, p), rank(Gb + Gs, p)
-            hits += 1
-            print(
-                json.dumps(
-                    {
-                        "a": a.name,
-                        "b": b.name,
-                        "perm": [nb[j] for j in perm],
-                        "signs": signs,
-                        "rank_Gb": rGb,
-                        "rank_Ga_moved": rGs,
-                        "rank_union": rU,
-                        "G_spans_equal": rGb == rGs == rU,
-                    }
-                ),
-                flush=True,
+        if rank(Jb + Js, p) != rJb or rank(Js, p) != rJb:
+            continue
+        Gs = [apply(g, perm, signs, p) for g in Ga]
+        rGs, rU = rank(Gs, p), rank(Gb + Gs, p)
+        out.append(
+            json.dumps(
+                {
+                    "a": Path(a).name,
+                    "b": Path(b).name,
+                    "perm": [nb[j] for j in perm],
+                    "signs": signs,
+                    "rank_Gb": rGb,
+                    "rank_Ga_moved": rGs,
+                    "rank_union": rU,
+                    "G_spans_equal": rGb == rGs == rU,
+                }
             )
-    print(
-        json.dumps(
-            {
-                "pair": [a.name, b.name],
-                "profile_choices": [len(c) for c in choices],
-                "permutations_tested": perms,
-                "J_preserving_maps": hits,
-            }
-        ),
-        flush=True,
-    )
+        )
+    return out
 
 
 def main() -> None:
     files = sorted(Path(sys.argv[1]).glob("*.sing"))
+    plans = []
+    items: list[tuple[str, str, tuple[int, ...]]] = []
     for a in files:
         for b in files:
-            sweep(a, b)
+            ctx = context(str(a), str(b))
+            if ctx is None:
+                continue
+            choices, perms = permutations(ctx)
+            plans.append((a, b, choices, len(perms)))
+            items += [(str(a), str(b), perm) for perm in perms]
+    results = iter(parallel.ordered_map(hits, items, min_items=1))
+    for a, b, choices, count in plans:
+        found = 0
+        for _ in range(count):
+            for line in next(results):
+                print(line, flush=True)
+                found += 1
+        print(
+            json.dumps(
+                {
+                    "pair": [a.name, b.name],
+                    "profile_choices": [len(c) for c in choices],
+                    "permutations_tested": count,
+                    "J_preserving_maps": found,
+                }
+            ),
+            flush=True,
+        )
 
 
 if __name__ == "__main__":

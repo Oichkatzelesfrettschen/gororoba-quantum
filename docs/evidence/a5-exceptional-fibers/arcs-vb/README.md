@@ -101,7 +101,8 @@ limit vector F(u1, u2, k) with respect to (u1, u2, k) equals the number of param
 space has dimension at least 3 at this point; F lies in V(P2) and outside V(P1) there, and V_+(P2) is irreducible of
 projective dimension 3, so the family is dominant onto it, as A5-015 states for the interpolant. The ideal of the 303
 relations in the 20 variables T(1) to T(12), h, t2 to t8 has dimension 4 (`normalization-dimension.json`, Singular,
-`dp`, 3.09 s recorded). This is a one-prime, one-point witness; it says nothing about characteristic 0.
+`dp`, 3.09 s recorded). This is a one-prime, one-point witness; it says nothing about characteristic 0. The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md)
+lists the witness as a result-missing record (section 3A, item 3).
 
 | File | Content |
 |---|---|
@@ -109,9 +110,26 @@ relations in the 20 variables T(1) to T(12), h, t2 to t8 has dimension 4 (`norma
 | `dominance-witness/normalization-dimension.json` | return code, seconds and Singular output of the dimension computation |
 | `../working/reviews/codex-reaudit/arc_derivative.py`, `normalization_dimension.py`, `audit.py` | the producers as run, with the scrub of `retain_working.sh` applied; both import `parse` and `rank` from `audit.py` beside them |
 
-Replay: the producers read `docs/local/a5-failed-runs/build/arc/` and `audit.py` sets `ROOT` to the checkout. The
-files they read (`norid.txt`, `G.txt`, `sel.pkl`, `tbase_branches.txt`, `primeP1.txt`, `primeP2.txt`) are tracked
-under `../working/build/arc/`. With `ROOT` set to the checkout and the base path set to that directory,
-`"$PYTHON" arc_derivative.py` (python-flint 0.9.0) wrote `arc-derivative.jsonl` byte for byte in 1.1 s and `"$PYTHON"
-normalization_dimension.py` (Singular 4.4.1) returned `normalization_dim 4` in 0.84 s. The scripts are retained as run, in
-their compact style, under `working/`, which the `sources` gate of `ci/gates.json` leaves out of ruff and mypy.
+Replay from the tracked inputs. The scrub of `retain_working.sh` left `ROOT` in `audit.py` as the relative path
+`~/Projects/gororoba-workspace/gororoba-quantum`, and both producers read `ROOT / 'docs/local/a5-failed-runs/build/arc'`
+(`norid.txt`, `G.txt`, `sel.pkl`, `tbase_branches.txt`, `primeP1.txt`, `primeP2.txt`), a tree that is not tracked. The
+same six files are tracked under `../working/build/arc/`. A working directory that holds a subdirectory of that literal
+name, with the `arc` leaf a link to the tracked directory, resolves every read without a change to the producers:
+
+```sh
+REPO=$PWD A5=docs/evidence/a5-exceptional-fibers      # from the repository root, with PYTHON and Singular set
+R=$(mktemp -d)
+mkdir -p "$R/~/Projects/gororoba-workspace/gororoba-quantum/docs/local/a5-failed-runs/build"
+ln -s "$REPO/$A5/working/build/arc" "$R/~/Projects/gororoba-workspace/gororoba-quantum/docs/local/a5-failed-runs/build/arc"
+cd "$R"
+"$PYTHON" "$REPO/$A5/working/reviews/codex-reaudit/arc_derivative.py" > arc-derivative.jsonl
+cmp arc-derivative.jsonl "$REPO/$A5/arcs-vb/dominance-witness/arc-derivative.jsonl"
+"$PYTHON" "$REPO/$A5/working/reviews/codex-reaudit/normalization_dimension.py"
+```
+
+With python-flint 0.9.0, `arc_derivative.py` wrote `arc-derivative.jsonl` byte for byte in 0.9 s, and
+`normalization_dimension.py` (Singular 4.4.1) printed `rc` 0 and `normalization_dim 4` in 0.7 s; its `seconds` field is
+a wall time and differs from the retained 3.09 s, so `normalization-dimension.json` reproduces in every field except
+that one. `normalization_dimension.py` writes `normalization-dimension.sing` into the working directory. The scripts
+are retained as run, in their compact style, under `working/`, which the `sources` gate of `ci/gates.json` leaves out of
+ruff and mypy.

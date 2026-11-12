@@ -6,7 +6,7 @@ paths. The [evidence README](../README.md) states the scan order. The registry s
 equals the K2 count of its fiber and prime (`k2-hilbert.jsonl`), so the four records below, all under that count,
 change none of `claims.json`, `certificates.jsonl` and `unbound.jsonl` (`build_registry.py --check`: registry
 matches). They state truncated ranks below the target of rungs of three ladders, with the per-block ranks, and enter
-the ledger as A5-324.
+the ledger as A5-324. The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md) lists them as result-missing records (section 3A, item 4).
 
 ## Truncated ranks below the K2 count, per character block
 

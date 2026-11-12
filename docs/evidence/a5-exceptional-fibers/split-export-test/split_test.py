@@ -3,7 +3,8 @@
 Runs the engine's own serial export script at a small N, then the split: one Singular process computes std(J + m^N)
 and writes it; one process per variable reads that basis back, marks it a standard basis and writes its
 multiplication table; one extra pair of processes writes the first table in two index halves of kbase. Every file is
-compared against the serial export after newline removal. Any difference falsifies the split.
+compared against the serial export byte for byte. Any difference, a nonzero exit status of any Singular process or a
+nonempty output directory stops the run.
 """
 
 import hashlib
@@ -42,7 +43,14 @@ def run(script: str, path: Path) -> subprocess.Popen:
 
 
 def norm(path: Path) -> str:
-    return hashlib.sha256(path.read_text().replace("\n", "").encode()).hexdigest()
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def finish(proc: subprocess.Popen) -> None:
+    """Wait for a Singular process; a nonzero exit status stops the run."""
+    code = proc.wait()
+    if code != 0:
+        raise RuntimeError(f"{proc.args!r} exited with status {code}")
 
 
 def main() -> int:
@@ -51,6 +59,8 @@ def main() -> int:
     nv = len(h["names"].split(","))
     for sub in ("serial", "split"):
         (out / sub).mkdir(parents=True, exist_ok=True)
+        if any((out / sub).iterdir()):
+            raise RuntimeError(f"output directory {out / sub} is not empty")
     pre = f"ring r={h['p']},({h['names']}),dp;\noption(redSB);\n"
     t0 = time.time()
     serial = run(SERIAL.format(N=N, out=out / "serial", **{k: h[k] for k in ("p", "names", "J", "G")}),
@@ -59,7 +69,7 @@ def main() -> int:
     std = run(pre + f"ideal J={h['J']};\nint t0=rtimer;\nideal s=std(J+maxideal({N}));\n"
               f'short=0; write(":w {sp}/s.txt",s);\nideal B=kbase(s);\nshort=0; write(":w {sp}/qB.txt",B);\n'
               f'"RESULT std", ncols(s), ncols(B), rtimer-t0;\nquit;\n', sp / "std.sing")  # fmt: skip
-    std.wait()
+    finish(std)
     t_std = time.time() - t0
     load = (f'execute("ideal s=" + read("{sp}/s.txt") + ";");\nattrib(s,"isSB",1);\n'
             "ideal B=kbase(s);\n")  # fmt: skip
@@ -74,14 +84,14 @@ def main() -> int:
     jobs.append(run(pre + load + f"ideal G={h['G']};\nG=reduce(jet(G,{N}-1),s);\n"
                     f'short=0; write(":w {sp}/qG.txt",G);\nquit;\n', sp / "g.sing"))  # fmt: skip
     for j in jobs:
-        j.wait()
+        finish(j)
     t_split = time.time() - t0
-    serial.wait()
+    finish(serial)
     t_serial = time.time() - t0
     names = ["qB.txt", "qG.txt"] + [f"qM{k}.txt" for k in range(1, nv + 1)]
     bad = [n for n in names if norm(out / "serial" / n) != norm(sp / n)]
-    halves = ((sp / "qM1.h1.txt").read_text() + "," + (sp / "qM1.h2.txt").read_text()).replace("\n", "")
-    if hashlib.sha256(halves.encode()).hexdigest() != norm(out / "serial" / "qM1.txt"):
+    halves = (sp / "qM1.h1.txt").read_bytes() + b"," + (sp / "qM1.h2.txt").read_bytes()
+    if hashlib.sha256(halves).hexdigest() != norm(out / "serial" / "qM1.txt"):
         bad.append("qM1 halves")
     print(f"N={N} serial {t_serial:.1f} s; split std {t_std:.1f} s, split total {t_split:.1f} s; "
           f"files {len(names)}; mismatches {bad}")  # fmt: skip

@@ -2,7 +2,8 @@
 
 `summary.txt` holds the measured cost of one Singular `std` call on the truncated slice ideal J + m^N of
 E8-bar -> N- at p = 32009, the first stage of the Singular export that a quotient-mode truncated rank of this fiber
-runs ([A5-246](../ledger.tsv) measures the whole export). The ledger row is A5-321.
+runs ([A5-246](../ledger.tsv) measures the whole export). The ledger row is A5-321. The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md)
+lists these timings as a result-missing record (section 3A, item 1).
 
 | N | quotient length (`vdim`) | standard basis size | wall time | peak resident set |
 |---:|---:|---:|---:|---:|

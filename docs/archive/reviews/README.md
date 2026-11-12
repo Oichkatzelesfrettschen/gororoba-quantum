@@ -126,6 +126,7 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-27-ascella-replication-review-orchestrator.md](2026-10-27-ascella-replication-review-orchestrator.md) | orchestrator's referee report on the replication, corrected by the audit |
 | [2026-11-10-kernel-limits-fiber-map/](2026-11-10-kernel-limits-fiber-map/README.md) | Local codex and nemotron reviews and the hosted Codex and Copilot findings on the kernel-plane limits at the special VB point and the fiber-to-Grassmannian map (pull request 817), each with its verdict and disposition |
 | [2026-11-10-monomial-ladder/](2026-11-10-monomial-ladder/README.md) | Local codex review of the monomial ladder (pull request 818) and the disposition of its six findings |
+| [untracked-records-audit-2026-11-11/](untracked-records-audit-2026-11-11/README.md) | Read-only audit of the ignored `docs/local/` trees of the A5 exceptional-fiber program (22,648 + 456 + 505 files) against every ref: result-missing, already-represented, scratch and failed-run groups with the home of each; the per-file listing is not retained and the counts are the audit's own |
 
 The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
 [model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.

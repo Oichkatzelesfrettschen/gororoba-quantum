@@ -34,6 +34,22 @@ split and copies every file whose scrubbed bytes differ from the retained copy (
 | [`azure-results/`](working/azure-results/README.md) | the complete work trees of Azure VMs `gororoba-a5-fiber`, `gororoba-a5-fiber-2` and `gororoba-a5-fiber-4`: archive hashes, restore command and the outputs they hold |
 | `*-brief.md`, `greater-picture-*.md`, `final-review-*.md`, `review-*.md` | consultant briefs and answers |
 
+The ignored `docs/local/` trees of the program were compared with every ref in the [retention audit](../../archive/reviews/untracked-records-audit-2026-11-11/README.md),
+which sorts their files into result-missing, provenance-gap, scratch and failed-run groups and names the home of each;
+the audit keeps no per-file listing, and its counts are its own. The records of `a5-failed-runs/`, `std-ladder/`,
+`split-export-test/`, `arcs-vb/`, `arcs/`, `structure/` and the operational ledger rows A5-327 to A5-332 retain its
+result-missing and failed-run groups.
+
+The first line of each of the three msolve logs (`working/distribute/out/a5-iso-nm-msolve/msolve.log`,
+`a5-iso-np-msolve/msolve.log` and `a5-w8-np-msolve/msolve.log`) reads `Initial seed for pseudo-random number generator
+is N`, with N = 1793211011, 1793211033 and 1793211444. The recorded commands pass no seed option, so the value is the
+tool's own seed of that retained run; it is kept as an identifier of the run and enters no seed ledger, because the
+repository drew no seed for it. Measured: the msolve 0.11.0 help text documents `--random-seed` with the default `-1`,
+meaning `time(0)`, and a local run of that build printed a seed equal to the Unix time at its start; the three logged
+values read as the Unix times 2026-10-28T18:10:11Z, 18:10:33Z and 18:17:24Z. Hypothesis: the `passagemath-msolve`
+10.8.13 wheel of the kernels (msolve version not recorded in the logs) seeds from the clock in the same way, and a
+replay with `--random-seed N` reproduces the pseudo-random choices of the run.
+
 The registry and its checks sit beside `working/` and read only from it:
 
 | File | Content |
@@ -47,7 +63,7 @@ The registry and its checks sit beside `working/` and read only from it:
 | [n15-laptop/](n15-laptop/) | E8-bar -> N- at N = 15 on the workstation: engine v9 d = 4 at both primes (r 495, blocks 158, 137, 100, 100; certifies h_4 = 495, and h_4 of E8-bar -> N+ by the sign isomorphism), the engine v11 d = 4 control at p = 32009 (same blocks), and v11 d = 5 at both primes (r 742, blocks 168, 148, 213, 213, a lower bound against HF 952) |
 | [a5-failed-runs/](a5-failed-runs/README.md) | the 36 run records and four engines (`fiber_rank_v4.py` to `v7.py`) of the ignored `docs/local/a5-failed-runs/` tree that the registry binds or lists as unbound, at their original relative paths, so the scan root of the same name rebuilds `claims.json`, `certificates.jsonl` and `unbound.jsonl` byte for byte from tracked files; ledger rows such as A5-080 cite them by these paths; four of the records, with per-block ranks below the K2 count of E8-bar -> N-, W8 -> N- and X-, bind nothing and enter the ledger as A5-324 |
 | [std-ladder/](std-ladder/README.md) | Singular `std(J + m^N)` of E8-bar -> N- at p = 32009 for N = 12, 13 and 14: 627, 1,584 and 4,195 s, quotient lengths 11,595, 16,575 and 23,128, basis sizes 5,125, 6,739 and 8,687 (A5-321) |
-| [split-export-test/](split-export-test/README.md) | the split quotient export of engine v9 against the serial export of engine v8 on E8-bar -> N- at p = 32009: 11 files equal at N = 9 and N = 11, 31.3 against 37.3 s and 425.3 against 524.8 s (A5-322) |
+| [split-export-test/](split-export-test/README.md) | the split quotient export of engine v9 against the serial export of engine v8 on E8-bar -> N- at p = 32009: 11 files byte-identical at N = 9 and N = 11, 31.3 against 37.3 s and 425.3 against 524.8 s (A5-322) |
 | [n16-laptop/](n16-laptop/) | E8-bar -> N- at N = 16 and p = 32009 on the workstation with engine v11 (`replay/engine/fiber_rank_v11.py`): degree 5 gives r_16 = 742 with blocks 168, 148, 213, 213, equal to r_15 and below the K2 count 952 and the arc lower bound 861 of [arcs/](arcs/README.md), so it is a lower bound only; degree 4 gives r_16 = 495 with blocks 158, 137, 100, 100, equal to the K2 count 495 and to r_15; the registry scan roots include this directory, so [claims.json](claims.json) binds the degree-4 record (r_16 = 495, the K2 count) and leaves the degree-5 record, a lower bound below 952, unbound |
 | [n18-laptop/](n18-laptop/README.md) | E8-bar -> N- at N = 18, both primes, engine v11: h_5 = 952 (A5-183, A5-220) and the degree-4 controls |
 | [iso-d6-n19-laptop/](iso-d6-n19-laptop/README.md) | Iso degree 6 at N = 18 and 19: h_6 = 2,422 at both primes (A5-119, A5-125) |

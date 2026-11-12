@@ -15,6 +15,11 @@ from pathlib import Path
 
 import flint
 
+ROOT = Path(__file__).resolve().parents[5]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
 
 def field(pattern: str, text: str) -> str:
     m = re.search(pattern, text)
@@ -35,32 +40,35 @@ def exponents(text: str, names: list[str]) -> list[list[int]]:
     return out
 
 
+def record(path: str) -> str:
+    """The JSON line of one header."""
+    t = Path(path).read_text()
+    names = field(r"ring r=\d+,\(([^)]*)\)", t).split(",")
+    rows = []
+    for ideal in ("J", "G"):
+        for poly in field(rf"ideal {ideal}=([^;]*);", t).split(","):
+            e = exponents(poly, names)
+            rows += [[a - b for a, b in zip(x, e[0], strict=True)] for x in e[1:]]
+    snf = flint.fmpz_mat(rows).snf()
+    diag = [int(snf[i, i]) for i in range(min(snf.nrows(), snf.ncols()))]
+    nonzero = [d for d in diag if d]
+    order = 1
+    for d in nonzero:
+        order *= d
+    return json.dumps(
+        {
+            "header": path,
+            "vars": len(names),
+            "lattice_rank": len(nonzero),
+            "invariant_factors": nonzero,
+            "torus_order": order if len(nonzero) == len(names) else "infinite",
+        }
+    )
+
+
 def main() -> None:
-    for path in sys.argv[1:]:
-        t = Path(path).read_text()
-        names = field(r"ring r=\d+,\(([^)]*)\)", t).split(",")
-        rows = []
-        for ideal in ("J", "G"):
-            for poly in field(rf"ideal {ideal}=([^;]*);", t).split(","):
-                e = exponents(poly, names)
-                rows += [[a - b for a, b in zip(x, e[0], strict=True)] for x in e[1:]]
-        snf = flint.fmpz_mat(rows).snf()
-        diag = [int(snf[i, i]) for i in range(min(snf.nrows(), snf.ncols()))]
-        nonzero = [d for d in diag if d]
-        order = 1
-        for d in nonzero:
-            order *= d
-        print(
-            json.dumps(
-                {
-                    "header": path,
-                    "vars": len(names),
-                    "lattice_rank": len(nonzero),
-                    "invariant_factors": nonzero,
-                    "torus_order": order if len(nonzero) == len(names) else "infinite",
-                }
-            )
-        )
+    for line in parallel.ordered_map(record, sys.argv[1:], min_items=1):
+        print(line)
 
 
 if __name__ == "__main__":

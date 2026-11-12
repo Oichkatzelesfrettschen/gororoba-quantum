@@ -123,7 +123,8 @@ onto the other. The input logs are byte-identical to `families/` of the four tar
 and `check_j_twist.py` beside it are retained as run, byte-identical for the two primes. They import the earlier `symfam.py` and `arclib.py` of the
 campaign, whose interfaces the consolidated modules of this directory replaced (`load_fj(logtext)` against
 `load_fj(logtext, p)`), and a per-target `config.py`; with those modules and the `families/` logs as `fam/`, both
-producers reproduced the retained files byte for byte.
+producers reproduced the retained files byte for byte. The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md)
+lists the twist records as result-missing (section 3A, item 6).
 
 ## Records per target
 

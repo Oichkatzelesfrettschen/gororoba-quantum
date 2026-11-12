@@ -95,7 +95,8 @@ slice.
 ## Sign symmetry of the fiber headers: Smith invariants, signed-permutation sweep, the pair flip
 
 [sign-symmetry/](sign-symmetry/) retains the records behind A5-032 and A5-049 for the three producer specializations
-(p, i) = (32009, 10754), (32009, 21255) and (32029, 9115). The exact proof of the pair flip is
+(p, i) = (32009, 10754), (32009, 21255) and (32029, 9115); the [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md) lists them as a
+provenance gap (section 3B). The exact proof of the pair flip is
 `doubling_automorphism.py` above; these records are the computations that found and bounded it.
 
 | File | Content |
@@ -107,13 +108,25 @@ slice.
 
 The sweep prunes permutations by a per-variable profile of J, so an empty result for a multi-generator J is not a
 proof of absence and a valid map with J_b = 2 J_a is pruned; it certifies the maps it found. The `tc_*` tangent-cone
-probes of the same run carried Singular errors and were withdrawn; they are not retained. Replay from the tracked
-headers under `../working/build/inputs/`: `smith_torus.py` reproduced `smith_torus.jsonl` (header paths aside),
-`sign_search.py` reproduced `sign_search.log` at all three specializations, and `signed_perm_sweep.py` on the nine
-headers of the run reproduced `sweep_p32009.jsonl` byte for byte (68 s). The programs `smith_torus.py`,
-`signed_perm_sweep.py` and `tangent_cone.py` are formatted with ruff after the run (whitespace and quotes only) so the
-`sources` gate of `ci/gates.json` accepts them. The `header` and `map` fields of the records hold the paths of the
-producing run.
+probes of the same run carried Singular errors and were withdrawn; they are not retained.
+
+`npm_map.py` wrote the first three lines of `npm_map.jsonl` and `k2_transport.py` the last two. The `map` field of
+those two lines names the `map_*.json` file tracked beside the record, and every other field equals the line the run
+wrote while reading an untracked copy of the same map (`k2_transport.py` on the retained relation files and the tracked
+map reproduces both lines). The `header` fields of `smith_torus.jsonl` hold the run path of the headers, written
+`~/Projects/gororoba-workspace/gororoba-quantum/docs/evidence/a5-exceptional-fibers/working/build/inputs/...` by the
+scrub of `retain_working.sh`.
+
+Replay from the tracked headers under `../working/build/inputs/`, with `GOROROBA_WORKERS=2`. `smith_torus.py`,
+`sign_search.py` and `signed_perm_sweep.py` map their independent items (headers, sign vectors, permutations of one
+header pair) through `ordered_map` of `gororoba_quantum/parallel.py` in input order, so each output equals the serial
+program's. `smith_torus.py` run on the 27 header paths of the record, from a directory whose `~/Projects/gororoba-workspace/`
+subdirectory links to the checkout, reproduced `smith_torus.jsonl` byte for byte (the header paths resolve there);
+`sign_search.py` on the E8-bar headers of (32009, 10754) reproduced `sign_search.log` byte for byte; and
+`signed_perm_sweep.py` on the nine headers of the run (`e8-nm`, `e8-np`, `e8-vb`, `iso-nm`, `iso-np`, `w8-nm`, `w8-np`,
+`xm-nm`, `xp-np` of `p32009-r10754`) reproduced `sweep_p32009.jsonl` byte for byte in 26 s, against 68 s for the serial
+program. The programs `smith_torus.py`, `signed_perm_sweep.py` and `tangent_cone.py` are formatted with ruff after the
+run (whitespace and quotes only) so the `sources` gate of `ci/gates.json` accepts them.
 
 ## Re-audit records: germ fingerprints and the pair flip at three specializations
 
@@ -140,6 +153,7 @@ and read `working/build/inputs/`.
 
 ## Tangent cones of X- and E8-bar -> VB
 
+The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md) lists these cones as a result-missing record (section 3A, item 5).
 [germ-xvb/](germ-xvb/) holds the tangent cones at the origin of the presolved slice germs of X- -> N- (7 variables, 12
 generators of J, header `xm-nm.sing`) and E8-bar -> VB (8 variables, 17 generators, `e8-vb.sing`) at p = 32009. The
 program `tangent_cone.py HEADER TAG` writes a Singular script that deforms each generator f to f(u t) / u^ord(f),
