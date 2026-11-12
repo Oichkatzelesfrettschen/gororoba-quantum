@@ -116,9 +116,24 @@ def check(data: list[dict[str, str]]) -> list[str]:
     return problems
 
 
+def uncited_directories(data: list[dict[str, str]], directories: list[str]) -> list[str]:
+    """The directories, as repository-relative paths, under which no row cites an evidence path."""
+    cited = [x.strip() for r in data for x in r["evidence"].split(";") if x.strip()]
+    return [d for d in directories if not any(path == d or path.startswith(d + "/") for path in cited)]
+
+
+def a5_directories() -> list[str]:
+    """Every `docs/evidence/a5-*` directory of the checkout; `--check` requires a citing row for each."""
+    return sorted(str(p.relative_to(ROOT)) for p in (ROOT / "docs" / "evidence").glob("a5-*") if p.is_dir())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--check", action="store_true", help="validate the ledger; exit 1 on any problem")
+    ap.add_argument(
+        "--check",
+        action="store_true",
+        help="validate the ledger and require a citing row for every a5-* evidence directory; exit 1 on any problem",
+    )
     ap.add_argument("--summary", action="store_true", help="counts by status and kind")
     ap.add_argument(
         "--open",
@@ -128,6 +143,9 @@ def main() -> int:
     a = ap.parse_args()
     data = rows()
     problems = check(data)
+    if a.check:
+        uncited = uncited_directories(data, a5_directories())
+        problems += [f"{d}: no ledger row cites this evidence directory" for d in uncited]
     for line in problems:
         print(line)
     if a.summary or not (a.check or a.open):

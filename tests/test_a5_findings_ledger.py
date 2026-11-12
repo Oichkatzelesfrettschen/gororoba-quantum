@@ -36,6 +36,17 @@ def test_a_row_with_a_missing_evidence_path_or_unknown_status_is_reported() -> N
         raise AssertionError(problems)
 
 
+def test_every_a5_evidence_directory_is_cited_and_an_uncited_one_is_reported() -> None:
+    mod = load()
+    data = mod.rows()
+    directories = mod.a5_directories()
+    if len(directories) < 15 or mod.uncited_directories(data, directories):
+        raise AssertionError((directories, mod.uncited_directories(data, directories)))
+    absent = "docs/evidence/a5-kernel"
+    if mod.uncited_directories(data, [*directories, absent]) != [absent]:
+        raise AssertionError("a directory that only prefixes cited names passes as cited")
+
+
 def test_a_supersedes_pointer_runs_from_a_live_successor_to_a_superseded_row() -> None:
     mod = load()
     old = dict(mod.rows()[0], id="A5-901", status="superseded", supersedes="")
