@@ -19,6 +19,11 @@ the closest entry and say what changed.
 - Formulation: the cheapest decisive computation chosen (computer-algebra.md) and the alternatives rejected.
 - Host and tool versions: substrate row of compute-flags.md, binary and version.
 - Launch line and environment: every flag, with the reason for each non-default value.
+- Runner and exit status: the launcher exits with the engine's status and records it; a fiber-rank cell runs through
+  `docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py` (JSON written to `.part` and renamed after exit 0
+  and identity validation, engine arguments after `--`, process-group resource record, `--timeout`). A launcher
+  that exits 0 after an engine failure, or that writes the engine's stdout straight to the final record, is a
+  departure to list below (#793, #802).
 - Departures from the foundations: each rule not followed, and why.
 - Parallelism: processes against physical cores (hyperthreads counted separately).
 - Memory and time limits: mechanism, value, and what the log shows if a limit rather than the mathematics ends it.
@@ -184,8 +189,14 @@ the closest entry and say what changed.
 - Parallelism: one job on the laptop; export chunks run through the engine's worker pool.
 - Memory and time limits: the cgroup cap of 48 GiB; the preflight gate ends the run by design (exit 1).
 - Checkpoints: the export directory keeps `s.txt` and `qB.txt` with their hashes.
-- End state: export kept on the laptop for the full run; records retained; the runner logs the engine status but
-  exits 0 on failure (#793 tracks the fix for new runners).
+- End state: export kept on the laptop for the full run; records retained. That executed runner logs the engine
+  status but exits 0 on failure and writes stdout directly to the final record, so its bytes remain retained as
+  historical evidence only. New cells use `docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py`: it exits
+  with the engine status, writes JSON to `.part`, validates the engine/header/field/degree/order identity and a
+  nonnegative integral `r_N`, then flushes and atomically renames only after exit 0. Existing final JSON is skipped
+  only after the same validation and a match of the engine-argument digest in the resource record; failures retain
+  `.part`, stderr and process-group resource evidence. Engine arguments follow `--`; SIGTERM, SIGINT and
+  `--timeout SECONDS` terminate the engine's process group and exit 128 + signal or 124 (#793, #802).
 - Outcome: standard basis and preflight in 2,773.7 s at 486,608 KiB peak; preflight 375.62 GiB (D = 235,543); peak
   forecast about 160 GiB, at most about 195 GiB, from the degree-5 term-by-term reading. Case:
   `docs/evidence/a5-exceptional-fibers/working/azure-cases/w8-d6-n19.md`.
@@ -398,6 +409,76 @@ the closest entry and say what changed.
 - Checkpoints: `summary.json`, `a5-k2-iso-direct.log`, an empty `out.log` per job.
 - End state: the kernel output pulled and kept under `working/distribute/out/`.
 - Outcome: both jobs timed out at 41,000.1 s with no result.
+
+
+### W8 -> N- degree 5, N = 16: preceding cached-operator acceptance on the build host
+
+- Question and decisive outcome: whether engine v14 with the compact echelon reproduces the retained v11 receipt run
+  of W8 -> N- at p = 32009 (`r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, A5-333) under a 16 GiB scope.
+  The 12 GiB `--max-gb` value admits selected-array estimates; sampled process-group RSS supplies a distinct
+  observation. The cell checks arithmetic at N = 16, while the N = 19 route requires its own validation.
+- Formulation: the engine's quotient mode over the degree-2 receipt, so the 4,116 standard representatives are
+  multiplied (4,381 rows built) and 265 nonstandard checks (202 targeted, 63 strided) test for rank growth; the
+  comparator is the retained receipt-bound v11 run of `w8-n16-azure/`.
+- Host and tool versions: the build host, Python 3.14.7, NumPy 2.5.4, SciPy 1.18.1, python-flint 0.9.0, Singular
+  4.4.1; engine `fiber_rank_v14.py` sha256 `ba7bc490c9e986ab...`.
+- Launch line and environment: the command of
+  [memory-bounded/README.md](../evidence/a5-exceptional-fibers/memory-bounded/README.md#reproducing-the-acceptance-run)
+  under `systemd-run --user --scope -p MemoryMax=16G -p MemorySwapMax=0`, `--timeout 14400`, `--operator-cache-gb 6`
+  (the cached uint16 operator), `--echelon compact`, `--chunk 64`, `--max-gb 12`, `--dense-tables-gb 0`, and
+  `GOROROBA_WORKERS=4`, `OPENBLAS_NUM_THREADS=4`, `OMP_NUM_THREADS=1`.
+- Runner and exit status: `rank_cell.py`; engine exit 0, runner exit 0, `termination: exited`, empty
+  `validation_error`.
+- Departures from the foundations: none identified; the memory scope (16 GiB) sits above the `--max-gb 12` of the
+  preflight.
+- Parallelism: 4 workers and 4 BLAS threads on the build host; the resource file records at most 10 processes.
+- Memory and time limits: `--max-gb 12` (the preflight admitted at 4.69 GiB), the 16 GiB scope with no swap, and the
+  runner's 14,400 s timeout; a limit that ended the run would show in `termination` and in the exit status.
+- Checkpoints: the engine's stderr prints `products built`, one line per closure round and the echelon insert time;
+  the runner publishes the stdout record by atomic rename after exit 0.
+- End state: the three records under `memory-bounded/w8-n16-acceptance/` (stdout record, stderr, resource file), each
+  listed with its sha256 in `memory-bounded/w8-n16-acceptance.json`. The sparse-panel release acceptance below
+  refreshes those derived paths; Git preserves the preceding run's bytes.
+- Outcome: the first attempt ended after about 27 minutes (the operator's account; its records were not kept) with
+  exit 1, because `rank_cell.process_group_rss` raised `ProcessLookupError` when a group member exited between the
+  `/proc` directory listing and the read of its stat file; commit `b97b47fa9` skips such a member and adds a test that
+  raises ESRCH on one stat read. The preceding successful run, on the engine whose preflight includes cached-operator construction
+  scratch and whose first closure pass multiplies `--chunk` rows at a time, took 5,881.9 s (Singular and export 569.5 s, products 1,255.3 s,
+  closure 3,966.0 s, of which echelon inserts 3,812.7 s) with a maximum sampled process-group RSS of 5,377,896,448 bytes
+  (5.01 GiB), `r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315,
+  and no rank growth in 265 nonstandard checks. The measured-combinations table of compute-flags.md holds no
+  engine v14 row.
+
+### W8 to N-minus degree 5, order 16: sparse-panel release acceptance
+
+- Question and falsifier: the corrected uint16 operator builder releases each sparse-product panel before building
+  the next. The degree-5, order-16 cell at prime 32009 must reproduce rank 4116, all four block ranks and all 265
+  nonstandard controls of the retained engine-v11 receipt run. A differing rank or control falsifies equivalence;
+  a resource stop establishes an operational limit.
+- Formulation and sources: engine v14 `342ec30537a09ba0...` with the retained W8 header and degree-2 receipt, quotient
+  mode, cached uint16 operator and compact echelon. The existing successful records remain intact until the new
+  output validates; a fresh directory prevents an existing-record skip.
+- Host and launch: the build host, pinned Python 3.14.7 and Singular 4.4.1; four workers, two OpenBLAS threads,
+  OMP one, `MALLOC_ARENA_MAX=2` and the loader TLS reservation. The engine uses `--quotient --stream-products
+  --operator-cache-gb 6 --echelon compact --chunk 64 --max-gb 12 --dense-tables-gb 0` and the retained receipt.
+- Memory and deadline: a 16 GiB cgroup scope with zero allowed swap; runner timeout 10800 seconds and scope backstop
+  10920 seconds. The prior measured 5881.946 seconds times 1.75 plus 300 gives 10593.4055 seconds, rounded upward.
+  The cgroup cap is distinct from the selected-array preflight budget and the sampled process-group RSS statistic.
+- Checkpoints and admission: the runner preserves partial stdout, stderr and resources on failure, and publishes
+  after successful exit and identity validation. A terminal record decides the exit state. The sampled RSS maximum
+  and sampling interval are retained together; allocations between samples remain unobserved.
+- Outcome: the engine, runner and terminal wrapper exit 0. The runner records 7,218.380 seconds, rank 4116,
+  block contributions 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315, and zero
+  growth in all 265 nonstandard controls. Singular/export took 431.6 seconds, products 914.5 seconds and closure
+  5,578.7 seconds, including 5,324.6 seconds of echelon insertion. Maximum sampled process-group RSS is
+  5,398,753,280 bytes (5.03 GiB), sampled every 0.1 seconds across at most ten processes, with zero unavailable
+  samples. All six source/input hashes match the launch case. The preceding canonical bytes were copied and
+  hash-verified before the three fresh records replaced them; the regenerated acceptance summary and selected-array
+  model both pass their read-only checks. The observed cached N = 16 route supplies no N = 19 fit guarantee.
+  The retained v14 preflight omits the third product-stack copy; its numerical estimate remains historical.
+  The [versioned successor](../evidence/a5-exceptional-fibers/memory-bounded/README.md#product-row-admission) counts
+  that copy and preserves the executable arithmetic, with bounded cached/streamed controls; its full-scale
+  acceptance is not run. The tracked launch manifest binds the six original inputs and completed resource record.
 
 ### E8-bar degree-seven fiber-cone ranks from arc jets
 
