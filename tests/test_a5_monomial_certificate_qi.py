@@ -84,3 +84,14 @@ def test_the_retained_record_has_no_failure_and_a_wrong_invariant_flips_it() -> 
         broken = dict(row, l_mult=11)
         _check(set(cert.invariant_failures(broken)) == {"l_mult"})
         _check(cert.verdict(broken) == "failed")
+
+
+def test_the_record_comparison_drops_run_measurements_and_keeps_every_polynomial() -> None:
+    row = dict(_row(), wall_seconds=4.1, peak_rss_kib=107568, l_polynomials=["y1*y2", "y3^2"])
+    row["reductions"][0]["wall_seconds"] = 0.3
+    other = copy.deepcopy(row)
+    other["wall_seconds"], other["peak_rss_kib"] = 9.9, 1
+    other["reductions"][0]["wall_seconds"] = 7.0
+    _check(cert.algebraic({"cases": [row]}) == cert.algebraic({"cases": [other]}))
+    other["l_polynomials"][0] = "1"
+    _check(cert.algebraic({"cases": [row]}) != cert.algebraic({"cases": [other]}))
