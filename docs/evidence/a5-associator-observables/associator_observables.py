@@ -95,6 +95,8 @@ COMPOSITE_T2 = (Fraction(-1), Fraction(2), Fraction(1, 2), Fraction(1))
 GRID_STRIDE = 11
 GRID_PER_STRATUM = 100
 GRID_CHUNK = 4096
+GRID_SIZE = 3**15
+GRID_CANDIDATE_CHUNK = 1 << 19
 # (index of the compact derivation, cos, sin); every pair satisfies cos^2 + sin^2 = 1.
 AUTOMORPHISMS: dict[str, tuple[tuple[int, Fraction, Fraction], ...]] = {
     "rot-a": ((0, Fraction(3, 5), Fraction(4, 5)),),
@@ -421,25 +423,30 @@ def programs() -> list[tuple[str, Program]]:
 # Grid points
 
 
-def _grid_candidates() -> list[int]:
-    """Indices i of {-1, 0, 1}^15 (digit k of i in base 3, minus 1, is z'_(k+1)) on a necessary equation of R_8."""
+def _grid_candidate_chunk(bounds: tuple[int, int]) -> list[int]:
+    """Ascending grid indices in the half-open bounds satisfying a necessary equation of R_8."""
+    start, stop = bounds
     eta = np.array(independent.ETA[1:8], dtype=np.int64)
     powers = 3 ** np.arange(15, dtype=np.int64)
-    total = 3**15
-    chunk = 1 << 19
-    found: list[Any] = []
-    for start in range(0, total, chunk):
-        idx = np.arange(start, min(start + chunk, total), dtype=np.int64)
-        digits = (idx[:, None] // powers[None, :]) % 3 - 1
-        u, mu, v = digits[:, 0:7], digits[:, 7], digits[:, 8:15]
-        eu = (u * u * eta).sum(axis=1)
-        ev = (v * v * eta).sum(axis=1)
-        euv = (u * v * eta).sum(axis=1)
-        w8 = (mu == 0) & (eu + ev == 0) & (euv == 0)
-        quadric = (eu - mu * mu - ev == 0) & (euv * euv - eu * ev == 0)
-        keep = (w8 | quadric) & (digits != 0).any(axis=1)
-        found.append(idx[keep])
-    return [int(i) for i in np.concatenate(found)]
+    indices = np.arange(start, stop, dtype=np.int64)
+    digits = (indices[:, None] // powers[None, :]) % 3 - 1
+    first_vector, scalar, second_vector = digits[:, 0:7], digits[:, 7], digits[:, 8:15]
+    first_norm = (first_vector * first_vector * eta).sum(axis=1)
+    second_norm = (second_vector * second_vector * eta).sum(axis=1)
+    mixed = (first_vector * second_vector * eta).sum(axis=1)
+    w8 = (scalar == 0) & (first_norm + second_norm == 0) & (mixed == 0)
+    quadric = (first_norm - scalar * scalar - second_norm == 0) & (mixed * mixed - first_norm * second_norm == 0)
+    keep = (w8 | quadric) & (digits != 0).any(axis=1)
+    candidates: list[int] = indices[keep].tolist()
+    return candidates
+
+
+def _grid_candidates() -> list[int]:
+    """Indices i of {-1, 0, 1}^15 (digit k of i in base 3, minus 1, is z'_(k+1)) on a necessary equation of R_8."""
+    bounds = [
+        (start, min(start + GRID_CANDIDATE_CHUNK, GRID_SIZE)) for start in range(0, GRID_SIZE, GRID_CANDIDATE_CHUNK)
+    ]
+    return [index for chunk in parallel.ordered_map(_grid_candidate_chunk, bounds, min_items=1) for index in chunk]
 
 
 def grid_point(index: int) -> RationalVector:

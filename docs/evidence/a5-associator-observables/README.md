@@ -124,6 +124,8 @@ Every point comes from the deterministic enumeration in the script; no random dr
 - `grid`: the points of `{-1, 0, 1}^15` in split coordinates that satisfy a necessary equation of `R_8` (`mu' = 0`,
   `eta(u') = -eta(v')`, `eta(u', v') = 0`; or `Q = 0` and `Delta = 0`), every 11th such point classified by its
   membership pattern, and per stratum 100 evenly spaced members (all members when fewer). The record lists the member counts.
+  Independent 524,288-index candidate chunks run through `parallel.ordered_map`; their ascending outputs concatenate
+  before the stride selection, so worker count preserves the selected coordinates and their order.
 
 Each point is certified in its stratum by the exact nullity of `L_y` and its membership pattern, evaluated on the Gaussian
 rational split coordinates of `y`; all 3,596 sample evaluations (3,044 distinct points) and all 336 control-image evaluations pass.

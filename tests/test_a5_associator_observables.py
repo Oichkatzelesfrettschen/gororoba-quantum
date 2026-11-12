@@ -4,8 +4,10 @@ rotation of it, each decided in exact arithmetic."""
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable, Sequence
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -84,3 +86,55 @@ def test_summary_counts_exact_coordinates_and_refuses_inconsistent_duplicates(mo
     rows[1]["obs"] = {**rows[1]["obs"], "rank_left": 24}
     with pytest.raises(RuntimeError, match="duplicate coordinates"):
         probe._summaries(rows, specs)
+
+
+@pytest.mark.parametrize(
+    "bounds,expected",
+    [
+        ((0, 27), [1, 3, 13, 23, 25]),
+        ((27, 54), [27, 37, 39, 47, 51]),
+        (
+            ((3**15 - 1) // 2 - 13, (3**15 - 1) // 2 + 14),
+            [(3**15 - 1) // 2 - 13 + offset for offset in (1, 3, 5, 7, 19, 21, 23, 25)],
+        ),
+        ((54, 54), []),
+    ],
+)
+def test_grid_candidate_chunk_matches_bounded_scalar_equations(bounds: tuple[int, int], expected: list[int]) -> None:
+    """The eight nonzero isotropic triples near the origin satisfy -u1^2-u2^2+u3^2=0.
+
+    The first two intervals fix the remaining base-three digits at zero, hence the remaining coordinates at -1.
+    Their literal indices also catch a missing interval endpoint, coordinate reversal or reordered results.
+    """
+    _check(probe._grid_candidate_chunk(bounds) == expected)
+
+
+def test_grid_candidate_dispatch_preserves_serial_parallel_order_and_stride(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A serial candidate loop, an unordered flattening or applying the stride inside chunks breaks the contract."""
+    monkeypatch.setattr(probe, "GRID_SIZE", 54)
+    monkeypatch.setattr(probe, "GRID_CANDIDATE_CHUNK", 17)
+    monkeypatch.setattr(probe, "GRID_STRIDE", 3)
+    actual_map = probe.parallel.ordered_map
+    dispatched: list[tuple[Callable[[Any], Any], int]] = []
+
+    def record_dispatch(function: Callable[[Any], Any], items: Sequence[Any], min_items: int = 64) -> list[Any]:
+        dispatched.append((function, min_items))
+        return actual_map(function, items, min_items=min_items)
+
+    monkeypatch.setattr(probe.parallel, "ordered_map", record_dispatch)
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    serial = probe._grid_candidates()
+    serial_selection = probe.grid_selection()
+    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    pooled = probe._grid_candidates()
+    pooled_selection = probe.grid_selection()
+    expected = [1, 3, 13, 23, 25, 27, 37, 39, 47, 51]
+    _check(serial == pooled == expected)
+    _check(serial[::3] == [1, 23, 37, 51])
+    selected = {name: [37] if name == "Ehat" else [] for name in probe.STRATA}
+    counts = {name: int(name == "Ehat") for name in probe.STRATA}
+    _check(serial_selection == pooled_selection == (selected, counts))
+    candidate_dispatches = [minimum for function, minimum in dispatched if function is probe._grid_candidate_chunk]
+    _check(candidate_dispatches == [1, 1, 1, 1])
