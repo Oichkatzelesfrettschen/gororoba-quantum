@@ -99,6 +99,7 @@ def fixture() -> tuple[dict[str, Any], bytes, bytes, bytes]:
         "joint_job_id": "synthetic-joint-job",
         "joint_platform_id": "synthetic-joint-platform",
         "apparatus_ids": ["qpu:ascella", "qpu:belenos"],
+        "endpoint_roles": {"bell_station": "qpu:ascella", "receiver": "qpu:belenos"},
         "route_id": "synthetic-route",
         "frame_convention": "receiver_byproduct_Xx_Zz",
         "processing_status": "raw_detector_counts",
@@ -271,6 +272,7 @@ def test_changed_configuration_anomalies_and_processing_block_physical_inference
         "processed",
     ):
         check(phrase in issues, f"preserve {phrase}")
+    check(report["metadata"]["processing_chain"] == ["probability_to_counts"], "the declared chain is retained")
     check(report["scores"]["equal_prior_success_weighted_fidelity"] == 1.0, "descriptor score remains visible")
     check(not report["physical_claim_admitted"], "a high descriptor score does not qualify the instrument")
 
@@ -398,6 +400,7 @@ def test_complete_case_declarations_allow_review_only() -> None:
         ({"claim_level": "C0"}, "C3 case only"),
         ({"output_capability": "O1"}, "surviving, heralded"),
         ({"output_capability": "O3"}, "surviving, heralded"),
+        ({"source_repository": "unrelated/repository"}, "source_repository must name"),
     ],
 )
 def test_a_documented_case_outside_the_terminal_c3_scope_is_not_review_ready(
@@ -750,6 +753,92 @@ def test_joint_record_faults_are_rejected_with_their_own_diagnostic(fault: str, 
         row["outcomes"][0]["receiver_pattern"] = [1, 0, 0]
     with pytest.raises(records.NetworkRecordError, match=re.escape(match)):
         records.parse_joint_record(value)
+
+
+ASCELLA_BELL = {"bell_station": "qpu:ascella", "receiver": "qpu:belenos"}
+BELENOS_BELL = {"bell_station": "qpu:belenos", "receiver": "qpu:ascella"}
+
+
+def test_endpoint_roles_follow_the_declared_transfer_direction() -> None:
+    value, _, _, _ = fixture()
+    check(records.analyze_joint(value)["metadata"]["endpoint_roles"] == ASCELLA_BELL, "A_to_B roles are retained")
+    value["protocol"] = "teleportation_B_to_A"
+    with pytest.raises(records.NetworkRecordError, match="contradict the direction of teleportation_B_to_A"):
+        records.parse_joint_record(value)
+    value["endpoint_roles"] = BELENOS_BELL
+    check(records.parse_joint_record(value).metadata["endpoint_roles"] == BELENOS_BELL, "B_to_A swaps the roles")
+    value["protocol"] = "teleportation_A_to_B"
+    with pytest.raises(records.NetworkRecordError, match="contradict the direction of teleportation_A_to_B"):
+        records.parse_joint_record(value)
+
+
+@pytest.mark.parametrize(
+    "roles,match",
+    [
+        ({"bell_station": "qpu:ascella"}, "missing keys"),
+        ({"receiver": "qpu:belenos"}, "missing keys"),
+        ({**ASCELLA_BELL, "reference": "qpu:ascella"}, "unknown keys"),
+        ({"bell_station": "qpu:ascella", "receiver": "qpu:ascella"}, "exactly one role"),
+        ({"bell_station": "qpu:ascella", "receiver": "qpu:other"}, "exactly one role"),
+        ({"bell_station": "qpu:ascella", "receiver": " "}, "endpoint_roles.receiver"),
+        (["qpu:ascella", "qpu:belenos"], "endpoint_roles must be an object"),
+        (None, "endpoint_roles must be an object"),
+    ],
+)
+def test_a_missing_extra_or_ambiguous_endpoint_role_map_is_rejected(roles: object, match: str) -> None:
+    value, _, _, _ = fixture()
+    value["endpoint_roles"] = roles
+    with pytest.raises(records.NetworkRecordError, match=match):
+        records.parse_joint_record(value)
+    del value["endpoint_roles"]
+    with pytest.raises(records.NetworkRecordError, match="missing keys"):
+        records.parse_joint_record(value)
+
+
+def test_a_swapped_role_map_cannot_bind_to_a_case_of_the_other_direction() -> None:
+    value, case_bytes, _, _ = fixture()
+    value["protocol"] = "teleportation_B_to_A"
+    value["endpoint_roles"] = BELENOS_BELL
+    with pytest.raises(records.NetworkRecordError, match="bound case protocol differs"):
+        records.verify_bindings(value, case_bytes=case_bytes)
+
+
+@pytest.mark.parametrize(
+    "status,chain,match",
+    [
+        ("raw_detector_counts", ["probability_to_counts"], "must be empty"),
+        ("processed_counts", [], "needs a nonempty processing_chain"),
+    ],
+)
+def test_processing_status_and_chain_must_agree(status: str, chain: list[str], match: str) -> None:
+    value, _, _, _ = fixture()
+    value.update(processing_status=status, processing_chain=chain)
+    with pytest.raises(records.NetworkRecordError, match=match):
+        records.parse_joint_record(value)
+
+
+@pytest.mark.parametrize("chain", [[], ["adapter_normalization"]])
+def test_an_unknown_processing_status_takes_any_declared_chain(chain: list[str]) -> None:
+    value, _, _, _ = fixture()
+    value.update(processing_status="unknown", processing_chain=chain)
+    report = records.analyze_joint(value)
+    check(report["metadata"]["processing_chain"] == chain, "the declared chain survives")
+    check("processed or unknown" in " ".join(report["integrity_and_scope_issues"]), "unknown law is an issue")
+
+
+def _nested(depth: int) -> bytes:
+    """A JSON object whose deepest array sits at the given container level; the root object is level 1."""
+    return b'{"x":' + b"[" * (depth - 1) + b"0" + b"]" * (depth - 1) + b"}"
+
+
+@pytest.mark.parametrize("depth,accepted", [(1, True), (63, True), (64, True), (65, False), (66, False)])
+def test_json_depth_counts_the_root_and_admits_exactly_the_maximum(depth: int, accepted: bool) -> None:
+    check(records.MAX_JSON_DEPTH == 64, "the boundary cases below assume a 64-level limit")
+    if accepted:
+        check(records.decode_json(_nested(depth))["x"] is not None, "within the limit")
+    else:
+        with pytest.raises(records.NetworkRecordError, match="nesting exceeds 64 levels"):
+            records.decode_json(_nested(depth))
 
 
 def test_a_repeated_outcome_key_is_rejected_even_when_the_counts_conserve() -> None:

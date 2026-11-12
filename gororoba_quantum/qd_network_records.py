@@ -44,6 +44,16 @@ AXES = ("X", "Y", "Z")
 INPUTS = tuple(row[0] for row in SIX_STATES)
 MATCHING = {label: (axis, 0 if sign == 1 else 1) for label, _, axis, sign in SIX_STATES}
 PROTOCOLS = ("teleportation_A_to_B", "teleportation_B_to_A")
+SOURCE_REPOSITORY = "Oichkatzelesfrettschen/gororoba-quantum"
+# The design (docs/design/ascella-belenos-entanglement-teleportation.md, "Roles") places the input q and the
+# sender half a on Ascella and the receiver half b on Belenos, so direction A_to_B names Ascella as the Bell
+# station and Belenos as the receiver; B_to_A exchanges them. qd_network_protocol defines no device mapping.
+ENDPOINT_ROLES = {
+    "teleportation_A_to_B": {"bell_station": "qpu:ascella", "receiver": "qpu:belenos"},
+    "teleportation_B_to_A": {"bell_station": "qpu:belenos", "receiver": "qpu:ascella"},
+}
+ROLE_KEYS = frozenset(("bell_station", "receiver"))
+PROCESSING_STATUSES = ("raw_detector_counts", "processed_counts", "unknown")
 EVIDENCE_STATUSES = ("unknown", "documented", "unavailable", "conflicting")
 EVIDENCE_KEYS = frozenset(("status", "reference", "sha256", "reason"))
 ASSUMPTIONS = (
@@ -188,6 +198,7 @@ def _finite_json_float(value: str) -> float:
 
 
 def _check_json_depth(value: dict[str, Any]) -> None:
+    """Reject containers nested deeper than MAX_JSON_DEPTH; the root object is level 1, so 64 levels pass."""
     # Dependent traversal keeps only one iterator per ancestor, independent of array length.
     stack = [iter((value,))]
     while stack:
@@ -197,7 +208,7 @@ def _check_json_depth(value: dict[str, Any]) -> None:
             stack.pop()
             continue
         if isinstance(item, dict | list):
-            if len(stack) >= MAX_JSON_DEPTH:
+            if len(stack) > MAX_JSON_DEPTH:
                 raise NetworkRecordError(f"JSON nesting exceeds {MAX_JSON_DEPTH} levels")
             stack.append(iter(item.values() if isinstance(item, dict) else item))
 
@@ -235,7 +246,7 @@ def case_template(source_revision: str) -> dict[str, Any]:
         "schema": CASE_SCHEMA,
         "status": "draft",
         "admission": "blocked",
-        "source_repository": "Oichkatzelesfrettschen/gororoba-quantum",
+        "source_repository": SOURCE_REPOSITORY,
         "source_revision": _revision(source_revision, "source_revision"),
         "protocol": "teleportation_A_to_B",
         "claim_level": "C3",
@@ -334,6 +345,8 @@ def assess_case(case: Mapping[str, Any]) -> dict[str, Any]:
     if ensemble["accepted_multiphoton_bound"] is None:
         missing.append("accepted_multiphoton_bound")
     unsupported = []
+    if item["source_repository"] != SOURCE_REPOSITORY:
+        unsupported.append(f"source_repository must name {SOURCE_REPOSITORY}")
     if item["claim_level"] != "C3":
         unsupported.append("version 1 assesses a terminal single-hop C3 case only")
     if item["output_capability"] != "O0":
@@ -365,6 +378,7 @@ JOINT_KEYS = frozenset(
         "joint_job_id",
         "joint_platform_id",
         "apparatus_ids",
+        "endpoint_roles",
         "route_id",
         "frame_convention",
         "processing_status",
@@ -518,9 +532,20 @@ def parse_joint_record(record: Mapping[str, Any]) -> JointRecord:
     apparatus = _strings(item["apparatus_ids"], "apparatus_ids", unique=True)
     if set(apparatus) != {"qpu:ascella", "qpu:belenos"}:
         raise NetworkRecordError("apparatus_ids must identify the two declared Ascella/Belenos partitions")
+    roles = _object(item["endpoint_roles"], "endpoint_roles", ROLE_KEYS)
+    for role, platform in roles.items():
+        _text(platform, f"endpoint_roles.{role}")
+    if sorted(roles.values()) != sorted(apparatus):
+        raise NetworkRecordError("endpoint_roles must assign each apparatus_ids entry to exactly one role")
+    if roles != ENDPOINT_ROLES[item["protocol"]]:
+        raise NetworkRecordError(f"endpoint_roles contradict the direction of {item['protocol']}")
     _choice(item["frame_convention"], "frame_convention", (FRAME_CONVENTION,))
-    _choice(item["processing_status"], "processing_status", ("raw_detector_counts", "processed_counts", "unknown"))
-    _strings(item["processing_chain"], "processing_chain")
+    status = _choice(item["processing_status"], "processing_status", PROCESSING_STATUSES)
+    chain = _strings(item["processing_chain"], "processing_chain")
+    if status == "raw_detector_counts" and chain:
+        raise NetworkRecordError("raw_detector_counts declares no processing, so processing_chain must be empty")
+    if status == "processed_counts" and not chain:
+        raise NetworkRecordError("processed_counts needs a nonempty processing_chain naming each transformation")
     evidence = _object(item["evidence"], "evidence", frozenset(ASSUMPTIONS))
     item["evidence"] = {key: _evidence(value, f"evidence.{key}") for key, value in evidence.items()}
     blocks = _strings(item["block_ids"], "block_ids", unique=True)
@@ -780,6 +805,9 @@ def verify_bindings(
     metadata = joint.metadata
     inputs = {"case": case_bytes, "raw_result": raw_result_bytes, "payload": payload_bytes}
     bindings: dict[str, Any] = {}
+    # At most three digests of up to MAX_JSON_BYTES run serially. Measured on a 12-worker Linux host with three
+    # 64 MiB buffers: serial 0.10-0.18 s; parallel.ordered_map(min_items=1) 0.25-0.42 s, because the pool pickles
+    # every buffer into its workers; hence no pool.
     for name, data in inputs.items():
         expected = metadata[f"{name}_sha256"]
         if data is None:
@@ -809,6 +837,8 @@ def verify_bindings(
         ):
             if case[left] != metadata[right]:
                 raise NetworkRecordError(f"bound case {left} differs from joint record {right}")
+        # parse_joint_record fixes endpoint_roles to the direction of the record's protocol, so the equal protocols
+        # above and the equal platform sets below bind the roles to the case.
         if set(case["local_platforms"]) != set(metadata["apparatus_ids"]):
             raise NetworkRecordError("bound case apparatus scope differs from the joint record")
         if case["claim_level"] != "C3" or case["output_capability"] != "O0":

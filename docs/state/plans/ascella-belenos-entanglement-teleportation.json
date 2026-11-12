@@ -209,6 +209,42 @@
             }
           ],
           "scope_sha256": "251fa45a5f8eadd2623946d447173757c950405704a8c72618c407c6b00f1676"
+        },
+        {
+          "result": "Review-finding fixes: the joint record requires an endpoint_roles map (bell_station and receiver) that must assign each apparatus once and follow the protocol direction; processing_status and processing_chain must agree (raw_detector_counts with an empty chain, processed_counts with a nonempty one); a case whose source_repository differs from the canonical repository is listed under unsupported_scope; the JSON depth limit counts the root object as level 1 and is tested at 63, 64 and 65. The five-file focused selection collects 237 tests (157 reader, 18 command-line, 7 protocol-boundary controls, 28 protocol model, 27 classical benchmark) and all pass. Three 64 MiB digests run serially in 0.10-0.18 s against 0.25-0.42 s through parallel.ordered_map, which pickles each buffer, so the digests stay serial. The provider comment digest, URL and paraphrases are documented as externally unverifiable from the tree. The observation is of the uncommitted tree on top of the revision named here; hosted revalidation of the resulting head is not observed.",
+          "observed_at": "2026-11-12T00:10:03+00:00",
+          "revision": "d0e915a0571f83809c9c710a875af67e42671746",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/qd_network_records.py",
+              "sha256": "846805da526535e71923dec75fb94504c374e0c566d371697a9c772c508db5da"
+            },
+            {
+              "ref": "scripts/qd_network_analysis.py",
+              "sha256": "e02bda26623fb32cddad830f038fb5d2c0bf5c89ac207f6fed81656dc843b3f2"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_qd_network_records.py",
+              "sha256": "46af01bcf7fc10bf240e5dfc62b4808de798ef0a58ab2e06e630eb3822cbb679"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_analysis.py",
+              "sha256": "c5ffd222f90b8da38ed66a52e8779e1bce035207db1dd9eff39b43a3fcc037f2"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol_boundaries.py",
+              "sha256": "9870ab6cdd4d274ad34f1f4e1f0b01440655fc3e097271ef801b67e54d89f95a"
+            },
+            {
+              "ref": "docs/evidence/quandela/network-records/pending-case.json",
+              "sha256": "9c882a86b148264622460ed7d33e47cf57c5d7660320991605892b2e16ec9720"
+            },
+            {
+              "ref": "docs/runbooks/ascella-belenos-network-case.md",
+              "sha256": "795c5b3d56e4a47c225248680bd347c910e84cff1d8399230b5ace5557996e48"
+            }
+          ],
+          "scope_sha256": "251fa45a5f8eadd2623946d447173757c950405704a8c72618c407c6b00f1676"
         }
       ]
     },

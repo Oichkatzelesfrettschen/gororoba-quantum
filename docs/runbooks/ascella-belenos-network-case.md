@@ -14,8 +14,10 @@ records the later response about calibration and result semantics. Its
 `body_sha256` identifies the provider's comment body as read at the
 assessment's `observed_at`; the body bytes are not retained in the
 repository, and the six `provider_statements` are the assessor's paraphrases
-recorded on that date. Neither the digest nor a paraphrase can be checked
-offline. A reader who fetches the comment compares its UTF-8 bytes with the
+recorded on that date. The digest, the comment URL and the six paraphrases are
+externally unverifiable from this tree: no retained bytes back them, and neither
+the issue comment nor the pinned gororoba-open URL is registered in
+`docs/SOURCES.json`. A reader who fetches the comment compares its UTF-8 bytes with the
 digest, and a mismatch means the provider edited the comment after the
 assessment (the comment was already updated once, on 2026-11-03). The
 [plan record](../state/plans/ascella-belenos-entanglement-teleportation.json)
@@ -83,7 +85,8 @@ env GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 \
 Supply `--payload` only when the record declares its digest. Omitted
 binding inputs appear as `unverified`. The CLI reads each supplied input
 as one bounded byte snapshot, hashes the parsed snapshot, and refuses
-inputs larger than 64 MiB. It rejects a report destination that resolves
+inputs larger than 64 MiB. Every JSON input may nest at most 64 container
+levels, counting the root object as level 1. It rejects a report destination that resolves
 to any input or bound-source path. It writes the complete report through
 a temporary sibling and atomic replacement only after validation and
 binding succeed. An invalid binding leaves any existing report intact.
@@ -108,7 +111,7 @@ case object.
 
 | Field group | Required representation |
 |---|---|
-| Identity | Nonempty `source_repository`; lowercase 40-character `source_revision`; `teleportation_A_to_B` or `teleportation_B_to_A`; both local platform IDs. |
+| Identity | `source_repository` equal to `Oichkatzelesfrettschen/gororoba-quantum` (another value stays structurally valid and is listed under `unsupported_scope`, so the case is not review-ready); lowercase 40-character `source_revision`; `teleportation_A_to_B` or `teleportation_B_to_A`; both local platform IDs. |
 | Supported claim | `claim_level: C3`, `output_capability: O0`, `logical_frame_convention: receiver_byproduct_Xx_Zz`. Other declared C0–C6/O0–O3 values are retained as unsupported scope and cannot be review-ready. |
 | Ensemble | `uniform_pauli_six`, six exact `"1/6"` probability strings, physical-preparation evidence and an accepted-multiphoton bound in [0,1] or null. |
 | Analysis | `output_measurements: ["X", "Y", "Z"]`, `base_setting_cells: 18`. |
@@ -144,8 +147,8 @@ do not supply that observation.
 | Field group | Required representation |
 |---|---|
 | Provenance | `data_origin: synthetic` or `measured`; full `protocol_revision`; case and raw-result SHA-256 digests; nullable payload digest. |
-| Apparatus | `joint_job_id`, nullable `joint_platform_id`, both `apparatus_ids`, nullable `route_id`, and the case's transfer direction/frame convention. These are declarations. |
-| Processing | `processing_status: raw_detector_counts`, `processed_counts`, or `unknown`; a string array `processing_chain` preserving the declared transformations. |
+| Apparatus | `joint_job_id`, nullable `joint_platform_id`, both `apparatus_ids`, an `endpoint_roles` object, nullable `route_id`, and the case's transfer direction/frame convention. These are declarations. `endpoint_roles` has exactly the keys `bell_station` and `receiver`, whose values are the two `apparatus_ids` entries, each used once. Direction `teleportation_A_to_B` requires `qpu:ascella` as the Bell station and `qpu:belenos` as the receiver, following the design's roles (input and sender half on Ascella, receiver half on Belenos); `teleportation_B_to_A` exchanges them, and any other assignment is an error. `route_id` is an opaque string, so no role is checked against the route. |
+| Processing | `processing_status: raw_detector_counts`, `processed_counts`, or `unknown`; a string array `processing_chain` preserving the declared transformations. `raw_detector_counts` requires an empty chain and `processed_counts` a nonempty one; `unknown` takes either. A violation is an error. |
 | Assumptions | Exactly `fixed_channel`, `basis_independent_selection`, `setting_identity`, `input_label_isolation`, `single_copy_input`, `calibration_validity`, `raw_event_provenance`, `physical_route`, `resource_factory`, and `bell_instrument`; each uses the evidence representation above. |
 | Coverage | Nonempty unique `block_ids`; a `cells` array. Declare an intended block even if it has no returned cells. Standalone inspection sees only these declarations; a bound case with a statistical contract also checks the planned block identities. |
 
@@ -232,7 +235,8 @@ does not automatically cover this estimated ratio.
 bytes with the declared digests. A mismatch is an error. A bound case
 must also agree on the source revision, transfer direction, frame,
 joint-platform ID, apparatus partition, payload digest, C3 claim, and
-O0 output scope. When the case supplies a statistical contract, its
+O0 output scope. Because `endpoint_roles` follows the record's direction, an
+equal direction binds the roles to the case. When the case supplies a statistical contract, its
 planned block identities must match the record's declared blocks.
 Preserve unreturned planned blocks with no cells so the incomplete
 coverage remains visible. Binding also reports cells below, above, or

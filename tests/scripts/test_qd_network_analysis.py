@@ -109,6 +109,7 @@ def write_joint(directory: Path) -> tuple[Path, Path, Path]:
         "joint_job_id": "synthetic-cli-fixture",
         "joint_platform_id": None,
         "apparatus_ids": ["qpu:ascella", "qpu:belenos"],
+        "endpoint_roles": {"bell_station": "qpu:ascella", "receiver": "qpu:belenos"},
         "route_id": None,
         "frame_convention": records.FRAME_CONVENTION,
         "processing_status": "raw_detector_counts",

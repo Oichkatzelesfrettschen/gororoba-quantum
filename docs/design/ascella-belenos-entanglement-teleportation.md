@@ -714,8 +714,8 @@ submission.
 The [provider assessment](../evidence/quandela/remote-result-contract/provider-assessment.json)
 records paraphrases of the response to items 2 and 3, created 2026-10-29T13:18:58Z and
 updated 2026-11-03T15:17:09Z, with the digest of the body as read and a bounded
-interpretation; the body bytes are not retained, and the runbook states the offline
-limit.
+interpretation; the body bytes are not retained, and the digest, the comment URL and the paraphrases are
+externally unverifiable from this tree (the runbook states the offline limit).
 The response clarifies result terminology but supplies no version-bound applied
 configuration or cross-device apparatus. G1 and G2 remain open. Retain later
 answers with the platform, access route, date and software version they cover;
