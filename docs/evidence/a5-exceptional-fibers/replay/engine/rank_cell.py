@@ -7,12 +7,14 @@ arguments, with the order of repeated options preserved because the engine's par
 `.part`, validated after a zero engine exit, flushed to disk and atomically renamed. Engine arguments follow a mandatory
 `--`. The engine runs in its own process group; SIGTERM or SIGINT delivered to this runner and `--timeout` both
 terminate that group (SIGTERM, then SIGKILL after `--grace-seconds`) and still write the resource record with the
-termination cause. Failures retain `.part`, stderr and the resource record. `--timeout` replaces an outer `timeout`; an
-outer `timeout -k` must exceed `--grace-seconds`, or its SIGKILL reaches the runner before the runner reaches the engine
-group. The exit status is 0 on success, 2 when validation fails, 124 on timeout, 126 when the interpreter or engine
-cannot be executed (a permission or other operating-system error at launch), 127 when it does not exist, 128 + n when
-signal n ended the runner or the engine, and the engine's own status otherwise. A launch failure still writes the
-resource record, with the error class and errno in `launch_error`, and keeps the stderr file.
+termination cause; a group member that outlives the engine's own exit, successful or not, is terminated the same way
+before the runner returns. Failures retain `.part`, stderr and the resource record. `--timeout` replaces an outer
+`timeout`; an outer `timeout -k` must exceed `--grace-seconds`, or its SIGKILL reaches the runner before the runner
+reaches the engine group. The exit status is 0 on success, 2 when validation fails, 124 on timeout, 126 when the
+interpreter or engine cannot be executed (a permission or other operating-system error at launch), 127 when it does
+not exist, 128 + n when signal n ended the runner or the engine, and the engine's own status otherwise. A launch
+failure still writes the resource record, with the error class and errno in `launch_error`, and keeps the stderr
+file.
 """
 
 from __future__ import annotations
@@ -48,28 +50,36 @@ def header_prime(path: Path) -> int:
     return int(text.split(marker, 1)[1].split(",", 1)[0])
 
 
+def split_option(token: str) -> tuple[str, str]:
+    """`--flag=VALUE` as (`--flag=`, VALUE); any other token as ("", token)."""
+    if token.startswith("--") and "=" in token:
+        flag, value = token.split("=", 1)
+        return flag + "=", value
+    return "", token
+
+
 def argument_identity(token: str, root: Path | None) -> str:
     """One engine argument as it enters the skip identity.
 
-    A token that is an absolute path, or holds a slash, names a file (also as the value of `--flag=VALUE`). Inside
-    the checkout it is bound by its repository-relative path, so a moved checkout matches. Outside it, an existing
-    file is bound by the SHA-256 of its contents, so one file reached through two paths binds equally and a changed
-    file binds differently; a path that does not exist is bound by the SHA-256 of its text. No digest reveals a
-    path. Every other token is bound verbatim."""
-    prefix, value = "", token
-    if token.startswith("--") and "=" in token:
-        flag, value = token.split("=", 1)
-        prefix = flag + "="
-    if not (Path(value).is_absolute() or "/" in value):
+    A token that is an absolute path or holds a slash names a file, as does a slash-free token that names an existing
+    file under the working directory, which the engine inherits (both also as the value of `--flag=VALUE`). An
+    existing file is bound by the SHA-256 of its contents, so one file reached through any path, inside the checkout
+    or outside it, binds equally and a changed file binds differently. A path that does not exist is bound by its
+    repository-relative path inside the checkout, so a moved checkout matches, and by the SHA-256 of its text outside
+    it. No digest reveals an absolute path. Every other token is bound verbatim."""
+    prefix, value = split_option(token)
+    path = Path(value)
+    slashed = path.is_absolute() or "/" in value
+    if not slashed and not (value and not value.startswith("--") and path.is_file()):
         return token
-    resolved = Path(value).resolve()
+    resolved = path.resolve()
+    if resolved.is_file():
+        return f"{prefix}file-sha256:{sha256(resolved)}"
     if root is not None:
         try:
             return prefix + str(resolved.relative_to(root))
         except ValueError:
             pass
-    if resolved.is_file():
-        return f"{prefix}file-sha256:{sha256(resolved)}"
     return f"{prefix}text-sha256:{hashlib.sha256(value.encode()).hexdigest()}"
 
 
@@ -142,16 +152,18 @@ def repository_root() -> Path | None:
 
 
 def portable_path(value: str, root: Path | None) -> str:
-    """A path as stored in evidence: relative to the repository root when inside it, else its basename."""
-    path = Path(value)
+    """A path as stored in evidence, also as the value of `--flag=VALUE`: relative to the repository root when inside
+    it, else its basename."""
+    prefix, text = split_option(value)
+    path = Path(text)
     if not path.is_absolute():
         return value
     if root is not None:
         try:
-            return str(path.resolve().relative_to(root))
+            return prefix + str(path.resolve().relative_to(root))
         except ValueError:
             pass
-    return path.name
+    return prefix + path.name
 
 
 def process_group_rss(pgid: int) -> tuple[int, int]:
@@ -250,8 +262,8 @@ def exit_status(returncode: int) -> int:
 def supervise(
     process: subprocess.Popen[bytes], args: argparse.Namespace, received: list[int], started: float
 ) -> tuple[str, int, int]:
-    """Poll the engine's process group until it exits or a signal or the timeout ends it: the termination cause, the
-    peak group resident bytes and the peak process count."""
+    """Poll the engine's process group until it exits or a signal or the timeout ends it, then stop any member that
+    outlives the engine: the termination cause, the peak group resident bytes and the peak process count."""
     cause = "exited"
     peak_rss = peak_processes = 0
     while process.poll() is None:
@@ -267,6 +279,10 @@ def supervise(
             break
         time.sleep(args.poll_seconds)
     rss, processes = process_group_rss(process.pid)
+    if cause == "exited" and processes:
+        # A worker or Singular child can outlive the engine, whatever its exit status; it stays in the group, so
+        # the group is stopped here and `--timeout` need not reach it.
+        stop_group(process, args.grace_seconds)
     return cause, max(peak_rss, rss), max(peak_processes, processes)
 
 

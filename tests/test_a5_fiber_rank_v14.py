@@ -3,11 +3,15 @@
 
 from __future__ import annotations
 
+import contextlib
 import importlib.util
 import inspect
+import io
 import json
+import math
 import shutil
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -313,3 +317,72 @@ def test_lazy_closure_frontier_on_an_in_memory_two_block_cell(
         got = run(v14, extra)
         assert got["per_block"] == want["per_block"], name
         assert got["r_N"] == want["r_N"] and got["closure_rounds"] == want["closure_rounds"], name
+
+
+def _in_memory_cell(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Callable[[list[str]], dict]:
+    """Run v14's quotient route on the order-7 monomial cell with the given engine options, without Singular."""
+    basis, tables = _truncated_monomial_cell(7)
+    gens = [dict(g) for g in CLOSURE_GENERATORS]
+    header = tmp_path / "h.sing"
+    terms = ",".join("+".join(f"{c}*x^{a}*y^{b}" for (a, b), c in g.items()) for g in gens)
+    header.write_text(f"ring r={P},(x,y),dp;\nideal J=x^9,y^9;\nideal G={terms};\n")
+    monkeypatch.setattr(v14, "quotient_data", lambda *args, **kwargs: (basis, tables, [dict(g) for g in gens], {}))
+
+    def run(extra: list[str]) -> dict:
+        monkeypatch.setattr(sys, "argv", ["engine", str(header), "2", "7", "--quotient", *extra])
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            v14.main()
+        return json.loads(stdout.getvalue())
+
+    return run
+
+
+def test_initial_closure_multiplication_is_sliced_by_chunk(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """The first closure pass multiplies the product rows of a block through `table_mul` one `--chunk` slice at a time,
+    so its float64 result and modulo temporaries stay inside the `closure_chunk_temporaries` budget; the ranks do not
+    depend on the slice width."""
+    run = _in_memory_cell(tmp_path, monkeypatch)
+    rows: list[int] = []
+    for name in ("exact_mod_matmul", "sparse_mod_matmul"):
+        real = getattr(v14, name)
+
+        def spy(x: np.ndarray, table: Any, p: int, real: Callable = real) -> np.ndarray:
+            if sys._getframe(1).f_code.co_name == "table_mul":
+                rows.append(x.shape[0])
+            return real(x, table, p)
+
+        monkeypatch.setattr(v14, name, spy)
+    for dense_gib in ("0", "1"):
+        common = ["--stream-products", "--echelon", "compact", "--dense-tables-gb", dense_gib]
+        wide = run([*common, "--chunk", "64"])
+        products = wide["products"]
+        assert products > 2 and max(rows) > 2, "the cell must hold more product rows than the narrow chunk"
+        rows.clear()
+        narrow = run([*common, "--chunk", "2"])
+        assert rows and max(rows) <= 2
+        assert narrow["closure_tables"] == wide["closure_tables"] == ("dense" if dense_gib == "1" else "sparse")
+        for field in ("r_N", "per_block", "closure_rounds", "products"):
+            assert narrow[field] == wide[field], (dense_gib, field)
+        rows.clear()
+
+
+@needs_singular
+def test_compact_preflight_counts_the_character_components(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A header generator that spans several character blocks becomes one product generator per component, so the
+    retained product rows and the accumulation temporaries follow the component count, not the header's."""
+    got = _record(
+        v14, tmp_path, "components", ["--stream-products", "--echelon", "compact", "--chunk", "2"], monkeypatch, capsys
+    )
+    ngens = 3
+    components = got["generator_components"]
+    assert components > ngens
+    widest = max(block["cols"] for block in got["per_block"].values())
+    rows = sum(math.comb(components + degree - 1, degree) for degree in range(1, 3))
+    terms = got["preflight_terms"]
+    assert terms["uint16_product_rows"] == 4 * rows * widest
+    assert terms["streamed_loop_arrays"] == v14.streamed_loop_bytes(
+        v14.streamed_prefix_peak(2, components, None), widest
+    )

@@ -18,7 +18,11 @@ SymPy 1.14.0, Singular 4.4.1 and msolve 0.10.1. `msolve -t 4` is the bounded set
 whose three records the directory [`w8-n16-acceptance/`](w8-n16-acceptance/) retains: the engine's stdout record
 ([`w8-nm-d5-n16-p32009.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.json)), its stderr
 ([`.err`](w8-n16-acceptance/w8-nm-d5-n16-p32009.err)) and the runner's resource file
-([`.resources.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json)); the summary lists their sha256. The
+([`.resources.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json)); the summary lists their sha256.
+[`acceptance_summary.py`](acceptance_summary.py) regenerates the summary from those three records and the retained v11
+comparator; `--check` compares the tracked file with a fresh one and also requires the engine file's sha256 to equal
+the resource record's `engine_sha256`, so an edited engine fails it until the run is repeated. The launcher settings
+that no record holds are constants of the script. The
 summary agrees with the retained v11 receipt run: `r_16 = 4116`; block contributions 1,017 / 1,005 / 1,047 / 1,047;
 closure ranks 15,364 / 15,264 / 15,315 / 15,315; all 265 nonstandard controls add zero rank. V14 reports four
 frontier rounds rather than v11's five because rows are materialized lazily after intervening RREF updates; the fixed
@@ -97,10 +101,12 @@ timings vary with the host.
   a few panels (`insert_panel_bytes`).
 - The standard-monomial receipt restricts the product rows. Its nonstandard controls must add zero rank.
 - The cell runner binds the engine and header hashes, field, degree and truncation order, and through its resource
-  record the engine arguments (repeated options keep their order, since the engine's parser keeps the last one; a file
-  outside the checkout is bound by the SHA-256 of its contents, a path inside by its repository-relative path). It
-  publishes JSON by flush and atomic rename only after engine exit 0 and
-  record validation, and it terminates the engine's process group on SIGTERM, SIGINT or `--timeout`.
+  record the engine arguments (repeated options keep their order, since the engine's parser keeps the last one; an
+  existing file, named with or without a slash, is bound by the SHA-256 of its contents wherever it lies, a path that
+  does not exist inside the checkout by its repository-relative path; `--option=VALUE` is split at the first `=` for
+  both rules and for the path stored in the resource record). It publishes JSON by flush and
+  atomic rename only after engine exit 0 and record validation, and it terminates the engine's process group on
+  SIGTERM, SIGINT or `--timeout`, and any group member still alive when the engine exits, successfully or not.
 
 Small exact tests compare streamed and cached uint16 operators with engine v13's dense operator on a two-block
 fixture with a nonzero variable character, compare v14's closure with v13's on a four-round, four-block cell, and

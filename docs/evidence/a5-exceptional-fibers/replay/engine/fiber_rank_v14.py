@@ -79,8 +79,9 @@ p < PMAX = 2^15 of modular_echelon.py that main enforces for these routes, so on
 
 Echelon backend (--echelon). The per-block echelon basis is gororoba_quantum/modular_echelon_compact.py's
 CompactEchelon, which runs gororoba_quantum/modular_echelon.py's Echelon unchanged for the flint and gpu backends and
-adds the compact one. With --echelon flint (the default) the basis is a float64 host array, the reduction and the update of the basis run as
-float64 BLAS products and FLINT's nmod_mat.rref echelonizes the residual rows, as in engine v11. With --echelon gpu
+adds the compact one. With --echelon flint (the default) the basis is a float64 host array, the reduction and the
+update of the basis run as float64 BLAS products and FLINT's nmod_mat.rref echelonizes the residual rows, as in engine
+v11. With --echelon gpu
 the basis lives on the CUDA device as int32 residues: the reduction and the update run as exact INT8 tensor-core
 products (base-256 digits, int32 accumulation), and a device PLUQ factorization with a blocked back substitution
 replaces nmod_mat.rref. The reduced row echelon form of a row space is unique, so both backends return the same
@@ -1375,8 +1376,9 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
             "echelon_bases": 2 * 8 * sum(int(sizes[b]) ** 2 for b in blocks),
         }
 
-    def compact_estimate(basis: list[Monomial]) -> dict[str, int]:
-        """Peak selected arrays of the streamed/compact route; no full generator operator is resident."""
+    def compact_estimate(basis: list[Monomial], m: int = ngens) -> dict[str, int]:
+        """Peak selected arrays of the streamed/compact route for m generators (the character components once known);
+        no full generator operator is resident."""
         layout = block_layout(basis)
         sizes = np.bincount(layout, minlength=len(blocks))
         widest = int(sizes.max())
@@ -1394,7 +1396,7 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         if rset:
             rows = nprod + sum(len(v) for degree, v in rset.wanted.items() if degree < a.d)
         else:
-            rows = sum(math.comb(ngens + degree - 1, degree) for degree in range(1, a.d + 1))
+            rows = sum(math.comb(m + degree - 1, degree) for degree in range(1, a.d + 1))
         operator_bytes = max(full_operator_bytes, default=0)
         cache = bool(a.operator_cache_gb and operator_bytes <= a.operator_cache_gb * 2**30)
         terms = {
@@ -1409,14 +1411,14 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         if cache:
             terms["tiled_product_temporaries"] = tiled_product_bytes(a.chunk)
         else:
-            prefixes = streamed_prefix_peak(a.d, ngens, rset.wanted if rset else None)
+            prefixes = streamed_prefix_peak(a.d, m, rset.wanted if rset else None)
             terms["streamed_loop_arrays"] = streamed_loop_bytes(prefixes, widest)
             terms["streamed_chunk_temporaries"] = streamed_chunk_bytes(a.chunk, widest)
         return terms
 
     def preflight(basis: list[Monomial], m: int = ngens) -> None:
         compact_route = a.stream_products and a.echelon == "compact"
-        est = compact_estimate(basis) if compact_route else estimate(basis, m)
+        est = compact_estimate(basis, m) if compact_route else estimate(basis, m)
         stages = compact_stage_peaks(est) if compact_route else {"simultaneous": sum(est.values())}
         peak = max(stages.values(), default=0)
         if a.max_gb and peak > a.max_gb * 2**30:
@@ -1469,7 +1471,7 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
     gchar = [c for _, c in comps]
     preflight(basis, len(gchar))
     compact_route = a.stream_products and a.echelon == "compact"
-    selected_estimate = compact_estimate(basis) if compact_route else estimate(basis, len(gchar))
+    selected_estimate = compact_estimate(basis, len(gchar)) if compact_route else estimate(basis, len(gchar))
     selected_stages = (
         compact_stage_peaks(selected_estimate) if compact_route else {"simultaneous": sum(selected_estimate.values())}
     )
@@ -1525,8 +1527,8 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
     for b in blocks:
         for k in range(n):
             tb = b ^ var_char[k]
-            if len(Q[b]):
-                W[tb].insert(table_mul(Q[b], mats[k][b]), a.chunk)
+            for s0 in range(0, len(Q[b]), a.chunk):
+                W[tb].insert(table_mul(Q[b][s0 : s0 + a.chunk], mats[k][b]), a.chunk)
     new = {b: W[b].new_indices(set()) for b in blocks}
     rounds = 0
     while any(len(v) for v in new.values()):

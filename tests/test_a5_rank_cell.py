@@ -35,16 +35,21 @@ def _check_unequal(left: object, right: object) -> None:
     assert left != right
 
 
-def _engine(path: Path, exit_code: int = 0) -> None:
+def _engine(path: Path, exit_code: int = 0, child_pids: Path | None = None) -> None:
+    """A stand-in engine that prints a valid record; with `child_pids` it first leaves a `sleep` child in its process
+    group, records the child's pid there and exits without waiting."""
     path.write_text(
-        """import hashlib,json,sys
+        """import hashlib,json,subprocess,sys
 from pathlib import Path
+if CHILD:
+    child=subprocess.Popen(['sleep','60'],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    Path(CHILD).write_text(str(child.pid))
 engine,header,d,N=Path(sys.argv[0]),Path(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3])
 p=int(header.read_text().split('ring r=',1)[1].split(',',1)[0])
 print(json.dumps({'check':'fiber-rank-linear-algebra','engine_sha256_16':hashlib.sha256(engine.read_bytes()).hexdigest()[:16],
 'header_sha256_16':hashlib.sha256(header.read_bytes()).hexdigest()[:16],'prime':p,'d':d,'N':N,'r_N':7}))
 raise SystemExit(EXIT)
-""".replace("EXIT", str(exit_code))
+""".replace("EXIT", str(exit_code)).replace("CHILD", repr(None if child_pids is None else str(child_pids)))
     )
 
 
@@ -421,3 +426,91 @@ def test_process_group_rss_skips_a_member_that_exits_during_the_scan(monkeypatch
     assert refused == [own]
     assert resident >= 0
     assert count >= 0
+
+
+def test_option_value_paths_in_the_resource_record_are_portable(tmp_path: Path) -> None:
+    root = rank_cell.repository_root()
+    assert root is not None
+    inside = str(root / "docs" / "r.json")
+    assert rank_cell.portable_path(f"--k2-receipt={inside}", root) == "--k2-receipt=docs/r.json"
+    assert rank_cell.portable_path(f"--k2-receipt={tmp_path / 'r.json'}", root) == "--k2-receipt=r.json"
+    assert rank_cell.portable_path("--chunk=64", root) == "--chunk=64"
+    assert rank_cell.portable_path("--max-gb", root) == "--max-gb"
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    args = _args(tmp_path, engine, output)
+    args.engine_args = [f"--k2-receipt={tmp_path / 'elsewhere' / 'receipt.json'}", "--chunk=64"]
+    assert rank_cell.run_cell(args) == 0
+    text = output.with_suffix(".resources.json").read_text()
+    assert str(tmp_path) not in text
+    assert json.loads(text)["command"][-2:] == ["--k2-receipt=receipt.json", "--chunk=64"]
+
+
+def test_a_file_named_without_a_slash_binds_by_its_contents(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """`--k2-receipt receipt.json` run from the receipt's directory names a file as surely as an absolute path."""
+    monkeypatch.chdir(tmp_path)
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text('{"rank": 1}\n')
+    root = rank_cell.repository_root()
+    digest = rank_cell.engine_arguments_digest
+    separate, joined = ["--k2-receipt", "receipt.json"], ["--k2-receipt=receipt.json"]
+    first_separate, first_joined = digest(separate, root), digest(joined, root)
+    _check_equal(first_separate, digest(["--k2-receipt", str(receipt)], root))
+    receipt.write_text('{"rank": 2}\n')
+    _check_unequal(first_separate, digest(separate, root))
+    _check_unequal(first_joined, digest(joined, root))
+    assert rank_cell.argument_identity("receipt.json", root).startswith("file-sha256:")
+    assert rank_cell.argument_identity("--receipt=receipt.json", root).startswith("--receipt=file-sha256:")
+    assert rank_cell.argument_identity("64", root) == "64"
+    assert rank_cell.argument_identity("--chunk", root) == "--chunk"
+    assert rank_cell.argument_identity("absent.json", root) == "absent.json"
+
+
+def test_skip_is_refused_when_a_receipt_named_without_a_slash_changes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text('{"rank": 1}\n')
+    monkeypatch.chdir(tmp_path)
+    args = _args(tmp_path, engine, output)
+    args.engine_args = ["--k2-receipt", "receipt.json"]
+    assert rank_cell.run_cell(args) == 0
+    assert rank_cell.run_cell(args) == 0
+    receipt.write_text('{"rank": 2}\n')
+    with pytest.raises(ValueError, match="engine arguments differ"):
+        rank_cell.run_cell(args)
+
+
+@pytest.mark.parametrize("exit_code", [0, 3])
+def test_a_group_member_that_outlives_the_engine_is_terminated(tmp_path: Path, exit_code: int) -> None:
+    """The stand-in engine leaves a `sleep 60` in its process group and exits; the runner returns only after it is
+    gone, whether the engine succeeded or failed."""
+    engine, output, child_file = tmp_path / "engine.py", tmp_path / "cell.json", tmp_path / "child"
+    _engine(engine, exit_code, child_file)
+    args = _args(tmp_path, engine, output)
+    try:
+        assert rank_cell.run_cell(args) == exit_code
+        child = int(child_file.read_text())
+        assert not _alive(child)
+    finally:
+        if child_file.exists():
+            with contextlib.suppress(ProcessLookupError):
+                os.kill(int(child_file.read_text()), signal.SIGKILL)
+    record = json.loads(output.with_suffix(".resources.json").read_text())
+    assert (record["termination"], record["engine_exit"], record["runner_exit"]) == ("exited", exit_code, exit_code)
+
+
+def test_one_existing_file_binds_equally_through_every_spelling_inside_the_checkout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = rank_cell.repository_root()
+    assert root is not None
+    monkeypatch.chdir(root / "gororoba_quantum")
+    identities = {
+        rank_cell.argument_identity(token, root)
+        for token in ("parallel.py", "./parallel.py", str(root / "gororoba_quantum" / "parallel.py"))
+    }
+    assert len(identities) == 1 and identities.pop().startswith("file-sha256:")
+    assert rank_cell.argument_identity("--k2-receipt=parallel.py", root).startswith("--k2-receipt=file-sha256:")
