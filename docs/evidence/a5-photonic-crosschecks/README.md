@@ -55,7 +55,8 @@ For an LCU herald implementing `L_y / alpha`, with `alpha=sum_i |c_i|`, every ba
 
 The [exceptional-fiber ledger](../a5-exceptional-fibers/ledger.tsv) owns the current algebraic status. As of
 2026-11-11, E8 degree five has h5=952 at both retained primes, and the Iso, W8 and E8-to-VB full fiber equalities
-are established at both primes. E8 degree six remains bounded by 1526 <= h6 <= 1666 (A5-251). Its 140-dimensional
+are established at both primes. E8 degree six is settled at h6 = 1666 on both headers at both primes (A5-335); A5-251 had bounded it by
+1526 <= h6 <= 1666. Its 140-dimensional
 target space belongs to the [monomial-ladder computation](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/5a8b151c5edeafbd9e6f17fa38610ed5467497b3/docs/evidence/a5-exceptional-fibers/monomial-ladder/README.md).
 These finite-field results do not establish characteristic-zero transfer, real attaching maps or a hardware speedup.
 

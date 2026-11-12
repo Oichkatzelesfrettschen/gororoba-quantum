@@ -11,7 +11,7 @@ Columns (tab-separated, first line is the header):
 - id: stable key, `A5-` and a number; never reused.
 - kind: equation | structure | method | operational.
 - fibers: the pairs Y -> Z the claim concerns, comma-separated, or `all`.
-- primes: 32009, 32029, `both`, `char0`, or `any` (a statement independent of the field).
+- primes: 32003, 32009, 32029, `both` (32009 and 32029), `char0`, or `any` (a statement independent of the field).
 - claim: the statement, with equations written out.
 - status: one of STATUSES below.
 - basis: the deciding evidence in words (the measured numbers, the argument).
@@ -49,7 +49,7 @@ COLUMNS = [
     "updated",
 ]
 KINDS = {"equation", "structure", "method", "operational"}
-PRIMES = {"32009", "32029", "both", "char0", "any"}
+PRIMES = {"32003", "32009", "32029", "both", "char0", "any"}
 STATUSES = {
     "proved": "a complete argument or exact computation decides it over the stated fields",
     "certified": "a lower bound and a matching upper bound decide the value",
