@@ -106,6 +106,26 @@ the 270 limits of both families against the E8-bar -> N- ideals at the same prim
 P1, P2, K2 of E8-bar -> N-, and the first-order limits satisfy the E8-bar -> N- P2 and K2 (the two P2 are the same
 ideal, `compare_nm.log`) but not P1. The membership test separates the two slices.
 
+**Twist correspondence.** The symbolic limit vectors of the two families of E8-bar -> N+ equal those of E8-bar -> N-
+at the same prime, coordinate by coordinate, up to a sign and a substitution of the parameters, so the arcs of the two
+targets correspond one to one (`twist_compare.json`, `twist_compare.log` of `e8np-p32009` and `e8np-p32029`, identical
+at both primes; A5-326). In the first-order family (limits E^2 F, polynomials in W, R, S, Z, E) 11 coordinates are
+nonzero, the same 11 on both targets, and N+_j(E) = eps_j E^(d_j) N-_j(1/E) holds on all 11 with d_j = 4 and
+eps_j = -1 for j = 1, 5, 15, 16, 17, 18, 20 and +1 for j = 3, 10, 11, 21 (no failing coordinate). In the order-5
+family (W, R, S, Z, E1) 16 coordinates are nonzero on both targets, and N+_j = eps_j N-_j holds on all 16 under a
+common sign change of (W, R, S, Z, E1); eight of the 32 sign vectors qualify, all with E1 -> -E1. The generator
+comparison `j_twist.log` applies t9 -> -t9 alone to the slice: 7 of the 16 generators of J of N+ equal the image of
+the N- generator and 9 equal its negative, and none of the 21 generators of G equals its image or the negative of it,
+so t9 -> -t9 alone is not the isomorphism; the pair flip t8 -> -t8, t9 -> -t9 is (A5-049). The check is confirmatory:
+the sign isomorphism of [structure](../structure/README.md) (`doubling_automorphism.py`, A5-049) transports one target
+onto the other. The input logs are byte-identical to `families/` of the four targets; the producers
+`../working/arcs-p2/e8np-p32009/twist_compare.py` (`twist_compare.py NM_DIR OUT.json` from the N+ target directory)
+and `check_j_twist.py` beside it are retained as run, byte-identical for the two primes. They import the earlier `symfam.py` and `arclib.py` of the
+campaign, whose interfaces the consolidated modules of this directory replaced (`load_fj(logtext)` against
+`load_fj(logtext, p)`), and a per-target `config.py`; with those modules and the `families/` logs as `fam/`, both
+producers reproduced the retained files byte for byte. The [retention audit](../../../archive/reviews/untracked-records-audit-2026-11-11/README.md)
+lists the twist records as result-missing (section 3A, item 6).
+
 ## Records per target
 
 | Target | Fiber | Prime, root of -1 | s9 | Header | K2 relation file |
@@ -132,7 +152,7 @@ Each target directory holds:
 | `numeric_P2.json`, `numeric_P1.json` | the independent numeric certificates |
 | `mutation_controls.json` | the three corruptions |
 | `survey.json`, `line_check.json` | the 540 arcs at other base points and the line check |
-| `compare_nm.sing`, `compare_nm.log`, `cross_control.json` | E8-bar -> N+ targets only |
+| `compare_nm.sing`, `compare_nm.log`, `cross_control.json`, `twist_compare.json`, `twist_compare.log`, `j_twist.log` | E8-bar -> N+ targets only |
 | `result.json`, `result_P1.json` | the certificate of P2 and of P1 |
 | `campaign_summary.json` | every count, including the scan tallies |
 

@@ -1,0 +1,23 @@
+int C=5; string outdir="n5";
+// Normalization of the strict transform in chart t_C = 1, writing the normalization before any further Groebner work.
+// The caller sets int C and string outdir. vars.txt and norid.txt are what chart.py reads; std(norid), dim and
+// slocus are diagnostics that live in snorm_diag.sing.
+LIB "normal.lib";
+int t0=rtimer;
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+execute("ideal S="+read("strict_transform.txt")+";");
+ideal S1=subst(S,var(C+1),1);
+string vs="h"; int i; for(i=1;i<=8;i++){ if(i!=C){ vs=vs+",t"+string(i);} }
+execute("ring Q=32009,("+vs+"),dp;");
+ideal S1=imap(R,S1); S1=std(S1);
+"RESULT std_input", rtimer-t0, "dim", dim(S1), "size", size(S1);
+list nr=normal(S1);
+"RESULT normal_done", rtimer-t0, "rings", size(nr[1]);
+write(":w "+outdir+"/conductor.txt",string(nr[2][1]));
+def Rn=nr[1][1]; setring Rn;
+write(":w "+outdir+"/vars.txt",varstr(Rn));
+write(":w "+outdir+"/norid.txt",string(norid));
+write(":w "+outdir+"/normap.txt",string(normap));
+write(":w "+outdir+"/ordstr.txt",ordstr(Rn));
+"RESULT written", rtimer-t0, "nvars", nvars(Rn), "nrel", size(norid);
+quit;

@@ -185,7 +185,9 @@ The Hilbert series numerator is 1, 11, -3, 4, -1 over (1 - t)^4, that of k[y]/K2
 same-sign X incidences holds in characteristic 0, and the projective fiber V_+(L) is nonreduced over Q(i): L is
 saturated and y1, y5, y6 are nilpotent. Falsifier: an element of the completed local ring of the slice outside
 R = Q(i)[[t]] + (a, rho, sig) P, the one identification the certificate takes from the parametrization. The record is
-`monomial-certificate-qi.json`.
+`monomial-certificate-qi.json`; it holds the 69 generators of L as `l_polynomials`, and its verdict is `certified`
+only when the generator count and degrees, the dimension, the multiplicity, the Hilbert numerator, the saturation
+and the three nilpotents all take the values above (`invariant_failures` lists each one that differs).
 
 ## The slice rings over Q(i): kernel of the parametrization (A5-314)
 

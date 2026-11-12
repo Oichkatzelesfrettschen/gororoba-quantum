@@ -1,0 +1,13 @@
+{
+ "label": "Iso->N+ degree-3 fiber relations by local syzygies",
+ "wheel": "passagemath-singular==10.8.13",
+ "return_code": 124,
+ "wall_seconds": 41051.8,
+ "peak_child_rss_kib": 18284028,
+ "mem_total_kib": 32869288,
+ "results": [
+  "RESULT U_size 6784"
+ ],
+ "machine": "x86_64",
+ "python": "3.13.15"
+}

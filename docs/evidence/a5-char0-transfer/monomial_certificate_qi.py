@@ -15,10 +15,13 @@ A second run per prime reduces the generators of L at (p, i -> r) and compares t
 Writes monomial-certificate-qi.json beside this file.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-char0-transfer/monomial_certificate_qi.py
+`--check` recomputes the certificate, writes nothing and fails unless every field of the retained record other than
+the run measurements (`wall_seconds`, `peak_rss_kib`) equals the fresh one, the 69 generators of L included.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -148,6 +151,37 @@ def reduce_at(job: tuple[str, int, int, str, list[str], int]) -> dict[str, Any]:
     }
 
 
+# Every invariant asserted by the certificate participates in its verdict.
+# The Hilbert numerator is Singular's numerator for the 4-dimensional graded ring.
+EXPECTED: dict[str, Any] = {
+    "l_generators": 69,
+    "l_degrees": [2, 2],
+    "l_dim": 4,
+    "l_mult": 12,
+    "l_hilbert_numerator": "1,11,-3,4,-1,0",
+    "l_saturated": True,
+    "y1_y5_y6_outside_l": 3,
+    "y1_y5_y6_squared_in_l": True,
+}
+
+
+def invariant_failures(row: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """The invariants of EXPECTED that the observed row does not meet, as {name: {expected, observed}}."""
+    return {key: {"expected": value, "observed": row[key]} for key, value in EXPECTED.items() if row[key] != value}
+
+
+def verdict(row: dict[str, Any]) -> str:
+    """`certified` when I = M, every invariant of EXPECTED holds and each reduction of L agrees with the retained K2."""
+    count = row["l_generators"]
+    return (
+        "certified"
+        if row["i_equals_m"]
+        and not invariant_failures(row)
+        and all(r["l_in_k2"] and r["k2_in_l"] and r["nonzero_generators"] == count for r in row["reductions"])
+        else "failed"
+    )
+
+
 def certify(slug: str) -> dict[str, Any]:
     probe = rc.rees._run_singular(
         rc._script(slug, None, rc.rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
@@ -190,24 +224,49 @@ def certify(slug: str) -> dict[str, Any]:
     )
     jobs = [(slug, prime, root, rel, generators, row["generators"]) for prime, (root, rel) in K2[slug].items()]
     row["reductions"] = parallel.ordered_map(reduce_at, jobs, min_items=2)
-    row["verdict"] = (
-        "certified"
-        if row["i_equals_m"]
-        and all(r["l_in_k2"] and r["k2_in_l"] and r["nonzero_generators"] == count for r in row["reductions"])
-        else "failed"
-    )
+    row["invariant_failures"] = invariant_failures(row)
+    row["l_polynomials"] = generators
+    row["verdict"] = verdict(row)
     return row
 
 
+MEASURED = frozenset({"wall_seconds", "peak_rss_kib"})
+
+
+def algebraic(value: Any) -> Any:
+    """`value` without the fields that measure a run (`MEASURED`), at every depth."""
+    if isinstance(value, dict):
+        return {key: algebraic(item) for key, item in value.items() if key not in MEASURED}
+    if isinstance(value, list):
+        return [algebraic(item) for item in value]
+    return value
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description=(__doc__ or "").split("\n\n", maxsplit=1)[0])
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="recompute the certificate and compare every algebraic field with the retained record; write nothing",
+    )
+    args = parser.parse_args()
     rows = parallel.ordered_map(certify, list(SIGN), min_items=2)
     record = {"schema": "a5-monomial-certificate-qi-v1", "field": "Q(i)", "cases": rows}
-    (HERE / "monomial-certificate-qi.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
-    for row in rows:
-        print(json.dumps({k: v for k, v in row.items()}))
+    path = HERE / "monomial-certificate-qi.json"
     failed = [row["slug"] for row in rows if row["verdict"] != "certified"]
     if failed:
         raise SystemExit(f"certificate over Q(i) fails on {', '.join(failed)}")
+    if args.check:
+        retained = json.loads(path.read_text(encoding="utf-8"))
+        if algebraic(retained) != algebraic(record):
+            raise SystemExit(
+                f"{path.name}: the retained record differs from a fresh certificate outside {sorted(MEASURED)}"
+            )
+        print(f"{path.name}: {len(rows)} cases agree with a fresh certificate in every algebraic field")
+        return
+    path.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    for row in rows:
+        print(json.dumps(row))
 
 
 if __name__ == "__main__":
