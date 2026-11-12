@@ -31,7 +31,7 @@ has power ranks `15,6,2,0` and Jordan blocks `3,3,2,2,1,1,1,1,1`. Rank and chara
 `C_z`, while the square rank changes from one to two. Congruence therefore transports the rank/Pfaffian questions
 used by the strata calculation, and supplies no transport of the kernel filtration by itself.
 
-The replay checks `nullity_R(L_y)=28-2*rank_C(C_z)` and
+For nonzero doubly pure real operands, the replay checks `nullity_R(L_y)=28-2*rank_C(C_z)` and
 `rank_R(L_y)=2*rank_C(A(z,conj(z)))` on all 870 signed doubly pure two-support operands, plus the named witnesses.
 The denominator is `2*binomial(30,2)`: indices `1,...,31` with index 16 omitted. Six additional named Gaussian
 coefficient points test the full characteristic-polynomial identity
@@ -44,7 +44,9 @@ chi_C(lambda) = lambda*(lambda^2+Q)^3*(lambda^4+2*Q*lambda^2+G)^2.
 ```
 
 The [existing strata proof](../a5-zero-divisor-strata/README.md#theorem-2-nullity-l_y--28---2-rank-c_z) owns the
-general reduction theorem. These finite evaluations and the coefficient-skew identity retain its domain.
+general reduction theorem. At the excluded zero operand, `C_z=0` and `nullity_R(L_0)=32`, while the expression
+`28-2*rank_C(C_z)` equals 28. The rank/nullity checker enforces the nonzero doubly pure domain. These finite
+evaluations and the coefficient-skew identity retain the theorem's domain.
 
 ## Gram moments and complete projectors
 

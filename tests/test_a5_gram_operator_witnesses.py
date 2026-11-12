@@ -87,6 +87,25 @@ def test_split_congruence_changes_the_kernel_filtration_even_when_the_spectrum_a
     require(row["congruence_characteristic_polynomial_equal"] is True)
 
 
+def test_split_congruence_claim_locates_the_rank_preserving_jordan_witness() -> None:
+    record = json.loads((gram.HERE / "witnesses.json").read_text())
+    claim = next(row for row in record["claims"] if row["claim"] == "6.4")
+    witness = record["checks"][claim["evidence"]]
+    require(witness["congruence_rank"] == 6)
+    require(witness["original_square_rank"] == 1 and witness["congruent_square_rank"] == 2)
+    require(witness["original_jordan_blocks"] != witness["congruent_jordan_blocks"])
+
+
+@pytest.mark.parametrize("terms", [(), ((1, 1), (1, -1))])
+def test_zero_operand_is_outside_the_reduced_nullity_formula(terms: tuple[tuple[int, int], ...]) -> None:
+    reduced, _coordinates = gram.reduced(terms)
+    actual_nullity = 32 - int(gram.left(32, terms).rank())
+    expression = 28 - 2 * gram.complex_rank(reduced)
+    require(actual_nullity == 32 and expression == 28)
+    with pytest.raises(ValueError, match="nonzero doubly pure operand"):
+        gram.rank_identity(terms)
+
+
 def test_characteristic_polynomial_checks_gaussian_coefficients_before_realification() -> None:
     row = gram.characteristic_witness(((1, 1), (2, 2), (8, 1), (17, 2), (25, -1)))
     require(row["Q"] == "1 + 4*I")

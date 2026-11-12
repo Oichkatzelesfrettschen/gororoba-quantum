@@ -206,7 +206,7 @@
     },
     {
       "claim": "6.3",
-      "proposition": "For a doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
+      "proposition": "For a nonzero doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
       "source": {
         "path": "docs/evidence/a5-zero-divisor-strata/README.md",
         "locator": "Theorem 2; Theorem 4"

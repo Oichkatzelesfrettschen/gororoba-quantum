@@ -1637,7 +1637,7 @@
       "claim": "6.3",
       "correction": "The signed doubly pure two-support corpus has 2*binomial(30,2)=870 elements; the predecessor count 812 is incorrect.",
       "evidence": "reduced",
-      "proposition": "For a doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
+      "proposition": "For a nonzero doubly pure real operand y, nullity_R(L_y)=28-2*rank_C(C_z), and rank_R(L_y)=2*rank_C(A(z,conj(z))).",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
       "source": {
         "locator": "Theorem 2; Theorem 4",
@@ -1647,7 +1647,7 @@
     },
     {
       "claim": "6.4",
-      "evidence": "reduced",
+      "evidence": "reduced_structure",
       "proposition": "Split-coordinate congruence preserves rank but not Jordan structure",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
       "source": {
@@ -1822,10 +1822,10 @@
       "verdict": "not_checked"
     }
   ],
-  "producer_sha256": "2f9d3558988cdc8b95b38fb6f177c361e56b684f7d5dfd08a0f652abd69cf416",
+  "producer_sha256": "81ff6f5d5cfb07263f8645236a9940292279341e7adc86c256232b87ca0f1a05",
   "schema": "a5-gram-operator-witnesses/1",
   "sources_sha256": {
-    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "c2c733ea9250d53fe730494a1e0f42cea46f1be40a1b7258f3a38274b61cd0f6",
+    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "da7103cddf7e9d55ca9bb9f10d624f66585f8cacefb51a75057958c37ebcfd17",
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
     "docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py": "b23919697c9adfa9ccbd1ab5929af206d48ff604195c511699f3ff8dc3fd6cbb",
     "docs/notes/topics/strata-gauss-bottleneck.md": "91568d079ad628b64d42c48526b3762f4cf9d56306c19ed9edfa1acaf5b8e84f",

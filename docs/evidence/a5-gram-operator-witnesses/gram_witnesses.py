@@ -130,6 +130,11 @@ def reduced(terms: Terms) -> tuple[ComplexMatrix, list[Any]]:
 
 
 def rank_identity(terms: Terms) -> dict[str, Any]:
+    values = vector(32, terms)
+    require(
+        values[0] == 0 and values[16] == 0 and any(values),
+        "rank/nullity identity requires a nonzero doubly pure operand",
+    )
     matrix, coordinates = reduced(terms)
     real, imaginary = matrix
     border_real = fmpq_mat(16, 16)
@@ -725,14 +730,14 @@ def validate_validation_receipt(receipt: Path, witnesses: Path, expected_sha256:
 def claim_rows() -> list[dict[str, Any]]:
     families = {
         "basis": ("1.2", "2.2", "4.1"),
-        "reduced_structure": ("0.1", "0.2"),
+        "reduced_structure": ("0.1", "0.2", "6.4"),
         "gram_expansion": ("4.2", "7.5"),
         "two_support": ("1.5", "4.3", "4.4", "5.1"),
         "special_lifts": ("1.4",),
         "inverses": ("1.3", "2.1"),
         "cancellation": ("3.1", "3.2", "3.3"),
         "projector": ("5.2", "5.3", "5.4"),
-        "reduced": ("6.1", "6.2", "6.3", "6.4"),
+        "reduced": ("6.1", "6.2", "6.3"),
         "scalar": ("7.1",),
         "phase": ("7.2", "7.3"),
         "kernel_limits": ("8.2",),
