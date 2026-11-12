@@ -104,7 +104,7 @@ numbers.
    is a polynomial with 5,290 terms over the 15 generators, 1 + w is a unit of P, and every monomial of every H_j
    lies in M.
 2. I + q M = M. Since P = R + w R, M is a finite R-module and m_R M = (t, a, ρ, σ) M = q M. The monomials of M
-   outside q M are among g and w g for the ten minimal generators g, and 15 of them remain, a basis of M / q M.
+   outside q M are among g and w g for the twelve minimal generators g, and 15 of them remain, a basis of M / q M.
    P acts on M / q M through k[w]/(w²), so the class of G_j is that of (1 − 8 w) H_j; the 15 classes have rank 15.
 3. Nakayama's lemma over the local ring R gives I = M. Then I^d = M^d and m_R I^d = q M^d for d ≥ 1, so
    F(I) = k ⊕ ⊕_(d ≥ 1) M^d / q M^d: the subalgebra generated in degree 1 of P[M T] / q P[M T]. The map of the

@@ -1,0 +1,14 @@
+{
+ "label": "w8_np degree-2 fiber relations by local syzygies",
+ "wheel": "passagemath-singular==10.8.13",
+ "return_code": -9,
+ "wall_seconds": 6207.5,
+ "peak_child_rss_kib": 31355876,
+ "mem_total_kib": 32869296,
+ "results": [
+  "RESULT generators 24",
+  "RESULT slice_variables 7"
+ ],
+ "machine": "x86_64",
+ "python": "3.13.15"
+}

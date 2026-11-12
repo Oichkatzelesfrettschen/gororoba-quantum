@@ -1,0 +1,10 @@
+[{"stream_name":"stderr","time":0.952823126,"data":"/kaggle/src/script.py:8: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":0.95287593,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":41069.689103808,"data":"{\"rc\": 124, \"wall_s\": 41000.0, \"maxrss_kib\": 218376, \"elapsed_s\": 41068.8}\n"}
+,{"stream_name":"stderr","time":41072.724859237,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":41072.724917674,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":41073.239259258,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":41073.239304417,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":41074.742100277,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":41076.235822781,"data":"[NbConvertApp] Writing 373230 bytes to __results__.html\n"}
+]

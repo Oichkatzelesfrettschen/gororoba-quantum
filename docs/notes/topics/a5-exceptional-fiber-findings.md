@@ -62,7 +62,8 @@ maps and no others, but its pruning reads presentation-dependent coefficients an
 is pruned), so it certifies only the maps it found.
 
 **Germ fingerprints.** The quotient lengths q_N = dim k[t]/(J + m^N) separate the classes at small N and agree
-within each class at all three specializations (Codex re-audit, `germ-checks.jsonl`):
+within each class at all three specializations (Codex re-audit,
+[`germ-checks.jsonl`](../../evidence/a5-exceptional-fibers/structure/reaudit/germ-checks.jsonl)):
 
 | Class | Variables | J, G generators | q_2, ..., q_7 |
 |---|---|---|---|

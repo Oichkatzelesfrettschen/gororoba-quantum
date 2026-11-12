@@ -297,6 +297,120 @@ the closest entry and say what changed.
   the retained rows through degree 8 (1,422) at 13.0 GB peak in 3,690 s; the machine and its resource group were
   deleted after the record and logs were copied and their sha256 compared.
 
+### E8-bar -> N- degree-3 products: the full standard basis on an 84 GB cloud VM
+
+- Question and decisive outcome: whether `std(J + m P_3)` for the 225 degree-3 products of the 21 generators G of
+  E8-bar -> N- finishes within 36 h; a finished basis would give the degree-3 normal forms and the membership rank
+  h_3 (ledger A5-327).
+- Formulation: the untruncated standard basis in one process; the jet-truncated rank (A5-031) was the cheaper route
+  and decided h_3 = 225 (A5-092).
+- Host and tool versions: the fourth Azure VM of the program (84 GB, `hv_balloon` maximum 86,016 MB), Singular from a sage
+  wheel, p = 32009.
+- Launch line and environment: `cg-run.sh e8nm_d3 78G 129600 Singular -q --no-rc --cpus=1 input.sing` with
+  `MALLOC_ARENA_MAX=2`, a transient cgroup scope with `MemoryMax=78G` and `MemorySwapMax=0`, and `timeout -k 30`.
+- Departures from the foundations: none.
+- Parallelism: one process, one CPU.
+- Memory and time limits: 78 GiB cgroup limit without swap, 129,600 s; a timeout shows as `e8nm_d3/exit` = 124.
+- Checkpoints: `out.log` (generator count, target count, products time), `samples.tsv` (resident set every 30 s),
+  `started`, `exit`, `all.done`.
+- End state: the work tree copied and its sha256 verified, then the VM deallocated (`vm4/watch.out`); `vm4/watch.log`
+  holds the five-minute poll of the job.
+- Outcome: timeout at 129,600 s (exit 124), no standard basis, products built in 1,825 s, peak Singular resident set
+  49,760,004 KiB, so the time cap ended the run; no measured-combinations row, since the run produced no result.
+
+### Rees-graph elimination by msolve on a 32 GiB Kaggle kernel (Iso -> N-, Iso -> N+, W8 -> N+)
+
+- Question and decisive outcome: whether msolve eliminates the Rees graph of Iso -> N-, Iso -> N+ and W8 -> N+ in one
+  Kaggle session; a Groebner basis of the graph would give the defining ideal of the fiber cone (ledger A5-328;
+  E8-bar -> N+ is A5-042).
+- Formulation: full elimination `-e 1 -g 2`; a homogenized or Macaulay slice stays untested (A5-042).
+- Host and tool versions: Kaggle CPU kernel, 4 cores, 32,869,288 KiB, Python 3.13.15, `passagemath-msolve` 10.8.13,
+  p = 32009.
+- Launch line and environment: `msolve -v 2 -t 4 -e 1 -g 2 -f input.ms -o gb.out`.
+- Departures from the foundations: none.
+- Parallelism: 4 threads on 4 cores.
+- Memory and time limits: the kernel's 32 GiB; return code -9 at a peak of 31.37 million of 32.87 million KiB reads as
+  an out-of-memory kill (hypothesis: the kernel's killer, not recorded in the log).
+- Checkpoints: `msolve.log` (one line per F4 step), `samples.tsv` (resident set every 30 s), `result.json`.
+- End state: the kernel output pulled and kept under `working/distribute/out/`.
+- Outcome: killed at 9,069.4 s (Iso -> N-), 10,910.0 s (Iso -> N+) and 3,839.7 s (W8 -> N+) at 31.37 million KiB, in
+  the degree-10 F4 step with 110,419, 110,419 and 52,198 pairs; `gb.out` empty.
+
+### Local-syzygy fiber relations on a Kaggle CPU kernel (W8, E8-bar -> N+, Iso -> N+)
+
+- Question and decisive outcome: whether the local-syzygy computation of the degree-2 fiber relations (degree 3 for
+  Iso -> N+) finishes in one Kaggle session; the relations would give the quadric ideal K2 without the global
+  products (ledger A5-329; the route is superseded by A5-044).
+- Formulation: a local (`ds`) ordering, which the relations need (A5-044); the jet-truncated route replaced it.
+- Host and tool versions: Kaggle CPU kernel, 4 cores, 32,869,288 to 32,869,296 KiB, Python 3.13.15, `passagemath-singular` 10.8.13,
+  p = 32009.
+- Launch line and environment: the Singular script `input.sing` of each kernel in a local (`ds`) ring, with a timeout
+  of 41,000 s on the E8-bar -> N+ and Iso -> N+ kernels.
+- Departures from the foundations: none.
+- Parallelism: one Singular process.
+- Memory and time limits: return code -9 at a peak near the kernel's 32 GiB (W8; hypothesis: an out-of-memory kill) and
+  return code 124 at the 41,000 s timeout (E8-bar -> N+, Iso -> N+).
+- Checkpoints: `singular.log` (generator and variable counts, the `syz` stage on Iso -> N+), `samples.tsv`,
+  `result.json`.
+- End state: the kernel output pulled and kept under `working/distribute/out/`.
+- Outcome: W8 -> N- and W8 -> N+ killed at 5,437.4 and 6,207.5 s at 29.9 GiB; E8-bar -> N+ timed out at 41,047.0 s at
+  18.8 GiB; Iso -> N+ degree 3 timed out at 41,051.8 s at 17.4 GiB in the `syz` stage.
+
+### Engine v7 quotient export of E8-bar -> N- degree 4 at N = 14 to 16 in one Kaggle session
+
+- Question and decisive outcome: whether one 41,000 s Kaggle session exports and ranks the quotient for N = 14, 15 and
+  16 at degree 4; a rank at N = 15 equal to 495 would close the ladder (ledger A5-330).
+- Formulation: engine v7 (`fiber_rank_v7.py`, sha256 prefix `a197799d97287b78`) in quotient mode on the header
+  `e8-nm.sing`, one kernel per N.
+- Host and tool versions: Kaggle CPU kernel, 4 cores, 32,869,292 KiB, Python 3.13.15, numpy 2.1.3, scipy 1.16.3,
+  python-flint 0.9.0, p = 32009.
+- Launch line and environment: one kernel per rung (`a5-v7-e8nm-d4-n14`, `-n15`, `-n16`) with the engine's admission
+  limit `--max-gb 24.0` and a 41,000 s timeout.
+- Departures from the foundations: none.
+- Parallelism: not recorded.
+- Memory and time limits: `--max-gb 24.0` (a refusal prints `preflight X GiB exceeds --max-gb 24.0`), 41,000 s.
+- Checkpoints: `progress.log` (sizes of the export tables every 300 s), `summary.json`, `stderr.log`.
+- End state: the kernel output pulled and kept under `working/kaggle-v7/out/`.
+- Outcome: N = 14 refused by the admission check at 40,381.7 s (24.59 GiB against 24.0, equal to the preflight of the
+  laptop record); N = 15 and 16 timed out at 41,000 s with three tables and none written. The laptop ran N = 15 (A5-324).
+
+### Normalization of the E8-bar -> VB chart ideals on a Kaggle CPU kernel
+
+- Question and decisive outcome: whether Singular `normal` finishes on the strict-transform chart ideals t3, t5 and t7
+  of the point blowup of E8-bar -> VB; the normalization would give arcs for the degree-3 component (ledger A5-331,
+  A5-016).
+- Formulation: `normal` on one chart ideal, with the script writing the normalization out before any further basis
+  computation; the build host's run of chart 5 is the counterpart.
+- Host and tool versions: Kaggle CPU kernel, 4 cores; `summary.json` records the versions 10.9 and 4.4.1 (Singular
+  4.4.1); p = 32009.
+- Launch line and environment: kernel `a5-vb-arcs` (charts 3, 5, 7 at 14,400 s each, then the arc search on chart 7)
+  and kernel `a5-vb-chart5` (chart 5 at 37,800 s).
+- Departures from the foundations: none.
+- Parallelism: one Singular process per chart, the three charts of `a5-vb-arcs` at once (14,509.6 s in all).
+- Memory and time limits: the per-chart timeouts above (return code 124).
+- Checkpoints: `snorm3.log`, `snorm5.log`, `snorm7.log`, `arcs7.jsonl`, `summary.json`.
+- End state: the kernel output pulled and kept under `working/distribute/out/`; the build-host chart-5 files under
+  `working/build/arc/n5/`.
+- Outcome: no chart finished on Kaggle; the arc search on the chart-7 normalization from the build host raised
+  `ValueError: min() iterable argument is empty` after 8.5 s; the build host finished chart 5 in 359 s.
+
+### Minimal primes of the Iso -> N- quadric ideal K2 on a Kaggle CPU kernel
+
+- Question and decisive outcome: whether `minAssChar` and `minAssGTZ` of K2 (17 variables, p = 32009) finish in one
+  Kaggle session; a result would give the prime decomposition of K2 for Iso -> N- (ledger A5-332).
+- Formulation: the whole-ideal decompositions; the chart criterion of
+  `structure/iso-k2/chart-colon/README.md` decided that K2 is radical.
+- Host and tool versions: Kaggle CPU kernel, 4 cores, 32,869,296 KiB, Singular 4.4.1, Python 3.13.15.
+- Launch line and environment: kernel `a5-k2-iso-direct`, the two jobs `iso_k2_minAssChar` and `iso_k2_minAssGTZ`, 41,000 s
+  each.
+- Departures from the foundations: none.
+- Parallelism: the two jobs at once, one process each (41,047.1 s in all).
+- Memory and time limits: 41,000 s per job (return code 124).
+- Checkpoints: `summary.json`, `a5-k2-iso-direct.log`, an empty `out.log` per job.
+- End state: the kernel output pulled and kept under `working/distribute/out/`.
+- Outcome: both jobs timed out at 41,000.1 s with no result.
+
+
 ### W8 -> N- degree 5, N = 16: memory-bounded engine v14 rerun on the build host (do the retained ranks reproduce at a bounded peak)
 
 - Question and decisive outcome: whether engine v14 with the compact echelon reproduces the retained v11 receipt run

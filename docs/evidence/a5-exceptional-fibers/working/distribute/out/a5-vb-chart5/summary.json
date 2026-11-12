@@ -1,0 +1,17 @@
+{
+ "cpu_count": 4,
+ "install": {
+  "rc": 0,
+  "seconds": 103.1
+ },
+ "versions": "10.9\n4.4.1\n",
+ "charts": {
+  "5": {
+   "normal": {
+    "rc": 124,
+    "seconds": 37800.0
+   }
+  }
+ },
+ "total_seconds": 37904.8
+}

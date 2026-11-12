@@ -1,0 +1,1 @@
+Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00

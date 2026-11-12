@@ -1,0 +1,42 @@
+[{"stream_name":"stderr","time":1.635267218,"data":"/kaggle/src/script.py:7: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":1.6353182739999998,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":14511.265570967,"data":"{\n"}
+,{"stream_name":"stdout","time":14511.26560381,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":14511.265610346,"data":" \"install\": {\n"}
+,{"stream_name":"stdout","time":14511.265615259,"data":"  \"rc\": 0,\n"}
+,{"stream_name":"stdout","time":14511.265620096,"data":"  \"seconds\": 99.7\n"}
+,{"stream_name":"stdout","time":14511.265624949,"data":" },\n"}
+,{"stream_name":"stdout","time":14511.26562965,"data":" \"versions\": \"10.9\\n4.4.1\\n\",\n"}
+,{"stream_name":"stdout","time":14511.265634415,"data":" \"charts\": {\n"}
+,{"stream_name":"stdout","time":14511.265651159,"data":"  \"3\": {\n"}
+,{"stream_name":"stdout","time":14511.265667374,"data":"   \"normal\": {\n"}
+,{"stream_name":"stdout","time":14511.2656726,"data":"    \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":14511.265677304,"data":"    \"seconds\": 14400.0\n"}
+,{"stream_name":"stdout","time":14511.265682134,"data":"   }\n"}
+,{"stream_name":"stdout","time":14511.26568668,"data":"  },\n"}
+,{"stream_name":"stdout","time":14511.26569146,"data":"  \"5\": {\n"}
+,{"stream_name":"stdout","time":14511.265696588,"data":"   \"normal\": {\n"}
+,{"stream_name":"stdout","time":14511.265701467,"data":"    \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":14511.265705928,"data":"    \"seconds\": 14400.0\n"}
+,{"stream_name":"stdout","time":14511.265710254,"data":"   }\n"}
+,{"stream_name":"stdout","time":14511.26571472,"data":"  },\n"}
+,{"stream_name":"stdout","time":14511.265719247,"data":"  \"7\": {\n"}
+,{"stream_name":"stdout","time":14511.265723819,"data":"   \"normal\": {\n"}
+,{"stream_name":"stdout","time":14511.265728784,"data":"    \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":14511.265733337,"data":"    \"seconds\": 14400.0\n"}
+,{"stream_name":"stdout","time":14511.26573754,"data":"   },\n"}
+,{"stream_name":"stdout","time":14511.265741925,"data":"   \"arcs\": {\n"}
+,{"stream_name":"stdout","time":14511.2657463,"data":"    \"rc\": 1,\n"}
+,{"stream_name":"stdout","time":14511.265750449,"data":"    \"seconds\": 8.5\n"}
+,{"stream_name":"stdout","time":14511.265754887,"data":"   }\n"}
+,{"stream_name":"stdout","time":14511.265759322,"data":"  }\n"}
+,{"stream_name":"stdout","time":14511.265763794,"data":" },\n"}
+,{"stream_name":"stdout","time":14511.265767996,"data":" \"total_seconds\": 14509.6\n"}
+,{"stream_name":"stdout","time":14511.265772677,"data":"}\n"}
+,{"stream_name":"stderr","time":14514.472750939,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":14514.472784806,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":14515.156123335,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":14515.156149895,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":14519.034520045,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":14520.587374732,"data":"[NbConvertApp] Writing 298754 bytes to __results__.html\n"}
+]
