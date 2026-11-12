@@ -5664,6 +5664,22 @@
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d5.json",
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d6.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "printf '%s\\n' '8e19351eef04196d304c02a27a7b2b848702bc567991c22affbdee3daaddfe71  docs/evidence/a5-char0-transfer/e8-closure-check-validation.json' | sha256sum -c - && \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/e8_closure_validation.py --check && if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/e8_closure_certificate.py --check --workers 2 --memory-budget-gib 12; else echo \"skipped: GOROROBA_SINGULAR_REQUIRED=1 enables the exact Singular replay\"; fi",
+      "name": "core-a5-e8-closure-certificate-qi",
+      "seconds": 165.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-char0-transfer/e8-closure-certificate-e8-nm.json",
+        "docs/evidence/a5-char0-transfer/e8-closure-certificate-e8-np.json",
+        "docs/evidence/a5-char0-transfer/e8-closure-check-validation.json"
+      ]
     }
   ],
   "excluded": [

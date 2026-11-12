@@ -238,7 +238,7 @@ the Q(i) solution. Both roots of -1 at each split prime give real and imaginary 
 boxes leave a measured gap: weight 9 with the m-range [-7, 9] or [-8, 10] gives qw-relation rank 20 over Q(i), and
 weight 10 with [-6, 8] gives rank 16 modulo 32009. `--check` first compares the sha256 of `e8_closure_certificate.py`,
 `slice_rings_qi.py` and `reduction_check.py` with the record, so an edit of any of the three makes it fail until
-`--write` regenerates the records (about 65 minutes for both signs in the retained runs); it then reruns the exact
+`--write` regenerates the records with the resource flags below; it then reruns the exact
 identities from the cofactor file and two mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities,
 one coefficient of G_1 doubled breaks 42.
 
@@ -256,8 +256,17 @@ and imposes no operating-system memory or swap limit. Native arithmetic threads 
 
 | Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search and full-run cost | exact check | mutations fail |
 |---|---|---|---|---|---|
-| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 259.8-354.1 s, 1,982.8 s total wall, 4.1 GiB peak per worker | 26.9 s | 1 of 42, 42 of 42 |
-| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 236.0-396.2 s, 1,878.9 s total wall, 4.1 GiB peak per worker | 18.1 s | 1 of 42, 42 of 42 |
+| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 194.9-201.8 s, 655.3 s total wall, 4.10 GiB peak per worker | 14.2 s | 1 of 42, 42 of 42 |
+| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 193.3-199.6 s, 653.4 s total wall, 4.09 GiB peak per worker | 14.5 s | 1 of 42, 42 of 42 |
+
+The table records a full regeneration with four process workers, a twenty-four-GiB planning budget and one native
+arithmetic thread per worker. Both compressed cofactor files reproduce their retained bytes.
+[`e8-closure-check-validation.json`](e8-closure-check-validation.json) binds the generated records to the completed
+exact replay and mutations and records identical selected-sign generation-diagnostic hashes before and after each
+`--check`. [`e8_closure_validation.py`](e8_closure_validation.py) checks the certificate, cofactor, source and
+diagnostic bindings. The on-demand `core-a5-e8-closure-certificate-qi` gate pins the complete receipt bytes and runs
+that reader; `GOROROBA_SINGULAR_REQUIRED=1` also enables the corrected two-sign exact replay. Elapsed-time floats
+record execution telemetry. Polynomial identities, ideal inclusions and the exact relation rank decide the verdict.
 
 Records: `e8-closure-certificate-SLUG.json` (primes, box, counts, digests of the producer script, the Q(i) J and G,
 this producer, `slice_rings_qi.py`, `reduction_check.py` and the cofactor file, stage times, verdict),

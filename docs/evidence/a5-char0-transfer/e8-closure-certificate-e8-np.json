@@ -54,6 +54,32 @@
   }
  ],
  "reconstruction": "CRT of real and imaginary parts, rational reconstruction, stable over two prime sets",
+ "execution": {
+  "requested_workers": 4,
+  "effective_workers": 4,
+  "memory_budget_gib": 24,
+  "required_memory_gib": 21,
+  "worker_memory_reserve_gib": 5,
+  "controller_memory_reserve_gib": 1,
+  "memory_budget_is_admission_only": true,
+  "native_threads": 1,
+  "environment": {
+   "OPENBLAS_NUM_THREADS": "1",
+   "OMP_NUM_THREADS": "1",
+   "MKL_NUM_THREADS": "1",
+   "BLIS_NUM_THREADS": "1",
+   "NUMEXPR_NUM_THREADS": "1",
+   "VECLIB_MAXIMUM_THREADS": "1",
+   "GOROROBA_WORKERS": "4",
+   "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
+   "MALLOC_ARENA_MAX": "2"
+  },
+  "runtime": {
+   "python": "3.13.18",
+   "python_flint": "0.9.0",
+   "sympy": "1.14.0"
+  }
+ },
  "box": {
   "m_range": [
    -7,
@@ -75,7 +101,7 @@
  "sha256": {
   "producer_script": "5b3e4addda1197627a4441738600c75665c7c4370a451f86735158ecdb1c5cc0",
   "header_j_and_g": "24b8d2f786c9d64473cfad7be1e327b94893058e37f70bdc45b7fe75fd2ebc34",
-  "certificate_producer": "c881065cbeff8d876b3ec8a2b080cb8d6061dc61c4feaf1c6f2c4101592ae4c8",
+  "certificate_producer": "e89f5b317a5a7c199b349d60aa49905f223a29b9244c3c43ca7d1149a3992419",
   "slice_rings_qi": "5f034b1981ea070f5ebd381a1d250dcd8fa14527226c6074a5da69d6595643d7",
   "reduction_check": "2cb80bafe8437df476442f13a449046ae998ab9d0907c41cedd72b7543cffd88",
   "cofactor_file": "fa403cf03dfa8d200bcde8299c2363aefa7384d08c0416009dc9f63cd9ade228"
@@ -125,8 +151,8 @@
  },
  "stages": {
   "producer": {
-   "wall_seconds": 85.2,
-   "peak_rss_kib": 166344
+   "wall_seconds": 38.0,
+   "peak_rss_kib": 163612
   },
   "modular": [
    {
@@ -136,9 +162,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 18868,
-    "linear_algebra_seconds": 316.9,
-    "worker_peak_rss_kib": 4269104
+    "singular_peak_rss_kib": 16836,
+    "linear_algebra_seconds": 197.2,
+    "worker_peak_rss_kib": 4271156
    },
    {
     "prime": 32009,
@@ -147,9 +173,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 19056,
-    "linear_algebra_seconds": 315.1,
-    "worker_peak_rss_kib": 4270984
+    "singular_peak_rss_kib": 17060,
+    "linear_algebra_seconds": 198.8,
+    "worker_peak_rss_kib": 4270972
    },
    {
     "prime": 32029,
@@ -158,9 +184,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 19456,
-    "linear_algebra_seconds": 282.2,
-    "worker_peak_rss_kib": 4270984
+    "singular_peak_rss_kib": 17132,
+    "linear_algebra_seconds": 196.4,
+    "worker_peak_rss_kib": 4270732
    },
    {
     "prime": 32029,
@@ -168,10 +194,10 @@
     "rows": 23903,
     "columns": 13872,
     "rank": 3538,
-    "singular_seconds": 0.2,
-    "singular_peak_rss_kib": 18920,
-    "linear_algebra_seconds": 285.3,
-    "worker_peak_rss_kib": 4269456
+    "singular_seconds": 0.1,
+    "singular_peak_rss_kib": 17316,
+    "linear_algebra_seconds": 193.3,
+    "worker_peak_rss_kib": 4270556
    },
    {
     "prime": 32749,
@@ -180,9 +206,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 18824,
-    "linear_algebra_seconds": 393.4,
-    "worker_peak_rss_kib": 4270984
+    "singular_peak_rss_kib": 17280,
+    "linear_algebra_seconds": 198.8,
+    "worker_peak_rss_kib": 4270556
    },
    {
     "prime": 32749,
@@ -191,9 +217,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 18032,
-    "linear_algebra_seconds": 396.2,
-    "worker_peak_rss_kib": 4269456
+    "singular_peak_rss_kib": 16836,
+    "linear_algebra_seconds": 195.2,
+    "worker_peak_rss_kib": 4270736
    },
    {
     "prime": 32717,
@@ -202,9 +228,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 19508,
-    "linear_algebra_seconds": 257.8,
-    "worker_peak_rss_kib": 4270984
+    "singular_peak_rss_kib": 17336,
+    "linear_algebra_seconds": 198.1,
+    "worker_peak_rss_kib": 4271156
    },
    {
     "prime": 32717,
@@ -213,9 +239,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 19268,
-    "linear_algebra_seconds": 257.8,
-    "worker_peak_rss_kib": 4269712
+    "singular_peak_rss_kib": 17060,
+    "linear_algebra_seconds": 199.3,
+    "worker_peak_rss_kib": 4288308
    },
    {
     "prime": 32713,
@@ -223,10 +249,10 @@
     "rows": 23903,
     "columns": 13872,
     "rank": 3538,
-    "singular_seconds": 0.3,
-    "singular_peak_rss_kib": 18340,
-    "linear_algebra_seconds": 276.4,
-    "worker_peak_rss_kib": 4270984
+    "singular_seconds": 0.1,
+    "singular_peak_rss_kib": 17164,
+    "linear_algebra_seconds": 195.2,
+    "worker_peak_rss_kib": 4270736
    },
    {
     "prime": 32713,
@@ -234,10 +260,10 @@
     "rows": 23903,
     "columns": 13872,
     "rank": 3538,
-    "singular_seconds": 0.3,
-    "singular_peak_rss_kib": 18424,
-    "linear_algebra_seconds": 278.2,
-    "worker_peak_rss_kib": 4269712
+    "singular_seconds": 0.1,
+    "singular_peak_rss_kib": 17244,
+    "linear_algebra_seconds": 198.8,
+    "worker_peak_rss_kib": 4271156
    },
    {
     "prime": 32693,
@@ -246,9 +272,9 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 20020,
-    "linear_algebra_seconds": 236.6,
-    "worker_peak_rss_kib": 4270984
+    "singular_peak_rss_kib": 17072,
+    "linear_algebra_seconds": 198.8,
+    "worker_peak_rss_kib": 4270556
    },
    {
     "prime": 32693,
@@ -257,15 +283,15 @@
     "columns": 13872,
     "rank": 3538,
     "singular_seconds": 0.1,
-    "singular_peak_rss_kib": 19696,
-    "linear_algebra_seconds": 236.0,
-    "worker_peak_rss_kib": 4269712
+    "singular_peak_rss_kib": 17056,
+    "linear_algebra_seconds": 199.6,
+    "worker_peak_rss_kib": 4288308
    }
   ],
   "verification": {
    "status": "completed",
-   "wall_seconds": 18.1,
-   "peak_rss_kib": 30472,
+   "wall_seconds": 14.5,
+   "peak_rss_kib": 28364,
    "j_nonzero": 0,
    "generators": 21,
    "colength_of_n": 2,
@@ -279,5 +305,5 @@
   }
  },
  "verdict": "i_equals_is",
- "wall_seconds": 1878.9
+ "wall_seconds": 653.4
 }
