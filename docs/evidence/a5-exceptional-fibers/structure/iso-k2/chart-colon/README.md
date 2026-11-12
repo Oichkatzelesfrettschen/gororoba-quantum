@@ -16,4 +16,5 @@ ring is reduced, so A is reduced when the affine chart C is reduced.
 
 **Conclusion.** K2 is radical at p = 32009 and at p = 32029. Chart 2 carries the proof at each prime; chart 3 is redundancy (a chart-1 reproduction was stopped unfinished after 3 minutes as unnecessary). The global `radical(K)` (13 h on the westus3 VM, Singular 4.3.2, plus about
 8 h of an earlier local attempt) answers a question this settles in seconds. The prime decomposition of K2 remains
-open: whole-ideal minAssGTZ and minAssChar exceeded about 40,000 s, and chart minAssChar did not finish in 8,000 s.
+open: whole-ideal minAssGTZ and minAssChar exceeded about 40,000 s (both timed out at 41,000.1 s on a Kaggle kernel,
+A5-332), and chart minAssChar did not finish in 8,000 s.

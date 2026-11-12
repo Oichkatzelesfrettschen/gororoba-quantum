@@ -1,0 +1,21 @@
+{
+ "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+ "nproc": 4,
+ "mem_kib": {
+  "MemTotal": 32869296,
+  "MemAvailable": 31853396
+ },
+ "python": "3.13.15",
+ "numpy": "2.1.3",
+ "scipy": "1.16.3",
+ "flint": "0.9.0",
+ "engine_sha256": "a197799d97287b782c25449897c0eb20b491376c6ad8b9c55cfd29fccc7d7587",
+ "job": {
+  "slug": "a5-v7-e8nm-d4-n16",
+  "gpu": false,
+  "kind": "rung",
+  "header": "e8-nm.sing",
+  "d": 4,
+  "N": 16
+ }
+}

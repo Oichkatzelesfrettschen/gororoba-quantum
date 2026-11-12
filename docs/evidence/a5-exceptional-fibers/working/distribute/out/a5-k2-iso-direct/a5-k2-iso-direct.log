@@ -1,0 +1,35 @@
+[{"stream_name":"stderr","time":1.059833648,"data":"/kaggle/src/script.py:11: DeprecationWarning: Python 3.14 will, by default, filter extracted tar archives and reject files or modify their metadata. Use the filter argument to control this behavior.\n"}
+,{"stream_name":"stderr","time":1.059891956,"data":"  tarfile.open(fileobj=io.BytesIO(base64.b64decode(PAYLOAD))).extractall(W)\n"}
+,{"stream_name":"stdout","time":41048.16135208,"data":"{\n"}
+,{"stream_name":"stdout","time":41048.16169003,"data":" \"cpu_count\": 4,\n"}
+,{"stream_name":"stdout","time":41048.161700394,"data":" \"meminfo_kib\": {\n"}
+,{"stream_name":"stdout","time":41048.161705653,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":41048.161710781,"data":"  \"MemAvailable\": \"31808576\"\n"}
+,{"stream_name":"stdout","time":41048.161715822,"data":" },\n"}
+,{"stream_name":"stdout","time":41048.161720473,"data":" \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":41048.161724754,"data":" \"singular\": \"4.4.1\",\n"}
+,{"stream_name":"stdout","time":41048.161729647,"data":" \"jobs\": {\n"}
+,{"stream_name":"stdout","time":41048.161734449,"data":"  \"iso_k2_minAssChar\": {\n"}
+,{"stream_name":"stdout","time":41048.161739524,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":41048.161744408,"data":"   \"seconds\": 41000.1,\n"}
+,{"stream_name":"stdout","time":41048.161749233,"data":"   \"results\": []\n"}
+,{"stream_name":"stdout","time":41048.161754282,"data":"  },\n"}
+,{"stream_name":"stdout","time":41048.161758788,"data":"  \"iso_k2_minAssGTZ\": {\n"}
+,{"stream_name":"stdout","time":41048.161763478,"data":"   \"rc\": 124,\n"}
+,{"stream_name":"stdout","time":41048.161768086,"data":"   \"seconds\": 41000.1,\n"}
+,{"stream_name":"stdout","time":41048.161772984,"data":"   \"results\": []\n"}
+,{"stream_name":"stdout","time":41048.161777696,"data":"  }\n"}
+,{"stream_name":"stdout","time":41048.161782203,"data":" },\n"}
+,{"stream_name":"stdout","time":41048.16178668,"data":" \"meminfo_end_kib\": {\n"}
+,{"stream_name":"stdout","time":41048.161791348,"data":"  \"MemTotal\": \"32869296\",\n"}
+,{"stream_name":"stdout","time":41048.161795975,"data":"  \"MemAvailable\": \"31956848\"\n"}
+,{"stream_name":"stdout","time":41048.161800715,"data":" },\n"}
+,{"stream_name":"stdout","time":41048.161805105,"data":" \"total_seconds\": 41047.1\n"}
+,{"stream_name":"stdout","time":41048.161809987,"data":"}\n"}
+,{"stream_name":"stderr","time":41051.985675973,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":41051.985767186,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":41052.647427976,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":41052.647460531,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":41054.510930575,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":41056.148266045,"data":"[NbConvertApp] Writing 315097 bytes to __results__.html\n"}
+]

@@ -1,0 +1,21 @@
+int C=3; string outdir="n3";
+// Normalization of the strict transform in chart t_C = 1; C is set by the caller as int C.
+LIB "normal.lib";
+ring R=32009,(h,t1,t2,t3,t4,t5,t6,t7,t8),dp;
+execute("ideal S="+read("strict_transform.txt")+";");
+ideal S1=subst(S,var(C+1),1);
+string vs="h"; int i; for(i=1;i<=8;i++){ if(i!=C){ vs=vs+",t"+string(i);} }
+execute("ring Q=32009,("+vs+"),dp;");
+ideal S1=imap(R,S1); S1=std(S1);
+list nr=normal(S1);
+def Rn=nr[1][1]; setring Rn;
+ideal sn=std(norid);
+"RESULT dim",dim(sn),"nrel",size(norid),"nvars",nvars(Rn);
+string names=varstr(Rn); int k;
+for(k=1;k<=size(names);k++){ if(names[k]==","){ names[k]=" "; } }
+write(":w "+outdir+"/vars.txt",names);
+write(":w "+outdir+"/norid.txt",string(norid));
+ideal sl=slocus(norid); sl=std(sl);
+"RESULT slocus_dim",dim(sl),"size",size(sl);
+write(":w "+outdir+"/slocus.txt",string(sl));
+quit;

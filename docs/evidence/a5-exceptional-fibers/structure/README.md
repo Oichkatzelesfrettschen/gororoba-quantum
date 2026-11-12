@@ -92,6 +92,76 @@ planes sweep a 5-dimensional set (Jacobian rank 6 with dual numbers), so V(K2 : 
 and F(I) = k[y]/K2 for W8 at both primes, with controls and a measured cost of about 50 s per point against the stalled global
 slice.
 
+## Sign symmetry of the fiber headers: Smith invariants, signed-permutation sweep, the pair flip
+
+[sign-symmetry/](sign-symmetry/) retains the records behind A5-032 and A5-049 for the three producer specializations
+(p, i) = (32009, 10754), (32009, 21255) and (32029, 9115). The exact proof of the pair flip is
+`doubling_automorphism.py` above; these records are the computations that found and bounded it.
+
+| File | Content |
+|---|---|
+| `smith_torus.jsonl` (`smith_torus.py HEADER...`) | the 27 headers (nine at each specialization): the exponent-difference lattice of every displayed J and G polynomial has full rank (6, 7, 8 or 9, the number of variables) and invariant factors 1, ..., 1, 2, 2, so the diagonal torus fixing every polynomial up to a character has order 4 at every header |
+| `sweep_p32009.jsonl` (`signed_perm_sweep.py`) | 6,225 lines at p = 32009: 25 per-pair summaries (ordered pairs of headers with the same variable count) and 6,200 signed permutations t_i -> s_i t_pi(i) with span(J_a o sigma) = span(J_b); 68 of them map the G span onto itself, exactly 4 for each of 17 ordered pairs (36 within a header, 32 between the N+ and N- headers of one pair) |
+| `sign_search.log` (`sign_search.py HEADER+ HEADER-`) | E8-bar -> N+ against E8-bar -> N- at (32009, 10754): all 2^9 diagonal sign vectors; 8 map J up to sign, and of those the 4 with t9 -> -t9 and t8 fixed leave the combined G span at rank 41 (all 21 generators of G- outside the moved G+), the 4 with t8 -> -t8 and t9 -> -t9 keep it at 21 (none outside); the logs at the other two specializations are identical |
+| `npm_map.jsonl`, `map_p32009-r10754.json`, `map_p32009-r21255.json`, `map_p32029-r9115.json` (`npm_map.py`, `k2_transport.py`) | the pair flip t8 -> -t8, t9 -> -t9 as an integer identity on the 16 J and 21 G generators at each specialization (a sign for every index), and the transport of the 148 N- quadrics onto the N+ span (ranks 148, 148, union 148 at 32009 and 32029) |
+
+The sweep prunes permutations by a per-variable profile of J, so an empty result for a multi-generator J is not a
+proof of absence and a valid map with J_b = 2 J_a is pruned; it certifies the maps it found. The `tc_*` tangent-cone
+probes of the same run carried Singular errors and were withdrawn; they are not retained. Replay from the tracked
+headers under `../working/build/inputs/`: `smith_torus.py` reproduced `smith_torus.jsonl` (header paths aside),
+`sign_search.py` reproduced `sign_search.log` at all three specializations, and `signed_perm_sweep.py` on the nine
+headers of the run reproduced `sweep_p32009.jsonl` byte for byte (68 s). The programs `smith_torus.py`,
+`signed_perm_sweep.py` and `tangent_cone.py` are formatted with ruff after the run (whitespace and quotes only) so the
+`sources` gate of `ci/gates.json` accepts them. The `header` and `map` fields of the records hold the paths of the
+producing run.
+
+## Re-audit records: germ fingerprints and the pair flip at three specializations
+
+[reaudit/](reaudit/) retains two records of the Codex re-audit that the findings note cites (`germ-checks.jsonl` for
+the table of germ fingerprints). Their producers `germ_checks.py` and `audit.py` are retained as run in
+`../working/reviews/codex-reaudit/`.
+
+- `germ-checks.jsonl`: 27 rows, one per header, each with return code 0 and no Singular error.
+  Each runs `std(J + m^N)` in `dp` for N = 2 to 7 and prints N, `vdim`, the size of the standard basis and the number of
+  generators of G that reduce to zero. The quotient lengths q_2, ..., q_7 are 9, 39, 117, 283, 594, 1127 (E8-bar -> N+-,
+  6 headers), 7, 27, 77, 182, 378, 714 (Iso, 6), 8, 35, 112, 294, 672, 1386 (W8, 6), 8, 27, 66, 135, 246, 413 (X-
+  and X+, 6) and again 8, 27, 66, 135, 246, 413 (E8-bar -> VB, 3). X and E8-bar -> VB share q_N for N = 2 to 7 while
+  their standard bases differ in size (28 against 29 at N = 2).
+- `invariants.jsonl`: 42 rows. Each of the 27 headers carries the ranks of J and G, the orders and degrees of the G
+  generators and its group of diagonal sign changes; four pair rows per specialization (E8-bar: flips t8, t9; X and W8:
+  flip t9; Iso: none) give the ranks of J and G of N+, N- and the union (E8-bar 16, 16, 16 and 21, 21, 21) and the sign
+  of each G generator against its partner (every one is +1 or -1); one row per specialization states that the
+  receipt's header hashes match.
+
+Replay from the tracked headers: `audit.py` (its `main`) reproduced all 42 rows of `invariants.jsonl` and
+`germ_checks.py` all 27 rows of `germ-checks.jsonl` (3.5 s each); the tracked inputs now hold eleven headers per
+specialization instead of nine, so a replay prints 46 and 31 rows. Both producers set `ROOT` to the checkout of the run
+and read `working/build/inputs/`.
+
+## Tangent cones of X- and E8-bar -> VB
+
+[germ-xvb/](germ-xvb/) holds the tangent cones at the origin of the presolved slice germs of X- -> N- (7 variables, 12
+generators of J, header `xm-nm.sing`) and E8-bar -> VB (8 variables, 17 generators, `e8-vb.sing`) at p = 32009. The
+program `tangent_cone.py HEADER TAG` writes a Singular script that deforms each generator f to f(u t) / u^ord(f),
+saturates by u and sets u = 0, all in the global ordering `dp`; `tc_xm.log` and `tc_vb.log` are its outputs and
+`tc.resources` the wall time and peak resident set (0.05 and 0.06 s, 19 MB).
+
+| | X- | E8-bar -> VB |
+|---|---|---|
+| generators of the cone | nine quadrics | one linear form and nine quadrics |
+| Hilbert series numerator | 1, 0, -9, 18, -15, 6, -1 | 1, -1, -9, 27, -33, 21, -7, 1 |
+| dimension, multiplicity | 4, 2 | 4, 2 |
+| minimal primes | 1 (dimension 4, multiplicity 1, 3 linear generators) | 1 (dimension 4, multiplicity 1, 4 linear generators) |
+| singular locus | dimension 4, multiplicity 1 | dimension 4, multiplicity 1 |
+
+The VB numerator equals (1 - t) times the X- numerator, the factor of its one linear form, so the two cones have the
+same Hilbert series once that form is eliminated. Each reduced cone is a linear 4-space (a prime of dimension 4 and
+multiplicity 1 holding 3 independent linear forms in 7 variables, or 4 in 8), and each cone has multiplicity 2, so both
+are double structures on a linear 4-space. The comparison leaves open whether the germs are isomorphic (A5-325): equal
+Hilbert series of the cones and equal q_N for N = 2 to 7 (`reaudit/germ-checks.jsonl`) do not give a germ map. The
+scripts regenerate byte for byte from the tracked headers with Singular 4.4.1, and a rerun reproduced both logs byte
+for byte; the `redefining` lines at the head of each log (139 in both) are Singular's library-load notices.
+
 ## Falsifiers
 
 A basis pair failing the automorphism identity, an orbit representative whose phi-image leaves the predicted closure, a

@@ -1,0 +1,1 @@
+N=14 wall 40381.73 s maxrss 4634480 KiB
