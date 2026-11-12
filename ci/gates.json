@@ -5616,6 +5616,17 @@
       "replays": [
         "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 120 \"$PYTHON\" -B -m pytest -q -p no:cacheprovider -m audit tests/test_a5_monomial_certificate_qi.py",
+      "name": "core-a5-monomial-certificate-qi-record",
+      "seconds": 10.0,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/a5-char0-transfer/monomial-certificate-qi.json"
+      ]
     }
   ],
   "excluded": [

@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 CHAR0 = ROOT / "docs/evidence/a5-char0-transfer"
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -72,6 +74,7 @@ def test_a_failed_reduction_or_a_failed_nakayama_check_fails_the_verdict() -> No
     _check(cert.verdict(row) == "failed")
 
 
+@pytest.mark.audit
 def test_the_retained_record_has_no_failure_and_a_wrong_invariant_flips_it() -> None:
     record = json.loads((CHAR0 / "monomial-certificate-qi.json").read_text(encoding="utf-8"))
     _check(len(record["cases"]) == 2)

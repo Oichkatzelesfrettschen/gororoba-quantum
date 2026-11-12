@@ -89,13 +89,14 @@ def file_digests(paths: list[Path]) -> dict[str, str]:
 def input_files(slug: str, prime: int) -> list[Path]:
     """The files a fit at (slug, prime) reads or executes: the headers `limits.one_arc` and `limits.slice_data` load
     (the header of the run prime supplies J and G; slice_data also loads the header of the first prime), the producer
-    sources and result files that `fiber_inputs._task` builds the base point from, and the three scripts of this
-    directory that compute the arcs, the planes and the fit."""
+    sources and result files that `fiber_inputs._task` builds the base point from, `fiber_inputs.py` itself, and the
+    three scripts of this directory that compute the arcs, the planes and the fit."""
     headers = [limits.INPUTS / f"p{p}-r{limits.PRIMES[p]}" / f"{slug}.sing" for p in {prime, next(iter(limits.PRIMES))}]
     return [
         *headers,
         *limits.rees.SOURCE_PATHS,
         *limits.basepoints.SOURCE_PATHS,
+        Path(limits.fiber_inputs.__file__).resolve(),
         HERE / "fiber_plucker_map.py",
         HERE / "plucker_limits.py",
         HERE / "vb_limit_span.py",
