@@ -670,6 +670,10 @@ def validate_claim_definitions(definitions: Any, expected: set[str]) -> dict[str
     mapping: dict[str, Any] = {}
     for definition in definitions:
         require(isinstance(definition, dict), "claim definition must be an object")
+        require(
+            set(definition) <= {"claim", "proposition", "source", "correction"},
+            "claim definition metadata contains unsupported fields",
+        )
         claim = definition.get("claim")
         require(isinstance(claim, str), "claim definition needs a string ID")
         require(claim not in mapping, f"duplicate claim definition: {claim}")

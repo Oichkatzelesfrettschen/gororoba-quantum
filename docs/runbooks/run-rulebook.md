@@ -414,6 +414,6 @@ the closest entry and say what changed.
   the expected whole-receipt digest, the receipt binds the witness, and the witness binds its producer and claim
   definitions. The exact witness stays float-free; receipt timings receive a metadata exemption because their
   bytes are digest-checked rather than numerically replayed. GNU time retains per-process RSS and wall/CPU costs.
-- Outcome: the two-worker writer and checker exit 0 in 23.88/23.32 seconds, with GNU time maximum process RSS
-  81,680/81,632 KiB. The 15 bounded tests, pinned Ruff format/check, strict mypy, ledger check and all 1,194 Markdown
+- Outcome: the two-worker writer and checker exit 0 in 27.72/25.22 seconds, with GNU time maximum process RSS
+  81,772/81,676 KiB. The 26 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,194 Markdown
   link checks pass. Historical timings remain separate from the exact witness arithmetic.

@@ -155,7 +155,8 @@ matrix; scaling the output fails that control. The 32,768 ordered pathion basis 
 The JSON classifies 42 numbered claims: 30 confirmed with the stated coefficient identities or bounded witnesses,
 one refuted description of the tracked note, and eleven `not_checked` entries with reasons. The matrix checks
 carry their propositions and source locators from [claim_definitions.json](claim_definitions.json), whose digest
-the witness binds. Exact ID coverage and uniqueness are checked before the definitions join the verdicts.
+the witness binds. Exact ID coverage, uniqueness and the metadata-only field set are checked before the
+definitions join the verdicts. Definitions cannot overwrite verdict, evidence or scope fields.
 The definitions preserve the 870-element doubly pure corpus and the `e1` mixed-moment counterexample; the
 predecessor's 812-element count and `e0` prediction remain explicit corrections. The checks
 establish neither a new classification theorem nor a new physical primitive. The
@@ -187,12 +188,12 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHONDONTWRITEBYTECOD
 export GOROROBA_WORKERS=2 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MALLOC_ARENA_MAX=2
 systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 \
   timeout -k 10 180 "$PYTHON" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check \
-  --validation-sha256 8b5153588821d80b6aba4b14478db566e75df91e4beb40182b58fff5b013ec48 </dev/null
+  --validation-sha256 07b80eb07417d0974d2eb6a38775cd560f27906e62d86c4ff8f68e222c39f078 </dev/null
 sh ci/pr_checks.sh tests tests/test_a5_gram_operator_witnesses.py
 ```
 
 The bounded tests check the cubic filter, Gaussian Jordan partitions, phase swap, scalar shift, split-congruence
 counterexample, a genuinely Gaussian characteristic polynomial, complete claim definitions, and altered/stale
-validation-receipt rejection. The two-worker writer/checker measured 23.88/23.32 seconds. Retained-record replay belongs to an
+validation-receipt rejection. The two-worker writer/checker measured 27.72/25.22 seconds. Retained-record replay belongs to an
 on-demand gate. A new checkable input that violates an asserted identity, an accepted missing-root filter or a
 changed source digest falsifies the corresponding record.

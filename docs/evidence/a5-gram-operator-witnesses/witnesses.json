@@ -1740,7 +1740,7 @@
       "verdict": "not_checked"
     }
   ],
-  "producer_sha256": "5d8f65541d7723a04382ff5a731d8054f6a929e9eb4f106d89a8f76d56ac29ce",
+  "producer_sha256": "24ee43ac95fbd2ddb98cddab82ddcf558e34730031bc60e6fa20fbaa4f73c0e6",
   "schema": "a5-gram-operator-witnesses/1",
   "sources_sha256": {
     "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "43e1ddaa8e8c41740e9bcb27ada275511bd8488391996041f6027910b4d4af8d",

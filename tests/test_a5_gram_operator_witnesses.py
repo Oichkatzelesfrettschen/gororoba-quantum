@@ -91,6 +91,16 @@ def test_claim_definitions_reject_incomplete_or_ambiguous_coverage(mutation: str
         gram.validate_claim_definitions(definitions, expected)
 
 
+@pytest.mark.parametrize("field", ["verdict", "evidence", "scope"])
+def test_claim_metadata_cannot_upgrade_an_unchecked_proposition(field: str) -> None:
+    definitions = json.loads((gram.HERE / "claim_definitions.json").read_text())["claims"]
+    expected = {row["claim"] for row in definitions}
+    unchecked = next(row for row in definitions if row["claim"] == "9.5")
+    unchecked[field] = "confirmed"
+    with pytest.raises(ValueError, match="claim definition metadata"):
+        gram.validate_claim_definitions(definitions, expected)
+
+
 @pytest.mark.parametrize("mutation", ["receipt", "witness", "schema", "valid"])
 def test_validation_receipt_binds_whole_bytes_schema_and_witness(tmp_path: Path, mutation: str) -> None:
     witness = tmp_path / "witnesses.json"
