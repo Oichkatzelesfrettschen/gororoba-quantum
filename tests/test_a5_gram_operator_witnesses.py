@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
+from fractions import Fraction
 from pathlib import Path
 
 import pytest
@@ -26,6 +27,29 @@ def test_maximal_operand_requires_all_three_positive_gram_roots() -> None:
     require(row["moments"] == ["32", "88", "296"])
     require(row["quadratic_trace"] == "28" and row["quadratic_idempotent"] is False)
     require(row["cubic_trace"] == "16" and row["missing_root_rejected"] is True)
+
+
+@pytest.mark.parametrize(("dimension", "pair", "blocks"), [(8, (1, 2), 0), (32, (1, 10), 8), (32, (1, 18), 12)])
+@pytest.mark.parametrize("beta", [1, -1])
+def test_two_support_block_count_distinguishes_raw_and_unit_norm_gram(
+    dimension: int, pair: tuple[int, int], blocks: int, beta: int
+) -> None:
+    operand = [Fraction(0)] * dimension
+    operand[pair[0]], operand[pair[1]] = Fraction(1), Fraction(beta)
+    matrix = gram.rational_matrix(gram.cd_core.left_mult_matrix_exact(dimension, tuple(operand)))
+    operator = matrix.transpose() * matrix
+    raw_square, normalized_square = operator**2, (operator / 2) ** 2
+    raw_second = sum(raw_square[index, index] for index in range(dimension))
+    normalized_second = sum(normalized_square[index, index] for index in range(dimension))
+    require(raw_second == 4 * dimension + 8 * blocks)
+    require(normalized_second == dimension + 2 * blocks)
+    require((raw_second - dimension) / 2 != blocks)
+    row = gram.two_support_witness((dimension, *pair))
+    moment = next(entry for entry in row["equal_weight_moments"] if entry["beta"] == beta)
+    require(moment["raw_second_moment"] == str(raw_second))
+    require(moment["unit_norm_second_moment"] == str(normalized_second))
+    require(moment["raw_block_count"] == moment["unit_norm_block_count"] == str(blocks))
+    require(moment["normalization_mutation_detected"] is True)
 
 
 @pytest.mark.parametrize(

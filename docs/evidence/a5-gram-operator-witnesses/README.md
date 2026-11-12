@@ -66,6 +66,13 @@ For the input `e1`, `<M>^2=1` and `<M^2>=3/2`; squaring the first moment loses t
 `e0` gives equality, with both quantities equal to one. The normalized two-term family has positive Gram roots
 among one and two and admits the quadratic projector. Its validity does not extend to arbitrary operands.
 
+For raw equal-magnitude coefficients `a=e_i+/-e_j`, let `M_raw=L_a^T L_a` in dimension `D`, and let `n` count the
+symmetric two-dimensional blocks of `L_i^T L_j`. Then `tr(M_raw^2)=4*D+8*n`, so
+`n=(tr(M_raw^2)-4*D)/8`. The unit-norm operand `a/sqrt(2)` instead has `M_unit=M_raw/2`, with
+`n=(tr(M_unit^2)-D)/2`. The replay checks both formulas for both signs on all 591 pairs and rejects application
+of the unit-norm expression to the raw operator. Named octonion and pathion receipts retain zero, eight and
+twelve symmetric blocks; the octonion raw second moment is 32, while its unit-norm second moment is eight.
+
 ## Coefficients, embeddings and phase
 
 All 591 unordered imaginary basis pairs in dimensions 8, 16 and 32 run with coefficient ratios `1,-1,2,3`.
@@ -188,12 +195,12 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHONDONTWRITEBYTECOD
 export GOROROBA_WORKERS=2 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MALLOC_ARENA_MAX=2
 systemd-run --user --scope -q -p MemoryMax=8G -p MemorySwapMax=0 \
   timeout -k 10 180 "$PYTHON" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check \
-  --validation-sha256 07b80eb07417d0974d2eb6a38775cd560f27906e62d86c4ff8f68e222c39f078 </dev/null
+  --validation-sha256 2f064626eca21b3ce9eca2e9da7b556814159dbf4f3eb3a597664d931e43dbe3 </dev/null
 sh ci/pr_checks.sh tests tests/test_a5_gram_operator_witnesses.py
 ```
 
 The bounded tests check the cubic filter, Gaussian Jordan partitions, phase swap, scalar shift, split-congruence
 counterexample, a genuinely Gaussian characteristic polynomial, complete claim definitions, and altered/stale
-validation-receipt rejection. The two-worker writer/checker measured 27.72/25.22 seconds. Retained-record replay belongs to an
+validation-receipt rejection. The two-worker writer/checker measured 31.75/31.75 seconds. Retained-record replay belongs to an
 on-demand gate. A new checkable input that violates an asserted identity, an accepted missing-root filter or a
 changed source digest falsifies the corresponding record.

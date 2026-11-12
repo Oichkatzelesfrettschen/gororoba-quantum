@@ -5678,9 +5678,9 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check --validation-sha256 07b80eb07417d0974d2eb6a38775cd560f27906e62d86c4ff8f68e222c39f078",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check --validation-sha256 2f064626eca21b3ce9eca2e9da7b556814159dbf4f3eb3a597664d931e43dbe3",
       "name": "core-a5-gram-operator-witnesses",
-      "seconds": 34.14,
+      "seconds": 41.97,
       "workers": "all",
       "replays": [
         "docs/evidence/a5-gram-operator-witnesses/witnesses.json",

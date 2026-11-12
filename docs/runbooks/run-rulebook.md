@@ -403,7 +403,9 @@ the closest entry and say what changed.
 
 - Question and falsifier: the 42 numbered Gram propositions receive tracked definitions and source locators while
   retaining their exact arithmetic verdicts. A changed rank, spectrum, moment or attachment witness falsifies
-  arithmetic equivalence; a changed receipt or stale witness hash must fail receipt admission.
+  arithmetic equivalence; a changed receipt or stale witness hash must fail receipt admission. The equal-weight
+  block-count check distinguishes the raw formula `(tr(M^2)-4*D)/8` from the unit-norm formula `(tr(M^2)-D)/2` on
+  both signs of all 591 pairs and rejects application of the normalized expression to the raw operator.
 - Formulation and host: the build host runs the pinned Python 3.14.7, FLINT rational matrices and SymPy Gaussian
   arithmetic. Deterministic corpora and named operands consume no new random seed.
 - Parallelism and limits: two repository workers, native threads one, a separate 8 GiB scope with zero swap and
@@ -414,6 +416,6 @@ the closest entry and say what changed.
   the expected whole-receipt digest, the receipt binds the witness, and the witness binds its producer and claim
   definitions. The exact witness stays float-free; receipt timings receive a metadata exemption because their
   bytes are digest-checked rather than numerically replayed. GNU time retains per-process RSS and wall/CPU costs.
-- Outcome: the two-worker writer and checker exit 0 in 27.72/25.22 seconds, with GNU time maximum process RSS
-  81,772/81,676 KiB. The 26 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,194 Markdown
+- Outcome: the two-worker writer and checker exit 0 in 31.75/31.75 seconds, with GNU time maximum process RSS
+  81,876/82,032 KiB. The 32 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,195 Markdown
   link checks pass. Historical timings remain separate from the exact witness arithmetic.

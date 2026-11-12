@@ -1264,6 +1264,87 @@
     "two_support": {
       "all_checks_pass": true,
       "coefficient_choices_per_pair": 4,
+      "equal_weight_moment_checks": 1182,
+      "named_equal_weight_moments": [
+        {
+          "dimension": 8,
+          "moments": [
+            {
+              "beta": 1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "0",
+              "raw_second_moment": "32",
+              "unit_norm_block_count": "0",
+              "unit_norm_second_moment": "8"
+            },
+            {
+              "beta": -1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "0",
+              "raw_second_moment": "32",
+              "unit_norm_block_count": "0",
+              "unit_norm_second_moment": "8"
+            }
+          ],
+          "pair": [
+            1,
+            2
+          ],
+          "symmetric_blocks": 0
+        },
+        {
+          "dimension": 32,
+          "moments": [
+            {
+              "beta": 1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "8",
+              "raw_second_moment": "192",
+              "unit_norm_block_count": "8",
+              "unit_norm_second_moment": "48"
+            },
+            {
+              "beta": -1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "8",
+              "raw_second_moment": "192",
+              "unit_norm_block_count": "8",
+              "unit_norm_second_moment": "48"
+            }
+          ],
+          "pair": [
+            1,
+            10
+          ],
+          "symmetric_blocks": 8
+        },
+        {
+          "dimension": 32,
+          "moments": [
+            {
+              "beta": 1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "12",
+              "raw_second_moment": "224",
+              "unit_norm_block_count": "12",
+              "unit_norm_second_moment": "56"
+            },
+            {
+              "beta": -1,
+              "normalization_mutation_detected": true,
+              "raw_block_count": "12",
+              "raw_second_moment": "224",
+              "unit_norm_block_count": "12",
+              "unit_norm_second_moment": "56"
+            }
+          ],
+          "pair": [
+            1,
+            18
+          ],
+          "symmetric_blocks": 12
+        }
+      ],
       "pairs": 591,
       "pathion_pair_nullity_histogram": {
         "0": 171,
@@ -1464,8 +1545,9 @@
     },
     {
       "claim": "4.3",
+      "correction": "The block-count formula with denominator 2 requires the unit-norm Gram operator; applying it directly to the raw equal-weight Gram operator gives an incorrect block count.",
       "evidence": "two_support",
-      "proposition": "Spectrum of alpha e_i + beta e_j is {(a+b)^2 [n], (a-b)^2 [n], s [D-2n]}; tr M^2 = D s^2 + 8 n a^2 b^2; n = (tr M^2 - D)/2 at equal weights",
+      "proposition": "For real a=alpha*e_i+beta*e_j, s=alpha^2+beta^2 and n symmetric two-dimensional blocks, spec(M)={(alpha+beta)^2 [n], (alpha-beta)^2 [n], s [D-2n]} and tr(M^2)=D*s^2+8*n*alpha^2*beta^2. For raw coefficients alpha=1,beta=+/-1, n=(tr(M_raw^2)-4*D)/8. For the unit-norm operand (e_i+/-e_j)/sqrt(2), M_unit=M_raw/2 and n=(tr(M_unit^2)-D)/2.",
       "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
       "source": {
         "locator": "Gram moments and complete projectors",
@@ -1740,10 +1822,10 @@
       "verdict": "not_checked"
     }
   ],
-  "producer_sha256": "24ee43ac95fbd2ddb98cddab82ddcf558e34730031bc60e6fa20fbaa4f73c0e6",
+  "producer_sha256": "2f9d3558988cdc8b95b38fb6f177c361e56b684f7d5dfd08a0f652abd69cf416",
   "schema": "a5-gram-operator-witnesses/1",
   "sources_sha256": {
-    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "43e1ddaa8e8c41740e9bcb27ada275511bd8488391996041f6027910b4d4af8d",
+    "docs/evidence/a5-gram-operator-witnesses/claim_definitions.json": "c2c733ea9250d53fe730494a1e0f42cea46f1be40a1b7258f3a38274b61cd0f6",
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
     "docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py": "b23919697c9adfa9ccbd1ab5929af206d48ff604195c511699f3ff8dc3fd6cbb",
     "docs/notes/topics/strata-gauss-bottleneck.md": "91568d079ad628b64d42c48526b3762f4cf9d56306c19ed9edfa1acaf5b8e84f",

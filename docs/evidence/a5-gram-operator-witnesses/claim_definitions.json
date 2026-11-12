@@ -140,11 +140,12 @@
     },
     {
       "claim": "4.3",
-      "proposition": "Spectrum of alpha e_i + beta e_j is {(a+b)^2 [n], (a-b)^2 [n], s [D-2n]}; tr M^2 = D s^2 + 8 n a^2 b^2; n = (tr M^2 - D)/2 at equal weights",
+      "proposition": "For real a=alpha*e_i+beta*e_j, s=alpha^2+beta^2 and n symmetric two-dimensional blocks, spec(M)={(alpha+beta)^2 [n], (alpha-beta)^2 [n], s [D-2n]} and tr(M^2)=D*s^2+8*n*alpha^2*beta^2. For raw coefficients alpha=1,beta=+/-1, n=(tr(M_raw^2)-4*D)/8. For the unit-norm operand (e_i+/-e_j)/sqrt(2), M_unit=M_raw/2 and n=(tr(M_unit^2)-D)/2.",
       "source": {
         "path": "docs/evidence/a5-gram-operator-witnesses/README.md",
         "locator": "Gram moments and complete projectors"
-      }
+      },
+      "correction": "The block-count formula with denominator 2 requires the unit-norm Gram operator; applying it directly to the raw equal-weight Gram operator gives an incorrect block count."
     },
     {
       "claim": "4.4",

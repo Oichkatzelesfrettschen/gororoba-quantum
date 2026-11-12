@@ -339,6 +339,7 @@ def two_support_witness(case: tuple[int, int, int]) -> dict[str, Any]:
         if index < (index ^ displacement)
     )
     rows = []
+    moments: list[dict[str, Any]] = []
     unit = identity(dimension)
     for beta in (1, -1, 2, 3):
         matrix = first + beta * second
@@ -360,6 +361,22 @@ def two_support_witness(case: tuple[int, int, int]) -> dict[str, Any]:
                 "two-support quadratic filter fails",
             )
             require(trace(projector) == symmetric, "two-support projector loses complete kernel")
+            raw_second = trace(gram**2)
+            unit_norm_second = trace(normalized**2)
+            raw_count = (raw_second - 4 * dimension) / 8
+            unit_norm_count = (unit_norm_second - dimension) / 2
+            require(raw_count == unit_norm_count == symmetric, "equal-weight Gram block-count scaling fails")
+            require((raw_second - dimension) / 2 != symmetric, "raw-Gram normalization mutation escaped")
+            moments.append(
+                {
+                    "beta": beta,
+                    "raw_second_moment": str(raw_second),
+                    "unit_norm_second_moment": str(unit_norm_second),
+                    "raw_block_count": str(raw_count),
+                    "unit_norm_block_count": str(unit_norm_count),
+                    "normalization_mutation_detected": True,
+                }
+            )
         rows.append({"beta": beta, "nullity": dimension - int(matrix.rank())})
     return {
         "dimension": dimension,
@@ -367,6 +384,7 @@ def two_support_witness(case: tuple[int, int, int]) -> dict[str, Any]:
         "symmetric_blocks": symmetric,
         "coefficients_checked": [1, -1, 2, 3],
         "nullities": [row["nullity"] for row in rows],
+        "equal_weight_moments": moments,
     }
 
 
@@ -825,6 +843,17 @@ def build_result() -> dict[str, Any]:
                 sorted(Counter(str(row["symmetric_blocks"]) for row in pairs if row["dimension"] == 32).items())
             ),
             "coefficient_choices_per_pair": 4,
+            "equal_weight_moment_checks": sum(len(row["equal_weight_moments"]) for row in pairs),
+            "named_equal_weight_moments": [
+                {
+                    "dimension": row["dimension"],
+                    "pair": row["pair"],
+                    "symmetric_blocks": row["symmetric_blocks"],
+                    "moments": row["equal_weight_moments"],
+                }
+                for row in pairs
+                if (row["dimension"], *row["pair"]) in {(8, 1, 2), (32, 1, 10), (32, 1, 18)}
+            ],
             "all_checks_pass": True,
         },
         "special_lifts": {
