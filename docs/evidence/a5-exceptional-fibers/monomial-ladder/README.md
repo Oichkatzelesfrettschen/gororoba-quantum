@@ -190,7 +190,8 @@ HF(C/H, d). Only rank(phi_N) is added to that base dimension. The target dimensi
 are 952 − 861 = 91 in degree 5 and 1,666 − 1,526 = 140 in degree 6. Degree 5
 already has h_5 = 952 at both registered primes (A5-183/A5-220); it is a positive
 control for this computation. The N14 target ranks below strengthen the
-degree-six lower bound to 1,554 at both registered primes; the exact h_6 remains open.
+degree-six lower bound to 1,554 at both registered primes; the jet functionals of
+[../arc-jets/](../arc-jets/README.md) close the cell at h_6 = 1,666 on both primes.
 
 `e8_target_rank.py prepare` computes a global `dp` standard basis of K2 and of
 P1 ∩ P2, exports the degree-d standard monomials modulo K2 and their normal forms
@@ -328,8 +329,9 @@ Consequence: I^d = (I S)^d and m_R I^d = (m_R S)(I S)^d, so F(I) is the part of 
 S[I T] / (m_R S) S[I T], the Rees algebra of an ideal of a hypersurface ring reduced modulo an ideal of colength 2.
 That is a finite presentation: `records/e8-fiber-cone-e8-nm-p32009.sing` computes its kernel L in k[y_1..y_21] by
 two eliminations and compares it with K2. That run has not finished. The target ranks above give
-1,581 ≤ h_6 ≤ 1,666 at p = 32009 and 1,554 ≤ h_6 ≤ 1,666 at p = 32029; the exact value and the existence of
-generators of L above degree 2 remain open. The truncated ranks of I and
+1,581 ≤ h_6 ≤ 1,666 at p = 32009 and 1,554 ≤ h_6 ≤ 1,666 at p = 32029; the jet functionals of
+[../arc-jets/](../arc-jets/README.md) reach rank 1,666 at both primes, so h_6 = 1,666 there and L has no generator
+of degree 3 to 6 beyond K2; generators of L above degree 6 remain open. The truncated ranks of I and
 I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817; `e8_closure_probe.py`,
 `records/e8-closure-probe-e8-nm-p32009.jsonl`), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
 `records/slice-ring-e8-*.log` show that the kernel of the parametrization equals the header's J (one component)
