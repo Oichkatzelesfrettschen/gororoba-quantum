@@ -1,0 +1,60 @@
+{
+  "schema": "work-plan-v1",
+  "id": "teleportation-publication-and-fixed-route",
+  "kind": "implementation",
+  "summary": "Bind the audited teleportation/QET plates to historical records and qualify a same-route six-state successor without promoting terminal correlations into live-output or network evidence.",
+  "sources": [
+    "docs/evidence/teleportation-publication/README.md",
+    "docs/design/fixed-route-teleportation-benchmark.md",
+    "gororoba_quantum/teleportation_contract.py",
+    "scripts/qi_teleportation_design.py",
+    "gororoba_quantum/publication_evidence.py",
+    "scripts/publication_plates.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The historical four-input decoder and QET reference already exist. The reusable contracts, bounded regressions, crossed-route cases and source-bound SVG checks leave the retained producers and observations unedited."
+  },
+  "scope": "Software admission, historical publication binding and prospective fixed-route design. No provider execution, resource purchase, new acquisition, live-output demonstration or cross-device claim is authorized.",
+  "owner": "teleportation evidence maintainer",
+  "next_action": "Run the pinned repository admission checks on the implementation and the on-demand source-bound render before admitting a new hardware case.",
+  "related": [
+    "ascella-belenos-entanglement-teleportation"
+  ],
+  "steps": [
+    {
+      "id": "implementation-admission",
+      "action": "Admit the bounded Python tests and the source-bound renderer through their repository checks. A gororoba-open frame module is an external, unverified reference that this tree does not hold, and no acceptance here depends on it.",
+      "acceptance": "Pinned style/type/behavior checks pass; the source-bound render checks actual historical bytes; local-only checks remain labelled.",
+      "state": "doing"
+    },
+    {
+      "id": "native-channel-admission",
+      "action": "Prepare a fresh QRNG-bound fixed-route case and compare the compiled native channel and timing for all six inputs under a retained calibration.",
+      "acceptance": "One route has a common input-independent instrument, preparation/readout controls and a written owner-approved case with provider budget and queue admission.",
+      "state": "todo",
+      "depends_on": [
+        "implementation-admission"
+      ]
+    },
+    {
+      "id": "fixed-route-acquisition",
+      "action": "Acquire and retain all planned blocks and inputs, then replay through qi_records and the fixed-route estimator.",
+      "acceptance": "All receipts, circuit hashes, denominators and calibration assumptions are resolved; every planned group is reported with sampling and systematic limitations.",
+      "state": "todo",
+      "depends_on": [
+        "native-channel-admission"
+      ]
+    },
+    {
+      "id": "surviving-output",
+      "action": "Specify a separate supported-backend protocol with dynamic correction or tracked downstream quantum operations and an untouched-reference test.",
+      "acceptance": "An approved case and actual downstream quantum-sensitive acquisition establish carrier continuity; ideal matrix tests alone do not close this step.",
+      "state": "todo",
+      "depends_on": [
+        "implementation-admission"
+      ]
+    }
+  ]
+}

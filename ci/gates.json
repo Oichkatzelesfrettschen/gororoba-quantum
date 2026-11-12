@@ -5616,6 +5616,14 @@
       "replays": [
         "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/publication_plates.py --check",
+      "name": "core-teleportation-publication-source-bound-release",
+      "seconds": 0.2,
+      "workers": 1
     }
   ],
   "excluded": [
