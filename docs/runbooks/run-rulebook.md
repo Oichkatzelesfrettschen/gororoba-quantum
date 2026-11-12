@@ -429,3 +429,24 @@ the closest entry and say what changed.
 - Outcome: all four cells reach rank 2,718 from 3,000 arcs / 6,000 rows with every J and K2 check passing.
   The terminal wall times and largest-process RSS values are in the linked evidence table; the equality is
   finite-field evidence through degree seven, with characteristic zero and higher degrees open.
+
+### Exact Gram claim definitions and validation receipt
+
+- Question and falsifier: the 42 numbered Gram propositions receive tracked definitions and source locators while
+  retaining their exact arithmetic verdicts. A changed rank, spectrum, moment or attachment witness falsifies
+  arithmetic equivalence; a changed receipt or stale witness hash must fail receipt admission. The equal-weight
+  block-count check distinguishes the raw formula `(tr(M^2)-4*D)/8` from the unit-norm formula `(tr(M^2)-D)/2` on
+  both signs of all 591 pairs and rejects application of the normalized expression to the raw operator.
+- Formulation and host: the build host runs the pinned Python 3.14.7, FLINT rational matrices and SymPy Gaussian
+  arithmetic. Deterministic corpora and named operands consume no new random seed.
+- Parallelism and limits: two repository workers, native threads one, a separate 8 GiB scope with zero swap and
+  unlimited address space. The prior four-worker writer/checker walls of 33.81/26.01 seconds give two-worker
+  estimates 67.62/52.02 seconds. Writer/checker deadlines are 300/180 seconds, with 330/210-second scope backstops.
+  The existing acceptance scope uses 16 GiB; the combined caps fit the build host's physical memory.
+- Command and checkpoints: `gram_witnesses.py --write`, then `--check --validation-sha256 DIGEST`; the gate stores
+  the expected whole-receipt digest, the receipt binds the witness, and the witness binds its producer and claim
+  definitions. The exact witness stays float-free; receipt timings receive a metadata exemption because their
+  bytes are digest-checked rather than numerically replayed. GNU time retains per-process RSS and wall/CPU costs.
+- Outcome: the two-worker writer and checker exit 0 in 31.75/31.75 seconds, with GNU time maximum process RSS
+  81,876/82,032 KiB. The 32 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,195 Markdown
+  link checks pass. Historical timings remain separate from the exact witness arithmetic.

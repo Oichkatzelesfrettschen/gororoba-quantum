@@ -5720,6 +5720,18 @@
         "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8np-p32009-d7-basis.json",
         "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8np-p32029-d7-basis.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check --validation-sha256 a7715210fb236c5b465e4bdbdb9752175ad29c374e15bbe4483e503fab671ce3",
+      "name": "core-a5-gram-operator-witnesses",
+      "seconds": 56.45,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-gram-operator-witnesses/witnesses.json",
+        "docs/evidence/a5-gram-operator-witnesses/validation.json"
+      ]
     }
   ],
   "excluded": [
