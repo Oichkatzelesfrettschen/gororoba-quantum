@@ -14,46 +14,72 @@ SymPy 1.14.0, Singular 4.4.1 and msolve 0.10.1. `msolve -t 4` is the bounded set
 
 ## W8 N = 16 acceptance
 
-[`w8-n16-acceptance.json`](w8-n16-acceptance.json) summarizes one run of W8 -> N- at degree 5, N = 16, p = 32009.
-The summary agrees with the retained v11 receipt run: `r_16 = 4116`; block contributions 1,017 / 1,005 / 1,047 /
-1,047; closure ranks 15,364 / 15,264 / 15,315 / 15,315; all 265 nonstandard controls add zero rank. V14 reports four
+[`w8-n16-acceptance.json`](w8-n16-acceptance.json) summarizes one run of W8 -> N- at degree 5, N = 16, p = 32009,
+whose three records the directory [`w8-n16-acceptance/`](w8-n16-acceptance/) retains: the engine's stdout record
+([`w8-nm-d5-n16-p32009.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.json)), its stderr
+([`.err`](w8-n16-acceptance/w8-nm-d5-n16-p32009.err)) and the runner's resource file
+([`.resources.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json)); the summary lists their sha256. The
+summary agrees with the retained v11 receipt run: `r_16 = 4116`; block contributions 1,017 / 1,005 / 1,047 / 1,047;
+closure ranks 15,364 / 15,264 / 15,315 / 15,315; all 265 nonstandard controls add zero rank. V14 reports four
 frontier rounds rather than v11's five because rows are materialized lazily after intervening RREF updates; the fixed
 closure space and every final block rank agree.
 
 Provenance of the summary:
 
-- The run executed `fiber_rank_v14.py` as committed in `f8092f967` (sha256 `0c006242b544c0cb...`, the record's
-  `engine_sha256`). The engine at `a84b82772` has another digest. `git diff f8092f967 a84b82772` of the engine shows
-  line wrapping, two stderr progress prints (`products built`, `closure round`), the `preflight_stages` output
-  field, the function `compact_stage_peaks` and an admission rule that tests the larger of the products and closure
-  stages where `f8092f967` tested their sum; the same diff of `gororoba_quantum/modular_echelon.py` shows line
-  wrapping and one docstring word. No line of the rank arithmetic differs between those two commits. A later change
-  adds the `PMAX` prime guards and the `inner_tile` parameter of `tiled_mod_product`, whose default, 4,096, equals the
-  literal the run used; p = 32009 never reaches a guard. The compact echelon of those commits sat in
-  `gororoba_quantum/modular_echelon.py`; the head holds it in `gororoba_quantum/modular_echelon_compact.py` and leaves
-  `modular_echelon.py`, which engine v12 pins by digest, at its pinned bytes.
+- The run executed `fiber_rank_v14.py` through [`rank_cell.py`](../replay/engine/rank_cell.py). The resource file's
+  `engine_sha256` (`497a974b0b3a629e...`) equals the digest of the engine file at the head of the branch, as do the
+  header and receipt digests of the files the command names; the runner exited 0 with an empty `validation_error`.
 - The run used the cached uint16 operator (`product_operator: uint16-cached`, `operator_cache_gib: 6`). The streamed
   route without the cache, on which the N = 19 model below rests, was not exercised at this size; the unit tests and
   the smaller cells compare it with the dense operator.
-- The engine's stdout record, its stderr and the resource file of that run are not retained in the tree, so no file
-  here reproduces the summary's numbers except by rerunning the cell. A rerun at the branch head through
-  [`rank_cell.py`](../replay/engine/rank_cell.py) would retain all three and takes about 100 minutes on four workers;
-  it has not been performed.
-- The fields `swap_bytes` and `oom_kills` were removed from the summary: no producer wrote them.
+- The worker count, BLAS and OpenMP thread settings and the memory scope (a systemd user scope with
+  `MemoryMax=16G`, `MemorySwapMax=0`) come from the launch of the run; the resource file records the engine arguments
+  and the process-group resident set, not the environment. The summary keeps them in a separate block.
+- The resource file carries no swap or out-of-memory counter, so the summary reports none; the scope's
+  `MemorySwapMax=0` leaves no swap to count.
 
 | Quantity | retained v11 | v14 compact |
 | --- | ---: | ---: |
-| wall | 7,841.2 s (two workers on a cloud VM, beside a second job) | 5,993.6 s (four workers, another machine) |
-| products | 2,201.4 s | 1,239.2 s |
-| closure | 4,751.3 s | 4,515.6 s |
-| peak memory | 24.9 GiB (largest single-process RSS, GNU `time`) | 4.98 GiB (RSS summed over the process group) |
-| preflight selected arrays | 58.9 GiB | 5.69 GiB (sum of every selected-array term) |
+| wall | 7,841.2 s (two workers on a cloud VM, beside a second job) | 5,121.2 s (four workers, the build host) |
+| products | 2,201.4 s | 844.7 s |
+| closure | 4,751.3 s | 3,559.8 s |
+| peak memory | 24.9 GiB (largest single-process RSS, GNU `time`) | 5.01 GiB (RSS summed over the process group) |
+| preflight selected arrays | 58.9 GiB (sum of every term) | 4.68 GiB (larger of the products and closure stages; the six terms sum to 5.90 GiB) |
 
 The memory rows are two statistics: a single-process maximum and a process-group sum that counts pages shared by
-forked workers once per process, so the ratio 0.200 errs against v14. The wall rows come from two machines with
-different worker counts, and v11 shared its VM with a second job, so the ratio 0.764 carries no hardware-neutral
+forked workers once per process, so the ratio 0.201 errs against v14. The wall rows come from two machines with
+different worker counts, and v11 shared its VM with a second job, so the ratio 0.653 carries no hardware-neutral
 meaning. On this cell the measured v14 peak lies below the v11 peak; the equality of ranks is a finite-field result
 and does not transfer to characteristic zero.
+
+### Reproducing the acceptance run
+
+The command below runs from the repository root, takes about 85 minutes and writes the three records into a new
+empty `OUT` directory (`rank_cell.py` skips a run whose existing record validates, so a populated `OUT` launches
+nothing). It needs Singular 4.4.1 on `PATH` and the interpreter of the CI pins in `PYTHON`.
+
+```sh
+PYTHON=${PYTHON:-python3}; export PYTHON
+FIB=docs/evidence/a5-exceptional-fibers
+ENGINE=$FIB/replay/engine/fiber_rank_v14.py
+HEADER=$FIB/working/build/inputs/p32009-r10754/w8-nm.sing
+RECEIPT=$FIB/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json
+OUT=PATH-TO-A-NEW-EMPTY-DIRECTORY
+printf '%s  %s\n' \
+    497a974b0b3a629e01c21d194885ff9cb91701436457ee4aaa92d292c0273a85 "$ENGINE" \
+    585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760 "$HEADER" \
+    6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425 "$RECEIPT" | sha256sum -c -
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export GOROROBA_WORKERS=4 OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=1 SINGULAR=Singular
+systemd-run --user --scope -q -p MemoryMax=16G -p MemorySwapMax=0 \
+    "$PYTHON" -B $FIB/replay/engine/rank_cell.py --timeout 14400 \
+    "$ENGINE" "$HEADER" 5 16 "$OUT/w8-nm-d5-n16-p32009.json" -- \
+    --quotient --stream-products --operator-cache-gb 6 --echelon compact --chunk 64 --max-gb 12 \
+    --dense-tables-gb 0 --k2-receipt "$RECEIPT" --singular "$SINGULAR"
+```
+
+A rerun is compared with the retained stdout record on `r_N`, `per_block` and `checks`; the `seconds` and `export`
+timings vary with the host.
 
 ## Exactness invariants
 

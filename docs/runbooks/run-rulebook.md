@@ -296,3 +296,39 @@ the closest entry and say what changed.
   The replay with it on an Azure D8ds_v6 (8 vCPU, 32 GB, westus3; D8ds_v5 has no quota in the subscription) gave
   the retained rows through degree 8 (1,422) at 13.0 GB peak in 3,690 s; the machine and its resource group were
   deleted after the record and logs were copied and their sha256 compared.
+
+### W8 -> N- degree 5, N = 16: memory-bounded engine v14 rerun on the build host (do the retained ranks reproduce at a bounded peak)
+
+- Question and decisive outcome: whether engine v14 with the compact echelon reproduces the retained v11 receipt run
+  of W8 -> N- at p = 32009 (`r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, A5-333) at a process-group peak
+  below the 12 GiB `--max-gb` of the preflight. Equal ranks at a bounded peak support the engine for the W8
+  degree-6, N = 19 route without deciding it; a different rank would be an engine defect.
+- Formulation: the engine's quotient mode over the degree-2 receipt, so the 4,116 standard representatives are
+  multiplied (4,381 rows built) and 265 nonstandard checks (202 targeted, 63 strided) test for rank growth; the
+  comparator is the retained receipt-bound v11 run of `w8-n16-azure/`.
+- Host and tool versions: the build host, Python 3.14.7, NumPy 2.5.4, SciPy 1.18.1, python-flint 0.9.0, Singular
+  4.4.1; engine `fiber_rank_v14.py` sha256 `497a974b0b3a629e...`.
+- Launch line and environment: the command of
+  [memory-bounded/README.md](../evidence/a5-exceptional-fibers/memory-bounded/README.md#reproducing-the-acceptance-run)
+  under `systemd-run --user --scope -p MemoryMax=16G -p MemorySwapMax=0`, `--timeout 14400`, `--operator-cache-gb 6`
+  (the cached uint16 operator), `--echelon compact`, `--chunk 64`, `--max-gb 12`, `--dense-tables-gb 0`, and
+  `GOROROBA_WORKERS=4`, `OPENBLAS_NUM_THREADS=4`, `OMP_NUM_THREADS=1`.
+- Runner and exit status: `rank_cell.py`; engine exit 0, runner exit 0, `termination: exited`, empty
+  `validation_error`.
+- Departures from the foundations: none identified; the memory scope (16 GiB) sits above the `--max-gb 12` of the
+  preflight.
+- Parallelism: 4 workers and 4 BLAS threads on the build host; the resource file records at most 10 processes.
+- Memory and time limits: `--max-gb 12` (the preflight admitted at 4.68 GiB), the 16 GiB scope with no swap, and the
+  runner's 14,400 s timeout; a limit that ended the run would show in `termination` and in the exit status.
+- Checkpoints: the engine's stderr prints `products built`, one line per closure round and the echelon insert time;
+  the runner publishes the stdout record by atomic rename after exit 0.
+- End state: the three records under `memory-bounded/w8-n16-acceptance/` (stdout record, stderr, resource file), each
+  listed with its sha256 in `memory-bounded/w8-n16-acceptance.json`.
+- Outcome: the first attempt ended after about 27 minutes (the operator's account; its records were not kept) with
+  exit 1, because `rank_cell.process_group_rss` raised `ProcessLookupError` when a group member exited between the
+  `/proc` directory listing and the read of its stat file; commit `b97b47fa9` skips such a member and adds a test that
+  raises ESRCH on one stat read. The rerun at that fix took 5,121.2 s (singular and export 621.1 s, products 844.7 s,
+  closure 3,559.8 s, of which echelon inserts 3,400.6 s) with a peak process-group resident set of 5,379,538,944 bytes
+  (5.01 GiB), `r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315,
+  and no rank growth in 265 nonstandard checks. The measured-combinations table of compute-flags.md holds no
+  engine v14 row.
