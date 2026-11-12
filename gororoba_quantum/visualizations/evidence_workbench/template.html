@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src __SCRIPT_POLICY__; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Quantum evidence workbench</title><style>__STYLE__</style></head>
+<body><a class="skip" href="#plot">Skip to data figure</a>
+<header><p class="eyebrow">GOROROBA / EVIDENCE WORKBENCH</p><h1>Observations, dependencies, and admissible states</h1>
+<p>Retained counts and model references remain separate. No new acquisition or silent refit occurs.</p>
+<div class="topline"><span id="summary"></span><button id="theme" type="button">Light / dark</button><button id="saveView" type="button">Save view</button><label class="file">Restore view<input type="file" id="restoreView" accept=".json,application/json"></label></div></header>
+<nav aria-label="Evidence workspaces" id="navigation">
+<button data-view="ramsey" aria-pressed="true">Ramsey compatibility</button><button data-view="dependence" aria-pressed="false">Same-PUB dependence</button><button data-view="blocks" aria-pressed="false">Shot-index blocks</button><button data-view="members" aria-pressed="false">Outcome distributions</button><button data-view="rank" aria-pressed="false">Rank-sector response</button><button data-view="optical" aria-pressed="false">Optical holdouts</button><button data-view="provenance" aria-pressed="false">Provenance</button>
+</nav>
+<div id="status" role="status" aria-live="polite"></div><div id="error" role="alert" hidden></div>
+<main><div class="layout"><section class="figure-panel" aria-labelledby="plotTitle"><div class="plot-heading"><h2 id="plotTitle">Measured X/Y expectations</h2><div><button id="toControls">Controls</button><button id="exportSVG">SVG + context</button><button id="exportPNG">PNG + context</button></div></div>
+<p id="scope" class="scope"></p><svg id="plot" role="img" tabindex="0" aria-label="Selected evidence figure" viewBox="0 0 900 600"></svg><p id="legend"></p>
+<div class="pager"><button id="previous">Previous record</button><button id="next">Next record</button><button id="toInspector">Inspect selected record</button></div>
+<details id="tableDetails"><summary>Accessible numerical table</summary><div class="table-scroll" id="table"></div></details>
+</section>
+<aside id="controls" tabindex="-1" aria-label="Workbench controls"><h2>View controls</h2>
+<div id="ramseyControls" class="control-group"><label>Condition<select id="condition"></select></label><label>Physical qubit<select id="qubit"></select></label><label>Executed delay<select id="delay"></select></label>
+<label>Coordinates<select id="geometry"><option value="xy">X/Y, equal units</option><option value="bloch">Bloch-compatible set, not Z tomography</option><option value="setting">X/Y/delay setting space</option></select></label>
+<label>Display extent<select id="extent"><option value="detail">Fixed cohort detail</option><option value="full">Full physical disk</option></select></label>
+<label><input type="checkbox" id="uncertainty" checked>Show simultaneous coordinate set</label><label><input type="checkbox" id="mle">Overlay constrained X/Y estimator</label>
+<p class="fine">The optional estimator uses separate binomial likelihoods constrained to the transverse disk. It does not estimate Z.</p>
+<label>Yaw<input id="yaw" type="range" min="-180" max="180" value="-30"></label><label>Pitch<input id="pitch" type="range" min="-85" max="85" value="25"></label>
+<button id="nextDelay">Next acquired delay</button><button id="play">Play acquired settings</button></div>
+<div id="acquisitionControls" class="control-group" hidden><label>Acquisition<select id="acquisition"></select></label><label>Full PUB identity<select id="pub"></select></label><label>Member name filter<input id="memberFilter" type="search" autocomplete="off"></label><label>Member<select id="member"></select></label></div>
+<div id="dependenceControls" class="control-group" hidden><label>Event<select id="event"><option value="event_zero">Outcome equals zero</option><option value="deterministic_error">Error against deterministic ideal</option></select></label><label>Matrix quantity<select id="metric"><option value="covariance">Empirical covariance</option><option value="correlation">Empirical correlation</option><option value="joint">Joint event probability</option></select></label></div>
+<div id="memberControls" class="control-group" hidden><label><input id="exact" type="checkbox" checked>Exact circuit reference</label><label><input id="preparation" type="checkbox">Preparation model</label><label><input id="replay" type="checkbox">Qualified execution replay</label></div>
+<div id="rankControls" class="control-group" hidden><label>Sector<select id="sector"></select></label><label>Probe<select id="probe"></select></label><label>Vertical quantity<select id="norm"><option value="probability">LCU success probability</option><option value="unit">Unit-probe squared norm</option><option value="unnormalized">Unnormalized-probe squared norm</option></select></label></div>
+<div id="opticalControls" class="control-group" hidden><label>Held-out cohort<select id="cohort"></select></label><label>Frozen predictor<select id="predictor"></select></label><label>View<select id="opticalMode"><option value="scatter">Observed versus frozen prediction</option><option value="residual">Observed minus frozen prediction</option></select></label></div>
+<label>Color encoding<select id="color"><option value="condition">Condition / cohort</option><option value="qubit">Physical qubit</option><option value="monochrome">Monochrome</option></select></label>
+<button id="backToPlot">Return to figure</button></aside></div>
+<section id="inspector" tabindex="-1"><h2>Selected evidence</h2><p id="selectedSummary"></p><pre id="record"></pre><button id="exportCSV">CSV table</button><button id="exportData">Source-bound bundle JSON</button></section>
+<section id="provenance" hidden><h2>Source identity and verification scope</h2><div id="sourceTable" class="table-scroll"></div><pre id="verification"></pre></section>
+<noscript><p>JavaScript is disabled. The embedded Ramsey count records are listed below when a Ramsey input is present; the embedded data and source hashes remain in this document.</p>__STATIC__</noscript>
+</main><footer>Offline SVG workbench. A byte digest establishes identity, not authenticity. Missing quantities remain unavailable. Cross-PUB covariance, physical chronology, and complete state tomography are not inferred.</footer>
+<script id="payload" type="application/json">__DATA__</script><span id="payloadIdentity" hidden>__DATA_SHA__</span>
+<script>__MATH__</script><script>__APP__</script></body></html>
