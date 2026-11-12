@@ -5664,6 +5664,17 @@
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d5.json",
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d6.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check",
+      "name": "core-a5-gram-operator-witnesses",
+      "seconds": 44.94,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-gram-operator-witnesses/witnesses.json"
+      ]
     }
   ],
   "excluded": [
