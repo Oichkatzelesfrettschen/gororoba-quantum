@@ -82,6 +82,23 @@ def test_registry_binds_the_w8_degree_5_engine_stdout_records() -> None:
         raise AssertionError(sources)
 
 
+def test_check_exits_nonzero_and_names_a_directory_whose_rows_are_removed(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    mod = load()
+    target = "docs/evidence/a5-quantum-contracts"
+    kept = [row for row in mod.rows() if target + "/" not in row["evidence"]]
+    if len(kept) == len(mod.rows()):
+        raise AssertionError("no row cites the target directory")
+    monkeypatch.setattr(mod, "rows", lambda: kept)
+    monkeypatch.setattr(mod, "check", lambda _rows: [])
+    monkeypatch.setattr(sys, "argv", ["ledger.py", "--check"])
+    if mod.main() == 0:
+        raise AssertionError("ledger.py --check passed with an uncited directory")
+    if f"{target}: no ledger row cites this evidence directory" not in capsys.readouterr().out:
+        raise AssertionError("the uncited directory is not named")
+
+
 def test_open_lists_rows_with_an_outstanding_falsifier_and_no_decided_row(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
