@@ -77,6 +77,61 @@ def base_kernel(data: dict[str, Any]) -> list[limits.Vector]:
     return limits.rref(limits.saturated_kernel(matrix, field)[0], field)
 
 
+def file_digests(paths: list[Path]) -> dict[str, str]:
+    """SHA-256 of each file, keyed by its path relative to the repository root, in sorted key order."""
+    root = limits.rees.ROOT
+    return {
+        str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
+        for path in sorted(set(paths), key=lambda p: str(p.relative_to(root)))
+    }
+
+
+def input_files(slug: str, prime: int) -> list[Path]:
+    """The files a fit at (slug, prime) reads or executes: the headers `limits.one_arc` and `limits.slice_data` load
+    (the header of the run prime supplies J and G; slice_data also loads the header of the first prime), the producer
+    sources and result files that `fiber_inputs._task` builds the base point from, `fiber_inputs.py` itself, and the
+    three scripts of this directory that compute the arcs, the planes and the fit."""
+    headers = [limits.INPUTS / f"p{p}-r{limits.PRIMES[p]}" / f"{slug}.sing" for p in {prime, next(iter(limits.PRIMES))}]
+    return [
+        *headers,
+        *limits.rees.SOURCE_PATHS,
+        *limits.basepoints.SOURCE_PATHS,
+        Path(limits.fiber_inputs.__file__).resolve(),
+        HERE / "fiber_plucker_map.py",
+        HERE / "plucker_limits.py",
+        HERE / "vb_limit_span.py",
+    ]
+
+
+def plucker_subsets(ground: int, size: int) -> dict[str, Any]:
+    """The column subsets of `span.plucker`: all `size`-subsets of range(ground) in `itertools.combinations` order,
+    identified by their count and the SHA-256 of their JSON text."""
+    subsets = [list(c) for c in itertools.combinations(range(ground), size)]
+    return {
+        "rule": "itertools.combinations(range(ground), size), one Plucker coordinate per subset in this order",
+        "ground": ground,
+        "size": size,
+        "count": len(subsets),
+        "sha256": hashlib.sha256(json.dumps(subsets, separators=(",", ":")).encode()).hexdigest(),
+    }
+
+
+def map_provenance(slug: str, prime: int, basis: list[limits.Vector]) -> dict[str, Any]:
+    """What the coordinates of a retained map mean: the digests of the inputs, the ordered generators G of the
+    header, the boundary-kernel basis `base_kernel` returned and the Plucker column subsets for that basis."""
+    variables, _, generators = limits.header(slug, prime)
+    kernel = [[int(v) for v in row] for row in basis]
+    return {
+        "header_slug": slug,
+        "input_sha256": file_digests(input_files(slug, prime)),
+        "header_variables": list(variables),
+        "generators": {"count": len(generators), "sha256": hashlib.sha256(json.dumps(generators).encode()).hexdigest()},
+        "boundary_kernel_basis": kernel,
+        "boundary_kernel_basis_sha256": hashlib.sha256(json.dumps(kernel, separators=(",", ":")).encode()).hexdigest(),
+        "plucker_subsets": plucker_subsets(len(basis), len(basis) - limits.SOURCE_NULLITY),
+    }
+
+
 def sample(item: tuple[dict[str, Any], list[limits.Vector], str, int]) -> dict[str, Any] | None:
     data, basis, kind, arc = item
     record = limits.one_arc((data, parameters(kind, arc), False))
@@ -115,13 +170,24 @@ def scalar_system(left_rows: list[list[int]], pr: list[list[int]], prime: int) -
     )
 
 
-def normalized_digest(t: nmod_mat, prime: int) -> str:
-    """SHA-256 of T scaled so that its first nonzero entry in row-major order is 1; T is defined up to one scalar."""
-    entries = [int(t[i, j]) for i in range(t.nrows()) for j in range(t.ncols())]
-    lead = next((v for v in entries if v), 1)
+def normalized_entries(t: nmod_mat, prime: int) -> list[list[int]]:
+    """T as rows of integers, scaled so that its first nonzero entry in row-major order is 1; T is defined up to one
+    scalar."""
+    entries = [[int(t[i, j]) for j in range(t.ncols())] for i in range(t.nrows())]
+    lead = next((v for row in entries for v in row if v), 1)
     inverse = pow(lead, -1, prime)
-    text = ",".join(str(v * inverse % prime) for v in entries)
-    return hashlib.sha256(f"{t.nrows()}x{t.ncols()}:{text}".encode()).hexdigest()
+    return [[v * inverse % prime for v in row] for row in entries]
+
+
+def matrix_digest(rows: list[list[int]]) -> str:
+    """SHA-256 of the text `RxC:` followed by the comma-separated entries in row-major order."""
+    text = ",".join(str(v) for row in rows for v in row)
+    return hashlib.sha256(f"{len(rows)}x{len(rows[0]) if rows else 0}:{text}".encode()).hexdigest()
+
+
+def normalized_digest(t: nmod_mat, prime: int) -> str:
+    """SHA-256 of the normalized entries of T."""
+    return matrix_digest(normalized_entries(t, prime))
 
 
 def pivot_columns(matrix: nmod_mat) -> list[int]:
@@ -132,7 +198,9 @@ def pivot_columns(matrix: nmod_mat) -> list[int]:
     return out
 
 
-def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, max_delta: int) -> dict[str, Any]:
+def fit(
+    samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, max_delta: int, retain_map: bool = False
+) -> dict[str, Any]:
     plucker = nmod_mat([s["plucker"] for s in samples], prime)
     plucker_pivots = pivot_columns(plucker)
     pr = [[s["plucker"][j] for j in plucker_pivots] for s in samples]
@@ -164,6 +232,19 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
         t = square.inv() * nmod_mat(full, prime)
         out["t_rank"] = int(t.rank())
         out["t_sha256"] = normalized_digest(t, prime)
+        if retain_map:
+            # Columns use the same Plucker ordering as span.plucker(); rows use veronese()'s
+            # combinations_with_replacement ordering, restricted to the pivot monomials.
+            monomials = list(itertools.combinations_with_replacement(range(len(samples[0]["y"])), delta))
+            out["map"] = {
+                "field_prime": prime,
+                "degree": delta,
+                "monomial_indices": v_pivots,
+                "monomials": [list(monomials[j]) for j in v_pivots],
+                "plucker_coordinate_count": t.ncols(),
+                "matrix_rows": normalized_entries(t, prime),
+                "convention": "v_delta(y)[monomial_indices] times matrix_rows",
+            }
         residual = vr * t - nmod_mat(
             [[c[s] * p % prime for p in samples[s]["plucker"]] for s in range(len(samples))], prime
         )
@@ -193,11 +274,13 @@ def fit(samples: list[dict[str, Any]], held: list[dict[str, Any]], prime: int, m
     return out
 
 
-def fit_case(job: tuple[list[dict[str, Any]], list[dict[str, Any]], int, int]) -> dict[str, Any]:
+def fit_case(job: tuple[list[dict[str, Any]], list[dict[str, Any]], int, int, bool]) -> dict[str, Any]:
     return fit(*job)
 
 
-def build(family: str, prime: int, count: int, held_out: int, max_delta: int, plus: bool = False) -> dict[str, Any]:
+def build(
+    family: str, prime: int, count: int, held_out: int, max_delta: int, plus: bool = False, retain_map: bool = False
+) -> dict[str, Any]:
     slug, order, kinds = FAMILIES[family]
     if plus:
         slug = PLUS[family]
@@ -210,10 +293,15 @@ def build(family: str, prime: int, count: int, held_out: int, max_delta: int, pl
     groups = (*by_kind.items(), *((("all", results),) if len(kinds) > 1 else ()))
     # Arcs below count are fitted and the rest are held out, by arc index, so a rejected arc never shifts the split.
     jobs = [
-        ([r for r in rows if r["arc"] < count], [r for r in rows if r["arc"] >= count], prime, max_delta)
+        ([r for r in rows if r["arc"] < count], [r for r in rows if r["arc"] >= count], prime, max_delta, retain_map)
         for _, rows in groups
     ]
     cases = dict(zip((name for name, _ in groups), parallel.ordered_map(fit_case, jobs, min_items=2), strict=True))
+    if retain_map:
+        provenance = map_provenance(slug, prime, basis)
+        for case in cases.values():
+            if "map" in case:
+                case["map"]["provenance"] = provenance
     return {
         "schema": SCHEMA,
         "family": family,
@@ -236,9 +324,12 @@ def main() -> None:
     parser.add_argument("--held-out", type=int, default=40)
     parser.add_argument("--max-delta", type=int, default=3)
     parser.add_argument("--plus", action="store_true", help="use the N+ header of the family")
+    parser.add_argument(
+        "--retain-map", action="store_true", help="retain the complete normalized fitted matrix (large JSON)"
+    )
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
-    record = build(args.family, args.prime, args.fit, args.held_out, args.max_delta, args.plus)
+    record = build(args.family, args.prime, args.fit, args.held_out, args.max_delta, args.plus, args.retain_map)
     suffix = "-plus" if args.plus else ""
     out = args.out or HERE / f"fiber-plucker-map-{args.family}{suffix}-p{args.prime}.json"
     out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
