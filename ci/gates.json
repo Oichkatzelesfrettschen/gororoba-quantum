@@ -5562,6 +5562,17 @@
         "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json",
         "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n15.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py --check docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json",
+      "name": "core-a5-e8-loader-check",
+      "seconds": 90.0,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json"
+      ]
     }
   ],
   "excluded": [

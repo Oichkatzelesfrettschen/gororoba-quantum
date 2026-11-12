@@ -285,4 +285,3 @@ the closest entry and say what changed.
   The replay with it on an Azure D8ds_v6 (8 vCPU, 32 GB, westus3; D8ds_v5 has no quota in the subscription) gave
   the retained rows through degree 8 (1,422) at 13.0 GB peak in 3,690 s; the machine and its resource group were
   deleted after the record and logs were copied and their sha256 compared.
-

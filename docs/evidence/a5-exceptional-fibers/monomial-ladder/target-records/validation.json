@@ -23,8 +23,29 @@
    "status": "passed"
   },
   {
-   "command": "git diff --check",
+   "command": "git diff --check dd4e84b09...HEAD -- . ':!docs/evidence/a5-exceptional-fibers/quadric-census/e8nm-nonreduced-locus-p32009.log' ':!docs/evidence/a5-exceptional-fibers/quadric-census/e8nm-nonreduced-locus-p32029.log' ':!docs/evidence/a5-exceptional-fibers/quadric-census/vb-census-p32029.log' ':!docs/evidence/a5-exceptional-fibers/quadric-census/vb-radical.log'",
+   "exceptions": [
+    {
+     "path": "docs/evidence/a5-exceptional-fibers/quadric-census/e8nm-nonreduced-locus-p32009.log",
+     "reason": "retained Singular log; its bytes stay as the run wrote them (trailing whitespace on lines 5 and 6, or a blank last line)"
+    },
+    {
+     "path": "docs/evidence/a5-exceptional-fibers/quadric-census/e8nm-nonreduced-locus-p32029.log",
+     "reason": "retained Singular log; its bytes stay as the run wrote them (trailing whitespace on lines 5 and 6, or a blank last line)"
+    },
+    {
+     "path": "docs/evidence/a5-exceptional-fibers/quadric-census/vb-census-p32029.log",
+     "reason": "retained Singular log; its bytes stay as the run wrote them (trailing whitespace on lines 5 and 6, or a blank last line)"
+    },
+    {
+     "path": "docs/evidence/a5-exceptional-fibers/quadric-census/vb-radical.log",
+     "reason": "retained Singular log; its bytes stay as the run wrote them (trailing whitespace on lines 5 and 6, or a blank last line)"
+    }
+   ],
+   "measured": "git diff --check dd4e84b09 -- . with the same exclusions, on the working tree that holds the fixes, before they were committed: no output; the commit-range form holds once they are committed",
    "name": "git-diff-check",
+   "range": "dd4e84b09 (merge base with origin/main) to the head of the commit that carries the whitespace fixes",
+   "scope": "Every file the pull request adds or changes except the four retained logs; the whitespace of the other files was corrected in place.",
    "status": "passed"
   },
   {
@@ -41,6 +62,13 @@
    "readme_target_record_links": 12,
    "status": "passed",
    "target_record_files": 30
+  },
+  {
+   "command": "\"$PYTHON\" -B docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py --check docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json",
+   "gate": "core-a5-e8-loader-check",
+   "name": "loader-check-regeneration",
+   "scope": "A fresh loader check at order 4 for the four targets is byte-identical to loader-check.json, so the file has a retained producer and an on-demand gate.",
+   "status": "passed"
   }
  ],
  "environment": {
@@ -60,6 +88,7 @@
  },
  "independent_review": {
   "closed_issue": "Fresh global-order Singular export prevents a forged but internally consistent normal-form/kernel payload from being accepted.",
+  "loader_producer": "docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py",
   "loader_record": "loader-check.json",
   "loader_targets": 4,
   "scientific_payloads_checked": 9,

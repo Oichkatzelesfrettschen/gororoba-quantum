@@ -98,4 +98,3 @@ Thus a Plücker permutation is detected. The code reports the failure through mi
 A full geometric mutation replay was not completed: the repository’s slice reconstruction stopped before sampling with `xp-nm elimpart blocked_error: Singular exited with status 1`. That harness failure supplies no mathematical evidence.
 
 **Verdict:** The central rank computations and finite-sample quadratic fits are internally sound. The pull request should preserve its hypothesis status, correct the sign equation, replace the SHA genericity claim, and retain enough witness material plus an explicit mutation verdict to make A5-296 independently auditable.
-

@@ -548,11 +548,13 @@ Ledger rows A5-298 to A5-314; evidence in
 - Same-sign X (X- -> N-, X+ -> N+): the slice ideal equals a monomial ideal M of the parameter ring (membership
   of every generator plus a rank over M / q M, then Nakayama), the fiber cone is the positive part of
   P[M T] / q P[M T], and its defining ideal, computed by elimination, is the 69 quadrics K2 with no generator of
-  higher degree. This holds at both primes and over Q(i), so F(I) = k[y]/K2 in every degree and every h_d holds in
-  characteristic 0. K2 is saturated and nonreduced: the projective fiber is generically reduced of degree 12 with
+  higher degree. I = M holds on both incidences at both primes; the comparison L = K2 is retained for three modular
+  cells (X- -> N- at 32009 and 32029, X+ -> N+ at 32029), and X+ -> N+ at 32009 has I = M without a retained K2
+  comparison. Over Q(i) the same certificate gives 69 quadrics that reduce to K2 at those three cells, so
+  F(I) = k[y]/K2 in every degree on them and every h_d of the same-sign X pairs holds in characteristic 0. K2 is saturated and nonreduced: the projective fiber is generically reduced of degree 12 with
   nilpotents y1, y5, y6 on one embedded plane.
-- The fiber cone is now k[y]/K2 on every pair except E8-bar -> N+-: opposite-sign X (a plane), same-sign X,
-  E8-bar -> VB, Iso and W8.
+- The fiber cone is now k[y]/K2 on every pair except E8-bar -> N+-: opposite-sign X (a plane), same-sign X (on the
+  three modular cells above and over Q(i)), E8-bar -> VB, Iso and W8.
 - E8-bar -> N+-: the slice ideal is an ideal of the quadratic algebra S = P + P b at both primes and headers, so the
   fiber cone is the positive part of S[I T] / (m_R S) S[I T]; the elimination that would give its defining ideal has
   not finished, and h_6 stays between 1,526 and 1,666. The quadric scheme V_+(K2) is saturated, generically reduced
@@ -561,5 +563,5 @@ Ledger rows A5-298 to A5-314; evidence in
 - Every retained K2 is saturated at the irrelevant ideal. The Lie algebra of linear vector fields preserving K2 has
   dimension 23, 15, 17, 34, 26 (same-sign X, VB, Iso, E8-bar -> N+-, W8); its torus rank excludes a toric K2 on
   Iso and W8 in any linear coordinates.
-- A truncated rank r_N(d) never exceeds h_d, and the batched float64 echelon reproduces the python-flint ranks.
-
+- A truncated rank r_N(d) never exceeds h_d, and the batched float64 echelon agrees with the python-flint ranks on the
+  one cell both engines ran (degree 6, order 26: dim A = 4,879, dim B = 4,214, r = 665; A5-302).
