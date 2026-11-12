@@ -15572,6 +15572,34 @@
       "local_cache_path": "docs/local_source_cache/quant-ph-0409083v3.pdf",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/0908.0022v2",
+      "note": "docs/notes/papers/0908.0022.md",
+      "audited_at_utc": "2026-11-11T21:07:03+00:00",
+      "status": "external_only",
+      "sha256": "bee79f6c25ebd54049935591742ccdcbcc1c7fc5ca5b4776a8395187a3631e7c",
+      "bytes": 139566,
+      "pages": 10,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "bee79f6c25ebd54049935591742ccdcbcc1c7fc5ca5b4776a8395187a3631e7c",
+        "verified_at_utc": "2026-11-11T21:07:03+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/0908.0022v2",
+        "evidence_sha256": "2f60a9b2cdb5a153c564892d8a37e785e0ed24a90a08adbd9e07ae8c923c816d",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page; hash of the raw response, without retaining its abstract text",
+        "reading_scope": "Exact-version identity and license metadata; operative grant names arXiv as recipient. The paper note records the mathematical reading scope.",
+        "evidence_summary": "Manual external-only audit: the exact-version page links the arXiv nonexclusive distribution grant. That grant supplies no downstream rehosting permission. No reading copy, transcription or abstract-page capture is admitted."
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/0908.0022v2.pdf",
+      "local_cache_path": "docs/local_source_cache/0908.0022v2.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The inspected grant authorizes arXiv distribution and supplies no downstream rehosting permission."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",

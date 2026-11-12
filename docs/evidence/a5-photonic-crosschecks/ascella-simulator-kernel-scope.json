@@ -1,0 +1,525 @@
+{
+  "analysis_sources": {
+    "gororoba_quantum/a5_photonic_scope.py": "a78d69cb7591e269ded24d7b8b3373b2fa5a3ff9eb27723b5c74a98ac5df79bd",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "scripts/ascella_a5_kernel_analysis.py": "1b0b56126118c2663dd94606248080b025dc9a4af870c148b2962260e04bcd7b",
+    "scripts/ascella_a5_kernel_scope_analysis.py": "ec2787c043667d8739572a5998e0c25da4284b78e63d1b650d531cff8ef5d83f",
+    "scripts/ascella_a5_kernel_slice.py": "704e7c5958b780a806f5d532ad50e292a474bc636c4594509165e649cc7ec3f7"
+  },
+  "artifact_sha256": {
+    "cases.json": "a17be05d355b38e20cbaeab1685b3fe18dac761fdd90a8df474c4cf7df2edb7d",
+    "circuit.json": "8d05c0fcf57c7a2a3a5c7933d5c6ad128d4970cf4119598b4ea0c84bf2795fa2",
+    "job-body.json": "d5d543f71a1207e02306df9a81eac33fcc46fea0844e1dabac6bbd6659657bc9",
+    "raw/result.json": "c7c4246fb5f9a06678c5ddd9b18f0861e597cc955367b01ee3a15b4e181d3ad6",
+    "results.json": "efe4f16d0ef96f9ed6cf53847673481a7c2130c63d8aa2ec52067c24778a8bb5",
+    "submission.json": "fcf1b5abdb39600b2cce847fa73740dd584b4b8744723e0cc0f282a4c384925b"
+  },
+  "interpretation": "Selected two-column operator conformance and descriptive returned-event fractions. The selected actions also agree exactly with embedded A4 actions; full A5 nullity, dimension discrimination and physical nonassociativity remain untested.",
+  "job_id": "83d1d00f-e392-47e7-a172-146bd78e9d69",
+  "observations": [
+    {
+      "event_accounting": {
+        "denominator_boundary": "Returned events are not unobserved source trials or a provider shot population.",
+        "eligible_events": 10000,
+        "eligible_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        },
+        "excluded_mode_events": 0,
+        "excluded_modes_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "failure_events": 4980,
+        "invalid_events": 0,
+        "invalid_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "returned_events": 10000,
+        "success_events": 5020,
+        "success_given_eligible": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 5020
+        },
+        "success_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 5020
+        }
+      },
+      "failure": 4980,
+      "ideal_success": "1/2",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "control-dark",
+      "port_counts": [
+        1230,
+        1244,
+        1230,
+        1316,
+        1213,
+        1254,
+        1257,
+        1256,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10001,
+      "success": 5020
+    },
+    {
+      "event_accounting": {
+        "denominator_boundary": "Returned events are not unobserved source trials or a provider shot population.",
+        "eligible_events": 10000,
+        "eligible_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        },
+        "excluded_mode_events": 0,
+        "excluded_modes_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "failure_events": 10000,
+        "invalid_events": 0,
+        "invalid_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "returned_events": 10000,
+        "success_events": 0,
+        "success_given_eligible": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "success_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        }
+      },
+      "failure": 10000,
+      "ideal_success": "0",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "kernel-dark",
+      "port_counts": [
+        0,
+        0,
+        0,
+        0,
+        5011,
+        0,
+        0,
+        4989,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10000,
+      "success": 0
+    },
+    {
+      "event_accounting": {
+        "denominator_boundary": "Returned events are not unobserved source trials or a provider shot population.",
+        "eligible_events": 10000,
+        "eligible_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        },
+        "excluded_mode_events": 0,
+        "excluded_modes_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "failure_events": 0,
+        "invalid_events": 0,
+        "invalid_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "returned_events": 10000,
+        "success_events": 10000,
+        "success_given_eligible": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        },
+        "success_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        }
+      },
+      "failure": 0,
+      "ideal_success": "1",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "mutation-dark",
+      "port_counts": [
+        5025,
+        0,
+        0,
+        4975,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10000,
+      "success": 10000
+    },
+    {
+      "event_accounting": {
+        "denominator_boundary": "Returned events are not unobserved source trials or a provider shot population.",
+        "eligible_events": 10000,
+        "eligible_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        },
+        "excluded_mode_events": 0,
+        "excluded_modes_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "failure_events": 10000,
+        "invalid_events": 0,
+        "invalid_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "returned_events": 10000,
+        "success_events": 0,
+        "success_given_eligible": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "success_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        }
+      },
+      "failure": 10000,
+      "ideal_success": "0",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "mutation-bright",
+      "port_counts": [
+        0,
+        0,
+        0,
+        0,
+        5008,
+        0,
+        0,
+        4992,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10001,
+      "success": 0
+    },
+    {
+      "event_accounting": {
+        "denominator_boundary": "Returned events are not unobserved source trials or a provider shot population.",
+        "eligible_events": 9999,
+        "eligible_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 9999
+        },
+        "excluded_mode_events": 0,
+        "excluded_modes_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "failure_events": 0,
+        "invalid_events": 1,
+        "invalid_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 1
+        },
+        "returned_events": 10000,
+        "success_events": 9999,
+        "success_given_eligible": {
+          "defined": true,
+          "denominator": 9999,
+          "numerator": 9999
+        },
+        "success_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 9999
+        }
+      },
+      "failure": 0,
+      "ideal_success": "1",
+      "invalid_events": {
+        "other_photon_number": 1,
+        "zero_click": 0
+      },
+      "name": "kernel-bright",
+      "port_counts": [
+        5022,
+        0,
+        0,
+        4977,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10000,
+      "success": 9999
+    },
+    {
+      "event_accounting": {
+        "denominator_boundary": "Returned events are not unobserved source trials or a provider shot population.",
+        "eligible_events": 10000,
+        "eligible_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 10000
+        },
+        "excluded_mode_events": 0,
+        "excluded_modes_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "failure_events": 5020,
+        "invalid_events": 0,
+        "invalid_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 0
+        },
+        "returned_events": 10000,
+        "success_events": 4980,
+        "success_given_eligible": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 4980
+        },
+        "success_per_returned_event": {
+          "defined": true,
+          "denominator": 10000,
+          "numerator": 4980
+        }
+      },
+      "failure": 5020,
+      "ideal_success": "1/2",
+      "invalid_events": {
+        "other_photon_number": 0,
+        "zero_click": 0
+      },
+      "name": "control-bright",
+      "port_counts": [
+        1247,
+        1257,
+        1233,
+        1243,
+        1277,
+        1196,
+        1254,
+        1293,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returned_events": 10000,
+      "sentinel": 0,
+      "shots_used": 10001,
+      "success": 4980
+    }
+  ],
+  "operator_scope": [
+    {
+      "name": "control-dark",
+      "optical_componentwise_tolerance": "1/1000000000000",
+      "requested_optical_operator_matches_exact_builder": true,
+      "scope": {
+        "all_input_columns_checked": false,
+        "ambient_dimension": 32,
+        "dimension_discrimination_established": false,
+        "input_basis": [
+          4,
+          15
+        ],
+        "input_span_dimension": 2,
+        "inputs_in_reference_algebra": true,
+        "operand_in_reference_algebra": true,
+        "outputs_in_reference_algebra": true,
+        "reference_dimension": 16,
+        "same_embedded_action": true,
+        "unprobed_input_dimension": 30
+      },
+      "selected_success_operator_checked_exactly": true
+    },
+    {
+      "name": "kernel-dark",
+      "optical_componentwise_tolerance": "1/1000000000000",
+      "requested_optical_operator_matches_exact_builder": true,
+      "scope": {
+        "all_input_columns_checked": false,
+        "ambient_dimension": 32,
+        "dimension_discrimination_established": false,
+        "input_basis": [
+          4,
+          15
+        ],
+        "input_span_dimension": 2,
+        "inputs_in_reference_algebra": true,
+        "operand_in_reference_algebra": true,
+        "outputs_in_reference_algebra": true,
+        "reference_dimension": 16,
+        "same_embedded_action": true,
+        "unprobed_input_dimension": 30
+      },
+      "selected_success_operator_checked_exactly": true
+    },
+    {
+      "name": "mutation-dark",
+      "optical_componentwise_tolerance": "1/1000000000000",
+      "requested_optical_operator_matches_exact_builder": true,
+      "scope": {
+        "all_input_columns_checked": false,
+        "ambient_dimension": 32,
+        "dimension_discrimination_established": false,
+        "input_basis": [
+          4,
+          15
+        ],
+        "input_span_dimension": 2,
+        "inputs_in_reference_algebra": true,
+        "operand_in_reference_algebra": true,
+        "outputs_in_reference_algebra": true,
+        "reference_dimension": 16,
+        "same_embedded_action": true,
+        "unprobed_input_dimension": 30
+      },
+      "selected_success_operator_checked_exactly": true
+    },
+    {
+      "name": "mutation-bright",
+      "optical_componentwise_tolerance": "1/1000000000000",
+      "requested_optical_operator_matches_exact_builder": true,
+      "scope": {
+        "all_input_columns_checked": false,
+        "ambient_dimension": 32,
+        "dimension_discrimination_established": false,
+        "input_basis": [
+          4,
+          15
+        ],
+        "input_span_dimension": 2,
+        "inputs_in_reference_algebra": true,
+        "operand_in_reference_algebra": true,
+        "outputs_in_reference_algebra": true,
+        "reference_dimension": 16,
+        "same_embedded_action": true,
+        "unprobed_input_dimension": 30
+      },
+      "selected_success_operator_checked_exactly": true
+    },
+    {
+      "name": "kernel-bright",
+      "optical_componentwise_tolerance": "1/1000000000000",
+      "requested_optical_operator_matches_exact_builder": true,
+      "scope": {
+        "all_input_columns_checked": false,
+        "ambient_dimension": 32,
+        "dimension_discrimination_established": false,
+        "input_basis": [
+          4,
+          15
+        ],
+        "input_span_dimension": 2,
+        "inputs_in_reference_algebra": true,
+        "operand_in_reference_algebra": true,
+        "outputs_in_reference_algebra": true,
+        "reference_dimension": 16,
+        "same_embedded_action": true,
+        "unprobed_input_dimension": 30
+      },
+      "selected_success_operator_checked_exactly": true
+    },
+    {
+      "name": "control-bright",
+      "optical_componentwise_tolerance": "1/1000000000000",
+      "requested_optical_operator_matches_exact_builder": true,
+      "scope": {
+        "all_input_columns_checked": false,
+        "ambient_dimension": 32,
+        "dimension_discrimination_established": false,
+        "input_basis": [
+          4,
+          15
+        ],
+        "input_span_dimension": 2,
+        "inputs_in_reference_algebra": true,
+        "operand_in_reference_algebra": true,
+        "outputs_in_reference_algebra": true,
+        "reference_dimension": 16,
+        "same_embedded_action": true,
+        "unprobed_input_dimension": 30
+      },
+      "selected_success_operator_checked_exactly": true
+    }
+  ],
+  "platform": "sim:ascella",
+  "recorded_charge": "1.0",
+  "schema": "ascella-a5-kernel-slice-scope-analysis-v1",
+  "source_analysis_schema": "ascella-a5-kernel-slice-analysis-v1"
+}

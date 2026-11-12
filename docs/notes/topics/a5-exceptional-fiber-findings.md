@@ -532,7 +532,7 @@ Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 | E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | forecast: N = 22, quotient dimension 184,206, preflight 226 GiB, peak about 230 GiB and a standard basis of about 1.5e6 s (two weeks) (`forecasts/trends-2026-11-06.md`, item 14); a paid VM of at least 256 GiB by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
 | W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
 
-No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.
+No retained quantum-hardware job certifies these ranks, and the audited block-encoded proposal supplies none (A5-320); the hardware rows A5-202 and A5-242 wait on written cases.
 
 Retired from this list on 2026-11-08: the W8 -> N- support decomposition (the C30 proof decides W8 without it), the
 W8 degree-6 rank run as a decision run.
