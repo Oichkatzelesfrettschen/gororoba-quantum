@@ -4,6 +4,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -16,7 +17,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 20,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 16
    },
@@ -33,6 +37,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -45,7 +50,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 20,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 16
    },
@@ -62,6 +70,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -74,7 +83,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 20,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 16
    },
@@ -91,6 +103,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -103,7 +116,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 12,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 8
    },
@@ -120,6 +136,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -132,7 +149,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 12,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 8
    },
@@ -149,6 +169,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 4,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 3,
     "derived_series": [
@@ -161,7 +182,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 14,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 4,
     "trace_form_nil_ideal": 11
    },
@@ -178,6 +202,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 4,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 3,
     "derived_series": [
@@ -190,7 +215,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 14,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 4,
     "trace_form_nil_ideal": 11
    },
@@ -207,6 +235,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 4,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 3,
     "derived_series": [
@@ -219,7 +248,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 14,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 4,
     "trace_form_nil_ideal": 11
    },
@@ -236,6 +268,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 6,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 5,
     "derived_series": [
@@ -249,7 +282,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 31,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
@@ -266,6 +302,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 6,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 5,
     "derived_series": [
@@ -279,7 +316,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 31,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
@@ -296,6 +336,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 6,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 5,
     "derived_series": [
@@ -309,7 +350,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 31,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
@@ -326,6 +370,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 6,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 5,
     "derived_series": [
@@ -339,7 +384,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 31,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
@@ -356,6 +404,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -367,7 +416,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 23,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 19
    },
@@ -405,6 +457,7 @@
    "algebra": {
     "cartan_derived_dimension": 0,
     "cartan_dimension": 5,
+    "cartan_is_toral": true,
     "center": 1,
     "central_torus": 4,
     "derived_series": [
@@ -416,7 +469,10 @@
     "levi_dimension": 3,
     "levi_rank": 1,
     "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_is_perfect": true,
     "radical": 23,
+    "radical_is_solvable_ideal": true,
     "torus_rank": 5,
     "trace_form_nil_ideal": 19
    },

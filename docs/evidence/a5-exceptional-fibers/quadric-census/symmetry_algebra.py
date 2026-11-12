@@ -5,18 +5,23 @@ computes g by a dense route independent of quadric_structure.py (the action of e
 monomials, projected to the quotient by K2) and then, in coordinates on a reduced echelon basis of g:
 
 - the derived series and the center;
-- the radical r = {x : kappa(x, [g, g]) = 0} for the Killing form kappa, so dim g - dim r is the dimension of a
-  Levi factor;
-- the ideal u = {x in r : tr(x y) = 0 for all y in g} of the trace form of the defining representation; over a field
-  of characteristic 0 it is the set of nilpotent matrices of r for an algebraic g (the stabilizer of a subspace is
-  algebraic), so r / u is the central torus of a reductive complement;
-- a Cartan subalgebra h, the Fitting null component of ad x for one fixed element x, and the rank of the trace form
-  on h. h is nilpotent and splits as torus + nilpotent matrices, the trace form vanishes on the nilpotent part and
-  is non-degenerate on the torus in characteristic 0, so that rank is the rank of a maximal torus of g.
+- r = {x : kappa(x, [g, g]) = 0} for the Killing form kappa, with three checks that hold over F_p without any
+  criterion: r is an ideal, its derived series reaches 0, and g / r is perfect. A perfect Lie algebra of dimension 3
+  over a field of characteristic other than 2 is simple and, over a finite field, split, so a 3-dimensional perfect
+  quotient is sl2 and r is then the radical;
+- u = {x in r : tr(x y) = 0 for all y in g}, the trace form of the defining representation, with the checks that u
+  is an ideal and its lower central series reaches 0 (a nilpotent ideal);
+- h, the Fitting null component of ad x for one fixed element x, with the checks that h is abelian and that each
+  basis matrix is annihilated by the squarefree part of its characteristic polynomial. Commuting semisimple
+  matrices are simultaneously diagonalizable over the algebraic closure, so h is then a toral subalgebra, and the
+  rank of the trace form on h equals dim h;
+- for a fiber with retained component ideals, the restriction of h to the linear span of each component.
 
-The two characterizations by forms are theorems in characteristic 0; at p near 32000 they are the reading of a
-modular computation, and the record states each dimension as computed over F_p. `--write` writes
-symmetry-algebra.json beside this file, `--check` recomputes and compares.
+Every statement of the record is a statement about the Lie algebra over F_p. The reading in characteristic 0 (a Levi
+factor, a maximal torus of the symmetry group, a torus action on the cone) is a hypothesis the record does not test:
+it needs the same computation over Q(i). The relation files are read by `quadric_structure.parse`, so the two
+stabilizer constructions share their parser. `--write` writes symmetry-algebra.json beside this file, `--check`
+recomputes and compares.
 """
 
 from __future__ import annotations
@@ -147,9 +152,26 @@ def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, An
     killing = np.array([[int(np.trace(ad[k] @ ad[m] % prime)) % prime for m in range(dim)] for k in range(dim)])
     trace = np.array([[int(np.trace(basis[k] @ basis[m] % prime)) % prime for m in range(dim)] for k in range(dim)])
 
-    def derived(ideal: np.ndarray) -> np.ndarray:
-        brackets = [(np.tensordot(x, ad, axes=(0, 0)) % prime) @ y % prime for x, y in itertools.product(ideal, ideal)]
+    def product(left: np.ndarray, right: np.ndarray) -> np.ndarray:
+        """The span of the brackets [x, y], x in `left`, y in `right`, in coordinates."""
+        brackets = [(np.tensordot(x, ad, axes=(0, 0)) % prime) @ y % prime for x, y in itertools.product(left, right)]
         return row_space(np.array(brackets, dtype=np.int64).reshape(-1, dim), prime)
+
+    def derived(ideal: np.ndarray) -> np.ndarray:
+        return product(ideal, ideal)
+
+    def is_ideal(ideal: np.ndarray) -> bool:
+        return len(row_space(np.concatenate([ideal, product(whole, ideal)]), prime)) == len(ideal)
+
+    def reaches_zero(ideal: np.ndarray, step: Any) -> bool:
+        current = ideal
+        for _ in range(dim + 1):
+            if not len(current):
+                return True
+            current = step(current)
+        return not len(current)
+
+    whole = np.eye(dim, dtype=np.int64)
 
     series = [np.eye(dim, dtype=np.int64)]
     while len(series[-1]) and len(series) <= dim + 1:
@@ -173,6 +195,10 @@ def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, An
     torus_form = cartan @ trace % prime @ cartan.T % prime
     torus = int(_mat(torus_form, prime).rank()) if len(cartan) else 0
     central_torus = len(radical) - len(nil)
+    # Facts over F_p that need no form criterion: the radical is a solvable ideal with perfect quotient, the nil
+    # ideal is a nilpotent ideal, and the Cartan subalgebra is spanned by commuting semisimple matrices.
+    perfect_quotient = len(row_space(np.concatenate([commutator, radical]), prime)) == dim
+    cartan_matrices = (cartan @ flat % prime).reshape(len(cartan), n, n)
     levi = (dim - len(radical), torus - central_torus)
     numbers = {
         "dimension": dim,
@@ -188,8 +214,23 @@ def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, An
         "cartan_dimension": len(cartan),
         "cartan_derived_dimension": len(lower),
         "torus_rank": torus,
+        "radical_is_solvable_ideal": is_ideal(radical) and reaches_zero(radical, derived),
+        "quotient_by_radical_is_perfect": perfect_quotient,
+        "nil_ideal_is_nilpotent_ideal": is_ideal(nil) and reaches_zero(nil, lambda current: product(nil, current)),
+        "cartan_is_toral": not len(lower) and all(is_semisimple(matrix, prime) for matrix in cartan_matrices),
     }
-    return numbers, (cartan @ flat % prime).reshape(len(cartan), n, n)
+    return numbers, cartan_matrices
+
+
+def is_semisimple(matrix: np.ndarray, prime: int) -> bool:
+    """Whether the squarefree part of the characteristic polynomial annihilates the matrix (degree below p)."""
+    poly = _mat(matrix, prime).charpoly()
+    squarefree = poly // poly.gcd(poly.derivative())
+    value = np.zeros_like(matrix)
+    identity = np.eye(len(matrix), dtype=np.int64)
+    for coefficient in reversed([int(c) for c in squarefree.coeffs()]):
+        value = (value @ matrix + coefficient * identity) % prime
+    return not value.any()
 
 
 def linear_forms(text: str, n: int, prime: int) -> np.ndarray:

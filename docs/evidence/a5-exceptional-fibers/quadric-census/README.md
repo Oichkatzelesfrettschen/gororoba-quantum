@@ -78,8 +78,10 @@ Is K2 spanned by monomials and binomials in the header's coordinates y? The redu
 quadratic monomials answers it for these coordinates only. Which linear changes of coordinates could make it so?
 A monomial-binomial presentation of a d-dimensional toric variety has a diagonal torus of rank at least d among
 its linear symmetries, so the script computes the Lie algebra g of matrices whose derivation preserves K2, its
-diagonal part, and the centralizer of one fixed element of g; a maximal torus is conjugate into that centralizer, so
-its dimension bounds the rank of every torus of linear symmetries from above.
+diagonal part, and the centralizer of one fixed element x of g. hypothesis (the bound A5-310 states): in
+characteristic 0 a torus of linear symmetries lies in a Cartan subalgebra, whose dimension is at most that of the
+Fitting null component of ad x; `symmetry_algebra.py` computes that component, and it equals the centralizer on
+every file.
 
 | Fiber | dim of the cone | supports 1, 2, 3, more | dim g | diagonal torus | torus rank at most |
 |---|---|---|---|---|---|
@@ -97,15 +99,15 @@ or 5 on W8 would still make them varieties with a torus action of complexity one
 E8-bar → VB and E8-bar → N− the bound leaves a full-rank torus possible and decides nothing. Trinomial rows
 (support 3) occur in every K2 and carry no known structure here.
 
-## Levi structure and torus rank of the symmetry algebras (A5-347, A5-348)
+## Structure of the symmetry algebras over F_p (A5-347, A5-348, A5-349)
 
-`symmetry_algebra.py --write` recomputes each g by a second route (the action of every matrix unit on the quadratic
+`symmetry_algebra.py --write` recomputes each g by a second stabilizer construction (the action of every matrix unit on the quadratic
 monomials, projected to the quotient by K2) and decomposes it; the record is
 [symmetry-algebra.json](symmetry-algebra.json), 57 s and 0.5 GB on four workers. The dimensions 23, 15, 17, 34
 and 26 of the table above reappear on all fourteen files, and the same number of quadrics with coefficients from a
 fixed hash stream keeps the Euler field alone (dimension 1) on every file.
 
-| Fiber | dim g | derived series | radical | nilpotent ideal | central torus | Levi factor | Cartan subalgebra | torus rank |
+| Fiber | dim g | derived series | radical r | nilpotent ideal u | dim r / u | g / r | h | toral rank |
 |---|---|---|---|---|---|---|---|---|
 | X− → N−, X+ → N+ | 23 | 23, 19, 18 | 20 | 16 | 4 | sl2 | 5, abelian | 5 |
 | E8-bar → VB | 15 | 15, 11, 10 | 12 | 8 | 4 | sl2 | 5, abelian | 5 |
@@ -113,36 +115,43 @@ fixed hash stream keeps the Euler field alone (dimension 1) on every file.
 | E8-bar → N−, N+ | 34 | 34, 29, 26, 23 | 31 | 26 | 5 | sl2 | 6, abelian | 6 |
 | W8 → N− | 26 | 26, 22 | 23 | 19 | 4 | sl2 | 5, abelian | 5 |
 
-The radical is the orthogonal complement of [g, g] under the Killing form, the nilpotent ideal is the part of the
-radical orthogonal to g under the trace form of the defining representation, the Cartan subalgebra is the Fitting
-null component of ad x for one fixed x, and the torus rank is the rank of the trace form on it. Each is a theorem
-for an algebraic Lie algebra in characteristic 0 and a computation over F_p here; the script returns the known
-numbers for so(4) with scalars, a parabolic subalgebra of gl(3) and gl(3) (`tests/test_a5_symmetry_algebra.py`).
-The center is the line of the Euler field on every fiber.
+What the record proves, over F_p on each file. r, the orthogonal complement of [g, g] under the Killing form, is
+an ideal whose derived series reaches 0, and g / r is perfect of dimension 3; a perfect Lie algebra of dimension 3
+over a finite field of odd characteristic is sl2, so r is the radical and the quotient is sl2. u, the part of r
+orthogonal to g under the trace form of the defining representation, is an ideal whose lower central series
+reaches 0. h, the Fitting null component of ad x for one fixed x, is abelian and each basis matrix is annihilated
+by the squarefree part of its characteristic polynomial, so h is a toral subalgebra (commuting semisimple matrices)
+of the dimension in the last column. The center is the line of the Euler field. The script returns the known
+numbers for so(4) with scalars, a parabolic subalgebra of gl(3), gl(3) and the Heisenberg algebra
+(`tests/test_a5_symmetry_algebra.py`). The stabilizer construction is independent of `quadric_structure.py`; the
+relation parser is shared.
 
-Readings. Every g is sl2 plus a solvable radical: a torus of rank 3 to 5 that commutes with sl2, and a nilpotent
-ideal that carries most of the dimension. The Cartan subalgebra is a torus, so the upper bounds of the table above
-are attained: the linear symmetries of K2 hold a torus of rank exactly 5, 5, 4, 6 and 5. The Levi factor has the
-dimension of the stabilizer in G_2 of an orthogonal equal-norm pair of imaginary octonions, the base point of the
-two N headers (ledger A5-338), which is SU(2); no record builds the map from that stabilizer into g, so the
-identification is a hypothesis, and the dimension of g (15 to 34) exceeds dim G_2 = 14 on every fiber, so the
-automorphisms of the algebra account for the Levi factor at most, never for the radical.
+What the record does not prove. K2 is a modular object here, and so is g. The reading in characteristic 0, where g
+would be sl2 with a Levi complement, h the Lie algebra of a maximal torus of the symmetry group, and that torus
+would act on the cone, is a hypothesis: equal numbers at 32009 and 32029 give no integral model. The same
+computation on quadrics over Q(i) decides it, and no record holds those quadrics for all five fibers. The Levi
+factor has the dimension of the stabilizer in G_2 of an orthogonal equal-norm pair of imaginary octonions, the
+base point of the two N headers, which the kernel-bundle record computes as (SU(2) x U(1)) / Z_2 over Q; no
+record builds the map from that stabilizer into g, and dim g (15 to 34) exceeds dim G_2 = 14 on every fiber, so
+the automorphisms of the algebra account for the Levi factor at most.
 
-Iso. K2 is geometrically prime of projective dimension 4 with no linear form (ledger A5-060), so its cone is a
-5-dimensional variety that spans the 17 coordinates and the torus of rank 4 acts on it effectively: the Iso cone
-is a variety with a torus action of complexity one, and by the bound above it is not toric.
+Iso (A5-348). K2 is geometrically prime of projective dimension 4 in 17 coordinates with no linear form (ledger
+A5-060), so the cone spans the coordinates and a matrix that vanishes on the cone vanishes: the 4-dimensional
+toral subalgebra acts faithfully on the 5-dimensional cone. hypothesis: over Q(i) this is a torus of rank 4 acting
+effectively, a torus action of complexity one.
 
-W8 → N−. V(K2) is the union of two 6-dimensional components C20 and C30 of degrees 20 and 30 (ledger A5-062),
-and neither spans the 24 coordinates: the retained ideals at 32009 hold 9 linear forms (`P-p32009.txt`, V(P) = C20)
-and 4 (`quotient.txt`, K2 : P = I(C30)), which a Singular standard basis confirms as the whole degree-1 part of each
-(`w8-component-linear-forms.sing`, run from the repository root; log beside it). The script
-restricts the Cartan torus to the span of each component: the torus preserves both spans, has rank 5 on the 20
-coordinates of C30 and rank 4 on the 15 coordinates of C20. K2 : P is radical and C30 is geometrically irreducible,
-so the span of C30 is exact and C30 is a variety with a torus action of complexity one (ledger A5-349). On C20
-the complexity is at least two; it is exactly two if P is radical, which the records leave open. The component
-ideals are retained at 32009 only.
+W8 → N− (A5-349). V(K2) is the union of two 6-dimensional components C20 and C30 of degrees 20 and 30 (ledger
+A5-062), and neither spans the 24 coordinates: the retained ideals at 32009 hold 9 linear forms (`P-p32009.txt`,
+V(P) = C20) and 4 (`quotient.txt`, K2 : P = I(C30)), which a Singular standard basis confirms as the whole degree-1
+part of each (`w8-component-linear-forms.sing`, run from the repository root; log beside it). The script restricts
+h to the span of each component: h preserves both spans, has rank 5 on the 20 coordinates of C30 and rank 4 on the
+15 coordinates cut out by the linear forms of P. K2 : P is radical and C30 is geometrically irreducible, so the
+span of C30 is exact and h acts faithfully on C30; under the same hypothesis as for Iso that is a torus action of
+complexity one. On C20 the rank is at most 4; P is not known to be radical. The component ideals are retained at
+32009 only.
 
-X, E8-bar → VB and E8-bar → N have torus rank above the dimension
-of the cone (5 > 4, 5 > 4, 6 > 5), so a subtorus of positive dimension fixes every point of each irreducible
-component: these K2 have components inside proper coordinate subspaces or nilpotent coordinates, as the monomial
-quadrics of their echelon bases (27, 0 and 25 rows of support 1) and the non-reduced E8-bar schemes already show.
+X, E8-bar → VB and E8-bar → N have a toral subalgebra larger than the dimension of the cone (5 > 4, 5 > 4,
+6 > 5). A torus acts effectively on an irreducible variety of dimension d with rank at most d, so if h integrates,
+a subtorus of positive dimension fixes every point of each irreducible component: these K2 would have components
+inside proper coordinate subspaces or nilpotent coordinates, as the monomial quadrics of their echelon bases (27,
+0 and 25 rows of support 1) and the non-reduced E8-bar schemes already show.
