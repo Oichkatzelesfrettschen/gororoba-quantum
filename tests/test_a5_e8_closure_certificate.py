@@ -7,6 +7,8 @@ from __future__ import annotations
 import copy
 import json
 import lzma
+import math
+import os
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -64,6 +66,13 @@ def test_every_reconstructed_fraction_satisfies_its_congruence() -> None:
 )
 def test_a_small_fraction_is_reconstructed_from_its_residue(fraction: Fraction) -> None:
     _check(cert._ratrec(_residue(fraction), MODULUS) == fraction)
+
+
+@pytest.mark.parametrize("sign", [1, -1])
+def test_the_eight_prime_reconstruction_boundary_uses_integer_arithmetic(sign: int) -> None:
+    modulus = math.prod(prime for prime, _root in cert.PRIMES[:8])
+    boundary = math.isqrt(modulus // 2)
+    _check(cert._ratrec(sign * boundary, modulus) == Fraction(sign * boundary))
 
 
 def test_a_verdict_needs_every_premise() -> None:
@@ -207,3 +216,78 @@ def test_check_fails_when_a_mutation_goes_undetected(
 ) -> None:
     with pytest.raises(SystemExit, match="was not detected"):
         _replay(monkeypatch, tmp_path, mutated)
+
+
+@pytest.mark.parametrize("fail_mutation", [False, True])
+def test_check_preserves_retained_diagnostics_on_success_and_failure(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, fail_mutation: bool
+) -> None:
+    _record_setup(monkeypatch, tmp_path, _source_digests())
+    retained_logs = tmp_path / "retained"
+    retained_logs.mkdir()
+    for suffix in ("log", "time"):
+        (retained_logs / f"retained.{suffix}").write_text(f"retained {suffix}\n")
+    before = {path.name: path.read_bytes() for path in retained_logs.iterdir()}
+    scratch = tmp_path / "work"
+    monkeypatch.setattr(cert, "LOGS", retained_logs)
+    monkeypatch.setattr(cert, "WORK", scratch)
+    monkeypatch.setattr(cert, "_input_digest", lambda _inputs: "jg")
+
+    class CompletedCommand:
+        def wait(self, timeout: int | None = None) -> int:
+            return 0
+
+        def poll(self) -> int:
+            return 0
+
+    def command(*_args: Any, **kwargs: Any) -> CompletedCommand:
+        kwargs["stdout"].write("RESULT harmless 1\n")
+        kwargs["stderr"].write("Maximum resident set size (kbytes): 1024\n")
+        return CompletedCommand()
+
+    monkeypatch.setattr(cert.subprocess, "Popen", command)
+
+    def producer(_slug: str) -> dict[str, Any]:
+        cert._singular("quit;\n", "retained")
+        return {"script_sha256": "script"}
+
+    def verify(_slug: str, _inputs: Any, _cofactors: Any, mutate: str | None = None) -> dict[str, Any]:
+        cert._singular("quit;\n", "retained")
+        if mutate is not None:
+            return {"status": "completed", "bad_identities": 0 if fail_mutation else 1, "verdict": "failed"}
+        return {**_closed_row(), "verdict": "i_equals_is", "wall_seconds": 0}
+
+    monkeypatch.setattr(cert, "producer", producer)
+    monkeypatch.setattr(cert, "verify", verify)
+    if fail_mutation:
+        with pytest.raises(SystemExit, match="was not detected"):
+            cert.check("e8-nm")
+    else:
+        _check(cert.check("e8-nm")["verdict"] == "i_equals_is")
+    _check({path.name: path.read_bytes() for path in retained_logs.iterdir()} == before)
+    _check(bool(list(scratch.rglob("retained.log"))))
+    _check(cert.LOGS == retained_logs and cert.WORK == scratch)
+
+
+def test_default_worker_admission_caps_execution_and_restores_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cert.parallel, "available_cpus", lambda: 8)
+    monkeypatch.setenv("GOROROBA_WORKERS", "8")
+    monkeypatch.setenv("OMP_NUM_THREADS", "6")
+    with cert._execution_scope(2, 12) as execution:
+        _check(cert.parallel.workers() == 2 and os.environ["OMP_NUM_THREADS"] == "1")
+        _check(execution["requested_workers"] == 2 and execution["effective_workers"] == 2)
+        _check(execution["memory_budget_gib"] == 12 and execution["required_memory_gib"] == 11)
+    _check(os.environ["GOROROBA_WORKERS"] == "8" and os.environ["OMP_NUM_THREADS"] == "6")
+
+
+def test_four_workers_require_an_explicit_sufficient_memory_budget(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(cert.parallel, "available_cpus", lambda: 8)
+    monkeypatch.setenv("GOROROBA_WORKERS", "8")
+    with pytest.raises(ValueError, match="21 GiB"):
+        with cert._execution_scope(4, 12):
+            pass
+    with cert._execution_scope(4, 24) as execution:
+        _check(cert.parallel.workers() == 4 and execution["required_memory_gib"] == 21)
+    with pytest.raises(ValueError, match="between 1 and 4"):
+        with cert._execution_scope(5, 32):
+            pass

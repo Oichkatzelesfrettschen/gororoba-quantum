@@ -242,6 +242,18 @@ weight 10 with [-6, 8] gives rank 16 modulo 32009. `--check` first compares the 
 identities from the cofactor file and two mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities,
 one coefficient of G_1 doubled breaks 42.
 
+`--check` sends producer, exact-check and mutation scripts and diagnostics to a unique ignored workspace under
+`docs/local/e8-closure-certificate/checks/`; retained generation diagnostics keep their bytes. Rational
+reconstruction uses the integer square root of half the modulus, so an exact boundary coefficient remains
+admissible when the modulus exceeds binary64 integer precision.
+
+The modular stage defaults to two process workers with a twelve-GiB declared resident-memory budget. Each worker
+reserves five GiB, based on the retained 4.073-GiB process peak plus margin, and the controller reserves one GiB.
+`--workers 4 --memory-budget-gib 24` admits four workers when the host's reviewed case provides that capacity;
+a declared budget below the required twenty-one GiB fails before a producer starts. The budget admits concurrency
+and imposes no operating-system memory or swap limit. Native arithmetic threads stay one. The record's
+`execution` fields retain requested and effective workers, the budget, native-thread environment and runtime versions.
+
 | Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search and full-run cost | exact check | mutations fail |
 |---|---|---|---|---|---|
 | E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 259.8-354.1 s, 1,982.8 s total wall, 4.1 GiB peak per worker | 26.9 s | 1 of 42, 42 of 42 |

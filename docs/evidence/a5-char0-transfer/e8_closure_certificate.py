@@ -36,8 +36,10 @@ reconstructions agree. The modular work only finds the certificate; the exact ch
 must fail it: one cofactor coefficient changed, and one coefficient of the generator G_1 changed. The digests cover the
 cofactor file, the Q(i) producer script, its J and G, and the sources of this script, `slice_rings_qi.py` and
 `reduction_check.py`, so an edit of any of those three Python files makes `--check` fail with a request to regenerate
-the records with `--write` (about 40 minutes for both signs); a replay never runs with sources that differ from the
-ones that wrote the record.
+the records with `--write`; the README records measured generation costs. Check scripts and diagnostics go into
+an ignored workspace, preserving retained generation logs. The default execution admits two process workers with
+a twelve-GiB planning budget. An explicit four-worker run needs at least twenty-one GiB of declared budget, with
+native arithmetic threads fixed at one. Each generated record binds the actual worker count and execution flags.
 """
 
 from __future__ import annotations
@@ -49,6 +51,7 @@ import json
 import lzma
 import math
 import os
+import platform
 import re
 import resource
 import signal
@@ -57,6 +60,7 @@ import sys
 import time
 from array import array
 from collections.abc import Iterator
+from contextlib import contextmanager
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -102,6 +106,18 @@ PRIMES = (
 )
 MIN_PRIMES = 2
 TIMEOUT_SECONDS = 3300
+DEFAULT_WORKERS = 2
+DEFAULT_MEMORY_BUDGET_GIB = 12
+WORKER_MEMORY_RESERVE_GIB = 5
+CONTROLLER_MEMORY_RESERVE_GIB = 1
+NATIVE_THREAD_FLAGS = (
+    "OPENBLAS_NUM_THREADS",
+    "OMP_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "BLIS_NUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+    "VECLIB_MAXIMUM_THREADS",
+)
 WORK = ROOT / "docs" / "local" / "e8-closure-certificate"
 LOGS = HERE / "logs"
 COFACTORS = HERE / "cofactors"
@@ -121,6 +137,77 @@ def _sha256_bytes(data: bytes) -> str:
 
 def _sha256_file(path: Path) -> str:
     return _sha256_bytes(path.read_bytes())
+
+
+def _execution_settings(workers: int, memory_budget_gib: int) -> dict[str, Any]:
+    """Admit the requested process count against a declared resident-memory planning budget.
+
+    Each modular worker measured 4.073 GiB peak process RSS; five GiB reserves that observation plus margin.
+    The declared budget admits concurrency and sets no operating-system memory or swap limit.
+    """
+    if type(workers) is not int or not 1 <= workers <= 4:
+        raise ValueError("workers must be between 1 and 4")
+    if type(memory_budget_gib) is not int or memory_budget_gib < 1:
+        raise ValueError("memory budget must be a positive number of GiB")
+    effective = min(workers, parallel.workers())
+    required = CONTROLLER_MEMORY_RESERVE_GIB + WORKER_MEMORY_RESERVE_GIB * effective
+    if memory_budget_gib < required:
+        raise ValueError(f"{effective} workers require a declared budget of at least {required} GiB")
+    return {
+        "requested_workers": workers,
+        "effective_workers": effective,
+        "memory_budget_gib": memory_budget_gib,
+        "required_memory_gib": required,
+        "worker_memory_reserve_gib": WORKER_MEMORY_RESERVE_GIB,
+        "controller_memory_reserve_gib": CONTROLLER_MEMORY_RESERVE_GIB,
+        "memory_budget_is_admission_only": True,
+    }
+
+
+@contextmanager
+def _execution_scope(workers: int, memory_budget_gib: int) -> Iterator[dict[str, Any]]:
+    settings = _execution_settings(workers, memory_budget_gib)
+    replacements = {name: "1" for name in NATIVE_THREAD_FLAGS}
+    replacements["GOROROBA_WORKERS"] = str(settings["effective_workers"])
+    previous = {name: os.environ.get(name) for name in replacements}
+    previous_flint_threads = flint.ctx.threads
+    try:
+        os.environ.update(replacements)
+        flint.ctx.threads = 1
+        settings.update(
+            {
+                "native_threads": 1,
+                "environment": {
+                    name: os.environ.get(name) for name in (*replacements, "GLIBC_TUNABLES", "MALLOC_ARENA_MAX")
+                },
+                "runtime": {
+                    "python": platform.python_version(),
+                    "python_flint": flint.__version__,
+                    "sympy": sympy.__version__,
+                },
+            }
+        )
+        yield settings
+    finally:
+        flint.ctx.threads = previous_flint_threads
+        for name, value in previous.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+
+
+@contextmanager
+def _check_workspace(slug: str) -> Iterator[None]:
+    """Route a check's scripts and diagnostics to one ignored workspace, restoring the generation destinations."""
+    global WORK, LOGS
+    generation_work, generation_logs = WORK, LOGS
+    WORK = generation_work / "checks" / f"{slug}-{os.getpid()}-{time.monotonic_ns()}"
+    LOGS = WORK / "logs"
+    try:
+        yield
+    finally:
+        WORK, LOGS = generation_work, generation_logs
 
 
 def _singular(script: str, name: str, timeout: int = TIMEOUT_SECONDS) -> dict[str, Any]:
@@ -420,7 +507,7 @@ def _ratrec(value: int, modulus: int) -> Fraction | None:
     reduced form a/b has b invertible modulo `modulus` and satisfies the congruence, so a value with no such fraction
     (for example 32009 * 32029 modulo 32009 * 32029 * 32749) is None and never a spurious zero.
     """
-    bound = int((modulus // 2) ** 0.5)
+    bound = math.isqrt(modulus // 2)
     r0, r1, s0, s1 = modulus, value % modulus, 0, 1
     while r1 > bound:
         q = r0 // r1
@@ -596,7 +683,14 @@ def _stats(cofactors: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def write(slug: str) -> dict[str, Any]:
+def write(
+    slug: str, workers: int = DEFAULT_WORKERS, memory_budget_gib: int = DEFAULT_MEMORY_BUDGET_GIB
+) -> dict[str, Any]:
+    with _execution_scope(workers, memory_budget_gib) as execution:
+        return _write(slug, execution)
+
+
+def _write(slug: str, execution: dict[str, Any]) -> dict[str, Any]:
     started = time.monotonic()
     inputs = producer(slug)
     runs: dict[tuple[int, int], dict[str, Any]] = {}
@@ -647,6 +741,7 @@ def write(slug: str) -> dict[str, Any]:
         "x in n = (qa, qz, qr, qs, qb, qw^2) = m_R S, and Id + beta has rank 21; hence I = I S by Nakayama",
         "primes": [{"prime": p, "root": r, "roots_used": [r, p - r]} for p, r in used],
         "reconstruction": "CRT of real and imaginary parts, rational reconstruction, stable over two prime sets",
+        "execution": execution,
         "box": cofactors["box"],
         "counts": {
             "generators": n,
@@ -707,17 +802,18 @@ def check(slug: str) -> dict[str, Any]:
             f"{slug}: {name} differs from the digest in {_record_path(slug).name}; regenerate the record with --write",
         )
     _require(_sha256_file(_cofactor_path(slug)) == digests["cofactor_file"], f"{slug}: cofactor file digest")
-    inputs = producer(slug)
-    _require(inputs["script_sha256"] == digests["producer_script"], f"{slug}: producer script changed")
-    _require(_input_digest(inputs) == digests["header_j_and_g"], f"{slug}: producer J or G changed")
-    cofactors = json.loads(lzma.decompress(_cofactor_path(slug).read_bytes()))
-    exact = verify(slug, inputs, cofactors)
-    _require(exact["verdict"] == "i_equals_is", f"{slug}: exact check {exact}")
-    mutations = {}
-    for kind in ("cofactor", "generator"):
-        row = verify(slug, inputs, cofactors, kind)
-        mutations[kind] = {k: row.get(k) for k in ("status", "bad_identities", "verdict")}
-        _require(mutation_detected(row), f"{slug}: mutation {kind} was not detected: {row}")
+    with _check_workspace(slug):
+        inputs = producer(slug)
+        _require(inputs["script_sha256"] == digests["producer_script"], f"{slug}: producer script changed")
+        _require(_input_digest(inputs) == digests["header_j_and_g"], f"{slug}: producer J or G changed")
+        cofactors = json.loads(lzma.decompress(_cofactor_path(slug).read_bytes()))
+        exact = verify(slug, inputs, cofactors)
+        _require(exact["verdict"] == "i_equals_is", f"{slug}: exact check {exact}")
+        mutations = {}
+        for kind in ("cofactor", "generator"):
+            row = verify(slug, inputs, cofactors, kind)
+            mutations[kind] = {k: row.get(k) for k in ("status", "bad_identities", "verdict")}
+            _require(mutation_detected(row), f"{slug}: mutation {kind} was not detected: {row}")
     return {"slug": slug, "verdict": exact["verdict"], "mutations": mutations, "wall_seconds": exact["wall_seconds"]}
 
 
@@ -727,14 +823,44 @@ def main() -> None:
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
     parser.add_argument("--slug", choices=sorted(SIGN), action="append")
+    parser.add_argument(
+        "--workers",
+        type=int,
+        choices=range(1, 5),
+        default=DEFAULT_WORKERS,
+        help="process cap, default two; a larger cap requires a sufficient declared memory budget",
+    )
+    parser.add_argument(
+        "--memory-budget-gib",
+        type=int,
+        default=DEFAULT_MEMORY_BUDGET_GIB,
+        help="resident-memory planning budget; admits workers without imposing a system memory limit",
+    )
     args = parser.parse_args()
+    try:
+        _execution_settings(args.workers, args.memory_budget_gib)
+    except ValueError as error:
+        parser.error(str(error))
     slugs = args.slug or sorted(SIGN)
     # `write` pools its modular solves itself; the checks of the two signs share no file and run as pooled items.
-    rows = (write(slug) for slug in slugs) if args.write else parallel.ordered_map(check, slugs, min_items=2)
-    for slug, row in zip(slugs, rows, strict=True):
-        print(json.dumps({key: row[key] for key in row if key in ("slug", "verdict", "mutations", "wall_seconds")}))
-        if row["verdict"] != "i_equals_is":
-            raise SystemExit(f"{slug}: {row['verdict']}")
+    with _execution_scope(args.workers, args.memory_budget_gib):
+        rows = (
+            (write(slug, args.workers, args.memory_budget_gib) for slug in slugs)
+            if args.write
+            else parallel.ordered_map(check, slugs, min_items=2)
+        )
+        for slug, row in zip(slugs, rows, strict=True):
+            print(
+                json.dumps(
+                    {
+                        key: row[key]
+                        for key in row
+                        if key in ("slug", "verdict", "mutations", "wall_seconds", "execution")
+                    }
+                )
+            )
+            if row["verdict"] != "i_equals_is":
+                raise SystemExit(f"{slug}: {row['verdict']}")
 
 
 if __name__ == "__main__":
