@@ -2,7 +2,7 @@
 
 The rank of the left alternative associator operator `L_y^2 - L_(y^2)` is not an invariant of a rank stratum on six of
 the twelve strata (W8, Ehat, Iso, X+, X-, B9); on the other six (V, VB, Va+, Va-, N+, N-) it equals 24 at all 1,754 exact
-points sampled there. The nullity of `L_y` is the stratum invariant, and the factored spectrum of `-L_y^2` varies on every
+points sampled there. The nullity of `L_y` is the stratum invariant, and the factored spectrum of `-L_y^2 / N` varies on every
 stratum except N+ and N-. `associator_observables.py` computes every observable in exact arithmetic over Q and writes
 `associator-observables.json`, bound to the script by its sha256.
 
