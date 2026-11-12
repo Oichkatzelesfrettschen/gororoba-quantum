@@ -1,0 +1,56 @@
+{
+ "schema": "a5-w8-n19-memory-model-v2",
+ "inputs": {
+  "engine": "fiber_rank_v15.py",
+  "uint16_product_row_copies": 3,
+  "quotient_dimension": 235543,
+  "blocks": 4,
+  "sum_block_squares": 13870201081,
+  "degree_counts": [
+   1,
+   7,
+   28,
+   84,
+   209,
+   455,
+   896,
+   1632,
+   2793,
+   4543,
+   7084,
+   10652,
+   15457,
+   21560,
+   28609,
+   35448,
+   39922,
+   38752,
+   27411
+  ],
+  "v11_generator_block_bytes": 110961608648,
+  "v11_product_row_bytes": 14953585152,
+  "chunk": 64,
+  "prefix_peak_rows": null
+ },
+ "derived": {
+  "maximum_block_size_upper_bound": 59123,
+  "maximum_adjacent_degree_rows": 78674,
+  "full_uint16_generator_operator_bytes": 27740402162,
+  "streamed_operator_layers_bytes": 9302885804,
+  "uint16_product_rows_bytes": 5607594432,
+  "compact_echelon_ceiling_bytes": 6935100540,
+  "closure_chunk_temporaries_bytes": 90812928,
+  "compact_insert_panels_bytes": 419412736,
+  "streamed_walk_temporaries_bytes": 158308352,
+  "streamed_loop_arrays_bytes": null,
+  "max_prefix_rows_that_fit": 3570
+ },
+ "stage_peaks": {
+  "products_selected_arrays_bytes": 15068788588,
+  "closure_selected_arrays_bytes": 13052920636,
+  "selected_array_peak_bytes": 15068788588,
+  "selected_array_headroom_at_16_gib_bytes": 2111080596
+ },
+ "streamed_loop_arrays_status": "hypothesis: the products stage omits the accumulate-line arrays of streamed_generator_product, 10 * prefix_rows * block_max bytes (contribution plus two uint32 temporaries per element); the figure fits 16 GiB only when the largest per-call prefix row count of the N = 19 receipt is at most max_prefix_rows_that_fit. fiber_rank_v15.py reports the term streamed_loop_arrays (10 * prefix_rows * block size) in preflight_terms once the receipt is loaded and refuses a run whose stage exceeds --max-gb; that preflight, or an instrumented run, settles it.",
+ "boundary": "Upper bounds for the named dense arrays only; sparse tables, Python objects, the flint entry lists of each insertion, allocator state and file cache require an instrumented acceptance run. Nonpositive selected-array headroom fails this model's conservative admission criterion. A cgroup memory-limit stop falsifies successful execution of that run under the cap. Sampled process-group RSS counts shared pages per process and supplies neither a cgroup peak nor guaranteed resident-memory headroom."
+}
