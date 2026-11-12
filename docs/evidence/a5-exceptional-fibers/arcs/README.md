@@ -39,7 +39,7 @@ At each of the four targets:
 | 3 | 195 | 225 | h_3 = 225 |
 | 4 | 440 | 495 | h_4 = 495 |
 | 5 | 861 | 952 | h_5 = 952: N- by r_18 = 952 (`../n18-laptop/`, A5-183, A5-220), N+ by the t8/t9 sign isomorphism (A5-082, A5-088) |
-| 6 | 1526 | 1666 | open |
+| 6 | 1526 | 1666 | N-: h_6 = 1666 by the jet functionals of [../arc-jets/](../arc-jets/README.md) (A5-335); N+ not run |
 
 The columns come from `k2_primes.log` of each target (`kbase` of the standard bases of K2 and of P1 intersect P2,
 equal at all four targets) and `k2-hilbert.jsonl`, which `run_target.py` compares with the K2 column. The upper
