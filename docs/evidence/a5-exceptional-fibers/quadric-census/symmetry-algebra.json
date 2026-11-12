@@ -20,6 +20,7 @@
     "torus_rank": 5,
     "trace_form_nil_ideal": 16
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "X-",
    "generators": 15,
@@ -48,6 +49,7 @@
     "torus_rank": 5,
     "trace_form_nil_ideal": 16
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "X-",
    "generators": 15,
@@ -76,6 +78,7 @@
     "torus_rank": 5,
     "trace_form_nil_ideal": 16
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "X+",
    "generators": 15,
@@ -104,6 +107,7 @@
     "torus_rank": 5,
     "trace_form_nil_ideal": 8
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "E8-bar -> VB",
    "generators": 10,
@@ -132,6 +136,7 @@
     "torus_rank": 5,
     "trace_form_nil_ideal": 8
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "E8-bar -> VB",
    "generators": 10,
@@ -160,6 +165,7 @@
     "torus_rank": 4,
     "trace_form_nil_ideal": 11
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "Iso",
    "generators": 17,
@@ -188,6 +194,7 @@
     "torus_rank": 4,
     "trace_form_nil_ideal": 11
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "Iso",
    "generators": 17,
@@ -216,6 +223,7 @@
     "torus_rank": 4,
     "trace_form_nil_ideal": 11
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "Iso",
    "generators": 17,
@@ -245,6 +253,7 @@
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "E8-bar -> N-",
    "generators": 21,
@@ -274,6 +283,7 @@
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "E8-bar -> N-",
    "generators": 21,
@@ -303,6 +313,7 @@
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "E8-bar -> N+",
    "generators": 21,
@@ -332,6 +343,7 @@
     "torus_rank": 6,
     "trace_form_nil_ideal": 26
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "E8-bar -> N+",
    "generators": 21,
@@ -358,6 +370,28 @@
     "radical": 23,
     "torus_rank": 5,
     "trace_form_nil_ideal": 19
+   },
+   "components": {
+    "C20": {
+     "complexity": 2,
+     "dimension": 6,
+     "ideal": "structure/w8-kp/P-p32009.txt",
+     "ideal_sha256": "1804b481652aec5e4a0a60b9dc8fb321e3e809af5964cccf7a3ee5608b166554",
+     "linear_forms": 9,
+     "span_dimension": 15,
+     "span_preserved": true,
+     "torus_rank_on_span": 4
+    },
+    "C30": {
+     "complexity": 1,
+     "dimension": 6,
+     "ideal": "structure/w8-kp/quotient.txt",
+     "ideal_sha256": "dd18bea7fe2ab5ebe5132f4e4884b896d46cbd83f285d3563abc765694d079c9",
+     "linear_forms": 4,
+     "span_dimension": 20,
+     "span_preserved": true,
+     "torus_rank_on_span": 5
+    }
    },
    "control_stabilizer_dimension": 1,
    "fiber": "W8 -> N-",
@@ -386,6 +420,7 @@
     "torus_rank": 5,
     "trace_form_nil_ideal": 19
    },
+   "components": {},
    "control_stabilizer_dimension": 1,
    "fiber": "W8 -> N-",
    "generators": 24,

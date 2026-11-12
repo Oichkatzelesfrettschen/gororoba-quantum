@@ -25,6 +25,7 @@ import argparse
 import hashlib
 import itertools
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -46,6 +47,15 @@ import quadric_structure  # noqa: E402
 SCHEMA = "a5-quadric-symmetry-algebra/1"
 RECORD = HERE / "symmetry-algebra.json"
 SOURCES = list(k2_hilbert.SOURCES)
+# Retained ideals of the irreducible components of V(K2), in the coordinates of the relation file, with the
+# dimension of each cone: (fiber, prime) -> component -> (path under the fiber evidence directory, dimension).
+COMPONENTS = {
+    ("W8 -> N-", 32009): {
+        "C20": ("structure/w8-kp/P-p32009.txt", 6),
+        "C30": ("structure/w8-kp/quotient.txt", 6),
+    },
+}
+LINEAR_TERM = re.compile(r"([+-]?)(\d*)\*?y\((\d+)\)")
 # Semisimple Lie algebras fixed by (dimension, rank) among those of rank at most 3.
 LEVI_TYPES = {
     (0, 0): "0",
@@ -118,6 +128,11 @@ def _echelon(algebra: np.ndarray, prime: int) -> tuple[np.ndarray, list[int]]:
 
 def analyze(algebra: np.ndarray, prime: int, label: str) -> dict[str, Any]:
     """The structure numbers of a matrix Lie algebra given by a basis (dim, n, n) over F_p."""
+    return decompose(algebra, prime, label)[0]
+
+
+def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, Any], np.ndarray]:
+    """The structure numbers and the matrices (rank, n, n) of a basis of the Cartan subalgebra."""
     dim, n = len(algebra), algebra.shape[1]
     flat, pivots = _echelon(algebra, prime)
     basis = flat.reshape(dim, n, n)
@@ -159,7 +174,7 @@ def analyze(algebra: np.ndarray, prime: int, label: str) -> dict[str, Any]:
     torus = int(_mat(torus_form, prime).rank()) if len(cartan) else 0
     central_torus = len(radical) - len(nil)
     levi = (dim - len(radical), torus - central_torus)
-    return {
+    numbers = {
         "dimension": dim,
         "derived_series": [len(s) for s in series],
         "center": len(center),
@@ -174,6 +189,45 @@ def analyze(algebra: np.ndarray, prime: int, label: str) -> dict[str, Any]:
         "cartan_derived_dimension": len(lower),
         "torus_rank": torus,
     }
+    return numbers, (cartan @ flat % prime).reshape(len(cartan), n, n)
+
+
+def linear_forms(text: str, n: int, prime: int) -> np.ndarray:
+    """The generators of degree 1 of a Singular ideal string, as rows of coefficients on y(1..n)."""
+    rows = []
+    for poly in text.strip().rstrip(";").replace(" ", "").replace("\n", "").split(","):
+        terms = LINEAR_TERM.findall(poly)
+        if (
+            not terms
+            or "^" in poly
+            or ")*y(" in poly
+            or "".join(s + c + f"*y({i})" for s, c, i in terms)
+            != (LINEAR_TERM.sub(lambda m: f"{m.group(1)}{m.group(2)}*y({m.group(3)})", poly))
+        ):
+            continue
+        row = np.zeros(n, dtype=np.int64)
+        for sign, number, index in terms:
+            row[int(index) - 1] = (-1 if sign == "-" else 1) * int(number or 1) % prime
+        rows.append(row)
+    return row_space(np.array(rows, dtype=np.int64).reshape(-1, n), prime)
+
+
+def restricted_torus(cartan: np.ndarray, forms: np.ndarray, prime: int) -> dict[str, Any]:
+    """The torus on the linear subspace W cut out by `forms`: whether it preserves W, and its rank on W.
+
+    A matrix A acts on a linear form c by c -> c A and on a point x by x -> A x. W is preserved when forms A x = 0
+    for every x in W, and the rank of the torus on W is the dimension of the span of the restrictions A|W.
+    """
+    n = forms.shape[1]
+    points = null_space(forms, n, prime).T
+    restrictions = np.array([a @ points % prime for a in cartan], dtype=np.int64)
+    preserved = not any((forms @ r % prime).any() for r in restrictions)
+    return {
+        "linear_forms": len(forms),
+        "span_dimension": points.shape[1],
+        "span_preserved": preserved,
+        "torus_rank_on_span": len(row_space(restrictions.reshape(len(cartan), -1), prime)),
+    }
 
 
 def structure(source: tuple[str, int, int, str]) -> dict[str, Any]:
@@ -181,6 +235,18 @@ def structure(source: tuple[str, int, int, str]) -> dict[str, Any]:
     path = k2_hilbert.W / relations
     quadrics = quadric_structure.parse(path.read_text(encoding="utf-8"), n, prime)
     algebra = stabilizer(quadrics, n, prime)
+    numbers, cartan = decompose(algebra, prime, fiber)
+    components = {}
+    for name, (relative, dimension) in COMPONENTS.get((fiber, prime), {}).items():
+        ideal = HERE.parent / relative
+        row = restricted_torus(cartan, linear_forms(ideal.read_text(encoding="utf-8"), n, prime), prime)
+        row.update(
+            ideal=relative,
+            ideal_sha256=hashlib.sha256(ideal.read_bytes()).hexdigest(),
+            dimension=dimension,
+            complexity=dimension - row["torus_rank_on_span"],
+        )
+        components[name] = row
     # Control: the same number of quadrics with coefficients from a fixed hash stream keeps only the Euler field.
     stream = hashlib.shake_256(f"{fiber}|{prime}|control".encode()).digest(4 * len(quadrics) * n * (n + 1) // 2)
     monomials = list(itertools.combinations_with_replacement(range(n), 2))
@@ -195,7 +261,8 @@ def structure(source: tuple[str, int, int, str]) -> dict[str, Any]:
         "relations": relations,
         "relations_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "quadrics": len(row_space(_span(quadrics, n, prime), prime)),
-        "algebra": analyze(algebra, prime, fiber),
+        "algebra": numbers,
+        "components": components,
         "control_stabilizer_dimension": len(stabilizer(control, n, prime)),
     }
 

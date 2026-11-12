@@ -68,3 +68,29 @@ def test_retained_record_gives_sl2_and_an_abelian_cartan_torus_on_every_file() -
         _same((numbers["cartan_dimension"], numbers["generic_centralizer"]), (numbers["torus_rank"],) * 2)
         found = (numbers["dimension"], numbers["radical"], numbers["trace_form_nil_ideal"], numbers["torus_rank"])
         _same(found, EXPECTED[row["fiber"]])
+
+
+def test_linear_forms_keep_the_degree_one_generators_only() -> None:
+    forms = sa.linear_forms("y(1)+3*y(2),y(1)*y(2)+y(3)*y(4),-y(3),y(2)^2,2*y(4)-y(1),5", 4, PRIME)
+    _same(forms.tolist(), [[1, 0, 0, PRIME - 2], [0, 1, 0, 2 * pow(3, -1, PRIME) % PRIME], [0, 0, 1, 0]])
+
+
+def test_restricted_torus_loses_the_directions_that_fix_the_subspace() -> None:
+    """The diagonal torus of gl(3) on the plane y(3) = 0 has rank 2 and preserves it; a shear does not preserve it."""
+    diagonal = sa.np.array([sa.np.diag([1 if i == k else 0 for i in range(3)]) for k in range(3)])
+    plane = sa.linear_forms("y(3)", 3, PRIME)
+    row = sa.restricted_torus(diagonal, plane, PRIME)
+    _same((row["span_dimension"], row["span_preserved"], row["torus_rank_on_span"]), (2, True, 2))
+    shear = sa.np.array([[[0, 0, 0], [0, 0, 0], [1, 0, 0]]])
+    _same(sa.restricted_torus(shear, plane, PRIME)["span_preserved"], False)
+
+
+def test_retained_record_gives_the_torus_rank_on_each_w8_component() -> None:
+    rows = json.loads((CENSUS / "symmetry-algebra.json").read_text(encoding="utf-8"))["rows"]
+    with_components = [row for row in rows if row["components"]]
+    _same([(row["fiber"], row["prime"]) for row in with_components], [("W8 -> N-", 32009)])
+    found = {
+        name: (c["linear_forms"], c["span_dimension"], c["span_preserved"], c["torus_rank_on_span"], c["complexity"])
+        for name, c in with_components[0]["components"].items()
+    }
+    _same(found, {"C20": (9, 15, True, 4, 2), "C30": (4, 20, True, 5, 1)})

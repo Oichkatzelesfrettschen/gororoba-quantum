@@ -130,10 +130,19 @@ automorphisms of the algebra account for the Levi factor at most, never for the 
 
 Iso. K2 is geometrically prime of projective dimension 4 with no linear form (ledger A5-060), so its cone is a
 5-dimensional variety that spans the 17 coordinates and the torus of rank 4 acts on it effectively: the Iso cone
-is a variety with a torus action of complexity one, and by the bound above it is not toric. W8 → N−.
-V(K2) is the union of two 6-dimensional components of degrees 20 and 30 (ledger A5-062); a connected torus
-preserves each, and the torus of rank 5 acts on a component with complexity one exactly when that component spans
-the 24 coordinates, which no record decides. X, E8-bar → VB and E8-bar → N have torus rank above the dimension
+is a variety with a torus action of complexity one, and by the bound above it is not toric.
+
+W8 → N−. V(K2) is the union of two 6-dimensional components C20 and C30 of degrees 20 and 30 (ledger A5-062),
+and neither spans the 24 coordinates: the retained ideals at 32009 hold 9 linear forms (`P-p32009.txt`, V(P) = C20)
+and 4 (`quotient.txt`, K2 : P = I(C30)), which a Singular standard basis confirms as the whole degree-1 part of each
+(`w8-component-linear-forms.sing`, run from the repository root; log beside it). The script
+restricts the Cartan torus to the span of each component: the torus preserves both spans, has rank 5 on the 20
+coordinates of C30 and rank 4 on the 15 coordinates of C20. K2 : P is radical and C30 is geometrically irreducible,
+so the span of C30 is exact and C30 is a variety with a torus action of complexity one (ledger A5-349). On C20
+the complexity is at least two; it is exactly two if P is radical, which the records leave open. The component
+ideals are retained at 32009 only.
+
+X, E8-bar → VB and E8-bar → N have torus rank above the dimension
 of the cone (5 > 4, 5 > 4, 6 > 5), so a subtorus of positive dimension fixes every point of each irreducible
 component: these K2 have components inside proper coordinate subspaces or nilpotent coordinates, as the monomial
 quadrics of their echelon bases (27, 0 and 25 rows of support 1) and the non-reduced E8-bar schemes already show.
