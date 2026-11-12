@@ -20,8 +20,12 @@ whose three records the directory [`w8-n16-acceptance/`](w8-n16-acceptance/) ret
 ([`.err`](w8-n16-acceptance/w8-nm-d5-n16-p32009.err)) and the runner's resource file
 ([`.resources.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json)); the summary lists their sha256.
 [`acceptance_summary.py`](acceptance_summary.py) regenerates the summary from those three records and the retained v11
-comparator; `--check` compares the tracked file with a fresh one and verifies the current engine, header and receipt
-bytes against the recorded digests. An edited engine fails the check until the run is repeated. Missing, empty and
+comparator; `--check` compares the tracked file with a fresh one and verifies all six computation/input files against
+the immutable [launch-input manifest](w8-n16-launch-inputs.json). The manifest copies the prelaunch case's digests
+for the engine, runner, compact echelon implementation, process-pool implementation, header and degree-two receipt;
+the launcher checked them before starting, and in-run and post-run observations matched. Its resource-record digest
+binds the completed run, and the summary producer pins the manifest's own bytes. Changed dependency bytes fail the
+check; replacing recorded digests with hashes of edited files cannot establish a run of those files. Missing, empty and
 withheld rank/control/RSS results fail admission. The launcher settings
 that no record holds are constants of the script. The
 summary agrees with the retained v11 receipt run: `r_16 = 4116`; block contributions 1,017 / 1,005 / 1,047 / 1,047;
@@ -34,6 +38,10 @@ Provenance of the summary:
 - The run executed `fiber_rank_v14.py` through [`rank_cell.py`](../replay/engine/rank_cell.py). The resource file's
   `engine_sha256` (`342ec30537a09ba0...`) equals the digest of the engine file at the head of the branch, as do the
   header and receipt digests of the files the command names; the runner exited 0 with an empty `validation_error`.
+- The schema-v4 summary includes the launch manifest's path, digest and six input identities. The launch manifest
+  preserves those identities when a checker or a versioned successor changes; a later acceptance needs its own
+  manifest. `--skip-engine-digest` omits only the current engine-byte comparison and retains every imported-dependency
+  check.
 - The run used the cached uint16 operator (`product_operator: uint16-cached`, `operator_cache_gib: 6`). The streamed
   route without the cache, on which the N = 19 model below rests, was not exercised at this size; the unit tests and
   the smaller cells compare it with the dense operator.
@@ -107,7 +115,8 @@ The acceptance-summary gate (`core-a5-w8-memory-acceptance-summary`) and selecte
 
 The commands read the retained files and leave their bytes unchanged. Bounded
 [receipt tests](../../../../tests/test_a5_memory_evidence_receipts.py) admit a complete fixture and reject changed
-engine/header/receipt/output bytes, missing files, empty records and withheld results. The model check accepts its
+engine/header/receipt/output bytes, each imported implementation, missing or withheld launch manifests, empty records
+and withheld results. The manifest's resource binding is checked separately. The model check accepts its
 bounded fixture and rejects an altered selected-array result. Historical wall-time fields receive a documented
 timing-metadata exemption in [the replay ledger](../../../../ci/runner_image_records.json); the summary gate
 recomputes the derivation from those fixed measurements, rather than acquiring new timings.

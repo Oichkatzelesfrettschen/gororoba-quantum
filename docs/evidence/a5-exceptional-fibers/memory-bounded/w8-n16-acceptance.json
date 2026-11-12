@@ -1,5 +1,19 @@
 {
- "schema": "a5-fiber-rank-v14-memory-acceptance-v3",
+ "schema": "a5-fiber-rank-v14-memory-acceptance-v4",
+ "launch_inputs": {
+  "role": "immutable prelaunch input manifest",
+  "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-launch-inputs.json",
+  "sha256": "21b7b7dbaa0a3f0ff8a4276a986389e9372c127ebd2f35bf42569e8eb1048797",
+  "launch_head": "dff16336c581a0ccc6f03b6ef37e806f5f7a9ae4",
+  "input_sha256": {
+   "docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v14.py": "342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29",
+   "docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py": "072d28456a6bf7192a64ac8758d24d9563be7ca1f2fdbb8632393d3e6a15b0db",
+   "gororoba_quantum/modular_echelon_compact.py": "97ffe60ef3642d4309fb45d59e8bd2e6f6fb48a6cbf2335e5578f1f13a9d6b40",
+   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+   "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+   "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+  }
+ },
  "case": {
   "fiber": "W8 -> N-",
   "prime": 32009,

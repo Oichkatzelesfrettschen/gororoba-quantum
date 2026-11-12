@@ -1,0 +1,18 @@
+{
+ "schema": "a5-fiber-rank-v14-launch-inputs-v1",
+ "launch_head": "dff16336c581a0ccc6f03b6ef37e806f5f7a9ae4",
+ "source_case_sha256": "c64624c7b2b860996e8474448f16e2077f1cb3b04721eabf66d773c3d6ffdec5",
+ "input_sha256": {
+  "docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v14.py": "342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29",
+  "docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py": "072d28456a6bf7192a64ac8758d24d9563be7ca1f2fdbb8632393d3e6a15b0db",
+  "gororoba_quantum/modular_echelon_compact.py": "97ffe60ef3642d4309fb45d59e8bd2e6f6fb48a6cbf2335e5578f1f13a9d6b40",
+  "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+  "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+ },
+ "resource_record": {
+  "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json",
+  "sha256": "17119b669b0a2ee6c2cac55fa9f6f23e69cf1c457c65b59b002101abcb603ea2"
+ },
+ "provenance": "The six input digests are copied from the retained prelaunch case. The launcher checked those values before starting; in-run observations and post-run verification matched every value. The resource-record digest binds the completed run whose summary consumes this manifest."
+}

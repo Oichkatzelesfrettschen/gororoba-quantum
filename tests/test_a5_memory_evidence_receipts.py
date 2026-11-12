@@ -12,6 +12,12 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRECTORY = "docs/evidence/a5-exceptional-fibers/memory-bounded"
+LAUNCH_MANIFEST = f"{DIRECTORY}/w8-n16-launch-inputs.json"
+DEPENDENCIES = {
+    "runner": "docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py",
+    "compact": "gororoba_quantum/modular_echelon_compact.py",
+    "parallel": "gororoba_quantum/parallel.py",
+}
 SPEC = importlib.util.spec_from_file_location(
     "a5_memory_acceptance_receipt_test", ROOT / DIRECTORY / "acceptance_summary.py"
 )
@@ -31,11 +37,34 @@ def write_json(path: Path, record: dict[str, Any]) -> None:
     path.write_text(json.dumps(record) + "\n")
 
 
+def bind_launch_manifest(root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    resource_path = root / summary.RECORD_DIRECTORY / f"{summary.RECORD_STEM}.resources.json"
+    manifest = {
+        "schema": "a5-fiber-rank-v14-launch-inputs-v1",
+        "launch_head": "0" * 40,
+        "source_case_sha256": "0" * 64,
+        "input_sha256": {
+            name: summary.sha256(root / name)
+            for name in [summary.ENGINE, *DEPENDENCIES.values(), "inputs/header.sing", "inputs/receipt.json"]
+        },
+        "resource_record": {
+            "path": str(resource_path.relative_to(root)),
+            "sha256": summary.sha256(resource_path),
+        },
+    }
+    write_json(root / LAUNCH_MANIFEST, manifest)
+    monkeypatch.setattr(summary, "LAUNCH_INPUTS_SHA256", summary.sha256(root / LAUNCH_MANIFEST), raising=False)
+
+
 @pytest.fixture
-def receipt_fixture(tmp_path: Path) -> Path:
+def receipt_fixture(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     engine = tmp_path / summary.ENGINE
     engine.parent.mkdir(parents=True)
     engine.write_text("bounded engine fixture\n")
+    for label, filename in DEPENDENCIES.items():
+        dependency = tmp_path / filename
+        dependency.parent.mkdir(parents=True, exist_ok=True)
+        dependency.write_text(f"bounded {label} fixture\n")
     header = "inputs/header.sing"
     receipt = "inputs/receipt.json"
     (tmp_path / header).parent.mkdir()
@@ -107,6 +136,7 @@ def receipt_fixture(tmp_path: Path) -> Path:
     comparator = tmp_path / summary.COMPARATOR_DIRECTORY
     write_json(comparator / f"{summary.COMPARATOR_STEM}.out", record)
     (comparator / f"{summary.COMPARATOR_STEM}.err").write_text("Maximum resident set size (kbytes): 2\n")
+    bind_launch_manifest(tmp_path, monkeypatch)
     return tmp_path
 
 
@@ -114,9 +144,12 @@ def test_acceptance_summary_admits_a_complete_bounded_receipt(receipt_fixture: P
     record = summary.build_summary(receipt_fixture, True)
     check(record["result"]["r_N"] == 2)
     check(record["resources"]["rss_poll_seconds"] == 0.1)
+    check(record["launch_inputs"]["path"] == LAUNCH_MANIFEST)
+    check(record["launch_inputs"]["sha256"] == summary.sha256(receipt_fixture / LAUNCH_MANIFEST))
+    check(len(record["launch_inputs"]["input_sha256"]) == 6)
 
 
-@pytest.mark.parametrize("mutation", ["engine", "header", "receipt", "stdout", "stderr"])
+@pytest.mark.parametrize("mutation", ["engine", "header", "receipt", "stdout", "stderr", *DEPENDENCIES])
 def test_acceptance_summary_rejects_changed_bound_bytes(receipt_fixture: Path, mutation: str) -> None:
     paths = {
         "engine": summary.ENGINE,
@@ -124,6 +157,7 @@ def test_acceptance_summary_rejects_changed_bound_bytes(receipt_fixture: Path, m
         "receipt": "inputs/receipt.json",
         "stdout": f"{summary.RECORD_DIRECTORY}/{summary.RECORD_STEM}.json",
         "stderr": f"{summary.RECORD_DIRECTORY}/{summary.RECORD_STEM}.err",
+        **DEPENDENCIES,
     }
     path = receipt_fixture / paths[mutation]
     path.write_bytes(path.read_bytes() + b" \n")
@@ -132,9 +166,61 @@ def test_acceptance_summary_rejects_changed_bound_bytes(receipt_fixture: Path, m
 
 
 @pytest.mark.parametrize(
+    "mutation",
+    [
+        "missing",
+        "empty",
+        "withheld_manifest",
+        "withheld_inputs",
+        "missing_dependency",
+        "withheld_digest",
+        "wrong_resource_binding",
+        "tampered",
+    ],
+)
+def test_acceptance_summary_rejects_missing_withheld_or_tampered_launch_manifest(
+    receipt_fixture: Path, monkeypatch: pytest.MonkeyPatch, mutation: str
+) -> None:
+    path = receipt_fixture / LAUNCH_MANIFEST
+    if mutation == "missing":
+        path.unlink()
+    elif mutation == "empty":
+        path.write_text("")
+    else:
+        manifest = json.loads(path.read_text())
+        if mutation == "withheld_manifest":
+            manifest = None
+        elif mutation == "withheld_inputs":
+            manifest["input_sha256"] = None
+        elif mutation == "missing_dependency":
+            del manifest["input_sha256"][DEPENDENCIES["compact"]]
+        elif mutation == "withheld_digest":
+            manifest["input_sha256"][DEPENDENCIES["parallel"]] = None
+        elif mutation == "wrong_resource_binding":
+            manifest["resource_record"]["sha256"] = "0" * 64
+        else:
+            manifest["launch_head"] = "1" * 40
+        path.write_text(json.dumps(manifest) + "\n")
+        if mutation != "tampered":
+            monkeypatch.setattr(summary, "LAUNCH_INPUTS_SHA256", summary.sha256(path), raising=False)
+    with pytest.raises(SystemExit):
+        summary.build_summary(receipt_fixture, True)
+
+
+@pytest.mark.parametrize("dependency", DEPENDENCIES.values())
+def test_skipping_the_engine_digest_keeps_imported_dependency_checks(receipt_fixture: Path, dependency: str) -> None:
+    path = receipt_fixture / dependency
+    path.write_bytes(path.read_bytes() + b" \n")
+    with pytest.raises(SystemExit):
+        summary.build_summary(receipt_fixture, False)
+
+
+@pytest.mark.parametrize(
     "mutation", ["missing_output", "empty_resources", "empty_blocks", "withheld_rank", "withheld_checks", "empty_rss"]
 )
-def test_acceptance_summary_refuses_missing_empty_or_withheld_results(receipt_fixture: Path, mutation: str) -> None:
+def test_acceptance_summary_refuses_missing_empty_or_withheld_results(
+    receipt_fixture: Path, monkeypatch: pytest.MonkeyPatch, mutation: str
+) -> None:
     directory = receipt_fixture / summary.RECORD_DIRECTORY
     output = directory / f"{summary.RECORD_STEM}.json"
     resource_path = directory / f"{summary.RECORD_STEM}.resources.json"
@@ -159,11 +245,12 @@ def test_acceptance_summary_refuses_missing_empty_or_withheld_results(receipt_fi
                 write_json(path, record)
             resources["stdout_part_sha256"] = summary.sha256(output)
         write_json(resource_path, resources)
+        bind_launch_manifest(receipt_fixture, monkeypatch)
     with pytest.raises((SystemExit, OSError, ValueError)):
         summary.build_summary(receipt_fixture, True)
 
 
-@pytest.mark.parametrize("mutation", ["valid", "stale_summary", "changed_header"])
+@pytest.mark.parametrize("mutation", ["valid", "stale_summary", "changed_header", *DEPENDENCIES, "missing_manifest"])
 def test_acceptance_check_mode_admits_good_and_rejects_bad_without_writing(
     receipt_fixture: Path, monkeypatch: pytest.MonkeyPatch, mutation: str
 ) -> None:
@@ -175,11 +262,15 @@ def test_acceptance_check_mode_admits_good_and_rejects_bad_without_writing(
         destination.write_text("{}\n")
     elif mutation == "changed_header":
         (receipt_fixture / "inputs/header.sing").write_text("changed header\n")
+    elif mutation in DEPENDENCIES:
+        (receipt_fixture / DEPENDENCIES[mutation]).write_text("changed dependency\n")
+    elif mutation == "missing_manifest":
+        (receipt_fixture / LAUNCH_MANIFEST).unlink()
     before = destination.read_bytes(), destination.stat().st_mtime_ns
     monkeypatch.setattr(summary, "repository_root", lambda: receipt_fixture)
     monkeypatch.setattr(summary, "__file__", str(producer))
     monkeypatch.setattr(sys, "argv", [str(producer), "--check"])
-    if mutation == "changed_header":
+    if mutation not in ("valid", "stale_summary"):
         with pytest.raises(SystemExit):
             summary.main()
     else:

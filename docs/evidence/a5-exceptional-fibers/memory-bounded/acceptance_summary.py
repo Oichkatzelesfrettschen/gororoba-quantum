@@ -1,6 +1,6 @@
 """Regenerate w8-n16-acceptance.json from the three records of the W8 N = 16 acceptance run and the retained v11 run.
 
-The summary (schema v3) takes every number from `w8-n16-acceptance/` (the engine's stdout record, its stderr and the
+The summary (schema v4) takes every number from `w8-n16-acceptance/` (the engine's stdout record, its stderr and the
 runner's resource file) and from the retained v11 receipt run (`w8-n16-azure/receipt-bound/`). The launcher settings
 that no record holds (worker count, BLAS and OpenMP threads, the memory scope) are the constants `LAUNCHER` below.
 
@@ -8,8 +8,8 @@ that no record holds (worker count, BLAS and OpenMP threads, the memory scope) a
     acceptance_summary.py --check    compare the tracked file with a fresh summary; exit 1 on a difference
 
 The summary states that the resource record's `engine_sha256` equals the digest of the engine file at the commit that
-retains it. Both modes verify that equality, so a change of `fiber_rank_v14.py` fails them until the acceptance run is
-repeated and its records replace the old ones; `--skip-engine-digest` omits that one check.
+retains it. Both modes verify the six launch inputs against the immutable manifest copied from the prelaunch case;
+`--skip-engine-digest` omits only the current engine-byte check, retaining every imported-dependency check.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-SCHEMA = "a5-fiber-rank-v14-memory-acceptance-v3"
+SCHEMA = "a5-fiber-rank-v14-memory-acceptance-v4"
 FIBER = "docs/evidence/a5-exceptional-fibers"
 ENGINE = f"{FIBER}/replay/engine/fiber_rank_v14.py"
 RECORD_DIRECTORY = f"{FIBER}/memory-bounded/w8-n16-acceptance"
@@ -31,6 +31,13 @@ RECORD_STEM = "w8-nm-d5-n16-p32009"
 COMPARATOR_DIRECTORY = f"{FIBER}/w8-n16-azure/receipt-bound"
 COMPARATOR_STEM = "w8d5-n16-rcpt"
 SUMMARY = "w8-n16-acceptance.json"
+LAUNCH_INPUTS = f"{FIBER}/memory-bounded/w8-n16-launch-inputs.json"
+LAUNCH_INPUTS_SHA256 = "21b7b7dbaa0a3f0ff8a4276a986389e9372c127ebd2f35bf42569e8eb1048797"
+IMPORTED_IMPLEMENTATIONS = (
+    f"{FIBER}/replay/engine/rank_cell.py",
+    "gororoba_quantum/modular_echelon_compact.py",
+    "gororoba_quantum/parallel.py",
+)
 
 LAUNCHER: dict[str, Any] = {
     "workers": 4,
@@ -93,6 +100,43 @@ def log_match(text: str, pattern: str) -> re.Match[str]:
     return match
 
 
+def verify_launch_inputs(
+    root: Path, resources_path: Path, header: str, receipt: str, check_engine: bool
+) -> dict[str, Any]:
+    """Verify recorded launch identities without deriving replacement identities from the checkout."""
+    path = root / LAUNCH_INPUTS
+    require(path.is_file(), "the retained launch-input manifest is missing")
+    require(sha256(path) == LAUNCH_INPUTS_SHA256, "the retained launch-input manifest bytes differ")
+    manifest = json.loads(path.read_text())
+    require(
+        isinstance(manifest, dict) and manifest.get("schema") == "a5-fiber-rank-v14-launch-inputs-v1",
+        "the launch-input manifest is withheld or has an unsupported schema",
+    )
+    inputs = manifest.get("input_sha256")
+    require(isinstance(inputs, dict), "the launch-input manifest withholds its input digests")
+    require(
+        set(inputs) == {ENGINE, *IMPORTED_IMPLEMENTATIONS, header, receipt},
+        "the launch-input manifest must name the six recorded files",
+    )
+    require(
+        all(isinstance(digest, str) and re.fullmatch(r"[0-9a-f]{64}", digest) for digest in inputs.values()),
+        "the launch-input manifest contains a withheld or malformed input digest",
+    )
+    resource = manifest.get("resource_record")
+    require(
+        isinstance(resource, dict) and resource.get("path") == str(resources_path.relative_to(root)),
+        "the launch-input manifest names another resource record",
+    )
+    require(
+        resource.get("sha256") == sha256(resources_path),
+        "the launch-input manifest resource digest differs from the retained run",
+    )
+    for filename, expected in inputs.items():
+        if check_engine or filename != ENGINE:
+            require(sha256(root / filename) == expected, f"{filename}: current bytes differ from the launch manifest")
+    return manifest
+
+
 def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
     records = root / RECORD_DIRECTORY
     record_path, err_path = records / f"{RECORD_STEM}.json", records / f"{RECORD_STEM}.err"
@@ -129,6 +173,13 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
     require(
         sha256(root / receipt) == record["representatives"]["receipt_sha256"],
         "the current degree-two receipt bytes differ from the run",
+    )
+    launch_inputs = verify_launch_inputs(root, resources_path, command[2], receipt, check_engine)
+    require(launch_inputs["input_sha256"][ENGINE] == resources["engine_sha256"], "the launch engine digest differs")
+    require(launch_inputs["input_sha256"][command[2]] == resources["header_sha256"], "the launch header digest differs")
+    require(
+        launch_inputs["input_sha256"][receipt] == record["representatives"]["receipt_sha256"],
+        "the launch receipt digest differs",
     )
 
     retained = int(log_match(err, r"^products built in [0-9.]+ s: (\d+) retained rows$").group(1))
@@ -180,6 +231,11 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
 
     return {
         "schema": SCHEMA,
+        "launch_inputs": {
+            **entry("immutable prelaunch input manifest", root / LAUNCH_INPUTS),
+            "launch_head": launch_inputs["launch_head"],
+            "input_sha256": launch_inputs["input_sha256"],
+        },
         "case": {
             "fiber": "W8 -> N-",
             "prime": record["prime"],
