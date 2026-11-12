@@ -5620,6 +5620,14 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/publication_plates.py --check",
+      "name": "core-teleportation-publication-source-bound-release",
+      "seconds": 0.2,
+      "workers": 1
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "timeout -k 10 120 \"$PYTHON\" -B -m pytest -q -p no:cacheprovider -m audit tests/test_a5_monomial_certificate_qi.py && if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/monomial_certificate_qi.py --check; else echo \"skipped: Singular 4.4 is absent here; GOROROBA_SINGULAR_REQUIRED=1 replays this record\"; fi",
       "name": "core-a5-monomial-certificate-qi-record",
       "seconds": 30.0,
