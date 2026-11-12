@@ -137,6 +137,12 @@ separates the arc generation from the rank computation.
 
 ## Degree-seven controls and costs
 
+The digest-bound [basis producer](../monomial-ladder/e8_target_basis_v2.py) and its predecessor retain their bytes.
+The producer's `replay` subcommand is a historical interface; current basis admission uses
+[e8_target_basis_verify.py](../monomial-ladder/e8_target_basis_verify.py). The verifier checks the complete payload,
+registered field and coordinates, both producer digests and every bound data source before replaying the exact
+Singular export. The separate admission boundary preserves the basis-file identities that the arc records bind.
+
 The successor preserves the coefficient enumeration, arc parametrization, functionals and finite-field rank of
 `jet_rank.py`. Its `--control` replay reproduces the retained N- degree-six record at 32009 across 25 fields,
 including every arc and checkpoint: 1,800 arcs and rank 1,666. The four degree-seven records share all arc entries
@@ -182,6 +188,8 @@ the column basis included. Start Python with `GLIBC_TUNABLES=glibc.rtld.optional
 For degree seven, the versioned successor reuses the same exact arithmetic:
 
 ```sh
+"$PYTHON" docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py \
+  docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d7-basis.json
 "$PYTHON" docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --target e8nm-p32009 --degree 7 \
   --arcs 6000 --step 100 --stall-steps 5 \
   --write docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d7.json
@@ -191,6 +199,8 @@ For degree seven, the versioned successor reuses the same exact arithmetic:
 
 The v2 record binds both rank producers and its own degree-seven basis. Its check compares every field except
 the elapsed time. The retained v1 producers and records keep their bytes.
+The optional-Singular basis gate skips unless `GOROROBA_SINGULAR_REQUIRED=1`; an opted-in verifier failure fails
+the gate. The direct verifier command above always requests the exact export replay.
 
 ## Falsifiers and what remains
 

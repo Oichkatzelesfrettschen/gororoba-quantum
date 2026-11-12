@@ -63,6 +63,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py docs/evidence/a5-char0-transfer/transfer_counterexample.py docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py"
+	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -76,6 +77,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py ../docs/evidence/a5-char0-transfer/transfer_counterexample.py ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py"
+	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
