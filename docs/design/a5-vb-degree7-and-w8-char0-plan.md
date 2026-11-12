@@ -104,13 +104,16 @@ of the four predictions; N = 22 tests closure.
 
 ### What the transfer needs
 
-The proposition in `docs/notes/topics/a5-char0-and-kernel-limits.md` transfers one certified h_d to Q(i) under
-three checks. For W8 -> N- the certified degrees are d = 1 to 5 at both primes (A5-138 to A5-142, A5-144 to A5-148):
+The corrected proposition in `docs/notes/topics/a5-char0-and-kernel-limits.md` transfers one certified h_d to Q(i)
+only when the truncated-rank matrices share a common integral model and the subspace W_N has the same rank before
+and after reduction. For W8 -> N- the certified degrees are d = 1 to 5 at both primes (A5-138 to A5-142,
+A5-144 to A5-148):
 
 | check | W8 -> N- status |
 |---|---|
 | 1. good reduction of J and G | survives (A5-247; J has one generator, G has 24) |
-| 3. good reduction of J + m^N at N = 3d + 1 | survives at N = 4, 7, 10, 13 (A5-277); N = 16 (d = 5) running under the 3-hour cap |
+| 3a. good reduction of J + m^N at N = 3d + 1 | survives at N = 4, 7, 10, 13 and 16 (A5-277); this does not supply a lower bound |
+| 3b. rank_Q(i) W_N = rank_F_p W_N in one integral ambient model | not run at any closing order |
 | 2. degree-2 relations over Q(i), reducing onto K2 | not run; 300 products, 144 relations (h_2 = 156) |
 
 Radicality of K2 does not enter the per-degree proposition. The 24,548 s global radical test belongs only to the
@@ -170,10 +173,11 @@ its own transfer, which no record yet sizes.
 
 ### W8 decision for the owner
 
-Per-degree transfer for d = 1 to 4 needs check 2. Degree 5 also needs check 3 at N = 16. Check 2 runs as the
-canonical linear system above, piloted on X- and then on W8 from the retained W8 standard bases. Scaling the X- lift
-by the W8 receipt ratio gives about 136 h per prime, so a direct W8 `lift` has no bounded case. The all-degree
-statement needs the flatness check, the two bridges above, and a sized transfer of A5-066.
+Per-degree transfer for d = 1 to 5 needs check 2 and the rank equality of check 3b at the corresponding closing
+order. A5-277 supplies only check 3a. Check 2 runs as the canonical linear system above, piloted on X- and then on
+W8 from the retained W8 standard bases. Scaling the X- lift by the W8 receipt ratio gives about 136 h per prime, so
+a direct W8 `lift` has no bounded case. The all-degree statement needs the flatness check, the two bridges above,
+and a sized transfer of A5-066.
 
 ## Placement and concurrency
 
@@ -190,7 +194,8 @@ each open computation by its measured bottleneck:
 | GPU work for VB | none: tables, products and closure are under 63 s | none; the GPU (engine v12) pays only where closure dominates | |
 | X- cofactor lift, per prime | lift 1,565 s at 16.5 GB | build host, one prime at a time (two at once exceed 38.6 GiB) | the probes and the W8 truncation check |
 | X- identity check over Q(i), per relation | polynomial products, unmeasured | build host through `parallel.py`; Kaggle CPU for relations that run long | |
-| W8 check 3 at N = 16 | Q(i) std, 114 s at N = 13 | build host | everything |
+| W8 ambient good reduction at N = 16 | completed in A5-277; it does not test rank W_N | none | |
+| W8 check-3 rank equality, each closing order | exact rank of W_N over Q(i), unmeasured | size from the modular W_N matrices before placement | check 2 |
 | W8 check 2 (cofactors) | scale of the X- pilot times the W8 receipt ratio, unmeasured | sized after the X- pilot | |
 | W8 degree 6 at N = 19 (task 113, not needed for F(I) by A5-066; withdrawn 2026-11-10, A5-291) | closure 14 to 19 h CPU, L = 103 GiB dense under v11 | GPU: engine v12 on the RTX 4090 laptop once L streams by degree (efficiency lever 1 and the streaming idea), Kaggle T4 x2 with CPU fallback for the export; an Azure VM otherwise | |
 | Exact torus and weighted std (task 115) | symbolic linear algebra, small | build host | everything |

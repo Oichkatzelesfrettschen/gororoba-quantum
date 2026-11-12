@@ -15,6 +15,7 @@ Writes quadrics-<slug>.json beside this file. Run from the repository root:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -35,23 +36,35 @@ FIBERS = HERE.parent / "a5-exceptional-fibers" / "working" / "distribute" / "out
 # slug -> ((prime, root, relation directory under FIBERS), ...); each directory holds the K2 source k2_hilbert.py reads
 SOURCES = {
     "xm-nm": ((32009, 10754, "a5-xm-d4/xm_p1/d2"), (32029, 9115, "a5-p2-small/xm_p2/d2")),
+    "iso-nm": ((32009, 10754, "a5-iso-d4/iso_p1/d2"), (32029, 9115, "a5-p2-iso/iso_p2/d2")),
+    "w8-nm": ((32009, 10754, "a5-w8-receipt-p1/w8_p1/d2"), (32029, 9115, "a5-p2-w8/w8_p2/d2")),
+    "e8-nm": ((32009, 10754, "a5-e8-d2/e8nm_p1/d2"), (32029, 9115, "a5-e8-d2/e8nm_p2/d2")),
+    "e8-vb": ((32029, 9115, "a5-p2-small/vb_p2/d2"),),
 }
+# Generators of a K2 run that are the negatives of the header's (one-based): the run's y_j stands for -G_j, so a
+# monomial of the relation file changes sign once per such factor. Read from the `signs of the run generators` lines
+# of ../a5-exceptional-fibers/structure/arcs-iso-w8 (the same at both primes).
+NEGATED = {"iso-nm": frozenset(range(6, 16))}
 
 QUADRICS = (
     "option(redSB);def R0=basering;ideal sJ=std(ReducedJ);ideal GG=ReducedG;",
     "int n=ncols(GG);int i;int k;int f;int e;int b;int j;",
+    '"STAGE std_J_done "+string(rtimer);',
     "for(i=1;i<=n;i++){GG[i]=reduce(GG[i],sJ);}",
     "ring Y=0,(y(1..n)),dp;ideal kb=kbase(std(ideal(0)),2);int c=ncols(kb);",
     'for(i=1;i<=c;i++){"RESULT target_"+string(i),kb[i];}',
     "setring R0;ideal P;poly q;intvec ev;",
     "for(i=1;i<=c;i++){setring Y;ev=leadexp(kb[i]);setring R0;q=1;",
-    "for(f=1;f<=n;f++){for(e=1;e<=ev[f];e++){q=reduce(q*GG[f],sJ);}}P[i]=q;}",
+    "for(f=1;f<=n;f++){for(e=1;e<=ev[f];e++){q=reduce(q*GG[f],sJ);}}P[i]=q;",
+    '"STAGE product "+string(i)+" of "+string(c)+" "+string(rtimer);}',
     # m is the ideal of the slice variables, as in the receipts; the producer ring still carries t3 and t8
     "ideal SliceM=@SLICE@;ideal Q=sJ;for(k=1;k<=ncols(SliceM);k++){for(i=1;i<=c;i++){Q=Q,SliceM[k]*P[i];}}",
-    'ideal sQ=std(Q);"RESULT sq_size",size(sQ);ideal N=reduce(P,sQ);',
+    '"STAGE std_Q_start generators "+string(size(Q))+" "+string(rtimer);',
+    'ideal sQ=std(Q);"RESULT sq_size",size(sQ);"STAGE std_Q_done "+string(rtimer);ideal N=reduce(P,sQ);',
+    '"STAGE normal_forms_done "+string(rtimer);',
     "ideal mons;poly h;for(b=1;b<=c;b++){h=N[b];while(h!=0){mons=mons,leadmonom(h);h=h-lead(h);}}",
     'mons=simplify(mons,6);"RESULT monomials",size(mons);',
-    "matrix M=coeffs(N,mons);module S=syz(module(M));",
+    'matrix M=coeffs(N,mons);module S=syz(module(M));"STAGE syzygies_done "+string(rtimer);',
     '"RESULT targets",c;"RESULT relations",size(S);string row;',
     "for(j=1;j<=size(S);j++){row=string(S[j][1]);",
     'for(b=2;b<=c;b++){row=row+";"+string(S[j][b]);}"RESULT rel_"+string(j),row;}',
@@ -141,7 +154,9 @@ def _monomial(text: str) -> tuple[int, ...]:
     return tuple(sorted(factors))
 
 
-def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -> list[list[int]]:
+def _modular_rows(
+    path: Path, columns: dict[tuple[int, ...], int], prime: int, negated: frozenset[int] = frozenset()
+) -> list[list[int]]:
     rows = []
     for relation in path.read_text(encoding="utf-8").replace("\n", "").split(","):
         if not relation.strip():
@@ -154,18 +169,36 @@ def _modular_rows(path: Path, columns: dict[tuple[int, ...], int], prime: int) -
             if match is None:
                 raise SystemExit(f"unparsed term {term!r} in {path}")
             sign, number, monomial = match.groups()
-            coefficient = int(number or 1) * (-1 if sign == "-" else 1)
-            row[columns[_monomial(monomial)]] = (row[columns[_monomial(monomial)]] + coefficient) % prime
+            factors = _monomial(monomial)
+            flips = sum(index in negated for index in factors)
+            coefficient = int(number or 1) * (-1 if sign == "-" else 1) * (-1) ** flips
+            row[columns[factors]] = (row[columns[factors]] + coefficient) % prime
         rows.append(row)
     return rows
 
 
-def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict[str, Any]:
+def singular_script(slug: str, cores: int = 0) -> str:
+    """The Singular script of the check. With cores > 0 the two standard bases over Q(i) come from nfmodStd
+    (nfmodstd.lib: standard bases modulo primes on `cores` processes, Chinese remaindering and rational
+    reconstruction, then the final test that the input reduces to zero and the result is a standard basis). The
+    final test proves that the result generates an ideal containing the input; equality holds with high probability
+    for these inhomogeneous inputs, so the relation space of a modular run contains the true one."""
     body = reduction_check._script(slug, None, rees.MODULAR_PRIME, extra=False)
     header = (reduction_check.HEADERS / f"p{SOURCES[slug][0][0]}-r{SOURCES[slug][0][1]}" / f"{slug}.sing").read_text()
     ring_line = header.splitlines()[0]
     slice_vars = ring_line[ring_line.index("(") + 1 : ring_line.index(")")]
-    script = body.replace("\nquit;\n", "\n") + "\n".join(QUADRICS).replace("@SLICE@", slice_vars) + "\nquit;\n"
+    quadrics = "\n".join(QUADRICS).replace("@SLICE@", slice_vars)
+    if cores:
+        for direct, modular in (("std(ReducedJ)", "nfmodStd(ReducedJ)"), ("ideal sQ=std(Q)", "ideal sQ=nfmodStd(Q)")):
+            if quadrics.count(direct) != 1:
+                raise SystemExit(f"the script holds {quadrics.count(direct)} copies of {direct}")
+            quadrics = quadrics.replace(direct, modular)
+        quadrics = f'LIB "nfmodstd.lib";setcores({cores});\n' + quadrics
+    return body.replace("\nquit;\n", "\n") + quadrics + "\nquit;\n"
+
+
+def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS, cores: int = 0) -> dict[str, Any]:
+    script = singular_script(slug, cores)
     outcome = rees._run_singular(script, "quadrics_qi", timeout)
     if outcome.status != "completed":
         raise SystemExit(f"{slug}: {outcome.status} {outcome.diagnostic}")
@@ -177,7 +210,8 @@ def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict
     echelon, pivots = _rref_qi(relations)
     rows = []
     for prime, root, directory in SOURCES[slug]:
-        modular = _rref_fp(_modular_rows(FIBERS / directory / "relations-upto-d2.rel", columns, prime), prime)
+        relation_file = FIBERS / directory / "relations-upto-d2.rel"
+        modular = _rref_fp(_modular_rows(relation_file, columns, prime, NEGATED.get(slug, frozenset())), prime)
         reduced, bad = _reduce(echelon, prime, root)
         mutated = [list(r) for r in echelon]
         free = next(c for c in range(count) if c not in pivots)
@@ -203,8 +237,13 @@ def check(slug: str, timeout: int = 4 * reduction_check.TIMEOUT_SECONDS) -> dict
         "qi_rank_h2": count - len(echelon),
         "qi_max_denominator": max((max(a.denominator, b.denominator) for r in echelon for a, b in r), default=1),
         "qi_has_imaginary_part": any(b != 0 for r in echelon for _, b in r),
+        "qi_echelon_sha256": hashlib.sha256(
+            json.dumps([[[str(a), str(b)] for a, b in r] for r in echelon]).encode()
+        ).hexdigest(),
         "sq_size": int(res["sq_size"]),
         "monomials": int(res["monomials"]),
+        "engine": f"nfmodStd on {cores} processes" if cores else "std",
+        "relation_ideal": "contained in the ideal of the standard basis (nfmodStd final test)" if cores else "exact",
         "wall_seconds": round(outcome.wall_nanoseconds / 1e9, 1),
         "peak_rss_kib": outcome.peak_rss_kib,
         "primes": rows,
@@ -220,9 +259,15 @@ def main() -> None:
     parser.add_argument(
         "--timeout", type=int, default=4 * reduction_check.TIMEOUT_SECONDS, help="seconds for the Singular call"
     )
+    parser.add_argument("--cores", type=int, default=0, help="processes of nfmodStd; 0 runs std over Q(i)")
+    parser.add_argument("--dump-script", type=Path, help="write the Singular script there and exit")
     arguments = parser.parse_args()
-    result = check(arguments.slug, arguments.timeout)
-    (HERE / f"quadrics-{arguments.slug}.json").write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
+    if arguments.dump_script:
+        arguments.dump_script.write_text(singular_script(arguments.slug, arguments.cores), encoding="utf-8")
+        return
+    result = check(arguments.slug, arguments.timeout, arguments.cores)
+    name = f"quadrics-{arguments.slug}-modular.json" if arguments.cores else f"quadrics-{arguments.slug}.json"
+    (HERE / name).write_text(json.dumps(result, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=1))
 
 
