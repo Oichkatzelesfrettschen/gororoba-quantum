@@ -5690,6 +5690,36 @@
         "docs/evidence/a5-char0-transfer/e8-closure-certificate-e8-np.json",
         "docs/evidence/a5-char0-transfer/e8-closure-check-validation.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d7.json && timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32029-d7.json && timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d7.json && timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d7.json",
+      "name": "core-a5-e8-arc-jet-rank-v2",
+      "seconds": 6166.11,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d7.json",
+        "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32029-d7.json",
+        "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d7.json",
+        "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d7.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d7-basis.json && timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d7-basis.json && timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8np-p32009-d7-basis.json && timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8np-p32029-d7-basis.json; else echo \"skipped: optional Singular replay; GOROROBA_SINGULAR_REQUIRED=1 verifies these bases\"; fi",
+      "name": "core-a5-e8-degree-seven-bases",
+      "seconds": 10.0,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d7-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d7-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8np-p32009-d7-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8np-p32029-d7-basis.json"
+      ]
     }
   ],
   "excluded": [
