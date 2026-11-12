@@ -2,8 +2,11 @@
 
 import importlib.util
 import json
+import sys
 from pathlib import Path
 from types import ModuleType
+
+import pytest
 
 LEDGER_PY = Path(__file__).resolve().parents[1] / "docs/evidence/a5-exceptional-fibers/ledger.py"
 
@@ -66,3 +69,23 @@ def test_registry_binds_the_w8_degree_5_engine_stdout_records() -> None:
     sources = {lb["source"] for (fiber, _), cell in cells.items() if fiber == "W8 -> N-" for lb in cell["lower_bounds"]}
     if not sources or not all(s.startswith("w8-n16-azure/") and s.endswith(".out") for s in sources):
         raise AssertionError(sources)
+
+
+def test_open_lists_rows_with_an_outstanding_falsifier_and_no_decided_row(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    mod = load()
+    base = mod.rows()[0]
+    data = [
+        dict(base, id=f"A5-9{i:02d}", status=status, supersedes="") for i, status in enumerate(sorted(mod.STATUSES))
+    ]
+    monkeypatch.setattr(mod, "rows", lambda: data)
+    monkeypatch.setattr(mod, "check", lambda _rows: [])
+    monkeypatch.setattr(sys, "argv", ["ledger.py", "--open"])
+    if mod.main() != 0:
+        raise AssertionError("ledger.py --open exited nonzero")
+    listed = {line.split("\t")[1] for line in capsys.readouterr().out.splitlines() if line}
+    if listed != {"survives", "open", "stalled", "boundary"} or listed != mod.OPEN_STATUSES:
+        raise AssertionError(listed)
+    if {"proved", "refuted", "certified", "rejected", "superseded"} & listed:
+        raise AssertionError(listed)

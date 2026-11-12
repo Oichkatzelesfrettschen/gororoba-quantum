@@ -61,6 +61,8 @@ STATUSES = {
     "stalled": "a computation that would decide it did not finish; the evidence records the cost",
     "boundary": "outside what the current records can decide; the evidence names the follow-up",
 }
+# The statuses of a row whose falsifier or deciding test is still outstanding; `--open` lists these rows.
+OPEN_STATUSES = frozenset({"survives", "open", "stalled", "boundary"})
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ID = re.compile(r"^A5-\d{3}$")
 
@@ -135,7 +137,7 @@ def main() -> int:
         print("by kind", dict(sorted(Counter(r["kind"] for r in data).items())))
     if a.open:
         for r in data:
-            if r["status"] in {"survives", "open", "stalled", "boundary"}:
+            if r["status"] in OPEN_STATUSES:
                 print(f"{r['id']}\t{r['status']}\t{r['fibers']}\t{r['claim'][:110]}")
     return 1 if problems else 0
 

@@ -148,6 +148,37 @@ def reduce_at(job: tuple[str, int, int, str, list[str], int]) -> dict[str, Any]:
     }
 
 
+# Every invariant asserted by the certificate participates in its verdict.
+# The Hilbert numerator is Singular's numerator for the 4-dimensional graded ring.
+EXPECTED: dict[str, Any] = {
+    "l_generators": 69,
+    "l_degrees": [2, 2],
+    "l_dim": 4,
+    "l_mult": 12,
+    "l_hilbert_numerator": "1,11,-3,4,-1,0",
+    "l_saturated": True,
+    "y1_y5_y6_outside_l": 3,
+    "y1_y5_y6_squared_in_l": True,
+}
+
+
+def invariant_failures(row: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """The invariants of EXPECTED that the observed row does not meet, as {name: {expected, observed}}."""
+    return {key: {"expected": value, "observed": row[key]} for key, value in EXPECTED.items() if row[key] != value}
+
+
+def verdict(row: dict[str, Any]) -> str:
+    """`certified` when I = M, every invariant of EXPECTED holds and each reduction of L agrees with the retained K2."""
+    count = row["l_generators"]
+    return (
+        "certified"
+        if row["i_equals_m"]
+        and not invariant_failures(row)
+        and all(r["l_in_k2"] and r["k2_in_l"] and r["nonzero_generators"] == count for r in row["reductions"])
+        else "failed"
+    )
+
+
 def certify(slug: str) -> dict[str, Any]:
     probe = rc.rees._run_singular(
         rc._script(slug, None, rc.rees.MODULAR_PRIME, extra=False).replace("\nquit;\n", "\n")
@@ -190,29 +221,9 @@ def certify(slug: str) -> dict[str, Any]:
     )
     jobs = [(slug, prime, root, rel, generators, row["generators"]) for prime, (root, rel) in K2[slug].items()]
     row["reductions"] = parallel.ordered_map(reduce_at, jobs, min_items=2)
-    # Every invariant asserted by the certificate must participate in its verdict.
-    # The Hilbert numerator is Singular's numerator for the 4-dimensional graded ring.
-    expected = {
-        "l_generators": 69,
-        "l_degrees": [2, 2],
-        "l_dim": 4,
-        "l_mult": 12,
-        "l_hilbert_numerator": "1,11,-3,4,-1,0",
-        "l_saturated": True,
-        "y1_y5_y6_outside_l": 3,
-        "y1_y5_y6_squared_in_l": True,
-    }
-    row["invariant_failures"] = {
-        key: {"expected": value, "observed": row[key]} for key, value in expected.items() if row[key] != value
-    }
+    row["invariant_failures"] = invariant_failures(row)
     row["l_polynomials"] = generators
-    row["verdict"] = (
-        "certified"
-        if row["i_equals_m"]
-        and not row["invariant_failures"]
-        and all(r["l_in_k2"] and r["k2_in_l"] and r["nonzero_generators"] == count for r in row["reductions"])
-        else "failed"
-    )
+    row["verdict"] = verdict(row)
     return row
 
 

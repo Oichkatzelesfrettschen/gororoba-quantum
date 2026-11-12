@@ -201,11 +201,14 @@ of E8-bar -> N+- (A5-026); 16 and 69 are the Hilbert function of its reduced fib
 
 ### Certification boundary of the quadratic fits
 
-The retained records certify sampled interpolation, not a morphism on a fiber scheme and not an attaching map. In
-particular, each record retains only `t_sha256`; it does not retain the coefficients of `T`, the pivot-monomial basis
-used for its rows, or a characteristic-zero lift. The following obligations are therefore the admission boundary for
-using these fits in the attachment program. A later certificate must keep its field, header slug, input digests and
-the following coordinate orders with the coefficient matrix itself:
+The retained records certify sampled interpolation, not a morphism on a fiber scheme and not an attaching map. Every
+committed record is digest-only: it holds `t_sha256` and the ranks, and neither the coefficients of `T`, the
+pivot-monomial basis used for its rows nor a characteristic-zero lift. A record written with the opt-in `--retain-map`
+([Retaining a fitted coordinate map](#retaining-a-fitted-coordinate-map)) adds the normalized coefficient matrix, the
+selected monomials and the coordinate provenance; no such record is committed yet. The obligations below are the
+admission boundary for using these fits in the attachment program. A certificate keeps its field, header slug, input
+digests and the following coordinate orders with the coefficient matrix itself, which a map-bearing record does for
+the single fit it holds:
 
 - fiber coordinates in the order of the selected header's `G` list;
 - quadratic monomials in the lexicographic order emitted by
@@ -217,7 +220,7 @@ the following coordinate orders with the coefficient matrix itself:
 
 | Obligation | What the retained records establish | Certificate still required |
 |---|---|---|
-| Coefficient matrix and conventions | A normalized SHA-256 of the fitted modular matrix and its rank | Every normalized coefficient of `T`, the four coordinate orders above, the header and input digests |
+| Coefficient matrix and conventions | Committed records: a normalized SHA-256 of the fitted modular matrix and its rank. A `--retain-map` record: every normalized coefficient of `T`, the selected monomials, the header and input digests, the digest of the ordered `G`, the boundary-kernel basis and the Plucker subsets by rule and digest | A committed map-bearing record for each family and prime, and a check that reconstructs the digest and the four coordinate orders from the record and its digest-bound inputs alone |
 | Construction from the kernel map | Exact arcwise limits are computed from `L_x(s)` | Derive the coordinate functions from the Pfaffian/kernel construction, independently of interpolation |
 | Coordinate-ring identity | The equation holds on 320 fitted and 40 held-out arcs per arc family (640 and 80 in a pooled case) | Reduce every kernel and Plucker equation modulo the full defining ideal of each intended fiber component, with exact remainders or cofactor witnesses |
 | Projective base locus | The fitted image is nonzero at every sampled point and `T` has the sampled degree-two rank | Determine the common-zero locus of all projective coordinate forms on the full fiber support |
@@ -229,13 +232,13 @@ the following coordinate orders with the coefficient matrix itself:
 | Attaching maps | No retained fit supplies link or sphere-bundle data | Construct the link-to-limit-set map and the union of partner spheres inside the boundary sphere |
 | Specialization compatibility | No retained fit compares a composite specialization with a direct one | Compare every 8-to-12-to-16 composite with the corresponding direct 8-to-16 specialization in the same coordinates |
 
-The first bounded next step is retention, not another interpolation run: revise the producer so a replay writes the
-candidate coefficients and coordinate metadata above. The identity check then works component by component over a
-split prime before any `Q(i)` lift. A failed identity, a projective basepoint or disagreement on a component
-intersection rejects the candidate matrix even when all held-out arcs remain proportional. The run times and peak
-memory quoted above (1 to 27 minutes and 1.6 GB on the 32-thread laptop) are reported in this README and held by no
-record, and they apply only to interpolation; there is no measured runtime or memory bound for the all-point
-coordinate-ring checks.
+The producer now writes the candidate coefficients and coordinate metadata on request, so the first bounded next step
+is to commit a map-bearing record per family and prime and to check it from its own contents. The identity check then
+works component by component over a split prime before any `Q(i)` lift. A failed identity, a projective basepoint or
+disagreement on a component intersection rejects the candidate matrix even when all held-out arcs remain proportional.
+The run times and peak memory quoted above (1 to 27 minutes and 1.6 GB on the 32-thread laptop) are reported in this
+README and held by no record, and they apply only to interpolation; there is no measured runtime or memory bound for
+the all-point coordinate-ring checks, and none for a `--retain-map` replay.
 
 ## Replay
 
@@ -263,7 +266,14 @@ not determine the fitted map. `--retain-map` adds `cases[...].map` to the record
         --retain-map --out fiber-plucker-map-iso-p32009-with-map.json
 
 `map` holds the prime, the degree delta, the selected monomial indices of degree delta (in the order of
-`itertools.combinations_with_replacement`), the Plucker coordinate count and the fitted matrix, scaled so that its
-first nonzero entry in row-major order is 1, the normalization `t_sha256` hashes. The matrices are large, so the
-retained records carry the digest alone. The map is a fit over one finite field: symbolic Plucker identities, a
-base-locus analysis and agreement with the kernel-limit construction are the checks that would certify it.
+`itertools.combinations_with_replacement`) with the monomials they name as tuples of fiber-coordinate indices, the
+Plucker coordinate count and the fitted matrix, scaled so that its first nonzero entry in row-major order is 1, the
+normalization `t_sha256` hashes. `map.provenance` makes the coordinates identifiable without the producer: the header
+slug and variables; the SHA-256 of the header files and of the producer, base-point, census and library sources the fit
+reads (keyed by path relative to the repository root); the count and SHA-256 of the ordered generators `G` of the
+header, whose entries are the fiber coordinates; the boundary-kernel basis `base_kernel` returned, with its digest; and
+the Plucker column subsets, given by their rule (all subsets of the stated size of `range(ground)` in
+`itertools.combinations` order, one coordinate per subset), their count and the SHA-256 of their JSON text, because the
+12,870 subsets of the Iso fit are large. The matrices are large, so the committed records carry the digest alone. The
+map is a fit over one finite field: symbolic Plucker identities, a base-locus analysis and agreement with the
+kernel-limit construction are the checks that would certify it.
