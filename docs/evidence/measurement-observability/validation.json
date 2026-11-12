@@ -1,0 +1,161 @@
+{
+  "schema": "measurement-observability-validation-v1",
+  "scope": "Reusable observation-law contracts and deterministic analytic fixtures; no provider acquisition or physical-origin inference.",
+  "observed_at": "2026-11-12T00:41:04.778461+00:00",
+  "source_revision": "114e61ddc5e3c616df978f9842ac45090aacdff7",
+  "source_qualification": "source_sha256 holds the digests of the files after the second-pass review fixes (scalar-type admission of real arrays and Hermitian expectations, exact power-of-two scaling of overflowing score rows, one pooled worker for both compensated row reductions, scale-aware covariance standardization and a strict JSON underflow check), applied on top of source_revision; the commit that lands them holds exactly these bytes.",
+  "environment": {
+    "python": "3.14.7",
+    "packages": {
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "sympy": "1.14.0",
+      "pytest": "9.2.0",
+      "ruff": "0.17.4",
+      "mypy": "2.4.1"
+    },
+    "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
+    "sampling": "Deterministic fixtures; no random seeds or provider operations."
+  },
+  "checks": [
+    {
+      "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
+      "exit_code": 0,
+      "result": "226 passed",
+      "evidence_class": "bounded deterministic tests"
+    },
+    {
+      "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_provider_counters.py -m \"not audit\"",
+      "exit_code": 0,
+      "result": "25 passed, 5 deselected in 3.35s",
+      "evidence_class": "existing provider-counter regression tests",
+      "observed_source_revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+      "qualification": "Existing provider-counter implementation and tests remain byte-identical; this check is the earlier retained regression observation."
+    },
+    {
+      "command": "\"$PYTHON\" ci/pinned_tool.py ruff format --check gororoba_quantum/measurement_statistics.py gororoba_quantum/acceptance_statistics.py gororoba_quantum/kernel_observability.py scripts/measurement_observability.py tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
+      "exit_code": 0,
+      "result": "8 files already formatted"
+    },
+    {
+      "command": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/measurement_statistics.py gororoba_quantum/acceptance_statistics.py gororoba_quantum/kernel_observability.py scripts/measurement_observability.py tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
+      "exit_code": 0,
+      "result": "All checks passed!"
+    },
+    {
+      "command": "\"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/measurement_statistics.py gororoba_quantum/acceptance_statistics.py gororoba_quantum/kernel_observability.py scripts/measurement_observability.py tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
+      "exit_code": 0,
+      "result": "Success: no issues found in 8 source files"
+    },
+    {
+      "command": "\"$PYTHON\" scripts/measurement_observability.py tests/fixtures/measurement-observability.json --output \"$RESULT\"",
+      "exit_code": 0,
+      "result": "Five analysis kinds complete; the retained result differs from the previous one only in the three producer digests that changed, so the analytic values are bit-identical.",
+      "output": "docs/evidence/measurement-observability/analytic-result.json"
+    },
+    {
+      "command": "\"$PYTHON\" -B -m pytest -q tests/ci/test_runner_image_records.py",
+      "exit_code": 0,
+      "result": "12 passed in 0.73s",
+      "evidence_class": "replay-declaration contract of the on-demand gate list"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/measurement_observability.py tests/fixtures/measurement-observability.json | cmp - docs/evidence/measurement-observability/analytic-result.json",
+      "exit_code": 0,
+      "result": "Byte-identical replay; gate core-measurement-observability of ci/gates.json.",
+      "evidence_class": "on-demand byte replay",
+      "qualification": "Replayed on one x86-64 host (OpenBLAS core Haswell, numpy dispatch X86_V3). The record's provenance names Python and NumPy versions and producer digests, not the CPU path."
+    }
+  ],
+  "source_sha256": {
+    "gororoba_quantum/measurement_statistics.py": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170",
+    "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
+    "gororoba_quantum/kernel_observability.py": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc",
+    "scripts/measurement_observability.py": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507",
+    "tests/gororoba_quantum/test_measurement_statistics.py": "0c330b004d78b2086aac4a0f713ea1fefb73460e3744db9d595d6edb04c61cf2",
+    "tests/gororoba_quantum/test_acceptance_statistics.py": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d",
+    "tests/gororoba_quantum/test_kernel_observability.py": "c78267eb91dd0e3ecd30a86494b0313656c33fd69d86d095939a5c07dbf323e2",
+    "tests/scripts/test_measurement_observability.py": "43cd786ab698dc9f158236f074d99ebf91a8ffd44d170a98c79639a6211c781c",
+    "tests/fixtures/measurement-observability.json": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
+  },
+  "native_counterpart": {
+    "repository": "https://github.com/Oichkatzelesfrettschen/gororoba-open",
+    "revision": "e4a095f664667e94cea1883b201ec55a401d7bb8",
+    "pull_request": "https://github.com/Oichkatzelesfrettschen/gororoba-open/pull/269",
+    "source": "crates/stats_core/src/measurement_scores.rs",
+    "source_sha256": "769e4178d4a1eb8a35acdb85c734adb11d5d0539cb16aedb2387eb71e7a50c4f",
+    "toolchain": "1.97.0",
+    "checks": [
+      {
+        "command": "cargo test -p stats_core --lib measurement_scores --profile validation --locked",
+        "exit_code": 0,
+        "result": "13 passed"
+      },
+      {
+        "command": "cargo clippy -p stats_core --lib --profile validation --locked -- -D warnings",
+        "exit_code": 0,
+        "result": "Pass"
+      },
+      {
+        "command": "cargo clippy -p stats_core --all-targets --profile validation --locked -- -D warnings",
+        "exit_code": 0,
+        "result": "Pass"
+      },
+      {
+        "command": "rustfmt --check crates/stats_core/src/measurement_scores.rs",
+        "exit_code": 0,
+        "result": "Pass"
+      }
+    ],
+    "shell_overrides": {
+      "RUSTC_WRAPPER": "",
+      "RUSTFLAGS": "",
+      "CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER": "cc",
+      "CARGO_TARGET_DIR": "isolated temporary build directory"
+    },
+    "qualification": "The published tree equals the locally tested tree. Existing optional glslc absence selects the CPU fallback; stable rustfmt reports existing nightly-only configuration options.",
+    "hosted_validation": {
+      "workflow": "https://github.com/Oichkatzelesfrettschen/gororoba-open/actions/runs/43099457497",
+      "head": "e4a095f664667e94cea1883b201ec55a401d7bb8",
+      "status": "completed",
+      "conclusion": "success",
+      "observed_at": "2026-11-11T21:21:14.793879+00:00"
+    }
+  },
+  "boundaries": [
+    "Whole-repository hosted admission checks remain separate from these local diagnostics.",
+    "Five on-demand provider audit tests are excluded; retained-data censuses and expensive historical replays are not rerun.",
+    "The Hermitian completion does not re-certify the original acquired atlas bank or replace the archived 28/49 span and Lie-envelope checks.",
+    "Unknown attempted populations, physical timestamps, calibration, fit covariance, and energy measurements remain unknown.",
+    "GitHub review and merge remain outside this bounded implementation completion."
+  ],
+  "prior_observations": [
+    {
+      "source_revision": "dc28d03931a701b6adb952c4f109c0d41209d2c7",
+      "observed_at": "2026-11-11T21:06:11.230752+00:00",
+      "validation_sha256": "196279bc98b8d30ce53f21c503fded1a76d5826f2dbc38d7353f2da3d23d411d",
+      "record": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/a0fba04a426d20fc84d8156d3aba04311bcd141a/docs/evidence/measurement-observability/validation.json",
+      "qualification": "The original local checks pass. Subsequent hosted macOS ARM validation exposes the exception-type portability regression described below."
+    },
+    {
+      "source_revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
+      "observed_at": "2026-11-11T21:21:14.793879+00:00",
+      "validation_sha256": "eed554b00b5cb46f72135bdafef9c85d79015ff235406668d29cc0c4037e40bb",
+      "record": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/863290f0cab5ad09c97b82829fb2291841096b62/docs/evidence/measurement-observability/validation.json",
+      "qualification": "164 new Python tests and pinned Ruff and mypy passed at this revision; the first-pass review fixes supersede these source digests."
+    }
+  ],
+  "portability_regression": {
+    "original_head": "a0fba04a426d20fc84d8156d3aba04311bcd141a",
+    "workflow": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/actions/runs/43100380140",
+    "failed_job": "arm (macos-15)",
+    "failed_step": "pytest",
+    "failed_test": "tests/gororoba_quantum/test_acceptance_statistics.py::test_contrast_covariance_rejects_overflow_without_a_nonfinite_output",
+    "observation": "macOS ARM matrix multiplication returns an infinite contrast covariance without raising FloatingPointError. The subsequent validator rejects it with StatisticsError, violating the AcceptanceError overflow contract. The other five hosted jobs pass.",
+    "correction": "An explicit finite-entry check follows covariance projection and raises the same AcceptanceError overflow diagnostic before covariance_matrix.",
+    "regression": "test_contrast_covariance_rejects_nonfinite_blas_output suppresses floating exceptions through captured-original errstate and verifies the silent nonfinite-return path.",
+    "source_revision": "32c8feec6e5eddf3b73e2b0b4411d3e787606e78",
+    "local_result": "46 acceptance tests and all 164 new Python tests pass; pinned Ruff and mypy pass.",
+    "hosted_revalidation": "As of revision 32c8feec6e5eddf3b73e2b0b4411d3e787606e78, pending publication of the corrected head; no macOS success is inferred from local tests."
+  }
+}

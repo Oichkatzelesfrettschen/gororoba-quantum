@@ -1,0 +1,1285 @@
+{
+  "schema": "measurement-observability-result-v1",
+  "execution": "offline_analysis",
+  "items": [
+    {
+      "id": "shared-scores",
+      "kind": "multinomial_scores",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "result": {
+        "total_count": 10,
+        "means": [
+          -0.3,
+          0.8
+        ],
+        "covariance_of_means": [
+          [
+            0.061,
+            -0.026
+          ],
+          [
+            -0.026,
+            0.016
+          ]
+        ],
+        "estimator": "plugin",
+        "sampling_assumption": "independent fixed-number multinomial trials"
+      }
+    },
+    {
+      "id": "acceptance-counterexample",
+      "kind": "six_state",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "result": {
+        "schema": "six-state-acceptance-v1",
+        "state_order": [
+          "f",
+          "g",
+          "+",
+          "-",
+          "+i",
+          "-i"
+        ],
+        "contrast_order": [
+          "real",
+          "imaginary"
+        ],
+        "contrast_coefficients": [
+          [
+            -1,
+            -1,
+            1,
+            1,
+            0,
+            0
+          ],
+          [
+            -1,
+            -1,
+            0,
+            0,
+            1,
+            1
+          ]
+        ],
+        "estimates": [
+          {
+            "state": "f",
+            "selected": 4,
+            "accepted": 4,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:f",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:f",
+            "source": "deterministic analytic fixture, not a provider acquisition",
+            "conditional_probability": 1.0,
+            "acceptance_probability": 0.4,
+            "unconditional_probability": 0.4,
+            "unconditional_reason": null
+          },
+          {
+            "state": "g",
+            "selected": 0,
+            "accepted": 6,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:g",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:g",
+            "source": "deterministic analytic fixture, not a provider acquisition",
+            "conditional_probability": 0.0,
+            "acceptance_probability": 0.6,
+            "unconditional_probability": 0.0,
+            "unconditional_reason": null
+          },
+          {
+            "state": "+",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:+",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:+",
+            "source": "deterministic analytic fixture, not a provider acquisition",
+            "conditional_probability": 0.4,
+            "acceptance_probability": 0.5,
+            "unconditional_probability": 0.2,
+            "unconditional_reason": null
+          },
+          {
+            "state": "-",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:-",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:-",
+            "source": "deterministic analytic fixture, not a provider acquisition",
+            "conditional_probability": 0.4,
+            "acceptance_probability": 0.5,
+            "unconditional_probability": 0.2,
+            "unconditional_reason": null
+          },
+          {
+            "state": "+i",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:+i",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:+i",
+            "source": "deterministic analytic fixture, not a provider acquisition",
+            "conditional_probability": 0.4,
+            "acceptance_probability": 0.5,
+            "unconditional_probability": 0.2,
+            "unconditional_reason": null
+          },
+          {
+            "state": "-i",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:-i",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:-i",
+            "source": "deterministic analytic fixture, not a provider acquisition",
+            "conditional_probability": 0.4,
+            "acceptance_probability": 0.5,
+            "unconditional_probability": 0.2,
+            "unconditional_reason": null
+          }
+        ],
+        "conditional_contrasts": {
+          "real": -0.19999999999999996,
+          "imaginary": -0.19999999999999996
+        },
+        "unconditional_contrasts": {
+          "real": 0.0,
+          "imaginary": 0.0
+        },
+        "rate_covariance": [
+          [
+            0.024,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.016000000000000004,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.016000000000000004,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.016000000000000004,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.016000000000000004
+          ]
+        ],
+        "contrast_covariance": [
+          [
+            0.05600000000000001,
+            0.024
+          ],
+          [
+            0.024,
+            0.05600000000000001
+          ]
+        ],
+        "contrast_standard_errors": {
+          "real": 0.23664319132398465,
+          "imaginary": 0.23664319132398465
+        },
+        "uncertainty": {
+          "model": "independent_fixed_attempts_binomial_plugin",
+          "reason": "boundary-count plug-in variance can vanish and does not supply a finite-sample confidence bound",
+          "independent_trials": true,
+          "fixed_attempts": true
+        }
+      }
+    },
+    {
+      "id": "shared-prediction",
+      "kind": "predictive_residual",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "result": {
+        "residual": [
+          1.0,
+          2.0
+        ],
+        "covariance": [
+          [
+            1.5,
+            1.0
+          ],
+          [
+            1.0,
+            3.0
+          ]
+        ],
+        "dependence": "independent",
+        "approximation": "first-order delta method; exact for an affine predictor",
+        "score": {
+          "value": 1.4285714285714286,
+          "covariance_rank": 2,
+          "supported": true,
+          "unsupported_relative_standardized_norm": 0.0,
+          "rank_tolerance": 4.1819831744505564e-14,
+          "reference_distribution": null
+        }
+      }
+    },
+    {
+      "id": "nested-herald",
+      "kind": "nested_herald",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "result": {
+        "attempt_counter": {
+          "name": "attempts",
+          "value": 64,
+          "population": "circuit_execution",
+          "scope": "four depths on the same trials",
+          "status": "observed",
+          "source": "deterministic analytic fixture, not a provider acquisition"
+        },
+        "successes": [
+          32,
+          24,
+          20,
+          18
+        ],
+        "probabilities": [
+          0.5,
+          0.375,
+          0.3125,
+          0.28125
+        ],
+        "covariance_of_means": [
+          [
+            0.00390625,
+            0.0029296875,
+            0.00244140625,
+            0.002197265625
+          ],
+          [
+            0.0029296875,
+            0.0036621093749999996,
+            0.0030517578124999996,
+            0.00274658203125
+          ],
+          [
+            0.00244140625,
+            0.0030517578124999996,
+            0.0033569335937499996,
+            0.0030212402343749996
+          ],
+          [
+            0.002197265625,
+            0.00274658203125,
+            0.0030212402343749996,
+            0.0031585693359374996
+          ]
+        ],
+        "retention": 1.0,
+        "recurrence_residuals": [
+          0.0,
+          0.0
+        ],
+        "recurrence_covariance": [
+          [
+            0.005859374999999999,
+            -0.0019531250000000035
+          ],
+          [
+            -0.0019531250000000026,
+            0.0029296875000000026
+          ]
+        ],
+        "estimator": "plugin",
+        "sampling_assumption": "fixed independent attempts with nested outcomes from the same attempts",
+        "reference_distribution": null
+      }
+    },
+    {
+      "id": "tomography-completion",
+      "kind": "tomography_completion",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "result": {
+        "dimension": 4,
+        "observables": 16,
+        "coefficient_entries": 512,
+        "coefficient_entry_budget": 1000000,
+        "family_dimensions": {
+          "real_J_commutant": 4,
+          "real_J_anticommutant": 6,
+          "imaginary_skew": 6
+        },
+        "names": [
+          "C_A_0_0",
+          "C_A_0_1",
+          "C_A_1_1",
+          "C_B_0_1",
+          "A_A_0_0",
+          "A_A_0_1",
+          "A_A_1_1",
+          "A_B_0_0",
+          "A_B_0_1",
+          "A_B_1_1",
+          "I_0_1",
+          "I_0_2",
+          "I_0_3",
+          "I_1_2",
+          "I_1_3",
+          "I_2_3"
+        ],
+        "families": [
+          "real_J_commutant",
+          "real_J_commutant",
+          "real_J_commutant",
+          "real_J_commutant",
+          "real_J_anticommutant",
+          "real_J_anticommutant",
+          "real_J_anticommutant",
+          "real_J_anticommutant",
+          "real_J_anticommutant",
+          "real_J_anticommutant",
+          "imaginary_skew",
+          "imaginary_skew",
+          "imaginary_skew",
+          "imaginary_skew",
+          "imaginary_skew",
+          "imaginary_skew"
+        ],
+        "real_coefficients": [
+          [
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              -1,
+              0
+            ],
+            [
+              0,
+              -1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              -1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              -1
+            ],
+            [
+              0,
+              0,
+              -1,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              -1
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ]
+        ],
+        "imaginary_coefficients": [
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              -1,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              -1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              -1,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              -1,
+              0
+            ]
+          ]
+        ],
+        "hilbert_schmidt_norm_squared": [
+          2,
+          4,
+          2,
+          4,
+          2,
+          4,
+          2,
+          2,
+          4,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "admission": "constructive Hermitian basis; physical implementation and acquired-bank span remain separate"
+      }
+    }
+  ],
+  "qualification": "declared sampling/provenance contracts; no automatic physical-origin or significance claim",
+  "provenance": {
+    "input_sha256": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b",
+    "producer_sha256": {
+      "scripts/measurement_observability.py": "aaded22916cbd1e28eda7ff3ee2a3fa7f9683a4151afc4554d51a68f18f8b507",
+      "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
+      "gororoba_quantum/kernel_observability.py": "edfcc860c936b570665dbbdff528f5740e8ec599ccfd0b296ca15e6966ad76cc",
+      "gororoba_quantum/measurement_statistics.py": "6e7e61d7092aed4e2c936a8071646b61397fc519bcf1a9a9e79c5d753acc8170",
+      "gororoba_quantum/provider_counters.py": "184240f314ed7cb4689d933697e99b8d2216e58b5fe8169e1880ac62166d5125",
+      "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+    },
+    "python": "3.14.7",
+    "numpy": "2.5.4"
+  }
+}
