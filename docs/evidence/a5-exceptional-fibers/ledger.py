@@ -118,7 +118,11 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--check", action="store_true", help="validate the ledger; exit 1 on any problem")
     ap.add_argument("--summary", action="store_true", help="counts by status and kind")
-    ap.add_argument("--open", action="store_true", help="list all rows with outstanding falsifiers (survives, open, stalled, boundary)")
+    ap.add_argument(
+        "--open",
+        action="store_true",
+        help="list all rows with outstanding falsifiers (survives, open, stalled, boundary)",
+    )
     a = ap.parse_args()
     data = rows()
     problems = check(data)

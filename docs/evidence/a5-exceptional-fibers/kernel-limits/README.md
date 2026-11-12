@@ -256,10 +256,14 @@ From the repository root (Singular 4.4.1, python-flint 0.9.0, sympy 1.14.0; the 
 
 ## Retaining a fitted coordinate map
 
-The default `fiber_plucker_map.py` output holds ranks, validation counts, and a digest; these are insufficient to reconstruct the fitted map. Re-run a specific family with `--retain-map` to add `cases[...].map` to its JSON record:
+The default record of `fiber_plucker_map.py` holds ranks, validation counts and the digest `t_sha256`, which do
+not determine the fitted map. `--retain-map` adds `cases[...].map` to the record of one family:
 
-```sh
-"$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py iso --fit 240 --held-out 40 --retain-map --out /tmp/a5-iso-plucker-map.json
-```
+    "$PYTHON" docs/evidence/a5-exceptional-fibers/kernel-limits/fiber_plucker_map.py iso --fit 240 --held-out 40 \
+        --retain-map --out fiber-plucker-map-iso-p32009-with-map.json
 
-The optional `map` contains the prime, degree, selected degree-`delta` monomial indices (in `itertools.combinations_with_replacement` order), the full normalized Plucker-coordinate matrix, and the column count. It uses the same canonical normalization as `t_sha256`. The full matrices can be large and are not retained in historical records until this replay is executed; `--retain-map` is opt-in for that reason. The result remains a finite-field *fit* until symbolic Plucker identities, a base-locus analysis, and agreement with the kernel-limit construction are certified.
+`map` holds the prime, the degree delta, the selected monomial indices of degree delta (in the order of
+`itertools.combinations_with_replacement`), the Plucker coordinate count and the fitted matrix, scaled so that its
+first nonzero entry in row-major order is 1, the normalization `t_sha256` hashes. The matrices are large, so the
+retained records carry the digest alone. The map is a fit over one finite field: symbolic Plucker identities, a
+base-locus analysis and agreement with the kernel-limit construction are the checks that would certify it.

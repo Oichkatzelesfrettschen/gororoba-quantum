@@ -203,9 +203,7 @@ def certify(slug: str) -> dict[str, Any]:
         "y1_y5_y6_squared_in_l": True,
     }
     row["invariant_failures"] = {
-        key: {"expected": value, "observed": row[key]}
-        for key, value in expected.items()
-        if row[key] != value
+        key: {"expected": value, "observed": row[key]} for key, value in expected.items() if row[key] != value
     }
     row["l_polynomials"] = generators
     row["verdict"] = (
