@@ -1,0 +1,1544 @@
+{
+  "boundary": "Exact finite arithmetic and coefficient identities; calibration and full topology stay separate.",
+  "checks": {
+    "associator": [
+      {
+        "basis_triples": 1024,
+        "first_index": 0,
+        "homomorphism_mutation_rejected_triples": 0
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 1,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 2,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 3,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 4,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 5,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 6,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 7,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 8,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 9,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 10,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 11,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 12,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 13,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 14,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 15,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 16,
+        "homomorphism_mutation_rejected_triples": 840
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 17,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 18,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 19,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 20,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 21,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 22,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 23,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 24,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 25,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 26,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 27,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 28,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 29,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 30,
+        "homomorphism_mutation_rejected_triples": 504
+      },
+      {
+        "basis_triples": 1024,
+        "first_index": 31,
+        "homomorphism_mutation_rejected_triples": 504
+      }
+    ],
+    "basis": {
+      "all_checks_pass": true,
+      "basis_pairs": 1365,
+      "count": 63
+    },
+    "cancellation": [
+      {
+        "chi_invariant_under_single_index_resigning": true,
+        "chi_plus_one": 0,
+        "chi_plus_one_by_m": {},
+        "chi_plus_one_by_weight_of_m": {},
+        "dimension": 8,
+        "min_weight_of_m": null,
+        "partial_cross_ratio_mutation_detected": true,
+        "sign_erasure_additional_zero_product_patterns": 42,
+        "signed_zero_products_on_skeleton": 0,
+        "skeleton_ordered_pairs_of_index_pairs": 42,
+        "two_blade_zero_divisor_elements": 0,
+        "zero_divisor_index_pairs": 0,
+        "zero_products_off_skeleton": 0
+      },
+      {
+        "chi_invariant_under_single_index_resigning": true,
+        "chi_plus_one": 168,
+        "chi_plus_one_by_m": {
+          "10": 24,
+          "11": 24,
+          "12": 24,
+          "13": 24,
+          "14": 24,
+          "15": 24,
+          "9": 24
+        },
+        "chi_plus_one_by_weight_of_m": {
+          "2": 72,
+          "3": 72,
+          "4": 24
+        },
+        "dimension": 16,
+        "min_weight_of_m": 2,
+        "partial_cross_ratio_mutation_detected": true,
+        "sign_erasure_additional_zero_product_patterns": 462,
+        "signed_zero_products_on_skeleton": 336,
+        "skeleton_ordered_pairs_of_index_pairs": 630,
+        "two_blade_zero_divisor_elements": 84,
+        "zero_divisor_index_pairs": 42,
+        "zero_products_off_skeleton": 0
+      },
+      {
+        "chi_invariant_under_single_index_resigning": true,
+        "chi_plus_one": 2520,
+        "chi_plus_one_by_m": {
+          "10": 96,
+          "11": 96,
+          "12": 96,
+          "13": 96,
+          "14": 96,
+          "15": 96,
+          "17": 168,
+          "18": 168,
+          "19": 168,
+          "20": 168,
+          "21": 168,
+          "22": 168,
+          "23": 168,
+          "24": 168,
+          "25": 72,
+          "26": 72,
+          "27": 72,
+          "28": 72,
+          "29": 72,
+          "30": 72,
+          "31": 72,
+          "9": 96
+        },
+        "chi_plus_one_by_weight_of_m": {
+          "2": 960,
+          "3": 1008,
+          "4": 480,
+          "5": 72
+        },
+        "dimension": 32,
+        "min_weight_of_m": 2,
+        "partial_cross_ratio_mutation_detected": true,
+        "sign_erasure_additional_zero_product_patterns": 3990,
+        "signed_zero_products_on_skeleton": 5040,
+        "skeleton_ordered_pairs_of_index_pairs": 6510,
+        "two_blade_zero_divisor_elements": 588,
+        "zero_divisor_index_pairs": 294,
+        "zero_products_off_skeleton": 0
+      }
+    ],
+    "gram_expansion": {
+      "cross_term_omission_detected": true,
+      "cross_terms": 6,
+      "encoding_scale": "4",
+      "gram_scale_squared": "16",
+      "terms": [
+        [
+          1,
+          1
+        ],
+        [
+          10,
+          -1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          25,
+          1
+        ]
+      ]
+    },
+    "hardware_blocks": [
+      {
+        "coset": 2,
+        "gram_characteristic_coefficients_low_first": [
+          0,
+          0,
+          48,
+          -16,
+          1
+        ],
+        "operand_indices": [
+          1,
+          10,
+          20,
+          31
+        ],
+        "output_orthogonal_invariance": true,
+        "scaling_mutation_detected": true,
+        "success_scale_squared": 16
+      },
+      {
+        "coset": 5,
+        "gram_characteristic_coefficients_low_first": [
+          0,
+          -64,
+          64,
+          -16,
+          1
+        ],
+        "operand_indices": [
+          1,
+          8,
+          18,
+          27
+        ],
+        "output_orthogonal_invariance": true,
+        "scaling_mutation_detected": true,
+        "success_scale_squared": 16
+      }
+    ],
+    "inverses": [
+      {
+        "dimension": 16,
+        "inverse_basis_offsets_checked": 4,
+        "inverse_sign_mutation_detected": true,
+        "nullity": 4,
+        "terms": [
+          [
+            1,
+            1
+          ],
+          [
+            10,
+            1
+          ]
+        ]
+      },
+      {
+        "dimension": 32,
+        "inverse_basis_offsets_checked": 16,
+        "inverse_sign_mutation_detected": true,
+        "nullity": 16,
+        "terms": [
+          [
+            1,
+            1
+          ],
+          [
+            10,
+            -1
+          ],
+          [
+            18,
+            1
+          ],
+          [
+            25,
+            1
+          ]
+        ]
+      }
+    ],
+    "kernel_limits": [
+      {
+        "endpoint_nullity": 12,
+        "family": "four_support",
+        "generic_nullities": [
+          4,
+          4,
+          4
+        ],
+        "pairwise_intersections": [
+          {
+            "dimension": 0,
+            "first": "first_linear_component",
+            "second": "second_linear_component"
+          },
+          {
+            "dimension": 0,
+            "first": "first_linear_component",
+            "second": "quadratic_component"
+          },
+          {
+            "dimension": 0,
+            "first": "second_linear_component",
+            "second": "quadratic_component"
+          }
+        ],
+        "path_count": 3,
+        "sum_equals_endpoint_projector": true
+      },
+      {
+        "automorphism_checked": true,
+        "endpoint_nullity": 12,
+        "family": "eight_nullity",
+        "first_second_projector_product_trace": "9/2",
+        "generic_nullities": [
+          8,
+          8,
+          8,
+          8
+        ],
+        "pairwise_intersections": [
+          {
+            "dimension": 4,
+            "first": "e3+e27",
+            "second": "e4+e11"
+          },
+          {
+            "dimension": 4,
+            "first": "e3+e27",
+            "second": "e8+e27"
+          },
+          {
+            "dimension": 4,
+            "first": "e3+e27",
+            "second": "e11+e24"
+          },
+          {
+            "dimension": 4,
+            "first": "e4+e11",
+            "second": "e8+e27"
+          },
+          {
+            "dimension": 4,
+            "first": "e4+e11",
+            "second": "e11+e24"
+          },
+          {
+            "dimension": 4,
+            "first": "e8+e27",
+            "second": "e11+e24"
+          }
+        ],
+        "path_count": 4
+      },
+      {
+        "family": "controls",
+        "invalid_inputs_rejected": [
+          "approximate_endpoint",
+          "approximate_operator",
+          "approximate_partner",
+          "boolean_coefficient",
+          "empty_operator",
+          "endpoint_kernel_outside_limit",
+          "irrational_coefficient",
+          "multiple_symbols",
+          "multiplication_side",
+          "non_power_two_dimension",
+          "nonpolynomial_operator",
+          "parameter_real_assumption",
+          "partner_dimension",
+          "string_partner"
+        ],
+        "mutations_rejected": [
+          "attachment",
+          "endpoint_frame",
+          "endpoint_pivot_determinant",
+          "exceptional_polynomial",
+          "generic_rank",
+          "kernel_frame",
+          "limit_projector",
+          "limiting_frame",
+          "pivot_determinant",
+          "projector",
+          "punctured_radius",
+          "transport_determinant",
+          "transport_frame",
+          "transport_gram"
+        ]
+      }
+    ],
+    "phase": [
+      {
+        "bilinear_gram_mutation_detected": true,
+        "dimension": 8,
+        "nullities_at_one_and_i": [
+          0,
+          4
+        ],
+        "pair": [
+          1,
+          2
+        ],
+        "phase_cases": [
+          {
+            "cos": "1",
+            "nullity": 0,
+            "sin": "0",
+            "spectrum": {
+              "0": 0,
+              "2": 8,
+              "4": 0
+            }
+          },
+          {
+            "cos": "0",
+            "nullity": 4,
+            "sin": "1",
+            "spectrum": {
+              "0": 4,
+              "2": 0,
+              "4": 4
+            }
+          },
+          {
+            "cos": "3/5",
+            "nullity": 0,
+            "sin": "4/5",
+            "spectrum": {
+              "16/5": 0,
+              "18/5": 4,
+              "2/5": 4,
+              "4/5": 0
+            }
+          }
+        ],
+        "symmetric_blocks": 0
+      },
+      {
+        "bilinear_gram_mutation_detected": true,
+        "dimension": 32,
+        "nullities_at_one_and_i": [
+          12,
+          4
+        ],
+        "pair": [
+          1,
+          18
+        ],
+        "phase_cases": [
+          {
+            "cos": "1",
+            "nullity": 12,
+            "sin": "0",
+            "spectrum": {
+              "0": 12,
+              "2": 8,
+              "4": 12
+            }
+          },
+          {
+            "cos": "0",
+            "nullity": 4,
+            "sin": "1",
+            "spectrum": {
+              "0": 4,
+              "2": 24,
+              "4": 4
+            }
+          },
+          {
+            "cos": "3/5",
+            "nullity": 0,
+            "sin": "4/5",
+            "spectrum": {
+              "16/5": 12,
+              "18/5": 4,
+              "2/5": 4,
+              "4/5": 12
+            }
+          }
+        ],
+        "symmetric_blocks": 12
+      },
+      {
+        "bilinear_gram_mutation_detected": true,
+        "dimension": 32,
+        "nullities_at_one_and_i": [
+          4,
+          12
+        ],
+        "pair": [
+          1,
+          26
+        ],
+        "phase_cases": [
+          {
+            "cos": "1",
+            "nullity": 4,
+            "sin": "0",
+            "spectrum": {
+              "0": 4,
+              "2": 24,
+              "4": 4
+            }
+          },
+          {
+            "cos": "0",
+            "nullity": 12,
+            "sin": "1",
+            "spectrum": {
+              "0": 12,
+              "2": 8,
+              "4": 12
+            }
+          },
+          {
+            "cos": "3/5",
+            "nullity": 0,
+            "sin": "4/5",
+            "spectrum": {
+              "16/5": 4,
+              "18/5": 12,
+              "2/5": 12,
+              "4/5": 4
+            }
+          }
+        ],
+        "symmetric_blocks": 4
+      }
+    ],
+    "projector": {
+      "annihilation": true,
+      "cubic_idempotent": true,
+      "cubic_trace": "16",
+      "identity_input_has_equal_moments": true,
+      "mean_squared": "1",
+      "minimal_filter_degree": 3,
+      "missing_root_rejected": true,
+      "moment_input_basis_index": 1,
+      "moments": [
+        "32",
+        "88",
+        "296"
+      ],
+      "operand": [
+        [
+          1,
+          "1/2"
+        ],
+        [
+          10,
+          "-1/2"
+        ],
+        [
+          18,
+          "1/2"
+        ],
+        [
+          25,
+          "1/2"
+        ]
+      ],
+      "quadratic_idempotent": false,
+      "quadratic_trace": "28",
+      "second_moment": "3/2",
+      "spectrum": {
+        "0": 16,
+        "1": 8,
+        "2": 4,
+        "4": 4
+      }
+    },
+    "reduced": {
+      "characteristic_polynomial_cases": [
+        {
+          "Delta": "0",
+          "G": "1",
+          "Q": "1",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "7",
+            "0",
+            "21",
+            "0",
+            "35",
+            "0",
+            "35",
+            "0",
+            "21",
+            "0",
+            "7",
+            "0",
+            "1",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "91",
+            "0",
+            "364",
+            "0",
+            "1001",
+            "0",
+            "2002",
+            "0",
+            "3003",
+            "0",
+            "3432",
+            "0",
+            "3003",
+            "0",
+            "2002",
+            "0",
+            "1001",
+            "0",
+            "364",
+            "0",
+            "91",
+            "0",
+            "14",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "0",
+          "G": "4",
+          "Q": "2",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "84",
+            "0",
+            "280",
+            "0",
+            "560",
+            "0",
+            "672",
+            "0",
+            "448",
+            "0",
+            "128",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "28",
+            "0",
+            "364",
+            "0",
+            "2912",
+            "0",
+            "16016",
+            "0",
+            "64064",
+            "0",
+            "192192",
+            "0",
+            "439296",
+            "0",
+            "768768",
+            "0",
+            "1025024",
+            "0",
+            "1025024",
+            "0",
+            "745472",
+            "0",
+            "372736",
+            "0",
+            "114688",
+            "0",
+            "16384",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "1",
+          "G": "0",
+          "Q": "2",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "76",
+            "0",
+            "200",
+            "0",
+            "256",
+            "0",
+            "128",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "28",
+            "0",
+            "348",
+            "0",
+            "2528",
+            "0",
+            "11888",
+            "0",
+            "37824",
+            "0",
+            "82496",
+            "0",
+            "121856",
+            "0",
+            "116736",
+            "0",
+            "65536",
+            "0",
+            "16384",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              10,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "0",
+          "G": "0",
+          "Q": "0",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              18,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "0",
+          "G": "0",
+          "Q": "0",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              10,
+              -1
+            ],
+            [
+              18,
+              1
+            ],
+            [
+              25,
+              1
+            ]
+          ]
+        },
+        {
+          "Delta": "-4",
+          "G": "1 + 8*I",
+          "Q": "1 + 4*I",
+          "complex_characteristic_coefficients": [
+            "1",
+            "0",
+            "7 + 28*I",
+            "0",
+            "-283 + 168*I",
+            "0",
+            "-1485 - 1180*I",
+            "0",
+            "1091 - 5840*I",
+            "0",
+            "9269 - 5084*I",
+            "0",
+            "10775 + 1960*I",
+            "0",
+            "3793 + 2524*I",
+            "0"
+          ],
+          "quartic_coefficient_mutation_detected": true,
+          "realified_characteristic_coefficients": [
+            "1",
+            "0",
+            "14",
+            "0",
+            "267",
+            "0",
+            "2476",
+            "0",
+            "23625",
+            "0",
+            "150802",
+            "0",
+            "884491",
+            "0",
+            "3855848",
+            "0",
+            "14519547",
+            "0",
+            "41679954",
+            "0",
+            "95157817",
+            "0",
+            "158613676",
+            "0",
+            "164592827",
+            "0",
+            "91633230",
+            "0",
+            "20757425",
+            "0",
+            "0"
+          ],
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              8,
+              1
+            ],
+            [
+              17,
+              2
+            ],
+            [
+              25,
+              -1
+            ]
+          ]
+        }
+      ],
+      "doubly_pure_signed_two_support_count": 870,
+      "named": [
+        {
+          "bordered_rank": 10,
+          "characteristic_polynomial": "lambda**15",
+          "jordan_blocks": [
+            3,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "nullity": 12,
+          "power_ranks": [
+            15,
+            8,
+            1,
+            0
+          ],
+          "reduced_rank": 8,
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              18,
+              1
+            ]
+          ]
+        },
+        {
+          "bordered_rank": 8,
+          "characteristic_polynomial": "lambda**15",
+          "jordan_blocks": [
+            3,
+            2,
+            2,
+            2,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "nullity": 16,
+          "power_ranks": [
+            15,
+            6,
+            1,
+            0
+          ],
+          "reduced_rank": 6,
+          "terms": [
+            [
+              1,
+              1
+            ],
+            [
+              10,
+              -1
+            ],
+            [
+              18,
+              1
+            ],
+            [
+              25,
+              1
+            ]
+          ]
+        }
+      ],
+      "rank_identity_checks_pass": true
+    },
+    "reduced_structure": {
+      "adjoint_equals_negative_conjugate": true,
+      "bordered_shape": [
+        16,
+        16
+      ],
+      "coefficient_offdiagonal_pairs": 210,
+      "congruence_characteristic_polynomial_equal": true,
+      "congruence_operand": [
+        [
+          1,
+          1
+        ],
+        [
+          10,
+          -1
+        ],
+        [
+          18,
+          1
+        ],
+        [
+          25,
+          1
+        ]
+      ],
+      "congruence_rank": 6,
+      "congruent_jordan_blocks": [
+        3,
+        3,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "congruent_square_rank": 2,
+      "nonreal_skew_hermitian": false,
+      "note_already_corrected": true,
+      "original_jordan_blocks": [
+        3,
+        2,
+        2,
+        2,
+        2,
+        1,
+        1,
+        1,
+        1
+      ],
+      "original_square_rank": 1,
+      "shape": [
+        15,
+        15
+      ],
+      "transpose_skew": true
+    },
+    "scalar": [
+      {
+        "dimension": 2,
+        "gram_shift_identity": true,
+        "pure_nullity": 0,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 4,
+        "gram_shift_identity": true,
+        "pure_nullity": 0,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 8,
+        "gram_shift_identity": true,
+        "pure_nullity": 0,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 16,
+        "gram_shift_identity": true,
+        "pure_nullity": 4,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      },
+      {
+        "dimension": 32,
+        "gram_shift_identity": true,
+        "pure_nullity": 12,
+        "scalar": "1",
+        "shifted_nullity": 0,
+        "skew_sign_mutation_detected": true
+      }
+    ],
+    "special_lifts": {
+      "all_checks_pass": true,
+      "count": 424,
+      "lifted_nullity_histogram": {
+        "12": 196,
+        "16": 168,
+        "4": 60
+      }
+    },
+    "two_support": {
+      "all_checks_pass": true,
+      "coefficient_choices_per_pair": 4,
+      "pairs": 591,
+      "pathion_pair_nullity_histogram": {
+        "0": 171,
+        "12": 126,
+        "4": 84,
+        "8": 84
+      },
+      "signed_pathion_elements": 930
+    }
+  },
+  "claims": [
+    {
+      "claim": "0.1",
+      "evidence": "reduced_structure",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "0.2",
+      "evidence": "reduced_structure",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "0.3",
+      "evidence": "reduced_structure.note_already_corrected",
+      "scope": "The tracked note already has the correct matrix dimension and transpose-skew domain.",
+      "verdict": "refuted"
+    },
+    {
+      "claim": "1.1",
+      "evidence": "README.md#scope",
+      "scope": "Complete real nullity classification is a published theorem; named attainment witnesses are computed.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "1.2",
+      "evidence": "basis",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.3",
+      "evidence": "inverses",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.4",
+      "evidence": "special_lifts",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.5",
+      "evidence": "two_support",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "1.6",
+      "evidence": "README.md#scope",
+      "scope": "Maximal-locus topology and partner spheres require the published geometric proofs.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "2.1",
+      "evidence": "inverses",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "2.2",
+      "evidence": "basis",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.1",
+      "evidence": "cancellation",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.2",
+      "evidence": "cancellation",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.3",
+      "evidence": "cancellation",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "3.4",
+      "evidence": "README.md#scope",
+      "scope": "The separate Lean project and the group-algebra theorem are outside this arithmetic replay.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "4.1",
+      "evidence": "basis",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "4.2",
+      "evidence": "gram_expansion",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "4.3",
+      "evidence": "two_support",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "4.4",
+      "evidence": "two_support",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.1",
+      "evidence": "two_support",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.2",
+      "evidence": "projector",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.3",
+      "evidence": "projector",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "5.4",
+      "evidence": "projector",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.1",
+      "evidence": "reduced",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.2",
+      "evidence": "reduced",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.3",
+      "evidence": "reduced",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.4",
+      "evidence": "reduced",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "6.5",
+      "evidence": "README.md#scope",
+      "scope": "Selecting a complete invariant for attachments requires a classification beyond these power ranks.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "7.1",
+      "evidence": "scalar",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "7.2",
+      "evidence": "phase",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "7.3",
+      "evidence": "phase",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "7.4",
+      "evidence": "README.md#scope",
+      "scope": "The experimental distinction between operator and input phase needs its declared encoding.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "7.5",
+      "evidence": "gram_expansion",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "8.1",
+      "evidence": "README.md#scope",
+      "scope": "Stable bundle equivalence and nontriviality require the cited topology argument.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "8.2",
+      "evidence": "kernel_limits",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "8.3",
+      "evidence": "README.md#scope",
+      "scope": "The retained acquisitions establish neither Berry transport nor holonomy.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.1",
+      "evidence": "hardware_blocks",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "9.2",
+      "evidence": "README.md#scope",
+      "scope": "Calibrated provider readings are owned by their retained analyses; raw acquisitions are not replayed.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.3",
+      "evidence": "README.md#scope",
+      "scope": "The Ascella acquisition and denominators belong to a5_photonic_scope; that analysis is not duplicated.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.4",
+      "evidence": "associator",
+      "scope": "The declared finite inputs and coefficient identities; wider domains need the cited proofs.",
+      "verdict": "confirmed"
+    },
+    {
+      "claim": "9.5",
+      "evidence": "README.md#scope",
+      "scope": "Mesh variance and repeat correlations require the existing acquisition-level analyses.",
+      "verdict": "not_checked"
+    },
+    {
+      "claim": "9.6",
+      "evidence": "README.md#scope",
+      "scope": "External review citation line numbers are not scientific evidence or an input to the calculation.",
+      "verdict": "not_checked"
+    }
+  ],
+  "producer_sha256": "43301aef860366c0bf813fcfb40431b7f167c17d2a7df6f2afc96d7f57f83164",
+  "schema": "a5-gram-operator-witnesses/1",
+  "sources_sha256": {
+    "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+    "docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py": "b23919697c9adfa9ccbd1ab5929af206d48ff604195c511699f3ff8dc3fd6cbb",
+    "docs/notes/topics/strata-gauss-bottleneck.md": "91568d079ad628b64d42c48526b3762f4cf9d56306c19ed9edfa1acaf5b8e84f",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/cd_quantum_contracts.py": "82b5d5b3b221489d94a6f0aa76b4f870b8de84acaf907c2b2090e55197396839",
+    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
+    "gororoba_quantum/kernel_limit_contracts.py": "8f6ab9b457d42a94ab59646fe1b3731d2d407e4ac92549bd4d60ef07657c2586",
+    "gororoba_quantum/kernel_limits.py": "46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  }
+}
