@@ -43,8 +43,10 @@ import hashlib
 import itertools
 import json
 import lzma
+import os
 import re
 import resource
+import signal
 import subprocess
 import sys
 import time
@@ -125,18 +127,26 @@ def _singular(script: str, name: str, timeout: int = TIMEOUT_SECONDS) -> dict[st
     log, report = LOGS / f"{name}.log", LOGS / f"{name}.time"
     started = time.monotonic()
     with log.open("w", encoding="utf-8") as out, report.open("w", encoding="utf-8") as err:
+        # Singular is a child of /usr/bin/time, so the command gets its own session and a timeout signals the group.
+        process = subprocess.Popen(  # noqa: S603
+            ("/usr/bin/time", "-v", "Singular", "-q", "--no-warn", path.name),
+            stdin=subprocess.DEVNULL,
+            stdout=out,
+            stderr=err,
+            cwd=WORK,
+            start_new_session=True,
+        )
         try:
-            status = subprocess.run(  # noqa: S603
-                ("/usr/bin/time", "-v", "Singular", "-q", "--no-warn", path.name),
-                stdin=subprocess.DEVNULL,
-                stdout=out,
-                stderr=err,
-                timeout=timeout,
-                check=False,
-                cwd=WORK,
-            ).returncode
+            status = process.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
             status = 124
+        finally:
+            if process.poll() is None:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                process.wait()
     text = log.read_text(encoding="utf-8")
     peak = re.search(r"Maximum resident set size \(kbytes\): (\d+)", report.read_text(encoding="utf-8"))
     results: dict[str, str] = {}
@@ -665,7 +675,8 @@ def check(slug: str) -> dict[str, Any]:
     for kind in ("cofactor", "generator"):
         row = verify(slug, inputs, cofactors, kind)
         mutations[kind] = {k: row.get(k) for k in ("status", "bad_identities", "verdict")}
-        _require(row["verdict"] != "i_equals_is", f"{slug}: mutation {kind} was not detected")
+        detected = row.get("status") == "completed" and (row.get("bad_identities") or 0) > 0
+        _require(detected and row["verdict"] != "i_equals_is", f"{slug}: mutation {kind} was not detected: {row}")
     return {"slug": slug, "verdict": exact["verdict"], "mutations": mutations, "wall_seconds": exact["wall_seconds"]}
 
 
@@ -676,8 +687,10 @@ def main() -> None:
     mode.add_argument("--check", action="store_true")
     parser.add_argument("--slug", choices=sorted(SIGN), action="append")
     args = parser.parse_args()
-    for slug in args.slug or sorted(SIGN):
-        row = write(slug) if args.write else check(slug)
+    slugs = args.slug or sorted(SIGN)
+    # `write` pools its modular solves itself; the checks of the two signs share no file and run as pooled items.
+    rows = (write(slug) for slug in slugs) if args.write else parallel.ordered_map(check, slugs, min_items=2)
+    for slug, row in zip(slugs, rows, strict=True):
         print(json.dumps({key: row[key] for key in row if key in ("slug", "verdict", "mutations", "wall_seconds")}))
         if row["verdict"] != "i_equals_is":
             raise SystemExit(f"{slug}: {row['verdict']}")

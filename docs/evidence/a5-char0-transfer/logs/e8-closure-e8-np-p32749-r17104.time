@@ -7,10 +7,10 @@
 	Average unshared data size (kbytes): 0
 	Average stack size (kbytes): 0
 	Average total size (kbytes): 0
-	Maximum resident set size (kbytes): 19812
+	Maximum resident set size (kbytes): 19500
 	Average resident set size (kbytes): 0
 	Major (requiring I/O) page faults: 0
-	Minor (reclaiming a frame) page faults: 1760
+	Minor (reclaiming a frame) page faults: 1740
 	Voluntary context switches: 6
 	Involuntary context switches: 0
 	Swaps: 0

@@ -232,8 +232,8 @@ mutations: one cofactor coefficient plus 1 breaks 1 of the 42 identities, one co
 
 | Pair | primes (root of -1) | coefficients, largest numerator / denominator digits | modular search | exact check | mutations fail |
 |---|---|---|---|---|---|
-| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 180-196 s, 20 min wall, 4.3 GB peak per worker | 17 s | 1 of 42, 42 of 42 |
-| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 177-181 s, 19 min wall, 4.3 GB peak per worker | 17 s | 1 of 42, 42 of 42 |
+| E8-bar -> N- | 32009 (10754), 32029 (9115), 32749 (15645), 32717 (11332), 32713 (974), 32693 (8590) | 39,168; 11 / 8 | 12 solves of 186-244 s, 22 min wall, 4.1 GiB peak per worker | 17 s | 1 of 42, 42 of 42 |
+| E8-bar -> N+ | the same six primes and roots | 39,168; 11 / 8 | 12 solves of 178-191 s, 19 min wall, 4.1 GiB peak per worker | 17 s | 1 of 42, 42 of 42 |
 
 Records: `e8-closure-certificate-SLUG.json` (primes, box, counts, digests of the producer script, the Q(i) J and G,
 this producer, `slice_rings_qi.py`, `reduction_check.py` and the cofactor file, stage times, verdict),
