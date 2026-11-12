@@ -17,6 +17,7 @@ from typing import Literal
 
 import numpy as np
 
+import parallel
 from cd_core import left_mult_matrix_exact
 from measurement_statistics import multinomial_scores
 from provider_counters import Counter, Population, Status
@@ -124,12 +125,14 @@ def exact_herald_moments(
     if any(depth > MAX_HERALD_DEPTH for depth in checked):
         raise ValueError(f"depth exceeds the exact-denominator budget of {MAX_HERALD_DEPTH} bits")
     # Each value is one bounded exact coefficient, not a circuit simulation.
-    return tuple(
-        Fraction(1)
-        if depth == 0
-        else eta**depth * (Fraction(nullity, dim) + Fraction(dim - 2 * nullity, dim * 2**depth))
-        for depth in checked
-    )
+    return tuple(parallel.ordered_map(_herald_moment, [(depth, eta, nullity, dim) for depth in checked]))
+
+
+def _herald_moment(task: tuple[int, Fraction, int, int]) -> Fraction:
+    depth, eta, nullity, dim = task
+    if depth == 0:
+        return Fraction(1)
+    return eta**depth * (Fraction(nullity, dim) + Fraction(dim - 2 * nullity, dim * 2**depth))
 
 
 def uniform_retention_nullity(first: Fraction, second: Fraction, dimension: int) -> Fraction:

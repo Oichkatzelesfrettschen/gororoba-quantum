@@ -296,3 +296,12 @@ def test_completion_entry_count_matches_the_allocated_coefficients() -> None:
     if basis.real.size + basis.imaginary.size != completion_entries(3):
         raise AssertionError("the budgeted entry count differs from the allocated coefficients")
     tomography_completion(2, entry_budget=completion_entries(2))
+
+
+def test_herald_moments_keep_their_order_through_the_pool(forced_pool: None) -> None:
+    certificate = certify_equal_weight_pair(16, 1, 10, 1)
+    depths = list(range(40, -1, -1))
+    pooled = exact_herald_moments(certificate, depths, retention=Fraction(3, 4))
+    expected = [exact_herald_moments(certificate, [depth], retention=Fraction(3, 4))[0] for depth in depths]
+    if list(pooled) != expected:
+        raise AssertionError("mapped herald moments differ from the per-depth values")

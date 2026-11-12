@@ -21,7 +21,7 @@
     {
       "command": "\"$PYTHON\" -B -m pytest -q tests/gororoba_quantum/test_measurement_statistics.py tests/gororoba_quantum/test_acceptance_statistics.py tests/gororoba_quantum/test_kernel_observability.py tests/scripts/test_measurement_observability.py",
       "exit_code": 0,
-      "result": "200 passed",
+      "result": "202 passed",
       "evidence_class": "bounded deterministic tests"
     },
     {
@@ -68,13 +68,13 @@
     }
   ],
   "source_sha256": {
-    "gororoba_quantum/measurement_statistics.py": "a83f6543e8ee31f2d82c43261804a08d320c3fad79a0945a9dfff0efedea897c",
+    "gororoba_quantum/measurement_statistics.py": "8beb606789b4f7d734aedd7e4245dcc538a694a9b8b41b24c0d2e1ed74e94840",
     "gororoba_quantum/acceptance_statistics.py": "44447f09fad7c157e9c025c6fa3b88d9e5178519d4b7e8c426ea57df4d2efd94",
-    "gororoba_quantum/kernel_observability.py": "04b2a95bc8c7b05fa56c47b45c8017f7bbf75e27f4af2ce22221d3f4fb98050d",
+    "gororoba_quantum/kernel_observability.py": "46b387b3ecb981dd8dcf66a0a837a977d3e4ced01c19464f0aad612dd28bdc85",
     "scripts/measurement_observability.py": "45f9d5dab2957975cb3fe9fb9748762b688f2f66d23125c2395060f0ee3d3da9",
-    "tests/gororoba_quantum/test_measurement_statistics.py": "f26b657937c03f03fb044c1c1590d96add0c02f7a59ab793156be3e467a5f562",
+    "tests/gororoba_quantum/test_measurement_statistics.py": "e283e80f30e8bbd0baca1093bac0a2a38e75db3c847543693d56bad480d8423d",
     "tests/gororoba_quantum/test_acceptance_statistics.py": "14c00f2159098a27898d5ef6fa72ea37148bdb8621752f3603c58fe15878172d",
-    "tests/gororoba_quantum/test_kernel_observability.py": "daed0215af2147d2ef26d6c53b1efa42da78b9aecde5df8ef8fac89ebb88c0c6",
+    "tests/gororoba_quantum/test_kernel_observability.py": "5e27d603874abf820a31dde89e7edfb1f4c227aac3982de022f9064cad9c8cbe",
     "tests/scripts/test_measurement_observability.py": "ac8f0baba0e9e4d9b1ae22a14ef685976c26a3975dbbda923f89b91bdd0a3b8b",
     "tests/fixtures/measurement-observability.json": "8400893c303ce8974afe512b90f9136bdb30525cca4b73bcaf881cbe796d051b"
   },

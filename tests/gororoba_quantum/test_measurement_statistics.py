@@ -356,3 +356,26 @@ def test_congruence_roundoff_bound_snaps_noise_and_keeps_real_covariance() -> No
         _snap_congruence(np.array([[1.0, 0.5], [0.1, 1.0]]), magnitude, 1)
     with pytest.raises(StatisticsError, match="negative variance"):
         _snap_congruence(np.array([[-1e-3, 0.0], [0.0, 1.0]]), magnitude, 1)
+
+
+def test_score_mean_keeps_a_small_term_beside_cancelling_ones_in_any_category_order() -> None:
+    for row in ([1e16, 1.0, -1e16], [1.0, 1e16, -1e16], [-1e16, 1e16, 1.0]):
+        means = multinomial_scores([1, 1, 1], [row]).means
+        np.testing.assert_array_equal(means, [1 / 3])
+
+
+def test_correlated_residual_survives_cancellation_of_shared_uncertainty() -> None:
+    shared = 2.0**38
+    residual = np.array([[1, 23 / 32, 23 / 32], [23 / 32, 1, 3 / 64], [23 / 32, 3 / 64, 1]])
+    result = predictive_residual(
+        np.zeros(3),
+        np.zeros(3),
+        np.full((3, 3), shared) + residual,
+        np.ones((3, 1)),
+        [[shared]],
+        dependence="supplied_cross_covariance",
+        cross_covariance=np.full((3, 1), shared),
+    )
+    np.testing.assert_allclose(result.covariance, residual, atol=1e-3)
+    if np.linalg.eigvalsh(result.covariance)[0] <= 0:
+        raise AssertionError("the residual covariance must stay positive definite")

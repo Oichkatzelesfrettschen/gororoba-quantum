@@ -108,7 +108,7 @@ joint covariance and is admitted to an entrywise tolerance of `64 * eps * n * |S
 the roundoff of the two products; no error analysis is retained), where `S` is `(I,-J)` scaled by the joint standard
 deviations, `C` the joint correlation and `n` the number of coordinates with positive variance, so a small residual
 covariance that is a difference of large terms keeps its sign and symmetry tests at the scale of the cancellation.
-Entries within the tolerance become zero, and a coordinate whose variance lies within it is deterministic: a fit that
+A coordinate whose variance lies within the tolerance is deterministic and other entries keep their values: a fit that
 reuses an observation exactly yields the zero residual covariance, and `covariance_score` then decides support from
 the residual alone.
 

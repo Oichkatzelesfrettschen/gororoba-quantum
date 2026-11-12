@@ -113,6 +113,23 @@ class ScoreEstimate:
         }
 
 
+def _weighted_mean(task: tuple[np.ndarray, np.ndarray, float]) -> float:
+    """sum_j n_j s_j / N with the sum exact: each product enters as its rounded value and its fma remainder.
+
+    math.fsum then returns the correctly rounded sum of the exact products, so the mean does not depend on the
+    order of the outcome categories and keeps a small term beside large cancelling ones.
+    """
+    row, occupied, total = task
+    parts: list[float] = []
+    for value, count in zip(row.tolist(), occupied.tolist(), strict=True):
+        product = value * count
+        if not math.isfinite(product):
+            raise OverflowError("score times count overflows float64")
+        parts.append(product)
+        parts.append(math.fma(value, count, -product))
+    return math.fsum(parts) / total
+
+
 def multinomial_scores(counts: Sequence[int], scores: ArrayLike, *, estimator: Estimator = "plugin") -> ScoreEstimate:
     """Means and full covariance for score rows over mutually exclusive outcomes.
 
@@ -141,14 +158,16 @@ def multinomial_scores(counts: Sequence[int], scores: ArrayLike, *, estimator: E
         with np.errstate(over="raise", invalid="raise"):
             offsets = score[:, positive] - anchor[:, None]
             weights = probabilities[positive]
-            terms = offsets * weights
-            pooled = terms.size >= POOLED_SUM_ENTRIES
-            mean_offsets = np.array(
+            occupied = np.asarray(counts, dtype=float)[positive]
+            rows = [(row, occupied, float(total)) for row in score[:, positive]]
+            pooled = offsets.size >= POOLED_SUM_ENTRIES
+            means = np.array(
                 parallel.ordered_map(
-                    math.fsum, list(terms), min_items=parallel.MIN_PARALLEL_ITEMS if pooled else len(terms) + 1
+                    _weighted_mean, rows, min_items=parallel.MIN_PARALLEL_ITEMS if pooled else len(rows) + 1
                 )
             )
-            means = anchor + mean_offsets
+            # Centering uses the mean of the offsets, which keeps a spread far below the rounding of the mean.
+            mean_offsets = np.array([math.fsum(row) for row in offsets * weights])
             centered = offsets - mean_offsets[:, None]
             weighted = centered * np.sqrt(weights / denominator)
             covariance = weighted @ weighted.T
@@ -252,7 +271,7 @@ def _snap_congruence(product: np.ndarray, magnitude: np.ndarray, terms: int) -> 
     the roundoff of the two matrix products; no error analysis is retained, and the
     tests exercise it on residual scales from 1e-1 down to exact cancellation. A small residual covariance that is a
     difference of large terms therefore keeps its sign and symmetry tests at the
-    scale of the cancellation. Entries within the bound become exactly zero, and a
+    scale of the cancellation. Entries within the bound become zero where that keeps the smallest eigenvalue, and a
     coordinate whose variance is within its bound is treated as deterministic, so
     an exactly cancelling shared-data prediction yields the zero covariance.
     """
@@ -262,8 +281,12 @@ def _snap_congruence(product: np.ndarray, magnitude: np.ndarray, terms: int) -> 
     if np.any(np.diag(product) < -np.diag(bound)):
         raise StatisticsError("residual covariance: negative variance beyond the congruence roundoff bound")
     snapped = product + (product.T - product) / 2
-    snapped[np.abs(snapped) <= bound] = 0.0
-    deterministic = np.diag(snapped) == 0
+    deterministic = np.diag(snapped) <= np.diag(bound)
+    # Zeroing single entries can turn a positive-definite matrix indefinite, so the entrywise snap is kept only
+    # when it does not lower the smallest eigenvalue; otherwise the entries keep their computed values.
+    entrywise = np.where(np.abs(snapped) <= bound, 0.0, snapped)
+    if np.linalg.eigvalsh(entrywise)[0] >= np.linalg.eigvalsh(snapped)[0]:
+        snapped = entrywise
     snapped[deterministic, :] = 0.0
     snapped[:, deterministic] = 0.0
     return snapped
@@ -288,8 +311,8 @@ def predictive_residual(
 
     The residual covariance is admitted to the roundoff of its congruence, a bound
     built from the magnitudes of the terms (see _snap_congruence), so a small
-    residual covariance that is a difference of large terms is accepted. Entries
-    within the bound become zero: exact reuse of an observation by the fit yields
+    residual covariance that is a difference of large terms is accepted. A coordinate
+    whose variance lies within the bound becomes deterministic: exact reuse of an observation by the fit yields
     the zero covariance, and the score then reports whether the residual is
     supported. A rank-deficient nonzero residual covariance is still held to the
     correlation tolerance of covariance_matrix.
