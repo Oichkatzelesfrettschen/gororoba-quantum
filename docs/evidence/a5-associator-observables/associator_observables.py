@@ -522,32 +522,38 @@ def evaluate_point(spec: PointSpec) -> dict[str, Any]:
     return row
 
 
-def point_specs(grid: dict[str, list[int]]) -> list[PointSpec]:
+def stratum_point_specs(item: tuple[str, RationalVector, list[int]]) -> list[PointSpec]:
+    """Construct one stratum's movement and control points in their deterministic order."""
+    name, rep, grid_indices = item
     specs: list[PointSpec] = []
     movement = programs()
-    for name, rep in REPRESENTATIVES.items():
-        moved: dict[str, RationalVector] = {}
-        for family, program in movement:
-            label = program_label(program)
-            point = apply_program(rep, program)
-            moved[label] = point
-            specs.append(PointSpec(name, family, label, point))
-        grid_labels = []
-        for index in grid[name]:
-            label = f"grid:{index}"
-            grid_labels.append(label)
-            moved[label] = grid_point(index)
-            specs.append(PointSpec(name, "grid", label, moved[label]))
-        bases = ["rep", "u0:1", program_label(movement[-COMPOSITE_COUNT][1])]
-        bases += grid_labels[:1]
-        for base in bases:
-            for aut in AUTOMORPHISM_NAMES:
-                specs.append(PointSpec(name, "automorphism-image", f"{base}|{aut}", moved[base], f"aut:{aut}", base))
-        for base in PHASE_BASES:
-            for cos, sin in PHASES:
-                label = f"{base}|phase:{cos}:{sin}"
-                specs.append(PointSpec(name, "phase-image", label, moved[base], f"phase:{cos}:{sin}", base))
+    moved: dict[str, RationalVector] = {}
+    for family, program in movement:
+        label = program_label(program)
+        point = apply_program(rep, program)
+        moved[label] = point
+        specs.append(PointSpec(name, family, label, point))
+    grid_labels = []
+    for index in grid_indices:
+        label = f"grid:{index}"
+        grid_labels.append(label)
+        moved[label] = grid_point(index)
+        specs.append(PointSpec(name, "grid", label, moved[label]))
+    bases = ["rep", "u0:1", program_label(movement[-COMPOSITE_COUNT][1])]
+    bases += grid_labels[:1]
+    for base in bases:
+        for aut in AUTOMORPHISM_NAMES:
+            specs.append(PointSpec(name, "automorphism-image", f"{base}|{aut}", moved[base], f"aut:{aut}", base))
+    for base in PHASE_BASES:
+        for cos, sin in PHASES:
+            label = f"{base}|phase:{cos}:{sin}"
+            specs.append(PointSpec(name, "phase-image", label, moved[base], f"phase:{cos}:{sin}", base))
     return specs
+
+
+def point_specs(grid: dict[str, list[int]]) -> list[PointSpec]:
+    items = [(name, representative, grid[name]) for name, representative in REPRESENTATIVES.items()]
+    return [spec for group in parallel.ordered_map(stratum_point_specs, items, min_items=1) for spec in group]
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -584,8 +590,8 @@ def verification_task(name: str) -> dict[str, Any]:
     return {"map": name, "kind": kind, "failed_basis_pairs": automorphism_failures(matrix), "pairs": DIM * DIM}
 
 
-def doubling_failures() -> int:
-    """Basis pairs where cd_multiply_exact differs from (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))."""
+def doubling_pair_failure(pair: tuple[int, int]) -> int:
+    """Compare one basis product with (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))."""
 
     def conj(v: Sequence[Fraction]) -> list[Fraction]:
         return [v[0], *(-x for x in v[1:])]
@@ -593,15 +599,18 @@ def doubling_failures() -> int:
     def product(x: Sequence[Fraction], y: Sequence[Fraction]) -> list[Fraction]:
         return list(cd_multiply_exact(HALF, x, y))
 
-    failures = 0
-    for p, q in itertools.product(range(DIM), repeat=2):
-        a, b = _unit(p)[:HALF], _unit(p)[HALF:]
-        c, d = _unit(q)[:HALF], _unit(q)[HALF:]
-        first = [x - y for x, y in zip(product(a, c), product(conj(d), b), strict=True)]
-        second = [x + y for x, y in zip(product(d, a), product(b, conj(c)), strict=True)]
-        if [*first, *second] != list(cd_multiply_exact(DIM, _unit(p), _unit(q))):
-            failures += 1
-    return failures
+    p, q = pair
+    a, b = _unit(p)[:HALF], _unit(p)[HALF:]
+    c, d = _unit(q)[:HALF], _unit(q)[HALF:]
+    first = [x - y for x, y in zip(product(a, c), product(conj(d), b), strict=True)]
+    second = [x + y for x, y in zip(product(d, a), product(b, conj(c)), strict=True)]
+    return int([*first, *second] != list(cd_multiply_exact(DIM, _unit(p), _unit(q))))
+
+
+def doubling_failures() -> int:
+    """Count convention failures across independent basis pairs with ordered parallel dispatch."""
+    pairs = list(itertools.product(range(DIM), repeat=2))
+    return sum(parallel.ordered_map(doubling_pair_failure, pairs, min_items=1))
 
 
 def unipotent_task(item: tuple[int, Fraction]) -> bool:

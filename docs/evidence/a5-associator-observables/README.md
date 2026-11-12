@@ -93,8 +93,8 @@ per multiplicity pattern.
   not verify transitivity; the constant spectrum over 420 distinct points (526 evaluations) agrees with it.
 - The spectrum and its multiplicity pattern are not stratum invariants on any stratum but N+ and N-. On V the rational roots of
   the spectrum of the representative are 0, 1 and 2 with multiplicities 12, 8 and 12; other points of V add roots such as
-  `338/769` and `2738/769`, so neither the multiplicity pattern nor the spectrum identifies the orbit of the compact group
-  inside V.
+  `338/769` and `2738/769`. The differing spectra certify distinct compact-group orbits inside V. Completeness of the
+  spectrum or multiplicity pattern as an invariant of those orbits remains open.
 - The movement families alone would have reported B9 as constant: the 180 unipotent, 6 boost-scale-reflect and 20 composite
   images of the B9 representative all have rank 28, and only the grid points reach 20 and 24 (`rank_values_by_family` in the
   record). Movements from one representative therefore under-sample the moduli, and the constancy claims on V, VB, Va+, Va-,
@@ -102,10 +102,11 @@ per multiplicity pattern.
 - The phase `z -> (c + i s) z`, an element of the `C^*` factor of H, is not an automorphism (840 of 1,024 basis products fail
   for `(3/5, 4/5)`), and all 48 phase images (two angles, two base points, twelve strata) leave every observable, the
   unnormalized characteristic polynomial included, unchanged. The cause is unproved: conjugacy of `L_y` and `L_(y')` by
-  `cI +- s L_e` or `cI +- s R_e` fails at three tested points. The sample is consistent with the observables being functions
-  on the quotient of a stratum by the compact group `G_2 x U(1)` (the group of the
+  `cI +- s L_e` or `cI +- s R_e` fails at three tested points. The sample is consistent with the nullities, associator ranks
+  and normalized spectra being functions on the quotient of a stratum by the compact group `G_2 x U(1)` (the group of the
   [compact orbit ranks](../a5-kernel-bundles-nullity8/compact_orbit_ranks.py)) and the real scalings, with the unipotents and
-  boosts of H as the moduli directions.
+  boosts of H as the moduli directions. Real scaling by a nonzero factor `r` multiplies `N` and `-L_y^2` by `r^2`, so `N` and the
+  unnormalized characteristic polynomial retain their scale dependence.
 - The outer reflection `(a, b) -> (a, -b)` is an automorphism and exchanges X+ with X-, Va+ with Va- and N+ with N-
   (`controls.automorphism_images.reflection_image_strata`).
 

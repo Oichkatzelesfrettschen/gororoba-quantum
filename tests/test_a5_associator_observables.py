@@ -138,3 +138,70 @@ def test_grid_candidate_dispatch_preserves_serial_parallel_order_and_stride(
     _check(serial_selection == pooled_selection == (selected, counts))
     candidate_dispatches = [minimum for function, minimum in dispatched if function is probe._grid_candidate_chunk]
     _check(candidate_dispatches == [1, 1, 1, 1])
+
+
+def test_point_construction_dispatches_strata_and_preserves_serial_parallel_order(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    representatives = {name: probe.REPRESENTATIVES[name] for name in ("W8", "Ehat")}
+    monkeypatch.setattr(probe, "REPRESENTATIVES", representatives)
+    actual_map = probe.parallel.ordered_map
+    dispatches: list[tuple[Callable[[Any], Any], int]] = []
+
+    def record_dispatch(function: Callable[[Any], Any], items: Sequence[Any], min_items: int = 64) -> list[Any]:
+        dispatches.append((function, min_items))
+        return actual_map(function, items, min_items=min_items)
+
+    monkeypatch.setattr(probe.parallel, "ordered_map", record_dispatch)
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    serial = probe.point_specs({name: [] for name in representatives})
+    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    pooled = probe.point_specs({name: [] for name in representatives})
+    _check(serial == pooled)
+    movement = probe.programs()
+    per_stratum = len(movement) + 3 * len(probe.AUTOMORPHISM_NAMES) + len(probe.PHASE_BASES) * len(probe.PHASES)
+    _check([spec.stratum for spec in pooled] == ["W8"] * per_stratum + ["Ehat"] * per_stratum)
+    _check([spec.label for spec in pooled[: len(movement)]] == [probe.program_label(item[1]) for item in movement])
+    _check(dispatches == [(probe.stratum_point_specs, 1), (probe.stratum_point_specs, 1)])
+
+
+def test_doubling_basis_pairs_dispatch_and_detect_a_product_mutation(monkeypatch: pytest.MonkeyPatch) -> None:
+    actual_map = probe.parallel.ordered_map
+    dispatches: list[tuple[Callable[[Any], Any], list[Any], int]] = []
+
+    def record_dispatch(function: Callable[[Any], Any], items: Sequence[Any], min_items: int = 64) -> list[Any]:
+        dispatches.append((function, list(items), min_items))
+        return actual_map(function, items, min_items=min_items)
+
+    monkeypatch.setattr(probe.parallel, "ordered_map", record_dispatch)
+    monkeypatch.setenv("GOROROBA_WORKERS", "2")
+    _check(probe.doubling_failures() == 0)
+    function, pairs, minimum = dispatches[0]
+    _check(function is probe.doubling_pair_failure and minimum == 1)
+    _check(pairs == [(first, second) for first in range(32) for second in range(32)])
+    actual_product = probe.cd_multiply_exact
+
+    def altered_product(dimension: int, first: Sequence[Fraction], second: Sequence[Fraction]) -> tuple[Fraction, ...]:
+        result = list(actual_product(dimension, first, second))
+        if dimension == probe.DIM:
+            result[0] += 1
+        return tuple(result)
+
+    monkeypatch.setattr(probe, "cd_multiply_exact", altered_product)
+    _check(probe.doubling_pair_failure((0, 0)) == 1)
+
+
+def test_real_scaling_preserves_normalized_observables_and_changes_raw_spectrum() -> None:
+    operand = _w8()
+    base = probe.observables(operand)
+    scaled = probe.observables([2 * coefficient for coefficient in operand])
+    for field in ("rank_left", "rank_right", "nullity_left", "nullity_right", "spectrum", "spectrum_id"):
+        _check(scaled[field] == base[field])
+    _check(Fraction(scaled["norm"]) == 4 * Fraction(base["norm"]))
+    _check(scaled["charpoly"] != base["charpoly"])
+    _check(
+        all(
+            Fraction(changed) == Fraction(original) * 4 ** (probe.DIM - degree)
+            for degree, (original, changed) in enumerate(zip(base["charpoly"], scaled["charpoly"], strict=True))
+        )
+    )

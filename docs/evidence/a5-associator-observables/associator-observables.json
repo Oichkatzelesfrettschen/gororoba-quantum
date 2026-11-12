@@ -158,7 +158,7 @@
   "unipotents_are_split_octonion_automorphisms": "180 of 180"
  },
  "inputs": {
-  "docs/evidence/a5-associator-observables/associator_observables.py": "b3aca0b7a49e33b8d7786b22d6c1e78427849b7df6a3af23b8368fc2a3712333",
+  "docs/evidence/a5-associator-observables/associator_observables.py": "80c988aa56a775e39ad951e235973cf0fc48e9afe7b2617666dd0e0d3eee5ea1",
   "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
   "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
   "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
@@ -40105,7 +40105,7 @@
   }
  },
  "schema": "a5-associator-observables-v1",
- "script_sha256": "b3aca0b7a49e33b8d7786b22d6c1e78427849b7df6a3af23b8368fc2a3712333",
+ "script_sha256": "80c988aa56a775e39ad951e235973cf0fc48e9afe7b2617666dd0e0d3eee5ea1",
  "spectra": {
   "0007613996b3": {
    "factors": [
