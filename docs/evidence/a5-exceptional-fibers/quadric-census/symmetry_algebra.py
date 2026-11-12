@@ -164,7 +164,7 @@ def sums_to_whole(left: np.ndarray, right: np.ndarray, prime: int) -> bool:
 
 
 def quotient_has_sl2_triple(ad: np.ndarray, ideal: np.ndarray, prime: int) -> bool:
-    """Whether g / ideal has dimension 3 and holds h, e, f with [h, e] = 2e, [h, f] = -2f, [e, f] = h.
+    """Whether `ideal` is an ideal and g / ideal, of dimension 3, holds h, e, f: [h, e] = 2e, [h, f] = -2f, [e, f] = h.
 
     A class is written on the basis vectors at the non-pivot columns of the reduced echelon basis of the ideal,
     and the search runs over x with small integer coordinates whose ad on the quotient has eigenvalues 0, a, -a
@@ -172,6 +172,8 @@ def quotient_has_sl2_triple(ad: np.ndarray, ideal: np.ndarray, prime: int) -> bo
     """
     dim = ad.shape[0]
     ideal = row_space(ideal, prime) if len(ideal) else ideal
+    if len(ideal) and not is_ideal(ideal, ad, prime):
+        return False
     pivots = [int(np.flatnonzero(row)[0]) for row in ideal]
     free = [k for k in range(dim) if k not in pivots]
     if len(free) != 3:
@@ -365,7 +367,10 @@ def structure(source: tuple[str, int, int, str]) -> dict[str, Any]:
     stream = hashlib.shake_256(f"{fiber}|{prime}|control".encode()).digest(4 * len(quadrics) * n * (n + 1) // 2)
     monomials = list(itertools.combinations_with_replacement(range(n), 2))
     control = [
-        {m: int.from_bytes(stream[4 * (i * len(monomials) + k) :][:4], "big") % prime for k, m in enumerate(monomials)}
+        {
+            m: int.from_bytes(stream[4 * (i * len(monomials) + k) : 4 * (i * len(monomials) + k) + 4], "big") % prime
+            for k, m in enumerate(monomials)
+        }
         for i in range(len(quadrics))
     ]
     return {

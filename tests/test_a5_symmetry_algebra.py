@@ -169,8 +169,8 @@ def test_each_structure_check_fails_on_a_case_that_lacks_the_property() -> None:
     _same([sa.reaches_zero(space, derived) for space in (scalars, eye[:2], sl2, eye)], [True, True, False, False])
     _same([sa.sums_to_whole(sl2, scalars, PRIME), sa.sums_to_whole(sl2, sl2[:1], PRIME)], [True, False])
     borel = sa.row_space(eye[[0, 1, 3]], PRIME)
-    found = [sa.quotient_has_sl2_triple(ad, ideal, PRIME) for ideal in (scalars, eye[:0], eye[1:2])]
-    _same(found, [True, False, False])
+    found = [sa.quotient_has_sl2_triple(ad, ideal, PRIME) for ideal in (scalars, eye[:0], eye[1:2], eye[:1])]
+    _same(found, [True, False, False, False])
     unreduced = sa.np.array([[2, 0, 0, 2]])
     _same(sa.quotient_has_sl2_triple(ad, unreduced, PRIME), True)
     _same(sa.is_ideal(borel, ad, PRIME), False)

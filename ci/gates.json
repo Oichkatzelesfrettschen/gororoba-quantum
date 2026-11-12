@@ -5689,7 +5689,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "[ \"$(Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.sing | grep '^RESULT')\" = \"$(grep '^RESULT' docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.log)\" ]",
+      "cmd": "out=$(Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.sing) && [ \"$(printf '%s\\n' \"$out\" | grep '^RESULT')\" = \"$(grep '^RESULT' docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.log)\" ]",
       "name": "core-a5-w8-component-linear-forms",
       "seconds": 60.0,
       "requires": [
