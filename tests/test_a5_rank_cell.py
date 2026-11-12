@@ -26,6 +26,14 @@ sys.modules[SPEC.name] = rank_cell
 SPEC.loader.exec_module(rank_cell)
 
 
+def _check_equal(left: object, right: object) -> None:
+    assert left == right
+
+
+def _check_unequal(left: object, right: object) -> None:
+    assert left != right
+
+
 def _engine(path: Path, exit_code: int = 0) -> None:
     path.write_text(
         """import hashlib,json,sys
@@ -159,15 +167,106 @@ def test_skip_requires_a_resource_record_of_a_successful_run_with_the_same_bytes
         rank_cell.run_cell(args)
 
 
-def test_argument_digest_ignores_flag_order_and_checkout_location(tmp_path: Path) -> None:
+def test_option_order_matters_only_among_repeated_options() -> None:
     root = rank_cell.repository_root()
-    one = ["--k2-receipt", "/one/place/receipt.json", "--chunk", "4"]
-    two = ["--chunk", "4", "--k2-receipt", "/another/place/receipt.json"]
-    assert rank_cell.engine_arguments_digest(one, root) == rank_cell.engine_arguments_digest(two, root)
-    assert rank_cell.engine_arguments_digest(one, root) != rank_cell.engine_arguments_digest(["--chunk", "5"], root)
+    digest = rank_cell.engine_arguments_digest
+    _check_equal(
+        digest(["--chunk", "4", "--echelon", "compact"], root), digest(["--echelon", "compact", "--chunk", "4"], root)
+    )
+    # argparse keeps the last of a repeated option, so these two invocations run different engines.
+    _check_unequal(digest(["--chunk", "3", "--chunk", "4"], root), digest(["--chunk", "4", "--chunk", "3"], root))
+    _check_unequal(digest(["--chunk", "4"], root), digest(["--chunk", "5"], root))
+    _check_unequal(digest(["--chunk=3", "--chunk=4"], root), digest(["--chunk=4", "--chunk=3"], root))
+
+
+def test_receipts_of_one_basename_bind_by_their_contents(tmp_path: Path) -> None:
+    root = rank_cell.repository_root()
+    one, other = tmp_path / "one", tmp_path / "other"
+    one.mkdir()
+    other.mkdir()
+    (one / "receipt.json").write_text('{"rank": 1}\n')
+    (other / "receipt.json").write_text('{"rank": 2}\n')
+    digest = rank_cell.engine_arguments_digest
+    first = digest(["--k2-receipt", str(one / "receipt.json")], root)
+    _check_unequal(first, digest(["--k2-receipt", str(other / "receipt.json")], root))
+    _check_unequal(first, digest([f"--k2-receipt={other / 'receipt.json'}"], root))
+    (other / "receipt.json").write_text('{"rank": 1}\n')
+    _check_equal(first, digest(["--k2-receipt", str(other / "receipt.json")], root))
+
+
+def test_one_file_reached_through_two_absolute_paths_binds_equally(tmp_path: Path) -> None:
+    root = rank_cell.repository_root()
+    (tmp_path / "real").mkdir()
+    target = tmp_path / "real" / "receipt.json"
+    target.write_text('{"rank": 1}\n')
+    (tmp_path / "alias.json").symlink_to(target)
+    detour = tmp_path / "real" / ".." / "real" / "receipt.json"
+    digest = rank_cell.engine_arguments_digest
+    base = digest(["--k2-receipt", str(target)], root)
+    _check_equal(base, digest(["--k2-receipt", str(tmp_path / "alias.json")], root))
+    _check_equal(base, digest(["--k2-receipt", str(detour)], root))
+
+
+def test_unreadable_paths_bind_by_the_hash_of_their_text(tmp_path: Path) -> None:
+    root = rank_cell.repository_root()
+    one = rank_cell.argument_identity(str(tmp_path / "missing.json"), root)
+    other = rank_cell.argument_identity(str(tmp_path / "elsewhere.json"), root)
+    assert one.startswith("text-sha256:") and one != other and str(tmp_path) not in one
+    assert rank_cell.argument_identity("64", root) == "64"
+    assert rank_cell.argument_identity("--chunk", root) == "--chunk"
+
+
+def test_paths_inside_the_checkout_stay_repository_relative() -> None:
+    root = rank_cell.repository_root()
     assert root is not None
-    inside = [str(root / "a.json")]
-    assert rank_cell.engine_arguments_digest(inside, root) == rank_cell.engine_arguments_digest(["a.json"], root)
+    inside = str(root / "docs" / "a.json")
+    assert rank_cell.argument_identity(inside, root) == "docs/a.json"
+    assert rank_cell.argument_identity(f"--k2-receipt={inside}", root) == "--k2-receipt=docs/a.json"
+    assert rank_cell.engine_arguments_digest([inside], root) == rank_cell.engine_arguments_digest(["docs/a.json"], root)
+
+
+def test_skip_is_refused_when_an_external_receipt_changes(tmp_path: Path) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    receipt = tmp_path / "elsewhere" / "receipt.json"
+    receipt.parent.mkdir()
+    receipt.write_text('{"rank": 1}\n')
+    args = _args(tmp_path, engine, output)
+    args.engine_args = ["--k2-receipt", str(receipt)]
+    assert rank_cell.run_cell(args) == 0
+    assert rank_cell.run_cell(args) == 0
+    receipt.write_text('{"rank": 2}\n')
+    with pytest.raises(ValueError, match="engine arguments differ"):
+        rank_cell.run_cell(args)
+
+
+def test_missing_interpreter_writes_a_resource_record_and_exits_127(tmp_path: Path) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    args = _args(tmp_path, engine, output)
+    args.python = str(tmp_path / "no-such-python")
+    assert rank_cell.run_cell(args) == 127
+    record = json.loads(output.with_suffix(".resources.json").read_text())
+    assert (record["termination"], record["engine_exit"], record["runner_exit"]) == ("launch_error", None, 127)
+    assert record["launch_error"].startswith("FileNotFoundError: errno 2")
+    assert str(tmp_path) not in output.with_suffix(".resources.json").read_text()
+    assert "cannot launch the engine" in output.with_suffix(".err").read_text()
+    assert output.with_suffix(".json.part").exists() and not output.exists()
+
+
+def test_unexecutable_interpreter_exits_126(tmp_path: Path) -> None:
+    engine, output = tmp_path / "engine.py", tmp_path / "cell.json"
+    _engine(engine)
+    args = _args(tmp_path, engine, output)
+    plain = tmp_path / "plain-file"
+    plain.write_text("not a program\n")
+    plain.chmod(0o644)
+    args.python = str(plain)
+    assert rank_cell.run_cell(args) == 126
+    record = json.loads(output.with_suffix(".resources.json").read_text())
+    assert (record["termination"], record["runner_exit"]) == ("launch_error", 126)
+    assert record["launch_error"].startswith("PermissionError: errno 13")
+    assert not output.exists()
 
 
 def test_resource_record_holds_no_local_absolute_path(tmp_path: Path) -> None:

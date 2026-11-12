@@ -2,14 +2,17 @@
 
 An existing JSON is skipped only after its engine, header, field, degree and truncation identities validate and its
 resource record names a successful run that wrote the same bytes with the same engine arguments (a digest of the
-canonical arguments, absolute paths reduced to repository-relative paths or basenames). A new record is written to
+arguments, with the order of repeated options preserved because the engine's parser keeps the last one; see
+`option_groups` and `argument_identity`). A new record is written to
 `.part`, validated after a zero engine exit, flushed to disk and atomically renamed. Engine arguments follow a mandatory
 `--`. The engine runs in its own process group; SIGTERM or SIGINT delivered to this runner and `--timeout` both
 terminate that group (SIGTERM, then SIGKILL after `--grace-seconds`) and still write the resource record with the
 termination cause. Failures retain `.part`, stderr and the resource record. `--timeout` replaces an outer `timeout`; an
 outer `timeout -k` must exceed `--grace-seconds`, or its SIGKILL reaches the runner before the runner reaches the engine
-group. The exit status is 0 on success, 2 when validation fails, 124 on timeout, 128 + n when signal n ended the runner
-or the engine, and the engine's own status otherwise.
+group. The exit status is 0 on success, 2 when validation fails, 124 on timeout, 126 when the interpreter or engine
+cannot be executed (a permission or other operating-system error at launch), 127 when it does not exist, 128 + n when
+signal n ended the runner or the engine, and the engine's own status otherwise. A launch failure still writes the
+resource record, with the error class and errno in `launch_error`, and keeps the stderr file.
 """
 
 from __future__ import annotations
@@ -45,22 +48,49 @@ def header_prime(path: Path) -> int:
     return int(text.split(marker, 1)[1].split(",", 1)[0])
 
 
-def canonical_engine_arguments(engine_args: list[str]) -> list[list[str]]:
-    """Engine arguments grouped as one `--flag` with its values, groups sorted, so flag order does not matter."""
+def argument_identity(token: str, root: Path | None) -> str:
+    """One engine argument as it enters the skip identity.
+
+    A token that is an absolute path, or holds a slash, names a file (also as the value of `--flag=VALUE`). Inside
+    the checkout it is bound by its repository-relative path, so a moved checkout matches. Outside it, an existing
+    file is bound by the SHA-256 of its contents, so one file reached through two paths binds equally and a changed
+    file binds differently; a path that does not exist is bound by the SHA-256 of its text. No digest reveals a
+    path. Every other token is bound verbatim."""
+    prefix, value = "", token
+    if token.startswith("--") and "=" in token:
+        flag, value = token.split("=", 1)
+        prefix = flag + "="
+    if not (Path(value).is_absolute() or "/" in value):
+        return token
+    resolved = Path(value).resolve()
+    if root is not None:
+        try:
+            return prefix + str(resolved.relative_to(root))
+        except ValueError:
+            pass
+    if resolved.is_file():
+        return f"{prefix}file-sha256:{sha256(resolved)}"
+    return f"{prefix}text-sha256:{hashlib.sha256(value.encode()).hexdigest()}"
+
+
+def option_groups(engine_args: list[str]) -> list[list[str]]:
+    """Engine arguments grouped as one `--flag` with its values, groups stable-sorted by flag.
+
+    Different options commute, so their order is not identity. The engine's parser keeps the last of a repeated
+    option, so the relative order of repeated options, which a stable sort preserves, is part of the identity."""
     groups: list[list[str]] = []
     for token in engine_args:
         if token.startswith("--") or not groups:
             groups.append([token])
         else:
             groups[-1].append(token)
-    return sorted(groups)
+    return sorted(groups, key=lambda group: group[0].split("=", 1)[0])
 
 
 def engine_arguments_digest(engine_args: list[str], root: Path | None) -> str:
-    """Digest of the canonical engine arguments, absolute paths made portable so a moved checkout matches."""
-    portable = [portable_path(token, root) for token in engine_args]
-    text = json.dumps(canonical_engine_arguments(portable), separators=(",", ":"))
-    return hashlib.sha256(text.encode()).hexdigest()[:16]
+    """Digest of the engine arguments, each bound by `argument_identity`, option groups ordered by `option_groups`."""
+    bound = [[argument_identity(token, root) for token in group] for group in option_groups(engine_args)]
+    return hashlib.sha256(json.dumps(bound, separators=(",", ":")).encode()).hexdigest()[:16]
 
 
 def expected_identity(engine: Path, header: Path, degree: int, order: int) -> dict[str, Any]:
@@ -216,6 +246,34 @@ def exit_status(returncode: int) -> int:
     return 128 - returncode if returncode < 0 else returncode
 
 
+def supervise(
+    process: subprocess.Popen[bytes], args: argparse.Namespace, received: list[int], started: float
+) -> tuple[str, int, int]:
+    """Poll the engine's process group until it exits or a signal or the timeout ends it: the termination cause, the
+    peak group resident bytes and the peak process count."""
+    cause = "exited"
+    peak_rss = peak_processes = 0
+    while process.poll() is None:
+        rss, processes = process_group_rss(process.pid)
+        peak_rss = max(peak_rss, rss)
+        peak_processes = max(peak_processes, processes)
+        if received:
+            cause = signal.Signals(received[0]).name
+        elif args.timeout is not None and time.time() - started >= args.timeout:
+            cause = "timeout"
+        if cause != "exited":
+            stop_group(process, args.grace_seconds)
+            break
+        time.sleep(args.poll_seconds)
+    rss, processes = process_group_rss(process.pid)
+    return cause, max(peak_rss, rss), max(peak_processes, processes)
+
+
+def launch_status(error: OSError) -> int:
+    """Shell convention: 127 when the command does not exist, 126 when it exists and cannot be executed."""
+    return 127 if isinstance(error, FileNotFoundError) else 126
+
+
 def run_cell(args: argparse.Namespace) -> int:
     engine, header, output = Path(args.engine).resolve(), Path(args.header).resolve(), Path(args.output).resolve()
     engine_args = list(args.engine_args)
@@ -246,34 +304,32 @@ def run_cell(args: argparse.Namespace) -> int:
             break
     started = time.time()
     cause = "exited"
+    peak_rss = peak_processes = 0
+    process: subprocess.Popen[bytes] | None = None
+    launch_error: str | None = None
+    launch_exit = 0
     try:
         with part.open("w") as out, stderr.open("w") as err:
-            process = subprocess.Popen(
-                command, stdout=out, stderr=err, stdin=subprocess.DEVNULL, start_new_session=True
-            )
-            peak_rss = peak_processes = 0
-            while process.poll() is None:
-                rss, processes = process_group_rss(process.pid)
-                peak_rss = max(peak_rss, rss)
-                peak_processes = max(peak_processes, processes)
-                if received:
-                    cause = signal.Signals(received[0]).name
-                elif args.timeout is not None and time.time() - started >= args.timeout:
-                    cause = "timeout"
-                if cause != "exited":
-                    stop_group(process, args.grace_seconds)
-                    break
-                time.sleep(args.poll_seconds)
-            rss, processes = process_group_rss(process.pid)
-            peak_rss = max(peak_rss, rss)
-            peak_processes = max(peak_processes, processes)
+            try:
+                process = subprocess.Popen(
+                    command, stdout=out, stderr=err, stdin=subprocess.DEVNULL, start_new_session=True
+                )
+            except OSError as error:
+                launch_exit = launch_status(error)
+                launch_error = f"{type(error).__name__}: errno {error.errno}: {error.strerror}"
+                err.write(f"cannot launch the engine: {launch_error}\n")
+                cause = "launch_error"
+            else:
+                cause, peak_rss, peak_processes = supervise(process, args, received, started)
     finally:
         for number, handler in previous.items():
             signal.signal(number, handler)
     elapsed = time.time() - started
 
     validation_error = None
-    if cause == "timeout":
+    if process is None:
+        status = launch_exit
+    elif cause == "timeout":
         status = TIMEOUT_STATUS
     elif cause != "exited":
         status = 128 + signal.Signals[cause].value
@@ -292,8 +348,9 @@ def run_cell(args: argparse.Namespace) -> int:
             "command": [portable_path(token, root) if i else Path(token).name for i, token in enumerate(command)],
             "engine_args_sha256_16": arguments_digest,
             "elapsed_seconds": round(elapsed, 3),
-            "engine_exit": process.returncode,
+            "engine_exit": None if process is None else process.returncode,
             "termination": cause,
+            "launch_error": launch_error,
             "timeout_seconds": args.timeout,
             "runner_exit": status,
             "validation_error": validation_error,

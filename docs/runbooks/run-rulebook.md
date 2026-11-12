@@ -19,6 +19,11 @@ the closest entry and say what changed.
 - Formulation: the cheapest decisive computation chosen (computer-algebra.md) and the alternatives rejected.
 - Host and tool versions: substrate row of compute-flags.md, binary and version.
 - Launch line and environment: every flag, with the reason for each non-default value.
+- Runner and exit status: the launcher exits with the engine's status and records it; a fiber-rank cell runs through
+  `docs/evidence/a5-exceptional-fibers/replay/engine/rank_cell.py` (JSON written to `.part` and renamed after exit 0
+  and identity validation, engine arguments after `--`, process-group resource record, `--timeout`). A launcher
+  that exits 0 after an engine failure, or that writes the engine's stdout straight to the final record, is a
+  departure to list below (#793, #802).
 - Departures from the foundations: each rule not followed, and why.
 - Parallelism: processes against physical cores (hyperthreads counted separately).
 - Memory and time limits: mechanism, value, and what the log shows if a limit rather than the mathematics ends it.

@@ -77,8 +77,9 @@ routes (--stream-products, --echelon compact) store residues in [0, p) as uint16
 float64 product at 4,096 inner terms, which needs 4,096 (p - 1)^2 < 2^53 (p <= 1,482,911); both are wider than the bound
 p < PMAX = 2^15 of modular_echelon.py that main enforces for these routes, so one prime range governs every backend.
 
-Echelon backend (--echelon). The per-block echelon basis is gororoba_quantum/modular_echelon.py's Echelon. With
---echelon flint (the default) the basis is a float64 host array, the reduction and the update of the basis run as
+Echelon backend (--echelon). The per-block echelon basis is gororoba_quantum/modular_echelon_compact.py's
+CompactEchelon, which runs gororoba_quantum/modular_echelon.py's Echelon unchanged for the flint and gpu backends and
+adds the compact one. With --echelon flint (the default) the basis is a float64 host array, the reduction and the update of the basis run as
 float64 BLAS products and FLINT's nmod_mat.rref echelonizes the residual rows, as in engine v11. With --echelon gpu
 the basis lives on the CUDA device as int32 residues: the reduction and the update run as exact INT8 tensor-core
 products (base-256 digits, int32 accumulation), and a device PLUQ factorization with a blocked back substitution
@@ -136,7 +137,8 @@ sys.path.insert(0, _parallel_dir())
 import scipy.sparse as sp  # noqa: E402
 
 import parallel  # noqa: E402
-from modular_echelon import PMAX, Echelon, modular_matmul_exact_bound  # noqa: E402
+from modular_echelon import PMAX, modular_matmul_exact_bound  # noqa: E402
+from modular_echelon_compact import CompactEchelon, insert_panel_bytes  # noqa: E402
 
 ENGINE_SHA = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()[:16]
 
@@ -207,10 +209,60 @@ def compact_stage_peaks(terms: dict[str, int]) -> dict[str, int]:
     if operator is None:
         raise ValueError("compact memory terms have no generator operator")
     products = terms["uint16_product_rows"]
+    loop = (
+        terms.get("streamed_loop_arrays", 0)
+        + terms.get("streamed_chunk_temporaries", 0)
+        + terms.get("tiled_product_temporaries", 0)
+    )
     return {
-        "products": operator + products,
-        "closure": products + terms["compact_echelon_ceiling"] + terms["closure_chunk_temporaries"],
+        "products": operator + products + loop,
+        "closure": products
+        + terms["compact_echelon_ceiling"]
+        + terms["closure_chunk_temporaries"]
+        + terms.get("compact_insert_panels", 0),
     }
+
+
+def streamed_prefix_peak(d: int, ngens: int, wanted: dict[int, set[tuple[int, ...]]] | None) -> int:
+    """Largest number of prefix rows one `streamed_generator_product` call receives in `block_products_streamed`.
+
+    A call multiplies the prefixes of one level whose last generator index is at most f by generator f. With `wanted`
+    these are the wanted tuples t of that level whose extension t + (f,) is wanted one level up; without it every
+    nondecreasing tuple of the level over generators 0..f, C(f + level, level) of them."""
+    peak = 0
+    for f in range(ngens):
+        for level in range(1, d):
+            if wanted is None:
+                count = math.comb(f + level, level)
+            else:
+                count = sum(1 for t in wanted[level] if t[-1] <= f and t + (f,) in wanted[level + 1])
+            peak = max(peak, count)
+    return peak
+
+
+def streamed_loop_bytes(prefixes: int, widest: int) -> int:
+    """Arrays beyond the retained uint16 product rows while one streamed level is accumulated into its outputs.
+
+    The retained rows dictionary and the stacked inputs are the two uint16 copies of `uint16_product_rows` (prefix and
+    new rows are distinct dictionary entries, so inputs and outputs together stay inside two row copies). On top of
+    them the accumulate line `((outputs.astype(uint32) + contribution) % p).astype(uint16)` holds, per element of the
+    contribution (prefixes x widest at most), the contribution (2 bytes) and two uint32 temporaries (4 + 4 bytes)
+    beside the old output already counted: 10 bytes. The gathered input and the contribution under construction
+    inside `tiled_mod_product` need 4 bytes per element and are covered by that maximum."""
+    return 10 * prefixes * widest
+
+
+def tiled_product_bytes(chunk: int) -> int:
+    """Float64 tiles of `tiled_mod_product` for `chunk` rows at its default 4,096-term inner tile and 1,024-column
+    output tile: the left cast, the right cast and the accumulator, the sum and the modulo of an output tile."""
+    return 8 * (chunk * 4096 + 4096 * 1024 + 3 * chunk * 1024)
+
+
+def streamed_chunk_bytes(chunk: int, widest: int) -> int:
+    """Walk temporaries of `streamed_generator_product` per `chunk` rows: the gathered parent rows (uint16), the
+    float64 transpose, the sparse product and its modulo (3 x 8 bytes) and the uint16 result, bounded by
+    4 x 8 bytes per element, plus the tiles of `tiled_product_bytes`."""
+    return 4 * 8 * chunk * widest + tiled_product_bytes(chunk)
 
 
 def is_odd_prime(p: int) -> bool:
@@ -1345,14 +1397,22 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
             rows = sum(math.comb(ngens + degree - 1, degree) for degree in range(1, a.d + 1))
         operator_bytes = max(full_operator_bytes, default=0)
         cache = bool(a.operator_cache_gb and operator_bytes <= a.operator_cache_gb * 2**30)
-        return {
+        terms = {
             "uint16_generator_operator" if cache else "streamed_operator_layers": (
                 operator_bytes if cache else max(layer_bytes, default=0)
             ),
             "uint16_product_rows": 4 * rows * widest,
             "compact_echelon_ceiling": 2 * sum((int(size) ** 2) // 4 for size in sizes),
             "closure_chunk_temporaries": 3 * 8 * a.chunk * widest,
+            "compact_insert_panels": insert_panel_bytes(widest, a.chunk),
         }
+        if cache:
+            terms["tiled_product_temporaries"] = tiled_product_bytes(a.chunk)
+        else:
+            prefixes = streamed_prefix_peak(a.d, ngens, rset.wanted if rset else None)
+            terms["streamed_loop_arrays"] = streamed_loop_bytes(prefixes, widest)
+            terms["streamed_chunk_temporaries"] = streamed_chunk_bytes(a.chunk, widest)
+        return terms
 
     def preflight(basis: list[Monomial], m: int = ngens) -> None:
         compact_route = a.stream_products and a.echelon == "compact"
@@ -1461,7 +1521,7 @@ def quotient_rank(a: argparse.Namespace, p: int, names: list[str], gens: list[np
         return exact_mod_matmul(X, T, p) if isinstance(T, np.ndarray) else sparse_mod_matmul(X, T, p)
 
     t0 = time.time()
-    W = {b: Echelon(len(cols[b]), p, a.echelon) for b in blocks}
+    W = {b: CompactEchelon(len(cols[b]), p, a.echelon) for b in blocks}
     for b in blocks:
         for k in range(n):
             tb = b ^ var_char[k]
@@ -1703,7 +1763,7 @@ def main() -> None:
                     if ok.any():
                         yield space.index(f[ok]), coef[ok]
 
-    W = {b: Echelon(len(space.cols[b]), p, a.echelon) for b in space.blocks}
+    W = {b: CompactEchelon(len(space.cols[b]), p, a.echelon) for b in space.blocks}
     new = {}
     for b in space.blocks:
         buf: list[tuple[np.ndarray, np.ndarray]] = []

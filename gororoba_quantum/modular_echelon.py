@@ -1,4 +1,4 @@
-"""Exact reduced row echelon form and growing echelon bases over F_p, on FLINT, compact host storage or CUDA.
+"""Exact reduced row echelon form and growing echelon bases over F_p, on FLINT or on a CUDA device.
 
 `rref(a, p, backend)` returns the unique reduced row echelon rows and pivot columns of a residue matrix. The `flint`
 backend runs `flint.nmod_mat.rref`; the `gpu` backend factors the matrix with the recursive PLUQ scheme of FFLAS-FFPACK
@@ -9,15 +9,6 @@ every input (docs/design/gpu-exact-modular-linear-algebra.md, Layer 3).
 fiber-rank closure keeps per character block. With `backend="gpu"` the basis B lives on the device as int32 residues
 and `reduce`, `insert` and the update of B never leave it: the host passes the rows to insert and reads back only the
 pivot columns and the rows it asks for.
-
-With `backend="compact"`, pivot columns are implicit unit vectors and only nonpivot coefficients are retained as
-uint16 column panels. Insertions update one panel at a time, so neither removing newly promoted pivot columns nor
-growing the row count copies the whole basis. Arithmetic is tiled through float64 products whose inner dimension is
-checked against the exact-integer bound. This representation is intended for CPU closures whose full float64 RREF
-bases exceed memory; it changes storage, not the row space or insertion order. Its prime range is the device range
-below: uint16 residues need p <= 2^16 and each float64 tile of COMPACT_INNER columns needs
-COMPACT_INNER (p - 1)^2 < 2^53 (p <= 1,482,911 at 4,096), both wider than the shared bound p < PMAX = 2^15 that the
-constructor enforces.
 
 Exactness. Residues are int32 in [0, p) with an odd prime p < 2^15. A modular product splits each operand into signed
 base-256 digits (a = 256 a1 + a0, a0 in [-128, 127], a1 in [-64, 64]) and runs four INT8 tensor-core products with
@@ -44,13 +35,11 @@ from typing import Any, Literal
 
 import numpy as np
 
-Backend = Literal["flint", "compact", "gpu"]
+Backend = Literal["flint", "gpu"]
 
 KMAX = 32768
 IMAX = 0x7FFFFFFF
 PMAX = 2**15
-COMPACT_COLS = 1024
-COMPACT_INNER = 4096
 
 _KERNELS = r"""
 #define IMAX 0x7fffffff
@@ -549,7 +538,7 @@ def rref_gpu(a: np.ndarray, p: int) -> tuple[np.ndarray, np.ndarray]:
 
 def rref(a: np.ndarray, p: int, backend: Backend = "flint") -> tuple[np.ndarray, np.ndarray]:
     """Reduced row echelon rows and pivot columns of a residue matrix over F_p on the chosen backend."""
-    if backend in ("flint", "compact"):
+    if backend == "flint":
         return rref_flint(a, p)
     if backend == "gpu":
         return rref_gpu(a, p)
@@ -561,29 +550,20 @@ class Echelon:
 
     Invariant: basis row i has a one in column piv[i] and zeros in every other pivot column. `insert` reduces the
     incoming rows by the basis, takes the reduced row echelon form of what remains on the non-pivot columns and then
-    clears the new pivot columns from the old rows, so the basis stays fully reduced. All backends produce the same
+    clears the new pivot columns from the old rows, so the basis stays fully reduced. Both backends produce the same
     basis and pivot list for the same insertion sequence.
     """
 
     def __init__(self, ncols: int, p: int, backend: Backend = "flint"):
-        if backend not in ("flint", "compact", "gpu"):
+        if backend not in ("flint", "gpu"):
             raise ValueError(f"unknown backend {backend!r}")
-        if backend == "compact":
-            check_modulus(p)
         self.p, self.ncols, self.backend = p, ncols, backend
         self.piv = np.zeros(0, dtype=np.int64)
         self.insert_seconds = 0.0
         self._nrows = 0
         self._host = np.zeros((0, ncols))
-        self._compact_cols: list[np.ndarray] = []
-        self._compact_parts: list[np.ndarray] = []
         self._dev: Any = None
         self._arith: DeviceArithmetic | None = None
-        if backend == "compact":
-            self._compact_cols = [
-                np.arange(i, min(i + COMPACT_COLS, ncols), dtype=np.int64) for i in range(0, ncols, COMPACT_COLS)
-            ]
-            self._compact_parts = [np.zeros((0, len(cols)), dtype=np.uint16) for cols in self._compact_cols]
         if backend == "gpu":
             self._arith = DeviceArithmetic.get(p)
             self._dev = self._arith.torch.zeros((0, ncols), dtype=self._arith.torch.int32, device="cuda")
@@ -598,17 +578,9 @@ class Echelon:
         return self.rows(None)
 
     def rows(self, idx: np.ndarray | list[int] | None) -> np.ndarray:
-        """Copy of basis rows `idx`; compact storage materializes only the rows requested."""
+        """Copy of the basis rows `idx` (all rows when None) as float64; the device backend moves only these rows."""
         if self.backend == "flint":
             return self._host.copy() if idx is None else self._host[np.asarray(idx, dtype=np.int64)]
-        if self.backend == "compact":
-            take = np.arange(self._nrows, dtype=np.int64) if idx is None else np.asarray(idx, dtype=np.int64)
-            out = np.zeros((len(take), self.ncols), dtype=np.uint16)
-            if len(take):
-                out[np.arange(len(take)), self.piv[take]] = 1
-                for cols, part in zip(self._compact_cols, self._compact_parts, strict=True):
-                    out[:, cols] = part[take]
-            return out
         torch = self._device().torch
         sel = (
             self._dev[: self._nrows]
@@ -619,11 +591,7 @@ class Echelon:
 
     def new_rows(self, start: set[int]) -> np.ndarray:
         """Basis rows whose pivot column is not in `start`, in basis order."""
-        return self.rows(self.new_indices(start))
-
-    def new_indices(self, start: set[int]) -> np.ndarray:
-        """Indices of basis rows whose pivot column is not in `start`, without materializing those rows."""
-        return np.array([i for i, c in enumerate(self.piv.tolist()) if c not in start], dtype=np.int64)
+        return self.rows(np.array([i for i, c in enumerate(self.piv.tolist()) if c not in start], dtype=np.int64))
 
     def _device(self) -> DeviceArithmetic:
         if self._arith is None:
@@ -635,8 +603,6 @@ class Echelon:
         """Rows of x reduced by the basis (zero in every pivot column), as a float64 host array."""
         if self.backend == "flint":
             return self._reduce_host(x)
-        if self.backend == "compact":
-            return self._reduce_compact(x)
         out = self._reduce_dev(self._upload(x))
         return out.cpu().numpy().astype(np.float64)
 
@@ -647,8 +613,6 @@ class Echelon:
         for s in range(0, len(x), chunk):
             if self.backend == "flint":
                 self._insert_host(x[s : s + chunk])
-            elif self.backend == "compact":
-                self._insert_compact(x[s : s + chunk])
             else:
                 self._insert_dev(x[s : s + chunk])
         self.insert_seconds += time.perf_counter() - t0
@@ -683,81 +647,6 @@ class Echelon:
         self._host = np.vstack([self._host, xr])
         self._nrows = len(self._host)
         self.piv = np.concatenate([self.piv, q])
-
-    # compact host path: uint16 nonpivot panels and implicit pivot identities
-    def _subtract_compact_product(self, out: np.ndarray, a: np.ndarray, b: np.ndarray) -> None:
-        """Set uint16 `out` to out - a @ b mod p, with bounded exact float64 tiles."""
-        if a.shape[1] != b.shape[0] or out.shape != (a.shape[0], b.shape[1]):
-            raise ValueError("compact product shape mismatch")
-        for r0 in range(0, len(out), 128):
-            r1 = min(r0 + 128, len(out))
-            for c0 in range(0, out.shape[1], COMPACT_COLS):
-                c1 = min(c0 + COMPACT_COLS, out.shape[1])
-                z = out[r0:r1, c0:c1].astype(np.float64)
-                for k0 in range(0, a.shape[1], COMPACT_INNER):
-                    k1 = min(k0 + COMPACT_INNER, a.shape[1])
-                    if not modular_matmul_exact_bound(k1 - k0, self.p):
-                        raise RuntimeError(f"inner tile {k1 - k0} leaves the exact float64 range at p = {self.p}")
-                    z = np.mod(
-                        z - a[r0:r1, k0:k1].astype(np.float64) @ b[k0:k1, c0:c1].astype(np.float64),
-                        self.p,
-                    )
-                out[r0:r1, c0:c1] = z.astype(np.uint16)
-
-    def _reduce_compact(self, x: np.ndarray) -> np.ndarray:
-        out = np.mod(x, self.p).astype(np.uint16)
-        if self._nrows == 0 or len(out) == 0:
-            return out
-        coef = out[:, self.piv].copy()
-        out[:, self.piv] = 0
-        for cols, part in zip(self._compact_cols, self._compact_parts, strict=True):
-            panel = out[:, cols].copy()
-            self._subtract_compact_product(panel, coef, part)
-            out[:, cols] = panel
-        return out
-
-    def _insert_compact(self, x: np.ndarray) -> None:
-        y = self._reduce_compact(x)
-        y = y[np.any(y != 0, axis=1)]
-        if len(y) == 0:
-            return
-        free = np.concatenate(self._compact_cols) if self._compact_cols else np.zeros(0, dtype=np.int64)
-        rows, piv_rel = rref_flint(y[:, free].astype(np.int64), self.p)
-        rk = len(rows)
-        if rk == 0:
-            return
-        rows = rows.astype(np.uint16)
-        q = free[piv_rel]
-        pivot_at = {int(pos): i for i, pos in enumerate(piv_rel.tolist())}
-        coef = np.zeros((self._nrows, rk), dtype=np.uint16)
-        offset = 0
-        for part in self._compact_parts:
-            for j in range(part.shape[1]):
-                slot = pivot_at.get(offset + j)
-                if slot is not None and self._nrows:
-                    coef[:, slot] = part[:, j]
-            offset += part.shape[1]
-
-        new_cols: list[np.ndarray] = []
-        new_parts: list[np.ndarray] = []
-        offset = 0
-        for cols, part in zip(self._compact_cols, self._compact_parts, strict=True):
-            keep = np.array([offset + j not in pivot_at for j in range(len(cols))], dtype=bool)
-            kept_cols = cols[keep]
-            new_rows = rows[:, offset : offset + len(cols)][:, keep]
-            grown = np.empty((self._nrows + rk, len(kept_cols)), dtype=np.uint16)
-            if self._nrows:
-                grown[: self._nrows] = part[:, keep]
-                self._subtract_compact_product(grown[: self._nrows], coef, new_rows)
-            grown[self._nrows :] = new_rows
-            if len(kept_cols):
-                new_cols.append(kept_cols)
-                new_parts.append(grown)
-            offset += len(cols)
-        self._compact_cols = new_cols
-        self._compact_parts = new_parts
-        self._nrows += rk
-        self.piv = np.concatenate([self.piv, q.astype(np.int64)])
 
     # device path: int32 basis on the GPU
     def _upload(self, x: np.ndarray) -> Any:

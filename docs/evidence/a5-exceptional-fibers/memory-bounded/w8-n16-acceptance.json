@@ -8,7 +8,7 @@
   "header_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
   "engine_sha256": "0c006242b544c0cb2a5cf604e43fefa071088f7e177d4bec4126b3a8939392f5",
   "engine_commit": "f8092f967",
-  "engine_bytes": "fiber_rank_v14.py as committed in f8092f967; a84b82772 differs by line wrapping, two stderr progress prints, the preflight_stages field and the stage-maximum admission rule, and gororoba_quantum/modular_echelon.py by line wrapping and one docstring word; a later change adds PMAX prime guards and an inner_tile parameter defaulting to the literal 4096"
+  "engine_bytes": "fiber_rank_v14.py as committed in f8092f967; a84b82772 differs by line wrapping, two stderr progress prints, the preflight_stages field and the stage-maximum admission rule, and gororoba_quantum/modular_echelon.py by line wrapping and one docstring word; a later change adds PMAX prime guards and an inner_tile parameter defaulting to the literal 4096; at those commits the compact echelon lived in gororoba_quantum/modular_echelon.py, which the head holds in gororoba_quantum/modular_echelon_compact.py"
  },
  "configuration": {
   "workers": 4,

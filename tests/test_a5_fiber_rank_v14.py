@@ -82,10 +82,17 @@ def test_streamed_products_respect_a_restricted_prefix_order_ideal() -> None:
         _check(np.array_equal(dense[key][1], streamed[key][1]))
 
 
-def test_sign_mask_parallel_map_preserves_the_known_group() -> None:
+def test_sign_mask_checks_run_in_the_process_pool(monkeypatch: pytest.MonkeyPatch, forced_pool: Any) -> None:
+    """The engine module imported by its own name is picklable into spawned workers; `forced_pool` reports two
+    workers and records that `parallel.ordered_map` mapped every mask check."""
+    monkeypatch.syspath_prepend(str(ENGINE_DIR))
+    monkeypatch.delitem(sys.modules, "fiber_rank_v14", raising=False)
+    engine = importlib.import_module("fiber_rank_v14")
     x2_plus_y2 = {(2, 0): 1, (0, 2): 1}
     xy = {(1, 1): 1}
-    _check(v14.sign_group([[x2_plus_y2], [xy]], 2, P) == [(0,), (1,), (0, 1)])
+    _check(engine.sign_group([[x2_plus_y2], [xy]], 2, P) == [(0,), (1,), (0, 1)])
+    _check(forced_pool.maps == [("SignMaskCheck", 3)])
+    _check(forced_pool.pools == [2])
 
 
 def test_compact_preflight_uses_stage_peaks() -> None:
@@ -96,6 +103,46 @@ def test_compact_preflight_uses_stage_peaks() -> None:
         "closure_chunk_temporaries": 1,
     }
     _check(v14.compact_stage_peaks(terms) == {"products": 13, "closure": 12})
+    terms |= {"streamed_loop_arrays": 20, "streamed_chunk_temporaries": 30, "compact_insert_panels": 100}
+    _check(v14.compact_stage_peaks(terms) == {"products": 63, "closure": 112})
+    cached = {"uint16_generator_operator": 9, "uint16_product_rows": 4, "compact_echelon_ceiling": 7}
+    cached |= {"closure_chunk_temporaries": 1, "tiled_product_temporaries": 5}
+    _check(v14.compact_stage_peaks(cached) == {"products": 18, "closure": 12})
+
+
+def test_streamed_prefix_peak_counts_the_rows_of_the_largest_generator_call(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The observed row count of every `streamed_generator_product` call never exceeds, and here equals, the bound."""
+    basis = [(0, 0), (1, 0), (0, 1), (1, 1)]
+    index = {monomial: i for i, monomial in enumerate(basis)}
+    tables = [
+        [{(1, 0): 1}, {}, {(1, 1): 1}, {}],
+        [{(0, 1): 1}, {(1, 1): 1}, {}, {}],
+    ]
+    lay = v14.block_tables(tables, index, np.zeros(len(basis), dtype=np.int64), [0, 0], [0])
+    generators = np.array([[0, 1, 1, 0], [0, 0, 0, 1], [0, 1, 0, 1]], dtype=np.float64)
+    seen: list[int] = []
+    real = v14.streamed_generator_product
+
+    def spy(inputs: dict[int, np.ndarray], *args: Any) -> dict[int, np.ndarray]:
+        seen.append(sum(len(rows) for rows in inputs.values()))
+        return real(inputs, *args)
+
+    monkeypatch.setattr(v14, "streamed_generator_product", spy)
+    levels = v14.order_walk_levels(basis, lay)
+    wanted = {1: {(0,), (1,), (2,)}, 2: {(0, 0), (0, 1), (1, 1), (0, 2)}, 3: {(0, 0, 0), (0, 0, 1), (0, 1, 2)}}
+    for subset in (None, wanted):
+        seen.clear()
+        v14.block_products_streamed(generators, [0, 0, 0], 0, levels, lay, 3, P, 2, subset)
+        _check(max(seen) == v14.streamed_prefix_peak(3, 3, subset))
+    _check(v14.streamed_prefix_peak(3, 3, None) == 6)
+    _check(v14.streamed_prefix_peak(1, 5, None) == 0)
+
+
+def test_streamed_loop_and_chunk_terms_follow_the_accumulate_line() -> None:
+    """Contribution (2 bytes) plus two uint32 temporaries (8 bytes) per prefix row element."""
+    _check(v14.streamed_loop_bytes(5, 1000) == 10 * 5 * 1000)
+    _check(v14.tiled_product_bytes(64) == 8 * (64 * 4096 + 4096 * 1024 + 3 * 64 * 1024))
+    _check(v14.streamed_chunk_bytes(64, 1000) == 4 * 8 * 64 * 1000 + v14.tiled_product_bytes(64))
 
 
 def _next_prime(n: int) -> int:
