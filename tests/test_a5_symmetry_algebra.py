@@ -145,7 +145,7 @@ def test_linear_forms_add_repeated_coordinates_and_reject_an_index_outside_the_r
         sa.linear_forms("y(4)", 3, PRIME)
 
 
-def _gl2() -> tuple[object, object]:
+def _gl2() -> tuple[sa.np.ndarray, sa.np.ndarray]:
     """ad of gl(2) on the basis E11, E12, E21, E22 (an echelon basis), and that basis."""
     units = [(0, 0), (0, 1), (1, 0), (1, 1)]
     basis = sa.np.array([[[int((i, j) == unit) for j in range(2)] for i in range(2)] for unit in units])
@@ -162,7 +162,7 @@ def test_each_structure_check_fails_on_a_case_that_lacks_the_property() -> None:
     sl2 = sa.row_space(sa.np.array([[1, 0, 0, PRIME - 1], [0, 1, 0, 0], [0, 0, 1, 0]]), PRIME)
     scalars = sa.np.array([[1, 0, 0, 1]])
 
-    def derived(space: object) -> object:
+    def derived(space: sa.np.ndarray) -> sa.np.ndarray:
         return sa.bracket_span(space, space, ad, PRIME)
 
     _same([sa.is_ideal(space, ad, PRIME) for space in (sl2, scalars, eye[:1], eye[1:2])], [True, True, False, False])
