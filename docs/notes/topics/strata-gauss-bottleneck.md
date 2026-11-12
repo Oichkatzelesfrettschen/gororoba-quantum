@@ -28,18 +28,13 @@ The certified zero set is:
 
 ---
 
-## 2. The 16 × 16 Complex Matrix C_z
+## 2. The 15 × 15 complex matrix C_z and the bordered matrix A(z, t)
 
-For z ∈ ℂ¹⁶ ≅ 𝔸₄ ⊗ ℂ, C_z is the imaginary block of left multiplication by z in the sedenion algebra 𝔸₄. Entries for row a ∈ {0, …, 15} and column b ∈ {0, …, 15}:
-
-(C_z)_{a,b} = cd_sign(16, a ⊕ b, b) · z_{a⊕b}
-
-where ⊕ denotes bitwise exclusive-OR, and cd_sign(16, p, q) ∈ {-1, +1} is the Cayley-Dickson structural sign table on standard basis elements eₚ · e_q = cd_sign(16, p, q) e_{p⊕q}.
-
-In split coordinates z'_k (k = 0, …, 15, with z_k = i^{popcount(k)} z'_k):
-(C'_z')_{a, b} = (-1)^{popcount(a & b)} · cd_sign(16, a ⊕ b, b) · z'_{a ⊕ b}
-
-C_z is skew-Hermitian on the pure imaginary subspace Re(z) = 0.
+The repository's convention ([a5-rank-strata-equations](../../evidence/a5-rank-strata-equations/README.md),
+[a5-stiefel-pfaffian-germs](../../evidence/a5-stiefel-pfaffian-germs/README.md)): C_z is the 15 × 15 imaginary block
+of left multiplication by z in the sedenions, indexed 1 through 15, and the bordered matrix A(z, t) is 16 × 16. In
+split coordinates the matrix is M(z') = D C_(D z') D with the diagonal D of that README. Over ℂ the matrix C_z is
+skew-symmetric (C_zᵀ = −C_z); it is skew-Hermitian only for real z.
 
 ---
 
@@ -68,7 +63,7 @@ rank[u'_V; v'_V] = rank(3 e'_1, 5 e'_1) = 1
 
 ---
 
-## 4. Action of H_V = SU(2) × U(1) on (u', μ', v')
+## 4. Stabilizers on (u', μ', v')
 
 ### 4.1 Ambient Tangent Generators of H = G₂(ℂ) × SO(2, ℂ) × ℂ^*
 
@@ -87,10 +82,17 @@ S(u', μ', v') = (u', μ', v')
 
 The vectors u'_V and v'_V lie entirely along the line spanned by e'_1. The sub-algebra of 𝔤₂(ℂ) fixing e'_1 is isomorphic to 𝔰𝔩(3, ℂ) (compact form 𝔰𝔲(3)). Under e'_1, the orthogonal space (e'_1)^⊥ ⊂ ℂ⁷ splits into two 3-dimensional eigenspaces V₊ and V₋ of the cross product operator e'_1 × ·:
 
-V₊ = span{e'_2 + e'_3, e'_4 + e'_6, e'_5 + e'_7}
-V₋ = span{e'_2 - e'_3, e'_4 - e'_6, e'_5 - e'_7}
+V₊ = span{e'_2 + e'_3, e'_4 + e'_5, -e'_6 + e'_7}
+V₋ = span{e'_2 - e'_3, e'_4 - e'_5, -e'_6 - e'_7}
 
-The normal null directions n_± satisfying e'_1 × n_± = ± n_± and η(n_±) = 0 lie in V_±. The SU(2) subgroup of the stabilizer SU(3) preserves the chosen null pair, rotating the normal slice via its standard spin representation. On μ', the SU(2) action is trivial (μ' is an SU(2)-singlet).
+(bases computed by the local review of this note with the split-octonion product of the tree; the three-dimensional
+eigenspaces are the statement of [a5-rank-strata-equations](../../evidence/a5-rank-strata-equations/README.md)).
+
+The displayed representative (3e'_1, 4, 5e'_1) is the collinear endpoint of V: its stabilizer has dimension 8, Lie
+algebra 𝔰𝔲(3), acting on the normal slice as 3 + conjugate(3)
+([v-topology-representation-result.json](../../evidence/a5-kernel-bundles/v-topology-representation-result.json)).
+A generic point of V has stabilizer SU(2), and SU(2) × U(1) belongs to the boundary row VB of the same record.
+The normal null directions n_± satisfying e'_1 × n_± = ± n_± and η(n_±) = 0 lie in V_±; μ' is a singlet.
 
 ---
 
@@ -100,8 +102,8 @@ Execute Bottleneck 2 (Gauss Map Classification in Gr_ℂ(4, 6)) first.
 
 ### Rationale
 
-1. Bottleneck 2 decides whether the kernel bundle attaching map over V is topologically rigid or transitive under the stabilizer SU(2), providing the closed topological classification of the boundary singularity.
-2. The computation requires only exact rational linear algebra on the 16 × 16 matrix C_z(t) and its Jordan chain leading terms, with no large-scale polynomial elimination dependencies.
+1. Jordan-chain leading terms along chosen arcs give sampled lower bounds on the image of the Gauss map of the kernel bundle over V; they need only exact rational linear algebra on C_z(t).
+2. A classification needs more than samples: the closed graph (Rees or blow-up) computation, and the real-versus-complex closure and higher-order degenerations that [a5-kernel-attachments-program.md](../../design/a5-kernel-attachments-program.md) leaves open.
 
 ---
 
