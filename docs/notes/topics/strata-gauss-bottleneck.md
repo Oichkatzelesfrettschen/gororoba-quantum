@@ -12,7 +12,7 @@ is not in this tree. The proposed first step is the limit-set computation from n
 
 ## 1. Eight Quadratic Generators q₁, …, q₈
 
-The Rocq file `NullityTwelveQuadraticLocus.v` (gororoba-open) defines eight quadratic polynomials in affine coordinates (z₅, z₆, z₁₃, z₁₆, z₁₇, z₁₈, z₁₉, z₂₀) ∈ ℝ⁸ with 13 free affine coordinates:
+The Rocq file `NullityTwelveQuadraticLocus.v` (gororoba-open) defines eight quadratic polynomials in affine coordinates (z₅, z₆, z₁₃, z₁₆, z₁₇, z₁₈, z₁₉, z₂₀) ∈ ℝ⁸ with 13 free affine coordinates. These are the 21 tangent coordinates h = Kz at the center e₁ + e₁₈ of [nullity_twelve_local_geometry.md](../nullity_twelve_local_geometry.md), a point of the boundary stratum VB; they are tangent-cone equations at that center and differ from the split coordinates of the V representative in section 3, which describe the open stratum V:
 
 q₁ = z₆² - z₁₆²
 q₂ = z₅ z₆ - z₁₃ z₁₆
@@ -94,8 +94,9 @@ differ. In the complex group H = G₂(ℂ) × SO(2, ℂ) × ℂ* of section 4.1,
 ([a5-rank-strata-equations](../../evidence/a5-rank-strata-equations/README.md)); a complex Gauss-map classification
 uses this action. The compact computation of
 [v-topology-representation-result.json](../../evidence/a5-kernel-bundles/v-topology-representation-result.json)
-gives the compact forms: 𝔰𝔲(3) of dimension 8 at this endpoint, acting on the normal slice as 3 + conjugate(3),
-SU(2) at a generic point of V, and SU(2) × U(1) on the boundary row VB.
+gives the compact forms: 𝔰𝔲(3) of dimension 8 at this endpoint, acting on the complex rank-six kernel as
+3 + conjugate(3) (the record's complex kernel representation; no normal-slice statement is retained), SU(2) at a
+generic point of V, and the connected stabilizer U(2) on the boundary row VB, whose Lie algebra is 𝔰𝔲(2) + 𝔲(1).
 The normal null directions n_± satisfying e'_1 × n_± = ± n_± and η(n_±) = 0 lie in V_±; μ' is a singlet.
 
 ---
@@ -106,7 +107,7 @@ Execute Bottleneck 2 (Gauss Map Classification in Gr_ℂ(4, 6)) first.
 
 ### Rationale
 
-1. Jordan-chain leading terms along chosen arcs give sampled lower bounds on the image of the Gauss map of the kernel bundle over V; they need only exact rational linear algebra on C_z(t).
+1. Jordan-chain leading terms along chosen arcs give sampled lower bounds on the image of the Gauss map of the kernel bundle over V; they need only exact rational linear algebra. The matrix is the bordered A(z, conjugate(z)) with the kernel transport ker_R L_y = psi^-1(ker_C A(z, conjugate(z))) of [a5-kernel-bundles](../../evidence/a5-kernel-bundles/README.md), whose complex kernels have the dimensions 4 and 6 a map into Gr_ℂ(4, 6) needs; C_z alone has complex kernel dimensions 5 and 7 at nullities 8 and 12.
 2. A classification needs more than samples: the closed graph (Rees or blow-up) computation, and the real-versus-complex closure and higher-order degenerations that [a5-kernel-attachments-program.md](../../design/a5-kernel-attachments-program.md) leaves open.
 
 ---

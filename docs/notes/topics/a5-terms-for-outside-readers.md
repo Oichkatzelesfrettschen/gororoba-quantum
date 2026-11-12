@@ -39,7 +39,7 @@ The repository symbol A₅ names the 32-dimensional real algebra produced by the
 
 ### Finding 2: Nullity denotes operator kernel dimension, not graph spectral multiplicity
 
-The repository uses nullity to mean η(x) = dim ker(Lₓ) where Lₓ : 𝔸₅ → 𝔸₅ is the left-multiplication operator Lₓ(y) = x · y. The zero-divisor locus 𝒵(𝔸₅) = {x ∈ 𝔸₅ ∖ {0} : ∃ y ≠ 0, x y = 0} is the union V(Q) ∪ V(G) of a quadric and a quartic hypersurface ([a5-zero-divisor-strata](../../evidence/a5-zero-divisor-strata/README.md)). The rank stratification of Lₓ yields strata of nullity 4, 8, 12 and 16 (ranks 28, 24, 20, 16). For sedenions 𝔸₄, non-zero zero-divisors have uniform nullity 4 (rank 12); 𝔸₅ has the four nullities 4, 8, 12 and 16.
+The repository uses nullity to mean η(x) = dim ker(Lₓ) where Lₓ : 𝔸₅ → 𝔸₅ is the left-multiplication operator Lₓ(y) = x · y. The zero-divisor locus 𝒵(𝔸₅) = {x ∈ 𝔸₅ ∖ {0} : ∃ y ≠ 0, x y = 0} lies in the doubly pure subspace x₀ = x₁₆ = 0, and under the identification of that subspace with ℂ¹⁵ it is the union V(Q) ∪ V(G) of a quadric and a quartic hypersurface with the origin removed ([a5-zero-divisor-strata](../../evidence/a5-zero-divisor-strata/README.md)). The rank stratification of Lₓ yields strata of nullity 4, 8, 12 and 16 (ranks 28, 24, 20, 16). For sedenions 𝔸₄, non-zero zero-divisors have uniform nullity 4 (rank 12); 𝔸₅ has the four nullities 4, 8, 12 and 16.
 
 **Correction**: The reviewer's spectral graph nullity η(G) = dim ker(A(G)) of an adjacency matrix A(G) is absent from the repository. No graph adjacency matrix appears in the fiber program's computations.
 
@@ -47,7 +47,7 @@ The repository uses nullity to mean η(x) = dim ker(Lₓ) where Lₓ : 𝔸₅ �
 
 ### Finding 3: Strata are zero-divisor rank loci in ℙ³¹, not graph families
 
-The repository's strata are the projective loci where rank(Lₓ) takes a fixed value among {16, 20, 24, 28} for x ∈ 𝔸₅. These are algebraic subvarieties of ℙ³¹ defined by the vanishing of minors of the 32 × 32 matrix Lₓ. The kernel bundle 𝒦 → 𝒵ₖ over each stratum and its exceptional fiber limits along rational arcs are the geometric objects under study.
+The repository's strata are the projective loci where rank(Lₓ) takes a fixed value among {16, 20, 24, 28} for x ∈ 𝔸₅. Vanishing minors of the 32 × 32 matrix Lₓ define the closed loci Rₖ of nullity at least k; a stratum is the locally closed set Sₖ = Rₖ ∖ Rₖ₊₄, on which the kernel has constant dimension ([a5-strata-regularity](../../evidence/a5-strata-regularity/README.md)). The kernel bundle 𝒦 → 𝒵ₖ over each stratum and its exceptional fiber limits along rational arcs are the geometric objects under study.
 
 **Correction**: The reviewer's "strata" as graph families or partition classes with fixed spectral nullity do not correspond to any repository object.
 
@@ -82,7 +82,7 @@ The reviewer has analyzed a completely different mathematical domain due to two 
 1. **A₅ is not the alternating group**. The repository studies 𝔸₅, the 32-dimensional real non-associative algebra produced by the 5th Cayley-Dickson doubling of the sedenions 𝔸₄.
 2. **Nullity is not graph spectrum multiplicity**. The repository studies the kernel dimension of the left-multiplication operator Lₓ : 𝔸₅ → 𝔸₅, Lₓ(y) = x · y.
 3. **The concrete geometric objects**:
-   - The zero-divisor locus 𝒵(𝔸₅) = {x ∈ 𝔸₅ ∖ {0} : ∃ y ≠ 0, x y = 0}, the union V(Q) ∪ V(G) of a quadric and a quartic hypersurface.
+   - The zero-divisor locus 𝒵(𝔸₅) = {x ∈ 𝔸₅ ∖ {0} : ∃ y ≠ 0, x y = 0}, inside the doubly pure subspace x₀ = x₁₆ = 0 ≅ ℂ¹⁵ the union V(Q) ∪ V(G) of a quadric and a quartic hypersurface, with the origin removed.
    - The rank stratification of Lₓ: for 𝔸₄, non-zero zero-divisors have uniform nullity 4 (rank 12); in 𝔸₅ the nullities are 4, 8, 12, 16 (ranks 28, 24, 20, 16).
    - The kernel bundle 𝒦 → 𝒵ₖ over each stratum and its exceptional fiber limits along rational arcs.
 4. **Algorithmic status**:
