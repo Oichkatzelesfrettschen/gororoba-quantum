@@ -1,0 +1,49 @@
+{
+  "schema": "qd-network-case-v1",
+  "status": "draft",
+  "admission": "blocked",
+  "source_repository": "Oichkatzelesfrettschen/gororoba-quantum",
+  "source_revision": "d5ff68e283ca26b12dc07bf95a48cc515a3c6145",
+  "protocol": "teleportation_A_to_B",
+  "claim_level": "C3",
+  "local_platforms": [
+    "qpu:ascella",
+    "qpu:belenos"
+  ],
+  "joint_platform_id": null,
+  "physical_route_evidence": null,
+  "input_ensemble": {
+    "name": "uniform_pauli_six",
+    "probabilities": [
+      "1/6",
+      "1/6",
+      "1/6",
+      "1/6",
+      "1/6",
+      "1/6"
+    ],
+    "physical_preparation_evidence": null,
+    "accepted_multiphoton_bound": null
+  },
+  "output_measurements": [
+    "X",
+    "Y",
+    "Z"
+  ],
+  "base_setting_cells": 18,
+  "resource_factory_evidence": null,
+  "bell_instrument_evidence": null,
+  "logical_frame_convention": "receiver_byproduct_Xx_Zz",
+  "output_capability": "O0",
+  "joint_record_contract": null,
+  "attempt_denominator_contract": null,
+  "effective_processing_contract": null,
+  "calibration_bundle": null,
+  "benchmark_certificate": null,
+  "statistical_case": null,
+  "max_jobs": null,
+  "max_seconds": null,
+  "max_credits": null,
+  "approval_record": null,
+  "payload_sha256": null
+}
