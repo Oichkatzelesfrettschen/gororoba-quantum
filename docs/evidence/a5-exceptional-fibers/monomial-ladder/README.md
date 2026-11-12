@@ -191,7 +191,7 @@ are 952 − 861 = 91 in degree 5 and 1,666 − 1,526 = 140 in degree 6. Degree 5
 already has h_5 = 952 at both registered primes (A5-183/A5-220); it is a positive
 control for this computation. The N14 target ranks below strengthen the
 degree-six lower bound to 1,554 at both registered primes; the jet functionals of
-[../arc-jets/](../arc-jets/README.md) close the cell at h_6 = 1,666 on both primes.
+[../arc-jets/](../arc-jets/README.md) close the cell at h_6 = 1,666 on both primes, for the N- and for the N+ header.
 
 `e8_target_rank.py prepare` computes a global `dp` standard basis of K2 and of
 P1 ∩ P2, exports the degree-d standard monomials modulo K2 and their normal forms
@@ -287,6 +287,10 @@ and verification logs are retained in the same directory. The on-demand gates
 `core-a5-e8-target-rank`, `core-a5-e8-target-frontier`,
 `core-a5-e8-target-second-prime` and `core-a5-e8-target-n15` bind these bases
 and ranks to the producer.
+The N+ header has the four matching bases (`e8np-p32009-d5-basis.json`, `e8np-p32009-d6-basis.json`,
+`e8np-p32029-d5-basis.json`, `e8np-p32029-d6-basis.json`, each with its Singular export and log), written by
+`e8_target_rank.py prepare` and read by the N+ jet-rank records of [../arc-jets/](../arc-jets/README.md); no target
+rank is computed on them and no on-demand gate replays their Singular export.
 The [validation record](target-records/validation.json) records successful
 executions of the first three gates: both degree-five controls, both N14
 degree-six ranks and all four bases. The N15 calculation completed under the
@@ -330,8 +334,9 @@ S[I T] / (m_R S) S[I T], the Rees algebra of an ideal of a hypersurface ring red
 That is a finite presentation: `records/e8-fiber-cone-e8-nm-p32009.sing` computes its kernel L in k[y_1..y_21] by
 two eliminations and compares it with K2. That run has not finished. The target ranks above give
 1,581 ≤ h_6 ≤ 1,666 at p = 32009 and 1,554 ≤ h_6 ≤ 1,666 at p = 32029; the jet functionals of
-[../arc-jets/](../arc-jets/README.md) reach rank 1,666 at both primes, so h_6 = 1,666 there and L has no generator
-of degree 3 to 6 beyond K2; generators of L above degree 6 remain open. The truncated ranks of I and
+[../arc-jets/](../arc-jets/README.md) reach rank 1,666 at both primes on the N- header and on the N+ header (the
+`e8np-*` bases of `target-records/` supply the N+ columns), so h_6 = 1,666 there and L has no generator of degree 3
+to 6 beyond K2; generators of L above degree 6 remain open. The truncated ranks of I and
 I S agree at orders 5 to 9 (114, 276, 569, 1,056, 1,817; `e8_closure_probe.py`,
 `records/e8-closure-probe-e8-nm-p32009.jsonl`), consistent with the exact result. The four closure runs (N− and N+ headers, both primes) give the same numbers, and
 `records/slice-ring-e8-*.log` show that the kernel of the parametrization equals the header's J (one component)
