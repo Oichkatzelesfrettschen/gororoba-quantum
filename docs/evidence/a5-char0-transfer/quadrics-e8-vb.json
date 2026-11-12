@@ -1,0 +1,25 @@
+{
+ "slug": "e8-vb",
+ "conjecture": "the Q(i) degree-2 relation space {q : q(G) in J + m I^2} reduces onto K2 mod p",
+ "targets": 55,
+ "qi_dimension": 21,
+ "qi_rank_h2": 34,
+ "qi_max_denominator": 25,
+ "qi_has_imaginary_part": true,
+ "sq_size": 431,
+ "monomials": 1632,
+ "wall_seconds": 649.5,
+ "peak_rss_kib": 1303240,
+ "primes": [
+  {
+   "prime": 32029,
+   "root": 9115,
+   "k2_source": "working/distribute/out/a5-p2-small/vb_p2/d2/relations-upto-d2.rel",
+   "modular_dimension": 21,
+   "bad_denominators": 0,
+   "echelon_equal": true,
+   "mutation_detected": true
+  }
+ ],
+ "verdict": "survives"
+}
