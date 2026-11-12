@@ -61,11 +61,11 @@ lint)
 	# producers under results/ and docs/ that a gate or a ledger binds.
 	checked_files="results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py docs/evidence/least-squares-precision/fp_host.py docs/evidence/least-squares-precision/fp_sweep.py docs/evidence/least-squares-precision/fp_export.py docs/evidence/a5-exceptional-fibers/vb-export-levers/kaggle docs/evidence/a5-char0-transfer/kaggle"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py docs/evidence/a5-char0-transfer/transfer_counterexample.py docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
-	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py"
+	checked_files="$checked_files docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
+	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_closure_certificate.py docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/arc_jets_qi.py"
-	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py"
-	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	checked_files="$checked_files docs/evidence/a5-associator-observables/associator_observables.py"
+	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -77,11 +77,11 @@ types)
 	# their imports resolve.
 	typed_files="../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py ../docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py ../docs/evidence/least-squares-precision/fp_host.py ../docs/evidence/least-squares-precision/fp_sweep.py ../docs/evidence/least-squares-precision/fp_export.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py ../docs/evidence/a5-char0-transfer/transfer_counterexample.py ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
-	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py"
+	typed_files="$typed_files ../docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
+	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_closure_certificate.py ../docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/arc_jets_qi.py"
-	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py"
-	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	typed_files="$typed_files ../docs/evidence/a5-associator-observables/associator_observables.py"
+	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files

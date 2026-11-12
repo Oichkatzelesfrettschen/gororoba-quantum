@@ -68,7 +68,8 @@ remain.
      elimination over Q(i), or kernel vectors reconstructed over Q(i) and verified. The other repair is a direct
      lower bound over Q(i) with no prime in it, which is what the completed characteristic-0 rows use: the
      opposite-sign X proof (A5-270), the same-sign X certificate over Q(i) (A5-304, A5-305) and the direct degree-2
-     relation spaces (A5-248, A5-294, A5-315).
+     relation spaces (A5-248, A5-294, A5-315); the direct Q(i) arc ranks (A5-293) give the recorded lower
+     bounds on analytic spread the same way.
      **Checker.** [`scripts/a5_char0_rank_gate.py`](../../../scripts/a5_char0_rank_gate.py) takes a JSON object
      with `prime`, `i_root`, `W` and `P` (rows are common ambient coordinates; entries are integers, rational
      strings or [real, imaginary] Gaussian-rational pairs), reduces the same exact matrices modulo the split prime,
@@ -105,7 +106,14 @@ remain.
 2. **The ten blocked rows over Q(i):** check 1 ran on 2026-11-09 and survives on all ten pairs at both primes
    ([`evidence/a5-char0-transfer/`](../../evidence/a5-char0-transfer/README.md), ledger A5-247): J has an
    integer reduced standard basis over Q(i) whose reduction equals the F_p basis, G matches, and a corrupted
-   coefficient breaks the equality. The good-reduction computation of the first form of check 3 survives for X- -> N- at N = 4, 8, 11, 15 and 18 (A5-249; `truncation_check.py`), and by A5-316 it does not yield the lower bound without condition (d); the same-sign X values over Q(i) rest on the direct certificate (A5-304, A5-305) instead, and check 2 stalled on that pair at the 3-hour cap (A5-248, `quadric_lift.py`; the next attempt checks modular cofactors reconstructed over Q(i) as polynomial identities, avoiding the Q(i) standard basis). The opposite-sign X incidences need neither check: their arc certificate replays exactly over Q(i) and gives F(I) = Q(i)[y1, y2, y3] in every degree (A5-270, `x_opposite_qi.py`), the first all-degree fiber statement in characteristic 0 on the fiber track. Conjecture for check 2: the degree-2 relation space
+   coefficient breaks the equality. The ambient good-reduction computation survives for X- -> N- at N = 4, 8,
+   11, 15 and 18 (A5-249; `truncation_check.py`) and for W8 -> N- at N = 4, 7, 10, 13 and 16 (A5-277), and by
+   A5-316 those rows yield no characteristic-0 lower bound without condition (d). Check 2 survives directly for
+   X- -> N- (A5-248), Iso -> N- (A5-294) and E8-bar -> VB at 32029 (A5-315). The same-sign X values over Q(i)
+   rest on the direct certificate (A5-304, A5-305), and the opposite-sign X incidences need no modular transfer:
+   their direct certificate over Q(i) gives F(I) = Q(i)[y1, y2, y3] in every degree (A5-270, `x_opposite_qi.py`).
+   The direct Q(i) arc ranks A5-293 independently give the recorded lower bounds on analytic spread. Conjecture
+   for the other check-2 rows: the degree-2 relation space
    {q : q(G) in J + m I^2} over Q(i) has the dimension of K2 mod p and reduces onto it at both primes; the
    cheapest instance is X- -> N-, falsified by a dimension or a reduced basis that differs.
 3. **The fiber-track open cells:** E8-bar -> N+- degree 6, the VB degree-3 component (A5-016), and the all-degree
