@@ -31,7 +31,7 @@ closure space and every final block rank agree.
 Provenance of the summary:
 
 - The run executed `fiber_rank_v14.py` through [`rank_cell.py`](../replay/engine/rank_cell.py). The resource file's
-  `engine_sha256` (`42689db8a5450cb5...`) equals the digest of the engine file at the head of the branch, as do the
+  `engine_sha256` (`ba7bc490c9e986ab...`) equals the digest of the engine file at the head of the branch, as do the
   header and receipt digests of the files the command names; the runner exited 0 with an empty `validation_error`.
 - The run used the cached uint16 operator (`product_operator: uint16-cached`, `operator_cache_gib: 6`). The streamed
   route without the cache, on which the N = 19 model below rests, was not exercised at this size; the unit tests and
@@ -44,21 +44,21 @@ Provenance of the summary:
 
 | Quantity | retained v11 | v14 compact |
 | --- | ---: | ---: |
-| wall | 7,841.2 s (two workers on a cloud VM, beside a second job) | 4,719.8 s (four workers, the build host) |
-| products | 2,201.4 s | 833.7 s |
-| closure | 4,751.3 s | 3,358.7 s |
-| peak memory | 24.9 GiB (largest single-process RSS, GNU `time`) | 5.04 GiB (RSS summed over the process group) |
-| preflight selected arrays | 58.9 GiB (sum of every term) | 4.68 GiB (larger of the products and closure stages; the six terms sum to 5.90 GiB) |
+| wall | 7,841.2 s (two workers on a cloud VM, beside a second job) | 5,881.9 s (four workers, the build host) |
+| products | 2,201.4 s | 1,255.3 s |
+| closure | 4,751.3 s | 3,966.0 s |
+| peak memory | 24.9 GiB (largest single-process RSS, GNU `time`) | 5.01 GiB (RSS summed over the process group) |
+| preflight selected arrays | 58.9 GiB (sum of every term) | 4.69 GiB (larger of the products and closure stages; the seven terms sum to 5.95 GiB) |
 
 The memory rows are two statistics: a single-process maximum and a process-group sum that counts pages shared by
 forked workers once per process, so the ratio 0.201 errs against v14. The wall rows come from two machines with
-different worker counts, and v11 shared its VM with a second job, so the ratio 0.653 carries no hardware-neutral
+different worker counts, and v11 shared its VM with a second job, so the ratio 0.750 carries no hardware-neutral
 meaning. On this cell the measured v14 peak lies below the v11 peak; the equality of ranks is a finite-field result
 and does not transfer to characteristic zero.
 
 ### Reproducing the acceptance run
 
-The command below runs from the repository root, takes about 85 minutes and writes the three records into a new
+The command below runs from the repository root, takes about 98 minutes and writes the three records into a new
 empty `OUT` directory (`rank_cell.py` skips a run whose existing record validates, so a populated `OUT` launches
 nothing). It needs Singular 4.4.1 on `PATH` and the interpreter of the CI pins in `PYTHON`.
 
@@ -70,7 +70,7 @@ HEADER=$FIB/working/build/inputs/p32009-r10754/w8-nm.sing
 RECEIPT=$FIB/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json
 OUT=PATH-TO-A-NEW-EMPTY-DIRECTORY
 printf '%s  %s\n' \
-    42689db8a5450cb54df9cb842c98febf3a0de91d30a069c1488f16ab5e1c666a "$ENGINE" \
+    ba7bc490c9e986ab9e794973ac73f5f25e704dd1c6e21b9bf04808779ec3eca5 "$ENGINE" \
     585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760 "$HEADER" \
     6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425 "$RECEIPT" | sha256sum -c -
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096

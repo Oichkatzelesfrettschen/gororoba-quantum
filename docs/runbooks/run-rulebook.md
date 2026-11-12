@@ -421,7 +421,7 @@ the closest entry and say what changed.
   multiplied (4,381 rows built) and 265 nonstandard checks (202 targeted, 63 strided) test for rank growth; the
   comparator is the retained receipt-bound v11 run of `w8-n16-azure/`.
 - Host and tool versions: the build host, Python 3.14.7, NumPy 2.5.4, SciPy 1.18.1, python-flint 0.9.0, Singular
-  4.4.1; engine `fiber_rank_v14.py` sha256 `42689db8a5450cb5...`.
+  4.4.1; engine `fiber_rank_v14.py` sha256 `ba7bc490c9e986ab...`.
 - Launch line and environment: the command of
   [memory-bounded/README.md](../evidence/a5-exceptional-fibers/memory-bounded/README.md#reproducing-the-acceptance-run)
   under `systemd-run --user --scope -p MemoryMax=16G -p MemorySwapMax=0`, `--timeout 14400`, `--operator-cache-gb 6`
@@ -432,7 +432,7 @@ the closest entry and say what changed.
 - Departures from the foundations: none identified; the memory scope (16 GiB) sits above the `--max-gb 12` of the
   preflight.
 - Parallelism: 4 workers and 4 BLAS threads on the build host; the resource file records at most 10 processes.
-- Memory and time limits: `--max-gb 12` (the preflight admitted at 4.68 GiB), the 16 GiB scope with no swap, and the
+- Memory and time limits: `--max-gb 12` (the preflight admitted at 4.69 GiB), the 16 GiB scope with no swap, and the
   runner's 14,400 s timeout; a limit that ended the run would show in `termination` and in the exit status.
 - Checkpoints: the engine's stderr prints `products built`, one line per closure round and the echelon insert time;
   the runner publishes the stdout record by atomic rename after exit 0.
@@ -441,8 +441,9 @@ the closest entry and say what changed.
 - Outcome: the first attempt ended after about 27 minutes (the operator's account; its records were not kept) with
   exit 1, because `rank_cell.process_group_rss` raised `ProcessLookupError` when a group member exited between the
   `/proc` directory listing and the read of its stat file; commit `b97b47fa9` skips such a member and adds a test that
-  raises ESRCH on one stat read. The retained run, on the engine whose first closure pass multiplies `--chunk` rows at a time, took 4,719.8 s
-  (singular and export 423.8 s, products 833.7 s, closure 3,358.7 s, of which echelon inserts 3,200.4 s) with a peak
-  process-group resident set of 5,416,853,504 bytes (5.04 GiB), `r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315,
+  raises ESRCH on one stat read. The retained run, on the engine whose preflight includes cached-operator construction
+  scratch and whose first closure pass multiplies `--chunk` rows at a time, took 5,881.9 s (Singular and export 569.5 s, products 1,255.3 s,
+  closure 3,966.0 s, of which echelon inserts 3,812.7 s) with a peak process-group resident set of 5,377,896,448 bytes
+  (5.01 GiB), `r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315,
   and no rank growth in 265 nonstandard checks. The measured-combinations table of compute-flags.md holds no
   engine v14 row.
