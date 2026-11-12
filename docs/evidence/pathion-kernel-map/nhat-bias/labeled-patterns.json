@@ -1,0 +1,25 @@
+{
+ "schema": "nhat-labeled-patterns-v1",
+ "operands": 252,
+ "orbits": {
+  "VB": 168,
+  "V": 56,
+  "Vap": 14,
+  "Vam": 14
+ },
+ "minus_bins": {
+  "values": 35,
+  "values_by_orbit_content": {
+   "V+Vam+Vap": 7,
+   "VB": 28
+  }
+ },
+ "pair_class_and_minus_bins": {
+  "values": 63,
+  "values_by_orbit_content": {
+   "V": 14,
+   "VB": 42,
+   "Vam+Vap": 7
+  }
+ }
+}

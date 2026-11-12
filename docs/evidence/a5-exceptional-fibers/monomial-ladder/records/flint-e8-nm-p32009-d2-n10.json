@@ -1,0 +1,24 @@
+{
+ "slug": "e8-nm",
+ "prime": 32009,
+ "order": 10,
+ "generators": 21,
+ "generator_order": 2,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 8,
+   "A": 1056,
+   "B": 1035,
+   "r": 21
+  },
+  {
+   "degree": 2,
+   "order": 10,
+   "A": 2149,
+   "B": 2066,
+   "r": 83
+  }
+ ],
+ "seconds": 100.8
+}

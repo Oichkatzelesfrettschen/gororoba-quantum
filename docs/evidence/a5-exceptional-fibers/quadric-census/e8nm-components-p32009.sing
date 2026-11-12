@@ -1,0 +1,14 @@
+// E8-bar -> N-, p = 32009: minimal primes of K2 + N, N the nilpotent coordinates, and whether K2 + N is radical.
+option(redSB); LIB "primdec.lib";
+ring Y=32009,(y(1..21)),dp;
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel")+";");
+ideal P=std(K+ideal(y(4),y(6),y(7),y(12),y(14)));
+list L=minAssChar(P);
+"RESULT minimal primes of K2 + N", size(L);
+int i; ideal R=L[1]; for(i=1;i<=size(L);i++){ "RESULT prime", i, "dim", dim(std(L[i])), "mult", mult(std(L[i])); if(i>1){ R=intersect(R,L[i]); } }
+R=std(R);
+"RESULT K2 + N radical", size(simplify(reduce(R,P),2))==0;
+"RESULT intersection of the two components: dim", dim(std(L[1]+L[2])), "mult", mult(std(L[1]+L[2]));
+ideal Q=std(quotient(std(K),P));
+"RESULT embedded quadric inside prime 1", size(simplify(reduce(L[1],Q),2))==0, "inside prime 2", size(simplify(reduce(L[2],Q),2))==0;
+quit;

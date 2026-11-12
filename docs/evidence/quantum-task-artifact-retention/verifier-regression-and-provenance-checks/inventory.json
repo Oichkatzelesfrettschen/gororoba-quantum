@@ -4,9 +4,9 @@
    "classification": "retained-sanitized",
    "content_changed": true,
    "git_blob_oid": "f88ec582b4340de009628bebd79a216152e62599",
-   "retained": "captures/75251161864b9a7669b6a4e2d68eac23727419818fc7e374c50ba901045ecfe0.txt",
-   "retained_bytes": 2584,
-   "retained_sha256": "75251161864b9a7669b6a4e2d68eac23727419818fc7e374c50ba901045ecfe0",
+   "retained": "captures/c85160bdc3cb09e4a1157d474fa0522837557c3c18fe0bcaf880de4b01801b51.txt",
+   "retained_bytes": 2585,
+   "retained_sha256": "c85160bdc3cb09e4a1157d474fa0522837557c3c18fe0bcaf880de4b01801b51",
    "source": "escaped-credential-regressions",
    "source_bytes": 2570,
    "source_sha256": "d4e0fcafce93dfc692b0940a70fb48d5cb51956cc0f7587e375186ae7c6a35b3"

@@ -1,0 +1,58 @@
+{
+ "slug": "e8-nm",
+ "prime": 32009,
+ "order": 14,
+ "generators": 21,
+ "generator_order": 2,
+ "engine": "float64-batched-echelon",
+ "source_sha256": {
+  "fast_ladder.py": "48d99e9eae2ceaa3f942ece05b2c0fb09d869aa47f26852ad26a4fb552eed849",
+  "e8_ladder.py": "ff0df04d529c25752239c4fa9f770742cf5002d5c7199433937bdd449791c254"
+ },
+ "versions": {
+  "torch": "2.15.0+cpu",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1"
+ },
+ "batch": 1024,
+ "threads": 16,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 10,
+   "columns": 3289,
+   "map_nnz": 761982,
+   "A": 2951,
+   "B": 2930,
+   "r": 21,
+   "seconds": 521.9
+  },
+  {
+   "degree": 2,
+   "order": 12,
+   "columns": 7371,
+   "map_nnz": 3197211,
+   "A": 5536,
+   "B": 5453,
+   "r": 83,
+   "seconds": 686.9
+  },
+  {
+   "degree": 3,
+   "order": 14,
+   "columns": 14756,
+   "map_nnz": 10508729,
+   "A": 9104,
+   "B": 8879,
+   "r": 225,
+   "seconds": 1095.3
+  }
+ ],
+ "timing": {
+  "generators": 23.7,
+  "maps": 6.3,
+  "products": 127.0,
+  "echelon": 936.8
+ },
+ "seconds": 1095.3
+}

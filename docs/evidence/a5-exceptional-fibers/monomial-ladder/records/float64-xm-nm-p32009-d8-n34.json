@@ -1,0 +1,83 @@
+{
+ "slug": "xm-nm",
+ "prime": 32009,
+ "order": 34,
+ "generator_order": 3,
+ "engine": "float64-batched-echelon",
+ "batch": 1024,
+ "device": "cpu",
+ "threads": 24,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 13,
+   "A": 1335,
+   "B": 1320,
+   "r": 15,
+   "seconds": 136.3
+  },
+  {
+   "degree": 2,
+   "order": 16,
+   "A": 2226,
+   "B": 2175,
+   "r": 51,
+   "seconds": 353.3
+  },
+  {
+   "degree": 3,
+   "order": 19,
+   "A": 3402,
+   "B": 3280,
+   "r": 122,
+   "seconds": 654.4
+  },
+  {
+   "degree": 4,
+   "order": 22,
+   "A": 4855,
+   "B": 4615,
+   "r": 240,
+   "seconds": 712.9
+  },
+  {
+   "degree": 5,
+   "order": 25,
+   "A": 6555,
+   "B": 6138,
+   "r": 417,
+   "seconds": 859.6
+  },
+  {
+   "degree": 6,
+   "order": 28,
+   "A": 8450,
+   "B": 7785,
+   "r": 665,
+   "seconds": 1195.8
+  },
+  {
+   "degree": 7,
+   "order": 31,
+   "A": 10466,
+   "B": 9470,
+   "r": 996,
+   "seconds": 1908.3
+  },
+  {
+   "degree": 8,
+   "order": 34,
+   "A": 12507,
+   "B": 11085,
+   "r": 1422,
+   "seconds": 3350.9
+  }
+ ],
+ "timing": {
+  "generators": 1.8,
+  "maps": 30.1,
+  "products": 911.1,
+  "echelon": 2407.3
+ },
+ "seconds": 3350.9
+}

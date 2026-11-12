@@ -1,0 +1,83 @@
+{
+ "base_dimension": 861,
+ "basis_payload_sha256": "5509f4377c0a8c1baf376e38a55eea222eac4004d6ffd562be1842dc99326425",
+ "basis_verification": {
+  "export_log_sha256": "c6b955c1a8ae6f913d1079be9a2197c000b451a5232ffd03c32ef04c0d325f63",
+  "export_script_sha256": "fd1cce1e17ba744ae96f0edd6091295af678e4421659899b1804edc438a5806b",
+  "singular": "4.4.1"
+ },
+ "degree": 5,
+ "denominator_stages": [
+  {
+   "degree": 1,
+   "denominator_rank": 23,
+   "elapsed_ms": 175,
+   "order": 4,
+   "selected_array_budget_bytes": 129360
+  },
+  {
+   "degree": 2,
+   "denominator_rank": 62,
+   "elapsed_ms": 508,
+   "order": 6,
+   "selected_array_budget_bytes": 2921184
+  },
+  {
+   "degree": 3,
+   "denominator_rank": 130,
+   "elapsed_ms": 1198,
+   "order": 8,
+   "selected_array_budget_bytes": 26123328
+  },
+  {
+   "degree": 4,
+   "denominator_rank": 235,
+   "elapsed_ms": 2577,
+   "order": 10,
+   "selected_array_budget_bytes": 143663520
+  },
+  {
+   "degree": 5,
+   "denominator_rank": 385,
+   "elapsed_ms": 7106,
+   "order": 12,
+   "selected_array_budget_bytes": 582014160
+  }
+ ],
+ "elapsed_ms": 43230,
+ "exact_membership_certified": false,
+ "full_generator_count": 21,
+ "header_parser_sha256": "a184d37f1107a9f8088ae61be1d9eb23a1a8e4e3438c433b60b270eb1097b433",
+ "lower": 882,
+ "order": 12,
+ "parallel_sha256": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+ "payload_sha256": "f1bed85508d262c448f7d120a7028dcbe630a0d6db97d093edaad7df2e5cc051",
+ "prime": 32029,
+ "producer_sha256": "0e9d3b4ceac05608546adf075d420838c5a27ded08ab9291333d92000b219a04",
+ "python_flint": "0.9.0",
+ "ring_producer_sha256": "ff0df04d529c25752239c4fa9f770742cf5002d5c7199433937bdd449791c254",
+ "root": 9115,
+ "schema": "a5-e8-nilpotent-target-rank-v1",
+ "scope": "Selected finite field only. A truncated zero or plateau supplies no exact membership upper bound.",
+ "selected_array_limit_bytes": 805306368,
+ "sources": {
+  "docs/evidence/a5-exceptional-fibers/arcs/arc_targets.py": "bcbb56e16a66e0922d806d7cd0d80299bfe7c832c8a5aedf6e27f4dd3aecb387",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32029/P1.txt": "3c9cc98dbc10e88ade453836a9f8fa0363c53eeaae01003153143ec2764e273a",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32029/P2.txt": "d5b6545db4bff6ddd63e234e2ceb0a33c499ba261dfafe6a8d8b310bb4a2b80e",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32029/campaign_summary.json": "1d7cd446cb0eb5d2dc55049039f82c03b84f1b4758599584e8f02944455a20ac",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32029/result.json": "291fb99f0529d431d37f5e2f3f9bd13c078e3f311633af0f779da0bb7e4ab671",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32029/result_P1.json": "95a453fd71471e96e07098ba57b8b0315feb7e62724455dee0960c6842f348fc",
+  "docs/evidence/a5-exceptional-fibers/k2-hilbert.jsonl": "116222a7aec8d8c00cf061a5236f992ee516334236325199796f26b3cd049aa4",
+  "docs/evidence/a5-exceptional-fibers/witnesses.jsonl": "ee323aa5a0cb606b02533fb7446d836a571b15b1fda6b8ee129caee231d76c3d",
+  "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-nm.sing": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/gens.txt": "a183205b60d31874db9c805ea8edc808bc4925a7763319a3e3874b17aadd3059",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/receipt-d2.json": "5573ef662aef6fba9be48eb382651c0f05911058c01f91564920e136a8e9c629",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-d2.rel": "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-upto-d2.rel": "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b"
+ },
+ "status": "lower_bound_only",
+ "target": "e8nm-p32029",
+ "target_dimension": 91,
+ "target_rank": 21,
+ "upper": 952
+}

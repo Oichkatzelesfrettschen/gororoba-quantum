@@ -1,0 +1,100 @@
+{
+ "schema": "a5-char0-transfer-counterexample-v1",
+ "ideal": [
+  "x^7",
+  "y^7",
+  "x^4*y^2*(1025216261 + x)"
+ ],
+ "c": 1025216261,
+ "order": 22,
+ "identity_holds": true,
+ "truncated": {
+  "Q": {
+   "1": {
+    "products": 3,
+    "rank_W": 216,
+    "rank_W_and_products": 219,
+    "r": 3
+   },
+   "2": {
+    "products": 6,
+    "rank_W": 139,
+    "rank_W_and_products": 145,
+    "r": 6
+   },
+   "3": {
+    "products": 10,
+    "rank_W": 23,
+    "rank_W_and_products": 32,
+    "r": 9
+   }
+  },
+  "F_32009": {
+   "1": {
+    "products": 3,
+    "rank_W": 211,
+    "rank_W_and_products": 214,
+    "r": 3
+   },
+   "2": {
+    "products": 6,
+    "rank_W": 126,
+    "rank_W_and_products": 132,
+    "r": 6
+   },
+   "3": {
+    "products": 10,
+    "rank_W": 0,
+    "rank_W_and_products": 10,
+    "r": 10
+   }
+  },
+  "F_32029": {
+   "1": {
+    "products": 3,
+    "rank_W": 211,
+    "rank_W_and_products": 214,
+    "r": 3
+   },
+   "2": {
+    "products": 6,
+    "rank_W": 126,
+    "rank_W_and_products": 132,
+    "r": 6
+   },
+   "3": {
+    "products": 10,
+    "rank_W": 0,
+    "rank_W_and_products": 10,
+    "r": 10
+   }
+  }
+ },
+ "truncated_rank_degrees_1_to_3": {
+  "Q": [
+   3,
+   6,
+   9
+  ],
+  "F_32009": [
+   3,
+   6,
+   10
+  ],
+  "F_32029": [
+   3,
+   6,
+   10
+  ]
+ },
+ "degree_2_relations": {
+  "Q": 0,
+  "F_32009": 0,
+  "F_32029": 0
+ },
+ "rank_W_degree_3_drop_modulo_p": {
+  "F_32009": 23,
+  "F_32029": 23
+ },
+ "verdict": "counterexample"
+}

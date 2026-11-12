@@ -1,0 +1,17 @@
+{
+ "schema": "a5-monomial-probe-v1",
+ "slug": "xm-nm",
+ "prime": 32009,
+ "order": 14,
+ "spaces": {
+  "I": {
+   "rank": 1788,
+   "single_monomial_rows": 1788
+  },
+  "m_R I": {
+   "rank": 1773,
+   "single_monomial_rows": 1773
+  }
+ },
+ "verdict": "monomial_span"
+}
