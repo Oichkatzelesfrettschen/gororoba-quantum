@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+
 import modular_echelon_compact as mec
 
 ROOT = Path(__file__).parents[1]
@@ -41,9 +43,21 @@ def test_stage_bounds_fit_16_gib_but_full_operator_does_not() -> None:
     _check(derived["max_prefix_rows_that_fit"] == 6_732)
 
 
-def test_retained_json_is_the_regenerated_model() -> None:
-    retained = json.loads((EVIDENCE / "memory-bounded/w8-n19-memory-model.json").read_text())
-    _check(retained == memory_model.model())
+@pytest.mark.parametrize("altered", [False, True])
+def test_model_check_rejects_changed_selected_array_evidence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, altered: bool
+) -> None:
+    record = memory_model.model()
+    if altered:
+        record["stage_peaks"]["selected_array_peak_bytes"] += 1
+    destination = tmp_path / "model.json"
+    destination.write_text(json.dumps(record, indent=1) + "\n")
+    monkeypatch.setattr(sys, "argv", [str(PRODUCER), "--check", str(destination)])
+    if altered:
+        with pytest.raises(SystemExit, match="model differs"):
+            memory_model.main()
+    else:
+        memory_model.main()
 
 
 def test_known_prefix_peak_adds_ten_bytes_per_element_to_the_products_stage() -> None:

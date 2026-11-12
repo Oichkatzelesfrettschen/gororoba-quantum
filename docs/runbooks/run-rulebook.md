@@ -411,12 +411,12 @@ the closest entry and say what changed.
 - Outcome: both jobs timed out at 41,000.1 s with no result.
 
 
-### W8 -> N- degree 5, N = 16: memory-bounded engine v14 rerun on the build host (do the retained ranks reproduce at a bounded peak)
+### W8 -> N- degree 5, N = 16: preceding cached-operator acceptance on the build host
 
 - Question and decisive outcome: whether engine v14 with the compact echelon reproduces the retained v11 receipt run
-  of W8 -> N- at p = 32009 (`r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, A5-333) at a process-group peak
-  below the 12 GiB `--max-gb` of the preflight. Equal ranks at a bounded peak support the engine for the W8
-  degree-6, N = 19 route without deciding it; a different rank would be an engine defect.
+  of W8 -> N- at p = 32009 (`r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, A5-333) under a 16 GiB scope.
+  The 12 GiB `--max-gb` value admits selected-array estimates; sampled process-group RSS supplies a distinct
+  observation. The cell checks arithmetic at N = 16, while the N = 19 route requires its own validation.
 - Formulation: the engine's quotient mode over the degree-2 receipt, so the 4,116 standard representatives are
   multiplied (4,381 rows built) and 265 nonstandard checks (202 targeted, 63 strided) test for rank growth; the
   comparator is the retained receipt-bound v11 run of `w8-n16-azure/`.
@@ -437,13 +437,41 @@ the closest entry and say what changed.
 - Checkpoints: the engine's stderr prints `products built`, one line per closure round and the echelon insert time;
   the runner publishes the stdout record by atomic rename after exit 0.
 - End state: the three records under `memory-bounded/w8-n16-acceptance/` (stdout record, stderr, resource file), each
-  listed with its sha256 in `memory-bounded/w8-n16-acceptance.json`.
+  listed with its sha256 in `memory-bounded/w8-n16-acceptance.json`. The sparse-panel release acceptance below
+  refreshes those derived paths; Git preserves the preceding run's bytes.
 - Outcome: the first attempt ended after about 27 minutes (the operator's account; its records were not kept) with
   exit 1, because `rank_cell.process_group_rss` raised `ProcessLookupError` when a group member exited between the
   `/proc` directory listing and the read of its stat file; commit `b97b47fa9` skips such a member and adds a test that
-  raises ESRCH on one stat read. The retained run, on the engine whose preflight includes cached-operator construction
+  raises ESRCH on one stat read. The preceding successful run, on the engine whose preflight includes cached-operator construction
   scratch and whose first closure pass multiplies `--chunk` rows at a time, took 5,881.9 s (Singular and export 569.5 s, products 1,255.3 s,
-  closure 3,966.0 s, of which echelon inserts 3,812.7 s) with a peak process-group resident set of 5,377,896,448 bytes
+  closure 3,966.0 s, of which echelon inserts 3,812.7 s) with a maximum sampled process-group RSS of 5,377,896,448 bytes
   (5.01 GiB), `r_16 = 4116`, blocks 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315,
   and no rank growth in 265 nonstandard checks. The measured-combinations table of compute-flags.md holds no
   engine v14 row.
+
+### W8 to N-minus degree 5, order 16: sparse-panel release acceptance
+
+- Question and falsifier: the corrected uint16 operator builder releases each sparse-product panel before building
+  the next. The degree-5, order-16 cell at prime 32009 must reproduce rank 4116, all four block ranks and all 265
+  nonstandard controls of the retained engine-v11 receipt run. A differing rank or control falsifies equivalence;
+  a resource stop establishes an operational limit.
+- Formulation and sources: engine v14 `342ec30537a09ba0...` with the retained W8 header and degree-2 receipt, quotient
+  mode, cached uint16 operator and compact echelon. The existing successful records remain intact until the new
+  output validates; a fresh directory prevents an existing-record skip.
+- Host and launch: the build host, pinned Python 3.14.7 and Singular 4.4.1; four workers, two OpenBLAS threads,
+  OMP one, `MALLOC_ARENA_MAX=2` and the loader TLS reservation. The engine uses `--quotient --stream-products
+  --operator-cache-gb 6 --echelon compact --chunk 64 --max-gb 12 --dense-tables-gb 0` and the retained receipt.
+- Memory and deadline: a 16 GiB cgroup scope with zero allowed swap; runner timeout 10800 seconds and scope backstop
+  10920 seconds. The prior measured 5881.946 seconds times 1.75 plus 300 gives 10593.4055 seconds, rounded upward.
+  The cgroup cap is distinct from the selected-array preflight budget and the sampled process-group RSS statistic.
+- Checkpoints and admission: the runner preserves partial stdout, stderr and resources on failure, and publishes
+  after successful exit and identity validation. A terminal record decides the exit state. The sampled RSS maximum
+  and sampling interval are retained together; allocations between samples remain unobserved.
+- Outcome: the engine, runner and terminal wrapper exit 0. The runner records 7,218.380 seconds, rank 4116,
+  block contributions 1,017 / 1,005 / 1,047 / 1,047, closure ranks 15,364 / 15,264 / 15,315 / 15,315, and zero
+  growth in all 265 nonstandard controls. Singular/export took 431.6 seconds, products 914.5 seconds and closure
+  5,578.7 seconds, including 5,324.6 seconds of echelon insertion. Maximum sampled process-group RSS is
+  5,398,753,280 bytes (5.03 GiB), sampled every 0.1 seconds across at most ten processes, with zero unavailable
+  samples. All six source/input hashes match the launch case. The preceding canonical bytes were copied and
+  hash-verified before the three fresh records replaced them; the regenerated acceptance summary and selected-array
+  model both pass their read-only checks. The observed cached N = 16 route supplies no N = 19 fit guarantee.

@@ -133,18 +133,33 @@ def model(prefix_peak_rows: int | None = None) -> dict[str, object]:
         ),
         "boundary": (
             "Upper bounds for the named dense arrays only; sparse tables, Python objects, the flint entry lists of "
-            "each insertion, allocator state and file cache require an instrumented acceptance run. A nonpositive "
-            "headroom or measured process-group RSS above 16 GiB falsifies this host route."
+            "each insertion, allocator state and file cache require an instrumented acceptance run. Nonpositive "
+            "selected-array headroom fails this model's conservative admission criterion. A cgroup memory-limit "
+            "stop falsifies successful execution of that run under the cap. "
+            "Sampled process-group RSS counts shared pages per process and supplies neither a cgroup peak nor "
+            "guaranteed resident-memory headroom."
         ),
     }
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", type=Path)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--out", type=Path)
+    mode.add_argument(
+        "--check",
+        type=Path,
+        nargs="?",
+        const=Path(__file__).with_name("w8-n19-memory-model.json"),
+        help="compare a retained model without writing it",
+    )
     args = parser.parse_args()
     text = json.dumps(model(), indent=1) + "\n"
-    if args.out:
+    if args.check:
+        if args.check.read_text() != text:
+            raise SystemExit(f"selected-array model differs from {args.check}")
+        print("The retained selected-array model matches its producer.")
+    elif args.out:
         args.out.write_text(text)
     else:
         print(text, end="")

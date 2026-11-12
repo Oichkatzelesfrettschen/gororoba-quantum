@@ -1,5 +1,5 @@
 {
- "schema": "a5-fiber-rank-v14-memory-acceptance-v2",
+ "schema": "a5-fiber-rank-v14-memory-acceptance-v3",
  "case": {
   "fiber": "W8 -> N-",
   "prime": 32009,
@@ -7,7 +7,7 @@
   "order": 16,
   "header_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
   "engine": "docs/evidence/a5-exceptional-fibers/replay/engine/fiber_rank_v14.py",
-  "engine_sha256": "ba7bc490c9e986ab9e794973ac73f5f25e704dd1c6e21b9bf04808779ec3eca5",
+  "engine_sha256": "342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29",
   "engine_bytes": "the file at the commit that retains this summary; its sha256 equals the resource record's engine_sha256"
  },
  "configuration": {
@@ -21,14 +21,14 @@
    "max_gib": 12,
    "dense_tables_gib": 0,
    "closure_tables": "sparse",
-   "timeout_seconds": 14400.0,
+   "timeout_seconds": 10800.0,
    "receipt_sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425",
-   "engine_args_sha256_16": "31de905056a981fb"
+   "engine_args_sha256_16": "f4c92361cdd9543a"
   },
   "streamed_uncached_route": "not exercised at this size",
   "from_launcher_not_recorded": {
    "workers": 4,
-   "openblas_threads": 4,
+   "openblas_threads": 2,
    "omp_threads": 1,
    "memory_scope": "systemd user scope, MemoryMax=16G, MemorySwapMax=0",
    "host": "the build host",
@@ -67,15 +67,18 @@
   }
  },
  "resources": {
-  "elapsed_seconds": 5881.946,
-  "max_process_group_rss_bytes": 5377896448,
-  "max_processes": 10,
+  "elapsed_seconds": 7218.38,
+  "max_sampled_process_group_rss_bytes": 5398753280,
+  "max_sampled_processes": 10,
+  "rss_poll_seconds": 0.1,
+  "rss_unavailable_samples": 0,
+  "rss_statistic": "maximum observed sum of process-group RSS at polling times; allocations between samples are unobserved, so this statistic is not a process-group high-water mark",
   "seconds": {
-   "singular_and_export": 569.5,
-   "products": 1255.3,
-   "closure": 3966.0,
-   "total": 5881.5,
-   "echelon_insert_within_closure": 3812.7
+   "singular_and_export": 431.6,
+   "products": 914.5,
+   "closure": 5578.7,
+   "total": 7217.9,
+   "echelon_insert_within_closure": 5324.6
   },
   "preflight_stage_maximum_bytes": 5040786432,
   "preflight_stage_bytes": {
@@ -90,17 +93,17 @@
    {
     "role": "engine stdout record",
     "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.json",
-    "sha256": "7f715b38d5f899ce6ba4b756a0f4994640e41b5169a9b8a1a8007886cac823b8"
+    "sha256": "98a0cc44d9feb9b7c41dfd06e9a793c7e3c6b94749f0ac824c189edc866a8b86"
    },
    {
     "role": "engine stderr",
     "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.err",
-    "sha256": "ae386078004d2b72992d5492e162b46733009c421daa0b79e1a56da2231c2673"
+    "sha256": "8eb719c53fd3147b9f2ab5a726f96da8d7acb9ef09347564ad32adf43e766df7"
    },
    {
     "role": "runner resource file",
     "path": "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json",
-    "sha256": "9eff124aab69cbb3145dc602bc1191becde7d54bc85b5d7521f81cd345466ee5"
+    "sha256": "17119b669b0a2ee6c2cac55fa9f6f23e69cf1c457c65b59b002101abcb603ea2"
    }
   ],
   "cross_check": "the resource file's stdout_part_sha256 and stderr_sha256 equal the sha256 of the first two files"
@@ -127,5 +130,5 @@
   "elapsed_seconds": 7841.2,
   "max_rss_kib": 26119936
  },
- "verdict": "r_N, every block rank and every nonstandard control agree with the retained v11 receipt run; the v14 process-group resident-set peak (5.01 GiB, summed over the group) lies below the v11 single-process maximum (24.9 GiB) on different machines"
+ "verdict": "r_N, every block rank and every nonstandard control agree with the retained v11 receipt run; the v14 maximum sampled process-group RSS is 5.03 GiB at a 0.1-second interval, while the v11 single-process high-water mark is 24.9 GiB on another machine; these distinct statistics establish no true-peak ratio"
 }

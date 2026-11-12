@@ -122,6 +122,14 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
             f"{ENGINE} has sha256 {engine_digest}, the resource record names {resources['engine_sha256']}; "
             "repeat the acceptance run and retain its records",
         )
+    require(sha256(root / command[2]) == resources["header_sha256"], "the current header bytes differ from the run")
+    receipt = options.get("--k2-receipt")
+    if receipt is None:
+        raise SystemExit("acceptance_summary: the recorded command has no degree-two receipt")
+    require(
+        sha256(root / receipt) == record["representatives"]["receipt_sha256"],
+        "the current degree-two receipt bytes differ from the run",
+    )
 
     retained = int(log_match(err, r"^products built in [0-9.]+ s: (\d+) retained rows$").group(1))
     insert_seconds = float(log_match(err, r"^echelon insert seconds in the closure: ([0-9.]+)$").group(1))
@@ -130,7 +138,23 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
     stages = record["preflight_stages"]
     max_gb = option_number(options, "--max-gb")
 
-    per_block = record["per_block"]
+    for field in ("r_N", "dim_quotient", "products"):
+        require(type(record.get(field)) is int and record[field] >= 0, f"the recorded {field} result is withheld")
+    require(
+        isinstance(record.get("checks"), dict)
+        and type(record["checks"].get("count")) is int
+        and record["checks"]["count"] > 0,
+        "the nonstandard control results are empty or withheld",
+    )
+    per_block = record.get("per_block")
+    require(isinstance(per_block, dict) and bool(per_block), "the per-block results are empty or withheld")
+    for block, result in per_block.items():
+        require(isinstance(result, dict), f"block {block}: the result is withheld")
+        for field in ("r_N", "rank_W", "cols"):
+            require(
+                type(result.get(field)) is int and result[field] >= 0,
+                f"block {block}: the {field} result is withheld",
+            )
     order = sorted(per_block, key=int)
     v11_blocks = v11["per_block"]
     require(sorted(v11_blocks, key=int) == order, "v11 and v14 differ in their blocks")
@@ -143,6 +167,11 @@ def build_summary(root: Path, check_engine: bool) -> dict[str, Any]:
 
     comparator_err = comparator_err_path.read_text()
     v11_rss_kib = int(log_match(comparator_err, r"^\s*Maximum resident set size \(kbytes\): (\d+)$").group(1))
+    require(
+        type(resources.get("max_sampled_process_group_rss_bytes")) is int
+        and resources["max_sampled_process_group_rss_bytes"] > 0,
+        "the sampled process-group RSS result is empty or withheld",
+    )
     v14_gib, v11_gib = resources["max_sampled_process_group_rss_bytes"] / 2**30, v11_rss_kib / 2**20
     require(resources["rss_poll_seconds"] > 0, "the RSS sample interval must be positive")
 

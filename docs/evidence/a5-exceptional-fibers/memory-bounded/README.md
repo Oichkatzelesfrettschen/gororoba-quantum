@@ -7,8 +7,8 @@ stores only nonpivot echelon coefficients and materializes closure rows one chun
 
 ## Run configuration and tool versions
 
-The acceptance run used `GOROROBA_WORKERS=4`, `OPENBLAS_NUM_THREADS=4` and `OMP_NUM_THREADS=1`: independent
-sign-mask checks use the repository process pool, tiled dense products use four BLAS threads, and nested OpenMP does
+The acceptance run used `GOROROBA_WORKERS=4`, `OPENBLAS_NUM_THREADS=2` and `OMP_NUM_THREADS=1`: independent
+sign-mask checks use the repository process pool, tiled dense products use two BLAS threads, and nested OpenMP does
 not oversubscribe them. The active exact stack is Python 3.14.7, NumPy 2.5.4, SciPy 1.18.1, python-flint 0.9.0,
 SymPy 1.14.0, Singular 4.4.1 and msolve 0.10.1. `msolve -t 4` is the bounded setting for a separate msolve process.
 
@@ -20,8 +20,9 @@ whose three records the directory [`w8-n16-acceptance/`](w8-n16-acceptance/) ret
 ([`.err`](w8-n16-acceptance/w8-nm-d5-n16-p32009.err)) and the runner's resource file
 ([`.resources.json`](w8-n16-acceptance/w8-nm-d5-n16-p32009.resources.json)); the summary lists their sha256.
 [`acceptance_summary.py`](acceptance_summary.py) regenerates the summary from those three records and the retained v11
-comparator; `--check` compares the tracked file with a fresh one and also requires the engine file's sha256 to equal
-the resource record's `engine_sha256`, so an edited engine fails it until the run is repeated. The launcher settings
+comparator; `--check` compares the tracked file with a fresh one and verifies the current engine, header and receipt
+bytes against the recorded digests. An edited engine fails the check until the run is repeated. Missing, empty and
+withheld rank/control/RSS results fail admission. The launcher settings
 that no record holds are constants of the script. The
 summary agrees with the retained v11 receipt run: `r_16 = 4116`; block contributions 1,017 / 1,005 / 1,047 / 1,047;
 closure ranks 15,364 / 15,264 / 15,315 / 15,315; all 265 nonstandard controls add zero rank. V14 reports four
@@ -31,7 +32,7 @@ closure space and every final block rank agree.
 Provenance of the summary:
 
 - The run executed `fiber_rank_v14.py` through [`rank_cell.py`](../replay/engine/rank_cell.py). The resource file's
-  `engine_sha256` (`ba7bc490c9e986ab...`) equals the digest of the engine file at the head of the branch, as do the
+  `engine_sha256` (`342ec30537a09ba0...`) equals the digest of the engine file at the head of the branch, as do the
   header and receipt digests of the files the command names; the runner exited 0 with an empty `validation_error`.
 - The run used the cached uint16 operator (`product_operator: uint16-cached`, `operator_cache_gib: 6`). The streamed
   route without the cache, on which the N = 19 model below rests, was not exercised at this size; the unit tests and
@@ -39,51 +40,77 @@ Provenance of the summary:
 - The worker count, BLAS and OpenMP thread settings and the memory scope (a systemd user scope with
   `MemoryMax=16G`, `MemorySwapMax=0`) come from the launch of the run; the resource file records the engine arguments
   and the process-group resident set, not the environment. The summary keeps them in a separate block.
+- The maximum sampled process-group RSS is 5,398,753,280 bytes (5.03 GiB), from 0.1-second polling, with a maximum
+  sampled count of ten processes and zero unavailable samples. The statistic describes observations at poll times.
 - The resource file carries no swap or out-of-memory counter, so the summary reports none; the scope's
   `MemorySwapMax=0` leaves no swap to count.
 
 | Quantity | retained v11 | v14 compact |
 | --- | ---: | ---: |
-| wall | 7,841.2 s (two workers on a cloud VM, beside a second job) | 5,881.9 s (four workers, the build host) |
-| products | 2,201.4 s | 1,255.3 s |
-| closure | 4,751.3 s | 3,966.0 s |
-| peak memory | 24.9 GiB (largest single-process RSS, GNU `time`) | 5.01 GiB (RSS summed over the process group) |
+| wall | 7,841.2 s (two workers on a cloud VM, beside a second job) | 7,218.4 s (four workers, two BLAS threads, the build host) |
+| products | 2,201.4 s | 914.5 s |
+| closure | 4,751.3 s | 5,578.7 s |
+| memory statistic | 24.9 GiB (largest single-process RSS, GNU `time`) | 5.03 GiB (maximum sampled process-group RSS at 0.1 s) |
 | preflight selected arrays | 58.9 GiB (sum of every term) | 4.69 GiB (larger of the products and closure stages; the seven terms sum to 5.95 GiB) |
 
-The memory rows are two statistics: a single-process maximum and a process-group sum that counts pages shared by
-forked workers once per process, so the ratio 0.201 errs against v14. The wall rows come from two machines with
-different worker counts, and v11 shared its VM with a second job, so the ratio 0.750 carries no hardware-neutral
-meaning. On this cell the measured v14 peak lies below the v11 peak; the equality of ranks is a finite-field result
-and does not transfer to characteristic zero.
+The v14 statistic samples a process-group sum that counts pages shared by forked workers once per process;
+allocations between polls remain unobserved. The v11 statistic is a single-process high-water mark. The runs use
+different machines and worker configurations, and v11 shared its VM with a second job. Those measurements establish
+neither a true-peak ratio nor a hardware-neutral speedup. The equality of ranks is a finite-field result at one
+prime and does not transfer to characteristic zero.
+The v14 Singular/export stage took 431.6 seconds, and closure echelon inserts took 5,324.6 seconds. The wall time
+also includes the final fibre-rank and nonstandard-control insertions after closure.
 
 ### Reproducing the acceptance run
 
-The command below runs from the repository root, takes about 98 minutes and writes the three records into a new
-empty `OUT` directory (`rank_cell.py` skips a run whose existing record validates, so a populated `OUT` launches
-nothing). It needs Singular 4.4.1 on `PATH` and the interpreter of the CI pins in `PYTHON`.
+The retained run completed in about 120 minutes. The command below runs from the repository root and writes the
+three records into a new empty `OUT` directory (`rank_cell.py` skips a run whose existing record validates).
+It needs Singular 4.4.1 on `PATH` and the interpreter of the CI pins in `PYTHON`. Complete the
+[compute-flags checklist](../../../runbooks/compute-flags.md) before launching a new run.
 
 ```sh
-PYTHON=${PYTHON:-python3}; export PYTHON
+: "${PYTHON:?Set PYTHON to the interpreter pinned by docs/PYTHON.md}"; export PYTHON
 FIB=docs/evidence/a5-exceptional-fibers
 ENGINE=$FIB/replay/engine/fiber_rank_v14.py
 HEADER=$FIB/working/build/inputs/p32009-r10754/w8-nm.sing
 RECEIPT=$FIB/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json
-OUT=PATH-TO-A-NEW-EMPTY-DIRECTORY
+OUT=docs/local/w8-sampled-acceptance-$(date -u +%Y%m%dT%H%M%SZ)
 printf '%s  %s\n' \
-    ba7bc490c9e986ab9e794973ac73f5f25e704dd1c6e21b9bf04808779ec3eca5 "$ENGINE" \
+    342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29 "$ENGINE" \
+    072d28456a6bf7192a64ac8758d24d9563be7ca1f2fdbb8632393d3e6a15b0db "$FIB/replay/engine/rank_cell.py" \
+    97ffe60ef3642d4309fb45d59e8bd2e6f6fb48a6cbf2335e5578f1f13a9d6b40 gororoba_quantum/modular_echelon_compact.py \
+    90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48 gororoba_quantum/parallel.py \
     585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760 "$HEADER" \
     6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425 "$RECEIPT" | sha256sum -c -
-export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
-export GOROROBA_WORKERS=4 OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=1 SINGULAR=Singular
-systemd-run --user --scope -q -p MemoryMax=16G -p MemorySwapMax=0 \
-    "$PYTHON" -B $FIB/replay/engine/rank_cell.py --timeout 14400 \
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHONDONTWRITEBYTECODE=1
+export GOROROBA_WORKERS=4 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=1 MALLOC_ARENA_MAX=2 SINGULAR=Singular
+export MKL_NUM_THREADS=1 BLIS_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 NUMEXPR_NUM_THREADS=1
+systemd-run --user --scope -q -p MemoryMax=16G -p MemorySwapMax=0 -p RuntimeMaxSec=10920 \
+    "$PYTHON" -B $FIB/replay/engine/rank_cell.py --timeout 10800 --poll-seconds 0.1 --grace-seconds 10 \
     "$ENGINE" "$HEADER" 5 16 "$OUT/w8-nm-d5-n16-p32009.json" -- \
     --quotient --stream-products --operator-cache-gb 6 --echelon compact --chunk 64 --max-gb 12 \
-    --dense-tables-gb 0 --k2-receipt "$RECEIPT" --singular "$SINGULAR"
+    --dense-tables-gb 0 --k2-receipt "$RECEIPT" --singular "$SINGULAR" </dev/null
 ```
 
 A rerun is compared with the retained stdout record on `r_N`, `per_block` and `checks`; the `seconds` and `export`
 timings vary with the host.
+
+### Read-only evidence checks
+
+The acceptance-summary gate (`core-a5-w8-memory-acceptance-summary`) and selected-array-model gate
+(`core-a5-w8-n19-memory-model`) are registered in [the on-demand manifest](../../../../ci/gates.json):
+
+```sh
+"$PYTHON" -B -W error docs/evidence/a5-exceptional-fibers/memory-bounded/acceptance_summary.py --check
+"$PYTHON" -B -W error docs/evidence/a5-exceptional-fibers/memory-bounded/w8_n19_memory_model.py --check
+```
+
+The commands read the retained files and leave their bytes unchanged. Bounded
+[receipt tests](../../../../tests/test_a5_memory_evidence_receipts.py) admit a complete fixture and reject changed
+engine/header/receipt/output bytes, missing files, empty records and withheld results. The model check accepts its
+bounded fixture and rejects an altered selected-array result. Historical wall-time fields receive a documented
+timing-metadata exemption in [the replay ledger](../../../../ci/runner_image_records.json); the summary gate
+recomputes the derivation from those fixed measurements, rather than acquiring new timings.
 
 ## Exactness invariants
 
@@ -137,9 +164,10 @@ The model's target memory limit is 16 GiB, the `memory_limit` of the script.
 
 The last three bounds are stage-local. Summing the operator and echelon terms would count arrays that are never live
 together. Conversely, the 3.707 GiB is not guaranteed RSS headroom: sparse tables, Python objects, the FLINT entry
-lists of each insertion and allocator state are outside the model. An instrumented process-group peak at or above
-16 GiB falsifies the 16 GiB route. The model is arithmetic on named arrays under the Cauchy block-size bound; it is
-neither a measurement nor a proof that an N = 19 run fits.
+lists of each insertion and allocator state are outside the model. A cgroup memory-limit stop falsifies successful
+execution under the 16 GiB cap. Sampled process-group RSS counts shared pages once per process and supplies neither
+a cgroup peak nor guaranteed headroom. The model is arithmetic on named arrays under the Cauchy block-size bound;
+it is neither a measurement nor a proof that an N = 19 run fits.
 
 Closure stage. `CompactEchelon._insert_compact` replaces one panel at a time and drops each old panel before the next
 is touched, so one basis is live. Beyond it an insertion holds the old panel, its column-selected copy and the grown

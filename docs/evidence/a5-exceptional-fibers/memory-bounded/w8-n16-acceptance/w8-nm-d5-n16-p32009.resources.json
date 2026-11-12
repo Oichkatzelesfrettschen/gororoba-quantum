@@ -22,18 +22,20 @@
   "--singular",
   "Singular"
  ],
- "engine_args_sha256_16": "31de905056a981fb",
- "elapsed_seconds": 5881.946,
+ "engine_args_sha256_16": "f4c92361cdd9543a",
+ "elapsed_seconds": 7218.38,
  "engine_exit": 0,
  "termination": "exited",
  "launch_error": null,
- "timeout_seconds": 14400.0,
+ "timeout_seconds": 10800.0,
  "runner_exit": 0,
  "validation_error": null,
- "max_process_group_rss_bytes": 5377896448,
- "max_processes": 10,
- "engine_sha256": "ba7bc490c9e986ab9e794973ac73f5f25e704dd1c6e21b9bf04808779ec3eca5",
+ "max_sampled_process_group_rss_bytes": 5398753280,
+ "max_sampled_processes": 10,
+ "rss_poll_seconds": 0.1,
+ "rss_unavailable_samples": 0,
+ "engine_sha256": "342ec30537a09ba0addee77643d106a6731c58fa72d40c155146e1fb9cfe0f29",
  "header_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
- "stdout_part_sha256": "7f715b38d5f899ce6ba4b756a0f4994640e41b5169a9b8a1a8007886cac823b8",
- "stderr_sha256": "ae386078004d2b72992d5492e162b46733009c421daa0b79e1a56da2231c2673"
+ "stdout_part_sha256": "98a0cc44d9feb9b7c41dfd06e9a793c7e3c6b94749f0ac824c189edc866a8b86",
+ "stderr_sha256": "8eb719c53fd3147b9f2ab5a726f96da8d7acb9ef09347564ad32adf43e766df7"
 }

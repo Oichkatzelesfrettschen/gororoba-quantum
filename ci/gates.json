@@ -5664,6 +5664,28 @@
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d5.json",
         "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d6.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/memory-bounded/acceptance_summary.py --check",
+      "name": "core-a5-w8-memory-acceptance-summary",
+      "seconds": 0.05,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n16-acceptance.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/memory-bounded/w8_n19_memory_model.py --check",
+      "name": "core-a5-w8-n19-memory-model",
+      "seconds": 0.04,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/memory-bounded/w8-n19-memory-model.json"
+      ]
     }
   ],
   "excluded": [

@@ -1,6 +1,6 @@
-products built in 1255.2 s: 4381 retained rows
+products built in 914.5 s: 4381 retained rows
 closure round 1: ranks [15348, 15249, 15303, 15302], frontier [8258, 8181, 8262, 8253]
 closure round 2: ranks [15364, 15264, 15313, 15313], frontier [16, 15, 10, 11]
 closure round 3: ranks [15364, 15264, 15315, 15315], frontier [0, 0, 2, 2]
 closure round 4: ranks [15364, 15264, 15315, 15315], frontier [0, 0, 0, 0]
-echelon insert seconds in the closure: 3812.7
+echelon insert seconds in the closure: 5324.6
