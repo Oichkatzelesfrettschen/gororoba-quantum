@@ -9,7 +9,8 @@ without the Singular export or the rank computation: the registry root and sign 
 and ordered G agree with the ladder module's parser, every input digest binds (`bound_inputs`), and the 21
 generators substituted into the quadratic algebra at precision 4 are the ones e8_ladder.generators returns after
 checking that all 16 J vanish on the shifted parametrization. A disagreement raises instead of writing a record.
-The record names the sha256 of the four sources it ran, and `--check` compares the whole file bytes with a fresh
+The record names the sha256 of the four sources it ran and, per case, the repository-relative path and sha256 of
+every input `e8_target_rank.bound_inputs` binds, and `--check` compares the whole file bytes with a fresh
 record, so a change of any source, input or target registry shows as a difference.
 """
 
@@ -46,7 +47,7 @@ def check_target(target: Any) -> dict[str, Any]:
         "G_count": len(generators),
         "J_count": len(ideal_j),
         "J_vanishes_on_shifted_parametrization_modulo_n_order": True,
-        "bound_input_count": len(inputs),
+        "bound_inputs": inputs,
         "minimum_G_valuation_at_precision": min(rank.valuation(g, ORDER) for g in generators),
         "nonzero_G_count_at_precision": sum(1 for g in generators if g[0] or g[1]),
         "order": ORDER,

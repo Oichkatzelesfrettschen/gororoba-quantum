@@ -305,7 +305,8 @@ observations are not a controlled performance comparison. The one higher-order
 attempt stops the present resource study at N15.
 
 The [four-target loader check](target-records/loader-check.json) covers both signs and both primes: the root,
-sign, ordered J and G, successful input receipts, all 21 substituted G and vanishing of all 16 J at order 4. Its
+sign, ordered J and G, successful input receipts, all 21 substituted G and vanishing of all 16 J at order 4. Each
+case stores the repository-relative path and sha256 of every input that `e8_target_rank.bound_inputs` binds. Its
 producer is [e8_loader_check.py](e8_loader_check.py), which repeats the input stage of `e8_target_rank.py run` and
 writes the file; `--check` compares a fresh record byte for byte, and gate `core-a5-e8-loader-check` of
 `ci/gates.json` runs that comparison on demand. It verifies loader compatibility and leaves the retained

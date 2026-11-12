@@ -260,8 +260,9 @@ No kernel-map or coset-tiling observable that forgets the labels of the output b
 all tilings, the unlabeled signature) therefore separates the H-orbits of nullity-12 two-term operands, and the
 statement of claim 5 that a [0, 4, 4, 4] reading under the default tiling excludes V is a property of the rule that
 picks the default basis, not of the orbit. The labeled sign pattern keeps part of the orbit (ledger A5-317, grouping
-the same 252 operands): the set of minus bins takes 35 values, 28 of them occurring only in VB and 7 shared by V,
-V^a- and V^a+; together with the operand pair class m the pattern takes 63 values, 42 only in VB, 14 only in V and 7
-shared by V^a- and V^a+. A labeled reading therefore separates VB, V and the pair {V^a-, V^a+}, and the two signed
-V^a classes collide in every pattern; separating those two needs an observable outside the sign network (operands
-with more terms, or amplitudes that the conditional contrast discards).
+the same 252 operands): the set of minus bins (the lower member of each misaligned pair, where the circuit's ideal
+contrast reads -1) takes 35 values, 28 of them occurring only in VB and 7 shared by V, V^a- and V^a+; together with
+the operand pair class m the pattern takes 63 values, 42 only in VB, 14 only in V and 7 shared by V^a- and V^a+. A
+labeled reading therefore separates VB, V and the pair {V^a-, V^a+}, and the two signed V^a classes collide in every
+pattern; separating those two needs an observable outside the sign network (operands with more terms, or amplitudes
+that the conditional contrast discards).

@@ -2,11 +2,12 @@
 
     $PYTHON docs/evidence/pathion-kernel-map/nhat-bias/labeled_patterns.py [--out labeled-patterns.json]
 
-For an operand (i, j, t) with pair class m = i xor j, the ideal kernel-map contrast is -1 on the misaligned pairs
-{k, k xor m} (`nhat_spectral.aligned_reps`). The unlabeled signature over all tilings is one value on all 252
-operands (`nhat_spectral.orbit_blindness`). This script keeps the labels: it groups the operands by the set of
-minus bins, and by that set together with m, and counts which orbits of `hardware_orbits.classify` occur in each
-group. A group that holds one orbit identifies it; a group that holds several is a collision.
+For an operand (i, j, t) with pair class m = i xor j, the ideal kernel-map contrast is -1 on the lower member k of
+each misaligned pair {k, k xor m} (`nhat_spectral.aligned_reps`, `nhat_spectral.orbit_geometry`). The unlabeled
+signature over all tilings is one value on all 252 operands (`nhat_spectral.orbit_blindness`). This script keeps the
+labels: it groups the operands by the set of minus bins, and by that set together with m, and counts which orbits of
+`hardware_orbits.classify` occur in each group. A group that holds one orbit identifies it; a group that holds
+several is a collision.
 """
 
 from __future__ import annotations
@@ -27,12 +28,16 @@ pkm, nb = ns.pkm, ns.nb
 
 
 def pattern(op: tuple[int, int, int]) -> tuple[int, int, tuple[int, ...]] | None:
-    """(nullity, m, minus bins) of the operand; None unless the nullity is 12."""
+    """(nullity, m, minus bins) of the operand; None unless the nullity is 12.
+
+    The minus bins are the lower members k < k xor m of the misaligned pairs, the bins at which the ideal output
+    contrast of the circuit reads -1 (`nhat_spectral.orbit_geometry`, `minus_bins_match_circuit`).
+    """
     m, aligned = ns.aligned_reps(op)
     if len(aligned) != 12:
         return None
     reps = [k for k in range(pkm.DIM) if k < k ^ m and k not in aligned]
-    return len(aligned), m, tuple(sorted(x for k in reps for x in (k, k ^ m)))
+    return len(aligned), m, tuple(sorted(reps))
 
 
 def build() -> dict[str, Any]:
