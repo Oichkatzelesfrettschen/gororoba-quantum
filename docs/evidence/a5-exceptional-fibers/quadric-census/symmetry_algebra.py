@@ -6,16 +6,18 @@ monomials, projected to the quotient by K2) and then, in coordinates on a reduce
 
 - the derived series and the center;
 - r = {x : kappa(x, [g, g]) = 0} for the Killing form kappa, with three checks that hold over F_p without any
-  criterion: r is an ideal, its derived series reaches 0, and g / r is perfect. A perfect Lie algebra of dimension 3
-  over a field of characteristic other than 2 is simple and, over a finite field, split, so a 3-dimensional perfect
-  quotient is sl2 and r is then the radical;
+  criterion: r is an ideal, its derived series reaches 0, [g, g] + r = g, and, when g / r has dimension 3, three
+  elements h, e, f of g / r with [h, e] = 2e, [h, f] = -2f and [e, f] = h, found and verified in coordinates. The
+  triple spans g / r, so g / r is sl2 over F_p, and a solvable ideal with simple quotient is the radical;
 - u = {x in r : tr(x y) = 0 for all y in g}, the trace form of the defining representation, with the checks that u
   is an ideal and its lower central series reaches 0 (a nilpotent ideal);
 - h, the Fitting null component of ad x for one fixed element x, with the checks that h is abelian and that each
   basis matrix is annihilated by the squarefree part of its characteristic polynomial. Commuting semisimple
-  matrices are simultaneously diagonalizable over the algebraic closure, so h is then a toral subalgebra, and the
-  rank of the trace form on h equals dim h;
-- for a fiber with retained component ideals, the restriction of h to the linear span of each component.
+  matrices are simultaneously diagonalizable over the algebraic closure, so h is then a toral subalgebra. The rank
+  of the trace form on h is recorded beside dim h; the two agree on every retained file, which torality alone
+  does not force over F_p (the span of diag(1, i), i^2 = -1, is toral with trace form 0);
+- for a fiber with retained component ideals, the restriction of h to the linear subspace cut out by the linear
+  forms among the generators of each component ideal.
 
 Every statement of the record is a statement about the Lie algebra over F_p. The reading in characteristic 0 (a Levi
 factor, a maximal torus of the symmetry group, a torus action on the cone) is a hypothesis the record does not test:
@@ -32,6 +34,7 @@ import itertools
 import json
 import re
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -60,7 +63,8 @@ COMPONENTS = {
         "C30": ("structure/w8-kp/quotient.txt", 6),
     },
 }
-LINEAR_TERM = re.compile(r"([+-]?)(\d*)\*?y\((\d+)\)")
+LINEAR_TERM = re.compile(r"([+-]?)(?:(\d+)\*)?y\((\d+)\)")
+LINEAR_FORM = re.compile(r"(?:[+-]?(?:\d+\*)?y\(\d+\))(?:[+-](?:\d+\*)?y\(\d+\))*")
 # Semisimple Lie algebras fixed by (dimension, rank) among those of rank at most 3.
 LEVI_TYPES = {
     (0, 0): "0",
@@ -131,6 +135,84 @@ def _echelon(algebra: np.ndarray, prime: int) -> tuple[np.ndarray, list[int]]:
     return flat, pivots
 
 
+def bracket_span(left: np.ndarray, right: np.ndarray, ad: np.ndarray, prime: int) -> np.ndarray:
+    """The span of the brackets [x, y], x in `left`, y in `right`, in coordinates; ad[k][:, l] holds [b_k, b_l]."""
+    dim = ad.shape[0]
+    brackets = [(np.tensordot(x, ad, axes=(0, 0)) % prime) @ y % prime for x, y in itertools.product(left, right)]
+    return row_space(np.array(brackets, dtype=np.int64).reshape(-1, dim), prime)
+
+
+def is_ideal(subspace: np.ndarray, ad: np.ndarray, prime: int) -> bool:
+    """Whether [g, subspace] lies in the subspace."""
+    whole = np.eye(ad.shape[0], dtype=np.int64)
+    return len(row_space(np.concatenate([subspace, bracket_span(whole, subspace, ad, prime)]), prime)) == len(subspace)
+
+
+def reaches_zero(subspace: np.ndarray, step: Callable[[np.ndarray], np.ndarray]) -> bool:
+    """Whether iterating `step` from the subspace reaches 0 within dim + 1 steps."""
+    current = subspace
+    for _ in range(subspace.shape[1] + 1):
+        if not len(current):
+            return True
+        current = step(current)
+    return not len(current)
+
+
+def sums_to_whole(left: np.ndarray, right: np.ndarray, prime: int) -> bool:
+    """Whether the two subspaces together span the ambient space."""
+    return len(row_space(np.concatenate([left, right]), prime)) == left.shape[1]
+
+
+def quotient_has_sl2_triple(ad: np.ndarray, ideal: np.ndarray, prime: int) -> bool:
+    """Whether g / ideal has dimension 3 and holds h, e, f with [h, e] = 2e, [h, f] = -2f, [e, f] = h.
+
+    A class is written on the basis vectors at the non-pivot columns of the reduced echelon basis of the ideal,
+    and the search runs over x with small integer coordinates whose ad on the quotient has eigenvalues 0, a, -a
+    in F_p.
+    """
+    dim = ad.shape[0]
+    ideal = row_space(ideal, prime) if len(ideal) else ideal
+    pivots = [int(np.flatnonzero(row)[0]) for row in ideal]
+    free = [k for k in range(dim) if k not in pivots]
+    if len(free) != 3:
+        return False
+
+    def classes(vector: np.ndarray) -> np.ndarray:
+        reduced = (vector - vector[pivots] @ ideal) % prime if len(ideal) else vector % prime
+        return reduced[free]
+
+    # table[a][:, b] holds the class of [c_a, c_b].
+    table = np.array([[classes(ad[a][:, b]) for b in free] for a in free], dtype=np.int64).transpose(0, 2, 1)
+    roots = {value * value % prime: value for value in range(1, prime)}
+    for weights in itertools.product(range(-2, 3), repeat=3):
+        x = np.array(weights, dtype=np.int64) % prime
+        operator = np.tensordot(x, table, axes=(0, 0)) % prime
+        square = int(np.trace(operator @ operator % prime)) * pow(2, -1, prime) % prime
+        if square not in roots:
+            continue
+        h = x * (2 * pow(roots[square], -1, prime)) % prime
+        ad_h = np.tensordot(h, table, axes=(0, 0)) % prime
+        up = null_space((ad_h - 2 * np.eye(3, dtype=np.int64)) % prime, 3, prime)
+        down = null_space((ad_h + 2 * np.eye(3, dtype=np.int64)) % prime, 3, prime)
+        if len(up) != 1 or len(down) != 1:
+            continue
+        e, f = up[0], down[0]
+        bracket = (np.tensordot(e, table, axes=(0, 0)) % prime) @ f % prime
+        support = np.flatnonzero(h)
+        scale = int(bracket[support[0]]) * pow(int(h[support[0]]), -1, prime) % prime
+        if not scale or ((bracket - scale * h) % prime).any():
+            continue
+        f = f * pow(scale, -1, prime) % prime
+        relations = [
+            ((ad_h @ e - 2 * e) % prime).any(),
+            ((ad_h @ f + 2 * f) % prime).any(),
+            (((np.tensordot(e, table, axes=(0, 0)) % prime) @ f - h) % prime).any(),
+        ]
+        if not any(relations) and len(row_space(np.array([h, e, f]), prime)) == 3:
+            return True
+    return False
+
+
 def analyze(algebra: np.ndarray, prime: int, label: str) -> dict[str, Any]:
     """The structure numbers of a matrix Lie algebra given by a basis (dim, n, n) over F_p."""
     return decompose(algebra, prime, label)[0]
@@ -153,25 +235,10 @@ def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, An
     trace = np.array([[int(np.trace(basis[k] @ basis[m] % prime)) % prime for m in range(dim)] for k in range(dim)])
 
     def product(left: np.ndarray, right: np.ndarray) -> np.ndarray:
-        """The span of the brackets [x, y], x in `left`, y in `right`, in coordinates."""
-        brackets = [(np.tensordot(x, ad, axes=(0, 0)) % prime) @ y % prime for x, y in itertools.product(left, right)]
-        return row_space(np.array(brackets, dtype=np.int64).reshape(-1, dim), prime)
+        return bracket_span(left, right, ad, prime)
 
     def derived(ideal: np.ndarray) -> np.ndarray:
         return product(ideal, ideal)
-
-    def is_ideal(ideal: np.ndarray) -> bool:
-        return len(row_space(np.concatenate([ideal, product(whole, ideal)]), prime)) == len(ideal)
-
-    def reaches_zero(ideal: np.ndarray, step: Any) -> bool:
-        current = ideal
-        for _ in range(dim + 1):
-            if not len(current):
-                return True
-            current = step(current)
-        return not len(current)
-
-    whole = np.eye(dim, dtype=np.int64)
 
     series = [np.eye(dim, dtype=np.int64)]
     while len(series[-1]) and len(series) <= dim + 1:
@@ -190,14 +257,13 @@ def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, An
     for _ in range(dim):
         power = power @ generic % prime
     cartan = null_space(power, dim, prime)
-    brackets_in_cartan = [(np.tensordot(x, ad, axes=(0, 0)) % prime) @ y % prime for x in cartan for y in cartan]
-    lower = row_space(np.array(brackets_in_cartan, dtype=np.int64).reshape(-1, dim), prime)
+    lower = product(cartan, cartan)
     torus_form = cartan @ trace % prime @ cartan.T % prime
     torus = int(_mat(torus_form, prime).rank()) if len(cartan) else 0
     central_torus = len(radical) - len(nil)
-    # Facts over F_p that need no form criterion: the radical is a solvable ideal with perfect quotient, the nil
+    # Facts over F_p that need no form criterion: the radical is a solvable ideal with quotient sl2, the nil
     # ideal is a nilpotent ideal, and the Cartan subalgebra is spanned by commuting semisimple matrices.
-    perfect_quotient = len(row_space(np.concatenate([commutator, radical]), prime)) == dim
+    perfect_quotient = sums_to_whole(commutator, radical, prime)
     cartan_matrices = (cartan @ flat % prime).reshape(len(cartan), n, n)
     levi = (dim - len(radical), torus - central_torus)
     numbers = {
@@ -214,16 +280,24 @@ def decompose(algebra: np.ndarray, prime: int, label: str) -> tuple[dict[str, An
         "cartan_dimension": len(cartan),
         "cartan_derived_dimension": len(lower),
         "torus_rank": torus,
-        "radical_is_solvable_ideal": is_ideal(radical) and reaches_zero(radical, derived),
+        "radical_is_solvable_ideal": is_ideal(radical, ad, prime) and reaches_zero(radical, derived),
         "quotient_by_radical_is_perfect": perfect_quotient,
-        "nil_ideal_is_nilpotent_ideal": is_ideal(nil) and reaches_zero(nil, lambda current: product(nil, current)),
+        "quotient_by_radical_has_sl2_triple": quotient_has_sl2_triple(ad, radical, prime),
+        "nil_ideal_is_nilpotent_ideal": (
+            is_ideal(nil, ad, prime) and reaches_zero(nil, lambda current: product(nil, current))
+        ),
         "cartan_is_toral": not len(lower) and all(is_semisimple(matrix, prime) for matrix in cartan_matrices),
     }
     return numbers, cartan_matrices
 
 
 def is_semisimple(matrix: np.ndarray, prime: int) -> bool:
-    """Whether the squarefree part of the characteristic polynomial annihilates the matrix (degree below p)."""
+    """Whether the squarefree part of the characteristic polynomial annihilates the matrix; needs size below p.
+
+    chi / gcd(chi, chi') is the squarefree part only when every root multiplicity is below p.
+    """
+    if len(matrix) >= prime:
+        raise ValueError(f"matrix size {len(matrix)} is not below the prime {prime}")
     poly = _mat(matrix, prime).charpoly()
     squarefree = poly // poly.gcd(poly.derivative())
     value = np.zeros_like(matrix)
@@ -234,27 +308,26 @@ def is_semisimple(matrix: np.ndarray, prime: int) -> bool:
 
 
 def linear_forms(text: str, n: int, prime: int) -> np.ndarray:
-    """The generators of degree 1 of a Singular ideal string, as rows of coefficients on y(1..n)."""
+    """The generators of degree 1 of a Singular ideal string, as rows of coefficients on y(1..n).
+
+    A generator counts when it is a sum of terms `c*y(i)` or `y(i)` in Singular's printed form; every other
+    generator, a constant or a product included, is skipped.
+    """
     rows = []
     for poly in text.strip().rstrip(";").replace(" ", "").replace("\n", "").split(","):
-        terms = LINEAR_TERM.findall(poly)
-        if (
-            not terms
-            or "^" in poly
-            or ")*y(" in poly
-            or "".join(s + c + f"*y({i})" for s, c, i in terms)
-            != (LINEAR_TERM.sub(lambda m: f"{m.group(1)}{m.group(2)}*y({m.group(3)})", poly))
-        ):
+        if not LINEAR_FORM.fullmatch(poly):
             continue
         row = np.zeros(n, dtype=np.int64)
-        for sign, number, index in terms:
-            row[int(index) - 1] = (-1 if sign == "-" else 1) * int(number or 1) % prime
-        rows.append(row)
+        for sign, number, index in LINEAR_TERM.findall(poly):
+            if not 1 <= int(index) <= n:
+                raise ValueError(f"y({index}) lies outside y(1..{n})")
+            row[int(index) - 1] += (-1 if sign == "-" else 1) * int(number or 1)
+        rows.append(row % prime)
     return row_space(np.array(rows, dtype=np.int64).reshape(-1, n), prime)
 
 
 def restricted_torus(cartan: np.ndarray, forms: np.ndarray, prime: int) -> dict[str, Any]:
-    """The torus on the linear subspace W cut out by `forms`: whether it preserves W, and its rank on W.
+    """The matrices `cartan` on the linear subspace W cut out by `forms`: whether they preserve W, and their rank on W.
 
     A matrix A acts on a linear form c by c -> c A and on a point x by x -> A x. W is preserved when forms A x = 0
     for every x in W, and the rank of the torus on W is the dimension of the span of the restrictions A|W.
@@ -285,7 +358,7 @@ def structure(source: tuple[str, int, int, str]) -> dict[str, Any]:
             ideal=relative,
             ideal_sha256=hashlib.sha256(ideal.read_bytes()).hexdigest(),
             dimension=dimension,
-            complexity=dimension - row["torus_rank_on_span"],
+            dimension_minus_torus_rank_on_span=dimension - row["torus_rank_on_span"],
         )
         components[name] = row
     # Control: the same number of quadrics with coefficients from a fixed hash stream keeps only the Euler field.

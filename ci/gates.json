@@ -5689,6 +5689,19 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "[ \"$(Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.sing | grep '^RESULT')\" = \"$(grep '^RESULT' docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.log)\" ]",
+      "name": "core-a5-w8-component-linear-forms",
+      "seconds": 60.0,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.log"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d7.json && timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32029-d7.json && timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d7.json && timeout -k 10 3430 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d7.json",
       "name": "core-a5-e8-arc-jet-rank-v2",
       "seconds": 6166.11,
