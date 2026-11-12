@@ -5668,6 +5668,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-associator-observables/associator_observables.py --check",
+      "name": "core-a5-associator-observables",
+      "seconds": 22.0,
+      "replays": [
+        "docs/evidence/a5-associator-observables/associator-observables.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py --check --validation-sha256 07b80eb07417d0974d2eb6a38775cd560f27906e62d86c4ff8f68e222c39f078",
       "name": "core-a5-gram-operator-witnesses",
       "seconds": 34.14,
