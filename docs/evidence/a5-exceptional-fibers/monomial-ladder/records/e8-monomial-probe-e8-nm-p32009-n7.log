@@ -1,0 +1,10 @@
+e8-nm 32009 order 7 I [orig] rank 569 single-monomial rows 555 largest support 4
+e8-nm 32009 order 7 I [x] rank 569 single-monomial rows 531 largest support 5
+e8-nm 32009 order 7 I [xs] rank 569 single-monomial rows 531 largest support 4
+e8-nm 32009 order 7 I [xy] rank 569 single-monomial rows 531 largest support 4
+e8-nm 32009 order 7 I [xy, b - X] rank 569 single-monomial rows 531 largest support 4
+e8-nm 32009 order 7 m_R I [orig] rank 548 single-monomial rows 535 largest support 3
+e8-nm 32009 order 7 m_R I [x] rank 548 single-monomial rows 518 largest support 4
+e8-nm 32009 order 7 m_R I [xs] rank 548 single-monomial rows 518 largest support 3
+e8-nm 32009 order 7 m_R I [xy] rank 548 single-monomial rows 518 largest support 4
+e8-nm 32009 order 7 m_R I [xy, b - X] rank 548 single-monomial rows 518 largest support 4

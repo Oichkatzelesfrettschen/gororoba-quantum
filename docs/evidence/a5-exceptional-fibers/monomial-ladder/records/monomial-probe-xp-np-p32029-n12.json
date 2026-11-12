@@ -1,0 +1,17 @@
+{
+ "schema": "a5-monomial-probe-v1",
+ "slug": "xp-np",
+ "prime": 32029,
+ "order": 12,
+ "spaces": {
+  "I": {
+   "rank": 973,
+   "single_monomial_rows": 973
+  },
+  "m_R I": {
+   "rank": 958,
+   "single_monomial_rows": 958
+  }
+ },
+ "verdict": "monomial_span"
+}

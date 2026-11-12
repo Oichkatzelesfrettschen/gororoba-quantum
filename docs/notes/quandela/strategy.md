@@ -144,6 +144,14 @@ step.
 
 ## 2. Platform facts that shape a case
 
+- **Provider result contract.** The [2026-11-11 assessment](../../evidence/quandela/remote-result-contract/provider-assessment.json)
+  incorporates the response to Perceval issue 798, updated 2026-11-03. It
+  distinguishes the returned calibration model, detection-based shot/sample
+  counters, mitigation and selection, relative `t_out`, and processor-field
+  completeness. Applied-setting identity, acquisition order, optical attempts,
+  and a shared physical route remain unresolved. Use the dated assessment
+  alongside the run's own records; keep the historical provider contract intact.
+
 - **The dominant error is the compiled mesh, and a seed fixes it.** On
   `qpu:belenos` the per-seed compiled-mesh error of an observable exceeds
   its binomial error, drift within and between jobs minutes apart, and any
@@ -187,18 +195,19 @@ step.
   are conditional calculations under an unconfirmed acquisition model: they
   exclude no timing, settling or acquisition mechanism and bound no dark
   count.
-- **Mitigation and filtering.** No retained job body carries a
-  `mitigations` field, and qpu:belenos's `default_mitigations` decodes to
-  `[DetectorBalancing]`, so every retained count passed the service's
-  default processing. In Perceval 1.3.1, DetectorBalancing turns the
+- **Mitigation and filtering in the early 2026-10-17/18 acquisitions.**
+  None of these retained job bodies carries a `mitigations` field, and the
+  contemporaneous qpu:belenos `default_mitigations` decodes to
+  `[DetectorBalancing]`, so these requests select the service's default
+  processing. In Perceval 1.3.1, DetectorBalancing turns the
   subcomputation into `probs`, corrects the distribution by detector and
   output-loss models, and the common mitigation layer converts it back to
   the requested command, which can regenerate counts from corrected
   probabilities (`error_mitigation/detector_balancing.py`,
   `abstract_mitigation.py`, `utils/conversion.py`); the retained artifacts
   do not establish the server-side processing of these acquisitions, so the
-  histograms are not assumed to be unmitigated detector records. All 192 retained
-  QPU result entries (single jobs and iterator entries) report
+  histograms are not assumed to be unmitigated detector records. All 192 QPU result
+  entries in that early acquisition set (single jobs and iterator entries) report
   `final_mode_number` 24, which excludes a cutoff to a smaller output
   register; photon-number selection (`min_detected_photons` 1), event
   rejection, correction or resampling that keeps 24 modes stay open. The `apply_emt` flag the bodies carry belongs to

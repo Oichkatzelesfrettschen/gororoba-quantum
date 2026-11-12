@@ -1,0 +1,18 @@
+// Kernel L of k[y] -> P[M T] / q P[M T] for the same-sign X slice xm-nm, p = 32009.
+option(redSB);
+ring B=32009,(T,a,r,s,w,z(1..12),y(1..15)),dp;
+ideal Z=z(1)-T*a^1*w^2,z(2)-T*r^1*w^2,z(3)-T*s^1*w^2,z(4)-T*s^3*w^1,z(5)-T*r^1*s^2*w^1,z(6)-T*r^2*s^1*w^1,z(7)-T*r^3*w^1,z(8)-T*a^1*s^2*w^1,z(9)-T*a^1*r^1*s^1*w^1,z(10)-T*a^1*r^2*w^1,z(11)-T*a^2*s^1*w^1,z(12)-T*a^2*r^1*w^1;
+ideal J=eliminate(Z,T);
+ideal Q=J,w^2,a,r,s,y(1)-(32001*w*z(1)),y(2)-(9995*z(1)+22014*w*z(1)),y(3)-(4*z(3)+32005*w*z(3)+4*z(2)),y(4)-(21002*z(3)+11007*w*z(3)+11007*z(2)),y(5)-(32007*w*z(3)+32007*w*z(2)),y(6)-(32007*w*z(3)+2*w*z(2)),y(7)-(32007*z(5)+32007*z(6)+2*z(11)+2*z(12)),y(8)-(10754*z(4)+10754*z(5)+10754*z(6)+10754*z(7)+21508*z(11)+21508*z(12)),y(9)-(9995*w*z(1)+10501*z(8)+21002*z(9)+10501*z(10)),y(10)-(4*z(3)+32008*z(4)+4*z(2)+32005*w*z(2)+1*z(5)+32008*z(6)+1*z(7)+32007*z(11)+2*z(12)),y(11)-(21255*z(4)+10754*z(5)+10754*z(6)+21255*z(7)),y(12)-(10501*z(5)+21508*z(6)+21508*z(11)+10501*z(12)),y(13)-(32008*z(4)+1*z(5)+32008*z(6)+1*z(7)+2*z(11)+32007*z(12)),y(14)-(9995*w*z(1)+21508*z(8)+21002*z(9)+21508*z(10)),y(15)-(9995*z(1)+22014*w*z(1)+21508*z(8)+10501*z(10));
+ideal E=eliminate(Q,T*a*r*s*w*z(1)*z(2)*z(3)*z(4)*z(5)*z(6)*z(7)*z(8)*z(9)*z(10)*z(11)*z(12));
+ring Y=32009,(y(1..15)),dp;
+ideal L=std(imap(B,E));
+execute("ideal K="+read("docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel")+";");
+ideal S=std(K);
+"RESULT L generators", size(minbase(L)), "maximal degree", deg(minbase(L)[size(minbase(L))]), "dim", dim(L), "mult", mult(L);
+int i; intvec D; for(i=1;i<=size(minbase(L));i++){ D[i]=deg(minbase(L)[i]); }
+"RESULT degrees of the minimal generators of L", string(D);
+"RESULT K2 inside L", size(simplify(reduce(K,L),2))==0, "L inside K2", size(simplify(reduce(L,S),2))==0;
+"RESULT hilbert numerator of L", hilb(L,2);
+"RESULT hilbert numerator of K2", hilb(S,2);
+quit;

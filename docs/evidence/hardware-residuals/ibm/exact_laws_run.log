@@ -1,0 +1,197 @@
+{
+ "adjacency_law": {
+  "cases": "n 2..10, every k",
+  "max_abs_error": 9.992007221626409e-16
+ },
+ "runs_at_least_L_law": {
+  "cases": "n 3..12, every k, L in 1,2,3,5",
+  "max_abs_error_pmf_and_tail": 0.0,
+  "max_abs_error_mean": 0.0
+ },
+ "runs_mean_equals_E_L": {
+  "max_relative_difference": 2.2634695452235653e-16
+ },
+ "hypergeometric_far_tail": {
+  "log10_tail_exact": -104.43487317843346,
+  "log10_tail_scipy": -104.43487317844998,
+  "log10_tail_grid": -104.4348731784476
+ },
+ "lag1_cross_moments": {
+  "cases": "n 8, six margin sets, all distinct row orders",
+  "max_abs_mean": 0.0,
+  "max_abs_var": 2.220446049250313e-16
+ },
+ "chernoff_bound": {
+  "cases": [
+   {
+    "L": 2,
+    "obs": 9,
+    "log10_exact": -0.009605766016351377,
+    "log10_bound": 0.0,
+    "bound_holds": true
+   },
+   {
+    "L": 2,
+    "obs": 14,
+    "log10_exact": -0.5577267233346788,
+    "log10_bound": -0.1534081785322901,
+    "bound_holds": true
+   },
+   {
+    "L": 3,
+    "obs": 5,
+    "log10_exact": -0.47947985680953054,
+    "log10_bound": -0.11771143947121984,
+    "bound_holds": true
+   }
+  ]
+ },
+ "support_cap": {
+  "cases": [
+   {
+    "n": 32768,
+    "k": 400,
+    "L": 2,
+    "cap": 173,
+    "mean": 4.8114453083275475,
+    "log10_dropped_mass": -300.0,
+    "log10_tail_at_cap": -297.6616778665518
+   },
+   {
+    "n": 32768,
+    "k": 3000,
+    "L": 3,
+    "cap": 318,
+    "mean": 22.82356871259974,
+    "log10_dropped_mass": -300.0,
+    "log10_tail_at_cap": -299.47859888360836
+   },
+   {
+    "n": 4096,
+    "k": 40,
+    "L": 2,
+    "cap": 20,
+    "mean": 0.37732514880952384,
+    "log10_dropped_mass": null,
+    "log10_tail_at_cap": -42.74217943304576
+   }
+  ]
+ },
+ "hypergeometric_same_shot_enumeration": {
+  "cases": "n 1..8, every (K_i, K_j): 284 margin pairs, every arrangement of one column",
+  "max_abs_error_pmf": 8.881784197001252e-16,
+  "max_abs_error_log10_two_sided": 3.219646771412954e-15,
+  "holds": true
+ },
+ "adjacency_pooled_two_units": {
+  "cases": "two units, n 1..6, every k each (k = 0, 1 and n included), every observed count 0 .. top + 2",
+  "max_abs_error_pmf": 7.216449660063518e-16,
+  "max_abs_error_log10_tails": 6.750292265873014e-16,
+  "holds": true
+ },
+ "runs_pooled_two_units": {
+  "cases": "two units, n 1..6, every k each (k = 0, 1 and n included), L in 1, 2, 3, every observed count",
+  "max_abs_error_pmf": 1.1102230246251565e-16,
+  "max_abs_error_log10_tails": 2.220446049250313e-16,
+  "holds": true
+ },
+ "lag1_cross_moments_n2_to_5": {
+  "cases": "n 2..5, every margin triple (K_j, K_i, J): 121 triples, all distinct row orders",
+  "max_abs_mean": 0.0,
+  "max_abs_var": 3.4139358007223564e-15,
+  "holds": true
+ },
+ "chernoff_bound_every_count": {
+  "cases": [
+   {
+    "columns": [
+     [
+      6,
+      6
+     ],
+     [
+      6,
+      6
+     ]
+    ],
+    "L": 2,
+    "counts": 5,
+    "min_bound_minus_exact": 0.0,
+    "holds": true
+   },
+   {
+    "columns": [
+     [
+      8,
+      4
+     ],
+     [
+      8,
+      3
+     ]
+    ],
+    "L": 2,
+    "counts": 6,
+    "min_bound_minus_exact": 0.0,
+    "holds": true
+   },
+   {
+    "columns": [
+     [
+      10,
+      5
+     ],
+     [
+      9,
+      4
+     ],
+     [
+      7,
+      3
+     ]
+    ],
+    "L": 2,
+    "counts": 8,
+    "min_bound_minus_exact": -1.4654943925052066e-14,
+    "holds": true
+   },
+   {
+    "columns": [
+     [
+      10,
+      6
+     ],
+     [
+      8,
+      5
+     ]
+    ],
+    "L": 3,
+    "counts": 6,
+    "min_bound_minus_exact": 0.0,
+    "holds": true
+   },
+   {
+    "columns": [
+     [
+      12,
+      5
+     ],
+     [
+      12,
+      6
+     ],
+     [
+      6,
+      2
+     ]
+    ],
+    "L": 1,
+    "counts": 16,
+    "min_bound_minus_exact": -4.440892098500626e-16,
+    "holds": true
+   }
+  ],
+  "holds": true
+ }
+}

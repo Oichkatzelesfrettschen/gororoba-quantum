@@ -525,14 +525,43 @@ Iso and W8, floor(7d/2) + 1 on X- and, through d = 5, E8-bar).
 | E8-bar -> VB degree 6, both primes | A5-107, A5-113 | done: r_20 = 420 at both primes, about 3 h and 1.7 GiB each, export 98.6 percent (`vb-d6-laptop/`); r_19 = 420 and r_18 = 407 at both primes, so the closing order is exactly 19 = 3d + 1 with a last jump of 13 (7/6/0/0); degree 5 closes at 16 with a jump of 11 (5/6/0/0), as A5-269 preregistered | done |
 | Degree-3 component of E8-bar -> VB: the t7 = 1 chart is done (prime, 115 s; normalized, 451 s with `isPrim`; 34 order-1 arcs all in the degree-4 component); remaining: the k^2 + 3 = 0 chart, the singular points and jet-parameter arcs on t1 = 0 and the apex | A5-016 | chart 5: 359 s | OCI A1 (Singular only) |
 | Iso by the C30 local route: plane family on the point blowup | A5-067 | one C30 plane: 45 to 52 s, 26 MiB | OCI A1 or laptop |
-| E8-bar degree 6 by membership: K2 is not radical for E8-bar, so arcs and plane families give only L in sqrt(K2) (1526 <= h_6); h_6 is decided in the 140-dimensional space sqrt(K2)_6 / K2_6. Pilot the receipt on the 91-dimensional sqrt(K2)_5 / K2_5, where h_5 = 952 says no form lies in L, and time it | A5-083/089/095/101, A5-251 | the degree-d receipt (`fiber_cone_driver.py`) needs std(J + m P_d): for E8-bar -> N- degree 2 that stage took 12,678 s under a 28 GiB cap (`working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json`), a degree-3 attempt ran past 51 min without a receipt, and a 1,200 s degree-2 rerun on the workstation timed out (2026-11-09); degrees 5 and 6 face the same standard-basis wall as the truncated-rank export, so the route needs a membership test that avoids std(J + m P_d) before a pilot | none until then |
+| E8-bar degree 6 by target restriction and membership: h_6 is decided in the 140-dimensional (sqrt(K2)/K2)_6; exact N14 target ranks now give 1554 <= h_6 <= 1666 at both primes. Exact membership and the value of h_6 remain open | A5-083/089/095/101, A5-251 | implemented and measured: [e8_target_rank.py](../../evidence/a5-exceptional-fibers/monomial-ladder/README.md#restrict-the-target-retain-the-complete-denominator) prepares the 91/140-dimensional bases, verifies them from the retained ideals, and computes target ranks modulo the complete m_R I^d closure without std(J + m P_d). The degree-five positive control gives rank 21 at N12 despite known exact rank 91; degree six gives rank 28 at N14. The truncated kernels do not certify exact membership; retained costs and resource stops accompany the receipts | bounded local exact CPU runs |
 | Characteristic 0: degree-2 K2 by rational reconstruction, then exact membership | roadmap 10 | hours | laptop |
 | Kernel-plane limits along the arcs | A5-272 to A5-276 (formerly A5-029) | one-arc pilot first | laptop |
 | Engine v12: the GPU echelon step is accepted (int32 residues on the device; `engine-v12/`); not done: the preflight terms, in-place update, streamed L, free-column storage and 2-byte storage, then the rest of the GPU path (laptop RTX 4090 16 GiB, Kaggle T4 by case, build-host GPU last); it shortens the echelon work inside the closure, which dominates W8 and Iso (the host table products and the export stay on the host; device-resident tables are separate work), not the export, which dominates E8-bar and X- (X- degree 6: 1,356 of 1,700 s) | roadmap 4 | acceptance of the echelon step: W8 degree 4 and Iso degree 6 byte-equal (met); preflight within 1.3x (open: `fiber_rank_v12.py` keeps the v11 walk and echelon terms) | laptop |
 | E8-bar degree 6 direct rank | A5-083/089/095/101 | degree 5 took 35.4 GiB and 118,427 s, of which the Singular standard basis of k[t]/(J + m^18) was 114,755 s (97 percent); degree 6 needs N of about 21 to 22 | forecast: N = 22, quotient dimension 184,206, preflight 226 GiB, peak about 230 GiB and a standard basis of about 1.5e6 s (two weeks) (`forecasts/trends-2026-11-06.md`, item 14); a paid VM of at least 256 GiB by approved case, only if the membership route fails; engine v12 and the GPU path do not shorten this export |
 | W8 degree 6 rank | engine test of A5-066 | 129 to 223 GiB, 18 to 27 h on engine v11 | none needed |
 
-No quantum-hardware job certifies these ranks (A5-076); the hardware rows A5-202 and A5-242 wait on written cases.
+No retained quantum-hardware job certifies these ranks, and the audited block-encoded proposal supplies none (A5-320); the hardware rows A5-202 and A5-242 wait on written cases.
 
 Retired from this list on 2026-11-08: the W8 -> N- support decomposition (the C30 proof decides W8 without it), the
 W8 degree-6 rank run as a decision run.
+
+## Exact presentations and scheme structure of the fibers (2026-11-10)
+
+Ledger rows A5-298 to A5-314; evidence in
+[monomial-ladder](../../evidence/a5-exceptional-fibers/monomial-ladder/README.md),
+[quadric-census](../../evidence/a5-exceptional-fibers/quadric-census/README.md),
+[arcs-x-same](../../evidence/a5-exceptional-fibers/arcs-x-same/README.md) and
+[a5-char0-transfer](../../evidence/a5-char0-transfer/README.md).
+
+- Same-sign X (X- -> N-, X+ -> N+): the slice ideal equals a monomial ideal M of the parameter ring (membership
+  of every generator plus a rank over M / q M, then Nakayama), the fiber cone is the positive part of
+  P[M T] / q P[M T], and its defining ideal, computed by elimination, is the 69 quadrics K2 with no generator of
+  higher degree. I = M holds on both incidences at both primes; the comparison L = K2 is retained for three modular
+  cells (X- -> N- at 32009 and 32029, X+ -> N+ at 32029), and X+ -> N+ at 32009 has I = M without a retained K2
+  comparison. Over Q(i) the same certificate gives 69 quadrics that reduce to K2 at those three cells, so
+  F(I) = k[y]/K2 in every degree on them and every h_d of the same-sign X pairs holds in characteristic 0. K2 is saturated and nonreduced: the projective fiber is generically reduced of degree 12 with
+  nilpotents y1, y5, y6 on one embedded plane.
+- The fiber cone is now k[y]/K2 on every pair except E8-bar -> N+-: opposite-sign X (a plane), same-sign X (on the
+  three modular cells above and over Q(i)), E8-bar -> VB, Iso and W8.
+- E8-bar -> N+-: the slice ideal is an ideal of the quadratic algebra S = P + P b at both primes and headers, so the
+  fiber cone is the positive part of S[I T] / (m_R S) S[I T]; the elimination that would give its defining ideal has
+  not finished, and h_6 stays between 1,526 and 1,666. The quadric scheme V_+(K2) is saturated, generically reduced
+  of degree 11 plus a second component of degree 4 meeting it in a plane, with nilpotents y4, y6, y7, y12, y14 on an
+  embedded quadric threefold.
+- Every retained K2 is saturated at the irrelevant ideal. The Lie algebra of linear vector fields preserving K2 has
+  dimension 23, 15, 17, 34, 26 (same-sign X, VB, Iso, E8-bar -> N+-, W8); its torus rank excludes a toric K2 on
+  Iso and W8 in any linear coordinates.
+- A truncated rank r_N(d) never exceeds h_d, and the batched float64 echelon agrees with the python-flint ranks on the
+  one cell both engines ran (degree 6, order 26: dim A = 4,879, dim B = 4,214, r = 665; A5-302).

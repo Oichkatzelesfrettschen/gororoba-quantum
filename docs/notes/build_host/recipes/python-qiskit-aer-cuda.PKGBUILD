@@ -1,4 +1,4 @@
-# Maintainer: eirikr <eirikr@localhost>
+# Maintainer: <maintainer>
 #
 # qiskit-aer with the CUDA Thrust backend and the cuQuantum libraries
 # (cuStateVec for the statevector method, cuTensorNet for tensor_network).

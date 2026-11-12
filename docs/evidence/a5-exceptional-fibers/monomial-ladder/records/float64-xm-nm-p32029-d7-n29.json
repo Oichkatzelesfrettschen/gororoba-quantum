@@ -1,0 +1,98 @@
+{
+ "slug": "xm-nm",
+ "prime": 32029,
+ "order": 29,
+ "generators": 15,
+ "generator_order": 3,
+ "engine": "float64-batched-echelon",
+ "source_sha256": {
+  "fast_ladder.py": "48d99e9eae2ceaa3f942ece05b2c0fb09d869aa47f26852ad26a4fb552eed849",
+  "x_same_ladder.py": "b2b55f7ee83483bd29464dd80a8ba0d0ef426d258493e447dabb0e2f175b0cb1"
+ },
+ "versions": {
+  "torch": "2.15.0+cpu",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1"
+ },
+ "batch": 1024,
+ "threads": 16,
+ "rows": [
+  {
+   "degree": 1,
+   "order": 11,
+   "columns": 1001,
+   "map_nnz": 69332,
+   "A": 689,
+   "B": 674,
+   "r": 15,
+   "seconds": 18.3
+  },
+  {
+   "degree": 2,
+   "order": 14,
+   "columns": 2380,
+   "map_nnz": 364022,
+   "A": 1227,
+   "B": 1176,
+   "r": 51,
+   "seconds": 29.7
+  },
+  {
+   "degree": 3,
+   "order": 17,
+   "columns": 4845,
+   "map_nnz": 1283189,
+   "A": 1946,
+   "B": 1824,
+   "r": 122,
+   "seconds": 56.4
+  },
+  {
+   "degree": 4,
+   "order": 20,
+   "columns": 8855,
+   "map_nnz": 3530507,
+   "A": 2826,
+   "B": 2586,
+   "r": 240,
+   "seconds": 128.9
+  },
+  {
+   "degree": 5,
+   "order": 23,
+   "columns": 14950,
+   "map_nnz": 8213435,
+   "A": 3825,
+   "B": 3408,
+   "r": 417,
+   "seconds": 316.3
+  },
+  {
+   "degree": 6,
+   "order": 26,
+   "columns": 23751,
+   "map_nnz": 16936043,
+   "A": 4879,
+   "B": 4214,
+   "r": 665,
+   "seconds": 632.5
+  },
+  {
+   "degree": 7,
+   "order": 29,
+   "columns": 35960,
+   "map_nnz": 31891838,
+   "A": 5902,
+   "B": 4906,
+   "r": 996,
+   "seconds": 890.0
+  }
+ ],
+ "timing": {
+  "generators": 5.5,
+  "maps": 9.1,
+  "products": 255.5,
+  "echelon": 616.8
+ },
+ "seconds": 890.0
+}

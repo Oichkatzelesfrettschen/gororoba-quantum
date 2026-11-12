@@ -1,0 +1,90 @@
+{
+ "base_dimension": 1526,
+ "basis_payload_sha256": "3ac76af534d694ac7c750f0a073b5a1620f2205529e96932cf0e406d6e4a37e8",
+ "basis_verification": {
+  "export_log_sha256": "52e9c0ee2c2a21bc7e1d56a4de683ee1e51c01fda232e50197a254e402852ff1",
+  "export_script_sha256": "ea05539bb75584c0618886c9ba3550aeae3f0e6179f4cd0130f92f0f099ae68a",
+  "singular": "4.4.1"
+ },
+ "degree": 6,
+ "denominator_stages": [
+  {
+   "degree": 1,
+   "denominator_rank": 93,
+   "elapsed_ms": 4090,
+   "order": 5,
+   "selected_array_budget_bytes": 1406496
+  },
+  {
+   "degree": 2,
+   "denominator_rank": 220,
+   "elapsed_ms": 8348,
+   "order": 7,
+   "selected_array_budget_bytes": 22311072
+  },
+  {
+   "degree": 3,
+   "denominator_rank": 428,
+   "elapsed_ms": 8660,
+   "order": 9,
+   "selected_array_budget_bytes": 153679680
+  },
+  {
+   "degree": 4,
+   "denominator_rank": 737,
+   "elapsed_ms": 20508,
+   "order": 11,
+   "selected_array_budget_bytes": 719759040
+  },
+  {
+   "degree": 5,
+   "denominator_rank": 1167,
+   "elapsed_ms": 35950,
+   "order": 13,
+   "selected_array_budget_bytes": 2614003392
+  },
+  {
+   "degree": 6,
+   "denominator_rank": 1738,
+   "elapsed_ms": 55991,
+   "order": 15,
+   "selected_array_budget_bytes": 7919093952
+  }
+ ],
+ "elapsed_ms": 208306,
+ "exact_membership_certified": false,
+ "full_generator_count": 21,
+ "header_parser_sha256": "a184d37f1107a9f8088ae61be1d9eb23a1a8e4e3438c433b60b270eb1097b433",
+ "lower": 1581,
+ "order": 15,
+ "parallel_sha256": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
+ "payload_sha256": "7fe633afe2820c89cd5425ca135b684bdff9e703cc48d0d0b5f9e865dca7ba9c",
+ "prime": 32009,
+ "producer_sha256": "0e9d3b4ceac05608546adf075d420838c5a27ded08ab9291333d92000b219a04",
+ "python_flint": "0.9.0",
+ "ring_producer_sha256": "ff0df04d529c25752239c4fa9f770742cf5002d5c7199433937bdd449791c254",
+ "root": 10754,
+ "schema": "a5-e8-nilpotent-target-rank-v1",
+ "scope": "Selected finite field only. A truncated zero or plateau supplies no exact membership upper bound.",
+ "selected_array_limit_bytes": 17179869184,
+ "sources": {
+  "docs/evidence/a5-exceptional-fibers/arcs/arc_targets.py": "bcbb56e16a66e0922d806d7cd0d80299bfe7c832c8a5aedf6e27f4dd3aecb387",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32009/P1.txt": "abca3c9b91b2c9f32b0fa51827af11984d37d76feed9d435146c47d4d8bc9b78",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32009/P2.txt": "31f15063fc4568442c85428506bcbfd3f77cf1eb04d98d98b8de6ba8ef573b45",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32009/campaign_summary.json": "478967030d8dcf596eb4db5d3fa2bcc265bd6145e1ddfd6f37d79c49c61aaa5d",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32009/result.json": "d60cf5b00d82e5b04b36a2af50716af3f33aaa72c65a123b60f0ef6c0f7db32f",
+  "docs/evidence/a5-exceptional-fibers/arcs/e8nm-p32009/result_P1.json": "f60ff4653b790b93bc448ec9750b25563b325dd66b763ff4201a3e7210bb084f",
+  "docs/evidence/a5-exceptional-fibers/k2-hilbert.jsonl": "116222a7aec8d8c00cf061a5236f992ee516334236325199796f26b3cd049aa4",
+  "docs/evidence/a5-exceptional-fibers/witnesses.jsonl": "ee323aa5a0cb606b02533fb7446d836a571b15b1fda6b8ee129caee231d76c3d",
+  "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-nm.sing": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/gens.txt": "e7b5e2720243e85e835486bdddfb6335b4430e2f795b3d0378cd8ef540095cff",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json": "7a4e45b11a1e4ab56d944d04e36d9e4440dfc7a413bece48b4374c2f4cfecfd7",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-d2.rel": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6",
+  "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6"
+ },
+ "status": "lower_bound_only",
+ "target": "e8nm-p32009",
+ "target_dimension": 140,
+ "target_rank": 55,
+ "upper": 1666
+}

@@ -1,0 +1,86 @@
+{
+ "schema": "a5-monomial-certificate-qi-v1",
+ "field": "Q(i)",
+ "cases": [
+  {
+   "slug": "xm-nm",
+   "j_nonzero": 0,
+   "generators": 15,
+   "denominator_power": 8,
+   "terms_outside_m": 0,
+   "stray_class_term": false,
+   "basis_of_m_mod_qm": 15,
+   "rank_of_classes": 15,
+   "l_generators": 69,
+   "l_degrees": [
+    2,
+    2
+   ],
+   "l_dim": 4,
+   "l_mult": 12,
+   "l_hilbert_numerator": "1,11,-3,4,-1,0",
+   "l_has_imaginary_part": true,
+   "l_saturated": true,
+   "y1_y5_y6_outside_l": 3,
+   "y1_y5_y6_squared_in_l": true,
+   "wall_seconds": 5.9,
+   "peak_rss_kib": 109428,
+   "i_equals_m": true,
+   "reductions": [
+    {
+     "prime": 32009,
+     "root": 10754,
+     "k2_source": "working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel",
+     "nonzero_generators": 69,
+     "l_in_k2": true,
+     "k2_in_l": true
+    },
+    {
+     "prime": 32029,
+     "root": 9115,
+     "k2_source": "working/distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel",
+     "nonzero_generators": 69,
+     "l_in_k2": true,
+     "k2_in_l": true
+    }
+   ],
+   "verdict": "certified"
+  },
+  {
+   "slug": "xp-np",
+   "j_nonzero": 0,
+   "generators": 15,
+   "denominator_power": 8,
+   "terms_outside_m": 0,
+   "stray_class_term": false,
+   "basis_of_m_mod_qm": 15,
+   "rank_of_classes": 15,
+   "l_generators": 69,
+   "l_degrees": [
+    2,
+    2
+   ],
+   "l_dim": 4,
+   "l_mult": 12,
+   "l_hilbert_numerator": "1,11,-3,4,-1,0",
+   "l_has_imaginary_part": true,
+   "l_saturated": true,
+   "y1_y5_y6_outside_l": 3,
+   "y1_y5_y6_squared_in_l": true,
+   "wall_seconds": 5.3,
+   "peak_rss_kib": 109320,
+   "i_equals_m": true,
+   "reductions": [
+    {
+     "prime": 32029,
+     "root": 9115,
+     "k2_source": "working/distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel",
+     "nonzero_generators": 69,
+     "l_in_k2": true,
+     "k2_in_l": true
+    }
+   ],
+   "verdict": "certified"
+  }
+ ]
+}

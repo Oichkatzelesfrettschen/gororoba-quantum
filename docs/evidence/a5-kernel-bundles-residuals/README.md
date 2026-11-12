@@ -92,3 +92,22 @@ Rank 16 equals the base rank, so it is the generic value; rank 13 marks a specia
 bundles are therefore families over moduli spaces of real dimension 11, 11 and 9, and the homogeneous
 stabilizer-representation route of the higher nullities does not classify them alone; their classes come from the
 kernel Gauss map into `Gr(2, C^16)` (real nullity 4, complex rank 2) over those moduli.
+
+[`nullity4-kernel-gauss-result.json`](nullity4-kernel-gauss-result.json) starts that Gauss-map computation without
+collapsing the continuous moduli. On all 66 retained exact grid points, `nullity4_kernel_gauss.py` constructs an
+order-fourteen principal-Pfaffian Schur frame of `ker A(z, conjugate(z))`, realifies it to a four-frame of
+`ker L_y`, and records the 120 normalized Plucker coordinates of the resulting point of `Gr(2,C^16)`. Every frame
+identity, Pfaffian-square identity, real kernel identity, and Plucker quadric holds exactly, and the coordinates equal
+those of an independently computed nullspace. On the first fixture of each stratum that comparison rejects all 120
+single-coordinate shifts and the vector (1, 0, ..., 0), which satisfies every Plucker quadric and names another plane. The general principal-rank theorem supplies 120 local charts, indexed by the two free rows;
+on a double overlap the transition is the target frame restricted to the source free rows.
+
+This is a fixture-level chart and coordinate certificate, not the requested nullity-four classification. It does not
+give equations for the Gauss image over the nine- and eleven-dimensional moduli, a finite cover of those moduli by
+explicit parameter charts, global transition functions, stabilizer jumps, or a bundle class. The next decisive
+bounded computation is elimination of the moduli parameters against these 120 Plucker coordinates, one component
+and one chart at a time; its falsifier is a transition outside the claimed structure group or two exact points with
+the same proposed moduli invariants and different Plucker images.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --check` (exact). The producer
+uses the repository worker cap through `parallel.ordered_map`; the 66 fixtures are independent.

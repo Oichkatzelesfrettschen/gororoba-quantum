@@ -95,6 +95,11 @@ additional wave, transform, packing or replication acquisitions retain separate 
 
 ## Operational conjecture synthesis
 
+The [measurement observability contracts](measurement-observability.md) supply reusable acceptance-aware endpoints,
+complete score and prediction covariance, repeated-herald diagnostics and a constructive Hermitian completion.
+They preserve the provider-counter meanings and keep mathematical encoding, physical instrument and statistical
+qualification as separate obligations.
+
 The [conjecture bundle](../evidence/algebra-device-conjectures-16/README.md) accounts for the ten retained-data proposals and
 twelve algebra/device extensions. Its frozen manifest names each proposal, falsifier, disposition, selected claim and
 acquisition exclusion. The registry remains the authority for claims and acquisitions; the bundle is a derived view.

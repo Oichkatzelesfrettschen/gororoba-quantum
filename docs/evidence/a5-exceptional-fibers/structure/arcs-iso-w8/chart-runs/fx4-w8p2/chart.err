@@ -1,5 +1,5 @@
 Command terminated by signal 9
-	Command being timed: "timeout 79200 /home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/Singular -q --no-rc chart-ckpt.sing"
+	Command being timed: "timeout 79200 <venv>/lib/python3.12/site-packages/sage_wheels/bin/Singular -q --no-rc chart-ckpt.sing"
 	User time (seconds): 0.00
 	System time (seconds): 0.00
 	Percent of CPU this job got: 0%

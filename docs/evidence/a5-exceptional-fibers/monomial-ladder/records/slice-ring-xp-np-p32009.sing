@@ -1,0 +1,19 @@
+// Kernel of the parametrization of the same-sign X slice xp-np at p = 32009, compared with the header's J.
+ring r=32009,(t1,t2,t4,t5,t6,t7,t9),dp;
+number I=10754;
+ideal J=t4^2-t5^2-t6^2+t7^2,t1*t7*t9-t7*t9^2-t1*t5+t2*t6+t1*t7+t5*t9-t7*t9,t6^2*t9-t7^2*t9-t4*t6+t6^2+t5*t7-t7^2,t5*t6*t9+t4*t7*t9-t4*t5+t5*t6+t4*t7-t6*t7,t4*t6*t9+t5*t7*t9-t5^2+t4*t6-t6^2+t5*t7,t1*t6*t9-t6*t9^2-t1*t4+t1*t6+t2*t7+t4*t9-t6*t9,t1*t5*t9-t5*t9^2-t2*t4+t1*t5-t1*t7-t5*t9+t7*t9,t1*t4*t9-t4*t9^2+t1*t4-t2*t5-t1*t6-t4*t9+t6*t9,t1*t5*t6-t2*t6^2-t1*t4*t7+t2*t7^2+2*t4*t7*t9-t4*t5+t5*t6+t4*t7-t6*t7,t1*t5^2-t2*t5*t6-t2*t4*t7-t1*t7^2-t5^2*t9+t7^2*t9,t1*t4*t5-t2*t4*t6-t2*t5*t7-t1*t6*t7-t4*t5*t9+t6*t7*t9,t1^2*t9^2-2*t1*t9^3+t9^4+2*t1^2*t9-4*t1*t9^2+2*t9^3-t2^2;
+LIB "primdec.lib";
+def R0=basering; ideal SJ=std(J);
+ring G=32009,(pa,pr,ps,pw,pu,t1,t2,t4,t5,t6,t7,t9),dp;
+ideal Z=pu*(1+pw)-1, t1-(pa+pw^2*pu/2), t2-pa*pw*(pw+2)*pu/2, t4-((1+pw)*pr+ps)/2, t5-((1+pw)*pr-ps)/2, t6-((1+pw)*ps+pr)/2, t7-(pr-(1+pw)*ps)/2, t9-(-1)*(-pw^2*pu/2);
+ideal E=eliminate(Z,pa*pr*ps*pw*pu);
+// The parameter ring is finite over the coordinate ring: pw^2 = T (1 + pw) with T = -2 t9 / sign.
+"RESULT integrality of w", reduce(pw^2-(-2*t9/(-1))*(1+pw), std(Z))==0;
+setring R0;
+ideal K=std(imap(G,E));
+"RESULT kernel generators", size(K), "dim", dim(K), "mult", mult(K);
+"RESULT J dim", dim(SJ), "mult", mult(SJ);
+"RESULT J inside kernel", size(simplify(reduce(J,K),2))==0, "kernel inside J", size(simplify(reduce(K,SJ),2))==0;
+list L=minAssGTZ(J);
+"RESULT components of J", size(L);
+quit;

@@ -1,0 +1,46 @@
+{
+  "schema": "work-plan-v1",
+  "id": "casimir-warp-evidence",
+  "kind": "implementation",
+  "summary": "Reconcile the nanoscale warp claim with primary sources and bind a native full-stress counterexample and Casimir reference audit to actual validation receipts.",
+  "sources": [
+    "docs/notes/topics/casimir-warp-evidence.md",
+    "docs/notes/papers/casimir-warp-primary-sources.md",
+    "docs/SOURCES.json",
+    "https://github.com/Oichkatzelesfrettschen/gororoba-open/tree/10aa093345e5fc2b0281fe602c174250d61b3685"
+  ],
+  "state": "active",
+  "scope": "Primary-source reconciliation and cross-repository binding for the ideal Casimir tensor, local planar-shift Einstein tensor, scalar-matching counterexample and pure Alcubierre baseline correction; preserve historical evidence and run no provider jobs.",
+  "owner": "casimir-warp-evidence implementation",
+  "next_action": "Record the scoped source-validation receipt, then bind the final Rust revision, native checks, generated artifacts and canonical export/admission outcomes using observed receipts.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Existing vacuum, QET and ideal-material work was audited at quantum d5ff68e283ca26b12dc07bf95a48cc515a3c6145 and Rust b73ca1050ace1c5c6f8a25564879f70bacdbf80b. Historical scalar-prefactor, two-body and error-sign defects are already corrected; the remaining bounded gap is source interpretation and a complete-tensor audit. This record asserts no completed numerical replay."
+  },
+  "steps": [
+    {
+      "id": "source-and-model-boundary",
+      "action": "Register the five primary-source reading scopes and actual response receipts, reconcile existing implementations, and document the full-tensor counterexample.",
+      "acceptance": "The five added source receipts match fetched bytes and declared reading scopes; their registry schema, both new notes and added map links validate; old evidence remains unchanged.",
+      "state": "doing"
+    },
+    {
+      "id": "bind-numerical-replay",
+      "action": "Bind the native implementation revision, focused mathematical and domain checks, Alcubierre regression and generated Casimir/curvature audit artifacts.",
+      "acceptance": "Actual validation output and artifact hashes identify the generating source; the full residual remains nonzero when energy densities match; no physical bubble or QPU acquisition is inferred.",
+      "state": "todo",
+      "depends_on": [
+        "source-and-model-boundary"
+      ]
+    },
+    {
+      "id": "validate-and-integrate",
+      "action": "Bind final published source and evidence revisions, canonical registry export/admission checks and cross-repository integration outcomes.",
+      "acceptance": "Receipts bind observed revisions and evidence files; links resolve; the final interpretation distinguishes reference computation from measured gravitational evidence.",
+      "state": "todo",
+      "depends_on": [
+        "bind-numerical-replay"
+      ]
+    }
+  ]
+}

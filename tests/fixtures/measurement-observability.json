@@ -1,0 +1,200 @@
+{
+  "schema": "measurement-observability-input-v1",
+  "items": [
+    {
+      "id": "shared-scores",
+      "kind": "multinomial_scores",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "input": {
+        "counts": [
+          2,
+          3,
+          5
+        ],
+        "scores": [
+          [
+            1,
+            0,
+            -1
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "sampling": "independent_fixed_trials"
+      }
+    },
+    {
+      "id": "acceptance-counterexample",
+      "kind": "six_state",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "input": {
+        "records": [
+          {
+            "state": "f",
+            "selected": 4,
+            "accepted": 4,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:f",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:f",
+            "source": "deterministic analytic fixture, not a provider acquisition"
+          },
+          {
+            "state": "g",
+            "selected": 0,
+            "accepted": 6,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:g",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:g",
+            "source": "deterministic analytic fixture, not a provider acquisition"
+          },
+          {
+            "state": "+",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:+",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:+",
+            "source": "deterministic analytic fixture, not a provider acquisition"
+          },
+          {
+            "state": "-",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:-",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:-",
+            "source": "deterministic analytic fixture, not a provider acquisition"
+          },
+          {
+            "state": "+i",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:+i",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:+i",
+            "source": "deterministic analytic fixture, not a provider acquisition"
+          },
+          {
+            "state": "-i",
+            "selected": 2,
+            "accepted": 5,
+            "denominator": {
+              "name": "attempts",
+              "value": 10,
+              "population": "circuit_execution",
+              "scope": "state:-i",
+              "status": "observed",
+              "source": "deterministic analytic fixture, not a provider acquisition"
+            },
+            "scope": "state:-i",
+            "source": "deterministic analytic fixture, not a provider acquisition"
+          }
+        ],
+        "independent_trials": true,
+        "fixed_attempts": true
+      }
+    },
+    {
+      "id": "shared-prediction",
+      "kind": "predictive_residual",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "input": {
+        "observed": [
+          1,
+          2
+        ],
+        "predicted": [
+          0,
+          0
+        ],
+        "observation_covariance": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "jacobian": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "parameter_covariance": [
+          [
+            0.5
+          ]
+        ],
+        "dependence": "independent"
+      }
+    },
+    {
+      "id": "nested-herald",
+      "kind": "nested_herald",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "input": {
+        "attempt_counter": {
+          "name": "attempts",
+          "value": 64,
+          "population": "circuit_execution",
+          "scope": "four depths on the same trials",
+          "status": "observed",
+          "source": "deterministic analytic fixture, not a provider acquisition"
+        },
+        "successes": [
+          32,
+          24,
+          20,
+          18
+        ],
+        "sampling": "fixed_independent_attempts"
+      }
+    },
+    {
+      "id": "tomography-completion",
+      "kind": "tomography_completion",
+      "source": "deterministic analytic fixture, not a provider acquisition",
+      "input": {
+        "half_dimension": 2
+      }
+    }
+  ]
+}

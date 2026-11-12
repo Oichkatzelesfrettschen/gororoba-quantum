@@ -81,3 +81,72 @@ Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points 
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
 record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
 (A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
+
+## The same-sign X fiber cone over Q(i): I = M and L is 69 quadrics
+
+[`monomial_certificate_qi.py`](monomial_certificate_qi.py) repeats over Q(i) the exact certificate of
+[monomial-ladder](../a5-exceptional-fibers/monomial-ladder/README.md) with the G of the Q(i) producer. In one
+Singular run per incidence (5 s, 0.1 GB) the producer's J vanishes on the parametrization, every term of
+(1 + w)^8 G_j lies in the monomial ideal M = w^2 (a, rho, sig) + w (rho, sig) (a, rho, sig)^2, and the classes of the
+15 generators in M / q M (dimension 15, q = (w^2, a, rho, sig) P) have rank 15. Nakayama's lemma gives I = M over
+Q(i), so F(I) = Q(i) + sum_(d >= 1) M^d / q M^d, and elimination gives its defining ideal L:
+
+| Pair | L over Q(i) | dimension, multiplicity | saturated | y1, y5, y6 | reduction at (p, i -> r) |
+|---|---|---|---|---|---|
+| X- -> N- | 69 quadrics, no higher generator | 4, 12 | yes | outside L, squares inside L | equals the retained K2 at 32009 and 32029 |
+| X+ -> N+ | 69 quadrics, no higher generator | 4, 12 | yes | outside L, squares inside L | equals the retained K2 at 32029 |
+
+The Hilbert series numerator is 1, 11, -3, 4, -1 over (1 - t)^4, that of k[y]/K2 modulo p, so every h_d of the
+same-sign X incidences holds in characteristic 0, and the projective fiber V_+(L) is nonreduced over Q(i): L is
+saturated and y1, y5, y6 are nilpotent. Falsifier: an element of the completed local ring of the slice outside
+R = Q(i)[[t]] + (a, rho, sig) P, the one identification the certificate takes from the parametrization. The record is
+`monomial-certificate-qi.json`.
+
+## The slice rings over Q(i): kernel of the parametrization (A5-314)
+
+[`slice_rings_qi.py`](slice_rings_qi.py) eliminates the parameters from the graph of each slice parametrization over
+Q(i) and compares the kernel with the J of the Q(i) producer (together with the variables its presolve removed, which
+J does not involve and which vanish on the slice):
+
+| Pair | kernel: generators, dimension, multiplicity | equals J | run |
+|---|---|---|---|
+| X- -> N- | 14, 4, 6 | yes | 3.6 s |
+| X+ -> N+ | 14, 4, 6 | yes | 3.5 s |
+| E8-bar -> N- | 16, 5, 12 | yes | 59 s |
+| E8-bar -> N+ | 16, 5, 12 | yes | 60 s |
+
+So the coordinate ring of each slice is the image ring of its parametrization in characteristic 0 as well, the
+input of the certificates of `../a5-exceptional-fibers/monomial-ladder`. Records: `slice-rings-qi-kernel-*.json`.
+The same script holds the E8-bar closure check over Q(i) (I = I S); its two cases have not finished.
+
+
+## The lower-bound step of the transfer is refuted as a criterion (ledger A5-316)
+
+[transfer_counterexample.py](transfer_counterexample.py) replays the exact counterexample of an outside review
+(2026-11-11) to the claim that good reduction of the ambient truncation k[t]/(J + m^N) turns a truncated rank computed
+modulo p into a lower bound for h_d in characteristic 0. With J = 0 and I = (x^7, y^7, x^4 y^2 (c + x)),
+c = 32009 * 32029, the degree-2 relation space is 0 over Q and modulo both primes, and the truncated rank of degree 3
+at order 22 is 10 modulo each prime and 9 over Q ([transfer-counterexample.json](transfer-counterexample.json)): the
+image W of m I^3 has rank 23 over Q and 0 modulo p, and a difference of ranks is not semicontinuous. The repaired
+criterion and the rows it leaves standing are in
+[a5-char0-and-kernel-limits.md](../../notes/topics/a5-char0-and-kernel-limits.md); `truncation_check.py` (A5-249)
+remains a good-reduction computation and no longer stands for a lower bound.
+
+## The plane where the two components of the reduced E8-bar quadric scheme meet
+
+`scripts/a5_e8_plane_certificate.py HEADER PRIME_ID --repo . --run --record FILE` writes a Singular script (global
+ordering `dp`) that adds the five nilpotent coordinates y4, y6, y7, y12, y14 to the retained degree-2 relations of an
+E8-bar fiber, takes the two minimal primes, and tests their sum T against the ideal H of its linear forms: both
+inclusions T in H and H in T, 18 independent linear generators, dimension 3 and multiplicity 1 for both. The script
+embeds the relation text, so its sha256 binds the bytes Singular reads. The records in [`e8-plane/`](e8-plane/) hold
+the verdict, the sha256 of the relation file and of the script, the Singular version and Singular's output, for the
+three relation files this tree holds (Singular 4.4.1; 5 to 6 s of CPU and 27 MB each):
+
+| Fiber | Prime | Record | Verdict |
+|---|---|---|---|
+| E8-bar -> N- | 32009 | [e8-nm-p32009.json](e8-plane/e8-nm-p32009.json) | the two components meet in a linear P^2 |
+| E8-bar -> N- | 32029 | [e8-nm-p32029.json](e8-plane/e8-nm-p32029.json) | the same |
+| E8-bar -> N+ | 32029 | [e8-np-p32029.json](e8-plane/e8-np-p32029.json) | the same |
+
+E8-bar -> N- passes at both primes and E8-bar -> N+ at 32029; E8-bar -> N+ at 32009 is not run, because its relation
+file (`e8np_p1`) is not retained. Each verdict holds modulo its prime; no characteristic-0 form is computed.
