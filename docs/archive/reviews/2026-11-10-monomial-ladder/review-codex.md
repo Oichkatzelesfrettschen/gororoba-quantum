@@ -79,4 +79,3 @@ Artifact: one-commit Python/JSON/Markdown evidence bundle at `b02ae8d34f99360094
 - **HYPOTHESIS:** X-minus at 32029 also has `h_7=996`. Falsifier: an exact additional relation below degree 8. Cheapest decisive test: a source-bound degree-seven ladder at order 29, followed by comparison with the already retained K2 upper count 996.
 
 Verdict: the truncated-image construction is mathematically sound and cannot overshoot. The PR does not yet earn its two new certified ledger claims because the decisive float64 records demonstrably came from an unidentified producer version. A current-source, hash-bound replay or retention of the exact predecessor source is the essential repair.
-

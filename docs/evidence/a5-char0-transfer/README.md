@@ -131,3 +131,22 @@ image W of m I^3 has rank 23 over Q and 0 modulo p, and a difference of ranks is
 criterion and the rows it leaves standing are in
 [a5-char0-and-kernel-limits.md](../../notes/topics/a5-char0-and-kernel-limits.md); `truncation_check.py` (A5-249)
 remains a good-reduction computation and no longer stands for a lower bound.
+
+## The plane where the two components of the reduced E8-bar quadric scheme meet
+
+`scripts/a5_e8_plane_certificate.py HEADER PRIME_ID --repo . --run --record FILE` writes a Singular script (global
+ordering `dp`) that adds the five nilpotent coordinates y4, y6, y7, y12, y14 to the retained degree-2 relations of an
+E8-bar fiber, takes the two minimal primes, and tests their sum T against the ideal H of its linear forms: both
+inclusions T in H and H in T, 18 independent linear generators, dimension 3 and multiplicity 1 for both. The script
+embeds the relation text, so its sha256 binds the bytes Singular reads. The records in [`e8-plane/`](e8-plane/) hold
+the verdict, the sha256 of the relation file and of the script, the Singular version and Singular's output, for the
+three relation files this tree holds (Singular 4.4.1; 5 to 6 s of CPU and 27 MB each):
+
+| Fiber | Prime | Record | Verdict |
+|---|---|---|---|
+| E8-bar -> N- | 32009 | [e8-nm-p32009.json](e8-plane/e8-nm-p32009.json) | the two components meet in a linear P^2 |
+| E8-bar -> N- | 32029 | [e8-nm-p32029.json](e8-plane/e8-nm-p32029.json) | the same |
+| E8-bar -> N+ | 32029 | [e8-np-p32029.json](e8-plane/e8-np-p32029.json) | the same |
+
+E8-bar -> N- passes at both primes and E8-bar -> N+ at 32029; E8-bar -> N+ at 32009 is not run, because its relation
+file (`e8np_p1`) is not retained. Each verdict holds modulo its prime; no characteristic-0 form is computed.

@@ -1,4 +1,4 @@
-# Maintainer: eirikr <eirikr@localhost>
+# Maintainer: <maintainer>
 #
 # NVIDIA cuQuantum SDK redistributable for CUDA 13 (cuStateVec, cuTensorNet,
 # cuDensityMat, cuPauliProp, cuStabilizer). The vendor archive and its sha256

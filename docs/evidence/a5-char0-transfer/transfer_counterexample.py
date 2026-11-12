@@ -23,7 +23,9 @@ not semicontinuous.
 
 The script asserts the identity, the truncated ranks through degree 3 (3, 6, 9 over Q; 3, 6, 10 modulo each prime;
 these are the fiber Hilbert functions, by the count of minimal monomial generators) and the vanishing of the
-degree-2 relations, and exits 1 when any differs from the stated value.
+degree-2 relations, and exits 1 when any differs from the stated value. The independent products of generators, the
+monomial multiples of each product and the nine (field, degree) cells run through parallel.ordered_map; a task is a
+module-level function over plain integers, and the record is the one a serial loop writes.
 """
 
 from __future__ import annotations
@@ -41,6 +43,11 @@ PRIMES = (32009, 32029)
 C = PRIMES[0] * PRIMES[1]
 ORDER = 22
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parents[2] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
+
+Terms = dict[tuple[int, int], int]
 
 
 def generators() -> tuple[Any, list[Any]]:
@@ -57,31 +64,55 @@ def rank(rows: list[list[int]], prime: int) -> int:
     return int(fmpq_mat([[fmpq(v) for v in row] for row in rows]).rank())
 
 
+def product_terms(combo: tuple[int, ...]) -> Terms:
+    """The product of the generators named by combo, as plain {(a, b): coefficient} terms."""
+    ctx, gens = generators()
+    value = ctx.from_dict({(0, 0): 1})
+    for index in combo:
+        value *= gens[index]
+    return {(int(e[0]), int(e[1])): int(c) for e, c in value.to_dict().items()}
+
+
+def columns() -> dict[tuple[int, int], int]:
+    """Column of each monomial x^a y^b of degree below ORDER."""
+    return {(a, b): i for i, (a, b) in enumerate((a, b) for a in range(ORDER) for b in range(ORDER - a))}
+
+
+def row_of(terms: Terms, table: dict[tuple[int, int], int]) -> list[int]:
+    out = [0] * len(table)
+    for key, coefficient in terms.items():
+        if key in table:
+            out[table[key]] = coefficient
+    return out
+
+
+def multiple_rows(terms: Terms) -> list[list[int]]:
+    """The nonzero rows of x^a y^b * product for every monomial of positive degree below ORDER."""
+    table = columns()
+    rows = []
+    for a in range(ORDER):
+        for b in range(ORDER - a):
+            if a + b > 0:
+                shifted = {(i + a, j + b): c for (i, j), c in terms.items()}
+                if any(key in table for key in shifted):
+                    rows.append(row_of(shifted, table))
+    return [r for r in rows if any(r)]
+
+
 def truncated(degree: int, prime: int) -> dict[str, int]:
     """rank [W; P], rank W and their difference for I^degree modulo m^ORDER over F_prime (Q when prime is 0)."""
-    ctx, gens = generators()
-    x, y = ctx.gens()
-    columns = {(a, b): i for i, (a, b) in enumerate((a, b) for a in range(ORDER) for b in range(ORDER - a))}
-
-    def row(poly: Any) -> list[int]:
-        out = [0] * len(columns)
-        for exponent, coefficient in poly.to_dict().items():
-            key = (int(exponent[0]), int(exponent[1]))
-            if key in columns:
-                out[columns[key]] = int(coefficient)
-        return out
-
-    products = []
-    for combo in itertools.combinations_with_replacement(range(len(gens)), degree):
-        value = ctx.from_dict({(0, 0): 1})
-        for index in combo:
-            value *= gens[index]
-        products.append(value)
-    multiples = [row(p * x**a * y**b) for p in products for a in range(ORDER) for b in range(ORDER - a) if a + b > 0]
-    multiples = [r for r in multiples if any(r)]
+    combos = list(itertools.combinations_with_replacement(range(3), degree))
+    products = parallel.ordered_map(product_terms, combos, min_items=2)
+    table = columns()
+    multiples = [r for part in parallel.ordered_map(multiple_rows, products, min_items=2) for r in part]
     w = rank(multiples, prime)
-    both = rank(multiples + [row(p) for p in products], prime)
+    both = rank(multiples + [row_of(p, table) for p in products], prime)
     return {"products": len(products), "rank_W": w, "rank_W_and_products": both, "r": both - w}
+
+
+def cell(job: tuple[int, int]) -> dict[str, int]:
+    """One (degree, prime) cell of the truncated-rank table."""
+    return truncated(*job)
 
 
 def build() -> dict[str, Any]:
@@ -89,7 +120,9 @@ def build() -> dict[str, Any]:
     x, y = ctx.gens()
     identity = (x + C) ** 3 * g1**2 * g2 - x**2 * y * g3**3
     fields = {"Q": 0, **{f"F_{p}": p for p in PRIMES}}
-    table = {name: {str(d): truncated(d, prime) for d in (1, 2, 3)} for name, prime in fields.items()}
+    jobs = [(d, prime) for prime in fields.values() for d in (1, 2, 3)]
+    results = iter(parallel.ordered_map(cell, jobs, min_items=2))
+    table = {name: {str(d): next(results) for d in (1, 2, 3)} for name in fields}
     expected = {"Q": [3, 6, 9], **{f"F_{p}": [3, 6, 10] for p in PRIMES}}
     hilbert = {name: [table[name][str(d)]["r"] for d in (1, 2, 3)] for name in fields}
     relations = {name: 6 - table[name]["2"]["r"] for name in fields}

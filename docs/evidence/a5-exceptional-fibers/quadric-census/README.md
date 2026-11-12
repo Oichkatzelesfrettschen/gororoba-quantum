@@ -97,4 +97,3 @@ or 5 on W8 would still make them varieties with a torus action of complexity one
 E8-bar → VB and E8-bar → N− the bound leaves a full-rank torus possible and decides nothing. Trinomial rows
 (support 3) occur in every K2 and carry no known structure here. hypothesis: the symmetry algebras come from the
 stabilizer of the base point in the automorphism group of the algebra; no record tests that.
-

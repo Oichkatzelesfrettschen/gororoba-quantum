@@ -77,6 +77,7 @@ def digest(data: bytes) -> str:
 
 def clean_text(text: str) -> str:
     text = re.sub(r"/home/[^/\s\"']+", "${USER_HOME}", text)
+    text = re.sub(r"pytest-of-[^/\s\"']+", "pytest-of-${USER}", text)
     text = text.replace("/tmp/", "${TEMP}/")
     text = re.sub(r"(?i)\b(?:Bearer|Basic)\s+[A-Za-z0-9._~+/-]+=*", "Bearer [REDACTED]", text)
     text = re.sub(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b", "[REDACTED-JWT]", text)

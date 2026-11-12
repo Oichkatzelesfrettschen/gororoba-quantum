@@ -18,17 +18,21 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" scripts/results_index.py claim a5-stiefel-pfaffian-reduction
 "$PYTHON" scripts/results_index.py path results/live/<run>/raw/<job>/pub_00.json
 "$PYTHON" scripts/results_index.py --json summary     # any subcommand as JSON
+"$PYTHON" scripts/results_index.py --json ledger --summary
+"$PYTHON" scripts/results_index.py ledger --markdown > /tmp/quantum-ledger.md
+"$PYTHON" scripts/results_index.py --json ledger > /tmp/quantum-ledger.json
 ```
 
-`summary` lists three coverage gaps: provider runs no acquisition registers,
-acquisitions whose run the provider adapter does not hold, and Kaggle
-submissions with no collection receipt. Kaggle runs are simulations and enter
-no acquisition. A job id is the provider's own identifier as text (IBM job
+`summary` lists coverage gaps: provider runs no acquisition registers,
+acquisitions whose run the provider adapter does not hold, acquisitions without
+claim citations, and Kaggle submissions without a collection receipt. Kaggle
+runs are compute sessions and enter no acquisition. Their kernels can perform
+simulation or classical analysis. A job id is the provider's own identifier as text (IBM job
 id, Quantum Inspire job number, Quandela and IQM job UUID); a Kaggle run's
 job is its `owner/slug/version` kernel reference.
 
 `sqlite [OUT]` writes the same relations (`runs`, `jobs`, `acquisitions`,
-`claims`, `claim_acquisitions`, `claim_evidence`, `claim_gates`,
+`claims`, `claim_qualifications`, `claim_acquisitions`, `claim_evidence`, `claim_gates`,
 `claim_dependencies`) to a new SQLite file for ad hoc SQL. OUT defaults to
 `${XDG_CACHE_HOME:-~/.cache}/gororoba-quantum/results-index.sqlite` and must
 lie outside the repository and not exist; the file is a cache that the
@@ -50,6 +54,58 @@ resolves to its run, every claim resolves to the runs of its acquisitions,
 and a build leaves `git status` unchanged. The design choice against a committed catalog
 is argued in
 [the catalog opposition review](../archive/reviews/2026-10-25-results-catalog-opposition.md).
+
+## Quantum evidence ledger
+
+`ledger` joins every registered evidence class with the tracked files under
+`results/`, `docs/evidence/` and `proofs/`. Claim evidence and documents outside
+those roots also enter the census. The JSON view carries full claim records,
+acquisitions, provider-qualified jobs, source-file digests and source-native
+library/provenance metadata. The A5 findings retain their own statements,
+statuses, field restrictions, evidence, falsifiers and supersession. The
+[ledger architecture](../design/quantum-evidence-ledger.md) defines the joins
+and the limits of each observation.
+
+`ledger --markdown` renders the claim table; `--summary` reports its denominator
+and gap counts. Both outputs are disposable views. The detailed JSON includes
+every unclaimed acquisition, claim without a replay gate or pinned evidence,
+artifact without a direct claim citation or indexed run owner, and execution
+record outside indexed runs. Tracked-file presence and untracked claim-artifact
+lists expose packaging gaps separately. These sets are work queues, not counts of failed
+experiments: case definitions, proposals, source code and algebraic evidence
+also occur in the artifact census. A run owner identifies a directory; a claim
+binding identifies scientific evidence. The ledger keeps those relations apart.
+
+Quandela discovery includes submitted directories under `cases/`, with the
+same raw-reader validation as `runs/`. The ledger classifies IBM execution
+candidates through the existing evidence-closure reader and reconciles known
+unexecuted cancellations against the validated retention audit. Account-only
+jobs remain separate from acquisitions.
+
+`observation` resolves an RFC 6901 JSON Pointer against the exact retained file
+and returns its SHA256, selected value, citing claims and containing runs:
+
+```sh
+"$PYTHON" scripts/results_index.py --json observation \
+  docs/evidence/ibm-fez-actor-pilot/analysis.json --pointer /conditions/0
+"$PYTHON" scripts/results_index.py job 1528724 --provider quantum_inspire
+```
+
+An empty pointer selects the whole document; `/conditions/0/n` selects one
+denominator. Escape `/` inside a key as `~1` and `~` as `~0`. A missing field
+fails, while a recorded zero or null retains its value. A file citation locates
+potentially relevant claims; the citation alone does not establish that the
+claim uses the selected field. Record-selector bindings remain in
+`evidence_bindings`, with their original digest semantics.
+
+Every query validates the registry before returning a scientific view. That
+validation checks the retained evidence bindings and provider-adapter contracts;
+it does not run the registered numerical replay commands. The ledger labels
+replay execution `not-run-by-ledger` even when a claim has status `established`.
+The SQLite `jobs.provider` column qualifies job identity, and
+`claim_qualifications` preserves boundaries, assumptions and supersession for SQL
+consumers. Library versions describe the retained producer environment; they
+make no assertion about the environment running the query.
 
 ## Run layout and registry adapters
 

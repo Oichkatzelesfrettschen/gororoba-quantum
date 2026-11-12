@@ -5285,6 +5285,23 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --check",
+      "name": "core-nullity4-kernel-gauss",
+      "seconds": 12.91,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --self-test",
+      "name": "core-nullity4-kernel-gauss-self-test",
+      "seconds": 20.40
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
@@ -5480,6 +5497,124 @@
       "workers": 1,
       "replays": [
         "docs/evidence/pathion-kernel-map/nhat-bias/result_spectral.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/check_a5_quantum_contracts.py --check docs/evidence/a5-quantum-contracts/exact-contracts.json",
+      "name": "core-a5-quantum-exact-contracts",
+      "seconds": 5.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-quantum-contracts/exact-contracts.json"
+      ]
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_a5_kernel_scope_analysis.py results/quandela/runs/2026-10-30T190300Z-qpu_ascella-a5-kernel-slice --out docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json --check",
+      "name": "sources-ascella-a5-scope-hardware",
+      "seconds": 12.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-photonic-crosschecks/ascella-hardware-kernel-scope.json"
+      ]
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/ascella_a5_kernel_scope_analysis.py results/quandela/runs/2026-10-30T190014Z-sim_ascella-a5-kernel-slice --out docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json --check",
+      "name": "sources-ascella-a5-scope-simulator",
+      "seconds": 12.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-photonic-crosschecks/ascella-simulator-kernel-scope.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/measurement_observability.py tests/fixtures/measurement-observability.json | cmp - docs/evidence/measurement-observability/analytic-result.json",
+      "name": "core-measurement-observability",
+      "seconds": 0.2,
+      "replays": [
+        "docs/evidence/measurement-observability/analytic-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 180 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-n12.json --timeout 60 && timeout -k 10 60 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json --timeout 60; else echo \"skipped: Singular 4.4 is absent here; GOROROBA_SINGULAR_REQUIRED=1 replays this record\"; fi",
+      "name": "core-a5-e8-target-rank",
+      "seconds": 120.0,
+      "workers": 1,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d5-n12.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n14.json --timeout 60 && timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-n14.json --timeout 60; else echo \"skipped: Singular 4.4 is absent here; GOROROBA_SINGULAR_REQUIRED=1 replays this record\"; fi",
+      "name": "core-a5-e8-target-frontier",
+      "seconds": 120.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n14.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-n14.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 180 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-n12.json --timeout 60 && timeout -k 10 60 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json --timeout 60; else echo \"skipped: Singular 4.4 is absent here; GOROROBA_SINGULAR_REQUIRED=1 replays this record\"; fi",
+      "name": "core-a5-e8-target-second-prime",
+      "seconds": 60.0,
+      "workers": 1,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d5-n12.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32029-d6-basis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py replay docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n15.json --timeout 60; else echo \"skipped: Singular 4.4 is absent here; GOROROBA_SINGULAR_REQUIRED=1 replays this record\"; fi",
+      "name": "core-a5-e8-target-n15",
+      "seconds": 240.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-basis.json",
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/e8nm-p32009-d6-n15.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py --check docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json",
+      "name": "core-a5-e8-loader-check",
+      "seconds": 90.0,
+      "workers": 1,
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/monomial-ladder/target-records/loader-check.json"
       ]
     }
   ],

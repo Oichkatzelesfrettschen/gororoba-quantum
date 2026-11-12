@@ -75,13 +75,18 @@ context, and access needs a provider record.
   setting's compilation keeps setting-to-count association open; the
   [predecessor intervention](../runbooks/evidence-closure.md#first-acquisition-candidate-predecessor-intervention)
   is the drafted test, with its admission conditions unresolved.
-- **Observation contract.** The open semantics of returned circuits, count
-  provenance, processing versions and acceptance calibration live in
-  [provider_contract.json](../evidence/bdsc/provider_contract.json). Perceval
-  1.3 documents `mitigations=[]` as disabling remote mitigation and `None` as
-  the provider default
+- **Observation contract.** The [provider assessment of 2026-11-11](../evidence/quandela/remote-result-contract/provider-assessment.json)
+  incorporates the response to Perceval issue 798, created 2026-10-29 and
+  updated 2026-11-03, and preserves the historical
+  [provider_contract.json](../evidence/bdsc/provider_contract.json). Returned
+  calibration-model and counter terminology is partly clarified. Applied
+  setting identity, raw-event aggregation, processing versions, acceptance
+  calibration, and independent preparation/analyzer control remain open.
+  Perceval documents the explicit mitigation request
   ([error mitigation](../notes/quandela/perceval/reference/runtime/error_mitigation/index.md));
-  an empty list is a request field, not proof of raw event provenance.
+  the provider confirms that physical and logical selections remain active
+  when mitigation is disabled. The response establishes no physical route
+  between the two QPUs.
 - **Tuna-17 precedent.** The Quantum Inspire run implements a Bell resource,
   an intraprocessor SWAP of one half, a Bell-basis rotation and analysis-side
   Pauli correction on one device
@@ -96,7 +101,7 @@ context, and access needs a provider record.
 | Gate | Proceeds when | Status |
 |---|---|---|
 | G0 Evidence | Every premise has a dated source and stale summaries have successors. | Met by this design and the calibration reconciliation. |
-| G1 Observation | Event provenance, setting identity, preparation/analyzer scope and selection support the inference. | Open: provider_contract rows and the Belenos association question. |
+| G1 Observation | Event provenance, setting identity, preparation/analyzer scope and selection support the inference. | Open: the [dated provider assessment](../evidence/quandela/remote-result-contract/provider-assessment.json) narrows terminology; acquisition provenance, independent controls and the Belenos association question remain unresolved. |
 | G2 Physical access | A provider-bound record identifies the carrier, source, ports, quantum operation, detector boundary and access route across the partitions. | Hold: no route in the inspected access. |
 | G3 Optical feasibility | Selected-path calibration and a rate budget fit an informative test. | Waits on G1 and G2. |
 | G4 Entanglement | The registered lower witness bound exceeds 1/2 under valid selection. | Waits on G3. |
@@ -269,16 +274,16 @@ inferred from the apparatus the paper describes).
 
 | Package | Status | Home or blocker |
 |---|---|---|
-| WP00 freeze evidence | Done | This design; pinned replays run on the nightly audit ([ci/AGENTS.md](../../ci/AGENTS.md)). |
+| WP00 freeze evidence | Done | This design; retained replays run as on-demand gates ([ci/AGENTS.md](../../ci/AGENTS.md)). |
 | WP01 reconcile summaries | Done | [calibration.md](../notes/quandela/calibration.md), [platform-specifications.md](../notes/quandela/platform-specifications.md). |
-| WP02 replay decisions | Covered by gates | The nightly audit replays the retained Ascella and Belenos records against their pinned runtimes. |
+| WP02 replay decisions | Covered by on-demand gates | Replay the retained Ascella and Belenos records against their pinned runtimes when the corresponding evidence changes. No replay result is inferred from this documentation reconciliation. |
 | WP03 Ascella outside-block decomposition | Done before this design | [Conformance design](ascella-signed-coherence-conformance.md) and the job-00 README. |
 | WP04 Belenos diagnostics | Done for the drift series; predecessor intervention drafted | [bdsc-qualification.md](bdsc-qualification.md), [evidence-closure.md](../runbooks/evidence-closure.md). |
-| WP05 observation contract | Waits on the provider answer | [provider_contract.json](../evidence/bdsc/provider_contract.json) rows; request items 2 and 3 are [Perceval issue 798](https://github.com/Quandela/Perceval/issues/798). |
-| WP06 physical access | Waits on the provider answer | Request items 1 and 4, through the Quandela contact form. |
+| WP05 observation contract | Provider response assessed; qualification incomplete | The [dated assessment](../evidence/quandela/remote-result-contract/provider-assessment.json) incorporates issue 798's response; acquisition identity, event provenance and independent controls remain open. |
+| WP06 physical access | Blocked: no retained physical-route contract | Request items 1 and 4 concern apparatus and surviving output; the retained response to items 2 and 3 supplies neither. |
 | WP07 protocol model | Done | `scripts/qd_network_protocol.py` and its test. |
-| WP08 records and analysis | Partly done | Witness, certified classical benchmark and joint-histogram scoring exist; a provider record parser waits on WP05. |
-| WP09 to WP16 | Blocked on G1 and G2 | Every step needs a physical joint apparatus and admitted cases. |
+| WP08 records and analysis | Offline normalized-record boundary implemented; provider adapter blocked | Witness, certified classical benchmark and joint scoring exist. The [offline record runbook](../runbooks/ascella-belenos-network-case.md) defines strict cases, joint histograms, typed attempts and byte binding. A provider-specific raw-to-normalized adapter waits on WP05. |
+| WP09 to WP16 physical acquisitions | Blocked on G1 and G2 | Network acquisition, qualification and physical claim evaluation require a joint apparatus and admitted cases. Offline models and record validation do not supply those prerequisites. |
 
 The parent plan's scope excludes, until G2 holds, a case generator for
 network acquisitions and a live joint-execution adapter: no admissible
@@ -704,9 +709,17 @@ result contract and went to Quandela on 2026-10-25 at 18:33 UTC as
 with the papers, Perceval sources and retained measurements behind each
 question cited inline. Items 1 and 4 concern the installations and go through
 the Quandela contact form under the Research Collaboration subject, which the
-owner submits under their own name; the plan record dates that submission.
-Each answer enters this design dated, with the platform and version it
-covers.
+owner submits under their own name; the plan record carries no date for that
+submission.
+The [provider assessment](../evidence/quandela/remote-result-contract/provider-assessment.json)
+records paraphrases of the response to items 2 and 3, created 2026-10-29T13:18:58Z and
+updated 2026-11-03T15:17:09Z, with the digest of the body as read and a bounded
+interpretation; the body bytes are not retained, and the digest, the comment URL and the paraphrases are
+externally unverifiable from this tree (the runbook states the offline limit).
+The response clarifies result terminology but supplies no version-bound applied
+configuration or cross-device apparatus. G1 and G2 remain open. Retain later
+answers with the platform, access route, date and software version they cover;
+a statement about expected fields does not verify every retained acquisition.
 
 Identify whether the physical installations exposed as `qpu:ascella` and
 `qpu:belenos` support one coordinated experiment with coherent optical routing
@@ -740,14 +753,27 @@ apparatus, route and data contract enters G2.
 
 ## Draft network case record
 
-A future case record carries `schema: qd-network-case-v1`, `status: draft`
-and `admission: blocked` until G2, and keeps every unknown field null: the
-joint platform id, physical route evidence, resource-factory and
-Bell-instrument evidence, joint record contract, attempt-denominator
-contract, effective processing contract, calibration bundle, benchmark
-certificate, statistical case, job, second and credit ceilings, approval
-record and payload digest. Its fixed fields are the protocol
-(`teleportation_A_to_B`), claim level, the two local platforms, the uniform
-six-state ensemble, output axes X, Y and Z, 18 base setting cells, the
-`X^x Z^z` frame convention and output level O0. The scientific case record
-stays separate from the provider payload.
+The [pending case](../evidence/quandela/network-records/pending-case.json)
+instantiates `qd-network-case-v1` with `status: draft` and
+`admission: blocked`. Unknown apparatus, evidence, budget, approval and
+payload fields stay null. Its fixed scope is a terminal single-hop C3
+proposal, the two local platforms, the uniform six-state ensemble,
+output axes X/Y/Z, 18 base setting cells, the receiver `X^x Z^z` frame
+convention and output level O0. The scientific case remains separate
+from a provider payload.
+
+[`qd_network_records.py`](../../gororoba_quantum/qd_network_records.py)
+validates this case and `qd-network-joint-v1` normalized joint histograms.
+[`qd_network_analysis.py`](../../scripts/qd_network_analysis.py) exposes
+the bounded offline reader, descriptive scores and optional source-byte
+binding. The [runbook](../runbooks/ascella-belenos-network-case.md) defines
+the fields, command lines, denominators and review limits. Zero-success
+cells, partial blocks, rejected outcomes and unknown controls remain
+explicit. Mean conditional, pooled accepted and equal-prior
+success-weighted fidelities are distinct report fields.
+
+A complete case declaration may be ready for review. Every report keeps
+execution and physical-claim admission false. A raw-file digest match
+binds identity only; it does not verify a provider-to-normalized-count
+transformation. No normalized record or successful local test supplies
+G1/G2 or converts a local rehearsal into cross-device evidence.

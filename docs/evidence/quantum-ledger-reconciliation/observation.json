@@ -1,0 +1,3084 @@
+{
+  "algebra_ledger_check": {
+    "boundary": "Schema, evidence-path and supersession checks; mathematical proofs are not replayed.",
+    "result": "passed",
+    "rows": 295
+  },
+  "boundary": "The census precedes admission of this reconciliation record. Artifact counts are files, not trials. Registry bindings are validated; the ledger executes no numerical replay.",
+  "execution_candidates": [
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T165944+0000/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "422067b2789d8beb33f29d4816ff5998c7a736000ac63dd5cf25efa477d5b461",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T171827+0000/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3fe90ccf9893aedf4aa67130417b92f989a956a00e4f7550988954006d02863c",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T172316+0000/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ee4a9f31f60b2f672d2d8f7c29f4df6a27206ed71332df48665ebc13e4e84c49",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T173416.028543Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0bdb560ea06102608804229f07e177acc357c22c9b8ace177068b1a1a3fe73a9",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T174036.860138Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3faedc850ab24c06757cdebe5e9b0fd1d39d8599bbc467b1185fe50d4f7c6c40",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T174235.045010Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fa66c1e7e3fcf6fc06e5f86bc4dd2200f99bc0271401ae1dd5134afbdcbf0cfe",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T175925.891919Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5f3b34e3ca01d1123a5fb9bf575d9661909d222e4e0f659ca44e5fc728040408",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T183023.567277Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "89a3edeb0a29fe1dd0ddd1824e8fe8e2417f3da12027f27301133ac016f7b0ab",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T183325.225102Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "892ac44d1c2517128a200bfb2bf76ba7310e25e5ef063f8c516be5ba5ca5ec52",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T183549.443333Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a0ae8d166ab8ff30f9103cd87e2779da7c5f13362fcd48dd41e377aee89a5e6d",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T193949.352436Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1eacca6b2c9081ca6bd81528a4f4df293efabbe488792c4a718c7da8dceb57ef",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T194700.095769Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b54b7dfcd19ba8c5dfde6ec37ae3f739374a33dc096501115ac7c580076d09e7",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "unresolved",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T195204.086678Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2a3ad5b1fe611eba7ef02631457ad11784255c016f69c11b85c90627150b4df3",
+      "state": null,
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T200646.447516Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "361710c4529f85ab13fa9d917f8d99b889bbecc50331429ce6b5828d7d6eba68",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T213145.298421Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7db1e6e31109c6cbdf06d42351fddf96d39f642436da879f33d75ead59525cc4",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T214318.070235Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "c35125c69a8be85106dfb8f8b3cdf3c506c8acdd09df2aff8f4e0f24853012b9",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T215434.847324Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9ccd56e545fcbcd473095bc05b6898338d3e91cd0bd513076813a65c94eb4bf0",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T220435.034757Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0beed75edbbdd25cb6c718a1f8f5fd2d171c98c500407d3d2b7b4d498bf97939",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T220438.712726Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "df4a78449671817ccc700781e0d277f1e3e7ae0787a33314cff2b78ba997efa3",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T221412.255180Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "104b45b40147ecfa913fefbafea6d37103bf4588003fd410c4f66be6a13676f9",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T222132.627032Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9b9b29d5e8ce78f90fc3179c083bef1b1f9741dfa54a181698b70ad8c69f7e4e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T223619.798923Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6c347e70e0ea22de682fc935d810612287bbb984d1a3ac551b367f550d5f0f7c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T230646.694665Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-10T232219.919322Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T062204.877756Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "813be4a7e9e654c5a0043c596f900d4f3537c010d5bc9a863037f77163f4ae50",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T071616.724800Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "54946d4b19b9ec9ff92d7c536ff050ba4dbdd0e3504d7f4e621ff70198682524",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T082455.919602Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "503cc3da9d08f2426b80a145bf6091dc18405ea416d33aef0621777c66e188ef",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T085437.294823Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "522e3bf7f765cda7a0139a326147a54b966a38188e104030de660e8653fb8e75",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T090500.749224Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6c0d04b9cc4e7417ccd872af39ebe8935a3d5b3c301b0870df251d7df0607472",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T091019.824103Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "96318b9b46ca355089b99011136311b4f6d8ee252ea87b6d93e69a4586b253cd",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T091715.073826Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "79e35c6a8a6bef2e215bb4ea07e450370c74fc8622612cc0d14db3255ec8bd58",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T093336.320234Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2245c42f8eb4f853c93fdf672c3979760eba85a96708394eb4db27627e2b58c0",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T093445.248590Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "54c1705b70e1b7884cff4ebfc5610e3af090df0303f92689e8b67d0eb521fb23",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T094055.608273Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3734874afce712274a239478ad6b17e6564befff66116f6f54647bbbe6e8e64d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T095108.705673Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4836ac0086cf84e5f2cff1837c9d4423ac2af00833cfa3c82d3adbda7663415a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T095541.923847Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4b5e61dcaa5e87c5a76a7cbccf7bf85e5ef115951d87fe118a5b8b4fd5f28dfa",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T095547.705434Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "534a8d51a414e70019ef4ab4994101b8e5cef4c9510d69d804cce801e7c99e31",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T100158.375275Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2d54cb68e1fd04465eb6753f8a40a250a197bdade6210ef6b5c9659b48418a92",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T100526.684788Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d7400b165b2089d5081167bf60d56e6638c9fd8e11786f8f00e6ce3ffaab4f92",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T101630.331262Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "277204b26629986b77622943ddb765500e6afc3c27972966e70fb872e0a48adf",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T102037.475268Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5f8ec0bf35d0f30ee35db204203f1b84df764da9c9dcc20de863bd9e4075a270",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T111237.410777Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b7223494e0b11a7672a0949007c04952e0156ab19b7d6d7da028ae5d98051aed",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T111555.975109Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6e75d92d50ecd7bf7201e45c751973b91eae7089ef574326f32c490cab903f65",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T113111.266543Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2e08db3de61e25e1c272bafafe74034cb00291367a4da2d7ad9675f6bd728553",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T114048.080610Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d18c0ef542b10260bc9affc275c9a4eae6a963a9719fa85a2b3881a2162792af",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T114958.902835Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9c4285d7a293ea52fb5364494aaae14f896d5e610efc8d9d782330bfe71dbdde",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T120803.085652Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0f06c5ef86bfd24a2b773f9a0de96a36a505c0806728b666bc5bfb3b681b843c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T121402.617901Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "807f1856b54abc7aaec1a311a999d0c6f8fd197ccf385488bc153531432c447b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T163812.041836Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3042735c391ade3a8741b214242989bddfba2877ee0b22d341e42e302ca5d2d2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T200341.410400Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "dbd522bc3e14f7d32c275ba4c95f33e5ed06d094be19a0f84aa887b9a60beb99",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T203420.747793Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8c0c5c3b17f6ba529cf079ef047dcc933c74126b407d845337568efad5f9c10d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-11T203535.690679Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "505ffcd719f966d59b26c34581d3d4a805f6292c1658f22b162713f90198c08e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T011109.792785Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2a6d02ebc703ec81e1cbe4383f6215331b97add27ca823a16dfe6110b692aabb",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T011110.481425Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0f05e1e687adc7f247ec05fb93e8af648ae78b80dc8c447383b7d87f2e88549c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T014428.093689Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6bf8f0ce211d42c804276cf206cf8c3cf55b9d19c15a69d9c14d3fb9be0364d2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T014450.672483Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e43c3e5bca12795a77d4148ff958735354271635430e2114f3b10233f9032d98",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T020459.130482Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1d4bf7040c71b3a53c096825be34f37f694ed0b61f9bc1bbb4e488bbbbad7fef",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T024756.245948Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f8006ac659b43224f67eee85928987ae32ad9409e117d7802e97d78579438f2d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T054229.702537Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b4774b596656865edf75ff9eae32cf0d2630a06477d2d1547f498d102bc66cef",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T055017.711575Z-prepared/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2f87de38661a484bb0e09625b25e363acdc1eed1aba408ef5c2bea1bd6a1092a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T055017.711575Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "aea22a9ddaa54be03481d8ea34dbce5479262d2a9cd8ea4e980d56dfb9d7a01d",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T062505.208379Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T062505.552988Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T074042.840320Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T153635.004894Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T163354.210407Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T163354.247043Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T163354.310138Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T170742.727534Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T174739.912595Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "88a1e9a95feb80bf39bd44998ac4507fc66d46cb53b8496f6b97337b68b913e3",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T174740.017449Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bca843fb99dff39c5ac9a8b2c9ea453cdaa53c25be37da529f1f89c9782d0bea",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T185136.764695Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3a66462d5f62b8e74e1946754d38d4b2eb699dc8000a66c6419bcc3ea1a09d92",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T195043.912458Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T195828.029302Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T200830.246684Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8dc6d11f7e8d5683bf10214b976fa76e686fafacf35562c2f8e8ffe922c8d9ae",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T202604.294879Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7159448f76a68c3e1bd71576cb9f55542f91d5dfdb437ed8a882f452fbc0722f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T202752.126072Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T203301.342941Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f380511031e2161632801e20b9794caabecb52e9ba33d46941530f39539e0fe9",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T205014.933900Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d8ee86531c7317e62505730f9487bde056d4ed64d3e1153dbdd44bfecb5278b3",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T210043.972363Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T210111.066250Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6d4de1692e84f5d8b8b9308fcd387aac59a74490133360ebad19e04b624967b7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T210733.761428Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "76c1f472a1bcd71bd2e1660355f14c119e47b5ccfb5143e6ca0d9503a998241d",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T210815.657132Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T213459.470118Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "603f6e975f53d792d8d5c2fe3682b77c882994251b4daec49815aab06943034f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T215030.944608Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8b7832967064aa55bdd00d5cc376653611dd809a9ab7241a71795abc610205c2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T215030.995079Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2807a634ff3fbdac979e3092d0a1b5a802aa0483ccaaa19af6ecdfcffa50da1f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T215031.046514Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b0a647ea218dd907988f6046a11b7163aa853e23591f8e263bf9c67017a5858a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T221651.485791Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-12T225019.585504Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "46199b32e1b36f424111b19d6fb87fe5c0d3d9f5220b4337b51797519b056226",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T020255.180301Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f90f9715f6938d4ece1b58221e18ff912f92f715777b30dd382001ac4e6a252e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T022211.257292Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "78d17752b78b7e11424b9a92bdff201cda6afa319ed6717b0c83f308b5e5467b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T024407.448597Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8c9bd292a6d6f976f2e7014fe49fd99ed7327ad79a982bdfb8ae641a64877c4d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T031726.380783Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5563c7e59b7e3a90d49cecefed223d354afcbbbacc121d7d2f3899455c6e37f6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T072413.099286Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ed8e194c3343e3d4129ee906650d85a8157e2a2250a0988b6f391406d978fc68",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T074504.229783Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "aa23407dcf902fab3b349cb6db6cea9e7db1fc241446518f676da65b70f1de18",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T074533.144752Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "362a0c5b613889091e4005029f63c3c795a6545efa444dae07d2baaaa8c85bc0",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T074651.134471Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7282ba8b66a60741854a18e27b47f4fa308abd93cde5ba7333adad810b8456fe",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T082319.041879Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8a4210408c159bd44f2926636abc5736a2117c863a8c8beca081bff88f7dbff5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T160858.135475Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "949fa3388aec338bd16f8dc0535708f7c0ac6c79196ec9048183e345e1c9e0a8",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T163154.032617Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a0ed332e83cd69c404be983b197d92e36bbd70aac3f96de9e8a4666b8b90c58e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T185452.264685Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2e460547555c65eb00e7401c03b63c069d6b248b273e6e3beece79dc4fa24fa7",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T185600.943502Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0b94d46168f459cc687415548d021fd93cd36e3bd67d272612c08c3e4c00025f",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T185653.169839Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4edd657a7ef481d43cfd96a3c65826592dfefc6cb3b6be7152605566c267bb2c",
+      "state": "budget_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T185758.378350Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7344197bf181835805f3f45095a901f3befbf7f56ee6f019a45434bcc16729b7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T190357.049286Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "c8a80a5a3f9a36afa4ffcbbbadf0950b371e58c1c84c64893b4fb176e7fc8878",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T190502.456251Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "810458f8aa7adf5a1f09fb2f679a49808f899fc97b0135154f24dcd48d62ef81",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T190549.596960Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bd25957acf984ead5240a487e11923d5a618b49a545733c31d99802be8edc875",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T190634.658358Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ce18b65218051a2a1d3bd13977fc134735bf83d9c980e5d801526e1c278588bf",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T192048.384019Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "58860fcf21e3d21ab8155b8e42325ddb8cb83912c0811c5f41f3d3c913cb1997",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T195251.183877Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "50d512b5b40ad31f920d3cbfadc0f20e299a549b1570f0f1d2c20a031b723a70",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T201059.920197Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "69d36d3a6bc58c5885604f2f20e7a95bae1e33b4f2f5db28c8be1d50f396378c",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T201228.119505Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "425b426c5efd2c14450f850537aea1c97b1ac8ace9dbd45b3aae79300d21dc83",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T201314.868415Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "539839c678c2c0e591c5365814f83919d5391e7f3a1494792eae635015e8ec1e",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T201455.521932Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "47b53e9c77448ed4e112e8638c1ee316f8c56cccb8027f33e0322ada6b37e59f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T201529.748272Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9ee906654cf5f3c102b946b6d09e1b7545e58c6a4351507228530a39a2e7cebe",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-13T201720.224397Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ec6e86629948407640b5e7a66a2306cca8bd7d1004227f66de50aedee898cc2f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T055711.938217Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9ca39ad47c1833903111c344b29ff1467e12c3728c7cd93d5f1fc35af7255138",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T055754.499747Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f88c01a1394116dc154271c8dd8205fa020d44e6d2fcd79df26da308c7a9d571",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T060826.976518Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fdef1edf58c0a0872ee36201d649245525bfab55eae0b66406c7b0ef994a32a6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T103147.847414Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f22c7213ac1066d59848bfcd0ca682eb47d8e204af24b0148eff86861166a182",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T113012.109467Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "c10b99918f8c68fee09746bb5351b41bc7c3a5c104cd77329ee9dbd005c845db",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T113945.518703Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e39aaccec1c6cd3c64cb034602ac52089688633a4b167d1d20143f5c88c38c8b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-14T204144.526374Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "036237e0bae40cc7e65c3055a4a919300242b857f6c56d1ed5599600c7e211a1",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T013255.787315Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "94226058c08db80bffb66bde56e766673b533fdb2a317554eef2d1a0b82dea68",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T013256.246642Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e0f9a714718630091fca5d6353df1497c6733e332d78a09de68aae945cd562be",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T013528.988943Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0bd6b15dc32492e90734c302ab2739d1caf267392f70cf2bfa14b5cdd4652309",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T013647.977610Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b57fb093b3a88d60d9b2f06711d16c6379c2b13cd591b520aa0483d376d1a546",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T024845.723885Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e38d8b06d28d44ae8b633dc94754ab17e20a0b73dddc36aa2d63af90ba2f4197",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T030638.132007Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fbc8826e6dfcd3924ab57f076912b7cc7edbf3675916e5dea7d2e9c18415f6e9",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T030638.321696Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9f0d50a404b7596b35cb495a72b0b5d4a48173434179437696e7093e24cb1e7f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T030638.929111Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "135dcac7e2c98c04f5a699926f506567a90ee0535ce35c280f880672384d7781",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T070828.127101Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b9fd50af55c51fd2a9e22795a765642e4b32a4225a5af69f2ecd5fb719836cc8",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T070828.397109Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "341fcc11bdfc2e9ebb6e86a59792051a3027db992b1bcb98bc4df7259506174e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T164003.621261Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "48e6495e70f494c08d0abcefba51f29cb8bfea87eb5e7806d4d37cafb8003d1d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T204407.674235Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ab00c568d4bd00b5044ec3f2a021e3126b13c33a8a0a19e5ac48c8568a1b43e5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T204427.864020Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f41b6a0b980ea11cf6ac7354675c505a3bb4a041f02dc8d1d489d579cac8d029",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T212000.401292Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d4691778749bc672381ea2ee7490d8086a4742d8ffe95c14c67c964fa036d786",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T212016.630328Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4f791d581fc13d04d450409fcbb6de25653564339279b56281b5f01ffb04c86e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T224704.122016Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b29c0a3825f09f1c90c078d244beb875739d8c97fbcb85ce328e64ed8f1707b5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T224725.179602Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fceebffbb3376d6c9676da907a1077719f412622ae2ad5f0199335517f597b0f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T224747.140174Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8c7764d2e40c3e102b3cd089e956a951c3d19c7650a4ec9fd1b8e27d9372d030",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T224805.443398Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "960baeef4f53830a75fb46eb4d8a718c5b7f4251262a9ba42e0aafdcef944a02",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-15T224821.527684Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a0f865be93b024fbcf4ba9a49bca5e818cf429490b245d1a003cda8268ef0c43",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T003834.987727Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bfa94947ac9225013570d3a912508e9a894bd7ec042d1b37915c3f2d6fac6012",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T023204.041725Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e749441d082c2e68ff4c515e93979d34e93fa3cbb261f2d3347feb5cb4512443",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T091514.662497Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0b797590fab7b7c8724d46d4be97a6ea12d0cce7da0a1b74a66a53f55b0ffa46",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T094344.639211Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "520f009066dbf645a17453187497866a6c0b2c91f2387bed0167e31fd138022a",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T095700.173349Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "05940c74113391f5bd33e8054b904466430193da40195b3c4ea72b55745a588c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T101105.548987Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1cdf7c6de845eb8ce4a3a5b431ea32e48ce35e0e3c54abbd3310c7b3c2ed33af",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T111902.183133Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "adf5a64a11c7bec9fe5e2eafa7cd02eddf99d36eb32062f0b1b69de34c0f9227",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T114216.070396Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f3b55a4d0277749056d37d517e2f14c251223e407e46560a9de0d0dec19db7bd",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T124919.270570Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f370e109643e3b6239a8b511548b91d2733f3aa2bfd45488a3df828839c27288",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T130242.718497Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b639ecfabd39f0c4aef337c910a2eaed46c597a2af5399d69274a64d744579be",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T135838.153827Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1fce55e840c8d8f9a9b1647195ca6b7c9031dca3cb50fdc09164c54793c1cabb",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T193940.625280Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d5d66912aed40cc6a5737da7094a7c282bff3e29898ea2c5b241cf28a299e1ea",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T194115.872682Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f31a4c60fdd7c3bdaef6b9f0304d359ce83ed58c21c16615d1c86fd5408cbb88",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T201931.783685Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "722a00270ffe3d90fdc792a65e912e0cc8a87ae883a012f2d5004173df5a8ae6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T203941.331080Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d5ab878077a190e8695eb22d5257f3398a16316b702c8ae321fbca434cee416c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T204710.144206Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a361f710df039afc8f83ebe19c56199c3fb1485ad2f1f95c5240452503193325",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T214153.170495Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3e5a6e299eac8e22af3ca3974afd28bd551e653ed39afd2b3c950833bb87ca69",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T214839.779704Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d9cafa66bcdb83cc7e4e3f0bc78225a320042d75cd5706d93ccb7f15ab68f08c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T224019.610669Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0cf498aecf9801d9446b6ea8bd865c2994c617ea3095ea8217de8c096cae303b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-17T224342.528684Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6b80ce043934f0571512735cb567240dc28ec6fc9932da8784d8170d958af91a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T040408.797363Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3b2280b3c8bf1d014c930ad3434ca09cff503903517a8842de6e0844214e9df9",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T044724.343287Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "64fe59b81820a9232b2385b9dd7a1aaab8c06d355882d09da27c0a2b53c0c482",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T062500.711287Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bee44f51e6eff892294bf9da2e0fafac3a2776fe0b58d923482cf626fa7d8a9e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T082231.223185Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "838ec9c296f0c19ceec80d54370ca3748d60fcf52ac7864b48a16e55b693c086",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T082231.415191Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "65c38ce5545bd9491baaa19af7e51611655a38507429b08e4e35cd8baf6ad112",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T082231.599609Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "140d8de1160010b1eb99142ac7e309bd6eb525396289fc20e91385b3a549c491",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T082231.656321Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4a45c5e729ee1098581dcc3336f6724b895b034a76f8b224723d3e364e12e9b5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T085503.864744Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "345728f830e80269a22d91a7d7d85269ea1fe74d60efaaa45e9b9c630cd8a3b5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T085924.738302Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "210f3ddab5753ee3f51d1a193f0bd40e80372cae15e5eb2ad679292157f95a64",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T162313.509396Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "803497b13b4ab09b69152c9c5bcdfd9da12145bbf03f6ea8415d52e74c796b03",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T163059.972492Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d43ee2ec981d0bbe6276a6cf2a205ab1cfc6510cb231640688ed70e72f583171",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T200330.601865Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "568143a34029df3eac662fa956b1d453ec7836595925a4bad730ad988fcc9175",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T200331.136533Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "20da4811995a160353d9cb692308d2cb245f3cf4bc9d80817aabeb4b74d6be91",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T200421.028496Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e605a71425d16bfe80f8cea3e22bc277b2018d0d6bff7e414c03ec2f0bc923be",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T205407.648499Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f7b624207e9cd9f66967e9e71d319952110d3ffd711cb88601570956e898c92d",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T205407.892597Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "76e2f8929f15c1c5a08377a1d8f250788807d41abe1ec2d0f4b2281c747d2abc",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T211254.496601Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b6638826bc86d1a6a9eed4c5a462a053336b7e82ead47a1904754f320153af3b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T211401.221526Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "85c9e968418ac1b99c0dbcdeb877e811398134d9288eb813a8be0da72f3d3b79",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T212659.064635Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0e6f73d90189dbcf3f06a52c8415463b6df487bbb47fee8d1979aa8bc9415751",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T212702.570947Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d4925da3ad9b8bed0f5abb0e4bb3bf4201fc2c8d0177a44f8ba47afe0a321963",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T214125.608264Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "39664e3fc959b14a4c536f90892db4c083ad8b39d7315019f72374a5a8b369f2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-18T214125.791313Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "63de2d2f2d305b3279a687523d693c3a69783604cebe57841086032139930d84",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T074329.019207Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "cf219a7dbbbe96eea6aedf026a7b08461b924e3d8d5190ef00daf51786fb59a2",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T093755.367276Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "91970d2dc8485ba719e6a4ea4b94d8a169fcbe2c2e7b379e0ce2558ba07af114",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T094027.032367Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0dfb1f98f1cabf32edd77140447ad65403679887b63dcc6d6963e82d169be4a7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T131011.649985Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7c33b7eb7a53c4329145edf1b95a43ed18ee62ac776b28f680e0de8fc1ef3842",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T151805.635398Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b19fd4c8f17d8afdcbe2ea84a65f65d0cd91a69a4fd8ad066ab7edb6b16ff971",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T154630.567597Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fda3388a3b8c4cafa157249afbbdb928e9c52931288a301e15cb1ba8f06a9e78",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T165053.703289Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f735e245ba0bd6e79ca53621fc819009617b3dc31ce1e56abf55bfb68517bbfe",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T170452.672515Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f21bae24840ed975cae0a6269461b12b448321a5d4710f3e913670705b7ef313",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-19T223641.935223Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "be3229453177950e1d0237a92a46e92f6e293881e6353b49a1400df833e29eca",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-20T031107.452802Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "eded1b04d7b8a98ae892b05f0650d3b1e847f0ec088de7938dc53d825ee7df25",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-21T025706.848746Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0cf0088e870a83863a49aa258898669c6dc06056087e056b2be419999ab5a138",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-21T042551.694368Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fd4a28c137e99f253ab68e819fd808e99c69509847bf4b7c12d70f91743ac32e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-21T063625.403699Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a2003f81a63dc673911fa69802d7d1bbfebf0f2494539dbaebc59386ca97d0aa",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-21T084732.702964Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fe73915ba794dfcf3d9f7d1652f61555718db4f75b0a9340e33023605e4bd0e3",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-22T021809.096866Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0d3b095cf5cfb25ff19f513328689cefdae535b59cb3d0339c8de13ee7ede27a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T190033.449958Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d26e3fdd7a40f8ded607651bcf960f6ce8759e10d84a6af647a2283c2248d108",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T192932.145570Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d248693bfb49223aa8bd3f41bb33075bb8330b467f776cd99379fc3919c7bd77",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T201449.111343Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "9c6a0413394baef52d57dbf512aed0d891390a9e50294b7a21e519d513b00e0e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T202551.074292Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "04e352e2bb6d685d7b0bbc4629efbbf93475b3e5a4058a81515c806de085a0ac",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T203606.302690Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "492796a94b7fefdd59726576b091b0b0b9f44c9e661a97fece4ad413491c1caf",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T223857.467590Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5a82470b67ba357fd46542aaa82d4699334518edb709f3ee7408a43139edda96",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T225108.092204Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "44f1e36fa58b81c7776945c4ae7381cd1afd28ffe030895d344862b7bd4c80be",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-25T230238.648709Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2c27cd151a1b68576d2d58324deececdc7f1dea58069f6719a00b237fb2d7335",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T005951.692602Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a8848b9c3e9e24483b4f8836a3e24ca04d0335d5c4e3445ffe0cc359a122f9ed",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T023925.714097Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e55d99289865bea72bd46c7095b97399adbbb7a573f81077f9917e2d4e9977f1",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T025240.156256Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "382063c2e0b888525b9f7bb7d940d056e55dfb6b2dca5143c172b9f598ef822e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T032838.913325Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d1cf030842b5f9a586447a60208a4dba25bf229fbe1bed9a3afa5370ba35e781",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T033210.091698Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "febf1c2e1cdf396d7745b5c2ae438f7e75815eb565c03bbd30445237e937b839",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T041058.884703Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "68adaa14c5589f40c9aa1111882c1f225c95cf244314a27383d0c4fb5d462931",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T041131.747025Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "111fc995bde7b945f15e8ff1aa93edd2b6220f0a1d9f1052fb80e720ecab2809",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "ambiguously dispatched",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T041541.662284Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "53eb27b3bc8ea9953e11c5522a653c9636b67b496806a6fe8bf75d3c6c3e1e60",
+      "state": "submission_started",
+      "submission_field_present": true
+    },
+    {
+      "classification": "ambiguously dispatched",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T044116.003197Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "c08ea3c45ba75ddd80a52133bdda5d50fd7a340b78ba2ccb3ce1e298e2227c0d",
+      "state": "approval_required",
+      "submission_field_present": true
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T044954.431433Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f8beab9c815749283db3e2e1f9a75c6f9db57ce7e732ed99046909fbf8ab27d4",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T045028.853944Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0f0d23da3c2eabd0e5ebd7aaa727461ee8f8845ffbb8b2e283a7cdd563bf77f4",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T055648.326039Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d27a2aa95dadd7b6e94f6c4045f689f627f5641e4253cfe4455bd2e20f2ae38a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T083800.427156Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "dfbaece23621cfc28a0bf1192e6995aeb2be14388d4682af766279341748ff02",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T083828.143913Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e1c90c24ca2f985303ecf2851ca617c5e2769b0f5ebdbfc210079a08e3864ea0",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T182259.060781Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "88ea106aca9b9964ff42322c06c17216a2ade1f0c9dfc2d1046016e005c1067d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T182322.084422Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e21f7fc3805d293ff1c621eb42b9e1774a5a6eb5507de1b5dc663bb74fb04b16",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T182345.638824Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f827887b6abd4bcb01b26936b4daf9d3780ee21c843e42b0ffd946c477617a12",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T182501.844592Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bffff85d88b17061b60b068aeb4621c03e38620d56c388b7ab1ffe64638fdd9f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T190257.591387Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "eb5e9b4666e733a794da15266cbeff4ca61c5b1a49e4d1a75595b344d44ac55a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T190336.832917Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ad4025d9e101f1de4db79da5fbb077f55fa376ea2dd16b2093a1eddf2d579d70",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T202236.647959Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a343bf3372f21fc7ecf760ff4ad0093a61df744eacae7d060d39e120bcf27ce6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T215024.737181Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d4ad7c3fbb1bfc02dae314b33471fe05fdc762bef70da88ee567cafa42457643",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T215312.986352Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8be8edc473c5ccdac842a95bd98e1fe8db4d0970b443161ed69d5c58c82cf17f",
+      "state": "approval_required",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-26T221508.307305Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6442b450640311c99e853f86d0f6c97e4c240dc632d96d0844dc2da4af45078c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T003928.422192Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "454d142ad04385bfbd6b93e3aa4679b8421ff2355e0e187dbfaa0c9c528583d6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T005603.796934Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "30215a9ee48a63d211215d565ec6b0453b4b97b91c8c86a65cb706153dd04b89",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T005625.918478Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a5764b91ead604c027009c6583b81d5205c7cc49ccbf049ffe0d204dcc3f2849",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T005647.453920Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bdffb066cfcfa53daa4f1ce427308618a99b262a5dc109bbfda87c43a4a39cf6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T005707.592661Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8f8596b420bdaf6449ea9013e1b4022a6c0f500ecf8b4709465d531fe06f8cff",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T005728.992643Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0191048c876174937a497ecb42d393050290b1c1f53a7924b43dc7bec786741c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T005842.636425Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "bc0d5c16b2e8573f06fc30bb72e720cea28d55a934d8ceb19b865ade7be2565b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T010222.461059Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "02cf8226363c07d257c0af0ab94d6eef29190c8788cd7fec33582db19a05799d",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T010649.227019Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f1accbbcb4fe43b7b1d8cea867b28e35d6c7bab241a1267e5537bb6e3742e836",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T010823.590534Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3259a74820355d38868fb269b2ff5db9c3720efbd2dec14068f9f310a652e84a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T010945.923159Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "380b115c39506022d4a48d005f541357e6ab1060597b77cf7a43c769eae01ba2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T011052.603194Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b03a55314dec5870521a6e246adccf74547230dba3a4fe52ec8ed8a5ad1e65ff",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T011212.783117Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "83e278b2d903686bf643fe24c3aebe22df17a5c9d0911a911e30fade842984c5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T012214.435220Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ac412781c7d1c5c10325b6a6c6d93013ad734cce31b7b815ec510621b191c8b4",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T013519.244840Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3e2eab8a7a076f9fb04ae81da78a0bf6608ce4a84d21d18b043a915acdcf705c",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T013902.641724Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d6b07ede4b7b0728161686a14148689c3e76fed7a6ac47957a15dd11850ee49f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T041426.793844Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "305dcfee0092e9b3cae1898571922873463c303c3111fda62e98df792e936e39",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T152238.313159Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5d3b9555f477fe4dae96dfe946183f5f36510dedb41562709696493fc80ae916",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T153449.309331Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "dc8a95e036d8b8a2bd979ac22a47fb9f7d2cbd150892095f83026032aa486a4b",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T155933.767848Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5b63f75ad51e0a3665b16500900e856383bbbf85c97877d329d6d07b9b6a5639",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T155934.096853Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "eec53fb559e794b6b9853ada5940ed0568a8e4cca0dcdb2ea7d02f21c5bcba86",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T160617.546354Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8b9d38a161d2e55a7da448b6c1772a8e74405cc34d3a4fcd96d52357618686c2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T173041.727190Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f0f4673575103ad9cf06a1c146db665d830c690ee870a72636d8bb8092295ee8",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T191809.705421Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d4778defcfd6e4451c858a3317cf74abdd6af09013fbf71aa1d0ead60c58b8e4",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T191857.888009Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "914a19475d3304e7851ea3a3347c93a84088d34862e8f8f2fcb96797eb305bc7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T204540.839611Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d72a0deb434ea9513d9611a87aba126d7ca268d58ebc86de8acc27d70e065054",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-27T205759.964796Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "dcf5d3482378ca23114000ce4af8581a2205af8965dda9fe1777a566dfd70858",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-28T000211.008810Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "98b4371a2e13198490810328675b69653c8dd5ad88ca6cd3b0855f56544e817a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-28T163139.827337Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3e43b4db8de0d8cb219022bd47c68193a4c834a88700b5830beba0f9944f546e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-28T224031.317960Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1623c3dc470344a0668fa6edb72aa6248dc10b5aea4c57d3f5abc76c92e54c59",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T002839.028671Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3b11c9b3ecd8af388a65866f82b446d26e8d544e8de9cfed83a3286ef26e2b95",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T004725.208468Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5a0f3205cfefc31fa9c98d058a508edbd2fdbdacbe06abc35be3a259217b0fa1",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T005449.339992Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "33909616929ddb370541c62f912c43a5146d4370100e85e9aea210ee5fc77727",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "infeasible before dispatch",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T010313.262887Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "94321faead94efeffc87159011192e9d9f4dfc6cc5887826815df0c825ebc87c",
+      "state": "design_infeasible",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T010517.821761Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "375b197e5277ca9afaebe15fd627f89249a3d1a34691302bc61e07a1fa1e5aa2",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T012554.415581Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a8559c3e01146614a4b7a1a1246de831fbcf82841d676bdfde75493ff9ab73b8",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T013110.359249Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "35ad8cc0d93d2b835ea20ba6238d1209ebce268fac0adac4c0d91a2d5cb1e2f6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T131159.515371Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a888cb747c905567d7766b482a48f292643711a4b3b46c144c375f58610b41b6",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T132851.529467Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7537eebe9fe93fa3e4b6e3ee8d4f95ae08455133b92f237205f05fc6bcfef25a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "dispatched with a provider identity",
+      "job_ids": [
+        "dbhkprlep8hs73amc680"
+      ],
+      "path": "results/live/2026-10-29T133453.165309Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "e4570a4d769d85ee86efc081ad0e6c616a4b84442166e07a96bca0a32380cc16",
+      "state": "submitted",
+      "submission_field_present": true
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T193911.165282Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "aa229afb8a53546a6f0e754bd9ff5f7bc126853b10f54c47227163260755aeb5",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T194752.938875Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "b294c2e95928102afd4dec28e0eb494562008fac0ca9670c291718b79e559002",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T195142.288785Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "95ae00bb2f326e0cf51fae65302f689137a2d8b04ffa5d0b19d4c78f304abaeb",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T195407.901803Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f46f8b03150a1fb3cb40f63617e1102eb5b2491096ebdfe48a816ebb3c5f3921",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T195800.891065Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7f00be96f4ad38013fae2e240fe415ba7446607c7642a2db616bce36379e8ec7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T203522.626908Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4bfb6b68f3f2a63691f64c05c51c8838dc2555b3e9ac935ae12dbced9350929a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T231157.338216Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "4e372dbcab6a5b632d2f4854efe507f9704b3a4c589954fa2d5510050371ba3e",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T231459.174185Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "20c90426e2e763db8596d0ae44383bc4bfeabdc0b5c19b3a65270df524aa3ab7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-29T234451.870135Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "99f4ff7b0c2c6e077921ab64e68a732a4310d09783b15ecbe364a26da16d27e9",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T001355.330762Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "93325cea9acd4317700823192bd18fa9c3d727b62298bda8f802c8acc52521f4",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T002939.860862Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "7f12c7bae6cbfb438ccaddc87437e5065f16c96b1312aca7380e2c24dd438f60",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T003838.148646Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "50b9e232581f895ccac12fc861457c38478d8d97cff0591e3ebf32133cc3e144",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T004640.933278Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "8bf299ead696dca1549c306f53d7f4718c182ea48d641a23fc6edee1036ea799",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T010259.410185Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5a9931be2b8d25eff845e14437887e41d0840a2a6020bace713b7d67e3e18e78",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T012526.854953Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "c744ec5b1757c1c635fdf87a795e1c406b7371db2229a159342d69b0faf38843",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T014957.640282Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "470d029fc557dddfee454b8ca3717bf90a79366545d80262ba8da783db1a6cfb",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-30T160528.608684Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "1295b67dea7381e0882eed2830bacc84f9e96388b92dc05647b54b8f105d735f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-10-31T003321.466202Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "fcb30383a216edcd7577da4af7d2e7ec5ae6a84924ad5dadb7fef67467344933",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-06T180755.872625Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "6f96014861f5cfbfa3217c98d26941d7af3276ab8c767d7b0e8f3e869cc72985",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-06T183051.978364Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "446b2d65d81406b2c0914901d62809c5ecea728352bc80a7d6a62ed2e68f29ec",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-06T194735.738910Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2c40683eb941e7ddd55bff8a1ab6d5910b48bae1aa659c00d8e3a0e52f0c2407",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-06T194735.851653Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "2626a8357e9be2a557ac1d384faf6df86604b72f2ca982f06cddb4cdf61e9032",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-06T200151.093434Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "f8e7cac641920c1d68bbc45608330ceb0ffbe01403c73bff0c049b39fabc0d56",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-06T200151.405088Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "ca32f03199e9feb9fc8541f236b1238aa4996a20778c4f6ef96737d2cd55ef1f",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T035554.327341Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "96816ccfd17ae85114999c9235a84d5a880b2603b8341b1e2345993bdccf0862",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T040239.842834Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "a87aa9d2af3c760e3718cd5ef0cb9607749f8325c12f398d4c43019f2e95a65a",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T041623.255956Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "73569c6ad2d2b6558ea1c6d43acc817a5e9b0ebda7cb10166783e63a998a7789",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T041624.522872Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "076dedc420c21faba27ee1b913b3ff8fde4444be408f844249717b1a8e9854fe",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T102253.403258Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "0b49acbd55f3a66182321c0c3d835c6f08b36b5ba3ab59479d218fcaa58f2af7",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T102337.840878Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "3173db9e91bd2742420e1662a17480f4acd0ac64b5ae12dcb381bd3f50226c16",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T153237.628673Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "5e5482993be07c2abea4cb1a3248818e337bdd27f0f47ed1a9fb4cac574b2dcf",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "planning-only",
+      "job_ids": [],
+      "path": "results/live/2026-11-07T153238.421725Z/record.json",
+      "reason": "Classification uses explicit record fields; absence of a submission is not proof of no historical execution.",
+      "sha256": "d768a6d62087da5374e23f8bc2b08589837803935040e2be7ab9ed8ccf8bc957",
+      "state": "planned",
+      "submission_field_present": false
+    },
+    {
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/local_compute/aer_delay_sentinels/record.json",
+      "sha256": "a562797e27ddbbc21a16cc18b2619fef0a2f312f7e2da2250fe9c0f899af9e14",
+      "state": null
+    },
+    {
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/quandela/cases/ascella_associator_character/job-00/submission.json",
+      "sha256": "5751a6ae1886567dae9b41e2bf49e8a9a125bc34a89782820a9240190b6f390e",
+      "state": null
+    },
+    {
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/quandela/cases/ascella_associator_character/sim-00/submission.json",
+      "sha256": "65d5206bcd245cb9a7158ed0d17aba73f777aaf5de0e0a0dd9bfec400602dfe1",
+      "state": null
+    },
+    {
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/quandela/cases/ascella_associator_predecessor/job-00/submission.json",
+      "sha256": "f78c17e166a9e77e92be789935591d1c60eb469c89cdfa17e991f040133d1a14",
+      "state": null
+    },
+    {
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/quandela/cases/ascella_associator_predecessor/job-01/submission.json",
+      "sha256": "86c7aa33b87b1dd97cdb273651755e0b4e5829d90f66897d03987189aeab4316",
+      "state": null
+    },
+    {
+      "classification": "schema requires a provider-specific reader",
+      "path": "results/quandela/cases/ascella_two_photon_character/job-01/submission.json",
+      "sha256": "82c39381d67b344a42c183f39d8d2d913aa1fd2d4e4f7a9b5d3efec30c398b6d",
+      "state": null
+    }
+  ],
+  "observed_at": "2026-11-11T07:52:02.251346+00:00",
+  "raw_replay": {
+    "boundary": "Descriptive raw-shot reconstruction; physical alignment, independence, and causation remain unqualified.",
+    "claim": "ibm-fez-actor-pilot-descriptive-errors",
+    "conditions": 24,
+    "gate": "core-ibm-fez-actor-pilot-replay",
+    "result": "passed",
+    "shots": 73728
+  },
+  "schema": "quantum-ledger-reconciliation-observation-v1",
+  "source_revision": "3573d1cae5cf5c39daed452c213a13479f0914c3",
+  "sources": {
+    "docs/evidence/a5-exceptional-fibers/ledger.tsv": "56084c7a72f733b208aa91817c7a48ba23ad4f7042ad2c9f71ba7fee18487695",
+    "docs/evidence/ibm-fez-actor-pilot/analysis.json": "e1c79886827420c8491f906c5b5b3e68570a9c2461f42b0e2b721910cf06c4b7",
+    "docs/state/research_state.json": "b6e2d3ddffc76784a0d165b8b620d014bf5629439c649b6ecf3555bc74a7cf3f"
+  },
+  "summary": {
+    "acquisitions": 482,
+    "algebra_findings": 295,
+    "artifacts": 29068,
+    "claims": 340,
+    "evidence_classes": {
+      "circuit-conformance check": 8,
+      "exact finite certificate": 25,
+      "exploratory reanalysis": 112,
+      "machine-checked proof": 10,
+      "mathematical claim": 32,
+      "numerical or stochastic simulation": 12,
+      "preregistered emulator control": 13,
+      "preregistered hardware inference": 102,
+      "proposed experiment": 15,
+      "withdrawn claim": 11
+    },
+    "execution_classifications": {
+      "ambiguously dispatched": 2,
+      "dispatched with a provider identity": 1,
+      "infeasible before dispatch": 16,
+      "planning-only": 272,
+      "schema requires a provider-specific reader": 6,
+      "unresolved": 13
+    },
+    "gap_counts": {
+      "artifacts_without_claim_or_run_link": 19381,
+      "claims_without_pinned_evidence": 44,
+      "claims_without_replay_gate": 141,
+      "execution_records_outside_indexed_runs": 310,
+      "missing_tracked_artifacts": 0,
+      "unclaimed_acquisitions": 3,
+      "untracked_claim_artifacts": 0
+    },
+    "pinned_source_files": 730,
+    "raw_directory_files": 3414,
+    "runs": 585,
+    "source_schemas": {
+      "None": 221,
+      "a5-aligned-nullity-twelve-orbit-moduli-v1": 1,
+      "a5-aligned-nullity-twelve-stabilizer-representation-v1": 1,
+      "a5-high-nullity-bundle-invariants-v2": 1,
+      "a5-high-nullity-kernel-frames-v2": 1,
+      "a5-high-nullity-transition-atlas-v1": 1,
+      "a5-isotropic-orbit-data-v1": 1,
+      "a5-kernel-bundles-nullity8-boundary-specializations-v1": 1,
+      "a5-kernel-bundles-nullity8-classes-v1": 1,
+      "a5-kernel-bundles-nullity8-compact-orbit-ranks-v1": 1,
+      "a5-kernel-bundles-nullity8-remaining-orbit-moduli-v1": 1,
+      "a5-kernel-bundles-nullity8-stabilizer-fiber-samples-v1": 1,
+      "a5-kernel-bundles-nullity8-stabilizer-strata-v1": 1,
+      "a5-kernel-bundles-nullity8-transition-atlas-v1": 1,
+      "a5-kernel-bundles-nullity8-unit-section-topology-v1": 1,
+      "a5-kernel-bundles-nullity8-w8-orbit-moduli-v1": 1,
+      "a5-kernel-symmetry-v3": 1,
+      "a5-nullity-sixteen-bundle-invariants-v2": 1,
+      "a5-nullity-sixteen-stabilizer-representation-v1": 1,
+      "a5-stiefel-pfaffian-germs-v1": 1,
+      "a5-v-compact-orbit-moduli-v1": 1,
+      "a5-v-topology-stabilizer-representation-v2": 1,
+      "a5-zero-divisor-strata-v1": 1,
+      "algebra-device-conjectures-v1": 1,
+      "annihilator-kernel-attachment-evidence-v1": 1,
+      "ascella-a5-kernel-slice-analysis-v1": 2,
+      "ascella-acquisition-account-after-v1": 1,
+      "ascella-cancellation-transition-acquisition-inventory-v1": 1,
+      "ascella-configuration-holdout-v1": 2,
+      "ascella-correction-power-v1": 1,
+      "ascella-correction-score-v1": 1,
+      "ascella-correction-table-v1": 1,
+      "ascella-experiment-analysis-v1": 1,
+      "ascella-experiment-qualification-v1": 1,
+      "ascella-fixed-mesh-confirmation-v1": 1,
+      "ascella-fixed-mesh-error-v1": 1,
+      "ascella-fixed-mesh-frozen-predictions-v1": 1,
+      "ascella-four-output-order-analysis-v1": 1,
+      "ascella-heater-coupling-reading-v1": 1,
+      "ascella-long-horizon-power-v1": 1,
+      "ascella-long-horizon-reading-v1": 3,
+      "ascella-matched-port-comparison-v1": 1,
+      "ascella-new-mesh-offsets-v1": 1,
+      "ascella-new-mesh-score-v1": 1,
+      "ascella-new-seed-sizing-v1": 1,
+      "ascella-pathion-coset-block-pairs-analysis-v1": 2,
+      "ascella-pathion-four-term-blocks-analysis-v1": 1,
+      "ascella-pathion-mesh-persistence-analysis-v2": 1,
+      "ascella-perturbed-compilation-design-v1": 2,
+      "ascella-perturbed-compilation-reading-v1": 1,
+      "ascella-predecessor-current-analysis-v1": 1,
+      "ascella-predecessor-simulator-v1": 1,
+      "ascella-replication-offsets-v1": 1,
+      "ascella-replication-score-v1": 1,
+      "ascella-replication-sensitivity-v1": 1,
+      "ascella-seed-repeat-reading-v1": 1,
+      "ascella-signed-coherence-analysis-v1": 2,
+      "ascella-signed-coherence-comparison-v1": 1,
+      "ascella-signed-coherence-diagnostics-v1": 2,
+      "ascella-signed-coherence-drive-response-v1": 1,
+      "ascella-signed-coherence-physical-models-v1": 1,
+      "ascella-signed-coherence-response-geometry-v1": 1,
+      "ascella-target-slot-drift-analysis-v1": 2,
+      "ascella-transition-context-account-after-v1": 1,
+      "ascella-transition-context-analysis-v1": 1,
+      "ascella-transition-context-campaign-v1": 1,
+      "ascella-transition-context-inventory-v1": 1,
+      "ascella-transition-day-repeat-analysis-v1": 1,
+      "ascella-transition-day-repeat-campaign-v1": 1,
+      "ascella-transition-day-repeat-inventory-v1": 1,
+      "ascella-transition-mesh-port-analysis-v1": 1,
+      "ascella-transition-mesh-port-campaign-v1": 1,
+      "ascella-transition-mesh-port-inventory-v1": 1,
+      "associator-cubic-normal-form-v1": 1,
+      "atlas-coherent-families-v2": 1,
+      "atlas-detuning-map-v6": 1,
+      "bdsc-drift-series-diagnostic-v1": 1,
+      "bdsc-drift-series-readout-v1": 1,
+      "bdsc-stationarity-calibration-contrast-v1": 1,
+      "bdsc-stationarity-readout-v1": 1,
+      "bdsc-stray-mode-veto-v1": 2,
+      "box-kite-analysis-v1": 4,
+      "calibration-scoped-family-analysis-v1": 1,
+      "cayley-dickson-claim-boundaries-v1": 1,
+      "cayley-dickson-local-skew-schur-probe-v1": 1,
+      "census-frequency-design-v2": 1,
+      "complex-skew-certificate-v1": 1,
+      "d-locus-nullity-v1": 1,
+      "demarrais-pauli-propagation-v1": 1,
+      "dense-run-digests-v1": 2,
+      "design-c-cubic-noise-v1": 1,
+      "dimension32-skew-schur-evidence-v1": 1,
+      "folded-correction-second-analysis-v1": 1,
+      "ghost-run-report-v5": 1,
+      "ghost-run-v2": 1,
+      "github-branch-activity-v1": 2,
+      "gororoba-calibration-snapshot-v2": 8,
+      "gororoba-conditional-ramsey-power-v2": 1,
+      "gororoba-echo-dilation-noise-v1": 1,
+      "gororoba-primorial-bound-residuals-v1": 1,
+      "gororoba-primorial-cover-certificates-v1": 1,
+      "gororoba-primorial-cover-noise-v1": 1,
+      "gororoba-primorial-null-residuals-v1": 1,
+      "gororoba-primorial-probe-case-v1": 1,
+      "gororoba-primorial-ziller-table-v1": 1,
+      "gororoba-signed-kernel-noise-v2": 1,
+      "gororoba-walk-scaffold-channels-v1": 1,
+      "hypercomplex-measured-frame-v1": 8,
+      "hypercomplex-operator-evidence-v1": 1,
+      "hypercomplex-order-pilot-summary-v1": 1,
+      "ibm-fez-descriptive-analysis-v1": 1,
+      "idle-penalty-exploratory-v1": 1,
+      "iqm-cancellation-probe-analysis-v1": 2,
+      "iqm-circuit-case-v1": 1,
+      "iqm-idle-schedule-probe-analysis-v1": 2,
+      "iqm-measurement-diagnostic-analysis-v1": 1,
+      "iqm-measurement-preflight-analysis-v1": 1,
+      "iqm-measurement-sequence-analysis-v1": 1,
+      "iqm-measurement-sequence-analysis-v2": 2,
+      "iqm-qet-ladder-analysis-v1": 1,
+      "iqm-reset-billing-analysis-v1": 1,
+      "iqm-results-v1": 39,
+      "iqm-signed-probe-analysis-v1": 1,
+      "iqm-signed-probe-audit-v1": 1,
+      "iqm-signed-resolve-analysis-v1": 1,
+      "job-cancellation-authority-v1": 1,
+      "kaggle-aer-collect-v1": 1,
+      "kernel-determinant-certificate-v1": 1,
+      "linear-conjugation-search-v1": 1,
+      "local-idle-schedule-v1": 1,
+      "measured-static-algebra-extraction-v1": 2,
+      "measurement-sequence-scatter-floor-v1": 2,
+      "moreno-stiefel-exact-nullity-v1": 1,
+      "moreno-stiefel-pfaffian-identity-v1": 1,
+      "msq-reset-persistence-v1": 1,
+      "msq-successor-null-summary-v2": 1,
+      "n21-conjugation-noise-v1": 1,
+      "nhat-bias-v1": 1,
+      "nullity-twelve-locus-evidence-v1": 1,
+      "pathion-kernel-map-census-wide-v1": 1,
+      "pathion-parallel-coset-analysis-v1": 1,
+      "pathion-wide-coset-analysis-v2": 1,
+      "photonic-compilation-measurement-audit-v1": 2,
+      "photonic-repeat-descriptive-readout-v1": 2,
+      "principal-skew-atlas-evidence-v1": 1,
+      "projective-kernel-limits-v1": 1,
+      "qd-belenos-cone-reading-v2": 1,
+      "qd-belenos-followup-preregistration-v1": 1,
+      "qd-belenos-followup-v1": 1,
+      "qd-belenos-form-dwell-preregistration-v1": 1,
+      "qd-belenos-form-dwell-v1": 1,
+      "qd-belenos-form-ensemble-preregistration-v1": 1,
+      "qd-belenos-form-ensemble-v1": 1,
+      "qd-belenos-form-mesh-bridge-preregistration-v1": 1,
+      "qd-belenos-form-mesh-bridge-v1": 1,
+      "qd-belenos-leakage-rca-v1": 1,
+      "qd-belenos-mesh-analysis-v1": 10,
+      "qd-belenos-mesh-efficiency-v1": 1,
+      "qd-belenos-payload-series-readout-v1": 1,
+      "qd-belenos-seeded-single-readout-v1": 1,
+      "qd-belenos-static-offsets-v1": 1,
+      "qd-belenos-suppression-analysis-v2": 2,
+      "qd-box-kite-analysis-v1": 33,
+      "qd-box-kite-cases-v1": 3,
+      "qd-catalogue-v1": 2,
+      "qd-collection-v1": 89,
+      "qd-cz-tomography-analysis-v2": 1,
+      "qd-demarrais-tower-analysis-v1": 1,
+      "qd-hypercomplex-cases-v1": 6,
+      "qd-submission-v1": 13,
+      "qd-teleportation-analysis-v1": 1,
+      "qd-teleportation-analysis-v2": 5,
+      "qd-teleportation-replay-v1": 1,
+      "qd-teleportation-secondary-v1": 2,
+      "qi-bdsc-pauli-analysis-v3": 2,
+      "qi-bdsc-pauli-series-v1": 1,
+      "qi-bdsc-pauli-twin-series-v1": 1,
+      "qi-collection-v1": 13,
+      "qi-coupler-zz-analysis-v1": 2,
+      "qi-crosstalk-teleport-analysis-v2": 2,
+      "qi-demarrais-tower-analysis-v1": 6,
+      "qi-destination-one-predictable-response-analysis-v1": 1,
+      "qi-destination-predictable-response-analysis-v1": 1,
+      "qi-ibm-noise-replay-v1": 1,
+      "qi-kernel-cancellation-analysis-v2": 2,
+      "qi-nominal-zero-prefix-description-v1": 1,
+      "qi-pathion-coset-block-analysis-v2": 2,
+      "qi-pathion-coset-coin-analysis-v1": 2,
+      "qi-pathion-one-cz-null-analysis-v2": 2,
+      "qi-projector-conformance-v1": 1,
+      "qi-projector-live-admission-v1": 1,
+      "qi-read-only-recovery-v1": 1,
+      "qi-readout-ringdown-analysis-v1": 4,
+      "qi-readout-ringdown-calibration-sensitivity-v1": 2,
+      "qi-readout-ringdown-device-context-v1": 1,
+      "qi-readout-ringdown-null-calibration-v1": 1,
+      "qi-ry-probe-analysis-v1": 1,
+      "qi-shot-record-line-v2": 1,
+      "qi-spectator-zz-split-v1": 1,
+      "qi-stored-source-observation-v1": 3,
+      "qi-tuna-binary-readout-diagnostics-v1": 1,
+      "qi-tuna-destination-analysis-encoding-receipt-v1": 1,
+      "qi-tuna-readout-response-mixture-v1": 1,
+      "qi-tuna-register-qualification-v1": 1,
+      "qi-tuna-sequential-completion-v1": 3,
+      "qi-tuna-sequential-state-v1": 1,
+      "qi-tuna17-readout-faults-v1": 1,
+      "qi-walsh-exemplar-analysis-v1": 1,
+      "qi-zero-divisor-analysis-v1": 6,
+      "qi-zero-divisor-secondary-v1": 1,
+      "qi-zz-map-plan-v1": 1,
+      "qi-zz-map-qx-plan-v1": 1,
+      "qpu-job-retention-audit-v1": 1,
+      "qx-reset-phase-analysis-v1": 1,
+      "rank-locus-local-dimension-v1": 1,
+      "rank-locus-nullity12-refinement-v1": 1,
+      "rank-locus-padic-lift-v1": 1,
+      "rank-locus-quadric-germ-v1": 1,
+      "rank-locus-rotation-composite-audit-v1": 1,
+      "rank-locus-rotation-composite-v1": 1,
+      "rank-locus-second-order-v1": 1,
+      "rank-locus-tangent-linearity-v2": 1,
+      "rank-sector-endpoint-decomposition-v2": 1,
+      "readout-actor-collection-v1": 1,
+      "real-frontier-graphs-v1": 1,
+      "remeasure-history-v1": 1,
+      "retrospective-wide-control-analysis-v1": 1,
+      "scaffolding-exposure-v1": 1,
+      "scheduled-idle-replay-v1": 6,
+      "scheduled-idle-scaling-v1": 1,
+      "schur-acceleration-evidence-v1": 1,
+      "sedenion-clifford-envelope-v1": 1,
+      "signed-kernel-probe-v1": 1,
+      "state-prep-control-parameters-v1": 1,
+      "state-prep-excess-v2": 1,
+      "state-prep-split-v1": 1,
+      "stiefel-pfaffian-higher-v1": 1,
+      "stiefel-witness-package-cross-check-v1": 1,
+      "walk-scaffold-members-v1": 1
+    }
+  },
+  "unclaimed_acquisitions": [
+    "qd-qpu-ascella-cz-tomography-reference-job-00",
+    "qd-qpu-ascella-cz-tomography-reference-job-01",
+    "qd-sim-ascella-signed-coherence-job-02-sim-replay"
+  ]
+}
