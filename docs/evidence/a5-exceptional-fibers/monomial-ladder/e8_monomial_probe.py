@@ -14,6 +14,7 @@ A subspace is a monomial span exactly when every row of its reduced echelon form
     $PYTHON docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_monomial_probe.py ORDER [PRIME] [SLUG] [--rows]
 """
 
+import functools
 import sys
 
 import e8_ladder as lad
@@ -122,24 +123,37 @@ def report(label, elements):
     red, r, keys = echelon(elements)
     sizes = [sum(1 for j in range(len(keys)) if int(red[i, j])) for i in range(r)]
     single = sum(v == 1 for v in sizes)
-    print(
-        slug, p, "order", N, label, "rank", r, "single-monomial rows", single, "largest support", max(sizes), flush=True
+    return " ".join(
+        str(v)
+        for v in (slug, p, "order", N, label, "rank", r, "single-monomial rows", single, "largest support", max(sizes))
     )
-    return single == r
 
 
-for label, maximal in (("I", False), ("m_R I", True)):
+@functools.cache
+def ideal_span(maximal):
     span = [ring.mul(g, x, N) for g in gens for x in lad.ring_basis(ring, N, maximal)]
-    span = [x for x in span if x[0] or x[1]]
-    for name, images in systems.items():
-        moved = [(substitute(x[0], images), cut(substitute(x[1], images), N - 1)) for x in span] if images else span
-        report(f"{label} [{name}]", moved)
-        if name == "xy":
-            # b -> b + X: p + q b becomes (p + q X) + q b
-            shifted = [(cut(x[0] + x[1] * a), x[1]) for x in moved]
-            report(f"{label} [xy, b - X]", shifted)
+    return [x for x in span if x[0] or x[1]]
 
-if "--rows" in sys.argv:
+
+def probe(task):
+    """Report lines of one (space, coordinate system) cell; the cells are independent."""
+    label, maximal, name = task
+    span, images = ideal_span(maximal), systems[name]
+    moved = [(substitute(x[0], images), cut(substitute(x[1], images), N - 1)) for x in span] if images else span
+    lines = [report(f"{label} [{name}]", moved)]
+    if name == "xy":
+        # b -> b + X: p + q b becomes (p + q X) + q b
+        lines.append(report(f"{label} [xy, b - X]", [(cut(x[0] + x[1] * a), x[1]) for x in moved]))
+    return lines
+
+
+if __name__ == "__main__":
+    cells = [(label, maximal, name) for label, maximal in (("I", False), ("m_R I", True)) for name in systems]
+    for lines in lad.parallel.ordered_map(probe, cells, min_items=2):
+        for line in lines:
+            print(line, flush=True)
+
+if __name__ == "__main__" and "--rows" in sys.argv:
     span = [ring.mul(g, x, N) for g in gens for x in lad.ring_basis(ring, N, False)]
     red, r, keys = echelon([x for x in span if x[0] or x[1]])
     print("columns are (b flag, w, rho, sig, zeta, a)")

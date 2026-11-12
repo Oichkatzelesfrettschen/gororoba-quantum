@@ -62,7 +62,8 @@ def check_target(target: Any) -> dict[str, Any]:
 
 
 def build() -> dict[str, Any]:
-    cases = [check_target(rank.targets.TARGETS[name]) for name in sorted(rank.targets.TARGETS)]
+    targets = [rank.targets.TARGETS[name] for name in sorted(rank.targets.TARGETS)]
+    cases = rank.ring_module().parallel.ordered_map(check_target, targets, min_items=2)
     failed = [case["target"] for case in cases if case["status"] != "passed"]
     if failed:
         raise ValueError(f"loader disagreement on {failed}")
