@@ -1,7 +1,7 @@
 # Associator observables on the A_5 rank strata
 
 The rank of the left alternative associator operator `L_y^2 - L_(y^2)` is not an invariant of a rank stratum on six of
-the twelve strata (W8, Ehat, Iso, X+, X-, B9); on the other six (V, VB, Va+, Va-, N+, N-) it equals 24 at all 1,754 exact
+the twelve strata (W8, Ehat, Iso, X+, X-, B9); on the other six (V, VB, Va+, Va-, N+, N-) it equals 24 at all 1,367 distinct exact
 points sampled there. The nullity of `L_y` is the stratum invariant, and the factored spectrum of `-L_y^2 / N` varies on every
 stratum except N+ and N-. `associator_observables.py` computes every observable in exact arithmetic over Q and writes
 `associator-observables.json`, bound to the script by its sha256.
@@ -32,23 +32,25 @@ so the real scalings and the phase `z -> (c + i s) z` with `c^2 + s^2 = 1` are e
 
 ## Result
 
-Each row counts the points of one stratum: the representative, 180 unipotent images, 6 boost, scaling and reflection images,
-20 composite images and the grid points (up to 100) of the enumeration below.
+Each row counts distinct rational split coordinates within one stratum. The enumeration evaluates 3,596 labeled
+rows at 3,044 distinct points: stabilizing movements and overlaps between families repeat some coordinates. The
+summary deduplicates coordinates before counting ranks or spectra, rejects conflicting observables at repeated
+coordinates, and retains evaluation counts separately. The point table keeps every labeled evaluation for replay.
 
-| Stratum | Nullity | Points | Ranks of `L_y^2 + N I` (count) | Distinct spectra | Distinct multiplicity patterns | Rank on the sample |
-|---|---|---|---|---|---|---|
-| W8 | 8 | 307 | 16 (8), 20 (7), 24 (168), 28 (124) | 99 | 9 | varies |
-| Ehat | 8 | 307 | 24 (73), 28 (234) | 124 | 4 | varies |
-| Iso | 8 | 307 | 20 (6), 24 (77), 28 (224) | 171 | 8 | varies |
-| X+ | 8 | 307 | 20 (10), 24 (68), 28 (229) | 109 | 6 | varies |
-| X- | 8 | 307 | 20 (9), 24 (72), 28 (226) | 110 | 6 | varies |
-| B9 | 12 | 307 | 20 (15), 24 (14), 28 (278) | 85 | 5 | varies |
-| V | 12 | 307 | 24 (307) | 28 | 3 | constant 24 |
-| VB | 12 | 307 | 24 (307) | 4 | 2 | constant 24 |
-| Va+ | 12 | 307 | 24 (307) | 26 | 3 | constant 24 |
-| Va- | 12 | 307 | 24 (307) | 26 | 3 | constant 24 |
-| N+ | 16 | 262 | 24 (262) | 1 | 1 | constant 24 |
-| N- | 16 | 264 | 24 (264) | 1 | 1 | constant 24 |
+| Stratum | Nullity | Evaluations | Distinct points | Ranks of `L_y^2 + N I` (distinct-point count) | Distinct spectra | Distinct multiplicity patterns | Rank on the sample |
+|---|---|---|---|---|---|---|---|
+| W8 | 8 | 307 | 276 | 16 (7), 20 (7), 24 (138), 28 (124) | 99 | 9 | varies |
+| Ehat | 8 | 307 | 271 | 24 (40), 28 (231) | 124 | 4 | varies |
+| Iso | 8 | 307 | 300 | 20 (6), 24 (73), 28 (221) | 171 | 8 | varies |
+| X+ | 8 | 307 | 270 | 20 (6), 24 (38), 28 (226) | 109 | 6 | varies |
+| X- | 8 | 307 | 270 | 20 (5), 24 (42), 28 (223) | 110 | 6 | varies |
+| B9 | 12 | 307 | 290 | 20 (15), 24 (14), 28 (261) | 85 | 5 | varies |
+| V | 12 | 307 | 232 | 24 (232) | 28 | 3 | constant 24 |
+| VB | 12 | 307 | 257 | 24 (257) | 4 | 2 | constant 24 |
+| Va+ | 12 | 307 | 229 | 24 (229) | 26 | 3 | constant 24 |
+| Va- | 12 | 307 | 229 | 24 (229) | 26 | 3 | constant 24 |
+| N+ | 16 | 262 | 211 | 24 (211) | 1 | 1 | constant 24 |
+| N- | 16 | 264 | 209 | 24 (209) | 1 | 1 | constant 24 |
 
 The ranks at the retained representatives reproduce the exploratory probe: 16 (W8), 24 (Ehat, Iso), 20 (X+, X-), 28 (B9),
 24 (V, VB, Va+, Va-, N+, N-). The representative is the lowest-rank point of the sample on W8, Ehat, X+ and X-, and the
@@ -81,14 +83,14 @@ per multiplicity pattern.
 
 ### Observed on the finite sample
 
-- On V, VB, Va+ and Va- the rank is 24 at all 307 points of each, and on N+ and N- at 262 and 264 points, while the spectra
-  take 28, 4, 26, 26, 1 and 1 distinct values. **Inferred** at high confidence for V, VB, Va+ and Va-, and not proved: a certified
+- On V, VB, Va+ and Va- the rank is 24 at 232, 257, 229 and 229 distinct points, and on N+ and N- at 211 and 209 distinct points, while the spectra
+  take 28, 4, 26, 26, 1 and 1 distinct values. **Conjecture**, unproved for V, VB, Va+ and Va-: a certified
   point with another rank is the falsifier, and each point count above is the number tried.
 - N+ and N- have one spectrum over all their points. **Inferred** from a standard fact: in original coordinates a point of
   N+ (N-) is `u = a + i b`, `v = +i u` (`v = -i u`) with `a`, `b` orthogonal of equal norm in R^7, and the compact `G_2` acts
   on `y` through the same action on the four octonion blocks, so transitivity of `G_2` on orthonormal pairs of `R^7`
   (`G_2 / SU(2) = V_2(R^7)`) makes N+ and N- each one orbit of the compact automorphisms and the scalings. The script does
-  not verify transitivity; the constant spectrum over 526 points agrees with it.
+  not verify transitivity; the constant spectrum over 420 distinct points (526 evaluations) agrees with it.
 - The spectrum and its multiplicity pattern are not stratum invariants on any stratum but N+ and N-. On V the rational roots of
   the spectrum of the representative are 0, 1 and 2 with multiplicities 12, 8 and 12; other points of V add roots such as
   `338/769` and `2738/769`, so neither the multiplicity pattern nor the spectrum identifies the orbit of the compact group
@@ -124,7 +126,7 @@ Every point comes from the deterministic enumeration in the script; no random dr
   membership pattern, and per stratum 100 evenly spaced members (all members when fewer). The record lists the member counts.
 
 Each point is certified in its stratum by the exact nullity of `L_y` and its membership pattern, evaluated on the Gaussian
-rational split coordinates of `y`; all 3,596 points and all 336 control images pass.
+rational split coordinates of `y`; all 3,596 sample evaluations (3,044 distinct points) and all 336 control-image evaluations pass.
 
 ## Controls
 
@@ -142,7 +144,7 @@ rational split coordinates of `y`; all 3,596 points and all 336 control images p
 - Each non-invariance claim rests on two exact witnesses; it fails only if a witness lies outside its stratum (a nullity or a
   membership pattern different from the stratum's), which the certification of every point excludes.
 - Each constancy claim is overturned by one certified point of that stratum with a rank other than 24. The sample tried
-  307 points on each of V, VB, Va+ and Va-, and 262 and 264 on N+ and N-.
+  232, 257, 229 and 229 distinct points on V, VB, Va+ and Va-, and 211 and 209 on N+ and N-.
 - The automorphism invariance fails at one basis pair that a map breaks, or one image whose observables differ; none of
   the 288 images and none of the six maps fails.
 - The `G_2` transitivity argument for N+ and N- fails at a pair of orthogonal equal-norm vectors in `R^7` that no automorphism

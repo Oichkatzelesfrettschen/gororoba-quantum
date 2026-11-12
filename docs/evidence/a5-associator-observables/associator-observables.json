@@ -158,7 +158,7 @@
   "unipotents_are_split_octonion_automorphisms": "180 of 180"
  },
  "inputs": {
-  "docs/evidence/a5-associator-observables/associator_observables.py": "f9e92556e10246dd6569b174cfc23ea66f6a1dd73ed2a58a9dcf613b4aac4b6e",
+  "docs/evidence/a5-associator-observables/associator_observables.py": "13790719b14f3f6a6cfc142b87e98a9805b9391e443e869e50d8062f6c721fda",
   "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
   "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
   "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
@@ -40105,7 +40105,7 @@
   }
  },
  "schema": "a5-associator-observables-v1",
- "script_sha256": "f9e92556e10246dd6569b174cfc23ea66f6a1dd73ed2a58a9dcf613b4aac4b6e",
+ "script_sha256": "13790719b14f3f6a6cfc142b87e98a9805b9391e443e869e50d8062f6c721fda",
  "spectra": {
   "0007613996b3": {
    "factors": [
@@ -75092,11 +75092,19 @@
  ],
  "summary": {
   "B9": {
-   "certified": 307,
+   "certified": 290,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 28,
    "multiplicity_pattern_values": {
-    "[[1, 4], [1, 12], [4, 4]]": 226,
+    "[[1, 4], [1, 12], [4, 4]]": 209,
     "[[1, 4], [1, 4], [1, 12], [1, 12]]": 15,
     "[[1, 4], [1, 4], [1, 12], [3, 4]]": 13,
     "[[1, 4], [1, 4], [1, 4], [1, 12], [2, 4]]": 39,
@@ -75112,15 +75120,15 @@
    "nullity": 12,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "12": 307
+    "12": 290
    },
-   "points": 307,
+   "points": 290,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 165
    },
    "rank_28_attained": true,
    "rank_right_equals_rank_left": true,
@@ -75128,7 +75136,7 @@
    "rank_values": {
     "20": 15,
     "24": 14,
-    "28": 278
+    "28": 261
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -75146,7 +75154,7 @@
      "28": 1
     },
     "unipotent": {
-     "28": 180
+     "28": 165
     }
    },
    "rank_witness": {
@@ -75157,7 +75165,7 @@
    "spectrum_status": "varies",
    "spectrum_values": {
     "03c15668549f": 1,
-    "07b1be48f6d1": 78,
+    "07b1be48f6d1": 61,
     "0a9ab4f43cee": 1,
     "0c5216d20df9": 1,
     "0cb9e52f9d19": 2,
@@ -75244,14 +75252,22 @@
    }
   },
   "Ehat": {
-   "certified": 307,
+   "certified": 271,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 28,
    "multiplicity_pattern_values": {
-    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 11,
+    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 6,
     "[[1, 4], [1, 4], [1, 8], [4, 4]]": 16,
-    "[[1, 4], [1, 8], [1, 8], [3, 4]]": 62,
-    "[[1, 4], [1, 8], [5, 4]]": 218
+    "[[1, 4], [1, 8], [1, 8], [3, 4]]": 34,
+    "[[1, 4], [1, 8], [5, 4]]": 215
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": "u14:-2",
@@ -75262,22 +75278,22 @@
    "nullity": 8,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "8": 307
+    "8": 271
    },
-   "points": 307,
+   "points": 271,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 145
    },
    "rank_28_attained": true,
    "rank_right_equals_rank_left": true,
    "rank_status": "varies",
    "rank_values": {
-    "24": 73,
-    "28": 234
+    "24": 40,
+    "28": 231
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -75295,8 +75311,8 @@
      "24": 1
     },
     "unipotent": {
-     "24": 60,
-     "28": 120
+     "24": 28,
+     "28": 117
     }
    },
    "rank_witness": {
@@ -75310,22 +75326,22 @@
     "054a78455e46": 3,
     "05ec7c8017bb": 1,
     "08504b4fce05": 1,
-    "09076d23932a": 8,
+    "09076d23932a": 7,
     "0b905ebb9a04": 1,
     "0b96dfc5b5a1": 4,
     "0d323b433b5d": 1,
     "0e45613ea5a3": 1,
-    "0ed4f29b22a1": 2,
+    "0ed4f29b22a1": 1,
     "1022e7ddc93b": 1,
     "1078f8ff9f63": 2,
     "1112cc375f9a": 3,
-    "14bacc560141": 2,
+    "14bacc560141": 1,
     "168b204241cf": 5,
-    "16df27b71046": 2,
+    "16df27b71046": 1,
     "17ac175f5996": 4,
     "1d0fe9560955": 1,
     "1e8f285b5263": 6,
-    "2290f050fd29": 8,
+    "2290f050fd29": 7,
     "24593dcf8845": 1,
     "26b4025af583": 5,
     "2c656e366195": 1,
@@ -75345,19 +75361,19 @@
     "4257e7246891": 2,
     "44bccbf0f03a": 1,
     "475248f4c29e": 1,
-    "49e3aca71131": 2,
+    "49e3aca71131": 1,
     "4b09fb789ba3": 1,
     "4beccecfdfeb": 3,
-    "4db62f5ee8d3": 8,
+    "4db62f5ee8d3": 5,
     "5137084093c8": 1,
     "5b43441bf0ff": 1,
-    "5b85a6f16a59": 6,
+    "5b85a6f16a59": 2,
     "5b8a8c6221eb": 3,
     "5d8c484e6377": 1,
     "63c4bf0c2e7f": 1,
     "642327c80c9e": 1,
     "65519530a505": 2,
-    "66add4680e82": 4,
+    "66add4680e82": 1,
     "68d13ff99a09": 1,
     "6c0002062cf2": 16,
     "6c2e3faeda13": 8,
@@ -75369,8 +75385,8 @@
     "8483c3202af6": 1,
     "877fc44eb023": 1,
     "889f11e096cc": 4,
-    "8af9a6a941c0": 4,
-    "8c18ff6dad71": 2,
+    "8af9a6a941c0": 1,
+    "8c18ff6dad71": 1,
     "8c5cfef15561": 1,
     "8e900e94e234": 1,
     "8ed40369223c": 1,
@@ -75379,19 +75395,19 @@
     "985e2416cf57": 1,
     "98add1259834": 1,
     "9b3dc4a4e5b5": 2,
-    "9c1641cba4f4": 4,
+    "9c1641cba4f4": 1,
     "9c996b48ddee": 1,
     "9d503ac87891": 1,
     "a2e043e82e2b": 2,
     "a4d29b3e2a0d": 1,
     "a6158d702dd4": 1,
     "a76c1b427905": 2,
-    "a824b3806995": 2,
+    "a824b3806995": 1,
     "a837cf2a9c15": 1,
     "a9190aa0ebbd": 1,
     "a9def80ae270": 1,
     "aba6152857bd": 1,
-    "ac289b4e974a": 2,
+    "ac289b4e974a": 1,
     "add067a90381": 1,
     "af038c4b2ea7": 1,
     "afc83d93bd03": 3,
@@ -75404,7 +75420,7 @@
     "c7d8773f77a6": 3,
     "caccec841599": 1,
     "cb05c84770fa": 1,
-    "cbe28eefe3d4": 2,
+    "cbe28eefe3d4": 1,
     "ccc74bb8dfab": 1,
     "cdf761972800": 1,
     "ce6a7318afa1": 1,
@@ -75413,27 +75429,35 @@
     "de28c372f6d8": 2,
     "de876be40d3b": 1,
     "dfb845be8c9d": 3,
-    "dfd5c8657e4b": 4,
+    "dfd5c8657e4b": 2,
     "e0c1bfb28f2e": 1,
     "e13776ac1a22": 3,
     "e5ee214cb0b9": 5,
     "ea896edf9e8e": 1,
-    "edd4da97ae38": 4,
+    "edd4da97ae38": 1,
     "eeb88dce431d": 3,
     "f41949f81a85": 1,
     "f9a7ed244c44": 1,
     "f9ce3327877c": 1,
-    "fbff3b7705c4": 8,
+    "fbff3b7705c4": 7,
     "fe865cfcf703": 1,
     "fe8db9dd35b7": 3,
-    "fe9842a46475": 4,
+    "fe9842a46475": 1,
     "ff0f5dcbe96f": 2,
-    "ffc1273961ec": 2
+    "ffc1273961ec": 1
    }
   },
   "Iso": {
-   "certified": 307,
+   "certified": 300,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 28,
    "multiplicity_pattern_values": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": 4,
@@ -75442,8 +75466,8 @@
     "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 6,
     "[[1, 4], [1, 4], [1, 8], [4, 4]]": 16,
     "[[1, 4], [1, 8], [1, 12], [2, 4]]": 2,
-    "[[1, 4], [1, 8], [1, 8], [3, 4]]": 67,
-    "[[1, 4], [1, 8], [5, 4]]": 206
+    "[[1, 4], [1, 8], [1, 8], [3, 4]]": 63,
+    "[[1, 4], [1, 8], [5, 4]]": 203
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": "grid:4510785",
@@ -75458,23 +75482,23 @@
    "nullity": 8,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "8": 307
+    "8": 300
    },
-   "points": 307,
+   "points": 300,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 175
    },
    "rank_28_attained": true,
    "rank_right_equals_rank_left": true,
    "rank_status": "varies",
    "rank_values": {
     "20": 6,
-    "24": 77,
-    "28": 224
+    "24": 73,
+    "28": 221
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -75493,8 +75517,8 @@
      "24": 1
     },
     "unipotent": {
-     "24": 33,
-     "28": 147
+     "24": 31,
+     "28": 144
     }
    },
    "rank_witness": {
@@ -75585,21 +75609,21 @@
     "6b94080df93b": 2,
     "6bece598a7ef": 2,
     "6c0e992e8d6a": 1,
-    "77e2673e6bb8": 13,
+    "77e2673e6bb8": 9,
     "7cd6bd44ee87": 1,
-    "7e89bcc51545": 5,
+    "7e89bcc51545": 4,
     "839f34972b88": 2,
     "83f7dd6a16f9": 3,
     "88f710976354": 1,
     "8aa617291839": 3,
     "8b255f1b730d": 1,
-    "8c87f322ac1b": 2,
+    "8c87f322ac1b": 1,
     "8cc5349aef25": 1,
     "8f9a16a630cb": 1,
     "92849d7a6ba0": 1,
     "929c7eee5e3e": 2,
     "92f5e4a9855f": 3,
-    "98959fda59e7": 6,
+    "98959fda59e7": 5,
     "99a365978e85": 1,
     "9f8115bf40fa": 1,
     "a0315a4f9960": 3,
@@ -75678,11 +75702,19 @@
    }
   },
   "N+": {
-   "certified": 262,
+   "certified": 211,
    "consistent": true,
+   "evaluations": 262,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 55,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 24,
    "multiplicity_pattern_values": {
-    "[[1, 4], [1, 4], [1, 8], [1, 16]]": 262
+    "[[1, 4], [1, 4], [1, 8], [1, 16]]": 211
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 8], [1, 16]]": "rep"
@@ -75690,25 +75722,25 @@
    "nullity": 16,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "16": 262
+    "16": 211
    },
-   "points": 262,
+   "points": 211,
    "points_by_family": {
-    "boost-scale-reflect": 6,
+    "boost-scale-reflect": 5,
     "composite": 20,
     "grid": 55,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 132
    },
    "rank_28_attained": false,
    "rank_right_equals_rank_left": true,
    "rank_status": "constant on the sample",
    "rank_values": {
-    "24": 262
+    "24": 211
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
-     "24": 6
+     "24": 5
     },
     "composite": {
      "24": 20
@@ -75720,7 +75752,7 @@
      "24": 1
     },
     "unipotent": {
-     "24": 180
+     "24": 132
     }
    },
    "rank_witness": {
@@ -75728,15 +75760,23 @@
    },
    "spectrum_status": "constant on the sample",
    "spectrum_values": {
-    "6f0adcae4249": 262
+    "6f0adcae4249": 211
    }
   },
   "N-": {
-   "certified": 264,
+   "certified": 209,
    "consistent": true,
+   "evaluations": 264,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 57,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 24,
    "multiplicity_pattern_values": {
-    "[[1, 4], [1, 4], [1, 8], [1, 16]]": 264
+    "[[1, 4], [1, 4], [1, 8], [1, 16]]": 209
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 8], [1, 16]]": "rep"
@@ -75744,25 +75784,25 @@
    "nullity": 16,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "16": 264
+    "16": 209
    },
-   "points": 264,
+   "points": 209,
    "points_by_family": {
-    "boost-scale-reflect": 6,
+    "boost-scale-reflect": 5,
     "composite": 20,
     "grid": 57,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 132
    },
    "rank_28_attained": false,
    "rank_right_equals_rank_left": true,
    "rank_status": "constant on the sample",
    "rank_values": {
-    "24": 264
+    "24": 209
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
-     "24": 6
+     "24": 5
     },
     "composite": {
      "24": 20
@@ -75774,7 +75814,7 @@
      "24": 1
     },
     "unipotent": {
-     "24": 180
+     "24": 132
     }
    },
    "rank_witness": {
@@ -75782,17 +75822,25 @@
    },
    "spectrum_status": "constant on the sample",
    "spectrum_values": {
-    "6f0adcae4249": 264
+    "6f0adcae4249": 209
    }
   },
   "V": {
-   "certified": 307,
+   "certified": 232,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 24,
    "multiplicity_pattern_values": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": 1,
-    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 187,
-    "[[1, 8], [1, 12], [1, 12]]": 119
+    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 124,
+    "[[1, 8], [1, 12], [1, 12]]": 107
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": "u13:1>b:13/12:5/12>u32:-1",
@@ -75802,21 +75850,21 @@
    "nullity": 12,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "12": 307
+    "12": 232
    },
-   "points": 307,
+   "points": 232,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 106
    },
    "rank_28_attained": false,
    "rank_right_equals_rank_left": true,
    "rank_status": "constant on the sample",
    "rank_values": {
-    "24": 307
+    "24": 232
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -75832,7 +75880,7 @@
      "24": 1
     },
     "unipotent": {
-     "24": 180
+     "24": 106
     }
    },
    "rank_witness": {
@@ -75842,15 +75890,15 @@
    "spectrum_values": {
     "0666dce76a86": 1,
     "1146abbf3830": 1,
-    "11505a767b44": 18,
-    "1b30ea336f10": 52,
+    "11505a767b44": 11,
+    "1b30ea336f10": 31,
     "27a79450f532": 1,
     "2ba771cd105f": 1,
     "3247d888a49d": 1,
     "41a4fa1cc7c3": 1,
     "4e8d2fd1bd07": 1,
     "56111723537c": 1,
-    "561c51cfffca": 52,
+    "561c51cfffca": 31,
     "5bba4287a896": 4,
     "6155e6f9425c": 1,
     "7ac9f1b628e6": 4,
@@ -75864,19 +75912,27 @@
     "9d142372583a": 1,
     "b03c573efa6c": 1,
     "ba5766143168": 1,
-    "d225964940e9": 34,
-    "d690c3ccaede": 119,
+    "d225964940e9": 20,
+    "d690c3ccaede": 107,
     "df6687db77e8": 4,
     "f72ebd7f302b": 1
    }
   },
   "VB": {
-   "certified": 307,
+   "certified": 257,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 24,
    "multiplicity_pattern_values": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": 23,
-    "[[1, 8], [1, 12], [1, 12]]": 284
+    "[[1, 8], [1, 12], [1, 12]]": 234
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": "b:5/4:3/4",
@@ -75885,21 +75941,21 @@
    "nullity": 12,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "12": 307
+    "12": 257
    },
-   "points": 307,
+   "points": 257,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 132
    },
    "rank_28_attained": false,
    "rank_right_equals_rank_left": true,
    "rank_status": "constant on the sample",
    "rank_values": {
-    "24": 307
+    "24": 257
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -75915,7 +75971,7 @@
      "24": 1
     },
     "unipotent": {
-     "24": 180
+     "24": 132
     }
    },
    "rank_witness": {
@@ -75926,17 +75982,25 @@
     "5eb5100e86cf": 8,
     "675c18b1a2b2": 8,
     "7542f599437c": 7,
-    "d690c3ccaede": 284
+    "d690c3ccaede": 234
    }
   },
   "Va+": {
-   "certified": 307,
+   "certified": 229,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 24,
    "multiplicity_pattern_values": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": 10,
-    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 272,
-    "[[1, 8], [1, 12], [1, 12]]": 25
+    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 208,
+    "[[1, 8], [1, 12], [1, 12]]": 11
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": "u13:1>b:13/12:5/12>u32:-1",
@@ -75946,25 +76010,25 @@
    "nullity": 12,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "12": 307
+    "12": 229
    },
-   "points": 307,
+   "points": 229,
    "points_by_family": {
-    "boost-scale-reflect": 6,
+    "boost-scale-reflect": 5,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 106
    },
    "rank_28_attained": false,
    "rank_right_equals_rank_left": true,
    "rank_status": "constant on the sample",
    "rank_values": {
-    "24": 307
+    "24": 229
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
-     "24": 6
+     "24": 5
     },
     "composite": {
      "24": 20
@@ -75976,7 +76040,7 @@
      "24": 1
     },
     "unipotent": {
-     "24": 180
+     "24": 106
     }
    },
    "rank_witness": {
@@ -75987,8 +76051,8 @@
     "01bbbc08678c": 14,
     "024e2c7fa3ca": 41,
     "115d92452d63": 1,
-    "14f014286e7c": 58,
-    "180f216c07c4": 52,
+    "14f014286e7c": 43,
+    "180f216c07c4": 31,
     "1a4f99ea7047": 4,
     "1ae1c7ee5f21": 8,
     "4b0f480a7d53": 1,
@@ -75999,27 +76063,35 @@
     "675c18b1a2b2": 1,
     "7376773ff070": 1,
     "75e5eceb70f2": 1,
-    "7ac9f1b628e6": 53,
+    "7ac9f1b628e6": 32,
     "8aa6dc3b4fc5": 1,
-    "9047894d193b": 19,
+    "9047894d193b": 12,
     "950555a829cf": 1,
     "9d4fe3ebf6e9": 1,
     "b438f2c96336": 9,
     "c598d3a958ab": 5,
-    "d690c3ccaede": 25,
+    "d690c3ccaede": 11,
     "db89104e4847": 1,
     "eeabccf2e376": 1,
     "f394c31076ac": 4
    }
   },
   "Va-": {
-   "certified": 307,
+   "certified": 229,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 24,
    "multiplicity_pattern_values": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": 10,
-    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 266,
-    "[[1, 8], [1, 12], [1, 12]]": 31
+    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 202,
+    "[[1, 8], [1, 12], [1, 12]]": 17
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": "u13:1>b:13/12:5/12>u32:-1",
@@ -76029,25 +76101,25 @@
    "nullity": 12,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "12": 307
+    "12": 229
    },
-   "points": 307,
+   "points": 229,
    "points_by_family": {
-    "boost-scale-reflect": 6,
+    "boost-scale-reflect": 5,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 106
    },
    "rank_28_attained": false,
    "rank_right_equals_rank_left": true,
    "rank_status": "constant on the sample",
    "rank_values": {
-    "24": 307
+    "24": 229
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
-     "24": 6
+     "24": 5
     },
     "composite": {
      "24": 20
@@ -76059,7 +76131,7 @@
      "24": 1
     },
     "unipotent": {
-     "24": 180
+     "24": 106
     }
    },
    "rank_witness": {
@@ -76070,8 +76142,8 @@
     "01bbbc08678c": 16,
     "024e2c7fa3ca": 23,
     "115d92452d63": 1,
-    "14f014286e7c": 63,
-    "180f216c07c4": 52,
+    "14f014286e7c": 48,
+    "180f216c07c4": 31,
     "1a4f99ea7047": 4,
     "1ae1c7ee5f21": 13,
     "4b0f480a7d53": 1,
@@ -76082,33 +76154,41 @@
     "675c18b1a2b2": 1,
     "7376773ff070": 1,
     "75e5eceb70f2": 1,
-    "7ac9f1b628e6": 53,
+    "7ac9f1b628e6": 32,
     "8aa6dc3b4fc5": 1,
-    "9047894d193b": 19,
+    "9047894d193b": 12,
     "950555a829cf": 1,
     "9d4fe3ebf6e9": 1,
     "b438f2c96336": 9,
     "c598d3a958ab": 5,
-    "d690c3ccaede": 31,
+    "d690c3ccaede": 17,
     "db89104e4847": 1,
     "eeabccf2e376": 1,
     "f394c31076ac": 4
    }
   },
   "W8": {
-   "certified": 307,
+   "certified": 276,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 28,
    "multiplicity_pattern_values": {
     "[[1, 4], [1, 4], [1, 4], [1, 4], [1, 8], [1, 8]]": 6,
     "[[1, 4], [1, 4], [1, 4], [1, 8], [1, 12]]": 2,
     "[[1, 4], [1, 4], [1, 4], [1, 8], [3, 4]]": 14,
-    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 67,
+    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 37,
     "[[1, 4], [1, 4], [1, 8], [4, 4]]": 6,
     "[[1, 4], [1, 8], [1, 12], [2, 4]]": 5,
     "[[1, 4], [1, 8], [1, 8], [3, 4]]": 95,
     "[[1, 4], [1, 8], [5, 4]]": 104,
-    "[[1, 8], [1, 8], [1, 16]]": 8
+    "[[1, 8], [1, 8], [1, 16]]": 7
    },
    "multiplicity_pattern_witness": {
     "[[1, 4], [1, 4], [1, 4], [1, 4], [1, 8], [1, 8]]": "b:5/4:3/4",
@@ -76124,23 +76204,23 @@
    "nullity": 8,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "8": 307
+    "8": 276
    },
-   "points": 307,
+   "points": 276,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 150
    },
    "rank_28_attained": true,
    "rank_right_equals_rank_left": true,
    "rank_status": "varies",
    "rank_values": {
-    "16": 8,
+    "16": 7,
     "20": 7,
-    "24": 168,
+    "24": 138,
     "28": 124
    },
    "rank_values_by_family": {
@@ -76163,7 +76243,7 @@
     },
     "unipotent": {
      "20": 6,
-     "24": 132,
+     "24": 102,
      "28": 42
     }
    },
@@ -76199,12 +76279,12 @@
     "300e643ffa2e": 10,
     "310b20a3e740": 1,
     "36c9bbc25451": 2,
-    "40c4ccd98cc6": 8,
+    "40c4ccd98cc6": 3,
     "40e43bd39992": 1,
-    "4290ccc1725e": 8,
+    "4290ccc1725e": 3,
     "44221c7adbed": 1,
     "45fcf98ff882": 5,
-    "483a2e904d6a": 8,
+    "483a2e904d6a": 3,
     "50d1009d412b": 2,
     "51d123e89ef8": 9,
     "525140eb1a0d": 1,
@@ -76213,7 +76293,7 @@
     "5aad0c61b346": 1,
     "5c0219694f89": 2,
     "5c57d4b05016": 2,
-    "5e08e1ba6bee": 8,
+    "5e08e1ba6bee": 7,
     "62b52676a982": 1,
     "663742cb31b3": 4,
     "66ada1030b6c": 8,
@@ -76243,7 +76323,7 @@
     "a2876039f610": 6,
     "a2e6e1db1d19": 4,
     "a2e8d58fc874": 4,
-    "a3b21d70c512": 16,
+    "a3b21d70c512": 6,
     "a42c912c03a9": 4,
     "a50947edb122": 3,
     "a7b1918bff5a": 3,
@@ -76273,19 +76353,27 @@
     "f23dcd9a392b": 1,
     "f5ecbd592798": 2,
     "f8e8be4bec59": 2,
-    "fc24bfa18ec1": 8
+    "fc24bfa18ec1": 3
    }
   },
   "X+": {
-   "certified": 307,
+   "certified": 270,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 28,
    "multiplicity_pattern_values": {
-    "[[1, 4], [1, 4], [1, 8], [1, 8], [1, 8]]": 7,
-    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 59,
+    "[[1, 4], [1, 4], [1, 8], [1, 8], [1, 8]]": 5,
+    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 31,
     "[[1, 4], [1, 4], [1, 8], [4, 4]]": 32,
-    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 10,
-    "[[1, 4], [1, 8], [5, 4]]": 197,
+    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 6,
+    "[[1, 4], [1, 8], [5, 4]]": 194,
     "[[1, 8], [1, 8], [4, 4]]": 2
    },
    "multiplicity_pattern_witness": {
@@ -76299,23 +76387,23 @@
    "nullity": 8,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "8": 307
+    "8": 270
    },
-   "points": 307,
+   "points": 270,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 145
    },
    "rank_28_attained": true,
    "rank_right_equals_rank_left": true,
    "rank_status": "varies",
    "rank_values": {
-    "20": 10,
-    "24": 68,
-    "28": 229
+    "20": 6,
+    "24": 38,
+    "28": 226
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -76335,9 +76423,9 @@
      "20": 1
     },
     "unipotent": {
-     "20": 4,
-     "24": 58,
-     "28": 118
+     "20": 2,
+     "24": 28,
+     "28": 115
     }
    },
    "rank_witness": {
@@ -76347,37 +76435,37 @@
    },
    "spectrum_status": "varies",
    "spectrum_values": {
-    "0007613996b3": 6,
+    "0007613996b3": 2,
     "0124d73826fe": 1,
     "04a7c79bd0c5": 5,
     "04be25bb4ea3": 3,
-    "04c090e2628f": 8,
+    "04c090e2628f": 2,
     "059aa700d800": 1,
-    "05c0434cc574": 2,
+    "05c0434cc574": 1,
     "062d6dd0b33b": 1,
     "07686a58f30d": 11,
-    "07ff618f9285": 2,
+    "07ff618f9285": 1,
     "096bfe278874": 1,
-    "0ac347fae12d": 10,
+    "0ac347fae12d": 6,
     "0f1db67fb374": 3,
     "0f5b4b289f94": 2,
     "0fc413dbcb8a": 1,
     "161e2bdc5d9b": 1,
     "1bb1ce2e9166": 1,
-    "211b605d8cfd": 2,
+    "211b605d8cfd": 1,
     "235c7ba36b0a": 9,
     "23737b82e0fd": 1,
     "24cbd519035d": 8,
-    "287f550cb5ed": 2,
+    "287f550cb5ed": 1,
     "2936cf65eef1": 1,
     "2a04a4a244ac": 1,
     "2c437708edcd": 1,
-    "2e7abc761eee": 4,
+    "2e7abc761eee": 1,
     "317cd44e4be9": 1,
-    "34e9cc4e0147": 2,
+    "34e9cc4e0147": 1,
     "36e86e56e6f3": 1,
-    "385dd9ffe799": 4,
-    "39240f3f6871": 2,
+    "385dd9ffe799": 1,
+    "39240f3f6871": 1,
     "398120ce2976": 1,
     "3b210f71442e": 2,
     "3be2653cee71": 2,
@@ -76393,18 +76481,18 @@
     "5ccf9df0ffb9": 3,
     "5e2a003f1566": 10,
     "5f8de930dc35": 2,
-    "60a3e191c0f7": 20,
+    "60a3e191c0f7": 19,
     "622e0805c51e": 1,
     "669dd1fa26c5": 1,
     "67197a047e7f": 3,
     "6a74afbc74b9": 4,
-    "6cc041183b24": 8,
+    "6cc041183b24": 7,
     "6f1db517c19f": 1,
     "75cad18a59d2": 5,
     "76a6686fd6a5": 1,
     "7b1768dda5a3": 2,
     "7e32ac217035": 3,
-    "811cba877e5f": 4,
+    "811cba877e5f": 2,
     "84ff361c1d2f": 1,
     "86cc3694e33e": 1,
     "87bd1b74ef3f": 1,
@@ -76418,7 +76506,7 @@
     "9a489e86977e": 1,
     "9c935e897286": 1,
     "9e0189106637": 1,
-    "a1627bc463f8": 2,
+    "a1627bc463f8": 1,
     "a1cd7baa8fad": 1,
     "a636572f3b94": 3,
     "a76c1b427905": 3,
@@ -76441,33 +76529,41 @@
     "cf249ac50663": 1,
     "cf6bb36d8a85": 1,
     "d1b935914f30": 1,
-    "d573e3e2f4b3": 8,
+    "d573e3e2f4b3": 7,
     "d880412aaa13": 1,
     "dbf177b072c0": 1,
     "e00793b6419e": 1,
     "e028a8107d5d": 1,
     "e204e0573112": 2,
-    "ef70e2a5c148": 4,
+    "ef70e2a5c148": 1,
     "f427051be36e": 1,
     "f5beb21a6ed8": 1,
     "f67bae249f1b": 3,
-    "f9033b5c8777": 5,
+    "f9033b5c8777": 4,
     "f9f4910cba50": 1,
     "fa981f50df4d": 1,
-    "fbee03cc64a9": 2,
+    "fbee03cc64a9": 1,
     "fc6ebe685f44": 1
    }
   },
   "X-": {
-   "certified": 307,
+   "certified": 270,
    "consistent": true,
+   "evaluations": 307,
+   "evaluations_by_family": {
+    "boost-scale-reflect": 6,
+    "composite": 20,
+    "grid": 100,
+    "representative": 1,
+    "unipotent": 180
+   },
    "maximum_rank": 28,
    "multiplicity_pattern_values": {
-    "[[1, 4], [1, 4], [1, 8], [1, 8], [1, 8]]": 8,
-    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 61,
+    "[[1, 4], [1, 4], [1, 8], [1, 8], [1, 8]]": 6,
+    "[[1, 4], [1, 4], [1, 8], [1, 8], [2, 4]]": 33,
     "[[1, 4], [1, 4], [1, 8], [4, 4]]": 38,
-    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 9,
-    "[[1, 4], [1, 8], [5, 4]]": 188,
+    "[[1, 4], [1, 8], [1, 12], [2, 4]]": 5,
+    "[[1, 4], [1, 8], [5, 4]]": 185,
     "[[1, 8], [1, 8], [4, 4]]": 3
    },
    "multiplicity_pattern_witness": {
@@ -76481,23 +76577,23 @@
    "nullity": 8,
    "nullity_right_equals_nullity_left": true,
    "nullity_values": {
-    "8": 307
+    "8": 270
    },
-   "points": 307,
+   "points": 270,
    "points_by_family": {
     "boost-scale-reflect": 6,
     "composite": 20,
     "grid": 100,
     "representative": 1,
-    "unipotent": 180
+    "unipotent": 145
    },
    "rank_28_attained": true,
    "rank_right_equals_rank_left": true,
    "rank_status": "varies",
    "rank_values": {
-    "20": 9,
-    "24": 72,
-    "28": 226
+    "20": 5,
+    "24": 42,
+    "28": 223
    },
    "rank_values_by_family": {
     "boost-scale-reflect": {
@@ -76517,9 +76613,9 @@
      "20": 1
     },
     "unipotent": {
-     "20": 4,
-     "24": 58,
-     "28": 118
+     "20": 2,
+     "24": 28,
+     "28": 115
     }
    },
    "rank_witness": {
@@ -76529,35 +76625,35 @@
    },
    "spectrum_status": "varies",
    "spectrum_values": {
-    "0007613996b3": 6,
+    "0007613996b3": 2,
     "04a7c79bd0c5": 1,
     "04be25bb4ea3": 6,
-    "04c090e2628f": 8,
+    "04c090e2628f": 2,
     "059aa700d800": 1,
-    "05c0434cc574": 2,
+    "05c0434cc574": 1,
     "07686a58f30d": 14,
-    "07ff618f9285": 2,
-    "0ac347fae12d": 9,
+    "07ff618f9285": 1,
+    "0ac347fae12d": 5,
     "0f1db67fb374": 3,
     "0f5b4b289f94": 2,
-    "211b605d8cfd": 2,
+    "211b605d8cfd": 1,
     "235c7ba36b0a": 11,
     "23737b82e0fd": 1,
     "243abb39a0f0": 1,
     "24cbd519035d": 8,
     "2544db1c3d40": 1,
-    "287f550cb5ed": 2,
+    "287f550cb5ed": 1,
     "2a04a4a244ac": 1,
     "2c437708edcd": 1,
-    "2e7abc761eee": 4,
+    "2e7abc761eee": 1,
     "317cd44e4be9": 1,
     "34d393302166": 1,
-    "34e9cc4e0147": 2,
+    "34e9cc4e0147": 1,
     "35b1704a6cd6": 1,
     "36b1e2e11e13": 1,
     "36e86e56e6f3": 1,
-    "385dd9ffe799": 4,
-    "39240f3f6871": 2,
+    "385dd9ffe799": 1,
+    "39240f3f6871": 1,
     "398120ce2976": 1,
     "3b210f71442e": 2,
     "3be2653cee71": 2,
@@ -76576,20 +76672,20 @@
     "5ccf9df0ffb9": 3,
     "5e2a003f1566": 4,
     "5f8de930dc35": 2,
-    "60a3e191c0f7": 19,
+    "60a3e191c0f7": 18,
     "619e1f4688c3": 1,
     "622e0805c51e": 1,
     "63fbc73c265d": 1,
     "67197a047e7f": 3,
     "682ee204b839": 1,
     "6a74afbc74b9": 4,
-    "6cc041183b24": 8,
+    "6cc041183b24": 7,
     "6e40a6b515e5": 1,
     "6f1db517c19f": 1,
     "75cad18a59d2": 5,
     "7b1768dda5a3": 2,
     "7e32ac217035": 3,
-    "811cba877e5f": 4,
+    "811cba877e5f": 2,
     "84ff361c1d2f": 1,
     "86cc3694e33e": 1,
     "8cc70e66c59d": 3,
@@ -76600,7 +76696,7 @@
     "95a71028f442": 1,
     "998c69aeea1b": 1,
     "9c935e897286": 1,
-    "a1627bc463f8": 2,
+    "a1627bc463f8": 1,
     "a18882c7734d": 1,
     "a636572f3b94": 2,
     "a76c1b427905": 2,
@@ -76622,7 +76718,7 @@
     "cf249ac50663": 1,
     "cf6bb36d8a85": 1,
     "d1b935914f30": 1,
-    "d573e3e2f4b3": 8,
+    "d573e3e2f4b3": 7,
     "d880412aaa13": 1,
     "db76157698ac": 1,
     "dbf177b072c0": 1,
@@ -76630,14 +76726,14 @@
     "e028a8107d5d": 1,
     "e204e0573112": 2,
     "e76b4e57f10b": 1,
-    "ef70e2a5c148": 4,
+    "ef70e2a5c148": 1,
     "f27ec5090f4a": 1,
     "f44b1a8e1802": 1,
     "f67bae249f1b": 3,
-    "f9033b5c8777": 5,
+    "f9033b5c8777": 4,
     "f9f4910cba50": 1,
     "fa981f50df4d": 1,
-    "fbee03cc64a9": 2,
+    "fbee03cc64a9": 1,
     "fc6ebe685f44": 1
    }
   }

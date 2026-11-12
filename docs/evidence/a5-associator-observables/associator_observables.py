@@ -610,10 +610,25 @@ def _pattern_key(spectrum: list[tuple[int, tuple[str, ...]]]) -> str:
     return json.dumps(sorted([len(c) - 1, mult] for mult, c in spectrum))
 
 
-def _summaries(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def _unique_points(
+    rows: list[dict[str, Any]], coordinates: dict[tuple[str, str], RationalVector]
+) -> list[dict[str, Any]]:
+    unique: dict[RationalVector, dict[str, Any]] = {}
+    for row in rows:
+        point = coordinates[(row["stratum"], row["label"])]
+        if point in unique:
+            _require(unique[point]["obs"] == row["obs"], "duplicate coordinates have different observables")
+        else:
+            unique[point] = row
+    return list(unique.values())
+
+
+def _summaries(rows: list[dict[str, Any]], specs: list[PointSpec]) -> dict[str, Any]:
+    coordinates = {(spec.stratum, spec.label): spec.point for spec in specs if spec.family in FAMILIES}
     out: dict[str, Any] = {}
     for name in STRATA:
-        sample = [r for r in rows if r["stratum"] == name and r["family"] in FAMILIES]
+        evaluations = [r for r in rows if r["stratum"] == name and r["family"] in FAMILIES]
+        sample = _unique_points(evaluations, coordinates)
         ranks = Counter(r["obs"]["rank_left"] for r in sample)
         spec_counts = Counter(r["obs"]["spectrum_id"] for r in sample)
         nullities = Counter(r["obs"]["nullity_left"] for r in sample)
@@ -628,14 +643,26 @@ def _summaries(rows: list[dict[str, Any]]) -> dict[str, Any]:
         out[name] = {
             "nullity": NULLITY[name],
             "points": len(sample),
-            "points_by_family": {f: sum(1 for r in sample if r["family"] == f) for f in FAMILIES},
+            "evaluations": len(evaluations),
+            "points_by_family": {
+                family: len(_unique_points([row for row in evaluations if row["family"] == family], coordinates))
+                for family in FAMILIES
+            },
+            "evaluations_by_family": {
+                family: sum(1 for row in evaluations if row["family"] == family) for family in FAMILIES
+            },
             "certified": sum(1 for r in sample if r["certified"]),
             "nullity_values": {str(k): v for k, v in sorted(nullities.items())},
             "rank_values": {str(k): v for k, v in sorted(ranks.items())},
             "rank_values_by_family": {
                 f: {
                     str(k): v
-                    for k, v in sorted(Counter(r["obs"]["rank_left"] for r in sample if r["family"] == f).items())
+                    for k, v in sorted(
+                        Counter(
+                            row["obs"]["rank_left"]
+                            for row in _unique_points([row for row in evaluations if row["family"] == f], coordinates)
+                        ).items()
+                    )
                 }
                 for f in FAMILIES
             },
@@ -766,7 +793,7 @@ def build_record() -> dict[str, Any]:
     names = [*AUTOMORPHISM_NAMES, "mutated rotation", *movement_maps()]
     verification = parallel.ordered_map(verification_task, names, min_items=1)
     spectra = _spectra_table(rows)
-    summary = _summaries(rows)
+    summary = _summaries(rows, specs)
     controls = _controls(rows)
     mutated = next(v for v in verification if v["map"] == "mutated rotation")
     base_obs = observables(y_from_split(REPRESENTATIVES["W8"]))

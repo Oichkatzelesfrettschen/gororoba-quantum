@@ -7,6 +7,8 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs/evidence/a5-associator-observables"
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -63,3 +65,22 @@ def test_the_unipotent_realization_and_a_mutated_rotation_are_not_automorphisms(
 def test_b9_representative_attains_the_maximal_associator_rank_28() -> None:
     obs = probe.observables(probe.y_from_split(probe.REPRESENTATIVES["B9"]))
     _check(obs["rank_left"] == 28 and obs["nullity_left"] == 12 and obs["consistent"])
+
+
+def test_summary_counts_exact_coordinates_and_refuses_inconsistent_duplicates(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(probe, "STRATA", {"W8": probe.STRATA["W8"]})
+    representative = probe.REPRESENTATIVES["W8"]
+    moved = probe.apply_program(representative, (("u", 0, Fraction(1)),))
+    specs = [
+        probe.PointSpec("W8", "representative", "rep", representative),
+        probe.PointSpec("W8", "unipotent", "stabilized", representative),
+        probe.PointSpec("W8", "unipotent", "moved", moved),
+    ]
+    rows = [probe.evaluate_point(spec) for spec in specs]
+    summary = probe._summaries(rows, specs)["W8"]
+    _check(summary["evaluations"] == 3 and summary["points"] == 2 and summary["certified"] == 2)
+    _check(summary["rank_values"] == {"16": 1, "24": 1})
+    _check(summary["points_by_family"]["unipotent"] == 2)
+    rows[1]["obs"] = {**rows[1]["obs"], "rank_left": 24}
+    with pytest.raises(RuntimeError, match="duplicate coordinates"):
+        probe._summaries(rows, specs)
