@@ -15,7 +15,7 @@ E               AssertionError: escaped quotes truncated private-value redaction
 tests/scripts/test_quantum_artifact_retention.py:219: AssertionError
 ______________ test_check_rejects_capture_only_repository_option _______________
 
-tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-290/test_check_rejects_capture_onl0')
+tmp_path = PosixPath('${TEMP}/pytest-of-${USER}/pytest-290/test_check_rejects_capture_onl0')
 
     def test_check_rejects_capture_only_repository_option(tmp_path: Path) -> None:
         source = tmp_path / "source.txt"

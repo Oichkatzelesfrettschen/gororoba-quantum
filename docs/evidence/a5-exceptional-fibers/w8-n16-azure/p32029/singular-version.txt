@@ -11,28 +11,28 @@ CC = gcc,FLAGS : -I/host/var/tmp/sage-local-manylinux_2_28_x86_64/include -g -O2
 CXX = g++,FLAGS : -I/host/var/tmp/sage-local-manylinux_2_28_x86_64/include -g -O2 -pipe -fno-common -g0 -O3 -Wno-unused-function -Wno-trigraphs -Wno-unused-parameter -Wunknown-pragmas -Wno-unused-variable -fomit-frame-pointer -fwrapv -fvisibility=default -finline-functions -fno-exceptions -fno-threadsafe-statics -fno-enforce-eh-specs -fconserve-space -funroll-loops -fno-rtti -fno-delete-null-pointer-checks -pthread,
 DEFS : ,CPPFLAGS : ,
 LDFLAGS : -Wl,-rpath-link,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath-link,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib  -pipe -fno-common -g0 -O3 -Wno-unused-function -Wno-trigraphs -Wno-unused-parameter -Wunknown-pragmas -Wno-unused-variable -fomit-frame-pointer -fwrapv -fvisibility=default -finline-functions -fno-exceptions -fconserve-space -funroll-loops  -rdynamic -Wl,-undefined,dynamic_lookup,LIBS : -lreadline  -L/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -Wl,-rpath,/host/var/tmp/sage-local-manylinux_2_28_x86_64/lib -lgmp -lrt -lpthread   (ver: 14.2.1 20250110 (Red Hat 14.2.1-11))
-argv[0]   :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/Singular
-SearchPath:	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/LIB:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/factory:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../lib/singular/MOD:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/..
-Singular  :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/Singular
-BinDir    :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin
-ProcDir   :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/..:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../lib/singular/MOD
-RootDir   :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/..
-DataDir   :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share
+argv[0]   :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/Singular
+SearchPath:	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/LIB:<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/factory:<venv>/lib/python3.12/site-packages/sage_wheels/bin/../lib/singular/MOD:<venv>/lib/python3.12/site-packages/sage_wheels/bin:<venv>/lib/python3.12/site-packages/sage_wheels/bin/..
+Singular  :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/Singular
+BinDir    :	<venv>/lib/python3.12/site-packages/sage_wheels/bin
+ProcDir   :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/..:<venv>/lib/python3.12/site-packages/sage_wheels/bin/../lib/singular/MOD
+RootDir   :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/..
+DataDir   :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share
 DefaultDir:	
-InfoFile  :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/info/singular.info
-IdxFile   :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/singular.idx
+InfoFile  :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/info/singular.info
+IdxFile   :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/singular.idx
 HtmlDir   :	
 ManualUrl :	https://www.singular.uni-kl.de/Manual/
 ExDir     :	
-Path      :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/..:/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../lib/singular/MOD:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+Path      :	<venv>/lib/python3.12/site-packages/sage_wheels/bin:<venv>/lib/python3.12/site-packages/sage_wheels/bin/..:<venv>/lib/python3.12/site-packages/sage_wheels/bin/../lib/singular/MOD:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
 emacs     :	
 xemacs    :	
-SingularEmacs:	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/Singular
-EmacsLoad :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/emacs/.emacs-singular
-EmacsDir  :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/emacs
-SingularXterm:	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/Singular
+SingularEmacs:	<venv>/lib/python3.12/site-packages/sage_wheels/bin/Singular
+EmacsLoad :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/emacs/.emacs-singular
+EmacsDir  :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/emacs
+SingularXterm:	<venv>/lib/python3.12/site-packages/sage_wheels/bin/Singular
 xterm     :	
-EmacsDir  :	/home/a5/pmvenv/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/emacs
+EmacsDir  :	<venv>/lib/python3.12/site-packages/sage_wheels/bin/../share/singular/emacs
 Available HelpBrowsers: info, builtin, dummy, emacs, 
 Current HelpBrowser: info 
                      SINGULAR                                 /  Development
