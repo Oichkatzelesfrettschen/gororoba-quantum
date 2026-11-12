@@ -64,6 +64,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
+	checked_files="$checked_files docs/evidence/a5-associator-observables/associator_observables.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -78,6 +79,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
+	typed_files="$typed_files ../docs/evidence/a5-associator-observables/associator_observables.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
