@@ -631,8 +631,18 @@ the closest entry and say what changed.
   I_1 : I_2^infinity is the union of the I_1 : I_2^i and is reached at the first j with
   I^(j+1) contained in I^(j), I^(j+1) = I^(j) : I_2; Lemma 1.8.16, page 84, the kernel of a ring map x_i -> f_i
   is the elimination ideal of (I_0, g_j, x_i - f_i). The colon certificate follows from the first: H in (RS)
-  in H : u^infinity and (RS) : u = (RS) give H : u^infinity in (RS) : u^infinity = (RS). Read at no source yet:
-  the Rees ideal as the saturation of the linear relations by a generator, the special fiber of the blowup as
+  in H : u^infinity and (RS) : u = (RS) give H : u^infinity in (RS) : u^infinity = (RS). Vasconcelos, Arithmetic
+  of Blowup Algebras (1994; sha256 `49431544db5530d32e4ec3c6621eb1aa3ec7fa1c607548155e3d59936d65e334`), chapter
+  8, page 196: the kernel of the symmetric algebra S(I) onto the Rees algebra is, over an integral domain R, the
+  R-torsion of S(I), and a nonzero f in I annihilates it. The scripts saturate J plus the 2 x 2 minors
+  y_a G_b - y_b G_a by the pivot generator: after inverting the pivot the minors give y_b = y_p G_b / G_p, so
+  the saturation is the kernel onto the Rees algebra localized at the pivot, and it equals the Rees ideal when
+  the pivot is a nonzerodivisor on the slice ring. Checked for the two certified scripts modulo 32009
+  (Singular 4.4.1, build host, under 1 s each): the slice ideal J of Iso at N- is prime of dimension 5 and
+  degree 2, that of E8-bar at N- prime of dimension 5 and degree 10, J : G_pivot = J in both, pivots 7 and 9 of
+  weight 3. The scripts do not print this check; a script whose J has a component containing the pivot would
+  compute a smaller object. Read at no source yet:
+  the special fiber of the blowup as
   the fiber of the closed graph, the Pfaffian results of Baetica (1998) and of Jozefiak and Pragacz (1979), and
   the passage from the local ring of the sources to the graded polynomial ring of the scripts, which rests on
   the weight grading and is argued in this repository alone.
