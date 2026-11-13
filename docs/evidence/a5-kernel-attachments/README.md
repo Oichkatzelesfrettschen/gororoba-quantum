@@ -505,8 +505,8 @@ therefore compute one object from one `J` and one `G`. [`nullity8_fiber_import.p
 regenerates the header of each of the ten blocked incidences and of `E8bar->VB` at the cells
 `(32009, i = 10754)`, `(32009, i = 21255)` and `(32029, i = 9115)` and writes
 [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json). **Observed:** 31 of 31 regenerated
-headers equal the retained file byte for byte; the selected Pfaffian coordinates are the same at every cell and
-equal the chosen coordinates of the nullity-16 record; the generator count equals that record's Nakayama count and
+headers equal the retained file byte for byte; the selected Pfaffian coordinates are the same, in the same order, at
+every cell and equal the chosen coordinates of the nullity-16 record; the generator count equals that record's Nakayama count and
 embedding rank. The header regenerated at `i = 21255` differs from the retained header at `i = 10754` at all nine
 incidences that have both, so the comparison detects the conjugate embedding. The generation takes 74 seconds and
 124 MiB of resident memory on twelve cores, against the eliminations the exceptional-fiber ledger records as
@@ -650,7 +650,16 @@ through `M` is a plane `P` inside some `Q`. With `S_0 = alpha ^ beta` the contai
 point `m` of the fiber of `M`. [`composed_limit_sections.py`](composed_limit_sections.py) evaluates that linear
 section of `V_+(K2)` from the two embedding matrices of the nullity-16 record and the retained quadrics, modulo
 32009 and 32029, and writes [`composed-limit-sections-result.json`](composed-limit-sections-result.json): 41
-chains, 136 sections, 2 seconds. **Observed**, with the same values at both primes:
+chains, 136 sections, 2 seconds. Each K2 relation file is bound to the canonical header it is written
+against: the K2 digest of `k2-hilbert.jsonl` is certified by a degree-2 receipt (or, for `E8bar->N+` at 32009, by
+the sign-isomorphism witness from `E8bar->N-`) whose `input_sha256` is the digest of the regenerated header of
+[`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json) and whose `generator_order_sha256` is the
+digest of a `gens.txt` that lists the header's G ideal in the header's order (`k2_bindings` in the record, 11
+source and prime pairs). **Observed:** the sections agree between the primes for the 19 source and stratum pairs
+that both primes carry. The three pairs of `X+->N+` (through `B9`, `VB` and `V^a_+`) exist at 32029 only, since no K2
+file of `X+->N+` is retained at 32009 (the sign map carries `X-->N-` there); the record marks those chains
+`single_prime_excluded_from_agreement` and leaves them out of the agreement. Each value below holds at every prime
+that carries the pair:
 
 | Source | Through `VB` (one `Q`) | Through `V^a_+` or `V^a_-` (one `Q`) | Through `B9` at a point off the `VB` form | Through `V` at a point off the `VB` form |
 | --- | --- | --- | --- | --- |
@@ -660,6 +669,9 @@ chains, 136 sections, 2 seconds. **Observed**, with the same values at both prim
 | `W8` (fivefolds of degrees 20 and 30) | a `P^4` with section degree 2 | no such chain | a `P^3` and a `P^4` | no such chain |
 | `E8bar` (fourfold of degree 11, threefold of degree 4) | threefolds of degrees 3 and 4 | a plane with section degree 2 | a plane and a quadric surface | a plane with section degree 2 |
 
+The `E8bar` sections are sections of `V_+(K2)`, which is the special fiber only given `F(I) = k[y]/K2` in degrees
+8 and above (`A5-009`, `survives`); a Hilbert function that agrees through degree 7 does not fix the fiber.
+
 The section through `VB` has the reduced components of the fiber of the same source over `VB`, computed
 independently at a `VB` basepoint: `P^2`, `P^3` and `P^4` (the Nakayama record) and the cubic and quartic
 threefolds of `E8bar->VB` (`A5-005`). The section through `V^a_+` or `V^a_-` is one plane of degree 2 where the
@@ -668,17 +680,25 @@ and at that point of either fiber the section is the section through `VB`. The c
 an exact plane inside a 7-plane and have 1,000 and 1,112 nonzero coefficients on a plane sharing one covector
 and on a transverse plane.
 
-**Inferred:** a composed limit through `M` lies in the section of some point `m`. Through `VB` the composed
-limit set is the whole reduced section, given that the fibers over the points of `VB` near `z_0` have the
-dimension and degree of the fiber at the retained `VB` basepoint: their limit is a closed set of that dimension
-and degree inside a reduced section with the same dimension and degree, component by component. The group
-action transports the fiber along six of the seven orbit directions of `VB`, and the boost record below samples
-the seventh for `Iso`, `W8`, `X+` and `X-`. Through `V^a_+` and `V^a_-` the two planes of the fiber have one
+**Inferred:** a composed limit through `M` lies in the section of some point `m`.
+
+`hypothesis:` through `VB` the composed limit set is the whole reduced section. Computed: the section and the
+fiber of the source over `VB` have equal dimension, degree and component count at the retained `VB` basepoint
+(and, for `Iso`, `W8`, `X+` and `X-`, at the three sampled boosts below). Missing: a flat family of the fibers over
+the points of `VB` near `z_0` whose special fiber specializes componentwise, so that the limit of the fibers is a
+closed subscheme of the section with the same dimension and degree; constant nearby dimension and total degree do not
+supply it. The inference is plausible for the irreducible linear `Iso`, `W8` and `X` sections. For `E8bar` the
+degree-3 and degree-4 components need separate tracking, since equal total degree 7 admits a collision of components
+or a multiplicity. The group action transports the fiber along six of the seven orbit directions of `VB`, and the
+boost record below samples the seventh for `Iso`, `W8`, `X+` and `X-`. A flat relative Rees or Grassmannian family
+over `VB`, or an exact one-parameter limit, decides it.
+
+Through `V^a_+` and `V^a_-` the two planes of the fiber have one
 limit plane. The record does not decide which planes of a section through `B9` or `V` are composed limits: there
 the fiber of the source over the middle stratum is smaller than the section (one point for `X`, a line for
 `Iso`, a plane for `W8` and a conic for `E8bar` over `B9`), and the missing datum is the limit of that fiber
 along `w -> z_0`. A section through `VB` whose reduced components differ from the fiber over `VB`, or a section
-that differs between the primes, falsifies the observation.
+that differs between the primes at a pair both primes carry, falsifies the observation.
 
 ## Along the boost the four whole-space fibers into VB keep their shape at three sampled basepoints
 
