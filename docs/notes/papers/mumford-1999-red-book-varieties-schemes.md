@@ -53,8 +53,8 @@ page 66. The front matter is numbered in Roman numerals (PDF page 5 is printed p
   irreducible algebraic set `X` from the coordinate ring `R = k[X]`, a domain, as the intersections of the local rings.
 - [P] Definition 1 and Proposition 1 of Section I.5 (p. 25): a prevariety is a topological space with a sheaf of `k`-valued
   functions that is connected and has a finite open cover by affine varieties, and every prevariety is an irreducible topological
-  space. Proposition 4 (p. 27): an open subset of a prevariety is a prevariety; Propositions 4 and 5 together give a prevariety
-  structure to the locally closed subsets (p. 27).
+  space. Proposition 4 (p. 27): an open subset of a prevariety is a prevariety; Proposition 5 (p. 27) makes a closed irreducible subset a prevariety,
+  and the two together give a prevariety structure to the irreducible locally closed subsets (the book's sentence on p. 27 says "every locally closed subset"; Proposition 5 is stated for an irreducible closed subset, and a prevariety is irreducible).
 - [P] Definition 2 of Section I.6 (p. 37): a variety is a prevariety `X` that satisfies the Hausdorff axiom (for all prevarieties
   `Y` and morphisms `f, g : Y -> X`, the set where `f` and `g` agree is closed); Proposition 4 (p. 37) states that this holds
   if and only if the diagonal of `X x X` is closed. Remark II (p. 38): an affine variety is a variety; Remark I: a subvariety of a
