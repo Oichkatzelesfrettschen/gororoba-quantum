@@ -70,6 +70,7 @@ import qi_zero_divisor_cases as zd  # noqa: E402
 
 import pathion_coset_analysis as pca  # noqa: E402
 import pathion_coset_block as pcb  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
 TUNA_SERIES = "pathion_null_rotation_scan_tuna_17"
@@ -929,6 +930,14 @@ def simulated_labels(noise: np.ndarray, means: np.ndarray) -> list[str]:
     return labels
 
 
+def label_counts(item: tuple[np.ndarray, np.ndarray]) -> dict[str, int]:
+    """Count of each decision label over the simulated series of one truth: item is (noise, means)."""
+    counts: dict[str, int] = {}
+    for label in simulated_labels(*item):
+        counts[label] = counts.get(label, 0) + 1
+    return counts
+
+
 def operating_characteristics(
     draws: int = OC_DRAWS, drift: bool = False, mix: float = 0.0
 ) -> dict[str, dict[str, float]]:
@@ -939,19 +948,20 @@ def operating_characteristics(
     the two base batches of the one-CZ series; `mix` is the truth's contraction share."""
     rng = np.random.default_rng(int(read_record(OC_DRAW)["values"][OC_SEED_INDEX]))
     scans = [(k, r) for k, r in batch_order() if k != "bridge"]
-    out: dict[str, dict[str, float]] = {}
-    for label, world, branch in TRUTHS:
+    # Every truth's draws leave the one generator in TRUTHS order before the truths are mapped over the pool.
+    items = []
+    for _, world, branch in TRUTHS:
         means = []
         for kind, replicate in scans:
             contrast = DRIFT_CONTRAST if drift and replicate == 1 else DESIGN_CONTRAST
             row = predicted_contrasts(world, truth_parameter(world, branch, contrast, mix), mix)
             means.append([row[a] for a in scan_arms(kind, replicate)])
-        labels = simulated_labels(rng.normal(size=(draws, len(scans), 3)), np.array(means))
-        counts: dict[str, int] = {}
-        for item in labels:
-            counts[item] = counts.get(item, 0) + 1
-        out[label] = {k: round(n / draws, 4) for k, n in sorted(counts.items())}
-    return out
+        items.append((rng.normal(size=(draws, len(scans), 3)), np.array(means)))
+    counted = ordered_map(label_counts, items, min_items=1)
+    return {
+        label: {k: round(n / draws, 4) for k, n in sorted(counts.items())}
+        for (label, _, _), counts in zip(TRUTHS, counted, strict=True)
+    }
 
 
 def predictions(operating: bool = True) -> dict[str, Any]:
@@ -1006,8 +1016,10 @@ def check(directory: Path, operating: bool = True) -> None:
         built[TUNA_SERIES]["prediction.json"] = json.dumps(predictions(), indent=1, sort_keys=True) + "\n"
     else:
         stored = json.loads(prediction.read_text(encoding="utf-8"))
-        if stored.pop("operating_characteristics", None) is None or stored != predictions(operating=False):
-            raise ValueError(f"{prediction} differs from the prediction record")
+        fresh = predictions(operating=False)
+        if stored.pop("operating_characteristics", None) is None or stored != fresh:
+            keys = sorted(k for k in set(stored) | set(fresh) if stored.get(k) != fresh.get(k))
+            raise ValueError(f"{prediction} differs from the prediction record under {keys}")
         built[TUNA_SERIES]["prediction.json"] = prediction.read_text(encoding="utf-8")
     for name, files in built.items():
         root = directory / name

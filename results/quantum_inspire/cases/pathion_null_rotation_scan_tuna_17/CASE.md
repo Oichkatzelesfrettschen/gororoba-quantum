@@ -155,7 +155,8 @@ read from that list, outside the decision.
 
 `prediction.json` (`operating_characteristics`): 10,000 simulated series per truth, Gaussian contrasts at the design
 standard error, decided by rules 2 to 5 with every batch admitted; `--operating-characteristics` repeats it (about
-ten minutes on sixteen cores). Share of runs per label; each cell gives the truth at contraction share 0 and, after
+twelve minutes on the six cores of the build host, as the on-demand gate
+`core-pathion-null-rotation-scan-case-replay` of `ci/gates.json`). Share of runs per label; each cell gives the truth at contraction share 0 and, after
 the slash, at share 1:
 
 | truth (center contrast +0.0164) | `pulse_x` | `pulse_other` | `readout` | `x_excluded` | undecided |

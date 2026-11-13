@@ -2,7 +2,8 @@
 arms, the series shape, the decision on planted worlds and the analysis path on expected counts.
 
 Fixtures hold expected counts (largest remainder, no random draw). The operating characteristics are replayed by
-`--check` on demand and are outside these tests.
+`--check` on demand and are outside these tests. The tests marked `audit` compare the committed case and the pinned
+digest with the build or take more than 3 s of CPU; pull requests deselect them.
 """
 
 from __future__ import annotations
@@ -27,6 +28,7 @@ def _expect(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
+@pytest.mark.audit
 def test_emitter_reproduces_the_retained_circuit() -> None:
     _expect(rs.replay_check() == oc.COIN_PINS["b0.cq"], "the emitted b0 does not carry the pinned digest")
 
@@ -282,6 +284,7 @@ def _manifest() -> dict[str, object]:
     return dict(json.loads((CASES / rs.TUNA_SERIES / "batch-01" / "cases.json").read_text(encoding="utf-8")))
 
 
+@pytest.mark.audit
 def test_evaluate_reads_a_planted_over_rotation_through_the_analysis_path() -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
     report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768), _manifest())
@@ -295,6 +298,7 @@ def test_evaluate_reads_a_planted_over_rotation_through_the_analysis_path() -> N
     _expect(all(r["guard"]["admitted"] for r in report["batch_rows"].values()), "a steady readout fails the guard")
 
 
+@pytest.mark.audit
 def test_evaluate_reads_an_over_rotation_whose_visibility_loss_spares_the_selector() -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DESIGN_CONTRAST, 1.0)
     report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, mix=1.0), _manifest())
@@ -318,6 +322,7 @@ def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_readout_guard(role:
     _expect(len(failed) >= 2, f"the guard flags {failed}")
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("offset", [1, 3])
 def test_evaluate_withholds_the_decision_when_a_bridge_batch_is_not_admitted(offset: int) -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
@@ -333,5 +338,6 @@ def test_evaluate_withholds_the_decision_when_a_bridge_batch_is_not_admitted(off
     _expect(decision["numbers"]["rx_label"] == "pulse_x" and not decision["decided"], "the Rx class is not pulse_x")
 
 
+@pytest.mark.audit
 def test_the_committed_case_matches_the_build() -> None:
     rs.check(CASES, operating=False)
