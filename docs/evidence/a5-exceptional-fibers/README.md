@@ -4,8 +4,10 @@ This directory retains the working record of the exceptional-fiber computations 
 input scripts, run logs, relation and receipt files, consultant briefs and answers, the formal-arc certificate and
 the Kaggle distribution scripts. The [findings note](../../notes/topics/a5-exceptional-fiber-findings.md) states
 the results, the hypotheses tested against them and what survives; this directory is the data it rests on. Results
-here are diagnostic working data over F_32009 (and F_32029 where named) and enter the tracked claim record only
-through the [kernel-attachments ledger](../a5-kernel-attachments/README.md).
+here are diagnostic working data over F_32009 (and F_32029 where named). The central claim record is
+[ledger.tsv](ledger.tsv): one row per claim of this directory and of the sibling A_5 evidence directories (strata,
+equations, kernel bundles, kernel attachments, cross-checks), each with its status, basis, evidence and falsifier;
+the [kernel-attachments ledger](../a5-kernel-attachments/README.md) stays the program log of that track.
 
 Every file of the working directory is retained except cloud run-control files named `ip` or `known_hosts*`
 (public addresses and host keys, kept in the private infrastructure repository), with home paths written `~`, the session scratch directory

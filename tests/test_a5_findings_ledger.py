@@ -36,6 +36,30 @@ def test_a_row_with_a_missing_evidence_path_or_unknown_status_is_reported() -> N
         raise AssertionError(problems)
 
 
+def test_every_a5_evidence_directory_is_cited_and_an_uncited_one_is_reported() -> None:
+    mod = load()
+    data = mod.rows()
+    directories = mod.a5_directories()
+    if len(directories) < 15 or mod.uncited_directories(data, directories):
+        raise AssertionError((directories, mod.uncited_directories(data, directories)))
+    absent = "docs/evidence/a5-kernel"
+    if mod.uncited_directories(data, [*directories, absent]) != [absent]:
+        raise AssertionError("a directory that only prefixes cited names passes as cited")
+
+
+def test_directories_come_from_disk_when_no_git_executable_exists(monkeypatch: pytest.MonkeyPatch) -> None:
+    mod = load()
+    tracked = mod.a5_directories()
+
+    def missing(*_args: object, **_kwargs: object) -> None:
+        raise FileNotFoundError("git")
+
+    monkeypatch.setattr(mod.subprocess, "run", missing)
+    on_disk = mod.a5_directories()
+    if not set(tracked) <= set(on_disk):
+        raise AssertionError(sorted(set(tracked) - set(on_disk)))
+
+
 def test_a_supersedes_pointer_runs_from_a_live_successor_to_a_superseded_row() -> None:
     mod = load()
     old = dict(mod.rows()[0], id="A5-901", status="superseded", supersedes="")
@@ -69,6 +93,23 @@ def test_registry_binds_the_w8_degree_5_engine_stdout_records() -> None:
     sources = {lb["source"] for (fiber, _), cell in cells.items() if fiber == "W8 -> N-" for lb in cell["lower_bounds"]}
     if not sources or not all(s.startswith("w8-n16-azure/") and s.endswith(".out") for s in sources):
         raise AssertionError(sources)
+
+
+def test_check_exits_nonzero_and_names_a_directory_whose_rows_are_removed(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    mod = load()
+    target = "docs/evidence/a5-quantum-contracts"
+    kept = [row for row in mod.rows() if target + "/" not in row["evidence"]]
+    if len(kept) == len(mod.rows()):
+        raise AssertionError("no row cites the target directory")
+    monkeypatch.setattr(mod, "rows", lambda: kept)
+    monkeypatch.setattr(mod, "check", lambda _rows: [])
+    monkeypatch.setattr(sys, "argv", ["ledger.py", "--check"])
+    if mod.main() == 0:
+        raise AssertionError("ledger.py --check passed with an uncited directory")
+    if f"{target}: no ledger row cites this evidence directory" not in capsys.readouterr().out:
+        raise AssertionError("the uncited directory is not named")
 
 
 def test_open_lists_rows_with_an_outstanding_falsifier_and_no_decided_row(
