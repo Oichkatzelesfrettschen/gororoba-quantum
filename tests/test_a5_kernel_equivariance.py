@@ -62,8 +62,7 @@ def test_complex_span_membership_separates_a_member_from_a_nonmember() -> None:
 
 
 def test_each_g2_derivation_lifts_to_itself_and_the_sign_flipped_lift_fails() -> None:
-    for index in range(ke.G2_DERIVATION_COUNT):
-        row = ke.lift_task(index)
+    for row in ke.parallel.ordered_map(ke.lift_task, range(ke.G2_DERIVATION_COUNT), min_items=1):
         _same((row["residual_nonzero_entries"], row["generator_is_skew"]), (0, True))
         _same(row["sign_flipped_lift_residual_nonzero_entries"] > 0, True)
     scaling = ke.lift_task(ke.G2_DERIVATION_COUNT)
