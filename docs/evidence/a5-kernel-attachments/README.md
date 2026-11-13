@@ -546,10 +546,11 @@ closed-graph fiber is the set of complex points of `Proj` of the fiber cone over
 of complex points of the degree-12 threefold cut out by the 69 quadrics of `A5-305`; both statements rest on the
 closure theorem cited above, whose text is uninspected. For `Iso`, `W8` and `E8bar` the same deduction identifies
 the real limit set with the complex points of the characteristic-0 fiber, and that fiber is determined modulo
-32009 and 32029 only: its dimension is at least that of the modular fiber for `Iso` and `W8` (`A5-293`), and no
-record decides its equations over `Q(i)`. A fiber cone over `Q(i)` for one of these three sources, by the route of
-`A5-270` and `A5-305` (a parametrization of the germ in which `(G)` becomes monomial or a regular sequence times
-a unit), closes the corresponding row.
+32009 and 32029, and over `Q(i)` as far as the
+[weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
+the whole fiber cone of `Iso->N-` (`A5-422`), the quadrics, Hilbert numerator and minimal primes of the quadric
+ideal for `W8` and `E8bar` (`A5-421`), and `h_1` to `h_7` of `E8bar` (`A5-423`). Open are `Iso->N+`, the
+degree-20 component of `W8` over `Q(i)`, and both components of `E8bar` above degree 7 (`A5-418`).
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
@@ -724,6 +725,50 @@ retained basepoint is the cubic and quartic threefold pair of the import table a
 Nakayama route ran 31 minutes at the retained basepoint without output and was stopped. A sampled basepoint whose
 fiber is a proper subvariety, or whose slice is not complementary, falsifies the observation.
 
+## On a torus weight slice the quadrics of all ten fiber cones are computed over Q(i)
+
+At the `N+` or `N-` basepoint `z_0` the stabilizer in `g_2` + scaling + boost contains a two-dimensional torus
+that acts on `ker C_(z_0)`. [`weight_slice_fiber_relations.py`](weight_slice_fiber_relations.py) takes the
+nine-dimensional normal slice along joint eigenvectors of that torus and writes the Schur form in a frame of torus
+eigenvectors. **Computed:** the 126 principal 4-Pfaffians are then homogeneous for the weight
+`(1, 0, 3, 2, 2, 1, 4, 4, 3)` on the slice coordinates. The germ ideal `J` of a source closure is replaced by the
+intersection of its minimal primes through the origin, and the Nakayama generators `G`, their products and the
+relations `{q : q(G) in J + m I^2}` come from standard bases truncated above the largest weight present, since a
+weight-homogeneous standard basis never mixes weights. The table runs over `Q(i)` in 60 s; the ungraded standard
+basis of `J + m P` took 1,507 s for `Iso` (`A5-294`) and did not finish for `W8` and `E8bar`.
+
+| Source | Generators | Quadrics at `N+` and `N-` | Quadric ideal over `Q(i)` |
+|---|---|---|---|
+| `W8` | 24 | 144 | dimension 6, multiplicity 50, primes of degrees 20 and 30 |
+| `E8bar` | 21 | 148 | dimension 5, multiplicity 11, primes of dimension 5 degree 11 and dimension 4 degree 4 |
+| `Iso` | 17 | 68 | not computed here (`A5-422`) |
+| same-sign `X` | 15 | 69 | `A5-305` |
+| opposite-sign `X` | 3 | 0 | `A5-270` |
+
+The counts equal the modular ones of the [import record](#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record).
+For `W8` and `E8bar` the quadric ideal is saturated with the Hilbert numerator of the modular `K2`, and at `N-` the
+`Q(i)` relation space reduced at `(32009, i = 10754)` equals the modular one (ranks 144 and 148, joint ranks the
+same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
+component step `X+->N-` returns 12 generators in place of 3.
+
+**Inferred (`A5-422`):** the fiber cone of `Iso->N-` over `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68
+quadrics. The reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
+modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
+dimension at least 5 (`A5-293`), so `K' = K2`. A product in `K` of two primitive forms outside `K` would reduce to
+one in the prime `K'`, so `K` is prime, `V(L)` is a closed subset of the irreducible `V(K)` of the same dimension,
+and `L = K`. The counterexample of `A5-316` lacks exactly the primality and dimension inputs this uses.
+
+**Inferred (`A5-423`):** for `E8bar->N+` and `E8bar->N-` the 148 quadrics bound `h_d` over `Q(i)` above by the
+Hilbert function of their ideal, 21, 83, 225, 495, 952, 1666, 2718 for `d = 1..7`, and the arc-jet ranks of
+`A5-346` bound it below by the same numbers.
+
+Evidence: [`weight-slice-fiber-relations-result.json`](weight-slice-fiber-relations-result.json) and the
+[ledger](ledger.md#ledger-rows). The relation lines are named by digest and regenerated by the producer; no map
+from its generators to the header generators of the modular record is retained. A rerun with different counts,
+numerator, minimal primes or reduction ranks, a weight-inhomogeneous Pfaffian, or a relation that fails the
+untruncated membership falsifies the table; a prime at which the saturated lattice of `K` reduces off `K2`
+falsifies the `Iso` statement.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
@@ -845,6 +890,8 @@ prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullit
     --check docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/composed_limit_sections.py \
     --check docs/evidence/a5-kernel-attachments/composed-limit-sections-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py \
+    --check docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares
