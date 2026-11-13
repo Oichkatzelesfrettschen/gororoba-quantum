@@ -641,6 +641,18 @@ The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds 
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
+**Computed (`A5-436`):** [`g2_derivation_tables.py`](g2_derivation_tables.py) writes each of the 14 derivations as
+its images of the basis units `e_0, ..., e_15` of the sedenions
+([g2-derivation-tables.json](g2-derivation-tables.json)). Every entry is a Gaussian integer, each table has 8
+nonzero entries, `D(e_0) = 0`, the matrix is skew, the 14 tables are independent over `Q(i)`, and the Leibniz
+rule `D(e_a e_b) = D(e_a) e_b + e_a D(e_b)` holds on all 256 pairs of basis units for the product of
+`gororoba_quantum/cd_core.py`. Both sides are bilinear, so each table is a derivation of the sedenions over every
+commutative ring that contains a square root of -1. Six tables are real and eight are not. Without the phase map
+of the original coordinates, eleven of the 14 split-coordinate matrices (those of the eight tables that are not
+real and of three of the real six) fail the rule on 96 pairs each; that and the identity map are the negative
+controls. Check the record with
+`"$PYTHON" docs/evidence/a5-kernel-attachments/g2_derivation_tables.py --check` (1 second).
+
 ## A composed limit through a nullity-12 stratum lies in a linear section of the nullity-16 fiber
 
 Every row into `N+`, and every row into `N-`, uses one basepoint `z_0`, one slice and one frame of the
