@@ -1,0 +1,431 @@
+{
+ "field": "Q(i)",
+ "inputs": {
+  "docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py": "75889fa05723e92156335fedaa61dd4ddb98965402b8394d9d983a24d0f841c2",
+  "docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py": "b3a90027e878b551d4b09dab369bd43fa98e7f39b33090813a4dbf8553895d98"
+ },
+ "pass": true,
+ "rows": [
+  {
+   "boost_has_a_matrix": true,
+   "boost_in_symmetry_algebra": true,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 24,
+   "generators": 24,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 26,
+   "image_with_boost_dimension": 10,
+   "incidence": "W8->N+",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N+",
+   "radical_dimension": 23,
+   "relations_sha256": "10aabdd3a560da6672d3e438a3a4c2aef10fbed007b034afff8c592e85beb8d1",
+   "source": "w8",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 26
+  },
+  {
+   "boost_has_a_matrix": false,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 21,
+   "generators": 21,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 34,
+   "incidence": "E8bar->N+",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N+",
+   "radical_dimension": 31,
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "source": "e8",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 34
+  },
+  {
+   "boost_has_a_matrix": true,
+   "boost_in_symmetry_algebra": true,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 17,
+   "generators": 17,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 17,
+   "image_with_boost_dimension": 10,
+   "incidence": "Iso->N+",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N+",
+   "radical_dimension": 14,
+   "relations_sha256": "f4d0152eabd91b56306e683641831f8ca69c86cecaa1350744afe97e85be81ee",
+   "source": "iso",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 17
+  },
+  {
+   "boost_has_a_matrix": true,
+   "boost_in_symmetry_algebra": true,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 15,
+   "generators": 15,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 23,
+   "image_with_boost_dimension": 10,
+   "incidence": "X+->N+",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N+",
+   "radical_dimension": 20,
+   "relations_sha256": "6a41e14d70d75c4a72e768630ef77d9f1ec9e6582b626fa05e759cd3a130011d",
+   "source": "xp",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 23
+  },
+  {
+   "boost_has_a_matrix": true,
+   "boost_in_symmetry_algebra": true,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 24,
+   "generators": 24,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 26,
+   "image_with_boost_dimension": 10,
+   "incidence": "W8->N-",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N-",
+   "radical_dimension": 23,
+   "relations_sha256": "10964885cae3177d8a8585e05b263269193199b7a37a5a9679bc76e843523b1d",
+   "source": "w8",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 26
+  },
+  {
+   "boost_has_a_matrix": false,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 21,
+   "generators": 21,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 34,
+   "incidence": "E8bar->N-",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N-",
+   "radical_dimension": 31,
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "source": "e8",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 34
+  },
+  {
+   "boost_has_a_matrix": true,
+   "boost_in_symmetry_algebra": true,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 17,
+   "generators": 17,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 17,
+   "image_with_boost_dimension": 10,
+   "incidence": "Iso->N-",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N-",
+   "radical_dimension": 14,
+   "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+   "source": "iso",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 17
+  },
+  {
+   "boost_has_a_matrix": true,
+   "boost_in_symmetry_algebra": true,
+   "bracket_signs": [
+    "plus",
+    "zero"
+   ],
+   "control_diagonal_has_a_matrix": false,
+   "elements_in_symmetry_algebra": 9,
+   "elements_with_a_matrix": 9,
+   "generator_normal_forms_rank": 15,
+   "generators": 15,
+   "grading_image_is_diagonal": true,
+   "grading_image_minus_weights": [
+    [
+     "0",
+     "0"
+    ]
+   ],
+   "grading_image_plus_weights": null,
+   "grading_nonzero_image_dimension": 5,
+   "grading_nonzero_image_in_radical": true,
+   "grading_nonzero_part_dimension": 5,
+   "grading_zero_image_dimension": 4,
+   "grading_zero_image_modulo_radical": 3,
+   "grading_zero_part_dimension": 4,
+   "image_dimension": 9,
+   "image_plus_radical_dimension": 23,
+   "image_with_boost_dimension": 10,
+   "incidence": "X-->N-",
+   "moving_derivation_has_a_matrix": true,
+   "moving_in_symmetry_algebra": false,
+   "orbit": "N-",
+   "radical_dimension": 20,
+   "relations_sha256": "55b9928144fd01d6de2b4438418e1ea8c765e8658016c3524eacc616298525de",
+   "source": "xm",
+   "stabilizer_dimension": 9,
+   "symmetry_algebra_dimension": 23
+  }
+ ],
+ "schema": "a5-kernel-attachments-stabilizer-action-qi-v1",
+ "stabilizers": [
+  {
+   "dimension": 9,
+   "grading_weights": [
+    -3,
+    0,
+    -1,
+    -2,
+    -3,
+    0,
+    0,
+    -1,
+    0
+   ],
+   "orbit": "N+",
+   "torus_weights": [
+    [
+     -2,
+     -1
+    ],
+    [
+     -1,
+     -2
+    ],
+    [
+     -1,
+     -1
+    ],
+    [
+     -1,
+     0
+    ],
+    [
+     -1,
+     1
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2
+    ]
+   ]
+  },
+  {
+   "dimension": 9,
+   "grading_weights": [
+    -3,
+    0,
+    -1,
+    -2,
+    -3,
+    0,
+    0,
+    -1,
+    0
+   ],
+   "orbit": "N-",
+   "torus_weights": [
+    [
+     -2,
+     -1
+    ],
+    [
+     -1,
+     -2
+    ],
+    [
+     -1,
+     -1
+    ],
+    [
+     -1,
+     0
+    ],
+    [
+     -1,
+     1
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2
+    ]
+   ]
+  }
+ ],
+ "tools": {
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00",
+  "singular_version": "4.4.1"
+ }
+}
