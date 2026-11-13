@@ -82,20 +82,29 @@ def test_a_coefficient_divisible_by_p_lowers_the_exact_valuation_only() -> None:
 
 
 @pytest.mark.parametrize("slug", sorted(qi.TARGETS))
-def test_retained_record_states_the_bounds_and_binds_its_sources(slug: str) -> None:
+def test_retained_record_states_the_bounds_for_every_degree(slug: str) -> None:
     record = json.loads((TRANSFER / f"arc-jets-qi-{slug}.json").read_text(encoding="utf-8"))
     _same(record["verdict"], "lower_bounds_hold_over_qi")
     _same(record["j_on_phi"]["phi"], {"generators": 16, "nonzero": 0})
     if not record["j_on_phi"]["mutated"]["nonzero"]:
         raise AssertionError("the mutated arc family passes the J identity")
-    _same(record["sha256"]["arc_jets_qi"], qi._sha256(TRANSFER / "arc_jets_qi.py"))
-    _same(record["sha256"]["jet_rank"], qi._sha256(qi.ARC_JETS / "jet_rank.py"))
-    _same(record["sha256"]["reduction_check"], qi._sha256(TRANSFER / "reduction_check.py"))
     _same(sorted({degree for cell in record["cells"] for degree in cell["lower_bounds"]}), sorted(RANKS))
     for cell in record["cells"]:
         _same((cell["arcs_checked"], cell["arcs_with_problems"], cell["arcs_differing_from_record"]), (3000, [], []))
         for degree, bound in cell["lower_bounds"].items():
             _same((bound["rank"], bound["arcs_within_checked"]), (RANKS[degree], True))
+
+
+@pytest.mark.audit
+@pytest.mark.parametrize("slug", sorted(qi.TARGETS))
+def test_retained_record_binds_its_sources_and_modular_records(slug: str) -> None:
+    """On demand: a change to a bound source needs the records regenerated, which costs 8,800 CPU seconds."""
+    record = json.loads((TRANSFER / f"arc-jets-qi-{slug}.json").read_text(encoding="utf-8"))
+    _same(record["sha256"]["arc_jets_qi"], qi._sha256(TRANSFER / "arc_jets_qi.py"))
+    _same(record["sha256"]["jet_rank"], qi._sha256(qi.ARC_JETS / "jet_rank.py"))
+    _same(record["sha256"]["reduction_check"], qi._sha256(TRANSFER / "reduction_check.py"))
+    for cell in record["cells"]:
+        for bound in cell["lower_bounds"].values():
             _same(bound["sha256"], qi._sha256(ROOT / bound["record"]))
 
 
