@@ -442,13 +442,14 @@ transverse slice germ at each selected basepoint, the real limit set in `Gr(4, K
 | `X_+` to `VB`, `X_-` to `VB` | 2, 1, 1 (a `P^2`) |
 | `X_+` to `V^a_+`, `X_-` to `V^a_-` | 2, 2, 2 |
 
-The first plane of E8-bar to `V^a_+` and to `V^a_-` is a real limit by consequence 2, and no retained arc reaches
-it; an exact arc on the first sheet is the open constructive witness. Each fiber is computed on the retained
+The first plane of E8-bar to `V^a_+` and to `V^a_-` is a real limit by consequence 2, and no arc of the two fiber
+records reaches it; the [sheet record below](#each-e8-bar-sheet-at-va-carries-one-fiber-plane-and-an-exact-arc-reaches-the-first)
+supplies an exact arc. Each fiber is computed on the retained
 transverse slice at the selected path-supported basepoint. The record does not cover E8-bar to `VB`, whose fiber is
 the open Rees elimination; the variation of a fiber along its boundary orbit; or the exclusion of limits along arcs
-that leave the slice, which holds where the boundary orbit carries a local product structure that acts on `ker C_z`
-(hypothesis: the complexified automorphism group supplies it, since an automorphism `g` gives
-`ker C_(g z) = g ker C_z`).
+that leave the slice, which holds where the boundary orbit carries a local product structure that acts on `ker C_z`.
+The [equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) decides
+where: on the orbits of `B9`, `V^a_+`, `V^a_-`, `N+` and `N-`, and not on `V` or `VB`.
 
 The falsifier is a failed identity; a failed Hermitian splitting at an exact point; a retained arc whose holomorphic
 limit differs from its bordered limit plus the boundary line; a source stratum whose equations involve
@@ -483,6 +484,51 @@ slice. A characteristic disagreement on one of the eight fibers, a source closur
 `conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
 Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
+
+## Each E8-bar sheet at Va carries one fiber plane, and an exact arc reaches the first
+
+[`sheet_fiber_planes.py`](sheet_fiber_planes.py) decomposes the reduced slice germ of E8-bar at the `V^a_+` and
+`V^a_-` basepoints into its two prime sheets (dimension 4 each; their intersection is the germ ideal) and computes
+the special fiber of each sheet by the recipe of the Nakayama record, over `Q(i)` and modulo 32003. Each sheet gives
+exactly one of the two fiber planes: the sheet `t6 = t7, t4 = -t5, t1 = t3, t2^2 + t8^2 + 2 t2 = 0` at `V^a_+`
+(with `t1 = -t3` at `V^a_-`) gives `{y1 = y2 = y6 = 0}`, the plane no arc of the fiber records reached, and the
+other sheet gives `{y3 = y4 = y5 = 0}`.
+
+The line `t = (1, 0, 1, -2, 2, 3, 3, 0) u` at `V^a_+`, and `t = (1, 0, -1, -2, 2, 3, 3, 0) u` at `V^a_-`, lies on
+the first sheet: the sheet, germ and closure generators vanish identically in `u`, `rank C_z` is 8 at `u = 0` and 10
+at `u = 1, 2, 3`, and the 21 Schur coordinates vanish to order one with leading vector equal to the embedded point
+`[0 : 0 : 2i : -10 : 2 : 0]` (respectively `[0 : 0 : -10i : 2 : -2 : 0]`) of the first plane. The first plane is
+therefore reached by an exact arc in the open E8-bar source. One arc witnesses one point of each plane; the
+realization of the remaining points rests on the previous section. Adding 1 to the `t5` coefficient leaves a sheet
+generator nonzero, and the check fails. A sheet whose fiber meets both planes, an arc generator that does not vanish,
+or a leading vector outside the first plane falsifies the record. The replay takes 1.3 seconds wall time and 4.2 CPU
+seconds. Evidence: [`sheet-fiber-planes-result.json`](sheet-fiber-planes-result.json) and the
+[ledger](ledger.md#ledger-rows).
+
+## G_2 and scaling act on the holomorphic kernel, and the boost does not
+
+[`kernel_equivariance.py`](kernel_equivariance.py) tests which symmetries of the strata act on `ker C_z`. In original
+coordinates the unipotent `G_2` automorphism `g` of the census satisfies `g^T g = I` and
+`C_(g z) = g^(-T) C_z g^(-1)` on the 15 basis directions, hence for every `z` by linearity, and
+`ker C_(g z) = g ker C_z` at the twelve canonical points. The boost `b` (`c = 5/4`, `s = 3/4`) preserves each
+nullity and fails the congruence for the four candidate matrices tested; `b ker C_z` differs from `ker C_(b z)` at
+`B9`, `V`, `VB`, E8-bar, `X+` and `X-`, with the smallest witness at `VB` (two 7-planes meeting in dimension 6).
+
+The linear system for an infinitesimal congruence, `C_(X e_k) + R^T C_k + C_k R = 0` in `(X, R)`, has a
+15-dimensional solution space whose `X` projection holds the 14 `G_2` derivations and the scaling and excludes the
+boost generator. **Inferred:** no matrix congruence exists for the boost, since a rational representation of its
+one-parameter group would differentiate to a solution of that system. At each canonical point the tangent span of
+`G_2` and the scaling has the dimension of the orbit, except at `V` (7 against 8), `VB` (6 against 7) and E8-bar
+(10 against 11), where the boost generator supplies the missing direction.
+
+**Inferred:** on the orbits of `B9`, `V^a_+`, `V^a_-`, `N+`, `N-`, `W8`, `Iso`, `X+` and `X-` a kernel-equivariant
+group acts locally transitively, so the fiber over any point of the orbit near the basepoint is the transport of the
+fiber at the basepoint, and a limit along an arc that leaves the slice lies in the transported fiber. On `V` and `VB`
+as boundary orbits the kernel can vary along the boost direction, and the variation of the fiber there is open.
+Using the split-coordinate matrix in place of `g` leaves 1,458 nonzero residual entries. A nonzero residual for
+`g`, a kernel that `g` fails to transport, or the boost generator inside the `X` projection falsifies the record.
+The replay takes 6.6 seconds wall time and 35.9 CPU seconds. Evidence:
+[`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
 ## Investigated questions
 

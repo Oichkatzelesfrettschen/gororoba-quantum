@@ -5346,6 +5346,30 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/sheet-fiber-planes-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "name": "core-a5-sheet-fiber-planes",
+      "seconds": 4.17,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/sheet-fiber-planes-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/kernel_equivariance.py --check docs/evidence/a5-kernel-attachments/kernel-equivariance-result.json",
+      "name": "core-a5-kernel-equivariance",
+      "seconds": 35.9,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/kernel-equivariance-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --check docs/evidence/a5-kernel-attachments/partner-purity-result.json",
       "name": "core-761",
       "seconds": 1.0,

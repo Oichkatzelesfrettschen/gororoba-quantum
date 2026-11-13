@@ -1,0 +1,438 @@
+{
+  "boost": {
+    "parameters_cosh_sinh": [
+      "5/4",
+      "3/4"
+    ],
+    "points_where_b_ker_differs_from_ker_of_bz": [
+      "B9",
+      "V",
+      "VB",
+      "E8bar",
+      "X+",
+      "X-"
+    ],
+    "residual_nonzero_entries": {
+      "b_original": 336,
+      "b_original_inverse": 392,
+      "b_split": 392,
+      "identity": 392
+    },
+    "smallest_witness": "VB",
+    "witnesses": {
+      "B9": {
+        "dimension_of_b_ker_meet_ker_of_bz": 6,
+        "kernel_dimension": 7,
+        "support_size_in_split_coordinates": 8
+      },
+      "V": {
+        "dimension_of_b_ker_meet_ker_of_bz": 1,
+        "kernel_dimension": 7,
+        "support_size_in_split_coordinates": 3
+      },
+      "VB": {
+        "dimension_of_b_ker_meet_ker_of_bz": 6,
+        "kernel_dimension": 7,
+        "support_size_in_split_coordinates": 2
+      }
+    }
+  },
+  "computed": [
+    "the congruence residual for the unipotent automorphism with rho = g is zero on 15 basis directions",
+    "g^T g = I in original coordinates",
+    "g ker C_z = ker C_(g z) at the twelve canonical points",
+    "the residual of four candidate rho for the boost is nonzero",
+    "b ker C_z differs from ker C_(b z) at six canonical points",
+    "the dimension of the solution space of the infinitesimal system and the membership tests",
+    "the tangent ranks of the table"
+  ],
+  "falsifier": "The unipotent congruence residual is nonzero, g^T g differs from I, or g ker C_z differs from ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix leaves a zero residual.",
+  "inferred": [
+    "the identity for every z follows from linearity of z -> C_z in the basis directions",
+    "no matrix rho of any kind satisfies C_(b z) = rho^(-T) C_z rho^(-1) for the boost: a rational representation rho of the one-parameter group would differentiate to a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection (algebraic-group step, not computed)"
+  ],
+  "infinitesimal": {
+    "boost_generator_in_x_projection": false,
+    "equation_count": 3375,
+    "g2_derivation_count": 14,
+    "g2_derivations_in_x_projection": 14,
+    "scaling_in_x_projection": true,
+    "solution_dimension": 15,
+    "system": "C_(X e_k) + R^T C_k + C_k R = 0 for k = 0..14, unknowns (X, R) in two 15 x 15 blocks",
+    "unknown_count": 450,
+    "x_projection_dimension": 15
+  },
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "docs/evidence/a5-kernel-attachments/incidence_census.py": "1ac6e43468e4cd6ad482533792437da898d0d89960532982126b98572c190a32",
+    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "13f71940997b31de286688171fb4f76486687db7fd3313f09ad56842653a084c",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "mutation_control": {
+    "detected": true,
+    "input_change": "use the split-coordinate matrix of g in place of its original-coordinate matrix as rho",
+    "kernel_transport_lost_at_points": [
+      "B9",
+      "V",
+      "VB",
+      "Va+",
+      "Va-",
+      "N+",
+      "N-",
+      "W8",
+      "E8bar",
+      "Iso",
+      "X+",
+      "X-"
+    ],
+    "name": "split_coordinate_matrix_as_rho",
+    "residual_nonzero_entries": 1458
+  },
+  "orbit_table": [
+    {
+      "point": "B9",
+      "recomputed_orbit_dimension": 9,
+      "recorded_orbit_dimension": 9,
+      "tangent_rank_equivariant_span": 9,
+      "tangent_rank_equivariant_span_with_boost_generator": 9,
+      "tangent_rank_g2_derivations": 9,
+      "tangent_rank_nilpotent_derivations": 9
+    },
+    {
+      "point": "V",
+      "recomputed_orbit_dimension": 8,
+      "recorded_orbit_dimension": 8,
+      "tangent_rank_equivariant_span": 7,
+      "tangent_rank_equivariant_span_with_boost_generator": 8,
+      "tangent_rank_g2_derivations": 6,
+      "tangent_rank_nilpotent_derivations": 6
+    },
+    {
+      "point": "VB",
+      "recomputed_orbit_dimension": 7,
+      "recorded_orbit_dimension": 7,
+      "tangent_rank_equivariant_span": 6,
+      "tangent_rank_equivariant_span_with_boost_generator": 7,
+      "tangent_rank_g2_derivations": 6,
+      "tangent_rank_nilpotent_derivations": 6
+    },
+    {
+      "point": "Va+",
+      "recomputed_orbit_dimension": 7,
+      "recorded_orbit_dimension": 7,
+      "tangent_rank_equivariant_span": 7,
+      "tangent_rank_equivariant_span_with_boost_generator": 7,
+      "tangent_rank_g2_derivations": 6,
+      "tangent_rank_nilpotent_derivations": 6
+    },
+    {
+      "point": "Va-",
+      "recomputed_orbit_dimension": 7,
+      "recorded_orbit_dimension": 7,
+      "tangent_rank_equivariant_span": 7,
+      "tangent_rank_equivariant_span_with_boost_generator": 7,
+      "tangent_rank_g2_derivations": 6,
+      "tangent_rank_nilpotent_derivations": 6
+    },
+    {
+      "point": "N+",
+      "recomputed_orbit_dimension": 6,
+      "recorded_orbit_dimension": 6,
+      "tangent_rank_equivariant_span": 6,
+      "tangent_rank_equivariant_span_with_boost_generator": 6,
+      "tangent_rank_g2_derivations": 6,
+      "tangent_rank_nilpotent_derivations": 6
+    },
+    {
+      "point": "N-",
+      "recomputed_orbit_dimension": 6,
+      "recorded_orbit_dimension": 6,
+      "tangent_rank_equivariant_span": 6,
+      "tangent_rank_equivariant_span_with_boost_generator": 6,
+      "tangent_rank_g2_derivations": 6,
+      "tangent_rank_nilpotent_derivations": 6
+    },
+    {
+      "point": "W8",
+      "recomputed_orbit_dimension": 12,
+      "recorded_orbit_dimension": 12,
+      "tangent_rank_equivariant_span": 12,
+      "tangent_rank_equivariant_span_with_boost_generator": 12,
+      "tangent_rank_g2_derivations": 11,
+      "tangent_rank_nilpotent_derivations": 11
+    },
+    {
+      "point": "E8bar",
+      "recomputed_orbit_dimension": 11,
+      "recorded_orbit_dimension": 11,
+      "tangent_rank_equivariant_span": 10,
+      "tangent_rank_equivariant_span_with_boost_generator": 11,
+      "tangent_rank_g2_derivations": 9,
+      "tangent_rank_nilpotent_derivations": 9
+    },
+    {
+      "point": "Iso",
+      "recomputed_orbit_dimension": 11,
+      "recorded_orbit_dimension": 11,
+      "tangent_rank_equivariant_span": 11,
+      "tangent_rank_equivariant_span_with_boost_generator": 11,
+      "tangent_rank_g2_derivations": 11,
+      "tangent_rank_nilpotent_derivations": 11
+    },
+    {
+      "point": "X+",
+      "recomputed_orbit_dimension": 10,
+      "recorded_orbit_dimension": 10,
+      "tangent_rank_equivariant_span": 10,
+      "tangent_rank_equivariant_span_with_boost_generator": 10,
+      "tangent_rank_g2_derivations": 9,
+      "tangent_rank_nilpotent_derivations": 9
+    },
+    {
+      "point": "X-",
+      "recomputed_orbit_dimension": 10,
+      "recorded_orbit_dimension": 10,
+      "tangent_rank_equivariant_span": 10,
+      "tangent_rank_equivariant_span_with_boost_generator": 10,
+      "tangent_rank_g2_derivations": 9,
+      "tangent_rank_nilpotent_derivations": 9
+    }
+  ],
+  "pass": true,
+  "points": [
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": false,
+        "dimension_of_b_ker_meet_ker_of_bz": 6,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 7,
+      "point": "B9",
+      "support_size_in_split_coordinates": 8,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": false,
+        "dimension_of_b_ker_meet_ker_of_bz": 1,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 7,
+      "point": "V",
+      "support_size_in_split_coordinates": 3,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": false,
+        "dimension_of_b_ker_meet_ker_of_bz": 6,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 7,
+      "point": "VB",
+      "support_size_in_split_coordinates": 2,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": true,
+        "dimension_of_b_ker_meet_ker_of_bz": 7,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 7,
+      "point": "Va+",
+      "support_size_in_split_coordinates": 2,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": true,
+        "dimension_of_b_ker_meet_ker_of_bz": 7,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 7,
+      "point": "Va-",
+      "support_size_in_split_coordinates": 2,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": true,
+        "dimension_of_b_ker_meet_ker_of_bz": 9,
+        "moved_kernel_dimension": 9,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 9,
+      "point": "N+",
+      "support_size_in_split_coordinates": 4,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 9,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": true,
+        "dimension_of_b_ker_meet_ker_of_bz": 9,
+        "moved_kernel_dimension": 9,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 9,
+      "point": "N-",
+      "support_size_in_split_coordinates": 4,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 9,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": true,
+        "dimension_of_b_ker_meet_ker_of_bz": 5,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 5,
+      "point": "W8",
+      "support_size_in_split_coordinates": 2,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": false,
+        "dimension_of_b_ker_meet_ker_of_bz": 1,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 5,
+      "point": "E8bar",
+      "support_size_in_split_coordinates": 7,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": true,
+        "dimension_of_b_ker_meet_ker_of_bz": 5,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 5,
+      "point": "Iso",
+      "support_size_in_split_coordinates": 4,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": false,
+        "dimension_of_b_ker_meet_ker_of_bz": 4,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 5,
+      "point": "X+",
+      "support_size_in_split_coordinates": 4,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    },
+    {
+      "boost": {
+        "b_ker_equals_ker_of_bz": false,
+        "dimension_of_b_ker_meet_ker_of_bz": 4,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_b_original_z": true,
+        "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "kernel_dimension": 5,
+      "point": "X-",
+      "support_size_in_split_coordinates": 4,
+      "unipotent": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
+      }
+    }
+  ],
+  "schema": "a5-kernel-attachments-kernel-equivariance-v1",
+  "scope": {
+    "claim_boundary": "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate matrices rho for the boost; the Lie-algebra solve is exact over Q. A rho outside the candidates is excluded only by the inference listed under inferred.",
+    "statement": "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the selected unipotent G_2 automorphism of incidence_census.py, the rational boost of verify_regularity_independent.py, and the twelve canonical points of that module"
+  },
+  "tools": {
+    "python_flint": "0.9.0"
+  },
+  "unipotent_g2": {
+    "basis_direction_count": 15,
+    "g_transpose_g_equals_identity_in_original_coordinates": true,
+    "identity": "C_(g z) = g^(-T) C_z g^(-1), tested as g^T C_(g e_k) g = C_(e_k)",
+    "kernel_transport_at_twelve_points": true,
+    "moved_points_agree_with_original_coordinate_action": true,
+    "residual_nonzero_entries": 0
+  }
+}
