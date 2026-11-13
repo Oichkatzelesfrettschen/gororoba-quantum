@@ -67,6 +67,8 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "control": lambda r: r.update(control_diagonal_has_a_matrix=True),
         "moving": lambda r: r.update(moving_in_symmetry_algebra=True),
         "span": lambda r: r.update(image_plus_radical_dimension=1),
+        "stabilizer dimension": lambda r: r.update(stabilizer_dimension=8, elements_with_a_matrix=8),
+        "injectivity": lambda r: r.update(image_dimension=8),
         "levi": lambda r: r.update(grading_zero_image_modulo_radical=2),
         "unipotent": lambda r: r.update(grading_nonzero_image_in_radical=False),
     }

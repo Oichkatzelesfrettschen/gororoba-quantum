@@ -9,9 +9,11 @@ image with the Levi factor and the radical of g.
 Mechanism. The encoding z -> C(z) is linear, so along the vector field z -> X z the matrix moves by C(X z), and
 the Schur form W = det(B) D + X^T adj(B) X moves by the product rule, with d det(B) = tr(adj(B) dB) and
 d adj(B) = (tr(adj(B) dB) adj(B) - adj(B) dB adj(B)) / det(B). A generator G_a = pf4(W) then moves to a polynomial
-dG_a on the slice. The field X z leaves the slice, and the correction that returns it is a combination of orbit
-fields with coefficients in the maximal ideal m, each of which maps I into I, so the class of dG_a modulo m I is
-the class of the action on the slice germ. The script reduces dG_a and the generators modulo J + m (all Pfaffians)
+dG_a on the slice. The field X z leaves the slice, and the correction that returns it is a combination, with
+coefficients in the maximal ideal m, of the fields of g_2 and the scaling, each of which maps I into I; they span
+the tangent space of the boundary orbit at z_0, since the boost generator of the stabilizer torus fixes z_0. The
+class of dG_a modulo m I is therefore the class of the action on the slice germ. The script reduces dG_a and
+the generators modulo J + m (all Pfaffians)
 and a truncation above the largest weight, exactly as the producer of the generators does, and solves
 dG_a = sum_b rho(X)_ab G_b on the normal forms over Q(i).
 
@@ -19,7 +21,8 @@ Checks per cell. Every rho(X) must exist and must lie in g (`symmetry_algebra_qi
 quadrics). The brackets must match with one sign for the whole algebra. The image of the grading element
 2 t_1 - t_2 of the slice torus must be the diagonal matrix of the generator weights up to a multiple of the Euler
 field: this ties the map to the grading that the producer measures independently. One control must fail to give a
-matrix: the diagonal matrix 1, 2, ..., 15, which preserves no stratum. Two further rows are observations: a
+matrix: the diagonal matrix 1, 2, ..., 15, a direction outside g_2, the scaling and the boost. Two further rows are
+observations: a
 derivation of g_2 that moves z_0, under which the Pfaffian ideal is still invariant while the relations are not,
 and the boost generator of the stabilizer torus, which lies outside g_2 + scaling and has no lift to the kernel.
 
@@ -58,7 +61,9 @@ SCHEMA = "a5-kernel-attachments-stabilizer-action-qi-v1"
 RECORD = HERE / "stabilizer-action-qi-result.json"
 SOURCE_PATHS = (HERE / "stabilizer_action_qi.py", HERE / "symmetry_algebra_qi.py")
 SLICE_SYMBOLS = sp.symbols(f"s1:{ws.NORMAL_DIMENSION + 1}")
-# A direction that is no symmetry of any stratum: the diagonal matrix 1, 2, ..., 15 in the original coordinates.
+# The dimension of the stabilizer of the N+ or N- basepoint in g_2(C) plus scaling: a maximal parabolic of g_2.
+STABILIZER_DIMENSION = 9
+# A direction outside g_2, the scaling and the boost: the diagonal matrix 1, 2, ..., 15 in the original coordinates.
 CONTROL_DIAGONAL = sp.diag(*range(1, ws.COMPLEX_DIMENSION + 1))
 # The largest drop or rise of the grading weight under an element of the stabilizer, with a margin of one.
 WEIGHT_MARGIN = 4
@@ -267,7 +272,13 @@ def run_cell(job: tuple[str, str, list[int], dict[str, str], str]) -> dict[str, 
     count = len(_selected)
     generators = [values[f"ng_{a}"][0] for a in range(1, count + 1)]
     derivatives = {label: [values[f"nd_{label}_{a}"][0] for a in range(1, count + 1)] for label in _elements}
-    return {"orbit": orbit, "source": source, "generators": generators, "derivatives": derivatives}
+    return {
+        "orbit": orbit,
+        "source": source,
+        "generators": generators,
+        "derivatives": derivatives,
+        "selected": list(_selected),
+    }
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -296,6 +307,7 @@ def analyze(job: tuple[dict[str, Any], dict[str, Any], tuple[str, str, int, list
             len({k for t in generators for k in t}),
         ),
         "stabilizer_dimension": len(names),
+        "selected_pfaffians_one_based": list(run["selected"]),
         "elements_with_a_matrix": sum(images[name] is not None for name in names),
         "control_diagonal_has_a_matrix": images["diagonal"] is not None,
         "moving_derivation_has_a_matrix": images["moving"] is not None,
@@ -382,6 +394,12 @@ def stabilizer_payload(stabilizer: Stabilizer) -> dict[str, Any]:
     }
 
 
+def orbit_setup(orbit: str) -> tuple[ws.OrbitSlice, ws.SlicePiece, Stabilizer]:
+    """The slice, its Singular statements and the stabilizer of one basepoint; the two orbits are independent."""
+    piece = ws.build_slice(orbit)
+    return piece, ws.orbit_task(orbit), build_stabilizer(piece)
+
+
 def compute(cells: tuple[tuple[str, str], ...] = qi.CELLS) -> dict[str, Any]:
     banner, version = ws.singular_version()
     retained = {
@@ -389,9 +407,10 @@ def compute(cells: tuple[tuple[str, str], ...] = qi.CELLS) -> dict[str, Any]:
         for cell in json.loads(qi.RELATIONS_RECORD.read_text(encoding="utf-8"))["cells"]
         if cell["characteristic"] == 0
     }
-    pieces = {orbit: ws.build_slice(orbit) for orbit in ws.ORBITS}
-    slice_pieces = {piece.orbit: piece for piece in parallel.ordered_map(ws.orbit_task, ws.ORBITS, min_items=1)}
-    stabilizers = {orbit: build_stabilizer(pieces[orbit]) for orbit in ws.ORBITS}
+    setups = parallel.ordered_map(orbit_setup, ws.ORBITS, min_items=1)
+    pieces = {orbit: setup[0] for orbit, setup in zip(ws.ORBITS, setups, strict=True)}
+    slice_pieces = {orbit: setup[1] for orbit, setup in zip(ws.ORBITS, setups, strict=True)}
+    stabilizers = {orbit: setup[2] for orbit, setup in zip(ws.ORBITS, setups, strict=True)}
     relations = {(job[0], job[1]): job for job in qi.regenerate_relations()}
     jobs = []
     for orbit, source in cells:
@@ -434,6 +453,8 @@ def verdict(record: dict[str, Any]) -> list[str]:
         name = row["incidence"]
         if row["generator_normal_forms_rank"] != row["generators"]:
             problems.append(f"{name}: the normal forms of the generators are dependent")
+        if row["stabilizer_dimension"] != STABILIZER_DIMENSION:
+            problems.append(f"{name}: the stabilizer has dimension {row['stabilizer_dimension']}")
         if row["elements_with_a_matrix"] != row["stabilizer_dimension"]:
             problems.append(f"{name}: a stabilizer element has no matrix on the generators")
             continue
@@ -451,6 +472,8 @@ def verdict(record: dict[str, Any]) -> list[str]:
             problems.append(f"{name}: the diagonal control has a matrix")
         if row["moving_derivation_has_a_matrix"] and row.get("moving_in_symmetry_algebra"):
             problems.append(f"{name}: a derivation that moves the basepoint preserves the quadrics")
+        if row["image_dimension"] != row["stabilizer_dimension"]:
+            problems.append(f"{name}: the map from the stabilizer is not injective")
         if row["image_plus_radical_dimension"] != row["symmetry_algebra_dimension"]:
             problems.append(f"{name}: the image and the radical do not span the symmetry algebra")
         if row["grading_zero_image_modulo_radical"] != 3 or not row["grading_nonzero_image_in_radical"]:
