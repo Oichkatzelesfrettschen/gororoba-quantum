@@ -10,8 +10,8 @@ the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and qu
 frames now carry explicit overlap maps, inverse and cocycle identities, and canonical unitary reductions on every
 high-nullity piece. The five nullity-twelve complex bundles are trivial; the two nullity-sixteen complex and
 quaternionic bundles retain the nonzero order-two class already found by the homogeneous calculation, although all
-seven underlying real bundles are trivial. An exhaustive component census and smaller reductions on the
-non-homogeneous pieces remain open. The aligned nullity-twelve pieces now have an explicit
+seven underlying real bundles are trivial. The component group is exactly the visible `S_3 x Z_2` (`A5-379`);
+smaller reductions on the non-homogeneous pieces remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
 their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
 quotient, a computed unit-section topology and K-groups, and exact stabilizer representations on its principal,

@@ -71,7 +71,9 @@ stabilizer computation.
 algebra of `K`, so conjugation by any element of `K` preserves `G_2` and agrees on it with conjugation by an element
 of `G_2`: every component of `K` meets the centralizer `Z = Z_K(G_2)`, and `pi_0(Z) -> pi_0(K)` is onto. It is
 one-to-one because `Z` meets the identity component `K^0 = G_2 T` in the centralizer of `G_2` there, which is the
-central torus `T` (`G_2` has trivial center) and is connected. Hence `pi_0(K) = pi_0(Z_K(G_2))`. `probes/g2_commutant.py` computes the commutant of the fourteen octonion-derivation triples
+central torus `T` (`G_2` has trivial center) and is connected.
+Hence `pi_0(K) = pi_0(Z_K(G_2))`.
+`probes/g2_commutant.py` computes the commutant of the fourteen octonion-derivation triples
 in each slot of the transport triple exactly over Q: dimension 32 with a 4-dimensional invariant subspace in every
 slot, so each slot decomposes as `4 R + 4 R^7` and the centralizer is `GL(4) x GL(4)` per slot
 ([log](probes/g2-commutant.log)). `Z_K(G_2)` is therefore the solution set of the group-level transport equations in
@@ -83,7 +85,8 @@ slot, so each slot decomposes as `4 R + 4 R^7` and the centralizer is `GL(4) x G
 `Z = Z_K(G_2)`; the record is [`centralizer-components-result.json`](centralizer-components-result.json). The
 identity component of `Z` is the torus `T` of the four central directions. `J = L_(e_16)` and `R = R_(e_16)`
 commute and square to `-1`, and their joint eigenspaces are four lines on the unit multiplicity space and two
-planes on the vector multiplicity space, where only the sign pairs `(e, -e)` occur. **Inferred:** `Z` normalizes
+planes on the vector multiplicity space, where only the sign pairs `(e, -e)` occur. Proof of the reduction to patterns, each
+hypothesis of which this record or the kernel-bundle record checks: `Z` normalizes
 `T`, so `P` and `Q` permute the four unit lines and the two vector planes and `G` permutes the two eigenspaces of
 `J` on the doubly pure space; a pattern is a choice of these permutations, 4,608 in all, and within a pattern the
 unknowns are ten scalars and six 2 x 2 blocks. `T` scales the unit scalars by characters, four of which generate
@@ -100,7 +103,8 @@ pattern, and with one structure sign flipped the identity pattern has 1 point in
 imposed for `y` on one unit eigenvector per class and on the vector eigenvectors of octonion index 1; on both
 patterns with points the equations for the indices 1 to 7 reduce to zero modulo that ideal.
 
-**Inferred (`A5-379`):** two real points of `Z` in one component of `Z_C` differ by a real point of `T`, which is
+**Proved (`A5-379`)**, from the counts above: two real
+points of `Z` in one component of `Z_C` differ by a real point of `T`, which is
 connected, so the real group has at most 12 components. The visible subgroup `S_3 x Z_2` occupies 12 distinct
 components ([kernel bundles](../a5-kernel-bundles/README.md#a-visible-s_3-x-z_2-occupies-twelve-components)), so
 `pi_0(K) = pi_0(Z) = S_3 x Z_2`: every constant kernel-pencil symmetry is a product of an element of the identity

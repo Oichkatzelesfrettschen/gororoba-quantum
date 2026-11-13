@@ -2,9 +2,10 @@
 
 A constant kernel-pencil symmetry is a triple (G, P, Q) of invertible linear maps, G on the doubly pure space U
 and P, Q on A_5, with Q L_y = L_(G y) P for every y in U. The group K of such triples has identity component with
-Lie algebra g_2 plus four central directions (`../a5-kernel-bundles/README.md`), and `Out(g_2)` is trivial, so
-pi_0(K) = pi_0(Z) for the centralizer Z of G_2 in K. This script counts the components of the complex algebraic
-group Z_C and deduces pi_0 of the real group.
+Lie algebra g_2 plus four central directions (`../a5-kernel-bundles/README.md`). `Out(g_2)` is trivial and g_2 is
+the derived algebra of Lie(K), so every component of K meets the centralizer Z of G_2 in K; Z meets the identity
+component G_2 T in the connected central torus T, because G_2 has trivial center; hence pi_0(K) = pi_0(Z). This
+script counts the components of the complex algebraic group Z_C and deduces pi_0 of the real group.
 
 Structure. An element of Z commutes with G_2, so P, Q and G act on the multiplicity spaces of the trivial and the
 7-dimensional representation. The identity component of Z is the torus T with Lie algebra spanned by the base
@@ -80,6 +81,11 @@ GENERATORS = {
     "vertical_phase": ((0, 0, 0), (0, 1, 0), (0, -1, 0)),
     "base_phase_lift": ((0, 1, 0), (0, 0, 1), (0, 1, 1)),
 }
+
+# The count the record certifies: the order of the visible S_3 x Z_2, on the identity pattern and on the pattern
+# that sends every sign pair to its negative.
+EXPECTED_COMPONENTS = 12
+EXPECTED_PATTERNS = [[[0, 1, 2, 3], 0, [0, 1, 2, 3], 0, 0], [[3, 2, 1, 0], 1, [3, 2, 1, 0], 1, 1]]
 
 Pattern = tuple[tuple[int, ...], int, tuple[int, ...], int, int]
 
@@ -352,8 +358,10 @@ def full_reduction(pattern: Pattern, mutation: str) -> int:
         )
     lines = process.stdout.splitlines()
     match = next((RESULT_LINE.match(line) for line in lines if RESULT_LINE.match(line)), None)
+    failed = process.stderr.strip() != "" or any(line.lstrip().startswith("?") for line in lines)
     _require(
-        process.returncode == 0 and "DONE" in lines and match is not None, f"Singular failed: {process.stdout[-800:]}"
+        not failed and process.returncode == 0 and "DONE" in lines and match is not None,
+        f"Singular failed: {(process.stderr + process.stdout)[-800:]}",
     )
     return int(match.group(2)) if match is not None else -1
 
@@ -526,6 +534,10 @@ def verdict(record: dict[str, Any]) -> list[str]:
     """The reasons the record fails its own rules; empty when it passes."""
     problems = []
     counts, torus, controls = record["counts"], record["torus"], record["controls"]
+    if record["complex_components"] != EXPECTED_COMPONENTS:
+        problems.append(f"the complex centralizer has {record['complex_components']} components")
+    if sorted(entry["pattern"] for entry in counts["patterns_with_points"]) != sorted(EXPECTED_PATTERNS):
+        problems.append("the patterns with points differ from the identity and the sign-negating pattern")
     if counts["patterns"] != 4608:
         problems.append("the pattern enumeration is incomplete")
     if counts["patterns_of_positive_dimension"]:
