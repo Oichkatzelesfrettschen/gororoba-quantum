@@ -196,6 +196,14 @@ case takes 25 s; a series case takes 1,540 s and 1.8 GB.
 Check the record with `"$PYTHON" docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py --check`; without the
 flag the producer regenerates it.
 
+[`w8_component_arc_matrices_qi.py`](w8_component_arc_matrices_qi.py) runs the same script and writes the eight
+rank matrices themselves ([w8-component-arc-matrices-qi.json](w8-component-arc-matrices-qi.json)): two basepoints,
+two families, two parameter points, each 24 rows by 6 columns (the five partial derivatives of F, then F), every
+entry a pair of rationals for its real and imaginary part. Its check needs no Singular: it recomputes each rank
+by exact elimination over Q(i) (6 for the full matrix, 5 for the derivative columns alone) and compares order,
+rank and the count of nonzero limit coordinates with the record above. The matrices are the input of the rank
+certificates planned in Rocq. Regeneration takes 26 minutes, the check 1 second.
+
 ## The same-sign X fiber cone over Q(i): I = M and L is 69 quadrics
 
 [`monomial_certificate_qi.py`](monomial_certificate_qi.py) repeats over Q(i) the exact certificate of
