@@ -139,7 +139,7 @@ that model at n = 4 and n = 5. Neither can start on Hilbert functions alone, so 
 | 115 | exact torus over Q in the Klein centralizer, then a weighted dp order | Kaggle CPU or the laptop | symbolic; the weighted std then runs at N = 15 and 18 |
 | 133 | done by a second route: the arc family of `structure/arcs-iso-w8/blowup-arcs` decides A5-007 and A5-067 at both primes without the fiber-cone deduction | | |
 | 132 | withdrawn: the fez qubit-90 channel admits every mapped marginal (second review of the wide-coset write-up); an independent calibration of qubit 90 replaces it | none | |
-| 134 | byte-reproducible serializer for the Tuna-17 one-CZ null analysis, as a versioned successor | code change | regeneration drifts by at most 1.78e-14 today |
+| 134 | done: `scripts/qi_pathion_one_cz_null_analysis.py` writes the Tuna-17 one-CZ null analysis in exact rational arithmetic (schema v3, `results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json`), and gate `core-pathion-one-cz-null-tuna-analysis-replay` replays it byte for byte | | |
 | variable-order screen | fixed dp permutations at N = 15 | Kaggle CPU sessions, one permutation each | about 420 s per permutation; reversed variables measured 1.81 times slower at N = 13 |
 | `degBound` lever | `slimgb` with `degBound = N` at N = 18 | laptop, after the degree-7 cells | byte-identical basis and 12 percent faster at N = 13, 33.5 percent at N = 15 (Codex final review) |
 

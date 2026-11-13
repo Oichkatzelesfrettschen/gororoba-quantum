@@ -1,0 +1,240 @@
+"""Contracts of the exact-arithmetic successor of the Tuna-17 one-CZ null analysis.
+
+The fixtures hold at most 256 shots per circuit, so the exact statistics cost milliseconds; the retained
+19-batch regeneration is the on-demand gate core-pathion-one-cz-null-tuna-analysis-replay. The audit-marked
+retained-record test reads two committed JSON files (the schema-v2 record and its schema-v3 successor) and
+regenerates nothing.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from fractions import Fraction
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import pytest
+import qi_pathion_coset_coin_cases as cc
+import qi_pathion_one_cz_null_analysis as ana
+import qi_pathion_one_cz_null_cases as oc
+
+import exact_contrast_statistics as ecs
+import parallel
+
+ROOT = Path(__file__).resolve().parents[2]
+TEMPLATE_BATCHES = {"b0": "batch-00", "k4": "batch-03", "k8": "batch-04", "k12": "batch-07"}
+SHOTS = 256
+READOUT_SHOTS = 64
+
+
+def _expect(condition: bool, message: str) -> None:
+    if not condition:
+        raise AssertionError(message)
+
+
+@pytest.fixture(scope="module")
+def manifest() -> dict[str, Any]:
+    loaded: dict[str, Any] = json.loads(oc.build()[oc.TUNA_SERIES]["batch-00/cases.json"])
+    return loaded
+
+
+def _readout_shots(width: int, register: list[int], flips: dict[int, int], prepared: int) -> list[str]:
+    """READOUT_SHOTS strings of `width` bits; qubit q reads wrongly in its first flips[q] shots."""
+    strings = []
+    for shot in range(READOUT_SHOTS):
+        value = 0
+        for q in register:
+            wrong = shot < flips[q]
+            value |= (prepared ^ wrong) << q
+        strings.append(format(value, f"0{width}b"))
+    return strings
+
+
+def _mini_series(manifest: dict[str, Any]) -> dict[str, list[str]]:
+    """One base circuit per template, one readout pair per batch and one coin twin pair per template."""
+    width, register = manifest["nqubits"], manifest["register"]
+    shots: dict[str, list[str]] = {}
+    for position, (template, batch) in enumerate(TEMPLATE_BATCHES.items()):
+        roles = manifest["templates"][template]["roles"]
+        law = np.array([1.0 + (5 * i + 3 * position) % 7 for i in range(oc.NOUT)])
+        counts = cc.largest_remainder(law, SHOTS)
+        shots[f"{batch}/{template}.cq"] = cc.place_counts(counts, oc.KEYS, roles, width)
+        zero_flips = {q: 1 + (q + position) % 4 for q in register}
+        one_flips = {q: 2 + (2 * q + position) % 5 for q in register}
+        shots[f"{batch}/readout-0.cq"] = _readout_shots(width, register, zero_flips, 0)
+        shots[f"{batch}/readout-1.cq"] = _readout_shots(width, register, one_flips, 1)
+        for coin in (0, 1):
+            selector = roles["selector"]
+            twin = [format(int((shot + coin + position) % 3 == 0) << selector, f"0{width}b") for shot in range(128)]
+            shots[f"{batch}/{template}-coin{coin}.cq"] = twin
+    return shots
+
+
+def _jsonable(value: Any) -> Any:
+    loaded = json.loads(json.dumps(value, allow_nan=False))
+    return loaded
+
+
+def test_the_successor_equals_the_float_predecessor_within_the_declared_bound(manifest: dict[str, Any]) -> None:
+    shots = _mini_series(manifest)
+    floats: list[tuple[float, float]] = []
+    found = ana.compare_records(
+        _jsonable(oc.batch_estimates(shots, manifest)), _jsonable(ana.batch_estimates(shots, manifest)), floats
+    )
+    _expect(not found, "\n".join(found[:10]))
+    _expect(len(floats) >= 400, f"the comparison covered {len(floats)} floats")
+    corrected = [
+        row["statistics"].keys() for t in ana.batch_estimates(shots, manifest)[1].values() for row in t.values()
+    ]
+    _expect(all("readout_corrected" in keys for keys in corrected), "every base circuit carries its bracket")
+
+
+def test_the_successor_bytes_repeat_and_follow_neither_the_worker_count_nor_the_linear_solver(
+    manifest: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    shots = _mini_series(manifest)
+
+    def regenerate() -> str:
+        return ana.record_text({"rows": ana.batch_estimates(shots, manifest)})
+
+    reference = regenerate()
+    _expect(regenerate() == reference, "a second regeneration differs")
+    for workers in ("1", "4"):
+        monkeypatch.setenv("GOROROBA_WORKERS", workers)
+        if parallel.workers() != int(workers):
+            pytest.skip(f"fewer than {workers} CPUs available: the worker comparison would run serially")
+        _expect(regenerate() == reference, f"{workers} workers differ from the default run")
+    predecessor = ana.record_text({"rows": oc.batch_estimates(shots, manifest)})
+    monkeypatch.setattr(np.linalg, "solve", lambda matrix, vector: np.linalg.inv(matrix) @ vector)
+    resolved = ana.record_text({"rows": oc.batch_estimates(shots, manifest)})
+    _expect(resolved != predecessor, "a different linear solver left the predecessor's bytes unchanged")
+    _expect(regenerate() == reference, "the successor follows the linear solver")
+
+
+def test_a_rebound_function_leaves_the_predecessor_module_untouched() -> None:
+    pooled_before, heterogeneity_before = oc.pooled, oc.heterogeneity
+    _expect(ana.decide_estimates is not oc.decide_estimates, "the rebound decision rule is a copy")
+    _expect(oc.decide_estimates.__globals__["pooled"] is pooled_before, "the predecessor still pools by pow")
+    _expect(ana.decide_estimates.__globals__["pooled"] is ana.pooled, "the copy pools by products")
+    _expect(oc.pooled is pooled_before and oc.heterogeneity is heterogeneity_before, "predecessor names moved")
+    _expect(ana.joint_statistics.__globals__["pooled"] is ana.pooled, "the joint calibration pools by products")
+
+
+def _rows(shifts: dict[str, float]) -> dict[str, dict[str, list[tuple[float, float]]]]:
+    return {
+        t: {
+            kind: [(shifts.get(t, 0.0) + sign * 0.0004, 0.002 + 0.0001 * sign) for sign in (1, -1)]
+            for kind in ("base", "twin")
+        }
+        for t in oc.TEMPLATES
+    }
+
+
+@pytest.mark.parametrize(
+    ("shifts", "label"),
+    [
+        ({"b0": 0.0164}, "zero"),
+        ({t: 0.0164 for t in oc.TEMPLATES}, "b0_like"),
+        ({}, "offset_absent"),
+        ({"b0": 0.5, "k4": -0.4}, "unresolved_batch"),
+    ],
+)
+def test_the_rebound_decision_rule_reads_the_same_label_and_numbers(shifts: dict[str, float], label: str) -> None:
+    rows = _rows(shifts)
+    if label == "unresolved_batch":
+        rows["b0"]["base"] = [(0.5, 0.002), (0.0, 0.002)]
+    kept, rebound = oc.decide_estimates(rows), ana.decide_estimates(rows)
+    _expect(kept["label"] == label and rebound["label"] == label, f"{kept['label']} and {rebound['label']}")
+    floats: list[tuple[float, float]] = []
+    found = ana.compare_records(_jsonable(kept), _jsonable(rebound), floats)
+    _expect(not found and bool(floats), f"{found[:5]}")
+    _expect(max(difference for difference, _ in floats) < 1e-12, "the product form moved a number")
+
+
+def test_pooling_multiplies_where_the_predecessor_squares() -> None:
+    values = [(0.0123, 0.0031), (0.0207, 0.0044), (0.0161, 0.0029)]
+    weights = [1.0 / (se * se) for _, se in values]
+    mean = sum(w * v for w, (v, _) in zip(weights, values, strict=True)) / sum(weights)
+    _expect(ana.pooled(values) == (mean, (1.0 / sum(weights)) ** 0.5), "pooled follows its definition")
+    expected = sum(((v - mean) / se) * ((v - mean) / se) for v, se in values)
+    _expect(ana.heterogeneity(values) == expected, "heterogeneity sums products")
+
+
+def test_the_implied_contraction_is_the_rooted_corrected_visibility(manifest: dict[str, Any]) -> None:
+    template = manifest["templates"]["k4"]
+    shots = _mini_series(manifest)
+    counts = cc.coin_counts(shots["batch-03/k4.cq"], template["roles"])
+    result = _statistics(counts, template)
+    corrected = ana.statistics_record(result)
+    row = ana.template_row(
+        "k4", template, counts, ana.statistics_record(_statistics(counts, template, False)), corrected
+    )
+    visibility = corrected["visibility"]
+    _expect(visibility is not None and visibility > 0, f"fixture visibility {visibility}")
+    implied = row["contraction_per_cz_implied"]
+    _expect(abs(implied ** template["cz"] - visibility) <= 1e-12 * visibility, f"{implied} ** cz is not {visibility}")
+    _expect(row["visibility_readout_corrected"] == visibility, "the row reports the exact corrected visibility")
+    low, high = cc.RHO_BAND
+    _expect(row["against_rho_band"] == ("below" if implied < low else "above" if implied > high else "inside"), "band")
+
+
+def _statistics(counts: np.ndarray, template: dict[str, Any], corrected: bool = True) -> Any:
+    """The exact statistics of one template's counts under a fixed small assignment (or raw)."""
+    readout = tuple((Fraction(2 + k, 64), Fraction(3 + k, 64)) for k in range(5)) if corrected else None
+    sign = tuple(int(s) for s in np.sign(np.array(template["ideal_c"])))
+    job = ecs.ContrastJob(tuple(int(n) for n in counts), sign, readout, ana.ZERO_WEIGHT)
+    return ecs.contrast_statistics(job)
+
+
+def test_compare_records_names_each_kind_of_difference() -> None:
+    base = {"label": "a", "flag": True, "count": 3, "none": None, "list": [1.0, 2.0], "float": 0.5}
+    floats: list[tuple[float, float]] = []
+    _expect(ana.compare_records(base, json.loads(json.dumps(base)), floats) == [] and len(floats) == 3, "equal")
+    cases = {
+        "label": "b",
+        "flag": False,
+        "count": 4,
+        "none": 0.0,
+        "list": [1.0],
+        "float": 0.5 + 1e-6,
+        "extra": 1,
+    }
+    for key, value in cases.items():
+        other = {**base, key: value}
+        found = ana.compare_records(base, other, [])
+        _expect(len(found) == 1 and key in found[0], f"{key}: {found}")
+    _expect(ana.compare_records(base, {**base, "float": 0.5 + 1e-13}, []) == [], "a float inside the bound differs")
+
+
+def test_a_qx_control_record_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(ana, "analyze_series", lambda run_dirs: {"claim_kind": oc.CONTROL_KIND})
+    with pytest.raises(SystemExit, match="QX control record"):
+        ana.analyze([])
+
+
+@pytest.mark.audit
+def test_the_retained_successor_record_names_and_agrees_with_its_predecessor() -> None:
+    old = ROOT / ana.PREDECESSOR_RECORD
+    new = ROOT / ana.SUCCESSOR_RECORD
+    _expect(hashlib.sha256(old.read_bytes()).hexdigest() == ana.PREDECESSOR_SHA256, "the predecessor bytes moved")
+    record = json.loads(new.read_text(encoding="utf-8"))
+    _expect(record["schema"] == ana.SCHEMA and ana.SCHEMA.endswith("-v3"), f"{record['schema']}")
+    _expect(
+        record["succeeds"]
+        == {
+            "schema": oc.ANALYSIS_SCHEMA,
+            "producer": "scripts/qi_pathion_one_cz_null_cases.py --analyze",
+            "record": ana.PREDECESSOR_RECORD,
+            "record_sha256": ana.PREDECESSOR_SHA256,
+        },
+        "the record names its predecessor",
+    )
+    _expect(new.read_text(encoding="utf-8").endswith("}\n"), "the retained record ends with one newline")
+    floats: list[tuple[float, float]] = []
+    found = ana.compare_records(json.loads(old.read_text(encoding="utf-8")), record, floats)
+    found = [d for d in found if not d.startswith(("/schema ", "/arithmetic ", "/succeeds "))]
+    _expect(not found, "\n".join(found[:10]))
+    _expect(len(floats) == 1365, f"{len(floats)} floats compared")
+    _expect(record["decision"]["label"] == "unresolved_batch" and not record["decision"]["decided"], "decision")
