@@ -1764,7 +1764,7 @@
   },
   "falsifier": "A grading under which a Pfaffian or a germ generator is inhomogeneous; a generator or relation count that differs from the retained value of the same incidence; a Hilbert dimension, multiplicity or saturation outside the stated values, or a first numerator that differs between Q(i) and the modular cell; a Q(i) relation space whose reduction differs in rank from the modular one; or a control that the checker accepts.",
   "inputs": {
-    "docs/evidence/a5-kernel-attachments/composed_limit_sections.py": "465a7f3389e607b67e19f44f1be0cdca3620ed12c8452199e9258fd9b07459ef",
+    "docs/evidence/a5-kernel-attachments/composed_limit_sections.py": "c12c919f4576b5c39dc88b318fca2d33153d429bc85ac1b0f815b2311a32716d",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
     "docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json": "2c7dd00477a0af20c1d0f04b96f86ba96b3782499c60a19532ad655d33b1d8f1",

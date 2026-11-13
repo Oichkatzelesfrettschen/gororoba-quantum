@@ -46,6 +46,7 @@ SOURCE_PATHS = (
     HERE / "nakayama_rees_fibers.py",
     HERE / "holomorphic_gauss_fibers.py",
     HERE / "first-order-normal-cones-result.json",
+    nakayama.RESULT_PATH,
     HERE.parent / "a5-strata-regularity" / "verify_regularity_independent.py",
     HERE.parent / "a5-strata-regularity" / "strata_regularity.py",
 )

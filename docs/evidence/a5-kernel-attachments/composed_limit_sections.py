@@ -505,7 +505,12 @@ def build_record() -> dict[str, Any]:
             source, target = source_row.split("->")
             quadrics, provenance, relations = _relations(label, prime, hilbert)
             if not quadrics:
-                continue  # no retained K2 of this source at this prime
+                # The only source without a retained K2 at one prime is the declared single-prime source.
+                _require(
+                    SINGLE_PRIME_SOURCES.get(source_row, prime) != prime,
+                    f"{source_row}: no retained K2 at {prime}, and the source is not a declared single-prime source",
+                )
+                continue
             if label is not None and relations is not None:
                 bindings.append(
                     {
