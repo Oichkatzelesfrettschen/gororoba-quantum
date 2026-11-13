@@ -759,20 +759,43 @@ For `W8` and `E8bar` the quadric ideal has the Hilbert numerator of the modular 
 same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
 component step `X+->N-` returns 12 generators in place of 3.
 
-**Inferred (`A5-429`, conditional on `A5-293` and `A5-421`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
+**Inferred (`A5-429`, conditional on `A5-293`, `A5-421`, `A5-433` and the slice premise of `A5-423`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68 quadrics. `K` is prime of dimension 5 and degree 23 over `Q(i)`
 by the computation above and lies in the relation ideal `L`, whose quotient has dimension at least 5 at both
 basepoints (`A5-293`); a proper quotient of the domain `Q(i)[y]/K` has dimension below 5, so `L = K`. The
-primality is over `Q(i)`; geometric irreducibility is proved modulo 32009 and 32029 at `N-` (`A5-060`).
+arcs live on the header slice and the quadrics on the weight slice, and the isomorphism that joins them is known
+over C alone (`A5-423`), so the comparison runs over C: `K` is absolutely prime (`A5-433`), and the same argument
+holds there.
 
-**Inferred (`A5-431`, conditional on `A5-421` and `A5-430`):** the fiber cone of `W8->N+` and of `W8->N-` over
+**Inferred (`A5-431`, conditional on `A5-421`, `A5-430`, `A5-433` and the slice premise of `A5-423`):** the fiber cone of `W8->N+` and of `W8->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 144 quadrics. Two arc families over `Q(i)`
 ([`w8_component_arcs_qi.py`](../a5-char0-transfer/w8_component_arcs_qi.py),
 [record](../a5-char0-transfer/w8-component-arcs-qi.json)) each have a 6-dimensional set of limits in `V(L)`, which
 lies in `V(K)`: one spans 15 dimensions and the other 20. The two components of `V(K)` span `24 - 9 = 15` and
 `24 - 4 = 20` dimensions, so the first family fills the degree-20 component and the second the degree-30 one.
 `V(L)` then contains both, `L` lies in the intersection of the two primes, and that intersection is `K` because `K`
-is radical (`A5-430`); hence `L = K`.
+is radical (`A5-430`); hence `L = K`. The comparison runs over C, where the slice isomorphism of `A5-423` is
+known: both primes are absolutely prime (`A5-433`), so `V(K)` has exactly two components over C, and each family,
+geometrically irreducible of dimension 6, is the component of its span.
+
+**Computed (`A5-433`):** every minimal prime of the three quadric ideals holds a smooth `Q(i)`-rational point.
+[`weight_slice_smooth_points.py`](weight_slice_smooth_points.py) lists the maximal sets of generators that contain
+no monomial of any quadric; each spans a coordinate subspace inside `V(K)`. At one rational point of each it
+computes the rank of the Jacobian of the quadrics and the minimal primes through the point
+([record](weight-slice-smooth-points-result.json)), the same at `N+` and `N-`:
+
+| Source | Prime (dimension, degree) | Points on it alone | Jacobian rank |
+|---|---|---|---|
+| `Iso` | 5, 23 | 3 | 12 = 17 - 5 |
+| `W8` | 6, 20 | 1 | 18 = 24 - 6 |
+| `W8` | 6, 30 | 3 | 18 = 24 - 6 |
+| `E8bar` | 5, 11 | 3 | 16 = 21 - 5 |
+| `E8bar` | 4, 4 | 4 | 17 = 21 - 4 |
+
+**Inferred:** at such a point the local ring of `V(K)` is regular, so one geometric component passes through it;
+the Galois group permutes the geometric components of the prime transitively and fixes the point, so the prime has
+one geometric component and stays prime over C. A rerun in which a prime has no such point falsifies the record;
+check it with `"$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py --check`.
 
 **Inferred (`A5-432`, conditional on `A5-421`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
 hold 9 and 14 linear forms in 21 generators, so at least `9 + 14 - 21 = 2` linear forms lie in both; each is
