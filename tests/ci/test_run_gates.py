@@ -130,7 +130,7 @@ def test_a_skipped_gate_is_reported_and_counted_apart_from_the_passes(root: Path
     with runner(root, GOROROBA_SINGULAR_REQUIRED=None) as output:
         status = run_gates.main(["--timings", str(timings)])
     text = output.getvalue()
-    wanted = ("SKIP skips", "PASS passes", "1 passed, 1 skipped, 0 failed of 2", "skipped, no check ran: skips")
+    wanted = ("SKIP skips", "PASS passes", "1 passed, 1 skipped, 0 failed of 2", "skipped, replay not run: skips")
     if status != 0 or any(part not in text for part in wanted) or "PASS skips" in text or "skipped: absent" not in text:
         raise AssertionError(f"a skip was not reported apart from the passes (status {status}):\n{text}")
     verdicts = {row["name"]: row["verdict"] for row in json.loads(timings.read_text())["gates"]}

@@ -25,7 +25,7 @@ toolchain is absent. A caller that exports the variable REQUIREMENTS names for
 the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
 each such gate take its live path or fail.
 
-A gate that ran no check says so by exit status 77 after a last output line
+A gate that left its replay unrun says so by exit status 77 after a last output line
 that begins ``skipped:`` and gives the reason. The runner prints SKIP for it,
 counts it apart from the passes in the summary and the timings, and lists the
 skipped names. A run with a failure exits 1; a run that passes nothing and
@@ -72,7 +72,8 @@ import parallel  # noqa: E402
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
-# The exit status by which a gate that declares `requires` reports that it ran no check (automake's skip status).
+# The exit status by which a gate that declares `requires` reports that it left its replay unrun (automake's skip status);
+# a gate may run cheaper checks first, so a skip says the replay is missing and nothing about those.
 SKIP_STATUS = 77
 # The prefix of the line by which a skipping gate states its reason; the runner accepts no skip without it.
 SKIP_PREFIX = "skipped:"
@@ -394,10 +395,10 @@ def main(argv: list[str] | None = None) -> int:
     summary = f"{passed} passed, {len(skipped)} skipped, {len(failures)} failed of {len(selected)} gates"
     print(f"\n{summary} on {device}")
     if skipped:
-        print(f"skipped, no check ran: {', '.join(sorted(skipped))}")
+        print(f"skipped, replay not run: {', '.join(sorted(skipped))}")
     if failures:
         return 1
-    # A run that passed nothing and skipped something verified nothing: it reports the skip status itself.
+    # A run that passed nothing and skipped something completed no gate: it reports the skip status itself.
     return SKIP_STATUS if skipped and passed == 0 else 0
 
 
