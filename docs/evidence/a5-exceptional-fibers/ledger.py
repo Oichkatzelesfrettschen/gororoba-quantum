@@ -127,12 +127,15 @@ def a5_directories() -> list[str]:
     """Every `docs/evidence/a5-*` directory that holds a tracked file; `--check` requires a citing row for each.
 
     The tracked files come from `git ls-files`, so an ignored or leftover directory does not count; outside a git
-    checkout every such directory on disk counts.
+    checkout, or on a host with no git executable, every such directory on disk counts.
     """
-    listing = subprocess.run(
-        ["git", "-C", str(ROOT), "ls-files", "docs/evidence/a5-*"], capture_output=True, text=True, check=False
-    )
-    if listing.returncode == 0:
+    try:
+        listing = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-files", "docs/evidence/a5-*"], capture_output=True, text=True, check=False
+        )
+    except FileNotFoundError:
+        listing = None
+    if listing is not None and listing.returncode == 0:
         return sorted({"/".join(line.split("/")[:3]) for line in listing.stdout.splitlines() if line.count("/") >= 3})
     return sorted(str(p.relative_to(ROOT)) for p in (ROOT / "docs" / "evidence").glob("a5-*") if p.is_dir())
 

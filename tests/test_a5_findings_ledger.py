@@ -47,6 +47,19 @@ def test_every_a5_evidence_directory_is_cited_and_an_uncited_one_is_reported() -
         raise AssertionError("a directory that only prefixes cited names passes as cited")
 
 
+def test_directories_come_from_disk_when_no_git_executable_exists(monkeypatch: pytest.MonkeyPatch) -> None:
+    mod = load()
+    tracked = mod.a5_directories()
+
+    def missing(*_args: object, **_kwargs: object) -> None:
+        raise FileNotFoundError("git")
+
+    monkeypatch.setattr(mod.subprocess, "run", missing)
+    on_disk = mod.a5_directories()
+    if not set(tracked) <= set(on_disk):
+        raise AssertionError(sorted(set(tracked) - set(on_disk)))
+
+
 def test_a_supersedes_pointer_runs_from_a_live_successor_to_a_superseded_row() -> None:
     mod = load()
     old = dict(mod.rows()[0], id="A5-901", status="superseded", supersedes="")
