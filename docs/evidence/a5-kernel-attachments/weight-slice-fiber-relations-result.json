@@ -1,0 +1,1837 @@
+{
+  "basepoints": [
+    {
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "complement_joint_weights": [
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "kernel_joint_weights": [
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "normal_joint_weights": [
+        [
+          0,
+          -1,
+          -2
+        ],
+        [
+          0,
+          0,
+          -2
+        ],
+        [
+          1,
+          -1,
+          -1
+        ],
+        [
+          1,
+          0,
+          -1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          -1
+        ],
+        [
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2
+        ],
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "orbit": "N+",
+      "tangent_joint_weights": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          -1,
+          1
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          2,
+          1,
+          2
+        ]
+      ],
+      "torus_generators": [
+        "identity minus the lift of derivation 7",
+        "lift of derivation 13 minus the lift of derivation 7",
+        "boost minus (+1 at N+, -1 at N-) times the lift of derivation 7"
+      ]
+    },
+    {
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "complement_joint_weights": [
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "kernel_joint_weights": [
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          -1
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          -1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "normal_joint_weights": [
+        [
+          0,
+          -1,
+          2
+        ],
+        [
+          0,
+          0,
+          2
+        ],
+        [
+          1,
+          -1,
+          1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          1,
+          1,
+          1
+        ],
+        [
+          2,
+          0,
+          -2
+        ],
+        [
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          1,
+          0
+        ]
+      ],
+      "orbit": "N-",
+      "tangent_joint_weights": [
+        [
+          0,
+          -1,
+          0
+        ],
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          -1,
+          -1
+        ],
+        [
+          1,
+          0,
+          -1
+        ],
+        [
+          1,
+          1,
+          -1
+        ],
+        [
+          2,
+          1,
+          -2
+        ]
+      ],
+      "torus_generators": [
+        "identity minus the lift of derivation 7",
+        "lift of derivation 13 minus the lift of derivation 7",
+        "boost minus (+1 at N+, -1 at N-) times the lift of derivation 7"
+      ]
+    }
+  ],
+  "cells": [
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 6,
+          "multiplicity": 2,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 24,
+      "generator_weights": [
+        5,
+        4,
+        5,
+        6,
+        7,
+        5,
+        8,
+        6,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        6,
+        4,
+        5,
+        6,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 6,
+        "generators": 3,
+        "multiplicity": 2
+      },
+      "germ_before": {
+        "dimension": 6,
+        "generators": 3,
+        "multiplicity": 2
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": {
+        "affine_dimension": 6,
+        "first_numerator": [
+          1,
+          0,
+          -144,
+          1456,
+          -7569,
+          25092,
+          -56304,
+          83232,
+          -62118,
+          -45968,
+          222768,
+          -381888,
+          432718,
+          -358632,
+          222768,
+          -102816,
+          33813,
+          -7056,
+          544,
+          144,
+          -45,
+          4
+        ],
+        "minimal_primes": [
+          [
+            6,
+            20,
+            9
+          ],
+          [
+            6,
+            30,
+            4
+          ]
+        ],
+        "multiplicity": 50,
+        "relation_count": 144,
+        "saturated": true
+      },
+      "i_root": null,
+      "incidence": "W8->N+",
+      "orbit": "N+",
+      "pfaffian_max_weight": 10,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 123,
+      "product_count": 300,
+      "product_max_weight": 16,
+      "relation_count": 144,
+      "relation_lines": 144,
+      "relations_sha256": "10aabdd3a560da6672d3e438a3a4c2aef10fbed007b034afff8c592e85beb8d1",
+      "retained_fiber": {
+        "degree": 50,
+        "fiber": "W8",
+        "generators": 24,
+        "projective_dimension": 5,
+        "quadrics": 144
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        18,
+        27,
+        28,
+        30,
+        31,
+        33,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        102,
+        104,
+        106,
+        109,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "w8"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 5,
+          "multiplicity": 10,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 21,
+      "generator_weights": [
+        5,
+        4,
+        7,
+        5,
+        6,
+        5,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        4,
+        4,
+        5,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 5,
+        "generators": 13,
+        "multiplicity": 10
+      },
+      "germ_before": {
+        "dimension": 5,
+        "generators": 13,
+        "multiplicity": 10
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": {
+        "affine_dimension": 5,
+        "first_numerator": [
+          1,
+          0,
+          -148,
+          1562,
+          -8745,
+          32753,
+          -89936,
+          190224,
+          -319606,
+          435500,
+          -488280,
+          454948,
+          -354354,
+          231126,
+          -125840,
+          56672,
+          -20763,
+          6028,
+          -1332,
+          210,
+          -21,
+          1
+        ],
+        "minimal_primes": [
+          [
+            4,
+            4,
+            14
+          ],
+          [
+            5,
+            11,
+            9
+          ]
+        ],
+        "multiplicity": 11,
+        "relation_count": 148,
+        "saturated": true
+      },
+      "i_root": null,
+      "incidence": "E8bar->N+",
+      "orbit": "N+",
+      "pfaffian_max_weight": 10,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 111,
+      "product_count": 231,
+      "product_max_weight": 14,
+      "relation_count": 148,
+      "relation_lines": 148,
+      "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+      "retained_fiber": {
+        "degree": 11,
+        "fiber": "E8bar into N",
+        "generators": 21,
+        "projective_dimension": 4,
+        "quadrics": 148
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        16,
+        18,
+        20,
+        30,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        86,
+        87,
+        89,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "e8"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 5,
+          "multiplicity": 2,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 17,
+      "generator_weights": [
+        5,
+        4,
+        5,
+        6,
+        5,
+        6,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        6,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 5,
+        "generators": 4,
+        "multiplicity": 2
+      },
+      "germ_before": {
+        "dimension": 5,
+        "generators": 4,
+        "multiplicity": 2
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": null,
+      "i_root": null,
+      "incidence": "Iso->N+",
+      "orbit": "N+",
+      "pfaffian_max_weight": 8,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 84,
+      "product_count": 153,
+      "product_max_weight": 12,
+      "relation_count": 68,
+      "relation_lines": 68,
+      "relations_sha256": "f4d0152eabd91b56306e683641831f8ca69c86cecaa1350744afe97e85be81ee",
+      "retained_fiber": {
+        "degree": 23,
+        "fiber": "Iso",
+        "generators": 17,
+        "projective_dimension": 4,
+        "quadrics": 68
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        18,
+        27,
+        30,
+        33,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        109,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "iso"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 4,
+          "multiplicity": 4,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 15,
+      "generator_weights": [
+        5,
+        4,
+        7,
+        5,
+        6,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 4,
+        "generators": 14,
+        "multiplicity": 4
+      },
+      "germ_before": {
+        "dimension": 4,
+        "generators": 15,
+        "multiplicity": 4
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": null,
+      "i_root": null,
+      "incidence": "X+->N+",
+      "orbit": "N+",
+      "pfaffian_max_weight": 9,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 99,
+      "product_count": 120,
+      "product_max_weight": 14,
+      "relation_count": 69,
+      "relation_lines": 69,
+      "relations_sha256": "6a41e14d70d75c4a72e768630ef77d9f1ec9e6582b626fa05e759cd3a130011d",
+      "retained_fiber": {
+        "degree": 12,
+        "fiber": "X same sign",
+        "generators": 15,
+        "projective_dimension": 3,
+        "quadrics": 69
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        16,
+        18,
+        20,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        123,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "xp"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 4,
+          "multiplicity": 1,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 3,
+      "generator_weights": [
+        3,
+        4,
+        3
+      ],
+      "germ_after": {
+        "dimension": 4,
+        "generators": 5,
+        "multiplicity": 1
+      },
+      "germ_before": {
+        "dimension": 4,
+        "generators": 9,
+        "multiplicity": 1
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": null,
+      "i_root": null,
+      "incidence": "X-->N+",
+      "orbit": "N+",
+      "pfaffian_max_weight": 7,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 56,
+      "product_count": 6,
+      "product_max_weight": 8,
+      "relation_count": 0,
+      "relation_lines": 0,
+      "relations_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "retained_fiber": {
+        "degree": 1,
+        "fiber": "X opposite sign",
+        "generators": 3,
+        "projective_dimension": 2,
+        "quadrics": 0
+      },
+      "selected_pfaffians_one_based": [
+        49,
+        51,
+        123
+      ],
+      "singular_version": "4.4.1",
+      "source": "xm"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 6,
+          "multiplicity": 2,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 24,
+      "generator_weights": [
+        5,
+        4,
+        5,
+        6,
+        7,
+        5,
+        8,
+        6,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        6,
+        4,
+        5,
+        6,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 6,
+        "generators": 3,
+        "multiplicity": 2
+      },
+      "germ_before": {
+        "dimension": 6,
+        "generators": 3,
+        "multiplicity": 2
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": {
+        "affine_dimension": 6,
+        "first_numerator": [
+          1,
+          0,
+          -144,
+          1456,
+          -7569,
+          25092,
+          -56304,
+          83232,
+          -62118,
+          -45968,
+          222768,
+          -381888,
+          432718,
+          -358632,
+          222768,
+          -102816,
+          33813,
+          -7056,
+          544,
+          144,
+          -45,
+          4
+        ],
+        "minimal_primes": [
+          [
+            6,
+            20,
+            9
+          ],
+          [
+            6,
+            30,
+            4
+          ]
+        ],
+        "multiplicity": 50,
+        "relation_count": 144,
+        "saturated": true
+      },
+      "i_root": null,
+      "incidence": "W8->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 10,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 123,
+      "product_count": 300,
+      "product_max_weight": 16,
+      "relation_count": 144,
+      "relation_lines": 144,
+      "relations_sha256": "10964885cae3177d8a8585e05b263269193199b7a37a5a9679bc76e843523b1d",
+      "retained_fiber": {
+        "degree": 50,
+        "fiber": "W8",
+        "generators": 24,
+        "projective_dimension": 5,
+        "quadrics": 144
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        18,
+        27,
+        28,
+        30,
+        31,
+        33,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        102,
+        104,
+        106,
+        109,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "w8"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 5,
+          "multiplicity": 10,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 21,
+      "generator_weights": [
+        5,
+        4,
+        7,
+        5,
+        6,
+        5,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        4,
+        4,
+        5,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 5,
+        "generators": 13,
+        "multiplicity": 10
+      },
+      "germ_before": {
+        "dimension": 5,
+        "generators": 13,
+        "multiplicity": 10
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": {
+        "affine_dimension": 5,
+        "first_numerator": [
+          1,
+          0,
+          -148,
+          1562,
+          -8745,
+          32753,
+          -89936,
+          190224,
+          -319606,
+          435500,
+          -488280,
+          454948,
+          -354354,
+          231126,
+          -125840,
+          56672,
+          -20763,
+          6028,
+          -1332,
+          210,
+          -21,
+          1
+        ],
+        "minimal_primes": [
+          [
+            4,
+            4,
+            14
+          ],
+          [
+            5,
+            11,
+            9
+          ]
+        ],
+        "multiplicity": 11,
+        "relation_count": 148,
+        "saturated": true
+      },
+      "i_root": null,
+      "incidence": "E8bar->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 10,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 111,
+      "product_count": 231,
+      "product_max_weight": 14,
+      "relation_count": 148,
+      "relation_lines": 148,
+      "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+      "retained_fiber": {
+        "degree": 11,
+        "fiber": "E8bar into N",
+        "generators": 21,
+        "projective_dimension": 4,
+        "quadrics": 148
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        16,
+        18,
+        20,
+        30,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        86,
+        87,
+        89,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "e8"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 5,
+          "multiplicity": 2,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 17,
+      "generator_weights": [
+        5,
+        4,
+        5,
+        6,
+        5,
+        6,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        6,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 5,
+        "generators": 4,
+        "multiplicity": 2
+      },
+      "germ_before": {
+        "dimension": 5,
+        "generators": 4,
+        "multiplicity": 2
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": null,
+      "i_root": null,
+      "incidence": "Iso->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 8,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 84,
+      "product_count": 153,
+      "product_max_weight": 12,
+      "relation_count": 68,
+      "relation_lines": 68,
+      "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+      "retained_fiber": {
+        "degree": 23,
+        "fiber": "Iso",
+        "generators": 17,
+        "projective_dimension": 4,
+        "quadrics": 68
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        18,
+        27,
+        30,
+        33,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        109,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "iso"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 4,
+          "multiplicity": 1,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 3,
+      "generator_weights": [
+        3,
+        4,
+        3
+      ],
+      "germ_after": {
+        "dimension": 4,
+        "generators": 5,
+        "multiplicity": 1
+      },
+      "germ_before": {
+        "dimension": 4,
+        "generators": 9,
+        "multiplicity": 1
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": null,
+      "i_root": null,
+      "incidence": "X+->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 7,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 56,
+      "product_count": 6,
+      "product_max_weight": 8,
+      "relation_count": 0,
+      "relation_lines": 0,
+      "relations_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "retained_fiber": {
+        "degree": 1,
+        "fiber": "X opposite sign",
+        "generators": 3,
+        "projective_dimension": 2,
+        "quadrics": 0
+      },
+      "selected_pfaffians_one_based": [
+        49,
+        51,
+        123
+      ],
+      "singular_version": "4.4.1",
+      "source": "xp"
+    },
+    {
+      "characteristic": 0,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 4,
+          "multiplicity": 5,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "Q(i)",
+      "generator_count": 15,
+      "generator_weights": [
+        5,
+        4,
+        7,
+        5,
+        6,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 4,
+        "generators": 14,
+        "multiplicity": 5
+      },
+      "germ_before": {
+        "dimension": 4,
+        "generators": 15,
+        "multiplicity": 5
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": null,
+      "i_root": null,
+      "incidence": "X-->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 9,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 99,
+      "product_count": 120,
+      "product_max_weight": 14,
+      "relation_count": 69,
+      "relation_lines": 69,
+      "relations_sha256": "55b9928144fd01d6de2b4438418e1ea8c765e8658016c3524eacc616298525de",
+      "retained_fiber": {
+        "degree": 12,
+        "fiber": "X same sign",
+        "generators": 15,
+        "projective_dimension": 3,
+        "quadrics": 69
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        16,
+        18,
+        20,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        123,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "xm"
+    },
+    {
+      "characteristic": 32009,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 6,
+          "multiplicity": 2,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "GF(32009), i = 10754",
+      "generator_count": 24,
+      "generator_weights": [
+        5,
+        4,
+        5,
+        6,
+        7,
+        5,
+        8,
+        6,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        6,
+        4,
+        5,
+        6,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 6,
+        "generators": 3,
+        "multiplicity": 2
+      },
+      "germ_before": {
+        "dimension": 6,
+        "generators": 3,
+        "multiplicity": 2
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": {
+        "affine_dimension": 6,
+        "first_numerator": [
+          1,
+          0,
+          -144,
+          1456,
+          -7569,
+          25092,
+          -56304,
+          83232,
+          -62118,
+          -45968,
+          222768,
+          -381888,
+          432718,
+          -358632,
+          222768,
+          -102816,
+          33813,
+          -7056,
+          544,
+          144,
+          -45,
+          4
+        ],
+        "minimal_primes": [
+          [
+            6,
+            20,
+            9
+          ],
+          [
+            6,
+            30,
+            4
+          ]
+        ],
+        "multiplicity": 50,
+        "relation_count": 144,
+        "saturated": true
+      },
+      "i_root": 10754,
+      "incidence": "W8->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 10,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 123,
+      "product_count": 300,
+      "product_max_weight": 16,
+      "relation_count": 144,
+      "relation_lines": 144,
+      "relations_sha256": "9c1cb03630f7f262805f28a746cc3d1c22abac6f7091c33f1fa22db2c6cdd429",
+      "retained_fiber": {
+        "degree": 50,
+        "fiber": "W8",
+        "generators": 24,
+        "projective_dimension": 5,
+        "quadrics": 144
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        18,
+        27,
+        28,
+        30,
+        31,
+        33,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        102,
+        104,
+        106,
+        109,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "w8"
+    },
+    {
+      "characteristic": 32009,
+      "component_step": true,
+      "components": [
+        {
+          "dimension": 5,
+          "multiplicity": 10,
+          "through_origin": true
+        }
+      ],
+      "degree": 2,
+      "field": "GF(32009), i = 10754",
+      "generator_count": 21,
+      "generator_weights": [
+        5,
+        4,
+        7,
+        5,
+        6,
+        5,
+        7,
+        5,
+        3,
+        4,
+        4,
+        5,
+        5,
+        3,
+        4,
+        4,
+        5,
+        3,
+        3,
+        4,
+        5
+      ],
+      "germ_after": {
+        "dimension": 5,
+        "generators": 13,
+        "multiplicity": 10
+      },
+      "germ_before": {
+        "dimension": 5,
+        "generators": 13,
+        "multiplicity": 10
+      },
+      "germ_inhomogeneous_generators": 0,
+      "grading_weights": [
+        1,
+        0,
+        3,
+        2,
+        2,
+        1,
+        4,
+        4,
+        3
+      ],
+      "hilbert": {
+        "affine_dimension": 5,
+        "first_numerator": [
+          1,
+          0,
+          -148,
+          1562,
+          -8745,
+          32753,
+          -89936,
+          190224,
+          -319606,
+          435500,
+          -488280,
+          454948,
+          -354354,
+          231126,
+          -125840,
+          56672,
+          -20763,
+          6028,
+          -1332,
+          210,
+          -21,
+          1
+        ],
+        "minimal_primes": [
+          [
+            4,
+            4,
+            14
+          ],
+          [
+            5,
+            11,
+            9
+          ]
+        ],
+        "multiplicity": 11,
+        "relation_count": 148,
+        "saturated": true
+      },
+      "i_root": 10754,
+      "incidence": "E8bar->N-",
+      "orbit": "N-",
+      "pfaffian_max_weight": 10,
+      "pfaffians_inhomogeneous": [],
+      "pfaffians_nonzero": 111,
+      "product_count": 231,
+      "product_max_weight": 14,
+      "relation_count": 148,
+      "relation_lines": 148,
+      "relations_sha256": "42b1d8ff03d4c505597b39fe303c52ac45fcdc4d35bbf01d0b8e7e23a97367d0",
+      "retained_fiber": {
+        "degree": 11,
+        "fiber": "E8bar into N",
+        "generators": 21,
+        "projective_dimension": 4,
+        "quadrics": 148
+      },
+      "selected_pfaffians_one_based": [
+        12,
+        15,
+        16,
+        18,
+        20,
+        30,
+        35,
+        47,
+        49,
+        51,
+        52,
+        54,
+        55,
+        84,
+        86,
+        87,
+        89,
+        123,
+        124,
+        125,
+        126
+      ],
+      "singular_version": "4.4.1",
+      "source": "e8"
+    }
+  ],
+  "execution_contract": {
+    "degree": 2,
+    "modular_prime": 32009,
+    "modular_root_of_minus_one": 10754,
+    "random_seed": "none: the scripts draw no random value and Singular is started without --random",
+    "singular_address_space_bytes": 8589934592,
+    "singular_options": [
+      "-q",
+      "--no-warn",
+      "--no-rc"
+    ],
+    "singular_timeout_seconds": 3600
+  },
+  "falsifier": "A grading under which a Pfaffian or a germ generator is inhomogeneous; a generator or relation count that differs from the retained value of the same incidence; a Hilbert dimension, multiplicity or saturation outside the stated values, or a first numerator that differs between Q(i) and the modular cell; a Q(i) relation space whose reduction differs in rank from the modular one; or a control that the checker accepts.",
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/composed_limit_sections.py": "c12c919f4576b5c39dc88b318fca2d33153d429bc85ac1b0f815b2311a32716d",
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
+    "docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json": "2c7dd00477a0af20c1d0f04b96f86ba96b3782499c60a19532ad655d33b1d8f1",
+    "docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json": "52079d22d48df289d04dcdbba8293569eeeaa14c000af502ba64f9f23472d721",
+    "docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py": "f4c2274ed3d739f067a23bd5fe7e54b015c60be1f0c2b938803fa03a4ccb3f0d",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "mutation_controls": [
+    {
+      "cell": "X+->N-",
+      "detected": true,
+      "generator_count": 12,
+      "input_change": "keep the germ ideal as given instead of the intersection of its minimal primes through the origin",
+      "name": "component_step_dropped",
+      "relation_count": 72
+    },
+    {
+      "cell": "W8->N-",
+      "detected": true,
+      "inhomogeneous_germ_generators": 1,
+      "inhomogeneous_pfaffians": 59,
+      "input_change": "exchange the weights of s1 and s3 in the torus grading",
+      "name": "wrong_weight_vector"
+    }
+  ],
+  "pass": true,
+  "reduction_comparison": [
+    {
+      "i_root": 10754,
+      "joint_rank": 144,
+      "modular_rank": 144,
+      "modular_relations": 144,
+      "orbit": "N-",
+      "prime": 32009,
+      "product_columns": 256,
+      "reduced_rank": 144,
+      "reduced_relations": 144,
+      "same_selected_pfaffians": true,
+      "source": "w8",
+      "spaces_equal": true
+    },
+    {
+      "i_root": 10754,
+      "joint_rank": 148,
+      "modular_rank": 148,
+      "modular_relations": 148,
+      "orbit": "N-",
+      "prime": 32009,
+      "product_columns": 207,
+      "reduced_rank": 148,
+      "reduced_relations": 148,
+      "same_selected_pfaffians": true,
+      "source": "e8",
+      "spaces_equal": true
+    }
+  ],
+  "schema": "a5-kernel-attachments-weight-slice-fiber-relations-v1",
+  "scope": {
+    "claim_boundary": "The relations are the degree-2 forms q(G) in J + m I^2 on the slice. The record decides the fiber cone in no other degree and retains the relation lines only as digests. The reduction comparison and the Hilbert data cover W8 and E8bar at N- over Q(i) and modulo 32009.",
+    "statement": "At the retained basepoints of N+ and N- the nine slice coordinates carry a torus grading under which the 126 principal 4-Pfaffians of the Schur form are weight-homogeneous. For each of W8, E8bar, Iso, X+ and X- the germ ideal through the origin, the Nakayama generators among the Pfaffians and the degree-2 relations of the fiber cone follow from standard bases truncated at a fixed weight, over Q(i) at both basepoints and modulo 32009 at N- for W8 and E8bar."
+  },
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00",
+    "singular_version": "4.4.1",
+    "sympy": "1.14.0"
+  }
+}

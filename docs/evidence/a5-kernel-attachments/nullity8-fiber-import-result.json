@@ -1,0 +1,1988 @@
+{
+  "falsifier": "A regenerated header that differs from the retained file; a selected coordinate set that differs between cells or from the nullity-16 record; a Hilbert or Cohen-Macaulay row that differs from the declared fiber; a deciding ledger row whose status has changed; or a header that the conjugate root reproduces.",
+  "fibers": [
+    {
+      "characteristic_zero": "decided: F = Q(i)[y1, y2, y3]",
+      "characteristic_zero_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-270",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "cohen_macaulay": true,
+      "degree": 1,
+      "fiber": "X opposite sign",
+      "fiber_cone_equals_quotient_by_quadrics_in": "every degree",
+      "generators": 3,
+      "geometry_rows": [],
+      "hilbert": {
+        "cells": [],
+        "cohen_macaulay_rows": [],
+        "cohen_macaulay_rows_match": true,
+        "hilbert_function_degrees_1_to_7": [],
+        "rows_match_declared_values": true,
+        "top_dimensional_component_degrees_sum_to_the_degree": true
+      },
+      "incidences": [
+        "X+->N-",
+        "X-->N+"
+      ],
+      "modular_primes": [
+        32009,
+        32029
+      ],
+      "modular_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-001",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "open_items": [],
+      "projective_dimension": 2,
+      "quadrics": 0,
+      "reduced_components_projective_dimension_degree": [
+        [
+          2,
+          1
+        ]
+      ],
+      "sign_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-023",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "sources_agree": true
+    },
+    {
+      "characteristic_zero": "decided: F = Q(i)[y]/L with L of 69 quadrics reducing to K2",
+      "characteristic_zero_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-305",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-306",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-314",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "cohen_macaulay": false,
+      "degree": 12,
+      "fiber": "X same sign",
+      "fiber_cone_equals_quotient_by_quadrics_in": "every degree",
+      "generators": 15,
+      "geometry_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-022",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-303",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "survives",
+          "id": "A5-297",
+          "ledger_status": "survives",
+          "match": true
+        }
+      ],
+      "hilbert": {
+        "cells": [
+          [
+            "X+",
+            32029,
+            "85fdced79dfd830c0fad13da9c71fcbbd0b197418462c299f375a59952b4f8eb"
+          ],
+          [
+            "X-",
+            32009,
+            "596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245"
+          ],
+          [
+            "X-",
+            32029,
+            "1fea3714381f564a6a628c21efbce504311a98e10ca8ff7d9ed284357fed8903"
+          ]
+        ],
+        "cohen_macaulay_rows": [
+          [
+            "X+",
+            32029,
+            false
+          ],
+          [
+            "X-",
+            32009,
+            false
+          ],
+          [
+            "X-",
+            32029,
+            false
+          ]
+        ],
+        "cohen_macaulay_rows_match": true,
+        "hilbert_function_degrees_1_to_7": [
+          [
+            15,
+            51,
+            122,
+            240,
+            417,
+            665,
+            996
+          ]
+        ],
+        "rows_match_declared_values": true,
+        "top_dimensional_component_degrees_sum_to_the_degree": true
+      },
+      "incidences": [
+        "X+->N+",
+        "X-->N-"
+      ],
+      "modular_primes": [
+        32009,
+        32029
+      ],
+      "modular_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-304",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "open_items": [
+        "no retained K2 of X+->N+ at 32009; the sign map carries X-->N- there",
+        "irreducibility and degree 12 of the reduced fiber are proved at 32009 for X-->N- (A5-022) and survive elsewhere (A5-297)"
+      ],
+      "projective_dimension": 3,
+      "quadrics": 69,
+      "reduced_components_projective_dimension_degree": [
+        [
+          3,
+          12
+        ]
+      ],
+      "sign_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-013",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "sources_agree": true
+    },
+    {
+      "characteristic_zero": "open: dimension at least 5 and the 68 quadrics over Q(i); equality of the fiber with V(K2) undecided",
+      "characteristic_zero_rows": [
+        {
+          "declared_status": "survives",
+          "id": "A5-293",
+          "ledger_status": "survives",
+          "match": true
+        },
+        {
+          "declared_status": "survives",
+          "id": "A5-294",
+          "ledger_status": "survives",
+          "match": true
+        }
+      ],
+      "cohen_macaulay": true,
+      "degree": 23,
+      "fiber": "Iso",
+      "fiber_cone_equals_quotient_by_quadrics_in": "every degree",
+      "generators": 17,
+      "geometry_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-058",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-059",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-060",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "hilbert": {
+        "cells": [
+          [
+            "Iso",
+            32009,
+            "53852d5c62b4a7333929abdef66a26db3b9f02f4dc1fd412e9a6e719418b38c5"
+          ],
+          [
+            "Iso",
+            32009,
+            "e5d2792f13332ffaabaaba7970f239b64bcf88325f5691e693555ade60cf0bfc"
+          ],
+          [
+            "Iso",
+            32029,
+            "fd3cd56049cacb8250e00c15228907f440322de2a53b2d14dc86cc534c910fee"
+          ]
+        ],
+        "cohen_macaulay_rows": [
+          [
+            "Iso",
+            32009,
+            true
+          ],
+          [
+            "Iso",
+            32009,
+            true
+          ],
+          [
+            "Iso",
+            32029,
+            true
+          ]
+        ],
+        "cohen_macaulay_rows_match": true,
+        "hilbert_function_degrees_1_to_7": [
+          [
+            17,
+            85,
+            265,
+            640,
+            1316,
+            2422,
+            4110
+          ]
+        ],
+        "rows_match_declared_values": true,
+        "top_dimensional_component_degrees_sum_to_the_degree": true
+      },
+      "incidences": [
+        "Iso->N+",
+        "Iso->N-"
+      ],
+      "modular_primes": [
+        32009,
+        32029
+      ],
+      "modular_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-007",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-067",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "open_items": [
+        "the fiber cone over Q(i) in every degree"
+      ],
+      "projective_dimension": 4,
+      "quadrics": 68,
+      "reduced_components_projective_dimension_degree": [
+        [
+          4,
+          23
+        ]
+      ],
+      "sign_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-013",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "sources_agree": true
+    },
+    {
+      "characteristic_zero": "open: dimension at least 6; the quadrics over Q(i) are not computed",
+      "characteristic_zero_rows": [
+        {
+          "declared_status": "survives",
+          "id": "A5-293",
+          "ledger_status": "survives",
+          "match": true
+        },
+        {
+          "declared_status": "survives",
+          "id": "A5-277",
+          "ledger_status": "survives",
+          "match": true
+        }
+      ],
+      "cohen_macaulay": true,
+      "degree": 50,
+      "fiber": "W8",
+      "fiber_cone_equals_quotient_by_quadrics_in": "every degree",
+      "generators": 24,
+      "geometry_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-061",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-062",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "hilbert": {
+        "cells": [
+          [
+            "W8 -> N-",
+            32009,
+            "31feaac8cace8050dfbd42ead4cdc3fb669382d0253f687429d2f1583f2e8df2"
+          ],
+          [
+            "W8 -> N-",
+            32029,
+            "ed601263b5da77273c0f7751d03a8a5e4ae6219c1e75da8576bb1155598fd40c"
+          ]
+        ],
+        "cohen_macaulay_rows": [
+          [
+            "W8 -> N-",
+            32009,
+            true
+          ],
+          [
+            "W8 -> N-",
+            32029,
+            true
+          ]
+        ],
+        "cohen_macaulay_rows_match": true,
+        "hilbert_function_degrees_1_to_7": [
+          [
+            24,
+            156,
+            600,
+            1725,
+            4116,
+            8624,
+            16416
+          ]
+        ],
+        "rows_match_declared_values": true,
+        "top_dimensional_component_degrees_sum_to_the_degree": true
+      },
+      "incidences": [
+        "W8->N+",
+        "W8->N-"
+      ],
+      "modular_primes": [
+        32009,
+        32029
+      ],
+      "modular_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-008",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-066",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "open_items": [
+        "the fiber cone over Q(i), starting with its quadrics"
+      ],
+      "projective_dimension": 5,
+      "quadrics": 144,
+      "reduced_components_projective_dimension_degree": [
+        [
+          5,
+          20
+        ],
+        [
+          5,
+          30
+        ]
+      ],
+      "sign_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-013",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-025",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "sources_agree": true
+    },
+    {
+      "characteristic_zero": "open: h_d is bounded below by the modular values for d at most 7",
+      "characteristic_zero_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-346",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "cohen_macaulay": false,
+      "degree": 11,
+      "fiber": "E8bar into N",
+      "fiber_cone_equals_quotient_by_quadrics_in": "degrees 1 to 7",
+      "generators": 21,
+      "geometry_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-252",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-312",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "hilbert": {
+        "cells": [
+          [
+            "E8-bar -> N+",
+            32009,
+            "bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652"
+          ],
+          [
+            "E8-bar -> N+",
+            32029,
+            "3c2294f7dee43a1471cec20a7af5c259741b50a02216bbe92074d127dc34694a"
+          ],
+          [
+            "E8-bar -> N-",
+            32009,
+            "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6"
+          ],
+          [
+            "E8-bar -> N-",
+            32029,
+            "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b"
+          ]
+        ],
+        "cohen_macaulay_rows": [
+          [
+            "E8-bar -> N+",
+            32009,
+            false
+          ],
+          [
+            "E8-bar -> N+",
+            32029,
+            false
+          ],
+          [
+            "E8-bar -> N-",
+            32009,
+            false
+          ],
+          [
+            "E8-bar -> N-",
+            32029,
+            false
+          ]
+        ],
+        "cohen_macaulay_rows_match": true,
+        "hilbert_function_degrees_1_to_7": [
+          [
+            21,
+            83,
+            225,
+            495,
+            952,
+            1666,
+            2718
+          ]
+        ],
+        "rows_match_declared_values": true,
+        "top_dimensional_component_degrees_sum_to_the_degree": true
+      },
+      "incidences": [
+        "E8bar->N+",
+        "E8bar->N-"
+      ],
+      "modular_primes": [
+        32009,
+        32029
+      ],
+      "modular_rows": [
+        {
+          "declared_status": "survives",
+          "id": "A5-009",
+          "ledger_status": "survives",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-335",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-339",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "open_items": [
+        "a generator of the defining ideal in degree 8 or above",
+        "the 148 quadrics over Q(i)"
+      ],
+      "projective_dimension": 4,
+      "quadrics": 148,
+      "reduced_components_projective_dimension_degree": [
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          11
+        ]
+      ],
+      "sign_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-013",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-326",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "sources_agree": true
+    },
+    {
+      "characteristic_zero": "open: the 21 quadrics over Q(i) reduce to K2 at 32029",
+      "characteristic_zero_rows": [
+        {
+          "declared_status": "survives",
+          "id": "A5-315",
+          "ledger_status": "survives",
+          "match": true
+        }
+      ],
+      "cohen_macaulay": true,
+      "degree": 7,
+      "fiber": "E8bar into VB",
+      "fiber_cone_equals_quotient_by_quadrics_in": "every degree",
+      "generators": 10,
+      "geometry_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-017",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-010",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "hilbert": {
+        "cells": [
+          [
+            "E8-bar -> VB",
+            32009,
+            "977af3c02824113271dc94ae36d5c2c862af6d36a46bf5da23f476a30b39d0ed"
+          ],
+          [
+            "E8-bar -> VB",
+            32029,
+            "e65cbd06cbcef44195409f776541d28e0f7a39f50347eea54b21a15f7c5a95ac"
+          ]
+        ],
+        "cohen_macaulay_rows": [
+          [
+            "E8-bar -> VB",
+            32009,
+            true
+          ],
+          [
+            "E8-bar -> VB",
+            32029,
+            true
+          ]
+        ],
+        "cohen_macaulay_rows_match": true,
+        "hilbert_function_degrees_1_to_7": [
+          [
+            10,
+            34,
+            80,
+            155,
+            266,
+            420,
+            624
+          ]
+        ],
+        "rows_match_declared_values": true,
+        "top_dimensional_component_degrees_sum_to_the_degree": true
+      },
+      "incidences": [
+        "E8bar->VB"
+      ],
+      "modular_primes": [
+        32009,
+        32029
+      ],
+      "modular_rows": [
+        {
+          "declared_status": "proved",
+          "id": "A5-005",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-015",
+          "ledger_status": "proved",
+          "match": true
+        },
+        {
+          "declared_status": "proved",
+          "id": "A5-016",
+          "ledger_status": "proved",
+          "match": true
+        }
+      ],
+      "open_items": [
+        "the fiber cone over Q(i) in every degree"
+      ],
+      "projective_dimension": 3,
+      "quadrics": 21,
+      "reduced_components_projective_dimension_degree": [
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "sign_rows": [],
+      "sources_agree": true
+    }
+  ],
+  "incidences": [
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 15,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xp-np.sing",
+          "header_sha256": "bed98a273d55f0e67eb61ff69e626079606d9c519855f11673b6ce29c8019a96",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "bed98a273d55f0e67eb61ff69e626079606d9c519855f11673b6ce29c8019a96",
+          "selected_indices_one_based": [
+            67,
+            68,
+            60,
+            61,
+            18,
+            65,
+            96,
+            98,
+            111,
+            78,
+            77,
+            76,
+            79,
+            90,
+            89
+          ]
+        },
+        {
+          "generator_count": 15,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/xp-np.sing",
+          "header_sha256": "af8b2723b1d3e46742d5bf3079fa5158fb10acb82f211b3000bc63360cdb9f54",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "af8b2723b1d3e46742d5bf3079fa5158fb10acb82f211b3000bc63360cdb9f54",
+          "selected_indices_one_based": [
+            67,
+            68,
+            60,
+            61,
+            18,
+            65,
+            96,
+            98,
+            111,
+            78,
+            77,
+            76,
+            79,
+            90,
+            89
+          ]
+        },
+        {
+          "generator_count": 15,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xp-np.sing",
+          "header_sha256": "5e7ff045b8ad75325fb42ce6905db01b81749c44c91fd94e2c55c88ea5f5653f",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "5e7ff045b8ad75325fb42ce6905db01b81749c44c91fd94e2c55c88ea5f5653f",
+          "selected_indices_one_based": [
+            67,
+            68,
+            60,
+            61,
+            18,
+            65,
+            96,
+            98,
+            111,
+            78,
+            77,
+            76,
+            79,
+            90,
+            89
+          ]
+        }
+      ],
+      "fiber": "X same sign",
+      "generator_count_matches_fiber": true,
+      "incidence": "X+->N+",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          67,
+          68,
+          60,
+          61,
+          18,
+          65,
+          96,
+          98,
+          111,
+          78,
+          77,
+          76,
+          79,
+          90,
+          89
+        ],
+        "embedding_rank": 15,
+        "nakayama_generator_count": 15,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "xp-np"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 15,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-nm.sing",
+          "header_sha256": "f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6",
+          "selected_indices_one_based": [
+            67,
+            68,
+            60,
+            61,
+            18,
+            65,
+            96,
+            98,
+            111,
+            78,
+            77,
+            76,
+            79,
+            90,
+            89
+          ]
+        },
+        {
+          "generator_count": 15,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/xm-nm.sing",
+          "header_sha256": "90d89f75a60bc9755d634c17dfd3dbe18dcd51a7744f8ef2be2ffa27a23672b7",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "90d89f75a60bc9755d634c17dfd3dbe18dcd51a7744f8ef2be2ffa27a23672b7",
+          "selected_indices_one_based": [
+            67,
+            68,
+            60,
+            61,
+            18,
+            65,
+            96,
+            98,
+            111,
+            78,
+            77,
+            76,
+            79,
+            90,
+            89
+          ]
+        },
+        {
+          "generator_count": 15,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xm-nm.sing",
+          "header_sha256": "98de6225b05399df9bd3e92ac87b7d7e94ecf3b129c8e3bba132b0ce8ea0dd3b",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "98de6225b05399df9bd3e92ac87b7d7e94ecf3b129c8e3bba132b0ce8ea0dd3b",
+          "selected_indices_one_based": [
+            67,
+            68,
+            60,
+            61,
+            18,
+            65,
+            96,
+            98,
+            111,
+            78,
+            77,
+            76,
+            79,
+            90,
+            89
+          ]
+        }
+      ],
+      "fiber": "X same sign",
+      "generator_count_matches_fiber": true,
+      "incidence": "X-->N-",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          67,
+          68,
+          60,
+          61,
+          18,
+          65,
+          96,
+          98,
+          111,
+          78,
+          77,
+          76,
+          79,
+          90,
+          89
+        ],
+        "embedding_rank": 15,
+        "nakayama_generator_count": 15,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "xm-nm"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 3,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xp-nm.sing",
+          "header_sha256": "54d3166188cb56a45e2b0d4d0be6da73bbf757de0d6dedc6586d396e201cf280",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "54d3166188cb56a45e2b0d4d0be6da73bbf757de0d6dedc6586d396e201cf280",
+          "selected_indices_one_based": [
+            68,
+            96,
+            78
+          ]
+        },
+        {
+          "generator_count": 3,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xp-nm.sing",
+          "header_sha256": "3d383939164ec3d8e4173662ca75a3c2a20b8f654e859c27157eece1947d7e28",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "3d383939164ec3d8e4173662ca75a3c2a20b8f654e859c27157eece1947d7e28",
+          "selected_indices_one_based": [
+            68,
+            96,
+            78
+          ]
+        }
+      ],
+      "fiber": "X opposite sign",
+      "generator_count_matches_fiber": true,
+      "incidence": "X+->N-",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          68,
+          96,
+          78
+        ],
+        "embedding_rank": 3,
+        "nakayama_generator_count": 3,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "xp-nm"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 3,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-np.sing",
+          "header_sha256": "b47b99e772a0878d7d0aba3473d67f46944a46fb91a0189c840ec541f078f500",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "b47b99e772a0878d7d0aba3473d67f46944a46fb91a0189c840ec541f078f500",
+          "selected_indices_one_based": [
+            68,
+            96,
+            78
+          ]
+        },
+        {
+          "generator_count": 3,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xm-np.sing",
+          "header_sha256": "53306cce7d1063626a85fe9d7cf1696b22b498b3a9b2aa4147c6c571d4d9277c",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "53306cce7d1063626a85fe9d7cf1696b22b498b3a9b2aa4147c6c571d4d9277c",
+          "selected_indices_one_based": [
+            68,
+            96,
+            78
+          ]
+        }
+      ],
+      "fiber": "X opposite sign",
+      "generator_count_matches_fiber": true,
+      "incidence": "X-->N+",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          68,
+          96,
+          78
+        ],
+        "embedding_rank": 3,
+        "nakayama_generator_count": 3,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "xm-np"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 17,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-np.sing",
+          "header_sha256": "a2043188e06aed268878a226f7737123b6fa4d0868e9269524d63e7ca2b6f103",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "a2043188e06aed268878a226f7737123b6fa4d0868e9269524d63e7ca2b6f103",
+          "selected_indices_one_based": [
+            8,
+            9,
+            16,
+            23,
+            31,
+            41,
+            76,
+            77,
+            78,
+            79,
+            88,
+            89,
+            96,
+            98,
+            109,
+            118,
+            119
+          ]
+        },
+        {
+          "generator_count": 17,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/iso-np.sing",
+          "header_sha256": "19266f24da530503ca68145a196f42709a329755e1f5053cf5c3c1614e8c9795",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "19266f24da530503ca68145a196f42709a329755e1f5053cf5c3c1614e8c9795",
+          "selected_indices_one_based": [
+            8,
+            9,
+            16,
+            23,
+            31,
+            41,
+            76,
+            77,
+            78,
+            79,
+            88,
+            89,
+            96,
+            98,
+            109,
+            118,
+            119
+          ]
+        },
+        {
+          "generator_count": 17,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-np.sing",
+          "header_sha256": "0243e3184ea64cf532a800eb90bda06e24d1e9bf7406e6590489c2ed62c330c9",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "0243e3184ea64cf532a800eb90bda06e24d1e9bf7406e6590489c2ed62c330c9",
+          "selected_indices_one_based": [
+            8,
+            9,
+            16,
+            23,
+            31,
+            41,
+            76,
+            77,
+            78,
+            79,
+            88,
+            89,
+            96,
+            98,
+            109,
+            118,
+            119
+          ]
+        }
+      ],
+      "fiber": "Iso",
+      "generator_count_matches_fiber": true,
+      "incidence": "Iso->N+",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          8,
+          9,
+          16,
+          23,
+          31,
+          41,
+          76,
+          77,
+          78,
+          79,
+          88,
+          89,
+          96,
+          98,
+          109,
+          118,
+          119
+        ],
+        "embedding_rank": 17,
+        "nakayama_generator_count": 17,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "iso-np"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 17,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-nm.sing",
+          "header_sha256": "1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "1f1757d55751f1e3b34605d78fc818e3b457349b7069a17240d0a5ff44713170",
+          "selected_indices_one_based": [
+            8,
+            9,
+            16,
+            23,
+            31,
+            41,
+            76,
+            77,
+            78,
+            79,
+            88,
+            89,
+            96,
+            98,
+            109,
+            118,
+            119
+          ]
+        },
+        {
+          "generator_count": 17,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/iso-nm.sing",
+          "header_sha256": "e1770a1d36ac25dfb511e2cb61837eae32643d68e438375750dbb2cc21e7d0fc",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "e1770a1d36ac25dfb511e2cb61837eae32643d68e438375750dbb2cc21e7d0fc",
+          "selected_indices_one_based": [
+            8,
+            9,
+            16,
+            23,
+            31,
+            41,
+            76,
+            77,
+            78,
+            79,
+            88,
+            89,
+            96,
+            98,
+            109,
+            118,
+            119
+          ]
+        },
+        {
+          "generator_count": 17,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-nm.sing",
+          "header_sha256": "28c3c473369c6edab4fb131098d00465e55d3dd7970e8554985f005d443bf4e6",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "28c3c473369c6edab4fb131098d00465e55d3dd7970e8554985f005d443bf4e6",
+          "selected_indices_one_based": [
+            8,
+            9,
+            16,
+            23,
+            31,
+            41,
+            76,
+            77,
+            78,
+            79,
+            88,
+            89,
+            96,
+            98,
+            109,
+            118,
+            119
+          ]
+        }
+      ],
+      "fiber": "Iso",
+      "generator_count_matches_fiber": true,
+      "incidence": "Iso->N-",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          8,
+          9,
+          16,
+          23,
+          31,
+          41,
+          76,
+          77,
+          78,
+          79,
+          88,
+          89,
+          96,
+          98,
+          109,
+          118,
+          119
+        ],
+        "embedding_rank": 17,
+        "nakayama_generator_count": 17,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "iso-nm"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 21,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-np.sing",
+          "header_sha256": "ab6dd0ef6281b0d02e84d744ace39f56a8cf95695186324e4d76fb387c628af6",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "ab6dd0ef6281b0d02e84d744ace39f56a8cf95695186324e4d76fb387c628af6",
+          "selected_indices_one_based": [
+            89,
+            90,
+            68,
+            67,
+            81,
+            87,
+            56,
+            61,
+            60,
+            120,
+            121,
+            54,
+            80,
+            53,
+            78,
+            76,
+            96,
+            98,
+            109,
+            110,
+            126
+          ]
+        },
+        {
+          "generator_count": 21,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/e8-np.sing",
+          "header_sha256": "71c22c7a967eadf1e25a136d0e9b414e75db89f4775c4dac68a4262d143de877",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "71c22c7a967eadf1e25a136d0e9b414e75db89f4775c4dac68a4262d143de877",
+          "selected_indices_one_based": [
+            89,
+            90,
+            68,
+            67,
+            81,
+            87,
+            56,
+            61,
+            60,
+            120,
+            121,
+            54,
+            80,
+            53,
+            78,
+            76,
+            96,
+            98,
+            109,
+            110,
+            126
+          ]
+        },
+        {
+          "generator_count": 21,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-np.sing",
+          "header_sha256": "966c836537e2ef8e313cbbb6ae2b9a3ea7ee54de7b106aa3f53c83d555d13cae",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "966c836537e2ef8e313cbbb6ae2b9a3ea7ee54de7b106aa3f53c83d555d13cae",
+          "selected_indices_one_based": [
+            89,
+            90,
+            68,
+            67,
+            81,
+            87,
+            56,
+            61,
+            60,
+            120,
+            121,
+            54,
+            80,
+            53,
+            78,
+            76,
+            96,
+            98,
+            109,
+            110,
+            126
+          ]
+        }
+      ],
+      "fiber": "E8bar into N",
+      "generator_count_matches_fiber": true,
+      "incidence": "E8bar->N+",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          89,
+          90,
+          68,
+          67,
+          81,
+          87,
+          56,
+          61,
+          60,
+          120,
+          121,
+          54,
+          80,
+          53,
+          78,
+          76,
+          96,
+          98,
+          109,
+          110,
+          126
+        ],
+        "embedding_rank": 21,
+        "nakayama_generator_count": 21,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "e8-np"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 21,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-nm.sing",
+          "header_sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+          "selected_indices_one_based": [
+            89,
+            90,
+            68,
+            67,
+            81,
+            87,
+            56,
+            61,
+            60,
+            120,
+            121,
+            54,
+            80,
+            53,
+            78,
+            76,
+            96,
+            98,
+            109,
+            110,
+            126
+          ]
+        },
+        {
+          "generator_count": 21,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/e8-nm.sing",
+          "header_sha256": "a40d0d065bbb2e12766fb880085f6706c42aaa66ab8747dd116c65807de8a6d1",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "a40d0d065bbb2e12766fb880085f6706c42aaa66ab8747dd116c65807de8a6d1",
+          "selected_indices_one_based": [
+            89,
+            90,
+            68,
+            67,
+            81,
+            87,
+            56,
+            61,
+            60,
+            120,
+            121,
+            54,
+            80,
+            53,
+            78,
+            76,
+            96,
+            98,
+            109,
+            110,
+            126
+          ]
+        },
+        {
+          "generator_count": 21,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-nm.sing",
+          "header_sha256": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca",
+          "selected_indices_one_based": [
+            89,
+            90,
+            68,
+            67,
+            81,
+            87,
+            56,
+            61,
+            60,
+            120,
+            121,
+            54,
+            80,
+            53,
+            78,
+            76,
+            96,
+            98,
+            109,
+            110,
+            126
+          ]
+        }
+      ],
+      "fiber": "E8bar into N",
+      "generator_count_matches_fiber": true,
+      "incidence": "E8bar->N-",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          89,
+          90,
+          68,
+          67,
+          81,
+          87,
+          56,
+          61,
+          60,
+          120,
+          121,
+          54,
+          80,
+          53,
+          78,
+          76,
+          96,
+          98,
+          109,
+          110,
+          126
+        ],
+        "embedding_rank": 21,
+        "nakayama_generator_count": 21,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "e8-nm"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 24,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing",
+          "header_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+          "selected_indices_one_based": [
+            82,
+            76,
+            77,
+            78,
+            73,
+            74,
+            75,
+            79,
+            102,
+            103,
+            96,
+            97,
+            98,
+            94,
+            95,
+            80,
+            41,
+            109,
+            110,
+            107,
+            91,
+            88,
+            119,
+            118
+          ]
+        },
+        {
+          "generator_count": 24,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/w8-nm.sing",
+          "header_sha256": "722835cda7dd824631a3fb578fd676e7b8d0f96467fe474d5eb18c270792d953",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "722835cda7dd824631a3fb578fd676e7b8d0f96467fe474d5eb18c270792d953",
+          "selected_indices_one_based": [
+            82,
+            76,
+            77,
+            78,
+            73,
+            74,
+            75,
+            79,
+            102,
+            103,
+            96,
+            97,
+            98,
+            94,
+            95,
+            80,
+            41,
+            109,
+            110,
+            107,
+            91,
+            88,
+            119,
+            118
+          ]
+        },
+        {
+          "generator_count": 24,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/w8-nm.sing",
+          "header_sha256": "20d00f15fd8f35c9bc5f0e4a998508244e4eba8662c0c20fbf8690e1bff384dc",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "20d00f15fd8f35c9bc5f0e4a998508244e4eba8662c0c20fbf8690e1bff384dc",
+          "selected_indices_one_based": [
+            82,
+            76,
+            77,
+            78,
+            73,
+            74,
+            75,
+            79,
+            102,
+            103,
+            96,
+            97,
+            98,
+            94,
+            95,
+            80,
+            41,
+            109,
+            110,
+            107,
+            91,
+            88,
+            119,
+            118
+          ]
+        }
+      ],
+      "fiber": "W8",
+      "generator_count_matches_fiber": true,
+      "incidence": "W8->N-",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          82,
+          76,
+          77,
+          78,
+          73,
+          74,
+          75,
+          79,
+          102,
+          103,
+          96,
+          97,
+          98,
+          94,
+          95,
+          80,
+          41,
+          109,
+          110,
+          107,
+          91,
+          88,
+          119,
+          118
+        ],
+        "embedding_rank": 24,
+        "nakayama_generator_count": 24,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "w8-nm"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 24,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-np.sing",
+          "header_sha256": "96acfcfbd118af39a13d5171ec44885acd37aa3068c44f70a9fa063350cdaa50",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "96acfcfbd118af39a13d5171ec44885acd37aa3068c44f70a9fa063350cdaa50",
+          "selected_indices_one_based": [
+            82,
+            76,
+            77,
+            78,
+            73,
+            74,
+            75,
+            79,
+            102,
+            103,
+            96,
+            97,
+            98,
+            94,
+            95,
+            80,
+            41,
+            109,
+            110,
+            107,
+            91,
+            88,
+            119,
+            118
+          ]
+        },
+        {
+          "generator_count": 24,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/w8-np.sing",
+          "header_sha256": "c348bd6d3125faeb31941cfb1f6873fa2ca93c04844cbb2754db95a1a245f82b",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "c348bd6d3125faeb31941cfb1f6873fa2ca93c04844cbb2754db95a1a245f82b",
+          "selected_indices_one_based": [
+            82,
+            76,
+            77,
+            78,
+            73,
+            74,
+            75,
+            79,
+            102,
+            103,
+            96,
+            97,
+            98,
+            94,
+            95,
+            80,
+            41,
+            109,
+            110,
+            107,
+            91,
+            88,
+            119,
+            118
+          ]
+        },
+        {
+          "generator_count": 24,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/w8-np.sing",
+          "header_sha256": "a1d17173e6fdc6dbccecd06ec920d75dce4699d7793dfb9bffadccfe28750246",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "a1d17173e6fdc6dbccecd06ec920d75dce4699d7793dfb9bffadccfe28750246",
+          "selected_indices_one_based": [
+            82,
+            76,
+            77,
+            78,
+            73,
+            74,
+            75,
+            79,
+            102,
+            103,
+            96,
+            97,
+            98,
+            94,
+            95,
+            80,
+            41,
+            109,
+            110,
+            107,
+            91,
+            88,
+            119,
+            118
+          ]
+        }
+      ],
+      "fiber": "W8",
+      "generator_count_matches_fiber": true,
+      "incidence": "W8->N+",
+      "nullity16_record": {
+        "blocked_stage": "modular_rees_fiber",
+        "chosen_coordinate_indices_one_based": [
+          82,
+          76,
+          77,
+          78,
+          73,
+          74,
+          75,
+          79,
+          102,
+          103,
+          96,
+          97,
+          98,
+          94,
+          95,
+          80,
+          41,
+          109,
+          110,
+          107,
+          91,
+          88,
+          119,
+          118
+        ],
+        "embedding_rank": 24,
+        "nakayama_generator_count": 24,
+        "status": "blocked_timeout"
+      },
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "w8-np"
+    },
+    {
+      "all_cells_identical": true,
+      "cells": [
+        {
+          "generator_count": 10,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-vb.sing",
+          "header_sha256": "4dbcb4676ca0821a49641bb6a406254b5c3c7bd56452419c0790c81ae6b6edd5",
+          "i_root": 10754,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "4dbcb4676ca0821a49641bb6a406254b5c3c7bd56452419c0790c81ae6b6edd5",
+          "selected_indices_one_based": [
+            7,
+            8,
+            10,
+            11,
+            12,
+            14,
+            15,
+            17,
+            18,
+            21
+          ]
+        },
+        {
+          "generator_count": 10,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r21255/e8-vb.sing",
+          "header_sha256": "66388680d97c1ddf70bf8ff36ba3769eeedceb2617cb276f571902348479615f",
+          "i_root": 21255,
+          "identical": true,
+          "prime": 32009,
+          "regenerated_sha256": "66388680d97c1ddf70bf8ff36ba3769eeedceb2617cb276f571902348479615f",
+          "selected_indices_one_based": [
+            7,
+            8,
+            10,
+            11,
+            12,
+            14,
+            15,
+            17,
+            18,
+            21
+          ]
+        },
+        {
+          "generator_count": 10,
+          "header": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-vb.sing",
+          "header_sha256": "6b3cea4923b4e0e2650349e64a83f902fcbbbe288ba364c685a552b03f9e82e0",
+          "i_root": 9115,
+          "identical": true,
+          "prime": 32029,
+          "regenerated_sha256": "6b3cea4923b4e0e2650349e64a83f902fcbbbe288ba364c685a552b03f9e82e0",
+          "selected_indices_one_based": [
+            7,
+            8,
+            10,
+            11,
+            12,
+            14,
+            15,
+            17,
+            18,
+            21
+          ]
+        }
+      ],
+      "fiber": "E8bar into VB",
+      "generator_count_matches_fiber": true,
+      "incidence": "E8bar->VB",
+      "nullity16_record": null,
+      "one_selection_at_every_cell": true,
+      "record_agrees": true,
+      "slug": "e8-vb"
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-exceptional-fibers/k2-cm.jsonl": "58fbdb559a15708de067ffca101e971eabb8922940ef21f4557eb690cde18c75",
+    "docs/evidence/a5-exceptional-fibers/k2-hilbert.jsonl": "116222a7aec8d8c00cf061a5236f992ee516334236325199796f26b3cd049aa4",
+    "docs/evidence/a5-kernel-attachments/fiber_inputs.py": "9c95b34144c3fac8293008b224329d1f63eb86b96e7f456ed53fd09b251fce25",
+    "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
+    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "ee368b627b2b8f5203c7366ac920206516e539b21f523bfbe5064d2efa034a46",
+    "docs/evidence/a5-kernel-attachments/nullity16_basepoints.py": "7d02631cb5ac5538a6841b6097184983bc6a04ad742d61032e157b65ac67eb07",
+    "docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py": "dfe6a7c2f415e9d53f400df569b8e50f983bd751b8746316d3a27bea4fc8d759",
+    "docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py": "ae3a34903a490eb79f4de259b7ea053d036b06251e227352a3b272be2b6032e7"
+  },
+  "mutation_control": {
+    "detected": true,
+    "headers_compared": 9,
+    "headers_that_differ": [
+      "e8-nm",
+      "e8-np",
+      "e8-vb",
+      "iso-nm",
+      "iso-np",
+      "w8-nm",
+      "w8-np",
+      "xm-nm",
+      "xp-np"
+    ],
+    "input_change": "regenerate at i = 21255 and compare with the retained header at i = 10754",
+    "name": "conjugate_root_of_minus_one"
+  },
+  "pass": true,
+  "schema": "a5-kernel-attachments-nullity8-fiber-import-v1",
+  "scope": {
+    "claim_boundary": "The record regenerates headers and reads retained Hilbert rows and ledger statuses. It recomputes no quadric ideal, no Hilbert function and no decomposition, decides no degree and no characteristic beyond the named rows, and computes no kernel-plane map.",
+    "statement": "For each of the ten incidences from a nullity-8 source into N+ or N-, and for E8bar->VB, the special fiber of the Nakayama-reduced Rees algebra is Proj of the fiber cone the exceptional-fiber record determines from the same header; the fiber, the degrees decided and the characteristics are those of the ledger rows named in each fiber row."
+  },
+  "stalled_elimination_row": {
+    "declared_status": "stalled",
+    "id": "A5-409",
+    "ledger_status": "stalled",
+    "match": true
+  },
+  "summary": {
+    "fibers_decided_in_characteristic_zero": [
+      "X opposite sign",
+      "X same sign"
+    ],
+    "fibers_decided_in_every_degree_at_both_primes": [
+      "X opposite sign",
+      "X same sign",
+      "Iso",
+      "W8",
+      "E8bar into VB"
+    ],
+    "header_cells_identical": 31,
+    "header_cells_regenerated": 31,
+    "incidence_count": 11
+  }
+}

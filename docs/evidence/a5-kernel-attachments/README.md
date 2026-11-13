@@ -481,7 +481,9 @@ incidences with a completed Rees fiber is that whole fiber:
 
 The four one-point rows carry a canonical limiting six-plane on the slice germ. No retained arc ends at these
 basepoints, so no arc comparison enters, and the ten incidences from the nullity-8 sources (`E8bar`, `Iso`, `W8`,
-`X+`, `X-` into `N+` and `N-`) have no computed fiber and stay open. The boundaries of the previous section hold
+`X+`, `X-` into `N+` and `N-`) have no fiber in the nullity-16 Rees record; the
+[next section](#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record)
+imports their fibers from the exceptional-fiber record. The boundaries of the previous section hold
 here as stated for the slice germ; the
 [equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) removes the
 last two at the `N+` and `N-` basepoints, where the limits along paths that leave the slice are limits along the
@@ -491,6 +493,72 @@ the eight fibers, a source closure with an equation in
 `conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
 Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
+
+## The ten blocked fibers into nullity 16 are the fiber cones of the exceptional-fiber record
+
+The special fiber of the Rees algebra of the Nakayama generator ideal `(G)` on the germ `V(J)` is `Proj F`,
+`F = sum_d (G)^d / m (G)^d`. That graded ring is the fiber cone `F(I)` which
+[`../a5-exceptional-fibers`](../a5-exceptional-fibers/README.md) determines degree by degree, by rank computations
+and arc families, from headers that [`fiber_inputs.py`](fiber_inputs.py) emits from the phase-one script of
+`nullity16_rees_fibers.py`. The elimination that reaches the 300-second limit and the degree-by-degree record
+therefore compute one object from one `J` and one `G`. [`nullity8_fiber_import.py`](nullity8_fiber_import.py)
+regenerates the header of each of the ten blocked incidences and of `E8bar->VB` at the cells
+`(32009, i = 10754)`, `(32009, i = 21255)` and `(32029, i = 9115)` and writes
+[`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json). **Observed:** 31 of 31 regenerated
+headers equal the retained file byte for byte; the selected Pfaffian coordinates are the same, in the same order, at
+every cell and equal the chosen coordinates of the nullity-16 record; the generator count equals that record's Nakayama count and
+embedding rank. The header regenerated at `i = 21255` differs from the retained header at `i = 10754` at all nine
+incidences that have both, so the comparison detects the conjugate embedding. The generation takes 74 seconds and
+124 MiB of resident memory on twelve cores, against the eliminations the exceptional-fiber ledger records as
+exhausted (`A5-042`, `A5-048`, `A5-070`, `A5-071`, `A5-328`).
+
+| Incidences | Generators | Fiber `V_+(K2)`: projective dimension, degree, reduced components | `F = k[y]/K2` decided | Characteristic 0 |
+| --- | ---: | --- | --- | --- |
+| `X+->N-`, `X-->N+` | 3 | 2, 1: the plane `P^2`, `K2 = 0` | every degree at 32009 and 32029 (`A5-001`) | decided: `Q(i)[y1, y2, y3]` (`A5-270`) |
+| `X+->N+`, `X-->N-` | 15 | 3, 12: one threefold; the scheme has nilpotents `y1`, `y5`, `y6` | every degree (`A5-304`) | decided: 69 quadrics over `Q(i)` reducing to `K2` (`A5-305`) |
+| `Iso->N+`, `Iso->N-` | 17 | 4, 23: one geometrically prime fourfold, Cohen-Macaulay | every degree (`A5-007`, `A5-067`) | open: dimension at least 5 and the 68 quadrics (`A5-293`, `A5-294`) |
+| `W8->N+`, `W8->N-` | 24 | 5, 50: two fivefolds of degrees 20 and 30, Cohen-Macaulay | every degree (`A5-008`, `A5-066`) | open: dimension at least 6 (`A5-293`) |
+| `E8bar->N+`, `E8bar->N-` | 21 | 4, 11: a fourfold of degree 11 and a threefold of degree 4 | degrees 1 to 7 (`A5-009`, `A5-335`, `A5-339`) | open: lower bounds on `h_d` for `d` at most 7 (`A5-346`) |
+| `E8bar->VB` | 10 | 3, 7: threefolds of degrees 3 and 4, Cohen-Macaulay | every degree (`A5-005`) | open: the 21 quadrics at 32029 (`A5-315`) |
+
+The record binds, for each row, the Hilbert and Cohen-Macaulay rows of `k2-hilbert.jsonl` and `k2-cm.jsonl` and the
+status of each deciding ledger row; a status that changes in the ledger fails the record until it is regenerated.
+The results on the `N+` header pass to the `N-` header by the sign automorphism `phi(a, b) = (a, -b)` (`A5-013`).
+`X+->N+` has no retained `K2` at 32009.
+
+**Inferred:** the limiting kernel planes form the fiber itself. The nullity-16 record expresses all 126 principal
+four-Pfaffians of the rank-four Schur form, the Pluecker coordinates of the limiting plane, as a constant matrix
+applied to the selected generators modulo `m (G)`, of rank equal to the generator count over `Q(i)` and modulo
+32009. The map from `Proj F` to the Grassmannian is therefore the restriction of a linear embedding of
+`P^(g - 1)` into `P^125`: it is injective on the whole fiber and its image is `V_+` of the defining ideal of `F`
+in those linear coordinates. The sampled kernel-limit records of the exceptional-fiber track (`A5-272` to
+`A5-275`, `A5-292`, `A5-296`) are instances.
+
+### Real limit sets of the ten incidences
+
+The deduction of the two previous sections applies with `ker C_z` of dimension 5 inside the 9-dimensional
+`ker C_(z_0)`: the limits of the bordered kernel are the planes `P meet z_0^perp` in `Gr(4, K_0)`, `K_0` of
+dimension 8, for `P` in the closed-graph fiber, and the
+[equivariance record](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) makes the limits
+along every sequence in the source stratum the limits along the slice germ at the `N+` and `N-` basepoints. The
+closed-graph fiber is the set of complex points of `Proj` of the fiber cone over `Q(i)`. **Inferred:** for
+`X+->N-` and `X-->N+` the real limit set is the complex plane `P^2`, and for `X+->N+` and `X-->N-` it is the set
+of complex points of the degree-12 threefold cut out by the 69 quadrics of `A5-305`; both statements rest on the
+closure theorem cited above, whose text is uninspected. For `Iso`, `W8` and `E8bar` the same deduction identifies
+the real limit set with the complex points of the characteristic-0 fiber, and that fiber is determined modulo
+32009 and 32029, and over `Q(i)` as far as the
+[weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
+the whole fiber cone of `Iso->N-` (`A5-422`), the quadrics, Hilbert numerator and minimal primes of the quadric
+ideal for `W8` and `E8bar` (`A5-421`), and `h_1` to `h_7` of `E8bar` (`A5-423`). Open are `Iso->N+`, the
+degree-20 component of `W8` over `Q(i)`, and both components of `E8bar` above degree 7 (`A5-418`).
+
+Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
+[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
+[`../a5-exceptional-fibers/working/build/inputs`](../a5-exceptional-fibers/working/build/inputs), and the
+[ledger](ledger.md#ledger-rows). A regenerated header that differs from its retained file, a selection that differs
+from the nullity-16 record, a changed Hilbert row or deciding status, a generator of the defining ideal of the
+`E8bar` fiber cone in degree 8 or above, or a fiber cone over `Q(i)` whose reduction differs from `K2` falsifies
+the corresponding statement.
 
 ## Each E8-bar sheet at Va carries one fiber plane, and an exact arc reaches the first
 
@@ -570,6 +638,144 @@ The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds 
 12 workers) on the 12-core build
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
+
+## A composed limit through a nullity-12 stratum lies in a linear section of the nullity-16 fiber
+
+Every row into `N+`, and every row into `N-`, uses one basepoint `z_0`, one slice and one frame of the
+9-dimensional `ker C_(z_0)`, so the fibers of all sources at that basepoint live in one space. A nullity-12
+stratum `M` has the rank-two Schur form `S` and the limiting 7-plane `Q = ker S_0`; a nullity-8 source has the
+rank-four form `T`, the limiting 5-plane `P = ker T_0`, and the Pfaffian vector `pi` of `T`. A limit of 5-planes
+taken first at points `w` of `M` and then along `w -> z_0` lies in the limit of `ker C_w`, so a composed limit
+through `M` is a plane `P` inside some `Q`. With `S_0 = alpha ^ beta` the containment reads
+`(iota_v S_0) ^ pi = 0` for every `v`, which is linear in the fiber coordinates `y` of the source for a fixed
+point `m` of the fiber of `M`. [`composed_limit_sections.py`](composed_limit_sections.py) evaluates that linear
+section of `V_+(K2)` from the two embedding matrices of the nullity-16 record and the retained quadrics, modulo
+32009 and 32029, and writes [`composed-limit-sections-result.json`](composed-limit-sections-result.json): 41
+chains, 136 sections, 2 seconds. Each K2 relation file is bound to the canonical header it is written
+against: the K2 digest of `k2-hilbert.jsonl` is certified by a degree-2 receipt (or, for `E8bar->N+` at 32009, by
+the sign-isomorphism witness from `E8bar->N-`) whose `input_sha256` is the digest of the regenerated header of
+[`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json) and whose `generator_order_sha256` is the
+digest of a `gens.txt` that lists the header's G ideal in the header's order (`k2_bindings` in the record, 11
+source and prime pairs). **Observed:** the sections agree between the primes for the 19 source and stratum pairs
+that both primes carry. The three pairs of `X+->N+` (through `B9`, `VB` and `V^a_+`) exist at 32029 only, since no K2
+file of `X+->N+` is retained at 32009 (the sign map carries `X-->N-` there); the record marks those chains
+`single_prime_excluded_from_agreement` and leaves them out of the agreement. Each value below holds at every prime
+that carries the pair:
+
+| Source | Through `VB` (one `Q`) | Through `V^a_+` or `V^a_-` (one `Q`) | Through `B9` at a point off the `VB` form | Through `V` at a point off the `VB` form |
+| --- | --- | --- | --- | --- |
+| `X` opposite sign (`P^2`) | the whole `P^2`, no condition | no such chain | a line | no such chain |
+| `X` same sign (threefold of degree 12) | a plane | a plane with section degree 2 | two lines | no such chain |
+| `Iso` (fourfold of degree 23) | a `P^3` with section degree 2 | no such chain | a plane and a `P^3` | no such chain |
+| `W8` (fivefolds of degrees 20 and 30) | a `P^4` with section degree 2 | no such chain | a `P^3` and a `P^4` | no such chain |
+| `E8bar` (fourfold of degree 11, threefold of degree 4) | threefolds of degrees 3 and 4 | a plane with section degree 2 | a plane and a quadric surface | a plane with section degree 2 |
+
+The `E8bar` sections are sections of `V_+(K2)`, which is the special fiber only given `F(I) = k[y]/K2` in degrees
+8 and above (`A5-009`, `survives`); a Hilbert function that agrees through degree 7 does not fix the fiber.
+
+The section through `VB` has the reduced components of the fiber of the same source over `VB`, computed
+independently at a `VB` basepoint: `P^2`, `P^3` and `P^4` (the Nakayama record) and the cubic and quartic
+threefolds of `E8bar->VB` (`A5-005`). The section through `V^a_+` or `V^a_-` is one plane of degree 2 where the
+fiber over that stratum is two disjoint planes. The third generator of `B9->N` and of `V->N` is the form of `VB`,
+and at that point of either fiber the section is the section through `VB`. The containment equations vanish on
+an exact plane inside a 7-plane and have 1,000 and 1,112 nonzero coefficients on a plane sharing one covector
+and on a transverse plane.
+
+**Inferred:** a composed limit through `M` lies in the section of some point `m`.
+
+`hypothesis:` through `VB` the composed limit set is the whole reduced section. Computed: the section and the
+fiber of the source over `VB` have equal dimension, degree and component count at the retained `VB` basepoint
+(and, for `Iso`, `W8`, `X+` and `X-`, at the three sampled boosts below). Missing: a flat family of the fibers over
+the points of `VB` near `z_0` whose special fiber specializes componentwise, so that the limit of the fibers is a
+closed subscheme of the section with the same dimension and degree; constant nearby dimension and total degree do not
+supply it. The inference is plausible for the irreducible linear `Iso`, `W8` and `X` sections. For `E8bar` the
+degree-3 and degree-4 components need separate tracking, since equal total degree 7 admits a collision of components
+or a multiplicity. The group action transports the fiber along six of the seven orbit directions of `VB`, and the
+boost record below samples the seventh for `Iso`, `W8`, `X+` and `X-`. A flat relative Rees or Grassmannian family
+over `VB`, or an exact one-parameter limit, decides it.
+
+Through `V^a_+` and `V^a_-` the two planes of the fiber have one
+limit plane. The record does not decide which planes of a section through `B9` or `V` are composed limits: there
+the fiber of the source over the middle stratum is smaller than the section (one point for `X`, a line for
+`Iso`, a plane for `W8` and a conic for `E8bar` over `B9`), and the missing datum is the limit of that fiber
+along `w -> z_0`. A section through `VB` whose reduced components differ from the fiber over `VB`, or a section
+that differs between the primes at a pair both primes carry, falsifies the observation.
+
+## Along the boost the four whole-space fibers into VB keep their shape at three sampled basepoints
+
+At a basepoint on `VB` the orbit of `G_2(C) x C^*` has dimension 6 in the 7-dimensional boundary orbit, and the
+missing direction is the boost `u -> c u + s v`, `v -> s u + c v` with `c^2 - s^2 = 1`, which preserves every
+stratum and has no lift to the kernel (the section above). [`boost_fiber_variation.py`](boost_fiber_variation.py)
+moves the retained `VB` basepoint of `Iso->VB`, `W8->VB`, `X+->VB` and `X-->VB` by the boosts
+`(c, s) = (5/4, 3/4)`, `(5/3, 4/3)` and `(13/12, -5/12)`, keeps the retained slice columns, and recomputes the
+Nakayama-reduced Rees special fiber over `Q(i)` and modulo 32003; the record is
+[`boost-fiber-variation-result.json`](boost-fiber-variation-result.json). **Observed:** at all sixteen basepoints
+(the retained one and three moved ones per incidence) the moved point lies on the `VB` orbit, the slice is
+complementary to it (rank 15 with the orbit tangent space), the germ keeps its dimension, and the special fiber
+is the whole projective space of the generators in both characteristics: `P^3` for `Iso`, `P^4` for `W8`, `P^2`
+for `X+` and `X-`, with embedding rank equal to the generator count. The selected Pfaffian coordinates are the
+same at every basepoint for `Iso`, `X+` and `X-`; for `W8` they are `8, 12, 16, 17, 18` at the retained basepoint
+and `3, 8, 12, 17, 18` at each moved one, so the retained `W8` basepoint is special for the selection and not for
+the fiber. A slice with one column removed has rank 14 and fails the check. The generation takes 45 seconds and
+204 MiB.
+
+The record samples the boost orbit. It compares no limiting plane between basepoints, so it does not decide
+whether the family of fibers over the boost orbit is a product; it covers neither `E8bar->VB`, whose fiber at the
+retained basepoint is the cubic and quartic threefold pair of the import table above, nor `E8bar->V`, where the
+Nakayama route ran 31 minutes at the retained basepoint without output and was stopped. A sampled basepoint whose
+fiber is a proper subvariety, or whose slice is not complementary, falsifies the observation.
+
+## On a torus weight slice the quadrics of all ten fiber cones are computed over Q(i)
+
+At the `N+` or `N-` basepoint `z_0` the stabilizer in `g_2` + scaling + boost contains a two-dimensional torus
+that acts on `ker C_(z_0)`. [`weight_slice_fiber_relations.py`](weight_slice_fiber_relations.py) takes the
+nine-dimensional normal slice along joint eigenvectors of that torus and writes the Schur form in a frame of torus
+eigenvectors. **Computed:** the 126 principal 4-Pfaffians are then homogeneous for the weight
+`(1, 0, 3, 2, 2, 1, 4, 4, 3)` on the slice coordinates. The germ ideal `J` of a source closure is replaced by the
+intersection of its minimal primes through the origin, and the Nakayama generators `G`, their products and the
+relations `{q : q(G) in J + m I^2}` come from standard bases truncated above the largest weight present. **Inferred:**
+the truncation changes no normal form of a product, because every ideal involved is graded by the weight and the
+added monomials lie above the largest product weight; and membership in the polynomial ring equals membership in
+the local ring, because the class of `q(G)` modulo `J + m P` is killed by the maximal ideal, so the local units
+`det B`, `1 + i s_2` and `1 - s_2^2` act on it as nonzero constants. The component step changes the germ ideal of
+the two `X` sources only (at `N-`: `E8bar`, `W8` and `Iso` are radical already). The table runs over `Q(i)` in 60 s; the ungraded standard
+basis of `J + m P` took 1,507 s for `Iso` (`A5-294`) and did not finish for `W8` and `E8bar`.
+
+| Source | Generators | Quadrics at `N+` and `N-` | Quadric ideal over `Q(i)` |
+|---|---|---|---|
+| `W8` | 24 | 144 | dimension 6, multiplicity 50, primes of degrees 20 and 30 |
+| `E8bar` | 21 | 148 | dimension 5, multiplicity 11, primes of dimension 5 degree 11 and dimension 4 degree 4 |
+| `Iso` | 17 | 68 | not computed here (`A5-422`) |
+| same-sign `X` | 15 | 69 | `A5-305` |
+| opposite-sign `X` | 3 | 0 | `A5-270` |
+
+The counts equal the modular ones of the [import record](#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record).
+For `W8` and `E8bar` the quadric ideal is saturated with the Hilbert numerator of the modular `K2`, and at `N-` the
+`Q(i)` relation space reduced at `(32009, i = 10754)` equals that of the modular cell of the same run (ranks 144 and 148, joint ranks the
+same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
+component step `X+->N-` returns 12 generators in place of 3.
+
+**Inferred (`A5-422`, conditional on `A5-293` and `A5-294`):** the fiber cone of `Iso->N-` over `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68
+quadrics. The reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
+modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
+dimension at least 5 (`A5-293`), so `K' = K2`. The quotient of the lattice by its saturated part is
+torsion-free over the prime above 32009, so each nonzero class is a power of that prime times a class that stays
+nonzero modulo it, and the reduction is a domain; hence `K` is prime, `V(L)` is a closed subset of the irreducible
+`V(K)` of the same dimension, and `L = K`. The counterexample of `A5-316` lacks exactly the primality and dimension inputs this uses.
+
+**Inferred (`A5-423`):** for `E8bar->N+` and `E8bar->N-` the 148 quadrics bound `h_d` over `Q(i)` above by the
+Hilbert function of their ideal, 21, 83, 225, 495, 952, 1666, 2718 for `d = 1..7`, and the arc-jet ranks of
+`A5-346` bound it below by the same numbers. The quadrics live on the weight slice and the arcs on the header
+slice; `h_d` is an invariant of the ideal germ, and the two slices are joined by the transverse-slice isomorphism of
+the [equivariance section](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not), under which the
+Pfaffian ideal is invariant (`pf4(W) = det(B)^2 pf4(S)`).
+
+Evidence: [`weight-slice-fiber-relations-result.json`](weight-slice-fiber-relations-result.json) and the
+[ledger](ledger.md#ledger-rows). The relation lines are named by digest and regenerated by the producer; no map
+from its generators to the header generators of the modular record is retained. A rerun with different counts,
+numerator, minimal primes or reduction ranks, a weight-inhomogeneous Pfaffian, or a relation that fails the
+untruncated membership falsifies the table; a prime at which the saturated lattice of `K` reduces off `K2`
+falsifies the `Iso` statement.
 
 ## Investigated questions
 
@@ -686,6 +892,14 @@ prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
     docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --self-test
 prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py \
     --check docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py \
+    --check docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/boost_fiber_variation.py \
+    --check docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/composed_limit_sections.py \
+    --check docs/evidence/a5-kernel-attachments/composed-limit-sections-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py \
+    --check docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares
