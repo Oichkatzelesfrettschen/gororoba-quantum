@@ -412,6 +412,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Ein, Lazarsfeld and Mustata 2004 -- Contact loci in arc spaces (arXiv math/0303268)](notes/papers/math-0303268.md) | [PDF](https://arxiv.org/pdf/math/0303268v4) | `math-0303268v4.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0303268v4) |
 | [Landsberg and Manivel 2003 -- On the projective geometry of rational homogeneous varieties (arXiv math/9810140)](notes/papers/math-9810140.md) | [PDF](https://arxiv.org/pdf/math/9810140v3) | `math-9810140v3.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/9810140v3) |
 | [Lejeune-Jalabert and Teissier 2008 -- Clôture intégrale des idéaux et équisingularité (arXiv 0803.2369)](notes/papers/0803.2369.md) | [PDF](https://arxiv.org/pdf/0803.2369v1) | `0803.2369v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0803.2369v1) |
+| [Mumford 1999 -- The Red Book of Varieties and Schemes, second edition (Lecture Notes in Mathematics 1358)](notes/papers/mumford-1999-red-book-varieties-schemes.md) | [PDF](https://doi.org/10.1007/b62130) | `mumford-1999-red-book-varieties-schemes.pdf` | [No redistribution grant found in the PDF](https://doi.org/10.1007/b62130) |
 
 ## Licensed software source snapshots
 The [Nebe--Sloane lattice catalogue note](notes/papers/nebe-lattices-d14-a13.md)

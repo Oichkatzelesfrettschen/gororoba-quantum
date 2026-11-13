@@ -356,6 +356,7 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [math-0303268](../notes/papers/math-0303268.md) | Ein, Lazarsfeld and Mustata, Contact loci in arc spaces (Compos. Math. 140, 2004) | none | none | none |
 | [math-9810140](../notes/papers/math-9810140.md) | Landsberg and Manivel, On the projective geometry of rational homogeneous varieties (Comment. Math. Helv. 78, 2003) | none | low | none |
 | [0803.2369](../notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier, Clôture intégrale des idéaux et équisingularité (Ann. Fac. Sci. Toulouse Math. 17(4), 2008) | none | none | none |
+| [mumford-1999-red-book-varieties-schemes](../notes/papers/mumford-1999-red-book-varieties-schemes.md) | Mumford, The Red Book of Varieties and Schemes, second edition (Lecture Notes in Mathematics 1358, 1999) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,

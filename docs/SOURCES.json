@@ -914,6 +914,12 @@
       "doi": "10.1090/S0002-9947-1991-1005076-8",
       "venue": "Transactions of the American Mathematical Society 326(2), 507-528 (1991)",
       "receipt_url": "https://api.crossref.org/works/10.1090/S0002-9947-1991-1005076-8"
+    },
+    "docs/notes/papers/mumford-1999-red-book-varieties-schemes.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/b62130",
+      "venue": "Lecture Notes in Mathematics 1358, second, expanded edition (Springer, 1999)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/b62130"
     }
   },
   "web_sources": [
@@ -4109,6 +4115,15 @@
       "bytes": 11986,
       "retrieved_at_utc": "2026-11-13T20:04:17+00:00",
       "reading_scope": "Crossref DOI metadata: title, authors, venue, volume, issue, pages and date for the version of record",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/mumford-1999-red-book-varieties-schemes.md",
+      "url": "https://api.crossref.org/works/10.1007/b62130",
+      "sha256": "cdcf1b1490f818518a87631f3aaf61d0de00eab8becb9a7bb5bb55ff6a019106",
+      "bytes": 2775,
+      "retrieved_at_utc": "2026-11-13T21:57:14+00:00",
+      "reading_scope": "Crossref DOI metadata: title, author, publisher, container title, year and both ISBNs for the book; the record carries no series volume number and no edition statement",
       "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
@@ -16171,6 +16186,34 @@
         "evidence_locator": "Original PDF page 1, American Mathematical Society copyright line and journal running head",
         "reading_scope": "Rights notices on the first pages of the PDF; the note carries the content reading scope.",
         "evidence_summary": "American Mathematical Society copyright line on page 1; no redistribution grant in the PDF."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1007/b62130",
+      "note": "docs/notes/papers/mumford-1999-red-book-varieties-schemes.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "28a2ca3ac335162ce26faa3f6e8a081a548e82dc7e8426e8f2b81bd626d2f00b",
+      "bytes": 52454837,
+      "pages": 312,
+      "audited_at_utc": "2026-11-13T22:05:00+00:00",
+      "excluded_published_path": "docs/pdf/mumford-1999-red-book-varieties-schemes.pdf",
+      "local_cache_path": "docs/local_source_cache/mumford-1999-red-book-varieties-schemes.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 5 (printed page IV), the Springer-Verlag copyright page, and the copyright line on the first page of Chapter I (PDF page 12)",
+      "rights_reason": "The PDF page 5 states that the work is subject to copyright with all rights reserved and carries the line (c) Springer-Verlag Berlin Heidelberg 1999, and holds no redistribution grant from the rights holder; the Crossref record lists only the Springer text-mining terms, which are no Creative Commons or public-domain grant. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "28a2ca3ac335162ce26faa3f6e8a081a548e82dc7e8426e8f2b81bd626d2f00b",
+        "verified_at_utc": "2026-11-13T22:05:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1007/b62130",
+        "evidence_sha256": "28a2ca3ac335162ce26faa3f6e8a081a548e82dc7e8426e8f2b81bd626d2f00b",
+        "evidence_locator": "Original PDF page 5 (printed page IV), the Springer-Verlag copyright page, and the copyright line on the first page of Chapter I (PDF page 12)",
+        "reading_scope": "Rights notices on the copyright page and the first page of Chapter I; the note carries the content reading scope.",
+        "evidence_summary": "Springer-Verlag copyright page (c) 1999 with all rights reserved; no redistribution grant in the PDF; the Crossref record names only the Springer text-mining terms."
       }
     }
   ],
