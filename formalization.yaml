@@ -135,6 +135,21 @@ sources:
       The fold-average descent obstruction, the terminal-channel separation
       in rational and real semantics, and the N = 21 target-flip networks.
 
+  - title: "Sedenions, Clifford Algebras, and Three Fermion Generations: A Focused Review"
+    authors: ["Niels Gresnigt"]
+    id: arXiv:2609.10569
+    type: article
+    relationship: formalizes
+    location: docs/notes/papers/2609.10569.md
+    note: >-
+      Eq. 61, the order-three map psi of the sedenions: CdTowerOrderThreeMap.v
+      proves that psi preserves sums, scalars, products and conjugates over
+      every commutative ring with a square root of 3 and an inverse of 2, by
+      a vm_compute check of the 256 basis pairs over Z[sqrt 3]
+      (CdTowerRingBasis.v reduces a bilinear identity to basis pairs and
+      CdTowerRingBaseChange.v transports the check along a ring
+      homomorphism). That psi is a bijection of order three is not proved.
+
 related_formalizations:
   - id: https://github.com/Oichkatzelesfrettschen/open_gororoba
     relationship: builds-on
@@ -145,7 +160,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Selected main-result declarations of twenty-four proof sources, not every
+    Selected main-result declarations of twenty-seven proof sources, not every
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
@@ -277,6 +292,27 @@ status:
     - declaration: ZRingBridge.mul_eq
       file: proofs/CdTowerRingDomain.v
       axioms: []
+    - declaration: Root3Map.BC.SB.multiplicative_by_basis
+      file: proofs/CdTowerRingBasis.v
+      axioms: []
+    - declaration: Root3Map.BC.SB.derivation_by_basis
+      file: proofs/CdTowerRingBasis.v
+      axioms: []
+    - declaration: Root3Map.BC.scaled_multiplicative_transport
+      file: proofs/CdTowerRingBaseChange.v
+      axioms: []
+    - declaration: Root3Map.BC.derivation_transport
+      file: proofs/CdTowerRingBaseChange.v
+      axioms: []
+    - declaration: Root3Map.psi2_mul
+      file: proofs/CdTowerOrderThreeMap.v
+      axioms: []
+    - declaration: Mod11.psi_mul
+      file: proofs/CdTowerOrderThreeMap.v
+      axioms: []
+    - declaration: Mod11.psi_diagonal_mul
+      file: proofs/CdTowerOrderThreeMap.v
+      axioms: []
     - declaration: RRingBridge.reflect_mul
       file: proofs/CdTowerRingDomain.v
       axioms:
@@ -397,6 +433,22 @@ alignment:
       file: proofs/CdTowerRingDomain.v
       statement: "the product of the commutative-ring tower at Z is the product of the ordered-domain tower at Z"
       source: docs/evidence/cd-tower-ring/README.md
+    - declaration: Root3Map.BC.SB.multiplicative_by_basis
+      file: proofs/CdTowerRingBasis.v
+      statement: "at Z[sqrt 3], a linear map of level k with f(e_i e_j) = f(e_i) f(e_j) on all pairs of basis vectors preserves every product; the instance of the functor theorem RingTowerBasis.multiplicative_by_basis, which holds over the signature CommutativeRing"
+      source: docs/evidence/cd-tower-ring-base-change/README.md
+    - declaration: Root3Map.BC.scaled_multiplicative_transport
+      file: proofs/CdTowerRingBaseChange.v
+      statement: "for the homomorphism from Z[sqrt 3] to itself, a table of images whose linear map satisfies f(e_i) f(e_j) = c f(e_i e_j) on the basis pairs over the source ring satisfies f(x) f(y) = h(c) f(x y) for all x, y over the target ring; the instance of the functor theorem BaseChange.scaled_multiplicative_transport, which holds for every homomorphism of commutative rings"
+      source: docs/evidence/cd-tower-ring-base-change/README.md
+    - declaration: Root3Map.psi2_mul
+      file: proofs/CdTowerOrderThreeMap.v
+      statement: "at Z[sqrt 3], psi2(x) psi2(y) = 2 psi2(x y) for all x, y of level 4, where psi2 is twice the map psi of Eq. 61; the instance of the functor theorem OrderThreeMap.psi2_mul, which holds over every commutative ring with a square root of 3"
+      source: docs/notes/papers/2609.10569.md
+    - declaration: Mod11.psi_mul
+      file: proofs/CdTowerOrderThreeMap.v
+      statement: "at Zmod 11, psi(x y) = psi(x) psi(y) for all x, y of level 4; the instance of the functor theorem OrderThreeAutomorphism.psi_mul, which holds over every commutative ring with a square root of 3 and an inverse of 2"
+      source: docs/notes/papers/2609.10569.md
     - declaration: ZBridge.kernel_equality
       file: proofs/CdTowerDomainZ.v
       statement: "a z = 0 exactly when z a = 0 in the integer tower of CdImaginarySumConference.v, from the functor CdTower of CdTowerDomain.v over an abstract ordered domain instantiated at Z"
