@@ -638,6 +638,48 @@ The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds 
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
+## A composed limit through a nullity-12 stratum lies in a linear section of the nullity-16 fiber
+
+Every row into `N+`, and every row into `N-`, uses one basepoint `z_0`, one slice and one frame of the
+9-dimensional `ker C_(z_0)`, so the fibers of all sources at that basepoint live in one space. A nullity-12
+stratum `M` has the rank-two Schur form `S` and the limiting 7-plane `Q = ker S_0`; a nullity-8 source has the
+rank-four form `T`, the limiting 5-plane `P = ker T_0`, and the Pfaffian vector `pi` of `T`. A limit of 5-planes
+taken first at points `w` of `M` and then along `w -> z_0` lies in the limit of `ker C_w`, so a composed limit
+through `M` is a plane `P` inside some `Q`. With `S_0 = alpha ^ beta` the containment reads
+`(iota_v S_0) ^ pi = 0` for every `v`, which is linear in the fiber coordinates `y` of the source for a fixed
+point `m` of the fiber of `M`. [`composed_limit_sections.py`](composed_limit_sections.py) evaluates that linear
+section of `V_+(K2)` from the two embedding matrices of the nullity-16 record and the retained quadrics, modulo
+32009 and 32029, and writes [`composed-limit-sections-result.json`](composed-limit-sections-result.json): 41
+chains, 136 sections, 2 seconds. **Observed**, with the same values at both primes:
+
+| Source | Through `VB` (one `Q`) | Through `V^a_+` or `V^a_-` (one `Q`) | Through `B9` at a point off the `VB` form | Through `V` at a point off the `VB` form |
+| --- | --- | --- | --- | --- |
+| `X` opposite sign (`P^2`) | the whole `P^2`, no condition | no such chain | a line | no such chain |
+| `X` same sign (threefold of degree 12) | a plane | a plane with section degree 2 | two lines | no such chain |
+| `Iso` (fourfold of degree 23) | a `P^3` with section degree 2 | no such chain | a plane and a `P^3` | no such chain |
+| `W8` (fivefolds of degrees 20 and 30) | a `P^4` with section degree 2 | no such chain | a `P^3` and a `P^4` | no such chain |
+| `E8bar` (fourfold of degree 11, threefold of degree 4) | threefolds of degrees 3 and 4 | a plane with section degree 2 | a plane and a quadric surface | a plane with section degree 2 |
+
+The section through `VB` has the reduced components of the fiber of the same source over `VB`, computed
+independently at a `VB` basepoint: `P^2`, `P^3` and `P^4` (the Nakayama record) and the cubic and quartic
+threefolds of `E8bar->VB` (`A5-005`). The section through `V^a_+` or `V^a_-` is one plane of degree 2 where the
+fiber over that stratum is two disjoint planes. The third generator of `B9->N` and of `V->N` is the form of `VB`,
+and at that point of either fiber the section is the section through `VB`. The containment equations vanish on
+an exact plane inside a 7-plane and have 1,000 and 1,112 nonzero coefficients on a plane sharing one covector
+and on a transverse plane.
+
+**Inferred:** a composed limit through `M` lies in the section of some point `m`. Through `VB` the composed
+limit set is the whole reduced section, given that the fibers over the points of `VB` near `z_0` have the
+dimension and degree of the fiber at the retained `VB` basepoint: their limit is a closed set of that dimension
+and degree inside a reduced section with the same dimension and degree, component by component. The group
+action transports the fiber along six of the seven orbit directions of `VB`, and the boost record below samples
+the seventh for `Iso`, `W8`, `X+` and `X-`. Through `V^a_+` and `V^a_-` the two planes of the fiber have one
+limit plane. The record does not decide which planes of a section through `B9` or `V` are composed limits: there
+the fiber of the source over the middle stratum is smaller than the section (one point for `X`, a line for
+`Iso`, a plane for `W8` and a conic for `E8bar` over `B9`), and the missing datum is the limit of that fiber
+along `w -> z_0`. A section through `VB` whose reduced components differ from the fiber over `VB`, or a section
+that differs between the primes, falsifies the observation.
+
 ## Along the boost the four whole-space fibers into VB keep their shape at three sampled basepoints
 
 At a basepoint on `VB` the orbit of `G_2(C) x C^*` has dimension 6 in the 7-dimensional boundary orbit, and the
@@ -781,6 +823,8 @@ prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullit
     --check docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/boost_fiber_variation.py \
     --check docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/composed_limit_sections.py \
+    --check docs/evidence/a5-kernel-attachments/composed-limit-sections-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares

@@ -5392,6 +5392,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/composed_limit_sections.py --check docs/evidence/a5-kernel-attachments/composed-limit-sections-result.json",
+      "name": "core-a5-composed-limit-sections",
+      "seconds": 2.1,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/composed-limit-sections-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --check docs/evidence/a5-kernel-attachments/partner-purity-result.json",
       "name": "core-761",
       "seconds": 1.0,
