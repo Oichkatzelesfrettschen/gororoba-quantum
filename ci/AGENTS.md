@@ -132,7 +132,8 @@ makes it take its live path or fail
 installs it into a separate virtual environment; Singular reads stdin even for `--version`, so run it with stdin
 from `/dev/null`); `GOROROBA_SINGULAR_REQUIRED=1` turns the skip into a failure. A gate that skips ends its output with a
 `skipped:` line and exits 77; `ci/run_gates.py` prints `SKIP`, counts it apart from the passes and lists the
-skipped names, and status 77 from a gate without `requires` or without that line is a failure. `verify.py` checks the
+skipped names, and status 77 from a gate without `requires`, without that line, or under the caller's `REQUIRED`
+variable is a failure. A run that passes no gate and skips at least one exits 77 itself. `verify.py` checks the
 gororoba-open commit named in [ci/open_gororoba.pin](open_gororoba.pin) by hand:
 `ci/fetch_open_gororoba.sh` sparse-checks out the paths it is given, and
 `scripts/materialize_gororoba_csv.py` rewrites the git-ignored `data/csv`

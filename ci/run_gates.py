@@ -28,9 +28,10 @@ each such gate take its live path or fail.
 A gate that ran no check says so by exit status 77 after a last output line
 that begins ``skipped:`` and gives the reason. The runner prints SKIP for it,
 counts it apart from the passes in the summary and the timings, and lists the
-skipped names; a skip leaves the exit status of the run unchanged. Only a gate
-that declares ``requires`` may skip: status 77 from any other gate, or without
-the ``skipped:`` line, is a failure.
+skipped names. A run with a failure exits 1; a run that passes nothing and
+skips at least one gate exits 77; every other run exits 0. Only a gate that
+declares ``requires`` may skip: status 77 from any other gate, without a
+``skipped: REASON`` line, or under the caller's REQUIRED variable is a failure.
 
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
 chooses: an explicit $PYTHON as named, else the running interpreter when it
@@ -394,7 +395,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"\n{summary} on {device}")
     if skipped:
         print(f"skipped, no check ran: {', '.join(sorted(skipped))}")
-    return 1 if failures else 0
+    if failures:
+        return 1
+    # A run that passed nothing and skipped something verified nothing: it reports the skip status itself.
+    return SKIP_STATUS if skipped and passed == 0 else 0
 
 
 if __name__ == "__main__":

@@ -138,6 +138,19 @@ def test_a_skipped_gate_is_reported_and_counted_apart_from_the_passes(root: Path
         raise AssertionError(f"the timings record holds {verdicts}")
 
 
+def test_a_run_that_only_skips_exits_with_the_skip_status(root: Path) -> None:
+    manifest(root, SKIPPING[1:])
+    with runner(root, GOROROBA_SINGULAR_REQUIRED=None) as output:
+        status = run_gates.main([])
+    if status != run_gates.SKIP_STATUS or "0 passed, 1 skipped, 0 failed of 1" not in output.getvalue():
+        raise AssertionError(f"an all-skip run returned {status}:\n{output.getvalue()}")
+    manifest(root, [SKIPPING[1], {"name": "fails", "cwd": ".", "cmd": "false"}])
+    with runner(root, GOROROBA_SINGULAR_REQUIRED=None) as output:
+        status = run_gates.main([])
+    if status != 1:
+        raise AssertionError(f"a run with a skip and a failure returned {status}:\n{output.getvalue()}")
+
+
 def test_the_required_variable_turns_the_skip_into_the_live_path(root: Path) -> None:
     manifest(root, SKIPPING)
     with runner(root, GOROROBA_SINGULAR_REQUIRED="1") as output:
@@ -189,7 +202,7 @@ def test_a_skip_under_the_required_variable_is_a_failure(root: Path) -> None:
         unrelated = run_gates.main([])
     if required != 1 or "FAIL ignores" not in output.getvalue():
         raise AssertionError(f"a skip under GOROROBA_SINGULAR_REQUIRED=1 did not fail:\n{output.getvalue()}")
-    if unrelated != 0 or "SKIP ignores" not in other.getvalue():
+    if unrelated != run_gates.SKIP_STATUS or "SKIP ignores" not in other.getvalue():
         raise AssertionError(f"another toolchain's variable changed the verdict:\n{other.getvalue()}")
 
 
