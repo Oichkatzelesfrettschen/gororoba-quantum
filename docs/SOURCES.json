@@ -947,6 +947,24 @@
       "doi": "10.1016/0021-8693(79)90313-2",
       "venue": "Journal of Algebra 61(1), 189-198 (1979)",
       "receipt_url": "https://api.crossref.org/works/10.1016/0021-8693(79)90313-2"
+    },
+    "docs/notes/papers/eisenbud-harris-2000-geometry-of-schemes.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/b97680",
+      "venue": "Graduate Texts in Mathematics 197 (Springer, 2000)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/b97680"
+    },
+    "docs/notes/papers/hartshorne-1977-algebraic-geometry.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/978-1-4757-3849-0",
+      "venue": "Graduate Texts in Mathematics 52 (Springer, 1977)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/978-1-4757-3849-0"
+    },
+    "docs/notes/papers/fulton-1998-intersection-theory.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/978-1-4612-1700-8",
+      "venue": "Intersection Theory, second edition (Springer, 1998)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/978-1-4612-1700-8"
     }
   },
   "web_sources": [
@@ -4196,6 +4214,33 @@
       "bytes": 10256,
       "retrieved_at_utc": "2026-11-13T22:41:44+00:00",
       "reading_scope": "Crossref bibliographic search for the book title and authors, three rows: the returned records are two papers of Delfino and Swanson on integral closure in excellent local rings (1997 and its 2004 erratum) and a 2019 chapter of Aberbach and Huneke; no record of the book, so no DOI is registered",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/eisenbud-harris-2000-geometry-of-schemes.md",
+      "url": "https://api.crossref.org/works/10.1007/b97680",
+      "sha256": "a05f14fd696fe46bc59af87145ac7e3b7c5e5bbd95b19d8e4d40e9ea5d5bc832",
+      "bytes": 2398,
+      "retrieved_at_utc": "2026-11-13T23:43:25+00:00",
+      "reading_scope": "Crossref DOI metadata: title, publisher, print ISBN, year and series title for the book; the record lists no authors and no volume number",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/hartshorne-1977-algebraic-geometry.md",
+      "url": "https://api.crossref.org/works/10.1007/978-1-4757-3849-0",
+      "sha256": "0534eee1b5f6c415abe91174f209cfb935f09e5bfe7a9ecce8fe23dc9297505c",
+      "bytes": 2606,
+      "retrieved_at_utc": "2026-11-13T23:43:25+00:00",
+      "reading_scope": "Crossref DOI metadata: title, author, publisher, both ISBNs, year and series title for the book; the record carries no volume number",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/fulton-1998-intersection-theory.md",
+      "url": "https://api.crossref.org/works/10.1007/978-1-4612-1700-8",
+      "sha256": "084f7641e3db87727eec5707428787a79a4c967bae458826303f9eb31f1c3421",
+      "bytes": 4028,
+      "retrieved_at_utc": "2026-11-13T23:43:26+00:00",
+      "reading_scope": "Crossref DOI metadata: title, author, publisher Springer New York, both ISBNs and year for the New York printing of the second edition; the record carries no series and no edition statement",
       "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
@@ -16426,6 +16471,90 @@
         "evidence_locator": "Original PDF page 1, the Academic Press copyright footer",
         "reading_scope": "Rights notice on page 1 of the PDF; the note carries the content reading scope.",
         "evidence_summary": "Academic Press copyright footer (c) 1979 with all rights of reproduction reserved; no redistribution grant in the PDF; the Crossref record names only the Elsevier user licenses."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1007/b97680",
+      "note": "docs/notes/papers/eisenbud-harris-2000-geometry-of-schemes.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "5a82206a220e17140f389b5c5dd3617d4f947c0fc6085517c08e9feae917850d",
+      "bytes": 3569503,
+      "pages": 300,
+      "audited_at_utc": "2026-11-13T23:55:00+00:00",
+      "excluded_published_path": "docs/pdf/eisenbud-harris-2000-geometry-of-schemes.pdf",
+      "local_cache_path": "docs/local_source_cache/eisenbud-harris-2000-geometry-of-schemes.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 5, the Springer-Verlag imprint page with the line (c) 2000 Springer-Verlag New York, Inc. and the sentence All rights reserved",
+      "rights_reason": "The PDF page 5 carries the line (c) 2000 Springer-Verlag New York, Inc. with all rights reserved and the publisher's permission terms, and holds no redistribution grant from the rights holder; the Crossref record lists only the Springer text-mining terms, which are no Creative Commons or public-domain grant. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "5a82206a220e17140f389b5c5dd3617d4f947c0fc6085517c08e9feae917850d",
+        "verified_at_utc": "2026-11-13T23:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1007/b97680",
+        "evidence_sha256": "5a82206a220e17140f389b5c5dd3617d4f947c0fc6085517c08e9feae917850d",
+        "evidence_locator": "Original PDF page 5, the Springer-Verlag imprint page with the line (c) 2000 Springer-Verlag New York, Inc. and the sentence All rights reserved",
+        "reading_scope": "Rights notice on the imprint page of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "Springer-Verlag New York copyright line (c) 2000 with all rights reserved on the imprint page; no redistribution grant in the PDF; the Crossref record names only the Springer text-mining terms."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1007/978-1-4757-3849-0",
+      "note": "docs/notes/papers/hartshorne-1977-algebraic-geometry.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "2a7035d49f68c60d20b5642821e01ca66f62fe39734fca927f51848803d72607",
+      "bytes": 51617798,
+      "pages": 510,
+      "audited_at_utc": "2026-11-13T23:55:00+00:00",
+      "excluded_published_path": "docs/pdf/hartshorne-1977-algebraic-geometry.pdf",
+      "local_cache_path": "docs/local_source_cache/hartshorne-1977-algebraic-geometry.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 4, the Springer imprint page with the line (c) 1977 Springer Science+Business Media New York and the sentence All rights reserved",
+      "rights_reason": "The PDF page 4 carries the line (c) 1977 Springer Science+Business Media New York with all rights reserved and the publisher's permission terms, and holds no redistribution grant from the rights holder; the Crossref record lists only the Springer text-mining terms, which are no Creative Commons or public-domain grant. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "2a7035d49f68c60d20b5642821e01ca66f62fe39734fca927f51848803d72607",
+        "verified_at_utc": "2026-11-13T23:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1007/978-1-4757-3849-0",
+        "evidence_sha256": "2a7035d49f68c60d20b5642821e01ca66f62fe39734fca927f51848803d72607",
+        "evidence_locator": "Original PDF page 4, the Springer imprint page with the line (c) 1977 Springer Science+Business Media New York and the sentence All rights reserved",
+        "reading_scope": "Rights notice on the imprint page of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "Springer copyright line (c) 1977 with all rights reserved on the imprint page; no redistribution grant in the PDF; the Crossref record names only the Springer text-mining terms."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1007/978-1-4612-1700-8",
+      "note": "docs/notes/papers/fulton-1998-intersection-theory.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "d1333fa2ced86549afe0cd850be3702a5001f795ddd21687832015e0cb6d71e1",
+      "bytes": 16584533,
+      "pages": 485,
+      "audited_at_utc": "2026-11-13T23:55:00+00:00",
+      "excluded_published_path": "docs/pdf/fulton-1998-intersection-theory.pdf",
+      "local_cache_path": "docs/local_source_cache/fulton-1998-intersection-theory.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 4, the Springer-Verlag imprint page with the copyright notice and the line (c) Springer-Verlag Berlin Heidelberg 1984, 1998",
+      "rights_reason": "The PDF page 4 states that the work is subject to copyright with all rights reserved and carries the line (c) Springer-Verlag Berlin Heidelberg 1984, 1998, and holds no redistribution grant from the rights holder; the Crossref record lists only the Springer text-mining terms, which are no Creative Commons or public-domain grant. The held file is a DjVu scan converted to PDF, and the digest names the converted file. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "d1333fa2ced86549afe0cd850be3702a5001f795ddd21687832015e0cb6d71e1",
+        "verified_at_utc": "2026-11-13T23:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1007/978-1-4612-1700-8",
+        "evidence_sha256": "d1333fa2ced86549afe0cd850be3702a5001f795ddd21687832015e0cb6d71e1",
+        "evidence_locator": "Original PDF page 4, the Springer-Verlag imprint page with the copyright notice and the line (c) Springer-Verlag Berlin Heidelberg 1984, 1998",
+        "reading_scope": "Rights notice on the imprint page of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "Springer-Verlag copyright notice (c) 1984, 1998 with all rights reserved on the imprint page; no redistribution grant in the PDF; the Crossref record names only the Springer text-mining terms."
       }
     }
   ],
