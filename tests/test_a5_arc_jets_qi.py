@@ -120,3 +120,59 @@ def test_the_coordinate_valuation_drop_at_32009_leaves_e_and_v_in_place() -> Non
     cell = next(c for c in record["cells"] if c["target"] == "e8nm-p32009")
     drops = {row["index"]: row["drops"] for row in cell["coordinate_valuation_drops"]}
     _same(drops.get(2996), ["t2: valuation 3 over Q(i), 4 modulo p"])
+
+
+CELL = "e8nm-p32009"
+
+
+def _integer_lift(scale: int = 1) -> list[qi.Coefficients]:
+    """The modular generators of G read as integer polynomials: equal to G modulo p, outside G over Q(i)."""
+    _, modular_g, _ = jr.slice_ideals(CELL)
+    return [{exps: (Fraction(scale * int(c)), Fraction(0)) for exps, c in g.items()} for g in modular_g]
+
+
+def _has(problems: list[str], fragment: str) -> bool:
+    return any(fragment in problem for problem in problems)
+
+
+def test_check_arc_accepts_a_coordinate_drop_that_keeps_e() -> None:
+    row = qi.check_arc((CELL, 2996, [], []))
+    _same((row["e"], row["v"], row["problems"]), (2, 4, []))
+    _same(row["drops"], ["t2: valuation 3 over Q(i), 4 modulo p"])
+
+
+def test_check_arc_reports_a_lowered_e(monkeypatch: pytest.MonkeyPatch) -> None:
+    """p s added to t3 vanishes modulo p and lowers e = min val t_i from 2 to 1 over Q(i)."""
+    exact = qi.arc
+
+    def lowered(prime: int, sign9: int, idx: int, n: int) -> list[qi.Series]:
+        ts = exact(prime, sign9, idx, n)
+        ts[2] = ts[2] + qi.Series.terms(1, [prime], n)
+        return ts
+
+    monkeypatch.setattr(qi, "arc", lowered)
+    row = qi.check_arc((CELL, 0, [], []))
+    if not _has(row["problems"], "e = 1 over Q(i), 2 modulo p"):
+        raise AssertionError(row["problems"])
+
+
+def test_check_arc_reports_a_generator_that_vanishes_only_modulo_p() -> None:
+    """The integer lift has the modular jets and coefficients below s^v that p divides without being zero."""
+    row = qi.check_arc((CELL, 0, [], _integer_lift()))
+    if not _has(row["problems"], "coefficients of G below s^4 are nonzero over Q(i)"):
+        raise AssertionError(row["problems"])
+    if _has(row["problems"], "jet coefficients"):
+        raise AssertionError(row["problems"])
+
+
+def test_check_arc_reports_a_jet_that_differs_from_the_modular_one() -> None:
+    row = qi.check_arc((CELL, 0, [], _integer_lift(scale=2)))
+    if not _has(row["problems"], "jet coefficients do not reduce to the modular ones"):
+        raise AssertionError(row["problems"])
+
+
+def test_check_arc_reports_a_slice_generator_that_is_nonzero_on_the_arc() -> None:
+    t3: qi.Coefficients = {(0, 0, 1, 0, 0, 0, 0, 0, 0): (Fraction(1), Fraction(0))}
+    row = qi.check_arc((CELL, 0, [t3], []))
+    if not _has(row["problems"], "1 generators of J are nonzero on the arc"):
+        raise AssertionError(row["problems"])
