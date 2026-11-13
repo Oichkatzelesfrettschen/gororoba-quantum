@@ -5381,6 +5381,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/boost_fiber_variation.py --check docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json",
+      "name": "core-a5-boost-fiber-variation",
+      "seconds": 44.8,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --check docs/evidence/a5-kernel-attachments/partner-purity-result.json",
       "name": "core-761",
       "seconds": 1.0,

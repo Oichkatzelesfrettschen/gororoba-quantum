@@ -638,6 +638,30 @@ The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds 
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
+## Along the boost the four whole-space fibers into VB keep their shape at three sampled basepoints
+
+At a basepoint on `VB` the orbit of `G_2(C) x C^*` has dimension 6 in the 7-dimensional boundary orbit, and the
+missing direction is the boost `u -> c u + s v`, `v -> s u + c v` with `c^2 - s^2 = 1`, which preserves every
+stratum and has no lift to the kernel (the section above). [`boost_fiber_variation.py`](boost_fiber_variation.py)
+moves the retained `VB` basepoint of `Iso->VB`, `W8->VB`, `X+->VB` and `X-->VB` by the boosts
+`(c, s) = (5/4, 3/4)`, `(5/3, 4/3)` and `(13/12, -5/12)`, keeps the retained slice columns, and recomputes the
+Nakayama-reduced Rees special fiber over `Q(i)` and modulo 32003; the record is
+[`boost-fiber-variation-result.json`](boost-fiber-variation-result.json). **Observed:** at all sixteen basepoints
+(the retained one and three moved ones per incidence) the moved point lies on the `VB` orbit, the slice is
+complementary to it (rank 15 with the orbit tangent space), the germ keeps its dimension, and the special fiber
+is the whole projective space of the generators in both characteristics: `P^3` for `Iso`, `P^4` for `W8`, `P^2`
+for `X+` and `X-`, with embedding rank equal to the generator count. The selected Pfaffian coordinates are the
+same at every basepoint for `Iso`, `X+` and `X-`; for `W8` they are `8, 12, 16, 17, 18` at the retained basepoint
+and `3, 8, 12, 17, 18` at each moved one, so the retained `W8` basepoint is special for the selection and not for
+the fiber. A slice with one column removed has rank 14 and fails the check. The generation takes 45 seconds and
+204 MiB.
+
+The record samples the boost orbit. It compares no limiting plane between basepoints, so it does not decide
+whether the family of fibers over the boost orbit is a product; it covers neither `E8bar->VB`, whose fiber at the
+retained basepoint is the cubic and quartic threefold pair of the import table above, nor `E8bar->V`, where the
+Nakayama route ran 31 minutes at the retained basepoint without output and was stopped. A sampled basepoint whose
+fiber is a proper subvariety, or whose slice is not complementary, falsifies the observation.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
@@ -755,6 +779,8 @@ prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullit
     --check docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py \
     --check docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/boost_fiber_variation.py \
+    --check docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares

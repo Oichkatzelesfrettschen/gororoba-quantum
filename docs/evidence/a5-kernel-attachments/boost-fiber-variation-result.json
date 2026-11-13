@@ -1,0 +1,1319 @@
+{
+  "falsifier": "A sampled basepoint off the VB orbit or with a slice that is not complementary; a fiber other than the whole projective space in either characteristic; a selection that differs between the characteristics; or a slice with one column removed passing the complementarity check.",
+  "identity_boost_reproduces_the_retained_selection": true,
+  "incidences": [
+    {
+      "expected_fiber_projective_dimension_degree_components": [
+        3,
+        1,
+        1
+      ],
+      "incidence": "Iso->VB",
+      "pass": true,
+      "points": [
+        {
+          "boost_cosh_sinh": [
+            "1",
+            "0"
+          ],
+          "boundary_point": [
+            "-2",
+            "-2",
+            "-2",
+            "0",
+            "-2",
+            "0",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "-1",
+            "0",
+            "-1",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/4",
+            "3/4"
+          ],
+          "boundary_point": [
+            "-13/4",
+            "-13/4",
+            "-13/4",
+            "0",
+            "-13/4",
+            "0",
+            "0",
+            "0",
+            "-11/4",
+            "-11/4",
+            "-11/4",
+            "0",
+            "-11/4",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/3",
+            "4/3"
+          ],
+          "boundary_point": [
+            "-14/3",
+            "-14/3",
+            "-14/3",
+            "0",
+            "-14/3",
+            "0",
+            "0",
+            "0",
+            "-13/3",
+            "-13/3",
+            "-13/3",
+            "0",
+            "-13/3",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "13/12",
+            "-5/12"
+          ],
+          "boundary_point": [
+            "-7/4",
+            "-7/4",
+            "-7/4",
+            "0",
+            "-7/4",
+            "0",
+            "0",
+            "0",
+            "-1/4",
+            "-1/4",
+            "-1/4",
+            "0",
+            "-1/4",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  3,
+                  1
+                ]
+              ],
+              "embedding_rank": 4,
+              "fiber_projective_dimension_degree_components": [
+                3,
+                1,
+                1
+              ],
+              "germ_dimension": 4,
+              "selected_count": 4,
+              "selected_indices_one_based": [
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        }
+      ],
+      "selected_coordinates_change_along_the_boost": false
+    },
+    {
+      "expected_fiber_projective_dimension_degree_components": [
+        4,
+        1,
+        1
+      ],
+      "incidence": "W8->VB",
+      "pass": true,
+      "points": [
+        {
+          "boost_cosh_sinh": [
+            "1",
+            "0"
+          ],
+          "boundary_point": [
+            "1",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                8,
+                12,
+                16,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                8,
+                12,
+                16,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/4",
+            "3/4"
+          ],
+          "boundary_point": [
+            "5/4",
+            "0",
+            "5/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3/4",
+            "0",
+            "3/4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                3,
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                3,
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/3",
+            "4/3"
+          ],
+          "boundary_point": [
+            "5/3",
+            "0",
+            "5/3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "4/3",
+            "0",
+            "4/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                3,
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                3,
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "13/12",
+            "-5/12"
+          ],
+          "boundary_point": [
+            "13/12",
+            "0",
+            "13/12",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-5/12",
+            "0",
+            "-5/12",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                3,
+                8,
+                12,
+                17,
+                18
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  4,
+                  1
+                ]
+              ],
+              "embedding_rank": 5,
+              "fiber_projective_dimension_degree_components": [
+                4,
+                1,
+                1
+              ],
+              "germ_dimension": 5,
+              "selected_count": 5,
+              "selected_indices_one_based": [
+                3,
+                8,
+                12,
+                17,
+                18
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        }
+      ],
+      "selected_coordinates_change_along_the_boost": true
+    },
+    {
+      "expected_fiber_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "incidence": "X+->VB",
+      "pass": true,
+      "points": [
+        {
+          "boost_cosh_sinh": [
+            "1",
+            "0"
+          ],
+          "boundary_point": [
+            "0",
+            "-2",
+            "-2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/4",
+            "3/4"
+          ],
+          "boundary_point": [
+            "0",
+            "-13/4",
+            "-13/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-11/4",
+            "-11/4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/3",
+            "4/3"
+          ],
+          "boundary_point": [
+            "0",
+            "-14/3",
+            "-14/3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-13/3",
+            "-13/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "13/12",
+            "-5/12"
+          ],
+          "boundary_point": [
+            "0",
+            "-7/4",
+            "-7/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-1/4",
+            "-1/4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        }
+      ],
+      "selected_coordinates_change_along_the_boost": false
+    },
+    {
+      "expected_fiber_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "incidence": "X-->VB",
+      "pass": true,
+      "points": [
+        {
+          "boost_cosh_sinh": [
+            "1",
+            "0"
+          ],
+          "boundary_point": [
+            "0",
+            "-2",
+            "-2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-1",
+            "-1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/4",
+            "3/4"
+          ],
+          "boundary_point": [
+            "0",
+            "-13/4",
+            "-13/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-11/4",
+            "-11/4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "5/3",
+            "4/3"
+          ],
+          "boundary_point": [
+            "0",
+            "-14/3",
+            "-14/3",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-13/3",
+            "-13/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        },
+        {
+          "boost_cosh_sinh": [
+            "13/12",
+            "-5/12"
+          ],
+          "boundary_point": [
+            "0",
+            "-7/4",
+            "-7/4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-1/4",
+            "-1/4",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "fibers": [
+            {
+              "characteristic": 0,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            },
+            {
+              "characteristic": 32003,
+              "components_projective_dimension_degree": [
+                [
+                  2,
+                  1
+                ]
+              ],
+              "embedding_rank": 3,
+              "fiber_projective_dimension_degree_components": [
+                2,
+                1,
+                1
+              ],
+              "germ_dimension": 3,
+              "selected_count": 3,
+              "selected_indices_one_based": [
+                7,
+                8,
+                12
+              ]
+            }
+          ],
+          "pass": true,
+          "transversality": {
+            "closure_membership": "111111110000",
+            "orbit_dimension": 7,
+            "rank_of_orbit_tangent_with_slice": 15,
+            "slice_dimension": 8
+          }
+        }
+      ],
+      "selected_coordinates_change_along_the_boost": false
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "2923dcb2e0b5b8ff22c4d3e873d27429949d04abf08e8b2b562abf08c69f5bab",
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+    "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
+    "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280"
+  },
+  "mutation_control": {
+    "detected": true,
+    "input_change": "drop the last slice column of Iso->VB at the boost (5/4, 3/4)",
+    "name": "slice_with_one_column_removed",
+    "transversality": {
+      "closure_membership": "111111110000",
+      "orbit_dimension": 7,
+      "rank_of_orbit_tangent_with_slice": 14,
+      "slice_dimension": 7
+    }
+  },
+  "pass": true,
+  "schema": "a5-kernel-attachments-boost-fiber-variation-v1",
+  "scope": {
+    "claim_boundary": "Four points of a one-parameter orbit per incidence. The record compares no limiting plane between basepoints, covers neither E8bar->VB nor E8bar->V, and proves nothing at an unsampled boost.",
+    "statement": "At the retained VB basepoint and at its images under three rational boosts, the retained slice is complementary to the boundary orbit and the Nakayama-reduced Rees special fiber of Iso->VB, W8->VB, X+->VB and X-->VB is the whole projective space of its generators over Q(i) and modulo 32003."
+  }
+}
