@@ -341,6 +341,11 @@ def run_job(job: tuple[str, Family | bool, list[str]]) -> dict[str, Any]:
     return dict(arc_jets_qi.identity(slug, variables, what))
 
 
+def analyze_job(job: tuple[str, list[dict[str, Any]], dict[str, dict[str, int]]]) -> dict[str, Any]:
+    """The exact rank and span analysis of one target; the targets are independent."""
+    return analyze(*job)
+
+
 def compute() -> dict[str, Any]:
     slugs = list(TARGETS)
     variables = dict(zip(slugs, parallel.ordered_map(probe_variables, slugs, min_items=1), strict=True))
@@ -348,12 +353,13 @@ def compute() -> dict[str, Any]:
     jobs = [(slug, kind, variables[slug]) for slug in slugs for kind in kinds]
     runs = parallel.ordered_map(run_job, jobs, min_items=1)
     primes = quadric_primes()
-    targets = []
+    analyses = []
     for position, slug in enumerate(slugs):
         mine = runs[position * len(kinds) : (position + 1) * len(kinds)]
-        row = analyze(slug, mine[2:], {"arc": mine[0], "mutated": mine[1]})
+        analyses.append((slug, mine[2:], {"arc": mine[0], "mutated": mine[1]}))
+    targets = parallel.ordered_map(analyze_job, analyses, min_items=1)
+    for slug, row in zip(slugs, targets, strict=True):
         row["quadric_ideal_minimal_primes"] = primes[TARGETS[slug][1]]
-        targets.append(row)
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "field": "Q(i)",
