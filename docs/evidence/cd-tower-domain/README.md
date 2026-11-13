@@ -60,7 +60,11 @@ nonzero because 1 = 1 1 is nonnegative and 1 <> 0, and the coordinate tactic
 `vec` unfolds them before `ring`. `lia` remains only on the nat indices of
 `ext`. No proof decides equality on the coefficient domain, so neither
 `Z.eq_dec` nor `Req_dec` enters. No step uses associativity, alternativity
-or multiplicativity of the norm, which fail from level 4 on.
+or multiplicativity of the norm, which fail from level 4 on. The ring laws
+alone do not give `kernel_equality`: [cd-tower-ring](../cd-tower-ring/README.md)
+proves that over a commutative ring with a square root of -1 the swap holds
+at a level of at least 2 exactly when 2 = 0, and gives the form that holds
+over every commutative ring, ker R_a = conj(ker L_a) for pure a.
 
 Every theorem rests on the type theory that `rocq check` re-verifies
 ([kernel.txt](kernel.txt)) for the two bridge libraries together: the

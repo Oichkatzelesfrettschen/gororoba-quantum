@@ -3375,6 +3375,13 @@
     {
       "suite": "sources",
       "cwd": ".",
+      "cmd": "shellcheck docs/evidence/cd-tower-ring/replay_rocq.sh",
+      "name": "sources-cd-tower-ring-replay-shellcheck",
+      "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
       "seconds": 0.1
@@ -5421,6 +5428,34 @@
       ],
       "replays": [
         "docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-symmetry-algebra-qi",
+      "seconds": 240.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/symmetry-algebra-qi-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-stabilizer-action-qi",
+      "seconds": 160.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/stabilizer-action-qi-result.json"
       ]
     },
     {
