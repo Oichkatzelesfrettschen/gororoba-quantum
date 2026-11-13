@@ -5346,7 +5346,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/sheet-fiber-planes-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/sheet-fiber-planes-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-a5-sheet-fiber-planes",
       "seconds": 4.17,
       "requires": [
@@ -5404,7 +5404,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-765",
       "seconds": 60.0,
       "requires": [
@@ -5417,7 +5417,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-766",
       "seconds": 1.0,
       "requires": [
@@ -5430,7 +5430,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-767",
       "seconds": 8.0,
       "requires": [
@@ -5443,7 +5443,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_basepoints.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-768",
       "seconds": 640.0,
       "workers": 4,
@@ -5457,7 +5457,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-769",
       "seconds": 9000.0,
       "requires": [
@@ -5470,7 +5470,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; the singular-stack job of ci.yml replays this record\"; fi",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; fi",
       "name": "core-770",
       "seconds": 60.0,
       "requires": [

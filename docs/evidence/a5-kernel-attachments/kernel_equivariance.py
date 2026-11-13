@@ -1,10 +1,11 @@
-"""Equivariance of the holomorphic kernel map z -> ker C_z under a unipotent G_2 automorphism and the boost.
+"""Equivariance of the holomorphic kernel map z -> ker C_z under a product of unipotent G_2 automorphisms and the boost.
 
 C_z is linear in z in the original coordinates z_k = i^popcount(k) z'_k of holomorphic_kernel_lemma.py. A matrix g of
 the 15-dimensional representation acts on the kernel bundle when C_(g z) = rho^(-T) C_z rho^(-1) for one matrix rho,
-since then ker C_(g z) = rho ker C_z, and rho = g gives ker C_(g z) = g ker C_z. For the selected unipotent G_2
-automorphism of incidence_census.py, written in original coordinates, g^T g = I and the identity holds with rho = g
-on the 15 basis directions, hence for every z by linearity. The same identity with the split-coordinate matrix as
+since then ker C_(g z) = rho ker C_z, and rho = g gives ker C_(g z) = g ker C_z. For the product of unipotent G_2
+automorphisms that incidence_census.py selects (trace 12 on the 15-dimensional representation, so not itself
+unipotent), written in original coordinates, g^T g = I and the identity holds with rho = g on the 15 basis
+directions, hence for every z by linearity. The same identity with the split-coordinate matrix as
 rho, which omits the phase conjugation, leaves a nonzero residual; that is the mutation control. For the rational
 boost b(c, s) of verify_regularity_independent.py no candidate rho satisfies the identity, and ker C_(b z) differs from
 b ker C_z at six of the twelve canonical points, with the smallest witness at the canonical VB point.
@@ -175,8 +176,8 @@ def kernel_transport(split_point: list[Fraction], matrix: GaussianMatrix) -> tup
 
 
 @functools.cache
-def unipotent_matrices() -> tuple[GaussianMatrix, GaussianMatrix]:
-    """The selected unipotent G_2 automorphism in split and in original coordinates."""
+def g2_matrices() -> tuple[GaussianMatrix, GaussianMatrix]:
+    """The product of unipotent G_2 automorphisms of the census in split and in original coordinates."""
     split = split_matrix_of_automorphism(incidence_census._unipotent_automorphism())
     return split, to_original_coordinates(split)
 
@@ -192,11 +193,11 @@ def boost_matrices() -> tuple[GaussianMatrix, GaussianMatrix, GaussianMatrix, Ga
 
 def residual_task(name: str) -> tuple[str, int]:
     """The congruence residual of one named candidate rho against its group element."""
-    unipotent_split, unipotent_original = unipotent_matrices()
+    g2_split, g2_original = g2_matrices()
     boost_split, boost_original, _, boost_inverse_original = boost_matrices()
     candidates = {
-        "unipotent_rho_equals_g_original": (unipotent_original, unipotent_original),
-        "unipotent_rho_equals_g_split": (unipotent_split, unipotent_original),
+        "g2_rho_equals_g_original": (g2_original, g2_original),
+        "g2_rho_equals_g_split": (g2_split, g2_original),
         "boost_rho_equals_b_original": (boost_original, boost_original),
         "boost_rho_equals_b_original_inverse": (boost_inverse_original, boost_original),
         "boost_rho_equals_b_split": (boost_split, boost_original),
@@ -208,28 +209,28 @@ def residual_task(name: str) -> tuple[str, int]:
 
 def point_task(name: str) -> dict[str, Any]:
     """Kernel transport of both group elements at one canonical point, with the split-coordinate controls."""
-    _, unipotent_original = unipotent_matrices()
-    unipotent_split, _ = unipotent_matrices()
+    _, g2_original = g2_matrices()
+    g2_split, _ = g2_matrices()
     boost_split, boost_original, _, _ = boost_matrices()
     cosh, sinh = regularity.BOOST
     split_point = regularity.REPS[name]
     z = kernel_lemma._original_z_from_split(tuple(split_point))
-    unipotent_dim, unipotent_moved_dim, unipotent_equal, _ = kernel_transport(split_point, unipotent_original)
+    g2_dim, g2_moved_dim, g2_equal, _ = kernel_transport(split_point, g2_original)
     boost_dim, boost_moved_dim, boost_equal, intersection_dimension = kernel_transport(split_point, boost_original)
-    split_unipotent_equal = kernel_transport(split_point, unipotent_split)[2]
+    split_g2_equal = kernel_transport(split_point, g2_split)[2]
     split_boost_equal = kernel_transport(split_point, boost_split)[2]
-    moved_by_unipotent = regularity.act_g2(incidence_census._unipotent_automorphism(), split_point)
+    moved_by_g2 = regularity.act_g2(incidence_census._unipotent_automorphism(), split_point)
     moved_by_boost = regularity.act_boost(cosh, sinh, split_point)
     return {
         "point": name,
         "support_size_in_split_coordinates": sum(1 for value in split_point if value != 0),
-        "kernel_dimension": unipotent_dim,
-        "unipotent": {
-            "moved_kernel_dimension": unipotent_moved_dim,
-            "g_ker_equals_ker_of_gz": unipotent_equal,
-            "moved_point_equals_g_original_z": kernel_lemma._original_z_from_split(tuple(moved_by_unipotent))
-            == kernel_lemma._matrix_vector(unipotent_original, z),
-            "split_matrix_control_g_ker_equals_ker_of_gz": split_unipotent_equal,
+        "kernel_dimension": g2_dim,
+        "g2": {
+            "moved_kernel_dimension": g2_moved_dim,
+            "g_ker_equals_ker_of_gz": g2_equal,
+            "moved_point_equals_g_original_z": kernel_lemma._original_z_from_split(tuple(moved_by_g2))
+            == kernel_lemma._matrix_vector(g2_original, z),
+            "split_matrix_control_g_ker_equals_ker_of_gz": split_g2_equal,
         },
         "boost": {
             "moved_kernel_dimension": boost_moved_dim,
@@ -315,8 +316,8 @@ def orbit_task(
 
 def build_record() -> dict[str, Any]:
     residual_names = (
-        "unipotent_rho_equals_g_original",
-        "unipotent_rho_equals_g_split",
+        "g2_rho_equals_g_original",
+        "g2_rho_equals_g_split",
         "boost_rho_equals_b_original",
         "boost_rho_equals_b_original_inverse",
         "boost_rho_equals_b_split",
@@ -324,8 +325,8 @@ def build_record() -> dict[str, Any]:
     )
     residuals = dict(parallel.ordered_map(residual_task, residual_names, min_items=1))
     points = parallel.ordered_map(point_task, CANONICAL_POINTS, min_items=1)
-    _, unipotent_original = unipotent_matrices()
-    orthogonality = multiply_matrices(kernel_lemma._transpose(unipotent_original), unipotent_original)
+    _, g2_original = g2_matrices()
+    orthogonality = multiply_matrices(kernel_lemma._transpose(g2_original), g2_original)
     orthogonal = orthogonality == identity_matrix()
 
     nullity, projection_rank, projections = equivariance_system()
@@ -346,8 +347,8 @@ def build_record() -> dict[str, Any]:
         min_items=1,
     )
 
-    unipotent_equal = all(point["unipotent"]["g_ker_equals_ker_of_gz"] for point in points)
-    unipotent_consistent = all(point["unipotent"]["moved_point_equals_g_original_z"] for point in points)
+    g2_equal = all(point["g2"]["g_ker_equals_ker_of_gz"] for point in points)
+    g2_consistent = all(point["g2"]["moved_point_equals_g_original_z"] for point in points)
     boost_failures = [point["point"] for point in points if not point["boost"]["b_ker_equals_ker_of_bz"]]
     witnesses = {
         point["point"]: {
@@ -358,13 +359,13 @@ def build_record() -> dict[str, Any]:
         for point in points
         if point["point"] in WITNESS_POINTS
     }
-    controls_fail = all(not point["unipotent"]["split_matrix_control_g_ker_equals_ker_of_gz"] for point in points)
-    mutation_detected = residuals["unipotent_rho_equals_g_split"] > 0 and controls_fail
+    controls_fail = all(not point["g2"]["split_matrix_control_g_ker_equals_ker_of_gz"] for point in points)
+    mutation_detected = residuals["g2_rho_equals_g_split"] > 0 and controls_fail
     baseline_pass = (
         orthogonal
-        and residuals["unipotent_rho_equals_g_original"] == 0
-        and unipotent_equal
-        and unipotent_consistent
+        and residuals["g2_rho_equals_g_original"] == 0
+        and g2_equal
+        and g2_consistent
         and all(point["boost"]["moved_point_equals_b_original_z"] for point in points)
         and all(residuals[name] > 0 for name in residual_names if name.startswith("boost_"))
         and len(boost_failures) == 6
@@ -384,7 +385,7 @@ def build_record() -> dict[str, Any]:
         "scope": {
             "statement": (
                 "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the "
-                "selected unipotent G_2 automorphism of incidence_census.py, the rational boost of "
+                "product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of "
                 "verify_regularity_independent.py, and the twelve canonical points of that module"
             ),
             "claim_boundary": (
@@ -397,13 +398,14 @@ def build_record() -> dict[str, Any]:
                 "compatible with the kernel map are hypotheses of any off-slice conclusion."
             ),
         },
-        "unipotent_g2": {
+        "g2_element": {
+            "trace_in_original_coordinates": str(sum((g2_original[i][i][0] for i in range(DIMENSION)), Fraction(0))),
             "g_transpose_g_equals_identity_in_original_coordinates": orthogonal,
             "identity": "C_(g z) = g^(-T) C_z g^(-1), tested as g^T C_(g e_k) g = C_(e_k)",
             "basis_direction_count": DIMENSION,
-            "residual_nonzero_entries": residuals["unipotent_rho_equals_g_original"],
-            "kernel_transport_at_twelve_points": unipotent_equal,
-            "moved_points_agree_with_original_coordinate_action": unipotent_consistent,
+            "residual_nonzero_entries": residuals["g2_rho_equals_g_original"],
+            "kernel_transport_at_twelve_points": g2_equal,
+            "moved_points_agree_with_original_coordinate_action": g2_consistent,
         },
         "boost": {
             "parameters_cosh_sinh": [str(value) for value in regularity.BOOST],
@@ -430,7 +432,7 @@ def build_record() -> dict[str, Any]:
         },
         "orbit_table": orbit_rows,
         "computed": [
-            "the congruence residual for the unipotent automorphism with rho = g is zero on 15 basis directions",
+            "the congruence residual for the G_2 element g with rho = g is zero on 15 basis directions",
             "g^T g = I in original coordinates",
             "g ker C_z = ker C_(g z) at the twelve canonical points",
             "the residual of four candidate rho for the boost is nonzero",
@@ -447,16 +449,14 @@ def build_record() -> dict[str, Any]:
         "mutation_control": {
             "name": "split_coordinate_matrix_as_rho",
             "input_change": "use the split-coordinate matrix of g in place of its original-coordinate matrix as rho",
-            "residual_nonzero_entries": residuals["unipotent_rho_equals_g_split"],
+            "residual_nonzero_entries": residuals["g2_rho_equals_g_split"],
             "kernel_transport_lost_at_points": [
-                point["point"]
-                for point in points
-                if not point["unipotent"]["split_matrix_control_g_ker_equals_ker_of_gz"]
+                point["point"] for point in points if not point["g2"]["split_matrix_control_g_ker_equals_ker_of_gz"]
             ],
             "detected": mutation_detected,
         },
         "falsifier": (
-            "The unipotent congruence residual is nonzero, g^T g differs from I, or g ker C_z differs from "
+            "The congruence residual of the G_2 element g is nonzero, g^T g differs from I, or g ker C_z differs from "
             "ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals "
             "ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, "
             "omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix "

@@ -1,4 +1,4 @@
-"""Equivariance of ker C_z under the unipotent G_2 automorphism and the failure of it for the boost."""
+"""Equivariance of ker C_z under the census product of unipotent G_2 automorphisms; its failure for the boost."""
 
 from __future__ import annotations
 
@@ -20,22 +20,28 @@ def _same(found: object, expected: object) -> None:
         raise AssertionError((found, expected))
 
 
-def test_original_coordinate_matrix_of_the_unipotent_automorphism_is_complex_orthogonal() -> None:
-    _, original = ke.unipotent_matrices()
+def test_original_coordinate_matrix_of_the_g2_element_is_complex_orthogonal() -> None:
+    _, original = ke.g2_matrices()
     _same(ke.multiply_matrices(ke.kernel_lemma._transpose(original), original), ke.identity_matrix())
 
 
-def test_kernel_transport_holds_for_the_unipotent_element_and_fails_for_the_boost_at_vb() -> None:
+def test_the_census_g2_element_has_trace_12_and_is_therefore_not_unipotent() -> None:
+    _, original = ke.g2_matrices()
+    _same(sum((original[index][index][0] for index in range(ke.DIMENSION)), Fraction(0)), Fraction(12))
+    _same(all(original[index][index][1] == 0 for index in range(ke.DIMENSION)), True)
+
+
+def test_kernel_transport_holds_for_the_g2_element_and_fails_for_the_boost_at_vb() -> None:
     split_point = ke.regularity.REPS["VB"]
-    _, unipotent = ke.unipotent_matrices()
+    _, g2_element = ke.g2_matrices()
     _, boost, _, _ = ke.boost_matrices()
-    _same(ke.kernel_transport(split_point, unipotent), (7, 7, True, 7))
+    _same(ke.kernel_transport(split_point, g2_element), (7, 7, True, 7))
     _same(ke.kernel_transport(split_point, boost), (7, 7, False, 6))
 
 
 def test_the_split_coordinate_matrix_moves_the_kernel_at_a_point_where_the_original_one_does_not() -> None:
     split_point = ke.regularity.REPS["Va+"]
-    split, original = ke.unipotent_matrices()
+    split, original = ke.g2_matrices()
     _same(ke.kernel_transport(split_point, original)[2], True)
     _same(ke.kernel_transport(split_point, split)[2], False)
 

@@ -38,7 +38,7 @@
     }
   },
   "computed": [
-    "the congruence residual for the unipotent automorphism with rho = g is zero on 15 basis directions",
+    "the congruence residual for the G_2 element g with rho = g is zero on 15 basis directions",
     "g^T g = I in original coordinates",
     "g ker C_z = ker C_(g z) at the twelve canonical points",
     "the residual of four candidate rho for the boost is nonzero",
@@ -46,7 +46,16 @@
     "the dimension of the solution space of the infinitesimal system and the membership tests",
     "the tangent ranks of the table"
   ],
-  "falsifier": "The unipotent congruence residual is nonzero, g^T g differs from I, or g ker C_z differs from ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix leaves a zero residual.",
+  "falsifier": "The congruence residual of the G_2 element g is nonzero, g^T g differs from I, or g ker C_z differs from ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix leaves a zero residual.",
+  "g2_element": {
+    "basis_direction_count": 15,
+    "g_transpose_g_equals_identity_in_original_coordinates": true,
+    "identity": "C_(g z) = g^(-T) C_z g^(-1), tested as g^T C_(g e_k) g = C_(e_k)",
+    "kernel_transport_at_twelve_points": true,
+    "moved_points_agree_with_original_coordinate_action": true,
+    "residual_nonzero_entries": 0,
+    "trace_in_original_coordinates": "12"
+  },
   "inferred": [
     "the identity for every z follows from linearity of z -> C_z in the basis directions",
     "no rational one-parameter family rho(t) with rho(0) = I satisfies C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection"
@@ -65,7 +74,7 @@
   "inputs": {
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/incidence_census.py": "1ac6e43468e4cd6ad482533792437da898d0d89960532982126b98572c190a32",
-    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "c382085244757ba43f84ff8024778249134d6dbaa8aa6b73d3e70dbf989f95c1",
+    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "0cb3229dc6d6af2d7a231340e6f76e8cdcd647f9b37f1fe4e26c66175e6ee85a",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
     "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
@@ -210,15 +219,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 7,
-      "point": "B9",
-      "support_size_in_split_coordinates": 8,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 7,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 7,
+      "point": "B9",
+      "support_size_in_split_coordinates": 8
     },
     {
       "boost": {
@@ -228,15 +237,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 7,
-      "point": "V",
-      "support_size_in_split_coordinates": 3,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 7,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 7,
+      "point": "V",
+      "support_size_in_split_coordinates": 3
     },
     {
       "boost": {
@@ -246,15 +255,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 7,
-      "point": "VB",
-      "support_size_in_split_coordinates": 2,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 7,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 7,
+      "point": "VB",
+      "support_size_in_split_coordinates": 2
     },
     {
       "boost": {
@@ -263,16 +272,16 @@
         "moved_kernel_dimension": 7,
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "g2": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 7,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
       },
       "kernel_dimension": 7,
       "point": "Va+",
-      "support_size_in_split_coordinates": 2,
-      "unipotent": {
-        "g_ker_equals_ker_of_gz": true,
-        "moved_kernel_dimension": 7,
-        "moved_point_equals_g_original_z": true,
-        "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      "support_size_in_split_coordinates": 2
     },
     {
       "boost": {
@@ -282,15 +291,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 7,
-      "point": "Va-",
-      "support_size_in_split_coordinates": 2,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 7,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 7,
+      "point": "Va-",
+      "support_size_in_split_coordinates": 2
     },
     {
       "boost": {
@@ -299,16 +308,16 @@
         "moved_kernel_dimension": 9,
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "g2": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 9,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
       },
       "kernel_dimension": 9,
       "point": "N+",
-      "support_size_in_split_coordinates": 4,
-      "unipotent": {
-        "g_ker_equals_ker_of_gz": true,
-        "moved_kernel_dimension": 9,
-        "moved_point_equals_g_original_z": true,
-        "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      "support_size_in_split_coordinates": 4
     },
     {
       "boost": {
@@ -318,15 +327,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 9,
-      "point": "N-",
-      "support_size_in_split_coordinates": 4,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 9,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 9,
+      "point": "N-",
+      "support_size_in_split_coordinates": 4
     },
     {
       "boost": {
@@ -336,15 +345,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 5,
-      "point": "W8",
-      "support_size_in_split_coordinates": 2,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 5,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 5,
+      "point": "W8",
+      "support_size_in_split_coordinates": 2
     },
     {
       "boost": {
@@ -354,15 +363,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 5,
-      "point": "E8bar",
-      "support_size_in_split_coordinates": 7,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 5,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 5,
+      "point": "E8bar",
+      "support_size_in_split_coordinates": 7
     },
     {
       "boost": {
@@ -372,15 +381,15 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 5,
-      "point": "Iso",
-      "support_size_in_split_coordinates": 4,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 5,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 5,
+      "point": "Iso",
+      "support_size_in_split_coordinates": 4
     },
     {
       "boost": {
@@ -389,16 +398,16 @@
         "moved_kernel_dimension": 5,
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
+      },
+      "g2": {
+        "g_ker_equals_ker_of_gz": true,
+        "moved_kernel_dimension": 5,
+        "moved_point_equals_g_original_z": true,
+        "split_matrix_control_g_ker_equals_ker_of_gz": false
       },
       "kernel_dimension": 5,
       "point": "X+",
-      "support_size_in_split_coordinates": 4,
-      "unipotent": {
-        "g_ker_equals_ker_of_gz": true,
-        "moved_kernel_dimension": 5,
-        "moved_point_equals_g_original_z": true,
-        "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      "support_size_in_split_coordinates": 4
     },
     {
       "boost": {
@@ -408,31 +417,23 @@
         "moved_point_equals_b_original_z": true,
         "split_matrix_control_b_ker_equals_ker_of_bz": false
       },
-      "kernel_dimension": 5,
-      "point": "X-",
-      "support_size_in_split_coordinates": 4,
-      "unipotent": {
+      "g2": {
         "g_ker_equals_ker_of_gz": true,
         "moved_kernel_dimension": 5,
         "moved_point_equals_g_original_z": true,
         "split_matrix_control_g_ker_equals_ker_of_gz": false
-      }
+      },
+      "kernel_dimension": 5,
+      "point": "X-",
+      "support_size_in_split_coordinates": 4
     }
   ],
   "schema": "a5-kernel-attachments-kernel-equivariance-v1",
   "scope": {
     "claim_boundary": "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one boost element outside the four candidates, and a lift in another component, are not excluded. Equal tangent rank and orbit dimension is a first-order statement; the integration of the infinitesimal pairs to a group action on a neighborhood and a local product structure compatible with the kernel map are hypotheses of any off-slice conclusion.",
-    "statement": "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the selected unipotent G_2 automorphism of incidence_census.py, the rational boost of verify_regularity_independent.py, and the twelve canonical points of that module"
+    "statement": "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of verify_regularity_independent.py, and the twelve canonical points of that module"
   },
   "tools": {
     "python_flint": "0.9.0"
-  },
-  "unipotent_g2": {
-    "basis_direction_count": 15,
-    "g_transpose_g_equals_identity_in_original_coordinates": true,
-    "identity": "C_(g z) = g^(-T) C_z g^(-1), tested as g^T C_(g e_k) g = C_(e_k)",
-    "kernel_transport_at_twelve_points": true,
-    "moved_points_agree_with_original_coordinate_action": true,
-    "residual_nonzero_entries": 0
   }
 }

@@ -519,7 +519,8 @@ the 12-core build host. Evidence: [`sheet-fiber-planes-result.json`](sheet-fiber
 ## G_2 and scaling act on the holomorphic kernel, and the boost does not
 
 [`kernel_equivariance.py`](kernel_equivariance.py) tests which symmetries of the strata act on `ker C_z`. In original
-coordinates the unipotent `G_2` automorphism `g` of the census satisfies `g^T g = I` and
+coordinates the `G_2` automorphism `g` of the census, a product of three unipotent automorphisms with trace 12 and
+so not itself unipotent, satisfies `g^T g = I` and
 `C_(g z) = g^(-T) C_z g^(-1)` on the 15 basis directions, hence for every `z` by linearity, and
 `ker C_(g z) = g ker C_z` at the twelve canonical points. The boost `b` (`c = 5/4`, `s = 3/4`) preserves each
 nullity and fails the congruence for the four candidate matrices tested; `b ker C_z` differs from `ker C_(b z)` at
