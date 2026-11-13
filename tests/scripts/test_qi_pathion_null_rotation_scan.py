@@ -308,6 +308,7 @@ def test_evaluate_reads_an_over_rotation_whose_visibility_loss_spares_the_select
     _expect(decision["a5_186"].startswith("survives"), decision["a5_186"])
 
 
+@pytest.mark.audit
 @pytest.mark.parametrize("role", ["d2", "selector", "coin"])
 def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_readout_guard(role: str) -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
