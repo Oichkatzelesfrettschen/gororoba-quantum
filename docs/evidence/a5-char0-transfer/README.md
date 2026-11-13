@@ -357,13 +357,20 @@ the 14 and 9 linear forms of the two minimal primes of the quadric ideal over Q(
 **Inferred.** A relation f of degree d of the fiber cone has f(G) in J + m I^d in the local ring at the origin,
 so on an arc of V(J) through the
 origin with G of order nu the series f(G(x(s))) has order above d nu and f(F) = 0: every limit vector lies in V(L),
-L the relation ideal. The degree-2 part of L spans an ideal K_h with V(L) inside V(K_h). Under the premise of
-A5-423, that the fiber cone on the header slice is the fiber cone on the weight slice up to a linear change of
-generators, K_h has the two minimal primes of A5-421 over Q(i): P1 of dimension 5 and degree 11 and P2 of
-dimension 4 and degree 4. The closure Y1 of the order-5 limits is irreducible over Q(i) of dimension at least 5 in
-V(K_h), whose only component of that dimension is V(P1), so Y1 = V(P1). The closure Y2 of the first-order limits
-is irreducible of dimension at least 4, and holds a point outside the linear span of Y1 = V(P1), because the joint
-span 16 exceeds 12; so Y2 lies in V(P2) and equals it by dimension. Hence V(L) = V(P1) union V(P2) over Q(i). The
+L the relation ideal. The premise of A5-423 supplies an isomorphism, over the complex numbers, of the slice germs
+at the basepoint that carries the Pfaffian ideal of one slice onto that of the other; it induces a complex-linear
+change A of the 21 generators under which the degree-2 relations on the header slice become the 148 quadrics K of
+A5-421. Nothing shows that A is defined over Q(i), so the deduction runs over the complex numbers. There
+V(L) lies in the image under A of V(K) = V(P1) union V(P2), where P1 (dimension 5, degree 11) and P2 (dimension 4,
+degree 4) are prime over Q(i) and each is a union of conjugate geometric components of one dimension and degree.
+A nondegenerate irreducible variety has degree at least its codimension plus one. The closure Y1 of the order-5
+limits is geometrically irreducible of dimension at least 5, so it is a geometric component of the image of V(P1);
+it spans 12 dimensions, so its degree is at least 12 - 5 + 1 = 8, more than half of 11, and V(P1) has a single
+geometric component: Y1 is the whole image of V(P1). The closure Y2 of the first-order limits is geometrically
+irreducible of dimension at least 4 and holds a point outside the linear span of Y1, because the joint span 16
+exceeds 12; so it is a geometric component of the image of V(P2), of degree at least 7 - 4 + 1 = 4 = deg P2, and
+equals that image. Hence V(L) = Y1 union Y2, both geometrically irreducible and defined over Q(i): a fourfold of
+degree 11 and a threefold of degree 4 in projective terms. The
 [attachments record](../a5-kernel-attachments/README.md#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record)
 identifies the set of limits of the kernel with the complex points of this fiber, under its own premises (A5-411,
 A5-415 and A5-417, which rest on a closure theorem whose text is uninspected). Under those premises and the two

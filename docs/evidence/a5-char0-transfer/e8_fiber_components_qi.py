@@ -22,10 +22,12 @@ at (32009, i -> 10754) and (32029, i -> 9115) are compared, polynomial by polyno
 family logs. A control family, the order-5 family recentered at e = 2, has order 3 and rank 2: the order
 and the rank of the certified family belong to the center e = -1.
 
-Deduction, stated in the README beside this file: with the quadric ideal K of the fiber cone over Q(i) and its two
-minimal primes of dimension 5 and 4 (A5-421), rank 5 puts the closure of the order-5 limits onto the component of
-dimension 5, rank 4 together with a first-order limit outside the linear span of the order-5 limits puts the
-closure of the first-order limits onto the component of dimension 4, and V(L) is the union of the two.
+Deduction, stated in the README beside this file, over the complex numbers: the quadric ideal K of the weight
+slice (A5-421) has minimal primes of dimension 5, degree 11 and dimension 4, degree 4, and a complex-linear change
+of generators carries V(L) into V(K). A nondegenerate irreducible variety has degree at least its codimension plus
+one, so the order-5 closure (dimension 5, span 12, degree at least 8) is the whole component of degree 11, and the
+first-order closure (dimension 4, span 7, degree at least 4, with a point outside the span of the other) is the
+whole component of degree 4. `verdict` checks both degree bounds on the recorded numbers.
 
 `--write` writes e8-fiber-components-qi.json beside this file, `--check` recomputes and compares. Both need
 Singular 4.4 on PATH.
@@ -72,6 +74,9 @@ TARGETS = {
 }
 # (affine dimension, multiplicity, linear forms) of the two minimal primes of the quadric ideal over Q(i).
 EXPECTED_PRIMES = [[4, 4, 14], [5, 11, 9]]
+# The two spans (7 and 12) meet in 3 dimensions, where the components meet; the recentered family spans 2.
+EXPECTED_JOINT_SPAN = 16
+EXPECTED_CONTROL_SPAN = 2
 SOURCE_PATHS = (HERE / "e8_fiber_components_qi.py", HERE / "arc_jets_qi.py", HERE / "reduction_check.py")
 
 
@@ -188,7 +193,7 @@ def coefficients(poly: sp.Poly) -> dict[tuple[int, ...], tuple[Fraction, Fractio
 def complex_rank(rows: list[list[tuple[Fraction, Fraction]]]) -> int:
     """The rank over Q(i) of a matrix of pairs (real, imaginary): half the FLINT rank of the rational matrix of
     twice the size, [[A, -B], [B, A]] for A + B i."""
-    if not rows or not rows[0]:
+    if not rows or not any(rows):
         return 0
     width = len(rows[0])
     _require(all(len(row) == width for row in rows), "ragged matrix")
@@ -375,7 +380,7 @@ def verdict(record: dict[str, Any]) -> list[str]:
             problems.append(f"{name}: the quadric ideal has other minimal primes")
             continue
         rows = {row["family"]: row for row in target["families"]}
-        if sorted(rows) != sorted(family.name for family in FAMILIES):
+        if [row["family"] for row in target["families"]] != [family.name for family in FAMILIES]:
             problems.append(f"{name}: the families differ from the three of the script")
             continue
         # The minimal prime of affine dimension d has k linear forms and spans 21 - k dimensions; the family of
@@ -398,8 +403,18 @@ def verdict(record: dict[str, Any]) -> list[str]:
                 problems.append(f"{name} {family.name}: the reduction does not cover both primes")
             if any(entry["coordinates_that_differ"] for entry in row["reduction"]):
                 problems.append(f"{name} {family.name}: a reduced limit differs from the modular log")
-        if target["joint_span_dimension"] <= rows[ORDER_FIVE.name]["span_dimension"]:
-            problems.append(f"{name}: the first-order limits lie in the span of the order-5 limits")
+        if target["joint_span_dimension"] != EXPECTED_JOINT_SPAN:
+            problems.append(f"{name}: joint span {target['joint_span_dimension']}")
+        if rows[CONTROL.name]["span_dimension"] != EXPECTED_CONTROL_SPAN:
+            problems.append(f"{name}: control span {rows[CONTROL.name]['span_dimension']}")
+        # deg >= codimension + 1 for a nondegenerate irreducible variety: the order-5 closure must take more than
+        # half the degree of its prime, and the first-order closure the whole degree of its prime.
+        degree_of_dimension = {prime[0]: prime[1] for prime in primes}
+        five, first = rows[ORDER_FIVE.name], rows[FIRST_ORDER.name]
+        if 2 * (five["span_dimension"] - ORDER_FIVE.expected_rank + 1) <= degree_of_dimension[ORDER_FIVE.expected_rank]:
+            problems.append(f"{name}: the degree bound leaves room for a second component of dimension 5")
+        if first["span_dimension"] - FIRST_ORDER.expected_rank + 1 < degree_of_dimension[FIRST_ORDER.expected_rank]:
+            problems.append(f"{name}: the degree bound leaves room for a second component of dimension 4")
     return problems
 
 
