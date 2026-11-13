@@ -481,7 +481,9 @@ incidences with a completed Rees fiber is that whole fiber:
 
 The four one-point rows carry a canonical limiting six-plane on the slice germ. No retained arc ends at these
 basepoints, so no arc comparison enters, and the ten incidences from the nullity-8 sources (`E8bar`, `Iso`, `W8`,
-`X+`, `X-` into `N+` and `N-`) have no computed fiber and stay open. The boundaries of the previous section hold
+`X+`, `X-` into `N+` and `N-`) have no fiber in the nullity-16 Rees record; the
+[next section](#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record)
+imports their fibers from the exceptional-fiber record. The boundaries of the previous section hold
 here as stated for the slice germ; the
 [equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) removes the
 last two at the `N+` and `N-` basepoints, where the limits along paths that leave the slice are limits along the
@@ -491,6 +493,71 @@ the eight fibers, a source closure with an equation in
 `conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
 Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
+
+## The ten blocked fibers into nullity 16 are the fiber cones of the exceptional-fiber record
+
+The special fiber of the Rees algebra of the Nakayama generator ideal `(G)` on the germ `V(J)` is `Proj F`,
+`F = sum_d (G)^d / m (G)^d`. That graded ring is the fiber cone `F(I)` which
+[`../a5-exceptional-fibers`](../a5-exceptional-fibers/README.md) determines degree by degree, by rank computations
+and arc families, from headers that [`fiber_inputs.py`](fiber_inputs.py) emits from the phase-one script of
+`nullity16_rees_fibers.py`. The elimination that reaches the 300-second limit and the degree-by-degree record
+therefore compute one object from one `J` and one `G`. [`nullity8_fiber_import.py`](nullity8_fiber_import.py)
+regenerates the header of each of the ten blocked incidences and of `E8bar->VB` at the cells
+`(32009, i = 10754)`, `(32009, i = 21255)` and `(32029, i = 9115)` and writes
+[`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json). **Observed:** 31 of 31 regenerated
+headers equal the retained file byte for byte; the selected Pfaffian coordinates are the same at every cell and
+equal the chosen coordinates of the nullity-16 record; the generator count equals that record's Nakayama count and
+embedding rank. The header regenerated at `i = 21255` differs from the retained header at `i = 10754` at all nine
+incidences that have both, so the comparison detects the conjugate embedding. The generation takes 74 seconds and
+124 MiB of resident memory on twelve cores, against the eliminations the exceptional-fiber ledger records as
+exhausted (`A5-042`, `A5-048`, `A5-070`, `A5-071`, `A5-328`).
+
+| Incidences | Generators | Fiber `V_+(K2)`: projective dimension, degree, reduced components | `F = k[y]/K2` decided | Characteristic 0 |
+| --- | ---: | --- | --- | --- |
+| `X+->N-`, `X-->N+` | 3 | 2, 1: the plane `P^2`, `K2 = 0` | every degree at 32009 and 32029 (`A5-001`) | decided: `Q(i)[y1, y2, y3]` (`A5-270`) |
+| `X+->N+`, `X-->N-` | 15 | 3, 12: one threefold; the scheme has nilpotents `y1`, `y5`, `y6` | every degree (`A5-304`) | decided: 69 quadrics over `Q(i)` reducing to `K2` (`A5-305`) |
+| `Iso->N+`, `Iso->N-` | 17 | 4, 23: one geometrically prime fourfold, Cohen-Macaulay | every degree (`A5-007`, `A5-067`) | open: dimension at least 5 and the 68 quadrics (`A5-293`, `A5-294`) |
+| `W8->N+`, `W8->N-` | 24 | 5, 50: two fivefolds of degrees 20 and 30, Cohen-Macaulay | every degree (`A5-008`, `A5-066`) | open: dimension at least 6 (`A5-293`) |
+| `E8bar->N+`, `E8bar->N-` | 21 | 4, 11: a fourfold of degree 11 and a threefold of degree 4 | degrees 1 to 7 (`A5-009`, `A5-335`, `A5-339`) | open: lower bounds on `h_d` for `d` at most 7 (`A5-346`) |
+| `E8bar->VB` | 10 | 3, 7: threefolds of degrees 3 and 4, Cohen-Macaulay | every degree (`A5-005`) | open: the 21 quadrics at 32029 (`A5-315`) |
+
+The record binds, for each row, the Hilbert and Cohen-Macaulay rows of `k2-hilbert.jsonl` and `k2-cm.jsonl` and the
+status of each deciding ledger row; a status that changes in the ledger fails the record until it is regenerated.
+The results on the `N+` header pass to the `N-` header by the sign automorphism `phi(a, b) = (a, -b)` (`A5-013`).
+`X+->N+` has no retained `K2` at 32009.
+
+**Inferred:** the limiting kernel planes form the fiber itself. The nullity-16 record expresses all 126 principal
+four-Pfaffians of the rank-four Schur form, the Pluecker coordinates of the limiting plane, as a constant matrix
+applied to the selected generators modulo `m (G)`, of rank equal to the generator count over `Q(i)` and modulo
+32009. The map from `Proj F` to the Grassmannian is therefore the restriction of a linear embedding of
+`P^(g - 1)` into `P^125`: it is injective on the whole fiber and its image is `V_+` of the defining ideal of `F`
+in those linear coordinates. The sampled kernel-limit records of the exceptional-fiber track (`A5-272` to
+`A5-275`, `A5-292`, `A5-296`) are instances.
+
+### Real limit sets of the ten incidences
+
+The deduction of the two previous sections applies with `ker C_z` of dimension 5 inside the 9-dimensional
+`ker C_(z_0)`: the limits of the bordered kernel are the planes `P meet z_0^perp` in `Gr(4, K_0)`, `K_0` of
+dimension 8, for `P` in the closed-graph fiber, and the
+[equivariance record](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) makes the limits
+along every sequence in the source stratum the limits along the slice germ at the `N+` and `N-` basepoints. The
+closed-graph fiber is the set of complex points of `Proj` of the fiber cone over `Q(i)`. **Inferred:** for
+`X+->N-` and `X-->N+` the real limit set is the complex plane `P^2`, and for `X+->N+` and `X-->N-` it is the set
+of complex points of the degree-12 threefold cut out by the 69 quadrics of `A5-305`; both statements rest on the
+closure theorem cited above, whose text is uninspected. For `Iso`, `W8` and `E8bar` the same deduction identifies
+the real limit set with the complex points of the characteristic-0 fiber, and that fiber is determined modulo
+32009 and 32029 only: its dimension is at least that of the modular fiber for `Iso` and `W8` (`A5-293`), and no
+record decides its equations over `Q(i)`. A fiber cone over `Q(i)` for one of these three sources, by the route of
+`A5-270` and `A5-305` (a parametrization of the germ in which `(G)` becomes monomial or a regular sequence times
+a unit), closes the corresponding row.
+
+Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
+[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
+[`../a5-exceptional-fibers/working/build/inputs`](../a5-exceptional-fibers/working/build/inputs), and the
+[ledger](ledger.md#ledger-rows). A regenerated header that differs from its retained file, a selection that differs
+from the nullity-16 record, a changed Hilbert row or deciding status, a generator of the defining ideal of the
+`E8bar` fiber cone in degree 8 or above, or a fiber cone over `Q(i)` whose reduction differs from `K2` falsifies
+the corresponding statement.
 
 ## Each E8-bar sheet at Va carries one fiber plane, and an exact arc reaches the first
 
@@ -686,6 +753,8 @@ prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
     docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py --self-test
 prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py \
     --check docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py \
+    --check docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares
