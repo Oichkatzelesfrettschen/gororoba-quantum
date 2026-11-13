@@ -550,9 +550,13 @@ the real limit set with the complex points of the characteristic-0 fiber, and th
 32009 and 32029, and over `Q(i)` as far as the
 [weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
 the whole fiber cone of `Iso->N+` and `Iso->N-` (`A5-429`), the quadrics, Hilbert numerator and minimal primes of
-the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-430`), and `h_1` to `h_7` of `E8bar`
-(`A5-423`), and the whole fiber cone of `W8->N+` and `W8->N-` by one arc family in each component (`A5-431`).
-Open are both components of `E8bar` above degree 7 (`A5-418`).
+the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-430`), `h_1` to `h_7` of `E8bar`
+(`A5-423`), the whole fiber cone of `W8->N+` and `W8->N-` by one arc family in each component (`A5-431`), and,
+conditional on `A5-421` and the slice premise of `A5-423`, the complex point set of the `E8bar` fiber, the union of
+both components of its quadric scheme after a complex-linear change of generators
+([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
+`A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open is the
+scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-432` shows is not reduced.
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
