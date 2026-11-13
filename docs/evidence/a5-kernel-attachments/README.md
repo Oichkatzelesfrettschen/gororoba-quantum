@@ -394,6 +394,70 @@ characteristic agreement and the detected mutation. It certifies no fiber for th
 and no attaching map. A completed modular fiber for a blocked row, a characteristic disagreement, a standard basis
 point inside an embedding span, or a surviving mutation falsifies it.
 
+## On the retained slice germ the real limit set at fourteen incidences is the whole holomorphic fiber
+
+For every nonzero doubly pure `z`, the kernel of the bordered matrix is the Hermitian complement of `z` in
+`ker C_z`: the partner-purity identities (`C_z` skew, `C_z z = 0`, hence `a z^T conjugate(z) = 0` and `a = 0`) leave
+the equations `C_z u = 0` and `conjugate(z)^T u = 0`, and `conjugate(z)^T z > 0` gives
+`ker C_z = C z (+) ker A(z, conjugate(z))`. The identity holds at every point, where the
+[holomorphic-kernel record](holomorphic-kernel-lemma-result.json) verified it at 110 samples.
+
+Three consequences follow at a boundary point `z_0` with `K_0 = ker C_(z_0) meet z_0^perp`.
+
+1. **Inferred:** the map `P -> P meet z^perp` on planes through `z` is continuous in `(z, P)`, and every limit of
+   `ker C_z` along `z -> z_0` contains `z_0`. The limits of the bordered kernel are therefore the planes
+   `P meet z_0^perp` for `P` a limit of the holomorphic kernel, and `P -> P meet z_0^perp` identifies the 5-planes of
+   `ker C_(z_0)` through `z_0` with `Gr(4, K_0)`.
+2. **Inferred:** the five source closures are complex-algebraic subvarieties cut out by holomorphic polynomials in
+   `z` alone (`strata_regularity.py`, the generators of `W8`, `Ehat`, `Iso`, `Xp` and `Xm`), each named source is
+   the dense locally closed orbit in its closure, and the doubly pure real locus is all of `C^15`. The graph of
+   `z -> ker C_z` over the source germ is therefore a complex constructible set, whose Zariski closure equals its
+   closure in the classical topology (Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1), so
+   every point of the computed fiber lies in the Euclidean closure of the graph. The graph is also a real
+   semialgebraic set, and the curve selection lemma
+   ([Basu and Roy, Theorem 1](../../notes/1803.00505.md)) gives a continuous semialgebraic path that starts at the
+   fiber point and lies in the graph for positive parameter. Its `z` component is an arc of real A_5 points in the
+   source, and the kernel along it converges to the fiber point. Every point of the holomorphic fiber is a real
+   limit on the slice germ.
+3. **Inferred:** a limit along any arc in the same slice germ lies in the closed graph fiber, so on that germ the
+   fiber excludes every other plane.
+
+[`real_limit_sets.py`](real_limit_sets.py) verifies the identities symbolically, checks the splitting exactly at
+`z = e_1 + i e_2` (kernel dimension 7, Hermitian complement 6), and collects the fourteen computed fibers in
+[`real-limit-sets-result.json`](real-limit-sets-result.json). On all 29 retained arcs of these incidences the
+holomorphic limit equals the retained bordered limit plus the boundary line. The record's `pass` covers these
+computed checks; the three consequences are deductions from them and the two cited theorems. On the retained
+transverse slice germ at each selected basepoint, the real limit set in `Gr(4, K_0)` is:
+
+| Incidence | Real limit set on the slice germ: projective dimension, degree, components |
+| --- | --- |
+| E8-bar to `B9` | 1, 2, 1 |
+| E8-bar to `V` | 2, 2, 2 |
+| E8-bar to `V^a_+`, E8-bar to `V^a_-` | 2, 2, 2 (two disjoint planes) |
+| `Iso` to `B9` | 1, 1, 1 |
+| `Iso` to `VB` | 3, 1, 1 (a `P^3`) |
+| `W8` to `B9` | 2, 1, 1 |
+| `W8` to `VB` | 4, 1, 1 (a `P^4`) |
+| `X_+` to `B9`, `X_-` to `B9` | 0, 1, 1 (the canonical plane) |
+| `X_+` to `VB`, `X_-` to `VB` | 2, 1, 1 (a `P^2`) |
+| `X_+` to `V^a_+`, `X_-` to `V^a_-` | 2, 2, 2 |
+
+The first plane of E8-bar to `V^a_+` and to `V^a_-` is a real limit by consequence 2, and no retained arc reaches
+it; an exact arc on the first sheet is the open constructive witness. Each fiber is computed on the retained
+transverse slice at the selected path-supported basepoint. The record does not cover E8-bar to `VB`, whose fiber is
+the open Rees elimination; the variation of a fiber along its boundary orbit; or the exclusion of limits along arcs
+that leave the slice, which holds where the boundary orbit carries a local product structure that acts on `ker C_z`
+(hypothesis: the complexified automorphism group supplies it, since an automorphism `g` gives
+`ker C_(g z) = g ker C_z`).
+
+The falsifier is a failed identity; a failed Hermitian splitting at an exact point; a retained arc whose holomorphic
+limit differs from its bordered limit plus the boundary line; a source stratum whose equations involve
+`conjugate(z)`; or a fiber invariant on which the two characteristics disagree. Replacing the Hermitian pairing by
+the bilinear pairing `z^T u` at the isotropic point `e_1 + i e_2` puts `z` in its own complement, and the splitting
+fails. The `--out` run took 1.5 seconds wall time and 77,448 KiB peak resident memory. Evidence:
+[`real_limit_sets.py`](real_limit_sets.py), [`real-limit-sets-result.json`](real-limit-sets-result.json), and the
+[ledger](ledger.md#ledger-rows).
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
