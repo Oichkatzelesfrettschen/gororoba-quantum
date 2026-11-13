@@ -145,10 +145,132 @@ on a double overlap the transition is the target frame restricted to the source 
 
 This is a fixture-level chart and coordinate certificate, not the requested nullity-four classification. It does not
 give equations for the Gauss image over the nine- and eleven-dimensional moduli, a finite cover of those moduli by
-explicit parameter charts, global transition functions, stabilizer jumps, or a bundle class. The next decisive
-bounded computation is elimination of the moduli parameters against these 120 Plucker coordinates, one component
-and one chart at a time; its falsifier is a transition outside the claimed structure group or two exact points with
-the same proposed moduli invariants and different Plucker images.
+explicit parameter charts, global transition functions, stabilizer jumps, or a bundle class. The
+[section below](#the-nullity-4-kernel-gauss-map-factors-through-the-planes-of-the-three-planes-ker-mz) measures the
+image modulo 32029: its dimension, its linear span and its quadric equations on each stratum. The falsifier of a
+classification stays a transition outside the claimed structure group or two exact points with the same proposed
+moduli invariants and different Plucker images.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --check` (exact). The producer
 uses the repository worker cap through `parallel.ordered_map`; the 66 fixtures are independent.
+
+
+## The nullity-4 kernel Gauss map factors through the planes of the three-planes ker M(z)
+
+The bordered matrix `A(z, w)` has first row `-w` and lower 15 x 15 skew block `M(z)`, linear in `z`; a real point has
+`w = conjugate(z)`. [`nullity4_gauss_image.py`](nullity4_gauss_image.py) takes `z` and `w` as independent
+variables and computes modulo 32029 with `i = 9115`, at points fixed by a hash of a label and a counter; the
+record is [`nullity4-gauss-image-result.json`](nullity4-gauss-image-result.json).
+
+**Observed (`A5-429`), modulo 32029 at four points of each stratum:** `M(z)` has rank 12 and `z` lies in its
+kernel; `A(z, w)` has rank 14 for each of three sampled `w` off the stratum and one on it; `ker A(z, w)` has first
+coordinate zero, lies in `ker M(z)` and is orthogonal to `w`. At a point off both hypersurfaces `M(z)` has rank 14
+with kernel `z` and `A(z, w)` is invertible. In characteristic 0 the retained exact record agrees at its 66 real
+fixtures: the 15 Plucker coordinates `p_(0 j)` vanish at each.
+
+**Proved, in any characteristic other than 2, from rank `M(z)` = 12:** write `K = ker M(z)`. `M` is skew, so its
+image is `K-perp`. A vector `(a, x)` lies in `ker A(z, w)` exactly when `w . x = 0` and `M x = -a w`. When `w` is
+nonzero on `K`, `w` lies outside the image of `M`, so `a = 0` and `ker A(z, w) = {0} x (K n w-perp)`, a plane of
+the three-plane `K`: the Gauss map lands in `Gr(2, 15)`. At a real point `w = conjugate(z)` and `z` lies in `K`
+with `w . z = |z|^2 > 0`, so the condition holds at every real point of the strata. When `w` vanishes on `K`
+(`w = 0` is one case) a kernel vector with `a = 1` exists and the statement fails.
+
+| Stratum | Complex dimension of the projective stratum | Rank of `z -> ker M(z)` | Rank of the Gauss map | Rank of the pair (Gauss map, conjugate Gauss map) | Span of 300 sampled planes in `P^104` | Quadrics vanishing on 6,100 sampled planes |
+|---|---:|---:|---:|---:|---:|---:|
+| `V(Q)` minus `V(G)` | 13 | 13 | 15 | 26 | 105 | 1,678 |
+| `V(G)` minus `V(Q)` | 13 | 13 | 15 | 26 | 105 | 1,543 |
+| `V(Q) n V(G)` | 12 | 10 | 12 | 24 | 90 | 2,940 |
+
+These ranks are computed at independent pairs `(z, w)` of sampled points, `w` on the conjugate stratum: they are
+ranks of the complexified maps at the sampled pairs, and the rank of the Gauss map is the same with `w` free. The
+quadric count is 5,565 monomials in the 105 Plucker coordinates minus the rank of their values at 6,100 sampled
+planes, and the rank is the same at 5,800; the Plucker ideal of `Gr(2, 15)` has 1,365 quadrics. A quadric that
+vanishes on the image vanishes on the sampled planes, so each count is an upper bound for the quadrics of the
+image, and 105 and 90 are lower bounds for the dimension of its linear span.
+
+**Proved (`A5-430`): the fibers are linear.** `A(z, w)` is linear in `(z, w)`, so the pairs whose kernel plane
+is a given `P` and whose conjugate kernel plane is a given `P'` lie in the linear space
+`L = {(z, w): A(z, w) P = 0, A-bar(w, z) P' = 0}`, which contains the scalings of `z` and of `w`. `P` and `P'`
+have first coordinate zero, so `L = L_z x L_w` with `L_z = {z: M(z) P = 0, z perpendicular to P'}` and
+`L_w = {w: M-bar(w) P' = 0, w perpendicular to P}`. Every `z` in `L_z` has `P` in `ker M(z)`, so `M(z)` has rank
+at most 12, and the identity `P_j = Q G z_j` (`A5-364`) gives `Q(z) G(z) = 0`. `L_z` is irreducible and lies in
+one hypersurface. On `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)`, therefore, the fiber of the pair (Gauss map,
+conjugate Gauss map) through a pair of the stratum is an open subset of `L`, and the differential of the pair has
+rank at most the tangent dimension minus `dim L`. On `V(Q) n V(G)` the same holds where `L` lies in both
+hypersurfaces, as at the two exact fixtures, where `L` is the plane of scalings. At a real point the conjugation
+`(z', w') -> (conjugate(w'), conjugate(z'))` preserves `L` and exchanges `L_z` and `L_w`, so the real fiber has
+real dimension `dim L` and its image in the projective stratum is an open subset of the projective space of
+`L_z` (the points on the other hypersurface or of lower rank are removed), of real dimension `dim L - 2`.
+
+**At the 66 exact real fixtures, on the real locus `w' = z'`:** the differentials are computed modulo 32029,
+where the rank of the pair is a lower bound for the rank over the reals of `z -> ker A(z, conjugate(z))` in
+characteristic 0 (the pivot block is invertible modulo the prime and the tangent space keeps its dimension);
+`dim L` is exact over `Q(i)`; the orbit rank of the 18-dimensional kernel symmetry algebra and the nullity of the
+kernel vectors are exact over `Q`.
+
+| Stratum | Fixtures | Orbit rank | Rank of `z -> ker M(z)` | Rank of the Gauss map | Real rank | `dim L` | Nullity of the kernel vectors | Fixtures sharing a kernel plane |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `V(Q)` minus `V(G)` | 3 | 16 | 13 | 15 | 26 | 2 | 4 | 0 |
+| `V(Q)` minus `V(G)` | 9 | 13 | 13 | 15 | 26 | 2 | 4 | 0 |
+| `V(G)` minus `V(Q)` | 23 | 16 | 13 | 15 | 26 | 2 | 4 | 0 |
+| `V(G)` minus `V(Q)` | 13 | 13 | 13 | 13 | 22 | 6 | 12 | 10 |
+| `V(G)` minus `V(Q)` | 16 | 13 | 13 | 10 | 16 | 12 | 16 | 12 |
+| `V(Q) n V(G)` | 2 | 16 | 10 | 12 | 24 | 2 | 4 | 0 |
+
+In every row the real rank modulo 32029 equals the tangent dimension (28, 28, 26) minus the exact `dim L`, so it
+is the real rank in characteristic 0 (`A5-430`). At the 37 fixtures with `dim L = 2` the real Gauss map is an
+immersion of the projective stratum. Through each of the other 29 it has a linear fiber of real dimension 4 or 10.
+The nullity column is the least nullity, as elements of the algebra, among six vectors of the real kernel of left
+multiplication by the fixture: where the fiber is large, the six sampled kernel vectors are zero divisors of a
+deeper stratum, which bounds the nullity of a general kernel vector from above only (`A5-433`, part c).
+
+**Proved in characteristic 0 (`A5-431`): the real Gauss map is not injective on `V(G)` minus `V(Q)`.** The
+retained fixture record gives the normalized Plucker vector of the kernel plane at each fixture; the 66 fixtures
+are 66 projective points and carry 54 planes. Ten planes are each shared by two or three fixtures, 22 in all, each
+with `dim L` of 6 or 12; the split points `e_1 + t (e_8 + e_9) + e_13` for `t` = 1, 2, 3 are one example.
+
+**Refuted (`A5-432`): "`dim L > 2` exactly at orbit rank 13".** The fixtures of `V(G)` minus `V(Q)` and of
+`V(Q) n V(G)` fit that statement. A grid of 41,616 integer points `e_1 + a e_2 + b e_3 + m e_8 + v` (`v` with
+at most three nonzero coordinates among `e_9..e_15`) has 3,687 points of nullity 4, classified modulo 32029 on the
+real locus:
+
+| Stratum | Orbit rank | `dim L` | Nullity of a kernel vector | Grid points |
+|---|---:|---:|---:|---:|
+| `V(Q)` minus `V(G)` | 13 | 2 | 4 | 371 |
+| `V(Q)` minus `V(G)` | 16 | 2 | 4 | 1,725 |
+| `V(G)` minus `V(Q)` | 13 | 6 | 12 | 61 |
+| `V(G)` minus `V(Q)` | 13 | 12 | 16 | 78 |
+| `V(G)` minus `V(Q)` | 16 | 2 | 4 | 1,042 |
+| `V(G)` minus `V(Q)` | 16 | 2 | 12 | 8 |
+| `V(G)` minus `V(Q)` | 16 | 12 | 16 | 14 |
+| `V(Q) n V(G)` | 16 | 2 | 4 | 384 |
+| `V(Q) n V(G)` | 16 | 6 | 12 | 4 |
+
+Rows 7 and 9 are points of orbit rank 16, the maximum and therefore exact, with a large fiber. Row 1 has orbit
+rank 13 modulo 32029, a lower bound for the exact rank, with the smallest fiber; the exact leg of that direction
+is the 9 exact fixtures of `V(Q)` minus `V(G)` with orbit rank 13 and `dim L = 2`. At the 26 points of rows 6, 7
+and 9 `dim L` is recomputed exactly over `Q(i)` and the kernel nullity exactly over `Q`, and both agree.
+
+**Inferred, modulo 32029:** on `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)` the three-planes `ker M(z)` form a
+family of dimension 13, the projective dimension of the stratum, and the Gauss image is the projection to
+`Gr(2, 15)` of the bundle of pairs `(K, P)`, `P` a plane of the three-plane `K = ker M(z)`; the image has
+dimension 15 in the 26-dimensional `Gr(2, 15)`. The projection is not injective: two exact fixtures that share a
+kernel plane (`A5-431`) have different three-planes, which span a 4-space. On `V(Q) n V(G)` the three-plane map has
+fibers of dimension 2 and the image has dimension 12.
+
+`hypothesis` (`A5-433`, open): on `V(G)` minus `V(Q)` every real point of orbit rank 13 has `dim L` of 6 or 12
+(139 grid points with the orbit rank modulo 32029, 29 fixtures); on `V(Q)` minus `V(G)` every real point has `dim L = 2` (2,096 grid points, 12
+fixtures); a real point with `dim L` of 6 or 12 has kernel vectors of nullity 12 or 16 (157 grid points, 29
+fixtures), and row 6 shows that nullity 12 does not force a large fiber. The grid is one integer family; the
+record holds no equations for the locus `dim L > 2` and no real point with non-real split coordinates.
+
+`hypothesis` (`A5-434`, open): the sampled planes span the quadrics of each image, so that the images carry 313,
+178 and 1,575 quadric equations beyond the Plucker quadrics, the first two images differ and the third lies in a
+linear space of codimension 15; the record holds no certificate that the deterministic samples are general for
+degree 2. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
+each stratum outside a proper closed subset.
+
+The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
+no bundle class. Each ledger row names its falsifier.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 2 minutes 11 seconds of wall time, 215 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
