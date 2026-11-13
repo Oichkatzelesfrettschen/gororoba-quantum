@@ -5782,6 +5782,20 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-fiber-components-qi",
+      "seconds": 722.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-char0-transfer/e8-fiber-components-qi.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "timeout -k 10 120 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d1.json && timeout -k 10 120 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d2.json && timeout -k 10 120 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d3.json && timeout -k 10 240 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d4.json && timeout -k 10 540 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d5.json && timeout -k 10 960 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32009-d6.json && timeout -k 10 540 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32029-d5.json && timeout -k 10 960 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8nm-p32029-d6.json && timeout -k 10 120 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d1.json && timeout -k 10 120 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d2.json && timeout -k 10 120 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d3.json && timeout -k 10 300 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d4.json && timeout -k 10 540 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d5.json && timeout -k 10 1080 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d6.json && timeout -k 10 660 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d5.json && timeout -k 10 1440 \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py --check docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d6.json",
       "name": "core-a5-e8-arc-jet-rank",
       "seconds": 2430.0,
