@@ -909,7 +909,7 @@ same-sign `X` because their closures are cut out by forms that the boost preserv
 A stabilizer element without a matrix, an image outside `g`, a bracket that fails, a grading image that differs
 from the weight derivation, an image that misses the Levi factor, or a diagonal control with a matrix falsifies the
 record. Evidence: [`stabilizer-action-qi-result.json`](stabilizer-action-qi-result.json) and the
-[ledger](ledger.md#ledger-rows). The replay takes 4 minutes 26 seconds of wall time, 429 CPU seconds and
+[ledger](ledger.md#ledger-rows). The replay takes 2 minutes 34 seconds of wall time and
 0.47 GiB on two workers under a 12 GiB memory scope (Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, Singular
 4.4.1) on the build host.
 

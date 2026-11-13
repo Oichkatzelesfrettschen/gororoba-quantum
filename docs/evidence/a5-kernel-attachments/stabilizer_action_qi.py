@@ -394,6 +394,12 @@ def stabilizer_payload(stabilizer: Stabilizer) -> dict[str, Any]:
     }
 
 
+def orbit_setup(orbit: str) -> tuple[ws.OrbitSlice, ws.SlicePiece, Stabilizer]:
+    """The slice, its Singular statements and the stabilizer of one basepoint; the two orbits are independent."""
+    piece = ws.build_slice(orbit)
+    return piece, ws.orbit_task(orbit), build_stabilizer(piece)
+
+
 def compute(cells: tuple[tuple[str, str], ...] = qi.CELLS) -> dict[str, Any]:
     banner, version = ws.singular_version()
     retained = {
@@ -401,9 +407,10 @@ def compute(cells: tuple[tuple[str, str], ...] = qi.CELLS) -> dict[str, Any]:
         for cell in json.loads(qi.RELATIONS_RECORD.read_text(encoding="utf-8"))["cells"]
         if cell["characteristic"] == 0
     }
-    pieces = {orbit: ws.build_slice(orbit) for orbit in ws.ORBITS}
-    slice_pieces = {piece.orbit: piece for piece in parallel.ordered_map(ws.orbit_task, ws.ORBITS, min_items=1)}
-    stabilizers = {orbit: build_stabilizer(pieces[orbit]) for orbit in ws.ORBITS}
+    setups = parallel.ordered_map(orbit_setup, ws.ORBITS, min_items=1)
+    pieces = {orbit: setup[0] for orbit, setup in zip(ws.ORBITS, setups, strict=True)}
+    slice_pieces = {orbit: setup[1] for orbit, setup in zip(ws.ORBITS, setups, strict=True)}
+    stabilizers = {orbit: setup[2] for orbit, setup in zip(ws.ORBITS, setups, strict=True)}
     relations = {(job[0], job[1]): job for job in qi.regenerate_relations()}
     jobs = []
     for orbit, source in cells:
