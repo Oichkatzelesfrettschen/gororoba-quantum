@@ -149,6 +149,37 @@ def test_a_malformed_job_is_refused() -> None:
             ecs.contrast_statistics(job)
 
 
+def _readout_with(pair_index: int, pair: tuple[Fraction, Fraction]) -> ecs.Readout:
+    pairs = list(_readout())
+    pairs[pair_index] = pair
+    return tuple(pairs)
+
+
+@pytest.mark.parametrize(
+    ("job", "field"),
+    [
+        (ecs.ContrastJob((-1, *_counts()[1:]), SIGN, None, ZERO), "counts"),
+        (ecs.ContrastJob((1.5, *_counts()[1:]), SIGN, None, ZERO), "counts"),  # type: ignore[arg-type]
+        (ecs.ContrastJob(_counts(), (2, *SIGN[1:]), None, ZERO), "sign"),
+        (ecs.ContrastJob(_counts(), SIGN, _readout()[:4], ZERO), "readout needs exactly 5"),
+        (ecs.ContrastJob(_counts(), SIGN, _readout_with(2, (Fraction(-1, 64), Fraction(1, 64))), ZERO), "bit 2"),
+        (ecs.ContrastJob(_counts(), SIGN, _readout_with(3, (Fraction(1, 64), Fraction(65, 64))), ZERO), "bit 3"),
+        (ecs.ContrastJob(_counts(), SIGN, _readout_with(1, (Fraction(1, 4), Fraction(3, 4))), ZERO), "singular"),
+    ],
+)
+def test_each_malformed_job_field_is_refused_with_its_name(job: ecs.ContrastJob, field: str) -> None:
+    with pytest.raises(ValueError, match=field):
+        ecs.contrast_statistics(job)
+
+
+@pytest.mark.parametrize("degree", [0, -1])
+def test_a_root_of_nonpositive_degree_is_refused(degree: int) -> None:
+    with pytest.raises(ValueError, match="degree"):
+        ecs.correctly_rounded_root(Fraction(2), degree)
+    with pytest.raises(ValueError, match="degree"):
+        ecs.integer_root(4, degree)
+
+
 def test_the_floats_ignore_a_perturbation_far_below_one_ulp_and_follow_one_above_it() -> None:
     base = ecs.contrast_statistics(_job())
     below = ecs.contrast_statistics(_job(extra=Fraction(1, 10**40)))

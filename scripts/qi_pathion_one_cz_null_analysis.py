@@ -4,19 +4,20 @@ scripts/qi_pathion_one_cz_null_cases.py stays the pinned producer of the series'
 decision rule and its schema-v2 record. Its readout-corrected statistics call np.linalg.solve, whose last bits
 follow the OpenBLAS build and core: regenerating the record under the distribution's OpenBLAS, or under a forced
 Sandybridge or Nehalem core of the pinned wheel, moves 152 to 209 floats by up to 1.8e-14 absolute (about 1e-12
-relative), all in readout_corrected statistics; every string, boolean, integer and the decision stay equal. This
-module keeps the predecessor's selection, shot reading, twin contrasts, joint calibration, drift covariate and
+relative), all in `statistics/readout_corrected` or in its copy, the `visibility_readout_corrected` leaf of a row;
+every string, boolean, integer and the decision stay equal. This module keeps the predecessor's selection, shot
+reading, twin contrasts, joint calibration, drift covariate and
 decision rule by import (a rebound copy of a predecessor function resolves its module-level names through
 `rebound`'s overrides, so the predecessor module is never modified) and replaces the arithmetic that depends on the
 numeric identity:
 
-- gororoba_quantum/exact_contrast_statistics.py evaluates each coin job's readout correction, contrasts and
-  delta-method errors in rational arithmetic on the integer counts and the integer-ratio assignment rates of the
-  batch's readout pair, and rounds each reported float once (value: float(Fraction); error: the correctly rounded
-  square root of the exact variance). The jobs are independent, so they run through parallel.ordered_map.
+- gororoba_quantum/exact_contrast_statistics.py evaluates, for the 16 evaluations (raw and readout-corrected) of the
+  eight 32-outcome coin jobs, the readout correction, the contrasts and the central-difference delta approximation of
+  the errors in exact rational arithmetic on the integer counts and the integer-ratio assignment rates of the batch's
+  readout pair, and rounds each reported float once (value: float(Fraction); error: the correctly rounded square
+  root of the exact variance). The evaluations are independent, so they run through parallel.ordered_map.
 - `pooled` and `heterogeneity` multiply where the predecessor squares with the libm pow call, whose result is not
-  always the correctly rounded square (on glibc 2.44, pow(x, 2) differs from x * x for about 1 in 1200 uniform
-  random doubles in [-50, 50]).
+  always the correctly rounded square.
 - `contraction_per_cz_implied` is the correctly rounded `cz`-th root of the stored corrected visibility.
 
 No decimal rounding enters: a rounding grid cannot absorb a drift of 1e-12 relative and still has values that
@@ -66,9 +67,10 @@ FLOAT_ABSOLUTE = 1.0e-12
 FLOAT_RELATIVE = 1.0e-9
 ARITHMETIC = {
     "rule": (
-        "Each float of template_rows.*.*.statistics is float(Fraction) of an exact rational of the integer shot "
-        "counts and integer-ratio readout rates, and each of its errors is the correctly rounded square root of the "
-        "exact delta-method variance; contraction_per_cz_implied is the correctly rounded cz-th root of the stored "
+        "Each float of template_rows.*.*.statistics (and its copy visibility_readout_corrected) is float(Fraction) of "
+        "an exact rational of the integer shot counts and integer-ratio readout rates, and each of its errors is the "
+        "correctly rounded square root of the exact-rational evaluation of the central-difference delta "
+        "approximation of the variance; contraction_per_cz_implied is the correctly rounded cz-th root of the stored "
         "corrected visibility; pooled and chi-square sums multiply where the predecessor called pow. Every other float "
         "(bin, selector and batch contrasts, calibration, drift covariate, decision numbers) comes from IEEE basic "
         "operations, math.sqrt, math.hypot, CPython's float sum and numpy sums of at most 16 values. No decimal "
@@ -163,7 +165,8 @@ def template_row(
 def batch_estimates(
     shots: dict[str, list[str]], manifest: dict[str, Any]
 ) -> tuple[dict[str, dict[str, list[tuple[float, float]]]], dict[str, dict[str, dict[str, Any]]]]:
-    """oc.batch_estimates with the coin-job statistics computed exactly, in parallel over the base circuits."""
+    """oc.batch_estimates with the 16 evaluations (raw and readout-corrected) of the eight 32-outcome coin jobs
+    computed exactly, in parallel over the evaluations."""
     templates = manifest["templates"]
     register = [int(q) for q in manifest["register"]]
     brackets = {

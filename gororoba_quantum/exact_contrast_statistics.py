@@ -4,14 +4,17 @@ A count job of the coin series holds 32 integer counts over the outcome index y 
 coin c). Its readout correction applies the inverse of the joint assignment matrix, the Kronecker product of one
 2x2 matrix [[1 - e01, e10], [e01, 1 - e10]] per logical bit (row = measured, column = true, bit v of the index on
 the v-th factor), and each rate e01 and e10 is a ratio of integer shot counts. The correction, the pile contrasts
-c(y), the ratios c / V, V and N_hat, and their delta-method errors are therefore rational functions of integers,
+c(y), the ratios c / V, V and N_hat, and the central-difference delta approximation of their errors are therefore
+rational functions of integers,
 and this module evaluates them in `Fraction` arithmetic with one rounding per reported float: the value is
 `float(Fraction)`, which CPython rounds to nearest (an integer true division), and the standard error is the
 correctly rounded square root of the exact variance (`correctly_rounded_root`). No BLAS, LAPACK, einsum or libm
 call enters the result, so the floats are the same on every CPU, numpy build and worker count that reads the same
 integers (docs/design/native-numeric-replay.md, contract item 7).
 
-The error follows pathion_coset_analysis.contrast_statistics' definition for a coin job. The 32 counts are one
+The error follows pathion_coset_analysis.contrast_statistics' definition for a coin job: an exact-rational
+evaluation of the central-difference delta approximation, which differs from the analytic delta-method derivative
+(for x / (x + y) at (5, 7) the central difference is 7/143, the derivative 7/144). The 32 counts are one
 multinomial with covariance N (diag p - p p^T), and the Jacobian J of the 18 outputs is the central difference of
 one count (the output at counts + e_i minus the output at counts - e_i, over 2), evaluated exactly. The variance
 of output k is then the sum over i of n_i J_ki^2, minus (the sum over i of n_i J_ki)^2 over N, which equals
@@ -33,6 +36,7 @@ from fractions import Fraction
 OUTCOMES = 32
 HALF = 16
 BINS = 8
+READOUT_BITS = 5
 OUTPUTS = 2 * BINS + 2
 
 # Per logical bit (e01, e10) of the joint assignment, in the order of the index bits (bit 0 first).
@@ -61,8 +65,10 @@ class ContrastResult:
 
 def integer_root(value: int, degree: int) -> int:
     """floor(value ** (1 / degree)) for an integer value >= 0, by bisection over integers."""
-    if value < 0 or degree < 1:
-        raise ValueError("integer_root needs a nonnegative value and a positive degree")
+    if degree < 1:
+        raise ValueError(f"integer_root degree must be positive, got {degree}")
+    if value < 0:
+        raise ValueError("integer_root needs a nonnegative value")
     low, high = 0, 1 << (-(-value.bit_length() // degree) + 1)
     while low < high:
         middle = (low + high + 1) // 2
@@ -79,6 +85,8 @@ def correctly_rounded_root(value: Fraction, degree: int) -> float:
     The integer root of value * 2^(degree k) carries at least 64 significant bits; an inexact root takes the odd
     neighbor of its floor (round to odd), so the final division by 2^k, which CPython rounds to nearest, rounds
     the true root once and correctly."""
+    if degree < 1:
+        raise ValueError(f"correctly_rounded_root degree must be positive, got {degree}")
     if value < 0:
         raise ValueError("a root of a negative value is undefined")
     if value == 0:
@@ -144,6 +152,18 @@ def check_job(job: ContrastJob) -> int:
     """The shot count of `job`, after refusing a malformed one."""
     if len(job.counts) != OUTCOMES or len(job.sign) != BINS:
         raise ValueError("a coin job holds 32 counts and 8 bin signs")
+    if any(isinstance(n, bool) or not isinstance(n, int) or n < 0 for n in job.counts):
+        raise ValueError("counts must be nonnegative integers")
+    if any(s not in (-1, 0, 1) for s in job.sign):
+        raise ValueError("sign entries must be -1, 0 or 1")
+    if job.readout is not None:
+        if len(job.readout) != READOUT_BITS:
+            raise ValueError(f"readout needs exactly {READOUT_BITS} (e01, e10) pairs, got {len(job.readout)}")
+        for bit, pair in enumerate(job.readout):
+            if len(pair) != 2 or not all(isinstance(rate, Fraction) and 0 <= rate <= 1 for rate in pair):
+                raise ValueError(f"readout rates of bit {bit} must be Fractions in [0, 1]")
+            if pair[0] + pair[1] == 1:
+                raise ValueError(f"the assignment of bit {bit} is singular (e01 + e10 = 1)")
     if job.zero <= 0:
         raise ValueError("the zero-weight threshold must be positive")
     total = sum(job.counts)
@@ -164,7 +184,8 @@ def exact_values(job: ContrastJob) -> list[Fraction | None]:
 
 
 def exact_variances(job: ContrastJob) -> list[Fraction | None]:
-    """The exact delta-method variance of each output; None where a perturbed value is undefined."""
+    """The exact-rational evaluation of the central-difference delta approximation of each output's variance; None
+    where a perturbed value is undefined."""
     total = check_job(job)
     base = corrected(job, list(job.counts))
     jacobian: list[list[Fraction | None]] = [[] for _ in range(OUTPUTS)]
@@ -194,7 +215,7 @@ def delta_variance(column: list[Fraction | None], counts: tuple[int, ...], total
     square = sum(n * j * j for n, j in zip(counts, numerators, strict=True))
     variance = Fraction(total * square - linear * linear, total * denominator * denominator)
     if variance < 0:
-        raise ValueError("a delta-method variance is negative in exact arithmetic")
+        raise ValueError("a central-difference delta variance is negative in exact arithmetic")
     return variance
 
 
