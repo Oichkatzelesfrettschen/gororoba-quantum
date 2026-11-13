@@ -73,8 +73,9 @@ ARITHMETIC = {
         "approximation of the variance; contraction_per_cz_implied is the correctly rounded cz-th root of the stored "
         "corrected visibility; pooled and chi-square sums multiply where the predecessor called pow. Every other float "
         "(bin, selector and batch contrasts, calibration, drift covariate, decision numbers) comes from IEEE basic "
-        "operations, math.sqrt, math.hypot, CPython's float sum and numpy sums of at most 16 values. No decimal "
-        "rounding applies, and no BLAS, LAPACK, einsum or libm pow call enters a float."
+        "operations, math.sqrt, math.hypot, CPython's float sum and numpy sums of at most 32 values, the 32-value ones "
+        "over integer shot counts. No decimal rounding applies, and no BLAS, LAPACK, einsum or libm pow call enters "
+        "a float."
     ),
     "authority": "docs/design/native-numeric-replay.md, contract item 7",
     "implementation": "gororoba_quantum/exact_contrast_statistics.py",
