@@ -921,6 +921,9 @@
       "venue": "Lecture Notes in Mathematics 1358, second, expanded edition (Springer, 1999)",
       "receipt_url": "https://api.crossref.org/works/10.1007/b62130"
     },
+    "docs/notes/papers/huneke-swanson-2006-integral-closure-ideals-rings-modules.md": {
+      "status": "journal-venue-unverified"
+    },
     "docs/notes/papers/vasconcelos-1994-arithmetic-blowup-algebras.md": {
       "status": "journal-identity-verified",
       "doi": "10.1017/CBO9780511574726",

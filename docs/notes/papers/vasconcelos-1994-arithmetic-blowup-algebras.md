@@ -30,7 +30,7 @@ page 140 is printed page 130 and PDF page 263 is printed page 253). The front ma
   and foreword) and PDF pages 11 to 16 (the Introduction, printed pages 1 to 6); printed pages 99 to 101 (PDF pages 109 to 111: the opening of Chapter 5 and the start of Section 5.1, with Definitions 5.1.1 and 5.1.2); printed pages 130 to 137 (PDF pages 140 to 147: the end of
   Section 5.4 and Section 5.5 on the construction of Rees algebras, with the opening of Section 5.6); printed pages 195 to 198 (PDF pages
   205 to 208: the opening of Chapter 8 and the start of Section 8.1); printed pages 253 to 266 (PDF pages 263 to 276: Chapter 10 from
-  its opening through Section 10.2 and the start of Section 10.3); printed pages 327 to 329 (PDF pages 337 to 339: the index, searched for the entries special fiber, fiber cone, saturation and homogenization). The rest of the book was not read: Chapters 1 to 4, Section 5.1 beyond page 101, Sections 5.2 to 5.4 and 5.6 to 5.7, Chapters 6, 7 and 9, Sections 8.1 to 8.4 beyond page 198, Sections 10.3 to 10.6 beyond page 266, the bibliography and the index.
+  its opening through Section 10.2 and the start of Section 10.3); printed pages 327 to 329 (PDF pages 337 to 339: the index, searched for the entries special fiber, fiber cone, saturation and homogenization). The rest of the book was not read: Chapters 1 to 4, Section 5.1 beyond page 101, Sections 5.2 to 5.4 and 5.6 to 5.7, Chapters 6, 7 and 9, Sections 8.1 to 8.4 beyond page 198, Sections 10.3 to 10.6 beyond page 266 and the bibliography.
 - Status: published book (Cambridge University Press, 1994; the scan is a later digital printing of the same text).
 
 ## Contents recorded from the table of contents
@@ -84,8 +84,8 @@ page 140 is printed page 130 and PDF page 263 is printed page 253). The front ma
 
 ## Reduction number and the special fiber (Chapter 5, pp. 99-101)
 
-- [P] Page 99 (opening of Chapter 5): an ideal `J` contained in `I` is a reduction of `I` when `J I^r = I^(r+1)` for some `r` (the notion is attributed to Northcott and Rees); equivalently `R[Jt]` embeds in `R[It]` as a finite morphism of graded algebras.
-- [P] Definition 5.1.1 (p. 100): the reduction number `r_J(I)` is the least such `r`, and the reduction number of `I` is its minimum over all reductions `J` of `I`; it equals the infimum of the top degrees of homogeneous generating sets of `R[It]` over `R[Jt]`.
+- [P] Page 99 (opening of Chapter 5): an ideal `J` contained in `I` is a reduction of `I` when `J I^r = I^(r+1)` for some `r` (the notion is attributed to Northcott and Rees), and the least such `r` is the reduction number `r_J(I)` of `I` with respect to `J`; equivalently `R[Jt]` embeds in `R[It]` as a finite morphism of graded algebras.
+- [P] Definition 5.1.1 (p. 100): for a commutative Noetherian ring `R`, the reduction number of `I` is the smallest `r_J(I)` over all reductions `J` of `I`. The paragraph after it: `R[It]` is a finitely generated graded module over `R[Jt]`, and `r_J(I)` is the infimum of the top degree of any homogeneous set of generators.
 - [P] Definition 5.1.2 (p. 100): for a Noetherian local ring `(R, m)` the special fiber of the Rees algebra `R[It]` is `F(I) = R[It] tensor_R R/m`; its Krull dimension is the analytic spread `ell(I)`. For `I = m` the ring `F(m)` is the tangent cone of `R`, and `F(I)` is also called the fiber cone of `I`.
   Proposition 5.1.3 (p. 100): when the residue field is infinite, lifts `a_1, ..., a_ell` of a Noether normalization `k[z_1, ..., z_ell] -> F(I)` with the `z_j` in degree 1 generate a reduction `J` of `I`, and `r_J(I)` is the largest degree of a minimal homogeneous module generator of `F(I)` over `k[z]`.
   Corollary 5.1.4 (p. 101): `ht I <= ell(I) <= dim R`.
@@ -93,9 +93,9 @@ page 140 is printed page 130 and PDF page 263 is printed page 253). The front ma
 
 ## Other pages read
 
-- [P] Section 5.5 (pp. 130-137): Definition 5.5.1 (p. 130) calls two ideals transversal when `I intersect J = I J`; Propositions 5.5.2 and 5.5.3 (p. 131) and Theorem 5.5.5 (p. 132) concern Serre's condition `(S_r)` of affine algebras and
-  its stability under extension of the base field; Proposition 5.5.7 (p. 133) presents the Rees algebra of `(I_1, I_2)` in a tensor product of algebras by gluing, with Theorems 5.5.9 and 5.5.10 (p. 135) giving the Cohen-Macaulay
-  property of the glued Rees algebra when the factors are Cohen-Macaulay. Theorem 5.4.15 (p. 130) concerns equimultiple ideals of codimension `g` in a Cohen-Macaulay ring whose Rees algebra satisfies `(S_2)`.
+- [P] Section 5.5 (pp. 130-137): Definition 5.5.1 (p. 130) calls two ideals transversal when `I intersect J = I J`; Propositions 5.5.2 and 5.5.3 (p. 131) concern Serre's condition `(S_r)` of affine algebras, and Theorem 5.5.5 (p. 132) states that if affine algebras `A` and `B` over a field `k` satisfy `(S_r)` then so does `A tensor_k B`
+  (its proof reduces to an extension of the base field); Proposition 5.5.7 (p. 133) presents the Rees algebra of `(I_1, I_2)` in a tensor product of algebras by gluing. Theorem 5.5.9 (p. 135): if the Rees algebras `R_1[I_1 t]` and `R_2[I_2 t]` are Cohen-Macaulay then `R[(I_1, I_2)t]` is Cohen-Macaulay. Theorem 5.5.10 (p. 135): for normally transversal ideals `I_1` and `I_2` of a regular local ring,
+  `R(I_1, I_2)` is Cohen-Macaulay when `R(I_1)` and `R(I_2)` are. Theorem 5.4.15 (p. 130) concerns equimultiple ideals of codimension `g` in a Cohen-Macaulay ring whose Rees algebra satisfies `(S_2)`.
   These pages treat sums of ideals and product varieties; they contain no statement on Pfaffian ideals.
 - [P] Section 8.1 (pp. 197-198): the section opens with almost complete intersection primes of dimension one and their second symbolic power; Proposition 8.1.1 (p. 197) and Corollary 8.1.2 (p. 197) recover
   the intersection of the primary components of height `g` of a power `I^n` as the annihilator of `Ext^g(R/I^n, R)` over a Gorenstein ring; page 198 begins "The content of syzygies". These pages
