@@ -721,9 +721,41 @@ the fiber. A slice with one column removed has rank 14 and fails the check. The 
 
 The record samples the boost orbit. It compares no limiting plane between basepoints, so it does not decide
 whether the family of fibers over the boost orbit is a product; it covers neither `E8bar->VB`, whose fiber at the
-retained basepoint is the cubic and quartic threefold pair of the import table above, nor `E8bar->V`, where the
+retained basepoint is the cubic and quartic threefold pair of the import table above and whose quadric scheme the
+[next section](#along-the-boost-the-quadric-scheme-of-e8bar-vb-keeps-its-invariants-at-four-sampled-basepoints)
+samples, nor `E8bar->V`, where the
 Nakayama route ran 31 minutes at the retained basepoint without output and was stopped. A sampled basepoint whose
 fiber is a proper subvariety, or whose slice is not complementary, falsifies the observation.
+
+## Along the boost the quadric scheme of E8bar->VB keeps its invariants at four sampled basepoints
+
+[`boost_e8_vb_quadrics.py`](boost_e8_vb_quadrics.py) samples the boost for `E8bar->VB`, which the section above
+leaves out, through the relations of low degree of its fiber cone; the record is
+[`boost-e8-vb-quadrics-result.json`](boost-e8-vb-quadrics-result.json). At the retained `VB` basepoint and at the
+boosts `(5/4, 3/4)`, `(5/3, 4/3)` and `(13/12, -5/12)` of it the script keeps the retained slice columns, emits the
+presolved slice ideal and the Nakayama generators by the phase-one script of the nullity-16 Rees record, and
+computes the degree-2 relations `{q : q(G) in J + m I^2}` modulo 32029 with `i = 9115`.
+
+**Observed (`A5-428`):** at all four basepoints the moved point lies on the `VB` orbit with a complementary slice
+(rank 15), and the fiber cone has 10 generators and 21 quadrics whose ideal has dimension 4, multiplicity 7, first
+Hilbert numerator `1, 0, -21, 70, -105, 84, -35, 6`, is saturated and radical, has two minimal primes of dimension
+4 and degrees 3 and 4, and has a linear symmetry algebra of dimension 15. At the retained basepoint the echelon
+form of the relations equals the retained `K2` of the exceptional-fiber record. The four echelon forms differ from
+one another, so the four computations are independent inputs. At the boost `(5/4, 3/4)` the degree-3 relations
+number 140 of 220 products, so `h_3 = 80`, the value of the quadric ring.
+
+**Inferred:** the fiber of `E8bar` over each sampled point lies in a quadric scheme with the invariants of the one
+at the retained point, and at `(5/4, 3/4)` the fiber cone agrees with the quadric ring through degree 3.
+`hypothesis:` the family of fibers of `E8bar` over the boost orbit is constant up to projective equivalence. The
+record tests invariants at sampled points; it builds no projective equivalence between two basepoints, compares no
+limiting plane, runs in one characteristic, and decides the fiber cone above degree 3 at no moved point. An
+invariant that differs at a rational boost, or a degree-3 count other than 140, falsifies the observation; a
+projective invariant that separates two of the four quadric schemes falsifies the hypothesis.
+
+The replay takes 19 minutes 51 seconds of wall time, 1,083 CPU seconds and 0.33 GiB on two workers under an 8 GiB
+memory scope (Python 3.14.9, python-flint 0.9.0, Singular 4.4.1) on the build host; each degree-2 basepoint takes
+12 seconds and the degree-3 count 18 minutes. Evidence:
+[`boost-e8-vb-quadrics-result.json`](boost-e8-vb-quadrics-result.json) and the [ledger](ledger.md#ledger-rows).
 
 ## On a torus weight slice the quadrics of all ten fiber cones are computed over Q(i)
 
