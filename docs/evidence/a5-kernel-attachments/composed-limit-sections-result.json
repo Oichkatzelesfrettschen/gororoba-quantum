@@ -121,6 +121,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X+->N-",
       "source_generators": 3,
       "source_quadrics": null,
@@ -128,6 +129,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 0,
         "reduced_components": [
           [
             2,
@@ -158,6 +160,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X+->N-",
       "source_generators": 3,
       "source_quadrics": null,
@@ -284,6 +287,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X-->N+",
       "source_generators": 3,
       "source_quadrics": null,
@@ -291,6 +295,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 0,
         "reduced_components": [
           [
             2,
@@ -321,6 +326,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X-->N+",
       "source_generators": 3,
       "source_quadrics": null,
@@ -467,6 +473,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X-->N-",
       "source_generators": 15,
       "source_quadrics": {
@@ -477,6 +484,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             2,
@@ -507,6 +515,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X-->N-",
       "source_generators": 15,
       "source_quadrics": {
@@ -517,6 +526,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             2,
@@ -547,6 +557,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "X-->N-",
       "source_generators": 15,
       "source_quadrics": {
@@ -696,6 +707,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "Iso->N+",
       "source_generators": 17,
       "source_quadrics": {
@@ -706,6 +718,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             3,
@@ -736,6 +749,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "Iso->N+",
       "source_generators": 17,
       "source_quadrics": {
@@ -885,6 +899,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "W8->N-",
       "source_generators": 24,
       "source_quadrics": {
@@ -895,6 +910,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 13,
         "reduced_components": [
           [
             4,
@@ -925,6 +941,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "W8->N-",
       "source_generators": 24,
       "source_quadrics": {
@@ -1078,6 +1095,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -1211,6 +1229,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -1221,6 +1240,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 11,
         "reduced_components": [
           [
             3,
@@ -1259,6 +1279,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -1269,6 +1290,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 15,
         "reduced_components": [
           [
             2,
@@ -1299,6 +1321,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -1452,6 +1475,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -1585,6 +1609,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -1595,6 +1620,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 11,
         "reduced_components": [
           [
             3,
@@ -1633,6 +1659,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -1643,6 +1670,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 15,
         "reduced_components": [
           [
             2,
@@ -1673,6 +1701,7 @@
         }
       ],
       "prime": 32009,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -1802,6 +1831,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X+->N-",
       "source_generators": 3,
       "source_quadrics": null,
@@ -1809,6 +1839,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 0,
         "reduced_components": [
           [
             2,
@@ -1839,6 +1870,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X+->N-",
       "source_generators": 3,
       "source_quadrics": null,
@@ -1965,6 +1997,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X-->N+",
       "source_generators": 3,
       "source_quadrics": null,
@@ -1972,6 +2005,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 0,
         "reduced_components": [
           [
             2,
@@ -2002,6 +2036,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X-->N+",
       "source_generators": 3,
       "source_quadrics": null,
@@ -2148,6 +2183,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "single_prime_excluded_from_agreement",
       "source": "X+->N+",
       "source_generators": 15,
       "source_quadrics": {
@@ -2158,6 +2194,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             2,
@@ -2188,6 +2225,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "single_prime_excluded_from_agreement",
       "source": "X+->N+",
       "source_generators": 15,
       "source_quadrics": {
@@ -2198,6 +2236,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             2,
@@ -2228,6 +2267,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "single_prime_excluded_from_agreement",
       "source": "X+->N+",
       "source_generators": 15,
       "source_quadrics": {
@@ -2377,6 +2417,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X-->N-",
       "source_generators": 15,
       "source_quadrics": {
@@ -2387,6 +2428,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             2,
@@ -2417,6 +2459,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X-->N-",
       "source_generators": 15,
       "source_quadrics": {
@@ -2427,6 +2470,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             2,
@@ -2457,6 +2501,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "X-->N-",
       "source_generators": 15,
       "source_quadrics": {
@@ -2606,6 +2651,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "Iso->N+",
       "source_generators": 17,
       "source_quadrics": {
@@ -2616,6 +2662,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 9,
         "reduced_components": [
           [
             3,
@@ -2646,6 +2693,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "Iso->N+",
       "source_generators": 17,
       "source_quadrics": {
@@ -2795,6 +2843,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "W8->N-",
       "source_generators": 24,
       "source_quadrics": {
@@ -2805,6 +2854,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 13,
         "reduced_components": [
           [
             4,
@@ -2835,6 +2885,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "W8->N-",
       "source_generators": 24,
       "source_quadrics": {
@@ -2988,6 +3039,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -3121,6 +3173,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -3131,6 +3184,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 11,
         "reduced_components": [
           [
             3,
@@ -3169,6 +3223,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -3179,6 +3234,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 15,
         "reduced_components": [
           [
             2,
@@ -3209,6 +3265,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N+",
       "source_generators": 21,
       "source_quadrics": {
@@ -3362,6 +3419,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -3495,6 +3553,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -3505,6 +3564,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 11,
         "reduced_components": [
           [
             3,
@@ -3543,6 +3603,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -3553,6 +3614,7 @@
     },
     {
       "expected_through_one_point_stratum": {
+        "linear_conditions": 15,
         "reduced_components": [
           [
             2,
@@ -3583,6 +3645,7 @@
         }
       ],
       "prime": 32029,
+      "prime_coverage": "both_primes",
       "source": "E8bar->N-",
       "source_generators": 21,
       "source_quadrics": {
@@ -3592,14 +3655,468 @@
       "through": "Va-->N-"
     }
   ],
-  "falsifier": "A section through VB whose reduced components differ from the fiber of the source over VB; a section through V^a+ or V^a- other than one plane of section degree 2; a section that differs between the two primes; or containment equations that vanish on a plane outside the 7-plane.",
+  "falsifier": "A section through VB whose reduced components differ from the fiber of the source over VB, or whose reduced degree or linear-condition count differs from the retained value; a section through V^a+ or V^a- other than one plane of section degree 2; a section that differs between the two primes at a pair both primes carry; a single-prime chain outside the declared sources; a K2 relation file without a certified generator order in its header; or containment equations that vanish on a plane outside the 7-plane.",
   "inputs": {
     "docs/evidence/a5-exceptional-fibers/k2-hilbert.jsonl": "116222a7aec8d8c00cf061a5236f992ee516334236325199796f26b3cd049aa4",
-    "docs/evidence/a5-kernel-attachments/composed_limit_sections.py": "f18a4329397d982e2ed25747f9fb404ae983647080ddfcd3763ed0784d21ab6b",
+    "docs/evidence/a5-exceptional-fibers/witnesses.jsonl": "ee323aa5a0cb606b02533fb7446d836a571b15b1fda6b8ee129caee231d76c3d",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-nm.sing": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-np.sing": "ab6dd0ef6281b0d02e84d744ace39f56a8cf95695186324e4d76fb387c628af6",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-np.sing": "a2043188e06aed268878a226f7737123b6fa4d0868e9269524d63e7ca2b6f103",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-nm.sing": "f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-nm.sing": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-np.sing": "966c836537e2ef8e313cbbb6ae2b9a3ea7ee54de7b106aa3f53c83d555d13cae",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-np.sing": "0243e3184ea64cf532a800eb90bda06e24d1e9bf7406e6590489c2ed62c330c9",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/w8-nm.sing": "20d00f15fd8f35c9bc5f0e4a998508244e4eba8662c0c20fbf8690e1bff384dc",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xm-nm.sing": "98de6225b05399df9bd3e92ac87b7d7e94ecf3b129c8e3bba132b0ce8ea0dd3b",
+    "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xp-np.sing": "5e7ff045b8ad75325fb42ce6905db01b81749c44c91fd94e2c55c88ea5f5653f",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/gens.txt": "e7b5e2720243e85e835486bdddfb6335b4430e2f795b3d0378cd8ef540095cff",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json": "7a4e45b11a1e4ab56d944d04e36d9e4440dfc7a413bece48b4374c2f4cfecfd7",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-d2.rel": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/gens.txt": "a183205b60d31874db9c805ea8edc808bc4925a7763319a3e3874b17aadd3059",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/receipt-d2.json": "5573ef662aef6fba9be48eb382651c0f05911058c01f91564920e136a8e9c629",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-d2.rel": "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/gens.txt": "2eec7a64ff4ea5424fb9ce6453005ee1a992f0b6cc16ef12e74a4a15290ab083",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/receipt-d2.json": "6669e232bf332a537ed94c3411550da89b2b8bd1bcdaa81b57ae160496407d81",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/relations-d2.rel": "3c2294f7dee43a1471cec20a7af5c259741b50a02216bbe92074d127dc34694a",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/gens.txt": "c2c190a626630a7a6463ad0d4a152b41c81a50cf789edea70bf73f8a0b284f22",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/receipt-d2.json": "ddf02dd155427c71913356f0425f32b74c5914c5b76636e049ac987e7bd88082",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/relations-d2.rel": "e5d2792f13332ffaabaaba7970f239b64bcf88325f5691e693555ade60cf0bfc",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/gens.txt": "170e5f4ff66dbb2108af20e224943c1920b8c0978d340afb9f7ba627130f99ba",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/receipt-d2.json": "94f06be6f52f0c71e2572f5e6c7dead1a7f813fb13c72f7c307c0ef4a5ba3776",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel": "fd3cd56049cacb8250e00c15228907f440322de2a53b2d14dc86cc534c910fee",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/gens.txt": "c49aa4bb5f113963dbb551548c1592a2c1376607d457b9c5abe0ff96ad4edaa8",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/receipt-d2.json": "1a055b607ef29c01ca6a1bd0339212bc93f4676e5b35387f5b33acbaa0619ee7",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/relations-d2.rel": "1fea3714381f564a6a628c21efbce504311a98e10ca8ff7d9ed284357fed8903",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xp_p2/d2/gens.txt": "74a233d4eec3eff7f52a4a93f097deeb848bfa57e67d941dc7d3c3e7c5eea4f2",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xp_p2/d2/receipt-d2.json": "adc64b1f6fa40510ee0a36ab7255c8f0846b0a36763ba28b1afba4e909c69d8c",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xp_p2/d2/relations-d2.rel": "85fdced79dfd830c0fad13da9c71fcbbd0b197418462c299f375a59952b4f8eb",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/gens.txt": "f0f60640c84af6e066fa1f17b73c07f5516eae6632252678294dcce944bc1c99",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/receipt-d2.json": "b5ec8fbeaadc55cbcafdac278a36d50d07df1459611bba370041b722de62f846",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/relations-d2.rel": "ed601263b5da77273c0f7751d03a8a5e4ae6219c1e75da8576bb1155598fd40c",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/gens.txt": "c2d5f4d6bd8d60aeb7cffd7127d18debf1dbd45f7d625d85c5a3ab689a9e41ae",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/relations-d2.rel": "ad37712c91be5cb60dc2176d908aed6e4e516b819534d7d503992e819cc18c20",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/gens.txt": "30eed48f21e9e6e0ecc2bc333df8e82120a339b2049518a038ea3a3ea81d1eee",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/receipt-d2.json": "97f9ed40689d130e043b4a9abfec9e40978db77a905f938288a30404e951da97",
+    "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/relations-d2.rel": "596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245",
+    "docs/evidence/a5-kernel-attachments/composed_limit_sections.py": "465a7f3389e607b67e19f44f1be0cdca3620ed12c8452199e9258fd9b07459ef",
     "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
     "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
-    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "ee368b627b2b8f5203c7366ac920206516e539b21f523bfbe5064d2efa034a46"
+    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "ee368b627b2b8f5203c7366ac920206516e539b21f523bfbe5064d2efa034a46",
+    "docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json": "52079d22d48df289d04dcdbba8293569eeeaa14c000af502ba64f9f23472d721"
   },
+  "k2_bindings": [
+    {
+      "flip": [
+        "t8",
+        "t9"
+      ],
+      "from_binding": {
+        "generator_count": 21,
+        "generator_order_file": {
+          "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/gens.txt",
+          "sha256": "e7b5e2720243e85e835486bdddfb6335b4430e2f795b3d0378cd8ef540095cff"
+        },
+        "header": {
+          "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-nm.sing",
+          "sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de"
+        },
+        "i_root": 10754,
+        "incidence": "E8bar->N-",
+        "k2_relations": "working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel",
+        "k2_relations_sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6",
+        "k2_span_mutual_remainders": [
+          0,
+          0
+        ],
+        "prime": 32009,
+        "quadrics": 148,
+        "receipt": {
+          "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json",
+          "sha256": "7a4e45b11a1e4ab56d944d04e36d9e4440dfc7a413bece48b4374c2f4cfecfd7"
+        },
+        "receipt_generator_order_sha256": "e7b5e2720243e85e835486bdddfb6335b4430e2f795b3d0378cd8ef540095cff",
+        "receipt_input_sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+        "receipt_relations": {
+          "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-d2.rel",
+          "sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6"
+        },
+        "route": "k2_span_witness"
+      },
+      "generator_count": 21,
+      "generator_signs": [
+        -1,
+        -1,
+        1,
+        1,
+        -1,
+        -1,
+        -1,
+        1,
+        1,
+        1,
+        1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        1
+      ],
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-np.sing",
+        "sha256": "ab6dd0ef6281b0d02e84d744ace39f56a8cf95695186324e4d76fb387c628af6"
+      },
+      "i_root": 10754,
+      "incidence": "E8bar->N+",
+      "k2_mutual_remainders_after_the_y_signs": [
+        0,
+        0
+      ],
+      "k2_relations": "working/runs/e8_a2/e8_k2.rel",
+      "k2_relations_sha256": "bbe9bb734af739d735ca4ca4938b85fce9ed87c07b7373ec5353c47335be0652",
+      "prime": 32009,
+      "quadrics": 148,
+      "route": "sign_isomorphism_witness",
+      "sign_isomorphism_from": "E8-bar -> N-",
+      "source": "E8bar->N+"
+    },
+    {
+      "generator_count": 21,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/gens.txt",
+        "sha256": "2eec7a64ff4ea5424fb9ce6453005ee1a992f0b6cc16ef12e74a4a15290ab083"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-np.sing",
+        "sha256": "966c836537e2ef8e313cbbb6ae2b9a3ea7ee54de7b106aa3f53c83d555d13cae"
+      },
+      "i_root": 9115,
+      "incidence": "E8bar->N+",
+      "k2_relations": "working/distribute/out/a5-e8-d2/e8np_p2/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "3c2294f7dee43a1471cec20a7af5c259741b50a02216bbe92074d127dc34694a",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32029,
+      "quadrics": 148,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/receipt-d2.json",
+        "sha256": "6669e232bf332a537ed94c3411550da89b2b8bd1bcdaa81b57ae160496407d81"
+      },
+      "receipt_generator_order_sha256": "2eec7a64ff4ea5424fb9ce6453005ee1a992f0b6cc16ef12e74a4a15290ab083",
+      "receipt_input_sha256": "966c836537e2ef8e313cbbb6ae2b9a3ea7ee54de7b106aa3f53c83d555d13cae",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8np_p2/d2/relations-d2.rel",
+        "sha256": "3c2294f7dee43a1471cec20a7af5c259741b50a02216bbe92074d127dc34694a"
+      },
+      "route": "k2_span_witness",
+      "source": "E8bar->N+"
+    },
+    {
+      "generator_count": 21,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/gens.txt",
+        "sha256": "e7b5e2720243e85e835486bdddfb6335b4430e2f795b3d0378cd8ef540095cff"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/e8-nm.sing",
+        "sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de"
+      },
+      "i_root": 10754,
+      "incidence": "E8bar->N-",
+      "k2_relations": "working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32009,
+      "quadrics": 148,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/receipt-d2.json",
+        "sha256": "7a4e45b11a1e4ab56d944d04e36d9e4440dfc7a413bece48b4374c2f4cfecfd7"
+      },
+      "receipt_generator_order_sha256": "e7b5e2720243e85e835486bdddfb6335b4430e2f795b3d0378cd8ef540095cff",
+      "receipt_input_sha256": "7d3521d0e8026e6ff9b17f1a3af618adcd133ff2835ff68f9d445c3db42414de",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-d2.rel",
+        "sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6"
+      },
+      "route": "k2_span_witness",
+      "source": "E8bar->N-"
+    },
+    {
+      "generator_count": 21,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/gens.txt",
+        "sha256": "a183205b60d31874db9c805ea8edc808bc4925a7763319a3e3874b17aadd3059"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/e8-nm.sing",
+        "sha256": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca"
+      },
+      "i_root": 9115,
+      "incidence": "E8bar->N-",
+      "k2_relations": "working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32029,
+      "quadrics": 148,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/receipt-d2.json",
+        "sha256": "5573ef662aef6fba9be48eb382651c0f05911058c01f91564920e136a8e9c629"
+      },
+      "receipt_generator_order_sha256": "a183205b60d31874db9c805ea8edc808bc4925a7763319a3e3874b17aadd3059",
+      "receipt_input_sha256": "48bdcbe0fa17d04cd4899c0a1e056706b9c9c368ccece97ebeb94686ad3c1cca",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-e8-d2/e8nm_p2/d2/relations-d2.rel",
+        "sha256": "bfd7470cfa57467ea510e8b89a34bcefed60ebb86dbf423c22cef945d2ed831b"
+      },
+      "route": "k2_span_witness",
+      "source": "E8bar->N-"
+    },
+    {
+      "generator_count": 17,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/gens.txt",
+        "sha256": "c2c190a626630a7a6463ad0d4a152b41c81a50cf789edea70bf73f8a0b284f22"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/iso-np.sing",
+        "sha256": "a2043188e06aed268878a226f7737123b6fa4d0868e9269524d63e7ca2b6f103"
+      },
+      "i_root": 10754,
+      "incidence": "Iso->N+",
+      "k2_relations": "working/distribute/out/a5-iso-d4/iso_p1/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "e5d2792f13332ffaabaaba7970f239b64bcf88325f5691e693555ade60cf0bfc",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32009,
+      "quadrics": 68,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/receipt-d2.json",
+        "sha256": "ddf02dd155427c71913356f0425f32b74c5914c5b76636e049ac987e7bd88082"
+      },
+      "receipt_generator_order_sha256": "c2c190a626630a7a6463ad0d4a152b41c81a50cf789edea70bf73f8a0b284f22",
+      "receipt_input_sha256": "a2043188e06aed268878a226f7737123b6fa4d0868e9269524d63e7ca2b6f103",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-iso-d4/iso_p1/d2/relations-d2.rel",
+        "sha256": "e5d2792f13332ffaabaaba7970f239b64bcf88325f5691e693555ade60cf0bfc"
+      },
+      "route": "k2_span_witness",
+      "source": "Iso->N+"
+    },
+    {
+      "generator_count": 17,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/gens.txt",
+        "sha256": "170e5f4ff66dbb2108af20e224943c1920b8c0978d340afb9f7ba627130f99ba"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/iso-np.sing",
+        "sha256": "0243e3184ea64cf532a800eb90bda06e24d1e9bf7406e6590489c2ed62c330c9"
+      },
+      "i_root": 9115,
+      "incidence": "Iso->N+",
+      "k2_relations": "working/distribute/out/a5-p2-iso/iso_p2/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "fd3cd56049cacb8250e00c15228907f440322de2a53b2d14dc86cc534c910fee",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32029,
+      "quadrics": 68,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/receipt-d2.json",
+        "sha256": "94f06be6f52f0c71e2572f5e6c7dead1a7f813fb13c72f7c307c0ef4a5ba3776"
+      },
+      "receipt_generator_order_sha256": "170e5f4ff66dbb2108af20e224943c1920b8c0978d340afb9f7ba627130f99ba",
+      "receipt_input_sha256": "0243e3184ea64cf532a800eb90bda06e24d1e9bf7406e6590489c2ed62c330c9",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-iso/iso_p2/d2/relations-d2.rel",
+        "sha256": "fd3cd56049cacb8250e00c15228907f440322de2a53b2d14dc86cc534c910fee"
+      },
+      "route": "k2_span_witness",
+      "source": "Iso->N+"
+    },
+    {
+      "generator_count": 24,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/gens.txt",
+        "sha256": "c2d5f4d6bd8d60aeb7cffd7127d18debf1dbd45f7d625d85c5a3ab689a9e41ae"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/w8-nm.sing",
+        "sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760"
+      },
+      "i_root": 10754,
+      "incidence": "W8->N-",
+      "k2_relations": "working/runs/w8_a2/w8_k2.rel",
+      "k2_relations_sha256": "31feaac8cace8050dfbd42ead4cdc3fb669382d0253f687429d2f1583f2e8df2",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32009,
+      "quadrics": 144,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/receipt-d2.json",
+        "sha256": "6e464db695bd891e93bfde1689dfab9c0d5bc1afdc17da3df3c3a29bb0f76425"
+      },
+      "receipt_generator_order_sha256": "c2d5f4d6bd8d60aeb7cffd7127d18debf1dbd45f7d625d85c5a3ab689a9e41ae",
+      "receipt_input_sha256": "585a946d2d75073e4a90f697417017f2c13f432556c89088aaabfb9dff02a760",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-w8-receipt-p1/w8_p1/d2/relations-d2.rel",
+        "sha256": "ad37712c91be5cb60dc2176d908aed6e4e516b819534d7d503992e819cc18c20"
+      },
+      "route": "k2_span_witness",
+      "source": "W8->N-"
+    },
+    {
+      "generator_count": 24,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/gens.txt",
+        "sha256": "f0f60640c84af6e066fa1f17b73c07f5516eae6632252678294dcce944bc1c99"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/w8-nm.sing",
+        "sha256": "20d00f15fd8f35c9bc5f0e4a998508244e4eba8662c0c20fbf8690e1bff384dc"
+      },
+      "i_root": 9115,
+      "incidence": "W8->N-",
+      "k2_relations": "working/distribute/out/a5-p2-w8/w8_p2/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "ed601263b5da77273c0f7751d03a8a5e4ae6219c1e75da8576bb1155598fd40c",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32029,
+      "quadrics": 144,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/receipt-d2.json",
+        "sha256": "b5ec8fbeaadc55cbcafdac278a36d50d07df1459611bba370041b722de62f846"
+      },
+      "receipt_generator_order_sha256": "f0f60640c84af6e066fa1f17b73c07f5516eae6632252678294dcce944bc1c99",
+      "receipt_input_sha256": "20d00f15fd8f35c9bc5f0e4a998508244e4eba8662c0c20fbf8690e1bff384dc",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-w8/w8_p2/d2/relations-d2.rel",
+        "sha256": "ed601263b5da77273c0f7751d03a8a5e4ae6219c1e75da8576bb1155598fd40c"
+      },
+      "route": "k2_span_witness",
+      "source": "W8->N-"
+    },
+    {
+      "generator_count": 15,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xp_p2/d2/gens.txt",
+        "sha256": "74a233d4eec3eff7f52a4a93f097deeb848bfa57e67d941dc7d3c3e7c5eea4f2"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xp-np.sing",
+        "sha256": "5e7ff045b8ad75325fb42ce6905db01b81749c44c91fd94e2c55c88ea5f5653f"
+      },
+      "i_root": 9115,
+      "incidence": "X+->N+",
+      "k2_relations": "working/distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "85fdced79dfd830c0fad13da9c71fcbbd0b197418462c299f375a59952b4f8eb",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32029,
+      "quadrics": 69,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xp_p2/d2/receipt-d2.json",
+        "sha256": "adc64b1f6fa40510ee0a36ab7255c8f0846b0a36763ba28b1afba4e909c69d8c"
+      },
+      "receipt_generator_order_sha256": "74a233d4eec3eff7f52a4a93f097deeb848bfa57e67d941dc7d3c3e7c5eea4f2",
+      "receipt_input_sha256": "5e7ff045b8ad75325fb42ce6905db01b81749c44c91fd94e2c55c88ea5f5653f",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xp_p2/d2/relations-d2.rel",
+        "sha256": "85fdced79dfd830c0fad13da9c71fcbbd0b197418462c299f375a59952b4f8eb"
+      },
+      "route": "k2_span_witness",
+      "source": "X+->N+"
+    },
+    {
+      "generator_count": 15,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/gens.txt",
+        "sha256": "30eed48f21e9e6e0ecc2bc333df8e82120a339b2049518a038ea3a3ea81d1eee"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32009-r10754/xm-nm.sing",
+        "sha256": "f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6"
+      },
+      "i_root": 10754,
+      "incidence": "X-->N-",
+      "k2_relations": "working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32009,
+      "quadrics": 69,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/receipt-d2.json",
+        "sha256": "97f9ed40689d130e043b4a9abfec9e40978db77a905f938288a30404e951da97"
+      },
+      "receipt_generator_order_sha256": "30eed48f21e9e6e0ecc2bc333df8e82120a339b2049518a038ea3a3ea81d1eee",
+      "receipt_input_sha256": "f437c9ea4f9e8861b8cb30dcadf1d667b2d444473d630dc88c8e82072c4423c6",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-xm-d4/xm_p1/d2/relations-d2.rel",
+        "sha256": "596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245"
+      },
+      "route": "k2_span_witness",
+      "source": "X-->N-"
+    },
+    {
+      "generator_count": 15,
+      "generator_order_file": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/gens.txt",
+        "sha256": "c49aa4bb5f113963dbb551548c1592a2c1376607d457b9c5abe0ff96ad4edaa8"
+      },
+      "header": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/build/inputs/p32029-r9115/xm-nm.sing",
+        "sha256": "98de6225b05399df9bd3e92ac87b7d7e94ecf3b129c8e3bba132b0ce8ea0dd3b"
+      },
+      "i_root": 9115,
+      "incidence": "X-->N-",
+      "k2_relations": "working/distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel",
+      "k2_relations_sha256": "1fea3714381f564a6a628c21efbce504311a98e10ca8ff7d9ed284357fed8903",
+      "k2_span_mutual_remainders": [
+        0,
+        0
+      ],
+      "prime": 32029,
+      "quadrics": 69,
+      "receipt": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/receipt-d2.json",
+        "sha256": "1a055b607ef29c01ca6a1bd0339212bc93f4676e5b35387f5b33acbaa0619ee7"
+      },
+      "receipt_generator_order_sha256": "c49aa4bb5f113963dbb551548c1592a2c1376607d457b9c5abe0ff96ad4edaa8",
+      "receipt_input_sha256": "98de6225b05399df9bd3e92ac87b7d7e94ecf3b129c8e3bba132b0ce8ea0dd3b",
+      "receipt_relations": {
+        "path": "docs/evidence/a5-exceptional-fibers/working/distribute/out/a5-p2-small/xm_p2/d2/relations-d2.rel",
+        "sha256": "1fea3714381f564a6a628c21efbce504311a98e10ca8ff7d9ed284357fed8903"
+      },
+      "route": "k2_span_witness",
+      "source": "X-->N-"
+    }
+  ],
   "mutation_control": {
     "contained_plane_nonzero_coefficients": 0,
     "detected": true,
@@ -3610,12 +4127,31 @@
   "pass": true,
   "schema": "a5-kernel-attachments-composed-limit-sections-v1",
   "scope": {
-    "claim_boundary": "Exact modulo 32009 and 32029 at the listed points m. The section is a necessary condition on a composed limit: the record does not compute which planes of a section are limits of the fibers over the middle stratum, and it samples the plane of B9 and the conic of V at six points each.",
+    "claim_boundary": "Exact modulo 32009 and 32029 at the listed points m. Sections agree between the primes for the source and stratum pairs that both primes carry; the chains of X+->N+ exist at 32029 only (no K2 file at 32009) and are marked single-prime and excluded from that agreement. The section is a necessary condition on a composed limit: the record does not compute which planes of a section are limits of the fibers over the middle stratum, and it samples the plane of B9 and the conic of V at six points each. The K2 relation file of each source and prime is bound to its canonical header by a retained receipt or sign-isomorphism witness (k2_bindings).",
     "statement": "For a fixed point m of the fiber of a nullity-12 stratum at the shared N+ or N- basepoint, the limit planes of a nullity-8 source contained in the limiting 7-plane of m form the linear section of the source fiber V_+(K2) recorded here; a composed limit through that stratum lies in such a section."
   },
   "summary": {
     "chain_count": 41,
     "chains_through_a_one_point_stratum": 22,
+    "k2_bindings": 11,
+    "pairs_at_one_prime_only": [
+      [
+        "X+->N+",
+        "B9->N+",
+        32029
+      ],
+      [
+        "X+->N+",
+        "VB->N+",
+        32029
+      ],
+      [
+        "X+->N+",
+        "Va+->N+",
+        32029
+      ]
+    ],
+    "pairs_compared_at_both_primes": 19,
     "section_count": 136,
     "sections_agree_between_the_primes": true
   }

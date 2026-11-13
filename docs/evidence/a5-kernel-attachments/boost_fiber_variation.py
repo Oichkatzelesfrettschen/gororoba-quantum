@@ -100,16 +100,31 @@ def fiber_task(item: tuple[dict[str, Any], tuple[str, ...], int]) -> dict[str, A
     }
 
 
-def point_passes(point: dict[str, Any], expected: tuple[int, int, int]) -> bool:
-    """A sampled basepoint passes when its slice is complementary and both characteristics give the whole space."""
+def source_expectation(row: dict[str, Any]) -> dict[str, Any]:
+    """Closure membership of the retained basepoint and the germ dimension of the retained first-order row.
+
+    The boost preserves the VB orbit, so a moved point carries the closure pattern of the retained point, and the
+    slice germ of the moved point has the germ dimension the committed first-order record states for the row.
+    """
+    point = [Fraction(value) for value in row["boundary_point"]]
+    return {
+        "closure_membership": independent.pattern(point),
+        "germ_dimension": int(row["germ"]["expected_dimension_multiplicity_embedding_components"][0]),
+    }
+
+
+def point_passes(point: dict[str, Any], expected: tuple[int, int, int], source: dict[str, Any]) -> bool:
+    """A sampled basepoint passes when it stays on the orbit with a complementary slice and both fibers are whole."""
     geometry = point["transversality"]
     fibers = point["fibers"]
     count = expected[0] + 1
     return (
         geometry["orbit_dimension"] == VB_ORBIT_DIMENSION
+        and geometry["closure_membership"] == source["closure_membership"]
         and geometry["orbit_dimension"] + geometry["slice_dimension"] == COMPLEX_DIMENSION
         and geometry["rank_of_orbit_tangent_with_slice"] == COMPLEX_DIMENSION
         and [fiber["characteristic"] for fiber in fibers] == list(CHARACTERISTICS)
+        and all(fiber["germ_dimension"] == source["germ_dimension"] for fiber in fibers)
         and all(tuple(fiber["fiber_projective_dimension_degree_components"]) == expected for fiber in fibers)
         and all(fiber["selected_count"] == count == fiber["embedding_rank"] for fiber in fibers)
         and len({tuple(fiber["selected_indices_one_based"]) for fiber in fibers}) == 1
@@ -120,6 +135,7 @@ def build_record() -> dict[str, Any]:
     first_order = nakayama._load_json(nakayama.FIRST_ORDER_RESULT)
     rows = {str(entry["incidence"]): entry for entry in first_order["incidences"]}
     closures = {name: nakayama._closure_row(name, rows=rows)[1] for name in INCIDENCES}
+    sources = {name: source_expectation(rows[name]) for name in INCIDENCES}
     moved = [(name, boost, moved_row(rows[name], boost)) for name in INCIDENCES for boost in BOOSTS]
     items = [(row, closures[name], characteristic) for name, _, row in moved for characteristic in CHARACTERISTICS]
     fibers = parallel.ordered_map(fiber_task, items, min_items=1)
@@ -135,7 +151,7 @@ def build_record() -> dict[str, Any]:
                 "transversality": transversality(moved[position][2]),
                 "fibers": fibers[len(CHARACTERISTICS) * position : len(CHARACTERISTICS) * (position + 1)],
             }
-            point["pass"] = point_passes(point, expected)
+            point["pass"] = point_passes(point, expected, sources[name])
             points.append(point)
         selections = [point["fibers"][0]["selected_indices_one_based"] for point in points]
         incidences.append(
@@ -162,7 +178,7 @@ def build_record() -> dict[str, Any]:
         "name": "slice_with_one_column_removed",
         "input_change": "drop the last slice column of Iso->VB at the boost (5/4, 3/4)",
         "transversality": mutated_point["transversality"],
-        "detected": not point_passes(mutated_point, nakayama.EXPECTED_FIBERS[INCIDENCES[0]]),
+        "detected": not point_passes(mutated_point, nakayama.EXPECTED_FIBERS[INCIDENCES[0]], sources[INCIDENCES[0]]),
     }
     return {
         "schema": SCHEMA,
@@ -196,9 +212,34 @@ def _record_bytes(record: dict[str, Any]) -> bytes:
     return (json.dumps(record, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
+def _verdict(record: dict[str, Any]) -> bool:
+    """The pass flag recomputed from the points of the record against the retained first-order rows."""
+    first_order = nakayama._load_json(nakayama.FIRST_ORDER_RESULT)
+    rows = {str(entry["incidence"]): entry for entry in first_order["incidences"]}
+    for entry in record["incidences"]:
+        name = str(entry["incidence"])
+        expected = tuple(entry["expected_fiber_projective_dimension_degree_components"])
+        source = source_expectation(rows[name])
+        passes = [point_passes(point, expected, source) for point in entry["points"]]
+        if (
+            expected != nakayama.EXPECTED_FIBERS[name]
+            or [point["boost_cosh_sinh"] for point in entry["points"]]
+            != [[str(cosh), str(sinh)] for cosh, sinh in BOOSTS]
+            or passes != [bool(point["pass"]) for point in entry["points"]]
+            or not all(passes)
+        ):
+            return False
+    return (
+        [str(entry["incidence"]) for entry in record["incidences"]] == list(INCIDENCES)
+        and bool(record["identity_boost_reproduces_the_retained_selection"])
+        and bool(record["mutation_control"]["detected"])
+    )
+
+
 def _self_test(record: dict[str, Any]) -> None:
     _require(bool(record["pass"]), "the boost fiber variation record failed")
     _require(bool(record["mutation_control"]["detected"]), "the shortened slice passed the complementarity check")
+    _require(_verdict(record), "the boost fiber variation record disagrees with its own points")
 
 
 def main() -> None:

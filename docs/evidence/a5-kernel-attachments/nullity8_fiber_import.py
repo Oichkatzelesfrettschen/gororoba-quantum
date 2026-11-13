@@ -66,6 +66,8 @@ class Fiber:
     characteristic_zero: str
     characteristic_zero_rows: tuple[tuple[str, str], ...]
     open_items: tuple[str, ...]
+    # (`fiber` label, prime) of every retained row of k2-hilbert.jsonl and of k2-cm.jsonl, a repeated cell once per row.
+    hilbert_cells: tuple[tuple[str, int], ...] = ()
 
 
 FIBER_TABLE = (
@@ -108,6 +110,7 @@ FIBER_TABLE = (
             "irreducibility and degree 12 of the reduced fiber are proved at 32009 for X-->N- (A5-022) and survive "
             "elsewhere (A5-297)",
         ),
+        (("X+", 32029), ("X-", 32009), ("X-", 32029)),
     ),
     Fiber(
         "Iso",
@@ -126,6 +129,7 @@ FIBER_TABLE = (
         "open: dimension at least 5 and the 68 quadrics over Q(i); equality of the fiber with V(K2) undecided",
         (("A5-293", "survives"), ("A5-294", "survives")),
         ("the fiber cone over Q(i) in every degree",),
+        (("Iso", 32009), ("Iso", 32009), ("Iso", 32029)),
     ),
     Fiber(
         "W8",
@@ -144,6 +148,7 @@ FIBER_TABLE = (
         "open: dimension at least 6; the quadrics over Q(i) are not computed",
         (("A5-293", "survives"), ("A5-277", "survives")),
         ("the fiber cone over Q(i), starting with its quadrics",),
+        (("W8 -> N-", 32009), ("W8 -> N-", 32029)),
     ),
     Fiber(
         "E8bar into N",
@@ -165,6 +170,7 @@ FIBER_TABLE = (
             "a generator of the defining ideal in degree 8 or above",
             "the 148 quadrics over Q(i)",
         ),
+        (("E8-bar -> N+", 32009), ("E8-bar -> N+", 32029), ("E8-bar -> N-", 32009), ("E8-bar -> N-", 32029)),
     ),
     Fiber(
         "E8bar into VB",
@@ -183,6 +189,7 @@ FIBER_TABLE = (
         "open: the 21 quadrics over Q(i) reduce to K2 at 32029",
         (("A5-315", "survives"),),
         ("the fiber cone over Q(i) in every degree",),
+        (("E8-bar -> VB", 32009), ("E8-bar -> VB", 32029)),
     ),
 )
 SLUG_FIBER = {slug: fiber for fiber in FIBER_TABLE for slug in fiber.slugs}
@@ -239,6 +246,7 @@ def hilbert_block(fiber: Fiber, rows: list[dict[str, Any]], cm_rows: list[dict[s
     """The retained Hilbert and Cohen-Macaulay rows of a fiber, with their agreement with the declared values."""
     mine = [row for row in rows if row["fiber"] in fiber.hilbert_labels]
     cm = [row for row in cm_rows if row["fiber"] in fiber.hilbert_labels]
+    expected_cells = sorted(fiber.hilbert_cells)
     functions = {tuple(int(row["h"][degree]) for degree in HILBERT_DEGREES) for row in mine}
     values_match = all(
         (int(row["generators"]), int(row["quadrics"]), int(row["projdim"]), int(row["degree"]))
@@ -249,11 +257,14 @@ def hilbert_block(fiber: Fiber, rows: list[dict[str, Any]], cm_rows: list[dict[s
     return {
         "cells": sorted([str(row["fiber"]), int(row["prime"]), str(row["relations_sha256"])] for row in mine),
         "hilbert_function_degrees_1_to_7": [list(function) for function in sorted(functions)],
-        "rows_match_declared_values": values_match and len(functions) <= 1 and bool(mine) == bool(fiber.hilbert_labels),
+        "rows_match_declared_values": values_match
+        and len(functions) <= 1
+        and sorted((str(row["fiber"]), int(row["prime"])) for row in mine) == expected_cells,
         "cohen_macaulay_rows": sorted(
             [str(row["fiber"]), int(row["prime"]), bool(row["cohen_macaulay"])] for row in cm
         ),
-        "cohen_macaulay_rows_match": all(bool(row["cohen_macaulay"]) == fiber.cohen_macaulay for row in cm),
+        "cohen_macaulay_rows_match": sorted((str(row["fiber"]), int(row["prime"])) for row in cm) == expected_cells
+        and all(bool(row["cohen_macaulay"]) == fiber.cohen_macaulay for row in cm),
         "top_dimensional_component_degrees_sum_to_the_degree": top_degree == fiber.degree,
     }
 
@@ -292,7 +303,8 @@ def incidence_row(
                 "selected_indices_one_based": emitted["selected_indices_one_based"],
             }
         )
-    selections = {tuple(sorted(cell["selected_indices_one_based"])) for cell in cells}
+    # The selection order fixes the generator order of the header, so cells are compared as ordered lists.
+    selections = {tuple(cell["selected_indices_one_based"]) for cell in cells}
     counts = {int(cell["generator_count"]) for cell in cells}
     blocked = nullity16.get(spec.incidence)
     row: dict[str, Any] = {
@@ -309,7 +321,7 @@ def incidence_row(
         row["nullity16_record"] = None
         row["record_agrees"] = spec.route == "nakayama"
         return row
-    chosen = sorted(int(value) for value in blocked["chosen_coordinate_indices_one_based"])
+    chosen = [int(value) for value in blocked["chosen_coordinate_indices_one_based"]]
     row["nullity16_record"] = {
         "status": blocked["status"],
         "blocked_stage": blocked.get("blocked_stage"),
@@ -326,13 +338,11 @@ def incidence_row(
     return row
 
 
+BLOCKS = ("modular_rows", "geometry_rows", "sign_rows", "characteristic_zero_rows")
+
+
 def fiber_row(fiber: Fiber, statuses: dict[str, str], rows: list[dict[str, Any]], cm: list[dict[str, Any]]) -> dict:
-    blocks = {
-        "modular_rows": _status_block(fiber.modular_rows, statuses),
-        "geometry_rows": _status_block(fiber.geometry_rows, statuses),
-        "sign_rows": _status_block(fiber.sign_rows, statuses),
-        "characteristic_zero_rows": _status_block(fiber.characteristic_zero_rows, statuses),
-    }
+    blocks = {key: _status_block(getattr(fiber, key), statuses) for key in BLOCKS}
     hilbert = hilbert_block(fiber, rows, cm)
     return {
         "fiber": fiber.name,
@@ -452,9 +462,43 @@ def _record_bytes(record: dict[str, Any]) -> bytes:
     return (json.dumps(record, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
+def _verdict(record: dict[str, Any]) -> bool:
+    """The pass flag recomputed from the cells, flags and blocks the record stores."""
+    incidences = record["incidences"]
+    control = record["mutation_control"]
+    return (
+        all(
+            bool(cell["identical"]) and cell["regenerated_sha256"] == cell["header_sha256"]
+            for row in incidences
+            for cell in row["cells"]
+        )
+        and all(
+            bool(row["cells"])
+            and len({tuple(cell["selected_indices_one_based"]) for cell in row["cells"]}) == 1
+            and bool(row["one_selection_at_every_cell"])
+            and bool(row["all_cells_identical"])
+            and bool(row["generator_count_matches_fiber"])
+            and bool(row["record_agrees"])
+            for row in incidences
+        )
+        and all(
+            bool(row["sources_agree"])
+            and all(bool(entry["match"]) for key in BLOCKS for entry in row[key])
+            and bool(row["hilbert"]["rows_match_declared_values"])
+            and bool(row["hilbert"]["cohen_macaulay_rows_match"])
+            and bool(row["hilbert"]["top_dimensional_component_degrees_sum_to_the_degree"])
+            for row in record["fibers"]
+        )
+        and bool(record["stalled_elimination_row"]["match"])
+        and bool(control["detected"])
+        and len(control["headers_that_differ"]) == control["headers_compared"] > 0
+    )
+
+
 def _self_test(record: dict[str, Any]) -> None:
     _require(bool(record["pass"]), "the fiber import record failed")
     _require(bool(record["mutation_control"]["detected"]), "the conjugate-root mutation survived")
+    _require(_verdict(record), "the fiber import record disagrees with its own cells and blocks")
 
 
 def main() -> None:
