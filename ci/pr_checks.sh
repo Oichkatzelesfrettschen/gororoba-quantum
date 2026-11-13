@@ -67,6 +67,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/composed_limit_sections.py docs/evidence/a5-kernel-attachments/boost_fiber_variation.py docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py docs/evidence/a5-kernel-attachments/real_limit_sets.py docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py docs/evidence/a5-kernel-attachments/kernel_equivariance.py docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py"
 	checked_files="$checked_files docs/evidence/a5-associator-observables/associator_observables.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
@@ -85,6 +86,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/composed_limit_sections.py ../docs/evidence/a5-kernel-attachments/boost_fiber_variation.py ../docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py ../docs/evidence/a5-kernel-attachments/real_limit_sets.py ../docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py ../docs/evidence/a5-kernel-attachments/kernel_equivariance.py ../docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py"
 	typed_files="$typed_files ../docs/evidence/a5-associator-observables/associator_observables.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py ../docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086

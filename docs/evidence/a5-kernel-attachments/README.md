@@ -777,6 +777,142 @@ numerator, minimal primes or reduction ranks, a weight-inhomogeneous Pfaffian, o
 untruncated membership falsifies the table; a prime at which the saturated lattice of `K` reduces off `K2`
 falsifies the `Iso` statement.
 
+## Over Q(i) the linear symmetries of the fiber-cone quadrics are sl2 over a solvable radical with a torus of rank 4 to 6
+
+[`symmetry_algebra_qi.py`](symmetry_algebra_qi.py) regenerates the quadrics `K` of the
+[weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) for the
+eight cells that have any (`W8`, `E8bar`, `Iso` and same-sign `X` at `N+` and `N-`), checks each digest against that
+record, and computes over `Q(i)` the Lie algebra `g` of matrices in `gl_n` whose derivation
+`y_i -> sum_j A_ij y_j` maps `K` into `K`; the record is
+[`symmetry-algebra-qi-result.json`](symmetry-algebra-qi-result.json). The linear system is formed modulo 32009, a
+spanning set of its rows is formed over `Q(i)`, and every basis matrix of the null space of those rows is applied to
+every basis quadric and reduced exactly, so the null space equals `g` whatever the modular selection did. The
+structure is computed by the definitions of the modular record of the
+[quadric census](../a5-exceptional-fibers/quadric-census/README.md#structure-of-the-symmetry-algebras-over-f_p-a5-347-a5-348-a5-349),
+in exact arithmetic over `Q(i)`.
+
+**Observed (`A5-424`), the same numbers at `N+` and `N-`:**
+
+| Source | Generators | dim g | derived series | radical r | nilpotent ideal u | g / r | Cartan subalgebra | center |
+|---|---:|---:|---|---:|---:|---|---|---:|
+| `W8` | 24 | 26 | 26, 22 | 23 | 19 | sl2 | 5, toral | 1 |
+| `E8bar` | 21 | 34 | 34, 29, 26, 23 | 31 | 26 | sl2 | 6, toral | 1 |
+| `Iso` | 17 | 17 | 17, 14, 13 | 14 | 11 | sl2 | 4, toral | 1 |
+| same-sign `X` | 15 | 23 | 23, 19, 18 | 20 | 16 | sl2 | 5, toral | 1 |
+
+On each cell `r = {x : kappa(x, [g, g]) = 0}` is an ideal whose derived series reaches 0, `[g, g] + r = g`, and
+`g / r` has dimension 3 and holds `h, e, f` over `Q(i)` with `[h, e] = 2e`, `[h, f] = -2f` and `[e, f] = h`, so `r`
+is the radical and the quotient is the split `sl2`. `u`, the part of `r` orthogonal to `g` under the trace form, is
+an ideal whose lower central series reaches 0. The Fitting null component of one fixed element is abelian and each
+of its basis matrices has a squarefree minimal polynomial. The center is the line of the Euler field, and the
+diagonal matrix of the torus weights of the generators lies in `g`. The basis of `g` reduced at
+`(32009, i = 10754)` has the same structure numbers under the modular script, the stabilizer of the reduced quadrics
+has the dimension of `g`, and the same number of quadrics with hash-stream integer coefficients keeps the Euler
+field alone modulo 32009, which bounds its stabilizer over `Q(i)` by 1. The numbers equal those of the modular
+record (`A5-347`) for `X`, `Iso`, `E8bar -> N+-` and `W8 -> N-`, which that record computes in header coordinates
+at 32009 and 32029.
+
+**Inferred:** in characteristic 0 the stabilizer of `K` in `GL_n` is smooth, so `g` is its Lie algebra and a Cartan
+subalgebra of `g` is the Lie algebra of a Cartan subgroup, the centralizer of a maximal torus. That Cartan
+subalgebra consists of semisimple matrices on every cell, so the maximal tori of the group of linear symmetries of
+`K` have rank 5, 6, 4 and 5, and the Levi factor of its identity component has Lie algebra `sl2`. The torus is a
+subgroup of `GL_n`, and an element `g` of it that fixes every point of the cone has `g - 1` vanishing on the cone,
+so the rows of `g - 1` lie in the linear part of the radical of `K`; for `Iso->N-`, where `K` is prime and is the
+whole relation ideal (`A5-422`, conditional on `A5-293` and `A5-294`), that part is zero, `g = 1`, and the torus of rank 4 acts effectively on the
+5-dimensional fiber cone (`A5-348`).
+
+**Observed (`A5-426`), a Levi subalgebra and a split maximal torus, the same at `N+` and `N-`.** The triple of
+`g / r` lifts to elements `h, e, f` of `g` that satisfy the `sl2` relations exactly (corrections solved along the
+derived series of `r`). `h` has integer eigenvalues on the generators, symmetric about 0, and they split the
+generators into irreducible `sl2` summands:
+
+| Source | Generators | Weights of `h` (weight: multiplicity) | Summands of dimension 1, 2, 3, 4 |
+|---|---:|---|---|
+| `W8` | 24 | 0: 6, +-1: 6, +-2: 2, +-3: 1 | 4, 5, 2, 1 |
+| `E8bar` | 21 | 0: 5, +-1: 6, +-2: 1, +-3: 1 | 4, 5, 1, 1 |
+| `Iso` | 17 | 0: 3, +-1: 4, +-2: 2, +-3: 1 | 1, 3, 2, 1 |
+| same-sign `X` | 15 | 0: 3, +-1: 4, +-2: 1, +-3: 1 | 2, 3, 1, 1 |
+
+`h` commutes with the derivation `D` of the slice-torus weight `2 w_1 - w_2`. A Cartan subalgebra of `g` that
+contains `h` and `D` (the Fitting null component of an element of their common centralizer, abelian with semisimple
+basis matrices and of the dimension of the table above) has all its eigenvalues in `Q(i)`, and its joint eigenspaces
+fill the generators: the maximal torus is split over `Q(i)`. Its weights on the generators, written on a basis of
+the lattice they generate, are integer vectors of full rank 5, 6, 4 and 5; the Euler field, `h` and `D` are integer
+cocharacters. The weights are pairwise distinct for `E8bar` (21), `Iso` (17) and same-sign `X` (15), and `W8` has
+23 distinct weights on 24 generators (one of multiplicity 2). On torus eigen-coordinates the quadric space is the
+direct sum of its weight spaces: the ranks on the monomials of each weight add up to 144, 148, 68 and 69. The
+record lists every weight, and per weight the dimensions of the monomial space and of the quadrics in it: 6, 37
+and 10 weights of `W8`, `E8bar` and same-sign `X` hold a single monomial that lies in the quadric space, and no
+weight of `Iso` does.
+
+**Inferred:** on `Iso` the torus has rank 4 and the cone dimension 5, so the action has complexity one (`A5-348`),
+and the coordinates are torus eigenvectors of pairwise distinct weights. The weight list of the record is the input
+of a description by polyhedral divisors, which no record computes.
+
+`hypothesis:` the `sl2` is the image of the derived algebra of the `gl_2` part of the stabilizer of the base point
+in `g_2` plus scaling; the [stabilizer record](#the-base-point-stabilizer-maps-onto-the-levi-factor-of-the-symmetry-algebra)
+tests it. `dim g` exceeds `dim G_2 = 14` on every cell. The record does not cover `E8bar->VB`, whose
+quadrics over `Q(i)` come from the 650-second run of `A5-315` and are not retained. A matrix of the retained basis
+that fails to stabilize the regenerated quadrics, a structure number that differs from the tables, a reduction with
+other numbers, a control of dimension above 1, a triple with a nonzero defect, a Cartan basis matrix with an
+eigenvalue outside `Q(i)`, weights of rank below the Cartan dimension, or a quadric space that is not the sum of
+its weight spaces falsifies the record. The replay takes 3 minutes 55 seconds of wall time, 419 CPU seconds and
+0.63 GiB on two workers under a 12 GiB memory scope (Python 3.14.9, python-flint 0.9.0, Singular 4.4.1) on the build
+host. Evidence: [`symmetry-algebra-qi-result.json`](symmetry-algebra-qi-result.json) and
+the [ledger](ledger.md#ledger-rows).
+
+## The base-point stabilizer maps onto the Levi factor of the symmetry algebra
+
+[`stabilizer_action_qi.py`](stabilizer_action_qi.py) computes the action of the stabilizer `p` of the basepoint
+`z_0` in `g_2(C)` plus the scaling on the generators of each fiber cone, and compares its image with the symmetry
+algebra `g` of the [section above](#over-qi-the-linear-symmetries-of-the-fiber-cone-quadrics-are-sl2-over-a-solvable-radical-with-a-torus-of-rank-4-to-6);
+the record is [`stabilizer-action-qi-result.json`](stabilizer-action-qi-result.json). `C(z)` is linear in `z`, so
+along the field `z -> X z` the Schur form moves by the product rule, a generator `G_a = pf4(W)` moves to a polynomial
+`dG_a` on the slice, and `rho(X)` is the matrix with `dG_a = sum_b rho(X)_ab G_b` modulo `J + m (all Pfaffians)`.
+**Inferred:** the field leaves the slice, and the correction that returns it is a combination, with coefficients
+in `m`, of the fields of `g_2` and the scaling, each of which maps the Pfaffian ideal into itself; those fields
+span the tangent space of the boundary orbit at `z_0`, because the boost generator of the stabilizer torus fixes
+`z_0` and so moves `z_0` as a derivation of `g_2` does. The class modulo `m I` is therefore the action on the slice
+germ. The normal forms are taken modulo the weight truncation and the sixth power of the slice coordinate
+of weight zero, a quotient that is Artinian and local; the generators stay independent there (rank equal to their
+number on every cell), which makes each `rho(X)` unique.
+
+**Observed (`A5-427`), the same at `N+` and `N-` and on `W8`, `E8bar`, `Iso` and same-sign `X`:**
+
+- `p` has dimension 9: a part of grading weight 0 of dimension 4 (two torus elements and the root vectors of
+  weights `(1, 2)` and `(-1, -2)` under the two torus characters), and a part of dimension 5 of grading weights
+  -1, -1, -2, -3, -3.
+- Every one of the nine basis elements has a matrix, and every matrix lies in `g` (it maps each basis quadric into
+  the quadric space, exactly). The brackets of the images equal the images of the brackets on all 36 pairs.
+- The image of the grading element `2 t_1 - t_2` is the diagonal matrix of the generator weights that the producer
+  measures, with no multiple of the Euler field added.
+- `rho` is injective (image of dimension 9). The image and the radical of `g` together span `g` (dimension 26, 34,
+  17, 23). The weight-zero part maps to a subalgebra of dimension 4 whose image modulo the radical has dimension 3,
+  and the part of nonzero weight maps into the radical.
+- Control: the diagonal matrix 1, 2, ..., 15, a direction outside `g_2`, the scaling and the boost, has no matrix
+  on any cell.
+- A derivation of `g_2` that moves `z_0` has a matrix on every cell, and that matrix lies outside `g` on every cell.
+- The boost generator of the stabilizer torus, which is outside `g_2` plus scaling and has no lift to the kernel,
+  has a matrix in `g` on `W8`, `Iso` and same-sign `X`, where it adds one dimension to the image (10), and has no
+  matrix on `E8bar`. No invariance argument covers the boost, so its matrices are statements about this truncated
+  quotient (weight margin 4, sixth power of the weight-zero coordinate) and a larger quotient could lose them; the
+  absence of a matrix on `E8bar` holds in every larger quotient.
+
+**Inferred:** the Levi factor `sl2` of `g` is the image of the `sl2` in the weight-zero part `gl_2` of `p`, whose
+compact form is the `SU(2)` of the stabilizer `(SU(2) x U(1)) / Z_2` of the base point in `G_2 x U(1)`
+([kernel bundles](../a5-kernel-bundles/README.md)); the hypothesis of the section above holds on these eight cells.
+The derived algebra of all of `p` has dimension 8 and maps injectively, so it is larger than the Levi factor. The rest of `g` (dimension 17, 25, 8 and 14 beyond the
+image) is not explained by `g_2` plus scaling. `hypothesis:` the boost acts on the fiber cones of `W8`, `Iso` and
+same-sign `X` because their closures are cut out by forms that the boost preserves as an ideal, and fails on
+`E8bar`; no record tests the mechanism.
+
+A stabilizer element without a matrix, an image outside `g`, a bracket that fails, a grading image that differs
+from the weight derivation, an image that misses the Levi factor, or a diagonal control with a matrix falsifies the
+record. Evidence: [`stabilizer-action-qi-result.json`](stabilizer-action-qi-result.json) and the
+[ledger](ledger.md#ledger-rows). The replay takes 2 minutes 34 seconds of wall time and
+0.47 GiB on two workers under a 12 GiB memory scope (Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, Singular
+4.4.1) on the build host.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
