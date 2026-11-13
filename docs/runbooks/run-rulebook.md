@@ -531,3 +531,52 @@ the closest entry and say what changed.
 - Outcome: the two-worker writer and checker exit 0 in 31.75/31.75 seconds, with GNU time maximum process RSS
   81,876/82,032 KiB. The 32 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,195 Markdown
   link checks pass. Historical timings remain separate from the exact witness arithmetic.
+
+### Rees special fibers on the weight slice at N- (is the fiber cone the quadric locus for Iso, E8-bar and W8)
+
+- Question and decisive outcome: for each of Iso, E8-bar and W8 at the basepoint N-, whether the special fiber of
+  the Rees algebra of the ideal I of the 126 principal 4-Pfaffians, taken on the nine-variable weight slice, equals
+  k[y]/K for the retained quadric ideal K (`weight-slice-fiber-relations-result.json`). Equality needs the FIBER
+  line to show the dimension and multiplicity of K (Iso 5 and 23, E8-bar 5 and 11, W8 6 and 50) with every minimal
+  generator of degree 2. A differing dimension or multiplicity, or a generator of degree above 2, refutes equality
+  over that field. The mod 32009 runs are finite-field evidence; the Q(i) runs decide characteristic 0.
+- Formulation: Nakayama selection of g minimal generators G of I modulo J (17, 21, 24), the Rees ideal as
+  (J, y_a G_b - y_b G_a) saturated by the pivot generator of least weight (weight 3 in all three), then s = 0.
+  J is a single prime through the origin in each script (one `COMPONENT` line), so the pivot is a nonzerodivisor
+  and the saturation is the Rees ideal. Two forms run as twins: `sat(H, G_pivot)` of elim.lib (`r-*`), and the
+  variable saturation (`h-*`, written by `hsat.py`): u = G_pivot adjoined as the last variable of the weighted
+  reverse-lexicographic ordering with the pivot's weight, one `std`, division of each element by its highest power
+  of u. The unsliced `sat` form never finished (measured-combinations row "pivot saturation of the Rees ideal");
+  the weight slice (9 variables in place of the full germ) and weight-homogeneity are what changed. Rejected: the
+  degree-by-degree membership rank, which bounds one degree per run and cannot show the absence of higher
+  generators.
+- Host and tool versions: build host, Singular 4.4.1 (Arch package): `r-iso-nm-p`, `r-e8-nm-p`, `r-w8-nm-p`
+  (mod 32009) and `r-iso-nm-q` (Q(i)). Windows compute workstation (WSL, 32 threads, 54 GiB), passagemath Singular
+  4.4.1: `r-e8-nm-q`, `r-w8-nm-q` (Q(i)) and `h-iso-nm-p`, `h-e8-nm-p`, `h-w8-nm-p` (mod 32009).
+- Launch line and environment: one tmux session per run, `/usr/bin/time -v Singular -q < NAME.sing > NAME.log
+  2> NAME.time; echo EXIT $? >> NAME.log`; on the build host inside `systemd-run --user --scope -p MemoryMax=7G -p
+  MemorySwapMax=0`, on the workstation inside `ulimit -v 25000000` (`r-*`) or `ulimit -v 12000000` (`h-*`).
+  `option(redSB)`, ordering `wp` with the slice weights followed by the generator weights. Scripts come from
+  `graded.py ORBIT SOURCE FIELD [DEGREE] [comp] [rees]`.
+- Runner and exit status: the shell appends Singular's status as the `EXIT` line. Singular exits 0 on SIGTERM, so
+  a run counts as finished only with its `FIBER` line and `STAGE rees_done` present.
+- Departures from the foundations: none of the nine runs sets `option(prot)`, so a stalled run shows only
+  `STAGE rees_start` and its resident set; every restart adds it. `MALLOC_ARENA_MAX` is unset. The workstation
+  runs carry an address-space limit although its substrate row keeps no cap; the limit protects the five sibling
+  runs from one another.
+- Parallelism: four single-thread processes on the build host (6 cores) and five on the workstation (16 cores).
+- Memory and time limits: build host 7 GiB cgroup each (28 GiB of 62); workstation 25 GB and 12 GB of address
+  space (86 GB summed against 54 GiB, so the two Q(i) runs are watched by resident set). A cgroup kill or an
+  allocation failure ends a run with no `FIBER` line and decides nothing. No time limit; `watch.sh` wakes the
+  session on the first `EXIT` line or lost tmux session.
+- Checkpoints: stage lines in `NAME.log` (`STAGE pf_done`, `nakayama_done`, `syz_done`, `rees_start`,
+  `rees_std_done` in the variable form, `rees_sat_done`, `rees_done`); no intermediate basis is saved.
+- End state: logs, scripts and `.time` files stay in the session scratch on both hosts until the producer mode
+  that regenerates them is retained; a finished workstation log is copied to the build host first.
+- Calibration: the same-sign X control at N- (15 generators, K of dimension 4 and multiplicity 12, 69 quadrics)
+  returns FIBER dimension 4, multiplicity 12, 69 minimal generators, all of degree 2, in all three runs: `sat`
+  mod 32009 in 6 s of saturation, `sat` over Q(i) in 466 s (476 s wall, 208 MB), variable saturation mod 32009 in
+  6 s (16 s wall, 37 MB).
+- Outcome: open. At 1 h 20 min every run has printed `STAGE rees_start` and no later stage; resident sets: Iso
+  0.33 GB (mod p, `sat`), 0.52 GB (Q(i)); E8-bar 2.6 GB (mod p), 11.8 GB (Q(i)); W8 1.7 GB (mod p), 4.8 GB (Q(i));
+  variable form at 16 min 0.30, 0.87 and 0.67 GB.
