@@ -5716,6 +5716,30 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py --check",
+      "name": "core-a5-quadric-symmetry-algebra",
+      "seconds": 60.0,
+      "workers": 4,
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/quadric-census/symmetry-algebra.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "out=$(Singular -q --no-warn < docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.sing) && [ \"$(printf '%s\\n' \"$out\" | grep '^RESULT')\" = \"$(grep '^RESULT' docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.log)\" ]",
+      "name": "core-a5-w8-component-linear-forms",
+      "seconds": 60.0,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/quadric-census/w8-component-linear-forms.log"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "printf '%s\\n' '8e19351eef04196d304c02a27a7b2b848702bc567991c22affbdee3daaddfe71  docs/evidence/a5-char0-transfer/e8-closure-check-validation.json' | sha256sum -c - && \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/e8_closure_validation.py --check && if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then timeout -k 10 600 \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/e8_closure_certificate.py --check --workers 2 --memory-budget-gib 12; else echo \"skipped: GOROROBA_SINGULAR_REQUIRED=1 enables the exact Singular replay\"; fi",
       "name": "core-a5-e8-closure-certificate-qi",
       "seconds": 165.0,

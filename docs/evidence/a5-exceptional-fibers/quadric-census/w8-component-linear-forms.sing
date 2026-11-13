@@ -1,0 +1,9 @@
+ring R=32009,(y(1..24)),dp;
+execute("ideal Q="+read("docs/evidence/a5-exceptional-fibers/structure/w8-kp/quotient.txt")+";");
+execute("ideal P="+read("docs/evidence/a5-exceptional-fibers/structure/w8-kp/P-p32009.txt")+";");
+ideal sQ=std(Q); ideal sP=std(P);
+int i; int lq=0; int lp=0;
+for(i=1;i<=ncols(sQ);i++){ if(deg(sQ[i])==1){lq++;} }
+for(i=1;i<=ncols(sP);i++){ if(deg(sP[i])==1){lp++;} }
+"RESULT linear forms in K2:P", lq, "in P", lp, "dims", dim(sQ), dim(sP), "mult", mult(sQ), mult(sP);
+quit;
