@@ -16,6 +16,8 @@ import centralizer_components as cc  # noqa: E402
 import kernel_symmetry as ks  # noqa: E402
 import sympy as sp  # noqa: E402
 
+import parallel  # noqa: E402
+
 
 def _same(found: object, expected: object) -> None:
     if found != expected:
@@ -142,27 +144,30 @@ def _pattern_and_values(matrix: sp.Matrix) -> tuple[cc.Pattern, dict[str, Any]]:
     return pattern, values
 
 
+def _visible_case(item: tuple[int, int, int]) -> tuple[cc.Pattern, tuple[int, int, int], int]:
+    """The pattern of one visible automorphism and the number of transport equations of that pattern it fails."""
+    outer, epsilon, psi = item
+    pattern, values = _pattern_and_values(_visible(outer, epsilon, psi))
+    names, generators = cc.pattern_ideal(pattern, "")
+    # The last 16 generators are the inverses and the 4 before them the gauge; the rest are the equations.
+    equations = generators[: len(generators) - 20]
+    symbols = {name: sp.Symbol(name) for name in names} | {"i": sp.I}
+    table = {sp.Symbol(name): value for name, value in values.items()}
+    failed = sum(
+        sp.simplify(sp.sympify(text.replace("^", "**"), locals=symbols).subs(table)) != 0 for text in equations
+    )
+    return pattern, item, int(failed)
+
+
 def test_the_twelve_visible_automorphisms_solve_the_two_patterns_six_each() -> None:
     """The lower S_3 lies in the identity pattern and its products with the outer reflection in the sign-negating
     one; each satisfies every transport equation of its pattern. Six distinct solutions modulo T in an ideal with
     six points also show that the ideal is radical, with no call to `radical`."""
+    items = [(outer, epsilon, psi) for outer in range(2) for epsilon in range(2) for psi in range(3)]
     members: dict[cc.Pattern, list[tuple[int, int, int]]] = {}
-    for outer in range(2):
-        for epsilon in range(2):
-            for psi in range(3):
-                pattern, values = _pattern_and_values(_visible(outer, epsilon, psi))
-                names, generators = cc.pattern_ideal(pattern, "")
-                # The last 16 generators are the inverses and the 4 before them the gauge; the rest are the equations.
-                equations = generators[: len(generators) - 20]
-                symbols = {name: sp.Symbol(name) for name in names} | {"i": sp.I}
-                table = {sp.Symbol(name): value for name, value in values.items()}
-                failed = [
-                    text
-                    for text in equations
-                    if sp.simplify(sp.sympify(text.replace("^", "**"), locals=symbols).subs(table)) != 0
-                ]
-                _same(failed, [])
-                members.setdefault(pattern, []).append((outer, epsilon, psi))
+    for pattern, item, failed in parallel.ordered_map(_visible_case, items, min_items=1):
+        _same(failed, 0)
+        members.setdefault(pattern, []).append(item)
     identity: cc.Pattern = ((0, 1, 2, 3), 0, (0, 1, 2, 3), 0, 0)
     negating: cc.Pattern = ((3, 2, 1, 0), 1, (3, 2, 1, 0), 1, 1)
     _same(sorted(members), sorted([identity, negating]))
