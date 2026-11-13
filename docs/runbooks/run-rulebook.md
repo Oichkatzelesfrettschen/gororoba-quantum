@@ -697,7 +697,12 @@ the closest entry and say what changed.
   the script prints the FIBER line only after the certificate and writes no intermediate basis, so a run that
   dies in the certificate loses the standard basis. The E8-bar run `c-e8-nm-p` carries `ulimit -v 30000000`
   (resident 2.6 GB at 3 h 20 min, growing about 0.6 GB per hour); the workstation's rule is a planning sum of
-  52.5 GB with no cap on a job.
+  52.5 GB with no cap on a job. Two checkpointed runs started beside it at 15:19 PST with the owner's approval,
+  uncapped: `k-e8-nm-p2` (E8-bar at N- modulo 32029, i = 9115) and `k-e8-np-p` (E8-bar at N+ modulo 32009). Each
+  writes its standard basis to `NAME.hs.ssi`, prints `FIBER_BEFORE_CERT` with the minimal generators, then runs
+  the colon certificate and prints `FIBER` and `FIBER_SAME_AS_BEFORE_CERT`. The same script shape on the
+  same-sign X control prints the control's FIBER line and Hilbert numerator on both sides of the certificate
+  (16 s). Falsifier: a FIBER line or Hilbert numerator that differs between the three E8-bar runs.
 - Outcome (2026-11-13, 14:16 PST): the certified Iso run at N- modulo 32009 (`c-iso-nm-p`, workstation) exits 0
   after 2 h 24 min 45 s at 1.76 GB peak with `CERT divided_basis_leading_u_bad 0`,
   `CERT saturation_colon_equal 1`, `FIBER dim 5 mult 23 minimal generators 68`, all 68 generators of degree 2, and
