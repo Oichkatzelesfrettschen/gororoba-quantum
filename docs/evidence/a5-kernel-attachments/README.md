@@ -741,17 +741,18 @@ computes the degree-2 relations `{q : q(G) in J + m I^2}` modulo 32029 with `i =
 Hilbert numerator `1, 0, -21, 70, -105, 84, -35, 6`, is saturated and radical, has two minimal primes of dimension
 4 and degrees 3 and 4, and has a linear symmetry algebra of dimension 15. At the retained basepoint the echelon
 form of the relations equals the retained `K2` of the exceptional-fiber record. The four computations read four
-different inputs (the digest of the moved point, the Schur coordinates and the slice columns differs at each), and
-their four echelon forms differ. At the boost `(5/4, 3/4)` the degree-3 relations number 140 of 220 products, so
+different inputs (the digest of the moved point, the Schur coordinates and the slice columns differs at each).
+At the boost `(5/4, 3/4)` the degree-3 relations number 140 of 220 products, so
 `h_3 = 80`, the value of the quadric ring.
 
-The four echelon bases have one support and differ in three scalars `a`, `b`, `d` read from them. The linear spans
+Three scalars `a`, `b`, `d` are read from each echelon basis. The linear spans
 of the two components are cut out by `y7, y3, y4 + y6` and by `y10 + a y1, y9 + b y5, y8 + b y2, y6 - y4 + d y1`;
 the substitution `y = M w` that takes those seven forms to `w1, w2, w3` and `w4 - (d/2) w7, w5, w6, w7`, and
 `y1, y2, y5` to `w8, w9, w10`, is invertible, and after it the four quadric ideals have the same reduced echelon
 basis. So `M_k M_0^{-1}` carries the quadric ideal at basepoint `k` onto the one at the retained basepoint: the four
 quadric schemes are projectively equivalent over `F_32029`, by explicit matrices. The frame of the retained
-basepoint, applied at each moved basepoint, gives a different ideal (the control of the comparison).
+basepoint, applied at each moved basepoint, gives a different ideal: the control shows that each moved quadric ideal differs from the retained one, so the
+equivalence is not the identity.
 
 **Inferred, modulo 32029:** the fiber of `E8bar` over each sampled point lies in one quadric scheme up to a linear
 change of the 10 generators, and at `(5/4, 3/4)` the fiber cone agrees with the quadric ring through degree 3.

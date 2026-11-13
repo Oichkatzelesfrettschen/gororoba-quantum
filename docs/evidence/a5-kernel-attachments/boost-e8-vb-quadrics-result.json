@@ -214,9 +214,11 @@
  "inputs": {
   "docs/evidence/a5-char0-transfer/quadric_lift.py": "66ff39f49f33084927d232875689960afa798a3abc90075c5ae8c85041456c4e",
   "docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py": "14568a6ccded9ced70bc4853d0a6f2a0cd8c4e0dd5ea8ca9ab2d71c64592b52f",
-  "docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py": "3d0b2bc6b2283020f23e345ae4309ddd701d97b79d3aa6acce37dd50212a9211",
+  "docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py": "e016c9fddffc48980d40e651b52d1962a027e6129e5783bb1a8abcc36a0a366e",
   "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "724ccc6f5f3f339303d32a4ca88bfa6e828d7d21cc770af52a5a0e5858fd1a11",
-  "docs/evidence/a5-kernel-attachments/fiber_inputs.py": "9c95b34144c3fac8293008b224329d1f63eb86b96e7f456ed53fd09b251fce25"
+  "docs/evidence/a5-kernel-attachments/fiber_inputs.py": "9c95b34144c3fac8293008b224329d1f63eb86b96e7f456ed53fd09b251fce25",
+  "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+  "docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py": "dfe6a7c2f415e9d53f400df569b8e50f983bd751b8746316d3a27bea4fc8d759"
  },
  "pass": true,
  "schema": "a5-kernel-attachments-boost-e8-vb-quadrics-v1"

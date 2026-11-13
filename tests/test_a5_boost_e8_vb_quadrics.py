@@ -68,6 +68,11 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "products": lambda r: r["basepoints"][1].update(products=54),
         "slice dimension": lambda r: r["basepoints"][1]["transversality"].update(slice_dimension=7),
         "closure": lambda r: r["basepoints"][2]["transversality"].update(closure_membership="000000000000"),
+        "closure everywhere": lambda r: [
+            row["transversality"].update(closure_membership="000000000000") for row in r["basepoints"]
+        ],
+        "retained digest": lambda r: r["basepoints"][0].update(retained_k2_sha256="0" * 64),
+        "retained digest absent": lambda r: r["basepoints"][0].pop("retained_k2_sha256"),
         "field": lambda r: r.update(field="GF(2)"),
         "incidence": lambda r: r.update(incidence="E8->VB"),
         "same input": lambda r: r["basepoints"][1].update(moved_input_sha256=r["basepoints"][0]["moved_input_sha256"]),

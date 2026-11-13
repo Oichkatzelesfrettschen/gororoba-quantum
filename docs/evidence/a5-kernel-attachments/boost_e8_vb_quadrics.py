@@ -79,6 +79,8 @@ SOURCE_PATHS = (
     HERE / "boost_e8_vb_quadrics.py",
     HERE / "boost_fiber_variation.py",
     HERE / "fiber_inputs.py",
+    HERE / "nullity16_rees_fibers.py",
+    HERE / "first-order-normal-cones-result.json",
     TRANSFER / "quadric_lift.py",
     CENSUS / "symmetry_algebra.py",
 )
@@ -99,6 +101,9 @@ EXPECTED: dict[str, Any] = {
 PRODUCTS = {2: math.comb(GENERATORS + 1, 2), 3: math.comb(GENERATORS + 2, 3)}
 DEGREE_THREE_RELATIONS = 140
 SLICE_DIMENSION, COMPLEX_DIMENSION = 8, 15
+# Membership of a VB point in the twelve closure ideals, and the digest of the retained K2 relation file.
+CLOSURE_MEMBERSHIP = "111111110000"
+RETAINED_K2_SHA256 = "e65cbd06cbcef44195409f776541d28e0f7a39f50347eea54b21a15f7c5a95ac"
 # The three scalars of the adapted frame, as (monomial that names the row, monomial whose coefficient is read).
 FRAME_SCALARS = {"a": ((7, 10), (1, 7)), "b": ((7, 9), (5, 7)), "d": ((6, 7), (1, 7))}
 
@@ -332,7 +337,7 @@ def compute() -> dict[str, Any]:
         [{(a, b): value for a, b, value in quadric} for quadric in row.pop("_quadrics")] for row in rows[: len(BOOSTS)]
     ]
     retained_frame = adapted_frame(ideals[0])[1]
-    for row, quadrics in zip(rows, ideals, strict=False):
+    for row, quadrics in zip(rows[: len(BOOSTS)], ideals, strict=True):
         scalars, matrix = adapted_frame(quadrics)
         row["adapted_frame_scalars"] = scalars
         row["normal_form_sha256"] = _digest(normal_form(quadrics, matrix))
@@ -365,7 +370,7 @@ def verdict(record: dict[str, Any]) -> list[str]:
             geometry["orbit_dimension"] != COMPLEX_DIMENSION - SLICE_DIMENSION
             or geometry["slice_dimension"] != SLICE_DIMENSION
             or geometry["rank_of_orbit_tangent_with_slice"] != COMPLEX_DIMENSION
-            or geometry["closure_membership"] != rows[0]["transversality"]["closure_membership"]
+            or geometry["closure_membership"] != CLOSURE_MEMBERSHIP
         ):
             problems.append(f"{name}: the point leaves the VB orbit or the slice is not complementary")
         if row.get("products") != PRODUCTS[2]:
@@ -373,7 +378,7 @@ def verdict(record: dict[str, Any]) -> list[str]:
         for key, value in EXPECTED.items():
             if row.get(key) != value:
                 problems.append(f"{name}: {key} is {row.get(key)}, expected {value}")
-    if rows and rows[0].get("equals_retained_k2") is not True:
+    if rows and (rows[0].get("equals_retained_k2"), rows[0].get("retained_k2_sha256")) != (True, RETAINED_K2_SHA256):
         problems.append("the retained basepoint does not reproduce the retained K2")
     if len({row["moved_input_sha256"] for row in rows}) != len(rows):
         problems.append("two basepoints hand the relation stage the same input")
