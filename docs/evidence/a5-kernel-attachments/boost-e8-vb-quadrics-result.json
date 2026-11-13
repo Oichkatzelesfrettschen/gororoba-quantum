@@ -1,0 +1,225 @@
+{
+ "basepoints": [
+  {
+   "adapted_frame_scalars": {
+    "a": 26905,
+    "b": 24737,
+    "d": 17445
+   },
+   "affine_dimension": 4,
+   "boost": [
+    "1",
+    "0"
+   ],
+   "echelon_sha256": "259e2a1911a806fc61d6e31ebff6b8f4a26f151f5e169bc27192a14c9193a96f",
+   "equals_retained_k2": true,
+   "first_numerator": [
+    1,
+    0,
+    -21,
+    70,
+    -105,
+    84,
+    -35,
+    6
+   ],
+   "generators": 10,
+   "minimal_primes": [
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "moved_input_sha256": "775908467a31c49f6640abf3044b3ecf620b7dc8d9b51acaec560991443da229",
+   "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
+   "products": 55,
+   "radical": true,
+   "relations": 21,
+   "retained_k2_sha256": "e65cbd06cbcef44195409f776541d28e0f7a39f50347eea54b21a15f7c5a95ac",
+   "saturated": true,
+   "symmetry_algebra_dimension": 15,
+   "transversality": {
+    "closure_membership": "111111110000",
+    "orbit_dimension": 7,
+    "rank_of_orbit_tangent_with_slice": 15,
+    "slice_dimension": 8
+   }
+  },
+  {
+   "adapted_frame_scalars": {
+    "a": 26232,
+    "b": 6473,
+    "d": 12946
+   },
+   "affine_dimension": 4,
+   "boost": [
+    "5/4",
+    "3/4"
+   ],
+   "echelon_sha256": "65ec555ca01ae52b993c4834ec1519068224cc31286f2b15c12f7a9e4bd9871b",
+   "first_numerator": [
+    1,
+    0,
+    -21,
+    70,
+    -105,
+    84,
+    -35,
+    6
+   ],
+   "generators": 10,
+   "minimal_primes": [
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "moved_input_sha256": "172b7259e6eca7d11d6867738c23ed569a804c5de37656528d7bdb28a0161f80",
+   "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "7e0cf5ff6274da992fd54f316cfe62fc01768e6ce07bd3c993ce8a7ef3fd867e",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
+   "products": 55,
+   "radical": true,
+   "relations": 21,
+   "saturated": true,
+   "symmetry_algebra_dimension": 15,
+   "transversality": {
+    "closure_membership": "111111110000",
+    "orbit_dimension": 7,
+    "rank_of_orbit_tangent_with_slice": 15,
+    "slice_dimension": 8
+   }
+  },
+  {
+   "adapted_frame_scalars": {
+    "a": 27817,
+    "b": 26449,
+    "d": 20869
+   },
+   "affine_dimension": 4,
+   "boost": [
+    "5/3",
+    "4/3"
+   ],
+   "echelon_sha256": "e764866ef678e567340660b6c3d7414423b35e6a10c237da7e304259148d00ba",
+   "first_numerator": [
+    1,
+    0,
+    -21,
+    70,
+    -105,
+    84,
+    -35,
+    6
+   ],
+   "generators": 10,
+   "minimal_primes": [
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "moved_input_sha256": "626f78e21409c6409cda2a66ceedada4eda8304cf40b2be6f14ed86bb49325f1",
+   "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "63ee7b797fca6cf6fdda7b0dd948652f8a77c19cff098ba8ea57600e7df4d2ba",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
+   "products": 55,
+   "radical": true,
+   "relations": 21,
+   "saturated": true,
+   "symmetry_algebra_dimension": 15,
+   "transversality": {
+    "closure_membership": "111111110000",
+    "orbit_dimension": 7,
+    "rank_of_orbit_tangent_with_slice": 15,
+    "slice_dimension": 8
+   }
+  },
+  {
+   "adapted_frame_scalars": {
+    "a": 18910,
+    "b": 23071,
+    "d": 14113
+   },
+   "affine_dimension": 4,
+   "boost": [
+    "13/12",
+    "-5/12"
+   ],
+   "echelon_sha256": "62694826de19ba57035b9f3c479b3cd588f6658b678092de397e6a6a5cdc6551",
+   "first_numerator": [
+    1,
+    0,
+    -21,
+    70,
+    -105,
+    84,
+    -35,
+    6
+   ],
+   "generators": 10,
+   "minimal_primes": [
+    [
+     4,
+     3
+    ],
+    [
+     4,
+     4
+    ]
+   ],
+   "moved_input_sha256": "3198e9ee189fdfd708a6bce4b9095d8ee1d8260a38c36643f05d316fcf17c973",
+   "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "914520be4fe996165e4fc9bf3e7bca8000194ab61def481424a0f9338f1c9e9f",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
+   "products": 55,
+   "radical": true,
+   "relations": 21,
+   "saturated": true,
+   "symmetry_algebra_dimension": 15,
+   "transversality": {
+    "closure_membership": "111111110000",
+    "orbit_dimension": 7,
+    "rank_of_orbit_tangent_with_slice": 15,
+    "slice_dimension": 8
+   }
+  }
+ ],
+ "degree_three": {
+  "boost": [
+   "5/4",
+   "3/4"
+  ],
+  "h_3": 80,
+  "products": 220,
+  "quadric_ring_h_3": 80,
+  "relations": 140
+ },
+ "field": "GF(32029), i = 9115",
+ "incidence": "E8bar->VB",
+ "inputs": {
+  "docs/evidence/a5-char0-transfer/quadric_lift.py": "66ff39f49f33084927d232875689960afa798a3abc90075c5ae8c85041456c4e",
+  "docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py": "14568a6ccded9ced70bc4853d0a6f2a0cd8c4e0dd5ea8ca9ab2d71c64592b52f",
+  "docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py": "e89b56182e592032a806ad5c6942cf46ce392790fea4406ee85e7db1829e0337",
+  "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "724ccc6f5f3f339303d32a4ca88bfa6e828d7d21cc770af52a5a0e5858fd1a11",
+  "docs/evidence/a5-kernel-attachments/fiber_inputs.py": "9c95b34144c3fac8293008b224329d1f63eb86b96e7f456ed53fd09b251fce25",
+  "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+  "docs/evidence/a5-kernel-attachments/nullity16_rees_fibers.py": "dfe6a7c2f415e9d53f400df569b8e50f983bd751b8746316d3a27bea4fc8d759"
+ },
+ "pass": true,
+ "schema": "a5-kernel-attachments-boost-e8-vb-quadrics-v1"
+}
