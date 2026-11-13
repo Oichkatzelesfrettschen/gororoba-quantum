@@ -446,6 +446,12 @@ def _mutations() -> dict[str, Callable[[dict[str, Any]], None]]:
             hilbert=copy.deepcopy(rec["cells"][0]["hilbert"])
         ),
         "reduction rank differs": lambda rec: rec["reduction_comparison"][0].update(spaces_equal=False),
+        "a reduction rank changes under a stored equality": lambda rec: rec["reduction_comparison"][0].update(
+            joint_rank=145
+        ),
+        "hilbert numerator differs between basepoints": lambda rec: rec["cells"][0]["hilbert"][
+            "first_numerator"
+        ].__setitem__(2, -143),
         "reduction compares different selections": lambda rec: rec["reduction_comparison"][1].update(
             same_selected_pfaffians=False
         ),

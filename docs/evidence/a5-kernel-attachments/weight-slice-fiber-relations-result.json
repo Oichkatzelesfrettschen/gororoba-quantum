@@ -1769,7 +1769,7 @@
     "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
     "docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json": "2c7dd00477a0af20c1d0f04b96f86ba96b3782499c60a19532ad655d33b1d8f1",
     "docs/evidence/a5-kernel-attachments/nullity8-fiber-import-result.json": "52079d22d48df289d04dcdbba8293569eeeaa14c000af502ba64f9f23472d721",
-    "docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py": "5c431c7578604a921cdb4715c862e6ffc4f21f9669c13f793de135b58715e679",
+    "docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py": "f4c2274ed3d739f067a23bd5fe7e54b015c60be1f0c2b938803fa03a4ccb3f0d",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
     "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"

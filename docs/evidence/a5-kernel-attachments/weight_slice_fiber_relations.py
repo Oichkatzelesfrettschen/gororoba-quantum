@@ -12,7 +12,11 @@ intersection of its minimal primes through the origin. The producer then selects
 Pfaffians (a Pfaffian joins G when its reduction modulo J + m (all Pfaffians), computed on a truncation at the
 largest Pfaffian weight, is nonzero), forms the products G_a ... G_d, and reads the relations q(G) in J + m I^d
 (I = (G)) as the syzygies of the normal forms of the products modulo J + m P + (monomials of weight above the largest
-product weight). A truncated standard basis of weight-homogeneous input computes each of these in one pass, so the
+product weight). Two facts make this the local computation. Every ideal involved is graded by the torus weight and
+the added monomials lie above the largest weight of a product, so the truncation changes no normal form of a product.
+The class of q(G) modulo J + m P is killed by the maximal ideal, so a unit of the local ring (det B, 1 + i s_2,
+1 - s_2^2) acts on it as a nonzero constant, and membership in the polynomial ring equals membership in the local
+ring. A truncated standard basis of weight-homogeneous input computes each of these in one pass, so the
 whole table runs over Q(i) in under a minute, and the relation ideal of the retained W8 and E8bar cells then gets its
 Hilbert series, dimension, multiplicity and saturation. Two cells recompute modulo 32009 with i sent to 10754, and the
 Q(i) relation space reduced through that map is compared with the modular one by rank.
@@ -1071,7 +1075,10 @@ def verdict(record: dict[str, Any]) -> list[str]:
             continue
         if not entry["same_selected_pfaffians"]:
             problems.append(f"{label}: the cells selected different Pfaffians")
-        if not entry["spaces_equal"] or entry["modular_relations"] != modular["relation_count"]:
+        ranks_equal = entry["modular_rank"] == entry["reduced_rank"] == entry["joint_rank"]
+        if not ranks_equal or entry["spaces_equal"] != ranks_equal:
+            problems.append(f"{label}: the three ranks differ or the stored equality contradicts them")
+        if entry["modular_relations"] != modular["relation_count"]:
             problems.append(f"{label}: the reduced Q(i) relation space differs from the modular one")
     if [(entry["orbit"], entry["source"]) for entry in record["reduction_comparison"]] != [
         (MODULAR_ORBIT, source) for source in MODULAR_SOURCES
@@ -1081,10 +1088,10 @@ def verdict(record: dict[str, Any]) -> list[str]:
         numerators = {
             tuple(cell["hilbert"]["first_numerator"])
             for cell in record["cells"]
-            if cell["source"] == source and cell["orbit"] == MODULAR_ORBIT and cell["hilbert"] is not None
+            if cell["source"] == source and cell["hilbert"] is not None
         }
         if len(numerators) != 1:
-            problems.append(f"{source}: the first Hilbert numerators differ between Q(i) and the modular cell")
+            problems.append(f"{source}: the first Hilbert numerators differ between basepoints or fields")
     names = [control["name"] for control in record["mutation_controls"]]
     if names != ["component_step_dropped", "wrong_weight_vector"]:
         problems.append("the mutation controls are missing")
