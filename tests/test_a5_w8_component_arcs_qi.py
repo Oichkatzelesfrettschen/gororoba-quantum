@@ -60,7 +60,7 @@ def test_the_component_table_is_the_minimal_primes_of_every_w8_cell_of_the_weigh
 
 
 def test_the_spans_separate_the_two_components() -> None:
-    """Span 15 fits the 15-dimensional span of the degree-20 component only; span 20 exceeds it."""
+    """A 6-dimensional family is a whole component; span 15 or 20 names it as the degree-20 or degree-30 one."""
     small, large = (arcs.GENERATORS - linear_forms for _, _, linear_forms in arcs.COMPONENTS)
     _same((small, large), (15, 20))
     _same((arcs.EXPECTED["linear"][2], arcs.EXPECTED["series"][2]), (small, large))
@@ -125,6 +125,10 @@ MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "components swapped": (_swap_components, "component table"),
     "pass flag cleared": (_clear_pass, "pass flag"),
     "schema changed": (_schema, "schema"),
+    "field changed": (lambda record: record.update(field="Q"), "field"),
+    "order changed": (lambda record: record.update(order=11), "truncation order"),
+    "points changed": (lambda record: record.update(points=[[1, 1, 1, 1, 1], [13, 4, 9, 6, 17]]), "parameter points"),
+    "slice variable renamed": (_set("w8-nm", "series", "slice_variables", ["s1"]), "slice variables"),
 }
 
 
@@ -143,5 +147,4 @@ def test_the_retained_record_binds_the_current_input_digests() -> None:
     _same(sorted(record["inputs"]), sorted(arcs.INPUTS))
     for name in arcs.INPUTS:
         _same(record["inputs"][name], hashlib.sha256((TRANSFER / name).read_bytes()).hexdigest())
-    _same(record["order"], arcs.arcs_qi.ORDER)
-    _same(record["points"], [list(point) for point in arcs.arcs_qi.POINTS])
+    _same(record["weight_slice_record_sha256"], hashlib.sha256(WEIGHT_SLICE.read_bytes()).hexdigest())

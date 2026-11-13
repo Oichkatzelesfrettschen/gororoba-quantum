@@ -31,9 +31,11 @@
   ]
  ],
  "inputs": {
+  "w8_component_arcs_qi.py": "ea907f4beec02bee3c834eeda65b4a520aabf8cdf44224170fadf431e8501c2e",
   "arcs_qi.py": "7b99e9f3ad126ccc88defa89105b512849f1002125598086c975759974d44970",
   "reduction_check.py": "2cb80bafe8437df476442f13a449046ae998ab9d0907c41cedd72b7543cffd88"
  },
+ "weight_slice_record_sha256": "63f61da69ab0f30e61b3625e817e828a9f78974803e320630295410219a4c344",
  "rows": [
   {
    "slug": "w8-nm",
@@ -61,8 +63,8 @@
     6
    ],
    "span_of_limits": 15,
-   "wall_seconds": 25,
-   "peak_rss_kib": 170312
+   "wall_seconds": 24,
+   "peak_rss_kib": 170636
   },
   {
    "slug": "w8-np",
@@ -90,95 +92,95 @@
     6
    ],
    "span_of_limits": 15,
+   "wall_seconds": 24,
+   "peak_rss_kib": 170476
+  },
+  {
+   "slug": "w8-nm",
+   "family": "series",
+   "control": false,
+   "last_coordinate_sign": 1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 0,
+   "j_is_identity": null,
+   "order_of_G": 4,
+   "generators": 24,
+   "limit_nonzero": 23,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 20,
+   "wall_seconds": 2040,
+   "peak_rss_kib": 1755944
+  },
+  {
+   "slug": "w8-np",
+   "family": "series",
+   "control": false,
+   "last_coordinate_sign": -1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 0,
+   "j_is_identity": null,
+   "order_of_G": 4,
+   "generators": 24,
+   "limit_nonzero": 23,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 20,
+   "wall_seconds": 2034,
+   "peak_rss_kib": 1755444
+  },
+  {
+   "slug": "w8-nm",
+   "family": "linear",
+   "control": true,
+   "last_coordinate_sign": -1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 1,
+   "j_is_identity": false,
+   "order_of_G": 2,
+   "generators": 24,
+   "limit_nonzero": 21,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 15,
    "wall_seconds": 23,
-   "peak_rss_kib": 170632
-  },
-  {
-   "slug": "w8-nm",
-   "family": "series",
-   "control": false,
-   "last_coordinate_sign": 1,
-   "slice_variables": [
-    "t1",
-    "t2",
-    "t3",
-    "t4",
-    "t5",
-    "t6",
-    "t7",
-    "t8",
-    "t9"
-   ],
-   "j_nonzero": 0,
-   "j_is_identity": null,
-   "order_of_G": 4,
-   "generators": 24,
-   "limit_nonzero": 23,
-   "ranks": [
-    6,
-    6
-   ],
-   "span_of_limits": 20,
-   "wall_seconds": 1548,
-   "peak_rss_kib": 1756956
-  },
-  {
-   "slug": "w8-np",
-   "family": "series",
-   "control": false,
-   "last_coordinate_sign": -1,
-   "slice_variables": [
-    "t1",
-    "t2",
-    "t3",
-    "t4",
-    "t5",
-    "t6",
-    "t7",
-    "t8",
-    "t9"
-   ],
-   "j_nonzero": 0,
-   "j_is_identity": null,
-   "order_of_G": 4,
-   "generators": 24,
-   "limit_nonzero": 23,
-   "ranks": [
-    6,
-    6
-   ],
-   "span_of_limits": 20,
-   "wall_seconds": 1534,
-   "peak_rss_kib": 1756896
-  },
-  {
-   "slug": "w8-nm",
-   "family": "linear",
-   "control": true,
-   "last_coordinate_sign": -1,
-   "slice_variables": [
-    "t1",
-    "t2",
-    "t3",
-    "t4",
-    "t5",
-    "t6",
-    "t7",
-    "t8",
-    "t9"
-   ],
-   "j_nonzero": 1,
-   "j_is_identity": false,
-   "order_of_G": 2,
-   "generators": 24,
-   "limit_nonzero": 21,
-   "ranks": [
-    6,
-    6
-   ],
-   "span_of_limits": 15,
-   "wall_seconds": 16,
-   "peak_rss_kib": 170404
+   "peak_rss_kib": 170500
   },
   {
    "slug": "w8-np",
@@ -206,8 +208,8 @@
     6
    ],
    "span_of_limits": 15,
-   "wall_seconds": 19,
-   "peak_rss_kib": 170264
+   "wall_seconds": 23,
+   "peak_rss_kib": 170576
   }
  ],
  "pass": true

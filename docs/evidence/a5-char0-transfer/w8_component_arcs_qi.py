@@ -39,7 +39,11 @@ import parallel  # noqa: E402
 
 RECORD = HERE / "w8-component-arcs-qi.json"
 SCHEMA = "gororoba.a5.w8-component-arcs-qi/1"
-INPUTS = ("arcs_qi.py", "reduction_check.py")
+# The record binds this producer, whose LINEAR and SPAN text enters every script, and the two modules that supply
+# J, G and the series family; the weight-slice record that supplies COMPONENTS is bound by path.
+INPUTS = ("w8_component_arcs_qi.py", "arcs_qi.py", "reduction_check.py")
+WEIGHT_SLICE = HERE.parent / "a5-kernel-attachments" / "weight-slice-fiber-relations-result.json"
+SLICE_VARIABLES = [f"t{index}" for index in range(1, 10)]
 LINEAR_PARAMETERS = ("C", "D", "T", "U", "V")
 LINEAR = (
     "poly A=x; poly Cc=C*x; poly Dd=D*x; poly T7=T*x;"
@@ -170,9 +174,17 @@ def problems(record: dict[str, Any]) -> list[str]:
         return found
     if tuple(tuple(component) for component in record.get("components", [])) != COMPONENTS:
         found.append("the component table differs")
+    if record.get("field") != "Q(i)":
+        found.append("the field differs from Q(i)")
+    if record.get("order") != arcs_qi.ORDER:
+        found.append("the truncation order differs")
+    if record.get("points") != [list(point) for point in arcs_qi.POINTS]:
+        found.append("the parameter points differ")
     small, large = 24 - COMPONENTS[0][2], 24 - COMPONENTS[1][2]
     for row in rows:
         label = f"{row['slug']} {row['family']}{' control' if row['control'] else ''}"
+        if row.get("slice_variables") != SLICE_VARIABLES:
+            found.append(f"{label}: the slice variables differ")
         if row["control"]:
             if row["j_nonzero"] == 0 or row["j_is_identity"] is not False:
                 found.append(f"{label}: the reversed sign stays on V(J)")
@@ -208,6 +220,7 @@ def build() -> dict[str, Any]:
         "points": [list(point) for point in arcs_qi.POINTS],
         "components": [list(component) for component in COMPONENTS],
         "inputs": {name: hashlib.sha256((HERE / name).read_bytes()).hexdigest() for name in INPUTS},
+        "weight_slice_record_sha256": hashlib.sha256(WEIGHT_SLICE.read_bytes()).hexdigest(),
         "rows": rows,
         "pass": True,
     }
@@ -222,6 +235,15 @@ def main() -> None:
         for name in INPUTS:
             if record["inputs"].get(name) != hashlib.sha256((HERE / name).read_bytes()).hexdigest():
                 found.append(f"input digest of {name} differs")
+        if record.get("weight_slice_record_sha256") != hashlib.sha256(WEIGHT_SLICE.read_bytes()).hexdigest():
+            found.append("digest of the weight-slice record differs")
+        cells = [
+            cell for cell in json.loads(WEIGHT_SLICE.read_text(encoding="utf-8"))["cells"] if cell["source"] == "w8"
+        ]
+        if not cells or any(
+            tuple(tuple(prime) for prime in cell["hilbert"]["minimal_primes"]) != COMPONENTS for cell in cells
+        ):
+            found.append("the weight-slice record holds other minimal primes for W8")
         if found:
             raise SystemExit("\n".join(found))
         print("w8-component-arcs-qi.json: pass")
