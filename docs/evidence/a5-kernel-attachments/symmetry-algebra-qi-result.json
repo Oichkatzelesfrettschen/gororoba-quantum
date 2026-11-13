@@ -2,7 +2,7 @@
  "field": "Q(i)",
  "inputs": {
   "docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py": "14568a6ccded9ced70bc4853d0a6f2a0cd8c4e0dd5ea8ca9ab2d71c64592b52f",
-  "docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py": "b3a90027e878b551d4b09dab369bd43fa98e7f39b33090813a4dbf8553895d98"
+  "docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py": "a3c1c3b55f4c00cc914d45c5d340704abe16dba1ee50c5f261536fe69bb1db9f"
  },
  "pass": true,
  "rows": [

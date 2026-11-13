@@ -492,7 +492,10 @@ def main() -> None:
     args = parser.parse_args()
     if args.cell:
         cells = tuple((text.split("|")[0], text.split("|")[1]) for text in args.cell)
-        print(json.dumps(compute(cells), indent=1, sort_keys=True))
+        restricted = compute(cells)
+        print(json.dumps(restricted, indent=1, sort_keys=True))
+        if verdict(restricted):
+            raise SystemExit("\n".join(verdict(restricted)))
         return
     record = compute()
     if args.write:

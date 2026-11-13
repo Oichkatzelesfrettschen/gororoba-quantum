@@ -215,3 +215,40 @@ def test_base_cache(repo: Path, tmp_path: Path) -> None:
         status, text = run("consistent")
         if status != 3 or "base cache miss" not in text or "blocking admission: host" not in text:
             raise AssertionError(f"the entry {foreign!r} was trusted:\n{text}")
+
+
+def test_a_skip_line_parses_as_no_failure_and_a_fail_line_as_a_failure() -> None:
+    lines = [
+        "PASS passes     0.1s  true",
+        "SKIP skips     0.0s  if ...",
+        "     skips: skipped: no toolchain",
+        "FAIL fails     0.2s  false",
+        "1 passed, 1 skipped, 1 failed of 3 gates on CPU",
+    ]
+    found = premerge_gates.parse_statuses(lines)
+    if found != {"passes": 0, "skips": 0, "fails": 1}:
+        raise AssertionError(found)
+
+
+@pytest.mark.parametrize(
+    ("base", "merged", "introduced", "shared"),
+    (
+        ("SKIP", "SKIP", [], []),
+        ("SKIP", "PASS", [], []),
+        ("SKIP", "FAIL", ["gate"], []),
+        ("PASS", "SKIP", [], []),
+        ("FAIL", "SKIP", [], []),
+        ("FAIL", "FAIL", [], ["gate"]),
+    ),
+)
+def test_a_skip_on_either_tree_never_hides_or_invents_a_failure(
+    base: str, merged: str, introduced: list[str], shared: list[str]
+) -> None:
+    def tree(label: str) -> dict[str, tuple[int, str]]:
+        return {
+            name: (status, "") for name, status in premerge_gates.parse_statuses([f"{label} gate   0.1s  cmd"]).items()
+        }
+
+    found = premerge_gates.compare(tree(base), tree(merged))
+    if found != (introduced, shared):
+        raise AssertionError((base, merged, found))
