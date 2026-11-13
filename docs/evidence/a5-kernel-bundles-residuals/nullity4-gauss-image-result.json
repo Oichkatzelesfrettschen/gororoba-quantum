@@ -1,0 +1,518 @@
+{
+ "control": {
+  "lower_kernel_is_z": true,
+  "rank_bordered": 16,
+  "rank_lower_block": 14
+ },
+ "exact_fixtures": {
+  "first_coordinate_zero": 66,
+  "fixtures": 66
+ },
+ "field": "GF(32029), i = 9115",
+ "image": [
+  {
+   "linear_samples": 300,
+   "linear_span_dimension": 105,
+   "plucker_coordinates": 105,
+   "plucker_quadrics": 1365,
+   "quadric_monomials": 5565,
+   "quadric_ranks": [
+    3887,
+    3887
+   ],
+   "quadric_samples": [
+    5800,
+    6100
+   ],
+   "quadrics_vanishing": 1678,
+   "stratum": "V(Q) minus V(G)"
+  },
+  {
+   "linear_samples": 300,
+   "linear_span_dimension": 105,
+   "plucker_coordinates": 105,
+   "plucker_quadrics": 1365,
+   "quadric_monomials": 5565,
+   "quadric_ranks": [
+    4022,
+    4022
+   ],
+   "quadric_samples": [
+    5800,
+    6100
+   ],
+   "quadrics_vanishing": 1543,
+   "stratum": "V(G) minus V(Q)"
+  },
+  {
+   "linear_samples": 300,
+   "linear_span_dimension": 90,
+   "plucker_coordinates": 105,
+   "plucker_quadrics": 1365,
+   "quadric_monomials": 5565,
+   "quadric_ranks": [
+    2625,
+    2625
+   ],
+   "quadric_samples": [
+    5800,
+    6100
+   ],
+   "quadrics_vanishing": 2940,
+   "stratum": "V(Q) intersect V(G)"
+  }
+ ],
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "6ca1b02eff64c8bd19c8d7ec719baad6ddfbaff0593047853c2dece9ce35042b",
+  "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d"
+ },
+ "pass": true,
+ "points": [
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "3724ed7fa604bf00a8ac46bc331e7615b5109aece8abb2a83e414bc6a4daeb91",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "3033a35d6cd98703ea1f0c8a91d23fd9cf000948f611c8163f5f9b5b46ba85db",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "f08665267da147e15cfb8b18f5dc7b1e737143d8da987003e45a09bbc6832cc5",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "810b94964a8a211b535fcd5140b552a060aea061a5be298e260af01e1dfeebc9",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "edfbc52ede94cfe22116d83a0a483c9decddf239e5629acce745cb76ea454809",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "283334f111eea0c40b598f2c5dc142a4e471745deeb7ead08007912277e200e9",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "71cddfb329e4964b38841379d4cea9bf5722f912783f42f8b6c2420706c6c397",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "23fb872dddd8434d7e1190fb0668ee85a3594bd952db58e98aaeab45c4893b13",
+   "rank_lower_block": 12,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "50435bc7dad87b2e6981f7da462cd58a996514f3af4dc65e1d5a69500d0f0ca4",
+   "rank_lower_block": 12,
+   "real_rank": 24,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "458220dba8ec637bc0342790f68e0cf06042ac2cb93e2e5f3c040d08151cbfde",
+   "rank_lower_block": 12,
+   "real_rank": 24,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "a6df46800cfc08e5acda3be6a4c6d14db0c7bab5a173e0618e44bb049fcb8601",
+   "rank_lower_block": 12,
+   "real_rank": 24,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  },
+  {
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "de427c989625b28de7f1d7816c907776ba69bfa6d0f7bc97cc1bfea485849f40",
+   "rank_lower_block": 12,
+   "real_rank": 24,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  }
+ ],
+ "schema": "a5-kernel-bundles-residuals-nullity4-gauss-image-v1"
+}

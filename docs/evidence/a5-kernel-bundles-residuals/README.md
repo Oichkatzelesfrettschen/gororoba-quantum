@@ -145,10 +145,54 @@ on a double overlap the transition is the target frame restricted to the source 
 
 This is a fixture-level chart and coordinate certificate, not the requested nullity-four classification. It does not
 give equations for the Gauss image over the nine- and eleven-dimensional moduli, a finite cover of those moduli by
-explicit parameter charts, global transition functions, stabilizer jumps, or a bundle class. The next decisive
-bounded computation is elimination of the moduli parameters against these 120 Plucker coordinates, one component
-and one chart at a time; its falsifier is a transition outside the claimed structure group or two exact points with
-the same proposed moduli invariants and different Plucker images.
+explicit parameter charts, global transition functions, stabilizer jumps, or a bundle class. The
+[section below](#the-nullity-4-gauss-image-is-a-plane-bundle-over-the-three-plane-map-z---ker-mz) measures the
+image modulo 32029: its dimension, its linear span and its quadric equations on each stratum. The falsifier of a
+classification stays a transition outside the claimed structure group or two exact points with the same proposed
+moduli invariants and different Plucker images.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gauss.py --check` (exact). The producer
 uses the repository worker cap through `parallel.ordered_map`; the 66 fixtures are independent.
+
+
+## The nullity-4 Gauss image is a plane bundle over the three-plane map z -> ker M(z)
+
+The bordered matrix `A(z, w)` has first row `-w` and lower 15 x 15 skew block `M(z)`, linear in `z`; a real point has
+`w = conjugate(z)`. [`nullity4_gauss_image.py`](nullity4_gauss_image.py) takes `z` and `w` as independent
+variables and computes modulo 32029 with `i = 9115`, at points fixed by a hash of a label and a counter; the
+record is [`nullity4-gauss-image-result.json`](nullity4-gauss-image-result.json).
+
+**Observed (`A5-429`), modulo 32029 at four points of each stratum:** `M(z)` has rank 12 and `z` lies in its
+kernel; `A(z, w)` has rank 14 for each of three sampled `w` off the stratum and one on it; `ker A(z, w)` has first
+coordinate zero, lies in `ker M(z)` and is orthogonal to `w`. So the kernel plane is `ker M(z) n w-perp`, a plane of
+the three-plane `ker M(z)` in `C^15`, and the Gauss map lands in `Gr(2, 15)`. At a point off both hypersurfaces
+`M(z)` has rank 14 with kernel `z` and `A(z, w)` is invertible. In characteristic 0 the retained exact record
+agrees at its 66 real fixtures: the 15 Plucker coordinates `p_(0 j)` vanish at each.
+
+| Stratum | Complex dimension of the projective stratum | Rank of `z -> ker M(z)` | Rank of the Gauss map | Real rank | Linear span in `P^104` | Quadrics vanishing |
+|---|---:|---:|---:|---:|---:|---:|
+| `V(Q)` minus `V(G)` | 13 | 13 | 15 | 26 | 105 | 1,678 |
+| `V(G)` minus `V(Q)` | 13 | 13 | 15 | 26 | 105 | 1,543 |
+| `V(Q) n V(G)` | 12 | 10 | 12 | 24 | 90 | 2,940 |
+
+The rank of the Gauss map is the same with `w` free and with `w` on the conjugate stratum. The real rank is the
+rank of the pair (Gauss map, conjugate Gauss map) on stratum x conjugate stratum, which is the rank over the reals
+of the Gauss map at real points. The quadric count is 5,565 monomials in the 105 Plucker coordinates minus the rank
+of their values at 6,100 image points, and the rank is the same at 5,800 points; the Plucker ideal of `Gr(2, 15)`
+has 1,365 quadrics.
+
+**Inferred, modulo 32029:** on `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)` the three-planes `ker M(z)` form a
+family of dimension 13, the projective dimension of the stratum, and the Gauss image is the bundle of planes in
+those three-planes, of dimension 15 in the 26-dimensional `Gr(2, 15)`; its quadric equations number 313 and 178
+beyond the Plucker quadrics, so the two images differ. On `V(Q) n V(G)` the three-plane map has fibers of
+dimension 2, the image has dimension 12 and lies in a linear space of codimension 15. The real rank equals the real
+dimension of the projective stratum (26, 26, 24), so at the sampled points the real Gauss map `z -> ker A(z,
+conjugate(z))` is an immersion of the projective stratum: the kernel plane separates nearby points, in particular
+nearby points of the moduli of real dimension 11, 11 and 9. `hypothesis:` the same ranks and counts hold in
+characteristic 0 and at every point of each stratum outside a proper closed subset; the sublocus of orbit rank 13
+is not sampled separately. The record gives no equations of degree 3 or more, no generators of the image ideal, no
+global injectivity, no transition functions and no bundle class. A point of a stratum where `ker A(z, w)` leaves
+`ker M(z)`, a rank or a count that differs at another prime or in an exact computation, or two real points of one
+stratum with different moduli and the same kernel plane near a sampled point falsifies it.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029; 2 minutes 51 seconds of wall time, 151 CPU seconds and 3.2 GiB on two workers under an 8 GiB memory scope, Python 3.14.9, python-flint 0.9.0, on the build host).
