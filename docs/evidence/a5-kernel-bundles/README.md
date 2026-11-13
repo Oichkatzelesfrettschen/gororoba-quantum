@@ -1019,7 +1019,10 @@ The falsifier was a failed basis product, relation, commutator, center-separatio
 The control changes one radical coefficient of `psi`; 244 sedenion basis products and 1,952 A_5 basis products then
 fail. This computation does not prove that `S_3 x Z_2` is the entire component group: Brown's automorphism theorem
 classifies algebra automorphisms in dimension 32, while the kernel-pencil group also permits triples that are not
-algebra automorphisms. An exhaustive normalizer census remains open.
+algebra automorphisms. The
+[centralizer record](../a5-kernel-bundles-residuals/README.md#the-component-group-is-the-visible-s_3-x-z_2) supplies
+the census: the centralizer of `G_2` has 12 complex components and a connected real torus, so the component group
+is exactly this `S_3 x Z_2` (`A5-379`).
 
 ## Standard topology references
 
