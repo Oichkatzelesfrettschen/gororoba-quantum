@@ -80,6 +80,18 @@ def _complement(kernel: tuple[hk.GaussianVector, ...], z: hk.GaussianVector, pai
     return [hk._linear_combination(kernel, coefficients) for coefficients in hk._nullspace(functional)]
 
 
+def _pairing_record(task: tuple[tuple[hk.GaussianVector, ...], hk.GaussianVector, str]) -> dict[str, Any]:
+    """The complement of z in span(kernel) under one pairing, and whether C z (+) complement is the whole span."""
+    kernel, z, pairing = task
+    complement = _complement(kernel, z, pairing)
+    span = hk._columns_rank((z, *complement))
+    return {
+        "complement_dimension": len(complement),
+        "span_with_z_dimension": span,
+        "direct_sum_is_the_kernel": span == len(kernel) and len(complement) == len(kernel) - 1,
+    }
+
+
 def _split_record(task: tuple[str, hk.GaussianVector]) -> dict[str, Any]:
     """Whether ker C_z = C z (+) {u in ker C_z: <z, u> = 0} for each pairing, at one exact point."""
     name, z = task
@@ -92,14 +104,9 @@ def _split_record(task: tuple[str, hk.GaussianVector]) -> dict[str, Any]:
         "bilinear_norm": hk._gaussian_text(_bilinear_pair(z, z)),
         "hermitian_norm": hk._gaussian_text(hk._hermitian_pair(z, z)),
     }
-    for pairing in ("hermitian", "bilinear"):
-        complement = _complement(kernel, z, pairing)
-        row[pairing] = {
-            "complement_dimension": len(complement),
-            "span_with_z_dimension": hk._columns_rank((z, *complement)),
-            "direct_sum_is_the_kernel": hk._columns_rank((z, *complement)) == len(kernel)
-            and len(complement) == len(kernel) - 1,
-        }
+    pairings = ("hermitian", "bilinear")
+    splits = parallel.ordered_map(_pairing_record, [(kernel, z, pairing) for pairing in pairings], min_items=1)
+    row.update(zip(pairings, splits, strict=True))
     return row
 
 
