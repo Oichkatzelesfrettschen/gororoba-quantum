@@ -74,6 +74,10 @@ sources:
       the note states it), and once on the functor CdTowerDomain.v over an
       abstract ordered domain, whose Z and R instances the bridges
       CdTowerDomainZ.v and CdTowerDomainR.v identify with the two towers.
+      CdTowerRing.v states the tower over a commutative ring and bounds the
+      kernel-equality theorem: with a square root of -1 it holds at a level
+      of at least 2 exactly when 2 = 0, and CdTowerRingDomain.v identifies
+      that tower with the ordered-domain one at Z and R.
 
   - title: "Large annihilators in Cayley-Dickson algebras"
     authors: ["Daniel K. Biss", "Daniel Dugger", "Daniel C. Isaksen"]
@@ -379,15 +383,15 @@ alignment:
       source: docs/notes/math-0511691.md
     - declaration: GaussianTower.T.pure_kernel_conj
       file: proofs/CdTowerRing.v
-      statement: "over a commutative ring, for a with conj(a) = -a at any level, a z = 0 exactly when conj(z) a = 0, so ker R_a = conj(ker L_a)"
+      statement: "at the Gaussian integers, for a with conj(a) = -a at any level, a z = 0 exactly when conj(z) a = 0; the instance of the functor theorem RingTower.pure_kernel_conj, which holds over the signature CommutativeRing"
       source: docs/evidence/cd-tower-ring/README.md
     - declaration: GaussianTower.T.reflect_mul
       file: proofs/CdTowerRing.v
-      statement: "over a commutative ring, the map (a, b) -> (a, -b) of level k + 1 preserves the product"
+      statement: "at the Gaussian integers, the map (a, b) -> (a, -b) of level k + 1 preserves the product; the instance of the functor theorem RingTower.reflect_mul, which holds over the signature CommutativeRing"
       source: docs/evidence/cd-tower-ring/README.md
     - declaration: GaussianTower.kernel_swap_iff_two_zero
       file: proofs/CdTowerRing.v
-      statement: "over a commutative ring with i i = -1, a z = 0 implies z a = 0 for all a, z of level k + 2 exactly when 2 = 0 (the scope of Corollary 9.3 of math/0511691)"
+      statement: "at the Gaussian integers, a z = 0 implies z a = 0 for all a, z of level k + 2 exactly when 2 = 0, which is false there; the instance of the functor theorem RingTowerI.kernel_swap_iff_two_zero over the signature CommutativeRingWithI (the scope of Corollary 9.3 of math/0511691)"
       source: docs/evidence/cd-tower-ring/README.md
     - declaration: ZRingBridge.mul_eq
       file: proofs/CdTowerRingDomain.v

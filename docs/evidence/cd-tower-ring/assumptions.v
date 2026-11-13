@@ -5,6 +5,7 @@ Print Assumptions CdTowerRing.GaussianTower.T.re_zero_pure.
 Print Assumptions CdTowerRing.GaussianTower.T.pure_kernel_conj.
 Print Assumptions CdTowerRing.GaussianTower.T.pure_kernel_conj_right.
 Print Assumptions CdTowerRing.GaussianTower.T.two_zero_commutative.
+Print Assumptions CdTowerRing.GaussianTower.T.level_one_commutative.
 Print Assumptions CdTowerRing.GaussianTower.T.reflect_mul.
 Print Assumptions CdTowerRing.GaussianTower.T.reflect_add.
 Print Assumptions CdTowerRing.GaussianTower.T.reflect_scale.
@@ -12,6 +13,9 @@ Print Assumptions CdTowerRing.GaussianTower.T.reflect_one.
 Print Assumptions CdTowerRing.GaussianTower.T.reflect_conj.
 Print Assumptions CdTowerRing.GaussianTower.T.reflect_involutive.
 Print Assumptions CdTowerRing.GaussianTower.T.reflect_kernel.
+Print Assumptions CdTowerRing.GaussianTower.T.diag_mul.
+Print Assumptions CdTowerRing.GaussianTower.T.diag_conj.
+Print Assumptions CdTowerRing.GaussianTower.T.diag_reflect_mul.
 Print Assumptions CdTowerRing.GaussianTower.T.lift_mul.
 Print Assumptions CdTowerRing.GaussianTower.nilpotent2_square.
 Print Assumptions CdTowerRing.GaussianTower.witness2_product.

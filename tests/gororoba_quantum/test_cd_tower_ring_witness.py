@@ -2,11 +2,13 @@
 
 RingTowerI proves, over a commutative ring with i i = -1, that a = nilpotent2 and w = witness2 satisfy
 a u = w for the level-1 unit u, a a = 0, a w = 0 and w a = -2 a at level 2, and lifts the pair to every
-higher level by x -> (x, 0). The test reads the two definitions from the proof source, places a nested pair
-((x0, x1), (x2, x3)) at coordinates 0 to 3 (the order of the tower's coord, first half first) and checks the
-same four products with cd_core.cd_sign extended bilinearly to Gaussian-integer coordinates, in dimensions 4,
-8, 16 and 32. The controls replace i by 1, where a w differs from 0, and take a real zero-divisor pair of
-the sedenions, where both orders of the product vanish.
+higher level by x -> (x, 0). The test reads the two element definitions from the proof source, places a nested
+pair ((x0, x1), (x2, x3)) at coordinates 0 to 3 (first half first) and computes the same four products with
+cd_core.cd_sign extended bilinearly to Gaussian-integer coordinates, in dimensions 4, 8, 16 and 32. It reads no
+product or coordinate definition from Rocq: the identity of the Rocq product with cd_sign at integer
+coefficients is the chain of proofs named in docs/evidence/cd-tower-ring/README.md ("Binding to cd_core"). The
+controls replace i by 1, where a w differs from 0, and take a real zero-divisor pair of the sedenions, where
+both orders of the product vanish.
 """
 
 import re
