@@ -72,8 +72,8 @@ import parallel  # noqa: E402
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
-# The exit status by which a gate that declares `requires` reports that it left its replay unrun (automake's skip status);
-# a gate may run cheaper checks first, so a skip says the replay is missing and nothing about those.
+# The exit status by which a gate that declares `requires` reports that it left its replay unrun (automake's skip
+# status); a gate may run cheaper checks first, so a skip says the replay is missing and nothing about those.
 SKIP_STATUS = 77
 # The prefix of the line by which a skipping gate states its reason; the runner accepts no skip without it.
 SKIP_PREFIX = "skipped:"
