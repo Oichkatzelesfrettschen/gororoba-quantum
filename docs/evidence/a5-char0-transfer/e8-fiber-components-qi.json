@@ -1,0 +1,309 @@
+{
+ "field": "Q(i)",
+ "inputs": {
+  "docs/evidence/a5-char0-transfer/arc_jets_qi.py": "a61cc7997c9b66ac10af77ab738803410a88198b89c2c90a755258607390b0b4",
+  "docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py": "1d43ee4b7205a230206af26345364562921f3438a278d76d4c1a7d690de7b2f5",
+  "docs/evidence/a5-char0-transfer/reduction_check.py": "2cb80bafe8437df476442f13a449046ae998ab9d0907c41cedd72b7543cffd88"
+ },
+ "parameter_points": [
+  [
+   3,
+   5,
+   7,
+   11,
+   2
+  ],
+  [
+   13,
+   4,
+   9,
+   6,
+   17
+  ]
+ ],
+ "pass": true,
+ "schema": "a5-e8-fiber-components-qi/1",
+ "targets": [
+  {
+   "families": [
+    {
+     "cone_ranks": [
+      4,
+      4
+     ],
+     "family": "first_order",
+     "generators": 21,
+     "limit_sha256": "742c70e2f595637dc036adef6d672aa8e0be88a5984143833139acb1c05d9082",
+     "nonzero_coordinates": [
+      1,
+      3,
+      5,
+      10,
+      11,
+      15,
+      16,
+      17,
+      18,
+      20,
+      21
+     ],
+     "order": 2,
+     "origin_residues": 0,
+     "reduction": [
+      {
+       "coordinates_that_differ": [],
+       "i_root": 10754,
+       "log_sha256": "29fdb4fbda5e1eadeb123d5c912b1e6562924b4c7caedeb5d8e7bee5ccef70a6",
+       "prime": 32009,
+       "target": "e8nm-p32009"
+      },
+      {
+       "coordinates_that_differ": [],
+       "i_root": 9115,
+       "log_sha256": "9d2947e78c2cbd881e0a8b9b9a517d7156a617f8394f09a3a5599f30f0f5d087",
+       "prime": 32029,
+       "target": "e8nm-p32029"
+      }
+     ],
+     "series_residues": 0,
+     "span_dimension": 7
+    },
+    {
+     "cone_ranks": [
+      5,
+      5
+     ],
+     "family": "order_five",
+     "generators": 21,
+     "limit_sha256": "da8ac643067502ea239c3a664e43a714988f6349e3573b82044bba8aa3b951d4",
+     "nonzero_coordinates": [
+      1,
+      2,
+      3,
+      5,
+      8,
+      9,
+      10,
+      11,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+     ],
+     "order": 5,
+     "origin_residues": 0,
+     "reduction": [
+      {
+       "coordinates_that_differ": [],
+       "i_root": 10754,
+       "log_sha256": "4f3e08545e516057318a238b2de4d78447260e7a0620da6c3da0f1e301cd02bd",
+       "prime": 32009,
+       "target": "e8nm-p32009"
+      },
+      {
+       "coordinates_that_differ": [],
+       "i_root": 9115,
+       "log_sha256": "95247d50fbf86969b7ad7e7f1e49d7653056e7bfda0f48a526ebe491a093e32c",
+       "prime": 32029,
+       "target": "e8nm-p32029"
+      }
+     ],
+     "series_residues": 0,
+     "span_dimension": 12
+    },
+    {
+     "cone_ranks": [
+      2,
+      2
+     ],
+     "family": "order_five_recentered_at_2",
+     "generators": 21,
+     "limit_sha256": "b8cf93b061c8fa8c6124fda878171fc3feb4c8cde113755e1727d1bf285491fb",
+     "nonzero_coordinates": [
+      5,
+      10,
+      11,
+      15,
+      16,
+      17,
+      18
+     ],
+     "order": 3,
+     "origin_residues": 0,
+     "series_residues": 0,
+     "span_dimension": 2
+    }
+   ],
+   "incidence": "E8bar->N-",
+   "joint_span_dimension": 16,
+   "phi_identity": {
+    "arc": {
+     "generators": 16,
+     "nonzero": 0
+    },
+    "mutated": {
+     "generators": 16,
+     "nonzero": 15
+    }
+   },
+   "quadric_ideal_minimal_primes": [
+    [
+     4,
+     4,
+     14
+    ],
+    [
+     5,
+     11,
+     9
+    ]
+   ],
+   "slug": "e8-nm"
+  },
+  {
+   "families": [
+    {
+     "cone_ranks": [
+      4,
+      4
+     ],
+     "family": "first_order",
+     "generators": 21,
+     "limit_sha256": "871a56f7f1d33fbd77959e721883fddd5fdd2d078f1734a91957c5fcc8a8eded",
+     "nonzero_coordinates": [
+      1,
+      3,
+      5,
+      10,
+      11,
+      15,
+      16,
+      17,
+      18,
+      20,
+      21
+     ],
+     "order": 2,
+     "origin_residues": 0,
+     "reduction": [
+      {
+       "coordinates_that_differ": [],
+       "i_root": 10754,
+       "log_sha256": "8a57791ccb3511447f1115fbf4453fa7132b07c0ccbd49dc9a2559daca0d8df1",
+       "prime": 32009,
+       "target": "e8np-p32009"
+      },
+      {
+       "coordinates_that_differ": [],
+       "i_root": 9115,
+       "log_sha256": "c7b1f4ea758d72952070910ca30763c74a59cc04bd0e65a45e9258bf21bee842",
+       "prime": 32029,
+       "target": "e8np-p32029"
+      }
+     ],
+     "series_residues": 0,
+     "span_dimension": 7
+    },
+    {
+     "cone_ranks": [
+      5,
+      5
+     ],
+     "family": "order_five",
+     "generators": 21,
+     "limit_sha256": "c60f54d9344ca0f88c5abaf1d3d0e452bc8655611bf0cbf74f76cbe25a5e7ceb",
+     "nonzero_coordinates": [
+      1,
+      2,
+      3,
+      5,
+      8,
+      9,
+      10,
+      11,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+     ],
+     "order": 5,
+     "origin_residues": 0,
+     "reduction": [
+      {
+       "coordinates_that_differ": [],
+       "i_root": 10754,
+       "log_sha256": "31901e5b521015ab2c7431c4075385214ad65ff3b1cb63979c4950bbf4e952e7",
+       "prime": 32009,
+       "target": "e8np-p32009"
+      },
+      {
+       "coordinates_that_differ": [],
+       "i_root": 9115,
+       "log_sha256": "ae7ceff1ea759b2c9e21142140d6b338203a8279c6396c0bbf55da27738f3acd",
+       "prime": 32029,
+       "target": "e8np-p32029"
+      }
+     ],
+     "series_residues": 0,
+     "span_dimension": 12
+    },
+    {
+     "cone_ranks": [
+      2,
+      2
+     ],
+     "family": "order_five_recentered_at_2",
+     "generators": 21,
+     "limit_sha256": "6ea4866dc531138dc8fc5d0df57c579d790780382d8ccef7e0e8c735f2d7d5d0",
+     "nonzero_coordinates": [
+      5,
+      10,
+      11,
+      15,
+      16,
+      17,
+      18
+     ],
+     "order": 3,
+     "origin_residues": 0,
+     "series_residues": 0,
+     "span_dimension": 2
+    }
+   ],
+   "incidence": "E8bar->N+",
+   "joint_span_dimension": 16,
+   "phi_identity": {
+    "arc": {
+     "generators": 16,
+     "nonzero": 0
+    },
+    "mutated": {
+     "generators": 16,
+     "nonzero": 15
+    }
+   },
+   "quadric_ideal_minimal_primes": [
+    [
+     4,
+     4,
+     14
+    ],
+    [
+     5,
+     11,
+     9
+    ]
+   ],
+   "slug": "e8-np"
+  }
+ ],
+ "weight_slice_record_sha256": "c825213c89892d6a4e8f6324cdb3b62c720f91e07f2352742ac1d532753c5285"
+}

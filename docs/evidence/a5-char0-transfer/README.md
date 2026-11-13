@@ -332,6 +332,52 @@ record whose exact e or v differs from the modular one, or a generator of J over
 header takes 16 to 23 minutes of wall time and 4,000 to 5,600 CPU seconds on five workers with 170 MB of peak resident
 memory, measured on the build host with Singular 4.4.1.
 
+## Both components of the E8-bar quadric scheme lie in the fiber over Q(i) (ledger A5-425)
+
+Over Q(i) the reduced exceptional fiber of E8-bar -> N- and of E8-bar -> N+ is the union of the two components of
+the quadric scheme: a fourfold of degree 11 and a threefold of degree 4. [e8_fiber_components_qi.py](e8_fiber_components_qi.py)
+substitutes the two arc families of the modular certificate ([arcs](../a5-exceptional-fibers/arcs/README.md)) into
+the J and G of the Q(i) producer, with the family parameters W, R, S, Z, E as ring variables, and reads the limit
+vector F, the first nonzero coefficient vector of G(x(s)); the record is
+[e8-fiber-components-qi.json](e8-fiber-components-qi.json).
+
+| Family | Arc | Order of G | Rank of [dF, F] at two points | Linear span of the limits |
+|---|---|---:|---|---:|
+| first-order | w = W s, rho = R s, sigma = S s, e = E, zeta = Z s | 2 | 4, 4 | 7 |
+| order-5 | w = W s^2, rho = (R + S) s / 2, sigma = (R - S) s / 2, e = -1 + E s^2, zeta = Z s | 5 | 5, 5 | 12 |
+| control: order-5 recentered at e = 2 | the same with e = 2 + E s^2 | 3 | 2, 2 | 2 |
+
+The numbers are the same on both targets. The two spans together have dimension 16. Phi satisfies the 16 generators
+of J over Q(i) identically and the mutated Phi leaves 15 nonzero (the identity of A5-346, rerun here). Each limit
+vector reduced at (32009, i = 10754) and at (32029, i = 9115) equals, polynomial by polynomial in all 21
+coordinates, the limit of the retained modular family log of the same target. The spans 7 and 12 equal 21 minus
+the 14 and 9 linear forms of the two minimal primes of the quadric ideal over Q(i) (A5-421).
+
+**Inferred.** A relation f of degree d of the fiber cone has f(G) in J + m I^d, so on an arc of V(J) through the
+origin with G of order nu the series f(G(x(s))) has order above d nu and f(F) = 0: every limit vector lies in V(L),
+L the relation ideal. The degree-2 part of L spans an ideal K_h with V(L) inside V(K_h). Under the premise of
+A5-423, that the fiber cone on the header slice is the fiber cone on the weight slice up to a linear change of
+generators, K_h has the two minimal primes of A5-421 over Q(i): P1 of dimension 5 and degree 11 and P2 of
+dimension 4 and degree 4. The closure Y1 of the order-5 limits is irreducible over Q(i) of dimension at least 5 in
+V(K_h), whose only component of that dimension is V(P1), so Y1 = V(P1). The closure Y2 of the first-order limits
+is irreducible of dimension at least 4, and holds a point outside the linear span of Y1 = V(P1), because the joint
+span 16 exceeds 12; so Y2 lies in V(P2) and equals it by dimension. Hence V(L) = V(P1) union V(P2) over Q(i). The
+set of limits of the kernel is the set of complex points of this fiber
+([attachments](../a5-kernel-attachments/README.md#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record)),
+so for E8-bar that set no longer waits on the relation ideal in degrees 8 and above (A5-009); those degrees decide
+the scheme structure alone, including whether the five coordinates that are nilpotent on the quadric scheme stay
+nilpotent on the fiber.
+
+Not covered: the scheme structure of the fiber, and the premise that joins the two slices, which the record takes
+from A5-423 and does not recompute. A family whose order, rank or span differs, a reduced limit that differs from
+its modular log, a first-order limit inside the span of the order-5 limits, a control that keeps order 5 and rank
+5, or a quadric ideal over Q(i) with other minimal primes falsifies the record.
+
+`e8_fiber_components_qi.py --write` produces the record and `--check` replays it (gate
+`core-a5-e8-fiber-components-qi`). One replay takes 7 minutes 8 seconds of wall time and 722 CPU seconds on two workers
+under a 12 GiB memory scope, with 0.17 GiB of peak resident memory in the parent and one Singular process per
+family, measured on the build host with Singular 4.4.1, Python 3.14.9 and python-flint 0.9.0.
+
 ## The plane where the two components of the reduced E8-bar quadric scheme meet
 
 `scripts/a5_e8_plane_certificate.py HEADER PRIME_ID --repo . --run --record FILE` writes a Singular script (global
