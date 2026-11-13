@@ -16,8 +16,14 @@ stabilizer of the quadric census). At the retained basepoint the echelon form of
 retained K2 of the exceptional-fiber record. At one boosted basepoint the script also counts the degree-3 relations:
 220 minus that count is h_3 of the fiber cone there, to compare with the Hilbert function of the quadric ring.
 
-The record states invariants at sampled basepoints. Equal invariants are consistent with a family of fibers that
-is constant along the boost up to projective equivalence and do not prove it; a differing invariant refutes it.
+The four quadric ideals are then compared directly. Each echelon basis yields three scalars a, b, d and from them
+an invertible matrix M (`adapted_frame`); `normal_form` substitutes y = M w and row-reduces. The four normal forms
+are one ideal, so M_k M_0^{-1} is a linear change of the 10 generators that carries the quadric ideal at basepoint
+k onto the one at the retained basepoint: the four quadric schemes are projectively equivalent over F_32029. As a
+control, the frame of the retained basepoint applied at a moved basepoint gives another ideal.
+
+The equivalence concerns the quadric schemes at four sampled points in one characteristic. The fiber cone above
+degree 2 is compared at one moved point and in degree 3 alone, and no limiting plane is compared.
 
 `--write` writes boost-e8-vb-quadrics-result.json beside this file, `--check` recomputes and compares. Both need
 Singular 4.4 on PATH; the degree-3 count takes about 18 minutes in one process.
@@ -64,6 +70,7 @@ SCHEMA = "a5-kernel-attachments-boost-e8-vb-quadrics-v1"
 RECORD = HERE / "boost-e8-vb-quadrics-result.json"
 INCIDENCE = "E8bar->VB"
 PRIME, ROOT_OF_MINUS_ONE = 32029, 9115
+FIELD = f"GF({PRIME}), i = {ROOT_OF_MINUS_ONE}"
 RETAINED_K2 = "a5-p2-small/vb_p2/d2"
 BOOSTS = boosts_record.BOOSTS
 DEGREE_THREE_BOOST = BOOSTS[1]
@@ -89,6 +96,11 @@ EXPECTED: dict[str, Any] = {
     "minimal_primes": [[4, 3], [4, 4]],
     "symmetry_algebra_dimension": 15,
 }
+PRODUCTS = {2: math.comb(GENERATORS + 1, 2), 3: math.comb(GENERATORS + 2, 3)}
+DEGREE_THREE_RELATIONS = 140
+SLICE_DIMENSION, COMPLEX_DIMENSION = 8, 15
+# The three scalars of the adapted frame, as (monomial that names the row, monomial whose coefficient is read).
+FRAME_SCALARS = {"a": ((7, 10), (1, 7)), "b": ((7, 9), (5, 7)), "d": ((6, 7), (1, 7))}
 
 
 def _require(condition: bool, message: str) -> None:
@@ -185,9 +197,64 @@ def hilbert_data(quadrics: list[dict[tuple[int, int], int]], generators: int) ->
     }
 
 
+def adapted_frame(quadrics: list[dict[tuple[int, int], int]]) -> tuple[dict[str, int], list[list[int]]]:
+    """The scalars a, b, d of one echelon basis and the matrix M of the substitution y = M w they define.
+
+    The linear spans of the two components are cut out by y7, y3, y4 + y6 and by y10 + a y1, y9 + b y5, y8 + b y2,
+    y6 - y4 + d y1. M takes those seven forms to w1, w2, w3 and w4 - (d/2) w7, w5, w6, w7 and y1, y2, y5 to
+    w8, w9, w10. Nothing here is assumed: `normal_form` decides whether the frame works.
+    """
+    scalars = {}
+    for name, (pivot, monomial) in FRAME_SCALARS.items():
+        rows = [quadric for quadric in quadrics if (pivot[0] - 1, pivot[1] - 1) in quadric]
+        _require(len(rows) == 1, f"{len(rows)} echelon rows hold y{pivot[0]} y{pivot[1]}")
+        scalars[name] = rows[0].get((monomial[0] - 1, monomial[1] - 1), 0)
+    a, b, d = scalars["a"], scalars["b"], scalars["d"]
+    half = (PRIME + 1) // 2
+    forms: dict[int, dict[int, int]] = {
+        1: {8: 1},
+        2: {9: 1},
+        3: {2: 1},
+        4: {3: half, 7: -half, 8: half * d},
+        5: {10: 1},
+        6: {3: half, 7: half, 8: -half * d},
+        7: {1: 1},
+        8: {6: 1, 9: -b},
+        9: {5: 1, 10: -b},
+        10: {4: 1, 7: -half * d, 8: -a},
+    }
+    matrix = [[forms[k + 1].get(j + 1, 0) % PRIME for j in range(GENERATORS)] for k in range(GENERATORS)]
+    _require(len(quadric_lift._rref_fp(matrix, PRIME)) == GENERATORS, "the adapted frame is singular")
+    return scalars, matrix
+
+
+def normal_form(quadrics: list[dict[tuple[int, int], int]], matrix: list[list[int]]) -> list[list[int]]:
+    """The reduced echelon basis of the quadrics after the substitution y = M w, on the monomials w_i w_j, i <= j."""
+    columns = {
+        pair: index for index, pair in enumerate((i, j) for i in range(GENERATORS) for j in range(i, GENERATORS))
+    }
+    rows = []
+    for quadric in quadrics:
+        row = [0] * len(columns)
+        for (first, second), value in quadric.items():
+            for i, left in enumerate(matrix[first]):
+                if not left:
+                    continue
+                for j, right in enumerate(matrix[second]):
+                    if right:
+                        column = columns[(min(i, j), max(i, j))]
+                        row[column] = (row[column] + value * left * right) % PRIME
+        rows.append(row)
+    return [list(row) for row in quadric_lift._rref_fp(rows, PRIME)]
+
+
+def _digest(value: object) -> str:
+    return hashlib.sha256(json.dumps(value).encode("utf-8")).hexdigest()
+
+
 def degree_two_row(boost: tuple[Fraction, Fraction]) -> dict[str, Any]:
     """Geometry, relation counts, echelon digest, Hilbert data and symmetry algebra dimension at one basepoint."""
-    _, _, _, geometry = moved_inputs(boost)
+    task, data, _, geometry = moved_inputs(boost)
     outcome = rees._run_singular(relation_script(boost, 2), "boost_e8_vb_d2", SINGULAR_TIMEOUT_SECONDS)
     _require(outcome.status == "completed", f"{boost}: {outcome.status} {outcome.diagnostic}")
     results = outcome.results
@@ -206,10 +273,15 @@ def degree_two_row(boost: tuple[Fraction, Fraction]) -> dict[str, Any]:
     row: dict[str, Any] = {
         "boost": [str(value) for value in boost],
         "transversality": geometry,
+        # The moved boundary point, the Schur coordinates and the slice columns the relation stage reads.
+        "moved_input_sha256": _digest(
+            [task.row["boundary_point"], [str(value) for value in data.coordinates], list(data.slice_columns)]
+        ),
+        "_quadrics": [[[a, b, value] for (a, b), value in quadric.items()] for quadric in quadrics],
         "generators": generators,
         "products": count,
         "relations": len(echelon),
-        "echelon_sha256": hashlib.sha256(json.dumps(echelon).encode("utf-8")).hexdigest(),
+        "echelon_sha256": _digest(echelon),
         "symmetry_algebra_dimension": len(symmetry_algebra.stabilizer(quadrics, generators, PRIME)),
     }
     row |= hilbert_data(quadrics, generators)
@@ -256,10 +328,19 @@ def quadric_ring_hilbert(numerator: list[int], generators: int, degree: int) -> 
 def compute() -> dict[str, Any]:
     items = [(2, boost) for boost in BOOSTS] + [(3, DEGREE_THREE_BOOST)]
     rows = parallel.ordered_map(job, items, min_items=1)
+    ideals = [
+        [{(a, b): value for a, b, value in quadric} for quadric in row.pop("_quadrics")] for row in rows[: len(BOOSTS)]
+    ]
+    retained_frame = adapted_frame(ideals[0])[1]
+    for row, quadrics in zip(rows, ideals, strict=False):
+        scalars, matrix = adapted_frame(quadrics)
+        row["adapted_frame_scalars"] = scalars
+        row["normal_form_sha256"] = _digest(normal_form(quadrics, matrix))
+        row["normal_form_in_retained_frame_sha256"] = _digest(normal_form(quadrics, retained_frame))
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "incidence": INCIDENCE,
-        "field": f"GF({PRIME}), i = {ROOT_OF_MINUS_ONE}",
+        "field": FIELD,
         "inputs": {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in SOURCE_PATHS},
         "basepoints": rows[: len(BOOSTS)],
         "degree_three": rows[len(BOOSTS)] | {"quadric_ring_h_3": quadric_ring_hilbert(FIRST_NUMERATOR, GENERATORS, 3)},
@@ -271,23 +352,46 @@ def compute() -> dict[str, Any]:
 def verdict(record: dict[str, Any]) -> list[str]:
     """The reasons the record fails its own rules; empty when it passes."""
     problems = []
+    header = (record.get("schema"), record.get("incidence"), record.get("field"))
+    if header != (SCHEMA, INCIDENCE, FIELD):
+        problems.append(f"the record is headed {header}")
     rows = record["basepoints"]
     if [row["boost"] for row in rows] != [[str(value) for value in boost] for boost in BOOSTS]:
         problems.append("the basepoints differ from the four boosts")
     for row in rows:
         name = "boost " + ", ".join(row["boost"])
         geometry = row["transversality"]
-        if geometry["orbit_dimension"] != 7 or geometry["rank_of_orbit_tangent_with_slice"] != 15:
+        if (
+            geometry["orbit_dimension"] != COMPLEX_DIMENSION - SLICE_DIMENSION
+            or geometry["slice_dimension"] != SLICE_DIMENSION
+            or geometry["rank_of_orbit_tangent_with_slice"] != COMPLEX_DIMENSION
+            or geometry["closure_membership"] != rows[0]["transversality"]["closure_membership"]
+        ):
             problems.append(f"{name}: the point leaves the VB orbit or the slice is not complementary")
+        if row.get("products") != PRODUCTS[2]:
+            problems.append(f"{name}: {row.get('products')} degree-2 products")
         for key, value in EXPECTED.items():
             if row.get(key) != value:
                 problems.append(f"{name}: {key} is {row.get(key)}, expected {value}")
     if rows and rows[0].get("equals_retained_k2") is not True:
         problems.append("the retained basepoint does not reproduce the retained K2")
-    if len({row["echelon_sha256"] for row in rows}) != len(rows):
-        problems.append("two basepoints give the same echelon form, so the samples are not independent inputs")
+    if len({row["moved_input_sha256"] for row in rows}) != len(rows):
+        problems.append("two basepoints hand the relation stage the same input")
+    if len({row["normal_form_sha256"] for row in rows}) != 1:
+        problems.append("the adapted frames do not carry the four quadric ideals onto one ideal")
+    for row in rows[1:]:
+        # Control: the frame of the retained point is the wrong frame at a moved point.
+        if rows and row["normal_form_in_retained_frame_sha256"] == rows[0]["normal_form_sha256"]:
+            problems.append("the retained frame carries a moved ideal onto the common one: the control is void")
+    if rows and rows[0]["normal_form_in_retained_frame_sha256"] != rows[0]["normal_form_sha256"]:
+        problems.append("the retained frame gives two normal forms at the retained point")
     third = record["degree_three"]
-    if third["boost"] != [str(value) for value in DEGREE_THREE_BOOST] or third["h_3"] != third["quadric_ring_h_3"]:
+    expected_h_3 = quadric_ring_hilbert(FIRST_NUMERATOR, GENERATORS, 3)
+    if third["boost"] != [str(value) for value in DEGREE_THREE_BOOST]:
+        problems.append("the degree-3 count is not at the boosted basepoint")
+    if (third["products"], third["relations"]) != (PRODUCTS[3], DEGREE_THREE_RELATIONS):
+        problems.append(f"degree 3 has {third['products']} products and {third['relations']} relations")
+    if not third["h_3"] == third["products"] - third["relations"] == third["quadric_ring_h_3"] == expected_h_3:
         problems.append("h_3 at the boosted basepoint differs from the quadric ring")
     return problems
 

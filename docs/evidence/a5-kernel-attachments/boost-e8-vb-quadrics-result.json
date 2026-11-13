@@ -1,6 +1,11 @@
 {
  "basepoints": [
   {
+   "adapted_frame_scalars": {
+    "a": 26905,
+    "b": 24737,
+    "d": 17445
+   },
    "affine_dimension": 4,
    "boost": [
     "1",
@@ -29,7 +34,10 @@
      4
     ]
    ],
+   "moved_input_sha256": "775908467a31c49f6640abf3044b3ecf620b7dc8d9b51acaec560991443da229",
    "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
    "products": 55,
    "radical": true,
    "relations": 21,
@@ -44,6 +52,11 @@
    }
   },
   {
+   "adapted_frame_scalars": {
+    "a": 26232,
+    "b": 6473,
+    "d": 12946
+   },
    "affine_dimension": 4,
    "boost": [
     "5/4",
@@ -71,7 +84,10 @@
      4
     ]
    ],
+   "moved_input_sha256": "172b7259e6eca7d11d6867738c23ed569a804c5de37656528d7bdb28a0161f80",
    "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "7e0cf5ff6274da992fd54f316cfe62fc01768e6ce07bd3c993ce8a7ef3fd867e",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
    "products": 55,
    "radical": true,
    "relations": 21,
@@ -85,6 +101,11 @@
    }
   },
   {
+   "adapted_frame_scalars": {
+    "a": 27817,
+    "b": 26449,
+    "d": 20869
+   },
    "affine_dimension": 4,
    "boost": [
     "5/3",
@@ -112,7 +133,10 @@
      4
     ]
    ],
+   "moved_input_sha256": "626f78e21409c6409cda2a66ceedada4eda8304cf40b2be6f14ed86bb49325f1",
    "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "63ee7b797fca6cf6fdda7b0dd948652f8a77c19cff098ba8ea57600e7df4d2ba",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
    "products": 55,
    "radical": true,
    "relations": 21,
@@ -126,6 +150,11 @@
    }
   },
   {
+   "adapted_frame_scalars": {
+    "a": 18910,
+    "b": 23071,
+    "d": 14113
+   },
    "affine_dimension": 4,
    "boost": [
     "13/12",
@@ -153,7 +182,10 @@
      4
     ]
    ],
+   "moved_input_sha256": "3198e9ee189fdfd708a6bce4b9095d8ee1d8260a38c36643f05d316fcf17c973",
    "multiplicity": 7,
+   "normal_form_in_retained_frame_sha256": "914520be4fe996165e4fc9bf3e7bca8000194ab61def481424a0f9338f1c9e9f",
+   "normal_form_sha256": "4662683b47ab6035bcfbb8c49b82fde0f32798259d6057263f2b71ff61d1360f",
    "products": 55,
    "radical": true,
    "relations": 21,
@@ -182,7 +214,7 @@
  "inputs": {
   "docs/evidence/a5-char0-transfer/quadric_lift.py": "66ff39f49f33084927d232875689960afa798a3abc90075c5ae8c85041456c4e",
   "docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py": "14568a6ccded9ced70bc4853d0a6f2a0cd8c4e0dd5ea8ca9ab2d71c64592b52f",
-  "docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py": "2efdbe2d52f5e23466051ea107e7ddf40d7002030b8736ae4feeed57aa0903f3",
+  "docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py": "3d0b2bc6b2283020f23e345ae4309ddd701d97b79d3aa6acce37dd50212a9211",
   "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "724ccc6f5f3f339303d32a4ca88bfa6e828d7d21cc770af52a5a0e5858fd1a11",
   "docs/evidence/a5-kernel-attachments/fiber_inputs.py": "9c95b34144c3fac8293008b224329d1f63eb86b96e7f456ed53fd09b251fce25"
  },

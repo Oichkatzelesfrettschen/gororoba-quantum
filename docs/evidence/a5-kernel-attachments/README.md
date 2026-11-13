@@ -727,7 +727,7 @@ samples, nor `E8bar->V`, where the
 Nakayama route ran 31 minutes at the retained basepoint without output and was stopped. A sampled basepoint whose
 fiber is a proper subvariety, or whose slice is not complementary, falsifies the observation.
 
-## Along the boost the quadric scheme of E8bar->VB keeps its invariants at four sampled basepoints
+## Along the boost the quadric schemes of E8bar->VB at four sampled basepoints are projectively equivalent
 
 [`boost_e8_vb_quadrics.py`](boost_e8_vb_quadrics.py) samples the boost for `E8bar->VB`, which the section above
 leaves out, through the relations of low degree of its fiber cone; the record is
@@ -740,17 +740,28 @@ computes the degree-2 relations `{q : q(G) in J + m I^2}` modulo 32029 with `i =
 (rank 15), and the fiber cone has 10 generators and 21 quadrics whose ideal has dimension 4, multiplicity 7, first
 Hilbert numerator `1, 0, -21, 70, -105, 84, -35, 6`, is saturated and radical, has two minimal primes of dimension
 4 and degrees 3 and 4, and has a linear symmetry algebra of dimension 15. At the retained basepoint the echelon
-form of the relations equals the retained `K2` of the exceptional-fiber record. The four echelon forms differ from
-one another, so the four computations are independent inputs. At the boost `(5/4, 3/4)` the degree-3 relations
-number 140 of 220 products, so `h_3 = 80`, the value of the quadric ring.
+form of the relations equals the retained `K2` of the exceptional-fiber record. The four computations read four
+different inputs (the digest of the moved point, the Schur coordinates and the slice columns differs at each), and
+their four echelon forms differ. At the boost `(5/4, 3/4)` the degree-3 relations number 140 of 220 products, so
+`h_3 = 80`, the value of the quadric ring.
 
-**Inferred:** the fiber of `E8bar` over each sampled point lies in a quadric scheme with the invariants of the one
-at the retained point, and at `(5/4, 3/4)` the fiber cone agrees with the quadric ring through degree 3.
-`hypothesis:` the family of fibers of `E8bar` over the boost orbit is constant up to projective equivalence. The
-record tests invariants at sampled points; it builds no projective equivalence between two basepoints, compares no
-limiting plane, runs in one characteristic, and decides the fiber cone above degree 3 at no moved point. An
-invariant that differs at a rational boost, or a degree-3 count other than 140, falsifies the observation; a
-projective invariant that separates two of the four quadric schemes falsifies the hypothesis.
+The four echelon bases have one support and differ in three scalars `a`, `b`, `d` read from them. The linear spans
+of the two components are cut out by `y7, y3, y4 + y6` and by `y10 + a y1, y9 + b y5, y8 + b y2, y6 - y4 + d y1`;
+the substitution `y = M w` that takes those seven forms to `w1, w2, w3` and `w4 - (d/2) w7, w5, w6, w7`, and
+`y1, y2, y5` to `w8, w9, w10`, is invertible, and after it the four quadric ideals have the same reduced echelon
+basis. So `M_k M_0^{-1}` carries the quadric ideal at basepoint `k` onto the one at the retained basepoint: the four
+quadric schemes are projectively equivalent over `F_32029`, by explicit matrices. The frame of the retained
+basepoint, applied at each moved basepoint, gives a different ideal (the control of the comparison).
+
+**Inferred, modulo 32029:** the fiber of `E8bar` over each sampled point lies in one quadric scheme up to a linear
+change of the 10 generators, and at `(5/4, 3/4)` the fiber cone agrees with the quadric ring through degree 3.
+`hypothesis:` the family of fibers of `E8bar` over the boost orbit is constant up to projective equivalence, in
+characteristic 0 as well. The record compares the quadric schemes at four sampled points in one characteristic; it
+compares no limiting plane and decides the fiber cone above degree 3 at no moved point. An invariant that differs
+at a rational boost, a degree-3 count other than 140, or a sampled basepoint whose adapted frame fails to carry
+its quadric ideal onto the common one falsifies the observation; a sampled boost whose quadric scheme is
+inequivalent to the retained one, or a fiber that leaves its quadric scheme in a higher degree at one basepoint
+and not at another, falsifies the hypothesis.
 
 The replay takes 19 minutes 51 seconds of wall time, 1,083 CPU seconds and 0.33 GiB on two workers under an 8 GiB
 memory scope (Python 3.14.9, python-flint 0.9.0, Singular 4.4.1) on the build host; each degree-2 basepoint takes
@@ -881,6 +892,7 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export GOROROBA_WORKERS=4
 export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/incidence_census.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py --check
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/incidence_census.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/incidence_census.py \
     --check docs/evidence/a5-kernel-attachments/incidence-census-result.json
