@@ -678,9 +678,11 @@ the closest entry and say what changed.
   Rees algebra or the fiber cone. Read at no source yet: the blowup as the closure of the graph of the map
   given by the generators (Huneke and Swanson, section 5.6, pages 114 and 115, and its index entries for
   blowup, Proj and fiber cone do not state it; no held work does, and a fetch of Eisenbud and Harris,
-  Hartshorne and Fulton is with the literature session), and the passage from the local ring of the sources
-  to the graded polynomial ring of the scripts, which rests on the weight grading and is argued in this
-  repository alone.
+  Hartshorne and Fulton is with the literature session). The passage from the local ring of the sources to
+  the polynomial ring of the scripts is argued in
+  [the kernel-attachments record](../evidence/a5-kernel-attachments/README.md#the-polynomial-ring-computation-equals-the-fiber-cone-of-the-local-ring):
+  each piece I^d / m I^d is annihilated by the maximal ideal, so it equals its localization, and no positive
+  grading is used.
 - Engine and ordering review of the certified scripts (2026-11-13, Singular 4.4.1p5, the passagemath build on
   the workstation unless stated). The gradings: the exponent differences of every generator of
   H = J + minors + (u - G_pivot) of E8-bar at N- (9,786 distinct vectors in the 31 variables s, y, u) have rank
