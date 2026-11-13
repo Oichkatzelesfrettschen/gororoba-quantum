@@ -93,6 +93,21 @@ def test_a_basepoint_has_a_local_product_on_va_plus_and_lacks_one_tangent_direct
     _same(ke.basepoint_task((rows["E8bar->Va+"], generators[:1]))["local_product_with_kernel_transport"], False)
 
 
+def test_a_deficient_basepoint_with_its_slice_removed_keeps_its_flag_and_fails_the_dimension_check() -> None:
+    rows = {str(row["incidence"]): row for row in ke._load_incidences(ke.FIRST_ORDER_RESULT)}
+    generators = [
+        *(ke.to_original_coordinates(ke.split_matrix_of_derivation(d)) for d in ke.regularity.DERS),
+        ke.identity_matrix(),
+    ]
+    retained = ke.basepoint_task((rows["Iso->VB"], generators))
+    _same(ke.basepoint_dimensions_match(retained), True)
+    _same(retained["rank_of_tangent_span_with_slice"], 14)
+    stripped = ke.basepoint_task(({**rows["Iso->VB"], "slice_columns_zero_based": []}, generators))
+    _same(stripped["local_product_with_kernel_transport"], False)
+    _same(ke.basepoint_dimensions_match(stripped), False)
+    _same(ke.basepoint_dimensions_match({**retained, "boundary_orbit": "W8"}), False)
+
+
 def test_the_basepoint_partition_rejects_a_missing_a_repeated_and_a_reclassified_incidence() -> None:
     rows = [
         *({"incidence": name, "local_product_with_kernel_transport": True} for name in ke.LOCAL_PRODUCT_INCIDENCES),

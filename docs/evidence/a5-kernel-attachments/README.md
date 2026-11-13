@@ -485,7 +485,9 @@ basepoints, so no arc comparison enters, and the ten incidences from the nullity
 here as stated for the slice germ; the
 [equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) removes the
 last two at the `N+` and `N-` basepoints, where the limits along paths that leave the slice are limits along the
-slice germ and the fiber is transported along the orbit by `G_2(C) x C^*`. A characteristic disagreement on one of the eight fibers, a source closure with an equation in
+slice germ and the fiber of holomorphic kernel limits `P` is transported along the orbit by `G_2(C) x C^*`; the
+bordered-kernel limits at `g z_0` are the planes `g P meet (g z_0)^perp`. A characteristic disagreement on one of
+the eight fibers, a source closure with an equation in
 `conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
 Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
@@ -550,9 +552,11 @@ tangent span has the orbit dimension and spans `C^15` together with the slice. *
 `(xi, s) -> exp(xi) s`, from a complement of the stabilizer algebra times the slice, is then a local biholomorphism
 at the basepoint `z_0` by the inverse function theorem, so every `z` near `z_0` is `g(z) s(z)` with `g(z)` tending
 to the identity and `s(z)` in the slice. The source strata are invariant under the group, so `s(z)` stays in the
-source slice germ and `ker C_z = g(z) ker C_(s(z))`. The limits of `ker C_z` along any sequence or continuous path in the
-source tending to `z_0` are therefore limits along the slice germ (the fiber over `z_0` of the closed graph equals
-that of its restriction to the slice), and the fiber over `g z_0` is `g` applied to the fiber over `z_0`:
+source slice germ and `ker C_z = g(z) ker C_(s(z))`. The limits of `ker C_z` along any sequence or continuous path
+in the source tending to `z_0` are therefore limits along the slice germ (the fiber over `z_0` of the closed graph
+equals that of its restriction to the slice), and the fiber of holomorphic kernel limits over `g z_0` is `g`
+applied to the fiber over `z_0`. The bordered-kernel limits over `g z_0` are the planes `g P meet (g z_0)^perp` for `P` in the fiber over `z_0`: `g` is
+complex orthogonal and need not be unitary, so it does not carry `P meet z_0^perp` to that plane. Hence
 at those basepoints the closed-graph fibers of the two sections above are the limit sets over all approaches;
 their identification with the limits along real arcs keeps the condition of those sections,
 and they are transported along the whole boundary orbit by the group: `G_2(C) x C^*` is a direct factor of the

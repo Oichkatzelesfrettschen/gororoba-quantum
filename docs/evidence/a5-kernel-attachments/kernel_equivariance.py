@@ -413,6 +413,29 @@ def basepoint_task(task: tuple[dict[str, Any], list[GaussianMatrix]]) -> dict[st
     }
 
 
+# Per boundary orbit: orbit dimension, slice dimension, tangent rank of g_2 + scaling, rank of tangent span with slice.
+EXPECTED_BASEPOINT_DIMENSIONS = {
+    "B9": (9, 6, 9, 15),
+    "Va+": (7, 8, 7, 15),
+    "Va-": (7, 8, 7, 15),
+    "N+": (6, 9, 6, 15),
+    "N-": (6, 9, 6, 15),
+    "V": (8, 7, 7, 14),
+    "VB": (7, 8, 6, 14),
+}
+
+
+def basepoint_dimensions_match(row: dict[str, Any]) -> bool:
+    """Whether the four dimensions of a basepoint row are those declared for its boundary orbit."""
+    found = (
+        row["boundary_orbit_dimension"],
+        row["slice_dimension"],
+        row["tangent_rank_equivariant_span"],
+        row["rank_of_tangent_span_with_slice"],
+    )
+    return found == EXPECTED_BASEPOINT_DIMENSIONS.get(str(row["boundary_orbit"]))
+
+
 def basepoint_partition_matches(rows: list[dict[str, Any]]) -> bool:
     """Whether the rows are exactly the declared incidences, each once, split as declared; a missing, repeated or
     unexpected incidence fails."""
@@ -498,6 +521,7 @@ def build_record() -> dict[str, Any]:
     )
     basepoints_pass = (
         basepoint_partition_matches(basepoint_rows)
+        and all(basepoint_dimensions_match(row) for row in basepoint_rows)
         and product_orbits == LOCAL_PRODUCT_ORBITS
         and other_orbits == BOOST_DEFICIENT_ORBITS
     )
@@ -611,6 +635,10 @@ def build_record() -> dict[str, Any]:
             "incidences_with_local_product": sum(row["local_product_with_kernel_transport"] for row in basepoint_rows),
             "incidence_count": len(basepoint_rows),
             "rows_are_the_declared_incidences_each_once": basepoint_partition_matches(basepoint_rows),
+            "expected_orbit_slice_tangent_and_joint_dimensions": {
+                orbit: list(values) for orbit, values in EXPECTED_BASEPOINT_DIMENSIONS.items()
+            },
+            "rows_with_the_expected_dimensions": sum(basepoint_dimensions_match(row) for row in basepoint_rows),
             "deduction": (
                 "Where the tangent span of g_2 + scaling at the basepoint z_0 has the dimension of the boundary "
                 "orbit and spans C^15 together with the slice, the map (xi, s) -> exp(xi) s from a complement of "
@@ -621,8 +649,10 @@ def build_record() -> dict[str, Any]:
                 "source "
                 "tending to z_0 are therefore limits along the slice germ (the fiber over z_0 of the closed graph "
                 "equals that of its restriction to the slice; s(z(t)) is analytic and need not be semialgebraic), "
-                "and the fiber over g z_0 is g applied to the "
-                "fiber over z_0. G_2(C) x C^* is a direct factor of the connected group G_2(C) x SO(2, C) x C^* "
+                "and the fiber of holomorphic kernel limits P over g z_0 is g applied to the fiber over z_0; the "
+                "bordered-kernel limits over g z_0 are the planes g P meet (g z_0)^perp, since g is complex "
+                "orthogonal and need not preserve the Hermitian complement. "
+                "G_2(C) x C^* is a direct factor of the connected group G_2(C) x SO(2, C) x C^* "
                 "whose orbit is the boundary orbit, so its tangent rank is constant along that orbit; its orbits "
                 "inside the boundary orbit are then open and partition a connected set, so the orbit of z_0 under "
                 "G_2(C) x C^* is the whole boundary orbit."
