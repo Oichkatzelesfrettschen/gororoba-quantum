@@ -66,6 +66,45 @@ SMALLEST_WITNESS = "VB"
 G2_DERIVATION_COUNT = 14
 LOCAL_PRODUCT_ORBITS = ["B9", "N+", "N-", "Va+", "Va-"]
 BOOST_DEFICIENT_ORBITS = ["V", "VB"]
+# The retained incidences in record order: those whose basepoint lies on an orbit of LOCAL_PRODUCT_ORBITS, and those
+# whose basepoint lies on V or VB.
+LOCAL_PRODUCT_INCIDENCES = (
+    "E8bar->B9",
+    "E8bar->Va+",
+    "E8bar->Va-",
+    "Iso->B9",
+    "W8->B9",
+    "X+->B9",
+    "X+->Va+",
+    "X-->B9",
+    "X-->Va-",
+    "B9->N+",
+    "B9->N-",
+    "V->N+",
+    "V->N-",
+    "VB->N+",
+    "VB->N-",
+    "Va+->N+",
+    "Va-->N-",
+    "E8bar->N+",
+    "E8bar->N-",
+    "Iso->N+",
+    "Iso->N-",
+    "W8->N+",
+    "W8->N-",
+    "X+->N+",
+    "X+->N-",
+    "X-->N+",
+    "X-->N-",
+)
+BOOST_DEFICIENT_INCIDENCES = (
+    "E8bar->V",
+    "E8bar->VB",
+    "Iso->VB",
+    "W8->VB",
+    "X+->VB",
+    "X-->VB",
+)
 
 Gaussian = kernel_lemma.Gaussian
 GaussianVector = kernel_lemma.GaussianVector
@@ -374,6 +413,14 @@ def basepoint_task(task: tuple[dict[str, Any], list[GaussianMatrix]]) -> dict[st
     }
 
 
+def basepoint_partition_matches(rows: list[dict[str, Any]]) -> bool:
+    """Whether the rows are exactly the declared incidences, each once, split as declared; a missing, repeated or
+    unexpected incidence fails."""
+    with_product = sorted(str(row["incidence"]) for row in rows if row["local_product_with_kernel_transport"])
+    without = sorted(str(row["incidence"]) for row in rows if not row["local_product_with_kernel_transport"])
+    return with_product == sorted(LOCAL_PRODUCT_INCIDENCES) and without == sorted(BOOST_DEFICIENT_INCIDENCES)
+
+
 def _load_incidences(path: Path) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = json.loads(path.read_text(encoding="utf-8"))["incidences"]
     return rows
@@ -449,7 +496,11 @@ def build_record() -> dict[str, Any]:
     other_orbits = sorted(
         {row["boundary_orbit"] for row in basepoint_rows if not row["local_product_with_kernel_transport"]}
     )
-    basepoints_pass = product_orbits == LOCAL_PRODUCT_ORBITS and other_orbits == BOOST_DEFICIENT_ORBITS
+    basepoints_pass = (
+        basepoint_partition_matches(basepoint_rows)
+        and product_orbits == LOCAL_PRODUCT_ORBITS
+        and other_orbits == BOOST_DEFICIENT_ORBITS
+    )
 
     g2_equal = all(point["g2"]["g_ker_equals_ker_of_gz"] for point in points)
     g2_consistent = all(point["g2"]["moved_point_equals_g_original_z"] for point in points)
@@ -492,7 +543,9 @@ def build_record() -> dict[str, Any]:
             "statement": (
                 "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the "
                 "product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of "
-                "verify_regularity_independent.py, and the twelve canonical points of that module"
+                "verify_regularity_independent.py, the twelve canonical points of that module, the 14 G_2 "
+                "derivations and the scaling with their lifts, and the retained basepoint and slice of each of the "
+                "33 incidences of first-order-normal-cones-result.json and nullity16-basepoints-result.json"
             ),
             "claim_boundary": (
                 "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate "
@@ -557,6 +610,7 @@ def build_record() -> dict[str, Any]:
             "boundary_orbits_without": other_orbits,
             "incidences_with_local_product": sum(row["local_product_with_kernel_transport"] for row in basepoint_rows),
             "incidence_count": len(basepoint_rows),
+            "rows_are_the_declared_incidences_each_once": basepoint_partition_matches(basepoint_rows),
             "deduction": (
                 "Where the tangent span of g_2 + scaling at the basepoint z_0 has the dimension of the boundary "
                 "orbit and spans C^15 together with the slice, the map (xi, s) -> exp(xi) s from a complement of "
@@ -565,7 +619,10 @@ def build_record() -> dict[str, Any]:
                 "source stratum is invariant under G_2(C) x C^*, so s(z) lies in the source slice germ, and "
                 "ker C_z = g(z) ker C_(s(z)). The limits of ker C_z along any path in the source ending at z_0 are "
                 "therefore limits along a path in the slice germ, and the fiber over g z_0 is g applied to the "
-                "fiber over z_0."
+                "fiber over z_0. G_2(C) x C^* is a direct factor of the connected group G_2(C) x SO(2, C) x C^* "
+                "whose orbit is the boundary orbit, so its tangent rank is constant along that orbit; its orbits "
+                "inside the boundary orbit are then open and partition a connected set, so the orbit of z_0 under "
+                "G_2(C) x C^* is the whole boundary orbit."
             ),
         },
         "computed": [

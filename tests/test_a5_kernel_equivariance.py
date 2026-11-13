@@ -62,7 +62,7 @@ def test_complex_span_membership_separates_a_member_from_a_nonmember() -> None:
 
 
 def test_each_g2_derivation_lifts_to_itself_and_the_sign_flipped_lift_fails() -> None:
-    for index in (0, 6, 13):
+    for index in range(ke.G2_DERIVATION_COUNT):
         row = ke.lift_task(index)
         _same((row["residual_nonzero_entries"], row["generator_is_skew"]), (0, True))
         _same(row["sign_flipped_lift_residual_nonzero_entries"] > 0, True)
@@ -92,6 +92,24 @@ def test_a_basepoint_has_a_local_product_on_va_plus_and_lacks_one_tangent_direct
     _same((on_vb["boundary_orbit_dimension"], on_vb["tangent_rank_equivariant_span"]), (7, 6))
     _same(on_vb["local_product_with_kernel_transport"], False)
     _same(ke.basepoint_task((rows["E8bar->Va+"], generators[:1]))["local_product_with_kernel_transport"], False)
+
+
+def test_the_basepoint_partition_rejects_a_missing_a_repeated_and_a_reclassified_incidence() -> None:
+    rows = [
+        *({"incidence": name, "local_product_with_kernel_transport": True} for name in ke.LOCAL_PRODUCT_INCIDENCES),
+        *({"incidence": name, "local_product_with_kernel_transport": False} for name in ke.BOOST_DEFICIENT_INCIDENCES),
+    ]
+    _same((len(ke.LOCAL_PRODUCT_INCIDENCES), len(ke.BOOST_DEFICIENT_INCIDENCES)), (27, 6))
+    _same(len({*ke.LOCAL_PRODUCT_INCIDENCES, *ke.BOOST_DEFICIENT_INCIDENCES}), 33)
+    _same(ke.basepoint_partition_matches(rows), True)
+    _same(ke.basepoint_partition_matches(rows[1:]), False)
+    _same(ke.basepoint_partition_matches([*rows, rows[0]]), False)
+    flipped = [{**rows[0], "local_product_with_kernel_transport": False}, *rows[1:]]
+    _same(ke.basepoint_partition_matches(flipped), False)
+    _same(
+        ke.basepoint_partition_matches([*rows, {"incidence": "W8->V", "local_product_with_kernel_transport": True}]),
+        False,
+    )
 
 
 def test_self_test_rejects_a_failed_record_and_a_surviving_mutation() -> None:
