@@ -5804,6 +5804,16 @@
         "docs/evidence/a5-gram-operator-witnesses/witnesses.json",
         "docs/evidence/a5-gram-operator-witnesses/validation.json"
       ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_analysis.py --check results/quantum_inspire/runs/*pathion_one_cz_null_tuna_17-batch-* --record results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json --predecessor results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json",
+      "name": "core-pathion-one-cz-null-tuna-analysis-replay",
+      "seconds": 25.36,
+      "replays": [
+        "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json"
+      ]
     }
   ],
   "excluded": [

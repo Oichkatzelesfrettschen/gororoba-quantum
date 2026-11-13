@@ -15544,8 +15544,8 @@
       "boundary": "One calibration window of one device. The decision is the preregistered rule, whose replicate-heterogeneity gate precedes every class, so the near-zero 6-CZ readings and the b0 offset are reported numbers and the rule decides neither a zero class nor an exclusion of the coin-conditioned dropout; the comparison of the 6-CZ readings with the dropout prediction sits in no retained analysis record, and no claim rests on it. The b0 base replicate that reads 0.0393 is batch 15, whose readout bracket records q11's |1> misassignment at 0.434 after 0.095 in batch 14; all five readout shifts above the 0.02 threshold during the series sit on q11, a qubit of the five-qubit region. That the q11 shift explains the replicate disagreement is a hypothesis; a rerun with a per-batch q11 readout admission whose b0 replicates still disagree falsifies it. The 6-CZ blocks cannot separate the coherent over-rotation from a q12 correlation, since both predict zero there. The calibration classes cover the terminal-assignment context, so a correlation that appears only after the template's CZ and X90 schedule stays open. The QX twin establishes the analysis path and no device behavior.",
       "evidence": [
         {
-          "path": "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json",
-          "sha256": "e39956c54bd79740a94785712c398ba5fe65b33a9e03c58c2ca179374a0cc693"
+          "path": "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json",
+          "sha256": "b93b4e319e2421513bc3c5ed1faaa4910b16a5033974aa725c9693e297d47f36"
         },
         {
           "path": "results/quantum_inspire/pathion_one_cz_null_qx_analysis.json",
