@@ -64,11 +64,12 @@ So the Macaulay route needs a different checker, not a larger input to the prese
      sparse product; equivalently a matrix C with (rows - r) rows, each a relation.
    The cost of the check is the number of nonzeros of the relation matrix times the row length, which the
    producer can report before any proof is attempted.
-3. Characteristic zero. A rank over F_p bounds the rank over Q(i) from below only: for a matrix with integral
-   entries, rank mod p is at most the rank over the fraction field. HF over Q(i) at degree d therefore satisfies
-   HF_(Q(i))(d) <= HF_(F_p)(d). Equality needs either the relations themselves over Q(i) (rational relations,
-   checked in the real block form) or the upper-semicontinuity argument run the other way with the dimension
-   and degree known over Q(i). The note must state which of the two a given row uses.
+3. Characteristic zero. For a matrix with integral entries the rank modulo p is at most the rank over the
+   fraction field, so HF_(Q(i))(d) <= HF_(F_p)(d): a modular certificate bounds the characteristic-0 value from
+   above only. Equality at degree d needs an upper bound on the rank over Q(i), that is the relations
+   themselves over Q(i), checked in the real block form. The dimension and the degree over Q(i) do not give
+   it: they fix the leading term of the Hilbert polynomial and say nothing about one low degree. A note that
+   cites a certificate states which field its rank was certified over.
 4. The link from the certified matrix to the ideal is the weakest joint: the checker sees numbers, and the
    statement "this matrix is M_d of the 68 quadrics of row A5-294" is the producer's claim. Bind it as the rank
    certificates of gororoba-open do: the certificate names the sha256 of the retained quadric file, and a
@@ -83,18 +84,21 @@ takes more than minutes, the route stops at a documented negative.
 
 ## A smaller first input
 
-The degree-20 component of the W8 fiber cone (ledger row A5-421) lives in 15 coordinates after its 9 linear
-forms, with 36 quadrics. Issue 863 tested the lead that it is the cone over the adjoint variety of SL_4; that
-form is refuted (the torus weights of A5-426 and the dimension of the symmetry algebra exclude it), and the
-working hypothesis is a rank-3 hyperplane section of the Segre variety P^3 x P^3. Every hyperplane section of
-that Segre variety has Hilbert function 1, 15, 84, 300, 825, so the Macaulay matrices are 540 x 680 of rank 380
-in degree 3 and 4,320 x 3,060 of rank 2,235 in degree 4, smaller than the Iso matrices above. hypothesis: the
-component has that Hilbert function (reported from a scratch computation of the A_5 program on 2026-11-13, not
-yet a ledger row). A certified HF(2) = 84 and HF(3) = 300 would be a replayable test of it.
+Ledger row A5-421 records that the quadric ideal K of W8 over Q(i) has two minimal primes, of degrees 20 and 30;
+the retained presentation of the degree-20 prime (`docs/evidence/a5-exceptional-fibers/structure/w8-kp/`, at
+p = 32009) has 9 linear forms and 36 quadrics, so it lives in 15 coordinates. Whether that prime is a component
+of the fiber cone over Q(i) is a separate question, which row A5-418 states with status open; a rank certificate
+would concern the ideal, not that identification. Issue 863 tested the lead that the prime defines the cone over the
+adjoint variety of SL_4: that form is refuted, and the working hypothesis is a rank-3 hyperplane section of the
+Segre variety P^3 x P^3. Every hyperplane section of that Segre variety has Hilbert function 1, 15, 84, 300,
+825, so the Macaulay matrices would be 540 x 680 of rank 380 in degree 3 and 4,320 x 3,060 of rank 2,235 in
+degree 4, smaller than the Iso matrices above. hypothesis: the degree-20 prime has that Hilbert function
+(reported from scratch computations on 2026-11-13, modulo 32009 and over Q(i), not yet a ledger row). A
+certified HF(2) = 84 and HF(3) = 300 would be a replayable test of it.
 
 ## Out of scope
 
-Primality and radicality of K (ledger rows A5-422 and A5-425), the regularity bound that turns finitely many
+Primality and radicality of K (ledger rows A5-421 and A5-422), the regularity bound that turns finitely many
 values into a Hilbert series, and Groebner-basis certificates. No route for these is proposed here.
 
 ## Open questions for the owner and the A5 session

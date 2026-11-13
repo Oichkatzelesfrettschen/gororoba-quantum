@@ -41,6 +41,23 @@ printf '%s\n' "$version"
     done
     exit 1
 }
+# Mutation control: with the sign of the r3 term of the first half of source_psi2 flipped, the 256-pair check
+# images_basis_check has to fail, so the compile of the mutant has to exit nonzero inside that proof.
+sed 's/(TA.scale k Root3Integers.r3 (im (snd x)))/(TA.scale k (Root3Integers.opp Root3Integers.r3) (im (snd x)))/' \
+    "$proof_tmp/CdTowerOrderThreeMap.v" > "$proof_tmp/CdTowerOrderThreeMapMutant.v"
+if cmp -s "$proof_tmp/CdTowerOrderThreeMap.v" "$proof_tmp/CdTowerOrderThreeMapMutant.v"; then
+    printf '%s\n' 'The mutation matched no line of CdTowerOrderThreeMap.v.' >&2
+    exit 1
+fi
+if (cd "$proof_tmp" && "$ROCQ" compile -q -w @all -Q . '' CdTowerOrderThreeMapMutant.v > mutant.txt 2>&1); then
+    printf '%s\n' 'The sign-flipped mutant of source_psi2 compiled.' >&2
+    exit 1
+fi
+if ! grep -q '^Hi : 1 < 16$' "$proof_tmp/mutant.txt" || ! grep -q '^Hj : 8 < 16$' "$proof_tmp/mutant.txt"; then
+    printf '%s\n' 'The mutant failed somewhere other than the basis pair (1, 8) of images_basis_check:' >&2
+    cat "$proof_tmp/mutant.txt" >&2
+    exit 1
+fi
 if grep -n '[Ww]arning:' "$proof_tmp/compile.txt" "$proof_tmp/assumptions.txt" "$proof_tmp/images.txt" \
     "$proof_tmp/kernel.txt"; then
     exit 1
@@ -52,4 +69,4 @@ fi
 cmp "$proof_tmp/assumptions.txt" "$evidence_dir/assumptions.txt"
 cmp "$proof_tmp/images.txt" "$evidence_dir/images.txt"
 cmp "$proof_tmp/kernel.txt" "$evidence_dir/kernel.txt"
-printf '%s\n' 'compile_kernel_assumptions_pass CdTowerOrderThreeMap'
+printf '%s\n' 'compile_kernel_assumptions_pass CdTowerOrderThreeMap' 'mutant_rejected images_basis_check pair (1, 8)'

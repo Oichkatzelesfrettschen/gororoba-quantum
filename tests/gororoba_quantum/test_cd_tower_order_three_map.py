@@ -2,19 +2,29 @@
 
 docs/evidence/cd-tower-ring-base-change/images.txt is the Rocq vm_compute output of images.v: for each basis
 element e_m of level 4, the 16 coordinates over Z[sqrt 3] of psi2(e_m) = 2 psi(e_m), as pairs (a, b) for
-a + b sqrt 3. The tests compare that table with twice the matrix of Gresnigt (arXiv 2609.10569), Eq. 61, written
-out here from the formula psi(e_i) = -e_i/2 - (sqrt 3 / 2) e_(i+8), psi(e_(i+8)) = (sqrt 3 / 2) e_i - e_(i+8)/2
-for i = 1..7 with e_0 and e_8 fixed, and recompute psi2(e_i) psi2(e_j) = 2 psi2(e_i e_j) on the 256 basis pairs
-with cd_core.cd_sign extended bilinearly to Z[sqrt 3]. The Rocq theorem images_basis_check proves the same 256
-identities for the pair-tower product; the identity of that product with cd_sign at integer coefficients is the
-chain of proofs named in docs/evidence/cd-tower-ring/README.md ("Binding to cd_core"). The control flips the
-sign of one entry of the table and requires the product check to fail.
+a + b sqrt 3. A table here is indexed table[m][i] = coordinate i of the image of e_m, so it is the transpose of
+the matrix whose columns are the images. The tests compare the Rocq table with twice the formula of Gresnigt
+(arXiv 2609.10569), Eq. 61, written out here (psi(e_i) = -e_i/2 - (sqrt 3 / 2) e_(i+8),
+psi(e_(i+8)) = (sqrt 3 / 2) e_i - e_(i+8)/2 for i = 1..7 with e_0 and e_8 fixed) and with twice the sympy matrix
+psi() of test_sedenion_automorphism_group.py, whose columns are the images; they recompute
+psi2(e_i) psi2(e_j) = 2 psi2(e_i e_j) on the 256 basis pairs with cd_core.cd_sign extended bilinearly to
+Z[sqrt 3]. The Rocq theorem images_basis_check proves the same 256 identities for the pair-tower product; the
+identity of that product with cd_sign at integer coefficients is the chain of proofs named in
+docs/evidence/cd-tower-ring/README.md ("Binding to cd_core"). The controls: the table with one sign flipped fails
+the product check, and the transposed table, which is the inverse map and passes the product check, differs from
+Eq. 61, so the product check alone does not identify the map.
 """
 
 import re
+import sys
 from pathlib import Path
 
+from sympy import Integer, sqrt
+
 import cd_core
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from test_sedenion_automorphism_group import psi  # noqa: E402
 
 IMAGES = Path(__file__).resolve().parents[2] / "docs/evidence/cd-tower-ring-base-change/images.txt"
 Root3 = tuple[int, int]
@@ -98,6 +108,30 @@ def test_rocq_image_table_is_twice_gresnigt_psi() -> None:
     differing = [(m, i) for m in range(DIM) for i in range(DIM) if rocq_images()[m][i] != gresnigt_twice_psi()[m][i]]
     if differing:
         raise AssertionError(f"the Rocq table and twice Eq. 61 differ at (basis element, coordinate) {differing}")
+
+
+def test_rocq_image_table_is_twice_the_sympy_psi_matrix() -> None:
+    """Column m of psi() is the image of e_m, so the table entry [m][i] is twice the matrix entry [i, m]."""
+    matrix = psi()
+    table = rocq_images()
+    differing = [
+        (m, i)
+        for m in range(DIM)
+        for i in range(DIM)
+        if (Integer(table[m][i][0]) + Integer(table[m][i][1]) * sqrt(3) - 2 * matrix[i, m]).expand() != 0
+    ]
+    if differing:
+        raise AssertionError(f"the Rocq table and 2 psi() differ at (basis element, coordinate) {differing}")
+
+
+def test_transposed_table_is_another_product_preserving_map() -> None:
+    """The transpose is twice the inverse of psi: it passes the product check and is not Eq. 61."""
+    table = rocq_images()
+    transposed = [[table[i][m] for i in range(DIM)] for m in range(DIM)]
+    if product_failures(transposed):
+        raise AssertionError("the transposed table must also preserve products up to the factor 2")
+    if transposed == gresnigt_twice_psi():
+        raise AssertionError("the transposed table must differ from twice Eq. 61")
 
 
 def test_image_table_preserves_cd_core_products_up_to_two() -> None:

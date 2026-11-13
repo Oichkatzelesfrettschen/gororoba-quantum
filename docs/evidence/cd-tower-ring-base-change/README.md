@@ -17,9 +17,10 @@ a signature that holds the commutative-ring laws alone:
 The purpose is a route for certificates: a finite computation over the
 integers, or over a ring of integers such as Z[sqrt 3], decided by
 `vm_compute`, becomes a theorem about all elements over every commutative
-ring that receives a homomorphism from it. A symbolic `ring` proof of the
-256 basis identities of level 4 took 31 s for one pair on the pinned
-toolchain, so the direct route was abandoned.
+ring that receives a homomorphism from it. The direct route, a symbolic
+`ring` proof of each of the 256 basis identities of level 4 over an abstract
+ring, was abandoned as too slow (one trial of one pair on the pinned
+toolchain ran for tens of seconds; no log of it is retained).
 
 ## Theorems of `RingTowerBasis`, for every level k and every commutative ring
 
@@ -76,9 +77,9 @@ Instances: `Root3Map` applies `OrderThreeMap` to Z[sqrt 3] itself, and `Mod11`
 applies `OrderThreeAutomorphism` to Zmod 11, where 5 5 = 3 and 2 6 = 1, so
 both signatures have a model.
 
-Mutation control (run by hand on the pinned toolchain, not part of the
-replay): with one sign of `source_psi2` flipped, `images_basis_check` fails at
-the basis pair (1, 8).
+Mutation control, part of the replay: `replay_rocq.sh` flips the sign of the
+r3 term in the first half of `source_psi2` in a copy of the file and requires
+its compile to fail inside `images_basis_check` at the basis pair (1, 8).
 
 ## Scope
 
@@ -90,22 +91,31 @@ the cube is checked on the printed table by the test below (computed, not
 proved). `derivation_transport` is stated and proved, and no derivation table
 is passed through it yet: the 14 derivations of the sedenions are the next
 input. `psi_diagonal_mul` gives a product-preserving map of level 5; whether
-level 5 has further automorphisms is outside this bundle.
+level 5 has further automorphisms is outside this bundle. The instances are
+Z[sqrt 3] and Zmod 11; no instance over the real numbers is built, although
+the reals satisfy the signature. The identity of the pair-tower product with
+`cd_sign` at coordinates in Z[sqrt 3] is not a Rocq statement (see the next
+section).
 
 ## Binding to Eq. 61 and to cd_core
 
 [images.txt](images.txt) is the `vm_compute` output of [images.v](images.v):
 the coordinates over Z[sqrt 3] of psi2(e_m) for the 16 basis elements of
-level 4. `tests/gororoba_quantum/test_cd_tower_order_three_map.py` requires
-that table to equal twice Eq. 61 written out on the basis
+level 4, one row per basis element.
+`tests/gororoba_quantum/test_cd_tower_order_three_map.py` requires that table
+to equal twice Eq. 61 written out on the basis
 (psi(e_i) = -e_i/2 - (sqrt 3 / 2) e_(i+8) and
 psi(e_(i+8)) = (sqrt 3 / 2) e_i - e_(i+8)/2 for i = 1..7, with e_0 and e_8
-fixed, the matrix `psi()` of
-`tests/gororoba_quantum/test_sedenion_automorphism_group.py`), recomputes the
-256 identities psi2(e_i) psi2(e_j) = 2 psi2(e_i e_j) with `cd_core.cd_sign`
+fixed) and twice the matrix `psi()` of
+`tests/gororoba_quantum/test_sedenion_automorphism_group.py`, whose columns
+are the images, so the comparison transposes; it recomputes the 256
+identities psi2(e_i) psi2(e_j) = 2 psi2(e_i e_j) with `cd_core.cd_sign`
 extended bilinearly to Z[sqrt 3], requires psi2 applied three times to equal
 8 on every basis element, and requires the product check to fail on the
-table with one sign flipped. The identity of the pair-tower product with
+table with one sign flipped. The transposed table is twice the inverse map;
+it passes the product check and the test requires it to differ from Eq. 61,
+so the comparison with the formula, and not the product check, identifies
+the map. The identity of the pair-tower product with
 `cd_sign` at integer coefficients is the chain of proofs named in
 [cd-tower-ring](../cd-tower-ring/README.md) ("Binding to cd_core"); the
 passage to coordinates in Z[sqrt 3] is the bilinear extension, which no Rocq
@@ -131,7 +141,6 @@ sha256sum -c docs/evidence/cd-tower-ring-base-change/source_hashes.sha256
 [assumptions.v](assumptions.v) and [images.v](images.v) in temporary storage
 with `-w @all`, fails on any warning or compiler output, runs `rocq check`
 over the three libraries, and compares the outputs byte for byte with the
-three receipts. `scripts/rocq_kaggle_replay.py --only cd-tower-ring-base-change`
-selects the replay and `source_hashes.sha256` binds the three sources and the
-receipts. A replay takes about one minute; `CdTowerOrderThreeMap.v` is 22 s of
-it.
+three receipts, then runs the mutation control.
+`scripts/rocq_kaggle_replay.py --only cd-tower-ring-base-change` selects the
+replay and `source_hashes.sha256` binds the three sources and the receipts.
