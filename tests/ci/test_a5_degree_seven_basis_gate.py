@@ -69,7 +69,8 @@ def test_basis_gate_skips_optional_tools_and_propagates_required_results(
     if actual_arguments != expected_arguments:
         raise AssertionError(actual_arguments)
     if required != "1":
-        if result.returncode != 0 or "skipped:" not in result.stdout:
+        # A skip exits with the skip status of ci/run_gates.py after its reason line.
+        if result.returncode != 77 or not result.stdout.strip().splitlines()[-1].startswith("skipped:"):
             raise AssertionError(result)
     elif result.returncode != status:
         raise AssertionError(result)

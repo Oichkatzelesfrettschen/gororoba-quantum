@@ -183,7 +183,7 @@ def cached_passes(path: Path, digest: str) -> set[str] | None:
     """The passing gate names a matching entry records, or None for a missing or foreign entry."""
     try:
         entry = json.loads(path.read_text())
-    except (OSError, ValueError):
+    except OSError, ValueError:
         return None
     if not isinstance(entry, dict):
         return None
@@ -206,6 +206,11 @@ def store_passes(path: Path, digest: str, components: dict[str, Any], base: dict
     os.replace(handle.name, path)
 
 
+def parse_statuses(lines: list[str]) -> dict[str, int]:
+    """Gate name -> 1 for a FAIL line and 0 for a PASS or SKIP line of ci/run_gates.py."""
+    return {m.group(2): 1 if m.group(1) == "FAIL" else 0 for m in map(VERDICT.match, lines) if m}
+
+
 def results(
     root: Path, max_seconds: float, replay: dict[str, str] | None = None, gates: list[str] | None = None
 ) -> dict[str, tuple[int, str]]:
@@ -222,7 +227,7 @@ def results(
         check=False,
     )
     lines = completed.stdout.splitlines()
-    statuses = {m.group(2): 1 if m.group(1) == "FAIL" else 0 for m in map(VERDICT.match, lines) if m}
+    statuses = parse_statuses(lines)
     if "unrecognized arguments: --max-seconds" in completed.stderr:
         raise SystemExit(f"{root / 'ci/run_gates.py'} predates --max-seconds; the base needs ci/premerge_gates.py too")
     if gates is not None and "unrecognized arguments: --gates" in completed.stderr:

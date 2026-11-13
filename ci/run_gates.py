@@ -25,11 +25,12 @@ toolchain is absent. A caller that exports the variable REQUIREMENTS names for
 the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
 each such gate take its live path or fail.
 
-A gate that ran no check says so by exit status 77 after one line that gives
-the reason. The runner prints SKIP for it, counts it apart from the passes in
-the summary and the timings, and lists the skipped names; a skip leaves the
-exit status of the run unchanged. Only a gate that declares ``requires`` may
-skip: status 77 from any other gate is a failure.
+A gate that ran no check says so by exit status 77 after a last output line
+that begins ``skipped:`` and gives the reason. The runner prints SKIP for it,
+counts it apart from the passes in the summary and the timings, and lists the
+skipped names; a skip leaves the exit status of the run unchanged. Only a gate
+that declares ``requires`` may skip: status 77 from any other gate, or without
+the ``skipped:`` line, is a failure.
 
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
 chooses: an explicit $PYTHON as named, else the running interpreter when it
@@ -72,6 +73,8 @@ TAIL_LINES = 40
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
 # The exit status by which a gate that declares `requires` reports that it ran no check (automake's skip status).
 SKIP_STATUS = 77
+# The prefix of the line by which a skipping gate states its reason; the runner accepts no skip without it.
+SKIP_PREFIX = "skipped:"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # The numeric stack a gate's interpreter loads under the gate environment: the CPU model, numpy's enabled dispatch
 # targets, and each OpenBLAS that numpy and scipy.linalg load with the core it selected: the native numeric path a
@@ -163,11 +166,18 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
     return measured, completed.returncode, time.monotonic() - start, completed.stdout
 
 
-def verdict(gate: dict[str, Any], status: int) -> str:
-    """PASS for status 0, SKIP for the skip status of a gate that declares `requires`, FAIL otherwise."""
+def skip_reason(output: str) -> str | None:
+    """The last nonblank output line when it states a skip (`skipped: ...`), else None."""
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    return lines[-1] if lines and lines[-1].startswith(SKIP_PREFIX) else None
+
+
+def verdict(gate: dict[str, Any], status: int, output: str) -> str:
+    """PASS for status 0; SKIP for the skip status of a gate that declares `requires` and ends its output with a
+    `skipped:` line; FAIL otherwise, the skip status without that line included."""
     if status == 0:
         return "PASS"
-    if status == SKIP_STATUS and gate.get("requires"):
+    if status == SKIP_STATUS and gate.get("requires") and skip_reason(output) is not None:
         return "SKIP"
     return "FAIL"
 
@@ -338,7 +348,7 @@ def main(argv: list[str] | None = None) -> int:
     started = time.monotonic()
     timings = []
     for gate, status, seconds, output in run_all(selected, environment, ROOT):
-        label = verdict(gate, status)
+        label = verdict(gate, status, output)
         timings.append(
             {
                 "name": gate["name"],
@@ -353,8 +363,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{label} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
         if label == "SKIP":
             skipped.append(gate["name"])
-            reason = (output.strip().splitlines() or ["no reason given"])[-1]
-            print(f"     {gate['name']}: {reason}", flush=True)
+            print(f"     {gate['name']}: {skip_reason(output)}", flush=True)
         elif label == "FAIL":
             failures.append((gate, status, output))
             tail = "\n".join(output.splitlines()[-TAIL_LINES:])

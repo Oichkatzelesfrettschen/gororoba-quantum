@@ -154,6 +154,25 @@ def test_the_skip_status_from_a_gate_without_requires_is_a_failure(root: Path) -
         raise AssertionError(f"status 77 without requires did not fail:\n{output.getvalue()}")
 
 
+@pytest.mark.parametrize(
+    "command", ("exit 77", 'echo "no reason here"; exit 77', 'echo "skipped: early"; echo "later line"; exit 77')
+)
+def test_the_skip_status_without_a_closing_reason_line_is_a_failure(root: Path, tmp_path: Path, command: str) -> None:
+    manifest(root, [{"name": "silent", "cwd": ".", "cmd": command, "requires": ["singular"]}])
+    timings = tmp_path / "timings.json"
+    with runner(root) as output:
+        status = run_gates.main(["--timings", str(timings)])
+    text = output.getvalue()
+    verdicts = [row["verdict"] for row in json.loads(timings.read_text())["gates"]]
+    if (
+        status != 1
+        or "FAIL silent" not in text
+        or "0 passed, 0 skipped, 1 failed of 1" not in text
+        or verdicts != ["FAIL"]
+    ):
+        raise AssertionError(f"status 77 without a closing skipped: line did not fail (status {status}):\n{text}")
+
+
 def test_every_repository_gate_that_prints_a_skip_line_exits_with_the_skip_status() -> None:
     lacking = [
         gate["name"]
