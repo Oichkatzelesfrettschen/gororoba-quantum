@@ -321,6 +321,17 @@ def job(item: tuple[int, tuple[Fraction, Fraction]]) -> dict[str, Any]:
     return degree_two_row(boost) if degree == 2 else degree_three_row(boost)
 
 
+def normalize(item: tuple[list[dict[tuple[int, int], int]], list[list[int]]]) -> dict[str, Any]:
+    """The frame scalars of one quadric ideal and its normal forms in its own frame and in the retained frame."""
+    quadrics, retained_frame = item
+    scalars, matrix = adapted_frame(quadrics)
+    return {
+        "adapted_frame_scalars": scalars,
+        "normal_form_sha256": _digest(normal_form(quadrics, matrix)),
+        "normal_form_in_retained_frame_sha256": _digest(normal_form(quadrics, retained_frame)),
+    }
+
+
 def quadric_ring_hilbert(numerator: list[int], generators: int, degree: int) -> int:
     """The Hilbert function in the given degree of a quotient of k[y_1..y_n] with that first numerator."""
     return sum(
@@ -337,11 +348,9 @@ def compute() -> dict[str, Any]:
         [{(a, b): value for a, b, value in quadric} for quadric in row.pop("_quadrics")] for row in rows[: len(BOOSTS)]
     ]
     retained_frame = adapted_frame(ideals[0])[1]
-    for row, quadrics in zip(rows[: len(BOOSTS)], ideals, strict=True):
-        scalars, matrix = adapted_frame(quadrics)
-        row["adapted_frame_scalars"] = scalars
-        row["normal_form_sha256"] = _digest(normal_form(quadrics, matrix))
-        row["normal_form_in_retained_frame_sha256"] = _digest(normal_form(quadrics, retained_frame))
+    normalized = parallel.ordered_map(normalize, [(quadrics, retained_frame) for quadrics in ideals], min_items=1)
+    for row, fields in zip(rows[: len(BOOSTS)], normalized, strict=True):
+        row.update(fields)
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "incidence": INCIDENCE,
