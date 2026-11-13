@@ -330,10 +330,12 @@ def build_record() -> dict[str, Any]:
 
     nullity, projection_rank, projections = equivariance_system()
     derivations = [to_original_coordinates(split_matrix_of_derivation(derivation)) for derivation in regularity.DERS]
-    derivations_in_span = [in_complex_span(projections, matrix) for matrix in derivations]
-    scaling_in_span = in_complex_span(projections, identity_matrix())
     boost_generator = to_original_coordinates(split_matrix_of_boost_generator())
-    boost_generator_in_span = in_complex_span(projections, boost_generator)
+    *derivations_in_span, scaling_in_span, boost_generator_in_span = parallel.ordered_map(
+        functools.partial(in_complex_span, projections),
+        [*derivations, identity_matrix(), boost_generator],
+        min_items=1,
+    )
     nilpotent = [
         to_original_coordinates(split_matrix_of_derivation(derivation))
         for derivation in regularity.nilpotent_derivations()

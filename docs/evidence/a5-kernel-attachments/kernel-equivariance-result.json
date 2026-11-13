@@ -65,7 +65,7 @@
   "inputs": {
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/incidence_census.py": "1ac6e43468e4cd6ad482533792437da898d0d89960532982126b98572c190a32",
-    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "5b95814f70ba903bb40d85f0eded663f89d740182c72d1c0b12b992926e87850",
+    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "c382085244757ba43f84ff8024778249134d6dbaa8aa6b73d3e70dbf989f95c1",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
     "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
