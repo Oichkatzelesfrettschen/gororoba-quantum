@@ -577,6 +577,10 @@ the closest entry and say what changed.
   returns FIBER dimension 4, multiplicity 12, 69 minimal generators, all of degree 2, in all three runs: `sat`
   mod 32009 in 6 s of saturation, `sat` over Q(i) in 466 s (476 s wall, 208 MB), variable saturation mod 32009 in
   6 s (16 s wall, 37 MB).
-- Outcome: open. At 1 h 20 min every run has printed `STAGE rees_start` and no later stage; resident sets: Iso
+- Outcome: Iso at N- modulo 32009 in the variable form (`h-iso-nm-p`): FIBER dimension 5, multiplicity 23, 68
+  minimal generators, all of degree 2, the quadric ideal K; 1,216 s (standard basis of 7,459 elements in 1,212 s),
+  577 MB peak, exit 0, while its `sat` twin had no later stage at 1 h 26 min. The Q(i) script in the variable form
+  with `option(prot)` (`h-iso-nm-q`, build host, 12 GiB cgroup) and its same-sign X control (`h-xm-nm-q`, 7 GiB)
+  started after that result. The other runs are open: at 1 h 20 min every run has printed `STAGE rees_start` and no later stage; resident sets: Iso
   0.33 GB (mod p, `sat`), 0.52 GB (Q(i)); E8-bar 2.6 GB (mod p), 11.8 GB (Q(i)); W8 1.7 GB (mod p), 4.8 GB (Q(i));
   variable form at 16 min 0.30, 0.87 and 0.67 GB.
