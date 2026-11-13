@@ -1,0 +1,224 @@
+{
+ "schema": "qi-pathion-null-rotation-scan-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "2": 2,
+  "4": 4,
+  "8": 8,
+  "11": 11,
+  "12": 12
+ },
+ "register": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json",
+ "guard_qubits": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cz": 21,
+   "roles": {
+    "d0": 12,
+    "d1": 4,
+    "d2": 11,
+    "selector": 8,
+    "coin": 2
+   },
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, and the visibility of the center arm of each scan batch",
+  "guard": "a data batch is admitted when e01 and e10 of every region qubit each change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of every scan kind, otherwise it reads unresolved_guard",
+  "control": "the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds 3.0 standard errors; within 3.0 standard errors of zero the offset is absent, below that it is reversed, and either way no mechanism is decided",
+  "fit": "per admitted scan batch, world and contraction share, the least chi-square of the batch's three contrasts over the world's one parameter, at the retention that reproduces the center arm's visibility through the mean assignment matrix of the two brackets; a world's chi-square is the sum over the admitted scan batches at the one contraction share (the part of the visibility loss that depolarizes the data bits alone, 0 to 1) that makes the sum least",
+  "adequate": "a world is adequate when its chi-square is at most the 0.999 quantile of the chi-square law with two degrees of freedom per admitted batch less one for the share",
+  "class": "three classes of worlds: a rotation about x added to the pulses (on all pulses, on q8's or on q4's), a rotation about y or z added before or after them (same scopes), and the two selector readout worlds; a class is preferred when its best world is adequate and the best world of each other class sits at least 25.0 above it; the x class is excluded when the two other classes lead, the leader is adequate and the best x world sits at least 25.0 above it",
+  "bridge": "Rx(pi/2) reproduces X90 when the within-batch difference of the b0-rx and b0 contrasts, pooled over the two bridge batches, both admitted, is within 3.0 standard errors of zero; a class label stands only when the bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits",
+  "qx": "every circuit within twice the sampling floor of its ideal law"
+ },
+ "shots": 131072,
+ "batch": "batch-03",
+ "kind": "q8-5",
+ "replicate": 0,
+ "circuits": [
+  {
+   "file": "b0-rx-q8-m5.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "pulse": "Rx",
+    "scope": "q8",
+    "steps": -1
+   },
+   "ideal": [
+    0.055450466209,
+    0.000565758173,
+    0.066027019224,
+    0.002509770432,
+    0.065889868871,
+    0.000164657364,
+    0.063923420914,
+    0.003848252447,
+    0.000277198104,
+    0.065254660678,
+    0.006124292697,
+    0.053790834482,
+    0.000922741476,
+    0.055523820681,
+    0.007288869243,
+    0.052438369003,
+    0.003117053532,
+    0.062922560587,
+    0.005746997118,
+    0.053761501771,
+    0.007435800083,
+    0.053531154434,
+    0.003947012667,
+    0.05089592339,
+    0.053764085586,
+    0.001540730483,
+    0.06094184119,
+    0.008205229733,
+    0.058767572421,
+    0.011146925248,
+    0.05865382882,
+    0.005621782937
+   ],
+   "sha256": "72f793e88876a2e4363cad2e479c3bf947c5f0c0ba3073d111a191581ea58b2f"
+  },
+  {
+   "file": "b0-rx.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "pulse": "Rx",
+    "scope": null,
+    "steps": 0
+   },
+   "ideal": [
+    0.06242201442,
+    7.798558e-05,
+    0.062419618627,
+    8.0381373e-05,
+    0.06232564198,
+    0.00017435802,
+    0.062419618627,
+    8.0381373e-05,
+    0.00017435802,
+    0.06232564198,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    8.0381373e-05,
+    0.062419618627,
+    0.00017435802,
+    0.06232564198,
+    8.0381373e-05,
+    0.062419618627,
+    0.06232564198,
+    0.00017435802,
+    0.062322015216,
+    0.000177984784,
+    0.06242201442,
+    7.798558e-05,
+    0.062322015216,
+    0.000177984784
+   ],
+   "sha256": "e1b6a989cd172da07f9c49f34afabaadc7ee5adfa2f21c6058e75b3be17cbead"
+  },
+  {
+   "file": "b0-rx-q8-p5.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "pulse": "Rx",
+    "scope": "q8",
+    "steps": 1
+   },
+   "ideal": [
+    0.066075053796,
+    0.001514645673,
+    0.054897543559,
+    0.002978643963,
+    0.058425433841,
+    0.000391886838,
+    0.049958169057,
+    0.005197806594,
+    0.001330281116,
+    0.054584569819,
+    0.004962021206,
+    0.063657240867,
+    0.003176031071,
+    0.067814475135,
+    0.005143186506,
+    0.059893010959,
+    0.002932997352,
+    0.056122989302,
+    0.004288745583,
+    0.060531935989,
+    0.007614445742,
+    0.056477111506,
+    0.003686558879,
+    0.065102384321,
+    0.067011922108,
+    0.001881345285,
+    0.048524820755,
+    0.008705243626,
+    0.045722132303,
+    0.011587189423,
+    0.054346827073,
+    0.005463350755
+   ],
+   "sha256": "b5d9d6a199f631eee3b15fc5b925a5f2eeff1186ddd655041e6f7c40674f3523"
+  }
+ ]
+}
