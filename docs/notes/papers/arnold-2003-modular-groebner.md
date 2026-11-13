@@ -53,7 +53,7 @@ Printed page numbers are the PDF page index plus 402 (PDF page 1 is printed page
   bound of the Hilbert function over `Q` by the Hilbert function of each reduction, so a Hilbert function measured modulo a prime bounds the characteristic 0 one from above when the same generators define both ideals. Theorem 7.1 is the verification step that turns a modular candidate into a statement over `Q`
   without a lucky-prime hypothesis, for homogeneous ideals.
 - [I] The paper works over `Q` and `Z`, and its setting is homogeneous (Section 3 reduces the general case by homogenization). The program's ground field is `Q(i)`, reduced at split primes with `i` sent to a square root of -1 modulo `p`, so a transfer of Theorem 5.3 or Theorem 7.1 needs the same argument over `Z[i]`, which this paper does not supply;
-  the later paper on standard bases for non-homogeneous ideals ([1005.5663](1005.5663.md)) and the paper on number fields ([1504.04564](1504.04564.md)) address the other two gaps.
+  the later paper on standard bases for non-homogeneous ideals ([1005.5663](1005.5663.md), whose Theorem 2.4 admits a counterexample as printed) and the paper on number fields ([1504.04564](1504.04564.md)) address the other two gaps.
 
 ## Relevance
 
