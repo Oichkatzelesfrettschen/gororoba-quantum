@@ -276,6 +276,10 @@ def _sha256(path: Path) -> str:
 
 
 def compute(slug: str) -> dict[str, Any]:
+    retained = {d for name in TARGETS[slug] for d in DEGREES if (ARC_JETS / "records" / f"{name}-d{d}.json").exists()}
+    rc._require(
+        retained == set(DEGREES), f"{slug}: modular records cover degrees {sorted(retained)} of {list(DEGREES)}"
+    )
     qi = rc._run(slug, None, rc.rees.MODULAR_PRIME)
     names = rc.fiber_inputs._variables(qi["basis"] + qi["generators"])
     rc._require(names == [f"t{i}" for i in range(1, 10)], f"{slug}: slice variables {names}")

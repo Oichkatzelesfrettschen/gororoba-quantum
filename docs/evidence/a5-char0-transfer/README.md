@@ -329,8 +329,8 @@ K2, which no record holds for E8-bar -> N+-; the lower bounds stand without it. 
 record whose exact e or v differs from the modular one, or a generator of J over Q(i) that Phi leaves nonzero.
 
 `arc_jets_qi.py --slug SLUG --write` produces a record and `--check` replays it (gate `core-a5-e8-arc-jets-qi`); one
-header takes 23 minutes of wall time on five workers with 170 MB of peak resident memory, measured on the build
-host with Singular 4.4.1.
+header takes 16 to 23 minutes of wall time and 4,000 to 5,600 CPU seconds on five workers with 170 MB of peak resident
+memory, measured on the build host with Singular 4.4.1.
 
 ## The plane where the two components of the reduced E8-bar quadric scheme meet
 

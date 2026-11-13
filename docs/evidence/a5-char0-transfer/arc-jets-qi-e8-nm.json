@@ -127,9 +127,9 @@
   }
  ],
  "sha256": {
-  "arc_jets_qi": "35290cb5db645287193dcd3a3936d31074e670c5e7790e6c1acbb04aee581b1c",
+  "arc_jets_qi": "a61cc7997c9b66ac10af77ab738803410a88198b89c2c90a755258607390b0b4",
   "jet_rank": "c89aebba6f4221efef1fac3f9f9d83d7b6341601a62791b4240b816989428c0a",
-  "reduction_check": "7500b2a81f0bc117a3689e40bffd6f7b577ddf80da020053a49a1727a56b3e90"
+  "reduction_check": "2cb80bafe8437df476442f13a449046ae998ab9d0907c41cedd72b7543cffd88"
  },
  "verdict": "lower_bounds_hold_over_qi"
 }

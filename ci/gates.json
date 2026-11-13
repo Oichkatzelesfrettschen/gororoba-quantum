@@ -5644,7 +5644,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/arc_jets_qi.py --slug e8-nm --check && \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/arc_jets_qi.py --slug e8-np --check",
       "name": "core-a5-e8-arc-jets-qi",
-      "seconds": 2700.0,
+      "seconds": 8769.75,
       "workers": 5,
       "requires": [
         "singular"

@@ -90,11 +90,19 @@ def test_retained_record_states_the_bounds_and_binds_its_sources(slug: str) -> N
         raise AssertionError("the mutated arc family passes the J identity")
     _same(record["sha256"]["arc_jets_qi"], qi._sha256(TRANSFER / "arc_jets_qi.py"))
     _same(record["sha256"]["jet_rank"], qi._sha256(qi.ARC_JETS / "jet_rank.py"))
+    _same(record["sha256"]["reduction_check"], qi._sha256(TRANSFER / "reduction_check.py"))
+    _same(sorted({degree for cell in record["cells"] for degree in cell["lower_bounds"]}), sorted(RANKS))
     for cell in record["cells"]:
         _same((cell["arcs_checked"], cell["arcs_with_problems"], cell["arcs_differing_from_record"]), (3000, [], []))
         for degree, bound in cell["lower_bounds"].items():
             _same((bound["rank"], bound["arcs_within_checked"]), (RANKS[degree], True))
             _same(bound["sha256"], qi._sha256(ROOT / bound["record"]))
+
+
+def test_a_missing_degree_record_stops_the_run(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(qi, "DEGREES", (*qi.DEGREES, 8))
+    with pytest.raises(SystemExit, match="degrees"):
+        qi.compute("e8-nm")
 
 
 def test_the_coordinate_valuation_drop_at_32009_leaves_e_and_v_in_place() -> None:
