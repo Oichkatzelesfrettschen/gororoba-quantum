@@ -5444,6 +5444,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py --check",
+      "name": "core-a5-e8-quadric-nilradical",
+      "seconds": 0.3,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-quadric-nilradical-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py --check",
       "name": "core-a5-w8-component-arcs-qi",
       "seconds": 0.3,

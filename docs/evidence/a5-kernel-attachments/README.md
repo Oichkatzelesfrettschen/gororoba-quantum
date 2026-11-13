@@ -803,6 +803,16 @@ nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`,
 `L` is not the intersection of the two primes. The limit set of `A5-418` is the reduced support and needs
 `V(L) = V(K)` alone; `L = K` in every degree is the separate statement about the scheme.
 
+**Computed (`A5-434`):** [`e8_quadric_nilradical.py`](e8_quadric_nilradical.py) computes the nilradical of the
+`E8bar` quadric ideal over `Q(i)` at both basepoints ([record](e8-quadric-nilradical-result.json)). The radical is
+`K` plus five linear forms: the generators `y3`, `y5`, `y6`, `y7` and `2 y12 + i y13 + i y17` (its conjugate at
+`N+`). The square of the radical lies in `K`. The annihilator of the nilradical has dimension 4 and degree 2, with
+16 linear generators and one quadric, so the nilpotents live on a quadric threefold in projective terms. `K` has
+three primary components: the two minimal primes and one embedded component of dimension 4 and degree 4 over a
+prime of degree 2. **Inferred:** the five forms are nilpotent and nonzero in the fiber cone, since `K` lies in `L`
+and `L` holds no linear form; whether their products with the other generators vanish in the fiber cone as they
+do modulo `K` is the open scheme statement above degree 7.
+
 **Second route at `N-` (`A5-422`, superseded by `A5-429`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
 dimension at least 5 (`A5-293`), so `K' = K2`. The quotient of the lattice by its saturated part is
