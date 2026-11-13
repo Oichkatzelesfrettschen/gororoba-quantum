@@ -178,6 +178,13 @@ associativity never enters.
   ([functor bundle](../../evidence/cd-tower-domain/README.md)). Z is a domain
   and not a field, so the shared signature is the domain, and only the
   affine family needs the field.
+- The kernel equality does not extend to every coefficient ring. Over a
+  commutative ring with a square root of -1 in which 2 differs from 0
+  (Q(i), the complex numbers, a prime field of order 1 modulo 4) the element
+  a = e_1 + i e_2 has a (a e_1) = 0 and (a e_1) a = -2 a in every dimension
+  from 4 on, and the statement that holds over every commutative ring is
+  ker R_a = conj(ker L_a) for pure a
+  ([commutative-ring bundle](../../evidence/cd-tower-ring/README.md)).
 - The record enumerates fixed families; the general element of dimension
   32 or higher is covered by the written argument alone.
 - The falsifier is one element a with ker L_a different from ker R_a, or one

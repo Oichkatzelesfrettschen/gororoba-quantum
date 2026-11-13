@@ -1,0 +1,5 @@
+67cd21f55a0abcbb2932ad866a67e6cde0d8ce38fd01b5ccd6f9b8dbe515be62  proofs/CdTowerRing.v
+150e9ca7cdfa0a2b553cd809c4f32a7e5f791da0e41a9f8a1737839c106182ec  proofs/CdTowerRingDomain.v
+e033ed58c7f929f81e72bfa8f6fbba59cc9f2b3e0211fd0cb46f287bc1b3e7ba  docs/evidence/cd-tower-ring/assumptions.v
+f530ece5046d791d667bb0e09cf0916d26f0a1431bef9778803949b78c898d6d  docs/evidence/cd-tower-ring/assumptions.txt
+882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6  docs/evidence/cd-tower-ring/kernel.txt
