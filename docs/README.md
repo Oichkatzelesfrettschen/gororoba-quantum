@@ -413,7 +413,7 @@ differs from it only in the `cd_core.py` digest.
 | [math-0303268.md](notes/papers/math-0303268.md) | Ein, Lazarsfeld and Mustata 2004 contact loci in arc spaces: Theorems A and C relating arc loci to log resolutions and divisorial valuations (pp. 1-5 read) |
 | [math-9810140.md](notes/papers/math-9810140.md) | Landsberg and Manivel 2003 projective geometry of rational homogeneous varieties: adjoint varieties in Proposition 4.17 and Remark 4.18 and the lead on the degree-20 W8 fiber component (all pages read) |
 | [0803.2369.md](notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier 2008 integral closure of ideals: Theorem 2.1 (arcs, normalized blow-up), Theorem 4.1.6 and the arc formula of Theorem 5.2 (pp. 1-48 of 78 read, in French) |
-| [mumford-1999-red-book-varieties-schemes.md](notes/papers/mumford-1999-red-book-varieties-schemes.md) | Mumford 1999 Red Book of Varieties and Schemes, second edition: Section I.10 on complex varieties, the strong topology, Theorem 1 (density of a nonempty open subvariety) and Corollary 1 (Zariski closure equals strong closure for a constructible set) with the definitions of variety and constructible set (printed pp. 1, 16-27, 33-39, 50-54 and 57-63 read) |
+| [mumford-1999-red-book-varieties-schemes.md](notes/papers/mumford-1999-red-book-varieties-schemes.md) | Mumford 1999 Red Book of Varieties and Schemes, second edition: Section I.10 on complex varieties, the strong topology, Theorem 1 (density of a nonempty open subvariety) and Corollary 1 (Zariski closure equals strong closure for a constructible set) with the definitions of variety and constructible set (printed pp. 1, 16-18, 20-27, 33-34, 36-39, 50-54, 57-63 and 65-66 read) |
 
 ### Algebra and proofs
 

@@ -84,7 +84,7 @@ page 66. The front matter is numbered in Roman numerals (PDF page 5 is printed p
   statement is local in the Zariski topology, takes a finite surjective morphism `pi : X -> A^n` from Noether normalization, and
   picks a nonzero polynomial `g` that vanishes on `pi(X - U)`. For a point `x` of `X - U`, the proof joins `pi(x)` to a point
   `y^(1)` with `g(y^(1))` different from 0 by a complex line, giving points `y^(i)` of that line with `g(y^(i))` nonzero that converge to
-  `pi(x)` in the strong topology, lifts them in two steps to points `z^(i)` of `X` over `y^(i)` (an integral equation of `g` over the polynomial ring
+  `pi(x)` in the strong topology, lifts them in two steps to points `z^(i)` of `X` over `y^(i)` (the book reuses the letter `g` on p. 59 for a second function, called `h` here: a regular function on `X` that vanishes at `x` and at no other point of its fiber; the irreducible equation of `h` over the polynomial ring
   controls the roots, and the integrality of the coordinate functions confines the preimage of a relatively compact set to a
   relatively compact set), and shows that a limit point of the lifts is `x` itself. These points lie in `U` because
   `pi(Z)` lies in the zero set of `g`.
@@ -103,20 +103,22 @@ page 66. The front matter is numbered in Roman numerals (PDF page 5 is printed p
 
 ## Mapping to this repository
 
-- [I] Ledger rows A5-411, A5-412 and A5-417 of `docs/evidence/a5-exceptional-fibers/ledger.tsv` cite "Mumford, Red Book, I.10
-  Theorem 1" for the equality of the Zariski closure and the Euclidean closure of a complex constructible set. The book states
-  that equality as Corollary 1 on printed page 60 (PDF page 71), which rests on Theorem 1 on printed page 58 (PDF page 69); Theorem
-  1 itself asserts the density of a nonempty open subvariety, and the rows cite Corollary 1 with Theorem 1 as its basis. The rows
-  record the locator as uninspected; this note supplies the locator.
+- [I] Ledger rows A5-411, A5-412 and A5-417 of `docs/evidence/a5-exceptional-fibers/ledger.tsv` cite this book, directly or
+  through row A5-411, for the equality of the Zariski closure and the Euclidean closure of a complex constructible set. The book
+  states that equality as Corollary 1 on printed page 60 (PDF page 71), resting on Theorem 1 on printed page 58 (PDF page 69);
+  Theorem 1 itself asserts the density of a nonempty open subvariety. A row that names "I.10 Theorem 1" for the closure equality
+  means Corollary 1, and this note supplies the inspected locator.
 - [I] What the rows may cite: for a constructible subset `Z` of a variety `X` over `C` in the book's sense (irreducible, Hausdorff
   axiom), the Zariski closure of `Z` equals its closure in the classical topology. The inclusion of the strong closure in the
   Zariski closure is property (i) of Section 10 (a Zariski-closed set is strongly closed); the reverse inclusion is the content of
-  Theorem 1, applied to the open pieces of the locally closed pieces of `Z`. The corollary has no proof printed, and the
-  reduction of a constructible set to Theorem 1 (a finite union of locally closed sets, each open in its closure) is the
-  repository's reading of the statement and is not a quotation of a proof.
+  Theorem 1, in three steps: for a locally closed piece `L` of `Z`, pass to each irreducible component `W` of the Zariski closure
+  of `L`; the intersection of `L` with `W` is a nonempty open subvariety of `W`, since `L` is open and dense in its closure, so
+  Theorem 1 makes it strongly dense in `W`; and property (iii) of Section 10 (the strong topology of a locally closed subvariety
+  is the induced one) carries that density into `X`. The corollary has no proof printed, and this reduction is the repository's
+  reading of the statement and is not a quotation of a proof.
 - [I] Hypotheses the rows meet or must meet. The ambient space is a variety in the book's sense, so it is irreducible: an affine
-  space `C^15` times a Grassmannian embedded in a projective space is such a variety by Theorem 3 of Section I.6 and the Corollary
-  on p. 39, where the Pluecker embedding of the Grassmannian is a fact outside the pages read. A reducible ambient algebraic set
+  space `C^15` times a Grassmannian embedded in a projective space is such a variety, since `C^15` is an affine variety (Remark II,
+  p. 38), a projective variety is a variety (the Corollary on p. 39) and a product of two varieties is a variety (Remark I, p. 38), where the Pluecker embedding of the Grassmannian is a fact outside the pages read. A reducible ambient algebraic set
   is covered component by component (Zariski closure and strong closure of a finite union are the unions of the closures).
   The constructibility of the graph of `z -> ker C_z` over its source stratum is the rows' own claim; Corollary 2 of Section I.8
   (p. 51), the Chevalley theorem for the image of a morphism, is the book's route to constructibility of such sets.
