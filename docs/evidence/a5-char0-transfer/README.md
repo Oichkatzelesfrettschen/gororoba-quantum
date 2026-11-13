@@ -174,6 +174,28 @@ Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points 
 record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
 (A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
 
+## One arc family in each component of the W8 quadric locus over Q(i) (ledger A5-426)
+
+[`w8_component_arcs_qi.py`](w8_component_arcs_qi.py) substitutes two arc families into the J and G of the Q(i)
+producer at the N- and the N+ basepoint and adds, to the order and rank of the section above, the dimension of the
+linear span of the limits ([w8-component-arcs-qi.json](w8-component-arcs-qi.json)).
+
+| Family | J on the arc | Order of G | Rank of [dF, F] | Span of the limits | Component |
+|---|---|---|---|---|---|
+| linear, five parameters, coefficients in Q(i) ([cert-w8-P](../a5-exceptional-fibers/structure/arcs-iso-w8/README.md)) | zero identically | 2 | 6, 6 | 15 | degree 20 |
+| power series of the section above | zero through the truncation order | 4 | 6, 6 | 20 | degree 30 |
+
+The quadric ideal K of W8 over Q(i) is the intersection of two primes of dimension 6, one containing 9 linear forms
+and one containing 4 ([weight-slice record](../a5-kernel-attachments/README.md), A5-421 and A5-425). A family of
+rank 6 has a 6-dimensional irreducible set of limits inside V(K), so its closure is a component, and the span
+tells which: 15 dimensions cannot hold the degree-30 component, and 20 dimensions exceed the span of the
+degree-20 one. The relation ideal L therefore lies in both primes, and L = K at both basepoints. The linear family
+with the sign of its last slice coordinate reversed is the control: one generator of J is nonzero on it. A linear
+case takes 25 s; a series case takes 1,540 s and 1.8 GB.
+
+Check the record with `"$PYTHON" docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py --check`; without the
+flag the producer regenerates it.
+
 ## The same-sign X fiber cone over Q(i): I = M and L is 69 quadrics
 
 [`monomial_certificate_qi.py`](monomial_certificate_qi.py) repeats over Q(i) the exact certificate of

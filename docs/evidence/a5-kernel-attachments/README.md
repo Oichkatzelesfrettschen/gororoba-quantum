@@ -550,8 +550,8 @@ the real limit set with the complex points of the characteristic-0 fiber, and th
 [weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
 the whole fiber cone of `Iso->N+` and `Iso->N-` (`A5-424`), the quadrics, Hilbert numerator and minimal primes of
 the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-425`), and `h_1` to `h_7` of `E8bar`
-(`A5-423`). Open are the degree-20 component of `W8` over `Q(i)` and both components of `E8bar` above degree 7
-(`A5-418`).
+(`A5-423`), and the whole fiber cone of `W8->N+` and `W8->N-` by one arc family in each component (`A5-426`).
+Open are both components of `E8bar` above degree 7 (`A5-418`).
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
@@ -764,6 +764,15 @@ component step `X+->N-` returns 12 generators in place of 3.
 by the computation above and lies in the relation ideal `L`, whose quotient has dimension at least 5 at both
 basepoints (`A5-293`); a proper quotient of the domain `Q(i)[y]/K` has dimension below 5, so `L = K`. The
 primality is over `Q(i)`; geometric irreducibility is proved modulo 32009 and 32029 at `N-` (`A5-060`).
+
+**Inferred (`A5-426`, conditional on `A5-421` and `A5-425`):** the fiber cone of `W8->N+` and of `W8->N-` over
+`Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 144 quadrics. Two arc families over `Q(i)`
+([`w8_component_arcs_qi.py`](../a5-char0-transfer/w8_component_arcs_qi.py),
+[record](../a5-char0-transfer/w8-component-arcs-qi.json)) each have a 6-dimensional set of limits in `V(L)`, which
+lies in `V(K)`: one spans 15 dimensions and the other 20. The two components of `V(K)` span `24 - 9 = 15` and
+`24 - 4 = 20` dimensions, so the first family fills the degree-20 component and the second the degree-30 one.
+`V(L)` then contains both, `L` lies in the intersection of the two primes, and that intersection is `K` because `K`
+is radical (`A5-425`); hence `L = K`.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-424`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
