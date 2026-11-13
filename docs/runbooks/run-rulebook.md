@@ -608,7 +608,7 @@ the closest entry and say what changed.
   division by powers of u proves only H in (RS) in H : u^infinity. In k[x, y, u] with the degree ordering,
   H = (x u + y, y u) has H : u^infinity = (x, y) and divided ideal (x u, y). The FIBER lines of the two finished
   Iso runs (`h-iso-nm-p`, `h-iso-np-p2`) are therefore outputs of the division, uncertified as Rees fibers; the
-  fiber cone of Iso rests on A5-424, which does not use them. `hsat.py` now appends a certificate to each script:
+  fiber cone of Iso rests on A5-429, which does not use them. `hsat.py` now appends a certificate to each script:
   the count of divided elements whose leading monomial keeps u, and the test (RS) : u = (RS), which gives
   (RS) = H : u^infinity for any input. The same-sign X control passes both (count 0, colon equal) modulo 32009 in
   24 s and over Q(i) in 188 s with the FIBER line unchanged; `c-iso-nm-p` repeats Iso at N- modulo 32009 with
@@ -616,7 +616,7 @@ the closest entry and say what changed.
 - Outcome and stop (2026-11-13, 11:55 PST, owner's choice): the two MacBook Iso runs (`h-iso-nm-p2`, N- modulo
   32029; `h-iso-np-p`, N+ modulo 32009) each printed FIBER dimension 5, multiplicity 23, 68 minimal generators at
   5,353 s, uncertified like the two before them. The ten open workstation runs were stopped without a FIBER line:
-  Iso and W8 are closed over Q(i) by A5-424 and A5-426, and no open run carried the certificate. Resident sets at
+  Iso and W8 are closed over Q(i) by A5-429 and A5-431, and no open run carried the certificate. Resident sets at
   the stop: the Q(i) runs of E8-bar and W8 at 11.5 and 3.3 GB after 1 h 33 min, the `sat` W8 run over Q(i) at
   7.2 GB after 3 h 14 min, the modular runs between 1.4 and 3.3 GB. One certified run replaces them: `c-e8-nm-p`,
   E8-bar at N- modulo 32009, on the workstation under `ulimit -v 30000000`.
