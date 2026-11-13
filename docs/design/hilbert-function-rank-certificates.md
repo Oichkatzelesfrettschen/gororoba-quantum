@@ -81,14 +81,16 @@ that is beyond the enumerating proof and small enough to finish. Measure the `vm
 certificate size there before promising degree 4 (10,404 x 4,845, rank 4,205) or any Q(i) statement. If degree 3
 takes more than minutes, the route stops at a documented negative.
 
-## A smaller first input, if it survives its falsifiers
+## A smaller first input
 
-Issue 863 states the lead that the degree-20 component of the W8 fiber cone is the cone over the adjoint variety
-of SL_4. hypothesis: if that holds in the linearly normal form, the component lives in 15 coordinates with 36
-quadrics and Hilbert function 1, 15, 84, 300, 825, so its Macaulay matrices are 540 x 680 of rank 380 in degree
-3 and 4,320 x 3,060 of rank 2,235 in degree 4, smaller than the Iso matrices above. A certified HF(2) = 84 and
-HF(3) = 300 would be a test of the lead that a reader can replay without a computer-algebra system. The issue
-lists a tension with ledger row A5-426 that is cheaper to settle first.
+The degree-20 component of the W8 fiber cone (ledger row A5-421) lives in 15 coordinates after its 9 linear
+forms, with 36 quadrics. Issue 863 tested the lead that it is the cone over the adjoint variety of SL_4; that
+form is refuted (the torus weights of A5-426 and the dimension of the symmetry algebra exclude it), and the
+working hypothesis is a rank-3 hyperplane section of the Segre variety P^3 x P^3. Every hyperplane section of
+that Segre variety has Hilbert function 1, 15, 84, 300, 825, so the Macaulay matrices are 540 x 680 of rank 380
+in degree 3 and 4,320 x 3,060 of rank 2,235 in degree 4, smaller than the Iso matrices above. hypothesis: the
+component has that Hilbert function (reported from a scratch computation of the A_5 program on 2026-11-13, not
+yet a ledger row). A certified HF(2) = 84 and HF(3) = 300 would be a replayable test of it.
 
 ## Out of scope
 
