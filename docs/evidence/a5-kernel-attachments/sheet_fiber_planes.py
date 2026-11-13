@@ -1,4 +1,4 @@
-"""Sheets, special fibers and an exact line arc for the E8bar->Va+ and E8bar->Va- slice germs.
+"""Sheets, special fibers and exact arcs for the E8bar->Va+ and E8bar->Va- slice germs.
 
 The reduced slice germ ideal J of each incidence (Nakayama-reduced, from nakayama_rees_fibers.py) has two prime
 components over Q(i), the sheets, each a 4-dimensional complete intersection with a linear part and one quadric. The
@@ -6,12 +6,17 @@ Rees ideal of the six Nakayama generators G restricted to one sheet has a specia
 a plane of the projective fiber (three coordinate hyperplanes y_i = 0), computed over Q(i) and modulo 32003 with
 global monomial orderings; the sheet-to-plane correspondence matches each plane with a component of the retained
 fiber of nakayama-rees-fibers-result.json. The retained arcs reach exactly one component, so the sheet whose plane is
-the other component carries the arcs that no retained arc represents. On that sheet the linear subspace
-t_2 = t_8 = 0 holds line arcs t(u) = c u; the arc of ARCS lies in J, in the sheet and in the source closure
-identically in u, has rank C_z = 8 at the origin and 10 along the arc, and its 21 Schur coordinates vanish to first
-order with leading vector equal to the embedded plane point of the preimage (g_1, ..., g_6) of the Rees map. The
-algebra of the claim is exact: Singular checks vanishing in Q(i)[u], and the ranks are exact Gaussian-rational ranks of
-the original-coordinate matrix C_z of holomorphic_kernel_lemma.py.
+the other component carries the arcs that no retained arc represents. That sheet holds the conic
+t_2^2 + t_8^2 + 2 t_2 = 0, whose only line through the origin direction is t_2 = t_8 = 0. Two arcs are recorded on it.
+The conic arc t_2 = -2 u^2 / (1 + u^2), t_8 = -2 u / (1 + u^2), t_k = c_k u otherwise, lies in the open E8-bar orbit:
+the E8-bar closure generators vanish on it and each closure strictly inside the E8-bar closure (EXPECTED_LOWER of
+strata_regularity.py) has a generator that does not. The line arc t = c u inside t_2 = t_8 = 0 lies in the closure of
+X+ (at Va+) or X- (at Va-), a lower stratum of nullity 8. Each arc lies in J and in the sheet identically in u, has
+rank C_z = 8 at the origin and 10 along the arc, and its 21 Schur coordinates vanish to first order with leading
+vector equal to the embedded plane point of the preimage (g_1, ..., g_6) of the Rees map. The algebra of the claim
+is exact: Singular substitutes the arc in Q(i)[u, d], clears d = 1 / (1 + u^2) by the unit (1 + u^2)^M, which leaves
+the lowest-order coefficient vector in u unchanged, and checks vanishing in Q(i)[u]; the ranks are exact
+Gaussian-rational ranks of the original-coordinate matrix C_z of holomorphic_kernel_lemma.py.
 """
 
 from __future__ import annotations
@@ -20,6 +25,7 @@ import argparse
 import json
 import sys
 from fractions import Fraction
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -57,13 +63,17 @@ SLICE_VARIABLE_COUNT = 8
 SCHUR_COORDINATE_COUNT = 21
 NAKAYAMA_GENERATOR_COUNT = 6
 SHEET_COUNT = 2
-# Line arcs t_k(u) = c_k u on the sheet whose special fiber is the plane that no retained arc reaches, inside the
-# linear subspace t_2 = t_8 = 0 of that sheet. The sheet of E8bar->Va+ is t_6 = t_7, t_4 = -t_5, t_1 = t_3; the
-# sheet of E8bar->Va- is t_6 = t_7, t_4 = -t_5, t_1 = -t_3.
+# Arcs on the sheet whose special fiber is the plane that no retained arc reaches. The sheet of E8bar->Va+ is
+# t_6 = t_7, t_4 = -t_5, t_1 = t_3, t_2^2 + t_8^2 + 2 t_2 = 0; the sheet of E8bar->Va- has t_1 = -t_3 instead. The
+# coefficients give t_k(u) = c_k u for k outside {2, 8}. The line arc keeps t_2 = t_8 = 0; the conic arc sets
+# t_2 = -2 u^2 d and t_8 = -2 u d with d (1 + u^2) = 1, the rational parametrization of the conic through the origin.
 ARCS: dict[str, tuple[int, ...]] = {
     "E8bar->Va+": (1, 0, 1, -2, 2, 3, 3, 0),
     "E8bar->Va-": (1, 0, -1, -2, 2, 3, 3, 0),
 }
+CONIC_POSITIONS = {1: "-2*u^2*d", 7: "-2*u*d"}
+LINE_ARC_STRATUM = {"E8bar->Va+": "Xp", "E8bar->Va-": "Xm"}
+SOURCE_KEY = "Ehat"
 MUTATED_COEFFICIENT_INDEX = 4
 RANK_PARAMETERS = (0, 1, 2, 3)
 RANK_AT_ORIGIN = 8
@@ -182,49 +192,87 @@ def _fiber(characteristic: int, phase_one: dict[str, Any], sheet: list[str]) -> 
     }
 
 
+def _arc_image(coefficients: tuple[int, ...], conic: bool) -> tuple[str, ...]:
+    """The images of t_1..t_8 in Q(i)[u, d]: c_k u, with the conic parametrization at t_2 and t_8 when conic."""
+    return tuple(
+        CONIC_POSITIONS[position] if conic and position in CONIC_POSITIONS else f"({value})*u"
+        for position, value in enumerate(coefficients)
+    )
+
+
+def _arc_point(coefficients: tuple[int, ...], conic: bool, parameter: int) -> tuple[Fraction, ...]:
+    """The slice point of the arc at a rational parameter, with d = 1 / (1 + u^2)."""
+    unit = Fraction(1, 1 + parameter * parameter)
+    conic_values = {1: -2 * parameter * parameter * unit, 7: -2 * parameter * unit}
+    return tuple(
+        conic_values[position] if conic and position in conic_values else Fraction(value * parameter)
+        for position, value in enumerate(coefficients)
+    )
+
+
+# cleard multiplies each entry of an ideal of Q(i)[u, d] by (1 + u^2)^M after d -> 1 / (1 + u^2), M the largest
+# d-degree in the ideal: the result lies in Q(i)[u], vanishes exactly when the entry vanishes on the arc, and has the
+# lowest-order coefficient vector of the arc series because (1 + u^2)^M = 1 + O(u^2) is one common unit.
+CLEAR_D_PROCEDURE = (
+    "proc cleard(ideal A){int M=0;int i;int j;intvec w=0,1;"
+    "for(i=1;i<=ncols(A);i++){if(A[i]!=0){if(deg(A[i],w)>M){M=deg(A[i],w);}}}"
+    "ideal B;matrix C;poly Q;"
+    "for(i=1;i<=ncols(A);i++){B[i]=0;if(A[i]!=0){C=coeffs(A[i],d);Q=0;"
+    "for(j=1;j<=nrows(C);j++){Q=Q+C[j,1]*(1+u^2)^(M-j+1);}B[i]=Q;}}"
+    "return(B);}"
+)
+
+
 def _arc_script(
     row: dict[str, Any],
-    closure: tuple[str, ...],
+    closures: dict[str, tuple[str, ...]],
     data: Any,
     phase_one: dict[str, Any],
     sheet: list[str],
-    coefficients: tuple[int, ...],
+    image: tuple[str, ...],
 ) -> str:
-    """Substitute t_k = c_k u; report nonzero generator counts and the u-coefficients of G and the Schur coordinates."""
+    """Substitute the arc; report nonzero generator counts and the u-coefficients of G and the Schur coordinates.
+
+    closures maps the source key and every closure strictly inside the source closure to its generators.
+    """
     names = _slice_names()
     schur = ",".join(resolved._singular_expression(value) for value in data.coordinates)
-    image = ",".join(f"({value})*u" for value in coefficients)
-    return "\n".join(
-        [
-            f"ring r={nakayama._field(0)},({','.join(regularity.GLOBAL_VARS)}),dp;",
-            "minpoly=I2+1;",
-            f"ideal Closure={','.join(closure)};",
-            f"ring Slice={nakayama._field(0)},({','.join(names)}),dp;",
-            "minpoly=I2+1;",
-            f"map sliceMap=r,{','.join(nakayama._germ_substitutions(row))};",
-            "ideal CG=sliceMap(Closure);",
-            f"ideal J={','.join(phase_one['reduced_j'])};",
-            f"ideal S={','.join(sheet)};",
-            f"ideal G={','.join(phase_one['reduced_g'])};",
-            f"ideal F={schur};",
-            '"RESULT closure_slice_nonzero",size(CG);',
-            f"ring Arc={nakayama._field(0)},(u),dp;",
-            "minpoly=I2+1;",
-            f"map arcMap=Slice,{image};",
-            "ideal CGu=arcMap(CG); ideal Ju=arcMap(J); ideal Su=arcMap(S); ideal Gu=arcMap(G); ideal Fu=arcMap(F);",
-            '"RESULT closure_nonzero",size(simplify(CGu,2));',
-            '"RESULT germ_nonzero",size(simplify(Ju,2));',
-            '"RESULT sheet_nonzero",size(simplify(Su,2));',
-            "int i; int k; matrix M;",
-            f"for(i=1;i<={NAKAYAMA_GENERATOR_COUNT};i++){{M=coeffs(Gu[i],u);"
-            '"RESULT g_"+string(i)+"_count",nrows(M);'
-            'for(k=1;k<=nrows(M);k++){"RESULT g_"+string(i)+"_"+string(k),string(M[k,1]);}}',
-            f"for(i=1;i<={SCHUR_COORDINATE_COUNT};i++){{M=coeffs(Fu[i],u);"
-            '"RESULT f_"+string(i)+"_count",nrows(M);'
-            'for(k=1;k<=nrows(M);k++){"RESULT f_"+string(i)+"_"+string(k),string(M[k,1]);}}',
-            "quit;",
-        ]
-    )
+    lower = sorted(key for key in closures if key != SOURCE_KEY)
+    lines = [
+        f"ring r={nakayama._field(0)},({','.join(regularity.GLOBAL_VARS)}),dp;",
+        "minpoly=I2+1;",
+        f"ideal Closure={','.join(closures[SOURCE_KEY])};",
+        *(f"ideal Lower{key}={','.join(closures[key])};" for key in lower),
+        f"ring Slice={nakayama._field(0)},({','.join(names)}),dp;",
+        "minpoly=I2+1;",
+        f"map sliceMap=r,{','.join(nakayama._germ_substitutions(row))};",
+        "ideal CG=sliceMap(Closure);",
+        *(f"ideal LG{key}=sliceMap(Lower{key});" for key in lower),
+        f"ideal J={','.join(phase_one['reduced_j'])};",
+        f"ideal S={','.join(sheet)};",
+        f"ideal G={','.join(phase_one['reduced_g'])};",
+        f"ideal F={schur};",
+        '"RESULT closure_slice_nonzero",size(CG);',
+        f"ring Arc={nakayama._field(0)},(u,d),dp;",
+        "minpoly=I2+1;",
+        CLEAR_D_PROCEDURE,
+        f"map arcMap=Slice,{','.join(image)};",
+        "ideal CGu=cleard(arcMap(CG)); ideal Ju=cleard(arcMap(J)); ideal Su=cleard(arcMap(S));",
+        "ideal Gu=cleard(arcMap(G)); ideal Fu=cleard(arcMap(F));",
+        '"RESULT closure_nonzero",size(simplify(CGu,2));',
+        '"RESULT germ_nonzero",size(simplify(Ju,2));',
+        '"RESULT sheet_nonzero",size(simplify(Su,2));',
+        *(f'"RESULT lower_{key}_nonzero",size(simplify(cleard(arcMap(LG{key})),2));' for key in lower),
+        "int i; int k; matrix M;",
+        f"for(i=1;i<={NAKAYAMA_GENERATOR_COUNT};i++){{M=coeffs(Gu[i],u);"
+        '"RESULT g_"+string(i)+"_count",nrows(M);'
+        'for(k=1;k<=nrows(M);k++){"RESULT g_"+string(i)+"_"+string(k),string(M[k,1]);}}',
+        f"for(i=1;i<={SCHUR_COORDINATE_COUNT};i++){{M=coeffs(Fu[i],u);"
+        '"RESULT f_"+string(i)+"_count",nrows(M);'
+        'for(k=1;k<=nrows(M);k++){"RESULT f_"+string(i)+"_"+string(k),string(M[k,1]);}}',
+        "quit;",
+    ]
+    return "\n".join(lines)
 
 
 def _coefficient_lists(result: dict[str, str], prefix: str, count: int) -> list[list[nakayama.Gaussian]]:
@@ -252,23 +300,23 @@ def _coefficient_at(series: list[list[nakayama.Gaussian]], degree: int) -> nakay
 
 def _arc_vanishing(
     row: dict[str, Any],
-    closure: tuple[str, ...],
+    closures: dict[str, tuple[str, ...]],
     data: Any,
     phase_one: dict[str, Any],
     sheet: list[str],
-    coefficients: tuple[int, ...],
+    image: tuple[str, ...],
 ) -> dict[str, str]:
-    return nakayama._run_singular(_arc_script(row, closure, data, phase_one, sheet, coefficients))
+    return nakayama._run_singular(_arc_script(row, closures, data, phase_one, sheet, image))
 
 
-def _rank_along_arc(row: dict[str, Any], coefficients: tuple[int, ...]) -> dict[str, int]:
+def _rank_along_arc(row: dict[str, Any], coefficients: tuple[int, ...], conic: bool) -> dict[str, int]:
     boundary = [Fraction(value) for value in row["boundary_point"]]
     slice_columns = [int(value) for value in row["slice_columns_zero_based"]]
     ranks: dict[str, int] = {}
     for parameter in RANK_PARAMETERS:
         split = list(boundary)
-        for position, column in enumerate(slice_columns):
-            split[column] = boundary[column] + coefficients[position] * parameter
+        for column, value in zip(slice_columns, _arc_point(coefficients, conic, parameter), strict=True):
+            split[column] = boundary[column] + value
         z = kernel_lemma._original_z_from_split(tuple(split))
         ranks[str(parameter)] = kernel_lemma._rank(kernel_lemma._c_matrix(z))
     return ranks
@@ -288,9 +336,10 @@ def _arc_record(
     sheet: list[str],
     plane: list[str],
     coefficients: tuple[int, ...],
+    conic: bool,
 ) -> dict[str, Any]:
-    row, closure, data, phase_one = task["row"], task["closure"], task["data"], task["phase_one"]
-    result = _arc_vanishing(row, closure, data, phase_one, sheet, coefficients)
+    row, closures, data, phase_one = task["row"], task["closures"], task["data"], task["phase_one"]
+    result = _arc_vanishing(row, closures, data, phase_one, sheet, _arc_image(coefficients, conic))
     g_series = _coefficient_lists(result, "g", NAKAYAMA_GENERATOR_COUNT)
     f_series = _coefficient_lists(result, "f", SCHUR_COORDINATE_COUNT)
     g_order = _lowest_order(g_series)
@@ -300,11 +349,15 @@ def _arc_record(
     columns = nakayama._rational_columns(phase_one)
     preimage = nakayama._solve_gaussian(columns, f_leading)
     plane_indices = [int(name[1:]) - 1 for name in plane]
+    lower = {key: int(result[f"lower_{key}_nonzero"]) for key in sorted(closures) if key != SOURCE_KEY}
     return {
         "coefficients_of_t1_to_t8": list(coefficients),
-        "closure_generator_count": len(closure),
+        "images_of_t1_to_t8": list(_arc_image(coefficients, conic)),
+        "closure_generator_count": len(closures[SOURCE_KEY]),
         "closure_generators_nonzero_on_slice": int(result["closure_slice_nonzero"]),
         "closure_generators_nonzero_on_arc": int(result["closure_nonzero"]),
+        "lower_closure_generators_nonzero_on_arc": lower,
+        "lower_closures_containing_the_arc": sorted(key for key, count in lower.items() if count == 0),
         "germ_generators_nonzero_on_arc": int(result["germ_nonzero"]),
         "sheet_generators_nonzero_on_arc": int(result["sheet_nonzero"]),
         "schur_lowest_order_in_u": f_order,
@@ -318,20 +371,35 @@ def _arc_record(
         "schur_leading_vector_equals_embedded_rees_leading_vector": preimage == g_leading and f_order == g_order,
         "leading_vector_is_nonzero_and_on_plane": all(g_leading[index] == kernel_lemma.ZERO for index in plane_indices)
         and any(value != kernel_lemma.ZERO for value in g_leading),
+        "rank_C_z_at_parameter": _rank_along_arc(row, coefficients, conic),
     }
 
 
-def _arc_passes(arc: dict[str, Any], ranks: dict[str, int]) -> bool:
+def _arc_passes(arc: dict[str, Any], lower_closures_containing: list[str]) -> bool:
+    """The arc lies on the sheet in the source closure, in exactly the named lower closures, with the rank jump."""
+    ranks = arc["rank_C_z_at_parameter"]
     return (
         arc["closure_generators_nonzero_on_arc"] == 0
         and arc["germ_generators_nonzero_on_arc"] == 0
         and arc["sheet_generators_nonzero_on_arc"] == 0
+        and arc["lower_closures_containing_the_arc"] == sorted(lower_closures_containing)
         and arc["schur_lowest_order_in_u"] == 1
         and bool(arc["schur_leading_vector_equals_embedded_rees_leading_vector"])
         and bool(arc["leading_vector_is_nonzero_and_on_plane"])
         and ranks[str(RANK_PARAMETERS[0])] == RANK_AT_ORIGIN
         and all(ranks[str(parameter)] == RANK_ALONG_ARC for parameter in RANK_PARAMETERS[1:])
     )
+
+
+def _phase_one(characteristic: int, *, task: Any, data: Any) -> dict[str, Any]:
+    summary: dict[str, Any] = nakayama._phase_one_summary(
+        nakayama._run_singular(nakayama._phase_one_script(characteristic, task, data))
+    )
+    return summary
+
+
+def _fiber_pair(generators: list[str], *, rational: dict[str, Any], modular: dict[str, Any]) -> dict[str, Any]:
+    return {"rational": _fiber(0, rational, generators), "modular": _fiber(MODULAR_PRIME, modular, generators)}
 
 
 def _analyze(name: str) -> dict[str, Any]:
@@ -342,12 +410,13 @@ def _analyze(name: str) -> dict[str, Any]:
     _, closure = nakayama._closure_row(name, rows=rows)
     task = nakayama.RowTask(row, (), closure)
     data = resolved._schur_polynomials(resolved.IncidenceTask(row))
-    phase_one = {
-        characteristic: nakayama._phase_one_summary(
-            nakayama._run_singular(nakayama._phase_one_script(characteristic, task, data))
+    phase_one = dict(
+        zip(
+            CHARACTERISTICS,
+            parallel.ordered_map(partial(_phase_one, task=task, data=data), CHARACTERISTICS, min_items=1),
+            strict=True,
         )
-        for characteristic in CHARACTERISTICS
-    }
+    )
     rational = phase_one[0]
     modular = phase_one[MODULAR_PRIME]
     reductions_agree = rational["reduced_j"] == modular["reduced_j"] and rational["reduced_g"] == modular["reduced_g"]
@@ -355,13 +424,9 @@ def _analyze(name: str) -> dict[str, Any]:
     sheets = sorted(rational_decomposition["sheets"], key=lambda entry: entry["generators"])
     sheet_generators = [list(entry["generators"]) for entry in sheets]
     modular_decomposition = _decomposition(MODULAR_PRIME, modular, sheet_generators)
-    fibers = [
-        {
-            "rational": _fiber(0, rational, generators),
-            "modular": _fiber(MODULAR_PRIME, modular, generators),
-        }
-        for generators in sheet_generators
-    ]
+    fibers = parallel.ordered_map(
+        partial(_fiber_pair, rational=rational, modular=modular), sheet_generators, min_items=1
+    )
 
     retained = next(entry for entry in nakayama._load_json(NAKAYAMA_RESULT)["incidences"] if entry["incidence"] == name)
     retained_components = [sorted(component["generators"]) for component in retained["rational"]["components"]]
@@ -392,10 +457,17 @@ def _analyze(name: str) -> dict[str, Any]:
     mutated = tuple(
         value + 1 if index == MUTATED_COEFFICIENT_INDEX else value for index, value in enumerate(coefficients)
     )
-    context = {"row": row, "closure": closure, "data": data, "phase_one": rational}
-    arc = _arc_record(context, sheet_generators[sheet_position], plane, coefficients)
-    ranks = _rank_along_arc(row, coefficients)
-    mutated_result = _arc_vanishing(row, closure, data, rational, sheet_generators[sheet_position], mutated)
+    ideals = regularity.closure_ideals()
+    closures = {
+        key: tuple(str(value) for value in ideals[key]) for key in (SOURCE_KEY, *regularity.EXPECTED_LOWER[SOURCE_KEY])
+    }
+    _require(closures[SOURCE_KEY] == closure, "the source closure differs from the one of the Nakayama record")
+    context = {"row": row, "closures": closures, "data": data, "phase_one": rational}
+    sheet = sheet_generators[sheet_position]
+    conic_arc, line_arc = parallel.ordered_map(
+        partial(_arc_record, context, sheet, plane, coefficients), (True, False), min_items=1
+    )
+    mutated_result = _arc_vanishing(row, closures, data, rational, sheet, _arc_image(mutated, True))
     mutated_nonzero = {
         "sheet_generators_nonzero_on_arc": int(mutated_result["sheet_nonzero"]),
         "germ_generators_nonzero_on_arc": int(mutated_result["germ_nonzero"]),
@@ -419,7 +491,8 @@ def _analyze(name: str) -> dict[str, Any]:
         and fibers_agree
         and all(len(entry["special_fiber_over_q_i"]["prime_components"]) == 1 for entry in sheet_rows)
         and all(entry["retained_fiber_component_one_based"] is not None for entry in sheet_rows)
-        and _arc_passes(arc, ranks)
+        and _arc_passes(conic_arc, [])
+        and _arc_passes(line_arc, [LINE_ARC_STRATUM[name]])
         and mutated_nonzero["sheet_generators_nonzero_on_arc"] > 0
     )
     return {
@@ -434,12 +507,15 @@ def _analyze(name: str) -> dict[str, Any]:
         "sheets": sheet_rows,
         "retained_arc_components_one_based": reached,
         "unreached_sheet_index_one_based": sheet_position + 1,
-        "line_arc": {
-            **arc,
-            "rank_C_z_at_parameter": ranks,
+        "conic_arc_in_the_open_source_orbit": {
+            **conic_arc,
+            "parameter": "u, with t_2 = -2 u^2 d, t_8 = -2 u d, d = 1 / (1 + u^2), and t_k = c_k u otherwise",
+        },
+        "line_arc_in_a_lower_stratum": {
+            **line_arc,
             "parameter": "u, with t_k = c_k u",
         },
-        "mutated_line_arc": {
+        "mutated_conic_arc": {
             "coefficients_of_t1_to_t8": list(mutated),
             "changed_coefficient_index_one_based": MUTATED_COEFFICIENT_INDEX + 1,
             **mutated_nonzero,
@@ -453,7 +529,7 @@ def build_record() -> dict[str, Any]:
     inputs = dict(parallel.ordered_map(nakayama._hash_path, SOURCE_PATHS, min_items=1))
     versions = {row["singular_version_code"] for row in rows}
     _require(len(versions) == 1, "the incidences ran under different Singular builds")
-    mutation_detected = all(row["mutated_line_arc"]["sheet_generators_nonzero_on_arc"] > 0 for row in rows)
+    mutation_detected = all(row["mutated_conic_arc"]["sheet_generators_nonzero_on_arc"] > 0 for row in rows)
     return {
         "schema": SCHEMA,
         "inputs": inputs,
@@ -467,32 +543,35 @@ def build_record() -> dict[str, Any]:
         "scope": {
             "incidences": list(INCIDENCES),
             "claim_boundary": (
-                "Each line arc is exact on the retained transverse slice germ of its incidence at the retained "
-                "basepoint. The record computes two sheets and two planes per incidence and one arc on the sheet "
-                "that no retained arc reaches; the variation of the fibers along the boundary orbit and the "
-                "incidence E8bar->VB lie outside it."
+                "Each arc is exact on the retained transverse slice germ of its incidence at the retained "
+                "basepoint. The record computes two sheets and two planes per incidence and two arcs on the sheet "
+                "that no retained arc reaches: a conic arc in the open E8-bar orbit and a line arc in the closure "
+                "of X+ or X-. Membership in the open orbit is the vanishing of the E8-bar closure generators with "
+                "one nonvanishing generator of every closure strictly inside it. The variation of the fibers "
+                "along the boundary orbit and the incidence E8bar->VB lie outside the record."
             ),
         },
         "incidences": rows,
         "summary": {
             "incidence_count": len(rows),
             "sheet_count": sum(len(row["sheets"]) for row in rows),
-            "line_arcs_in_germ_sheet_and_closure": sum(
-                row["line_arc"]["germ_generators_nonzero_on_arc"]
-                + row["line_arc"]["sheet_generators_nonzero_on_arc"]
-                + row["line_arc"]["closure_generators_nonzero_on_arc"]
-                == 0
-                for row in rows
+            "conic_arcs_in_the_open_source_orbit": sum(
+                _arc_passes(row["conic_arc_in_the_open_source_orbit"], []) for row in rows
+            ),
+            "line_arcs_in_a_lower_stratum": sum(
+                _arc_passes(row["line_arc_in_a_lower_stratum"], [LINE_ARC_STRATUM[row["incidence"]]]) for row in rows
             ),
         },
         "mutation_control": {
             "name": "one_changed_arc_coefficient",
-            "input_change": "add 1 to the coefficient of t5 in each line arc",
+            "input_change": "add 1 to the coefficient of t5 in each conic arc",
             "detected": mutation_detected,
         },
         "falsifier": (
             "A sheet decomposition, special fiber or plane that differs between Q(i) and the prime 32003; a sheet "
-            "generator, germ generator or closure generator that fails to vanish on the line arc; a rank of C_z "
+            "generator, germ generator or closure generator that fails to vanish on an arc; a closure strictly "
+            "inside the E8-bar closure whose generators all vanish on the conic arc; a line arc outside the closure "
+            "of X+ (at Va+) or X- (at Va-); a rank of C_z "
             "other than 8 at the origin and 10 at the parameters 1, 2 and 3; a Schur leading vector that differs "
             "from the embedded Rees leading vector or leaves the plane; or a one-coefficient change of the arc "
             "that the vanishing check still accepts."

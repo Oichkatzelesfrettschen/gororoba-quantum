@@ -49,7 +49,7 @@
   "falsifier": "The unipotent congruence residual is nonzero, g^T g differs from I, or g ker C_z differs from ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix leaves a zero residual.",
   "inferred": [
     "the identity for every z follows from linearity of z -> C_z in the basis directions",
-    "no matrix rho of any kind satisfies C_(b z) = rho^(-T) C_z rho^(-1) for the boost: a rational representation rho of the one-parameter group would differentiate to a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection (algebraic-group step, not computed)"
+    "no rational one-parameter family rho(t) with rho(0) = I satisfies C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection"
   ],
   "infinitesimal": {
     "boost_generator_in_x_projection": false,
@@ -65,7 +65,7 @@
   "inputs": {
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/incidence_census.py": "1ac6e43468e4cd6ad482533792437da898d0d89960532982126b98572c190a32",
-    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "13f71940997b31de286688171fb4f76486687db7fd3313f09ad56842653a084c",
+    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "5b95814f70ba903bb40d85f0eded663f89d740182c72d1c0b12b992926e87850",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
     "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
@@ -421,7 +421,7 @@
   ],
   "schema": "a5-kernel-attachments-kernel-equivariance-v1",
   "scope": {
-    "claim_boundary": "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate matrices rho for the boost; the Lie-algebra solve is exact over Q. A rho outside the candidates is excluded only by the inference listed under inferred.",
+    "claim_boundary": "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one boost element outside the four candidates, and a lift in another component, are not excluded. Equal tangent rank and orbit dimension is a first-order statement; the integration of the infinitesimal pairs to a group action on a neighborhood and a local product structure compatible with the kernel map are hypotheses of any off-slice conclusion.",
     "statement": "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the selected unipotent G_2 automorphism of incidence_census.py, the rational boost of verify_regularity_independent.py, and the twelve canonical points of that module"
   },
   "tools": {

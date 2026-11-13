@@ -287,7 +287,7 @@
   ],
   "inference": {
     "authorities": [
-      "Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1: the Zariski closure of a complex constructible set is its closure in the classical topology",
+      "Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1: the Zariski closure of a complex constructible set is its closure in the classical topology (the book has no row in docs/SOURCES.json; the locator is cited from the standard literature and its text was not inspected)",
       "Basu and Roy, Quantitative Curve Selection Lemma, Theorem 1 (docs/notes/1803.00505.md): a continuous semialgebraic path from a closure point into a semialgebraic set"
     ],
     "exclusion": "a limit along any arc in the slice germ lies in the closed graph fiber",
@@ -301,7 +301,7 @@
     "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
     "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "ee368b627b2b8f5203c7366ac920206516e539b21f523bfbe5064d2efa034a46",
     "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
-    "docs/evidence/a5-kernel-attachments/real_limit_sets.py": "a0b8d0dcc708a074a5f1a8d2d5d3c9fe9333aafce5c7abdb7e613197417e67c0",
+    "docs/evidence/a5-kernel-attachments/real_limit_sets.py": "6743a9bdc98cdfa9977dd519a9f64801e5b9861546194edb6de7818f1bb72e67",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
   },
   "kernel_decomposition": {

@@ -273,7 +273,8 @@ def build_record() -> dict[str, Any]:
             "exclusion": "a limit along any arc in the slice germ lies in the closed graph fiber",
             "authorities": [
                 "Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1: the Zariski closure of a "
-                "complex constructible set is its closure in the classical topology",
+                "complex constructible set is its closure in the classical topology (the book has no row in "
+                "docs/SOURCES.json; the locator is cited from the standard literature and its text was not inspected)",
                 "Basu and Roy, Quantitative Curve Selection Lemma, Theorem 1 (docs/notes/1803.00505.md): a "
                 "continuous semialgebraic path from a closure point into a semialgebraic set",
             ],

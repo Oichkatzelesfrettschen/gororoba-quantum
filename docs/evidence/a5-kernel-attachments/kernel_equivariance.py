@@ -387,8 +387,12 @@ def build_record() -> dict[str, Any]:
             ),
             "claim_boundary": (
                 "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate "
-                "matrices rho for the boost; the Lie-algebra solve is exact over Q. A rho outside the candidates is "
-                "excluded only by the inference listed under inferred."
+                "matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational "
+                "one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one "
+                "boost element outside the four candidates, and a lift in another component, are not excluded. "
+                "Equal tangent rank and orbit dimension is a first-order statement; the integration of the "
+                "infinitesimal pairs to a group action on a neighborhood and a local product structure "
+                "compatible with the kernel map are hypotheses of any off-slice conclusion."
             ),
         },
         "unipotent_g2": {
@@ -434,9 +438,9 @@ def build_record() -> dict[str, Any]:
         ],
         "inferred": [
             "the identity for every z follows from linearity of z -> C_z in the basis directions",
-            "no matrix rho of any kind satisfies C_(b z) = rho^(-T) C_z rho^(-1) for the boost: a rational "
-            "representation rho of the one-parameter group would differentiate to a solution (beta, R) of the "
-            "infinitesimal system, and beta lies outside its X-projection (algebraic-group step, not computed)",
+            "no rational one-parameter family rho(t) with rho(0) = I satisfies "
+            "C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be "
+            "a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection",
         ],
         "mutation_control": {
             "name": "split_coordinate_matrix_as_rho",
