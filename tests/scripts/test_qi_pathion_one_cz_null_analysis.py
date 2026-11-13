@@ -162,6 +162,74 @@ def test_pooling_multiplies_where_the_predecessor_squares() -> None:
     _expect(ana.heterogeneity(values) == expected, "heterogeneity sums products")
 
 
+def test_pooling_and_chi_square_match_a_hand_computed_three_entry_fixture() -> None:
+    # weights 1 / se^2 = 4, 16, 64 (sum 84); mean (4 + 32 + 192) / 84 = 19/7; chi-square (576 + 400 + 256) / 49 = 176/7.
+    values = [(1.0, 0.5), (2.0, 0.25), (3.0, 0.125)]
+    mean, error = ana.pooled(values)
+    _expect(mean == pytest.approx(19 / 7, rel=1e-15, abs=0.0), f"pooled mean {mean!r}")
+    _expect(error == pytest.approx(1 / 84**0.5, rel=1e-15, abs=0.0), f"pooled error {error!r}")
+    _expect(ana.heterogeneity(values) == pytest.approx(176 / 7, rel=1e-15, abs=0.0), "chi-square of the fixture")
+    _expect(ana.heterogeneity([(2.0, 0.5), (2.0, 0.25)]) == 0.0, "equal values have zero chi-square")
+
+
+def test_pooling_an_empty_list_or_a_zero_standard_error_raises_like_the_predecessor() -> None:
+    for degenerate in ([], [(1.0, 0.0), (2.0, 0.5)]):
+        for function, kept in ((ana.pooled, oc.pooled), (ana.heterogeneity, oc.heterogeneity)):
+            with pytest.raises(ZeroDivisionError):
+                function(degenerate)
+            with pytest.raises(ZeroDivisionError):
+                kept(degenerate)
+
+
+def _flat_rows(
+    low_base: dict[str, float], low_twin: dict[str, float], b0_base: float, b0_twin: float
+) -> dict[str, dict[str, list[tuple[float, float]]]]:
+    """Two identical batch estimates per template, so each batch chi-square is zero and the pooled values are exact."""
+    standard_error = 0.002
+    values = {"b0": (b0_base, b0_twin), **{t: (low_base[t], low_twin[t]) for t in oc.LOW_NAMES}}
+    return {
+        t: {"base": [(base, standard_error)] * 2, "twin": [(twin, standard_error)] * 2}
+        for t, (base, twin) in values.items()
+    }
+
+
+def _uniform(value: float) -> dict[str, float]:
+    return {t: value for t in oc.LOW_NAMES}
+
+
+@pytest.mark.parametrize(
+    ("rows", "label"),
+    [
+        (_flat_rows(_uniform(0.0164), _uniform(0.0164), 0.0164, 0.0), "superposition_only"),
+        (_flat_rows(_uniform(0.0164), _uniform(0.0164), 0.005, 0.002), "unresolved"),
+        (_flat_rows(_uniform(0.02), _uniform(0.0), 0.0164, 0.0164), "unresolved_context"),
+        (
+            _flat_rows({"k4": 0.014, "k8": 0.020, "k12": 0.014}, _uniform(0.016), 0.0164, 0.0164),
+            "unresolved_block",
+        ),
+        (_flat_rows(_uniform(0.008), _uniform(0.008), 0.0164, 0.0164), "intermediate"),
+        (_flat_rows(_uniform(-0.02), _uniform(-0.02), 0.0164, 0.0164), "unresolved"),
+    ],
+    ids=[
+        "superposition_only",
+        "unresolved_twin_gap",
+        "unresolved_context",
+        "unresolved_block",
+        "intermediate",
+        "unresolved_negative_mean",
+    ],
+)
+def test_the_rebound_decision_rule_reaches_every_remaining_branch(
+    rows: dict[str, dict[str, list[tuple[float, float]]]], label: str
+) -> None:
+    kept, rebound = oc.decide_estimates(rows), ana.decide_estimates(rows)
+    _expect(
+        kept["label"] == label and rebound["label"] == label, f"{kept['label']} and {rebound['label']}, not {label}"
+    )
+    _expect(rebound["outcome"] == oc.OUTCOMES[label][0], "the outcome text follows the label")
+    _expect(rebound["decided"] == (label in oc.DECIDING), "only zero, b0_like and superposition_only decide")
+
+
 def test_the_implied_contraction_is_the_rooted_corrected_visibility(manifest: dict[str, Any]) -> None:
     template = manifest["templates"]["k4"]
     shots = _mini_series(manifest)

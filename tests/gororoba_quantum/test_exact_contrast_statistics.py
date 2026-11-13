@@ -197,6 +197,138 @@ def test_one_more_shot_in_any_outcome_changes_the_result() -> None:
         _expect(moved != base, f"a shot added to outcome {index} left the statistics unchanged")
 
 
+def _perturbed_counts(job: ecs.ContrastJob, index: int, step: int) -> ecs.ContrastJob:
+    counts = list(job.counts)
+    counts[index] += step
+    return ecs.ContrastJob(tuple(counts), job.sign, job.readout, job.zero)
+
+
+def _multinomial_variances(job: ecs.ContrastJob) -> list[Fraction | None]:
+    """J cov J^T with cov = N (diag p - p p^T) formed explicitly and J the central difference of exact_values at
+    counts +- e_i (the readout correction applied to each perturbed integer vector, not through linearity)."""
+    total = sum(job.counts)
+    probability = [Fraction(n, total) for n in job.counts]
+    covariance = [
+        [
+            total * ((probability[i] if i == j else Fraction(0)) - probability[i] * probability[j])
+            for j in range(ecs.OUTCOMES)
+        ]
+        for i in range(ecs.OUTCOMES)
+    ]
+    ups = [ecs.exact_values(_perturbed_counts(job, i, 1)) for i in range(ecs.OUTCOMES)]
+    downs = [ecs.exact_values(_perturbed_counts(job, i, -1)) for i in range(ecs.OUTCOMES)]
+    variances: list[Fraction | None] = []
+    for k in range(ecs.OUTPUTS):
+        if any(up[k] is None or down[k] is None for up, down in zip(ups, downs, strict=True)):
+            variances.append(None)
+            continue
+        jacobian = [(up[k] - down[k]) / 2 for up, down in zip(ups, downs, strict=True)]  # type: ignore[operator]
+        covariance_times_j = [
+            sum((c * j for c, j in zip(row, jacobian, strict=True)), Fraction(0)) for row in covariance
+        ]
+        variances.append(sum((j * w for j, w in zip(jacobian, covariance_times_j, strict=True)), Fraction(0)))
+    return variances
+
+
+@pytest.mark.parametrize("corrected", [True, False])
+def test_the_exact_variances_equal_an_explicit_multinomial_covariance_sandwich(corrected: bool) -> None:
+    job = _job(1, corrected=corrected)
+    expected = _multinomial_variances(job)
+    _expect(all(v is not None and v > 0 for v in expected), "every output of the fixture has a defined variance")
+    _expect(ecs.exact_variances(job) == expected, "exact_variances differs from J cov J^T")
+
+
+# Counts of the 32 outcomes as (minus pile first half, minus second half, plus first half, plus second half); bin y
+# pairs outcome y with outcome y + 8 inside one pile. Conditional probabilities of the plus / minus piles:
+# bin 0: 1/4, 3/4; 1: 3/4, 1/2; 2: 1/2, 1/2; 3: 3/4, 1/4; 4: 2/3, 1/3; 5: 1/4, 1/2; 6: 1/2, 1; 7: 3/4, 1/2.
+HAND_COUNTS = (3, 1, 2, 1, 1, 3, 4, 1) + (1, 1, 2, 3, 2, 3, 0, 1) + (1, 3, 2, 3, 2, 1, 2, 3) + (3, 1, 2, 1, 1, 3, 2, 1)
+HAND_CONTRAST = [Fraction(n, d) for n, d in ((-1, 2), (1, 4), (0, 1), (1, 2), (1, 3), (-1, 4), (-1, 2), (1, 4))]
+HAND_SIGN = (1, -1, 1, 0, -1, 1, -1, 1)
+
+
+def test_contrast_visibility_ratio_and_nullity_follow_the_hand_computed_fixture() -> None:
+    # V = (1/8) sum c s = -7/96, c / V = c (-96/7), N_hat = (sum c) / 2 / V = (1/24) (-96/7) = -4/7.
+    values = ecs.exact_values(ecs.ContrastJob(HAND_COUNTS, HAND_SIGN, None, ZERO))
+    visibility = Fraction(-7, 96)
+    _expect(values[:8] == HAND_CONTRAST, f"c(y) {values[:8]}")
+    _expect(values[16] == visibility, f"V {values[16]}")
+    _expect(values[8:16] == [c / visibility for c in HAND_CONTRAST], f"c / V {values[8:16]}")
+    _expect(values[8] == Fraction(48, 7) and values[9] == Fraction(-24, 7) and values[10] == 0, "c / V of bins 0-2")
+    _expect(values[17] == Fraction(-4, 7), f"N_hat {values[17]}")
+
+
+def test_swapping_the_piles_negates_c_and_v_and_flipping_one_sign_moves_v_ratios_and_nullity() -> None:
+    swapped = ecs.exact_values(ecs.ContrastJob(HAND_COUNTS[16:] + HAND_COUNTS[:16], HAND_SIGN, None, ZERO))
+    _expect(swapped[:8] == [-c for c in HAND_CONTRAST], "swapped piles negate every c(y)")
+    _expect(swapped[16] == Fraction(7, 96), "swapped piles negate V")
+    _expect(swapped[8:16] == [c / Fraction(-7, 96) for c in HAND_CONTRAST] and swapped[17] == Fraction(-4, 7), "ratios")
+    flipped_sign = (-1, *HAND_SIGN[1:])
+    flipped = ecs.exact_values(ecs.ContrastJob(HAND_COUNTS, flipped_sign, None, ZERO))
+    # c(0) = -1/2 changes sign in the sum: V = (-7/12 + 1) / 8 = 5/96 and N_hat = (1/24) / (5/96) = 4/5.
+    _expect(flipped[:8] == HAND_CONTRAST and flipped[16] == Fraction(5, 96), f"V {flipped[16]}")
+    _expect(flipped[8:16] == [c * Fraction(96, 5) for c in HAND_CONTRAST] and flipped[17] == Fraction(4, 5), "ratios")
+
+
+def test_a_bin_weight_exactly_at_the_threshold_contributes_nothing_and_one_epsilon_below_it_contributes() -> None:
+    # Every minus bin has weight 2 of 16 (1/8); plus bin 0 has weight 12 of 26, plus bins 1-7 weight 2 of 26.
+    minus = [1] * ecs.HALF
+    plus = [10, *([1] * 7), 2, *([1] * 7)]
+    piles = [*minus, *plus]
+    epsilon = Fraction(1, 10**9)
+    at = ecs.contrast_outputs(piles, SIGN, Fraction(1, 8))
+    below = ecs.contrast_outputs(piles, SIGN, Fraction(1, 8) - epsilon)
+    above = ecs.contrast_outputs(piles, SIGN, Fraction(1, 8) + epsilon)
+    _expect(at[0] == above[0] == Fraction(5, 6), f"a minus weight equal to the threshold reads 0: {at[0]}, {above[0]}")
+    _expect(below[0] == Fraction(5, 6) - Fraction(1, 2), f"a minus weight just above the threshold counts: {below[0]}")
+    _expect(at[1] == above[1] == 0 and below[1] == Fraction(-1, 2), "bin 1 follows the same strict comparison")
+
+
+@pytest.mark.parametrize("degree", [2, 3])
+@pytest.mark.parametrize("anchor", [1.0, math.nextafter(1.0, 2.0), 0.1, 123456.789, 3.0e-5])
+def test_a_value_within_two_to_the_minus_200_of_a_halfway_point_rounds_toward_its_side(
+    anchor: float, degree: int
+) -> None:
+    upper = math.nextafter(anchor, math.inf)
+    halfway = (Fraction(anchor) + Fraction(upper)) / 2
+    tilt = Fraction(1, 2**200)
+    _expect(ecs.correctly_rounded_root(halfway**degree * (1 - tilt), degree) == anchor, f"{anchor!r} below halfway")
+    _expect(ecs.correctly_rounded_root(halfway**degree * (1 + tilt), degree) == upper, f"{anchor!r} above halfway")
+
+
+def _moved_job(job: ecs.ContrastJob, removed: int | None, added: int | None) -> ecs.ContrastJob:
+    """`job` with one shot taken from outcome `removed` and one given to outcome `added` (None skips a side)."""
+    counts = list(job.counts)
+    if added is not None:
+        counts[added] += 1
+    if removed is not None:
+        counts[removed] -= 1
+    return ecs.ContrastJob(tuple(counts), job.sign, job.readout, job.zero)
+
+
+def test_every_one_of_the_32_outcomes_enters_the_readout_corrected_values() -> None:
+    job = _job(2)
+    base = ecs.exact_values(job)
+    for index in range(ecs.OUTCOMES):
+        other = (index + 1) % ecs.OUTCOMES
+        moved = ecs.exact_values(_moved_job(job, index, other))
+        _expect(moved != base, f"moving a shot from {index} to {other} left the values unchanged")
+        _expect(moved != ecs.exact_values(_moved_job(job, None, other)), f"outcome {index} does not enter the values")
+        _expect(moved != ecs.exact_values(_moved_job(job, index, None)), f"outcome {other} does not enter the values")
+
+
+def test_every_one_of_the_32_outcomes_enters_the_raw_values_and_errors() -> None:
+    job = _job(2, corrected=False)
+    base = ecs.contrast_statistics(job)
+    for index in range(ecs.OUTCOMES):
+        other = (index + 1) % ecs.OUTCOMES
+        moved = ecs.contrast_statistics(_moved_job(job, index, other))
+        added = ecs.contrast_statistics(_moved_job(job, None, other))
+        removed = ecs.contrast_statistics(_moved_job(job, index, None))
+        _expect(moved != base, f"moving a shot from {index} to {other} left the statistics unchanged")
+        _expect(moved.values != added.values and moved.errors != added.errors, f"outcome {index} is ignored")
+        _expect(moved.values != removed.values and moved.errors != removed.errors, f"outcome {other} is ignored")
+
+
 def test_the_record_repeats_exactly_and_follows_the_worker_count(monkeypatch: pytest.MonkeyPatch) -> None:
     jobs = [_job(shift, corrected=shift % 4 != 3) for shift in range(8)]
     reference = [ecs.contrast_statistics(job) for job in jobs]
