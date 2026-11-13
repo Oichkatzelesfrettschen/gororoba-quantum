@@ -774,6 +774,12 @@ lies in `V(K)`: one spans 15 dimensions and the other 20. The two components of 
 `V(L)` then contains both, `L` lies in the intersection of the two primes, and that intersection is `K` because `K`
 is radical (`A5-425`); hence `L = K`.
 
+**Inferred (`A5-427`, conditional on `A5-421`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
+hold 9 and 14 linear forms in 21 generators, so at least `9 + 14 - 21 = 2` linear forms lie in both; each is
+nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`, whose degree-1 part is zero. So
+`L` is not the intersection of the two primes. The limit set of `A5-418` is the reduced support and needs
+`V(L) = V(K)` alone; `L = K` in every degree is the separate statement about the scheme.
+
 **Second route at `N-` (`A5-422`, superseded by `A5-424`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
 dimension at least 5 (`A5-293`), so `K' = K2`. The quotient of the lattice by its saturated part is

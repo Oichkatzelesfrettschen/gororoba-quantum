@@ -413,6 +413,18 @@ def test_the_w8_relation_ideal_is_radical_and_the_e8bar_ideal_is_not_in_every_ce
     _same(wf.EXPECTED_MINIMAL_PRIMES["iso"], ((5, 23, 0),))
 
 
+def test_the_e8bar_minimal_primes_share_at_least_two_linear_forms_in_every_cell() -> None:
+    """9 + 14 linear forms in 21 generators: the intersection of the primes holds a linear form, which A5-427 uses."""
+    record = json.loads(RECORD.read_text(encoding="utf-8"))
+    cells = [cell for cell in record["cells"] if cell["source"] == "e8"]
+    _same(len(cells), 3)
+    for cell in cells:
+        primes = cell["hilbert"]["minimal_primes"]
+        _same(sorted(prime[0] for prime in primes), [4, 5])
+        if sum(prime[2] for prime in primes) - cell["generator_count"] < 2:
+            raise AssertionError(primes)
+
+
 def test_the_hilbert_script_compares_the_ideal_with_the_intersection_of_its_minimal_primes() -> None:
     script = wf.hilbert_script(["RELATION 1,2:1", "RELATION 1,1:(2*i)"], 2, 0, 0)
     for marker in (
