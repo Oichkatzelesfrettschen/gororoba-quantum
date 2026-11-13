@@ -1,0 +1,135 @@
+{
+ "schema": "a5-arc-jets-qi/1",
+ "slug": "e8-np",
+ "field": "Q(i)",
+ "statement": "h_d of the fiber cone over Q(i) is at least the retained modular arc-jet rank, d = 1..7",
+ "j_on_phi": {
+  "phi": {
+   "generators": 16,
+   "nonzero": 0
+  },
+  "mutated": {
+   "generators": 16,
+   "nonzero": 15
+  }
+ },
+ "qi_generators": {
+  "j": 16,
+  "g": 21
+ },
+ "cells": [
+  {
+   "target": "e8np-p32009",
+   "prime": 32009,
+   "root": 10754,
+   "arcs_checked": 3000,
+   "valuations": {
+    "v=4,e=2": 2000,
+    "v=10,e=2": 1000
+   },
+   "arcs_with_problems": [],
+   "coordinate_valuation_drops": [
+    {
+     "index": 2996,
+     "drops": [
+      "t2: valuation 3 over Q(i), 4 modulo p"
+     ]
+    }
+   ],
+   "arcs_differing_from_record": [],
+   "lower_bounds": {
+    "1": {
+     "rank": 21,
+     "arcs": 20,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d1.json",
+     "sha256": "5eedecfb1b56e94e2410283cfb893a610bcd5febf0b6594ae4d2330eeacb6004"
+    },
+    "2": {
+     "rank": 83,
+     "arcs": 100,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d2.json",
+     "sha256": "edd08f54f90e288bee7230d3b4df4f8ba2cb69e510be007e7d58e1bd84d532f4"
+    },
+    "3": {
+     "rank": 225,
+     "arcs": 200,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d3.json",
+     "sha256": "ab6bf8d2e3cb9fe41d3d81bdaede08114d83d6fa0e5108a8986c8f48ff47fab3"
+    },
+    "4": {
+     "rank": 495,
+     "arcs": 500,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d4.json",
+     "sha256": "4e70b77a08dcd6f639476ae3c315ff7142d7d8189969159c4b98c4ff15f9002d"
+    },
+    "5": {
+     "rank": 952,
+     "arcs": 1000,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d5.json",
+     "sha256": "cc18ee10d3e47f7245ebf3fd9bfce0f944ec5554145ed94f4b344aa87b7d7621"
+    },
+    "6": {
+     "rank": 1666,
+     "arcs": 1800,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d6.json",
+     "sha256": "7020d8d62099d105ea56453830a6f07cca86ca1fb50773f3eb346bd82549974e"
+    },
+    "7": {
+     "rank": 2718,
+     "arcs": 3000,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32009-d7.json",
+     "sha256": "0f98d4cd4634afeb6d7dfc1ae189ad29f2374abb962e0bb286325e31aa1cb22c"
+    }
+   }
+  },
+  {
+   "target": "e8np-p32029",
+   "prime": 32029,
+   "root": 9115,
+   "arcs_checked": 3000,
+   "valuations": {
+    "v=4,e=2": 2000,
+    "v=10,e=2": 1000
+   },
+   "arcs_with_problems": [],
+   "coordinate_valuation_drops": [],
+   "arcs_differing_from_record": [],
+   "lower_bounds": {
+    "5": {
+     "rank": 952,
+     "arcs": 1000,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d5.json",
+     "sha256": "745ceb0dd5b72474ff3875dcd1878a1646ca4653c4a5e2c4e0091190c148c878"
+    },
+    "6": {
+     "rank": 1666,
+     "arcs": 1800,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d6.json",
+     "sha256": "f147333180ef7ca6c245357bb742b1ebc3e592ab11ac343f843c78a48a0a4698"
+    },
+    "7": {
+     "rank": 2718,
+     "arcs": 3000,
+     "arcs_within_checked": true,
+     "record": "docs/evidence/a5-exceptional-fibers/arc-jets/records/e8np-p32029-d7.json",
+     "sha256": "018266b1b357f81f362655cf72abc309316aebcb2fd746630c41b2453415e0ab"
+    }
+   }
+  }
+ ],
+ "sha256": {
+  "arc_jets_qi": "a61cc7997c9b66ac10af77ab738803410a88198b89c2c90a755258607390b0b4",
+  "jet_rank": "c89aebba6f4221efef1fac3f9f9d83d7b6341601a62791b4240b816989428c0a",
+  "reduction_check": "2cb80bafe8437df476442f13a449046ae998ab9d0907c41cedd72b7543cffd88"
+ },
+ "verdict": "lower_bounds_hold_over_qi"
+}
