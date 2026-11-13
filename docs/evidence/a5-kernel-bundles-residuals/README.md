@@ -189,15 +189,24 @@ vanishes on the image vanishes on the sampled planes, so each count is an upper 
 image, and 105 and 90 are lower bounds for the dimension of its linear span.
 
 **Proved (`A5-430`): the fibers are linear.** `A(z, w)` is linear in `(z, w)`, so the pairs whose kernel plane
-is a given `P` and whose conjugate kernel plane is a given `P'` form an open subset of the linear space
-`L = {(z, w): A(z, w) P = 0, A-bar(w, z) P' = 0}`. `L` contains the scalings of `z` and of `w`, and the
-differential of the pair (Gauss map, conjugate Gauss map) has rank at most the tangent dimension minus `dim L`.
+is a given `P` and whose conjugate kernel plane is a given `P'` lie in the linear space
+`L = {(z, w): A(z, w) P = 0, A-bar(w, z) P' = 0}`, which contains the scalings of `z` and of `w`. `P` and `P'`
+have first coordinate zero, so `L = L_z x L_w` with `L_z = {z: M(z) P = 0, z perpendicular to P'}` and
+`L_w = {w: M-bar(w) P' = 0, w perpendicular to P}`. Every `z` in `L_z` has `P` in `ker M(z)`, so `M(z)` has rank
+at most 12, and the identity `P_j = Q G z_j` (`A5-364`) gives `Q(z) G(z) = 0`. `L_z` is irreducible and lies in
+one hypersurface. On `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)`, therefore, the fiber of the pair (Gauss map,
+conjugate Gauss map) through a pair of the stratum is an open subset of `L`, and the differential of the pair has
+rank at most the tangent dimension minus `dim L`. On `V(Q) n V(G)` the same holds where `L` lies in both
+hypersurfaces, as at the two exact fixtures, where `L` is the plane of scalings. At a real point the conjugation
+`(z', w') -> (conjugate(w'), conjugate(z'))` preserves `L` and exchanges `L_z` and `L_w`, so the real fiber has
+real dimension `dim L` and its image in the projective stratum is the projective space of `L_z`, of real dimension
+`dim L - 2`.
 
 **At the 66 exact real fixtures, on the real locus `w' = z'`:** the differentials are computed modulo 32029,
 where the rank of the pair is a lower bound for the rank over the reals of `z -> ker A(z, conjugate(z))` in
 characteristic 0 (the pivot block is invertible modulo the prime and the tangent space keeps its dimension);
-`dim L`, the orbit rank of the 18-dimensional kernel symmetry algebra and the nullity of the kernel vectors are
-exact.
+`dim L` is exact over `Q(i)`; the orbit rank of the 18-dimensional kernel symmetry algebra and the nullity of the
+kernel vectors are exact over `Q`.
 
 | Stratum | Fixtures | Orbit rank | Rank of `z -> ker M(z)` | Rank of the Gauss map | Real rank | `dim L` | Nullity of the kernel vectors | Fixtures sharing a kernel plane |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -212,8 +221,8 @@ In every row the real rank modulo 32029 equals the tangent dimension (28, 28, 26
 is the real rank in characteristic 0 (`A5-430`). At the 37 fixtures with `dim L = 2` the real Gauss map is an
 immersion of the projective stratum. Through each of the other 29 it has a linear fiber of real dimension 4 or 10.
 The nullity column is the least nullity, as elements of the algebra, among six vectors of the real kernel of left
-multiplication by the fixture: where the fiber is large, the kernel consists of zero divisors of a deeper
-stratum.
+multiplication by the fixture: where the fiber is large, the six sampled kernel vectors are zero divisors of a
+deeper stratum, which bounds the nullity of a general kernel vector from above only (`A5-433`, part c).
 
 **Proved in characteristic 0 (`A5-431`): the real Gauss map is not injective on `V(G)` minus `V(Q)`.** The
 retained fixture record gives the normalized Plucker vector of the kernel plane at each fixture; the 66 fixtures
@@ -237,9 +246,10 @@ real locus:
 | `V(Q) n V(G)` | 16 | 2 | 4 | 384 |
 | `V(Q) n V(G)` | 16 | 6 | 12 | 4 |
 
-Rows 7 and 9 are points of orbit rank 16, the maximum, with a large fiber; row 1 is orbit rank 13 with the
-smallest fiber. At the 26 points of rows 6, 7 and 9 `dim L` and the kernel nullity are recomputed exactly over
-`Q(i)` and agree.
+Rows 7 and 9 are points of orbit rank 16, the maximum and therefore exact, with a large fiber. Row 1 has orbit
+rank 13 modulo 32029, a lower bound for the exact rank, with the smallest fiber; the exact leg of that direction
+is the 9 exact fixtures of `V(Q)` minus `V(G)` with orbit rank 13 and `dim L = 2`. At the 26 points of rows 6, 7
+and 9 `dim L` is recomputed exactly over `Q(i)` and the kernel nullity exactly over `Q`, and both agree.
 
 **Inferred, modulo 32029:** on `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)` the three-planes `ker M(z)` form a
 family of dimension 13, the projective dimension of the stratum, and the Gauss image is the bundle of planes in
@@ -247,7 +257,7 @@ those three-planes, of dimension 15 in the 26-dimensional `Gr(2, 15)`. On `V(Q) 
 fibers of dimension 2 and the image has dimension 12.
 
 `hypothesis` (`A5-433`, open): on `V(G)` minus `V(Q)` every real point of orbit rank 13 has `dim L` of 6 or 12
-(139 grid points, 29 fixtures); on `V(Q)` minus `V(G)` every real point has `dim L = 2` (2,096 grid points, 12
+(139 grid points with the orbit rank modulo 32029, 29 fixtures); on `V(Q)` minus `V(G)` every real point has `dim L = 2` (2,096 grid points, 12
 fixtures); a real point with `dim L` of 6 or 12 has kernel vectors of nullity 12 or 16 (157 grid points, 29
 fixtures), and row 6 shows that nullity 12 does not force a large fiber. The grid is one integer family; the
 record holds no equations for the locus `dim L > 2` and no real point with non-real split coordinates.
