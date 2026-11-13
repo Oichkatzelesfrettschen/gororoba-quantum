@@ -4,9 +4,11 @@ The bordered matrix of a doubly pure z in C^15 is A(z, conj z) = [[0, -conj(z)^T
 linear in z and C_z z = 0. For z != 0 its kernel is {0} x (ker C_z meet z^perp), the Hermitian complement of z in
 ker C_z, so ker C_z = C z (+) ker A. The map P -> P meet z^perp on planes P containing z is continuous in (z, P),
 and every limit of ker C_z along z -> z_0 contains z_0. The limits of ker A at z_0 are therefore the planes
-P meet z_0^perp, P a limit of the holomorphic kernel. The rank strata of C_z are complex algebraic in z and the real
-A_5 locus is all of C^15, so every point of the closed holomorphic Gauss-graph fiber is the limit along a holomorphic
-arc in the source (curve selection), and the restriction of that arc to a real parameter is a real arc.
+P meet z_0^perp, P a limit of the holomorphic kernel. The source closures are cut out by holomorphic polynomials in
+z and the real A_5 locus is all of C^15, so the graph of z -> ker C_z is complex constructible and real
+semialgebraic: its Zariski closure is its Euclidean closure (Mumford, Red Book, I.10 Theorem 1), and curve selection
+(Basu and Roy, Theorem 1, docs/notes/1803.00505.md) gives a real semialgebraic path in the graph to every point of
+the closed graph fiber. The record's pass covers the computed checks; these two theorems carry the realization.
 
 This producer verifies the two identities the decomposition rests on, the failure of the decomposition under the
 bilinear pairing at an isotropic point, and collects the fourteen computed holomorphic fibers with the retained
@@ -191,7 +193,10 @@ def build_record() -> dict[str, Any]:
         "schema": SCHEMA,
         "inputs": dict(parallel.ordered_map(_hash_path, SOURCE_PATHS, min_items=1)),
         "scope": {
-            "passage": "the fourteen nullity-8 to nullity-12 incidences with a computed holomorphic fiber",
+            "passage": (
+                "the fourteen nullity-8 to nullity-12 incidences with a computed holomorphic fiber, each on its "
+                "retained transverse slice germ"
+            ),
             "open_incidence": OPEN_INCIDENCE,
             "claim_boundary": (
                 "Each fiber is the fiber over the selected path-supported basepoint of the closed holomorphic Gauss "
@@ -222,11 +227,19 @@ def build_record() -> dict[str, Any]:
                 "ker A"
             ),
             "realization": (
-                "every point of a fiber is the limit along a holomorphic arc in the source germ by curve selection; "
-                "its restriction to a real parameter is an arc of real A_5 points, since the doubly pure real locus "
-                "is all of C^15 and the strata are rank strata of the holomorphic C_z"
+                "the source closures are cut out by holomorphic polynomials in z and the doubly pure real locus is "
+                "all of C^15, so the graph of z -> ker C_z over the source germ is complex constructible and real "
+                "semialgebraic; every point of the computed fiber lies in its Euclidean closure and a continuous "
+                "semialgebraic path in the graph starts there"
             ),
             "exclusion": "a limit along any arc in the slice germ lies in the closed graph fiber",
+            "authorities": [
+                "Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1: the Zariski closure of a "
+                "complex constructible set is its closure in the classical topology",
+                "Basu and Roy, Quantitative Curve Selection Lemma, Theorem 1 (docs/notes/1803.00505.md): a "
+                "continuous semialgebraic path from a closure point into a semialgebraic set",
+            ],
+            "status": "deductions from the computed checks and the two authorities; pass does not test them",
         },
         "incidences": rows,
         "summary": {
@@ -245,7 +258,7 @@ def build_record() -> dict[str, Any]:
         "falsifier": (
             "C_z is not skew or C_z z is nonzero; the Hermitian complement of z fails to split ker C_z at an exact "
             "point; a retained arc whose holomorphic limit differs from its bordered limit plus the boundary line; "
-            "a source stratum whose equations involve conj(z); a fiber invariant that the two characteristics "
+            "a source closure whose equations involve conj(z); a fiber invariant that the two characteristics "
             "compute differently; or the bilinear pairing splitting ker C_z at the isotropic point."
         ),
         "pass": baseline_pass and mutation_detected,

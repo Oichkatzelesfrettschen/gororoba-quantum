@@ -50,6 +50,15 @@ def test_a_fiber_component_that_no_retained_arc_reaches_is_listed() -> None:
     row = rls._nakayama_row(fixture)
     _same(row["fiber_projective_dimension_degree_components"], [2, 2, 2])
     _same((row["components_reached_by_a_retained_arc"], row["components_without_a_retained_arc"]), ([2], [1]))
+    _same(row["characteristics_agree"], True)
+    _same(rls._nakayama_row({**fixture, "characteristic_invariants_agree": False})["characteristics_agree"], False)
+
+
+def test_self_test_rejects_a_failed_record_and_a_surviving_mutation() -> None:
+    with pytest.raises(RuntimeError, match="failed"):
+        rls._self_test({"pass": False, "mutation_control": {"detected": True}})
+    with pytest.raises(RuntimeError, match="survived"):
+        rls._self_test({"pass": True, "mutation_control": {"detected": False}})
 
 
 @pytest.mark.audit

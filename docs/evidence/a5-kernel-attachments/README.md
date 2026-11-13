@@ -394,7 +394,7 @@ characteristic agreement and the detected mutation. It certifies no fiber for th
 and no attaching map. A completed modular fiber for a blocked row, a characteristic disagreement, a standard basis
 point inside an embedding span, or a surviving mutation falsifies it.
 
-## The real limit set at fourteen incidences is the whole holomorphic fiber
+## On the retained slice germ the real limit set at fourteen incidences is the whole holomorphic fiber
 
 For every nonzero doubly pure `z`, the kernel of the bordered matrix is the Hermitian complement of `z` in
 `ker C_z`: the partner-purity identities (`C_z` skew, `C_z z = 0`, hence `a z^T conjugate(z) = 0` and `a = 0`) leave
@@ -408,19 +408,28 @@ Three consequences follow at a boundary point `z_0` with `K_0 = ker C_(z_0) meet
    `ker C_z` along `z -> z_0` contains `z_0`. The limits of the bordered kernel are therefore the planes
    `P meet z_0^perp` for `P` a limit of the holomorphic kernel, and `P -> P meet z_0^perp` identifies the 5-planes of
    `ker C_(z_0)` through `z_0` with `Gr(4, K_0)`.
-2. **Inferred:** the source strata are rank strata of the holomorphic matrix `C_z`, and the doubly pure real locus
-   is all of `C^15`. By curve selection every point of the fiber over `z_0` of the closed holomorphic Gauss graph is
-   the limit along a holomorphic arc in the source; its restriction to a real parameter is an arc of real A_5
-   points. Every point of the holomorphic fiber is a real limit.
-3. **Inferred:** a limit along any arc in the same germ lies in the closed graph fiber, so the fiber excludes every
-   other plane.
+2. **Inferred:** the five source closures are complex-algebraic subvarieties cut out by holomorphic polynomials in
+   `z` alone (`strata_regularity.py`, the generators of `W8`, `Ehat`, `Iso`, `Xp` and `Xm`), each named source is
+   the dense locally closed orbit in its closure, and the doubly pure real locus is all of `C^15`. The graph of
+   `z -> ker C_z` over the source germ is therefore a complex constructible set, whose Zariski closure equals its
+   closure in the classical topology (Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1), so
+   every point of the computed fiber lies in the Euclidean closure of the graph. The graph is also a real
+   semialgebraic set, and the curve selection lemma
+   ([Basu and Roy, Theorem 1](../../notes/1803.00505.md)) gives a continuous semialgebraic path that starts at the
+   fiber point and lies in the graph for positive parameter. Its `z` component is an arc of real A_5 points in the
+   source, and the kernel along it converges to the fiber point. Every point of the holomorphic fiber is a real
+   limit on the slice germ.
+3. **Inferred:** a limit along any arc in the same slice germ lies in the closed graph fiber, so on that germ the
+   fiber excludes every other plane.
 
 [`real_limit_sets.py`](real_limit_sets.py) verifies the identities symbolically, checks the splitting exactly at
 `z = e_1 + i e_2` (kernel dimension 7, Hermitian complement 6), and collects the fourteen computed fibers in
 [`real-limit-sets-result.json`](real-limit-sets-result.json). On all 29 retained arcs of these incidences the
-holomorphic limit equals the retained bordered limit plus the boundary line. The real limit set in `Gr(4, K_0)` is:
+holomorphic limit equals the retained bordered limit plus the boundary line. The record's `pass` covers these
+computed checks; the three consequences are deductions from them and the two cited theorems. On the retained
+transverse slice germ at each selected basepoint, the real limit set in `Gr(4, K_0)` is:
 
-| Incidence | Real limit set: projective dimension, degree, components |
+| Incidence | Real limit set on the slice germ: projective dimension, degree, components |
 | --- | --- |
 | E8-bar to `B9` | 1, 2, 1 |
 | E8-bar to `V` | 2, 2, 2 |
@@ -445,7 +454,7 @@ The falsifier is a failed identity; a failed Hermitian splitting at an exact poi
 limit differs from its bordered limit plus the boundary line; a source stratum whose equations involve
 `conjugate(z)`; or a fiber invariant on which the two characteristics disagree. Replacing the Hermitian pairing by
 the bilinear pairing `z^T u` at the isotropic point `e_1 + i e_2` puts `z` in its own complement, and the splitting
-fails. The producer took 1.5 seconds wall time and 77 MiB peak resident memory. Evidence:
+fails. The `--out` run took 1.5 seconds wall time and 77,448 KiB peak resident memory. Evidence:
 [`real_limit_sets.py`](real_limit_sets.py), [`real-limit-sets-result.json`](real-limit-sets-result.json), and the
 [ledger](ledger.md#ledger-rows).
 
