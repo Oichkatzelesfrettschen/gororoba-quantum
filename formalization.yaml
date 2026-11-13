@@ -141,7 +141,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Selected main-result declarations of twenty-two proof sources, not every
+    Selected main-result declarations of twenty-four proof sources, not every
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
@@ -258,6 +258,26 @@ status:
     - declaration: Mod5.eq_uv_twisted
       file: proofs/CdTwistedProduct.v
       axioms: []
+    - declaration: GaussianTower.T.pure_kernel_conj
+      file: proofs/CdTowerRing.v
+      axioms: []
+    - declaration: GaussianTower.T.reflect_mul
+      file: proofs/CdTowerRing.v
+      axioms: []
+    - declaration: GaussianTower.kernel_swap_iff_two_zero
+      file: proofs/CdTowerRing.v
+      axioms: []
+    - declaration: gaussian_kernel_swap_fails
+      file: proofs/CdTowerRing.v
+      axioms: []
+    - declaration: ZRingBridge.mul_eq
+      file: proofs/CdTowerRingDomain.v
+      axioms: []
+    - declaration: RRingBridge.reflect_mul
+      file: proofs/CdTowerRingDomain.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
     - declaration: isum_conference
       file: proofs/CdImaginarySumConference.v
       axioms: []
@@ -357,6 +377,22 @@ alignment:
       file: proofs/CdAnnihilatorSymmetryReal.v
       statement: "(x y) x = x (y x) for all x, y with real coordinates at every level (Corollary 2.9 of math/0511691), from flex_sum_zero: x (y z) - (x y) z + z (y x) - (z y) x = 0"
       source: docs/notes/math-0511691.md
+    - declaration: GaussianTower.T.pure_kernel_conj
+      file: proofs/CdTowerRing.v
+      statement: "over a commutative ring, for a with conj(a) = -a at any level, a z = 0 exactly when conj(z) a = 0, so ker R_a = conj(ker L_a)"
+      source: docs/evidence/cd-tower-ring/README.md
+    - declaration: GaussianTower.T.reflect_mul
+      file: proofs/CdTowerRing.v
+      statement: "over a commutative ring, the map (a, b) -> (a, -b) of level k + 1 preserves the product"
+      source: docs/evidence/cd-tower-ring/README.md
+    - declaration: GaussianTower.kernel_swap_iff_two_zero
+      file: proofs/CdTowerRing.v
+      statement: "over a commutative ring with i i = -1, a z = 0 implies z a = 0 for all a, z of level k + 2 exactly when 2 = 0 (the scope of Corollary 9.3 of math/0511691)"
+      source: docs/evidence/cd-tower-ring/README.md
+    - declaration: ZRingBridge.mul_eq
+      file: proofs/CdTowerRingDomain.v
+      statement: "the product of the commutative-ring tower at Z is the product of the ordered-domain tower at Z"
+      source: docs/evidence/cd-tower-ring/README.md
     - declaration: ZBridge.kernel_equality
       file: proofs/CdTowerDomainZ.v
       statement: "a z = 0 exactly when z a = 0 in the integer tower of CdImaginarySumConference.v, from the functor CdTower of CdTowerDomain.v over an abstract ordered domain instantiated at Z"
@@ -425,7 +461,7 @@ alignment:
 automation:
   methods:
     - method: agent
-      models: ["claude-opus-5-5", "claude-fable-5-1"]
+      models: ["claude-opus-5-5", "claude-fable-5-1", "claude-fable-5-2"]
       framework: "Claude Code"
       tool_setup: "Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0; proofs replayed by each bundle's replay_rocq.sh with -w +all and rocq check"
     - method: manual
@@ -433,8 +469,9 @@ automation:
     Commit trailers under proofs/ record Claude Code (claude-opus-5-5) on
     most sources, Claude Code (claude-fable-5-1) on CdAnnihilatorSymmetry.v,
     CdTowerReal.v, CdAnnihilatorSymmetryReal.v, CdTowerDomain.v,
-    CdTowerDomainZ.v and CdTowerDomainR.v, and OpenAI ChatGPT on one; the
-    owner reviewed and replayed every source.
+    CdTowerDomainZ.v and CdTowerDomainR.v, and OpenAI ChatGPT on one;
+    CdTowerRing.v and CdTowerRingDomain.v come from Claude Code
+    (claude-fable-5-2). The owner reviewed and replayed every source.
 
 review:
   status: self-assessed
