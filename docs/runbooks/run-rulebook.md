@@ -681,6 +681,23 @@ the closest entry and say what changed.
   Hartshorne and Fulton is with the literature session), and the passage from the local ring of the sources
   to the graded polynomial ring of the scripts, which rests on the weight grading and is argued in this
   repository alone.
+- Engine and ordering review of the certified scripts (2026-11-13, Singular 4.4.1p5, the passagemath build on
+  the workstation unless stated). The gradings: the exponent differences of every generator of
+  H = J + minors + (u - G_pivot) of E8-bar at N- (9,786 distinct vectors in the 31 variables s, y, u) have rank
+  28, so H is homogeneous for a lattice of gradings of rank 3, and the slice variable s2 has weight 0 in each
+  of them. No grading with every weight positive exists, so a weighted reverse-lexicographic ordering always
+  breaks the homogeneity at s2 and the division by u needs its certificate. The ordering that keeps the
+  grading, (a(grading), a(0, ..., 0, -1), dp), is global, makes the division exact by the argument of Bayer and
+  Stillman, and passes its homogeneity check on the same-sign X control, where its standard basis was stopped
+  unfinished after 300 s on the build host against 8 s under `wp`: refuted as a route. On that control `slimgb`
+  takes 81 s and 1.8 GB against 8 s and 39 MB for `std`, and `option(noredSB)` changes neither the time nor the
+  basis size (2,160); all four variants print the control's FIBER line. `std` uses one thread, so the
+  workstation's other 31 threads serve only independent runs (a second prime, the other basepoint). Measured
+  on the certified Iso run: the standard basis took 1,241 s and the colon certificate 7,444 s of 8,685 s, and
+  the script prints the FIBER line only after the certificate and writes no intermediate basis, so a run that
+  dies in the certificate loses the standard basis. The E8-bar run `c-e8-nm-p` carries `ulimit -v 30000000`
+  (resident 2.6 GB at 3 h 20 min, growing about 0.6 GB per hour); the workstation's rule is a planning sum of
+  52.5 GB with no cap on a job.
 - Outcome (2026-11-13, 14:16 PST): the certified Iso run at N- modulo 32009 (`c-iso-nm-p`, workstation) exits 0
   after 2 h 24 min 45 s at 1.76 GB peak with `CERT divided_basis_leading_u_bad 0`,
   `CERT saturation_colon_equal 1`, `FIBER dim 5 mult 23 minimal generators 68`, all 68 generators of degree 2, and
