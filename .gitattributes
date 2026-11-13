@@ -1,6 +1,7 @@
 # Preserve whitespace in raw compiler and kernel-check receipts.
 docs/evidence/folding_proofs/*.log -whitespace
 docs/evidence/cd-twisted-product/kernel.txt -whitespace
+docs/evidence/cd-tower-ring/kernel.txt -whitespace
 # Preserve whitespace in retained exact-version source responses.
 docs/evidence/source_rights/*.html -text -whitespace
 docs/evidence/source_rights/*.json -text

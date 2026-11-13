@@ -25,6 +25,14 @@ toolchain is absent. A caller that exports the variable REQUIREMENTS names for
 the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
 each such gate take its live path or fail.
 
+A gate that left its replay unrun says so by exit status 77 after a last output line
+that begins ``skipped:`` and gives the reason. The runner prints SKIP for it,
+counts it apart from the passes in the summary and the timings, and lists the
+skipped names. A run with a failure exits 1; a run that passes nothing and
+skips at least one gate exits 77; every other run exits 0. Only a gate that
+declares ``requires`` may skip: status 77 from any other gate, without a
+``skipped: REASON`` line, or under the caller's REQUIRED variable is a failure.
+
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
 chooses: an explicit $PYTHON as named, else the running interpreter when it
 holds every pin of requirements.txt and ci/requirements-ci.txt, else the
@@ -64,6 +72,11 @@ import parallel  # noqa: E402
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
+# The exit status by which a gate that declares `requires` reports that it left its replay unrun (automake's skip
+# status); a gate may run cheaper checks first, so a skip says the replay is missing and nothing about those.
+SKIP_STATUS = 77
+# The prefix of the line by which a skipping gate states its reason; the runner accepts no skip without it.
+SKIP_PREFIX = "skipped:"
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # The numeric stack a gate's interpreter loads under the gate environment: the CPU model, numpy's enabled dispatch
 # targets, and each OpenBLAS that numpy and scipy.linalg load with the core it selected: the native numeric path a
@@ -153,6 +166,28 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
     except ValueError as error:
         return gate, 127, time.monotonic() - start, f"gate resource record is invalid: {error}"
     return measured, completed.returncode, time.monotonic() - start, completed.stdout
+
+
+def skip_reason(output: str) -> str | None:
+    """The last nonblank output line when it states a skip with a reason (`skipped: REASON`), else None."""
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    if not lines or not lines[-1].startswith(SKIP_PREFIX) or not lines[-1][len(SKIP_PREFIX) :].strip():
+        return None
+    return lines[-1]
+
+
+def verdict(gate: dict[str, Any], status: int, output: str, environment: dict[str, str]) -> str:
+    """PASS for status 0; SKIP for the skip status of a gate that declares `requires`, ends its output with a
+    `skipped: REASON` line and has none of its toolchains required by the caller; FAIL otherwise.
+
+    A caller that exports the variable REQUIREMENTS names for one of the gate's toolchains asked for the live
+    path, so a skip under it is a failure whatever the gate's own guard did."""
+    if status == 0:
+        return "PASS"
+    required = any(environment.get(REQUIREMENTS[name]) == "1" for name in gate.get("requires", ()))
+    if status == SKIP_STATUS and gate.get("requires") and not required and skip_reason(output) is not None:
+        return "SKIP"
+    return "FAIL"
 
 
 def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | None = None) -> int:
@@ -317,21 +352,27 @@ def main(argv: list[str] | None = None) -> int:
     if unresolved:
         return 2
     failures = []
+    skipped = []
     started = time.monotonic()
     timings = []
     for gate, status, seconds, output in run_all(selected, environment, ROOT):
+        label = verdict(gate, status, output, environment)
         timings.append(
             {
                 "name": gate["name"],
                 "status": status,
+                "verdict": label,
                 "seconds": seconds,
                 "estimated_seconds": gate.get("seconds"),
                 "resources": gate.get("resources"),
                 "runtime": gate.get("runtime", "current"),
             }
         )
-        print(f"{'PASS' if status == 0 else 'FAIL'} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
-        if status != 0:
+        print(f"{label} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
+        if label == "SKIP":
+            skipped.append(gate["name"])
+            print(f"     {gate['name']}: {skip_reason(output)}", flush=True)
+        elif label == "FAIL":
             failures.append((gate, status, output))
             tail = "\n".join(output.splitlines()[-TAIL_LINES:])
             print(f"\n=== {gate['name']} exit {status} in {gate['cwd']}\n{gate['cmd']}\n{tail}", flush=True)
@@ -349,11 +390,16 @@ def main(argv: list[str] | None = None) -> int:
             )
             + "\n"
         )
-    passed = len(selected) - len(failures)
+    passed = len(selected) - len(failures) - len(skipped)
     device = environment.get("GOROROBA_AER_DEVICE", "CPU")
-    summary = f"{passed} passed, {len(failures)} failed of {len(selected)} gates"
+    summary = f"{passed} passed, {len(skipped)} skipped, {len(failures)} failed of {len(selected)} gates"
     print(f"\n{summary} on {device}")
-    return 1 if failures else 0
+    if skipped:
+        print(f"skipped, replay not run: {', '.join(sorted(skipped))}")
+    if failures:
+        return 1
+    # A run that passed nothing and skipped something completed no gate: it reports the skip status itself.
+    return SKIP_STATUS if skipped and passed == 0 else 0
 
 
 if __name__ == "__main__":
