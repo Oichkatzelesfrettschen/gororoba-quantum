@@ -185,7 +185,8 @@ class PreflightReached(Exception):
 
 
 class PreflightClient:
-    """A hardware backend that accepts the manifest's backend and shots and stops at the language lookup."""
+    """The manifest's backend type as the catalogue records it (hardware flag, batch and queue capacity), accepting
+    the manifest's shots and stopping at the language lookup."""
 
     member_id = 1
 
@@ -197,14 +198,14 @@ class PreflightClient:
     def get(self, path: str, **params: Any) -> Any:
         if path == f"/backend_types/{self.cases['backend_type_id']}":
             return {
-                "identifier": self.cases["backend"],
-                "name": self.cases["backend"],
+                "identifier": self.backend["identifier"],
+                "name": self.backend["name"],
                 "status": "idle",
-                "is_hardware": True,
+                "is_hardware": self.backend["is_hardware"],
                 "nqubits": self.backend["nqubits"],
-                "max_jobs_per_batch_job": 5,
+                "max_jobs_per_batch_job": self.backend["max_jobs_per_batch_job"],
                 "max_number_of_shots": self.cases["shots"],
-                "batchjobs_per_queue_limit": 5,
+                "batchjobs_per_queue_limit": self.backend["batchjobs_per_queue_limit"],
             }
         if path == f"/backend_types/{self.cases['backend_type_id']}/queue":
             return {"number_of_jobs_in_queue": 0}
@@ -219,8 +220,17 @@ class PreflightClient:
         raise AssertionError("a preflight check created a remote resource")
 
 
+def batch_limit(backend: dict[str, Any]) -> int:
+    """The circuits one batch may hold on a catalogue backend type. The FAQ limits a hardware backend to three queued
+    jobs, and the runner applies that limit to every type the API flags is_hardware: the Tuna processors, and the Ry
+    emulator as a choice stricter than the FAQ. The QX emulator keeps the service's max_jobs_per_batch_job
+    (docs/notes/quantum_inspire/usage.md, "Queue rules: the FAQ governs")."""
+    service = int(backend["max_jobs_per_batch_job"])
+    return min(service, platform.HARDWARE_BATCH_CIRCUITS) if backend["is_hardware"] else service
+
+
 class GeneratedCaseChecks(unittest.TestCase):
-    def test_every_generated_batch_passes_hardware_submission_checks(self) -> None:
+    def test_every_generated_batch_passes_its_backend_submission_checks(self) -> None:
         manifests = [
             path
             for path in sorted(CASES.rglob("cases.json"))
@@ -230,7 +240,7 @@ class GeneratedCaseChecks(unittest.TestCase):
         for manifest in manifests:
             with self.subTest(case=manifest.parent.relative_to(CASES).as_posix()):
                 cases = json.loads(manifest.read_text(encoding="utf-8"))
-                self.assertLessEqual(len(cases["circuits"]), platform.HARDWARE_BATCH_CIRCUITS)
+                self.assertLessEqual(len(cases["circuits"]), batch_limit(PreflightClient(cases).backend))
                 with tempfile.TemporaryDirectory() as scratch:
                     case_dir = Path(scratch) / manifest.parent.name
                     case_dir.mkdir()
@@ -240,6 +250,54 @@ class GeneratedCaseChecks(unittest.TestCase):
                         with self.assertRaises(PreflightReached):
                             platform.submit(case_dir, cases["backend_type_id"], "preflight fixture")
                     self.assertFalse((case_dir / "submission-state.json").exists())
+
+    def test_an_oversized_batch_is_refused_by_its_backend_rule(self) -> None:
+        # Known-bad inputs of the size rule: one circuit more than the batch limit of every backend type that holds a
+        # generated manifest, built as copies of that type's first circuit.
+        manifests = [
+            (path, cases)
+            for path in sorted(CASES.rglob("cases.json"))
+            for cases in [json.loads(path.read_text(encoding="utf-8"))]
+            if isinstance(cases.get("circuits"), list)
+        ]
+        backend_type_ids = sorted({cases["backend_type_id"] for _, cases in manifests})
+        self.assertEqual(backend_type_ids, [1, 4, 5, 6, 7])
+        for backend_type_id in backend_type_ids:
+            path, base = next((path, cases) for path, cases in manifests if cases["backend_type_id"] == backend_type_id)
+            backend = PreflightClient(base).backend
+            limit = batch_limit(backend)
+            message = "a hardware batch may hold" if backend["is_hardware"] else "max_jobs_per_batch_job"
+            source = (path.parent / base["circuits"][0]["file"]).read_bytes()
+            with self.subTest(backend=base["backend"], circuits=limit + 1), tempfile.TemporaryDirectory() as scratch:
+                case_dir = Path(scratch) / "oversized"
+                case_dir.mkdir()
+                circuits = []
+                for n in range(limit + 1):
+                    (case_dir / f"c{n}.cq").write_bytes(source)
+                    circuits.append({**base["circuits"][0], "file": f"c{n}.cq"})
+                cases = {**base, "circuits": circuits}
+                (case_dir / "cases.json").write_text(json.dumps(cases), encoding="utf-8")
+                with patch.object(platform, "Client", return_value=PreflightClient(cases)):
+                    with self.assertRaisesRegex(SystemExit, message):
+                        platform.submit(case_dir, backend_type_id, "preflight fixture")
+                self.assertFalse((case_dir / "submission-state.json").exists())
+
+    def test_a_manifest_naming_another_backend_is_refused(self) -> None:
+        path = next(
+            p for p in sorted(CASES.rglob("cases.json")) if json.loads(p.read_text()).get("backend_type_id") == 1
+        )
+        base = json.loads(path.read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as scratch:
+            case_dir = Path(scratch) / "misnamed"
+            case_dir.mkdir()
+            cases = {**base, "backend": "tuna_17"}
+            (case_dir / "cases.json").write_text(json.dumps(cases), encoding="utf-8")
+            for row in base["circuits"]:
+                (case_dir / row["file"]).write_bytes((path.parent / row["file"]).read_bytes())
+            with patch.object(platform, "Client", return_value=PreflightClient(cases)):
+                with self.assertRaisesRegex(SystemExit, "is QXsinglenodesimulator, not tuna_17"):
+                    platform.submit(case_dir, 1, "preflight fixture")
+            self.assertFalse((case_dir / "submission-state.json").exists())
 
     def test_zero_divisor_routing_constants_follow_the_catalogue(self) -> None:
         sys.path.insert(0, str(ROOT / "scripts"))
