@@ -56,6 +56,33 @@ def test_an_arm_changes_only_the_pulse_lines(arm: str) -> None:
         offset = (float(match.group(1)) - math.pi / 2) / rs.STEP
         expected = steps if int(match.group(2)) in injected else 0
         _expect(abs(offset - expected) < 1e-9, f"{arm}: {after} is not {expected} grid steps from pi/2")
+    # File level: the header and measurement stay, and the note line and the pulse lines are the only ones that differ.
+    retained_text = rs.arm_text(rs.RETAINED, place, cc.NQUBITS).split("\n")
+    text = rs.arm_text(arm, place, cc.NQUBITS).split("\n")
+    _expect(len(text) == len(retained_text), f"{arm}: the line count changed")
+    for before, after in zip(retained_text, text, strict=True):
+        if before != after:
+            _expect(before.startswith(("X90 ", "//")), f"{arm}: {after} replaces {before}")
+    _expect(sum(1 for a, b in zip(retained_text, text, strict=True) if a != b and a.startswith("//")) == 1, arm)
+
+
+def test_the_after_worlds_repeat_the_before_worlds() -> None:
+    thetas = rs.THETA_FINE[::50]
+    for scope in rs.SCOPES:
+        for arm in rs.ARM_NAMES:
+            y = rs.forward_laws(arm, f"pulse_y_before_{scope}", thetas) - rs.forward_laws(
+                arm, f"pulse_y_after_{scope}", -thetas
+            )
+            z = rs.forward_laws(arm, f"pulse_z_before_{scope}", thetas) - rs.forward_laws(
+                arm, f"pulse_z_after_{scope}", thetas
+            )
+            _expect(float(np.abs(y).max()) < 1e-12, f"{arm}, {scope}: y after(-t) differs from y before(t)")
+            _expect(float(np.abs(z).max()) < 1e-12, f"{arm}, {scope}: z after differs from z before")
+
+
+def test_an_x_rotation_on_q4_alone_gives_the_center_arm_no_offset() -> None:
+    contrast = rs.selector_contrast(rs.forward_laws(rs.CENTER, "pulse_x_before_q4", rs.THETA_FINE[::20]))
+    _expect(float(np.abs(contrast).max()) < 1e-12, "an x rotation on q4's pulses moves the center contrast")
 
 
 @pytest.mark.parametrize("series_name", [rs.TUNA_SERIES, rs.QX_SERIES])
@@ -107,6 +134,40 @@ def test_a_planted_world_reads_its_own_class(
         _expect(decision["numbers"]["chi2"][world] < 1.0, f"planted {world} does not fit itself")
 
 
+def _planted_x() -> list[dict[str, object]]:
+    return rs.planted_batches("pulse_x_before_all", rs.truth_parameter("pulse_x_before_all", 1, rs.DESIGN_CONTRAST))
+
+
+@pytest.mark.parametrize(
+    ("bridge", "label"),
+    [((0.001, 0.0024), "pulse_x"), ((0.0164, 0.0024), "unresolved_bridge"), (None, "unresolved_bridge")],
+)
+def test_a_class_label_stands_only_when_the_bridge_holds(bridge: tuple[float, float] | None, label: str) -> None:
+    decision = rs.outcome(rs.decide(_planted_x(), bridge, None, transfer=True))
+    _expect(decision["label"] == label, f"bridge {bridge} reads {decision['label']}")
+    _expect(decision["decided"] is (label == "pulse_x"), f"bridge {bridge}: decided is {decision['decided']}")
+    if label == "unresolved_bridge":
+        _expect(decision["numbers"]["rx_label"] == "pulse_x", "the class of the Rx circuits is not reported")
+        _expect(decision["a5_186"].startswith("unchanged"), "a failed bridge changes the ledger row")
+
+
+def test_a_center_contrast_below_zero_reads_reversed() -> None:
+    batches = _planted_x()
+    for batch in batches:
+        batch["contrasts"] = [-float(c) for c in batch["contrasts"]]  # type: ignore[attr-defined]
+    decision = rs.outcome(rs.decide(batches, None, None))
+    _expect(decision["label"] == "offset_reversed" and not decision["decided"], f"reads {decision['label']}")
+    means = np.array([b["contrasts"] for b in batches])
+    _expect(rs.simulated_labels(np.zeros((1, 8, 3)), means) == ["offset_reversed"], "the simulation reads otherwise")
+
+
+def test_a_cz_phase_error_reads_outside_the_x_class() -> None:
+    exact = rs.cz_phase_contrasts(0.0)
+    _expect(max(abs(exact[a] - v) for a, v in rs.predicted_contrasts(None, 0.0).items()) < 1e-9, "phase 0 differs")
+    for row in rs.unmodeled().values():
+        _expect(row["label"] != "pulse_x", f"a CZ phase error reads {row['label']}")
+
+
 @pytest.mark.parametrize(
     ("best", "label"),
     [
@@ -153,9 +214,11 @@ def _strings(law: np.ndarray, shots: int, roles: dict[str, int]) -> list[str]:
     return listed
 
 
-def _series_shots(world: str, value: float, shots: int, jump: tuple[str, ...] = ()) -> dict[str, list[str]]:
+def _series_shots(
+    world: str, value: float, shots: int, jump: tuple[str, ...] = (), lost_qubit: int = 11
+) -> dict[str, list[str]]:
     """Expected-count shot lists of the whole Tuna-17 series under a planted world with exact assignment readout;
-    the readout-1 circuit of each batch named in `jump` reads q11 as 0 in a quarter of its shots."""
+    the readout-1 circuit of each batch named in `jump` reads `lost_qubit` as 0 in a quarter of its shots."""
     roles = rs.retained()["roles"]
     register = rs.retained()["region"]
     grid = rs.parameter_grid(world)
@@ -163,7 +226,7 @@ def _series_shots(world: str, value: float, shots: int, jump: tuple[str, ...] = 
     laws = table[int(np.argmin(np.abs(grid - value)))]
     out: dict[str, list[str]] = {}
     ones = "".join("1" if cc.NQUBITS - 1 - i in register else "0" for i in range(cc.NQUBITS))
-    dropped = "".join("0" if cc.NQUBITS - 1 - i == rs.GUARD_QUBIT else c for i, c in enumerate(ones))
+    dropped = "".join("0" if cc.NQUBITS - 1 - i == lost_qubit else c for i, c in enumerate(ones))
     for row in rs.batch_rows(rs.TUNA_SERIES):
         for circuit in row["circuits"]:
             key = f"{row['batch']}/{circuit['file']}"
@@ -193,19 +256,34 @@ def test_evaluate_reads_a_planted_over_rotation_through_the_analysis_path() -> N
     fits = decision["numbers"]["fits"]
     angles = [fits[b]["pulse_x_before_all"]["parameter"] for b in fits]
     _expect(max(abs(a - value) for a in angles) < 0.004, f"the fitted angles {angles} miss the planted {value}")
-    _expect(all(r["guard"]["admitted"] for r in report["batch_rows"].values()), "a steady q11 fails the guard")
+    _expect(all(r["guard"]["admitted"] for r in report["batch_rows"].values()), "a steady readout fails the guard")
 
 
-def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_q11_guard() -> None:
+@pytest.mark.parametrize("role", ["d2", "selector", "coin"])
+def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_readout_guard(role: str) -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
     rows = rs.batch_rows(rs.TUNA_SERIES)
     names = [r["batch"] for r in rows]
-    # The bracket after each q8 scan batch reads q11 changed, so both q8 batches leave the admitted set.
-    jump = tuple(names[n + 1] for n, r in enumerate(rows) if r["kind"] == "q8")
-    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, jump), _manifest())
+    # The bracket after each q8 +-5 scan batch reads the role's qubit changed, so both batches leave the admitted set.
+    jump = tuple(names[n + 1] for n, r in enumerate(rows) if r["kind"] == "q8-5")
+    shots = _series_shots("pulse_x_before_all", value, 32768, jump, rs.retained()["roles"][role])
+    report = rs.evaluate(shots, _manifest())
     _expect(report["decision"]["label"] == "unresolved_guard", f"reads {report['decision']['label']}")
     failed = sorted(b for b, r in report["batch_rows"].items() if not r["guard"]["admitted"])
     _expect(len(failed) >= 2, f"the guard flags {failed}")
+
+
+def test_evaluate_withholds_the_decision_when_no_bridge_batch_is_admitted() -> None:
+    value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
+    rows = rs.batch_rows(rs.TUNA_SERIES)
+    names = [r["batch"] for r in rows]
+    # The one bracket between the two bridge batches reads q11 changed, so neither bridge batch is admitted.
+    bridges = [n for n, r in enumerate(rows) if r["kind"] == "bridge"]
+    _expect(bridges[1] - bridges[0] == 2, "the bridge batches do not share a bracket")
+    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, (names[bridges[0] + 1],)), _manifest())
+    decision = report["decision"]
+    _expect(decision["label"] == "unresolved_bridge", f"reads {decision['label']}")
+    _expect(decision["numbers"]["rx_label"] == "pulse_x" and not decision["decided"], "the Rx class is not pulse_x")
 
 
 def test_the_committed_case_matches_the_build() -> None:

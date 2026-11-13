@@ -24,8 +24,8 @@
    "batch": "batch-02",
    "kind": "control",
    "files": [
-    "b0-rx-q4-m5.cq",
-    "b0-rx-q4-p5.cq",
+    "b0-rx-q8-m10.cq",
+    "b0-rx-q8-p10.cq",
     "b0-rx-all-m10.cq"
    ]
   },

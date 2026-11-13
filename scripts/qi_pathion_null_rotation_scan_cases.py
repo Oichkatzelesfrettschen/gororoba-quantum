@@ -6,9 +6,10 @@ of scripts/qi_pathion_one_cz_null_cases.py), where every arm-symmetric readout a
 gives 0. That case's 6-CZ blocks read zero, which a coherent pulse error and a selector flip conditioned on q12 both
 predict, so it left the two apart. This module builds the case that separates them on b0 itself.
 
-Mechanism. Tuna-17 runs Rx natively on a pi/36 grid and Rz as a frame change of zero duration (cqasm.md), so
-replacing an X90 by Rx(pi/2 + k pi/36) adds a known rotation k pi/36 about the pulse axis and leaves the schedule,
-the CZ count and every other instruction unchanged. A pulse that already over-rotates by theta then rotates by
+Mechanism. Tuna-17 runs X90 and Rx as native single-qubit operations of one 20 ns duration and quantizes a rotation
+angle to a pi/36 grid (cqasm.md; site/kbase_tuna-operational-specifics.md), so replacing an X90 by
+Rx(pi/2 + k pi/36) adds a known rotation k pi/36 about the pulse axis and leaves the schedule, the CZ count and every
+other instruction unchanged. A pulse that already over-rotates by theta then rotates by
 pi/2 + theta + k pi/36, so the selector contrast as a function of k is the pulse-error response curve shifted by
 theta. A readout mechanism (a selector flip conditioned on q12, a selector dropout conditioned on the coin) leaves
 the curve of an exact pulse in place and adds its offset. hypothesis: Rx(pi/2 + k pi/36) is the X90 pulse at a scaled
@@ -16,20 +17,26 @@ amplitude; the bridge batches test the k = 0 case, Rx(pi/2) against X90, inside 
 
 Circuits. Every circuit is the retained b0 text (COIN_PINS of the one-CZ case pins its bytes; emit() reproduces them
 from the parsed instruction list) with pulses rewritten: "b0" keeps X90, "b0-rx" replaces every X90 by Rx(pi/2), and
-"b0-rx-SCOPE-mK" / "-pK" add -K or +K degrees on the pulses of SCOPE (all five region qubits, q8 alone, q4 alone) and
-keep Rx(pi/2) elsewhere. forward_law() simulates any of them under a pulse-error world on the five region qubits.
+"b0-rx-SCOPE-mK" / "-pK" add -K or +K degrees on the pulses of SCOPE (all five region qubits, q8 alone) and keep
+Rx(pi/2) elsewhere; the note line names the arm. forward_law() simulates any of them under a pulse-error world on the
+five region qubits. An arm on q4 alone is left out: a rotation about x on q4's pulses gives the center arm a selector
+contrast of exactly 0, and under the x and readout worlds sized to the offset the two q4 arms at +-5 degrees differ
+by at most 0.0014, half a standard error.
 
 Series. A scan batch holds [minus arm, b0-rx, plus arm], so each batch carries its own center and a drift between
-batches changes no within-batch comparison. Scan batches: +-5 degrees on all pulses, on q8, on q4, and +-10 degrees
-on all pulses, each in a forward round and a mirror round with the arm order reversed. Two bridge batches hold b0
-and b0-rx. A readout batch [readout-0, readout-1] sits before and after every data batch; it supplies the assignment
-matrix of the neighboring data batch and the q11 readout admission (q11's e01 and e10 steady across the two
-brackets), which the one-CZ series lacked when q11's e10 moved between 0.03 and 0.43.
+batches changes no within-batch comparison. Scan batches: +-5 and +-10 degrees on all pulses and on q8's, each in a
+forward round and a mirror round with the arm order reversed. Two bridge batches hold b0 and b0-rx. A readout batch
+[readout-0, readout-1] sits before and after every data batch; it supplies the assignment matrix of the neighboring
+data batch and the readout admission (e01 and e10 of every region qubit steady across the two brackets), which the
+one-CZ series lacked when q11's e10 moved between 0.03 and 0.43.
 
 Decision. fit_batch() fits each world's one parameter to the three raw selector contrasts of a batch at the per-CZ
 retention that reproduces the center arm's visibility; decide() sums the batch chi-squares per world over the
-admitted batches and classes the best pulse world against the best readout world. preregistered(), OUTCOMES and
-decide() state and apply the rules; operating_characteristics() simulates the decision under each world.
+admitted batches and classes the best pulse world against the best readout world; a deciding label on the hardware
+series also needs the bridge to hold. preregistered(), OUTCOMES and decide() state and apply the rules;
+operating_characteristics() simulates the decision under each world. The chi-square bound and the separation are
+design thresholds whose error rates the operating characteristics measure: the retention is plugged in from the
+center arm, and each class enters by its least chi-square over several worlds.
 
 Usage: "$PYTHON" scripts/qi_pathion_null_rotation_scan_cases.py
        (--write DIR | --check DIR | --operating-characteristics | --sanity RUN_DIR...
@@ -79,10 +86,10 @@ Z_RESOLVE = pca.Z_RESOLVE
 STEP = math.pi / 36
 RETAINED = "b0"
 CENTER = "b0-rx"
-# Injection scopes: the physical qubits whose pulses carry the injected angle.
+# Scopes of a pulse-error world: the physical qubits whose pulses carry the error.
 SCOPES: dict[str, tuple[int, ...]] = {"all": (2, 4, 8, 11, 12), "q8": (8,), "q4": (4,)}
-# Scan kinds: (scope, grid steps of the injected angle).
-SCANS: dict[str, tuple[str, int]] = {"all5": ("all", 1), "q8": ("q8", 1), "q4": ("q4", 1), "all10": ("all", 2)}
+# Scan kinds: (injection scope, grid steps of the injected angle).
+SCANS: dict[str, tuple[str, int]] = {"all5": ("all", 1), "q8-5": ("q8", 1), "q8-10": ("q8", 2), "all10": ("all", 2)}
 
 
 def arm_name(scope: str, steps: int) -> str:
@@ -113,7 +120,9 @@ DESIGN_CONTRAST = 0.0164
 DRIFT_CONTRAST = 0.0393
 
 # Pulse-error worlds: a rotation by theta about `axis` added to every pulse (X90 or Rx) on the qubits of `scope`,
-# before or after the pulse in time; Rz is exact. About x the two orders coincide.
+# before or after the pulse in time; Rz is exact. About x the two orders coincide. About z they give one law, and
+# about y the "after" law at theta is the "before" law at -theta (tests/scripts/test_qi_pathion_null_rotation_scan.py),
+# so on the symmetric grid each "after" world repeats its "before" world's least chi-square.
 THETA_FINE = np.linspace(-0.30, 0.30, 601)
 PULSE_WORLDS: dict[str, tuple[str, str, str]] = {
     f"pulse_{axis}_{order}_{scope}": (axis, order, scope)
@@ -139,11 +148,11 @@ CLASSES: dict[str, tuple[str, ...]] = {
 CLASS_LABEL = {"x": "pulse_x", "other": "pulse_other", "readout": "readout"}
 
 ADEQUACY_ALPHA = 0.001
-# Chi-square separation between the best worlds of two classes at which one class is preferred: 25 is five standard
-# errors of a single contrast.
+# Chi-square separation between the best worlds of two classes at which one class is preferred. A design threshold:
+# the classes are non-nested and each enters by its best world, so 25 carries no significance level of its own; the
+# operating characteristics state the error rates it gives.
 SEPARATION = 25.0
-# q11 readout admission: the change of q11's e01 and of its e10 between the brackets around a data batch.
-GUARD_QUBIT = 11
+# Readout admission: the largest change of e01 or e10 of a region qubit between the brackets around a data batch.
 GUARD_LIMIT = pcs.DRIFT_STOP
 
 OC_DRAW = "docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json"
@@ -241,12 +250,13 @@ def rotation(axis: str, angle: float) -> np.ndarray:
     return math.cos(angle / 2) * np.eye(2, dtype=complex) - 1j * math.sin(angle / 2) * PAULI[axis]
 
 
-def forward_laws(arm: str, world: str | None, thetas: np.ndarray) -> np.ndarray:
+def forward_laws(arm: str, world: str | None, thetas: np.ndarray, cz_phase: float = 0.0) -> np.ndarray:
     """Laws over the logical outcome index (bit v of the index is KEYS[v]) of an arm under a pulse-error world, one
     row per value of `thetas`.
 
     A state vector over the five region qubits per theta; every pulse on a qubit of the world's scope is preceded or
-    followed by a rotation of theta about the world's axis. `world` None is the exact circuit."""
+    followed by a rotation of theta about the world's axis. `world` None is the exact circuit. Every CZ applies the
+    conditional phase pi + `cz_phase`."""
     ref = retained()
     region = ref["region"]
     axis_of = {q: i for i, q in enumerate(region)}
@@ -261,7 +271,8 @@ def forward_laws(arm: str, world: str | None, thetas: np.ndarray) -> np.ndarray:
     index = np.indices(shape)
     for gate, angle, qubits in ref["ops"]:
         if gate == "CZ":
-            psi = psi * (1 - 2 * (index[axis_of[qubits[0]]] * index[axis_of[qubits[1]]]))
+            both = index[axis_of[qubits[0]]] * index[axis_of[qubits[1]]]
+            psi = psi * np.where(both == 1, -np.exp(1j * cz_phase), 1.0)
             continue
         q = qubits[0]
         if gate == "Rz":
@@ -442,7 +453,7 @@ def scan_arms(kind: str, replicate: int) -> list[str]:
 def batch_order() -> list[tuple[str, int]]:
     """(kind, replicate) of the ten data batches: the four scans and the bridge, then the same list backwards, so the
     replicates of one kind sit at mirrored positions."""
-    first = [("all5", 0), ("q8", 0), ("q4", 0), ("all10", 0), ("bridge", 0)]
+    first = [("all5", 0), ("q8-5", 0), ("q8-10", 0), ("all10", 0), ("bridge", 0)]
     return first + [(kind, 1) for kind, _ in reversed(first)]
 
 
@@ -508,11 +519,12 @@ def preregistered() -> dict[str, str]:
     return {
         "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its "
         "binomial standard error, and the visibility of the center arm of each scan batch",
-        "guard": f"a data batch is admitted when q{GUARD_QUBIT}'s e01 and e10 each change by at most {GUARD_LIMIT} "
-        "between the readout batch before it and the one after; the decision needs at least one admitted batch of "
-        "every scan kind, otherwise it reads unresolved_guard",
+        "guard": "a data batch is admitted when e01 and e10 of every region qubit each change by at most "
+        f"{GUARD_LIMIT} between the readout batch before it and the one after; the decision needs at least one "
+        "admitted batch of every scan kind, otherwise it reads unresolved_guard",
         "control": f"the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds {z} "
-        "standard errors, otherwise the offset is absent and no mechanism is decided",
+        f"standard errors; within {z} standard errors of zero the offset is absent, below that it is reversed, and "
+        "either way no mechanism is decided",
         "fit": "per admitted scan batch and world, the least chi-square of the batch's three contrasts over the "
         "world's one parameter, at the retention that reproduces the center arm's visibility through the mean "
         "assignment matrix of the two brackets; a world's chi-square is the sum over the admitted scan batches",
@@ -524,30 +536,45 @@ def preregistered() -> dict[str, str]:
         f"{SEPARATION} above it; the x class is excluded when the two other classes lead, the leader is adequate and "
         f"the best x world sits at least {SEPARATION} above it",
         "bridge": f"Rx(pi/2) reproduces X90 when the within-batch difference of the b0-rx and b0 contrasts, pooled "
-        f"over the two bridge batches, is within {z} standard errors of zero",
+        f"over the admitted bridge batches, is within {z} standard errors of zero; a class label stands only when the "
+        "bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits",
         "qx": "every circuit within twice the sampling floor of its ideal law",
     }
 
 
 OUTCOMES: dict[str, tuple[str, str]] = {
     "unresolved_guard": (
-        f"unresolved: a scan kind holds no batch that passes the q{GUARD_QUBIT} readout admission",
+        "unresolved: a scan kind holds no batch that passes the readout admission",
+        "unchanged; the numbers are reported",
+    ),
+    "unresolved_bridge": (
+        "unresolved: the scan classes the Rx circuits (numbers.rx_label) and the bridge does not show that Rx(pi/2) "
+        "reproduces X90, because the two read different contrasts or no bridge batch passed the readout admission",
         "unchanged; the numbers are reported",
     ),
     "offset_absent": (
-        "offset absent: the center arm's contrast no longer reads positive; nothing about the mechanism is decided",
+        "offset absent: the center arm's contrast reads within the resolution of zero; nothing about the mechanism "
+        "is decided",
         "unchanged",
+    ),
+    "offset_reversed": (
+        "offset reversed: the center arm's contrast reads below zero, where the retained runs read above it; nothing "
+        "about the mechanism is decided",
+        "unchanged; the numbers are reported",
     ),
     "pulse_x": (
         "the x class is preferred: the selector offset follows the injected rotation as a coherent over- or "
-        "under-rotation of the pulses on the named scope predicts",
-        "survives, with the fitted angle and scope: its falsifier, a response curve that stays in place under the "
-        "injected rotation, is unmet",
+        "under-rotation of the pulses predicts",
+        "survives as a rotation about x on the pulses: its falsifier, a response curve that stays in place under the "
+        "injected rotation, is unmet. The reported scope and angle are those of the best single-scope world "
+        "(numbers.x_scope_margin is its lead over the next scope); angles that differ between qubits are outside "
+        "the model",
     ),
     "pulse_other": (
-        "the y-or-z class is preferred: a coherent pulse error produces the offset, about another axis than the one "
-        "A5-186 names",
-        "amended: a coherent pulse error stands and its axis is y or z",
+        "the y-or-z class is preferred: a coherent error other than a rotation about x on the pulses produces the "
+        "offset. A conditional-phase error of the CZ gates can read here as well (prediction.json, unmodeled)",
+        "amended: a coherent gate error stands; it is a pulse rotation about y or z or a CZ phase error, which this "
+        "scan leaves apart",
     ),
     "readout": (
         "the readout class is preferred: the response curve of an exact pulse stays in place and the offset adds to it",
@@ -570,8 +597,8 @@ OUTCOMES: dict[str, tuple[str, str]] = {
 DECIDING = ("pulse_x", "pulse_other", "readout", "x_excluded")
 TRANSFER = {
     True: "Rx(pi/2) reproduces X90 inside the bridge batches, so the decision transfers to the retained X90 circuit",
-    False: "Rx(pi/2) and X90 read different contrasts inside the bridge batches: the decision holds for the Rx "
-    "circuits and its transfer to the retained X90 circuit is not established",
+    False: "Rx(pi/2) and X90 read different contrasts inside the bridge batches, or no bridge batch passed the "
+    "readout admission: the scan classes the Rx circuits and decides nothing about the retained X90 circuit",
 }
 
 
@@ -588,7 +615,7 @@ def series(backend: dict[str, Any], series_name: str, nqubits: int, place: dict[
         "placement": {str(q): place[q] for q in region},
         "register": register,
         "qrng_draw": OC_DRAW,
-        "guard_qubit": place[GUARD_QUBIT],
+        "guard_qubits": register,
         "templates": {
             "b0": {
                 "block": "b0",
@@ -685,24 +712,35 @@ def classify(best: dict[str, float], limit: float) -> str:
     return "unresolved_both"
 
 
-def decide(batches: list[dict[str, Any]], bridge: tuple[float, float] | None, matrix_of: Any | None) -> dict[str, Any]:
+def decide(
+    batches: list[dict[str, Any]],
+    bridge: tuple[float, float] | None,
+    matrix_of: Any | None,
+    transfer: bool = False,
+) -> dict[str, Any]:
     """The preregistered decision from the scan batches.
 
     Each batch: {"kind", "arms", "contrasts", "errors", "center_visibility", "admitted", "name"}; `matrix_of(batch)`
     gives its assignment matrix, and `matrix_of` None fits every batch at the design retention and readout; `bridge`
-    is the pooled within-batch difference of b0-rx and b0 (value, se)."""
+    is the within-batch difference of b0-rx and b0 pooled over the admitted bridge batches (value, se), None when
+    none was admitted. `transfer` True (the hardware analysis) lets a class label stand only when the bridge holds;
+    False (the operating characteristics and the calibration) leaves the bridge out."""
     admitted = [b for b in batches if b["admitted"]]
     numbers: dict[str, Any] = {"admitted_batches": [b["name"] for b in admitted]}
     if {b["kind"] for b in admitted} != set(SCANS):
         return {"label": "unresolved_guard", "numbers": numbers}
     center = oc.pooled([(float(b["contrasts"][1]), float(b["errors"][1])) for b in admitted])
     numbers["center_contrast"] = list(center)
+    holds = bridge is not None and abs(bridge[0]) <= Z_RESOLVE * bridge[1]
     if bridge is not None:
         numbers["bridge_difference"] = list(bridge)
-        numbers["bridge_holds"] = abs(bridge[0]) <= Z_RESOLVE * bridge[1]
-        numbers["transfer"] = TRANSFER[numbers["bridge_holds"]]
-    if center[0] <= Z_RESOLVE * center[1]:
+    if transfer:
+        numbers["bridge_holds"] = holds
+        numbers["transfer"] = TRANSFER[holds]
+    if abs(center[0]) <= Z_RESOLVE * center[1]:
         return {"label": "offset_absent", "numbers": numbers}
+    if center[0] < 0:
+        return {"label": "offset_reversed", "numbers": numbers}
     totals: dict[str, float] = dict.fromkeys((*WORLDS, "none"), 0.0)
     fits: dict[str, dict[str, Any]] = {}
     for b in admitted:
@@ -718,13 +756,20 @@ def decide(batches: list[dict[str, Any]], bridge: tuple[float, float] | None, ma
             totals[world] += row["chi2"]
     limit = adequacy_limit(len(admitted))
     leaders = {name: min(worlds, key=lambda w: totals[w]) for name, worlds in CLASSES.items()}
+    scopes = sorted(totals[w] for w in CLASSES["x"])
     numbers |= {
         "chi2": {w: round(v, 3) for w, v in totals.items()},
         "adequacy_limit": round(limit, 3),
         "best_world": leaders,
+        "best_parameters": {name: {b: fits[b][w]["parameter"] for b in fits} for name, w in leaders.items()},
+        "x_scope_margin": round(scopes[1] - scopes[0], 3),
         "fits": fits,
     }
-    return {"label": classify({name: totals[w] for name, w in leaders.items()}, limit), "numbers": numbers}
+    label = classify({name: totals[w] for name, w in leaders.items()}, limit)
+    if transfer and not holds and label in DECIDING:
+        numbers["rx_label"] = label
+        label = "unresolved_bridge"
+    return {"label": label, "numbers": numbers}
 
 
 def outcome(decision: dict[str, Any]) -> dict[str, Any]:
@@ -766,6 +811,8 @@ TRUTHS: tuple[tuple[str, str | None, int | None], ...] = (
     ("x over-rotation, all pulses", "pulse_x_before_all", 1),
     ("x under-rotation, all pulses", "pulse_x_before_all", 0),
     ("x over-rotation, q8 pulses", "pulse_x_before_q8", 1),
+    ("x over-rotation, q8 pulses, upper root", "pulse_x_before_q8", 2),
+    ("x under-rotation, q8 pulses", "pulse_x_before_q8", 0),
     ("y rotation before, all pulses", "pulse_y_before_all", 1),
     ("z rotation before, all pulses", "pulse_z_before_all", 0),
     ("selector flip when q12 reads 0", "selector_flip_q12_0", 0),
@@ -799,13 +846,18 @@ def simulated_labels(noise: np.ndarray, means: np.ndarray) -> list[str]:
             curve = (seen**2).sum(1)[:, None] - 2.0 * seen @ model.T + (model**2).sum(1)[None]
             totals[world] += curve.min(1) / error**2
     center = contrasts[:, :, 1].mean(1)
-    absent = center <= Z_RESOLVE * error / math.sqrt(len(scans))
+    resolution = Z_RESOLVE * error / math.sqrt(len(scans))
     best = {name: np.min([totals[w] for w in worlds], axis=0) for name, worlds in CLASSES.items()}
     limit = adequacy_limit(len(scans))
-    return [
-        "offset_absent" if absent[i] else classify({name: float(v[i]) for name, v in best.items()}, limit)
-        for i in range(len(noise))
-    ]
+    labels = []
+    for i in range(len(noise)):
+        if abs(center[i]) <= resolution:
+            labels.append("offset_absent")
+        elif center[i] < 0:
+            labels.append("offset_reversed")
+        else:
+            labels.append(classify({name: float(v[i]) for name, v in best.items()}, limit))
+    return labels
 
 
 def operating_characteristics(draws: int = OC_DRAWS, drift: bool = False) -> dict[str, dict[str, float]]:
@@ -844,6 +896,7 @@ def predictions(operating: bool = True) -> dict[str, Any]:
         "model": "raw selector contrast of every arm under each world sized to the center contrast "
         f"{DESIGN_CONTRAST} at retention {DESIGN_RETENTION} and the retained readout rates of the coin series",
         "predicted_contrast": table,
+        "unmodeled": unmodeled(),
         "design": design(),
         "preregistered": preregistered(),
         "outcomes": {label: {"outcome": v[0], "a5_186": v[1]} for label, v in OUTCOMES.items()},
@@ -929,7 +982,7 @@ def evaluate(
     """Preregistered decision from shot lists keyed "batch/file"; `manifest` is any batch's cases.json."""
     roles = {k: int(v) for k, v in manifest["templates"]["b0"]["roles"].items()}
     register = [int(q) for q in manifest["register"]]
-    guard = int(manifest["guard_qubit"])
+    guard = [int(q) for q in manifest["guard_qubits"]]
     plan = {row["batch"]: row for row in batch_rows(TUNA_SERIES)}
     names = sorted(plan)
     brackets = {b: cc.batch_assignment(shots, b, register) for b in names if plan[b]["kind"] == "readout"}
@@ -946,8 +999,10 @@ def evaluate(
         before, after = brackets[names[n - 1]], brackets[names[n + 1]]
         if before is None or after is None:
             raise ValueError(f"{batch} lacks a bracket")
-        change = {kind: abs(after[guard][i] - before[guard][i]) for i, kind in enumerate(("e01", "e10"))}
-        admitted = all(v <= GUARD_LIMIT for v in change.values())
+        change = {
+            str(q): {kind: abs(after[q][i] - before[q][i]) for i, kind in enumerate(("e01", "e10"))} for q in guard
+        }
+        admitted = all(v <= GUARD_LIMIT for rates in change.values() for v in rates.values())
         mean = {q: ((before[q][0] + after[q][0]) / 2, (before[q][1] + after[q][1]) / 2) for q in register}
         matrices[batch] = cc.readout_matrix(mean, roles)
         stats = [circuit_statistics(shots[f"{batch}/{c['file']}"], roles) for c in row["circuits"]]
@@ -958,17 +1013,18 @@ def evaluate(
             "arms": arms,
             "statistics": stats,
             "guard": {
-                "qubit": guard,
                 "change": change,
                 "admitted": admitted,
-                "before": before[guard],
-                "after": after[guard],
+                "before": {str(q): before[q] for q in guard},
+                "after": {str(q): after[q] for q in guard},
             },
         }
         if row["kind"] == "bridge":
             rx = oc.pooled([(s["contrast"], s["se"]) for a, s in zip(arms, stats, strict=True) if a == CENTER])
             x90 = oc.pooled([(s["contrast"], s["se"]) for a, s in zip(arms, stats, strict=True) if a == RETAINED])
-            bridge_differences.append((rx[0] - x90[0], math.hypot(rx[1], x90[1])))
+            rows[batch]["bridge_difference"] = [rx[0] - x90[0], math.hypot(rx[1], x90[1])]
+            if admitted:
+                bridge_differences.append((rx[0] - x90[0], math.hypot(rx[1], x90[1])))
             continue
         batches.append(
             {
@@ -981,7 +1037,8 @@ def evaluate(
                 "admitted": admitted,
             }
         )
-    decision = outcome(decide(batches, oc.pooled(bridge_differences), lambda b: matrices[b["name"]]))
+    bridge = oc.pooled(bridge_differences) if bridge_differences else None
+    decision = outcome(decide(batches, bridge, lambda b: matrices[b["name"]], transfer=True))
     drift = pcs.reference_drift(
         [(k.split("/")[0], k.split("/")[1], v) for k, v in shots.items() if k.split("/")[1] in pcs.READOUT_KIND],
         register,
@@ -1019,7 +1076,8 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
 
 
 def sanity(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> dict[str, Any]:
-    """Bind each collected batch to the series case and report the readout drift between brackets."""
+    """Bind each collected batch to the series case and report the readout drift between the brackets it is given.
+    The readout admission of a data batch needs the bracket after it and is applied by analyze() on the series."""
     loaded = []
     for run_dir in sorted(run_dirs, key=lambda p: p.name):
         cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
@@ -1035,9 +1093,40 @@ def sanity(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> dic
 # Self-test --------------------------------------------------------------------------------------------------------
 
 
-def planted_batches(world: str | None, parameter: float, guard_fails: tuple[str, ...] = ()) -> list[dict[str, Any]]:
-    """Noiseless scan batches of a world at the design retention and readout, for the calibration of decide()."""
-    row = predicted_contrasts(world, parameter)
+def cz_phase_contrasts(delta: float) -> dict[str, float]:
+    """Raw selector contrast of every arm, at the design retention and readout, when every CZ applies the conditional
+    phase pi + delta and every pulse is exact. The decision models no such world."""
+    laws = np.stack([forward_laws(arm, None, np.array([0.0]), cz_phase=delta)[0] for arm in ARM_NAMES])
+    laws = DESIGN_RETENTION * laws + (1 - DESIGN_RETENTION) / NOUT
+    seen = selector_contrast(read(laws, design_matrix()))
+    return {arm: round(float(v), 5) for arm, v in zip(ARM_NAMES, seen, strict=True)}
+
+
+# Conditional-phase errors of the CZ gates whose noiseless decision the prediction record states.
+CZ_PHASES = (-0.12, -0.08, 0.08, 0.12)
+
+
+def unmodeled() -> dict[str, Any]:
+    """Noiseless decision label of each mechanism outside the decision's worlds, with every batch admitted."""
+    out: dict[str, Any] = {}
+    for delta in CZ_PHASES:
+        row = cz_phase_contrasts(delta)
+        decision = decide(planted_batches(None, 0.0, row=row), None, None)
+        out[f"cz conditional phase {delta:+.2f} rad"] = {
+            "contrast": row,
+            "label": decision["label"],
+            "best_world": decision["numbers"].get("best_world"),
+        }
+    return out
+
+
+def planted_batches(
+    world: str | None, parameter: float, guard_fails: tuple[str, ...] = (), row: dict[str, float] | None = None
+) -> list[dict[str, Any]]:
+    """Noiseless scan batches at the design retention and readout, for the calibration of decide(): the contrasts of
+    a world at a parameter, or the contrasts `row` gives per arm."""
+    if row is None:
+        row = predicted_contrasts(world, parameter)
     batches = []
     for kind, replicate in batch_order():
         if kind == "bridge":
@@ -1075,7 +1164,7 @@ def self_test() -> str:
         ("selector_dropout_coin_1", 0, (), "readout"),
         ("pulse_z_before_all", 0, (), "pulse_other"),
         (None, None, (), "offset_absent"),
-        ("pulse_x_before_all", 1, ("q4",), "unresolved_guard"),
+        ("pulse_x_before_all", 1, ("q8-10",), "unresolved_guard"),
     )
     lines = [f"emitter reproduces the retained b0.cq ({digest[:12]}); simulator within {gap:.1e} of its ideal law"]
     for world, branch, fails, label in expected:

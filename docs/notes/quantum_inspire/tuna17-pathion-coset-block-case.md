@@ -337,7 +337,7 @@ The written case
 [pathion_null_rotation_scan_tuna_17](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md)
 separates the two mechanisms that series left together, the coherent pulse error and the q12-correlated selector
 readout, on b0 itself: it replaces b0's X90 pulses by the native `Rx` at 80 to 100 degrees and reads how the selector
-contrast follows the injected rotation, with a readout bracket and a q11 readout admission around every data batch.
+contrast follows the injected rotation, with a readout bracket and a readout admission of the five region qubits around every data batch.
 Its generator is `scripts/qi_pathion_null_rotation_scan_cases.py`; the case awaits the owner's approval.
 
 The schema-v2 record is byte-reproducible only on one OpenBLAS build and core: its readout-corrected statistics solve the

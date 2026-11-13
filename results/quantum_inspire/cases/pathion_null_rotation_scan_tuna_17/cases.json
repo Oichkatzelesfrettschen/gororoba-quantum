@@ -29,7 +29,7 @@
   },
   {
    "batch": "batch-03",
-   "kind": "q8",
+   "kind": "q8-5",
    "files": [
     "b0-rx-q8-m5.cq",
     "b0-rx.cq",
@@ -46,11 +46,11 @@
   },
   {
    "batch": "batch-05",
-   "kind": "q4",
+   "kind": "q8-10",
    "files": [
-    "b0-rx-q4-m5.cq",
+    "b0-rx-q8-m10.cq",
     "b0-rx.cq",
-    "b0-rx-q4-p5.cq"
+    "b0-rx-q8-p10.cq"
    ]
   },
   {
@@ -131,11 +131,11 @@
   },
   {
    "batch": "batch-15",
-   "kind": "q4",
+   "kind": "q8-10",
    "files": [
-    "b0-rx-q4-p5.cq",
+    "b0-rx-q8-p10.cq",
     "b0-rx.cq",
-    "b0-rx-q4-m5.cq"
+    "b0-rx-q8-m10.cq"
    ]
   },
   {
@@ -148,7 +148,7 @@
   },
   {
    "batch": "batch-17",
-   "kind": "q8",
+   "kind": "q8-5",
    "files": [
     "b0-rx-q8-p5.cq",
     "b0-rx.cq",

@@ -357,7 +357,7 @@ labeled as one.
 | Same-dimension components (A5-218) | branch-count variant, validated on a small E8-bar control first | unknown until implemented | laptop or Kaggle for the control |
 | Scheme-theoretic A_4 restriction of W8 | done: refuted for ideals, holds for radicals (A5-222); PB primary decomposition stalled at 3600 s | seconds for the decisive checks | laptop |
 | PR #788 reanalysis | done: covariance-aware intervals from the retained per-shot records (`results/live/pathion_wide_coset_analysis.json`) | none | none |
-| Tuna-17 rerun of row 186 | the [injected-rotation scan of b0](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md): 21 batches with a q11 readout admission around every data batch | 43 to 48 min execution plus queue; owner approval | Tuna-17 only |
+| Tuna-17 rerun of row 186 | the [injected-rotation scan of b0](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md): 21 batches with a readout admission around every data batch | 43 to 48 min execution plus queue; owner approval | Tuna-17 only |
 | Characteristic zero | good-reduction argument for J, K2 and the receipts | proof work | none needed |
 
 No available host finishes the 23-variable Iso chart, the Rees route of E8-bar -> VB (209 GB without finishing) or a
