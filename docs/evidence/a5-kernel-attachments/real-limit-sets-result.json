@@ -1,0 +1,381 @@
+{
+  "falsifier": "C_z is not skew or C_z z is nonzero; the Hermitian complement of z fails to split ker C_z at an exact point; a retained arc whose holomorphic limit differs from its bordered limit plus the boundary line; a source stratum whose equations involve conj(z); a fiber invariant that the two characteristics compute differently; or the bilinear pairing splitting ker C_z at the isotropic point.",
+  "incidences": [
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        1,
+        2,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "E8bar->B9",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->V",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 3,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": [
+        2
+      ],
+      "components_without_a_retained_arc": [
+        1
+      ],
+      "fiber_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "E8bar->Va+",
+      "minimal_generator_count": 6,
+      "resolution": "Nakayama-reduced Rees fiber",
+      "retained_arc_count": 2,
+      "source_record": "nakayama-rees-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": [
+        2
+      ],
+      "components_without_a_retained_arc": [
+        1
+      ],
+      "fiber_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "E8bar->Va-",
+      "minimal_generator_count": 6,
+      "resolution": "Nakayama-reduced Rees fiber",
+      "retained_arc_count": 2,
+      "source_record": "nakayama-rees-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        1,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "Iso->B9",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": [
+        1
+      ],
+      "components_without_a_retained_arc": [],
+      "fiber_projective_dimension_degree_components": [
+        3,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "Iso->VB",
+      "minimal_generator_count": 4,
+      "resolution": "Nakayama-reduced Rees fiber",
+      "retained_arc_count": 2,
+      "source_record": "nakayama-rees-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "W8->B9",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": [
+        1
+      ],
+      "components_without_a_retained_arc": [],
+      "fiber_projective_dimension_degree_components": [
+        4,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "W8->VB",
+      "minimal_generator_count": 5,
+      "resolution": "Nakayama-reduced Rees fiber",
+      "retained_arc_count": 2,
+      "source_record": "nakayama-rees-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        0,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "X+->B9",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": [
+        1
+      ],
+      "components_without_a_retained_arc": [],
+      "fiber_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "X+->VB",
+      "minimal_generator_count": 3,
+      "resolution": "Nakayama-reduced Rees fiber",
+      "retained_arc_count": 2,
+      "source_record": "nakayama-rees-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "X+->Va+",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        0,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "X-->B9",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": [
+        1
+      ],
+      "components_without_a_retained_arc": [],
+      "fiber_projective_dimension_degree_components": [
+        2,
+        1,
+        1
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "X-->VB",
+      "minimal_generator_count": 3,
+      "resolution": "Nakayama-reduced Rees fiber",
+      "retained_arc_count": 2,
+      "source_record": "nakayama-rees-fibers-result.json"
+    },
+    {
+      "characteristics_agree": true,
+      "components_reached_by_a_retained_arc": null,
+      "components_without_a_retained_arc": null,
+      "fiber_projective_dimension_degree_components": [
+        2,
+        2,
+        2
+      ],
+      "holomorphic_limit_equals_bordered_limit_plus_boundary_line": [
+        true,
+        true
+      ],
+      "incidence": "X-->Va-",
+      "minimal_generator_count": null,
+      "resolution": "one ordinary blow-up of the slice origin",
+      "retained_arc_count": 2,
+      "source_record": "holomorphic-gauss-fibers-result.json"
+    }
+  ],
+  "inference": {
+    "exclusion": "a limit along any arc in the slice germ lies in the closed graph fiber",
+    "limit_map": "P -> P meet z_0^perp is an isomorphism from the 5-planes of ker C_(z_0) through z_0 onto Gr(4, K_0), K_0 = ker C_(z_0) meet z_0^perp, and carries the limits of ker C_z onto the limits of ker A",
+    "realization": "every point of a fiber is the limit along a holomorphic arc in the source germ by curve selection; its restriction to a real parameter is an arc of real A_5 points, since the doubly pure real locus is all of C^15 and the strata are rank strata of the holomorphic C_z"
+  },
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json": "7f8f2faff7256143679f32ac2a93e786da24ca6d8486adec1edc8f3e2504e62b",
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
+    "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
+    "docs/evidence/a5-kernel-attachments/real_limit_sets.py": "8661a0805fbabc0823fd18baba5b5e28964ece7cee0a17a880a289be2efd4b3d",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+  },
+  "kernel_decomposition": {
+    "exact_points": [
+      {
+        "bilinear": {
+          "complement_dimension": 0,
+          "direct_sum_is_the_kernel": true,
+          "span_with_z_dimension": 1
+        },
+        "bilinear_norm": [
+          "1240",
+          "0"
+        ],
+        "c_z_annihilates_z": true,
+        "hermitian": {
+          "complement_dimension": 0,
+          "direct_sum_is_the_kernel": true,
+          "span_with_z_dimension": 1
+        },
+        "hermitian_norm": [
+          "1240",
+          "0"
+        ],
+        "kernel_dimension": 1,
+        "point": "sum_j j e_j"
+      },
+      {
+        "bilinear": {
+          "complement_dimension": 7,
+          "direct_sum_is_the_kernel": false,
+          "span_with_z_dimension": 7
+        },
+        "bilinear_norm": [
+          "0",
+          "0"
+        ],
+        "c_z_annihilates_z": true,
+        "hermitian": {
+          "complement_dimension": 6,
+          "direct_sum_is_the_kernel": true,
+          "span_with_z_dimension": 7
+        },
+        "hermitian_norm": [
+          "2",
+          "0"
+        ],
+        "kernel_dimension": 7,
+        "point": "e_1 + i e_2"
+      }
+    ],
+    "hermitian_norm_equals_euclidean_norm": true,
+    "identities": {
+      "interior_is_skew": true,
+      "interior_matches_repository_bordered_block": true,
+      "left_identity_zT_Cz_zero": true,
+      "projected_partner_remainder_zero": true,
+      "right_identity_Cz_z_zero": true
+    },
+    "statement": "for every z != 0: ker A(z, conj z) = {0} x (ker C_z meet z^perp) and ker C_z = C z (+) it"
+  },
+  "mutation_control": {
+    "detected": true,
+    "input_change": "replace conj(z)^T u by z^T u in the complement of z at z = e_1 + i e_2",
+    "name": "bilinear_pairing_at_an_isotropic_point"
+  },
+  "pass": true,
+  "schema": "a5-kernel-attachments-real-limit-sets-v1",
+  "scope": {
+    "claim_boundary": "Each fiber is the fiber over the selected path-supported basepoint of the closed holomorphic Gauss graph of the source germ on the retained transverse slice. The record does not compute the fiber of E8bar->VB, the variation of a fiber along its boundary orbit, or limits along arcs that leave the slice beyond the retained arcs.",
+    "open_incidence": "E8bar->VB",
+    "passage": "the fourteen nullity-8 to nullity-12 incidences with a computed holomorphic fiber"
+  },
+  "summary": {
+    "incidence_count": 14,
+    "incidences_with_a_component_no_retained_arc_reaches": [
+      "E8bar->Va+",
+      "E8bar->Va-"
+    ],
+    "retained_arc_count": 29,
+    "retained_arcs_matching": 29
+  }
+}
