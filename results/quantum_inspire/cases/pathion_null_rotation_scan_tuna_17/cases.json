@@ -1,0 +1,184 @@
+{
+ "schema": "qi-pathion-null-rotation-scan-series-v1",
+ "backend": "tuna_17",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "kind": "all5",
+   "files": [
+    "b0-rx-all-m5.cq",
+    "b0-rx.cq",
+    "b0-rx-all-p5.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "kind": "q8-5",
+   "files": [
+    "b0-rx-q8-m5.cq",
+    "b0-rx.cq",
+    "b0-rx-q8-p5.cq"
+   ]
+  },
+  {
+   "batch": "batch-04",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-05",
+   "kind": "q8-10",
+   "files": [
+    "b0-rx-q8-m10.cq",
+    "b0-rx.cq",
+    "b0-rx-q8-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "kind": "all10",
+   "files": [
+    "b0-rx-all-m10.cq",
+    "b0-rx.cq",
+    "b0-rx-all-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-08",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-09",
+   "kind": "bridge",
+   "files": [
+    "b0.cq",
+    "b0-rx.cq",
+    "b0-repeat.cq"
+   ]
+  },
+  {
+   "batch": "batch-10",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-11",
+   "kind": "bridge",
+   "files": [
+    "b0-rx.cq",
+    "b0.cq",
+    "b0-rx-repeat.cq"
+   ]
+  },
+  {
+   "batch": "batch-12",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-13",
+   "kind": "all10",
+   "files": [
+    "b0-rx-all-p10.cq",
+    "b0-rx.cq",
+    "b0-rx-all-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-14",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-15",
+   "kind": "q8-10",
+   "files": [
+    "b0-rx-q8-p10.cq",
+    "b0-rx.cq",
+    "b0-rx-q8-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-16",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-17",
+   "kind": "q8-5",
+   "files": [
+    "b0-rx-q8-p5.cq",
+    "b0-rx.cq",
+    "b0-rx-q8-m5.cq"
+   ]
+  },
+  {
+   "batch": "batch-18",
+   "kind": "readout",
+   "files": [
+    "readout-1.cq",
+    "readout-0.cq"
+   ]
+  },
+  {
+   "batch": "batch-19",
+   "kind": "all5",
+   "files": [
+    "b0-rx-all-p5.cq",
+    "b0-rx.cq",
+    "b0-rx-all-m5.cq"
+   ]
+  },
+  {
+   "batch": "batch-20",
+   "kind": "readout",
+   "files": [
+    "readout-0.cq",
+    "readout-1.cq"
+   ]
+  }
+ ]
+}

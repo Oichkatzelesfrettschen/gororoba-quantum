@@ -1,0 +1,40 @@
+{
+ "schema": "qi-pathion-null-rotation-scan-series-v1",
+ "backend": "QXsinglenodesimulator",
+ "batches": [
+  {
+   "batch": "batch-00",
+   "kind": "control",
+   "files": [
+    "b0.cq",
+    "b0-rx.cq",
+    "b0-rx-all-m5.cq"
+   ]
+  },
+  {
+   "batch": "batch-01",
+   "kind": "control",
+   "files": [
+    "b0-rx-all-p5.cq",
+    "b0-rx-q8-m5.cq",
+    "b0-rx-q8-p5.cq"
+   ]
+  },
+  {
+   "batch": "batch-02",
+   "kind": "control",
+   "files": [
+    "b0-rx-q8-m10.cq",
+    "b0-rx-q8-p10.cq",
+    "b0-rx-all-m10.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "kind": "control",
+   "files": [
+    "b0-rx-all-p10.cq"
+   ]
+  }
+ ]
+}
