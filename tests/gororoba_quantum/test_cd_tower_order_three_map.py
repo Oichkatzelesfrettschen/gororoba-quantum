@@ -132,6 +132,11 @@ def test_transposed_table_is_another_product_preserving_map() -> None:
         raise AssertionError("the transposed table must also preserve products up to the factor 2")
     if transposed == gresnigt_twice_psi():
         raise AssertionError("the transposed table must differ from twice Eq. 61")
+    for m in range(DIM):
+        unit = [ZERO] * DIM
+        unit[m] = (1, 0)
+        if apply(transposed, apply(table, unit)) != [r_scale(4, x) for x in unit]:
+            raise AssertionError(f"the transposed table composed with the table differs from 4 at e_{m}")
 
 
 def test_image_table_preserves_cd_core_products_up_to_two() -> None:

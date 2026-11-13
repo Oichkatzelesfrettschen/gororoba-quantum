@@ -66,9 +66,10 @@ So the Macaulay route needs a different checker, not a larger input to the prese
    producer can report before any proof is attempted.
 3. Characteristic zero. For a matrix with integral entries the rank modulo p is at most the rank over the
    fraction field, so HF_(Q(i))(d) <= HF_(F_p)(d): a modular certificate bounds the characteristic-0 value from
-   above only. Equality at degree d needs an upper bound on the rank over Q(i), that is the relations
-   themselves over Q(i), checked in the real block form. The dimension and the degree over Q(i) do not give
-   it: they fix the leading term of the Hilbert polynomial and say nothing about one low degree. A note that
+   above only. Equality at degree d needs an upper bound on the rank over Q(i): the relations themselves over
+   Q(i), checked in the real block form, or a deduction of the kind ledger row A5-422 makes (a flat saturated
+   lattice whose reduction is the modular ideal). The dimension and the degree over Q(i) do not give it: they
+   fix the leading term of the Hilbert polynomial and say nothing about one low degree. A note that
    cites a certificate states which field its rank was certified over.
 4. The link from the certified matrix to the ideal is the weakest joint: the checker sees numbers, and the
    statement "this matrix is M_d of the 68 quadrics of row A5-294" is the producer's claim. Bind it as the rank
@@ -84,21 +85,20 @@ takes more than minutes, the route stops at a documented negative.
 
 ## A smaller first input
 
-Ledger row A5-421 records that the quadric ideal K of W8 over Q(i) has two minimal primes, of degrees 20 and 30;
-the retained presentation of the degree-20 prime (`docs/evidence/a5-exceptional-fibers/structure/w8-kp/`, at
-p = 32009) has 9 linear forms and 36 quadrics, so it lives in 15 coordinates. Whether that prime is a component
-of the fiber cone over Q(i) is a separate question, which row A5-418 states with status open; a rank certificate
-would concern the ideal, not that identification. Issue 863 tested the lead that the prime defines the cone over the
-adjoint variety of SL_4: that form is refuted, and the working hypothesis is a rank-3 hyperplane section of the
-Segre variety P^3 x P^3. Every hyperplane section of that Segre variety has Hilbert function 1, 15, 84, 300,
-825, so the Macaulay matrices would be 540 x 680 of rank 380 in degree 3 and 4,320 x 3,060 of rank 2,235 in
-degree 4, smaller than the Iso matrices above. hypothesis: the degree-20 prime has that Hilbert function
-(reported from scratch computations on 2026-11-13, modulo 32009 and over Q(i), not yet a ledger row). A
-certified HF(2) = 84 and HF(3) = 300 would be a replayable test of it.
+Ledger row A5-421 records that the quadric ideal K of W8 over Q(i) has two minimal primes, of degrees 20 and 30.
+At p = 32009 the retained record `docs/evidence/a5-exceptional-fibers/structure/w8-kp/` holds a modular ideal
+whose radical is the ideal of the degree-20 component (9 linear, 36 quadric and 3 cubic generators), so that
+component lives in 15 coordinates there. Whether the degree-20 prime over Q(i) is a component of the fiber cone
+is a separate question, which row A5-418 states with status open; a rank certificate would concern the ideal,
+not that identification. hypothesis: after the 9 linear forms the degree-20 prime has Hilbert function
+1, 15, 84, 300, 825 (reported as a scratch computation in the comments of issue 863 on 2026-11-13, not a ledger
+row; what variety the prime defines is open there). Under it the Macaulay matrices of the 36 quadrics are
+540 x 680 of rank 380 in degree 3 and 4,320 x 3,060 of rank 2,235 in degree 4, smaller than the Iso matrices
+above, and a certified HF(2) = 84 and HF(3) = 300 would be a replayable test of the hypothesis.
 
 ## Out of scope
 
-Primality and radicality of K (ledger rows A5-421 and A5-422), the regularity bound that turns finitely many
+Primality of K (ledger row A5-422, for Iso) and its minimal primes (row A5-421, for W8 and E8-bar), the regularity bound that turns finitely many
 values into a Hilbert series, and Groebner-basis certificates. No route for these is proposed here.
 
 ## Open questions for the owner and the A5 session
