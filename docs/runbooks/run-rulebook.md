@@ -620,3 +620,12 @@ the closest entry and say what changed.
   the stop: the Q(i) runs of E8-bar and W8 at 11.5 and 3.3 GB after 1 h 33 min, the `sat` W8 run over Q(i) at
   7.2 GB after 3 h 14 min, the modular runs between 1.4 and 3.3 GB. One certified run replaces them: `c-e8-nm-p`,
   E8-bar at N- modulo 32009, on the workstation under `ulimit -v 30000000`.
+- Outcome (2026-11-13, 14:16 PST): the certified Iso run at N- modulo 32009 (`c-iso-nm-p`, workstation) exits 0
+  after 2 h 24 min 45 s at 1.76 GB peak with `CERT divided_basis_leading_u_bad 0`,
+  `CERT saturation_colon_equal 1`, `FIBER dim 5 mult 23 minimal generators 68`, all 68 generators of degree 2, and
+  `STAGE rees_done`. The Rees standard basis took 1,241 s and the colon certificate 7,444 s. The first Hilbert
+  numerator, 1, 0, -68, 452, -1485, 2948, -3630, 2376, 231, -2200, 2376, -1420, 517, -108, 10, equals that of the
+  quadric ideal over Q(i) in the weight-slice record, so the modular Rees fiber of Iso at N- is certified and
+  agrees with A5-429. Log sha256 `67b3b21e5d8e0420a244da5cc151ea7cbc0583776c16247874e98f7f190a64a7`, script sha256
+  `452ea270018c239212a9142f86beb6b6ea757b8a999f88e28496c31a912bdcb5`. `c-e8-nm-p` was still in its Rees standard
+  basis at 2 h 12 min and 2.1 GB.
