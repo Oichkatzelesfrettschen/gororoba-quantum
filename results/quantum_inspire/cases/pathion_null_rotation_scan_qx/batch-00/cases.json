@@ -1,0 +1,218 @@
+{
+ "schema": "qi-pathion-null-rotation-scan-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "region": [
+  2,
+  4,
+  8,
+  11,
+  12
+ ],
+ "placement": {
+  "2": 0,
+  "4": 1,
+  "8": 2,
+  "11": 3,
+  "12": 4
+ },
+ "register": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json",
+ "guard_qubit": 3,
+ "templates": {
+  "b0": {
+   "block": "b0",
+   "operand": [
+    1,
+    17,
+    1
+   ],
+   "basis": [
+    16,
+    1,
+    2
+   ],
+   "coset": 0,
+   "cz": 21,
+   "roles": {
+    "d0": 4,
+    "d1": 1,
+    "d2": 3,
+    "selector": 2,
+    "coin": 0
+   },
+   "ideal_c": [
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869,
+    -0.995965,
+    0.995965,
+    -0.995869,
+    0.995869
+   ]
+  }
+ },
+ "retained_b0": {
+  "cases_sha256": "b7d52dd9f635fd3e8ee507ab0b1d4aa706e3698adedcd659b6750ab164c113ab",
+  "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
+ },
+ "preregistered": {
+  "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, and the visibility of the center arm of each scan batch",
+  "guard": "a data batch is admitted when q11's e01 and e10 each change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of every scan kind, otherwise it reads unresolved_guard",
+  "control": "the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds 3.0 standard errors, otherwise the offset is absent and no mechanism is decided",
+  "fit": "per admitted scan batch and world, the least chi-square of the batch's three contrasts over the world's one parameter, at the retention that reproduces the center arm's visibility through the mean assignment matrix of the two brackets; a world's chi-square is the sum over the admitted scan batches",
+  "adequate": "a world is adequate when its chi-square is at most the 0.999 quantile of the chi-square law with two degrees of freedom per admitted batch",
+  "class": "three classes of worlds: a rotation about x added to the pulses (on all pulses, on q8's or on q4's), a rotation about y or z added before or after them (same scopes), and the two selector readout worlds; a class is preferred when its best world is adequate and the best world of each other class sits at least 25.0 above it; the x class is excluded when the two other classes lead, the leader is adequate and the best x world sits at least 25.0 above it",
+  "bridge": "Rx(pi/2) reproduces X90 when the within-batch difference of the b0-rx and b0 contrasts, pooled over the two bridge batches, is within 3.0 standard errors of zero",
+  "qx": "every circuit within twice the sampling floor of its ideal law"
+ },
+ "shots": 2048,
+ "batch": "batch-00",
+ "kind": "control",
+ "replicate": null,
+ "circuits": [
+  {
+   "file": "b0.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "pulse": "X90",
+    "scope": null,
+    "steps": 0
+   },
+   "ideal": [
+    0.06242201442,
+    7.798558e-05,
+    0.062419618627,
+    8.0381373e-05,
+    0.06232564198,
+    0.00017435802,
+    0.062419618627,
+    8.0381373e-05,
+    0.00017435802,
+    0.06232564198,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    8.0381373e-05,
+    0.062419618627,
+    0.00017435802,
+    0.06232564198,
+    8.0381373e-05,
+    0.062419618627,
+    0.06232564198,
+    0.00017435802,
+    0.062322015216,
+    0.000177984784,
+    0.06242201442,
+    7.798558e-05,
+    0.062322015216,
+    0.000177984784
+   ],
+   "sha256": "9c348677d607b06019b57d7187aae861ecaeebeb36bd90b401527ea2a2723ac1"
+  },
+  {
+   "file": "b0-rx.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "pulse": "Rx",
+    "scope": null,
+    "steps": 0
+   },
+   "ideal": [
+    0.06242201442,
+    7.798558e-05,
+    0.062419618627,
+    8.0381373e-05,
+    0.06232564198,
+    0.00017435802,
+    0.062419618627,
+    8.0381373e-05,
+    0.00017435802,
+    0.06232564198,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    0.000177984784,
+    0.062322015216,
+    7.798558e-05,
+    0.06242201442,
+    8.0381373e-05,
+    0.062419618627,
+    0.00017435802,
+    0.06232564198,
+    8.0381373e-05,
+    0.062419618627,
+    0.06232564198,
+    0.00017435802,
+    0.062322015216,
+    0.000177984784,
+    0.06242201442,
+    7.798558e-05,
+    0.062322015216,
+    0.000177984784
+   ],
+   "sha256": "6680ebbb7945336fc1bceef76e847a8c7bf8471db26b6331dce792ae5772fd6e"
+  },
+  {
+   "file": "b0-rx-all-m5.cq",
+   "kind": "data",
+   "template": "b0",
+   "arm": {
+    "pulse": "Rx",
+    "scope": "all",
+    "steps": -1
+   },
+   "ideal": [
+    0.076509980898,
+    4.800969e-05,
+    0.069897638696,
+    8.5707642e-05,
+    0.068889871127,
+    0.001375850174,
+    0.048535873334,
+    0.002588048326,
+    0.000933835226,
+    0.073308530943,
+    0.001615636316,
+    0.073077562837,
+    0.001568741471,
+    0.068129045423,
+    0.004256142449,
+    0.052757396823,
+    0.004561687139,
+    0.076114400917,
+    0.005683333477,
+    0.044162516224,
+    0.007994293401,
+    0.044391975248,
+    0.004698335994,
+    0.036319641277,
+    0.0549601346,
+    0.000218069242,
+    0.059043743063,
+    0.003357084466,
+    0.058175467728,
+    0.005230929167,
+    0.049395498735,
+    0.002115017951
+   ],
+   "sha256": "e02b045c4d4ca3893fbcf0b826277d63044c53c3e70e64b79bc04269f28ec744"
+  }
+ ]
+}

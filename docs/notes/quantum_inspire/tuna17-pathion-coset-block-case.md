@@ -333,6 +333,13 @@ and its QX twin `pathion_one_cz_null_qx`; the owner approved both on 2026-11-07,
 `results/quantum_inspire/runs/`, and the Tuna-17 series read `unresolved_batch` under the preregistered rule
 (`results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json`).
 
+The written case
+[pathion_null_rotation_scan_tuna_17](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md)
+separates the two mechanisms that series left together, the coherent pulse error and the q12-correlated selector
+readout, on b0 itself: it replaces b0's X90 pulses by the native `Rx` at 80 to 100 degrees and reads how the selector
+contrast follows the injected rotation, with a readout bracket and a q11 readout admission around every data batch.
+Its generator is `scripts/qi_pathion_null_rotation_scan_cases.py`; the case awaits the owner's approval.
+
 The schema-v2 record is byte-reproducible only on one OpenBLAS build and core: its readout-corrected statistics solve the
 32 x 32 assignment system with `np.linalg.solve`, and a regeneration under the system interpreter (which loads the
 distribution's `libopenblas`, where the pinned interpreter loads the wheel's `libscipy_openblas64_`) or under a forced
