@@ -2,23 +2,25 @@
 
 The modular arc certificate (`../a5-exceptional-fibers/arcs`) substitutes two arc families of the parametrization Phi
 of the slice V(J) into the 21 generators G and reads the limit vector F, the first nonzero coefficient vector of
-G(x(s)). Here the same two families are substituted into the J and G of the Q(i) producer
+G(x(s)). Here the same two families are substituted into the generators G of the Q(i) producer
 (`reduction_check._script`, whose good reduction A5-247 checks), with the family parameters W, R, S, Z, E as ring
-variables over Q(i):
+variables over Q(i); the slice ideal J enters through the identity J(Phi) = 0 below:
 
     first-order family:  w = W s, rho = R s, sigma = S s, e = E, zeta = Z s
     order-5 family:      w = W s^2, rho = (R + S) s / 2, sigma = (R - S) s / 2, e = -1 + E s^2, zeta = Z s
 
 Phi satisfies J over Q(i) identically (`arc_jets_qi.identity`, A5-346), so every arc of either family lies on V(J)
-and starts at the origin. A relation f of degree d of the fiber cone has f(G) in J + m I^d, so f(G(x(s))) has order
-above d nu on an arc of order nu, and f(F) = 0: every limit vector lies in V(L), L the relation ideal.
+and starts at the origin. A relation f of degree d of the fiber cone has f(G) in J + m I^d in the local ring at
+the origin, so f(G(x(s))) has order above d nu on an arc of order nu, and f(F) = 0: every limit vector lies in
+V(L), L the relation ideal.
 
 Per target and family the record holds the order nu, the nonzero coordinates of F, the rank of [dF | F] at two
 integer parameter points (the dimension of the cone over the image of F is at least that rank), the dimension of
 the linear span of the image (the rank of the coefficient vectors of F on the parameter monomials, which are
 linearly independent functions), and the dimension of the joint span of the two families. The limit vectors reduced
 at (32009, i -> 10754) and (32029, i -> 9115) are compared, polynomial by polynomial, with the retained modular
-family logs. A control family, the order-5 family recentered at e = 2, must lose order or rank.
+family logs. A control family, the order-5 family recentered at e = 2, has order 3 and rank 2: the order
+and the rank of the certified family belong to the center e = -1.
 
 Deduction, stated in the README beside this file: with the quadric ideal K of the fiber cone over Q(i) and its two
 minimal primes of dimension 5 and 4 (A5-421), rank 5 puts the closure of the order-5 limits onto the component of
@@ -90,7 +92,8 @@ class Family:
 
 FIRST_ORDER = Family("first_order", "fam_p2_first_order_n2.log", 1, 2, False, None, 2, 4)
 ORDER_FIVE = Family("order_five", "fam_near_e-1_j2_a2_b1_c1_d1_n5.log", 2, 5, True, -1, 5, 5)
-CONTROL = Family("order_five_recentered_at_2", None, 2, 5, True, 2, 5, 5)
+# Recentered away from e = -1 the order-5 arcs lose order and rank: order 3 and rank 2 in place of 5 and 5.
+CONTROL = Family("order_five_recentered_at_2", None, 2, 5, True, 2, 3, 2)
 FAMILIES = (FIRST_ORDER, ORDER_FIVE, CONTROL)
 
 
@@ -188,6 +191,7 @@ def complex_rank(rows: list[list[tuple[Fraction, Fraction]]]) -> int:
     if not rows or not rows[0]:
         return 0
     width = len(rows[0])
+    _require(all(len(row) == width for row in rows), "ragged matrix")
     entries = []
     for row in rows:
         entries += [_q(a) for a, _ in row] + [_q(-b) for _, b in row]
@@ -360,32 +364,42 @@ def compute() -> dict[str, Any]:
 def verdict(record: dict[str, Any]) -> list[str]:
     """The reasons the record fails its own rules; empty when it passes."""
     problems = []
+    if [target.get("slug") for target in record["targets"]] != list(TARGETS):
+        problems.append("the record does not hold exactly the two targets")
     for target in record["targets"]:
         name = target["slug"]
         if target["phi_identity"]["arc"]["nonzero"] != 0 or target["phi_identity"]["mutated"]["nonzero"] == 0:
             problems.append(f"{name}: Phi leaves J, or the mutated Phi stays on it")
-        if target["quadric_ideal_minimal_primes"] != EXPECTED_PRIMES:
+        primes = target["quadric_ideal_minimal_primes"]
+        if primes != EXPECTED_PRIMES:
             problems.append(f"{name}: the quadric ideal has other minimal primes")
+            continue
         rows = {row["family"]: row for row in target["families"]}
-        for family in (FIRST_ORDER, ORDER_FIVE):
+        if sorted(rows) != sorted(family.name for family in FAMILIES):
+            problems.append(f"{name}: the families differ from the three of the script")
+            continue
+        # The minimal prime of affine dimension d has k linear forms and spans 21 - k dimensions; the family of
+        # rank d is dense in it and spans the same.
+        span_of_dimension = {prime[0]: GENERATORS - prime[2] for prime in primes}
+        for family in FAMILIES:
             row = rows[family.name]
             if row["generators"] != GENERATORS or row["series_residues"] or row["origin_residues"]:
                 problems.append(f"{name} {family.name}: generator count or series residues")
             if row["order"] != family.expected_order:
                 problems.append(f"{name} {family.name}: order {row['order']}")
-            if not row["cone_ranks"] or min(row["cone_ranks"]) != family.expected_rank:
+            if row["cone_ranks"] != [family.expected_rank] * len(POINTS):
                 problems.append(f"{name} {family.name}: cone ranks {row['cone_ranks']}")
+        for family in (FIRST_ORDER, ORDER_FIVE):
+            row = rows[family.name]
+            if row["span_dimension"] != span_of_dimension[family.expected_rank]:
+                problems.append(f"{name} {family.name}: span {row['span_dimension']}")
+            expected_targets = [(entry[1], entry[2]) for entry in TARGETS[name][2]]
+            if [(entry["prime"], entry["i_root"]) for entry in row["reduction"]] != expected_targets:
+                problems.append(f"{name} {family.name}: the reduction does not cover both primes")
             if any(entry["coordinates_that_differ"] for entry in row["reduction"]):
                 problems.append(f"{name} {family.name}: a reduced limit differs from the modular log")
-        # A minimal prime with k linear forms spans a space of dimension 21 - k, and a dense family spans the same.
-        spans = sorted(rows[family.name]["span_dimension"] for family in (FIRST_ORDER, ORDER_FIVE))
-        if spans != sorted(GENERATORS - prime[2] for prime in target["quadric_ideal_minimal_primes"]):
-            problems.append(f"{name}: the spans {spans} differ from 21 minus the linear forms of the minimal primes")
         if target["joint_span_dimension"] <= rows[ORDER_FIVE.name]["span_dimension"]:
             problems.append(f"{name}: the first-order limits lie in the span of the order-5 limits")
-        control = rows[CONTROL.name]
-        if control["order"] == ORDER_FIVE.expected_order and max(control["cone_ranks"], default=0) >= 5:
-            problems.append(f"{name}: the recentered control keeps order 5 and rank 5")
     return problems
 
 

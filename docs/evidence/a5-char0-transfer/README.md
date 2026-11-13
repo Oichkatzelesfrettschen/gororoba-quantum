@@ -334,10 +334,11 @@ memory, measured on the build host with Singular 4.4.1.
 
 ## Both components of the E8-bar quadric scheme lie in the fiber over Q(i) (ledger A5-425)
 
-Over Q(i) the reduced exceptional fiber of E8-bar -> N- and of E8-bar -> N+ is the union of the two components of
-the quadric scheme: a fourfold of degree 11 and a threefold of degree 4. [e8_fiber_components_qi.py](e8_fiber_components_qi.py)
+Conditional on the quadric ideal over Q(i) of A5-421 and on the slice premise of A5-423, the reduced exceptional
+fiber of E8-bar -> N- and of E8-bar -> N+ over Q(i) is the union of the two components of the quadric scheme: a
+fourfold of degree 11 and a threefold of degree 4. [e8_fiber_components_qi.py](e8_fiber_components_qi.py)
 substitutes the two arc families of the modular certificate ([arcs](../a5-exceptional-fibers/arcs/README.md)) into
-the J and G of the Q(i) producer, with the family parameters W, R, S, Z, E as ring variables, and reads the limit
+the generators G of the Q(i) producer, with the family parameters W, R, S, Z, E as ring variables, and reads the limit
 vector F, the first nonzero coefficient vector of G(x(s)); the record is
 [e8-fiber-components-qi.json](e8-fiber-components-qi.json).
 
@@ -345,7 +346,7 @@ vector F, the first nonzero coefficient vector of G(x(s)); the record is
 |---|---|---:|---|---:|
 | first-order | w = W s, rho = R s, sigma = S s, e = E, zeta = Z s | 2 | 4, 4 | 7 |
 | order-5 | w = W s^2, rho = (R + S) s / 2, sigma = (R - S) s / 2, e = -1 + E s^2, zeta = Z s | 5 | 5, 5 | 12 |
-| control: order-5 recentered at e = 2 | the same with e = 2 + E s^2 | 3 | 2, 2 | 2 |
+| order-5 recentered at e = 2 (control) | the same with e = 2 + E s^2 | 3 | 2, 2 | 2 |
 
 The numbers are the same on both targets. The two spans together have dimension 16. Phi satisfies the 16 generators
 of J over Q(i) identically and the mutated Phi leaves 15 nonzero (the identity of A5-346, rerun here). Each limit
@@ -353,7 +354,8 @@ vector reduced at (32009, i = 10754) and at (32029, i = 9115) equals, polynomial
 coordinates, the limit of the retained modular family log of the same target. The spans 7 and 12 equal 21 minus
 the 14 and 9 linear forms of the two minimal primes of the quadric ideal over Q(i) (A5-421).
 
-**Inferred.** A relation f of degree d of the fiber cone has f(G) in J + m I^d, so on an arc of V(J) through the
+**Inferred.** A relation f of degree d of the fiber cone has f(G) in J + m I^d in the local ring at the origin,
+so on an arc of V(J) through the
 origin with G of order nu the series f(G(x(s))) has order above d nu and f(F) = 0: every limit vector lies in V(L),
 L the relation ideal. The degree-2 part of L spans an ideal K_h with V(L) inside V(K_h). Under the premise of
 A5-423, that the fiber cone on the header slice is the fiber cone on the weight slice up to a linear change of
@@ -362,14 +364,19 @@ dimension 4 and degree 4. The closure Y1 of the order-5 limits is irreducible ov
 V(K_h), whose only component of that dimension is V(P1), so Y1 = V(P1). The closure Y2 of the first-order limits
 is irreducible of dimension at least 4, and holds a point outside the linear span of Y1 = V(P1), because the joint
 span 16 exceeds 12; so Y2 lies in V(P2) and equals it by dimension. Hence V(L) = V(P1) union V(P2) over Q(i). The
-set of limits of the kernel is the set of complex points of this fiber
-([attachments](../a5-kernel-attachments/README.md#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record)),
-so for E8-bar that set no longer waits on the relation ideal in degrees 8 and above (A5-009); those degrees decide
-the scheme structure alone, including whether the five coordinates that are nilpotent on the quadric scheme stay
+[attachments record](../a5-kernel-attachments/README.md#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record)
+identifies the set of limits of the kernel with the complex points of this fiber, under its own premises (A5-411,
+A5-415 and A5-417, which rest on a closure theorem whose text is uninspected). Under those premises and the two
+above, that set for E8-bar no longer waits on the relation ideal in degrees 8 and above (A5-009); those degrees
+decide the scheme structure alone, including whether the five coordinates that are nilpotent on the quadric scheme stay
 nilpotent on the fiber.
 
-Not covered: the scheme structure of the fiber, and the premise that joins the two slices, which the record takes
-from A5-423 and does not recompute. A family whose order, rank or span differs, a reduced limit that differs from
+Not covered: the scheme structure of the fiber, and the premise that joins the two slices. That premise is the
+local-product argument of the
+[attachments record](../a5-kernel-attachments/README.md#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not)
+with the invariance `pf4(W) = det(B)^2 pf4(S)`; no map between the 21 generators of the two slices is retained, and
+this record does not recompute it. The control family is a genuine family of arcs of V(J): its order 3 and rank 2
+show that the order and rank of the certified family belong to the center e = -1. A family whose order, rank or span differs, a reduced limit that differs from
 its modular log, a first-order limit inside the span of the order-5 limits, a control that keeps order 5 and rank
 5, or a quadric ideal over Q(i) with other minimal primes falsifies the record.
 

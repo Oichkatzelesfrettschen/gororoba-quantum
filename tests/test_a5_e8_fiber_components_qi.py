@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "docs" / "evidence" / "a5-char0-transfer"))
@@ -66,20 +68,41 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         (True, [], ["e8-nm", "e8-np"]),
     )
 
-    def family(target: dict, name: str) -> dict:
+    def family(target: dict[str, Any], name: str) -> dict[str, Any]:
         return next(row for row in target["families"] if row["family"] == name)
 
-    changes = (
-        lambda t: family(t, "order_five").update(cone_ranks=[4, 4]),
-        lambda t: family(t, "first_order").update(order=1),
-        lambda t: t.update(joint_span_dimension=family(t, "order_five")["span_dimension"]),
-        lambda t: family(t, "first_order")["reduction"][0].update(coordinates_that_differ=[1]),
-        lambda t: t["phi_identity"]["arc"].update(nonzero=1),
-        lambda t: t.update(quadric_ideal_minimal_primes=[[5, 11, 9]]),
-        lambda t: family(t, "order_five_recentered_at_2").update(order=5, cone_ranks=[5, 5]),
-    )
-    for change in changes:
-        mutated = json.loads(json.dumps(record))
-        change(mutated["targets"][0])
+    def swap_spans(target: dict[str, Any]) -> None:
+        family(target, "first_order").update(span_dimension=12)
+        family(target, "order_five").update(span_dimension=7)
+
+    changes: dict[str, Callable[[dict[str, Any]], Any]] = {
+        "order-5 rank too small": lambda t: family(t, "order_five").update(cone_ranks=[4, 4]),
+        "order-5 rank too large at one point": lambda t: family(t, "order_five").update(cone_ranks=[6, 5]),
+        "first-order rank too large at one point": lambda t: family(t, "first_order").update(cone_ranks=[5, 4]),
+        "first-order order": lambda t: family(t, "first_order").update(order=1),
+        "swapped spans": swap_spans,
+        "first-order span": lambda t: family(t, "first_order").update(span_dimension=8),
+        "joint span": lambda t: t.update(joint_span_dimension=family(t, "order_five")["span_dimension"]),
+        "reduced limit": lambda t: family(t, "first_order")["reduction"][0].update(coordinates_that_differ=[1]),
+        "empty reduction": lambda t: family(t, "order_five").update(reduction=[]),
+        "identity": lambda t: t["phi_identity"]["arc"].update(nonzero=1),
+        "mutated identity": lambda t: t["phi_identity"]["mutated"].update(nonzero=0),
+        "primes": lambda t: t.update(quadric_ideal_minimal_primes=[[5, 11, 9]]),
+        "generator count": lambda t: family(t, "first_order").update(generators=20),
+        "series residue": lambda t: family(t, "order_five").update(series_residues=1),
+        "origin residue": lambda t: family(t, "first_order").update(origin_residues=1),
+        "control keeps order 5": lambda t: family(t, "order_five_recentered_at_2").update(order=5),
+        "control keeps rank 5": lambda t: family(t, "order_five_recentered_at_2").update(cone_ranks=[5, 5]),
+        "control residue": lambda t: family(t, "order_five_recentered_at_2").update(series_residues=1),
+        "missing family": lambda t: t.update(families=t["families"][:2]),
+    }
+    for position in (0, 1):
+        for name, change in changes.items():
+            mutated = json.loads(json.dumps(record))
+            change(mutated["targets"][position])
+            if components.verdict(mutated) == []:
+                raise AssertionError(f"a record mutated at {name} on target {position} passes")
+    for name, emptied in (("no target", []), ("one target", record["targets"][:1])):
+        mutated = json.loads(json.dumps(record)) | {"targets": json.loads(json.dumps(emptied))}
         if components.verdict(mutated) == []:
-            raise AssertionError("a mutated record passes")
+            raise AssertionError(f"a record with {name} passes")
