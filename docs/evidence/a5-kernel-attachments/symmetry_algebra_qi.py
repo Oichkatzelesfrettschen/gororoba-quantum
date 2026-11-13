@@ -575,7 +575,8 @@ def decompose(algebra: list[CMat], label: str) -> tuple[dict[str, Any], list[CMa
         series.append(following)
     commutator = series[1] if len(series) > 1 else series[0]
     # x is central when sum_k x_k ad[k] = 0: one equation per entry of the matrix.
-    center = null_space([[ad[k].rows()[c][m] for k in range(dim)] for c in range(dim) for m in range(dim)], dim)
+    entries = [matrix.rows() for matrix in ad]
+    center = null_space([[entries[k][c][m] for k in range(dim)] for c in range(dim) for m in range(dim)], dim)
     against_commutator = (CMat.from_rows(commutator, dim) @ killing).rows() if commutator else []
     radical = null_space(against_commutator, dim)
     nil = null_space(against_commutator + trace.rows(), dim)
