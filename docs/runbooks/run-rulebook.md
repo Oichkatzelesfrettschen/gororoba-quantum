@@ -613,3 +613,10 @@ the closest entry and say what changed.
   (RS) = H : u^infinity for any input. The same-sign X control passes both (count 0, colon equal) modulo 32009 in
   24 s and over Q(i) in 188 s with the FIBER line unchanged; `c-iso-nm-p` repeats Iso at N- modulo 32009 with
   the certificate on the workstation. A run started before the certificate existed prints no `CERT` line.
+- Outcome and stop (2026-11-13, 11:55 PST, owner's choice): the two MacBook Iso runs (`h-iso-nm-p2`, N- modulo
+  32029; `h-iso-np-p`, N+ modulo 32009) each printed FIBER dimension 5, multiplicity 23, 68 minimal generators at
+  5,353 s, uncertified like the two before them. The ten open workstation runs were stopped without a FIBER line:
+  Iso and W8 are closed over Q(i) by A5-424 and A5-426, and no open run carried the certificate. Resident sets at
+  the stop: the Q(i) runs of E8-bar and W8 at 11.5 and 3.3 GB after 1 h 33 min, the `sat` W8 run over Q(i) at
+  7.2 GB after 3 h 14 min, the modular runs between 1.4 and 3.3 GB. One certified run replaces them: `c-e8-nm-p`,
+  E8-bar at N- modulo 32009, on the workstation under `ulimit -v 30000000`.
