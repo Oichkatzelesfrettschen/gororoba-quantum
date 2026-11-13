@@ -167,17 +167,23 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
 
 
 def skip_reason(output: str) -> str | None:
-    """The last nonblank output line when it states a skip (`skipped: ...`), else None."""
+    """The last nonblank output line when it states a skip with a reason (`skipped: REASON`), else None."""
     lines = [line.strip() for line in output.splitlines() if line.strip()]
-    return lines[-1] if lines and lines[-1].startswith(SKIP_PREFIX) else None
+    if not lines or not lines[-1].startswith(SKIP_PREFIX) or not lines[-1][len(SKIP_PREFIX) :].strip():
+        return None
+    return lines[-1]
 
 
-def verdict(gate: dict[str, Any], status: int, output: str) -> str:
-    """PASS for status 0; SKIP for the skip status of a gate that declares `requires` and ends its output with a
-    `skipped:` line; FAIL otherwise, the skip status without that line included."""
+def verdict(gate: dict[str, Any], status: int, output: str, environment: dict[str, str]) -> str:
+    """PASS for status 0; SKIP for the skip status of a gate that declares `requires`, ends its output with a
+    `skipped: REASON` line and has none of its toolchains required by the caller; FAIL otherwise.
+
+    A caller that exports the variable REQUIREMENTS names for one of the gate's toolchains asked for the live
+    path, so a skip under it is a failure whatever the gate's own guard did."""
     if status == 0:
         return "PASS"
-    if status == SKIP_STATUS and gate.get("requires") and skip_reason(output) is not None:
+    required = any(environment.get(REQUIREMENTS[name]) == "1" for name in gate.get("requires", ()))
+    if status == SKIP_STATUS and gate.get("requires") and not required and skip_reason(output) is not None:
         return "SKIP"
     return "FAIL"
 
@@ -348,7 +354,7 @@ def main(argv: list[str] | None = None) -> int:
     started = time.monotonic()
     timings = []
     for gate, status, seconds, output in run_all(selected, environment, ROOT):
-        label = verdict(gate, status, output)
+        label = verdict(gate, status, output, environment)
         timings.append(
             {
                 "name": gate["name"],

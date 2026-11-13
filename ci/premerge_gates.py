@@ -183,7 +183,7 @@ def cached_passes(path: Path, digest: str) -> set[str] | None:
     """The passing gate names a matching entry records, or None for a missing or foreign entry."""
     try:
         entry = json.loads(path.read_text())
-    except OSError, ValueError:
+    except (OSError, ValueError):
         return None
     if not isinstance(entry, dict):
         return None

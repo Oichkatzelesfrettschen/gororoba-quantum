@@ -155,7 +155,14 @@ def test_the_skip_status_from_a_gate_without_requires_is_a_failure(root: Path) -
 
 
 @pytest.mark.parametrize(
-    "command", ("exit 77", 'echo "no reason here"; exit 77', 'echo "skipped: early"; echo "later line"; exit 77')
+    "command",
+    (
+        "exit 77",
+        'echo "no reason here"; exit 77',
+        'echo "skipped: early"; echo "later line"; exit 77',
+        'echo "skipped:"; exit 77',
+        'echo "skipped:   "; exit 77',
+    ),
 )
 def test_the_skip_status_without_a_closing_reason_line_is_a_failure(root: Path, tmp_path: Path, command: str) -> None:
     manifest(root, [{"name": "silent", "cwd": ".", "cmd": command, "requires": ["singular"]}])
@@ -171,6 +178,19 @@ def test_the_skip_status_without_a_closing_reason_line_is_a_failure(root: Path, 
         or verdicts != ["FAIL"]
     ):
         raise AssertionError(f"status 77 without a closing skipped: line did not fail (status {status}):\n{text}")
+
+
+def test_a_skip_under_the_required_variable_is_a_failure(root: Path) -> None:
+    # The guard of this gate ignores the variable; the runner still refuses the skip once the caller requires the tool.
+    manifest(root, [{"name": "ignores", "cwd": ".", "cmd": 'echo "skipped: x"; exit 77', "requires": ["singular"]}])
+    with runner(root, GOROROBA_SINGULAR_REQUIRED="1") as output:
+        required = run_gates.main([])
+    with runner(root, GOROROBA_SINGULAR_REQUIRED=None, GOROROBA_QI_REQUIRED="1") as other:
+        unrelated = run_gates.main([])
+    if required != 1 or "FAIL ignores" not in output.getvalue():
+        raise AssertionError(f"a skip under GOROROBA_SINGULAR_REQUIRED=1 did not fail:\n{output.getvalue()}")
+    if unrelated != 0 or "SKIP ignores" not in other.getvalue():
+        raise AssertionError(f"another toolchain's variable changed the verdict:\n{other.getvalue()}")
 
 
 def test_every_repository_gate_that_prints_a_skip_line_exits_with_the_skip_status() -> None:
