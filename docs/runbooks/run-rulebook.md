@@ -640,10 +640,12 @@ the closest entry and say what changed.
   the pivot is a nonzerodivisor on the slice ring. Checked for the two certified scripts modulo 32009
   (Singular 4.4.1, build host, under 1 s each): the slice ideal J of Iso at N- is prime of dimension 5 and
   degree 2, that of E8-bar at N- prime of dimension 5 and degree 10, J : G_pivot = J in both, pivots 7 and 9 of
-  weight 3. The scripts do not print this check; a script whose J has a component containing the pivot would
-  compute a smaller object. Read at no source yet:
-  the special fiber of the blowup as
-  the fiber of the closed graph, the Pfaffian results of Baetica (1998) and of Jozefiak and Pragacz (1979), and
+  weight 3. The two certified scripts predate the check; `hsat.py` now writes it into every script as
+  `CERT pivot_nonzerodivisor_mod_J`, which stops the run when it fails, and the same-sign X control passes it
+  with the FIBER line unchanged (16 s). Huneke and Swanson, Definition 5.6.2, page 114: the blowup of I is
+  Proj R[It], covered by the Spec R[I / a_i]; its fiber over the closed point is then Proj of the fiber cone by
+  base change. Read at no source yet: the blowup as the closure of the graph of the map given by the
+  generators (section 5.6 does not state it), the Pfaffian results of Baetica (1998) and of Jozefiak and Pragacz (1979), and
   the passage from the local ring of the sources to the graded polynomial ring of the scripts, which rests on
   the weight grading and is argued in this repository alone.
 - Outcome (2026-11-13, 14:16 PST): the certified Iso run at N- modulo 32009 (`c-iso-nm-p`, workstation) exits 0
