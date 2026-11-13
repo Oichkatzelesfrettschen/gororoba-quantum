@@ -1,4 +1,365 @@
 {
+  "basepoint_local_products": {
+    "boundary_orbits_with_local_product": [
+      "B9",
+      "N+",
+      "N-",
+      "Va+",
+      "Va-"
+    ],
+    "boundary_orbits_without": [
+      "V",
+      "VB"
+    ],
+    "deduction": "Where the tangent span of g_2 + scaling at the basepoint z_0 has the dimension of the boundary orbit and spans C^15 together with the slice, the map (xi, s) -> exp(xi) s from a complement of the stabilizer algebra times the slice is a local biholomorphism at (0, z_0) by the inverse function theorem. Every z near z_0 is g(z) s(z) with g(z) -> identity and s(z) in the slice; the source stratum is invariant under G_2(C) x C^*, so s(z) lies in the source slice germ, and ker C_z = g(z) ker C_(s(z)). The limits of ker C_z along any sequence or continuous path in the source tending to z_0 are therefore limits along the slice germ (the fiber over z_0 of the closed graph equals that of its restriction to the slice; s(z(t)) is analytic and need not be semialgebraic), and the fiber of holomorphic kernel limits P over g z_0 is g applied to the fiber over z_0; the bordered-kernel limits over g z_0 are the planes g P meet (g z_0)^perp, since g is complex orthogonal and need not preserve the Hermitian complement. G_2(C) x C^* is a direct factor of the connected group G_2(C) x SO(2, C) x C^* whose orbit is the boundary orbit, so its tangent rank is constant along that orbit; its orbits inside the boundary orbit are then open and partition a connected set, so the orbit of z_0 under G_2(C) x C^* is the whole boundary orbit.",
+    "expected_orbit_slice_tangent_and_joint_dimensions": {
+      "B9": [
+        9,
+        6,
+        9,
+        15
+      ],
+      "N+": [
+        6,
+        9,
+        6,
+        15
+      ],
+      "N-": [
+        6,
+        9,
+        6,
+        15
+      ],
+      "V": [
+        8,
+        7,
+        7,
+        14
+      ],
+      "VB": [
+        7,
+        8,
+        6,
+        14
+      ],
+      "Va+": [
+        7,
+        8,
+        7,
+        15
+      ],
+      "Va-": [
+        7,
+        8,
+        7,
+        15
+      ]
+    },
+    "incidence_count": 33,
+    "incidences_with_local_product": 27,
+    "rows": [
+      {
+        "boundary_orbit": "B9",
+        "boundary_orbit_dimension": 9,
+        "incidence": "E8bar->B9",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 6,
+        "tangent_rank_equivariant_span": 9
+      },
+      {
+        "boundary_orbit": "V",
+        "boundary_orbit_dimension": 8,
+        "incidence": "E8bar->V",
+        "local_product_with_kernel_transport": false,
+        "rank_of_tangent_span_with_slice": 14,
+        "slice_dimension": 7,
+        "tangent_rank_equivariant_span": 7
+      },
+      {
+        "boundary_orbit": "VB",
+        "boundary_orbit_dimension": 7,
+        "incidence": "E8bar->VB",
+        "local_product_with_kernel_transport": false,
+        "rank_of_tangent_span_with_slice": 14,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "Va+",
+        "boundary_orbit_dimension": 7,
+        "incidence": "E8bar->Va+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 7
+      },
+      {
+        "boundary_orbit": "Va-",
+        "boundary_orbit_dimension": 7,
+        "incidence": "E8bar->Va-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 7
+      },
+      {
+        "boundary_orbit": "B9",
+        "boundary_orbit_dimension": 9,
+        "incidence": "Iso->B9",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 6,
+        "tangent_rank_equivariant_span": 9
+      },
+      {
+        "boundary_orbit": "VB",
+        "boundary_orbit_dimension": 7,
+        "incidence": "Iso->VB",
+        "local_product_with_kernel_transport": false,
+        "rank_of_tangent_span_with_slice": 14,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "B9",
+        "boundary_orbit_dimension": 9,
+        "incidence": "W8->B9",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 6,
+        "tangent_rank_equivariant_span": 9
+      },
+      {
+        "boundary_orbit": "VB",
+        "boundary_orbit_dimension": 7,
+        "incidence": "W8->VB",
+        "local_product_with_kernel_transport": false,
+        "rank_of_tangent_span_with_slice": 14,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "B9",
+        "boundary_orbit_dimension": 9,
+        "incidence": "X+->B9",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 6,
+        "tangent_rank_equivariant_span": 9
+      },
+      {
+        "boundary_orbit": "VB",
+        "boundary_orbit_dimension": 7,
+        "incidence": "X+->VB",
+        "local_product_with_kernel_transport": false,
+        "rank_of_tangent_span_with_slice": 14,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "Va+",
+        "boundary_orbit_dimension": 7,
+        "incidence": "X+->Va+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 7
+      },
+      {
+        "boundary_orbit": "B9",
+        "boundary_orbit_dimension": 9,
+        "incidence": "X-->B9",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 6,
+        "tangent_rank_equivariant_span": 9
+      },
+      {
+        "boundary_orbit": "VB",
+        "boundary_orbit_dimension": 7,
+        "incidence": "X-->VB",
+        "local_product_with_kernel_transport": false,
+        "rank_of_tangent_span_with_slice": 14,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "Va-",
+        "boundary_orbit_dimension": 7,
+        "incidence": "X-->Va-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 8,
+        "tangent_rank_equivariant_span": 7
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "B9->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "B9->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "V->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "V->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "VB->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "VB->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "Va+->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "Va-->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "E8bar->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "E8bar->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "Iso->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "Iso->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "W8->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "W8->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "X+->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "X+->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N+",
+        "boundary_orbit_dimension": 6,
+        "incidence": "X-->N+",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      },
+      {
+        "boundary_orbit": "N-",
+        "boundary_orbit_dimension": 6,
+        "incidence": "X-->N-",
+        "local_product_with_kernel_transport": true,
+        "rank_of_tangent_span_with_slice": 15,
+        "slice_dimension": 9,
+        "tangent_rank_equivariant_span": 6
+      }
+    ],
+    "rows_are_the_declared_incidences_each_once": true,
+    "rows_with_the_expected_dimensions": 33
+  },
   "boost": {
     "parameters_cosh_sinh": [
       "5/4",
@@ -44,9 +405,11 @@
     "the residual of four candidate rho for the boost is nonzero",
     "b ker C_z differs from ker C_(b z) at six canonical points",
     "the dimension of the solution space of the infinitesimal system and the membership tests",
-    "the tangent ranks of the table"
+    "the tangent ranks of the table",
+    "the zero residual of (X, X) for the 14 G_2 derivations and of (I, -I/2) for the scaling",
+    "the tangent rank and the rank with the slice at the retained basepoint of every incidence"
   ],
-  "falsifier": "The congruence residual of the G_2 element g is nonzero, g^T g differs from I, or g ker C_z differs from ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix leaves a zero residual.",
+  "falsifier": "The congruence residual of the G_2 element g is nonzero, g^T g differs from I, or g ker C_z differs from ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix leaves a zero residual; a G_2 derivation or the scaling with a nonzero lift residual; a basepoint on B9, Va+, Va-, N+ or N- whose tangent span with the slice has rank below 15, or one on V or VB whose tangent span reaches the orbit dimension.",
   "g2_element": {
     "basis_direction_count": 15,
     "g_transpose_g_equals_identity_in_original_coordinates": true,
@@ -56,9 +419,123 @@
     "residual_nonzero_entries": 0,
     "trace_in_original_coordinates": "12"
   },
+  "group_action": {
+    "all_residuals_zero": true,
+    "deduction": "For a G_2 derivation X in original coordinates the pair (X, X) solves the identity and X is skew, so F(t) = exp(tX)^T C_(exp(tX) z) exp(tX) has derivative zero and exp(tX) satisfies C_(g z) = g^(-T) C_z g^(-1) for every t; the exponentials generate the connected group G_2(C) and the congruence is closed under products, so every g in G_2(C) acts with rho = g and ker C_(g z) = g ker C_z. The scaling z -> c z has C_(c z) = c C_z and leaves ker C_z fixed. The solution space and its X-projection both have dimension 15, so the lift R of each X is unique.",
+    "generators": [
+      {
+        "generator": "g2_derivation_1",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_2",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_3",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_4",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_5",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_6",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_7",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_8",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_9",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_10",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_11",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_12",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_13",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "g2_derivation_14",
+        "generator_is_skew": true,
+        "lift": "R = X",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 112
+      },
+      {
+        "generator": "scaling",
+        "generator_is_skew": false,
+        "lift": "R = -I/2",
+        "residual_nonzero_entries": 0,
+        "sign_flipped_lift_residual_nonzero_entries": 210
+      }
+    ],
+    "identity": "C_(X e_k) + R^T C_(e_k) + C_(e_k) R = 0 for k = 0..14"
+  },
   "inferred": [
     "the identity for every z follows from linearity of z -> C_z in the basis directions",
-    "no rational one-parameter family rho(t) with rho(0) = I satisfies C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection"
+    "no rational one-parameter family rho(t) with rho(0) = I satisfies C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection",
+    "G_2(C) x C^* acts on the kernel bundle (deduction of group_action)",
+    "at the basepoints on B9, Va+, Va-, N+ and N- the limits along paths that leave the slice are limits along the slice germ (deduction of basepoint_local_products)"
   ],
   "infinitesimal": {
     "boost_generator_in_x_projection": false,
@@ -72,12 +549,19 @@
     "x_projection_dimension": 15
   },
   "inputs": {
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/incidence_census.py": "1ac6e43468e4cd6ad482533792437da898d0d89960532982126b98572c190a32",
-    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "0cb3229dc6d6af2d7a231340e6f76e8cdcd647f9b37f1fe4e26c66175e6ee85a",
+    "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "1b043185ff1b96966e4915766bbd2fa65bcd7d036561b60f8b963356b55f5c8e",
+    "docs/evidence/a5-kernel-attachments/nullity16-basepoints-result.json": "2c7dd00477a0af20c1d0f04b96f86ba96b3782499c60a19532ad655d33b1d8f1",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
     "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "lift_mutation_control": {
+    "detected": true,
+    "input_change": "use -R in place of the lift R of each generator",
+    "name": "sign_flipped_lift"
   },
   "mutation_control": {
     "detected": true,
@@ -428,10 +912,10 @@
       "support_size_in_split_coordinates": 4
     }
   ],
-  "schema": "a5-kernel-attachments-kernel-equivariance-v1",
+  "schema": "a5-kernel-attachments-kernel-equivariance-v2",
   "scope": {
-    "claim_boundary": "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one boost element outside the four candidates, and a lift in another component, are not excluded. Equal tangent rank and orbit dimension is a first-order statement; the integration of the infinitesimal pairs to a group action on a neighborhood and a local product structure compatible with the kernel map are hypotheses of any off-slice conclusion.",
-    "statement": "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of verify_regularity_independent.py, and the twelve canonical points of that module"
+    "claim_boundary": "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one boost element outside the four candidates, and a lift in another component, are not excluded. The group action of G_2(C) x C^* on the kernel is a deduction from the exact lifts (group_action); the local product at a basepoint is a deduction from the exact ranks of basepoint_local_products by the inverse function theorem. Basepoints on V and VB lack one tangent direction and carry no such deduction.",
+    "statement": "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of verify_regularity_independent.py, the twelve canonical points of that module, the 14 G_2 derivations and the scaling with their lifts, and the retained basepoint and slice of each of the 33 incidences of first-order-normal-cones-result.json and nullity16-basepoints-result.json"
   },
   "tools": {
     "python_flint": "0.9.0"

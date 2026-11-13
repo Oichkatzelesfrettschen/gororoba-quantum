@@ -451,8 +451,8 @@ transverse slice at the selected path-supported basepoint. The record does not c
 the open Rees elimination; the variation of a fiber along its boundary orbit; or the exclusion of limits along arcs
 that leave the slice, which holds where the boundary orbit carries a local product structure that acts on `ker C_z`.
 The [equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) gives the
-first-order evidence for that structure on the orbits of `B9`, `V^a_+`, `V^a_-`, `N+` and `N-`, and against it on
-`V` and `VB`; the structure itself stays a hypothesis.
+that structure at the basepoints on `B9`, `V^a_+`, `V^a_-`, `N+` and `N-` by an exact rank check and the inverse
+function theorem, so the exclusion holds there; on `V` and `VB` it stays open.
 
 The falsifier is a failed identity; a failed Hermitian splitting at an exact point; a retained arc whose holomorphic
 limit differs from its bordered limit plus the boundary line; a source stratum whose equations involve
@@ -482,8 +482,12 @@ incidences with a completed Rees fiber is that whole fiber:
 The four one-point rows carry a canonical limiting six-plane on the slice germ. No retained arc ends at these
 basepoints, so no arc comparison enters, and the ten incidences from the nullity-8 sources (`E8bar`, `Iso`, `W8`,
 `X+`, `X-` into `N+` and `N-`) have no computed fiber and stay open. The boundaries of the previous section hold
-here: the slice germ at one basepoint, no variation along the boundary orbit, no exclusion for arcs that leave the
-slice. A characteristic disagreement on one of the eight fibers, a source closure with an equation in
+here as stated for the slice germ; the
+[equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) removes the
+last two at the `N+` and `N-` basepoints, where the limits along paths that leave the slice are limits along the
+slice germ and the fiber of holomorphic kernel limits `P` is transported along the orbit by `G_2(C) x C^*`; the
+bordered-kernel limits at `g z_0` are the planes `g P meet (g z_0)^perp`. A characteristic disagreement on one of
+the eight fibers, a source closure with an equation in
 `conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
 Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
@@ -534,16 +538,36 @@ outside the four candidates tested is not excluded. At each canonical point the 
 `G_2` and the scaling has the dimension of the orbit, except at `V` (7 against 8), `VB` (6 against 7) and E8-bar
 (10 against 11), where the boost generator supplies the missing direction.
 
-`hypothesis:` on the orbits of `B9`, `V^a_+`, `V^a_-`, `N+`, `N-`, `W8`, `Iso`, `X+` and `X-` the
-kernel-equivariant group acts locally transitively, the fiber over a point of the orbit near the basepoint is the
-transport of the fiber at the basepoint, and a limit along an arc that leaves the slice lies in the transported
-fiber. The record computes the equality of tangent rank and orbit dimension at the nine canonical points; the
-hypothesis also needs the infinitesimal pairs `(X, R)` to integrate to a group action near each point and a local
-product of orbit and slice compatible with the kernel map, and neither is computed. On `V` and `VB` as boundary
-orbits the kernel can vary along the boost direction, and the variation of the fiber there is open.
+The group `G_2(C) x C^*` acts on the kernel bundle. For each of the 14 `G_2` derivations `X` in original coordinates
+the pair `(X, R) = (X, X)` solves the infinitesimal system exactly and `X` is skew, so
+`F(t) = exp(tX)^T C_(exp(tX) z) exp(tX)` has derivative zero and `exp(tX)` satisfies the congruence with `rho = g`
+for every `t`. **Inferred:** the exponentials generate the connected group `G_2(C)` and the congruence is closed
+under products, so `ker C_(g z) = g ker C_z` for every `g` in `G_2(C)` and every `z`; the scaling has lift
+`R = -I/2` and fixes each kernel. The solution space and its `X` projection both have dimension 15, so each lift
+is unique. Replacing a lift by its negative leaves a nonzero residual for all 15 generators.
+
+At the retained basepoint of each of the 33 incidences the record compares the tangent span of `g_2` and the scaling
+with the boundary orbit and with the slice. At the 27 basepoints on `B9`, `V^a_+`, `V^a_-`, `N+` and `N-` the
+tangent span has the orbit dimension and spans `C^15` together with the slice. **Inferred:** the map
+`(xi, s) -> exp(xi) s`, from a complement of the stabilizer algebra times the slice, is then a local biholomorphism
+at the basepoint `z_0` by the inverse function theorem, so every `z` near `z_0` is `g(z) s(z)` with `g(z)` tending
+to the identity and `s(z)` in the slice. The source strata are invariant under the group, so `s(z)` stays in the
+source slice germ and `ker C_z = g(z) ker C_(s(z))`. The limits of `ker C_z` along any sequence or continuous path
+in the source tending to `z_0` are therefore limits along the slice germ (the fiber over `z_0` of the closed graph
+equals that of its restriction to the slice), and the fiber of holomorphic kernel limits over `g z_0` is `g`
+applied to the fiber over `z_0`. The bordered-kernel limits over `g z_0` are the planes `g P meet (g z_0)^perp` for `P` in the fiber over `z_0`: `g` is
+complex orthogonal and need not be unitary, so it does not carry `P meet z_0^perp` to that plane. Hence
+at those basepoints the closed-graph fibers of the two sections above are the limit sets over all approaches;
+their identification with the limits along real arcs keeps the condition of those sections,
+and they are transported along the whole boundary orbit by the group: `G_2(C) x C^*` is a direct factor of the
+connected group `G_2(C) x SO(2, C) x C^*` whose orbit is the boundary orbit, so its tangent rank is constant along
+that orbit, its orbits there are open, and a connected set holds only one of them. At the 6 basepoints on `V` and `VB` the tangent
+span is one short of the orbit (7 against 8, 6 against 7) and reaches rank 14 with the slice; there the kernel can
+vary along the boost direction, and the variation of the fiber is open.
 Using the split-coordinate matrix in place of `g` leaves 1,458 nonzero residual entries. A nonzero residual for
 `g`, a kernel that `g` fails to transport, or the boost generator inside the `X` projection falsifies the record.
-The replay takes 6.6 seconds wall time and 35.9 CPU seconds with the default worker pool on the 12-core build
+The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds (Python 3.14.7, python-flint 0.9.0,
+12 workers) on the 12-core build
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 

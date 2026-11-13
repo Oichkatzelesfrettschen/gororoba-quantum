@@ -41,11 +41,15 @@ import verify_regularity_independent as regularity  # noqa: E402
 
 import parallel  # noqa: E402
 
-SCHEMA = "a5-kernel-attachments-kernel-equivariance-v1"
+SCHEMA = "a5-kernel-attachments-kernel-equivariance-v2"
+FIRST_ORDER_RESULT = HERE / "first-order-normal-cones-result.json"
+NULLITY16_BASEPOINTS_RESULT = HERE / "nullity16-basepoints-result.json"
 SOURCE_PATHS = (
     HERE / "kernel_equivariance.py",
     HERE / "holomorphic_kernel_lemma.py",
     HERE / "incidence_census.py",
+    FIRST_ORDER_RESULT,
+    NULLITY16_BASEPOINTS_RESULT,
     HERE.parent / "a5-strata-regularity" / "verify_regularity_independent.py",
     ROOT / "gororoba_quantum" / "cd_core.py",
     ROOT / "gororoba_quantum" / "parallel.py",
@@ -60,6 +64,47 @@ UNKNOWN_COUNT = 2 * DIMENSION * DIMENSION
 WITNESS_POINTS = ("VB", "B9", "V")
 SMALLEST_WITNESS = "VB"
 G2_DERIVATION_COUNT = 14
+LOCAL_PRODUCT_ORBITS = ["B9", "N+", "N-", "Va+", "Va-"]
+BOOST_DEFICIENT_ORBITS = ["V", "VB"]
+# The retained incidences in record order: those whose basepoint lies on an orbit of LOCAL_PRODUCT_ORBITS, and those
+# whose basepoint lies on V or VB.
+LOCAL_PRODUCT_INCIDENCES = (
+    "E8bar->B9",
+    "E8bar->Va+",
+    "E8bar->Va-",
+    "Iso->B9",
+    "W8->B9",
+    "X+->B9",
+    "X+->Va+",
+    "X-->B9",
+    "X-->Va-",
+    "B9->N+",
+    "B9->N-",
+    "V->N+",
+    "V->N-",
+    "VB->N+",
+    "VB->N-",
+    "Va+->N+",
+    "Va-->N-",
+    "E8bar->N+",
+    "E8bar->N-",
+    "Iso->N+",
+    "Iso->N-",
+    "W8->N+",
+    "W8->N-",
+    "X+->N+",
+    "X+->N-",
+    "X-->N+",
+    "X-->N-",
+)
+BOOST_DEFICIENT_INCIDENCES = (
+    "E8bar->V",
+    "E8bar->VB",
+    "Iso->VB",
+    "W8->VB",
+    "X+->VB",
+    "X-->VB",
+)
 
 Gaussian = kernel_lemma.Gaussian
 GaussianVector = kernel_lemma.GaussianVector
@@ -296,6 +341,114 @@ def tangent_rank(generators: list[GaussianMatrix], z: GaussianVector) -> int:
     return kernel_lemma._columns_rank([kernel_lemma._matrix_vector(matrix, z) for matrix in generators])
 
 
+def infinitesimal_residual(generator: GaussianMatrix, lift: GaussianMatrix) -> int:
+    """The nonzero entry count of C_(X e_k) + R^T C_(e_k) + C_(e_k) R for X = generator, R = lift, summed over k."""
+    transposed = kernel_lemma._transpose(lift)
+    nonzero = 0
+    for k in range(DIMENSION):
+        fixed = kernel_lemma._c_matrix(basis_vector(k))
+        moved = kernel_lemma._c_matrix(kernel_lemma._matrix_vector(generator, basis_vector(k)))
+        left = multiply_matrices(transposed, fixed)
+        right = multiply_matrices(fixed, lift)
+        nonzero += sum(
+            1
+            for i in range(DIMENSION)
+            for j in range(DIMENSION)
+            if (
+                moved[i][j][0] + left[i][j][0] + right[i][j][0] != 0
+                or moved[i][j][1] + left[i][j][1] + right[i][j][1] != 0
+            )
+        )
+    return nonzero
+
+
+def scaled_matrix(factor: Fraction, matrix: GaussianMatrix) -> GaussianMatrix:
+    return tuple(tuple((factor * entry[0], factor * entry[1]) for entry in row) for row in matrix)
+
+
+def lift_task(index: int) -> dict[str, Any]:
+    """One generator of g_2 + scaling with its lift R: the residual, the skewness and the sign-flipped control.
+
+    Index 0..13 is a G_2 derivation X with R = X; index 14 is the scaling X = I with R = -I/2."""
+    if index < G2_DERIVATION_COUNT:
+        generator = to_original_coordinates(split_matrix_of_derivation(regularity.DERS[index]))
+        lift = generator
+        name = f"g2_derivation_{index + 1}"
+    else:
+        generator = identity_matrix()
+        lift = scaled_matrix(Fraction(-1, 2), generator)
+        name = "scaling"
+    return {
+        "generator": name,
+        "lift": "R = X" if index < G2_DERIVATION_COUNT else "R = -I/2",
+        "residual_nonzero_entries": infinitesimal_residual(generator, lift),
+        "generator_is_skew": generator == scaled_matrix(Fraction(-1), kernel_lemma._transpose(generator)),
+        "sign_flipped_lift_residual_nonzero_entries": infinitesimal_residual(
+            generator, scaled_matrix(Fraction(-1), lift)
+        ),
+    }
+
+
+def basepoint_task(task: tuple[dict[str, Any], list[GaussianMatrix]]) -> dict[str, Any]:
+    """At the retained basepoint of one incidence: the tangent rank of g_2 + scaling against the dimension of the
+    boundary orbit, and the rank of that tangent space together with the slice directions."""
+    row, equivariant = task
+    split_point = [Fraction(value) for value in row["boundary_point"]]
+    z = kernel_lemma._original_z_from_split(tuple(split_point))
+    tangent = [kernel_lemma._matrix_vector(matrix, z) for matrix in equivariant]
+    slice_columns = [int(value) for value in row["slice_columns_zero_based"]]
+    tangent_rank_here = kernel_lemma._columns_rank(tangent)
+    orbit_dimension = regularity.orbit_dim(split_point)
+    spanned = kernel_lemma._columns_rank([*tangent, *(basis_vector(column) for column in slice_columns)])
+    return {
+        "incidence": str(row["incidence"]),
+        "boundary_orbit": str(row["boundary_orbit"]),
+        "boundary_orbit_dimension": orbit_dimension,
+        "slice_dimension": len(slice_columns),
+        "tangent_rank_equivariant_span": tangent_rank_here,
+        "rank_of_tangent_span_with_slice": spanned,
+        "local_product_with_kernel_transport": tangent_rank_here == orbit_dimension
+        and orbit_dimension + len(slice_columns) == DIMENSION
+        and spanned == DIMENSION,
+    }
+
+
+# Per boundary orbit: orbit dimension, slice dimension, tangent rank of g_2 + scaling, rank of tangent span with slice.
+EXPECTED_BASEPOINT_DIMENSIONS = {
+    "B9": (9, 6, 9, 15),
+    "Va+": (7, 8, 7, 15),
+    "Va-": (7, 8, 7, 15),
+    "N+": (6, 9, 6, 15),
+    "N-": (6, 9, 6, 15),
+    "V": (8, 7, 7, 14),
+    "VB": (7, 8, 6, 14),
+}
+
+
+def basepoint_dimensions_match(row: dict[str, Any]) -> bool:
+    """Whether the four dimensions of a basepoint row are those declared for its boundary orbit."""
+    found = (
+        row["boundary_orbit_dimension"],
+        row["slice_dimension"],
+        row["tangent_rank_equivariant_span"],
+        row["rank_of_tangent_span_with_slice"],
+    )
+    return found == EXPECTED_BASEPOINT_DIMENSIONS.get(str(row["boundary_orbit"]))
+
+
+def basepoint_partition_matches(rows: list[dict[str, Any]]) -> bool:
+    """Whether the rows are exactly the declared incidences, each once, split as declared; a missing, repeated or
+    unexpected incidence fails."""
+    with_product = sorted(str(row["incidence"]) for row in rows if row["local_product_with_kernel_transport"])
+    without = sorted(str(row["incidence"]) for row in rows if not row["local_product_with_kernel_transport"])
+    return with_product == sorted(LOCAL_PRODUCT_INCIDENCES) and without == sorted(BOOST_DEFICIENT_INCIDENCES)
+
+
+def _load_incidences(path: Path) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = json.loads(path.read_text(encoding="utf-8"))["incidences"]
+    return rows
+
+
 def orbit_task(
     task: tuple[str, list[GaussianMatrix], list[GaussianMatrix], list[GaussianMatrix], GaussianMatrix],
 ) -> dict[str, Any]:
@@ -347,6 +500,32 @@ def build_record() -> dict[str, Any]:
         min_items=1,
     )
 
+    lifts = parallel.ordered_map(lift_task, range(G2_DERIVATION_COUNT + 1), min_items=1)
+    lifts_pass = all(row["residual_nonzero_entries"] == 0 for row in lifts) and all(
+        row["generator_is_skew"] for row in lifts[:G2_DERIVATION_COUNT]
+    )
+    lift_mutation_detected = all(row["sign_flipped_lift_residual_nonzero_entries"] > 0 for row in lifts)
+    basepoint_rows = parallel.ordered_map(
+        basepoint_task,
+        [
+            (row, [*derivations, identity_matrix()])
+            for row in [*_load_incidences(FIRST_ORDER_RESULT), *_load_incidences(NULLITY16_BASEPOINTS_RESULT)]
+        ],
+        min_items=1,
+    )
+    product_orbits = sorted(
+        {row["boundary_orbit"] for row in basepoint_rows if row["local_product_with_kernel_transport"]}
+    )
+    other_orbits = sorted(
+        {row["boundary_orbit"] for row in basepoint_rows if not row["local_product_with_kernel_transport"]}
+    )
+    basepoints_pass = (
+        basepoint_partition_matches(basepoint_rows)
+        and all(basepoint_dimensions_match(row) for row in basepoint_rows)
+        and product_orbits == LOCAL_PRODUCT_ORBITS
+        and other_orbits == BOOST_DEFICIENT_ORBITS
+    )
+
     g2_equal = all(point["g2"]["g_ker_equals_ker_of_gz"] for point in points)
     g2_consistent = all(point["g2"]["moved_point_equals_g_original_z"] for point in points)
     boost_failures = [point["point"] for point in points if not point["boost"]["b_ker_equals_ker_of_bz"]]
@@ -377,6 +556,8 @@ def build_record() -> dict[str, Any]:
         and scaling_in_span
         and not boost_generator_in_span
         and all(row["recorded_orbit_dimension"] == row["recomputed_orbit_dimension"] for row in orbit_rows)
+        and lifts_pass
+        and basepoints_pass
     )
     return {
         "schema": SCHEMA,
@@ -386,16 +567,19 @@ def build_record() -> dict[str, Any]:
             "statement": (
                 "the holomorphic kernel C_z of the 15-dimensional representation in original coordinates, the "
                 "product of unipotent G_2 automorphisms that incidence_census.py selects, the rational boost of "
-                "verify_regularity_independent.py, and the twelve canonical points of that module"
+                "verify_regularity_independent.py, the twelve canonical points of that module, the 14 G_2 "
+                "derivations and the scaling with their lifts, and the retained basepoint and slice of each of the "
+                "33 incidences of first-order-normal-cones-result.json and nullity16-basepoints-result.json"
             ),
             "claim_boundary": (
                 "The finite checks cover the 15 basis directions, the twelve canonical points and four candidate "
                 "matrices rho for the boost; the Lie-algebra solve is exact over Q. The solve excludes a rational "
                 "one-parameter family rho(t) through the identity for the boost group; a single matrix rho for one "
                 "boost element outside the four candidates, and a lift in another component, are not excluded. "
-                "Equal tangent rank and orbit dimension is a first-order statement; the integration of the "
-                "infinitesimal pairs to a group action on a neighborhood and a local product structure "
-                "compatible with the kernel map are hypotheses of any off-slice conclusion."
+                "The group action of G_2(C) x C^* on the kernel is a deduction from the exact lifts (group_action); "
+                "the local product at a basepoint is a deduction from the exact ranks of basepoint_local_products "
+                "by the inverse function theorem. Basepoints on V and VB lack one tangent direction and carry no "
+                "such deduction."
             ),
         },
         "g2_element": {
@@ -431,6 +615,49 @@ def build_record() -> dict[str, Any]:
             "boost_generator_in_x_projection": boost_generator_in_span,
         },
         "orbit_table": orbit_rows,
+        "group_action": {
+            "identity": "C_(X e_k) + R^T C_(e_k) + C_(e_k) R = 0 for k = 0..14",
+            "generators": lifts,
+            "all_residuals_zero": lifts_pass,
+            "deduction": (
+                "For a G_2 derivation X in original coordinates the pair (X, X) solves the identity and X is skew, "
+                "so F(t) = exp(tX)^T C_(exp(tX) z) exp(tX) has derivative zero and exp(tX) satisfies "
+                "C_(g z) = g^(-T) C_z g^(-1) for every t; the exponentials generate the connected group G_2(C) and "
+                "the congruence is closed under products, so every g in G_2(C) acts with rho = g and "
+                "ker C_(g z) = g ker C_z. The scaling z -> c z has C_(c z) = c C_z and leaves ker C_z fixed. The "
+                "solution space and its X-projection both have dimension 15, so the lift R of each X is unique."
+            ),
+        },
+        "basepoint_local_products": {
+            "rows": basepoint_rows,
+            "boundary_orbits_with_local_product": product_orbits,
+            "boundary_orbits_without": other_orbits,
+            "incidences_with_local_product": sum(row["local_product_with_kernel_transport"] for row in basepoint_rows),
+            "incidence_count": len(basepoint_rows),
+            "rows_are_the_declared_incidences_each_once": basepoint_partition_matches(basepoint_rows),
+            "expected_orbit_slice_tangent_and_joint_dimensions": {
+                orbit: list(values) for orbit, values in EXPECTED_BASEPOINT_DIMENSIONS.items()
+            },
+            "rows_with_the_expected_dimensions": sum(basepoint_dimensions_match(row) for row in basepoint_rows),
+            "deduction": (
+                "Where the tangent span of g_2 + scaling at the basepoint z_0 has the dimension of the boundary "
+                "orbit and spans C^15 together with the slice, the map (xi, s) -> exp(xi) s from a complement of "
+                "the stabilizer algebra times the slice is a local biholomorphism at (0, z_0) by the inverse "
+                "function theorem. Every z near z_0 is g(z) s(z) with g(z) -> identity and s(z) in the slice; the "
+                "source stratum is invariant under G_2(C) x C^*, so s(z) lies in the source slice germ, and "
+                "ker C_z = g(z) ker C_(s(z)). The limits of ker C_z along any sequence or continuous path in the "
+                "source "
+                "tending to z_0 are therefore limits along the slice germ (the fiber over z_0 of the closed graph "
+                "equals that of its restriction to the slice; s(z(t)) is analytic and need not be semialgebraic), "
+                "and the fiber of holomorphic kernel limits P over g z_0 is g applied to the fiber over z_0; the "
+                "bordered-kernel limits over g z_0 are the planes g P meet (g z_0)^perp, since g is complex "
+                "orthogonal and need not preserve the Hermitian complement. "
+                "G_2(C) x C^* is a direct factor of the connected group G_2(C) x SO(2, C) x C^* "
+                "whose orbit is the boundary orbit, so its tangent rank is constant along that orbit; its orbits "
+                "inside the boundary orbit are then open and partition a connected set, so the orbit of z_0 under "
+                "G_2(C) x C^* is the whole boundary orbit."
+            ),
+        },
         "computed": [
             "the congruence residual for the G_2 element g with rho = g is zero on 15 basis directions",
             "g^T g = I in original coordinates",
@@ -439,12 +666,17 @@ def build_record() -> dict[str, Any]:
             "b ker C_z differs from ker C_(b z) at six canonical points",
             "the dimension of the solution space of the infinitesimal system and the membership tests",
             "the tangent ranks of the table",
+            "the zero residual of (X, X) for the 14 G_2 derivations and of (I, -I/2) for the scaling",
+            "the tangent rank and the rank with the slice at the retained basepoint of every incidence",
         ],
         "inferred": [
             "the identity for every z follows from linearity of z -> C_z in the basis directions",
             "no rational one-parameter family rho(t) with rho(0) = I satisfies "
             "C_(b(t) z) = rho(t)^(-T) C_z rho(t)^(-1) along the boost group b(t): its derivative at t = 0 would be "
             "a solution (beta, R) of the infinitesimal system, and beta lies outside its X-projection",
+            "G_2(C) x C^* acts on the kernel bundle (deduction of group_action)",
+            "at the basepoints on B9, Va+, Va-, N+ and N- the limits along paths that leave the slice are limits "
+            "along the slice germ (deduction of basepoint_local_products)",
         ],
         "mutation_control": {
             "name": "split_coordinate_matrix_as_rho",
@@ -455,14 +687,21 @@ def build_record() -> dict[str, Any]:
             ],
             "detected": mutation_detected,
         },
+        "lift_mutation_control": {
+            "name": "sign_flipped_lift",
+            "input_change": "use -R in place of the lift R of each generator",
+            "detected": lift_mutation_detected,
+        },
         "falsifier": (
             "The congruence residual of the G_2 element g is nonzero, g^T g differs from I, or g ker C_z differs from "
             "ker C_(g z) at a canonical point; the boost residual vanishes for a candidate rho or b ker C_z equals "
             "ker C_(b z) at the smallest witness; the infinitesimal solution space has a dimension other than 15, "
             "omits a G_2 derivation or the scaling, or contains the boost generator; or the split-coordinate matrix "
-            "leaves a zero residual."
+            "leaves a zero residual; a G_2 derivation or the scaling with a nonzero lift residual; a basepoint on "
+            "B9, Va+, Va-, N+ or N- whose tangent span with the slice has rank below 15, or one on V or VB whose "
+            "tangent span reaches the orbit dimension."
         ),
-        "pass": baseline_pass and mutation_detected,
+        "pass": baseline_pass and mutation_detected and lift_mutation_detected,
     }
 
 
@@ -473,6 +712,7 @@ def _record_bytes(record: dict[str, Any]) -> bytes:
 def _self_test(record: dict[str, Any]) -> None:
     _require(bool(record["pass"]), "the kernel-equivariance record failed")
     _require(bool(record["mutation_control"]["detected"]), "the split-coordinate matrix left a zero residual")
+    _require(bool(record["lift_mutation_control"]["detected"]), "a sign-flipped lift left a zero residual")
 
 
 def main() -> None:
