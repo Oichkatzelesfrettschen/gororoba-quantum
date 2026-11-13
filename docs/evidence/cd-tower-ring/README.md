@@ -8,41 +8,44 @@ alone, `CommutativeRing`, with the doubling
 `gororoba_quantum/cd_core.py`. The ordered-domain functor of
 [cd-tower-domain](../cd-tower-domain/README.md) proves Corollary 9.3 of Biss,
 Dugger and Isaksen (math/0511691), a z = 0 exactly when z a = 0, from the
-order of its coefficients; Q(i), the complex numbers and the prime fields have
+order of its coefficients; Q(i), the complex numbers and the finite fields have
 no such order. This bundle proves what holds over every commutative ring and
-shows that the swap itself holds only when 2 = 0 once the ring contains a
-square root of -1.
+shows that, once the ring contains a square root of -1, the swap holds at the
+levels from 2 on only when 2 = 0.
 
 ## Theorems of `RingTower`, for every level k and every commutative ring
 
 | Theorem | Statement |
 | --- | --- |
 | `conj_mul`, `conj_conj`, `conj_add`, `conj_scale` | conjugation is an additive involution that commutes with scalars and reverses products |
-| `kernel_conj` | a z = 0 exactly when conj(z) conj(a) = 0, so conjugation maps ker L_a onto ker R_(conj a) bijectively |
+| `kernel_conj` | a z = 0 exactly when conj(z) conj(a) = 0 |
 | `re_zero_pure` | re(a) = 0 implies conj(a) = -a (`pure`) |
 | `pure_kernel_conj`, `pure_kernel_conj_right` | for pure a, a z = 0 exactly when conj(z) a = 0, and w a = 0 exactly when a conj(w) = 0: ker R_a = conj(ker L_a) |
 | `two_zero_commutative` | when 2 = 0, x y = y x |
 | `level_one_commutative` | at level 1, x y = y x over every commutative ring, so level 2 is the first level where a z = 0 and z a = 0 can differ |
 | `reflect_mul` | at level k + 1 the map (a, b) -> (a, -b) satisfies reflect(x y) = reflect(x) reflect(y) |
 | `reflect_add`, `reflect_scale`, `reflect_one`, `reflect_conj`, `reflect_involutive` | the reflection is linear, fixes 1, commutes with conjugation and is its own inverse |
-| `reflect_kernel` | x z = 0 exactly when reflect(x) reflect(z) = 0, so the reflection maps ker L_x onto ker L_(reflect x) bijectively |
+| `reflect_kernel` | x z = 0 exactly when reflect(x) reflect(z) = 0 |
 | `diag_mul`, `diag_add`, `diag_scale`, `diag_conj`, `diag_one` | a map f of level k that preserves sums, scalars, products and conjugates extends to level k + 1 as (a, b) -> (f a, f b) with the same four properties, and the extension fixes 1 when f does |
 | `diag_reflect_mul` | the diagonal extension of the reflection of level k + 1 preserves the product of level k + 2 |
-| `lift_mul`, `lift_conj`, `lift_scale`, `lift_zero_inv` | x -> (x, 0), iterated, embeds level j in level k + j as a subalgebra closed under conjugation |
+| `lift_mul`, `lift_add`, `lift_scale`, `lift_conj`, `lift_one`, `lift_injective` | x -> (x, 0), iterated, is an injective map of level j into level k + j that preserves sums, scalars, products, conjugates and 1 |
 
 `kernel_conj` is the anti-automorphism law read on a vanishing product.
 `reflect_mul` unfolds one doubling step and uses the scalar laws of the
 product; it needs no induction on the level.
 
-Prose consequences, which no Rocq statement of this bundle carries: conj is
-additive, commutes with scalars and is its own inverse (`conj_add`,
-`conj_scale`, `conj_conj`), so `kernel_conj` makes ker L_a and ker R_(conj a)
+`conj_add`, `conj_scale` and `conj_conj` state that conj is additive, commutes
+with scalars and is its own inverse. The following consequences are prose,
+which no Rocq statement of this bundle carries: with `kernel_conj`, conj
+restricts to a bijection of ker L_a onto ker R_(conj a), so the two are
 isomorphic modules; over a field their dimensions agree, and for pure a the
 left and right nullities of a agree. `reflect_kernel` with
 `reflect_involutive` makes the reflection a bijection of ker L_x onto
-ker L_(reflect x). Composing diagonal extensions of reflections of the lower
-levels gives the 2^k coordinate sign changes
-e_p -> (-1)^popcount(m and p) e_p as product-preserving maps of level k.
+ker L_(reflect x). Composing the reflection of level k with diagonal
+extensions of the reflections of the levels below gives, for each of the 2^k
+masks m, the coordinate sign change e_p -> (-1)^popcount(m and p) e_p as a
+product-preserving map of level k; the maps for different masks coincide when
+2 = 0.
 
 ## Theorems of `RingTowerI`, over a commutative ring with i i = -1
 
@@ -118,8 +121,10 @@ levels 3, 4 and 5.
 
 ## Assumptions
 
-[assumptions.txt](assumptions.txt) holds 38 `Print Assumptions` queries. The
-28 on `GaussianTower` and `Mod5Tower` and the five on `ZRingBridge` read
+[assumptions.txt](assumptions.txt) holds 46 `Print Assumptions` queries. The
+36 on the Gaussian-integer and Zmod 5 instances (34 inside `GaussianTower` and
+`Mod5Tower`, and the lemmas `gaussian_kernel_swap_fails` and
+`mod5_kernel_swap_fails`) and the five on `ZRingBridge` read
 "Closed under the global context". Of the five on `RRingBridge`, `mul_eq` and
 `conjugate_eq` list `ClassicalDedekindReals.sig_forall_dec`, and
 `reflect_mul`, `reflect_kernel` and `pure_kernel_conj` list it with
@@ -146,5 +151,4 @@ with `-w @all`, fails on any warning or compiler output, runs `rocq check`
 over the two libraries, and compares the outputs byte for byte with the two
 receipts. `scripts/rocq_kaggle_replay.py --only cd-tower-ring` selects the
 replay and `source_hashes.sha256` binds the two sources and the receipts. A
-replay takes about one minute, most of it `rocq check` over the imported real
-library.
+replay takes about one minute.

@@ -465,7 +465,7 @@ alignment:
 automation:
   methods:
     - method: agent
-      models: ["claude-opus-5-5", "claude-fable-5-1", "claude-fable-5-2"]
+      models: ["claude-opus-5-5", "claude-fable-5-1"]
       framework: "Claude Code"
       tool_setup: "Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0; proofs replayed by each bundle's replay_rocq.sh with -w +all and rocq check"
     - method: manual
@@ -473,9 +473,8 @@ automation:
     Commit trailers under proofs/ record Claude Code (claude-opus-5-5) on
     most sources, Claude Code (claude-fable-5-1) on CdAnnihilatorSymmetry.v,
     CdTowerReal.v, CdAnnihilatorSymmetryReal.v, CdTowerDomain.v,
-    CdTowerDomainZ.v and CdTowerDomainR.v, and OpenAI ChatGPT on one;
-    CdTowerRing.v and CdTowerRingDomain.v come from Claude Code
-    (claude-fable-5-2). The owner reviewed and replayed every source.
+    CdTowerDomainZ.v and CdTowerDomainR.v, and OpenAI ChatGPT on one; the
+    owner reviewed and replayed every source.
 
 review:
   status: self-assessed

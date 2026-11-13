@@ -31,6 +31,14 @@ Closed under the global context
 Closed under the global context
 Closed under the global context
 Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
+Closed under the global context
 Axioms:
 ClassicalDedekindReals.sig_forall_dec :
   forall P : nat -> Prop,

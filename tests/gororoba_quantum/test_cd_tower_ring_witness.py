@@ -1,7 +1,7 @@
 """The kernel-swap witness of proofs/CdTowerRing.v under the cd_core product over the Gaussian integers.
 
 RingTowerI proves, over a commutative ring with i i = -1, that a = nilpotent2 and w = witness2 satisfy
-a u = w for the level-1 unit u, a a = 0, a w = 0 and w a = -2 a at level 2, and lifts the pair to every
+a e_1 = w, a a = 0, a w = 0 and w a = -2 a at level 2, and lifts the pair to every
 higher level by x -> (x, 0). The test reads the two element definitions from the proof source, places a nested
 pair ((x0, x1), (x2, x3)) at coordinates 0 to 3 (first half first) and computes the same four products with
 cd_core.cd_sign extended bilinearly to Gaussian-integer coordinates, in dimensions 4, 8, 16 and 32. It reads no
@@ -91,7 +91,7 @@ def test_witness_products_under_cd_core(dim: int) -> None:
 
 @pytest.mark.parametrize("dim", [4, 8, 16, 32])
 def test_real_coordinates_remove_the_witness(dim: int) -> None:
-    """With i replaced by 1 the element e_1 + e_2 has norm 2 and annihilates nothing."""
+    """With i replaced by 1 the product (e_1 + e_2)((e_1 + e_2) e_1) differs from 0."""
     a = embed(dim, [(0, 0), (1, 0), (1, 0), (0, 0)])
     u = embed(dim, [(0, 0), (1, 0)])
     require(cd_mul(dim, a, cd_mul(dim, a, u)) != [ZERO] * dim, "e_1 + e_2 must not annihilate (e_1 + e_2) e_1")
