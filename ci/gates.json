@@ -3382,6 +3382,13 @@
     {
       "suite": "sources",
       "cwd": ".",
+      "cmd": "shellcheck docs/evidence/cd-tower-ring-base-change/replay_rocq.sh",
+      "name": "sources-cd-tower-ring-base-change-replay-shellcheck",
+      "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
       "seconds": 0.1
@@ -5411,6 +5418,20 @@
       ],
       "replays": [
         "docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-boost-e8-vb-quadrics",
+      "seconds": 1200.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/boost-e8-vb-quadrics-result.json"
       ]
     },
     {
