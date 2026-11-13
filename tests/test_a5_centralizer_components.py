@@ -61,6 +61,9 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "enumeration": lambda r: r["counts"].update(patterns=4607),
         "positive dimension": lambda r: r["counts"].update(patterns_of_positive_dimension=1),
         "radical": lambda r: r["counts"].update(points=r["counts"]["points"] + 1),
+        "other octonion index": lambda r: r["counts"]["patterns_with_points"][0].update(
+            equations_over_all_indices_not_reduced=1
+        ),
         "gauge": lambda r: r["torus"].update(gauge_index_in_character_lattice=2),
         "rank": lambda r: r["torus"].update(character_lattice_rank=3),
         "real torus": lambda r: r["torus"].update(real_torus_components=2),

@@ -67,8 +67,11 @@ stabilizer computation.
 
 ## Full component group: reduction to the `G_2` centralizer
 
-`Out(g_2)` is trivial, so every component of the kernel symmetry group `K` meets the centralizer of `G_2` in `K`, and
-`pi_0(K) = pi_0(Z_K(G_2))`. `probes/g2_commutant.py` computes the commutant of the fourteen octonion-derivation triples
+`Out(g_2)` is trivial (the Dynkin diagram of `G_2` has no symmetry), and `g_2` is the derived algebra of the Lie
+algebra of `K`, so conjugation by any element of `K` preserves `G_2` and agrees on it with conjugation by an element
+of `G_2`: every component of `K` meets the centralizer `Z = Z_K(G_2)`, and `pi_0(Z) -> pi_0(K)` is onto. It is
+one-to-one because `Z` meets the identity component `K^0 = G_2 T` in the centralizer of `G_2` there, which is the
+central torus `T` (`G_2` has trivial center) and is connected. Hence `pi_0(K) = pi_0(Z_K(G_2))`. `probes/g2_commutant.py` computes the commutant of the fourteen octonion-derivation triples
 in each slot of the transport triple exactly over Q: dimension 32 with a 4-dimensional invariant subspace in every
 slot, so each slot decomposes as `4 R + 4 R^7` and the centralizer is `GL(4) x GL(4)` per slot
 ([log](probes/g2-commutant.log)). `Z_K(G_2)` is therefore the solution set of the group-level transport equations in
@@ -93,7 +96,9 @@ zero-dimensional and radical with 6 points for two: the identity pattern and the
 pair with its negative. No pattern has positive dimension. `Z_C` therefore has 12 components. On the character
 lattice of `T` complex conjugation fixes a cocharacter lattice of rank 2, and the norms fill it (elementary
 divisors 1, 1), so the real points of `T` are connected. Controls: the identity triple solves the identity
-pattern, and with one structure sign flipped the identity pattern has 1 point in place of 6.
+pattern, and with one structure sign flipped the identity pattern has 1 point in place of 6. The equations are
+imposed for `y` on one unit eigenvector per class and on the vector eigenvectors of octonion index 1; on both
+patterns with points the equations for the indices 1 to 7 reduce to zero modulo that ideal.
 
 **Inferred (`A5-379`):** two real points of `Z` in one component of `Z_C` differ by a real point of `T`, which is
 connected, so the real group has at most 12 components. The visible subgroup `S_3 x Z_2` occupies 12 distinct
@@ -103,8 +108,8 @@ component and one of the twelve visible automorphisms. The deduction uses the re
 the Lie algebra of the kernel-bundle record.
 
 A pattern with a point outside the two listed, a pattern of positive dimension, a gauge index other than 1, a
-disconnected real torus, or a flipped sign that leaves the count falsifies the record. The replay takes 2 minutes
-55 seconds of wall time, 287 CPU seconds and 84 MiB in the parent on two workers under an 8 GiB memory scope
+disconnected real torus, or a flipped sign that leaves the count falsifies the record. The replay takes 1 minute
+42 seconds of wall time and 84 MiB in the parent on two workers under an 8 GiB memory scope
 (Python 3.14.9, sympy 1.14.0, python-flint 0.9.0, Singular 4.4.1) on the build host.
 
 ## Nullity-4 strata carry continuous moduli

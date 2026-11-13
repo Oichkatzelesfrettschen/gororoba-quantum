@@ -140,7 +140,14 @@ def eigen_frame(mutation: str) -> tuple[tuple[Label, ...], sp.Matrix, sp.Matrix]
                         blocks.append(block)
                 for copy, block in enumerate(blocks):
                     for index in indices:
-                        columns.append(projector[:, 8 * block + index])
+                        column = projector[:, 8 * block + index]
+                        _require(
+                            any(column)
+                            and j * column == sp.I * first * column
+                            and r * column == sp.I * second * column,
+                            "a frame column is no joint eigenvector",
+                        )
+                        columns.append(column)
                         labels.append((kind, first, second, copy, index))
     frame = sp.Matrix.hstack(*columns)
     _require(frame.shape == (DIMENSION, DIMENSION) and frame.rank() == DIMENSION, "the eigenvectors do not span")
@@ -184,8 +191,11 @@ def all_patterns() -> list[Pattern]:
     ]
 
 
-def pattern_ideal(pattern: Pattern, mutation: str) -> tuple[list[str], list[str]]:
-    """Variable names and generators (Singular text) of the gauge-fixed ideal of one pattern."""
+def pattern_ideal(pattern: Pattern, mutation: str, indices: tuple[int, ...] = (1,)) -> tuple[list[str], list[str]]:
+    """Variable names and generators (Singular text) of the gauge-fixed ideal of one pattern.
+
+    `indices` lists the octonion indices of the vector eigenvectors y the equations use; index 1 alone suffices by
+    the action of G_2, and `full_reduction` checks that claim on the patterns that have points."""
     unit_p, swap_p, unit_q, swap_q, swap_g = pattern
     labels, _, _ = eigen_frame(mutation)
     position = {label: k for k, label in enumerate(labels)}
@@ -224,11 +234,11 @@ def pattern_ideal(pattern: Pattern, mutation: str) -> tuple[list[str], list[str]
             - g_unit[sign] * eigen_left((0, image_sign, -image_sign, 0, 0), mutation) * p_matrix
         )
         equations.update(sp.expand(entry) for entry in unit)
-        for copy in range(2):
+        for copy, index in itertools.product(range(2), indices):
             moved = sp.zeros(DIMENSION, DIMENSION)
             for image in range(2):
-                moved += g_block[sign][image, copy] * eigen_left((1, image_sign, -image_sign, image, 1), mutation)
-            vector = q_matrix * eigen_left((1, sign, -sign, copy, 1), mutation) - moved * p_matrix
+                moved += g_block[sign][image, copy] * eigen_left((1, image_sign, -image_sign, image, index), mutation)
+            vector = q_matrix * eigen_left((1, sign, -sign, copy, index), mutation) - moved * p_matrix
             equations.update(sp.expand(entry) for entry in vector)
     equations.discard(sp.Integer(0))
     scalars = {"p": p_unit, "q": q_unit}
@@ -310,6 +320,42 @@ def count_patterns(mutation: str, patterns: list[Pattern] | None = None) -> dict
         "points": sum(entry["points"] for entry in solved),
         "reduced_points": sum(entry["reduced_points"] for entry in solved),
     }
+
+
+def full_reduction(pattern: Pattern, mutation: str) -> int:
+    """The number of equations for y over every octonion index that fail to reduce to zero modulo the ideal built
+    from index 1 alone; 0 confirms that the representatives imply the equation for every y in U."""
+    names, representative = pattern_ideal(pattern, mutation)
+    full_names, everything = pattern_ideal(pattern, mutation, tuple(range(1, 8)))
+    _require(names == full_names, "the two ideals use different variables")
+    script = "\n".join(
+        [
+            "option(redSB);",
+            f"ring r=(0,i),({','.join(names)}),dp; minpoly=i^2+1;",
+            f"ideal S=std(ideal({','.join(representative)}));",
+            f"ideal A={','.join(everything)};",
+            'print("RESULT 0 "+string(size(reduce(A,S)))+" "+string(ncols(A))+" 0");',
+            'print("DONE");',
+            "quit;",
+        ]
+    )
+    with tempfile.TemporaryDirectory(prefix="centralizer-") as directory:
+        path = Path(directory) / "full.sing"
+        path.write_text(script + "\n", encoding="utf-8")
+        process = subprocess.run(
+            ["prlimit", f"--as={SINGULAR_ADDRESS_SPACE_BYTES}", "Singular", "-q", "--no-warn", "--no-rc", str(path)],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=SINGULAR_TIMEOUT_SECONDS,
+        )
+    lines = process.stdout.splitlines()
+    match = next((RESULT_LINE.match(line) for line in lines if RESULT_LINE.match(line)), None)
+    _require(
+        process.returncode == 0 and "DONE" in lines and match is not None, f"Singular failed: {process.stdout[-800:]}"
+    )
+    return int(match.group(2)) if match is not None else -1
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -448,6 +494,11 @@ def compute() -> dict[str, Any]:
     identity: Pattern = ((0, 1, 2, 3), 0, (0, 1, 2, 3), 0, 0)
     mutated = count_patterns("flip_structure_sign", [identity])
     index = torus["gauge_index_in_character_lattice"]
+    for entry in counts["patterns_with_points"]:
+        unit_p, swap_p, unit_q, swap_q, swap_g = entry["pattern"]
+        entry["equations_over_all_indices_not_reduced"] = full_reduction(
+            (tuple(unit_p), swap_p, tuple(unit_q), swap_q, swap_g), ""
+        )
     components = counts["reduced_points"] // index if index else None
     record: dict[str, Any] = {
         "schema": SCHEMA,
@@ -479,6 +530,8 @@ def verdict(record: dict[str, Any]) -> list[str]:
         problems.append("the pattern enumeration is incomplete")
     if counts["patterns_of_positive_dimension"]:
         problems.append("a gauge-fixed pattern has positive dimension")
+    if any(entry.get("equations_over_all_indices_not_reduced") != 0 for entry in counts["patterns_with_points"]):
+        problems.append("an equation for another octonion index does not follow from the representatives")
     if counts["points"] != counts["reduced_points"]:
         problems.append("a pattern ideal is not radical")
     if torus["character_lattice_rank"] != 4 or torus["gauge_index_in_character_lattice"] != 1:

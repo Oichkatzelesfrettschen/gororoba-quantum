@@ -1054,8 +1054,9 @@ stabilizer representations. The finite classification then proves that all five 
 trivial, both nullity-sixteen complex and quaternionic bundles are nontrivial with reduced class `x`, every
 underlying real kernel bundle is trivial. Reduced `K^0`, the exact cancellation ranges, the periodic phase lift, and
 `pi_6(U(6))=0` supply these triviality statements without choosing a canonical clutching matrix. This completes
-deliverable 4. The computation has not proved that
-the visible components exhaust the group and has not classified an equivariant extension under the disconnected
+deliverable 4. The visible components exhaust the component group (`A5-379`, by the
+[centralizer record](../a5-kernel-bundles-residuals/README.md#the-component-group-is-the-visible-s_3-x-z_2)). The
+computation has not classified an equivariant extension under the disconnected
 `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, or smaller structure-group reductions
 on the nullity-twelve pieces. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit

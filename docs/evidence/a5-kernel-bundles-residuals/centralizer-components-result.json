@@ -10,6 +10,7 @@
   "patterns_of_positive_dimension": 0,
   "patterns_with_points": [
    {
+    "equations_over_all_indices_not_reduced": 0,
     "pattern": [
      [
       0,
@@ -31,6 +32,7 @@
     "reduced_points": 6
    },
    {
+    "equations_over_all_indices_not_reduced": 0,
     "pattern": [
      [
       3,
@@ -69,7 +71,7 @@
  },
  "field": "Q(i)",
  "inputs": {
-  "docs/evidence/a5-kernel-bundles-residuals/centralizer_components.py": "729ceb39c2bd21424ba9b95ddd22fc2d5a52d08c5c5193a2f5dbc8a63e23af63",
+  "docs/evidence/a5-kernel-bundles-residuals/centralizer_components.py": "92bbde4449b1b51166664da3bd39ab0e5197ad979f0c61eea595bee9842e5031",
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
  },
  "pass": true,
