@@ -1052,7 +1052,11 @@ def series_of(run_dir: Path) -> str:
 
 def circuit_statistics(listed: list[str], roles: dict[str, int]) -> dict[str, float]:
     """Raw selector contrast, its standard error and the visibility of one data circuit's shots."""
-    counts = cc.coin_counts(listed, roles)
+    return count_statistics(cc.coin_counts(listed, roles))
+
+
+def count_statistics(counts: np.ndarray) -> dict[str, float]:
+    """Raw selector contrast, its standard error and the visibility of counts over the logical outcome index."""
     plus, minus = cc.piles(counts)
     value, error = pca.selector_stat(plus, minus)
     contrast = pcb.output_contrast(plus / plus.sum(), minus / minus.sum())
