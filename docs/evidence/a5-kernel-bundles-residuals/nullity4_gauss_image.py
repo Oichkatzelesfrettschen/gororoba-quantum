@@ -10,14 +10,41 @@ deterministic points of the three nullity-4 strata V(Q) minus V(G), V(G) minus V
   of the three-plane ker M(z);
 - the rank of the differential of z -> ker M(z) on the stratum (the dimension of the family of three-planes), of
   the Gauss map (z, w) -> ker A(z, w) with w free and with w on the conjugate stratum, and of the pair (Gauss map,
-  conjugate Gauss map) on stratum x conjugate stratum, which is the real rank of the Gauss map at real points;
-- the number of linear forms and of quadrics in the 105 Plucker coordinates of Gr(2, 15) that vanish on the image,
-  by interpolation at more points than there are monomials, with the rank read at two sample sizes.
+  conjugate Gauss map) on stratum x conjugate stratum at an independent pair (z, w): the complexified ranks at a
+  general pair;
+- the dimension of the linear span of the Plucker vectors of 300 sampled kernel planes and the rank of the 5,565
+  quadratic monomials in the 105 Plucker coordinates of Gr(2, 15) at 6,100 sampled planes, read also at 5,800.
+  Monomials minus rank counts the quadrics that vanish on the sampled planes, an upper bound for the quadrics that
+  vanish on the image.
 
 Off the strata the control point has rank M = 14 with kernel spanned by z, and rank A = 16.
 
-The retained fixture record `nullity4-kernel-gauss-result.json` (exact, characteristic 0, real points) is read for
-one fact: at each of its 66 fixtures the 15 Plucker coordinates p_(0 j) vanish, the first-coordinate statement above.
+The retained fixture record `nullity4-kernel-gauss-result.json` (exact, characteristic 0) holds 66 real points with
+integer split coordinates, where w' = z'. It is read for two facts. At each fixture the 15 Plucker coordinates
+p_(0 j) vanish, the first-coordinate statement above. At each fixture reduced modulo 32029 the same differentials
+are computed on the real locus: the rank of the pair there is the rank over the reals of the Gauss map
+z -> ker A(z, conjugate(z)). A rank modulo 32029 is a lower bound for the rank in characteristic 0 (the pivot
+block is invertible modulo the prime and the tangent space keeps its dimension), and the two scalings of z and w
+bound the rank of the pair by 26, 26 and 24, so a fixture that reaches the bound has that real rank in
+characteristic 0.
+
+A(z, w) is linear in (z, w), so the pairs with a given kernel plane P and conjugate kernel plane P' form the
+linear space L = {(z, w): A(z, w) P = 0 and A-bar(w, z) P' = 0}: the fiber of the pair of Gauss maps is linear, it
+contains the two scalings, and the differential of the pair has rank at most the tangent dimension minus dim L.
+dim L is computed exactly over Q(i) at each fixture; where the rank modulo 32029 equals that bound it is the rank
+in characteristic 0.
+
+Four exact facts are joined to those ranks fixture by fixture: dim L; the rank of the orbit of the 18-dimensional
+kernel symmetry algebra of `kernel_symmetry.py` at the fixture (16 at a general point, 13 on a special sublocus);
+the least nullity among six vectors of the real kernel of left multiplication by the fixture, each taken as an
+element of the algebra; and the class of fixtures with the same normalized Plucker vector in the retained record,
+that is, the same kernel plane.
+
+A grid of 41,616 integer points e_1 + a e_2 + b e_3 + m e_8 + v, v with at most three nonzero coordinates among
+e_9..e_15, is then filtered to its nullity-4 points and the same three invariants are computed modulo 32029 with
+w' = z'. An orbit rank of 16 modulo the prime is exact, and so is a fiber of dimension 2; the grid points where
+the fiber is larger at orbit rank 16, or the kernel vectors have higher nullity at fiber dimension 2, have their
+fiber recomputed exactly.
 
 The points come from sha256 of a label and a counter, reduced modulo 32029: a fixed list, with no seed.
 
@@ -33,12 +60,16 @@ import hashlib
 import itertools
 import json
 import math
+import re
 import sys
 from collections.abc import Callable, Sequence
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
 from flint import nmod_mat, nmod_poly
+from sympy import QQ_I, I
+from sympy.polys.matrices import DomainMatrix
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
@@ -47,6 +78,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(BUNDLES))
 
 import kernel_frames as frames  # noqa: E402
+import kernel_symmetry as symmetry  # noqa: E402
 
 import parallel  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
@@ -54,11 +86,18 @@ from cd_core import cd_sign  # noqa: E402
 SCHEMA = "a5-kernel-bundles-residuals-nullity4-gauss-image-v1"
 RECORD = HERE / "nullity4-gauss-image-result.json"
 FIXTURES = HERE / "nullity4-kernel-gauss-result.json"
-SOURCE_PATHS = (HERE / "nullity4_gauss_image.py", BUNDLES / "kernel_frames.py", FIXTURES)
+SOURCE_PATHS = (
+    HERE / "nullity4_gauss_image.py",
+    BUNDLES / "kernel_frames.py",
+    BUNDLES / "kernel_symmetry.py",
+    FIXTURES,
+)
 PRIME, ROOT_OF_MINUS_ONE = 32029, 9115
 FIELD = f"GF({PRIME}), i = {ROOT_OF_MINUS_ONE}"
 IMAGINARY, BORDERED = 15, 16
 STRATA = ("V(Q) minus V(G)", "V(G) minus V(Q)", "V(Q) intersect V(G)")
+# Whether Q and whether G vanish on the stratum.
+MEMBERSHIP = {STRATA[0]: (True, False), STRATA[1]: (False, True), STRATA[2]: (True, True)}
 RANK_POINTS = 4
 FREE_W_PER_POINT = 3
 PLUCKER_PAIRS = tuple(itertools.combinations(range(1, BORDERED), 2))
@@ -66,14 +105,15 @@ QUADRIC_MONOMIALS = tuple(itertools.combinations_with_replacement(range(len(PLUC
 PLUCKER_QUADRICS = math.comb(IMAGINARY, 4)
 LINEAR_SAMPLES = 300
 QUADRIC_SAMPLES = (5800, 6100)
-# Per stratum: rank of the three-plane map, of the Gauss map (w free, w on the conjugate stratum), the real rank,
-# the dimension of the linear span of the image and the number of quadrics that vanish on it.
+# Per stratum: rank of the three-plane map, of the Gauss map (w free, w on the conjugate stratum), of the pair
+# (Gauss map, conjugate Gauss map), the dimension of the linear span of the sampled planes and the number of
+# quadrics that vanish on them.
 EXPECTED: dict[str, dict[str, int]] = {
     STRATA[0]: {
         "tangent_dimension": 14,
         "three_plane_map_rank": 13,
         "gauss_rank_w_free": 15,
-        "real_rank": 26,
+        "conjugate_pair_rank": 26,
         "linear_span_dimension": 105,
         "quadrics_vanishing": 1678,
     },
@@ -81,7 +121,7 @@ EXPECTED: dict[str, dict[str, int]] = {
         "tangent_dimension": 14,
         "three_plane_map_rank": 13,
         "gauss_rank_w_free": 15,
-        "real_rank": 26,
+        "conjugate_pair_rank": 26,
         "linear_span_dimension": 105,
         "quadrics_vanishing": 1543,
     },
@@ -89,7 +129,7 @@ EXPECTED: dict[str, dict[str, int]] = {
         "tangent_dimension": 13,
         "three_plane_map_rank": 10,
         "gauss_rank_w_free": 12,
-        "real_rank": 24,
+        "conjugate_pair_rank": 24,
         "linear_span_dimension": 90,
         "quadrics_vanishing": 2940,
     },
@@ -98,6 +138,36 @@ SIGNS = tuple(
     tuple(cd_sign(BORDERED, row ^ column, column) if row and column and row != column else 0 for column in range(16))
     for row in range(16)
 )
+# Exact real fixtures by (stratum, exact rank of the symmetry orbit, rank of the three-plane map, rank of the Gauss
+# map on the real locus, real rank), the last three modulo PRIME.
+FIXTURE_RANKS: dict[tuple[str, int, int, int, int], int] = {
+    (STRATA[0], 16, 13, 15, 26): 3,
+    (STRATA[0], 13, 13, 15, 26): 9,
+    (STRATA[1], 16, 13, 15, 26): 23,
+    (STRATA[1], 13, 13, 13, 22): 13,
+    (STRATA[1], 13, 13, 10, 16): 16,
+    (STRATA[2], 16, 10, 12, 24): 2,
+}
+# Exact dim L at a fixture by (stratum, real rank): tangent dimension of stratum x conjugate stratum minus the rank.
+FIBER_DIMENSIONS = {26: 2, 24: 2, 22: 6, 16: 12}
+# Nullity-4 grid points by (stratum, orbit rank, dim L, least nullity of a sampled kernel vector), modulo PRIME.
+GRID_CANDIDATES = 41616
+GRID_CLASSES: dict[tuple[str, int, int, int], int] = {
+    (STRATA[0], 13, 2, 4): 371,
+    (STRATA[0], 16, 2, 4): 1725,
+    (STRATA[1], 13, 6, 12): 61,
+    (STRATA[1], 13, 12, 16): 78,
+    (STRATA[1], 16, 2, 4): 1042,
+    (STRATA[1], 16, 2, 12): 8,
+    (STRATA[1], 16, 12, 16): 14,
+    (STRATA[2], 16, 2, 4): 384,
+    (STRATA[2], 16, 6, 12): 4,
+}
+# Classes that refute "dim L > 2 exactly at orbit rank 13" and "dim L > 2 exactly at kernel nullity above 4".
+GRID_EXCEPTIONS = ((STRATA[1], 16, 2, 12), (STRATA[1], 16, 12, 16), (STRATA[2], 16, 6, 12))
+KERNEL_COMBINATIONS = ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1), (1, 2, 3, 5), (2, -1, 7, 3))
+# Distinct kernel planes among the 66 exact fixtures, and the fixtures that share a plane with another one.
+FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES = 54, 22
 Vector = list[int]
 Matrix = list[list[int]]
 
@@ -269,7 +339,9 @@ def kernel_differential(
     """Chart coordinates of d ker(matrix_of) along each direction, and the Schur frame of the kernel.
 
     matrix_of is linear. With principal pivots P and free rows F the frame is K = [-A_PP^-1 A_PF; I], and along a
-    direction v tangent to the rank locus (K^T A(v) K = 0, which is checked) dK = -A_PP^-1 (A(v) K)_P, zero on F.
+    direction v tangent to the rank locus dK = -A_PP^-1 (A(v) K)_P, zero on F. Callers pass directions from the
+    kernel of the gradients of the stratum (`tangent_space`). K^T A(v) K = 0 is checked: every tangent direction
+    satisfies it, and on V(Q) n V(G), where the rank locus is singular, other directions satisfy it too.
     """
     matrix = matrix_of(point)
     size = len(matrix)
@@ -338,8 +410,36 @@ def rank_point(job: tuple[str, int]) -> dict[str, Any]:
         "three_plane_map_rank": _rank(three_planes),
         "gauss_rank_w_free": _rank(free),
         "gauss_rank_w_on_conjugate_stratum": _rank(on_stratum),
-        "real_rank": _rank([a + b for a, b in zip(on_stratum, conjugate, strict=True)]),
+        "conjugate_pair_rank": _rank([a + b for a, b in zip(on_stratum, conjugate, strict=True)]),
     }
+
+
+def fixture_ranks() -> list[dict[str, Any]]:
+    """The differentials on the real locus w' = z' at each exact fixture, reduced modulo PRIME."""
+    polynomials = _polynomials()
+    zero = [0] * IMAGINARY
+    rows = []
+    for number, fixture in enumerate(json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]):
+        stratum = fixture["stratum"]
+        z = [int(value) % PRIME for value in fixture["split_point"]]
+        membership = tuple(_value(polynomials[name], z) == 0 for name in ("Q", "G"))
+        _require(membership == MEMBERSHIP[stratum], f"fixture {number} lies off its stratum modulo {PRIME}")
+        tangent = tangent_space(stratum, z, polynomials)
+        directions = [*([*v, *zero] for v in tangent), *([*zero, *v] for v in tangent)]
+        three_planes, _ = kernel_differential(lower_block, z, tangent, 12)
+        gauss, _ = kernel_differential(bordered, [*z, *z], directions, 14)
+        conjugate, _ = kernel_differential(conjugate_bordered, [*z, *z], directions, 14)
+        rows.append(
+            {
+                "fixture": number,
+                "stratum": stratum,
+                "tangent_dimension": len(tangent),
+                "three_plane_map_rank": _rank(three_planes),
+                "gauss_rank": _rank(gauss),
+                "real_rank": _rank([a + b for a, b in zip(gauss, conjugate, strict=True)]),
+            }
+        )
+    return rows
 
 
 def plucker(job: tuple[str, int]) -> Vector:
@@ -352,8 +452,187 @@ def plucker(job: tuple[str, int]) -> Vector:
     return [(kernel[0][a] * kernel[1][b] - kernel[0][b] * kernel[1][a]) % PRIME for a, b in PLUCKER_PAIRS]
 
 
+def fixture_orbit_ranks() -> list[int]:
+    """The exact rank of the orbit of the kernel symmetry algebra at each exact fixture."""
+    triples, _, _ = symmetry._solve_lie_triples("")
+    ranks = []
+    for fixture in json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]:
+        point = tuple(symmetry.equations.y_from_split([Fraction(value) for value in fixture["split_point"]]))
+        moved = [symmetry._rational_matrix_vector_product(triple[0], point) for triple in triples]
+        ranks.append(int(symmetry._rank(moved)))
+    return ranks
+
+
+def fixture_plane_classes() -> list[int]:
+    """For each exact fixture, the first fixture with the same kernel plane; the points are projectively distinct."""
+    rows = json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]
+    points = [[Fraction(value) for value in row["split_point"]] for row in rows]
+    for first, second in itertools.combinations(points, 2):
+        minors = (first[a] * second[b] - first[b] * second[a] for a, b in itertools.combinations(range(IMAGINARY), 2))
+        _require(any(minors), "two exact fixtures are one projective point")
+    planes = [tuple(row["normalized_plucker_coordinates"]) for row in rows]
+    return [planes.index(plane) for plane in planes]
+
+
+def _split_basis() -> Matrix:
+    return [[int(row == column) for column in range(2 * IMAGINARY)] for row in range(2 * IMAGINARY)]
+
+
+def fiber_dimension(split: Sequence[int]) -> int:
+    """dim L modulo PRIME at the pair (z', z'): the pairs whose bordered matrices kill both kernel planes."""
+    point = [*split, *split]
+    kernels = (_nullspace(bordered(point)), _nullspace(conjugate_bordered(point)))
+    columns = []
+    for unit in _split_basis():
+        column: Vector = []
+        for matrix, kernel in zip((bordered(unit), conjugate_bordered(unit)), kernels, strict=True):
+            for vector in kernel:
+                column += [sum(a * b for a, b in zip(row, vector, strict=True)) % PRIME for row in matrix]
+        columns.append(column)
+    return 2 * IMAGINARY - _rank([list(row) for row in zip(*columns, strict=True)])
+
+
+def _exact_bordered(point: Sequence[int], conjugate: bool = False) -> list[list[Any]]:
+    """`bordered` over the Gaussian rationals."""
+    first, second = (point[IMAGINARY:], point[:IMAGINARY]) if conjugate else (point[:IMAGINARY], point[IMAGINARY:])
+    unit = QQ_I.convert(-I if conjugate else I)
+    z = [unit ** (index + 1).bit_count() * QQ_I.convert(value) for index, value in enumerate(first)]
+    w = [(-unit) ** (index + 1).bit_count() * QQ_I.convert(value) for index, value in enumerate(second)]
+    matrix = [[QQ_I.zero] * BORDERED for _ in range(BORDERED)]
+    for index in range(1, BORDERED):
+        matrix[0][index], matrix[index][0] = -w[index - 1], w[index - 1]
+    for row in range(1, BORDERED):
+        for column in range(1, BORDERED):
+            if row != column:
+                matrix[row][column] = SIGNS[row][column] * z[(row ^ column) - 1]
+    return matrix
+
+
+def exact_fiber_dimension(split: Sequence[int]) -> int:
+    """dim L over Q(i) at the pair (z', z') of an integer split point."""
+    point = [*split, *split]
+    shape = (BORDERED, BORDERED)
+    kernels = [
+        DomainMatrix(_exact_bordered(point, conjugate), shape, QQ_I).nullspace().to_list()
+        for conjugate in (False, True)
+    ]
+    _require([len(kernel) for kernel in kernels] == [2, 2], "an exact kernel is not a plane")
+    columns = []
+    for unit in _split_basis():
+        column: list[Any] = []
+        for conjugate, kernel in zip((False, True), kernels, strict=True):
+            matrix = _exact_bordered(unit, conjugate)
+            for vector in kernel:
+                column += [sum((a * b for a, b in zip(row, vector, strict=True)), QQ_I.zero) for row in matrix]
+        columns.append(column)
+    system = DomainMatrix([list(row) for row in zip(*columns, strict=True)], (len(columns[0]), len(columns)), QQ_I)
+    return 2 * IMAGINARY - int(system.rank())
+
+
+def _real_point(split: Sequence[int]) -> list[Fraction]:
+    return list(symmetry.equations.y_from_split([Fraction(int(value)) for value in split]))
+
+
+def kernel_vector_nullity(split: Sequence[int]) -> int:
+    """The least nullity, exact, among six vectors of the kernel of left multiplication by the real point."""
+    kernel = symmetry.equations.nullspace(symmetry.equations.l_matrix(_real_point(split)))
+    _require(len(kernel) == 4, "the real kernel is not four-dimensional")
+    vectors = [
+        [
+            sum((c * vector[index] for c, vector in zip(combination, kernel, strict=True)), Fraction(0))
+            for index in range(32)
+        ]
+        for combination in KERNEL_COMBINATIONS
+    ]
+    return min(int(symmetry.equations.nullity(vector)) for vector in vectors)
+
+
+def _left_multiplication(vector: Sequence[int]) -> Matrix:
+    rows = symmetry.equations.l_matrix([Fraction(int(value)) for value in vector])
+    return [[int(value) % PRIME for value in row] for row in rows]
+
+
+def grid_block(job: tuple[int, int, int, tuple[tuple[tuple[int, ...], ...], ...]]) -> list[list[Any]]:
+    """Nullity-4 points of one block of the grid: [split point, stratum, orbit rank, dim L, kernel nullity]."""
+    second, third, eighth, generators = job
+    polynomials = _polynomials()
+    rows: list[list[Any]] = []
+    candidates = 0
+    for count in range(4):
+        for support in itertools.combinations(range(7), count):
+            for values in itertools.product((-1, 1, 2), repeat=count):
+                split = [1, second, third, 0, 0, 0, 0, eighth, *([0] * 7)]
+                for position, value in zip(support, values, strict=True):
+                    split[8 + position] = value
+                candidates += 1
+                reduced = [value % PRIME for value in split]
+                if _rank(lower_block(reduced)) != 12 or _rank(bordered([*reduced, *reduced])) != 14:
+                    continue
+                membership = tuple(_value(polynomials[name], reduced) == 0 for name in ("Q", "G"))
+                stratum = next(name for name, pattern in MEMBERSHIP.items() if pattern == membership)
+                real = [int(value) % PRIME for value in _real_point(split)]
+                orbit = _rank(
+                    [[sum(a * b for a, b in zip(row, real, strict=True)) % PRIME for row in g] for g in generators]
+                )
+                kernel = _nullspace(_left_multiplication(real))
+                _require(len(kernel) == 4, "the real kernel modulo the prime is not four-dimensional")
+                general = [
+                    sum(c * v[i] for c, v in zip(KERNEL_COMBINATIONS[4], kernel, strict=True)) % PRIME
+                    for i in range(32)
+                ]
+                nullity = 32 - _rank(_left_multiplication(general))
+                rows.append([split, stratum, orbit, fiber_dimension(reduced), nullity])
+    return [[candidates], *rows]
+
+
+def grid() -> dict[str, Any]:
+    """The classes of the nullity-4 grid points and the exact fiber dimension at the exceptional ones."""
+    triples, _, _ = symmetry._solve_lie_triples("")
+    generators = tuple(
+        tuple(
+            tuple(Fraction(value).numerator * pow(Fraction(value).denominator, -1, PRIME) % PRIME for value in row)
+            for row in triple[0]
+        )
+        for triple in triples
+    )
+    jobs = [(second, third, eighth, generators) for second in range(3) for third in range(3) for eighth in range(4)]
+    blocks = parallel.ordered_map(grid_block, jobs, min_items=2)
+    classes: dict[tuple[str, int, int, int], int] = {}
+    exceptions = []
+    for block in blocks:
+        for split, stratum, orbit, fiber, nullity in block[1:]:
+            found = (stratum, orbit, fiber, nullity)
+            classes[found] = classes.get(found, 0) + 1
+            if found in GRID_EXCEPTIONS:
+                exceptions.append(
+                    {
+                        "split_point": split,
+                        "stratum": stratum,
+                        "orbit_rank": orbit,
+                        "fiber_dimension": fiber,
+                        "kernel_vector_nullity": kernel_vector_nullity(split),
+                        "exact_fiber_dimension": exact_fiber_dimension(split),
+                    }
+                )
+    return {
+        "candidates": sum(block[0][0] for block in blocks),
+        "classes": [[*found, count] for found, count in sorted(classes.items())],
+        "exceptions": exceptions,
+    }
+
+
+def fixture_invariants() -> list[dict[str, int]]:
+    """Exact dim L and least sampled kernel-vector nullity at each exact fixture."""
+    rows = json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]
+    splits = [[int(value) for value in row["split_point"]] for row in rows]
+    return [
+        {"fiber_dimension": exact_fiber_dimension(split), "kernel_vector_nullity": kernel_vector_nullity(split)}
+        for split in splits
+    ]
+
+
 def image_equations(stratum: str) -> dict[str, Any]:
-    """Linear span of the image and the count of quadrics vanishing on it, at two sample sizes."""
+    """Linear span of the sampled planes and the count of quadrics vanishing on them, at two sample sizes."""
     rows = parallel.ordered_map(plucker, [(stratum, number) for number in range(QUADRIC_SAMPLES[-1])], min_items=2)
     quadrics = [[row[a] * row[b] % PRIME for a, b in QUADRIC_MONOMIALS] for row in rows]
     ranks = [_rank(quadrics[:count]) for count in QUADRIC_SAMPLES]
@@ -396,16 +675,25 @@ def fixtures() -> dict[str, int]:
     return {"fixtures": len(rows), "first_coordinate_zero": vanishing}
 
 
+def _inputs() -> dict[str, str]:
+    return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in SOURCE_PATHS}
+
+
 def compute() -> dict[str, Any]:
     jobs = [(stratum, number) for stratum in STRATA for number in range(RANK_POINTS)]
     record: dict[str, Any] = {
         "schema": SCHEMA,
         "field": FIELD,
-        "inputs": {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in SOURCE_PATHS},
+        "inputs": _inputs(),
         "points": parallel.ordered_map(rank_point, jobs, min_items=2),
         "image": [image_equations(stratum) for stratum in STRATA],
         "control": control(),
         "exact_fixtures": fixtures(),
+        "exact_fixture_ranks": fixture_ranks(),
+        "exact_fixture_orbit_ranks": fixture_orbit_ranks(),
+        "exact_fixture_plane_classes": fixture_plane_classes(),
+        "exact_fixture_invariants": fixture_invariants(),
+        "grid": grid(),
     }
     record["pass"] = verdict(record) == []
     return record
@@ -416,10 +704,15 @@ def verdict(record: dict[str, Any]) -> list[str]:
     problems = []
     if (record.get("schema"), record.get("field")) != (SCHEMA, FIELD):
         problems.append("the record is headed otherwise")
+    if record.get("inputs") != _inputs():
+        problems.append("the input digests differ from the files")
+    if record.get("pass", True) is not True:
+        problems.append("the record states that it fails")
     points = record["points"]
     if [row["stratum"] for row in points] != [stratum for stratum in STRATA for _ in range(RANK_POINTS)]:
         problems.append("the points differ from the sampled strata")
-    if len({row["point_sha256"] for row in points}) != len(points):
+    digests = {row["point_sha256"] for row in points}
+    if len(digests) != len(points) or any(re.fullmatch("[0-9a-f]{64}", digest) is None for digest in digests):
         problems.append("two rank points coincide")
     for number, row in enumerate(points):
         name = f"{row['stratum']} point {number % RANK_POINTS}"
@@ -436,7 +729,7 @@ def verdict(record: dict[str, Any]) -> list[str]:
                 "orthogonal_to_w": True,
             }:
                 problems.append(f"{name}: ker A(z, w) is not ker M(z) n w-perp")
-        for key in ("tangent_dimension", "three_plane_map_rank", "gauss_rank_w_free", "real_rank"):
+        for key in ("tangent_dimension", "three_plane_map_rank", "gauss_rank_w_free", "conjugate_pair_rank"):
             if row[key] != expected.get(key):
                 problems.append(f"{name}: {key} is {row[key]}, expected {expected.get(key)}")
         if row["gauss_rank_w_on_conjugate_stratum"] != row["gauss_rank_w_free"]:
@@ -447,6 +740,8 @@ def verdict(record: dict[str, Any]) -> list[str]:
         name, expected = row["stratum"], EXPECTED.get(row["stratum"], {})
         if row["quadric_samples"] != list(QUADRIC_SAMPLES) or row["quadric_samples"][0] <= row["quadric_monomials"]:
             problems.append(f"{name}: the quadric interpolation has too few samples")
+        if row["linear_samples"] != LINEAR_SAMPLES:
+            problems.append(f"{name}: the linear span is read at {row['linear_samples']} samples")
         if len(set(row["quadric_ranks"])) != 1:
             problems.append(f"{name}: the quadric rank still grows between the two sample sizes")
         if row["quadrics_vanishing"] != row["quadric_monomials"] - row["quadric_ranks"][-1]:
@@ -465,6 +760,61 @@ def verdict(record: dict[str, Any]) -> list[str]:
     exact = record["exact_fixtures"]
     if exact["fixtures"] != 66 or exact["first_coordinate_zero"] != exact["fixtures"]:
         problems.append("an exact fixture has a kernel vector with nonzero first coordinate")
+    ranks = record["exact_fixture_ranks"]
+    if [row["fixture"] for row in ranks] != list(range(exact["fixtures"])):
+        problems.append("the fixture ranks do not cover the exact fixtures in order")
+    orbits, classes = record["exact_fixture_orbit_ranks"], record["exact_fixture_plane_classes"]
+    if len(orbits) != len(ranks) or len(classes) != len(ranks):
+        problems.append("the orbit ranks or the plane classes do not cover the exact fixtures")
+        return problems
+    found: dict[tuple[str, int, int, int, int], int] = {}
+    for row, orbit in zip(ranks, orbits, strict=True):
+        rank_class = (row["stratum"], orbit, row["three_plane_map_rank"], row["gauss_rank"], row["real_rank"])
+        found[rank_class] = found.get(rank_class, 0) + 1
+        if row["tangent_dimension"] != EXPECTED.get(row["stratum"], {}).get("tangent_dimension"):
+            problems.append(f"fixture {row['fixture']}: the tangent space drops modulo {PRIME}")
+    if found != FIXTURE_RANKS:
+        problems.append("the ranks on the real locus at the exact fixtures differ from the expected table")
+    for stratum in STRATA:
+        bound = EXPECTED[stratum]["conjugate_pair_rank"]
+        if not any(row["stratum"] == stratum and row["real_rank"] == bound for row in ranks):
+            problems.append(f"{stratum}: no exact fixture has real rank {bound}")
+    invariants = record["exact_fixture_invariants"]
+    if len(invariants) != len(ranks):
+        problems.append("the fiber dimensions do not cover the exact fixtures")
+        return problems
+    for row, invariant in zip(ranks, invariants, strict=True):
+        fiber = invariant["fiber_dimension"]
+        if FIBER_DIMENSIONS.get(row["real_rank"]) != fiber or row["real_rank"] != 2 * row["tangent_dimension"] - fiber:
+            problems.append(f"fixture {row['fixture']}: the real rank is not the tangent dimension minus dim L")
+        if invariant["kernel_vector_nullity"] != {2: 4, 6: 12, 12: 16}.get(fiber):
+            problems.append(f"fixture {row['fixture']}: the kernel vectors have another nullity")
+    lattice = record["grid"]
+    if lattice["candidates"] != GRID_CANDIDATES:
+        problems.append("the grid has another number of candidates")
+    if {tuple(row[:4]): row[4] for row in lattice["classes"]} != GRID_CLASSES or len(lattice["classes"]) != len(
+        GRID_CLASSES
+    ):
+        problems.append("the classes of the nullity-4 grid points differ from the expected table")
+    expected_exceptions = [found for found in sorted(GRID_EXCEPTIONS) for _ in range(GRID_CLASSES[found])]
+    found_exceptions = sorted(
+        (row["stratum"], row["orbit_rank"], row["exact_fiber_dimension"], row["kernel_vector_nullity"])
+        for row in lattice["exceptions"]
+    )
+    if found_exceptions != expected_exceptions:
+        problems.append("an exceptional grid point has another exact fiber dimension or kernel nullity")
+    if any(row["fiber_dimension"] != row["exact_fiber_dimension"] for row in lattice["exceptions"]):
+        problems.append("an exceptional grid point has a fiber that changes modulo the prime")
+    shared = [number for number, first in enumerate(classes) if classes.count(first) > 1]
+    if (len(set(classes)), len(shared)) != (FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES):
+        problems.append("the count of kernel planes shared by two exact fixtures differs")
+    if any(first > number or classes[first] != first for number, first in enumerate(classes)):
+        problems.append("a plane class does not name its first fixture")
+    for number in shared:
+        row = ranks[number]
+        full = EXPECTED.get(row["stratum"], {}).get("conjugate_pair_rank")
+        if (row["stratum"], orbits[number]) != (STRATA[1], 13) or row["real_rank"] == full:
+            problems.append(f"fixture {number} shares its kernel plane off the orbit-rank-13 locus of V(G) minus V(Q)")
     return problems
 
 
@@ -483,7 +833,7 @@ def main() -> None:
     if problems:
         raise SystemExit("\n".join(problems))
     for row in record["points"][::RANK_POINTS]:
-        print(row["stratum"], row["three_plane_map_rank"], row["gauss_rank_w_free"], row["real_rank"])
+        print(row["stratum"], row["three_plane_map_rank"], row["gauss_rank_w_free"], row["conjugate_pair_rank"])
     for row in record["image"]:
         print(row["stratum"], row["linear_span_dimension"], row["quadrics_vanishing"])
 

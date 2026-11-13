@@ -56,6 +56,46 @@ def test_kernel_differential_of_a_known_family() -> None:
     _same(rows, [[1, 0], [0, gauss.PRIME - 1]])
 
 
+def test_a_direction_off_both_hypersurfaces_passes_the_first_order_check_on_the_intersection() -> None:
+    # On V(Q) n V(G) the rank locus is singular and K^T A(v) K = 0 holds for directions outside the tangent space,
+    # so the tangent directions come from the gradients (`tangent_space`) and the check is a necessary condition.
+    polynomials = gauss._polynomials()
+    point = gauss.sample(gauss.STRATA[2], gauss.Points("test:tangency"), polynomials)
+    for index in range(gauss.IMAGINARY):
+        direction = [int(index == k) for k in range(gauss.IMAGINARY)]
+        slopes = [gauss._gradient(polynomials[name], point)[index] for name in ("Q", "G")]
+        if all(slopes):
+            gauss.kernel_differential(gauss.lower_block, point, [direction], 12)
+            return
+    raise AssertionError("every coordinate direction is tangent to one hypersurface")
+
+
+def test_real_ranks_at_three_exact_fixtures() -> None:
+    rows = gauss.fixture_ranks()
+    found = {n: (rows[n]["three_plane_map_rank"], rows[n]["gauss_rank"], rows[n]["real_rank"]) for n in (13, 29, 28, 0)}
+    _same(found, {13: (13, 15, 26), 29: (13, 15, 26), 28: (10, 12, 24), 0: (13, 13, 22)})
+
+
+def test_fiber_dimension_and_kernel_nullity_at_three_exact_fixtures_and_one_grid_exception() -> None:
+    record = json.loads(gauss.FIXTURES.read_text(encoding="utf-8"))["fixtures"]
+    splits = {number: [int(value) for value in record[number]["split_point"]] for number in (29, 0, 1)}
+    splits[-1] = [1, 0, 1, 0, 0, 0, 0, 0, 2, 0, 0, -1, 0, -1, 0]
+    found = {
+        number: (
+            gauss.exact_fiber_dimension(split),
+            gauss.fiber_dimension([value % gauss.PRIME for value in split]),
+            gauss.kernel_vector_nullity(split),
+        )
+        for number, split in splits.items()
+    }
+    _same(found, {29: (2, 2, 4), 0: (6, 6, 12), 1: (12, 12, 16), -1: (12, 12, 16)})
+
+
+def test_kernel_planes_shared_by_exact_fixtures() -> None:
+    classes = gauss.fixture_plane_classes()
+    _same((len(set(classes)), classes[5], classes[22], classes[26], classes[29]), (54, 3, 17, 17, 29))
+
+
 def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None:
     record = json.loads(gauss.RECORD.read_text(encoding="utf-8"))
     _same((record["pass"], gauss.verdict(record), len(record["points"])), (True, [], 12))
@@ -72,7 +112,38 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "three-plane rank": lambda r: r["points"][0].update(three_plane_map_rank=12),
         "gauss rank": lambda r: r["points"][4].update(gauss_rank_w_free=14, gauss_rank_w_on_conjugate_stratum=14),
         "gauss rank on the stratum": lambda r: r["points"][5].update(gauss_rank_w_on_conjugate_stratum=14),
-        "real rank": lambda r: r["points"][9].update(real_rank=22),
+        "pair rank": lambda r: r["points"][9].update(conjugate_pair_rank=22),
+        "inputs": lambda r: r.update(inputs={}),
+        "one input digest": lambda r: r["inputs"].update({next(iter(r["inputs"])): "0" * 64}),
+        "stated failure": lambda r: r.update({"pass": False}),
+        "linear samples": lambda r: r["image"][0].update(linear_samples=1),
+        "point digest": lambda r: r["points"][0].update(point_sha256="0" * 63),
+        "fixture real rank": lambda r: r["exact_fixture_ranks"][13].update(real_rank=25),
+        "fixture rank table": lambda r: r["exact_fixture_ranks"][0].update(gauss_rank=15, real_rank=26),
+        "fixture tangent": lambda r: r["exact_fixture_ranks"][28].update(tangent_dimension=12),
+        "orbit rank": lambda r: r["exact_fixture_orbit_ranks"].__setitem__(0, 16),
+        "missing orbit rank": lambda r: r.update(exact_fixture_orbit_ranks=r["exact_fixture_orbit_ranks"][:65]),
+        "separated planes": lambda r: r["exact_fixture_plane_classes"].__setitem__(5, 5),
+        "merged planes": lambda r: r["exact_fixture_plane_classes"].__setitem__(13, 0),
+        "shared plane at full rank": lambda r: (
+            r["exact_fixture_plane_classes"].__setitem__(5, 5),
+            r["exact_fixture_plane_classes"].__setitem__(30, 29),
+        ),
+        "fiber dimension": lambda r: r["exact_fixture_invariants"][0].update(fiber_dimension=2),
+        "fixture kernel nullity": lambda r: r["exact_fixture_invariants"][1].update(kernel_vector_nullity=4),
+        "missing invariant": lambda r: r.update(exact_fixture_invariants=r["exact_fixture_invariants"][:65]),
+        "grid candidates": lambda r: r["grid"].update(candidates=41615),
+        "grid class count": lambda r: r["grid"]["classes"][0].__setitem__(4, 370),
+        "grid class dropped": lambda r: r["grid"].update(classes=r["grid"]["classes"][:-1]),
+        "exception exact fiber": lambda r: r["grid"]["exceptions"][0].update(
+            exact_fiber_dimension=2, fiber_dimension=2
+        ),
+        "exception modular fiber": lambda r: r["grid"]["exceptions"][0].update(fiber_dimension=14),
+        "exception dropped": lambda r: r["grid"].update(exceptions=r["grid"]["exceptions"][1:]),
+        "missing fixture": lambda r: r.update(exact_fixture_ranks=r["exact_fixture_ranks"][:65]),
+        "no real immersion": lambda r: [
+            row.update(real_rank=22) for row in r["exact_fixture_ranks"] if row["stratum"] == gauss.STRATA[0]
+        ],
         "same point": lambda r: r["points"][1].update(point_sha256=r["points"][0]["point_sha256"]),
         "missing point": lambda r: r.update(points=r["points"][:11]),
         "linear span": lambda r: r["image"][0].update(linear_span_dimension=104),
