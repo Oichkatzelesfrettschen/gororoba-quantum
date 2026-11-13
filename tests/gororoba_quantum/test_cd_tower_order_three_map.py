@@ -22,6 +22,7 @@ from pathlib import Path
 from sympy import Integer, sqrt
 
 import cd_core
+import parallel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from test_sedenion_automorphism_group import psi  # noqa: E402
@@ -91,17 +92,39 @@ def apply(images: list[list[Root3]], vector: list[Root3]) -> list[Root3]:
     return out
 
 
-def product_failures(images: list[list[Root3]]) -> list[tuple[int, int]]:
-    """Basis pairs (i, j) where psi2(e_i) psi2(e_j) differs from 2 psi2(e_i e_j)."""
-    failures = []
-    for i in range(DIM):
-        for j in range(DIM):
-            product = [ZERO] * DIM
-            product[i ^ j] = (cd_core.cd_sign(DIM, i, j), 0)
-            expected = [r_scale(2, x) for x in apply(images, product)]
-            if cd_mul(images[i], images[j]) != expected:
-                failures.append((i, j))
-    return failures
+Table = list[list[Root3]]
+
+
+def pair_fails(item: tuple[Table, int, int]) -> bool:
+    """Whether psi2(e_i) psi2(e_j) differs from 2 psi2(e_i e_j) for the table and the basis pair of the item."""
+    images, i, j = item
+    product = [ZERO] * DIM
+    product[i ^ j] = (cd_core.cd_sign(DIM, i, j), 0)
+    expected = [r_scale(2, x) for x in apply(images, product)]
+    return cd_mul(images[i], images[j]) != expected
+
+
+def product_failures(images: Table) -> list[tuple[int, int]]:
+    """Basis pairs (i, j) where psi2(e_i) psi2(e_j) differs from 2 psi2(e_i e_j), the 256 pairs mapped in order."""
+    pairs = [(i, j) for i in range(DIM) for j in range(DIM)]
+    flags = parallel.ordered_map(pair_fails, [(images, i, j) for i, j in pairs])
+    return [pair for pair, failed in zip(pairs, flags, strict=True) if failed]
+
+
+def composite_on_unit(item: tuple[tuple[Table, ...], int]) -> list[Root3]:
+    """The image of e_m under the tables of the item applied right to left."""
+    tables, m = item
+    vector = [ZERO] * DIM
+    vector[m] = (1, 0)
+    for table in reversed(tables):
+        vector = apply(table, vector)
+    return vector
+
+
+def composite_defects(tables: tuple[Table, ...], factor: int) -> list[int]:
+    """Basis indices m where the composite of the tables differs from factor times e_m."""
+    images = parallel.ordered_map(composite_on_unit, [(tables, m) for m in range(DIM)], min_items=1)
+    return [m for m, image in enumerate(images) if image != [(factor if i == m else 0, 0) for i in range(DIM)]]
 
 
 def test_rocq_image_table_is_twice_gresnigt_psi() -> None:
@@ -132,11 +155,8 @@ def test_transposed_table_is_another_product_preserving_map() -> None:
         raise AssertionError("the transposed table must also preserve products up to the factor 2")
     if transposed == gresnigt_twice_psi():
         raise AssertionError("the transposed table must differ from twice Eq. 61")
-    for m in range(DIM):
-        unit = [ZERO] * DIM
-        unit[m] = (1, 0)
-        if apply(transposed, apply(table, unit)) != [r_scale(4, x) for x in unit]:
-            raise AssertionError(f"the transposed table composed with the table differs from 4 at e_{m}")
+    if defects := composite_defects((transposed, table), 4):
+        raise AssertionError(f"the transposed table composed with the table differs from 4 at basis indices {defects}")
 
 
 def test_image_table_preserves_cd_core_products_up_to_two() -> None:
@@ -157,9 +177,5 @@ def test_sign_flipped_table_fails_the_product_check() -> None:
 def test_psi_has_order_three_on_the_table() -> None:
     """psi2 applied three times is 8 times the identity, so psi = psi2 / 2 has order dividing three."""
     table = rocq_images()
-    for m in range(DIM):
-        unit = [ZERO] * DIM
-        unit[m] = (1, 0)
-        cubed = apply(table, apply(table, apply(table, unit)))
-        if cubed != [r_scale(8, x) for x in unit]:
-            raise AssertionError(f"psi2 cubed differs from 8 at e_{m}: {cubed}")
+    if defects := composite_defects((table, table, table), 8):
+        raise AssertionError(f"psi2 cubed differs from 8 at basis indices {defects}")
