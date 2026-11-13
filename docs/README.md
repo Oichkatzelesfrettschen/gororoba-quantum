@@ -402,6 +402,17 @@ differs from it only in the `cd_core.py` digest.
 | [2609.28112.md](notes/papers/2609.28112.md) | Nghiem, Berry and Phan 2026: NP-hardness of p-torsion in clique-complex homology and a one-sided quantum torsion witness |
 | [2610.03686.md](notes/papers/2610.03686.md) | Summer and Jamet 2026: permute-act-unpermute block encoding with 8 S N T gates, separating the support address from the operator label |
 | [2611.03348.md](notes/papers/2611.03348.md) | Rua Munoz, Mahecha Gomez and Pineda Montoya 2025: quaternionic quantum computation is polynomially equivalent to the complex model; octonionic obstructions and mitigations |
+| [1005.5663.md](notes/papers/1005.5663.md) | Idrees, Pfister and Steidel 2011 modular standard bases: Theorem 2.4 lifting a candidate basis from one prime without a homogeneity hypothesis, lucky primes and the modStd algorithm (pp. 1-9 read) |
+| [1207.1651.md](notes/papers/1207.1651.md) | Boehm, Decker, Fieker and Pfister 2015 bad primes in rational reconstruction: five types of bad primes, error tolerant lifting and the type-5 prime of Example 5.12 (all pages read) |
+| [1504.04564.md](notes/papers/1504.04564.md) | Boku, Decker, Fieker and Steenpass 2015 Groebner bases over number fields: Theorem 5.1, admissible and lucky primes, Algorithms 2 and 3 of nfmodstd.lib and the verification only for homogeneous ideals or local orderings (all pages read) |
+| [arnold-2003-modular-groebner.md](notes/papers/arnold-2003-modular-groebner.md) | Arnold 2003 modular Groebner bases: Hilbert lucky primes, Theorem 5.3 (HF_I <= HF_(I_p)) and the verification criterion of Theorem 7.1 for homogeneous ideals (pp. 403-410 and 415-419 read) |
+| [1111.7263.md](notes/papers/1111.7263.md) | Bruns, Conca and Varbaro 2013 relations between minors of a generic matrix: quadrics f_(u,v), cubics in Theorems 2.4 and 2.7, Conjecture 2.12 and Theorem 3.1 (pp. 1-28 read) |
+| [1909.11705.md](notes/papers/1909.11705.md) | Huang, Perlman, Polini, Raicu and Sammartano 2021 the case t = 2 of the Bruns-Conca-Varbaro conjecture: Theorems 1.1 and 1.2 and the fiber-type question of Section 7 (pp. 1-4 and 18-20 read) |
+| [1303.6874.md](notes/papers/1303.6874.md) | De Negri and Gorla 2011 invariants of pfaffian ideals of ladders: multiplicity formulas, regularity and the resolution of the maximal pfaffian ideal M_t (all pages read) |
+| [bruns-simis-trung-1991-straightening-closed.md](notes/papers/bruns-simis-trung-1991-straightening-closed.md) | Bruns, Simis and Trung 1991 straightening-closed ideals: Hodge algebra structure of the Rees algebra, Theorem 2.2.2 and Theorems 3.1.1 to 3.2.1 (pp. 507-518 read) |
+| [math-0303268.md](notes/papers/math-0303268.md) | Ein, Lazarsfeld and Mustata 2004 contact loci in arc spaces: Theorems A and C relating arc loci to log resolutions and divisorial valuations (pp. 1-5 read) |
+| [math-9810140.md](notes/papers/math-9810140.md) | Landsberg and Manivel 2003 projective geometry of rational homogeneous varieties: adjoint varieties in Proposition 4.17 and Remark 4.18 and the lead on the degree-20 W8 fiber component (all pages read) |
+| [0803.2369.md](notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier integral closure of ideals: Theorem 2.1 (arcs, normalized blow-up), Theorem 4.1.6 and the arc formula of Theorem 5.2 (pp. 1-48 of 78 read, in French) |
 
 ### Algebra and proofs
 
