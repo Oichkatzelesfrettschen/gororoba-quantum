@@ -76,6 +76,8 @@ TARGETS = {
 EXPECTED_PRIMES = [[4, 4, 14], [5, 11, 9]]
 # The two spans (7 and 12) meet in 3 dimensions, where the components meet; the recentered family spans 2.
 EXPECTED_JOINT_SPAN = 16
+# The presolved slice ideal J of each target has 16 generators; both identity runs substitute into all of them.
+J_GENERATORS = 16
 EXPECTED_CONTROL_SPAN = 2
 SOURCE_PATHS = (HERE / "e8_fiber_components_qi.py", HERE / "arc_jets_qi.py", HERE / "reduction_check.py")
 
@@ -379,8 +381,11 @@ def verdict(record: dict[str, Any]) -> list[str]:
         problems.append("the record does not hold exactly the two targets")
     for target in record["targets"]:
         name = target["slug"]
-        if target["phi_identity"]["arc"]["nonzero"] != 0 or target["phi_identity"]["mutated"]["nonzero"] == 0:
+        identity = target["phi_identity"]
+        if identity["arc"]["nonzero"] != 0 or identity["mutated"]["nonzero"] == 0:
             problems.append(f"{name}: Phi leaves J, or the mutated Phi stays on it")
+        if (identity["arc"]["generators"], identity["mutated"]["generators"]) != (J_GENERATORS, J_GENERATORS):
+            problems.append(f"{name}: the identity runs do not cover the {J_GENERATORS} generators of J")
         primes = target["quadric_ideal_minimal_primes"]
         if primes != EXPECTED_PRIMES:
             problems.append(f"{name}: the quadric ideal has other minimal primes")

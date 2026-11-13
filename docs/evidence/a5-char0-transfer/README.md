@@ -335,8 +335,11 @@ memory, measured on the build host with Singular 4.4.1.
 ## Both components of the E8-bar quadric scheme lie in the fiber over Q(i) (ledger A5-425)
 
 Conditional on the quadric ideal over Q(i) of A5-421 and on the slice premise of A5-423, the reduced exceptional
-fiber of E8-bar -> N- and of E8-bar -> N+ over Q(i) is the union of the two components of the quadric scheme: a
-fourfold of degree 11 and a threefold of degree 4. [e8_fiber_components_qi.py](e8_fiber_components_qi.py)
+fiber of E8-bar -> N- and of E8-bar -> N+, over the complex numbers, is the union of the two components of the
+quadric scheme after the complex-linear change of the 21 generators that the premise supplies: a fourfold of degree
+11 and a threefold of degree 4. The relation ideal L lives on the header slice and the minimal primes on the weight
+slice; the change of generators between them is not shown to be defined over Q(i), so the statement is one about
+complex points and transported components, and the computations below are over Q(i). [e8_fiber_components_qi.py](e8_fiber_components_qi.py)
 substitutes the two arc families of the modular certificate ([arcs](../a5-exceptional-fibers/arcs/README.md)) into
 the generators G of the Q(i) producer, with the family parameters W, R, S, Z, E as ring variables, and reads the limit
 vector F, the first nonzero coefficient vector of G(x(s)); the record is
@@ -388,9 +391,10 @@ its modular log, a first-order limit inside the span of the order-5 limits, a co
 5, or a quadric ideal over Q(i) with other minimal primes falsifies the record.
 
 `e8_fiber_components_qi.py --write` produces the record and `--check` replays it (gate
-`core-a5-e8-fiber-components-qi`). One replay takes 7 minutes 8 seconds of wall time and 722 CPU seconds on two workers
-under a 12 GiB memory scope, with 0.17 GiB of peak resident memory in the parent and one Singular process per
-family, measured on the build host with Singular 4.4.1, Python 3.14.9 and python-flint 0.9.0.
+`core-a5-e8-fiber-components-qi`). One replay takes 7 minutes 8 seconds of wall time and 722 CPU seconds on two workers.
+The Python parent ran under a 12 GiB memory scope and peaked at 0.17 GiB; each Singular process runs in its own
+scope of the shared runner (`_run_singular` of `nullity16_rees_fibers.py`, 16 GiB each), two at a time, so the
+parent scope does not bound the solvers and the admitted total is 12 + 2 x 16 GiB. Measured on the build host with Singular 4.4.1, Python 3.14.9 and python-flint 0.9.0.
 
 ## The plane where the two components of the reduced E8-bar quadric scheme meet
 

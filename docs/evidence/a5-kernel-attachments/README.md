@@ -550,7 +550,8 @@ the real limit set with the complex points of the characteristic-0 fiber, and th
 [weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
 the whole fiber cone of `Iso->N-` (`A5-422`), the quadrics, Hilbert numerator and minimal primes of the quadric
 ideal for `W8` and `E8bar` (`A5-421`), `h_1` to `h_7` of `E8bar` (`A5-423`), and, conditional on `A5-421` and the slice premise of
-`A5-423`, the point set of the `E8bar` fiber, the union of both components of its quadric scheme
+`A5-423`, the complex point set of the `E8bar` fiber, the union of both components of its quadric scheme after a
+complex-linear change of generators
 ([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
 `A5-425`). Open are `Iso->N+`, the degree-20 component of `W8` over `Q(i)`, and the scheme structure of the
 `E8bar` fiber above degree 7 (`A5-418`, `A5-009`).

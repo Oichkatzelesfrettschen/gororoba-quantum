@@ -95,6 +95,10 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "control keeps rank 5": lambda t: family(t, "order_five_recentered_at_2").update(cone_ranks=[5, 5]),
         "control residue": lambda t: family(t, "order_five_recentered_at_2").update(series_residues=1),
         "missing family": lambda t: t.update(families=t["families"][:2]),
+        "dropped identity generators": lambda t: (
+            t["phi_identity"]["arc"].update(generators=1),
+            t["phi_identity"]["mutated"].update(generators=1, nonzero=1),
+        ),
         "duplicated family": lambda t: t.update(families=[*t["families"], t["families"][0]]),
         "joint span thirteen": lambda t: t.update(joint_span_dimension=13),
         "control span": lambda t: family(t, "order_five_recentered_at_2").update(span_dimension=3),
