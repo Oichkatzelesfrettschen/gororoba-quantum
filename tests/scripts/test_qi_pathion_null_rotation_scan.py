@@ -151,6 +151,42 @@ def test_a_class_label_stands_only_when_the_bridge_holds(bridge: tuple[float, fl
         _expect(decision["a5_186"].startswith("unchanged"), "a failed bridge changes the ledger row")
 
 
+@pytest.mark.parametrize(
+    ("world", "branch", "survives"),
+    [("pulse_x_before_all", 1, True), ("pulse_x_before_all", 0, False), ("pulse_x_before_q8", 1, False)],
+)
+def test_only_an_over_rotation_of_every_pulse_keeps_the_ledger_row(world: str, branch: int, survives: bool) -> None:
+    value = rs.truth_parameter(world, branch, rs.DESIGN_CONTRAST)
+    decision = rs.outcome(rs.decide(rs.planted_batches(world, value), None, None))
+    _expect(decision["label"] == "pulse_x", f"planted {world} reads {decision['label']}")
+    _expect(decision["x_over_rotation_of_every_pulse"] is survives, f"{world} at {value:+.4f}")
+    _expect(decision["a5_186"].startswith("survives" if survives else "amended"), decision["a5_186"])
+
+
+@pytest.mark.parametrize(
+    ("world", "branch", "label"),
+    [
+        ("pulse_x_before_all", 1, "pulse_x"),
+        ("pulse_y_before_all", 1, "pulse_other"),
+        ("selector_flip_q12_0", 0, "readout"),
+    ],
+)
+def test_a_world_whose_visibility_loss_spares_the_selector_reads_its_class(world: str, branch: int, label: str) -> None:
+    value = rs.truth_parameter(world, branch, rs.DESIGN_CONTRAST, 1.0)
+    decision = rs.decide(rs.planted_batches(world, value, mix=1.0), None, None)
+    _expect(decision["label"] == label, f"planted {world} at share 1 reads {decision['label']}")
+    _expect(decision["numbers"]["contraction_share"][world] == 1.0, "the fitted share is not the planted one")
+    _expect(decision["numbers"]["chi2"][world] < 1.0, f"planted {world} does not fit itself")
+
+
+def test_contraction_at_share_one_keeps_the_selector_and_coin_law() -> None:
+    laws = rs.exact_laws()[None]
+    kept = rs.contract(laws, 0.5, 1.0).reshape(-1, 4, 8).sum(-1)
+    _expect(float(np.abs(kept - laws.reshape(-1, 4, 8).sum(-1)).max()) < 1e-12, "share 1 moves the selector or coin")
+    whole = rs.contract(laws, 0.5, 0.0)
+    _expect(float(np.abs(whole - (0.5 * laws + 0.5 / rs.NOUT)).max()) < 1e-12, "share 0 is not a uniform contraction")
+
+
 def test_a_center_contrast_below_zero_reads_reversed() -> None:
     batches = _planted_x()
     for batch in batches:
@@ -215,14 +251,14 @@ def _strings(law: np.ndarray, shots: int, roles: dict[str, int]) -> list[str]:
 
 
 def _series_shots(
-    world: str, value: float, shots: int, jump: tuple[str, ...] = (), lost_qubit: int = 11
+    world: str, value: float, shots: int, jump: tuple[str, ...] = (), lost_qubit: int = 11, mix: float = 0.0
 ) -> dict[str, list[str]]:
     """Expected-count shot lists of the whole Tuna-17 series under a planted world with exact assignment readout;
     the readout-1 circuit of each batch named in `jump` reads `lost_qubit` as 0 in a quarter of its shots."""
     roles = rs.retained()["roles"]
     register = rs.retained()["region"]
     grid = rs.parameter_grid(world)
-    table = rs.world_laws(world, rs.DESIGN_RETENTION, rs.ARM_NAMES)
+    table = rs.world_laws(world, rs.DESIGN_RETENTION, rs.ARM_NAMES, mix)
     laws = table[int(np.argmin(np.abs(grid - value)))]
     out: dict[str, list[str]] = {}
     ones = "".join("1" if cc.NQUBITS - 1 - i in register else "0" for i in range(cc.NQUBITS))
@@ -259,6 +295,15 @@ def test_evaluate_reads_a_planted_over_rotation_through_the_analysis_path() -> N
     _expect(all(r["guard"]["admitted"] for r in report["batch_rows"].values()), "a steady readout fails the guard")
 
 
+def test_evaluate_reads_an_over_rotation_whose_visibility_loss_spares_the_selector() -> None:
+    value = rs.truth_parameter("pulse_x_before_all", 1, rs.DESIGN_CONTRAST, 1.0)
+    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, mix=1.0), _manifest())
+    decision = report["decision"]
+    _expect(decision["label"] == "pulse_x", f"reads {decision['label']}")
+    _expect(decision["numbers"]["contraction_share"]["pulse_x_before_all"] >= 0.9, "the fitted share is low")
+    _expect(decision["a5_186"].startswith("survives"), decision["a5_186"])
+
+
 @pytest.mark.parametrize("role", ["d2", "selector", "coin"])
 def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_readout_guard(role: str) -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
@@ -273,14 +318,16 @@ def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_readout_guard(role:
     _expect(len(failed) >= 2, f"the guard flags {failed}")
 
 
-def test_evaluate_withholds_the_decision_when_no_bridge_batch_is_admitted() -> None:
+@pytest.mark.parametrize("offset", [1, 3])
+def test_evaluate_withholds_the_decision_when_a_bridge_batch_is_not_admitted(offset: int) -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
     rows = rs.batch_rows(rs.TUNA_SERIES)
     names = [r["batch"] for r in rows]
-    # The one bracket between the two bridge batches reads q11 changed, so neither bridge batch is admitted.
+    # Offset 1 is the bracket the two bridge batches share (neither is admitted); offset 3 is the bracket after the
+    # second one, which leaves the first admitted and the second not.
     bridges = [n for n, r in enumerate(rows) if r["kind"] == "bridge"]
     _expect(bridges[1] - bridges[0] == 2, "the bridge batches do not share a bracket")
-    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, (names[bridges[0] + 1],)), _manifest())
+    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, (names[bridges[0] + offset],)), _manifest())
     decision = report["decision"]
     _expect(decision["label"] == "unresolved_bridge", f"reads {decision['label']}")
     _expect(decision["numbers"]["rx_label"] == "pulse_x" and not decision["decided"], "the Rx class is not pulse_x")

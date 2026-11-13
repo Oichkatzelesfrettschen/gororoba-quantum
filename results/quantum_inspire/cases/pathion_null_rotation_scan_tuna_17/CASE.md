@@ -41,9 +41,18 @@ above the dropout and 0.024 above the q12 flip, which the +-5 degree arms leave 
 
 hypothesis: `Rx(pi/2 + k pi/36)` is the X90 pulse at a scaled amplitude, so it carries the X90 pulse's error. The
 bridge batches test the k = 0 case, `Rx(pi/2)` against `X90`, inside one batch; the provider documents both as native
-and publishes no pulse shapes. The model contracts each law toward uniform by one retention per batch and fits it to
-the center arm's visibility; a noise channel that reshapes the response curve is outside the model and shows as an
-inadequate best world.
+and publishes no pulse shapes.
+
+Noise model. b0's visibility on Tuna-17 is 0.44 where the exact circuit gives 0.88. The fit contracts each law by one
+retention per batch, set by the center arm's visibility, and by one contraction share for the series: the part of
+the visibility loss that depolarizes the three data bits alone and leaves the selector and coin law (share 1), the
+rest contracting the whole law toward uniform (share 0). The share decides how far the offset and its response to
+the injected rotation shrink with the visibility, and the scan fits it. The table above is drawn at share 0. Row
+A5-186's "+0.03 rad" comes from a model that contracts nothing (visibility 0.86,
+`docs/evidence/pathion-kernel-map/conjectures/c2_tuna_mech.txt`); at the observed visibility the same offset needs
++0.0511 rad at share 0 and +0.0294 rad at share 1, so the fitted angle is read together with the fitted share. A
+noise channel that reshapes the response curve in another way is outside the model and shows as an inadequate best
+world.
 
 ### Circuits
 
@@ -101,35 +110,40 @@ The raw counts are read; Z = 3 standard errors.
    scan kind (all +-5, q8 +-5, q8 +-10, all +-10); otherwise it reads `unresolved_guard`.
 2. Control: the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds 3 standard
    errors. Within 3 standard errors of zero it reads `offset_absent`, below that `offset_reversed`.
-3. Fit: per admitted scan batch and world, the least chi-square of the batch's three contrasts over the world's one
-   parameter, at the retention that reproduces the center arm's visibility through the mean assignment matrix of
-   the two brackets. A world's chi-square is the sum over the admitted scan batches. Worlds: a rotation about x on
-   the pulses of all qubits, of q8 or of q4; a rotation about y or z before or after the pulses of the same scopes; a
-   selector flip when q12 reads 0; a selector dropout when the coin reads 1. The "after" worlds repeat the "before"
-   worlds (about z the two give one law, about y the same law at the opposite angle).
+3. Fit: per admitted scan batch, world and contraction share, the least chi-square of the batch's three contrasts
+   over the world's one parameter, at the retention that reproduces the center arm's visibility through the mean
+   assignment matrix of the two brackets. A world's chi-square is the sum over the admitted scan batches at the one
+   contraction share (0 to 1 in steps of 1/12) that makes the sum least. Worlds: a rotation about x on the pulses
+   of all qubits, of q8 or of q4; a rotation about y or z before or after the pulses of the same scopes; a selector
+   flip when q12 reads 0; a selector dropout when the coin reads 1. The "after" worlds repeat the "before" worlds
+   (about z the two give one law, about y the same law at the opposite angle).
 4. Adequacy: a world is adequate when its chi-square is at most the 0.999 quantile of the chi-square law with two
-   degrees of freedom per admitted batch (39.25 for eight batches).
+   degrees of freedom per admitted batch less one for the share (37.70 for eight batches).
 5. Class: the x class, the y-or-z class and the readout class are compared by their best worlds. A class is
    preferred when its best world is adequate and the best world of each other class sits at least 25 above it. The
    x class is excluded when the other two classes lead, the leader is adequate and the best x world sits at least
    25 above it.
 6. Bridge: `Rx(pi/2)` reproduces `X90` when the within-batch difference of the `b0-rx` and `b0` contrasts, pooled
-   over the admitted bridge batches, is within 3 standard errors of zero. A class label of rule 5 stands only when
-   the bridge holds. When the two read different contrasts, or no bridge batch is admitted, the series reads
-   `unresolved_bridge`, reports the class of the Rx circuits as `rx_label` and leaves A5-186 unchanged. The pooled
-   difference of two bridge batches has a standard error of 0.0024, so the bridge resolves a difference of 0.007,
-   0.4 of the offset.
+   over the two bridge batches, both admitted, is within 3 standard errors of zero. A class label of rule 5 stands
+   only when the bridge holds. When the two read different contrasts, or a bridge batch fails admission, the series
+   reads `unresolved_bridge`, reports the class of the Rx circuits as `rx_label` and leaves A5-186 unchanged. The
+   pooled difference has a standard error of 0.0024, so the bridge resolves a difference of 0.007, 0.4 of the
+   offset; a smaller difference between the two gates passes it.
+7. Reading of `pulse_x` on A5-186, which names one over-rotation of the X90 pulse: the row survives when the best x
+   world rotates every pulse and every admitted batch fits a positive angle. Any other x fit (an under-rotation,
+   q8's pulses alone, signs that differ between batches) amends the row.
 
 The adequacy bound and the separation are design thresholds. The retention is plugged in from the center arm, each
 class enters by its least chi-square over several worlds, and each batch takes its own parameter, so the sum is a
-chi-square with 16 degrees of freedom only approximately; the operating characteristics below state the error rates
+chi-square with 15 degrees of freedom only approximately; the operating characteristics below state the error rates
 the two thresholds give at the design values. A per-batch parameter tests the shape of the response in each batch;
 the analysis reports the fitted parameter of every batch (`best_parameters`), and their agreement across batches is
 read from that list, outside the decision.
 
 | label | outcome | effect on A5-186 |
 |---|---|---|
-| `pulse_x` | the x class is preferred: the offset follows the injected rotation as an over- or under-rotation of the pulses predicts | survives as a rotation about x on the pulses; the reported scope and angle are those of the best single-scope world, with its lead over the next scope (`x_scope_margin`) |
+| `pulse_x`, every pulse, positive angle in every batch | the x class is preferred: the offset follows the injected rotation as an over-rotation of every pulse predicts | survives; the fitted angle and contraction share are reported beside the row's +0.03 rad |
+| `pulse_x`, any other fit | the x class is preferred with an under-rotation, on q8's pulses alone, or with signs that differ between batches | amended: a rotation about x stands, and its sign or scope differs from the row's; the scope is the best single-scope world, with its lead over the next (`x_scope_margin`) |
 | `pulse_other` | the y-or-z class is preferred | amended: a coherent gate error stands, a pulse rotation about y or z or a CZ phase error |
 | `readout` | the readout class is preferred | refuted as stated |
 | `x_excluded` | no x rotation reproduces the scan; readout map and y-or-z rotation are closer than the separation | refuted as stated; the surviving mechanism is undecided |
@@ -140,27 +154,31 @@ read from that list, outside the decision.
 ### Operating characteristics
 
 `prediction.json` (`operating_characteristics`): 10,000 simulated series per truth, Gaussian contrasts at the design
-standard error, decided by the rule above with every batch admitted; `--operating-characteristics` repeats it. Share
-of runs per label, stationary truth:
+standard error, decided by rules 2 to 5 with every batch admitted; `--operating-characteristics` repeats it (about
+ten minutes on sixteen cores). Share of runs per label; each cell gives the truth at contraction share 0 and, after
+the slash, at share 1:
 
 | truth (center contrast +0.0164) | `pulse_x` | `pulse_other` | `readout` | `x_excluded` | undecided |
 |---|---|---|---|---|---|
-| x over-rotation, all pulses | 0.9992 | 0 | 0 | 0 | 0.0008 |
-| x under-rotation, all pulses | 0.9992 | 0 | 0 | 0 | 0.0008 |
-| x over-rotation, q8 pulses (+0.0924 rad) | 0.9995 | 0 | 0 | 0 | 0.0005 |
-| x over-rotation, q8 pulses, upper root (+0.1481 rad) | 0.9992 | 0 | 0 | 0 | 0.0008 |
-| x under-rotation, q8 pulses (-0.2471 rad) | 0.9991 | 0 | 0 | 0 | 0.0009 |
-| y rotation before, all pulses | 0 | 0.9922 | 0 | 0.0075 | 0.0003 |
-| z rotation before, all pulses | 0 | 0.9989 | 0 | 0 | 0.0011 |
-| selector flip when q12 reads 0 | 0 | 0 | 0.9970 | 0.0023 | 0.0007 |
-| selector dropout when the coin reads 1 | 0 | 0 | 0.8675 | 0.1318 | 0.0007 |
+| x over-rotation, all pulses | 0.9988 / 0.9983 | 0 / 0 | 0 / 0 | 0 / 0 | 0.0012 / 0.0017 |
+| x under-rotation, all pulses | 0.9987 / 0.9992 | 0 / 0 | 0 / 0 | 0 / 0 | 0.0013 / 0.0008 |
+| x over-rotation, q8 pulses, lower root | 0.9994 / 0.1077 | 0 / 0 | 0 / 0 | 0 / 0 | 0.0006 / 0.8923 |
+| x over-rotation, q8 pulses, upper root | 0.8509 / 0.9990 | 0 / 0 | 0 / 0 | 0 / 0 | 0.1491 / 0.0010 |
+| x under-rotation, q8 pulses | 0.9984 / 0.9985 | 0 / 0 | 0 / 0 | 0 / 0 | 0.0016 / 0.0015 |
+| y rotation before, all pulses | 0 / 0 | 0.9879 / 0.9993 | 0 / 0 | 0.0114 / 0 | 0.0007 / 0.0007 |
+| z rotation before, all pulses | 0 / 0 | 0.9921 / 0.2704 | 0 / 0 | 0 / 0 | 0.0079 / 0.7296 |
+| selector flip when q12 reads 0 | 0 / 0 | 0 / 0 | 0.9972 / 0.9987 | 0.0019 / 0 | 0.0009 / 0.0013 |
+| selector dropout when the coin reads 1 | 0 / 0 | 0 / 0 | 0.8752 / 0.9970 | 0.1239 / 0.0022 | 0.0009 / 0.0008 |
 | no offset | 0 | 0 | 0 | 0 | 0.0013; `offset_absent` 0.9971; `offset_reversed` 0.0016 |
 
-Every truth with an offset reads the correct verdict on A5-186 (survives under an x truth, refuted or amended under
-any other) in at least 99.89 percent of the simulated runs, and none of the 10,000 runs of a truth outside the x
-class reads `pulse_x`. The weakest separation is the dropout truth, which reads `readout` in 86.8 percent and
-`x_excluded` in 13.2 percent of runs. With the mirror round sized to +0.0393 it reads `readout` in 99.7 percent
-and the q12 flip in 99.9 percent.
+None of the simulated runs reads a class other than its truth's: among 10,000 runs per truth and share, no truth
+outside the x class reads `pulse_x`, and no x truth reads `pulse_other`, `readout` or `x_excluded`. An over- or
+under-rotation of every pulse, the mechanism A5-186 names and its mirror, reads `pulse_x` in at least 99.8 percent
+of runs at either share. Three truths are left undecided (`unresolved_both`) in a large part of the runs, because
+the fitted share lets a neighboring class come within the separation: the lower q8 over-rotation at share 1 (89
+percent), the z rotation at share 1 (73 percent) and the upper q8 over-rotation at share 0 (15 percent). The
+dropout at share 0 reads `x_excluded` in 12 percent, which gives A5-186 the same verdict as `readout`. With the
+mirror round sized to +0.0393 at share 0, every truth with an offset reads its class in at least 99.7 percent.
 
 The simulation holds the retention and readout at their design values, admits every batch, leaves the bridge out and
 draws no drift inside a batch.
@@ -177,8 +195,8 @@ draws no drift inside a batch.
 - A selector or coin readout whose assignment during the b0 circuits differs from the one the bracket circuits read
   (the brackets prepare computational states with no gate history): the brackets and the guard cannot see it. It
   changes the contrasts the fit expects and reads as a worse fit, toward the unresolved labels.
-- Depolarization of the data qubits alone lowers the center arm's visibility and leaves the selector contrast, so
-  the single retention over-contracts the model; hypothesis: the series then reads `unresolved_none`.
+- Visibility loss that follows neither kind of the noise model, or a contraction share that changes between
+  batches: the series fits one share, so such a loss shows as a worse fit, toward `unresolved_none`.
 
 ## Not built
 
@@ -187,7 +205,8 @@ draws no drift inside a batch.
 - A rerun of the 6-CZ blocks: every surviving mechanism predicts zero there, and the retained run reads zero.
 - An arm on q4 alone: a rotation about x on q4's 8 pulses gives the center arm a contrast of exactly 0, and under
   the x and readout worlds of the table the two q4 arms at +-5 degrees differ by at most 0.0014, half a standard
-  error.
+  error. The y and z worlds move them further (0.007 under the y rotation of the table), and the q8 +-10 arms
+  separate those worlds by more.
 - Arms on q12, q2 and q11 alone: they hold 5, 1 and 1 pulses, too few for a +-5 degree arm to resolve.
 
 ## Submission commands (not run)
@@ -209,10 +228,11 @@ SCAN=scripts/qi_pathion_null_rotation_scan_cases.py
 "$PYTHON" "$SCAN" --check "$CASES"
 "$PYTHON" scripts/qi_toolchain_check.py --check
 
-# QX twin: four batches, then the control analysis.
+# QX twin: four batches, then the control analysis, which exits 1 unless the series is complete and every circuit
+# reads its ideal law; the Tuna-17 lines run only after it exits 0.
 SANITY_COMMAND="true" sh scripts/qi_pathion_one_cz_null_submit.sh 1 "$CASES/pathion_null_rotation_scan_qx" "$RUNS" "$STAMP" "QUOTE"
 "$PYTHON" "$SCAN" --analyze "$RUNS/$STAMP"-pathion_null_rotation_scan_qx-batch-* \
-	--out results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json
+	--out results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json || exit 1
 
 # Tuna-17: twenty-one batches in order, after the QX analysis reads a passing control and with Tuna-17 online and the
 # account's queue empty.

@@ -30,9 +30,11 @@ forward round and a mirror round with the arm order reversed. Two bridge batches
 data batch and the readout admission (e01 and e10 of every region qubit steady across the two brackets), which the
 one-CZ series lacked when q11's e10 moved between 0.03 and 0.43.
 
-Decision. fit_batch() fits each world's one parameter to the three raw selector contrasts of a batch at the per-CZ
-retention that reproduces the center arm's visibility; decide() sums the batch chi-squares per world over the
-admitted batches and classes the best pulse world against the best readout world; a deciding label on the hardware
+Decision. fit_batch() fits each world's one parameter to the three raw selector contrasts of a batch at the retention
+that reproduces the center arm's visibility, for each contraction share (MIX_GRID: how much of the visibility loss
+depolarizes the data bits alone and so spares the selector contrast); decide() sums the batch chi-squares per world
+over the admitted batches at the one share that makes the sum least and classes the best pulse world against the
+best readout world; a deciding label on the hardware
 series also needs the bridge to hold. preregistered(), OUTCOMES and decide() state and apply the rules;
 operating_characteristics() simulates the decision under each world. The chi-square bound and the separation are
 design thresholds whose error rates the operating characteristics measure: the retention is plugged in from the
@@ -325,16 +327,44 @@ def parameter_grid(world: str) -> np.ndarray:
     return THETA_FINE if world in PULSE_WORLDS else X_FINE
 
 
-def world_laws(world: str, retention: np.ndarray | float, arms: tuple[str, ...]) -> np.ndarray:
-    """Device laws of `arms` on the world's parameter grid before the assignment readout, shape (parameter, arm,
-    outcome): the world's law contracted toward uniform by `retention` (a scalar or one value per parameter)."""
-    picked = [ARM_NAMES.index(a) for a in arms]
+DATA_OUTCOMES = 8
+# Share of a batch's visibility loss that depolarizes the three data bits and leaves the law of the selector and the
+# coin: 0 contracts the whole law toward uniform, 1 contracts the data bits alone. A selector contrast survives the
+# second kind of loss and shrinks under the first, so the share sets how far the offset and its response to an
+# injected rotation shrink with the visibility. Models are computed on MIX_GRID and fitted on MIX_FINE by linear
+# interpolation of the model contrasts; one share serves every batch of a series.
+MIX_GRID = np.linspace(0.0, 1.0, 5)
+MIX_FINE = np.linspace(0.0, 1.0, 13)
+
+
+def contract(laws: np.ndarray, retention: np.ndarray | float, mix: float) -> np.ndarray:
+    """`laws`, shape (row, arm, outcome), contracted by `retention` (a scalar or one value per row): the factor
+    retention ** mix mixes the law of the data bits toward uniform at fixed selector and coin, and the factor
+    retention ** (1 - mix) mixes the whole law toward uniform."""
     keep = np.asarray(retention, dtype=float).reshape(-1, 1, 1)
+    data, whole = keep**mix, keep ** (1.0 - mix)
+    shaped = laws.reshape(*laws.shape[:-1], NOUT // DATA_OUTCOMES, DATA_OUTCOMES)
+    spread = shaped.sum(-1, keepdims=True) / DATA_OUTCOMES
+    mixed = (data[..., None] * shaped + (1 - data[..., None]) * spread).reshape(laws.shape)
+    return np.asarray(whole * mixed + (1 - whole) / NOUT)
+
+
+def fine_mix(models: np.ndarray) -> np.ndarray:
+    """Values on MIX_FINE of an array whose leading axis runs over MIX_GRID, by linear interpolation."""
+    position = MIX_FINE * (len(MIX_GRID) - 1)
+    low = np.minimum(position.astype(int), len(MIX_GRID) - 2)
+    weight = (position - low).reshape(-1, *([1] * (models.ndim - 1)))
+    return np.asarray((1 - weight) * models[low] + weight * models[low + 1])
+
+
+def world_laws(world: str, retention: np.ndarray | float, arms: tuple[str, ...], mix: float = 0.0) -> np.ndarray:
+    """Device laws of `arms` on the world's parameter grid before the assignment readout, shape (parameter, arm,
+    outcome): the world's law under contract() at `retention` (a scalar or one value per parameter) and `mix`."""
+    picked = [ARM_NAMES.index(a) for a in arms]
     if world in PULSE_WORLDS:
-        return np.asarray(keep * pulse_table(world)[:, picked] + (1 - keep) / NOUT)
-    contracted = keep * exact_laws()[picked][None] + (1 - keep) / NOUT
-    contracted = np.broadcast_to(contracted, (len(X_FINE), len(picked), NOUT))
-    return np.asarray(np.einsum("xij,xaj->xai", readout_maps(world), contracted))
+        return contract(pulse_table(world)[:, picked], retention, mix)
+    exact = np.broadcast_to(exact_laws()[picked][None], (len(X_FINE), len(picked), NOUT))
+    return np.asarray(np.einsum("xij,xaj->xai", readout_maps(world), contract(exact, retention, mix)))
 
 
 def selector_contrast(laws: np.ndarray) -> np.ndarray:
@@ -364,13 +394,15 @@ def read(laws: np.ndarray, matrix: np.ndarray) -> np.ndarray:
     return np.asarray(laws @ matrix.T)
 
 
-RETENTION_GRID = np.linspace(0.05, 1.0, 96)
+RETENTION_GRID = np.linspace(0.05, 1.0, 20)
 
 
-def retention_for(world: str, matrix: np.ndarray, center_visibility: float) -> np.ndarray:
-    """Per parameter value, the retention at which the world's center arm reads `center_visibility`; a value the
-    retention grid does not reach clips to its end."""
-    seen = np.stack([visibility(read(world_laws(world, float(r), (CENTER,)), matrix))[:, 0] for r in RETENTION_GRID])
+def retention_for(world: str, matrix: np.ndarray, center_visibility: float, mix: float) -> np.ndarray:
+    """Per parameter value, the retention at which the world's center arm reads `center_visibility` at the
+    contraction share `mix`; a value the retention grid does not reach clips to its end."""
+    seen = np.stack(
+        [visibility(read(world_laws(world, float(r), (CENTER,), mix), matrix))[:, 0] for r in RETENTION_GRID]
+    )
     out = np.empty(seen.shape[1])
     for j in range(seen.shape[1]):
         column = seen[:, j]
@@ -379,21 +411,21 @@ def retention_for(world: str, matrix: np.ndarray, center_visibility: float) -> n
     return out
 
 
-def minimum(curve: np.ndarray, grid: np.ndarray) -> tuple[float, float]:
-    """(minimum, argument) of a curve on a grid."""
-    j = int(np.argmin(curve))
-    return float(curve[j]), float(grid[j])
-
-
 # Model contrasts at the design retention and readout, keyed (world, arms); design_model fills it.
 DESIGN_MODELS: dict[tuple[str, tuple[str, ...]], np.ndarray] = {}
 
 
 def design_model(world: str, arms: tuple[str, ...]) -> np.ndarray:
-    """Raw selector contrasts of `arms` on the world's parameter grid at DESIGN_RETENTION and the design readout."""
+    """Raw selector contrasts of `arms` at DESIGN_RETENTION and the design readout, shape (share of MIX_FINE,
+    parameter, arm)."""
     key = (world, arms)
     if key not in DESIGN_MODELS:
-        DESIGN_MODELS[key] = selector_contrast(read(world_laws(world, DESIGN_RETENTION, arms), design_matrix()))
+        matrix = design_matrix()
+        DESIGN_MODELS[key] = fine_mix(
+            np.stack(
+                [selector_contrast(read(world_laws(world, DESIGN_RETENTION, arms, float(m)), matrix)) for m in MIX_GRID]
+            )
+        )
     return DESIGN_MODELS[key]
 
 
@@ -403,41 +435,39 @@ def fit_batch(
     errors: np.ndarray,
     matrix: np.ndarray | None,
     center_visibility: float | None,
-) -> dict[str, dict[str, Any]]:
-    """Per world, the least chi-square of a batch's raw selector contrasts over the world's parameter.
+) -> dict[str, dict[str, np.ndarray]]:
+    """Per world and contraction share of MIX_FINE, the least chi-square of a batch's raw selector contrasts over the
+    world's parameter: arrays "chi2", "parameter", "retention" (one value per share) and "predicted" (share, arm).
 
-    With an assignment `matrix` and the center arm's visibility, each parameter value takes the retention at which
-    the world reproduces that visibility. `matrix` None fits at DESIGN_RETENTION and the design readout (the operating
-    characteristics and the calibration). A pulse world also reports the least chi-square of each sign of theta; the
-    row "none" is the exact circuit, the theta = 0 point of a pulse world."""
-    rows: dict[str, dict[str, Any]] = {}
+    With an assignment `matrix` and the center arm's visibility, each parameter value and share takes the retention
+    at which the world reproduces that visibility. `matrix` None fits at DESIGN_RETENTION and the design readout (the
+    operating characteristics and the calibration)."""
+    rows: dict[str, dict[str, np.ndarray]] = {}
+    take = np.arange(len(MIX_FINE))
     for world in WORLDS:
         grid = parameter_grid(world)
         if matrix is None or center_visibility is None:
-            keep = np.full(len(grid), DESIGN_RETENTION)
+            keep = np.full((len(MIX_FINE), len(grid)), DESIGN_RETENTION)
             model = design_model(world, arms)
         else:
-            keep = retention_for(world, matrix, center_visibility)
-            model = selector_contrast(read(world_laws(world, keep, arms), matrix))
+            kept = np.stack([retention_for(world, matrix, center_visibility, float(m)) for m in MIX_GRID])
+            model = fine_mix(
+                np.stack(
+                    [
+                        selector_contrast(read(world_laws(world, kept[i], arms, float(m)), matrix))
+                        for i, m in enumerate(MIX_GRID)
+                    ]
+                )
+            )
+            keep = fine_mix(kept)
         curve = (((model - contrasts) / errors) ** 2).sum(-1)
-        value, where = minimum(curve, grid)
-        j = int(np.argmin(curve))
-        row: dict[str, Any] = {
-            "chi2": value,
-            "parameter": where,
-            "retention": float(keep[j]),
-            "predicted": [float(v) for v in model[j]],
+        best = curve.argmin(1)
+        rows[world] = {
+            "chi2": curve[take, best],
+            "parameter": grid[best],
+            "retention": keep[take, best],
+            "predicted": model[take, best],
         }
-        if world in PULSE_WORLDS:
-            negative, positive = grid < 0, grid >= 0
-            row["branches"] = {
-                "negative": list(minimum(curve[negative], grid[negative])),
-                "positive": list(minimum(curve[positive], grid[positive])),
-            }
-        if world == X_PULSE[0]:
-            zero = int(np.argmin(np.abs(grid)))
-            rows["none"] = {"chi2": float(curve[zero]), "predicted": [float(v) for v in model[zero]]}
-        rows[world] = row
     return rows
 
 
@@ -510,8 +540,9 @@ def arm_of(file: str) -> str:
 
 
 def adequacy_limit(batches: int) -> float:
-    """Chi-square bound of a world over `batches` batches: three contrasts and one fitted parameter per batch."""
-    return float(chi2_law.ppf(1 - ADEQUACY_ALPHA, 2 * batches))
+    """Chi-square bound of a world over `batches` batches: three contrasts and one fitted parameter per batch, and
+    one contraction share for the series."""
+    return float(chi2_law.ppf(1 - ADEQUACY_ALPHA, 2 * batches - 1))
 
 
 def preregistered() -> dict[str, str]:
@@ -525,19 +556,21 @@ def preregistered() -> dict[str, str]:
         "control": f"the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds {z} "
         f"standard errors; within {z} standard errors of zero the offset is absent, below that it is reversed, and "
         "either way no mechanism is decided",
-        "fit": "per admitted scan batch and world, the least chi-square of the batch's three contrasts over the "
-        "world's one parameter, at the retention that reproduces the center arm's visibility through the mean "
-        "assignment matrix of the two brackets; a world's chi-square is the sum over the admitted scan batches",
+        "fit": "per admitted scan batch, world and contraction share, the least chi-square of the batch's three "
+        "contrasts over the world's one parameter, at the retention that reproduces the center arm's visibility "
+        "through the mean assignment matrix of the two brackets; a world's chi-square is the sum over the admitted "
+        "scan batches at the one contraction share (the part of the visibility loss that depolarizes the data bits "
+        "alone, 0 to 1) that makes the sum least",
         "adequate": f"a world is adequate when its chi-square is at most the {1 - ADEQUACY_ALPHA} quantile of the "
-        "chi-square law with two degrees of freedom per admitted batch",
+        "chi-square law with two degrees of freedom per admitted batch less one for the share",
         "class": "three classes of worlds: a rotation about x added to the pulses (on all pulses, on q8's or on q4's), "
         "a rotation about y or z added before or after them (same scopes), and the two selector readout worlds; a "
         f"class is preferred when its best world is adequate and the best world of each other class sits at least "
         f"{SEPARATION} above it; the x class is excluded when the two other classes lead, the leader is adequate and "
         f"the best x world sits at least {SEPARATION} above it",
         "bridge": f"Rx(pi/2) reproduces X90 when the within-batch difference of the b0-rx and b0 contrasts, pooled "
-        f"over the admitted bridge batches, is within {z} standard errors of zero; a class label stands only when the "
-        "bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits",
+        f"over the two bridge batches, both admitted, is within {z} standard errors of zero; a class label stands only "
+        "when the bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits",
         "qx": "every circuit within twice the sampling floor of its ideal law",
     }
 
@@ -549,7 +582,7 @@ OUTCOMES: dict[str, tuple[str, str]] = {
     ),
     "unresolved_bridge": (
         "unresolved: the scan classes the Rx circuits (numbers.rx_label) and the bridge does not show that Rx(pi/2) "
-        "reproduces X90, because the two read different contrasts or no bridge batch passed the readout admission",
+        "reproduces X90, because the two read different contrasts or a bridge batch failed the readout admission",
         "unchanged; the numbers are reported",
     ),
     "offset_absent": (
@@ -565,10 +598,7 @@ OUTCOMES: dict[str, tuple[str, str]] = {
     "pulse_x": (
         "the x class is preferred: the selector offset follows the injected rotation as a coherent over- or "
         "under-rotation of the pulses predicts",
-        "survives as a rotation about x on the pulses: its falsifier, a response curve that stays in place under the "
-        "injected rotation, is unmet. The reported scope and angle are those of the best single-scope world "
-        "(numbers.x_scope_margin is its lead over the next scope); angles that differ between qubits are outside "
-        "the model",
+        "see X_ROW: the effect depends on the sign and scope of the fit",
     ),
     "pulse_other": (
         "the y-or-z class is preferred: a coherent error other than a rotation about x on the pulses produces the "
@@ -595,9 +625,20 @@ OUTCOMES: dict[str, tuple[str, str]] = {
     ),
 }
 DECIDING = ("pulse_x", "pulse_other", "readout", "x_excluded")
+# Effect of a pulse_x label on A5-186, which names one over-rotation of the X90 pulse: True when the best x world
+# rotates every pulse and every admitted batch fits a positive angle.
+X_ROW = {
+    True: "survives as an over-rotation of every pulse: its falsifier, a response curve that stays in place under "
+    "the injected rotation, is unmet. The fitted angle and contraction share are reported beside the row's +0.03 "
+    "rad, which the row took from a model that contracts nothing; angles that differ between qubits are outside "
+    "the model",
+    False: "amended: a rotation about x on the pulses stands, and its sign or scope differs from the single "
+    "over-rotation the row names (an under-rotation, q8's pulses alone, or signs that differ between batches); "
+    "numbers.best_world, best_parameters and x_scope_margin state the fit",
+}
 TRANSFER = {
     True: "Rx(pi/2) reproduces X90 inside the bridge batches, so the decision transfers to the retained X90 circuit",
-    False: "Rx(pi/2) and X90 read different contrasts inside the bridge batches, or no bridge batch passed the "
+    False: "Rx(pi/2) and X90 read different contrasts inside the bridge batches, or a bridge batch failed the "
     "readout admission: the scan classes the Rx circuits and decides nothing about the retained X90 circuit",
 }
 
@@ -722,8 +763,8 @@ def decide(
 
     Each batch: {"kind", "arms", "contrasts", "errors", "center_visibility", "admitted", "name"}; `matrix_of(batch)`
     gives its assignment matrix, and `matrix_of` None fits every batch at the design retention and readout; `bridge`
-    is the within-batch difference of b0-rx and b0 pooled over the admitted bridge batches (value, se), None when
-    none was admitted. `transfer` True (the hardware analysis) lets a class label stand only when the bridge holds;
+    is the within-batch difference of b0-rx and b0 pooled over the bridge batches (value, se), None unless both
+    were admitted. `transfer` True (the hardware analysis) lets a class label stand only when the bridge holds;
     False (the operating characteristics and the calibration) leaves the bridge out."""
     admitted = [b for b in batches if b["admitted"]]
     numbers: dict[str, Any] = {"admitted_batches": [b["name"] for b in admitted]}
@@ -741,24 +782,38 @@ def decide(
         return {"label": "offset_absent", "numbers": numbers}
     if center[0] < 0:
         return {"label": "offset_reversed", "numbers": numbers}
-    totals: dict[str, float] = dict.fromkeys((*WORLDS, "none"), 0.0)
-    fits: dict[str, dict[str, Any]] = {}
+    by_share = {world: np.zeros(len(MIX_FINE)) for world in WORLDS}
+    rows_of: dict[str, dict[str, dict[str, np.ndarray]]] = {}
     for b in admitted:
-        rows = fit_batch(
+        rows_of[b["name"]] = fit_batch(
             tuple(b["arms"]),
             np.array(b["contrasts"]),
             np.array(b["errors"]),
             None if matrix_of is None else matrix_of(b),
             b["center_visibility"],
         )
-        fits[b["name"]] = rows
-        for world, row in rows.items():
-            totals[world] += row["chi2"]
+        for world, row in rows_of[b["name"]].items():
+            by_share[world] += row["chi2"]
+    share = {world: int(np.argmin(curve)) for world, curve in by_share.items()}
+    totals = {world: float(by_share[world][share[world]]) for world in WORLDS}
+    fits = {
+        name: {
+            world: {
+                "chi2": float(row["chi2"][share[world]]),
+                "parameter": float(row["parameter"][share[world]]),
+                "retention": float(row["retention"][share[world]]),
+                "predicted": [float(v) for v in row["predicted"][share[world]]],
+            }
+            for world, row in rows.items()
+        }
+        for name, rows in rows_of.items()
+    }
     limit = adequacy_limit(len(admitted))
     leaders = {name: min(worlds, key=lambda w: totals[w]) for name, worlds in CLASSES.items()}
     scopes = sorted(totals[w] for w in CLASSES["x"])
     numbers |= {
         "chi2": {w: round(v, 3) for w, v in totals.items()},
+        "contraction_share": {w: round(float(MIX_FINE[i]), 4) for w, i in share.items()},
         "adequacy_limit": round(limit, 3),
         "best_world": leaders,
         "best_parameters": {name: {b: fits[b][w]["parameter"] for b in fits} for name, w in leaders.items()},
@@ -774,16 +829,23 @@ def decide(
 
 def outcome(decision: dict[str, Any]) -> dict[str, Any]:
     text, row = OUTCOMES[decision["label"]]
-    return {**decision, "outcome": text, "a5_186": row, "decided": decision["label"] in DECIDING}
+    out = {**decision, "outcome": text, "a5_186": row, "decided": decision["label"] in DECIDING}
+    if decision["label"] == "pulse_x":
+        numbers = decision["numbers"]
+        every_pulse = PULSE_WORLDS[numbers["best_world"]["x"]][2] == "all"
+        over = every_pulse and all(v > 0 for v in numbers["best_parameters"]["x"].values())
+        out |= {"a5_186": X_ROW[over], "x_over_rotation_of_every_pulse": over}
+    return out
 
 
 # Predictions ------------------------------------------------------------------------------------------------------
 
 
-def sized(world: str, contrast: float = DESIGN_CONTRAST) -> list[float]:
+def sized(world: str, contrast: float = DESIGN_CONTRAST, mix: float = 0.0) -> list[float]:
     """Parameter values at which the world's center arm reads `contrast` at the design retention and readout."""
     grid = parameter_grid(world)
-    curve = selector_contrast(read(world_laws(world, DESIGN_RETENTION, (CENTER,)), design_matrix()))[:, 0] - contrast
+    laws = world_laws(world, DESIGN_RETENTION, (CENTER,), mix)
+    curve = selector_contrast(read(laws, design_matrix()))[:, 0] - contrast
     roots = []
     for j in range(len(grid) - 1):
         if curve[j] == 0.0 or curve[j] * curve[j + 1] < 0:
@@ -791,14 +853,14 @@ def sized(world: str, contrast: float = DESIGN_CONTRAST) -> list[float]:
     return roots
 
 
-def predicted_contrasts(world: str | None, parameter: float) -> dict[str, float]:
+def predicted_contrasts(world: str | None, parameter: float, mix: float = 0.0) -> dict[str, float]:
     """Raw selector contrast of every arm at the design retention and readout; `world` None is the exact circuit."""
     matrix = design_matrix()
     if world is None:
-        laws = DESIGN_RETENTION * exact_laws() + (1 - DESIGN_RETENTION) / NOUT
+        laws = contract(exact_laws()[None], DESIGN_RETENTION, mix)[0]
     else:
         grid = parameter_grid(world)
-        table = world_laws(world, DESIGN_RETENTION, ARM_NAMES)
+        table = world_laws(world, DESIGN_RETENTION, ARM_NAMES, mix)
         j = int(np.clip(np.searchsorted(grid, parameter) - 1, 0, len(grid) - 2))
         weight = (parameter - grid[j]) / (grid[j + 1] - grid[j])
         laws = (1 - weight) * table[j] + weight * table[j + 1]
@@ -820,13 +882,17 @@ TRUTHS: tuple[tuple[str, str | None, int | None], ...] = (
 )
 
 
-def truth_parameter(world: str | None, branch: int | None, contrast: float) -> float:
+def truth_parameter(world: str | None, branch: int | None, contrast: float, mix: float = 0.0) -> float:
     if world is None or branch is None:
         return 0.0
-    roots = sized(world, contrast)
+    roots = sized(world, contrast, mix)
     if not roots:
         raise ValueError(f"{world} does not reach a center contrast of {contrast}")
     return roots[min(branch, len(roots) - 1)]
+
+
+# An "after" world repeats its "before" world's least chi-square (PULSE_WORLDS), so the simulation fits one of each.
+SIMULATED_WORLDS = tuple(w for w in WORLDS if "_after_" not in w)
 
 
 def simulated_labels(noise: np.ndarray, means: np.ndarray) -> list[str]:
@@ -834,20 +900,23 @@ def simulated_labels(noise: np.ndarray, means: np.ndarray) -> list[str]:
     shape (series, scan batch, 3), and `means` the true contrasts, shape (scan batch, 3).
 
     The arithmetic is decide()'s with every batch admitted, taken over all series at once: the chi-square of a world
-    on its parameter grid is |c|^2 - 2 c.m + |m|^2 over the three contrasts."""
+    on its parameter grid is |c|^2 - 2 c.m + |m|^2 over the three contrasts, summed over the batches per contraction
+    share and then least over the shares."""
     error = 1.0 / math.sqrt(SCAN_SHOTS)
     contrasts = means[None] + error * noise
     scans = [(k, r) for k, r in batch_order() if k != "bridge"]
-    totals = {world: np.zeros(len(noise)) for world in WORLDS}
-    for n, (kind, replicate) in enumerate(scans):
-        seen = contrasts[:, n, :]
-        for world in WORLDS:
-            model = design_model(world, tuple(scan_arms(kind, replicate)))
-            curve = (seen**2).sum(1)[:, None] - 2.0 * seen @ model.T + (model**2).sum(1)[None]
-            totals[world] += curve.min(1) / error**2
+    totals: dict[str, np.ndarray] = {}
+    for world in SIMULATED_WORLDS:
+        by_share = np.zeros((len(noise), len(MIX_FINE)))
+        for n, (kind, replicate) in enumerate(scans):
+            seen = contrasts[:, n, :]
+            norm = (seen**2).sum(1)[:, None]
+            for i, model in enumerate(design_model(world, tuple(scan_arms(kind, replicate)))):
+                by_share[:, i] += (norm - 2.0 * seen @ model.T + (model**2).sum(1)[None]).min(1)
+        totals[world] = by_share.min(1) / error**2
     center = contrasts[:, :, 1].mean(1)
     resolution = Z_RESOLVE * error / math.sqrt(len(scans))
-    best = {name: np.min([totals[w] for w in worlds], axis=0) for name, worlds in CLASSES.items()}
+    best = {name: np.min([totals[w] for w in worlds if w in totals], axis=0) for name, worlds in CLASSES.items()}
     limit = adequacy_limit(len(scans))
     labels = []
     for i in range(len(noise)):
@@ -860,12 +929,14 @@ def simulated_labels(noise: np.ndarray, means: np.ndarray) -> list[str]:
     return labels
 
 
-def operating_characteristics(draws: int = OC_DRAWS, drift: bool = False) -> dict[str, dict[str, float]]:
+def operating_characteristics(
+    draws: int = OC_DRAWS, drift: bool = False, mix: float = 0.0
+) -> dict[str, dict[str, float]]:
     """Share of each decision label per truth world, from `draws` simulated series of Gaussian contrasts at the design
     standard error, retention and readout, seeded from QRNG value OC_SEED_INDEX of OC_DRAW.
 
     `drift` sizes the mirror round of every truth to DRIFT_CONTRAST instead of DESIGN_CONTRAST, the change between
-    the two base batches of the one-CZ series."""
+    the two base batches of the one-CZ series; `mix` is the truth's contraction share."""
     rng = np.random.default_rng(int(read_record(OC_DRAW)["values"][OC_SEED_INDEX]))
     scans = [(k, r) for k, r in batch_order() if k != "bridge"]
     out: dict[str, dict[str, float]] = {}
@@ -873,7 +944,7 @@ def operating_characteristics(draws: int = OC_DRAWS, drift: bool = False) -> dic
         means = []
         for kind, replicate in scans:
             contrast = DRIFT_CONTRAST if drift and replicate == 1 else DESIGN_CONTRAST
-            row = predicted_contrasts(world, truth_parameter(world, branch, contrast))
+            row = predicted_contrasts(world, truth_parameter(world, branch, contrast, mix), mix)
             means.append([row[a] for a in scan_arms(kind, replicate)])
         labels = simulated_labels(rng.normal(size=(draws, len(scans), 3)), np.array(means))
         counts: dict[str, int] = {}
@@ -907,6 +978,7 @@ def predictions(operating: bool = True) -> dict[str, Any]:
             "seed_index": OC_SEED_INDEX,
             "draws_per_world": OC_DRAWS,
             "stationary": operating_characteristics(),
+            "stationary_data_only_contraction": operating_characteristics(mix=1.0),
             f"mirror_round_at_{DRIFT_CONTRAST}": operating_characteristics(drift=True),
         }
     return record
@@ -1037,7 +1109,8 @@ def evaluate(
                 "admitted": admitted,
             }
         )
-    bridge = oc.pooled(bridge_differences) if bridge_differences else None
+    bridges = sum(1 for row in plan.values() if row["kind"] == "bridge")
+    bridge = oc.pooled(bridge_differences) if len(bridge_differences) == bridges else None
     decision = outcome(decide(batches, bridge, lambda b: matrices[b["name"]], transfer=True))
     drift = pcs.reference_drift(
         [(k.split("/")[0], k.split("/")[1], v) for k, v in shots.items() if k.split("/")[1] in pcs.READOUT_KIND],
@@ -1121,12 +1194,16 @@ def unmodeled() -> dict[str, Any]:
 
 
 def planted_batches(
-    world: str | None, parameter: float, guard_fails: tuple[str, ...] = (), row: dict[str, float] | None = None
+    world: str | None,
+    parameter: float,
+    guard_fails: tuple[str, ...] = (),
+    row: dict[str, float] | None = None,
+    mix: float = 0.0,
 ) -> list[dict[str, Any]]:
     """Noiseless scan batches at the design retention and readout, for the calibration of decide(): the contrasts of
-    a world at a parameter, or the contrasts `row` gives per arm."""
+    a world at a parameter and contraction share, or the contrasts `row` gives per arm."""
     if row is None:
-        row = predicted_contrasts(world, parameter)
+        row = predicted_contrasts(world, parameter, mix)
     batches = []
     for kind, replicate in batch_order():
         if kind == "bridge":
@@ -1198,10 +1275,12 @@ def main() -> int:
     elif args.analyze:
         if args.out is None:
             parser.error("--analyze needs --out")
-        args.out.write_text(
-            json.dumps(analyze(args.analyze), indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8"
-        )
+        report = analyze(args.analyze)
+        args.out.write_text(json.dumps(report, indent=1, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
         print(f"wrote {args.out}")
+        if "qx_control" in report and not (report["complete"] and report["qx_control"]["pass"]):
+            print("the QX control is incomplete or missed its ideal: no Tuna-17 batch follows", file=sys.stderr)
+            return 1
     else:
         print(self_test())
     return 0
