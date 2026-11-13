@@ -550,9 +550,11 @@ tangent span has the orbit dimension and spans `C^15` together with the slice. *
 `(xi, s) -> exp(xi) s`, from a complement of the stabilizer algebra times the slice, is then a local biholomorphism
 at the basepoint `z_0` by the inverse function theorem, so every `z` near `z_0` is `g(z) s(z)` with `g(z)` tending
 to the identity and `s(z)` in the slice. The source strata are invariant under the group, so `s(z)` stays in the
-source slice germ and `ker C_z = g(z) ker C_(s(z))`. The limits of `ker C_z` along any path in the source ending at
-`z_0` are therefore limits along the slice germ, and the fiber over `g z_0` is `g` applied to the fiber over `z_0`:
-at those basepoints the slice-germ limit sets of the two sections above are the limit sets over all approaches,
+source slice germ and `ker C_z = g(z) ker C_(s(z))`. The limits of `ker C_z` along any sequence or continuous path in the
+source tending to `z_0` are therefore limits along the slice germ (the fiber over `z_0` of the closed graph equals
+that of its restriction to the slice), and the fiber over `g z_0` is `g` applied to the fiber over `z_0`:
+at those basepoints the closed-graph fibers of the two sections above are the limit sets over all approaches;
+their identification with the limits along real arcs keeps the condition of those sections,
 and they are transported along the whole boundary orbit by the group: `G_2(C) x C^*` is a direct factor of the
 connected group `G_2(C) x SO(2, C) x C^*` whose orbit is the boundary orbit, so its tangent rank is constant along
 that orbit, its orbits there are open, and a connected set holds only one of them. At the 6 basepoints on `V` and `VB` the tangent
@@ -560,7 +562,8 @@ span is one short of the orbit (7 against 8, 6 against 7) and reaches rank 14 wi
 vary along the boost direction, and the variation of the fiber is open.
 Using the split-coordinate matrix in place of `g` leaves 1,458 nonzero residual entries. A nonzero residual for
 `g`, a kernel that `g` fails to transport, or the boost generator inside the `X` projection falsifies the record.
-The replay takes 8.2 seconds wall time and 51 CPU seconds with the default worker pool on the 12-core build
+The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds (Python 3.14.7, python-flint 0.9.0,
+12 workers) on the 12-core build
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
