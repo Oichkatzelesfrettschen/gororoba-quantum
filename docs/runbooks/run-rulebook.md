@@ -598,3 +598,8 @@ the closest entry and say what changed.
   started after that result. The other runs are open: at 1 h 20 min every run has printed `STAGE rees_start` and no later stage; resident sets: Iso
   0.33 GB (mod p, `sat`), 0.52 GB (Q(i)); E8-bar 2.6 GB (mod p), 11.8 GB (Q(i)); W8 1.7 GB (mod p), 4.8 GB (Q(i));
   variable form at 16 min 0.30, 0.87 and 0.67 GB.
+- Outcome: Iso at N+ modulo 32029 in the variable form (`h-iso-np-p2`, lab-a1): FIBER dimension 5, multiplicity
+  23, 68 minimal generators, all of degree 2; 2,558 s, 576 MB peak, exit 0. At 11:05 PST on 2026-11-13 the laptop
+  runs had printed no stage after `STAGE rees_start`: the two modular runs of 09:42 at 1.4 and 1.6 GB after
+  1 h 23 min, the eight runs of 10:21 between 1.0 and 5.7 GB after 43 min, the `sat` W8 run over Q(i) at 4.7 GB
+  after 2 h 24 min.
