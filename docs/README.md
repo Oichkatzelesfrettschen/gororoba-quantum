@@ -412,7 +412,7 @@ differs from it only in the `cd_core.py` digest.
 | [bruns-simis-trung-1991-straightening-closed.md](notes/papers/bruns-simis-trung-1991-straightening-closed.md) | Bruns, Simis and Trung 1991 straightening-closed ideals: Hodge algebra structure of the Rees algebra, Theorem 2.2.2 and Theorems 3.1.1 to 3.2.1 (pp. 507-518 read) |
 | [math-0303268.md](notes/papers/math-0303268.md) | Ein, Lazarsfeld and Mustata 2004 contact loci in arc spaces: Theorems A and C relating arc loci to log resolutions and divisorial valuations (pp. 1-5 read) |
 | [math-9810140.md](notes/papers/math-9810140.md) | Landsberg and Manivel 2003 projective geometry of rational homogeneous varieties: adjoint varieties in Proposition 4.17 and Remark 4.18 and the lead on the degree-20 W8 fiber component (all pages read) |
-| [0803.2369.md](notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier integral closure of ideals: Theorem 2.1 (arcs, normalized blow-up), Theorem 4.1.6 and the arc formula of Theorem 5.2 (pp. 1-48 of 78 read, in French) |
+| [0803.2369.md](notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier 2008 integral closure of ideals: Theorem 2.1 (arcs, normalized blow-up), Theorem 4.1.6 and the arc formula of Theorem 5.2 (pp. 1-48 of 78 read, in French) |
 
 ### Algebra and proofs
 

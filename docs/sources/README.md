@@ -355,7 +355,7 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [bruns-simis-trung-1991-straightening-closed](../notes/papers/bruns-simis-trung-1991-straightening-closed.md) | Bruns, Simis and Trung, Blow-up of straightening-closed ideals in ordinal Hodge algebras (Trans. AMS 326, 1991) | none | none | none |
 | [math-0303268](../notes/papers/math-0303268.md) | Ein, Lazarsfeld and Mustata, Contact loci in arc spaces (Compos. Math. 140, 2004) | none | none | none |
 | [math-9810140](../notes/papers/math-9810140.md) | Landsberg and Manivel, On the projective geometry of rational homogeneous varieties (Comment. Math. Helv. 78, 2003) | none | low | none |
-| [0803.2369](../notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier, Clôture intégrale des idéaux et équisingularité (Ann. Fac. Sci. Toulouse Math. 17(4)) | none | none | none |
+| [0803.2369](../notes/papers/0803.2369.md) | Lejeune-Jalabert and Teissier, Clôture intégrale des idéaux et équisingularité (Ann. Fac. Sci. Toulouse Math. 17(4), 2008) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
