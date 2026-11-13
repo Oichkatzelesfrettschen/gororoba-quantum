@@ -61,11 +61,48 @@ def test_complex_span_membership_separates_a_member_from_a_nonmember() -> None:
     _same(ke.in_complex_span([ke.identity_matrix()], ke.split_matrix_of_boost_generator()), False)
 
 
+def test_each_g2_derivation_lifts_to_itself_and_the_sign_flipped_lift_fails() -> None:
+    for index in (0, 6, 13):
+        row = ke.lift_task(index)
+        _same((row["residual_nonzero_entries"], row["generator_is_skew"]), (0, True))
+        _same(row["sign_flipped_lift_residual_nonzero_entries"] > 0, True)
+    scaling = ke.lift_task(ke.G2_DERIVATION_COUNT)
+    _same((scaling["generator"], scaling["residual_nonzero_entries"]), ("scaling", 0))
+    _same(ke.infinitesimal_residual(ke.identity_matrix(), ke.identity_matrix()) > 0, True)
+
+
+def test_the_boost_generator_with_itself_as_lift_leaves_a_residual() -> None:
+    boost = ke.to_original_coordinates(ke.split_matrix_of_boost_generator())
+    _same(ke.infinitesimal_residual(boost, boost) > 0, True)
+
+
+def test_a_basepoint_has_a_local_product_on_va_plus_and_lacks_one_tangent_direction_on_vb() -> None:
+    rows = {str(row["incidence"]): row for row in ke._load_incidences(ke.FIRST_ORDER_RESULT)}
+    generators = [
+        *(ke.to_original_coordinates(ke.split_matrix_of_derivation(d)) for d in ke.regularity.DERS),
+        ke.identity_matrix(),
+    ]
+    on_va = ke.basepoint_task((rows["E8bar->Va+"], generators))
+    _same(
+        (on_va["tangent_rank_equivariant_span"], on_va["rank_of_tangent_span_with_slice"]),
+        (7, 15),
+    )
+    _same(on_va["local_product_with_kernel_transport"], True)
+    on_vb = ke.basepoint_task((rows["Iso->VB"], generators))
+    _same((on_vb["boundary_orbit_dimension"], on_vb["tangent_rank_equivariant_span"]), (7, 6))
+    _same(on_vb["local_product_with_kernel_transport"], False)
+    _same(ke.basepoint_task((rows["E8bar->Va+"], generators[:1]))["local_product_with_kernel_transport"], False)
+
+
 def test_self_test_rejects_a_failed_record_and_a_surviving_mutation() -> None:
     with pytest.raises(RuntimeError, match="failed"):
         ke._self_test({"pass": False, "mutation_control": {"detected": True}})
-    with pytest.raises(RuntimeError, match="zero residual"):
+    with pytest.raises(RuntimeError, match="split-coordinate"):
         ke._self_test({"pass": True, "mutation_control": {"detected": False}})
+    with pytest.raises(RuntimeError, match="sign-flipped"):
+        ke._self_test(
+            {"pass": True, "mutation_control": {"detected": True}, "lift_mutation_control": {"detected": False}}
+        )
 
 
 @pytest.mark.audit
