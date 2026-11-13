@@ -577,6 +577,20 @@ the closest entry and say what changed.
   returns FIBER dimension 4, multiplicity 12, 69 minimal generators, all of degree 2, in all three runs: `sat`
   mod 32009 in 6 s of saturation, `sat` over Q(i) in 466 s (476 s wall, 208 MB), variable saturation mod 32009 in
   6 s (16 s wall, 37 MB).
+- Placement after the first result (10:16 to 10:24 PST): Singular's `std` runs on one thread, so placement follows
+  per-thread speed, idle cores and memory. Measured on the same-sign X control over Q(i) in the variable form:
+  96 s on the workstation against 158 s on the build host, whose load average stood at 18.75 on 12 threads with
+  other sessions' jobs; `sat` took 466 s on the build host. `nfmodStd` of nfmodstd.lib on 8 cores took 377 s wall
+  and 1,891 s of CPU on the workstation and returned the same FIBER line, so the plain `std` stays. The two Iso
+  `sat` twins and the Iso Q(i) variable run left the build host (stopped at 1 h 41 min with `STAGE rees_start` as
+  their last stage, 0.34 and 0.55 GB; the Q(i) run after 14 min). New runs, all in the variable form with
+  `option(prot)`: workstation, `ulimit -v` 16 GB for `h-iso-nm-q`, `h-e8-nm-q`, `h-w8-nm-q` (Q(i), N-) and 12 GB
+  for `h-e8-nm-p2`, `h-w8-nm-p2` (p = 32029, i = 9115, N-) and `h-e8-np-p`, `h-w8-np-p` (p = 32009, N+), eleven
+  single-thread jobs on 16 cores; MacBook Air (Homebrew Singular 4.4.1, `caffeinate -i`, `nohup`, two of four
+  performance cores, the owner's interactive session keeps the rest): `h-iso-nm-p2` and `h-iso-np-p`; lab-a1
+  (apt Singular, one of two cores, `ulimit -v` 8 GB): `h-iso-np-p2`. The build host keeps `r-e8-nm-p` and
+  `r-w8-nm-p` under their 7 GiB caps. A cloud machine enters when a Q(i) run's resident set projects past the
+  workstation's 52.5 GB budget; no core is short. `watch.sh` polls the four hosts.
 - Outcome: Iso at N- modulo 32009 in the variable form (`h-iso-nm-p`): FIBER dimension 5, multiplicity 23, 68
   minimal generators, all of degree 2, the quadric ideal K; 1,216 s (standard basis of 7,459 elements in 1,212 s),
   577 MB peak, exit 0, while its `sat` twin had no later stage at 1 h 26 min. The Q(i) script in the variable form
