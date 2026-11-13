@@ -146,7 +146,7 @@ on a double overlap the transition is the target frame restricted to the source 
 This is a fixture-level chart and coordinate certificate, not the requested nullity-four classification. It does not
 give equations for the Gauss image over the nine- and eleven-dimensional moduli, a finite cover of those moduli by
 explicit parameter charts, global transition functions, stabilizer jumps, or a bundle class. The
-[section below](#the-nullity-4-gauss-image-is-a-plane-bundle-over-the-three-plane-map-z---ker-mz) measures the
+[section below](#the-nullity-4-kernel-gauss-map-factors-through-the-planes-of-the-three-planes-ker-mz) measures the
 image modulo 32029: its dimension, its linear span and its quadric equations on each stratum. The falsifier of a
 classification stays a transition outside the claimed structure group or two exact points with the same proposed
 moduli invariants and different Plucker images.
@@ -155,7 +155,7 @@ Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_kernel_gau
 uses the repository worker cap through `parallel.ordered_map`; the 66 fixtures are independent.
 
 
-## The nullity-4 Gauss image is a plane bundle over the three-plane map z -> ker M(z)
+## The nullity-4 kernel Gauss map factors through the planes of the three-planes ker M(z)
 
 The bordered matrix `A(z, w)` has first row `-w` and lower 15 x 15 skew block `M(z)`, linear in `z`; a real point has
 `w = conjugate(z)`. [`nullity4_gauss_image.py`](nullity4_gauss_image.py) takes `z` and `w` as independent
@@ -199,8 +199,8 @@ conjugate Gauss map) through a pair of the stratum is an open subset of `L`, and
 rank at most the tangent dimension minus `dim L`. On `V(Q) n V(G)` the same holds where `L` lies in both
 hypersurfaces, as at the two exact fixtures, where `L` is the plane of scalings. At a real point the conjugation
 `(z', w') -> (conjugate(w'), conjugate(z'))` preserves `L` and exchanges `L_z` and `L_w`, so the real fiber has
-real dimension `dim L` and its image in the projective stratum is the projective space of `L_z`, of real dimension
-`dim L - 2`.
+real dimension `dim L` and its image in the projective stratum is an open subset of the projective space of
+`L_z` (the points on the other hypersurface or of lower rank are removed), of real dimension `dim L - 2`.
 
 **At the 66 exact real fixtures, on the real locus `w' = z'`:** the differentials are computed modulo 32029,
 where the rank of the pair is a lower bound for the rank over the reals of `z -> ker A(z, conjugate(z))` in
@@ -252,8 +252,10 @@ is the 9 exact fixtures of `V(Q)` minus `V(G)` with orbit rank 13 and `dim L = 2
 and 9 `dim L` is recomputed exactly over `Q(i)` and the kernel nullity exactly over `Q`, and both agree.
 
 **Inferred, modulo 32029:** on `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)` the three-planes `ker M(z)` form a
-family of dimension 13, the projective dimension of the stratum, and the Gauss image is the bundle of planes in
-those three-planes, of dimension 15 in the 26-dimensional `Gr(2, 15)`. On `V(Q) n V(G)` the three-plane map has
+family of dimension 13, the projective dimension of the stratum, and the Gauss image is the projection to
+`Gr(2, 15)` of the bundle of pairs `(K, P)`, `P` a plane of the three-plane `K = ker M(z)`; the image has
+dimension 15 in the 26-dimensional `Gr(2, 15)`. The projection is not injective: two exact fixtures that share a
+kernel plane (`A5-431`) have different three-planes, which span a 4-space. On `V(Q) n V(G)` the three-plane map has
 fibers of dimension 2 and the image has dimension 12.
 
 `hypothesis` (`A5-433`, open): on `V(G)` minus `V(Q)` every real point of orbit rank 13 has `dim L` of 6 or 12
@@ -271,4 +273,4 @@ each stratum outside a proper closed subset.
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 1 minute 51 seconds of wall time, 165 CPU seconds and 3.2 GiB on two workers under an 8 GiB memory scope, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 2 minutes 11 seconds of wall time, 215 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).

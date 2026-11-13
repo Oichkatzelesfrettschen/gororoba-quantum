@@ -1690,7 +1690,7 @@
  ],
  "inputs": {
   "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "e905c37c3141b087a044e2aae3fc6b7ffd72305f260397e11905a536c62407b8",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "09acea2ad55c4ae05910ba35fa2fa9dac283d68adccd6e3d6cdddc0206ea3a7b",
   "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
   "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194"
  },
@@ -2141,5 +2141,19 @@
    "z_in_lower_kernel": true
   }
  ],
- "schema": "a5-kernel-bundles-residuals-nullity4-gauss-image-v1"
+ "schema": "a5-kernel-bundles-residuals-nullity4-gauss-image-v1",
+ "shared_plane_three_plane_spans": [
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4
+ ]
 }

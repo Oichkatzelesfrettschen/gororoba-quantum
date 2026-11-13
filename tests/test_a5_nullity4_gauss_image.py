@@ -8,6 +8,8 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "docs" / "evidence" / "a5-kernel-bundles-residuals"))
 
@@ -94,11 +96,16 @@ def test_fiber_dimension_and_kernel_nullity_at_three_exact_fixtures_and_one_grid
 
 def test_kernel_planes_shared_by_exact_fixtures() -> None:
     classes = gauss.fixture_plane_classes()
+    _same(gauss.shared_plane_spans(), [4] * 12)
     _same((len(set(classes)), classes[5], classes[22], classes[26], classes[29]), (54, 3, 17, 17, 29))
 
 
-def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None:
+def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypatch: pytest.MonkeyPatch) -> None:
     record = json.loads(gauss.RECORD.read_text(encoding="utf-8"))
+    # The digests of the live source files are compared by the on-demand replay gate; here the rule that compares
+    # them is exercised against a fixed copy, so an edit of an input file leaves the required test lane green.
+    retained_inputs = dict(record["inputs"])
+    monkeypatch.setattr(gauss, "_inputs", lambda: dict(retained_inputs))
     _same((record["pass"], gauss.verdict(record), len(record["points"])), (True, [], 12))
     changes: dict[str, Callable[[dict[str, Any]], Any]] = {
         "field": lambda r: r.update(field="GF(2)"),
@@ -125,6 +132,7 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "orbit rank": lambda r: r["exact_fixture_orbit_ranks"].__setitem__(0, 16),
         "missing orbit rank": lambda r: r.update(exact_fixture_orbit_ranks=r["exact_fixture_orbit_ranks"][:65]),
         "plane class sizes": lambda r: r["exact_fixture_plane_classes"].__setitem__(27, 17),
+        "one three-plane": lambda r: r["shared_plane_three_plane_spans"].__setitem__(0, 3),
         "separated planes": lambda r: r["exact_fixture_plane_classes"].__setitem__(5, 5),
         "merged planes": lambda r: r["exact_fixture_plane_classes"].__setitem__(13, 0),
         "shared plane at full rank": lambda r: (

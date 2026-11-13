@@ -1,4 +1,4 @@
-"""The image of the nullity-4 kernel Gauss map: a plane bundle over the three-plane map z -> ker M(z), modulo 32029.
+"""The nullity-4 kernel Gauss map factors through the planes of the three-planes ker M(z): ranks, fibers, image.
 
 The bordered skew matrix A(z, w) of `kernel_frames._bordered_matrix` has first row -w and lower 15 x 15 block M(z),
 linear in z; at a real point w is the conjugate of z. This producer treats z and w as independent, in split
@@ -38,7 +38,9 @@ Four exact facts are joined to those ranks fixture by fixture: dim L; the rank o
 kernel symmetry algebra of `kernel_symmetry.py` at the fixture (16 at a general point, 13 on a special sublocus);
 the least nullity among six vectors of the real kernel of left multiplication by the fixture, each taken as an
 element of the algebra; and the class of fixtures with the same normalized Plucker vector in the retained record,
-that is, the same kernel plane.
+that is, the same kernel plane. Two fixtures of one class have different three-planes ker M(z): the two kernels
+span a 4-space modulo 32029, the largest span of two three-planes through one plane, so the Gauss image is the
+projection to Gr(2, 15) of the bundle of pairs (K, P in K) and that projection is not injective.
 
 A grid of 41,616 integer points e_1 + a e_2 + b e_3 + m e_8 + v, v with at most three nonzero coordinates among
 e_9..e_15, is then filtered to its nullity-4 points and the same three invariants are computed modulo 32029 with
@@ -638,11 +640,21 @@ def fixture_invariants() -> list[dict[str, int]]:
     return parallel.ordered_map(exact_invariants, [split for _, _, split in _fixture_splits()], min_items=2)
 
 
-def image_equations(stratum: str) -> dict[str, Any]:
-    """Linear span of the sampled planes and the count of quadrics vanishing on them, at two sample sizes."""
-    rows = parallel.ordered_map(plucker, [(stratum, number) for number in range(QUADRIC_SAMPLES[-1])], min_items=2)
-    quadrics = [[row[a] * row[b] % PRIME for a, b in QUADRIC_MONOMIALS] for row in rows]
-    ranks = [_rank(quadrics[:count]) for count in QUADRIC_SAMPLES]
+def image_equations(job: tuple[str, list[Vector]]) -> dict[str, Any]:
+    """Linear span of the sampled planes and the count of quadrics vanishing on them, at two sample sizes.
+
+    The values of the quadratic monomials fill two flint matrices of machine words, one per sample size: 0.5 GiB
+    for one stratum, so the three strata run at once inside the 8 GiB scope of the gate.
+    """
+    stratum, rows = job
+    matrices = [nmod_mat(count, len(QUADRIC_MONOMIALS), PRIME) for count in QUADRIC_SAMPLES]
+    for number, row in enumerate(rows):
+        for column, (a, b) in enumerate(QUADRIC_MONOMIALS):
+            value = row[a] * row[b] % PRIME
+            for count, matrix in zip(QUADRIC_SAMPLES, matrices, strict=True):
+                if number < count:
+                    matrix[number, column] = value
+    ranks = [int(matrix.rank()) for matrix in matrices]
     return {
         "stratum": stratum,
         "linear_samples": LINEAR_SAMPLES,
@@ -654,6 +666,25 @@ def image_equations(stratum: str) -> dict[str, Any]:
         "quadrics_vanishing": len(QUADRIC_MONOMIALS) - ranks[-1],
         "plucker_quadrics": PLUCKER_QUADRICS,
     }
+
+
+def images() -> list[dict[str, Any]]:
+    """`image_equations` on the three strata: the planes are sampled in the pool, then the three rank stages are."""
+    samples = [(stratum, number) for stratum in STRATA for number in range(QUADRIC_SAMPLES[-1])]
+    planes = parallel.ordered_map(plucker, samples, min_items=2)
+    size = QUADRIC_SAMPLES[-1]
+    jobs = [(stratum, planes[index * size : (index + 1) * size]) for index, stratum in enumerate(STRATA)]
+    return parallel.ordered_map(image_equations, jobs, min_items=2)
+
+
+def shared_plane_spans() -> list[int]:
+    """For each exact fixture that shares its kernel plane with an earlier one: dim (ker M(z) + ker M(z'))."""
+    splits = [[value % PRIME for value in split] for _, _, split in _fixture_splits()]
+    spans = []
+    for number, first in enumerate(fixture_plane_classes()):
+        if first != number:
+            spans.append(_rank([*_nullspace(lower_block(splits[first])), *_nullspace(lower_block(splits[number]))]))
+    return spans
 
 
 def control() -> dict[str, Any]:
@@ -693,12 +724,13 @@ def compute() -> dict[str, Any]:
         "field": FIELD,
         "inputs": _inputs(),
         "points": parallel.ordered_map(rank_point, jobs, min_items=2),
-        "image": [image_equations(stratum) for stratum in STRATA],
+        "image": images(),
         "control": control(),
         "exact_fixtures": fixtures(),
         "exact_fixture_ranks": fixture_ranks(),
         "exact_fixture_orbit_ranks": fixture_orbit_ranks(),
         "exact_fixture_plane_classes": fixture_plane_classes(),
+        "shared_plane_three_plane_spans": shared_plane_spans(),
         "exact_fixture_invariants": fixture_invariants(),
         "grid": grid(),
     }
@@ -817,6 +849,8 @@ def verdict(record: dict[str, Any]) -> list[str]:
     shared = [number for number, first in enumerate(classes) if classes.count(first) > 1]
     if (len(set(classes)), len(shared)) != (FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES):
         problems.append("the count of kernel planes shared by two exact fixtures differs")
+    if record["shared_plane_three_plane_spans"] != [4] * (FIXTURES_ON_SHARED_PLANES - len(SHARED_PLANE_SIZES)):
+        problems.append("two fixtures with one kernel plane do not have two different three-planes ker M(z)")
     sizes = sorted(classes.count(first) for first in set(classes) if classes.count(first) > 1)
     by_rank = sorted(ranks[number]["real_rank"] for number in shared)
     if sizes != SHARED_PLANE_SIZES or by_rank != SHARED_PLANE_REAL_RANKS:
