@@ -1,0 +1,732 @@
+{
+  "execution_contract": {
+    "modular_prime": 32003,
+    "orderings": "global dp",
+    "singular_address_space_bytes": 4294967296,
+    "singular_timeout_seconds": 300
+  },
+  "falsifier": "A sheet decomposition, special fiber or plane that differs between Q(i) and the prime 32003; a sheet generator, germ generator or closure generator that fails to vanish on an arc; a closure strictly inside the E8-bar closure whose generators all vanish on the conic arc; a line arc outside the closure of X+ (at Va+) or X- (at Va-); a rank of C_z other than 8 at the origin and 10 at the parameters 1, 2 and 3; a Schur leading vector that differs from the embedded Rees leading vector or leaves the plane; or a one-coefficient change of the arc that the vanishing check still accepts.",
+  "incidences": [
+    {
+      "conic_arc_in_the_open_source_orbit": {
+        "closure_generator_count": 37,
+        "closure_generators_nonzero_on_arc": 0,
+        "closure_generators_nonzero_on_slice": 33,
+        "coefficients_of_t1_to_t8": [
+          1,
+          0,
+          1,
+          -2,
+          2,
+          3,
+          3,
+          0
+        ],
+        "germ_generators_nonzero_on_arc": 0,
+        "images_of_t1_to_t8": [
+          "(1)*u",
+          "-2*u^2*d",
+          "(1)*u",
+          "(-2)*u",
+          "(2)*u",
+          "(3)*u",
+          "(3)*u",
+          "-2*u*d"
+        ],
+        "leading_vector_is_nonzero_and_on_plane": true,
+        "lower_closure_generators_nonzero_on_arc": {
+          "B9": 10,
+          "Nm": 9,
+          "Np": 9,
+          "V": 14,
+          "VB": 18,
+          "Vam": 8,
+          "Vap": 8,
+          "Xm": 2,
+          "Xp": 2
+        },
+        "lower_closures_containing_the_arc": [],
+        "parameter": "u, with t_2 = -2 u^2 d, t_8 = -2 u d, d = 1 / (1 + u^2), and t_k = c_k u otherwise",
+        "rank_C_z_at_parameter": {
+          "0": 8,
+          "1": 10,
+          "2": 10,
+          "3": 10
+        },
+        "rees_map_leading_vector": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "2"
+          ],
+          [
+            "-10",
+            "0"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "rees_map_lowest_order_in_u": 1,
+        "schur_leading_vector_equals_embedded_rees_leading_vector": true,
+        "schur_leading_vector_lies_in_embedding_span": true,
+        "schur_leading_vector_preimage": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "2"
+          ],
+          [
+            "-10",
+            "0"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "schur_lowest_order_in_u": 1,
+        "schur_nonzero_leading_entry_count": 12,
+        "sheet_generators_nonzero_on_arc": 0
+      },
+      "germ_dimension": 4,
+      "incidence": "E8bar->Va+",
+      "line_arc_in_a_lower_stratum": {
+        "closure_generator_count": 37,
+        "closure_generators_nonzero_on_arc": 0,
+        "closure_generators_nonzero_on_slice": 33,
+        "coefficients_of_t1_to_t8": [
+          1,
+          0,
+          1,
+          -2,
+          2,
+          3,
+          3,
+          0
+        ],
+        "germ_generators_nonzero_on_arc": 0,
+        "images_of_t1_to_t8": [
+          "(1)*u",
+          "(0)*u",
+          "(1)*u",
+          "(-2)*u",
+          "(2)*u",
+          "(3)*u",
+          "(3)*u",
+          "(0)*u"
+        ],
+        "leading_vector_is_nonzero_and_on_plane": true,
+        "lower_closure_generators_nonzero_on_arc": {
+          "B9": 9,
+          "Nm": 8,
+          "Np": 7,
+          "V": 14,
+          "VB": 17,
+          "Vam": 7,
+          "Vap": 6,
+          "Xm": 1,
+          "Xp": 0
+        },
+        "lower_closures_containing_the_arc": [
+          "Xp"
+        ],
+        "parameter": "u, with t_k = c_k u",
+        "rank_C_z_at_parameter": {
+          "0": 8,
+          "1": 10,
+          "2": 10,
+          "3": 10
+        },
+        "rees_map_leading_vector": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "2"
+          ],
+          [
+            "-10",
+            "0"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "rees_map_lowest_order_in_u": 1,
+        "schur_leading_vector_equals_embedded_rees_leading_vector": true,
+        "schur_leading_vector_lies_in_embedding_span": true,
+        "schur_leading_vector_preimage": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "2"
+          ],
+          [
+            "-10",
+            "0"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "schur_lowest_order_in_u": 1,
+        "schur_nonzero_leading_entry_count": 12,
+        "sheet_generators_nonzero_on_arc": 0
+      },
+      "mutated_conic_arc": {
+        "changed_coefficient_index_one_based": 5,
+        "coefficients_of_t1_to_t8": [
+          1,
+          0,
+          1,
+          -2,
+          3,
+          3,
+          3,
+          0
+        ],
+        "germ_generators_nonzero_on_arc": 3,
+        "sheet_generators_nonzero_on_arc": 1
+      },
+      "pass": true,
+      "reduced_slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "reductions_agree_between_characteristics": true,
+      "retained_arc_components_one_based": [
+        2
+      ],
+      "sheets": [
+        {
+          "dimension": 4,
+          "generators": [
+            "t5-t7",
+            "t4-t6",
+            "t2-t3",
+            "t1^2+t8^2+2*t1"
+          ],
+          "multiplicity": 2,
+          "plane_vanishing_coordinates": [
+            "y3",
+            "y4",
+            "y5"
+          ],
+          "reached_by_a_retained_arc": true,
+          "retained_fiber_component_one_based": 2,
+          "sheet_index_one_based": 1,
+          "special_fiber_modulo_prime": {
+            "generators": [
+              "y3",
+              "y4",
+              "y5"
+            ],
+            "prime_components": [
+              [
+                "y3",
+                "y4",
+                "y5"
+              ]
+            ]
+          },
+          "special_fiber_over_q_i": {
+            "generators": [
+              "y3",
+              "y4",
+              "y5"
+            ],
+            "prime_components": [
+              [
+                "y3",
+                "y4",
+                "y5"
+              ]
+            ]
+          }
+        },
+        {
+          "dimension": 4,
+          "generators": [
+            "t6-t7",
+            "t4+t5",
+            "t1-t3",
+            "t2^2+t8^2+2*t2"
+          ],
+          "multiplicity": 2,
+          "plane_vanishing_coordinates": [
+            "y1",
+            "y2",
+            "y6"
+          ],
+          "reached_by_a_retained_arc": false,
+          "retained_fiber_component_one_based": 1,
+          "sheet_index_one_based": 2,
+          "special_fiber_modulo_prime": {
+            "generators": [
+              "y1",
+              "y2",
+              "y6"
+            ],
+            "prime_components": [
+              [
+                "y1",
+                "y2",
+                "y6"
+              ]
+            ]
+          },
+          "special_fiber_over_q_i": {
+            "generators": [
+              "y1",
+              "y2",
+              "y6"
+            ],
+            "prime_components": [
+              [
+                "y1",
+                "y2",
+                "y6"
+              ]
+            ]
+          }
+        }
+      ],
+      "sheets_agree_modulo_prime": true,
+      "sheets_intersect_to_germ": true,
+      "singular_version_code": 44105,
+      "special_fibers_agree_between_characteristics": true,
+      "unreached_sheet_index_one_based": 2
+    },
+    {
+      "conic_arc_in_the_open_source_orbit": {
+        "closure_generator_count": 37,
+        "closure_generators_nonzero_on_arc": 0,
+        "closure_generators_nonzero_on_slice": 33,
+        "coefficients_of_t1_to_t8": [
+          1,
+          0,
+          -1,
+          -2,
+          2,
+          3,
+          3,
+          0
+        ],
+        "germ_generators_nonzero_on_arc": 0,
+        "images_of_t1_to_t8": [
+          "(1)*u",
+          "-2*u^2*d",
+          "(-1)*u",
+          "(-2)*u",
+          "(2)*u",
+          "(3)*u",
+          "(3)*u",
+          "-2*u*d"
+        ],
+        "leading_vector_is_nonzero_and_on_plane": true,
+        "lower_closure_generators_nonzero_on_arc": {
+          "B9": 10,
+          "Nm": 9,
+          "Np": 9,
+          "V": 14,
+          "VB": 18,
+          "Vam": 8,
+          "Vap": 8,
+          "Xm": 2,
+          "Xp": 2
+        },
+        "lower_closures_containing_the_arc": [],
+        "parameter": "u, with t_2 = -2 u^2 d, t_8 = -2 u d, d = 1 / (1 + u^2), and t_k = c_k u otherwise",
+        "rank_C_z_at_parameter": {
+          "0": 8,
+          "1": 10,
+          "2": 10,
+          "3": 10
+        },
+        "rees_map_leading_vector": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-10"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "-2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "rees_map_lowest_order_in_u": 1,
+        "schur_leading_vector_equals_embedded_rees_leading_vector": true,
+        "schur_leading_vector_lies_in_embedding_span": true,
+        "schur_leading_vector_preimage": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-10"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "-2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "schur_lowest_order_in_u": 1,
+        "schur_nonzero_leading_entry_count": 12,
+        "sheet_generators_nonzero_on_arc": 0
+      },
+      "germ_dimension": 4,
+      "incidence": "E8bar->Va-",
+      "line_arc_in_a_lower_stratum": {
+        "closure_generator_count": 37,
+        "closure_generators_nonzero_on_arc": 0,
+        "closure_generators_nonzero_on_slice": 33,
+        "coefficients_of_t1_to_t8": [
+          1,
+          0,
+          -1,
+          -2,
+          2,
+          3,
+          3,
+          0
+        ],
+        "germ_generators_nonzero_on_arc": 0,
+        "images_of_t1_to_t8": [
+          "(1)*u",
+          "(0)*u",
+          "(-1)*u",
+          "(-2)*u",
+          "(2)*u",
+          "(3)*u",
+          "(3)*u",
+          "(0)*u"
+        ],
+        "leading_vector_is_nonzero_and_on_plane": true,
+        "lower_closure_generators_nonzero_on_arc": {
+          "B9": 9,
+          "Nm": 7,
+          "Np": 8,
+          "V": 14,
+          "VB": 17,
+          "Vam": 6,
+          "Vap": 7,
+          "Xm": 0,
+          "Xp": 1
+        },
+        "lower_closures_containing_the_arc": [
+          "Xm"
+        ],
+        "parameter": "u, with t_k = c_k u",
+        "rank_C_z_at_parameter": {
+          "0": 8,
+          "1": 10,
+          "2": 10,
+          "3": 10
+        },
+        "rees_map_leading_vector": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-10"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "-2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "rees_map_lowest_order_in_u": 1,
+        "schur_leading_vector_equals_embedded_rees_leading_vector": true,
+        "schur_leading_vector_lies_in_embedding_span": true,
+        "schur_leading_vector_preimage": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-10"
+          ],
+          [
+            "2",
+            "0"
+          ],
+          [
+            "-2",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "schur_lowest_order_in_u": 1,
+        "schur_nonzero_leading_entry_count": 12,
+        "sheet_generators_nonzero_on_arc": 0
+      },
+      "mutated_conic_arc": {
+        "changed_coefficient_index_one_based": 5,
+        "coefficients_of_t1_to_t8": [
+          1,
+          0,
+          -1,
+          -2,
+          3,
+          3,
+          3,
+          0
+        ],
+        "germ_generators_nonzero_on_arc": 4,
+        "sheet_generators_nonzero_on_arc": 1
+      },
+      "pass": true,
+      "reduced_slice_variables": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5",
+        "t6",
+        "t7",
+        "t8"
+      ],
+      "reductions_agree_between_characteristics": true,
+      "retained_arc_components_one_based": [
+        2
+      ],
+      "sheets": [
+        {
+          "dimension": 4,
+          "generators": [
+            "t5+t7",
+            "t4+t6",
+            "t2-t3",
+            "t1^2+t8^2-2*t1"
+          ],
+          "multiplicity": 2,
+          "plane_vanishing_coordinates": [
+            "y3",
+            "y4",
+            "y5"
+          ],
+          "reached_by_a_retained_arc": true,
+          "retained_fiber_component_one_based": 2,
+          "sheet_index_one_based": 1,
+          "special_fiber_modulo_prime": {
+            "generators": [
+              "y3",
+              "y4",
+              "y5"
+            ],
+            "prime_components": [
+              [
+                "y3",
+                "y4",
+                "y5"
+              ]
+            ]
+          },
+          "special_fiber_over_q_i": {
+            "generators": [
+              "y3",
+              "y4",
+              "y5"
+            ],
+            "prime_components": [
+              [
+                "y3",
+                "y4",
+                "y5"
+              ]
+            ]
+          }
+        },
+        {
+          "dimension": 4,
+          "generators": [
+            "t6-t7",
+            "t4+t5",
+            "t1+t3",
+            "t2^2+t8^2+2*t2"
+          ],
+          "multiplicity": 2,
+          "plane_vanishing_coordinates": [
+            "y1",
+            "y2",
+            "y6"
+          ],
+          "reached_by_a_retained_arc": false,
+          "retained_fiber_component_one_based": 1,
+          "sheet_index_one_based": 2,
+          "special_fiber_modulo_prime": {
+            "generators": [
+              "y1",
+              "y2",
+              "y6"
+            ],
+            "prime_components": [
+              [
+                "y1",
+                "y2",
+                "y6"
+              ]
+            ]
+          },
+          "special_fiber_over_q_i": {
+            "generators": [
+              "y1",
+              "y2",
+              "y6"
+            ],
+            "prime_components": [
+              [
+                "y1",
+                "y2",
+                "y6"
+              ]
+            ]
+          }
+        }
+      ],
+      "sheets_agree_modulo_prime": true,
+      "sheets_intersect_to_germ": true,
+      "singular_version_code": 44105,
+      "special_fibers_agree_between_characteristics": true,
+      "unreached_sheet_index_one_based": 2
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+    "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
+    "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
+    "docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py": "96596b9247b65713c8f7890b032aae7b1e20be5151090b6fdf79adfd8ed0419c",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "mutation_control": {
+    "detected": true,
+    "input_change": "add 1 to the coefficient of t5 in each conic arc",
+    "name": "one_changed_arc_coefficient"
+  },
+  "pass": true,
+  "schema": "a5-kernel-attachments-sheet-fiber-planes-v1",
+  "scope": {
+    "claim_boundary": "Each arc is exact on the retained transverse slice germ of its incidence at the retained basepoint. The record computes two sheets and two planes per incidence and two arcs on the sheet that no retained arc reaches: a conic arc in the open E8-bar orbit and a line arc in the closure of X+ or X-. Membership in the open orbit is the vanishing of the E8-bar closure generators with one nonvanishing generator of every closure strictly inside it. The variation of the fibers along the boundary orbit and the incidence E8bar->VB lie outside the record.",
+    "incidences": [
+      "E8bar->Va+",
+      "E8bar->Va-"
+    ]
+  },
+  "summary": {
+    "conic_arcs_in_the_open_source_orbit": 2,
+    "incidence_count": 2,
+    "line_arcs_in_a_lower_stratum": 2,
+    "sheet_count": 4
+  },
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "version code 44105"
+  }
+}

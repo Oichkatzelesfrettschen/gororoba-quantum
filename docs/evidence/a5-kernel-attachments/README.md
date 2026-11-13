@@ -412,7 +412,9 @@ Three consequences follow at a boundary point `z_0` with `K_0 = ker C_(z_0) meet
    `z` alone (`strata_regularity.py`, the generators of `W8`, `Ehat`, `Iso`, `Xp` and `Xm`), each named source is
    the dense locally closed orbit in its closure, and the doubly pure real locus is all of `C^15`. The graph of
    `z -> ker C_z` over the source germ is therefore a complex constructible set, whose Zariski closure equals its
-   closure in the classical topology (Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1), so
+   closure in the classical topology (Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1; the
+   book is not held in the documents repositories and has no row in `docs/SOURCES.json`, so the locator is cited
+   from the standard literature and its text was not inspected), so
    every point of the computed fiber lies in the Euclidean closure of the graph. The graph is also a real
    semialgebraic set, and the curve selection lemma
    ([Basu and Roy, Theorem 1](../../notes/1803.00505.md)) gives a continuous semialgebraic path that starts at the
@@ -442,21 +444,108 @@ transverse slice germ at each selected basepoint, the real limit set in `Gr(4, K
 | `X_+` to `VB`, `X_-` to `VB` | 2, 1, 1 (a `P^2`) |
 | `X_+` to `V^a_+`, `X_-` to `V^a_-` | 2, 2, 2 |
 
-The first plane of E8-bar to `V^a_+` and to `V^a_-` is a real limit by consequence 2, and no retained arc reaches
-it; an exact arc on the first sheet is the open constructive witness. Each fiber is computed on the retained
+The first plane of E8-bar to `V^a_+` and to `V^a_-` is a real limit by consequence 2, and no arc of the two fiber
+records reaches it; the [sheet record below](#each-e8-bar-sheet-at-va-carries-one-fiber-plane-and-an-exact-arc-reaches-the-first)
+supplies an exact arc. Each fiber is computed on the retained
 transverse slice at the selected path-supported basepoint. The record does not cover E8-bar to `VB`, whose fiber is
 the open Rees elimination; the variation of a fiber along its boundary orbit; or the exclusion of limits along arcs
-that leave the slice, which holds where the boundary orbit carries a local product structure that acts on `ker C_z`
-(hypothesis: the complexified automorphism group supplies it, since an automorphism `g` gives
-`ker C_(g z) = g ker C_z`).
+that leave the slice, which holds where the boundary orbit carries a local product structure that acts on `ker C_z`.
+The [equivariance record below](#g_2-and-scaling-act-on-the-holomorphic-kernel-and-the-boost-does-not) gives the
+first-order evidence for that structure on the orbits of `B9`, `V^a_+`, `V^a_-`, `N+` and `N-`, and against it on
+`V` and `VB`; the structure itself stays a hypothesis.
 
 The falsifier is a failed identity; a failed Hermitian splitting at an exact point; a retained arc whose holomorphic
 limit differs from its bordered limit plus the boundary line; a source stratum whose equations involve
 `conjugate(z)`; or a fiber invariant on which the two characteristics disagree. Replacing the Hermitian pairing by
 the bilinear pairing `z^T u` at the isotropic point `e_1 + i e_2` puts `z` in its own complement, and the splitting
-fails. The `--out` run took 1.5 seconds wall time and 77,448 KiB peak resident memory. Evidence:
+fails. The `--out` run took 1.5 seconds wall time (one process) and 77,448 KiB peak resident memory. Evidence:
 [`real_limit_sets.py`](real_limit_sets.py), [`real-limit-sets-result.json`](real-limit-sets-result.json), and the
 [ledger](ledger.md#ledger-rows).
+
+## The same identification gives eight real limit sets into nullity 16
+
+The deduction of the previous section uses only the kernel identity, the holomorphic source closures and the two
+cited theorems, so it applies at a nullity-16 boundary point `z_0`, where `ker C_(z_0)` has dimension 9 and
+`K_0 = ker C_(z_0) meet z_0^perp` has dimension 8. The limits of the bordered kernel of a nullity-12 source are the
+planes `P meet z_0^perp` for `P` a limit of the 7-plane `ker C_z`, in `Gr(6, K_0)`. The closures of `B9`, `V`, `VB`,
+`V^a_+` and `V^a_-` are cut out by holomorphic polynomials in `z` (`strata_regularity.py`). **Inferred:** on the
+retained slice germ at the census-supported `N+` or `N-` basepoint, the real limit set of each of the eight
+incidences with a completed Rees fiber is that whole fiber:
+
+| Incidence | Real limit set on the slice germ: projective dimension, degree, components |
+| --- | --- |
+| `B9` to `N+`, `B9` to `N-` | 2, 1, 1 (a `P^2`) |
+| `V` to `N+`, `V` to `N-` | 1, 2, 1 (the conic `y2^2 - y1*y3`) |
+| `VB` to `N+`, `VB` to `N-` | 0, 1, 1 (one point) |
+| `V^a_+` to `N+`, `V^a_-` to `N-` | 0, 1, 1 (one point) |
+
+The four one-point rows carry a canonical limiting six-plane on the slice germ. No retained arc ends at these
+basepoints, so no arc comparison enters, and the ten incidences from the nullity-8 sources (`E8bar`, `Iso`, `W8`,
+`X+`, `X-` into `N+` and `N-`) have no computed fiber and stay open. The boundaries of the previous section hold
+here: the slice germ at one basepoint, no variation along the boundary orbit, no exclusion for arcs that leave the
+slice. A characteristic disagreement on one of the eight fibers, a source closure with an equation in
+`conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
+Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
+[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
+
+## Each E8-bar sheet at Va carries one fiber plane, and an exact arc reaches the first
+
+[`sheet_fiber_planes.py`](sheet_fiber_planes.py) decomposes the reduced slice germ of E8-bar at the `V^a_+` and
+`V^a_-` basepoints into its two prime sheets (dimension 4 each; their intersection is the germ ideal) and computes
+the special fiber of each sheet by the recipe of the Nakayama record, over `Q(i)` and modulo 32003. Each sheet gives
+exactly one of the two fiber planes: the sheet `t6 = t7, t4 = -t5, t1 = t3, t2^2 + t8^2 + 2 t2 = 0` at `V^a_+`
+(with `t1 = -t3` at `V^a_-`) gives `{y1 = y2 = y6 = 0}`, the plane no arc of the fiber records reached, and the
+other sheet gives `{y3 = y4 = y5 = 0}`.
+
+The line `t = (1, 0, 1, -2, 2, 3, 3, 0) u` at `V^a_+`, and `t = (1, 0, -1, -2, 2, 3, 3, 0) u` at `V^a_-`, lies on
+the first sheet: the sheet, germ and closure generators vanish identically in `u`, `rank C_z` is 8 at `u = 0` and 10
+at `u = 1, 2, 3`, and the 21 Schur coordinates vanish to order one with leading vector equal to the embedded point
+`[0 : 0 : 2i : -10 : 2 : 0]` (respectively `[0 : 0 : -10i : 2 : -2 : 0]`) of the first plane. That line
+lies in the closure of `X+` (respectively `X-`), a lower stratum of nullity 8 inside the E8-bar closure: rank 10
+holds on E8-bar, `X+` and `X-` alike, and every generator of the `X+` closure vanishes on the line. The sheet's
+conic `t2^2 + t8^2 + 2 t2 = 0` admits no other line through the origin, so the arc in the open orbit is curved:
+`t2 = -2 u^2 / (1 + u^2)`, `t8 = -2 u / (1 + u^2)` with the same coefficients elsewhere. On it the E8-bar closure,
+germ and sheet generators vanish identically, each of the nine closures strictly inside the E8-bar closure (`X+`,
+`X-`, `B9`, `V`, `VB`, `V^a_+`, `V^a_-`, `N+`, `N-`) keeps a nonvanishing generator, `rank C_z` is 8 at `u = 0` and
+10 at `u = 1, 2, 3`, and the leading vector is the same plane point. The first plane is therefore reached by an
+exact arc in the open E8-bar source and by an exact arc in `X+` or `X-`. One arc witnesses one point of each plane;
+the realization of the remaining points rests on the previous section. Adding 1 to the `t5` coefficient of the conic
+arc leaves a sheet generator nonzero, and the check fails. A sheet whose fiber meets both planes, an arc generator
+that does not vanish, a lower closure that contains the conic arc, or a leading vector outside the first plane
+falsifies the record. The replay takes 1.6 seconds wall time and 4.2 CPU seconds with the default worker pool on
+the 12-core build host. Evidence: [`sheet-fiber-planes-result.json`](sheet-fiber-planes-result.json) and the
+[ledger](ledger.md#ledger-rows).
+
+## G_2 and scaling act on the holomorphic kernel, and the boost does not
+
+[`kernel_equivariance.py`](kernel_equivariance.py) tests which symmetries of the strata act on `ker C_z`. In original
+coordinates the `G_2` automorphism `g` of the census, a product of three unipotent automorphisms with trace 12 and
+so not itself unipotent, satisfies `g^T g = I` and
+`C_(g z) = g^(-T) C_z g^(-1)` on the 15 basis directions, hence for every `z` by linearity, and
+`ker C_(g z) = g ker C_z` at the twelve canonical points. The boost `b` (`c = 5/4`, `s = 3/4`) preserves each
+nullity and fails the congruence for the four candidate matrices tested; `b ker C_z` differs from `ker C_(b z)` at
+`B9`, `V`, `VB`, E8-bar, `X+` and `X-`, with the smallest witness at `VB` (two 7-planes meeting in dimension 6).
+
+The linear system for an infinitesimal congruence, `C_(X e_k) + R^T C_k + C_k R = 0` in `(X, R)`, has a
+15-dimensional solution space whose `X` projection holds the 14 `G_2` derivations and the scaling and excludes the
+boost generator. **Inferred:** no rational one-parameter family of congruences through the identity exists for
+the boost group, since its derivative would be a solution of that system; a congruence for a single boost element
+outside the four candidates tested is not excluded. At each canonical point the tangent span of
+`G_2` and the scaling has the dimension of the orbit, except at `V` (7 against 8), `VB` (6 against 7) and E8-bar
+(10 against 11), where the boost generator supplies the missing direction.
+
+`hypothesis:` on the orbits of `B9`, `V^a_+`, `V^a_-`, `N+`, `N-`, `W8`, `Iso`, `X+` and `X-` the
+kernel-equivariant group acts locally transitively, the fiber over a point of the orbit near the basepoint is the
+transport of the fiber at the basepoint, and a limit along an arc that leaves the slice lies in the transported
+fiber. The record computes the equality of tangent rank and orbit dimension at the nine canonical points; the
+hypothesis also needs the infinitesimal pairs `(X, R)` to integrate to a group action near each point and a local
+product of orbit and slice compatible with the kernel map, and neither is computed. On `V` and `VB` as boundary
+orbits the kernel can vary along the boost direction, and the variation of the fiber there is open.
+Using the split-coordinate matrix in place of `g` leaves 1,458 nonzero residual entries. A nonzero residual for
+`g`, a kernel that `g` fails to transport, or the boost generator inside the `X` projection falsifies the record.
+The replay takes 6.6 seconds wall time and 35.9 CPU seconds with the default worker pool on the 12-core build
+host. Evidence:
+[`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
 ## Investigated questions
 
