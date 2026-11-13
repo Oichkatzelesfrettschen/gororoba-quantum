@@ -168,6 +168,9 @@ GRID_EXCEPTIONS = ((STRATA[1], 16, 2, 12), (STRATA[1], 16, 12, 16), (STRATA[2], 
 KERNEL_COMBINATIONS = ((1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1), (1, 2, 3, 5), (2, -1, 7, 3))
 # Distinct kernel planes among the 66 exact fixtures, and the fixtures that share a plane with another one.
 FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES = 54, 22
+# Sizes of the ten shared classes, and the real ranks of the 22 fixtures in them.
+SHARED_PLANE_SIZES = [2] * 8 + [3] * 2
+SHARED_PLANE_REAL_RANKS = [16] * 12 + [22] * 10
 Vector = list[int]
 Matrix = list[list[int]]
 
@@ -414,32 +417,36 @@ def rank_point(job: tuple[str, int]) -> dict[str, Any]:
     }
 
 
-def fixture_ranks() -> list[dict[str, Any]]:
-    """The differentials on the real locus w' = z' at each exact fixture, reduced modulo PRIME."""
+def fixture_rank(job: tuple[int, str, list[int]]) -> dict[str, Any]:
+    """The differentials on the real locus w' = z' at one exact fixture, reduced modulo PRIME."""
+    number, stratum, split = job
     polynomials = _polynomials()
     zero = [0] * IMAGINARY
-    rows = []
-    for number, fixture in enumerate(json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]):
-        stratum = fixture["stratum"]
-        z = [int(value) % PRIME for value in fixture["split_point"]]
-        membership = tuple(_value(polynomials[name], z) == 0 for name in ("Q", "G"))
-        _require(membership == MEMBERSHIP[stratum], f"fixture {number} lies off its stratum modulo {PRIME}")
-        tangent = tangent_space(stratum, z, polynomials)
-        directions = [*([*v, *zero] for v in tangent), *([*zero, *v] for v in tangent)]
-        three_planes, _ = kernel_differential(lower_block, z, tangent, 12)
-        gauss, _ = kernel_differential(bordered, [*z, *z], directions, 14)
-        conjugate, _ = kernel_differential(conjugate_bordered, [*z, *z], directions, 14)
-        rows.append(
-            {
-                "fixture": number,
-                "stratum": stratum,
-                "tangent_dimension": len(tangent),
-                "three_plane_map_rank": _rank(three_planes),
-                "gauss_rank": _rank(gauss),
-                "real_rank": _rank([a + b for a, b in zip(gauss, conjugate, strict=True)]),
-            }
-        )
-    return rows
+    z = [value % PRIME for value in split]
+    membership = tuple(_value(polynomials[name], z) == 0 for name in ("Q", "G"))
+    _require(membership == MEMBERSHIP[stratum], f"fixture {number} lies off its stratum modulo {PRIME}")
+    tangent = tangent_space(stratum, z, polynomials)
+    directions = [*([*v, *zero] for v in tangent), *([*zero, *v] for v in tangent)]
+    three_planes, _ = kernel_differential(lower_block, z, tangent, 12)
+    gauss, _ = kernel_differential(bordered, [*z, *z], directions, 14)
+    conjugate, _ = kernel_differential(conjugate_bordered, [*z, *z], directions, 14)
+    return {
+        "fixture": number,
+        "stratum": stratum,
+        "tangent_dimension": len(tangent),
+        "three_plane_map_rank": _rank(three_planes),
+        "gauss_rank": _rank(gauss),
+        "real_rank": _rank([a + b for a, b in zip(gauss, conjugate, strict=True)]),
+    }
+
+
+def _fixture_splits() -> list[tuple[int, str, list[int]]]:
+    rows = json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]
+    return [(number, row["stratum"], [int(value) for value in row["split_point"]]) for number, row in enumerate(rows)]
+
+
+def fixture_ranks() -> list[dict[str, Any]]:
+    return parallel.ordered_map(fixture_rank, _fixture_splits(), min_items=2)
 
 
 def plucker(job: tuple[str, int]) -> Vector:
@@ -452,15 +459,19 @@ def plucker(job: tuple[str, int]) -> Vector:
     return [(kernel[0][a] * kernel[1][b] - kernel[0][b] * kernel[1][a]) % PRIME for a, b in PLUCKER_PAIRS]
 
 
+def fixture_orbit_rank(job: tuple[list[int], tuple[Any, ...]]) -> int:
+    """The exact rank of the orbit of the kernel symmetry algebra, given by its base matrices, at one split point."""
+    split, generators = job
+    point = tuple(symmetry.equations.y_from_split([Fraction(value) for value in split]))
+    return int(symmetry._rank([symmetry._rational_matrix_vector_product(matrix, point) for matrix in generators]))
+
+
 def fixture_orbit_ranks() -> list[int]:
-    """The exact rank of the orbit of the kernel symmetry algebra at each exact fixture."""
     triples, _, _ = symmetry._solve_lie_triples("")
-    ranks = []
-    for fixture in json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]:
-        point = tuple(symmetry.equations.y_from_split([Fraction(value) for value in fixture["split_point"]]))
-        moved = [symmetry._rational_matrix_vector_product(triple[0], point) for triple in triples]
-        ranks.append(int(symmetry._rank(moved)))
-    return ranks
+    generators = tuple(triple[0] for triple in triples)
+    return parallel.ordered_map(
+        fixture_orbit_rank, [(split, generators) for _, _, split in _fixture_splits()], min_items=2
+    )
 
 
 def fixture_plane_classes() -> list[int]:
@@ -605,15 +616,12 @@ def grid() -> dict[str, Any]:
             classes[found] = classes.get(found, 0) + 1
             if found in GRID_EXCEPTIONS:
                 exceptions.append(
-                    {
-                        "split_point": split,
-                        "stratum": stratum,
-                        "orbit_rank": orbit,
-                        "fiber_dimension": fiber,
-                        "kernel_vector_nullity": kernel_vector_nullity(split),
-                        "exact_fiber_dimension": exact_fiber_dimension(split),
-                    }
+                    {"split_point": split, "stratum": stratum, "orbit_rank": orbit, "fiber_dimension": fiber}
                 )
+    exact = parallel.ordered_map(exact_invariants, [row["split_point"] for row in exceptions], min_items=2)
+    for row, invariant in zip(exceptions, exact, strict=True):
+        row["kernel_vector_nullity"] = invariant["kernel_vector_nullity"]
+        row["exact_fiber_dimension"] = invariant["fiber_dimension"]
     return {
         "candidates": sum(block[0][0] for block in blocks),
         "classes": [[*found, count] for found, count in sorted(classes.items())],
@@ -621,14 +629,13 @@ def grid() -> dict[str, Any]:
     }
 
 
+def exact_invariants(split: list[int]) -> dict[str, int]:
+    """Exact dim L and least sampled kernel-vector nullity at one integer split point."""
+    return {"fiber_dimension": exact_fiber_dimension(split), "kernel_vector_nullity": kernel_vector_nullity(split)}
+
+
 def fixture_invariants() -> list[dict[str, int]]:
-    """Exact dim L and least sampled kernel-vector nullity at each exact fixture."""
-    rows = json.loads(FIXTURES.read_text(encoding="utf-8"))["fixtures"]
-    splits = [[int(value) for value in row["split_point"]] for row in rows]
-    return [
-        {"fiber_dimension": exact_fiber_dimension(split), "kernel_vector_nullity": kernel_vector_nullity(split)}
-        for split in splits
-    ]
+    return parallel.ordered_map(exact_invariants, [split for _, _, split in _fixture_splits()], min_items=2)
 
 
 def image_equations(stratum: str) -> dict[str, Any]:
@@ -712,8 +719,10 @@ def verdict(record: dict[str, Any]) -> list[str]:
     if [row["stratum"] for row in points] != [stratum for stratum in STRATA for _ in range(RANK_POINTS)]:
         problems.append("the points differ from the sampled strata")
     digests = {row["point_sha256"] for row in points}
-    if len(digests) != len(points) or any(re.fullmatch("[0-9a-f]{64}", digest) is None for digest in digests):
+    if len(digests) != len(points):
         problems.append("two rank points coincide")
+    if any(re.fullmatch("[0-9a-f]{64}", digest) is None for digest in digests):
+        problems.append("a point digest is not a sha256 digest")
     for number, row in enumerate(points):
         name = f"{row['stratum']} point {number % RANK_POINTS}"
         expected = EXPECTED.get(row["stratum"], {})
@@ -808,6 +817,10 @@ def verdict(record: dict[str, Any]) -> list[str]:
     shared = [number for number, first in enumerate(classes) if classes.count(first) > 1]
     if (len(set(classes)), len(shared)) != (FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES):
         problems.append("the count of kernel planes shared by two exact fixtures differs")
+    sizes = sorted(classes.count(first) for first in set(classes) if classes.count(first) > 1)
+    by_rank = sorted(ranks[number]["real_rank"] for number in shared)
+    if sizes != SHARED_PLANE_SIZES or by_rank != SHARED_PLANE_REAL_RANKS:
+        problems.append("the kernel planes are shared in other class sizes or at other real ranks")
     if any(first > number or classes[first] != first for number, first in enumerate(classes)):
         problems.append("a plane class does not name its first fixture")
     for number in shared:

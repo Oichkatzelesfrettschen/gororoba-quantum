@@ -70,9 +70,10 @@ def test_a_direction_off_both_hypersurfaces_passes_the_first_order_check_on_the_
     raise AssertionError("every coordinate direction is tangent to one hypersurface")
 
 
-def test_real_ranks_at_three_exact_fixtures() -> None:
-    rows = gauss.fixture_ranks()
-    found = {n: (rows[n]["three_plane_map_rank"], rows[n]["gauss_rank"], rows[n]["real_rank"]) for n in (13, 29, 28, 0)}
+def test_real_ranks_at_four_exact_fixtures() -> None:
+    jobs = gauss._fixture_splits()
+    rows = {number: gauss.fixture_rank(jobs[number]) for number in (13, 29, 28, 0)}
+    found = {n: (row["three_plane_map_rank"], row["gauss_rank"], row["real_rank"]) for n, row in rows.items()}
     _same(found, {13: (13, 15, 26), 29: (13, 15, 26), 28: (10, 12, 24), 0: (13, 13, 22)})
 
 
@@ -123,6 +124,7 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None
         "fixture tangent": lambda r: r["exact_fixture_ranks"][28].update(tangent_dimension=12),
         "orbit rank": lambda r: r["exact_fixture_orbit_ranks"].__setitem__(0, 16),
         "missing orbit rank": lambda r: r.update(exact_fixture_orbit_ranks=r["exact_fixture_orbit_ranks"][:65]),
+        "plane class sizes": lambda r: r["exact_fixture_plane_classes"].__setitem__(27, 17),
         "separated planes": lambda r: r["exact_fixture_plane_classes"].__setitem__(5, 5),
         "merged planes": lambda r: r["exact_fixture_plane_classes"].__setitem__(13, 0),
         "shared plane at full rank": lambda r: (
