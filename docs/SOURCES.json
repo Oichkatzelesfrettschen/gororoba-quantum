@@ -920,6 +920,33 @@
       "doi": "10.1007/b62130",
       "venue": "Lecture Notes in Mathematics 1358, second, expanded edition (Springer, 1999)",
       "receipt_url": "https://api.crossref.org/works/10.1007/b62130"
+    },
+    "docs/notes/papers/huneke-swanson-2006-integral-closure-ideals-rings-modules.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/vasconcelos-1994-arithmetic-blowup-algebras.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1017/CBO9780511574726",
+      "venue": "London Mathematical Society Lecture Note Series 195 (Cambridge University Press, 1994)",
+      "receipt_url": "https://api.crossref.org/works/10.1017/CBO9780511574726"
+    },
+    "docs/notes/papers/greuel-pfister-2008-singular-introduction-commutative-algebra.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/978-3-540-73542-7",
+      "venue": "A Singular Introduction to Commutative Algebra, second, extended edition (Springer, 2008)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/978-3-540-73542-7"
+    },
+    "docs/notes/papers/baetica-1998-rees-algebra-pfaffians.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/00927879808826238",
+      "venue": "Communications in Algebra 26(6), 1769-1778 (1998)",
+      "receipt_url": "https://api.crossref.org/works/10.1080/00927879808826238"
+    },
+    "docs/notes/papers/jozefiak-pragacz-1979-ideals-generated-pfaffians.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1016/0021-8693(79)90313-2",
+      "venue": "Journal of Algebra 61(1), 189-198 (1979)",
+      "receipt_url": "https://api.crossref.org/works/10.1016/0021-8693(79)90313-2"
     }
   },
   "web_sources": [
@@ -4124,6 +4151,51 @@
       "bytes": 2775,
       "retrieved_at_utc": "2026-11-13T21:57:14+00:00",
       "reading_scope": "Crossref DOI metadata: title, author, publisher, container title, year and both ISBNs for the book; the record carries no series volume number and no edition statement",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/vasconcelos-1994-arithmetic-blowup-algebras.md",
+      "url": "https://api.crossref.org/works/10.1017/CBO9780511574726",
+      "sha256": "21451eb60957e38e0012ac8ec87d481b8a48e983b0fd72589b14192e85f125e6",
+      "bytes": 3939,
+      "retrieved_at_utc": "2026-11-13T22:41:43+00:00",
+      "reading_scope": "Crossref DOI metadata: title, author, publisher, type, issue date, both ISBNs and edition number for the book; the record carries no series name or volume number",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/greuel-pfister-2008-singular-introduction-commutative-algebra.md",
+      "url": "https://api.crossref.org/works/10.1007/978-3-540-73542-7",
+      "sha256": "cfccff715b0a4ffa6bda453102fcba825646a956c4206cbd563550d6b2def9bb",
+      "bytes": 2501,
+      "retrieved_at_utc": "2026-11-13T22:41:43+00:00",
+      "reading_scope": "Crossref DOI metadata: title, publisher, print ISBN and print year for the book; the record lists no authors and carries no edition statement",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/baetica-1998-rees-algebra-pfaffians.md",
+      "url": "https://api.crossref.org/works/10.1080/00927879808826238",
+      "sha256": "9a927e69890d5a145357b8c744cdcdf9e78168a409c4f1ed41a49bfc35b242aa",
+      "bytes": 3070,
+      "retrieved_at_utc": "2026-11-13T22:41:44+00:00",
+      "reading_scope": "Crossref DOI metadata: title, author, publisher, journal, volume, issue, pages and date for the version of record",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/jozefiak-pragacz-1979-ideals-generated-pfaffians.md",
+      "url": "https://api.crossref.org/works/10.1016/0021-8693(79)90313-2",
+      "sha256": "157be766e3f55908a80e123fee04f122ac23ed2addbc9ae30e0a0c356f6ec827",
+      "bytes": 4635,
+      "retrieved_at_utc": "2026-11-13T22:41:44+00:00",
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, pages and date for the version of record",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "note": "docs/notes/papers/huneke-swanson-2006-integral-closure-ideals-rings-modules.md",
+      "url": "https://api.crossref.org/works?query.bibliographic=Integral+Closure+of+Ideals+Rings+and+Modules+Huneke+Swanson&rows=3",
+      "sha256": "db29961e55dddf5f86911baaf3de0a42f6241ddd2ae0c6a603cb328ca8ad6eff",
+      "bytes": 10256,
+      "retrieved_at_utc": "2026-11-13T22:41:44+00:00",
+      "reading_scope": "Crossref bibliographic search for the book title and authors, three rows: the returned records are two papers of Delfino and Swanson on integral closure in excellent local rings (1997 and its 2004 erratum) and a 2019 chapter of Aberbach and Huneke; no record of the book, so no DOI is registered",
       "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
@@ -16214,6 +16286,146 @@
         "evidence_locator": "Original PDF page 5 (printed page IV), the Springer-Verlag copyright page, and the copyright line on the first page of Chapter I (PDF page 12)",
         "reading_scope": "Rights notices on the copyright page and the first page of Chapter I; the note carries the content reading scope.",
         "evidence_summary": "Springer-Verlag copyright page (c) 1999 with all rights reserved; no redistribution grant in the PDF; the Crossref record names only the Springer text-mining terms."
+      }
+    },
+    {
+      "source_url": "https://www.math.purdue.edu/~iswanso/book/SwansonHuneke.pdf",
+      "note": "docs/notes/papers/huneke-swanson-2006-integral-closure-ideals-rings-modules.md",
+      "status": "external_only",
+      "acquisition": "download_from_author_page",
+      "sha256": "a12705f066aee67648768bc37b58a37c661907dc3918a71974c1441bc551a18b",
+      "bytes": 3521018,
+      "pages": 463,
+      "audited_at_utc": "2026-11-13T22:55:00+00:00",
+      "excluded_published_path": "docs/pdf/huneke-swanson-2006-integral-closure-ideals-rings-modules.pdf",
+      "local_cache_path": "docs/local_source_cache/huneke-swanson-2006-integral-closure-ideals-rings-modules.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF pages 1 to 14 (series title page, title page, contents, table of basic properties, notation and preface): no copyright page and no license or rights statement",
+      "rights_reason": "The retained authors' copy carries no copyright page, no publisher imprint and no license or rights statement on its first 14 pages, and the title page names Cambridge University Press as publisher of the book; no redistribution grant from the rights holder is established. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "a12705f066aee67648768bc37b58a37c661907dc3918a71974c1441bc551a18b",
+        "verified_at_utc": "2026-11-13T22:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://www.math.purdue.edu/~iswanso/book/SwansonHuneke.pdf",
+        "evidence_sha256": "a12705f066aee67648768bc37b58a37c661907dc3918a71974c1441bc551a18b",
+        "evidence_locator": "Original PDF pages 1 to 14 (series title page, title page, contents, table of basic properties, notation and preface): no copyright page and no license or rights statement",
+        "reading_scope": "Rights notices on the first 14 pages of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "No copyright page, license or rights statement on PDF pages 1 to 14; no redistribution grant is established."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1017/cbo9780511574726",
+      "note": "docs/notes/papers/vasconcelos-1994-arithmetic-blowup-algebras.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "49431544db5530d32e4ec3c6621eb1aa3ec7fa1c607548155e3d59936d65e334",
+      "bytes": 11014031,
+      "pages": 339,
+      "audited_at_utc": "2026-11-13T22:55:00+00:00",
+      "excluded_published_path": "docs/pdf/vasconcelos-1994-arithmetic-blowup-algebras.pdf",
+      "local_cache_path": "docs/local_source_cache/vasconcelos-1994-arithmetic-blowup-algebras.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 4, the Cambridge University Press imprint page with the line (c) Cambridge University Press 1994",
+      "rights_reason": "The PDF page 4 states that the publication is in copyright and carries the line (c) Cambridge University Press 1994 with a prohibition of reproduction without the written permission of the publisher, and holds no redistribution grant; the Crossref record lists only the Cambridge Core terms, which are no Creative Commons or public-domain grant. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "49431544db5530d32e4ec3c6621eb1aa3ec7fa1c607548155e3d59936d65e334",
+        "verified_at_utc": "2026-11-13T22:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1017/cbo9780511574726",
+        "evidence_sha256": "49431544db5530d32e4ec3c6621eb1aa3ec7fa1c607548155e3d59936d65e334",
+        "evidence_locator": "Original PDF page 4, the Cambridge University Press imprint page with the line (c) Cambridge University Press 1994",
+        "reading_scope": "Rights notice on the imprint page of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "Cambridge University Press copyright line (c) 1994 on the imprint page; no redistribution grant in the PDF; the Crossref record names only the Cambridge Core terms."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1007/978-3-540-73542-7",
+      "note": "docs/notes/papers/greuel-pfister-2008-singular-introduction-commutative-algebra.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "062bfc8e5c828b6cb681fbafc882807c6989dee0e852665bccabac5413cff762",
+      "bytes": 10389124,
+      "pages": 703,
+      "audited_at_utc": "2026-11-13T22:55:00+00:00",
+      "excluded_published_path": "docs/pdf/greuel-pfister-2008-singular-introduction-commutative-algebra.pdf",
+      "local_cache_path": "docs/local_source_cache/greuel-pfister-2008-singular-introduction-commutative-algebra.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 4, the Springer-Verlag imprint page with the copyright notice and the line (c) Springer-Verlag Berlin Heidelberg 2002, 2008",
+      "rights_reason": "The PDF page 4 states that the work is subject to copyright with all rights reserved and carries the line (c) Springer-Verlag Berlin Heidelberg 2002, 2008, and holds no redistribution grant from the rights holder; the Crossref record lists only the Springer text-mining terms, which are no Creative Commons or public-domain grant. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "062bfc8e5c828b6cb681fbafc882807c6989dee0e852665bccabac5413cff762",
+        "verified_at_utc": "2026-11-13T22:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1007/978-3-540-73542-7",
+        "evidence_sha256": "062bfc8e5c828b6cb681fbafc882807c6989dee0e852665bccabac5413cff762",
+        "evidence_locator": "Original PDF page 4, the Springer-Verlag imprint page with the copyright notice and the line (c) Springer-Verlag Berlin Heidelberg 2002, 2008",
+        "reading_scope": "Rights notice on the imprint page of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "Springer-Verlag copyright notice (c) 2002, 2008 with all rights reserved on the imprint page; no redistribution grant in the PDF; the Crossref record names only the Springer text-mining terms."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1080/00927879808826238",
+      "note": "docs/notes/papers/baetica-1998-rees-algebra-pfaffians.md",
+      "status": "external_only",
+      "acquisition": "download_from_third_party_mirror",
+      "sha256": "50946647458f6e3fcc8c0167cb6f085572d5148cd7cc456270232ae731a84dd8",
+      "bytes": 387507,
+      "pages": 11,
+      "audited_at_utc": "2026-11-13T22:55:00+00:00",
+      "excluded_published_path": "docs/pdf/baetica-1998-rees-algebra-pfaffians.pdf",
+      "local_cache_path": "docs/local_source_cache/baetica-1998-rees-algebra-pfaffians.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 2 (printed page 1769), the Marcel Dekker copyright line, and the Taylor and Francis cover sheet on PDF page 1",
+      "rights_reason": "The PDF page 2 carries the line Copyright (c) 1998 by Marcel Dekker, Inc., and the cover sheet on PDF page 1 limits use to research, teaching and private study and forbids substantial or systematic reproduction and redistribution; the PDF holds no redistribution grant, and the Crossref record lists no license. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "50946647458f6e3fcc8c0167cb6f085572d5148cd7cc456270232ae731a84dd8",
+        "verified_at_utc": "2026-11-13T22:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://doi.org/10.1080/00927879808826238",
+        "evidence_sha256": "50946647458f6e3fcc8c0167cb6f085572d5148cd7cc456270232ae731a84dd8",
+        "evidence_locator": "Original PDF page 2 (printed page 1769), the Marcel Dekker copyright line, and the Taylor and Francis cover sheet on PDF page 1",
+        "reading_scope": "Rights notices on PDF pages 1 and 2; the note carries the content reading scope.",
+        "evidence_summary": "Marcel Dekker copyright line (c) 1998 on page 1769 and a Taylor and Francis cover sheet that forbids redistribution; no redistribution grant in the PDF."
+      }
+    },
+    {
+      "source_url": "https://www.sciencedirect.com/science/article/pii/0021-8693(79)90313-2/pdfft?download=true",
+      "note": "docs/notes/papers/jozefiak-pragacz-1979-ideals-generated-pfaffians.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "37a386953f0651477faed20e6d5eb08112685cfecc80c4e829d15706cb5fb756",
+      "bytes": 502288,
+      "pages": 10,
+      "audited_at_utc": "2026-11-13T22:55:00+00:00",
+      "excluded_published_path": "docs/pdf/jozefiak-pragacz-1979-ideals-generated-pfaffians.pdf",
+      "local_cache_path": "docs/local_source_cache/jozefiak-pragacz-1979-ideals-generated-pfaffians.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Original PDF page 1, the Academic Press copyright footer",
+      "rights_reason": "The PDF page 1 carries the line Copyright (c) 1979 by Academic Press, Inc. with all rights of reproduction in any form reserved, and holds no redistribution grant; the Crossref record lists the Elsevier text-mining and open-archive user licenses, which are no Creative Commons or public-domain grant. The repository retains the citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "37a386953f0651477faed20e6d5eb08112685cfecc80c4e829d15706cb5fb756",
+        "verified_at_utc": "2026-11-13T22:55:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://www.sciencedirect.com/science/article/pii/0021-8693(79)90313-2/pdfft?download=true",
+        "evidence_sha256": "37a386953f0651477faed20e6d5eb08112685cfecc80c4e829d15706cb5fb756",
+        "evidence_locator": "Original PDF page 1, the Academic Press copyright footer",
+        "reading_scope": "Rights notice on page 1 of the PDF; the note carries the content reading scope.",
+        "evidence_summary": "Academic Press copyright footer (c) 1979 with all rights of reproduction reserved; no redistribution grant in the PDF; the Crossref record names only the Elsevier user licenses."
       }
     }
   ],
