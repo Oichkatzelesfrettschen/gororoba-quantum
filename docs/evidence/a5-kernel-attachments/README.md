@@ -818,7 +818,7 @@ subalgebra consists of semisimple matrices on every cell, so the maximal tori of
 `K` have rank 5, 6, 4 and 5, and the Levi factor of its identity component has Lie algebra `sl2`. The torus is a
 subgroup of `GL_n`, and an element `g` of it that fixes every point of the cone has `g - 1` vanishing on the cone,
 so the rows of `g - 1` lie in the linear part of the radical of `K`; for `Iso->N-`, where `K` is prime and is the
-whole relation ideal (`A5-422`), that part is zero, `g = 1`, and the torus of rank 4 acts effectively on the
+whole relation ideal (`A5-422`, conditional on `A5-293` and `A5-294`), that part is zero, `g = 1`, and the torus of rank 4 acts effectively on the
 5-dimensional fiber cone (`A5-348`).
 
 **Observed (`A5-426`), a Levi subalgebra and a split maximal torus, the same at `N+` and `N-`.** The triple of
@@ -849,8 +849,8 @@ weight of `Iso` does.
 and the coordinates are torus eigenvectors of pairwise distinct weights. The weight list of the record is the input
 of a description by polyhedral divisors, which no record computes.
 
-`hypothesis:` the `sl2` is the image of the derived algebra of the stabilizer of the base point in `g_2` plus
-scaling; the [stabilizer record](#the-base-point-stabilizer-maps-onto-the-levi-factor-of-the-symmetry-algebra)
+`hypothesis:` the `sl2` is the image of the derived algebra of the `gl_2` part of the stabilizer of the base point
+in `g_2` plus scaling; the [stabilizer record](#the-base-point-stabilizer-maps-onto-the-levi-factor-of-the-symmetry-algebra)
 tests it. `dim g` exceeds `dim G_2 = 14` on every cell. The record does not cover `E8bar->VB`, whose
 quadrics over `Q(i)` come from the 650-second run of `A5-315` and are not retained. A matrix of the retained basis
 that fails to stabilize the regenerated quadrics, a structure number that differs from the tables, a reduction with
@@ -869,9 +869,11 @@ algebra `g` of the [section above](#over-qi-the-linear-symmetries-of-the-fiber-c
 the record is [`stabilizer-action-qi-result.json`](stabilizer-action-qi-result.json). `C(z)` is linear in `z`, so
 along the field `z -> X z` the Schur form moves by the product rule, a generator `G_a = pf4(W)` moves to a polynomial
 `dG_a` on the slice, and `rho(X)` is the matrix with `dG_a = sum_b rho(X)_ab G_b` modulo `J + m (all Pfaffians)`.
-**Inferred:** the field leaves the slice, and the correction that returns it is a combination of orbit fields with
-coefficients in `m`, each of which maps the Pfaffian ideal into itself, so the class modulo `m I` is the action on
-the slice germ. The normal forms are taken modulo the weight truncation and the sixth power of the slice coordinate
+**Inferred:** the field leaves the slice, and the correction that returns it is a combination, with coefficients
+in `m`, of the fields of `g_2` and the scaling, each of which maps the Pfaffian ideal into itself; those fields
+span the tangent space of the boundary orbit at `z_0`, because the boost generator of the stabilizer torus fixes
+`z_0` and so moves `z_0` as a derivation of `g_2` does. The class modulo `m I` is therefore the action on the slice
+germ. The normal forms are taken modulo the weight truncation and the sixth power of the slice coordinate
 of weight zero, a quotient that is Artinian and local; the generators stay independent there (rank equal to their
 number on every cell), which makes each `rho(X)` unique.
 
@@ -887,15 +889,19 @@ number on every cell), which makes each `rho(X)` unique.
 - `rho` is injective (image of dimension 9). The image and the radical of `g` together span `g` (dimension 26, 34,
   17, 23). The weight-zero part maps to a subalgebra of dimension 4 whose image modulo the radical has dimension 3,
   and the part of nonzero weight maps into the radical.
-- Control: the diagonal matrix 1, 2, ..., 15, which preserves no stratum, has no matrix on any cell.
+- Control: the diagonal matrix 1, 2, ..., 15, a direction outside `g_2`, the scaling and the boost, has no matrix
+  on any cell.
 - A derivation of `g_2` that moves `z_0` has a matrix on every cell, and that matrix lies outside `g` on every cell.
 - The boost generator of the stabilizer torus, which is outside `g_2` plus scaling and has no lift to the kernel,
   has a matrix in `g` on `W8`, `Iso` and same-sign `X`, where it adds one dimension to the image (10), and has no
-  matrix on `E8bar`.
+  matrix on `E8bar`. No invariance argument covers the boost, so its matrices are statements about this truncated
+  quotient (weight margin 4, sixth power of the weight-zero coordinate) and a larger quotient could lose them; the
+  absence of a matrix on `E8bar` holds in every larger quotient.
 
 **Inferred:** the Levi factor `sl2` of `g` is the image of the `sl2` in the weight-zero part `gl_2` of `p`, whose
-compact form is the `SU(2)` of the stabilizer `(SU(2) x U(1)) / Z_2` of the base point in `G_2 x U(1)`; the
-hypothesis of the section above holds on these eight cells. The rest of `g` (dimension 17, 25, 8 and 14 beyond the
+compact form is the `SU(2)` of the stabilizer `(SU(2) x U(1)) / Z_2` of the base point in `G_2 x U(1)`
+([kernel bundles](../a5-kernel-bundles/README.md)); the hypothesis of the section above holds on these eight cells.
+The derived algebra of all of `p` has dimension 8 and maps injectively, so it is larger than the Levi factor. The rest of `g` (dimension 17, 25, 8 and 14 beyond the
 image) is not explained by `g_2` plus scaling. `hypothesis:` the boost acts on the fiber cones of `W8`, `Iso` and
 same-sign `X` because their closures are cut out by forms that the boost preserves as an ideal, and fails on
 `E8bar`; no record tests the mechanism.
@@ -903,7 +909,7 @@ same-sign `X` because their closures are cut out by forms that the boost preserv
 A stabilizer element without a matrix, an image outside `g`, a bracket that fails, a grading image that differs
 from the weight derivation, an image that misses the Levi factor, or a diagonal control with a matrix falsifies the
 record. Evidence: [`stabilizer-action-qi-result.json`](stabilizer-action-qi-result.json) and the
-[ledger](ledger.md#ledger-rows). The replay takes 3 minutes 25 seconds of wall time, 371 CPU seconds and
+[ledger](ledger.md#ledger-rows). The replay takes 4 minutes 26 seconds of wall time, 429 CPU seconds and
 0.47 GiB on two workers under a 12 GiB memory scope (Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, Singular
 4.4.1) on the build host.
 
