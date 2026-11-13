@@ -1,0 +1,407 @@
+{
+ "field": "Q(i)",
+ "inputs": {
+  "docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py": "14568a6ccded9ced70bc4853d0a6f2a0cd8c4e0dd5ea8ca9ab2d71c64592b52f",
+  "docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py": "cd9b365296844724270148c889420daabcd239c8750e3e3bb9b124ff51f65ae4"
+ },
+ "pass": true,
+ "rows": [
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 5,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 4,
+    "derived_series": [
+     26,
+     22
+    ],
+    "dimension": 26,
+    "generic_centralizer": 5,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 23,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 5,
+    "trace_form_nil_ideal": 19
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 24,
+   "incidence": "W8->N+",
+   "orbit": "N+",
+   "quadratic_monomials": 300,
+   "quadrics": 144,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 26
+   },
+   "relations_sha256": "10aabdd3a560da6672d3e438a3a4c2aef10fbed007b034afff8c592e85beb8d1",
+   "route": {
+    "quadric_space_dimension": 144,
+    "selected_rank_over_qi": 550,
+    "selected_rows": 550,
+    "system_rows": 22464
+   },
+   "source": "w8",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 6,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 5,
+    "derived_series": [
+     34,
+     29,
+     26,
+     23
+    ],
+    "dimension": 34,
+    "generic_centralizer": 6,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 31,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 6,
+    "trace_form_nil_ideal": 26
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 21,
+   "incidence": "E8bar->N+",
+   "orbit": "N+",
+   "quadratic_monomials": 231,
+   "quadrics": 148,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 34
+   },
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "route": {
+    "quadric_space_dimension": 148,
+    "selected_rank_over_qi": 407,
+    "selected_rows": 407,
+    "system_rows": 12284
+   },
+   "source": "e8",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 4,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 3,
+    "derived_series": [
+     17,
+     14,
+     13
+    ],
+    "dimension": 17,
+    "generic_centralizer": 4,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 14,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 4,
+    "trace_form_nil_ideal": 11
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 17,
+   "incidence": "Iso->N+",
+   "orbit": "N+",
+   "quadratic_monomials": 153,
+   "quadrics": 68,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 17
+   },
+   "relations_sha256": "f4d0152eabd91b56306e683641831f8ca69c86cecaa1350744afe97e85be81ee",
+   "route": {
+    "quadric_space_dimension": 68,
+    "selected_rank_over_qi": 272,
+    "selected_rows": 272,
+    "system_rows": 5780
+   },
+   "source": "iso",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 5,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 4,
+    "derived_series": [
+     23,
+     19,
+     18
+    ],
+    "dimension": 23,
+    "generic_centralizer": 5,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 20,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 5,
+    "trace_form_nil_ideal": 16
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 15,
+   "incidence": "X+->N+",
+   "orbit": "N+",
+   "quadratic_monomials": 120,
+   "quadrics": 69,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 23
+   },
+   "relations_sha256": "6a41e14d70d75c4a72e768630ef77d9f1ec9e6582b626fa05e759cd3a130011d",
+   "route": {
+    "quadric_space_dimension": 69,
+    "selected_rank_over_qi": 202,
+    "selected_rows": 202,
+    "system_rows": 3519
+   },
+   "source": "xp",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 5,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 4,
+    "derived_series": [
+     26,
+     22
+    ],
+    "dimension": 26,
+    "generic_centralizer": 5,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 23,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 5,
+    "trace_form_nil_ideal": 19
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 24,
+   "incidence": "W8->N-",
+   "orbit": "N-",
+   "quadratic_monomials": 300,
+   "quadrics": 144,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 26
+   },
+   "relations_sha256": "10964885cae3177d8a8585e05b263269193199b7a37a5a9679bc76e843523b1d",
+   "route": {
+    "quadric_space_dimension": 144,
+    "selected_rank_over_qi": 550,
+    "selected_rows": 550,
+    "system_rows": 22464
+   },
+   "source": "w8",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 6,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 5,
+    "derived_series": [
+     34,
+     29,
+     26,
+     23
+    ],
+    "dimension": 34,
+    "generic_centralizer": 6,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 31,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 6,
+    "trace_form_nil_ideal": 26
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 21,
+   "incidence": "E8bar->N-",
+   "orbit": "N-",
+   "quadratic_monomials": 231,
+   "quadrics": 148,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 34
+   },
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "route": {
+    "quadric_space_dimension": 148,
+    "selected_rank_over_qi": 407,
+    "selected_rows": 407,
+    "system_rows": 12284
+   },
+   "source": "e8",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 4,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 3,
+    "derived_series": [
+     17,
+     14,
+     13
+    ],
+    "dimension": 17,
+    "generic_centralizer": 4,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 14,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 4,
+    "trace_form_nil_ideal": 11
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 17,
+   "incidence": "Iso->N-",
+   "orbit": "N-",
+   "quadratic_monomials": 153,
+   "quadrics": 68,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 17
+   },
+   "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+   "route": {
+    "quadric_space_dimension": 68,
+    "selected_rank_over_qi": 272,
+    "selected_rows": 272,
+    "system_rows": 5780
+   },
+   "source": "iso",
+   "weight_derivation_stabilizes": true
+  },
+  {
+   "algebra": {
+    "cartan_derived_dimension": 0,
+    "cartan_dimension": 5,
+    "cartan_is_toral": true,
+    "center": 1,
+    "central_torus": 4,
+    "derived_series": [
+     23,
+     19,
+     18
+    ],
+    "dimension": 23,
+    "generic_centralizer": 5,
+    "levi_dimension": 3,
+    "levi_rank": 1,
+    "levi_type": "sl2",
+    "nil_ideal_is_nilpotent_ideal": true,
+    "quotient_by_radical_has_sl2_triple": true,
+    "quotient_by_radical_is_perfect": true,
+    "radical": 20,
+    "radical_is_solvable_ideal": true,
+    "torus_rank": 5,
+    "trace_form_nil_ideal": 16
+   },
+   "control_stabilizer_dimension_modulo_prime": 1,
+   "euler_field_stabilizes": true,
+   "generators": 15,
+   "incidence": "X-->N-",
+   "orbit": "N-",
+   "quadratic_monomials": 120,
+   "quadrics": 69,
+   "reduction": {
+    "differing_keys": [],
+    "i_root": 10754,
+    "numbers_of_reduced_basis_equal": true,
+    "prime": 32009,
+    "stabilizer_dimension_of_reduced_quadrics": 23
+   },
+   "relations_sha256": "55b9928144fd01d6de2b4438418e1ea8c765e8658016c3524eacc616298525de",
+   "route": {
+    "quadric_space_dimension": 69,
+    "selected_rank_over_qi": 202,
+    "selected_rows": 202,
+    "system_rows": 3519
+   },
+   "source": "xm",
+   "weight_derivation_stabilizes": true
+  }
+ ],
+ "schema": "a5-kernel-attachments-symmetry-algebra-qi-v1",
+ "tools": {
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00",
+  "singular_version": "4.4.1"
+ }
+}

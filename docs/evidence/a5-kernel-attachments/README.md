@@ -777,6 +777,59 @@ numerator, minimal primes or reduction ranks, a weight-inhomogeneous Pfaffian, o
 untruncated membership falsifies the table; a prime at which the saturated lattice of `K` reduces off `K2`
 falsifies the `Iso` statement.
 
+## Over Q(i) the linear symmetries of the fiber-cone quadrics are sl2 over a solvable radical with a torus of rank 4 to 6
+
+[`symmetry_algebra_qi.py`](symmetry_algebra_qi.py) regenerates the quadrics `K` of the
+[weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) for the
+eight cells that have any (`W8`, `E8bar`, `Iso` and same-sign `X` at `N+` and `N-`), checks each digest against that
+record, and computes over `Q(i)` the Lie algebra `g` of matrices in `gl_n` whose derivation
+`y_i -> sum_j A_ij y_j` maps `K` into `K`; the record is
+[`symmetry-algebra-qi-result.json`](symmetry-algebra-qi-result.json). The linear system is formed modulo 32009, a
+spanning set of its rows is formed over `Q(i)`, and every basis matrix of the null space of those rows is applied to
+every basis quadric and reduced exactly, so the null space equals `g` whatever the modular selection did. The
+structure is computed by the definitions of the modular record of the
+[quadric census](../a5-exceptional-fibers/quadric-census/README.md#structure-of-the-symmetry-algebras-over-f_p-a5-347-a5-348-a5-349),
+in exact arithmetic over `Q(i)`.
+
+**Observed (`A5-424`), the same numbers at `N+` and `N-`:**
+
+| Source | Generators | dim g | derived series | radical r | nilpotent ideal u | g / r | Cartan subalgebra | center |
+|---|---:|---:|---|---:|---:|---|---|---:|
+| `W8` | 24 | 26 | 26, 22 | 23 | 19 | sl2 | 5, toral | 1 |
+| `E8bar` | 21 | 34 | 34, 29, 26, 23 | 31 | 26 | sl2 | 6, toral | 1 |
+| `Iso` | 17 | 17 | 17, 14, 13 | 14 | 11 | sl2 | 4, toral | 1 |
+| same-sign `X` | 15 | 23 | 23, 19, 18 | 20 | 16 | sl2 | 5, toral | 1 |
+
+On each cell `r = {x : kappa(x, [g, g]) = 0}` is an ideal whose derived series reaches 0, `[g, g] + r = g`, and
+`g / r` has dimension 3 and holds `h, e, f` over `Q(i)` with `[h, e] = 2e`, `[h, f] = -2f` and `[e, f] = h`, so `r`
+is the radical and the quotient is the split `sl2`. `u`, the part of `r` orthogonal to `g` under the trace form, is
+an ideal whose lower central series reaches 0. The Fitting null component of one fixed element is abelian and each
+of its basis matrices has a squarefree minimal polynomial. The center is the line of the Euler field, and the
+diagonal matrix of the torus weights of the generators lies in `g`. The basis of `g` reduced at
+`(32009, i = 10754)` has the same structure numbers under the modular script, the stabilizer of the reduced quadrics
+has the dimension of `g`, and the same number of quadrics with hash-stream integer coefficients keeps the Euler
+field alone modulo 32009, which bounds its stabilizer over `Q(i)` by 1. The numbers equal those of the modular
+record (`A5-347`) for `X`, `Iso`, `E8bar -> N+-` and `W8 -> N-`, which that record computes in header coordinates
+at 32009 and 32029.
+
+**Inferred:** in characteristic 0 the stabilizer of `K` in `GL_n` is smooth, so `g` is its Lie algebra and a Cartan
+subalgebra of `g` is the Lie algebra of a Cartan subgroup, the centralizer of a maximal torus. That Cartan
+subalgebra consists of semisimple matrices on every cell, so the maximal tori of the group of linear symmetries of
+`K` have rank 5, 6, 4 and 5, and the Levi factor of its identity component has Lie algebra `sl2`. A matrix that
+vanishes on the cone has rows in the linear part of the radical of `K`; for `Iso->N-`, where `K` is prime and is the
+whole relation ideal (`A5-422`), that part is zero and the torus of rank 4 acts effectively on the 5-dimensional
+fiber cone (`A5-348`). The torus of the weight grading accounts for two of the toral dimensions on every cell.
+
+`hypothesis:` the `sl2` is the image of the derived algebra of the stabilizer `(SU(2) x U(1)) / Z_2` of the base
+point in `G_2 x U(1)`; no record builds that map, and `dim g` exceeds `dim G_2 = 14` on every cell. The record does
+not decide whether a maximal torus splits over `Q(i)`, computes no weights, and does not cover `E8bar->VB`, whose
+quadrics over `Q(i)` come from the 650-second run of `A5-315` and are not retained. A matrix of the retained basis that fails to stabilize the
+regenerated quadrics, a structure number that differs from the table, a reduction with other numbers, or a control
+of dimension above 1 falsifies the record. The replay takes 148 seconds wall time, 491 CPU seconds and 0.6 GiB
+(Python 3.14.9, python-flint 0.9.0, Singular 4.4.1, 12 workers) on the 12-core build host, 126 seconds of it the
+regeneration of the quadrics. Evidence: [`symmetry-algebra-qi-result.json`](symmetry-algebra-qi-result.json) and
+the [ledger](ledger.md#ledger-rows).
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
