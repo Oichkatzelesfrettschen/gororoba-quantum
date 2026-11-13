@@ -548,9 +548,10 @@ closure theorem cited above, whose text is uninspected. For `Iso`, `W8` and `E8b
 the real limit set with the complex points of the characteristic-0 fiber, and that fiber is determined modulo
 32009 and 32029, and over `Q(i)` as far as the
 [weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
-the whole fiber cone of `Iso->N-` (`A5-422`), the quadrics, Hilbert numerator and minimal primes of the quadric
-ideal for `W8` and `E8bar` (`A5-421`), and `h_1` to `h_7` of `E8bar` (`A5-423`). Open are `Iso->N+`, the
-degree-20 component of `W8` over `Q(i)`, and both components of `E8bar` above degree 7 (`A5-418`).
+the whole fiber cone of `Iso->N+` and `Iso->N-` (`A5-424`), the quadrics, Hilbert numerator and minimal primes of
+the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-425`), and `h_1` to `h_7` of `E8bar`
+(`A5-423`). Open are the degree-20 component of `W8` over `Q(i)` and both components of `E8bar` above degree 7
+(`A5-418`).
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
@@ -743,20 +744,28 @@ basis of `J + m P` took 1,507 s for `Iso` (`A5-294`) and did not finish for `W8`
 
 | Source | Generators | Quadrics at `N+` and `N-` | Quadric ideal over `Q(i)` |
 |---|---|---|---|
-| `W8` | 24 | 144 | dimension 6, multiplicity 50, primes of degrees 20 and 30 |
-| `E8bar` | 21 | 148 | dimension 5, multiplicity 11, primes of dimension 5 degree 11 and dimension 4 degree 4 |
-| `Iso` | 17 | 68 | not computed here (`A5-422`) |
+| `W8` | 24 | 144 | dimension 6, multiplicity 50, radical, primes of degrees 20 and 30 |
+| `E8bar` | 21 | 148 | dimension 5, multiplicity 11, not radical, primes of dimension 5 degree 11 and dimension 4 degree 4 |
+| `Iso` | 17 | 68 | prime, dimension 5, degree 23 |
 | same-sign `X` | 15 | 69 | `A5-305` |
 | opposite-sign `X` | 3 | 0 | `A5-270` |
 
 The counts equal the modular ones of the [import record](#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record).
-For `W8` and `E8bar` the quadric ideal is saturated with the Hilbert numerator of the modular `K2`, and at `N-` the
+**Computed (`A5-425`):** each quadric ideal is compared with the intersection of its minimal primes. The `W8` ideal
+equals it, the `E8bar` ideal is strictly smaller, so `Q(i)[y]/K` has nilpotents for `E8bar`, and the `Iso` ideal has
+one minimal prime and equals it at both basepoints. All three are saturated.
+For `W8` and `E8bar` the quadric ideal has the Hilbert numerator of the modular `K2`, and at `N-` the
 `Q(i)` relation space reduced at `(32009, i = 10754)` equals that of the modular cell of the same run (ranks 144 and 148, joint ranks the
 same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
 component step `X+->N-` returns 12 generators in place of 3.
 
-**Inferred (`A5-422`, conditional on `A5-293` and `A5-294`):** the fiber cone of `Iso->N-` over `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68
-quadrics. The reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
+**Inferred (`A5-424`, conditional on `A5-293` and `A5-421`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
+`Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68 quadrics. `K` is prime of dimension 5 and degree 23 over `Q(i)`
+by the computation above and lies in the relation ideal `L`, whose quotient has dimension at least 5 at both
+basepoints (`A5-293`); a proper quotient of the domain `Q(i)[y]/K` has dimension below 5, so `L = K`. The
+primality is over `Q(i)`; geometric irreducibility is proved modulo 32009 and 32029 at `N-` (`A5-060`).
+
+**Second route at `N-` (`A5-422`, superseded by `A5-424`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
 dimension at least 5 (`A5-293`), so `K' = K2`. The quotient of the lattice by its saturated part is
 torsion-free over the prime above 32009, so each nonzero class is a power of that prime times a class that stays
