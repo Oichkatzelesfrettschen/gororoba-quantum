@@ -1292,7 +1292,7 @@
     }
   ],
   "inputs": {
-    "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "b3d65770b2fdb7b427d75573b3e30f9235ba77a5f771354449c39cf18b4cfef6",
+    "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "38ed3b415e2a8e7e77de33c0b1581a1180b62a85245334b6970dc505d33dcf47",
     "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
     "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
     "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",

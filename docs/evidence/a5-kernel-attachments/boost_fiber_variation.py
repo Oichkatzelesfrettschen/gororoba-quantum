@@ -139,6 +139,7 @@ def build_record() -> dict[str, Any]:
     moved = [(name, boost, moved_row(rows[name], boost)) for name in INCIDENCES for boost in BOOSTS]
     items = [(row, closures[name], characteristic) for name, _, row in moved for characteristic in CHARACTERISTICS]
     fibers = parallel.ordered_map(fiber_task, items, min_items=1)
+    transversalities = parallel.ordered_map(transversality, [row for _, _, row in moved], min_items=1)
     incidences: list[dict[str, Any]] = []
     for index, name in enumerate(INCIDENCES):
         expected = nakayama.EXPECTED_FIBERS[name]
@@ -148,7 +149,7 @@ def build_record() -> dict[str, Any]:
             point: dict[str, Any] = {
                 "boost_cosh_sinh": [str(boost[0]), str(boost[1])],
                 "boundary_point": moved[position][2]["boundary_point"],
-                "transversality": transversality(moved[position][2]),
+                "transversality": transversalities[position],
                 "fibers": fibers[len(CHARACTERISTICS) * position : len(CHARACTERISTICS) * (position + 1)],
             }
             point["pass"] = point_passes(point, expected, sources[name])
