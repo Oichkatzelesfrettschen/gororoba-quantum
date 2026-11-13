@@ -412,9 +412,10 @@ Three consequences follow at a boundary point `z_0` with `K_0 = ker C_(z_0) meet
    `z` alone (`strata_regularity.py`, the generators of `W8`, `Ehat`, `Iso`, `Xp` and `Xm`), each named source is
    the dense locally closed orbit in its closure, and the doubly pure real locus is all of `C^15`. The graph of
    `z -> ker C_z` over the source germ is therefore a complex constructible set, whose Zariski closure equals its
-   closure in the classical topology (Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1; the
-   book is not held in the documents repositories and has no row in `docs/SOURCES.json`, so the locator is cited
-   from the standard literature and its text was not inspected), so
+   closure in the classical topology (Mumford, The Red Book of Varieties and Schemes, second expanded edition,
+   section I.10, Corollary 1 of Theorem 1, page 60: a constructible subset of a variety has the same closure in
+   both topologies; the statement was read in the reading copy with sha256
+   `28a2ca3ac335162ce26faa3f6e8a081a548e82dc7e8426e8f2b81bd626d2f00b`), so
    every point of the computed fiber lies in the Euclidean closure of the graph. The graph is also a real
    semialgebraic set, and the curve selection lemma
    ([Basu and Roy, Theorem 1](../../notes/1803.00505.md)) gives a continuous semialgebraic path that starts at the
@@ -544,7 +545,7 @@ along every sequence in the source stratum the limits along the slice germ at th
 closed-graph fiber is the set of complex points of `Proj` of the fiber cone over `Q(i)`. **Inferred:** for
 `X+->N-` and `X-->N+` the real limit set is the complex plane `P^2`, and for `X+->N+` and `X-->N-` it is the set
 of complex points of the degree-12 threefold cut out by the 69 quadrics of `A5-305`; both statements rest on the
-closure theorem cited above, whose text is uninspected. For `Iso`, `W8` and `E8bar` the same deduction identifies
+closure theorem cited above (Corollary 1 of section I.10 of the Red Book). For `Iso`, `W8` and `E8bar` the same deduction identifies
 the real limit set with the complex points of the characteristic-0 fiber, and that fiber is determined modulo
 32009 and 32029, and over `Q(i)` as far as the
 [weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
@@ -969,6 +970,44 @@ record. Evidence: [`stabilizer-action-qi-result.json`](stabilizer-action-qi-resu
 [ledger](ledger.md#ledger-rows). The replay takes 2 minutes 34 seconds of wall time and
 0.47 GiB on two workers under a 12 GiB memory scope (Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, Singular
 4.4.1) on the build host.
+
+## The limit-set rows use the Hermitian norm of a real element and no kernel swap
+
+The vector `z` in `C^15` carries two readings, and a statement about one can fail for the other.
+
+- **A real element.** `z` is the complex coordinate of a real doubly pure element of `A_5`: 30 real coordinates,
+  the real and imaginary parts of `z`. Every point of `C^15` is such an element, so an arc of points `z` is an arc
+  of real elements. The limit sets of the ledger rows `A5-411`, `A5-412`, `A5-415`, `A5-417` and `A5-418` are sets
+  of limits of the left kernel of real elements.
+- **A sedenion with complex coefficients.** `holomorphic_kernel_lemma._c_matrix` fills entry `(r, c)` of `C_z` with
+  `cd_sign(16, r xor c, c) z_(r xor c)`, the coefficient of `e_r` in `z e_c`: `C_z` is the pure block of left
+  multiplication by `sum_p z_p e_p` in the sedenions over `C`. That algebra has elements of norm zero, such as
+  `e_1 + i e_2`.
+
+The theorem that a real Cayley-Dickson element `a` has `a z = 0` exactly when `z a = 0` (Biss, Dugger and Isaksen,
+Corollary 9.3) rests on the order of the real numbers. Over a ring with a square root of -1 it holds from level 2
+on exactly when `2 = 0` (`kernel_swap_iff_two_zero` of the [Rocq bundle](../cd-tower-ring/README.md), with the
+witness `a = e_1 + i e_2`, `w = -1 - i e_3`, `a w = 0`, `w a = -2 a`); what holds over every commutative ring is
+`ker R_a = conj(ker L_a)` for pure `a` (`pure_kernel_conj`, `pure_kernel_conj_right`).
+
+**Audited:** the five rows and their seven producers stay on the side of each statement where it holds.
+
+| Step | Reading it uses | Where the source fixes it |
+| --- | --- | --- |
+| `C_z` is skew and `C_z z = 0` | polynomial identities in `z`, true for every complex `z` | `partner_purity.py` proves both with `z` and its conjugate as independent symbols |
+| the scalar coordinate of a bordered kernel vector is zero, and `ker C_z = C z (+) ker A(z, conjugate(z))` | the Hermitian norm `conjugate(z)^T z`, the sum of the 30 squared real coordinates, positive for a nonzero real element | the positive-norm certificate of `partner_purity.py`; the splitting fails for the bilinear form `z^T u` at `e_1 + i e_2` ([`real-limit-sets-result.json`](real-limit-sets-result.json)) |
+| every point of a computed fiber is a limit along real elements | the graph of `z -> ker C_z` is a constructible set whose points all lie over real elements | the closure theorem and the curve selection theorem of the [slice-germ section](#on-the-retained-slice-germ-the-real-limit-set-at-fourteen-incidences-is-the-whole-holomorphic-fiber), both read at their locators |
+| `G_2(C)` and the scaling transport the fibers | complex-linear congruences of `C_z`; `g` is complex orthogonal and need not be unitary | [`kernel_equivariance.py`](kernel_equivariance.py) transports the bordered plane as `g P meet (g z_0)^perp` |
+| a right annihilator, or the passage from `a z = 0` to `z a = 0` | none of the five rows uses one | the search `rg -n -i` for the pattern `\bR_a\b\|ker R\|right[ _-](kernel\|annihil\|mult)\|commut\|z a\b` over the seven producers has no match; each of the 29 matches of `right` is a parameter name, a local matrix product or the identity `C_z z = 0` |
+
+The seven producers are `real_limit_sets.py`, `partner_purity.py`, `holomorphic_kernel_lemma.py`,
+`kernel_equivariance.py`, `nullity8_fiber_import.py`, `nullity16_rees_fibers.py` and
+`../a5-strata-regularity/strata_regularity.py`. The audit does not cover the identification of each computed
+fiber with the fiber of the Zariski closure of the graph, which each fiber row carries, or the slice premise of
+`A5-423`. With the closure theorem read, rows `A5-411`, `A5-412` and `A5-417` hold as proved; `A5-418` stays open
+for E8-bar. A producer of the five rows that evaluates a right annihilator, a step that takes positivity from
+`z^T z` or from an independent conjugate variable, or a retained point at which `conjugate(z)^T z` differs from
+the squared Euclidean norm falsifies the audit (`A5-435`).
 
 ## Investigated questions
 

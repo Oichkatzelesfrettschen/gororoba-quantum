@@ -6,7 +6,7 @@ ker C_z, so ker C_z = C z (+) ker A. The map P -> P meet z^perp on planes P cont
 and every limit of ker C_z along z -> z_0 contains z_0. The limits of ker A at z_0 are therefore the planes
 P meet z_0^perp, P a limit of the holomorphic kernel. The source closures are cut out by holomorphic polynomials in
 z and the real A_5 locus is all of C^15, so the graph of z -> ker C_z is complex constructible and real
-semialgebraic: its Zariski closure is its Euclidean closure (Mumford, Red Book, I.10 Theorem 1), and curve selection
+semialgebraic: its Zariski closure is its Euclidean closure (Mumford, Red Book, I.10 Corollary 1), and curve selection
 (Basu and Roy, Theorem 1, docs/notes/1803.00505.md) gives a real semialgebraic path in the graph to every point of
 the closed graph fiber. The record's pass covers the computed checks; these two theorems carry the realization.
 
@@ -272,9 +272,11 @@ def build_record() -> dict[str, Any]:
             ),
             "exclusion": "a limit along any arc in the slice germ lies in the closed graph fiber",
             "authorities": [
-                "Mumford, The Red Book of Varieties and Schemes, section I.10, Theorem 1: the Zariski closure of a "
-                "complex constructible set is its closure in the classical topology (the book has no row in "
-                "docs/SOURCES.json; the locator is cited from the standard literature and its text was not inspected)",
+                "Mumford, The Red Book of Varieties and Schemes, second expanded edition (1999), section I.10, "
+                "Corollary 1 of Theorem 1, page 60: a constructible subset of a variety has the same closure in the "
+                "Zariski and in the classical topology; Theorem 1, page 58, is the density of a nonempty Zariski-open "
+                "subset in the classical topology (statement read in the reading copy with sha256 "
+                "28a2ca3ac335162ce26faa3f6e8a081a548e82dc7e8426e8f2b81bd626d2f00b)",
                 "Basu and Roy, Quantitative Curve Selection Lemma, Theorem 1 (docs/notes/1803.00505.md): a "
                 "continuous semialgebraic path from a closure point into a semialgebraic set",
             ],
