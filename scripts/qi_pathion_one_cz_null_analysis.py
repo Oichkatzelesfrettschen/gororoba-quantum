@@ -58,6 +58,9 @@ import pathion_kernel_map as pkm  # noqa: E402
 SCHEMA = "qi-pathion-one-cz-null-analysis-v3"
 PREDECESSOR_RECORD = "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json"
 PREDECESSOR_SHA256 = "e39956c54bd79740a94785712c398ba5fe65b33a9e03c58c2ca179374a0cc693"
+# sha256 of the predecessor record's batch_cases_sha256 mapping (sorted keys, compact separators): the identity of
+# the 19 collected batches that record analyzes.
+PREDECESSOR_BATCH_CASES_SHA256 = "d55ad60baa08b9c9422587aa8ec252de6b148ebb85e8319f42bb6e48a2c95225"
 SUCCESSOR_RECORD = "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json"
 ZERO_WEIGHT = Fraction(pkm.ZERO)
 # The exact value and the predecessor's float path (a central difference of floats that cancels, then LAPACK and
@@ -139,6 +142,13 @@ def statistics_record(result: ecs.ContrastResult) -> dict[str, Any]:
     )
 
 
+def unused_statistics(counts: np.ndarray, sign: np.ndarray, matrix: np.ndarray | None = None) -> None:
+    """Stands in for cc.coin_statistics inside row_fields, whose statistics template_row replaces."""
+
+
+row_fields = rebound(cc.template_row, coin_statistics=unused_statistics)
+
+
 def template_row(
     name: str,
     template: dict[str, Any],
@@ -150,7 +160,7 @@ def template_row(
 
     cc.template_row builds every field that is not a coin-job statistic (bin contrasts, signed z, selector
     contrast, visibility of the raw bins); the fields that follow from the statistics are redone here."""
-    row = cc.template_row(name, template, counts, None, np.array(template["ideal_c"]))
+    row = row_fields(name, template, counts, None, np.array(template["ideal_c"]))
     row["statistics"] = {"raw": raw} if corrected is None else {"raw": raw, "readout_corrected": corrected}
     if corrected is not None:
         visibility = corrected["visibility"]
@@ -222,21 +232,24 @@ evaluate = rebound(
 analyze_series = rebound(oc.analyze, evaluate=evaluate, ANALYSIS_SCHEMA=SCHEMA)
 
 
+def batch_cases_digest(record: dict[str, Any]) -> str:
+    """sha256 of the record's batch-to-case-digest mapping, the identity of the batches it analyzes."""
+    text = json.dumps(record["batch_cases_sha256"], sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def analyze(run_dirs: list[Path]) -> dict[str, Any]:
-    """The schema-v3 record of the collected Tuna-17 batches."""
+    """The schema-v3 record of the collected Tuna-17 batches.
+
+    The record names the retained predecessor record only for the complete series of the batches that record
+    analyzes; a partial or different series names the predecessor schema and producer alone."""
     record = analyze_series(run_dirs)
     if record["claim_kind"] != "hardware acquisition":
         raise SystemExit("a QX control record keeps the predecessor producer's schema-v2 analysis")
-    return {
-        **record,
-        "arithmetic": ARITHMETIC,
-        "succeeds": {
-            "schema": oc.ANALYSIS_SCHEMA,
-            "producer": "scripts/qi_pathion_one_cz_null_cases.py --analyze",
-            "record": PREDECESSOR_RECORD,
-            "record_sha256": PREDECESSOR_SHA256,
-        },
-    }
+    succeeds = {"schema": oc.ANALYSIS_SCHEMA, "producer": "scripts/qi_pathion_one_cz_null_cases.py --analyze"}
+    if record["complete"] and batch_cases_digest(record) == PREDECESSOR_BATCH_CASES_SHA256:
+        succeeds |= {"record": PREDECESSOR_RECORD, "record_sha256": PREDECESSOR_SHA256}
+    return {**record, "arithmetic": ARITHMETIC, "succeeds": succeeds}
 
 
 def record_text(record: dict[str, Any]) -> str:

@@ -282,11 +282,35 @@ def test_a_qx_control_record_is_refused(monkeypatch: pytest.MonkeyPatch) -> None
         ana.analyze([])
 
 
+def test_only_the_complete_series_of_the_predecessor_batches_names_the_predecessor_record(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    cases = {"batch-00": "aa", "batch-01": "bb"}
+    series = {"claim_kind": "hardware acquisition", "complete": True, "batch_cases_sha256": cases}
+    monkeypatch.setattr(ana, "analyze_series", lambda run_dirs: dict(series))
+    monkeypatch.setattr(ana, "PREDECESSOR_BATCH_CASES_SHA256", ana.batch_cases_digest(series))
+    _expect(ana.analyze([])["succeeds"].get("record_sha256") == ana.PREDECESSOR_SHA256, "the matching series")
+    monkeypatch.setattr(ana, "analyze_series", lambda run_dirs: {**series, "complete": False})
+    _expect(set(ana.analyze([])["succeeds"]) == {"schema", "producer"}, "a partial series names a record")
+    monkeypatch.setattr(ana, "analyze_series", lambda run_dirs: {**series, "batch_cases_sha256": {"batch-00": "aa"}})
+    _expect(set(ana.analyze([])["succeeds"]) == {"schema", "producer"}, "another series names a record")
+
+
+def test_the_row_builder_skips_the_float_statistics_the_exact_ones_replace() -> None:
+    _expect(ana.row_fields.__code__ is ana.cc.template_row.__code__, "row_fields shares the predecessor code")
+    _expect(ana.row_fields.__globals__["coin_statistics"] is ana.unused_statistics, "coin_statistics is rebound")
+    _expect(ana.cc.template_row.__globals__["coin_statistics"] is ana.cc.coin_statistics, "the predecessor changed")
+
+
 @pytest.mark.audit
 def test_the_retained_successor_record_names_and_agrees_with_its_predecessor() -> None:
     old = ROOT / ana.PREDECESSOR_RECORD
     new = ROOT / ana.SUCCESSOR_RECORD
     _expect(hashlib.sha256(old.read_bytes()).hexdigest() == ana.PREDECESSOR_SHA256, "the predecessor bytes moved")
+    _expect(
+        ana.batch_cases_digest(json.loads(old.read_text(encoding="utf-8"))) == ana.PREDECESSOR_BATCH_CASES_SHA256,
+        "the predecessor batches moved",
+    )
     record = json.loads(new.read_text(encoding="utf-8"))
     _expect(record["schema"] == ana.SCHEMA and ana.SCHEMA.endswith("-v3"), f"{record['schema']}")
     _expect(
