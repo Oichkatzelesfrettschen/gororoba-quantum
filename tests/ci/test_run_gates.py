@@ -82,7 +82,7 @@ def test_launch_failure_keeps_going(root: Path, capacity: int, override: str | N
     text = output.getvalue()
     if status != 1 or "FAIL missing-directory" not in text or "PASS retained-success" not in text:
         raise AssertionError(f"a launch failure stopped the shard or lost a passing gate:\n{text}")
-    if "could not start" not in text or "1 passed, 1 failed of 2" not in text:
+    if "could not start" not in text or "1 passed, 0 skipped, 1 failed of 2" not in text:
         raise AssertionError(f"the launch diagnostic or the keep-going denominator is missing:\n{text}")
 
 
@@ -111,6 +111,57 @@ def test_requires_names_the_variable_that_forces_the_live_path(root: Path, expor
         status = run_gates.main([])
     if status != expected:
         raise AssertionError(f"GOROROBA_QI_REQUIRED exported={exported} gave status {status}:\n{output.getvalue()}")
+
+
+SKIPPING: list[dict[str, Any]] = [
+    {"name": "passes", "cwd": ".", "cmd": "true"},
+    {
+        "name": "skips",
+        "cwd": ".",
+        "cmd": 'if [ "${GOROROBA_SINGULAR_REQUIRED:-0}" = 1 ]; then true; else echo "skipped: absent"; exit 77; fi',
+        "requires": ["singular"],
+    },
+]
+
+
+def test_a_skipped_gate_is_reported_and_counted_apart_from_the_passes(root: Path, tmp_path: Path) -> None:
+    manifest(root, SKIPPING)
+    timings = tmp_path / "timings.json"
+    with runner(root, GOROROBA_SINGULAR_REQUIRED=None) as output:
+        status = run_gates.main(["--timings", str(timings)])
+    text = output.getvalue()
+    wanted = ("SKIP skips", "PASS passes", "1 passed, 1 skipped, 0 failed of 2", "skipped, no check ran: skips")
+    if status != 0 or any(part not in text for part in wanted) or "PASS skips" in text or "skipped: absent" not in text:
+        raise AssertionError(f"a skip was not reported apart from the passes (status {status}):\n{text}")
+    verdicts = {row["name"]: row["verdict"] for row in json.loads(timings.read_text())["gates"]}
+    if verdicts != {"passes": "PASS", "skips": "SKIP"}:
+        raise AssertionError(f"the timings record holds {verdicts}")
+
+
+def test_the_required_variable_turns_the_skip_into_the_live_path(root: Path) -> None:
+    manifest(root, SKIPPING)
+    with runner(root, GOROROBA_SINGULAR_REQUIRED="1") as output:
+        status = run_gates.main([])
+    if status != 0 or "2 passed, 0 skipped, 0 failed of 2" not in output.getvalue():
+        raise AssertionError(f"the live path did not pass:\n{output.getvalue()}")
+
+
+def test_the_skip_status_from_a_gate_without_requires_is_a_failure(root: Path) -> None:
+    manifest(root, [{"name": "undeclared", "cwd": ".", "cmd": "exit 77"}])
+    with runner(root) as output:
+        status = run_gates.main([])
+    if status != 1 or "FAIL undeclared" not in output.getvalue():
+        raise AssertionError(f"status 77 without requires did not fail:\n{output.getvalue()}")
+
+
+def test_every_repository_gate_that_prints_a_skip_line_exits_with_the_skip_status() -> None:
+    lacking = [
+        gate["name"]
+        for gate in run_gates.select(ROOT)
+        if "skipped:" in gate["cmd"] and not ("; exit 77; fi" in gate["cmd"] and gate.get("requires"))
+    ]
+    if lacking:
+        raise AssertionError(f"gates print a skip line and exit 0, which reads as a pass: {lacking}")
 
 
 def test_gates_selects_by_name(root: Path) -> None:

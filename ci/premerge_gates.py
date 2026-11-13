@@ -81,7 +81,8 @@ TAIL_LINES = 20
 # The merge commit lives only in the scratch worktree and is never pushed, so it
 # carries a local identity and no signature.
 MERGE_IDENTITY = ["-c", "user.name=premerge", "-c", "user.email=premerge@localhost", "-c", "commit.gpgSign=false"]
-VERDICT = re.compile(r"^(PASS|FAIL) (\S+) ")
+# A SKIP line names a gate that ran no check; it is no failure on either tree, so it compares as a pass.
+VERDICT = re.compile(r"^(PASS|SKIP|FAIL) (\S+) ")
 FAILURE_TAIL = re.compile(r"^=== (\S+) exit ")
 CACHE_SCHEMA = "gororoba-premerge-base-v1"
 
@@ -221,7 +222,7 @@ def results(
         check=False,
     )
     lines = completed.stdout.splitlines()
-    statuses = {m.group(2): 0 if m.group(1) == "PASS" else 1 for m in map(VERDICT.match, lines) if m}
+    statuses = {m.group(2): 1 if m.group(1) == "FAIL" else 0 for m in map(VERDICT.match, lines) if m}
     if "unrecognized arguments: --max-seconds" in completed.stderr:
         raise SystemExit(f"{root / 'ci/run_gates.py'} predates --max-seconds; the base needs ci/premerge_gates.py too")
     if gates is not None and "unrecognized arguments: --gates" in completed.stderr:

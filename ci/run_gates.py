@@ -25,6 +25,12 @@ toolchain is absent. A caller that exports the variable REQUIREMENTS names for
 the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
 each such gate take its live path or fail.
 
+A gate that ran no check says so by exit status 77 after one line that gives
+the reason. The runner prints SKIP for it, counts it apart from the passes in
+the summary and the timings, and lists the skipped names; a skip leaves the
+exit status of the run unchanged. Only a gate that declares ``requires`` may
+skip: status 77 from any other gate is a failure.
+
 A gate without a ``runtime`` runs under $PYTHON, which pins.resolve_current
 chooses: an explicit $PYTHON as named, else the running interpreter when it
 holds every pin of requirements.txt and ci/requirements-ci.txt, else the
@@ -64,6 +70,8 @@ import parallel  # noqa: E402
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
 REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
+# The exit status by which a gate that declares `requires` reports that it ran no check (automake's skip status).
+SKIP_STATUS = 77
 REPLAY_INTERPRETERS = {runtime: variable for runtime, (variable, _pins) in pins.REPLAY_RUNTIMES.items()}
 # The numeric stack a gate's interpreter loads under the gate environment: the CPU model, numpy's enabled dispatch
 # targets, and each OpenBLAS that numpy and scipy.linalg load with the core it selected: the native numeric path a
@@ -153,6 +161,15 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
     except ValueError as error:
         return gate, 127, time.monotonic() - start, f"gate resource record is invalid: {error}"
     return measured, completed.returncode, time.monotonic() - start, completed.stdout
+
+
+def verdict(gate: dict[str, Any], status: int) -> str:
+    """PASS for status 0, SKIP for the skip status of a gate that declares `requires`, FAIL otherwise."""
+    if status == 0:
+        return "PASS"
+    if status == SKIP_STATUS and gate.get("requires"):
+        return "SKIP"
+    return "FAIL"
 
 
 def allocated_workers(gate: dict[str, Any], capacity: int, caller_cap: str | None = None) -> int:
@@ -317,21 +334,28 @@ def main(argv: list[str] | None = None) -> int:
     if unresolved:
         return 2
     failures = []
+    skipped = []
     started = time.monotonic()
     timings = []
     for gate, status, seconds, output in run_all(selected, environment, ROOT):
+        label = verdict(gate, status)
         timings.append(
             {
                 "name": gate["name"],
                 "status": status,
+                "verdict": label,
                 "seconds": seconds,
                 "estimated_seconds": gate.get("seconds"),
                 "resources": gate.get("resources"),
                 "runtime": gate.get("runtime", "current"),
             }
         )
-        print(f"{'PASS' if status == 0 else 'FAIL'} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
-        if status != 0:
+        print(f"{label} {gate['name']} {seconds:7.1f}s  {gate['cmd'][:100]}", flush=True)
+        if label == "SKIP":
+            skipped.append(gate["name"])
+            reason = (output.strip().splitlines() or ["no reason given"])[-1]
+            print(f"     {gate['name']}: {reason}", flush=True)
+        elif label == "FAIL":
             failures.append((gate, status, output))
             tail = "\n".join(output.splitlines()[-TAIL_LINES:])
             print(f"\n=== {gate['name']} exit {status} in {gate['cwd']}\n{gate['cmd']}\n{tail}", flush=True)
@@ -349,10 +373,12 @@ def main(argv: list[str] | None = None) -> int:
             )
             + "\n"
         )
-    passed = len(selected) - len(failures)
+    passed = len(selected) - len(failures) - len(skipped)
     device = environment.get("GOROROBA_AER_DEVICE", "CPU")
-    summary = f"{passed} passed, {len(failures)} failed of {len(selected)} gates"
+    summary = f"{passed} passed, {len(skipped)} skipped, {len(failures)} failed of {len(selected)} gates"
     print(f"\n{summary} on {device}")
+    if skipped:
+        print(f"skipped, no check ran: {', '.join(sorted(skipped))}")
     return 1 if failures else 0
 
 
