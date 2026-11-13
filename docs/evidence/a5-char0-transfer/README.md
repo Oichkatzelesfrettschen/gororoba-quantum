@@ -171,8 +171,8 @@ journal of that host, 2026-11-11; the journal lines are not retained here). Neit
 rational coefficients, and over Q(i) they keep J = 0, the order of G (4, 4, 5) and the rank of the limit map (5 on
 Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points of the modular certificates
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
-record does not show that the limits fill V(K2) over Q(i), because the Q(i) quadrics exist for X- -> N- only
-(A5-248); E8-bar -> VB is outside the Q(i) producer and is not replayed.
+record alone does not show that the limits fill V(K2) over Q(i); the Q(i) quadrics of every pair came later
+(A5-421), and with them Iso closes by primality (A5-424) and W8 by the section below (A5-426); E8-bar -> VB is outside the Q(i) producer and is not replayed.
 
 ## One arc family in each component of the W8 quadric locus over Q(i) (ledger A5-426)
 

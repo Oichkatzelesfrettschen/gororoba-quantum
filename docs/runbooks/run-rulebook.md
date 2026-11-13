@@ -603,3 +603,13 @@ the closest entry and say what changed.
   runs had printed no stage after `STAGE rees_start`: the two modular runs of 09:42 at 1.4 and 1.6 GB after
   1 h 23 min, the eight runs of 10:21 between 1.0 and 5.7 GB after 43 min, the `sat` W8 run over Q(i) at 4.7 GB
   after 2 h 24 min.
+- Correction to the variable form (2026-11-13, found by two outside reviews of the scripts): the ordering gives
+  the slice variable of torus weight 0 the weight 1, so (J, minors, u - G_pivot) is not homogeneous for it, and the
+  division by powers of u proves only H in (RS) in H : u^infinity. In k[x, y, u] with the degree ordering,
+  H = (x u + y, y u) has H : u^infinity = (x, y) and divided ideal (x u, y). The FIBER lines of the two finished
+  Iso runs (`h-iso-nm-p`, `h-iso-np-p2`) are therefore outputs of the division, uncertified as Rees fibers; the
+  fiber cone of Iso rests on A5-424, which does not use them. `hsat.py` now appends a certificate to each script:
+  the count of divided elements whose leading monomial keeps u, and the test (RS) : u = (RS), which gives
+  (RS) = H : u^infinity for any input. The same-sign X control passes both (count 0, colon equal) modulo 32009 in
+  24 s and over Q(i) in 188 s with the FIBER line unchanged; `c-iso-nm-p` repeats Iso at N- modulo 32009 with
+  the certificate on the workstation. A run started before the certificate existed prints no `CERT` line.
