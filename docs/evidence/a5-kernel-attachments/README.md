@@ -458,6 +458,32 @@ fails. The `--out` run took 1.5 seconds wall time and 77,448 KiB peak resident m
 [`real_limit_sets.py`](real_limit_sets.py), [`real-limit-sets-result.json`](real-limit-sets-result.json), and the
 [ledger](ledger.md#ledger-rows).
 
+## The same identification gives eight real limit sets into nullity 16
+
+The deduction of the previous section uses only the kernel identity, the holomorphic source closures and the two
+cited theorems, so it applies at a nullity-16 boundary point `z_0`, where `ker C_(z_0)` has dimension 9 and
+`K_0 = ker C_(z_0) meet z_0^perp` has dimension 8. The limits of the bordered kernel of a nullity-12 source are the
+planes `P meet z_0^perp` for `P` a limit of the 7-plane `ker C_z`, in `Gr(6, K_0)`. The closures of `B9`, `V`, `VB`,
+`V^a_+` and `V^a_-` are cut out by holomorphic polynomials in `z` (`strata_regularity.py`). **Inferred:** on the
+retained slice germ at the census-supported `N+` or `N-` basepoint, the real limit set of each of the eight
+incidences with a completed Rees fiber is that whole fiber:
+
+| Incidence | Real limit set on the slice germ: projective dimension, degree, components |
+| --- | --- |
+| `B9` to `N+`, `B9` to `N-` | 2, 1, 1 (a `P^2`) |
+| `V` to `N+`, `V` to `N-` | 1, 2, 1 (the conic `y2^2 - y1*y3`) |
+| `VB` to `N+`, `VB` to `N-` | 0, 1, 1 (one point) |
+| `V^a_+` to `N+`, `V^a_-` to `N-` | 0, 1, 1 (one point) |
+
+The four one-point rows carry a canonical limiting six-plane on the slice germ. No retained arc ends at these
+basepoints, so no arc comparison enters, and the ten incidences from the nullity-8 sources (`E8bar`, `Iso`, `W8`,
+`X+`, `X-` into `N+` and `N-`) have no computed fiber and stay open. The boundaries of the previous section hold
+here: the slice germ at one basepoint, no variation along the boundary orbit, no exclusion for arcs that leave the
+slice. A characteristic disagreement on one of the eight fibers, a source closure with an equation in
+`conjugate(z)`, or an exact real arc in a slice germ with a limit outside the listed fiber falsifies a row.
+Evidence: the `nullity_16` block of [`real-limit-sets-result.json`](real-limit-sets-result.json),
+[`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), and the [ledger](ledger.md#ledger-rows).
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?

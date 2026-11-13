@@ -299,8 +299,9 @@
     "docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json": "7f8f2faff7256143679f32ac2a93e786da24ca6d8486adec1edc8f3e2504e62b",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
     "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
+    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "ee368b627b2b8f5203c7366ac920206516e539b21f523bfbe5064d2efa034a46",
     "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
-    "docs/evidence/a5-kernel-attachments/real_limit_sets.py": "c04f9676c4c35882527ba3bed60f24a8929bb9c818db1b875ddaa499b3a9231d",
+    "docs/evidence/a5-kernel-attachments/real_limit_sets.py": "a0b8d0dcc708a074a5f1a8d2d5d3c9fe9333aafce5c7abdb7e613197417e67c0",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
   },
   "kernel_decomposition": {
@@ -367,8 +368,131 @@
     "input_change": "replace conj(z)^T u by z^T u in the complement of z at z = e_1 + i e_2",
     "name": "bilinear_pairing_at_an_isotropic_point"
   },
+  "nullity_16": {
+    "blocked_incidences": [
+      "E8bar->N+",
+      "E8bar->N-",
+      "Iso->N+",
+      "Iso->N-",
+      "W8->N+",
+      "W8->N-",
+      "X+->N+",
+      "X+->N-",
+      "X-->N+",
+      "X-->N-"
+    ],
+    "claim_boundary": "No retained arc ends at these basepoints, so no arc comparison enters; the ten incidences from the nullity-8 sources have no computed fiber.",
+    "incidences": [
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          2,
+          1,
+          1
+        ],
+        "incidence": "B9->N+",
+        "minimal_generator_count": 3,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          2,
+          1,
+          1
+        ],
+        "incidence": "B9->N-",
+        "minimal_generator_count": 3,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          1,
+          2,
+          1
+        ],
+        "incidence": "V->N+",
+        "minimal_generator_count": 3,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          1,
+          2,
+          1
+        ],
+        "incidence": "V->N-",
+        "minimal_generator_count": 3,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          0,
+          1,
+          1
+        ],
+        "incidence": "VB->N+",
+        "minimal_generator_count": 1,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          0,
+          1,
+          1
+        ],
+        "incidence": "VB->N-",
+        "minimal_generator_count": 1,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          0,
+          1,
+          1
+        ],
+        "incidence": "Va+->N+",
+        "minimal_generator_count": 1,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      },
+      {
+        "characteristics_agree": true,
+        "fiber_projective_dimension_degree_components": [
+          0,
+          1,
+          1
+        ],
+        "incidence": "Va-->N-",
+        "minimal_generator_count": 1,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "retained_arc_count": 0,
+        "source_record": "nullity16-rees-fibers-result.json"
+      }
+    ],
+    "limit_map": "P -> P meet z_0^perp from the 7-planes of the 9-dimensional ker C_(z_0) through z_0 onto Gr(6, K_0), K_0 of dimension 8",
+    "passage": "the eight incidences from nullity 12 into nullity 16 with a completed Rees fiber, each on its retained transverse slice germ at the census-supported N+ or N- basepoint"
+  },
   "pass": true,
-  "schema": "a5-kernel-attachments-real-limit-sets-v1",
+  "schema": "a5-kernel-attachments-real-limit-sets-v2",
   "scope": {
     "claim_boundary": "Each fiber is the fiber over the selected path-supported basepoint of the closed holomorphic Gauss graph of the source germ on the retained transverse slice. The record does not compute the fiber of E8bar->VB, the variation of a fiber along its boundary orbit, or limits along arcs that leave the slice beyond the retained arcs.",
     "open_incidence": "E8bar->VB",
@@ -380,6 +504,8 @@
       "E8bar->Va+",
       "E8bar->Va-"
     ],
+    "nullity_16_blocked_count": 10,
+    "nullity_16_incidence_count": 8,
     "retained_arc_count": 29,
     "retained_arcs_matching": 29
   }

@@ -61,6 +61,19 @@ def test_self_test_rejects_a_failed_record_and_a_surviving_mutation() -> None:
         rls._self_test({"pass": True, "mutation_control": {"detected": False}})
 
 
+def test_a_nullity_16_row_reports_its_fiber_and_fails_agreement_when_the_source_row_fails() -> None:
+    fixture: dict[str, Any] = {
+        "incidence": "fixture",
+        "nakayama_generator_count": 3,
+        "characteristic_invariants_agree": True,
+        "pass": True,
+        "rational": {"image_projective_dimension": 1, "image_degree": 2, "component_count": 1},
+    }
+    row = rls._nullity16_row(fixture)
+    _same((row["fiber_projective_dimension_degree_components"], row["characteristics_agree"]), ([1, 2, 1], True))
+    _same(rls._nullity16_row({**fixture, "pass": False})["characteristics_agree"], False)
+
+
 @pytest.mark.audit
 def test_retained_record_is_the_regenerated_record() -> None:
     record = rls.build_record()

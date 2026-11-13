@@ -12,7 +12,8 @@ the closed graph fiber. The record's pass covers the computed checks; these two 
 
 This producer verifies the two identities the decomposition rests on, the failure of the decomposition under the
 bilinear pairing at an isotropic point, and collects the fourteen computed holomorphic fibers with the retained
-checks that the holomorphic limit equals the retained bordered limit plus the boundary line.
+checks that the holomorphic limit equals the retained bordered limit plus the boundary line. The same deduction
+gives the eight completed incidences from nullity 12 into nullity 16, where ker C_(z_0) has dimension 9.
 """
 
 from __future__ import annotations
@@ -35,19 +36,24 @@ import partner_purity  # noqa: E402
 
 import parallel  # noqa: E402
 
-SCHEMA = "a5-kernel-attachments-real-limit-sets-v1"
+SCHEMA = "a5-kernel-attachments-real-limit-sets-v2"
 NAKAYAMA_RESULT = HERE / "nakayama-rees-fibers-result.json"
 BLOWUP_RESULT = HERE / "holomorphic-gauss-fibers-result.json"
+NULLITY16_RESULT = HERE / "nullity16-rees-fibers-result.json"
 SOURCE_PATHS = (
     HERE / "real_limit_sets.py",
     HERE / "partner_purity.py",
     HERE / "holomorphic_kernel_lemma.py",
     NAKAYAMA_RESULT,
     BLOWUP_RESULT,
+    NULLITY16_RESULT,
     ROOT / "gororoba_quantum" / "cd_core.py",
 )
 INCIDENCE_COUNT = 14
 OPEN_INCIDENCE = "E8bar->VB"
+# Into nullity 16 the Rees fibers of the eight nullity-12 sources are complete and the ten nullity-8 rows block.
+NULLITY16_COMPLETED_COUNT = 8
+NULLITY16_BLOCKED_COUNT = 10
 # z = e_1 + i e_2 has z^T z = 0 and conj(z)^T z = 2: the bilinear form vanishes on z, the Hermitian form does not.
 ISOTROPIC_POINT: hk.GaussianVector = (hk.ONE, hk.I_UNIT, *([hk.ZERO] * (hk.COMPLEX_DIMENSION - 2)))
 # z = sum_j j e_j: a rational point with no isotropy, where both pairings split ker C_z.
@@ -158,6 +164,24 @@ def _blowup_row(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _nullity16_row(row: dict[str, Any]) -> dict[str, Any]:
+    """One completed incidence from nullity 12 into nullity 16: 7-planes of the 9-dimensional ker C_(z_0)."""
+    fiber = row["rational"]
+    return {
+        "incidence": row["incidence"],
+        "source_record": NULLITY16_RESULT.name,
+        "resolution": "Nakayama-reduced Rees fiber",
+        "minimal_generator_count": row["nakayama_generator_count"],
+        "fiber_projective_dimension_degree_components": [
+            fiber["image_projective_dimension"],
+            fiber["image_degree"],
+            fiber["component_count"],
+        ],
+        "characteristics_agree": bool(row["characteristic_invariants_agree"]) and bool(row["pass"]),
+        "retained_arc_count": 0,
+    }
+
+
 def build_record() -> dict[str, Any]:
     identities = partner_purity._case_record("")
     norm = partner_purity._positive_norm_certificate()
@@ -179,6 +203,10 @@ def build_record() -> dict[str, Any]:
     rows = [_blowup_row(row) for row in blowup["incidences"]] + [_nakayama_row(row) for row in nakayama["incidences"]]
     rows.sort(key=lambda row: str(row["incidence"]))
     arc_flags = [flag for row in rows for flag in row["holomorphic_limit_equals_bordered_limit_plus_boundary_line"]]
+    nullity16 = json.loads(NULLITY16_RESULT.read_text(encoding="utf-8"))
+    completed16 = [row for row in nullity16["incidences"] if row["status"] == "completed"]
+    blocked16 = sorted(str(row["incidence"]) for row in nullity16["incidences"] if row["status"] != "completed")
+    rows16 = sorted((_nullity16_row(row) for row in completed16), key=lambda row: str(row["incidence"]))
     baseline_pass = (
         identities_hold
         and bool(anisotropic["c_z_annihilates_z"])
@@ -193,6 +221,9 @@ def build_record() -> dict[str, Any]:
         and bool(blowup["pass"])
         and all(bool(row["characteristics_agree"]) for row in rows)
         and all(arc_flags)
+        and len(rows16) == NULLITY16_COMPLETED_COUNT
+        and len(blocked16) == NULLITY16_BLOCKED_COUNT
+        and all(bool(row["characteristics_agree"]) for row in rows16)
     )
     # The pairing mutation: with z^T u in place of conj(z)^T u the complement of an isotropic z contains z.
     mutation_detected = not bool(isotropic["bilinear"]["direct_sum_is_the_kernel"])
@@ -249,8 +280,26 @@ def build_record() -> dict[str, Any]:
             "status": "deductions from the computed checks and the two authorities; pass does not test them",
         },
         "incidences": rows,
+        "nullity_16": {
+            "passage": (
+                "the eight incidences from nullity 12 into nullity 16 with a completed Rees fiber, each on its "
+                "retained transverse slice germ at the census-supported N+ or N- basepoint"
+            ),
+            "limit_map": (
+                "P -> P meet z_0^perp from the 7-planes of the 9-dimensional ker C_(z_0) through z_0 onto "
+                "Gr(6, K_0), K_0 of dimension 8"
+            ),
+            "incidences": rows16,
+            "blocked_incidences": blocked16,
+            "claim_boundary": (
+                "No retained arc ends at these basepoints, so no arc comparison enters; the ten incidences from "
+                "the nullity-8 sources have no computed fiber."
+            ),
+        },
         "summary": {
             "incidence_count": len(rows),
+            "nullity_16_incidence_count": len(rows16),
+            "nullity_16_blocked_count": len(blocked16),
             "retained_arc_count": len(arc_flags),
             "retained_arcs_matching": sum(arc_flags),
             "incidences_with_a_component_no_retained_arc_reaches": [
