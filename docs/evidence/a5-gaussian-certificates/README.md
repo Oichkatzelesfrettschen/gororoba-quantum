@@ -7,7 +7,7 @@ directory, so that every integer in them has one home here and a `--check` that 
 | --- | --- | --- | --- |
 | `gororoba-math:rocq/quantum/CdTowerG2Derivations.v` | `gaussian_certificates.py` | [g2-derivation-tables.json](../a5-kernel-attachments/g2-derivation-tables.json) (ledger row `A5-453`), `left-inverses.json` | each of the 14 tables satisfies the Leibniz rule D(xy) = D(x) y + x D(y) on the sedenions over every commutative ring that receives the Gaussian integers, and the 14 maps are linearly independent there |
 | `gororoba-math:rocq/quantum/A5W8ArcMatrixRanks.v` | `gaussian_certificates.py` | [w8-component-arc-matrices-qi.json](../a5-char0-transfer/w8-component-arc-matrices-qi.json) (ledger row `A5-448`), `left-inverses.json` | for each of the eight 24 x 6 matrices M a 6 x 24 matrix L and a Gaussian integer d with L M = d I, so that a column relation M a = 0 has h(d) a_l = 0 and the six columns are independent where h(d) is a nonzero divisor |
-| `gororoba-math:rocq/quantum/CdTowerG2DerivationSpan.v` | `render_span.py` | `span.json` | for every linear map F of the sedenions that satisfies the Leibniz rule on the basis units, h(6) F is a combination of the 14 tables ([derivations_spanned]); where h(6) is invertible, F is that combination |
+| `gororoba-math:rocq/quantum/CdTowerG2DerivationSpan.v` | `render_span.py` | `span.json` | for every linear map F of the sedenions that satisfies the Leibniz rule on the basis units, h(6) F is a combination of the 14 tables ([derivations_spanned]); where h(6) is invertible or a nonzero divisor, F is that combination ([derivations_spanned_invertible], [derivations_spanned_regular]), and so over the Gaussian integers ([derivations_spanned_gaussian]) |
 
 ## Files
 
@@ -20,7 +20,7 @@ directory, so that every integer in them has one home here and a `--check` that 
 | `span.json` | record | row order 0 (`"seed": 0`, the lexicographic order of the triples, no random draw): d = 6, 242 triples, 1195 nonzero entries of P, largest absolute value 12 |
 | `render_span.py` | generator | reads `span.json` with exact key sets, integer types, counts and index ranges and renders the third Rocq source |
 | `make_span_mutants.py` | mutation controls | six edited copies of the span source, each with the lemma that must reject it |
-| `run_span_checks.sh`, `SpanQueries.v` | driver | the Rocq half of the span checks for a machine that holds Rocq: compile of the three span sources, 10 assumption queries, kernel check, the six mutants, one verdict line |
+| `run_span_checks.sh`, `SpanQueries.v` | driver | the Rocq half of the span checks for a machine that holds Rocq: compile of the three span sources, 15 assumption queries, kernel check, the six mutants, one verdict line |
 
 The tests are [test_a5_gaussian_certificates.py](../../../tests/gororoba_quantum/test_a5_gaussian_certificates.py).
 
