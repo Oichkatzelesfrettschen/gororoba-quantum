@@ -341,6 +341,26 @@ def subset(rows, settings, kinds):
     return [r for r, _ in picked], [s for _, s in picked]
 
 
+def served_mesh(circuit: Any, name: str) -> tuple[list[tuple[str, int]], np.ndarray, np.ndarray]:
+    """Topology (component kind, first mode), beam-splitter angles and phase-shifter angles of a served mesh.
+
+    Perceval's public iteration over a circuit yields every atomic component with its absolute modes, and
+    `BS.convention` names the beam-splitter parameterization. The frozen maps propagate angles through BS.Rx, so any
+    other served convention raises."""
+    from perceval.components import BSConvention  # noqa: PLC0415
+
+    topology: list[tuple[str, int]] = []
+    theta: list[float] = []
+    phi: list[float] = []
+    for modes, component in circuit:
+        kind = type(component).__name__
+        topology.append((kind, modes[0]))
+        if kind == "BS" and component.convention != BSConvention.Rx:
+            raise ValueError(f"{name}: a served beam splitter is not BS.Rx")
+        (theta if kind == "BS" else phi).append(float(component.get_parameters(all_params=True)[0]))
+    return topology, np.array(theta), np.array(phi)
+
+
 def frozen_map_prediction(run: Path, settings: list[dict[str, Any]], kinds: tuple[str, ...]) -> dict[str, Any]:
     """Raw slot levels the frozen c1_static maps predict for each iteration of the given kinds."""
     import c1_mesh  # noqa: PLC0415
@@ -353,19 +373,9 @@ def frozen_map_prediction(run: Path, settings: list[dict[str, Any]], kinds: tupl
     for i, (setting, entry) in enumerate(zip(settings, results["iterations"], strict=True)):
         if setting["kind"] not in kinds:
             continue
-        circuit = deserialize(entry["result_fields"]["computed_circuit"])
-        topo: list[tuple[str, int]] = []
-        th: list[float] = []
-        ph: list[float] = []
-        for rng, comp in circuit._components:
-            kind = type(comp).__name__
-            topo.append((kind, rng[0]))
-            if kind == "BS" and comp._convention.name != "Rx":
-                raise ValueError(f"{setting['name']}: a served beam splitter is not BS.Rx")
-            (th if kind == "BS" else ph).append(float(comp.get_parameters(all_params=True)[0]))
+        topo, th_a, ph_a = served_mesh(deserialize(entry["result_fields"]["computed_circuit"]), setting["name"])
         if [k for k, _ in topo] != list(kinds0) or [m for _, m in topo] != list(lo0):
             raise ValueError(f"{setting['name']}: the served mesh topology differs from the frozen maps'")
-        th_a, ph_a = np.array(th), np.array(ph)
         for model in ("gain", "offset"):
             x, a, c = (maps[f"{part}_{model}_all"] for part in ("x", "a", "c"))
             dph = (x * ph_a)[None, :] if model == "gain" else x[None, :]

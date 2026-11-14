@@ -8,7 +8,9 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import perceval as pcvl
 import pytest
+from perceval.serialization import deserialize, serialize
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -201,3 +203,23 @@ def test_spec_check_bounds_published_imperfections() -> None:
     spec = case.spec_check(limit=2)
     check(spec["worst_level_shift_from_g2_and_indistinguishability"] < 0.005, "g2 and indistinguishability shift")
     check(spec["dark_level_shift_bound"] < 0.005, "dark count bound")
+
+
+def served_circuit(convention: pcvl.BSConvention) -> pcvl.Circuit:
+    """Three modes: a beam splitter and a phase shifter at the top level, then a nested two-mode block on modes 1, 2."""
+    nested = pcvl.Circuit(2).add(0, pcvl.BS(convention=convention, theta=0.7)).add(1, pcvl.PS(0.9))
+    circuit = pcvl.Circuit(3).add(0, pcvl.BS(convention=convention, theta=0.4)).add(0, pcvl.PS(0.2))
+    return circuit.add(1, nested, merge=False)
+
+
+def test_served_mesh_reads_topology_and_angles_through_the_public_iteration() -> None:
+    circuit = deserialize(serialize(served_circuit(pcvl.BSConvention.Rx)))
+    topology, theta, phi = reading.served_mesh(circuit, "fixture")
+    check(topology == [("BS", 0), ("PS", 0), ("BS", 1), ("PS", 2)], f"topology {topology}")
+    check(np.allclose(theta, [0.4, 0.7]) and np.allclose(phi, [0.2, 0.9]), f"angles {theta} {phi}")
+
+
+@pytest.mark.parametrize("convention", [pcvl.BSConvention.Ry, pcvl.BSConvention.H])
+def test_served_mesh_refuses_a_beam_splitter_that_is_not_rx(convention: pcvl.BSConvention) -> None:
+    with pytest.raises(ValueError, match="not BS.Rx"):
+        reading.served_mesh(deserialize(serialize(served_circuit(convention))), "fixture")
