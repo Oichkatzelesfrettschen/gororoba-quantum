@@ -28,6 +28,7 @@ RUNNER_FILES = (
     "ci/manifest.py",
     "ci/pins.py",
     "ci/requirements-replay.txt",
+    "gororoba_quantum/math_sources.py",
     "gororoba_quantum/parallel.py",
 )
 
