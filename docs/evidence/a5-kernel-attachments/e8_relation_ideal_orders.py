@@ -3,7 +3,7 @@
 On the weight slice at N- or N+ (`weight_slice_fiber_relations.py`) let O be the local ring of the E8-bar germ at the
 origin, m its maximal ideal, I = (G_1, ..., G_21) the Pfaffian ideal, L the relation ideal of the fiber cone
 (a form F of degree d lies in L exactly when F(G) lies in m I^d), and K the ideal that the 148 relations of degree 2
-generate (each lies in L by the weight-slice producer, A5-421, the one premise this argument takes from it). K has
+generate (each lies in L: `weight_slice_relation_membership.py`, A5-459). K has
 the minimal primes P5 (dimension 5, degree 11) and P4 (dimension 4, degree 4), radical R = P5 /\\ P4, and the
 embedded prime A = K : R (A5-451, A5-454).
 
