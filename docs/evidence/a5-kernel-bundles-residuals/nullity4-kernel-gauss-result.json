@@ -11625,7 +11625,7 @@
   "frame_formula": "F_I=[-B_I^(-1) C_I; I_2] in pivot/free order",
   "input_sha256": {
     "cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
-    "kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
     "nullity4_orbit_ranks.py": "955b6448417dd9c9addb2869946ed1489e5c69089a47b1181f26197cd0818209",
     "rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
     "strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651"

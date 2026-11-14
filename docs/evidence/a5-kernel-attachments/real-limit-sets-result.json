@@ -296,10 +296,10 @@
     "status": "deductions from the computed checks and the two authorities; pass does not test them"
   },
   "inputs": {
-    "docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json": "7f8f2faff7256143679f32ac2a93e786da24ca6d8486adec1edc8f3e2504e62b",
+    "docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json": "4dbd90b752b1c4107f547036b2cf7950c9783c6291f4f1e2a3c8dabd94211d98",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
-    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
-    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "ee368b627b2b8f5203c7366ac920206516e539b21f523bfbe5064d2efa034a46",
+    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "8fe9302437bfc1605564d4ba1312a1fdbb3c00fa66a892c7e0b1a8a39ba23ae4",
+    "docs/evidence/a5-kernel-attachments/nullity16-rees-fibers-result.json": "87b7ec3ff3b941d4b8edb5dfa0fde0b7f62593186e48efbd2bd14d55d3eeeba4",
     "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
     "docs/evidence/a5-kernel-attachments/real_limit_sets.py": "833b4ceba5f491a73d1ff86b7e0894a9e53c22772551f8b12878f1a312edda2e",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"

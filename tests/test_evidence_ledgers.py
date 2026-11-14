@@ -42,6 +42,8 @@ LEDGERS = [
     (".", "docs/evidence/cd-half-fold/source_hashes.sha256"),
     (".", "docs/evidence/cd-twisted-product/source_hashes.sha256"),
     (".", "docs/evidence/cd-tower-ring/source_hashes.sha256"),
+    (".", "docs/evidence/cd-tower-ring-base-change/source_hashes.sha256"),
+    (".", "docs/evidence/cd-tower-kernel-certificates/source_hashes.sha256"),
     ("docs/evidence/four_support_geometry", "SHA256SUMS"),
     ("docs/evidence/four_support_doubling", "SHA256SUMS"),
     ("docs/evidence/four_support_homology", "SHA256SUMS"),

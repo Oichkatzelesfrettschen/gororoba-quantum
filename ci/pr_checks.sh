@@ -63,14 +63,17 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py docs/evidence/a5-char0-transfer/transfer_counterexample.py docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
 	checked_files="$checked_files docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/centralizer_components.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_closure_certificate.py docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/arc_jets_qi.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/composed_limit_sections.py docs/evidence/a5-kernel-attachments/boost_fiber_variation.py docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py docs/evidence/a5-kernel-attachments/real_limit_sets.py docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py docs/evidence/a5-kernel-attachments/kernel_equivariance.py docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py"
 	checked_files="$checked_files docs/evidence/a5-associator-observables/associator_observables.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
+	checked_files="$checked_files docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -84,14 +87,17 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_rank.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_loader_check.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/fast_ladder_blocks_resumable.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/ladder_checkpoint.py ../docs/evidence/a5-char0-transfer/transfer_counterexample.py ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank.py"
 	typed_files="$typed_files ../docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/centralizer_components.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_closure_certificate.py ../docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/arc_jets_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/composed_limit_sections.py ../docs/evidence/a5-kernel-attachments/boost_fiber_variation.py ../docs/evidence/a5-kernel-attachments/nullity8_fiber_import.py ../docs/evidence/a5-kernel-attachments/real_limit_sets.py ../docs/evidence/a5-kernel-attachments/sheet_fiber_planes.py ../docs/evidence/a5-kernel-attachments/kernel_equivariance.py ../docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/quadric-census/symmetry_algebra.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py"
 	typed_files="$typed_files ../docs/evidence/a5-associator-observables/associator_observables.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py ../docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
+	typed_files="$typed_files ../docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files
