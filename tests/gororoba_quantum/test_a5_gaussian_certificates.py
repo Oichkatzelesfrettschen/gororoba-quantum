@@ -131,6 +131,7 @@ def test_a_perturbed_left_inverse_or_matrix_or_scalar_is_detected() -> None:
         raise AssertionError("a changed scalar passed")
 
 
+@pytest.mark.audit
 def test_the_generator_rebuilds_the_tracked_left_inverse_record() -> None:
     tables = gc.derivation_tables(fresh(G2_JSON))
     certificates = gc.arc_matrices(fresh(ARC_JSON))
@@ -208,6 +209,7 @@ def test_the_recorded_smith_invariants_give_the_finite_field_nullities() -> None
         raise AssertionError("a changed multiplicity leaves the nullity modulo 2")
 
 
+@pytest.mark.audit
 def test_flint_recomputes_the_tracked_span_record() -> None:
     tables = gc.derivation_tables(fresh(G2_JSON))
     left = gc.derivation_left_inverse(fresh(LEFT_JSON))

@@ -47,6 +47,9 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+
+import parallel  # noqa: E402
 
 G2_SCHEMA = "gororoba.a5.g2-derivation-tables/1"
 ARC_SCHEMA = "gororoba.a5.w8-component-arc-matrices-qi/1"
@@ -295,6 +298,36 @@ def derivation_certificate(tables: list[list[list[Entry]]]) -> dict[str, Any]:
     return {"row_meaning": "row 16 m + c is coordinate c of D(e_m)", **certificate}
 
 
+def arc_certificate(matrix: dict[str, Any]) -> dict[str, Any]:
+    """One matrix of the arc record with its integer entries and its exact left inverse; the matrices are
+    independent, so arc_matrices maps this function over them in order."""
+    name = matrix["id"]
+    shape = tuple(exact_integer(matrix[key], f"{name}, {key}") for key in ("rows", "columns", "claimed_rank"))
+    if shape != (ARC_ROWS, ARC_COLUMNS, ARC_COLUMNS):
+        raise RuntimeError(f"{name}: rows, columns and claimed rank are {shape}")
+    rows = matrix["entries"]
+    if (
+        not isinstance(rows, list)
+        or len(rows) != ARC_ROWS
+        or any(not isinstance(row, list) or len(row) != ARC_COLUMNS for row in rows)
+    ):
+        raise RuntimeError(f"{name}: the entries are not {ARC_ROWS} x {ARC_COLUMNS}")
+    for index, row in enumerate(rows):
+        for column, entry in enumerate(row):
+            exact_keys(entry, ARC_ENTRY_KEYS, f"{name}, row {index}, column {column}")
+    entries = [
+        [
+            (
+                decimal_integer(entry["re"], f"{name}, row {index}, column {column}, re"),
+                decimal_integer(entry["im"], f"{name}, row {index}, column {column}, im"),
+            )
+            for column, entry in enumerate(row)
+        ]
+        for index, row in enumerate(rows)
+    ]
+    return {"id": name, "ledger_row": matrix["ledger_row"], "entries": entries, **left_inverse(entries)}
+
+
 def arc_matrices(record: dict[str, Any]) -> list[dict[str, Any]]:
     """The eight matrices of ARC_IDS, each with its integer entries and its left inverse."""
     exact_keys(record, ARC_RECORD_KEYS, "arc-matrix record")
@@ -310,36 +343,7 @@ def arc_matrices(record: dict[str, Any]) -> list[dict[str, Any]]:
     identifiers = tuple(matrix["id"] for matrix in matrices)
     if identifiers != ARC_IDS:
         raise RuntimeError(f"the arc-matrix record holds {identifiers}, expected {ARC_IDS}")
-    certificates = []
-    for matrix in matrices:
-        name = matrix["id"]
-        shape = tuple(exact_integer(matrix[key], f"{name}, {key}") for key in ("rows", "columns", "claimed_rank"))
-        if shape != (ARC_ROWS, ARC_COLUMNS, ARC_COLUMNS):
-            raise RuntimeError(f"{name}: rows, columns and claimed rank are {shape}")
-        rows = matrix["entries"]
-        if (
-            not isinstance(rows, list)
-            or len(rows) != ARC_ROWS
-            or any(not isinstance(row, list) or len(row) != ARC_COLUMNS for row in rows)
-        ):
-            raise RuntimeError(f"{name}: the entries are not {ARC_ROWS} x {ARC_COLUMNS}")
-        for index, row in enumerate(rows):
-            for column, entry in enumerate(row):
-                exact_keys(entry, ARC_ENTRY_KEYS, f"{name}, row {index}, column {column}")
-        entries = [
-            [
-                (
-                    decimal_integer(entry["re"], f"{name}, row {index}, column {column}, re"),
-                    decimal_integer(entry["im"], f"{name}, row {index}, column {column}, im"),
-                )
-                for column, entry in enumerate(row)
-            ]
-            for index, row in enumerate(rows)
-        ]
-        certificates.append(
-            {"id": name, "ledger_row": matrix["ledger_row"], "entries": entries, **left_inverse(entries)}
-        )
-    return certificates
+    return parallel.ordered_map(arc_certificate, matrices, min_items=2)
 
 
 def derivation_left_inverse(record: object) -> list[list[tuple[int, Entry]]]:

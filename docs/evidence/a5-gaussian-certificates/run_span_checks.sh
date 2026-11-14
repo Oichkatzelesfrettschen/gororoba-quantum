@@ -11,6 +11,7 @@ PYTHON=${PYTHON:-python3}
 export PYTHON
 [ -x "$R" ] || { echo "run_span_checks: no rocq at the rocq-9.3 switch" >&2; exit 2; }
 cd "$B"
+B=$(pwd)
 rec=span-checks-record.txt
 fail() { echo "verdict: FAIL $*" >> "$rec"; echo "run_span_checks: $*" >&2; exit 1; }
 {
