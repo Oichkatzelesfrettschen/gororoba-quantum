@@ -239,7 +239,7 @@ f_i(j ^ x) keeps f_i's leading layer, so the three sign rows cancel there
 and deg g_ij <= n - 2, the upper bound that Theorem 2 sharpens to an exact
 value. Theorem 3 at k = 2 fails: the quaternion rows are affine and their
 linear coefficients follow a different map. `sign_row_leading` in
-[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves Theorem 3 for every
+gororoba-math `rocq/quantum/CdSignRowAnf.v` proves Theorem 3 for every
 n >= 3, and `sign_row_top` the absent degree-n term for n >= 2, on ANF
 coefficients defined as the Moebius transform (`anf_coef`), which
 `anf_inversion` and `anf_unique` identify with the ANF.
@@ -277,7 +277,7 @@ slices:
 In the last two slices bitlen(m) = n, so the degree is 1 at the power of two
 and max(1, n - 2) = max(1, bitlen(m) - 2) otherwise; the first slice carries
 that value up unchanged from level bitlen(m). `right_row_degree` in
-[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves the proposition for
+gororoba-math `rocq/quantum/CdSignRowAnf.v` proves the proposition for
 every n through the same three slices.
 
 **Bilinear layer (Albuquerque-Majid, p. 19).** The paper states without
@@ -330,7 +330,7 @@ delta_m(0) = 0 sets const = 1. For m = 0 it is delta_0(z) + const, and
 g(0) = 0 sets const = 1, leaving 1 + delta_0(z) = N(z).
 
 The displayed identity is formalized for every n >= 3 in
-[CdAssociatorPointIndicators.v](../../proofs/CdAssociatorPointIndicators.v)
+gororoba-math `rocq/quantum/CdAssociatorPointIndicators.v`
 as `point_indicator_pairs`, with separate nonzero and zero specializations;
 `point_indicator_degree` proves degree exactly n - 2, including n = 3.
 The [point-indicator bundle](../evidence/cd-associator-point-indicators/README.md)
@@ -387,19 +387,19 @@ model.
 
 ## Formalization statement
 
-[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves the sign-row
+gororoba-math `rocq/quantum/CdSignRowAnf.v` proves the sign-row
 statement in this repository's terms: `sign_row_degree_all` gives degree
 max(1, n - 1) for every n against the tower sign sigma, which the
 [tower basis-sign bundle](../evidence/cd-tower-basis-sign/README.md) ties to
 cd_sign through dim 64 and the
 [cd_sign Python-semantics bundle](../evidence/cd-sign-python-semantics/README.md)
-for every n, by running cd_sign's syntax tree. [CdAssociatorAnf.v](../../proofs/CdAssociatorAnf.v) proves the
+for every n, by running cd_sign's syntax tree. gororoba-math `rocq/quantum/CdAssociatorAnf.v` proves the
 associator statement on the same terms: `assoc_degree_is` gives degree
 max(1, Nat.log2 (max p q) - 1) for every k >= 3 and distinct nonzero p, q,
 following Lemmas A to D and the induction above; `assoc_sigma` equates the
 phase with the four cd_sign factors of predict.associator_phase, and
 `assoc_basis` with e_p (e_q e_x) = (-1)^g(x) (e_p e_q) e_x.
-[CdAssociatorCensus.v](../../proofs/CdAssociatorCensus.v) proves the
+gororoba-math `rocq/quantum/CdAssociatorCensus.v` proves the
 census: with `anf_degree` the largest weight carrying a nonzero ANF
 coefficient, `census_degree_one` and `census_degree` count 21 pairs of
 degree 1 and 3 2^d (2^(d+1) - 1) of degree d for 2 <= d <= k - 2,
@@ -450,11 +450,11 @@ section in about 10 s. `--mutate high-low-unconditional` and `--mutate
 high-high-no-early-return` each replace one cd_sign branch, and the run
 exits 0 only when a check catches the change. gororoba_quantum/verify.py
 keeps its pure-Python degree checks at dims 8 to 128.
-[CdTowerBasisSign.v](../../proofs/CdTowerBasisSign.v) proves Lemma 1 as
+gororoba-math `rocq/quantum/CdTowerBasisSign.v` proves Lemma 1 as
 `am_altercommutative`, Lemma A as `am_left_involution` and Lemma E as
 `sigma_right_involution`, in the paper's argument order, for every n, and
-[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves Theorem 1, Theorem 3
-and Proposition 4, and [CdAssociatorCensus.v](../../proofs/CdAssociatorCensus.v)
+gororoba-math `rocq/quantum/CdSignRowAnf.v` proves Theorem 1, Theorem 3
+and Proposition 4, and gororoba-math `rocq/quantum/CdAssociatorCensus.v`
 the table's last two columns for every n.
 
 | n | dim | sign-row degree | new unordered pairs | their degree |

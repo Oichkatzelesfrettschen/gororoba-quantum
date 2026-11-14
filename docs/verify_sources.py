@@ -1280,6 +1280,16 @@ def verify() -> None:
             if ":" in target or target.startswith("#"):
                 continue
             relative_target = target.split("#", 1)[0]
+            # A replay bundle keeps its bytes, and its README still names a Rocq source that moved to gororoba-math
+            # as proofs/NAME.v; the same untracked target from any other note is a broken link.
+            relocated = (
+                note.name == "README.md"
+                and (note.parent / "replay_rocq.sh").is_file()
+                and re.fullmatch(r"(?:\.\./)+proofs/[A-Za-z0-9_]+\.v", relative_target) is not None
+            )
+            if relocated and not (note.parent / relative_target).exists():
+                link_count += 1
+                continue
             require((note.parent / relative_target).exists(), f"broken link: {note.relative_to(root)} -> {target}")
             link_count += 1
     print(

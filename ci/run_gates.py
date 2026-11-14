@@ -18,12 +18,18 @@ the fast gates ci/premerge_gates.py runs on a merge result.
 
 A gate's optional ``requires`` list names the toolchains its live path
 needs beyond the repository interpreter; ``qi`` is the Quantum Inspire stack
-under $QI_PYTHON (gororoba_quantum/qi_stack.py) and ``singular`` is Singular
-4.4 on PATH. Every run includes such a gate, which replays its retained record
-(qi) or skips (singular, by its GOROROBA_SINGULAR_REQUIRED guard) where the
+under $QI_PYTHON (gororoba_quantum/qi_stack.py), ``singular`` is Singular
+4.4 on PATH and ``gororoba-math`` is the checkout $GOROROBA_MATH names at the
+commit of ci/gororoba_math.pin (gororoba_quantum/math_sources.py). Every run includes such a gate,
+which replays its retained record (qi) or skips (singular, by its GOROROBA_SINGULAR_REQUIRED guard; gororoba-math,
+by the runner itself while GOROROBA_MATH is unset) where the
 toolchain is absent. A caller that exports the variable REQUIREMENTS names for
-the toolchain (GOROROBA_QI_REQUIRED=1 or GOROROBA_SINGULAR_REQUIRED=1) makes
-each such gate take its live path or fail.
+the toolchain (GOROROBA_QI_REQUIRED=1, GOROROBA_SINGULAR_REQUIRED=1 or
+GOROROBA_MATH_REQUIRED=1) makes each such gate take its live path or fail.
+A gororoba-math gate runs with its working directory inside a shadow root
+whose proofs/ holds the digest-checked sources of that checkout, so a retained
+ledger row ``proofs/NAME.v`` resolves; a checkout off the pin or a source whose
+bytes differ from the retained digest fails the gate.
 
 A gate that left its replay unrun says so by exit status 77 after a last output line
 that begins ``skipped:`` and gives the reason. The runner prints SKIP for it,
@@ -67,11 +73,16 @@ import pins
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import math_sources  # noqa: E402
 import parallel  # noqa: E402
 
 TAIL_LINES = 40
 # Each named toolchain and the variable that makes its absence a gate failure when the caller exports it.
-REQUIREMENTS = {"qi": "GOROROBA_QI_REQUIRED", "singular": "GOROROBA_SINGULAR_REQUIRED"}
+REQUIREMENTS = {
+    "qi": "GOROROBA_QI_REQUIRED",
+    "singular": "GOROROBA_SINGULAR_REQUIRED",
+    "gororoba-math": math_sources.REQUIRED_VARIABLE,
+}
 # The exit status by which a gate that declares `requires` reports that it left its replay unrun (automake's skip
 # status); a gate may run cheaper checks first, so a skip says the replay is missing and nothing about those.
 SKIP_STATUS = 77
@@ -140,6 +151,15 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
     try:
         with TemporaryDirectory(prefix="ci-gate-resources-") as temporary:
             resource_file = Path(temporary) / "usage.json"
+            gate_root = root
+            if "gororoba-math" in gate.get("requires", ()):
+                if not environment.get(math_sources.ENVIRONMENT_VARIABLE):
+                    return gate, SKIP_STATUS, 0.0, f"skipped: {math_sources.ENVIRONMENT_VARIABLE} is unset"
+                try:
+                    math = math_sources.checkout(environment, root)
+                    gate_root = math_sources.shadow_root(Path(temporary) / "root", math, root)
+                except math_sources.MathSourcesError as error:
+                    return gate, 1, time.monotonic() - start, f"gororoba-math sources: {error}"
             completed = subprocess.run(
                 [
                     sys.executable,
@@ -151,7 +171,7 @@ def _run(gate: dict[str, Any], environment: dict[str, str], root: Path) -> tuple
                     "-c",
                     f"set -eu\n{gate['cmd']}",
                 ],
-                cwd=root / gate["cwd"],
+                cwd=gate_root / gate["cwd"],
                 env=environment,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,

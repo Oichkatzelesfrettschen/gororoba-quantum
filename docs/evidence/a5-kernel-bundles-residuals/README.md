@@ -506,7 +506,7 @@ The hypothesis `N1(z)` nonzero is needed (`A5-478`): `V(G)` has nullity-4 points
 makes `N1(., z)` vanish on all of `K(z)` there, and at the exact point
 `z = (0, 1, i, 0, 0, 0, 0, 2 i, -2, 0, -2, 0, 0, 0, 0)` the vector `z` of `K(z)` has `t_8 = 2 i`. Two earlier
 forms of the statement are superseded: `A5-473` named the plane by `ker t_8`, which is all of `K(z)` at the 39
-of the 54 exact fixtures with `z_8 = 0` (`A5-474`), and `A5-475` omitted the hypothesis.
+of the 54 exact fixtures with `z_8 = 0` (`A5-484`), and `A5-485` omitted the hypothesis.
 
 The three proofs share one shape. `G2(C)` acts on the doubling by `(a, b) -> (g a, g b)` and preserves the
 block, the kernel, the doubling forms, `Q` and `G`. Up to scale and that action, a point with `N1` and `Delta`

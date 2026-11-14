@@ -1,8 +1,9 @@
-"""Contracts for cd_sign_rocq_ast: the Rocq terms in proofs/CdSignPythonSemantics.v are the serialized syntax tree
-of cd_core.cd_sign and of its high-low-unconditional mutant, the mutation changes the term, a construct outside
-the Rocq syntax is rejected rather than dropped, and the guards _dimension and _index behave on ints as the Rocq
-builtin clauses state, reject every dimension whose type is not exactly int (bool and int subclasses that
-override the guard's or the loop's operators included), and pass an __index__ object on as a Python int.
+"""Contracts for cd_sign_rocq_ast: the Rocq terms in CdSignPythonSemantics.v of gororoba-math are the serialized
+syntax tree of cd_core.cd_sign and of its high-low-unconditional mutant, the mutation changes the term, a
+construct outside the Rocq syntax is rejected rather than dropped, and the guards _dimension and _index behave
+on ints as the Rocq builtin clauses state, reject every dimension whose type is not exactly int (bool and int
+subclasses that override the guard's or the loop's operators included), and pass an __index__ object on as a Python
+int.
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ import ast
 import enum
 import hashlib
 from collections.abc import Callable
+from pathlib import Path
 from typing import cast
 
 import cd_sign_rocq_ast as extract
@@ -20,12 +22,13 @@ import pytest
 import cd_core
 
 
-def test_proof_terms_match_cd_core_source() -> None:
+@pytest.mark.audit
+def test_proof_terms_match_cd_core_source(math_source: Callable[[str], Path]) -> None:
     generated = extract.terms(extract.SOURCE.read_text(encoding="utf-8"))
-    proof = extract.PROOF.read_text(encoding="utf-8")
+    proof = math_source("CdSignPythonSemantics.v").read_text(encoding="utf-8")
     for name, term in generated.items():
         if extract.embedded(proof, name) != term:
-            raise AssertionError(f"{name} in {extract.PROOF.name} differs from the syntax tree of cd_core.cd_sign")
+            raise AssertionError(f"{name} in CdSignPythonSemantics.v differs from the syntax tree of cd_core.cd_sign")
 
 
 def test_mutant_term_differs_from_cd_sign_term() -> None:
@@ -36,9 +39,10 @@ def test_mutant_term_differs_from_cd_sign_term() -> None:
         raise AssertionError("the high-low mutation did not remove the q != 0 test from the term")
 
 
-def test_edited_source_fails_the_comparison() -> None:
+@pytest.mark.audit
+def test_edited_source_fails_the_comparison(math_source: Callable[[str], Path]) -> None:
     source = extract.SOURCE.read_text(encoding="utf-8").replace("half >>= 1", "half >>= 2")
-    proof = extract.PROOF.read_text(encoding="utf-8")
+    proof = math_source("CdSignPythonSemantics.v").read_text(encoding="utf-8")
     if extract.embedded(proof, "cd_sign_ast") == extract.terms(source)["cd_sign_ast"]:
         raise AssertionError("a changed shift count left the generated term unchanged")
 
