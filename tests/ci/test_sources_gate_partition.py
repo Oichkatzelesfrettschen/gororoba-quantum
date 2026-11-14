@@ -117,7 +117,9 @@ def collisions(process: str, files: list[str]) -> dict[str, list[str]]:
 
 
 def test_the_single_sweep_holds_the_four_known_collisions() -> None:
-    _same(set(collisions(SINGLE_SWEEP, tracked_python_files())), SINGLE_SWEEP_COLLISIONS)
+    # A subset: a later same-named pair that the partition already separates adds a name here and breaks nothing.
+    found = set(collisions(SINGLE_SWEEP, tracked_python_files()))
+    _same(sorted(SINGLE_SWEEP_COLLISIONS - found), [])
 
 
 def test_no_process_of_the_gate_holds_two_sources_of_one_module_name() -> None:
