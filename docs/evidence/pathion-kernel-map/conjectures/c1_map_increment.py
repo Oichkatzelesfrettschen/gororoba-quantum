@@ -33,7 +33,7 @@ def predictions(settings, entries, maps, kinds0, lo0):
         if setting["kind"] not in FRESH:
             continue
         theta, phi = [], []
-        for _, comp in deserialize(entry["result_fields"]["computed_circuit"])._components:
+        for _, comp in deserialize(entry["result_fields"]["computed_circuit"]):
             (theta if type(comp).__name__ == "BS" else phi).append(float(comp.get_parameters(all_params=True)[0]))
         th, ph = np.array(theta), np.array(phi)
         for model in out:
