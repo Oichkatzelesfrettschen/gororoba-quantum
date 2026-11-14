@@ -514,14 +514,14 @@
   "falsifier": "Any retained sample has the wrong C_z rank; C_z z is nonzero; ker A differs from the Hermitian complement of z in ker C_z; ker C_z differs from C z plus ker A; the Gaussian-rational and FLINT realification ranks disagree; or replacing z by an independent vector of ker C_z leaves the complement equal to ker A.",
   "inputs": {
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
-    "docs/evidence/a5-kernel-attachments/partner-purity-result.json": "4b5d2a682b7c008ee98d5e56a7cc060c8e887ea670bab02db455347413144928",
+    "docs/evidence/a5-kernel-attachments/partner-purity-result.json": "193c38848163c56fdcfa84a3a8f9266c0eafb846866d4f2af51af8069213bfba",
     "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
-    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "66891ac343c109a2f2eed736fe2525f658212f9d3f1f85e15964214a0c1af02c",
+    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "eeeb5a03c7ef0cf574d92e4f5aac85a34c3b873102a12be89aa716deeedd813c",
     "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "9bb0c5a3b37d4bf074d42562757fb87077f9f121fe5dad4337e11447a978c2e3",
-    "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "72225e7c796af887110867bf77c52635743a97530bc0ca528f14f107a2d71b24",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
-    "docs/evidence/a5-kernel-bundles/frames-result.json": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476",
-    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "docs/evidence/a5-kernel-bundles/frames-result.json": "0b826e8f3956e048cce28675cd58376fe4ed303c7fb89bb0c9c16f363b70333c",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
   },
   "mutation": {

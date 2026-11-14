@@ -101,7 +101,7 @@
   },
   "inference_scope": "The pass flag covers producer bindings, ranks, representation multiplicities, phase periodicity, external projections, K-residue arithmetic, and boundary comparisons. Associated-bundle identifications, graph-section triviality, Kunneth pullbacks, and ordinary equivalence statements are written mathematical arguments.",
   "input_digests": {
-    "boundary_result_sha256": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
+    "boundary_result_sha256": "72225e7c796af887110867bf77c52635743a97530bc0ca528f14f107a2d71b24",
     "boundary_script_sha256": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
     "fiber_samples_result_sha256": "3e1dc533998eb53539a894fb2d3713e598f3ba18c34c6d34f502bca2493ea331",
     "fiber_samples_script_sha256": "09d88b77345e2ed06cab8e12bf63edeed8f99b65601791ba3134c35bdc6ec9f8",
@@ -113,7 +113,7 @@
     "stabilizer_strata_script_sha256": "5c400f4ae0010c107b1bb2e3f82acccdac5b8bd77e8cafab22e4213b02417449",
     "topology_result_sha256": "5bcebb5175d9d4e481034c899b698f590dbd67fe3f05dfa0c3b71c36f1c5850d",
     "topology_script_sha256": "75408f36dde2eff071327f87e496c35b230c18aa4823084aad5139272ef482d1",
-    "transition_atlas_result_sha256": "e1e99192ebb3f99d84c0fed873299840b8da72b87d9a1a5983e8d06bb3f299c9",
+    "transition_atlas_result_sha256": "199dd0312fb3fed4f246fb1b263bca754ec03123ac6ce07d93f480eeea4db069",
     "transition_atlas_script_sha256": "beceae739687bef5e712d7024049b14f3689baa28e924922c6f487fca4b44b2f"
   },
   "mutation": {

@@ -286,7 +286,7 @@ def compute(slug: str) -> dict[str, Any]:
     ideal_j = [rc._poly_qi(text, names) for text in qi["basis"]]
     ideal_g = [rc._poly_qi(text, names) for text in qi["generators"]]
     part1 = {"phi": identity(slug, names, False), "mutated": identity(slug, names, True)}
-    cells = []
+    cells: list[dict[str, Any]] = []
     for name in TARGETS[slug]:
         target = jr.TARGETS[name]
         records = {d: ARC_JETS / "records" / f"{name}-d{d}.json" for d in DEGREES}
