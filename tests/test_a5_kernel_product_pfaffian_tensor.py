@@ -159,8 +159,11 @@ def test_grid_fixture_and_general_point_records_are_recomputed() -> None:
         _same((value.x.denominator, value.y), (1, 0))
 
 
-def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None:
+def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypatch: pytest.MonkeyPatch) -> None:
     record = json.loads(tensor.RECORD.read_text(encoding="utf-8"))
+    # The rules run against the digests the record retains; the on-demand gate compares them with the live sources.
+    retained_inputs = dict(record["inputs"])
+    monkeypatch.setattr(tensor, "_inputs", lambda: dict(retained_inputs))
     _same(tensor.verdict(record), [])
     _same(tensor.RECORD.read_text(encoding="utf-8"), tensor._serialized(tensor.expected_record()))
 

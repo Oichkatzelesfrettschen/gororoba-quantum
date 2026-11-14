@@ -1,0 +1,60 @@
+{
+ "control": {
+  "formula_holds": false,
+  "pair": [
+   [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ]
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py": "c01b0c92c6ce4244a98a66dcfb3c2c7dd0646a3e602aca0322c230271cae1fab",
+  "docs/evidence/a5-kernel-bundles-residuals/singular_kernel_formula.py": "39568060e9e5ddf0aaa0e3250e75911d1f312b40021e88c9c086c97a1a691e84",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+ },
+ "modular": {
+  "3": {
+   "norm_nonzero": 924,
+   "rank_ten": 924,
+   "span_dimension_five": 924
+  },
+  "5": {
+   "norm_nonzero": 6524,
+   "rank_ten": 6524,
+   "span_dimension_five": 6524
+  },
+  "7": {
+   "norm_nonzero": 6524,
+   "rank_ten": 6524,
+   "span_dimension_five": 6524
+  }
+ },
+ "norms": [
+  1,
+  2,
+  3
+ ],
+ "pass": true,
+ "points": {
+  "formula_holds": 6524,
+  "points": 6524,
+  "rank_ten": 6524,
+  "span_dimension_five": 6524
+ },
+ "schema": "a5-kernel-bundles-residuals-singular-kernel-formula-v1"
+}
