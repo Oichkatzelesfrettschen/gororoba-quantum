@@ -759,17 +759,17 @@ the closest entry and say what changed.
   y_a G_p - y_p G_a by the pivot G_p in place of the 2 x 2 minors): Rees standard basis in 911 s against 1,241 s,
   colon certificate at 8,701 s against 8,685 s, the same fiber (dimension 5, multiplicity 23, 68 generators). The
   pivot form moves no time out of the saturation, so the E8-bar pivot run was not started; the block route is the
-  open A5-502.
+  open A5-506.
 
 ### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
 
 - Question and decisive outcome: the dimension and components of the singular locus of the minimal prime of
   dimension 5 and degree 11 of the E8-bar quadric ideal over Q(i). Codimension 1 would make the component
-  non-normal; codimension 2 or more, with its Cohen-Macaulay property, makes it normal (ledger A5-499, A5-500).
+  non-normal; codimension 2 or more, with its Cohen-Macaulay property, makes it normal (ledger A5-503, A5-504).
 - Formulation: 25 quadrics in 12 variables in codimension 7. The full ideal of 7 x 7 Jacobian minors has
   380,714,400 generators; `slocus` over Q(i) and modulo 32009, and the minors of nine dense combinations of the
   quadrics modulo 32009, each ended with `no more memory` at a 20 GB address-space cap on the workstation. Chosen:
-  the route of A5-501, kept minors of the sparse quadrics for an outer bound, a decomposition of the bound, and the
+  the route of A5-505, kept minors of the sparse quadrics for an outer bound, a decomposition of the bound, and the
   Fitting ideal of the pruned Jacobian cokernel on each component, with a two-sided rank bound on every result.
 - Host and tool versions: an 84 GB cloud VM with 4 vCPUs shared with another session's four processes, Singular
   4.4.1 from passagemath-singular 10.8.13 in a user-level environment, Python 3.14.7.
@@ -791,6 +791,6 @@ the closest entry and say what changed.
 - End state: record copied and checked with `--check`; the VM left running for its other user.
 - Outcome: 10 min 57 s for both basepoints in the first build beside another job, 5 min 43 s in the rebuild after
   review (isolated singular parts kept; same values) and 9 min 3 s for the committed record, which adds the
-  vertex space, the scroll matrix and three tangent cones (A5-504, A5-505, A5-507); a first exact pass in scratch took 3.7 s to bound the locus in
-  dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-500). Two traps are in A5-501: row
+  vertex space, the scroll matrix and three tangent cones (A5-508, A5-509, A5-511); a first exact pass in scratch took 3.7 s to bound the locus in
+  dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-504). Two traps are in A5-505: row
   sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.

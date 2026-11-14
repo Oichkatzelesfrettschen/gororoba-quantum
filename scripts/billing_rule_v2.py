@@ -48,8 +48,11 @@ def supersede(record: dict[str, Any], path: tuple[str, ...], old: str, new: str)
 # docs/evidence/bdsc/qualification_case.json), so a successor request would pass submission and fail analysis.
 # qd_platform.submit refuses a manifest whose acquisition_admission is not "ready"; a successor job manifest carries
 # this value until a successor analyzer admits it, as ascella_predecessor_current_analysis.py admits the
-# current-schema request.
+# current-schema request; the acquisition pairs ascella_predecessor_acquisition_{case,analysis}.py and
+# bdsc_diagnostic_acquisition_{case,analysis}.py replace it with READY.
 ADMISSION = "awaiting-analyzer"
+# The value of a manifest whose successor analyzer admits it; qd_platform.submit reads an absent key the same way.
+READY = "ready"
 # draw_claims scans results/quandela for manifests that name a draw, and docs/evidence holds the retained records the
 # originals' --check compares, so a successor tree written under either would claim a retained draw or replace a
 # pinned record.
@@ -63,6 +66,19 @@ def admit_none(manifest: dict[str, Any]) -> None:
             f"the original manifest already sets acquisition_admission {manifest['acquisition_admission']!r}"
         )
     manifest["acquisition_admission"] = ADMISSION
+
+
+def admit_ready(manifest: dict[str, Any]) -> None:
+    """Set READY on the manifest of a successor builder that ships with its own analyzer.
+
+    A manifest derived from a `_v2` record carries ADMISSION, which READY replaces through `supersede`; a manifest
+    that an original builder emits carries no admission and receives READY. Any other value is refused, so a
+    derivation that changes its admission cannot pass unreviewed.
+    """
+    if "acquisition_admission" not in manifest:
+        manifest["acquisition_admission"] = READY
+        return
+    supersede(manifest, ("acquisition_admission",), ADMISSION, READY)
 
 
 def outside_records(root: Path, directory: Path) -> Path:
