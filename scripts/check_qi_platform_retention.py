@@ -265,7 +265,7 @@ class GeneratedCaseChecks(unittest.TestCase):
         backend_type_ids = sorted({cases["backend_type_id"] for _, cases in manifests})
         self.assertEqual(backend_type_ids, [1, 4, 5, 6, 7])
         # One manifest per backend type and hardware policy: a wave-v1 manifest has its own, larger limit.
-        selected = {}
+        selected: dict[tuple[int, str | None], tuple[Path, dict[str, Any]]] = {}
         for path, cases in manifests:
             selected.setdefault((cases["backend_type_id"], cases.get("hardware_policy")), (path, cases))
         self.assertIn((7, "wave-v1"), selected)
