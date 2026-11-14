@@ -365,6 +365,16 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [eisenbud-harris-2000-geometry-of-schemes](../notes/papers/eisenbud-harris-2000-geometry-of-schemes.md) | Eisenbud and Harris, The Geometry of Schemes (Graduate Texts in Mathematics 197, Springer, 2000) | none | none | none |
 | [hartshorne-1977-algebraic-geometry](../notes/papers/hartshorne-1977-algebraic-geometry.md) | Hartshorne, Algebraic Geometry (Graduate Texts in Mathematics 52, Springer, 1977) | none | none | none |
 | [fulton-1998-intersection-theory](../notes/papers/fulton-1998-intersection-theory.md) | Fulton, Intersection Theory, second edition (Springer, 1998) | none | none | none |
+| [kleppe-laksov-1980-pfaffian-schemes](../notes/papers/kleppe-laksov-1980-pfaffian-schemes.md) | Kleppe and Laksov, The algebraic structure and deformation of pfaffian schemes (J. Algebra 64, 1980) | none | none | none |
+| [buchsbaum-eisenbud-1977-finite-free-resolutions-codimension-3](../notes/papers/buchsbaum-eisenbud-1977-finite-free-resolutions-codimension-3.md) | Buchsbaum and Eisenbud, Algebra structures for finite free resolutions, and some structure theorems for ideals of codimension 3 (Amer. J. Math. 99, 1977) | none | none | none |
+| [hartshorne-1962-complete-intersections-connectedness](../notes/papers/hartshorne-1962-complete-intersections-connectedness.md) | Hartshorne, Complete intersections and connectedness (Amer. J. Math. 84, 1962) | none | none | none |
+| [northcott-rees-1954-reductions-ideals-local-rings](../notes/papers/northcott-rees-1954-reductions-ideals-local-rings.md) | Northcott and Rees, Reductions of ideals in local rings (Proc. Cambridge Philos. Soc. 50, 1954) | none | none | none |
+| [swanson-2011-rees-valuations](../notes/papers/swanson-2011-rees-valuations.md) | Swanson, Rees valuations (in Commutative Algebra: Noetherian and Non-Noetherian Perspectives, Springer, 2011) | none | none | none |
+| [pfister-2007-modular-computation-standard-basis](../notes/papers/pfister-2007-modular-computation-standard-basis.md) | Pfister, On modular computation of standard basis (An. Stiint. Univ. Ovidius Constanta 15(1), 2007) | none | none | none |
+| [kaji-ohno-yasukura-1999-adjoint-varieties-secant-varieties](../notes/papers/kaji-ohno-yasukura-1999-adjoint-varieties-secant-varieties.md) | Kaji, Ohno and Yasukura, Adjoint varieties and their secant varieties (Indag. Math. 10, 1999) | none | none | none |
+| [bruns-herzog-1998-cohen-macaulay-rings](../notes/papers/bruns-herzog-1998-cohen-macaulay-rings.md) | Bruns and Herzog, Cohen-Macaulay Rings, revised edition (Cambridge Studies in Advanced Mathematics 39, 1998) | none | none | none |
+| [fulton-harris-2004-representation-theory](../notes/papers/fulton-harris-2004-representation-theory.md) | Fulton and Harris, Representation Theory: A First Course (Graduate Texts in Mathematics 129, Springer, 2004) | none | none | none |
+| [kato-1995-perturbation-theory-linear-operators](../notes/papers/kato-1995-perturbation-theory-linear-operators.md) | Kato, Perturbation Theory for Linear Operators, reprint of the 1980 edition (Classics in Mathematics, Springer, 1995) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
