@@ -64,7 +64,7 @@ import time
 from collections import Counter, defaultdict
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 HOST = "https://api.quantum-inspire.com"
 CATALOGUE_SCHEMA = "qi-catalogue-v1"
@@ -74,12 +74,28 @@ USAGE_SCHEMA = "qi-usage-v2"
 USAGE_SCHEMAS = ("qi-usage-v1", USAGE_SCHEMA)
 SUBMISSION_STATE_SCHEMA = "qi-submission-state-v1"
 SUBMISSION_SCHEMA = "qi-submission-v2"
-# The FAQ allows three queued jobs per hardware backend, and the API counts
-# its queue in batches. On hardware a batch holds at most three circuits and
-# waits for the account's queue to be empty, so at most three jobs are queued
-# under either reading of "job".
-HARDWARE_BATCH_CIRCUITS = 3
-HARDWARE_QUEUED_BATCHES = 1
+
+
+# The FAQ allows three queued jobs per hardware backend and does not say whether a "job" is a circuit or a batch
+# (docs/notes/quantum_inspire/usage.md, "Queue rules"); the API counts its queue in batches. A case manifest selects a
+# row of HARDWARE_POLICIES through its `hardware_policy` field. A manifest without the field takes the legacy row, which
+# satisfies both readings of "job" at once: a batch of at most three circuits and no more than one queued batch, so at
+# most three circuits of the account wait. The `wave-v1` row reads "job" as a batch job: a batch of at most five
+# circuits and up to three queued batches, a wave of fifteen circuits. Both rows are capped by the backend record
+# (`max_jobs_per_batch_job`, `batchjobs_per_queue_limit`) in `hardware_limits`.
+class HardwarePolicy(NamedTuple):
+    batch_circuits: int
+    queued_batches: int
+
+
+HARDWARE_POLICIES: dict[str, HardwarePolicy] = {
+    "legacy": HardwarePolicy(batch_circuits=3, queued_batches=1),
+    "wave-v1": HardwarePolicy(batch_circuits=5, queued_batches=3),
+}
+DEFAULT_HARDWARE_POLICY = "legacy"
+# The legacy row, which the case generators, proposals and gates that predate the policy field read.
+HARDWARE_BATCH_CIRCUITS = HARDWARE_POLICIES[DEFAULT_HARDWARE_POLICY].batch_circuits
+HARDWARE_QUEUED_BATCHES = HARDWARE_POLICIES[DEFAULT_HARDWARE_POLICY].queued_batches
 # A repository pacing rule, not a provider one: the FAQ, the general conditions
 # of use and the backend pages set no interval between submissions
 # (docs/notes/quantum_inspire/usage.md, "What the provider requires"). The pause
@@ -742,28 +758,58 @@ def _case_qubit_widths(cases: dict[str, Any], sources: dict[str, str]) -> dict[s
     return widths
 
 
-def hardware_pause_left(client: Client) -> int:
-    """Whole seconds before the account's hardware jobs have all been finished for HARDWARE_PAUSE_SECONDS.
+def hardware_policy(cases: dict[str, Any]) -> HardwarePolicy:
+    """The row of HARDWARE_POLICIES a manifest selects by `hardware_policy`; a missing field selects the legacy row."""
+    name = cases.get("hardware_policy", DEFAULT_HARDWARE_POLICY)
+    if type(name) is not str or name not in HARDWARE_POLICIES:
+        raise SystemExit(f"cases.json hardware_policy {name!r} is not one of {sorted(HARDWARE_POLICIES)}")
+    return HARDWARE_POLICIES[name]
+
+
+def hardware_limits(cases: dict[str, Any], backend_type: dict[str, Any]) -> HardwarePolicy:
+    """The policy's circuits per batch and queued batches, each capped by the backend record."""
+    policy = hardware_policy(cases)
+    return HardwarePolicy(
+        batch_circuits=min(policy.batch_circuits, backend_type["max_jobs_per_batch_job"]),
+        queued_batches=min(policy.queued_batches, backend_type["batchjobs_per_queue_limit"]),
+    )
+
+
+def hardware_pause_state(client: Client, wave_backend_type_id: int | None = None) -> tuple[int, int]:
+    """(seconds until the account's hardware jobs have all been finished for HARDWARE_PAUSE_SECONDS, batches in flight).
 
     A job counts when its batch runs on a backend type with is_hardware set. An
     unfinished job (a status outside TERMINAL) refuses the batch outright,
     except in a batch that stayed un-enqueued for ABANDONED_PLANNING_SECONDS.
+
+    A wave policy (`wave_backend_type_id` names the backend type of the batch to submit) admits the unfinished batches
+    of that one backend type: they are the earlier batches of the wave, they count as in flight, and their jobs set
+    no pause, because the platform calibrates between jobs it runs back to back from one wave. An unfinished job on
+    any other hardware backend type still refuses, and every finished batch keeps its pause.
     """
-    hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
+    types = {row["id"]: row for row in client.pages("/backend_types/") if row["is_hardware"]}
     at = utc_now()
-    batches = set()
+    batches = {}
     for row in client.pages("/batch_jobs"):
-        if row["backend_type_id"] not in hardware:
+        if row["backend_type_id"] not in types:
             continue
         if row["status"] == "planned":
             age = (at - datetime.datetime.fromisoformat(row["created_on"])).total_seconds()
             if age < ABANDONED_PLANNING_SECONDS:
                 raise SystemExit(f"hardware batch {row['id']} is being planned; wait until it is enqueued")
             continue
-        batches.add(row["id"])
+        batches[row["id"]] = row["backend_type_id"]
+    jobs = [job for job in client.pages("/jobs") if job["batch_job_id"] in batches]
+    in_flight = set()
+    if wave_backend_type_id is not None:
+        in_flight = {
+            job["batch_job_id"]
+            for job in jobs
+            if job["status"] not in TERMINAL and batches[job["batch_job_id"]] == wave_backend_type_id
+        }
     left = 0.0
-    for job in client.pages("/jobs"):
-        if job["batch_job_id"] not in batches:
+    for job in jobs:
+        if job["batch_job_id"] in in_flight:
             continue
         if job["status"] not in TERMINAL:
             raise SystemExit(f"hardware job {job['id']} is {job['status']}; wait until the account's jobs finish")
@@ -771,7 +817,50 @@ def hardware_pause_left(client: Client) -> int:
             raise SystemExit(f"hardware job {job['id']} is {job['status']} without a finish time; its pause is unknown")
         elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
         left = max(left, HARDWARE_PAUSE_SECONDS - elapsed)
-    return math.ceil(left)
+    return math.ceil(left), len(in_flight)
+
+
+def hardware_pause_left(client: Client) -> int:
+    """Whole seconds before the account's hardware jobs have all been finished for HARDWARE_PAUSE_SECONDS; an
+    unfinished hardware job refuses (hardware_pause_state with no wave)."""
+    return hardware_pause_state(client)[0]
+
+
+def hardware_admission(
+    client: Client,
+    cases: dict[str, Any],
+    backend_type: dict[str, Any],
+    backend_type_id: int,
+    circuits: int,
+    queue_limit: int,
+) -> tuple[int, int]:
+    """(queue limit, pause seconds left) of a batch of `circuits` circuits on a hardware backend type, or SystemExit.
+
+    The batch holds at most the policy's circuits. Under the legacy policy no account job on any hardware type may be
+    unfinished. Under a wave policy the account's earlier batches on this type may be unfinished, and the batch is
+    refused once the batches in flight reach the policy's queued count. Submitting a wave's batches one after another,
+    each only after the previous one is enqueued, keeps the queue in submission order, so the wave's circuits run in
+    the case's batch order, which the mirrored layouts of the cases rely on to cancel a linear drift.
+    """
+    limits = hardware_limits(cases, backend_type)
+    if circuits > limits.batch_circuits:
+        raise SystemExit(f"{circuits} circuits exceed the {limits.batch_circuits} a hardware batch may hold")
+    queue_limit = min(queue_limit, limits.queued_batches)
+    if hardware_policy(cases).queued_batches == 1:
+        pause = hardware_pause_left(client)
+        in_flight = 0
+    else:
+        pause, in_flight = hardware_pause_state(client, wave_backend_type_id=backend_type_id)
+    if in_flight + 1 > limits.queued_batches:
+        raise SystemExit(
+            f"the account has {in_flight} batches in flight; adding one exceeds the limit {limits.queued_batches}"
+        )
+    if pause > 0:
+        raise SystemExit(
+            f"the account's last hardware job finished less than {HARDWARE_PAUSE_SECONDS} s ago; "
+            f"wait {pause} more seconds so the platform can calibrate"
+        )
+    return queue_limit, pause
 
 
 def pre_dispatch_refused(case_dir: Path, cases_sha256: str) -> bool:
@@ -882,6 +971,7 @@ def _submit(
     if expected_cases_sha256 is not None and hashlib.sha256(cases_bytes).hexdigest() != expected_cases_sha256:
         raise SystemExit("cases.json differs from the approved manifest digest; renewed case approval is required")
     cases = json.loads(cases_bytes)
+    hardware_policy(cases)
     if cases["backend_type_id"] != backend_type_id:
         raise SystemExit(f"cases.json names backend type {cases['backend_type_id']}, not {backend_type_id}")
     if not isinstance(cases["shots"], int) or isinstance(cases["shots"], bool) or cases["shots"] < 1:
@@ -922,15 +1012,9 @@ def _submit(
     if type(queue_limit) is not int or queue_limit < 0 or type(queued) is not int or queued < 0:
         raise PlatformError("queue capacity or current-user queue count is invalid")
     if backend_type["is_hardware"]:
-        if len(sources) > HARDWARE_BATCH_CIRCUITS:
-            raise SystemExit(f"{len(sources)} circuits exceed the {HARDWARE_BATCH_CIRCUITS} a hardware batch may hold")
-        queue_limit = min(queue_limit, HARDWARE_QUEUED_BATCHES)
-        pause = hardware_pause_left(client)
-        if pause > 0:
-            raise SystemExit(
-                f"the account's last hardware job finished less than {HARDWARE_PAUSE_SECONDS} s ago; "
-                f"wait {pause} more seconds so the platform can calibrate"
-            )
+        queue_limit, _pause = hardware_admission(
+            client, cases, backend_type, backend_type_id, len(sources), queue_limit
+        )
     if queued + 1 > queue_limit:
         raise SystemExit(f"current-user queue has {queued} batches; adding one exceeds the limit {queue_limit}")
     language = next(lang for lang in client.pages("/languages") if lang["name"] == "cQASM" and lang["version"] == "3.0")
