@@ -1,0 +1,486 @@
+{
+ "schema": "gororoba.a5.e8-component-geometry/1",
+ "field": "Q(i)",
+ "inputs": {
+  "e8_component_geometry.py": "a5f7583c88b1546483991d169dc0afc10d39f5660a4cd5b0263f0e06bd22e342",
+  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
+ },
+ "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
+ "cells": [
+  {
+   "orbit": "N-",
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "minimal_primes": 2,
+   "embedded_linear_forms": 16,
+   "embedded_quadric_rank": 4,
+   "scroll_generator_degrees": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "scroll_betti": [
+    [
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     6,
+     8,
+     3
+    ]
+   ],
+   "scroll_singular_locus": 0,
+   "main_linear_forms": 9,
+   "main_residual_generator_degrees": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "main_hilbert_second": [
+    1,
+    7,
+    3
+   ],
+   "main_betti": [
+    [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     25,
+     91,
+     147,
+     119,
+     35,
+     6,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     21,
+     14,
+     3
+    ]
+   ],
+   "main_free_variables": 12,
+   "main_codimension": 7,
+   "walk": [
+    [
+     1,
+     198000,
+     1394,
+     3,
+     13
+    ],
+    [
+     2,
+     435600,
+     1657,
+     3,
+     4
+    ]
+   ],
+   "bound_components": 8,
+   "bound_component_dimensions": [
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     2,
+     1,
+     1
+    ],
+    [
+     2,
+     1,
+     1
+    ],
+    [
+     2,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     2
+    ]
+   ],
+   "bound_components_with_smooth_points": 8,
+   "singular_components": [
+    [
+     1,
+     1,
+     4,
+     4,
+     true,
+     true,
+     true,
+     true
+    ],
+    [
+     2,
+     1,
+     6,
+     6,
+     true,
+     true,
+     true,
+     false
+    ]
+   ],
+   "singular_generators": [
+    "y(21),y(20),y(19),y(18),y(17),y(15)+(i)*y(16),y(14),y(13),y(12),y(11)+(i)*y(16),y(10)+y(16),y(9),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)",
+    "y(21),y(20),y(18)+(i)*y(19),y(17),y(16),y(15),y(13),y(12),y(11),y(10),y(9)+(i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)"
+   ],
+   "scroll_prime": [
+    4,
+    4
+   ],
+   "main_prime": [
+    5,
+    11
+   ],
+   "embedded_prime": [
+    4,
+    2
+   ],
+   "scroll_meets_main": [
+    3,
+    1
+   ],
+   "scroll_meets_embedded": [
+    3,
+    1
+   ],
+   "embedded_vertex": [
+    1,
+    1
+   ],
+   "smooth_rank": [
+    7,
+    7
+   ],
+   "singular_locus": [
+    2,
+    1
+   ],
+   "embedded_contains_main": true,
+   "embedded_contains_scroll": false,
+   "scroll_meets_main_is_linear": true,
+   "scroll_meets_main_contains_embedded": true,
+   "scroll_meets_embedded_equals_scroll_meets_main": true,
+   "main_is_cohen_macaulay": true,
+   "main_is_gorenstein": false,
+   "main_is_normal": true
+  },
+  {
+   "orbit": "N+",
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "minimal_primes": 2,
+   "embedded_linear_forms": 16,
+   "embedded_quadric_rank": 4,
+   "scroll_generator_degrees": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "scroll_betti": [
+    [
+     1,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     6,
+     8,
+     3
+    ]
+   ],
+   "scroll_singular_locus": 0,
+   "main_linear_forms": 9,
+   "main_residual_generator_degrees": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "main_hilbert_second": [
+    1,
+    7,
+    3
+   ],
+   "main_betti": [
+    [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    [
+     0,
+     25,
+     91,
+     147,
+     119,
+     35,
+     6,
+     0
+    ],
+    [
+     0,
+     0,
+     0,
+     0,
+     0,
+     21,
+     14,
+     3
+    ]
+   ],
+   "main_free_variables": 12,
+   "main_codimension": 7,
+   "walk": [
+    [
+     1,
+     198000,
+     1394,
+     3,
+     13
+    ],
+    [
+     2,
+     435600,
+     1657,
+     3,
+     4
+    ]
+   ],
+   "bound_components": 8,
+   "bound_component_dimensions": [
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     2,
+     1,
+     1
+    ],
+    [
+     2,
+     1,
+     1
+    ],
+    [
+     2,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     1
+    ],
+    [
+     3,
+     1,
+     2
+    ]
+   ],
+   "bound_components_with_smooth_points": 8,
+   "singular_components": [
+    [
+     1,
+     1,
+     4,
+     4,
+     true,
+     true,
+     true,
+     true
+    ],
+    [
+     2,
+     1,
+     6,
+     6,
+     true,
+     true,
+     true,
+     false
+    ]
+   ],
+   "singular_generators": [
+    "y(21),y(20),y(19),y(18),y(17),y(15)+(-i)*y(16),y(14),y(13),y(12),y(11)+(-i)*y(16),y(10)+y(16),y(9),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)",
+    "y(21),y(20),y(18)+(-i)*y(19),y(17),y(16),y(15),y(13),y(12),y(11),y(10),y(9)+(-i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)"
+   ],
+   "scroll_prime": [
+    4,
+    4
+   ],
+   "main_prime": [
+    5,
+    11
+   ],
+   "embedded_prime": [
+    4,
+    2
+   ],
+   "scroll_meets_main": [
+    3,
+    1
+   ],
+   "scroll_meets_embedded": [
+    3,
+    1
+   ],
+   "embedded_vertex": [
+    1,
+    1
+   ],
+   "smooth_rank": [
+    7,
+    7
+   ],
+   "singular_locus": [
+    2,
+    1
+   ],
+   "embedded_contains_main": true,
+   "embedded_contains_scroll": false,
+   "scroll_meets_main_is_linear": true,
+   "scroll_meets_main_contains_embedded": true,
+   "scroll_meets_embedded_equals_scroll_meets_main": true,
+   "main_is_cohen_macaulay": true,
+   "main_is_gorenstein": false,
+   "main_is_normal": true
+  }
+ ],
+ "pass": true
+}
