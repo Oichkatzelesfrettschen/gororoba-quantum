@@ -142,6 +142,7 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
         raise AssertionError((name, found))
 
 
+@pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
     _same(sorted(record["inputs"]), sorted(arcs.INPUTS))

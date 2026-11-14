@@ -138,6 +138,7 @@ def test_the_comparison_with_the_arc_record_rejects_another_order_rank_or_limit(
             raise AssertionError((fragment, found))
 
 
+@pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
     _same(sorted(record["inputs"]), sorted(matrices.INPUTS))

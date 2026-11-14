@@ -68,7 +68,7 @@ def test_the_identity_map_fails_the_leibniz_rule() -> None:
         raise AssertionError("the identity passes as a derivation")
 
 
-def _entry(number: int, image: int, coordinate: int, value: list[int]) -> Callable[[dict[str, Any]], None]:
+def _entry(number: int, image: int, coordinate: int, value: list[Any]) -> Callable[[dict[str, Any]], None]:
     def mutate(record: dict[str, Any]) -> None:
         record["derivations"][number]["images"][image][coordinate] = value
 
@@ -94,6 +94,8 @@ def _repeat_a_derivation(record: dict[str, Any]) -> None:
 MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "one entry negated": (_negate_one_entry, "Leibniz rule fails"),
     "an image of e_0": (_entry(0, 0, 5, [1, 0]), "e_0 enters"),
+    "a fractional coefficient": (_entry(0, 0, 0, [0.5, 0]), "not a pair of integers"),
+    "a boolean coefficient": (_entry(2, 1, 1, [True, 0]), "not a pair of integers"),
     "an e_0 coordinate": (_entry(7, 9, 0, [0, 1]), "e_0 enters"),
     "a derivation repeated": (_repeat_a_derivation, "rank 13"),
     "a derivation removed": (lambda record: record["derivations"].pop(), "14 in order"),
@@ -116,6 +118,7 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
         raise AssertionError((name, found))
 
 
+@pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
     _same(sorted(record["inputs"]), sorted(tables.INPUTS))

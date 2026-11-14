@@ -32,6 +32,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import kernel_equivariance as equivariance  # noqa: E402
 
+import parallel  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 
 RECORD = HERE / "g2-derivation-tables.json"
@@ -110,11 +111,43 @@ def span_rank(tables: list[Table]) -> int:
     return int(equivariance.kernel_lemma._columns_rank(vectors))
 
 
+def noninteger_entries(record: dict[str, Any]) -> list[str]:
+    """Derivations with a coordinate that is not a pair of integers; `int` would truncate a fraction to a table that
+    passes."""
+    return [
+        f"{derivation.get('id')}: a coefficient is not a pair of integers"
+        for derivation in record.get("derivations", [])
+        if not all(
+            isinstance(entry, list) and len(entry) == 2 and all(type(part) is int for part in entry)
+            for image in derivation.get("images", [])
+            for entry in image
+        )
+    ]
+
+
 def tables_of(record: dict[str, Any]) -> list[Table]:
     return [
         [[(int(real), int(imaginary)) for real, imaginary in image] for image in derivation["images"]]
         for derivation in record.get("derivations", [])
     ]
+
+
+def table_problems(item: tuple[str, int | None, Table]) -> list[str]:
+    """The failures of one derivation table: shape, e_0, the Leibniz rule on 256 pairs, skewness, the entry count."""
+    label, recorded_entries, table = item
+    if [len(image) for image in table] != [DIMENSION] * DIMENSION:
+        return [f"{label}: the table is not {DIMENSION} by {DIMENSION}"]
+    found: list[str] = []
+    if any(entry != (0, 0) for entry in table[0]) or any(image[0] != (0, 0) for image in table):
+        found.append(f"{label}: e_0 enters the table")
+    failures = leibniz_failures(table)
+    if failures:
+        found.append(f"{label}: the Leibniz rule fails on {failures} pairs of basis units")
+    if not is_skew(table):
+        found.append(f"{label}: the matrix is not skew")
+    if recorded_entries != sum(entry != (0, 0) for image in table for entry in image):
+        found.append(f"{label}: the count of nonzero entries differs")
+    return found
 
 
 def regenerated() -> list[Table]:
@@ -137,21 +170,16 @@ def problems(record: dict[str, Any]) -> list[str]:
     if [derivation.get("id") for derivation in derivations] != [f"g2_derivation_{n}" for n in range(1, COUNT + 1)]:
         found.append(f"the derivations are not the {COUNT} in order")
         return found
+    noninteger = noninteger_entries(record)
+    if noninteger:
+        return found + noninteger
     tables = tables_of(record)
-    for derivation, table in zip(derivations, tables, strict=True):
-        label = derivation["id"]
-        if [len(image) for image in table] != [DIMENSION] * DIMENSION:
-            found.append(f"{label}: the table is not {DIMENSION} by {DIMENSION}")
-            continue
-        if any(entry != (0, 0) for entry in table[0]) or any(image[0] != (0, 0) for image in table):
-            found.append(f"{label}: e_0 enters the table")
-        failures = leibniz_failures(table)
-        if failures:
-            found.append(f"{label}: the Leibniz rule fails on {failures} pairs of basis units")
-        if not is_skew(table):
-            found.append(f"{label}: the matrix is not skew")
-        if derivation.get("nonzero_entries") != sum(entry != (0, 0) for image in table for entry in image):
-            found.append(f"{label}: the count of nonzero entries differs")
+    items = [
+        (derivation["id"], derivation.get("nonzero_entries"), table)
+        for derivation, table in zip(derivations, tables, strict=True)
+    ]
+    for table_found in parallel.ordered_map(table_problems, items, min_items=2):
+        found += table_found
     if not any("not 16 by 16" in problem for problem in found):
         rank = span_rank(tables)
         if rank != COUNT or record.get("span_rank") != COUNT:

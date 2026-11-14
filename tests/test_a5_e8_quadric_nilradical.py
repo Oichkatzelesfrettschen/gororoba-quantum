@@ -175,6 +175,7 @@ def test_the_slice_comparison_rejects_other_relations() -> None:
     _same(nil.slice_problems(record), ["N-: the relations differ from those of the weight-slice record"])
 
 
+@pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
     _same(sorted(record["inputs"]), sorted(nil.INPUTS))

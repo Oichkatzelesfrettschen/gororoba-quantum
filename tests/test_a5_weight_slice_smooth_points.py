@@ -134,6 +134,7 @@ def test_the_slice_comparison_rejects_other_relations_and_other_primes() -> None
             raise AssertionError((fragment, found))
 
 
+@pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
     _same(sorted(record["inputs"]), sorted(smooth.INPUTS))
