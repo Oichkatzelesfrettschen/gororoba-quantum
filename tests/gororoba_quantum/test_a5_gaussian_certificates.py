@@ -191,6 +191,23 @@ def test_the_leibniz_equations_vanish_on_the_tables_and_not_on_a_perturbed_one()
         raise AssertionError("a perturbed table satisfied every equation")
 
 
+@pytest.mark.audit
+def test_flint_recomputes_the_smith_invariants() -> None:
+    found = sc.smith_invariants(sc.equations(sc.sign_table()))
+    if found != sc.SMITH_INVARIANTS:
+        raise AssertionError(found)
+
+
+def test_the_recorded_smith_invariants_give_the_finite_field_nullities() -> None:
+    recorded = sc.SMITH_INVARIANTS
+    if recorded != {1: 192, 2: 49, 6: 1} or sum(recorded.values()) != 242:
+        raise AssertionError(recorded)
+    if [sc.nullity_modulo(recorded, prime) for prime in (2, 3, 5)] != [64, 15, 14]:
+        raise AssertionError("the invariants do not give nullities 64, 15 and 14 modulo 2, 3 and 5")
+    if sc.nullity_modulo({1: 193, 2: 48, 6: 1}, 2) == 64:
+        raise AssertionError("a changed multiplicity leaves the nullity modulo 2")
+
+
 def test_flint_recomputes_the_tracked_span_record() -> None:
     tables = gc.derivation_tables(fresh(G2_JSON))
     left = gc.derivation_left_inverse(fresh(LEFT_JSON))
@@ -421,6 +438,17 @@ LEFT_CASES: dict[str, Mutation] = {
     "item that is no pair": set_at(["g2_derivations", "left_sparse", 0, 0], [18]),
     "line that is no list": set_at(["g2_derivations", "left_sparse", 0], None),
     "out of order": lambda record: reverse_a_long_line(record["g2_derivations"]["left_sparse"]),
+    "convention that is no string": set_at(["convention"], 7),
+    "arc matrices that are no list": set_at(["arc_matrices"], "x"),
+    "repeated selected row": lambda record: record["g2_derivations"]["selected_rows"].__setitem__(
+        1, record["g2_derivations"]["selected_rows"][0]
+    ),
+    "13 selected rows": delete_at(["g2_derivations", "selected_rows", 13]),
+    "selected row 256": set_at(["g2_derivations", "selected_rows", 13], 256),
+    "float norm": set_at(["g2_derivations", "norm_of_d"], 1.0),
+    "norm 2": set_at(["g2_derivations", "norm_of_d"], 2),
+    "row meaning that is no string": set_at(["g2_derivations", "row_meaning"], None),
+    "column outside the selected rows": set_at(["g2_derivations", "selected_rows", 0], 0),
 }
 
 SPAN_CASES: dict[str, Mutation] = {

@@ -41,6 +41,7 @@ import re
 import sys
 import tempfile
 from fractions import Fraction
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -345,7 +346,9 @@ def derivation_left_inverse(record: object) -> list[list[tuple[int, Entry]]]:
     """The 14 lines of the left inverse of the 256 x 14 coordinate matrix, each as (column, (real, imaginary)) pairs.
 
     The reader accepts exactly the shape this module writes: the key sets of the record and of its derivation
-    section, integer types, scalar d = 1, 14 lines whose columns are distinct and increase within 0 to 255."""
+    section, integer types, scalar d = 1 with its norm, 14 distinct increasing selected rows within 0 to 255, 14 lines
+    whose columns are distinct, increase and lie among the selected rows, the two sentences as nonempty strings and
+    arc_matrices as a list of sections (arc_certificates checks the arc matrices against their own record)."""
     record = exact_keys(record, LEFT_RECORD_KEYS, "left-inverse record")
     if record["schema"] != RECORD_SCHEMA or record["ring"] != "Z[i]":
         raise RuntimeError("unexpected left-inverse record")
@@ -360,6 +363,21 @@ def derivation_left_inverse(record: object) -> list[list[tuple[int, Entry]]]:
         raise RuntimeError(f"derivations, d: {scalar!r} is not a [real, imaginary] pair")
     if (exact_integer(scalar[0], "derivations, d"), exact_integer(scalar[1], "derivations, d")) != (1, 0):
         raise RuntimeError(f"the scalar {scalar} is not 1")
+    if exact_integer(section["norm_of_d"], "derivations, norm_of_d") != 1:
+        raise RuntimeError(f"derivations, norm_of_d: {section['norm_of_d']} is not the norm of d = 1")
+    for holder, key in ((record, "convention"), (section, "row_meaning")):
+        if not isinstance(holder[key], str) or not holder[key]:
+            raise RuntimeError(f"left-inverse record, {key}: {holder[key]!r} is not a sentence")
+    if not isinstance(record["arc_matrices"], list) or not all(
+        isinstance(item, dict) for item in record["arc_matrices"]
+    ):
+        raise RuntimeError("left-inverse record, arc_matrices: not a list of sections")
+    selected = section["selected_rows"]
+    if not isinstance(selected, list) or len(selected) != DERIVATIONS:
+        raise RuntimeError(f"derivations, selected_rows: not a list of {DERIVATIONS} rows")
+    chosen = [exact_integer(row, "derivations, selected_rows") for row in selected]
+    if any(not 0 <= row < DIMENSION * DIMENSION for row in chosen) or any(a >= b for a, b in pairwise(chosen)):
+        raise RuntimeError(f"derivations, selected_rows: {chosen} leaves 0 to 255, repeats or is out of order")
     lines = section["left_sparse"]
     if not isinstance(lines, list) or len(lines) != DERIVATIONS:
         raise RuntimeError(f"the left inverse does not hold {DERIVATIONS} lines")
@@ -375,6 +393,8 @@ def derivation_left_inverse(record: object) -> list[list[tuple[int, Entry]]]:
             column = exact_integer(item[0], where)
             if not 0 <= column < DIMENSION * DIMENSION or (items and column <= items[-1][0]):
                 raise RuntimeError(f"{where}: column {column} is out of range, repeated or out of order")
+            if column not in chosen:
+                raise RuntimeError(f"{where}: column {column} is outside selected_rows")
             items.append((column, (exact_integer(item[1][0], where), exact_integer(item[1][1], where))))
         result.append(items)
     return result

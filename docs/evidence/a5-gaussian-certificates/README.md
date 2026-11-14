@@ -72,10 +72,12 @@ ahead of the lemma named for it.
   the Gaussian integers.
 - The span theorem multiplies by 6: it states h(6) F = sum c_t D_t. It says nothing about a ring where 2 or 3 is a zero
   divisor (h(6) is then a zero divisor, and the combination holds only after multiplication by it), and it states
-  F itself only where 6 is invertible.
+  F itself where the image of 6 is a nonzero divisor ([derivations_spanned_regular]) or invertible
+  ([derivations_spanned_invertible]).
 - Computed, not proved: with exact arithmetic (python-flint), the Leibniz system for a linear map of the sedenions,
   4096 equations in 256 unknowns, has rank 242 and nullity 14 over Q, with Smith invariants 1 (192 times), 2 (49
-  times) and 6 (once). With the independence theorem this gives a derivation algebra of dimension 14 in
+  times) and 6 (once), hence nullity 64 over F_2 and 15 over F_3 (`span_certificate.py --smith` recomputes the
+  invariants and compares them). With the independence theorem this gives a derivation algebra of dimension 14 in
   characteristic zero, spanned by the 14 tables; the span theorem is the Rocq statement of the spanning half, with the
   multiplier 6. That the algebra is g_2 is not stated by any theorem.
 - Rocq receipts (compile without warnings, closed assumptions, kernel check without axioms, mutants rejected) are

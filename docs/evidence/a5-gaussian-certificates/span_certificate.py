@@ -127,6 +127,30 @@ def solve(rows: Rows, chosen: list[Triple], target: list[list[int]]) -> Any:
     return solution
 
 
+# The invariant factors of the 4096 x 256 integer Leibniz system (value -> multiplicity); the rest of the diagonal of
+# its Smith form is zero. Computed with python-flint 0.9.0 and compared by --smith; no Rocq theorem states them.
+SMITH_INVARIANTS = {1: 192, 2: 49, 6: 1}
+
+
+def smith_invariants(rows: Rows) -> dict[int, int]:
+    """The nonzero diagonal of the Smith normal form of the whole Leibniz system over Z, as value -> multiplicity."""
+    import flint
+
+    matrix = flint.fmpz_mat([[row.get(index, 0) for index in range(UNKNOWNS)] for row in rows.values()])
+    form = matrix.snf()
+    counts: dict[int, int] = {}
+    for position in range(min(form.nrows(), form.ncols())):
+        value = abs(int(form[position, position]))
+        if value:
+            counts[value] = counts.get(value, 0) + 1
+    return counts
+
+
+def nullity_modulo(invariants: dict[int, int], prime: int) -> int:
+    """The dimension of the solution space modulo `prime`: the unknowns less the invariants prime does not divide."""
+    return UNKNOWNS - sum(count for value, count in invariants.items() if value % prime)
+
+
 def coordinate_matrix(tables: Tables) -> list[list[Entry]]:
     """V[16 m + k][n] is coordinate k of D_(n+1)(e_m)."""
     return [[tables[n][j // N][j % N] for n in range(DERIVATIONS)] for j in range(UNKNOWNS)]
@@ -238,7 +262,17 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="recompute and compare with --out, write nothing")
     mode.add_argument("--verify", action="store_true", help="check the identity of --out in integers, no flint")
+    mode.add_argument("--smith", action="store_true", help="recompute the Smith invariants of the Leibniz system")
     arguments = parser.parse_args(argv)
+    if arguments.smith:
+        found_invariants = smith_invariants(equations(sign_table()))
+        same = found_invariants == SMITH_INVARIANTS
+        listed = ", ".join(f"{value} ({count})" for value, count in sorted(found_invariants.items()))
+        print(
+            f"{'ok' if same else 'DIFFERS'} Smith invariants {listed}; nullity {nullity_modulo(found_invariants, 2)}"
+            f" modulo 2, {nullity_modulo(found_invariants, 3)} modulo 3"
+        )
+        return 0 if same else 1
     tables = gc.derivation_tables(json.loads(arguments.g2.read_text(encoding="utf-8")))
     left_sparse = gc.derivation_left_inverse(json.loads(arguments.left_inverses.read_text(encoding="utf-8")))
     if arguments.verify:

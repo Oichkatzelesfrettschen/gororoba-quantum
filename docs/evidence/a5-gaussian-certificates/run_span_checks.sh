@@ -7,6 +7,8 @@
 set -eu
 B=${1:?build directory}
 R="$HOME/.opam/rocq-9.3/bin/rocq"
+PYTHON=${PYTHON:-python3}
+export PYTHON
 [ -x "$R" ] || { echo "run_span_checks: no rocq at the rocq-9.3 switch" >&2; exit 2; }
 cd "$B"
 rec=span-checks-record.txt
@@ -36,10 +38,10 @@ grep -q 'Axioms:' span-queries-output.txt && fail "a query lists an axiom"
 cat time.tmp >> "$rec"
 grep -q '^\* Axioms: <none>$' span-kernel-check-output.txt || fail "the kernel checker reports an axiom"
 echo "kernel check: Axioms: <none>" >> "$rec"
-rm -rf mutants-span
-python3 make_span_mutants.py CdTowerG2DerivationSpan.v mutants-span
+mutants=$(mktemp -d "$PWD/mutants-span.XXXXXX")
+"$PYTHON" make_span_mutants.py CdTowerG2DerivationSpan.v "$mutants"
 count=0
-for d in mutants-span/*/; do
+for d in "$mutants"/*/; do
   n=$(basename "$d")
   status=0
   ( cd "$d" && "$R" compile -q -w @all -Q "$B" "" -Q . "" CdTowerG2DerivationSpan.v > compile.log 2>&1 ) || status=$?

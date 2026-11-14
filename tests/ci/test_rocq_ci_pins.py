@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 
 import pytest
-from check_rocq_ci_pins import FIXED_FILES, ROOT, WORKFLOW, bundles, check, read_pin
+from check_rocq_ci_pins import FIXED_FILES, ROOT, WORKFLOW, bundles, check, digest_ledgers, read_pin
 
 
 def checked_files() -> list[str]:
@@ -17,7 +17,9 @@ def checked_files() -> list[str]:
         files += [f"docs/evidence/{name}/{leaf}" for leaf in ("toolchain.txt", "replay_rocq.sh")]
         if (ROOT / f"docs/evidence/{name}/source_hashes.sha256").exists():
             files.append(f"docs/evidence/{name}/source_hashes.sha256")
-    return files
+    for name in digest_ledgers(ROOT):
+        files += [str(path.relative_to(ROOT)) for path in sorted((ROOT / "docs/evidence" / name).glob("*.sha256"))]
+    return sorted(set(files))
 
 
 def mutations() -> list[tuple[str, str, str]]:
@@ -46,6 +48,8 @@ def mutations() -> list[tuple[str, str, str]]:
             ("      - ci/gororoba_math.pin\n", ""),
             ("      - docs/state/research_state.json\n", ""),
             ("      - scripts/math_source_generators.py\n", ""),
+            # A directory that holds a digest ledger and no replay script.
+            ("      - docs/evidence/a5-gaussian-certificates/**\n", ""),
             # Both events list the path, so the first occurrence is the pull_request list.
             ("      - docs/evidence/stiefel_witness/**\n", ""),
             # The push list is checked apart from the pull_request list.
