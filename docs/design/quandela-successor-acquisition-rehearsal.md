@@ -5,7 +5,7 @@ until the owner approves the case it names.
 
 A new acquisition of the Ascella target-slot request or of the Belenos diagnostic request builds with a successor
 builder and reads with its paired analyzer. Each pair states the billing rule of
-[`scripts/billing_rule_v2.py`](../../scripts/billing_rule_v2.py), carries `acquisition_admission: ready`, binds its own
+[`scripts/billing_rule_v2.py`](../../scripts/billing_rule_v2.py), carries `acquisition_admission: ready`, binds the digests of its
 sources into the request, and admits a run only against that request's sha256
 ([billing-rule successor record](../evidence/quandela-billing-rule-successor/README.md)). A simulator run rehearses the
 whole path (build, plan, review packet, submit, collect, analyze) on a platform whose charge is the per-job price, so
@@ -38,15 +38,30 @@ QPU case rests on it.
 
 | Platform | Source of the charge | Charge per completed job |
 |---|---|---|
-| sim:ascella, sim:belenos | the price per shot is 0 on every simulator: [credit optimization runbook](../runbooks/quandela-credit-optimization.md), "The billing rule" (lines 34 to 42) and "Simulator jobs are not free" | 1 credit |
+| sim:ascella, sim:belenos | the price per shot is 0 on every simulator: [credit optimization runbook](../runbooks/quandela-credit-optimization.md), "The billing rule" (lines 34 to 42) and "Simulator jobs are not free" | 1 credit, the observed charge of a completed simulator job; falsifier: an isolated completed simulator job whose usage counter moves by another amount |
 | qpu:ascella, qpu:belenos | 1 credit plus 1e-6 per billed shot | 1 + 1e-6 times the smaller of the shots used and the largest iteration's `max_shots` |
 
-Simulator jobs are billed. A retained sim:ascella run of the frozen target-slot request used 8 iterations of 32768
+Simulator jobs are billed. The 1 credit is an observed charge, not a resolved tariff. A retained sim:ascella run of the frozen target-slot request used 8 iterations of 32768
 events and charged 1.0 credit (`qd_platform.run_facts` of
 `results/quandela/runs/2026-10-30T010726Z-sim_ascella-ascella_predecessor-source-compatible`, `charge` 1.0). The
 platform note [platform-specifications.md](../notes/quandela/platform-specifications.md) records the simulator tariff
 as unresolved and asks a case to budget at least 1.0 credit per job; this plan budgets 1.0 and reads the usage report
 before and after each job as the check.
+
+## Rebinding and source binding
+
+Each analyzer rebinds a frozen function with `gororoba_quantum/rebound.py`. The helper overrides the global names that
+the copied code looks up directly; a callee it calls keeps its own module's globals, so every call site passes each
+nested callee that must see the successor record or platform as its own override. The tests plant a defect in the
+frozen readout and require the hand-computed expectations to reject it.
+
+Source binding differs by family. The Ascella request records the digests of its builder, analyzer and shared modules in
+`preregistered.current_case_sources`; `qd_platform.acquisition_sources` verifies them at `review` and `submit`, and the
+analyzer rebuilds the request from the tree it runs in. `plan` and `collect` do not verify them. The Belenos manifests
+record the sha256 of every repository module the readout imports as `successor_sources`; `qd_platform.load_case`
+verifies them before `plan`, `review`, `submit` and `collect`, and the analyzer verifies them before it reads a run.
+Both bindings include `scripts/qd_platform.py`, so a built request is valid in one source tree and is rebuilt after a
+change to any bound file.
 
 ## Ascella target-slot request
 
