@@ -329,9 +329,14 @@ def test_shadow_root_writes_the_verified_bytes_and_verified_bytes_reads_once(
     fixture: tuple[Path, Path], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root, math = fixture
-    reads = []
+    reads: list[str] = []
     original = Path.read_bytes
-    monkeypatch.setattr(Path, "read_bytes", lambda self: (reads.append(self.name), original(self))[1])
+
+    def recording_read_bytes(self: Path) -> bytes:
+        reads.append(self.name)
+        return original(self)
+
+    monkeypatch.setattr(Path, "read_bytes", recording_read_bytes)
     shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
     if any(name.endswith(".v") and name in SOURCES and name != "Kept.v" for name in reads):
         raise AssertionError(f"a moved source was read a second time through Path.read_bytes: {reads}")
