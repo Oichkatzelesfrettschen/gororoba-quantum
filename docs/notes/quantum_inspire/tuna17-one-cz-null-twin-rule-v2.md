@@ -8,7 +8,7 @@ the four changes a recorded verdict.
 
 | limit | disposition | home |
 |---|---|---|
-| single-ended twin readout reference | stated and bounded below; a bracketed successor layout is costed, not built | this note |
+| single-ended twin readout reference | stated and bounded below; the bracketed successor case reads every twin against its own bracket | this note, `scripts/qi_pathion_one_cz_null_bracketed_cases.py` |
 | twin control admits a large negative t0 | rule v2 with an `unresolved_negative_twin` row | `scripts/qi_pathion_one_cz_null_rule_v2.py`, `results/quantum_inspire/pathion_one_cz_null_tuna_17_rule_v2.json` |
 | `pooled` divides by zero for a deterministic arm | finite-count error per arm, named refusal of a zero error | `scripts/qi_pathion_one_cz_null_analysis.py` |
 | k8 and k12 of `c2_one_cz_twins.txt` unchecked | every `oc.LOW_NAMES` template read against `oc.PREDICTED` | `tests/scripts/test_qi_pathion_one_cz_null_models.py` |
@@ -47,10 +47,16 @@ batches (16 to 18) estimate. An additive shift cancels only while both twins of 
 A bracket around every twin needs two readouts beside each twin, four circuits for a pair, and a batch holds three
 (`PLATFORM_CIRCUITS_PER_BATCH` in `tests/scripts/test_qi_pathion_one_cz_null_rule_v2.py`). The successor layout that
 brackets every twin runs each twin as `[readout-0, twin, readout-1]`: 16 twin batches instead of 8, 27 batches instead of
-19, and 8 more pauses of 30 s (240 s). It separates the two twins of a pair across batches, so a batch drift enters
-t directly (the case's preregistered drift is 0.003, 1.1 pooled twin standard errors) in exchange for a correction of an
-effect that the spread above puts at 0.062 standard errors. The single-ended layout keeps the within-batch pairing and
-stays the recommended design; the bracketed layout is not built.
+19, and 8 more pauses of 30 s (240 s). The successor case
+[pathion_one_cz_null_bracketed_tuna_17](../../../results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md)
+builds it (owner ruling 2026-11-14) and preregisters rule v2 and the finite-count error. Splitting a pair removes the
+within-batch cancellation of the additive readout shift: the retained selector e01 steps by about 0.005 between
+adjacent batches (chi-square 84.4 on 11 degrees of freedom over the 12 readout-0 circuits), which moves a raw split
+contrast by about 0.0025, 0.9 pooled twin standard errors, so the successor reads each twin against its own bracket.
+Since every twin's ideal P(s = 0) is 1/2, the bracket offset (e10 - e01) / 2 corrects that shift linearly and leaves
+the contrast on the raw-prediction scale. What a split pair still exposes is a drift of the offset itself over one
+queue interval (retained batches started tens of minutes apart), which no readout circuit corrects; the successor's
+operating characteristics price it (CASE.md there).
 
 ## Twin-control rule v2
 

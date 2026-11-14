@@ -197,6 +197,18 @@ cancels a linear drift in the pooled twin contrast and is not simulated: the dri
   drifts); the unchanged heterogeneity gate reads it as `unresolved_batch`.
 - A readout-context difference between the two brackets (readout-1 excites the five region qubits only) shifts c1 and c0
   alike, but a context bias that differs between batches is outside the correction.
+- A split pair sits one queue interval apart. In the retained series the last result of one batch and the first of the
+  next are 23 to 207 minutes apart (mean 52; result `created_on` of
+  `results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-*`, Tuna-17, 2026-11-07), against
+  10 to 147 s inside one batch, and the series spanned 15.8 hours; the successor's 27 batches would span about 20 hours
+  at that pace. A drift of the selector response over one interval enters a twin contrast in full; the 0.003 per-batch
+  drift of the operating characteristics is a stress, not a bound on that interval.
+- hypothesis: the retained readout-0 selector error e01 behaves as steps rather than independent batch scatter (three
+  constant segments reduce its chi-square from 84.4 on 11 to 5.7 on 9 degrees of freedom, breakpoints chosen after
+  seeing the data, one of them between the forward and mirror rounds). The bracket corrects a step per batch; the
+  operating characteristics draw independent per-batch drift and do not simulate steps.
+- The Ry check has little statistical power: at 1,024 shots a twin's P(s = 0) carries a standard error of about 0.016,
+  so it distinguishes the corrected from the raw reading only when |e10 - e01| / 2 on Ry exceeds about 0.05.
 - The X-only calibration (batches 24 to 26) covers the assignment context; a q12 correlation that appears only after the
   template's CZ and X90 schedule stays open, and no outcome label changes.
 
