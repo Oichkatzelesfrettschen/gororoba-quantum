@@ -382,14 +382,79 @@ fixtures), and row 6 shows that nullity 12 does not force a large fiber. The gri
 record holds no equations for the locus `dim L > 2`; `A5-438` adds real points with non-real split coordinates
 to the second part.
 
-`hypothesis` (`A5-434`, open): the sampled planes span the quadrics of each image, so that the images carry 313,
-178 and 1,575 quadric equations beyond the Plucker quadrics, the first two images differ and the third lies in a
-linear space of codimension 15; the record holds no certificate that the deterministic samples are general for
-degree 2. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
+The count of quadrics on each image (`A5-434`, superseded by `A5-447`) is tested and taken apart in the next
+subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
 each stratum outside a proper closed subset.
+
+#### The quadrics of the Gauss images
+
+`gauss_image_quadrics.py` (record `gauss-image-quadrics-result.json`) works modulo 32029 at 760 points `z` of each
+stratum, in the frame of the kernel vectors, where `Q` is the sum of the squares of the 15 coordinates.
+
+**Proved** (`A5-446`): the kernel plane at `(z, w)` is `K(z) n w-perp` and `w` is free, so the image is the union
+of the projective planes `P(Lambda^2 K(z))`, each linear in the Plucker space. A quadric vanishes on the image
+exactly when its polar form vanishes on `S^2(Lambda^2 K(z))` for every `z`: the quadrics beyond the 1,365 Plucker
+quadrics are the annihilator of the span of these six-dimensional spaces in a space of dimension 4,200.
+
+Sampled (`A5-447`, survives): the six products of a basis of `Lambda^2 K(z)` at the 760 points have the ranks of
+the first table's sampler, which draws planes under another label.
+
+| stratum | rank | saturates at | first `rank` retained planes | both samples | quadrics beyond Plucker |
+|---|---|---|---|---|---|
+| `V(Q)` minus `V(G)` | 3,887 | 648 three-planes | 3,887 | 3,887 | 313 |
+| `V(G)` minus `V(Q)` | 4,022 | 671 three-planes | 4,022 | 4,022 | 178 |
+| `V(Q) n V(G)` | 2,625 | 438 three-planes | 2,625 | 2,625 | 1,575 |
+
+The rank grows by six per three-plane until it saturates, so the samples are as general as their size allows.
+Each rank is a lower bound for the dimension of the degree-2 part of the coordinate ring; the count of quadrics
+stays an upper bound, since the vanishing of a quadric on the whole image is an identity of degree 12 in `z`
+that the record does not prove.
+
+Sampled (`A5-448`, survives): the product `k, k' -> M(k) k'` on `K(z)`, skew because `M(u) v = -M(v) u`, has one
+type per stratum at all 760 points.
+
+| stratum | products `M(k) k'` | double products | type of `K(z)` |
+|---|---|---|---|
+| `V(Q)` minus `V(G)` | multiples of `z` | zero | Heisenberg algebra with center `z` |
+| `V(G)` minus `V(Q)` | one line outside `K(z)`, not the line of `z` | nonzero | not closed |
+| `V(Q) n V(G)` | zero | zero | abelian |
+
+Write `mu(u ^ v) = M(u) v`, a linear map from `Lambda^2 V` to `V` of rank 15, and `Pi(p)` for the skew matrix of
+a bivector `p`. A symmetric form `beta` that vanishes on a three-plane `K` gives `Pi(p) beta Pi(p) = 0` on
+`Lambda^2 K`, because every term of the expansion carries a value of `beta` on `K` (`A5-449`); on the two strata
+inside `V(Q)` exactly one symmetric form vanishes on every sampled `K(z)`, the norm, and on `V(G)` minus `V(Q)`
+none does. The table lists, per family of quadrics, how many independent ones it adds to the families before it.
+
+| family | written | `V(Q)` minus `V(G)` | `V(G)` minus `V(Q)` | `V(Q) n V(G)` |
+|---|---|---|---|---|
+| Plucker quadrics | 1,365 | 1,365 | 1,365 | 1,365 |
+| vanishing linear form times coordinate | 105 per form | no form | no form | 1,455 (15 forms) |
+| coordinates of `p ^ mu(p)` | 455 | 98 | 3 | 0 |
+| `mu(p)_a mu(p)_b` | 120 | 0 | 3 | 0 |
+| `Pi(p) M(e_j) mu(p)` | 225 | 119 | 14 | 0 |
+| entries of `Pi(p) M(e_j) Pi(p)` | 1,575 | 0 | 133 | 0 |
+| entries of `Pi(p) N Pi(p)`, `N` the norm | 120 | 96 | no form | 96 |
+| total | | 1,678 | 1,518 | 2,916 |
+| quadrics on the sampled span | | 1,678 | 1,543 | 2,940 |
+| outside the families | | 0 | 25 | 24 |
+
+On `V(Q)` minus `V(G)` the four families span every quadric of the sample (`A5-450`), and the Heisenberg product
+explains the two middle ones: `mu(p) = omega(p) z` puts `p ^ mu(p)` in `Lambda^3 K(z)`, whose span over the
+stratum has dimension 356 of 455, which leaves 99 linear forms; and `Pi(p) M(e_j) z = -Pi(p) M(z) e_j = 0`
+because `p` lies in `Lambda^2 ker M(z)`. On `V(Q) n V(G)` the 15 linear forms that cut the span of the image down
+to dimension 90 are the coordinates of `mu` (`A5-451`).
+
+`hypothesis` (`A5-452`, open): the product types hold at every nullity-4 point of the two strata inside `V(Q)`,
+which would make the 313 quadrics of `V(Q)` minus `V(G)` identities in characteristic 0. The quadrics
+outside the families split by the characters of the sign changes `e_k -> chi(k) e_k` of the coordinates
+(`A5-453`, open): 3 on `V(G)` minus `V(Q)` and 2 on `V(Q) n V(G)` in the trivial character, one in each of the
+characters 1 to 8 and two in each of the characters 9 to 15, the same 21 on both strata. The record counts them
+and holds none explicitly.
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check` (modulo 32029; 299 CPU seconds and 3.4 GiB on two workers under an 8 GiB memory scope, 3 minutes 12 seconds of wall time, same versions and host as the last replay).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
 

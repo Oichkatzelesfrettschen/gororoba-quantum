@@ -5352,6 +5352,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check",
+      "name": "core-a5-gauss-image-quadrics",
+      "seconds": 299.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/gauss-image-quadrics-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
