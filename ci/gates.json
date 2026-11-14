@@ -5400,6 +5400,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check",
+      "name": "core-a5-gauss-image-quadrics",
+      "seconds": 357.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/gauss-image-quadrics-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
@@ -5577,6 +5588,28 @@
       "workers": "all",
       "replays": [
         "docs/evidence/a5-kernel-attachments/e8-relation-ideal-orders-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py --check",
+      "name": "core-a5-weight-slice-relation-membership",
+      "seconds": 0.5,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/weight-slice-relation-membership-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py --check",
+      "name": "core-a5-iso-w8-relation-ideal-orders",
+      "seconds": 0.5,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/iso-w8-relation-ideal-orders-result.json"
       ]
     },
     {
