@@ -6085,12 +6085,14 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_analysis.py --check results/quantum_inspire/runs/*pathion_one_cz_null_tuna_17-batch-* --record results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json --predecessor results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json && \"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_rule_v2.py --check --record results/quantum_inspire/pathion_one_cz_null_tuna_17_rule_v2.json",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_analysis.py --check results/quantum_inspire/runs/*pathion_one_cz_null_tuna_17-batch-* --record results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json --predecessor results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json && \"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_rule_v2.py --check --record results/quantum_inspire/pathion_one_cz_null_tuna_17_rule_v2.json && \"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_bracketed_cases.py --check results/quantum_inspire/cases",
       "name": "core-pathion-one-cz-null-tuna-analysis-replay",
-      "seconds": 112.5,
+      "seconds": 121.1,
       "replays": [
         "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json",
-        "results/quantum_inspire/pathion_one_cz_null_tuna_17_rule_v2.json"
+        "results/quantum_inspire/pathion_one_cz_null_tuna_17_rule_v2.json",
+        "results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17",
+        "results/quantum_inspire/cases/pathion_one_cz_null_bracketed_qx"
       ]
     },
     {
