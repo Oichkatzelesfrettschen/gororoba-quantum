@@ -8,7 +8,7 @@ checker reads the record without Singular: it recomputes each rank by exact elim
 order, rank and the count of nonzero limit coordinates with the record of `w8_component_arcs_qi.py`.
 
 Rank 6 of [dF | F] at a point says that the cone over the limits has dimension 6 there: the five parameter
-directions and the radial direction F are independent (ledger A5-437).
+directions and the radial direction F are independent (ledger A5-448).
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py [--check]
 """
@@ -34,7 +34,7 @@ import parallel  # noqa: E402
 RECORD = HERE / "w8-component-arc-matrices-qi.json"
 SCHEMA = "gororoba.a5.w8-component-arc-matrices-qi/1"
 INPUTS = ("w8_component_arc_matrices_qi.py", *arcs.INPUTS)
-LEDGER_ROW = "A5-437"
+LEDGER_ROW = "A5-448"
 ROWS = arcs.GENERATORS
 PARAMETERS = 5
 COLUMNS = PARAMETERS + 1

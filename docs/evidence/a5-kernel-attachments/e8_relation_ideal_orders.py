@@ -4,7 +4,7 @@ On the weight slice at N- or N+ (`weight_slice_fiber_relations.py`) let O be the
 origin, m its maximal ideal, I = (G_1, ..., G_21) the Pfaffian ideal, L the relation ideal of the fiber cone
 (a form F of degree d lies in L exactly when F(G) lies in m I^d), and K the ideal that the 148 relations of degree 2
 generate. K has the minimal primes P5 (dimension 5, degree 11) and P4 (dimension 4, degree 4), radical R = P5 /\\ P4,
-and the embedded prime A = K : R (A5-440, A5-443).
+and the embedded prime A = K : R (A5-451, A5-454).
 
 A polynomial map phi from the affine space of (pa, pb, pl, pz, pm) to the slice sends the origin to the origin and
 satisfies every generator of the germ ideal J, so it induces a ring map from O to the local ring of that affine
@@ -25,7 +25,7 @@ weights (1, 1, 1, 1, 1) give e = 1 and no order strictly between nu and nu + e, 
 basepoint leaves generators of J nonzero.
 
 Deduction recorded in the ledger: L lies in P5 /\\ P4 = R, so L / K is a submodule of the torsion-free module R / K
-of rank 1 over S / A (A5-443); a nonzero submodule would give c outside A with c * y6 in L, and the third order
+of rank 1 over S / A (A5-454); a nonzero submodule would give c outside A with c * y6 in L, and the third order
 function forces every such c into A. Hence L = K.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py [--check]

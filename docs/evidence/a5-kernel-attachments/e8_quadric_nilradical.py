@@ -1,7 +1,7 @@
 """The nilradical of the E8-bar quadric ideal over Q(i) on the weight slice: five linear forms of square zero.
 
 The quadric ideal K of E8-bar (148 quadrics on 21 generators, `weight_slice_fiber_relations.py`) is not radical
-(A5-436). This producer regenerates the quadrics at N- and N+ and computes over Q(i) in Singular: the radical R of K
+(A5-447). This producer regenerates the quadrics at N- and N+ and computes over Q(i) in Singular: the radical R of K
 as the intersection of the minimal primes from minAssGTZ, the linear forms among its minimal generators, whether
 R = K + (those linear forms), whether R^2 lies in K, the annihilator A = K : R of the nilradical R / K, whether A is
 prime (one minimal prime from minAssGTZ and A equal to its radical), the first Hilbert series numerators of S/K, S/R

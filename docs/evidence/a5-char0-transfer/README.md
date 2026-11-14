@@ -172,9 +172,9 @@ rational coefficients, and over Q(i) they keep J = 0, the order of G (4, 4, 5) a
 Iso -> N+-, 6 on W8 -> N+-, 4 on X- -> N- and X+ -> N+) at the parameter points of the modular certificates
 ([arcs-qi.json](arcs-qi.json)). The fiber cones therefore have at least those dimensions in characteristic 0. The
 record alone does not show that the limits fill V(K2) over Q(i); the Q(i) quadrics of every pair came later
-(A5-421), and with them Iso closes by primality (A5-435) and W8 by the section below (A5-437); E8-bar -> VB is outside the Q(i) producer and is not replayed.
+(A5-421), and with them Iso closes by primality (A5-446) and W8 by the section below (A5-448); E8-bar -> VB is outside the Q(i) producer and is not replayed.
 
-## One arc family in each component of the W8 quadric locus over Q(i) (ledger A5-437)
+## One arc family in each component of the W8 quadric locus over Q(i) (ledger A5-448)
 
 [`w8_component_arcs_qi.py`](w8_component_arcs_qi.py) substitutes two arc families into the J and G of the Q(i)
 producer at the N- and the N+ basepoint and adds, to the order and rank of the section above, the dimension of the
@@ -186,7 +186,7 @@ linear span of the limits ([w8-component-arcs-qi.json](w8-component-arcs-qi.json
 | power series of the section above | zero through the truncation order | 4 | 6, 6 | 20 | degree 30 |
 
 The quadric ideal K of W8 over Q(i) is the intersection of two primes of dimension 6, one containing 9 linear forms
-and one containing 4 ([weight-slice record](../a5-kernel-attachments/README.md), A5-421 and A5-436). A family of
+and one containing 4 ([weight-slice record](../a5-kernel-attachments/README.md), A5-421 and A5-447). A family of
 rank 6 has a 6-dimensional irreducible set of limits inside V(K), so its closure is a component, and the span
 tells which: 15 dimensions cannot hold the degree-30 component, and 20 dimensions exceed the span of the
 degree-20 one. The relation ideal L therefore lies in both primes, and L = K at both basepoints. The linear family

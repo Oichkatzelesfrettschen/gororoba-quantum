@@ -608,7 +608,7 @@ the closest entry and say what changed.
   division by powers of u proves only H in (RS) in H : u^infinity. In k[x, y, u] with the degree ordering,
   H = (x u + y, y u) has H : u^infinity = (x, y) and divided ideal (x u, y). The FIBER lines of the two finished
   Iso runs (`h-iso-nm-p`, `h-iso-np-p2`) are therefore outputs of the division, uncertified as Rees fibers; the
-  fiber cone of Iso rests on A5-435, which does not use them. `hsat.py` now appends a certificate to each script:
+  fiber cone of Iso rests on A5-446, which does not use them. `hsat.py` now appends a certificate to each script:
   the count of divided elements whose leading monomial keeps u, and the test (RS) : u = (RS), which gives
   (RS) = H : u^infinity for any input. The same-sign X control passes both (count 0, colon equal) modulo 32009 in
   24 s and over Q(i) in 188 s with the FIBER line unchanged; `c-iso-nm-p` repeats Iso at N- modulo 32009 with
@@ -616,7 +616,7 @@ the closest entry and say what changed.
 - Outcome and stop (2026-11-13, 11:55 PST, owner's choice): the two MacBook Iso runs (`h-iso-nm-p2`, N- modulo
   32029; `h-iso-np-p`, N+ modulo 32009) each printed FIBER dimension 5, multiplicity 23, 68 minimal generators at
   5,353 s, uncertified like the two before them. The ten open workstation runs were stopped without a FIBER line:
-  Iso and W8 are closed over Q(i) by A5-435 and A5-437, and no open run carried the certificate. Resident sets at
+  Iso and W8 are closed over Q(i) by A5-446 and A5-448, and no open run carried the certificate. Resident sets at
   the stop: the Q(i) runs of E8-bar and W8 at 11.5 and 3.3 GB after 1 h 33 min, the `sat` W8 run over Q(i) at
   7.2 GB after 3 h 14 min, the modular runs between 1.4 and 3.3 GB. One certified run replaces them: `c-e8-nm-p`,
   E8-bar at N- modulo 32009, on the workstation under `ulimit -v 30000000`.
@@ -652,8 +652,8 @@ the closest entry and say what changed.
   2t-Pfaffians, of the dimension of K[X] (proof of Lemma 1.4): the fiber cone of the generic Pfaffian ideal at
   the origin is a domain. The 126 generators here are the 4-Pfaffians of a 9 x 9 antisymmetric matrix whose
   entries are affine in the slice variables, over the slice ring k[s] / J, so the matrix is a specialization and
-  none of these conclusions transfers: the E8-bar fiber cone is not reduced (A5-438) and the W8 one has two
-  components (A5-436), where the generic one is a domain. Sections 2 and 3 of the same paper (pages 1771 to
+  none of these conclusions transfers: the E8-bar fiber cone is not reduced (A5-449) and the W8 one has two
+  components (A5-447), where the generic one is a domain. Sections 2 and 3 of the same paper (pages 1771 to
   1777) stay with the generic matrix: Theorem 2.1 matches the shape statistic of a standard monomial of
   Pfaffians with that of its image under the Knuth-Robinson-Schensted correspondence, Proposition 3.1 and
   Theorem 3.6 give Groebner bases of the symbolic and the ordinary powers of I_t by products of Pfaffians for
@@ -719,6 +719,6 @@ the closest entry and say what changed.
   `STAGE rees_done`. The Rees standard basis took 1,241 s and the colon certificate 7,444 s. The first Hilbert
   numerator, 1, 0, -68, 452, -1485, 2948, -3630, 2376, 231, -2200, 2376, -1420, 517, -108, 10, equals that of the
   quadric ideal over Q(i) in the weight-slice record, so the modular Rees fiber of Iso at N- is certified and
-  agrees with A5-435. Log sha256 `67b3b21e5d8e0420a244da5cc151ea7cbc0583776c16247874e98f7f190a64a7`, script sha256
+  agrees with A5-446. Log sha256 `67b3b21e5d8e0420a244da5cc151ea7cbc0583776c16247874e98f7f190a64a7`, script sha256
   `452ea270018c239212a9142f86beb6b6ea757b8a999f88e28496c31a912bdcb5`. `c-e8-nm-p` was still in its Rees standard
   basis at 2 h 12 min and 2.1 GB.

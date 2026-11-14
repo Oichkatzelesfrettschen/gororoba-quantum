@@ -107,7 +107,7 @@ MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "seven columns": (_set("w8-nm-linear-point1", "columns", 7), "shape"),
     "point changed": (_set("w8-nm-linear-point2", "point", {"C": 1}), "parameter point"),
     "columns renamed": (_set("w8-np-series-point1", "columns_meaning", ["F"]), "column meaning"),
-    "ledger row changed": (_set("w8-nm-series-point2", "ledger_row", "A5-435"), "ledger row"),
+    "ledger row changed": (_set("w8-nm-series-point2", "ledger_row", "A5-446"), "ledger row"),
     "a matrix removed": (lambda record: record["matrices"].pop(), "eight cases"),
     "pass flag cleared": (lambda record: record.update({"pass": False}), "pass flag"),
     "schema changed": (lambda record: record.update(schema="gororoba.a5.w8-component-arc-matrices-qi/0"), "schema"),
