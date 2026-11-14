@@ -18,6 +18,8 @@ import bdsc_diagnostic_acquisition_case as belenos
 import pytest
 import qd_platform as qd
 
+from qd_records import RecordError
+
 ROOT = belenos.ROOT
 CASES = ("sim:ascella", "qpu:ascella", "sim:belenos", "qpu:belenos")
 # max_credits, expected seconds and the largest iteration's max_shots of each family's written case.
@@ -57,7 +59,9 @@ def case_directory(tmp_path: Path, platform: str, draw_directory: Path) -> Path:
     return target
 
 
-def mock_provider(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, platform: str) -> None:
+def mock_provider(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, platform: str, running: int = 0, queued: int = 0
+) -> None:
     """Replace every provider read and the POST with local stand-ins; the case, source and admission checks stay."""
     simulator = platform.startswith("sim:")
     body = {"process_id": str(uuid.uuid4()), "platform_name": platform, "payload": {"command": "sample_count"}}
@@ -82,7 +86,12 @@ def mock_provider(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, platform: str
     monkeypatch.setattr(
         qd,
         "availability",
-        lambda: {"max_concurrent_jobs": 1, "max_jobs_in_queue": 1, "num_concurrent_jobs": 0, "num_jobs_in_queue": 0},
+        lambda: {
+            "max_concurrent_jobs": 1,
+            "max_jobs_in_queue": 1,
+            "num_concurrent_jobs": running,
+            "num_jobs_in_queue": queued,
+        },
     )
     monkeypatch.setattr(qd, "hom_warning", lambda *args: None)
     monkeypatch.setattr(
@@ -108,7 +117,7 @@ def test_submit_reaches_the_checkpoint_for_each_admitted_platform(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, draw_directory: Path, platform: str
 ) -> None:
     case = case_directory(tmp_path, platform, draw_directory)
-    mock_provider(monkeypatch, tmp_path, platform)
+    mock_provider(monkeypatch, tmp_path, platform, running=1)
     credits, seconds, per_job = arguments(platform)
     extra: dict[str, Any] = {}
     if family(platform) == "ascella":
@@ -176,3 +185,25 @@ def test_a_case_without_bound_successor_sources_still_needs_an_idle_token() -> N
     for manifest in ({"family": "bdsc", "job": "diagnostic"}, {"family": "ascella_predecessor", "job": "retained"}):
         with pytest.raises(qd.PlatformError, match="running or queued"):
             qd.require_token_capacity(manifest, busy)
+
+
+@pytest.mark.parametrize("platform", CASES)
+def test_submit_refuses_a_successor_case_when_the_token_queue_is_full(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, draw_directory: Path, platform: str
+) -> None:
+    case = case_directory(tmp_path, platform, draw_directory)
+    mock_provider(monkeypatch, tmp_path, platform, running=1)
+    credits, seconds, per_job = arguments(platform)
+    extra: dict[str, Any] = {}
+    if family(platform) == "ascella":
+        packet = tmp_path / "review.json"
+        qd.prepare_acquisition_review(case, platform, credits, seconds, per_job, (), packet)
+        extra = {
+            "reviewed_packet": packet,
+            "reviewed_sha256": hashlib.sha256(packet.read_bytes()).hexdigest(),
+        }
+    mock_provider(monkeypatch, tmp_path, platform, running=1, queued=1)
+    with pytest.raises((qd.PlatformError, RecordError), match="no available queue slot"):
+        qd.submit(case, platform, "mocked approval", credits, seconds, per_job, **extra)
+    if any((case / name).exists() for name in ("submission-state.json", "job-body.json")):
+        raise AssertionError("a refused submission left a checkpoint")

@@ -102,8 +102,13 @@ RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_ascella-ascella_prede
 The QPU job repeats the commands with `--platform qpu:ascella`, the job directory `...-qpu_ascella-...-qpu-ascella-billing-rule`,
 the build argument `--platform qpu:ascella`, and `--admit-status running` on `plan`, `review` and `submit`, because the
 request's `admitted_platform_statuses` lists `running` and qpu:ascella may read `running` while it serves its queue.
-The token-capacity gate (`qd_platform.require_token_capacity`) is separate: it refuses a submission while the token holds
-a running or queued job, and its queue-slot exception belongs to the `current-schema` job alone.
+The token-capacity gate (`qd_platform.require_token_capacity`) is separate. A case whose manifest binds its builder and
+analyzer (an `ascella_predecessor` job of `CURRENT_CASE_SOURCES`, or any manifest that carries `successor_sources`) takes
+the token's free queue slot on all four platforms: it submits while the token holds one running job and no queued job,
+because the token allows `max_concurrent_jobs` 1 and `max_jobs_in_queue` 1 (Quandela `qd_availability` read on
+2026-11-14), and it is refused once the queue holds `max_jobs_in_queue` jobs. Every older case keeps the idle-token
+rule: it is refused while the token holds a running or queued job. The owner ruled this policy for every platform on
+2026-11-14.
 
 The rehearsal passes when the analyzer prints `"verdict": "descriptive-only"` with `"platform": "sim:ascella"`, every
 iteration returns 32768 events in total, and the usage report moved by one job and 1.0 credit. An iteration may hold

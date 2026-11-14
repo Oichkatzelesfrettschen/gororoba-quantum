@@ -1393,7 +1393,7 @@ def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -
         return
     keys = ("max_concurrent_jobs", "max_jobs_in_queue", "num_concurrent_jobs", "num_jobs_in_queue")
     if any(type(counters.get(key)) is not int or counters[key] < 0 for key in keys):
-        raise PlatformError("the current case requires non-negative integer token capacity counters")
+        raise PlatformError("a queued case requires non-negative integer token capacity counters")
     if counters["max_concurrent_jobs"] < 1 or counters["num_concurrent_jobs"] > counters["max_concurrent_jobs"]:
         raise PlatformError(f"the token running-job capacity is invalid: {counters}")
     if counters["max_jobs_in_queue"] < 1 or counters["num_jobs_in_queue"] >= counters["max_jobs_in_queue"]:
