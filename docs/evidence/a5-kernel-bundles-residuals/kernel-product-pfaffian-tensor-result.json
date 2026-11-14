@@ -1,0 +1,272 @@
+{
+ "calibration": {
+  "pfaffian_4x4": "8",
+  "pfaffian_squared_is_determinant": true
+ },
+ "constant": -2,
+ "field": "Q(i)",
+ "fixtures": {
+  "V(G) minus V(Q)": {
+   "fixtures": 52,
+   "gradient_identity_holds": 52,
+   "identity_holds": 0,
+   "kernel_is_null": 0,
+   "right_factor_is_point": 52,
+   "tensor_zero": 0,
+   "three_vector_spans_kernel": 52
+  },
+  "V(Q) intersect V(G)": {
+   "fixtures": 2,
+   "gradient_identity_holds": 2,
+   "identity_holds": 2,
+   "kernel_is_null": 2,
+   "right_factor_is_point": 2,
+   "tensor_zero": 2,
+   "three_vector_spans_kernel": 2
+  },
+  "V(Q) minus V(G)": {
+   "fixtures": 12,
+   "gradient_identity_holds": 12,
+   "identity_holds": 12,
+   "kernel_is_null": 12,
+   "right_factor_is_point": 12,
+   "tensor_zero": 0,
+   "three_vector_spans_kernel": 12
+  }
+ },
+ "general_points": [
+  {
+   "G": "74161",
+   "Q": "507",
+   "global_identity_holds": true,
+   "kernel_dimension": 1,
+   "point": [
+    "3",
+    "-1",
+    "4",
+    "1",
+    "-5",
+    "9",
+    "2",
+    "6",
+    "-5",
+    "3",
+    "5",
+    "-8",
+    "9",
+    "7",
+    "-9"
+   ]
+  },
+  {
+   "G": "57940 + 1920*I",
+   "Q": "456",
+   "global_identity_holds": true,
+   "kernel_dimension": 1,
+   "point": [
+    "2",
+    "7",
+    "-1",
+    "8",
+    "2",
+    "-8",
+    "1",
+    "8",
+    "2",
+    "-8",
+    "4",
+    "5",
+    "-9",
+    "I",
+    "4"
+   ]
+  }
+ ],
+ "grids": {
+  "FG+": {
+   "gradient_identity_holds": 91,
+   "points": 91,
+   "quadric_zero": 0,
+   "quartic_zero": 91,
+   "rank_twelve": 91,
+   "tensor_zero": 0
+  },
+  "FG-": {
+   "gradient_identity_holds": 91,
+   "points": 91,
+   "quadric_zero": 3,
+   "quartic_zero": 91,
+   "rank_twelve": 88,
+   "tensor_zero": 3
+  },
+  "FQ": {
+   "gradient_identity_holds": 49,
+   "points": 49,
+   "quadric_zero": 49,
+   "quartic_zero": 7,
+   "rank_twelve": 42,
+   "tensor_zero": 7
+  }
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py": "c01b0c92c6ce4244a98a66dcfb3c2c7dd0646a3e602aca0322c230271cae1fab",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py": "de11b11002b0e0b38e656f54ccbb44790ec29d1f3a7faba88d676454e7adb7c7",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+ },
+ "pass": true,
+ "schema": "a5-kernel-bundles-residuals-kernel-product-pfaffian-tensor-v1",
+ "singular_points": [
+  {
+   "G": "0",
+   "Q": "2",
+   "kernel_dimension": 5,
+   "point": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "quartic_gradient_zero": true
+  },
+  {
+   "G": "0",
+   "Q": "2",
+   "kernel_dimension": 5,
+   "point": [
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "quartic_gradient_zero": true
+  },
+  {
+   "G": "0",
+   "Q": "10",
+   "kernel_dimension": 5,
+   "point": [
+    "2",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "2",
+    "0",
+    "0"
+   ],
+   "quartic_gradient_zero": true
+  }
+ ],
+ "special_points": [
+  {
+   "G": "4",
+   "N1": "0",
+   "Q": "0",
+   "gradient_identity_holds": true,
+   "kernel_dimension": 3,
+   "point": [
+    "1",
+    "I",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "I",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "tensor_zero": false,
+   "three_vector_spans_kernel": true
+  },
+  {
+   "G": "4",
+   "N1": "0",
+   "Q": "0",
+   "gradient_identity_holds": true,
+   "kernel_dimension": 3,
+   "point": [
+    "1",
+    "I",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "I",
+    "0",
+    "0",
+    "0"
+   ],
+   "tensor_zero": false,
+   "three_vector_spans_kernel": true
+  },
+  {
+   "G": "0",
+   "N1": "0",
+   "Q": "4",
+   "gradient_identity_holds": true,
+   "kernel_dimension": 3,
+   "point": [
+    "0",
+    "1",
+    "I",
+    "0",
+    "0",
+    "0",
+    "0",
+    "2*I",
+    "-2",
+    "0",
+    "-2",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "tensor_zero": false,
+   "three_vector_spans_kernel": true
+  }
+ ]
+}
