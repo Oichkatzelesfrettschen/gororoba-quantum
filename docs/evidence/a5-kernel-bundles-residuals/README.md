@@ -496,8 +496,7 @@ let `P_I(z)` be the Pfaffian of `M(z)` without the rows and columns of `I`, with
 coordinates transform under congruence by an identity of integer polynomials, and the block normal form of an
 alternating matrix of rank 12 makes it the product of twelve coordinates, so over every field `P(z)` at a rank-12
 point is a nonzero multiple of the three-vector of `K(z)`, and there `T(z) = c M(k_1) k_2 (x) z` with `c` nonzero
-for
-`K(z) = C z + C k_1 + C k_2` (`A5-490`). On the zero-divisor variety `Q G = 0`, so the kernel commutator is the
+for a basis `z, k_1, k_2` of `K(z)` (`A5-490`). On the zero-divisor variety `Q G = 0`, so the kernel commutator is the
 gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `V(Q)` (`A5-486`) and
 `-Q grad G` on `V(G)` (`A5-491`). The consequences:
 
@@ -524,9 +523,8 @@ which two exact points off the variety give as `-I`. `kernel_product_pfaffian_te
 exact points with `N1(z) = 0`, three singular points of `V(G)`, the two general points and the 66 fixtures.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check` (exact
-over `Q(i)`; 94 CPU seconds and 84 MiB on two workers with the host at load average 45, and 49.5 CPU seconds
-and 26 seconds of wall time on a quieter host before the two general points, about 1 CPU second each, were added;
-Python 3.14.9 with sympy 1.14.0).
+over `Q(i)`; 98.8 CPU seconds, 121 seconds of wall time and 84 MiB on two workers, measured with the host at
+load average 28 from unrelated jobs; Python 3.14.9 with sympy 1.14.0).
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
