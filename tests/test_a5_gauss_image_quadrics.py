@@ -289,6 +289,41 @@ def test_doubling_forms_on_the_kernel_are_proportional_and_of_rank_one_inside_th
             _same(squares, rank_one)
 
 
+def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_with_product_zero() -> None:
+    # Inside V(G), on the plane K0(z) of the vectors of K(z) with t_8 = 0, a vector is a pair (c, d') of imaginary
+    # octonions, c in the coordinates 1 to 7 and d' in 9 to 15. The symmetric forms that vanish on every K0(z) are
+    # the 15 products t_8 t_k, the norms N1 of c and N3 of d', and the 8 coordinates of the octonion product c d':
+    # 25 forms, which is what the 95 = 120 - 25 dimensions spanned by S^2 K0(z) leave.
+    monomials = quadrics.SYMMETRIC_MONOMIALS
+    candidates = np.zeros((25, len(monomials)), dtype=np.int64)
+    for index in range(IMAGINARY):
+        candidates[index, monomials.index((min(index, 7), max(index, 7)))] = 1
+    for column, (first, second) in enumerate(monomials):
+        candidates[15, column] = int(first == second and first < 7)
+        candidates[16, column] = int(first == second and first > 7)
+    for left in range(1, 8):
+        for right in range(1, 8):
+            units = [[int(index == unit) for index in range(8)] for unit in (left, right)]
+            for coordinate, value in enumerate(cd_core.cd_multiply_exact(8, *units)):
+                candidates[17 + coordinate, monomials.index((left - 1, right + 7))] += int(value)
+    candidates %= PRIME
+    _same(quadrics.matrix_rank(candidates), 25)
+    pairs = np.array([[0, 0], [0, 1], [1, 1]])
+    for stratum in STRATA[1:]:
+        planes = []
+        for number in range(40):
+            kernel = np.array(quadrics.three_plane((stratum, number))[0], dtype=np.int64)
+            combinations = np.array(_nullspace([[int(value) for value in kernel[:, 7]]]), dtype=np.int64)
+            planes.append(combinations @ kernel % PRIME)
+        stacked = np.array(planes)
+        _same((stacked.shape[1], bool(stacked[:, :, 7].any())), (2, False))
+        rows = quadrics.polar_rows(
+            stacked[:, pairs[:, 0]], stacked[:, pairs[:, 1]], quadrics.SYMMETRIC_FIRST, quadrics.SYMMETRIC_SECOND
+        ).reshape(-1, len(monomials))
+        _same(quadrics.matrix_rank(rows), len(monomials) - 25)
+        _same(bool((candidates @ rows.T % PRIME).any()), False)
+
+
 def test_fixture_class_is_exact_and_agrees_with_the_modular_class_of_its_stratum() -> None:
     first: dict[str, tuple[int, str, list[int]]] = {}
     for job in _fixture_splits():

@@ -494,6 +494,11 @@ identities on those images. The ranks are at most 1 at the sampled points and ex
 `V(G)`, and by `A5-472`, which makes `N1` a multiple of `N2 + N3` on `K(z)`, the statement reduces to the pair
 `N2`, `N3`.
 
+Sampled (`A5-473`, survives): inside `V(G)` every vector of the plane `K0(z) = K(z) n ker t_8` is a pair
+`(c, d')` of null imaginary octonions with product `c d' = 0`. The symmetric forms that vanish on every `K0(z)`
+are the 25 these conditions give: the 15 products `t_8 t_k`, the norms `N1` and `N3`, and the 8 coordinates of
+`c d'`. By `A5-470` they are the forms whose combinations with the doubling forms are the 25 and 24 quadrics.
+
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
