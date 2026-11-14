@@ -17,7 +17,7 @@ directory, so that every integer in them has one home here and a `--check` that 
 | `left-inverses.json` | record | the selected rows, the scalar d, its norm and the nonzero entries of each left inverse (one for the 256 x 14 matrix of the derivation tables, eight for the arc matrices); every entry is [real part, imaginary part] |
 | `make_mutants.py` | mutation controls | six edited copies of the first two Rocq files, each of which must fail to compile in the lemma named beside it |
 | `span_certificate.py` | computation | the Leibniz system of the sedenions (4096 forms in 256 unknowns, product `cd_sign(16, a, b)` of `gororoba_quantum/cd_core.py`), a greedy choice of 242 independent forms, and P, d with P M + d V C = d I for the tables V and their left inverse C; writes `span.json`, or verifies it |
-| `span.json` | record | seed 0 (lexicographic order of the triples): d = 6, 242 triples, 1195 nonzero entries of P, largest absolute value 12 |
+| `span.json` | record | row order 0 (`"seed": 0`, the lexicographic order of the triples, no random draw): d = 6, 242 triples, 1195 nonzero entries of P, largest absolute value 12 |
 | `render_span.py` | generator | reads `span.json` with exact key sets, integer types, counts and index ranges and renders the third Rocq source |
 | `make_span_mutants.py` | mutation controls | six edited copies of the span source, each with the lemma that must reject it |
 | `run_span_checks.sh`, `SpanQueries.v` | driver | the Rocq half of the span checks for a machine that holds Rocq: compile of the three span sources, 10 assumption queries, kernel check, the six mutants, one verdict line |
@@ -45,12 +45,14 @@ python-flint. Without the runner, `--rocq DIRECTORY` names the directory of the 
 
 `span_certificate.py` without `--verify` recomputes `span.json`; with `--check` it compares the recomputation with the
 file. It needs python-flint 0.9.0, the pin of `requirements.txt`, which the pull-request environment holds, so the
-test `test_flint_recomputes_the_tracked_span_record` recomputes the record at seed 0 on every run. The left-inverse
+test `test_flint_recomputes_the_tracked_span_record` recomputes the record at row order 0 on every run. The left-inverse
 record is an explicit argument (`--left-inverses`), and C V = I is checked before P is computed.
 
 The mutation controls need Rocq. On a machine that has it, `make_mutants.py ROCQ_DIRECTORY OUTPUT_DIRECTORY` and
 `make_span_mutants.py SOURCE_V OUTPUT_DIRECTORY` write the edited copies, and `sh run_span_checks.sh BUILD_DIRECTORY`
-runs the span checks (the build directory holds the compiled imports of the three span sources). No Rocq compile
+runs the span checks. The build directory holds the three span sources, `SpanQueries.v`, `make_span_mutants.py` and the
+compiled sources they import (`MatrixSplittingCertificate.v`, `CdTowerLeibnizSystem.v`, `CdTowerG2Derivations.v` and
+the files below them). No Rocq compile
 runs in the pull-request checks; the tests check that each mutant differs from its original in the one intended line,
 ahead of the lemma named for it.
 
@@ -82,9 +84,12 @@ ahead of the lemma named for it.
 
 ## Binding to gororoba-math
 
-`scripts/math_source_generators.py` resolves each source through `gororoba_quantum/math_sources.py`, which needs the
-commit of `ci/gororoba_math.pin` to hold the three sources and a retained record to hold the sha256 of each. Both
-wait for the merge of gororoba-math pull request 16: the pin moves to the merged commit, and a ledger row
-`DIGEST  proofs/NAME.v` (or a registry evidence entry) binds each of `CdTowerG2Derivations.v`, `A5W8ArcMatrixRanks.v`
-and `CdTowerG2DerivationSpan.v`. Until then the two gates above fail with a message that names the missing digest or
-the commit off the pin.
+`scripts/math_source_generators.py` resolves each source through `gororoba_quantum/math_sources.py`. A checkout at the
+commit of `ci/gororoba_math.pin` supplies the sources, and a retained record must hold the sha256 of each one it
+reads: a ledger row `DIGEST  proofs/NAME.v` in `docs/evidence/*/*.sha256`, or a registry evidence entry. Every name in
+the `_RocqProject` of the pinned checkout needs such a digest, because the shadow root of the replay bundles and
+`verified_sources` read them all; the sources of this directory add seven names to that list: the three generated
+files named above and the hand-written `GaussianIntegerHom.v`, `MatrixLeftInverseCertificate.v`,
+`MatrixSplittingCertificate.v` and `CdTowerLeibnizSystem.v`. A pin that holds a source without its digest fails every
+gate tagged `requires: ["gororoba-math"]` and the Rocq replay of `proofs.yml`, with a message that names the missing
+digest.

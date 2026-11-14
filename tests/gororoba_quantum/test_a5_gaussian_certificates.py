@@ -712,7 +712,7 @@ def test_the_runner_write_replaces_both_sources_and_refuses_a_linked_one(
     for name in (gc.G2_FILE, gc.ARC_FILE):
         if (math / "rocq/quantum" / name).read_text(encoding="utf-8") != texts[name]:
             raise AssertionError(f"{name} is not the rendering after --write")
-    if record.read_text(encoding="utf-8") != gc.LEFT_INVERSES.read_text(encoding="utf-8"):
+    if record.read_text(encoding="utf-8") != (BUNDLE / "left-inverses.json").read_text(encoding="utf-8"):
         raise AssertionError("--write did not write the left-inverse record")
     outside = tmp_path / "outside.v"
     outside.write_text("kept\n", encoding="utf-8")
@@ -721,6 +721,23 @@ def test_the_runner_write_replaces_both_sources_and_refuses_a_linked_one(
     target.symlink_to(outside)
     if runner.main(["gaussian_certificates", "--write"]) != 2 or outside.read_text(encoding="utf-8") != "kept\n":
         raise AssertionError("--write went through a symbolic link")
+
+
+def test_a_producer_without_the_runner_writes_a_readable_file_and_checks_it(tmp_path: Path) -> None:
+    for module, name, extra in (
+        (gc, gc.G2_FILE, ["--record", str(tmp_path / "left-inverses.json")]),
+        (render_span, render_span.ROCQ_NAME, []),
+    ):
+        if (
+            module.main(["--write", "--rocq", str(tmp_path), *extra]) != 0
+            or module.main(["--check", "--rocq", str(tmp_path), *extra]) != 0
+        ):
+            raise AssertionError(f"{module.__name__}: --write then --check failed")
+        if (tmp_path / name).stat().st_mode & 0o777 != 0o644:
+            raise AssertionError(f"{name} was not written with mode 0644")
+        (tmp_path / name).write_text("(* edited *)\n", encoding="utf-8")
+        if module.main(["--check", "--rocq", str(tmp_path), *extra]) != 1:
+            raise AssertionError(f"{module.__name__}: an edited file passed --check")
 
 
 def test_the_runner_rejects_an_entry_whose_constants_and_sources_differ_in_number(

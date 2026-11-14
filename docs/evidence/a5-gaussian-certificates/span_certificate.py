@@ -15,11 +15,14 @@ passed with `--left-inverses`); both are read with the exact key sets and intege
 pair (real part, imaginary part).
 
 Run:
-    "$PYTHON" span_certificate.py --left-inverses LEFT_JSON [--g2 G2_JSON] [--out SPAN_JSON] [--seed N ...]
+    "$PYTHON" span_certificate.py --left-inverses LEFT_JSON [--g2 G2_JSON] [--out SPAN_JSON]
     "$PYTHON" span_certificate.py --left-inverses LEFT_JSON --check    # recompute and compare with SPAN_JSON
     "$PYTHON" span_certificate.py --left-inverses LEFT_JSON --verify   # identity of SPAN_JSON, no python-flint
-A seed other than 0 shuffles the order of the triples before the greedy choice of independent ones; the record keeps
-the seed whose scalar d is smallest, then the fewest nonzero entries.
+The command line computes row order 0, the lexicographic order of the triples, which the tracked record holds
+(`"seed": 0` there names that order; no random draw enters). `span_record` also accepts the orders n > 0 of its
+`seeds` argument, each a shuffle of the triples by `random.Random(n)` before the greedy choice of independent ones,
+and keeps the order whose scalar d is smallest, then the fewest nonzero entries. No command-line flag offers them:
+a new seed enters through `qrng_seeds.add_seed_argument` (AGENTS.md, "Seeds").
 """
 
 from __future__ import annotations
@@ -232,7 +235,6 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--left-inverses", type=Path, required=True, help="the left-inverse record (JSON)")
     parser.add_argument("--g2", type=Path, default=gc.G2_RECORD, help="g2-derivation-tables.json")
     parser.add_argument("--out", type=Path, default=SPAN_RECORD, help="the span record (JSON)")
-    parser.add_argument("--seed", type=int, action="append", help="row order seed; repeat for several (default 0)")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="recompute and compare with --out, write nothing")
     mode.add_argument("--verify", action="store_true", help="check the identity of --out in integers, no flint")
@@ -246,7 +248,7 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(f"C V = I and P M + d V C = d I: {len(found)} defects, d = {record['d']}")
         return 1 if found else 0
-    text = record_text(span_record(tables, left_sparse, arguments.seed or [0]))
+    text = record_text(span_record(tables, left_sparse, [0]))
     if arguments.check:
         same = arguments.out.is_file() and arguments.out.read_text(encoding="utf-8") == text
         print(f"{'ok' if same else 'DIFFERS'} {arguments.out.name}")
