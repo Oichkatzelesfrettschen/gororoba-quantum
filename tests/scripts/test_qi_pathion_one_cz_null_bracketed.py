@@ -10,6 +10,8 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import shutil
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +23,8 @@ import qi_pathion_one_cz_null_bracketed_cases as bc
 import qi_pathion_one_cz_null_cases as oc
 import qi_pathion_one_cz_null_rule_v2 as rule
 import qi_platform
+
+import qi_records
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = ROOT / "results/quantum_inspire/cases"
@@ -567,3 +571,90 @@ def test_the_qx_check_passes_a_noiseless_run_and_fails_a_misassigned_shot_and_a_
         counts["batch-00/b0-coin0.cq"],
     )
     _expect(not bc.qx_check(swapped)["qx_control"]["pass"], "a wrong circuit passes")
+
+
+def _runs(root: Path, series: str, files: dict[str, str], shots: dict[str, list[str]]) -> list[Path]:
+    """Collected run directories `<stamp>-<series>-batch-NN` of every batch, in qi_platform.collect's layout."""
+    cases_root = root / "cases" / series
+    for rel, text in files.items():
+        path = cases_root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+    dirs = []
+    for batch in sorted({rel.split("/")[0] for rel in files if rel.startswith("batch-")}):
+        cases = json.loads((cases_root / batch / "cases.json").read_text(encoding="utf-8"))
+        run = root / "runs" / f"2026-11-15T000000Z-{series}-{batch}"
+        shutil.copytree(cases_root / batch, run)
+        (run / "raw").mkdir()
+        n = int(batch.removeprefix("batch-"))
+        submitted, collected = [], []
+        for k, row in enumerate(cases["circuits"]):
+            listed = shots[f"{batch}/{row['file']}"]
+            (run / "raw" / f"{row['file']}.json").write_text(json.dumps(listed), encoding="utf-8")
+            job = {
+                "id": 100 * n + k,
+                "created_on": f"2026-11-15T00:{n:02d}:00.000000Z",
+                "status": "completed",
+                "batch_job_id": 77 + n,
+                "queued_at": f"2026-11-15T00:{n:02d}:{k:02d}.000000Z",
+                "finished_at": f"2026-11-15T01:{n:02d}:{k:02d}.000000Z",
+                "number_of_shots": cases["shots"],
+            }
+            result = {
+                "job_id": job["id"],
+                "shots_requested": cases["shots"],
+                "shots_done": cases["shots"],
+                "results": dict(sorted(Counter(listed).items())),
+            }
+            submitted.append({"file": row["file"], "job": job["id"], "sha256": row["sha256"]})
+            collected.append({"file": row["file"], "job": job, "results": [result], "logs": ""})
+        receipt = {
+            "schema": "qi-submission-v2",
+            "state": "enqueued",
+            "approval": "fixture",
+            "backend": cases["backend"],
+            "backend_type_id": cases["backend_type_id"],
+            "cases_sha256": qi_records.digest((run / "cases.json").read_bytes()),
+            "batch_job": 77 + n,
+            "shots": cases["shots"],
+            "jobs": submitted,
+        }
+        (run / "submission.json").write_text(json.dumps(receipt), encoding="utf-8")
+        (run / "results.json").write_text(
+            json.dumps({"schema": "qi-collection-v1", "transactions": [], "jobs": collected}), encoding="utf-8"
+        )
+        dirs.append(run)
+    return dirs
+
+
+def test_analyze_reads_the_collected_qx_series_and_reports_the_bracket_arithmetic(
+    tmp_path: Path, built: dict[str, dict[str, str]]
+) -> None:
+    files = built[bc.QX_SERIES]
+    counts = _qx_counts(files)
+    shots = {key: [s for s, n in sorted(hist.items()) for _ in range(n)] for key, hist in counts.items()}
+    dirs = _runs(tmp_path, bc.QX_SERIES, files, shots)
+    record = bc.analyze(dirs, tmp_path / "cases")
+    _expect(record["claim_kind"] == oc.CONTROL_KIND and record["complete"], f"{record}")
+    _expect(record["schema"] == bc.ANALYSIS_SCHEMA, "the successor's analysis schema")
+    _expect(record["qx_control"]["pass"] and record["qx_brackets"]["pass"], f"{record['qx_brackets']}")
+    _expect(len(record["qx_control"]["arms"]) == 12, "every base circuit and twin is controlled")
+    json.dumps(record, allow_nan=False)
+    partial = bc.analyze(dirs[:3], tmp_path / "cases")
+    _expect(not partial["complete"] and "qx_brackets" not in partial, f"{partial['batches']}")
+
+
+@pytest.mark.audit
+def test_analyze_scores_the_collected_tuna_series_and_reports_an_incomplete_one(
+    tmp_path: Path, built: dict[str, dict[str, str]], worlds: dict[str, dict[str, list[str]]]
+) -> None:
+    dirs = _runs(tmp_path, bc.TUNA_SERIES, built[bc.TUNA_SERIES], worlds["over_rotation"])
+    record = bc.analyze(dirs, tmp_path / "cases")
+    _expect(record["complete"] and record["claim_kind"] == "hardware acquisition", f"{record.get('batches')}")
+    _expect(record["schema"] == bc.ANALYSIS_SCHEMA and record["decision"]["label"] == "zero", f"{record['decision']}")
+    json.dumps(record, allow_nan=False)
+    _expect(len(record["batch_contrasts"]["b0"]["twin"]) == 2, "two bracketed twin contrasts per template")
+    partial = bc.analyze(dirs[:3], tmp_path / "cases")
+    _expect(not partial["complete"] and partial["batches"] == ["batch-00", "batch-01", "batch-02"], f"{partial}")
+    sanity = bc.sanity(dirs[:8], tmp_path / "cases")
+    _expect(sanity["batches"] == [f"batch-{n:02d}" for n in range(8)] and sanity["drift"], "sanity")
