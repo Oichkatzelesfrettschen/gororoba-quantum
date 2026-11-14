@@ -48,8 +48,10 @@ A bracket around both twins of a pair needs two readouts beside them, four circu
 policy (three circuits per batch, `PLATFORM_CIRCUITS_PER_BATCH` in `tests/scripts/test_qi_pathion_one_cz_null_rule_v2.py`)
 refuses and the `wave-v1` policy admits ([usage.md](usage.md#queue-rules-the-faq-governs)). The successor case
 [pathion_one_cz_null_bracketed_tuna_17](../../../results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md)
-(owner rulings 2026-11-14) runs each pair as `[readout-0, coin-0 twin, coin-1 twin, readout-1]` in one batch: 19 batches in
-7 waves of at most three, and it preregisters rule v2 and the finite-count error. Both twins share the batch's bracket, so
+(owner rulings 2026-11-14) runs each pair as `[readout-0, coin-0 twin, coin-1 twin, readout-1]` in one batch, four replicates of
+every template and kind at 16,384 shots per circuit: 35 batches in 12 waves of at most three (a 60 s pause after each
+wave), and it preregisters rule v2, the finite-count error and the chi-square 16.266 batch bound of its three degrees of
+freedom (the predecessor's 10.828 is the one-degree value of its two replicates). Both twins share the batch's bracket, so
 the additive readout shift that the retained series moves between batches (the selector e01 steps by about 0.005 between
 adjacent batches, chi-square 84.4 on 11 degrees of freedom over the 12 readout-0 circuits; the bracket offset
 c = (e10 - e01)/2 scatters with chi-square 61.56 on 7 degrees of freedom over the 8 batches holding both readouts, range

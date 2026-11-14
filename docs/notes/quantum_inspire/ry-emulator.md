@@ -32,11 +32,11 @@ marked "inferred" has no page or run behind it.
   site-hosted backend reached through a remote service. The job error
   "RSP returned failure" names a remote service process whose expansion no
   page gives.
-- **Consequence of the flag** (`scripts/qi_platform.py`, `submit`):
+- **Consequence of the flag** (`scripts/qi_platform.py` and `scripts/qi_platform_wave.py`, `submit`):
   `is_hardware` selects the hardware submission rules, so a Ry batch holds at
   most the manifest's policy circuits (3 under the default `legacy`, with none
-  of the account's batches queued; 5 per batch and 3 queued Ry batches when the
-  manifest selects `wave-v1`), although the Ry emulator costs no metered quota
+  of the account's batches queued; 5 per batch and 3 queued Ry batches through
+  `qi_platform_wave.py` when the manifest selects `wave-v1`, with a 60 s pause), although the Ry emulator costs no metered quota
   ([usage.md](usage.md#queue-rules-the-faq-governs)). Code that filters backends on `is_hardware`
   must also read the identifier.
 - **Shared pause.** The same flag puts Ry under the account-wide hardware

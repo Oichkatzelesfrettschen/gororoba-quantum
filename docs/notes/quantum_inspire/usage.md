@@ -70,26 +70,32 @@ on hardware, and where the FAQ is silent they remain the ceiling the service
 enforces.
 
 The FAQ does not say whether a "job" is a batch or a circuit. A case manifest selects how the runner reads it through
-its `hardware_policy` field, a row of `HARDWARE_POLICIES` in `scripts/qi_platform.py` (one table, read by
-`qi_platform.py submit` and `qi_platform_submission_deadline.py`; an unknown name is refused before any service read):
+its `hardware_policy` field, a row of `HARDWARE_POLICIES` in `scripts/qi_platform_wave.py` (one table, read by
+`qi_platform_wave.py submit` and by the retention checker; an unknown name is refused before any service read):
 
-| `hardware_policy` | circuits per batch | queued batches | reading of "job" |
-|---|---|---|---|
-| absent, or `legacy` | 3 | 1 | both at once: at most three circuits of the account wait, in one batch |
-| `wave-v1` | 5 | 3 | a batch job (owner ruling 2026-11-14): a wave of 15 circuits in 3 batches |
+| `hardware_policy` | circuits per batch | queued batches | pause after a wave | reading of "job" |
+|---|---|---|---|---|
+| absent, or `legacy` | 3 | 1 | the ladder step `QI_HARDWARE_PAUSE_SECONDS` selects (30 s by default) | both at once: at most three circuits of the account wait, in one batch |
+| `wave-v1` | 5 | 3 | 60 s | a batch job (owner ruling 2026-11-14): a wave of 15 circuits in 3 batches |
 
-Both numbers are capped by the live backend record (`max_jobs_per_batch_job`, `batchjobs_per_queue_limit`). The default
-stays `legacy`, because the case generators, proposals and gates that predate the field read `HARDWARE_BATCH_CIRCUITS`
-(3) and `HARDWARE_QUEUED_BATCHES` (1), and retained bytes depend on them. On every backend type the catalogue flags
-`is_hardware`, `qi_platform.py submit`
+Both numbers are capped by the live backend record (`max_jobs_per_batch_job`, `batchjobs_per_queue_limit`). The pinned
+`scripts/qi_platform.py` (its sha256 binds retained receipts, proposals and projector-geometry records) and its
+deadline successor keep the legacy limits as `HARDWARE_BATCH_CIRCUITS` (3) and `HARDWARE_QUEUED_BATCHES` (1), so the
+case generators, proposals and gates that predate the field keep reading them; a case that needs a wave policy submits
+through `scripts/qi_platform_wave.py`, which calls the functions `qi_platform` exports. Owner ruling 2026-11-14 on the
+pause: no more than 3 batches queued at a time, and 60 s between runs of those three before queuing the next. A wave is
+three batches submitted back to back (fewer for the last wave), the wave finishes, and a pause of the row's
+`pause_seconds` precedes the next wave: 60 s under `wave-v1`, a step of the ladder 30, 60, 90, 120. A higher ladder step
+(`QI_HARDWARE_PAUSE_SECONDS`) raises the pause and never lowers it. On every backend type the catalogue flags
+`is_hardware`, `qi_platform_wave.py submit`
 
 - holds a batch to the policy's circuits;
 - refuses while the account has as many batches in flight on that type as the policy queues (the service's own queue
   count and the batches the runner reads from `/batch_jobs` must both be below it);
 - refuses while any account job on another hardware type is unfinished, and, under `legacy`, while any account job on
   any hardware type is unfinished;
-- refuses while any finished account job on a hardware type is less than `HARDWARE_PAUSE_SECONDS` old
-  ([pause escalation](#pause-escalation)), whichever session submitted it.
+- refuses while any finished account job on a hardware type is younger than the row's pause (`wave-v1` 60 s, `legacy`
+  `HARDWARE_PAUSE_SECONDS`, [pause escalation](#pause-escalation)), whichever session submitted it.
 
 A wave's batches are submitted one after another in series order (the order requested; the service owns the execution order, and its terms allow priority without regard to the queue, so an estimator that needs an order reads the retained `queued_at` times), and every
 batch of the wave must have finished, with the pause passed, before the next wave: under `wave-v1` the unfinished
@@ -261,8 +267,9 @@ From the same conditions:
   submitting the next. `submit` enforces the pause account-wide: it refuses a
   hardware batch while a finished account job on a hardware backend type is
   less than `HARDWARE_PAUSE_SECONDS` old and, under `legacy`, while any such job is
-  unfinished (under `wave-v1`, the unfinished batches of the batch's own backend
-  type up to the policy's queued count are admitted), so concurrent sessions
+  unfinished. For a manifest that names `hardware_policy`, `qi_platform_wave.py submit`
+  applies the same rule with the row's pause and, under `wave-v1`, admits the unfinished batches of the
+  batch's own backend type up to the policy's queued count, so concurrent sessions
   on this host sharing the account alternate. The pause is 30 s by
   default and follows the escalation below; the provider sets none.
 - The case directory acquires an exclusive `submission-state.json` before
