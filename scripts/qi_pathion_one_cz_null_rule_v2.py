@@ -10,10 +10,10 @@ decides nothing. The case bytes and the retained schema-v2 and schema-v3 records
 module is the versioned successor for a case that preregisters v2. It applies the v3 analyzer's decision
 (qi_pathion_one_cz_null_analysis.py, exact pooled sums) and relabels the one row.
 
-The operating characteristics of v2 take the nine worlds of the preregistered table (the eight of
-`oc.WORLDS_SIZED` first, so they draw as the stored table does from QRNG value `oc.OC_SEED_INDEX` of `oc.OC_DRAW`)
-and the negative-twin world, which no simulated mechanism produces: b0's twin contrast is the negative of its base
-contrast and the 6-CZ blocks read zero (a hypothesis row that exercises the new label).
+The operating characteristics of v2 take the eight worlds of the preregistered table (`oc.WORLDS_SIZED`, first, so
+they draw as the stored table does from QRNG value `oc.OC_SEED_INDEX` of `oc.OC_DRAW`) and the negative-twin world,
+which no simulated mechanism produces: b0's twin contrast is the negative of its base contrast and the 6-CZ blocks
+read zero (a hypothesis row that exercises the new label).
 
 Usage: "$PYTHON" scripts/qi_pathion_one_cz_null_rule_v2.py (--write | --check) [--record FILE]"""
 

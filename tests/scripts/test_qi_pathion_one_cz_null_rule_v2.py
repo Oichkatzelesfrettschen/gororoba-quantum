@@ -110,6 +110,12 @@ def test_the_successor_decision_reaches_spawned_workers() -> None:
     _expect(preregistered[rule.NEGATIVE_TWIN_WORLD].get("superposition_only", 0.0) >= 0.8, f"{preregistered}")
 
 
+def test_a_successor_decision_that_cannot_pickle_is_refused_before_any_draw() -> None:
+    # ana.decide_estimates is a rebound copy: its name resolves to the predecessor's function, not to itself.
+    with pytest.raises(ValueError, match="pickle by reference"):
+        oc.operating_characteristics(draws=64, decide=ana.decide_estimates)
+
+
 def _stored() -> dict[str, Any]:
     stored: dict[str, Any] = json.loads((ROOT / rule.RECORD).read_text(encoding="utf-8"))
     return stored

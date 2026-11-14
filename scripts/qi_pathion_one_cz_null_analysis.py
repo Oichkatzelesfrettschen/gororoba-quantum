@@ -66,6 +66,9 @@ PREDECESSOR_SHA256 = "e39956c54bd79740a94785712c398ba5fe65b33a9e03c58c2ca179374a
 PREDECESSOR_BATCH_CASES_SHA256 = "d55ad60baa08b9c9422587aa8ec252de6b148ebb85e8319f42bb6e48a2c95225"
 SUCCESSOR_RECORD = "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json"
 ZERO_WEIGHT = Fraction(pkm.ZERO)
+# Standard errors whose squares and reciprocal squares stay representable in a double.
+MIN_ERROR = 1.0e-100
+MAX_ERROR = 1.0e100
 # The exact value and the predecessor's float path (a central difference of floats that cancels, then LAPACK and
 # einsum) agree within this bound per float; the retained record differs from the exact value by at most 4.1e-14
 # absolute and 2.0e-12 relative.
@@ -110,10 +113,10 @@ def arm_variance(rate: float, shots: int) -> float:
     interval: the Agresti-Coull interval at z = Z_RESOLVE, with center (shots rate + z^2 / 2) / (shots + z^2) and
     variance center (1 - center) / (shots + z^2), is the finite-count interval of the arm. The adjustment applies
     to a deterministic arm alone, so every other float of a record keeps the predecessor's arithmetic."""
-    if 0.0 < rate < 1.0:
-        return rate * (1 - rate) / shots
     if shots < 1:
         raise ValueError("an arm needs at least one shot")
+    if 0.0 < rate < 1.0:
+        return rate * (1 - rate) / shots
     z2 = float(oc.Z_RESOLVE * oc.Z_RESOLVE)
     center = (shots * rate + z2 / 2) / (shots + z2)
     return center * (1 - center) / (shots + z2)
@@ -128,10 +131,13 @@ def selector_estimate(plus: np.ndarray, minus: np.ndarray) -> tuple[float, float
 
 
 def require_finite_errors(values: list[tuple[float, float]]) -> None:
-    """Refuse a pair whose standard error is not positive and finite: inverse-variance weights are undefined there,
-    and an estimator supplies a finite-count error through arm_variance."""
+    """Refuse an empty list and a pair whose standard error lies outside [MIN_ERROR, MAX_ERROR]: inverse-variance
+    weights are undefined or not representable there (the square underflows or overflows), and an estimator supplies
+    a finite-count error through arm_variance."""
+    if not values:
+        raise ValueError("no estimates to pool")
     for value, se in values:
-        if not (math.isfinite(se) and se > 0.0):
+        if not (math.isfinite(se) and MIN_ERROR <= se <= MAX_ERROR):
             raise ValueError(f"a pooled estimate ({value!r}, se {se!r}) has no positive finite standard error")
 
 

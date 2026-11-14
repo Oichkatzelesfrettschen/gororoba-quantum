@@ -173,15 +173,15 @@ def test_pooling_and_chi_square_match_a_hand_computed_three_entry_fixture() -> N
     _expect(ana.heterogeneity([(2.0, 0.5), (2.0, 0.25)]) == 0.0, "equal values have zero chi-square")
 
 
-def test_pooling_an_empty_list_raises_like_the_predecessor() -> None:
+def test_pooling_an_empty_list_is_refused_by_name_where_the_predecessor_divides_by_zero() -> None:
     for function, kept in ((ana.pooled, oc.pooled), (ana.heterogeneity, oc.heterogeneity)):
-        with pytest.raises(ZeroDivisionError):
+        with pytest.raises(ValueError, match="no estimates to pool"):
             function([])
         with pytest.raises(ZeroDivisionError):
             kept([])
 
 
-@pytest.mark.parametrize("error", [0.0, -0.5, float("nan"), float("inf")])
+@pytest.mark.parametrize("error", [0.0, -0.5, float("nan"), float("inf"), 1e-200, 1e200])
 def test_pooling_refuses_an_error_that_is_not_positive_and_finite_by_name(error: float) -> None:
     for function in (ana.pooled, ana.heterogeneity):
         with pytest.raises(ValueError, match="no positive finite standard error"):
@@ -202,8 +202,9 @@ def test_a_deterministic_arm_takes_the_finite_count_interval_of_its_shots() -> N
             _expect(variance == center * (1 - center) / (shots + z2) and 0.0 < variance < previous, f"{rate} {shots}")
             previous = variance
     _expect(ana.arm_variance(0.0, 4096) == pytest.approx(ana.arm_variance(1.0, 4096), rel=1e-12), "symmetric")
-    with pytest.raises(ValueError, match="at least one shot"):
-        ana.arm_variance(0.0, 0)
+    for rate in (0.0, 0.5, 1.0):
+        with pytest.raises(ValueError, match="at least one shot"):
+            ana.arm_variance(rate, 0)
 
 
 def test_a_series_with_a_deterministic_selector_decides_instead_of_dividing_by_zero() -> None:

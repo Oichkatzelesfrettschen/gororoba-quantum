@@ -22,21 +22,28 @@ bracket and the single readout serves only the drift covariate.
 
 The twin contrast of one batch is t = P(s = 0 | coin-1 twin) - P(s = 0 | coin-0 twin). With assignment errors e01 and e10 of
 the selector, each raw P(s = 0) is e10 + lambda p with lambda = 1 - e01 - e10 and p the ideal probability, so
-t_raw = lambda t_true: an additive readout shift cancels inside the batch, and only a drift of lambda between batches scales
-the contrast. On the retained series the selector q8 reads e01 in [0.0254, 0.0310] and e10 in [0.0275, 0.0322] over the 16
-template batches (`drift_covariate.references.pairs` of
+t_raw = lambda t_true: an additive readout shift cancels inside the batch, and a scale lambda < 1 shrinks the contrast.
+On the retained series the selector q8 reads e01 in [0.0254, 0.0310] and e10 in [0.0275, 0.0322] over the 16 template
+batches (`drift_covariate.references.pairs` of
 `results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json`, measured on Tuna-17, 2026-11-07), so lambda lies in
-[0.937, 0.947], a spread of 1.1 percent. For the b0 offset 0.0164 that moves t by at most 1.8e-4, 0.065 of the pooled b0
-twin standard error 0.00276. The bound covers the unconditional assignment of the selector; a selector error that depends
-on the coin is the coin-conditioned dropout the case tests, which no readout circuit of the series measures and the X-only
-calibration batches (16 to 18) estimate.
+[0.937, 0.947]. Two effects follow for the b0 offset 0.0164 against the pooled b0 twin standard error 0.00276:
+
+- the attenuation itself, a shortfall of 8.7e-4 to 1.04e-3 (0.31 to 0.38 standard errors), is common to every twin and to the
+  base contrasts, which read raw counts on the same scale; the predicted contrasts of `c2_one_cz_twins.txt` apply the
+  bracket product readout of the coin series, so the decision compares raw readings with raw predictions;
+- the spread of lambda between batches, at most 1.8e-4 (0.062 standard errors), is the part that a bracket in every batch
+  would correct and the single-ended layout leaves in.
+
+The bound covers the unconditional assignment of the selector; a selector error that depends on the coin is the
+coin-conditioned dropout the case tests, which no readout circuit of the series measures and the X-only calibration
+batches (16 to 18) estimate. An additive shift cancels only while both twins of a batch share one assignment channel.
 
 A bracket around every twin needs two readouts beside each twin, four circuits for a pair, and a batch holds three
 (`PLATFORM_CIRCUITS_PER_BATCH` in `tests/scripts/test_qi_pathion_one_cz_null_rule_v2.py`). The successor layout that
 brackets every twin runs each twin as `[readout-0, twin, readout-1]`: 16 twin batches instead of 8, 27 batches instead of
 19, and 8 more pauses of 30 s (240 s). It separates the two twins of a pair across batches, so a batch drift enters
 t directly (the case's preregistered drift is 0.003, 1.1 pooled twin standard errors) in exchange for a correction of an
-effect that the bound above puts at 0.065 standard errors. The single-ended layout keeps the within-batch pairing and
+effect that the spread above puts at 0.062 standard errors. The single-ended layout keeps the within-batch pairing and
 stays the recommended design; the bracketed layout is not built.
 
 ## Twin-control rule v2
@@ -54,7 +61,7 @@ response that has the opposite sign. Rule v2 states:
 unchanged. Every other label, number and threshold is the preregistered one, so the two rules differ only on that region
 (`test_rule_v2_differs_from_the_preregistered_rule_only_on_a_superposition_only_reading_with_a_negative_twin`).
 
-The operating characteristics repeat the nine worlds of the case's table from QRNG value 0 of
+The operating characteristics repeat the eight worlds of the case's table from QRNG value 0 of
 `docs/evidence/anu_qrng/draw-2026-11-07T185234Z.json` at 20,000 series per world, and add the negative-twin world (b0
 twin contrast = minus its base contrast, 6-CZ blocks zero; a hypothesis row, no simulation). The inherited worlds draw first
 and in order, so their rows equal the stored ones except where a series read superposition-only with t0 < -3 se:
@@ -77,6 +84,8 @@ its predecessor). The v3 analyzer now defines the case:
 - `arm_variance(rate, shots)` is rate (1 - rate) / shots for an interior rate and, for a deterministic arm, the variance of
   the Agresti-Coull interval at z = 3 (`Z_RESOLVE`): center (shots rate + 4.5) / (shots + 9), variance center
   (1 - center) / (shots + 9). The adjustment covers a deterministic arm only; every other float keeps its arithmetic.
+  The error steps from about 1/shots at an interior rate next to 0 to about 2.1/shots at 0, and no coverage calibration of
+  that step is supplied.
 - The base selector estimate (`selector_estimate`) and the twin contrast use `arm_variance`.
 - `pooled` and `heterogeneity` refuse a pair whose error is not positive and finite with a named `ValueError`; the calibration's
   matched pairs, which the joint statistics pool, take that refusal, since a calibration cell without a single misassigned

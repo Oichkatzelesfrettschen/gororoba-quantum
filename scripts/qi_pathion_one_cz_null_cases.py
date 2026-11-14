@@ -46,6 +46,7 @@ import hashlib
 import itertools
 import json
 import math
+import pickle
 import sys
 from collections.abc import Callable
 from functools import cache, partial
@@ -935,9 +936,15 @@ def operating_characteristics(
 
     `worlds` maps a world name to its mean contrasts (s_b0, t_b0, s_k, t_k), the WORLDS_SIZED worlds when None, and
     `decide` is a successor decision rule (a module-level function, so a spawned worker unpickles it), the
-    preregistered decide_estimates when None. Worlds draw in dict order from one generator, so a successor that
-    lists the WORLDS_SIZED worlds first reproduces their draws."""
+    preregistered decide_estimates when None; a rebound copy of a predecessor function does not pickle by reference,
+    so a `decide` that fails to pickle raises ValueError before any draw. Worlds draw in dict order from one generator,
+    so a successor that lists the WORLDS_SIZED worlds first reproduces their draws."""
     band = B0_LIKE_Z if b0_like_z is None else b0_like_z
+    if decide is not None:
+        try:
+            pickle.dumps(decide)
+        except (pickle.PicklingError, AttributeError, TypeError) as error:
+            raise ValueError("`decide` must pickle by reference, as a module-level function does") from error
     seed = int(read_record(OC_DRAW)["values"][OC_SEED_INDEX])
     rng = np.random.default_rng(seed)
     se_base = {t: 1.0 / math.sqrt(CONTROL_SHOTS if t == "b0" else BATCH_SHOTS) for t in TEMPLATES}
