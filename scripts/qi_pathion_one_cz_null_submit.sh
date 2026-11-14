@@ -19,6 +19,11 @@
 # STAMP cannot submit the series a second time. QI_REPEAT_SERIES set to the series directory's name arms a repeat of
 # the series under a new stamp, which needs its own approval.
 #
+# A run directory under STAMP whose copy of a batch file differs from the series directory stops the script before
+# any submit: the series was regenerated after the copy, and neither submit nor collect rewrites a copied file, so a
+# resumed call would otherwise submit the earlier circuits or mix two generations in one series. The retained
+# directories stay as they are; the regenerated series runs under a new stamp.
+#
 # QI_PYTHON names the Quantum Inspire interpreter, QI_PLATFORM the runner (default scripts/qi_platform.py),
 # SANITY_COMMAND the per-batch check that takes the run directory last (default: the case generator's --sanity under
 # PYTHON), QI_COLLECT_TIMEOUT the seconds one collection waits for its batch (default 3600; a batch still queued at
@@ -57,6 +62,17 @@ for other in "$runs"/*-"$name"-batch-*; do
 		echo "$other holds this series under stamp $held; resume with STAMP=$held, or arm a repeat with QI_REPEAT_SERIES=$name" >&2
 		exit 1
 	fi
+done
+for batch_dir in "$series"/batch-*; do
+	run="$runs/$stamp-$name-$(basename "$batch_dir")"
+	[ -e "$run" ] || continue
+	for file in "$batch_dir"/*; do
+		[ -f "$file" ] || continue
+		if ! cmp -s "$file" "$run/$(basename "$file")"; then
+			echo "$run/$(basename "$file") differs from $file: the series changed after this copy; run it under a new stamp" >&2
+			exit 1
+		fi
+	done
 done
 for batch_dir in "$series"/batch-*; do
 	batch=$(basename "$batch_dir")

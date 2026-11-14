@@ -594,14 +594,14 @@ def _submit(
     held: dict[str, tuple[str, ...]] | None = None,
     extra: dict[str, str] | None = None,
 ) -> tuple[int, str, str]:
-    """Run the submission script on empty batch directories; `held` names files already present in the run directory
-    of a batch, as an earlier call of the same series leaves them."""
+    """Run the submission script on batch directories, empty unless the caller filled them; `held` names files
+    already present in the run directory of a batch, as an earlier call of the same series leaves them."""
     series = tmp_path / "series"
     for n in range(batches):
-        (series / f"batch-{n:02d}").mkdir(parents=True)
+        (series / f"batch-{n:02d}").mkdir(parents=True, exist_ok=True)
     for batch, names in (held or {}).items():
         run = tmp_path / "runs" / f"STAMP-series-{batch}"
-        run.mkdir(parents=True)
+        run.mkdir(parents=True, exist_ok=True)
         for name in names:
             (run / name).write_text("{}\n", encoding="utf-8")
     script, log = _stub(tmp_path, failures)
@@ -660,6 +660,30 @@ def test_the_submission_sequence_submits_a_run_directory_that_saw_only_refusals(
     code, calls, err = _submit(tmp_path, [], held={"batch-00": ()})
     _expect(code == 0, f"exit {code}: {err}")
     _expect([ln.split()[0] for ln in calls.splitlines()] == ["submit", "collect", "submit", "collect"], calls)
+
+
+def test_the_submission_sequence_refuses_a_run_copy_that_differs_from_the_series(tmp_path: Path) -> None:
+    def resumed(name: str, copied: str, files: tuple[str, ...]) -> tuple[int, str, str]:
+        root = tmp_path / name
+        batch = root / "series" / "batch-00"
+        batch.mkdir(parents=True)
+        (batch / "cases.json").write_text('{"shots": 2048}\n', encoding="utf-8")
+        run = root / "runs" / "STAMP-series-batch-00"
+        run.mkdir(parents=True)
+        (run / "cases.json").write_text(copied, encoding="utf-8")
+        return _submit(root, [], held={"batch-00": files})
+
+    code, calls, err = resumed("same", '{"shots": 2048}\n', ())
+    _expect(code == 0 and calls.count("submit") == 2, f"an unchanged copy is submitted: {code} {calls} {err}")
+    for name, files in (
+        ("refused", ()),
+        ("queued", ("submission.json",)),
+        ("done", ("submission.json", "results.json")),
+    ):
+        code, calls, err = resumed(name, '{"shots": 1024}\n', files)
+        _expect(code == 1 and calls == "" and "new stamp" in err, f"{name}: {code} {calls} {err}")
+        copy = tmp_path / name / "runs" / "STAMP-series-batch-00" / "cases.json"
+        _expect(copy.read_text(encoding="utf-8") == '{"shots": 1024}\n', f"{name}: the retained copy changed")
 
 
 def test_the_submission_sequence_refuses_a_series_held_under_another_stamp(tmp_path: Path) -> None:
