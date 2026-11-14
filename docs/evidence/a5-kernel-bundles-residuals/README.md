@@ -494,16 +494,18 @@ identities on those images. The ranks are at most 1 at the sampled points and ex
 `V(G)`, and by `A5-472`, which makes `N1` a multiple of `N2 + N3` on `K(z)`, the statement reduces to the pair
 `N2`, `N3`.
 
-Sampled (`A5-475`, survives): inside `V(G)` the doubling form `N1` is a multiple `lambda l^2` of a square on
-`K(z)`, and every vector of the plane `K0(z) = K(z) n ker l` is a pair `(c, d')` of null imaginary octonions with
-product `c d' = 0`. At the sampled points `t_8` is a nonzero multiple of `l` on `K(z)`, and the symmetric forms
-that vanish on every sampled `K0(z)` are the 25 these conditions give: the 15 products `t_8 t_k`, the norms `N1`
-and `N3`, and the 8 coordinates of `c d'`. By `A5-470` they are the forms whose combinations with the doubling
-forms are the 25 and 24 quadrics.
+Sampled (`A5-475`, survives): inside `V(G)` every vector of the plane `K0(z)` of the vectors of `K(z)`
+orthogonal to `z` under `N1`, the kernel on `K(z)` of `l = N1(., z)`, is a pair `(c, d')` of null imaginary
+octonions with product `c d' = 0`. At the sampled points `t_8` is a nonzero multiple of `l` on `K(z)`, and the
+symmetric forms that vanish on every sampled `K0(z)` are the 25 these conditions give: the 15 products
+`t_8 t_k`, the norms `N1` and `N3`, and the 8 coordinates of `c d'`. By `A5-470` they are the forms whose
+combinations with the doubling forms are the 25 and 24 quadrics.
 
-**Proved at the fixtures** (`A5-474`): exactly over `Q(i)` the statement holds at all 54 fixtures inside `V(G)`.
-At 39 of them `t_8` vanishes on all of `K(z)` and `N1` does not, so `ker l` names the plane and `ker t_8` does not;
-the first form of the statement, with `ker t_8`, fails there (`A5-473`, superseded).
+**Proved at the fixtures** (`A5-474`): exactly over `Q(i)` the statement holds at all 54 fixtures inside `V(G)`,
+where `N1(z)` is nonzero and `N1` on `K(z)` is a multiple of `l^2`. The identity of `A5-471` for `N1` and
+`N2 = t_8^2` reads `N1(z) t_8(k) t_8(k') = N1(k, z) z_8 t_8(k')`, and `t_8` vanishes on all of `K(z)` exactly at
+the 39 fixtures with `z_8 = 0`. There `ker t_8` is `K(z)` and the first form of the statement, which named the
+plane by `ker t_8`, fails (`A5-473`, superseded).
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.

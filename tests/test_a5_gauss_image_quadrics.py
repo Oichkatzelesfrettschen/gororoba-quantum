@@ -305,10 +305,11 @@ def test_doubling_forms_on_the_kernel_are_proportional_and_of_rank_one_inside_th
 
 
 def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_with_product_zero() -> None:
-    # Inside V(G), on the plane K0(z) of the vectors of K(z) with t_8 = 0, a vector is a pair (c, d') of imaginary
-    # octonions, c in the coordinates 1 to 7 and d' in 9 to 15. The symmetric forms that vanish on every K0(z) are
-    # the 15 products t_8 t_k, the norms N1 of c and N3 of d', and the 8 coordinates of the octonion product c d':
-    # 25 forms, which is what the 95 = 120 - 25 dimensions spanned by S^2 K0(z) leave.
+    # Inside V(G), at the sampled points, t_8 is a nonzero multiple of the pairing N1(., z) on K(z), so the plane
+    # K0(z) of the vectors of K(z) orthogonal to z under N1 is the plane of those with t_8 = 0. A vector of it is a
+    # pair (c, d') of imaginary octonions, c in the coordinates 1 to 7 and d' in 9 to 15. The symmetric forms that
+    # vanish on every K0(z) are the 15 products t_8 t_k, the norms N1 of c and N3 of d', and the 8 coordinates of
+    # the octonion product c d': 25 forms, which is what the 95 = 120 - 25 dimensions spanned by S^2 K0(z) leave.
     monomials = quadrics.SYMMETRIC_MONOMIALS
     candidates = np.zeros((25, len(monomials)), dtype=np.int64)
     for index in range(IMAGINARY):
@@ -328,7 +329,11 @@ def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_wi
         planes = []
         for number in range(40):
             kernel = np.array(quadrics.three_plane((stratum, number))[0], dtype=np.int64)
-            combinations = np.array(_nullspace([[int(value) for value in kernel[:, 7]]]), dtype=np.int64)
+            point = _twist(sample(stratum, Points(f"quadrics:{stratum}:{number}"), _polynomials()), ROOT_OF_MINUS_ONE)
+            pairing = [int(value) for value in kernel[:, :7] @ np.array(point[:7], dtype=np.int64) % PRIME]
+            unit = [int(value) for value in kernel[:, 7]]
+            _same((any(pairing), any(unit), _rank([pairing, unit])), (True, True, 1))
+            combinations = np.array(_nullspace([unit]), dtype=np.int64)
             planes.append(combinations @ kernel % PRIME)
         stacked = np.array(planes)
         _same((stacked.shape[1], bool(stacked[:, :, 7].any())), (2, False))
@@ -339,11 +344,14 @@ def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_wi
         _same(bool((candidates @ rows.T % PRIME).any()), False)
 
 
-def test_null_octonion_pairs_fill_the_kernel_plane_of_the_square_root_of_the_first_doubling_form() -> None:
-    # Exact over Q(i) at the 54 fixtures inside V(G). N1 has rank one on K(z), N1 = lambda l^2, and every vector of
-    # the plane K(z) n ker l has t_8 = 0 and is a pair (c, d') of null imaginary octonions with c d' = 0. At 39
-    # fixtures t_8 vanishes on all of K(z), where N1 is nonzero, so ker t_8 names that plane only where t_8 is
-    # nonzero on K(z), as it is at the sampled points of the test above.
+def test_null_octonion_pairs_fill_the_part_of_the_kernel_orthogonal_to_its_point_under_the_first_doubling_form() -> (
+    None
+):
+    # Exact over Q(i) at the 54 fixtures z inside V(G). N1(z) is nonzero and N1 on K(z) is a multiple of the square
+    # of l = N1(., z), the pairing with the point, which lies in K(z). Every vector of the plane K(z) n ker l has
+    # t_8 = 0 and is a pair (c, d') of null imaginary octonions with c d' = 0. With N2 = t_8^2 the one-square
+    # identity reads N1(z) t_8(k) t_8(k') = N1(k, z) z_8 t_8(k'), so t_8 vanishes on all of K(z) exactly where
+    # z_8 = 0: at 39 fixtures, where ker t_8 is K(z) and not that plane.
     zero = QQ_I.zero
     table = {
         (left, right): [
@@ -367,7 +375,7 @@ def test_null_octonion_pairs_fill_the_kernel_plane_of_the_square_root_of_the_fir
         return out
 
     unit = QQ_I.convert(I)
-    inside, whole_kernel_off_the_unit = 0, 0
+    inside, point_off_the_unit = 0, 0
     for _, stratum, split in _fixture_splits():
         if stratum == STRATA[0]:
             continue
@@ -376,15 +384,17 @@ def test_null_octonion_pairs_fill_the_kernel_plane_of_the_square_root_of_the_fir
         kernel = quadrics._exact_kernel(quadrics._exact_block(frame))
         _same(len(kernel), 3)
         gram = [[dot(first[:7], second[:7]) for second in kernel] for first in kernel]
-        form = next(row for row in gram if any(row))
+        form = [dot(frame[:7], vector[:7]) for vector in kernel]
+        _same(bool(dot(frame[:7], frame[:7])) and any(form), True)
         _same(any(form[i] * row[j] - form[j] * row[i] for row in gram for i in range(3) for j in range(3)), False)
+        _same(any(vector[7] for vector in kernel), bool(frame[7]))
         pivot = next(index for index, value in enumerate(form) if value)
         plane = [
             [x - form[index] / form[pivot] * y for x, y in zip(kernel[index], kernel[pivot], strict=True)]
             for index in range(3)
             if index != pivot
         ]
-        whole_kernel_off_the_unit += not any(vector[7] for vector in kernel)
+        point_off_the_unit += not frame[7]
         for first in plane:
             _same(bool(first[7]), False)
             for second in plane:
@@ -393,7 +403,7 @@ def test_null_octonion_pairs_fill_the_kernel_plane_of_the_square_root_of_the_fir
                     x + y for x, y in zip(product(first[:7], second[8:]), product(second[:7], first[8:]), strict=True)
                 ]
                 _same(any(mixed), False)
-    _same([inside, whole_kernel_off_the_unit], [54, 39])
+    _same([inside, point_off_the_unit], [54, 39])
 
 
 def test_fixture_class_is_exact_and_agrees_with_the_modular_class_of_its_stratum() -> None:
