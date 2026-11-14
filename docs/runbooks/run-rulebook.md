@@ -754,3 +754,32 @@ the closest entry and say what changed.
   relation in J + m I^2 is certified for the ten cells in 100 s (A5-474), which makes A5-457 unconditional. At
   08:02 PST the three E8-bar Rees runs were still in the Rees standard basis: `c-e8-nm-p` after 20 h 7 min at
   4.1 GB, `k-e8-nm-p2` and `k-e8-np-p` after 16 h 42 min at 3.7 and 4.4 GB, no FIBER line.
+
+### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
+
+- Question and decisive outcome: the dimension and components of the singular locus of the minimal prime of
+  dimension 5 and degree 11 of the E8-bar quadric ideal over Q(i). Codimension 1 would make the component
+  non-normal; codimension 2 or more, with its Cohen-Macaulay property, makes it normal (ledger A5-488, A5-489).
+- Formulation: 25 quadrics in 12 variables in codimension 7. The full ideal of 7 x 7 Jacobian minors has
+  380,714,400 generators; `slocus` over Q(i) and modulo 32009, and the minors of nine dense combinations of the
+  quadrics modulo 32009, each ended with `no more memory` at a 20 GB address-space cap on the workstation. Chosen:
+  the route of A5-490, kept minors of the sparse quadrics for an outer bound, a decomposition of the bound, and the
+  Fitting ideal of the pruned Jacobian cokernel on each component, with a two-sided rank bound on every result.
+- Host and tool versions: an 84 GB cloud VM with 4 vCPUs shared with another session's four processes, Singular
+  4.4.1 from passagemath-singular 10.8.13 in a user-level environment, Python 3.14.7.
+- Launch line and environment: `e8_component_geometry.py` from a checkout at `origin/main` plus the producer, in
+  tmux with a full log and `/usr/bin/time -v`; scratch scripts before it under a 55 GB `ulimit -v` and a 12 h
+  `timeout`.
+- Runner and exit status: the producer's own `run_singular` (8 GiB address space, 3,600 s, exit status and `?`
+  lines checked, `RESULT done 1` required); the launcher appends `EXIT <status>` to the log.
+- Departures from the foundations: the VM was already allocated for other work under its standing run policy, so
+  this entry adds no VM case; the record was built on the VM and copied into the worktree, with the sha256 of the
+  producer compared on both sides before the copy.
+- Parallelism: two Singular processes (one per basepoint) on 4 vCPUs that another session's job already filled.
+- Memory and time limits: none reached; peak resident set 135,464 kB.
+- Checkpoints: the log, the `.time` file and the record.
+- End state: record copied and checked with `--check`; the VM left running for its other user.
+- Outcome: 10 min 57 s for both basepoints; a first exact pass in scratch took 3.7 s to bound the locus in
+  dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-489). Two traps are in A5-490: row
+  sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.
+
