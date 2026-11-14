@@ -37,7 +37,7 @@ kernel output, tool versions, source hashes and replay commands. Distinguish
 standard mathematical foundations, interface hypotheses and hardware-model
 premises; counting axioms alone cannot establish an appropriate theorem.
 
-The existing [N21 certificate](../../proofs/TargetFlipN21.v) proves finite
+The existing gororoba-math `rocq/quantum/TargetFlipN21.v` proves finite
 Boolean permutation action. Qiskit Operator checks establish phase and clean
 workspace behavior separately. Joining those layers requires a gate-semantics
 bridge, including relative phases under coherent control.
@@ -53,7 +53,7 @@ p(a,b) = (a+b)/2
 
 the retained exact witness has `x=e3+e10`, `y=e6-e15`, `x*y=0`, and
 `p(x)*p(y)=e5/2`. The source audit retains the original fixture and provenance.
-The new [FoldAverageDescent.v](../../proofs/FoldAverageDescent.v) proves a
+The new gororoba-math `rocq/quantum/FoldAverageDescent.v` proves a
 different, stronger information-loss obstruction over canonical rational
 scalar pairs:
 
@@ -194,8 +194,8 @@ separation by
 (1947-10)/8192 - 4*(21/1000) = 156109/1024000 > 0.
 ```
 
-The new [rational certificate](../../proofs/TerminalChannelSeparation.v) and
-[real certificate](../../proofs/TerminalChannelSeparationReal.v) check that
+The new gororoba-math `rocq/quantum/TerminalChannelSeparation.v` and
+gororoba-math `rocq/quantum/TerminalChannelSeparationReal.v` check that
 implication over their respective fields. The rational theorem is
 globally closed. The real theorem uses the standard library's classical real
 foundations, reported in the retained assumption output. Proving that

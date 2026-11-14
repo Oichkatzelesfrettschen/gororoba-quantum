@@ -10,7 +10,8 @@ the sedenions, exactly the S3 that epsilon and psi of Gresnigt (arXiv 2609.10569
 Aut(S) = G2 x S3 (docs/evidence/sedenion-automorphisms/README.md).
 
 The same computation on Gresnigt's Table 5 as printed is the mutation control, and the table Rocq evaluates
-from the integer pair tower of proofs/CdImaginarySumConference.v binds cd_core's product to the proof's.
+from the integer pair tower of gororoba-math `rocq/quantum/CdImaginarySumConference.v` binds cd_core's product to
+the proof's.
 """
 
 import json

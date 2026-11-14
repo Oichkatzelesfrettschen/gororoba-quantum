@@ -130,7 +130,7 @@ The algebra index bit `b` sits on register qubit `b`, little-endian
   `(1 - g)(1 + g) = 0` and the idempotents `(1 +- g)/2` are the stabilizer projectors `(1 +- X^m)/2`. The twist
   replaces `X^m` by `L_(e_m) = X^m D_m` with `D_m = diag(sigma(m, x))`. [E] `D_m` is affine over `F_2`, a signed
   Pauli string, for all three rows at `D = 4` and for no row at `D = 8, 16, 32`; the degree of the sign row is
-  exactly `k - 1` ([CdSignRowAnf.v](../../../proofs/CdSignRowAnf.v)), which makes sedenion left multiplication
+  exactly `k - 1` (gororoba-math `rocq/quantum/CdSignRowAnf.v`), which makes sedenion left multiplication
   CCZ-type ([algebra-hardware-probe-principles.md](algebra-hardware-probe-principles.md)).
 - [E] For two-unit pure `u` at `D = 16`, `L_u^2 = -|u|^2 I` on all 63 invertible pairs and fails on all 42
   zero-divisor pairs. The test does not mark zero divisors in general: the invertible `e_1 + e_2 + e_12`

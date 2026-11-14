@@ -60,9 +60,20 @@ the two differ.
   --out ../results/live`, a record under results/live/) belongs to a change
   of calibration admission, the approval comparison, the submission path or
   execution readiness, and to every case that heads for `--submit`.
-- A change to `proofs/`, a replay bundle or its receipts runs the Rocq
-  compile of `proofs.yml` (path-filtered, not a required check;
-  [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)).
+- The Rocq proof sources of the Cayley-Dickson tower, the formal certificates
+  and the Stiefel witness live in gororoba-math under `rocq/quantum`. A change
+  to a source is a gororoba-math pull request, followed here by a bump of
+  `ci/gororoba_math.pin` to the merged commit. A local run resolves the checkout
+  through `GOROROBA_MATH` (unset ends the run with a message); hosted CI fetches
+  the pin. A record names a source as `gororoba-math:rocq/quantum/NAME.v`. A
+  published replay bundle keeps its bytes and its `proofs/NAME.v` reads, which
+  `scripts/rocq_kaggle_replay.py` and the gates that declare
+  `requires: ["gororoba-math"]` supply from a shadow root of
+  `gororoba_quantum/math_sources.py`, after each source's sha256 equals the
+  digest the retained ledgers hold. A change to a pin, a replay bundle or its
+  receipts runs the Rocq compile of `proofs.yml` (path-filtered, not a
+  required check; [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)). `proofs/`
+  holds the sources that gororoba-math does not carry yet.
 
 ## Seeds
 
@@ -90,7 +101,7 @@ Never guess or estimate hardware specifications, timing budgets, algebraic
 conventions or mathematical invariants; import or validate against the
 registered repository artifact (`docs/notes/ibm_quantum/`,
 [ibm_heron_platform](docs/notes/ibm_heron_platform.md),
-`docs/evidence/heron_platform/targets.json`, `proofs/`).
+`docs/evidence/heron_platform/targets.json`, gororoba-math `rocq/quantum/`).
 
 - `a -> L_a` is a linear encoding, never an algebra homomorphism.
 - `|0>` is `e_0 = 1`, the identity, never the zero vector. A zero product is
