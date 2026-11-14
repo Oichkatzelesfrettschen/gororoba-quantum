@@ -10,7 +10,8 @@ solves the parameters and claims a QRNG draw stays in one place:
   scripts/bdsc_diagnostic_acquisition_analysis.py;
 - `draw_claims` compares a draw's retained manifests with the successor record's sha256, so a rebuild of the
   successor's own jobs never claims its draw and a manifest of any other case, the original diagnostic included, does;
-- every manifest admits the one platform and carries `acquisition_admission` billing_rule_v2.READY.
+- every manifest admits the one platform, carries `acquisition_admission` billing_rule_v2.READY and binds the sha256
+  of every module the readout imports as `successor_sources`, which qd_platform.load_case and the analyzer verify.
 
 The tree goes outside results/quandela/cases/bdsc_diagnostic, because the original `--check` requires exactly the
 original job directories there. qpu:belenos qualifies the diagnostic; sim:belenos carries the same request as a
@@ -36,7 +37,6 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-import bdsc_case_records_v2 as records_v2  # noqa: E402
 import bdsc_cases  # noqa: E402
 import bdsc_certificate as cert  # noqa: E402
 import bdsc_diagnostic as diag  # noqa: E402
@@ -48,6 +48,37 @@ PLATFORMS = ("qpu:belenos", "sim:belenos")
 BUILDER = "scripts/bdsc_diagnostic_acquisition_case.py"
 ANALYZER = "scripts/bdsc_diagnostic_acquisition_analysis.py"
 ORIGINAL_TREE = diag.CASES_DIR
+# Every repository module that the build and the readout import, as the interpreter loads them from the analyzer
+# (tests/scripts/test_bdsc_diagnostic_acquisition.py compares this tuple with a fresh interpreter's loaded set).
+# Each manifest binds the sha256 of each file as `successor_sources`; qd_platform.load_case verifies them before a
+# plan, review, submission or collection, and the analyzer verifies them before it reads a run.
+SOURCES = (
+    "gororoba_quantum/bdsc.py",
+    "gororoba_quantum/boolean_anf.py",
+    "gororoba_quantum/cd_core.py",
+    "gororoba_quantum/parallel.py",
+    "gororoba_quantum/qd_records.py",
+    "gororoba_quantum/rebound.py",
+    "gororoba_quantum/select_lcu.py",
+    "scripts/anu_qrng.py",
+    "scripts/bdsc_cases.py",
+    "scripts/bdsc_certificate.py",
+    "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_diagnostic_acquisition_analysis.py",
+    "scripts/bdsc_diagnostic_acquisition_case.py",
+    "scripts/bdsc_forensics.py",
+    "scripts/billing_rule_v2.py",
+    "scripts/box_kite_cases.py",
+    "scripts/oq_platform.py",
+    "scripts/qd_box_kite_cases.py",
+    "scripts/qd_platform.py",
+    "scripts/qi_platform.py",
+    "scripts/qi_zero_divisor_cases.py",
+)
+
+# The wording bdsc_diagnostic.case_record emits at /resources/billing_rule and
+# docs/evidence/quandela-billing-rule-successor/README.md supersedes; a record that carries another value is refused.
+OLD_RULE = "1 credit per job plus 1e-6 per shot of the job's largest iteration max_shots"
 
 Documents = dict[str, bytes | dict[str, bytes]]
 
@@ -61,7 +92,7 @@ def platform_of(platform: str) -> str:
 def case_record(platform: str) -> dict[str, Any]:
     """The original case record with the current billing rule and the platform the successor request admits."""
     record = diag.case_record()
-    supersede(record, ("resources", "billing_rule"), records_v2.OLD_RULE, RULE)
+    supersede(record, ("resources", "billing_rule"), OLD_RULE, RULE)
     record["acquisition"] = {"platform": platform_of(platform), "builder": BUILDER, "analyzer": ANALYZER}
     return record
 
@@ -80,6 +111,11 @@ def cases_namespace(platform: str, roots: tuple[Path, ...] | None = None) -> typ
     )
 
 
+def source_digests(root: Path = ROOT) -> dict[str, str]:
+    """The sha256 of each file of SOURCES under `root`."""
+    return {name: diag.sha256_bytes((root / name).read_bytes()) for name in SOURCES}
+
+
 def documents(platform: str, draw: Path | None = None, roots: tuple[Path, ...] | None = None) -> Documents:
     """{"case.json": bytes, job: {"cases.json": bytes, "circuit.json": bytes}} of the successor request."""
     namespace = cases_namespace(platform, roots)
@@ -94,6 +130,7 @@ def documents(platform: str, draw: Path | None = None, roots: tuple[Path, ...] |
         if isinstance(files, dict):
             manifest = json.loads(files["cases.json"])
             admit_ready(manifest)
+            manifest["successor_sources"] = source_digests()
             files["cases.json"] = (json.dumps(manifest, indent=1) + "\n").encode()
     return out
 

@@ -142,7 +142,6 @@ from qd_records import (  # noqa: E402
     PlatformError,
     expected_iterations,
     iteration_form,
-    load_case,
     parse_counts,
     predates,
     read_run,
@@ -150,6 +149,9 @@ from qd_records import (  # noqa: E402
     run_directories,
     seed_value,
     sha256_bytes,
+)
+from qd_records import (
+    load_case as load_case_records,
 )
 
 API = "https://api.cloud.quandela.com"
@@ -1335,6 +1337,39 @@ CURRENT_CASE_SOURCES: dict[str, tuple[str, ...]] = {
     "qpu-ascella-billing-rule": _ACQUISITION_PAIR,
     "sim-ascella-billing-rule": _ACQUISITION_PAIR,
 }
+
+
+def verify_successor_sources(manifest: dict[str, Any], root: Path = ROOT) -> None:
+    """Refuse a case whose `successor_sources` digests differ from the files under `root`.
+
+    A manifest without the field passes. The field maps repository-relative paths to sha256 digests of the modules
+    that build and read the case (scripts/bdsc_diagnostic_acquisition_case.py), so a plan, review, submission,
+    collection or analysis in another source tree refuses instead of crossing it.
+    """
+    sources = manifest.get("successor_sources")
+    if sources is None:
+        return
+    if not isinstance(sources, dict) or not sources:
+        raise PlatformError("successor_sources must map source paths to sha256 digests")
+    resolved = root.resolve()
+    for name, checksum in sources.items():
+        path = (root / name).resolve() if isinstance(name, str) else None
+        if (
+            path is None
+            or Path(name).is_absolute()
+            or not path.is_relative_to(resolved)
+            or not isinstance(checksum, str)
+        ):
+            raise PlatformError("invalid successor source identity")
+        if sha256_bytes(path.read_bytes()) != checksum:
+            raise PlatformError(f"reviewed source changed: {name}")
+
+
+def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
+    """qd_records.load_case, after the manifest's successor_sources match the tree."""
+    manifest, circuit, cases_sha256 = load_case_records(case_dir)
+    verify_successor_sources(manifest)
+    return manifest, circuit, cases_sha256
 
 
 def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -> None:

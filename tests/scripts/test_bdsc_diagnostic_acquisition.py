@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 import shutil
+import subprocess
+import sys
 import tempfile
 from collections.abc import Callable, Iterator
 from pathlib import Path
@@ -16,6 +18,7 @@ import bdsc_diagnostic as diag
 import bdsc_diagnostic_acquisition_analysis as analysis
 import bdsc_diagnostic_acquisition_case as acquisition
 import pytest
+import qd_platform as qd
 from billing_rule_v2 import RULE
 
 ROOT = acquisition.ROOT
@@ -218,7 +221,7 @@ def test_the_successor_reads_a_run_as_the_original_reads_its_own(drawn: Drawn, t
     # Each reader refuses the other's runs: the manifests name another case record.
     with pytest.raises(ValueError, match="built from another case record"):
         diag.readout(successor_runs, validate=False)
-    with pytest.raises(ValueError, match="built from another case record"):
+    with pytest.raises(ValueError, match="binds no successor sources"):
         analysis.readout(original_runs, drawn.case("qpu:belenos"), validate=False)
 
 
@@ -266,3 +269,154 @@ def test_a_single_run_admits_for_a_rehearsal_that_holds_fewer_than_every_job(dra
     (runs[0] / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n")
     with pytest.raises(ValueError, match="cases.json changed"):
         analysis.admit(runs[:1], case, validate=False)
+
+
+LOADED = """
+import sys
+from pathlib import Path
+sys.path[:0] = ["gororoba_quantum", "scripts"]
+import bdsc_diagnostic_acquisition_analysis
+import bdsc_diagnostic_acquisition_case as case
+case.documents("sim:belenos")
+root = Path.cwd().resolve()
+print("\\n".join(sorted(
+    str(Path(m.__file__).resolve().relative_to(root))
+    for m in sys.modules.values()
+    if getattr(m, "__file__", None) and Path(m.__file__).resolve().is_relative_to(root)
+)))
+"""
+
+
+def test_the_bound_sources_cover_every_repository_module_the_readout_imports() -> None:
+    """A fresh interpreter that imports the analyzer and builds a request loads no repository file outside SOURCES."""
+    found = subprocess.run(
+        [sys.executable, "-I", "-c", LOADED], cwd=ROOT, capture_output=True, text=True, check=True
+    ).stdout.split()
+    missing = sorted(set(found) - set(acquisition.SOURCES))
+    if missing:
+        raise AssertionError(f"imported repository modules outside SOURCES: {missing}")
+    # draw_values imports anu_qrng when a build or a readout reads a draw, which this undrawn build does not.
+    unused = sorted(set(acquisition.SOURCES) - set(found) - {"scripts/anu_qrng.py"})
+    if unused:
+        raise AssertionError(f"SOURCES names files that the readout does not import: {unused}")
+
+
+def source_copy(tmp_path: Path) -> Path:
+    """The bound files under a scratch tree, which a test mutates instead of the repository."""
+    copy = tmp_path / "tree"
+    for name in acquisition.SOURCES:
+        (copy / name).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT / name, copy / name)
+    return copy
+
+
+@pytest.mark.parametrize("name", acquisition.SOURCES)
+def test_a_changed_bound_source_is_refused(drawn: Drawn, tmp_path: Path, name: str) -> None:
+    manifest = drawn.manifests("sim:belenos")["b1-j1"]
+    if manifest["successor_sources"] != acquisition.source_digests():
+        raise AssertionError("the manifest does not bind the digests of the tree")
+    copy = source_copy(tmp_path)
+    qd.verify_successor_sources(manifest, copy)
+    target = copy / name
+    target.write_bytes(target.read_bytes() + b"\n# changed\n")
+    with pytest.raises(qd.PlatformError, match=f"reviewed source changed: {name}"):
+        qd.verify_successor_sources(manifest, copy)
+
+
+def test_the_analyzer_refuses_a_run_when_its_readout_source_changed(drawn: Drawn, tmp_path: Path) -> None:
+    runs = runs_for(tmp_path / "runs", "sim:belenos", drawn.manifests("sim:belenos"), response())
+    case = drawn.case("sim:belenos")
+    copy = source_copy(tmp_path)
+    if analysis.admit(runs[:1], case, validate=False, root=copy) != ["b1-j1"]:
+        raise AssertionError("an unchanged tree does not admit")
+    readout = copy / "scripts/bdsc_diagnostic.py"
+    readout.write_bytes(readout.read_bytes().replace(b"def readout(", b"def readout_changed(", 1))
+    with pytest.raises(qd.PlatformError, match="reviewed source changed: scripts/bdsc_diagnostic.py"):
+        analysis.admit(runs[:1], case, validate=False, root=copy)
+    with pytest.raises(qd.PlatformError, match="reviewed source changed: scripts/bdsc_diagnostic.py"):
+        analysis.readout(runs, case, validate=False, root=copy)
+
+
+# Counts that fix every fraction by hand: f and g at their output efficiencies 0.003 and 0.986 of 40000 trials, each
+# superposition at 0.4945, in both blocks, every template and every seed slot.
+FIXED_HITS = {"f": 120, "g": 39440, "+": 19780, "-": 19780, "+i": 19780, "-i": 19780}
+
+
+def fixed_counts(job: str, manifest: dict[str, Any], result: dict[str, Any], submission: dict[str, Any]) -> None:
+    selected = manifest["selected_modes"][0]
+    other = next(mode for mode in range(cert.MODES) if mode not in manifest["selected_modes"])
+    for setting, iteration in zip(manifest["settings"], result["iterations"], strict=True):
+        hits = FIXED_HITS[label(setting)]
+        hit, miss = ["0"] * cert.MODES, ["0"] * cert.MODES
+        hit[selected], miss[other] = "1", "1"
+        iteration["counts"] = {",".join(hit): hits, ",".join(miss): diag.TRIALS - hits}
+
+
+def assert_fixed_readout(report: dict[str, Any]) -> None:
+    """The fields that follow from FIXED_HITS by hand, independent of the analysis code.
+
+    Every instance repeats its block-1 match, so each block change is 0; each superposition sits at 19780 / 40000 =
+    0.4945, which is 0.0055 below the r-hat of 0.5 that equal perf_f and perf_g give (0.078 / (0.078 + 0.078)); the 32
+    residuals (2 blocks x 2 templates x 4 seeds x 2 families) are differences of equal fractions, hence 0; no test sees
+    dispersion, so every reading is consistent and the branch is ensemble-candidate."""
+    expected_fraction = 19780 / 40000
+    problems = []
+    if report["branch"] != "ensemble-candidate":
+        problems.append(f"branch {report['branch']}")
+    if set(report["readings"].values()) != {"consistent"}:
+        problems.append(f"readings {report['readings']}")
+    if len(report["residuals"]) != 32 or any(row["value"] != 0.0 for row in report["residuals"]):
+        problems.append("residuals")
+    if len(report["block_changes"]) != 48 or any(row["change"] != 0.0 for row in report["block_changes"]):
+        problems.append("block changes")
+    if report["returned_circuit_repeats"] != 48 or report["residuals_beyond_margin"] != 0:
+        problems.append("repeats or margin count")
+    if report["leak_outliers"]:
+        problems.append("leaks")
+    shifts = report["calibration_shift"]
+    if [shifts[k]["n"] for k in ("superposition", "f", "g")] != [32, 8, 8] or shifts["superposition"]["mean"] != 0.0:
+        problems.append("calibration shift")
+    deviations = report["perf_ratio"]["deviations"]
+    if len(deviations) != 64 or any(abs(row["fraction"] - expected_fraction) > 1e-12 for row in deviations):
+        problems.append("superposition fractions")
+    if (
+        abs(report["perf_ratio"]["deviation_rms"] - 0.0055) > 1e-12
+        or report["perf_ratio"]["r_hat_summary"]["mean"] != 0.5
+    ):
+        problems.append("perf ratio")
+    if problems:
+        raise AssertionError(f"the readout departs from the hand-computed fields: {problems}")
+
+
+@pytest.mark.parametrize("platform", acquisition.PLATFORMS)
+def test_the_readout_of_fixed_counts_matches_the_hand_computed_fields(
+    drawn: Drawn, tmp_path: Path, platform: str
+) -> None:
+    runs = runs_for(tmp_path / "runs", platform, drawn.manifests(platform), response(), edit=fixed_counts)
+    assert_fixed_readout(analysis.readout(runs, drawn.case(platform), validate=False))
+
+
+def test_a_planted_readout_defect_departs_from_the_hand_computed_fields(
+    drawn: Drawn, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    platform = "qpu:belenos"
+    runs = runs_for(tmp_path / "runs", platform, drawn.manifests(platform), response(), edit=fixed_counts)
+    case = drawn.case(platform)
+    analyse = diag.analyse
+    observations = diag.observations
+
+    def wrong_branch(observed: dict[int, dict[str, Any]]) -> dict[str, Any]:
+        return {**analyse(observed), "branch": "common-effect"}
+
+    def one_click_lost(manifest: dict[str, Any], result: dict[str, Any], trials: int = diag.TRIALS) -> Any:
+        items = observations(manifest, result, trials)
+        first = min(items)
+        items[first] = {**items[first], "selected": items[first]["selected"] - 40}
+        return items
+
+    for name, mutation in (("analyse", wrong_branch), ("observations", one_click_lost)):
+        with monkeypatch.context() as patched:
+            patched.setattr(diag, name, mutation)
+            report = analysis.readout(runs, case, validate=False)
+        with pytest.raises(AssertionError, match="departs from the hand-computed fields"):
+            assert_fixed_readout(report)

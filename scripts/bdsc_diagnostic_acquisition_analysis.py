@@ -31,12 +31,30 @@ from typing import Any
 
 import bdsc_diagnostic as diag
 import bdsc_diagnostic_acquisition_case as acquisition
+import qd_platform as qd
 
 from rebound import rebound
 
 
-def admitted(case: Path, roots: tuple[Path, ...] | None = None) -> tuple[str, str, Callable[..., Any]]:
-    """(platform, sha256 of the record, admit_run bound to it) for a case record that equals a fresh build."""
+def source_verified(admit_run: Callable[..., Any], root: Path) -> Callable[..., Any]:
+    """`admit_run` after the run's manifest binds the digests of the files under `root`, refusing another tree."""
+
+    def admit(run: Path, validate: bool, context: dict[str, Any]) -> Any:
+        manifest = json.loads((run / "cases.json").read_bytes())
+        if "successor_sources" not in manifest:
+            raise ValueError(f"{run}: the manifest binds no successor sources")
+        qd.verify_successor_sources(manifest, root)
+        return admit_run(run, validate, context)
+
+    return admit
+
+
+def admitted(
+    case: Path, roots: tuple[Path, ...] | None = None, root: Path = acquisition.ROOT
+) -> tuple[str, str, Callable[..., Any]]:
+    """(platform, sha256 of the record, admit_run bound to it) for a case record that equals a fresh build.
+
+    `root` is the source tree whose digests a run's `successor_sources` must equal; a test passes a copy."""
     record = case.read_bytes()
     named = json.loads(record).get("acquisition", {}).get("platform")
     platform = acquisition.platform_of(named if isinstance(named, str) else "")
@@ -48,30 +66,45 @@ def admitted(case: Path, roots: tuple[Path, ...] | None = None) -> tuple[str, st
         bdsc_cases=acquisition.cases_namespace(platform, roots),
         documents=acquisition.frozen_documents(platform, roots),
     )
-    return platform, hashlib.sha256(record).hexdigest(), bound
+    return platform, hashlib.sha256(record).hexdigest(), source_verified(bound, root)
 
 
-def admit(runs: list[Path], case: Path, validate: bool = True, roots: tuple[Path, ...] | None = None) -> list[str]:
+def admit(
+    runs: list[Path],
+    case: Path,
+    validate: bool = True,
+    roots: tuple[Path, ...] | None = None,
+    root: Path = acquisition.ROOT,
+) -> list[str]:
     """The job of each run that passes every integrity check, for a rehearsal that holds fewer than every job."""
-    _, _, admit_run = admitted(case, roots)
+    _, _, admit_run = admitted(case, roots, root)
     context: dict[str, Any] = {}
     return [admit_run(run, validate, context)[0]["job"] for run in runs]
 
 
 def readout(
-    runs: list[Path], case: Path, validate: bool = True, roots: tuple[Path, ...] | None = None
+    runs: list[Path],
+    case: Path,
+    validate: bool = True,
+    roots: tuple[Path, ...] | None = None,
+    root: Path = acquisition.ROOT,
 ) -> dict[str, Any]:
     """The diagnostic analysis of the collected runs of every job, admitted against the successor case record."""
-    platform, digest, admit = admitted(case, roots)
+    platform, digest, admit = admitted(case, roots, root)
     report: dict[str, Any] = rebound(diag.readout, admit_run=admit)(runs, validate)
     return {"platform": platform, "case_sha256": digest, **report}
 
 
 def matched_check(
-    b1j2: Path, b2j1: Path, case: Path, validate: bool = True, roots: tuple[Path, ...] | None = None
+    b1j2: Path,
+    b2j1: Path,
+    case: Path,
+    validate: bool = True,
+    roots: tuple[Path, ...] | None = None,
+    root: Path = acquisition.ROOT,
 ) -> list[str]:
     """The matched instances of b1-j2 and b2-j1 whose returned circuits differ, after the same admission."""
-    _, _, admit = admitted(case, roots)
+    _, _, admit = admitted(case, roots, root)
     mismatches: list[str] = rebound(diag.matched_check, admit_run=admit)(b1j2, b2j1, validate)
     return mismatches
 
