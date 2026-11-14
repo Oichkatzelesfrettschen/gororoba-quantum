@@ -83,3 +83,59 @@ The rehearsal passes when the analyzer prints `"verdict": "descriptive-only"` wi
 iteration returns 32768 events in total, and the usage report moved by one job and 1.0 credit. An iteration may hold
 fewer eligible single-photon events than that total, as the retained run's `eligible_counts` 32767 and 32766 did, and
 the analyzer reads the eligible count it finds.
+
+## Belenos diagnostic request
+
+Pair: [`scripts/bdsc_diagnostic_acquisition_case.py`](../../scripts/bdsc_diagnostic_acquisition_case.py) and
+[`scripts/bdsc_diagnostic_acquisition_analysis.py`](../../scripts/bdsc_diagnostic_acquisition_analysis.py). The request
+is the 96-instance crossed design of `scripts/bdsc_diagnostic.py` (four jobs of 24 iterations, 40000 eligible trials and
+an 80000-shot cap per iteration, empty mitigation list, 24-mode ladder-union circuit) under a successor case record
+that states the current billing rule and names its platform. The 24-mode circuit does not fit sim:ascella (12 modes,
+[platform-specifications.md](../notes/quandela/platform-specifications.md)), so the pair admits qpu:belenos and
+sim:belenos only.
+
+Each tree takes its own ANU draw. The draw seeds four compilation slots and orders the instances, and
+`draw_claims` refuses a draw that a manifest of any other case record names, so a sim:belenos tree and a qpu:belenos
+tree (two case records) cannot share one. The rehearsal draw is a free ANU read (`docs/notes/qrng/README.md`) and the
+QPU tree takes a second.
+
+| Platform | Shots | Expected seconds | Expected credits | Source |
+|---|---|---|---|---|
+| sim:belenos, four jobs | 4 x 24 x 80000 cap | at most 176.16 per job, 704.64 in all, plus the one-hour block gap | 4.0 (1.0 per job) | case record `resources.seconds_per_job_estimate` from the QPU timing rule as the ceiling; billing table above |
+| qpu:belenos, four jobs | 4 x 24 x 80000 cap | 176.16 per job, 704.64 in all | at most 4.32 (1.08 per job) | case record `resources` |
+
+No retained sim:belenos job has this shape. The nearest ran 148 s for 12 iterations of 300000 samples
+(`docs/notes/quandela/strategy.md`, run log of 2026-10-21 06:44), so the rehearsal budgets the QPU estimate as its
+ceiling, below the 300 s per-job limit, and reads the measured duration back into the QPU case.
+
+Rehearsal of one job, which exercises the build, plan, submit, collect and admission path for 1 credit:
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export QUANDELA_TOKEN_FILE="${QUANDELA_TOKEN_FILE:?set to the token file}"
+"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng --length 100 --type uint16
+DRAW=docs/evidence/anu_qrng/DRAW_FILE_NAMED_BY_THE_COMMAND_ABOVE.json
+TREE=results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos
+"$PYTHON" scripts/bdsc_diagnostic_acquisition_case.py --build --platform sim:belenos --out "$TREE" --draw "$DRAW"
+RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_belenos-bdsc_diagnostic-b1-j1
+mkdir -p "$RUN" && cp "$TREE"/b1-j1/cases.json "$TREE"/b1-j1/circuit.json "$RUN"/
+"$PYTHON" scripts/qd_platform.py plan "$RUN" --platform sim:belenos \
+  --max-credits 1.08 --expected-seconds 176.16 --per-job-credits 1
+# after the owner's approval of this case:
+"$PYTHON" scripts/qd_platform.py submit "$RUN" --platform sim:belenos \
+  --max-credits 1.08 --expected-seconds 176.16 --per-job-credits 1 --approval "APPROVAL TEXT"
+"$PYTHON" scripts/qd_platform.py collect "$RUN"
+"$PYTHON" scripts/bdsc_diagnostic_acquisition_analysis.py --case "$TREE"/case.json --admit-only "$RUN"
+```
+
+The full rehearsal repeats the run block for b1-j2, then b2-j1 at least one hour after block 1 ends, runs
+`--matched-check B1J2_RUN B2J1_RUN` after b2-j1 is collected and before b2-j2 is submitted, and ends with
+`scripts/bdsc_diagnostic_acquisition_analysis.py --case "$TREE"/case.json RUN...` over the four runs, which reads
+the branch and applies the schedule rules of `bdsc_diagnostic.require_schedule`. The qpu:belenos request repeats the
+commands with `--platform qpu:belenos`, a second draw, the tree `bdsc_diagnostic_billing_rule_qpu_belenos` and the
+run-directory platform tag `qpu_belenos`.
+
+The rehearsal passes when `--admit-only` prints `b1-j1`, the run's `platform_name` is sim:belenos, the usage report
+moved by one job and 1.0 credit, and, for the full rehearsal, the analyzer prints a `branch`. A simulator's branch
+describes the simulator and carries no claim about the QPU.

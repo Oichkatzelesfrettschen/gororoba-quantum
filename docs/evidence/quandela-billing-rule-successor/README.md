@@ -58,7 +58,10 @@ either family takes a successor builder together with a successor analyzer, as
 [issue 780](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/780) holds that work. The
 Ascella target-slot pair is `scripts/ascella_predecessor_acquisition_case.py` with
 `scripts/ascella_predecessor_acquisition_analysis.py`; the shipped current-schema pair carries the superseded
-`credit_basis` and keeps its bytes. [The rehearsal plan](../../design/quandela-successor-acquisition-rehearsal.md)
+`credit_basis` and keeps its bytes. The Belenos diagnostic pair is `scripts/bdsc_diagnostic_acquisition_case.py` with
+`scripts/bdsc_diagnostic_acquisition_analysis.py`: its successor case record carries the rule, and `draw_claims` and
+the readout compare against that record's sha256. Each pair takes a platform (qpu:ascella or sim:ascella; qpu:belenos
+or sim:belenos). The stationarity and qualification builders have no pair yet. [The rehearsal plan](../../design/quandela-successor-acquisition-rehearsal.md)
 holds the simulator commands, seconds and credits of each pair.
 
 Three pinned documents carry the same rule in prose and have full successors:
