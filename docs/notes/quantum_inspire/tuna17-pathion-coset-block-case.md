@@ -332,6 +332,9 @@ against a coin-conditioned or q12-correlated selector readout. Its generator is 
 and its QX twin `pathion_one_cz_null_qx`; the owner approved both on 2026-11-07, both series are retained under
 `results/quantum_inspire/runs/`, and the Tuna-17 series read `unresolved_batch` under the preregistered rule
 (`results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.json`).
+Four limits of that case, the single-ended twin readout, the twin control that admits a negative t0, the zero-error pooling
+and the k8 and k12 model coverage, have their successors in
+[tuna17-one-cz-null-twin-rule-v2.md](tuna17-one-cz-null-twin-rule-v2.md).
 
 The written case
 [pathion_null_rotation_scan_tuna_17](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md)

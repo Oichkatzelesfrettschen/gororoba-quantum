@@ -47,6 +47,7 @@ import itertools
 import json
 import math
 import sys
+from collections.abc import Callable
 from functools import cache, partial
 from pathlib import Path
 from typing import Any
@@ -896,8 +897,11 @@ def _series_label(
     se_base: dict[str, float],
     se_twin: float,
     b0_like_z: float,
+    decide: Callable[..., dict[str, Any]] | None = None,
 ) -> str:
-    """The decision label of one simulated series from its noise and drift draws, shape (templates, 2, REPLICATES)."""
+    """The decision label of one simulated series from its noise and drift draws, shape (templates, 2, REPLICATES);
+    `decide` is a successor rule with the signature of decide_estimates, decide_estimates when None."""
+    rule = decide_estimates if decide is None else decide
     noise, drift = draw
     rows: dict[str, dict[str, list[tuple[float, float]]]] = {}
     for j, name in enumerate(TEMPLATES):
@@ -911,11 +915,15 @@ def _series_label(
                 (mean[f"t_{key}"] + se_twin * noise[j, 1, r] + drift[j, 1, r], se_twin) for r in range(REPLICATES)
             ],
         }
-    return str(decide_estimates(rows, b0_like_z)["label"])
+    return str(rule(rows, b0_like_z)["label"])
 
 
 def operating_characteristics(
-    draws: int = OC_DRAWS, drift_sd: float = 0.0, b0_like_z: float | None = None
+    draws: int = OC_DRAWS,
+    drift_sd: float = 0.0,
+    b0_like_z: float | None = None,
+    worlds: dict[str, dict[str, float]] | None = None,
+    decide: Callable[..., dict[str, Any]] | None = None,
 ) -> dict[str, dict[str, float]]:
     """Frequency of each decision label per world, from `draws` simulated series of Gaussian batch estimates at the
     design standard errors (extra independent batch drift of standard deviation `drift_sd`), seeded from QRNG value
@@ -923,19 +931,28 @@ def operating_characteristics(
 
     Every series' noise and drift are drawn before any series is decided, in the order of the serial loop, and the
     decisions run through parallel.ordered_map, which returns them in series order. Spawned workers re-import this
-    module, so the b0-like band (B0_LIKE_Z when `b0_like_z` is None) is resolved here and passed to each decision."""
+    module, so the b0-like band (B0_LIKE_Z when `b0_like_z` is None) is resolved here and passed to each decision.
+
+    `worlds` maps a world name to its mean contrasts (s_b0, t_b0, s_k, t_k), the WORLDS_SIZED worlds when None, and
+    `decide` is a successor decision rule (a module-level function, so a spawned worker unpickles it), the
+    preregistered decide_estimates when None. Worlds draw in dict order from one generator, so a successor that
+    lists the WORLDS_SIZED worlds first reproduces their draws."""
     band = B0_LIKE_Z if b0_like_z is None else b0_like_z
     seed = int(read_record(OC_DRAW)["values"][OC_SEED_INDEX])
     rng = np.random.default_rng(seed)
     se_base = {t: 1.0 / math.sqrt(CONTROL_SHOTS if t == "b0" else BATCH_SHOTS) for t in TEMPLATES}
     se_twin = math.sqrt(0.5 / BATCH_SHOTS)
     out: dict[str, dict[str, float]] = {}
-    for world in WORLDS_SIZED:
-        mean = {"s_b0": 0.0, "t_b0": 0.0, "s_k": 0.0, "t_k": 0.0} if world == "absent" else PREDICTED[world]
+    if worlds is None:
+        worlds = {
+            w: {"s_b0": 0.0, "t_b0": 0.0, "s_k": 0.0, "t_k": 0.0} if w == "absent" else PREDICTED[w]
+            for w in WORLDS_SIZED
+        }
+    for world, mean in worlds.items():
         noise = rng.normal(size=(draws, len(TEMPLATES), 2, REPLICATES))
         drift = rng.normal(scale=drift_sd, size=(draws, len(TEMPLATES), 2, REPLICATES))
         labels = parallel.ordered_map(
-            partial(_series_label, mean=mean, se_base=se_base, se_twin=se_twin, b0_like_z=band),
+            partial(_series_label, mean=mean, se_base=se_base, se_twin=se_twin, b0_like_z=band, decide=decide),
             list(zip(noise, drift, strict=True)),
         )
         counts: dict[str, int] = {}
