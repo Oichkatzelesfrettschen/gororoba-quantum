@@ -304,10 +304,11 @@ def test_doubling_forms_on_the_kernel_are_proportional_and_of_rank_one_inside_th
 
 
 def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_with_product_zero() -> None:
-    # Inside V(G), on the plane K0(z) of the vectors of K(z) with t_8 = 0, a vector is a pair (c, d') of imaginary
-    # octonions, c in the coordinates 1 to 7 and d' in 9 to 15. The symmetric forms that vanish on every K0(z) are
-    # the 15 products t_8 t_k, the norms N1 of c and N3 of d', and the 8 coordinates of the octonion product c d':
-    # 25 forms, which is what the 95 = 120 - 25 dimensions spanned by S^2 K0(z) leave.
+    # Inside V(G), at the sampled points, t_8 is a nonzero multiple of the pairing N1(., z) on K(z), so the plane
+    # K0(z) of the vectors of K(z) orthogonal to z under N1 is the plane of those with t_8 = 0. A vector of it is a
+    # pair (c, d') of imaginary octonions, c in the coordinates 1 to 7 and d' in 9 to 15. The symmetric forms that
+    # vanish on every K0(z) are the 15 products t_8 t_k, the norms N1 of c and N3 of d', and the 8 coordinates of
+    # the octonion product c d': 25 forms, which is what the 95 = 120 - 25 dimensions spanned by S^2 K0(z) leave.
     monomials = quadrics.SYMMETRIC_MONOMIALS
     candidates = np.zeros((25, len(monomials)), dtype=np.int64)
     for index in range(IMAGINARY):
@@ -327,7 +328,11 @@ def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_wi
         planes = []
         for number in range(40):
             kernel = np.array(quadrics.three_plane((stratum, number))[0], dtype=np.int64)
-            combinations = np.array(_nullspace([[int(value) for value in kernel[:, 7]]]), dtype=np.int64)
+            point = _twist(sample(stratum, Points(f"quadrics:{stratum}:{number}"), _polynomials()), ROOT_OF_MINUS_ONE)
+            pairing = [int(value) for value in kernel[:, :7] @ np.array(point[:7], dtype=np.int64) % PRIME]
+            unit = [int(value) for value in kernel[:, 7]]
+            _same((any(pairing), any(unit), _rank([pairing, unit])), (True, True, 1))
+            combinations = np.array(_nullspace([unit]), dtype=np.int64)
             planes.append(combinations @ kernel % PRIME)
         stacked = np.array(planes)
         _same((stacked.shape[1], bool(stacked[:, :, 7].any())), (2, False))

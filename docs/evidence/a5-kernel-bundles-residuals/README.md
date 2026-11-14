@@ -477,27 +477,47 @@ coordinates preserve `M`, `Q` and `G`, and the 25 and 24 lie 3 and 2 in the triv
 the characters 1 to 8 and two in each of the characters 9 to 15. A family built from an equation of `V(G)` was
 the first reading of that split and is refuted by the doubling forms, which use none (`A5-466`).
 
-`hypothesis` (`A5-465`, open): the product types hold at every nullity-4 point of the two strata inside `V(Q)`.
-The entries of `Pi(p) M(e_j) mu(p)` and of `Pi(p) N Pi(p)` would then vanish identically on the image of `V(Q)`
-minus `V(G)`, and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, would give at least 313
-quadrics beyond Plucker in characteristic 0. The commutant of a null imaginary octonion has the same Heisenberg
-type (test), where the Moufang identities are available.
+**Proved in characteristic 0** (`A5-479`): at every nullity-4 point `z` of `V(Q)` the product of two kernel
+vectors is a multiple of the point, `M(k) k'` in `C z`, and on `V(Q) n V(G)` it is zero. The entries of
+`Pi(p) M(e_j) mu(p)` and of `Pi(p) N Pi(p)` therefore vanish identically on the image of `V(Q)` minus `V(G)`,
+and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, gives at least 313 quadrics beyond
+Plucker in characteristic 0 (`A5-481`). The product is nonzero at a general point and at the 12 fixtures;
+`hypothesis` (`A5-480`, open): it is nonzero at every nullity-4 point of `V(Q)` minus `V(G)`. The commutant of
+a null imaginary octonion has the same Heisenberg type (test).
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
 is cut out by `d a = b c` and `[a, c] = conj(d) b - conj(b) d`, and the multiplicative octonion norm gives
 `N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z)` on `K(z)` at every point.
 
-`hypothesis` (`A5-471`, open): at every nullity-4 point of `V(G)` the three doubling forms are multiples of one
-square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`, which would make the quadrics of the doubling forms
-identities on those images. The ranks are at most 1 at the sampled points and exactly at the 54 fixtures inside
-`V(G)`, and by `A5-472`, which makes `N1` a multiple of `N2 + N3` on `K(z)`, the statement reduces to the pair
-`N2`, `N3`.
+**Proved in characteristic 0** (`A5-476`): at every nullity-4 point of `V(G)` the three doubling forms are
+multiples of one square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`. Where `N1(z)` is nonzero (`A5-477`),
+`K(z) = C z + K0(z)` with `K0(z) = K(z) n ker N1(., z)`, `t_8` vanishes on `K0(z)`, and every vector of `K0(z)`
+is a pair `(c, d')` of null imaginary octonions with product `c d' = 0`. The 25 symmetric forms these conditions
+give, the 15 products `t_8 t_k`, the norms `N1` and `N3` and the 8 coordinates of `c d'`, therefore vanish on
+`K0(z)`, and by `A5-470` each of their combinations `trace(c Pi(p) D Pi(p))` with a doubling form `D` vanishes
+on `Lambda^2 K(z)` at every nullity-4 point of `V(G)` (`A5-483`).
 
-Sampled (`A5-473`, survives): inside `V(G)` every vector of the plane `K0(z) = K(z) n ker t_8` is a pair
-`(c, d')` of null imaginary octonions with product `c d' = 0`. The symmetric forms that vanish on every `K0(z)`
-are the 25 these conditions give: the 15 products `t_8 t_k`, the norms `N1` and `N3`, and the 8 coordinates of
-`c d'`. By `A5-470` they are the forms whose combinations with the doubling forms are the 25 and 24 quadrics.
+Sampled (`A5-482`, survives): at the sampled points `t_8` is a nonzero multiple of `N1(., z)` on `K(z)`, and
+the symmetric forms that vanish on every sampled `K0(z)` are exactly those 25. That the combinations of
+`A5-483` are all of the 25 and 24 quadrics the other families leave is the sampled count of `A5-469`.
+
+The hypothesis `N1(z)` nonzero is needed (`A5-478`): `V(G)` has nullity-4 points with `N1(z) = 0`, the identity
+makes `N1(., z)` vanish on all of `K(z)` there, and at the exact point
+`z = (0, 1, i, 0, 0, 0, 0, 2 i, -2, 0, -2, 0, 0, 0, 0)` the vector `z` of `K(z)` has `t_8 = 2 i`. Two earlier
+forms of the statement are superseded: `A5-473` named the plane by `ker t_8`, which is all of `K(z)` at the 39
+of the 54 exact fixtures with `z_8 = 0` (`A5-484`), and `A5-485` omitted the hypothesis.
+
+The three proofs share one shape. `G2(C)` acts on the doubling by `(a, b) -> (g a, g b)` and preserves the
+block, the kernel, the doubling forms, `Q` and `G`. Up to scale and that action, a point with `N1` and `Delta`
+nonzero is `(e_1, beta + lambda e_1 + s e_2)` with the parameters on a quadric cone (`V(G)`) or a quadric
+surface (`V(Q)`), because the orbit of `(e_1, e_2)` is dense in the orthonormal pairs (the derivations have
+rank 11 on it). `kernel_plane_identities.py` checks each statement over the function field of that slice, and
+the statements are closed conditions on the open set of nullity-4 points, so they hold at every one.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py --check` (exact over
+`Q(i)` and its function fields; 40 CPU seconds and 87 MiB on two workers, 38 seconds of wall time, Python 3.14.9
+with sympy 1.14.0).
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
