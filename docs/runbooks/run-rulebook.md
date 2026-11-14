@@ -705,6 +705,14 @@ the closest entry and say what changed.
   the colon certificate and prints `FIBER` and `FIBER_SAME_AS_BEFORE_CERT`. The same script shape on the
   same-sign X control prints the control's FIBER line and Hilbert numerator on both sides of the certificate
   (16 s). Falsifier: a FIBER line or Hilbert numerator that differs between the three E8-bar runs.
+- Outcome (2026-11-13, 16:51 PST): a degree-truncated elimination with no saturation does not shorten the E8-bar
+  Rees computation at N- modulo 32009. The header slice ideal J (16 generators, dimension 5, degree 12) is the
+  kernel of an explicit rational parametrization of the slice by five parameters with a rational inverse (both
+  inclusions reduce to zero, Jacobian rank 5 at two points, 0.5 s). Adding the power of (y, T) one above the
+  target degree to the graph ideal leaves the Rees ideal unchanged through that degree. Three bounded
+  workstation runs (3,600 s, 5 GB address space each) all ended at the time limit with exit 124: degree 1 from
+  J (0.55 GB peak), degree 2 from J (2.9 GB), and degree 2 from the parametrization (3.4 GB). The saturation
+  route of the three runs above remains the method.
 - Outcome (2026-11-13, 14:16 PST): the certified Iso run at N- modulo 32009 (`c-iso-nm-p`, workstation) exits 0
   after 2 h 24 min 45 s at 1.76 GB peak with `CERT divided_basis_leading_u_bad 0`,
   `CERT saturation_colon_equal 1`, `FIBER dim 5 mult 23 minimal generators 68`, all 68 generators of degree 2, and
