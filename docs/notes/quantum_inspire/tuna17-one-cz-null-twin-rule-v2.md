@@ -44,20 +44,18 @@ The bound covers the unconditional assignment of the selector; a selector error 
 coin-conditioned dropout the case tests, which no readout circuit of the series measures and the X-only calibration
 batches (16 to 18) estimate. An additive shift cancels only while both twins of a batch share one assignment channel.
 
-A bracket around every twin needs two readouts beside each twin, four circuits for a pair, and a batch holds three
-(`PLATFORM_CIRCUITS_PER_BATCH` in `tests/scripts/test_qi_pathion_one_cz_null_rule_v2.py`). The successor layout that
-brackets every twin runs each twin as `[readout-0, twin, readout-1]`: 16 twin batches instead of 8, 27 batches instead of
-19, and 8 more pauses of 30 s (240 s). The successor case
+A bracket around both twins of a pair needs two readouts beside them, four circuits per batch, which the legacy hardware
+policy (three circuits per batch, `PLATFORM_CIRCUITS_PER_BATCH` in `tests/scripts/test_qi_pathion_one_cz_null_rule_v2.py`)
+refuses and the `wave-v1` policy admits ([usage.md](usage.md#queue-rules-the-faq-governs)). The successor case
 [pathion_one_cz_null_bracketed_tuna_17](../../../results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md)
-builds it (owner ruling 2026-11-14) and preregisters rule v2 and the finite-count error. Splitting a pair removes the
-within-batch cancellation of the additive readout shift: the retained selector e01 steps by about 0.005 between
-adjacent batches (chi-square 84.4 on 11 degrees of freedom over the 12 readout-0 circuits), and the bracket offset
-c = (e10 - e01)/2 itself scatters beyond binomial (chi-square 61.56 on 7 degrees of freedom over the 8 batches holding
-both readouts, range -0.0014 to +0.0032), so the successor reads each twin against its own bracket.
-Since every twin's ideal P(s = 0) is 1/2, the bracket offset (e10 - e01) / 2 corrects that shift linearly and leaves
-the contrast on the raw-prediction scale. What a split pair still exposes is a drift of the offset itself over one
-queue interval (retained batches started tens of minutes apart), which no readout circuit corrects; the successor's
-operating characteristics price it (CASE.md there).
+(owner rulings 2026-11-14) runs each pair as `[readout-0, coin-0 twin, coin-1 twin, readout-1]` in one batch: 19 batches in
+7 waves of at most three, and it preregisters rule v2 and the finite-count error. Both twins share the batch's bracket, so
+the additive readout shift that the retained series moves between batches (the selector e01 steps by about 0.005 between
+adjacent batches, chi-square 84.4 on 11 degrees of freedom over the 12 readout-0 circuits; the bracket offset
+c = (e10 - e01)/2 scatters with chi-square 61.56 on 7 degrees of freedom over the 8 batches holding both readouts, range
+-0.0014 to +0.0032) cancels exactly in the twin contrast, and each batch reports its own c and the corrected twin readings.
+What the bracket still leaves is a drift of the offset itself between the two twins of a batch (10 to 147 s in the
+retained series), which no readout circuit corrects; the successor's operating characteristics price it (CASE.md there).
 
 ## Twin-control rule v2
 
