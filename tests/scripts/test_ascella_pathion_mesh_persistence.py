@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import ascella_pathion_mesh_persistence as case  # noqa: E402
 import ascella_pathion_mesh_persistence_analysis as reading  # noqa: E402
+import ascella_pathion_mesh_persistence_plan as printer  # noqa: E402
 
 CASES = ROOT / "results/quandela/cases/ascella_pathion_mesh_persistence"
 DRAW = ROOT / "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json"
@@ -223,3 +224,30 @@ def test_served_mesh_reads_topology_and_angles_through_the_public_iteration() ->
 def test_served_mesh_refuses_a_beam_splitter_that_is_not_rx(convention: pcvl.BSConvention) -> None:
     with pytest.raises(ValueError, match="not BS.Rx"):
         reading.served_mesh(deserialize(serialize(served_circuit(convention))), "fixture")
+
+
+def test_the_successor_plan_prints_the_median_of_the_scenario_that_sets_the_cutoff(
+    capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["ascella_pathion_mesh_persistence_plan.py", "--plan"])
+    check(printer.main() == 0, "--plan exits 0")
+    printed = json.loads(capsys.readouterr().out)
+    record = json.loads((ROOT / case.PERSISTENCE_PLAN).read_bytes())
+    median = record["r_quantiles"][printer.CUTOFF_SCENARIO]["0.5"]
+    check(printed["persistence_plan"] == record, "the printed plan carries the frozen record")
+    check(
+        printed["predictions"]["per_mesh_fixed"]["persistence_r"]
+        == f">= {case.PERSISTENCE_CUTOFF} (fixed-mesh median {median:.4f})",
+        "the printed median is the random-drift scenario's",
+    )
+    check(printed["iterations"] == case.ITERATIONS, "iteration count")
+
+
+def test_the_successor_plan_refuses_a_cutoff_that_the_scenario_does_not_set() -> None:
+    record = json.loads((ROOT / case.PERSISTENCE_PLAN).read_bytes())
+    check(printer.cutoff_scenario_median(record) == record["r_quantiles"]["random"]["0.5"], "frozen record reads")
+    record["persistence_cutoff"] = round(record["persistence_cutoff"] + 0.0001, 4)
+    with pytest.raises(ValueError, match="first percentile"):
+        printer.cutoff_scenario_median(record)
+    with pytest.raises(KeyError):
+        printer.cutoff_scenario_median({"r_quantiles": {"none": {"0.5": 0.99}}, "persistence_cutoff": 0.9})

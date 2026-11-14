@@ -96,7 +96,10 @@ not reproduce the difference within 0.005
 ## The reading module
 
 [`ascella_pathion_mesh_persistence.py`](../../scripts/ascella_pathion_mesh_persistence.py) builds the frozen requests
-and holds the thresholds (`PREREGISTERED`, copied into `cases.json`);
+and holds the thresholds (`PREREGISTERED`, copied into `cases.json`); its bytes are bound by both submitted cases, so its
+`--plan` mode, which raises `KeyError` on the nested `r_quantiles`, has the successor
+[`ascella_pathion_mesh_persistence_plan.py`](../../scripts/ascella_pathion_mesh_persistence_plan.py), which prints the
+median of the random-drift scenario that sets the persistence cutoff;
 [`ascella_pathion_mesh_persistence_analysis.py`](../../scripts/ascella_pathion_mesh_persistence_analysis.py) reads a run
 through three commands: `--mesh-gate` (the simulator run), `--analyze` (the QPU run, every decision with its numbers)
 and `--persistence-plan` (the fixed-mesh simulation that freezes the cutoffs). Its tests
