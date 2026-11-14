@@ -1316,8 +1316,7 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
 
 
 # Each ascella_predecessor job whose builder and analyzer are a successor pair, with the sources its manifest binds
-# in preregistered.current_case_sources and its token-capacity rule (a queue slot admits it while the chip reads
-# running). The platform-bound acquisition pair names one job per platform
+# in preregistered.current_case_sources. The platform-bound acquisition pair names one job per platform
 # (scripts/ascella_predecessor_acquisition_case.py).
 _ACQUISITION_PAIR = (
     "scripts/ascella_predecessor_acquisition_case.py",
@@ -1340,7 +1339,7 @@ CURRENT_CASE_SOURCES: dict[str, tuple[str, ...]] = {
 
 def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -> None:
     """Admit the current case when the token has a queue slot; preserve older case policies."""
-    if manifest.get("family") != "ascella_predecessor" or manifest.get("job") not in CURRENT_CASE_SOURCES:
+    if manifest.get("family") != "ascella_predecessor" or manifest.get("job") != "current-schema":
         if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
             raise PlatformError(f"the token has a running or queued job: {counters}")
         return

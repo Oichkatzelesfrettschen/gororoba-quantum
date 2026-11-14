@@ -253,14 +253,3 @@ def test_the_digest_anchors_bind_the_receipt_and_the_result(tmp_path: Path) -> N
     (run / "results.json").write_text("{}")
     with pytest.raises(ValueError, match="anchor"):
         analysis.analyze(run, submission_sha256=receipt, results_sha256=result)
-
-
-def test_the_token_capacity_rule_of_the_current_case_covers_the_successor_jobs() -> None:
-    counters = {"max_concurrent_jobs": 1, "max_jobs_in_queue": 1, "num_concurrent_jobs": 1, "num_jobs_in_queue": 0}
-    for platform in acquisition.PLATFORMS:
-        qd.require_token_capacity({"family": "ascella_predecessor", "job": acquisition.job_name(platform)}, counters)
-    with pytest.raises(qd.PlatformError, match="no available queue slot"):
-        qd.require_token_capacity(
-            {"family": "ascella_predecessor", "job": acquisition.job_name("qpu:ascella")},
-            {**counters, "num_jobs_in_queue": 1},
-        )

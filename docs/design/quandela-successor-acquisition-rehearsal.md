@@ -11,6 +11,16 @@ sources into the request, and admits a run only against that request's sha256
 whole path (build, plan, review packet, submit, collect, analyze) on a platform whose charge is the per-job price, so
 the pair meets provider data before a QPU job depends on it.
 
+## Why a provider simulator job
+
+A local Perceval run (`bdsc_cases.py --local`) and the offline tests of each pair cover the circuit, the request digest
+and the analyzer on synthetic counts. Only a provider job returns the receipt, the collected result fields
+(`computed_circuit`, `physical_perf`, `nb_shots_used`) and the usage movement that the integrity checks of
+`qd_platform.run_facts` and `bdsc_diagnostic.admit_run` read, so the first such job is the one that exercises them on
+service data. The retained sim:belenos `bdsc_qualification` run `tc-none-e1` returns `physical_perf` (0.0601 on its
+first iteration), `computed_circuit` and `samples` equal to `max_samples`, the fields `bdsc_diagnostic.observations`
+requires.
+
 ## What a simulator run establishes
 
 - Build, receipt, collection and analyzer agree on one request digest, and the analyzer refuses a run of another
@@ -75,9 +85,10 @@ RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-sim_ascella-ascella_prede
 ```
 
 The QPU job repeats the commands with `--platform qpu:ascella`, the job directory `...-qpu_ascella-...-qpu-ascella-billing-rule`,
-the build argument `--platform qpu:ascella`, and `--admit-status running` on `plan`, `review` and `submit`, because
-qpu:ascella accepts a job while the chip reads `running` and the token queue holds a free slot
-(`qd_platform.require_token_capacity`).
+the build argument `--platform qpu:ascella`, and `--admit-status running` on `plan`, `review` and `submit`, because the
+request's `admitted_platform_statuses` lists `running` and qpu:ascella may read `running` while it serves its queue.
+The token-capacity gate (`qd_platform.require_token_capacity`) is separate: it refuses a submission while the token holds
+a running or queued job, and its queue-slot exception belongs to the `current-schema` job alone.
 
 The rehearsal passes when the analyzer prints `"verdict": "descriptive-only"` with `"platform": "sim:ascella"`, every
 iteration returns 32768 events in total, and the usage report moved by one job and 1.0 credit. An iteration may hold
@@ -135,6 +146,9 @@ The full rehearsal repeats the run block for b1-j2, then b2-j1 at least one hour
 the branch and applies the schedule rules of `bdsc_diagnostic.require_schedule`. The qpu:belenos request repeats the
 commands with `--platform qpu:belenos`, a second draw, the tree `bdsc_diagnostic_billing_rule_qpu_belenos` and the
 run-directory platform tag `qpu_belenos`.
+
+The offline tests run the readout with `validate=False`, because a synthetic run carries no raw result; the first
+`validate=True` read of a successor run, which adds `qd_records.validate_run`, is the rehearsal's.
 
 The rehearsal passes when `--admit-only` prints `b1-j1`, the run's `platform_name` is sim:belenos, the usage report
 moved by one job and 1.0 credit, and, for the full rehearsal, the analyzer prints a `branch`. A simulator's branch

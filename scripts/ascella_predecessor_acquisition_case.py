@@ -13,7 +13,7 @@ sim:ascella carries the same request as a rehearsal of the record, the receipt a
 compilation need not reproduce the QPU's (docs/design/quandela-successor-acquisition-rehearsal.md).
 
 Usage:
-  "$PYTHON" scripts/ascella_predecessor_acquisition_case.py --build --platform sim:ascella [--out DIR]
+  "$PYTHON" scripts/ascella_predecessor_acquisition_case.py --build --platform sim:ascella --out DIR
   "$PYTHON" scripts/ascella_predecessor_acquisition_case.py --check DIR
 """
 
@@ -30,7 +30,6 @@ from billing_rule_v2 import admit_ready
 
 PLATFORMS = ("qpu:ascella", "sim:ascella")
 BUILDER = "scripts/ascella_predecessor_acquisition_case.py"
-CASES = original.ROOT / "results/quandela/cases/ascella_predecessor"
 
 
 def job_name(platform: str) -> str:
@@ -77,14 +76,12 @@ def main() -> int:
     group.add_argument("--build", action="store_true")
     group.add_argument("--check", type=Path, metavar="DIR")
     parser.add_argument("--platform", choices=PLATFORMS, help="platform the built request admits")
-    parser.add_argument(
-        "--out", type=Path, help="request directory; default results/quandela/cases/ascella_predecessor/JOB"
-    )
+    parser.add_argument("--out", type=Path, help="new request directory for --build, a run directory")
     args = parser.parse_args()
     if args.build:
-        if args.platform is None:
-            parser.error("--build requires --platform")
-        directory = args.out or CASES / job_name(args.platform)
+        if args.platform is None or args.out is None:
+            parser.error("--build requires --platform and --out")
+        directory = args.out
         original.publish_case(directory, documents(args.platform))
     else:
         directory = args.check
