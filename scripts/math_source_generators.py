@@ -14,6 +14,12 @@ so a source that is edited, symbolic-linked or off its retained digest fails bef
 a symbolic link or resolves outside the checkout. A write produces new bytes whose digest the retained records do
 not hold yet, so no digest comparison applies there; the commit that lands the change in gororoba-math moves the
 pin and the records are rebound. An unset GOROROBA_MATH ends the run with a message and status 2.
+
+The options a producer receives are its mode flags, spelled in full. Any other option ends the run with status 2
+before the producer loads, since a producer option that names a path (--output of target_flip_certificate) or an
+abbreviation argparse expands would move the read or the write off the location this runner checked. A producer
+that writes through its replace_text function writes through replace_text of this module instead, whose scratch
+file is created exclusively.
 """
 
 from __future__ import annotations
@@ -31,7 +37,8 @@ sys.path.insert(1, str(ROOT / "scripts"))
 import math_sources  # noqa: E402
 
 # producer module -> (module constant holding the proof path, source name in rocq/quantum, the flag that writes,
-# directory of the module when it lies outside gororoba_quantum/ and scripts/)
+# directory of the module when it lies outside gororoba_quantum/ and scripts/). The producer accepts the write flag
+# and --check, and nothing else.
 GENERATORS = {
     "cd_sign_rocq_ast": ("PROOF", "CdSignPythonSemantics.v", "--write", None),
     "cd_sign_source_ast": ("PROOF", "CdSignSourceCertificate.v", "--write", None),
@@ -45,12 +52,38 @@ GENERATORS = {
 }
 
 
+def replace_text(path: Path, text: str) -> None:
+    """Replace ``path`` with ``text`` through a scratch file created exclusively beside it.
+
+    os.O_EXCL (tempfile.mkstemp) fails on an existing name, a symbolic link included, so the bytes land in a new
+    regular file of this directory; os.replace then renames that file over ``path``, and a reader sees the old
+    bytes or the new ones. The mode of an existing ``path`` carries over."""
+    mode = path.stat().st_mode & 0o777 if path.is_file() else 0o644
+    descriptor, scratch = tempfile.mkstemp(prefix=path.name + ".", dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            stream.write(text)
+        os.chmod(scratch, mode)
+        os.replace(scratch, path)
+    except BaseException:
+        Path(scratch).unlink(missing_ok=True)
+        raise
+
+
 def main(argv: list[str]) -> int:
     if not argv or argv[0] not in GENERATORS:
-        print(f"usage: math_source_generators.py {{{'|'.join(GENERATORS)}}} [--check | --write] ...", file=sys.stderr)
+        print(f"usage: math_source_generators.py {{{'|'.join(GENERATORS)}}} [--check | --write]", file=sys.stderr)
         return 2
     name, options = argv[0], argv[1:]
     constant, source, write_flag, directory = GENERATORS[name]
+    refused = [option for option in options if option not in {"--check", write_flag}]
+    if refused:
+        print(
+            f"math_source_generators: {name} takes --check or {write_flag}, spelled in full; refused: "
+            + " ".join(refused),
+            file=sys.stderr,
+        )
+        return 2
     if directory is not None:
         sys.path.insert(2, str(ROOT / directory))
     try:
@@ -68,6 +101,8 @@ def main(argv: list[str]) -> int:
         except math_sources.MathSourcesError as error:
             print(f"math_source_generators: {error}", file=sys.stderr)
             return 2
+        if hasattr(producer, "replace_text"):
+            setattr(producer, "replace_text", replace_text)  # noqa: B010
         result = producer.main()
         return 0 if result is None else int(result)
     # Every other mode reads the source: the producer reads a copy of the bytes that verified_bytes returned, so

@@ -1,5 +1,6 @@
 """Contracts for math_source_generators: a read reaches the producer only as the digest-checked bytes of the
-checkout, and a write refuses a symbolic-link target.
+checkout, a write refuses a symbolic-link target, a producer receives its mode flags alone, and a replacing write
+goes through an exclusively created scratch file.
 
 Each test builds a gororoba-math checkout and a repository root in tmp_path; the producer is cd_sign_rocq_ast, run
 against a stub proof whose generated blocks the producer fills in.
@@ -10,6 +11,8 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+import sys
+import types
 from pathlib import Path
 
 import math_source_generators as runner
@@ -111,3 +114,63 @@ def test_check_needs_the_pin_and_the_variable(checkout: tuple[Path, Path], monke
         raise AssertionError("--check ran with the variable unset")
     if math_sources.ENVIRONMENT_VARIABLE != "GOROROBA_MATH":
         raise AssertionError("the variable name changed")
+
+
+@pytest.mark.parametrize("extra", [["--output", "elsewhere.v"], ["--output=elsewhere.v"], ["--out", "elsewhere.v"]])
+@pytest.mark.parametrize("mode", ["--write", "--check"])
+def test_a_destination_override_is_refused(
+    checkout: tuple[Path, Path], capsys: pytest.CaptureFixture[str], mode: str, extra: list[str]
+) -> None:
+    if runner.main(["target_flip_certificate", mode, *extra]) != 2 or "refused" not in capsys.readouterr().err:
+        raise AssertionError("an option that names another destination reached the producer")
+
+
+def test_an_abbreviated_mode_flag_is_refused(checkout: tuple[Path, Path]) -> None:
+    if runner.main(["cd_sign_rocq_ast", "--writ"]) != 2:
+        raise AssertionError("an abbreviated write flag reached the producer on the read path")
+
+
+def test_replace_text_leaves_a_planted_scratch_link_alone(tmp_path: Path) -> None:
+    target = tmp_path / "Source.v"
+    target.write_text("old\n", encoding="utf-8")
+    outside = tmp_path / "outside.txt"
+    outside.write_text("kept\n", encoding="utf-8")
+    (tmp_path / "Source.v.new").symlink_to(outside)
+    runner.replace_text(target, "new\n")
+    if outside.read_text(encoding="utf-8") != "kept\n":
+        raise AssertionError("the write went through the planted link")
+    if target.is_symlink() or target.read_text(encoding="utf-8") != "new\n":
+        raise AssertionError("the target is not a regular file holding the new text")
+    if sorted(entry.name for entry in tmp_path.iterdir()) != ["Source.v", "Source.v.new", "outside.txt"]:
+        raise AssertionError("a scratch file was left behind")
+
+
+def test_a_replacing_producer_writes_through_the_exclusive_scratch_file(
+    checkout: tuple[Path, Path], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _root, math = checkout
+    producer = types.ModuleType("replacing_producer")
+
+    def unsafe(path: Path, text: str) -> None:
+        scratch = path.with_name(path.name + ".new")
+        scratch.write_text(text, encoding="utf-8")
+        scratch.replace(path)
+
+    def main() -> int:
+        vars(producer)["replace_text"](vars(producer)["TARGET"], "regenerated\n")
+        return 0
+
+    producer.__file__ = "replacing_producer.py"
+    vars(producer).update(TARGET=Path("unset"), replace_text=unsafe, main=main)
+    monkeypatch.setitem(sys.modules, "replacing_producer", producer)
+    monkeypatch.setitem(runner.GENERATORS, "replacing_producer", ("TARGET", NAME, "--generate", None))
+    outside = tmp_path / "outside.txt"
+    outside.write_text("kept\n", encoding="utf-8")
+    target = math / "rocq/quantum" / NAME
+    target.with_name(NAME + ".new").symlink_to(outside)
+    if runner.main(["replacing_producer", "--generate"]) != 0:
+        raise AssertionError("the producer did not run")
+    if outside.read_text(encoding="utf-8") != "kept\n":
+        raise AssertionError("the producer wrote through the planted link")
+    if target.is_symlink() or target.read_text(encoding="utf-8") != "regenerated\n":
+        raise AssertionError("the source is not a regular file holding the regenerated text")
