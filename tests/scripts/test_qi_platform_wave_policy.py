@@ -49,6 +49,7 @@ class Service:
         if path == "/backend_types/":
             return [
                 {"id": 7, "is_hardware": True},
+                {"id": 5, "is_hardware": True},
                 {"id": 8, "is_hardware": True},
                 {"id": 1, "is_hardware": False},
             ]
@@ -272,6 +273,55 @@ def test_pause_state_without_a_wave_counts_no_batch_in_flight(service: Service) 
     state = qi_platform.hardware_pause_state(service)  # type: ignore[arg-type]
     if state != (30, 0):
         raise AssertionError(state)
+
+
+# Ry (type 5) is flagged is_hardware, so it shares the hardware rules and one pause clock with Tuna-17 (type 7).
+
+
+def admit(service: Service, type_id: int, circuits: int = 5, **fields: Any) -> tuple[int, int]:
+    manifest = {"hardware_policy": "wave-v1", **fields}
+    return qi_platform.hardware_admission(
+        service,  # type: ignore[arg-type]
+        manifest,
+        backend(id=type_id),
+        type_id,
+        circuits,
+        backend()["batchjobs_per_queue_limit"],
+    )
+
+
+def test_a_wave_counts_its_batches_per_backend_type_and_not_across_ry_and_tuna(service: Service) -> None:
+    # Two Ry batches in flight leave a Tuna wave refused (another hardware type is unfinished), not counted: the
+    # three-batch count holds per backend type, and a wave on one type needs every other hardware type idle.
+    service.batches = [batch(1, type_id=5), batch(2, type_id=5)]
+    service.jobs = [job(1, 1, "running"), job(2, 2, "queued")]
+    with pytest.raises(SystemExit, match="hardware job 1 is running"):
+        admit(service, 7)
+    # The Ry wave itself admits its third batch and refuses a fourth.
+    if admit(service, 5)[1] != 0:
+        raise AssertionError("the third Ry batch is admitted without a pause")
+    service.batches.append(batch(3, type_id=5))
+    service.jobs.append(job(3, 3, "queued"))
+    with pytest.raises(SystemExit, match="3 batches in flight"):
+        admit(service, 5)
+
+
+def test_the_pause_of_a_finished_ry_batch_holds_the_first_tuna_batch_of_a_wave(service: Service) -> None:
+    service.batches = [batch(1, type_id=5)]
+    service.jobs = [job(1, 1, "completed", finished_seconds_ago=10)]
+    with pytest.raises(SystemExit, match="wait 20 more seconds"):
+        admit(service, 7)
+    service.jobs = [job(1, 1, "completed", finished_seconds_ago=45)]
+    if admit(service, 7) != (3, 0):
+        raise AssertionError("the pause has passed")
+
+
+def test_the_pause_ladder_step_scales_the_wave_pause(service: Service, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(qi_platform, "HARDWARE_PAUSE_SECONDS", 90)
+    service.batches = [batch(1)]
+    service.jobs = [job(1, 1, "completed", finished_seconds_ago=40)]
+    with pytest.raises(SystemExit, match="wait 50 more seconds"):
+        admit(service, 7)
 
 
 # Mutation test: each refusal is a line of qi_platform.py. A copy of the module with that line disabled admits the
