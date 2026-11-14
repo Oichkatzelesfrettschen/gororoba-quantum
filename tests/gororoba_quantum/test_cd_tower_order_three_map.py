@@ -1,4 +1,5 @@
-"""The order-three sedenion map of proofs/CdTowerOrderThreeMap.v against Gresnigt's psi and the cd_core product.
+"""The order-three sedenion map of CdTowerOrderThreeMap.v (gororoba-math, rocq/quantum) against Gresnigt's psi and
+the cd_core product.
 
 docs/evidence/cd-tower-ring-base-change/images.txt is the Rocq vm_compute output of images.v: for each basis
 element e_m of level 4, the 16 coordinates over Z[sqrt 3] of psi2(e_m) = 2 psi(e_m), as pairs (a, b) for

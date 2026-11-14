@@ -52,7 +52,7 @@ times, and each replay's exit code, every output line carrying ``Warning:``
 and the output tail. The run passes only when
 every replay exits 0. Push it with scripts/kaggle_run.py --machine cpu and
 --include for ci/rocq_toolchain.pin, ci/gororoba_math.pin, gororoba_quantum/parallel.py,
-gororoba_quantum/math_sources.py, the proofs/ and docs/evidence/ directories, and the result files
+gororoba_quantum/math_sources.py, the docs/evidence/ directory, and the result files
 the formal certificates hash.
 """
 

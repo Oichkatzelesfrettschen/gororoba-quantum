@@ -3432,9 +3432,12 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py --check",
+      "cmd": "\"$PYTHON\" -B -W error scripts/math_source_generators.py kernel_certificates --check",
       "name": "sources-cd-tower-kernel-certificates-check",
-      "seconds": 1.2
+      "seconds": 1.2,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
