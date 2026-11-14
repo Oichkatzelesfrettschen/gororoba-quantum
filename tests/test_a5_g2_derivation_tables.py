@@ -94,6 +94,10 @@ def _repeat_a_derivation(record: dict[str, Any]) -> None:
 MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "one entry negated": (_negate_one_entry, "Leibniz rule fails"),
     "an image of e_0": (_entry(0, 0, 5, [1, 0]), "e_0 enters"),
+    "a real flag flipped": (
+        lambda record: record["derivations"][0].update(real=not record["derivations"][0]["real"]),
+        "real flag differs",
+    ),
     "a fractional coefficient": (_entry(0, 0, 0, [0.5, 0]), "not a pair of integers"),
     "a boolean coefficient": (_entry(2, 1, 1, [True, 0]), "not a pair of integers"),
     "an e_0 coordinate": (_entry(7, 9, 0, [0, 1]), "e_0 enters"),

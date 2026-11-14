@@ -170,6 +170,15 @@ def problems(record: dict[str, Any]) -> list[str]:
             support = [index + 1 for index, value in enumerate(point["coordinates"]) if value != 0]
             if support != point["support"] or len(point["coordinates"]) != generators:
                 found.append(f"{label}: a point leaves its coordinate subspace")
+            # The producer evaluates the Jacobian matrix at point_of(support) alone, and the quadrics are
+            # homogeneous, so their Jacobian matrix vanishes at the origin: a recorded rank belongs to a nonzero
+            # point with the producer's coordinates.
+            elif (
+                support == []
+                or len(support) > len(COORDINATES)
+                or point["coordinates"] != point_of(support, generators)
+            ):
+                found.append(f"{label}: a point is not the producer's point of its coordinate subspace")
             if point["quadrics_nonzero"] != 0:
                 found.append(f"{label}: a point lies off V(K)")
         for number, (dimension, _) in enumerate(PRIMES[cell["source"]], 1):

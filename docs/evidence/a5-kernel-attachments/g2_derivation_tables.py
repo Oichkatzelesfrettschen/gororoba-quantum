@@ -132,9 +132,9 @@ def tables_of(record: dict[str, Any]) -> list[Table]:
     ]
 
 
-def table_problems(item: tuple[str, int | None, Table]) -> list[str]:
-    """The failures of one derivation table: shape, e_0, the Leibniz rule on 256 pairs, skewness, the entry count."""
-    label, recorded_entries, table = item
+def table_problems(item: tuple[str, int | None, bool | None, Table]) -> list[str]:
+    """Failures of one table: shape, e_0, the Leibniz rule on 256 pairs, skewness, the entry count, the real flag."""
+    label, recorded_entries, recorded_real, table = item
     if [len(image) for image in table] != [DIMENSION] * DIMENSION:
         return [f"{label}: the table is not {DIMENSION} by {DIMENSION}"]
     found: list[str] = []
@@ -147,6 +147,8 @@ def table_problems(item: tuple[str, int | None, Table]) -> list[str]:
         found.append(f"{label}: the matrix is not skew")
     if recorded_entries != sum(entry != (0, 0) for image in table for entry in image):
         found.append(f"{label}: the count of nonzero entries differs")
+    if recorded_real is not all(entry[1] == 0 for image in table for entry in image):
+        found.append(f"{label}: the real flag differs from the entries")
     return found
 
 
@@ -175,7 +177,7 @@ def problems(record: dict[str, Any]) -> list[str]:
         return found + noninteger
     tables = tables_of(record)
     items = [
-        (derivation["id"], derivation.get("nonzero_entries"), table)
+        (derivation["id"], derivation.get("nonzero_entries"), derivation.get("real"), table)
         for derivation, table in zip(derivations, tables, strict=True)
     ]
     for table_found in parallel.ordered_map(table_problems, items, min_items=2):

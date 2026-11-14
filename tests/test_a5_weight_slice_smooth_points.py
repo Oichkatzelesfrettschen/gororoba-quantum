@@ -97,7 +97,20 @@ def _off_subspace(record: dict[str, Any]) -> None:
     point["coordinates"][point["coordinates"].index(0)] = 1
 
 
+def _points_at_the_origin(record: dict[str, Any]) -> None:
+    for point in _cell(record, "N-", "iso")["points"]:
+        point["coordinates"] = [0] * 17
+        point["support"] = []
+
+
+def _points_rescaled(record: dict[str, Any]) -> None:
+    for point in _cell(record, "N+", "e8")["points"]:
+        point["coordinates"] = [7 * value for value in point["coordinates"]]
+
+
 MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
+    "witnesses moved to the origin": (_points_at_the_origin, "not the producer's point"),
+    "witness coordinates rescaled": (_points_rescaled, "not the producer's point"),
     "iso rank lowered": (_point("N-", "iso", "jacobian_rank", 11), "no smooth rational point"),
     "w8 rank lowered": (_point("N+", "w8", "jacobian_rank", 17), "no smooth rational point"),
     "e8 rank lowered": (_point("N-", "e8", "jacobian_rank", 15), "no smooth rational point"),

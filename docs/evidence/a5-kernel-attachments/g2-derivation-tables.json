@@ -4,7 +4,7 @@
  "dimension": 16,
  "convention": "images[k] is D(e_k) as 16 coordinates [real part, imaginary part] on e_0, ..., e_15; e_a e_b = cd_sign(16, a, b) e_(a xor b) in gororoba_quantum/cd_core.py",
  "inputs": {
-  "docs/evidence/a5-kernel-attachments/g2_derivation_tables.py": "4dc38b1df368b005aff35e1efc45ed1907e1e269dbb4c08d4175917b4d8f7fed",
+  "docs/evidence/a5-kernel-attachments/g2_derivation_tables.py": "dea1a2b55f397ad3f2d49b80cc5ddd9d72e38fbbe599f0e31e7d7146e8233c6d",
   "docs/evidence/a5-kernel-attachments/kernel_equivariance.py": "1b043185ff1b96966e4915766bbd2fa65bcd7d036561b60f8b963356b55f5c8e",
   "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
