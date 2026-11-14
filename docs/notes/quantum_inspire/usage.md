@@ -91,7 +91,7 @@ stays `legacy`, because the case generators, proposals and gates that predate th
 - refuses while any finished account job on a hardware type is less than `HARDWARE_PAUSE_SECONDS` old
   ([pause escalation](#pause-escalation)), whichever session submitted it.
 
-A wave's batches are submitted one after another in series order (the platform then runs them in that order), and every
+A wave's batches are submitted one after another in series order (the order requested; the service owns the execution order, and its terms allow priority without regard to the queue, so an estimator that needs an order reads the retained `queued_at` times), and every
 batch of the wave must have finished, with the pause passed, before the next wave: under `wave-v1` the unfinished
 batches of the same backend type are the earlier batches of the wave and set no pause, and every finished batch keeps its
 pause. The pause clock is account-wide, so the Ry emulator, which the API flags `is_hardware`, shares it with Tuna-17
@@ -242,10 +242,11 @@ From the same conditions:
   raw-string `qi_submit` refuses execution and names this replacement.
 - Before creating any remote resource, the runner reads the current user's
   queue with `user_only=true`. It refuses a batch that would exceed the API's
-  `batchjobs_per_queue_limit`. On hardware it also refuses a batch of more
-  than three circuits and any batch while one of the account's batches is
-  still queued, so at most three jobs are queued whether the FAQ's "jobs"
-  means batches or circuits. The receipt records that scoped queue and the
+  `batchjobs_per_queue_limit`. On hardware under the default
+  `legacy` policy it also refuses a batch of more than three circuits and any
+  batch while one of the account's batches is still queued, so at most three
+  jobs are queued whether the FAQ's "jobs" means batches or circuits; a
+  manifest's `wave-v1` policy reads "jobs" as batches ([Queue rules](#queue-rules-the-faq-governs)). The receipt records that scoped queue and the
   applied limit. The queue count is in batches: the API endpoint names
   "(batch) job queue statistics", and both retained five-circuit Tuna-17
   receipts reported queue count 2 before their first child-job `queued_at`
@@ -258,9 +259,11 @@ From the same conditions:
   the rule and held five queued circuits. Between hardware batches a series
   collects the previous batch, passes its sanity checks and pauses before
   submitting the next. `submit` enforces the pause account-wide: it refuses a
-  hardware batch while any account job on a hardware backend type is
-  unfinished or finished less than `HARDWARE_PAUSE_SECONDS` ago, so
-  concurrent sessions sharing the account alternate. The pause is 30 s by
+  hardware batch while a finished account job on a hardware backend type is
+  less than `HARDWARE_PAUSE_SECONDS` old and, under `legacy`, while any such job is
+  unfinished (under `wave-v1`, the unfinished batches of the batch's own backend
+  type up to the policy's queued count are admitted), so concurrent sessions
+  on this host sharing the account alternate. The pause is 30 s by
   default and follows the escalation below; the provider sets none.
 - The case directory acquires an exclusive `submission-state.json` before
   the client creates any remote resource. It checkpoints the batch and job

@@ -220,6 +220,15 @@ def test_wave_refuses_a_fourth_queued_batch(tmp_path: Path, service: Service) ->
     refuses(case(tmp_path, 5, hardware_policy="wave-v1"), service, "limit 3")
 
 
+def test_wave_counts_a_queued_batch_whose_jobs_the_job_read_omits(tmp_path: Path, service: Service) -> None:
+    # Three batches the service lists as queued, running or reserved, none with a listed job yet.
+    service.batches = [batch(1, status="queued"), batch(2, status="running"), batch(3, status="reserved")]
+    refuses(case(tmp_path, 5, hardware_policy="wave-v1"), service, "3 batches in flight")
+    service.batches = [batch(1, status="queued"), batch(2, status="finished")]
+    service.jobs = [job(2, 2, "completed", finished_seconds_ago=100)]
+    admitted(case(tmp_path, 5, hardware_policy="wave-v1"), service)
+
+
 def test_wave_refuses_when_the_service_queue_holds_three(tmp_path: Path, service: Service) -> None:
     service.queued = 3
     refuses(case(tmp_path, 5, hardware_policy="wave-v1"), service, "current-user queue has 3 batches")
@@ -247,14 +256,14 @@ def test_wave_refuses_an_unfinished_job_on_another_hardware_type(tmp_path: Path,
 
 
 def test_wave_keeps_the_pause_of_a_finished_batch(tmp_path: Path, service: Service) -> None:
-    service.batches = [batch(1), batch(2)]
+    service.batches = [batch(1, status="finished"), batch(2)]
     service.jobs = [job(1, 1, "completed", finished_seconds_ago=10), job(2, 2, "queued")]
     service.queued = 1
     refuses(case(tmp_path, 5, hardware_policy="wave-v1"), service, "wait 20 more seconds")
 
 
 def test_wave_first_batch_waits_for_the_pause_after_the_previous_wave(tmp_path: Path, service: Service) -> None:
-    service.batches = [batch(1)]
+    service.batches = [batch(1, status="finished")]
     service.jobs = [job(1, 1, "completed", finished_seconds_ago=5)]
     refuses(case(tmp_path, 5, hardware_policy="wave-v1"), service, "wait 25 more seconds")
     service.jobs = [job(1, 1, "completed", finished_seconds_ago=31)]
@@ -307,7 +316,7 @@ def test_a_wave_counts_its_batches_per_backend_type_and_not_across_ry_and_tuna(s
 
 
 def test_the_pause_of_a_finished_ry_batch_holds_the_first_tuna_batch_of_a_wave(service: Service) -> None:
-    service.batches = [batch(1, type_id=5)]
+    service.batches = [batch(1, type_id=5, status="finished")]
     service.jobs = [job(1, 1, "completed", finished_seconds_ago=10)]
     with pytest.raises(SystemExit, match="wait 20 more seconds"):
         admit(service, 7)
@@ -318,7 +327,7 @@ def test_the_pause_of_a_finished_ry_batch_holds_the_first_tuna_batch_of_a_wave(s
 
 def test_the_pause_ladder_step_scales_the_wave_pause(service: Service, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(qi_platform, "HARDWARE_PAUSE_SECONDS", 90)
-    service.batches = [batch(1)]
+    service.batches = [batch(1, status="finished")]
     service.jobs = [job(1, 1, "completed", finished_seconds_ago=40)]
     with pytest.raises(SystemExit, match="wait 50 more seconds"):
         admit(service, 7)
@@ -331,6 +340,7 @@ MUTATIONS = [
     ("unknown policy", "if type(name) is not str or name not in HARDWARE_POLICIES:", 3, "wave-v2", {}),
     ("in flight", "if in_flight + 1 > limits.queued_batches:", 5, "wave-v1", {"in_flight": 3}),
     ("service queue", "if queued + 1 > queue_limit:", 5, "wave-v1", {"queued": 3}),
+    ("batch rows", "row_status in WAVE_IN_FLIGHT_BATCH_STATUSES", 5, "wave-v1", {"in_flight_rows": 3}),
     ("legacy default", 'DEFAULT_HARDWARE_POLICY = "legacy"', 4, None, {}),
     (
         "backend queue cap",
@@ -367,10 +377,14 @@ def test_each_refusal_fails_when_its_line_is_removed(
     state: dict[str, Any],
 ) -> None:
     replacement = 'DEFAULT_HARDWARE_POLICY = "wave-v1"' if label == "legacy default" else "if False:"
+    if label == "batch rows":
+        replacement = "False"
     if label == "backend queue cap":
         replacement = "queued_batches=policy.queued_batches"
     module = mutant(line, replacement)
     fake = Service(backend(**state.get("backend", {})), [], [], state.get("queued", 0))
+    if "in_flight_rows" in state:
+        fake.batches = [batch(i, status="queued") for i in range(1, state["in_flight_rows"] + 1)]
     if "in_flight" in state:
         fake.batches = [batch(i) for i in range(1, state["in_flight"] + 1)]
         fake.jobs = [job(i, i, "queued") for i in range(1, state["in_flight"] + 1)]

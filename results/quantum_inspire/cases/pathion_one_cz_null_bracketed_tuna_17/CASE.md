@@ -39,12 +39,16 @@ A wave is three consecutive batches of the series, listed in the series `cases.j
 batches, a last of one), at most 11 circuits each. `qi_platform.py submit` takes the batches of a wave one after another;
 each batch is refused while three batches of the account are in flight on the backend type, and every wave waits for all
 its batches to finish and for the pause (`QI_HARDWARE_PAUSE_SECONDS`, the ladder 30, 60, 90, 120 s) before the next.
-Submitting a wave's batches in series order keeps the platform's queue in that order, which the mirrored layout needs. An
+Submitting a wave's batches in series order requests that order; the service owns the execution order (its terms allow
+priority without regard to the queue), so the mirrored layout's cancellation is read from the retained `queued_at` times,
+not assumed. An
 unfinished job on another hardware backend type refuses the batch, and the pause clock is account-wide across every
 `is_hardware` type, the Ry emulator included (`docs/notes/quantum_inspire/ry-emulator.md`), so a finished Ry job delays
 the next Tuna-17 batch by the rest of its pause and Ry batches do not count toward the three Tuna-17 batches. The existing
-submission script submits and collects one batch at a time, which `wave-v1` admits too; submitting a wave concurrently is
-a separate procedure that this case does not write.
+submission script submits and collects one batch at a time, which `wave-v1` admits too, and pays one pause per batch: 18
+pauses of 30 s (540 s) for 19 batches. Submitting a wave concurrently (6 pauses, 180 s) is a separate procedure that this
+case does not write. The admission checks read one snapshot of the account, and `SUBMIT_LOCK` excludes only sessions on
+one host.
 
 Residual risk of the policy: the FAQ sentence is ambiguous. If the provider reads "job" as a circuit, a wave of 15 circuits
 queues five times the stated 3; the abuse clause removes the account. The owner accepted that reading for this case; a
@@ -135,7 +139,7 @@ predecessor, read raw.
   longest job, a 131,072-shot b0 base circuit, takes 80.0 s (2.6 s plus the coin series' maximum measured 0.5906 ms per
   shot), under the 300 s job limit.
 - Expected time: 1,521.0 to 1,675.8 s of execution (64 jobs at 2.6 s plus 0.53 ms to 0.5906 ms per shot), 6 pauses of 30 s
-  (180 s) between the 7 waves, plus queue time. With the rounded 0.59 ms per shot the longest job reads 79.9 s.
+  (180 s) between the 7 waves under a wave procedure, 18 pauses (540 s) under the one-batch-at-a-time script, plus queue time. With the rounded 0.59 ms per shot the longest job reads 79.9 s.
 - Quota: `docs/notes/quantum_inspire/usage.md` records no metered seconds, credits or minutes for this account.
 
 ## Preregistered decision rules

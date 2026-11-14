@@ -29,8 +29,10 @@ Subcommands:
   creates one project, one algorithm, commit and file per circuit, one batch
   job holding every circuit of cases.json, and enqueues it. It verifies each
   circuit's sha256 against cases.json first. A hardware batch is refused
-  while any of the account's jobs on a hardware backend type is unfinished or
-  finished less than HARDWARE_PAUSE_SECONDS ago. An exclusive submission-state.json
+  while a finished account job on a hardware backend type is less than
+  HARDWARE_PAUSE_SECONDS old and, under the default legacy policy, while any
+  such job is unfinished; a manifest's wave-v1 policy admits the unfinished
+  batches of the same backend type up to its queued-batch count. An exclusive submission-state.json
   is retained before the first remote write; either it or submission.json
   prevents a repeat submission, including after an uncertain enqueue response.
 - reconcile CASE_DIR (network, read-only) reads the recorded batch and jobs.
@@ -124,6 +126,7 @@ REDACTED = ("email", "full_name", "oidc_sub")
 ACCOUNT_IDENTIFIERS = ("team", "member", "user", "team_id", "member_id", "user_id", "owner_id")
 TERMINAL = {"completed", "failed", "cancelled"}
 ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
+WAVE_IN_FLIGHT_BATCH_STATUSES = {"queued", "reserved", "running"}
 # A batch still 'planned' was never enqueued, so its jobs never run. Within this
 # many seconds of its creation it is a submission in progress on some host;
 # after it, an interrupted submit that reconcile leaves blocked.
@@ -790,6 +793,7 @@ def hardware_pause_state(client: Client, wave_backend_type_id: int | None = None
     types = {row["id"]: row for row in client.pages("/backend_types/") if row["is_hardware"]}
     at = utc_now()
     batches = {}
+    batch_status = {}
     for row in client.pages("/batch_jobs"):
         if row["backend_type_id"] not in types:
             continue
@@ -799,13 +803,20 @@ def hardware_pause_state(client: Client, wave_backend_type_id: int | None = None
                 raise SystemExit(f"hardware batch {row['id']} is being planned; wait until it is enqueued")
             continue
         batches[row["id"]] = row["backend_type_id"]
+        batch_status[row["id"]] = row["status"]
     jobs = [job for job in client.pages("/jobs") if job["batch_job_id"] in batches]
     in_flight = set()
     if wave_backend_type_id is not None:
+        # A batch counts while any of its listed jobs is unfinished or the service lists the batch itself as queued,
+        # reserved or running, so a batch whose jobs the /jobs read does not yet show still holds a queue slot.
         in_flight = {
             job["batch_job_id"]
             for job in jobs
             if job["status"] not in TERMINAL and batches[job["batch_job_id"]] == wave_backend_type_id
+        } | {
+            batch_id
+            for batch_id, row_status in batch_status.items()
+            if row_status in WAVE_IN_FLIGHT_BATCH_STATUSES and batches[batch_id] == wave_backend_type_id
         }
     left = 0.0
     for job in jobs:
@@ -838,9 +849,11 @@ def hardware_admission(
 
     The batch holds at most the policy's circuits. Under the legacy policy no account job on any hardware type may be
     unfinished. Under a wave policy the account's earlier batches on this type may be unfinished, and the batch is
-    refused once the batches in flight reach the policy's queued count. Submitting a wave's batches one after another,
-    each only after the previous one is enqueued, keeps the queue in submission order, so the wave's circuits run in
-    the case's batch order, which the mirrored layouts of the cases rely on to cancel a linear drift.
+    refused once the batches in flight reach the policy's queued count. Submitting a wave's batches one after another
+    requests the series order. The service owns the execution order (its terms allow priority without regard to the
+    queue order), so a case whose estimator needs an order reads the retained `queued_at` times and does not assume
+    this one. The checks read one snapshot of the account, and a local lock (SUBMIT_LOCK) excludes only sessions on
+    this host: the limit is not enforced across hosts.
     """
     limits = hardware_limits(cases, backend_type)
     if circuits > limits.batch_circuits:
