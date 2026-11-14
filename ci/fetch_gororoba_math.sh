@@ -4,7 +4,12 @@
 # materializing only the cone directories PATH... (blobs outside them are never
 # downloaded). The checkout is detached at the pin and `git rev-parse HEAD` must
 # equal it, so a moved branch or a truncated fetch fails the step. Writes only
-# under DEST; a second run on the same DEST fetches and re-checks out.
+# under DEST; a second run on the same DEST fetches and re-checks out. DEST is
+# a directory this script created (it leaves the marker file
+# .git/gororoba-math-pin-fetch there) or a path that does not exist yet: the
+# script resets and cleans DEST, so it refuses any other repository, a
+# working checkout of gororoba-math included. Exit status: 0 fetched, 1 the
+# fetch or the pin comparison failed, 2 a usage, pin-file or DEST error.
 set -eu
 
 REPO_URL=${GOROROBA_MATH_URL:-https://github.com/Oichkatzelesfrettschen/gororoba-math.git}
@@ -36,10 +41,20 @@ retry() {
   done
 }
 
-if [ ! -d "$dest/.git" ]; then
+marker=.git/gororoba-math-pin-fetch
+if [ -e "$dest/.git" ]; then
+  [ -f "$dest/$marker" ] || {
+    echo "fetch_gororoba_math: $dest is a repository this script did not create; it would be reset and cleaned" >&2
+    exit 2
+  }
+elif [ -e "$dest" ] && [ -n "$(ls -A "$dest")" ]; then
+  echo "fetch_gororoba_math: $dest exists and is not empty" >&2
+  exit 2
+else
   mkdir -p "$dest"
   git -C "$dest" init -q
   git -C "$dest" remote add origin "$REPO_URL"
+  : >"$dest/$marker"
 fi
 git -C "$dest" sparse-checkout init --cone
 git -C "$dest" sparse-checkout set "$@"
