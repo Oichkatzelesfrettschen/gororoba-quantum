@@ -1,0 +1,121 @@
+{
+ "counterexample": {
+  "G": "0",
+  "N1": "0",
+  "N3": "8",
+  "Q": "4",
+  "kernel_dimension": 3,
+  "n1_pairing_zero_on_kernel": true,
+  "one_square_identity": true,
+  "point": [
+   "0",
+   "1",
+   "I",
+   "0",
+   "0",
+   "0",
+   "0",
+   "2*I",
+   "-2",
+   "0",
+   "-2",
+   "0",
+   "0",
+   "0",
+   "0"
+  ],
+  "point_in_kernel": true,
+  "t8": "2*I"
+ },
+ "derivations": {
+  "dimension": 14,
+  "rank_e1_e2": 11,
+  "rank_e1_w0": 11
+ },
+ "families": {
+  "FG+": {
+   "G": "0",
+   "Q": "2*m*(m + 2*u)",
+   "generators": [
+    "m",
+    "u"
+   ],
+   "one_square_identity": true,
+   "rank": 12,
+   "slice_forms_zero": true,
+   "slice_octonion_product_zero": true,
+   "slice_pairs_with_point_zero": true,
+   "slice_t8_zero": true
+  },
+  "FG-": {
+   "G": "0",
+   "Q": "-2*m*(-m + 2*u)",
+   "generators": [
+    "m",
+    "u"
+   ],
+   "one_square_identity": true,
+   "rank": 12,
+   "slice_forms_zero": true,
+   "slice_octonion_product_zero": true,
+   "slice_pairs_with_point_zero": true,
+   "slice_t8_zero": true
+  },
+  "FQ": {
+   "G": "4*(A*C - B)**2*(A*C + B)**2",
+   "Q": "0",
+   "generators": [
+    "A",
+    "B",
+    "C"
+   ],
+   "point_in_kernel": true,
+   "product_is_multiple_of_point": true,
+   "product_not_identically_zero": true,
+   "rank": 12
+  },
+  "FQG": {
+   "G": "0",
+   "Q": "0",
+   "generators": [
+    "u"
+   ],
+   "product_zero": true,
+   "rank": 12
+  }
+ },
+ "field": "Q(i)",
+ "fixtures": {
+  "V(G) minus V(Q)": {
+   "fixtures": 52,
+   "kernel_dimension_three": 52,
+   "one_square_identity": 52,
+   "product_multiple_of_point": 0,
+   "product_zero": 0
+  },
+  "V(Q) intersect V(G)": {
+   "fixtures": 2,
+   "kernel_dimension_three": 2,
+   "one_square_identity": 2,
+   "product_multiple_of_point": 2,
+   "product_zero": 2
+  },
+  "V(Q) minus V(G)": {
+   "fixtures": 12,
+   "kernel_dimension_three": 12,
+   "one_square_identity": 0,
+   "product_multiple_of_point": 12,
+   "product_zero": 0
+  }
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py": "a583c5d86cd8f124614c1897726a403025823368da9291cfd1e69e350c770649",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py": "2becfe006cce743e08ff42e5b081f0e7e8c877f5b11d76c034b09c279d28c960",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+ },
+ "pass": true,
+ "schema": "a5-kernel-bundles-residuals-kernel-plane-identities-v1"
+}
