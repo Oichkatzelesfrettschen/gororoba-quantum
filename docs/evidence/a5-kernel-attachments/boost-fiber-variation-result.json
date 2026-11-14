@@ -1293,9 +1293,9 @@
   ],
   "inputs": {
     "docs/evidence/a5-kernel-attachments/boost_fiber_variation.py": "724ccc6f5f3f339303d32a4ca88bfa6e828d7d21cc770af52a5a0e5858fd1a11",
-    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "0173462891d377fcf50cd7a88f923ecf8648011f8a0e91cc39a11b32f59d3d49",
     "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
-    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "9b8cf4d472502b5a560765c4dbce5cb740aaea18a53def0bc43dc0f1abaee530",
+    "docs/evidence/a5-kernel-attachments/nakayama-rees-fibers-result.json": "8fe9302437bfc1605564d4ba1312a1fdbb3c00fa66a892c7e0b1a8a39ba23ae4",
     "docs/evidence/a5-kernel-attachments/nakayama_rees_fibers.py": "4cb005dc80b6b3f819d6e1a8d8c5fddafa1da27bfef5cada67b11edc3da01f1a",
     "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280"

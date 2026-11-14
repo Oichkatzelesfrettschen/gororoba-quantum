@@ -1347,7 +1347,7 @@
   "inputs": {
     "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
     "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
-    "docs/evidence/a5-kernel-attachments/incidence-census-result.json": "e9e0405d1dfcba6146eabf97435ada98c429b5ed996b41c6da00d254fa40b19e",
+    "docs/evidence/a5-kernel-attachments/incidence-census-result.json": "de8de7adb1de971c5b3abb4bad5edb94093bac4e28691e7e6f67cf63ade8ee3b",
     "docs/evidence/a5-kernel-attachments/nullity16_basepoints.py": "7d02631cb5ac5538a6841b6097184983bc6a04ad742d61032e157b65ac67eb07",
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
     "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
