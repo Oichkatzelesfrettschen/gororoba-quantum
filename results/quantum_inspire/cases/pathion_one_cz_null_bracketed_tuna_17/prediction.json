@@ -1,0 +1,326 @@
+{
+ "design": {
+  "b0_base_batch_se_micro": 2762,
+  "base_batch_se_micro": 5524,
+  "batches": 27,
+  "calibration_se_limit_micro": 4000,
+  "calibration_se_micro": {
+   "selector_prepared_0": 1375,
+   "selector_prepared_1": 1165
+  },
+  "circuits_per_batch_max": 3,
+  "coin_series_seconds_per_shot_nanoseconds": [
+   542393,
+   590571
+  ],
+  "design_selector_readout_e01_e10_ten_thousandths": [
+   281,
+   296
+  ],
+  "execution_seconds_range_tenths": [
+   18405,
+   20271
+  ],
+  "job_seconds_limit": 300,
+  "jobs": 80,
+  "longest_job_seconds_tenths": 800,
+  "pause_seconds_per_batch": 30,
+  "pause_seconds_total": 780,
+  "pooled_se_micro": {
+   "b0_base": 1953,
+   "base": 3906,
+   "raw_twin": 2762,
+   "twin": 2839
+  },
+  "raw_twin_batch_se_micro": 3906,
+  "shots_total": 3080192,
+  "twin_batch_se_micro": 4014,
+  "unit": "standard errors in micro-units (10^-6), seconds in tenths, rates in ten-thousandths"
+ },
+ "model": "raw selector contrast of the base circuit (s) and of the bracketed coin-twin pair (t) of b0 and of a 6-CZ block under each hypothesis, as in the predecessor case (docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.txt and c2_one_cz_twins.txt), plus the negative-twin world of rule v2",
+ "operating_characteristics": {
+  "batch_drift_sd_0.003": {
+   "absent": {
+    "offset_absent": 7380,
+    "superposition_only": 37,
+    "unresolved": 129,
+    "unresolved_batch": 1242,
+    "unresolved_block": 1206,
+    "unresolved_negative_twin": 3,
+    "zero": 3
+   },
+   "coin_dropout": {
+    "b0_like": 6088,
+    "intermediate": 1148,
+    "offset_absent": 1,
+    "superposition_only": 67,
+    "unresolved": 91,
+    "unresolved_batch": 1228,
+    "unresolved_block": 1246,
+    "unresolved_context": 131
+   },
+   "over_rotation": {
+    "intermediate": 92,
+    "offset_absent": 1,
+    "superposition_only": 66,
+    "unresolved": 215,
+    "unresolved_batch": 1288,
+    "unresolved_block": 1155,
+    "unresolved_context": 134,
+    "zero": 7049
+   },
+   "over_rotation_x_all_after": {
+    "intermediate": 9,
+    "offset_absent": 1,
+    "superposition_only": 72,
+    "unresolved": 643,
+    "unresolved_batch": 1249,
+    "unresolved_block": 1210,
+    "unresolved_context": 789,
+    "zero": 6028
+   },
+   "over_rotation_x_all_before": {
+    "b0_like": 1082,
+    "intermediate": 5857,
+    "offset_absent": 1,
+    "superposition_only": 73,
+    "unresolved": 122,
+    "unresolved_batch": 1268,
+    "unresolved_block": 1186,
+    "unresolved_context": 403,
+    "zero": 9
+   },
+   "over_rotation_y_axis": {
+    "b0_like": 10,
+    "intermediate": 3420,
+    "offset_absent": 1,
+    "superposition_only": 88,
+    "unresolved": 138,
+    "unresolved_batch": 1216,
+    "unresolved_block": 1190,
+    "unresolved_context": 123,
+    "zero": 3815
+   },
+   "q12_correlation": {
+    "intermediate": 97,
+    "offset_absent": 1,
+    "superposition_only": 59,
+    "unresolved": 175,
+    "unresolved_batch": 1196,
+    "unresolved_block": 1190,
+    "unresolved_context": 115,
+    "zero": 7167
+   },
+   "superposition_only": {
+    "b0_like": 1,
+    "intermediate": 1,
+    "offset_absent": 2,
+    "superposition_only": 6498,
+    "unresolved": 726,
+    "unresolved_batch": 1265,
+    "unresolved_block": 1205,
+    "unresolved_context": 150,
+    "unresolved_negative_twin": 151
+   },
+   "twin_opposite_sign": {
+    "offset_absent": 1,
+    "superposition_only": 220,
+    "unresolved": 1,
+    "unresolved_batch": 1226,
+    "unresolved_block": 1211,
+    "unresolved_negative_twin": 7342
+   }
+  },
+  "draws_per_world": 20000,
+  "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json",
+  "seed_index": 0,
+  "stationary": {
+   "absent": {
+    "offset_absent": 9702,
+    "superposition_only": 3,
+    "unresolved": 14,
+    "unresolved_batch": 67,
+    "unresolved_block": 214
+   },
+   "coin_dropout": {
+    "b0_like": 9213,
+    "intermediate": 449,
+    "superposition_only": 4,
+    "unresolved": 14,
+    "unresolved_batch": 73,
+    "unresolved_block": 215,
+    "unresolved_context": 34
+   },
+   "over_rotation": {
+    "intermediate": 13,
+    "superposition_only": 5,
+    "unresolved": 34,
+    "unresolved_batch": 83,
+    "unresolved_block": 195,
+    "unresolved_context": 29,
+    "zero": 9640
+   },
+   "over_rotation_x_all_after": {
+    "superposition_only": 6,
+    "unresolved": 241,
+    "unresolved_batch": 77,
+    "unresolved_block": 195,
+    "unresolved_context": 575,
+    "zero": 8906
+   },
+   "over_rotation_x_all_before": {
+    "b0_like": 806,
+    "intermediate": 8682,
+    "superposition_only": 3,
+    "unresolved": 23,
+    "unresolved_batch": 89,
+    "unresolved_block": 194,
+    "unresolved_context": 202
+   },
+   "over_rotation_y_axis": {
+    "intermediate": 4461,
+    "superposition_only": 7,
+    "unresolved": 15,
+    "unresolved_batch": 77,
+    "unresolved_block": 197,
+    "unresolved_context": 32,
+    "zero": 5211
+   },
+   "q12_correlation": {
+    "intermediate": 14,
+    "superposition_only": 3,
+    "unresolved": 24,
+    "unresolved_batch": 79,
+    "unresolved_block": 195,
+    "unresolved_context": 26,
+    "zero": 9659
+   },
+   "superposition_only": {
+    "superposition_only": 9334,
+    "unresolved": 367,
+    "unresolved_batch": 80,
+    "unresolved_block": 191,
+    "unresolved_context": 13,
+    "unresolved_negative_twin": 15
+   },
+   "twin_opposite_sign": {
+    "superposition_only": 24,
+    "unresolved_batch": 77,
+    "unresolved_block": 221,
+    "unresolved_negative_twin": 9678
+   }
+  }
+ },
+ "outcomes": {
+  "b0_like": {
+   "a5_186": "refuted as stated: the resolved 6-CZ response is inconsistent with the model's bounded prediction of zero",
+   "outcome": "6-CZ blocks read the b0 value in both contexts: consistent with a coin-conditioned selector dropout, and the over-rotation and the q12 correlation are excluded"
+  },
+  "intermediate": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the 6-CZ response is resolved above zero and sits outside the b0 band, an intermediate response that matches no modeled mechanism"
+  },
+  "offset_absent": {
+   "a5_186": "unchanged",
+   "outcome": "offset absent: b0's base contrast no longer reads positive at the control level; nothing about the mechanism is decided"
+  },
+  "superposition_only": {
+   "a5_186": "refuted as modeled: the over-rotation predicts the offset in the classical-coin twin as well",
+   "outcome": "the offset exists only with the coin in superposition: b0's classical-coin twin reads below the base contrast, where the over-rotation, the coin-conditioned dropout and the q12 correlation all predict the same value"
+  },
+  "unresolved": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the contrasts match no preregistered row"
+  },
+  "unresolved_batch": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: replicate batches disagree beyond the heterogeneity bound"
+  },
+  "unresolved_block": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the three 6-CZ blocks disagree beyond the heterogeneity bound"
+  },
+  "unresolved_context": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: the 6-CZ base and twin contrasts disagree beyond three standard errors"
+  },
+  "unresolved_negative_twin": {
+   "a5_186": "unchanged; the numbers are reported",
+   "outcome": "unresolved: b0's classical-coin twin contrast reads below zero by more than three standard errors, a response that matches no modeled mechanism (each predicts a twin contrast at or above zero)"
+  },
+  "zero": {
+   "a5_186": "survives: its falsifier, a resolved nonzero 6-CZ response inconsistent with the model's bounded prediction of zero, is unmet; a post-schedule q12 correlation stays open",
+   "outcome": "6-CZ blocks read zero in both contexts: the coin-conditioned selector dropout is excluded; consistent with the over-rotation, the assignment-level q12 flip being excluded by the retained brackets; a post-schedule q12 correlation remains"
+  }
+ },
+ "outside_admitted_set": [
+  "over_rotation_x_all_before",
+  "over_rotation_x_all_after"
+ ],
+ "predicted_contrast": {
+  "absent": {
+   "s_b0": 0,
+   "s_k": 0,
+   "t_b0": 0,
+   "t_k": 0
+  },
+  "coin_dropout": {
+   "s_b0": 164,
+   "s_k": 164,
+   "t_b0": 170,
+   "t_k": 170
+  },
+  "over_rotation": {
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": 166,
+   "t_k": 0
+  },
+  "over_rotation_x_all_after": {
+   "s_b0": 164,
+   "s_k": -40,
+   "t_b0": 164,
+   "t_k": 0
+  },
+  "over_rotation_x_all_before": {
+   "s_b0": 164,
+   "s_k": 76,
+   "t_b0": 164,
+   "t_k": 103
+  },
+  "over_rotation_y_axis": {
+   "s_b0": 164,
+   "s_k": 38,
+   "t_b0": 164,
+   "t_k": 39
+  },
+  "q12_correlation": {
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": 170,
+   "t_k": 0
+  },
+  "superposition_only": {
+   "s_b0": 164,
+   "s_k": 164,
+   "t_b0": 0,
+   "t_k": 0
+  },
+  "twin_opposite_sign": {
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": -164,
+   "t_k": 0
+  }
+ },
+ "preregistered": {
+  "calibration": "the eight X-only preparations of q2, q8 and q12 are a secondary readout calibration in a terminal-assignment context: D, the selector misassignment with the coin prepared 1 minus 0 at a prepared selector 1, and G, with q12 prepared 0 minus 1, are reported with large (>= 0.036 - 3.0 se) and small (|.| + 3.0 se < 0.012) classes and change no outcome",
+  "control": "b0 base contrast s0 above 3.0 se, else the offset is absent and nothing about its mechanism is decided",
+  "estimates": "per template and batch kind, the contrast of each batch, pooled over the replicate batches by inverse variance: base, the raw arm contrast P(s=0 | coin read 1) - P(s=0 | coin read 0); twin, t = (P1 - c1) - (P0 - c0) over the coin-1 and coin-0 twin batches of one replicate, P the raw P(s=0) of the twin and c = (e10 - e01) / 2 the bracket offset of its own batch from the selector's assignment errors e01 (readout-0) and e10 (readout-1); the variance of t sums, per batch, the arm variance of P and a quarter of each arm variance of e01 and e10, a deterministic arm taking the Agresti-Coull interval variance",
+  "heterogeneity": "replicate batches of one template and kind agree within chi-square 10.828 (1 degree of freedom, alpha 0.001); the three 6-CZ blocks agree within chi-square 9.21 (2 degrees of freedom, alpha 0.01) for the base contrasts and for the twin contrasts; otherwise the decision is unresolved",
+  "qx": "every circuit within twice the sampling floor of its ideal law",
+  "six_cz": "c and d the inverse-variance means of the three 6-CZ base and twin contrasts, m their combination and r the combination of s0 and t0: contexts disagree when |c - d| exceeds 3.0 combined se; zero when |m| is within 3.0 se and r - m exceeds 3.0 combined se; b0-like when m exceeds 3.0 se and |r - m| is within 2.0 combined se; intermediate (unresolved) when m exceeds 3.0 se outside that band; otherwise unresolved",
+  "twin_control": "b0 twin contrast t0 above 3.0 se; if not, t0 within 3.0 se of zero (|t0| <= 3.0 se) and s0 - t0 above 3.0 combined se, the offset exists only with the coin in superposition; t0 below -3.0 se is unresolved (negative twin); otherwise unresolved"
+ },
+ "unit": "contrasts and shares in ten-thousandths: 164 is 0.0164, 9706 is a share of 0.9706"
+}
