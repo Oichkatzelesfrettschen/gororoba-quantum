@@ -731,3 +731,17 @@ the closest entry and say what changed.
   agrees with A5-446. Log sha256 `67b3b21e5d8e0420a244da5cc151ea7cbc0583776c16247874e98f7f190a64a7`, script sha256
   `452ea270018c239212a9142f86beb6b6ea757b8a999f88e28496c31a912bdcb5`. `c-e8-nm-p` was still in its Rees standard
   basis at 2 h 12 min and 2.1 GB.
+- Outcome (2026-11-13, 23:50 PST): weighted order functions on the weight slice decide the E8-bar relation ideal
+  without a Rees standard basis (A5-457: a five-parameter polynomial map of the germ and three weight vectors
+  give the two minimal primes and the embedded prime as limit ideals; about 60 s per basepoint over Q(i), build
+  host). The row predicts the FIBER line of the E8-bar runs: dimension 5, multiplicity 11, 148 minimal generators
+  of degree 2. A direct elimination modulo 32009 of the three initial-form maps at N- returns limit ideals of
+  (dimension, degree, linear forms) (5, 11, 9), (4, 4, 14) and (4, 2, 16), the three associated primes (scratch
+  `docs/local/agents/arc-test/elim.sing`, under 2 min). The same search for Iso and W8 at N- over Q(i) is
+  bounded and open (A5-458). On the map s = (p^2, z, p u, 0, 2 p q, p v, 0, 0, -q^2 - u v) of the Iso germ and
+  on two reparametrizations (q = u k with z = p^2 k - t; q = u k with v = y - u k^2), every weight vector with
+  entries 0 to 2 (0 to 4 on the first map, 0 to 3 on the second) and positive order on the slice coordinates
+  gives a limit family of dimension at most 4, against 5 for the fiber cone. On the map
+  s = (p^2, p a, p u, 0, 2 p q, p v, 0, p b, -q^2 - u v - a b) of the W8 germ, equal weights give one limit
+  family of dimension 6, and no weight vector with entries 0 to 2 gives a second. The negative covers these
+  maps and weight ranges alone.
