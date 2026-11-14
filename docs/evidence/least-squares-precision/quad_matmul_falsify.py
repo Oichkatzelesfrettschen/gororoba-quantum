@@ -94,7 +94,7 @@ def main() -> int:
     }
     for name, make in CASES.items():
         report["cases"][name] = check(*make(BASE64), *make(BASE_Q))  # type: ignore[index]
-    empty = {}
+    empty: dict[str, bool | str] = {}
     for label, (a, b) in {"vector (0,) @ (0, 2)": ((0,), (0, 2)), "matrix (3, 0) @ (0, 2)": ((3, 0), (0, 2))}.items():
         expected = np.ones(a) @ np.ones(b)
         try:
