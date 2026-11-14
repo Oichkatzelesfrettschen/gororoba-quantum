@@ -731,7 +731,7 @@ the closest entry and say what changed.
   agrees with A5-446. Log sha256 `67b3b21e5d8e0420a244da5cc151ea7cbc0583776c16247874e98f7f190a64a7`, script sha256
   `452ea270018c239212a9142f86beb6b6ea757b8a999f88e28496c31a912bdcb5`. `c-e8-nm-p` was still in its Rees standard
   basis at 2 h 12 min and 2.1 GB.
-- Outcome (2026-11-13, 23:50 PST): weighted order functions on the weight slice decide the E8-bar relation ideal
+- Outcome (2026-11-13, 23:30 PST): weighted order functions on the weight slice decide the E8-bar relation ideal
   without a Rees standard basis (A5-457: a five-parameter polynomial map of the germ and three weight vectors
   give the two minimal primes and the embedded prime as limit ideals; about 60 s per basepoint over Q(i), build
   host). The row predicts the FIBER line of the E8-bar runs: dimension 5, multiplicity 11, 148 minimal generators
