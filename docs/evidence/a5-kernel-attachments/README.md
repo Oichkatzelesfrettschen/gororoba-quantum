@@ -900,7 +900,7 @@ the Galois group permutes the geometric components of the prime transitively and
 one geometric component and stays prime over C. A rerun in which a prime has no such point falsifies the record;
 check it with `"$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py --check`.
 
-**Inferred (`A5-449`, conditional on `A5-421`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
+**Inferred (`A5-449`, with `K` inside `L` by `A5-459`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
 hold 9 and 14 linear forms in 21 generators, so at least `9 + 14 - 21 = 2` linear forms lie in both; each is
 nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`, whose degree-1 part is zero. So
 `L` is not the intersection of the two primes. The limit set of `A5-418` is the reduced support and needs
@@ -925,7 +925,7 @@ dimension 5 is too large and the minimal prime of dimension 4 has degree 4 again
 only one and equals `A`. `R / K` is therefore a torsion-free module of rank 1 over the domain `S/A`, the coordinate
 ring of a quadric threefold.
 
-**Inferred (`A5-455`, conditional on `A5-421` and `A5-425`):** the relation ideal `L` lies between `K` and `R`,
+**Inferred (`A5-455`, conditional on `A5-425`, with `K` inside `L` by `A5-459`):** the relation ideal `L` lies between `K` and `R`,
 and it equals `K` at both minimal primes, where `K` is already prime. `L / K` is then a submodule of the rank-1
 torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every degree exactly when the nilradical
 `R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything open about the `E8bar` fiber cone
