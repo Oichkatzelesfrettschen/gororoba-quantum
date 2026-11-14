@@ -18,6 +18,7 @@ import gauss_image_quadrics as quadrics  # noqa: E402
 from nullity4_gauss_image import (  # noqa: E402
     IMAGINARY,
     PRIME,
+    ROOT_OF_MINUS_ONE,
     STRATA,
     Points,
     _block,
@@ -25,6 +26,8 @@ from nullity4_gauss_image import (  # noqa: E402
     _nullspace,
     _polynomials,
     _rank,
+    _twist,
+    sample,
 )
 
 import cd_core  # noqa: E402
@@ -226,6 +229,64 @@ def test_doubling_forms_have_rank_at_most_one_on_the_kernels_inside_the_quartic_
     _same(quadrics.three_plane((STRATA[0], 1))[2], [0, 3, 1, 3])
     _same(quadrics.three_plane((STRATA[1], 1))[2], [1, 1, 1, 1])
     _same(quadrics.three_plane((STRATA[2], 1))[2], [0, 1, 1, 1])
+
+
+def _doubling_parts(first: list[int], second: list[int]) -> list[int]:
+    """N1, N2 and N3 as bilinear forms at two vectors: the sums over the indices 1 to 7, 8 and 9 to 15."""
+    return [
+        sum(first[index] * second[index] for index in range(low - 1, high)) % PRIME
+        for low, high in quadrics.DOUBLING_RANGES
+    ]
+
+
+def test_commutator_of_two_imaginary_elements_in_the_octonion_doubling() -> None:
+    # For z = (a, b) and k = (c, d) with a, c imaginary octonions: z k - k z = ([a, c] - (conj(d) b - conj(b) d),
+    # 2 (d a - b c)). The second component and the multiplicative octonion norm give |d|^2 |a|^2 = |b|^2 |c|^2 for
+    # k commuting with z.
+    def product(size: int, left: list[int], right: list[int]) -> list[int]:
+        return [int(value) % PRIME for value in cd_core.cd_multiply_exact(size, left, right)]
+
+    def difference(left: list[int], right: list[int]) -> list[int]:
+        return [(x - y) % PRIME for x, y in zip(left, right, strict=True)]
+
+    def conjugate(element: list[int]) -> list[int]:
+        return [element[0], *((-value) % PRIME for value in element[1:])]
+
+    points = Points("test:doubling:commutator")
+    for _ in range(3):
+        a, c = ([0, *(points.value() for _ in range(7))] for _ in range(2))
+        b, d = ([points.value() for _ in range(8)] for _ in range(2))
+        commutator = difference(product(16, [*a, *b], [*c, *d]), product(16, [*c, *d], [*a, *b]))
+        upper = difference(
+            difference(product(8, a, c), product(8, c, a)),
+            difference(product(8, conjugate(d), b), product(8, conjugate(b), d)),
+        )
+        lower = [2 * value % PRIME for value in difference(product(8, d, a), product(8, b, c))]
+        _same(commutator, [*upper, *lower])
+        norm = sum(value * value for value in product(8, d, a)) % PRIME
+        _same(norm, sum(value * value for value in d) * sum(value * value for value in a) % PRIME)
+
+
+def test_doubling_forms_on_the_kernel_are_proportional_and_of_rank_one_inside_the_quartic_hypersurface() -> None:
+    # On K(z), N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z) on every stratum, from the commutator above. Inside
+    # V(G) the three forms are multiples of one square: Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z) for all i and j; on
+    # V(Q) minus V(G), where N1 and N3 have rank 3 on K(z), that fails.
+    for stratum, rank_one in zip(STRATA, (False, True, True), strict=True):
+        for number in range(3):
+            split = sample(stratum, Points(f"quadrics:{stratum}:{number}"), _polynomials())
+            point = _twist(split, ROOT_OF_MINUS_ONE)
+            kernel = quadrics.three_plane((stratum, number))[0]
+            at_point = _doubling_parts(point, point)
+            squares = True
+            for first in kernel:
+                for second in kernel:
+                    parts = _doubling_parts(first, second)
+                    _same(parts[0] * (at_point[1] + at_point[2]) % PRIME, (parts[1] + parts[2]) * at_point[0] % PRIME)
+                    left, right = _doubling_parts(first, point), _doubling_parts(second, point)
+                    squares = squares and all(
+                        at_point[i] * parts[j] % PRIME == left[i] * right[j] % PRIME for i in range(3) for j in range(3)
+                    )
+            _same(squares, rank_one)
 
 
 def test_fixture_class_is_exact_and_agrees_with_the_modular_class_of_its_stratum() -> None:

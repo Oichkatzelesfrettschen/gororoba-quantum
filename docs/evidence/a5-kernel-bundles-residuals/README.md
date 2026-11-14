@@ -483,8 +483,16 @@ minus `V(G)`, and their rank 1,678 with the Plucker quadrics, a rank of integer 
 quadrics beyond Plucker in characteristic 0. The commutant of a null imaginary octonion has the same Heisenberg
 type (test), where the Moufang identities are available.
 
-`hypothesis` (`A5-458`, open): `N1` and `N3` have rank at most 1 on `K(z)` at every nullity-4 point of `V(G)`,
-which would make the quadrics of the doubling forms identities on those images.
+**Proved** (`A5-459`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
+`([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))`, so `K(z)` is cut out by `d a = b c` and
+`[a, c] = conj(d) b - conj(b) d`, and the multiplicative octonion norm gives
+`N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z)` on `K(z)` at every point.
+
+`hypothesis` (`A5-458`, open): at every nullity-4 point of `V(G)` the three doubling forms are multiples of one
+square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`, which would make the quadrics of the doubling forms
+identities on those images. The ranks are at most 1 at the sampled points and exactly at the 54 fixtures inside
+`V(G)`, and by `A5-459`, which makes `N1` a multiple of `N2 + N3` on `K(z)`, the statement reduces to the pair
+`N2`, `N3`.
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
