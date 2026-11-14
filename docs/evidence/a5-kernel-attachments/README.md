@@ -824,6 +824,19 @@ is radical (`A5-430`); hence `L = K`. The comparison runs over C, where the slic
 known: both primes are absolutely prime (`A5-433`), so `V(K)` has exactly two components over C, and each family,
 geometrically irreducible of dimension 6, is the component of its span.
 
+**Computed (`A5-439`):** [`w8_component_models.py`](w8_component_models.py) writes the two minimal primes of the
+`W8` quadric ideal as linear images of two parametrized models, over `Q(i)` at both basepoints
+([record](w8-component-models-result.json)). The prime of degree 20 is the ideal of the hyperplane section
+`w12 + w34 = 0` of the closure of `{(a a^T, a ^ c)}` in `S^2 C^4 + L^2 C^4`, with `a` and `c` in `C^4`: 15
+coordinates, and nine linear forms cut out their span. The prime of degree 30 is the ideal of the closure of
+`{(lam a_p a_q, a ^ c, nu a_p a_q a_r)}` with `a = (a1, a2, 0, a4)` on the same section, without the coordinate of
+`a4^3`: 20 coordinates and four linear forms. `K` equals the intersection of the two images, neither image
+contains the other, and each altered map of the four controls leaves `K` outside its image. The maps at `N+` are
+the complex conjugates of those at `N-`. **Inferred:** each model is the kernel of a map to a polynomial ring
+modulo an irreducible quadric, a domain over every field of characteristic 0, so both images are absolutely
+prime; two incomparable primes with intersection `K` are its minimal primes. This gives the radicality of
+`A5-430` and the absolute primality of `A5-433` for `W8` without a primary decomposition.
+
 **Computed (`A5-433`):** every minimal prime of the three quadric ideals holds a smooth `Q(i)`-rational point.
 [`weight_slice_smooth_points.py`](weight_slice_smooth_points.py) lists the maximal sets of generators that contain
 no monomial of any quadric; each spans a coordinate subspace inside `V(K)`. At one rational point of each it
