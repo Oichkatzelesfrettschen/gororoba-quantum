@@ -22,12 +22,12 @@ Both numbers of a row are capped by the backend record (`max_jobs_per_batch_job`
 Admission (`hardware_admission`). Under a wave policy the account's unfinished batches on the backend type to submit are
 the earlier batches of the wave: they count as in flight, and their jobs set no pause. An unfinished job on another
 hardware backend type refuses, every finished job keeps its pause, and a batch is refused once the batches in flight
-reach the row's queued count. A batch the service lists as queued, reserved or running with no listed job refuses, unless
-it is an earlier batch of the same backend type under a wave row. The pause clock is account-wide across every
-`is_hardware` type. The checks read one
-snapshot of the account and the local SUBMIT_LOCK excludes only sessions on one host, so the limit is not enforced
-across hosts, and the service owns the execution order of the queued batches (its terms allow priority without regard
-to the queue order), so an estimator that needs an order reads the retained `queued_at` times.
+reach the row's queued count. A batch the service lists as queued, reserved or running with no listed job refuses,
+unless it is an earlier batch of the same backend type under a wave row. The pause clock is account-wide across every
+`is_hardware` type. The checks read one snapshot of the account and the local SUBMIT_LOCK excludes only sessions on one
+host, so the limit is not enforced across hosts, and the service owns the execution order of the queued batches (its
+terms allow priority without regard to the queue order), so an estimator that needs an order reads the retained
+`queued_at` times.
 
 An unknown or non-string policy name is refused before any service read, and every refusal precedes the first remote
 write.
