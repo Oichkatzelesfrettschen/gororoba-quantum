@@ -526,15 +526,21 @@ over `Q(i)`; 98.8 CPU seconds, 121 seconds of wall time and 84 MiB on two worker
 load average 28 from unrelated jobs; Python 3.14.9 with sympy 1.14.0).
 
 **Proved in odd characteristic** (`A5-497`): at a singular point `z = (a, 0, b)` of `V(G)` off `V(Q)`, where
-`N(a, b) = 0` and `N(a) = N(b) = nu` is nonzero, the kernel has an explicit basis. For an octonion `y` let
-`x = [a, b, y]` be the associator; then `k(y) = (nu x, 0, -(b x) a)` lies in `K(z)`, and `z` with the `k(y)`
-spans a space of dimension 5, so rank `M(z)` is at most 10. The associator runs through the orthogonal complement
-of the quaternion subalgebra `span(1, a, b, a b)`, where it alternates, and the two components of the product
-`z k(y)` cancel term by term. The formula has integer coefficients and uses only the alternative law and the
+`N(a, b) = 0` and `N(a) = N(b) = nu` is nonzero, the kernel contains an explicit subspace of dimension 5. For an
+octonion `y` let `x = [a, b, y]` be the associator; then `k(y) = (nu x, 0, -(b x) a)` lies in `K(z)`, and `z` with
+the `k(y)` spans a space of dimension 5, so rank `M(z)` is at most 10. The octonion associator alternates,
+vanishes on the quaternion subalgebra `H = span(1, a, b, a b)` and runs through its orthogonal complement, so the
+two components of the product `z k(y)` cancel term by term. That subspace is the whole kernel (`A5-499`): a
+sedenion `(c, d)` with `z (c, d) = 0` has `c = -a (conj(d) b) / nu`, and `d` satisfies
+`nu d a = b ((b d) a)`, which on the associative `H` reads `2 nu d a = 0` and forces `d = 0`; the solutions `d`
+therefore meet `H` in zero and span at most 4 dimensions, and `K(z)` is the line of `z` plus the imaginary
+annihilators of `z`, so rank `M(z)` equals 10 and `z` with the `k(y)` is a basis of `K(z)`. The formula has integer coefficients and uses only the alternative law and the
 norm, so it replaces the orbit argument of `A5-493` and settles the hypothesis `A5-496`. With `A5-495` the
 product on `K(z)` is nonzero at every rank-12 point of `V(G)` minus `V(Q)` over every field of characteristic
 other than 2 (`A5-498`). `singular_kernel_formula.py` checks the formula over the integers at 6,524 pairs
-`(a, b)` with entries in `-1, 0, 1`, and the dimension 5 and rank 10 over `Q` and modulo 3, 5 and 7.
+`(a, b)` with entries in `-1, 0, 1`, and the dimension 5 and rank 10 over `Q` at all of them and modulo 3, 5
+and 7 at every pair whose norm stays nonzero modulo the prime: 924, 6,524 and 6,524 pairs, since the 5,600 pairs
+of norm 3 leave the locus modulo 3.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/singular_kernel_formula.py --check` (integer
 arithmetic; 50.8 CPU seconds, 34 seconds of wall time and 89 MiB on two workers with the host at load average 25

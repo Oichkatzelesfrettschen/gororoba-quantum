@@ -28,7 +28,7 @@ def _same(found: object, expected: object) -> None:
 
 
 def test_kernel_vectors_annihilate_the_point_under_the_cd_core_product() -> None:
-    # At (a, b) = (e_1, e_2) the sedenion product z k has zero imaginary part for each k = k(e_j), by cd_core.
+    # At (a, b) = (e_1, e_2) the sedenion product z k is zero for each k = k(e_j), by cd_core.
     point = [0, *E1, 0, *E2]
     vectors = formula.kernel_vectors(E1, E2)
     _same(len(vectors), 7)
@@ -36,7 +36,7 @@ def test_kernel_vectors_annihilate_the_point_under_the_cd_core_product() -> None
     for vector in vectors:
         _same((vector[0], vector[8]), (0, 0))
         product = [int(x) for x in cd_core.cd_multiply_exact(16, point, [0, *vector[1:]])]
-        _same(product[1:], [0] * 15)
+        _same(product, [0] * 16)
         nonzero += any(vector)
     # The associator [a, b, e_j] vanishes for e_j in span(e_1, e_2, e_3) and is nonzero on the complement.
     _same(nonzero, 4)
