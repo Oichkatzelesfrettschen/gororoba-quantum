@@ -238,14 +238,22 @@ These tables hold the visibility and readout at their design values, admit every
 no drift inside a batch and draw each truth from a noise model the fit contains. The shot-level simulation
 (`scripts/qi_pathion_null_rotation_scan_noise.py`, case note
 `docs/notes/quantum_inspire/tuna17-null-rotation-scan-noise-simulation.md`) draws whole series of counts under gate noise through the guard, the bridge and the per-batch fit, including a
-regime whose fit lacks the truth's noise family.
+regime whose fit lacks the truth's noise family. Its record
+(`results/kaggle/2026-11-14T043839Z-gororoba-null-rotation-scan-gate-noise-fit`, 12 series per family, truth and
+regime, 2,880 series) holds no wrong class among the 2,520 series of the modeled truths. Zero wrong series of 12
+bound one truth's wrong-class rate at about 22 percent, and zero of the 168 in one family and regime bound that
+rate below 1.8 percent, each at 95 percent confidence.
 
 ### Mechanisms outside the modeled worlds
 
 - A conditional-phase error of the CZ gates, here `diag(1, 1, 1, -exp(i delta))` on every CZ
   (`prediction.json`, `unmodeled`, noiseless): at +0.08 rad it gives a center contrast of +0.0075 and reads
   `x_excluded`; at -0.08 rad it reads `unresolved_both`, and at +-0.12 rad (center +0.0156 and +0.0135)
-  `unresolved_none`. None reads `pulse_x`. The earlier one-CZ analysis used `CZ exp(-i delta ZZ / 2)`, a different
+  `unresolved_none`. None reads `pulse_x` at noiseless expected values. Under phase damping per pulse the x class
+  leads the -0.08 rad fit (chi-square 29.8 against 36.8 for the other class, below the separation of 25), and 1
+  of the 180 shot-level series at -0.08 rad reads `pulse_x` (that family, retained readout walk). A `pulse_x`
+  reading therefore does not exclude a CZ conditional-phase error of that size. The earlier one-CZ analysis used
+  `CZ exp(-i delta ZZ / 2)`, a different
   channel, and its small response does not bound this one.
 - A scale on every pulse angle is an x over-rotation at k = 0 and reads `pulse_x`. A curvature of the pulse
   amplitude response in k, which the scaled-amplitude premise excludes, can read `pulse_x` as well: a 25 percent

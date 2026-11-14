@@ -78,6 +78,33 @@ Measured on the build host before the push, four series per regime under amplitu
 of -2.1 and -2.3 standard errors, whose pooled value passes 3; the bridge rule refuses 7 of 2,000 walk series
 drawn with equal `Rx(pi/2)` and `X90` laws (0.35 percent).
 
+## Result
+
+Record: `results/kaggle/2026-11-14T043839Z-gororoba-null-rotation-scan-gate-noise-fit` (schema
+`qi-pathion-null-rotation-scan-noise-v2`, kernel wall time 39,186 s of the 39,600 s limit). It holds 80 scenarios
+(16 truths in each of five families), 2,880 series, 192 per family and regime; the falsifiers and the time budget,
+written before the run, estimated 17 truths, 204 series and 85 scenarios. The Aer cross-check on the T4 agrees on 150 laws within
+3.6e-16; the ten qxelarator circuits lie within 3.09 standard errors of their ideal laws.
+
+| Falsifier | Reading | Verdict |
+|---|---|---|
+| wrong class in more than 1 of 12 series of a truth, or more than 3 in a family and regime | 1 wrong series of 2,880: the CZ conditional-phase error of -0.08 rad under phase damping per pulse reads `pulse_x` once in the retained walk; every other cell holds 0 | not falsified |
+| all-pulse x truth reads `pulse_x` in fewer than 10 of 12 `stable` series | 12 of 12 in eight of the ten scenarios, 11 of 12 (one `unresolved_bridge`) in the two under phase damping per pulse | not falsified |
+| fewer than half of the walk series admit all eight scan batches and both bridge batches | every series admits all eight scan batches; the bridge holds in 957 of 960 | not falsified |
+| a wrong class in the family-left-out regime | 0 of 960 | not falsified |
+
+The 14 modeled truths of a family (2,520 series over the record) hold no wrong class. Of their series 180 read
+`offset_absent` under no offset, 1,179 of 1,260 x-class series read `pulse_x`, 864 of 1,080 other-class series
+(360 of them the conditional-phase truths) read `pulse_other`, and 339 of 360 readout series read `readout`;
+the rest read an unresolved label or `x_excluded`. The family-left-out regime reads `unresolved_none` in 104 of
+960 series against 51 under `stable`. The bridge rule refuses 11 of 2,880 series (0.38 percent).
+
+The one wrong series is a false `pulse_x` under a mechanism outside the modeled worlds: at -0.08 rad of CZ
+conditional phase under phase damping per pulse the x class leads the expected-value fit (chi-square 29.8 against
+36.8). The written case states that limit under "Mechanisms outside the modeled worlds".
+
+The run ended 414 s before its limit, so a repeat at these counts needs fewer series or a reduced truth list.
+
 ## Record of the earlier decision
 
 `results/kaggle/2026-11-13T222402Z-gororoba-null-rotation-scan-noise` holds the same simulation of the earlier
