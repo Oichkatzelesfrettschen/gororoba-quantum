@@ -44,8 +44,10 @@ C V = I and P M + d V C = d I on `span.json` in Python integers, a Gaussian inte
 python-flint. Without the runner, `--rocq DIRECTORY` names the directory of the Rocq files.
 
 `span_certificate.py` without `--verify` recomputes `span.json`; with `--check` it compares the recomputation with the
-file. It needs python-flint 0.9.0, the pin of `requirements.txt`, which the pull-request environment holds, so the
-test `test_flint_recomputes_the_tracked_span_record` recomputes the record at row order 0 on every run. The left-inverse
+file. It needs python-flint 0.9.0, the pin of `requirements.txt`. The test
+`test_flint_recomputes_the_tracked_span_record` recomputes the record at row order 0 and is marked `audit`: a
+pull-request run deselects it and checks the recorded identity P M + d V C = d I and a small synthetic solve, and
+`pytest -m audit` on that test file regenerates the record. The left-inverse
 record is an explicit argument (`--left-inverses`), and C V = I is checked before P is computed.
 
 The mutation controls need Rocq. On a machine that has it, `make_mutants.py ROCQ_DIRECTORY OUTPUT_DIRECTORY` and

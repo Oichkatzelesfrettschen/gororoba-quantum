@@ -41,11 +41,22 @@ grep -q '^\* Axioms: <none>$' span-kernel-check-output.txt || fail "the kernel c
 echo "kernel check: Axioms: <none>" >> "$rec"
 mutants=$(mktemp -d "$PWD/mutants-span.XXXXXX")
 "$PYTHON" make_span_mutants.py CdTowerG2DerivationSpan.v "$mutants"
+# The mutant compiles are independent: each runs as its own job in its own directory and leaves its exit
+# status in status.txt; the loop below reads the statuses after every job has ended.
+for d in "$mutants"/*/; do
+  (
+    cd "$d"
+    status=0
+    "$R" compile -q -w @all -Q "$B" "" -Q . "" CdTowerG2DerivationSpan.v > compile.log 2>&1 || status=$?
+    echo "$status" > status.txt
+  ) &
+done
+wait
 count=0
 for d in "$mutants"/*/; do
   n=$(basename "$d")
-  status=0
-  ( cd "$d" && "$R" compile -q -w @all -Q "$B" "" -Q . "" CdTowerG2DerivationSpan.v > compile.log 2>&1 ) || status=$?
+  [ -s "$d/status.txt" ] || fail "mutant $n left no exit status"
+  status=$(cat "$d/status.txt")
   line=$(grep -m1 -oE 'line [0-9]+' "$d/compile.log" | grep -oE '[0-9]+' || true)
   lemma=$(awk -v L="${line:-0}" 'NR<=L && /^(Lemma|Theorem) /{name=$2} END{print name}' "$d/CdTowerG2DerivationSpan.v")
   expected=$(cat "$d/expected-lemma.txt")

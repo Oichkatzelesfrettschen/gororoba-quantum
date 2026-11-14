@@ -25,6 +25,7 @@ import re
 import subprocess
 import sys
 from collections.abc import Callable
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -207,6 +208,26 @@ def test_the_recorded_smith_invariants_give_the_finite_field_nullities() -> None
         raise AssertionError("the invariants do not give nullities 64, 15 and 14 modulo 2, 3 and 5")
     if sc.nullity_modulo({1: 193, 2: 48, 6: 1}, 2) == 64:
         raise AssertionError("a changed multiplicity leaves the nullity modulo 2")
+
+
+def test_the_row_basis_and_the_exact_solve_recover_known_rational_coefficients() -> None:
+    rows: sc.Rows = {(0, 0, 0): {0: 2}, (0, 0, 1): {1: 3, 2: 1}, (0, 0, 2): {0: 2, 1: 3, 2: 1}, (0, 0, 3): {5: 4}}
+    chosen = sc.independent(rows, sorted(rows))
+    if chosen != [(0, 0, 0), (0, 0, 1), (0, 0, 3)]:
+        raise AssertionError(f"the dependent third row was not skipped: {chosen}")
+
+    def target(entries: dict[int, int]) -> list[int]:
+        return [entries.get(index, 0) for index in range(sc.UNKNOWNS)]
+
+    solution = sc.solve(rows, chosen, [target({0: 1}), target({0: 2, 1: 3, 2: 1, 5: 1}), target({})])
+    found = [[Fraction(int(solution[i, j].p), int(solution[i, j].q)) for j in range(3)] for i in range(3)]
+    expected = [[Fraction(1, 2), 0, 0], [1, 1, Fraction(1, 4)], [0, 0, 0]]
+    if found != expected:
+        raise AssertionError(found)
+    with pytest.raises(RuntimeError, match="row space"):
+        sc.solve(rows, chosen, [target({1: 1})])
+    with pytest.raises(RuntimeError, match="dependent"):
+        sc.solve(rows, sorted(rows), [target({0: 1})])
 
 
 @pytest.mark.audit
