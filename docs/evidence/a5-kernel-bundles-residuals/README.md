@@ -491,13 +491,16 @@ is cut out by `d a = b c` and `[a, c] = conj(d) b - conj(b) d`, and the multipli
 `N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z)` on `K(z)` at every point.
 
 **Proved in characteristic 0** (`A5-476`): at every nullity-4 point of `V(G)` the three doubling forms are
-multiples of one square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`, so the quadrics of the doubling forms
-are identities on those images. Where `N1(z)` is nonzero (`A5-477`), `K(z) = C z + K0(z)` with
-`K0(z) = K(z) n ker N1(., z)`, `t_8` vanishes on `K0(z)`, and every vector of `K0(z)` is a pair `(c, d')` of
-null imaginary octonions with product `c d' = 0`. At the sampled points `t_8` is a nonzero multiple of
-`N1(., z)` on `K(z)`, and the symmetric forms that vanish on every sampled `K0(z)` are the 25 these conditions
-give: the 15 products `t_8 t_k`, the norms `N1` and `N3`, and the 8 coordinates of `c d'`. By `A5-470` they are
-the forms whose combinations with the doubling forms are the 25 and 24 quadrics.
+multiples of one square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`. Where `N1(z)` is nonzero (`A5-477`),
+`K(z) = C z + K0(z)` with `K0(z) = K(z) n ker N1(., z)`, `t_8` vanishes on `K0(z)`, and every vector of `K0(z)`
+is a pair `(c, d')` of null imaginary octonions with product `c d' = 0`. The 25 symmetric forms these conditions
+give, the 15 products `t_8 t_k`, the norms `N1` and `N3` and the 8 coordinates of `c d'`, therefore vanish on
+`K0(z)`, and by `A5-470` each of their combinations `trace(c Pi(p) D Pi(p))` with a doubling form `D` vanishes
+on `Lambda^2 K(z)` at every nullity-4 point of `V(G)` (`A5-483`).
+
+Sampled (`A5-482`, survives): at the sampled points `t_8` is a nonzero multiple of `N1(., z)` on `K(z)`, and
+the symmetric forms that vanish on every sampled `K0(z)` are exactly those 25. That the combinations of
+`A5-483` are all of the 25 and 24 quadrics the other families leave is the sampled count of `A5-469`.
 
 The hypothesis `N1(z)` nonzero is needed (`A5-478`): `V(G)` has nullity-4 points with `N1(z) = 0`, the identity
 makes `N1(., z)` vanish on all of `K(z)` there, and at the exact point
