@@ -60,7 +60,7 @@ EXPECTED: dict[str, Any] = {
     "primary_components": [[4, 2, 4, False], [4, 4, 4, True], [5, 11, 11, True]],
 }
 # The five linear forms of the radical, as Singular prints them: four generators and one form with coefficients in
-# Q(i), conjugate at the two basepoints. The checker compares them as a set, since the count alone would accept
+# Q(i), conjugate at the two basepoints. The checker compares them as a sorted list, since the count alone would accept
 # five copies of one form.
 LINEAR_FORMS: dict[str, tuple[str, ...]] = {
     "N-": ("2*y(12)+(i)*y(13)+(i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),

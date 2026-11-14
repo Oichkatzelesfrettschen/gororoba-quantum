@@ -3,17 +3,18 @@
 On the weight slice at N- or N+ (`weight_slice_fiber_relations.py`) let O be the local ring of the E8-bar germ at the
 origin, m its maximal ideal, I = (G_1, ..., G_21) the Pfaffian ideal, L the relation ideal of the fiber cone
 (a form F of degree d lies in L exactly when F(G) lies in m I^d), and K the ideal that the 148 relations of degree 2
-generate. K has the minimal primes P5 (dimension 5, degree 11) and P4 (dimension 4, degree 4), radical R = P5 /\\ P4,
-and the embedded prime A = K : R (A5-451, A5-454).
+generate (each lies in L by the weight-slice producer, A5-421, the one premise this argument takes from it). K has
+the minimal primes P5 (dimension 5, degree 11) and P4 (dimension 4, degree 4), radical R = P5 /\\ P4, and the
+embedded prime A = K : R (A5-451, A5-454).
 
 A polynomial map phi from the affine space of (pa, pb, pl, pz, pm) to the slice sends the origin to the origin and
 satisfies every generator of the germ ideal J, so it induces a ring map from O to the local ring of that affine
 space at its origin. A weight vector w on the five parameters gives the order function v_w(x) = (lowest w-weight of
 a term of phi^* x, and +infinity for phi^* x = 0). The weights are nonnegative, so the order is additive on products
-and at least the minimum on sums. With nu = min_a v_w(G_a) and e = min_k v_w(s_k), every weight vector here has
-e >= 1, also the one with a zero entry: a unit of O then keeps its nonzero constant term as its part of weight 0
-and has order zero, so v_w extends to fractions with unit denominators, and every element of m I^d has order at
-least d nu + e. The initial forms
+and at least the minimum on sums, and phi(0) = 0, so a unit of O keeps its nonzero constant term as its part of
+weight 0 and has order zero; v_w therefore extends to fractions with unit denominators. With nu = min_a v_w(G_a)
+and e = min_k v_w(s_k), every weight vector here has e >= 1, also the one with a zero entry, so every element of
+m I^d has order at least d nu + e. The initial forms
 V_a (the part of phi^* G_a of weight nu) define the limit ideal Q_w = ker(y_a -> V_a), a homogeneous prime.
 
 Two consequences hold for every w with e >= 1. A form F of L has v_w(F(G)) > deg(F) nu, so F(V) = 0: L lies in Q_w.
@@ -32,7 +33,8 @@ basepoint leaves generators of J nonzero.
 Deduction recorded in the ledger: L lies in P5 /\\ P4 = R, so L / K is a submodule of the torsion-free module R / K
 of rank 1 over S / A (A5-454). The class of y6 in R / K is nonzero, since K is generated in degree 2. A nonzero
 class of L / K and the class of y6 are dependent over S / A with both coefficients nonzero, which gives c outside A
-with c * y6 in L, and the third order function forces every such c into A. Hence L = K.
+with c * y6 in L; L, A and y6 are homogeneous, so some homogeneous component of c is outside A with its product
+with y6 in L, and the third order function forces every such form into A. Hence L = K, given K inside L.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py [--check]
 """
@@ -49,13 +51,14 @@ from typing import Any
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
+import e8_quadric_nilradical as nilradical  # noqa: E402
 import weight_slice_fiber_relations as ws  # noqa: E402
 
 import parallel  # noqa: E402
 
 RECORD = HERE / "e8-relation-ideal-orders-result.json"
 SCHEMA = "gororoba.a5.e8-relation-ideal-orders/1"
-INPUTS = ("e8_relation_ideal_orders.py", "weight_slice_fiber_relations.py")
+INPUTS = ("e8_relation_ideal_orders.py", "e8_quadric_nilradical.py", "weight_slice_fiber_relations.py")
 WEIGHT_SLICE = HERE / "weight-slice-fiber-relations-result.json"
 ORBITS = ("N-", "N+")
 GENERATORS = 21
@@ -93,13 +96,6 @@ ORDER_FUNCTIONS: dict[str, tuple[tuple[int, ...], str, str]] = {
     "prime5": ((1, 1, 2, 1, 2), "P5", "P4"),
     "prime4": ((1, 1, 1, 1, 0), "P4", "A"),
     "embedded": ((2, 2, 1, 2, 1), "A", "P4"),
-}
-# The five nilpotent linear forms (A5-451), as Singular prints them: four generators and one form with coefficients in
-# Q(i), conjugate at the two basepoints. The checker compares them as a set, since the count alone would accept
-# five copies of one form.
-LINEAR_FORMS: dict[str, tuple[str, ...]] = {
-    "N-": ("2*y(12)+(i)*y(13)+(i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),
-    "N+": ("2*y(12)+(-i)*y(13)+(-i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),
 }
 EQUAL_WEIGHTS = (1, 1, 1, 1, 1)
 RANK_POINT = (2, 3, 5, 7, 11)
@@ -306,7 +302,7 @@ def problems(record: dict[str, Any]) -> list[str]:
             found.append(f"{orbit}: parametrization differs from the one of the producer")
         if len(cell.get("linear_forms", [])) != cell.get("radical_linear_forms"):
             found.append(f"{orbit}: the linear forms listed differ in number from the count")
-        if sorted(cell.get("linear_forms", [])) != sorted(LINEAR_FORMS[orbit]):
+        if sorted(cell.get("linear_forms", [])) != sorted(nilradical.LINEAR_FORMS[orbit]):
             found.append(f"{orbit}: the linear forms differ from the five nilpotent forms")
         functions = cell.get("order_functions")
         if not isinstance(functions, dict) or set(functions) != set(ORDER_FUNCTIONS):

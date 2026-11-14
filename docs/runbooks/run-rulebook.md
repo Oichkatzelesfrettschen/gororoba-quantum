@@ -741,7 +741,9 @@ the closest entry and say what changed.
   bounded and open (A5-458). On the map s = (p^2, z, p u, 0, 2 p q, p v, 0, 0, -q^2 - u v) of the Iso germ and
   on two reparametrizations (q = u k with z = p^2 k - t; q = u k with v = y - u k^2), every weight vector with
   entries 0 to 2 (0 to 4 on the first map, 0 to 3 on the second) and positive order on the slice coordinates
-  gives a limit family of dimension at most 4, against 5 for the fiber cone. On the map
-  s = (p^2, p a, p u, 0, 2 p q, p v, 0, p b, -q^2 - u v - a b) of the W8 germ, equal weights give one limit
-  family of dimension 6, and no weight vector with entries 0 to 2 gives a second. The negative covers these
-  maps and weight ranges alone.
+  gives initial forms of Jacobian rank at most 4 at one rational point, against dimension 5 for the fiber cone;
+  a rank at one point bounds the dimension of the limit family from below only. On the map
+  s = (p^2, p a, p u, 0, 2 p q, p v, 0, p b, -q^2 - u v - a b) of the W8 germ, equal weights give rank 6 at
+  one rational point, so one limit family of dimension 6, and no other weight vector with entries 0 to 2
+  reaches rank 6 at that point; which of the two primes the family fills was not computed. The negative covers
+  these maps, weight ranges and points alone.

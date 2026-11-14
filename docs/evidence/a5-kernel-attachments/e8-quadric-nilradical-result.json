@@ -2,7 +2,7 @@
  "schema": "gororoba.a5.e8-quadric-nilradical/2",
  "field": "Q(i)",
  "inputs": {
-  "e8_quadric_nilradical.py": "2d52817f6a77ab21ec93f0ff43f48185df0097f951200a61eb2769fe2629044d",
+  "e8_quadric_nilradical.py": "91bbd6907aba7d9b85de2744fe99a9dae2649a001349b54446cfa1bb123883d4",
   "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
  },
  "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",

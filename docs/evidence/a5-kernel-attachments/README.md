@@ -934,7 +934,7 @@ family of arcs in the slice germ whose limit points are dense in `V(A)` and alon
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
 slice coordinates). The retained arc families fill the two prime components; `A5-457` runs the test on `V(A)` with an order function.
 
-**Computed (`A5-457`):** [`e8_relation_ideal_orders.py`](e8_relation_ideal_orders.py) evaluates three weighted
+**Computed (`A5-457`, conditional on `A5-421` for `K` inside `L`):** [`e8_relation_ideal_orders.py`](e8_relation_ideal_orders.py) evaluates three weighted
 order functions on the `E8bar` germ over `Q(i)` at both basepoints
 ([record](e8-relation-ideal-orders-result.json)). A polynomial map `phi` from the affine space of five parameters
 `(pa, pb, pl, pz, pm)` to the slice satisfies the germ ideal and sends the origin to the origin; at `N-` it reads
@@ -955,7 +955,7 @@ Jacobian matrix of `V` has the rank of the prime's dimension at the point `(2, 3
 weights give `e = 1` and nilpotent orders `4 = nu + e`, the map of the other basepoint leaves 12 generators of the
 germ ideal nonzero, and a second associated prime stays nonzero on each `V`. **Inferred:** `v_w` is additive on
 products and zero on units, and every element of `m I^d` has order at least `d nu + e`. A form of `L` therefore
-vanishes on `V`, so `L` lies in every `Q_w`, hence in the radical `R` of `K`. A form `c` with `c y6` in `L` has
+vanishes on `V`, so `L` lies in every `Q_w`, hence in the radical `R` of `K`; `K` lies in `L` (`A5-421`). A form `c` with `c y6` in `L` has
 order at least `deg(c) nu + 1` under the third weight vector, so it vanishes on `V` and lies in `A`. A nonzero
 class of `L / K` and the class of `y6` in the rank-1 torsion-free module `R / K` (`A5-454`) would satisfy a
 relation with both coefficients nonzero in `S / A`, which gives such a `c` outside `A`. Hence `L = K`: the `E8bar`
