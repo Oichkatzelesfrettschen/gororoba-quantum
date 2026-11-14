@@ -110,8 +110,14 @@ def test_special_and_singular_points_are_recomputed() -> None:
         _same(tensor.special_point_record(strings), {"point": list(strings), **facts})
     for strings, singular in zip(tensor.SINGULAR_POINTS, tensor.SINGULAR_POINT_FACTS, strict=True):
         _same(tensor.singular_point_record(strings), {"point": list(strings), **singular})
-    for strings, general in zip(tensor.GENERAL_POINTS, tensor.GENERAL_POINT_FACTS, strict=True):
-        _same(tensor.general_point_record(strings), {"point": list(strings), **general})
+
+
+def test_general_point_satisfies_the_identity_with_the_identity_matrix_term() -> None:
+    # One rank-14 point off V(Q) u V(G): T = -grad(Q G) (x) z - Q G I; the second point is in the audit test.
+    _same(
+        tensor.general_point_record(tensor.GENERAL_POINTS[0]),
+        {"point": list(tensor.GENERAL_POINTS[0]), **tensor.GENERAL_POINT_FACTS[0]},
+    )
 
 
 def test_pfaffian_rejects_a_matrix_that_is_not_skew() -> None:
@@ -142,9 +148,11 @@ def test_three_vector_is_not_the_kernel_three_vector_off_rank_twelve() -> None:
 
 
 @pytest.mark.audit
-def test_grid_and_fixture_counts_are_recomputed() -> None:
+def test_grid_fixture_and_general_point_records_are_recomputed() -> None:
     _same(tensor.grid_record(), tensor.GRID_COUNTS)
     _same(tensor.fixture_record(), tensor.FIXTURE_COUNTS)
+    for strings, general in zip(tensor.GENERAL_POINTS, tensor.GENERAL_POINT_FACTS, strict=True):
+        _same(tensor.general_point_record(strings), {"point": list(strings), **general})
 
 
 def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None:

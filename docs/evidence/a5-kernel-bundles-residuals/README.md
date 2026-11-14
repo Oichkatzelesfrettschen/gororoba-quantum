@@ -503,7 +503,8 @@ gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `
 - The product is nonzero at every nullity-4 point of `V(G)` minus `V(Q)` (`A5-492`): the singular points of
   `V(G)` off `V(Q)` are the points with `t_8 = 0`, `N1 = N3` and `p = 0`, where rank `M(z)` is at most 10
   (`A5-493`). At nullity 4 the product vanishes exactly on `V(Q) n V(G)`. `hypothesis` (`A5-496`, open): the
-  rank bound holds in every odd characteristic.
+  rank bound holds in every odd characteristic; the missing step is the transitivity of the automorphisms of
+  the octonions on orthogonal pairs of equal nonzero norm there.
 - Every point of `V(Q)` with rank `M(z)` below 12 lies in `V(G)`, so every point of `V(Q)` minus `V(G)` has
   nullity exactly 4 (`A5-488`).
 - `K(z)` is null at every nullity-4 point of `V(Q) n V(G)` as it is on `V(Q)` minus `V(G)`, by closure through
@@ -519,7 +520,9 @@ which two exact points off the variety give as `-I`. `kernel_product_pfaffian_te
 exact points with `N1(z) = 0`, three singular points of `V(G)`, the two general points and the 66 fixtures.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check` (exact
-over `Q(i)`; 52 CPU seconds and 85 MiB on two workers, 27 seconds of wall time, Python 3.14.9 with sympy 1.14.0).
+over `Q(i)`; 94 CPU seconds and 84 MiB on two workers with the host at load average 45, and 49.5 CPU seconds
+and 26 seconds of wall time on a quieter host before the two general points, about 1 CPU second each, were added;
+Python 3.14.9 with sympy 1.14.0).
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
