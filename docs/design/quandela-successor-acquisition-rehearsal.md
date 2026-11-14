@@ -189,8 +189,10 @@ The first `validate=True` read of a successor run (`qd_records.validate_run`) pa
 Deviation from the written prediction: the sim:belenos job reports `duration` 300, the platform's per-job limit
 (`max_duration` 300), against the 176.16 s the case budgets from the QPU timing rule. The run is not truncated: all 24
 iterations returned 24 x 40000 samples, `status` is completed with progress 1.0, and the job started at 20:32:54 UTC
-while `results.json` was written at 20:38:15 UTC, consistent with about 300 s of wall time. Other retained sim:belenos
-jobs report 11 to 83 s, so the clamp is not a general reporting artifact. Hypothesis: the simulator needs about 300 s
-for this shape, which puts a full four-job rehearsal at the per-job limit; falsifier: a second run of the same
-`b1-j1` request reporting a duration well below 300. The one-job rehearsal answers the admission and billing questions;
+while `results.json` was written at 20:38:15 UTC, consistent with about 300 s of wall time. Every iteration used 40000 or 40001 shots (`nb_shots_used`),
+below the 80000 cap. The other retained sim:belenos jobs are smaller shapes (11 to 83 s), so they cannot separate
+the two readings of the duration. `hypothesis:` the simulator needs about 300 s for this shape, which puts each job of
+a full four-job rehearsal at the per-job limit, so one job was the right size for the rehearsal; the alternative is
+that a job at the limit reports 300. Falsifier: a second run of the same `b1-j1` request reporting a duration well below
+300. The one-job rehearsal answers the admission and billing questions;
 the 176.16 s figure is the QPU's estimate and the simulator's value replaces it as the rehearsal ceiling.

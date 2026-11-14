@@ -3409,6 +3409,20 @@
       "run": "results/quandela/cases/ascella_two_photon_character/job-01",
       "family": "ascella_two_photon_character",
       "question": "Retain the canceled two-photon character job and its zero returned samples as an operational outcome."
+    },
+    {
+      "id": "qd-ascella-predecessor-acquisition-pair-sim-ascella",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-14T203025Z-sim_ascella-ascella_predecessor-sim-ascella-billing-rule",
+      "family": "ascella_predecessor",
+      "question": "Admit the successor acquisition pair's sim:ascella rehearsal of the target-slot request: one job, platform-bound request, billing rule v2."
+    },
+    {
+      "id": "qd-bdsc-diagnostic-acquisition-pair-sim-belenos-b1-j1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-14T203218Z-sim_belenos-bdsc_diagnostic-b1-j1",
+      "family": "bdsc_diagnostic",
+      "question": "Admit the successor acquisition pair's one-job sim:belenos rehearsal (b1-j1) of the diagnostic request and read its duration and billing."
     }
   ],
   "claims": [
