@@ -3470,9 +3470,9 @@
   }
  ],
  "inputs": {
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
-  "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+  "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
   "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
   "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
   "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
