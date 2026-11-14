@@ -16,6 +16,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import perceval as pcvl
@@ -429,6 +430,13 @@ MAP_ALIGNED = [[0.82, 0.42], [0.77, 0.43], [0.83, 0.40], [0.78, 0.41], [0.85, 0.
 MAP_OPPOSED = [[0.78, 0.46], [0.82, 0.38], [0.79, 0.43], [0.84, 0.41], [0.77, 0.36]]
 
 
+def map_generator() -> np.random.Generator:
+    """The case's map-permutation generator, seeded from the frozen draw as the analysis seeds it."""
+    manifest = json.loads((FIXTURE / CASE_DIRECTORY / "job-00" / "cases.json").read_bytes())
+    draw = json.loads((FIXTURE / DRAW_FILE).read_bytes())["values"]
+    return np.random.default_rng(draw[manifest["seed_source"]["layout"]["map_permutation"][0]])
+
+
 def map_case(levels: list[list[float]]):
     rows = [{"slot": {"A": a, "B": b}, "total": 1000.0} for a, b in MAP_ROWS]
     settings = [
@@ -469,7 +477,7 @@ def test_the_map_score_reads_r_p_ceiling_and_share_of_the_seed_block_test(
 ) -> None:
     expected = reference_map_reading(levels)
     rows, settings, pred = map_case(levels)
-    got = reading.map_score(rows, settings, pred, np.random.default_rng(7), 4000, 0.05)
+    got = reading.map_score(rows, settings, pred, map_generator(), 4000, 0.05)
     check(got["n_readings"] == 10 and got["n_seed_blocks"] == 5, "ten readings in five seed blocks")
     check(got["r"] == pytest.approx(expected["r"], abs=1e-9), f"r {got['r']} against {expected['r']}")
     check(got["ceiling"] == pytest.approx(expected["ceiling"], abs=1e-9), "ceiling")
@@ -493,7 +501,7 @@ def test_the_frozen_map_reads_the_topology_cache_of_its_root(tree: Path, monkeyp
     loaded: list[Path] = []
     load = np.load
 
-    def recording(path: Path, *args: object, **kwargs: object):
+    def recording(path: Path, *args: Any, **kwargs: Any) -> Any:
         loaded.append(Path(str(path)))
         return load(path, *args, **kwargs)
 
