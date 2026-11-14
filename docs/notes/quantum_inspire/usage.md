@@ -139,19 +139,25 @@ follow root AGENTS.md "Hardware services".
    couplers used (the excluded qubits of [experiments.md](experiments.md)
    named), the batch list, shots per circuit (at most 131072; execution
    about 2.6 s per job plus 0.53 ms per shot against the 300 s limit) and
-   the series duration including one pause per batch. Wait for the owner's
+   the series duration including one pause per batch (one pause per wave under `wave-v1`). Wait for the owner's
    approval and quote it verbatim.
 4. Read the device and the account: MCP `qi_backend` for type 7,
    `qi_hardware_status` and `qi_jobs` (or `qi_platform.py snapshot --out DIR`
    with DIR outside `docs/`). Proceed only while Tuna-17 is online and none
    of the account's hardware batches is queued or running.
-5. For each batch in order: copy it to
+5. A manifest without a hardware policy runs batch by batch: copy each batch to
    `results/quantum_inspire/runs/<UTC stamp>-<case>-batch-NN/`, then
    `"$QI_PYTHON" scripts/qi_platform.py submit RUN_DIR --backend-type-id 7 --approval "QUOTE"`,
    `"$QI_PYTHON" scripts/qi_platform.py collect RUN_DIR --poll 15 --timeout 3600`
    and the generator's `--sanity RUN_DIR`. The next batch goes in only after
    that collection, its sanity checks and the pause; `submit` refuses an
    early one before any remote write and names the seconds left.
+   A series whose manifest names `wave-v1` (batches of 4 or 5 circuits)
+   refuses in `qi_platform.py submit` and runs through
+   `"$QI_PYTHON" scripts/qi_platform_wave.py series SERIES_DIR RUNS_DIR STAMP --backend-type-id 7 --approval "QUOTE" --sanity-command "GENERATOR --sanity"`,
+   which submits a wave's batches back to back, collects and checks them, and holds the next wave for the 60 s pause
+   ("Queue rules" states the limits). It checks every run directory before the first submit and resumes nothing: after
+   a stop, `qi_platform_wave.py collect` and `qi_platform.py reconcile` recover the batches already submitted.
 6. Stop the series at the first platform failure, raise
    `QI_HARDWARE_PAUSE_SECONDS` one step of the ladder, and never resubmit a
    directory that holds `submission.json` or `submission-state.json`

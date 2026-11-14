@@ -123,6 +123,7 @@ def hardware_pause_state(
     at = qi_platform.utc_now()
     batches: dict[int, int] = {}
     batch_status: dict[int, str] = {}
+    batch_finished: dict[int, str | None] = {}
     for row in client.pages("/batch_jobs"):
         if row["backend_type_id"] not in types:
             continue
@@ -133,6 +134,7 @@ def hardware_pause_state(
             continue
         batches[row["id"]] = row["backend_type_id"]
         batch_status[row["id"]] = row["status"]
+        batch_finished[row["id"]] = row.get("finished_at")
     jobs = [job for job in client.pages("/jobs") if job["batch_job_id"] in batches]
     listed = {job["batch_job_id"] for job in jobs}
     for batch_id, row_status in batch_status.items():
@@ -163,6 +165,14 @@ def hardware_pause_state(
             raise SystemExit(f"hardware job {job['id']} is {job['status']} without a finish time; its pause is unknown")
         elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
         left = max(left, pause - elapsed)
+    for batch_id, finished_at in batch_finished.items():
+        # A finished batch whose jobs the job read omits keeps its pause through the batch's own finish time (BatchJob
+        # `finished_at` in the API schema); a batch without one sets none, as in qi_platform.hardware_pause_left.
+        if batch_id in listed or batch_id in in_flight or batch_status[batch_id] in IN_FLIGHT_BATCH_STATUSES:
+            continue
+        if finished_at is not None:
+            elapsed = (at - datetime.datetime.fromisoformat(finished_at)).total_seconds()
+            left = max(left, pause - elapsed)
     return math.ceil(left), len(in_flight)
 
 

@@ -350,6 +350,21 @@ def test_the_wave_pause_is_the_row_raised_to_the_ladder_step(
         admit(service, 7)
 
 
+def test_a_finished_batch_without_listed_jobs_keeps_its_pause_through_the_batch_finish_time(service: Service) -> None:
+    finished = (NOW - timedelta(seconds=15)).isoformat()
+    service.batches = [batch(1, status="finished") | {"finished_at": finished}]
+    service.jobs = []
+    with pytest.raises(SystemExit, match="wait 45 more seconds"):
+        admit(service, 7)
+
+
+def test_three_jobless_queued_batches_refuse_a_fourth(service: Service) -> None:
+    service.batches = [batch(i, status="queued") for i in range(1, 4)]
+    service.jobs = []
+    with pytest.raises(SystemExit, match="3 batches in flight"):
+        admit(service, 7)
+
+
 def test_the_legacy_pause_is_the_ladder_step(tmp_path: Path, service: Service) -> None:
     service.batches = [batch(1, status="finished")]
     service.jobs = [job(1, 1, "completed", finished_seconds_ago=10)]
@@ -386,6 +401,13 @@ MUTATIONS = [
         {"backend": {"batchjobs_per_queue_limit": 2}, "in_flight": 2},
     ),
     ("pause", "if left > 0:", 5, "wave-v1", {"finished_seconds_ago": 10}),
+    (
+        "batch finish pause",
+        "if finished_at is not None:",
+        5,
+        "wave-v1",
+        {"batch_finished_seconds_ago": 10},
+    ),
 ]
 
 
@@ -431,6 +453,9 @@ def test_each_refusal_fails_when_its_line_is_removed(
     if "finished_seconds_ago" in state:
         fake.batches = [batch(1, status="finished")]
         fake.jobs = [job(1, 1, "completed", finished_seconds_ago=state["finished_seconds_ago"])]
+    if "batch_finished_seconds_ago" in state:
+        finished = (NOW - timedelta(seconds=state["batch_finished_seconds_ago"])).isoformat()
+        fake.batches = [batch(1, status="finished") | {"finished_at": finished}]
     monkeypatch.setattr(qi_platform, "Client", lambda *_a, **_k: fake)
     fields = {} if policy is None else {"hardware_policy": policy}
     directory = case(tmp_path, circuits, **fields)

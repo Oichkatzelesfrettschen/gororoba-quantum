@@ -127,7 +127,7 @@ the tests.
 - A third replicate at full shots, more replicates of only the twin or of only the base batches, and twice the shots,
   priced by a scratch simulation (20,000 series per cell, independent drift 0.003, the matched bound, seeds from values
   911 to 919 of the draw below; the scratch code is not retained, so the cells are computed and not replayable from the
-  tree). Power in percent, dropout / superposition-only, independent drift and common-pair drift:
+  tree; issue 903 tracks retaining it). Power in percent, dropout / superposition-only, independent drift and common-pair drift:
 
   | replicates (base / twin) and shots per circuit | batches | waves | jobs | shots | execution s | independent | common |
   |---|---|---|---|---|---|---|---|
