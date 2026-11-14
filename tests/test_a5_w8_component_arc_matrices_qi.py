@@ -75,6 +75,9 @@ def test_the_two_basepoints_carry_the_same_shape_of_limit() -> None:
             _same(minus["order_of_G"], plus["order_of_G"])
 
 
+# The arc script embeds the survivor selection of the weight-slice inputs, which runs Singular; hosted runners
+# carry no Singular, so the comparison runs with the on-demand audit tests.
+@pytest.mark.audit
 def test_the_script_is_the_arc_script_with_the_entries_printed_before_quit() -> None:
     script = matrices.singular_script("w8-nm", "linear", 1, matrices.arcs.SLICE_VARIABLES)
     base = matrices.arcs.singular_script("w8-nm", "linear", 1, matrices.arcs.SLICE_VARIABLES)
