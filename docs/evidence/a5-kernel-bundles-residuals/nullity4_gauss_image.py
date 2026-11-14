@@ -107,6 +107,9 @@ SOURCE_PATHS = (
     HERE / "nullity4_gauss_image.py",
     BUNDLES / "kernel_frames.py",
     BUNDLES / "kernel_symmetry.py",
+    ROOT / "docs" / "evidence" / "a5-strata-regularity" / "strata_regularity.py",
+    ROOT / "docs" / "evidence" / "a5-rank-strata-equations" / "rederive_strata_equations.py",
+    ROOT / "gororoba_quantum" / "cd_core.py",
     FIXTURES,
 )
 PRIME, ROOT_OF_MINUS_ONE = 32029, 9115
@@ -665,26 +668,8 @@ def sign_identity() -> bool:
     return all(SIGNS[row][row ^ column] == -SIGNS[row][column] for row in units for column in units if row != column)
 
 
-def kernel_form(job: tuple[list[int], list[int]]) -> dict[str, Any]:
-    """The fiber through the pair (z', w') modulo PRIME, read from the kernel plane P = ker A(z, w).
-
-    M(z) p = -M(p) z, so the z-part of L is {z in ker M(p1) n ker M(p2): z orthogonal to the conjugate plane P'}
-    for a basis p1, p2 of P. The row holds dim L, the nullity of M(p) at the probe vector p1 + PROBE p2, the dimension
-    of ker M(p1) n ker M(p2), its dimension after the cut by P' (dim L_z, which is half of dim L at a real point,
-    where w' is the conjugate of z'), whether M(z) p = -M(p) z at p1 and p2, and the nullities of M(k) at the 342
-    nonzero combinations k, coefficients -3..3, of the echelon basis of ker M(z), as [nullity, vectors, projective
-    points, dimension of the span of those vectors, dimension of that span with P added]: a projective point is
-    counted at its coprime combination with a positive first nonzero coefficient, and the vectors of one nullity
-    lie on one line of the projective plane exactly when their span has dimension 2.
-    """
-    split, conjugate_split = job
-    point = [*split, *conjugate_split]
-    frame = _twist(split, ROOT_OF_MINUS_ONE)
-    plane = [vector[1:] for vector in _nullspace(bordered(point))]
-    conjugate_plane = [vector[1:] for vector in _nullspace(conjugate_bordered(point))]
-    _require(len(plane) == 2 and len(conjugate_plane) == 2, "a kernel modulo the prime is not a plane")
-    general = [(a + PROBE * b) % PRIME for a, b in zip(*plane, strict=True)]
-    common = [*_block(plane[0]), *_block(plane[1])]
+def three_plane_net(frame: Vector, plane: Matrix) -> list[list[int]]:
+    """The nullities of M(k) on the net of ker M(z): [nullity, vectors, projective points, span, span with P]."""
     three_plane = _nullspace(_block(frame))
     net: dict[int, list[int]] = {}
     members: dict[int, Matrix] = {}
@@ -699,19 +684,45 @@ def kernel_form(job: tuple[list[int], list[int]]) -> dict[str, Any]:
             counts = net.setdefault(nullity, [0, 0])
             counts[0] += 1
             counts[1] += math.gcd(*coefficients) == 1 and next(c for c in coefficients if c) > 0
+    return [
+        [nullity, *counts, _rank(members[nullity]), _rank([*members[nullity], *plane])]
+        for nullity, counts in sorted(net.items())
+    ]
+
+
+def kernel_form(job: tuple[list[int], list[int]], net: bool = True) -> dict[str, Any]:
+    """The fiber through the pair (z', w') modulo PRIME, read from the kernel plane P = ker A(z, w).
+
+    M(z) p = -M(p) z, so the z-part of L is {z in ker M(p1) n ker M(p2): z orthogonal to the conjugate plane P'}
+    for a basis p1, p2 of P. The row holds dim L, the nullity of M(p) at the probe vector p1 + PROBE p2, the dimension
+    of ker M(p1) n ker M(p2), its dimension after the cut by P' (dim L_z, which is half of dim L at a real point,
+    where w' is the conjugate of z'), whether M(z) p = -M(p) z at p1 and p2, and the nullities of M(k) at the 342
+    nonzero combinations k, coefficients -3..3, of the echelon basis of ker M(z), as [nullity, vectors, projective
+    points, dimension of the span of those vectors, dimension of that span with P added]: a projective point is
+    counted at its coprime combination with a positive first nonzero coefficient, and the vectors of one nullity
+    lie on one line of the projective plane exactly when their span has dimension 2. The grid and the Gaussian
+    points read the other fields only and pass net false, which leaves the net out of the row.
+    """
+    split, conjugate_split = job
+    point = [*split, *conjugate_split]
+    frame = _twist(split, ROOT_OF_MINUS_ONE)
+    plane = [vector[1:] for vector in _nullspace(bordered(point))]
+    conjugate_plane = [vector[1:] for vector in _nullspace(conjugate_bordered(point))]
+    _require(len(plane) == 2 and len(conjugate_plane) == 2, "a kernel modulo the prime is not a plane")
+    general = [(a + PROBE * b) % PRIME for a, b in zip(*plane, strict=True)]
+    common = [*_block(plane[0]), *_block(plane[1])]
     product = [[sum(a * b for a, b in zip(row, p, strict=True)) % PRIME for row in _block(frame)] for p in plane]
     swapped = [[-sum(a * b for a, b in zip(row, frame, strict=True)) % PRIME for row in _block(p)] for p in plane]
-    return {
+    form: dict[str, Any] = {
         "fiber_dimension": fiber_dimension(split, conjugate_split),
         "plane_nullity": IMAGINARY - _rank(_block(general)),
         "common_kernel": IMAGINARY - _rank(common),
         "common_kernel_cut": IMAGINARY - _rank([*common, *conjugate_plane]),
         "antisymmetric": product == swapped,
-        "three_plane_net": [
-            [nullity, *counts, _rank(members[nullity]), _rank([*members[nullity], *plane])]
-            for nullity, counts in sorted(net.items())
-        ],
     }
+    if net:
+        form["three_plane_net"] = three_plane_net(frame, plane)
+    return form
 
 
 def fixture_kernel_forms() -> list[dict[str, Any]]:
@@ -762,7 +773,7 @@ def gaussian_block(job: tuple[int, list[int]]) -> list[list[int]]:
         if _rank(lower_block(z)) != 12 or _rank(bordered([*z, *w])) != 14:
             rejected[3] += 1
             continue
-        form = kernel_form((z, w))
+        form = kernel_form((z, w), net=False)
         _require(form["antisymmetric"], "M(z) p = -M(p) z fails at a Gaussian point")
         rows.append(
             [
@@ -920,7 +931,7 @@ def grid_block(job: tuple[int, int, int, tuple[tuple[tuple[int, ...], ...], ...]
                     for i in range(32)
                 ]
                 nullity = 32 - _rank(_left_multiplication(general))
-                form = kernel_form((reduced, reduced))
+                form = kernel_form((reduced, reduced), net=False)
                 _require(form["antisymmetric"], "M(z) p = -M(p) z fails at a grid point")
                 plane = [form["plane_nullity"], form["common_kernel"], form["common_kernel_cut"]]
                 rows.append([split, stratum, orbit, fiber_dimension(reduced), nullity, plane])
@@ -1271,6 +1282,11 @@ def _kernel_form_problems(record: dict[str, Any]) -> list[str]:
     return problems
 
 
+def _serialized(record: dict[str, Any]) -> str:
+    """The retained text of a record. The replay compares text, so true and 1, which compare equal, differ."""
+    return json.dumps(record, indent=1, sort_keys=True) + "\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -1279,8 +1295,8 @@ def main() -> None:
     args = parser.parse_args()
     record = compute()
     if args.write:
-        RECORD.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    elif json.loads(RECORD.read_text(encoding="utf-8")) != record:
+        RECORD.write_text(_serialized(record), encoding="utf-8")
+    elif RECORD.read_text(encoding="utf-8") != _serialized(record):
         raise SystemExit(f"{RECORD.name} differs from the recomputation")
     problems = verdict(record)
     if problems:

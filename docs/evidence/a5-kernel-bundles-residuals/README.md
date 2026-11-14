@@ -355,12 +355,16 @@ quartic `G` restricted to `K`. The quartic has a singular scheme of length 3 and
 algebraic closure of GF(32029): a quartic `L C` has the length-3 scheme `V(L, C)` inside its singular scheme on
 the line `L = 0`, and the certificate shows that no line meets the singular scheme in length 3 or more. A line of
 higher zero divisors over `Q(i)` would reduce to one modulo the prime, so the fixtures have none in
-characteristic 0. On the grid the quartic is nonzero and free of lines at all 2,096 points; its singular scheme
+characteristic 0; the identification with the quartic and the length of its singular scheme are statements
+modulo 32029. At 40 points of the stratum with sha256 coordinates the singular scheme has length 3 and the
+quartic has no line. On the grid the quartic is nonzero and free of lines at all 2,096 points; its singular scheme
 has length 3 at 2,064 points and length 5 at 32 points of one slice, `e_1 + e_2 + 2 e_3 + e_8 + v`.
 
-These results refute two clauses of `A5-439`: the higher zero divisors of `K` on `V(Q)` minus `V(G)` are a
-curve and not finitely many points, and on `V(G)` minus `V(Q)` every tested point, of orbit rank 13 or 16,
-carries a line of them. The net of `A5-437` met the quartic at its few points of small height and saw the polar
+These results refute the finiteness clause of `A5-439`: the higher zero divisors of `K` on `V(Q)` minus `V(G)`
+are a curve at the fixtures. Its clause that confines the line on `V(G)` minus `V(Q)` to a proper closed subset
+of the orbit-rank-16 points is contradicted by every tested point, including 40 points of the stratum with
+sha256 coordinates (Gram rank 1, nullity 7 on the polar line, 3 off it); finitely many points do not refute it,
+and `A5-444` states the corrected form. The net of `A5-437` met the quartic at its few points of small height and saw the polar
 line only where it is a line of the net.
 
 `hypothesis` (`A5-443`, open): at every nullity-4 point of `V(Q)` minus `V(G)` the quartic contains no line, and
@@ -387,6 +391,6 @@ each stratum outside a proper closed subset.
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 71 CPU seconds and 84 MiB on two workers, 49 seconds of wall time, same versions and host as the next replay).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 411 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 6 minutes 13 seconds of wall time; 706 CPU seconds on a loaded host, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 326 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 3 minutes 33 seconds of wall time, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).

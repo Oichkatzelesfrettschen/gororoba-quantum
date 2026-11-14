@@ -205,6 +205,7 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         (12, 52),
     )
     quadric, quartic = "quadric_stratum", "quartic_stratum"
+    quadric_name, quartic_name = locus.QUADRIC, locus.QUARTIC
     changes: dict[str, Callable[[dict[str, Any]], Any]] = {
         "field": lambda r: r.update(field="GF(2)"),
         "inputs": lambda r: r.update(inputs={}),
@@ -230,6 +231,9 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         "pfaffian span": lambda r: r["fixtures"][quadric][7].update(pfaffian_span_rank=5),
         "pfaffian multiples": lambda r: r["fixtures"][quadric][8].update(quartic_multiples_rank=7),
         "pfaffian union": lambda r: r["fixtures"][quadric][9].update(union_rank=7),
+        "sampled class": lambda r: r["sampled_points"][quartic_name][0].__setitem__(0, 2),
+        "sampled count": lambda r: r["sampled_points"][quadric_name][0].__setitem__(4, 39),
+        "sampled line": lambda r: r["sampled_points"][quadric_name][0].__setitem__(3, 1),
         "quartic pfaffian span": lambda r: r["fixtures"][quartic][1].update(pfaffian_span_rank=5),
         "quartic pfaffian union": lambda r: r["fixtures"][quartic][2].update(union_rank=7),
         "exchanged fixture classes": lambda r: _exchange(r["fixtures"][quartic], 0, 23),
@@ -276,3 +280,9 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         change(mutated)
         if locus.verdict(mutated) == []:
             raise AssertionError(f"a record mutated at {name} passes")
+
+
+def test_replay_comparison_separates_a_boolean_from_an_integer() -> None:
+    # True == 1 in Python, so a comparison of parsed records accepts either; the replay compares the retained text.
+    _same({"plane_equals_line": True} == {"plane_equals_line": 1}, True)
+    _same(locus._serialized({"plane_equals_line": True}) == locus._serialized({"plane_equals_line": 1}), False)

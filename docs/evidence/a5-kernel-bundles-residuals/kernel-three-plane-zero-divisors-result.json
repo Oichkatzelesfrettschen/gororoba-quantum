@@ -2811,10 +2811,11 @@
   ]
  },
  "inputs": {
-  "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "5d311c9b4b5664f2acc72dbb6b01379b1628ef6beca35fc31df7b76ae67153b0",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "a8c74d864e846161b7d906df48f8b8c88237a928a043a4b45aeb512408285572",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
   "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+  "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
   "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
   "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
  },
@@ -2823,6 +2824,29 @@
   "coefficients": 15,
   "monomial_rank": 15,
   "points": 16
+ },
+ "sampled_points": {
+  "V(G) minus V(Q)": [
+   [
+    1,
+    16,
+    2,
+    [
+     7
+    ],
+    3,
+    40
+   ]
+  ],
+  "V(Q) minus V(G)": [
+   [
+    0,
+    true,
+    3,
+    0,
+    40
+   ]
+  ]
  },
  "schema": "a5-kernel-bundles-residuals-kernel-three-plane-zero-divisors-v1"
 }

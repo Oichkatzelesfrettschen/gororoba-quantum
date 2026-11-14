@@ -63,6 +63,13 @@ V(G) minus V(Q), 2 on V(Q) n V(G)) and at every nullity-4 point of the 41,616-ca
    By the span statement of item 3 their zero set is the zero set of G|_K modulo the prime, which contains no line.
    The statement needs no further computation.
 
+5. The fixtures and the grid are special families, so the facts of items 1 to 3 are also read at SAMPLED_POINTS
+   points of each stratum whose coordinates come from sha256 (`nullity4_gauss_image.sample`): Gram rank, probe
+   zeros, polar line, its nullities and the nullity off it on V(G) minus V(Q); Gram rank, nonzero quartic, length of
+   the singular scheme and line certificate on V(Q) minus V(G). A proper closed subset of a stratum holds a small
+   fraction of its points over GF(32029), so a property of every sampled point is evidence, and no proof, that it
+   holds on a dense open subset.
+
 The grid enumeration of `nullity4_gauss_image.grid_block` is repeated here point for point (same candidates, same
 filters), and the loops over independent points run through `parallel.ordered_map`. The grid points are integer split
 points, the sampled kernel vectors have fixed coefficients, and the probe points of every interpolation and of the
@@ -107,6 +114,7 @@ from nullity4_gauss_image import (  # noqa: E402
     SIGNS,
     STRATA,
     Matrix,
+    Points,
     Vector,
     _block,
     _fixture_splits,
@@ -119,6 +127,7 @@ from nullity4_gauss_image import (  # noqa: E402
     exact_fiber_dimension,
     fiber_dimension,
     lower_block,
+    sample,
 )
 
 import parallel  # noqa: E402
@@ -130,6 +139,7 @@ SOURCE_PATHS = (
     HERE / "nullity4_gauss_image.py",
     BUNDLES / "kernel_frames.py",
     ROOT / "docs" / "evidence" / "a5-strata-regularity" / "strata_regularity.py",
+    ROOT / "docs" / "evidence" / "a5-rank-strata-equations" / "rederive_strata_equations.py",
     ROOT / "gororoba_quantum" / "cd_core.py",
     FIXTURES,
 )
@@ -204,6 +214,11 @@ PLANE_ON_LINE_POINTS: tuple[tuple[int, ...], ...] = (
     (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -1),
 )
 EXCLUDED_GRID_POINTS = 388
+# Sampled points per stratum, and their classes: (Gram rank, probe zeros, polar line dimension, nullities on the
+# line, nullity off it) on V(G) minus V(Q), (Gram rank, G|_K nonzero, singular scheme length, trisecant Hilbert
+# value) on V(Q) minus V(G), each with its count.
+SAMPLED_POINTS = 40
+SAMPLED_CLASSES: dict[str, list[list[Any]]] = {QUARTIC: [[1, 16, 2, [7], 3, 40]], QUADRIC: [[0, True, 3, 0, 40]]}
 FIXTURE_STRATUM_COUNTS = {QUADRIC: 12, QUARTIC: 52, EXCLUDED_STRATUM: 2}
 # Fixture numbers of the record `nullity4-kernel-gauss-result.json` by stratum.
 QUADRIC_FIXTURES = (13, 14, 19, 24, 25, 42, 43, 44, 45, 61, 62, 65)
@@ -863,6 +878,43 @@ def fixtures() -> dict[str, Any]:
     }
 
 
+def sampled_point(job: tuple[str, int]) -> list[Any]:
+    """The class of one sampled point of a stratum, modulo PRIME; [None] where rank M(z) is not 12."""
+    stratum, number = job
+    split = sample(stratum, Points(f"zero divisors:{stratum}:{number}"), _hypersurfaces())
+    if _rank(lower_block(split)) != 12:
+        return [None]
+    if stratum == QUARTIC:
+        row = quartic_point(split)
+        return [
+            row["quadric_gram_rank"],
+            row["quartic_zero_probes"],
+            row["polar_line_dimension"],
+            sorted(set(row.get("line_nullities", []))),
+            row.get("off_line_nullity"),
+        ]
+    row = quadric_point(split)
+    return [
+        row["quadric_gram_rank"],
+        row["quartic_nonzero"],
+        row.get("singular_scheme_length"),
+        row.get("trisecant_hilbert_value"),
+    ]
+
+
+def sampled() -> dict[str, list[list[Any]]]:
+    """The classes of the sampled points of the two strata, each class with its count."""
+    jobs = [(stratum, number) for stratum in (QUARTIC, QUADRIC) for number in range(SAMPLED_POINTS)]
+    rows = parallel.ordered_map(sampled_point, jobs, min_items=2)
+    found: dict[str, list[list[Any]]] = {}
+    for index, stratum in enumerate((QUARTIC, QUADRIC)):
+        classes: dict[str, int] = {}
+        for row in rows[index * SAMPLED_POINTS : (index + 1) * SAMPLED_POINTS]:
+            classes[json.dumps(row)] = classes.get(json.dumps(row), 0) + 1
+        found[stratum] = [[*json.loads(key), count] for key, count in sorted(classes.items())]
+    return found
+
+
 def _inputs() -> dict[str, str]:
     return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest() for path in SOURCE_PATHS}
 
@@ -880,6 +932,7 @@ def compute() -> dict[str, Any]:
         "calibration": calibration(),
         "fixtures": fixtures(),
         "grid": grid(),
+        "sampled_points": sampled(),
     }
     record["pass"] = verdict(record) == []
     return record
@@ -1023,7 +1076,14 @@ def verdict(record: dict[str, Any]) -> list[str]:
         line_free(certificate) for name, certificate in calibrated.items() if name not in LINE_FREE_CALIBRATION
     ):
         problems.append("the line certificate does not separate the quartic without a line from the quartics with one")
+    if record.get("sampled_points") != SAMPLED_CLASSES:
+        problems.append("the sampled points of the two strata fall in other classes")
     return [*problems, *_fixture_problems(record), *_grid_problems(record["grid"])]
+
+
+def _serialized(record: dict[str, Any]) -> str:
+    """The retained text of a record. The replay compares text, so true and 1, which compare equal, differ."""
+    return json.dumps(record, indent=1, sort_keys=True) + "\n"
 
 
 def main() -> None:
@@ -1034,8 +1094,8 @@ def main() -> None:
     args = parser.parse_args()
     record = compute()
     if args.write:
-        RECORD.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    elif json.loads(RECORD.read_text(encoding="utf-8")) != record:
+        RECORD.write_text(_serialized(record), encoding="utf-8")
+    elif RECORD.read_text(encoding="utf-8") != _serialized(record):
         raise SystemExit(f"{RECORD.name} differs from the recomputation")
     problems = verdict(record)
     if problems:

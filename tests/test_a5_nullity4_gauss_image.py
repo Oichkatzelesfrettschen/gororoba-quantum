@@ -248,3 +248,9 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         change(mutated)
         if gauss.verdict(mutated) == []:
             raise AssertionError(f"a record mutated at {name} passes")
+
+
+def test_replay_comparison_separates_a_boolean_from_an_integer() -> None:
+    # True == 1 in Python, so a comparison of parsed records accepts either; the replay compares the retained text.
+    _same({"plane_equals_line": True} == {"plane_equals_line": 1}, True)
+    _same(gauss._serialized({"plane_equals_line": True}) == gauss._serialized({"plane_equals_line": 1}), False)
