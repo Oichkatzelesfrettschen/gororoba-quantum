@@ -9,8 +9,9 @@
 # absolute path of an existing directory; any other value, `ext::` command URLs
 # included, ends the run with status 2, and every git command runs with
 # protocol.ext.allow=never.
-# DEST is accepted in exactly three states: a path that does not exist, an
-# empty directory, or a repository this script created, which passes all of:
+# DEST is never a symbolic link (a dangling one included; status 2 before any
+# write) and is accepted in exactly three states: a path that does not exist,
+# an empty directory, or a repository this script created, which passes all of:
 # the file .git/gororoba-math-pin-fetch exists, `git for-each-ref refs/heads`
 # prints nothing (the script only detaches), and remote.origin.url equals the
 # validated URL. The script resets and cleans DEST, so any other DEST ends the
@@ -47,6 +48,10 @@ esac
 }
 dest=$1
 shift
+[ ! -L "$dest" ] || {
+  echo "fetch_gororoba_math: $dest is a symbolic link" >&2
+  exit 2
+}
 
 git_safe() {
   git -c protocol.ext.allow=never "$@"

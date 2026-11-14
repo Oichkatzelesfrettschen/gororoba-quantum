@@ -122,3 +122,17 @@ def test_a_non_empty_directory_that_is_no_repository_is_refused(world: tuple[Pat
     (destination / "file.txt").write_text("keep", encoding="utf-8")
     if fetch(script, str(source), destination).returncode != 2 or not (destination / "file.txt").exists():
         raise AssertionError("a non-empty directory was used")
+
+
+def test_a_destination_that_is_a_symbolic_link_is_refused_before_any_write(
+    world: tuple[Path, Path], tmp_path: Path
+) -> None:
+    script, source = world
+    real = tmp_path / "real"
+    for target in (tmp_path / "absent", real):
+        real.mkdir(exist_ok=True)
+        link = tmp_path / f"link-{target.name}"
+        link.symlink_to(target)
+        result = fetch(script, str(source), link)
+        if result.returncode != 2 or "symbolic link" not in result.stderr or any(real.iterdir()):
+            raise AssertionError((target.name, result.returncode, result.stderr))
