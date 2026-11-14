@@ -56,10 +56,25 @@ LEDGER_ROW = re.compile(r"([0-9a-f]{64}) [ *]proofs/([A-Za-z0-9_]+\.v)")
 STALE_MANIFESTS = frozenset({"docs/evidence/cd-sign-python-translation/source_hashes.sha256"})
 REGISTRY = "docs/state/research_state.json"
 HEX40 = re.compile(r"[0-9a-f]{40}")
+REFERENCE_PATTERN = re.compile(re.escape(REFERENCE_PREFIX) + r"[A-Za-z0-9_]+\.v")
 
 
 class MathSourcesError(RuntimeError):
     """The gororoba-math sources are unresolved, off the pin, or differ from the retained digests."""
+
+
+def validated_url(value: str) -> str:
+    """A clone URL that git may receive: an ``https://`` URL or the absolute path of an existing directory.
+
+    Any other transport (``ext::`` command URLs, ``file:``, ``ssh:``, a relative path) and any value with ``::`` or
+    whitespace raises MathSourcesError, since git runs the command of an ``ext::`` URL."""
+    if "::" in value or any(character.isspace() or ord(character) < 32 for character in value):
+        raise MathSourcesError(f"clone URL {value!r} holds '::' or whitespace")
+    if value.startswith("https://") and len(value) > len("https://"):
+        return value
+    if value.startswith("/") and Path(value).is_dir():
+        return value
+    raise MathSourcesError(f"clone URL {value!r} is neither an https:// URL nor an absolute directory")
 
 
 def read_pin(root: Path = ROOT) -> str:
@@ -98,14 +113,17 @@ def moved_names(math: Path) -> list[str]:
     return names
 
 
-def resolve_reference(reference: str, math: Path) -> Path:
-    """The file of the checkout that a ``gororoba-math:rocq/quantum/NAME.v`` reference names."""
-    if not reference.startswith(REFERENCE_PREFIX):
+def resolve_reference(reference: str, math: Path, root: Path = ROOT) -> Path:
+    """The verified file of the checkout that a ``gororoba-math:rocq/quantum/NAME.v`` reference names.
+
+    The file passes verified_source, so no caller receives a checkout path whose bytes the retained digests have not
+    confirmed."""
+    if REFERENCE_PATTERN.fullmatch(reference) is None:
         raise MathSourcesError(f"{reference} is no {REFERENCE_PREFIX}NAME.v reference")
     name = reference[len(REFERENCE_PREFIX) :]
-    if "/" in name or name not in moved_names(math):
+    if name not in moved_names(math):
         raise MathSourcesError(f"{reference} names no source of the {PROJECT_FILE} of the checkout")
-    return math / SUBDIRECTORY / name
+    return verified_source(name, math, root)
 
 
 def reference_for(name: str) -> str:
@@ -124,8 +142,22 @@ def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+_RECORDED_CACHE: dict[tuple[str, tuple[tuple[str, int, int], ...]], dict[str, str]] = {}
+
+
 def recorded_digests(root: Path = ROOT) -> dict[str, str]:
-    """The sha256 that the retained records hold for each source name; two different digests raise."""
+    """The sha256 that the retained records hold for each source name; two different digests raise.
+
+    The result is cached per root and per (path, mtime, size) of the ledgers and the registry it reads."""
+    files = [*sorted((root / "docs/evidence").glob("*/*.sha256")), root / REGISTRY]
+    signature = tuple((str(path), path.stat().st_mtime_ns, path.stat().st_size) for path in files)
+    key = (str(root), signature)
+    if key not in _RECORDED_CACHE:
+        _RECORDED_CACHE[key] = _read_recorded_digests(root)
+    return _RECORDED_CACHE[key]
+
+
+def _read_recorded_digests(root: Path) -> dict[str, str]:
     found: dict[str, dict[str, list[str]]] = {}
 
     def note(name: str, digest: str, origin: str) -> None:
@@ -156,20 +188,30 @@ def recorded_digests(root: Path = ROOT) -> dict[str, str]:
     return {name: next(iter(digests)) for name, digests in found.items()}
 
 
-def verified_sources(math: Path, root: Path = ROOT, names: list[str] | None = None) -> dict[str, Path]:
-    """Each moved source (or the listed ones) mapped to its file, after its sha256 equals the recorded digest."""
+def verified_source(name: str, math: Path, root: Path = ROOT) -> Path:
+    """The file of source ``name`` in the checkout, after four checks: the name is a plain ``NAME.v``, the file is a
+    regular file that is no symbolic link and resolves inside the checkout, a retained record holds a digest of it,
+    and its sha256 equals that digest."""
+    if re.fullmatch(r"[A-Za-z0-9_]+\.v", name) is None:
+        raise MathSourcesError(f"{name} is no source file name")
+    path = math / SUBDIRECTORY / name
+    if path.is_symlink():
+        raise MathSourcesError(f"{name} is a symbolic link in the checkout")
+    if not path.is_file():
+        raise MathSourcesError(f"{path} is missing")
+    if not path.resolve().is_relative_to(math.resolve()):
+        raise MathSourcesError(f"{name} resolves outside the checkout")
     recorded = recorded_digests(root)
-    sources: dict[str, Path] = {}
-    for name in names if names is not None else moved_names(math):
-        path = math / SUBDIRECTORY / name
-        if name not in recorded:
-            raise MathSourcesError(f"no retained record holds a digest of {name}")
-        if not path.is_file():
-            raise MathSourcesError(f"{path} is missing")
-        if sha256_file(path) != recorded[name]:
-            raise MathSourcesError(f"{name} differs from the retained digest {recorded[name][:12]}")
-        sources[name] = path
-    return sources
+    if name not in recorded:
+        raise MathSourcesError(f"no retained record holds a digest of {name}")
+    if sha256_file(path) != recorded[name]:
+        raise MathSourcesError(f"{name} differs from the retained digest {recorded[name][:12]}")
+    return path
+
+
+def verified_sources(math: Path, root: Path = ROOT, names: list[str] | None = None) -> dict[str, Path]:
+    """Each moved source (or the listed ones) mapped to its file through verified_source."""
+    return {name: verified_source(name, math, root) for name in (names if names is not None else moved_names(math))}
 
 
 def shadow_root(destination: Path, math: Path, root: Path = ROOT, bundle: str | None = None) -> Path:

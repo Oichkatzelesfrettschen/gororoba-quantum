@@ -94,8 +94,12 @@ def local_path(root: Path, reference: str) -> Path:
     gororoba-math checkout that $GOROROBA_MATH names at the pin (gororoba_quantum/math_sources.py)."""
     reference = math_sources.relocated_reference(reference, root) or reference
     if reference.startswith(math_sources.REFERENCE_PREFIX):
+        require(
+            math_sources.REFERENCE_PATTERN.fullmatch(reference) is not None,
+            f"malformed gororoba-math reference: {reference}",
+        )
         try:
-            return math_sources.resolve_reference(reference, math_sources.checkout(os.environ, root))
+            return math_sources.resolve_reference(reference, math_sources.checkout(os.environ, root), root)
         except math_sources.MathSourcesError as error:
             raise ValueError(str(error)) from error
     path = PurePosixPath(reference.split("#", 1)[0])
@@ -113,7 +117,9 @@ def deferred(root: Path, value: str) -> bool:
     ``requires: ["gororoba-math"]`` (core-270, core-plan-tracker) skip without the checkout and never report a pass.
     """
     named = math_sources.relocated_reference(value, root) or value
-    return named.startswith(math_sources.REFERENCE_PREFIX) and not os.environ.get(math_sources.ENVIRONMENT_VARIABLE)
+    return math_sources.REFERENCE_PATTERN.fullmatch(named) is not None and not os.environ.get(
+        math_sources.ENVIRONMENT_VARIABLE
+    )
 
 
 def reference(root: Path, value: str) -> None:

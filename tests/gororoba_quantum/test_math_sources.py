@@ -143,12 +143,15 @@ def test_a_source_without_a_recorded_digest_fails(fixture: tuple[Path, Path]) ->
 
 
 def test_reference_names_a_source_of_the_project_file(fixture: tuple[Path, Path]) -> None:
-    _root, math = fixture
-    if math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math) != math / "rocq/quantum/CdOne.v":
+    root, math = fixture
+    if (
+        math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math, root)
+        != math / "rocq/quantum/CdOne.v"
+    ):
         raise AssertionError("reference resolves to the checkout file")
     for bad in ("proofs/CdOne.v", "gororoba-math:rocq/quantum/Missing.v", "gororoba-math:rocq/quantum/a/CdOne.v"):
         with pytest.raises(math_sources.MathSourcesError):
-            math_sources.resolve_reference(bad, math)
+            math_sources.resolve_reference(bad, math, root)
 
 
 def test_shadow_root_holds_moved_and_kept_sources(fixture: tuple[Path, Path], tmp_path: Path) -> None:
@@ -203,3 +206,120 @@ def test_plan_references_into_gororoba_math_defer_while_the_variable_is_unset(
     monkeypatch.setenv("GOROROBA_MATH", str(math))
     if plan_records.deferred(root, new) or plan_records.local_path(root, legacy) != math / "rocq/quantum/CdOne.v":
         raise AssertionError("a set GOROROBA_MATH resolves both spellings to the checkout")
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["ext::sh -c true", "file:///tmp/x", "http://example.invalid/x", "relative/path", "", "https://a::b", "/tmp /x"],
+)
+def test_validated_url_refuses_every_value_but_https_or_an_existing_absolute_directory(
+    value: str, tmp_path: Path
+) -> None:
+    with pytest.raises(math_sources.MathSourcesError, match="clone URL"):
+        math_sources.validated_url(value)
+    if (
+        math_sources.validated_url("https://example.invalid/gororoba-math.git")
+        != "https://example.invalid/gororoba-math.git"
+    ):
+        raise AssertionError("an https URL is accepted")
+    if math_sources.validated_url(str(tmp_path)) != str(tmp_path):
+        raise AssertionError("an existing absolute directory is accepted")
+    with pytest.raises(math_sources.MathSourcesError, match="clone URL"):
+        math_sources.validated_url(str(tmp_path / "absent"))
+
+
+def test_the_replay_driver_refuses_an_ext_clone_url(
+    fixture: tuple[Path, Path], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import rocq_kaggle_replay
+
+    banner = rocq_kaggle_replay.TOOLCHAIN.read_text(encoding="utf-8")
+    rocq = tmp_path / "rocq"
+    rocq.write_text(f"#!/bin/sh\ncat <<'EOF'\n{banner}EOF\n", encoding="utf-8")
+    rocq.chmod(0o755)
+    open_checkout = tmp_path / "open"
+    open_checkout.mkdir()
+    git(open_checkout, "init", "-q")
+    git(open_checkout, "commit", "-q", "--allow-empty", "-m", "x")
+    commit = git(open_checkout, "rev-parse", "HEAD")
+    monkeypatch.delenv("GOROROBA_MATH", raising=False)
+    monkeypatch.setenv("GOROROBA_MATH_URL", "ext::sh -c true")
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rocq_kaggle_replay.py",
+            "--rocq",
+            str(rocq),
+            "--gororoba-root",
+            str(open_checkout),
+            "--gororoba-commit",
+            commit,
+            "--only",
+            "cd-twisted-product",
+            "--out",
+            str(tmp_path / "out.json"),
+        ],
+    )
+    with pytest.raises(SystemExit, match="GOROROBA_MATH_URL"):
+        rocq_kaggle_replay.main()
+
+
+def test_a_source_that_is_a_symbolic_link_is_refused_even_with_the_right_bytes(
+    fixture: tuple[Path, Path], tmp_path: Path
+) -> None:
+    root, math = fixture
+    target = tmp_path / "outside.v"
+    target.write_bytes(SOURCES["CdOne.v"])
+    link = math / "rocq/quantum/CdOne.v"
+    link.unlink()
+    link.symlink_to(target)
+    for attempt in (
+        lambda: math_sources.verified_source("CdOne.v", math, root),
+        lambda: math_sources.verified_sources(math, root),
+        lambda: math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math, root),
+        lambda: math_sources.shadow_root(tmp_path / "shadow", math, root),
+    ):
+        with pytest.raises(math_sources.MathSourcesError, match="symbolic link"):
+            attempt()
+
+
+def test_a_source_directory_that_resolves_outside_the_checkout_is_refused(
+    fixture: tuple[Path, Path], tmp_path: Path
+) -> None:
+    root, math = fixture
+    outside = tmp_path / "elsewhere"
+    outside.mkdir()
+    for name, data in SOURCES.items():
+        (outside / name).write_bytes(data)
+    (outside / "_RocqProject").write_text((math / "rocq/quantum/_RocqProject").read_text(encoding="utf-8"))
+    for child in (math / "rocq/quantum").iterdir():
+        child.unlink()
+    (math / "rocq/quantum").rmdir()
+    (math / "rocq/quantum").symlink_to(outside)
+    with pytest.raises(math_sources.MathSourcesError, match="outside the checkout"):
+        math_sources.verified_source("CdOne.v", math, root)
+
+
+def test_resolve_reference_checks_the_retained_digest(fixture: tuple[Path, Path]) -> None:
+    root, math = fixture
+    (math / "rocq/quantum/CdOne.v").write_bytes(b"changed\n")
+    with pytest.raises(math_sources.MathSourcesError, match="differs from the retained digest"):
+        math_sources.resolve_reference("gororoba-math:rocq/quantum/CdOne.v", math, root)
+
+
+def test_a_malformed_reference_is_neither_deferred_nor_resolved(
+    fixture: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import plan_records
+
+    root, math = fixture
+    bad = "gororoba-math:rocq/quantum/../x.v"
+    for variable in (None, str(math)):
+        if variable is None:
+            monkeypatch.delenv("GOROROBA_MATH", raising=False)
+        else:
+            monkeypatch.setenv("GOROROBA_MATH", variable)
+        if plan_records.deferred(root, bad):
+            raise AssertionError("a reference outside the grammar was deferred")
+        with pytest.raises(ValueError, match="malformed gororoba-math reference"):
+            plan_records.reference(root, bad)

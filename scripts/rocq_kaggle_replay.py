@@ -10,7 +10,7 @@ open_gororoba, whose sources three replays hash, is cloned at the commit
 ``--gororoba-commit`` names. The Rocq sources of rocq/quantum come from the
 gororoba-math checkout that ``--gororoba-math-root`` (else $GOROROBA_MATH) names
 at the commit of ci/gororoba_math.pin; without either, the pin is cloned from
-GOROROBA_MATH_URL.
+GOROROBA_MATH_URL, an https:// URL or an absolute directory.
 
 The ci.yml job rocq-replay supplies the toolchain and the checkout itself:
 ``--rocq PATH`` skips the build and keeps the version equality,
@@ -79,7 +79,7 @@ OCAML = "ocaml-base-compiler.5.5.1"
 ROCQ_PACKAGES = ("rocq-runtime.9.3.0", "rocq-core.9.3.0", "rocq-stdlib.9.2.0")
 SYSTEM_PACKAGES = ("opam", "m4", "pkg-config", "libgmp-dev", "git", "make", "gcc", "unzip", "bubblewrap")
 GOROROBA_URL = "https://github.com/Oichkatzelesfrettschen/open_gororoba.git"
-GOROROBA_MATH_URL = os.environ.get("GOROROBA_MATH_URL", "https://github.com/Oichkatzelesfrettschen/gororoba-math.git")
+GOROROBA_MATH_DEFAULT_URL = "https://github.com/Oichkatzelesfrettschen/gororoba-math.git"
 SWITCH = "rocq-9.3"
 REPLAYS = ("formal_certificates", "c881_exhaustive", "stiefel_witness")
 SELECTABLE = (
@@ -236,7 +236,25 @@ def main() -> int:
     pin = math_sources.read_pin(ROOT)
     if not os.environ.get(math_sources.ENVIRONMENT_VARIABLE):
         math_clone = Path(tempfile.mkdtemp()) / "gororoba-math"
-        steps.append(run(["git", "clone", "-q", "--filter=blob:none", GOROROBA_MATH_URL, str(math_clone)]))
+        try:
+            url = math_sources.validated_url(os.environ.get("GOROROBA_MATH_URL", GOROROBA_MATH_DEFAULT_URL))
+        except math_sources.MathSourcesError as error:
+            raise SystemExit(f"GOROROBA_MATH_URL: {error}") from error
+        steps.append(
+            run(
+                [
+                    "git",
+                    "-c",
+                    "protocol.ext.allow=never",
+                    "clone",
+                    "-q",
+                    "--filter=blob:none",
+                    "--",
+                    url,
+                    str(math_clone),
+                ]
+            )
+        )
         steps.append(run(["git", "-C", str(math_clone), "checkout", "-q", pin]))
         if steps[-1]["returncode"]:
             raise SystemExit(f"gororoba-math checkout failed\n{steps[-1]['tail']}")

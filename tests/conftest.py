@@ -181,7 +181,7 @@ def math_source() -> Callable[[str], Path]:
             pytest.skip(f"{math_sources.ENVIRONMENT_VARIABLE} is unset")
         try:
             math = math_sources.checkout(os.environ, ROOT)
-            return math_sources.resolve_reference(math_sources.reference_for(name), math)
+            return math_sources.resolve_reference(math_sources.reference_for(name), math, ROOT)
         except math_sources.MathSourcesError as error:
             pytest.fail(str(error))
 
