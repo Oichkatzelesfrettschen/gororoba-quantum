@@ -771,7 +771,7 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
+      "cmd": "rc=0; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' --exclude '^docs/evidence/a5-char0-transfer/kaggle/' --exclude '^docs/evidence/hardware-residuals/tuna-quandela/' --exclude '^docs/evidence/walk-control-scaffolding/' --exclude '^docs/evidence/vacuum_endpoint_information/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/a5-char0-transfer/kaggle || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/hardware-residuals/tuna-quandela || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/walk-control-scaffolding || rc=1; MYPYPATH=docs/evidence/vacuum_endpoint_information \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/vacuum_endpoint_information || rc=1; exit $rc",
       "name": "sources-122",
       "seconds": 11.5
     },
@@ -3421,6 +3421,20 @@
       "cmd": "shellcheck docs/evidence/cd-tower-ring-base-change/replay_rocq.sh",
       "name": "sources-cd-tower-ring-base-change-replay-shellcheck",
       "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "shellcheck docs/evidence/cd-tower-kernel-certificates/replay_rocq.sh",
+      "name": "sources-cd-tower-kernel-certificates-replay-shellcheck",
+      "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py --check",
+      "name": "sources-cd-tower-kernel-certificates-check",
+      "seconds": 1.2
     },
     {
       "suite": "sources",

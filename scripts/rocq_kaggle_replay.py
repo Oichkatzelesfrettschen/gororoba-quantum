@@ -22,7 +22,7 @@ TargetFlipN21, cd-imaginary-sum-conference, cd-tower-basis-sign, cd-sign-row-anf
 cd-associator-anf, cd-associator-census, cd-sign-python-semantics,
 cd-associator-point-indicators, cd-sign-python-translation, cd-annihilator-symmetry,
 cd-annihilator-symmetry-real, cd-tower-domain, cd-half-fold, cd-twisted-product, cd-tower-ring,
-cd-tower-ring-base-change; the default is the Kaggle set).
+cd-tower-ring-base-change, cd-tower-kernel-certificates; the default is the Kaggle set).
 
 Independent replays run through parallel.ordered_map with the detected CPU
 allowance capped by GOROROBA_WORKERS. Each replay uses separate temporary
@@ -37,8 +37,8 @@ gororoba-math, each checked against the sha256 the retained records hold:
   cd-sign-python-semantics/replay_rocq.sh, cd-associator-point-indicators/replay_rocq.sh,
   cd-sign-python-translation/replay_rocq.sh, cd-annihilator-symmetry/replay_rocq.sh,
   cd-annihilator-symmetry-real/replay_rocq.sh, cd-tower-domain/replay_rocq.sh,
-  cd-half-fold/replay_rocq.sh, cd-twisted-product/replay_rocq.sh, cd-tower-ring/replay_rocq.sh and
-  cd-tower-ring-base-change/replay_rocq.sh
+  cd-half-fold/replay_rocq.sh, cd-twisted-product/replay_rocq.sh, cd-tower-ring/replay_rocq.sh,
+  cd-tower-ring-base-change/replay_rocq.sh and cd-tower-kernel-certificates/replay_rocq.sh
   (repository proofs and receipts),
 - c881_exhaustive/replay_rocq.sh and stiefel_witness/replay_rocq.sh
   (GOROROBA_ROOT set to the clone),
@@ -101,6 +101,7 @@ SELECTABLE = (
     "cd-twisted-product",
     "cd-tower-ring",
     "cd-tower-ring-base-change",
+    "cd-tower-kernel-certificates",
 )
 
 
