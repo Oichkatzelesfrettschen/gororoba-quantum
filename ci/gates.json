@@ -5512,6 +5512,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py --check",
+      "name": "core-a5-e8-relation-ideal-orders",
+      "seconds": 0.5,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-relation-ideal-orders-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/g2_derivation_tables.py --check",
       "name": "core-a5-g2-derivation-tables",
       "seconds": 1.0,

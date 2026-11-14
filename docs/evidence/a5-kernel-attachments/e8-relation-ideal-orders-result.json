@@ -1,0 +1,484 @@
+{
+ "schema": "gororoba.a5.e8-relation-ideal-orders/1",
+ "field": "Q(i)",
+ "inputs": {
+  "e8_relation_ideal_orders.py": "76aa22e3c6a0d61f38a44ec2d8641b7caa4c218f0febd68c678873482efe5b58",
+  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
+ },
+ "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
+ "cells": [
+  {
+   "orbit": "N-",
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "parametrization": [
+    "pa",
+    "pz",
+    "pl*pa",
+    "pl*pm",
+    "pl*(2*pz+(-i)*(pm^2)/8)",
+    "pb",
+    "(i)*pl^2",
+    "pl^2*(-pz+(i)*(pm^2)/8)",
+    "-pl*pb"
+   ],
+   "ideal": [
+    5,
+    11,
+    148
+   ],
+   "minimal_primes": [
+    [
+     4,
+     4
+    ],
+    [
+     5,
+     11
+    ]
+   ],
+   "radical_linear_forms": 5,
+   "linear_forms": [
+    "2*y(12)+(i)*y(13)+(i)*y(17)",
+    "y(7)",
+    "y(6)",
+    "y(5)",
+    "y(3)"
+   ],
+   "annihilator": [
+    4,
+    2
+   ],
+   "annihilator_is_prime": true,
+   "germ_nonzero_on_parametrization": 0,
+   "order_functions": {
+    "prime5": {
+     "weights": [
+      1,
+      1,
+      2,
+      1,
+      2
+     ],
+     "generator_orders": [
+      5,
+      5,
+      7,
+      5,
+      7,
+      7,
+      7,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+     ],
+     "ideal_order": 5,
+     "maximal_ideal_order": 1,
+     "nilpotent_orders": [
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "target": [
+      5,
+      11
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 15,
+     "initial_jacobian_rank": 5
+    },
+    "prime4": {
+     "weights": [
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      3,
+      3,
+      3,
+      4,
+      3,
+      2,
+      2,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      3,
+      2,
+      2,
+      4,
+      4
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "nilpotent_orders": [
+      3,
+      4,
+      3,
+      3,
+      4
+     ],
+     "target": [
+      4,
+      4
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 5,
+     "initial_jacobian_rank": 4
+    },
+    "embedded": {
+     "weights": [
+      2,
+      2,
+      1,
+      2,
+      1
+     ],
+     "generator_orders": [
+      7,
+      7,
+      5,
+      5,
+      5,
+      5,
+      5,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      7,
+      7
+     ],
+     "ideal_order": 4,
+     "maximal_ideal_order": 2,
+     "nilpotent_orders": [
+      5,
+      5,
+      5,
+      5,
+      5
+     ],
+     "target": [
+      4,
+      2
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 4,
+     "initial_jacobian_rank": 4
+    }
+   },
+   "controls": {
+    "equal_weights": {
+     "weights": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      4,
+      4
+     ],
+     "ideal_order": 3,
+     "maximal_ideal_order": 1,
+     "nilpotent_orders": [
+      4,
+      4,
+      4,
+      4,
+      4
+     ]
+    },
+    "other_basepoint_parametrization": {
+     "germ_nonzero": 12
+    }
+   }
+  },
+  {
+   "orbit": "N+",
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "parametrization": [
+    "pa",
+    "pz",
+    "pl*pa",
+    "pl*(2*pz+(i)*(pm^2)/8)",
+    "pl*pm",
+    "pb",
+    "pl^2*(-pz+(-i)*(pm^2)/8)",
+    "(-i)*pl^2",
+    "-pl*pb"
+   ],
+   "ideal": [
+    5,
+    11,
+    148
+   ],
+   "minimal_primes": [
+    [
+     4,
+     4
+    ],
+    [
+     5,
+     11
+    ]
+   ],
+   "radical_linear_forms": 5,
+   "linear_forms": [
+    "2*y(12)+(-i)*y(13)+(-i)*y(17)",
+    "y(7)",
+    "y(6)",
+    "y(5)",
+    "y(3)"
+   ],
+   "annihilator": [
+    4,
+    2
+   ],
+   "annihilator_is_prime": true,
+   "germ_nonzero_on_parametrization": 0,
+   "order_functions": {
+    "prime5": {
+     "weights": [
+      1,
+      1,
+      2,
+      1,
+      2
+     ],
+     "generator_orders": [
+      5,
+      5,
+      7,
+      5,
+      7,
+      7,
+      7,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+     ],
+     "ideal_order": 5,
+     "maximal_ideal_order": 1,
+     "nilpotent_orders": [
+      7,
+      7,
+      7,
+      7,
+      7
+     ],
+     "target": [
+      5,
+      11
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 15,
+     "initial_jacobian_rank": 5
+    },
+    "prime4": {
+     "weights": [
+      1,
+      1,
+      1,
+      1,
+      0
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      3,
+      3,
+      3,
+      4,
+      3,
+      2,
+      2,
+      2,
+      3,
+      3,
+      2,
+      2,
+      2,
+      3,
+      2,
+      2,
+      4,
+      4
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "nilpotent_orders": [
+      3,
+      4,
+      3,
+      3,
+      4
+     ],
+     "target": [
+      4,
+      4
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 5,
+     "initial_jacobian_rank": 4
+    },
+    "embedded": {
+     "weights": [
+      2,
+      2,
+      1,
+      2,
+      1
+     ],
+     "generator_orders": [
+      7,
+      7,
+      5,
+      5,
+      5,
+      5,
+      5,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      7,
+      7
+     ],
+     "ideal_order": 4,
+     "maximal_ideal_order": 2,
+     "nilpotent_orders": [
+      5,
+      5,
+      5,
+      5,
+      5
+     ],
+     "target": [
+      4,
+      2
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 4,
+     "initial_jacobian_rank": 4
+    }
+   },
+   "controls": {
+    "equal_weights": {
+     "weights": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      4,
+      4
+     ],
+     "ideal_order": 3,
+     "maximal_ideal_order": 1,
+     "nilpotent_orders": [
+      4,
+      4,
+      4,
+      4,
+      4
+     ]
+    },
+    "other_basepoint_parametrization": {
+     "germ_nonzero": 12
+    }
+   }
+  }
+ ],
+ "pass": true
+}

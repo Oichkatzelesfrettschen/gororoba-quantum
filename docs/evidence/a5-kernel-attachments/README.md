@@ -932,7 +932,36 @@ torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every de
 above degree 7 (`A5-009`) is that one condition. A sufficient test needs no standard basis of the Rees ideal: a
 family of arcs in the slice germ whose limit points are dense in `V(A)` and along which one of the five nilpotent
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
-slice coordinates). The retained arc families fill the two prime components; a family on `V(A)` is not built.
+slice coordinates). The retained arc families fill the two prime components; `A5-446` runs the test on `V(A)` with an order function.
+
+**Computed (`A5-446`):** [`e8_relation_ideal_orders.py`](e8_relation_ideal_orders.py) evaluates three weighted
+order functions on the `E8bar` germ over `Q(i)` at both basepoints
+([record](e8-relation-ideal-orders-result.json)). A polynomial map `phi` from the affine space of five parameters
+`(pa, pb, pl, pz, pm)` to the slice satisfies the germ ideal and sends the origin to the origin; at `N-` it reads
+`s = (pa, pz, pl pa, pl pm, pl (2 pz - i pm^2 / 8), pb, i pl^2, pl^2 (-pz + i pm^2 / 8), -pl pb)`, and at `N+` it is
+the complex conjugate with `s4, s5` exchanged and `s7, s8` exchanged. A weight vector `w` on the parameters gives
+the order `v_w(x)`, the lowest weight of a term of `phi^* x`. With `nu` the least order of the 21 generators and `e`
+the least order of the nine slice coordinates, the initial forms `V_a` (the weight-`nu` part of `phi^* G_a`) define
+the limit ideal `Q_w = ker(y_a -> V_a)`.
+
+| weights on `(pa, pb, pl, pz, pm)` | `nu` | `e` | Jacobian rank of `V` | `Q_w` | orders of the five nilpotent forms |
+|---|---|---|---|---|---|
+| `(1, 1, 2, 1, 2)` | 5 | 1 | 5 | the minimal prime of dimension 5, degree 11 | 7, 7, 7, 7, 7 |
+| `(1, 1, 1, 1, 0)` | 2 | 1 | 4 | the minimal prime of dimension 4, degree 4 | 3, 4, 3, 3, 4 |
+| `(2, 2, 1, 2, 1)` | 4 | 2 | 4 | the embedded prime `A` | 5, 5, 5, 5, 5 |
+
+Each identification of `Q_w` rests on two computed facts: the generators of the prime vanish on `V`, and the
+Jacobian matrix of `V` has the rank of the prime's dimension at the point `(2, 3, 5, 7, 11)`. The controls: equal
+weights give `e = 1` and nilpotent orders `4 = nu + e`, the map of the other basepoint leaves 12 generators of the
+germ ideal nonzero, and a second associated prime stays nonzero on each `V`. **Inferred:** `v_w` is additive on
+products and zero on units, and every element of `m I^d` has order at least `d nu + e`. A form of `L` therefore
+vanishes on `V`, so `L` lies in every `Q_w`, hence in the radical `R` of `K`. A form `c` with `c y6` in `L` has
+order at least `deg(c) nu + 1` under the third weight vector, so it vanishes on `V` and lies in `A`. A nonzero
+class of `L / K` and the class of `y6` in the rank-1 torsion-free module `R / K` (`A5-443`) would satisfy a
+relation with both coefficients nonzero in `S / A`, which gives such a `c` outside `A`. Hence `L = K`: the `E8bar`
+fiber cone on the weight slice is `S / K` in every degree, with dimension 5, multiplicity 11 and the nilradical
+of `A5-443`. The statement on the header slices in characteristic `p` (`A5-009`) stays with its own row, since the
+passage between the slices rests on the premise of `A5-423`.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-435`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
