@@ -277,7 +277,8 @@ time and collects it before the next, waits out the pause that `qi_platform.py s
 refusal without a remainder, failed collection or failed sanity check. `QI_COLLECT_TIMEOUT` sets the seconds one
 collection waits (3,600 by default); a batch still queued then stops the script and stays queued, and the same
 command with the same `STAMP` resumes the series by collecting that batch without a second submit: the block
-prints its stamp, and a resume exports that value as `STAMP` before the block runs again. The per-batch
+prints its stamp, and a resume exports that value as `STAMP` before the block runs again. The script refuses a
+series that the runs directory already holds under another stamp. The per-batch
 sanity check binds the collected batch to this case; the readout admission of a data batch needs the bracket after
 it and is applied by `--analyze` on the complete series, so the series runs to its end and a batch that fails
 admission leaves the fit.

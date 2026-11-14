@@ -15,6 +15,10 @@
 # remote write, so only qi_platform.py reconcile can tell whether the batch reached the service. A run directory with
 # none of these files saw only refused submits, which write nothing, and is submitted.
 #
+# A run directory of the same series under another stamp stops the script before any submit, so a lost or changed
+# STAMP cannot submit the series a second time. QI_REPEAT_SERIES set to the series directory's name arms a repeat of
+# the series under a new stamp, which needs its own approval.
+#
 # QI_PYTHON names the Quantum Inspire interpreter, QI_PLATFORM the runner (default scripts/qi_platform.py),
 # SANITY_COMMAND the per-batch check that takes the run directory last (default: the case generator's --sanity under
 # PYTHON), QI_COLLECT_TIMEOUT the seconds one collection waits for its batch (default 3600; a batch still queued at
@@ -45,6 +49,15 @@ esac
 name=$(basename "$series")
 
 mkdir -p "$runs"
+for other in "$runs"/*-"$name"-batch-*; do
+	[ -e "$other" ] || continue
+	held=$(basename "$other")
+	held=${held%-"$name"-batch-*}
+	if [ "$held" != "$stamp" ] && [ "${QI_REPEAT_SERIES:-}" != "$name" ]; then
+		echo "$other holds this series under stamp $held; resume with STAMP=$held, or arm a repeat with QI_REPEAT_SERIES=$name" >&2
+		exit 1
+	fi
+done
 for batch_dir in "$series"/batch-*; do
 	batch=$(basename "$batch_dir")
 	run="$runs/$stamp-$name-$batch"

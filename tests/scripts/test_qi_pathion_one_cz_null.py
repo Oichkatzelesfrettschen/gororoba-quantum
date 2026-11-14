@@ -662,6 +662,21 @@ def test_the_submission_sequence_submits_a_run_directory_that_saw_only_refusals(
     _expect([ln.split()[0] for ln in calls.splitlines()] == ["submit", "collect", "submit", "collect"], calls)
 
 
+def test_the_submission_sequence_refuses_a_series_held_under_another_stamp(tmp_path: Path) -> None:
+    def held_elsewhere(name: str, extra: dict[str, str] | None) -> tuple[int, str, str]:
+        earlier = tmp_path / name / "runs" / "EARLIER-series-batch-00"
+        earlier.mkdir(parents=True)
+        (earlier / "results.json").write_text("{}\n", encoding="utf-8")
+        return _submit(tmp_path / name, [], extra=extra)
+
+    code, calls, err = held_elsewhere("unarmed", None)
+    _expect(code == 1 and calls == "" and "STAMP=EARLIER" in err, f"{code} {calls} {err}")
+    code, calls, err = held_elsewhere("wrong", {"QI_REPEAT_SERIES": "other"})
+    _expect(code == 1 and calls == "", f"a token naming another series armed the repeat: {code} {calls} {err}")
+    code, calls, err = held_elsewhere("armed", {"QI_REPEAT_SERIES": "series"})
+    _expect(code == 0 and calls.count("submit") == 2, f"{code} {calls} {err}")
+
+
 def test_the_submission_sequence_refuses_a_collection_timeout_that_is_not_whole_seconds(tmp_path: Path) -> None:
     code, calls, err = _submit(tmp_path, [], extra={"QI_COLLECT_TIMEOUT": "1h"})
     _expect(code == 2 and calls == "", f"{code} {calls} {err}")
