@@ -32,6 +32,7 @@ from qiskit.transpiler.passes.synthesis import HLSConfig
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
+import math_sources
 import qrng_seeds
 from order_finding import factor_order_finding, order_finding_plan
 
@@ -52,11 +53,12 @@ SOURCE_PATHS = (
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/target_flip.py",
     "gororoba_quantum/target_flip_certificate.py",
-    "proofs/TargetFlipN21.v",
     "scripts/python_call_graph.py",
     "pyproject.toml",
     "requirements.txt",
 )
+# Sources of gororoba-math (rocq/quantum) whose digests the record binds, keyed by their reference.
+MATH_SOURCE_NAMES = ("TargetFlipN21.v",)
 
 
 @dataclass(frozen=True)
@@ -367,6 +369,9 @@ def _git_output(*arguments: str) -> str:
 
 def _source_record() -> dict[str, Any]:
     source_files = {path: _sha256(REPOSITORY_ROOT / path) for path in SOURCE_PATHS}
+    math = math_sources.checkout(os.environ, REPOSITORY_ROOT)
+    for name, path in math_sources.verified_sources(math, REPOSITORY_ROOT, list(MATH_SOURCE_NAMES)).items():
+        source_files[math_sources.reference_for(name)] = _sha256(path)
     source_diff = subprocess.run(
         ["git", "-c", "core.fsmonitor=false", "diff", "--quiet", "HEAD", "--", *SOURCE_PATHS],
         cwd=REPOSITORY_ROOT,

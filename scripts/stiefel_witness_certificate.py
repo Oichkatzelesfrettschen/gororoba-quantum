@@ -7,7 +7,7 @@ left multiplication L_v[i][j] = cd_sign(64, i xor j, j) v[i xor j] has an exact
 inverse; with d the least common denominator of that inverse and N = d L_v^-1,
 the integer identity N L_v = d I holds.
 
-proofs/StiefelWitnessInvertible.v carries v, d and N as data, recomputes L_v
+StiefelWitnessInvertible.v (gororoba-math, rocq/quantum) carries v, d and N as data, recomputes L_v
 from v with gororoba-open's cd_sign_fuel (verified/C1474_FuelAdequacy.v, copied
 from a pinned GOROROBA_ROOT by docs/evidence/stiefel_witness/replay_rocq.sh),
 and checks N L_v = d I and the Stiefel conditions by vm_compute. N determines
@@ -15,7 +15,8 @@ L_v as d N^-1, so the identity can only pass when cd_sign_fuel reproduces
 cd_core on this matrix. Generic sum lemmas then turn the identity into a
 trivial integer kernel.
 
---write regenerates the proof file, --check compares it with a fresh render
+--write regenerates the proof file in the gororoba-math checkout that $GOROROBA_MATH names (no pin
+needed), --check compares the checkout's file at the commit of ci/gororoba_math.pin with a fresh render
 and re-verifies the identity in Python, and --package-cross-check recomputes
 L_v with python-hypercomplex (cayley_dickson_algebra(6, Fraction)) and writes
 the comparison to docs/evidence/stiefel_witness/package_cross_check.json.
@@ -33,10 +34,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+import math_sources  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 
 WITNESS = ROOT / "docs/evidence/moreno_stiefel/nullity.json"
-PROOF = ROOT / "proofs/StiefelWitnessInvertible.v"
+PROOF_NAME = "StiefelWitnessInvertible.v"
 CROSS_CHECK = ROOT / "docs/evidence/stiefel_witness/package_cross_check.json"
 DIM = 64
 HALF = 32
@@ -312,11 +314,12 @@ def main() -> int:
             CROSS_CHECK.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
             return 0
         text = certificate_text()
+        proof = math_sources.checkout(verify_pin=not arguments.write) / math_sources.SUBDIRECTORY / PROOF_NAME
         if arguments.write:
-            PROOF.write_text(text)
+            proof.write_text(text)
             return 0
-        require(PROOF.read_text() == text, f"{PROOF.relative_to(ROOT)} differs from a fresh render; run --write")
-    except (ValueError, KeyError, OSError) as error:
+        require(proof.read_text() == text, f"{PROOF_NAME} of gororoba-math differs from a fresh render; run --write")
+    except (ValueError, KeyError, OSError, math_sources.MathSourcesError) as error:
         print(f"stiefel witness certificate: {error}", file=sys.stderr)
         return 1
     print("stiefel witness certificate: N L_v = d I, Stiefel conditions and the Rocq source agree with cd_core")
