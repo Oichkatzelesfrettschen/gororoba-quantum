@@ -78,6 +78,17 @@ Measured on the build host before the push, four series per regime under amplitu
 of -2.1 and -2.3 standard errors, whose pooled value passes 3; the bridge rule refuses 7 of 2,000 walk series
 drawn with equal `Rx(pi/2)` and `X90` laws (0.35 percent).
 
+## Record of the earlier decision
+
+`results/kaggle/2026-11-13T222402Z-gororoba-null-rotation-scan-noise` holds the same simulation of the earlier
+decision (the two-contraction fit and the earlier scan set, 40 series per scenario, two regimes, record schema
+`qi-pathion-null-rotation-scan-noise-v1`). Its Aer cross-check agrees on 150 laws within 2.7e-16 and its ten
+qxelarator circuits lie within 2.81 standard errors of their ideal laws. The earlier decision names a wrong class
+in 14 of its family, truth and regime cells: under amplitude damping per CZ a y rotation reads wrongly in 17 of 40
+`stable` series and 9 of 40 walk series, a z rotation in 9 and 5, and the selector flip in 13 and 6; the
+remaining cells hold 1 to 6 wrong series of 40. That record is the shot-level ground for the two repairs above,
+and the run below repeats it on the repaired decision.
+
 ## What the simulation cannot answer
 
 The channel Tuna-17 applies during b0 is unpublished, and the retained b0 histograms deviate from every modeled
@@ -91,13 +102,15 @@ Measured on the build host: the strength-grid tables of the five families take 9
 start of the run; one series takes about 20 s of one core (36 series and 6 expected-value labels in 357 s on four
 cores). 85 scenarios at 12 series and three regimes give about 61,000 core-seconds, 4.7 hours on four cores at the
 build host's rate with the tables; the 11-hour limit leaves a factor of 2.3 for slower cores. The damping families
-run first. The entry rewrites its record after every scenario. GPU quota used: at most 11 of the weekly hours.
+run first. The kernel carries its own slug: a push to the earlier run's slug first lists that slug's versions
+through a signed-in browser session (`require_no_live_version` in `scripts/kaggle_run.py`), and a new slug holds
+no version. The entry rewrites its record after every scenario. GPU quota used: at most 11 of the weekly hours.
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
 STOPPED=results/quantum_inspire/runs/2026-11-06T221626Z-pathion_coset_block_tuna_17
 "$PYTHON" scripts/kaggle_run.py push scripts/qi_pathion_null_rotation_scan_noise.py \
-	--slug gororoba-null-rotation-scan-noise --machine NvidiaTeslaT4 --timeout 39600 \
+	--slug gororoba-null-rotation-scan-gate-noise-fit --machine NvidiaTeslaT4 --timeout 39600 \
 	--with qx-emulator --with exact-arithmetic \
 	--include results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json \
 	--include results/quantum_inspire/cases/pathion_coset_coin_tuna_17/batch-02 \

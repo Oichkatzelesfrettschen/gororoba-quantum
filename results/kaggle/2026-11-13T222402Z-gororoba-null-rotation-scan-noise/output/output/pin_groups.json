@@ -1,0 +1,9 @@
+{
+ "exact-arithmetic": {
+  "pyadic": "0.3.0",
+  "python-flint": "0.9.0"
+ },
+ "qx-emulator": {
+  "qxelarator": "0.10.0"
+ }
+}
