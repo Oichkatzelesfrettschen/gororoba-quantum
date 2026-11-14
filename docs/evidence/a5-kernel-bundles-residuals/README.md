@@ -258,11 +258,129 @@ dimension 15 in the 26-dimensional `Gr(2, 15)`. The projection is not injective:
 kernel plane (`A5-431`) have different three-planes, which span a 4-space. On `V(Q) n V(G)` the three-plane map has
 fibers of dimension 2 and the image has dimension 12.
 
+#### The fiber read from the kernel plane
+
+**Proved** (`A5-435`): the signs of the lower block satisfy `SIGNS[r][r ^ c] = -SIGNS[r][c]`, so
+`M(z) p = -M(p) z`. For a basis `p1, p2` of the kernel plane `P = ker A(z, w)` the `z`-part of the fiber is
+
+`L_z = {z in ker M(p1) n ker M(p2): z orthogonal to the conjugate kernel plane P'}`,
+
+the `w`-part is its mirror image, and `dim L = 2 dim L_z` at a real point. Every `z` of `L_z` has `P` inside
+`ker M(z)`. `kernel_form` computes modulo 32029 the nullity of `M(p)` at a general `p` of `P` (3 at a general
+point; a higher value makes `p` a higher zero divisor), the dimension of `ker M(p1) n ker M(p2)` before and after
+the cut by `P'`, and the nullities of `M(k)` on a net of 342 vectors `k` of the three-plane `ker M(z)`, which
+lie on 145 points of its projective plane. For each nullity the record holds the count of net vectors and
+points, the dimension of their span (2 for points of one projective line) and that dimension with `P` added
+(unchanged when the line is `P`).
+
+**Computed, modulo 32029,** at the 3,687 nullity-4 grid points:
+
+| Stratum | `dim L` | Nullity on `P` | `ker M(p1) n ker M(p2)` | After the cut by `P'` | Grid points |
+|---|---:|---:|---:|---:|---:|
+| `V(Q)` minus `V(G)` | 2 | 3 | 1 | 1 | 2,096 |
+| `V(G)` minus `V(Q)` | 2 | 3 | 1 | 1 | 1,041 |
+| `V(G)` minus `V(Q)` | 2 | 7 | 1 | 1 | 1 |
+| `V(G)` minus `V(Q)` | 2 | 7 | 3 | 1 | 8 |
+| `V(G)` minus `V(Q)` | 6 | 7 | 3 | 3 | 61 |
+| `V(G)` minus `V(Q)` | 12 | 9 | 6 | 6 | 92 |
+| `V(Q) n V(G)` | 2 | 3 | 3 | 1 | 384 |
+| `V(Q) n V(G)` | 6 | 7 | 5 | 3 | 4 |
+
+`dim L` is twice the last dimension in every row. The third column is the nullity at one probe vector
+`p1 + 7 p2` of the plane, modulo the prime. At the 9 points of rows 3 and 4 the nullity of `M(p)` is recomputed
+over `Q(i)` at six pairwise independent vectors of the kernel plane and at the probe vector. It is 7 at all
+seven at the 8 points of row 4; rank at most 8 is the vanishing of forms of degree
+5 on the plane, so every vector of the plane has nullity at least 7 there. Row 4 refutes "`dim L > 2` exactly
+where the kernel plane consists of higher zero divisors" (`A5-436`), which holds at all 66 exact fixtures: the
+common kernel has dimension 3 and the conjugate plane cuts it to the line of `z`. At the point of row 3,
+`e_1 + 2 e_3 + 2 e_8 + 2 e_9 + 2 e_13 - e_14`, the exact nullity is 3 at the six vectors and 7 at the probe
+vector: the plane meets the higher zero divisors of `ker M(z)` in the single point that the probe hits, so the
+nullity at a general vector of that plane is 3. A large fiber occurs only on planes where the probe has nullity
+7 or 9 modulo the prime.
+
+At the 29 exact fixtures with `dim L` of 6 or 12 the 16 net points of nullity 7 or 9 span the real kernel plane,
+inside a three-plane where the other net vectors have nullity 3 (`A5-437`). Rank at most `15 - n` of the skew
+`M(k)` is the vanishing of Pfaffians of degree `(17 - n) / 2`, so 16 collinear points put the whole line in the
+locus of nullity at least `n` modulo the prime: the real kernel plane is a line of higher zero divisors. Four
+fixtures of `V(G)` minus `V(Q)` with `dim L = 2` carry a line of nullity 9 that differs from the real kernel
+plane: 16 collinear net points at two fixtures and 8 at the other two, against degree 4. At the 12 fixtures of
+`V(Q)` minus `V(G)` the net holds no such line: 7 fixtures have no higher zero divisor on the net, 4 have one net
+point of nullity 5 or 7, which lies in the real kernel plane, and one has two net points of nullity 5, at least
+one of them off that plane.
+
+469 real points of `V(Q)` minus `V(G)` with Gaussian-integer split coordinates, where `w'` is the conjugate of
+`z'` and independent of it, have `dim L = 2`, nullity 3 on the kernel plane and common kernel the line of `z`
+(`A5-438`). They are the second intersections with the quadric `V(Q)` of the lines from its 12 exact fixtures
+along 40 Gaussian directions each; 11 of the 480 pairs are discarded: 2 directions are real, 8 are
+tangent to the quadric and return the fixture, and one line lies in `V(Q)` modulo the prime. At 25 sampled points `z0` of each stratum,
+every one of 40 general planes `P` of `ker M(z0)` off `z0` has `{z: P in ker M(z)}` of dimension 1 on the two
+hypersurface strata and 3 on `V(Q) n V(G)`.
+
+#### Higher zero divisors of the kernel three-plane
+
+`kernel_three_plane_zero_divisors.py` and its record `kernel-three-plane-zero-divisors-result.json` replace the
+finite net by equations for the higher zero divisors inside `K = ker M(z)` at a nullity-4 point `z`.
+
+**Proved** (`A5-440`): `K` lies in the hypersurface of `z`. For `k` in `K`, `M(k) z = -M(z) k = 0` and
+`M(k) k = 0`, so `M(k)` has nullity at least 3 and every maximal Pfaffian `Q G k_j` vanishes at `k`; `Q G` is
+zero on the linear space `K`, and the factor that is nonzero at `z` is excluded.
+
+On `V(G)` minus `V(Q)` (`A5-441`) the quadric `Q` restricted to `K` is a nonzero multiple of the square of a
+linear form. Its zero line, the polar line `l_z = K n ker dQ_z`, consists of higher zero divisors:
+
+| Points | `P = l_z` | Nullity on `l_z` | `dim L` | Count |
+|---|---|---:|---:|---:|
+| 52 fixtures, exact over `Q(i)` | no | 7 | 2 | 2 |
+| | no | 9 | 2 | 21 |
+| | yes | 7 | 6 | 13 |
+| | yes | 9 | 12 | 16 |
+| 1,203 grid points, modulo 32029 | no | 7 | 2 | 364 |
+| | yes | 7 | 2 | 8 |
+| | yes | 7 | 6 | 61 |
+| | no | 9 | 2 | 678 |
+| | yes | 9 | 12 | 92 |
+
+At the fixtures the rank of `M(k)` is 8 or 6 at six pairwise independent vectors of the exact line, which
+decides the whole line (Pfaffians of degree 5 and 4), and 12 at a vector off it; modulo 32029 the 91 principal
+12 x 12 Pfaffians of `M(k)` span exactly the multiples of the square of `Q` restricted to `K`, so at the fixtures
+the higher zero divisors of `K` are exactly the line. Every point of the stratum
+that was tested carries the line, of either orbit rank; the fiber is large only where the real kernel plane `P`
+is that line, and the 8 grid points with `P = l_z` and `dim L = 2` are the points of `A5-436`. A kernel plane
+other than `l_z` meets it in one point of the projective plane of `K`, the single higher zero divisor that the
+probe vector hit at the ninth point of `A5-436`.
+
+On `V(Q)` minus `V(G)` (`A5-442`) the locus is a curve. At the 12 fixtures the 91 principal 12 x 12 Pfaffians of
+`M(k)` restricted to a coordinate hyperplane, sextic forms on `K`, span exactly the multiples of the plane
+quartic `G` restricted to `K`. The quartic has a singular scheme of length 3 and contains no line over the
+algebraic closure of GF(32029): a quartic `L C` has the length-3 scheme `V(L, C)` inside its singular scheme on
+the line `L = 0`, and the certificate shows that no line meets the singular scheme in length 3 or more. A line of
+higher zero divisors over `Q(i)` would reduce to one modulo the prime, so the fixtures have none in
+characteristic 0; the identification with the quartic and the length of its singular scheme are statements
+modulo 32029. At 40 points of the stratum with sha256 coordinates the singular scheme has length 3 and the
+quartic has no line. On the grid the quartic is nonzero and free of lines at all 2,096 points; its singular scheme
+has length 3 at 2,064 points and length 5 at 32 points of one slice, `e_1 + e_2 + 2 e_3 + e_8 + v`.
+
+These results refute the finiteness clause of `A5-439`: the higher zero divisors of `K` on `V(Q)` minus `V(G)`
+are a curve at the fixtures. Its clause that confines the line on `V(G)` minus `V(Q)` to a proper closed subset
+of the orbit-rank-16 points is contradicted by every tested point, including 40 points of the stratum with
+sha256 coordinates (Gram rank 1, nullity 7 on the polar line, 3 off it); finitely many points do not refute it,
+and `A5-444` states the corrected form. The net of `A5-437` met the quartic at its few points of small height and saw the polar
+line only where it is a line of the net.
+
+`hypothesis` (`A5-443`, open): at every nullity-4 point of `V(Q)` minus `V(G)` the quartic contains no line, and
+`dim L = 2` at every real point of the stratum. `hypothesis` (`A5-444`, open): on `V(G)` minus `V(Q)` the higher
+zero divisors of `K` are exactly the polar line, and `dim L > 2` exactly where `P = l_z` and the conjugate plane
+is orthogonal to the common kernel of `M` on `l_z`; at the grid points the record tests one vector off the line. `hypothesis`
+(`A5-445`, open): the points where the singular scheme of the quartic is longer than 3 form a proper closed
+subset on which the quartic stays irreducible and free of lines; the record holds no type for those singular
+points.
+
 `hypothesis` (`A5-433`, open): on `V(G)` minus `V(Q)` every real point of orbit rank 13 has `dim L` of 6 or 12
 (139 grid points with the orbit rank modulo 32029, 29 fixtures); on `V(Q)` minus `V(G)` every real point has `dim L = 2` (2,096 grid points, 12
 fixtures); a real point with `dim L` of 6 or 12 has kernel vectors of nullity 12 or 16 (157 grid points, 29
 fixtures), and row 6 shows that nullity 12 does not force a large fiber. The grid is one integer family; the
-record holds no equations for the locus `dim L > 2` and no real point with non-real split coordinates.
+record holds no equations for the locus `dim L > 2`; `A5-438` adds real points with non-real split coordinates
+to the second part.
 
 `hypothesis` (`A5-434`, open): the sampled planes span the quadrics of each image, so that the images carry 313,
 178 and 1,575 quadric equations beyond the Plucker quadrics, the first two images differ and the third lies in a
@@ -273,4 +391,6 @@ each stratum outside a proper closed subset.
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 2 minutes 11 seconds of wall time, 215 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 326 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 3 minutes 33 seconds of wall time, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
