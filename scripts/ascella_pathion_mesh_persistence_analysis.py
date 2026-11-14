@@ -124,7 +124,7 @@ def mesh_gate(sim_run: Path, frozen: Path | None = None) -> dict[str, Any]:
         "misses": misses,
         "platform_differences": platform,
         "problems": problems,
-        "passed": not problems and not misses and compared == 52,
+        "passed": not problems and not misses and compared == len(expected),
     }
 
 
