@@ -1372,9 +1372,22 @@ def load_case(case_dir: Path) -> tuple[dict[str, Any], dict[str, Any], str]:
     return manifest, circuit, cases_sha256
 
 
+def uses_queue_slot(manifest: dict[str, Any]) -> bool:
+    """Whether the case queues behind the token's own job: current-schema, an Ascella pair or a bound successor.
+
+    The Quandela token admits max_jobs_in_queue queued jobs beside max_concurrent_jobs running ones, so a case whose
+    manifest binds its builder and analyzer (an ascella_predecessor job of CURRENT_CASE_SOURCES, or any manifest that
+    carries successor_sources) takes the free queue slot on every platform, simulators included. Every older case
+    keeps the stricter rule of an idle token.
+    """
+    if manifest.get("family") == "ascella_predecessor" and manifest.get("job") in CURRENT_CASE_SOURCES:
+        return True
+    return manifest.get("successor_sources") is not None
+
+
 def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -> None:
-    """Admit the current case when the token has a queue slot; preserve older case policies."""
-    if manifest.get("family") != "ascella_predecessor" or manifest.get("job") != "current-schema":
+    """Admit a successor or current case when the token has a queue slot; preserve older case policies."""
+    if not uses_queue_slot(manifest):
         if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
             raise PlatformError(f"the token has a running or queued job: {counters}")
         return

@@ -79,7 +79,11 @@ def mock_provider(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, platform: str
     monkeypatch.setattr(qd, "explorer_row", lambda name: dict(row))
     monkeypatch.setattr(qd, "get", get)
     monkeypatch.setattr(qd, "request", request)
-    monkeypatch.setattr(qd, "availability", lambda: {"num_concurrent_jobs": 0, "num_jobs_in_queue": 0})
+    monkeypatch.setattr(
+        qd,
+        "availability",
+        lambda: {"max_concurrent_jobs": 1, "max_jobs_in_queue": 1, "num_concurrent_jobs": 0, "num_jobs_in_queue": 0},
+    )
     monkeypatch.setattr(qd, "hom_warning", lambda *args: None)
     monkeypatch.setattr(
         qd,
@@ -152,3 +156,23 @@ def test_submit_refuses_a_belenos_case_whose_bound_sources_changed(
     credits, seconds, per_job = arguments("sim:belenos")
     with pytest.raises(qd.PlatformError, match="reviewed source changed: scripts/bdsc_diagnostic.py"):
         qd.submit(case, "sim:belenos", "mocked approval", credits, seconds, per_job)
+
+
+@pytest.mark.parametrize("platform", CASES)
+def test_a_successor_case_queues_behind_the_running_job_on_every_platform(
+    tmp_path: Path, draw_directory: Path, platform: str
+) -> None:
+    manifest = json.loads((case_directory(tmp_path, platform, draw_directory) / "cases.json").read_bytes())
+    busy = {"max_concurrent_jobs": 1, "max_jobs_in_queue": 1, "num_concurrent_jobs": 1, "num_jobs_in_queue": 0}
+    qd.require_token_capacity(manifest, busy)
+    with pytest.raises(qd.PlatformError, match="no available queue slot"):
+        qd.require_token_capacity(manifest, {**busy, "num_jobs_in_queue": 1})
+    with pytest.raises(qd.PlatformError, match="integer"):
+        qd.require_token_capacity(manifest, {**busy, "max_jobs_in_queue": None})
+
+
+def test_a_case_without_bound_successor_sources_still_needs_an_idle_token() -> None:
+    busy = {"max_concurrent_jobs": 1, "max_jobs_in_queue": 1, "num_concurrent_jobs": 1, "num_jobs_in_queue": 0}
+    for manifest in ({"family": "bdsc", "job": "diagnostic"}, {"family": "ascella_predecessor", "job": "retained"}):
+        with pytest.raises(qd.PlatformError, match="running or queued"):
+            qd.require_token_capacity(manifest, busy)
