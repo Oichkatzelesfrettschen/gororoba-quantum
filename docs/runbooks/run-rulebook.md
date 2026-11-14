@@ -790,6 +790,7 @@ the closest entry and say what changed.
 - Checkpoints: the log, the `.time` file and the record.
 - End state: record copied and checked with `--check`; the VM left running for its other user.
 - Outcome: 10 min 57 s for both basepoints in the first build beside another job, 5 min 43 s in the rebuild after
-  review (isolated singular parts kept; same values), which is the committed record; a first exact pass in scratch took 3.7 s to bound the locus in
+  review (isolated singular parts kept; same values) and 9 min 3 s for the committed record, which adds the
+  vertex space, the scroll matrix and three tangent cones (A5-504, A5-505, A5-507); a first exact pass in scratch took 3.7 s to bound the locus in
   dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-500). Two traps are in A5-501: row
   sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.

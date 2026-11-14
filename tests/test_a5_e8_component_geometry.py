@@ -89,6 +89,22 @@ def test_the_derived_properties_follow_the_betti_table_and_the_singular_locus() 
     _same(geometry.derived(cell)["main_is_gorenstein"], True)
 
 
+def test_the_main_prime_is_no_cone_and_its_tangent_cones_have_multiplicity_four_two_and_one() -> None:
+    for cell in _record()["cells"]:
+        _same(cell["main_vertex_space"], 0)
+        # At a point of the singular line, of the singular plane and of the meeting of the components.
+        _same(cell["tangent_cones"], [[1, 5, 4], [2, 5, 2], [3, 5, 1]])
+
+
+def test_the_meeting_of_the_components_is_a_ruling_plane_of_the_scroll() -> None:
+    record = _record()
+    for cell in record["cells"]:
+        _same(cell["scroll_is_linear_forms_plus_matrix_minors"], True)
+        _same(cell["scroll_rows_proportional_on_meeting"], True)
+    _same(_cell(record, "N-")["scroll_row_ratio_on_meeting"], "(-i)")
+    _same(_cell(record, "N+")["scroll_row_ratio_on_meeting"], "(i)")
+
+
 def test_every_component_of_the_outer_bound_holds_a_smooth_point() -> None:
     for cell in _record()["cells"]:
         parts = cell["bound_component_dimensions"]
@@ -200,6 +216,24 @@ MUTATIONS: dict[str, tuple[Mutation, str]] = {
         "outer bound are missing",
     ),
     "second walk removed": (lambda record: _cell(record, "N-")["walk"].pop(), "minor walks"),
+    "a vertex line on the main prime": (_set("N-", "main_vertex_space", 1), "main_vertex_space"),
+    "scroll matrix lost": (
+        _set("N+", "scroll_is_linear_forms_plus_matrix_minors", False),
+        "scroll_is_linear_forms_plus_matrix_minors",
+    ),
+    "scroll rows independent on the meeting": (
+        _set("N-", "scroll_rows_proportional_on_meeting", False),
+        "scroll_rows_proportional_on_meeting",
+    ),
+    "conjugate row ratio": (_set("N-", "scroll_row_ratio_on_meeting", "(i)"), "ratio of the scroll matrix rows"),
+    "multiplicity at the isolated point changed": (
+        _set("N-", "tangent_cones", [[1, 5, 3], [2, 5, 2], [3, 5, 1]]),
+        "tangent_cones",
+    ),
+    "a singular point of the meeting": (
+        _set("N+", "tangent_cones", [[1, 5, 4], [2, 5, 2], [3, 5, 2]]),
+        "tangent_cones",
+    ),
     "normal flag cleared": (_set("N-", "main_is_normal", False), "main_is_normal"),
     "gorenstein flag set": (_set("N+", "main_is_gorenstein", True), "main_is_gorenstein"),
     "cohen-macaulay flag cleared": (_set("N-", "main_is_cohen_macaulay", False), "main_is_cohen_macaulay"),

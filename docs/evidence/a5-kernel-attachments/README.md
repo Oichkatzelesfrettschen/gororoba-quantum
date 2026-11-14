@@ -1025,9 +1025,15 @@ explicit scheme in `P^20`: a normal Cohen-Macaulay fourfold of degree 11 in a `P
 threefold of rank 4 that lies in the fourfold and contains the plane; and the fourfold singular exactly along a
 line of that plane and at the singular point of the quadric.
 
-**Hypotheses (`A5-504` to `A5-507`, open):** the meeting plane is a ruling plane of the scroll; the degree-11
-component is not a cone; the five-parameter map of `A5-457` is birational onto it; and its multiplicity is at most 4
-at the isolated singular point and 2 along the singular line. Each row names a test of seconds.
+**Computed (`A5-504`, `A5-505`, `A5-507`):** the same producer records three further facts. The six quadrics of
+the scroll prime are the `2 x 2` minors of the matrix with rows `(y19, y16, y15, y14)` and `(y18, y15, y10, y9)`,
+and on the meeting of the two components the second row is `-i` times the first (`i` at `N+`), so the meeting is a
+ruling plane of the scroll. The partial derivatives of the 25 quadrics of the degree-11 prime have no common zero
+but the origin, so that component is not a cone. Its tangent cone has multiplicity 4 at the isolated singular point,
+2 at a point of the singular line and 1 at a point of the meeting plane.
+
+**Hypothesis (`A5-506`, open):** the five-parameter map of `A5-457` is birational onto the degree-11 component; the
+record proves it dominant.
 
 **Method (`A5-501`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and

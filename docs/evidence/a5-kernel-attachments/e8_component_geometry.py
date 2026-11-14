@@ -17,7 +17,11 @@ Q(i) in Singular:
   the checker requires (degree 1): the entries of the Jacobian reduced modulo Z then lie in the free coordinates of
   Z, so values for those coordinates give a point of Z; the rank there bounds the generic rank from below, and nf
   minus the rank there of the syzygy module of the reduced Jacobian bounds it from above. On a nonlinear component
-  entrywise reduction would not give a point of the component, and the bound would not hold.
+  entrywise reduction would not give a point of the component, and the bound would not hold;
+- the vertex space of the main prime (the common zeros of all partial derivatives of its quadrics), the 2 x 4 matrix
+  of linear forms whose minors are the six quadrics of the scroll prime, with the ratio of its two rows on the
+  meeting of the components, and the multiplicity of the tangent cone of the main prime at one point of the singular
+  line, of the singular plane and of the meeting.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_component_geometry.py [--check]
 """
@@ -95,6 +99,11 @@ EXPECTED: dict[str, Any] = {
         [1, 1, 4, 4, True, True, True, True],
         [2, 1, 6, 6, True, True, True, False],
     ],
+    "main_vertex_space": 0,
+    "scroll_is_linear_forms_plus_matrix_minors": True,
+    "scroll_rows_proportional_on_meeting": True,
+    # Tangent cones of the main prime: (dimension of the locus the point lies on, dimension, multiplicity).
+    "tangent_cones": [[1, 5, 4], [2, 5, 2], [3, 5, 1]],
     "main_is_cohen_macaulay": True,
     "main_is_gorenstein": False,
     "main_is_normal": True,
@@ -115,6 +124,8 @@ SINGULAR_GENERATORS: dict[str, tuple[str, ...]] = {
         "y(4),y(3),y(2),y(1)",
     ),
 }
+# The constant c with (second row) = c (first row) for the scroll matrix on the meeting of the two components.
+SCROLL_ROW_RATIO: dict[str, str] = {"N-": "(-i)", "N+": "(i)"}
 SCRIPT = r"""LIB "primdec.lib"; LIB "homolog.lib"; LIB "matrix.lib"; option(redSB);
 int k; int j; int j2; int a; int s0; int q; int w; int ok; int fam; int n; int tried;
 intvec pv=2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73;
@@ -198,6 +209,30 @@ for(q=1;q<=size(LA);q++){ Z=std(LA[q]);
     +string(size(reduce(Z,vertA))==0 and size(reduce(vertA,Z))==0));
   print("RESULT singular_generators "+string(dim(Z))+" "+string(minbase(Z))); }
 print("RESULT smooth_rank "+ranks(P4+P11,J,pv));
+// a cone has a vertex where every partial derivative of every quadric vanishes
+ideal vert11=std(lin11+ideal(jacob(Pc))); print("RESULT main_vertex_space "+string(dim(vert11)));
+// the scroll: six quadrics that are the 2 x 2 minors of a 2 x 4 matrix of linear forms; its rows on the meeting
+matrix B[2][4]=y(19),y(16),y(15),y(14),y(18),y(15),y(10),y(9);
+print("RESULT scroll_is_linear_forms_plus_matrix_minors "
+  +string(size(reduce(P4,std(lin4+minor(B,2))))==0 and size(reduce(minor(B,2),sP4))==0));
+matrix Br=reduce(B,I12); number ratio=0; int piv=0; int prop=1;
+for(j=1;j<=4;j++){ if(piv==0 and Br[1,j]!=0){ piv=j; ratio=leadcoef(Br[2,j])/leadcoef(Br[1,j]); } }
+for(j=1;j<=4;j++){ if(Br[2,j]-ratio*Br[1,j]!=0){ prop=0; } }
+print("RESULT scroll_rows_proportional_on_meeting "+string(piv>0 and prop==1 and ratio!=0));
+print("RESULT scroll_row_ratio_on_meeting "+string(ratio));
+// multiplicity of the tangent cone of the main prime at one point of each singular component and of the meeting
+ideal sh; list shifts; intvec shiftdims; ideal Zs; poly co;
+list PT=LA; PT[size(LA)+1]=ideal(I12);
+for(q=1;q<=size(PT);q++){ Zs=std(PT[q]); sh=0;
+  for(a=1;a<=nvars(basering);a++){ co=reduce(var(a),Zs);
+    for(j=1;j<=nvars(basering);j++){ co=subst(co,var(j),pv[j]); }
+    sh[a]=var(a)+co; }
+  shifts[q]=sh; shiftdims[q]=dim(Zs); }
+ring rl=(0,i),(y(1..21)),ds; minpoly=i^2+1;
+ideal P11l=imap(r,P11); list shl=imap(r,shifts); map tr; ideal T;
+for(q=1;q<=size(shl);q++){ tr=rl,ideal(shl[q]); T=std(tr(P11l));
+  print("RESULT tangent_cone "+string(shiftdims[q])+","+string(dim(T))+","+string(mult(T))); }
+setring r;
 print("RESULT done 1");
 quit;
 """
@@ -268,6 +303,9 @@ def certify(orbit: str) -> dict[str, Any]:
         "bound_components_with_smooth_points": int(values["bound_components_with_smooth_points"][0]),
         "singular_components": components,
         "singular_generators": generators,
+        "main_vertex_space": int(values["main_vertex_space"][0]),
+        "scroll_row_ratio_on_meeting": values["scroll_row_ratio_on_meeting"][0],
+        "tangent_cones": sorted(_integers(text) for text in values["tangent_cone"]),
     }
     for key in (
         "scroll_prime",
@@ -286,6 +324,8 @@ def certify(orbit: str) -> dict[str, Any]:
         "scroll_meets_main_is_linear",
         "scroll_meets_main_contains_embedded",
         "scroll_meets_embedded_equals_scroll_meets_main",
+        "scroll_is_linear_forms_plus_matrix_minors",
+        "scroll_rows_proportional_on_meeting",
     ):
         cell[key] = _flag(values, key)
     cell.update(derived(cell))
@@ -334,6 +374,8 @@ def problems(record: dict[str, Any]) -> list[str]:
                 found.append(f"{orbit}: {key} differs from {expected}")
         if cell.get("singular_generators") != list(SINGULAR_GENERATORS[orbit]):
             found.append(f"{orbit}: the generators of the singular components differ from the line and the plane")
+        if cell.get("scroll_row_ratio_on_meeting") != SCROLL_ROW_RATIO[orbit]:
+            found.append(f"{orbit}: the ratio of the scroll matrix rows on the meeting differs")
         found += _bound_problems(cell)
         try:
             flags = derived(cell)

@@ -2,7 +2,7 @@
  "schema": "gororoba.a5.e8-component-geometry/1",
  "field": "Q(i)",
  "inputs": {
-  "e8_component_geometry.py": "0c6638f4f33a40008232617a458d017748f221ec2f0302b8e8998629d4745268",
+  "e8_component_geometry.py": "62ece553c3109288854b6eed79142b19da98524515a3d9c433805a2761d62adf",
   "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
  },
  "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
@@ -203,6 +203,25 @@
     "y(21),y(20),y(19),y(18),y(17),y(15)+(i)*y(16),y(14),y(13),y(12),y(11)+(i)*y(16),y(10)+y(16),y(9),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)",
     "y(21),y(20),y(18)+(i)*y(19),y(17),y(16),y(15),y(13),y(12),y(11),y(10),y(9)+(i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)"
    ],
+   "main_vertex_space": 0,
+   "scroll_row_ratio_on_meeting": "(-i)",
+   "tangent_cones": [
+    [
+     1,
+     5,
+     4
+    ],
+    [
+     2,
+     5,
+     2
+    ],
+    [
+     3,
+     5,
+     1
+    ]
+   ],
    "scroll_prime": [
     4,
     4
@@ -240,6 +259,8 @@
    "scroll_meets_main_is_linear": true,
    "scroll_meets_main_contains_embedded": true,
    "scroll_meets_embedded_equals_scroll_meets_main": true,
+   "scroll_is_linear_forms_plus_matrix_minors": true,
+   "scroll_rows_proportional_on_meeting": true,
    "main_is_cohen_macaulay": true,
    "main_is_gorenstein": false,
    "main_is_normal": true
@@ -440,6 +461,25 @@
     "y(21),y(20),y(19),y(18),y(17),y(15)+(-i)*y(16),y(14),y(13),y(12),y(11)+(-i)*y(16),y(10)+y(16),y(9),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)",
     "y(21),y(20),y(18)+(-i)*y(19),y(17),y(16),y(15),y(13),y(12),y(11),y(10),y(9)+(-i)*y(14),y(8),y(7),y(6),y(5),y(4),y(3),y(2),y(1)"
    ],
+   "main_vertex_space": 0,
+   "scroll_row_ratio_on_meeting": "(i)",
+   "tangent_cones": [
+    [
+     1,
+     5,
+     4
+    ],
+    [
+     2,
+     5,
+     2
+    ],
+    [
+     3,
+     5,
+     1
+    ]
+   ],
    "scroll_prime": [
     4,
     4
@@ -477,6 +517,8 @@
    "scroll_meets_main_is_linear": true,
    "scroll_meets_main_contains_embedded": true,
    "scroll_meets_embedded_equals_scroll_meets_main": true,
+   "scroll_is_linear_forms_plus_matrix_minors": true,
+   "scroll_rows_proportional_on_meeting": true,
    "main_is_cohen_macaulay": true,
    "main_is_gorenstein": false,
    "main_is_normal": true
