@@ -1,0 +1,15 @@
+Require Import CdTowerRing GaussianIntegerHom.
+Require Import CdTowerG2DerivationSpan MatrixSplittingCertificate CdTowerLeibnizSystem.
+Print Assumptions GaussianG2Span.derivations_spanned.
+Print Assumptions GaussianG2Span.derivations_spanned_invertible.
+Print Assumptions GaussianG2Span.entries_spanned.
+Print Assumptions GaussianG2Span.splitting.
+Print Assumptions GaussianG2Span.tables_well_formed.
+Print Assumptions GaussianG2Span.equations_in_range.
+Print Assumptions GaussianG2Span.structure_source.
+Print Assumptions GaussianG2Span.solved.
+Module WithI := G2DerivationSpanWithI GaussianIntegers.
+Print Assumptions WithI.Span.derivations_spanned.
+Print Assumptions WithI.Span.derivations_spanned_invertible.
+Check GaussianG2Span.derivations_spanned.
+Check GaussianG2Span.derivations_spanned_invertible.
