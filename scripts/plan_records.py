@@ -106,8 +106,20 @@ def local_path(root: Path, reference: str) -> Path:
     return target
 
 
+def deferred(root: Path, value: str) -> bool:
+    """Whether a reference names a source of gororoba-math while GOROROBA_MATH is unset.
+
+    The file is unreadable then, so existence and digest checks leave the reference unchecked; the gates that declare
+    ``requires: ["gororoba-math"]`` (core-270, core-plan-tracker) skip without the checkout and never report a pass.
+    """
+    named = math_sources.relocated_reference(value, root) or value
+    return named.startswith(math_sources.REFERENCE_PREFIX) and not os.environ.get(math_sources.ENVIRONMENT_VARIABLE)
+
+
 def reference(root: Path, value: str) -> None:
     text(value, "reference")
+    if deferred(root, value):
+        return
     if value.startswith("https://"):
         parsed = urlsplit(value)
         require(
@@ -226,7 +238,7 @@ def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
         for evidence in newest["evidence"]:
             if evidence["ref"].startswith("https://"):
                 continue
-            if evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
+            if not deferred(root, evidence["ref"]) and evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
                 stale.append(f"{item['id']}: revalidation required for {evidence['ref']}")
     return sorted(set(stale))
 

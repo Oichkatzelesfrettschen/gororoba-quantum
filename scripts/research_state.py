@@ -688,6 +688,8 @@ def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str]
                 isinstance(item, dict) and set(item) == {"path", "sha256"},
                 f"{owner}: evidence entries carry path and sha256",
             )
+            if relocated(item["path"]) and plan_records.deferred(ROOT, item["path"]):
+                continue
             path = (
                 plan_records.local_path(ROOT, item["path"])
                 if relocated(item["path"])

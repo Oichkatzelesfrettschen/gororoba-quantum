@@ -184,3 +184,22 @@ def test_a_kept_source_that_the_project_file_lists_resolves_to_the_checkout(
     shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
     if (shadow / "proofs/CdOne.v").read_bytes() != SOURCES["CdOne.v"]:
         raise AssertionError("a name in the project file comes from gororoba-math")
+
+
+def test_plan_references_into_gororoba_math_defer_while_the_variable_is_unset(
+    fixture: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import plan_records
+
+    root, math = fixture
+    (root / "proofs/CdOne.v").unlink(missing_ok=True)
+    monkeypatch.delenv("GOROROBA_MATH", raising=False)
+    new, legacy = "gororoba-math:rocq/quantum/CdOne.v", "proofs/CdOne.v"
+    if not (plan_records.deferred(root, new) and plan_records.deferred(root, legacy)):
+        raise AssertionError("an unset GOROROBA_MATH defers references into gororoba-math")
+    if plan_records.deferred(root, "proofs/Kept.v") or plan_records.deferred(root, "ci/gororoba_math.pin"):
+        raise AssertionError("a tracked file is never deferred")
+    plan_records.reference(root, new)
+    monkeypatch.setenv("GOROROBA_MATH", str(math))
+    if plan_records.deferred(root, new) or plan_records.local_path(root, legacy) != math / "rocq/quantum/CdOne.v":
+        raise AssertionError("a set GOROROBA_MATH resolves both spellings to the checkout")
