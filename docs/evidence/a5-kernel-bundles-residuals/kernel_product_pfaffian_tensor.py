@@ -6,10 +6,13 @@ Delta = N1 N3 - p^2.
 
 For a triple I = (i_1 < i_2 < i_3) of indices, P_I(z) = eps(I) Pf(M(z) with the rows and columns of I removed),
 eps(I) the sign of the permutation (I, complement of I in increasing order). P(z) = sum_I P_I(z) e_I is a
-three-vector whose coordinates are polynomials of degree 6 in z. With omega = sum_(r<c) M_rc t_r ^ t_c the
-two-form of M(z), omega^6 / 6! = sum_J Pf(M_J) t_J over the 12-subsets J, and P(z) is its dual under the volume
-form: omega^6 is nonzero exactly when rank M(z) >= 12, and when the rank is 12 every vector of K(z) contracts
-omega^6 to zero, so P(z) is a nonzero multiple of k_1 ^ k_2 ^ k_3 for a basis of K(z).
+three-vector whose coordinates are integer polynomials of degree 6 in z. The twelve-form pi = sum_J Pf(M_J) t_J
+over the 12-subsets J is the sixth divided power of the two-form of M(z), and it transforms by congruence with
+integer polynomial coefficients: Pf((U^T M U)_J) = sum_J' Pf(M_J') det(U_(J', J)) for every matrix U. Over any
+field an alternating matrix of rank 12 is congruent to six blocks ((0, 1), (-1, 0)) and a zero block of order 3
+whose columns of U span K(z); in that basis pi is the product of the first twelve coordinates. So pi is nonzero
+exactly when rank M(z) >= 12, and at rank 12 its dual P(z) under the volume form is a nonzero multiple of
+k_1 ^ k_2 ^ k_3 for a basis of K(z). No step divides by an integer.
 
 tau: Lambda^3 V -> V (x) V sends a ^ b ^ c to Im(a b) (x) c + Im(b c) (x) a + Im(c a) (x) b, and T(z) = tau(P(z)),
 a 15 x 15 array of polynomials of degree 6 in z. At a rank-12 point z lies in K(z) and Im(z k) = 0 on K(z), so

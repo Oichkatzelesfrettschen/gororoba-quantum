@@ -153,6 +153,10 @@ def test_grid_fixture_and_general_point_records_are_recomputed() -> None:
     _same(tensor.fixture_record(), tensor.FIXTURE_COUNTS)
     for strings, general in zip(tensor.GENERAL_POINTS, tensor.GENERAL_POINT_FACTS, strict=True):
         _same(tensor.general_point_record(strings), {"point": list(strings), **general})
+    # At an integer point every coordinate of P is an integer: the identity is one of integer polynomials.
+    point = [QQ_I.convert(int(x)) for x in tensor.GENERAL_POINTS[0]]
+    for value in tensor.three_vector(point).values():
+        _same((value.x.denominator, value.y), (1, 0))
 
 
 def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None:

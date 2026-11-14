@@ -484,15 +484,19 @@ and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, gives
 Plucker in characteristic 0 (`A5-481`). The commutant of a null imaginary octonion has the same Heisenberg type
 (test).
 
-**Proved** (`A5-494`, every field): the product on `K(z)` has a polynomial formula. For a triple `I` of indices
+**Proved** (`A5-494`, every field): the tensor of the order-12 Pfaffians of `M(z)` has a polynomial formula, and at
+rank 12 in odd characteristic it is the product on `K(z)`. For a triple `I` of indices
 let `P_I(z)` be the Pfaffian of `M(z)` without the rows and columns of `I`, with the sign of the shuffle
 `(I, complement)`, and let `tau(a ^ b ^ c) = Im(a b) (x) c + Im(b c) (x) a + Im(c a) (x) b`. The tensor
 `T(z) = tau(sum_I P_I(z) e_I)` has entries of degree 6 in `z` with integer coefficients, and
 
 `T(z) = -grad(Q G)(z) (x) z - Q(z) G(z) I` at every point `z`.
 
-`P(z)` is the dual of `omega^6 / 6!` for the two-form `omega` of `M(z)`, so at a rank-12 point it is a nonzero
-multiple of the three-vector of `K(z)`, and there `T(z) = c M(k_1) k_2 (x) z` with `c` nonzero for
+`P(z)` is the dual of the twelve-form `sum_J Pf(M_J) t_J`, the sixth divided power of the two-form of `M(z)`. Its
+coordinates transform under congruence by an identity of integer polynomials, and the block normal form of an
+alternating matrix of rank 12 makes it the product of twelve coordinates, so over every field `P(z)` at a rank-12
+point is a nonzero multiple of the three-vector of `K(z)`, and there `T(z) = c M(k_1) k_2 (x) z` with `c` nonzero
+for
 `K(z) = C z + C k_1 + C k_2` (`A5-490`). On the zero-divisor variety `Q G = 0`, so the kernel commutator is the
 gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `V(Q)` (`A5-486`) and
 `-Q grad G` on `V(G)` (`A5-491`). The consequences:
