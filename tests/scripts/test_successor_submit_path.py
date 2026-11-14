@@ -207,3 +207,19 @@ def test_submit_refuses_a_successor_case_when_the_token_queue_is_full(
         qd.submit(case, platform, "mocked approval", credits, seconds, per_job, **extra)
     if any((case / name).exists() for name in ("submission-state.json", "job-body.json")):
         raise AssertionError("a refused submission left a checkpoint")
+
+
+@pytest.mark.parametrize("platform", CASES)
+def test_submit_refuses_an_empty_approval_on_every_successor_platform(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, draw_directory: Path, platform: str
+) -> None:
+    case = case_directory(tmp_path, platform, draw_directory)
+    mock_provider(monkeypatch, tmp_path, platform)
+    credits, seconds, per_job = arguments(platform)
+    extra: dict[str, Any] = {}
+    if family(platform) == "ascella":
+        extra = {"reviewed_packet": tmp_path / "unused.json", "reviewed_sha256": "0" * 64}
+    with pytest.raises(qd.PlatformError, match="nonempty approval"):
+        qd.submit(case, platform, "  ", credits, seconds, per_job, **extra)
+    if any((case / name).exists() for name in ("submission-state.json", "job-body.json")):
+        raise AssertionError("an unapproved submission left a checkpoint")
