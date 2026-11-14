@@ -7,12 +7,11 @@ name: proofs
 # A pull request compiles every bundle except the Stiefel bundle; the longest
 # of them takes about three minutes on the build host. A push to main and a
 # manual run add the Stiefel bundle, which takes about nine.
-# ci/check_rocq_ci_pins.py holds the path lists, the pin, the replay selection
-# and the open_gororoba fetch in agreement with the bundles.
+# ci/check_rocq_ci_pins.py holds the path lists, the pins, the replay selection
+# and the open_gororoba and gororoba-math fetches in agreement with the bundles.
 on:
   pull_request:
     paths:
-      - proofs/**
       - docs/evidence/c881_exhaustive/**
       - docs/evidence/cd-imaginary-sum-conference/**
       - docs/evidence/cd-tower-basis-sign/**
@@ -41,13 +40,15 @@ on:
       - gororoba_quantum/parallel.py
       - ci/open_gororoba.pin
       - ci/fetch_open_gororoba.sh
+      - ci/gororoba_math.pin
+      - ci/fetch_gororoba_math.sh
+      - gororoba_quantum/math_sources.py
       - ci/rocq_toolchain.pin
       - ci/install_rocq.sh
       - .github/workflows/proofs.yml
   push:
     branches: [main]
     paths:
-      - proofs/**
       - docs/evidence/c881_exhaustive/**
       - docs/evidence/cd-imaginary-sum-conference/**
       - docs/evidence/cd-tower-basis-sign/**
@@ -76,6 +77,9 @@ on:
       - gororoba_quantum/parallel.py
       - ci/open_gororoba.pin
       - ci/fetch_open_gororoba.sh
+      - ci/gororoba_math.pin
+      - ci/fetch_gororoba_math.sh
+      - gororoba_quantum/math_sources.py
       - ci/rocq_toolchain.pin
       - ci/install_rocq.sh
       - .github/workflows/proofs.yml
@@ -122,6 +126,10 @@ jobs:
           crates/algebra_analysis/src
           crates/algebra_experimental/src/sedenion_subalgebras
           crates/cd_kernel/src/cayley_dickson
+      - name: Fetch the pinned gororoba-math sources
+        run: >-
+          sh ci/fetch_gororoba_math.sh "$RUNNER_TEMP/gororoba_math"
+          rocq/quantum
       - name: Replay the receipts
         # A pull request replays the bundles in parallel; the longest is the
         # kernel-certificate bundle, about three minutes on the build host, most of
@@ -137,6 +145,7 @@ jobs:
           "$PYTHON" scripts/rocq_kaggle_replay.py --rocq "$rocq" \
             --gororoba-root "$RUNNER_TEMP/open_gororoba" \
             --gororoba-commit "$(tr -d ' \t\r\n' < ci/open_gororoba.pin)" \
+            --gororoba-math-root "$RUNNER_TEMP/gororoba_math" \
             --only $only --out "$RUNNER_TEMP/rocq_replay.json"
       - name: Show the replay record
         if: always()

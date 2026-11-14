@@ -6,6 +6,12 @@ rows below pair each ledger with that directory: the ledger's own directory for 
 the repository root for a ledger that names repository-relative paths. Linux hashes text and binary mode
 alike, so both markers compare the file's raw bytes. Backslash-escaped names, blank lines and comments are
 outside the formats the ledgers use and fail loudly instead of passing unverified.
+
+A row ``proofs/NAME.v`` whose file the checkout no longer holds names a source that moved to gororoba-math
+(``rocq/quantum``). This suite reaches no other repository, so such a row is verified where the checkout of that
+repository is resolved: the on-demand gates that declare ``requires: ["gororoba-math"]`` run the ledger from a
+shadow root, and the proofs workflow checks every moved source against the digests of all ledgers
+(gororoba_quantum/math_sources.py).
 """
 
 from __future__ import annotations
@@ -78,8 +84,15 @@ def ledger_id(entry: tuple[str, str]) -> str:
     return name if cwd == "." else f"{cwd}/{name}"
 
 
+def is_relocated(path: Path, name: str) -> bool:
+    """A row naming a Rocq source that the repository no longer tracks under proofs/."""
+    return name.startswith("proofs/") and not path.is_file()
+
+
 def mismatches(cwd: Path, ledger: str) -> list[str]:
-    """Rows of cwd/ledger whose file is absent or whose sha256 differs, as sha256sum -c run in cwd reports."""
+    """Rows of cwd/ledger whose file is absent or whose sha256 differs, as sha256sum -c run in cwd reports.
+
+    A relocated row (is_relocated) is left to the gororoba-math gates and is not listed."""
     found = []
     rows = (cwd / ledger).read_text(encoding="utf-8").split("\n")
     if rows.pop() != "":
@@ -91,6 +104,8 @@ def mismatches(cwd: Path, ledger: str) -> list[str]:
         if match is None:
             raise AssertionError(f"{ledger}:{number}: {row!r} is not a sha256sum row")
         path = cwd / match[2]
+        if is_relocated(path, match[2]):
+            continue
         if not path.is_file():
             found.append(f"{match[2]}: missing")
         elif hashlib.sha256(path.read_bytes()).hexdigest() != match[1]:
@@ -138,3 +153,22 @@ def test_a_changed_or_missing_byte_fails(tmp_path: Path) -> None:
     target.unlink()
     if mismatches(cwd, "SHA256SUMS") != ["sub/b.txt: missing"]:
         raise AssertionError("a deleted file passes the ledger")
+
+
+def test_a_relocated_source_row_is_left_to_the_gororoba_math_gates(tmp_path: Path) -> None:
+    """A proofs/ row without a tracked file is not a mismatch; a missing file elsewhere still is."""
+    cwd = tmp_path / "root"
+    (cwd / "proofs").mkdir(parents=True)
+    kept = b"Definition kept := 1.\n"
+    (cwd / "proofs/Kept.v").write_bytes(kept)
+    digest = hashlib.sha256(kept).hexdigest()
+    rows = [f"{digest}  proofs/Kept.v", f"{digest}  proofs/Moved.v"]
+    (cwd / "ledger.sha256").write_text("\n".join(rows) + "\n", encoding="utf-8")
+    if mismatches(cwd, "ledger.sha256"):
+        raise AssertionError("a relocated row failed the ledger")
+    (cwd / "ledger.sha256").write_text("\n".join([*rows, f"{digest}  results/gone.json"]) + "\n", encoding="utf-8")
+    if mismatches(cwd, "ledger.sha256") != ["results/gone.json: missing"]:
+        raise AssertionError("a missing file outside proofs/ passes")
+    (cwd / "proofs/Kept.v").write_bytes(kept + b"x")
+    if "proofs/Kept.v: bytes differ from the ledger" not in mismatches(cwd, "ledger.sha256"):
+        raise AssertionError("a tracked proofs/ source with changed bytes passes")

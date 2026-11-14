@@ -65,6 +65,7 @@ STATUSES = {
 # The statuses of a row whose falsifier or deciding test is still outstanding; `--open` lists these rows.
 OPEN_STATUSES = frozenset({"survives", "open", "stalled", "boundary"})
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+RELOCATED = re.compile(r"gororoba-math:rocq/quantum/[A-Za-z0-9_]+\.v")
 ID = re.compile(r"^A5-\d{3}$")
 
 
@@ -101,6 +102,8 @@ def check(data: list[dict[str, str]]) -> list[str]:
         if not paths:
             problems.append(f"{rid}: no evidence")
         for path in paths:
+            if RELOCATED.fullmatch(path):
+                continue  # a source of gororoba-math; the pull-request suite reaches no other repository
             if not (ROOT / path.split("#")[0]).exists():
                 problems.append(f"{rid}: evidence {path} does not exist")
         for sup in [x.strip() for x in r["supersedes"].split(";") if x.strip()]:

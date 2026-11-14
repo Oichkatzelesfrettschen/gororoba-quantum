@@ -16,6 +16,7 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+import math_sources
 from parallel import ordered_map
 
 
@@ -120,8 +121,11 @@ def build(
             }
         )
     tracked = set(tracked_paths)
-    census = {path for path in tracked if path.startswith(("results/", "docs/evidence/", "proofs/"))}
-    paths = sorted(census | set(pinned) | set(documented))
+    census = {path for path in tracked if path.startswith(("results/", "docs/evidence/"))}
+    # A source of gororoba-math has no file in this tree; scripts/research_state.py checks its digest against the
+    # checkout at the pin, and the ledger lists the files this repository holds.
+    held = {path: bindings for path, bindings in pinned.items() if not path.startswith(math_sources.REFERENCE_PREFIX)}
+    paths = sorted(census | set(held) | set(documented))
     runs_by_path = {run["path"]: run for run in runs}
     artifacts: list[dict[str, Any]] = []
     for path in paths:
@@ -142,9 +146,9 @@ def build(
                 "document_claims": sorted(documented.get(path, [])),
             }
         )
-    sources = ordered_map(_describe_source, [(root, path) for path in sorted(pinned)])
+    sources = ordered_map(_describe_source, [(root, path) for path in sorted(held)])
     for source in sources:
-        for binding in pinned[source["path"]]:
+        for binding in held[source["path"]]:
             if "#" not in binding["path"] and binding["sha256"] != source["file_sha256"]:
                 raise ValueError(f"evidence changed after registry validation: {binding['path']}")
     classes = Counter(claim["evidence_class"] for claim in claims)

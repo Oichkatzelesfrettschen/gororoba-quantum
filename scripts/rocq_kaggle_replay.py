@@ -7,12 +7,16 @@ ocaml-base-compiler OCAML and installs rocq-runtime, rocq-core and
 rocq-stdlib at ROCQ_PACKAGES, then this script requires ``rocq --version`` to
 equal docs/evidence/c881_exhaustive/toolchain.txt before any replay runs.
 open_gororoba, whose sources three replays hash, is cloned at the commit
-``--gororoba-commit`` names.
+``--gororoba-commit`` names. The Rocq sources of rocq/quantum come from the
+gororoba-math checkout that ``--gororoba-math-root`` (else $GOROROBA_MATH) names
+at the commit of ci/gororoba_math.pin; without either, the pin is cloned from
+GOROROBA_MATH_URL, an https:// URL or an absolute directory.
 
 The ci.yml job rocq-replay supplies the toolchain and the checkout itself:
 ``--rocq PATH`` skips the build and keeps the version equality,
 ``--gororoba-root DIR`` skips the clone and requires the checkout's HEAD to
-equal ``--gororoba-commit``, and ``--only NAME...`` selects replays by name
+equal ``--gororoba-commit``, ``--gororoba-math-root DIR`` skips the gororoba-math
+clone and requires the checkout's HEAD to equal the pin, and ``--only NAME...`` selects replays by name
 (formal_certificates, c881_exhaustive, stiefel_witness, folding_proofs,
 TargetFlipN21, cd-imaginary-sum-conference, cd-tower-basis-sign, cd-sign-row-anf,
 cd-associator-anf, cd-associator-census, cd-sign-python-semantics,
@@ -22,8 +26,10 @@ cd-tower-ring-base-change, cd-tower-kernel-certificates; the default is the Kagg
 
 Independent replays run through parallel.ordered_map with the detected CPU
 allowance capped by GOROROBA_WORKERS. Each replay uses separate temporary
-proof storage and returns its record in the requested order. Each replay runs
-unchanged, with ROCQ pointing at the built executable:
+proof storage and returns its record in the requested order. Each replay script runs
+unchanged, with ROCQ pointing at the built executable, from a shadow root
+(gororoba_quantum/math_sources.py) in which ``proofs/`` holds the sources of
+gororoba-math, each checked against the sha256 the retained records hold:
 
 - formal_certificates/replay_rocq.sh, cd-imaginary-sum-conference/replay_rocq.sh,
   cd-tower-basis-sign/replay_rocq.sh, cd-sign-row-anf/replay_rocq.sh,
@@ -39,14 +45,14 @@ unchanged, with ROCQ pointing at the built executable:
 - folding_proofs/replay_rocq.sh when ``--folding`` is given, whose complete
   stdout must equal the retained folding_proofs/rocq_replay.log,
 - the TargetFlipN21 procedure of ci/AGENTS.md: ``rocq compile -q -w +all``, no
-  warning, ``rocq check -silent -o``.
+  warning, ``rocq check -silent -o``, on the digest-checked gororoba-math source.
 
 ``--out FILE`` receives the toolchain identity, the build and replay wall
 times, and each replay's exit code, every output line carrying ``Warning:``
 and the output tail. The run passes only when
 every replay exits 0. Push it with scripts/kaggle_run.py --machine cpu and
---include for ci/rocq_toolchain.pin, gororoba_quantum/parallel.py, the proofs/
-and docs/evidence/ directories, and the result files
+--include for ci/rocq_toolchain.pin, ci/gororoba_math.pin, gororoba_quantum/parallel.py,
+gororoba_quantum/math_sources.py, the docs/evidence/ directory, and the result files
 the formal certificates hash.
 """
 
@@ -65,6 +71,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+import math_sources  # noqa: E402
 import parallel  # noqa: E402
 
 TOOLCHAIN = ROOT / "docs/evidence/c881_exhaustive/toolchain.txt"
@@ -72,6 +79,7 @@ OCAML = "ocaml-base-compiler.5.5.1"
 ROCQ_PACKAGES = ("rocq-runtime.9.3.0", "rocq-core.9.3.0", "rocq-stdlib.9.2.0")
 SYSTEM_PACKAGES = ("opam", "m4", "pkg-config", "libgmp-dev", "git", "make", "gcc", "unzip", "bubblewrap")
 GOROROBA_URL = "https://github.com/Oichkatzelesfrettschen/open_gororoba.git"
+GOROROBA_MATH_DEFAULT_URL = "https://github.com/Oichkatzelesfrettschen/gororoba-math.git"
 SWITCH = "rocq-9.3"
 REPLAYS = ("formal_certificates", "c881_exhaustive", "stiefel_witness")
 SELECTABLE = (
@@ -155,10 +163,11 @@ def build_toolchain(steps: list[dict[str, Any]]) -> Path:
     return Path(prefix) / "rocq"
 
 
-def target_flip(rocq: Path) -> dict[str, Any]:
+def target_flip(rocq: Path, math: Path) -> dict[str, Any]:
     with tempfile.TemporaryDirectory() as scratch:
         work = Path(scratch)
-        (work / "TargetFlipN21.v").write_bytes((ROOT / "proofs/TargetFlipN21.v").read_bytes())
+        source = math_sources.verified_sources(math, ROOT, ["TargetFlipN21.v"])["TargetFlipN21.v"]
+        (work / "TargetFlipN21.v").write_bytes(source.read_bytes())
         compiled = run([str(rocq), "compile", "-q", "-w", "+all", "TargetFlipN21.v"], cwd=work)
         if compiled["returncode"] == 0 and compiled["warning_lines"]:
             compiled["returncode"] = 1
@@ -171,15 +180,24 @@ def target_flip(rocq: Path) -> dict[str, Any]:
     }
 
 
-def replay_entry(arguments: tuple[str, Path, Path]) -> tuple[str, dict[str, Any]]:
-    """Run one independent bundle in its own temporary proof storage."""
-    name, rocq, gororoba = arguments
-    if name == "TargetFlipN21":
-        return name, target_flip(rocq)
-    evidence = ROOT / "docs/evidence" / name
-    retained = evidence / "rocq_replay.log" if name == "folding_proofs" else None
-    env = dict(os.environ, ROCQ=str(rocq), GOROROBA_ROOT=str(gororoba))
-    return name, run(["sh", str(evidence / "replay_rocq.sh")], env=env, cwd=ROOT, retained_log=retained)
+def replay_entry(arguments: tuple[str, Path, Path, Path]) -> tuple[str, dict[str, Any]]:
+    """Run one independent bundle from a shadow root, in its own temporary proof storage.
+
+    The shadow root holds a copy of the bundle directory and the digest-checked sources under proofs/, so the
+    retained replay_rocq.sh finds ``$repository_root/proofs/NAME.v`` with its bytes unchanged.
+    """
+    name, rocq, gororoba, math = arguments
+    try:
+        if name == "TargetFlipN21":
+            return name, target_flip(rocq, math)
+        with tempfile.TemporaryDirectory(prefix="quantum-rocq-shadow-") as scratch:
+            shadow = math_sources.shadow_root(Path(scratch) / "root", math, ROOT, bundle=name)
+            evidence = shadow / "docs/evidence" / name
+            retained = ROOT / "docs/evidence" / name / "rocq_replay.log" if name == "folding_proofs" else None
+            env = dict(os.environ, ROCQ=str(rocq), GOROROBA_ROOT=str(gororoba))
+            return name, run(["sh", str(evidence / "replay_rocq.sh")], env=env, cwd=shadow, retained_log=retained)
+    except math_sources.MathSourcesError as error:
+        return name, {"returncode": 2, "seconds": 0.0, "warning_lines": [], "tail": str(error)}
 
 
 def main() -> int:
@@ -188,6 +206,9 @@ def main() -> int:
     parser.add_argument("--folding", action="store_true", help="also replay folding_proofs")
     parser.add_argument("--rocq", type=Path, help="use this rocq executable and skip the opam build")
     parser.add_argument("--gororoba-root", type=Path, help="use this open_gororoba checkout and skip the clone")
+    parser.add_argument(
+        "--gororoba-math-root", type=Path, help="use this gororoba-math checkout (default $GOROROBA_MATH) at the pin"
+    )
     parser.add_argument("--only", nargs="+", choices=SELECTABLE, help="replay only these entries")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
@@ -210,13 +231,46 @@ def main() -> int:
         steps.append(run(["git", "-C", str(gororoba), "checkout", "-q", args.gororoba_commit]))
         if steps[-1]["returncode"]:
             raise SystemExit(f"open_gororoba checkout failed\n{steps[-1]['tail']}")
+    if args.gororoba_math_root is not None:
+        os.environ[math_sources.ENVIRONMENT_VARIABLE] = str(args.gororoba_math_root)
+    pin = math_sources.read_pin(ROOT)
+    if not os.environ.get(math_sources.ENVIRONMENT_VARIABLE):
+        math_clone = Path(tempfile.mkdtemp()) / "gororoba-math"
+        try:
+            url = math_sources.validated_url(os.environ.get("GOROROBA_MATH_URL", GOROROBA_MATH_DEFAULT_URL))
+        except math_sources.MathSourcesError as error:
+            raise SystemExit(f"GOROROBA_MATH_URL: {error}") from error
+        steps.append(
+            run(
+                [
+                    "git",
+                    "-c",
+                    "protocol.ext.allow=never",
+                    "clone",
+                    "-q",
+                    "--filter=blob:none",
+                    "--",
+                    url,
+                    str(math_clone),
+                ]
+            )
+        )
+        steps.append(run(["git", "-C", str(math_clone), "checkout", "-q", pin]))
+        if steps[-1]["returncode"]:
+            raise SystemExit(f"gororoba-math checkout failed\n{steps[-1]['tail']}")
+        os.environ[math_sources.ENVIRONMENT_VARIABLE] = str(math_clone)
+    try:
+        math = math_sources.checkout(os.environ, ROOT)
+    except math_sources.MathSourcesError as error:
+        raise SystemExit(str(error)) from error
     selected = args.only or (*REPLAYS, *(("folding_proofs",) if args.folding else ()), "TargetFlipN21")
-    replays = dict(parallel.ordered_map(replay_entry, [(name, rocq, gororoba) for name in selected], min_items=2))
+    replays = dict(parallel.ordered_map(replay_entry, [(name, rocq, gororoba, math) for name in selected], min_items=2))
     result = {
-        "schema": "rocq-kaggle-replay-v2",
+        "schema": "rocq-kaggle-replay-v3",
         "toolchain": version,
         "opam_packages": [OCAML, *ROCQ_PACKAGES],
         "open_gororoba_commit": args.gororoba_commit,
+        "gororoba_math_commit": pin,
         "build_steps": steps,
         "replays": replays,
         "passed": all(entry["returncode"] == 0 for entry in replays.values()),

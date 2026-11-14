@@ -128,6 +128,11 @@ tags `"requires": ["qi"]` replays its retained record unless the caller exports
 `GOROROBA_QI_REQUIRED=1` with `QI_PYTHON` naming the Quantum Inspire interpreter, which
 makes it take its live path or fail
 ([Quantum Inspire](../docs/notes/quantum_inspire/README.md#binding-rules)). A gate tagged
+`"requires": ["gororoba-math"]` reads a Rocq source of gororoba-math: `ci/run_gates.py` skips it (exit 77, a `skipped:`
+line) while `GOROROBA_MATH` is unset and fails it under `GOROROBA_MATH_REQUIRED=1`, fails it when the checkout is not
+at the commit of [ci/gororoba_math.pin](gororoba_math.pin) or a source differs from the digest the retained ledgers
+hold, and runs its command from a shadow root whose `proofs/` holds those sources, so a ledger row `proofs/NAME.v`
+resolves without a change to the ledger (`gororoba_quantum/math_sources.py`). A gate tagged
 `"requires": ["singular"]` skips unless Singular 4.4.1 is on PATH (the `passagemath-singular==10.8.13` wheel
 installs it into a separate virtual environment; Singular reads stdin even for `--version`, so run it with stdin
 from `/dev/null`); `GOROROBA_SINGULAR_REQUIRED=1` turns the skip into a failure. A gate that skips ends its output with a
@@ -323,14 +328,18 @@ raw replay uses `"$PYTHON" scripts/review_folded_jobs.py --run-dir "$FOLDED_RUN"
 The raw archive remains owned by that evidence change.
 
 The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
-when its generator, witnesses, or evaluator changes. Run the checks on a copy
+when its generator, witnesses, or evaluator changes. The generator keeps its
+bytes, which retained records bind; `"$PYTHON" scripts/math_source_generators.py
+target_flip_certificate --write` writes gororoba-math `rocq/quantum/TargetFlipN21.v`
+in the checkout `GOROROBA_MATH` names (`--check` compares it at the pin), and
+`cd_sign_rocq_ast`, `cd_sign_source_ast` take the same runner. Run the checks on a copy
 under temporary storage so the checkout retains source files only:
 
 ```sh
 (
   set -eu
   proof_tmp="$(mktemp -d)"
-  cp proofs/TargetFlipN21.v "$proof_tmp/"
+  cp "$GOROROBA_MATH/rocq/quantum/TargetFlipN21.v" "$proof_tmp/"
   (cd "$proof_tmp"
     rocq compile -q -w +all TargetFlipN21.v >compile.log 2>&1
     if rg -n "Warning:" compile.log; then exit 1; fi
@@ -341,8 +350,8 @@ under temporary storage so the checkout retains source files only:
 The certificate proves finite Boolean permutation action. Operator checks in
 modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 
-Changes to `proofs/FoldAverageDescent.v`, `proofs/TerminalChannelSeparation.v`,
-`proofs/TerminalChannelSeparationReal.v`, or their receipts also run
+Changes to gororoba-math `rocq/quantum/FoldAverageDescent.v`, `TerminalChannelSeparation.v`,
+`TerminalChannelSeparationReal.v`, or their receipts also run
 `ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh` with the
 toolchain its `toolchain.txt` pins, Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0. The replay compiles in temporary storage,
 treats warnings as errors, kernel-checks, and compares raw assumptions.
@@ -366,17 +375,25 @@ measured extraction/render checks join `ci/gates.json`.
 
 Changes to the C881 proof sources or receipts also run the pinned Rocq
 procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
-check verifies retained hashes. The proofs.yml job `rocq` replays the
-formal_certificates, c881_exhaustive, folding_proofs, TargetFlipN21 and
+check verifies retained hashes. The proofs.yml job `rocq` fetches the
+gororoba-open commit of `ci/open_gororoba.pin` and the gororoba-math commit of
+`ci/gororoba_math.pin` (`ci/fetch_gororoba_math.sh`, cone `rocq/quantum`), and
+replays the formal_certificates, c881_exhaustive, folding_proofs, TargetFlipN21 and
 the other Rocq bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq
-9.3.0 on OCaml 5.5.1 with Stdlib 9.2.0). The workflow triggers on a pull request
+9.3.0 on OCaml 5.5.1 with Stdlib 9.2.0). `scripts/rocq_kaggle_replay.py` runs each
+bundle's unchanged `replay_rocq.sh` from a shadow root that holds a copy of the bundle and,
+under `proofs/`, the gororoba-math sources, each checked against the sha256 that the retained
+ledgers and the claim registry hold; an unresolved checkout, a checkout off the pin and a
+differing digest fail the entry. A test that reads a gororoba-math source carries `audit`
+and takes the `math_source` fixture of tests/conftest.py, since the pull-request suite
+reaches no other repository. The workflow triggers on a pull request
 or a push to main whose diff touches a proof source, a replay bundle, the replay
 driver or a pin (its `paths:` lists), and on manual dispatch. A pull request
 replays the bundles under two minutes; a push to main and a manual run add the
 stiefel_witness bundle. The path filter leaves the workflow unrun on other
 changes, so it is not a required check.
 tests/ci/test_rocq_ci_pins.py holds the pin, the toolchain.txt banners, the
-`paths:` lists and the gororoba-open fetch in agreement and rejects each mutation
+`paths:` lists and the gororoba-open and gororoba-math fetches in agreement and rejects each mutation
 of them. The manual procedure remains the local replay.
 
 **Behavioral suite.** tests/ holds one pytest suite with two selections.

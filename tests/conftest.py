@@ -29,6 +29,7 @@ sys.path.insert(0, str(ROOT / "ci"))
 sys.path.insert(1, str(ROOT / "gororoba_quantum"))
 sys.path.insert(2, str(ROOT / "scripts"))
 
+import math_sources  # noqa: E402
 import parallel  # noqa: E402
 
 PLATFORM = f"{sys.platform}-{platform.machine()}"
@@ -164,3 +165,24 @@ def forced_pool(monkeypatch: pytest.MonkeyPatch) -> PoolSpy:
     monkeypatch.setattr(parallel, "ordered_map", ordered_map)
     monkeypatch.setattr(parallel, "_executor", executor)
     return spy
+
+
+@pytest.fixture
+def math_source() -> Callable[[str], Path]:
+    """The path of a Rocq source of gororoba-math (``NAME.v`` of rocq/quantum) at the commit of ci/gororoba_math.pin.
+
+    A test that reads it runs on demand (``audit``), since the pull-request suite reaches no other repository. An
+    unset GOROROBA_MATH skips the test unless GOROROBA_MATH_REQUIRED=1; a checkout off the pin fails it.
+    """
+
+    def resolve(name: str) -> Path:
+        required = os.environ.get(math_sources.REQUIRED_VARIABLE) == "1"
+        if not os.environ.get(math_sources.ENVIRONMENT_VARIABLE) and not required:
+            pytest.skip(f"{math_sources.ENVIRONMENT_VARIABLE} is unset")
+        try:
+            math = math_sources.checkout(os.environ, ROOT)
+            return math_sources.resolve_reference(math_sources.reference_for(name), math, ROOT)
+        except math_sources.MathSourcesError as error:
+            pytest.fail(str(error))
+
+    return resolve
