@@ -7,6 +7,10 @@ constant that names proofs/NAME.v of this repository; this runner points that co
 $GOROROBA_MATH/rocq/quantum/NAME.v and calls the producer's main, so the generated text, the markers and the
 --check comparison are the producer's own.
 
+A producer of the Gaussian-integer certificates (docs/evidence/a5-gaussian-certificates/) renders more than one
+source: its entry then lists the constants and the source names as two tuples of equal length, and every constant
+receives the location of the source at its position, under the rules above for one.
+
 --check (and any mode that only reads) needs the checkout at the commit of ci/gororoba_math.pin, the commit whose
 bytes the retained digests bind; the producer reads a copy of the bytes that math_sources.verified_bytes returned,
 so a source that is edited, symbolic-linked or off its retained digest fails before the comparison. --write
@@ -38,8 +42,10 @@ import math_sources  # noqa: E402
 
 # producer module -> (module constant holding the proof path, source name in rocq/quantum, the flag that writes,
 # directory of the module when it lies outside gororoba_quantum/ and scripts/). The producer accepts the write flag
-# and --check, and nothing else.
-GENERATORS = {
+# and --check, and nothing else. A producer of several sources lists its constants and their source names as
+# tuples of equal length.
+Names = str | tuple[str, ...]
+GENERATORS: dict[str, tuple[Names, Names, str, str | None]] = {
     "cd_sign_rocq_ast": ("PROOF", "CdSignPythonSemantics.v", "--write", None),
     "cd_sign_source_ast": ("PROOF", "CdSignSourceCertificate.v", "--write", None),
     "target_flip_certificate": ("CERTIFICATE_PATH", "TargetFlipN21.v", "--write", None),
@@ -48,6 +54,18 @@ GENERATORS = {
         "CdTowerCanonicalKernels.v",
         "--generate",
         "docs/evidence/cd-tower-kernel-certificates",
+    ),
+    "gaussian_certificates": (
+        ("G2_ROCQ_FILE", "ARC_ROCQ_FILE"),
+        ("CdTowerG2Derivations.v", "A5W8ArcMatrixRanks.v"),
+        "--write",
+        "docs/evidence/a5-gaussian-certificates",
+    ),
+    "render_span": (
+        "ROCQ_FILE",
+        "CdTowerG2DerivationSpan.v",
+        "--write",
+        "docs/evidence/a5-gaussian-certificates",
     ),
 }
 
@@ -76,6 +94,14 @@ def main(argv: list[str]) -> int:
         return 2
     name, options = argv[0], argv[1:]
     constant, source, write_flag, directory = GENERATORS[name]
+    constants = (constant,) if isinstance(constant, str) else constant
+    sources = (source,) if isinstance(source, str) else source
+    if len(constants) != len(sources) or not constants:
+        print(
+            f"math_source_generators: {name} lists {len(constants)} constants for {len(sources)} sources",
+            file=sys.stderr,
+        )
+        return 2
     refused = [option for option in options if option not in {"--check", write_flag}]
     if refused:
         print(
@@ -97,10 +123,12 @@ def main(argv: list[str]) -> int:
         # A write produces new bytes whose digest the retained records do not hold yet, so no digest comparison
         # applies; the target must be a plain file location inside the checkout, never a link out of it.
         try:
-            setattr(producer, constant, math_sources.writable_source(source, math))
+            targets = [math_sources.writable_source(each, math) for each in sources]
         except math_sources.MathSourcesError as error:
             print(f"math_source_generators: {error}", file=sys.stderr)
             return 2
+        for each_constant, target in zip(constants, targets, strict=True):
+            setattr(producer, each_constant, target)
         if hasattr(producer, "replace_text"):
             setattr(producer, "replace_text", replace_text)  # noqa: B010
         result = producer.main()
@@ -108,14 +136,15 @@ def main(argv: list[str]) -> int:
     # Every other mode reads the source: the producer reads a copy of the bytes that verified_bytes returned, so
     # the comparison covers the digest-checked content and not a second read of the checkout.
     try:
-        data = math_sources.verified_bytes(source, math, ROOT)
+        contents = [math_sources.verified_bytes(each, math, ROOT) for each in sources]
     except math_sources.MathSourcesError as error:
         print(f"math_source_generators: {error}", file=sys.stderr)
         return 2
     with tempfile.TemporaryDirectory(prefix="math-source-") as scratch:
-        copy = Path(scratch) / source
-        copy.write_bytes(data)
-        setattr(producer, constant, copy)
+        for each_constant, each, data in zip(constants, sources, contents, strict=True):
+            copy = Path(scratch) / each
+            copy.write_bytes(data)
+            setattr(producer, each_constant, copy)
         try:
             result = producer.main()
         except ValueError as error:

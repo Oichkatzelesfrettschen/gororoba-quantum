@@ -42,6 +42,19 @@ def bundles(root: Path) -> list[str]:
     return sorted(path.parent.name for path in (root / "docs/evidence").glob("*/replay_rocq.sh"))
 
 
+def digest_ledgers(root: Path) -> list[str]:
+    """The evidence directories whose .sha256 ledgers hold a `proofs/NAME.v` row: math_sources.recorded_digests reads
+    every one of them before a replay receives a source, whether or not the directory holds a replay script."""
+    row = re.compile(r"^[0-9a-f]{64} [ *]proofs/[A-Za-z0-9_]+\.v$", re.MULTILINE)
+    return sorted(
+        {
+            path.parent.name
+            for path in (root / "docs/evidence").glob("*/*.sha256")
+            if row.search(path.read_text(encoding="utf-8"))
+        }
+    )
+
+
 def constant(source: str, name: str) -> str:
     match = re.search(rf"^{name} = (.+)$", source, re.MULTILINE)
     if match is None:
@@ -138,7 +151,7 @@ def check(root: Path) -> list[str]:
         for directory in sorted(directories):
             if not any(directory == cone or directory.startswith(cone + "/") for cone in fetched):
                 errors.append(f"the proofs.yml fetch does not cover {directory}, which {name} hashes")
-    required = [f"docs/evidence/{name}/**" for name in bundles(root)]
+    required = [f"docs/evidence/{name}/**" for name in sorted({*bundles(root), *digest_ledgers(root)})]
     required += ["scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
     required += ["ci/gororoba_math.pin", "ci/fetch_gororoba_math.sh", "gororoba_quantum/math_sources.py"]
     required += ["scripts/math_source_generators.py", "docs/state/research_state.json"]
