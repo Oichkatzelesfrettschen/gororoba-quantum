@@ -517,9 +517,9 @@ exhausted (`A5-042`, `A5-048`, `A5-070`, `A5-071`, `A5-328`).
 | --- | ---: | --- | --- | --- |
 | `X+->N-`, `X-->N+` | 3 | 2, 1: the plane `P^2`, `K2 = 0` | every degree at 32009 and 32029 (`A5-001`) | decided: `Q(i)[y1, y2, y3]` (`A5-270`) |
 | `X+->N+`, `X-->N-` | 15 | 3, 12: one threefold; the scheme has nilpotents `y1`, `y5`, `y6` | every degree (`A5-304`) | decided: 69 quadrics over `Q(i)` reducing to `K2` (`A5-305`) |
-| `Iso->N+`, `Iso->N-` | 17 | 4, 23: one geometrically prime fourfold, Cohen-Macaulay | every degree (`A5-007`, `A5-067`) | open: dimension at least 5 and the 68 quadrics (`A5-293`, `A5-294`) |
-| `W8->N+`, `W8->N-` | 24 | 5, 50: two fivefolds of degrees 20 and 30, Cohen-Macaulay | every degree (`A5-008`, `A5-066`) | open: dimension at least 6 (`A5-293`) |
-| `E8bar->N+`, `E8bar->N-` | 21 | 4, 11: a fourfold of degree 11 and a threefold of degree 4 | degrees 1 to 7 (`A5-009`, `A5-335`, `A5-339`) | open: lower bounds on `h_d` for `d` at most 7 (`A5-346`) |
+| `Iso->N+`, `Iso->N-` | 17 | 4, 23: one geometrically prime fourfold, Cohen-Macaulay | every degree (`A5-007`, `A5-067`) | header slice open: dimension at least 5 and the 68 quadrics (`A5-293`, `A5-294`); weight slice decided: `Q(i)[y]/K` (`A5-446`, `A5-475`) |
+| `W8->N+`, `W8->N-` | 24 | 5, 50: two fivefolds of degrees 20 and 30, Cohen-Macaulay | every degree (`A5-008`, `A5-066`) | header slice open: dimension at least 6 (`A5-293`); weight slice decided: `Q(i)[y]/K` (`A5-448`, `A5-475`) |
+| `E8bar->N+`, `E8bar->N-` | 21 | 4, 11: a fourfold of degree 11 and a threefold of degree 4 | degrees 1 to 7 (`A5-009`, `A5-335`, `A5-339`) | header slice open: lower bounds on `h_d` for `d` at most 7 (`A5-346`); weight slice decided: `Q(i)[y]/K` in every degree (`A5-457`, `A5-503`) |
 | `E8bar->VB` | 10 | 3, 7: threefolds of degrees 3 and 4, Cohen-Macaulay | every degree (`A5-005`) | open: the 21 quadrics at 32029 (`A5-315`) |
 
 The record binds, for each row, the Hilbert and Cohen-Macaulay rows of `k2-hilbert.jsonl` and `k2-cm.jsonl` and the
@@ -584,8 +584,10 @@ the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-447`)
 conditional on `A5-421` and the slice premise of `A5-423`, the complex point set of the `E8bar` fiber, the union of
 both components of its quadric scheme after a complex-linear change of generators
 ([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
-`A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open is the
-scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-449` shows is not reduced.
+`A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open on the
+header slices is the scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-449` shows is not
+reduced. On the weight slice the three fiber cones are `S / K` as schemes without the slice premise (`A5-457`,
+`A5-475`), and `A5-503` describes the `E8bar` fiber.
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
@@ -928,7 +930,7 @@ ring of a quadric threefold.
 **Inferred (`A5-455`, conditional on `A5-425`, with `K` inside `L` by `A5-474`):** the relation ideal `L` lies between `K` and `R`,
 and it equals `K` at both minimal primes, where `K` is already prime. `L / K` is then a submodule of the rank-1
 torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every degree exactly when the nilradical
-`R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything open about the `E8bar` fiber cone
+`R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything that was open about the `E8bar` fiber cone
 above degree 7 (`A5-009`) is that one condition. A sufficient test needs no standard basis of the Rees ideal: a
 family of arcs in the slice germ whose limit points are dense in `V(A)` and along which one of the five nilpotent
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the

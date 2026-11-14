@@ -255,7 +255,8 @@ the closest entry and say what changed.
 ### E8-bar -> N+-: the defining ideal of the fiber cone by elimination from S[I T] / (m_R S) S[I T]
 
 - Question and decisive outcome: the kernel L of k[y_1..y_21] -> S[I T] / (m_R S) S[I T] for the E8-bar slice, where
-  I = I S is proved (A5-309). L = K2 closes A5-009 and gives h_6 = 1,666; a generator of L above degree 2 gives the
+  I = I S is proved (A5-309). L = K2 closes A5-009 on the header slice (on the weight slice A5-457 later proves
+  L = K by order functions) and gives h_6 = 1,666; a generator of L above degree 2 gives the
   true h_6 between 1,526 and 1,666. A run that does not finish proves nothing.
 - Formulation: one elimination of T from (y_j - T G_j) over the polynomial model of S (variables w, rho, sigma, zeta,
   a, b, u with u (1 + w) = 1 and b^2 = F), then elimination of the seven S variables from the result plus m_R S, in a
@@ -782,4 +783,3 @@ the closest entry and say what changed.
 - Outcome: 10 min 57 s for both basepoints; a first exact pass in scratch took 3.7 s to bound the locus in
   dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-500). Two traps are in A5-501: row
   sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.
-

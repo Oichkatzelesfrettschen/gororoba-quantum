@@ -13,8 +13,11 @@ Q(i) in Singular:
   the Jacobian matrix (every minor vanishes on the singular locus, so any subset bounds it from outside). On each
   component W of that set the singular locus is cut out exactly by the Fitting ideal of the Jacobian cokernel modulo
   W, which Singular computes from a pruned presentation; the union over the components is the singular locus. Each
-  resulting component Z carries a two-sided bound of the generic Jacobian rank on Z: the rank at one point of Z from
-  below, and nf minus the rank at that point of the syzygy module of the Jacobian modulo Z from above.
+  resulting component Z carries a two-sided bound of the generic Jacobian rank on Z, valid when Z is linear, which
+  the checker requires (degree 1): the entries of the Jacobian reduced modulo Z then lie in the free coordinates of
+  Z, so values for those coordinates give a point of Z; the rank there bounds the generic rank from below, and nf
+  minus the rank there of the syzygy module of the reduced Jacobian bounds it from above. On a nonlinear component
+  entrywise reduction would not give a point of the component, and the bound would not hold.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_component_geometry.py [--check]
 """
@@ -40,7 +43,6 @@ INPUTS = ("e8_component_geometry.py", "weight_slice_fiber_relations.py")
 WEIGHT_SLICE = HERE / "weight-slice-fiber-relations-result.json"
 ORBITS = ("N-", "N+")
 GENERATORS = 21
-MAIN_DIMENSION = 5
 # What every cell holds. Pairs are (dimension, degree) of the affine cone. A singular component is
 # (dimension, degree, generic Jacobian rank from below, from above, inside the main prime, inside the sum of the two
 # minimal primes, inside the embedded prime, equal to the vertex of the embedded prime), sorted.
@@ -72,6 +74,21 @@ EXPECTED: dict[str, Any] = {
     ],
     "main_free_variables": 12,
     "main_codimension": 7,
+    # Each walk: (row family, minors tried so far, minors kept so far, dimension and degree of the bound after it).
+    "walk": [[1, 198000, 1394, 3, 13], [2, 435600, 1657, 3, 4]],
+    # Each component of the outer bound: (dimension, degree, dimension of its singular part).
+    "bound_components": 8,
+    "bound_component_dimensions": [
+        [2, 1, 0],
+        [2, 1, 0],
+        [2, 1, 1],
+        [2, 1, 1],
+        [2, 1, 1],
+        [3, 1, 1],
+        [3, 1, 1],
+        [3, 1, 2],
+    ],
+    "bound_components_with_smooth_points": 8,
     "smooth_rank": [7, 7],
     "singular_locus": [2, 1],
     "singular_components": [
@@ -171,7 +188,7 @@ for(w=1;w<=size(MU);w++){ W=std(MU[w]); Jr=reduce(J,W); Mp=prune(module(transpos
   F=fitting(Mp,nf-cd); S=std(F+W);
   print("RESULT bound_component "+string(dim(W))+","+string(mult(W))+","+string(dim(S)));
   if(dim(S)<dim(W)){ smooth++; }
-  if(dim(S)>=1){ LS=minAssGTZ(S); for(q=1;q<=size(LS);q++){ acc=intersect(acc,LS[q]); } } }
+  if(dim(S)>=0){ LS=minAssGTZ(S); for(q=1;q<=size(LS);q++){ acc=intersect(acc,LS[q]); } } }
 print("RESULT bound_components_with_smooth_points "+string(smooth));
 acc=std(acc); print("RESULT singular_locus "+string(dim(acc))+","+string(mult(acc)));
 list LA=minAssGTZ(acc); ideal Z;
@@ -212,7 +229,7 @@ def derived(cell: dict[str, Any]) -> dict[str, bool]:
     return {
         "main_is_cohen_macaulay": cohen_macaulay,
         "main_is_gorenstein": cohen_macaulay and last == 1,
-        "main_is_normal": cohen_macaulay and MAIN_DIMENSION - cell["singular_locus"][0] >= 2,
+        "main_is_normal": cohen_macaulay and cell["main_prime"][0] - cell["singular_locus"][0] >= 2,
     }
 
 

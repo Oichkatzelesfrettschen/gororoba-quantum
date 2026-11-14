@@ -122,6 +122,21 @@ def _bound(orbit: str, index: int, value: list[int]) -> Mutation:
     return mutate
 
 
+def _walk(orbit: str, index: int, value: list[int]) -> Mutation:
+    def mutate(record: dict[str, Any]) -> None:
+        _cell(record, orbit)["walk"][index] = value
+
+    return mutate
+
+
+def _one_bound_component(record: dict[str, Any]) -> None:
+    """One component in place of eight, with every aggregate count adjusted to agree with it."""
+    cell = _cell(record, "N-")
+    cell["bound_component_dimensions"] = [[3, 1, 2]]
+    cell["bound_components"] = 1
+    cell["bound_components_with_smooth_points"] = 1
+
+
 def _swap_generators(record: dict[str, Any]) -> None:
     cell = _cell(record, "N-")
     cell["singular_generators"] = cell["singular_generators"][::-1]
@@ -175,6 +190,11 @@ MUTATIONS: dict[str, tuple[Mutation, str]] = {
         _set("N+", "bound_components_with_smooth_points", 0),
         "bound components with smooth points",
     ),
+    "a bound component of degree two": (_bound("N-", 7, [3, 2, 2]), "bound_component_dimensions"),
+    "all bound components replaced consistently": (_one_bound_component, "bound_component_dimensions"),
+    "kept-minor count of a walk changed": (_walk("N-", 1, [2, 435600, 1600, 3, 4]), "walk differs"),
+    "tried-minor count of a walk changed": (_walk("N+", 0, [1, 0, 1394, 3, 13]), "walk differs"),
+    "terminal bound of a walk changed": (_walk("N-", 1, [2, 435600, 1657, 4, 2]), "walk differs"),
     "bound components removed": (
         lambda record: _cell(record, "N-").pop("bound_component_dimensions"),
         "outer bound are missing",
