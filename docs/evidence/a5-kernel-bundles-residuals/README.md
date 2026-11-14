@@ -382,14 +382,209 @@ fixtures), and row 6 shows that nullity 12 does not force a large fiber. The gri
 record holds no equations for the locus `dim L > 2`; `A5-438` adds real points with non-real split coordinates
 to the second part.
 
-`hypothesis` (`A5-434`, open): the sampled planes span the quadrics of each image, so that the images carry 313,
-178 and 1,575 quadric equations beyond the Plucker quadrics, the first two images differ and the third lies in a
-linear space of codimension 15; the record holds no certificate that the deterministic samples are general for
-degree 2. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
+The count of quadrics on each image (`A5-434`, superseded by `A5-460`) is tested and taken apart in the next
+subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
 each stratum outside a proper closed subset.
+
+#### The quadrics of the Gauss images
+
+`gauss_image_quadrics.py` (record `gauss-image-quadrics-result.json`) works modulo 32029 at 760 points `z` of each
+stratum, in the frame of the kernel vectors, where `Q` is the sum of the squares of the 15 coordinates, and
+exactly over `Q(i)` at the 66 fixtures. `M(t) v` is the imaginary part of the product `t v` of two imaginary
+elements of the 16-dimensional Cayley-Dickson algebra, so `K(z) = ker M(z)` is the space of imaginary elements that
+commute with `z`.
+
+**Proved** (`A5-459`): the kernel plane at `(z, w)` is `K(z) n w-perp` and `w` is free, so the image is the union
+of the projective planes `P(Lambda^2 K(z))`, each linear in the Plucker space. A quadric vanishes on the image
+exactly when its polar form vanishes on `S^2(Lambda^2 K(z))` for every `z`: the quadrics beyond the 1,365 Plucker
+quadrics are the annihilator of the span of these six-dimensional spaces in a space of dimension 4,200.
+
+Sampled (`A5-460`, survives): the six products of a basis of `Lambda^2 K(z)` at the 760 points have the ranks of
+the first table, whose planes are another draw of the same sampler under another label.
+
+| stratum | rank | saturates at | first `rank` planes of the first draw | both draws | with the exact fixtures | quadrics beyond Plucker |
+|---|---|---|---|---|---|---|
+| `V(Q)` minus `V(G)` | 3,887 | 648 three-planes | 3,887 | 3,887 | 3,887 (12 fixtures) | 313 |
+| `V(G)` minus `V(Q)` | 4,022 | 671 three-planes | 4,022 | 4,022 | 4,022 (52 fixtures) | 178 |
+| `V(Q) n V(G)` | 2,625 | 438 three-planes | 2,625 | 2,625 | 2,625 (2 fixtures) | 1,575 |
+
+The rank grows by six per three-plane until it saturates, and the fixtures, which no sampler drew, add nothing.
+Each rank is a lower bound for the dimension of the degree-2 part of the coordinate ring over `F_32029`; the
+count of quadrics stays an upper bound, since the vanishing of a quadric on the whole image is an identity of
+degree 12 in `z` that the record does not prove, and the record holds no lift of the points to characteristic 0.
+
+Sampled and exact at the fixtures (`A5-461`, survives): the product `k, k' -> M(k) k'` on `K(z)`, skew because
+`M(u) v = -M(v) u` and equal to half the commutator, has one type per stratum at all 760 points and at all 66
+fixtures.
+
+| stratum | products `M(k) k'` | double products | type of `K(z)` |
+|---|---|---|---|
+| `V(Q)` minus `V(G)` | multiples of `z` | zero | Heisenberg algebra with center `z` |
+| `V(G)` minus `V(Q)` | one line outside `K(z)`, not the line of `z` | nonzero | not closed |
+| `V(Q) n V(G)` | zero | zero | abelian |
+
+Write `mu(u ^ v) = M(u) v`, a linear map from `Lambda^2 V` to `V` of rank 15, and `Pi(p)` for the skew matrix of
+a bivector `p`. Two identities govern the sandwiches `Pi(p) D Pi(p)` of a symmetric form `D`:
+
+- **Proved** (`A5-467`): a form that vanishes on a three-plane `K` gives `Pi(p) D Pi(p) = 0` on `Lambda^2 K`,
+  because every term of the expansion carries a value of `D` on `K`. The norm `N` vanishes on `K(z)` at every
+  nullity-4 point of `V(Q)` minus `V(G)` (`A5-440`), so the 120 entries of `Pi(p) N Pi(p)` are quadrics on that
+  image, independent modulo the Plucker quadrics (rank 1,485 of the two families).
+- **Proved** (`A5-470`): the combination of the entries with a symmetric `c` is minus the mixed discriminant of
+  `c` and `D` on the plane of `p`. Where `D` has rank one on `K`, `D = l^2`, the combination vanishes on
+  `Lambda^2 K` exactly when `c` vanishes on the plane `K n ker l` (characteristic other than 2). A form that
+  vanishes on no `K(z)` still yields quadrics on the image where its restrictions are degenerate.
+
+Over `F_32029` at most one symmetric form vanishes on every `K(z)` of a stratum inside `V(Q)`, the norm, and none
+on `V(G)` minus `V(Q)` (`A5-468`, proved from the spans of `S^2 K(z)`); the norm does vanish at the sampled points
+and the two fixtures of `V(Q) n V(G)`, and at every nullity-4 point of that stratum in characteristic 0 (`A5-489`).
+
+The doubling forms are the three diagonal forms `N1 = t_1^2 + ... + t_7^2`, `N2 = t_8^2`,
+`N3 = t_9^2 + ... + t_15^2` of the decomposition `O + R e_8 + O e_8` of the imaginary units as the double of the
+octonions. Their ranks on `K(z)` separate the two hypersurfaces (`A5-469`, survives):
+
+| stratum | rank of `N`, `N1`, `N2`, `N3` on `K(z)`, 760 points | exact at the fixtures |
+|---|---|---|
+| `V(Q)` minus `V(G)` | 0, 3, 1, 3 | 0, 3, 1, 3 at 12 |
+| `V(G)` minus `V(Q)` | 1, 1, 1, 1 | 1, 1, and 0 or 1 for `N2` and `N3`, at 52 |
+| `V(Q) n V(G)` | 0, 1, 1, 1 | 0, 1, 0, 1 at 2 |
+
+The table lists, per family of quadrics, how many independent ones it adds to the families before it.
+
+| family | written | `V(Q)` minus `V(G)` | `V(G)` minus `V(Q)` | `V(Q) n V(G)` |
+|---|---|---|---|---|
+| Plucker quadrics | 1,365 | 1,365 | 1,365 | 1,365 |
+| vanishing linear form times coordinate | 105 per form | no form | no form | 1,455 (15 forms) |
+| coordinates of `p ^ mu(p)` | 455 | 98 | 3 | 0 |
+| `mu(p)_a mu(p)_b` | 120 | 0 | 3 | 0 |
+| `Pi(p) M(e_j) mu(p)` | 225 | 119 | 14 | 0 |
+| entries of `Pi(p) M(e_j) Pi(p)` | 1,575 | 0 | 133 | 0 |
+| entries of `Pi(p) N Pi(p)`, `N` the norm | 120 | 96 | no form | 96 |
+| entries of `Pi(p) D Pi(p)`, `D` the three doubling forms | 360 | 0 | 25 | 24 |
+| total | | 1,678 | 1,543 | 2,940 |
+| quadrics on the sampled span | | 1,678 | 1,543 | 2,940 |
+| outside the families | | 0 | 0 | 0 |
+
+On `V(Q)` minus `V(G)` four families span every quadric of the sample (`A5-463`), and the Heisenberg product
+explains the two middle ones: `mu(p) = omega(p) z` puts `p ^ mu(p)` in `Lambda^3 K(z)`, whose span over the
+stratum has dimension 356 of 455, which leaves 99 linear forms; and `Pi(p) M(e_j) z = -Pi(p) M(z) e_j = 0`
+because `p` lies in `Lambda^2 ker M(z)`. The Plucker quadrics with all entries of `Pi(p) M(e_j) mu(p)` and of
+`Pi(p) N Pi(p)` already have rank 1,678 as whole families. On `V(Q) n V(G)` the 15 linear forms that cut the span
+of the image down to dimension 90 are the coordinates of `mu` (`A5-464`). On the two strata inside `V(G)` the
+families built from `mu`, the blocks and the norm leave 25 and 24 quadrics, and the doubling forms supply all of
+them (`A5-469`): 57 and 152 combinations of the 360 entries vanish. The sign changes `e_k -> chi(k) e_k` of the
+coordinates preserve `M`, `Q` and `G`, and the 25 and 24 lie 3 and 2 in the trivial character, one in each of
+the characters 1 to 8 and two in each of the characters 9 to 15. A family built from an equation of `V(G)` was
+the first reading of that split and is refuted by the doubling forms, which use none (`A5-466`).
+
+**Proved in characteristic 0** (`A5-479`): at every nullity-4 point `z` of `V(Q)` the product of two kernel
+vectors is a multiple of the point, `M(k) k'` in `C z`, and on `V(Q) n V(G)` it is zero. The entries of
+`Pi(p) M(e_j) mu(p)` and of `Pi(p) N Pi(p)` therefore vanish identically on the image of `V(Q)` minus `V(G)`,
+and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, gives at least 313 quadrics beyond
+Plucker in characteristic 0 (`A5-481`). The commutant of a null imaginary octonion has the same Heisenberg type
+(test).
+
+**Proved** (`A5-494`, every field): the tensor of the order-12 Pfaffians of `M(z)` has a polynomial formula, and at
+rank 12 in odd characteristic it is the product on `K(z)`. For a triple `I` of indices
+let `P_I(z)` be the Pfaffian of `M(z)` without the rows and columns of `I`, with the sign of the shuffle
+`(I, complement)`, and let `tau(a ^ b ^ c) = Im(a b) (x) c + Im(b c) (x) a + Im(c a) (x) b`. The tensor
+`T(z) = tau(sum_I P_I(z) e_I)` has entries of degree 6 in `z` with integer coefficients, and
+
+`T(z) = -grad(Q G)(z) (x) z - Q(z) G(z) I` at every point `z`.
+
+`P(z)` is the dual of the twelve-form `sum_J Pf(M_J) t_J`, the sixth divided power of the two-form of `M(z)`. Its
+coordinates transform under congruence by an identity of integer polynomials, and the block normal form of an
+alternating matrix of rank 12 makes it the product of twelve coordinates, so over every field `P(z)` at a rank-12
+point is a nonzero multiple of the three-vector of `K(z)`, and there `T(z) = c M(k_1) k_2 (x) z` with `c` nonzero
+for a basis `z, k_1, k_2` of `K(z)` (`A5-490`). On the zero-divisor variety `Q G = 0`, so the kernel commutator is the
+gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `V(Q)` (`A5-486`) and
+`-Q grad G` on `V(G)` (`A5-491`). The consequences:
+
+- The product is nonzero at every nullity-4 point of `V(Q)` minus `V(G)`, the points with `N1(z) = 0` included,
+  so `K(z)` is a Heisenberg algebra with center `C z` at each of them (`A5-487`, which closes the hypothesis
+  `A5-480`), and in every odd characteristic at every rank-12 point (`A5-495`).
+- The product is nonzero at every nullity-4 point of `V(G)` minus `V(Q)` (`A5-492`): the singular points of
+  `V(G)` off `V(Q)` are the points with `t_8 = 0`, `N1 = N3` and `p = 0`, where rank `M(z)` is at most 10
+  (`A5-493`). At nullity 4 the product vanishes exactly on `V(Q) n V(G)`. The rank bound and the nonvanishing
+  hold in every odd characteristic (`A5-497`, `A5-498`, below).
+- Every point of `V(Q)` with rank `M(z)` below 12 lies in `V(G)`, so every point of `V(Q)` minus `V(G)` has
+  nullity exactly 4 (`A5-488`).
+- `K(z)` is null at every nullity-4 point of `V(Q) n V(G)` as it is on `V(Q)` minus `V(G)`, by closure through
+  the contraction of `P(z)` with itself (`A5-489`, which closes the sampled `A5-462`).
+
+The proof has three steps. On `V(Q)` and on `V(G)` the identity `T = -grad(Q G) (x) z` is a polynomial identity
+on an irreducible hypersurface: `T` is equivariant under `G2(C)`, the slices of the paragraph on the three proofs
+below meet a dense set of orbits, and on the parametrizations `FQ`, `FG+` and `FG-` each entry of the difference
+has bounded degree in each generator (6 in each of `A`, `B`, `C`; 6 in `m` and 12 in `u`) and is homogeneous, so
+its exact vanishing on a 7 x 7 grid at `C = 1` and on two 7 x 13 grids decides it. The difference
+`T + grad(Q G) (x) z` then vanishes on `V(Q G)`, has degree 6, and so equals `Q G` times a matrix of constants,
+which two exact points off the variety give as `-I`. `kernel_product_pfaffian_tensor.py` holds the grids, three
+exact points with `N1(z) = 0`, three singular points of `V(G)`, the two general points and the 66 fixtures.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check` (exact
+over `Q(i)`; 98.8 CPU seconds, 121 seconds of wall time and 84 MiB on two workers, measured with the host at
+load average 28 from unrelated jobs; Python 3.14.9 with sympy 1.14.0).
+
+**Proved in odd characteristic** (`A5-497`): at a singular point `z = (a, 0, b)` of `V(G)` off `V(Q)`, where
+`N(a, b) = 0` and `N(a) = N(b) = nu` is nonzero, the kernel contains an explicit subspace of dimension 5. For an
+octonion `y` let `x = [a, b, y]` be the associator; then `k(y) = (nu x, 0, -(b x) a)` lies in `K(z)`, and `z` with
+the `k(y)` spans a space of dimension 5, so rank `M(z)` is at most 10. The octonion associator alternates,
+vanishes on the quaternion subalgebra `H = span(1, a, b, a b)` and runs through its orthogonal complement, so the
+two components of the product `z k(y)` cancel term by term. That subspace is the whole kernel (`A5-499`): a
+sedenion `(c, d)` with `z (c, d) = 0` has `c = -a (conj(d) b) / nu`, and `d` satisfies
+`nu d a = b ((b d) a)`, which on the associative `H` reads `2 nu d a = 0` and forces `d = 0`; the solutions `d`
+therefore meet `H` in zero and span at most 4 dimensions, and `K(z)` is the line of `z` plus the imaginary
+annihilators of `z`, so rank `M(z)` equals 10 and `z` with the `k(y)` spans `K(z)`, a basis when `y` runs
+through a basis of the complement of `H`. The formula has integer coefficients and uses only the alternative law and the
+norm, so it replaces the orbit argument of `A5-493` and settles the hypothesis `A5-496`. With `A5-495` the
+product on `K(z)` is nonzero at every rank-12 point of `V(G)` minus `V(Q)` over every field of characteristic
+other than 2 (`A5-498`). `singular_kernel_formula.py` checks the formula over the integers at 6,524 pairs
+`(a, b)` with entries in `-1, 0, 1`, and the dimension 5 and rank 10 over `Q` at all of them and modulo 3, 5
+and 7 at every pair whose norm stays nonzero modulo the prime: 924, 6,524 and 6,524 pairs, since the 5,600 pairs
+of norm 3 leave the locus modulo 3.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/singular_kernel_formula.py --check` (integer
+arithmetic; 50.8 CPU seconds, 34 seconds of wall time and 89 MiB on two workers with the host at load average 25
+from unrelated jobs, Python 3.14.9 with sympy 1.14.0).
+
+**Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
+`([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
+is cut out by `d a = b c` and `[a, c] = conj(d) b - conj(b) d`, and the multiplicative octonion norm gives
+`N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z)` on `K(z)` at every point.
+
+**Proved in characteristic 0** (`A5-476`): at every nullity-4 point of `V(G)` the three doubling forms are
+multiples of one square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`. Where `N1(z)` is nonzero (`A5-477`),
+`K(z) = C z + K0(z)` with `K0(z) = K(z) n ker N1(., z)`, `t_8` vanishes on `K0(z)`, and every vector of `K0(z)`
+is a pair `(c, d')` of null imaginary octonions with product `c d' = 0`. The 25 symmetric forms these conditions
+give, the 15 products `t_8 t_k`, the norms `N1` and `N3` and the 8 coordinates of `c d'`, therefore vanish on
+`K0(z)`, and by `A5-470` each of their combinations `trace(c Pi(p) D Pi(p))` with a doubling form `D` vanishes
+on `Lambda^2 K(z)` at every nullity-4 point of `V(G)` (`A5-483`).
+
+Sampled (`A5-482`, survives): at the sampled points `t_8` is a nonzero multiple of `N1(., z)` on `K(z)`, and
+the symmetric forms that vanish on every sampled `K0(z)` are exactly those 25. That the combinations of
+`A5-483` are all of the 25 and 24 quadrics the other families leave is the sampled count of `A5-469`.
+
+The hypothesis `N1(z)` nonzero is needed (`A5-478`): `V(G)` has nullity-4 points with `N1(z) = 0`, the identity
+makes `N1(., z)` vanish on all of `K(z)` there, and at the exact point
+`z = (0, 1, i, 0, 0, 0, 0, 2 i, -2, 0, -2, 0, 0, 0, 0)` the vector `z` of `K(z)` has `t_8 = 2 i`. Two earlier
+forms of the statement are superseded: `A5-473` named the plane by `ker t_8`, which is all of `K(z)` at the 39
+of the 54 exact fixtures with `z_8 = 0` (`A5-484`), and `A5-485` omitted the hypothesis.
+
+The three proofs share one shape. `G2(C)` acts on the doubling by `(a, b) -> (g a, g b)` and preserves the
+block, the kernel, the doubling forms, `Q` and `G`. Up to scale and that action, a point with `N1` and `Delta`
+nonzero is `(e_1, beta + lambda e_1 + s e_2)` with the parameters on a quadric cone (`V(G)`) or a quadric
+surface (`V(Q)`), because the orbit of `(e_1, e_2)` is dense in the orthonormal pairs (the derivations have
+rank 11 on it). `kernel_plane_identities.py` checks each statement over the function field of that slice, and
+the statements are closed conditions on the open set of nullity-4 points, so they hold at every one.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py --check` (exact over
+`Q(i)` and its function fields; 40 CPU seconds and 87 MiB on two workers, 38 seconds of wall time, Python 3.14.9
+with sympy 1.14.0).
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 357 CPU seconds and 3.4 GiB on two workers under an 8 GiB memory scope, 3 minutes 14 seconds of wall time, same versions and host as the last replay).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
 

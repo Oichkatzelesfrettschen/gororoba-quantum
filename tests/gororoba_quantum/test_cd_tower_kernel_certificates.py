@@ -1,4 +1,5 @@
-"""The kernel certificates of proofs/CdTowerCanonicalKernels.v against cd_core and the A_5 strata representatives.
+"""The kernel certificates of CdTowerCanonicalKernels.v (gororoba-math, rocq/quantum) against cd_core and the A_5
+strata representatives.
 
 docs/evidence/cd-tower-kernel-certificates/certificates.json holds, for the canonical point y of each of the twelve
 orbits of nullity 8, 12 and 16, the integer data (d, P, V, C) with L V = 0, d I = P L + V C and C V = d I_n for the
@@ -11,8 +12,11 @@ mutated inputs to fail.
 
 import json
 import sys
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "docs/evidence/cd-tower-kernel-certificates"))
@@ -83,9 +87,12 @@ def test_modular_nullity_equals_the_certified_one_exactly_off_the_scalar() -> No
         raise AssertionError(f"modular nullities contradict the certificates: {wrong}")
 
 
-def test_rocq_file_is_the_rendering_of_the_certificates() -> None:
-    if kc.ROCQ_FILE.read_text(encoding="utf-8") != kc.render(records()):
-        raise AssertionError("proofs/CdTowerCanonicalKernels.v differs from the rendering of certificates.json")
+@pytest.mark.audit
+def test_rocq_file_is_the_rendering_of_the_certificates(math_source: Callable[[str], Path]) -> None:
+    if math_source("CdTowerCanonicalKernels.v").read_text(encoding="utf-8") != kc.render(records()):
+        raise AssertionError(
+            "CdTowerCanonicalKernels.v of gororoba-math differs from the rendering of certificates.json"
+        )
 
 
 def test_mutated_inputs_fail_the_identities() -> None:

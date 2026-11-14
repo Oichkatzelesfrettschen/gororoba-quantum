@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+from perceval.components import BSConvention
 from perceval.serialization import deserialize
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -28,13 +29,13 @@ def extract(run: Path):
     for entry in results["iterations"]:
         circ = deserialize(entry["result_fields"]["computed_circuit"])
         this, th, ph = [], [], []
-        for rng, comp in circ._components:
+        for modes, comp in circ:
             kind = type(comp).__name__
-            this.append((kind, rng[0]))
+            this.append((kind, modes[0]))
             params = comp.get_parameters(all_params=True)
             if kind == "BS":
                 th.append(float(params[0]))
-                if comp._convention.name != "Rx":
+                if comp.convention != BSConvention.Rx:
                     raise ValueError("BS convention is not Rx")
             else:
                 ph.append(float(params[0]))
@@ -48,8 +49,9 @@ def extract(run: Path):
     return topo, np.array(thetas), np.array(phis), np.array(perf)
 
 
-def cached(run: Path, name: str):
-    f = HERE / f"mesh_{name}.npz"
+def cached(run: Path, name: str, directory: Path = HERE):
+    """The extracted mesh of `run`, read from `directory`/mesh_NAME.npz, which is written there when absent."""
+    f = directory / f"mesh_{name}.npz"
     if not f.exists():
         topo, th, ph, perf = extract(run)
         np.savez(f, kinds=np.array([k for k, _ in topo]), lo=np.array([m for _, m in topo]), th=th, ph=ph, perf=perf)

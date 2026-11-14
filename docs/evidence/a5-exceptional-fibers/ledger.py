@@ -11,7 +11,8 @@ Columns (tab-separated, first line is the header):
 - id: stable key, `A5-` and a number; never reused.
 - kind: equation | structure | method | operational.
 - fibers: the pairs Y -> Z the claim concerns, comma-separated, or `all`.
-- primes: 32003, 32009, 32029, `both` (32009 and 32029), `char0`, or `any` (a statement independent of the field).
+- primes: 32003, 32009, 32029, `both` (32009 and 32029), `char0`, `odd` (every field of characteristic other
+  than 2), or `any` (a statement independent of the field).
 - claim: the statement, with equations written out.
 - status: one of STATUSES below.
 - basis: the deciding evidence in words (the measured numbers, the argument).
@@ -50,7 +51,7 @@ COLUMNS = [
     "updated",
 ]
 KINDS = {"equation", "structure", "method", "operational"}
-PRIMES = {"32003", "32009", "32029", "both", "char0", "any"}
+PRIMES = {"32003", "32009", "32029", "both", "char0", "odd", "any"}
 STATUSES = {
     "proved": "a complete argument or exact computation decides it over the stated fields",
     "certified": "a lower bound and a matching upper bound decide the value",
@@ -65,6 +66,7 @@ STATUSES = {
 # The statuses of a row whose falsifier or deciding test is still outstanding; `--open` lists these rows.
 OPEN_STATUSES = frozenset({"survives", "open", "stalled", "boundary"})
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+RELOCATED = re.compile(r"gororoba-math:rocq/quantum/[A-Za-z0-9_]+\.v")
 ID = re.compile(r"^A5-\d{3}$")
 
 
@@ -101,6 +103,8 @@ def check(data: list[dict[str, str]]) -> list[str]:
         if not paths:
             problems.append(f"{rid}: no evidence")
         for path in paths:
+            if RELOCATED.fullmatch(path):
+                continue  # a source of gororoba-math; the pull-request suite reaches no other repository
             if not (ROOT / path.split("#")[0]).exists():
                 problems.append(f"{rid}: evidence {path} does not exist")
         for sup in [x.strip() for x in r["supersedes"].split(";") if x.strip()]:

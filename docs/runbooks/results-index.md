@@ -58,7 +58,7 @@ is argued in
 ## Quantum evidence ledger
 
 `ledger` joins every registered evidence class with the tracked files under
-`results/`, `docs/evidence/` and `proofs/`. Claim evidence and documents outside
+`results/` and `docs/evidence/`. Claim evidence and documents outside
 those roots also enter the census. The JSON view carries full claim records,
 acquisitions, provider-qualified jobs, source-file digests and source-native
 library/provenance metadata. The A5 findings retain their own statements,
