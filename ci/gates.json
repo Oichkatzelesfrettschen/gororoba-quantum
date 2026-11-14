@@ -5424,7 +5424,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check",
       "name": "core-a5-kernel-product-pfaffian-tensor",
-      "seconds": 20.0,
+      "seconds": 52.0,
       "workers": 2,
       "replays": [
         "docs/evidence/a5-kernel-bundles-residuals/kernel-product-pfaffian-tensor-result.json"
