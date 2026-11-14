@@ -1,0 +1,2159 @@
+{
+ "control": {
+  "lower_kernel_is_z": true,
+  "rank_bordered": 16,
+  "rank_lower_block": 14
+ },
+ "exact_fixture_invariants": [
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 12,
+   "kernel_vector_nullity": 16
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  },
+  {
+   "fiber_dimension": 6,
+   "kernel_vector_nullity": 12
+  },
+  {
+   "fiber_dimension": 2,
+   "kernel_vector_nullity": 4
+  }
+ ],
+ "exact_fixture_orbit_ranks": [
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  13,
+  16,
+  16,
+  16,
+  13,
+  16,
+  16,
+  16,
+  13,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  16,
+  13,
+  16,
+  13,
+  16,
+  16,
+  13,
+  16,
+  16,
+  16,
+  16,
+  13,
+  16,
+  16,
+  13,
+  16,
+  16,
+  16,
+  16,
+  16,
+  13,
+  16,
+  13,
+  13
+ ],
+ "exact_fixture_plane_classes": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  3,
+  6,
+  7,
+  8,
+  9,
+  7,
+  8,
+  9,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  15,
+  16,
+  17,
+  18,
+  24,
+  25,
+  17,
+  18,
+  28,
+  29,
+  30,
+  31,
+  32,
+  33,
+  34,
+  35,
+  36,
+  37,
+  38,
+  39,
+  40,
+  41,
+  42,
+  43,
+  44,
+  45,
+  46,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  31,
+  54,
+  55,
+  35,
+  57,
+  58,
+  59,
+  60,
+  61,
+  62,
+  63,
+  64,
+  65
+ ],
+ "exact_fixture_ranks": [
+  {
+   "fixture": 0,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 1,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 2,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 3,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 4,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 5,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 6,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 7,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 8,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 9,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 10,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 11,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 12,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 13,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 14,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 15,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 16,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 17,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 18,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 19,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 20,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 21,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 22,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 23,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 24,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 25,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 26,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 27,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 28,
+   "gauss_rank": 12,
+   "real_rank": 24,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10
+  },
+  {
+   "fixture": 29,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 30,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 31,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 32,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 33,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 34,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 35,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 36,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 37,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 38,
+   "gauss_rank": 12,
+   "real_rank": 24,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10
+  },
+  {
+   "fixture": 39,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 40,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 41,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 42,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 43,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 44,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 45,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 46,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 47,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 48,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 49,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 50,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 51,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 52,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 53,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 54,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 55,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 56,
+   "gauss_rank": 10,
+   "real_rank": 16,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 57,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 58,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 59,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 60,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 61,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 62,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 63,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 64,
+   "gauss_rank": 13,
+   "real_rank": 22,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  },
+  {
+   "fixture": 65,
+   "gauss_rank": 15,
+   "real_rank": 26,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13
+  }
+ ],
+ "exact_fixtures": {
+  "first_coordinate_zero": 66,
+  "fixtures": 66
+ },
+ "field": "GF(32029), i = 9115",
+ "grid": {
+  "candidates": 41616,
+  "classes": [
+   [
+    "V(G) minus V(Q)",
+    13,
+    6,
+    12,
+    61
+   ],
+   [
+    "V(G) minus V(Q)",
+    13,
+    12,
+    16,
+    78
+   ],
+   [
+    "V(G) minus V(Q)",
+    16,
+    2,
+    4,
+    1042
+   ],
+   [
+    "V(G) minus V(Q)",
+    16,
+    2,
+    12,
+    8
+   ],
+   [
+    "V(G) minus V(Q)",
+    16,
+    12,
+    16,
+    14
+   ],
+   [
+    "V(Q) intersect V(G)",
+    16,
+    2,
+    4,
+    384
+   ],
+   [
+    "V(Q) intersect V(G)",
+    16,
+    6,
+    12,
+    4
+   ],
+   [
+    "V(Q) minus V(G)",
+    13,
+    2,
+    4,
+    371
+   ],
+   [
+    "V(Q) minus V(G)",
+    16,
+    2,
+    4,
+    1725
+   ]
+  ],
+  "exceptions": [
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     -1,
+     0,
+     -1,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     1,
+     0,
+     1,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     2,
+     0,
+     2,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     0,
+     -1,
+     0,
+     -1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     0,
+     1,
+     0,
+     1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     0,
+     2,
+     0,
+     2
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     -1,
+     0,
+     -1,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     1,
+     0,
+     1,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     2,
+     0,
+     2,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     -1,
+     0,
+     -1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     1,
+     0,
+     1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     2,
+     0,
+     2
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "fiber_dimension": 6,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     -1,
+     0,
+     -1,
+     0,
+     1,
+     0
+    ],
+    "stratum": "V(Q) intersect V(G)"
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "fiber_dimension": 6,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     -1,
+     0,
+     1,
+     0,
+     -1,
+     0
+    ],
+    "stratum": "V(Q) intersect V(G)"
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "fiber_dimension": 6,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     -1,
+     0,
+     0,
+     -1,
+     0,
+     1
+    ],
+    "stratum": "V(Q) intersect V(G)"
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "fiber_dimension": 6,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     -1,
+     0,
+     0,
+     1,
+     0,
+     -1
+    ],
+    "stratum": "V(Q) intersect V(G)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     -1,
+     1,
+     0,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     1,
+     -1,
+     0,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     -1,
+     -1,
+     0,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     0,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     0,
+     0,
+     -1,
+     -1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     0,
+     0,
+     1,
+     1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "fiber_dimension": 2,
+    "kernel_vector_nullity": 12,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     -1
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     2,
+     0,
+     1,
+     0
+    ],
+    "stratum": "V(G) minus V(Q)"
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "fiber_dimension": 12,
+    "kernel_vector_nullity": 16,
+    "orbit_rank": 16,
+    "split_point": [
+     1,
+     0,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     2,
+     0,
+     0,
+     0,
+     1,
+     0,
+     2
+    ],
+    "stratum": "V(G) minus V(Q)"
+   }
+  ]
+ },
+ "image": [
+  {
+   "linear_samples": 300,
+   "linear_span_dimension": 105,
+   "plucker_coordinates": 105,
+   "plucker_quadrics": 1365,
+   "quadric_monomials": 5565,
+   "quadric_ranks": [
+    3887,
+    3887
+   ],
+   "quadric_samples": [
+    5800,
+    6100
+   ],
+   "quadrics_vanishing": 1678,
+   "stratum": "V(Q) minus V(G)"
+  },
+  {
+   "linear_samples": 300,
+   "linear_span_dimension": 105,
+   "plucker_coordinates": 105,
+   "plucker_quadrics": 1365,
+   "quadric_monomials": 5565,
+   "quadric_ranks": [
+    4022,
+    4022
+   ],
+   "quadric_samples": [
+    5800,
+    6100
+   ],
+   "quadrics_vanishing": 1543,
+   "stratum": "V(G) minus V(Q)"
+  },
+  {
+   "linear_samples": 300,
+   "linear_span_dimension": 90,
+   "plucker_coordinates": 105,
+   "plucker_quadrics": 1365,
+   "quadric_monomials": 5565,
+   "quadric_ranks": [
+    2625,
+    2625
+   ],
+   "quadric_samples": [
+    5800,
+    6100
+   ],
+   "quadrics_vanishing": 2940,
+   "stratum": "V(Q) intersect V(G)"
+  }
+ ],
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "09acea2ad55c4ae05910ba35fa2fa9dac283d68adccd6e3d6cdddc0206ea3a7b",
+  "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+  "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194"
+ },
+ "pass": true,
+ "points": [
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "3724ed7fa604bf00a8ac46bc331e7615b5109aece8abb2a83e414bc6a4daeb91",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "3033a35d6cd98703ea1f0c8a91d23fd9cf000948f611c8163f5f9b5b46ba85db",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "f08665267da147e15cfb8b18f5dc7b1e737143d8da987003e45a09bbc6832cc5",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "810b94964a8a211b535fcd5140b552a060aea061a5be298e260af01e1dfeebc9",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) minus V(G)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "edfbc52ede94cfe22116d83a0a483c9decddf239e5629acce745cb76ea454809",
+   "rank_lower_block": 12,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "283334f111eea0c40b598f2c5dc142a4e471745deeb7ead08007912277e200e9",
+   "rank_lower_block": 12,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "71cddfb329e4964b38841379d4cea9bf5722f912783f42f8b6c2420706c6c397",
+   "rank_lower_block": 12,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 26,
+   "gauss_rank_w_free": 15,
+   "gauss_rank_w_on_conjugate_stratum": 15,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "23fb872dddd8434d7e1190fb0668ee85a3594bd952db58e98aaeab45c4893b13",
+   "rank_lower_block": 12,
+   "stratum": "V(G) minus V(Q)",
+   "tangent_dimension": 14,
+   "three_plane_map_rank": 13,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 24,
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "50435bc7dad87b2e6981f7da462cd58a996514f3af4dc65e1d5a69500d0f0ca4",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 24,
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "458220dba8ec637bc0342790f68e0cf06042ac2cb93e2e5f3c040d08151cbfde",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 24,
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "a6df46800cfc08e5acda3be6a4c6d14db0c7bab5a173e0618e44bb049fcb8601",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  },
+  {
+   "conjugate_pair_rank": 24,
+   "gauss_rank_w_free": 12,
+   "gauss_rank_w_on_conjugate_stratum": 12,
+   "kernels": [
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    },
+    {
+     "first_coordinate_zero": true,
+     "inside_lower_kernel": true,
+     "orthogonal_to_w": true,
+     "rank_bordered": 14
+    }
+   ],
+   "point_sha256": "de427c989625b28de7f1d7816c907776ba69bfa6d0f7bc97cc1bfea485849f40",
+   "rank_lower_block": 12,
+   "stratum": "V(Q) intersect V(G)",
+   "tangent_dimension": 13,
+   "three_plane_map_rank": 10,
+   "z_in_lower_kernel": true
+  }
+ ],
+ "schema": "a5-kernel-bundles-residuals-nullity4-gauss-image-v1",
+ "shared_plane_three_plane_spans": [
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4
+ ]
+}

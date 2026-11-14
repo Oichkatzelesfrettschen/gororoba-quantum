@@ -765,7 +765,7 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
+      "cmd": "rc=0; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' --exclude '^docs/evidence/a5-char0-transfer/kaggle/' --exclude '^docs/evidence/hardware-residuals/tuna-quandela/' --exclude '^docs/evidence/walk-control-scaffolding/' --exclude '^docs/evidence/vacuum_endpoint_information/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/a5-char0-transfer/kaggle || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/hardware-residuals/tuna-quandela || rc=1; MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/walk-control-scaffolding || rc=1; MYPYPATH=docs/evidence/vacuum_endpoint_information \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/vacuum_endpoint_information || rc=1; exit $rc",
       "name": "sources-122",
       "seconds": 11.5
     },
@@ -3382,6 +3382,13 @@
     {
       "suite": "sources",
       "cwd": ".",
+      "cmd": "shellcheck docs/evidence/cd-tower-ring-base-change/replay_rocq.sh",
+      "name": "sources-cd-tower-ring-base-change-replay-shellcheck",
+      "seconds": 0.1
+    },
+    {
+      "suite": "sources",
+      "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
       "seconds": 0.1
@@ -5309,6 +5316,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check",
+      "name": "core-a5-nullity4-gauss-image",
+      "seconds": 215.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-gauss-image-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
@@ -5400,6 +5418,20 @@
       ],
       "replays": [
         "docs/evidence/a5-kernel-attachments/boost-fiber-variation-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/boost_e8_vb_quadrics.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-boost-e8-vb-quadrics",
+      "seconds": 1200.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/boost-e8-vb-quadrics-result.json"
       ]
     },
     {
@@ -5777,6 +5809,20 @@
       "replays": [
         "docs/evidence/a5-char0-transfer/arc-jets-qi-e8-nm.json",
         "docs/evidence/a5-char0-transfer/arc-jets-qi-e8-np.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-fiber-components-qi",
+      "seconds": 722.0,
+      "workers": 2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-char0-transfer/e8-fiber-components-qi.json"
       ]
     },
     {
