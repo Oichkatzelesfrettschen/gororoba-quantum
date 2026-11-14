@@ -382,7 +382,7 @@ fixtures), and row 6 shows that nullity 12 does not force a large fiber. The gri
 record holds no equations for the locus `dim L > 2`; `A5-438` adds real points with non-real split coordinates
 to the second part.
 
-The count of quadrics on each image (`A5-434`, superseded by `A5-447`) is tested and taken apart in the next
+The count of quadrics on each image (`A5-434`, superseded by `A5-460`) is tested and taken apart in the next
 subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
 each stratum outside a proper closed subset.
 
@@ -394,12 +394,12 @@ exactly over `Q(i)` at the 66 fixtures. `M(t) v` is the imaginary part of the pr
 elements of the 16-dimensional Cayley-Dickson algebra, so `K(z) = ker M(z)` is the space of imaginary elements that
 commute with `z`.
 
-**Proved** (`A5-446`): the kernel plane at `(z, w)` is `K(z) n w-perp` and `w` is free, so the image is the union
+**Proved** (`A5-459`): the kernel plane at `(z, w)` is `K(z) n w-perp` and `w` is free, so the image is the union
 of the projective planes `P(Lambda^2 K(z))`, each linear in the Plucker space. A quadric vanishes on the image
 exactly when its polar form vanishes on `S^2(Lambda^2 K(z))` for every `z`: the quadrics beyond the 1,365 Plucker
 quadrics are the annihilator of the span of these six-dimensional spaces in a space of dimension 4,200.
 
-Sampled (`A5-447`, survives): the six products of a basis of `Lambda^2 K(z)` at the 760 points have the ranks of
+Sampled (`A5-460`, survives): the six products of a basis of `Lambda^2 K(z)` at the 760 points have the ranks of
 the first table, whose planes are another draw of the same sampler under another label.
 
 | stratum | rank | saturates at | first `rank` planes of the first draw | both draws | with the exact fixtures | quadrics beyond Plucker |
@@ -413,7 +413,7 @@ Each rank is a lower bound for the dimension of the degree-2 part of the coordin
 count of quadrics stays an upper bound, since the vanishing of a quadric on the whole image is an identity of
 degree 12 in `z` that the record does not prove, and the record holds no lift of the points to characteristic 0.
 
-Sampled and exact at the fixtures (`A5-448`, survives): the product `k, k' -> M(k) k'` on `K(z)`, skew because
+Sampled and exact at the fixtures (`A5-461`, survives): the product `k, k' -> M(k) k'` on `K(z)`, skew because
 `M(u) v = -M(v) u` and equal to half the commutator, has one type per stratum at all 760 points and at all 66
 fixtures.
 
@@ -426,22 +426,22 @@ fixtures.
 Write `mu(u ^ v) = M(u) v`, a linear map from `Lambda^2 V` to `V` of rank 15, and `Pi(p)` for the skew matrix of
 a bivector `p`. Two identities govern the sandwiches `Pi(p) D Pi(p)` of a symmetric form `D`:
 
-- **Proved** (`A5-454`): a form that vanishes on a three-plane `K` gives `Pi(p) D Pi(p) = 0` on `Lambda^2 K`,
+- **Proved** (`A5-467`): a form that vanishes on a three-plane `K` gives `Pi(p) D Pi(p) = 0` on `Lambda^2 K`,
   because every term of the expansion carries a value of `D` on `K`. The norm `N` vanishes on `K(z)` at every
   nullity-4 point of `V(Q)` minus `V(G)` (`A5-440`), so the 120 entries of `Pi(p) N Pi(p)` are quadrics on that
   image, independent modulo the Plucker quadrics (rank 1,485 of the two families).
-- **Proved** (`A5-457`): the combination of the entries with a symmetric `c` is minus the mixed discriminant of
+- **Proved** (`A5-470`): the combination of the entries with a symmetric `c` is minus the mixed discriminant of
   `c` and `D` on the plane of `p`. Where `D` has rank one on `K`, `D = l^2`, the combination vanishes on
   `Lambda^2 K` exactly when `c` vanishes on the plane `K n ker l`. A form that vanishes on no `K(z)` still yields
   quadrics on the image where its restrictions are degenerate.
 
 Over `F_32029` at most one symmetric form vanishes on every `K(z)` of a stratum inside `V(Q)`, the norm, and none
-on `V(G)` minus `V(Q)` (`A5-455`, proved from the spans of `S^2 K(z)`); the norm does vanish at the sampled points
-and the two fixtures of `V(Q) n V(G)` (`A5-449`, survives).
+on `V(G)` minus `V(Q)` (`A5-468`, proved from the spans of `S^2 K(z)`); the norm does vanish at the sampled points
+and the two fixtures of `V(Q) n V(G)` (`A5-462`, survives).
 
 The doubling forms are the three diagonal forms `N1 = t_1^2 + ... + t_7^2`, `N2 = t_8^2`,
 `N3 = t_9^2 + ... + t_15^2` of the decomposition `O + R e_8 + O e_8` of the imaginary units as the double of the
-octonions. Their ranks on `K(z)` separate the two hypersurfaces (`A5-456`, survives):
+octonions. Their ranks on `K(z)` separate the two hypersurfaces (`A5-469`, survives):
 
 | stratum | rank of `N`, `N1`, `N2`, `N3` on `K(z)`, 760 points | exact at the fixtures |
 |---|---|---|
@@ -465,33 +465,33 @@ The table lists, per family of quadrics, how many independent ones it adds to th
 | quadrics on the sampled span | | 1,678 | 1,543 | 2,940 |
 | outside the families | | 0 | 0 | 0 |
 
-On `V(Q)` minus `V(G)` four families span every quadric of the sample (`A5-450`), and the Heisenberg product
+On `V(Q)` minus `V(G)` four families span every quadric of the sample (`A5-463`), and the Heisenberg product
 explains the two middle ones: `mu(p) = omega(p) z` puts `p ^ mu(p)` in `Lambda^3 K(z)`, whose span over the
 stratum has dimension 356 of 455, which leaves 99 linear forms; and `Pi(p) M(e_j) z = -Pi(p) M(z) e_j = 0`
 because `p` lies in `Lambda^2 ker M(z)`. The Plucker quadrics with all entries of `Pi(p) M(e_j) mu(p)` and of
 `Pi(p) N Pi(p)` already have rank 1,678 as whole families. On `V(Q) n V(G)` the 15 linear forms that cut the span
-of the image down to dimension 90 are the coordinates of `mu` (`A5-451`). On the two strata inside `V(G)` the
+of the image down to dimension 90 are the coordinates of `mu` (`A5-464`). On the two strata inside `V(G)` the
 families built from `mu`, the blocks and the norm leave 25 and 24 quadrics, and the doubling forms supply all of
-them (`A5-456`): 57 and 152 combinations of the 360 entries vanish. The sign changes `e_k -> chi(k) e_k` of the
+them (`A5-469`): 57 and 152 combinations of the 360 entries vanish. The sign changes `e_k -> chi(k) e_k` of the
 coordinates preserve `M`, `Q` and `G`, and the 25 and 24 lie 3 and 2 in the trivial character, one in each of
 the characters 1 to 8 and two in each of the characters 9 to 15. A family built from an equation of `V(G)` was
-the first reading of that split and is refuted by the doubling forms, which use none (`A5-453`).
+the first reading of that split and is refuted by the doubling forms, which use none (`A5-466`).
 
-`hypothesis` (`A5-452`, open): the product types hold at every nullity-4 point of the two strata inside `V(Q)`.
+`hypothesis` (`A5-465`, open): the product types hold at every nullity-4 point of the two strata inside `V(Q)`.
 The entries of `Pi(p) M(e_j) mu(p)` and of `Pi(p) N Pi(p)` would then vanish identically on the image of `V(Q)`
 minus `V(G)`, and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, would give at least 313
 quadrics beyond Plucker in characteristic 0. The commutant of a null imaginary octonion has the same Heisenberg
 type (test), where the Moufang identities are available.
 
-**Proved** (`A5-459`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
+**Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))`, so `K(z)` is cut out by `d a = b c` and
 `[a, c] = conj(d) b - conj(b) d`, and the multiplicative octonion norm gives
 `N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z)` on `K(z)` at every point.
 
-`hypothesis` (`A5-458`, open): at every nullity-4 point of `V(G)` the three doubling forms are multiples of one
+`hypothesis` (`A5-471`, open): at every nullity-4 point of `V(G)` the three doubling forms are multiples of one
 square on `K(z)`, `Ni(z) Nj(k, k') = Ni(k, z) Nj(k', z)`, which would make the quadrics of the doubling forms
 identities on those images. The ranks are at most 1 at the sampled points and exactly at the 54 fixtures inside
-`V(G)`, and by `A5-459`, which makes `N1` a multiple of `N2 + N3` on `K(z)`, the statement reduces to the pair
+`V(G)`, and by `A5-472`, which makes `N1` a multiple of `N2 + N3` on `K(z)`, the statement reduces to the pair
 `N2`, `N3`.
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
