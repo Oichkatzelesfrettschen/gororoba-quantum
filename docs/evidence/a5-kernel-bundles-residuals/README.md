@@ -484,37 +484,42 @@ and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, gives
 Plucker in characteristic 0 (`A5-481`). The commutant of a null imaginary octonion has the same Heisenberg type
 (test).
 
-**Proved in characteristic 0** (`A5-486`): the product on `K(z)` has a polynomial formula on `V(Q)`. For a triple
-`I` of indices let `P_I(z)` be the Pfaffian of `M(z)` without the rows and columns of `I`, with the sign of the
-shuffle `(I, complement)`, and let `tau(a ^ b ^ c) = Im(a b) (x) c + Im(b c) (x) a + Im(c a) (x) b`. The tensor
-`T(z) = tau(sum_I P_I(z) e_I)` has entries of degree 6 in `z`, and
+**Proved** (`A5-494`, every field): the product on `K(z)` has a polynomial formula. For a triple `I` of indices
+let `P_I(z)` be the Pfaffian of `M(z)` without the rows and columns of `I`, with the sign of the shuffle
+`(I, complement)`, and let `tau(a ^ b ^ c) = Im(a b) (x) c + Im(b c) (x) a + Im(c a) (x) b`. The tensor
+`T(z) = tau(sum_I P_I(z) e_I)` has entries of degree 6 in `z` with integer coefficients, and
 
-`T(z) = -2 G(z) z (x) z` at every point of `V(Q)`.
+`T(z) = -grad(Q G)(z) (x) z - Q(z) G(z) I` at every point `z`.
 
 `P(z)` is the dual of `omega^6 / 6!` for the two-form `omega` of `M(z)`, so at a rank-12 point it is a nonzero
 multiple of the three-vector of `K(z)`, and there `T(z) = c M(k_1) k_2 (x) z` with `c` nonzero for
-`K(z) = C z + C k_1 + C k_2` (`A5-490`, both hypersurfaces). Four consequences follow.
+`K(z) = C z + C k_1 + C k_2` (`A5-490`). On the zero-divisor variety `Q G = 0`, so the kernel commutator is the
+gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `V(Q)` (`A5-486`) and
+`-Q grad G` on `V(G)` (`A5-491`). The consequences:
 
 - The product is nonzero at every nullity-4 point of `V(Q)` minus `V(G)`, the points with `N1(z) = 0` included,
   so `K(z)` is a Heisenberg algebra with center `C z` at each of them (`A5-487`, which closes the hypothesis
-  `A5-480`).
+  `A5-480`), and in every odd characteristic at every rank-12 point (`A5-495`).
+- The product is nonzero at every nullity-4 point of `V(G)` minus `V(Q)` (`A5-492`): the singular points of
+  `V(G)` off `V(Q)` are the points with `t_8 = 0`, `N1 = N3` and `p = 0`, where rank `M(z)` is at most 10
+  (`A5-493`). At nullity 4 the product vanishes exactly on `V(Q) n V(G)`. `hypothesis` (`A5-496`, open): the
+  rank bound holds in every odd characteristic.
 - Every point of `V(Q)` with rank `M(z)` below 12 lies in `V(G)`, so every point of `V(Q)` minus `V(G)` has
   nullity exactly 4 (`A5-488`).
 - `K(z)` is null at every nullity-4 point of `V(Q) n V(G)` as it is on `V(Q)` minus `V(G)`, by closure through
   the contraction of `P(z)` with itself (`A5-489`, which closes the sampled `A5-462`).
-- On `V(G)` the vector `w(z)` with `T = w (x) z` is the restriction of polynomials of degree 5, as
-  `w = -2 G z` is on `V(Q)`: `C[z] / (G)` is a Cohen-Macaulay domain, so the quotients `T_rc / z_c` extend over
-  the origin (`A5-491`). The argument names no formula; `hypothesis` (`A5-492`, open): `w = Q c(z)` modulo `G`
-  for a vector `c` of cubics.
 
-The identity is a polynomial identity on the irreducible quadric `V(Q)`. `T` is equivariant under `G2(C)`, the
-slice of the paragraph on the three proofs below meets a dense set of orbits, and on the `FQ` parametrization of
-that slice each entry of `T + 2 G z (x) z` has degree at most 6 in each of `A`, `B`, `C` and is homogeneous under
-`(B, C) -> (t B, t C)`, so its exact vanishing at the 49 points `C = 1`, `A, B` in `1..7` decides it.
-`kernel_product_pfaffian_tensor.py` holds that grid, two exact points with `N1(z) = 0` and the 66 fixtures.
+The proof has three steps. On `V(Q)` and on `V(G)` the identity `T = -grad(Q G) (x) z` is a polynomial identity
+on an irreducible hypersurface: `T` is equivariant under `G2(C)`, the slices of the paragraph on the three proofs
+below meet a dense set of orbits, and on the parametrizations `FQ`, `FG+` and `FG-` each entry of the difference
+has bounded degree in each generator (6 in each of `A`, `B`, `C`; 6 in `m` and 12 in `u`) and is homogeneous, so
+its exact vanishing on a 7 x 7 grid at `C = 1` and on two 7 x 13 grids decides it. The difference
+`T + grad(Q G) (x) z` then vanishes on `V(Q G)`, has degree 6, and so equals `Q G` times a matrix of constants,
+which two exact points off the variety give as `-I`. `kernel_product_pfaffian_tensor.py` holds the grids, three
+exact points with `N1(z) = 0`, three singular points of `V(G)`, the two general points and the 66 fixtures.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check` (exact
-over `Q(i)`; 20 CPU seconds and 84 MiB on two workers, 12 seconds of wall time, Python 3.14.9 with sympy 1.14.0).
+over `Q(i)`; 52 CPU seconds and 85 MiB on two workers, 27 seconds of wall time, Python 3.14.9 with sympy 1.14.0).
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
