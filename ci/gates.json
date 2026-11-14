@@ -5949,7 +5949,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --self-test",
       "name": "core-pathion-null-rotation-scan-case-replay",
-      "seconds": 730.0,
+      "seconds": 1900.0,
       "workers": "all",
       "replays": [
         "results/quantum_inspire/cases/pathion_null_rotation_scan_qx",

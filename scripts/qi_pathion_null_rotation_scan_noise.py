@@ -1,12 +1,13 @@
 """Shot-level simulation of the Tuna-17 injected-rotation scan under physical noise, read by its own decision.
 
-The written case `results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md` fits a noise model of
-two contractions (toward uniform, and of the three data bits alone). Its operating characteristics are drawn from
-that same model. This program asks what the preregistered decision reads when the visibility loss comes from gate
-noise instead: a density matrix over the five region qubits carries the retained b0 instruction list with a Kraus
-channel after each pulse or CZ, and a planted mechanism (a coherent rotation on the pulses, an amplitude scale on
-every pulse angle, a conditional-phase error of the CZ gates, or a stochastic map on the selector read) sized to the
-observed center contrast where the mechanism reaches it.
+The written case `results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md` fits each world under
+thirteen contraction shares and five gate-noise families and draws its operating characteristics at expected
+contrasts with Gaussian errors. This program draws whole series of counts instead: a density matrix over the five
+region qubits carries the retained b0 instruction list with a Kraus channel after each pulse or CZ, and a planted
+mechanism (a coherent rotation on the pulses, an amplitude scale on every pulse angle, a conditional-phase error of
+the CZ gates, or a stochastic map on the selector read) sized to the observed center contrast where the mechanism
+reaches it. The density matrix is written apart from the batched engine of the case module (`gate_noise_laws`), so
+the two check each other.
 
 Noise kinds, each a one-parameter family whose strength is set so that the center arm reads the visibility 0.44 of
 the retained b0 runs (`pathion_one_cz_null_tuna_17_analysis.v3.json`, `template_rows.b0`): two-qubit depolarizing
@@ -14,24 +15,26 @@ after each CZ; phase damping after each pulse; phase damping on both qubits afte
 qubits after each CZ; and amplitude with phase damping after pulses and CZ together. hypothesis: Tuna-17's loss on b0
 lies inside the span of these families; the provider publishes no channel tomography of the region.
 
-A simulated series follows the case's 21 batches under one of two readout regimes. `retained_walk`: the (e01, e10)
-of the five qubits walk through the retained bracket rates of the one-CZ series in their recorded order from a
-random start, one step per bracket (q11's e10 moves between 0.03 and 0.43 there). `stable`: every bracket holds the
-mean retained rates. Each bracket reads its rates with binomial noise at the case's readout shots, and a data batch
-is read through the assignment at a uniform point between its two brackets. Data circuits draw multinomial counts at
-the case's shots.
-The counts pass through the statistics, guard, bridge and fit of
-`qi_pathion_null_rotation_scan_cases` (`count_statistics`, `decide`, `outcome`), the functions `evaluate` applies to
-hardware shots; `--self-test` requires the two paths to agree on a series expanded to shot strings.
+A simulated series follows the case's 21 batches under one of three regimes (`REGIMES`), two readout regimes read by
+the full fit and one read by a fit that lacks the gate-noise family the truth was drawn from. `retained_walk`: the
+(e01, e10) of the five qubits walk through the retained bracket rates of the one-CZ series in their recorded order
+from a random start, one step per bracket (q11's e10 moves between 0.03 and 0.43 there). `stable`: every bracket holds
+the mean retained rates. `stable_family_left_out`: the stable readout, the truth's family removed from the fit. Each
+bracket reads its rates with binomial noise at the case's readout shots, and a data batch is read through the
+assignment at a uniform point between its two brackets. Data circuits draw multinomial counts at the case's shots. The
+counts pass through the statistics, guard, bridge and fit of `qi_pathion_null_rotation_scan_cases`
+(`count_statistics`, `decide`, `outcome`), the functions `evaluate` applies to hardware shots; `--self-test` requires
+the two paths to agree on a series expanded to shot strings.
 
 --run OUT [--series N] [--kinds ...] [--truths ...] writes OUT after every scenario: per noise kind and truth the
-planted parameter, the label of the expected contrasts (no sampling noise, exact readout knowledge), and over N
-series the share of each label, of guard-admitted batches, the wrong-class share and the median chi-square of each
-class leader. Seeds: `DRAW_RECORD` value `DRAW_INDEX` spawns one generator per scenario and series
-(`numpy.random.SeedSequence`), so the record replays on any worker count. --cross-check adds, where the packages
-import, the same noisy laws from Qiskit Aer's density-matrix method on `GOROROBA_AER_DEVICE` and the exact laws of the
-QX twin's circuits from qxelarator at `QX_CHECK_SHOTS` shots. --replay RECORD recomputes a record's planted
-parameters and expected-contrast labels and, with --series N, the first N series of every scenario.
+planted parameter, the label of the expected contrasts (no sampling noise, exact readout knowledge) under the full fit
+and with the truth's family left out, and over N series the share of each label, of guard-admitted batches, the
+wrong-class share and the median chi-square of each class leader. Seeds: `DRAW_RECORD` value `DRAW_INDEX` spawns one
+generator per scenario and series (`numpy.random.SeedSequence`), so the record replays on any worker count.
+--cross-check adds, where the packages import, the same noisy laws from Qiskit Aer's density-matrix method on
+`GOROROBA_AER_DEVICE` and the exact laws of the QX twin's circuits from qxelarator at `QX_CHECK_SHOTS` shots. --replay
+RECORD recomputes a record's planted parameters and expected-contrast labels and, with --series N, the first N series
+of every scenario.
 """
 
 from __future__ import annotations
@@ -59,7 +62,7 @@ import qi_pathion_one_cz_null_cases as oc  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
-SCHEMA = "qi-pathion-null-rotation-scan-noise-v1"
+SCHEMA = "qi-pathion-null-rotation-scan-noise-v2"
 RETAINED_ANALYSIS = "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json"
 QX_CASES = ROOT / "results/quantum_inspire/cases" / rs.QX_SERIES
 DRAW_RECORD = rs.OC_DRAW
@@ -333,7 +336,17 @@ def plan() -> tuple[dict[str, Any], ...]:
     return tuple(rs.batch_rows(rs.TUNA_SERIES))
 
 
-REGIMES = ("stable", "retained_walk")
+# Regime -> (readout regime of simulate_series, whether the fit leaves out the gate-noise family the truth was drawn
+# from). The third regime reads a truth through a fit whose noise models do not contain the truth's noise.
+REGIMES: dict[str, tuple[str, bool]] = {
+    "stable": ("stable", False),
+    "retained_walk": ("retained_walk", False),
+    "stable_family_left_out": ("stable", True),
+}
+
+
+def fit_kinds(kind: str, left_out: bool) -> list[str]:
+    return [k for k in rs.GATE_KINDS if not (left_out and k == kind)]
 
 
 @cache
@@ -389,6 +402,7 @@ def decide_series(series: dict[str, Any]) -> dict[str, Any]:
     """The decision of `qi_pathion_null_rotation_scan_cases.evaluate` from a series' counts."""
     ref = rs.retained()
     region, roles = ref["region"], ref["roles"]
+    guard = [roles[k] for k in rs.GUARD_ROLES]
     rows = plan()
     names = [row["batch"] for row in rows]
     brackets = series["brackets"]
@@ -399,7 +413,7 @@ def decide_series(series: dict[str, Any]) -> dict[str, Any]:
         if row["kind"] == "readout":
             continue
         before, after = brackets[names[n - 1]], brackets[names[n + 1]]
-        admitted = all(abs(after[q][i] - before[q][i]) <= rs.GUARD_LIMIT for q in region for i in (0, 1))
+        admitted = all(abs(after[q][i] - before[q][i]) <= rs.GUARD_LIMIT for q in guard for i in (0, 1))
         mean = {q: ((before[q][0] + after[q][0]) / 2, (before[q][1] + after[q][1]) / 2) for q in region}
         matrices[row["batch"]] = np.asarray(cc.readout_matrix(mean, roles))
         stats = [rs.count_statistics(counts) for counts in series["data"][row["batch"]]]
@@ -422,12 +436,14 @@ def decide_series(series: dict[str, Any]) -> dict[str, Any]:
             }
         )
     bridges = sum(1 for row in rows if row["kind"] == "bridge")
-    bridge = oc.pooled(differences) if len(differences) == bridges else None
+    bridge = differences if len(differences) == bridges else None
     return rs.outcome(rs.decide(batches, bridge, lambda b: matrices[b["name"]], transfer=True))
 
 
-def expected_label(laws: np.ndarray) -> dict[str, Any]:
-    """The decision on the expected contrasts of a truth: no sampling noise, the mean retained readout known."""
+def expected_label(laws: np.ndarray, kinds: list[str] | None = None) -> dict[str, Any]:
+    """The decision on the expected contrasts of a truth: no sampling noise, the mean retained readout known, the
+    fit carrying the gate-noise families `kinds` (every family by default)."""
+    rs.FIT_KINDS[:] = list(rs.GATE_KINDS) if kinds is None else kinds
     matrix = mean_matrix()
     seen = rs.read(laws, matrix)
     contrast = dict(zip(rs.ARM_NAMES, rs.selector_contrast(seen), strict=True))
@@ -443,16 +459,16 @@ def expected_label(laws: np.ndarray) -> dict[str, Any]:
         "center_visibility": round(visibility, 4),
         "chi2_of_class_leader": {name: numbers["chi2"][world] for name, world in numbers.get("best_world", {}).items()},
         "best_world": numbers.get("best_world"),
-        "contraction_share": {
-            name: numbers["contraction_share"][world] for name, world in numbers.get("best_world", {}).items()
-        },
+        "noise_model": {name: numbers["noise_model"][world] for name, world in numbers.get("best_world", {}).items()},
     }
 
 
-def series_summary(item: tuple[np.ndarray, np.random.SeedSequence, str]) -> dict[str, Any]:
-    """Pool worker: one simulated series of a truth, reduced to its label and class-leader numbers."""
-    laws, seed, regime = item
-    decision = decide_series(simulate_series(laws, np.random.default_rng(seed), regime))
+def series_summary(item: tuple[np.ndarray, np.random.SeedSequence, str, list[str]]) -> dict[str, Any]:
+    """Pool worker: one simulated series of a truth under a readout regime, read by a fit that carries the
+    gate-noise families of the item, reduced to its label and class-leader numbers."""
+    laws, seed, readout, kinds = item
+    rs.FIT_KINDS[:] = kinds
+    decision = decide_series(simulate_series(laws, np.random.default_rng(seed), readout))
     numbers = decision["numbers"]
     leaders = numbers.get("best_world", {})
     return {
@@ -477,11 +493,13 @@ def wrong(label: str, rx_label: str | None, truth_class: str | None) -> bool:
 
 
 def regime_rows(
-    laws: np.ndarray, truth: dict[str, Any], count: int, seed: np.random.SeedSequence, regime: str
+    laws: np.ndarray, truth: dict[str, Any], count: int, seed: np.random.SeedSequence, regime: str, kind: str
 ) -> dict[str, Any]:
     out: dict[str, Any] = {}
+    readout, left_out = REGIMES[regime]
+    kinds = fit_kinds(kind, left_out)
     if count:
-        rows = ordered_map(series_summary, [(laws, child, regime) for child in seed.spawn(count)], min_items=1)
+        rows = ordered_map(series_summary, [(laws, child, readout, kinds) for child in seed.spawn(count)], min_items=1)
         labels: dict[str, int] = {}
         for row in rows:
             labels[row["label"]] = labels.get(row["label"], 0) + 1
@@ -507,9 +525,10 @@ def scenario(kind: str, truth: dict[str, Any], count: int, seed: np.random.SeedS
         **truth,
         "kind": kind,
         "expected": expected_label(laws),
+        "expected_family_left_out": expected_label(laws, fit_kinds(kind, True)),
         "series": count,
         "regimes": {
-            regime: regime_rows(laws, truth, count, child, regime)
+            regime: regime_rows(laws, truth, count, child, regime, kind)
             for regime, child in zip(REGIMES, children, strict=True)
         },
     }
@@ -534,6 +553,11 @@ def run(out: Path, count: int, kinds: list[str], only: list[str] | None, cross: 
         "target_visibility": TARGET_VISIBILITY,
         "retained_brackets": len(retained_brackets()),
         "shots": {"scan": rs.SCAN_SHOTS, "readout": rs.READOUT_SHOTS},
+        "scans": {name: list(scan) for name, scan in rs.SCANS.items()},
+        "fit_kinds": {
+            regime: "every family" if not left_out else "truth's family left out"
+            for regime, (_, left_out) in REGIMES.items()
+        },
         "series_per_scenario": count,
         "strength": {kind: round(strength_of(kind), 6) for kind in kinds},
         "scenarios": [],
@@ -541,6 +565,7 @@ def run(out: Path, count: int, kinds: list[str], only: list[str] | None, cross: 
     if cross:
         record["cross_check"] = cross_check(kinds)
     seeds = scenario_seeds(kinds)
+    rs.build_gate_tables()
     for kind in kinds:
         for truth in truths_of(kind):
             if only and not any(truth["name"].startswith(prefix) for prefix in only):
@@ -562,7 +587,12 @@ def run(out: Path, count: int, kinds: list[str], only: list[str] | None, cross: 
 
 
 def summarize(scenarios: list[dict[str, Any]]) -> dict[str, Any]:
-    wrong_expected = [f"{s['kind']}/{s['name']}" for s in scenarios if wrong(s["expected"]["label"], None, s["class"])]
+    wrong_expected = [
+        f"{s['kind']}/{s['name']}/{key}"
+        for s in scenarios
+        for key in ("expected", "expected_family_left_out")
+        if wrong(s[key]["label"], None, s["class"])
+    ]
     wrong_series = {
         f"{s['kind']}/{s['name']}/{regime}": [rows["wrong_class"], s["series"]]
         for s in scenarios
@@ -679,8 +709,11 @@ def replay(path: Path, count: int) -> str:
     record = json.loads(path.read_text(encoding="utf-8"))
     if record["schema"] != SCHEMA:
         raise ValueError(f"{path}: schema {record['schema']}")
+    if record["scans"] != {name: list(scan) for name, scan in rs.SCANS.items()}:
+        raise ValueError(f"{path}: scan set {record['scans']} is not this checkout's")
     kinds = list(record["strength"])
     seeds = scenario_seeds(kinds)
+    rs.build_gate_tables()
     truths = {(kind, t["name"]): t for kind in kinds for t in truths_of(kind)}
     for kind in kinds:
         if abs(strength_of(kind) - record["strength"][kind]) > 2e-6:
@@ -691,8 +724,9 @@ def replay(path: Path, count: int) -> str:
         if truth is None or abs(truth["parameter"] - row["parameter"]) > 1e-9:
             raise ValueError(f"{path}: {row['kind']}/{row['name']} is not a truth of this checkout")
         fresh = scenario(row["kind"], truth, min(count, row["series"]), seeds[row["kind"], row["name"]])
-        if fresh["expected"]["label"] != row["expected"]["label"]:
-            raise ValueError(f"{path}: {row['kind']}/{row['name']} expects {fresh['expected']['label']}")
+        for key in ("expected", "expected_family_left_out"):
+            if fresh[key]["label"] != row[key]["label"]:
+                raise ValueError(f"{path}: {row['kind']}/{row['name']} {key} reads {fresh[key]['label']}")
         for regime, rows in fresh["regimes"].items():
             if count and rows["per_series"] != row["regimes"][regime]["per_series"][: len(rows["per_series"])]:
                 raise ValueError(f"{path}: {row['kind']}/{row['name']}/{regime} series differ from the record")
@@ -740,6 +774,9 @@ def self_test() -> str:
     planted = noisy_law("b0-rx-q8-m10", (0.0, 0.0, 0.0, 0.0, 0.0), "pulse_y_before_all", -0.07)
     if np.abs(planted - rs.forward_law("b0-rx-q8-m10", "pulse_y_before_all", -0.07)).max() > 1e-12:
         raise AssertionError("the noiseless density matrix differs from the state-vector law of a planted world")
+    rs.build_gate_tables()
+    if KINDS != rs.GATE_KINDS:
+        raise AssertionError("the truth kinds differ from the gate-noise families of the fit")
     for kind in KINDS:
         law = noisy_law(rs.CENTER, noise_of(kind, strength_of(kind)), None, 0.0)
         if abs(law.sum() - 1) > 1e-10 or law.min() < -1e-12:
@@ -765,8 +802,8 @@ def self_test() -> str:
     if fast["label"] != "pulse_x":
         raise AssertionError(f"a planted over-rotation under CZ depolarizing reads {fast['label']}")
     walked = decide_series(simulate_series(truth_laws(kind, truth), np.random.default_rng([0, 2]), "retained_walk"))
-    if len(walked["numbers"]["admitted_batches"]) >= 8:
-        raise AssertionError("the retained readout walk admits every scan batch")
+    if len(walked["numbers"]["admitted_batches"]) != 8:
+        raise AssertionError("the guard refuses a scan batch of the retained readout walk, where only q11 moves")
     if not wrong("pulse_x", None, "pulse_other") or wrong("unresolved_both", None, "pulse_x"):
         raise AssertionError("the wrong-class rule misreads a label")
     if wrong("x_excluded", None, "readout") or not wrong("unresolved_bridge", "readout", "pulse_x"):

@@ -2,9 +2,10 @@
 
 The null block b0 = e1 + e17 (21 routed CZ, 49 X90 pulses: 34 on q8, 8 on q4, 5 on q12, 1 on q2, 1 on q11) reads a
 raw selector contrast above zero on Tuna-17 (+0.0164 in the coin series; +0.0162 and +0.0393 in the two base batches
-of scripts/qi_pathion_one_cz_null_cases.py), where every arm-symmetric readout and every unital or relaxation channel
-gives 0. That case's 6-CZ blocks read zero, which a coherent pulse error and a selector flip conditioned on q12 both
-predict, so it left the two apart. This module builds the case that separates them on b0 itself.
+of scripts/qi_pathion_one_cz_null_cases.py), where every arm-symmetric readout and both contractions of contract()
+give 0 and the gate-noise families of GATE_KINDS at most 0.0001 in size. That case's 6-CZ blocks read zero, which
+a coherent pulse error and a selector flip conditioned on q12 both predict, so it left the two apart.
+This module builds the case that separates them on b0 itself.
 
 Mechanism. Tuna-17 runs X90 and Rx as native single-qubit operations of one 20 ns duration and quantizes a rotation
 angle to a pi/36 grid (cqasm.md; site/kbase_tuna-operational-specifics.md), so replacing an X90 by
@@ -17,24 +18,24 @@ amplitude; the bridge batches test the k = 0 case, Rx(pi/2) against X90, inside 
 
 Circuits. Every circuit is the retained b0 text (COIN_PINS of the one-CZ case pins its bytes; emit() reproduces them
 from the parsed instruction list) with pulses rewritten: "b0" keeps X90, "b0-rx" replaces every X90 by Rx(pi/2), and
-"b0-rx-SCOPE-mK" / "-pK" add -K or +K degrees on the pulses of SCOPE (all five region qubits, q8 alone) and keep
-Rx(pi/2) elsewhere; the note line names the arm. forward_law() simulates any of them under a pulse-error world on the
-five region qubits. An arm on q4 alone is left out: a rotation about x on q4's pulses gives the center arm a selector
-contrast of exactly 0, and under the x and readout worlds sized to the offset the two q4 arms at +-5 degrees differ
-by at most 0.0014, half a standard error.
+"b0-rx-SCOPE-mK" / "-pK" add -K or +K degrees on the pulses of SCOPE (all five region qubits, q8 alone, q4 alone)
+and keep Rx(pi/2) elsewhere; the note line names the arm. forward_law() simulates any of them under a pulse-error
+world on the five region qubits.
 
 Series. A scan batch holds [minus arm, b0-rx, plus arm], so each batch carries its own center and a drift between
-batches changes no within-batch comparison. Scan batches: +-5 and +-10 degrees on all pulses and on q8's, each in a
-forward round and a mirror round with the arm order reversed. Two bridge batches hold b0 and b0-rx. A readout batch
+batches changes no within-batch comparison. Scan batches (SCANS): +-10 and +-20 degrees on all pulses, +-10 on q4's
+and on q8's, each in a forward round and a mirror round with the arm order reversed. Two bridge batches hold b0 and
+b0-rx. A readout batch
 [readout-0, readout-1] sits before and after every data batch; it supplies the assignment matrix of the neighboring
-data batch and the readout admission (e01 and e10 of every region qubit steady across the two brackets), which the
-one-CZ series lacked when q11's e10 moved between 0.03 and 0.43.
+data batch and the readout admission (e01 and e10 of the qubits of GUARD_ROLES steady across the two brackets).
 
 Decision. fit_batch() fits each world's one parameter to the three raw selector contrasts of a batch at the retention
-that reproduces the center arm's visibility, for each contraction share (MIX_GRID: how much of the visibility loss
-depolarizes the data bits alone and so spares the selector contrast); decide() sums the batch chi-squares per world
-over the admitted batches at the one share that makes the sum least and classes the best pulse world against the
-best readout world; a deciding label on the hardware
+or noise strength that reproduces the center arm's visibility, for each noise model: the contraction shares
+(MIX_GRID: how much of the visibility loss depolarizes the data bits alone and so spares the selector contrast) and
+the gate-noise families of GATE_KINDS, whose laws gate_table() tabulates. decide() sums the batch chi-squares per
+world over the admitted batches at the one noise model that makes the sum least and compares the best worlds of the
+x, y-or-z and readout classes; every label is a preference among these worlds and noise models; a deciding label on
+the hardware
 series also needs the bridge to hold. preregistered(), OUTCOMES and decide() state and apply the rules;
 operating_characteristics() simulates the decision under each world. The chi-square bound and the separation are
 design thresholds whose error rates the operating characteristics measure: the retention is plugged in from the
@@ -51,8 +52,10 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import re
 import sys
+import tempfile
 from functools import cache
 from pathlib import Path
 from typing import Any
@@ -69,7 +72,6 @@ import qi_pathion_one_cz_null_cases as oc  # noqa: E402
 import qi_zero_divisor_cases as zd  # noqa: E402
 
 import pathion_coset_analysis as pca  # noqa: E402
-import pathion_coset_block as pcb  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 from qrng_seeds import read_record  # noqa: E402
 
@@ -92,7 +94,10 @@ CENTER = "b0-rx"
 # Scopes of a pulse-error world: the physical qubits whose pulses carry the error.
 SCOPES: dict[str, tuple[int, ...]] = {"all": (2, 4, 8, 11, 12), "q8": (8,), "q4": (4,)}
 # Scan kinds: (injection scope, grid steps of the injected angle).
-SCANS: dict[str, tuple[str, int]] = {"all5": ("all", 1), "q8-5": ("q8", 1), "q8-10": ("q8", 2), "all10": ("all", 2)}
+# Among five candidate sets, this one alone read every sized truth of every modeled world in its class at expected
+# values under each noise model of the fit, also with the truth's own gate-noise family left out of the fit
+# (docs/notes/quantum_inspire/tuna17-null-rotation-scan-noise-simulation.md, "Scan set").
+SCANS: dict[str, tuple[str, int]] = {"all10": ("all", 2), "q4-10": ("q4", 2), "q8-10": ("q8", 2), "all20": ("all", 4)}
 
 
 def arm_name(scope: str, steps: int) -> str:
@@ -113,6 +118,10 @@ QX_QUBITS = 10
 # (docs/notes/quantum_inspire/usage.md, "Queue rules: the FAQ governs"), so one size rule covers every generated batch.
 QX_BATCH_CIRCUITS = 3
 REPLICATES = 2
+# Wall-time budget of the pause before each batch after the first: the top step of the pause ladder of
+# scripts/qi_platform.py (docs/notes/quantum_inspire/usage.md, "Pause escalation"), so a series run at any step stays
+# inside the budget.
+PAUSE_CEILING = 120
 
 # Design values of the forward model: the retention that takes b0's ideal visibility to the 0.44 the coin series read
 # (docs/evidence/pathion-kernel-map/conjectures/c2_one_cz_mech.py, RHO ** 21) and the selector contrast b0 read there.
@@ -155,12 +164,21 @@ ADEQUACY_ALPHA = 0.001
 # the classes are non-nested and each enters by its best world, so 25 carries no significance level of its own; the
 # operating characteristics state the error rates it gives.
 SEPARATION = 25.0
-# Readout admission: the largest change of e01 or e10 of a region qubit between the brackets around a data batch.
+# Readout admission: the largest change of e01 or e10 of a guarded qubit between the brackets around a data batch.
 GUARD_LIMIT = pcs.DRIFT_STOP
+# Logical bits whose qubits the admission guards: the bits the selector contrast and visibility() read. Both sum d2
+# out, so the assignment rates of d2's qubit leave them unchanged
+# (tests/scripts/test_qi_pathion_null_rotation_scan.py), and d2 is read on q11, whose e10 moved by up to 0.34 between
+# consecutive brackets of the one-CZ series (results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json),
+# above GUARD_LIMIT in 4 of its 15 steps.
+GUARD_ROLES = tuple(k for k in KEYS if k != "d2")
 
 OC_DRAW = "docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json"
 OC_SEED_INDEX = 0
 OC_DRAWS = 10000
+# Gate-noise families whose truths the operating characteristics simulate beside the two contractions: the two that
+# carry amplitude damping, the loss the contractions lack.
+OC_FAMILIES = ("cz_damping", "damping_and_dephasing")
 
 PAULI = {
     "x": np.array([[0, 1], [1, 0]], dtype=complex),
@@ -304,6 +322,118 @@ def forward_law(arm: str, world: str | None = None, theta: float = 0.0) -> np.nd
     return np.asarray(forward_laws(arm, world, np.array([theta]))[0])
 
 
+# Gate-noise families: one-parameter Kraus noise on the instruction list. Kind -> (amplitude damping per pulse, phase
+# damping per pulse, two-qubit depolarizing per CZ, amplitude damping per CZ qubit, phase damping per CZ qubit) as
+# multiples of the family's strength. hypothesis: Tuna-17's loss on b0 lies near the span of these families and of
+# the two contractions of contract(); the retained b0 runs read each bit's excitation between 0.43 and 0.53 where a
+# unital channel gives 0.48 to 0.50, which the damping families reproduce in sign.
+GATE_KINDS: dict[str, tuple[float, float, float, float, float]] = {
+    "cz_depolarizing": (0.0, 0.0, 1.0, 0.0, 0.0),
+    "pulse_dephasing": (0.0, 1.0, 0.0, 0.0, 0.0),
+    "cz_dephasing": (0.0, 0.0, 0.0, 0.0, 1.0),
+    "cz_damping": (0.0, 0.0, 0.0, 1.0, 0.0),
+    "damping_and_dephasing": (1 / 3, 1 / 3, 0.0, 1.0, 1.0),
+}
+
+
+def gate_noise(kind: str, strength: float) -> tuple[float, float, float, float, float]:
+    a, b, c, d, e = (strength * m for m in GATE_KINDS[kind])
+    return a, b, c, d, e
+
+
+def damping_kraus(amplitude: float, phase: float) -> list[np.ndarray]:
+    """Kraus operators of amplitude damping `amplitude` followed by phase damping `phase` on one qubit."""
+    a0 = np.array([[1, 0], [0, math.sqrt(1 - amplitude)]], dtype=complex)
+    a1 = np.array([[0, math.sqrt(amplitude)], [0, 0]], dtype=complex)
+    p0 = np.array([[1, 0], [0, math.sqrt(1 - phase)]], dtype=complex)
+    p1 = np.array([[0, 0], [0, math.sqrt(phase)]], dtype=complex)
+    return [p @ a for p in (p0, p1) for a in (a0, a1) if np.any(p @ a)]
+
+
+def channel_matrix(kraus: list[np.ndarray]) -> np.ndarray:
+    """The channel rho -> sum K rho K^dagger as a matrix on the row-major vectorization (ket index, bra index)."""
+    return np.asarray(sum(np.kron(k, k.conj()) for k in kraus))
+
+
+def cz_matrix(cz_phase: float, depolarizing: float, amplitude: float, phase: float) -> np.ndarray:
+    """A CZ of conditional phase pi + `cz_phase`, then two-qubit depolarizing, then damping on both qubits, as a
+    16 x 16 matrix on the vectorization (ket a, ket b, bra a, bra b)."""
+    identity = np.eye(2, dtype=complex)
+    gate = np.diag([1, 1, 1, -np.exp(1j * cz_phase)]).astype(complex)
+    out = np.kron(gate, gate.conj())
+    if depolarizing:
+        paulis = (identity, PAULI["x"], PAULI["y"], PAULI["z"])
+        mixed = sum(np.kron(np.kron(s, t), np.kron(s, t).conj()) for s in paulis for t in paulis) / 16
+        out = ((1 - depolarizing) * np.eye(16) + depolarizing * mixed) @ out
+    if amplitude or phase:
+        kraus = damping_kraus(amplitude, phase)
+        out = (
+            channel_matrix([np.kron(identity, k) for k in kraus])
+            @ channel_matrix([np.kron(k, identity) for k in kraus])
+            @ out
+        )
+    return np.asarray(out)
+
+
+def gate_noise_laws(
+    arm: str,
+    world: str | None,
+    thetas: np.ndarray,
+    noise: tuple[float, float, float, float, float],
+    cz_phase: float = 0.0,
+    scale: float = 0.0,
+) -> np.ndarray:
+    """Laws over the logical outcome index of an arm under a pulse-error world and gate noise, one row per value of
+    `thetas`: a density matrix over the five region qubits per theta, each pulse followed by its damping channel and
+    each CZ by its depolarizing and damping channels. `scale` multiplies every pulse angle by 1 + scale."""
+    pulse_amplitude, pulse_phase, cz_depolarizing, cz_amplitude, cz_phase_damping = noise
+    ref = retained()
+    region = ref["region"]
+    n = len(region)
+    axis_of = {q: i for i, q in enumerate(region)}
+    pulse, scope, steps = ARMS[arm]
+    injected = () if scope is None else SCOPES[scope]
+    error_axis, order, error_scope = ("x", "before", None) if world is None else PULSE_WORLDS[world]
+    faulty = () if error_scope is None else SCOPES[error_scope]
+    errors = np.stack([rotation(error_axis, float(t)) for t in thetas])
+    batch = len(thetas)
+    pulse_noise = channel_matrix(damping_kraus(pulse_amplitude, pulse_phase))
+    two = cz_matrix(cz_phase, cz_depolarizing, cz_amplitude, cz_phase_damping)
+    rho = np.zeros((batch, *(2,) * (2 * n)), dtype=complex)
+    rho.reshape(batch, -1)[:, 0] = 1.0
+    for gate, angle, qubits in ref["ops"]:
+        if gate == "CZ":
+            a, b = axis_of[qubits[0]], axis_of[qubits[1]]
+            source = (1 + a, 1 + b, 1 + n + a, 1 + n + b)
+            moved = np.moveaxis(rho, source, (-4, -3, -2, -1))
+            shape = moved.shape
+            rho = np.moveaxis((moved.reshape(batch, -1, 16) @ two.T).reshape(shape), (-4, -3, -2, -1), source)
+            continue
+        q = qubits[0]
+        a = axis_of[q]
+        if gate == "Rz":
+            unitary = rotation("z", float(angle or 0.0))[None]
+        else:
+            exact = rotation(
+                "x", (1 + scale) * (math.pi / 2 + (steps * STEP if pulse == "Rx" and q in injected else 0.0))
+            )
+            if q in faulty:
+                unitary = exact @ errors if order == "before" else errors @ exact
+            else:
+                unitary = exact[None]
+        acting = np.einsum("bij,bkl->bikjl", unitary, unitary.conj()).reshape(-1, 4, 4)
+        if gate != "Rz":
+            acting = pulse_noise @ acting
+        moved = np.moveaxis(rho, (1 + a, 1 + n + a), (-2, -1))
+        shape = moved.shape
+        flat = moved.reshape(batch, -1, 4)
+        flat = flat @ acting[0].T if len(acting) == 1 else np.einsum("brj,bij->bri", flat, acting)
+        rho = np.moveaxis(flat.reshape(shape), (-2, -1), (1 + a, 1 + n + a))
+    prob = np.real(np.einsum("bijklmijklm->bijklm", rho))
+    order_axes = [0, *(axis_of[ref["roles"][key]] + 1 for key in reversed(KEYS))]
+    return np.asarray(prob.transpose(order_axes).reshape(batch, NOUT), dtype=float)
+
+
 @cache
 def pulse_table(world: str) -> np.ndarray:
     """Laws of every arm under a pulse world on THETA_FINE, shape (theta, arm, outcome)."""
@@ -336,6 +466,14 @@ DATA_OUTCOMES = 8
 # interpolation of the model contrasts; one share serves every batch of a series.
 MIX_GRID = np.linspace(0.0, 1.0, 5)
 MIX_FINE = np.linspace(0.0, 1.0, 13)
+# Gate-noise families the fit carries beside the contraction shares; a caller that needs the contraction fit alone
+# (a test of the decision logic) empties it before the first fit of the process.
+FIT_KINDS: list[str] = list(GATE_KINDS)
+
+
+def noise_models() -> tuple[str, ...]:
+    """Names of the fit's noise models in the order of the leading axis of design_model and fit_batch."""
+    return (*(f"contraction share {m:.4f}" for m in MIX_FINE), *FIT_KINDS)
 
 
 def contract(laws: np.ndarray, retention: np.ndarray | float, mix: float) -> np.ndarray:
@@ -375,15 +513,42 @@ def selector_contrast(laws: np.ndarray) -> np.ndarray:
 
 
 def visibility(laws: np.ndarray) -> np.ndarray:
-    """Signed mean over the eight bins of c(y) = P(s = 0 | y, coin 1) - P(s = 0 | y, coin 0) along b0's ideal signs."""
-    sign = np.sign(np.array(retained()["ideal_c"]))
-    plus, minus = laws[..., HALF:], laws[..., :HALF]
+    """Signed mean over the four bins y = (d0, d1) of c(y) = P(s = 0 | y, coin 1) - P(s = 0 | y, coin 0) along b0's
+    ideal signs, with d2 summed out along the last axis (laws or counts).
+
+    b0's ideal c depends on d0 and d1 alone, and d2 is read on q11, whose e10 moved between 0.03 and 0.43 over the
+    retained brackets of the one-CZ series; summed over d2, an assignment error of q11 that is independent of the
+    other bits leaves this statistic and the selector contrast unchanged."""
+    ideal = np.array(retained()["ideal_c"]).reshape(2, 4)
+    if not np.all(np.sign(ideal[0]) == np.sign(ideal[1])):
+        raise ValueError("b0's ideal contrast changes sign with d2")
+    sign = np.sign(ideal[0])
+    # Last axis: coin, selector, d2, (d1, d0); the d2 axis is summed.
+    piles = np.asarray(laws, dtype=float).reshape(*np.shape(laws)[:-1], 2, 2, 2, 4).sum(-2)
 
     def conditional(pile: np.ndarray) -> np.ndarray:
-        total = pile[..., :8] + pile[..., 8:]
-        return np.divide(pile[..., :8], total, out=np.zeros_like(total), where=total > 0)
+        total = pile[..., 0, :] + pile[..., 1, :]
+        return np.divide(pile[..., 0, :], total, out=np.zeros_like(total), where=total > 0)
 
-    return np.asarray(((conditional(plus) - conditional(minus)) * sign).mean(-1))
+    return np.asarray(((conditional(piles[..., 1, :, :]) - conditional(piles[..., 0, :, :])) * sign).mean(-1))
+
+
+def d2_split(laws: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """The selector contrast among outcomes with d2 = 1 less the one among d2 = 0, along the last axis (laws or
+    counts), and its binomial standard error when the entries are counts.
+
+    Reported beside the decision and outside it: at the design visibility an over-rotation about x of every pulse
+    gives a larger contrast at d2 = 1, an under-rotation about x and a rotation about y or z a larger one at
+    d2 = 0, and a selector readout map the same contrast at both under a contraction and within 0.004 of it under
+    the gate-noise families (tests/scripts/test_qi_pathion_null_rotation_scan.py). An assignment error of d2's
+    qubit mixes the two groups and shrinks the difference toward zero."""
+    # Last axis: coin, selector, d2, (d1, d0); the (d1, d0) axis is summed.
+    piles = np.asarray(laws, dtype=float).reshape(*np.shape(laws)[:-1], 2, 2, 2, 4).sum(-1)
+    total = piles.sum(-2)
+    share = np.divide(piles[..., 0, :], total, out=np.zeros_like(total), where=total > 0)
+    variance = np.divide(share * (1 - share), total, out=np.zeros_like(total), where=total > 0)
+    contrast = share[..., 1, :] - share[..., 0, :]
+    return np.asarray(contrast[..., 1] - contrast[..., 0]), np.asarray(np.sqrt(variance.sum((-1, -2))))
 
 
 def design_matrix() -> np.ndarray:
@@ -412,21 +577,158 @@ def retention_for(world: str, matrix: np.ndarray, center_visibility: float, mix:
     return out
 
 
-# Model contrasts at the design retention and readout, keyed (world, arms); design_model fills it.
-DESIGN_MODELS: dict[tuple[str, tuple[str, ...]], np.ndarray] = {}
+# Gate-noise tables. A family's strength grid spans the exact circuit's center visibility VISIBILITY_SPAN through the
+# design readout in STRENGTH_POINTS equal visibility steps; a batch takes the strength that reproduces its center
+# arm's visibility by linear interpolation of the model contrasts between grid strengths, clipped at the grid ends.
+STRENGTH_POINTS = 12
+VISIBILITY_SPAN = (0.75, 0.20)
+TABLE_VERSION = 1
+
+
+def exact_gate_visibility(kind: str, strength: float) -> float:
+    law = gate_noise_laws(CENTER, None, np.zeros(1), gate_noise(kind, strength))[0]
+    return float(visibility(read(law, design_matrix())))
+
+
+def strength_at(kind: str, target: float) -> float:
+    return float(brentq(lambda s: exact_gate_visibility(kind, s) - target, 1e-7, 0.6, xtol=1e-12))
+
+
+@cache
+def strength_grid(kind: str) -> np.ndarray:
+    return np.array([strength_at(kind, v) for v in np.linspace(*VISIBILITY_SPAN, STRENGTH_POINTS)])
+
+
+@cache
+def design_strength(kind: str) -> float:
+    """The strength at which the exact circuit's center arm reads the visibility of contract() at DESIGN_RETENTION."""
+    center = exact_laws()[ARM_NAMES.index(CENTER)][None, None]
+    target = float(visibility(read(contract(center, DESIGN_RETENTION, 0.0)[0, 0], design_matrix())))
+    return strength_at(kind, target)
+
+
+@cache
+def table_directory() -> Path:
+    """Scratch directory of the gate-noise tables, keyed by every input a table depends on."""
+    key = json.dumps(
+        [
+            TABLE_VERSION,
+            hashlib.sha256(retained()["text"].encode()).hexdigest(),
+            GATE_KINDS,
+            ARMS,
+            SCOPES,
+            PULSE_WORLDS,
+            [float(THETA_FINE[0]), float(THETA_FINE[-1]), len(THETA_FINE)],
+            [float(X_FINE[0]), float(X_FINE[-1]), len(X_FINE)],
+            [STRENGTH_POINTS, *VISIBILITY_SPAN, DESIGN_RETENTION],
+            [float(v) for v in design_matrix().ravel()],
+        ],
+        sort_keys=True,
+    )
+    root = Path(os.environ.get("GOROROBA_SCAN_TABLES") or Path(tempfile.gettempdir()) / "gororoba-quantum-scan-tables")
+    path = root / hashlib.sha256(key.encode()).hexdigest()[:20]
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def compute_gate_table(kind: str, world: str | None, design: bool) -> np.ndarray:
+    """Laws of every arm under a family: shape (strength, parameter, arm, outcome) on the strength grid, or
+    (parameter, arm, outcome) at the design strength; `world` None is the exact circuit, one parameter row."""
+    thetas = np.zeros(1) if world is None else THETA_FINE
+    strengths = [design_strength(kind)] if design else list(strength_grid(kind))
+    table = np.stack(
+        [
+            np.stack([gate_noise_laws(arm, world, thetas, gate_noise(kind, float(s))) for arm in ARM_NAMES], axis=1)
+            for s in strengths
+        ]
+    )
+    return np.asarray(table[0] if design else table.astype(np.float32))
+
+
+@cache
+def gate_table(kind: str, world: str | None, design: bool = False) -> np.ndarray:
+    """compute_gate_table from the scratch directory, computed and stored there on first use."""
+    path = table_directory() / f"{kind}-{world or 'exact'}-{'design' if design else 'grid'}.npy"
+    if path.is_file():
+        return np.asarray(np.load(path))
+    table = compute_gate_table(kind, world, design)
+    scratch = path.with_name(f".{path.name}.{os.getpid()}.npy")
+    np.save(scratch, table)
+    os.replace(scratch, path)
+    return table
+
+
+def table_item(item: tuple[str, str | None, bool]) -> tuple[int, ...]:
+    return tuple(gate_table(*item).shape)
+
+
+def build_gate_tables(kinds: list[str] | None = None, grid: bool = True) -> int:
+    """Fill the scratch directory with every table of `kinds` (the fit's families by default) over the worker pool;
+    `grid` False builds the design tables alone, which the operating characteristics read."""
+    worlds: list[str | None] = [None, *(w for w in SIMULATED_WORLDS if w in PULSE_WORLDS)]
+    items = [
+        (kind, world, design)
+        for kind in (FIT_KINDS if kinds is None else kinds)
+        for world in worlds
+        for design in ((True, False) if grid else (True,))
+    ]
+    return len(ordered_map(table_item, items, min_items=1))
+
+
+def gate_world_laws(world: str, kind: str, arms: tuple[str, ...], design: bool = False) -> np.ndarray:
+    """world_laws under a gate-noise family: shape (parameter, arm, outcome) at the design strength, or (strength,
+    parameter, arm, outcome) on the strength grid."""
+    picked = [ARM_NAMES.index(a) for a in arms]
+    if world in PULSE_WORLDS:
+        axis, order, scope = PULSE_WORLDS[world]
+        source = world if order == "before" else f"pulse_{axis}_before_{scope}"
+        table = gate_table(kind, source, design)[..., picked, :]
+        # An "after" world about z is its "before" world; about y it is the "before" world at the opposite angle.
+        return np.asarray(table[..., ::-1, :, :] if order == "after" and axis == "y" else table)
+    exact = gate_table(kind, None, design)[..., 0, picked, :]
+    maps = readout_maps(world)
+    return np.asarray(np.einsum("xij,...aj->...xai", maps, exact))
+
+
+def gate_fit_model(
+    world: str, kind: str, arms: tuple[str, ...], matrix: np.ndarray, center_visibility: float
+) -> tuple[np.ndarray, np.ndarray]:
+    """Per parameter value, the family's model contrasts of `arms` (parameter, arm) and strength (parameter) at
+    which the world's center arm reads `center_visibility` through `matrix`."""
+    seen = read(gate_world_laws(world, kind, (*arms, CENTER)).astype(float), matrix)
+    visible = visibility(seen[:, :, -1])
+    contrast = selector_contrast(seen[:, :, :-1])
+    grid = strength_grid(kind)
+    count = len(grid)
+    low = np.clip((visible > center_visibility).sum(0) - 1, 0, count - 2)
+    column = np.arange(visible.shape[1])
+    upper, lower = visible[low, column], visible[low + 1, column]
+    span = np.where(upper != lower, upper - lower, 1.0)
+    weight = np.clip((upper - center_visibility) / span, 0.0, 1.0)
+    model = (1 - weight)[:, None] * contrast[low, column] + weight[:, None] * contrast[low + 1, column]
+    return np.asarray(model), np.asarray((1 - weight) * grid[low] + weight * grid[low + 1])
+
+
+# Model contrasts at the design retention and readout, keyed (world, arms, fitted families); design_model fills it.
+DESIGN_MODELS: dict[tuple[str, tuple[str, ...], tuple[str, ...]], np.ndarray] = {}
 
 
 def design_model(world: str, arms: tuple[str, ...]) -> np.ndarray:
-    """Raw selector contrasts of `arms` at DESIGN_RETENTION and the design readout, shape (share of MIX_FINE,
-    parameter, arm)."""
-    key = (world, arms)
+    """Raw selector contrasts of `arms` at the design visibility and readout, shape (noise model of noise_models(),
+    parameter, arm): the contraction shares at DESIGN_RETENTION, then each family of FIT_KINDS at its design
+    strength."""
+    key = (world, arms, tuple(FIT_KINDS))
     if key not in DESIGN_MODELS:
         matrix = design_matrix()
-        DESIGN_MODELS[key] = fine_mix(
+        shares = fine_mix(
             np.stack(
                 [selector_contrast(read(world_laws(world, DESIGN_RETENTION, arms, float(m)), matrix)) for m in MIX_GRID]
             )
         )
+        families = [
+            selector_contrast(read(gate_world_laws(world, kind, arms, design=True), matrix))[None] for kind in FIT_KINDS
+        ]
+        DESIGN_MODELS[key] = np.concatenate([shares, *families])
     return DESIGN_MODELS[key]
 
 
@@ -437,18 +739,24 @@ def fit_batch(
     matrix: np.ndarray | None,
     center_visibility: float | None,
 ) -> dict[str, dict[str, np.ndarray]]:
-    """Per world and contraction share of MIX_FINE, the least chi-square of a batch's raw selector contrasts over the
-    world's parameter: arrays "chi2", "parameter", "retention" (one value per share) and "predicted" (share, arm).
+    """Per world and noise model of noise_models(), the least chi-square of a batch's raw selector contrasts over
+    the world's parameter: arrays "chi2", "parameter", "retention" (one value per noise model; a gate-noise family
+    reports its strength there) and "predicted" (noise model, arm).
 
-    With an assignment `matrix` and the center arm's visibility, each parameter value and share takes the retention
-    at which the world reproduces that visibility. `matrix` None fits at DESIGN_RETENTION and the design readout (the
-    operating characteristics and the calibration)."""
+    With an assignment `matrix` and the center arm's visibility, each parameter value and noise model takes the
+    retention or strength at which the world reproduces that visibility. `matrix` None fits at the design visibility
+    and readout (the operating characteristics and the calibration)."""
     rows: dict[str, dict[str, np.ndarray]] = {}
-    take = np.arange(len(MIX_FINE))
+    take = np.arange(len(noise_models()))
     for world in WORLDS:
         grid = parameter_grid(world)
         if matrix is None or center_visibility is None:
-            keep = np.full((len(MIX_FINE), len(grid)), DESIGN_RETENTION)
+            keep = np.concatenate(
+                [
+                    np.full((len(MIX_FINE), len(grid)), DESIGN_RETENTION),
+                    *(np.full((1, len(grid)), design_strength(kind)) for kind in FIT_KINDS),
+                ]
+            )
             model = design_model(world, arms)
         else:
             kept = np.stack([retention_for(world, matrix, center_visibility, float(m)) for m in MIX_GRID])
@@ -461,6 +769,10 @@ def fit_batch(
                 )
             )
             keep = fine_mix(kept)
+            for kind in FIT_KINDS:
+                family, strength = gate_fit_model(world, kind, arms, matrix, center_visibility)
+                model = np.concatenate([model, family[None]])
+                keep = np.concatenate([keep, strength[None]])
         curve = (((model - contrasts) / errors) ** 2).sum(-1)
         best = curve.argmin(1)
         rows[world] = {
@@ -484,7 +796,7 @@ def scan_arms(kind: str, replicate: int) -> list[str]:
 def batch_order() -> list[tuple[str, int]]:
     """(kind, replicate) of the ten data batches: the four scans and the bridge, then the same list backwards, so the
     replicates of one kind sit at mirrored positions."""
-    first = [("all5", 0), ("q8-5", 0), ("q8-10", 0), ("all10", 0), ("bridge", 0)]
+    first = [*((kind, 0) for kind in SCANS), ("bridge", 0)]
     return first + [(kind, 1) for kind, _ in reversed(first)]
 
 
@@ -542,7 +854,7 @@ def arm_of(file: str) -> str:
 
 def adequacy_limit(batches: int) -> float:
     """Chi-square bound of a world over `batches` batches: three contrasts and one fitted parameter per batch, and
-    one contraction share for the series."""
+    one noise model for the series."""
     return float(chi2_law.ppf(1 - ADEQUACY_ALPHA, 2 * batches - 1))
 
 
@@ -551,27 +863,33 @@ def preregistered() -> dict[str, str]:
     return {
         "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its "
         "binomial standard error, and the visibility of the center arm of each scan batch",
-        "guard": "a data batch is admitted when e01 and e10 of every region qubit each change by at most "
-        f"{GUARD_LIMIT} between the readout batch before it and the one after; the decision needs at least one "
+        "guard": "a data batch is admitted when e01 and e10 of each qubit the statistics read (d0, d1, the selector "
+        f"and the coin) change by at most {GUARD_LIMIT} between the readout batch before it and the one after; d2 is "
+        "summed out of both statistics and its qubit's rates are reported unguarded; the decision needs at least one "
         "admitted batch of every scan kind, otherwise it reads unresolved_guard",
         "control": f"the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds {z} "
         f"standard errors; within {z} standard errors of zero the offset is absent, below that it is reversed, and "
         "either way no mechanism is decided",
-        "fit": "per admitted scan batch, world and contraction share, the least chi-square of the batch's three "
-        "contrasts over the world's one parameter, at the retention that reproduces the center arm's visibility "
-        "through the mean assignment matrix of the two brackets; a world's chi-square is the sum over the admitted "
-        "scan batches at the one contraction share (the part of the visibility loss that depolarizes the data bits "
-        "alone, 0 to 1) that makes the sum least",
+        "fit": "per admitted scan batch, world and noise model, the least chi-square of the batch's three "
+        "contrasts over the world's one parameter, at the retention or noise strength that reproduces the center "
+        "arm's visibility through the mean assignment matrix of the two brackets; the noise models are "
+        f"{len(MIX_FINE)} contraction shares (the part of the visibility loss that depolarizes the data bits alone, "
+        f"0 to 1) and the gate-noise families {', '.join(GATE_KINDS)}; a world's chi-square is the sum over the "
+        "admitted scan batches at the one noise model that makes the sum least",
         "adequate": f"a world is adequate when its chi-square is at most the {1 - ADEQUACY_ALPHA} quantile of the "
-        "chi-square law with two degrees of freedom per admitted batch less one for the share",
+        "chi-square law with two degrees of freedom per admitted batch less one for the noise model",
         "class": "three classes of worlds: a rotation about x added to the pulses (on all pulses, on q8's or on q4's), "
         "a rotation about y or z added before or after them (same scopes), and the two selector readout worlds; a "
         f"class is preferred when its best world is adequate and the best world of each other class sits at least "
-        f"{SEPARATION} above it; the x class is excluded when the two other classes lead, the leader is adequate and "
-        f"the best x world sits at least {SEPARATION} above it",
-        "bridge": f"Rx(pi/2) reproduces X90 when the within-batch difference of the b0-rx and b0 contrasts, pooled "
-        f"over the two bridge batches, both admitted, is within {z} standard errors of zero; a class label stands only "
-        "when the bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits",
+        f"{SEPARATION} above it; the x class is excluded when the two other classes lead, the leader is adequate, the "
+        f"best x world is inadequate and it sits at least {SEPARATION} above the leader; every label is a preference "
+        "among the modeled worlds and noise models",
+        "bridge": "Rx(pi/2) and X90 read the same selector contrast when both bridge batches are admitted, their "
+        f"within-batch differences of the b0-rx and b0 contrasts agree within {z} standard errors of each other, and "
+        f"the pooled difference is within {z} standard errors of zero; a class label stands only when the bridge "
+        "holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits. The bridge "
+        "compares the two gates at zero injected angle and leaves untested that an injected Rx angle acts as a "
+        "scaled X90 pulse",
         "qx": "every circuit within twice the sampling floor of its ideal law",
     }
 
@@ -583,7 +901,8 @@ OUTCOMES: dict[str, tuple[str, str]] = {
     ),
     "unresolved_bridge": (
         "unresolved: the scan classes the Rx circuits (numbers.rx_label) and the bridge does not show that Rx(pi/2) "
-        "reproduces X90, because the two read different contrasts or a bridge batch failed the readout admission",
+        "reads as X90, because the two read different contrasts, the two bridge batches disagree or a bridge batch "
+        "failed the readout admission",
         "unchanged; the numbers are reported",
     ),
     "offset_absent": (
@@ -597,27 +916,30 @@ OUTCOMES: dict[str, tuple[str, str]] = {
         "unchanged; the numbers are reported",
     ),
     "pulse_x": (
-        "the x class is preferred: the selector offset follows the injected rotation as a coherent over- or "
-        "under-rotation of the pulses predicts",
+        "the x class is preferred among the modeled worlds: the selector offset follows the injected rotation as a "
+        "coherent over- or under-rotation of the pulses predicts",
         "see X_ROW: the effect depends on the sign and scope of the fit",
     ),
     "pulse_other": (
-        "the y-or-z class is preferred: a coherent error other than a rotation about x on the pulses produces the "
-        "offset. A conditional-phase error of the CZ gates can read here as well (prediction.json, unmodeled)",
-        "amended: a coherent gate error stands; it is a pulse rotation about y or z or a CZ phase error, which this "
-        "scan leaves apart",
+        "the y-or-z class is preferred among the modeled worlds: the scan follows a pulse rotation about y or z. A "
+        "conditional-phase error of the CZ gates can read here as well (prediction.json, unmodeled)",
+        "not supported as stated: the scan prefers a coherent gate error other than a rotation about x, a pulse "
+        "rotation about y or z or a CZ phase error, which it leaves apart",
     ),
     "readout": (
-        "the readout class is preferred: the response curve of an exact pulse stays in place and the offset adds to it",
-        "refuted as stated: no pulse-error world reproduces the scan",
+        "the readout class is preferred among the modeled worlds: the response curve of an exact pulse stays in "
+        "place and the offset adds to it",
+        f"not supported: each modeled pulse rotation sits at least {SEPARATION} in chi-square above a selector "
+        "readout map; a mechanism outside the modeled worlds stays open",
     ),
     "x_excluded": (
-        "the x class is excluded and the scan leaves a selector readout map and a pulse rotation about y or z apart "
-        "by less than the separation",
-        "refuted as stated: no rotation about x reproduces the scan; the surviving mechanism is undecided",
+        "the x class is excluded among the modeled worlds and the scan leaves a selector readout map and a pulse "
+        "rotation about y or z apart by less than the separation",
+        "not supported: no modeled rotation about x is adequate under any noise model of the fit; the surviving "
+        "mechanism is undecided",
     ),
     "unresolved_both": (
-        "unresolved: the x class and another class both sit within the separation of the best adequate world",
+        "unresolved: no class is preferred by the separation and the x class is not excluded",
         "unchanged; the numbers are reported",
     ),
     "unresolved_none": (
@@ -630,7 +952,7 @@ DECIDING = ("pulse_x", "pulse_other", "readout", "x_excluded")
 # rotates every pulse and every admitted batch fits a positive angle.
 X_ROW = {
     True: "survives as an over-rotation of every pulse: its falsifier, a response curve that stays in place under "
-    "the injected rotation, is unmet. The fitted angle and contraction share are reported beside the row's +0.03 "
+    "the injected rotation, is unmet. The fitted angle and noise model are reported beside the row's +0.03 "
     "rad, which the row took from a model that contracts nothing; angles that differ between qubits are outside "
     "the model",
     False: "amended: a rotation about x on the pulses stands, and its sign or scope differs from the single "
@@ -638,9 +960,11 @@ X_ROW = {
     "numbers.best_world, best_parameters and x_scope_margin state the fit",
 }
 TRANSFER = {
-    True: "Rx(pi/2) reproduces X90 inside the bridge batches, so the decision transfers to the retained X90 circuit",
-    False: "Rx(pi/2) and X90 read different contrasts inside the bridge batches, or a bridge batch failed the "
-    "readout admission: the scan classes the Rx circuits and decides nothing about the retained X90 circuit",
+    True: "Rx(pi/2) and X90 read the same selector contrast inside both bridge batches, so the class of the Rx "
+    "circuits is read as the class of the retained X90 circuit at zero injected angle",
+    False: "Rx(pi/2) and X90 read different contrasts inside the bridge batches, the two bridge batches disagree, or "
+    "a bridge batch failed the readout admission: the scan classes the Rx circuits and decides nothing about the "
+    "retained X90 circuit",
 }
 
 
@@ -657,7 +981,7 @@ def series(backend: dict[str, Any], series_name: str, nqubits: int, place: dict[
         "placement": {str(q): place[q] for q in region},
         "register": register,
         "qrng_draw": OC_DRAW,
-        "guard_qubits": register,
+        "guard_qubits": [place[ref["roles"][k]] for k in GUARD_ROLES],
         "templates": {
             "b0": {
                 "block": "b0",
@@ -732,8 +1056,8 @@ def design() -> dict[str, Any]:
         ],
         "longest_job_seconds": round(2.6 + SCAN_SHOTS * timing["seconds_per_shot_max"], 1),
         "job_seconds_limit": 300,
-        "pause_seconds_per_batch": 30,
-        "pause_seconds_total": 30 * (len(rows) - 1),
+        "pause_seconds_per_batch": PAUSE_CEILING,
+        "pause_seconds_total": PAUSE_CEILING * (len(rows) - 1),
         "coin_series_timing": timing,
     }
 
@@ -749,14 +1073,14 @@ def classify(best: dict[str, float], limit: float) -> str:
         return "unresolved_none"
     if best[second] - best[lead] >= SEPARATION:
         return CLASS_LABEL[lead]
-    if "x" not in (lead, second) and best["x"] - best[lead] >= SEPARATION:
+    if "x" not in (lead, second) and best["x"] > limit and best["x"] - best[lead] >= SEPARATION:
         return "x_excluded"
     return "unresolved_both"
 
 
 def decide(
     batches: list[dict[str, Any]],
-    bridge: tuple[float, float] | None,
+    bridge: list[tuple[float, float]] | None,
     matrix_of: Any | None,
     transfer: bool = False,
 ) -> dict[str, Any]:
@@ -764,8 +1088,8 @@ def decide(
 
     Each batch: {"kind", "arms", "contrasts", "errors", "center_visibility", "admitted", "name"}; `matrix_of(batch)`
     gives its assignment matrix, and `matrix_of` None fits every batch at the design retention and readout; `bridge`
-    is the within-batch difference of b0-rx and b0 pooled over the bridge batches (value, se), None unless both
-    were admitted. `transfer` True (the hardware analysis) lets a class label stand only when the bridge holds;
+    lists the within-batch difference of b0-rx and b0 of each bridge batch (value, se), None unless every bridge
+    batch was admitted. `transfer` True (the hardware analysis) lets a class label stand only when the bridge holds;
     False (the operating characteristics and the calibration) leaves the bridge out."""
     admitted = [b for b in batches if b["admitted"]]
     numbers: dict[str, Any] = {"admitted_batches": [b["name"] for b in admitted]}
@@ -773,9 +1097,18 @@ def decide(
         return {"label": "unresolved_guard", "numbers": numbers}
     center = oc.pooled([(float(b["contrasts"][1]), float(b["errors"][1])) for b in admitted])
     numbers["center_contrast"] = list(center)
-    holds = bridge is not None and abs(bridge[0]) <= Z_RESOLVE * bridge[1]
+    holds = False
     if bridge is not None:
-        numbers["bridge_difference"] = list(bridge)
+        joint = oc.pooled(bridge)
+        agree = all(
+            abs(a[0] - b[0]) <= Z_RESOLVE * math.hypot(a[1], b[1]) for i, a in enumerate(bridge) for b in bridge[:i]
+        )
+        holds = agree and abs(joint[0]) <= Z_RESOLVE * joint[1]
+        numbers |= {
+            "bridge_difference": list(joint),
+            "bridge_batch_differences": [list(d) for d in bridge],
+            "bridge_batches_agree": agree,
+        }
     if transfer:
         numbers["bridge_holds"] = holds
         numbers["transfer"] = TRANSFER[holds]
@@ -783,7 +1116,7 @@ def decide(
         return {"label": "offset_absent", "numbers": numbers}
     if center[0] < 0:
         return {"label": "offset_reversed", "numbers": numbers}
-    by_share = {world: np.zeros(len(MIX_FINE)) for world in WORLDS}
+    by_share = {world: np.zeros(len(noise_models())) for world in WORLDS}
     rows_of: dict[str, dict[str, dict[str, np.ndarray]]] = {}
     for b in admitted:
         rows_of[b["name"]] = fit_batch(
@@ -814,7 +1147,7 @@ def decide(
     scopes = sorted(totals[w] for w in CLASSES["x"])
     numbers |= {
         "chi2": {w: round(v, 3) for w, v in totals.items()},
-        "contraction_share": {w: round(float(MIX_FINE[i]), 4) for w, i in share.items()},
+        "noise_model": {w: noise_models()[i] for w, i in share.items()},
         "adequacy_limit": round(limit, 3),
         "best_world": leaders,
         "best_parameters": {name: {b: fits[b][w]["parameter"] for b in fits} for name, w in leaders.items()},
@@ -842,10 +1175,14 @@ def outcome(decision: dict[str, Any]) -> dict[str, Any]:
 # Predictions ------------------------------------------------------------------------------------------------------
 
 
-def sized(world: str, contrast: float = DESIGN_CONTRAST, mix: float = 0.0) -> list[float]:
-    """Parameter values at which the world's center arm reads `contrast` at the design retention and readout."""
+def sized(world: str, contrast: float = DESIGN_CONTRAST, mix: float = 0.0, family: str | None = None) -> list[float]:
+    """Parameter values at which the world's center arm reads `contrast` at the design visibility and readout, under
+    the contraction share `mix` or, when named, the gate-noise `family` at its design strength."""
     grid = parameter_grid(world)
-    laws = world_laws(world, DESIGN_RETENTION, (CENTER,), mix)
+    if family is None:
+        laws = world_laws(world, DESIGN_RETENTION, (CENTER,), mix)
+    else:
+        laws = gate_world_laws(world, family, (CENTER,), design=True)
     curve = selector_contrast(read(laws, design_matrix()))[:, 0] - contrast
     roots = []
     for j in range(len(grid) - 1):
@@ -854,42 +1191,67 @@ def sized(world: str, contrast: float = DESIGN_CONTRAST, mix: float = 0.0) -> li
     return roots
 
 
-def predicted_contrasts(world: str | None, parameter: float, mix: float = 0.0) -> dict[str, float]:
-    """Raw selector contrast of every arm at the design retention and readout; `world` None is the exact circuit."""
+def predicted_contrasts(
+    world: str | None, parameter: float, mix: float = 0.0, family: str | None = None
+) -> dict[str, float]:
+    """Raw selector contrast of every arm at the design visibility and readout, under the contraction share `mix`
+    or the gate-noise `family`; `world` None is the exact circuit."""
     matrix = design_matrix()
     if world is None:
-        laws = contract(exact_laws()[None], DESIGN_RETENTION, mix)[0]
+        if family is None:
+            laws = contract(exact_laws()[None], DESIGN_RETENTION, mix)[0]
+        else:
+            laws = gate_table(family, None, True)[0].astype(float)
     else:
         grid = parameter_grid(world)
-        table = world_laws(world, DESIGN_RETENTION, ARM_NAMES, mix)
+        if family is None:
+            table = world_laws(world, DESIGN_RETENTION, ARM_NAMES, mix)
+        else:
+            table = gate_world_laws(world, family, ARM_NAMES, design=True)
         j = int(np.clip(np.searchsorted(grid, parameter) - 1, 0, len(grid) - 2))
         weight = (parameter - grid[j]) / (grid[j + 1] - grid[j])
         laws = (1 - weight) * table[j] + weight * table[j + 1]
     return {arm: round(float(v), 5) for arm, v in zip(ARM_NAMES, selector_contrast(read(laws, matrix)), strict=True)}
 
 
-# Truth worlds of the operating characteristics: (label, world or None, branch index into sized(), or None).
-TRUTHS: tuple[tuple[str, str | None, int | None], ...] = (
-    ("no offset", None, None),
-    ("x over-rotation, all pulses", "pulse_x_before_all", 1),
-    ("x under-rotation, all pulses", "pulse_x_before_all", 0),
-    ("x over-rotation, q8 pulses", "pulse_x_before_q8", 1),
-    ("x over-rotation, q8 pulses, upper root", "pulse_x_before_q8", 2),
-    ("x under-rotation, q8 pulses", "pulse_x_before_q8", 0),
-    ("y rotation before, all pulses", "pulse_y_before_all", 1),
-    ("z rotation before, all pulses", "pulse_z_before_all", 0),
-    ("selector flip when q12 reads 0", "selector_flip_q12_0", 0),
-    ("selector dropout when the coin reads 1", "selector_dropout_coin_1", 0),
+# Truth worlds of the operating characteristics: (label, world or None, branch index into sized() or None, sign of
+# the parameter the label names).
+TRUTHS: tuple[tuple[str, str | None, int | None, int], ...] = (
+    ("no offset", None, None, 0),
+    ("x over-rotation, all pulses", "pulse_x_before_all", 1, 1),
+    ("x under-rotation, all pulses", "pulse_x_before_all", 0, -1),
+    ("x over-rotation, q8 pulses", "pulse_x_before_q8", 1, 1),
+    ("x over-rotation, q8 pulses, upper root", "pulse_x_before_q8", 2, 1),
+    ("x under-rotation, q8 pulses", "pulse_x_before_q8", 0, -1),
+    ("y rotation before, all pulses", "pulse_y_before_all", 1, 1),
+    ("z rotation before, all pulses", "pulse_z_before_all", 0, -1),
+    ("selector flip when q12 reads 0", "selector_flip_q12_0", 0, 1),
+    ("selector dropout when the coin reads 1", "selector_dropout_coin_1", 0, 1),
 )
+# Label of a truth one of whose rounds has no parameter of the named branch and sign at the round's center contrast.
+UNREACHABLE = "truth_unreachable"
 
 
-def truth_parameter(world: str | None, branch: int | None, contrast: float, mix: float = 0.0) -> float:
+class UnreachableTruth(ValueError):
+    """A world has no parameter on the requested branch at the requested center contrast."""
+
+
+def truth_parameter(
+    world: str | None,
+    branch: int | None,
+    contrast: float,
+    mix: float = 0.0,
+    family: str | None = None,
+    sign: int = 0,
+) -> float:
+    """The parameter of a truth: root `branch` of sized(), which carries `sign` when a sign is named. A center
+    contrast the branch does not reach raises UnreachableTruth; another root never stands in for it."""
     if world is None or branch is None:
         return 0.0
-    roots = sized(world, contrast, mix)
-    if not roots:
-        raise ValueError(f"{world} does not reach a center contrast of {contrast}")
-    return roots[min(branch, len(roots) - 1)]
+    roots = sized(world, contrast, mix, family)
+    if branch >= len(roots) or (sign and math.copysign(1, roots[branch]) != sign):
+        raise UnreachableTruth(f"{world} has roots {roots} at a center contrast of {contrast}, none on branch {branch}")
+    return roots[branch]
 
 
 # An "after" world repeats its "before" world's least chi-square (PULSE_WORLDS), so the simulation fits one of each.
@@ -908,7 +1270,7 @@ def simulated_labels(noise: np.ndarray, means: np.ndarray) -> list[str]:
     scans = [(k, r) for k, r in batch_order() if k != "bridge"]
     totals: dict[str, np.ndarray] = {}
     for world in SIMULATED_WORLDS:
-        by_share = np.zeros((len(noise), len(MIX_FINE)))
+        by_share = np.zeros((len(noise), len(noise_models())))
         for n, (kind, replicate) in enumerate(scans):
             seen = contrasts[:, n, :]
             norm = (seen**2).sum(1)[:, None]
@@ -939,33 +1301,52 @@ def label_counts(item: tuple[np.ndarray, np.ndarray]) -> dict[str, int]:
 
 
 def operating_characteristics(
-    draws: int = OC_DRAWS, drift: bool = False, mix: float = 0.0
+    draws: int = OC_DRAWS, drift: bool = False, mix: float = 0.0, family: str | None = None
 ) -> dict[str, dict[str, float]]:
     """Share of each decision label per truth world, from `draws` simulated series of Gaussian contrasts at the design
     standard error, retention and readout, seeded from QRNG value OC_SEED_INDEX of OC_DRAW.
 
     `drift` sizes the mirror round of every truth to DRIFT_CONTRAST instead of DESIGN_CONTRAST, the change between
-    the two base batches of the one-CZ series; `mix` is the truth's contraction share."""
+    the two base batches of the one-CZ series; `mix` is the truth's contraction share, and `family` replaces the
+    contraction by a gate-noise family at its design strength. A truth that does not reach a round's center contrast
+    on its branch reads UNREACHABLE; its draws still leave the generator."""
     rng = np.random.default_rng(int(read_record(OC_DRAW)["values"][OC_SEED_INDEX]))
     scans = [(k, r) for k, r in batch_order() if k != "bridge"]
     # Every truth's draws leave the one generator in TRUTHS order before the truths are mapped over the pool.
     items = []
-    for _, world, branch in TRUTHS:
-        means = []
-        for kind, replicate in scans:
-            contrast = DRIFT_CONTRAST if drift and replicate == 1 else DESIGN_CONTRAST
-            row = predicted_contrasts(world, truth_parameter(world, branch, contrast, mix), mix)
-            means.append([row[a] for a in scan_arms(kind, replicate)])
-        items.append((rng.normal(size=(draws, len(scans), 3)), np.array(means)))
-    counted = ordered_map(label_counts, items, min_items=1)
-    return {
-        label: {k: round(n / draws, 4) for k, n in sorted(counts.items())}
-        for (label, _, _), counts in zip(TRUTHS, counted, strict=True)
-    }
+    reached = []
+    for _, world, branch, sign in TRUTHS:
+        noise = rng.normal(size=(draws, len(scans), 3))
+        try:
+            rows = {
+                contrast: predicted_contrasts(
+                    world, truth_parameter(world, branch, contrast, mix, family, sign), mix, family
+                )
+                for contrast in ((DESIGN_CONTRAST, DRIFT_CONTRAST) if drift else (DESIGN_CONTRAST,))
+            }
+        except UnreachableTruth:
+            reached.append(False)
+            continue
+        means = [
+            [
+                rows[DRIFT_CONTRAST if drift and replicate == 1 else DESIGN_CONTRAST][a]
+                for a in scan_arms(kind, replicate)
+            ]
+            for kind, replicate in scans
+        ]
+        reached.append(True)
+        items.append((noise, np.array(means)))
+    counted = iter(ordered_map(label_counts, items, min_items=1))
+    out: dict[str, dict[str, float]] = {}
+    for (label, _, _, _), found in zip(TRUTHS, reached, strict=True):
+        counts = next(counted) if found else {UNREACHABLE: draws}
+        out[label] = {k: round(n / draws, 4) for k, n in sorted(counts.items())}
+    return out
 
 
 def predictions(operating: bool = True) -> dict[str, Any]:
     """The prediction record; `operating` adds the operating characteristics, OC_DRAWS simulated series per truth."""
+    build_gate_tables(grid=False)
     table: dict[str, Any] = {"exact circuit": {"parameter": None, "contrast": predicted_contrasts(None, 0.0)}}
     for world in WORLDS:
         for value in sized(world):
@@ -989,6 +1370,7 @@ def predictions(operating: bool = True) -> dict[str, Any]:
             "draws_per_world": OC_DRAWS,
             "stationary": operating_characteristics(),
             "stationary_data_only_contraction": operating_characteristics(mix=1.0),
+            **{f"stationary_{kind}": operating_characteristics(family=kind) for kind in OC_FAMILIES},
             f"mirror_round_at_{DRIFT_CONTRAST}": operating_characteristics(drift=True),
         }
     return record
@@ -1056,12 +1438,18 @@ def circuit_statistics(listed: list[str], roles: dict[str, int]) -> dict[str, fl
 
 
 def count_statistics(counts: np.ndarray) -> dict[str, float]:
-    """Raw selector contrast, its standard error and the visibility of counts over the logical outcome index."""
+    """Raw selector contrast, its standard error, the visibility and the d2 split with its standard error of counts
+    over the logical outcome index."""
     plus, minus = cc.piles(counts)
     value, error = pca.selector_stat(plus, minus)
-    contrast = pcb.output_contrast(plus / plus.sum(), minus / minus.sum())
-    sign = np.sign(np.array(retained()["ideal_c"]))
-    return {"contrast": float(value), "se": float(error), "visibility": float((contrast * sign).mean())}
+    split, split_error = d2_split(np.asarray(counts))
+    return {
+        "contrast": float(value),
+        "se": float(error),
+        "visibility": float(visibility(np.asarray(counts))),
+        "d2_split": float(split),
+        "d2_split_se": float(split_error),
+    }
 
 
 def evaluate(
@@ -1103,8 +1491,8 @@ def evaluate(
             "guard": {
                 "change": change,
                 "admitted": admitted,
-                "before": {str(q): before[q] for q in guard},
-                "after": {str(q): after[q] for q in guard},
+                "before": {str(q): before[q] for q in register},
+                "after": {str(q): after[q] for q in register},
             },
         }
         if row["kind"] == "bridge":
@@ -1126,7 +1514,7 @@ def evaluate(
             }
         )
     bridges = sum(1 for row in plan.values() if row["kind"] == "bridge")
-    bridge = oc.pooled(bridge_differences) if len(bridge_differences) == bridges else None
+    bridge = bridge_differences if len(bridge_differences) == bridges else None
     decision = outcome(decide(batches, bridge, lambda b: matrices[b["name"]], transfer=True))
     drift = pcs.reference_drift(
         [(k.split("/")[0], k.split("/")[1], v) for k, v in shots.items() if k.split("/")[1] in pcs.READOUT_KIND],
@@ -1138,7 +1526,20 @@ def evaluate(
         for key in sorted(executed, key=lambda k: executed[k]):
             batch, fname = key.split("/")
             order[batch] = order.get(batch, "") + fname.removesuffix(".cq") + " "
-    return {"batch_rows": rows, "decision": decision, "drift_covariate": {"references": drift}, "executed_order": order}
+    centers = [
+        (s["d2_split"], s["d2_split_se"])
+        for row in rows.values()
+        if row["guard"]["admitted"]
+        for arm, s in zip(row["arms"], row["statistics"], strict=True)
+        if arm == CENTER
+    ]
+    return {
+        "batch_rows": rows,
+        "decision": decision,
+        "center_d2_split": list(oc.pooled(centers)) if centers else None,
+        "drift_covariate": {"references": drift},
+        "executed_order": order,
+    }
 
 
 def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> dict[str, Any]:
@@ -1161,6 +1562,7 @@ def analyze(run_dirs: list[Path], case_root: Path | None = pcs.CASES_ROOT) -> di
         return {**head, "complete": False, "batches": held}
     if emulator:
         return {**head, "complete": True}
+    build_gate_tables()
     return {**head, "complete": True, **evaluate(shots, shared, executed)}
 
 
@@ -1241,6 +1643,7 @@ def planted_batches(
 
 def self_test() -> str:
     """The emitter and simulator against the retained record, then decide() on a planted world of each class."""
+    build_gate_tables(grid=False)
     digest = replay_check()
     if digest != oc.COIN_PINS["b0.cq"]:
         raise AssertionError("the emitter's b0 does not carry the pinned digest")
