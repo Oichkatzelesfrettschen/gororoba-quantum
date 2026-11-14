@@ -384,25 +384,28 @@ MONOMIAL_CHARACTER = np.array(
 )
 
 
+def character_ranks(job: tuple[Array, list[Array]]) -> list[int]:
+    """For one character: the rank of the product vectors on its columns, then of each family set on them."""
+    products, blocks = job
+    return [matrix_rank(products), *(matrix_rank(block) for block in blocks)]
+
+
 def character_split(products: Array, vanishing: Sequence[Array]) -> list[list[int]]:
     """Per character: its monomials, the quadrics on the sampled span and the quadrics each family set supplies.
 
     A space of quadrics that the sign changes preserve is the direct sum of its parts supported on the monomials
     of one character. The part of the annihilator has dimension monomials minus the rank of the product vectors on
     those columns, and the part of a set of families has the rank of its rows on those columns; the sums over the
-    characters equal 5,565, the annihilator dimension and the rank of each set exactly when the spaces split.
+    characters equal 5,565, the annihilator dimension and the rank of each set exactly when the spaces split. The
+    characters are independent, so their ranks run through `parallel.ordered_map` on the column slices.
     """
-    rows = []
-    for character in CHARACTERS:
-        columns = np.flatnonzero(MONOMIAL_CHARACTER == character)
-        rows.append(
-            [
-                int(columns.size),
-                int(columns.size) - matrix_rank(products[:, columns]),
-                *(matrix_rank(block[:, columns]) for block in vanishing),
-            ]
-        )
-    return rows
+    slices = [np.flatnonzero(MONOMIAL_CHARACTER == character) for character in CHARACTERS]
+    jobs = [(products[:, columns], [block[:, columns] for block in vanishing]) for columns in slices]
+    ranks = parallel.ordered_map(character_ranks, jobs, min_items=2)
+    return [
+        [int(columns.size), int(columns.size) - found[0], *found[1:]]
+        for columns, found in zip(slices, ranks, strict=True)
+    ]
 
 
 def wedge(first: Array, second: Array) -> Array:

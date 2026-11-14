@@ -502,7 +502,7 @@ are the 25 these conditions give: the 15 products `t_8 t_k`, the norms `N1` and 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 352 CPU seconds and 3.4 GiB on two workers under an 8 GiB memory scope, 3 minutes 22 seconds of wall time, same versions and host as the last replay).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 385 CPU seconds and 3.4 GiB on two workers under an 8 GiB memory scope, 3 minutes 42 seconds of wall time, same versions and host as the last replay).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
 

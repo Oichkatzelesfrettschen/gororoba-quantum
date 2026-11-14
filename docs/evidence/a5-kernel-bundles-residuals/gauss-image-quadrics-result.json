@@ -92,7 +92,7 @@
   ]
  ],
  "inputs": {
-  "docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py": "d7c2c4a79fbc8e65b847db91d39b8fbd1f73ef9d7c451dc7fe81dc34d3796e82",
+  "docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py": "0aa2d2dce5683e81db1ffd66394697239fe893f0ea3be58bceef37c06ab54910",
   "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",

@@ -121,16 +121,21 @@ def test_block_product_is_the_imaginary_part_of_the_cayley_dickson_product() -> 
 def test_commutant_of_a_null_imaginary_octonion_is_a_heisenberg_algebra_with_that_center() -> None:
     # The octonion counterpart of the product type on V(Q) minus V(G): for a null imaginary octonion z the imaginary
     # elements commuting with z form a null three-plane whose products are multiples of z.
+    # x^2 + y^2 = -s has the solutions x = (r - s / r) / 2, y = (r + s / r) / (2 i) for every nonzero r, so the
+    # null elements come without a square root and without rejection.
     points = Points("test:octonion")
-    found = 0
-    while found < 8:
-        head = [points.value() for _ in range(6)]
-        square = -sum(value * value for value in head) % PRIME
-        root = pow(square, (PRIME + 1) // 4, PRIME)
-        if root * root % PRIME != square or not root:
-            continue
-        found += 1
-        null = [*head, root]
+    half, unit = pow(2, -1, PRIME), ROOT_OF_MINUS_ONE
+    for _ in range(8):
+        head = [points.value() for _ in range(5)]
+        total = sum(value * value for value in head) % PRIME
+        factor = points.value() or 1
+        quotient = total * pow(factor, -1, PRIME) % PRIME
+        null = [
+            *head,
+            (factor - quotient) * half % PRIME,
+            (factor + quotient) * half * pow(unit, -1, PRIME) % PRIME,
+        ]
+        _same(sum(value * value for value in null) % PRIME, 0)
         columns = [
             [int(v) % PRIME for v in cd_core.cd_multiply_exact(8, [0, *null], [0, *unit])[1:]]
             for unit in np.eye(7, dtype=np.int64).tolist()
