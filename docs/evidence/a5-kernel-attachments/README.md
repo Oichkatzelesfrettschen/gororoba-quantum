@@ -578,14 +578,14 @@ closure theorem cited above (Corollary 1 of section I.10 of the Red Book). For `
 the real limit set with the complex points of the characteristic-0 fiber, and that fiber is determined modulo
 32009 and 32029, and over `Q(i)` as far as the
 [weight-slice record](#on-a-torus-weight-slice-the-quadrics-of-all-ten-fiber-cones-are-computed-over-qi) reaches:
-the whole fiber cone of `Iso->N+` and `Iso->N-` (`A5-429`), the quadrics, Hilbert numerator and minimal primes of
-the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-430`), `h_1` to `h_7` of `E8bar`
-(`A5-423`), the whole fiber cone of `W8->N+` and `W8->N-` by one arc family in each component (`A5-431`), and,
+the whole fiber cone of `Iso->N+` and `Iso->N-` (`A5-435`), the quadrics, Hilbert numerator and minimal primes of
+the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-436`), `h_1` to `h_7` of `E8bar`
+(`A5-423`), the whole fiber cone of `W8->N+` and `W8->N-` by one arc family in each component (`A5-437`), and,
 conditional on `A5-421` and the slice premise of `A5-423`, the complex point set of the `E8bar` fiber, the union of
 both components of its quadric scheme after a complex-linear change of generators
 ([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
 `A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open is the
-scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-432` shows is not reduced.
+scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-438` shows is not reduced.
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
@@ -674,7 +674,7 @@ The replay of commit `542a51836` takes 8.2 seconds wall time and 51 CPU seconds 
 host. Evidence:
 [`kernel-equivariance-result.json`](kernel-equivariance-result.json) and the [ledger](ledger.md#ledger-rows).
 
-**Computed (`A5-436`):** [`g2_derivation_tables.py`](g2_derivation_tables.py) writes each of the 14 derivations as
+**Computed (`A5-442`):** [`g2_derivation_tables.py`](g2_derivation_tables.py) writes each of the 14 derivations as
 its images of the basis units `e_0, ..., e_15` of the sedenions
 ([g2-derivation-tables.json](g2-derivation-tables.json)). Every entry is a Gaussian integer, each table has 8
 nonzero entries, `D(e_0) = 0`, the matrix is skew, the 14 tables are independent over `Q(i)`, and the Leibniz
@@ -797,7 +797,7 @@ basis of `J + m P` took 1,507 s for `Iso` (`A5-294`) and did not finish for `W8`
 | opposite-sign `X` | 3 | 0 | `A5-270` |
 
 The counts equal the modular ones of the [import record](#the-ten-blocked-fibers-into-nullity-16-are-the-fiber-cones-of-the-exceptional-fiber-record).
-**Computed (`A5-430`):** each quadric ideal is compared with the intersection of its minimal primes. The `W8` ideal
+**Computed (`A5-436`):** each quadric ideal is compared with the intersection of its minimal primes. The `W8` ideal
 equals it, the `E8bar` ideal is strictly smaller, so `Q(i)[y]/K` has nilpotents for `E8bar`, and the `Iso` ideal has
 one minimal prime and equals it at both basepoints. All three are saturated.
 For `W8` and `E8bar` the quadric ideal has the Hilbert numerator of the modular `K2`, and at `N-` the
@@ -805,26 +805,26 @@ For `W8` and `E8bar` the quadric ideal has the Hilbert numerator of the modular 
 same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
 component step `X+->N-` returns 12 generators in place of 3.
 
-**Inferred (`A5-429`, conditional on `A5-293`, `A5-421`, `A5-433` and the slice premise of `A5-423`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
+**Inferred (`A5-435`, conditional on `A5-293`, `A5-421`, `A5-439` and the slice premise of `A5-423`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68 quadrics. `K` is prime of dimension 5 and degree 23 over `Q(i)`
 by the computation above and lies in the relation ideal `L`, whose quotient has dimension at least 5 at both
 basepoints (`A5-293`); a proper quotient of the domain `Q(i)[y]/K` has dimension below 5, so `L = K`. The
 arcs live on the header slice and the quadrics on the weight slice, and the isomorphism that joins them is known
-over C alone (`A5-423`), so the comparison runs over C: `K` is absolutely prime (`A5-433`), and the same argument
+over C alone (`A5-423`), so the comparison runs over C: `K` is absolutely prime (`A5-439`), and the same argument
 holds there.
 
-**Inferred (`A5-431`, conditional on `A5-421`, `A5-430`, `A5-433` and the slice premise of `A5-423`):** the fiber cone of `W8->N+` and of `W8->N-` over
+**Inferred (`A5-437`, conditional on `A5-421`, `A5-436`, `A5-439` and the slice premise of `A5-423`):** the fiber cone of `W8->N+` and of `W8->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 144 quadrics. Two arc families over `Q(i)`
 ([`w8_component_arcs_qi.py`](../a5-char0-transfer/w8_component_arcs_qi.py),
 [record](../a5-char0-transfer/w8-component-arcs-qi.json)) each have a 6-dimensional set of limits in `V(L)`, which
 lies in `V(K)`: one spans 15 dimensions and the other 20. The two components of `V(K)` span `24 - 9 = 15` and
 `24 - 4 = 20` dimensions, so the first family fills the degree-20 component and the second the degree-30 one.
 `V(L)` then contains both, `L` lies in the intersection of the two primes, and that intersection is `K` because `K`
-is radical (`A5-430`); hence `L = K`. The comparison runs over C, where the slice isomorphism of `A5-423` is
-known: both primes are absolutely prime (`A5-433`), so `V(K)` has exactly two components over C, and each family,
+is radical (`A5-436`); hence `L = K`. The comparison runs over C, where the slice isomorphism of `A5-423` is
+known: both primes are absolutely prime (`A5-439`), so `V(K)` has exactly two components over C, and each family,
 geometrically irreducible of dimension 6, is the component of its span.
 
-**Computed (`A5-439`):** [`w8_component_models.py`](w8_component_models.py) writes the two minimal primes of the
+**Computed (`A5-445`):** [`w8_component_models.py`](w8_component_models.py) writes the two minimal primes of the
 `W8` quadric ideal as linear images of two parametrized models, over `Q(i)` at both basepoints
 ([record](w8-component-models-result.json)). The prime of degree 20 is the ideal of the hyperplane section
 `w12 + w34 = 0` of the closure of `{(a a^T, a ^ c)}` in `S^2 C^4 + L^2 C^4`, with `a` and `c` in `C^4`: 15
@@ -835,9 +835,9 @@ contains the other, and each altered map of the four controls leaves `K` outside
 the complex conjugates of those at `N-`. **Inferred:** each model is the kernel of a map to a polynomial ring
 modulo an irreducible quadric, a domain over every field of characteristic 0, so both images are absolutely
 prime; two incomparable primes with intersection `K` are its minimal primes. This gives the radicality of
-`A5-430` and the absolute primality of `A5-433` for `W8` without a primary decomposition.
+`A5-436` and the absolute primality of `A5-439` for `W8` without a primary decomposition.
 
-**Computed (`A5-433`):** every minimal prime of the three quadric ideals holds a smooth `Q(i)`-rational point.
+**Computed (`A5-439`):** every minimal prime of the three quadric ideals holds a smooth `Q(i)`-rational point.
 [`weight_slice_smooth_points.py`](weight_slice_smooth_points.py) lists the maximal sets of generators that contain
 no monomial of any quadric; each spans a coordinate subspace inside `V(K)`. At one rational point of each it
 computes the rank of the Jacobian of the quadrics and the minimal primes through the point
@@ -856,13 +856,13 @@ the Galois group permutes the geometric components of the prime transitively and
 one geometric component and stays prime over C. A rerun in which a prime has no such point falsifies the record;
 check it with `"$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py --check`.
 
-**Inferred (`A5-432`, conditional on `A5-421`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
+**Inferred (`A5-438`, conditional on `A5-421`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
 hold 9 and 14 linear forms in 21 generators, so at least `9 + 14 - 21 = 2` linear forms lie in both; each is
 nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`, whose degree-1 part is zero. So
 `L` is not the intersection of the two primes. The limit set of `A5-418` is the reduced support and needs
 `V(L) = V(K)` alone; `L = K` in every degree is the separate statement about the scheme.
 
-**Computed (`A5-434`):** [`e8_quadric_nilradical.py`](e8_quadric_nilradical.py) computes the nilradical of the
+**Computed (`A5-440`):** [`e8_quadric_nilradical.py`](e8_quadric_nilradical.py) computes the nilradical of the
 `E8bar` quadric ideal over `Q(i)` at both basepoints ([record](e8-quadric-nilradical-result.json)). The radical is
 `K` plus five linear forms: the generators `y3`, `y5`, `y6`, `y7` and `2 y12 + i y13 + i y17` (its conjugate at
 `N+`). The square of the radical lies in `K`. The annihilator of the nilradical has dimension 4 and degree 2, with
@@ -872,7 +872,7 @@ prime of degree 2. **Inferred:** the five forms are nilpotent and nonzero in the
 and `L` holds no linear form; whether their products with the other generators vanish in the fiber cone as they
 do modulo `K` is the open scheme statement above degree 7.
 
-**Computed (`A5-437`):** the same producer records the annihilator `A = K : R` of the nilradical module `R / K`
+**Computed (`A5-443`):** the same producer records the annihilator `A = K : R` of the nilradical module `R / K`
 (`R` the radical of `K`) and the first Hilbert numerators of `S/K`, `S/R` and `S/A`. `A` is prime: `minAssGTZ`
 returns one prime and `A` equals its radical. The numerators satisfy `N_K - N_R = N_A - (1 - t)^21` at both
 basepoints, so `dim (R/K)_d = dim (S/A)_d` in every degree `d >= 1` (5, 14, 30, 55, 91, 140, ...). **Inferred:**
@@ -881,7 +881,7 @@ dimension 5 is too large and the minimal prime of dimension 4 has degree 4 again
 only one and equals `A`. `R / K` is therefore a torsion-free module of rank 1 over the domain `S/A`, the coordinate
 ring of a quadric threefold.
 
-**Inferred (`A5-438`, conditional on `A5-421` and `A5-425`):** the relation ideal `L` lies between `K` and `R`,
+**Inferred (`A5-444`, conditional on `A5-421` and `A5-425`):** the relation ideal `L` lies between `K` and `R`,
 and it equals `K` at both minimal primes, where `K` is already prime. `L / K` is then a submodule of the rank-1
 torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every degree exactly when the nilradical
 `R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything open about the `E8bar` fiber cone
@@ -890,7 +890,7 @@ family of arcs in the slice germ whose limit points are dense in `V(A)` and alon
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
 slice coordinates). The retained arc families fill the two prime components; a family on `V(A)` is not built.
 
-**Second route at `N-` (`A5-422`, superseded by `A5-429`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
+**Second route at `N-` (`A5-422`, superseded by `A5-435`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
 dimension at least 5 (`A5-293`), so `K' = K2`. The quotient of the lattice by its saturated part is
 torsion-free over the prime above 32009, so each nonzero class is a power of that prime times a class that stays
@@ -1083,7 +1083,7 @@ fiber with the fiber of the Zariski closure of the graph, which each fiber row c
 `A5-423`. With the closure theorem read, rows `A5-411`, `A5-412` and `A5-417` hold as proved; `A5-418` stays open
 for E8-bar. A producer of the five rows that evaluates a right annihilator, a step that takes positivity from
 `z^T z` or from an independent conjugate variable, or a retained point at which `conjugate(z)^T z` differs from
-the squared Euclidean norm falsifies the audit (`A5-435`).
+the squared Euclidean norm falsifies the audit (`A5-441`).
 
 ## Investigated questions
 

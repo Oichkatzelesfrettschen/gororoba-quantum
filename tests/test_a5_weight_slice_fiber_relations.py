@@ -414,7 +414,7 @@ def test_the_w8_relation_ideal_is_radical_and_the_e8bar_ideal_is_not_in_every_ce
 
 
 def test_the_e8bar_minimal_primes_share_at_least_two_linear_forms_in_every_cell() -> None:
-    """9 + 14 linear forms in 21 generators: the intersection of the primes holds a linear form, which A5-432 uses."""
+    """9 + 14 linear forms in 21 generators: the intersection of the primes holds a linear form, which A5-438 uses."""
     record = json.loads(RECORD.read_text(encoding="utf-8"))
     cells = [cell for cell in record["cells"] if cell["source"] == "e8"]
     _same(len(cells), 3)

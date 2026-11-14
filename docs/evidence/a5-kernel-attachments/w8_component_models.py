@@ -1,7 +1,7 @@
 """The two components of the W8 quadric ideal over Q(i) as linear images of two parametrized models.
 
 The quadric ideal K of W8 (144 quadrics on 24 generators, `weight_slice_fiber_relations.py`) is the intersection of
-two primes of dimension 6 and degrees 20 and 30 (A5-430). This producer regenerates the quadrics at N- and N+ and
+two primes of dimension 6 and degrees 20 and 30 (A5-436). This producer regenerates the quadrics at N- and N+ and
 checks in Singular over Q(i) that K equals the intersection of two explicit ideals, each a linear change of
 coordinates applied to the kernel of a polynomial map from a domain:
 
