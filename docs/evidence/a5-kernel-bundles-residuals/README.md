@@ -432,8 +432,8 @@ a bivector `p`. Two identities govern the sandwiches `Pi(p) D Pi(p)` of a symmet
   image, independent modulo the Plucker quadrics (rank 1,485 of the two families).
 - **Proved** (`A5-470`): the combination of the entries with a symmetric `c` is minus the mixed discriminant of
   `c` and `D` on the plane of `p`. Where `D` has rank one on `K`, `D = l^2`, the combination vanishes on
-  `Lambda^2 K` exactly when `c` vanishes on the plane `K n ker l`. A form that vanishes on no `K(z)` still yields
-  quadrics on the image where its restrictions are degenerate.
+  `Lambda^2 K` exactly when `c` vanishes on the plane `K n ker l` (characteristic other than 2). A form that
+  vanishes on no `K(z)` still yields quadrics on the image where its restrictions are degenerate.
 
 Over `F_32029` at most one symmetric form vanishes on every `K(z)` of a stratum inside `V(Q)`, the norm, and none
 on `V(G)` minus `V(Q)` (`A5-468`, proved from the spans of `S^2 K(z)`); the norm does vanish at the sampled points
@@ -484,8 +484,8 @@ quadrics beyond Plucker in characteristic 0. The commutant of a null imaginary o
 type (test), where the Moufang identities are available.
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
-`([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))`, so `K(z)` is cut out by `d a = b c` and
-`[a, c] = conj(d) b - conj(b) d`, and the multiplicative octonion norm gives
+`([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
+is cut out by `d a = b c` and `[a, c] = conj(d) b - conj(b) d`, and the multiplicative octonion norm gives
 `N1(k, k') (N2 + N3)(z) = (N2 + N3)(k, k') N1(z)` on `K(z)` at every point.
 
 `hypothesis` (`A5-471`, open): at every nullity-4 point of `V(G)` the three doubling forms are multiples of one
@@ -502,7 +502,7 @@ are the 25 these conditions give: the 15 products `t_8 t_k`, the norms `N1` and 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 385 CPU seconds and 3.4 GiB on two workers under an 8 GiB memory scope, 3 minutes 42 seconds of wall time, same versions and host as the last replay).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 357 CPU seconds and 3.4 GiB on two workers under an 8 GiB memory scope, 3 minutes 14 seconds of wall time, same versions and host as the last replay).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 72 CPU seconds and 86 MiB on two workers, 53 seconds of wall time, same versions and host as the next replay).
 

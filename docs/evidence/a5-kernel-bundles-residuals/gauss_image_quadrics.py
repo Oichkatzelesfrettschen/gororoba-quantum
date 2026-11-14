@@ -828,6 +828,16 @@ def annihilating_combinations(family: Array, products_float: FloatArray) -> Arra
     return product_mod_prime(left, family)
 
 
+def family_block(item: tuple[Callable[[Array], Array], int, FloatArray]) -> tuple[int, Array]:
+    """The rank of one family of quadrics and a spanning set of its quadrics that vanish on the product vectors.
+
+    The item holds the function whose entries are the quadrics, their count and the product vectors as float64.
+    """
+    function, count, products_float = item
+    family = quadric_coefficients(function, count) if count else np.zeros((0, QUADRIC_COEFFICIENTS), dtype=np.int64)
+    return matrix_rank(family), annihilating_combinations(family, products_float)
+
+
 def family_tallies(
     products: Array, forms: Array, betas: Sequence[Array], annihilator: int
 ) -> tuple[list[dict[str, Any]], int, list[list[int]]]:
@@ -848,19 +858,16 @@ def family_tallies(
         (bivector_matrix_form_bivector_matrix(betas), len(betas) * SYMMETRIC_COEFFICIENTS),
         (bivector_matrix_form_bivector_matrix(DOUBLING_FORMS), len(DOUBLING_FORMS) * SYMMETRIC_COEFFICIENTS),
     ]
-    rows: list[dict[str, Any]] = []
-    vanishing: list[Array] = []
-    for name, (function, count) in zip(FAMILY_NAMES, functions, strict=True):
-        family = quadric_coefficients(function, count) if count else np.zeros((0, QUADRIC_COEFFICIENTS), dtype=np.int64)
-        vanishing.append(annihilating_combinations(family, products_float))
-        rows.append(
-            {
-                "name": name,
-                "written": count,
-                "rank": matrix_rank(family),
-                "vanishing": matrix_rank(vanishing[-1]),
-            }
-        )
+    # The bound above the family count selects the serial path of ordered_map: a family holds thousands of rows of
+    # 5,565 coefficients beside the product matrix, the stratum already peaks at 3.4 GiB, and the families of a
+    # stratum are closures over its forms, which do not pickle.
+    items = [(function, count, products_float) for function, count in functions]
+    blocks = parallel.ordered_map(family_block, items, min_items=len(items) + 1)
+    vanishing = [block for _, block in blocks]
+    rows: list[dict[str, Any]] = [
+        {"name": name, "written": count, "rank": rank, "vanishing": matrix_rank(block)}
+        for name, (_, count), (rank, block) in zip(FAMILY_NAMES, functions, blocks, strict=True)
+    ]
     stacked = np.concatenate(vanishing)
     pivots = independent_rows(stacked)
     stop = 0

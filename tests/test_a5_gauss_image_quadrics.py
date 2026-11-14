@@ -257,17 +257,26 @@ def test_commutator_of_two_imaginary_elements_in_the_octonion_doubling() -> None
     def conjugate(element: list[int]) -> list[int]:
         return [element[0], *((-value) % PRIME for value in element[1:])]
 
+    def formula(a: list[int], b: list[int], c: list[int], d: list[int]) -> list[int]:
+        upper = difference(
+            difference(product(8, a, c), product(8, c, a)),
+            difference(product(8, conjugate(d), b), product(8, conjugate(b), d)),
+        )
+        return [*upper, *(2 * value % PRIME for value in difference(product(8, d, a), product(8, b, c)))]
+
+    # Both sides are bilinear in (z, k) with integer coefficients, so the 15 x 15 pairs of imaginary units decide
+    # the identity over the integers; the residues of -2 to 2 modulo PRIME are distinct.
+    units = [[int(row == column) for column in range(16)] for row in range(1, 16)]
+    for left in units:
+        for right in units:
+            commutator = difference(product(16, left, right), product(16, right, left))
+            _same(commutator, formula(left[:8], left[8:], right[:8], right[8:]))
     points = Points("test:doubling:commutator")
     for _ in range(3):
         a, c = ([0, *(points.value() for _ in range(7))] for _ in range(2))
         b, d = ([points.value() for _ in range(8)] for _ in range(2))
         commutator = difference(product(16, [*a, *b], [*c, *d]), product(16, [*c, *d], [*a, *b]))
-        upper = difference(
-            difference(product(8, a, c), product(8, c, a)),
-            difference(product(8, conjugate(d), b), product(8, conjugate(b), d)),
-        )
-        lower = [2 * value % PRIME for value in difference(product(8, d, a), product(8, b, c))]
-        _same(commutator, [*upper, *lower])
+        _same(commutator, formula(a, b, c, d))
         norm = sum(value * value for value in product(8, d, a)) % PRIME
         _same(norm, sum(value * value for value in d) * sum(value * value for value in a) % PRIME)
 
@@ -348,6 +357,27 @@ def test_independent_rows_give_the_rank_of_every_prefix() -> None:
     _same([quadrics.prefix_rank(pivots, count) for count in range(6)], [0, 1, 1, 2, 2, 3])
     _same(quadrics.matrix_rank(rows), 3)
     _same(quadrics.independent_rows(rows[:0]), [])
+
+
+def test_annihilating_combinations_span_the_family_quadrics_that_vanish_on_the_products() -> None:
+    # Products e_1, e_2 and a family e_1 + e_3, 2 e_3, e_2, e_3 + e_4, e_4 of quadric coefficient vectors, the
+    # polar pairing being the dot product: the family spans <e_1 + e_3, e_2, e_3, e_4> of dimension 4, and its
+    # quadrics that pair to zero with both products are <e_3, e_4> of dimension 2.
+    width = quadrics.QUADRIC_COEFFICIENTS
+    unit = np.eye(width, dtype=np.int64)
+    family = np.array([unit[0] + unit[2], 2 * unit[2], unit[1], unit[2] + unit[3], unit[3]], dtype=np.int64)
+    products = unit[:2].astype(np.float64)
+    found = quadrics.annihilating_combinations(family, products)
+    _same(quadrics.product_mod_prime(found, products.T).any(), False)
+    _same(quadrics.matrix_rank(found), 2)
+    _same(quadrics.matrix_rank(np.concatenate([found, unit[2:4]])), 2)
+    _same(quadrics.annihilating_combinations(family[:0], products).shape, (0, width))
+    # The family e_1, e_2 pairs with the products through the identity matrix, so no combination vanishes.
+    _same(quadrics.matrix_rank(quadrics.annihilating_combinations(unit[:2], products)), 0)
+    # family_block evaluates the quadrics first. The coefficient order starts x_0^2, x_0 x_1, x_0 x_2, so of the
+    # family x_0 x_1, x_0 x_2 exactly the second pairs to zero with both products.
+    rank, block = quadrics.family_block((lambda p: p[:, :1] * p[:, 1:3] % PRIME, 2, products))
+    _same([rank, quadrics.matrix_rank(block), quadrics.matrix_rank(np.concatenate([block, unit[2:3]]))], [2, 1, 1])
 
 
 def test_product_mod_prime_matches_integer_arithmetic() -> None:
