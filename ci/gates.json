@@ -5365,7 +5365,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py --check",
       "name": "core-a5-kernel-plane-identities",
-      "seconds": 46.1,
+      "seconds": 40.4,
       "workers": 2,
       "replays": [
         "docs/evidence/a5-kernel-bundles-residuals/kernel-plane-identities-result.json"

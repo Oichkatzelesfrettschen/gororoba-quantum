@@ -29,7 +29,6 @@ from nullity4_gauss_image import (  # noqa: E402
     _twist,
     sample,
 )
-from sympy import QQ_I, I  # noqa: E402
 
 import cd_core  # noqa: E402
 
@@ -342,68 +341,6 @@ def test_kernel_vectors_without_the_doubling_unit_are_pairs_of_null_octonions_wi
         ).reshape(-1, len(monomials))
         _same(quadrics.matrix_rank(rows), len(monomials) - 25)
         _same(bool((candidates @ rows.T % PRIME).any()), False)
-
-
-def test_null_octonion_pairs_fill_the_part_of_the_kernel_orthogonal_to_its_point_under_the_first_doubling_form() -> (
-    None
-):
-    # Exact over Q(i) at the 54 fixtures z inside V(G). N1(z) is nonzero and N1 on K(z) is a multiple of the square
-    # of l = N1(., z), the pairing with the point, which lies in K(z). Every vector of the plane K(z) n ker l has
-    # t_8 = 0 and is a pair (c, d') of null imaginary octonions with c d' = 0. With N2 = t_8^2 the one-square
-    # identity reads N1(z) t_8(k) t_8(k') = N1(k, z) z_8 t_8(k'), so t_8 vanishes on all of K(z) exactly where
-    # z_8 = 0: at 39 fixtures, where ker t_8 is K(z) and not that plane.
-    zero = QQ_I.zero
-    table = {
-        (left, right): [
-            int(value)
-            for value in cd_core.cd_multiply_exact(
-                8, *([int(index == unit) for index in range(8)] for unit in (left, right))
-            )
-        ]
-        for left in range(1, 8)
-        for right in range(1, 8)
-    }
-
-    def dot(first: list[Any], second: list[Any]) -> Any:
-        return sum((x * y for x, y in zip(first, second, strict=True)), zero)
-
-    def product(first: list[Any], second: list[Any]) -> list[Any]:
-        out = [zero] * 8
-        for (left, right), values in table.items():
-            for coordinate, value in enumerate(values):
-                out[coordinate] += value * first[left - 1] * second[right - 1]
-        return out
-
-    unit = QQ_I.convert(I)
-    inside, point_off_the_unit = 0, 0
-    for _, stratum, split in _fixture_splits():
-        if stratum == STRATA[0]:
-            continue
-        inside += 1
-        frame = [unit ** (index + 1).bit_count() * QQ_I.convert(value) for index, value in enumerate(split)]
-        kernel = quadrics._exact_kernel(quadrics._exact_block(frame))
-        _same(len(kernel), 3)
-        gram = [[dot(first[:7], second[:7]) for second in kernel] for first in kernel]
-        form = [dot(frame[:7], vector[:7]) for vector in kernel]
-        _same(bool(dot(frame[:7], frame[:7])) and any(form), True)
-        _same(any(form[i] * row[j] - form[j] * row[i] for row in gram for i in range(3) for j in range(3)), False)
-        _same(any(vector[7] for vector in kernel), bool(frame[7]))
-        pivot = next(index for index, value in enumerate(form) if value)
-        plane = [
-            [x - form[index] / form[pivot] * y for x, y in zip(kernel[index], kernel[pivot], strict=True)]
-            for index in range(3)
-            if index != pivot
-        ]
-        point_off_the_unit += not frame[7]
-        for first in plane:
-            _same(bool(first[7]), False)
-            for second in plane:
-                _same(bool(dot(first[:7], second[:7])) or bool(dot(first[8:], second[8:])), False)
-                mixed = [
-                    x + y for x, y in zip(product(first[:7], second[8:]), product(second[:7], first[8:]), strict=True)
-                ]
-                _same(any(mixed), False)
-    _same([inside, point_off_the_unit], [54, 39])
 
 
 def test_fixture_class_is_exact_and_agrees_with_the_modular_class_of_its_stratum() -> None:

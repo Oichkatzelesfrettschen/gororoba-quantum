@@ -89,28 +89,34 @@
   "V(G) minus V(Q)": {
    "fixtures": 52,
    "kernel_dimension_three": 52,
+   "null_slice_statement": 52,
    "one_square_identity": 52,
+   "point_t8_zero": 37,
    "product_multiple_of_point": 0,
    "product_zero": 0
   },
   "V(Q) intersect V(G)": {
    "fixtures": 2,
    "kernel_dimension_three": 2,
+   "null_slice_statement": 2,
    "one_square_identity": 2,
+   "point_t8_zero": 2,
    "product_multiple_of_point": 2,
    "product_zero": 2
   },
   "V(Q) minus V(G)": {
    "fixtures": 12,
    "kernel_dimension_three": 12,
+   "null_slice_statement": 0,
    "one_square_identity": 0,
+   "point_t8_zero": 3,
    "product_multiple_of_point": 12,
    "product_zero": 0
   }
  },
  "inputs": {
   "docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py": "a583c5d86cd8f124614c1897726a403025823368da9291cfd1e69e350c770649",
-  "docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py": "2becfe006cce743e08ff42e5b081f0e7e8c877f5b11d76c034b09c279d28c960",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py": "c01b0c92c6ce4244a98a66dcfb3c2c7dd0646a3e602aca0322c230271cae1fab",
   "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",

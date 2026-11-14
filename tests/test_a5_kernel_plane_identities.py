@@ -78,8 +78,31 @@ def test_counterexample_point_is_recomputed() -> None:
     _same(identities.counterexample_record(), identities.COUNTEREXAMPLE)
 
 
+@pytest.mark.audit
 def test_fixture_counts_are_recomputed() -> None:
+    # The sweep over all 66 retained fixtures; the unmarked test below checks the row of a few of them.
     _same(identities.fixture_record(), identities.FIXTURE_COUNTS)
+
+
+def test_fixture_rows_at_the_first_fixtures_of_each_kind() -> None:
+    # Row: stratum, dim K(z), one-square identity, products multiples of z, products zero, null-slice statement and
+    # z_8 = 0.
+    jobs = _fixture_splits()
+    first: dict[str, tuple[int, str, list[int]]] = {}
+    for job in jobs:
+        first.setdefault(job[1], job)
+        if job[1] != STRATA[0]:
+            first.setdefault("z_8 = 0" if not identities._frame(job[2])[7] else "z_8 nonzero", job)
+    _same(sorted(first), sorted([*STRATA, "z_8 = 0", "z_8 nonzero"]))
+    expected = {
+        STRATA[0]: [STRATA[0], 3, False, True, False, False, True],
+        STRATA[1]: [STRATA[1], 3, True, False, False, True, False],
+        STRATA[2]: [STRATA[2], 3, True, True, True, True, True],
+        "z_8 = 0": [STRATA[1], 3, True, False, False, True, True],
+        "z_8 nonzero": [STRATA[1], 3, True, False, False, True, False],
+    }
+    for kind, job in first.items():
+        _same((kind, identities.fixture_row(job)), (kind, expected[kind]))
 
 
 def test_a_family_with_one_generator_is_recomputed() -> None:

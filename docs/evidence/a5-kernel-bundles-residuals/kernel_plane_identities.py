@@ -37,7 +37,8 @@ The record holds four groups of exact computations.
    there.
 4. The 66 exact fixtures of `nullity4-kernel-gauss-result.json` (`fixtures`), per stratum: the count, the count
    with dim K(z) = 3, the count at which the one-square identity holds, the count at which every product M(k) k' of
-   basis vectors is a multiple of z and the count at which every such product vanishes.
+   basis vectors is a multiple of z, the count at which every such product vanishes, the count at which the
+   null-slice statement of `null_slice_statement` holds and the count with t_8(z) = 0.
 
 `verdict` first compares the fields and value types of a record with those of the record that the constants of
 this module determine and stops there on a difference, then applies the rules by name, and last compares the
@@ -159,8 +160,8 @@ COUNTEREXAMPLE_RULES = {
     "one_square_identity": "the one-square identity fails at the counterexample",
 }
 # Per stratum: fixtures, those with dim K(z) = 3, with the one-square identity (all inside V(G), none on V(Q) minus
-# V(G)), with every product M(k) k' a multiple of z (all of V(Q) minus V(G) and of V(Q) n V(G)) and with every
-# product zero.
+# V(G)), with every product M(k) k' a multiple of z (all of V(Q) minus V(G) and of V(Q) n V(G)), with every
+# product zero, with the null-slice statement (all inside V(G), none on V(Q) minus V(G)) and with t_8(z) = 0.
 FIXTURE_COUNTS = {
     STRATA[0]: {
         "fixtures": 12,
@@ -168,6 +169,8 @@ FIXTURE_COUNTS = {
         "one_square_identity": 0,
         "product_multiple_of_point": 12,
         "product_zero": 0,
+        "null_slice_statement": 0,
+        "point_t8_zero": 3,
     },
     STRATA[1]: {
         "fixtures": 52,
@@ -175,6 +178,8 @@ FIXTURE_COUNTS = {
         "one_square_identity": 52,
         "product_multiple_of_point": 0,
         "product_zero": 0,
+        "null_slice_statement": 52,
+        "point_t8_zero": 37,
     },
     STRATA[2]: {
         "fixtures": 2,
@@ -182,6 +187,8 @@ FIXTURE_COUNTS = {
         "one_square_identity": 2,
         "product_multiple_of_point": 2,
         "product_zero": 2,
+        "null_slice_statement": 2,
+        "point_t8_zero": 2,
     },
 }
 FIXTURE_RULES = {
@@ -190,6 +197,8 @@ FIXTURE_RULES = {
     "one_square_identity": "the one-square identity does not hold exactly at the fixtures inside V(G)",
     "product_multiple_of_point": "the products M(k) k' are not multiples of z at the pinned fixtures",
     "product_zero": "the products M(k) k' vanish at other fixtures than the pinned ones",
+    "null_slice_statement": "the null-slice statement does not hold exactly at the fixtures inside V(G)",
+    "point_t8_zero": "t_8 vanishes at the point of other fixtures than the pinned ones",
 }
 
 OCTONION = [[int(cd_core.cd_sign(8, i, j)) for j in range(8)] for i in range(8)]
@@ -322,6 +331,45 @@ def null_slice(kernel: Sequence[Sequence[Any]], point: Sequence[Any], zero: Any)
     ]
 
 
+def octonion_pairs_vanish(basis: Sequence[Sequence[Any]], zero: Any) -> bool:
+    """c d'' + c'' d' = 0 for all vectors (c, d') and (c'', d'') of the basis, c = t_1..t_7 and d' = t_9..t_15."""
+    return all(
+        not (x + y)
+        for k in basis
+        for kk in basis
+        for x, y in zip(
+            octonion_product([zero, *k[:7]], [zero, *kk[8:]], zero),
+            octonion_product([zero, *kk[:7]], [zero, *k[8:]], zero),
+            strict=True,
+        )
+    )
+
+
+def null_slice_statement(point: Sequence[Any], kernel: Sequence[Sequence[Any]], zero: Any) -> bool:
+    """The null-slice statement at a point z with the kernel basis of K(z), with l = N1(., z) the pairing with z.
+
+    N1(z) is nonzero, l is nonzero on K(z), and N1 on K(z) is a multiple of l^2 (every row of the Gram matrix of N1
+    is proportional to the vector of the values of l on the basis). On K0 = K(z) n ker l (`null_slice`) t_8 vanishes,
+    N1 and N3 vanish on pairs, and c d'' + c'' d' vanishes (`octonion_pairs_vanish`). With N2 = t_8^2 the one-square
+    identity reads N1(z) t_8(k) t_8(k') = N1(k, z) z_8 t_8(k'), so t_8 vanishes on all of K(z) exactly when z_8 = 0.
+    """
+    pairings = [form(0, k, point, zero) for k in kernel]
+    if not (form(0, point, point, zero) and any(pairings)):
+        return False
+    gram = [[form(0, first, second, zero) for second in kernel] for first in kernel]
+    count = range(len(kernel))
+    if any(pairings[i] * row[j] - pairings[j] * row[i] for row in gram for i in count for j in count):
+        return False
+    if any(k[7] for k in kernel) != bool(point[7]):
+        return False
+    cut = null_slice(kernel, point, zero)
+    return (
+        all(not k[7] for k in cut)
+        and all(not form(j, k, kk, zero) for k in cut for kk in cut for j in (0, 2))
+        and octonion_pairs_vanish(cut, zero)
+    )
+
+
 def family_record(name: str) -> dict[str, Any]:
     """The exact record of one family over Q(i)(generators); see the module docstring."""
     polynomials, generators = family_point(name)
@@ -348,16 +396,7 @@ def family_record(name: str) -> dict[str, Any]:
             not form(j, k, kk, zero) for k in slice_basis for kk in slice_basis for j in range(3)
         )
         record["slice_pairs_with_point_zero"] = all(not form(j, k, point, zero) for k in slice_basis for j in range(3))
-        record["slice_octonion_product_zero"] = all(
-            not (x + y)
-            for k in slice_basis
-            for kk in slice_basis
-            for x, y in zip(
-                octonion_product([zero, *k[:7]], [zero, *kk[8:]], zero),
-                octonion_product([zero, *kk[:7]], [zero, *k[8:]], zero),
-                strict=True,
-            )
-        )
+        record["slice_octonion_product_zero"] = octonion_pairs_vanish(slice_basis, zero)
     else:
         products = products_on_kernel(kernel, zero)
         if name == "FQ":
@@ -439,7 +478,8 @@ def _frame(split: Sequence[int]) -> list[Any]:
 
 def fixture_row(job: tuple[int, str, list[int]]) -> list[Any]:
     """At one fixture: the stratum, dim K(z), and whether the one-square identity holds, whether every product
-    M(k) k' of basis vectors is a multiple of z and whether every one vanishes."""
+    M(k) k' of basis vectors is a multiple of z, whether every one vanishes, whether the null-slice statement holds
+    (`null_slice_statement`) and whether z_8 = 0."""
     _, stratum, split = job
     zero = QQ_I.zero
     point = _frame(split)
@@ -451,6 +491,8 @@ def fixture_row(job: tuple[int, str, list[int]]) -> list[Any]:
         one_square_identity(point, kernel, zero),
         multiple_of_point(products, point),
         not any(x for vector in products for x in vector),
+        null_slice_statement(point, kernel, zero),
+        not point[7],
     ]
 
 
@@ -466,6 +508,8 @@ def fixture_record() -> dict[str, dict[str, int]]:
             "one_square_identity": sum(row[2] for row in mine),
             "product_multiple_of_point": sum(row[3] for row in mine),
             "product_zero": sum(row[4] for row in mine),
+            "null_slice_statement": sum(row[5] for row in mine),
+            "point_t8_zero": sum(row[6] for row in mine),
         }
     return record
 
