@@ -534,7 +534,8 @@ two components of the product `z k(y)` cancel term by term. That subspace is the
 sedenion `(c, d)` with `z (c, d) = 0` has `c = -a (conj(d) b) / nu`, and `d` satisfies
 `nu d a = b ((b d) a)`, which on the associative `H` reads `2 nu d a = 0` and forces `d = 0`; the solutions `d`
 therefore meet `H` in zero and span at most 4 dimensions, and `K(z)` is the line of `z` plus the imaginary
-annihilators of `z`, so rank `M(z)` equals 10 and `z` with the `k(y)` is a basis of `K(z)`. The formula has integer coefficients and uses only the alternative law and the
+annihilators of `z`, so rank `M(z)` equals 10 and `z` with the `k(y)` spans `K(z)`, a basis when `y` runs
+through a basis of the complement of `H`. The formula has integer coefficients and uses only the alternative law and the
 norm, so it replaces the orbit argument of `A5-493` and settles the hypothesis `A5-496`. With `A5-495` the
 product on `K(z)` is nonzero at every rank-12 point of `V(G)` minus `V(Q)` over every field of characteristic
 other than 2 (`A5-498`). `singular_kernel_formula.py` checks the formula over the integers at 6,524 pairs
