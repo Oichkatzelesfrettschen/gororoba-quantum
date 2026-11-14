@@ -173,3 +173,24 @@ The offline tests run the readout with `validate=False`, because a synthetic run
 The rehearsal passes when `--admit-only` prints `b1-j1`, the run's `platform_name` is sim:belenos, the usage report
 moved by one job and 1.0 credit, and, for the full rehearsal, the analyzer prints a `branch`. A simulator's branch
 describes the simulator and carries no claim about the QPU.
+
+## Measured rehearsal results (2026-11-14)
+
+The owner approved one job on each simulator on 2026-11-14. Both jobs ran from commit 59e0ade55 under Perceval
+1.3.1 and exqalibur 1.4.2, with the token idle before each submit (`max_concurrent_jobs` 1, `max_jobs_in_queue` 1).
+
+| Platform | Run | Result | Seconds | Credits |
+|---|---|---|---|---|
+| sim:ascella | `results/quandela/runs/2026-11-14T203025Z-sim_ascella-ascella_predecessor-sim-ascella-billing-rule` (job 2ead603b) | completed, 8 iterations of 32768 shots; the analyzer prints `"verdict": "descriptive-only"` with `"platform": "sim:ascella"` | 7 (case ceiling 40) | usage report 14 to 15 jobs, 14 to 15 free credits (1.0) |
+| sim:belenos | `results/quandela/runs/2026-11-14T203218Z-sim_belenos-bdsc_diagnostic-b1-j1` (job 544e010f, `b1-j1`) | completed, 24 iterations, 960000 samples; `--admit-only` prints `b1-j1`, `platform_name` sim:belenos | 300 (case ceiling 176.16) | usage report 24 to 25 jobs, 22 to 23 free credits (1.0) |
+
+The first `validate=True` read of a successor run (`qd_records.validate_run`) passed for the Belenos run.
+
+Deviation from the written prediction: the sim:belenos job reports `duration` 300, the platform's per-job limit
+(`max_duration` 300), against the 176.16 s the case budgets from the QPU timing rule. The run is not truncated: all 24
+iterations returned 24 x 40000 samples, `status` is completed with progress 1.0, and the job started at 20:32:54 UTC
+while `results.json` was written at 20:38:15 UTC, consistent with about 300 s of wall time. Other retained sim:belenos
+jobs report 11 to 83 s, so the clamp is not a general reporting artifact. Hypothesis: the simulator needs about 300 s
+for this shape, which puts a full four-job rehearsal at the per-job limit; falsifier: a second run of the same
+`b1-j1` request reporting a duration well below 300. The one-job rehearsal answers the admission and billing questions;
+the 176.16 s figure is the QPU's estimate and the simulator's value replaces it as the rehearsal ceiling.
