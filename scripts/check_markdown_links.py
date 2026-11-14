@@ -28,6 +28,11 @@ keep the links of their source):
   docs/local_source_cache/, docs/source_archives/  retained source copies
   docs/evidence/a5-exceptional-fibers/working/  retained working record, links kept as written
 
+Relocated links (is_relocated_link): the README of a replay bundle keeps its bytes with the bundle, and its link to
+a Rocq source that moved to gororoba-math still names proofs/NAME.v. A link from docs/evidence/BUNDLE/README.md,
+where docs/evidence/BUNDLE/replay_rocq.sh is tracked, to an untracked proofs/NAME.v is accepted; the same target
+from any other file is a broken link. The checker reads no other repository.
+
 Usage:
   "$PYTHON" scripts/check_markdown_links.py [--root DIR]
   "$PYTHON" scripts/check_markdown_links.py --self-test
@@ -66,6 +71,7 @@ EXCLUDED_PREFIXES = (
     "docs/source_archives/",
     "docs/evidence/a5-exceptional-fibers/working/",
 )
+RELOCATED_TARGET = re.compile(r"proofs/[A-Za-z0-9_]+\.v")
 IBM_TRANSCRIPTIONS = (
     "calibration-jobs",
     "estimate-job-run-time",
@@ -238,6 +244,18 @@ def normalize(path: str) -> str:
     return "docs/" + path[len("literature/") :] if path.startswith("literature/") else path
 
 
+def is_relocated_link(source: str, resolved: str, tracked: set[str]) -> bool:
+    """A link from a replay bundle's README to a proofs/NAME.v that the repository no longer tracks."""
+    bundle = PurePosixPath(source)
+    return (
+        bundle.name == "README.md"
+        and bundle.parent.parent.as_posix() == "docs/evidence"
+        and bundle.parent.joinpath("replay_rocq.sh").as_posix() in tracked
+        and RELOCATED_TARGET.fullmatch(resolved) is not None
+        and resolved not in tracked
+    )
+
+
 def check(root: Path, tracked: set[str], files: list[str]) -> list[str]:
     """Return one `path:line: message` per broken link or anchor."""
     tracked_n = {normalize(p) for p in tracked}
@@ -280,6 +298,8 @@ def check(root: Path, tracked: set[str], files: list[str]) -> list[str]:
                     problems.append(f"{source}:{number}: link leaves the repository: {target}")
                     continue
                 resolved = normalize("/".join(parts))
+            if is_relocated_link(source, resolved, tracked_n):
+                continue
             if resolved and resolved not in tracked_n and resolved.rstrip("/") not in directories:
                 problems.append(f"{source}:{number}: broken link target: {target}")
                 continue
@@ -335,6 +355,18 @@ def self_test() -> int:
         )
         (root / "docs/bad.md").write_text(bad, encoding="utf-8")
         tracked = {"docs/notes/target.md", "docs/good.md", "docs/bad.md"}
+        bundle = root / "docs/evidence/bundle"
+        bundle.mkdir(parents=True)
+        for name in ("README.md", "notes.md"):
+            (bundle / name).write_text("[moved](../../../proofs/Moved.v)\n", encoding="utf-8")
+        (root / "docs/other.md").write_text("[moved](../proofs/Moved.v)\n", encoding="utf-8")
+        tracked |= {"docs/evidence/bundle/README.md", "docs/evidence/bundle/notes.md", "docs/other.md"}
+        tracked.add("docs/evidence/bundle/replay_rocq.sh")
+        accepted = check(root, tracked, ["docs/evidence/bundle/README.md"])
+        rejected = check(root, tracked, ["docs/evidence/bundle/notes.md", "docs/other.md"])
+        if accepted or len(rejected) != 2:
+            print("self-test: a relocated link is accepted only from the README of a replay bundle")
+            return 1
         if problems := check(root, tracked, ["docs/good.md"]):
             print("self-test: false positives:\n" + "\n".join(problems))
             return 1
@@ -351,7 +383,7 @@ def self_test() -> int:
         if len(found) != len(wanted) or any(not any(w in line for line in found) for w in wanted):
             print("self-test: planted defects not all reported:\n" + "\n".join(found))
             return 1
-    print("self-test passed: 7 planted defects reported, 0 false positives")
+    print("self-test passed: 7 planted defects reported, 0 false positives, relocated links bound to bundle READMEs")
     return 0
 
 
