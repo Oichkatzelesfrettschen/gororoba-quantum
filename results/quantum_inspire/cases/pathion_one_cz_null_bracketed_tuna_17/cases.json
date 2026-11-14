@@ -17,6 +17,7 @@
    "files": [
     "readout-0.cq",
     "b0-coin0.cq",
+    "b0-coin1.cq",
     "readout-1.cq"
    ]
   },
@@ -25,30 +26,13 @@
    "kind": "twin",
    "files": [
     "readout-0.cq",
-    "b0-coin1.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-03",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
     "k4-coin0.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-04",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
     "k4-coin1.cq",
     "readout-1.cq"
    ]
   },
   {
-   "batch": "batch-05",
+   "batch": "batch-03",
    "kind": "base",
    "files": [
     "readout-0.cq",
@@ -57,7 +41,7 @@
    ]
   },
   {
-   "batch": "batch-06",
+   "batch": "batch-04",
    "kind": "base",
    "files": [
     "readout-0.cq",
@@ -66,20 +50,40 @@
    ]
   },
   {
-   "batch": "batch-07",
+   "batch": "batch-05",
    "kind": "twin",
    "files": [
     "readout-0.cq",
     "k8-coin0.cq",
+    "k8-coin1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-06",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k12-coin0.cq",
+    "k12-coin1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-07",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k12.cq",
     "readout-1.cq"
    ]
   },
   {
    "batch": "batch-08",
-   "kind": "twin",
+   "kind": "base",
    "files": [
     "readout-0.cq",
-    "k8-coin1.cq",
+    "k12.cq",
     "readout-1.cq"
    ]
   },
@@ -88,6 +92,7 @@
    "kind": "twin",
    "files": [
     "readout-0.cq",
+    "k12-coin1.cq",
     "k12-coin0.cq",
     "readout-1.cq"
    ]
@@ -97,7 +102,8 @@
    "kind": "twin",
    "files": [
     "readout-0.cq",
-    "k12-coin1.cq",
+    "k8-coin1.cq",
+    "k8-coin0.cq",
     "readout-1.cq"
    ]
   },
@@ -106,7 +112,7 @@
    "kind": "base",
    "files": [
     "readout-0.cq",
-    "k12.cq",
+    "k8.cq",
     "readout-1.cq"
    ]
   },
@@ -115,7 +121,7 @@
    "kind": "base",
    "files": [
     "readout-0.cq",
-    "k12.cq",
+    "k4.cq",
     "readout-1.cq"
    ]
   },
@@ -124,7 +130,8 @@
    "kind": "twin",
    "files": [
     "readout-0.cq",
-    "k12-coin1.cq",
+    "k4-coin1.cq",
+    "k4-coin0.cq",
     "readout-1.cq"
    ]
   },
@@ -133,84 +140,13 @@
    "kind": "twin",
    "files": [
     "readout-0.cq",
-    "k12-coin0.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-15",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
-    "k8-coin1.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-16",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
-    "k8-coin0.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-17",
-   "kind": "base",
-   "files": [
-    "readout-0.cq",
-    "k8.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-18",
-   "kind": "base",
-   "files": [
-    "readout-0.cq",
-    "k4.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-19",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
-    "k4-coin1.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-20",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
-    "k4-coin0.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-21",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
     "b0-coin1.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-22",
-   "kind": "twin",
-   "files": [
-    "readout-0.cq",
     "b0-coin0.cq",
     "readout-1.cq"
    ]
   },
   {
-   "batch": "batch-23",
+   "batch": "batch-15",
    "kind": "base",
    "files": [
     "readout-0.cq",
@@ -219,7 +155,7 @@
    ]
   },
   {
-   "batch": "batch-24",
+   "batch": "batch-16",
    "kind": "joint",
    "files": [
     "joint-011.cq",
@@ -228,7 +164,7 @@
    ]
   },
   {
-   "batch": "batch-25",
+   "batch": "batch-17",
    "kind": "joint",
    "files": [
     "joint-010.cq",
@@ -237,12 +173,48 @@
    ]
   },
   {
-   "batch": "batch-26",
+   "batch": "batch-18",
    "kind": "joint",
    "files": [
     "joint-100.cq",
     "joint-101.cq"
    ]
   }
+ ],
+ "hardware_policy": "wave-v1",
+ "waves": [
+  [
+   "batch-00",
+   "batch-01",
+   "batch-02"
+  ],
+  [
+   "batch-03",
+   "batch-04",
+   "batch-05"
+  ],
+  [
+   "batch-06",
+   "batch-07",
+   "batch-08"
+  ],
+  [
+   "batch-09",
+   "batch-10",
+   "batch-11"
+  ],
+  [
+   "batch-12",
+   "batch-13",
+   "batch-14"
+  ],
+  [
+   "batch-15",
+   "batch-16",
+   "batch-17"
+  ],
+  [
+   "batch-18"
+  ]
  ]
 }

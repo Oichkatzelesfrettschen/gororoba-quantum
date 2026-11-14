@@ -203,7 +203,7 @@
   "circuit_sha256": "9994e3b74314e0176bdbe77644be3faba9450a65ac79dae5136c7bc011cad56f"
  },
  "preregistered": {
-  "estimates": "per template and batch kind, the contrast of each batch, pooled over the replicate batches by inverse variance: base, the raw arm contrast P(s=0 | coin read 1) - P(s=0 | coin read 0); twin, t = (P1 - c1) - (P0 - c0) over the coin-1 and coin-0 twin batches of one replicate, P the raw P(s=0) of the twin and c = (e10 - e01) / 2 the bracket offset of its own batch from the selector's assignment errors e01 (readout-0) and e10 (readout-1); the variance of t sums, per batch, the arm variance of P and a quarter of each arm variance of e01 and e10, a deterministic arm taking the Agresti-Coull interval variance",
+  "estimates": "per template and batch kind, the contrast of each batch, pooled over the replicate batches by inverse variance: base, the raw arm contrast P(s=0 | coin read 1) - P(s=0 | coin read 0); twin, t = (P1 - c) - (P0 - c) = P1 - P0 over the two coin twins of one batch, P the raw P(s=0) of a twin and c = (e10 - e01) / 2 the offset of the batch's own readout-0 and readout-1, which cancels in t; the variance of t sums the arm variances of P1 and P0, a deterministic arm taking the Agresti-Coull interval variance",
   "heterogeneity": "replicate batches of one template and kind agree within chi-square 10.828 (1 degree of freedom, alpha 0.001); the three 6-CZ blocks agree within chi-square 9.21 (2 degrees of freedom, alpha 0.01) for the base contrasts and for the twin contrasts; otherwise the decision is unresolved",
   "control": "b0 base contrast s0 above 3.0 se, else the offset is absent and nothing about its mechanism is decided",
   "twin_control": "b0 twin contrast t0 above 3.0 se; if not, t0 within 3.0 se of zero (|t0| <= 3.0 se) and s0 - t0 above 3.0 combined se, the offset exists only with the coin in superposition; t0 below -3.0 se is unresolved (negative twin); otherwise unresolved",
@@ -213,8 +213,8 @@
  },
  "shots": 32768,
  "batch": "batch-07",
- "kind": "twin",
- "template": "k8",
+ "kind": "base",
+ "template": "k12",
  "replicate": 0,
  "circuits": [
   {
@@ -223,50 +223,51 @@
    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
   },
   {
-   "file": "k8-coin0.cq",
+   "file": "k12.cq",
    "kind": "data",
-   "template": "k8",
-   "coin": 0,
+   "template": "k12",
+   "coin": null,
    "ideal": [
-    0.125,
+    0.0625,
     0.0,
-    0.125,
+    0.0625,
     0.0,
-    0.125,
+    0.0625,
     0.0,
-    0.125,
-    0.0,
-    0.0,
-    0.125,
-    0.0,
-    0.125,
-    0.0,
-    0.125,
-    0.0,
-    0.125,
+    0.0625,
     0.0,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
+    0.0625,
     0.0,
-    0.0,
-    0.0,
-    0.0,
+    0.0625,
     0.0
    ],
-   "sha256": "3ed09f97bfb6ff0d4ab8f33e3a7d36d200ae9cb7f0eebfc4f199ae1c9896c00a"
+   "sha256": "1c917372d4ca8b8280e80afd2b3eec6fbb979a12cdb45bc6eaf60923cf09a45c"
   },
   {
    "file": "readout-1.cq",
    "kind": "readout",
    "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
   }
- ]
+ ],
+ "hardware_policy": "wave-v1"
 }

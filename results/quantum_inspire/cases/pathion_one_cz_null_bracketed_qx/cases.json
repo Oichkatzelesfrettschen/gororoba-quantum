@@ -8,6 +8,7 @@
    "files": [
     "readout-0.cq",
     "b0-coin0.cq",
+    "b0-coin1.cq",
     "readout-1.cq",
     "b0.cq"
    ]
@@ -17,8 +18,10 @@
    "kind": "control",
    "files": [
     "readout-0.cq",
-    "b0-coin1.cq",
-    "readout-1.cq"
+    "k4-coin0.cq",
+    "k4-coin1.cq",
+    "readout-1.cq",
+    "k4.cq"
    ]
   },
   {
@@ -26,9 +29,10 @@
    "kind": "control",
    "files": [
     "readout-0.cq",
-    "k4-coin0.cq",
+    "k8-coin0.cq",
+    "k8-coin1.cq",
     "readout-1.cq",
-    "k4.cq"
+    "k8.cq"
    ]
   },
   {
@@ -36,46 +40,10 @@
    "kind": "control",
    "files": [
     "readout-0.cq",
-    "k4-coin1.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-04",
-   "kind": "control",
-   "files": [
-    "readout-0.cq",
-    "k8-coin0.cq",
-    "readout-1.cq",
-    "k8.cq"
-   ]
-  },
-  {
-   "batch": "batch-05",
-   "kind": "control",
-   "files": [
-    "readout-0.cq",
-    "k8-coin1.cq",
-    "readout-1.cq"
-   ]
-  },
-  {
-   "batch": "batch-06",
-   "kind": "control",
-   "files": [
-    "readout-0.cq",
     "k12-coin0.cq",
+    "k12-coin1.cq",
     "readout-1.cq",
     "k12.cq"
-   ]
-  },
-  {
-   "batch": "batch-07",
-   "kind": "control",
-   "files": [
-    "readout-0.cq",
-    "k12-coin1.cq",
-    "readout-1.cq"
    ]
   }
  ]
