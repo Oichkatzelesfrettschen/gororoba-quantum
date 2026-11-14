@@ -587,10 +587,23 @@ def _stub(tmp_path: Path, failures: list[str]) -> tuple[Path, Path]:
     return script, log
 
 
-def _submit(tmp_path: Path, failures: list[str], batches: int = 2) -> tuple[int, str, str]:
+def _submit(
+    tmp_path: Path,
+    failures: list[str],
+    batches: int = 2,
+    held: dict[str, tuple[str, ...]] | None = None,
+    extra: dict[str, str] | None = None,
+) -> tuple[int, str, str]:
+    """Run the submission script on empty batch directories; `held` names files already present in the run directory
+    of a batch, as an earlier call of the same series leaves them."""
     series = tmp_path / "series"
     for n in range(batches):
         (series / f"batch-{n:02d}").mkdir(parents=True)
+    for batch, names in (held or {}).items():
+        run = tmp_path / "runs" / f"STAMP-series-{batch}"
+        run.mkdir(parents=True)
+        for name in names:
+            (run / name).write_text("{}\n", encoding="utf-8")
     script, log = _stub(tmp_path, failures)
     env = {
         "PATH": "/usr/bin:/bin",
@@ -598,6 +611,7 @@ def _submit(tmp_path: Path, failures: list[str], batches: int = 2) -> tuple[int,
         "QI_PLATFORM": str(script),
         "SANITY_COMMAND": "true",
         "QI_PAUSE_SLEEP": "0",
+        **(extra or {}),
     }
     done = subprocess.run(
         ["sh", str(SUBMIT), "7", str(series), str(tmp_path / "runs"), "STAMP", "QUOTE"],
@@ -625,6 +639,47 @@ def test_the_submission_sequence_stops_on_the_first_failure_and_after_ten_refusa
     refusal = "wait 5 more seconds so the platform can calibrate"
     code, calls, err = _submit(tmp_path / "x", [refusal] * 12)
     _expect(code != 0 and calls.count("submit") == 10, f"{code} {calls.count('submit')} {err}")
+
+
+def test_the_submission_sequence_resumes_a_series_without_a_second_submit(tmp_path: Path) -> None:
+    held = {"batch-00": ("submission.json", "results.json"), "batch-01": ("submission.json",)}
+    code, calls, err = _submit(tmp_path, [], batches=3, held=held, extra={"QI_COLLECT_TIMEOUT": "7200"})
+    _expect(code == 0, f"exit {code}: {err}")
+    lines = calls.splitlines()
+    _expect([ln.split()[0] for ln in lines] == ["collect", "submit", "collect"], f"{lines}")
+    _expect("batch-01" in lines[0] and "batch-02" in lines[1], f"the queued batch is not collected first: {lines}")
+    _expect(all(ln.endswith("--timeout 7200") for ln in lines if ln.startswith("collect")), f"{lines}")
+
+
+def test_the_submission_sequence_stops_at_a_checkpoint_without_a_receipt(tmp_path: Path) -> None:
+    code, calls, err = _submit(tmp_path, [], held={"batch-00": ("submission-state.json",)})
+    _expect(code != 0 and calls == "" and "reconcile" in err, f"{code} {calls} {err}")
+
+
+def test_the_submission_sequence_submits_a_run_directory_that_saw_only_refusals(tmp_path: Path) -> None:
+    code, calls, err = _submit(tmp_path, [], held={"batch-00": ()})
+    _expect(code == 0, f"exit {code}: {err}")
+    _expect([ln.split()[0] for ln in calls.splitlines()] == ["submit", "collect", "submit", "collect"], calls)
+
+
+def test_the_submission_sequence_refuses_a_series_held_under_another_stamp(tmp_path: Path) -> None:
+    def held_elsewhere(name: str, extra: dict[str, str] | None) -> tuple[int, str, str]:
+        earlier = tmp_path / name / "runs" / "EARLIER-series-batch-00"
+        earlier.mkdir(parents=True)
+        (earlier / "results.json").write_text("{}\n", encoding="utf-8")
+        return _submit(tmp_path / name, [], extra=extra)
+
+    code, calls, err = held_elsewhere("unarmed", None)
+    _expect(code == 1 and calls == "" and "STAMP=EARLIER" in err, f"{code} {calls} {err}")
+    code, calls, err = held_elsewhere("wrong", {"QI_REPEAT_SERIES": "other"})
+    _expect(code == 1 and calls == "", f"a token naming another series armed the repeat: {code} {calls} {err}")
+    code, calls, err = held_elsewhere("armed", {"QI_REPEAT_SERIES": "series"})
+    _expect(code == 0 and calls.count("submit") == 2, f"{code} {calls} {err}")
+
+
+def test_the_submission_sequence_refuses_a_collection_timeout_that_is_not_whole_seconds(tmp_path: Path) -> None:
+    code, calls, err = _submit(tmp_path, [], extra={"QI_COLLECT_TIMEOUT": "1h"})
+    _expect(code == 2 and calls == "", f"{code} {calls} {err}")
 
 
 def test_operating_characteristics_carry_the_band_into_spawned_workers() -> None:

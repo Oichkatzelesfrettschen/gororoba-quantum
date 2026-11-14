@@ -12,11 +12,11 @@
   },
   {
    "batch": "batch-01",
-   "kind": "all5",
+   "kind": "all10",
    "files": [
-    "b0-rx-all-m5.cq",
+    "b0-rx-all-m10.cq",
     "b0-rx.cq",
-    "b0-rx-all-p5.cq"
+    "b0-rx-all-p10.cq"
    ]
   },
   {
@@ -29,11 +29,11 @@
   },
   {
    "batch": "batch-03",
-   "kind": "q8-5",
+   "kind": "q4-10",
    "files": [
-    "b0-rx-q8-m5.cq",
+    "b0-rx-q4-m10.cq",
     "b0-rx.cq",
-    "b0-rx-q8-p5.cq"
+    "b0-rx-q4-p10.cq"
    ]
   },
   {
@@ -63,11 +63,11 @@
   },
   {
    "batch": "batch-07",
-   "kind": "all10",
+   "kind": "all20",
    "files": [
-    "b0-rx-all-m10.cq",
+    "b0-rx-all-m20.cq",
     "b0-rx.cq",
-    "b0-rx-all-p10.cq"
+    "b0-rx-all-p20.cq"
    ]
   },
   {
@@ -114,11 +114,11 @@
   },
   {
    "batch": "batch-13",
-   "kind": "all10",
+   "kind": "all20",
    "files": [
-    "b0-rx-all-p10.cq",
+    "b0-rx-all-p20.cq",
     "b0-rx.cq",
-    "b0-rx-all-m10.cq"
+    "b0-rx-all-m20.cq"
    ]
   },
   {
@@ -148,11 +148,11 @@
   },
   {
    "batch": "batch-17",
-   "kind": "q8-5",
+   "kind": "q4-10",
    "files": [
-    "b0-rx-q8-p5.cq",
+    "b0-rx-q4-p10.cq",
     "b0-rx.cq",
-    "b0-rx-q8-m5.cq"
+    "b0-rx-q4-m10.cq"
    ]
   },
   {
@@ -165,11 +165,11 @@
   },
   {
    "batch": "batch-19",
-   "kind": "all5",
+   "kind": "all10",
    "files": [
-    "b0-rx-all-p5.cq",
+    "b0-rx-all-p10.cq",
     "b0-rx.cq",
-    "b0-rx-all-m5.cq"
+    "b0-rx-all-m10.cq"
    ]
   },
   {

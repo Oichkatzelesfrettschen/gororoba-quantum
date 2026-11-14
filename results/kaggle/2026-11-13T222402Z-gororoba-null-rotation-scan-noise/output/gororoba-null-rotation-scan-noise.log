@@ -1,0 +1,332 @@
+[{"stream_name":"stdout","time":103.280164316,"data":"# Kaggle kernel agent guide\n"}
+,{"stream_name":"stdout","time":103.280212923,"data":"\n"}
+,{"stream_name":"stdout","time":103.28022227700001,"data":"This file travels inside every kernel that `scripts/kaggle_run.py` pushes\n"}
+,{"stream_name":"stdout","time":103.280225232,"data":"and is printed at the top of its log. The repository's root AGENTS.md owns\n"}
+,{"stream_name":"stdout","time":103.280227637,"data":"every rule; this guide states what a Kaggle kernel is for, what it runs on,\n"}
+,{"stream_name":"stdout","time":103.280229952,"data":"and what it must prove before its output counts.\n"}
+,{"stream_name":"stdout","time":103.280232297,"data":"\n"}
+,{"stream_name":"stdout","time":103.280234399,"data":"## What runs where\n"}
+,{"stream_name":"stdout","time":103.280236633,"data":"\n"}
+,{"stream_name":"stdout","time":103.280238752,"data":"| Substrate | Runs | Never runs |\n"}
+,{"stream_name":"stdout","time":103.280241046,"data":"| --- | --- | --- |\n"}
+,{"stream_name":"stdout","time":103.280243329,"data":"| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below 12 qubits (8 with mid-circuit measurement) | IBM jobs; anything needing an IBM credential |\n"}
+,{"stream_name":"stdout","time":103.280253567,"data":"| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches 12 qubits, or 8 with mid-circuit measurement (docs/notes/kaggle/substrates.md, \"CPU against T4\") | IBM jobs; narrow replays, which the T4 speeds up by at most 3 times |\n"}
+,{"stream_name":"stdout","time":103.280256621,"data":"| Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |\n"}
+,{"stream_name":"stdout","time":103.280259882,"data":"| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. An account without Persona identity verification gets a 4-core CPU machine for every TPU request; a verified account's request queues for a TPU, one batch session at a time (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |\n"}
+,{"stream_name":"stdout","time":103.280273117,"data":"| Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |\n"}
+,{"stream_name":"stdout","time":103.280277581,"data":"| A 15-qubit run (decision-gated) | the substrate an approved written case names: Kaggle T4 x2 or build host Aer, a GPU state wider than one T4 cache-blocked across both (`calibration_snapshot.blocking_options`; docs/notes/kaggle/gpu-runbook.md), or Tuna-17 through Quantum Inspire, whose `submit` refuses while another session's hardware job is live | any substrate the case does not name |\n"}
+,{"stream_name":"stdout","time":103.280282179,"data":"| IBM Heron r2 (ibm_fez, ibm_kingston, ibm_marrakesh) | 16 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |\n"}
+,{"stream_name":"stdout","time":103.280288187,"data":"| GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |\n"}
+,{"stream_name":"stdout","time":103.280291873,"data":"| Build host (Arch, RTX 4070 Ti 12 GB; guide in the untracked `docs/local/`) | development, dry runs, calibration exports, CPU replays, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |\n"}
+,{"stream_name":"stdout","time":103.28029581,"data":"\n"}
+,{"stream_name":"stdout","time":103.280298906,"data":"## Every kernel's phases\n"}
+,{"stream_name":"stdout","time":103.280302187,"data":"\n"}
+,{"stream_name":"stdout","time":103.280305259,"data":"`kaggle_kernel/kernel_main.py` writes one JSON file per phase into\n"}
+,{"stream_name":"stdout","time":103.280314214,"data":"`/kaggle/working/output`:\n"}
+,{"stream_name":"stdout","time":103.280317634,"data":"\n"}
+,{"stream_name":"stdout","time":103.280320792,"data":"1. `environment.json`: Python and package versions, CPU model and cores,\n"}
+,{"stream_name":"stdout","time":103.280324178,"data":"   RAM, working disk, every GPU (name, memory, driver, compute capability),\n"}
+,{"stream_name":"stdout","time":103.280327577,"data":"   CUDA driver version, TPU devices, Aer devices, the Aer device the entry\n"}
+,{"stream_name":"stdout","time":103.280330994,"data":"   runs on (`entry_aer_device`) and attached models.\n"}
+,{"stream_name":"stdout","time":103.280337594,"data":"2. `hypercomplex.json`: the hypercomplex stack, built and proved by\n"}
+,{"stream_name":"stdout","time":103.280340352,"data":"   `scripts/algebra_package_tables.py`. `--fetch` downloads the seventeen\n"}
+,{"stream_name":"stdout","time":103.280342716,"data":"   archives `RELEASES` pins and keeps each only if its sha256 matches.\n"}
+,{"stream_name":"stdout","time":103.280344913,"data":"   `--install` installs sixteen of them with `pip install --no-deps`,\n"}
+,{"stream_name":"stdout","time":103.280347194,"data":"   applying `BUILD_RECIPES` (the cayley-dickson, SplitOct and pyquaternion\n"}
+,{"stream_name":"stdout","time":103.280349409,"data":"   PKGBUILD `prepare()` steps) and taking the Octonion-Sedenion wheel as\n"}
+,{"stream_name":"stdout","time":103.280351637,"data":"   published, then installs `RUNTIME_PINS`: numpy-quaternion, the\n"}
+,{"stream_name":"stdout","time":103.280354599,"data":"   seventeenth, as its pinned compiled wheel, and numba, sparse and\n"}
+,{"stream_name":"stdout","time":103.280365467,"data":"   anywidget. `--extract` binds all seventeen\n"}
+,{"stream_name":"stdout","time":103.280369294,"data":"   installed distributions to their archives and regenerates\n"}
+,{"stream_name":"stdout","time":103.280373456,"data":"   `docs/evidence/algebra_packages/tables.json`; the kernel stops with exit\n"}
+,{"stream_name":"stdout","time":103.280377442,"data":"   code 3 unless those bytes equal the retained ones. The build host passes\n"}
+,{"stream_name":"stdout","time":103.280381241,"data":"   the same test against its Arch packages, so a run that reaches its entry\n"}
+,{"stream_name":"stdout","time":103.280384652,"data":"   used the same algebra code as the host. The file's `packages` field\n"}
+,{"stream_name":"stdout","time":103.280388061,"data":"   records the versions `kernel_main.REPORTED_PACKAGES` names, nine of the\n"}
+,{"stream_name":"stdout","time":103.280391374,"data":"   seventeen algebra distributions; the byte comparison binds the rest.\n"}
+,{"stream_name":"stdout","time":103.28039471,"data":"3. `capacity.json` (smoke kernels): the widest GHZ circuit each Aer method\n"}
+,{"stream_name":"stdout","time":103.280398042,"data":"   runs on the GPU.\n"}
+,{"stream_name":"stdout","time":103.280401209,"data":"4. The entry's stdout and stderr, written to `stdout.txt` and `stderr.txt`\n"}
+,{"stream_name":"stdout","time":103.280404494,"data":"   as the entry prints (`kernel_main.start_entry` sets\n"}
+,{"stream_name":"stdout","time":103.280408217,"data":"   `PYTHONUNBUFFERED=1`), then its exit code and the repository files it\n"}
+,{"stream_name":"stdout","time":103.280411609,"data":"   changed, which the kernel copies under `repo/` after the entry exits.\n"}
+,{"stream_name":"stdout","time":103.28041497,"data":"   A session Kaggle ends at `--timeout` still returns\n"}
+,{"stream_name":"stdout","time":103.280418228,"data":"   `/kaggle/working/output` but never reaches that copy, so an entry that\n"}
+,{"stream_name":"stdout","time":103.28042155,"data":"   may outlive its timeout writes its record to an absolute path under\n"}
+,{"stream_name":"stdout","time":103.280428266,"data":"   `/kaggle/working/output` and rewrites it after every finished unit of\n"}
+,{"stream_name":"stdout","time":103.280431707,"data":"   work, as `scripts/aer_gpu_probe.py` does per row.\n"}
+,{"stream_name":"stdout","time":103.280435217,"data":"\n"}
+,{"stream_name":"stdout","time":103.280441643,"data":"## Package stack\n"}
+,{"stream_name":"stdout","time":103.28044385,"data":"\n"}
+,{"stream_name":"stdout","time":103.280446407,"data":"The repository's central Python guide [docs/PYTHON.md](../docs/PYTHON.md)\n"}
+,{"stream_name":"stdout","time":103.280457189,"data":"documents multi-environment library roles, dependency manifests and\n"}
+,{"stream_name":"stdout","time":103.280461295,"data":"interpreter routing. Kernel packages are pinned as follows:\n"}
+,{"stream_name":"stdout","time":103.280465081,"data":"\n"}
+,{"stream_name":"stdout","time":103.280469029,"data":"| Package | Pin | Kernel source |\n"}
+,{"stream_name":"stdout","time":103.280472802,"data":"| --- | --- | --- |\n"}
+,{"stream_name":"stdout","time":103.280476039,"data":"| qiskit | 2.6.1 | PyPI |\n"}
+,{"stream_name":"stdout","time":103.280479211,"data":"| qiskit-aer-gpu-cu11 | 0.18.2 (the CUDA 11 build; the CUDA 12 `qiskit-aer-gpu` 0.18.2 also ships cp313 wheels but requires `cuquantum-cu12\u003c24.11`) | PyPI |\n"}
+,{"stream_name":"stdout","time":103.280483294,"data":"| cuquantum-cu11 | 24.8.0 (brings custatevec-cu11 1.6.0.post1 and cutensornet-cu11 2.5.0; the libraries the cu11 Aer wheel links) | PyPI |\n"}
+,{"stream_name":"stdout","time":103.280486901,"data":"| cutensor-cu11 | 2.2.0 (the newest release inside cutensornet-cu11 2.5.0's `\u003e=2.0.1,\u003c3`) | PyPI |\n"}
+,{"stream_name":"stdout","time":103.280490546,"data":"| qiskit-ibm-runtime | 0.51.0 (fake backends such as FakeFez; no account or credential) | PyPI |\n"}
+,{"stream_name":"stdout","time":103.28049398,"data":"| hypercomplex, hypercomplex-engine, hypercomplex-algebra, Cayley-Calculator, octonion, mathdunders | 0.3.4, 0.5.0, 0.2.0.2, 1.3.1, 0.1.0, 0.4.2 | PyPI sdist, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":103.280497591,"data":"| quaternionic, clifford, kingdon, galgebra, pyoctonion | 1.0.18, 1.5.1, 3.0.0, 0.6.0, 3.12 | PyPI sdist, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":103.280501107,"data":"| pyquaternion | 0.9.9 | PyPI sdist, sha256-pinned, PKGBUILD recipe (writes the VERSION.txt the sdist omits) |\n"}
+,{"stream_name":"stdout","time":103.280504571,"data":"| cayley-dickson, SplitOct | commits abf96e7, e29e72f | GitHub archive, sha256-pinned, PKGBUILD recipe |\n"}
+,{"stream_name":"stdout","time":103.280507982,"data":"| hyprat | 0.2.0 | GitHub tag archive, sha256-pinned |\n"}
+,{"stream_name":"stdout","time":103.280511315,"data":"| Octonion-Sedenion | 1.0.0 | PyPI wheel (its only release form), sha256-pinned |\n"}
+,{"stream_name":"stdout","time":103.280515318,"data":"| numpy-quaternion | 2024.0.13 | PyPI compiled wheel at the pin; `--extract` binds its Python files to the sha256-pinned sdist (Octonion-Sedenion builds on it) |\n"}
+,{"stream_name":"stdout","time":103.280519026,"data":"| numba, sparse, anywidget | 0.68.0, 0.17.0, 0.11.0 | PyPI (`RUNTIME_PINS`; runtime dependencies of quaternionic, clifford and kingdon) |\n"}
+,{"stream_name":"stdout","time":103.2805226,"data":"| numpy, scipy, sympy, pandas, torch | Kaggle image versions, recorded per run | Kaggle image |\n"}
+,{"stream_name":"stdout","time":103.280526007,"data":"| SageMath | 10.10 | build host only; a computation that needs Sage stays there |\n"}
+,{"stream_name":"stdout","time":103.280533409,"data":"\n"}
+,{"stream_name":"stdout","time":103.280535775,"data":"## Rules\n"}
+,{"stream_name":"stdout","time":103.280549648,"data":"\n"}
+,{"stream_name":"stdout","time":103.280553627,"data":"- A kernel is private, has internet enabled (and a GPU when one is\n"}
+,{"stream_name":"stdout","time":103.28055776,"data":"  requested), and holds no IBM credential. Noise comes from a retained\n"}
+,{"stream_name":"stdout","time":103.280561857,"data":"  `gororoba_quantum/calibration_snapshot.py` export.\n"}
+,{"stream_name":"stdout","time":103.280565191,"data":"- The entry reads `GOROROBA_AER_DEVICE`, which the kernel sets to its\n"}
+,{"stream_name":"stdout","time":103.280568659,"data":"  machine's device.\n"}
+,{"stream_name":"stdout","time":103.280571845,"data":"- An output is a numerical simulation. It enters\n"}
+,{"stream_name":"stdout","time":103.280575093,"data":"  `docs/state/research_state.json` only after a CPU replay gate re-derives\n"}
+,{"stream_name":"stdout","time":103.280578439,"data":"  a reduced case.\n"}
+,{"stream_name":"stdout","time":103.280581624,"data":"- The push selects hardware with `--accelerator`; `environment.json`\n"}
+,{"stream_name":"stdout","time":103.280584969,"data":"  records what actually ran.\n"}
+,{"stream_name":"stdout","time":103.280588212,"data":"- Measured limits of each machine shape, the qubit size guide and the\n"}
+,{"stream_name":"stdout","time":103.280591584,"data":"  captured Kaggle documentation are in `docs/notes/kaggle/`.\n"}
+,{"stream_name":"stdout","time":103.280594884,"data":"- An entry whose output a CI gate recompiles runs with `push --ci-env` on a\n"}
+,{"stream_name":"stdout","time":103.280598219,"data":"  CPU or GPU machine, using CPU Aer either way. The kernel then builds CI's Python 3.14.7 with CI's pins\n"}
+,{"stream_name":"stdout","time":103.280601632,"data":"  through `ci/install_pins.sh` and runs the entry under it, because the\n"}
+,{"stream_name":"stdout","time":103.280604925,"data":"  image's Python 3.13 and numpy 2.1.3 change compiled depths and durations.\n"}
+,{"stream_name":"stdout","time":103.280608274,"data":"\n"}
+,{"stream_name":"stdout","time":103.280611376,"data":"## Aer on the GPU\n"}
+,{"stream_name":"stdout","time":103.280614564,"data":"\n"}
+,{"stream_name":"stdout","time":103.280617668,"data":"- **Requesting a GPU.** Push with `--machine NvidiaTeslaT4` and a `--timeout`\n"}
+,{"stream_name":"stdout","time":103.280655992,"data":"  sized to the work; kaggle_run.py refuses an accelerator push without one.\n"}
+,{"stream_name":"stdout","time":103.280659729,"data":"  The kernel installs qiskit-aer-gpu-cu11 0.18.2, cuquantum-cu11 24.8.0 and\n"}
+,{"stream_name":"stdout","time":103.280663097,"data":"  cutensor-cu11 2.2.0 and sets `GOROROBA_AER_DEVICE=GPU`.\n"}
+,{"stream_name":"stdout","time":103.28066636,"data":"- **cuStateVec.** `noise_simulator(..., custatevec=True)`, or\n"}
+,{"stream_name":"stdout","time":103.280669631,"data":"  `GOROROBA_AER_CUSTATEVEC=1` in the entry's environment, sets\n"}
+,{"stream_name":"stdout","time":103.280672957,"data":"  `cuStateVec_enable` on a GPU statevector or density-matrix run; `scripts/aer_gpu_probe.py\n"}
+,{"stream_name":"stdout","time":103.280676403,"data":"  --workloads n21 --configurations\n"}
+,{"stream_name":"stdout","time":103.280679604,"data":"  cpu_statevector,gpu_statevector_unbatched,gpu_statevector_custatevec` records\n"}
+,{"stream_name":"stdout","time":103.280683059,"data":"  the three paths with Aer's reported `cuStateVec_enable`. The option excludes\n"}
+,{"stream_name":"stdout","time":103.280686856,"data":"  `batched_shots_gpu`. `docs/notes/kaggle/custatevec.md` holds the library\n"}
+,{"stream_name":"stdout","time":103.280690306,"data":"  chain, the T4 push command and how to read its result.\n"}
+,{"stream_name":"stdout","time":103.280693604,"data":"- **Pinned GPU environment.** A push with `--gpu-env` runs the entry in\n"}
+,{"stream_name":"stdout","time":103.280708564,"data":"  /tmp/gororoba/gpu-venv:\n"}
+,{"stream_name":"stdout","time":103.28071196,"data":"  - The venv runs the image's Python with the repository's pins and the GPU\n"}
+,{"stream_name":"stdout","time":103.280718497,"data":"    Aer wheels in qiskit-aer's place.\n"}
+,{"stream_name":"stdout","time":103.280720712,"data":"  - Before the entry, gpu_env.json records each pin's installed version, the\n"}
+,{"stream_name":"stdout","time":103.280731734,"data":"    owners of `qiskit_aer/__init__.py`, Aer's devices, and two seeded Bell\n"}
+,{"stream_name":"stdout","time":103.280735667,"data":"    runs on the GPU.\n"}
+,{"stream_name":"stdout","time":103.280739396,"data":"  - A nonempty `failures` list stops the kernel with exit 4, before the\n"}
+,{"stream_name":"stdout","time":103.280743526,"data":"    entry starts. Each failure names what to fix:\n"}
+,{"stream_name":"stdout","time":103.280747435,"data":"    - a pin that resolved to another version;\n"}
+,{"stream_name":"stdout","time":103.280754169,"data":"    - a CPU qiskit-aer that shares the qiskit_aer/ files;\n"}
+,{"stream_name":"stdout","time":103.280757511,"data":"    - a GPU that nvidia-smi does not list;\n"}
+,{"stream_name":"stdout","time":103.280761551,"data":"    - a Bell run that raised, ran on another device, or left cuStateVec off;\n"}
+,{"stream_name":"stdout","time":103.280765109,"data":"    - on a `--gpu-aer cu13` push (spec `cuda_in_venv`), a mapped CUDA library\n"}
+,{"stream_name":"stdout","time":103.280768466,"data":"      other than the driver's libcuda.so from outside the venv, or no mapped\n"}
+,{"stream_name":"stdout","time":103.280771704,"data":"      CUDA library at all.\n"}
+,{"stream_name":"stdout","time":103.280774871,"data":"  - `push --gpu-env-with torch` adds torch 2.14.1, the build host's version,\n"}
+,{"stream_name":"stdout","time":103.280778207,"data":"    to the venv's pins, so a torch entry runs over the repository's numpy\n"}
+,{"stream_name":"stdout","time":103.280781557,"data":"    and qiskit instead of the image's; the preflight requires it at that\n"}
+,{"stream_name":"stdout","time":103.280784887,"data":"    version like every other pin.\n"}
+,{"stream_name":"stdout","time":103.280788069,"data":"  - Under `--gpu-aer cu13` the Aer wheel comes from an attached dataset:\n"}
+,{"stream_name":"stdout","time":103.280791403,"data":"    gpu_env.json's `wheel` names the file found under /kaggle/input and its\n"}
+,{"stream_name":"stdout","time":103.280794719,"data":"    sha256, and a missing or different file is a failure before any install.\n"}
+,{"stream_name":"stdout","time":103.280797962,"data":"    The report's `controller_wrappers` and `cuda_libraries` show where each\n"}
+,{"stream_name":"stdout","time":103.280801267,"data":"    CUDA library resolved.\n"}
+,{"stream_name":"stdout","time":103.280804496,"data":"  - Read gpu-env-report.txt and install-pins.txt in the output for the\n"}
+,{"stream_name":"stdout","time":103.280807852,"data":"    commands' own output.\n"}
+,{"stream_name":"stdout","time":103.28081101,"data":"  - \"Keeping the run on the GPU\" in `docs/notes/kaggle/custatevec.md` maps\n"}
+,{"stream_name":"stdout","time":103.280814488,"data":"    each route to the CPU to the check that closes it.\n"}
+,{"stream_name":"stdout","time":103.280817964,"data":"- **Using it in an entry.** The entry passes\n"}
+,{"stream_name":"stdout","time":103.280821318,"data":"  `calibration_snapshot.aer_device()` to `noise_simulator(snapshot, device,\n"}
+,{"stream_name":"stdout","time":103.280825639,"data":"  method=...)`. On a GPU the simulator batches shots of circuits of at most\n"}
+,{"stream_name":"stdout","time":103.280833952,"data":"  10 active qubits without control flow and runs feed-forward circuits shot\n"}
+,{"stream_name":"stdout","time":103.280838364,"data":"  by shot (`calibration_snapshot.SnapshotSimulator`).\n"}
+,{"stream_name":"stdout","time":103.280853708,"data":"- **Noise model width.** Restricting the snapshot and the circuit to the\n"}
+,{"stream_name":"stdout","time":103.280857052,"data":"  active qubits (`snapshot_laws.restrict` and `restrict_circuit`) keeps\n"}
+,{"stream_name":"stdout","time":103.280860394,"data":"  Aer's noise model at the circuit's width on either device.\n"}
+,{"stream_name":"stdout","time":103.280863628,"data":"- **What the GPU is for.** It pays for density matrices at\n"}
+,{"stream_name":"stdout","time":103.280866929,"data":"  `local_compute.GPU_MIN_ACTIVE_QUBITS` (11) qubits or more and for wide\n"}
+,{"stream_name":"stdout","time":103.280870281,"data":"  statevectors. Small dynamic circuits sample faster on the host CPUs. On\n"}
+,{"stream_name":"stdout","time":103.280873631,"data":"  the 7-qubit N=21 order-finding circuits, statevector trajectories took 2.8\n"}
+,{"stream_name":"stdout","time":103.280879896,"data":"  and 36 ms per shot on the CPU, against 21.7 and 54.6 ms on one T4.\n"}
+,{"stream_name":"stdout","time":103.280883372,"data":"- **Batched shots.** `noise_simulator(..., batched_shots=True)` enables Aer's\n"}
+,{"stream_name":"stdout","time":103.280886756,"data":"  `batched_shots_gpu`, which aborts on any circuit with control flow\n"}
+,{"stream_name":"stdout","time":103.280890042,"data":"  (`if_else` lowers to `jump`), so only static circuits may batch. Batched\n"}
+,{"stream_name":"stdout","time":103.280893524,"data":"  static runs are unmeasured here.\n"}
+,{"stream_name":"stdout","time":103.280900756,"data":"- **Replay.** A GPU's seeded counts differ from the CPU's. Its records are\n"}
+,{"stream_name":"stdout","time":103.280903323,"data":"  replayed from their retained counts, never by resampling on CI.\n"}
+,{"stream_name":"stdout","time":103.280906115,"data":"\n"}
+,{"stream_name":"stdout","time":103.280917139,"data":"The measurements are in `docs/notes/kaggle/substrates.md`, from\n"}
+,{"stream_name":"stdout","time":103.280921061,"data":"`results/kaggle/2026-10-16T204620Z-gororoba-aer-gpu-probe`.\n"}
+,{"stream_name":"stdout","time":103.280925106,"data":"\n"}
+,{"stream_name":"stdout","time":103.282545163,"data":"usage guides in this kernel under /tmp/gororoba/repo:\n"}
+,{"stream_name":"stdout","time":103.282556922,"data":"  docs/notes/kaggle/README.md\n"}
+,{"stream_name":"stdout","time":103.282560657,"data":"  docs/notes/kaggle/competition-requirements.md\n"}
+,{"stream_name":"stdout","time":103.282567731,"data":"  docs/notes/kaggle/custatevec.md\n"}
+,{"stream_name":"stdout","time":103.282570633,"data":"  docs/notes/kaggle/gpu-runbook.md\n"}
+,{"stream_name":"stdout","time":103.282572894,"data":"  docs/notes/kaggle/hypercomplex-stack.md\n"}
+,{"stream_name":"stdout","time":103.282575263,"data":"  docs/notes/kaggle/interfaces.md\n"}
+,{"stream_name":"stdout","time":103.282577512,"data":"  docs/notes/kaggle/jax-bridge-structure-report.md\n"}
+,{"stream_name":"stdout","time":103.282579818,"data":"  docs/notes/kaggle/libraries.md\n"}
+,{"stream_name":"stdout","time":103.282583544,"data":"  docs/notes/kaggle/substrates.md\n"}
+,{"stream_name":"stdout","time":103.282585877,"data":"  docs/notes/kaggle/tpu-research.md\n"}
+,{"stream_name":"stdout","time":103.282588056,"data":"  docs/notes/kaggle/workflow.md\n"}
+,{"stream_name":"stdout","time":103.282590323,"data":"  docs/notes/packages/README.md\n"}
+,{"stream_name":"stdout","time":103.282592707,"data":"  docs/notes/packages/adjacent-algebras.md\n"}
+,{"stream_name":"stdout","time":103.282599907,"data":"  docs/notes/packages/candidates.md\n"}
+,{"stream_name":"stdout","time":103.282602337,"data":"  docs/notes/packages/cayley-calculator.md\n"}
+,{"stream_name":"stdout","time":103.282605408,"data":"  docs/notes/packages/cayley-dickson.md\n"}
+,{"stream_name":"stdout","time":103.282617811,"data":"  docs/notes/packages/clifford.md\n"}
+,{"stream_name":"stdout","time":103.282621488,"data":"  docs/notes/packages/galgebra.md\n"}
+,{"stream_name":"stdout","time":103.28262534,"data":"  docs/notes/packages/hypercomplex-algebra.md\n"}
+,{"stream_name":"stdout","time":103.282644107,"data":"  docs/notes/packages/hypercomplex-engine.md\n"}
+,{"stream_name":"stdout","time":103.282647525,"data":"  docs/notes/packages/hypercomplex.md\n"}
+,{"stream_name":"stdout","time":103.282650777,"data":"  docs/notes/packages/interplay.md\n"}
+,{"stream_name":"stdout","time":103.282654091,"data":"  docs/notes/packages/kingdon.md\n"}
+,{"stream_name":"stdout","time":103.28265728,"data":"  docs/notes/packages/manual/README.md\n"}
+,{"stream_name":"stdout","time":103.282660439,"data":"  docs/notes/packages/manual/cayley-calculator.md\n"}
+,{"stream_name":"stdout","time":103.282663835,"data":"  docs/notes/packages/manual/cayley-dickson.md\n"}
+,{"stream_name":"stdout","time":103.282667148,"data":"  docs/notes/packages/manual/clifford.md\n"}
+,{"stream_name":"stdout","time":103.282670384,"data":"  docs/notes/packages/manual/galgebra.md\n"}
+,{"stream_name":"stdout","time":103.2826736,"data":"  docs/notes/packages/manual/hypercomplex-algebra.md\n"}
+,{"stream_name":"stdout","time":103.282676988,"data":"  docs/notes/packages/manual/hypercomplex-engine.md\n"}
+,{"stream_name":"stdout","time":103.282680348,"data":"  docs/notes/packages/manual/hypercomplex.md\n"}
+,{"stream_name":"stdout","time":103.282683753,"data":"  docs/notes/packages/manual/hyprat.md\n"}
+,{"stream_name":"stdout","time":103.282690173,"data":"  docs/notes/packages/manual/kingdon.md\n"}
+,{"stream_name":"stdout","time":103.282692586,"data":"  docs/notes/packages/manual/mathdunders.md\n"}
+,{"stream_name":"stdout","time":103.282694808,"data":"  docs/notes/packages/manual/numpy-quaternion.md\n"}
+,{"stream_name":"stdout","time":103.282697015,"data":"  docs/notes/packages/manual/octonion-sedenion.md\n"}
+,{"stream_name":"stdout","time":103.28269922,"data":"  docs/notes/packages/manual/octonion.md\n"}
+,{"stream_name":"stdout","time":103.282701418,"data":"  docs/notes/packages/manual/pyadic.md\n"}
+,{"stream_name":"stdout","time":103.282703609,"data":"  docs/notes/packages/manual/pyoctonion.md\n"}
+,{"stream_name":"stdout","time":103.282706625,"data":"  docs/notes/packages/manual/pyquaternion.md\n"}
+,{"stream_name":"stdout","time":103.28271822,"data":"  docs/notes/packages/manual/python-flint.md\n"}
+,{"stream_name":"stdout","time":103.282722108,"data":"  docs/notes/packages/manual/quaternionic.md\n"}
+,{"stream_name":"stdout","time":103.282725829,"data":"  docs/notes/packages/manual/sagemath.md\n"}
+,{"stream_name":"stdout","time":103.282729904,"data":"  docs/notes/packages/manual/splitoct.md\n"}
+,{"stream_name":"stdout","time":103.282733956,"data":"  docs/notes/packages/mathdunders.md\n"}
+,{"stream_name":"stdout","time":103.282737192,"data":"  docs/notes/packages/numpy-quaternion.md\n"}
+,{"stream_name":"stdout","time":103.282740414,"data":"  docs/notes/packages/octonion-sedenion.md\n"}
+,{"stream_name":"stdout","time":103.282743673,"data":"  docs/notes/packages/octonion.md\n"}
+,{"stream_name":"stdout","time":103.282746877,"data":"  docs/notes/packages/pyoctonion.md\n"}
+,{"stream_name":"stdout","time":103.282754582,"data":"  docs/notes/packages/pyquaternion.md\n"}
+,{"stream_name":"stdout","time":103.282757919,"data":"  docs/notes/packages/quaternionic.md\n"}
+,{"stream_name":"stdout","time":103.282761205,"data":"  docs/notes/packages/sagemath.md\n"}
+,{"stream_name":"stdout","time":103.282764438,"data":"  docs/notes/packages/splitoct.md\n"}
+,{"stream_name":"stdout","time":103.282767655,"data":"  docs/notes/qiskit-ecosystem-install-plan.md\n"}
+,{"stream_name":"stdout","time":103.282770892,"data":"  docs/notes/qiskit-ecosystem.md\n"}
+,{"stream_name":"stdout","time":103.282774108,"data":"  docs/notes/quantum-tools/README.md\n"}
+,{"stream_name":"stdout","time":103.282777224,"data":"  docs/notes/quantum-tools/galois.md\n"}
+,{"stream_name":"stdout","time":103.282780428,"data":"  docs/notes/quantum-tools/gpu-arrays.md\n"}
+,{"stream_name":"stdout","time":103.282783703,"data":"  docs/notes/quantum-tools/ibm-quantum-schemas.md\n"}
+,{"stream_name":"stdout","time":103.282786908,"data":"  docs/notes/quantum-tools/lmfit.md\n"}
+,{"stream_name":"stdout","time":103.28279388,"data":"  docs/notes/quantum-tools/mthree.md\n"}
+,{"stream_name":"stdout","time":103.282796292,"data":"  docs/notes/quantum-tools/numpy-scipy-sympy.md\n"}
+,{"stream_name":"stdout","time":103.282799085,"data":"  docs/notes/quantum-tools/pyzx.md\n"}
+,{"stream_name":"stdout","time":103.282810502,"data":"  docs/notes/quantum-tools/qiskit-addon-utils.md\n"}
+,{"stream_name":"stdout","time":103.28281464,"data":"  docs/notes/quantum-tools/qiskit-aer.md\n"}
+,{"stream_name":"stdout","time":103.282818473,"data":"  docs/notes/quantum-tools/qiskit-experiments.md\n"}
+,{"stream_name":"stdout","time":103.282822528,"data":"  docs/notes/quantum-tools/qiskit-ibm-runtime.md\n"}
+,{"stream_name":"stdout","time":103.28282628,"data":"  docs/notes/quantum-tools/qiskit-mitigation.md\n"}
+,{"stream_name":"stdout","time":103.282829662,"data":"  docs/notes/quantum-tools/qiskit-qasm3-import.md\n"}
+,{"stream_name":"stdout","time":103.282832694,"data":"  docs/notes/quantum-tools/qiskit.md\n"}
+,{"stream_name":"stdout","time":103.282835902,"data":"  docs/notes/quantum-tools/quimb.md\n"}
+,{"stream_name":"stdout","time":103.282839148,"data":"  docs/notes/quantum-tools/rustworkx.md\n"}
+,{"stream_name":"stdout","time":103.282842393,"data":"  docs/notes/quantum-tools/samplomatic.md\n"}
+,{"stream_name":"stdout","time":103.282845681,"data":"  docs/notes/quantum-tools/seekpath.md\n"}
+,{"stream_name":"stdout","time":103.282848872,"data":"  docs/notes/quantum-tools/stim.md\n"}
+,{"stream_name":"stdout","time":123.704457921,"data":"environment.json: {\"aer_devices\": [\"CPU\", \"GPU\"], \"affinity_cpus\": 4, \"attached_models\": [], \"cpu_model\": \"Intel(R) Xeon(R) CPU @ 2.00GHz\", \"cuda_driver_version\": \"13.0\", \"entry_aer_device\": \"GPU\", \"gpus\": [{\"compute_capability\": \"7.5\", \"driver\": \"580.178.04\", \"memory_mib\": 15360, \"name\": \"Tesla T4\"}, {\"compute_capability\": \"7.5\", \"driver\": \"580.178.04\", \"memory_mib\": 15360, \"name\": \"Tesla T4\"}], \"logical_cpus\": 4, \"packages\": {\"Cayley-Calculator\": null, \"SplitOct\": null, \"cayley-dickson\": null, \"cuquantum-cu11\": \"24.8.0\", \"custatevec-cu11\": \"1.6.0.post1\", \"custatevec-cu13\": null, \"cutensor-cu11\": \"2.2.0\", \"cutensor-cu13\": null, \"cutensornet-cu11\": \"2.5.0\", \"cutensornet-cu13\": null, \"hypercomplex\": null, \"hypercomplex-algebra\": null, \"hypercomplex-engine\": null, \"mathdunders\": null, \"numpy\": \"2.1.3\", \"numpy-quaternion\": null, \"nvidia-cublas\": \"13.1.0.3\", \"nvidia-cuda-nvrtc\": \"13.0.88\", \"nvidia-cuda-runtime\": \"13.0.96\", \"nvidia-cusolver\": \"12.0.4.66\", \"nvidia-cusparse\": \"12.6.3.3\", \"nvidia-nvjitlink\": \"13.0.88\", \"octonion\": null, \"pandas\": \"2.3.3\", \"qiskit\": \"2.6.1\", \"qiskit-aer\": null, \"qiskit-aer-gpu-cu11\": \"0.18.2\", \"qiskit-aer-gpu-cu13\": null, \"qiskit-ibm-runtime\": \"0.51.0\", \"scipy\": \"1.16.3\", \"sympy\": \"1.14.0\", \"torch\": \"2.11.0+cu130\"}, \"platform\": \"Linux-6.18.55+-x86_64-with-glibc2.39\", \"python\": \"3.13.16\", \"ram_available_gib\": 30.18, \"ram_total_gib\": 31.35, \"tpus\": {\"devices\": [], \"error\": \"RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu', 'cuda']\"}, \"working_disk_free_gib\": 19.5, \"working_disk_total_gib\": 19.52}\n"}
+,{"stream_name":"stdout","time":123.706305538,"data":"pin_groups.json: {\"exact-arithmetic\": {\"pyadic\": \"0.3.0\", \"python-flint\": \"0.9.0\"}, \"qx-emulator\": {\"qxelarator\": \"0.10.0\"}}\n"}
+,{"stream_name":"stdout","time":235.713659904,"data":"hypercomplex.json: {\"identical\": true, \"packages\": {\"Cayley-Calculator\": \"1.3.1\", \"SplitOct\": \"0.16\", \"cayley-dickson\": \"0.1.0\", \"cuquantum-cu11\": \"24.8.0\", \"custatevec-cu11\": \"1.6.0.post1\", \"custatevec-cu13\": null, \"cutensor-cu11\": \"2.2.0\", \"cutensor-cu13\": null, \"cutensornet-cu11\": \"2.5.0\", \"cutensornet-cu13\": null, \"hypercomplex\": \"0.3.4\", \"hypercomplex-algebra\": \"0.2.0.2\", \"hypercomplex-engine\": \"0.5.0\", \"mathdunders\": \"0.4.2\", \"numpy\": \"2.1.3\", \"numpy-quaternion\": \"2024.0.13\", \"nvidia-cublas\": \"13.1.0.3\", \"nvidia-cuda-nvrtc\": \"13.0.88\", \"nvidia-cuda-runtime\": \"13.0.96\", \"nvidia-cusolver\": \"12.0.4.66\", \"nvidia-cusparse\": \"12.6.3.3\", \"nvidia-nvjitlink\": \"13.0.88\", \"octonion\": \"0.1.0\", \"pandas\": \"2.3.3\", \"qiskit\": \"2.6.1\", \"qiskit-aer\": null, \"qiskit-aer-gpu-cu11\": \"0.18.2\", \"qiskit-aer-gpu-cu13\": null, \"qiskit-ibm-runtime\": \"0.51.0\", \"scipy\": \"1.16.3\", \"sympy\": \"1.14.0\", \"torch\": \"2.11.0+cu130\"}, \"steps\": {\"--extract\": {\"returncode\": 0, \"tail\": \"wrote docs/evidence/algebra_packages/tables.json\\nalgebra package tables: 33 tables and sample sets match their declared relation to cd_core\\n\"}, \"--fetch\": {\"returncode\": 0, \"tail\": \"hypercomplex: hypercomplex-04241e5d01b3.tar.gz matches the pinned sha256\\nhypercomplex-engine: hypercomplex-engine-05634d7421e1.tar.gz matches the pinned sha256\\nhypercomplex-algebra: hypercomplex-algebra-aa043b53a004.tar.gz matches the pinned sha256\\nCayley-Calculator: Cayley-Calculator-65922fc90cc0.tar.gz matches the pinned sha256\\ncayley-dickson: cayley-dickson-446b43f2c955.tar.gz matches the pinned sha256\\noctonion: octonion-01788b55497d.tar.gz matches the pinned sha256\\nsplitoct: splitoct-a192a1d5d973.tar.gz matches the pinned sha256\\nmathdunders: mathdunders-ff9b624725fa.tar.gz matches the pinned sha256\\nnumpy-quaternion: numpy-quaternion-e155853fefdf.tar.gz matches the pinned sha256\\nquaternionic: quaternionic-9c5ee261650a.tar.gz matches the pinned sha256\\npyquaternion: pyquaternion-b1f61af219cb.tar.gz matches the pinned sha256\\nclifford: clifford-3484b312cff0.tar.gz matches the pinned sha256\\nkingdon: kingdon-77e6f3442b30.tar.gz matches the pinned sha256\\ngalgebra: galgebra-2e8db0172286.tar.gz matches the pinned sha256\\npyoctonion: pyoctonion-a0ed5c58dc0f.tar.gz matches the pinned sha256\\nhyprat: hyprat-17ae936c3fc5.tar.gz matches the pinned sha256\\nOctonion-Sedenion: octonion_sedenion-1.0.0-py3-none-any.whl matches the pinned sha256\\n\"}, \"--install\": {\"returncode\": 0, \"tail\": \"ar.gz\\nhypercomplex-engine: installed from hypercomplex-engine-05634d7421e1.tar.gz\\nhypercomplex-algebra: installed from hypercomplex-algebra-aa043b53a004.tar.gz\\nCayley-Calculator: installed from Cayley-Calculator-65922fc90cc0.tar.gz\\ncayley-dickson: installed from cayley-dickson-446b43f2c955.tar.gz\\noctonion: installed from octonion-01788b55497d.tar.gz\\nsplitoct: installed from splitoct-a192a1d5d973.tar.gz\\nmathdunders: installed from mathdunders-ff9b624725fa.tar.gz\\nquaternionic: installed from quaternionic-9c5ee261650a.tar.gz\\npyquaternion: installed from\n"}
+,{"stream_name":"stdout","time":22146.645431485,"data":" 36, 'unresolved_none': 4} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_both': 2, 'unresolved_bridge': 19, 'unresolved_guard': 14, 'unresolved_none': 3} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645483111,"data":"damping_and_dephasing pulse_x_before_q8@+0.1859: expected pulse_x; stable {'pulse_x': 35, 'unresolved_none': 5} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 20, 'unresolved_guard': 16, 'unresolved_none': 1} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.64548985,"data":"damping_and_dephasing pulse_y_before_all@-0.0676: expected unresolved_both; stable {'pulse_other': 3, 'pulse_x': 6, 'unresolved_both': 7, 'unresolved_none': 24} wrong 6; retained_walk {'unresolved_both': 11, 'unresolved_bridge': 2, 'unresolved_guard': 18, 'unresolved_none': 9} wrong 1\n"}
+,{"stream_name":"stdout","time":22146.645493967,"data":"damping_and_dephasing pulse_y_before_all@+0.0641: expected pulse_other; stable {'pulse_other': 38, 'unresolved_none': 2} wrong 0; retained_walk {'pulse_other': 3, 'unresolved_bridge': 13, 'unresolved_guard': 23, 'unresolved_none': 1} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645497665,"data":"damping_and_dephasing pulse_z_before_all@-0.0676: expected unresolved_both; stable {'pulse_other': 4, 'pulse_x': 2, 'unresolved_both': 6, 'unresolved_none': 28} wrong 2; retained_walk {'pulse_other': 1, 'unresolved_both': 9, 'unresolved_guard': 21, 'unresolved_none': 9} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645501394,"data":"damping_and_dephasing pulse_z_before_all@+0.0641: expected pulse_other; stable {'pulse_other': 38, 'unresolved_none': 2} wrong 0; retained_walk {'pulse_other': 6, 'unresolved_bridge': 17, 'unresolved_guard': 17} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.64550491,"data":"damping_and_dephasing selector_flip_q12_0@0.0375: expected x_excluded; stable {'pulse_other': 1, 'readout': 6, 'unresolved_none': 11, 'x_excluded': 22} wrong 1; retained_walk {'unresolved_bridge': 15, 'unresolved_guard': 15, 'unresolved_none': 4, 'x_excluded': 6} wrong 1\n"}
+,{"stream_name":"stdout","time":22146.645508467,"data":"damping_and_dephasing selector_dropout_coin_1@0.0357: expected readout; stable {'readout': 22, 'unresolved_none': 14, 'x_excluded': 4} wrong 0; retained_walk {'unresolved_bridge': 15, 'unresolved_guard': 17, 'unresolved_none': 4, 'x_excluded': 4} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645513781,"data":"damping_and_dephasing amplitude_scale@-0.0999: expected pulse_x; stable {'pulse_x': 31, 'unresolved_none': 9} wrong 0; retained_walk {'pulse_x': 3, 'unresolved_bridge': 15, 'unresolved_guard': 22} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645517209,"data":"damping_and_dephasing amplitude_scale@+0.0308: expected pulse_x; stable {'pulse_x': 40} wrong 0; retained_walk {'pulse_x': 2, 'unresolved_bridge': 19, 'unresolved_guard': 19} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645520599,"data":"damping_and_dephasing cz_phase@-0.08: expected unresolved_both; stable {'unresolved_both': 13, 'unresolved_none': 27} wrong 0; retained_walk {'unresolved_both': 7, 'unresolved_guard': 25, 'unresolved_none': 8} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645524056,"data":"damping_and_dephasing cz_phase@+0.08: expected pulse_other; stable {'pulse_other': 35, 'x_excluded': 5} wrong 0; retained_walk {'pulse_other': 1, 'unresolved_bridge': 19, 'unresolved_guard': 19, 'x_excluded': 1} wrong 0\n"}
+,{"stream_name":"stdout","time":22146.645527492,"data":"{\n"}
+,{"stream_name":"stdout","time":22146.645530487,"data":" \"expected_label_names_a_wrong_class\": [\n"}
+,{"stream_name":"stdout","time":22146.64553365,"data":"  \"cz_damping/pulse_y_before_all@-0.0728\",\n"}
+,{"stream_name":"stdout","time":22146.64553679,"data":"  \"cz_damping/pulse_z_before_all@-0.0728\"\n"}
+,{"stream_name":"stdout","time":22146.645551103,"data":" ],\n"}
+,{"stream_name":"stdout","time":22146.645553605,"data":" \"series_naming_a_wrong_class\": {\n"}
+,{"stream_name":"stdout","time":22146.645556066,"data":"  \"cz_depolarizing/cz_phase@-0.08/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645558503,"data":"   1,\n"}
+,{"stream_name":"stdout","time":22146.645560822,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645563394,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.64556574,"data":"  \"pulse_dephasing/cz_phase@-0.08/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645568137,"data":"   2,\n"}
+,{"stream_name":"stdout","time":22146.645570412,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645572681,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645574963,"data":"  \"cz_damping/pulse_y_before_all@-0.0728/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645577353,"data":"   17,\n"}
+,{"stream_name":"stdout","time":22146.645579729,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645582005,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645584269,"data":"  \"cz_damping/pulse_y_before_all@-0.0728/retained_walk\": [\n"}
+,{"stream_name":"stdout","time":22146.645586757,"data":"   9,\n"}
+,{"stream_name":"stdout","time":22146.645589209,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645591569,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645593841,"data":"  \"cz_damping/pulse_z_before_all@-0.0728/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645596319,"data":"   9,\n"}
+,{"stream_name":"stdout","time":22146.645598667,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645600947,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645603217,"data":"  \"cz_damping/pulse_z_before_all@-0.0728/retained_walk\": [\n"}
+,{"stream_name":"stdout","time":22146.645605605,"data":"   5,\n"}
+,{"stream_name":"stdout","time":22146.645607864,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645610125,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645612394,"data":"  \"cz_damping/selector_flip_q12_0@0.0389/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645614771,"data":"   13,\n"}
+,{"stream_name":"stdout","time":22146.645617035,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.64561929,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645654051,"data":"  \"cz_damping/selector_flip_q12_0@0.0389/retained_walk\": [\n"}
+,{"stream_name":"stdout","time":22146.645658875,"data":"   6,\n"}
+,{"stream_name":"stdout","time":22146.645664413,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645667897,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645671231,"data":"  \"cz_damping/selector_dropout_coin_1@0.0351/retained_walk\": [\n"}
+,{"stream_name":"stdout","time":22146.645674838,"data":"   1,\n"}
+,{"stream_name":"stdout","time":22146.645678237,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645681501,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645684779,"data":"  \"damping_and_dephasing/pulse_y_before_all@-0.0676/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645688295,"data":"   6,\n"}
+,{"stream_name":"stdout","time":22146.645691673,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645706296,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645708765,"data":"  \"damping_and_dephasing/pulse_y_before_all@-0.0676/retained_walk\": [\n"}
+,{"stream_name":"stdout","time":22146.645711173,"data":"   1,\n"}
+,{"stream_name":"stdout","time":22146.645713393,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645715691,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645722509,"data":"  \"damping_and_dephasing/pulse_z_before_all@-0.0676/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645725109,"data":"   2,\n"}
+,{"stream_name":"stdout","time":22146.645727441,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645729666,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645731887,"data":"  \"damping_and_dephasing/selector_flip_q12_0@0.0375/stable\": [\n"}
+,{"stream_name":"stdout","time":22146.645734255,"data":"   1,\n"}
+,{"stream_name":"stdout","time":22146.645737495,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645739889,"data":"  ],\n"}
+,{"stream_name":"stdout","time":22146.645742256,"data":"  \"damping_and_dephasing/selector_flip_q12_0@0.0375/retained_walk\": [\n"}
+,{"stream_name":"stdout","time":22146.645744912,"data":"   1,\n"}
+,{"stream_name":"stdout","time":22146.645747782,"data":"   40\n"}
+,{"stream_name":"stdout","time":22146.645750162,"data":"  ]\n"}
+,{"stream_name":"stdout","time":22146.645752415,"data":" }\n"}
+,{"stream_name":"stdout","time":22146.645754786,"data":"}\n"}
+,{"stream_name":"stdout","time":22146.645757385,"data":"\n"}
+,{"stream_name":"stdout","time":22146.645760557,"data":"\n"}
+,{"stream_name":"stdout","time":22146.663721998,"data":"exit.json: {\"returncode\": 0}\n"}
+,{"stream_name":"stderr","time":22153.2150515,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":22153.215086318,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":22153.53061321,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":22153.530654745,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":22154.41435484,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":22155.150747057,"data":"[NbConvertApp] Writing 989563 bytes to __results__.html\n"}
+]

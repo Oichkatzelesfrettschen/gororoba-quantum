@@ -4,12 +4,18 @@ arms, the series shape, the decision on planted worlds and the analysis path on 
 Fixtures hold expected counts (largest remainder, no random draw). The operating characteristics are replayed by
 `--check` on demand and are outside these tests. The tests marked `audit` compare the committed case and the pinned
 digest with the build or take more than 3 s of CPU; pull requests deselect them.
+
+The fit of every test carries the contraction shares alone unless the test takes the `families` fixture, which adds
+the gate-noise families and reads their design tables (about six CPU minutes on a host that holds none). The tables
+on the strength grid, which a fit against a measured visibility reads, take about seventy CPU minutes and stay outside
+these tests: `qi_pathion_null_rotation_scan_noise.py --self-test` exercises that path.
 """
 
 from __future__ import annotations
 
 import math
 import re
+from collections.abc import Iterator
 from pathlib import Path
 
 import numpy as np
@@ -26,6 +32,25 @@ CASES = ROOT / "results/quantum_inspire/cases"
 def _expect(condition: bool, message: str) -> None:
     if not condition:
         raise AssertionError(message)
+
+
+def _fit_kinds(kinds: list[str]) -> None:
+    rs.FIT_KINDS[:] = kinds
+    rs.DESIGN_MODELS.clear()
+
+
+@pytest.fixture(autouse=True)
+def _contraction_fit() -> Iterator[None]:
+    kept = list(rs.FIT_KINDS)
+    _fit_kinds([])
+    yield
+    _fit_kinds(kept)
+
+
+@pytest.fixture
+def families(_contraction_fit: None) -> None:
+    _fit_kinds(list(rs.GATE_KINDS))
+    rs.build_gate_tables(grid=False)
 
 
 @pytest.mark.audit
@@ -142,9 +167,15 @@ def _planted_x() -> list[dict[str, object]]:
 
 @pytest.mark.parametrize(
     ("bridge", "label"),
-    [((0.001, 0.0024), "pulse_x"), ((0.0164, 0.0024), "unresolved_bridge"), (None, "unresolved_bridge")],
+    [
+        ([(0.001, 0.0034), (0.002, 0.0034)], "pulse_x"),
+        ([(0.0164, 0.0034), (0.0164, 0.0034)], "unresolved_bridge"),
+        # The pooled difference is zero and the two batches sit 3.3 standard errors apart.
+        ([(0.008, 0.0034), (-0.008, 0.0034)], "unresolved_bridge"),
+        (None, "unresolved_bridge"),
+    ],
 )
-def test_a_class_label_stands_only_when_the_bridge_holds(bridge: tuple[float, float] | None, label: str) -> None:
+def test_a_class_label_stands_only_when_the_bridge_holds(bridge: list[tuple[float, float]] | None, label: str) -> None:
     decision = rs.outcome(rs.decide(_planted_x(), bridge, None, transfer=True))
     _expect(decision["label"] == label, f"bridge {bridge} reads {decision['label']}")
     _expect(decision["decided"] is (label == "pulse_x"), f"bridge {bridge}: decided is {decision['decided']}")
@@ -177,7 +208,9 @@ def test_a_world_whose_visibility_loss_spares_the_selector_reads_its_class(world
     value = rs.truth_parameter(world, branch, rs.DESIGN_CONTRAST, 1.0)
     decision = rs.decide(rs.planted_batches(world, value, mix=1.0), None, None)
     _expect(decision["label"] == label, f"planted {world} at share 1 reads {decision['label']}")
-    _expect(decision["numbers"]["contraction_share"][world] == 1.0, "the fitted share is not the planted one")
+    _expect(
+        decision["numbers"]["noise_model"][world] == rs.noise_models()[12], "the fitted share is not the planted one"
+    )
     _expect(decision["numbers"]["chi2"][world] < 1.0, f"planted {world} does not fit itself")
 
 
@@ -212,6 +245,8 @@ def test_a_cz_phase_error_reads_outside_the_x_class() -> None:
         ({"x": 5.0, "other": 40.0, "readout": 60.0}, "pulse_x"),
         ({"x": 60.0, "other": 40.0, "readout": 5.0}, "readout"),
         ({"x": 60.0, "other": 12.0, "readout": 5.0}, "x_excluded"),
+        # An adequate x world (the bound is 37.70) is not excluded, whatever its distance from the leader.
+        ({"x": 36.0, "other": 12.0, "readout": 5.0}, "unresolved_both"),
         ({"x": 20.0, "other": 40.0, "readout": 5.0}, "unresolved_both"),
         ({"x": 50.0, "other": 90.0, "readout": 95.0}, "unresolved_none"),
     ],
@@ -304,18 +339,19 @@ def test_evaluate_reads_an_over_rotation_whose_visibility_loss_spares_the_select
     report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, mix=1.0), _manifest())
     decision = report["decision"]
     _expect(decision["label"] == "pulse_x", f"reads {decision['label']}")
-    _expect(decision["numbers"]["contraction_share"]["pulse_x_before_all"] >= 0.9, "the fitted share is low")
+    share = rs.noise_models().index(decision["numbers"]["noise_model"]["pulse_x_before_all"])
+    _expect(rs.MIX_FINE[share] >= 0.9, "the fitted share is low")
     _expect(decision["a5_186"].startswith("survives"), decision["a5_186"])
 
 
 @pytest.mark.audit
-@pytest.mark.parametrize("role", ["d2", "selector", "coin"])
+@pytest.mark.parametrize("role", list(rs.GUARD_ROLES))
 def test_evaluate_refuses_a_scan_kind_whose_batches_fail_the_readout_guard(role: str) -> None:
     value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
     rows = rs.batch_rows(rs.TUNA_SERIES)
     names = [r["batch"] for r in rows]
-    # The bracket after each q8 +-5 scan batch reads the role's qubit changed, so both batches leave the admitted set.
-    jump = tuple(names[n + 1] for n, r in enumerate(rows) if r["kind"] == "q8-5")
+    # The bracket after each q4 +-10 scan batch reads the role's qubit changed, so both batches leave the admitted set.
+    jump = tuple(names[n + 1] for n, r in enumerate(rows) if r["kind"] == "q4-10")
     shots = _series_shots("pulse_x_before_all", value, 32768, jump, rs.retained()["roles"][role])
     report = rs.evaluate(shots, _manifest())
     _expect(report["decision"]["label"] == "unresolved_guard", f"reads {report['decision']['label']}")
@@ -333,12 +369,108 @@ def test_evaluate_withholds_the_decision_when_a_bridge_batch_is_not_admitted(off
     # second one, which leaves the first admitted and the second not.
     bridges = [n for n, r in enumerate(rows) if r["kind"] == "bridge"]
     _expect(bridges[1] - bridges[0] == 2, "the bridge batches do not share a bracket")
-    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, (names[bridges[0] + offset],)), _manifest())
+    jump = (names[bridges[0] + offset],)
+    selector = rs.retained()["roles"]["selector"]
+    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, jump, selector), _manifest())
     decision = report["decision"]
     _expect(decision["label"] == "unresolved_bridge", f"reads {decision['label']}")
     _expect(decision["numbers"]["rx_label"] == "pulse_x" and not decision["decided"], "the Rx class is not pulse_x")
 
 
 @pytest.mark.audit
-def test_the_committed_case_matches_the_build() -> None:
+def test_evaluate_admits_a_batch_whose_d2_readout_jumps() -> None:
+    value = rs.truth_parameter("pulse_x_before_all", 1, rs.DRIFT_CONTRAST)
+    rows = rs.batch_rows(rs.TUNA_SERIES)
+    jump = tuple(r["batch"] for r in rows if r["kind"] == "readout")[1::2]
+    report = rs.evaluate(_series_shots("pulse_x_before_all", value, 32768, jump), _manifest())
+    _expect(all(r["guard"]["admitted"] for r in report["batch_rows"].values()), "a d2 readout jump fails the guard")
+    _expect(report["decision"]["label"] == "pulse_x", f"reads {report['decision']['label']}")
+    moved = max(
+        abs(r["guard"]["after"]["11"][1] - r["guard"]["before"]["11"][1]) for r in report["batch_rows"].values()
+    )
+    _expect(moved > 0.2, f"the reported e10 of q11 moves by {moved}")
+    _expect(report["center_d2_split"][0] > 3 * report["center_d2_split"][1], "the d2 split of an over-rotation is flat")
+
+
+def test_the_statistics_ignore_the_readout_of_d2() -> None:
+    region, roles = rs.retained()["region"], rs.retained()["roles"]
+    value = rs.truth_parameter("pulse_x_before_all", 1, rs.DESIGN_CONTRAST)
+    laws = rs.world_laws("pulse_x_before_all", rs.DESIGN_RETENTION, rs.ARM_NAMES)[
+        int(np.argmin(np.abs(rs.parameter_grid("pulse_x_before_all") - value)))
+    ]
+    seen = []
+    for e10 in (0.03, 0.43):
+        rates = {q: (0.01, e10 if q == roles["d2"] else 0.05) for q in region}
+        seen.append(rs.read(laws, np.asarray(cc.readout_matrix(rates, roles))))
+    _expect(float(np.abs(rs.selector_contrast(seen[0]) - rs.selector_contrast(seen[1])).max()) < 1e-12, "contrast")
+    _expect(float(np.abs(rs.visibility(seen[0]) - rs.visibility(seen[1])).max()) < 1e-12, "visibility")
+    _expect(roles["d2"] not in [roles[k] for k in rs.GUARD_ROLES], "d2's qubit is guarded")
+
+
+@pytest.mark.parametrize(
+    ("world", "branch", "sign"),
+    [
+        ("pulse_x_before_all", 1, 1),
+        ("pulse_x_before_all", 0, -1),
+        ("pulse_x_before_q8", 0, -1),
+        ("pulse_y_before_all", 1, -1),
+        ("pulse_y_before_all", 0, -1),
+        ("pulse_z_before_all", 0, -1),
+        ("selector_flip_q12_0", 0, 0),
+        ("selector_dropout_coin_1", 0, 0),
+    ],
+)
+def test_the_d2_split_carries_the_sign_of_the_mechanism(world: str, branch: int, sign: int) -> None:
+    value = rs.truth_parameter(world, branch, rs.DESIGN_CONTRAST)
+    grid = rs.parameter_grid(world)
+    law = rs.world_laws(world, rs.DESIGN_RETENTION, (rs.CENTER,))[int(np.argmin(np.abs(grid - value))), 0]
+    split = float(rs.d2_split(rs.read(law, rs.design_matrix()))[0])
+    _expect(abs(split) < 1e-9 if sign == 0 else sign * split > 0.005, f"{world} at {value:+.4f} splits by {split}")
+
+
+def test_the_d2_split_error_is_the_binomial_one() -> None:
+    counts = np.array([100 + 7 * i for i in range(rs.NOUT)], dtype=float)
+    piles = counts.reshape(2, 2, 2, 4).sum(-1)
+    share = piles[:, 0] / piles.sum(1)
+    expected = math.sqrt(float((share * (1 - share) / piles.sum(1)).sum()))
+    value, error = rs.d2_split(counts)
+    _expect(abs(float(error) - expected) < 1e-12, f"the error reads {error}")
+    _expect(abs(float(value) - float((share[1] - share[0])[1] - (share[1] - share[0])[0])) < 1e-12, "the value")
+
+
+def test_a_truth_a_round_cannot_reach_is_refused() -> None:
+    reached = rs.sized("pulse_x_before_q8", rs.DRIFT_CONTRAST)
+    _expect(len(reached) == 1 and reached[0] < 0, f"q8's x rotation reaches the drift contrast at {reached}")
+    with pytest.raises(rs.UnreachableTruth):
+        rs.truth_parameter("pulse_x_before_q8", 1, rs.DRIFT_CONTRAST)
+    with pytest.raises(rs.UnreachableTruth):
+        rs.truth_parameter("pulse_x_before_all", 0, rs.DESIGN_CONTRAST, sign=1)
+
+
+@pytest.mark.audit
+@pytest.mark.parametrize("family", rs.OC_FAMILIES)
+@pytest.mark.parametrize(
+    ("world", "branch", "label"),
+    [
+        ("pulse_x_before_all", 1, "pulse_x"),
+        ("pulse_x_before_all", 0, "pulse_x"),
+        ("pulse_y_before_all", 1, "pulse_other"),
+        ("pulse_y_before_all", 0, "pulse_other"),
+        ("pulse_z_before_all", 0, "pulse_other"),
+        ("selector_flip_q12_0", 0, "readout"),
+        ("selector_dropout_coin_1", 0, "readout"),
+    ],
+)
+def test_a_world_under_a_damping_family_reads_its_class(
+    families: None, family: str, world: str, branch: int, label: str
+) -> None:
+    value = rs.truth_parameter(world, branch, rs.DESIGN_CONTRAST, family=family)
+    row = rs.predicted_contrasts(world, value, family=family)
+    decision = rs.decide(rs.planted_batches(None, 0.0, row=row), None, None)
+    _expect(decision["label"] == label, f"{world} at {value:+.4f} under {family} reads {decision['label']}")
+    _expect(decision["numbers"]["noise_model"][world] == family, "the fit leaves the planted family")
+
+
+@pytest.mark.audit
+def test_the_committed_case_matches_the_build(families: None) -> None:
     rs.check(CASES, operating=False)

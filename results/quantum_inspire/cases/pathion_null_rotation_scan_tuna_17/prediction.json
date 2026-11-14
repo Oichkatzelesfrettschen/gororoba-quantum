@@ -15,8 +15,8 @@
   "job_seconds_limit": 300,
   "jobs": 52,
   "longest_job_seconds": 80.0,
-  "pause_seconds_per_batch": 30,
-  "pause_seconds_total": 600,
+  "pause_seconds_per_batch": 120,
+  "pause_seconds_total": 2400,
   "shots_total": 4653056
  },
  "model": "raw selector contrast of every arm under each world sized to the center contrast 0.0164 at retention 0.505 and the retained readout rates of the coin series",
@@ -29,41 +29,39 @@
     "unresolved_both": 0.0013
    },
    "selector dropout when the coin reads 1": {
-    "readout": 0.9973,
-    "unresolved_none": 0.0011,
-    "x_excluded": 0.0016
+    "readout": 0.9991,
+    "unresolved_none": 0.0008,
+    "x_excluded": 0.0001
    },
    "selector flip when q12 reads 0": {
-    "readout": 0.9991,
-    "unresolved_none": 0.0009
+    "readout": 0.9988,
+    "unresolved_none": 0.0012
    },
    "x over-rotation, all pulses": {
-    "pulse_x": 0.9991,
-    "unresolved_none": 0.0009
+    "pulse_x": 0.9992,
+    "unresolved_none": 0.0008
    },
    "x over-rotation, q8 pulses": {
-    "pulse_x": 0.9981,
-    "unresolved_none": 0.0019
+    "truth_unreachable": 1.0
    },
    "x over-rotation, q8 pulses, upper root": {
+    "truth_unreachable": 1.0
+   },
+   "x under-rotation, all pulses": {
     "pulse_x": 0.9985,
     "unresolved_none": 0.0015
    },
-   "x under-rotation, all pulses": {
-    "pulse_x": 0.9988,
-    "unresolved_none": 0.0012
-   },
    "x under-rotation, q8 pulses": {
-    "pulse_x": 0.9978,
-    "unresolved_none": 0.0022
+    "pulse_x": 0.9977,
+    "unresolved_none": 0.0023
    },
    "y rotation before, all pulses": {
     "pulse_other": 0.9993,
     "unresolved_none": 0.0007
    },
    "z rotation before, all pulses": {
-    "pulse_other": 0.9986,
-    "unresolved_none": 0.0014
+    "pulse_other": 0.9984,
+    "unresolved_none": 0.0016
    }
   },
   "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json",
@@ -75,46 +73,131 @@
     "unresolved_both": 0.0013
    },
    "selector dropout when the coin reads 1": {
-    "readout": 0.8752,
-    "unresolved_none": 0.0009,
-    "x_excluded": 0.1239
+    "readout": 0.9877,
+    "unresolved_none": 0.0007,
+    "x_excluded": 0.0116
    },
    "selector flip when q12 reads 0": {
-    "readout": 0.9972,
-    "unresolved_none": 0.0009,
-    "x_excluded": 0.0019
+    "readout": 0.9987,
+    "unresolved_none": 0.0013
    },
    "x over-rotation, all pulses": {
-    "pulse_x": 0.9988,
-    "unresolved_none": 0.0012
+    "pulse_x": 0.9989,
+    "unresolved_none": 0.0011
    },
    "x over-rotation, q8 pulses": {
-    "pulse_x": 0.9994,
-    "unresolved_both": 0.0002,
-    "unresolved_none": 0.0004
+    "pulse_x": 0.9986,
+    "unresolved_both": 0.0003,
+    "unresolved_none": 0.0011
    },
    "x over-rotation, q8 pulses, upper root": {
-    "pulse_x": 0.8509,
-    "unresolved_both": 0.1482,
+    "pulse_x": 0.9993,
+    "unresolved_none": 0.0007
+   },
+   "x under-rotation, all pulses": {
+    "pulse_x": 0.9991,
+    "unresolved_none": 0.0009
+   },
+   "x under-rotation, q8 pulses": {
+    "pulse_x": 0.9985,
+    "unresolved_none": 0.0015
+   },
+   "y rotation before, all pulses": {
+    "pulse_other": 0.9929,
+    "unresolved_none": 0.0006,
+    "x_excluded": 0.0065
+   },
+   "z rotation before, all pulses": {
+    "pulse_other": 0.9983,
+    "unresolved_none": 0.0017
+   }
+  },
+  "stationary_cz_damping": {
+   "no offset": {
+    "offset_absent": 0.997,
+    "offset_reversed": 0.0018,
+    "unresolved_both": 0.0012
+   },
+   "selector dropout when the coin reads 1": {
+    "readout": 0.9987,
+    "unresolved_none": 0.0011,
+    "x_excluded": 0.0002
+   },
+   "selector flip when q12 reads 0": {
+    "readout": 0.9988,
+    "unresolved_none": 0.0012
+   },
+   "x over-rotation, all pulses": {
+    "pulse_x": 0.9986,
+    "unresolved_none": 0.0014
+   },
+   "x over-rotation, q8 pulses": {
+    "pulse_x": 0.9992,
+    "unresolved_none": 0.0008
+   },
+   "x over-rotation, q8 pulses, upper root": {
+    "pulse_x": 0.999,
+    "unresolved_none": 0.001
+   },
+   "x under-rotation, all pulses": {
+    "pulse_x": 0.9994,
+    "unresolved_none": 0.0006
+   },
+   "x under-rotation, q8 pulses": {
+    "pulse_x": 0.9986,
+    "unresolved_none": 0.0014
+   },
+   "y rotation before, all pulses": {
+    "pulse_other": 0.9992,
+    "unresolved_none": 0.0008
+   },
+   "z rotation before, all pulses": {
+    "pulse_other": 0.9981,
+    "unresolved_none": 0.0019
+   }
+  },
+  "stationary_damping_and_dephasing": {
+   "no offset": {
+    "offset_absent": 0.9971,
+    "offset_reversed": 0.0017,
+    "unresolved_both": 0.0012
+   },
+   "selector dropout when the coin reads 1": {
+    "readout": 0.9973,
+    "unresolved_none": 0.0007,
+    "x_excluded": 0.002
+   },
+   "selector flip when q12 reads 0": {
+    "readout": 0.9987,
+    "unresolved_none": 0.0013
+   },
+   "x over-rotation, all pulses": {
+    "pulse_x": 0.999,
+    "unresolved_none": 0.001
+   },
+   "x over-rotation, q8 pulses": {
+    "pulse_x": 0.9995,
+    "unresolved_none": 0.0005
+   },
+   "x over-rotation, q8 pulses, upper root": {
+    "pulse_x": 0.9991,
     "unresolved_none": 0.0009
    },
    "x under-rotation, all pulses": {
-    "pulse_x": 0.9987,
-    "unresolved_none": 0.0013
+    "pulse_x": 0.9995,
+    "unresolved_none": 0.0005
    },
    "x under-rotation, q8 pulses": {
-    "pulse_x": 0.9984,
-    "unresolved_none": 0.0016
+    "pulse_x": 0.9986,
+    "unresolved_none": 0.0014
    },
    "y rotation before, all pulses": {
-    "pulse_other": 0.9879,
-    "unresolved_none": 0.0007,
-    "x_excluded": 0.0114
+    "pulse_other": 0.9995,
+    "unresolved_none": 0.0005
    },
    "z rotation before, all pulses": {
-    "pulse_other": 0.9921,
-    "unresolved_both": 0.0071,
-    "unresolved_none": 0.0008
+    "pulse_other": 0.9981,
+    "unresolved_none": 0.0019
    }
   },
   "stationary_data_only_contraction": {
@@ -124,43 +207,40 @@
     "unresolved_both": 0.0013
    },
    "selector dropout when the coin reads 1": {
-    "readout": 0.997,
-    "unresolved_none": 0.0008,
-    "x_excluded": 0.0022
+    "readout": 0.9989,
+    "unresolved_none": 0.0011
    },
    "selector flip when q12 reads 0": {
-    "readout": 0.9987,
-    "unresolved_none": 0.0013
+    "readout": 0.9984,
+    "unresolved_none": 0.0016
    },
    "x over-rotation, all pulses": {
     "pulse_x": 0.9983,
     "unresolved_none": 0.0017
    },
    "x over-rotation, q8 pulses": {
-    "pulse_x": 0.1077,
-    "unresolved_both": 0.8912,
-    "unresolved_none": 0.0011
-   },
-   "x over-rotation, q8 pulses, upper root": {
-    "pulse_x": 0.999,
-    "unresolved_none": 0.001
-   },
-   "x under-rotation, all pulses": {
     "pulse_x": 0.9992,
     "unresolved_none": 0.0008
    },
-   "x under-rotation, q8 pulses": {
-    "pulse_x": 0.9985,
-    "unresolved_none": 0.0015
-   },
-   "y rotation before, all pulses": {
-    "pulse_other": 0.9993,
+   "x over-rotation, q8 pulses, upper root": {
+    "pulse_x": 0.9993,
     "unresolved_none": 0.0007
    },
+   "x under-rotation, all pulses": {
+    "pulse_x": 0.9988,
+    "unresolved_none": 0.0012
+   },
+   "x under-rotation, q8 pulses": {
+    "pulse_x": 0.9986,
+    "unresolved_none": 0.0014
+   },
+   "y rotation before, all pulses": {
+    "pulse_other": 0.9989,
+    "unresolved_none": 0.0011
+   },
    "z rotation before, all pulses": {
-    "pulse_other": 0.2704,
-    "unresolved_both": 0.7286,
-    "unresolved_none": 0.001
+    "pulse_other": 0.9982,
+    "unresolved_none": 0.0018
    }
   }
  },
@@ -174,24 +254,24 @@
    "outcome": "offset reversed: the center arm's contrast reads below zero, where the retained runs read above it; nothing about the mechanism is decided"
   },
   "pulse_other": {
-   "a5_186": "amended: a coherent gate error stands; it is a pulse rotation about y or z or a CZ phase error, which this scan leaves apart",
-   "outcome": "the y-or-z class is preferred: a coherent error other than a rotation about x on the pulses produces the offset. A conditional-phase error of the CZ gates can read here as well (prediction.json, unmodeled)"
+   "a5_186": "not supported as stated: the scan prefers a coherent gate error other than a rotation about x, a pulse rotation about y or z or a CZ phase error, which it leaves apart",
+   "outcome": "the y-or-z class is preferred among the modeled worlds: the scan follows a pulse rotation about y or z. A conditional-phase error of the CZ gates can read here as well (prediction.json, unmodeled)"
   },
   "pulse_x": {
    "a5_186": "see X_ROW: the effect depends on the sign and scope of the fit",
-   "outcome": "the x class is preferred: the selector offset follows the injected rotation as a coherent over- or under-rotation of the pulses predicts"
+   "outcome": "the x class is preferred among the modeled worlds: the selector offset follows the injected rotation as a coherent over- or under-rotation of the pulses predicts"
   },
   "readout": {
-   "a5_186": "refuted as stated: no pulse-error world reproduces the scan",
-   "outcome": "the readout class is preferred: the response curve of an exact pulse stays in place and the offset adds to it"
+   "a5_186": "not supported: each modeled pulse rotation sits at least 25.0 in chi-square above a selector readout map; a mechanism outside the modeled worlds stays open",
+   "outcome": "the readout class is preferred among the modeled worlds: the response curve of an exact pulse stays in place and the offset adds to it"
   },
   "unresolved_both": {
    "a5_186": "unchanged; the numbers are reported",
-   "outcome": "unresolved: the x class and another class both sit within the separation of the best adequate world"
+   "outcome": "unresolved: no class is preferred by the separation and the x class is not excluded"
   },
   "unresolved_bridge": {
    "a5_186": "unchanged; the numbers are reported",
-   "outcome": "unresolved: the scan classes the Rx circuits (numbers.rx_label) and the bridge does not show that Rx(pi/2) reproduces X90, because the two read different contrasts or a bridge batch failed the readout admission"
+   "outcome": "unresolved: the scan classes the Rx circuits (numbers.rx_label) and the bridge does not show that Rx(pi/2) reads as X90, because the two read different contrasts, the two bridge batches disagree or a bridge batch failed the readout admission"
   },
   "unresolved_guard": {
    "a5_186": "unchanged; the numbers are reported",
@@ -202,8 +282,8 @@
    "outcome": "unresolved: the best world is not adequate; the scan matches no modeled mechanism"
   },
   "x_excluded": {
-   "a5_186": "refuted as stated: no rotation about x reproduces the scan; the surviving mechanism is undecided",
-   "outcome": "the x class is excluded and the scan leaves a selector readout map and a pulse rotation about y or z apart by less than the separation"
+   "a5_186": "not supported: no modeled rotation about x is adequate under any noise model of the fit; the surviving mechanism is undecided",
+   "outcome": "the x class is excluded among the modeled worlds and the scan leaves a selector readout map and a pulse rotation about y or z apart by less than the separation"
   }
  },
  "predicted_contrast": {
@@ -212,13 +292,13 @@
     "b0": -0.0,
     "b0-rx": -0.0,
     "b0-rx-all-m10": 0.02813,
-    "b0-rx-all-m5": -0.00072,
+    "b0-rx-all-m20": 0.06587,
     "b0-rx-all-p10": 0.06359,
-    "b0-rx-all-p5": 0.03154,
+    "b0-rx-all-p20": 0.06828,
+    "b0-rx-q4-m10": -0.0,
+    "b0-rx-q4-p10": -0.0,
     "b0-rx-q8-m10": -0.00919,
-    "b0-rx-q8-m5": -0.01567,
-    "b0-rx-q8-p10": 0.01312,
-    "b0-rx-q8-p5": 0.01594
+    "b0-rx-q8-p10": 0.01312
    },
    "parameter": null
   },
@@ -227,13 +307,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.00918,
-    "b0-rx-all-m5": -0.00499,
+    "b0-rx-all-m20": 0.06117,
     "b0-rx-all-p10": 0.07265,
-    "b0-rx-all-p5": 0.05229,
+    "b0-rx-all-p20": 0.06221,
+    "b0-rx-q4-m10": 0.01473,
+    "b0-rx-q4-p10": 0.01636,
     "b0-rx-q8-m10": -0.03098,
-    "b0-rx-q8-m5": -0.01374,
-    "b0-rx-q8-p10": 0.01914,
-    "b0-rx-q8-p5": 0.03128
+    "b0-rx-q8-p10": 0.01914
    },
    "parameter": 0.0511
   },
@@ -242,13 +322,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.06334,
-    "b0-rx-all-m5": 0.0477,
+    "b0-rx-all-m20": 0.09361,
     "b0-rx-all-p10": 0.00882,
-    "b0-rx-all-p5": -0.00486,
+    "b0-rx-all-p20": 0.07004,
+    "b0-rx-q4-m10": 0.01651,
+    "b0-rx-q4-p10": 0.01468,
     "b0-rx-q8-m10": 0.06708,
-    "b0-rx-q8-m5": 0.04145,
-    "b0-rx-q8-p10": -0.00872,
-    "b0-rx-q8-p5": 0.00058
+    "b0-rx-q8-p10": -0.00872
    },
    "parameter": -0.1438
   },
@@ -257,13 +337,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.0057,
-    "b0-rx-all-m5": -0.00193,
+    "b0-rx-all-m20": 0.04412,
     "b0-rx-all-p10": 0.04719,
-    "b0-rx-all-p5": 0.03984,
+    "b0-rx-all-p20": 0.03042,
+    "b0-rx-q4-m10": 0.01427,
+    "b0-rx-q4-p10": 0.01706,
     "b0-rx-q8-m10": -0.0152,
-    "b0-rx-q8-m5": 0.00118,
-    "b0-rx-q8-p10": -0.01125,
-    "b0-rx-q8-p5": 0.01225
+    "b0-rx-q8-p10": -0.01125
    },
    "parameter": 0.0924
   },
@@ -272,13 +352,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": -0.00406,
-    "b0-rx-all-m5": -0.00183,
+    "b0-rx-all-m20": 0.03009,
     "b0-rx-all-p10": 0.0255,
-    "b0-rx-all-p5": 0.02863,
+    "b0-rx-all-p20": 0.00928,
+    "b0-rx-q4-m10": 0.01426,
+    "b0-rx-q4-p10": 0.01694,
     "b0-rx-q8-m10": -0.00594,
-    "b0-rx-q8-m5": 0.01251,
-    "b0-rx-q8-p10": -0.03035,
-    "b0-rx-q8-p5": -0.00121
+    "b0-rx-q8-p10": -0.03035
    },
    "parameter": 0.1481
   },
@@ -287,13 +367,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.08216,
-    "b0-rx-all-m5": 0.06615,
+    "b0-rx-all-m20": 0.09464,
     "b0-rx-all-p10": -0.0538,
-    "b0-rx-all-p5": -0.04076,
+    "b0-rx-all-p20": 0.05558,
+    "b0-rx-q4-m10": 0.02087,
+    "b0-rx-q4-p10": 0.00956,
     "b0-rx-q8-m10": 0.08187,
-    "b0-rx-q8-m5": 0.05625,
-    "b0-rx-q8-p10": -0.01412,
-    "b0-rx-q8-p5": -0.0123
+    "b0-rx-q8-p10": -0.01412
    },
    "parameter": -0.2471
   },
@@ -302,13 +382,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.01839,
-    "b0-rx-all-m5": 0.00488,
+    "b0-rx-all-m20": 0.04205,
     "b0-rx-all-p10": 0.06219,
-    "b0-rx-all-p5": 0.04498,
+    "b0-rx-all-p20": 0.05793,
+    "b0-rx-q4-m10": 0.02405,
+    "b0-rx-q4-p10": 0.00658,
     "b0-rx-q8-m10": -0.01287,
-    "b0-rx-q8-m5": -0.00432,
-    "b0-rx-q8-p10": 0.00846,
-    "b0-rx-q8-p5": 0.02423
+    "b0-rx-q8-p10": 0.00846
    },
    "parameter": 0.0692
   },
@@ -317,13 +397,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.05468,
-    "b0-rx-all-m5": 0.02207,
+    "b0-rx-all-m20": 0.08493,
     "b0-rx-all-p10": 0.08076,
-    "b0-rx-all-p5": 0.04492,
+    "b0-rx-all-p20": 0.08203,
+    "b0-rx-q4-m10": 0.00852,
+    "b0-rx-q4-p10": 0.02214,
     "b0-rx-q8-m10": 0.01268,
-    "b0-rx-q8-m5": 0.0027,
-    "b0-rx-q8-p10": 0.04508,
-    "b0-rx-q8-p5": 0.03747
+    "b0-rx-q8-p10": 0.04508
    },
    "parameter": -0.0655
   },
@@ -332,13 +412,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.05979,
-    "b0-rx-all-m5": 0.03151,
+    "b0-rx-all-m20": 0.06411,
     "b0-rx-all-p10": 0.06966,
-    "b0-rx-all-p5": 0.03257,
+    "b0-rx-all-p20": 0.12044,
+    "b0-rx-q4-m10": 0.00557,
+    "b0-rx-q4-p10": 0.02424,
     "b0-rx-q8-m10": 0.01807,
-    "b0-rx-q8-m5": 0.00672,
-    "b0-rx-q8-p10": 0.0678,
-    "b0-rx-q8-p5": 0.04214
+    "b0-rx-q8-p10": 0.0678
    },
    "parameter": -0.1951
   },
@@ -347,13 +427,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.05468,
-    "b0-rx-all-m5": 0.02207,
+    "b0-rx-all-m20": 0.08493,
     "b0-rx-all-p10": 0.08076,
-    "b0-rx-all-p5": 0.04492,
+    "b0-rx-all-p20": 0.08203,
+    "b0-rx-q4-m10": 0.00852,
+    "b0-rx-q4-p10": 0.02214,
     "b0-rx-q8-m10": 0.01268,
-    "b0-rx-q8-m5": 0.0027,
-    "b0-rx-q8-p10": 0.04508,
-    "b0-rx-q8-p5": 0.03747
+    "b0-rx-q8-p10": 0.04508
    },
    "parameter": 0.0655
   },
@@ -362,13 +442,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.01839,
-    "b0-rx-all-m5": 0.00488,
+    "b0-rx-all-m20": 0.04205,
     "b0-rx-all-p10": 0.06219,
-    "b0-rx-all-p5": 0.04498,
+    "b0-rx-all-p20": 0.05793,
+    "b0-rx-q4-m10": 0.02405,
+    "b0-rx-q4-p10": 0.00658,
     "b0-rx-q8-m10": -0.01287,
-    "b0-rx-q8-m5": -0.00432,
-    "b0-rx-q8-p10": 0.00846,
-    "b0-rx-q8-p5": 0.02423
+    "b0-rx-q8-p10": 0.00846
    },
    "parameter": -0.0692
   },
@@ -377,13 +457,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.05979,
-    "b0-rx-all-m5": 0.03151,
+    "b0-rx-all-m20": 0.06411,
     "b0-rx-all-p10": 0.06966,
-    "b0-rx-all-p5": 0.03257,
+    "b0-rx-all-p20": 0.12044,
+    "b0-rx-q4-m10": 0.00557,
+    "b0-rx-q4-p10": 0.02424,
     "b0-rx-q8-m10": 0.01807,
-    "b0-rx-q8-m5": 0.00672,
-    "b0-rx-q8-p10": 0.0678,
-    "b0-rx-q8-p5": 0.04214
+    "b0-rx-q8-p10": 0.0678
    },
    "parameter": 0.1951
   },
@@ -392,13 +472,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.06093,
-    "b0-rx-all-m5": 0.02516,
+    "b0-rx-all-m20": 0.09154,
     "b0-rx-all-p10": 0.07705,
-    "b0-rx-all-p5": 0.04297,
+    "b0-rx-all-p20": 0.07687,
+    "b0-rx-q4-m10": 0.0102,
+    "b0-rx-q4-p10": 0.02101,
     "b0-rx-q8-m10": 0.01549,
-    "b0-rx-q8-m5": 0.00384,
-    "b0-rx-q8-p10": 0.04096,
-    "b0-rx-q8-p5": 0.03623
+    "b0-rx-q8-p10": 0.04096
    },
    "parameter": 0.0655
   },
@@ -407,13 +487,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.01924,
-    "b0-rx-all-m5": 0.00697,
+    "b0-rx-all-m20": 0.03187,
     "b0-rx-all-p10": 0.06161,
-    "b0-rx-all-p5": 0.04302,
+    "b0-rx-all-p20": 0.06138,
+    "b0-rx-q4-m10": 0.02564,
+    "b0-rx-q4-p10": 0.00519,
     "b0-rx-q8-m10": -0.01383,
-    "b0-rx-q8-m5": -0.00366,
-    "b0-rx-q8-p10": 0.00938,
-    "b0-rx-q8-p5": 0.024
+    "b0-rx-q8-p10": 0.00938
    },
    "parameter": -0.0692
   },
@@ -422,13 +502,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.06116,
-    "b0-rx-all-m5": 0.03319,
+    "b0-rx-all-m20": 0.06769,
     "b0-rx-all-p10": 0.07098,
-    "b0-rx-all-p5": 0.03278,
+    "b0-rx-all-p20": 0.10446,
+    "b0-rx-q4-m10": 0.00557,
+    "b0-rx-q4-p10": 0.02424,
     "b0-rx-q8-m10": 0.01684,
-    "b0-rx-q8-m5": 0.00753,
-    "b0-rx-q8-p10": 0.05943,
-    "b0-rx-q8-p5": 0.04008
+    "b0-rx-q8-p10": 0.05943
    },
    "parameter": 0.1951
   },
@@ -437,13 +517,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.06093,
-    "b0-rx-all-m5": 0.02516,
+    "b0-rx-all-m20": 0.09154,
     "b0-rx-all-p10": 0.07705,
-    "b0-rx-all-p5": 0.04297,
+    "b0-rx-all-p20": 0.07687,
+    "b0-rx-q4-m10": 0.0102,
+    "b0-rx-q4-p10": 0.02101,
     "b0-rx-q8-m10": 0.01549,
-    "b0-rx-q8-m5": 0.00384,
-    "b0-rx-q8-p10": 0.04096,
-    "b0-rx-q8-p5": 0.03623
+    "b0-rx-q8-p10": 0.04096
    },
    "parameter": 0.0655
   },
@@ -452,13 +532,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.01924,
-    "b0-rx-all-m5": 0.00697,
+    "b0-rx-all-m20": 0.03187,
     "b0-rx-all-p10": 0.06161,
-    "b0-rx-all-p5": 0.04302,
+    "b0-rx-all-p20": 0.06138,
+    "b0-rx-q4-m10": 0.02564,
+    "b0-rx-q4-p10": 0.00519,
     "b0-rx-q8-m10": -0.01383,
-    "b0-rx-q8-m5": -0.00366,
-    "b0-rx-q8-p10": 0.00938,
-    "b0-rx-q8-p5": 0.024
+    "b0-rx-q8-p10": 0.00938
    },
    "parameter": -0.0692
   },
@@ -467,13 +547,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.06116,
-    "b0-rx-all-m5": 0.03319,
+    "b0-rx-all-m20": 0.06769,
     "b0-rx-all-p10": 0.07098,
-    "b0-rx-all-p5": 0.03278,
+    "b0-rx-all-p20": 0.10446,
+    "b0-rx-q4-m10": 0.00557,
+    "b0-rx-q4-p10": 0.02424,
     "b0-rx-q8-m10": 0.01684,
-    "b0-rx-q8-m5": 0.00753,
-    "b0-rx-q8-p10": 0.05943,
-    "b0-rx-q8-p5": 0.04008
+    "b0-rx-q8-p10": 0.05943
    },
    "parameter": 0.1951
   },
@@ -482,13 +562,13 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.04389,
-    "b0-rx-all-m5": 0.01582,
+    "b0-rx-all-m20": 0.08078,
     "b0-rx-all-p10": 0.07811,
-    "b0-rx-all-p5": 0.04691,
+    "b0-rx-all-p20": 0.08303,
+    "b0-rx-q4-m10": 0.0164,
+    "b0-rx-q4-p10": 0.0164,
     "b0-rx-q8-m10": 0.00731,
-    "b0-rx-q8-m5": 0.00102,
-    "b0-rx-q8-p10": 0.02959,
-    "b0-rx-q8-p5": 0.03212
+    "b0-rx-q8-p10": 0.02959
    },
    "parameter": 0.036
   },
@@ -497,71 +577,71 @@
     "b0": 0.0164,
     "b0-rx": 0.0164,
     "b0-rx-all-m10": 0.03813,
-    "b0-rx-all-m5": 0.01418,
+    "b0-rx-all-m20": 0.06778,
     "b0-rx-all-p10": 0.07179,
-    "b0-rx-all-p5": 0.04501,
+    "b0-rx-all-p20": 0.06816,
+    "b0-rx-q4-m10": 0.01576,
+    "b0-rx-q4-p10": 0.01576,
     "b0-rx-q8-m10": -0.0005,
-    "b0-rx-q8-m5": -0.00089,
-    "b0-rx-q8-p10": 0.02158,
-    "b0-rx-q8-p5": 0.0295
+    "b0-rx-q8-p10": 0.02158
    },
    "parameter": 0.0358
   }
  },
  "preregistered": {
-  "adequate": "a world is adequate when its chi-square is at most the 0.999 quantile of the chi-square law with two degrees of freedom per admitted batch less one for the share",
-  "bridge": "Rx(pi/2) reproduces X90 when the within-batch difference of the b0-rx and b0 contrasts, pooled over the two bridge batches, both admitted, is within 3.0 standard errors of zero; a class label stands only when the bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits",
-  "class": "three classes of worlds: a rotation about x added to the pulses (on all pulses, on q8's or on q4's), a rotation about y or z added before or after them (same scopes), and the two selector readout worlds; a class is preferred when its best world is adequate and the best world of each other class sits at least 25.0 above it; the x class is excluded when the two other classes lead, the leader is adequate and the best x world sits at least 25.0 above it",
+  "adequate": "a world is adequate when its chi-square is at most the 0.999 quantile of the chi-square law with two degrees of freedom per admitted batch less one for the noise model",
+  "bridge": "Rx(pi/2) and X90 read the same selector contrast when both bridge batches are admitted, their within-batch differences of the b0-rx and b0 contrasts agree within 3.0 standard errors of each other, and the pooled difference is within 3.0 standard errors of zero; a class label stands only when the bridge holds, otherwise the series reads unresolved_bridge and reports the class of the Rx circuits. The bridge compares the two gates at zero injected angle and leaves untested that an injected Rx angle acts as a scaled X90 pulse",
+  "class": "three classes of worlds: a rotation about x added to the pulses (on all pulses, on q8's or on q4's), a rotation about y or z added before or after them (same scopes), and the two selector readout worlds; a class is preferred when its best world is adequate and the best world of each other class sits at least 25.0 above it; the x class is excluded when the two other classes lead, the leader is adequate, the best x world is inadequate and it sits at least 25.0 above the leader; every label is a preference among the modeled worlds and noise models",
   "control": "the inverse-variance mean of the center arm's contrast over the admitted scan batches exceeds 3.0 standard errors; within 3.0 standard errors of zero the offset is absent, below that it is reversed, and either way no mechanism is decided",
   "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, and the visibility of the center arm of each scan batch",
-  "fit": "per admitted scan batch, world and contraction share, the least chi-square of the batch's three contrasts over the world's one parameter, at the retention that reproduces the center arm's visibility through the mean assignment matrix of the two brackets; a world's chi-square is the sum over the admitted scan batches at the one contraction share (the part of the visibility loss that depolarizes the data bits alone, 0 to 1) that makes the sum least",
-  "guard": "a data batch is admitted when e01 and e10 of every region qubit each change by at most 0.02 between the readout batch before it and the one after; the decision needs at least one admitted batch of every scan kind, otherwise it reads unresolved_guard",
+  "fit": "per admitted scan batch, world and noise model, the least chi-square of the batch's three contrasts over the world's one parameter, at the retention or noise strength that reproduces the center arm's visibility through the mean assignment matrix of the two brackets; the noise models are 13 contraction shares (the part of the visibility loss that depolarizes the data bits alone, 0 to 1) and the gate-noise families cz_depolarizing, pulse_dephasing, cz_dephasing, cz_damping, damping_and_dephasing; a world's chi-square is the sum over the admitted scan batches at the one noise model that makes the sum least",
+  "guard": "a data batch is admitted when e01 and e10 of each qubit the statistics read (d0, d1, the selector and the coin) change by at most 0.02 between the readout batch before it and the one after; d2 is summed out of both statistics and its qubit's rates are reported unguarded; the decision needs at least one admitted batch of every scan kind, otherwise it reads unresolved_guard",
   "qx": "every circuit within twice the sampling floor of its ideal law"
  },
  "unmodeled": {
   "cz conditional phase +0.08 rad": {
    "best_world": {
-    "other": "pulse_z_after_all",
+    "other": "pulse_z_after_q8",
     "readout": "selector_dropout_coin_1",
-    "x": "pulse_x_before_q4"
+    "x": "pulse_x_before_q8"
    },
    "contrast": {
     "b0": 0.00751,
     "b0-rx": 0.00751,
     "b0-rx-all-m10": 0.0427,
-    "b0-rx-all-m5": 0.01302,
+    "b0-rx-all-m20": 0.07682,
     "b0-rx-all-p10": 0.06873,
-    "b0-rx-all-p5": 0.03404,
+    "b0-rx-all-p20": 0.08201,
+    "b0-rx-q4-m10": 0.00316,
+    "b0-rx-q4-p10": 0.01112,
     "b0-rx-q8-m10": 0.01388,
-    "b0-rx-q8-m5": -0.00053,
-    "b0-rx-q8-p10": 0.02888,
-    "b0-rx-q8-p5": 0.02379
+    "b0-rx-q8-p10": 0.02888
    },
-   "label": "pulse_other"
+   "label": "x_excluded"
   },
   "cz conditional phase +0.12 rad": {
    "best_world": {
-    "other": "pulse_z_before_all",
+    "other": "pulse_z_after_all",
     "readout": "selector_dropout_coin_1",
-    "x": "pulse_x_before_q8"
+    "x": "pulse_x_before_all"
    },
    "contrast": {
     "b0": 0.01559,
     "b0-rx": 0.01559,
     "b0-rx-all-m10": 0.05217,
-    "b0-rx-all-m5": 0.02399,
+    "b0-rx-all-m20": 0.08214,
     "b0-rx-all-p10": 0.07052,
-    "b0-rx-all-p5": 0.03738,
+    "b0-rx-all-p20": 0.08713,
+    "b0-rx-q4-m10": 0.00992,
+    "b0-rx-q4-p10": 0.01988,
     "b0-rx-q8-m10": 0.02799,
-    "b0-rx-q8-m5": 0.01159,
-    "b0-rx-q8-p10": 0.03771,
-    "b0-rx-q8-p5": 0.03022
+    "b0-rx-q8-p10": 0.03771
    },
    "label": "unresolved_none"
   },
   "cz conditional phase -0.08 rad": {
    "best_world": {
-    "other": "pulse_y_after_all",
+    "other": "pulse_y_before_q8",
     "readout": "selector_flip_q12_0",
     "x": "pulse_x_before_q8"
    },
@@ -569,19 +649,19 @@
     "b0": 0.00599,
     "b0-rx": 0.00599,
     "b0-rx-all-m10": 0.02362,
-    "b0-rx-all-m5": 0.00048,
+    "b0-rx-all-m20": 0.05686,
     "b0-rx-all-p10": 0.0561,
-    "b0-rx-all-p5": 0.03447,
+    "b0-rx-all-p20": 0.04929,
+    "b0-rx-q4-m10": 0.0116,
+    "b0-rx-q4-p10": -0.00021,
     "b0-rx-q8-m10": -0.01982,
-    "b0-rx-q8-m5": -0.01451,
-    "b0-rx-q8-p10": 0.00143,
-    "b0-rx-q8-p5": 0.01577
+    "b0-rx-q8-p10": 0.00143
    },
    "label": "unresolved_both"
   },
   "cz conditional phase -0.12 rad": {
    "best_world": {
-    "other": "pulse_z_before_all",
+    "other": "pulse_y_before_q8",
     "readout": "selector_flip_q12_0",
     "x": "pulse_x_before_q8"
    },
@@ -589,13 +669,13 @@
     "b0": 0.01348,
     "b0-rx": 0.01348,
     "b0-rx-all-m10": 0.02577,
-    "b0-rx-all-m5": 0.00689,
+    "b0-rx-all-m20": 0.05341,
     "b0-rx-all-p10": 0.05123,
-    "b0-rx-all-p5": 0.03717,
+    "b0-rx-all-p20": 0.03785,
+    "b0-rx-q4-m10": 0.02192,
+    "b0-rx-q4-p10": 0.00358,
     "b0-rx-q8-m10": -0.01923,
-    "b0-rx-q8-m5": -0.00761,
-    "b0-rx-q8-p10": -0.00281,
-    "b0-rx-q8-p5": 0.01807
+    "b0-rx-q8-p10": -0.00281
    },
    "label": "unresolved_none"
   }

@@ -1,0 +1,22 @@
+{
+ "schema": "kaggle-aer-collect-v2",
+ "kernel": "probablyeric/gororoba-null-rotation-scan-noise/1",
+ "capture": "2026-11-14T043632.537176Z",
+ "state": "COMPLETE",
+ "collected_utc": "2026-11-14T043635Z",
+ "submission_sha256": "2809adc8b5acb00620d85913930b3fc6fe44459e30292d42ec4d66989594a5b8",
+ "predecessor_sha256": null,
+ "files": {
+  "gororoba-null-rotation-scan-noise.log": "b70790a0ebd73b1077e84e1be2014a0ddd7da30be58b11d16a72dd911e993771",
+  "output/environment.json": "3b785047e125ade6a8526334febb985afe8a712d084d83a355ae77f72af34673",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "df4aae16c92a8d0786821c8682fbd1eeceadc38a273a0667732e4a2820d47bdb",
+  "output/null-rotation-scan-noise.json": "5f82f397885247b77e85978ee2f0771cfc35d5078df526700fb9ec9ca75d9e5d",
+  "output/pin_groups.json": "18361c493417e16c350a5f3fecd3ac12ab0931c695b17316990c0a3f28db5c8d",
+  "output/pip.txt": "a341bb6e07db2f9e7750e12511db8d2453a45832cfe2c5055ec886bda24dc5a6",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "df875d8c34dbe79bbf93272e6a4c2b9f2cee530cbff28ae5853c5bf5408425e1"
+ },
+ "reported_status": "probablyeric/gororoba-null-rotation-scan-noise/1 has status \"KernelWorkerStatus.COMPLETE\"",
+ "discarded": {}
+}
