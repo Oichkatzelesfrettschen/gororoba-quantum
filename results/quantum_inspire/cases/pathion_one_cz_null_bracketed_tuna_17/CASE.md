@@ -26,7 +26,7 @@ predecessor's thresholds, heterogeneity gates and b0-like band; it differs in tw
 
 ## Derived coefficients and the design they force
 
-Each coefficient is re-derived in `tests/scripts/test_qi_pathion_one_cz_null_bracketed.py`.
+Items 1, 2, 3 and 5 are re-derived in `tests/scripts/test_qi_pathion_one_cz_null_bracketed.py`; the retained-record statistics of item 4 come from the selector counts of the retained run directories named there and are not re-derived by the tests.
 
 1. Three circuits per batch. `docs/notes/quantum_inspire/usage.md` ("Queue rules: the FAQ governs") reads the FAQ's three
    queued jobs per hardware backend and says it does not settle whether a job is a circuit; the runner holds a batch to
