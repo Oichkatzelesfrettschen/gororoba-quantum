@@ -51,8 +51,9 @@ order (its terms allow priority without regard to the queue), so the mirrored la
 retained `queued_at` times, not assumed. An unfinished job on another hardware backend type refuses the batch, and the
 pause clock is account-wide across every `is_hardware` type, the Ry emulator included
 (`docs/notes/quantum_inspire/ry-emulator.md`), so a finished Ry job delays the next Tuna-17 batch by the rest of its
-pause and Ry batches do not count toward the three Tuna-17 batches. The admission checks read one snapshot of the account
-and `SUBMIT_LOCK` excludes only sessions on one host.
+pause and Ry batches do not count toward the three Tuna-17 batches. The driver checks every run directory before its first submission and resumes nothing: a stop leaves the submitted
+batches queued, and `qi_platform_wave.py collect` (after `qi_platform.py reconcile` for an uncertain enqueue) recovers
+each one. The admission checks read one snapshot of the account and `SUBMIT_LOCK` excludes only sessions on one host.
 
 Residual risk of the policy: the FAQ sentence is ambiguous. If the provider reads "job" as a circuit, a wave of 15 circuits
 queues five times the stated 3; the abuse clause removes the account. The owner accepted that reading for this case; a
@@ -102,7 +103,8 @@ the tests.
    rounds alternate forward, mirror (the list reversed and, inside each twin batch, the twin order reversed: coin 1 then
    coin 0), forward, mirror (32 batches), so a linear drift per circuit position enters the four replicates of t as +g,
    -g, +g and -g and cancels in the pooled twin contrast (exactly for equal replicate weights, to first order for the
-   analyzer's inverse-variance pool). The three X-only calibration batches of the predecessor follow (3, 3 and 2
+   analyzer's inverse-variance pool) when the platform runs the jobs of a batch in the listed order; hypothesis: the
+   listed order is the execution order, which the retained `queued_at` times test and no gate enforces (issue 894). The three X-only calibration batches of the predecessor follow (3, 3 and 2
    circuits): 35 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte, as in the predecessor. The
    platform sets the execution order of the jobs of a batch (the retained `created_on` shows reversed twins in some
    batches), so the estimator uses batch co-membership, not the listed order.
@@ -159,8 +161,8 @@ predecessor, read raw.
 - Batches 32-34: the eight X-only preparations of (q2, q8, q12), 16,384 shots, a secondary readout calibration in a
   terminal-assignment context (D and G of the predecessor, reported beside the outcome).
 - The routing seeds are those of the predecessor (values 0, 64 and 128 of
-  `docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json`); the operating characteristics are seeded from value 0 of
-  `docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json`.
+  `docs/evidence/anu_qrng/draw-2026-11-07T163258Z.json`); the three operating-characteristics tables are seeded from
+  values 920, 921 and 922 of `docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json`, one each, in that order.
 - QX twin: per template one batch `[readout-0, coin-0 twin, coin-1 twin, readout-1, base]`, 4 batches of 5 circuits (the
   service ceiling) at 2,048 shots; the QX emulator is no hardware backend and takes no policy field.
 
@@ -249,9 +251,11 @@ layout met the rule only under the common-drift model (82.1 and 86.9 against 72.
 The two models bracket the truth: the in-batch pair removes every drift that shifts both twins together, and the stress
 leaves a drift between the two twins of a batch, 10 to 147 s apart in the retained series, unexcluded. Which model
 governs is a hypothesis; the retained twin forward-against-mirror comparison (chi-square 14.77 on 8 degrees of freedom)
-shows no twin drift above the sampling noise. The residual loss is the heterogeneity gates reading base-contrast drift
-(`unresolved_batch` and `unresolved_block` about 0.05 and 0.04 under the independent model, 0.03 each under the
-common-drift model, in every world), which no layout change of the twins reaches. A wrong refutation of A5-186 (a b0-like
+shows no twin drift above the sampling noise. Under the independent model the losses of the dropout world are `intermediate` 0.081, `unresolved_batch` 0.047 and
+`unresolved_block` 0.042, and those of the superposition-only world `unresolved` 0.048, `unresolved_batch` 0.047 and
+`unresolved_block` 0.046 (`prediction.json`); the gates and the b0-like band share the loss, and the gate losses fall to
+about 0.03 each under the common-drift model. Hypothesis: the gates read base-contrast drift, which no layout change of the
+twins reaches; the cheapest test reuses the draws and disables one gate at a time. A wrong refutation of A5-186 (a b0-like
 reading of an over-rotation world) occurs in 7.6 percent of stationary runs of the world that rotates before every
 single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted world.
 

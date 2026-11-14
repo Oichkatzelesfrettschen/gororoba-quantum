@@ -85,4 +85,3 @@ Verdict: the policy table and bracket arithmetic are sound, but the wave safety,
 - Pinned Ruff check/format and targeted mypy: passed.
 - Worktree remained clean at `088021c80644a019a3ee9e7191a3243004641fd3`.
 - No provider, credential, network, or cloud action ran.
-

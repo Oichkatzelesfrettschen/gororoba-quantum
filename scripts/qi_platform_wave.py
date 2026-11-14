@@ -22,7 +22,9 @@ Both numbers of a row are capped by the backend record (`max_jobs_per_batch_job`
 Admission (`hardware_admission`). Under a wave policy the account's unfinished batches on the backend type to submit are
 the earlier batches of the wave: they count as in flight, and their jobs set no pause. An unfinished job on another
 hardware backend type refuses, every finished job keeps its pause, and a batch is refused once the batches in flight
-reach the row's queued count. The pause clock is account-wide across every `is_hardware` type. The checks read one
+reach the row's queued count. A batch the service lists as queued, reserved or running with no listed job refuses, unless
+it is an earlier batch of the same backend type under a wave row. The pause clock is account-wide across every
+`is_hardware` type. The checks read one
 snapshot of the account and the local SUBMIT_LOCK excludes only sessions on one host, so the limit is not enforced
 across hosts, and the service owns the execution order of the queued batches (its terms allow priority without regard
 to the queue order), so an estimator that needs an order reads the retained `queued_at` times.
@@ -132,6 +134,14 @@ def hardware_pause_state(
         batches[row["id"]] = row["backend_type_id"]
         batch_status[row["id"]] = row["status"]
     jobs = [job for job in client.pages("/jobs") if job["batch_job_id"] in batches]
+    listed = {job["batch_job_id"] for job in jobs}
+    for batch_id, row_status in batch_status.items():
+        own_type = wave_backend_type_id is not None and batches[batch_id] == wave_backend_type_id
+        if row_status in IN_FLIGHT_BATCH_STATUSES and batch_id not in listed and not own_type:
+            # The job read omits an active batch: its jobs cannot show it finishing, so it refuses as an unfinished job.
+            raise SystemExit(
+                f"hardware batch {batch_id} is {row_status} without a listed job; wait until the jobs finish"
+            )
     in_flight: set[int] = set()
     if wave_backend_type_id is not None:
         in_flight = {
@@ -428,9 +438,19 @@ def run_series(
     wave is collected in series order (`sanity` runs on each collected run directory), and the next wave is submitted
     only after that, when admission refuses a batch for the pause and this function sleeps the remainder plus one second
     and retries (at most `max_pause_refusals` times in a row). A refusal that names no pause, a failed collection and a
-    failed sanity check stop the series. A run directory that exists is never resubmitted."""
+    failed sanity check stop the series. A run directory that exists is never resubmitted, and every destination is
+    checked before the first submission.
+
+    The driver resumes nothing: a stop leaves the batches it submitted queued on the service with their run directories,
+    which `collect` (after `reconcile` for an uncertain enqueue) recovers one by one, and the batches it never
+    submitted run from a fresh copy of the case."""
     series_dir = series_dir.resolve()
     waves = series_waves(series_dir)
+    for wave in waves:
+        for batch in wave:
+            run = runs_dir / f"{stamp}-{series_dir.name}-{batch}"
+            if run.exists():
+                raise SystemExit(f"{run} exists; a submitted batch is never resubmitted")
     runs_dir.mkdir(parents=True, exist_ok=True)
     done: list[Path] = []
     for wave in waves:

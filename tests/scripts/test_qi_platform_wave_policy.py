@@ -274,6 +274,16 @@ def test_wave_first_batch_waits_for_the_pause_after_the_previous_wave(tmp_path: 
     admitted(case(tmp_path, 5, hardware_policy="wave-v1"), service)
 
 
+def test_wave_refuses_an_active_batch_of_another_type_that_the_job_read_omits(tmp_path: Path, service: Service) -> None:
+    service.batches = [batch(1, type_id=8, status="running")]
+    refuses(case(tmp_path, 5, hardware_policy="wave-v1"), service, "hardware batch 1 is running without a listed job")
+
+
+def test_legacy_refuses_an_active_batch_that_the_job_read_omits(tmp_path: Path, service: Service) -> None:
+    service.batches = [batch(1, status="queued")]
+    refuses(case(tmp_path, 3), service, "hardware batch 1 is queued without a listed job")
+
+
 def test_wave_still_refuses_a_batch_being_planned(tmp_path: Path, service: Service) -> None:
     recent = (NOW - timedelta(seconds=5)).isoformat()
     service.batches = [{**batch(1, status="planned"), "created_on": recent}]
@@ -353,7 +363,20 @@ MUTATIONS = [
     ("unknown policy", "if type(name) is not str or name not in HARDWARE_POLICIES:", 3, "wave-v2", {}),
     ("in flight", "if in_flight + 1 > limits.queued_batches:", 5, "wave-v1", {"in_flight": 3}),
     ("service queue", "if queued + 1 > queue_limit:", 5, "wave-v1", {"queued": 3}),
-    ("batch rows", "row_status in IN_FLIGHT_BATCH_STATUSES", 5, "wave-v1", {"in_flight_rows": 3}),
+    (
+        "batch rows",
+        "if row_status in IN_FLIGHT_BATCH_STATUSES and batches[batch_id] == wave_backend_type_id",
+        5,
+        "wave-v1",
+        {"in_flight_rows": 3},
+    ),
+    (
+        "jobless active batch",
+        "if row_status in IN_FLIGHT_BATCH_STATUSES and batch_id not in listed and not own_type:",
+        5,
+        "wave-v1",
+        {"other_type_rows": 1},
+    ),
     ("legacy default", 'DEFAULT_HARDWARE_POLICY = "legacy"', 4, None, {}),
     (
         "backend queue cap",
@@ -393,13 +416,15 @@ def test_each_refusal_fails_when_its_line_is_removed(
 ) -> None:
     replacements = {
         "legacy default": 'DEFAULT_HARDWARE_POLICY = "wave-v1"',
-        "batch rows": "False",
+        "batch rows": "if False",
         "backend queue cap": "queued_batches=policy.queued_batches,",
     }
     module = mutant(line, replacements.get(label, "if False:"))
     fake = Service(backend(**state.get("backend", {})), [], [], state.get("queued", 0))
     if "in_flight_rows" in state:
         fake.batches = [batch(i, status="queued") for i in range(1, state["in_flight_rows"] + 1)]
+    if "other_type_rows" in state:
+        fake.batches = [batch(1, type_id=8, status="running")]
     if "in_flight" in state:
         fake.batches = [batch(i) for i in range(1, state["in_flight"] + 1)]
         fake.jobs = [job(i, i, "queued") for i in range(1, state["in_flight"] + 1)]
@@ -493,6 +518,19 @@ def test_the_series_stops_after_the_tenth_consecutive_pause_refusal(
     directory = series(tmp_path, [["batch-00"]])
     with pytest.raises(wave.PauseRefused):
         drive(monkeypatch, directory, tmp_path, refuse={"STAMP-series-batch-00": 99})
+
+
+def test_the_series_checks_every_destination_before_its_first_submission(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    directory = series(tmp_path, [["batch-00", "batch-01", "batch-02"]])
+    (tmp_path / "runs" / "STAMP-series-batch-02").mkdir(parents=True)
+    events: list[str] = []
+    monkeypatch.setattr(wave, "submit", lambda *_a, **_k: events.append("submit"))
+    with pytest.raises(SystemExit, match="never resubmitted"):
+        wave.run_series(directory, tmp_path / "runs", "STAMP", 7, "approval")
+    if events or (tmp_path / "runs" / "STAMP-series-batch-00").exists():
+        raise AssertionError(f"a later destination was checked after a submission: {events}")
 
 
 def test_the_series_never_resubmits_an_existing_run_directory(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
