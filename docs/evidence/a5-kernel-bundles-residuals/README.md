@@ -516,7 +516,7 @@ rank 11 on it). `kernel_plane_identities.py` checks each statement over the func
 the statements are closed conditions on the open set of nullity-4 points, so they hold at every one.
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py --check` (exact over
-`Q(i)` and its function fields; 46 CPU seconds and 87 MiB on two workers, 43 seconds of wall time, Python 3.14.9
+`Q(i)` and its function fields; 40 CPU seconds and 87 MiB on two workers, 38 seconds of wall time, Python 3.14.9
 with sympy 1.14.0).
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
