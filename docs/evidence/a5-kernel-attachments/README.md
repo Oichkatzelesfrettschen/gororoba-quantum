@@ -859,6 +859,24 @@ prime of degree 2. **Inferred:** the five forms are nilpotent and nonzero in the
 and `L` holds no linear form; whether their products with the other generators vanish in the fiber cone as they
 do modulo `K` is the open scheme statement above degree 7.
 
+**Computed (`A5-437`):** the same producer records the annihilator `A = K : R` of the nilradical module `R / K`
+(`R` the radical of `K`) and the first Hilbert numerators of `S/K`, `S/R` and `S/A`. `A` is prime: `minAssGTZ`
+returns one prime and `A` equals its radical. The numerators satisfy `N_K - N_R = N_A - (1 - t)^21` at both
+basepoints, so `dim (R/K)_d = dim (S/A)_d` in every degree `d >= 1` (5, 14, 30, 55, 91, 140, ...). **Inferred:**
+an associated prime of `R / K` is an associated prime of `K` that contains `A`; of the three, the prime of
+dimension 5 is too large and the minimal prime of dimension 4 has degree 4 against 2, so the embedded prime is the
+only one and equals `A`. `R / K` is therefore a torsion-free module of rank 1 over the domain `S/A`, the coordinate
+ring of a quadric threefold.
+
+**Inferred (`A5-438`, conditional on `A5-421` and `A5-425`):** the relation ideal `L` lies between `K` and `R`,
+and it equals `K` at both minimal primes, where `K` is already prime. `L / K` is then a submodule of the rank-1
+torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every degree exactly when the nilradical
+`R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything open about the `E8bar` fiber cone
+above degree 7 (`A5-009`) is that one condition. A sufficient test needs no standard basis of the Rees ideal: a
+family of arcs in the slice germ whose limit points are dense in `V(A)` and along which one of the five nilpotent
+linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
+slice coordinates). The retained arc families fill the two prime components; a family on `V(A)` is not built.
+
 **Second route at `N-` (`A5-422`, superseded by `A5-429`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
 dimension at least 5 (`A5-293`), so `K' = K2`. The quotient of the lattice by its saturated part is
