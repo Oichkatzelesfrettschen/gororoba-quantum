@@ -5534,6 +5534,28 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py --check",
+      "name": "core-a5-weight-slice-relation-membership",
+      "seconds": 0.5,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/weight-slice-relation-membership-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py --check",
+      "name": "core-a5-iso-w8-relation-ideal-orders",
+      "seconds": 0.5,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/iso-w8-relation-ideal-orders-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/g2_derivation_tables.py --check",
       "name": "core-a5-g2-derivation-tables",
       "seconds": 1.0,

@@ -1,0 +1,556 @@
+{
+ "schema": "gororoba.a5.iso-w8-relation-ideal-orders/1",
+ "field": "Q(i)",
+ "inputs": {
+  "iso_w8_relation_ideal_orders.py": "d45aca24db6ff4e50745722308b80b84e4d53030a7ce057d94ec66e67e2953a5",
+  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
+ },
+ "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
+ "cells": [
+  {
+   "orbit": "N-",
+   "source": "iso",
+   "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+   "parametrization": [
+    "qx",
+    "qx*qb/2-qt",
+    "qy",
+    "0",
+    "qy*qb",
+    "-(qy*qb^2+4*qx*qc)/4",
+    "0",
+    "0",
+    "qy*qc"
+   ],
+   "ideal": [
+    5,
+    23,
+    68
+   ],
+   "minimal_primes": [
+    [
+     5,
+     23
+    ]
+   ],
+   "radical": true,
+   "germ_nonzero_on_parametrization": 0,
+   "order_functions": {
+    "prime23": {
+     "weights": [
+      1,
+      2,
+      0,
+      0,
+      2
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+     ],
+     "ideal_order": 4,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 5,
+     "target": [
+      5,
+      23
+     ],
+     "target_nonzero_on_initial_forms": 0
+    }
+   },
+   "controls": {
+    "deficient_weights": {
+     "weights": [
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "generator_orders": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 4
+    },
+    "other_basepoint_parametrization": {
+     "germ_nonzero": 2
+    }
+   }
+  },
+  {
+   "orbit": "N-",
+   "source": "w8",
+   "relations_sha256": "10964885cae3177d8a8585e05b263269193199b7a37a5a9679bc76e843523b1d",
+   "parametrization": [
+    "qx",
+    "qx*qb/2-qt",
+    "qy",
+    "0",
+    "qy*qb",
+    "-(qy*qb^2+4*qx*qc+4*(qx*qb/2-qt)*qd)/4",
+    "0",
+    "qy*qd",
+    "qy*qc"
+   ],
+   "ideal": [
+    6,
+    50,
+    144
+   ],
+   "minimal_primes": [
+    [
+     6,
+     20
+    ],
+    [
+     6,
+     30
+    ]
+   ],
+   "radical": true,
+   "germ_nonzero_on_parametrization": 0,
+   "order_functions": {
+    "prime20": {
+     "weights": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      1
+     ],
+     "generator_orders": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 6,
+     "target": [
+      6,
+      20
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 27
+    },
+    "prime30": {
+     "weights": [
+      1,
+      2,
+      0,
+      0,
+      1,
+      2
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      4,
+      5,
+      4,
+      6,
+      4,
+      5,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+     ],
+     "ideal_order": 4,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 6,
+     "target": [
+      6,
+      30
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 26
+    }
+   },
+   "controls": {
+    "deficient_weights": {
+     "weights": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "generator_orders": [
+      6,
+      5,
+      5,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      4,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      4,
+      3,
+      2,
+      2,
+      2,
+      3,
+      3
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 2
+    },
+    "other_basepoint_parametrization": {
+     "germ_nonzero": 3
+    }
+   }
+  },
+  {
+   "orbit": "N+",
+   "source": "iso",
+   "relations_sha256": "f4d0152eabd91b56306e683641831f8ca69c86cecaa1350744afe97e85be81ee",
+   "parametrization": [
+    "qx",
+    "qx*qb/2-qt",
+    "qy",
+    "qy*qb",
+    "0",
+    "-(qy*qb^2+4*qx*qc)/4",
+    "0",
+    "0",
+    "qy*qc"
+   ],
+   "ideal": [
+    5,
+    23,
+    68
+   ],
+   "minimal_primes": [
+    [
+     5,
+     23
+    ]
+   ],
+   "radical": true,
+   "germ_nonzero_on_parametrization": 0,
+   "order_functions": {
+    "prime23": {
+     "weights": [
+      1,
+      2,
+      0,
+      0,
+      2
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+     ],
+     "ideal_order": 4,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 5,
+     "target": [
+      5,
+      23
+     ],
+     "target_nonzero_on_initial_forms": 0
+    }
+   },
+   "controls": {
+    "deficient_weights": {
+     "weights": [
+      1,
+      1,
+      0,
+      0,
+      1
+     ],
+     "generator_orders": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 4
+    },
+    "other_basepoint_parametrization": {
+     "germ_nonzero": 2
+    }
+   }
+  },
+  {
+   "orbit": "N+",
+   "source": "w8",
+   "relations_sha256": "10aabdd3a560da6672d3e438a3a4c2aef10fbed007b034afff8c592e85beb8d1",
+   "parametrization": [
+    "qx",
+    "qx*qb/2-qt",
+    "qy",
+    "qy*qb",
+    "0",
+    "-(qy*qb^2+4*qx*qc+4*(qx*qb/2-qt)*qd)/4",
+    "qy*qd",
+    "0",
+    "qy*qc"
+   ],
+   "ideal": [
+    6,
+    50,
+    144
+   ],
+   "minimal_primes": [
+    [
+     6,
+     20
+    ],
+    [
+     6,
+     30
+    ]
+   ],
+   "radical": true,
+   "germ_nonzero_on_parametrization": 0,
+   "order_functions": {
+    "prime20": {
+     "weights": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      1
+     ],
+     "generator_orders": [
+      3,
+      3,
+      3,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 6,
+     "target": [
+      6,
+      20
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 27
+    },
+    "prime30": {
+     "weights": [
+      1,
+      2,
+      0,
+      0,
+      1,
+      2
+     ],
+     "generator_orders": [
+      4,
+      4,
+      4,
+      4,
+      5,
+      4,
+      6,
+      4,
+      5,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+     ],
+     "ideal_order": 4,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 6,
+     "target": [
+      6,
+      30
+     ],
+     "target_nonzero_on_initial_forms": 0,
+     "other_prime_nonzero_on_initial_forms": 26
+    }
+   },
+   "controls": {
+    "deficient_weights": {
+     "weights": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ],
+     "generator_orders": [
+      6,
+      5,
+      5,
+      4,
+      4,
+      4,
+      4,
+      3,
+      3,
+      4,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      4,
+      3,
+      2,
+      2,
+      2,
+      3,
+      3
+     ],
+     "ideal_order": 2,
+     "maximal_ideal_order": 1,
+     "initial_jacobian_rank": 2
+    },
+    "other_basepoint_parametrization": {
+     "germ_nonzero": 3
+    }
+   }
+  }
+ ],
+ "pass": true
+}

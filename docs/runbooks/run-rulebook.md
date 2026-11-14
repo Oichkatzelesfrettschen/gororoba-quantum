@@ -747,3 +747,10 @@ the closest entry and say what changed.
   one rational point, so one limit family of dimension 6, and no other weight vector with entries 0 to 2
   reaches rank 6 at that point; which of the two primes the family fills was not computed. The negative covers
   these maps, weight ranges and points alone.
+- Outcome (2026-11-14, 08:40 PST): the order-function search for Iso and W8 succeeds on a map with the
+  coordinate t = s1 s5 / (2 s3) - s2 in place of s2 (A5-460, which supersedes the open A5-458): weights
+  (1, 2, 0, 0, 2) give the Iso prime, and weights (1, 1, 0, 0, 0, 1) and (1, 2, 0, 0, 1, 2) give the two W8
+  primes, at both basepoints over Q(i) (145 s for the four cells, build host). The membership of every degree-2
+  relation in J + m I^2 is certified for the ten cells in 100 s (A5-459), which makes A5-457 unconditional. At
+  08:02 PST the three E8-bar Rees runs were still in the Rees standard basis: `c-e8-nm-p` after 20 h 7 min at
+  4.1 GB, `k-e8-nm-p2` and `k-e8-np-p` after 16 h 42 min at 3.7 and 4.4 GB, no FIBER line.
