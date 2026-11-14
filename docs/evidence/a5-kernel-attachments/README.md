@@ -1000,7 +1000,7 @@ fiber cone on the weight slice is `S / K` in every degree, with dimension 5, mul
 of `A5-454`. The statement on the header slices in characteristic `p` (`A5-009`) stays with its own row, since the
 passage between the slices rests on the premise of `A5-423`.
 
-**Computed (`A5-486` to `A5-489`):** [`e8_component_geometry.py`](e8_component_geometry.py) computes over `Q(i)`
+**Computed (`A5-497` to `A5-500`):** [`e8_component_geometry.py`](e8_component_geometry.py) computes over `Q(i)`
 at both basepoints how the three associated primes of the `E8bar` quadric ideal sit together
 ([record](e8-component-geometry-result.json)). The embedded prime `A` contains the minimal prime of degree 11 and
 not the one of degree 4; its quadric has rank 4 in five variables, so `V(A)` is the cone over a quadric threefold
@@ -1017,17 +1017,17 @@ the line is the vertex of `V(A)`. **Inferred:** the degree-4 component is the co
 degree-11 component is Cohen-Macaulay of type 3 (Auslander-Buchsbaum), not Gorenstein, and normal (Serre's
 criterion, singular locus of codimension 3).
 
-**Inferred (`A5-492`):** with `L = K` (`A5-457`) the exceptional fiber of `E8bar` on the weight slice is one
+**Inferred (`A5-503`):** with `L = K` (`A5-457`) the exceptional fiber of `E8bar` on the weight slice is one
 explicit scheme in `P^20`: a normal Cohen-Macaulay fourfold of degree 11 in a `P^11` and a smooth scroll
 `S(1,1,2)` in a `P^6` that meet in a plane; a nilradical of square zero, torsion free of rank 1, on a quadric
 threefold of rank 4 that lies in the fourfold and contains the plane; and the fourfold singular exactly along a
 line of that plane and at the singular point of the quadric.
 
-**Method (`A5-490`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
+**Method (`A5-501`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
 dense minors ran out of a 20 GB address space on the same ideal.
 
-**Hypothesis (`A5-491`, open):** scratch runs modulo 32009 at three values of the slice coordinate `s2` find 32
+**Hypothesis (`A5-502`, open):** scratch runs modulo 32009 at three values of the slice coordinate `s2` find 32
 minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the `2 x 2`
 minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in `y`-degree 2.
 No tracked record holds them. The test that would falsify the block route is the count of `y`-degree-2 generators

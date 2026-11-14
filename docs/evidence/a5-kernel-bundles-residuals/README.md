@@ -437,7 +437,7 @@ a bivector `p`. Two identities govern the sandwiches `Pi(p) D Pi(p)` of a symmet
 
 Over `F_32029` at most one symmetric form vanishes on every `K(z)` of a stratum inside `V(Q)`, the norm, and none
 on `V(G)` minus `V(Q)` (`A5-468`, proved from the spans of `S^2 K(z)`); the norm does vanish at the sampled points
-and the two fixtures of `V(Q) n V(G)` (`A5-462`, survives).
+and the two fixtures of `V(Q) n V(G)`, and at every nullity-4 point of that stratum in characteristic 0 (`A5-489`).
 
 The doubling forms are the three diagonal forms `N1 = t_1^2 + ... + t_7^2`, `N2 = t_8^2`,
 `N3 = t_9^2 + ... + t_15^2` of the decomposition `O + R e_8 + O e_8` of the imaginary units as the double of the
@@ -481,9 +481,50 @@ the first reading of that split and is refuted by the doubling forms, which use 
 vectors is a multiple of the point, `M(k) k'` in `C z`, and on `V(Q) n V(G)` it is zero. The entries of
 `Pi(p) M(e_j) mu(p)` and of `Pi(p) N Pi(p)` therefore vanish identically on the image of `V(Q)` minus `V(G)`,
 and their rank 1,678 with the Plucker quadrics, a rank of integer vectors, gives at least 313 quadrics beyond
-Plucker in characteristic 0 (`A5-481`). The product is nonzero at a general point and at the 12 fixtures;
-`hypothesis` (`A5-480`, open): it is nonzero at every nullity-4 point of `V(Q)` minus `V(G)`. The commutant of
-a null imaginary octonion has the same Heisenberg type (test).
+Plucker in characteristic 0 (`A5-481`). The commutant of a null imaginary octonion has the same Heisenberg type
+(test).
+
+**Proved** (`A5-494`, every field): the tensor of the order-12 Pfaffians of `M(z)` has a polynomial formula, and at
+rank 12 in odd characteristic it is the product on `K(z)`. For a triple `I` of indices
+let `P_I(z)` be the Pfaffian of `M(z)` without the rows and columns of `I`, with the sign of the shuffle
+`(I, complement)`, and let `tau(a ^ b ^ c) = Im(a b) (x) c + Im(b c) (x) a + Im(c a) (x) b`. The tensor
+`T(z) = tau(sum_I P_I(z) e_I)` has entries of degree 6 in `z` with integer coefficients, and
+
+`T(z) = -grad(Q G)(z) (x) z - Q(z) G(z) I` at every point `z`.
+
+`P(z)` is the dual of the twelve-form `sum_J Pf(M_J) t_J`, the sixth divided power of the two-form of `M(z)`. Its
+coordinates transform under congruence by an identity of integer polynomials, and the block normal form of an
+alternating matrix of rank 12 makes it the product of twelve coordinates, so over every field `P(z)` at a rank-12
+point is a nonzero multiple of the three-vector of `K(z)`, and there `T(z) = c M(k_1) k_2 (x) z` with `c` nonzero
+for a basis `z, k_1, k_2` of `K(z)` (`A5-490`). On the zero-divisor variety `Q G = 0`, so the kernel commutator is the
+gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `V(Q)` (`A5-486`) and
+`-Q grad G` on `V(G)` (`A5-491`). The consequences:
+
+- The product is nonzero at every nullity-4 point of `V(Q)` minus `V(G)`, the points with `N1(z) = 0` included,
+  so `K(z)` is a Heisenberg algebra with center `C z` at each of them (`A5-487`, which closes the hypothesis
+  `A5-480`), and in every odd characteristic at every rank-12 point (`A5-495`).
+- The product is nonzero at every nullity-4 point of `V(G)` minus `V(Q)` (`A5-492`): the singular points of
+  `V(G)` off `V(Q)` are the points with `t_8 = 0`, `N1 = N3` and `p = 0`, where rank `M(z)` is at most 10
+  (`A5-493`). At nullity 4 the product vanishes exactly on `V(Q) n V(G)`. `hypothesis` (`A5-496`, open): the
+  rank bound holds in every odd characteristic; the missing step is the transitivity of the automorphisms of
+  the octonions on orthogonal pairs of equal nonzero norm there.
+- Every point of `V(Q)` with rank `M(z)` below 12 lies in `V(G)`, so every point of `V(Q)` minus `V(G)` has
+  nullity exactly 4 (`A5-488`).
+- `K(z)` is null at every nullity-4 point of `V(Q) n V(G)` as it is on `V(Q)` minus `V(G)`, by closure through
+  the contraction of `P(z)` with itself (`A5-489`, which closes the sampled `A5-462`).
+
+The proof has three steps. On `V(Q)` and on `V(G)` the identity `T = -grad(Q G) (x) z` is a polynomial identity
+on an irreducible hypersurface: `T` is equivariant under `G2(C)`, the slices of the paragraph on the three proofs
+below meet a dense set of orbits, and on the parametrizations `FQ`, `FG+` and `FG-` each entry of the difference
+has bounded degree in each generator (6 in each of `A`, `B`, `C`; 6 in `m` and 12 in `u`) and is homogeneous, so
+its exact vanishing on a 7 x 7 grid at `C = 1` and on two 7 x 13 grids decides it. The difference
+`T + grad(Q G) (x) z` then vanishes on `V(Q G)`, has degree 6, and so equals `Q G` times a matrix of constants,
+which two exact points off the variety give as `-I`. `kernel_product_pfaffian_tensor.py` holds the grids, three
+exact points with `N1(z) = 0`, three singular points of `V(G)`, the two general points and the 66 fixtures.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check` (exact
+over `Q(i)`; 98.8 CPU seconds, 121 seconds of wall time and 84 MiB on two workers, measured with the host at
+load average 28 from unrelated jobs; Python 3.14.9 with sympy 1.14.0).
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`

@@ -759,11 +759,11 @@ the closest entry and say what changed.
 
 - Question and decisive outcome: the dimension and components of the singular locus of the minimal prime of
   dimension 5 and degree 11 of the E8-bar quadric ideal over Q(i). Codimension 1 would make the component
-  non-normal; codimension 2 or more, with its Cohen-Macaulay property, makes it normal (ledger A5-488, A5-489).
+  non-normal; codimension 2 or more, with its Cohen-Macaulay property, makes it normal (ledger A5-499, A5-500).
 - Formulation: 25 quadrics in 12 variables in codimension 7. The full ideal of 7 x 7 Jacobian minors has
   380,714,400 generators; `slocus` over Q(i) and modulo 32009, and the minors of nine dense combinations of the
   quadrics modulo 32009, each ended with `no more memory` at a 20 GB address-space cap on the workstation. Chosen:
-  the route of A5-490, kept minors of the sparse quadrics for an outer bound, a decomposition of the bound, and the
+  the route of A5-501, kept minors of the sparse quadrics for an outer bound, a decomposition of the bound, and the
   Fitting ideal of the pruned Jacobian cokernel on each component, with a two-sided rank bound on every result.
 - Host and tool versions: an 84 GB cloud VM with 4 vCPUs shared with another session's four processes, Singular
   4.4.1 from passagemath-singular 10.8.13 in a user-level environment, Python 3.14.7.
@@ -780,6 +780,6 @@ the closest entry and say what changed.
 - Checkpoints: the log, the `.time` file and the record.
 - End state: record copied and checked with `--check`; the VM left running for its other user.
 - Outcome: 10 min 57 s for both basepoints; a first exact pass in scratch took 3.7 s to bound the locus in
-  dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-489). Two traps are in A5-490: row
+  dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-500). Two traps are in A5-501: row
   sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.
 
