@@ -30,6 +30,8 @@ FIXED_FILES = (
     "ci/open_gororoba.pin",
     "ci/install_rocq.sh",
     "ci/fetch_open_gororoba.sh",
+    "ci/gororoba_math.pin",
+    "ci/fetch_gororoba_math.sh",
     "scripts/rocq_kaggle_replay.py",
     WORKFLOW,
     "ci/gates.json",
@@ -99,6 +101,8 @@ def check(root: Path) -> list[str]:
                 errors.append(f"docs/evidence/{name}/toolchain.txt is {banner!r}, the pin implies {expected!r}")
     if not HEX40.fullmatch((root / "ci/open_gororoba.pin").read_text(encoding="utf-8").strip()):
         errors.append("ci/open_gororoba.pin is not a 40-digit commit")
+    if not HEX40.fullmatch((root / "ci/gororoba_math.pin").read_text(encoding="utf-8").strip()):
+        errors.append("ci/gororoba_math.pin is not a 40-digit commit")
     workflow = (root / WORKFLOW).read_text(encoding="utf-8")
     for needle in (
         "ci/install_rocq.sh",
@@ -107,10 +111,15 @@ def check(root: Path) -> list[str]:
         "command -v rg",
         "--rocq ",
         "ci/open_gororoba.pin",
+        "ci/fetch_gororoba_math.sh",
+        "ci/gororoba_math.pin",
+        "--gororoba-math-root",
     ):
         if needle not in workflow:
             errors.append(f"proofs.yml lacks {needle!r}")
     fetched = set(re.findall(r"^\s+((?:proofs|crates)[^\s]*)$", workflow, re.MULTILINE))
+    if "rocq/quantum" not in re.findall(r"^\s+(rocq/[^\s]*)$", workflow, re.MULTILINE):
+        errors.append("the proofs.yml gororoba-math fetch lacks the rocq/quantum cone")
     workflow_replays = {
         name for selection in re.findall(r'^\s+only="([^"]*)"', workflow, re.MULTILINE) for name in selection.split()
     }
@@ -131,6 +140,7 @@ def check(root: Path) -> list[str]:
                 errors.append(f"the proofs.yml fetch does not cover {directory}, which {name} hashes")
     required = [f"docs/evidence/{name}/**" for name in bundles(root)]
     required += ["proofs/**", "scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
+    required += ["ci/gororoba_math.pin", "ci/fetch_gororoba_math.sh", "gororoba_quantum/math_sources.py"]
     required += [WORKFLOW, "docs/evidence/rocq_kaggle_replay/**", "gororoba_quantum/parallel.py"]
     for event in PATH_TRIGGERS:
         listed = trigger_paths(workflow, event)
