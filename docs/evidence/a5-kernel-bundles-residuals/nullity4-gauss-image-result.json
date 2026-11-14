@@ -280,11 +280,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      7,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -297,11 +303,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -314,11 +326,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -331,11 +349,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -348,11 +372,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -365,11 +395,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -382,11 +418,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -399,11 +441,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -416,11 +464,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -433,11 +487,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -450,11 +510,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -467,11 +533,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -484,343 +556,16 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      9,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     336
-    ],
-    [
-     7,
-     6
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 3,
-   "fiber_dimension": 6,
-   "plane_nullity": 7,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 3,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     336
-    ],
-    [
-     9,
-     6
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     9,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 6,
-   "common_kernel_cut": 6,
-   "fiber_dimension": 12,
-   "plane_nullity": 9,
-   "three_plane_net": [
-    [
-     3,
-     294
-    ],
-    [
-     9,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     340
-    ],
-    [
-     9,
+     48,
+     16,
+     2,
      2
     ]
    ]
@@ -834,28 +579,17 @@
    "three_plane_net": [
     [
      3,
-     294
-    ],
-    [
-     9,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 6,
-   "common_kernel_cut": 6,
-   "fiber_dimension": 12,
-   "plane_nullity": 9,
-   "three_plane_net": [
-    [
+     336,
+     144,
      3,
-     294
+     3
     ],
     [
-     9,
-     48
+     7,
+     6,
+     1,
+     1,
+     2
     ]
    ]
   },
@@ -868,7 +602,102 @@
    "three_plane_net": [
     [
      3,
-     342
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -881,10 +710,179 @@
    "three_plane_net": [
     [
      3,
-     340
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
     ],
     [
-     9,
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 3,
+   "fiber_dimension": 6,
+   "plane_nullity": 7,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     7,
+     48,
+     16,
+     2,
      2
     ]
    ]
@@ -898,11 +896,17 @@
    "three_plane_net": [
     [
      3,
-     336
+     336,
+     144,
+     3,
+     3
     ],
     [
      9,
-     6
+     6,
+     1,
+     1,
+     3
     ]
    ]
   },
@@ -915,7 +919,10 @@
    "three_plane_net": [
     [
      3,
-     342
+     342,
+     145,
+     3,
+     3
     ]
    ]
   },
@@ -928,24 +935,40 @@
    "three_plane_net": [
     [
      3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
+     294,
+     129,
      3,
-     336
+     3
     ],
     [
      9,
-     6
+     48,
+     16,
+     2,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 6,
+   "common_kernel_cut": 6,
+   "fiber_dimension": 12,
+   "plane_nullity": 9,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     9,
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -958,7 +981,10 @@
    "three_plane_net": [
     [
      3,
-     342
+     342,
+     145,
+     3,
+     3
     ]
    ]
   },
@@ -971,57 +997,218 @@
    "three_plane_net": [
     [
      3,
-     336
+     340,
+     144,
+     3,
+     3
+    ],
+    [
+     9,
+     2,
+     1,
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     9,
+     48,
+     16,
+     2,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 6,
+   "common_kernel_cut": 6,
+   "fiber_dimension": 12,
+   "plane_nullity": 9,
+   "three_plane_net": [
+    [
+     3,
+     294,
+     129,
+     3,
+     3
+    ],
+    [
+     9,
+     48,
+     16,
+     2,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     340,
+     144,
+     3,
+     3
+    ],
+    [
+     9,
+     2,
+     1,
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 3,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     336,
+     144,
+     3,
+     3
+    ],
+    [
+     9,
+     6,
+     1,
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     336,
+     144,
+     3,
+     3
+    ],
+    [
+     9,
+     6,
+     1,
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     336,
+     144,
+     3,
+     3
     ],
     [
      5,
-     6
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     336
-    ],
-    [
-     5,
-     6
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     340
-    ],
-    [
-     7,
+     6,
+     1,
+     1,
      2
     ]
    ]
@@ -1035,11 +1222,79 @@
    "three_plane_net": [
     [
      3,
-     336
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     336,
+     144,
+     3,
+     3
+    ],
+    [
+     5,
+     6,
+     1,
+     1,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     340,
+     144,
+     3,
+     3
     ],
     [
      7,
-     6
+     2,
+     1,
+     1,
+     2
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     336,
+     144,
+     3,
+     3
+    ],
+    [
+     7,
+     6,
+     1,
+     1,
+     2
     ]
    ]
   },
@@ -1052,27 +1307,16 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      7,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     340
-    ],
-    [
-     9,
+     48,
+     16,
+     2,
      2
     ]
    ]
@@ -1086,37 +1330,72 @@
    "three_plane_net": [
     [
      3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
+     340,
+     144,
      3,
-     342
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
-     3,
-     322
+     3
     ],
     [
      9,
-     20
+     2,
+     1,
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     322,
+     137,
+     3,
+     3
+    ],
+    [
+     9,
+     20,
+     8,
+     2,
+     3
     ]
    ]
   },
@@ -1129,27 +1408,16 @@
    "three_plane_net": [
     [
      3,
-     294
-    ],
-    [
-     9,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
+     294,
+     129,
      3,
-     340
+     3
     ],
     [
      9,
+     48,
+     16,
+     2,
      2
     ]
    ]
@@ -1163,11 +1431,40 @@
    "three_plane_net": [
     [
      3,
-     322
+     340,
+     144,
+     3,
+     3
     ],
     [
      9,
-     20
+     2,
+     1,
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     322,
+     137,
+     3,
+     3
+    ],
+    [
+     9,
+     20,
+     8,
+     2,
+     3
     ]
    ]
   },
@@ -1180,27 +1477,16 @@
    "three_plane_net": [
     [
      3,
-     294
-    ],
-    [
-     9,
-     48
-    ]
-   ]
-  },
-  {
-   "antisymmetric": true,
-   "common_kernel": 1,
-   "common_kernel_cut": 1,
-   "fiber_dimension": 2,
-   "plane_nullity": 3,
-   "three_plane_net": [
-    [
+     294,
+     129,
      3,
-     340
+     3
     ],
     [
      9,
+     48,
+     16,
+     2,
      2
     ]
    ]
@@ -1214,11 +1500,17 @@
    "three_plane_net": [
     [
      3,
-     340
+     340,
+     144,
+     3,
+     3
     ],
     [
      9,
-     2
+     2,
+     1,
+     1,
+     3
     ]
    ]
   },
@@ -1231,7 +1523,17 @@
    "three_plane_net": [
     [
      3,
-     342
+     340,
+     144,
+     3,
+     3
+    ],
+    [
+     9,
+     2,
+     1,
+     1,
+     3
     ]
    ]
   },
@@ -1244,7 +1546,10 @@
    "three_plane_net": [
     [
      3,
-     342
+     342,
+     145,
+     3,
+     3
     ]
    ]
   },
@@ -1257,11 +1562,33 @@
    "three_plane_net": [
     [
      3,
-     336
+     342,
+     145,
+     3,
+     3
+    ]
+   ]
+  },
+  {
+   "antisymmetric": true,
+   "common_kernel": 1,
+   "common_kernel_cut": 1,
+   "fiber_dimension": 2,
+   "plane_nullity": 3,
+   "three_plane_net": [
+    [
+     3,
+     336,
+     144,
+     3,
+     3
     ],
     [
      7,
-     6
+     6,
+     1,
+     1,
+     2
     ]
    ]
   },
@@ -1274,7 +1601,10 @@
    "three_plane_net": [
     [
      3,
-     342
+     342,
+     145,
+     3,
+     3
     ]
    ]
   },
@@ -1287,11 +1617,17 @@
    "three_plane_net": [
     [
      3,
-     336
+     336,
+     144,
+     3,
+     3
     ],
     [
      9,
-     6
+     6,
+     1,
+     1,
+     3
     ]
    ]
   },
@@ -1304,11 +1640,17 @@
    "three_plane_net": [
     [
      3,
-     294
+     294,
+     129,
+     3,
+     3
     ],
     [
      7,
-     48
+     48,
+     16,
+     2,
+     2
     ]
    ]
   },
@@ -1321,11 +1663,17 @@
    "three_plane_net": [
     [
      3,
-     338
+     338,
+     143,
+     3,
+     3
     ],
     [
      5,
-     4
+     4,
+     2,
+     2,
+     3
     ]
    ]
   }
@@ -2010,11 +2358,16 @@
     3,
     1,
     1,
-    477
+    469
    ]
   ],
   "fixtures": 12,
-  "rejected": 3,
+  "rejected": [
+   2,
+   1,
+   8,
+   0
+  ],
   "samples_per_fixture": 40
  },
  "general_planes": [
@@ -3109,7 +3462,7 @@
  ],
  "inputs": {
   "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "c3cce04419eca1eb8aa5975d52bb7f9f363366e48cb4e3c2674962bdf0edcde6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "2ec28dfaf9f5957b7febc200092b2489440f1c4247ac5b02e0065ab5eca40013",
   "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
   "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194"
  },

@@ -120,12 +120,17 @@ def test_kernel_form_of_the_fiber_at_three_exact_fixtures_and_one_grid_exception
         )
     _same(found, {29: (2, 3, 1, 1), 0: (6, 7, 3, 3), 1: (12, 9, 6, 6), -1: (2, 7, 3, 1)})
     _same(gauss.exact_plane_nullities(splits[-1]), [7] * 6)
+    # Four net vectors of nullity 5 are two projective points: neither coprime combination has entries -1..1.
+    reduced = [int(value) % gauss.PRIME for value in record[65]["split_point"]]
+    _same(gauss.kernel_form((reduced, reduced))["three_plane_net"], [[3, 338, 143, 3, 3], [5, 4, 2, 2, 3]])
 
 
 def test_gaussian_points_and_general_planes_of_one_block() -> None:
     number, _, split = next(job for job in gauss._fixture_splits() if job[1] == gauss.STRATA[0])
     rows = gauss.gaussian_block((number, [value % gauss.PRIME for value in split]))
-    _same(rows[0][0] + len(rows) - 1, gauss.GAUSSIAN_PER_FIXTURE)
+    _same(sum(rows[0]) + len(rows) - 1, gauss.GAUSSIAN_PER_FIXTURE)
+    # Sample 33 at this fixture has a direction tangent to V(Q), which returns the fixture: z' = w'.
+    _same((number, rows[0]), (13, [0, 0, 1, 0]))
     _same({tuple(row) for row in rows[1:]}, {(1, 0, 2, 3, 1, 1)})
     _same([set(gauss.plane_block((stratum, 0))) for stratum in gauss.STRATA], [{1}, {1}, {3}])
 
@@ -197,10 +202,19 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         "modular fiber": lambda r: r["exact_fixture_kernel_forms"][0].update(fiber_dimension=2),
         "cut kernel": lambda r: r["exact_fixture_kernel_forms"][0].update(common_kernel_cut=1),
         "plane nullity": lambda r: r["exact_fixture_kernel_forms"][1].update(plane_nullity=3),
-        "net": lambda r: r["exact_fixture_kernel_forms"][1].update(three_plane_net=[[3, 342]]),
-        "short net": lambda r: r["exact_fixture_kernel_forms"][1].update(three_plane_net=[[3, 294]]),
+        "net": lambda r: r["exact_fixture_kernel_forms"][1].update(three_plane_net=[[3, 342, 145, 3, 3]]),
+        "short net": lambda r: r["exact_fixture_kernel_forms"][1].update(three_plane_net=[[3, 294, 129, 3, 3]]),
+        "net points": lambda r: r["exact_fixture_kernel_forms"][65].update(
+            three_plane_net=[[3, 338, 144, 3, 3], [5, 4, 1, 2, 3]]
+        ),
+        "net line off the plane": lambda r: r["exact_fixture_kernel_forms"][0]["three_plane_net"][1].__setitem__(4, 3),
+        "net points on a line": lambda r: r["exact_fixture_kernel_forms"][65]["three_plane_net"][1].__setitem__(3, 1),
+        "swapped kernel forms": lambda r: r["exact_fixture_kernel_forms"].__setitem__(
+            slice(13, 15), r["exact_fixture_kernel_forms"][13:15][::-1]
+        ),
         "missing kernel form": lambda r: r.update(exact_fixture_kernel_forms=r["exact_fixture_kernel_forms"][:65]),
         "grid kernel form": lambda r: r["grid"]["kernel_form_classes"][0].__setitem__(5, 1),
+        "grid cut kernel": lambda r: r["grid"]["kernel_form_classes"][0].__setitem__(4, 2),
         "grid without exceptions": lambda r: r["grid"].update(
             kernel_form_classes=[row for row in r["grid"]["kernel_form_classes"] if row[1:3] != [2, 7]]
         ),
@@ -208,11 +222,19 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         "exact plane nullity raised": lambda r: r["grid"]["kernel_form_exceptions"][8].update(
             exact_plane_nullities=[7] * 6
         ),
+        "plane exception point": lambda r: r["grid"]["kernel_form_exceptions"][0].update(split_point=[0] * 15),
+        "plane exception repeated": lambda r: r["grid"]["kernel_form_exceptions"][1].update(
+            split_point=r["grid"]["kernel_form_exceptions"][0]["split_point"]
+        ),
+        "plane exceptions exchanged": lambda r: (
+            r["grid"]["kernel_form_exceptions"][0].update(common_kernel=1, exact_plane_nullities=[3] * 6),
+            r["grid"]["kernel_form_exceptions"][8].update(common_kernel=3, exact_plane_nullities=[7] * 6),
+        ),
         "plane exception dropped": lambda r: r["grid"].update(
             kernel_form_exceptions=r["grid"]["kernel_form_exceptions"][1:]
         ),
         "gaussian class": lambda r: r["gaussian_points"]["classes"][0].__setitem__(2, 6),
-        "gaussian count": lambda r: r["gaussian_points"].update(rejected=4),
+        "gaussian count": lambda r: r["gaussian_points"].update(rejected=[2, 1, 8, 1]),
         "general planes": lambda r: r["general_planes"][0].update(common_kernels=[1, 3]),
         "few planes": lambda r: r["general_planes"][1].update(planes=999),
         "missing planes": lambda r: r.update(general_planes=r["general_planes"][:2]),
