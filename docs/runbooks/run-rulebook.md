@@ -755,6 +755,11 @@ the closest entry and say what changed.
   relation in J + m I^2 is certified for the ten cells in 100 s (A5-474), which makes A5-457 unconditional. At
   08:02 PST the three E8-bar Rees runs were still in the Rees standard basis: `c-e8-nm-p` after 20 h 7 min at
   4.1 GB, `k-e8-nm-p2` and `k-e8-np-p` after 16 h 42 min at 3.7 and 4.4 GB, no FIBER line.
+  2026-11-14, single-pivot calibration on Iso at N- modulo 32009 (the saturation of J plus the 16 relations
+  y_a G_p - y_p G_a by the pivot G_p in place of the 2 x 2 minors): Rees standard basis in 911 s against 1,241 s,
+  colon certificate at 8,701 s against 8,685 s, the same fiber (dimension 5, multiplicity 23, 68 generators). The
+  pivot form moves no time out of the saturation, so the E8-bar pivot run was not started; the block route is the
+  open A5-502.
 
 ### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
 
@@ -768,18 +773,23 @@ the closest entry and say what changed.
   Fitting ideal of the pruned Jacobian cokernel on each component, with a two-sided rank bound on every result.
 - Host and tool versions: an 84 GB cloud VM with 4 vCPUs shared with another session's four processes, Singular
   4.4.1 from passagemath-singular 10.8.13 in a user-level environment, Python 3.14.7.
-- Launch line and environment: `e8_component_geometry.py` from a checkout at `origin/main` plus the producer, in
-  tmux with a full log and `/usr/bin/time -v`; scratch scripts before it under a 55 GB `ulimit -v` and a 12 h
-  `timeout`.
+- Launch line and environment: `e8_component_geometry.py` from a clone of this session at `origin/main` plus the
+  producer, in tmux with a full log and `/usr/bin/time -v`; scratch scripts before it under a 55 GB `ulimit -v` and
+  a 12 h `timeout`.
 - Runner and exit status: the producer's own `run_singular` (8 GiB address space, 3,600 s, exit status and `?`
   lines checked, `RESULT done 1` required); the launcher appends `EXIT <status>` to the log.
 - Departures from the foundations: the VM was already allocated for other work under its standing run policy, so
   this entry adds no VM case; the record was built on the VM and copied into the worktree, with the sha256 of the
-  producer compared on both sides before the copy.
+  producer and of its two inputs compared on both sides before the copy. The first build ran in the VM's shared
+  checkout, whose HEAD this session moved to `origin/main` without reading its state while another session's job
+  ran from it; the checkout stood at the other commit from 20:15:13 to 20:39:15 UTC before it was restored. The
+  rule that follows: a session clones its own tree on a shared machine and reads `git status`, the reflog and the
+  working directories of live processes before any checkout in a tree it did not create.
 - Parallelism: two Singular processes (one per basepoint) on 4 vCPUs that another session's job already filled.
 - Memory and time limits: none reached; peak resident set 135,464 kB.
 - Checkpoints: the log, the `.time` file and the record.
 - End state: record copied and checked with `--check`; the VM left running for its other user.
-- Outcome: 10 min 57 s for both basepoints; a first exact pass in scratch took 3.7 s to bound the locus in
+- Outcome: 10 min 57 s for both basepoints in the first build beside another job, 5 min 43 s in the rebuild after
+  review (isolated singular parts kept; same values), which is the committed record; a first exact pass in scratch took 3.7 s to bound the locus in
   dimension 4 and 137 s to reach dimension 3. Result: a plane and a line (A5-500). Two traps are in A5-501: row
   sets in arithmetic progression alone stall, and a cokernel multiplicity read inside a qring misreports the rank.

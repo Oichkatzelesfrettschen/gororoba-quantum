@@ -1025,6 +1025,10 @@ explicit scheme in `P^20`: a normal Cohen-Macaulay fourfold of degree 11 in a `P
 threefold of rank 4 that lies in the fourfold and contains the plane; and the fourfold singular exactly along a
 line of that plane and at the singular point of the quadric.
 
+**Hypotheses (`A5-504` to `A5-507`, open):** the meeting plane is a ruling plane of the scroll; the degree-11
+component is not a cone; the five-parameter map of `A5-457` is birational onto it; and its multiplicity is at most 4
+at the isolated singular point and 2 along the singular line. Each row names a test of seconds.
+
 **Method (`A5-501`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
 dense minors ran out of a 20 GB address space on the same ideal.
