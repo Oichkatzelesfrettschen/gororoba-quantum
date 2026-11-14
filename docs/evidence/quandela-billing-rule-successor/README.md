@@ -28,8 +28,7 @@ field keeps its meaning. A reader that cites one of these fields as the billing 
 | `results/quandela/runs/2026-10-30T165953Z-qpu_ascella-ascella_predecessor-current-schema/cases.json` | `f7dca476ad6ffe4232d69c8ffd2d64488f2faaa528d711b70c47829ed31bcc49` | `/preregistered/credit_basis` | `docs/evidence/ascella-predecessor-admission/current-source-qpu.json`, the run's `submission.json` |
 
 The producers emit the same wording and keep it, because a changed string changes every record above:
-`scripts/bdsc_certificate.py` (sha256 `5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753`, the
-`billing_rule` and `credits` strings and the job-model comments), `scripts/ascella_predecessor_case.py` (sha256
+`scripts/bdsc_certificate.py` (sha256 `ed65031756cfd6fede08bfe0f9d1ea058b31025e7885cbd13424a2c8dec4699f` as of commit ed5a25b19; the file hashed to `5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753` at commit c0e43b8e8, and the ten lines added since touch the ladder weight and its tests only, so the `billing_rule` and `credits` strings and the job-model comments are unchanged), `scripts/ascella_predecessor_case.py` (sha256
 `2310aa98d1c0c68812d7edcbd30fd6a0713ca5fb6ab1e1b8c3c96e3d845b197b`, `charge` and `credit_basis`), and the
 `billing_rule` strings of `scripts/bdsc_diagnostic.py` and `scripts/bdsc_stationarity.py`.
 
