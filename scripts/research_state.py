@@ -89,6 +89,7 @@ import plan_records  # noqa: E402
 import qd_platform  # noqa: E402
 import qi_platform  # noqa: E402
 
+import math_sources  # noqa: E402
 import parallel  # noqa: E402
 import qi_records  # noqa: E402
 
@@ -687,7 +688,11 @@ def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str]
                 isinstance(item, dict) and set(item) == {"path", "sha256"},
                 f"{owner}: evidence entries carry path and sha256",
             )
-            path = ROOT / evidence_file(item["path"])
+            path = (
+                plan_records.local_path(ROOT, item["path"])
+                if relocated(item["path"])
+                else ROOT / evidence_file(item["path"])
+            )
             require(path.is_file(), f"{owner}: evidence {item['path']} is missing")
             # A FILE.json#COLLECTION/FIELD=VALUE entry binds the digest of the one record it selects, so a record
             # appended to a shared ledger leaves the claim's evidence unchanged.
@@ -792,6 +797,11 @@ def validate(registry: dict[str, Any], context: Context, uncited: frozenset[str]
 # Rendering
 
 
+def relocated(reference: str) -> bool:
+    """Whether an evidence reference names a source of gororoba-math (``gororoba-math:rocq/quantum/NAME.v``)."""
+    return reference.startswith(math_sources.REFERENCE_PREFIX)
+
+
 def evidence_file(reference: str) -> str:
     """The repository file an evidence entry names: its path, without a #COLLECTION/FIELD=VALUE record selector."""
     return reference.partition("#")[0]
@@ -802,7 +812,11 @@ def _evidence_links(claim: dict[str, Any], origin: Path) -> list[str]:
     files = Counter(evidence_file(item["path"]) for item in claim["evidence"])
     records = Counter(evidence_file(item["path"]) for item in claim["evidence"] if "#" in item["path"])
     return [
-        _link(name, origin, Path(name).name + (f" ({records[name]} records)" if records[name] else ""))
+        (
+            f"`gororoba-math {name.partition(':')[2]}`"
+            if relocated(name)
+            else _link(name, origin, Path(name).name + (f" ({records[name]} records)" if records[name] else ""))
+        )
         for name in files
     ]
 

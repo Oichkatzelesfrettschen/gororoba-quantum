@@ -334,10 +334,13 @@
     },
     {
       "suite": "core",
-      "cwd": "gororoba_quantum",
-      "cmd": "\"$PYTHON\" target_flip_certificate.py --check",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" scripts/math_source_generators.py target_flip_certificate --check",
       "name": "core-067",
-      "seconds": 0.8
+      "seconds": 0.8,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "core",
@@ -365,7 +368,10 @@
       "cwd": "gororoba_quantum",
       "cmd": "\"$PYTHON\" compile_evidence.py --seeds 20261010 --candidate one_clean_cycle >/dev/null",
       "name": "core-071",
-      "seconds": 5.0
+      "seconds": 5.0,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "core",
@@ -853,7 +859,10 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-row-anf/source_hashes.sha256",
       "name": "sources-399",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -867,7 +876,10 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-associator-anf/source_hashes.sha256",
       "name": "sources-401",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -881,7 +893,10 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-associator-census/source_hashes.sha256",
       "name": "sources-403",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -895,14 +910,20 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-semantics/source_hashes.sha256",
       "name": "sources-405",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/cd_sign_rocq_ast.py --check",
+      "cmd": "\"$PYTHON\" scripts/math_source_generators.py cd_sign_rocq_ast --check",
       "name": "sources-406",
-      "seconds": 0.2
+      "seconds": 0.2,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -1135,7 +1156,10 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/formal_certificates/source_hashes.sha256",
       "name": "sources-174",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -1979,7 +2003,10 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/research_state.py --check",
       "name": "core-270",
-      "seconds": 1.8
+      "seconds": 1.8,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "core",
@@ -2008,7 +2035,10 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_witness_certificate.py --check",
       "name": "core-275",
-      "seconds": 2.0
+      "seconds": 2.0,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -2029,7 +2059,10 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/stiefel_witness/repo_sources.sha256",
       "name": "sources-245",
-      "seconds": 0.0
+      "seconds": 0.0,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "core",
@@ -2534,7 +2567,7 @@
     {
       "suite": "core",
       "cwd": ".",
-      "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh ci/install_pins.sh",
+      "cmd": "shellcheck -S error ci/fetch_open_gororoba.sh ci/fetch_gororoba_math.sh ci/install_pins.sh",
       "name": "core-402",
       "seconds": 1.8
     },
@@ -3328,7 +3361,10 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
       "name": "sources-408",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -3391,14 +3427,20 @@
       "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
-      "seconds": 0.1
+      "seconds": 0.1,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/cd_sign_source_ast.py --check",
+      "cmd": "\"$PYTHON\" scripts/math_source_generators.py cd_sign_source_ast --check",
       "name": "sources-411",
-      "seconds": 0.2
+      "seconds": 0.2,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "sources",
@@ -4462,7 +4504,10 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check --base origin/main docs/state/plans",
       "name": "core-plan-tracker",
-      "seconds": 1.0
+      "seconds": 1.0,
+      "requires": [
+        "gororoba-math"
+      ]
     },
     {
       "suite": "core",

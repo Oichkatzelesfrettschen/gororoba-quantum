@@ -5,6 +5,7 @@ from __future__ import annotations
 import functools
 import hashlib
 import json
+import os
 import re
 import sys
 from datetime import datetime
@@ -13,6 +14,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+import math_sources  # noqa: E402
 import parallel  # noqa: E402
 
 SCHEMA = "work-plan-v1"
@@ -88,6 +90,14 @@ def strings(value: Any, label: str) -> None:
 
 
 def local_path(root: Path, reference: str) -> Path:
+    """The file a reference names: a path under root, or a ``gororoba-math:rocq/quantum/NAME.v`` source of the
+    gororoba-math checkout that $GOROROBA_MATH names at the pin (gororoba_quantum/math_sources.py)."""
+    reference = math_sources.relocated_reference(reference, root) or reference
+    if reference.startswith(math_sources.REFERENCE_PREFIX):
+        try:
+            return math_sources.resolve_reference(reference, math_sources.checkout(os.environ, root))
+        except math_sources.MathSourcesError as error:
+            raise ValueError(str(error)) from error
     path = PurePosixPath(reference.split("#", 1)[0])
     require(bool(path.parts) and not path.is_absolute() and ".." not in path.parts, "repository-relative path required")
     require(not str(path).startswith("docs/local/"), "ignored local planning sources need a retained successor")

@@ -1,4 +1,5 @@
-"""The kernel-swap witness of proofs/CdTowerRing.v under the cd_core product over the Gaussian integers.
+"""The kernel-swap witness of CdTowerRing.v (gororoba-math, rocq/quantum) under the cd_core product over the
+Gaussian integers.
 
 RingTowerI proves, over a commutative ring with i i = -1, that a = nilpotent2 and w = witness2 satisfy
 a e_1 = w, a a = 0, a w = 0 and w a = -2 a at level 2, and lifts the pair to every
@@ -12,13 +13,15 @@ both orders of the product vanish.
 """
 
 import re
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
 
 import cd_core
 
-SOURCE = Path(__file__).resolve().parents[2] / "proofs/CdTowerRing.v"
+NILPOTENT2: list[tuple[int, int]] = [(0, 0), (1, 0), (0, 1), (0, 0)]
+WITNESS2: list[tuple[int, int]] = [(-1, 0), (0, 0), (0, 0), (0, -1)]
 Gaussian = tuple[int, int]
 ZERO: Gaussian = (0, 0)
 ATOMS: dict[str, Gaussian] = {
@@ -49,12 +52,12 @@ def cd_mul(dim: int, a: list[Gaussian], b: list[Gaussian]) -> list[Gaussian]:
     return out
 
 
-def level2_definition(name: str) -> list[Gaussian]:
+def level2_definition(source: Path, name: str) -> list[Gaussian]:
     """The four coordinates of ``Definition NAME : T.cd 2 := ((x0, x1), (x2, x3)).`` in the proof source."""
-    text = SOURCE.read_text(encoding="utf-8")
+    text = source.read_text(encoding="utf-8")
     match = re.search(rf"^Definition {name} : T\.cd 2 := \(\((.+?), (.+?)\), \((.+?), (.+?)\)\)\.$", text, re.MULTILINE)
     if match is None:
-        raise ValueError(f"{SOURCE} defines no level-2 element {name}")
+        raise ValueError(f"{source.name} defines no level-2 element {name}")
     return [ATOMS[atom] for atom in match.groups()]
 
 
@@ -71,15 +74,16 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def test_source_definitions_are_the_stated_elements() -> None:
-    require(level2_definition("nilpotent2") == [(0, 0), (1, 0), (0, 1), (0, 0)], "nilpotent2 is e_1 + i e_2")
-    require(level2_definition("witness2") == [(-1, 0), (0, 0), (0, 0), (0, -1)], "witness2 is -e_0 - i e_3")
+@pytest.mark.audit
+def test_source_definitions_are_the_stated_elements(math_source: Callable[[str], Path]) -> None:
+    source = math_source("CdTowerRing.v")
+    require(level2_definition(source, "nilpotent2") == NILPOTENT2, "nilpotent2 is e_1 + i e_2")
+    require(level2_definition(source, "witness2") == WITNESS2, "witness2 is -e_0 - i e_3")
 
 
-@pytest.mark.parametrize("dim", [4, 8, 16, 32])
-def test_witness_products_under_cd_core(dim: int) -> None:
-    a = embed(dim, level2_definition("nilpotent2"))
-    w = embed(dim, level2_definition("witness2"))
+def check_witness_products(dim: int, nilpotent2: list[Gaussian], witness2: list[Gaussian]) -> None:
+    a = embed(dim, nilpotent2)
+    w = embed(dim, witness2)
     u = embed(dim, [(0, 0), (1, 0)])
     zero = [ZERO] * dim
     require(cd_mul(dim, a, u) == w, "a e_1 must equal the witness")
@@ -87,6 +91,19 @@ def test_witness_products_under_cd_core(dim: int) -> None:
     require(cd_mul(dim, a, w) == zero, "a must annihilate the witness on the left")
     require(cd_mul(dim, w, a) == scaled(-2, a), "the witness times a must equal -2 a")
     require(cd_mul(dim, w, a) != zero, "the swapped product must differ from zero")
+
+
+@pytest.mark.parametrize("dim", [4, 8, 16, 32])
+def test_witness_products_under_cd_core(dim: int) -> None:
+    """The stated elements; test_witness_products_of_the_source_definitions reads them from the proof source."""
+    check_witness_products(dim, NILPOTENT2, WITNESS2)
+
+
+@pytest.mark.audit
+@pytest.mark.parametrize("dim", [4, 8, 16, 32])
+def test_witness_products_of_the_source_definitions(dim: int, math_source: Callable[[str], Path]) -> None:
+    source = math_source("CdTowerRing.v")
+    check_witness_products(dim, level2_definition(source, "nilpotent2"), level2_definition(source, "witness2"))
 
 
 @pytest.mark.parametrize("dim", [4, 8, 16, 32])

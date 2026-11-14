@@ -4,14 +4,17 @@ from __future__ import annotations
 
 import ast
 import hashlib
+from collections.abc import Callable
+from pathlib import Path
 
 import cd_sign_source_ast as source_ast
 import pytest
 
 
-def test_complete_source_export_and_digest_match_the_certificate() -> None:
+@pytest.mark.audit
+def test_complete_source_export_and_digest_match_the_certificate(math_source: Callable[[str], Path]) -> None:
     source = source_ast.SOURCE.read_bytes()
-    proof = source_ast.PROOF.read_text(encoding="utf-8")
+    proof = math_source("CdSignSourceCertificate.v").read_text(encoding="utf-8")
     start, stop = source_ast.span(proof)
     term = source_ast.generated(source.decode("utf-8"))
     closure = source_ast.closure_source(source.decode("utf-8")).encode("utf-8")
