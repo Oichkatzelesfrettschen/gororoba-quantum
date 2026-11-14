@@ -5318,7 +5318,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check",
       "name": "core-a5-nullity4-gauss-image",
-      "seconds": 705.0,
+      "seconds": 411.0,
       "workers": 2,
       "replays": [
         "docs/evidence/a5-kernel-bundles-residuals/nullity4-gauss-image-result.json"

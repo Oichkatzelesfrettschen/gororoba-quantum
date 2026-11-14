@@ -286,14 +286,17 @@ points, the dimension of their span (2 for points of one projective line) and th
 | `V(Q) n V(G)` | 2 | 3 | 3 | 1 | 384 |
 | `V(Q) n V(G)` | 6 | 7 | 5 | 3 | 4 |
 
-`dim L` is twice the last dimension in every row. A nullity modulo the prime is an upper bound for the exact
-one, so at the 9 points of rows 3 and 4 the nullity of `M(p)` is recomputed over `Q(i)` at six pairwise independent
-vectors of the kernel plane. It is 7 at the 8 points of row 4; rank at most 8 is the vanishing of forms of degree
+`dim L` is twice the last dimension in every row. The third column is the nullity at one probe vector
+`p1 + 7 p2` of the plane, modulo the prime. At the 9 points of rows 3 and 4 the nullity of `M(p)` is recomputed
+over `Q(i)` at six pairwise independent vectors of the kernel plane and at the probe vector. It is 7 at all
+seven at the 8 points of row 4; rank at most 8 is the vanishing of forms of degree
 5 on the plane, so every vector of the plane has nullity at least 7 there. Row 4 refutes "`dim L > 2` exactly
 where the kernel plane consists of higher zero divisors" (`A5-436`), which holds at all 66 exact fixtures: the
 common kernel has dimension 3 and the conjugate plane cuts it to the line of `z`. At the point of row 3,
-`e_1 + 2 e_3 + 2 e_8 + 2 e_9 + 2 e_13 - e_14`, the exact nullity is 3 and the prime 32029 raises it to 7. A large
-fiber occurs only on planes of nullity 7 or 9 modulo the prime.
+`e_1 + 2 e_3 + 2 e_8 + 2 e_9 + 2 e_13 - e_14`, the exact nullity is 3 at the six vectors and 7 at the probe
+vector: the plane meets the higher zero divisors of `ker M(z)` in the single point that the probe hits, so the
+nullity at a general vector of that plane is 3. A large fiber occurs only on planes where the probe has nullity
+7 or 9 modulo the prime.
 
 At the 29 exact fixtures with `dim L` of 6 or 12 the 16 net points of nullity 7 or 9 span the real kernel plane,
 inside a three-plane where the other net vectors have nullity 3 (`A5-437`). Rank at most `15 - n` of the skew
@@ -335,4 +338,4 @@ each stratum outside a proper closed subset.
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
 
-Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 705 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 12 minutes 16 seconds of wall time on a loaded host, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 411 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 6 minutes 13 seconds of wall time; 706 CPU seconds on a loaded host, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).

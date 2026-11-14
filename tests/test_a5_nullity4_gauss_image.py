@@ -119,7 +119,9 @@ def test_kernel_form_of_the_fiber_at_three_exact_fixtures_and_one_grid_exception
             form["common_kernel_cut"],
         )
     _same(found, {29: (2, 3, 1, 1), 0: (6, 7, 3, 3), 1: (12, 9, 6, 6), -1: (2, 7, 3, 1)})
-    _same(gauss.exact_plane_nullities(splits[-1]), [7] * 6)
+    _same(gauss.exact_plane_nullities(splits[-1]), [7] * 7)
+    # The probe vector is the one vector of this plane, among the seven, that is a higher zero divisor.
+    _same(gauss.exact_plane_nullities([1, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, -1, 0]), [3] * 6 + [7])
     # Four net vectors of nullity 5 are two projective points: neither coprime combination has entries -1..1.
     reduced = [int(value) % gauss.PRIME for value in record[65]["split_point"]]
     _same(gauss.kernel_form((reduced, reduced))["three_plane_net"], [[3, 338, 143, 3, 3], [5, 4, 2, 2, 3]])
@@ -218,17 +220,17 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         "grid without exceptions": lambda r: r["grid"].update(
             kernel_form_classes=[row for row in r["grid"]["kernel_form_classes"] if row[1:3] != [2, 7]]
         ),
-        "exact plane nullity": lambda r: r["grid"]["kernel_form_exceptions"][0].update(exact_plane_nullities=[3] * 6),
+        "exact plane nullity": lambda r: r["grid"]["kernel_form_exceptions"][0].update(exact_plane_nullities=[3] * 7),
         "exact plane nullity raised": lambda r: r["grid"]["kernel_form_exceptions"][8].update(
-            exact_plane_nullities=[7] * 6
+            exact_plane_nullities=[7] * 7
         ),
         "plane exception point": lambda r: r["grid"]["kernel_form_exceptions"][0].update(split_point=[0] * 15),
         "plane exception repeated": lambda r: r["grid"]["kernel_form_exceptions"][1].update(
             split_point=r["grid"]["kernel_form_exceptions"][0]["split_point"]
         ),
         "plane exceptions exchanged": lambda r: (
-            r["grid"]["kernel_form_exceptions"][0].update(common_kernel=1, exact_plane_nullities=[3] * 6),
-            r["grid"]["kernel_form_exceptions"][8].update(common_kernel=3, exact_plane_nullities=[7] * 6),
+            r["grid"]["kernel_form_exceptions"][0].update(common_kernel=1, exact_plane_nullities=[3] * 6 + [7]),
+            r["grid"]["kernel_form_exceptions"][8].update(common_kernel=3, exact_plane_nullities=[7] * 7),
         ),
         "plane exception dropped": lambda r: r["grid"].update(
             kernel_form_exceptions=r["grid"]["kernel_form_exceptions"][1:]

@@ -3161,6 +3161,7 @@
      7,
      7,
      7,
+     7,
      7
     ],
     "split_point": [
@@ -3189,6 +3190,7 @@
      7,
      7,
      7,
+     7,
      7
     ],
     "split_point": [
@@ -3217,6 +3219,7 @@
      7,
      7,
      7,
+     7,
      7
     ],
     "split_point": [
@@ -3245,6 +3248,7 @@
      7,
      7,
      7,
+     7,
      7
     ],
     "split_point": [
@@ -3268,6 +3272,7 @@
    {
     "common_kernel": 3,
     "exact_plane_nullities": [
+     7,
      7,
      7,
      7,
@@ -3301,6 +3306,7 @@
      7,
      7,
      7,
+     7,
      7
     ],
     "split_point": [
@@ -3329,6 +3335,7 @@
      7,
      7,
      7,
+     7,
      7
     ],
     "split_point": [
@@ -3352,6 +3359,7 @@
    {
     "common_kernel": 3,
     "exact_plane_nullities": [
+     7,
      7,
      7,
      7,
@@ -3385,7 +3393,8 @@
      3,
      3,
      3,
-     3
+     3,
+     7
     ],
     "split_point": [
      1,
@@ -3462,7 +3471,7 @@
  ],
  "inputs": {
   "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "84d075def0a800bb8843c51a1fcde01ef665edff7aca0464c6c0587b28a57d34",
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "2ec28dfaf9f5957b7febc200092b2489440f1c4247ac5b02e0065ab5eca40013",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "a8c74d864e846161b7d906df48f8b8c88237a928a043a4b45aeb512408285572",
   "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
   "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194"
  },

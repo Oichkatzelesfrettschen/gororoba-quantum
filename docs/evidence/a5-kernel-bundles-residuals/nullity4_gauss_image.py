@@ -51,11 +51,12 @@ fiber recomputed exactly.
 The fiber is then read from the kernel plane itself. The signs of the lower block satisfy
 SIGNS[r][r ^ c] = -SIGNS[r][c], so M(z) p = -M(p) z, and for a basis p1, p2 of the kernel plane P the z-part of L is
 {z in ker M(p1) n ker M(p2): z orthogonal to the conjugate plane P'}. `kernel_form` computes modulo 32029 the
-nullity of M(p) at a general vector p of P, the dimension of ker M(p1) n ker M(p2) and of its cut by P', and the
+nullity of M(p) at the probe vector p1 + 7 p2 of P, the dimension of ker M(p1) n ker M(p2) and of its cut by P', and the
 nullities of M(k) on a net of 342 vectors k of the three-plane ker M(z), at the 66 fixtures and at every nullity-4
-grid point. A nullity modulo the prime is an upper bound for the exact one, so at the 9 grid points where the
-plane has nullity 7 and dim L = 2 the nullity is recomputed over Q(i) at six vectors of the plane: it is 7 at 8
-points and 3 at one, where 32029 raises it.
+grid point. One probe vector does not decide the nullity on the plane, so at the 9 grid points where the probe
+has nullity 7 and dim L = 2 the nullity is recomputed over Q(i) at six further vectors of the plane and at the
+probe: it is 7 at all seven at 8 points; at one point it is 3 at the six and 7 at the probe, where the plane meets
+the higher zero divisors of ker M(z) in that single point.
 
 Two further samples bear on the real points of V(Q) minus V(G): 469 real points of V(Q) with
 Gaussian-integer split coordinates, where w' is the conjugate of z' and independent of it, obtained by projecting
@@ -252,12 +253,14 @@ KERNEL_FORM_GRID: dict[tuple[str, int, int, int, int], int] = {
     (STRATA[2], 2, 3, 3, 1): 384,
     (STRATA[2], 6, 7, 5, 3): 4,
 }
-# Grid classes with plane nullity 7 modulo PRIME and dim L = 2, and the exact nullity of M(p) on the plane by the
-# dimension of the common kernel: the 8 points of common kernel 3 refute "dim L > 2 exactly where every vector of
-# the kernel plane has nullity above 3"; at the point of common kernel 1 the exact nullity is 3 and the prime
-# raises it.
+# Grid classes with nullity 7 at the probe vector modulo PRIME and dim L = 2, and the exact nullities of M(p) at
+# six further vectors of the plane and at the probe, by the dimension of the common kernel: the 8 points of common
+# kernel 3 refute "dim L > 2 exactly where every vector of the kernel plane has nullity above 3"; at the point of
+# common kernel 1 the probe is the only vector of the plane, up to scale, among the seven with nullity above 3.
 KERNEL_FORM_EXCEPTIONS = ((STRATA[1], 2, 7, 1, 1), (STRATA[1], 2, 7, 3, 1))
-EXACT_PLANE_NULLITY = {1: 3, 3: 7}
+EXACT_PLANE_NULLITY = {1: [3, 3, 3, 3, 3, 3, 7], 3: [7] * 7}
+# Multiplier of the probe vector p1 + PROBE p2 on the echelon basis p1, p2 of a kernel plane.
+PROBE = 7
 # The split points of those nine grid points, each with the dimension of its common kernel.
 PLANE_EXCEPTION_POINTS: dict[tuple[int, ...], int] = {
     (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, -1, 1, 0, 0): 3,
@@ -666,7 +669,7 @@ def kernel_form(job: tuple[list[int], list[int]]) -> dict[str, Any]:
     """The fiber through the pair (z', w') modulo PRIME, read from the kernel plane P = ker A(z, w).
 
     M(z) p = -M(p) z, so the z-part of L is {z in ker M(p1) n ker M(p2): z orthogonal to the conjugate plane P'}
-    for a basis p1, p2 of P. The row holds dim L, the nullity of M(p) at one general vector p of P, the dimension
+    for a basis p1, p2 of P. The row holds dim L, the nullity of M(p) at the probe vector p1 + PROBE p2, the dimension
     of ker M(p1) n ker M(p2), its dimension after the cut by P' (dim L_z, which is half of dim L at a real point,
     where w' is the conjugate of z'), whether M(z) p = -M(p) z at p1 and p2, and the nullities of M(k) at the 342
     nonzero combinations k, coefficients -3..3, of the echelon basis of ker M(z), as [nullity, vectors, projective
@@ -680,7 +683,7 @@ def kernel_form(job: tuple[list[int], list[int]]) -> dict[str, Any]:
     plane = [vector[1:] for vector in _nullspace(bordered(point))]
     conjugate_plane = [vector[1:] for vector in _nullspace(conjugate_bordered(point))]
     _require(len(plane) == 2 and len(conjugate_plane) == 2, "a kernel modulo the prime is not a plane")
-    general = [(a + 7 * b) % PRIME for a, b in zip(*plane, strict=True)]
+    general = [(a + PROBE * b) % PRIME for a, b in zip(*plane, strict=True)]
     common = [*_block(plane[0]), *_block(plane[1])]
     three_plane = _nullspace(_block(frame))
     net: dict[int, list[int]] = {}
@@ -829,16 +832,32 @@ def general_planes() -> list[dict[str, Any]]:
 
 
 def exact_plane_nullities(split: list[int]) -> list[int]:
-    """The nullity over Q(i) of M(p) at six vectors p of the kernel plane at the pair (z', z'): p1 + t p2 and p2.
+    """The nullity over Q(i) of M(p) at seven vectors p of the kernel plane at the pair (z', z').
 
-    The matrices of rank at most 8 among the skew M(p) are cut out by the Pfaffians of the principal 10 x 10 blocks,
-    forms of degree 5 on the plane, so nullity above 5 at six pairwise independent vectors holds on the whole plane.
+    Six are p1 + t p2, t = 0..4, and p2 on a basis of the exact kernel. The matrices of rank at most 8 among the
+    skew M(p) are cut out by the Pfaffians of the principal 10 x 10 blocks, forms of degree 5 on the plane, so
+    nullity above 5 at six pairwise independent vectors holds on the whole plane. The seventh is the probe vector
+    of `kernel_form`: the exact basis is normalized to the identity at the two pivot coordinates of the echelon
+    basis modulo PRIME, which makes it the lift of that basis.
     """
     point = [*split, *split]
     plane = DomainMatrix(_exact_bordered(point), (BORDERED, BORDERED), QQ_I).nullspace().to_list()
     _require(len(plane) == 2 and not any(vector[0] for vector in plane), "the exact kernel is not a plane of the block")
     first, second = (vector[1:] for vector in plane)
     vectors = [*([a + t * b for a, b in zip(first, second, strict=True)] for t in range(5)), second]
+    reduced = [value % PRIME for value in split]
+    echelon = [vector[1:] for vector in _nullspace(bordered([*reduced, *reduced]))]
+    pivots = [
+        next(index for index in range(IMAGINARY) if [vector[index] for vector in echelon] == unit)
+        for unit in ([1, 0], [0, 1])
+    ]
+    determinant = first[pivots[0]] * second[pivots[1]] - first[pivots[1]] * second[pivots[0]]
+    _require(determinant != 0, "the exact kernel plane has no basis on the pivots of the modular one")
+    lifted = [
+        [(second[pivots[1]] * a - first[pivots[1]] * b) / determinant for a, b in zip(first, second, strict=True)],
+        [(first[pivots[0]] * b - second[pivots[0]] * a) / determinant for a, b in zip(first, second, strict=True)],
+    ]
+    vectors.append([a + PROBE * b for a, b in zip(*lifted, strict=True)])
     found = []
     for vector in vectors:
         rows = [
@@ -1231,8 +1250,8 @@ def _kernel_form_problems(record: dict[str, Any]) -> list[str]:
         or {tuple(row["split_point"]): row["common_kernel"] for row in exceptions} != PLANE_EXCEPTION_POINTS
     ):
         problems.append("the grid points with a kernel plane of nullity 7 and dim L = 2 are other points")
-    if any(row["exact_plane_nullities"] != [EXACT_PLANE_NULLITY.get(row["common_kernel"])] * 6 for row in exceptions):
-        problems.append("a listed kernel plane has another exact nullity at its six vectors")
+    if any(row["exact_plane_nullities"] != EXACT_PLANE_NULLITY.get(row["common_kernel"]) for row in exceptions):
+        problems.append("a listed kernel plane has another exact nullity at its seven vectors")
     gaussian = record.get("gaussian_points", {})
     if gaussian != {
         "fixtures": sum(row["stratum"] == STRATA[0] for row in ranks),
