@@ -103,8 +103,10 @@ the tests.
    rounds alternate forward, mirror (the list reversed and, inside each twin batch, the twin order reversed: coin 1 then
    coin 0), forward, mirror (32 batches), so a linear drift per circuit position enters the four replicates of t as +g,
    -g, +g and -g and cancels in the pooled twin contrast (exactly for equal replicate weights, to first order for the
-   analyzer's inverse-variance pool) when the platform runs the jobs of a batch in the listed order; hypothesis: the
-   listed order is the execution order, which the retained `queued_at` times test and no gate enforces (issue 894). The three X-only calibration batches of the predecessor follow (3, 3 and 2
+   analyzer's inverse-variance pool) for the order the case requests. Measured: the platform ran the twins of some
+   retained batches in the reverse of their listed order, so the cancellation holds only for batches that run in the
+   requested order, a reordered batch leaves a +g or -g term in its t, and no gate orients the decision by the executed
+   order (issue 894); the retained `queued_at` and `created_on` times show which batches ran as requested. The three X-only calibration batches of the predecessor follow (3, 3 and 2
    circuits): 35 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte, as in the predecessor. The
    platform sets the execution order of the jobs of a batch (the retained `created_on` shows reversed twins in some
    batches), so the estimator uses batch co-membership, not the listed order.
@@ -115,7 +117,7 @@ the tests.
    errors (twin 0.002762, base 0.003906, b0 base 0.001953) and gains the degrees of freedom of the batch gates.
 8. Heterogeneity bound. Replicate batches of one template and kind agree within chi-square 16.266 (3 degrees of freedom,
    alpha 0.001; `CHI2_ALPHA_001`, checked in the tests against the closed-form survival function). At four replicates
-   the predecessor's 10.828 would trip each of the eight gates with probability 0.0128 under no drift, so the layout
+   the predecessor's 10.828 would trip each of the eight gates with probability 0.0127 under no drift (the chi-square survival function at 3 degrees of freedom), so the layout
    would lose power to false `unresolved_batch` readings: simulated at drift 0.003, 62.8 and 66.0 percent (dropout and
    superposition-only) against 82.1 and 85.3 with the matched bound. The three 6-CZ blocks keep 9.210 (2 degrees of
    freedom, alpha 0.01).
