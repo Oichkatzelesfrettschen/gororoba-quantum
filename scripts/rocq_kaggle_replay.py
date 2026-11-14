@@ -199,6 +199,11 @@ def replay_entry(arguments: tuple[str, Path, Path, Path]) -> tuple[str, dict[str
         return name, {"returncode": 2, "seconds": 0.0, "warning_lines": [], "tail": str(error)}
 
 
+def absolute(path: Path) -> Path:
+    """The path made absolute against the current directory, symbolic links kept."""
+    return Path(os.path.abspath(path))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--gororoba-commit", required=True)
@@ -211,6 +216,19 @@ def main() -> int:
     parser.add_argument("--only", nargs="+", choices=SELECTABLE, help="replay only these entries")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
+    # Each replay runs from a shadow root with its own working directory, so every external path that reaches a
+    # subprocess or its environment (ROCQ, GOROROBA_ROOT, GOROROBA_MATH) is made absolute here, before it can resolve
+    # against another directory. A bare command name for --rocq stays a PATH lookup.
+    if args.rocq is not None and len(args.rocq.parts) > 1:
+        args.rocq = absolute(args.rocq)
+    if args.gororoba_root is not None:
+        args.gororoba_root = absolute(args.gororoba_root)
+    if args.gororoba_math_root is not None:
+        args.gororoba_math_root = absolute(args.gororoba_math_root)
+    elif os.environ.get(math_sources.ENVIRONMENT_VARIABLE):
+        os.environ[math_sources.ENVIRONMENT_VARIABLE] = str(
+            absolute(Path(os.environ[math_sources.ENVIRONMENT_VARIABLE]))
+        )
     steps: list[dict[str, Any]] = []
     rocq = args.rocq if args.rocq is not None else build_toolchain(steps)
     version = subprocess.run([str(rocq), "--version"], capture_output=True, text=True, check=True).stdout
