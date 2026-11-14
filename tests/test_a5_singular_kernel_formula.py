@@ -74,8 +74,11 @@ def test_point_counts_are_recomputed() -> None:
     _same(formula.point_record(), (formula.POINTS, formula.MODULAR))
 
 
-def test_retained_record_passes_its_rules_and_each_mutation_fails_them() -> None:
+def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypatch: pytest.MonkeyPatch) -> None:
     text = formula.RECORD.read_text(encoding="utf-8")
+    # The rules run against the digests the record retains; the on-demand gate compares them with the live sources.
+    retained_inputs = dict(json.loads(text)["inputs"])
+    monkeypatch.setattr(formula, "_inputs", lambda: dict(retained_inputs))
     _same(formula.verdict(json.loads(text)), [])
     _same(text, formula._serialized(formula.expected_record()))
 
