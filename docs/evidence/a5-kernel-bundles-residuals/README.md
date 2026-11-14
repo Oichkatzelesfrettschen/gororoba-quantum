@@ -505,9 +505,8 @@ gradient of its equation: `c M(k_1) k_2 = -grad(Q G)(z)`, which is `-2 G z` on `
   `A5-480`), and in every odd characteristic at every rank-12 point (`A5-495`).
 - The product is nonzero at every nullity-4 point of `V(G)` minus `V(Q)` (`A5-492`): the singular points of
   `V(G)` off `V(Q)` are the points with `t_8 = 0`, `N1 = N3` and `p = 0`, where rank `M(z)` is at most 10
-  (`A5-493`). At nullity 4 the product vanishes exactly on `V(Q) n V(G)`. `hypothesis` (`A5-496`, open): the
-  rank bound holds in every odd characteristic; the missing step is the transitivity of the automorphisms of
-  the octonions on orthogonal pairs of equal nonzero norm there.
+  (`A5-493`). At nullity 4 the product vanishes exactly on `V(Q) n V(G)`. The rank bound and the nonvanishing
+  hold in every odd characteristic (`A5-497`, `A5-498`, below).
 - Every point of `V(Q)` with rank `M(z)` below 12 lies in `V(G)`, so every point of `V(Q)` minus `V(G)` has
   nullity exactly 4 (`A5-488`).
 - `K(z)` is null at every nullity-4 point of `V(Q) n V(G)` as it is on `V(Q)` minus `V(G)`, by closure through
@@ -525,6 +524,21 @@ exact points with `N1(z) = 0`, three singular points of `V(G)`, the two general 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py --check` (exact
 over `Q(i)`; 98.8 CPU seconds, 121 seconds of wall time and 84 MiB on two workers, measured with the host at
 load average 28 from unrelated jobs; Python 3.14.9 with sympy 1.14.0).
+
+**Proved in odd characteristic** (`A5-497`): at a singular point `z = (a, 0, b)` of `V(G)` off `V(Q)`, where
+`N(a, b) = 0` and `N(a) = N(b) = nu` is nonzero, the kernel has an explicit basis. For an octonion `y` let
+`x = [a, b, y]` be the associator; then `k(y) = (nu x, 0, -(b x) a)` lies in `K(z)`, and `z` with the `k(y)`
+spans a space of dimension 5, so rank `M(z)` is at most 10. The associator runs through the orthogonal complement
+of the quaternion subalgebra `span(1, a, b, a b)`, where it alternates, and the two components of the product
+`z k(y)` cancel term by term. The formula has integer coefficients and uses only the alternative law and the
+norm, so it replaces the orbit argument of `A5-493` and settles the hypothesis `A5-496`. With `A5-495` the
+product on `K(z)` is nonzero at every rank-12 point of `V(G)` minus `V(Q)` over every field of characteristic
+other than 2 (`A5-498`). `singular_kernel_formula.py` checks the formula over the integers at 6,524 pairs
+`(a, b)` with entries in `-1, 0, 1`, and the dimension 5 and rank 10 over `Q` and modulo 3, 5 and 7.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/singular_kernel_formula.py --check` (integer
+arithmetic; 50.8 CPU seconds, 34 seconds of wall time and 89 MiB on two workers with the host at load average 25
+from unrelated jobs, Python 3.14.9 with sympy 1.14.0).
 
 **Proved** (`A5-472`): for `z = (a, b)` and `k = (c, d)` in the doubling the commutator is
 `([a, c] - (conj(d) b - conj(b) d), 2 (d a - b c))` over the integers, so in characteristic other than 2 `K(z)`
