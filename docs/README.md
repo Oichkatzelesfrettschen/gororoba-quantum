@@ -612,6 +612,7 @@ differs from it only in the `cd_core.py` digest.
 | File | Contents |
 |---|---|
 | [providers.md](notes/providers.md) | provider interpreter variables and MCP server names, with the guide of each provider |
+| [topics/backend-measurement-chain-gaps.md](notes/topics/backend-measurement-chain-gaps.md) | measurement-chain gaps of Tuna-17, QX, Ry, Ascella and Belenos: each survivor with its location, falsifier and the case it feeds; the refuted candidates with their refuting sources |
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
