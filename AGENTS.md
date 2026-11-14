@@ -60,10 +60,11 @@ the two differ.
   --out ../results/live`, a record under results/live/) belongs to a change
   of calibration admission, the approval comparison, the submission path or
   execution readiness, and to every case that heads for `--submit`.
-- The Rocq proof sources of the Cayley-Dickson tower, the formal certificates
-  and the Stiefel witness live in gororoba-math under `rocq/quantum`. A change
-  to a source is a gororoba-math pull request, followed here by a bump of
-  `ci/gororoba_math.pin` to the merged commit. A local run resolves the checkout
+- The Rocq proof sources live in gororoba-math under `rocq/quantum`, and this
+  repository tracks no `proofs/` directory. A new Rocq file lands there by a
+  pull request in gororoba-math (listed in its `rocq/quantum/_RocqProject`),
+  followed here by a bump of `ci/gororoba_math.pin` to the merged commit; a
+  change to an existing source takes the same route. A local run resolves the checkout
   through `GOROROBA_MATH` (unset ends the run with a message); hosted CI fetches
   the pin. A record names a source as `gororoba-math:rocq/quantum/NAME.v`. A
   published replay bundle keeps its bytes and its `proofs/NAME.v` reads, which
@@ -72,8 +73,7 @@ the two differ.
   `gororoba_quantum/math_sources.py`, after each source's sha256 equals the
   digest the retained ledgers hold. A change to a pin, a replay bundle or its
   receipts runs the Rocq compile of `proofs.yml` (path-filtered, not a
-  required check; [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)). `proofs/`
-  holds the sources that gororoba-math does not carry yet.
+  required check; [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)).
 
 ## Seeds
 

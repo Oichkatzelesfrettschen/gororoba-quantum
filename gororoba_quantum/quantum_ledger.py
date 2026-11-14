@@ -121,7 +121,7 @@ def build(
             }
         )
     tracked = set(tracked_paths)
-    census = {path for path in tracked if path.startswith(("results/", "docs/evidence/", "proofs/"))}
+    census = {path for path in tracked if path.startswith(("results/", "docs/evidence/"))}
     # A source of gororoba-math has no file in this tree; scripts/research_state.py checks its digest against the
     # checkout at the pin, and the ledger lists the files this repository holds.
     held = {path: bindings for path, bindings in pinned.items() if not path.startswith(math_sources.REFERENCE_PREFIX)}

@@ -46,10 +46,11 @@ def mutations() -> list[tuple[str, str, str]]:
             ("      - ci/gororoba_math.pin\n", ""),
             # Both events list the path, so the first occurrence is the pull_request list.
             ("      - docs/evidence/stiefel_witness/**\n", ""),
-            # folding_proofs/** holds proofs/** as a substring, so only a whole-pattern match rejects this.
-            ("      - proofs/**\n", "      - proof/**\n"),
             # The push list is checked apart from the pull_request list.
-            ("branches: [main]\n    paths:\n      - proofs/**\n", "branches: [main]\n    paths:\n      - proof/**\n"),
+            (
+                "branches: [main]\n    paths:\n      - docs/evidence/c881_exhaustive/**\n",
+                "branches: [main]\n    paths:\n      - docs/evidence/c881_exhaustive_x/**\n",
+            ),
         ],
         "scripts/rocq_kaggle_replay.py": [(f'"{pin["compiler"]}"', '"ocaml-base-compiler.0.0.0"')],
         "ci/gates.json": [("the proofs.yml job rocq on proof paths", "a manual step on proof paths")],
