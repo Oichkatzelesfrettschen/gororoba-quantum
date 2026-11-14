@@ -849,7 +849,7 @@ For `W8` and `E8bar` the quadric ideal has the Hilbert numerator of the modular 
 same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
 component step `X+->N-` returns 12 generators in place of 3.
 
-**Inferred (`A5-446`, conditional on `A5-293`, `A5-421`, `A5-450` and the slice premise of `A5-423`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
+**Inferred (`A5-446`; proved on the weight slice by `A5-475` with `A5-474`, which removes the conditions `A5-293`, `A5-450` and the slice premise of `A5-423` that this paragraph's arc argument needs):** the fiber cone of `Iso->N+` and of `Iso->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68 quadrics. `K` is prime of dimension 5 and degree 23 over `Q(i)`
 by the computation above and lies in the relation ideal `L`, whose quotient has dimension at least 5 at both
 basepoints (`A5-293`); a proper quotient of the domain `Q(i)[y]/K` has dimension below 5, so `L = K`. The
@@ -857,7 +857,7 @@ arcs live on the header slice and the quadrics on the weight slice, and the isom
 over C alone (`A5-423`), so the comparison runs over C: `K` is absolutely prime (`A5-450`), and the same argument
 holds there.
 
-**Inferred (`A5-448`, conditional on `A5-421`, `A5-447`, `A5-450` and the slice premise of `A5-423`):** the fiber cone of `W8->N+` and of `W8->N-` over
+**Inferred (`A5-448`; proved on the weight slice by `A5-475` with `A5-474`, which removes the conditions `A5-450` and the slice premise of `A5-423` that this paragraph's arc argument needs):** the fiber cone of `W8->N+` and of `W8->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 144 quadrics. Two arc families over `Q(i)`
 ([`w8_component_arcs_qi.py`](../a5-char0-transfer/w8_component_arcs_qi.py),
 [record](../a5-char0-transfer/w8-component-arcs-qi.json)) each have a 6-dimensional set of limits in `V(L)`, which
@@ -914,7 +914,7 @@ nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`,
 three primary components: the two minimal primes and one embedded component of dimension 4 and degree 4 over a
 prime of degree 2. **Inferred:** the five forms are nilpotent and nonzero in the fiber cone, since `K` lies in `L`
 and `L` holds no linear form; whether their products with the other generators vanish in the fiber cone as they
-do modulo `K` is the open scheme statement above degree 7.
+do modulo `K` was the open scheme statement above degree 7; `A5-457` settles it on the weight slice (`L = K`).
 
 **Computed (`A5-454`):** the same producer records the annihilator `A = K : R` of the nilradical module `R / K`
 (`R` the radical of `K`) and the first Hilbert numerators of `S/K`, `S/R` and `S/A`. `A` is prime: `minAssGTZ`
