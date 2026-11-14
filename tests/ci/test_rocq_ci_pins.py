@@ -44,6 +44,8 @@ def mutations() -> list[tuple[str, str, str]]:
             ("          rocq/quantum\n", "          rocq/elsewhere\n"),
             ("--gororoba-math-root", "--gororoba-root-math"),
             ("      - ci/gororoba_math.pin\n", ""),
+            ("      - docs/state/research_state.json\n", ""),
+            ("      - scripts/math_source_generators.py\n", ""),
             # Both events list the path, so the first occurrence is the pull_request list.
             ("      - docs/evidence/stiefel_witness/**\n", ""),
             # The push list is checked apart from the pull_request list.

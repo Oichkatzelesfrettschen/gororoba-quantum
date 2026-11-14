@@ -141,6 +141,7 @@ def check(root: Path) -> list[str]:
     required = [f"docs/evidence/{name}/**" for name in bundles(root)]
     required += ["scripts/rocq_kaggle_replay.py", "ci/open_gororoba.pin", "ci/rocq_toolchain.pin"]
     required += ["ci/gororoba_math.pin", "ci/fetch_gororoba_math.sh", "gororoba_quantum/math_sources.py"]
+    required += ["scripts/math_source_generators.py", "docs/state/research_state.json"]
     required += [WORKFLOW, "docs/evidence/rocq_kaggle_replay/**", "gororoba_quantum/parallel.py"]
     for event in PATH_TRIGGERS:
         listed = trigger_paths(workflow, event)

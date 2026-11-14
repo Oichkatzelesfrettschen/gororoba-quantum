@@ -43,6 +43,8 @@ on:
       - ci/gororoba_math.pin
       - ci/fetch_gororoba_math.sh
       - gororoba_quantum/math_sources.py
+      - scripts/math_source_generators.py
+      - docs/state/research_state.json
       - ci/rocq_toolchain.pin
       - ci/install_rocq.sh
       - .github/workflows/proofs.yml
@@ -80,6 +82,8 @@ on:
       - ci/gororoba_math.pin
       - ci/fetch_gororoba_math.sh
       - gororoba_quantum/math_sources.py
+      - scripts/math_source_generators.py
+      - docs/state/research_state.json
       - ci/rocq_toolchain.pin
       - ci/install_rocq.sh
       - .github/workflows/proofs.yml
