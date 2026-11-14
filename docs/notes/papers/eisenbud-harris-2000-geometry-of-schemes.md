@@ -66,7 +66,7 @@ Printed page numbers are the PDF page index minus 7 in Section IV.2 (PDF page 16
   ([Mumford 1999](mumford-1999-red-book-varieties-schemes.md), Section I.10, Corollary 1).
 - [I] Strict transform. For a closed subscheme `X'` of `X`, Proposition IV-21 identifies the blow-up of `X'` along `X' intersect Y` with the closure of the preimage of `X' minus Y`; this is the statement that lets a blow-up of a subvariety be computed
   inside the blow-up of an ambient affine space.
-- [I] What the pages read do not give. (a) No description of the fiber of the blow-up over a point of the center beyond Example IV-17 (2), where the center is the origin of affine space, and Exercise IV-24, which is an exercise; the exceptional
+- [I] What the pages read do not give. (a) No general description of the fiber of the blow-up over a point of the center; the pages give worked cases only (Examples IV-14, IV-17 (2), IV-27 and IV-29, and Exercises IV-24 and IV-30 (c)); the exceptional
   divisor as a projective normal cone is in [Fulton 1998](fulton-1998-intersection-theory.md), B.6.3. (b) No statement on fiber cones, analytic spread or integral closure. (c) No statement over a non-affine base in Proposition IV-22, and no
   comparison between characteristics.
 
