@@ -1,0 +1,216 @@
+{
+ "schema": "gororoba.a5.w8-component-arcs-qi/1",
+ "field": "Q(i)",
+ "order": 12,
+ "points": [
+  [
+   2,
+   3,
+   5,
+   7,
+   11
+  ],
+  [
+   13,
+   4,
+   9,
+   6,
+   17
+  ]
+ ],
+ "components": [
+  [
+   6,
+   20,
+   9
+  ],
+  [
+   6,
+   30,
+   4
+  ]
+ ],
+ "inputs": {
+  "w8_component_arcs_qi.py": "ea907f4beec02bee3c834eeda65b4a520aabf8cdf44224170fadf431e8501c2e",
+  "arcs_qi.py": "7b99e9f3ad126ccc88defa89105b512849f1002125598086c975759974d44970",
+  "reduction_check.py": "2cb80bafe8437df476442f13a449046ae998ab9d0907c41cedd72b7543cffd88"
+ },
+ "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
+ "rows": [
+  {
+   "slug": "w8-nm",
+   "family": "linear",
+   "control": false,
+   "last_coordinate_sign": 1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 0,
+   "j_is_identity": true,
+   "order_of_G": 2,
+   "generators": 24,
+   "limit_nonzero": 21,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 15,
+   "wall_seconds": 24,
+   "peak_rss_kib": 170636
+  },
+  {
+   "slug": "w8-np",
+   "family": "linear",
+   "control": false,
+   "last_coordinate_sign": -1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 0,
+   "j_is_identity": true,
+   "order_of_G": 2,
+   "generators": 24,
+   "limit_nonzero": 21,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 15,
+   "wall_seconds": 24,
+   "peak_rss_kib": 170476
+  },
+  {
+   "slug": "w8-nm",
+   "family": "series",
+   "control": false,
+   "last_coordinate_sign": 1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 0,
+   "j_is_identity": null,
+   "order_of_G": 4,
+   "generators": 24,
+   "limit_nonzero": 23,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 20,
+   "wall_seconds": 2040,
+   "peak_rss_kib": 1755944
+  },
+  {
+   "slug": "w8-np",
+   "family": "series",
+   "control": false,
+   "last_coordinate_sign": -1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 0,
+   "j_is_identity": null,
+   "order_of_G": 4,
+   "generators": 24,
+   "limit_nonzero": 23,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 20,
+   "wall_seconds": 2034,
+   "peak_rss_kib": 1755444
+  },
+  {
+   "slug": "w8-nm",
+   "family": "linear",
+   "control": true,
+   "last_coordinate_sign": -1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 1,
+   "j_is_identity": false,
+   "order_of_G": 2,
+   "generators": 24,
+   "limit_nonzero": 21,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 15,
+   "wall_seconds": 23,
+   "peak_rss_kib": 170500
+  },
+  {
+   "slug": "w8-np",
+   "family": "linear",
+   "control": true,
+   "last_coordinate_sign": 1,
+   "slice_variables": [
+    "t1",
+    "t2",
+    "t3",
+    "t4",
+    "t5",
+    "t6",
+    "t7",
+    "t8",
+    "t9"
+   ],
+   "j_nonzero": 1,
+   "j_is_identity": false,
+   "order_of_G": 2,
+   "generators": 24,
+   "limit_nonzero": 21,
+   "ranks": [
+    6,
+    6
+   ],
+   "span_of_limits": 15,
+   "wall_seconds": 23,
+   "peak_rss_kib": 170576
+  }
+ ],
+ "pass": true
+}

@@ -109,9 +109,11 @@ EXPECTED_COUNTS = {
     ("N-", "xm"): (15, 69),
 }
 # (affine dimension, multiplicity) of the quadric ideal in k[y_1..y_g].
-EXPECTED_HILBERT = {"w8": (6, 50), "e8": (5, 11)}
+EXPECTED_HILBERT = {"w8": (6, 50), "e8": (5, 11), "iso": (5, 23)}
 # (affine dimension, multiplicity, linear forms of the reduced standard basis) of each minimal prime of that ideal.
-EXPECTED_MINIMAL_PRIMES = {"w8": ((6, 20, 9), (6, 30, 4)), "e8": ((4, 4, 14), (5, 11, 9))}
+EXPECTED_MINIMAL_PRIMES = {"w8": ((6, 20, 9), (6, 30, 4)), "e8": ((4, 4, 14), (5, 11, 9)), "iso": ((5, 23, 0),)}
+# Whether the relation ideal equals the intersection of its minimal primes; the E8bar ideal carries nilpotents.
+EXPECTED_RADICAL = {"w8": True, "e8": False, "iso": True}
 HILBERT_SOURCES = tuple(EXPECTED_HILBERT)
 MODULAR_PRIME = 32009
 MODULAR_ROOT = 10754
@@ -519,6 +521,9 @@ list components=minAssGTZ(K); ideal component; int position; int generator; int 
 for(position=1;position<=size(components);position++){ component=std(components[position]); linear=0;
   for(generator=1;generator<=size(component);generator++){ if(deg(component[generator])==1){linear++;} }
   print("RESULT minimal_prime "+string(dim(component))+","+string(mult(component))+","+string(linear)); }
+ideal radical_part=components[1];
+for(position=2;position<=size(components);position++){ radical_part=intersect(radical_part,components[position]); }
+print("RESULT radical "+string(size(reduce(radical_part,sK))==0));
 print("RESULT done 1");
 quit;
 """
@@ -804,6 +809,8 @@ def hilbert_item(script: str) -> dict[str, Any]:
         # The last entry of hilb(I,1) is bookkeeping of Singular's Hilbert-driven standard basis, not a coefficient.
         "first_numerator": numerator[:-1],
         "minimal_primes": sorted(_integers(text) for text in values.get("minimal_prime", [])),
+        # The ideal equals the intersection of its minimal primes; with one minimal prime it is prime.
+        "radical": bool(int(values["radical"][0])),
     }
 
 
@@ -1148,6 +1155,8 @@ def _cell_problems(cell: dict[str, Any], degree: int) -> list[str]:
             expected_primes = EXPECTED_MINIMAL_PRIMES[cell["source"]]
             if tuple(tuple(prime) for prime in hilbert.get("minimal_primes", [])) != expected_primes:
                 problems.append(f"{label}: the minimal primes differ from {expected_primes}")
+            if hilbert.get("radical") is not EXPECTED_RADICAL[cell["source"]]:
+                problems.append(f"{label}: radicality of the relation ideal differs from the expected value")
             if retained is not None and (
                 hilbert["affine_dimension"] != retained["projective_dimension"] + 1
                 or hilbert["multiplicity"] != retained["degree"]

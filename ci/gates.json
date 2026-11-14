@@ -5490,6 +5490,83 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py --check",
+      "name": "core-a5-weight-slice-smooth-points",
+      "seconds": 0.3,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/weight-slice-smooth-points-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py --check",
+      "name": "core-a5-e8-quadric-nilradical",
+      "seconds": 0.3,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-quadric-nilradical-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/w8_component_models.py --check",
+      "name": "core-a5-w8-component-models",
+      "seconds": 1.2,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/w8-component-models-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py --check",
+      "name": "core-a5-e8-relation-ideal-orders",
+      "seconds": 0.5,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-relation-ideal-orders-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/g2_derivation_tables.py --check",
+      "name": "core-a5-g2-derivation-tables",
+      "seconds": 1.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/g2-derivation-tables.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py --check",
+      "name": "core-a5-w8-component-arcs-qi",
+      "seconds": 0.3,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-char0-transfer/w8-component-arcs-qi.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py --check",
+      "name": "core-a5-w8-component-arc-matrices-qi",
+      "seconds": 1.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-char0-transfer/w8-component-arc-matrices-qi.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
       "name": "core-a5-symmetry-algebra-qi",
       "seconds": 240.0,

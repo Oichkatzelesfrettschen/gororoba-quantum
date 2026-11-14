@@ -531,3 +531,219 @@ the closest entry and say what changed.
 - Outcome: the two-worker writer and checker exit 0 in 31.75/31.75 seconds, with GNU time maximum process RSS
   81,876/82,032 KiB. The 32 Gram and replay-contract tests, pinned Ruff format/check, strict mypy, ledger check and all 1,195 Markdown
   link checks pass. Historical timings remain separate from the exact witness arithmetic.
+
+### Rees special fibers on the weight slice at N- (is the fiber cone the quadric locus for Iso, E8-bar and W8)
+
+- Question and decisive outcome: for each of Iso, E8-bar and W8 at the basepoint N-, whether the special fiber of
+  the Rees algebra of the ideal I of the 126 principal 4-Pfaffians, taken on the nine-variable weight slice, equals
+  k[y]/K for the retained quadric ideal K (`weight-slice-fiber-relations-result.json`). Equality needs the FIBER
+  line to show the dimension and multiplicity of K (Iso 5 and 23, E8-bar 5 and 11, W8 6 and 50) with every minimal
+  generator of degree 2. A differing dimension or multiplicity, or a generator of degree above 2, refutes equality
+  over that field. The mod 32009 runs are finite-field evidence; the Q(i) runs decide characteristic 0.
+- Formulation: Nakayama selection of g minimal generators G of I modulo J (17, 21, 24), the Rees ideal as
+  (J, y_a G_b - y_b G_a) saturated by the pivot generator of least weight (weight 3 in all three), then s = 0.
+  J is a single prime through the origin in each script (one `COMPONENT` line), so the pivot is a nonzerodivisor
+  and the saturation is the Rees ideal. Two forms run as twins: `sat(H, G_pivot)` of elim.lib (`r-*`), and the
+  variable saturation (`h-*`, written by `hsat.py`): u = G_pivot adjoined as the last variable of the weighted
+  reverse-lexicographic ordering with the pivot's weight, one `std`, division of each element by its highest power
+  of u. The unsliced `sat` form never finished (measured-combinations row "pivot saturation of the Rees ideal");
+  the weight slice (9 variables in place of the full germ) and weight-homogeneity are what changed. Rejected: the
+  degree-by-degree membership rank, which bounds one degree per run and cannot show the absence of higher
+  generators.
+- Host and tool versions: build host, Singular 4.4.1 (Arch package): `r-iso-nm-p`, `r-e8-nm-p`, `r-w8-nm-p`
+  (mod 32009) and `r-iso-nm-q` (Q(i)). Windows compute workstation (WSL, 32 threads, 54 GiB), passagemath Singular
+  4.4.1: `r-e8-nm-q`, `r-w8-nm-q` (Q(i)) and `h-iso-nm-p`, `h-e8-nm-p`, `h-w8-nm-p` (mod 32009).
+- Launch line and environment: one tmux session per run, `/usr/bin/time -v Singular -q < NAME.sing > NAME.log
+  2> NAME.time; echo EXIT $? >> NAME.log`; on the build host inside `systemd-run --user --scope -p MemoryMax=7G -p
+  MemorySwapMax=0`, on the workstation inside `ulimit -v 25000000` (`r-*`) or `ulimit -v 12000000` (`h-*`).
+  `option(redSB)`, ordering `wp` with the slice weights followed by the generator weights. Scripts come from
+  `graded.py ORBIT SOURCE FIELD [DEGREE] [comp] [rees]`.
+- Runner and exit status: the shell appends Singular's status as the `EXIT` line. Singular exits 0 on SIGTERM, so
+  a run counts as finished only with its `FIBER` line and `STAGE rees_done` present.
+- Departures from the foundations: none of the nine runs sets `option(prot)`, so a stalled run shows only
+  `STAGE rees_start` and its resident set; every restart adds it. `MALLOC_ARENA_MAX` is unset. The workstation
+  runs carry an address-space limit although its substrate row keeps no cap; the limit protects the five sibling
+  runs from one another.
+- Parallelism: four single-thread processes on the build host (6 cores) and five on the workstation (16 cores).
+- Memory and time limits: build host 7 GiB cgroup each (28 GiB of 62); workstation 25 GB and 12 GB of address
+  space (86 GB summed against 54 GiB, so the two Q(i) runs are watched by resident set). A cgroup kill or an
+  allocation failure ends a run with no `FIBER` line and decides nothing. No time limit; `watch.sh` wakes the
+  session on the first `EXIT` line or lost tmux session.
+- Checkpoints: stage lines in `NAME.log` (`STAGE pf_done`, `nakayama_done`, `syz_done`, `rees_start`,
+  `rees_std_done` in the variable form, `rees_sat_done`, `rees_done`); no intermediate basis is saved.
+- End state: logs, scripts and `.time` files stay in the session scratch on both hosts until the producer mode
+  that regenerates them is retained; a finished workstation log is copied to the build host first.
+- Calibration: the same-sign X control at N- (15 generators, K of dimension 4 and multiplicity 12, 69 quadrics)
+  returns FIBER dimension 4, multiplicity 12, 69 minimal generators, all of degree 2, in all three runs: `sat`
+  mod 32009 in 6 s of saturation, `sat` over Q(i) in 466 s (476 s wall, 208 MB), variable saturation mod 32009 in
+  6 s (16 s wall, 37 MB).
+- Placement after the first result (10:16 to 10:24 PST): Singular's `std` runs on one thread, so placement follows
+  per-thread speed, idle cores and memory. Measured on the same-sign X control over Q(i) in the variable form:
+  96 s on the workstation against 158 s on the build host, whose load average stood at 18.75 on 12 threads with
+  other sessions' jobs; `sat` took 466 s on the build host. `nfmodStd` of nfmodstd.lib on 8 cores took 377 s wall
+  and 1,891 s of CPU on the workstation and returned the same FIBER line, so the plain `std` stays. The two Iso
+  `sat` twins and the Iso Q(i) variable run left the build host (stopped at 1 h 41 min with `STAGE rees_start` as
+  their last stage, 0.34 and 0.55 GB; the Q(i) run after 14 min). New runs, all in the variable form with
+  `option(prot)`: workstation, `ulimit -v` 16 GB for `h-iso-nm-q`, `h-e8-nm-q`, `h-w8-nm-q` (Q(i), N-) and 12 GB
+  for `h-e8-nm-p2`, `h-w8-nm-p2` (p = 32029, i = 9115, N-) and `h-e8-np-p`, `h-w8-np-p` (p = 32009, N+), eleven
+  single-thread jobs on 16 cores; MacBook Air (Homebrew Singular 4.4.1, `caffeinate -i`, `nohup`, two of four
+  performance cores, the owner's interactive session keeps the rest): `h-iso-nm-p2` and `h-iso-np-p`; lab-a1
+  (apt Singular, one of two cores, `ulimit -v` 8 GB): `h-iso-np-p2`. The build host keeps `r-e8-nm-p` and
+  `r-w8-nm-p` under their 7 GiB caps. A cloud machine enters when a Q(i) run's resident set projects past the
+  workstation's 52.5 GB budget; no core is short. `watch.sh` polls the four hosts.
+- Outcome: Iso at N- modulo 32009 in the variable form (`h-iso-nm-p`): FIBER dimension 5, multiplicity 23, 68
+  minimal generators, all of degree 2, the quadric ideal K; 1,216 s (standard basis of 7,459 elements in 1,212 s),
+  577 MB peak, exit 0, while its `sat` twin had no later stage at 1 h 26 min. The Q(i) script in the variable form
+  with `option(prot)` (`h-iso-nm-q`, build host, 12 GiB cgroup) and its same-sign X control (`h-xm-nm-q`, 7 GiB)
+  started after that result. The other runs are open: at 1 h 20 min every run has printed `STAGE rees_start` and no later stage; resident sets: Iso
+  0.33 GB (mod p, `sat`), 0.52 GB (Q(i)); E8-bar 2.6 GB (mod p), 11.8 GB (Q(i)); W8 1.7 GB (mod p), 4.8 GB (Q(i));
+  variable form at 16 min 0.30, 0.87 and 0.67 GB.
+- Outcome: Iso at N+ modulo 32029 in the variable form (`h-iso-np-p2`, lab-a1): FIBER dimension 5, multiplicity
+  23, 68 minimal generators, all of degree 2; 2,558 s, 576 MB peak, exit 0. At 11:05 PST on 2026-11-13 the laptop
+  runs had printed no stage after `STAGE rees_start`: the two modular runs of 09:42 at 1.4 and 1.6 GB after
+  1 h 23 min, the eight runs of 10:21 between 1.0 and 5.7 GB after 43 min, the `sat` W8 run over Q(i) at 4.7 GB
+  after 2 h 24 min.
+- Correction to the variable form (2026-11-13, found by two outside reviews of the scripts): the ordering gives
+  the slice variable of torus weight 0 the weight 1, so (J, minors, u - G_pivot) is not homogeneous for it, and the
+  division by powers of u proves only H in (RS) in H : u^infinity. In k[x, y, u] with the degree ordering,
+  H = (x u + y, y u) has H : u^infinity = (x, y) and divided ideal (x u, y). The FIBER lines of the two finished
+  Iso runs (`h-iso-nm-p`, `h-iso-np-p2`) are therefore outputs of the division, uncertified as Rees fibers; the
+  fiber cone of Iso rests on A5-446, which does not use them. `hsat.py` now appends a certificate to each script:
+  the count of divided elements whose leading monomial keeps u, and the test (RS) : u = (RS), which gives
+  (RS) = H : u^infinity for any input. The same-sign X control passes both (count 0, colon equal) modulo 32009 in
+  24 s and over Q(i) in 188 s with the FIBER line unchanged; `c-iso-nm-p` repeats Iso at N- modulo 32009 with
+  the certificate on the workstation. A run started before the certificate existed prints no `CERT` line.
+- Outcome and stop (2026-11-13, 11:55 PST, owner's choice): the two MacBook Iso runs (`h-iso-nm-p2`, N- modulo
+  32029; `h-iso-np-p`, N+ modulo 32009) each printed FIBER dimension 5, multiplicity 23, 68 minimal generators at
+  5,353 s, uncertified like the two before them. The ten open workstation runs were stopped without a FIBER line:
+  Iso and W8 are closed over Q(i) by A5-446 and A5-448, and no open run carried the certificate. Resident sets at
+  the stop: the Q(i) runs of E8-bar and W8 at 11.5 and 3.3 GB after 1 h 33 min, the `sat` W8 run over Q(i) at
+  7.2 GB after 3 h 14 min, the modular runs between 1.4 and 3.3 GB. One certified run replaces them: `c-e8-nm-p`,
+  E8-bar at N- modulo 32009, on the workstation under `ulimit -v 30000000`.
+- Sources of the method, each statement read at its page in a held reading copy (2026-11-13). Huneke and
+  Swanson, Integral Closure of Ideals, Rings, and Modules (2006; sha256
+  `a12705f066aee67648768bc37b58a37c661907dc3918a71974c1441bc551a18b`;
+  [source note](../notes/papers/huneke-swanson-2006-integral-closure-ideals-rings-modules.md)): section 5.5, page 110, the Rees algebra
+  R[It] is R[T_1, ..., T_n] modulo the kernel of T_i -> x_i t, generated by the forms F with F(x_1, ..., x_n) = 0;
+  section 8.2, pages 161 and 162, over a Noetherian local ring (R, m) the fiber cone is R[It] / m R[It], the sum
+  of the I^n / m I^n, and the analytic spread of I is its dimension. Greuel and Pfister, A Singular Introduction
+  to Commutative Algebra, second edition (2008; sha256
+  `062bfc8e5c828b6cb681fbafc882807c6989dee0e852665bccabac5413cff762`;
+  [source note](../notes/papers/greuel-pfister-2008-singular-introduction-commutative-algebra.md)): section 1.8.9, page 81, the saturation
+  I_1 : I_2^infinity is the union of the I_1 : I_2^i and is reached at the first j with
+  I^(j+1) contained in I^(j), I^(j+1) = I^(j) : I_2; Lemma 1.8.16, page 84, the kernel of a ring map x_i -> f_i
+  is the elimination ideal of (I_0, g_j, x_i - f_i). The colon certificate follows from the first: H in (RS)
+  in H : u^infinity and (RS) : u = (RS) give H : u^infinity in (RS) : u^infinity = (RS). Vasconcelos, Arithmetic
+  of Blowup Algebras (1994; sha256 `49431544db5530d32e4ec3c6621eb1aa3ec7fa1c607548155e3d59936d65e334`;
+  [source note](../notes/papers/vasconcelos-1994-arithmetic-blowup-algebras.md)), chapter
+  8, page 196: the kernel of the symmetric algebra S(I) onto the Rees algebra is, over an integral domain R, the
+  R-torsion of S(I), and a nonzero f in I annihilates it. The scripts saturate J plus the 2 x 2 minors
+  y_a G_b - y_b G_a by the pivot generator: after inverting the pivot the minors give y_b = y_p G_b / G_p, so
+  the saturation is the kernel onto the Rees algebra localized at the pivot, and it equals the Rees ideal when
+  the pivot is a nonzerodivisor on the slice ring. Checked for the two certified scripts modulo 32009
+  (Singular 4.4.1, build host, under 1 s each): the slice ideal J of Iso at N- is prime of dimension 5 and
+  degree 2, that of E8-bar at N- prime of dimension 5 and degree 10, J : G_pivot = J in both, pivots 7 and 9 of
+  weight 3. The two certified scripts predate the check; `hsat.py` now writes it into every script as
+  `CERT pivot_nonzerodivisor_mod_J`, which stops the run when it fails, and the same-sign X control passes it
+  with the FIBER line unchanged (16 s). Huneke and Swanson, Definition 5.6.2, page 114: the blowup of I is
+  Proj R[It], covered by the Spec R[I / a_i]; its fiber over the closed point is then Proj of the fiber cone by
+  base change. Baetica, Rees algebra of ideals generated by pfaffians, Communications in Algebra 26 (1998),
+  1769-1778 (sha256 `50946647458f6e3fcc8c0167cb6f085572d5148cd7cc456270232ae731a84dd8`;
+  [source note](../notes/papers/baetica-1998-rees-algebra-pfaffians.md)), pages 1769 and 1770:
+  for the n x n antisymmetric matrix X of indeterminates over a field and I_t the ideal of its 2t-Pfaffians, in
+  non-exceptional characteristic the powers of I_t are integrally closed (Corollary 1.2), the Rees algebra is
+  normal (Corollary 1.3) and Cohen-Macaulay, and R(I_t) / I_1 R(I_t) is the subalgebra generated by the
+  2t-Pfaffians, of the dimension of K[X] (proof of Lemma 1.4): the fiber cone of the generic Pfaffian ideal at
+  the origin is a domain. The 126 generators here are the 4-Pfaffians of a 9 x 9 antisymmetric matrix whose
+  entries are affine in the slice variables, over the slice ring k[s] / J, so the matrix is a specialization and
+  none of these conclusions transfers: the E8-bar fiber cone is not reduced (A5-449) and the W8 one has two
+  components (A5-447), where the generic one is a domain. Sections 2 and 3 of the same paper (pages 1771 to
+  1777) stay with the generic matrix: Theorem 2.1 matches the shape statistic of a standard monomial of
+  Pfaffians with that of its image under the Knuth-Robinson-Schensted correspondence, Proposition 3.1 and
+  Theorem 3.6 give Groebner bases of the symbolic and the ordinary powers of I_t by products of Pfaffians for
+  one term order on the entries X_ij, Theorem 3.4 makes the Rees algebra and the associated graded ring
+  Cohen-Macaulay, and Corollary 3.7 gives the generic fiber cone a finitely generated normal initial algebra,
+  so it is a Cohen-Macaulay domain. Every proof uses the entries as the variables of the term order, so a
+  matrix with affine entries over k[s] / J inherits none of them. Baetica's results bound nothing in the
+  slice computations and are cited for that boundary. Jozefiak and Pragacz, Ideals generated by Pfaffians,
+  Journal of Algebra 61 (1979), 189-198 (sha256
+  `37a386953f0651477faed20e6d5eb08112685cfecc80c4e829d15706cb5fb756`;
+  [source note](../notes/papers/jozefiak-pragacz-1979-ideals-generated-pfaffians.md)), read whole. Two statements hold for
+  every alternating n x n matrix over a commutative Noetherian ring, so for a specialization: Theorem 2.1 and
+  Corollary 2.2 (pages 191 and 192) bound the height of each minimal prime, and the depth, of the ideal of
+  2p-Pfaffians by (n - 2p + 1)(n - 2p + 2) / 2; and Theorem 3.2 with Corollary 3.6 (pages 194 and 197) give
+  a self-dual free resolution of length 6 of the ideal of (n - 2)-Pfaffians for even n when its depth is 6
+  and 2 is invertible, which makes that ideal Gorenstein over a local ring. For the 4-Pfaffians of the
+  9 x 9 slice matrix the bound is 21, above the dimension 5 or 6 of every slice ring, so it excludes
+  nothing here; the resolution concerns 7-Pfaffians of an even matrix and has no instance here. Two
+  statements need independent entries: Theorem 2.3 and Corollaries 2.5 and 2.7 (pages 192 and 193) reach the
+  depth 21 when the entries are algebraically independent over a subring with a flatness hypothesis, or form
+  a regular sequence in a local algebra over a field; the 36 entries of the slice matrix lie in a ring of
+  dimension at most 6, so neither hypothesis holds. The paper states nothing on powers of the ideal, the
+  Rees algebra or the fiber cone. The blowup as the closure of the graph of the map
+  given by the generators is Eisenbud and Harris, The Geometry of Schemes (2000), Proposition IV-22, page 169:
+  for X = Spec A and Y = V(f_1, ..., f_n), the blow-up of Y in X is the closure in X x P^(n-1) of the graph of
+  x -> [f_1(x) : ... : f_n(x)] on X minus Y
+  ([source note](../notes/papers/eisenbud-harris-2000-geometry-of-schemes.md), which names the pages read).
+  Hartshorne, Algebraic Geometry (1977), Proposition 7.14, page 164, gives the universal property of the blowup
+  ([source note](../notes/papers/hartshorne-1977-algebraic-geometry.md)); Huneke and Swanson, section 5.6,
+  pages 114 and 115, define the blowup as Proj R[It] and do not state the graph closure. The passage from the local ring of the sources to
+  the polynomial ring of the scripts is argued in
+  [the kernel-attachments record](../evidence/a5-kernel-attachments/README.md#the-polynomial-ring-computation-equals-the-fiber-cone-of-the-local-ring):
+  each piece I^d / m I^d is annihilated by the maximal ideal, so it equals its localization, and no positive
+  grading is used.
+- Engine and ordering review of the certified scripts (2026-11-13, Singular 4.4.1p5, the passagemath build on
+  the workstation unless stated). The gradings: the exponent differences of every generator of
+  H = J + minors + (u - G_pivot) of E8-bar at N- (9,786 distinct vectors in the 31 variables s, y, u) have rank
+  28, so H is homogeneous for a lattice of gradings of rank 3, and the slice variable s2 has weight 0 in each
+  of them. No grading with every weight positive exists, so a weighted reverse-lexicographic ordering always
+  breaks the homogeneity at s2 and the division by u needs its certificate. The ordering that keeps the
+  grading, (a(grading), a(0, ..., 0, -1), dp), is global, makes the division exact by the argument of Bayer and
+  Stillman, and passes its homogeneity check on the same-sign X control, where its standard basis was stopped
+  unfinished after 300 s on the build host against 8 s under `wp`: refuted as a route. On that control `slimgb`
+  takes 81 s and 1.8 GB against 8 s and 39 MB for `std`, and `option(noredSB)` changes neither the time nor the
+  basis size (2,160); all four variants print the control's FIBER line. `std` uses one thread, so the
+  workstation's other 31 threads serve only independent runs (a second prime, the other basepoint). Measured
+  on the certified Iso run: the standard basis took 1,241 s and the colon certificate 7,444 s of 8,685 s, and
+  the script prints the FIBER line only after the certificate and writes no intermediate basis, so a run that
+  dies in the certificate loses the standard basis. The E8-bar run `c-e8-nm-p` carries `ulimit -v 30000000`
+  (resident 2.6 GB at 3 h 20 min, growing about 0.6 GB per hour); the workstation's rule is a planning sum of
+  52.5 GB with no cap on a job. Two checkpointed runs started beside it at 15:19 PST with the owner's approval,
+  uncapped: `k-e8-nm-p2` (E8-bar at N- modulo 32029, i = 9115) and `k-e8-np-p` (E8-bar at N+ modulo 32009). Each
+  writes its standard basis to `NAME.hs.ssi`, prints `FIBER_BEFORE_CERT` with the minimal generators, then runs
+  the colon certificate and prints `FIBER` and `FIBER_SAME_AS_BEFORE_CERT`. The same script shape on the
+  same-sign X control prints the control's FIBER line and Hilbert numerator on both sides of the certificate
+  (16 s). Falsifier: a FIBER line or Hilbert numerator that differs between the three E8-bar runs.
+- Outcome (2026-11-13, 16:51 PST): a degree-truncated elimination with no saturation does not shorten the E8-bar
+  Rees computation at N- modulo 32009. The header slice ideal J (16 generators, dimension 5, degree 12) is the
+  kernel of an explicit rational parametrization of the slice by five parameters with a rational inverse (both
+  inclusions reduce to zero, Jacobian rank 5 at two points, 0.5 s). Adding the power of (y, T) one above the
+  target degree to the graph ideal leaves the Rees ideal unchanged through that degree. Three bounded
+  workstation runs (3,600 s, 5 GB address space each) all ended at the time limit with exit 124: degree 1 from
+  J (0.55 GB peak), degree 2 from J (2.9 GB), and degree 2 from the parametrization (3.4 GB). The saturation
+  route of the three runs above remains the method.
+- Outcome (2026-11-13, 14:16 PST): the certified Iso run at N- modulo 32009 (`c-iso-nm-p`, workstation) exits 0
+  after 2 h 24 min 45 s at 1.76 GB peak with `CERT divided_basis_leading_u_bad 0`,
+  `CERT saturation_colon_equal 1`, `FIBER dim 5 mult 23 minimal generators 68`, all 68 generators of degree 2, and
+  `STAGE rees_done`. The Rees standard basis took 1,241 s and the colon certificate 7,444 s. The first Hilbert
+  numerator, 1, 0, -68, 452, -1485, 2948, -3630, 2376, 231, -2200, 2376, -1420, 517, -108, 10, equals that of the
+  quadric ideal over Q(i) in the weight-slice record, so the modular Rees fiber of Iso at N- is certified and
+  agrees with A5-446. Log sha256 `67b3b21e5d8e0420a244da5cc151ea7cbc0583776c16247874e98f7f190a64a7`, script sha256
+  `452ea270018c239212a9142f86beb6b6ea757b8a999f88e28496c31a912bdcb5`. `c-e8-nm-p` was still in its Rees standard
+  basis at 2 h 12 min and 2.1 GB.
+- Outcome (2026-11-13, 23:30 PST): weighted order functions on the weight slice decide the E8-bar relation ideal
+  without a Rees standard basis (A5-457: a five-parameter polynomial map of the germ and three weight vectors
+  give the two minimal primes and the embedded prime as limit ideals; about 60 s per basepoint over Q(i), build
+  host). The row predicts the FIBER line of the E8-bar runs: dimension 5, multiplicity 11, 148 minimal generators
+  of degree 2. A direct elimination modulo 32009 of the three initial-form maps at N- returns limit ideals of
+  (dimension, degree, linear forms) (5, 11, 9), (4, 4, 14) and (4, 2, 16), the three associated primes (scratch
+  `docs/local/agents/arc-test/elim.sing`, under 2 min). The same search for Iso and W8 at N- over Q(i) is
+  bounded and open (A5-458). On the map s = (p^2, z, p u, 0, 2 p q, p v, 0, 0, -q^2 - u v) of the Iso germ and
+  on two reparametrizations (q = u k with z = p^2 k - t; q = u k with v = y - u k^2), every weight vector with
+  entries 0 to 2 (0 to 4 on the first map, 0 to 3 on the second) and positive order on the slice coordinates
+  gives initial forms of Jacobian rank at most 4 at one rational point, against dimension 5 for the fiber cone;
+  a rank at one point bounds the dimension of the limit family from below only. On the map
+  s = (p^2, p a, p u, 0, 2 p q, p v, 0, p b, -q^2 - u v - a b) of the W8 germ, equal weights give rank 6 at
+  one rational point, so one limit family of dimension 6, and no other weight vector with entries 0 to 2
+  reaches rank 6 at that point; which of the two primes the family fills was not computed. The negative covers
+  these maps, weight ranges and points alone.
