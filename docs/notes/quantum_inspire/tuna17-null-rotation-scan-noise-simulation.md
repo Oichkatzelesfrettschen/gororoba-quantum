@@ -105,6 +105,16 @@ conditional phase under phase damping per pulse the x class leads the expected-v
 
 The run ended 414 s before its limit, so a repeat at these counts needs fewer series or a reduced truth list.
 
+Replay on a CPU: the record's first series of every scenario and regime, its expected-value labels and its summary
+reproduce on a four-core x86-64 virtual machine under the pinned Python 3.14.7 environment at commit `88418db13`
+(80 scenarios, 1 h 29 min 42 s wall, 0.67 GB resident). The check runs on demand, since its time exceeds an
+admission gate's:
+
+```sh
+"$PYTHON" -B -W error scripts/qi_pathion_null_rotation_scan_noise.py --series 1 --replay \
+	results/kaggle/2026-11-14T043839Z-gororoba-null-rotation-scan-gate-noise-fit/output/output/null-rotation-scan-noise.json
+```
+
 ## Record of the earlier decision
 
 `results/kaggle/2026-11-13T222402Z-gororoba-null-rotation-scan-noise` holds the same simulation of the earlier
