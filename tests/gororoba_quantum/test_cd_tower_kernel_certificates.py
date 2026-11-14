@@ -12,6 +12,7 @@ mutated inputs to fail.
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "docs/evidence/cd-tower-kernel-certificates"))
@@ -26,12 +27,12 @@ import parallel  # noqa: E402
 PRIMES = (2, 3, 5, 7, 32009, 32029)
 
 
-def records() -> list[dict[str, object]]:
-    points: list[dict[str, object]] = json.loads(kc.CERTIFICATES.read_text(encoding="utf-8"))["points"]
+def records() -> list[dict[str, Any]]:
+    points: list[dict[str, Any]] = json.loads(kc.CERTIFICATES.read_text(encoding="utf-8"))["points"]
     return points
 
 
-def point_defects(record: dict[str, object]) -> list[str]:
+def point_defects(record: dict[str, Any]) -> list[str]:
     """Defects of a record against the point recomputed from the strata representative of its name."""
     split = list(strata_regularity.REPS[str(record["name"])])
     problems = kc.defects(record, kc.point(split))
@@ -40,7 +41,7 @@ def point_defects(record: dict[str, object]) -> list[str]:
     return problems
 
 
-def modular_nullities(record: dict[str, object]) -> dict[int, int]:
+def modular_nullities(record: dict[str, Any]) -> dict[int, int]:
     left = kc.left_matrix(record["point"])
     return {prime: kc.DIM - exact_rank.rank_mod(left, prime) for prime in PRIMES}
 
@@ -74,7 +75,7 @@ def test_modular_nullity_equals_the_certified_one_exactly_off_the_scalar() -> No
     nullities = parallel.ordered_map(modular_nullities, records(), min_items=1)
     wrong = []
     for record, by_prime in zip(records(), nullities, strict=True):
-        scalar, nullity = int(record["scalar"]), int(record["nullity"])  # type: ignore[call-overload]
+        scalar, nullity = int(record["scalar"]), int(record["nullity"])
         for prime, value in by_prime.items():
             if (scalar % prime != 0 and value != nullity) or (scalar % prime == 0 and value <= nullity):
                 wrong.append((record["name"], prime, value))
@@ -90,13 +91,13 @@ def test_rocq_file_is_the_rendering_of_the_certificates() -> None:
 def test_mutated_inputs_fail_the_identities() -> None:
     """A flipped sign in the point, a changed kernel vector entry and a doubled scalar each break an identity."""
     record = records()[0]
-    point = list(record["point"])  # type: ignore[call-overload]
+    point = list(record["point"])
     flipped = [-x if index == 27 else x for index, x in enumerate(point)]
     if flipped == point or not kc.defects(record, flipped):
         raise AssertionError("the certificate of W8 must fail at the point with the sign of e_27 flipped")
-    vectors = [list(row) for row in record["vectors"]]  # type: ignore[attr-defined]
+    vectors = [list(row) for row in record["vectors"]]
     vectors[0][0] += 1
     if not kc.defects({**record, "vectors": vectors}, point):
         raise AssertionError("a certificate with one changed kernel vector entry must fail")
-    if not kc.defects({**record, "scalar": 2 * int(record["scalar"])}, point):  # type: ignore[call-overload]
+    if not kc.defects({**record, "scalar": 2 * int(record["scalar"])}, point):
         raise AssertionError("a certificate with a doubled scalar must fail")

@@ -13,8 +13,9 @@ Two Rocq files extend the commutative-ring tower of
   nullity 8, 12 and 16 of the 32-dimensional Cayley-Dickson algebra.
 
 The result, for each point: the kernel of left multiplication by y contains n
-explicit vectors, d times every kernel element is a combination of them, and
-where the image of d is invertible the kernel is the free module on them. Here
+explicit vectors, d times every kernel element is a combination of them, a
+vanishing combination has every coefficient annihilated by d, and where the
+image of d is invertible the kernel is the free module on them. Here
 n is the nullity (8, 12 or 16) and d is 2 at eleven points and 50 at the point
 of V.
 
@@ -45,10 +46,15 @@ C V = d I_n.
 | `splitting` | h(d) z = back(y z) + sum_j f_j(z) v_j for every z |
 | `kernel_spanned` | y z = 0 implies h(d) z = sum_j f_j(z) v_j |
 | `coefficients_recovered` | f_l(sum_j a_j v_j) = h(d) a_l |
+| `combination_zero_coefficients` | sum_j a_j v_j = 0 implies h(d) a_l = 0 for l below n |
 | `kernel_free_basis` | with an inverse of h(d): y z = 0 exactly when z = sum_j (inverse f_j(z)) v_j |
 | `kernel_coefficients_unique` | with an inverse of h(d): the coefficients of a combination are inverse f_l of it |
 
 The last two say that the kernel is the free B-module on v_0, ..., v_(n-1).
+Where h(d) is a nonzero divisor of B and has no inverse,
+`combination_zero_coefficients` gives the linear independence of the vectors
+and `kernel_spanned` says that h(d) annihilates the quotient of the kernel by
+their span.
 The proofs check the identities on the basis vectors over A and extend them
 by `tmap_basis`, `tmap_mul`, `target_map_tmap` and `RingTowerBasis.linear_ext`;
 no ordering, division or characteristic hypothesis enters before the inverse
@@ -80,8 +86,8 @@ coordinates y_k = Re z_k and y_(16+k) = Im z_k.
 The scalar d is the largest Smith invariant of L, so it is the least integer
 for which the splitting has integer entries. For each point the file states
 `<point>_kernel_vectors`, `<point>_kernel_spanned`,
-`<point>_coefficients_recovered` and `<point>_kernel_free_basis` over every
-commutative ring D, with h the homomorphism from Z (`IntegerHom`). `Mod7`
+`<point>_coefficients_recovered`, `<point>_combination_zero_coefficients` and
+`<point>_kernel_free_basis` over every commutative ring D, with h the homomorphism from Z (`IntegerHom`). `Mod7`
 instantiates the functor at Zmod 7, where 2 4 = 1 and 50 = 1, and
 `<point>_kernel_mod7` discharges the inverse, so the hypotheses have a model.
 
@@ -93,8 +99,8 @@ instantiates the functor at Zmod 7, where 2 4 = 1 and 50 = 1, and
   nullity takes only the values 0, 4, 8, 12 and 16; those rest on the group
   action and the Pfaffian equations of the strata scripts (computed).
 - Over a ring in which the image of d is a zero divisor or zero the theorems
-  give the containment of the n vectors in the kernel and `kernel_spanned`,
-  and no rank. The test below computes the rank of L modulo 2 at every point
+  give the containment of the n vectors in the kernel, `kernel_spanned` and
+  `combination_zero_coefficients`, and no rank. The test below computes the rank of L modulo 2 at every point
   and modulo 5 at the point of V: the nullity there is larger than n
   (computed, not proved in Rocq).
 - The point of V is one representative, with y y = -50; another point of the
@@ -104,10 +110,11 @@ instantiates the functor at Zmod 7, where 2 4 = 1 and 50 = 1, and
   cd_core"). The certificates were computed with `cd_sign` and are accepted
   by the Rocq product on all twelve points; that agreement is a computed
   check of the binding at these inputs, not a further theorem.
-- The complex points of the strata (kernels over Q(i) and the complex fiber)
-  are covered through base change: Q(i) receives Z and 2 and 50 are
-  invertible in it. A point whose own coordinates are not integers needs a
-  certificate over its ring of definition, by the same functor.
+- The twelve integer points, viewed over Q(i) or the complex numbers, are
+  covered through base change: each of these fields receives Z, and 2 and 50
+  are invertible in it. Every other point of a stratum, and in particular a
+  point whose coordinates are not integers, needs its own certificate over
+  its ring of definition, by the same functor.
 
 ## Binding to cd_core and to the strata representatives
 
@@ -118,10 +125,13 @@ three matrix identities in integer arithmetic, compares the nullity and d
 with python-flint's rank and Smith form, and requires
 `proofs/CdTowerCanonicalKernels.v` to be the rendering of the JSON, so the
 Rocq tables are the checked ones. `--generate` recomputes the certificates
-from a unimodular diagonalization and an LLL reduction of the kernel basis
-and rewrites both files; the rendering is deterministic, the reduction need
-not reproduce the same basis on another python-flint version, and `--check`
-does not depend on it.
+from a unimodular diagonalization and an LLL reduction of the kernel basis,
+runs the same identity, rank and Smith-form checks on them, and then
+replaces both files; a certificate that fails leaves both files as they
+were. The rendering is deterministic, the reduction need not reproduce the
+same basis on another python-flint version, and `--check` does not depend on
+it. A regenerated basis changes the Rocq tables, so the receipts and
+`source_hashes.sha256` are regenerated with it.
 
 `tests/gororoba_quantum/test_cd_tower_kernel_certificates.py` runs the same
 identities under the `tests` check, compares the nullities with the table
@@ -132,12 +142,14 @@ of e_27 flipped, one changed kernel vector entry, and a doubled d.
 
 ## Assumptions
 
-[assumptions.txt](assumptions.txt) holds 21 `Print Assumptions` queries on the
-Zmod 7 instance, the twelve `<point>_kernel_mod7` and nine statements of
+[assumptions.txt](assumptions.txt) holds 24 `Print Assumptions` queries on the
+Zmod 7 instance, the twelve `<point>_kernel_mod7` and twelve statements of
 three points; every one reads "Closed under the global context".
-[statements.txt](statements.txt) prints the five generic theorems and three
+[statements.txt](statements.txt) prints six generic theorems and three
 of the instance theorems. [kernel.txt](kernel.txt) is the `rocq check`
-context of the two libraries: it lists no axiom. No proof introduces an axiom
+context of the two libraries: it lists no axiom. The receipts are the bytes
+Rocq prints, trailing spaces included, as in every proof bundle of this
+directory; the replay compares them with `cmp`. No proof introduces an axiom
 or an `Admitted`.
 
 ## Replay

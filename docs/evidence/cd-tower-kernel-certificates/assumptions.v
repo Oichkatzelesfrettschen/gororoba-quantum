@@ -17,9 +17,12 @@ Print Assumptions Nm_kernel_mod7.
 Print Assumptions Mod7.W8_kernel_vectors.
 Print Assumptions Mod7.W8_kernel_spanned.
 Print Assumptions Mod7.W8_coefficients_recovered.
+Print Assumptions Mod7.W8_combination_zero_coefficients.
 Print Assumptions Mod7.V_kernel_vectors.
 Print Assumptions Mod7.V_kernel_spanned.
 Print Assumptions Mod7.V_coefficients_recovered.
+Print Assumptions Mod7.V_combination_zero_coefficients.
 Print Assumptions Mod7.Np_kernel_vectors.
 Print Assumptions Mod7.Np_kernel_spanned.
 Print Assumptions Mod7.Np_coefficients_recovered.
+Print Assumptions Mod7.Np_combination_zero_coefficients.

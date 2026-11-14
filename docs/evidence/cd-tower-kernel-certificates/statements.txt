@@ -39,6 +39,20 @@ Generic.coefficients_recovered
             (fun j : nat =>
              Generic.BC.TB.scale k (a j) (Generic.BC.tmap k (vectors j)))) =
        Zmod7.mul (ZmodHom.h d) (a l)
+Generic.combination_zero_coefficients
+     : forall (k n : nat) (d : IntegerRing.t)
+         (functionals vectors : nat -> Generic.BC.TA.cd k),
+       (forall j l : nat,
+        j < n ->
+        l < n ->
+        Generic.source_pair k (functionals j) (vectors l) =
+        (if j =? l then d else IntegerRing.zero)) ->
+       forall a : nat -> Zmod7.t,
+       Generic.BC.SB.tsum k n
+         (fun j : nat =>
+          Generic.BC.TB.scale k (a j) (Generic.BC.tmap k (vectors j))) =
+       Generic.BC.TB.zero k ->
+       forall l : nat, l < n -> Zmod7.mul (ZmodHom.h d) (a l) = Zmod7.zero
 Generic.kernel_free_basis
      : forall (k n : nat) (y : Generic.BC.TA.cd k) 
          (d : IntegerRing.t)

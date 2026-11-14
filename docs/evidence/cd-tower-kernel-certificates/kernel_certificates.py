@@ -16,7 +16,8 @@ certificate, checks it with cd_core and renders the Rocq file from it.
 
 --generate computes each certificate from a unimodular diagonalization U L W = D of L (d is the least common
 multiple of the nonzero diagonal entries, V the last n columns of W reduced by LLL, C = d times the last n rows of
-the inverse of W, P = W (d / D) U) and writes certificates.json and the Rocq file. It needs python-flint.
+the inverse of W, P = W (d / D) U), checks every certificate as --check does, and then writes certificates.json
+and the Rocq file; a failed check leaves both files as they were. It needs python-flint.
 --check reads certificates.json, recomputes y and L from the strata representatives and cd_core, verifies the
 three identities and the rank in exact integer arithmetic, and requires the Rocq file to be the rendering of the
 JSON; it uses python-flint only for the independent rank and Smith invariants.
@@ -31,9 +32,11 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
@@ -135,7 +138,7 @@ def diagonalize(matrix: Matrix) -> tuple[Matrix, Matrix, Matrix, Matrix]:
     return u, w, w_inverse, a
 
 
-def certificate(item: tuple[str, list[int]]) -> dict[str, object]:
+def certificate(item: tuple[str, list[int]]) -> dict[str, Any]:
     """The certificate of one point, from a diagonalization of L and an LLL reduction of the kernel basis."""
     from flint import fmpz_mat
 
@@ -165,15 +168,15 @@ def certificate(item: tuple[str, list[int]]) -> dict[str, object]:
             "vectors": vectors, "functionals": functionals, "back": transpose(back)}  # fmt: skip
 
 
-def defects(record: dict[str, object], y: list[int]) -> list[str]:
+def defects(record: dict[str, Any], y: list[int]) -> list[str]:
     """The identities of the certificate that fail for the point y, in exact integer arithmetic."""
     out = []
     left = left_matrix(y)
-    vectors = transpose(record["vectors"])  # type: ignore[arg-type]
-    functionals: Matrix = record["functionals"]  # type: ignore[assignment]
-    back = transpose(record["back"])  # type: ignore[arg-type]
-    scalar: int = record["scalar"]  # type: ignore[assignment]
-    nullity: int = record["nullity"]  # type: ignore[assignment]
+    vectors = transpose(record["vectors"])
+    functionals: Matrix = record["functionals"]
+    back = transpose(record["back"])
+    scalar: int = record["scalar"]
+    nullity: int = record["nullity"]
     if len(vectors[0]) != nullity or len(functionals) != nullity:
         out.append("shape")
     if any(any(row) for row in product(left, vectors)):
@@ -189,7 +192,7 @@ def defects(record: dict[str, object], y: list[int]) -> list[str]:
     return out
 
 
-def checked(item: tuple[dict[str, object], list[int]]) -> dict[str, object]:
+def checked(item: tuple[dict[str, Any], list[int]]) -> dict[str, Any]:
     """Defects of one record against its strata representative, with flint's rank and Smith invariants of L."""
     from flint import fmpz_mat
 
@@ -217,7 +220,7 @@ def rocq_table(rows: list[list[int]]) -> str:
     return "[" + ";\n     ".join(rocq_list(row) for row in rows) + "]"
 
 
-def render(records: list[dict[str, object]]) -> str:
+def render(records: list[dict[str, Any]]) -> str:
     """The Rocq file of the certificates; a deterministic function of the JSON records."""
     out = [
         "(** Kernels of left multiplication at the canonical points of the A_5 nullity strata.",
@@ -258,10 +261,10 @@ def render(records: list[dict[str, object]]) -> str:
         name, n, d = record["name"], record["nullity"], record["scalar"]
         out += [
             f"(** {name}: split coordinates {record['split']}, nullity {n}, d = {d}. *)",
-            f"Definition {name}_point : TA.cd 5 := of_list 5 {rocq_list(record['point'])}.",  # type: ignore[arg-type]
-            f"Definition {name}_vectors : nat -> TA.cd 5 := row\n    {rocq_table(record['vectors'])}.",  # type: ignore[arg-type]
-            f"Definition {name}_functionals : nat -> TA.cd 5 := row\n    {rocq_table(record['functionals'])}.",  # type: ignore[arg-type]
-            f"Definition {name}_back : nat -> TA.cd 5 := row\n    {rocq_table(record['back'])}.",  # type: ignore[arg-type]
+            f"Definition {name}_point : TA.cd 5 := of_list 5 {rocq_list(record['point'])}.",
+            f"Definition {name}_vectors : nat -> TA.cd 5 := row\n    {rocq_table(record['vectors'])}.",
+            f"Definition {name}_functionals : nat -> TA.cd 5 := row\n    {rocq_table(record['functionals'])}.",
+            f"Definition {name}_back : nat -> TA.cd 5 := row\n    {rocq_table(record['back'])}.",
             "",
             f"Lemma {name}_vectors_annihilated : forall j, (j < {n})%nat ->",
             f"  TA.mul 5 {name}_point ({name}_vectors j) = TA.zero 5.",
@@ -298,6 +301,14 @@ def render(records: list[dict[str, object]]) -> str:
             f"  exact (coefficients_recovered 5 {n} {d} {name}_functionals {name}_vectors {name}_functionals_dual a).",
             "Qed.",
             "",
+            f"Theorem {name}_combination_zero_coefficients (a : nat -> D.t) :",
+            f"  SB.tsum 5 {n} (fun j => TB.scale 5 (a j) (tmap 5 ({name}_vectors j))) = TB.zero 5 ->",
+            f"  forall l, (l < {n})%nat -> D.mul (H.h {d}) (a l) = D.zero.",
+            "Proof.",
+            f"  exact (combination_zero_coefficients 5 {n} {d} {name}_functionals {name}_vectors",
+            f"           {name}_functionals_dual a).",
+            "Qed.",
+            "",
             f"Theorem {name}_kernel_free_basis (inverse : D.t) : D.mul (H.h {d}) inverse = D.one -> forall z,",
             f"  TB.mul 5 (tmap 5 {name}_point) z = TB.zero 5 <->",
             f"  z = SB.tsum 5 {n} (fun j => TB.scale 5 (D.mul inverse "
@@ -330,12 +341,19 @@ def render(records: list[dict[str, object]]) -> str:
     ]
     for record in records:
         name, d = record["name"], record["scalar"]
-        inverse = pow(int(d), -1, 7)  # type: ignore[call-overload]
+        inverse = pow(int(d), -1, 7)
         out += [
             f"Definition {name}_kernel_mod7 :=",
             f"  Mod7.{name}_kernel_free_basis (Zmod.of_Z 7 {inverse}) ltac:(vm_compute; reflexivity).",
         ]
     return "\n".join(out) + "\n"
+
+
+def replace_text(path: Path, text: str) -> None:
+    """Write text beside path and rename it over path, so a reader sees the old bytes or the new ones."""
+    scratch = path.with_name(path.name + ".new")
+    scratch.write_text(text, encoding="utf-8")
+    os.replace(scratch, path)
 
 
 def main() -> int:
@@ -346,16 +364,18 @@ def main() -> int:
     args = parser.parse_args()
     reps = representatives()
     if args.generate:
-        records = parallel.ordered_map(certificate, list(reps.items()), min_items=1)
-        text = json.dumps({"schema": "cd-tower-kernel-certificates-v1", "points": records}, indent=1)
+        computed = parallel.ordered_map(certificate, list(reps.items()), min_items=1)
+        text = json.dumps({"schema": "cd-tower-kernel-certificates-v1", "points": computed}, indent=1)
         # One list of integers per line: a matrix row, a point or a split-coordinate vector.
         text = re.sub(
             r"\[\s+((?:-?\d+,\s+)*-?\d+)\s+\]", lambda found: "[" + " ".join(found.group(1).split()) + "]", text
         )
-        CERTIFICATES.write_text(text + "\n", encoding="utf-8")
-    records = json.loads(CERTIFICATES.read_text(encoding="utf-8"))["points"]
+        text += "\n"
+    else:
+        text = CERTIFICATES.read_text(encoding="utf-8")
+    records = json.loads(text)["points"]
     if [r["name"] for r in records] != list(NULLITY):
-        raise ValueError("certificates.json does not list the twelve points in order")
+        raise ValueError("the certificate data does not list the twelve points in order")
     results = parallel.ordered_map(checked, [(r, reps[r["name"]]) for r in records], min_items=1)
     failed = [r for r in results if r["defects"]]
     for r in results:
@@ -363,10 +383,16 @@ def main() -> int:
         print(
             f"{r['name']:5s} nullity {r['nullity']:2d} d {r['scalar']:2d} Smith invariants {r['invariants']} {verdict}"
         )
-    if ROCQ_FILE.read_text(encoding="utf-8") != render(records):
+    if failed:
+        return 1
+    if args.generate:
+        # Both files are written only after every regenerated certificate passes, the data file first.
+        replace_text(CERTIFICATES, text)
+        replace_text(ROCQ_FILE, render(records))
+    elif ROCQ_FILE.read_text(encoding="utf-8") != render(records):
         print(f"{ROCQ_FILE.relative_to(ROOT)} is not the rendering of {CERTIFICATES.relative_to(ROOT)}")
         return 1
-    return 1 if failed else 0
+    return 0
 
 
 if __name__ == "__main__":

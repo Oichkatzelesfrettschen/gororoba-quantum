@@ -7,6 +7,7 @@ Module Generic := KernelCertificate IntegerRing Zmod7 ZmodHom.
 Check Generic.kernel_vectors.
 Check Generic.kernel_spanned.
 Check Generic.coefficients_recovered.
+Check Generic.combination_zero_coefficients.
 Check Generic.kernel_free_basis.
 Check Generic.kernel_coefficients_unique.
 Check Mod7.W8_kernel_free_basis.

@@ -4,8 +4,9 @@ name: proofs
 # main touches a proof source, a replay bundle, the replay driver or a pin.
 # The path filter leaves the workflow unrun on other changes, so it is not a
 # required check (a required check from a skipped workflow stays pending).
-# A pull request compiles the bundles that take under two minutes; a push to
-# main and a manual run add the Stiefel bundle, which takes about nine.
+# A pull request compiles every bundle except the Stiefel bundle; the longest
+# of them takes about three minutes on the build host. A push to main and a
+# manual run add the Stiefel bundle, which takes about nine.
 # ci/check_rocq_ci_pins.py holds the path lists, the pin, the replay selection
 # and the open_gororoba fetch in agreement with the bundles.
 on:
