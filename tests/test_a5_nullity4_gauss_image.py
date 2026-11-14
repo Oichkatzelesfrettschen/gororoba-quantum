@@ -100,6 +100,43 @@ def test_kernel_planes_shared_by_exact_fixtures() -> None:
     _same((len(set(classes)), classes[5], classes[22], classes[26], classes[29]), (54, 3, 17, 17, 29))
 
 
+def test_kernel_form_of_the_fiber_at_three_exact_fixtures_and_one_grid_exception() -> None:
+    _same(gauss.sign_identity(), True)
+    record = json.loads(gauss.FIXTURES.read_text(encoding="utf-8"))["fixtures"]
+    splits = {number: [int(value) for value in record[number]["split_point"]] for number in (29, 0, 1)}
+    # A grid point of V(G) minus V(Q) whose kernel plane consists of higher zero divisors while dim L = 2.
+    # Its common kernel has dimension 3 and the conjugate plane cuts it to the line of z.
+    splits[-1] = [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, -1, 1, 0, 0]
+    found = {}
+    for number, split in splits.items():
+        reduced = [value % gauss.PRIME for value in split]
+        form = gauss.kernel_form((reduced, reduced))
+        _same(form["antisymmetric"], True)
+        found[number] = (
+            form["fiber_dimension"],
+            form["plane_nullity"],
+            form["common_kernel"],
+            form["common_kernel_cut"],
+        )
+    _same(found, {29: (2, 3, 1, 1), 0: (6, 7, 3, 3), 1: (12, 9, 6, 6), -1: (2, 7, 3, 1)})
+    _same(gauss.exact_plane_nullities(splits[-1]), [7] * 7)
+    # The probe vector is the one vector of this plane, among the seven, that is a higher zero divisor.
+    _same(gauss.exact_plane_nullities([1, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, -1, 0]), [3] * 6 + [7])
+    # Four net vectors of nullity 5 are two projective points: neither coprime combination has entries -1..1.
+    reduced = [int(value) % gauss.PRIME for value in record[65]["split_point"]]
+    _same(gauss.kernel_form((reduced, reduced))["three_plane_net"], [[3, 338, 143, 3, 3], [5, 4, 2, 2, 3]])
+
+
+def test_gaussian_points_and_general_planes_of_one_block() -> None:
+    number, _, split = next(job for job in gauss._fixture_splits() if job[1] == gauss.STRATA[0])
+    rows = gauss.gaussian_block((number, [value % gauss.PRIME for value in split]))
+    _same(sum(rows[0]) + len(rows) - 1, gauss.GAUSSIAN_PER_FIXTURE)
+    # Sample 33 at this fixture has a direction tangent to V(Q), which returns the fixture: z' = w'.
+    _same((number, rows[0]), (13, [0, 0, 1, 0]))
+    _same({tuple(row) for row in rows[1:]}, {(1, 0, 2, 3, 1, 1)})
+    _same([set(gauss.plane_block((stratum, 0))) for stratum in gauss.STRATA], [{1}, {1}, {3}])
+
+
 def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypatch: pytest.MonkeyPatch) -> None:
     record = json.loads(gauss.RECORD.read_text(encoding="utf-8"))
     # The digests of the live source files are compared by the on-demand replay gate; here the rule that compares
@@ -162,6 +199,47 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         "growing rank": lambda r: r["image"][2].update(quadric_ranks=[1, r["image"][2]["quadric_ranks"][1]]),
         "few samples": lambda r: r["image"][0].update(quadric_samples=[100, 200]),
         "missing stratum": lambda r: r.update(image=r["image"][:2]),
+        "sign identity": lambda r: r.update(sign_identity=False),
+        "antisymmetry": lambda r: r["exact_fixture_kernel_forms"][3].update(antisymmetric=False),
+        "modular fiber": lambda r: r["exact_fixture_kernel_forms"][0].update(fiber_dimension=2),
+        "cut kernel": lambda r: r["exact_fixture_kernel_forms"][0].update(common_kernel_cut=1),
+        "plane nullity": lambda r: r["exact_fixture_kernel_forms"][1].update(plane_nullity=3),
+        "net": lambda r: r["exact_fixture_kernel_forms"][1].update(three_plane_net=[[3, 342, 145, 3, 3]]),
+        "short net": lambda r: r["exact_fixture_kernel_forms"][1].update(three_plane_net=[[3, 294, 129, 3, 3]]),
+        "net points": lambda r: r["exact_fixture_kernel_forms"][65].update(
+            three_plane_net=[[3, 338, 144, 3, 3], [5, 4, 1, 2, 3]]
+        ),
+        "net line off the plane": lambda r: r["exact_fixture_kernel_forms"][0]["three_plane_net"][1].__setitem__(4, 3),
+        "net points on a line": lambda r: r["exact_fixture_kernel_forms"][65]["three_plane_net"][1].__setitem__(3, 1),
+        "swapped kernel forms": lambda r: r["exact_fixture_kernel_forms"].__setitem__(
+            slice(13, 15), r["exact_fixture_kernel_forms"][13:15][::-1]
+        ),
+        "missing kernel form": lambda r: r.update(exact_fixture_kernel_forms=r["exact_fixture_kernel_forms"][:65]),
+        "grid kernel form": lambda r: r["grid"]["kernel_form_classes"][0].__setitem__(5, 1),
+        "grid cut kernel": lambda r: r["grid"]["kernel_form_classes"][0].__setitem__(4, 2),
+        "grid without exceptions": lambda r: r["grid"].update(
+            kernel_form_classes=[row for row in r["grid"]["kernel_form_classes"] if row[1:3] != [2, 7]]
+        ),
+        "exact plane nullity": lambda r: r["grid"]["kernel_form_exceptions"][0].update(exact_plane_nullities=[3] * 7),
+        "exact plane nullity raised": lambda r: r["grid"]["kernel_form_exceptions"][8].update(
+            exact_plane_nullities=[7] * 7
+        ),
+        "plane exception point": lambda r: r["grid"]["kernel_form_exceptions"][0].update(split_point=[0] * 15),
+        "plane exception repeated": lambda r: r["grid"]["kernel_form_exceptions"][1].update(
+            split_point=r["grid"]["kernel_form_exceptions"][0]["split_point"]
+        ),
+        "plane exceptions exchanged": lambda r: (
+            r["grid"]["kernel_form_exceptions"][0].update(common_kernel=1, exact_plane_nullities=[3] * 6 + [7]),
+            r["grid"]["kernel_form_exceptions"][8].update(common_kernel=3, exact_plane_nullities=[7] * 7),
+        ),
+        "plane exception dropped": lambda r: r["grid"].update(
+            kernel_form_exceptions=r["grid"]["kernel_form_exceptions"][1:]
+        ),
+        "gaussian class": lambda r: r["gaussian_points"]["classes"][0].__setitem__(2, 6),
+        "gaussian count": lambda r: r["gaussian_points"].update(rejected=[2, 1, 8, 1]),
+        "general planes": lambda r: r["general_planes"][0].update(common_kernels=[1, 3]),
+        "few planes": lambda r: r["general_planes"][1].update(planes=999),
+        "missing planes": lambda r: r.update(general_planes=r["general_planes"][:2]),
         "control": lambda r: r["control"].update(rank_bordered=14),
         "fixture": lambda r: r["exact_fixtures"].update(first_coordinate_zero=65),
     }
@@ -170,3 +248,9 @@ def test_retained_record_passes_its_rules_and_each_mutation_fails_them(monkeypat
         change(mutated)
         if gauss.verdict(mutated) == []:
             raise AssertionError(f"a record mutated at {name} passes")
+
+
+def test_replay_comparison_separates_a_boolean_from_an_integer() -> None:
+    # True == 1 in Python, so a comparison of parsed records accepts either; the replay compares the retained text.
+    _same({"plane_equals_line": True} == {"plane_equals_line": 1}, True)
+    _same(gauss._serialized({"plane_equals_line": True}) == gauss._serialized({"plane_equals_line": 1}), False)
