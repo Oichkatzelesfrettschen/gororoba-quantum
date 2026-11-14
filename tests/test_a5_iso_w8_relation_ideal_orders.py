@@ -138,6 +138,17 @@ MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
         _function("N-", "w8", "prime20", "generator_orders", [3] * 24),
         "prime20 generator orders",
     ),
+    "one generator order raised": (
+        lambda record: _cell(record, "N-", "iso")["order_functions"]["prime23"]["generator_orders"].__setitem__(
+            _cell(record, "N-", "iso")["order_functions"]["prime23"]["generator_orders"].index(4), 5
+        ),
+        "prime23 generator orders",
+    ),
+    "a boolean rank": (_function("N+", "iso", "prime23", "initial_jacobian_rank", True), "not an integer"),
+    "a boolean control rank": (
+        _control("N-", "w8", "deficient_weights", "initial_jacobian_rank", False),
+        "deficient-weights control initial_jacobian_rank",
+    ),
     "germ ideal nonzero on the map": (_set("N-", "iso", "germ_nonzero_on_parametrization", 1), "germ_nonzero"),
     "map of the other basepoint recorded": (
         lambda record: _cell(record, "N+", "w8").update(parametrization=_cell(record, "N-", "w8")["parametrization"]),
@@ -147,7 +158,7 @@ MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "iso with two minimal primes": (_set("N-", "iso", "minimal_primes", [[5, 11], [5, 12]]), "minimal_primes"),
     "deficient control reaches the dimension": (
         _control("N-", "iso", "deficient_weights", "initial_jacobian_rank", 5),
-        "reaches the dimension",
+        "deficient-weights control initial_jacobian_rank",
     ),
     "other map satisfies the germ ideal": (
         _control("N+", "iso", "other_basepoint_parametrization", "germ_nonzero", 0),
@@ -177,7 +188,13 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
 def test_the_slice_comparison_rejects_other_relations() -> None:
     record = copy.deepcopy(_record())
     record["cells"][0]["relations_sha256"] = "0" * 64
-    _same(orders.slice_problems(record), ["iso N-: the relations differ from those of the weight-slice record"])
+    _same(
+        orders.slice_problems(record),
+        [
+            "iso N-: the relations differ from those of the weight-slice record",
+            "iso N-: the relations differ from those of the membership record",
+        ],
+    )
 
 
 @pytest.mark.audit
@@ -187,3 +204,4 @@ def test_the_retained_record_binds_the_current_input_digests() -> None:
     for name in orders.INPUTS:
         _same(record["inputs"][name], hashlib.sha256((ATTACH / name).read_bytes()).hexdigest())
     _same(record["weight_slice_record_sha256"], hashlib.sha256(orders.WEIGHT_SLICE.read_bytes()).hexdigest())
+    _same(record["membership_record_sha256"], hashlib.sha256(orders.MEMBERSHIP.read_bytes()).hexdigest())

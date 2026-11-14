@@ -22,6 +22,16 @@ The standard basis of the producer is that of J + T + m (P_ab reduced modulo J),
 reduced product differs from G_a G_b by an element of J. The control substitutes a single product G_a G_b with a
 nonzero normal form for a relation: it is rejected.
 
+Two further checks bind what the rows above this one assume. Selection: each of the 126 principal 4-Pfaffians reduces
+to zero modulo the standard basis of J + T' + m (Pfaffians) + (G), with T' the monomials above the largest Pfaffian
+weight; the Pfaffians are weight-homogeneous, so by the lemma each lies in J + (G) + m (Pfaffians), and Nakayama's
+lemma in the local ring gives (Pfaffians) = (G) there: the selected G_a generate the Pfaffian ideal. Spanning: the
+coefficient matrix M of the normal forms of the n products has rank n minus the number of relations, and the
+relations are linearly independent, so they are a basis of the kernel of M. A form q of degree 2 with q(G) in H has
+normal form zero, hence lies in that kernel; the relations therefore span every degree-2 form with q(G) in H. Passing
+from "q(G) in J + m I^2 in the local ring" to "q(G) in H" is the argument of the README section on the polynomial
+ring computation, which this producer does not recheck.
+
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py
 [--check]
 """
@@ -66,6 +76,18 @@ print("RESULT generators_inhomogeneous "+string(ginh));
 int crej=-1;
 for(ub=1;ub<=n;ub++){ if(N[ub]!=0 and crej<0){ crej=(reduce(G[IX[ub][1]]*G[IX[ub][2]],sQ)!=0); } }
 print("RESULT control_single_product_rejected "+string(crej));
+int sfail=0; ideal TG=std(J+TR+m*PF+G);
+for(ua=1;ua<=ncols(PF);ua++){ if(reduce(PF[ua],TG)!=0){sfail++;} }
+print("RESULT selection_failures "+string(sfail));
+int smin=-1; int sbad=0;
+for(ua=1;ua<=ncols(TR);ua++){ if(TR[ua]!=0){
+  if(size(TR[ua])!=1){sbad++;} if(smin<0 or tdeg(TR[ua])<smin){smin=tdeg(TR[ua]);} } }
+print("RESULT selection_truncation_bound "+string(dmax));
+print("RESULT selection_truncation_min_weight "+string(smin));
+print("RESULT selection_truncation_non_monomials "+string(sbad));
+print("RESULT spanning_products "+string(n));
+print("RESULT spanning_normal_form_rank "+string(rank(M)));
+print("RESULT spanning_relation_rank "+string(rank(matrix(S))));
 """
 
 
@@ -90,6 +112,14 @@ def certify(cell: tuple[str, str]) -> dict[str, Any]:
         "truncation_min_weight": int(values["truncation_min_weight"][0]),
         "truncation_non_monomials": int(values["truncation_non_monomials"][0]),
         "control_single_product_rejected": int(values["control_single_product_rejected"][0]),
+        "pfaffians_inhomogeneous": len(values["pfaffian_inhomogeneous"][0].split()),
+        "selection_failures": int(values["selection_failures"][0]),
+        "selection_truncation_bound": int(values["selection_truncation_bound"][0]),
+        "selection_truncation_min_weight": int(values["selection_truncation_min_weight"][0]),
+        "selection_truncation_non_monomials": int(values["selection_truncation_non_monomials"][0]),
+        "spanning_products": int(values["spanning_products"][0]),
+        "spanning_normal_form_rank": int(values["spanning_normal_form_rank"][0]),
+        "spanning_relation_rank": int(values["spanning_relation_rank"][0]),
     }
 
 
@@ -99,7 +129,24 @@ ZERO_KEYS = (
     "membership_failures",
     "relations_above_truncation",
     "truncation_non_monomials",
+    "pfaffians_inhomogeneous",
+    "selection_failures",
+    "selection_truncation_non_monomials",
 )
+INTEGER_KEYS = (
+    *ZERO_KEYS,
+    "relations",
+    "truncation_bound",
+    "truncation_min_weight",
+    "control_single_product_rejected",
+    "selection_truncation_bound",
+    "selection_truncation_min_weight",
+    "spanning_products",
+    "spanning_normal_form_rank",
+    "spanning_relation_rank",
+)
+# Relations per source: the cells of same-sign X hold 69 and those of opposite-sign X none.
+RELATIONS = {"w8": (144,), "e8": (148,), "iso": (68,), "xp": (0, 69), "xm": (0, 69)}
 
 
 def problems(record: dict[str, Any]) -> list[str]:
@@ -115,14 +162,25 @@ def problems(record: dict[str, Any]) -> list[str]:
         return found
     for cell in cells:
         label = f"{cell['source']} {cell['orbit']}"
+        wrong_type = [key for key in INTEGER_KEYS if type(cell.get(key)) is not int]
+        if wrong_type:
+            found.append(f"{label}: not an integer: {', '.join(wrong_type)}")
+            continue
         for key in ZERO_KEYS:
-            if cell.get(key) != 0:
+            if cell[key] != 0:
                 found.append(f"{label}: {key} is not zero")
-        bound, lowest = cell.get("truncation_bound"), cell.get("truncation_min_weight")
-        if not isinstance(bound, int) or not isinstance(lowest, int) or lowest <= bound:
-            found.append(f"{label}: a truncation monomial has weight at most the bound")
-        if cell.get("control_single_product_rejected") != 1:
+        if cell["truncation_min_weight"] != cell["truncation_bound"] + 1:
+            found.append(f"{label}: the lowest truncation monomial is not one weight above the bound")
+        if cell["selection_truncation_min_weight"] != cell["selection_truncation_bound"] + 1:
+            found.append(f"{label}: the lowest selection truncation monomial is not one weight above the bound")
+        if cell["control_single_product_rejected"] != 1:
             found.append(f"{label}: the control product is not rejected")
+        if cell["relations"] not in RELATIONS[cell["source"]]:
+            found.append(f"{label}: the relation count is not that of the source")
+        if cell["spanning_normal_form_rank"] + cell["relations"] != cell["spanning_products"]:
+            found.append(f"{label}: the relations do not fill the kernel of the normal-form matrix")
+        if cell["spanning_relation_rank"] != cell["relations"]:
+            found.append(f"{label}: the relations are linearly dependent")
     if record.get("pass") is not (found == []):
         found.append("the pass flag differs from the verdict")
     return found

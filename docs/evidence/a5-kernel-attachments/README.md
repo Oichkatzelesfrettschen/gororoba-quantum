@@ -936,7 +936,7 @@ slice coordinates). The retained arc families fill the two prime components; `A5
 
 **Computed (`A5-459`):** [`weight_slice_relation_membership.py`](weight_slice_relation_membership.py) certifies that
 every degree-2 relation `q` of the ten weight-slice cells satisfies `q(G)` in `J + m I^2`
-([record](weight-slice-relation-membership-result.json)): 566 relations, 0 failures. For each relation the polynomial
+([record](weight-slice-relation-membership-result.json)): 858 relations, 0 failures. For each relation the polynomial
 `q(G)`, formed from the unreduced products, reduces to zero modulo the standard basis of `H + T`, with
 `H = J + m (G_a G_b)` and `T` the truncation ideal of the producer. The generators of `J` and the selected Pfaffians
 are weight-homogeneous, every generator of `T` is a monomial of weight above the largest product weight `E`, and every
@@ -944,7 +944,12 @@ term of every `q(G)` has weight at most `E`. **Inferred (truncation lemma):** `H
 nonnegative integer weights; if `f = h + t` with `h` in `H` and `t` in `T`, the component of each weight `v <= E`
 reads `f_v = h_v + t_v`, where `h_v` lies in `H` and `t_v = 0`, so `f` lies in `H`. Membership holds in the
 polynomial ring and therefore in the local ring: `K` lies in the relation ideal `L` for every cell. The row covers
-the membership half of `A5-421` alone; that the relations span the degree-2 part of `L` stays with `A5-421`.
+the membership half of `A5-421`. The same producer checks two further facts. Each of the 126 principal
+4-Pfaffians reduces to zero modulo the standard basis of `J + T' + m (Pfaffians) + (G)`, so the selected generators
+generate the Pfaffian ideal in the local ring (the lemma, then Nakayama). The coefficient matrix of the normal forms
+of the `n` products has rank `n` minus the number of relations in every cell (`83 = 231 - 148` for `E8bar`), and the
+relations are independent, so they are a basis of the degree-2 forms `q` with `q(G)` in `H`; with the passage from
+the local ring to `H` of the section on the polynomial ring computation, they span the degree-2 part of `L`.
 
 **Computed (`A5-460`):** [`iso_w8_relation_ideal_orders.py`](iso_w8_relation_ideal_orders.py) applies the order-function
 argument of `A5-457` to `Iso` and `W8` at both basepoints ([record](iso-w8-relation-ideal-orders-result.json)). Both

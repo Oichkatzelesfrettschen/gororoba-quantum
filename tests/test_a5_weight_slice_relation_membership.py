@@ -51,8 +51,27 @@ def test_the_relation_counts_are_those_of_the_five_sources() -> None:
     _same(sorted(counts[(orbit, source)] for orbit in ("N-", "N+") for source in ("xp", "xm")), [0, 0, 69, 69])
 
 
+def test_the_relations_fill_the_kernel_of_the_normal_form_matrix_in_every_cell() -> None:
+    """Rank plus nullity: 858 relations in all, and for E8-bar the rank 83 is the dimension of (S/K)_2."""
+    cells = _record()["cells"]
+    _same(sum(cell["relations"] for cell in cells), 858)
+    for cell in cells:
+        _same(cell["spanning_normal_form_rank"] + cell["relations"], cell["spanning_products"])
+        _same(cell["spanning_relation_rank"], cell["relations"])
+        _same(cell["selection_failures"], 0)
+        if cell["source"] == "e8":
+            _same(cell["spanning_normal_form_rank"], 83)
+
+
 def test_the_stage_reduces_the_unreduced_products_modulo_the_producer_basis() -> None:
-    for fragment in ("G[IX[ub][1]]*G[IX[ub][2]]", "reduce(f,sQ)", "tmax(f)>pmax", "thomog(G[ua])"):
+    for fragment in (
+        "G[IX[ub][1]]*G[IX[ub][2]]",
+        "reduce(f,sQ)",
+        "tmax(f)>pmax",
+        "thomog(G[ua])",
+        "std(J+TR+m*PF+G)",
+        "rank(M)",
+    ):
         if fragment not in membership.STAGE:
             raise AssertionError(fragment)
 
@@ -69,8 +88,15 @@ MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "a relation above the truncation": (_set("N+", "w8", "relations_above_truncation", 2), "above_truncation"),
     "an inhomogeneous generator": (_set("N-", "iso", "generators_inhomogeneous", 1), "generators_inhomogeneous"),
     "an inhomogeneous germ generator": (_set("N+", "e8", "germ_inhomogeneous_generators", 1), "germ_inhomogeneous"),
-    "a truncation monomial at the bound": (_set("N-", "w8", "truncation_min_weight", 16), "at most the bound"),
+    "a truncation monomial at the bound": (_set("N-", "w8", "truncation_min_weight", 16), "one weight above"),
     "a truncation generator with two terms": (_set("N+", "iso", "truncation_non_monomials", 1), "non_monomials"),
+    "a boolean in an integer slot": (_set("N-", "e8", "membership_failures", False), "not an integer"),
+    "a truncation monomial far above the bound": (_set("N+", "e8", "truncation_min_weight", 999), "one weight above"),
+    "a Pfaffian outside the selected generators": (_set("N-", "w8", "selection_failures", 2), "selection_failures"),
+    "an inhomogeneous Pfaffian": (_set("N+", "iso", "pfaffians_inhomogeneous", 1), "pfaffians_inhomogeneous"),
+    "a relation missing from the kernel": (_set("N-", "e8", "spanning_normal_form_rank", 82), "do not fill the kernel"),
+    "dependent relations": (_set("N+", "w8", "spanning_relation_rank", 143), "linearly dependent"),
+    "a relation count of another source": (_set("N-", "iso", "relations", 69), "relation count is not"),
     "the control accepted": (_set("N-", "xm", "control_single_product_rejected", 0), "control product"),
     "a cell removed": (lambda record: record["cells"].pop(), "ten cells"),
     "pass flag cleared": (lambda record: record.update({"pass": False}), "pass flag"),

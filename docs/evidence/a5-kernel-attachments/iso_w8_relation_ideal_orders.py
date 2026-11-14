@@ -14,8 +14,8 @@ contains P, and dim S/Q_w is the generic rank of that matrix).
 Both germs are quadric cones: s5^2 + 4 s3 s6 + 4 s1 s9 = 0 for Iso and s5^2 + 4 s3 s6 + 4 s2 s8 + 4 s1 s9 = 0 for W8
 at N-, with s4 and s5 exchanged and s7 and s8 exchanged at N+. The map solves the quadric for s6 after s5 = y b,
 s9 = y c (and s8 = y d for W8) with y = s3 and x = s1, and it replaces s2 by x b / 2 - t: the combination
-t = s1 s5 / (2 s3) - s2 is the coordinate whose order separates the limits, and no weight vector on s2 itself reaches
-the dimension of the fiber cone (ledger row A5-458).
+t = s1 s5 / (2 s3) - s2 is the coordinate whose order separates the limits; on three maps that keep s2 as a
+coordinate, no weight vector in the ranges searched reaches the dimension of the fiber cone (ledger row A5-458).
 
 - Iso: weights (1, 2, 0, 0, 2) on (x, y, b, c, t) give Q_w = K, the prime of dimension 5 and degree 23. Hence
   L lies in K, and L = K.
@@ -48,6 +48,8 @@ RECORD = HERE / "iso-w8-relation-ideal-orders-result.json"
 SCHEMA = "gororoba.a5.iso-w8-relation-ideal-orders/1"
 INPUTS = ("iso_w8_relation_ideal_orders.py", "weight_slice_fiber_relations.py")
 WEIGHT_SLICE = HERE / "weight-slice-fiber-relations-result.json"
+# The record that certifies K inside L and (G) = (Pfaffians) for the same relation digests (A5-459).
+MEMBERSHIP = HERE / "weight-slice-relation-membership-result.json"
 CELLS: tuple[tuple[str, str], ...] = tuple((orbit, source) for orbit in ("N-", "N+") for source in ("iso", "w8"))
 GENERATORS = {"iso": 17, "w8": 24}
 PARAMETERS = {"iso": ("qx", "qy", "qb", "qc", "qt"), "w8": ("qx", "qy", "qb", "qc", "qd", "qt")}
@@ -86,6 +88,22 @@ EXPECTED_ORDERS: dict[str, dict[str, dict[str, Any]]] = {
         "prime20": {"weights": [1, 1, 0, 0, 0, 1], "ideal_order": 2, "maximal_ideal_order": 1, "target": [6, 20]},
         "prime30": {"weights": [1, 2, 0, 0, 1, 2], "ideal_order": 4, "maximal_ideal_order": 1, "target": [6, 30]},
     },
+}
+# The order of each pulled-back generator, per source and weight vector; the same at both basepoints.
+GENERATOR_ORDERS: dict[str, dict[str, tuple[int, ...]]] = {
+    "iso": {
+        "prime23": (4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
+        "deficient": (3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3),
+    },
+    "w8": {
+        "prime20": (3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3),
+        "prime30": (4, 4, 4, 4, 5, 4, 6, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4),
+        "deficient": (6, 5, 5, 4, 4, 4, 4, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 4, 3, 2, 2, 2, 3, 3),
+    },
+}
+DEFICIENT_EXPECTED: dict[str, dict[str, int]] = {
+    "iso": {"ideal_order": 2, "maximal_ideal_order": 1, "initial_jacobian_rank": 4},
+    "w8": {"ideal_order": 2, "maximal_ideal_order": 1, "initial_jacobian_rank": 2},
 }
 EXPECTED: dict[str, dict[str, Any]] = {
     "iso": {"ideal": [5, 23, 68], "minimal_primes": [[5, 23]], "radical": True, "germ_nonzero_on_parametrization": 0},
@@ -251,14 +269,17 @@ def _function_problems(label: str, source: str, name: str, function: Any) -> lis
     found = [
         f"{label}: {name} {key} differs from {value}" for key, value in expected.items() if function.get(key) != value
     ]
-    orders = function.get("generator_orders")
-    if not isinstance(orders, list) or len(orders) != GENERATORS[source] or min(orders) != function.get("ideal_order"):
-        found.append(f"{label}: {name} generator orders do not have the ideal order as their minimum")
+    if function.get("generator_orders") != list(GENERATOR_ORDERS[source][name]):
+        found.append(f"{label}: {name} generator orders differ from those of the producer")
+    integers = ("ideal_order", "maximal_ideal_order", "initial_jacobian_rank", "target_nonzero_on_initial_forms")
+    if any(type(function.get(key)) is not int for key in integers):
+        found.append(f"{label}: {name} holds a value that is not an integer")
     if function.get("target_nonzero_on_initial_forms") != 0:
         found.append(f"{label}: {name} target prime does not vanish on the initial forms")
     if function.get("initial_jacobian_rank") != expected["target"][0]:
         found.append(f"{label}: {name} initial_jacobian_rank differs from the dimension of the target prime")
-    if ORDER_FUNCTIONS[source][name][2] is not None and function.get("other_prime_nonzero_on_initial_forms", 0) <= 0:
+    other = function.get("other_prime_nonzero_on_initial_forms", 0)
+    if ORDER_FUNCTIONS[source][name][2] is not None and (type(other) is not int or other <= 0):
         found.append(f"{label}: {name} other prime vanishes on the initial forms")
     return found
 
@@ -270,12 +291,17 @@ def _control_problems(label: str, source: str, cell: dict[str, Any]) -> list[str
     found: list[str] = []
     deficient = controls["deficient_weights"]
     dimension = EXPECTED[source]["ideal"][0]
-    if deficient.get("weights") != list(DEFICIENT_WEIGHTS[source]) or deficient.get("maximal_ideal_order", 0) < 1:
-        found.append(f"{label}: the deficient-weights control has other weights or no positive order")
-    rank = deficient.get("initial_jacobian_rank")
-    if not isinstance(rank, int) or rank >= dimension:
+    if deficient.get("weights") != list(DEFICIENT_WEIGHTS[source]):
+        found.append(f"{label}: the deficient-weights control has other weights")
+    if deficient.get("generator_orders") != list(GENERATOR_ORDERS[source]["deficient"]):
+        found.append(f"{label}: the deficient-weights control has other generator orders")
+    for key, expected in DEFICIENT_EXPECTED[source].items():
+        if type(deficient.get(key)) is not int or deficient[key] != expected:
+            found.append(f"{label}: the deficient-weights control {key} differs from {expected}")
+    if DEFICIENT_EXPECTED[source]["initial_jacobian_rank"] >= dimension:
         found.append(f"{label}: the deficient-weights control reaches the dimension")
-    if controls["other_basepoint_parametrization"].get("germ_nonzero", 0) <= 0:
+    other_map = controls["other_basepoint_parametrization"].get("germ_nonzero", 0)
+    if type(other_map) is not int or other_map <= 0:
         found.append(f"{label}: the parametrization of the other basepoint satisfies the germ ideal")
     return found
 
@@ -316,17 +342,24 @@ def _digest(path: Path) -> str:
 
 
 def slice_problems(record: dict[str, Any]) -> list[str]:
-    """The relation digests against the Iso and W8 cells over Q(i) of the weight-slice record."""
+    """The relation digests against the weight-slice record and against the membership record, which must pass."""
     retained = {
         (cell["orbit"], cell["source"]): cell["relations_sha256"]
         for cell in json.loads(WEIGHT_SLICE.read_text(encoding="utf-8"))["cells"]
         if cell["characteristic"] == 0
     }
-    return [
-        f"{cell['source']} {cell['orbit']}: the relations differ from those of the weight-slice record"
-        for cell in record.get("cells", [])
-        if cell.get("relations_sha256") != retained.get((cell["orbit"], cell["source"]))
-    ]
+    membership = json.loads(MEMBERSHIP.read_text(encoding="utf-8"))
+    certified = {(cell["orbit"], cell["source"]): cell["relations_sha256"] for cell in membership.get("cells", [])}
+    found = [] if membership.get("pass") is True else ["the membership record does not pass"]
+    for cell in record.get("cells", []):
+        key = (cell["orbit"], cell["source"])
+        if cell.get("relations_sha256") != retained.get(key):
+            found.append(
+                f"{cell['source']} {cell['orbit']}: the relations differ from those of the weight-slice record"
+            )
+        if cell.get("relations_sha256") != certified.get(key):
+            found.append(f"{cell['source']} {cell['orbit']}: the relations differ from those of the membership record")
+    return found
 
 
 def build() -> dict[str, Any]:
@@ -335,6 +368,7 @@ def build() -> dict[str, Any]:
         "field": "Q(i)",
         "inputs": {name: _digest(HERE / name) for name in INPUTS},
         "weight_slice_record_sha256": _digest(WEIGHT_SLICE),
+        "membership_record_sha256": _digest(MEMBERSHIP),
         "cells": parallel.ordered_map(certify, list(CELLS), min_items=2),
         "pass": True,
     }
@@ -351,6 +385,8 @@ def main() -> None:
                 found.append(f"input digest of {name} differs")
         if record.get("weight_slice_record_sha256") != _digest(WEIGHT_SLICE):
             found.append("digest of the weight-slice record differs")
+        if record.get("membership_record_sha256") != _digest(MEMBERSHIP):
+            found.append("digest of the membership record differs")
         if found:
             raise SystemExit("\n".join(found))
         print("iso-w8-relation-ideal-orders-result.json: pass")
