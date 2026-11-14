@@ -79,7 +79,7 @@ ahead of the lemma named for it.
   characteristic zero, spanned by the 14 tables; the span theorem is the Rocq statement of the spanning half, with the
   multiplier 6. That the algebra is g_2 is not stated by any theorem.
 - Rocq receipts (compile without warnings, closed assumptions, kernel check without axioms, mutants rejected) are
-  those of gororoba-math pull requests 14 (merged) and 16 (open). This directory holds no compile or kernel-check
+  those of gororoba-math pull requests 14 and 16 (both merged). This directory holds no compile or kernel-check
   receipt, and the pull-request checks run none.
 
 ## Binding to gororoba-math
