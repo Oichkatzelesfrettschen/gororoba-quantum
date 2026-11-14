@@ -251,8 +251,14 @@ rate below 1.8 percent, each at 95 percent confidence.
   `x_excluded`; at -0.08 rad it reads `unresolved_both`, and at +-0.12 rad (center +0.0156 and +0.0135)
   `unresolved_none`. None reads `pulse_x` at noiseless expected values. Under phase damping per pulse the x class
   leads the -0.08 rad fit (chi-square 29.8 against 36.8 for the other class, below the separation of 25), and 1
-  of the 180 shot-level series at -0.08 rad reads `pulse_x` (that family, retained readout walk). A `pulse_x`
-  reading therefore does not exclude a CZ conditional-phase error of that size. The earlier one-CZ analysis used
+  of the 180 shot-level series at -0.08 rad reads `pulse_x` (that family, retained readout walk). A 200-series
+  sizing of that truth (`docs/evidence/qi-null-rotation-scan-conditional-phase-sizing/record.json`) reads
+  `pulse_x` in 11 of 400 series with every noise family in the fit (2.8 percent, 95 percent interval 1.4 to 4.9
+  percent), in 1 of 200 with the truth's family left out, and in 0 of 600 under phase damping per CZ. Those counts
+  meet the simulation note's first falsifier for this truth (more than 1 of 12 in 2 of 32 cells; 5 and 6 of 200
+  in one family and regime), so the statement that no simulated run reads a wrong class holds for the modeled
+  truths alone. Other sizes of the conditional phase and other noise strengths are unsized. A `pulse_x`
+  reading therefore does not exclude a CZ conditional-phase error. The earlier one-CZ analysis used
   `CZ exp(-i delta ZZ / 2)`, a different
   channel, and its small response does not bound this one.
 - A scale on every pulse angle is an x over-rotation at k = 0 and reads `pulse_x`. A curvature of the pulse

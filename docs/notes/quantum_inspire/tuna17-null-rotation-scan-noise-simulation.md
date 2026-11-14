@@ -88,7 +88,7 @@ written before the run, estimated 17 truths, 204 series and 85 scenarios. The Ae
 
 | Falsifier | Reading | Verdict |
 |---|---|---|
-| wrong class in more than 1 of 12 series of a truth, or more than 3 in a family and regime | 1 wrong series of 2,880: the CZ conditional-phase error of -0.08 rad under phase damping per pulse reads `pulse_x` once in the retained walk; every other cell holds 0 | not falsified |
+| wrong class in more than 1 of 12 series of a truth, or more than 3 in a family and regime | 1 wrong series of 2,880: the CZ conditional-phase error of -0.08 rad under phase damping per pulse reads `pulse_x` once in the retained walk; every other cell holds 0 | not falsified on this record; falsified for that one truth on the 200-series sizing record below |
 | all-pulse x truth reads `pulse_x` in fewer than 10 of 12 `stable` series | 12 of 12 in eight of the ten scenarios, 11 of 12 (one `unresolved_bridge`) in the two under phase damping per pulse | not falsified |
 | fewer than half of the walk series admit all eight scan batches and both bridge batches | every series admits all eight scan batches; the bridge holds in 957 of 960 | not falsified |
 | a wrong class in the family-left-out regime | 0 of 960 | not falsified |
@@ -102,6 +102,34 @@ the rest read an unresolved label or `x_excluded`. The family-left-out regime re
 The one wrong series is a false `pulse_x` under a mechanism outside the modeled worlds: at -0.08 rad of CZ
 conditional phase under phase damping per pulse the x class leads the expected-value fit (chi-square 29.8 against
 36.8). The written case states that limit under "Mechanisms outside the modeled worlds".
+
+Rate of that false reading: `docs/evidence/qi-null-rotation-scan-conditional-phase-sizing/record.json` holds 200
+series per regime of the -0.08 rad conditional-phase truth under each of the two phase-damping families, drawn
+from the record's seed, so its first 12 series of each regime equal the record's. Under phase damping per pulse
+the truth reads `pulse_x` in 5 of 200 `stable` series, 6 of 200 walk series and 1 of 200 family-left-out series:
+11 of 400 with every family in the fit (2.8 percent, 95 percent interval 1.4 to 4.9 percent) and 12 of 600 over
+the three regimes (2.0 percent, 1.0 to 3.5 percent). Under phase damping per CZ it reads `pulse_x` in 0 of 600
+(below 0.61 percent at 95 percent confidence). The other labels are `unresolved_both` (759 of 1,200),
+`unresolved_none` (402), `pulse_other` (26, the truth's class) and `unresolved_bridge` (1). A `pulse_x` reading
+of the hardware run therefore does not exclude this mechanism: other sizes of the conditional phase and other
+noise strengths are unsized, and at this one size and noise family the truth reads `pulse_x` in about 3 percent of
+series. Without the first 12 series of each regime, which hold the series that prompted the sizing, the counts are
+5 of 188, 5 of 188 and 1 of 188.
+
+The first falsifier's counts are met on this record. Cut into 16 cells of 12 series per regime, the truth reads
+`pulse_x` twice in one `stable` cell and in one walk cell (2 of 32 cells with every family in the fit), and it
+alone holds 5 and 6 wrong series in 200 of one family and regime, above the count of 3 in about 204. The Kaggle
+record's cell held 1 of 12 and stayed within the rule by its draw. The statement the falsifier tests, that no
+simulated run reads a class other than its truth's, is therefore falsified for this truth under phase damping
+per pulse and stands for the 14 modeled truths alone (0 wrong of 2,520 series), which is the scope the written
+case gives it.
+
+```sh
+"$PYTHON" -B -W error scripts/qi_pathion_null_rotation_scan_noise.py --run OUT.json --series 200 \
+	--kinds pulse_dephasing cz_dephasing --truths cz_phase@-0.08
+```
+
+The run took 1 h 54 min 14 s on a four-core x86-64 virtual machine (0.73 GB resident) at commit `88418db13`.
 
 The run ended 414 s before its limit, so a repeat at these counts needs fewer series or a reduced truth list.
 
