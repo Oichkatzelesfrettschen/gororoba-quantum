@@ -17,7 +17,10 @@ predecessor's CASE.md and in `prediction.json` here, `predicted_contrast`, in te
 predecessor's thresholds, heterogeneity gates and b0-like band; it differs in two places the owner ruled on 2026-11-14
 (issue 791 items 1 to 3):
 
-- every coin twin runs between its own readout-0 and readout-1, and its contrast is read against that bracket;
+- every coin twin shares its batch with its own readout-0 and readout-1, and its contrast is read against that bracket.
+  The three jobs of a batch share the batch and its readout pair, and the platform sets their execution order: the
+  result `created_on` of the retained series shows the listed order reversed in batches 06 and 10 and a template outside
+  its readouts in batches 08, 12 and 15. The correction therefore uses batch co-membership, not a temporal sandwich;
 - twin-control rule v2 (`scripts/qi_pathion_one_cz_null_rule_v2.py`) and the finite-count error of a deterministic arm
   (`scripts/qi_pathion_one_cz_null_analysis.py`, `arm_variance`) are preregistered from the start.
 
@@ -42,8 +45,11 @@ Each coefficient is re-derived in `tests/scripts/test_qi_pathion_one_cz_null_bra
    degrees of freedom) and e10 between 0.0275 and 0.0322 over twelve readout-1 references (chi-square 58.0 on 11), and
    adjacent batches step by about 0.005 (batch-02 to batch-03 and batch-07 to batch-08 of that series;
    `results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json`, `drift_covariate.references`, measured on
-   Tuna-17, 2026-11-07). A raw contrast of twins from two batches carries [(e10 - e01)_1 - (e10 - e01)_0] / 2, about
-   0.0025, roughly 0.9 pooled twin standard errors.
+   Tuna-17, 2026-11-07). A raw contrast of twins from two batches carries c_1 - c_0 = [(e10 - e01)_1 - (e10 - e01)_0] / 2,
+   which is the measured offset scatter below and not a fixed 0.0025. Over the 8 retained batches that hold both
+   readouts (00, 03, 04, 07, 08, 11, 12, 15), c = (e10 - e01)/2 of the selector has chi-square 61.56 on 7 degrees of
+   freedom about its weighted mean and ranges from -0.00136 to +0.00319, so a raw split contrast carries a c difference
+   of up to about 0.0045 (1.6 pooled twin standard errors) between batches.
 5. Twin estimator. The bracket offset of a batch is c = (e10 - e01) / 2, a twin reading is P - c, and the twin contrast of
    one replicate is t = (P1 - c1) - (P0 - c0) over the coin-1 and coin-0 batches.
    - Equal brackets reduce it exactly to the raw P1 - P0, the predecessor's statistic.
@@ -63,7 +69,9 @@ Each coefficient is re-derived in `tests/scripts/test_qi_pathion_one_cz_null_bra
 6. Order. The forward round is b0 base, b0 twin coin 0, b0 twin coin 1, k4 twin coin 0, k4 twin coin 1, k4 base, k8
    base, k8 twin coin 0, k8 twin coin 1, k12 twin coin 0, k12 twin coin 1, k12 base (12 batches); the mirror round is
    that list reversed, so the coin-1 twin precedes the coin-0 twin there and a linear drift g per batch enters the two
-   replicates as +g and -g and cancels in the pooled twin contrast. The three X-only calibration batches of the
+   replicates as +g and -g and cancels in the pooled twin contrast. The cancellation is exact for equal replicate
+   weights; the analyzer pools by inverse variance, whose weights differ only through the binomial and bracket
+   variances at the design rates, so the cancellation holds to first order. The three X-only calibration batches of the
    predecessor follow (3, 3 and 2 circuits): 27 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte,
    as in the predecessor.
 7. Shots and time. Base batches run at the predecessor's shots (b0 base batches 131,072 per circuit, other base batches
@@ -170,7 +178,8 @@ carries sqrt(2) x 0.003 of per-batch drift against 0.003 inside one batch, and t
 degree of freedom) reads that drift as disagreement more often. The dropout and superposition-only worlds fall below the 80
 percent the predecessor's power rule asks. The 0.003 is the case's preregistered stress, taken from the retained series'
 batch-to-batch spread, not a forecast of the run; stationary, every deciding world exceeds 92 percent. The mirror round
-cancels a linear drift in the pooled twin contrast and is not simulated: the drift draws are independent per batch.
+cancels a linear drift in the pooled twin contrast (exactly for equal replicate weights, to first order for the
+inverse-variance pool of item 6) and is not simulated: the drift draws are independent per batch.
 
 ## QX and Ry check plan
 

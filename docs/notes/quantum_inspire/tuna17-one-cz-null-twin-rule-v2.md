@@ -51,8 +51,9 @@ brackets every twin runs each twin as `[readout-0, twin, readout-1]`: 16 twin ba
 [pathion_one_cz_null_bracketed_tuna_17](../../../results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md)
 builds it (owner ruling 2026-11-14) and preregisters rule v2 and the finite-count error. Splitting a pair removes the
 within-batch cancellation of the additive readout shift: the retained selector e01 steps by about 0.005 between
-adjacent batches (chi-square 84.4 on 11 degrees of freedom over the 12 readout-0 circuits), which moves a raw split
-contrast by about 0.0025, 0.9 pooled twin standard errors, so the successor reads each twin against its own bracket.
+adjacent batches (chi-square 84.4 on 11 degrees of freedom over the 12 readout-0 circuits), and the bracket offset
+c = (e10 - e01)/2 itself scatters beyond binomial (chi-square 61.56 on 7 degrees of freedom over the 8 batches holding
+both readouts, range -0.0014 to +0.0032), so the successor reads each twin against its own bracket.
 Since every twin's ideal P(s = 0) is 1/2, the bracket offset (e10 - e01) / 2 corrects that shift linearly and leaves
 the contrast on the raw-prediction scale. What a split pair still exposes is a drift of the offset itself over one
 queue interval (retained batches started tens of minutes apart), which no readout circuit corrects; the successor's
