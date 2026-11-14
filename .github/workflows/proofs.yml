@@ -28,6 +28,7 @@ on:
       - docs/evidence/cd-twisted-product/**
       - docs/evidence/cd-tower-ring/**
       - docs/evidence/cd-tower-ring-base-change/**
+      - docs/evidence/cd-tower-kernel-certificates/**
       - docs/evidence/folding_proofs/**
       - docs/evidence/formal_certificates/**
       - docs/evidence/stiefel_witness/**
@@ -62,6 +63,7 @@ on:
       - docs/evidence/cd-twisted-product/**
       - docs/evidence/cd-tower-ring/**
       - docs/evidence/cd-tower-ring-base-change/**
+      - docs/evidence/cd-tower-kernel-certificates/**
       - docs/evidence/folding_proofs/**
       - docs/evidence/formal_certificates/**
       - docs/evidence/stiefel_witness/**
@@ -120,12 +122,13 @@ jobs:
           crates/algebra_experimental/src/sedenion_subalgebras
           crates/cd_kernel/src/cayley_dickson
       - name: Replay the receipts
-        # A pull request replays the bundles under two minutes; pushes to main
-        # and manual runs add the Stiefel bundle.
+        # A pull request replays the bundles in parallel; the longest is the
+        # kernel-certificate bundle, about three minutes on the build host, most of
+        # it in rocq check. Pushes to main and manual runs add the Stiefel bundle.
         run: |
           set -eu
           rocq=$(sed -n 's/^rocq //p' "$RUNNER_TEMP/opam_list.txt")
-          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation cd-annihilator-symmetry cd-annihilator-symmetry-real cd-tower-domain cd-half-fold cd-twisted-product cd-tower-ring cd-tower-ring-base-change"
+          only="formal_certificates c881_exhaustive folding_proofs TargetFlipN21 cd-imaginary-sum-conference cd-tower-basis-sign cd-sign-row-anf cd-associator-anf cd-associator-census cd-sign-python-semantics cd-associator-point-indicators cd-sign-python-translation cd-annihilator-symmetry cd-annihilator-symmetry-real cd-tower-domain cd-half-fold cd-twisted-product cd-tower-ring cd-tower-ring-base-change cd-tower-kernel-certificates"
           if [ "${{ github.event_name }}" != pull_request ]; then
             only="$only stiefel_witness"
           fi
