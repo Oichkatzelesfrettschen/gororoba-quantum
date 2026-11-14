@@ -366,8 +366,9 @@ def frozen_map_prediction(run: Path, settings: list[dict[str, Any]], kinds: tupl
     import c1_mesh  # noqa: PLC0415
     from perceval.serialization import deserialize  # noqa: PLC0415
 
-    kinds0, lo0, _, _, _ = c1_mesh.cached(ROOT / case.ORIGINAL_RUN, "pairs")
-    maps = np.load(ROOT / "docs/evidence/pathion-kernel-map/conjectures/c1_static.npz")
+    conjectures = ROOT / "docs/evidence/pathion-kernel-map/conjectures"
+    kinds0, lo0, _, _, _ = c1_mesh.cached(ROOT / case.ORIGINAL_RUN, "pairs", conjectures)
+    maps = np.load(conjectures / "c1_static.npz")
     results = json.loads((run / "results.json").read_bytes())
     out: dict[str, Any] = {"gain": {}, "offset": {}}
     for i, (setting, entry) in enumerate(zip(settings, results["iterations"], strict=True)):

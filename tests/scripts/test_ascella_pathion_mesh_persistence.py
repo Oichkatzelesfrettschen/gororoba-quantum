@@ -4,9 +4,9 @@ The unmarked tests build their synthetic runs from the small verbatim cut under
 tests/data/ascella_pathion_mesh_persistence/, a miniature repository root: five designs of the original QPU job and
 the original simulator run (the anchor, the dark, a-h-CC, a-h-NN and b-i-NN, 12 settings and result entries each),
 the frozen sim-00 and job-00 manifests restricted to those designs and their fresh counterparts (28 settings), the
-two failing items they hold, the case's draw and the frozen c1_static maps. Running this file as a script, with
-gororoba_quantum/ and scripts/ on PYTHONPATH, rewrites the cut from the retained records; the audit test compares the
-cut with them.
+two failing items they hold, the case's draw, the frozen c1_static maps and the topology cache mesh_pairs.npz of the
+original QPU job. Running this file as a script, with gororoba_quantum/ and scripts/ on PYTHONPATH, rewrites the cut
+from the retained records; the audit test compares the cut with them.
 """
 
 from __future__ import annotations
@@ -44,10 +44,12 @@ RUNS = {
     "job-00": ROOT / "results/quandela/runs/2026-11-07T182838Z-qpu_ascella-ascella_pathion_mesh_persistence-job-00",
 }
 
+EXCHANGED = ("a-h-NN-o0-i21", "b-i-NN-o0-i43")
 FIXTURE = ROOT / "tests/data/ascella_pathion_mesh_persistence"
 CASE_DIRECTORY = "results/quandela/cases/ascella_pathion_mesh_persistence"
 DRAW_FILE = "docs/evidence/anu_qrng/draw-2026-11-07T162910Z.json"
 MAPS_FILE = "docs/evidence/pathion-kernel-map/conjectures/c1_static.npz"
+MESH_FILE = "docs/evidence/pathion-kernel-map/conjectures/mesh_pairs.npz"
 # Designs the cut keeps from the original job, and from the frozen manifests their replays and fresh counterparts.
 FIXTURE_DESIGNS = ("anchor", "dark", "a-h-CC", "a-h-NN", "b-i-NN")
 FIXTURE_FAILING_ITEMS = [["a-h-NN", 1], ["b-i-NN", 1]]
@@ -62,6 +64,7 @@ FIXTURE_FILES = (
     f"{CASE_DIRECTORY}/job-00/cases.json",
     DRAW_FILE,
     MAPS_FILE,
+    MESH_FILE,
 )
 
 
@@ -102,7 +105,7 @@ def cut_documents(root: Path) -> dict[str, bytes]:
         manifest["settings"] = picked
         manifest["preregistered"]["failing_items"] = FIXTURE_FAILING_ITEMS
         documents[f"{CASE_DIRECTORY}/{directory}/cases.json"] = _dump(manifest, indent=1)
-    for name in (DRAW_FILE, MAPS_FILE):
+    for name in (DRAW_FILE, MAPS_FILE, MESH_FILE):
         documents[name] = (root / name).read_bytes()
     return documents
 
@@ -209,6 +212,14 @@ def synthetic_run(root: Path, directory: str = "job-00", mutate: str = "") -> Pa
         entries[target]["result_fields"]["computed_circuit"] = entries[other]["result_fields"]["computed_circuit"]
     elif mutate == "missing":
         entries = entries[:-1]
+    elif mutate == "echo-seed":
+        entries[0]["iteration"]["compilation_seed"] += 1
+    elif mutate == "echo-params":
+        entries[0]["iteration"]["circuit_params"] = {**entries[0]["iteration"]["circuit_params"], "changed": 1}
+    elif mutate == "exchange":
+        # Two replays of different designs exchange their click counts; both entries stay valid observations.
+        first, second = (i for i, s in enumerate(manifest["settings"]) if s.get("original_name") in EXCHANGED)
+        entries[first]["counts"], entries[second]["counts"] = entries[second]["counts"], entries[first]["counts"]
     elif mutate == "duplicate":
         replays = [s for s in manifest["settings"] if s["kind"] == "replay"]
         replays[1]["original_name"] = replays[0]["original_name"]
@@ -238,6 +249,14 @@ def test_mesh_gate_refuses_a_changed_missing_or_duplicated_replay(tree: Path, mu
     check(gate["passed"] == (mutate == ""), f"mesh gate with mutation {mutate!r}: {gate['problems'] or gate['misses']}")
     if mutate == "":
         check(gate["replay_compared"] == 12, "12 replay meshes compared, one per original setting")
+
+
+@pytest.mark.parametrize("mutate", ["echo-seed", "echo-params"])
+def test_mesh_gate_refuses_an_echoed_request_that_differs(tree: Path, mutate: str) -> None:
+    gate = reading.mesh_gate(synthetic_run(tree, "sim-00", mutate))
+    check(not gate["passed"], "a changed echoed request fails the gate")
+    check(any("the echoed request differs" in problem for problem in gate["problems"]), f"problems {gate['problems']}")
+    check(gate["replay_compared"] == 0, "no mesh is compared once the request differs")
 
 
 def test_the_qpu_manifest_fails_the_simulator_gate(tree: Path) -> None:
@@ -276,6 +295,228 @@ def test_a_replay_of_the_original_counts_reads_fixed_per_mesh(tree: Path) -> Non
         check(control[half] == pytest.approx(1.0), f"{half} reads the replay of the original counts")
     for model in ("gain", "offset"):
         check(report["frozen_maps"][model]["n_seed_blocks"] == 5, f"{model}: two failing, two anchor, one dark block")
+
+
+def pearson(x: list[float], y: list[float]) -> float:
+    """Pearson r from the defining sums, apart from numpy's correlation the reading uses."""
+    mx, my = sum(x) / len(x), sum(y) / len(y)
+    sxy = sum((a - mx) * (b - my) for a, b in zip(x, y, strict=True))
+    return sxy / (sum((a - mx) ** 2 for a in x) * sum((b - my) ** 2 for b in y)) ** 0.5
+
+
+def reference_mirror(rows: list[dict], settings: list[dict], calibration: dict) -> dict[tuple[str, int], float]:
+    """l_hat(orientation 0) - l_hat(orientation 1) per (setting, item), written out per setting and item."""
+    out: dict[tuple[str, int], float] = {}
+    for name in sorted({s["setting"] for s in settings if s["role"] in ("sign", "null")}):
+        by_orientation = {
+            s["orientation"]: an_levels(row, calibration)
+            for row, s in zip(rows, settings, strict=True)
+            if s["setting"] == name and s["role"] in ("sign", "null")
+        }
+        if set(by_orientation) == {0, 1}:
+            out[(name, 0)] = by_orientation[0]["A"] - by_orientation[1]["B"]
+            out[(name, 1)] = by_orientation[0]["B"] - by_orientation[1]["A"]
+    return out
+
+
+def an_levels(row: dict, calibration: dict) -> dict[str, float]:
+    """Calibrated level of each slot: twice the efficiency-scaled dark-subtracted clicks over all scaled clicks."""
+    scaled = {
+        slot: (row["slot"][slot] - calibration["dark"][slot] * row["total"]) / calibration["efficiency"][slot]
+        for slot in ("A", "B")
+    }
+    denominator = scaled["A"] + scaled["B"] + row["failure"]
+    return {slot: 2 * scaled[slot] / denominator for slot in ("A", "B")}
+
+
+def test_an_exchange_of_replay_counts_reads_the_correlation_of_the_two_mirrors(tree: Path) -> None:
+    report = reading.analyze(synthetic_run(tree, mutate="exchange"))
+    _, o_set, o_rows = reading.original()
+    _, r_set, r_rows = reading.load(tree / "run")
+    r_rows, r_set = zip(*[(r, s) for r, s in zip(r_rows, r_set, strict=True) if s["kind"] == "replay"], strict=True)
+    old = reference_mirror(o_rows, o_set, reading.an.calibrate(o_rows, o_set))
+    new = reference_mirror(list(r_rows), list(r_set), reading.an.calibrate(list(r_rows), list(r_set)))
+    keys = sorted(set(old) & set(new))
+    expected = pearson([old[k] for k in keys], [new[k] for k in keys])
+    check(expected < 0.99, f"the exchange moves the replay mirrors off the original's (r {expected})")
+    check(report["persistence"]["pairs"] == len(keys) == 6, "six mirror pairs")
+    check(report["persistence"]["r"] == pytest.approx(expected, abs=1e-9), "persistence r of the two mirrors")
+    check(report["persistence"]["r"] < 0.99 and report["persistence"]["reading"] != "fixed per mesh", "reading")
+
+
+HAND_CALIBRATION = {
+    "dark": {"A": 0.0, "B": 0.0},
+    "efficiency": {"A": 1.0, "B": 1.0},
+    "anchor_raw": {"A": 1.0, "B": 1.0},
+}
+
+
+def hand_row(a_clicks: float, b_clicks: float) -> dict:
+    """One returned iteration of 100 labeled clicks, the rest in the failure mode."""
+    return {
+        "returned": True,
+        "slot": {"A": a_clicks, "B": b_clicks},
+        "failure": 100 - a_clicks - b_clicks,
+        "total": 100.0,
+    }
+
+
+def hand_setting(design: str, orientation: int, role: str = "sign") -> dict:
+    return {"setting": design, "orientation": orientation, "role": role}
+
+
+def hand_job(counts: dict[str, tuple[tuple[int, int], tuple[int, int]]]) -> tuple[list[dict], list[dict]]:
+    """Rows and settings for designs given as ((A, B) clicks at orientation 0, (A, B) clicks at orientation 1)."""
+    rows, settings = [], []
+    for design, pair in counts.items():
+        for orientation, clicks in enumerate(pair):
+            rows.append(hand_row(*clicks))
+            settings.append(hand_setting(design, orientation))
+    return rows, settings
+
+
+def test_the_mirror_is_the_orientation_zero_level_minus_the_orientation_one_level_of_the_item() -> None:
+    rows, settings = hand_job({"s": ((30, 10), (25, 40))})
+    # Raw level 2 x slot / 100: orientation 0 reads A 0.6 and B 0.2, orientation 1 reads A 0.5 and B 0.8. Item 0 is A
+    # at orientation 0 against B at orientation 1, item 1 is B against A.
+    found = reading.mirror(rows, settings, None, "a")
+    check(found == pytest.approx({("s", 0): -0.2, ("s", 1): -0.3}), f"raw mirror {found}")
+    rows += [hand_row(10, 10), hand_row(60, 0), hand_row(1, 1)]
+    settings += [hand_setting("s", 0, "anchor"), hand_setting("lone", 0), hand_setting("n", 1, "null")]
+    check(set(reading.mirror(rows, settings, None, "a")) == {("s", 0), ("s", 1)}, "anchors and one-sided designs leave")
+    rows[2] = {"returned": False}
+    check(reading.mirror(rows[:2], settings[:2], None, "a") == found, "the pair is unchanged without the extras")
+
+
+def test_the_calibrated_mirror_divides_by_the_slot_efficiencies() -> None:
+    rows, settings = hand_job({"s": ((30, 10), (20, 30))})
+    calibration = {**HAND_CALIBRATION, "efficiency": {"A": 2.0, "B": 1.0}}
+    # Orientation 0: scaled clicks A 15, B 10 and 60 in the failure mode, 85 in all; orientation 1: A 10, B 30, 50
+    # failure, 90 in all.
+    found = reading.mirror(rows, settings, calibration, "l_hat")
+    expected = {("s", 0): 2 * 15 / 85 - 2 * 30 / 90, ("s", 1): 2 * 10 / 85 - 2 * 10 / 90}
+    check(found == pytest.approx(expected), f"calibrated mirror {found}")
+
+
+OLD_COUNTS = {"d1": ((30, 10), (25, 40)), "d2": ((20, 20), (10, 35)), "d3": ((45, 5), (40, 20))}
+NEW_COUNTS = {"d1": ((28, 12), (25, 40)), "d2": ((22, 18), (10, 35)), "d3": ((42, 8), (40, 20))}
+# Mirrors of OLD_COUNTS by hand, 2 x clicks / 100 at each orientation (d1: 0.6 - 0.8, 0.2 - 0.5; d2: 0.4 - 0.7,
+# 0.4 - 0.2; d3: 0.9 - 0.4, 0.1 - 0.8), and of NEW_COUNTS (d1: 0.56 - 0.8, 0.24 - 0.5; d2: 0.44 - 0.7, 0.36 - 0.2;
+# d3: 0.84 - 0.4, 0.16 - 0.8).
+OLD_MIRROR = [-0.2, -0.3, -0.3, 0.2, 0.5, -0.7]
+NEW_MIRROR = [-0.24, -0.26, -0.26, 0.16, 0.44, -0.64]
+
+
+def test_the_persistence_statistic_correlates_the_original_mirror_with_the_replay_mirror(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(reading.an, "calibrate", lambda rows, settings: HAND_CALIBRATION)
+    old_rows, old_set = hand_job(OLD_COUNTS)
+    new_rows, new_set = hand_job(NEW_COUNTS)
+    r, x, y = reading.persistence_r(old_rows, old_set, new_rows, new_set)
+    check(np.allclose(x, OLD_MIRROR) and np.allclose(y, NEW_MIRROR), f"mirrors {x} {y}")
+    check(0.9 < pearson(OLD_MIRROR, NEW_MIRROR) < 0.999, "the hand mirrors correlate, short of one")
+    check(r == pytest.approx(pearson(OLD_MIRROR, NEW_MIRROR), abs=1e-12), f"r {r}")
+    r_out, x_out, y_out = reading.persistence_r(old_rows, old_set, new_rows, new_set, frozenset({"d3"}))
+    check(np.allclose(x_out, OLD_MIRROR[:4]) and np.allclose(y_out, NEW_MIRROR[:4]), "an excluded design leaves")
+    check(r_out == pytest.approx(pearson(OLD_MIRROR[:4], NEW_MIRROR[:4]), abs=1e-12), f"reduced r {r_out}")
+
+
+MAP_ROWS = [(400, 200), (380, 230), (430, 190), (360, 170), (450, 240)]
+MAP_IDEAL = [0.8, 0.4]
+MAP_PARTIAL = [[0.82, 0.38], [0.78, 0.41], [0.81, 0.45], [0.77, 0.40], [0.84, 0.39]]
+MAP_ALIGNED = [[0.82, 0.42], [0.77, 0.43], [0.83, 0.40], [0.78, 0.41], [0.85, 0.39]]
+MAP_OPPOSED = [[0.78, 0.46], [0.82, 0.38], [0.79, 0.43], [0.84, 0.41], [0.77, 0.36]]
+
+
+def map_case(levels: list[list[float]]):
+    rows = [{"slot": {"A": a, "B": b}, "total": 1000.0} for a, b in MAP_ROWS]
+    settings = [
+        {"ideal_levels": MAP_IDEAL, "kind": "fresh-anchor", "compilation_seed": seed} for seed in range(len(MAP_ROWS))
+    ]
+    return rows, settings, dict(enumerate(levels))
+
+
+def reference_map_reading(levels: list[list[float]]) -> dict[str, float]:
+    """r, the exact block-permutation p, ceiling and share of a one-kind, five-seed map test, by enumeration."""
+    import itertools
+
+    obs = [2 * clicks / 1000 - ideal for pair in MAP_ROWS for clicks, ideal in zip(pair, MAP_IDEAL, strict=True)]
+    shares = [clicks / 1000 for pair in MAP_ROWS for clicks in pair]
+    variance = [4 * share * (1 - share) / 1000 for share in shares]
+
+    def centered(values: list[float]) -> list[float]:
+        return [v - sum(values) / len(values) for v in values]
+
+    o = centered(obs)
+    mod = [level - ideal for pair in levels for level, ideal in zip(pair, MAP_IDEAL, strict=True)]
+    r = pearson(o, centered(mod))
+    count = 0
+    for order in itertools.permutations(range(len(levels))):
+        shuffled = [level - ideal for k in order for level, ideal in zip(levels[k], MAP_IDEAL, strict=True)]
+        count += pearson(o, centered(shuffled)) >= r - 1e-12
+    mean_o = sum(obs) / len(obs)
+    ceiling = 1 - (sum(variance) / len(variance)) / (sum((v - mean_o) ** 2 for v in obs) / (len(obs) - 1))
+    return {"r": r, "p": count / 120, "ceiling": ceiling, "share": r**2 / ceiling if r > 0 and ceiling > 0 else 0.0}
+
+
+@pytest.mark.parametrize(
+    ("levels", "label"),
+    [(MAP_PARTIAL, "map does not carry"), (MAP_ALIGNED, "map carries"), (MAP_OPPOSED, "map does not carry")],
+)
+def test_the_map_score_reads_r_p_ceiling_and_share_of_the_seed_block_test(
+    levels: list[list[float]], label: str
+) -> None:
+    expected = reference_map_reading(levels)
+    rows, settings, pred = map_case(levels)
+    got = reading.map_score(rows, settings, pred, np.random.default_rng(7), 4000, 0.05)
+    check(got["n_readings"] == 10 and got["n_seed_blocks"] == 5, "ten readings in five seed blocks")
+    check(got["r"] == pytest.approx(expected["r"], abs=1e-9), f"r {got['r']} against {expected['r']}")
+    check(got["ceiling"] == pytest.approx(expected["ceiling"], abs=1e-9), "ceiling")
+    check(got["share"] == pytest.approx(expected["share"], abs=1e-9), "share")
+    check(got["p_one_sided"] == pytest.approx(expected["p"], abs=0.015), f"p {got['p_one_sided']} for {expected['p']}")
+    check(got["reading"] == label, f"reading {got['reading']}")
+
+
+def test_the_map_cases_span_the_decisions() -> None:
+    partial, aligned, opposed = (reference_map_reading(m) for m in (MAP_PARTIAL, MAP_ALIGNED, MAP_OPPOSED))
+    check(
+        0.0 < partial["r"] < 0.9 and partial["p"] > 0.1, f"the partial case sits well short of the threshold: {partial}"
+    )
+    check(0.0 < aligned["r"] < 0.9 and aligned["p"] < 0.05, f"the aligned case clears it: {aligned}")
+    check(
+        opposed["r"] < 0.0 and opposed["share"] == 0.0 and opposed["p"] > 0.9, f"the opposed case reads none: {opposed}"
+    )
+
+
+def test_the_frozen_map_reads_the_topology_cache_of_its_root(tree: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    loaded: list[Path] = []
+    load = np.load
+
+    def recording(path: Path, *args: object, **kwargs: object):
+        loaded.append(Path(str(path)))
+        return load(path, *args, **kwargs)
+
+    monkeypatch.setattr(np, "load", recording)
+    run = synthetic_run(tree)
+    settings = json.loads((run / "cases.json").read_bytes())["settings"]
+    predicted = reading.frozen_map_prediction(run, settings, ("fresh-anchor", "fresh-failing", "fresh-dark"))
+    check(len(predicted["gain"]) == len(predicted["offset"]) > 0, "both maps predict the fresh iterations")
+    check(
+        len(loaded) == 2 and all(tree in path.parents for path in loaded),
+        f"arrays read from outside the root: {loaded}",
+    )
+
+
+def test_the_topology_cache_is_the_public_iteration_of_the_original_job() -> None:
+    import c1_mesh
+
+    topology, theta, phi, _ = c1_mesh.extract(FIXTURE / case.ORIGINAL_RUN)
+    kinds, lo, cached_theta, cached_phi, _ = c1_mesh.cached(ORIGINAL, "pairs", (FIXTURE / MESH_FILE).parent)
+    check([k for k, _ in topology] == list(kinds) and [m for _, m in topology] == list(lo), "cached topology")
+    check(theta.shape[0] == phi.shape[0] == 12, "the cut holds twelve served meshes")
+    for angles, cached in ((theta, cached_theta), (phi, cached_phi)):
+        check(all(any(np.array_equal(row, c) for c in cached) for row in angles), "every cut mesh is a cached mesh")
 
 
 def test_a_foreign_manifest_is_not_read(tree: Path) -> None:
