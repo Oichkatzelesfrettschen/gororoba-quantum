@@ -2,92 +2,92 @@
  "operating_characteristics": {
   "batch_drift_sd_0.003": {
    "absent": {
-    "offset_absent": 0.8386,
-    "superposition_only": 0.0027,
-    "unresolved": 0.0134,
-    "unresolved_batch": 0.0723,
-    "unresolved_block": 0.0727,
-    "unresolved_negative_twin": 0.0001,
-    "zero": 0.0001
+    "offset_absent": 8386,
+    "superposition_only": 27,
+    "unresolved": 134,
+    "unresolved_batch": 723,
+    "unresolved_block": 727,
+    "unresolved_negative_twin": 1,
+    "zero": 1
    },
    "coin_dropout": {
-    "b0_like": 0.7268,
-    "intermediate": 0.1124,
-    "offset_absent": 0.0001,
-    "superposition_only": 0.0021,
-    "unresolved": 0.0032,
-    "unresolved_batch": 0.0692,
-    "unresolved_block": 0.076,
-    "unresolved_context": 0.0101
+    "b0_like": 7268,
+    "intermediate": 1124,
+    "offset_absent": 1,
+    "superposition_only": 21,
+    "unresolved": 32,
+    "unresolved_batch": 692,
+    "unresolved_block": 760,
+    "unresolved_context": 101
    },
    "over_rotation": {
-    "intermediate": 0.0064,
-    "offset_absent": 0.0001,
-    "superposition_only": 0.0024,
-    "unresolved": 0.0095,
-    "unresolved_batch": 0.0713,
-    "unresolved_block": 0.0745,
-    "unresolved_context": 0.0092,
-    "zero": 0.8268
+    "intermediate": 64,
+    "offset_absent": 1,
+    "superposition_only": 24,
+    "unresolved": 95,
+    "unresolved_batch": 713,
+    "unresolved_block": 745,
+    "unresolved_context": 92,
+    "zero": 8268
    },
    "over_rotation_x_all_after": {
-    "intermediate": 0.0003,
-    "offset_absent": 0.0001,
-    "superposition_only": 0.0027,
-    "unresolved": 0.0462,
-    "unresolved_batch": 0.0732,
-    "unresolved_block": 0.0777,
-    "unresolved_context": 0.0818,
-    "zero": 0.718
+    "intermediate": 3,
+    "offset_absent": 1,
+    "superposition_only": 27,
+    "unresolved": 462,
+    "unresolved_batch": 732,
+    "unresolved_block": 777,
+    "unresolved_context": 818,
+    "zero": 7180
    },
    "over_rotation_x_all_before": {
-    "b0_like": 0.114,
-    "intermediate": 0.6902,
-    "offset_absent": 0.0001,
-    "superposition_only": 0.0042,
-    "unresolved": 0.0061,
-    "unresolved_batch": 0.071,
-    "unresolved_block": 0.0765,
-    "unresolved_context": 0.0379,
-    "zero": 0.0001
+    "b0_like": 1140,
+    "intermediate": 6902,
+    "offset_absent": 1,
+    "superposition_only": 42,
+    "unresolved": 61,
+    "unresolved_batch": 710,
+    "unresolved_block": 765,
+    "unresolved_context": 379,
+    "zero": 1
    },
    "over_rotation_y_axis": {
-    "b0_like": 0.0006,
-    "intermediate": 0.4069,
-    "offset_absent": 0.0001,
-    "superposition_only": 0.0036,
-    "unresolved": 0.0046,
-    "unresolved_batch": 0.0727,
-    "unresolved_block": 0.0755,
-    "unresolved_context": 0.0094,
-    "zero": 0.4266
+    "b0_like": 6,
+    "intermediate": 4069,
+    "offset_absent": 1,
+    "superposition_only": 36,
+    "unresolved": 46,
+    "unresolved_batch": 727,
+    "unresolved_block": 755,
+    "unresolved_context": 94,
+    "zero": 4266
    },
    "q12_correlation": {
-    "intermediate": 0.005,
-    "offset_absent": 0.0003,
-    "superposition_only": 0.0026,
-    "unresolved": 0.0098,
-    "unresolved_batch": 0.0684,
-    "unresolved_block": 0.0765,
-    "unresolved_context": 0.0096,
-    "zero": 0.8278
+    "intermediate": 50,
+    "offset_absent": 3,
+    "superposition_only": 26,
+    "unresolved": 98,
+    "unresolved_batch": 684,
+    "unresolved_block": 765,
+    "unresolved_context": 96,
+    "zero": 8278
    },
    "superposition_only": {
-    "intermediate": 0.0001,
-    "offset_absent": 0.0002,
-    "superposition_only": 0.768,
-    "unresolved": 0.0664,
-    "unresolved_batch": 0.0726,
-    "unresolved_block": 0.079,
-    "unresolved_context": 0.0066,
-    "unresolved_negative_twin": 0.0072
+    "intermediate": 1,
+    "offset_absent": 2,
+    "superposition_only": 7680,
+    "unresolved": 664,
+    "unresolved_batch": 726,
+    "unresolved_block": 790,
+    "unresolved_context": 66,
+    "unresolved_negative_twin": 72
    },
    "twin_opposite_sign": {
-    "offset_absent": 0.0001,
-    "superposition_only": 0.0088,
-    "unresolved_batch": 0.0706,
-    "unresolved_block": 0.079,
-    "unresolved_negative_twin": 0.8415
+    "offset_absent": 1,
+    "superposition_only": 88,
+    "unresolved_batch": 706,
+    "unresolved_block": 790,
+    "unresolved_negative_twin": 8415
    }
   },
   "draws_per_world": 20000,
@@ -95,80 +95,80 @@
   "seed_index": 0,
   "stationary": {
    "absent": {
-    "offset_absent": 0.972,
-    "superposition_only": 0.0001,
-    "unresolved": 0.0013,
-    "unresolved_batch": 0.0088,
-    "unresolved_block": 0.0178
+    "offset_absent": 9720,
+    "superposition_only": 1,
+    "unresolved": 13,
+    "unresolved_batch": 88,
+    "unresolved_block": 178
    },
    "coin_dropout": {
-    "b0_like": 0.924,
-    "intermediate": 0.0445,
-    "superposition_only": 0.0003,
-    "unresolved": 0.0006,
-    "unresolved_batch": 0.0072,
-    "unresolved_block": 0.0204,
-    "unresolved_context": 0.0031
+    "b0_like": 9240,
+    "intermediate": 445,
+    "superposition_only": 3,
+    "unresolved": 6,
+    "unresolved_batch": 72,
+    "unresolved_block": 204,
+    "unresolved_context": 31
    },
    "over_rotation": {
-    "intermediate": 0.0014,
-    "superposition_only": 0.0003,
-    "unresolved": 0.0018,
-    "unresolved_batch": 0.0098,
-    "unresolved_block": 0.0197,
-    "unresolved_context": 0.0026,
-    "zero": 0.9644
+    "intermediate": 14,
+    "superposition_only": 3,
+    "unresolved": 18,
+    "unresolved_batch": 98,
+    "unresolved_block": 197,
+    "unresolved_context": 26,
+    "zero": 9644
    },
    "over_rotation_x_all_after": {
-    "intermediate": 0.0001,
-    "superposition_only": 0.0004,
-    "unresolved": 0.0221,
-    "unresolved_batch": 0.0079,
-    "unresolved_block": 0.0218,
-    "unresolved_context": 0.0609,
-    "zero": 0.8868
+    "intermediate": 1,
+    "superposition_only": 4,
+    "unresolved": 221,
+    "unresolved_batch": 79,
+    "unresolved_block": 218,
+    "unresolved_context": 609,
+    "zero": 8868
    },
    "over_rotation_x_all_before": {
-    "b0_like": 0.077,
-    "intermediate": 0.8728,
-    "superposition_only": 0.0006,
-    "unresolved": 0.0014,
-    "unresolved_batch": 0.008,
-    "unresolved_block": 0.0185,
-    "unresolved_context": 0.0217
+    "b0_like": 770,
+    "intermediate": 8728,
+    "superposition_only": 6,
+    "unresolved": 14,
+    "unresolved_batch": 80,
+    "unresolved_block": 185,
+    "unresolved_context": 217
    },
    "over_rotation_y_axis": {
-    "b0_like": 0.0001,
-    "intermediate": 0.4697,
-    "superposition_only": 0.0003,
-    "unresolved": 0.0013,
-    "unresolved_batch": 0.0084,
-    "unresolved_block": 0.0204,
-    "unresolved_context": 0.0027,
-    "zero": 0.497
+    "b0_like": 1,
+    "intermediate": 4697,
+    "superposition_only": 3,
+    "unresolved": 13,
+    "unresolved_batch": 84,
+    "unresolved_block": 204,
+    "unresolved_context": 27,
+    "zero": 4970
    },
    "q12_correlation": {
-    "intermediate": 0.001,
-    "superposition_only": 0.0003,
-    "unresolved": 0.0016,
-    "unresolved_batch": 0.0069,
-    "unresolved_block": 0.0188,
-    "unresolved_context": 0.0024,
-    "zero": 0.9688
+    "intermediate": 10,
+    "superposition_only": 3,
+    "unresolved": 16,
+    "unresolved_batch": 69,
+    "unresolved_block": 188,
+    "unresolved_context": 24,
+    "zero": 9688
    },
    "superposition_only": {
-    "superposition_only": 0.9399,
-    "unresolved": 0.0295,
-    "unresolved_batch": 0.0075,
-    "unresolved_block": 0.0204,
-    "unresolved_context": 0.0014,
-    "unresolved_negative_twin": 0.0013
+    "superposition_only": 9399,
+    "unresolved": 295,
+    "unresolved_batch": 75,
+    "unresolved_block": 204,
+    "unresolved_context": 14,
+    "unresolved_negative_twin": 13
    },
    "twin_opposite_sign": {
-    "superposition_only": 0.0017,
-    "unresolved_batch": 0.0086,
-    "unresolved_block": 0.0191,
-    "unresolved_negative_twin": 0.9706
+    "superposition_only": 17,
+    "unresolved_batch": 86,
+    "unresolved_block": 191,
+    "unresolved_negative_twin": 9706
    }
   }
  },
@@ -217,60 +217,61 @@
  "rule": "qi-pathion-one-cz-null-rule-v2",
  "supersedes": "the twin control (item 4) of the preregistered rule in scripts/qi_pathion_one_cz_null_cases.py",
  "twin_control": "b0 twin contrast t0 above 3.0 se; if not, t0 within 3.0 se of zero (|t0| <= 3.0 se) and s0 - t0 above 3.0 combined se, the offset exists only with the coin in superposition; t0 below -3.0 se is unresolved (negative twin); otherwise unresolved",
+ "unit": "worlds and operating characteristics in ten-thousandths: 164 is 0.0164, 9706 is a share of 0.9706",
  "worlds": {
   "absent": {
-   "s_b0": 0.0,
-   "s_k": 0.0,
-   "t_b0": 0.0,
-   "t_k": 0.0
+   "s_b0": 0,
+   "s_k": 0,
+   "t_b0": 0,
+   "t_k": 0
   },
   "coin_dropout": {
-   "s_b0": 0.0164,
-   "s_k": 0.0164,
-   "t_b0": 0.017,
-   "t_k": 0.017
+   "s_b0": 164,
+   "s_k": 164,
+   "t_b0": 170,
+   "t_k": 170
   },
   "over_rotation": {
-   "s_b0": 0.0164,
-   "s_k": 0.0,
-   "t_b0": 0.0166,
-   "t_k": 0.0
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": 166,
+   "t_k": 0
   },
   "over_rotation_x_all_after": {
-   "s_b0": 0.0164,
-   "s_k": -0.004,
-   "t_b0": 0.0164,
-   "t_k": 0.0
+   "s_b0": 164,
+   "s_k": -40,
+   "t_b0": 164,
+   "t_k": 0
   },
   "over_rotation_x_all_before": {
-   "s_b0": 0.0164,
-   "s_k": 0.0076,
-   "t_b0": 0.0164,
-   "t_k": 0.0103
+   "s_b0": 164,
+   "s_k": 76,
+   "t_b0": 164,
+   "t_k": 103
   },
   "over_rotation_y_axis": {
-   "s_b0": 0.0164,
-   "s_k": 0.0038,
-   "t_b0": 0.0164,
-   "t_k": 0.0039
+   "s_b0": 164,
+   "s_k": 38,
+   "t_b0": 164,
+   "t_k": 39
   },
   "q12_correlation": {
-   "s_b0": 0.0164,
-   "s_k": 0.0,
-   "t_b0": 0.017,
-   "t_k": 0.0
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": 170,
+   "t_k": 0
   },
   "superposition_only": {
-   "s_b0": 0.0164,
-   "s_k": 0.0164,
-   "t_b0": 0.0,
-   "t_k": 0.0
+   "s_b0": 164,
+   "s_k": 164,
+   "t_b0": 0,
+   "t_k": 0
   },
   "twin_opposite_sign": {
-   "s_b0": 0.0164,
-   "s_k": 0.0,
-   "t_b0": -0.0164,
-   "t_k": 0.0
+   "s_b0": 164,
+   "s_k": 0,
+   "t_b0": -164,
+   "t_k": 0
   }
  }
 }

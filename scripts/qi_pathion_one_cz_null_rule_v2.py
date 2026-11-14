@@ -83,14 +83,30 @@ def operating_characteristics() -> dict[str, Any]:
     }
 
 
+def ten_thousandths(value: float) -> int:
+    """10000 x a value that carries four decimals (a share or a contrast), as an integer, so the record holds no
+    float and a replay of it needs no numeric binding."""
+    return round(value * 10000)
+
+
 def record() -> dict[str, Any]:
+    ocs = operating_characteristics()
+    tables = {
+        key: {w: {label: ten_thousandths(share) for label, share in row.items()} for w, row in table.items()}
+        for key, table in ocs.items()
+        if isinstance(table, dict)
+    }
     return {
         "rule": RULE,
         "supersedes": "the twin control (item 4) of the preregistered rule in scripts/qi_pathion_one_cz_null_cases.py",
         "twin_control": TWIN_CONTROL,
         "outcomes": {label: {"outcome": v[0], "a5_186": v[1]} for label, v in OUTCOMES.items()},
-        "worlds": WORLDS,
-        "operating_characteristics": operating_characteristics(),
+        "unit": "worlds and operating characteristics in ten-thousandths: 164 is 0.0164, 9706 is a share of 0.9706",
+        "worlds": {w: {k: ten_thousandths(v) for k, v in mean.items()} for w, mean in WORLDS.items()},
+        "operating_characteristics": {
+            **{key: value for key, value in ocs.items() if not isinstance(value, dict)},
+            **tables,
+        },
     }
 
 

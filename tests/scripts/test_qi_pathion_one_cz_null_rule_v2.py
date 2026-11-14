@@ -123,7 +123,14 @@ def _stored() -> dict[str, Any]:
 
 def test_the_stored_table_repeats_the_preregistered_one_and_adds_the_negative_twin_row() -> None:
     old = json.loads(PREDICTION.read_text(encoding="utf-8"))["operating_characteristics"]
-    new = _stored()["operating_characteristics"]
+    stored = _stored()
+    new = {
+        key: {w: {k: v / 10000 for k, v in row.items()} for w, row in table.items()}
+        if isinstance(table, dict)
+        else table
+        for key, table in stored["operating_characteristics"].items()
+    }
+    _expect(stored["worlds"][rule.NEGATIVE_TWIN_WORLD]["t_b0"] == -164, "worlds are stored in ten-thousandths")
     _expect(new["qrng_draw"] == old["qrng_draw"] and new["seed_index"] == old["seed_index"], "the seed is the case's")
     for table in ("stationary", "batch_drift_sd_0.003"):
         _expect(list(new[table])[: len(old[table])] == list(old[table]), "the inherited worlds draw first, in order")
@@ -147,6 +154,18 @@ def test_the_stored_table_repeats_the_preregistered_one_and_adds_the_negative_tw
         not {"zero", "b0_like"} & new["stationary"][rule.NEGATIVE_TWIN_WORLD].keys(),
         "a negative twin decides no mechanism",
     )
+
+
+def test_the_stored_rule_v2_record_holds_no_float() -> None:
+    _expect(not _holds_float(_stored()), "a float in the record needs a numeric binding to replay")
+
+
+def _holds_float(node: Any) -> bool:
+    if isinstance(node, float):
+        return True
+    if isinstance(node, dict):
+        return any(_holds_float(v) for v in node.values())
+    return isinstance(node, list) and any(_holds_float(v) for v in node)
 
 
 @pytest.mark.audit

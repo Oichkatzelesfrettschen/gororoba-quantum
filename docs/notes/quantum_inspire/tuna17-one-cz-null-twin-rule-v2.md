@@ -28,9 +28,15 @@ batches (`drift_covariate.references.pairs` of
 `results/quantum_inspire/pathion_one_cz_null_tuna_17_analysis.v3.json`, measured on Tuna-17, 2026-11-07), so lambda lies in
 [0.937, 0.947]. Two effects follow for the b0 offset 0.0164 against the pooled b0 twin standard error 0.00276:
 
-- the attenuation itself, a shortfall of 8.7e-4 to 1.04e-3 (0.31 to 0.38 standard errors), is common to every twin and to the
-  base contrasts, which read raw counts on the same scale; the predicted contrasts of `c2_one_cz_twins.txt` apply the
-  bracket product readout of the coin series, so the decision compares raw readings with raw predictions;
+- the attenuation itself, a shortfall of 8.7e-4 to 1.04e-3 (0.31 to 0.38 standard errors), enters s0 and t0 alike as a
+  raw reading: the decision rows are `pca.selector_stat(plus, minus)` of the raw coin counts for the base contrast
+  (`qi_pathion_one_cz_null_cases.py:1168-1170`; the readout matrix of line 1172 feeds only the `template_rows` detail) and
+  the raw selector-0 fraction of each twin for the twin contrast (lines 1183-1186), and `decide_estimates` reads
+  `s0, t0 = base["b0"], twin["b0"]` from those (line 857; the v3 analyzer repeats both at
+  `qi_pathion_one_cz_null_analysis.py:256` and `265-268`). Neither contrast is bracket-corrected, so the shortfall is not
+  cancelled in s0 - t0; it is part of the model, since the predicted contrasts of `c2_one_cz_twins.txt` apply the bracket
+  product readout to base and twin alike (the base contrast, conditioned on the coin readout, carries the coin's assignment
+  factor as well), and the decision compares raw readings with raw predictions;
 - the spread of lambda between batches, at most 1.8e-4 (0.062 standard errors), is the part that a bracket in every batch
   would correct and the single-ended layout leaves in.
 
@@ -72,7 +78,8 @@ and in order, so their rows equal the stored ones except where a series read sup
 | negative twin (preregistered rule: superposition_only about 0.97) | unresolved_negative_twin 0.9706, superposition_only 0.0017 | unresolved_negative_twin 0.8415, superposition_only 0.0088 |
 
 A negative twin reads superposition-only in under 1 percent of runs under v2; under the preregistered rule it read that row
-in nearly every run it was decided. `"$PYTHON" scripts/qi_pathion_one_cz_null_rule_v2.py --check` regenerates the record.
+in nearly every run it was decided. `"$PYTHON" scripts/qi_pathion_one_cz_null_rule_v2.py --check` regenerates the record, which stores every value in ten-thousandths as an
+integer (float-free, so the replay needs no numeric binding); gate `core-pathion-one-cz-null-tuna-analysis-replay` runs it and declares it under `replays`.
 
 ## Zero-error policy
 
