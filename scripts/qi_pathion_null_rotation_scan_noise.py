@@ -67,6 +67,7 @@ RETAINED_ANALYSIS = "results/quantum_inspire/pathion_one_cz_null_tuna_17_analysi
 QX_CASES = ROOT / "results/quantum_inspire/cases" / rs.QX_SERIES
 DRAW_RECORD = rs.OC_DRAW
 DRAW_INDEX = 1
+SELF_TEST_INDICES = (2, 3)  # DRAW_RECORD values of the self-test's stable series and its retained-walk series
 TARGET_VISIBILITY = 0.44
 QX_CHECK_SHOTS = 131072
 QX_CHECK_Z = 5.0
@@ -243,10 +244,33 @@ def readout_map(world: str, x: float) -> np.ndarray:
     return np.asarray(make(rs.KEYS.index(key), state, float(x)))
 
 
-def roots(function: Any, grid: np.ndarray) -> list[float]:
-    values = [function(float(t)) for t in grid]
+def sizing_value(item: tuple[str, str, str | None, float]) -> float:
+    """Center contrast less the design contrast at one sizing point (kind, mechanism, world, parameter), read
+    through the mean retained readout."""
+    kind, mechanism, world, x = item
+    noise = noise_of(kind, strength_of(kind))
+    if mechanism == "pulse":
+        law = noisy_law(rs.CENTER, noise, world, x)
+    elif mechanism == "readout":
+        law = readout_map(str(world), x) @ noisy_law(rs.CENTER, noise, None, 0.0)
+    else:
+        law = noisy_law(rs.CENTER, noise, None, 0.0, 0.0, x)
+    return float(rs.selector_contrast(rs.read(law, mean_matrix()))) - rs.DESIGN_CONTRAST
+
+
+def roots(kind: str, mechanism: str, world: str | None, grid: np.ndarray) -> list[float]:
+    """Parameters at which the truth reaches the design contrast: the grid is evaluated over the process pool, and
+    each sign change is refined by brentq, whose evaluations depend on one another."""
+    values = ordered_map(sizing_value, [(kind, mechanism, world, float(t)) for t in grid], min_items=1)
     return [
-        float(brentq(function, float(grid[i]), float(grid[i + 1]), xtol=1e-9))
+        float(
+            brentq(
+                lambda t: sizing_value((kind, mechanism, world, float(t))),
+                float(grid[i]),
+                float(grid[i + 1]),
+                xtol=1e-9,
+            )
+        )
         for i in range(len(grid) - 1)
         if values[i] * values[i + 1] < 0
     ]
@@ -267,21 +291,12 @@ def truth_laws(kind: str, truth: dict[str, Any]) -> np.ndarray:
 
 def truths_of(kind: str) -> list[dict[str, Any]]:
     """Every truth of a noise kind, each pulse and readout world sized to the design center contrast."""
-    noise = noise_of(kind, strength_of(kind))
-    matrix = mean_matrix()
-
-    def contrast(law: np.ndarray) -> float:
-        return float(rs.selector_contrast(rs.read(law, matrix)))
-
     out: list[dict[str, Any]] = [
         {"name": "no_offset", "mechanism": "none", "world": None, "parameter": 0.0, "class": None}
     ]
     for world in PULSE_TRUTHS:
         axis = rs.PULSE_WORLDS[world][0]
-        found = roots(
-            lambda t, w=world: contrast(noisy_law(rs.CENTER, noise, w, t)) - rs.DESIGN_CONTRAST,
-            np.linspace(-0.30, 0.30, 61),
-        )
+        found = roots(kind, "pulse", world, np.linspace(-0.30, 0.30, 61))
         for theta in found:
             out.append(
                 {
@@ -292,19 +307,13 @@ def truths_of(kind: str) -> list[dict[str, Any]]:
                     "class": TRUTH_CLASS[axis],
                 }
             )
-    exact = noisy_law(rs.CENTER, noise, None, 0.0)
     for world in READOUT_TRUTHS:
-        found = roots(
-            lambda x, w=world: contrast(readout_map(w, x) @ exact) - rs.DESIGN_CONTRAST, np.linspace(0.0, 0.20, 21)
-        )
+        found = roots(kind, "readout", world, np.linspace(0.0, 0.20, 21))
         for x in found:
             out.append(
                 {"name": f"{world}@{x:.4f}", "mechanism": "readout", "world": world, "parameter": x, "class": "readout"}
             )
-    scales = roots(
-        lambda e: contrast(noisy_law(rs.CENTER, noise, None, 0.0, 0.0, e)) - rs.DESIGN_CONTRAST,
-        np.linspace(-0.2, 0.2, 41),
-    )
+    scales = roots(kind, "amplitude_scale", None, np.linspace(-0.2, 0.2, 41))
     for value in scales:
         out.append(
             {
@@ -784,8 +793,10 @@ def self_test() -> str:
         if abs(center_visibility(kind, strength_of(kind)) - TARGET_VISIBILITY) > 1e-6:
             raise AssertionError(f"{kind}: the visibility misses its target")
     kind = "cz_depolarizing"
+    values = read_record(DRAW_RECORD)["values"]
+    self_test_seeds = [int(values[index]) for index in SELF_TEST_INDICES]
     truth = next(t for t in truths_of(kind) if t["world"] == "pulse_x_before_all" and t["parameter"] > 0)
-    series = simulate_series(truth_laws(kind, truth), np.random.default_rng(np.random.SeedSequence([0, 1])))
+    series = simulate_series(truth_laws(kind, truth), np.random.default_rng(self_test_seeds[0]))
     manifest = json.loads(
         (ROOT / "results/quantum_inspire/cases" / rs.TUNA_SERIES / "batch-01" / "cases.json").read_text(
             encoding="utf-8"
@@ -801,7 +812,9 @@ def self_test() -> str:
         raise AssertionError(f"the counts path reads {fast['label']} and evaluate reads {slow['label']}")
     if fast["label"] != "pulse_x":
         raise AssertionError(f"a planted over-rotation under CZ depolarizing reads {fast['label']}")
-    walked = decide_series(simulate_series(truth_laws(kind, truth), np.random.default_rng([0, 2]), "retained_walk"))
+    walked = decide_series(
+        simulate_series(truth_laws(kind, truth), np.random.default_rng(self_test_seeds[1]), "retained_walk")
+    )
     if len(walked["numbers"]["admitted_batches"]) != 8:
         raise AssertionError("the guard refuses a scan batch of the retained readout walk, where only q11 moves")
     if not wrong("pulse_x", None, "pulse_other") or wrong("unresolved_both", None, "pulse_x"):
