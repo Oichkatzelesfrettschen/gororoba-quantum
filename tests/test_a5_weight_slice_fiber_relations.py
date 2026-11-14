@@ -385,6 +385,82 @@ def test_the_retained_record_passes_its_own_rules_and_holds_the_validated_counts
     _same([entry["spaces_equal"] for entry in record["reduction_comparison"]], [True, True])
 
 
+def test_the_iso_relation_ideal_is_prime_of_degree_23_at_both_basepoints_over_the_gaussian_field() -> None:
+    record = _record()
+    for incidence in ("Iso->N+", "Iso->N-"):
+        hilbert = _cell(record, incidence)["hilbert"]
+        _same(
+            (hilbert["affine_dimension"], hilbert["multiplicity"], hilbert["saturated"], hilbert["relation_count"]),
+            (5, 23, True, 68),
+        )
+        # One minimal prime equal to the ideal: the ideal is prime, and no linear form lies in it.
+        _same((hilbert["minimal_primes"], hilbert["radical"]), ([[5, 23, 0]], True))
+    _same(_cell(record, "Iso->N+")["hilbert"], _cell(record, "Iso->N-")["hilbert"])
+
+
+def test_the_w8_relation_ideal_is_radical_and_the_e8bar_ideal_is_not_in_every_cell() -> None:
+    record = _record()
+    found = {
+        (cell["incidence"], cell["field"]): cell["hilbert"]["radical"] for cell in record["cells"] if cell["hilbert"]
+    }
+    _same(len(found), 8)
+    for (incidence, _field), radical in found.items():
+        _same(radical, wf.EXPECTED_RADICAL[{"W8": "w8", "E8bar": "e8", "Iso": "iso"}[incidence.split("->")[0]]])
+    _same(wf.EXPECTED_RADICAL, {"w8": True, "e8": False, "iso": True})
+    _same(set(wf.EXPECTED_RADICAL), set(wf.EXPECTED_HILBERT))
+    _same(set(wf.EXPECTED_MINIMAL_PRIMES), set(wf.EXPECTED_HILBERT))
+    _same(wf.EXPECTED_HILBERT["iso"], (5, 23))
+    _same(wf.EXPECTED_MINIMAL_PRIMES["iso"], ((5, 23, 0),))
+
+
+def test_the_e8bar_minimal_primes_share_at_least_two_linear_forms_in_every_cell() -> None:
+    """9 + 14 linear forms in 21 generators: the intersection of the primes holds a linear form, which A5-449 uses."""
+    record = json.loads(RECORD.read_text(encoding="utf-8"))
+    cells = [cell for cell in record["cells"] if cell["source"] == "e8"]
+    _same(len(cells), 3)
+    for cell in cells:
+        primes = cell["hilbert"]["minimal_primes"]
+        _same(sorted(prime[0] for prime in primes), [4, 5])
+        if sum(prime[2] for prime in primes) - cell["generator_count"] < 2:
+            raise AssertionError(primes)
+
+
+def test_the_hilbert_script_compares_the_ideal_with_the_intersection_of_its_minimal_primes() -> None:
+    script = wf.hilbert_script(["RELATION 1,2:1", "RELATION 1,1:(2*i)"], 2, 0, 0)
+    for marker in (
+        "list components=minAssGTZ(K);",
+        "ideal radical_part=components[1];",
+        "radical_part=intersect(radical_part,components[position]);",
+        'print("RESULT radical "+string(size(reduce(radical_part,sK))==0));',
+    ):
+        _same(marker in script, True)
+    _same(script.index("RESULT minimal_prime") < script.index("RESULT radical") < script.index("RESULT done"), True)
+
+
+@pytest.mark.parametrize(("printed", "expected"), [("1", True), ("0", False)])
+def test_the_hilbert_summary_reads_the_radical_line(
+    monkeypatch: pytest.MonkeyPatch, printed: str, expected: bool
+) -> None:
+    values = {
+        "relation_count": ["2"],
+        "dimension": ["1"],
+        "multiplicity": ["2"],
+        "saturated": ["1"],
+        "hilbert_first_numerator": ["1,0,-2,1,0"],
+        "minimal_prime": ["1,1,1"],
+        "radical": [printed],
+    }
+    monkeypatch.setattr(wf, "run_singular", lambda script: {"values": values})
+    summary = wf.hilbert_item("unused")
+    _same(
+        (summary["radical"], summary["minimal_primes"], summary["first_numerator"]),
+        (expected, [[1, 1, 1]], [1, 0, -2, 1]),
+    )
+    del values["radical"]
+    with pytest.raises(KeyError):
+        wf.hilbert_item("unused")
+
+
 def test_the_retained_record_holds_only_integers_strings_and_digests() -> None:
     text = RECORD.read_text(encoding="utf-8")
     record = json.loads(text)
@@ -442,9 +518,22 @@ def _mutations() -> dict[str, Callable[[dict[str, Any]], None]]:
         "hilbert numerator differs between fields": lambda rec: rec["cells"][10]["hilbert"][
             "first_numerator"
         ].__setitem__(2, -143),
-        "an unexpected hilbert entry": lambda rec: rec["cells"][2].update(
+        "an unexpected hilbert entry": lambda rec: rec["cells"][3].update(
             hilbert=copy.deepcopy(rec["cells"][0]["hilbert"])
         ),
+        "iso hilbert entry removed": lambda rec: rec["cells"][2].update(hilbert=None),
+        "iso degree changed": lambda rec: rec["cells"][7]["hilbert"].update(multiplicity=22),
+        "iso ideal splits into two primes": lambda rec: rec["cells"][2]["hilbert"].update(
+            minimal_primes=[[5, 11, 0], [5, 12, 0]]
+        ),
+        "iso prime contains a linear form": lambda rec: rec["cells"][7]["hilbert"]["minimal_primes"][0].__setitem__(
+            2, 1
+        ),
+        "iso ideal not radical": lambda rec: rec["cells"][2]["hilbert"].update(radical=False),
+        "e8bar ideal reported radical": lambda rec: rec["cells"][6]["hilbert"].update(radical=True),
+        "w8 ideal not radical in the modular cell": lambda rec: rec["cells"][10]["hilbert"].update(radical=False),
+        "radical field removed": lambda rec: rec["cells"][5]["hilbert"].pop("radical"),
+        "radical field is an integer": lambda rec: rec["cells"][0]["hilbert"].update(radical=1),
         "reduction rank differs": lambda rec: rec["reduction_comparison"][0].update(spaces_equal=False),
         "a reduction rank changes under a stored equality": lambda rec: rec["reduction_comparison"][0].update(
             joint_rank=145

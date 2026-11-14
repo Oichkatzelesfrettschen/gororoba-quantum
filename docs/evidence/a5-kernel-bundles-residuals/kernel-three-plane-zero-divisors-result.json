@@ -1,0 +1,2852 @@
+{
+ "calibration": {
+  "conic_times_conic": {
+   "singular_scheme_length": 4,
+   "trisecant_hilbert_value": 0
+  },
+  "double_line_times_conic": {
+   "singular_scheme_length": null,
+   "trisecant_hilbert_value": null
+  },
+  "line_times_cubic": {
+   "singular_scheme_length": 3,
+   "trisecant_hilbert_value": 1
+  },
+  "tangent_conics": {
+   "singular_scheme_length": 5,
+   "trisecant_hilbert_value": 0
+  },
+  "three_nodal_quartic": {
+   "singular_scheme_length": 3,
+   "trisecant_hilbert_value": 0
+  },
+  "two_lines_times_conic": {
+   "singular_scheme_length": 5,
+   "trisecant_hilbert_value": 2
+  }
+ },
+ "field": "GF(32029), i = 9115",
+ "fixtures": {
+  "quadric_stratum": [
+   {
+    "fixture": 13,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 14,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 19,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 24,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 25,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 42,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 43,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 44,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 45,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 61,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 62,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   },
+   {
+    "fixture": 65,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "quadric_gram_rank": 0,
+    "quartic_multiples_rank": 6,
+    "quartic_nonzero": true,
+    "singular_scheme_length": 3,
+    "trisecant_hilbert_value": 0,
+    "union_rank": 6
+   }
+  ],
+  "quartic_stratum": [
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 0,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 1,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 2,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 3,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 4,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 5,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 6,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 7,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 8,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 9,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 10,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 11,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 12,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 15,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 16,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 17,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 18,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 20,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 21,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 22,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 23,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 26,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 27,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 29,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 30,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 31,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 32,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 33,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 34,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 35,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 36,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 37,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 39,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 40,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 41,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 46,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 47,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 48,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 49,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 50,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 51,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 52,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 53,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 54,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 55,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 12,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 12,
+    "fixture": 56,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 57,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 58,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 59,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 60,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 2,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 2,
+    "fixture": 63,
+    "line_nullities": [
+     9,
+     9,
+     9,
+     9,
+     9,
+     9
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": false,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   },
+   {
+    "exact_fiber_dimension": 6,
+    "exact_polar_line": {
+     "kernel_dimension": 3,
+     "line_ranks": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+     ],
+     "off_line_rank": 12,
+     "polar_line_dimension": 2,
+     "rank_lower_block": 12
+    },
+    "fiber_dimension": 6,
+    "fixture": 64,
+    "line_nullities": [
+     7,
+     7,
+     7,
+     7,
+     7,
+     7
+    ],
+    "off_line_nullity": 3,
+    "pfaffian_forms": 91,
+    "pfaffian_span_rank": 6,
+    "plane_equals_line": true,
+    "polar_line_dimension": 2,
+    "polar_square_multiples_rank": 6,
+    "quadric_gram_rank": 1,
+    "quartic_zero_probes": 16,
+    "union_rank": 6
+   }
+  ],
+  "stratum_counts": {
+   "V(G) minus V(Q)": 52,
+   "V(Q) intersect V(G)": 2,
+   "V(Q) minus V(G)": 12
+  }
+ },
+ "grid": {
+  "candidates": 41616,
+  "excluded_stratum_points": 388,
+  "long_scheme_points": [
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    2,
+    0,
+    1,
+    0,
+    2,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    2,
+    0,
+    1,
+    0,
+    0,
+    2,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    2,
+    1,
+    0,
+    2,
+    0,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    2,
+    1,
+    0,
+    0,
+    2,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    -1,
+    -1,
+    -1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    -1,
+    -1,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    -1,
+    1,
+    -1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    -1,
+    1,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    -1,
+    -1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    -1,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    -1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    2,
+    -1,
+    2,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    2,
+    1,
+    2,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    2,
+    2,
+    -1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    2,
+    2,
+    1,
+    0
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    -1,
+    -1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    -1,
+    1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    1,
+    -1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    -1,
+    2,
+    2
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1,
+    -1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1,
+    1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    -1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    2,
+    2
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    2,
+    -1,
+    2
+   ],
+   [
+    1,
+    1,
+    2,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    2,
+    1,
+    2
+   ]
+  ],
+  "plane_on_line": [
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     -1,
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     1,
+     -1,
+     0,
+     0
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     -1,
+     -1,
+     0,
+     0
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     1,
+     1,
+     0,
+     0
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     0,
+     0,
+     -1,
+     -1
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     0,
+     0,
+     1,
+     1
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     -1,
+     1
+    ]
+   },
+   {
+    "line_nullity": 7,
+    "split_point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     -1
+    ]
+   }
+  ],
+  "quadric_classes": [
+   [
+    0,
+    true,
+    3,
+    0,
+    2064
+   ],
+   [
+    0,
+    true,
+    5,
+    0,
+    32
+   ]
+  ],
+  "quartic_classes": [
+   [
+    7,
+    false,
+    2,
+    364
+   ],
+   [
+    7,
+    true,
+    2,
+    8
+   ],
+   [
+    7,
+    true,
+    6,
+    61
+   ],
+   [
+    9,
+    false,
+    2,
+    678
+   ],
+   [
+    9,
+    true,
+    12,
+    92
+   ]
+  ],
+  "quartic_invariants": [
+   [
+    1,
+    16,
+    2,
+    3,
+    1203
+   ]
+  ]
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
+  "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+  "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+ },
+ "pass": true,
+ "quartic_probes": {
+  "coefficients": 15,
+  "monomial_rank": 15,
+  "points": 16
+ },
+ "sampled_points": {
+  "V(G) minus V(Q)": [
+   [
+    1,
+    16,
+    2,
+    [
+     7
+    ],
+    3,
+    40
+   ]
+  ],
+  "V(Q) minus V(G)": [
+   [
+    0,
+    true,
+    3,
+    0,
+    40
+   ]
+  ]
+ },
+ "schema": "a5-kernel-bundles-residuals-kernel-three-plane-zero-divisors-v1"
+}

@@ -48,6 +48,21 @@ w' = z'. An orbit rank of 16 modulo the prime is exact, and so is a fiber of dim
 the fiber is larger at orbit rank 16, or the kernel vectors have higher nullity at fiber dimension 2, have their
 fiber recomputed exactly.
 
+The fiber is then read from the kernel plane itself. The signs of the lower block satisfy
+SIGNS[r][r ^ c] = -SIGNS[r][c], so M(z) p = -M(p) z, and for a basis p1, p2 of the kernel plane P the z-part of L is
+{z in ker M(p1) n ker M(p2): z orthogonal to the conjugate plane P'}. `kernel_form` computes modulo 32029 the
+nullity of M(p) at the probe vector p1 + 7 p2 of P, the dimension of ker M(p1) n ker M(p2) and of its cut by P', and the
+nullities of M(k) on a net of 342 vectors k of the three-plane ker M(z), at the 66 fixtures and at every nullity-4
+grid point. One probe vector does not decide the nullity on the plane, so at the 9 grid points where the probe
+has nullity 7 and dim L = 2 the nullity is recomputed over Q(i) at six further vectors of the plane and at the
+probe: it is 7 at all seven at 8 points; at one point it is 3 at the six and 7 at the probe, where the plane meets
+the higher zero divisors of ker M(z) in that single point.
+
+Two further samples bear on the real points of V(Q) minus V(G): 469 real points of V(Q) with
+Gaussian-integer split coordinates, where w' is the conjugate of z' and independent of it, obtained by projecting
+V(Q) from its 12 fixtures along Gaussian directions; and, at 25 sampled points z0 of each stratum, 40 general
+planes of ker M(z0) that avoid z0, with the dimension of {z: P in ker M(z)}.
+
 The points come from sha256 of a label and a counter, reduced modulo 32029: a fixed list, with no seed.
 
 `--write` writes nullity4-gauss-image-result.json beside this file; `--check` recomputes and compares.
@@ -92,6 +107,9 @@ SOURCE_PATHS = (
     HERE / "nullity4_gauss_image.py",
     BUNDLES / "kernel_frames.py",
     BUNDLES / "kernel_symmetry.py",
+    ROOT / "docs" / "evidence" / "a5-strata-regularity" / "strata_regularity.py",
+    ROOT / "docs" / "evidence" / "a5-rank-strata-equations" / "rederive_strata_equations.py",
+    ROOT / "gororoba_quantum" / "cd_core.py",
     FIXTURES,
 )
 PRIME, ROOT_OF_MINUS_ONE = 32029, 9115
@@ -173,6 +191,100 @@ FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES = 54, 22
 # Sizes of the ten shared classes, and the real ranks of the 22 fixtures in them.
 SHARED_PLANE_SIZES = [2] * 8 + [3] * 2
 SHARED_PLANE_REAL_RANKS = [16] * 12 + [22] * 10
+# Exact fixtures by (stratum, dim L, nullity of M(p) at a general vector p of the kernel plane, dimension of
+# ker M(p1) n ker M(p2), its dimension after the cut by the conjugate plane, nullities of M(k) on the net of
+# ker M(z) as (nullity, vectors, projective points, span, span with the kernel plane) rows), modulo PRIME, each
+# class with its fixture numbers. Vectors of one nullity lie on one projective line when their span is 2, and
+# that line is the kernel plane when the span stays 2 with the plane added.
+# The net has 342 vectors on 145 projective points; a line through it holds at most 48 vectors on 16 points, and
+# a point holds 6 vectors when its coprime combination has entries -1..1 and 2 otherwise.
+KERNEL_FORM_FIXTURES: dict[tuple[Any, ...], tuple[int, ...]] = {
+    (STRATA[0], 2, 3, 1, 1, ((3, 336, 144, 3, 3), (5, 6, 1, 1, 2))): (43, 45),
+    (STRATA[0], 2, 3, 1, 1, ((3, 336, 144, 3, 3), (7, 6, 1, 1, 2))): (13, 61),
+    (STRATA[0], 2, 3, 1, 1, ((3, 338, 143, 3, 3), (5, 4, 2, 2, 3))): (65,),
+    (STRATA[0], 2, 3, 1, 1, ((3, 342, 145, 3, 3),)): (14, 19, 24, 25, 42, 44, 62),
+    (STRATA[1], 2, 3, 1, 1, ((3, 294, 129, 3, 3), (9, 48, 16, 2, 3))): (30, 34),
+    (STRATA[1], 2, 3, 1, 1, ((3, 322, 137, 3, 3), (9, 20, 8, 2, 3))): (52, 55),
+    (STRATA[1], 2, 3, 1, 1, ((3, 336, 144, 3, 3), (7, 6, 1, 1, 2))): (47,),
+    (STRATA[1], 2, 3, 1, 1, ((3, 336, 144, 3, 3), (9, 6, 1, 1, 3))): (41, 63),
+    (STRATA[1], 2, 3, 1, 1, ((3, 340, 144, 3, 3), (7, 2, 1, 1, 2))): (46,),
+    (STRATA[1], 2, 3, 1, 1, ((3, 340, 144, 3, 3), (9, 2, 1, 1, 3))): (33, 37, 49, 54, 57, 58),
+    (STRATA[1], 2, 3, 1, 1, ((3, 342, 145, 3, 3),)): (29, 32, 36, 39, 40, 50, 51, 59, 60),
+    (STRATA[1], 6, 7, 3, 3, ((3, 294, 129, 3, 3), (7, 48, 16, 2, 2))): (
+        0,
+        15,
+        16,
+        17,
+        18,
+        20,
+        21,
+        22,
+        23,
+        26,
+        27,
+        48,
+        64,
+    ),
+    (STRATA[1], 12, 9, 6, 6, ((3, 294, 129, 3, 3), (9, 48, 16, 2, 2))): (
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        31,
+        35,
+        53,
+        56,
+    ),
+    (STRATA[2], 2, 3, 3, 1, ((3, 336, 144, 3, 3), (9, 6, 1, 1, 3))): (28, 38),
+}
+# Nullity-4 grid points by (stratum, dim L, plane nullity, common kernel, cut common kernel), modulo PRIME.
+KERNEL_FORM_GRID: dict[tuple[str, int, int, int, int], int] = {
+    (STRATA[0], 2, 3, 1, 1): 2096,
+    (STRATA[1], 2, 3, 1, 1): 1041,
+    (STRATA[1], 2, 7, 1, 1): 1,
+    (STRATA[1], 2, 7, 3, 1): 8,
+    (STRATA[1], 6, 7, 3, 3): 61,
+    (STRATA[1], 12, 9, 6, 6): 92,
+    (STRATA[2], 2, 3, 3, 1): 384,
+    (STRATA[2], 6, 7, 5, 3): 4,
+}
+# Grid classes with nullity 7 at the probe vector modulo PRIME and dim L = 2, and the exact nullities of M(p) at
+# six further vectors of the plane and at the probe, by the dimension of the common kernel: the 8 points of common
+# kernel 3 refute "dim L > 2 exactly where every vector of the kernel plane has nullity above 3"; at the point of
+# common kernel 1 the probe is the only vector of the plane, up to scale, among the seven with nullity above 3.
+KERNEL_FORM_EXCEPTIONS = ((STRATA[1], 2, 7, 1, 1), (STRATA[1], 2, 7, 3, 1))
+EXACT_PLANE_NULLITY = {1: [3, 3, 3, 3, 3, 3, 7], 3: [7] * 7}
+# Multiplier of the probe vector p1 + PROBE p2 on the echelon basis p1, p2 of a kernel plane.
+PROBE = 7
+# The split points of those nine grid points, each with the dimension of its common kernel.
+PLANE_EXCEPTION_POINTS: dict[tuple[int, ...], int] = {
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, -1, 1, 0, 0): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 1, -1, 0, 0): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, -1, -1, 0, 0): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, -1, -1): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 1, 1): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, -1, 1): 3,
+    (1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, -1): 3,
+    (1, 0, 2, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, -1, 0): 1,
+}
+# Gaussian real points of V(Q): 40 directions at each of the 12 fixtures of V(Q) minus V(G); the pairs kept, all
+# in the class (Q = 0, G != 0, dim L 2, plane nullity 3, common kernel 1, cut common kernel 1), and the rest: a
+# real direction (2), a line inside V(Q) modulo PRIME (1), a tangent direction, which returns the fixture (8), a
+# pair of another nullity (0).
+GAUSSIAN_PER_FIXTURE = 40
+GAUSSIAN_CLASSES, GAUSSIAN_REJECTED = [[1, 0, 2, 3, 1, 1, 469]], [2, 1, 8, 0]
+# Sampled points per stratum, planes of ker M(z0) off z0 per point, and dim {z: P in ker M(z)} at every such plane.
+PLANE_POINTS, PLANES_PER_POINT = 25, 40
+GENERAL_PLANE_KERNELS = {STRATA[0]: [1], STRATA[1]: [1], STRATA[2]: [3]}
 Vector = list[int]
 Matrix = list[list[int]]
 
@@ -491,9 +603,9 @@ def _split_basis() -> Matrix:
     return [[int(row == column) for column in range(2 * IMAGINARY)] for row in range(2 * IMAGINARY)]
 
 
-def fiber_dimension(split: Sequence[int]) -> int:
-    """dim L modulo PRIME at the pair (z', z'): the pairs whose bordered matrices kill both kernel planes."""
-    point = [*split, *split]
+def fiber_dimension(split: Sequence[int], conjugate_split: Sequence[int] | None = None) -> int:
+    """dim L modulo PRIME at the pair (z', w'), w' = z' by default: the pairs whose matrices kill both planes."""
+    point = [*split, *(split if conjugate_split is None else conjugate_split)]
     kernels = (_nullspace(bordered(point)), _nullspace(conjugate_bordered(point)))
     columns = []
     for unit in _split_basis():
@@ -540,6 +652,231 @@ def exact_fiber_dimension(split: Sequence[int]) -> int:
         columns.append(column)
     system = DomainMatrix([list(row) for row in zip(*columns, strict=True)], (len(columns[0]), len(columns)), QQ_I)
     return 2 * IMAGINARY - int(system.rank())
+
+
+def _block(vector: Sequence[int]) -> Matrix:
+    """M(t) for a vector t of the frame in which `bordered` writes its lower block and its kernel vectors."""
+    return [
+        [0 if row == column else SIGNS[row][column] * vector[(row ^ column) - 1] % PRIME for column in range(1, 16)]
+        for row in range(1, BORDERED)
+    ]
+
+
+def sign_identity() -> bool:
+    """SIGNS[r][r ^ c] = -SIGNS[r][c] for r != c, the identity behind M(z) p = -M(p) z."""
+    units = range(1, BORDERED)
+    return all(SIGNS[row][row ^ column] == -SIGNS[row][column] for row in units for column in units if row != column)
+
+
+def three_plane_net(frame: Vector, plane: Matrix) -> list[list[int]]:
+    """The nullities of M(k) on the net of ker M(z): [nullity, vectors, projective points, span, span with P]."""
+    three_plane = _nullspace(_block(frame))
+    net: dict[int, list[int]] = {}
+    members: dict[int, Matrix] = {}
+    for coefficients in itertools.product(range(-3, 4), repeat=len(three_plane)):
+        if any(coefficients):
+            vector = [
+                sum(c * v[index] for c, v in zip(coefficients, three_plane, strict=True)) % PRIME
+                for index in range(IMAGINARY)
+            ]
+            nullity = IMAGINARY - _rank(_block(vector))
+            members.setdefault(nullity, []).append(vector)
+            counts = net.setdefault(nullity, [0, 0])
+            counts[0] += 1
+            counts[1] += math.gcd(*coefficients) == 1 and next(c for c in coefficients if c) > 0
+    return [
+        [nullity, *counts, _rank(members[nullity]), _rank([*members[nullity], *plane])]
+        for nullity, counts in sorted(net.items())
+    ]
+
+
+def kernel_form(job: tuple[list[int], list[int]], net: bool = True) -> dict[str, Any]:
+    """The fiber through the pair (z', w') modulo PRIME, read from the kernel plane P = ker A(z, w).
+
+    M(z) p = -M(p) z, so the z-part of L is {z in ker M(p1) n ker M(p2): z orthogonal to the conjugate plane P'}
+    for a basis p1, p2 of P. The row holds dim L, the nullity of M(p) at the probe vector p1 + PROBE p2, the dimension
+    of ker M(p1) n ker M(p2), its dimension after the cut by P' (dim L_z, which is half of dim L at a real point,
+    where w' is the conjugate of z'), whether M(z) p = -M(p) z at p1 and p2, and the nullities of M(k) at the 342
+    nonzero combinations k, coefficients -3..3, of the echelon basis of ker M(z), as [nullity, vectors, projective
+    points, dimension of the span of those vectors, dimension of that span with P added]: a projective point is
+    counted at its coprime combination with a positive first nonzero coefficient, and the vectors of one nullity
+    lie on one line of the projective plane exactly when their span has dimension 2. The grid and the Gaussian
+    points read the other fields only and pass net false, which leaves the net out of the row.
+    """
+    split, conjugate_split = job
+    point = [*split, *conjugate_split]
+    frame = _twist(split, ROOT_OF_MINUS_ONE)
+    plane = [vector[1:] for vector in _nullspace(bordered(point))]
+    conjugate_plane = [vector[1:] for vector in _nullspace(conjugate_bordered(point))]
+    _require(len(plane) == 2 and len(conjugate_plane) == 2, "a kernel modulo the prime is not a plane")
+    general = [(a + PROBE * b) % PRIME for a, b in zip(*plane, strict=True)]
+    common = [*_block(plane[0]), *_block(plane[1])]
+    product = [[sum(a * b for a, b in zip(row, p, strict=True)) % PRIME for row in _block(frame)] for p in plane]
+    swapped = [[-sum(a * b for a, b in zip(row, frame, strict=True)) % PRIME for row in _block(p)] for p in plane]
+    form: dict[str, Any] = {
+        "fiber_dimension": fiber_dimension(split, conjugate_split),
+        "plane_nullity": IMAGINARY - _rank(_block(general)),
+        "common_kernel": IMAGINARY - _rank(common),
+        "common_kernel_cut": IMAGINARY - _rank([*common, *conjugate_plane]),
+        "antisymmetric": product == swapped,
+    }
+    if net:
+        form["three_plane_net"] = three_plane_net(frame, plane)
+    return form
+
+
+def fixture_kernel_forms() -> list[dict[str, Any]]:
+    jobs = [([value % PRIME for value in split],) * 2 for _, _, split in _fixture_splits()]
+    return parallel.ordered_map(kernel_form, jobs, min_items=2)
+
+
+def _small(label: str, count: int, span: int) -> Vector:
+    """`count` integers of -span..span from sha256 of the label and a counter."""
+    return [hashlib.sha256(f"{label}:{n}".encode()).digest()[0] % (2 * span + 1) - span for n in range(count)]
+
+
+def gaussian_block(job: tuple[int, list[int]]) -> list[list[int]]:
+    """Real points of V(Q) with Gaussian-integer split coordinates near one fixture of V(Q) minus V(G).
+
+    The line from the fixture in the direction a + i b meets the quadric V(Q) in a second point z' with
+    coordinates in Z[i]; w' is its conjugate and the pair is reduced by i -> ROOT_OF_MINUS_ONE. A pair is kept when
+    z' and w' are independent modulo PRIME, hence over Q(i), so [z'] is a non-real point. Odd samples keep
+    about a third of the coordinates of a and of b. Each row is [Q and G vanish (0 or 1 each), dim L, plane
+    nullity, common kernel, cut common kernel] at a pair of nullity 4; the first row counts the other pairs by
+    reason: a real direction, a line inside V(Q) modulo PRIME (z' = 0), a direction tangent to V(Q) at the fixture
+    (the second point is the fixture, so z' and w' are proportional), another nullity.
+    """
+    number, base = job
+    polynomials = _polynomials()
+    quadric = polynomials["Q"]
+    rows: list[list[int]] = []
+    rejected = [0, 0, 0, 0]
+    for sample_number in range(GAUSSIAN_PER_FIXTURE):
+        label = f"gaussian:{number}:{sample_number}"
+        real, imaginary = _small(f"{label}:re", IMAGINARY, 3), _small(f"{label}:im", IMAGINARY, 3)
+        if sample_number % 2:
+            keep = _small(f"{label}:keep", IMAGINARY, 1)
+            real = [value if kept == 1 else 0 for value, kept in zip(real, keep, strict=True)]
+            imaginary = [value if kept == -1 else 0 for value, kept in zip(imaginary, keep, strict=True)]
+        pair = []
+        for sign in (1, -1):
+            direction = [(a + sign * ROOT_OF_MINUS_ONE * b) % PRIME for a, b in zip(real, imaginary, strict=True)]
+            norm = _value(quadric, direction)
+            polar = (_value(quadric, [(a + b) % PRIME for a, b in zip(base, direction, strict=True)]) - norm) % PRIME
+            pair.append([(norm * a - polar * b) % PRIME for a, b in zip(base, direction, strict=True)])
+        z, w = pair
+        reasons = (not any(imaginary), not any(z), _rank([z, w]) != 2)
+        if any(reasons):
+            rejected[reasons.index(True)] += 1
+            continue
+        _require(_value(quadric, z) == 0 and _value(quadric, w) == 0, "a projected point lies off V(Q)")
+        if _rank(lower_block(z)) != 12 or _rank(bordered([*z, *w])) != 14:
+            rejected[3] += 1
+            continue
+        form = kernel_form((z, w), net=False)
+        _require(form["antisymmetric"], "M(z) p = -M(p) z fails at a Gaussian point")
+        rows.append(
+            [
+                int(_value(quadric, z) == 0),
+                int(_value(polynomials["G"], z) == 0),
+                form["fiber_dimension"],
+                form["plane_nullity"],
+                form["common_kernel"],
+                form["common_kernel_cut"],
+            ]
+        )
+    return [rejected, *rows]
+
+
+def gaussian_points() -> dict[str, Any]:
+    """Classes of the Gaussian real points of V(Q) projected from the fixtures of V(Q) minus V(G)."""
+    jobs = [
+        (number, [value % PRIME for value in split])
+        for number, stratum, split in _fixture_splits()
+        if stratum == STRATA[0]
+    ]
+    blocks = parallel.ordered_map(gaussian_block, jobs, min_items=2)
+    classes: dict[tuple[int, ...], int] = {}
+    for block in blocks:
+        for row in block[1:]:
+            classes[tuple(row)] = classes.get(tuple(row), 0) + 1
+    return {
+        "fixtures": len(jobs),
+        "samples_per_fixture": GAUSSIAN_PER_FIXTURE,
+        "rejected": [sum(counts) for counts in zip(*(block[0] for block in blocks), strict=True)],
+        "classes": [[*found, count] for found, count in sorted(classes.items())],
+    }
+
+
+def plane_block(job: tuple[str, int]) -> list[int]:
+    """dim {z: P in ker M(z)} at PLANES_PER_POINT planes P of ker M(z0) off z0, z0 a sampled point of the stratum."""
+    stratum, number = job
+    points = Points(f"planes:{stratum}:{number}")
+    frame = _twist(sample(stratum, points, _polynomials()), ROOT_OF_MINUS_ONE)
+    three_plane = _nullspace(_block(frame))
+    _require(len(three_plane) == 3, "ker M(z) is not a three-plane at a sampled point")
+    found: list[int] = []
+    while len(found) < PLANES_PER_POINT:
+        plane = []
+        for _ in range(2):
+            coefficients = [points.value() for _ in range(3)]
+            plane.append(
+                [
+                    sum(c * v[index] for c, v in zip(coefficients, three_plane, strict=True)) % PRIME
+                    for index in range(IMAGINARY)
+                ]
+            )
+        if _rank([*plane, frame]) == 3:
+            found.append(IMAGINARY - _rank([*_block(plane[0]), *_block(plane[1])]))
+    return found
+
+
+def general_planes() -> list[dict[str, Any]]:
+    """Per stratum, the common kernels of general planes of ker M(z0) at sampled points z0."""
+    jobs = [(stratum, number) for stratum in STRATA for number in range(PLANE_POINTS)]
+    blocks = parallel.ordered_map(plane_block, jobs, min_items=2)
+    rows = []
+    for index, stratum in enumerate(STRATA):
+        values = [value for block in blocks[index * PLANE_POINTS : (index + 1) * PLANE_POINTS] for value in block]
+        rows.append({"stratum": stratum, "planes": len(values), "common_kernels": sorted(set(values))})
+    return rows
+
+
+def exact_plane_nullities(split: list[int]) -> list[int]:
+    """The nullity over Q(i) of M(p) at seven vectors p of the kernel plane at the pair (z', z').
+
+    Six are p1 + t p2, t = 0..4, and p2 on a basis of the exact kernel. The matrices of rank at most 8 among the
+    skew M(p) are cut out by the Pfaffians of the principal 10 x 10 blocks, forms of degree 5 on the plane, so
+    nullity above 5 at six pairwise independent vectors holds on the whole plane. The seventh is the probe vector
+    of `kernel_form`: the exact basis is normalized to the identity at the two pivot coordinates of the echelon
+    basis modulo PRIME, which makes it the lift of that basis.
+    """
+    point = [*split, *split]
+    plane = DomainMatrix(_exact_bordered(point), (BORDERED, BORDERED), QQ_I).nullspace().to_list()
+    _require(len(plane) == 2 and not any(vector[0] for vector in plane), "the exact kernel is not a plane of the block")
+    first, second = (vector[1:] for vector in plane)
+    vectors = [*([a + t * b for a, b in zip(first, second, strict=True)] for t in range(5)), second]
+    reduced = [value % PRIME for value in split]
+    echelon = [vector[1:] for vector in _nullspace(bordered([*reduced, *reduced]))]
+    pivots = [
+        next(index for index in range(IMAGINARY) if [vector[index] for vector in echelon] == unit)
+        for unit in ([1, 0], [0, 1])
+    ]
+    determinant = first[pivots[0]] * second[pivots[1]] - first[pivots[1]] * second[pivots[0]]
+    _require(determinant != 0, "the exact kernel plane has no basis on the pivots of the modular one")
+    lifted = [
+        [(second[pivots[1]] * a - first[pivots[1]] * b) / determinant for a, b in zip(first, second, strict=True)],
+        [(first[pivots[0]] * b - second[pivots[0]] * a) / determinant for a, b in zip(first, second, strict=True)],
+    ]
+    vectors.append([a + PROBE * b for a, b in zip(*lifted, strict=True)])
+    found = []
+    for vector in vectors:
+        rows = [
+            [QQ_I.zero if row == column else SIGNS[row][column] * vector[(row ^ column) - 1] for column in range(1, 16)]
+            for row in range(1, BORDERED)
+        ]
+        found.append(IMAGINARY - int(DomainMatrix(rows, (IMAGINARY, IMAGINARY), QQ_I).rank()))
+    return found
 
 
 def _real_point(split: Sequence[int]) -> list[Fraction]:
@@ -594,7 +931,10 @@ def grid_block(job: tuple[int, int, int, tuple[tuple[tuple[int, ...], ...], ...]
                     for i in range(32)
                 ]
                 nullity = 32 - _rank(_left_multiplication(general))
-                rows.append([split, stratum, orbit, fiber_dimension(reduced), nullity])
+                form = kernel_form((reduced, reduced), net=False)
+                _require(form["antisymmetric"], "M(z) p = -M(p) z fails at a grid point")
+                plane = [form["plane_nullity"], form["common_kernel"], form["common_kernel_cut"]]
+                rows.append([split, stratum, orbit, fiber_dimension(reduced), nullity, plane])
     return [[candidates], *rows]
 
 
@@ -611,11 +951,16 @@ def grid() -> dict[str, Any]:
     jobs = [(second, third, eighth, generators) for second in range(3) for third in range(3) for eighth in range(4)]
     blocks = parallel.ordered_map(grid_block, jobs, min_items=2)
     classes: dict[tuple[str, int, int, int], int] = {}
+    planes: dict[tuple[str, int, int, int, int], int] = {}
     exceptions = []
+    plane_exceptions: list[dict[str, Any]] = []
     for block in blocks:
-        for split, stratum, orbit, fiber, nullity in block[1:]:
+        for split, stratum, orbit, fiber, nullity, plane in block[1:]:
             found = (stratum, orbit, fiber, nullity)
             classes[found] = classes.get(found, 0) + 1
+            planes[(stratum, fiber, *plane)] = planes.get((stratum, fiber, *plane), 0) + 1
+            if (stratum, fiber, *plane) in KERNEL_FORM_EXCEPTIONS:
+                plane_exceptions.append({"split_point": split, "common_kernel": plane[1]})
             if found in GRID_EXCEPTIONS:
                 exceptions.append(
                     {"split_point": split, "stratum": stratum, "orbit_rank": orbit, "fiber_dimension": fiber}
@@ -624,10 +969,17 @@ def grid() -> dict[str, Any]:
     for row, invariant in zip(exceptions, exact, strict=True):
         row["kernel_vector_nullity"] = invariant["kernel_vector_nullity"]
         row["exact_fiber_dimension"] = invariant["fiber_dimension"]
+    nullities = parallel.ordered_map(
+        exact_plane_nullities, [row["split_point"] for row in plane_exceptions], min_items=2
+    )
+    for row, found_nullities in zip(plane_exceptions, nullities, strict=True):
+        row["exact_plane_nullities"] = found_nullities
     return {
         "candidates": sum(block[0][0] for block in blocks),
         "classes": [[*found, count] for found, count in sorted(classes.items())],
+        "kernel_form_classes": [[*found, count] for found, count in sorted(planes.items())],
         "exceptions": exceptions,
+        "kernel_form_exceptions": plane_exceptions,
     }
 
 
@@ -733,6 +1085,10 @@ def compute() -> dict[str, Any]:
         "shared_plane_three_plane_spans": shared_plane_spans(),
         "exact_fixture_invariants": fixture_invariants(),
         "grid": grid(),
+        "sign_identity": sign_identity(),
+        "exact_fixture_kernel_forms": fixture_kernel_forms(),
+        "gaussian_points": gaussian_points(),
+        "general_planes": general_planes(),
     }
     record["pass"] = verdict(record) == []
     return record
@@ -846,6 +1202,7 @@ def verdict(record: dict[str, Any]) -> list[str]:
         problems.append("an exceptional grid point has another exact fiber dimension or kernel nullity")
     if any(row["fiber_dimension"] != row["exact_fiber_dimension"] for row in lattice["exceptions"]):
         problems.append("an exceptional grid point has a fiber that changes modulo the prime")
+    problems += _kernel_form_problems(record)
     shared = [number for number, first in enumerate(classes) if classes.count(first) > 1]
     if (len(set(classes)), len(shared)) != (FIXTURE_PLANES, FIXTURES_ON_SHARED_PLANES):
         problems.append("the count of kernel planes shared by two exact fixtures differs")
@@ -865,6 +1222,71 @@ def verdict(record: dict[str, Any]) -> list[str]:
     return problems
 
 
+def _kernel_form_problems(record: dict[str, Any]) -> list[str]:
+    """The rules on the kernel form of the fiber: fixtures, grid, Gaussian points and general planes."""
+    problems = []
+    if record.get("sign_identity") is not True:
+        problems.append("the sign identity behind M(z) p = -M(p) z is not recorded as true")
+    ranks, forms = record["exact_fixture_ranks"], record.get("exact_fixture_kernel_forms", [])
+    if len(forms) != len(ranks):
+        return [*problems, "the kernel forms do not cover the exact fixtures"]
+    found: dict[tuple[Any, ...], list[int]] = {}
+    for row, invariant, form in zip(ranks, record["exact_fixture_invariants"], forms, strict=True):
+        name = f"fixture {row['fixture']}"
+        if form["antisymmetric"] is not True:
+            problems.append(f"{name}: M(z) p = -M(p) z fails on the kernel plane")
+        if form["fiber_dimension"] != invariant["fiber_dimension"]:
+            problems.append(f"{name}: dim L modulo {PRIME} differs from the exact dim L")
+        if form["fiber_dimension"] != 2 * form["common_kernel_cut"]:
+            problems.append(f"{name}: dim L is not twice the cut common kernel")
+        net = tuple(tuple(pair) for pair in form["three_plane_net"])
+        totals = [sum(column) for column in zip(*net, strict=True)][1:3]
+        if any(len(entry) != 5 for entry in net) or totals != [342, 145]:
+            problems.append(f"{name}: the net of ker M(z) does not have 342 vectors on 145 projective points")
+        key = (row["stratum"], form["fiber_dimension"], form["plane_nullity"], form["common_kernel"])
+        found.setdefault((*key, form["common_kernel_cut"], net), []).append(row["fixture"])
+    if {key: tuple(members) for key, members in found.items()} != KERNEL_FORM_FIXTURES:
+        problems.append("the kernel forms at the exact fixtures differ from the expected table")
+    lattice = record["grid"].get("kernel_form_classes", [])
+    grid_classes = {tuple(row[:5]): row[5] for row in lattice}
+    if grid_classes != KERNEL_FORM_GRID or len(lattice) != len(KERNEL_FORM_GRID):
+        problems.append("the kernel forms of the nullity-4 grid points differ from the expected table")
+    if any(row[1] != 2 * row[4] for row in lattice):
+        problems.append("a grid class has dim L other than twice the cut common kernel")
+    if not all(grid_classes.get(found_class, 0) > 0 for found_class in KERNEL_FORM_EXCEPTIONS):
+        problems.append("no grid point has a kernel plane of higher zero divisors and dim L = 2")
+    exceptions = record["grid"].get("kernel_form_exceptions", [])
+    if (
+        len(exceptions) != len(PLANE_EXCEPTION_POINTS)
+        or {tuple(row["split_point"]): row["common_kernel"] for row in exceptions} != PLANE_EXCEPTION_POINTS
+    ):
+        problems.append("the grid points with a kernel plane of nullity 7 and dim L = 2 are other points")
+    if any(row["exact_plane_nullities"] != EXACT_PLANE_NULLITY.get(row["common_kernel"]) for row in exceptions):
+        problems.append("a listed kernel plane has another exact nullity at its seven vectors")
+    gaussian = record.get("gaussian_points", {})
+    if gaussian != {
+        "fixtures": sum(row["stratum"] == STRATA[0] for row in ranks),
+        "samples_per_fixture": GAUSSIAN_PER_FIXTURE,
+        "rejected": GAUSSIAN_REJECTED,
+        "classes": GAUSSIAN_CLASSES,
+    }:
+        problems.append("the Gaussian real points of V(Q) fall in other classes")
+    planes = record.get("general_planes", [])
+    if [row.get("stratum") for row in planes] != list(STRATA):
+        return [*problems, "the general planes do not cover the three strata"]
+    for row in planes:
+        if row["planes"] != PLANE_POINTS * PLANES_PER_POINT:
+            problems.append(f"{row['stratum']}: {row['planes']} general planes")
+        if row["common_kernels"] != GENERAL_PLANE_KERNELS[row["stratum"]]:
+            problems.append(f"{row['stratum']}: a general plane of ker M(z) has another common kernel")
+    return problems
+
+
+def _serialized(record: dict[str, Any]) -> str:
+    """The retained text of a record. The replay compares text, so true and 1, which compare equal, differ."""
+    return json.dumps(record, indent=1, sort_keys=True) + "\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -873,8 +1295,8 @@ def main() -> None:
     args = parser.parse_args()
     record = compute()
     if args.write:
-        RECORD.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    elif json.loads(RECORD.read_text(encoding="utf-8")) != record:
+        RECORD.write_text(_serialized(record), encoding="utf-8")
+    elif RECORD.read_text(encoding="utf-8") != _serialized(record):
         raise SystemExit(f"{RECORD.name} differs from the recomputation")
     problems = verdict(record)
     if problems:

@@ -64,6 +64,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/centralizer_components.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_closure_certificate.py docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/arc_jets_qi.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py"
@@ -74,6 +75,7 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	checked_files="$checked_files docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/w8_component_models.py docs/evidence/a5-kernel-attachments/g2_derivation_tables.py docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -88,6 +90,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-gram-operator-witnesses/gram_witnesses.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/centralizer_components.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_closure_certificate.py ../docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/arc_jets_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py"
@@ -98,6 +101,7 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py ../docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	typed_files="$typed_files ../docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py ../docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py ../docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/w8_component_models.py ../docs/evidence/a5-kernel-attachments/g2_derivation_tables.py ../docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py ../docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files

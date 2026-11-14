@@ -1,0 +1,1098 @@
+{
+ "schema": "gororoba.a5.weight-slice-smooth-points/1",
+ "field": "Q(i)",
+ "coordinates": [
+  2,
+  3,
+  5,
+  7,
+  11,
+  13,
+  17,
+  19,
+  23,
+  29
+ ],
+ "inputs": {
+  "weight_slice_smooth_points.py": "d4d4a690a1b0ce7714319df77c79c904b63db2fdd587a9bbcaf1855e09b65531",
+  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
+ },
+ "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
+ "cells": [
+  {
+   "orbit": "N-",
+   "source": "iso",
+   "generators": 17,
+   "relation_count": 68,
+   "relations_sha256": "f98219385df2a2cd47a8312d57a9861396d986234ec3f4175dad3fdc4182c955",
+   "primes": [
+    [
+     5,
+     23
+    ]
+   ],
+   "points": [
+    {
+     "support": [
+      1,
+      4
+     ],
+     "coordinates": [
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 12,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      7,
+      12,
+      14,
+      15
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      5,
+      7,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 12,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      13,
+      17
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 12,
+     "primes_through": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "orbit": "N-",
+   "source": "w8",
+   "generators": 24,
+   "relation_count": 144,
+   "relations_sha256": "10964885cae3177d8a8585e05b263269193199b7a37a5a9679bc76e843523b1d",
+   "primes": [
+    [
+     6,
+     20
+    ],
+    [
+     6,
+     30
+    ]
+   ],
+   "points": [
+    {
+     "support": [
+      1,
+      4,
+      10
+     ],
+     "coordinates": [
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      7,
+      10
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      11,
+      16,
+      18,
+      21,
+      22
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      5,
+      0,
+      0,
+      7,
+      11,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      20,
+      24
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "orbit": "N-",
+   "source": "e8",
+   "generators": 21,
+   "relation_count": 148,
+   "relations_sha256": "f4c808509571d7830d453654b16de85c254f876ef65c541f879a5097265d3b6e",
+   "primes": [
+    [
+     4,
+     4
+    ],
+    [
+     5,
+     11
+    ]
+   ],
+   "points": [
+    {
+     "support": [
+      1,
+      2
+     ],
+     "coordinates": [
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 16,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      1,
+      8
+     ],
+     "coordinates": [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 16,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      9,
+      10,
+      18
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      9,
+      14
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      14,
+      16,
+      19
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      3,
+      0,
+      0,
+      5,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      18,
+      19
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      20,
+      21
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 16,
+     "primes_through": [
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "orbit": "N+",
+   "source": "iso",
+   "generators": 17,
+   "relation_count": 68,
+   "relations_sha256": "f4d0152eabd91b56306e683641831f8ca69c86cecaa1350744afe97e85be81ee",
+   "primes": [
+    [
+     5,
+     23
+    ]
+   ],
+   "points": [
+    {
+     "support": [
+      1,
+      4
+     ],
+     "coordinates": [
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 12,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      7,
+      12,
+      14,
+      15
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      5,
+      7,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 12,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      13,
+      17
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 12,
+     "primes_through": [
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "orbit": "N+",
+   "source": "w8",
+   "generators": 24,
+   "relation_count": 144,
+   "relations_sha256": "10aabdd3a560da6672d3e438a3a4c2aef10fbed007b034afff8c592e85beb8d1",
+   "primes": [
+    [
+     6,
+     20
+    ],
+    [
+     6,
+     30
+    ]
+   ],
+   "points": [
+    {
+     "support": [
+      1,
+      4,
+      10
+     ],
+     "coordinates": [
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      7,
+      10
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      11,
+      16,
+      18,
+      21,
+      22
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      5,
+      0,
+      0,
+      7,
+      11,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      20,
+      24
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      3
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 18,
+     "primes_through": [
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "orbit": "N+",
+   "source": "e8",
+   "generators": 21,
+   "relation_count": 148,
+   "relations_sha256": "cb9c0862b2dedc4a46d2fc579904e5efd18f07b5b3976e5b29e84bb2af7bcb7a",
+   "primes": [
+    [
+     4,
+     4
+    ],
+    [
+     5,
+     11
+    ]
+   ],
+   "points": [
+    {
+     "support": [
+      1,
+      2
+     ],
+     "coordinates": [
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 16,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      1,
+      8
+     ],
+     "coordinates": [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 16,
+     "primes_through": [
+      2
+     ]
+    },
+    {
+     "support": [
+      9,
+      10,
+      18
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      9,
+      14
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      14,
+      16,
+      19
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      0,
+      3,
+      0,
+      0,
+      5,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      18,
+      19
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3,
+      0,
+      0
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 17,
+     "primes_through": [
+      1
+     ]
+    },
+    {
+     "support": [
+      20,
+      21
+     ],
+     "coordinates": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      3
+     ],
+     "quadrics_nonzero": 0,
+     "jacobian_rank": 16,
+     "primes_through": [
+      2
+     ]
+    }
+   ]
+  }
+ ],
+ "pass": true
+}
