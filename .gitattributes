@@ -4,6 +4,8 @@ docs/evidence/cd-twisted-product/kernel.txt -whitespace
 docs/evidence/cd-tower-ring/kernel.txt -whitespace
 docs/evidence/cd-tower-ring-base-change/kernel.txt -whitespace
 docs/evidence/cd-tower-ring-base-change/images.txt -whitespace
+docs/evidence/cd-tower-kernel-certificates/kernel.txt -whitespace
+docs/evidence/cd-tower-kernel-certificates/statements.txt -whitespace
 # Preserve whitespace in retained exact-version source responses.
 docs/evidence/source_rights/*.html -text -whitespace
 docs/evidence/source_rights/*.json -text
