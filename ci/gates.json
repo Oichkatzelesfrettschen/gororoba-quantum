@@ -765,7 +765,7 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py",
+      "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases --exclude 'ibm-fez-actor-pilot/analyze[.]py$' --exclude 'a5-exceptional-fibers/working/' --exclude 'a5-char0-transfer/kaggle/' --exclude 'hardware-residuals/tuna-quandela/' --exclude 'walk-control-scaffolding/' docs/verify_sources.py docs/check_verify_sources.py docs/evidence && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/ibm-fez-actor-pilot/analyze.py && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/a5-char0-transfer/kaggle && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/hardware-residuals/tuna-quandela && MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/evidence/walk-control-scaffolding",
       "name": "sources-122",
       "seconds": 11.5
     },
