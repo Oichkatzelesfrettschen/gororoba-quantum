@@ -314,11 +314,13 @@ def main() -> int:
             CROSS_CHECK.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
             return 0
         text = certificate_text()
-        proof = math_sources.checkout(verify_pin=not arguments.write) / math_sources.SUBDIRECTORY / PROOF_NAME
+        gororoba_math = math_sources.checkout(verify_pin=not arguments.write)
         if arguments.write:
-            proof.write_text(text)
+            # The write produces new bytes whose digest the retained records do not hold yet.
+            math_sources.writable_source(PROOF_NAME, gororoba_math).write_text(text)
             return 0
-        require(proof.read_text() == text, f"{PROOF_NAME} of gororoba-math differs from a fresh render; run --write")
+        proof = math_sources.verified_bytes(PROOF_NAME, gororoba_math, ROOT).decode("utf-8")
+        require(proof == text, f"{PROOF_NAME} of gororoba-math differs from a fresh render; run --write")
     except (ValueError, KeyError, OSError, math_sources.MathSourcesError) as error:
         print(f"stiefel witness certificate: {error}", file=sys.stderr)
         return 1

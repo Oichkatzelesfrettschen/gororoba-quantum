@@ -323,3 +323,30 @@ def test_a_malformed_reference_is_neither_deferred_nor_resolved(
             raise AssertionError("a reference outside the grammar was deferred")
         with pytest.raises(ValueError, match="malformed gororoba-math reference"):
             plan_records.reference(root, bad)
+
+
+def test_shadow_root_writes_the_verified_bytes_and_verified_bytes_reads_once(
+    fixture: tuple[Path, Path], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root, math = fixture
+    reads = []
+    original = Path.read_bytes
+    monkeypatch.setattr(Path, "read_bytes", lambda self: (reads.append(self.name), original(self))[1])
+    shadow = math_sources.shadow_root(tmp_path / "shadow", math, root)
+    if any(name.endswith(".v") and name in SOURCES and name != "Kept.v" for name in reads):
+        raise AssertionError(f"a moved source was read a second time through Path.read_bytes: {reads}")
+    if (shadow / "proofs/CdOne.v").read_bytes() != math_sources.verified_bytes("CdOne.v", math, root):
+        raise AssertionError("the shadow copy is the verified content")
+
+
+def test_writable_source_refuses_links_and_other_locations(fixture: tuple[Path, Path], tmp_path: Path) -> None:
+    _root, math = fixture
+    if math_sources.writable_source("CdOne.v", math) != math / "rocq/quantum/CdOne.v":
+        raise AssertionError("a plain source name is writable")
+    with pytest.raises(math_sources.MathSourcesError, match="no source file name"):
+        math_sources.writable_source("../x.v", math)
+    link = math / "rocq/quantum/CdOne.v"
+    link.unlink()
+    link.symlink_to(tmp_path / "elsewhere.v")
+    with pytest.raises(math_sources.MathSourcesError, match="symbolic link"):
+        math_sources.writable_source("CdOne.v", math)

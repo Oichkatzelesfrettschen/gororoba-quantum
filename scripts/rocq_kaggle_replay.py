@@ -166,8 +166,7 @@ def build_toolchain(steps: list[dict[str, Any]]) -> Path:
 def target_flip(rocq: Path, math: Path) -> dict[str, Any]:
     with tempfile.TemporaryDirectory() as scratch:
         work = Path(scratch)
-        source = math_sources.verified_sources(math, ROOT, ["TargetFlipN21.v"])["TargetFlipN21.v"]
-        (work / "TargetFlipN21.v").write_bytes(source.read_bytes())
+        (work / "TargetFlipN21.v").write_bytes(math_sources.verified_bytes("TargetFlipN21.v", math, ROOT))
         compiled = run([str(rocq), "compile", "-q", "-w", "+all", "TargetFlipN21.v"], cwd=work)
         if compiled["returncode"] == 0 and compiled["warning_lines"]:
             compiled["returncode"] = 1
@@ -227,8 +226,23 @@ def main() -> int:
             raise SystemExit(f"open_gororoba HEAD {head} differs from --gororoba-commit {args.gororoba_commit}")
     else:
         gororoba = Path(tempfile.mkdtemp()) / "open_gororoba"
-        steps.append(run(["git", "clone", "-q", "--filter=blob:none", GOROROBA_URL, str(gororoba)]))
-        steps.append(run(["git", "-C", str(gororoba), "checkout", "-q", args.gororoba_commit]))
+        steps.append(
+            run(
+                [
+                    "git",
+                    "-c",
+                    "protocol.ext.allow=never",
+                    "clone",
+                    "-q",
+                    "--filter=blob:none",
+                    GOROROBA_URL,
+                    str(gororoba),
+                ]
+            )
+        )
+        steps.append(
+            run(["git", "-c", "protocol.ext.allow=never", "-C", str(gororoba), "checkout", "-q", args.gororoba_commit])
+        )
         if steps[-1]["returncode"]:
             raise SystemExit(f"open_gororoba checkout failed\n{steps[-1]['tail']}")
     if args.gororoba_math_root is not None:
@@ -255,7 +269,7 @@ def main() -> int:
                 ]
             )
         )
-        steps.append(run(["git", "-C", str(math_clone), "checkout", "-q", pin]))
+        steps.append(run(["git", "-c", "protocol.ext.allow=never", "-C", str(math_clone), "checkout", "-q", pin]))
         if steps[-1]["returncode"]:
             raise SystemExit(f"gororoba-math checkout failed\n{steps[-1]['tail']}")
         os.environ[math_sources.ENVIRONMENT_VARIABLE] = str(math_clone)

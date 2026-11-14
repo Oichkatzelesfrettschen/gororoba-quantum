@@ -7,9 +7,13 @@ constant that names proofs/NAME.v of this repository; this runner points that co
 $GOROROBA_MATH/rocq/quantum/NAME.v and calls the producer's main, so the generated text, the markers and the
 --check comparison are the producer's own.
 
---check needs the checkout at the commit of ci/gororoba_math.pin, the commit whose bytes the retained digests
-bind. --write (--generate for kernel_certificates) needs no pin: it replaces the source in the checkout, and the
-commit that lands the change there moves the pin. An unset GOROROBA_MATH ends the run with a message and status 2.
+--check (and any mode that only reads) needs the checkout at the commit of ci/gororoba_math.pin, the commit whose
+bytes the retained digests bind; the producer reads a copy of the bytes that math_sources.verified_bytes returned,
+so a source that is edited, symbolic-linked or off its retained digest fails before the comparison. --write
+(--generate for kernel_certificates) needs no pin: it replaces the source in the checkout, refusing a target that is
+a symbolic link or resolves outside the checkout. A write produces new bytes whose digest the retained records do
+not hold yet, so no digest comparison applies there; the commit that lands the change in gororoba-math moves the
+pin and the records are rebound. An unset GOROROBA_MATH ends the run with a message and status 2.
 """
 
 from __future__ import annotations
@@ -17,6 +21,7 @@ from __future__ import annotations
 import importlib
 import os
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -54,9 +59,34 @@ def main(argv: list[str]) -> int:
         print(f"math_source_generators: {error}", file=sys.stderr)
         return 2
     producer = importlib.import_module(name)
-    setattr(producer, constant, math / math_sources.SUBDIRECTORY / source)
     sys.argv = [str(producer.__file__), *options]
-    result = producer.main()
+    if write_flag in options:
+        # A write produces new bytes whose digest the retained records do not hold yet, so no digest comparison
+        # applies; the target must be a plain file location inside the checkout, never a link out of it.
+        try:
+            setattr(producer, constant, math_sources.writable_source(source, math))
+        except math_sources.MathSourcesError as error:
+            print(f"math_source_generators: {error}", file=sys.stderr)
+            return 2
+        result = producer.main()
+        return 0 if result is None else int(result)
+    # Every other mode reads the source: the producer reads a copy of the bytes that verified_bytes returned, so
+    # the comparison covers the digest-checked content and not a second read of the checkout.
+    try:
+        data = math_sources.verified_bytes(source, math, ROOT)
+    except math_sources.MathSourcesError as error:
+        print(f"math_source_generators: {error}", file=sys.stderr)
+        return 2
+    with tempfile.TemporaryDirectory(prefix="math-source-") as scratch:
+        copy = Path(scratch) / source
+        copy.write_bytes(data)
+        setattr(producer, constant, copy)
+        try:
+            result = producer.main()
+        except ValueError as error:
+            # kernel_certificates names a mismatch relative to the repository root, which a copy lacks.
+            print(f"math_source_generators: {name}: {error}", file=sys.stderr)
+            return 1
     return 0 if result is None else int(result)
 
 

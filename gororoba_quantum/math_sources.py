@@ -39,6 +39,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 from collections.abc import Mapping
 from pathlib import Path
@@ -188,24 +189,60 @@ def _read_recorded_digests(root: Path) -> dict[str, str]:
     return {name: next(iter(digests)) for name, digests in found.items()}
 
 
-def verified_source(name: str, math: Path, root: Path = ROOT) -> Path:
-    """The file of source ``name`` in the checkout, after four checks: the name is a plain ``NAME.v``, the file is a
-    regular file that is no symbolic link and resolves inside the checkout, a retained record holds a digest of it,
-    and its sha256 equals that digest."""
+def _checked_location(name: str, math: Path) -> Path:
+    """The path of source ``name`` in the checkout once the name is a plain ``NAME.v`` and the path is no symbolic
+    link and resolves inside the checkout."""
     if re.fullmatch(r"[A-Za-z0-9_]+\.v", name) is None:
         raise MathSourcesError(f"{name} is no source file name")
     path = math / SUBDIRECTORY / name
     if path.is_symlink():
         raise MathSourcesError(f"{name} is a symbolic link in the checkout")
-    if not path.is_file():
-        raise MathSourcesError(f"{path} is missing")
     if not path.resolve().is_relative_to(math.resolve()):
         raise MathSourcesError(f"{name} resolves outside the checkout")
+    return path
+
+
+def verified_bytes(name: str, math: Path, root: Path = ROOT) -> bytes:
+    """The bytes of source ``name`` in the checkout, read once and hashed as read.
+
+    The file must be a regular file at a checked location (no symbolic link, inside the checkout; the final
+    component is opened with O_NOFOLLOW), a retained record must hold a digest of ``name``, and the sha256 of the
+    returned bytes equals that digest. A caller that writes or parses these bytes uses what was verified."""
+    path = _checked_location(name, math)
+    try:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW)
+    except OSError as error:
+        raise MathSourcesError(f"{path} cannot be opened: {error.strerror}") from error
+    with os.fdopen(descriptor, "rb") as handle:
+        if not stat.S_ISREG(os.fstat(handle.fileno()).st_mode):
+            raise MathSourcesError(f"{name} is not a regular file")
+        data = handle.read()
     recorded = recorded_digests(root)
     if name not in recorded:
         raise MathSourcesError(f"no retained record holds a digest of {name}")
-    if sha256_file(path) != recorded[name]:
+    if hashlib.sha256(data).hexdigest() != recorded[name]:
         raise MathSourcesError(f"{name} differs from the retained digest {recorded[name][:12]}")
+    return data
+
+
+def verified_source(name: str, math: Path, root: Path = ROOT) -> Path:
+    """The location of source ``name`` in the checkout, after verified_bytes accepted its bytes.
+
+    It guarantees the bytes at the moment of the call and nothing after it: a later read of the path can see other
+    bytes. A caller that consumes the content calls verified_bytes and uses those bytes."""
+    verified_bytes(name, math, root)
+    return _checked_location(name, math)
+
+
+def writable_source(name: str, math: Path) -> Path:
+    """The location a generator writes source ``name`` to: a plain ``NAME.v`` in rocq/quantum of the checkout that is
+    no symbolic link and resolves, with its directory, inside the checkout.
+
+    No digest comparison applies: a write produces new bytes, whose digest the retained records do not hold until
+    the change lands in gororoba-math and the records are rebound."""
+    path = _checked_location(name, math)
+    if not path.parent.resolve().is_relative_to(math.resolve()):
+        raise MathSourcesError(f"{SUBDIRECTORY} resolves outside the checkout")
     return path
 
 
@@ -217,22 +254,23 @@ def verified_sources(math: Path, root: Path = ROOT, names: list[str] | None = No
 def shadow_root(destination: Path, math: Path, root: Path = ROOT, bundle: str | None = None) -> Path:
     """Build ``destination`` as a stand-in for the repository root in which ``proofs/`` holds the sources.
 
-    Every moved source is copied from the checkout after its digest check; a source the project file omits and the
-    repository still tracks is copied from ``proofs/``. Each top-level entry of the repository except ``proofs`` and
-    ``.git`` is a symbolic link to the real one. With ``bundle``, ``docs/evidence/BUNDLE`` is a copy of the real
-    directory under a real ``docs/evidence``, so a script run from it finds its root three levels up without
-    following a link.
+    Every moved source is written from the bytes verified_bytes returned, so the copy is the digest-checked
+    content; a source the project file omits and the repository still tracks is copied from ``proofs/``. Each
+    top-level entry of the repository except ``proofs`` and ``.git`` is a symbolic link to the real one. With
+    ``bundle``, ``docs/evidence/BUNDLE`` is a copy of the real directory under a real ``docs/evidence``, so a script
+    run from it finds its root three levels up without following a link.
     """
-    sources = verified_sources(math, root)
+    names = moved_names(math)
+    contents = {name: verified_bytes(name, math, root) for name in names}
     proofs = destination / "proofs"
     proofs.mkdir(parents=True)
     local = root / "proofs"
     if local.is_dir():
         for path in sorted(local.glob("*.v")):
-            if path.name not in sources:
+            if path.name not in contents:
                 shutil.copyfile(path, proofs / path.name)
-    for name, path in sources.items():
-        shutil.copyfile(path, proofs / name)
+    for name, data in contents.items():
+        (proofs / name).write_bytes(data)
     for entry in sorted(root.iterdir()):
         if entry.name in {"proofs", ".git"} or (bundle is not None and entry.name == "docs"):
             continue
