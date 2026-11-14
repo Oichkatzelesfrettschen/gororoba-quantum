@@ -156,6 +156,158 @@
   },
   {
    "batch": "batch-16",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "b0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-17",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "b0-coin0.cq",
+    "b0-coin1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-18",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k4-coin0.cq",
+    "k4-coin1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-19",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k4.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-20",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k8.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-21",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k8-coin0.cq",
+    "k8-coin1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-22",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k12-coin0.cq",
+    "k12-coin1.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-23",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k12.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-24",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k12.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-25",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k12-coin1.cq",
+    "k12-coin0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-26",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k8-coin1.cq",
+    "k8-coin0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-27",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k8.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-28",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "k4.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-29",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "k4-coin1.cq",
+    "k4-coin0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-30",
+   "kind": "twin",
+   "files": [
+    "readout-0.cq",
+    "b0-coin1.cq",
+    "b0-coin0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-31",
+   "kind": "base",
+   "files": [
+    "readout-0.cq",
+    "b0.cq",
+    "readout-1.cq"
+   ]
+  },
+  {
+   "batch": "batch-32",
    "kind": "joint",
    "files": [
     "joint-011.cq",
@@ -164,7 +316,7 @@
    ]
   },
   {
-   "batch": "batch-17",
+   "batch": "batch-33",
    "kind": "joint",
    "files": [
     "joint-010.cq",
@@ -173,7 +325,7 @@
    ]
   },
   {
-   "batch": "batch-18",
+   "batch": "batch-34",
    "kind": "joint",
    "files": [
     "joint-100.cq",
@@ -214,7 +366,33 @@
    "batch-17"
   ],
   [
-   "batch-18"
+   "batch-18",
+   "batch-19",
+   "batch-20"
+  ],
+  [
+   "batch-21",
+   "batch-22",
+   "batch-23"
+  ],
+  [
+   "batch-24",
+   "batch-25",
+   "batch-26"
+  ],
+  [
+   "batch-27",
+   "batch-28",
+   "batch-29"
+  ],
+  [
+   "batch-30",
+   "batch-31",
+   "batch-32"
+  ],
+  [
+   "batch-33",
+   "batch-34"
   ]
  ]
 }

@@ -22,7 +22,7 @@ import qi_pathion_one_cz_null_analysis as ana
 import qi_pathion_one_cz_null_bracketed_cases as bc
 import qi_pathion_one_cz_null_cases as oc
 import qi_pathion_one_cz_null_rule_v2 as rule
-import qi_platform
+import qi_platform_wave as wave
 
 import qi_records
 
@@ -32,7 +32,8 @@ PREDECESSOR_CASE = CASES / "pathion_one_cz_null_tuna_17"
 # sha256 over the sorted "relative path, NUL, file sha256, newline" rows of the 78 files of the frozen predecessor case.
 PREDECESSOR_TREE_SHA256 = "d9bc49303f7c8bf66593e460394a25a5e72a5cd77de42c568b013621f715988b"
 SELECTOR_BIT = 3  # logical bit order d0, d1, d2, selector, coin
-N = 32768
+N = 16384  # shots per circuit of a template batch: half the predecessor's 32,768
+TWIN_BATCHES = [8 * r + n for r in range(4) for n in (1, 2, 5, 6)]  # four rounds of the 8-batch round
 E01, E10 = 0.0281, 0.0296  # the retained one-CZ series' selector means (v3 record references), as the design states
 
 
@@ -56,30 +57,39 @@ def _manifests(files: dict[str, str]) -> list[dict[str, Any]]:
 BACKEND_RECORD = {"max_jobs_per_batch_job": 5, "batchjobs_per_queue_limit": 5}
 
 
-def test_the_series_holds_nineteen_batches_within_the_wave_policy(built: dict[str, dict[str, str]]) -> None:
+def test_the_series_holds_thirty_five_batches_within_the_wave_policy(built: dict[str, dict[str, str]]) -> None:
     manifests = _manifests(built[bc.TUNA_SERIES])
-    _expect(len(manifests) == 19, f"{len(manifests)} batches")
+    _expect(len(manifests) == 35, f"{len(manifests)} batches")
     _expect(all(m["hardware_policy"] == "wave-v1" for m in manifests), "every batch names the wave policy")
     _expect(all(len(m["circuits"]) <= 5 for m in manifests), "five circuits a batch at most")
     _expect(all(m["shots"] <= 131072 and m["register"] == [2, 4, 8, 11, 12] for m in manifests), "limits")
     kinds = [m["kind"] for m in manifests]
-    _expect(kinds.count("base") == 8 and kinds.count("twin") == 8 and kinds[16:] == ["joint"] * 3, f"{kinds}")
-    _expect([len(m["circuits"]) for m in manifests if m["kind"] == "base"] == [3] * 8, "base batches")
-    _expect([len(m["circuits"]) for m in manifests if m["kind"] == "twin"] == [4] * 8, "twin batches")
-    _expect([len(m["circuits"]) for m in manifests[16:]] == [3, 3, 2], "the calibration batches")
-    bases = sorted(m["template"] for m in manifests if m["kind"] == "base")
-    _expect(bases == sorted(["b0", "b0", "k4", "k4", "k8", "k8", "k12", "k12"]), f"{bases}")
+    _expect(kinds.count("base") == 16 and kinds.count("twin") == 16 and kinds[32:] == ["joint"] * 3, f"{kinds}")
+    _expect([len(m["circuits"]) for m in manifests if m["kind"] == "base"] == [3] * 16, "base batches")
+    _expect([len(m["circuits"]) for m in manifests if m["kind"] == "twin"] == [4] * 16, "twin batches")
+    _expect([len(m["circuits"]) for m in manifests[32:]] == [3, 3, 2], "the calibration batches")
+    for kind in ("base", "twin"):
+        held = Counter(m["template"] for m in manifests if m["kind"] == kind)
+        _expect(held == {"b0": 4, "k4": 4, "k8": 4, "k12": 4}, f"four replicates of every template and kind: {held}")
+    shots = {(m["kind"], m["template"]): m["shots"] for m in manifests if m["kind"] in ("base", "twin")}
+    _expect(shots[("base", "b0")] == 65536 and shots[("twin", "b0")] == 16384, "b0 base 65,536, a twin 16,384")
+    _expect(shots[("base", "k4")] == shots[("twin", "k12")] == 16384, "16,384 shots per other circuit")
+    _expect({m["shots"] for m in manifests[32:]} == {16384}, "calibration shots")
+    _expect(
+        sorted(m["batch"] for m in manifests if m["kind"] == "twin") == [f"batch-{n:02d}" for n in TWIN_BATCHES],
+        "twins",
+    )
 
 
 def test_the_wave_policy_admits_the_manifests_and_the_legacy_policy_refuses_a_twin_batch(
     built: dict[str, dict[str, str]],
 ) -> None:
     for m in _manifests(built[bc.TUNA_SERIES]):
-        limits = qi_platform.hardware_limits(m, BACKEND_RECORD)
-        _expect((limits.batch_circuits, limits.queued_batches) == (5, 3), f"{limits}")
+        limits = wave.hardware_limits(m, BACKEND_RECORD)
+        _expect((limits.batch_circuits, limits.queued_batches, limits.pause_seconds) == (5, 3, 60), f"{limits}")
         _expect(len(m["circuits"]) <= limits.batch_circuits, f"{m['batch']} exceeds the wave policy")
         legacy = {k: v for k, v in m.items() if k != "hardware_policy"}
-        too_big = len(m["circuits"]) > qi_platform.hardware_limits(legacy, BACKEND_RECORD).batch_circuits
+        too_big = len(m["circuits"]) > wave.hardware_limits(legacy, BACKEND_RECORD).batch_circuits
         _expect(too_big == (m["kind"] == "twin"), f"{m['batch']}: only a twin batch needs the wave policy")
     _expect(all("hardware_policy" not in m for m in _manifests(built[bc.QX_SERIES])), "QX is no hardware backend")
 
@@ -89,52 +99,51 @@ def test_the_series_index_groups_the_batches_into_waves_of_at_most_fifteen_circu
 ) -> None:
     files = built[bc.TUNA_SERIES]
     index = json.loads(files["cases.json"])
-    names = [f"batch-{n:02d}" for n in range(19)]
-    expected = [names[i : i + 3] for i in range(0, 19, 3)]
+    names = [f"batch-{n:02d}" for n in range(35)]
+    expected = [names[i : i + 3] for i in range(0, 35, 3)]
     _expect(index["hardware_policy"] == "wave-v1" and index["waves"] == expected, f"{index['waves']}")
-    _expect(len(expected) == 7 and [len(w) for w in expected] == [3, 3, 3, 3, 3, 3, 1], "seven waves")
-    for wave in expected:
-        circuits = sum(len(json.loads(files[f"{b}/cases.json"])["circuits"]) for b in wave)
-        _expect(circuits <= 15, f"{wave}: {circuits} circuits")
+    _expect(len(expected) == 12 and [len(w) for w in expected] == [3] * 11 + [2], "twelve waves")
+    for names_in_wave in expected:
+        circuits = sum(len(json.loads(files[f"{b}/cases.json"])["circuits"]) for b in names_in_wave)
+        _expect(circuits <= 15, f"{names_in_wave}: {circuits} circuits")
 
 
 def test_every_twin_batch_holds_both_coin_twins_between_the_two_readouts(built: dict[str, dict[str, str]]) -> None:
     twins = [m for m in _manifests(built[bc.TUNA_SERIES]) if m["kind"] == "twin"]
-    _expect(len(twins) == 8, "eight twin batches")
+    _expect(len(twins) == 16, "sixteen twin batches")
     for m in twins:
         files = [c["file"] for c in m["circuits"]]
-        order = (0, 1) if m["replicate"] == 0 else (1, 0)
+        order = (0, 1) if m["replicate"] % 2 == 0 else (1, 0)
         want = ["readout-0.cq", *(f"{m['template']}-coin{c}.cq" for c in order), "readout-1.cq"]
         _expect(files == want, f"{m['batch']}: {files}")
         _expect([c.get("coin") for c in m["circuits"] if c["kind"] == "data"] == list(order), f"{m['batch']} coins")
-        _expect(m["shots"] == 32768, f"{m['batch']} shots")
+        _expect(m["shots"] == 16384, f"{m['batch']} shots")
 
 
-def test_the_mirror_round_reverses_the_batches_and_the_twins_of_each_pair(
-    built: dict[str, dict[str, str]],
-) -> None:
+def test_the_rounds_alternate_forward_and_mirror_order(built: dict[str, dict[str, str]]) -> None:
     manifests = _manifests(built[bc.TUNA_SERIES])
-    forward = [(m["template"], m["kind"]) for m in manifests[:16] if m["replicate"] == 0]
-    mirror = [(m["template"], m["kind"]) for m in manifests[:16] if m["replicate"] == 1]
-    _expect(len(forward) == 8 and mirror == forward[::-1], "the second round mirrors the first")
-    _expect([m["kind"] for m in manifests[:8]] == [k for _, k in forward], "the forward round leads the series")
-    _expect([m["replicate"] for m in manifests[:16]] == [0] * 8 + [1] * 8, "replicate labels")
+    rounds = [[(m["template"], m["kind"]) for m in manifests[8 * r : 8 * r + 8]] for r in range(4)]
+    _expect(rounds[1] == rounds[0][::-1] and rounds[2] == rounds[0] and rounds[3] == rounds[0][::-1], "alternating")
+    _expect([m["replicate"] for m in manifests[:32]] == [r for r in range(4) for _ in range(8)], "replicate labels")
+    _expect(
+        [m["kind"] for m in manifests[:8]] == ["base", "twin", "twin", "base", "base", "twin", "twin", "base"], "lead"
+    )
 
 
 def test_a_linear_drift_cancels_in_the_pooled_twin_contrast_of_the_mirrored_order() -> None:
-    # A drift of `gain` per circuit position across the series. The coin-1 twin runs after the coin-0 twin in the
-    # forward round and before it in the mirror, so the contrast carries +gain and -gain.
+    # A drift of `gain` per circuit position across the series. The coin-1 twin runs after the coin-0 twin in a forward
+    # round and before it in a mirror round, so the contrast carries +gain and -gain and four replicates sum to zero.
     rows = bc.batch_rows(bc.TUNA_SERIES)
     gain = 0.01
     for template in ("b0", "k4", "k8", "k12"):
         contrast = []
-        for replicate in (0, 1):
+        for replicate in range(4):
             (row,) = [
                 r for r in rows if r["kind"] == "twin" and r["template"] == template and r["replicate"] == replicate
             ]
             at = {c["coin"]: i for i, c in enumerate(row["circuits"]) if c["kind"] == "data"}
             contrast.append(gain * (at[1] - at[0]))
-        _expect(contrast[0] == gain and contrast[1] == -gain and sum(contrast) == 0.0, f"{template}: {contrast}")
+        _expect(contrast == [gain, -gain, gain, -gain] and sum(contrast) == 0.0, f"{template}: {contrast}")
 
 
 def test_every_twin_has_an_ideal_selector_marginal_of_one_half(built: dict[str, dict[str, str]]) -> None:
@@ -148,7 +157,7 @@ def test_every_twin_has_an_ideal_selector_marginal_of_one_half(built: dict[str, 
             for r in json.loads(path.read_text(encoding="utf-8"))["circuits"]
             if r["kind"] == "data" and r.get("coin") is not None
         ]
-    _expect(len(rows) >= 8 + 8 + 16 + 8, f"{len(rows)} twin rows")
+    _expect(len(rows) >= 16 + 8 + 16 + 8, f"{len(rows)} twin rows")
     for row in rows:
         ideal = row["ideal"]
         zero = sum(p for i, p in enumerate(ideal) if not (i >> SELECTOR_BIT) & 1)
@@ -156,29 +165,31 @@ def test_every_twin_has_an_ideal_selector_marginal_of_one_half(built: dict[str, 
 
 
 def test_jobs_shots_and_seconds_follow_plain_arithmetic(built: dict[str, dict[str, str]]) -> None:
-    jobs = 8 * 3 + 8 * 4 + 8
-    shots = 2 * 3 * 131072 + 6 * 3 * 32768 + 8 * 4 * 32768 + (3 + 3 + 2) * 16384
-    _expect(jobs == 64 and shots == 2555904, "the layout's counts")
+    jobs = 16 * 3 + 16 * 4 + 8
+    shots = 4 * 3 * 65536 + 3 * 4 * 3 * 16384 + 4 * 4 * 4 * 16384 + (3 + 3 + 2) * 16384
+    _expect(jobs == 120 and shots == 2555904, "the layout's counts")
     design = bc.design()
-    _expect(design["jobs"] == jobs and design["shots_total"] == shots and design["batches"] == 19, f"{design}")
-    _expect(design["waves"] == 7 and design["circuits_per_batch_max"] == 4, "waves and batch size")
+    _expect(design["jobs"] == jobs and design["shots_total"] == shots and design["batches"] == 35, f"{design}")
+    _expect(design["waves"] == 12 and design["circuits_per_batch_max"] == 4, "waves and batch size")
     _expect(design["hardware_policy"] == "wave-v1" and design["circuits_per_wave_max"] == 11, f"{design}")
+    _expect(design["replicates"] == 4 and design["batch_chi2_degrees_of_freedom"] == 3, f"{design}")
     manifests = _manifests(built[bc.TUNA_SERIES])
     _expect(sum(len(m["circuits"]) for m in manifests) == jobs, "jobs from the manifests")
     _expect(sum(len(m["circuits"]) * m["shots"] for m in manifests) == shots, "shots from the manifests")
     low = jobs * 2.6 + shots * 0.53e-3
-    _expect(abs(low - 1521.0) < 0.05, f"low {low}")
+    _expect(abs(low - 1666.6) < 0.05, f"low {low}")
     _expect(design["execution_seconds_range_tenths"][0] == round(low * 10), "low bound")
     rate = oc.coin_timing()["seconds_per_shot_max"]
     _expect(abs(rate - 0.59057e-3) < 1e-8, f"the measured maximum {rate}")
     high = jobs * 2.6 + shots * rate
-    _expect(abs(high - 1675.8) < 0.05, f"high {high}")
+    _expect(abs(high - 1821.4) < 0.05, f"high {high}")
     _expect(design["execution_seconds_range_tenths"][1] == round(high * 10), "high bound")
-    # The rounded 0.59 ms per shot of the case's estimate gives 79.9 s for the longest job.
-    _expect(abs(2.6 + 131072 * 0.59e-3 - 79.9) < 0.05, "0.59 ms")
-    longest = 2.6 + 131072 * rate
-    _expect(longest < 300 and design["longest_job_seconds_tenths"] == round(longest * 10) == 800, f"{longest}")
-    _expect(design["pause_seconds_total"] == 6 * 30 == 180, "6 pauses of 30 s between 7 waves")
+    # The rounded 0.59 ms per shot of the case's estimate gives 41.3 s for the longest job.
+    _expect(abs(2.6 + 65536 * 0.59e-3 - 41.3) < 0.05, "0.59 ms")
+    longest = 2.6 + 65536 * rate
+    _expect(longest < 300 and design["longest_job_seconds_tenths"] == round(longest * 10) == 413, f"{longest}")
+    # A wave procedure pays one 60 s pause per wave boundary (policy table), 11 boundaries between 12 waves.
+    _expect(design["pause_seconds_per_wave"] == 60 and design["pause_seconds_total"] == 11 * 60 == 660, "pauses")
 
 
 def test_the_design_standard_errors_follow_the_arm_variances() -> None:
@@ -186,13 +197,15 @@ def test_the_design_standard_errors_follow_the_arm_variances() -> None:
     _expect(abs(e01 - E01) < 5e-5 and abs(e10 - E10) < 5e-5, f"{e01} {e10}")
     per_p = 0.25 / N
     per_bracket = (e10 * (1 - e10) / N + e01 * (1 - e01) / N) / 4
-    _expect(abs(per_p - 7.629e-6) < 1e-9 and abs(per_bracket - 4.27e-7) < 5e-9, f"{per_p} {per_bracket}")
+    _expect(abs(per_p - 1.5259e-5) < 1e-9 and abs(per_bracket - 8.55e-7) < 5e-9, f"{per_p} {per_bracket}")
     contrast = math.sqrt(2 * per_p)
-    _expect(abs(contrast - 0.003906) < 2e-6, f"{contrast}")
-    _expect(abs(contrast / math.sqrt(2) - 0.002762) < 2e-6, "pooled over two replicates")
+    _expect(abs(contrast - 0.005524) < 2e-6, f"{contrast}")
+    _expect(abs(contrast / 2 - 0.002762) < 2e-6, "pooled over four replicates: the two-replicate error at 32,768 shots")
     design = bc.design()
     _expect(design["twin_batch_se_micro"] == round(contrast * 1e6), "design contrast se")
-    _expect(design["pooled_se_micro"]["twin"] == round(contrast / math.sqrt(2) * 1e6), "design pooled se")
+    _expect(design["pooled_se_micro"]["twin"] == round(contrast / 2 * 1e6), "design pooled se")
+    _expect(design["pooled_se_micro"]["base"] == round(1 / math.sqrt(N * 4) * 1e6) == 3906, "pooled base se")
+    _expect(design["pooled_se_micro"]["b0_base"] == round(1 / math.sqrt(65536 * 4) * 1e6) == 1953, "pooled b0 base se")
     _expect(design["bracket_offset_se_micro"] == round(math.sqrt(per_bracket) * 1e6), "design offset se")
     _expect(design["design_selector_readout_e01_e10_ten_thousandths"] == [281, 296], "design rates")
 
@@ -254,7 +267,9 @@ def test_the_batch_brackets_report_each_offset_and_the_corrected_twin_readings()
 
 
 def test_the_standard_error_agrees_with_a_monte_carlo_of_binomial_counts() -> None:
-    rng = np.random.default_rng(bc.OC_SEED)
+    from qrng_seeds import read_record
+
+    rng = np.random.default_rng(int(read_record(bc.OC_DRAW)["values"][bc.OC_SEED_INDICES[bc.STATIONARY_TABLE]]))
     draws = 20000
     p_read = 0.5 + (E10 - E01) / 2
     zeros = rng.binomial(N, p_read, size=(2, draws))
@@ -285,18 +300,18 @@ def _twin_se() -> float:
 
 
 def _rows(base: dict[str, float], twin: dict[str, float]) -> dict[str, dict[str, list[tuple[float, float]]]]:
-    se_base = {t: 1 / math.sqrt(oc.CONTROL_SHOTS if t == "b0" else oc.BATCH_SHOTS) for t in oc.TEMPLATES}
+    se_base = {t: 1 / math.sqrt(bc.CONTROL_SHOTS if t == "b0" else bc.BATCH_SHOTS) for t in oc.TEMPLATES}
     return {
         t: {
-            "base": [(base.get(t, 0.0), se_base[t])] * 2,
-            "twin": [(twin.get(t, 0.0), _twin_se())] * 2,
+            "base": [(base.get(t, 0.0), se_base[t])] * bc.REPLICATES,
+            "twin": [(twin.get(t, 0.0), _twin_se())] * bc.REPLICATES,
         }
         for t in oc.TEMPLATES
     }
 
 
 def test_rule_v2_labels_hand_built_bracketed_rows() -> None:
-    se_t0 = _twin_se() / math.sqrt(2)
+    se_t0 = _twin_se() / math.sqrt(bc.REPLICATES)
     for t0, label in (
         (0.0, "superposition_only"),
         (-0.999 * oc.Z_RESOLVE * se_t0, "superposition_only"),
@@ -316,7 +331,40 @@ def test_the_preregistered_text_restates_the_estimates_and_carries_rule_v2() -> 
     old = oc.preregistered()
     _expect(text["twin_control"] == rule.TWIN_CONTROL != old["twin_control"], "twin control")
     _expect("cancels in t" in text["estimates"] and text["estimates"] != old["estimates"], "estimates")
-    _expect({k for k in text if text[k] != old[k]} == {"estimates", "twin_control"}, "nothing else of the rule changes")
+    _expect(
+        {k for k in text if text[k] != old[k]} == {"estimates", "twin_control", "heterogeneity"},
+        "only the estimates, the twin control and the replicate-matched heterogeneity bound change",
+    )
+    _expect(str(bc.BATCH_CHI2) in text["heterogeneity"] and "3 degrees of freedom" in text["heterogeneity"], "gate")
+
+
+def _survival(dof: int, x: float) -> float:
+    """P(chi-square with `dof` degrees of freedom > x) for 1, 2 and 3 degrees of freedom, in closed form."""
+    if dof == 1:
+        return math.erfc(math.sqrt(x / 2))
+    if dof == 2:
+        return math.exp(-x / 2)
+    return math.erfc(math.sqrt(x / 2)) + math.sqrt(2 * x / math.pi) * math.exp(-x / 2)
+
+
+def test_the_batch_gate_is_the_alpha_0_001_quantile_of_the_replicates_degrees_of_freedom() -> None:
+    for dof, bound in bc.CHI2_ALPHA_001.items():
+        _expect(abs(_survival(dof, bound) - 0.001) < 5e-7, f"{dof} degrees of freedom: {bound}")
+    _expect(bc.BATCH_CHI2 == bc.CHI2_ALPHA_001[bc.REPLICATES - 1] == 16.266, "four replicates, 3 degrees of freedom")
+    _expect(oc.BATCH_CHI2 == bc.CHI2_ALPHA_001[1], "the predecessor's bound is the 1-degree-of-freedom value")
+
+
+def test_the_replicate_matched_gate_admits_the_spread_that_the_one_degree_bound_rejects() -> None:
+    # Four twin contrasts of k4 at [0, 0, 0, d se] have chi-square 3 d^2 / 4 about their weighted mean.
+    se = _twin_se()
+    for d, matched_rejects in ((4.5, False), (5.0, True)):
+        rows = _rows({"b0": 0.0164}, {})
+        rows["k4"]["twin"] = [(0.0, se), (0.0, se), (0.0, se), (d * se, se)]
+        chi2 = 0.75 * d * d
+        _expect((chi2 > 16.266) == matched_rejects and chi2 > 10.828, f"{chi2}")
+        _expect(rule.decide_estimates(rows)["label"] == "unresolved_batch", "the 1-degree bound rejects the spread")
+        got = bc.decide_estimates(rows)["label"]
+        _expect((got == "unresolved_batch") == matched_rejects, f"{chi2}: {got}")
 
 
 # Mutations and worlds -------------------------------------------------------------------------------------------
@@ -370,7 +418,7 @@ def test_the_bracket_offsets_of_the_synthetic_series_agree_between_batches(
 ) -> None:
     shots = oc.synthetic_series(built[bc.TUNA_SERIES], manifest)
     brackets = bc.batch_brackets(shots, manifest)
-    _expect(sorted(brackets) == [f"batch-{n:02d}" for n in (1, 2, 5, 6, 9, 10, 13, 14)], f"{sorted(brackets)}")
+    _expect(sorted(brackets) == [f"batch-{n:02d}" for n in TWIN_BATCHES], f"{sorted(brackets)}")
     offsets = [row["offset"] for row in brackets.values()]
     _expect(max(offsets) - min(offsets) < 1e-6, f"{offsets}")
 
@@ -414,17 +462,19 @@ def test_a_twin_batch_estimate_is_the_raw_contrast_of_its_two_twins(manifest: di
     rows, _ = bc.batch_estimates(shots, manifest)
     value, se = bc.twin_contrast(6, 8, 8, 8)
     got = rows["b0"]["twin"]
-    _expect(len(got) == 2 and abs(got[0][0] - value) < 1e-15 and abs(got[0][1] - se) < 1e-15, f"{got}")
+    _expect(len(got) == 4 and abs(got[0][0] - value) < 1e-15 and abs(got[0][1] - se) < 1e-15, f"{got}")
     _expect(abs(value - (6 / 8 - 1.0)) < 1e-15, f"{value}")
 
 
 def test_a_series_with_a_missing_or_misplaced_twin_is_refused(manifest: dict[str, Any]) -> None:
     shots = _twin_shots(manifest)
     rows, _ = bc.batch_estimates(shots, manifest)
-    _expect(all(len(rows[t]["twin"]) == 2 and rows[t]["base"] == [] for t in oc.TEMPLATES), "two replicates a template")
+    _expect(
+        all(len(rows[t]["twin"]) == 4 and rows[t]["base"] == [] for t in oc.TEMPLATES), "four replicates a template"
+    )
     without = {k: v for k, v in shots.items() if not k.startswith("batch-02/")}
     rows, _ = bc.batch_estimates(without, manifest)
-    _expect(len(rows["k4"]["twin"]) == 1, "a missing batch leaves one k4 replicate for the evaluation to refuse")
+    _expect(len(rows["k4"]["twin"]) == 3, "a missing batch leaves three k4 replicates for the evaluation to refuse")
     half = {k: v for k, v in shots.items() if k != "batch-02/k4-coin1.cq"}
     with pytest.raises(ValueError, match="holds one coin twin"):
         bc.batch_estimates(half, manifest)
@@ -461,12 +511,20 @@ def test_the_stored_prediction_record_holds_no_float() -> None:
     _expect(not _holds_float(_stored()), "a float in the record needs a numeric binding to replay")
 
 
-def test_the_registered_draw_seeds_the_simulation_and_the_prediction_names_it() -> None:
+def test_each_table_seeds_from_its_own_value_of_the_registered_draw_in_index_order() -> None:
     from qrng_seeds import read_record
 
     stored = _stored()["operating_characteristics"]
-    _expect(stored["qrng_draw"] == bc.OC_DRAW and stored["seed_index"] == bc.OC_SEED_INDEX == 0, "named draw")
-    _expect(bc.OC_SEED == int(read_record(bc.OC_DRAW)["values"][0]), "the seed is value 0 of the retained draw")
+    tables = ("stationary", "batch_drift_sd_0.003", "pair_common_drift_sd_0.003")
+    indices = [stored["seed_indices"][t] for t in tables]
+    _expect(stored["qrng_draw"] == bc.OC_DRAW and stored["seed_indices"] == bc.OC_SEED_INDICES, "named draw")
+    _expect(indices == sorted(set(indices)) and indices[0] >= 920, f"{indices}: increasing, distinct, from 920 up")
+    values = read_record(bc.OC_DRAW)["values"]
+    seeds = [int(values[i]) for i in indices]
+    _expect(len(set(seeds)) == 3, "three distinct seed values")
+    world = {rule.NEGATIVE_TWIN_WORLD: rule.NEGATIVE_TWIN_MEAN}
+    a = bc.operating_characteristics(indices[0], draws=64, worlds=world)
+    _expect(a == bc.operating_characteristics(indices[0], draws=64, worlds=world), "an index fixes the draws")
     _expect(bc.OC_DRAW != oc.OC_DRAW and (ROOT / bc.OC_DRAW).is_file(), "a new draw")
 
 
@@ -486,11 +544,11 @@ def test_the_stored_tables_hold_the_power_of_each_drift_model() -> None:
     _expect(share["stationary"]["absent"]["offset_absent"] >= 0.95, "no offset reads absent")
     wrong = share["stationary"]["over_rotation_x_all_before"].get("b0_like", 0.0)
     _expect(0.05 < wrong < 0.12, f"the outside-the-set world's wrong refutation {wrong}")
-    # The preregistered power rule (80 percent) under a batch drift of 0.003: met when the drift of a batch is common
-    # to the two twins of its pair (the in-batch layout), missed when every twin contrast drifts independently.
+    # The preregistered power rule (80 percent) under a drift of 0.003: met both when every twin contrast drifts
+    # independently and when the drift of a batch is common to the two twins of its pair.
     for world, label in (("coin_dropout", "b0_like"), ("superposition_only", "superposition_only")):
         _expect(share["pair_common_drift_sd_0.003"][world][label] >= 0.80, f"pair-common {world}")
-        _expect(share["batch_drift_sd_0.003"][world][label] < 0.80, f"per-contrast {world}")
+        _expect(share["batch_drift_sd_0.003"][world][label] >= 0.80, f"per-contrast {world}")
         _expect(
             share["pair_common_drift_sd_0.003"][world][label] > share["batch_drift_sd_0.003"][world][label],
             f"a drift that cancels in the pair raises the power of {world}",
@@ -499,29 +557,34 @@ def test_the_stored_tables_hold_the_power_of_each_drift_model() -> None:
 
 def test_the_successor_simulation_reaches_spawned_workers_and_is_serial_equal() -> None:
     world = {rule.NEGATIVE_TWIN_WORLD: rule.NEGATIVE_TWIN_MEAN}
-    first = bc.operating_characteristics(draws=128, worlds=world)
-    again = bc.operating_characteristics(draws=128, worlds=world)
+    seed = bc.OC_SEED_INDICES[bc.STATIONARY_TABLE]
+    first = bc.operating_characteristics(seed, draws=128, worlds=world)
+    again = bc.operating_characteristics(seed, draws=128, worlds=world)
     _expect(first == again, "a rerun reproduces the draws")
     _expect(first[rule.NEGATIVE_TWIN_WORLD].get(rule.NEGATIVE_TWIN, 0.0) >= 0.8, f"{first}")
 
 
 def test_a_drift_shared_by_a_pair_spares_its_twin_contrast_and_an_unknown_model_is_refused() -> None:
     world = {rule.NEGATIVE_TWIN_WORLD: rule.NEGATIVE_TWIN_MEAN}
-    independent = bc.operating_characteristics(draws=256, drift_sd=0.01, worlds=world)
-    shared = bc.operating_characteristics(draws=256, drift_sd=0.01, worlds=world, drift_model="pair")
+    seed = bc.OC_SEED_INDICES[bc.CONTRAST_DRIFT_TABLE]
+    independent = bc.operating_characteristics(seed, draws=256, drift_sd=0.01, worlds=world)
+    shared = bc.operating_characteristics(seed, draws=256, drift_sd=0.01, worlds=world, drift_model="pair")
     decided = rule.NEGATIVE_TWIN
     _expect(
         shared[rule.NEGATIVE_TWIN_WORLD].get(decided, 0.0) > independent[rule.NEGATIVE_TWIN_WORLD].get(decided, 0.0),
         "twin drift",
     )
     with pytest.raises(ValueError, match="drift_model"):
-        bc.operating_characteristics(draws=8, drift_model="batch")
+        bc.operating_characteristics(seed, draws=8, drift_model="batch")
 
 
 def test_a_larger_drift_lowers_the_deciding_share_of_the_dropout_world() -> None:
     world = {"coin_dropout": rule.WORLDS["coin_dropout"]}
-    still = bc.operating_characteristics(draws=256, worlds=world)["coin_dropout"]["b0_like"]
-    drifting = bc.operating_characteristics(draws=256, drift_sd=0.01, worlds=world)["coin_dropout"].get("b0_like", 0.0)
+    seed = bc.OC_SEED_INDICES[bc.STATIONARY_TABLE]
+    still = bc.operating_characteristics(seed, draws=256, worlds=world)["coin_dropout"]["b0_like"]
+    drifting = bc.operating_characteristics(seed, draws=256, drift_sd=0.01, worlds=world)["coin_dropout"].get(
+        "b0_like", 0.0
+    )
     _expect(still > drifting, f"{still} against {drifting}")
 
 
@@ -697,9 +760,9 @@ def test_analyze_scores_the_collected_tuna_series_and_reports_an_incomplete_one(
     _expect(record["complete"] and record["claim_kind"] == "hardware acquisition", f"{record.get('batches')}")
     _expect(record["schema"] == bc.ANALYSIS_SCHEMA and record["decision"]["label"] == "zero", f"{record['decision']}")
     json.dumps(record, allow_nan=False)
-    _expect(len(record["batch_contrasts"]["b0"]["twin"]) == 2, "two twin contrasts per template")
+    _expect(len(record["batch_contrasts"]["b0"]["twin"]) == 4, "four twin contrasts per template")
     brackets = record["twin_brackets"]
-    _expect(sorted(brackets) == [f"batch-{n:02d}" for n in (1, 2, 5, 6, 9, 10, 13, 14)], f"{sorted(brackets)}")
+    _expect(sorted(brackets) == [f"batch-{n:02d}" for n in TWIN_BATCHES], f"{sorted(brackets)}")
     _expect(all(math.isfinite(b["offset"]) and b["offset_se"] > 0 for b in brackets.values()), "offsets")
     partial = bc.analyze(dirs[:3], tmp_path / "cases")
     _expect(not partial["complete"] and partial["batches"] == ["batch-00", "batch-01", "batch-02"], f"{partial}")

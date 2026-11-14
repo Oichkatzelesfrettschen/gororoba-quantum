@@ -104,7 +104,6 @@ def _submit(
     if expected_cases_sha256 is not None and hashlib.sha256(cases_bytes).hexdigest() != expected_cases_sha256:
         raise SystemExit("cases.json differs from the approved manifest digest; renewed case approval is required")
     cases = json.loads(cases_bytes)
-    qi_platform.hardware_policy(cases)
     if cases["backend_type_id"] != backend_type_id:
         raise SystemExit(f"cases.json names backend type {cases['backend_type_id']}, not {backend_type_id}")
     if not isinstance(cases["shots"], int) or isinstance(cases["shots"], bool) or cases["shots"] < 1:
@@ -148,9 +147,17 @@ def _submit(
         raise qi_platform.PlatformError("queue capacity or current-user queue count is invalid")
     pause = 0
     if backend_type["is_hardware"]:
-        queue_limit, pause = qi_platform.hardware_admission(
-            client, cases, backend_type, backend_type_id, len(sources), queue_limit
-        )
+        if len(sources) > qi_platform.HARDWARE_BATCH_CIRCUITS:
+            raise SystemExit(
+                f"{len(sources)} circuits exceed the {qi_platform.HARDWARE_BATCH_CIRCUITS} a hardware batch may hold"
+            )
+        queue_limit = min(queue_limit, qi_platform.HARDWARE_QUEUED_BATCHES)
+        pause = qi_platform.hardware_pause_left(client)
+        if pause > 0:
+            raise SystemExit(
+                f"the account's last hardware job finished less than {qi_platform.HARDWARE_PAUSE_SECONDS} s ago; "
+                f"wait {pause} more seconds so the platform can calibrate"
+            )
     if queued + 1 > queue_limit:
         raise SystemExit(f"current-user queue has {queued} batches; adding one exceeds the limit {queue_limit}")
     if admission_check is not None:

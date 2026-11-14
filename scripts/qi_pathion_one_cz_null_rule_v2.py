@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -57,12 +58,23 @@ WORLDS: dict[str, dict[str, float]] = {
 }
 
 
+@cache
+def gated(batch_chi2: float) -> Any:
+    """The v3 decision with the batch heterogeneity bound `batch_chi2` in place of oc.BATCH_CHI2."""
+    return ana.rebound(ana.decide_estimates, BATCH_CHI2=batch_chi2)
+
+
 def decide_estimates(
-    rows: dict[str, dict[str, list[tuple[float, float]]]], b0_like_z: float | None = None
+    rows: dict[str, dict[str, list[tuple[float, float]]]],
+    b0_like_z: float | None = None,
+    batch_chi2: float | None = None,
 ) -> dict[str, Any]:
     """The v3 decision of per-batch estimates with the v2 twin control: a superposition-only reading needs
-    t0 >= -Z_RESOLVE se, and a t0 below that relabels it `unresolved_negative_twin`."""
-    decision: dict[str, Any] = ana.decide_estimates(rows, b0_like_z)
+    t0 >= -Z_RESOLVE se, and a t0 below that relabels it `unresolved_negative_twin`. `batch_chi2` is the bound of the
+    replicate-batch heterogeneity gate for a case whose replicate count differs from the predecessor's two
+    (oc.BATCH_CHI2 when None)."""
+    decide = ana.decide_estimates if batch_chi2 is None else gated(batch_chi2)
+    decision: dict[str, Any] = decide(rows, b0_like_z)
     t0, se = decision["numbers"]["t_b0"]
     if decision["label"] == "superposition_only" and t0 < -oc.Z_RESOLVE * se:
         outcome, effect = OUTCOMES[NEGATIVE_TWIN]

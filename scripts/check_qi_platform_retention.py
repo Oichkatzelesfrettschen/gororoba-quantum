@@ -25,6 +25,7 @@ from typing import Any
 from unittest.mock import Mock, patch
 
 import qi_platform as platform
+import qi_platform_wave as wave
 
 # submit() takes the account submit lock; the fixtures lock a private file.
 platform.SUBMIT_LOCK = Path(tempfile.mkdtemp(prefix="qi-submit-lock-")) / "submit.lock"
@@ -222,13 +223,20 @@ class PreflightClient:
 
 def batch_limit(backend: dict[str, Any], cases: dict[str, Any]) -> int:
     """The circuits one batch of the manifest `cases` may hold on a catalogue backend type. The FAQ limits a hardware
-    backend to three queued jobs, and the runner applies the manifest's hardware policy (qi_platform.hardware_limits;
+    backend to three queued jobs, and the runner applies the manifest's hardware policy
+    (qi_platform_wave.hardware_limits;
     a manifest without `hardware_policy` takes the legacy three circuits) to every type the API flags is_hardware: the
     Tuna processors, and the Ry emulator as a choice stricter than the FAQ. The QX emulator keeps the service's
     max_jobs_per_batch_job (docs/notes/quantum_inspire/usage.md, "Queue rules: the FAQ governs")."""
     if backend["is_hardware"]:
-        return platform.hardware_limits(cases, backend).batch_circuits
+        return wave.hardware_limits(cases, backend).batch_circuits
     return int(backend["max_jobs_per_batch_job"])
+
+
+def submit_route(cases: dict[str, Any]) -> Any:
+    """The submit function of the manifest `cases`: qi_platform.submit for a manifest without `hardware_policy`, whose
+    legacy limits that module keeps, and qi_platform_wave.submit for a manifest that names a policy."""
+    return platform.submit if "hardware_policy" not in cases else wave.submit
 
 
 class GeneratedCaseChecks(unittest.TestCase):
@@ -250,7 +258,7 @@ class GeneratedCaseChecks(unittest.TestCase):
                         (case_dir / name).write_bytes((manifest.parent / name).read_bytes())
                     with patch.object(platform, "Client", return_value=PreflightClient(cases)):
                         with self.assertRaises(PreflightReached):
-                            platform.submit(case_dir, cases["backend_type_id"], "preflight fixture")
+                            submit_route(cases)(case_dir, cases["backend_type_id"], "preflight fixture")
                     self.assertFalse((case_dir / "submission-state.json").exists())
 
     def test_an_oversized_batch_is_refused_by_its_backend_rule(self) -> None:
@@ -287,7 +295,7 @@ class GeneratedCaseChecks(unittest.TestCase):
                 (case_dir / "cases.json").write_text(json.dumps(cases), encoding="utf-8")
                 with patch.object(platform, "Client", return_value=PreflightClient(cases)):
                     with self.assertRaisesRegex(SystemExit, message):
-                        platform.submit(case_dir, backend_type_id, "preflight fixture")
+                        submit_route(cases)(case_dir, backend_type_id, "preflight fixture")
                 self.assertFalse((case_dir / "submission-state.json").exists())
 
     def test_a_four_circuit_wave_batch_is_admitted_only_under_its_policy(self) -> None:
@@ -312,10 +320,10 @@ class GeneratedCaseChecks(unittest.TestCase):
                 with patch.object(platform, "Client", return_value=PreflightClient(cases)):
                     if outcome == "reached":
                         with self.assertRaises(PreflightReached):
-                            platform.submit(case_dir, 7, "preflight fixture")
+                            submit_route(cases)(case_dir, 7, "preflight fixture")
                     else:
                         with self.assertRaisesRegex(SystemExit, outcome):
-                            platform.submit(case_dir, 7, "preflight fixture")
+                            submit_route(cases)(case_dir, 7, "preflight fixture")
                 self.assertFalse((case_dir / "submission-state.json").exists())
 
     def test_a_manifest_naming_another_backend_is_refused(self) -> None:
