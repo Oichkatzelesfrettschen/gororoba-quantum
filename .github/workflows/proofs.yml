@@ -29,6 +29,7 @@ on:
       - docs/evidence/cd-tower-ring/**
       - docs/evidence/cd-tower-ring-base-change/**
       - docs/evidence/cd-tower-kernel-certificates/**
+      - docs/evidence/a5-gaussian-certificates/**
       - docs/evidence/folding_proofs/**
       - docs/evidence/formal_certificates/**
       - docs/evidence/stiefel_witness/**
@@ -68,6 +69,7 @@ on:
       - docs/evidence/cd-tower-ring/**
       - docs/evidence/cd-tower-ring-base-change/**
       - docs/evidence/cd-tower-kernel-certificates/**
+      - docs/evidence/a5-gaussian-certificates/**
       - docs/evidence/folding_proofs/**
       - docs/evidence/formal_certificates/**
       - docs/evidence/stiefel_witness/**
