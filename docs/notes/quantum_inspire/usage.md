@@ -69,28 +69,48 @@ They grant no permission: no plan, case or batch size is derived from them
 on hardware, and where the FAQ is silent they remain the ceiling the service
 enforces.
 
-The FAQ does not say whether a "job" is a batch or a circuit, so the runner
-satisfies both readings at once. On every backend type the catalogue flags
+The FAQ does not say whether a "job" is a batch or a circuit. A case manifest selects how the runner reads it through
+its `hardware_policy` field, a row of `HARDWARE_POLICIES` in `scripts/qi_platform.py` (one table, read by
+`qi_platform.py submit` and `qi_platform_submission_deadline.py`; an unknown name is refused before any service read):
+
+| `hardware_policy` | circuits per batch | queued batches | reading of "job" |
+|---|---|---|---|
+| absent, or `legacy` | 3 | 1 | both at once: at most three circuits of the account wait, in one batch |
+| `wave-v1` | 5 | 3 | a batch job (owner ruling 2026-11-14): a wave of 15 circuits in 3 batches |
+
+Both numbers are capped by the live backend record (`max_jobs_per_batch_job`, `batchjobs_per_queue_limit`). The default
+stays `legacy`, because the case generators, proposals and gates that predate the field read `HARDWARE_BATCH_CIRCUITS`
+(3) and `HARDWARE_QUEUED_BATCHES` (1), and retained bytes depend on them. On every backend type the catalogue flags
 `is_hardware`, `qi_platform.py submit`
 
-- holds a batch to `HARDWARE_BATCH_CIRCUITS` (3) circuits;
-- enqueues a batch only while the account has no batch queued on that type
-  (`HARDWARE_QUEUED_BATCHES`, 1);
-- refuses while any account job on a hardware type is unfinished or finished
-  less than `HARDWARE_PAUSE_SECONDS` ago ([pause escalation](#pause-escalation)),
-  whichever session submitted it.
+- holds a batch to the policy's circuits;
+- refuses while the account has as many batches in flight on that type as the policy queues (the service's own queue
+  count and the batches the runner reads from `/batch_jobs` must both be below it);
+- refuses while any account job on another hardware type is unfinished, and, under `legacy`, while any account job on
+  any hardware type is unfinished;
+- refuses while any finished account job on a hardware type is less than `HARDWARE_PAUSE_SECONDS` old
+  ([pause escalation](#pause-escalation)), whichever session submitted it.
 
-At most three circuits of the account therefore wait for a hardware
-backend, in one batch, and nothing else of the account is queued or running
-on hardware meanwhile. The constants are fixed in the source, and
-submission routes that bypass `submit` (`QIProvider` `backend.run`, which
-batches up to the API's 5; the `qi` CLI; the web editor) carry no FAQ guard
-and stay unused for runs.
+A wave's batches are submitted one after another in series order (the platform then runs them in that order), and every
+batch of the wave must have finished, with the pause passed, before the next wave: under `wave-v1` the unfinished
+batches of the same backend type are the earlier batches of the wave and set no pause, and every finished batch keeps its
+pause. The pause clock is account-wide, so the Ry emulator, which the API flags `is_hardware`, shares it with Tuna-17
+([ry-emulator.md](ry-emulator.md)): a finished Ry job delays the next Tuna-17 batch by the rest of its pause, an
+unfinished Ry job refuses a Tuna-17 batch and the reverse, and the three queued batches are counted per backend type, so
+Ry batches do not count toward Tuna-17's three. Residual risk of `wave-v1`: if the provider reads "job" as a circuit, a
+wave of 15 circuits queues five times the stated 3, and the FAQ's abuse clause removes the account; the provider has not
+been asked. Evidence that the service accepts the numbers: `max_jobs_per_batch_job` and `batchjobs_per_queue_limit` are 5
+on every backend type in the catalogue; two retained Tuna-17 batches of 5 circuits were accepted and completed
+(`results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17`, `.../2026-10-16T221133Z-zero_divisor_tuna_17`); the SDK
+checks the batch size and nothing about the queue (`qi_jobs.py`); the service answers HTTP 429 "Backend type Tuna-17
+allows a maximum of 5 batch jobs in the queue at the same time" (compute-api-client issue 5), a limit of 5, not 3.
+Submission routes that bypass `submit` (`QIProvider` `backend.run`, which batches up to the API's 5; the `qi` CLI; the web
+editor) carry no FAQ guard and stay unused for runs.
 
 | Backend | Quantum Inspire's classification | FAQ queue rule | Rule the runner applies | Procedure |
 |---|---|---|---|---|
-| Tuna-17 (type 7); Tuna-5 and Tuna-9 when online | hardware ([KB hardware backends](site/kbase_hardware-backends.md)) | at most 3 jobs queued | the hardware rules above | [Run on Tuna-17](#run-on-tuna-17) |
-| Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the hardware rules above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
+| Tuna-17 (type 7); Tuna-5 and Tuna-9 when online | hardware ([KB hardware backends](site/kbase_hardware-backends.md)) | at most 3 jobs queued | the manifest's hardware policy above | [Run on Tuna-17](#run-on-tuna-17) |
+| Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the manifest's hardware policy above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
 | QX emulator (type 1) | emulator | none | the service's own ceilings: 5 circuits per batch, 5 queued batches; terms item 9 asks for syntax checking first | [qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator) |
 
 [Rules this repository adds](#rules-this-repository-adds) holds the evidence
@@ -104,7 +124,7 @@ calibration"). Every step below is a repository command; the approval steps
 follow root AGENTS.md "Hardware services".
 
 1. Generate the cases with the experiment's generator, which emits
-   `batch-NN/` directories of at most 3 circuits each, and run its `--check`
+   `batch-NN/` directories of at most the policy's circuits each (3, or 5 under a manifest's `wave-v1`), and run its `--check`
    and `"$QI_PYTHON" scripts/qi_toolchain_check.py` (libqasm analysis and
    compilation with the Tuna-17 compiler configuration).
 2. Run the QX dry run of the same cases ([qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator))
