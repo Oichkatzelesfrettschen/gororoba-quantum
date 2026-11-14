@@ -5,7 +5,7 @@ The automorphism group of the `cd_core` sedenions is `G2 x S3`, and the 11 cells
 [test_sedenion_automorphism_group.py](../../../tests/gororoba_quantum/test_sedenion_automorphism_group.py) computes
 both in exact arithmetic on every pull request. It runs against the multiplication table that the pinned Rocq
 evaluates from the integer pair tower of
-[CdImaginarySumConference.v](../../../proofs/CdImaginarySumConference.v).
+gororoba-math `rocq/quantum/CdImaginarySumConference.v`.
 
 ## Files
 
