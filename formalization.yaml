@@ -160,7 +160,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Selected main-result declarations of twenty-seven proof sources, not every
+    Selected main-result declarations of twenty-nine proof sources, not every
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
@@ -298,6 +298,24 @@ status:
     - declaration: Root3Map.BC.SB.derivation_by_basis
       file: proofs/CdTowerRingBasis.v
       axioms: []
+    - declaration: Mod7.KC.kernel_free_basis
+      file: proofs/CdTowerKernelCertificate.v
+      axioms: []
+    - declaration: Mod7.KC.kernel_coefficients_unique
+      file: proofs/CdTowerKernelCertificate.v
+      axioms: []
+    - declaration: Mod7.KC.combination_zero_coefficients
+      file: proofs/CdTowerKernelCertificate.v
+      axioms: []
+    - declaration: Mod7.W8_kernel_spanned
+      file: proofs/CdTowerCanonicalKernels.v
+      axioms: []
+    - declaration: V_kernel_mod7
+      file: proofs/CdTowerCanonicalKernels.v
+      axioms: []
+    - declaration: Np_kernel_mod7
+      file: proofs/CdTowerCanonicalKernels.v
+      axioms: []
     - declaration: Root3Map.BC.scaled_multiplicative_transport
       file: proofs/CdTowerRingBaseChange.v
       axioms: []
@@ -433,6 +451,26 @@ alignment:
       file: proofs/CdTowerRingDomain.v
       statement: "the product of the commutative-ring tower at Z is the product of the ordered-domain tower at Z"
       source: docs/evidence/cd-tower-ring/README.md
+    - declaration: Mod7.KC.kernel_free_basis
+      file: proofs/CdTowerKernelCertificate.v
+      statement: "at the homomorphism from Z to Zmod 7, for an element y of level k with a kernel certificate (n vectors annihilated by y, a splitting d e_i = back(y e_i) + sum_j f_j(e_i) v_j on the basis vectors) and an inverse of h(d), y z = 0 exactly when z is the combination of the vectors with coefficients inverse f_j(z); the instance of the functor theorem KernelCertificate.kernel_free_basis, which holds for every homomorphism of commutative rings"
+      source: docs/evidence/cd-tower-kernel-certificates/README.md
+    - declaration: Mod7.KC.combination_zero_coefficients
+      file: proofs/CdTowerKernelCertificate.v
+      statement: "at the homomorphism from Z to Zmod 7, with functionals dual to the vectors up to the scalar d, a combination sum_j a_j v_j equal to zero has h(d) a_l = 0 for every l below n; the instance of the functor theorem KernelCertificate.combination_zero_coefficients"
+      source: docs/evidence/cd-tower-kernel-certificates/README.md
+    - declaration: Mod7.W8_kernel_spanned
+      file: proofs/CdTowerCanonicalKernels.v
+      statement: "over Zmod 7, every z of level 5 with y z = 0 for the integer point y = e_17 - e_27 of the W8 orbit satisfies 2 z = sum_j f_j(z) v_j for the eight tabulated vectors and functionals; the instance of CanonicalKernels.W8_kernel_spanned, which holds over every commutative ring"
+      source: docs/evidence/cd-tower-kernel-certificates/README.md
+    - declaration: V_kernel_mod7
+      file: proofs/CdTowerCanonicalKernels.v
+      statement: "over Zmod 7, where 50 = 1, the kernel of left multiplication by the integer point y = -5 e_9 + 3 e_17 + 4 e_24 of the V orbit is the set of combinations of the twelve tabulated vectors with coefficients f_j(z); the statement CanonicalKernels.V_kernel_free_basis holds over every commutative ring with an inverse of 50"
+      source: docs/evidence/cd-tower-kernel-certificates/README.md
+    - declaration: Np_kernel_mod7
+      file: proofs/CdTowerCanonicalKernels.v
+      statement: "over Zmod 7, with inverse 4 of 2, the kernel of left multiplication by the integer point y = -e_3 - e_9 + e_17 - e_27 of the N_+ orbit is the set of combinations of the sixteen tabulated vectors with coefficients 4 f_j(z); the statement CanonicalKernels.Np_kernel_free_basis holds over every commutative ring with an inverse of 2"
+      source: docs/evidence/cd-tower-kernel-certificates/README.md
     - declaration: Root3Map.BC.SB.multiplicative_by_basis
       file: proofs/CdTowerRingBasis.v
       statement: "at Z[sqrt 3], a linear map of level k with f(e_i e_j) = f(e_i) f(e_j) on all pairs of basis vectors preserves every product; the instance of the functor theorem RingTowerBasis.multiplicative_by_basis, which holds over the signature CommutativeRing"

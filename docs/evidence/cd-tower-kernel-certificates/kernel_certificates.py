@@ -386,9 +386,10 @@ def main() -> int:
     if failed:
         return 1
     if args.generate:
-        # Both files are written only after every regenerated certificate passes, the data file first.
+        # Both texts exist before either file changes, and every regenerated certificate has passed.
+        rendering = render(records)
         replace_text(CERTIFICATES, text)
-        replace_text(ROCQ_FILE, render(records))
+        replace_text(ROCQ_FILE, rendering)
     elif ROCQ_FILE.read_text(encoding="utf-8") != render(records):
         print(f"{ROCQ_FILE.relative_to(ROOT)} is not the rendering of {CERTIFICATES.relative_to(ROOT)}")
         return 1

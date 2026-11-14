@@ -130,8 +130,10 @@ runs the same identity, rank and Smith-form checks on them, and then
 replaces both files; a certificate that fails leaves both files as they
 were. The rendering is deterministic, the reduction need not reproduce the
 same basis on another python-flint version, and `--check` does not depend on
-it. A regenerated basis changes the Rocq tables, so the receipts and
-`source_hashes.sha256` are regenerated with it.
+it. A regenerated basis changes `certificates.json` and the Rocq tables, so
+their two rows of `source_hashes.sha256` are refreshed and the replay is
+rerun; the receipts print statements and assumption queries, which do not
+depend on the tables.
 
 `tests/gororoba_quantum/test_cd_tower_kernel_certificates.py` runs the same
 identities under the `tests` check, compares the nullities with the table
@@ -142,14 +144,15 @@ of e_27 flipped, one changed kernel vector entry, and a doubled d.
 
 ## Assumptions
 
-[assumptions.txt](assumptions.txt) holds 24 `Print Assumptions` queries on the
-Zmod 7 instance, the twelve `<point>_kernel_mod7` and twelve statements of
-three points; every one reads "Closed under the global context".
+[assumptions.txt](assumptions.txt) holds 27 `Print Assumptions` queries on the
+Zmod 7 instance: the twelve `<point>_kernel_mod7`, twelve statements of
+three points, and three theorems of the functor instance `Mod7.KC`; every one reads "Closed under the global context".
 [statements.txt](statements.txt) prints six generic theorems and three
 of the instance theorems. [kernel.txt](kernel.txt) is the `rocq check`
 context of the two libraries: it lists no axiom. The receipts are the bytes
-Rocq prints, trailing spaces included, as in every proof bundle of this
-directory; the replay compares them with `cmp`. No proof introduces an axiom
+Rocq prints, trailing spaces included; the replay compares them with `cmp`,
+and `.gitattributes` exempts `kernel.txt` and `statements.txt` from the
+whitespace check. No proof introduces an axiom
 or an `Admitted`.
 
 ## Replay

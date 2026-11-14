@@ -26,3 +26,6 @@ Print Assumptions Mod7.Np_kernel_vectors.
 Print Assumptions Mod7.Np_kernel_spanned.
 Print Assumptions Mod7.Np_coefficients_recovered.
 Print Assumptions Mod7.Np_combination_zero_coefficients.
+Print Assumptions Mod7.KC.kernel_free_basis.
+Print Assumptions Mod7.KC.kernel_coefficients_unique.
+Print Assumptions Mod7.KC.combination_zero_coefficients.
