@@ -256,7 +256,7 @@ def splitting_defects(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0] if __doc__ else None)
-    parser.add_argument("--left-inverses", type=Path, required=True, help="the left-inverse record (JSON)")
+    parser.add_argument("--left-inverses", type=Path, help="the left-inverse record (JSON); every mode but --smith")
     parser.add_argument("--g2", type=Path, default=gc.G2_RECORD, help="g2-derivation-tables.json")
     parser.add_argument("--out", type=Path, default=SPAN_RECORD, help="the span record (JSON)")
     mode = parser.add_mutually_exclusive_group()
@@ -273,6 +273,8 @@ def main(argv: list[str] | None = None) -> int:
             f" modulo 2, {nullity_modulo(found_invariants, 3)} modulo 3"
         )
         return 0 if same else 1
+    if arguments.left_inverses is None:
+        parser.error("--left-inverses is required unless --smith is given")
     tables = gc.derivation_tables(json.loads(arguments.g2.read_text(encoding="utf-8")))
     left_sparse = gc.derivation_left_inverse(json.loads(arguments.left_inverses.read_text(encoding="utf-8")))
     if arguments.verify:

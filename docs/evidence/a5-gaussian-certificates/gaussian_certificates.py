@@ -348,7 +348,8 @@ def derivation_left_inverse(record: object) -> list[list[tuple[int, Entry]]]:
     The reader accepts exactly the shape this module writes: the key sets of the record and of its derivation
     section, integer types, scalar d = 1 with its norm, 14 distinct increasing selected rows within 0 to 255, 14 lines
     whose columns are distinct, increase and lie among the selected rows, the two sentences as nonempty strings and
-    arc_matrices as a list of sections (arc_certificates checks the arc matrices against their own record)."""
+    arc_matrices as a list of sections; their content is covered by the --check comparison of the whole record with
+    its regeneration, and no Rocq rendering reads it from the record."""
     record = exact_keys(record, LEFT_RECORD_KEYS, "left-inverse record")
     if record["schema"] != RECORD_SCHEMA or record["ring"] != "Z[i]":
         raise RuntimeError("unexpected left-inverse record")
