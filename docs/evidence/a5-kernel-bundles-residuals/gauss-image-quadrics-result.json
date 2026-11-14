@@ -1,0 +1,529 @@
+{
+ "calibration": {
+  "annihilator": 1365,
+  "general_bivectors": 4400,
+  "plucker_family_annihilates": true,
+  "plucker_family_rank": 1365,
+  "square_rank": 4200
+ },
+ "field": "GF(32029), i = 9115",
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/gauss_image_quadrics.py": "1297c198865234ecae94382077e67565f046f5d7760bfcbfc3fb1d6c6d9c73dd",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4a3b2d4e74bcedd2e5ce76d1a5eb4d8099ce3aa872f5d168d32f88496013a3bf",
+  "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+  "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+  "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+ },
+ "mu_rank": 15,
+ "pass": true,
+ "quadric_is_norm": true,
+ "schema": "a5-kernel-bundles-residuals-gauss-image-quadrics-v1",
+ "strata": {
+  "V(G) minus V(Q)": {
+   "characters": [
+    [
+     420,
+     119,
+     116
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     94,
+     93
+    ],
+    [
+     343,
+     96,
+     94
+    ],
+    [
+     343,
+     96,
+     94
+    ],
+    [
+     343,
+     96,
+     94
+    ],
+    [
+     343,
+     96,
+     94
+    ],
+    [
+     343,
+     96,
+     94
+    ],
+    [
+     343,
+     96,
+     94
+    ],
+    [
+     343,
+     96,
+     94
+    ]
+   ],
+   "families": [
+    {
+     "cumulative": 1365,
+     "name": "plucker_quadrics",
+     "rank": 1365,
+     "vanishing": 1365,
+     "written": 1365
+    },
+    {
+     "cumulative": 1365,
+     "name": "linear_forms_times_coordinates",
+     "rank": 0,
+     "vanishing": 0,
+     "written": 0
+    },
+    {
+     "cumulative": 1368,
+     "name": "bivector_wedge_product_image",
+     "rank": 455,
+     "vanishing": 4,
+     "written": 455
+    },
+    {
+     "cumulative": 1371,
+     "name": "product_image_pairs",
+     "rank": 120,
+     "vanishing": 3,
+     "written": 120
+    },
+    {
+     "cumulative": 1385,
+     "name": "bivector_matrix_block_product_image",
+     "rank": 211,
+     "vanishing": 18,
+     "written": 225
+    },
+    {
+     "cumulative": 1518,
+     "name": "bivector_matrix_block_bivector_matrix",
+     "rank": 1470,
+     "vanishing": 168,
+     "written": 1575
+    },
+    {
+     "cumulative": 1518,
+     "name": "bivector_matrix_form_bivector_matrix",
+     "rank": 0,
+     "vanishing": 0,
+     "written": 0
+    }
+   ],
+   "forms_and_mu_rank": 15,
+   "forms_with_quadric_rank": 1,
+   "linear_forms": 0,
+   "planes": 760,
+   "product_classes": [
+    [
+     1,
+     4,
+     false,
+     2,
+     760
+    ]
+   ],
+   "quadric_rank": {
+    "annihilator": 1543,
+    "planes_below": 670,
+    "rank": 4022,
+    "rank_above": 4022,
+    "rank_below": 4020,
+    "retained_planes": 4300,
+    "retained_rank": 4022,
+    "retained_rank_first": 4022,
+    "retained_rank_stacked": 4022,
+    "vectors": 4560
+   },
+   "spans": {
+    "bivectors": 105,
+    "symmetric_square": 120,
+    "trivectors": 439,
+    "vectors": 15
+   },
+   "symmetric_forms": 0,
+   "unexplained": 25
+  },
+  "V(Q) intersect V(G)": {
+   "characters": [
+    [
+     420,
+     225,
+     223
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     180
+    ],
+    [
+     343,
+     181,
+     179
+    ],
+    [
+     343,
+     181,
+     179
+    ],
+    [
+     343,
+     181,
+     179
+    ],
+    [
+     343,
+     181,
+     179
+    ],
+    [
+     343,
+     181,
+     179
+    ],
+    [
+     343,
+     181,
+     179
+    ],
+    [
+     343,
+     181,
+     179
+    ]
+   ],
+   "families": [
+    {
+     "cumulative": 1365,
+     "name": "plucker_quadrics",
+     "rank": 1365,
+     "vanishing": 1365,
+     "written": 1365
+    },
+    {
+     "cumulative": 2820,
+     "name": "linear_forms_times_coordinates",
+     "rank": 1470,
+     "vanishing": 1470,
+     "written": 1575
+    },
+    {
+     "cumulative": 2820,
+     "name": "bivector_wedge_product_image",
+     "rank": 455,
+     "vanishing": 455,
+     "written": 455
+    },
+    {
+     "cumulative": 2820,
+     "name": "product_image_pairs",
+     "rank": 120,
+     "vanishing": 120,
+     "written": 120
+    },
+    {
+     "cumulative": 2820,
+     "name": "bivector_matrix_block_product_image",
+     "rank": 211,
+     "vanishing": 211,
+     "written": 225
+    },
+    {
+     "cumulative": 2820,
+     "name": "bivector_matrix_block_bivector_matrix",
+     "rank": 1470,
+     "vanishing": 1470,
+     "written": 1575
+    },
+    {
+     "cumulative": 2916,
+     "name": "bivector_matrix_form_bivector_matrix",
+     "rank": 120,
+     "vanishing": 120,
+     "written": 120
+    }
+   ],
+   "forms_and_mu_rank": 15,
+   "forms_with_quadric_rank": 1,
+   "linear_forms": 15,
+   "planes": 760,
+   "product_classes": [
+    [
+     0,
+     3,
+     true,
+     0,
+     760
+    ]
+   ],
+   "quadric_rank": {
+    "annihilator": 2940,
+    "planes_below": 437,
+    "rank": 2625,
+    "rank_above": 2625,
+    "rank_below": 2622,
+    "retained_planes": 4300,
+    "retained_rank": 2625,
+    "retained_rank_first": 2625,
+    "retained_rank_stacked": 2625,
+    "vectors": 4560
+   },
+   "spans": {
+    "bivectors": 90,
+    "symmetric_square": 119,
+    "trivectors": 237,
+    "vectors": 15
+   },
+   "symmetric_forms": 1,
+   "unexplained": 24
+  },
+  "V(Q) minus V(G)": {
+   "characters": [
+    [
+     420,
+     133,
+     133
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     102,
+     102
+    ],
+    [
+     343,
+     103,
+     103
+    ],
+    [
+     343,
+     104,
+     104
+    ],
+    [
+     343,
+     104,
+     104
+    ],
+    [
+     343,
+     104,
+     104
+    ],
+    [
+     343,
+     104,
+     104
+    ],
+    [
+     343,
+     104,
+     104
+    ],
+    [
+     343,
+     104,
+     104
+    ],
+    [
+     343,
+     104,
+     104
+    ]
+   ],
+   "families": [
+    {
+     "cumulative": 1365,
+     "name": "plucker_quadrics",
+     "rank": 1365,
+     "vanishing": 1365,
+     "written": 1365
+    },
+    {
+     "cumulative": 1365,
+     "name": "linear_forms_times_coordinates",
+     "rank": 0,
+     "vanishing": 0,
+     "written": 0
+    },
+    {
+     "cumulative": 1463,
+     "name": "bivector_wedge_product_image",
+     "rank": 455,
+     "vanishing": 99,
+     "written": 455
+    },
+    {
+     "cumulative": 1463,
+     "name": "product_image_pairs",
+     "rank": 120,
+     "vanishing": 1,
+     "written": 120
+    },
+    {
+     "cumulative": 1582,
+     "name": "bivector_matrix_block_product_image",
+     "rank": 211,
+     "vanishing": 211,
+     "written": 225
+    },
+    {
+     "cumulative": 1582,
+     "name": "bivector_matrix_block_bivector_matrix",
+     "rank": 1470,
+     "vanishing": 232,
+     "written": 1575
+    },
+    {
+     "cumulative": 1678,
+     "name": "bivector_matrix_form_bivector_matrix",
+     "rank": 120,
+     "vanishing": 120,
+     "written": 120
+    }
+   ],
+   "forms_and_mu_rank": 15,
+   "forms_with_quadric_rank": 1,
+   "linear_forms": 0,
+   "planes": 760,
+   "product_classes": [
+    [
+     1,
+     3,
+     true,
+     1,
+     760
+    ]
+   ],
+   "quadric_rank": {
+    "annihilator": 1678,
+    "planes_below": 647,
+    "rank": 3887,
+    "rank_above": 3887,
+    "rank_below": 3882,
+    "retained_planes": 4300,
+    "retained_rank": 3887,
+    "retained_rank_first": 3887,
+    "retained_rank_stacked": 3887,
+    "vectors": 4560
+   },
+   "spans": {
+    "bivectors": 105,
+    "symmetric_square": 119,
+    "trivectors": 356,
+    "vectors": 15
+   },
+   "symmetric_forms": 1,
+   "unexplained": 0
+  }
+ }
+}
