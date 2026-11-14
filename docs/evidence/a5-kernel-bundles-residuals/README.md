@@ -316,11 +316,60 @@ tangent to the quadric and return the fixture, and one line lies in `V(Q)` modul
 every one of 40 general planes `P` of `ker M(z0)` off `z0` has `{z: P in ker M(z)}` of dimension 1 on the two
 hypersurface strata and 3 on `V(Q) n V(G)`.
 
-`hypothesis` (`A5-439`, open): at every point of `V(Q)` minus `V(G)` the higher zero divisors of the projective
-plane of `ker M(z)` are finitely many points, which gives `dim L = 2` at every real point there; on `V(G)` minus
-`V(Q)` the fiber is large exactly where the real kernel plane is a line of higher zero divisors and the conjugate
-plane is orthogonal to `ker M(p1) n ker M(p2)`. The net is finite and the record holds no equations for the locus
-of higher zero divisors.
+#### Higher zero divisors of the kernel three-plane
+
+`kernel_three_plane_zero_divisors.py` and its record `kernel-three-plane-zero-divisors-result.json` replace the
+finite net by equations for the higher zero divisors inside `K = ker M(z)` at a nullity-4 point `z`.
+
+**Proved** (`A5-440`): `K` lies in the hypersurface of `z`. For `k` in `K`, `M(k) z = -M(z) k = 0` and
+`M(k) k = 0`, so `M(k)` has nullity at least 3 and every maximal Pfaffian `Q G k_j` vanishes at `k`; `Q G` is
+zero on the linear space `K`, and the factor that is nonzero at `z` is excluded.
+
+On `V(G)` minus `V(Q)` (`A5-441`) the quadric `Q` restricted to `K` is a nonzero multiple of the square of a
+linear form. Its zero line, the polar line `l_z = K n ker dQ_z`, consists of higher zero divisors:
+
+| Points | `P = l_z` | Nullity on `l_z` | `dim L` | Count |
+|---|---|---:|---:|---:|
+| 52 fixtures, exact over `Q(i)` | no | 7 | 2 | 2 |
+| | no | 9 | 2 | 21 |
+| | yes | 7 | 6 | 13 |
+| | yes | 9 | 12 | 16 |
+| 1,203 grid points, modulo 32029 | no | 7 | 2 | 364 |
+| | yes | 7 | 2 | 8 |
+| | yes | 7 | 6 | 61 |
+| | no | 9 | 2 | 678 |
+| | yes | 9 | 12 | 92 |
+
+At the fixtures the rank of `M(k)` is 8 or 6 at six pairwise independent vectors of the exact line, which
+decides the whole line (Pfaffians of degree 5 and 4), and 12 at a vector off it; modulo 32029 the 91 principal
+12 x 12 Pfaffians of `M(k)` span exactly the multiples of the square of `Q` restricted to `K`, so at the fixtures
+the higher zero divisors of `K` are exactly the line. Every point of the stratum
+that was tested carries the line, of either orbit rank; the fiber is large only where the real kernel plane `P`
+is that line, and the 8 grid points with `P = l_z` and `dim L = 2` are the points of `A5-436`. A kernel plane
+other than `l_z` meets it in one point of the projective plane of `K`, the single higher zero divisor that the
+probe vector hit at the ninth point of `A5-436`.
+
+On `V(Q)` minus `V(G)` (`A5-442`) the locus is a curve. At the 12 fixtures the 91 principal 12 x 12 Pfaffians of
+`M(k)` restricted to a coordinate hyperplane, sextic forms on `K`, span exactly the multiples of the plane
+quartic `G` restricted to `K`. The quartic has a singular scheme of length 3 and contains no line over the
+algebraic closure of GF(32029): a quartic `L C` has the length-3 scheme `V(L, C)` inside its singular scheme on
+the line `L = 0`, and the certificate shows that no line meets the singular scheme in length 3 or more. A line of
+higher zero divisors over `Q(i)` would reduce to one modulo the prime, so the fixtures have none in
+characteristic 0. On the grid the quartic is nonzero and free of lines at all 2,096 points; its singular scheme
+has length 3 at 2,064 points and length 5 at 32 points of one slice, `e_1 + e_2 + 2 e_3 + e_8 + v`.
+
+These results refute two clauses of `A5-439`: the higher zero divisors of `K` on `V(Q)` minus `V(G)` are a
+curve and not finitely many points, and on `V(G)` minus `V(Q)` every tested point, of orbit rank 13 or 16,
+carries a line of them. The net of `A5-437` met the quartic at its few points of small height and saw the polar
+line only where it is a line of the net.
+
+`hypothesis` (`A5-443`, open): at every nullity-4 point of `V(Q)` minus `V(G)` the quartic contains no line, and
+`dim L = 2` at every real point of the stratum. `hypothesis` (`A5-444`, open): on `V(G)` minus `V(Q)` the higher
+zero divisors of `K` are exactly the polar line, and `dim L > 2` exactly where `P = l_z` and the conjugate plane
+is orthogonal to the common kernel of `M` on `l_z`; at the grid points the record tests one vector off the line. `hypothesis`
+(`A5-445`, open): the points where the singular scheme of the quartic is longer than 3 form a proper closed
+subset on which the quartic stays irreducible and free of lines; the record holds no type for those singular
+points.
 
 `hypothesis` (`A5-433`, open): on `V(G)` minus `V(Q)` every real point of orbit rank 13 has `dim L` of 6 or 12
 (139 grid points with the orbit rank modulo 32029, 29 fixtures); on `V(Q)` minus `V(G)` every real point has `dim L = 2` (2,096 grid points, 12
@@ -337,5 +386,7 @@ each stratum outside a proper closed subset.
 
 The record gives no equations of degree 3 or more, no generators of the image ideal, no transition functions and
 no bundle class. Each ledger row names its falsifier.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py --check` (modulo 32029 and exact over Q(i) at the fixtures; 71 CPU seconds and 84 MiB on two workers, 49 seconds of wall time, same versions and host as the next replay).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py --check` (exact modulo 32029 and over Q(i); 411 CPU seconds and 1.2 GiB on two workers under an 8 GiB memory scope, 6 minutes 13 seconds of wall time; 706 CPU seconds on a loaded host, Python 3.14.9, python-flint 0.9.0, sympy 1.14.0, on the build host).
