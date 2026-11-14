@@ -1315,9 +1315,32 @@ def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], p
     }
 
 
+# Each ascella_predecessor job whose builder and analyzer are a successor pair, with the sources its manifest binds
+# in preregistered.current_case_sources and its token-capacity rule (a queue slot admits it while the chip reads
+# running). The platform-bound acquisition pair names one job per platform
+# (scripts/ascella_predecessor_acquisition_case.py).
+_ACQUISITION_PAIR = (
+    "scripts/ascella_predecessor_acquisition_case.py",
+    "scripts/ascella_predecessor_acquisition_analysis.py",
+    "scripts/ascella_predecessor_case_v2.py",
+    "scripts/ascella_predecessor_current_analysis.py",
+    "scripts/ascella_predecessor_simulator.py",
+    "scripts/billing_rule_v2.py",
+    "gororoba_quantum/rebound.py",
+)
+CURRENT_CASE_SOURCES: dict[str, tuple[str, ...]] = {
+    "current-schema": (
+        "scripts/ascella_predecessor_current_case.py",
+        "scripts/ascella_predecessor_current_analysis.py",
+    ),
+    "qpu-ascella-billing-rule": _ACQUISITION_PAIR,
+    "sim-ascella-billing-rule": _ACQUISITION_PAIR,
+}
+
+
 def require_token_capacity(manifest: dict[str, Any], counters: dict[str, Any]) -> None:
     """Admit the current case when the token has a queue slot; preserve older case policies."""
-    if manifest.get("family") != "ascella_predecessor" or manifest.get("job") != "current-schema":
+    if manifest.get("family") != "ascella_predecessor" or manifest.get("job") not in CURRENT_CASE_SOURCES:
         if counters["num_concurrent_jobs"] or counters["num_jobs_in_queue"]:
             raise PlatformError(f"the token has a running or queued job: {counters}")
         return
@@ -1555,12 +1578,12 @@ def acquisition_sources(manifest: dict[str, Any]) -> dict[str, str]:
     if not isinstance(registered, dict):
         raise PlatformError("reviewed acquisition preregistration must be an object")
     additional = registered.get("current_case_sources")
-    if manifest.get("job") == "current-schema":
-        names = {"scripts/ascella_predecessor_current_case.py", "scripts/ascella_predecessor_current_analysis.py"}
+    if manifest.get("job") in CURRENT_CASE_SOURCES:
+        names = set(CURRENT_CASE_SOURCES[manifest["job"]])
         if not isinstance(additional, dict) or set(additional) != names:
             raise PlatformError("the current case requires its builder and analyzer identities")
     elif additional is not None:
-        raise PlatformError("current case sources require the current-schema job")
+        raise PlatformError("current case sources require a current-case job")
     combined = {**expected, **(additional or {})}
     for name, checksum in combined.items():
         if not isinstance(name, str) or not isinstance(checksum, str):

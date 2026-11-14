@@ -55,7 +55,11 @@ Every successor job manifest therefore carries `acquisition_admission: awaiting-
 `docs/evidence`, where a successor tree would claim a retained draw or replace a pinned record. A new acquisition of
 either family takes a successor builder together with a successor analyzer, as
 `scripts/ascella_predecessor_current_case.py` ships with `scripts/ascella_predecessor_current_analysis.py`;
-[issue 780](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/780) holds that work.
+[issue 780](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/780) holds that work. The
+Ascella target-slot pair is `scripts/ascella_predecessor_acquisition_case.py` with
+`scripts/ascella_predecessor_acquisition_analysis.py`; the shipped current-schema pair carries the superseded
+`credit_basis` and keeps its bytes. [The rehearsal plan](../../design/quandela-successor-acquisition-rehearsal.md)
+holds the simulator commands, seconds and credits of each pair.
 
 Three pinned documents carry the same rule in prose and have full successors:
 [`hypercomplex-operator-cases-v2.md`](../../runbooks/hypercomplex-operator-cases-v2.md),

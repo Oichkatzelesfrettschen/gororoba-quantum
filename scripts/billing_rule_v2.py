@@ -50,6 +50,8 @@ def supersede(record: dict[str, Any], path: tuple[str, ...], old: str, new: str)
 # this value until a successor analyzer admits it, as ascella_predecessor_current_analysis.py admits the
 # current-schema request.
 ADMISSION = "awaiting-analyzer"
+# The value of a manifest whose successor analyzer admits it; qd_platform.submit reads an absent key the same way.
+READY = "ready"
 # draw_claims scans results/quandela for manifests that name a draw, and docs/evidence holds the retained records the
 # originals' --check compares, so a successor tree written under either would claim a retained draw or replace a
 # pinned record.
@@ -63,6 +65,15 @@ def admit_none(manifest: dict[str, Any]) -> None:
             f"the original manifest already sets acquisition_admission {manifest['acquisition_admission']!r}"
         )
     manifest["acquisition_admission"] = ADMISSION
+
+
+def admit_ready(manifest: dict[str, Any]) -> None:
+    """Replace ADMISSION with READY in the manifest of a successor builder paired with its own analyzer.
+
+    A builder obtains the manifest from a `_v2` record derivation, which carries ADMISSION; the replacement refuses
+    a manifest that carries any other value, so a derivation that changes its admission cannot pass unreviewed.
+    """
+    supersede(manifest, ("acquisition_admission",), ADMISSION, READY)
 
 
 def outside_records(root: Path, directory: Path) -> Path:
