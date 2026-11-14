@@ -9,8 +9,11 @@ and the embedded prime A = K : R (A5-451, A5-454).
 A polynomial map phi from the affine space of (pa, pb, pl, pz, pm) to the slice sends the origin to the origin and
 satisfies every generator of the germ ideal J, so it induces a ring map from O to the local ring of that affine
 space at its origin. A weight vector w on the five parameters gives the order function v_w(x) = (lowest w-weight of
-a term of phi^* x). It is additive on products, at least the minimum on sums, and zero on units. With
-nu = min_a v_w(G_a) and e = min_k v_w(s_k), every element of m I^d has order at least d nu + e. The initial forms
+a term of phi^* x, and +infinity for phi^* x = 0). The weights are nonnegative, so the order is additive on products
+and at least the minimum on sums. With nu = min_a v_w(G_a) and e = min_k v_w(s_k), every weight vector here has
+e >= 1, also the one with a zero entry: a unit of O then keeps its nonzero constant term as its part of weight 0
+and has order zero, so v_w extends to fractions with unit denominators, and every element of m I^d has order at
+least d nu + e. The initial forms
 V_a (the part of phi^* G_a of weight nu) define the limit ideal Q_w = ker(y_a -> V_a), a homogeneous prime.
 
 Two consequences hold for every w with e >= 1. A form F of L has v_w(F(G)) > deg(F) nu, so F(V) = 0: L lies in Q_w.
@@ -20,13 +23,16 @@ The producer regenerates the relations at both basepoints and checks over Q(i) i
 vectors: Q_w = P5 for (1, 1, 2, 1, 2), Q_w = P4 for (1, 1, 1, 1, 0), and Q_w = A for (2, 2, 1, 2, 1), where nu = 4,
 e = 2 and each of the five nilpotent linear forms has order 5. Each equality Q_w = P is read from two facts: the
 generators of the prime P vanish on V, and the Jacobian matrix of V has rank dim P at a rational point, so the
-closure of the image of V is an irreducible subvariety of V(P) of the same dimension. Two controls run: equal
+closure of the image of V is an irreducible subvariety of V(P) of the same dimension (characteristic 0: the
+dimension of the closure of the image of a polynomial map is the generic rank of its Jacobian matrix, and the rank
+at one point bounds it from below; P is prime, contained in Q_w, and dim S/Q_w >= dim S/P). Two controls run: equal
 weights (1, 1, 1, 1, 1) give e = 1 and no order strictly between nu and nu + e, and the parametrization of the other
 basepoint leaves generators of J nonzero.
 
 Deduction recorded in the ledger: L lies in P5 /\\ P4 = R, so L / K is a submodule of the torsion-free module R / K
-of rank 1 over S / A (A5-454); a nonzero submodule would give c outside A with c * y6 in L, and the third order
-function forces every such c into A. Hence L = K.
+of rank 1 over S / A (A5-454). The class of y6 in R / K is nonzero, since K is generated in degree 2. A nonzero
+class of L / K and the class of y6 are dependent over S / A with both coefficients nonzero, which gives c outside A
+with c * y6 in L, and the third order function forces every such c into A. Hence L = K.
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py [--check]
 """
@@ -87,6 +93,13 @@ ORDER_FUNCTIONS: dict[str, tuple[tuple[int, ...], str, str]] = {
     "prime5": ((1, 1, 2, 1, 2), "P5", "P4"),
     "prime4": ((1, 1, 1, 1, 0), "P4", "A"),
     "embedded": ((2, 2, 1, 2, 1), "A", "P4"),
+}
+# The five nilpotent linear forms (A5-451), as Singular prints them: four generators and one form with coefficients in
+# Q(i), conjugate at the two basepoints. The checker compares them as a set, since the count alone would accept
+# five copies of one form.
+LINEAR_FORMS: dict[str, tuple[str, ...]] = {
+    "N-": ("2*y(12)+(i)*y(13)+(i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),
+    "N+": ("2*y(12)+(-i)*y(13)+(-i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),
 }
 EQUAL_WEIGHTS = (1, 1, 1, 1, 1)
 RANK_POINT = (2, 3, 5, 7, 11)
@@ -293,6 +306,8 @@ def problems(record: dict[str, Any]) -> list[str]:
             found.append(f"{orbit}: parametrization differs from the one of the producer")
         if len(cell.get("linear_forms", [])) != cell.get("radical_linear_forms"):
             found.append(f"{orbit}: the linear forms listed differ in number from the count")
+        if sorted(cell.get("linear_forms", [])) != sorted(LINEAR_FORMS[orbit]):
+            found.append(f"{orbit}: the linear forms differ from the five nilpotent forms")
         functions = cell.get("order_functions")
         if not isinstance(functions, dict) or set(functions) != set(ORDER_FUNCTIONS):
             found.append(f"{orbit}: the order functions are not the three of the producer")

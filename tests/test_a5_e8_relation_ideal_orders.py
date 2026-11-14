@@ -132,6 +132,11 @@ MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
         _set_function("N-", "embedded", "nilpotent_orders", [5, 5, 5, 5]),
         "embedded nilpotent_orders",
     ),
+    "five copies of one form": (_set("N-", "linear_forms", ["y(1)"] * 5), "differ from the five"),
+    "a nilpotent form replaced": (
+        _set("N+", "linear_forms", ["2*y(12)+(-i)*y(13)+(-i)*y(17)", "y(7)", "y(8)", "y(5)", "y(3)"]),
+        "differ from the five",
+    ),
     "maximal ideal of order 1": (
         _set_function("N-", "embedded", "maximal_ideal_order", 1),
         "embedded maximal_ideal_order",

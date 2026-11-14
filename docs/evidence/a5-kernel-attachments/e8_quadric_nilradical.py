@@ -59,6 +59,13 @@ EXPECTED: dict[str, Any] = {
     "nilradical_module_hilbert_function_is_that_of_annihilator_quotient": True,
     "primary_components": [[4, 2, 4, False], [4, 4, 4, True], [5, 11, 11, True]],
 }
+# The five linear forms of the radical, as Singular prints them: four generators and one form with coefficients in
+# Q(i), conjugate at the two basepoints. The checker compares them as a set, since the count alone would accept
+# five copies of one form.
+LINEAR_FORMS: dict[str, tuple[str, ...]] = {
+    "N-": ("2*y(12)+(i)*y(13)+(i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),
+    "N+": ("2*y(12)+(-i)*y(13)+(-i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"),
+}
 SCRIPT = """LIB "primdec.lib"; option(redSB);
 ideal sK=std(K); print("RESULT ideal "+string(dim(sK))+","+string(mult(sK)));
 list L=minAssGTZ(K); int k; ideal R=1; ideal component;
@@ -210,6 +217,8 @@ def problems(record: dict[str, Any]) -> list[str]:
                 found.append(f"{cell['orbit']}: {key} differs from {expected}")
         if len(cell.get("linear_forms", [])) != cell.get("radical_linear_forms"):
             found.append(f"{cell['orbit']}: the linear forms listed differ in number from the count")
+        if sorted(cell.get("linear_forms", [])) != sorted(LINEAR_FORMS[cell["orbit"]]):
+            found.append(f"{cell['orbit']}: the linear forms differ from the five of the radical")
         found += _hilbert_problems(cell)
     if record.get("pass") is not (found == []):
         found.append("the pass flag differs from the verdict")

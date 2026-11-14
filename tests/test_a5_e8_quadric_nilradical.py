@@ -119,6 +119,11 @@ def _altered_numerator(name: str, position: int) -> dict[str, list[int]]:
 MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "four linear forms": (_set("N-", "radical_linear_forms", 4), "radical_linear_forms"),
     "a linear form dropped": (_set("N+", "linear_forms", ["y(3)"]), "differ in number"),
+    "five copies of one form": (_set("N-", "linear_forms", ["y(1)"] * 5), "differ from the five"),
+    "the form of the other basepoint": (
+        _set("N+", "linear_forms", ["2*y(12)+(i)*y(13)+(i)*y(17)", "y(7)", "y(6)", "y(5)", "y(3)"]),
+        "differ from the five",
+    ),
     "radical larger": (_set("N-", "radical_is_ideal_plus_linear_forms", False), "radical_is_ideal_plus"),
     "square not zero": (_set("N+", "radical_square_in_ideal", False), "radical_square_in_ideal"),
     "annihilator changed": (_set("N-", "annihilator", [5, 2]), "annihilator differs"),

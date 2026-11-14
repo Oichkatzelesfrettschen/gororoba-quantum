@@ -1153,8 +1153,8 @@ The seven producers are `real_limit_sets.py`, `partner_purity.py`, `holomorphic_
 `kernel_equivariance.py`, `nullity8_fiber_import.py`, `nullity16_rees_fibers.py` and
 `../a5-strata-regularity/strata_regularity.py`. The audit does not cover the identification of each computed
 fiber with the fiber of the Zariski closure of the graph, which each fiber row carries, or the slice premise of
-`A5-423`. With the closure theorem read, rows `A5-411`, `A5-412` and `A5-417` hold as proved; `A5-418` stays open
-for E8-bar. A producer of the five rows that evaluates a right annihilator, a step that takes positivity from
+`A5-423`. With the closure theorem read, rows `A5-411`, `A5-412` and `A5-417` hold as proved, with a real arc read as a
+continuous semialgebraic path; `A5-418` survives under the conditions its row states. A producer of the five rows that evaluates a right annihilator, a step that takes positivity from
 `z^T z` or from an independent conjugate variable, or a retained point at which `conjugate(z)^T z` differs from
 the squared Euclidean norm falsifies the audit (`A5-452`).
 
