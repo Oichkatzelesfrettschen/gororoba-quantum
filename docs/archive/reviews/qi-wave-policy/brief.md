@@ -1,15 +1,15 @@
 # Brief: hardware wave policy in qi_platform and the in-batch bracketed twin case (PR 881 head 088021c80)
 
-Read first: /home/eirikr/Projects/gororoba-workspace/AGENTS.md, then
-/home/eirikr/Projects/gororoba-workspace/gororoba-quantum/AGENTS.md and its ci/AGENTS.md. Work read-only: change no file
+Read first: the workspace AGENTS.md, then
+gororoba-quantum/AGENTS.md and its ci/AGENTS.md. Work read-only: change no file
 except by printing your report; never commit, push, stash, submit to a provider or start a cloud resource, and read no
 token or key file; spawn no subagents. You may run git, and the pinned interpreter
-`/home/eirikr/.cache/gororoba-quantum/ci-py3.14.7/bin/python3` with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`;
+`the CI-pinned interpreter` with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`;
 keep each computation under 10 minutes, in a scratch directory outside every repository (for example under
-`/tmp/review-wave-policy`; do not write inside the worktree). A random sample takes its seed from
+`a scratch directory`; do not write inside the worktree). A random sample takes its seed from
 `docs/evidence/anu_qrng/draw-2026-11-14T183922Z.json` values at indices 900 to 910; name the indices you use.
 
-Material: worktree `/home/eirikr/worktrees/gororoba-quantum/qi-one-cz-null-twin-rule-v2`, branch
+Material: worktree `the session worktree`, branch
 `qi-one-cz-null-twin-rule-v2`, commits `d80d0ba46..088021c80` (`git log --oneline faf9a05a7..088021c80`,
 `git diff faf9a05a7..088021c80 -- scripts tests docs ci`; generated case directories under
 `results/quantum_inspire/cases/pathion_one_cz_null_bracketed_*` are outputs of

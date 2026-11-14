@@ -6,7 +6,7 @@ Verdict: the policy table and bracket arithmetic are sound, but the wave safety,
 
 1. **FATAL to the claimed wave contract — queue and pause admission is a non-atomic snapshot.** `[proved/computed]`
 
-   [hardware_pause_state](/home/eirikr/worktrees/gororoba-quantum/qi-one-cz-null-twin-rule-v2/scripts/qi_platform.py:778) counts in-flight batches only through nonterminal rows returned by `/jobs`; a non-`planned` batch with no returned job is absent from the count. The probe produced:
+   `scripts/qi_platform.py:778` counts in-flight batches only through nonterminal rows returned by `/jobs`; a non-`planned` batch with no returned job is absent from the count. The probe produced:
 
    ```text
    three-visible REFUSE ... 3 batches in flight
@@ -27,7 +27,7 @@ Verdict: the policy table and bracket arithmetic are sound, but the wave safety,
 
 2. **SERIOUS — sequential enqueue does not prove platform execution order.** `[proved]`
 
-   `hardware_admission` asserts that submission order keeps queue order (`qi_platform.py:839-843`), and [CASE.md:38](/home/eirikr/worktrees/gororoba-quantum/qi-one-cz-null-twin-rule-v2/results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md:38) relies on it for mirror cancellation.
+   `hardware_admission` asserts that submission order keeps queue order (`qi_platform.py:839-843`), and `results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md:38` relies on it for mirror cancellation.
 
    The provider terms expressly allow priority “without regard to the order of the queue” (`docs/notes/quantum_inspire/usage.md:195-197,212`). `_submit` knows one batch only and carries no wave ordinal into service scheduling.
 
@@ -35,7 +35,7 @@ Verdict: the policy table and bracket arithmetic are sound, but the wave safety,
 
 3. **SERIOUS — the supplied commands incur 18 pauses, not 6.** `[proved]`
 
-   [qi_pathion_one_cz_null_submit.sh:2](/home/eirikr/worktrees/gororoba-quantum/qi-one-cz-null-twin-rule-v2/scripts/qi_pathion_one_cz_null_submit.sh:2) submits, collects, and sanity-checks each batch before submitting the next (`:33-60`). It explicitly keeps at most one batch queued (`:9-10`).
+   `scripts/qi_pathion_one_cz_null_submit.sh:2` submits, collects, and sanity-checks each batch before submitting the next (`:33-60`). It explicitly keeps at most one batch queued (`:9-10`).
 
    CASE.md acknowledges that concurrent wave submission is an unwritten separate procedure (`:46-47`) but budgets six pauses at `:137-138` and invokes the serial wrapper at `:255-279`.
 
