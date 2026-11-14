@@ -223,21 +223,29 @@ def build() -> dict[str, Any]:
     return record
 
 
+def check_problems(record: dict[str, Any]) -> list[str]:
+    """Everything `--check` tests: the claim, the weight-slice record and the digests of the inputs."""
+    found = problems(record) + slice_problems(record)
+    inputs = record.get("inputs")
+    for name in INPUTS:
+        if not isinstance(inputs, dict) or inputs.get(name) != _digest(HERE / name):
+            found.append(f"input digest of {name} differs")
+    if record.get("weight_slice_record_sha256") != _digest(WEIGHT_SLICE):
+        found.append("digest of the weight-slice record differs")
+    return found
+
+
 def main() -> None:
     if "--check" in sys.argv[1:]:
-        record = json.loads(RECORD.read_text(encoding="utf-8"))
-        found = problems(record) + slice_problems(record)
-        for name in INPUTS:
-            if record["inputs"].get(name) != _digest(HERE / name):
-                found.append(f"input digest of {name} differs")
-        if record.get("weight_slice_record_sha256") != _digest(WEIGHT_SLICE):
-            found.append("digest of the weight-slice record differs")
+        found = check_problems(json.loads(RECORD.read_text(encoding="utf-8")))
         if found:
             raise SystemExit("\n".join(found))
         print("weight-slice-relation-membership-result.json: pass")
         return
     record = build()
     found = problems(record) + slice_problems(record)
+    # The saved flag is the verdict of every check the writer runs, so a rejected rebuild never stores a pass.
+    record["pass"] = found == []
     RECORD.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps({"pass": record["pass"], "problems": found}, indent=1))
     if found:

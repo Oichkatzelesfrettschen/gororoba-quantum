@@ -127,6 +127,13 @@ def test_the_slice_comparison_rejects_other_relations_counts_and_bounds() -> Non
             raise AssertionError((fragment, found))
 
 
+def test_the_full_validator_reports_a_changed_input_digest() -> None:
+    record = copy.deepcopy(_record())
+    record["inputs"]["weight_slice_fiber_relations.py"] = "0" * 64
+    found = membership.check_problems(record)
+    _same(found, ["input digest of weight_slice_fiber_relations.py differs"])
+
+
 @pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()

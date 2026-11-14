@@ -41,14 +41,19 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import weight_slice_fiber_relations as ws  # noqa: E402
+import weight_slice_relation_membership as membership_producer  # noqa: E402
 
 import parallel  # noqa: E402
 
 RECORD = HERE / "iso-w8-relation-ideal-orders-result.json"
 SCHEMA = "gororoba.a5.iso-w8-relation-ideal-orders/1"
-INPUTS = ("iso_w8_relation_ideal_orders.py", "weight_slice_fiber_relations.py")
+INPUTS = (
+    "iso_w8_relation_ideal_orders.py",
+    "weight_slice_fiber_relations.py",
+    "weight_slice_relation_membership.py",
+)
 WEIGHT_SLICE = HERE / "weight-slice-fiber-relations-result.json"
-# The record that certifies K inside L and (G) = (Pfaffians) for the same relation digests (A5-459).
+# The record that certifies K inside L and (G) = (Pfaffians) for the same relation digests (A5-474).
 MEMBERSHIP = HERE / "weight-slice-relation-membership-result.json"
 CELLS: tuple[tuple[str, str], ...] = tuple((orbit, source) for orbit in ("N-", "N+") for source in ("iso", "w8"))
 GENERATORS = {"iso": 17, "w8": 24}
@@ -350,7 +355,9 @@ def slice_problems(record: dict[str, Any]) -> list[str]:
     }
     membership = json.loads(MEMBERSHIP.read_text(encoding="utf-8"))
     certified = {(cell["orbit"], cell["source"]): cell["relations_sha256"] for cell in membership.get("cells", [])}
-    found = [] if membership.get("pass") is True else ["the membership record does not pass"]
+    found = [f"membership record: {problem}" for problem in membership_producer.check_problems(membership)]
+    if membership.get("pass") is not True:
+        found.append("the membership record does not pass")
     for cell in record.get("cells", []):
         key = (cell["orbit"], cell["source"])
         if cell.get("relations_sha256") != retained.get(key):
@@ -393,6 +400,8 @@ def main() -> None:
         return
     record = build()
     found = problems(record) + slice_problems(record)
+    # The saved flag is the verdict of every check the writer runs, so a failed prerequisite never stores a pass.
+    record["pass"] = found == []
     RECORD.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps({"pass": record["pass"], "problems": found}, indent=1))
     if found:

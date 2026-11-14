@@ -2,11 +2,12 @@
  "schema": "gororoba.a5.iso-w8-relation-ideal-orders/1",
  "field": "Q(i)",
  "inputs": {
-  "iso_w8_relation_ideal_orders.py": "4b9c543f5c6d75f4cfd9ec718cc5a5a5c3400b2d9c5f39dc27db3fc8e52667c7",
-  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
+  "iso_w8_relation_ideal_orders.py": "017b12ef41196fa67d751d7665995cbbef45b7960a6efd6c36ff63748fe9c218",
+  "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e",
+  "weight_slice_relation_membership.py": "9c7a49ec6e1f5503b9aeb8aab75c49153509fb8f2dd1b50ab4908c3ef4637153"
  },
  "weight_slice_record_sha256": "686a02ccf2ced4c51ece694ec2a31756604409ec7b154169b9ae371550e0520d",
- "membership_record_sha256": "88b38ea534c2ad479c94ac9e5cf79b7b5d8a48b1069fb219f19f02e4d35cad12",
+ "membership_record_sha256": "da8d49dcf98e7782c921dabe078097fe24beb61b7ece60fb1f2354cbb7c99c6c",
  "cells": [
   {
    "orbit": "N-",

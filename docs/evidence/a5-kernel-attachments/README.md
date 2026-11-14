@@ -900,7 +900,7 @@ the Galois group permutes the geometric components of the prime transitively and
 one geometric component and stays prime over C. A rerun in which a prime has no such point falsifies the record;
 check it with `"$PYTHON" docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py --check`.
 
-**Inferred (`A5-449`, with `K` inside `L` by `A5-459`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
+**Inferred (`A5-449`, with `K` inside `L` by `A5-474`):** the fiber cone of `E8bar` is not reduced. Its two minimal primes
 hold 9 and 14 linear forms in 21 generators, so at least `9 + 14 - 21 = 2` linear forms lie in both; each is
 nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`, whose degree-1 part is zero. So
 `L` is not the intersection of the two primes. The limit set of `A5-418` is the reduced support and needs
@@ -925,7 +925,7 @@ dimension 5 is too large and the minimal prime of dimension 4 has degree 4 again
 only one and equals `A`. `R / K` is therefore a torsion-free module of rank 1 over the domain `S/A`, the coordinate
 ring of a quadric threefold.
 
-**Inferred (`A5-455`, conditional on `A5-425`, with `K` inside `L` by `A5-459`):** the relation ideal `L` lies between `K` and `R`,
+**Inferred (`A5-455`, conditional on `A5-425`, with `K` inside `L` by `A5-474`):** the relation ideal `L` lies between `K` and `R`,
 and it equals `K` at both minimal primes, where `K` is already prime. `L / K` is then a submodule of the rank-1
 torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every degree exactly when the nilradical
 `R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything open about the `E8bar` fiber cone
@@ -934,7 +934,7 @@ family of arcs in the slice germ whose limit points are dense in `V(A)` and alon
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
 slice coordinates). The retained arc families fill the two prime components; `A5-457` runs the test on `V(A)` with an order function.
 
-**Computed (`A5-459`):** [`weight_slice_relation_membership.py`](weight_slice_relation_membership.py) certifies that
+**Computed (`A5-474`):** [`weight_slice_relation_membership.py`](weight_slice_relation_membership.py) certifies that
 every degree-2 relation `q` of the ten weight-slice cells satisfies `q(G)` in `J + m I^2`
 ([record](weight-slice-relation-membership-result.json)): 858 relations, 0 failures. For each relation the polynomial
 `q(G)`, formed from the unreduced products, reduces to zero modulo the standard basis of `H + T`, with
@@ -951,7 +951,7 @@ of the `n` products has rank `n` minus the number of relations in every cell (`8
 relations are independent, so they are a basis of the degree-2 forms `q` with `q(G)` in `H`; with the passage from
 the local ring to `H` of the section on the polynomial ring computation, they span the degree-2 part of `L`.
 
-**Computed (`A5-460`):** [`iso_w8_relation_ideal_orders.py`](iso_w8_relation_ideal_orders.py) applies the order-function
+**Computed (`A5-475`):** [`iso_w8_relation_ideal_orders.py`](iso_w8_relation_ideal_orders.py) applies the order-function
 argument of `A5-457` to `Iso` and `W8` at both basepoints ([record](iso-w8-relation-ideal-orders-result.json)). Both
 germs are quadric cones, `s5^2 + 4 s3 s6 + 4 s1 s9 = 0` for `Iso` and the same with `4 s2 s8` added for `W8` at `N-`
 (`s4, s5` and `s7, s8` exchanged at `N+`). The map sets `s1 = x`, `s3 = y`, `s5 = y b`, `s9 = y c` (`s8 = y d` for
@@ -967,7 +967,7 @@ The coordinate `t = s1 s5 / (2 s3) - s2` is what the bounded search of `A5-458` 
 coordinate, the leading parts of two pairs of generators coincide and every small weight vector gives rank at most 4
 for `Iso`. The controls give rank 4 (`Iso`, weights `(1, 1, 0, 0, 1)`) and rank 2 (`W8`, equal weights), and the
 other prime of `W8` stays nonzero on each family of initial forms. **Inferred:** `L` lies in every `Q_w`, hence in
-the intersection of the minimal primes, which is `K`; with `K` in `L` (`A5-459`), `L = K` for `Iso` and `W8` on the
+the intersection of the minimal primes, which is `K`; with `K` in `L` (`A5-474`), `L = K` for `Iso` and `W8` on the
 weight slice. `A5-446` and `A5-448` state the same fiber cones under the slice premise of `A5-423`; this route uses
 neither that premise nor the arcs of the header slice.
 
@@ -992,7 +992,7 @@ Jacobian matrix of `V` has the rank of the prime's dimension at the point `(2, 3
 weights give `e = 1` and nilpotent orders `4 = nu + e`, the map of the other basepoint leaves 12 generators of the
 germ ideal nonzero, and a second associated prime stays nonzero on each `V`. **Inferred:** `v_w` is additive on
 products and zero on units, and every element of `m I^d` has order at least `d nu + e`. A form of `L` therefore
-vanishes on `V`, so `L` lies in every `Q_w`, hence in the radical `R` of `K`; `K` lies in `L` (`A5-459`). A form `c` with `c y6` in `L` has
+vanishes on `V`, so `L` lies in every `Q_w`, hence in the radical `R` of `K`; `K` lies in `L` (`A5-474`). A form `c` with `c y6` in `L` has
 order at least `deg(c) nu + 1` under the third weight vector, so it vanishes on `V` and lies in `A`. A nonzero
 class of `L / K` and the class of `y6` in the rank-1 torsion-free module `R / K` (`A5-454`) would satisfy a
 relation with both coefficients nonzero in `S / A`, which gives such a `c` outside `A`. Hence `L = K`: the `E8bar`

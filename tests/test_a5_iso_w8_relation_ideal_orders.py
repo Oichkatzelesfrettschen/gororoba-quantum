@@ -197,6 +197,20 @@ def test_the_slice_comparison_rejects_other_relations() -> None:
     )
 
 
+def test_a_membership_record_with_a_failure_is_rejected_whatever_its_pass_flag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The orders record takes K inside L from the membership record, so it runs that record's own validator."""
+    membership = json.loads(orders.MEMBERSHIP.read_text(encoding="utf-8"))
+    membership["cells"][0]["membership_failures"] = 1
+    forged = tmp_path / "membership.json"
+    forged.write_text(json.dumps(membership), encoding="utf-8")
+    monkeypatch.setattr(orders, "MEMBERSHIP", forged)
+    found = orders.slice_problems(_record())
+    if not any("membership record:" in problem and "membership_failures" in problem for problem in found):
+        raise AssertionError(found)
+
+
 @pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
