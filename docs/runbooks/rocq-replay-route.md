@@ -11,7 +11,7 @@ names those READMEs carry; each affected row of [the documentation map](../READM
 
 | Name in a retained README or record | Current route (paths in gororoba-math) |
 | --- | --- |
-| `scripts/rocq_kaggle_replay.py`, with `--only NAME` | `ci/replay_quantum_bundles.sh [--ledgers-only] [NAME...]`; a NAME is a directory of `docs/evidence/` that holds a `replay_rocq.sh`, or `TargetFlipN21` |
+| `scripts/rocq_kaggle_replay.py`, with `--only NAME` | `ci/replay_quantum_bundles.sh [--ledgers-only] [NAME...]`; a NAME is a directory of `docs/evidence/` that holds a `replay_rocq.sh`, or `TargetFlipN21`, which only a full replay accepts |
 | `ci/rocq_toolchain.pin`, the opam switch of the replay | `ci/install_rocq.sh` builds the opam switch `rocq-9.3` (OCaml 5.5.1, rocq-core 9.3.0, rocq-stdlib 9.2.0); `rocq/open/opam/qualified-rocq-9.3.export` records the package set |
 | the `proofs.yml` job `rocq` and the nightly Rocq job | no workflow here; the replay runs on demand, outside every admission gate, and `ci/check_rocq.sh` of gororoba-math compiles and kernel-checks `rocq/quantum` on its own pull requests |
 | `scripts/stiefel_witness_certificate.py`, gate `core-275` | `ci/quantum-sources/stiefel_witness_certificate.py`, run with `--check` by `ci/check_quantum_sources.sh` |
@@ -33,10 +33,15 @@ GOROROBA_QUANTUM=PATH opam exec --switch=rocq-9.3 -- sh ci/replay_quantum_bundle
 ```
 
 `--ledgers-only` compares each `*.sha256` row that reads `proofs/NAME.v` with `rocq/quantum/NAME.v` and needs
-no Rocq. Without it the script runs each bundle's `replay_rocq.sh` unchanged from a shadow root that holds a
+no Rocq; it skips one row by name and digest (the `CdSignSourceCertificate.v` row of
+`cd-sign-python-translation/source_hashes.sha256`, a stale manifest whose closure ledgers hold the current
+digest) and refuses `TargetFlipN21`, which has no ledger. Without it the script runs each bundle's `replay_rocq.sh` unchanged from a shadow root that holds a
 copy of the bundle and of `rocq/quantum` as `proofs/`. A bundle whose script reads `GOROROBA_ROOT` (the
 gororoba-open sources) needs that variable set. `ci/check_quantum_sources.sh` needs python-flint under
-`PYTHON`. Both runs write only under a temporary directory.
+`PYTHON`, and it reports its package cross-check of the Stiefel record as skipped when the Python package
+`hypercomplex` is not importable. Both runs write under a temporary directory they remove. The shadow root of a
+full replay holds symbolic links to entries of this checkout, which cannot be read-only, so the replay relies on
+each retained script writing only to its own temporary directories.
 
 ## What stays in this repository
 
@@ -48,5 +53,8 @@ gororoba-open sources) needs that variable set. `ci/check_quantum_sources.sh` ne
   sources that retained ledgers and `docs/state/research_state.json` cite, each against its recorded sha256.
 - The `sha256sum -c` ledgers of the bundles (`sources-*` gates of `ci/gates.json`) check bundle bytes and
   fail on a difference; they re-derive nothing.
-- A claim of `docs/state/research_state.json` for a gororoba-math source cites its pinned evidence, which
-  `scripts/research_state.py --check` verifies. It names no replay or freshness gate of this repository.
+- A claim of `docs/state/research_state.json` for a gororoba-math source cites its pinned evidence.
+  `scripts/research_state.py --check` verifies those digests only when `GOROROBA_MATH` names a checkout
+  (`ci/fetch_gororoba_math.sh` fetches the pin); without it the `gororoba-math:` references stay unchecked and
+  the gates that declare `requires: ["gororoba-math"]` skip (`scripts/plan_records.py`, `deferred`). The claim
+  names no replay or freshness gate of this repository.
