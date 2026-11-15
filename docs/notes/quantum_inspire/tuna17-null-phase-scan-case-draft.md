@@ -29,8 +29,12 @@ acts on q8's side of coupler 8-12, where the two worlds differ most.
 ## Circuits
 
 Every circuit is the retained b0 text with each `X90` as `Rx(pi/2)` (the center arm `b0-rx` of the predecessor),
-rewritten on one qubit. Angles are multiples of pi/36, the processor's angle grid. `Rz` is virtual and takes no
-time, so the schedule, the pulse count and the CZ count of the `z12` and `z8` arms equal the center's. Seven
+rewritten on one qubit. Angles are multiples of pi/36, the processor's angle grid. The pulse count and the CZ count
+of the `z12` and `z8c` arms equal the center's. Their schedule is unverified: the provider lists `Rz` as a native
+operation and gives native single-qubit gates 20 ns under as-late-as-possible scheduling
+([operational specifics](site/kbase_tuna-operational-specifics.md)), so the five `Rz` of a `z12` arm may add
+100 ns on q12 and the four of a `z8c` arm 80 ns on q8, and no compile of these circuits has run. The minus and
+plus arm of a pair hold the same `Rz` count; an arm and its center do not. Seven
 distinct circuits:
 
 - `b0-rx`: the center, in every data batch.
@@ -55,7 +59,7 @@ comparison.
 
 ## Predictions
 
-Mean selector contrast, with `d2_split` in parentheses, in the forward model at the retained mean bracket and
+Mean selector contrast, with `d2_split` in parentheses for the center, `z12` and `z8c` rows, in the forward model at the retained mean bracket and
 visibility 0.42 (`docs/evidence/qi-null-rotation-scan-line-phase/followup_predictions.py`). The standard error of
 one contrast at 131,072 shots is 0.0028 and of one `d2_split` 0.0056.
 
@@ -103,7 +107,8 @@ q4 arms by a reference-free amplitude.
 5. Line phase. The line's frequency and phase come from q4's bit on the odd-indexed shots of each job and the
    contrast is folded on the even-indexed shots (`line_phase_split.py`). Per arm, the first harmonic projected on
    the center's phase, with its error taken over jobs (the spread of the per-job projections) and an exact
-   sign-flip p-value over the arm's jobs beside the shot-noise error. Labels: `line_on_q12_phase` (the two `z12`
+   sign-flip p-value over the arm's jobs beside the shot-noise error; over four jobs that p-value is at least
+   2/16 = 0.125, so it supports no label by itself. Labels: `line_on_q12_phase` (the two `z12`
    values follow 0.84 A (phi0 + phi) with the A and phi0 of rule 3 within 3 job-level standard errors each, the +20
    degree arm reversed), `line_elsewhere` (both within 3 of the center's value), `line_unresolved`.
 6. q4. The mean contrast less its batch center at +5 and +20 degrees with the retained values at -10, 0 and +10
@@ -124,8 +129,10 @@ every other outcome reports the numbers.
   32,768), every job at or under 131,072 shots and about 80 s against the 300 s limit.
 - QX twin: the seven distinct circuits at 2,048 shots in 3 batches, 7 jobs, 14,336 shots. Both together: 20
   batches, 49 jobs, 3,749,888 shots.
-- Expected time: about 35 minutes of execution and 16 pauses, under one hour at the 30 s pause step; the
-  predecessor's 21 batches took 66 minutes.
+- Expected time: 35 to 45 minutes of execution (0.53 to 0.70 ms per shot) and 16 pauses. The wall-time ceiling
+  takes the top pause step, 120 s ([usage.md](usage.md), "Pause escalation"): 32 minutes of pauses, 67 to 77
+  minutes in all; at the 30 s step 43 to 53 minutes. The predecessor's 21 batches took 66 minutes. The execution
+  seconds of the QX twin are not estimated.
 - Queue rule: one batch of at most 3 circuits queued at a time, each collected before the next
   ([usage.md](usage.md), "Queue rules: the FAQ governs").
 - Credits: expected 0, read from a fresh usage snapshot before the submission.
@@ -146,11 +153,34 @@ every other outcome reports the numbers.
   has no signed harmonic, and its parity amplitude is reported in its place.
 - The source of the line is unmeasured; rule 5 reads only whether its effect scales with the injected phase.
 
+## Open defects of the rules
+
+- An added `Rz` may change the timing of its qubit (see "Circuits"), so an arm-against-center difference mixes
+  the injected phase with up to 100 ns of instruction time. The successor compiles every circuit, records the
+  schedule, and either matches it across arms or states the difference.
+- Rule 2 is no function of its inputs. With the bound 32.91, chi-squares (exact, q12, coupler) = (10, 5, 20)
+  meet both `exact_parabola` and `phase_unresolved`, and (40, 20, 35) meet no label. The bound is uncalibrated
+  for the minimum over noise models; the predecessor's rule removes one more degree of freedom
+  (`adequacy_limit`, 11 here).
+- Rule 2 fits one parameter per batch and holds no test that one world persists across batches, so batches of
+  different worlds can sum to a label.
+- The retained contrasts and `d2_split` reject both phase worlds by wide margins (187 and 205; 211 and 427), so
+  `none_adequate` is the likely label unless the model widens, and its rate is not computed.
+- Rule 5 names "the A and phi0 of rule 3", which rule 3 does not define, and gives no label for a `z12` job whose
+  q4 bit carries no line.
+- Rule 6 holds no label and no threshold: a band maximum above the off-line maxima is an observed maximum with
+  no stated coverage.
+- A q12 phase before every pulse, after every pulse, or before all but the first pulse gives the same laws, so a
+  `q12_phase` label names that class and no single placement.
+
 ## Not built
 
 - The generator (a successor of `scripts/qi_pathion_null_rotation_scan_cases.py` with the `z12` and `z8c` arms and the q4
   steps), its tests, `cases.json`, the batch directories and their `--check`.
 - `prediction.json` with the operating characteristics of rules 2 and 5 under the three worlds and under gate
   noise, and a shot-level simulation of the line-phase statistic.
-- The QX twin and its control analysis.
-- The written case under `results/quantum_inspire/cases/`, its local review and the owner's approval.
+- A toolchain compile of every circuit (`scripts/qi_toolchain_check.py`) with the schedule read from it.
+- The `--sanity` and `--analyze` paths and the replay gate of the retained analysis.
+- The written case under `results/quantum_inspire/cases/`, its local review and the owner's approval, which
+  precedes every provider job, the emulator included.
+- After that approval: the QX twin and its control analysis, then the Tuna-17 series.
