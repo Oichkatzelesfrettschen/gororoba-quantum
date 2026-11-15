@@ -1033,22 +1033,49 @@ but the origin, so that component is not a cone. Its tangent cone, computed in a
 to the normal cone, has multiplicity 4 at the isolated singular point, 2 at a point of the singular line and 1 at a
 point of the meeting plane.
 
-**Refuted (`A5-510`) and restated (`A5-512`, open):** the five-parameter map of `A5-457` is dominant onto the
-degree-11 component and is not birational as an affine map: its 21 initial forms are weighted homogeneous of degree 5
-for the weights `(1, 1, 2, 1, 2)`, so the fifth roots of unity act on every fiber and a general fiber holds at least
-five points. The open hypothesis is that the induced map from the weighted projective space `P(1, 1, 2, 1, 2)` is
-birational, which would make the component rational; in scratch runs the fiber over two points is one orbit of five
-reduced points at both basepoints.
+**Refuted (`A5-510`), proved (`A5-512`):** the five-parameter map of `A5-457` is dominant onto the degree-11
+component and is not birational as an affine map: its 21 initial forms are weighted homogeneous of degree 5 for the
+weights `(1, 1, 2, 1, 2)`, so the fifth roots of unity act on every fiber and a general fiber holds at least five
+points. [`e8_birational_degree.py`](e8_birational_degree.py) proves that the induced map from the weighted projective
+space `P(1, 1, 2, 1, 2)` is birational onto the component ([record](e8-birational-degree-result.json)). It holds the
+17 nonzero initial forms at each basepoint as exact `Q(i)` coefficients, extracts them from the slice to confirm the
+fixture, and checks four facts. The ten parameters of the two factors are `(p, q)`.
+
+- Each of the 17 forms is divisible by `pl`. After the change of variable `m = 4 pz^2 - pm` at `N-` or
+  `m = -(pm + 4 pz^2)` at `N+` the quotients span 12 monomials of weighted degree 3 (14 before the change) with
+  coefficient matrix of rank 12 over `Q(i)`.
+- **Inferred from that rank:** the monomials `a^3, a^2 b, a^2 z, a l, a m` fix `b/a`, `z/a`, `l/a^2` and `m/a^2`, so
+  two points with the same image and `pa * pl != 0` differ by a weighted scalar `t` with `t^5 = 1`. A fiber over such
+  a point is one orbit of five points, the affine map has degree 5, the projective map is birational onto its image,
+  and the image is the component, since it lies in the irreducible degree-11 prime of `A5-457` and has the same
+  dimension. The component is a rational fourfold.
+- The 12 monomials span a toric variety of degree 11: the normalized volume of their hull in the lattice of weighted
+  degree 3 is 11 over a triangulation of 11 unimodular simplices, which the module verifies in exact integers (every
+  interior facet lies in two simplices on opposite sides, every boundary facet supports the hull), and the edges
+  span the lattice.
+- The saturation of the ideal of the 17 differences `V_k(p) - V_k(q)` by `pa * pl * qa * ql` equals the ideal of the
+  five graphs `q = zeta p` of the fifth roots of unity (dimension 5, multiplicity 5; two components of degrees 4 and
+  1 over `Q(i)`, each dominating both factors; dimension 8 before the saturation). A mutated difference gives a
+  saturation whose variety has dimension 4 and lies strictly inside the graphs, and for the graphs of the fourth roots of unity neither
+  ideal contains the other.
+
+The fixture checks run in the pull-request lane; the Singular stage runs in the module and in the replay gate
+`core-a5-e8-birational-degree`. The scratch runs modulo 32009 at both basepoints agree and are not retained.
 
 **Method (`A5-505`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
 dense minors ran out of a 20 GB address space on the same ideal.
 
-**Hypothesis (`A5-506`, open):** scratch runs modulo 32009 at three values of the slice coordinate `s2` find 32
-minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the `2 x 2`
-minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in `y`-degree 2.
-No tracked record holds them. The test that would falsify the block route is the count of `y`-degree-2 generators
-that survive modulo the slice coordinates, which must be the 148 quadrics.
+**Refuted (`A5-506`), restated (`A5-542`, open):** scratch runs modulo 32009 at three values of the slice coordinate
+`s2` find 32 minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the
+`2 x 2` minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in
+`y`-degree 2. The row is refuted as stated modulo 32009, the field of all of these runs, since at `s2 = 0` the
+same script finds 86 generators in 24 blocks and
+generators with `tw` up to 11. No fixed `s2` reaches the 148 quadrics: `s2` lies in the maximal ideal, and the fibers
+at `s2 = 0` and `s2 = 7013` have dimension 61 and 34 in `y`-degree 2 against 83. The surviving statement is for
+generic `s2`: over the function field in `s2`, or at a value that a nonzero minor certifies as outside the
+exceptional set, the count is 32 generators in 11 blocks. The polynomial ring in `s2` is another regime: there `s2`
+lies in the maximal ideal, and the `y`-degree-2 generators modulo every slice coordinate must be the 148 quadrics. No tracked record holds these runs.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-446`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
