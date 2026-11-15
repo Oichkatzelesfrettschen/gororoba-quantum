@@ -5554,6 +5554,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_component_geometry.py --check",
+      "name": "core-a5-e8-component-geometry",
+      "seconds": 0.3,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-component-geometry-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/w8_component_models.py --check",
       "name": "core-a5-w8-component-models",
       "seconds": 1.2,
