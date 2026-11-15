@@ -1,0 +1,123 @@
+{
+ "schema": "qi-api-route-observation-v1",
+ "observed_utc": "2026-11-15T17:47:48.592Z",
+ "method": "GET only, with the account bearer token",
+ "routes": {
+  "/healthz": 200,
+  "/drain_mode": [
+   403,
+   {
+    "detail": "Not authorised"
+   }
+  ],
+  "/backends/hostnames": [
+   403,
+   {
+    "detail": "Not authorised"
+   }
+  ],
+  "/metadata/backend/7": [
+   404,
+   {
+    "detail": "Not Found"
+   }
+  ],
+  "/reservations": [
+   200,
+   "an empty page"
+  ]
+ },
+ "backend_type_7_fields": [
+  "batchjobs_per_queue_limit",
+  "default_compiler_config",
+  "default_number_of_shots",
+  "description",
+  "enabled",
+  "features",
+  "gateset",
+  "id",
+  "identifier",
+  "image_id",
+  "infrastructure",
+  "is_hardware",
+  "job_execution_time_limit",
+  "max_jobs_per_batch_job",
+  "max_number_of_shots",
+  "messages",
+  "name",
+  "nqubits",
+  "protocol_version",
+  "status",
+  "supports_raw_data",
+  "topology"
+ ],
+ "openapi_schema_fields": {
+  "Job": [
+   "algorithm_type",
+   "batch_job_id",
+   "created_on",
+   "file_id",
+   "finished_at",
+   "id",
+   "message",
+   "number_of_shots",
+   "queued_at",
+   "raw_data_enabled",
+   "session_id",
+   "source",
+   "status",
+   "trace_id"
+  ],
+  "BatchJob": [
+   "aggregated_algorithm_type",
+   "backend_id",
+   "backend_type_id",
+   "created_on",
+   "finished_at",
+   "id",
+   "job_ids",
+   "queued_at",
+   "reserved_at",
+   "status",
+   "user_id"
+  ],
+  "Result": [
+   "created_on",
+   "execution_time_in_seconds",
+   "id",
+   "job_id",
+   "raw_data",
+   "results",
+   "shots_done",
+   "shots_requested"
+  ],
+  "Queue": [
+   "avg_wait_time_in_queue_secs",
+   "max_wait_time_in_queue_secs",
+   "min_wait_time_in_queue_secs",
+   "number_of_jobs_in_queue"
+  ],
+  "Reservation": [
+   "backend_id",
+   "backend_type_id",
+   "end_time",
+   "id",
+   "is_terminated",
+   "member_id",
+   "start_time"
+  ],
+  "DrainMode": [
+   "enabled",
+   "id",
+   "pending_jobs",
+   "running_jobs",
+   "safe_to_deploy"
+  ],
+  "FinalResult": [
+   "created_on",
+   "final_result",
+   "id",
+   "job_id"
+  ]
+ }
+}
