@@ -1355,7 +1355,7 @@ def verify_successor_sources(manifest: dict[str, Any], root: Path = ROOT) -> Non
 
 
 def verify_source_digests(sources: dict[Any, Any], root: Path) -> None:
-    """Refuse a path that leaves `root` or a digest that differs from the file's sha256."""
+    """Refuse a path that leaves `root`, names no file, or carries a digest that differs from the file's sha256."""
     resolved = root.resolve()
     for name, checksum in sources.items():
         path = (root / name).resolve() if isinstance(name, str) else None
@@ -1365,7 +1365,9 @@ def verify_source_digests(sources: dict[Any, Any], root: Path) -> None:
             or not path.is_relative_to(resolved)
             or not isinstance(checksum, str)
         ):
-            raise PlatformError("invalid successor source identity")
+            raise PlatformError("invalid source identity")
+        if not path.is_file():
+            raise PlatformError(f"reviewed source missing: {name}")
         if sha256_bytes(path.read_bytes()) != checksum:
             raise PlatformError(f"reviewed source changed: {name}")
 

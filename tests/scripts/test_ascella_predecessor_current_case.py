@@ -6,6 +6,7 @@ import hashlib
 import json
 import shutil
 from pathlib import Path
+from typing import Any
 
 import ascella_predecessor_case as original
 import ascella_predecessor_current_analysis as analysis
@@ -132,7 +133,7 @@ def digest(path: Path) -> str:
 
 
 @pytest.mark.parametrize(("job", "name"), BOUND)
-def test_a_changed_current_case_source_is_refused_when_the_case_loads(tmp_path: Path, job: str, name: str) -> None:
+def test_verify_current_case_sources_refuses_a_changed_bound_source(tmp_path: Path, job: str, name: str) -> None:
     tree = tmp_path / "tree"
     names = qd.CURRENT_CASE_SOURCES[job]
     for bound in names:
@@ -143,6 +144,26 @@ def test_a_changed_current_case_source_is_refused_when_the_case_loads(tmp_path: 
     (tree / name).write_bytes((tree / name).read_bytes() + b"\n# changed\n")
     with pytest.raises(qd.PlatformError, match=f"reviewed source changed: {name}"):
         qd.verify_current_case_sources(manifest, tree)
+
+
+def test_a_bound_source_that_is_missing_or_a_directory_is_a_platform_refusal(tmp_path: Path) -> None:
+    for name, make in (("scripts/gone.py", None), ("scripts", "dir")):
+        if make:
+            (tmp_path / name).mkdir(parents=True, exist_ok=True)
+        manifest = {"preregistered": {"current_case_sources": {name: "0" * 64}}}
+        with pytest.raises(qd.PlatformError, match=f"reviewed source missing: {name}"):
+            qd.verify_current_case_sources(manifest, tmp_path)
+
+
+def test_load_case_runs_the_current_case_source_check(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    original.publish_case(tmp_path, current.documents())
+
+    def refuse(manifest: dict[str, Any], root: Path = ROOT) -> None:
+        raise qd.PlatformError("current case source check ran")
+
+    monkeypatch.setattr(qd, "verify_current_case_sources", refuse)
+    with pytest.raises(qd.PlatformError, match="current case source check ran"):
+        qd.load_case(tmp_path)
 
 
 def test_a_manifest_without_current_case_sources_passes_and_a_malformed_one_is_refused() -> None:

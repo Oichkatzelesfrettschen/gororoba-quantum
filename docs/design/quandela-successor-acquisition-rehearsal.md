@@ -61,8 +61,11 @@ at `review` and `submit`, `qd_platform.load_case` verifies their digests before 
 `collect`, and the analyzer rebuilds the request from the tree it runs in. The Belenos manifests
 record the sha256 of every repository module the readout imports as `successor_sources`; `qd_platform.load_case`
 verifies them before `plan`, `review`, `submit` and `collect`, and the analyzer verifies them before it reads a run.
-Both bindings include `scripts/qd_platform.py`, so a built request is valid in one source tree and is rebuilt after a
-change to any bound file.
+The Ascella review and submit binding also includes `scripts/qd_platform.py` through `analysis_sources`;
+`current_case_sources` does not. A change to `qd_platform.py` therefore invalidates review and submit, while plan and
+collect reject changes to the files named by `current_case_sources`. Belenos includes `scripts/qd_platform.py` in
+`successor_sources`, which `load_case` verifies on all four paths. A built request is valid in one source tree and is
+rebuilt after a change to any bound file.
 
 ## Ascella target-slot request
 
