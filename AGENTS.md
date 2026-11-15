@@ -74,9 +74,11 @@ the two differ.
   reads, which the gates that declare `requires: ["gororoba-math"]` supply from a shadow root of the cited sources. A
   generator that a retained ledger binds (`scripts/cd_sign_rocq_ast.py`, `scripts/cd_sign_source_ast.py`,
   `gororoba_quantum/target_flip_certificate.py`, `docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py`
-  with `certificates.json`, and the three generators and `span.json` of `docs/evidence/a5-gaussian-certificates/` that
-  the findings ledger cites) keeps its bytes here as the record of the commit that ledger names, and no gate renders a
-  source from it; the live generator is the file of the same name in gororoba-math, where a change lands.
+  with `certificates.json`; and in `docs/evidence/a5-gaussian-certificates/` `span_certificate.py`, `render_span.py`,
+  `span.json` and the README, which row A5-500 of the findings ledger cites, with `gaussian_certificates.py`, which
+  both generators import, and `left-inverses.json`, which they read) keeps its bytes here as the record of the commit
+  that ledger names or cites, and no gate renders a source from it; the live generator is the file of the same name in
+  gororoba-math, where a change lands.
 
 ## Seeds
 

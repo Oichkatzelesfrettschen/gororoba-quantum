@@ -335,7 +335,7 @@ in modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 
 The compile and kernel check of a retained bundle (`docs/evidence/formal_certificates/replay_rocq.sh` and the others)
 run on demand through `sh ci/replay_quantum_bundles.sh` of gororoba-math, under the toolchain the bundle's
-`toolchain.txt` pins, Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0. A replay compiles in temporary storage, treats
+`toolchain.txt` pins, Rocq 9.3.0 on OCaml 5.5.1. A replay compiles in temporary storage, treats
 warnings as errors, kernel-checks, and compares raw assumptions. The
 [bundle](../docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
@@ -361,8 +361,9 @@ check verifies retained hashes. No workflow compiles Rocq: the retained bundles 
 `ci/replay_quantum_bundles.sh` of gororoba-math. `ci/gororoba_math.pin`, `ci/fetch_gororoba_math.sh` and
 `gororoba_quantum/math_sources.py` verify the sources that the retained ledgers and the claim registry cite, each
 against its recorded sha256; an unresolved checkout, a checkout off the pin and a differing digest fail the check. A
-test that reads a gororoba-math source carries `audit` and takes the `math_source` fixture of tests/conftest.py, since
-the pull-request suite reaches no other repository.
+test that reads a gororoba-math source (`tests/gororoba_quantum/test_cd_tower_ring_witness.py` is the one that does)
+carries `audit` and takes the `math_source` fixture of tests/conftest.py, since the pull-request suite reaches no other
+repository.
 
 **Behavioral suite.** tests/ holds one pytest suite with two selections.
 `pr.yml` runs every test the `audit` marker (pyproject.toml) leaves

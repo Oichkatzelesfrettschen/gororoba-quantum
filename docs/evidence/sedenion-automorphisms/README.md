@@ -20,7 +20,7 @@ gororoba-math `rocq/quantum/CdImaginarySumConference.v`.
 No workflow compiles Rocq, so CI never recompiles `TowerTable.v`; the test binds `cd_core` to the retained `tower_table.txt`. A change to
 `CdImaginarySumConference.v` or `CdTowerBasisSign.v` reruns the script below by hand.
 
-Replay: `ROCQ=<rocq 9.3.0 of ci/rocq_toolchain.pin> sh docs/evidence/sedenion-automorphisms/rocq_tower_table.sh`
+Replay: `ROCQ=<rocq 9.3.0 on OCaml 5.5.1, the banner of the replay bundles' toolchain.txt> sh docs/evidence/sedenion-automorphisms/rocq_tower_table.sh`
 prints `tower_table_pass TowerTable`. `sh ci/pr_checks.sh tests
 tests/gororoba_quantum/test_sedenion_automorphism_group.py` runs the certificate.
 

@@ -11,17 +11,26 @@ integer in them has one home and a `--check` that compares the two:
 
 ## Generators
 
-The generators `gaussian_certificates.py`, `span_certificate.py` and `render_span.py`, the records they write
-(`left-inverses.json`, `span.json`) and the mutation controls and Rocq driver of the span checks (`make_mutants.py`,
-`make_span_mutants.py`, `run_span_checks.sh`, `SpanQueries.v`) are files of gororoba-math under `ci/quantum-sources/`.
-They read the two records named above and `gororoba_quantum/cd_core.py` of this repository through
-`GOROROBA_QUANTUM`, and `GOROROBA_QUANTUM=PATH sh ci/check_quantum_sources.sh` there renders the three sources again
-and compares each with the tracked file. Three of them, `gaussian_certificates.py`, `span_certificate.py` and
-`render_span.py`, and `span.json` stay here with their bytes, because the A5-500 row of the findings ledger cites them
-as evidence; no gate renders a source from them. This directory also keeps [source_hashes.sha256](source_hashes.sha256), the
-sha256 of the seven gororoba-math sources that the retained records bind (the three generated files and
-`GaussianIntegerHom.v`, `MatrixLeftInverseCertificate.v`, `MatrixSplittingCertificate.v` and
-`CdTowerLeibnizSystem.v`).
+The live generators `gaussian_certificates.py`, `span_certificate.py` and `render_span.py`, the records `left-inverses.json`
+and `span.json`, and the mutation controls and Rocq driver of the span checks (`make_mutants.py`, `make_span_mutants.py`,
+`run_span_checks.sh`, `SpanQueries.v`) are files of gororoba-math under `ci/quantum-sources/`. They read the two
+records named above and `gororoba_quantum/cd_core.py` of this repository through `GOROROBA_QUANTUM`, and
+`GOROROBA_QUANTUM=PATH sh ci/check_quantum_sources.sh` there renders the three sources again and compares each with the
+tracked file. This directory keeps these files with their bytes, each for a stated reason, and no gate renders a source
+from them:
+
+| File | Why it stays here |
+| --- | --- |
+| `span_certificate.py`, `render_span.py`, `span.json` and this README | row A5-500 of [the findings ledger](../a5-exceptional-fibers/ledger.tsv) cites them as evidence, and `tests/test_a5_findings_ledger.py` requires every cited file to exist |
+| `gaussian_certificates.py` | `render_span.py` and `span_certificate.py` import it, so they run and type-check (`sources-122`) only with it beside them |
+| `left-inverses.json` | `gaussian_certificates.py` names it (`LEFT_INVERSES`) and `span_certificate.py --left-inverses` reads it, which `--verify`, `--check` and the test `test_a5_gaussian_certificates.py` need |
+| [source_hashes.sha256](source_hashes.sha256) | the sha256 of the seven gororoba-math sources that the retained records bind (the three generated files and `GaussianIntegerHom.v`, `MatrixLeftInverseCertificate.v`, `MatrixSplittingCertificate.v` and `CdTowerLeibnizSystem.v`), which `gororoba_quantum/math_sources.py` reads |
+
+`"$PYTHON" docs/evidence/a5-gaussian-certificates/span_certificate.py --left-inverses
+docs/evidence/a5-gaussian-certificates/left-inverses.json --verify` checks C V = I and P M + d V C = d I on `span.json`
+in Python integers, and [test_a5_gaussian_certificates.py](../../../tests/gororoba_quantum/test_a5_gaussian_certificates.py)
+checks the left inverses, the splitting identity, the Smith invariants (`audit`) and the rejection of malformed
+records. The cases that render or mutate a Rocq source moved to gororoba-math.
 
 ## Scope and limits
 
