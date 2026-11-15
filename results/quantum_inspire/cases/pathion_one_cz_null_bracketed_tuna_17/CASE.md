@@ -45,7 +45,7 @@ queued at a time, and 60 s between runs of those three before queuing the next. 
 three batches of a wave back to back, collects all three, runs the sanity check on each, and the next wave's first batch
 is refused until every job of the account has been finished for 60 s (`pause_seconds` of the policy row; a higher
 `QI_HARDWARE_PAUSE_SECONDS` ladder step raises it); the driver sleeps the refusal's remainder and retries. Each batch is
-refused while three batches of the account are in flight on the backend type. The series pays 11 pauses of 60 s (660 s)
+refused while three batches of the account are in flight on the backend type. The series pays 11 pauses of 60 s (660 s; the driver adds one second to each, 671 s, measured by `test_a_twelve_wave_series_pays_eleven_pauses_of_the_policy_and_never_queues_a_fourth_batch`)
 between its 12 waves. Submitting a wave's batches in series order requests that order; the service owns the execution
 order (its terms allow priority without regard to the queue), so the mirrored layout's cancellation is read from the
 retained `queued_at` times, not assumed. An unfinished job on another hardware backend type refuses the batch, and the
@@ -53,7 +53,7 @@ pause clock is account-wide across every `is_hardware` type, the Ry emulator inc
 (`docs/notes/quantum_inspire/ry-emulator.md`), so a finished Ry job delays the next Tuna-17 batch by the rest of its
 pause and Ry batches do not count toward the three Tuna-17 batches. The driver checks every run directory before its first submission and resumes nothing: a stop leaves the submitted
 batches queued, and `qi_platform_wave.py collect` (after `qi_platform.py reconcile` for an uncertain enqueue) recovers
-each one. The admission checks read one snapshot of the account and `SUBMIT_LOCK` excludes only sessions on one host.
+each one. The admission checks read one snapshot of the account and `SUBMIT_LOCK` excludes only sessions on one host; `qi_platform_wave.recheck_before_enqueue` reads the account again, leaving the batch's own planned row out, immediately before the enqueue PATCH and refuses at the policy's queued count. That narrows the window between the snapshot and the enqueue to one read and one PATCH; a rival on another host can still enqueue inside it, and a refused batch stays created and un-enqueued with `submission-state.json` at phase `enqueue-refused`.
 
 Residual risk of the policy: the FAQ sentence is ambiguous. If the provider reads "job" as a circuit, a wave of 15 circuits
 queues five times the stated 3; the abuse clause removes the account. The owner accepted that reading for this case; a
@@ -105,8 +105,14 @@ the tests.
    -g, +g and -g and cancels in the pooled twin contrast (exactly for equal replicate weights, to first order for the
    analyzer's inverse-variance pool) for the order the case requests. Measured: the platform ran the twins of some
    retained batches in the reverse of their listed order, so the cancellation holds only for batches that run in the
-   requested order, a reordered batch leaves a +g or -g term in its t, and no gate orients the decision by the executed
-   order (issue 894); the retained `queued_at` and `created_on` times show which batches ran as requested. The three X-only calibration batches of the predecessor follow (3, 3 and 2
+   requested order, and a reordered batch leaves a +g or -g term in its t. The analyzer therefore gates the decision on the
+   executed order (`order_gate` of `qi_pathion_one_cz_null_bracketed_cases.evaluate`, issue 894): the per-job start stamps
+   (`queued_at`, which follows the previous job's `finished_at` in the retained series) must order every batch's circuits
+   as requested with no tie, or the series reads `unresolved_order` and decides nothing, the label the rule would have read
+   staying beside it as `label_if_order_ignored`. A reversed twin pair or a template outside its readouts in any batch
+   therefore costs the whole series its decision. Measured from the retained `queued_at` stamps, 7 of the predecessor
+   series' 19 batches (01, 06, 08, 10, 12, 15 and 16) ran out of the requested order, so that series would have read
+   `unresolved_order` and a wave of this layout needs the platform to keep its order in every one of 35 batches. The three X-only calibration batches of the predecessor follow (3, 3 and 2
    circuits): 35 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte, as in the predecessor. The
    platform sets the execution order of the jobs of a batch (the retained `created_on` shows reversed twins in some
    batches), so the estimator uses batch co-membership, not the listed order.

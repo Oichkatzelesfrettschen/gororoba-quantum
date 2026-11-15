@@ -12,6 +12,7 @@ import json
 import math
 import shutil
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -768,3 +769,78 @@ def test_analyze_scores_the_collected_tuna_series_and_reports_an_incomplete_one(
     _expect(not partial["complete"] and partial["batches"] == ["batch-00", "batch-01", "batch-02"], f"{partial}")
     sanity = bc.sanity(dirs[:8], tmp_path / "cases")
     _expect(sanity["batches"] == [f"batch-{n:02d}" for n in range(8)] and sanity["drift"], "sanity")
+
+
+# The executed order of the batches --------------------------------------------------------------------------------
+
+
+def _stamped(order_of: Any = None) -> dict[str, str]:
+    """Per-job start stamps for every batch of the series; `order_of(row, files)` returns the files in execution order,
+    the requested order when None. Batch n runs in minute n, one second per job."""
+    stamps: dict[str, str] = {}
+    for row in bc.batch_rows(bc.TUNA_SERIES):
+        files = [circuit["file"] for circuit in row["circuits"]]
+        for position, name in enumerate(files if order_of is None else order_of(row, files)):
+            stamps[f"{row['batch']}/{name}"] = f"2026-11-08T01:{int(row['batch'][-2:]):02d}:{position:02d}.000000Z"
+    return stamps
+
+
+def test_the_retained_start_stamps_order_the_executions_of_a_predecessor_batch() -> None:
+    # Batch-06 of the predecessor series requested readout-0, k12-coin0, k12-coin1 and ran k12-coin1 first: each job's
+    # queued_at follows the previous job's finished_at within a second, so the stamps order the executions.
+    run = ROOT / "results/quantum_inspire/runs/2026-11-07T202323Z-pathion_one_cz_null_tuna_17-batch-06"
+    requested = [row["file"] for row in json.loads((run / "cases.json").read_text())["circuits"]]
+    jobs = {row["file"]: row["job"] for row in json.loads((run / "results.json").read_text())["jobs"]}
+    ran = sorted(requested, key=lambda name: jobs[name]["queued_at"])
+    _expect(requested == ["readout-0.cq", "k12-coin0.cq", "k12-coin1.cq"], f"{requested}")
+    _expect(ran == ["k12-coin1.cq", "readout-0.cq", "k12-coin0.cq"], f"executed {ran}")
+    for earlier, later in zip(ran, ran[1:], strict=False):
+        gap = (
+            datetime.fromisoformat(jobs[later]["queued_at"]) - datetime.fromisoformat(jobs[earlier]["finished_at"])
+        ).total_seconds()
+        _expect(0 <= gap < 1.0, f"{later} queued {gap} s after {earlier} finished")
+
+
+@pytest.fixture
+def stub_decision(monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    """bc.evaluate with the simulated series replaced by a fixed rule-v2 reading, so the gate alone is under test."""
+    reading = {"label": "zero", "outcome": "stub", "a5_186": "stub", "decided": True, "numbers": {}}
+    monkeypatch.setattr(bc, "evaluate_decision", lambda shots, manifest, executed=None: {"decision": dict(reading)})
+    monkeypatch.setattr(bc, "batch_brackets", lambda shots, manifest: {})
+    return reading
+
+
+def test_a_series_that_ran_in_its_requested_order_keeps_the_decision(stub_decision: dict[str, Any]) -> None:
+    ordered = bc.evaluate({}, {}, _stamped())
+    _expect(ordered["order_gate"]["intact"] is True, f"{ordered['order_gate']}")
+    _expect(ordered["decision"] == stub_decision, "an intact order changed the decision")
+    _expect(bc.evaluate({}, {})["order_gate"] is None, "a series without stamps reported a gate")
+
+
+@pytest.mark.parametrize(
+    ("label", "swap"),
+    [
+        ("reversed twins", lambda files: [files[0], files[2], files[1], files[3]]),
+        ("template outside its readouts", lambda files: [files[1], files[0], files[2], files[3]]),
+        ("readouts exchanged", lambda files: [files[3], files[1], files[2], files[0]]),
+    ],
+)
+def test_a_batch_out_of_its_requested_order_reads_unresolved_order(
+    label: str, swap: Any, stub_decision: dict[str, Any]
+) -> None:
+    twin_batch = f"batch-{TWIN_BATCHES[0]:02d}"
+    record = bc.evaluate({}, {}, _stamped(lambda row, files: swap(files) if row["batch"] == twin_batch else files))
+    gate = record["order_gate"]
+    broken = [name for name, entry in gate["batches"].items() if not entry["intact"]]
+    _expect(gate["intact"] is False and broken == [twin_batch], f"{label}: broken {broken}")
+    decision = record["decision"]
+    _expect(decision["label"] == "unresolved_order" and decision["decided"] is False, f"{label}: {decision}")
+    _expect(decision["label_if_order_ignored"] == "zero", f"{label}: {decision['label_if_order_ignored']}")
+
+
+def test_two_jobs_with_one_start_stamp_do_not_order_a_batch(stub_decision: dict[str, Any]) -> None:
+    stamps = _stamped()
+    batch = f"batch-{TWIN_BATCHES[0]:02d}"
+    stamps[f"{batch}/{oc.twin_file('b0', 0)}"] = stamps[f"{batch}/readout-0.cq"]
+    record = bc.evaluate({}, {}, stamps)
+    _expect(record["decision"]["label"] == "unresolved_order", f"{record['decision']['label']}")

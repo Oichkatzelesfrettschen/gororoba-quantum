@@ -321,12 +321,52 @@ evaluate_decision = ana.rebound(
 )
 
 
+def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
+    """Whether every batch ran its circuits in the requested order, read from the provider's per-job start stamps.
+
+    `executed` maps "batch/file" to the job's `queued_at`, which in the retained Tuna-17 series follows the previous
+    job's `finished_at` and so orders the executions (measured on batch-06 of the predecessor series). The queue
+    fixes the order requested, not the order executed (the provider's terms allow priority without regard to the
+    queue): 7 of the 19 retained batches of the predecessor series ran out of the requested order.
+    The mirror of the rounds cancels a linear drift only when each batch keeps its requested order, so a batch whose
+    stamps order its circuits otherwise, or tie two of them, is not intact (issue 894). None when no stamps are read.
+    """
+    if executed is None:
+        return None
+    batches: dict[str, dict[str, Any]] = {}
+    for row in batch_rows(TUNA_SERIES):
+        requested = [circuit["file"] for circuit in row["circuits"]]
+        stamps = {name: executed.get(f"{row['batch']}/{name}") for name in requested}
+        if any(stamp is None for stamp in stamps.values()):
+            continue
+        ran = sorted(requested, key=lambda name: stamps[name])
+        tied = len(set(stamps.values())) < len(requested)
+        batches[row["batch"]] = {"requested": requested, "executed": ran, "intact": ran == requested and not tied}
+    return {"batches": batches, "intact": all(entry["intact"] for entry in batches.values())}
+
+
 def evaluate(
     shots: dict[str, list[str]], manifest: dict[str, Any], executed: dict[str, str] | None = None
 ) -> dict[str, Any]:
-    """The rule-v2 decision of a complete Tuna-17 series, with the per-batch bracket offsets beside it."""
+    """The rule-v2 decision of a complete Tuna-17 series, with the per-batch bracket offsets beside it.
+
+    A series with a batch out of its requested order reads `unresolved_order` and decides nothing; the label the rule
+    would have read stays beside it as `label_if_order_ignored`."""
     record: dict[str, Any] = evaluate_decision(shots, manifest, executed)
     record["twin_brackets"] = batch_brackets(shots, manifest)
+    gate = order_gate(executed)
+    record["order_gate"] = gate
+    if gate is not None and not gate["intact"]:
+        outcome, effect = oc.OUTCOMES["unresolved"]
+        decision = record["decision"]
+        record["decision"] = {
+            **decision,
+            "label": "unresolved_order",
+            "outcome": outcome,
+            "a5_186": effect,
+            "decided": False,
+            "label_if_order_ignored": decision["label"],
+        }
     return record
 
 
