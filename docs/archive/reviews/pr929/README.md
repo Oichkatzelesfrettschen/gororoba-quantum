@@ -42,3 +42,11 @@ plane, `dim C(P)`, `dim L` and row. Both passed the sweep for the five finding c
 before the push: the factor loop runs through `parallel.ordered_map`, each test computes what it compares, each
 fact name states what its code evaluates, the Krawczyk test refuses a precision below 64 bits, a radius that selects
 the point evaluation and an unknown box, and the gate runs the producer directly.
+
+The hosted Codex round read head b3e379b5a and raised one finding (P2): the summary under the stratification
+table, and with it the claim of `A5-561`, said that the points with `dim L = 4` form one punctured line or
+nothing in a fiber, while the row proves one line for each of `P_y` and `P_z` and both exist at `s = 0` and
+`s = 2`. It holds. The claim of `A5-561`, the basis of `A5-558` and two passages of the evidence README now
+state the result for each plane and give the `dim L = 4` set as the union of at most two lines. No code or
+record changed. The owner's ruling for this pull request ends the review chain at this round, so no Copilot
+round follows the fix.

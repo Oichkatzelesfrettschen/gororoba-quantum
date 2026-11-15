@@ -503,8 +503,9 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
 - `A5-561` and `A5-562`, proved (`nullity4_qg_plane_incidence.py`, record
   `nullity4-qg-plane-incidence-result.json`); they settle the hypothesis that `A5-555` carried and the fiberwise and local parts of the one that `A5-558`
   carried. The stratum is the disjoint union of the sets `K` minus `J`, and in each the real points with kernel
-  plane `P_j` are one complex line minus its points of `J`, so the points with `dim L = 6` and those with
-  `dim L = 4` have real codimension 4 inside every fiber; at the six exact witnesses the real Jacobian of the
+  plane `P_j` are one complex line minus its points of `J` (empty when the line lies in `J`), so the points with
+  `dim L = 6` are at most one such line and those with `dim L = 4` the union of at most two, each line of real
+  codimension 4 inside its fiber; at the six exact witnesses the real Jacobian of the
   incidence map has rank 4 on a tangent space of dimension 13, so they form a submanifold of codimension 4 there.
   `hypothesis:` both sets have real dimension 22 in the stratum; the missing lemma is that the kernels form a
   family of real dimension 20 over which the exceptional lines are line bundles (`A5-558`). At `s = +-1` the vector `q` lies in `P_y` and
@@ -549,8 +550,10 @@ it carries another mark: `certified` (interval certificate), `measured` (exact a
 | `V(Q) n V(G)`, `s = +-1` | `P_x`, `P_y`, `P_z` (`dim C` = 7, 4, 4) are the kernel plane of no real point | 3 | 2 alone | 4 at a vector outside `J` | `A5-555`, `A5-562` |
 
 The values 8 and 10 of `dim L` occur on no stratum (`A5-550`, `A5-555`). On `V(Q) n V(G)` the real points with
-`dim L = 6` and those with `dim L = 4` form in each fiber `K` minus `J` a punctured complex line or nothing, and a
-submanifold of real codimension 4 near six exact witnesses (`A5-561`); that each set has real dimension 22 in the
+kernel plane `P_j` form in each fiber `K` minus `J` a punctured complex line or nothing, so the points with
+`dim L = 6` are at most one such line and those with `dim L = 4` the union of at most two, one for `P_y` and one
+for `P_z` (two at the witnesses of `s = 0` and `s = 2`); each set is a submanifold of real codimension 4 near six
+exact witnesses (`A5-561`); that each set has real dimension 22 in the
 whole stratum is a hypothesis (`A5-558`, with its missing lemma on the image of `z -> K(z)`). The dimension of the
 `dim L = 4` and `dim L = 6` loci on `V(G)` minus `V(Q)` is open.
 
