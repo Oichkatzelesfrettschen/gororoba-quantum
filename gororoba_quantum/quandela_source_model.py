@@ -66,9 +66,9 @@ def overlap_for_click_visibility(visibility: float, g2: float, reference: str = 
     multiphoton emission that ceiling can lie below 1. Measured with Perceval 1.3.1 (2026-11-15): the simulator drops
     probabilities below 1e-6, so at g2 = 0 the visibility reads exactly 1.0 within about 1e-6 of M = 1 (0.999999 at
     M = 1 - 1e-6). The ceiling therefore returns M = 1, and a visibility inside such a gap, which no overlap
-    simulates, raises after the bisection because the residual of the result exceeds RESIDUAL_TOLERANCE. Each
-    evaluation takes about 1 s once the reference is held, so a solve of about 42 evaluations suits a case builder and
-    not an inner loop.
+    simulates, raises after the bisection because the residual of the result exceeds RESIDUAL_TOLERANCE. Measured
+    2026-11-15 with Perceval 1.3.1 under a 1 GB cap: the first evaluation of a process takes about 2 s (import and
+    setup) and a warm one about 1 ms, so a default solve of about 42 evaluations takes about 0.03 s warm.
     """
     denominator = _denominator(g2, reference)
     low, high = OVERLAP_BOUNDS

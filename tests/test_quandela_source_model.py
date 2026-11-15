@@ -66,6 +66,16 @@ def test_distinguishable_photons_read_zero_under_the_dip_depth_and_below_zero_un
         model.click_visibility(0.5, 0.02, "other")
 
 
+def test_the_default_reference_is_the_dip_depth_of_the_belenos_mesh_script() -> None:
+    # perceval_hom_visibility of scripts/belenos_best_mesh_first_principles.py computes 1 - P(M) / P(0) at fixed g2 with
+    # its own processor; the default reference of this module agrees with it on the four pairs of issue 888.
+    import belenos_best_mesh_first_principles as mesh
+
+    for overlap, g2, _ in PAIRS:
+        ours, theirs = model.click_visibility(overlap, g2), mesh.perceval_hom_visibility(overlap, g2)
+        _expect(abs(ours - theirs) < 1e-12, f"V({overlap}, {g2}): {ours} against {theirs}")
+
+
 def test_a_visibility_inside_the_simulator_cutoff_gap_is_refused() -> None:
     # V reads 0.999999 at M = 1 - 1e-6 and exactly 1.0 from about 1 - 5e-7, so no overlap simulates 0.99999999.
     with pytest.raises(ValueError, match="no overlap simulates"):
