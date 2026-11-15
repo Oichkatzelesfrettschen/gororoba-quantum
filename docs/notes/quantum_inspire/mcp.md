@@ -21,7 +21,7 @@ fails on authentication returns the `Client` error text, which
 | `qi_jobs(latest=20)` | most recent jobs, newest first | read-only | allow |
 | `qi_job(job_id)` | one job, its result metadata and, unless completed, its logs | read-only | allow |
 | `qi_results(job_id, include_raw=False)` | outcome counts, and every shot on request | read-only | allow |
-| `qi_run_local(cqasm, shots=1024)` | local qxelarator emulation, at most 24 qubits and 100000 shots | read-only, closed world | allow |
+| `qi_run_local(cqasm, shots=1024, seed=None)` | local qxelarator emulation, at most 24 qubits and 100000 shots; `seed` (0 to 2**31 - 1) makes the counts replayable | read-only, closed world | allow |
 | `qi_compile(cqasm, backend_type_id, stage="decomposition")` | remote compilation; creates project, algorithm, commit and file; executes nothing | mutating | ask |
 | `qi_submit_case(case_dir, backend_type_id, approval)` | one batch from retained `cases.json` and checked cQASM files; enables raw shots and uses the durable submission guard | mutating | ask |
 | `qi_submit(cqasm, backend_type_id, shots, approval, raw_data=True)` | legacy signature; refuses execution and names `qi_submit_case` as its replacement | refuses execution | no execution |

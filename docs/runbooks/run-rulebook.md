@@ -760,6 +760,10 @@ the closest entry and say what changed.
   colon certificate at 8,701 s against 8,685 s, the same fiber (dimension 5, multiplicity 23, 68 generators). The
   pivot form moves no time out of the saturation, so the E8-bar pivot run was not started; the block route is the
   open A5-542, which restates A5-506, refuted modulo 32009.
+  2026-11-15, function field: the y-degree-1 block script of A5-542 with `s2` a transcendental parameter over
+  GF(32009) runs in 24 min at 240 MB on one core (span module standard basis 495 s, block reductions 23 min) and
+  returns 32 generators in 11 blocks, the table of `s2 = 3567`. A 15-minute limit stops it inside the reductions,
+  and the block table prints only at the end, so a run that is cut returns no count.
 
 ### Singular locus of the degree-11 component of the E8-bar fiber cone (plane and line, or a divisor)
 
