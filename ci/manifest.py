@@ -4,7 +4,7 @@ ci/gates.json lists the on-demand checks: retained-record replays, digest and re
 self-tests and the audit-marked tests (gate core-615). No workflow runs them; ``"$PYTHON" ci/run_gates.py`` runs
 them when a pin, a producer script, an input or a source changes. A claim of docs/state/research_state.json cites a
 gate by its id. This module is the only reader of the file: ci/run_gates.py, scripts/research_state.py,
-ci/runner_image_records.py, ci/premerge_gates.py, ci/check_rocq_ci_pins.py and the manifest tests go through it.
+ci/runner_image_records.py, ci/premerge_gates.py and the manifest tests go through it.
 """
 
 from __future__ import annotations

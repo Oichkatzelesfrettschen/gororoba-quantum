@@ -425,8 +425,8 @@ pays per interpreter it starts.
 
 Each gate runs its command once in normal Python. A second pass under
 `python -O` cost as much CPU as the first: on six normal/`-O` pairs
-(core-454, core-388, core-268, core-270, core-274, core-275,
-`GOROROBA_WORKERS=1`) the `-O` half took 26.8 of 53.5 CPU seconds. ruff
+(core-454, core-388, core-268, core-270, core-274, core-275 (a gate since
+removed), `GOROROBA_WORKERS=1`) the `-O` half took 26.8 of 53.5 CPU seconds. ruff
 `S101` with explicit raises carries the guarantee that pass checked, that no
 check depends on `assert`, at lint time.
 

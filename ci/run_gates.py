@@ -27,8 +27,8 @@ toolchain is absent. A caller that exports the variable REQUIREMENTS names for
 the toolchain (GOROROBA_QI_REQUIRED=1, GOROROBA_SINGULAR_REQUIRED=1 or
 GOROROBA_MATH_REQUIRED=1) makes each such gate take its live path or fail.
 A gororoba-math gate runs with its working directory inside a shadow root
-whose proofs/ holds the digest-checked sources of that checkout, so a retained
-ledger row ``proofs/NAME.v`` resolves; a checkout off the pin or a source whose
+whose proofs/ holds the digest-checked sources that retained records cite (a source no record cites is
+not read), so a retained ledger row ``proofs/NAME.v`` resolves; a checkout off the pin or a cited source whose
 bytes differ from the retained digest fails the gate.
 
 A gate that left its replay unrun says so by exit status 77 after a last output line
