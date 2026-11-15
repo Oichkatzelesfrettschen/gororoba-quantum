@@ -18,6 +18,11 @@ Three kinds of row, each one Singular run in the global ordering dp on retained 
   K2 : A = P, and the first Hilbert numerators of K2, P and A; the identity N_K2 - N_P = N_A - (1 - t)^15 states
   dim (P / K2)_d = dim (k[y] / A)_d for every d >= 1.
 
+- `e8-colon`: the quadric ideal K2 of E8-bar -> N+- with its radical R and A = K2 : R. The row records the linear
+  forms N of R, whether R = K2 + N and N^2 lies in K2, the dimension, multiplicity and primality of A, whether
+  K2 : A = R, and the first Hilbert numerators; N_K2 - N_R = N_A - (1 - t)^21 states
+  dim (R / K2)_d = dim (k[y] / A)_d for every d >= 1.
+
 No random source enters: the linear forms are fixed by their base. check() compares every field of a record with the
 expected value, row by row in the order of the job list, so a missing, relabeled or altered row is reported, and
 tests/test_a5_quadric_and_germ_probes.py applies it to the record and to mutated copies.
@@ -73,6 +78,12 @@ XS: list[tuple[str, int, str]] = [
     ("X- -> N-", P2, "distribute/out/a5-p2-small/xm_p2/d2/relations-upto-d2.rel"),
     ("X+ -> N+", P2, "distribute/out/a5-p2-small/xp_p2/d2/relations-upto-d2.rel"),
 ]
+E8S: list[tuple[str, int, str]] = [
+    ("E8-bar -> N-", 32009, "distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel"),
+    ("E8-bar -> N-", P2, "distribute/out/a5-e8-d2/e8nm_p2/d2/relations-upto-d2.rel"),
+    ("E8-bar -> N+", 32009, "runs/e8_a2/e8_k2.rel"),
+    ("E8-bar -> N+", P2, "distribute/out/a5-e8-d2/e8np_p2/d2/relations-upto-d2.rel"),
+]
 BASES = (2, 3, 4, 5)
 
 GERM_SING = """LIB "primdec.lib";
@@ -126,6 +137,20 @@ ideal A=std(quotient(sK,R));
 int i; for(i=1;i<=size(A);i++){{ "RESULT form",A[i]; }}
 ideal B=std(quotient(sK,A)); "RESULT bicolon",size(reduce(B,R))==0 && size(reduce(R,B))==0;
 "RESULT numK",hilb(sK,1); "RESULT numP",hilb(R,1); "RESULT numA",hilb(A,1);
+quit;
+"""
+
+
+E8_SING = """LIB "primdec.lib";
+ring r={p},(y(1..21)),dp;
+execute("ideal K="+read("{rel}")+";");
+ideal sK=std(K); ideal R=std(radical(sK)); ideal N=simplify(jet(R,1),2); ideal KN=std(sK+N);
+"RESULT radical",size(N),size(reduce(R,KN))==0 && size(reduce(KN,R))==0,dim(R),mult(R);
+"RESULT square",size(reduce(N*N,sK))==0;
+ideal A=std(quotient(sK,R)); list M=minAssChar(A);
+"RESULT colon",dim(A),mult(A),size(A),size(simplify(jet(A,1),2)),size(reduce(std(radical(A)),A))==0,size(M);
+ideal B=std(quotient(sK,A)); "RESULT bicolon",size(reduce(B,R))==0 && size(reduce(R,B))==0;
+"RESULT numK",hilb(sK,1); "RESULT numR",hilb(R,1); "RESULT numA",hilb(A,1);
 quit;
 """
 
@@ -222,21 +247,42 @@ def x_colon(item: tuple[str, int, str]) -> dict[str, Any]:
     return rec
 
 
+def e8_colon(item: tuple[str, int, str]) -> dict[str, Any]:
+    fiber, p, rel = item
+    rec: dict[str, Any] = {"check": "e8-colon", "fiber": fiber, "prime": p, "relations": rel}
+    for f in singular(E8_SING.format(p=p, rel=W / rel)):
+        if f[0] in ("numK", "numR", "numA"):
+            rec[f[0]] = [int(x) for x in "".join(f[1:]).split(",")][:-1]
+        else:
+            rec[f[0]] = [int(x) for x in f[1:]]
+    return rec
+
+
 def run(job: tuple[str, Any]) -> dict[str, Any]:
     kind, item = job
     if kind == "germ-prime":
         return germ(item)
     if kind == "vb-components":
         return vb_components(item)
+    if kind == "e8-colon":
+        return e8_colon(item)
     return x_colon(item)
 
 
-def numerator_identity(rec: dict[str, Any]) -> bool:
-    """N_K2 - N_P = N_A - (1 - t)^15, coefficient by coefficient."""
-    width = 16 + max(len(rec["numK"]), len(rec["numP"]), len(rec["numA"]))
-    pad = {k: rec[k] + [0] * (width - len(rec[k])) for k in ("numK", "numP", "numA")}
-    unit = [(-1) ** i * comb(15, i) if i <= 15 else 0 for i in range(width)]
-    return all(pad["numK"][i] - pad["numP"][i] == pad["numA"][i] - unit[i] for i in range(width))
+def numerator_identity(rec: dict[str, Any], radical: str = "numP", n: int = 15) -> bool:
+    """N_K2 - N_radical = N_A - (1 - t)^n, coefficient by coefficient, n the number of variables."""
+    keys = ("numK", radical, "numA")
+    if not all(isinstance(rec.get(k), list) and all(isinstance(x, int) for x in rec[k]) for k in keys):
+        return False
+    width = n + 1 + max(len(rec[k]) for k in keys)
+    pad = {k: rec[k] + [0] * (width - len(rec[k])) for k in keys}
+    unit = [(-1) ** i * comb(n, i) if i <= n else 0 for i in range(width)]
+    return all(pad["numK"][i] - pad[radical][i] == pad["numA"][i] - unit[i] for i in range(width))
+
+
+def hilbert_function(numerator: list[int], n: int, degrees: range) -> list[int]:
+    """The coefficients of numerator / (1 - t)^n in the given degrees."""
+    return [sum(c * comb(d - i + n - 1, n - 1) for i, c in enumerate(numerator) if i <= d) for d in degrees]
 
 
 # The 12 linear forms of K2 : P in the order Singular returns them; SIGN is - for X- -> N- and + for X+ -> N+.
@@ -257,6 +303,9 @@ PLANE_FORMS = (
 NUM_K = [1, 0, -69, 477, -1695, 3894, -6325, 7623, -7029, 5060, -2871, 1275, -429, 102, -15, 1]
 NUM_P = [1, -3, -30, 242, -825, 1683, -2244, 1980, -1089, 275, 66, -78, 25, -3]
 NUM_A = [(-1) ** i * comb(12, i) for i in range(13)]
+# (1 - t)^17 (1 + t): the numerator over (1 - t)^21 of a quadric hypersurface in five variables.
+NUM_A_E8 = [(-1) ** i * (comb(17, i) - (comb(17, i - 1) if i else 0)) for i in range(19)]
+HF_E8 = [21, 83, 225, 495, 952, 1666, 2718]
 MEET = {"projdim": 2, "degree": 1, "reduced": True, "linear": 7, "generators": 7}
 
 
@@ -295,8 +344,9 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
     Rows are compared in the order of the job list. A germ row equals its expected row field for field; a component
     or colon row carries its identity, its fixed values and the section condition.
     """
-    if len(rows) != len(GERMS) + len(VB) + len(XS):
-        return [f"{len(rows)} rows, expected {len(GERMS) + len(VB) + len(XS)}"]
+    total = len(GERMS) + len(VB) + len(XS) + len(E8S)
+    if len(rows) != total:
+        return [f"{len(rows)} rows, expected {total}"]
     bad: list[str] = []
     for r, item in zip(rows, GERMS, strict=False):
         if r != expected_germ(item):
@@ -324,6 +374,16 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
         }  # fmt: skip
         if r["hf"] != closed:
             bad.append(f"{tag}: Hilbert functions")
+    for r, (fiber, p, rel) in zip(rows[len(GERMS) + len(VB) + len(XS) :], E8S, strict=False):
+        tag = f"e8-colon {fiber} {p}"
+        fixed = {
+            "check": "e8-colon", "fiber": fiber, "prime": p, "relations": rel, "radical": [5, 1, 5, 11], "square": [1],
+            "colon": [4, 2, 17, 16, 1, 1], "bicolon": [1], "numA": NUM_A_E8,
+        }  # fmt: skip
+        if {k: r.get(k) for k in fixed} != fixed or set(r) != {*fixed, "numK", "numR"}:
+            bad.append(f"{tag}: the row differs from R = K2 + N, N^2 in K2, K2 : R a prime quadric cone, K2 : A = R")
+        elif not numerator_identity(r, "numR", 21) or hilbert_function(r["numK"], 21, range(1, 8)) != HF_E8:
+            bad.append(f"{tag}: N_K2 - N_R differs from N_A - (1 - t)^21, or N_K2 from the retained Hilbert function")
     for r, (fiber, p, rel) in zip(rows[len(GERMS) + len(VB) :], XS, strict=False):
         tag = f"x-colon {fiber} {p}"
         sign = "-" if fiber == "X- -> N-" else "+"
@@ -351,7 +411,8 @@ def main() -> int:
             break
     import parallel
 
-    jobs = [("germ-prime", g) for g in GERMS] + [("vb-components", v) for v in VB] + [("x-colon", x) for x in XS]
+    jobs: list[tuple[str, Any]] = [("germ-prime", g) for g in GERMS]
+    jobs += [("vb-components", v) for v in VB] + [("x-colon", x) for x in XS] + [("e8-colon", e) for e in E8S]
     rows = parallel.ordered_map(run, jobs, min_items=1)
     Path(sys.argv[1]).write_text("".join(json.dumps(r) + "\n" for r in rows))
     problems = check(rows)

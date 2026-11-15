@@ -10,11 +10,15 @@ This script reads the 12 linear forms of A = K2 : P from `quadric-and-germ-probe
 - `plane`, per retained K2 cell, modulo the prime: the ranks of the image of the embedded plane, of the image of the
   opposite-sign fiber and of their sum, and, for the strata VB and V^a of the sign of the basepoint, the rank of the
   linear conditions (iota_k S_0) ^ pi(y) = 0 of composed_limit_sections.py on the same-sign generators and their
-  rank together with the 12 forms. A joint rank of 12 puts every condition in the span of the 12 forms, so the
-  embedded plane lies in that section.
+  rank together with the 12 forms, and the rank of the same conditions on the three opposite-sign generators. A
+  joint rank of 12 puts every condition in the span of the 12 forms, so the embedded plane lies in that section; a
+  rank of 3 on three generators leaves no point of the opposite-sign fiber in it.
 
-Both kinds read the two incidences at one basepoint in one frame of the 9-dimensional kernel, the premise under which
-composed_limit_sections.py compares a source with a stratum. Exact arithmetic throughout; no Singular run.
+A `spans` row alone cannot tell skew spans from matrices written in different frames of the 9-dimensional kernel,
+since two unrelated subspaces of dimensions 15 and 3 also give rank 18. The `plane` rows separate the two images
+through source-against-stratum pairs: the V^a section holds the whole embedded plane and no point of the
+opposite-sign fiber. Their ranks 12 and 0, far from the generic 15 and 3, are the evidence that the source and
+stratum matrices of a basepoint share one frame. Exact arithmetic throughout; no Singular run.
 
 Usage: embedded_plane_images.py OUT.jsonl; run from any directory.
 """
@@ -140,36 +144,56 @@ def reduce_matrix(rows: list[list[list[str]]], p: int) -> list[list[int]]:
     return [[cls.reduce_gaussian(cell, p, ROOT_OF_MINUS_ONE[p]) for cell in row] for row in rows]
 
 
-def build() -> list[dict[str, Any]]:
+def spans(basepoint: str) -> dict[str, Any]:
     r16 = record16()
-    out: list[dict[str, Any]] = []
-    for basepoint, (same, opposite, _) in BASEPOINTS.items():
-        ms = [[(Fraction(c[0]), Fraction(c[1])) for c in row] for row in r16[same]["embedding_matrix_rows"]]
-        mo = [[(Fraction(c[0]), Fraction(c[1])) for c in row] for row in r16[opposite]["embedding_matrix_rows"]]
-        ranks = [rank_gauss(ms), rank_gauss(mo), rank_gauss([a + b for a, b in zip(ms, mo, strict=True)])]
-        out.append({"check": "spans", "basepoint": basepoint, "same": same, "opposite": opposite, "ranks": ranks})
+    same, opposite, _ = BASEPOINTS[basepoint]
+    ms = [[(Fraction(c[0]), Fraction(c[1])) for c in row] for row in r16[same]["embedding_matrix_rows"]]
+    mo = [[(Fraction(c[0]), Fraction(c[1])) for c in row] for row in r16[opposite]["embedding_matrix_rows"]]
+    ranks = [rank_gauss(ms), rank_gauss(mo), rank_gauss([x + y for x, y in zip(ms, mo, strict=True)])]
+    return {"check": "spans", "basepoint": basepoint, "same": same, "opposite": opposite, "ranks": ranks}
+
+
+def plane(probe: dict[str, Any]) -> dict[str, Any]:
+    r16 = record16()
+    p = probe["prime"]
+    basepoint = probe["fiber"][-2:]
+    same, opposite, va = BASEPOINTS[basepoint]
+    es = reduce_matrix(r16[same]["embedding_matrix_rows"], p)
+    eo = reduce_matrix(r16[opposite]["embedding_matrix_rows"], p)
+    forms = [form_row(f, 15, p) for f in probe["forms"]]
+    image = [[sum(row[j] * v[j] for j in range(15)) % p for row in es] for v in kernel_mod(forms, 15, p)]
+    fiber = [[row[j] for row in eo] for j in range(3)]
+    rec: dict[str, Any] = {"check": "plane", "fiber": probe["fiber"], "prime": p, "opposite": opposite}
+    rec["ranks"] = [rank_mod(image, p), rank_mod(fiber, p), rank_mod(image + fiber, p)]
+    for name, stratum in (("VB", f"VB->{basepoint}"), ("Va", va)):
+        s0 = [row[0] for row in reduce_matrix(r16[stratum]["embedding_matrix_rows"], p)]
+        conditions = flag_rows(s0, es, p)
+        rec[name] = {
+            "stratum": stratum,
+            "conditions": rank_mod(conditions, p),
+            "with_forms": rank_mod(forms + conditions, p),
+            "on_opposite": rank_mod(flag_rows(s0, eo, p), p),
+        }
+    return rec
+
+
+def run(job: tuple[str, Any]) -> dict[str, Any]:
+    kind, item = job
+    return spans(item) if kind == "spans" else plane(item)
+
+
+def build() -> list[dict[str, Any]]:
+    for parent in HERE.parents:
+        if (parent / "gororoba_quantum" / "parallel.py").is_file():
+            sys.path.insert(0, str(parent / "gororoba_quantum"))
+            break
+    import parallel
+
     probes = [json.loads(ln) for ln in (HERE / "quadric-and-germ-probes.jsonl").read_text().splitlines()]
-    for probe in (r for r in probes if r["check"] == "x-colon"):
-        p = probe["prime"]
-        basepoint = probe["fiber"][-2:]
-        same, opposite, va = BASEPOINTS[basepoint]
-        es = reduce_matrix(r16[same]["embedding_matrix_rows"], p)
-        eo = reduce_matrix(r16[opposite]["embedding_matrix_rows"], p)
-        forms = [form_row(f, 15, p) for f in probe["forms"]]
-        plane = [[sum(row[j] * v[j] for j in range(15)) % p for row in es] for v in kernel_mod(forms, 15, p)]
-        fiber = [[row[j] for row in eo] for j in range(3)]
-        rec: dict[str, Any] = {"check": "plane", "fiber": probe["fiber"], "prime": p, "opposite": opposite}
-        rec["ranks"] = [rank_mod(plane, p), rank_mod(fiber, p), rank_mod(plane + fiber, p)]
-        for name, stratum in (("VB", f"VB->{basepoint}"), ("Va", va)):
-            s0 = [row[0] for row in reduce_matrix(r16[stratum]["embedding_matrix_rows"], p)]
-            conditions = flag_rows(s0, es, p)
-            rec[name] = {
-                "stratum": stratum,
-                "conditions": rank_mod(conditions, p),
-                "with_forms": rank_mod(forms + conditions, p),
-            }
-        out.append(rec)
-    return out
+    jobs: list[tuple[str, Any]] = [("spans", basepoint) for basepoint in BASEPOINTS]
+    jobs += [("plane", probe) for probe in probes if probe["check"] == "x-colon"]
+    rows: list[dict[str, Any]] = parallel.ordered_map(run, jobs, min_items=1)
+    return rows
 
 
 EXPECTED: list[dict[str, Any]] = [
@@ -178,8 +202,8 @@ EXPECTED: list[dict[str, Any]] = [
     *(
         {
             "check": "plane", "fiber": fiber, "prime": p, "opposite": opposite, "ranks": [3, 3, 6],
-            "VB": {"stratum": f"VB->{fiber[-2:]}", "conditions": 9, "with_forms": 14},
-            "Va": {"stratum": va, "conditions": 9, "with_forms": 12},
+            "VB": {"stratum": f"VB->{fiber[-2:]}", "conditions": 9, "with_forms": 14, "on_opposite": 0},
+            "Va": {"stratum": va, "conditions": 9, "with_forms": 12, "on_opposite": 3},
         }
         for fiber, p, opposite, va in (
             ("X- -> N-", 32009, "X+->N-", "Va-->N-"),

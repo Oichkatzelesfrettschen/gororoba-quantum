@@ -79,6 +79,10 @@ MUTATIONS = {
     "a shifted numerator pair": lambda rows: [row(rows, "x-colon")[k].__setitem__(0, 101) for k in ("numK", "numP")],
     "a changed numerator": lambda rows: row(rows, "x-colon")["numP"].__setitem__(2, -29),
     "a row removed": lambda rows: rows.pop(),
+    "a colon ideal with two minimal primes": lambda rows: row(rows, "e8-colon")["colon"].__setitem__(5, 2),
+    "a radical with a sixth linear form": lambda rows: row(rows, "e8-colon")["radical"].__setitem__(0, 6),
+    "a changed radical numerator": lambda rows: row(rows, "e8-colon", 3)["numR"].__setitem__(1, -4),
+    "a quadric numerator replaced by a plane": lambda rows: row(rows, "e8-colon").update(numA=[1, -18, 153]),
 }
 
 
@@ -104,7 +108,9 @@ def test_meeting_spans_or_a_plane_outside_the_section_are_reported() -> None:
     meeting[0]["ranks"] = [15, 3, 17]
     outside = record("embedded-plane-images")
     outside[2]["Va"]["with_forms"] = 13
-    if not mod.check(meeting) or not mod.check(outside) or not mod.check(outside[:-1]):
+    shared = record("embedded-plane-images")
+    shared[3]["Va"]["on_opposite"] = 2
+    if not all(mod.check(rows) for rows in (meeting, outside, shared, outside[:-1])):
         raise AssertionError("a changed plane record passes")
 
 
