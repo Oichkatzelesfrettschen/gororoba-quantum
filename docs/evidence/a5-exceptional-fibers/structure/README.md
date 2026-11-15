@@ -181,3 +181,19 @@ for byte; the `redefining` lines at the head of each log (139 in both) are Singu
 A basis pair failing the automorphism identity, an orbit representative whose phi-image leaves the predicted closure, a
 germ tuple different from the table, a base locus with a second prime through 0 or a prime different from the B9
 pullback, a residual of a different dimension, or any disagreement between the three fields.
+
+## Germ ideals and three quadric schemes, probed exactly
+
+`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.jsonl` (16 rows, Singular 4.4.1 in dp, under a minute
+on the laptop) and holds the retained values in its `check()`:
+
+- `germ-prime`, 11 rows: the germ ideal J of X- -> N-, E8-bar -> VB, Iso -> N-, W8 -> N- and E8-bar -> N+ at 32009
+  (`working/runs/k2struct/`) and of the same five and E8-bar -> N- at 32029 (the canonical headers) is radical with
+  one minimal prime through the origin, so J is prime; each 32029 ideal equals the 32009 text read modulo 32029. The
+  pivots G_11, G_3, G_16 and G_19 lie outside J, so each is a nonzerodivisor modulo J (ledger rows A5-027, A5-028).
+- `vb-components`, 2 rows: each minimal prime of the quadric ideal of E8-bar -> VB has a reduced section by three
+  linear forms with an F_p-point, so it is absolutely prime; the two components meet in one reduced plane, and
+  HF(k[y]/K2, d) = 7 C(d + 2, 3) + C(d + 2, 2) for d = 1..7 (A5-020).
+- `x-colon`, 3 rows: for same-sign X, K2 : P is the ideal of the embedded plane, K2 : (K2 : P) = P, and the first
+  Hilbert numerators satisfy N_K2 - N_P = N_A - (1 - t)^15, so dim (P / K2)_d = C(d + 2, 2) for every d >= 1
+  (A5-542).
