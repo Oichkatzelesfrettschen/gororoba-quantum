@@ -42,8 +42,9 @@ The two long cells ran on the build host as user services under `MemoryMax` 22 G
 14 GiB (W8, driver budget 12 GiB), swap off, one Singular process each, after a written estimate of about two hours
 from the retained receipts (W8 6,560 s products stage on this host, E8-bar 12,600 s on a Kaggle CPU at about half
 this host's speed). Falsifier: a ring at 32057 that is reduced and not Cohen-Macaulay, or nonreduced and
-Cohen-Macaulay. This case was written into the record after the launch. Measured peak resident set: 1.4 GB (E8-bar)
-and 2.0 GB (W8). The products files `sq.txt` and `nf-d2.txt` of these two cells (166 and 39 MB, 209 and 61 MB) are
+Cohen-Macaulay. This case was written into the record after the launch. Measured peak memory, from the stage
+receipts in `receipt-d2.json`: the Singular products stage 4.90 GiB (E8-bar, 5,261,334,937 bytes) and 6.80 GiB (W8,
+7,301,444,403 bytes), the linear-algebra stage 1.33 and 1.94 GiB, the membership stage 1.0 and 1.2 GiB. The products files `sq.txt` and `nf-d2.txt` of these two cells (166 and 39 MB, 209 and 61 MB) are
 retained for analysis. Each file above 50 MB is split into 45 MiB parts `FILE.part00`, `FILE.part01`, ..., as in
 `working/` (`../README.md`), and `cat FILE.part* > FILE` restores it; the 39 MB `e8-nm/d2/nf-d2.txt` stays whole. Each
 `receipt-d2.json` binds `nf-d2.txt` by `normal_form_sha256`. The `pr.yml` checkouts skip these blobs, since no check
