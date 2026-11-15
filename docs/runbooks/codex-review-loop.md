@@ -6,9 +6,9 @@ then Copilot only when the Codex round needed a fix, then the owner
 
 Codex, the chatgpt-codex-connector app, reviews only on request: an issue
 comment `@Codex review` asks for a review of the current head; the mention
-carries the capital C, since a lowercase `@codex review` has left the round
-Running without a result (owner, 2026-11-15;
-[codex-review-stalls.md](codex-review-stalls.md)). The operator
+carries the capital C by the owner's ruling of 2026-11-15
+([codex-review-stalls.md](codex-review-stalls.md) holds the measurements).
+The operator
 requests one when the PR is a merge candidate, through
 `scripts/codex_review_request.sh PR`: it refuses a request when the PR's own
 diff (`git patch-id --verbatim` of merge-base..head against current main,
