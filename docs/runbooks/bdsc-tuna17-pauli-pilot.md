@@ -32,12 +32,14 @@ approved ([AGENTS.md](../../AGENTS.md#hardware-services)).
 ## Dry run
 
 1. Run the identical cQASM on qxelarator, which needs no account or queue,
-   once per series: `"$QI_PYTHON" -I scripts/qx_local_series.py results/quantum_inspire/cases/bdsc_pauli_tuna_17 OUT/tuna 4096`
-   and the same for `bdsc_pauli_qx` into `OUT/qx`, with
+   once per series: `"$QI_PYTHON" -I scripts/qx_local_series.py results/quantum_inspire/cases/bdsc_pauli_tuna_17 OUT/tuna 4096 --seed qrng:DRAW#INDEX`
+   and the same for `bdsc_pauli_qx` into `OUT/qx` (each run takes its own
+   QRNG value, `docs/notes/qrng/README.md`), with
    `QI_PYTHON=$HOME/.local/share/quantuminspire/venv/bin/python`
    ([qx-runs.md](../notes/quantum_inspire/qx-runs.md)). Each writes
    `OUT/.../batch-NN/` with a cases.json that records the shots run, the
-   simulator version and `control: local_qxelarator`, and `raw/<file>.json`
+   simulator version, the seed spelling, every circuit's derived seed and
+   `control: local_qxelarator`, and `raw/<file>.json`
    for every circuit.
 2. `"$PYTHON" scripts/qi_bdsc_pauli_cases.py --analyze OUT/tuna/batch-* --out OUT/tuna-analysis.json`
    (and `OUT/qx`). The claim kind reads "emulator control". Every witness
