@@ -470,7 +470,8 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
 The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the
-reconciliation of their findings.
+reconciliation of their findings; the [review record of the residual rows](../../archive/reviews/pr907/README.md)
+holds those of the rows from `A5-537` on.
 
 The count of quadrics on each image (`A5-434`, superseded by `A5-460`) is tested and taken apart in the next
 subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of
