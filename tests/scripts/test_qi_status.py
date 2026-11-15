@@ -5,6 +5,8 @@ per dashboard, sections that fail alone, queue scopes kept apart, and calibratio
 from __future__ import annotations
 
 import datetime
+import json
+import sys
 from typing import Any
 
 import pytest
@@ -150,7 +152,9 @@ def test_account_joins_instances_and_both_queue_scopes() -> None:
     changed.gateset = ["CZ", "X90"]
     if status.account(changed, NOW)["backend_types"][0]["definition_sha256"] == row["definition_sha256"]:
         raise AssertionError("a changed gate set kept the definition digest")
-    if "extra" in row["queue_all"] or [item["name"] for item in found["retired"]] != ["Spin-2+"]:
+    if "extra" in row["queue_all"] or [(item["name"], item["backend_type_id"]) for item in found["unlisted"]] != [
+        ("Spin-2+", 2)
+    ]:
         raise AssertionError(found)
     if [params for path, params in client.asked if path.endswith("/queue")] != [
         {"user_only": False},
@@ -254,7 +258,11 @@ def test_a_body_of_another_shape_fails_its_own_section_only() -> None:
     )
     found = status.document(None, http, pause=no_pause)
     boards = found["dashboards"]
-    if boards["tuna-17"]["calibration"]["state"] != "http-error" or "AttributeError" not in boards["tuna-9"]["error"]:
+    shape = boards["tuna-9"]["calibration"]
+    if boards["tuna-17"]["calibration"]["state"] != "http-error" or shape["state"] != "unread":
+        raise AssertionError(boards)
+    # The panel's failure stays with the panel: the dashboard keeps its notices.
+    if "AttributeError" not in shape["error"] or boards["tuna-9"]["notices"] != ["[2026-10-22] Data withheld."]:
         raise AssertionError(boards)
     if "current" not in found["platform"]:
         raise AssertionError(found["platform"])
@@ -303,3 +311,43 @@ def test_a_failed_panel_query_is_named_beside_the_panels_that_read() -> None:
     steady = status.platform_status(Transport({}), no_pause)
     if steady["history_reach"] != {"state": "data", "http_status": 200}:
         raise AssertionError(steady["history_reach"])
+
+
+class Dropped(Transport):
+    """The Status history panel and the second "Latest" panel fail in transport after the first reads succeed."""
+
+    def post(self, url: str, **_options: Any) -> Response:
+        if "/panels/2/" in url or "/panels/5/" in url:
+            raise ConnectionError("read timed out from 192.0.2.7")
+        return super().post(url, **_options)
+
+
+def test_a_transport_failure_on_a_later_panel_keeps_what_was_read() -> None:
+    live = (200, {"results": {"A": {"status": 200, "frames": [frame("Q0", [1792703520000], [41.5])]}}})
+    http = Dropped({"tuna-17": live})
+    platform = status.platform_status(http, no_pause)
+    if "Tuna-9" not in platform["current"] or platform["history"] != {}:
+        raise AssertionError(platform)
+    if platform["history_reach"]["state"] != "unread" or "<address>" not in platform["history_reach"]["error"]:
+        raise AssertionError(platform["history_reach"])
+    board = status.backend_dashboard("tuna-17", http, no_pause)
+    if list(board["latest"]) != ["Latest T1"] or board["latest_unread"]["Latest T2R"]["state"] != "unread":
+        raise AssertionError(board)
+    if board["notices"] != ["[2026-10-22] Data withheld."]:
+        raise AssertionError(board)
+
+
+def test_an_exit_while_importing_the_client_leaves_the_public_sections(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    class Exiting:
+        def __getattr__(self, name: str) -> Any:
+            raise SystemExit("QI_HARDWARE_PAUSE_SECONDS must be one of 30, 60, 90, 120")
+
+    monkeypatch.setitem(sys.modules, "qi_platform", Exiting())
+    monkeypatch.setattr(status, "document", lambda client, account_error="": {"client": client, "why": account_error})
+    if status.main([]) != 0:
+        raise AssertionError("the command exited nonzero")
+    printed = json.loads(capsys.readouterr().out)
+    if printed != {"client": None, "why": "SystemExit: QI_HARDWARE_PAUSE_SECONDS must be one of 30, 60, 90, 120"}:
+        raise AssertionError(printed)

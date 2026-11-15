@@ -106,6 +106,7 @@ def _instance(row: dict[str, Any], now: datetime.datetime) -> dict[str, Any]:
     beat = datetime.datetime.fromisoformat(row["last_heartbeat"].replace("Z", "+00:00"))
     return {
         "name": row["name"],
+        "backend_type_id": row["backend_type_id"],
         "status": row["status"],
         "message": (row.get("message") or {}).get("content", ""),
         "last_heartbeat": row["last_heartbeat"],
@@ -114,7 +115,11 @@ def _instance(row: dict[str, Any], now: datetime.datetime) -> dict[str, Any]:
 
 
 def account(client: Any, now: datetime.datetime | None = None) -> dict[str, Any]:
-    """Backend types with their instances and both queue scopes; instances of no listed type are `retired`."""
+    """Backend types with their instances and both queue scopes.
+
+    An instance whose type GET /backend_types/ leaves out is `unlisted` and keeps its backend_type_id: the list
+    names the reason for no absence, so the row claims none.
+    """
     now = now or datetime.datetime.now(datetime.UTC)
     types = client.pages("/backend_types/")
     instances = client.pages("/backends")
@@ -132,7 +137,7 @@ def account(client: Any, now: datetime.datetime | None = None) -> dict[str, Any]
     listed = {backend_type["id"] for backend_type in types}
     return {
         "backend_types": rows,
-        "retired": [_instance(item, now) for item in instances if item["backend_type_id"] not in listed],
+        "unlisted": [_instance(item, now) for item in instances if item["backend_type_id"] not in listed],
         "read_utc": now.isoformat(),
     }
 
@@ -213,10 +218,11 @@ def platform_status(http: Any, pause: Pause = time.sleep) -> dict[str, Any]:
     history_reach: dict[str, Any] = {"state": "no-panels"}
     if ranged is not None:
         pause(PANEL_PAUSE_SECONDS)
-        code, answer = _panel(http, token, ranged["id"])
-        # A failed history query is no empty history: its layer and error text travel beside the series.
-        history_reach = _reach(code, answer)
-        history = {_name(row): transitions(row["points"]) for row in _series(answer)}
+        # A failed history query is no empty history: its layer and error text travel beside the series, and the
+        # current values already read stay.
+        history_reach, answer = _read_panel(http, token, ranged["id"])
+        if history_reach["state"] == "data":
+            history = {_name(row): transitions(row["points"]) for row in _series(answer)}
     return {
         "value_text": monitoring.value_text(latest),
         "current": {name: {"utc": point[0], "value": point[1]} for name, point in sorted(current.items())},
@@ -226,6 +232,15 @@ def platform_status(http: Any, pause: Pause = time.sleep) -> dict[str, Any]:
         "version": body["dashboard"].get("version"),
         "updated": body.get("meta", {}).get("updated"),
     }
+
+
+def _read_panel(http: Any, token: str, panel_id: int) -> tuple[dict[str, Any], Any]:
+    """One panel's reach and body; a transport or shape failure reads as state `unread` with its redacted text."""
+    try:
+        status, body = _panel(http, token, panel_id)
+        return _reach(status, body), body
+    except READ_ERRORS as error:
+        return {"state": "unread", **_error(error)}, None
 
 
 def _reach(status: int, body: Any) -> dict[str, Any]:
@@ -267,8 +282,7 @@ def backend_dashboard(name: str, http: Any, pause: Pause = time.sleep) -> dict[s
     for index, panel in enumerate(latest_panels):
         if index:
             pause(PANEL_PAUSE_SECONDS)
-        status, answer = _panel(http, token, panel["id"])
-        reach = _reach(status, answer)
+        reach, answer = _read_panel(http, token, panel["id"])
         title = panel.get("title", str(panel["id"]))
         if index == 0:
             found["calibration"] = reach
@@ -331,7 +345,9 @@ def main(argv: list[str]) -> int:
             from qi_platform import Client  # noqa: PLC0415 - the public read needs no SDK
 
             client = Client()
-        except Exception as error:  # noqa: BLE001 - the SDK's authorization error derives from Exception alone
+        # The SDK's authorization error derives from Exception alone, and importing qi_platform exits on an
+        # environment value it rejects (QI_HARDWARE_PAUSE_SECONDS); both leave the public sections readable.
+        except (Exception, SystemExit) as error:  # noqa: BLE001
             reason = f"{type(error).__name__}: {error}"
     print(json.dumps(document(client, account_error=reason), indent=1, ensure_ascii=False))
     return 0
