@@ -276,3 +276,30 @@ def test_an_authorization_failure_of_the_client_fails_the_account_section_only()
         raise AssertionError(found["account"])
     if "current" not in found["platform"] or len(found["dashboards"]) != len(status.BACKEND_DASHBOARDS):
         raise AssertionError(found)
+
+
+class Flaky(Transport):
+    """The Status history panel and the second "Latest" panel answer a datasource error; the others answer data."""
+
+    def post(self, url: str, **_options: Any) -> Response:
+        if "/panels/2/" in url or "/panels/5/" in url:
+            self.posted.append(("failed", int(url.split("/panels/")[1].split("/")[0])))
+            return Response(502, {"results": {"A": {"status": 502, "error": "datasource timeout"}}})
+        return super().post(url, **_options)
+
+
+def test_a_failed_panel_query_is_named_beside_the_panels_that_read() -> None:
+    live = (200, {"results": {"A": {"status": 200, "frames": [frame("Q0", [1792703520000], [41.5])]}}})
+    http = Flaky({"tuna-17": live})
+    platform = status.platform_status(http, no_pause)
+    want = {"state": "datasource-error", "http_status": 502, "error": "datasource timeout"}
+    if platform["history"] != {} or platform["history_reach"] != want or "Tuna-9" not in platform["current"]:
+        raise AssertionError(platform)
+    board = status.backend_dashboard("tuna-17", http, no_pause)
+    if board["calibration"]["state"] != "data" or list(board["latest"]) != ["Latest T1"]:
+        raise AssertionError(board)
+    if board["latest_unread"] != {"Latest T2R": want}:
+        raise AssertionError(board["latest_unread"])
+    steady = status.platform_status(Transport({}), no_pause)
+    if steady["history_reach"] != {"state": "data", "http_status": 200}:
+        raise AssertionError(steady["history_reach"])

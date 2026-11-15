@@ -10,7 +10,9 @@ its refresh margin and which --public-only never reaches.
   passes) as served, so a changed device definition shows as a changed digest;
 - QuTech's public Grafana dashboards (no account, through qi_monitoring.py): the Status dashboard's value per
   backend type with its history, and for each backend dashboard its dated notices and whether its calibration
-  datasource answers. While it answers, the document carries the latest per-qubit value of every "Latest" panel.
+  datasource answers. While it answers, the document carries the latest per-qubit value of every "Latest"
+  panel, and each panel query that fails or holds no value is named with its layer (`history_reach`,
+  `latest_unread`).
 
 Each section fails alone: a section that cannot be read holds `{"error": TEXT}` and the others stay. The document
 names no team, member or user, and every error text passes redact(), which replaces network addresses and
@@ -208,15 +210,19 @@ def platform_status(http: Any, pause: Pause = time.sleep) -> dict[str, Any]:
     if not current:
         raise monitoring.MonitoringError(f"Status panel {latest['id']} returned no series")
     history: dict[str, list[list[Any]]] = {}
+    history_reach: dict[str, Any] = {"state": "no-panels"}
     if ranged is not None:
         pause(PANEL_PAUSE_SECONDS)
-        _, answer = _panel(http, token, ranged["id"])
+        code, answer = _panel(http, token, ranged["id"])
+        # A failed history query is no empty history: its layer and error text travel beside the series.
+        history_reach = _reach(code, answer)
         history = {_name(row): transitions(row["points"]) for row in _series(answer)}
     return {
         "value_text": monitoring.value_text(latest),
         "current": {name: {"utc": point[0], "value": point[1]} for name, point in sorted(current.items())},
         "window": body["dashboard"].get("time"),
         "history": history,
+        "history_reach": history_reach,
         "version": body["dashboard"].get("version"),
         "updated": body.get("meta", {}).get("updated"),
     }
@@ -257,20 +263,28 @@ def backend_dashboard(name: str, http: Any, pause: Pause = time.sleep) -> dict[s
     if not latest_panels:
         return {**found, "calibration": {"state": "no-panels"}}
     latest: dict[str, list[dict[str, Any]]] = {}
+    unread: dict[str, dict[str, Any]] = {}
     for index, panel in enumerate(latest_panels):
         if index:
             pause(PANEL_PAUSE_SECONDS)
         status, answer = _panel(http, token, panel["id"])
+        reach = _reach(status, answer)
+        title = panel.get("title", str(panel["id"]))
         if index == 0:
-            found["calibration"] = _reach(status, answer)
-            if found["calibration"]["state"] != "data":
+            found["calibration"] = reach
+            if reach["state"] != "data":
                 return found
-        latest[panel.get("title", str(panel["id"]))] = [
+        elif reach["state"] != "data":
+            # A later panel that fails or holds no value is named with its layer, apart from the panels that read.
+            unread[title] = reach
+            continue
+        latest[title] = [
             {"name": row["name"], "labels": row["labels"], "utc": row["points"][-1][0], "value": row["points"][-1][1]}
             for row in _series(answer)
             if row["points"]
         ]
     found["latest"] = latest
+    found["latest_unread"] = unread
     return found
 
 
