@@ -209,17 +209,20 @@ The owner approved the second job of block 1 after the local review round. `resu
 920000 of 960000 samples (the `iterations` list of `results.json` holds 23 entries of 40000 samples and a 24th marked `missing`); `--admit-only` refuses it ("the job did not complete"). The usage report moved by one job and 1.0
 credit (free credits 23 to 24, jobs 25 to 26). Collection exited 0 and kept the partial counts (`partial` true).
 
-The second job of the same shape separates the two readings of the first job's 300 s: the simulator needs more than 300 s
-for a 24-iteration request of this shape, and the first job finished at the limit's margin. The two jobs bound the
-per-iteration time: at most 12.5 s for b1-j1 (24 iterations inside 300 s) and about 13 s for b1-j2 (23 iterations inside
-300 s, the 24th unfinished). `hypothesis:` the request's cost is the simulator's per-iteration cost, about 12.5 to 13 s, and
-the margin of b1-j1 was luck of load; the falsifier is a job of this shape completing again well inside 300 s. Consequence: a four-job rehearsal of this
-tree is not a 300 s-bounded procedure, stages B and C were not submitted, and a shape that fits (fewer iterations per job)
-is a change of the preregistered request that needs the full review course before its approval.
+The two records bound end-to-end job throughput, not individual iteration latency: b1-j1 returned 960000 samples with a
+reported duration of 300 s, while b1-j2 returned 920000 samples with a reported duration of 305 s and its 24th iteration
+missing. The b1-j2 observation demonstrates that this frozen request can exceed the platform's 300 s limit; the records hold
+no iteration timestamps and no provider load measurement, so they identify neither a per-iteration cost nor the cause of the
+difference between the two jobs. `hypothesis:` the completion time of this request shape varies near the service limit.
+Falsifier: a repeat of b1-j2 that completes well inside 300 s; a controlled repeat with provider timing or load telemetry
+would separate request cost from service variation. Consequence: a four-job rehearsal of this tree is not a 300 s-bounded
+procedure, stages B and C were not submitted, and a request that fits (fewer iterations per job) is a change of the
+preregistered request that needs a new preregistration, a fresh resource estimate, the full review course and the owner's
+approval before any submission.
 
-The merge of the current-case-source check into `qd_platform.load_case` changed the digest of `scripts/qd_platform.py`, which
-the tree binds, so the tree was rebuilt under a new name from a new QRNG draw:
-`results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos_v2` (draw `docs/evidence/anu_qrng/draw-2026-11-15T190401Z.json`,
-`bdsc_diagnostic_acquisition_case.py --check` matches a fresh build, and the plan of its `b1-j2` request reads the merged
-digests). The earlier tree and the two retained runs keep their bytes and their old digests, so a later `collect` or plan of
-those directories refuses with `reviewed source changed: scripts/qd_platform.py`, the property `successor_sources` has.
+PR 920 changed the digest of `scripts/qd_platform.py`, which the tree binds, so the retained tree and runs now refuse a later
+plan or collect with `reviewed source changed: scripts/qd_platform.py` (the property `successor_sources` has). A rebuild of the
+same frozen request on the merged digest was built on 2026-11-15 and withdrawn in the same change: its manifests read
+`acquisition_admission: ready` and carry the 176.16 s estimate that the two jobs disproved, so a tree of this shape is not
+acquisition-ready. The free ANU draw taken for it, `docs/evidence/anu_qrng/draw-2026-11-15T190401Z.json`, stays unclaimed for
+the reviewed successor.
