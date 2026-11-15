@@ -102,3 +102,82 @@ def error_laws(
     probability = np.abs(psi) ** 2
     order = [0, *(axis_of[q] + 1 for q in outcome_qubits)]
     return np.asarray(probability.transpose(order).reshape(count, 2**width))
+
+
+def damping_kraus(amplitude: float, phase: float) -> list[np.ndarray]:
+    """Kraus operators of amplitude damping `amplitude` followed by phase damping `phase` on one qubit."""
+    a0 = np.array([[1, 0], [0, math.sqrt(1 - amplitude)]], dtype=complex)
+    a1 = np.array([[0, math.sqrt(amplitude)], [0, 0]], dtype=complex)
+    p0 = np.array([[1, 0], [0, math.sqrt(1 - phase)]], dtype=complex)
+    p1 = np.array([[0, 0], [0, math.sqrt(phase)]], dtype=complex)
+    return [p @ a for p in (p0, p1) for a in (a0, a1) if np.any(p @ a)]
+
+
+def channel_laws(
+    operations: Sequence[Operation],
+    region: Sequence[int],
+    outcome_qubits: Sequence[int],
+    pulse_angles: Mapping[int, float],
+    items: Sequence[Item],
+    pulse_kraus: Sequence[np.ndarray] = (),
+    cz_kraus: Sequence[np.ndarray] = (),
+) -> np.ndarray:
+    """error_laws on a density matrix, with a single-qubit channel after every pulse (`pulse_kraus`) and on each
+    qubit of every CZ after it (`cz_kraus`); an empty Kraus list is no channel. Shape (values, 2 ** len(region)).
+    The unitaries and error items follow error_laws' rules, so with no channel the two functions agree."""
+    if not items:
+        raise ValueError("at least one (candidate, values) pair fixes the number of rows")
+    count = len(items[0][1])
+    if any(len(values) != count for _, values in items):
+        raise ValueError("every pair carries the same number of values")
+    if sorted(outcome_qubits) != sorted(region):
+        raise ValueError("outcome_qubits is a permutation of region")
+    axis_of = {q: i for i, q in enumerate(region)}
+    n = len(region)
+    rho = np.zeros((count, *(2,) * (2 * n)), complex)
+    rho.reshape(count, -1)[:, 0] = 1
+    index = np.indices((2,) * n)
+
+    def apply_one(rho: np.ndarray, qubit: int, ops: np.ndarray) -> np.ndarray:
+        """rho -> sum_k K rho K^dagger on one qubit; `ops` has shape (count or 1, k, 2, 2)."""
+        a = axis_of[qubit]
+        moved = np.moveaxis(rho, (1 + a, 1 + n + a), (-2, -1))
+        k = ops if ops.shape[0] == count else np.broadcast_to(ops, (count, *ops.shape[1:]))
+        out = np.einsum("bkij,b...jl,bkml->b...im", k, moved, k.conj())
+        return np.moveaxis(out, (-2, -1), (1 + a, 1 + n + a))
+
+    pulse_ops = np.asarray(pulse_kraus, complex)[None] if len(pulse_kraus) else None
+    cz_ops = np.asarray(cz_kraus, complex)[None] if len(cz_kraus) else None
+    for gate, angle, qubits in operations:
+        if gate == "CZ":
+            coupler = tuple(sorted(qubits))
+            phase = np.zeros(count)
+            for (kind, first, _second), values in items:
+                if kind == "cz" and (first is None or coupler == first):
+                    phase = phase + values
+            diag = np.where(index[axis_of[qubits[0]]] * index[axis_of[qubits[1]]] == 1, 1.0, 0.0)
+            ket = np.exp(1j * (np.pi + phase))[(slice(None), *(None,) * n)] * diag[None] + (1 - diag[None])
+            for (kind, first, second), values in items:
+                if kind == "czz" and first in qubits and (second is None or coupler == second):
+                    ket = ket * np.exp(1j * values[(slice(None), *(None,) * n)] * (index[axis_of[first]][None] - 0.5))
+            rho = rho * ket[(..., *(None,) * n)] * ket.conj()[(slice(None), *(None,) * n, ...)]
+            if cz_ops is not None:
+                for q in qubits:
+                    rho = apply_one(rho, q, cz_ops)
+            continue
+        qubit = qubits[0]
+        if gate == "Rz":
+            unitary = np.broadcast_to(rotation("z", float(angle or 0.0)), (count, 2, 2))
+        else:
+            unitary = np.broadcast_to(rotation("x", pulse_angles.get(qubit, math.pi / 2)), (count, 2, 2))
+            for (kind, first, second), values in items:
+                if kind == "pulse" and (second is None or qubit == second):
+                    error = rotations(first[0], values)
+                    unitary = unitary @ error if first[1] == "b" else error @ unitary
+        rho = apply_one(rho, qubit, np.asarray(unitary)[:, None])
+        if gate != "Rz" and pulse_ops is not None:
+            rho = apply_one(rho, qubit, pulse_ops)
+    letters = "cdefghijkl"[:n]
+    diagonal = np.real(np.einsum(f"z{letters}{letters}->z{letters}", rho))
+    order = [0, *(axis_of[q] + 1 for q in outcome_qubits)]
+    return np.asarray(diagonal.transpose(order).reshape(count, 2**n))
