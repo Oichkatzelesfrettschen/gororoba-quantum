@@ -433,10 +433,17 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `rank M(p) = 2 rank B(p)` for the 7 x 8 block `B` and the rank is constant on `l_z` minus 0; unit ideals in the
   ring of `x = (rho - sigma, v_1, mu)` modulo the cone `x.x = 0` fix `rank B` at 4 off `mu = 0` and 3 on it.
   Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py --check` (about 10 s).
-- `hypothesis` (`A5-538`): at a real point with kernel plane `l_z` the conjugate plane is orthogonal to
-  `C(l_z)` or cuts it to the line of `z`, so `dim L` is 2, 6 or 12; no retained point has `dim L` of 4, 8 or 10.
-- `hypothesis` (`A5-539`): the real points of orbit rank 13 are the points in one quaternion subalgebra; this
-  holds at the 66 fixtures.
+- `A5-538`, superseded by `A5-550` (proved) and `A5-551` (open), both from `nullity4_real_polar_line.py` (record
+  `nullity4-real-polar-line-result.json`). A kernel vector `p` with `conjugate(p).p` nonzero has real nullity
+  `2 (nullity M(p) - 1)`, so 12 and 16 on `l_z`. Where `mu = 0`, `l_z` lies in `E_eps = {(a; 0; eps i a)}` and
+  `C(l_z)` in `C z + E_(-eps)`; these subspaces are Hermitian-orthogonal and preserved by the group, so `P = l_z`
+  gives `dim L = 12`, and 8 and 10 never occur. Where `mu` is nonzero, `dim L` is 2, 4 or 6. `hypothesis`
+  (`A5-551`): 4 occurs; two double-precision points have `P = l_z` and `dim L = 4` (singular-value gaps 0.49 and
+  0.28 above zeros near 1e-15), and no exact or interval-certified point is known.
+- `A5-539`, proved (same producer): at every point with `Delta` nonzero the orbit rank is 16 minus the dimension
+  of the stabilizer of the real span of `u` and `v` in the compact `g_2`, which is 3 in quaternion position and 0
+  otherwise, so the orbit rank is 13 exactly in quaternion position and 16 elsewhere. Replay:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py --check` (about 4 s).
 - `A5-540`, proved (`nullity4_quartic_discriminant.py` with two Singular scripts, record
   `nullity4-quartic-discriminant-result.json`): the singular scheme has length `3 + deg gcd(chi, chi')` at every
   point, with an `A_{2e-1}` point at the base point of a root of multiplicity `e`, and the quartic is absolutely

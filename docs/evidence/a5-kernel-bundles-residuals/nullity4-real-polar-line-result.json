@@ -1,0 +1,304 @@
+{
+ "calibrations": [
+  {
+   "fiber_dimension_of_L_z": 3,
+   "fiber_gap_above_1e-3": true,
+   "kernel_dimension": 3,
+   "kernel_plane_dimension": 2,
+   "kernel_singular_values_below_1e-9": true,
+   "mu_modulus_above_0.1": true,
+   "norm_square_modulus_above_0.1": true,
+   "polar_vector_ranks": [
+    8,
+    8,
+    8
+   ]
+  },
+  {
+   "fiber_dimension_of_L_z": 6,
+   "fiber_gap_above_1e-3": true,
+   "kernel_dimension": 3,
+   "kernel_plane_dimension": 2,
+   "kernel_singular_values_below_1e-9": true,
+   "mu_modulus_above_0.1": false,
+   "norm_square_modulus_above_0.1": true,
+   "polar_vector_ranks": [
+    6,
+    6,
+    6
+   ]
+  }
+ ],
+ "claims": {
+  "fiber": {
+   "dim_L_4_exact": false,
+   "dim_L_4_floating_point_witnesses": 2,
+   "mu_nonzero_dim_C": 3,
+   "mu_nonzero_dim_L_possible": [
+    2,
+    4,
+    6
+   ],
+   "mu_zero_with_P_equal_l_z": {
+    "dim_C": 6,
+    "dim_L": 12
+   },
+   "nullity_of_kernel_vectors_at_dim_L_6_and_12": [
+    12,
+    16
+   ]
+  },
+  "orbit rank": {
+   "fixtures_agreeing": 64,
+   "fixtures_checked": 64,
+   "fixtures_with_delta_zero": 2,
+   "rank_13_exactly_in_quaternion_position": true,
+   "values_where_delta_is_nonzero": [
+    13,
+    16
+   ]
+  }
+ },
+ "field": "Q and Q(i) with integer samples named by label; double precision for the two witnesses",
+ "first_order_pairings": [
+  {
+   "dim_of_S": 4,
+   "imaginary_part_is_definite": true,
+   "rank_of_dF": 4,
+   "real_part_of_det_is_zero": true
+  },
+  {
+   "dim_of_S": 4,
+   "imaginary_part_is_definite": true,
+   "rank_of_dF": 4,
+   "real_part_of_det_is_zero": true
+  },
+  {
+   "dim_of_S": 4,
+   "imaginary_part_is_definite": true,
+   "rank_of_dF": 4,
+   "real_part_of_det_is_zero": true
+  },
+  {
+   "dim_of_S": 4,
+   "imaginary_part_is_definite": true,
+   "rank_of_dF": 4,
+   "real_part_of_det_is_zero": true
+  }
+ ],
+ "fixture_agreement": {
+  "agreeing": 64,
+  "checked": 64,
+  "gram_zero": 2
+ },
+ "fixture_kernel_nullities": {
+  "agree": 66,
+  "fixtures": 66
+ },
+ "identities": {
+  "base_action_is_the_derivations_phase_and_scaling": true,
+  "eigenlines_are_hermitian_orthogonal": true,
+  "frame_stabilizer_is_su2_acting_freely_on_the_complement": true,
+  "real_nullity_of_a_kernel_vector": true,
+  "rotation_acts_by_scalars_on_the_eigenlines": true
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-gauss-image-result.json": "8c2b82678a84186cb5f371996cb657503bbb41a2d79a170ad92f46a04467508f",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py": "24318a1cbcce62f5b9d18eb2e1515a8de77ba39fae1d9740399bc55638cc2d47",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py": "b32892b6004185bd8bd4f02267700a5539bf3f7ca6c7ff02d3d45138f267d526",
+  "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+  "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b"
+ },
+ "mu_zero_kernels_independent_of_v_1": [
+  true,
+  true,
+  true,
+  true
+ ],
+ "mu_zero_lines": [
+  [
+   6,
+   -1,
+   true,
+   0,
+   5,
+   1
+  ],
+  [
+   6,
+   -1,
+   true,
+   0,
+   5,
+   1
+  ],
+  [
+   6,
+   1,
+   true,
+   0,
+   1,
+   5
+  ],
+  [
+   6,
+   1,
+   true,
+   0,
+   1,
+   5
+  ],
+  [
+   6,
+   1,
+   true,
+   0,
+   1,
+   5
+  ],
+  [
+   6,
+   1,
+   true,
+   0,
+   1,
+   5
+  ],
+  [
+   6,
+   -1,
+   true,
+   0,
+   5,
+   1
+  ],
+  [
+   6,
+   -1,
+   true,
+   0,
+   5,
+   1
+  ]
+ ],
+ "orbit_rank_samples": {
+  "gram zero calibration": [
+   12
+  ],
+  "other position": [
+   16
+  ],
+  "quaternion position": [
+   13
+  ]
+ },
+ "pass": true,
+ "schema": "a5-kernel-bundles-residuals-nullity4-real-polar-line-v1",
+ "witness_singular_values": [
+  {
+   "M(z)": [
+    "10",
+    "10",
+    "7.4",
+    "7.4",
+    "5.6",
+    "5.6",
+    "1.8",
+    "1.8",
+    "0.95",
+    "0.95",
+    "0.59",
+    "0.59",
+    "0",
+    "0",
+    "0"
+   ],
+   "fiber system": [
+    "2.5",
+    "2.2",
+    "2",
+    "1.8",
+    "1.6",
+    "1.4",
+    "1.3",
+    "1.2",
+    "1.2",
+    "0.9",
+    "0.85",
+    "0.59",
+    "0.49",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "M(z)": [
+    "5.5",
+    "5.5",
+    "4",
+    "4",
+    "2.8",
+    "2.8",
+    "1.1",
+    "1.1",
+    "0.68",
+    "0.68",
+    "0.25",
+    "0.25",
+    "0",
+    "0",
+    "0"
+   ],
+   "fiber system": [
+    "2.6",
+    "2.4",
+    "2.1",
+    "1.9",
+    "1.7",
+    "1.5",
+    "1.2",
+    "1.1",
+    "1.1",
+    "0.77",
+    "0.43",
+    "0.36",
+    "0.28",
+    "0",
+    "0"
+   ]
+  }
+ ],
+ "witnesses": [
+  {
+   "fiber_dimension_of_L_z": 2,
+   "fiber_gap_above_1e-3": true,
+   "kernel_dimension": 3,
+   "kernel_plane_dimension": 2,
+   "kernel_singular_values_below_1e-9": true,
+   "mu_modulus_above_0.1": true,
+   "norm_square_modulus_above_0.1": true,
+   "polar_vector_ranks": [
+    8,
+    8,
+    8
+   ]
+  },
+  {
+   "fiber_dimension_of_L_z": 2,
+   "fiber_gap_above_1e-3": true,
+   "kernel_dimension": 3,
+   "kernel_plane_dimension": 2,
+   "kernel_singular_values_below_1e-9": true,
+   "mu_modulus_above_0.1": true,
+   "norm_square_modulus_above_0.1": true,
+   "polar_vector_ranks": [
+    8,
+    8,
+    8
+   ]
+  }
+ ]
+}
