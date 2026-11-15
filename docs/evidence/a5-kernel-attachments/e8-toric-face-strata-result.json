@@ -1,0 +1,172 @@
+{
+ "schema": "gororoba.a5.e8-toric-face-strata/1",
+ "fields": {
+  "toric": "Q",
+  "strata": "Q(i)"
+ },
+ "inputs": {
+  "e8_toric_face_strata.py": "7ff2c435c1461d2e32979542361b0b11c5c040588fe456c718489f516355a257",
+  "e8_birational_degree.py": "8fb6dd51651f9be5054453c7cfb621cc31a50a21495c5955d88fcfab8c003ead",
+  "e8_component_geometry.py": "0ed4369a80aed9a157a1da0f0291bfe415907b5bc5d1a7ca38f67f658faf820c"
+ },
+ "polytope": {
+  "dimension": 4,
+  "points": 12,
+  "vertices": [
+   "a^3",
+   "b^3",
+   "a^2 z",
+   "b^2 z",
+   "a l",
+   "b l",
+   "z l",
+   "a m",
+   "b m"
+  ],
+  "facets": [
+   [
+    "a^3",
+    "a^2 b",
+    "a b^2",
+    "b^3",
+    "a^2 z",
+    "a b z",
+    "b^2 z",
+    "a l",
+    "b l",
+    "z l"
+   ],
+   [
+    "a^3",
+    "a^2 b",
+    "a b^2",
+    "b^3",
+    "a^2 z",
+    "a b z",
+    "b^2 z",
+    "a m",
+    "b m"
+   ],
+   [
+    "a^3",
+    "a^2 b",
+    "a b^2",
+    "b^3",
+    "a l",
+    "b l",
+    "a m",
+    "b m"
+   ],
+   [
+    "a^3",
+    "a^2 z",
+    "a l",
+    "z l",
+    "a m"
+   ],
+   [
+    "b^3",
+    "b^2 z",
+    "b l",
+    "z l",
+    "b m"
+   ],
+   [
+    "a^2 z",
+    "a b z",
+    "b^2 z",
+    "z l",
+    "a m",
+    "b m"
+   ],
+   [
+    "a l",
+    "b l",
+    "z l",
+    "a m",
+    "b m"
+   ]
+  ],
+  "monomials_of_the_degree": 16,
+  "lattice_points_outside": [],
+  "faces": {
+   "point": [
+    "z l"
+   ],
+   "line": [
+    "a m",
+    "b m"
+   ],
+   "plane": [
+    "z l",
+    "a m",
+    "b m"
+   ]
+  }
+ },
+ "toric": {
+  "generators": 25,
+  "generator_degrees": [
+   2
+  ],
+  "dimension": 5,
+  "multiplicity": 11,
+  "point": [
+   4,
+   4
+  ],
+  "line": [
+   4,
+   2
+  ],
+  "plane": [
+   4,
+   1
+  ],
+  "controls": {
+   "smooth_vertex": [
+    4,
+    1
+   ],
+   "without_z_l": [
+    5,
+    7
+   ]
+  }
+ },
+ "cells": [
+  {
+   "orbit": "N-",
+   "forms_sha256": "b3a371557dd1539e3cfee9b1c54cb114ecf5ad06ed7c6e300a073230799fe7fc",
+   "point_generators": 20,
+   "line_generators": 19,
+   "point_face_spans_the_point": true,
+   "line_face_spans_the_line": true,
+   "plane_face_rank": 3,
+   "columns_on_the_point": [
+    "z l"
+   ],
+   "columns_on_the_line": [
+    "a m",
+    "b m"
+   ]
+  },
+  {
+   "orbit": "N+",
+   "forms_sha256": "e071bd5ac443ab8728b99659d56d2e954234a34e6ebd332f8dc1620696280064",
+   "point_generators": 20,
+   "line_generators": 19,
+   "point_face_spans_the_point": true,
+   "line_face_spans_the_line": true,
+   "plane_face_rank": 3,
+   "columns_on_the_point": [
+    "z l"
+   ],
+   "columns_on_the_line": [
+    "a m",
+    "b m"
+   ]
+  }
+ ],
+ "pass": true
+}
