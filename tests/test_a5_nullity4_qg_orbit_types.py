@@ -69,10 +69,11 @@ def test_sigma_zero_agrees_with_the_chart_point_s_zero() -> None:
 
 def test_dimension_table_is_derived_from_the_minors() -> None:
     minors = {plane: dict(ot.STACK_MINORS[plane]) for plane in "xyz"}
-    table = ot.dimension_table(minors, ot.SPECIAL_DIMENSIONS, ot.SIGMA_FACTS[2], True)
+    sigma: Any = ot.SIGMA_FACTS[2]
+    table = ot.dimension_table(minors, ot.SPECIAL_DIMENSIONS, sigma, True)
     _same(table, ot.DIMENSION_TABLE)
     minors["x"]["factors"] = [*minors["x"]["factors"], ["s - 2", 1]]
-    _same(ot.dimension_table(minors, ot.SPECIAL_DIMENSIONS, ot.SIGMA_FACTS[2], True), {"inconsistent": []})
+    _same(ot.dimension_table(minors, ot.SPECIAL_DIMENSIONS, sigma, True), {"inconsistent": []})
 
 
 @pytest.mark.audit
