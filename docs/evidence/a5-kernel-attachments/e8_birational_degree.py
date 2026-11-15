@@ -669,7 +669,8 @@ def main() -> None:
         print("e8-birational-degree-result.json: pass")
         return
     record = build()
-    found = problems(record) + all_fixture_problems()
+    found = problems(record) + slice_problems(record) + all_fixture_problems()
+    record["pass"] = found == []
     RECORD.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps({"pass": record["pass"], "problems": found}, indent=1))
     if found:

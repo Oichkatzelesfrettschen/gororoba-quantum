@@ -318,6 +318,32 @@ def test_the_checker_rejects_each_mutation_of_a_record(name: str) -> None:
         raise AssertionError((name, found))
 
 
+def test_a_record_that_disagrees_with_the_weight_slice_record_is_written_as_failing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A constructed weight-slice record with 20 generators at N-: the written record must carry the full verdict.
+    cells = [
+        {
+            "orbit": cell["orbit"],
+            "characteristic": 0,
+            "source": "e8",
+            "generator_count": cell["generators"] - (cell["orbit"] == "N-"),
+            "generator_weights": cell["generator_weights"],
+        }
+        for cell in _record()["cells"]
+    ]
+    slice_path = tmp_path / "weight-slice.json"
+    slice_path.write_text(json.dumps({"cells": cells}), encoding="utf-8")
+    written = tmp_path / "record.json"
+    monkeypatch.setattr(birational, "WEIGHT_SLICE", slice_path)
+    monkeypatch.setattr(birational, "RECORD", written)
+    monkeypatch.setattr(birational, "build", _record)
+    monkeypatch.setattr(sys, "argv", ["e8_birational_degree.py"])
+    with pytest.raises(SystemExit):
+        birational.main()
+    _same(json.loads(written.read_text(encoding="utf-8"))["pass"], False)
+
+
 def test_the_slice_comparison_rejects_other_generators(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     cells = [
         {
