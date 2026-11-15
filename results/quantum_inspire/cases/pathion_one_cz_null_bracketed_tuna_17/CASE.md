@@ -287,7 +287,13 @@ single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted
   `core-pathion-one-cz-null-bracketed-qx-local-control`, which re-reads the retained counts and runs no new qxelarator
   execution; a local qxelarator run says nothing about the hosted emulator
   (the remote QX run below is the plumbing check) or about Tuna-17.
-- QX remote (type 1): the same series, a written case for the owner's approval (repository rule), 4 batches.
+- QX remote (type 1): the same series, 4 batches of 5 circuits at 2,048 shots, run on 2026-11-15 under the owner's approval
+  (runs `results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00` to `-03`, analysis
+  `results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json`, replay gate
+  `core-pathion-one-cz-null-bracketed-qx-analysis-replay`): `qx_control.pass` and `qx_brackets.pass` are true, so the
+  hosted emulator parses the batch of five circuits and returns its width and order. The series driver's default sanity
+  check refused the bracketed run directory after batch 0, so the run resumed under the same stamp with
+  `SANITY_COMMAND` naming `qi_pathion_one_cz_null_bracketed_cases.py --sanity`.
 - Ry (type 5): not built for the decision (predecessor CASE.md, owner decision 2026-11-07: 1,024 shots per job and an
   undocumented noise model). The one Ry check that adds information is the bracket arithmetic on a backend with nonzero
   readout error: a single `[readout-0, coin-0 twin, coin-1 twin, readout-1]` batch of b0 on a 5-qubit translation
