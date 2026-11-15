@@ -3436,28 +3436,28 @@
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-00",
       "family": "pathion one-CZ-null bracketed twin layout, QX control",
-      "question": "On the hosted QX emulator, does the in-batch bracketed layout of the Tuna-17 successor (five circuits per batch, 2048 shots) parse, return its width and order, and pass the noiseless control of the analyzer?"
+      "question": "On the hosted QX emulator, does this batch of the five-circuit QX control layout of the Tuna-17 bracketed successor (10 declared qubits, 2048 shots) parse, return 10-bit qubit-0-rightmost strings, and together with the other three batches pass the analyzer's noiseless control and bracket checks?"
     },
     {
       "id": "qi-pathion-one-cz-null-bracketed-qx-2026-11-15t184810-batch-01",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-01",
       "family": "pathion one-CZ-null bracketed twin layout, QX control",
-      "question": "On the hosted QX emulator, does the in-batch bracketed layout of the Tuna-17 successor (five circuits per batch, 2048 shots) parse, return its width and order, and pass the noiseless control of the analyzer?"
+      "question": "On the hosted QX emulator, does this batch of the five-circuit QX control layout of the Tuna-17 bracketed successor (10 declared qubits, 2048 shots) parse, return 10-bit qubit-0-rightmost strings, and together with the other three batches pass the analyzer's noiseless control and bracket checks?"
     },
     {
       "id": "qi-pathion-one-cz-null-bracketed-qx-2026-11-15t184810-batch-02",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-02",
       "family": "pathion one-CZ-null bracketed twin layout, QX control",
-      "question": "On the hosted QX emulator, does the in-batch bracketed layout of the Tuna-17 successor (five circuits per batch, 2048 shots) parse, return its width and order, and pass the noiseless control of the analyzer?"
+      "question": "On the hosted QX emulator, does this batch of the five-circuit QX control layout of the Tuna-17 bracketed successor (10 declared qubits, 2048 shots) parse, return 10-bit qubit-0-rightmost strings, and together with the other three batches pass the analyzer's noiseless control and bracket checks?"
     },
     {
       "id": "qi-pathion-one-cz-null-bracketed-qx-2026-11-15t184810-batch-03",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-03",
       "family": "pathion one-CZ-null bracketed twin layout, QX control",
-      "question": "On the hosted QX emulator, does the in-batch bracketed layout of the Tuna-17 successor (five circuits per batch, 2048 shots) parse, return its width and order, and pass the noiseless control of the analyzer?"
+      "question": "On the hosted QX emulator, does this batch of the five-circuit QX control layout of the Tuna-17 bracketed successor (10 declared qubits, 2048 shots) parse, return 10-bit qubit-0-rightmost strings, and together with the other three batches pass the analyzer's noiseless control and bracket checks?"
     },
     {
       "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-00",
