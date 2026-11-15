@@ -25,9 +25,10 @@ hardware backend type refuses, every finished job keeps its pause, and a batch i
 reach the row's queued count. A batch the service lists as queued, reserved or running with no listed job refuses,
 unless it is an earlier batch of the same backend type under a wave row. The pause clock is account-wide across every
 `is_hardware` type. The checks read one snapshot of the account and the local SUBMIT_LOCK excludes only sessions on one
-host, so the limit is not enforced across hosts, and the service owns the execution order of the queued batches (its
-terms allow priority without regard to the queue order), so an estimator that needs an order reads the retained
-`queued_at` times.
+host, so the limit is not enforced across hosts; recheck_before_enqueue repeats the checks from fresh reads just
+before the enqueue PATCH and narrows, without closing, that window, and the service owns the execution order of the
+queued batches (its terms allow priority without regard to the queue order), so an estimator that needs an order
+reads the retained `queued_at` times.
 
 An unknown or non-string policy name is refused before any service read, and every refusal precedes the first remote
 write.
@@ -110,14 +111,15 @@ def pause_seconds(policy: HardwarePolicy) -> int:
 
 
 def hardware_pause_state(
-    client: qi_platform.Client, pause: int, wave_backend_type_id: int | None = None
+    client: qi_platform.Client, pause: int, wave_backend_type_id: int | None = None, own_batch: int | None = None
 ) -> tuple[int, int]:
     """(seconds until every finished hardware job is `pause` seconds old, batches in flight).
 
     A job counts when its batch runs on a backend type with is_hardware set. An unfinished job refuses the batch, except
     in a batch that stayed un-enqueued for ABANDONED_PLANNING_SECONDS. `wave_backend_type_id` names the backend type of
     a wave policy's batch: its unfinished batches count as in flight and their jobs set no pause. Without it every
-    unfinished hardware job refuses.
+    unfinished hardware job refuses. `own_batch` names the submitter's own created, un-enqueued batch, which the
+    count leaves out (the re-read of recheck_before_enqueue).
     """
     types = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
     at = qi_platform.utc_now()
@@ -125,7 +127,7 @@ def hardware_pause_state(
     batch_status: dict[int, str] = {}
     batch_finished: dict[int, str | None] = {}
     for row in client.pages("/batch_jobs"):
-        if row["backend_type_id"] not in types:
+        if row["backend_type_id"] not in types or row["id"] == own_batch:
             continue
         if row["status"] == "planned":
             age = (at - datetime.datetime.fromisoformat(row["created_on"])).total_seconds()
@@ -208,6 +210,39 @@ def hardware_admission(
             left,
         )
     return queue_limit, left
+
+
+def recheck_before_enqueue(
+    client: qi_platform.Client,
+    cases: dict[str, Any],
+    backend_type: dict[str, Any],
+    backend_type_id: int,
+    own_batch: int,
+) -> None:
+    """Admission again, from fresh reads, immediately before the PATCH that queues the created batch, or SystemExit.
+
+    The first admission reads one snapshot, and the batch, its project and its jobs are created after it, so another
+    host, a web client or another SDK client can enqueue in between. This re-read leaves the submitter's own batch out
+    and refuses when the batches in flight reach the policy's queued count, when the account's current queue holds as
+    many, or when a finished job's pause has started since. It narrows that window to the time between this read and
+    the PATCH; it does not remove it (hypothesis: only a lease the service honors would; issue 893).
+    """
+    limits = hardware_limits(cases, backend_type)
+    wave = limits.queued_batches > 1
+    pause_left, rivals_in_flight = hardware_pause_state(
+        client, pause_seconds(limits), backend_type_id if wave else None, own_batch=own_batch
+    )
+    if rivals_in_flight + 1 > limits.queued_batches:
+        raise SystemExit(
+            f"the account has {rivals_in_flight} batches in flight at the enqueue; adding one exceeds the limit "
+            f"{limits.queued_batches}"
+        )
+    if pause_left > 0:
+        raise SystemExit(f"a finished hardware job started a pause of {pause_left} more seconds before the enqueue")
+    queued = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)["number_of_jobs_in_queue"]
+    queue_limit = min(backend_type["batchjobs_per_queue_limit"], limits.queued_batches)
+    if type(queued) is not int or queued < 0 or queued + 1 > queue_limit:
+        raise SystemExit(f"current-user queue has {queued} batches at the enqueue; adding one exceeds {queue_limit}")
 
 
 def submit(
@@ -397,6 +432,14 @@ def _submit(
         "jobs": jobs,
     }
     state["submission"] = record
+    if backend_type["is_hardware"]:
+        try:
+            recheck_before_enqueue(client, cases, backend_type, backend_type_id, batch["id"])
+        except SystemExit:
+            # The batch and its jobs exist and stay un-enqueued; the state file keeps a second submit out.
+            state.update(phase="enqueue-refused", enqueue_refused_utc=qi_platform.now())
+            qi_platform._write_json(state_path, state)
+            raise
     # Record uncertainty before sending: interruption or a lost response cannot leave an apparently unused case that a
     # second invocation can enqueue.
     state["phase"] = "enqueue_outcome_unknown"

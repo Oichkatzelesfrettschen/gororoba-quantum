@@ -580,3 +580,209 @@ def test_the_series_refuses_a_wave_list_beyond_its_policy(
     directory = series(tmp_path, waves, policy)
     with pytest.raises(SystemExit, match=message):
         drive(monkeypatch, directory, tmp_path)
+
+
+class Rival(Service):
+    """A service that accepts every write; once the submitter's last job exists, a rival client enqueues `arrival`."""
+
+    OWN_BATCH = 900
+
+    def __init__(
+        self, *args: Any, arrival: list[dict[str, Any]], arrival_jobs: list[dict[str, Any]], queued_after: int
+    ):
+        super().__init__(*args)
+        self.arrival = arrival
+        self.arrival_jobs = arrival_jobs
+        self.queued_after = queued_after
+        self.created_jobs = 0
+        self.patched: list[str] = []
+        self.counter = 1000
+
+    def post(self, path: str, body: dict[str, Any], **_kwargs: Any) -> Any:
+        self.writes.append(path)
+        self.counter += 1
+        if path == "/batch_jobs":
+            self.batches.append({**batch(self.OWN_BATCH, 7, "planned"), "created_on": NOW.isoformat()})
+            return {"id": self.OWN_BATCH}
+        if path == "/jobs":
+            self.created_jobs += 1
+            if self.created_jobs == 1:
+                self.batches.extend(self.arrival)
+                self.jobs.extend(self.arrival_jobs)
+                self.queued = self.queued_after
+        return {"id": self.counter}
+
+    def patch(self, path: str, **_kwargs: Any) -> Any:
+        self.patched.append(path)
+        return {}
+
+
+def rival_service(
+    monkeypatch: pytest.MonkeyPatch,
+    earlier: int,
+    *,
+    arrival: list[dict[str, Any]],
+    arrival_jobs: list[dict[str, Any]],
+    queued_after: int,
+) -> Rival:
+    batches = [batch(100 + i) for i in range(earlier)]
+    jobs = [job(200 + i, 100 + i, "queued") for i in range(earlier)]
+    fake = Rival(
+        backend(), batches, jobs, earlier, arrival=arrival, arrival_jobs=arrival_jobs, queued_after=queued_after
+    )
+
+    @contextmanager
+    def lock(_path: Path):
+        yield
+
+    monkeypatch.setattr(qi_platform, "Client", lambda *_a, **_k: fake)
+    monkeypatch.setattr(qi_platform, "token_lock", lock)
+    monkeypatch.setattr(qi_platform, "utc_now", lambda: NOW)
+    monkeypatch.setattr(qi_platform, "HARDWARE_PAUSE_SECONDS", 30)
+    return fake
+
+
+def state_phase(tmp_path: Path) -> str:
+    return str(json.loads((tmp_path / "submission-state.json").read_text())["phase"])
+
+
+def test_a_batch_that_a_rival_enqueues_after_admission_is_not_enqueued(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Two batches are queued when the admission reads them (two in flight, one slot left); a rival client then fills
+    # the slot, so the re-read before the enqueue sees three in flight and refuses to send the PATCH.
+    case(tmp_path, 2, hardware_policy="wave-v1")
+    fake = rival_service(monkeypatch, 2, arrival=[batch(300)], arrival_jobs=[job(400, 300, "queued")], queued_after=3)
+    with pytest.raises(SystemExit, match="3 batches in flight at the enqueue"):
+        wave.submit(tmp_path, 7, "fixture approval")
+    if fake.patched:
+        raise AssertionError(f"a refused batch was still enqueued: {fake.patched}")
+    if state_phase(tmp_path) != "enqueue-refused" or (tmp_path / "submission.json").exists():
+        raise AssertionError("the refusal left no enqueue-refused state or wrote a receipt")
+
+
+def test_the_enqueue_recheck_leaves_the_submitters_own_planned_batch_out(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    case(tmp_path, 2, hardware_policy="wave-v1")
+    fake = rival_service(monkeypatch, 2, arrival=[], arrival_jobs=[], queued_after=2)
+    record = wave.submit(tmp_path, 7, "fixture approval")
+    if fake.patched != [f"/batch_jobs/{Rival.OWN_BATCH}/enqueue"] or record["state"] != "enqueued":
+        raise AssertionError(f"patched {fake.patched}, receipt {record['state']}")
+
+
+def test_the_enqueue_recheck_refuses_a_rival_job_under_the_legacy_row(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    case(tmp_path, 2)
+    fake = rival_service(monkeypatch, 0, arrival=[batch(300)], arrival_jobs=[job(400, 300, "running")], queued_after=1)
+    with pytest.raises(SystemExit, match="hardware job 400 is running"):
+        wave.submit(tmp_path, 7, "fixture approval")
+    if fake.patched or state_phase(tmp_path) != "enqueue-refused":
+        raise AssertionError(f"patched {fake.patched}, phase {state_phase(tmp_path)}")
+
+
+def test_the_enqueue_recheck_refuses_when_the_account_queue_filled(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    case(tmp_path, 2, hardware_policy="wave-v1")
+    fake = rival_service(monkeypatch, 0, arrival=[], arrival_jobs=[], queued_after=3)
+    with pytest.raises(SystemExit, match="current-user queue has 3 batches at the enqueue"):
+        wave.submit(tmp_path, 7, "fixture approval")
+    if fake.patched:
+        raise AssertionError(f"patched {fake.patched}")
+
+
+class Live(Service):
+    """A service whose queue follows the writes: a created batch is planned, the enqueue PATCH queues it, and
+    `finish` completes it at the clock's time, so the real admission and the real series driver run against it."""
+
+    def __init__(self, clock: dict[str, datetime]):
+        super().__init__(backend(), [], [], 0)
+        self.clock = clock
+        self.counter = 1000
+        self.max_in_flight = 0
+
+    def get(self, path: str, *, execution_deadline: float | None = None, **params: Any) -> Any:
+        if path.endswith("/queue"):
+            return {
+                "number_of_jobs_in_queue": sum(row["status"] in wave.IN_FLIGHT_BATCH_STATUSES for row in self.batches)
+            }
+        return super().get(path, execution_deadline=execution_deadline, **params)
+
+    def post(self, path: str, body: dict[str, Any], **_kwargs: Any) -> Any:
+        self.counter += 1
+        if path == "/batch_jobs":
+            row = {
+                "id": self.counter,
+                "backend_type_id": 7,
+                "status": "planned",
+                "created_on": self.clock["now"].isoformat(),
+            }
+            self.batches.append(row)
+        elif path == "/jobs":
+            self.jobs.append(
+                {"id": self.counter, "batch_job_id": body["batch_job_id"], "status": "queued", "finished_at": None}
+            )
+        return {"id": self.counter}
+
+    def patch(self, path: str, **_kwargs: Any) -> Any:
+        identifier = int(path.split("/")[2])
+        for row in self.batches:
+            if row["id"] == identifier:
+                row["status"] = "queued"
+        self.max_in_flight = max(
+            self.max_in_flight, sum(r["status"] in wave.IN_FLIGHT_BATCH_STATUSES for r in self.batches)
+        )
+        return {}
+
+    def finish(self, identifier: int) -> None:
+        for row in self.batches:
+            if row["id"] == identifier:
+                row["status"] = "finished"
+                row["finished_at"] = self.clock["now"].isoformat()
+        for row in self.jobs:
+            if row["batch_job_id"] == identifier:
+                row.update(status="completed", finished_at=self.clock["now"].isoformat())
+
+
+def test_a_twelve_wave_series_pays_eleven_pauses_of_the_policy_and_never_queues_a_fourth_batch(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The bracketed case lists 35 batches in 12 waves (eleven of three, one of two) and states 11 pauses of 60 s.
+    # Each wave ends with a collection (5 s here) and the driver sleeps the remainder of the 60 s pause plus one second,
+    # so every pause from the last finish to the next submit is 61 s: 11 x 61 s = 671 s against the stated 660 s.
+    clock = {"now": NOW}
+    fake = Live(clock)
+    waves = [[f"batch-{3 * w + i:02d}" for i in range(3)] for w in range(11)] + [["batch-33", "batch-34"]]
+    directory = tmp_path / "series"
+    directory.mkdir()
+    for name in sorted({n for group in waves for n in group}):
+        (directory / name).mkdir()
+        case(directory / name, 2, hardware_policy="wave-v1")
+    (directory / "cases.json").write_text(json.dumps({"hardware_policy": "wave-v1", "waves": waves}))
+
+    @contextmanager
+    def lock(_path: Path):
+        yield
+
+    sleeps: list[float] = []
+
+    def sleep(seconds: float) -> None:
+        sleeps.append(seconds)
+        clock["now"] += timedelta(seconds=seconds)
+
+    def collect(run: Path, poll: float, timeout: float, **_k: Any) -> None:
+        fake.finish(json.loads((run / "submission.json").read_text())["batch_job"])
+        clock["now"] += timedelta(seconds=5)
+
+    monkeypatch.setattr(qi_platform, "Client", lambda *_a, **_k: fake)
+    monkeypatch.setattr(qi_platform, "token_lock", lock)
+    monkeypatch.setattr(qi_platform, "utc_now", lambda: clock["now"])
+    monkeypatch.setattr(qi_platform, "HARDWARE_PAUSE_SECONDS", 30)
+    monkeypatch.setattr(wave, "collect", collect)
+    runs = wave.run_series(directory, tmp_path / "runs", "STAMP", 7, "approval", sleep=sleep)
+    if len(runs) != 35 or fake.max_in_flight != 3:
+        raise AssertionError(f"{len(runs)} runs, at most {fake.max_in_flight} batches in flight")
+    if sleeps != [56.0] * 11:
+        raise AssertionError(f"pauses {sleeps} total {sum(sleeps)} s, the case states 11 x 60 s")
