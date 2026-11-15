@@ -1224,7 +1224,7 @@
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00",
       "family": "cQASM reset semantics on the hosted QX emulator",
-      "question": "Does the hosted QX emulator's reset on 2026-11-15 still apply qxelarator 0.10.0's sqrt(|a0|^2 + |a1|^2) map, or has a redeployment moved it to the phase-preserving cQASM reset that qxelarator 0.11.0 implements?"
+      "question": "On the preregistered |1> reset beside a |-> spectator input, does the hosted QX emulator on 2026-11-15 produce qxelarator 0.10.0's phase-dropping outcome or qxelarator 0.11.0's phase-preserving outcome?"
     },
     {
       "id": "qd-qpu-belenos-mesh-job-13-seeded-single",

@@ -107,14 +107,16 @@ A local run needs no account, queue or approval and records nothing.
    |->, `reset q[0]` followed by H on q1 reads q1 = 0 in 1000 of 1000 shots,
    where a phase-preserving reset reads 1 (the same program with X in place
    of the reset reads q1 = 1 in 1000 of 1000). Issue #223 holds the
-   amplitude-level evidence. The remote QX emulator applies the same map:
-   `scripts/qx_reset_phase_probe.py` read q1 = 0 in 2048 of 2048 shots
+   amplitude-level evidence. On this probe input the remote QX emulator
+   matches qxelarator 0.10.0: `scripts/qx_reset_phase_probe.py` read q1 = 0 in 2048 of 2048 shots
    (batch job 872957, `results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00`,
    gates core-455 to core-457) and again on 2026-11-15 (batch job 958302,
    `results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00`,
-   gate core-771: the same counts, with both controls at "10"), so the
-   qxelarator 0.10.0 pin stays the local twin of the remote emulator and
-   0.11.0 (phase-preserving reset) is not. A QX dry run of a reset circuit
+   gate core-771: the same counts, with both controls at "10"). The two
+   batches separate the implementations on that one input only: 0.11.0
+   (phase-preserving reset) differs there, so the 0.10.0 pin stays the
+   local twin for this probe, and the batches do not establish equivalence
+   on other reset inputs. A QX dry run of a reset circuit
    therefore checks syntax and plumbing, never its law (knowledge-base.md C22); the upstream
    report is https://github.com/QuTech-Delft/qx-simulator/issues/217. No
    box-kite dialect maps `reset` (`box_kite_cases.DIALECTS`), so `emit`
