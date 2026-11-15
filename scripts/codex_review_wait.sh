@@ -2,7 +2,7 @@
 # Wait until the Codex review of a pull request's head completes and every
 # check run on that head has completed, then print the review status line and
 # the check conclusions. A round with no result STALL seconds after its
-# request gets one fresh `@codex review` on the same head, because a dropped
+# request gets one fresh `@Codex review` on the same head, because a dropped
 # round never completes on its own and a same-head request starts a new one
 # (docs/runbooks/codex-review-stalls.md). A pull request that conflicts with its
 # base gets no merge commit and no check runs, so the wait stops and names it.
@@ -89,7 +89,7 @@ while :; do
                     round=$(printf '%s\n' "$status" | sed -n 's/.* round-start=\([^ ]*\) .*/\1/p')
                     # A failed fetch counts as a failed poll: the stale round-start alone would spend the retry early.
                     if ! requests=$(timeout -k 10 60 gh api --paginate "repos/$slug/issues/$pr/comments" \
-                        --jq '.[] | select(.body | startswith("@codex review")) | .created_at' 2>>"$log"); then
+                        --jq '.[] | select(.body | ascii_downcase | startswith("@codex review")) | .created_at' 2>>"$log"); then
                         polled=
                         requests=
                     fi
@@ -100,7 +100,7 @@ while :; do
                         start=$(date -d "$requested" +%s)
                     fi
                     if [ -n "$polled" ] && [ "$start" -gt 0 ] && [ $((now - start)) -ge "$stall" ]; then
-                        timeout -k 10 60 gh api "repos/$slug/issues/$pr/comments" -f body='@codex review' >/dev/null
+                        timeout -k 10 60 gh api "repos/$slug/issues/$pr/comments" -f body='@Codex review' >/dev/null
                         echo "$(date -u +%FT%TZ) round $round showed no result after ${stall}s; requested again" >>"$log"
                         retried_at=$now
                     fi

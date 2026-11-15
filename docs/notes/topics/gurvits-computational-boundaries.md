@@ -205,8 +205,8 @@ resource profiles.
 
 Run the repository's pinned format, lint and type tools on the three modules
 and test file, then run `"$PYTHON" -B -m pytest -q tests/test_photonic_gurvits.py`.
-The `lint`, `types`, `tests` and `contracts` checks of the pull-request
-workflow admit a change to these modules.
+The six checks of the pull-request workflow (`lint`, `types`, `tests`,
+`contracts` and the two `arm` legs) admit a change to these modules.
 
 The modules make no hardware job, provider upload, QRNG call or
 retained-acquisition rewrite. Call-site migration, empirical iid coverage and

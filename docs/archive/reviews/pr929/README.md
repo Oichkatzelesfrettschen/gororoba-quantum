@@ -7,6 +7,10 @@ reports are [review-codex.md](review-codex.md) and [review-agy-hydrogen-red-team
 Local paths, host names and the remote command in the three files are replaced by placeholders, and links into the
 worktree are reduced to their text. Advisor: not run, owner ruling.
 
+Row numbers: while this pull request was open, main assigned `A5-559` and `A5-560` to other rows. The rows that
+the brief, the two reports and the table below call `A5-559`, `A5-560` and `A5-561` are `A5-561`, `A5-562` and
+`A5-563` in the ledger; the brief and the reports keep the numbers their authors read.
+
 Both reviewers confirm `A5-560` and the arguments of `A5-561`. Each finding is checked against the source below.
 
 | # | Reviewer | Finding | Verdict | Action |
@@ -30,7 +34,7 @@ zero at 50 digits of a system of three polynomials of degrees 8, 8 and 16 (`A5-5
 this pull request.
 
 Two additions follow the local review, so neither local reviewer read them and the hosted round is their first
-review. `A5-562` (`nullity4_real_polar_sl3_chart.py`) computes the red-team reviewer's lead: the chart is checked
+review. `A5-564` (`nullity4_real_polar_sl3_chart.py`) computes the red-team reviewer's lead: the chart is checked
 as an identity, a Krawczyk box holds one real zero of the three polynomials with pairing rank 1, and the point
 lies on a factor of degree 88 of the eliminating polynomial that msolve 0.9.4 returns (the degree is computed, the
 eliminant is retained and not recomputed). The evidence README gains one table of the nullity-4 strata by kernel
