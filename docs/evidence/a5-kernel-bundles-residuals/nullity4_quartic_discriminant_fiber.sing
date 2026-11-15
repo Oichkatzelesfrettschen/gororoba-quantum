@@ -1,0 +1,33 @@
+LIB "elim.lib";
+LIB "primdec.lib";
+proc ssat(ideal I, ideal K) { def S = sat(I, K); if (typeof(S) == "list") { return(S[1]); } return(S); }
+
+ring R = 0, (c0, s, t, v, p, m), dp;
+poly rel = m2 + 1 + v2 + p2;
+vector X = [c0, -t, s];
+vector Y = [c0*v - p*t, c0*p - m*s + v*t, -m*t - v*s];
+poly n = c0^2 + s^2 + t^2;
+poly r = m*c0 + p*s;
+poly q = v*(c0^2 - s^2 - t^2) - 2*p*c0*t;
+poly F = n*(n + r^2) + q^2;
+ideal mc = c0, s, t;
+ideal JF = diff(F, c0), diff(F, s), diff(F, t);
+
+string label = system("getenv", "FIBER_LABEL");
+execute("ideal PAR = " + system("getenv", "FIBER_PARAMETERS") + ";");
+list C = minAssGTZ(std(PAR + ideal(rel)));
+string line = "FIBER " + label + " components " + string(size(C));
+int i;
+int points;
+int total;
+for (i = 1; i <= size(C); i++) {
+  ideal Ci = std(C[i]);
+  points = mult(Ci);
+  ideal Js = ssat(std(JF + Ci), mc);
+  total = mult(std(Js));
+  line = line + " | points " + string(points) + " length " + string(total div points) + " remainder " + string(total mod points);
+  kill Ci, Js;
+}
+print(line);
+print("MARKER DONE fiber " + label);
+quit;
