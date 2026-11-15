@@ -1,0 +1,23 @@
+{
+ "schema": "qi-tuna17-characterization-prediction-v1",
+ "profile": "qx",
+ "noiseless_outcome": {
+  "readout-0": "all 0",
+  "readout-1": "all 1",
+  "t1": "all 1",
+  "x90": "all 0"
+ },
+ "expected_execution_seconds": 44.2,
+ "seconds_model": "2.6 s per job plus 0.53 ms per shot plus the circuit's wait per shot",
+ "thresholds": {
+  "readout_tolerance_against_2026_10_17": 0.03,
+  "t1_chi_square_probability": 0.01,
+  "ladder_min_p0_at_256_pulses": 0.5,
+  "population_floor": 0.05
+ },
+ "verdicts": {
+  "readout": "per qubit: both closing-pair probabilities within the tolerance of the retained row",
+  "t1": "per qubit: a single exponential fits the points above the population floor",
+  "ladder": "per qubit: corrected P(0) at 256 pulses at or above the minimum"
+ }
+}

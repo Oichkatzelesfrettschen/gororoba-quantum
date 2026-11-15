@@ -1,0 +1,28 @@
+{
+ "schema": "qi-tuna17-characterization-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 8192,
+ "bit_order": "qubit 0 at the rightmost character",
+ "circuits": [
+  {
+   "file": "t1-0.cq",
+   "kind": "t1",
+   "wait_cycles": 0,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "t1-250.cq",
+   "kind": "t1",
+   "wait_cycles": 250,
+   "sha256": "e7935bf6cbc0eca646bfc3e887f9e7bf0cdc6276ee310734bafd660dbff628ce"
+  },
+  {
+   "file": "t1-500.cq",
+   "kind": "t1",
+   "wait_cycles": 500,
+   "sha256": "00cc800ee5c225ab814fabeff8a772bb480f300fc06f5c94d8a371ea349bd0c6"
+  }
+ ]
+}

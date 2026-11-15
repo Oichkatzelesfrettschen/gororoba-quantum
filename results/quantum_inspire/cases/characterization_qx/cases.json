@@ -1,0 +1,30 @@
+{
+ "schema": "qi-tuna17-characterization-cases-v1",
+ "profile": "qx",
+ "backend": "QXsinglenodesimulator",
+ "cycle_seconds": 2e-08,
+ "t1_wait_cycles": [
+  0,
+  250,
+  500,
+  1000,
+  2000,
+  4000
+ ],
+ "ladder_pulses": [
+  0,
+  32,
+  128,
+  256
+ ],
+ "batch_limit": 3,
+ "circuits": 14,
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02",
+  "batch-03",
+  "batch-04",
+  "batch-05"
+ ]
+}
