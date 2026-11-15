@@ -1,0 +1,101 @@
+{
+ "claims": {
+  "dim_L": 4,
+  "dim_L_z": 2,
+  "exact_point": false,
+  "interval_certificate": true,
+  "kernel_plane_is_polar_line": true,
+  "mu_nonzero": true,
+  "rank_of_pairing": 1
+ },
+ "double_precision": {
+  "fiber_dimension_of_L_z": 2,
+  "fiber_gap_above_1e-3": true,
+  "kernel_dimension": 3,
+  "kernel_plane_dimension": 2,
+  "kernel_singular_values_below_1e-9": true,
+  "mu_modulus_above_0.1": true,
+  "norm_square_modulus_above_0.1": true,
+  "polar_vector_ranks": [
+   8,
+   8,
+   8
+  ]
+ },
+ "exact": {
+  "dim_C": 3,
+  "polar_line_ranks": [
+   8,
+   8,
+   8,
+   8,
+   8
+  ],
+  "rank_M_z0": 12,
+  "stack_rank": 12
+ },
+ "field": "Q(i) for the normal form; arb balls at 200 bits for the zero in the box; double precision",
+ "identities": {
+  "derivations_are_skew_block_equivariant": true,
+  "normal_form_on_V_G_off_V_Q": true,
+  "polar_line_in_the_kernel_with_dim_C_3": true,
+  "rank_8_at_five_polar_vectors": true,
+  "rank_of_M_at_the_normal_form_is_12": true,
+  "unit_products_anticommute": true
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py": "24318a1cbcce62f5b9d18eb2e1515a8de77ba39fae1d9740399bc55638cc2d47",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_fiber_four.py": "d0d1aced9ccca0305b566ddc838c97165b5e5fb7de8b3e2566bd8fd89067a96f",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py": "5bddd6ed337595f2da2d33f9d98c4893778c6d1fc229e51b9488d026afbd32ad",
+  "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+  "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+  "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+ },
+ "krawczyk": {
+  "contraction_bits": 13,
+  "interior": true,
+  "pairing_bound_bits": 36,
+  "precision_bits": 200
+ },
+ "pass": true,
+ "point": {
+  "G": 0,
+  "Q": 10,
+  "cone": 0,
+  "mu": "5*I"
+ },
+ "schema": "a5-kernel-bundles-residuals-nullity4-real-polar-fiber-four-v1",
+ "slice": {
+  "fixed": {
+   "10": 2,
+   "12": 120,
+   "13": 275,
+   "3": 149,
+   "5": 98,
+   "6": -23,
+   "7": -70,
+   "8": 44
+  },
+  "fixed_bits": 10,
+  "free": [
+   0,
+   1,
+   2,
+   4,
+   9,
+   11
+  ],
+  "midpoint": [
+   38994581117443500,
+   53842321344079524,
+   -230017735920244814,
+   -23016549000837857,
+   -44883851846891566,
+   -79270953292811649
+  ],
+  "midpoint_bits": 60,
+  "radius_bits": 24
+ }
+}
