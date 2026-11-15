@@ -21,7 +21,8 @@ Q(i) in Singular:
 - the vertex space of the main prime (the common zeros of all partial derivatives of its quadrics), the 2 x 4 matrix
   of linear forms whose minors are the six quadrics of the scroll prime, with the ratio of its two rows on the
   meeting of the components, and the multiplicity of the tangent cone of the main prime at one point of the singular
-  line, of the singular plane and of the meeting.
+  line, of the singular plane and of the meeting, each cone computed in a global ordering by the deformation to the
+  normal cone (docs/runbooks/computer-algebra.md, "Orderings and local invariants").
 
 Run from the repository root: "$PYTHON" docs/evidence/a5-kernel-attachments/e8_component_geometry.py [--check]
 """
@@ -228,9 +229,13 @@ for(q=1;q<=size(PT);q++){ Zs=std(PT[q]); sh=0;
     for(j=1;j<=nvars(basering);j++){ co=subst(co,var(j),pv[j]); }
     sh[a]=var(a)+co; }
   shifts[q]=sh; shiftdims[q]=dim(Zs); }
-ring rl=(0,i),(y(1..21)),ds; minpoly=i^2+1;
-ideal P11l=imap(r,P11); list shl=imap(r,shifts); map tr; ideal T;
-for(q=1;q<=size(shl);q++){ tr=rl,ideal(shl[q]); T=std(tr(P11l));
+// in a global ordering, by the deformation to the normal cone: move the point to the origin, substitute y -> h y,
+// saturate by h and set h = 0; the ideal h makes the dimension that of the cone in the 21 coordinates
+ring rh=(0,i),(y(1..21),h),dp; minpoly=i^2+1;
+list shh=imap(r,shifts); ideal im; map tr; ideal T;
+for(q=1;q<=size(shh);q++){ im=ideal(shh[q]);
+  for(a=1;a<=21;a++){ im[a]=h*y(a)+jet(im[a],0); }
+  tr=r,im; T=sat(tr(P11),h); T=std(subst(T,h,0)+ideal(h));
   print("RESULT tangent_cone "+string(shiftdims[q])+","+string(dim(T))+","+string(mult(T))); }
 setring r;
 print("RESULT done 1");

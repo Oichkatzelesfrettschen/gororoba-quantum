@@ -281,6 +281,126 @@ def test_the_stored_record_check_rejects_a_missing_input_table() -> None:
     _same(sum("input digest" in problem for problem in found), len(geometry.INPUTS))
 
 
+def _join(numbers: list[int]) -> str:
+    return ",".join(str(int(number)) for number in numbers)
+
+
+def _singular_values(orbit: str) -> dict[str, list[str]]:
+    """The RESULT lines of a run that finds the expected cell, in an order and form the producer must normalize."""
+    expected = geometry.EXPECTED
+    line, plane = geometry.SINGULAR_GENERATORS[orbit]
+    values = {key: [str(expected[key])] for key in ("minimal_primes", "embedded_linear_forms", "bound_components")}
+    for key in (
+        "embedded_quadric_rank",
+        "scroll_singular_locus",
+        "main_linear_forms",
+        "main_free_variables",
+        "main_codimension",
+        "bound_components_with_smooth_points",
+        "main_vertex_space",
+    ):
+        values[key] = [str(expected[key])]
+    for key in (
+        "scroll_prime",
+        "main_prime",
+        "embedded_prime",
+        "scroll_meets_main",
+        "scroll_meets_embedded",
+        "embedded_vertex",
+        "smooth_rank",
+        "singular_locus",
+        "main_residual_generator_degrees",
+    ):
+        values[key] = [_join(expected[key])]
+    for key in (
+        "embedded_contains_main",
+        "embedded_contains_scroll",
+        "scroll_meets_main_is_linear",
+        "scroll_meets_main_contains_embedded",
+        "scroll_meets_embedded_equals_scroll_meets_main",
+        "scroll_is_linear_forms_plus_matrix_minors",
+        "scroll_rows_proportional_on_meeting",
+    ):
+        values[key] = [str(int(expected[key]))]
+    # Singular prints the degrees in generator order, the Hilbert numerator with a trailing marker entry, and the
+    # components, walks excepted, in the order its decomposition returns them: here the reverse of the sorted one.
+    values["scroll_generator_degrees"] = [_join(list(reversed(expected["scroll_generator_degrees"])))]
+    values["main_hilbert_second"] = [_join([*expected["main_hilbert_second"], 1])]
+    values["scroll_betti"] = [";".join(_join(row) for row in expected["scroll_betti"])]
+    values["main_betti"] = [";".join(_join(row) for row in expected["main_betti"])]
+    values["walk"] = [_join(row) for row in expected["walk"]]
+    values["bound_component"] = [_join(row) for row in reversed(expected["bound_component_dimensions"])]
+    values["singular_component"] = [_join(row) for row in reversed(expected["singular_components"])]
+    values["singular_generators"] = [f"2 {plane}", f"1 {line}"]
+    values["tangent_cone"] = [_join(row) for row in reversed(expected["tangent_cones"])]
+    values["scroll_row_ratio_on_meeting"] = [geometry.SCROLL_ROW_RATIO[orbit]]
+    values["done"] = ["1"]
+    return values
+
+
+def _mock_singular(monkeypatch: pytest.MonkeyPatch, values: dict[str, dict[str, list[str]]]) -> list[str]:
+    """Replace both Singular stages of `certify`; the returned list receives the second script of every call."""
+    scripts: list[str] = []
+
+    def run_singular(script: str) -> dict[str, Any]:
+        if script.startswith("relations of "):
+            return {"values": {"orbit": [script.removeprefix("relations of ")]}, "relations": [RELATION_LINE]}
+        scripts.append(script)
+        orbit = "N-" if len(scripts) % 2 == 1 else "N+"
+        return {"values": values[orbit], "relations": []}
+
+    monkeypatch.setattr(geometry.ws, "orbit_task", lambda orbit: orbit)
+    monkeypatch.setattr(geometry.ws, "fiber_script", lambda task, source, prime, root: f"relations of {task}")
+    monkeypatch.setattr(geometry.ws, "run_singular", run_singular)
+    monkeypatch.setattr(
+        geometry.ws, "summarize_fiber_run", lambda run: {"relations_sha256": run["values"]["orbit"][0] * 32}
+    )
+    return scripts
+
+
+RELATION_LINE = "RELATION 1,2:1 3,3:(i)"
+
+
+def test_certify_normalizes_the_order_and_form_of_the_singular_output(monkeypatch: pytest.MonkeyPatch) -> None:
+    scripts = _mock_singular(monkeypatch, {orbit: _singular_values(orbit) for orbit in geometry.ORBITS})
+    cells = [geometry.certify(orbit) for orbit in geometry.ORBITS]
+    for orbit, cell in zip(geometry.ORBITS, cells, strict=True):
+        for key, expected in geometry.EXPECTED.items():
+            _same(json.dumps(cell[key]), json.dumps(expected))
+        _same(cell["singular_generators"], list(geometry.SINGULAR_GENERATORS[orbit]))
+        _same(cell["relations_sha256"], orbit * 32)
+    _same(geometry.problems({"schema": geometry.SCHEMA, "field": "Q(i)", "cells": cells, "pass": True}), [])
+    # The second stage holds the relation as a polynomial over Q(i) and computes in global orderings only.
+    for script in scripts:
+        _same(script.startswith("ring r=(0,i),(y(1..21)),(dp); minpoly=i^2+1;"), True)
+        _same("ideal K=(1)*y(1)*y(2)+((i))*y(3)*y(3);" in script, True)
+        _same([ordering for ordering in ("),ds;", ",(ds);", "tangentcone(") if ordering in script], [])
+        _same("sat(tr(P11),h)" in script, True)
+
+
+@pytest.mark.parametrize(
+    ("key", "lines", "problem"),
+    [
+        ("scroll_meets_main_is_linear", ["0"], "scroll_meets_main_is_linear differs"),
+        ("embedded_contains_scroll", ["1"], "embedded_contains_scroll differs"),
+        ("main_hilbert_second", ["1,7,3"], "main_hilbert_second differs"),
+        ("tangent_cone", ["1,5,4", "2,5,2", "3,5,2"], "tangent_cones differs"),
+        ("singular_component", ["1,1,4,4,1,1,1,0", "2,1,6,6,1,1,1,0"], "singular_components differs"),
+        ("singular_generators", ["1 y(1)", "2 y(2)"], "the generators of the singular components differ"),
+    ],
+)
+def test_certify_carries_a_changed_singular_result_into_a_cell_the_checker_rejects(
+    monkeypatch: pytest.MonkeyPatch, key: str, lines: list[str], problem: str
+) -> None:
+    values = {orbit: _singular_values(orbit) for orbit in geometry.ORBITS}
+    values["N-"][key] = lines
+    _mock_singular(monkeypatch, values)
+    cells = [geometry.certify(orbit) for orbit in geometry.ORBITS]
+    found = geometry.problems({"schema": geometry.SCHEMA, "field": "Q(i)", "cells": cells, "pass": True})
+    _same([text for text in found if problem in text and text.startswith("N-")] != [], True)
+    _same([text for text in found if text.startswith("N+")], [])
+
+
 @pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()

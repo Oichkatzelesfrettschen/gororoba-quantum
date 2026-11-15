@@ -1029,11 +1029,16 @@ line of that plane and at the singular point of the quadric.
 the scroll prime are the `2 x 2` minors of the matrix with rows `(y19, y16, y15, y14)` and `(y18, y15, y10, y9)`,
 and on the meeting of the two components the second row is `-i` times the first (`i` at `N+`), so the meeting is a
 ruling plane of the scroll. The partial derivatives of the 25 quadrics of the degree-11 prime have no common zero
-but the origin, so that component is not a cone. Its tangent cone has multiplicity 4 at the isolated singular point,
-2 at a point of the singular line and 1 at a point of the meeting plane.
+but the origin, so that component is not a cone. Its tangent cone, computed in a global ordering by the deformation
+to the normal cone, has multiplicity 4 at the isolated singular point, 2 at a point of the singular line and 1 at a
+point of the meeting plane.
 
-**Hypothesis (`A5-510`, open):** the five-parameter map of `A5-457` is birational onto the degree-11 component; the
-record proves it dominant.
+**Refuted (`A5-510`) and restated (`A5-512`, open):** the five-parameter map of `A5-457` is dominant onto the
+degree-11 component and is not birational as an affine map: its 21 initial forms are weighted homogeneous of degree 5
+for the weights `(1, 1, 2, 1, 2)`, so the fifth roots of unity act on every fiber and a general fiber holds at least
+five points. The open hypothesis is that the induced map from the weighted projective space `P(1, 1, 2, 1, 2)` is
+birational, which would make the component rational; in scratch runs the fiber over two points is one orbit of five
+reduced points at both basepoints.
 
 **Method (`A5-505`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
