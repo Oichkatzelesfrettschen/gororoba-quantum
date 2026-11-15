@@ -6325,6 +6325,7 @@
       "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_bracketed_pricing.py --check docs/evidence/qi-bracketed-pricing/cells.jsonl > /dev/null",
       "name": "core-pathion-one-cz-null-bracketed-pricing-cells",
       "seconds": 36.2,
+      "workers": "all",
       "replays": [
         "docs/evidence/qi-bracketed-pricing/cells.jsonl"
       ]
