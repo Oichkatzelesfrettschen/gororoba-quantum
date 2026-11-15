@@ -198,6 +198,14 @@ and remove the external GNU time dependency. macOS RSS bytes convert to KiB. Pea
 sum of simultaneous child memory. These resource fields complement overlapping
 elapsed times; elapsed totals remain distinct from billed runner intervals.
 
+The call budget of tests/conftest.py (`GOROROBA_TEST_CALL_SECONDS`, ci/AGENTS.md) reads wall time, so contention
+alone can fail a unit. On a 4-vCPU cloud VM with the pinned Python 3.14.7 environment (2026-11-15),
+`test_contract_unit[correction_collection_contracts:verify]` of tests/gororoba_quantum/test_contract_suites.py took
+3.12 s serially and 19.55 s under `-n 8` beside four CPU-bound loops, failing with "over 1.5 times the 10 s
+pull-request budget"; the same load with the variable at 0 passed all 83 units, and an unloaded run with the variable
+at 1 failed that unit with the same text. A local run on a loaded host sets the variable to 0, and a unit that fails
+only there under load is no regression.
+
 ## Exact arithmetic and dependency qualification
 
 [Rank-sector benchmark samples and program](../evidence/ci_runtime/rank_sector.json)
