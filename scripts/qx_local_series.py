@@ -5,17 +5,23 @@ rewritten to describe this run: "shots" is the count actually run, "control" is 
 "simulator" names qxelarator and its version, so an analysis labels the run an emulator control and never
 a hardware inference. The circuits of a batch run in parallel through gororoba_quantum/parallel.py, and
 raw/<file>.json holds the shot list of each circuit: qxelarator's histogram expanded in sorted
-bit-string order, one character per declared qubit with qubit 0 rightmost. The run needs no account
+bit-string order, one character per declared qubit with qubit 0 rightmost. The run takes one
+seed, a quantum random value (--seed qrng:<draw>#<index>), and derives each circuit's qxelarator
+seed from it, so a second run with the same seed returns the same shots bit for bit and the
+manifest records the seed spelling and every circuit seed. The run needs no account
 and no network, and it submits nothing; qxelarator is the local twin of the hosted QX emulator
 (docs/notes/quantum_inspire/qx-runs.md), so the shots check cQASM syntax, register shape and the
 noiseless law of the circuits and say nothing about a device. It runs under the Quantum Inspire
 interpreter, which carries qxelarator and only the standard library is imported here.
 
 Usage: $HOME/.local/share/quantuminspire/venv/bin/python -I scripts/qx_local_series.py CASE_DIR OUT_DIR SHOTS
+    --seed qrng:docs/evidence/anu_qrng/draw-<UTC>.json#<index>
 """
 
 from __future__ import annotations
 
+import argparse
+import hashlib
 import json
 import shutil
 import sys
@@ -24,6 +30,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 import parallel  # noqa: E402
+import qrng_seeds  # noqa: E402
+
+
+def circuit_seed(seed: int, batch: str, circuit: str) -> int:
+    """The qxelarator seed of one circuit, a 31-bit function of the run seed and the circuit's place.
+
+    Measured with qxelarator 0.10.0: equal seeds return equal counts even for two circuits of equal law,
+    so one seed shared by a series would give twin circuits identical sampling noise and a twin contrast
+    of zero variance; and a seed of 2**64 - 1 ends the process with a segmentation fault, so every seed
+    stays below 2**31.
+    """
+    digest = hashlib.sha256(f"{seed}|{batch}|{circuit}".encode()).digest()
+    return int.from_bytes(digest[:4], "big") & 0x7FFFFFFF
 
 
 class RunCircuit:
@@ -32,16 +51,17 @@ class RunCircuit:
     def __init__(self, shots: int) -> None:
         self.shots = shots
 
-    def __call__(self, text: str) -> list[str]:
+    def __call__(self, job: tuple[str, int]) -> list[str]:
         import qxelarator
 
-        result = qxelarator.execute_string(text, iterations=self.shots)
+        text, seed = job
+        result = qxelarator.execute_string(text, iterations=self.shots, seed=seed)
         if result.shots_done != self.shots:
             raise SystemExit(f"{result.shots_done} shots done of {self.shots}")
         return [bits for bits, n in sorted(result.results.items()) for _ in range(n)]
 
 
-def run_series(case_dir: Path, out_dir: Path, shots: int) -> int:
+def run_series(case_dir: Path, out_dir: Path, shots: int, seed: int, seed_source: str) -> int:
     simulator = {"name": "qxelarator", "version": version("qxelarator")}
     count = 0
     for batch in sorted(p for p in case_dir.glob("batch-*") if p.is_dir()):
@@ -50,12 +70,21 @@ def run_series(case_dir: Path, out_dir: Path, shots: int) -> int:
             raise SystemExit(f"{target} exists; remove it before a new dry run")
         shutil.copytree(batch, target)
         manifest = json.loads((batch / "cases.json").read_text(encoding="utf-8"))
-        manifest |= {"shots": shots, "control": "local_qxelarator", "simulator": simulator}
+        rows = manifest["circuits"]
+        seeds = {row["file"]: circuit_seed(seed, batch.name, row["file"]) for row in rows}
+        manifest |= {
+            "shots": shots,
+            "control": "local_qxelarator",
+            "simulator": simulator,
+            "seed": qrng_seeds.seed_record("scripts/qx_local_series.py", "--seed", case_dir.name, seed_source),
+            "circuit_seeds": seeds,
+        }
         (target / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
         (target / "raw").mkdir()
-        rows = manifest["circuits"]
         shot_lists = parallel.ordered_map(
-            RunCircuit(shots), [(batch / row["file"]).read_text(encoding="utf-8") for row in rows], min_items=2
+            RunCircuit(shots),
+            [((batch / row["file"]).read_text(encoding="utf-8"), seeds[row["file"]]) for row in rows],
+            min_items=2,
         )
         for row, expanded in zip(rows, shot_lists, strict=True):
             (target / "raw" / f"{row['file']}.json").write_text(json.dumps(expanded) + "\n", encoding="utf-8")
@@ -63,10 +92,14 @@ def run_series(case_dir: Path, out_dir: Path, shots: int) -> int:
     return count
 
 
-def main() -> int:
-    if len(sys.argv) != 4 or not sys.argv[3].isdigit():
-        raise SystemExit(__doc__)
-    count = run_series(Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3]))
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run a written case series on local qxelarator.")
+    parser.add_argument("case_dir", type=Path)
+    parser.add_argument("out_dir", type=Path)
+    parser.add_argument("shots", type=int)
+    qrng_seeds.add_seed_argument(parser, "--seed", required=True, help="qrng:<draw>#<index> or repro:<integer>")
+    args = parser.parse_args(argv)
+    count = run_series(args.case_dir, args.out_dir, args.shots, args.seed, args.seed_source)
     print(f"qx local series: {count} circuits run")
     return 0
 

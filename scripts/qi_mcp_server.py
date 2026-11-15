@@ -44,6 +44,8 @@ from qi_platform import Client, PlatformError, declared_qubits, ledger, submit, 
 
 LOCAL_MAX_QUBITS = 24
 LOCAL_MAX_SHOTS = 100_000
+# Measured with qxelarator 0.10.0: a seed of 2**64 - 1 ends the process with a segmentation fault, not an exception.
+LOCAL_SEED_LIMIT = 2**31
 READ = ToolAnnotations(read_only_hint=True, open_world_hint=True)
 LOCAL = ToolAnnotations(read_only_hint=True, open_world_hint=False)
 MUTATE = ToolAnnotations(read_only_hint=False, destructive_hint=False, idempotent_hint=False, open_world_hint=True)
@@ -194,8 +196,11 @@ def qi_results(job_id: int, include_raw: bool = False) -> list[dict[str, Any]]:
 
 @server.tool(annotations=LOCAL)
 @reported
-def qi_run_local(cqasm: str, shots: int = 1024) -> dict[str, Any]:
-    """Run cQASM 3.0 on the local qxelarator emulator (no account, no queue); returns outcome counts."""
+def qi_run_local(cqasm: str, shots: int = 1024, seed: int | None = None) -> dict[str, Any]:
+    """Run cQASM 3.0 on the local qxelarator emulator (no account, no queue); returns outcome counts.
+
+    An unseeded run differs from run to run; a run with `seed` (0 to 2**31 - 1) returns the same counts each time.
+    """
     import qxelarator
 
     qubits = declared_qubits(cqasm)
@@ -203,8 +208,14 @@ def qi_run_local(cqasm: str, shots: int = 1024) -> dict[str, Any]:
         raise ValueError(f"{qubits} qubits exceed the local bound of {LOCAL_MAX_QUBITS}")
     if not 1 <= shots <= LOCAL_MAX_SHOTS:
         raise ValueError(f"shots must lie in 1..{LOCAL_MAX_SHOTS}")
+    if seed is not None and not 0 <= seed < LOCAL_SEED_LIMIT:
+        raise ValueError(f"seed must lie in 0..{LOCAL_SEED_LIMIT - 1}")
     try:
-        result = qxelarator.execute_string(cqasm, iterations=shots)
+        result = (
+            qxelarator.execute_string(cqasm, iterations=shots)
+            if seed is None
+            else qxelarator.execute_string(cqasm, iterations=shots, seed=seed)
+        )
     except Exception as error:  # qxelarator raises bare exceptions for parse and analysis failures
         raise ValueError(str(error)) from error
     if isinstance(result, qxelarator.SimulationError):
