@@ -10,7 +10,8 @@ print(
     "follow-up predictions: mean selector contrast at the retention where the exact center reads "
     "visibility 0.42 through the mean bracket matrix of the retained series, under three worlds: "
     "exact pulses; a phase of -0.18 rad before each q12 pulse; a conditional phase of -0.25 rad on "
-    "coupler 8-12. Arms: q4 pulses at k steps of 5 degrees; Rz(phi) before each q12 pulse."
+    "coupler 8-12. Arms: q4 pulses at k steps of 5 degrees; Rz(phi) before each q12 pulse; Rz(phi) on q8 "
+    "after each CZ of coupler 8-12."
 )
 S = "2026-11-15T001929Z"
 A_ = json.loads((ROOT / "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json").read_text())

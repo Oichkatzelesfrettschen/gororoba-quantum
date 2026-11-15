@@ -9,17 +9,7 @@ import numpy as np
 from scan_forward import ROOT, cc, laws, rs
 from scipy.interpolate import RegularGridInterpolator
 
-print(
-    "(single-parameter preamble kept for the shared setup) a single error parameter u oscillates with "
-    "the line, u = u0 + s A cos(theta), theta = 0 at the maximum of q4's P(1), s the sign of dP(q4 = "
-    "1)/du of the model at u0 for that arm. Data: the selector contrast of each arm type in 8 phase "
-    "bins pooled over its jobs (10 arm types, 80 points) plus the 10 mean q4-bit line amplitudes. "
-    "Parameters shared by all arms: u0, A. Noise: contraction share 0 at the retention where the "
-    "exact center reads visibility 0.42 through the mean bracket matrix. Candidates: z, x or y before "
-    "each qubit's pulses or all; conditional phase on each coupler or all; a z phase on one qubit "
-    "after each of its CZs on one coupler. Falsifier of a candidate: chi-square of the 80 contrast "
-    "points above 124.8 (0.001 point, 78 degrees of freedom); calibration: exact pulses with A = 0."
-)
+print("shared setup: the pooled phase-bin contrasts, the mean bracket matrix and the retention at visibility 0.42")
 S = "2026-11-15T001929Z"
 rows_in = json.loads((ROOT / "docs/evidence/qi-null-rotation-scan-line-phase/line_phase_bins.json").read_text())
 arms_seen = sorted({r["arm"] for r in rows_in if r["arm"] != rs.RETAINED})

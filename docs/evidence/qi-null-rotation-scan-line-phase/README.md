@@ -31,8 +31,10 @@ that module builds on first use (about thirty minutes) and caches.
 | `line_phase_bins.py` | `line_phase_bins.json`, `line_phase_bins_pooled.json` | selector contrast in 8 bins of the line's phase per job; pooled harmonics per arm |
 | `line_phase_split.py` | `line_phase_split.json` | the same fold with the phase from odd shots and the contrast from even shots; error over jobs and exact sign-flip null |
 | `line_phase_conditionals.py` | `line_phase_conditionals.json` | first harmonic of the conditional and marginal probabilities and of the contrast by q4's read value |
+| `line_parity_amplitude.py` | `line_parity_amplitude.json` | line-band amplitude of the selector-coin parity bit and of q4's bit per job, with an off-line band; no phase reference |
 | `phase_resolved_fit.py` | `phase_resolved_fit.json` | one parameter that follows the line, fitted to the phase-bin contrasts |
 | `phase_resolved_two_source.py` | `phase_resolved_two_source.json` | two parameters driven by one line phase |
+| `d2_split_worlds.py` | `d2_split_worlds.json` | the retained d2 splits of the 24 scan arms against three worlds at fixed parameters |
 | `followup_predictions.py` | `followup_predictions.json` | model contrasts of the draft follow-up arms under three worlds |
 
 `line_scan.py` imports `worker1` from `docs/evidence/hardware-residuals/tuna-quandela`. The forward-model scripts

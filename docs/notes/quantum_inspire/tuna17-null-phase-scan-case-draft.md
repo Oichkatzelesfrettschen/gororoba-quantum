@@ -13,7 +13,7 @@ The null block b0 reads a selector offset with a static part near 0.014 that dri
 amplitude 0.025 that follows the phase of the shot-order line on q4's read bit. Three questions, each a device
 fact:
 
-1. Does an injected `Rz` on q12 null the static part, at which angle and with which sign?
+1. Does an injected `Rz` on q12 move the static part as a phase on or around q12 predicts, and with which sign?
 2. Is the static part a single-qubit phase on q12 or a conditional phase of coupler 8-12?
 3. Is the quantity the line modulates the q12 phase itself, and does the oscillating part reverse beyond the q4
    angle where a straight line through the retained arms puts its zero?
@@ -69,7 +69,9 @@ one contrast at 131,072 shots is 0.0028 and of one `d2_split` 0.0056.
 | q4 +5 degrees | 0.000 | 0.008 | 0.007 |
 | q4 +20 degrees | 0.000 | -0.006 | -0.010 |
 
-A q12 phase of +0.18 rad gives the z12 rows exchanged. The z8c arms carry the separation of the two worlds: their
+A q12 phase of +0.18 rad gives the z12 rows exchanged. Evidence already retained: the `d2_split` of the 24
+scan arms of the predecessor reads chi-square 427 under the q12 phase and 211 under the coupler phase at the
+parameters of the contrast fits (`d2_split_worlds.py`), so the retained data lean to the coupler and fit neither. The z8c arms carry the separation of the two worlds: their
 `d2_split` differs by 0.031 at -10 degrees and by 0.023 at +10 degrees, 7.8 and 5.8 standard errors of a two-job
 mean, and the contrast at +10 degrees by 0.008. The retained q4 arms read 0.039 at -10 degrees and -0.006 at +10
 degrees, a steeper line than either world gives (0.024 and 0.002; 0.028 and 0.000).
@@ -81,8 +83,8 @@ that modulates another quantity leaves the first harmonic of the z12 arms near t
 gives a second harmonic of 0.0057 at the center, where the retained series reads 0.0017 with a shot-noise error
 of 0.0012, so the retained data already disfavor the first reading. In the retained q4 arms the first harmonic
 reads 0.036 at -10 degrees and 0.006 at +10 degrees; a straight line through them and the center's 0.025 crosses
-zero near +14 degrees and reads +0.014 at +5 degrees and -0.009 at +20 degrees, so the q4 +20 degree arm tests a
-reversal, at about 3 shot-noise standard errors of a two-job mean.
+zero near +14 degrees. The +10 degree value rests on a fold without a detected reference, so rule 6 reads the
+q4 arms by a reference-free amplitude.
 
 ## Decision rules (draft, fixed before any submission)
 
@@ -104,9 +106,13 @@ reversal, at about 3 shot-noise standard errors of a two-job mean.
    sign-flip p-value over the arm's jobs beside the shot-noise error. Labels: `line_on_q12_phase` (the two `z12`
    values follow 0.84 A (phi0 + phi) with the A and phi0 of rule 3 within 3 job-level standard errors each, the +20
    degree arm reversed), `line_elsewhere` (both within 3 of the center's value), `line_unresolved`.
-6. q4. The mean contrast less its batch center and the projected first harmonic at +5 and +20 degrees, each with
-   the retained values at -10, 0 and +10 degrees in one weighted straight-line fit: both chi-squares, both zero
-   crossings with intervals, their difference in standard errors, and the sign of the +20 degree harmonic.
+6. q4. The mean contrast less its batch center at +5 and +20 degrees with the retained values at -10, 0 and +10
+   degrees in one weighted straight-line fit (chi-square, zero crossing with its interval). For the oscillation,
+   the reference-free amplitude of the selector-coin parity bit over the line band against its off-line maximum
+   (`line_parity_amplitude.py`), since q4's bit loses the line at +10 degrees in the retained series and a signed
+   fold has no reference there: the retained amplitudes are 0.0186, 0.0142 and 0.0067 at -10, 0 and +10 degrees
+   against an off-line level near 0.005. Reported: the amplitudes at +5 and +20 degrees; an amplitude at +20
+   degrees above the off-line maxima of its jobs reads as a return of the oscillation beyond its zero.
 
 A5-186 changes only on `q12_phase` or `coupler_phase` with rule 1 passed, and then to the statement of that label;
 every other outcome reports the numbers.
@@ -135,6 +141,9 @@ every other outcome reports the numbers.
   arm; a physical echo changes the pulse history and the schedule and belongs to a successor.
 - The two-job arms (`z8c`, `q4`) have no job-level error of their own; rule 5's job-level calibration holds for
   the centers and the four-job `z12` arms.
+- Rule 5 takes q4's bit as the phase reference in the `z12` arms and assumes that an `Rz` on q12 leaves q4's
+  response to the line in place; an arm whose q4 bit carries no line (checked per job against the off-line band)
+  has no signed harmonic, and its parity amplitude is reported in its place.
 - The source of the line is unmeasured; rule 5 reads only whether its effect scales with the injected phase.
 
 ## Not built

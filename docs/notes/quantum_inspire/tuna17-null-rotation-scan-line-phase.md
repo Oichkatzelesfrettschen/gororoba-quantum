@@ -131,8 +131,26 @@ Readings:
   mean of 0.001 with a first harmonic of 0.025. A symmetric swing about zero that rectifies into the mean would
   carry a second harmonic near the mean; the second harmonic is 0.0017 against a mean of 0.0138, so that model is
   disfavored. How many device variables stand behind the two components is not identified.
-- q4's injected angle scales both: +10 degrees removes the mean and the oscillation, -10 degrees raises both. The
-  q8 arms carry no oscillation.
+- q4's injected angle scales both: -10 degrees raises the mean and the oscillation, +10 degrees removes the mean
+  and lowers the oscillation to the null level of the reference-free statistic below.
+
+The fold needs q4's bit as its phase reference, and the scanner detects no line on any bit in the q4 +10 and q8
++10 degree jobs, so a small folded harmonic there can be a lost reference. `line_parity_amplitude.py` needs none:
+the selector-coin parity bit has mean near 1/2 + contrast/2, and its largest amplitude over the line band is
+compared with the same maximum over an off-line band of equal width (0.004 to 0.006 in every arm):
+
+| Arm | Parity bit, line band | q4 bit, line band |
+|---|---|---|
+| `b0-rx` / `b0` | 0.0142 / 0.0150 | 0.0116 / 0.0146 |
+| q4 -10 / +10 degrees | 0.0186 / 0.0067 | 0.0156 / 0.0048 |
+| q8 -10 / +10 degrees | 0.0047 / 0.0053 | 0.0231 / 0.0058 |
+| all -10 / +10 degrees | 0.0078 / 0.0050 | 0.0205 / 0.0122 |
+| all -20 / +20 degrees | 0.0096 / 0.0116 | 0.0110 / 0.0254 |
+
+The centers read half their folded harmonic, as the parity relation gives. Both q8 arms sit at the off-line
+level, at -10 degrees with a strong reference on q4's bit, so the q8 arms carry no oscillation of the contrast.
+The q4 +10 degree arm sits within 0.002 of the off-line level, which bounds its contrast harmonic near a third
+of the center's. q4's own bit loses its line at q4 +10 and at q8 +10 degrees.
 
 ## Phase-resolved fits
 
@@ -148,13 +166,18 @@ oscillating 0.10 rad), reads 304 against 122.3.
 Computed in the forward model at the retained mean bracket and visibility 0.42 (`followup_predictions.py`):
 
 - Exact pulses read 0 at every q4 angle. With a q12 phase of -0.18 rad the q4 response is linear, 0.024 at -10
-  degrees to -0.002 at +15 degrees; with a conditional phase of -0.25 rad on coupler 8-12 it runs from 0.028 to
-  -0.006.
+  degrees to -0.006 at +20 degrees; with a conditional phase of -0.25 rad on coupler 8-12 it runs from 0.028 to
+  -0.010.
 - Under exact pulses the contrast is even in a phase on q12: 0.0128 at +-10 degrees, 0.047 at +-20 degrees, about
   0.42 phi^2. The static offset of 0.014 therefore corresponds to a q12 phase of 0.18 rad of either sign, and an
   injected `Rz` on q12 reads the sign: with -0.18 rad present, +10 degrees gives 0.000 and -10 degrees gives 0.048.
-- A conditional phase on coupler 8-12 leaves 0.003 at +10 degrees and 0.020 at +20 degrees with `d2_split` of
-  +0.011 and +0.018, where the q12 phase gives 0.000 and 0.012 with `d2_split` below 0.001.
+- A conditional phase on coupler 8-12 leaves 0.020 at +20 degrees on q12 with `d2_split` +0.018, where the q12
+  phase gives 0.012 with `d2_split` below 0.001.
+- An `Rz` on q8 after each CZ of coupler 8-12 separates the two most: at -10 and +10 degrees `d2_split` reads
+  +0.006 and +0.017 under the q12 phase and +0.037 and -0.006 under the coupler phase.
+- `d2_split_worlds.py` scores the retained `d2_split` of the 24 scan arms, which no fit used, at the shared
+  parameters of the contrast fits: chi-square 1125 under exact pulses, 427 under the q12 phase and 211 under the
+  coupler phase. The retained data favor the coupler phase and fit neither.
 - All 45 `Rz` angles of b0 are multiples of the processor's pi/36 angle grid, so the grid rounds none of them.
 
 ## Open
