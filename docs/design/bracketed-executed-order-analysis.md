@@ -51,12 +51,15 @@ x = +1, -1, +1, -1, equal batch errors), each batch flipping its sign independen
 | 0.05 | 0 | 1.007 | 1.035 |
 | 0.10 | 0 | 1.013 | 1.038 |
 | 0.20 | 1e-5 | 1.026 | 1.155 |
+| 0.25 (measured: 3 of 12 retained twin batches flipped) | 2.4e-5 | 1.032 | 1.168 |
 | 7/19 (the predecessor's) | 1.4e-4 | 1.043 | 1.183 |
 
 `P(confounded)` equals (2 r^2 (1 - r)^2)^4 (a test pins it): a template ends one-directional with probability 2 r^2 (1 - r)^2,
 which is 0.109 at 7/19, and the series is confounded only when all four do. These figures cover the twin batches under a
-model (hypothesis: independent flips, equal errors, a drift linear in the offset, the flip model standing for the offsets'
-real distribution until the 19 predecessor and 4 hosted-QX batches' offsets are tabulated). They are not the probability that
+model (hypothesis: independent flips, equal errors, a drift linear in the offset). The retained twin batches give the measured
+flip rate: 3 of 12 (2 of 8 predecessor batches, 1 of 4 hosted-QX batches), with executed offsets -2, +1 and -3 against requested
++1, -1 and +1; the strict gate's 7 of 19 counts any permutation of a batch, readouts included, and overstates the twin-flip rate.
+Under the strict gate the 16 twin batches alone all stay intact with probability 0.75^16 = 0.010 at 0.25. They are not the probability that
 the series decides.
 
 ## What is not covered, and why the series is not yet decidable
