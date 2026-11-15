@@ -408,7 +408,7 @@ degree 11 and a threefold of degree 4 in projective terms. The
 identifies the set of limits of the kernel with the complex points of this fiber, under its own premises (A5-411,
 A5-415 and A5-417, which rest on a closure theorem whose text is uninspected). Under those premises and the two
 above, that set for E8-bar no longer waits on the relation ideal in degrees 8 and above (A5-009); those degrees
-decide the scheme structure alone, and on the header slices modulo 32009 and 32029 A5-555 decides them: L = K2, so the
+decide the scheme structure alone, and on the header slices modulo 32009 and 32029 A5-559 decides them: L = K2, so the
 five coordinates that are nilpotent on the quadric scheme stay nilpotent on the fiber.
 
 Not covered: the scheme structure of the fiber, and the premise that joins the two slices. That premise is the

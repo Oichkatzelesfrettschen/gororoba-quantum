@@ -11,7 +11,7 @@ Columns (tab-separated, first line is the header):
 - id: stable key, `A5-` and a number; never reused.
 - kind: equation | structure | method | operational.
 - fibers: the pairs Y -> Z the claim concerns, comma-separated, or `all`.
-- primes: 32003, 32009, 32029, 32057 (the third split prime of A5-556), `both` (32009 and 32029), `char0`,
+- primes: 32003, 32009, 32029, 32057 (the third split prime of A5-560), `both` (32009 and 32029), `char0`,
   `odd` (every field of characteristic other than 2), or `any` (a statement independent of the field).
 - claim: the statement, with equations written out.
 - status: one of STATUSES below.

@@ -3,7 +3,7 @@
 Ledger row A5-548 states the hypothesis that a quadric ring k[y]/K2 of the fiber track is Cohen-Macaulay exactly when
 K2 is radical, and that where it is not, the defect is a nilradical module of rank one over a smaller cone. The rings
 at 32009 and 32029 fit it; this directory regenerates the rings at a third prime and decides both properties there.
-Row A5-556 records the result: the hypothesis survives at p = 32057.
+Row A5-560 records the result: the hypothesis survives at p = 32057.
 
 ## Prime, headers and relation files
 

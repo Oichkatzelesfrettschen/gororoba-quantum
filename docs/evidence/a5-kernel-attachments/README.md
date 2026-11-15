@@ -585,7 +585,7 @@ conditional on `A5-421` and the slice premise of `A5-423`, the complex point set
 both components of its quadric scheme after a complex-linear change of generators
 ([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
 `A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open on the
-header slices, the scheme structure of the `E8bar` fiber is `S / K2` in every degree at 32009 and 32029 (`A5-555`,
+header slices, the scheme structure of the `E8bar` fiber is `S / K2` in every degree at 32009 and 32029 (`A5-559`,
 which settles `A5-009`), and `A5-449` shows it is not reduced. On the weight slice the three fiber cones are `S / K` as schemes without the slice premise (`A5-457`,
 `A5-475`), and `A5-507` describes the `E8bar` fiber.
 
@@ -937,7 +937,7 @@ linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the
 slice coordinates). The retained arc families fill the two prime components; `A5-457` runs the test on `V(A)` with an order function,
 and on the header slices at 32009 and 32029 the family w = W s, rho = R s^2, sigma = S s^2, zeta = Z s^2,
 e = -1 + E1 s of the arc package runs it
-([`relation_ideal_orders.py`](../a5-exceptional-fibers/arcs/relation_ideal_orders.py), `A5-555`).
+([`relation_ideal_orders.py`](../a5-exceptional-fibers/arcs/relation_ideal_orders.py), `A5-559`).
 
 **Computed (`A5-474`):** [`weight_slice_relation_membership.py`](weight_slice_relation_membership.py) certifies that
 every degree-2 relation `q` of the ten weight-slice cells satisfies `q(G)` in `J + m I^2`

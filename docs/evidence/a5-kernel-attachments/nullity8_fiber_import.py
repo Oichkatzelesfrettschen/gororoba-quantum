@@ -161,7 +161,7 @@ FIBER_TABLE = (
         ((3, 4), (4, 11)),
         False,
         "every degree",
-        (("A5-009", "proved"), ("A5-555", "proved"), ("A5-335", "proved"), ("A5-339", "proved")),
+        (("A5-009", "proved"), ("A5-559", "proved"), ("A5-335", "proved"), ("A5-339", "proved")),
         (("A5-252", "proved"), ("A5-312", "proved")),
         (("A5-013", "proved"), ("A5-326", "proved")),
         "open: h_d is bounded below by the modular values for d at most 7",

@@ -1,4 +1,4 @@
-"""Bounded checks of the programs behind A5-024, A5-548, A5-555 and A5-556, on fixtures built here.
+"""Bounded checks of the programs behind A5-024, A5-548, A5-559 and A5-560, on fixtures built here.
 
 No Singular runs: each test feeds a program's pure verdict function a fixture assembled from that program's tables
 and the constants of quadric_and_germ_probes.py, and every mutation of a deciding field must be reported. The
