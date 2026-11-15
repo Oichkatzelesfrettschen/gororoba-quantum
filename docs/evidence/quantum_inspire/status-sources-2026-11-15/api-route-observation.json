@@ -1,0 +1,317 @@
+{
+ "schema": "qi-api-route-observation-v1",
+ "observed_utc": "2026-11-15T17:47:48.592Z",
+ "method": "GET only, with the account bearer token",
+ "routes": {
+  "/healthz": 200,
+  "/drain_mode": [
+   403,
+   {
+    "detail": "Not authorised"
+   }
+  ],
+  "/backends/hostnames": [
+   403,
+   {
+    "detail": "Not authorised"
+   }
+  ],
+  "/metadata/backend/7": [
+   404,
+   {
+    "detail": "Not Found"
+   }
+  ],
+  "/reservations": [
+   200,
+   "an empty page"
+  ]
+ },
+ "backend_type_7_fields": [
+  "batchjobs_per_queue_limit",
+  "default_compiler_config",
+  "default_number_of_shots",
+  "description",
+  "enabled",
+  "features",
+  "gateset",
+  "id",
+  "identifier",
+  "image_id",
+  "infrastructure",
+  "is_hardware",
+  "job_execution_time_limit",
+  "max_jobs_per_batch_job",
+  "max_number_of_shots",
+  "messages",
+  "name",
+  "nqubits",
+  "protocol_version",
+  "status",
+  "supports_raw_data",
+  "topology"
+ ],
+ "openapi_schema_fields": {
+  "Job": [
+   "algorithm_type",
+   "batch_job_id",
+   "created_on",
+   "file_id",
+   "finished_at",
+   "id",
+   "message",
+   "number_of_shots",
+   "queued_at",
+   "raw_data_enabled",
+   "session_id",
+   "source",
+   "status",
+   "trace_id"
+  ],
+  "BatchJob": [
+   "aggregated_algorithm_type",
+   "backend_id",
+   "backend_type_id",
+   "created_on",
+   "finished_at",
+   "id",
+   "job_ids",
+   "queued_at",
+   "reserved_at",
+   "status",
+   "user_id"
+  ],
+  "Result": [
+   "created_on",
+   "execution_time_in_seconds",
+   "id",
+   "job_id",
+   "raw_data",
+   "results",
+   "shots_done",
+   "shots_requested"
+  ],
+  "Queue": [
+   "avg_wait_time_in_queue_secs",
+   "max_wait_time_in_queue_secs",
+   "min_wait_time_in_queue_secs",
+   "number_of_jobs_in_queue"
+  ],
+  "Reservation": [
+   "backend_id",
+   "backend_type_id",
+   "end_time",
+   "id",
+   "is_terminated",
+   "member_id",
+   "start_time"
+  ],
+  "DrainMode": [
+   "enabled",
+   "id",
+   "pending_jobs",
+   "running_jobs",
+   "safe_to_deploy"
+  ],
+  "FinalResult": [
+   "created_on",
+   "final_result",
+   "id",
+   "job_id"
+  ]
+ },
+ "openapi": {
+  "url": "https://api.quantum-inspire.com/openapi.json",
+  "retrieved_utc": "2026-11-15T16:22:38Z",
+  "sha256_of_served_bytes": "714f66165611b38842dfe3497bb7f1ea818c9df756b3ed87ff128c838cac185f",
+  "info": {
+   "title": "Quantum Inspire 2",
+   "version": "0.1.0"
+  },
+  "paths": {
+   "/algorithms": [
+    "get",
+    "post"
+   ],
+   "/algorithms/{id}": [
+    "delete",
+    "get",
+    "put"
+   ],
+   "/auth_config": [
+    "get"
+   ],
+   "/backend_types/": [
+    "get"
+   ],
+   "/backend_types/me": [
+    "patch"
+   ],
+   "/backend_types/{id}": [
+    "get"
+   ],
+   "/backend_types/{id}/queue": [
+    "get"
+   ],
+   "/backends": [
+    "get",
+    "post"
+   ],
+   "/backends/hostnames": [
+    "get"
+   ],
+   "/backends/me": [
+    "get",
+    "patch"
+   ],
+   "/backends/{id}": [
+    "get"
+   ],
+   "/batch_jobs": [
+    "get",
+    "post"
+   ],
+   "/batch_jobs/peek": [
+    "patch"
+   ],
+   "/batch_jobs/pop": [
+    "patch"
+   ],
+   "/batch_jobs/{id}/enqueue": [
+    "patch"
+   ],
+   "/batch_jobs/{id}/finish": [
+    "patch"
+   ],
+   "/batch_jobs/{id}/unpop": [
+    "patch"
+   ],
+   "/commits": [
+    "get",
+    "post"
+   ],
+   "/commits/{id}": [
+    "delete",
+    "get"
+   ],
+   "/commits/{id}/compile": [
+    "post"
+   ],
+   "/drain_mode": [
+    "get",
+    "patch"
+   ],
+   "/files": [
+    "get",
+    "post"
+   ],
+   "/files/{id}": [
+    "delete",
+    "get"
+   ],
+   "/final_results": [
+    "post"
+   ],
+   "/final_results/job/{job_id}": [
+    "get"
+   ],
+   "/final_results/{id}": [
+    "get"
+   ],
+   "/healthz": [
+    "get"
+   ],
+   "/jobs": [
+    "get",
+    "post"
+   ],
+   "/jobs/{id}": [
+    "delete",
+    "get",
+    "patch"
+   ],
+   "/jobs/{id}/logs": [
+    "get"
+   ],
+   "/languages": [
+    "get"
+   ],
+   "/languages/{id}": [
+    "get"
+   ],
+   "/members": [
+    "get",
+    "post"
+   ],
+   "/members/{id}": [
+    "delete",
+    "get"
+   ],
+   "/permission_groups/": [
+    "get"
+   ],
+   "/permission_groups/{id}": [
+    "get"
+   ],
+   "/permissions/": [
+    "get"
+   ],
+   "/permissions/{id}": [
+    "get"
+   ],
+   "/projects": [
+    "get",
+    "post"
+   ],
+   "/projects/{id}": [
+    "delete",
+    "get",
+    "patch",
+    "put"
+   ],
+   "/reservations": [
+    "get",
+    "post"
+   ],
+   "/reservations/{id}": [
+    "get"
+   ],
+   "/reservations/{id}/terminate": [
+    "patch"
+   ],
+   "/results": [
+    "post"
+   ],
+   "/results/algorithm/{algorithm_id}": [
+    "get"
+   ],
+   "/results/job/{job_id}": [
+    "delete",
+    "get"
+   ],
+   "/results/{id}": [
+    "get"
+   ],
+   "/teams/": [
+    "get"
+   ],
+   "/teams/{id}": [
+    "get"
+   ],
+   "/transactions/": [
+    "get"
+   ],
+   "/transactions/{id}": [
+    "get"
+   ],
+   "/users": [
+    "get",
+    "post"
+   ],
+   "/users/{id}": [
+    "delete",
+    "get"
+   ]
+  }
+ }
+}
