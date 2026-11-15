@@ -197,11 +197,11 @@ on the laptop). Its `check()` compares every field of a record with the expected
   HF(k[y]/K2, d) = 7 C(d + 2, 3) + C(d + 2, 2) for d = 1..7 (A5-020).
 - `x-colon`, 3 rows: for same-sign X the minimal prime P is absolutely prime by the same section test, K2 : P is
   the ideal of the embedded plane, K2 : (K2 : P) = P, and the first Hilbert numerators satisfy
-  N_K2 - N_P = N_A - (1 - t)^15, so dim (P / K2)_d = C(d + 2, 2) for every d >= 1 (A5-022, A5-542).
+  N_K2 - N_P = N_A - (1 - t)^15, so dim (P / K2)_d = C(d + 2, 2) for every d >= 1 (A5-022, A5-544).
 - `e8-colon`, 4 rows: for E8-bar -> N- and N+ at both primes the radical R is K2 plus five linear forms of square
   zero, K2 : R is a prime of dimension 4 and multiplicity 2, K2 : (K2 : R) = R, and
   N_K2 - N_R = N_A - (1 - t)^21, so R / K2 has the Hilbert function 5, 14, 30, 55, 91, 140, 204, ... of the
-  irrelevant ideal of a quadric threefold cone in every degree (A5-545).
+  irrelevant ideal of a quadric threefold cone in every degree (A5-547).
 
 ## Where the embedded plane of same-sign X sits in the Pluecker space
 
@@ -210,10 +210,10 @@ embedding matrices of the [nullity-16 Rees record](../../a5-kernel-attachments/R
 
 - over Q(i), at N- and at N+, the embedding matrices of the same-sign and of the opposite-sign X incidence have
   ranks 15 and 3 and rank 18 side by side, so the two linear spans share no point and the embedded plane is not the
-  image of the opposite-sign P^2 fiber (A5-543, refuted);
+  image of the opposite-sign P^2 fiber (A5-545, refuted);
 - modulo 32009 and 32029 the 9 linear conditions of the section through V^a- (at N-) or V^a+ (at N+) lie in the
   span of the 12 forms, so the embedded plane lies in that section, and the section through VB meets the plane in
-  one point (A5-544);
+  one point (A5-546);
 - the same conditions have rank 3 on the three opposite-sign generators for V^a and rank 0 for VB, so the V^a
   section holds no point of the opposite-sign fiber. Rank 18 alone would also arise from matrices in different
   frames; these source-against-stratum ranks separate the two images and show the shared frame.
