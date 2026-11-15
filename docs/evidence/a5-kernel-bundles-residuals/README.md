@@ -462,9 +462,10 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   have `dim C(P)` of 5, 4, 4. Exact real points over Q(i) at `s = 0` and `s = 2` have these kernel planes, so
   `dim L` is 6, 4 and 4 there: the value 4 occurs, and `fiber_dimension` of
   `nullity4_gauss_image.py`, the routine of the grid classes, returns the same 6, 4, 4 there. At a real point with kernel plane `P_x` and `s^2` other
-  than 1 the vectors of `P` have nullity 7 (real nullity 12 through `A5-554`). `hypothesis` (`A5-553`): no other value occurs;
-  open at `s = +-1` (`dim C(P_x) = 7`, which would give 10), at the point `(beta, lambda) = (i, 0)` and at the
-  totally isotropic pairs. Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
+  than 1 the vectors of `P` have nullity 7. `hypothesis` (`A5-553`): no other value occurs, and every point with
+  `dim L = 6` has plane nullity 7; open at `s = +-1` (`dim C(P_x) = 7`, which would give 10), at the point
+  `(beta, lambda) = (i, 0)`, at the totally isotropic pairs, and for `dim L = 6` the lemma that every point with
+  `dim C(P) = 5` lies in the covered family. Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
   --check` (about 45 s).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
