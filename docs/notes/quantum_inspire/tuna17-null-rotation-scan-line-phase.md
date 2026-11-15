@@ -13,11 +13,12 @@ Follow-up: [draft case](tuna17-null-phase-scan-case-draft.md).
 
 ## Result
 
-The selector offset of the null block b0 has two parts. A static part of about 0.014 drifts between jobs. A
-second part follows the phase of the shot-order line of
+The selector offset of the null block b0 has two parts. A constant component of about 0.014 drifts between jobs. A
+second component follows the phase of the shot-order line of
 [tuna-17.md](tuna-17.md) ("50 Hz"), which q4's read bit carries in every data job: the selector contrast of
 `b0` and `b0-rx` reads about 0.014 + 0.025 cos(theta) over the line's phase theta. The pulse angle of q4 sets the
-size of both parts. No model fitted so far is adequate.
+size of both components. No model fitted so far is adequate. The line is a periodic component of the retained
+shot order; this series establishes neither that the order is execution time nor the line's source.
 
 ## What the scan arms read against exact pulses
 
@@ -54,9 +55,9 @@ the two leading worlds with a second elementary error fit the forward round (54 
 and fail the mirror round at the forward parameters (131 at best against 32.9). The per-batch q12 phase reads -0.16 to
 -0.20 rad in six batches and -0.09 and +0.14 rad in batches 13 and 15.
 
-An independent computation in the review of the retaining change ranks the same coupler first (-0.28 rad,
-chi-square 249 with one contraction) and reports that it reproduces the signs of `d2_split` in every arm outside
-the fit.
+A reviewer's computation during the review of the retaining change, not retained, ranks the same coupler first
+(-0.28 rad, chi-square 249 with one contraction) and reports that it reproduces the signs of `d2_split` in every
+arm outside the fit.
 
 `full_histogram_fit.py` fits all 96 outcome counts per batch: every candidate reads 124,000 to 153,000 on 720
 degrees of freedom, so the contraction is far from the device's law and that ranking carries no reading.
@@ -96,16 +97,40 @@ P(q4 reads 1)) and reads the selector contrast in eight phase bins:
 | all -10 / +10 degrees | 2 / 2 | 0.0493 / 0.0549 | 0.0104 (3.7) / 0.0087 (3.2, phase -2.65) | |
 | all -20 / +20 degrees | 2 / 2 | 0.0722 / 0.0539 | 0.0177 (6.0, phase -3.10) / 0.0136 (4.8) | |
 
-Each of the fourteen `b0` and `b0-rx` jobs shows the first harmonic at 0.022 to 0.035. The fold of the same shots at
-0.0237 cycles per shot gives 0.7 standard errors pooled. `line_phase_split.py` removes the shared-shot path: the
-frequency and phase come from the odd-indexed shots and the fold uses the even-indexed ones, which gives 0.0239
-(16.2 standard errors); the same maximize-then-fold procedure in an off-line band gives 0.0016 (1.1).
+The quoted multiples are shot-noise ratios at the fitted phase. Each of the fourteen `b0` and `b0-rx` jobs shows
+the first harmonic at 0.022 to 0.035. The fold of the same shots at 0.0237 cycles per shot gives 0.7 shot-noise
+errors pooled.
+
+`line_phase_split.py` removes the shared-shot path and calibrates at the job level. The frequency and phase come
+from the odd-indexed shots and the fold uses the even-indexed ones: the coherent mean over the fourteen jobs is
+0.0239 with a shot-noise error of 0.0015 (ratio 16.2) and an error over jobs of 0.0023 (10.6), which takes the
+fitted phases, the frequency drift and the scatter between jobs as random. The exact sign-flip null over the
+jobs gives p = 2/16384, its smallest value. The same maximize-then-fold procedure in an off-line band gives
+0.0016 (shot-noise ratio 1.1, sign-flip p = 0.67).
+
+`line_phase_conditionals.py` reads which probabilities carry it (first harmonics on the even shots, errors over
+jobs):
+
+| Statistic | First harmonic | Phase |
+|---|---|---|
+| P(selector reads 0 given coin reads 1) | 0.0086 +- 0.0009 | -0.25 |
+| P(selector reads 0 given coin reads 0) | 0.0153 +- 0.0018 | +3.07 |
+| selector contrast | 0.0239 +- 0.0023 | -0.14 |
+| P(selector reads 0) | 0.0043 +- 0.0010 | -3.02 |
+| P(coin reads 1) | 0.0004 +- 0.0009 | |
+| contrast where q4 reads 0 / reads 1 | 0.0235 +- 0.0032 / 0.0241 +- 0.0024 | -0.07 / -0.21 |
+
+The two conditional probabilities move in
+opposite phase, so the contrast carries their sum while the marginals nearly cancel, and the dependence is the
+same in both strata of q4's read value: an assignment effect of q4's read bit on the selector is excluded as its
+path.
 
 Readings:
 
-- The mean and the oscillation are separate quantities. A swing about zero that rectifies would carry a second
-  harmonic near the mean; the second harmonic is 0.0017 against a mean of 0.0138. Batch-15's center reads a mean
-  of 0.001 with a first harmonic of 0.025, so the static part drifts while the oscillating part stays.
+- The constant component and the first harmonic vary independently in this series: batch-15's center reads a
+  mean of 0.001 with a first harmonic of 0.025. A symmetric swing about zero that rectifies into the mean would
+  carry a second harmonic near the mean; the second harmonic is 0.0017 against a mean of 0.0138, so that model is
+  disfavored. How many device variables stand behind the two components is not identified.
 - q4's injected angle scales both: +10 degrees removes the mean and the oscillation, -10 degrees raises both. The
   q8 arms carry no oscillation.
 
@@ -134,9 +159,13 @@ Computed in the forward model at the retained mean bracket and visibility 0.42 (
 
 ## Open
 
-- hypothesis: one slowly drifting phase on q12 or on coupler 8-12 carries the static part, and a second quantity
-  that the line modulates and that q4's pulse angle couples to carries the oscillating part. Falsifier: the draft
-  case's `Rz` arms on q12 read the exact-pulse parabola centered at zero.
+- hypothesis: one slowly drifting phase on q12 or on coupler 8-12 carries the constant component. Falsifier: the
+  draft case's `Rz` arms on q12 read the exact-pulse parabola centered at zero.
+- hypothesis (from the review of this note): q4's drive reaches the joint response of the coin and the selector,
+  which the opposite phases of the two conditional probabilities admit. Falsifier: the first harmonic stays under a
+  q4 angle that the retained trend puts beyond its zero (the draft's +20 degree arm).
+- A record order that the provider's serialization imposes is not excluded as the line's origin; the fourteen
+  fitted phases do not lock to the record start (circular resultant 0.42 in the review's computation).
 - The source and the path of the line (flux pickup against another path, [tuna-17.md](tuna-17.md)) are unseparated.
 - The gate-noise families are untried in the phase-resolved and full-histogram fits.
 - The public calibration dashboard returned no series for the run date (its data source timed out on every
