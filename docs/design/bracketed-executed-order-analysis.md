@@ -12,6 +12,10 @@ If batches reorder independently at 7/19, all 35 stay in order with probability 
 quarter, an even chance only at 0.020 per batch). The series as written predicts `unresolved_order` with 2.6 million shots
 spent (`results/quantum_inspire/cases/pathion_one_cz_null_bracketed_tuna_17/CASE.md`, "Pre-flight record").
 
+A second measurement of the same shape: on the hosted QX emulator on 2026-11-15, 2 of the 4 batches of five circuits executed
+out of the requested order by `queued_at` (CASE.md, "QX remote"), so reordering is not particular to the Tuna-17 device or to
+three-circuit batches.
+
 ## Model
 
 A twin batch reads its contrast t = P1 - P0 with the coin-1 twin and the coin-0 twin in consecutive jobs, so a drift g of the

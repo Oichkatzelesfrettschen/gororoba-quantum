@@ -91,8 +91,9 @@ Exporting `GOROROBA_QI_REQUIRED=1` beside `QI_PYTHON` makes a replay a failure.
 
 The probe checks only qxelarator, libqasm and OpenSquirrel. The build host's `QI_ENV` read on 2026-11-15 holds
 quantuminspire 4.2.0, qiskit-quantuminspire 0.18.6 and qi-compute-api-client 0.64.0, while the lock pins quantuminspire
-4.1.0 and qiskit-quantuminspire 0.18.5; the SDK calls of the hosted QX series of 2026-11-15 ran under the installed
-versions, and the retained submissions record the endpoints and payloads, not the SDK versions. A move of the lock to
+4.1.0 and qiskit-quantuminspire 0.18.5 (and qi-compute-api-client 0.63.0). The retained QX receipts of 2026-11-15 record
+backend, batch and job identities, case and circuit digests and shot counts, but no SDK version, so attributing those calls
+to the installed versions is an inference. A move of the lock to
 the installed versions is a change of the environment that regenerates the toolchain record
 (`scripts/qi_toolchain_check.py`) and reruns the gates that cite it; a reinstall of the lock restores the documented
 pin. Until one of the two lands, an SDK-dependent record names this drift.
