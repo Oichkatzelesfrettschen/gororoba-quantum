@@ -12,6 +12,7 @@ from the retained records; the audit test compares the cut with them.
 from __future__ import annotations
 
 import copy
+import itertools
 import json
 import shutil
 import sys
@@ -593,3 +594,26 @@ def test_the_successor_plan_refuses_a_cutoff_that_the_scenario_does_not_set() ->
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+FIVE_BLOCKS = np.array([0.13, -0.13, 0.64, 0.1, -0.54])
+
+
+def test_a_relabeling_that_reproduces_the_observed_pairing_counts_as_a_tie() -> None:
+    # All 120 relabelings of a perfect five-block alignment: only the identity reaches r = 1, so the exact one-sided
+    # p of (1 + k) / (P + 1) is 2 / 121; the same two float evaluations of r (np.corrcoef, then the centered dot
+    # product of batch_r) read the identity one ulp low and gave 1 / 121 before the tie tolerance.
+    relabeled = np.array(list(itertools.permutations(FIVE_BLOCKS)))
+    observed = reading.finite_r(FIVE_BLOCKS, FIVE_BLOCKS)
+    rs = reading.batch_r(FIVE_BLOCKS, relabeled)
+    ties = [int(i) for i in np.flatnonzero(np.abs(rs - observed) <= reading.TIE_TOLERANCE)]
+    check(ties == [0], f"the relabelings within the tolerance of the observed r are {ties}, expected only the identity")
+    check(reading.permutation_p(observed, rs) == 2 / 121, f"p = {reading.permutation_p(observed, rs)}, expected 2/121")
+
+
+def test_a_relabeling_below_the_observed_r_by_more_than_the_tolerance_is_not_counted() -> None:
+    relabeled = np.array([FIVE_BLOCKS, FIVE_BLOCKS[::-1], np.roll(FIVE_BLOCKS, 1)])
+    observed = reading.finite_r(FIVE_BLOCKS, FIVE_BLOCKS)
+    rs = reading.batch_r(FIVE_BLOCKS, relabeled)
+    check(float(np.max(rs[1:])) < observed - 1e-3, f"the two shifted relabelings must read well below r = {observed}")
+    check(reading.permutation_p(observed, rs) == 2 / 4, "only the identity ties; p = (1 + 1) / (3 + 1)")

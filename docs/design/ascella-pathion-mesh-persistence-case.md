@@ -108,6 +108,18 @@ carried fraction adds a block or slot term of that size; "not reproduced" leaves
 unresolved unless the within-job control reads drift. The pathion block cases then take their slot efficiencies from
 many anchor seeds or a per-mesh table, sized by the fresh anchors of this job.
 
+## Relabeling-test tie convention
+
+Both relabeling tests (the frozen-map test over seed blocks and the persistence test over mirror pairs) score
+`p = (1 + #{r_relabeled >= r_observed}) / (P + 1)` through `permutation_p`, which counts a relabeled r within
+`TIE_TOLERANCE` (1e-12) below the observed r as a tie. The observed r (`np.corrcoef`) and a relabeled r
+(`batch_r`, a centered dot product over norms) are two float evaluations of one statistic, and a relabeling that
+reproduces the observed pairing read below the observed r in 628 of 2000 measured random draws, so the earlier
+analysis counted an exact tie as smaller. The retained QPU analysis (`analysis.json` of the job-00 run) reproduces
+byte for byte under the tolerance, since its group sizes (16 seed blocks, 6 mirror pairs) put the identity at
+probability 1/16! and 1/720 (issue 883). `docs/evidence/pathion-kernel-map/conjectures/c1_map_increment.py` imports
+`batch_r` and keeps its own untoleranced count as a retained evidence script.
+
 ## Review and the changes it made
 
 The Advisor review of the revised case (justification `docs/local/reviews/advisor-justification-cases.md`,
