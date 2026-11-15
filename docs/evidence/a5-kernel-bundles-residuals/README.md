@@ -390,7 +390,7 @@ kernel quartic is `4 (n (n + r^2) + q^2)`, `n = c0^2 + s^2 + t^2`, `q = v_1 (c0^
   and the real Gauss map is an injective immersion of the projectivized real points of the stratum: the
   derivative of the kernel plane of a constant-rank family vanishes in a direction `d` exactly when `A(d) P = 0`,
   so the kernel of the differential is `L`.
-- `A5-533`: the quartic is 4 times the squared length of `x cross y`, singular at the base points of that net
+- `A5-533`: the quartic is -4 times the squared length of `x cross y`, singular at the base points of that net
   of conics, which are the roots of `chi = lambda^3 + v_1 lambda^2 - (1 + 2 v_1^2 + 2 rho^2) lambda + v_1`. The
   points with singular scheme longer than 3 form a proper closed subset, and a quartic of length 3 that
   contains no line is irreducible.

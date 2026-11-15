@@ -650,24 +650,35 @@ def _square_root(value: int) -> int | None:
     return next(root for root in range(PRIME) if root * root % PRIME == value)
 
 
+def _discriminant_terms() -> list[tuple[int, tuple[int, int]]]:
+    polynomial = sp.Poly(sp.discriminant(node_cubic(), sp.Symbol("lambda")), V1, RHO)
+    return [(int(coefficient), (int(powers[0]), int(powers[1]))) for powers, coefficient in polynomial.terms()]
+
+
+def discriminant_row(job: tuple[int, int, bool]) -> list[tuple[int, int]]:
+    """The points (v_1, rho), rho in 1..limit, with mu in the field, on the discriminant of chi or off it."""
+    v1, limit, on_discriminant = job
+    terms = _discriminant_terms()
+    row = []
+    for rho in range(1, limit + 1):
+        value = sum(c * pow(v1, a, PRIME) * pow(rho, b, PRIME) for c, (a, b) in terms) % PRIME
+        if (value == 0) == on_discriminant and _square_root(-(1 + v1 * v1 + rho * rho)) is not None:
+            row.append((v1, rho))
+    return row
+
+
 def scheme_jobs() -> dict[str, list[tuple[int, int]]]:
     """The normal-form points (v_1, rho) of item 9 whose mu lies in the field, off and on the discriminant."""
-    lam = sp.Symbol("lambda")
-    polynomial = sp.Poly(sp.discriminant(node_cubic(), lam), V1, RHO)
-    terms = [(int(coefficient), powers) for powers, coefficient in polynomial.terms()]
-
-    def value(v1: int, rho: int) -> int:
-        return sum(c * pow(v1, a, PRIME) * pow(rho, b, PRIME) for c, (a, b) in terms) % PRIME
-
-    def in_field(v1: int, rho: int) -> bool:
-        return _square_root(-(1 + v1 * v1 + rho * rho)) is not None
-
-    small = range(1, GENERAL_RANGE + 1)
-    wide = range(1, DISCRIMINANT_RANGE + 1)
-    return {
-        "off the discriminant": [(a, b) for a in small for b in small if value(a, b) and in_field(a, b)],
-        "on the discriminant": [(a, b) for a in wide for b in wide if not value(a, b) and in_field(a, b)],
-    }
+    jobs = {}
+    for label, limit, on_discriminant in (
+        ("off the discriminant", GENERAL_RANGE, False),
+        ("on the discriminant", DISCRIMINANT_RANGE, True),
+    ):
+        rows = parallel.ordered_map(
+            discriminant_row, [(v1, limit, on_discriminant) for v1 in range(1, limit + 1)], min_items=2
+        )
+        jobs[label] = [point for row in rows for point in row]
+    return jobs
 
 
 def scheme_facts(job: tuple[int, int]) -> list[Any]:
