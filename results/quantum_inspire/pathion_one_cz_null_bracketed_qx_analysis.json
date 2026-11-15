@@ -1,0 +1,117 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "batch_cases_sha256": {
+  "batch-00": "9904dc68030fd23abed32e905320c0b67e1a74df6e79a14645a2a91fc99393ee",
+  "batch-01": "7aec9908027c5f06e7dcb9a288acb27de9bc9f9890b067a94dc8b5d1e43cba37",
+  "batch-02": "5ac4b6c411b4234493911400da264f08f3c5b60f4184b0858ba16264c19d9b7e",
+  "batch-03": "47a25a62683d922f5cc2e6461e057370871225b9d9cbed7ec6cdb74b28a1fef5"
+ },
+ "claim_kind": "preregistered emulator control",
+ "complete": true,
+ "qx_brackets": {
+  "pass": true,
+  "readout_misassigned_shots": {
+   "batch-00": {
+    "readout_0_selector_ones": 0,
+    "readout_1_selector_zeros": 0
+   },
+   "batch-01": {
+    "readout_0_selector_ones": 0,
+    "readout_1_selector_zeros": 0
+   },
+   "batch-02": {
+    "readout_0_selector_ones": 0,
+    "readout_1_selector_zeros": 0
+   },
+   "batch-03": {
+    "readout_0_selector_ones": 0,
+    "readout_1_selector_zeros": 0
+   }
+  },
+  "twin_contrasts": {
+   "b0": {
+    "bracketed": -0.02001953125,
+    "raw": -0.02001953125
+   },
+   "k12": {
+    "bracketed": 0.0107421875,
+    "raw": 0.0107421875
+   },
+   "k4": {
+    "bracketed": -0.02099609375,
+    "raw": -0.02099609375
+   },
+   "k8": {
+    "bracketed": -0.03076171875,
+    "raw": -0.03076171875
+   }
+  }
+ },
+ "qx_control": {
+  "arms": {
+   "batch-00/b0-coin0.cq": {
+    "floor": 0.02440855152430773,
+    "ok": true,
+    "tvd": 0.022149824947999996
+   },
+   "batch-00/b0-coin1.cq": {
+    "floor": 0.02440855152430773,
+    "ok": true,
+    "tvd": 0.026850677164999996
+   },
+   "batch-00/b0.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.03250249942899999
+   },
+   "batch-01/k4-coin0.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.03076171875
+   },
+   "batch-01/k4-coin1.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.02587890625
+   },
+   "batch-01/k4.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.029296875
+   },
+   "batch-02/k8-coin0.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.02978515625
+   },
+   "batch-02/k8-coin1.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.0302734375
+   },
+   "batch-02/k8.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.03173828125
+   },
+   "batch-03/k12-coin0.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.013671875
+   },
+   "batch-03/k12-coin1.cq": {
+    "floor": 0.023323520786882213,
+    "ok": true,
+    "tvd": 0.0146484375
+   },
+   "batch-03/k12.cq": {
+    "floor": 0.034142138456002474,
+    "ok": true,
+    "tvd": 0.03955078125
+   }
+  },
+  "factor": 2.0,
+  "pass": true
+ },
+ "schema": "qi-pathion-one-cz-null-bracketed-analysis-v1"
+}

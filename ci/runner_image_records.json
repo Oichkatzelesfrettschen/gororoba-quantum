@@ -684,6 +684,7 @@
   "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json": "5fccd3912e3ac895510dea9cd8588528656137c5638f10b6eae840f0f531dad4",
   "results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json": "14f4293ff9a5831fa330c1cbd3ef5d7f046cb35ef1fd430150157108433ef61b",
   "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json": "e12547ed29c124a7ebd4d70dfbef5be495edab6bd32f3b05a878dd366ddb85b3",
+  "results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json": "9417eeb01e2cca31f4a53943641eafd3c9f2f68954fdafdcac401c771fa65997",
   "results/ripple/cayley-dickson-ripples.html": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
   "results/ripple/measured-cayley-dickson-ripples.html": "0ec2b7c4ddb0a15bf17e2d8b787f923e9b6e18b2b527f196ff7141135692b1e2"
  },

@@ -6333,6 +6333,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_bracketed_cases.py --analyze results/quantum_inspire/runs/2026-11-15T184810Z-pathion_one_cz_null_bracketed_qx-batch-* --out {out}",
+      "name": "core-pathion-one-cz-null-bracketed-qx-analysis-replay",
+      "seconds": 3.0,
+      "replays": [
+        "results/quantum_inspire/pathion_one_cz_null_bracketed_qx_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --self-test",
       "name": "core-pathion-null-rotation-scan-case-replay",
       "seconds": 1900.0,

@@ -1,0 +1,89 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-15T18:53:49+00:00",
+ "approval": "then you submit the jobs: they are approved at that point (owner, 2026-11-15, after the local review, reconciliation and Advisor review)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "5ac4b6c411b4234493911400da264f08f3c5b60f4184b0858ba16264c19d9b7e",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1742633,
+   "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+  },
+  {
+   "file": "k8-coin0.cq",
+   "job": 1742634,
+   "sha256": "840e6d89a4a22607a299eadc3b53645c7c90c8bba4402aa72c7a162ab4725769"
+  },
+  {
+   "file": "k8-coin1.cq",
+   "job": 1742635,
+   "sha256": "b87e10ef63e0f3234dc55ced7bf4b8646f4bbd6802e837533e12901f8ae4ad26"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1742636,
+   "sha256": "fa6aca1516ebe2a2437409372d4e5d77b079ca0706745b1838c5cf256f43565a"
+  },
+  {
+   "file": "k8.cq",
+   "job": 1742637,
+   "sha256": "687603a86eaa737fc6bfba359ef6274df6ebc84478a14e126d3a6fae7a2894c4"
+  }
+ ],
+ "project": 859094,
+ "batch_job": 958993,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-15T18:53:54+00:00",
+  "approval": "then you submit the jobs: they are approved at that point (owner, 2026-11-15, after the local review, reconciliation and Advisor review)",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "5ac4b6c411b4234493911400da264f08f3c5b60f4184b0858ba16264c19d9b7e",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 958993,
+  "project": 859094,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "readout-0.cq",
+    "job": 1742633,
+    "sha256": "7b3bf3ffb80500d21812f761b6f7042fb1b05a4af21800c7aac7b990f100c10e"
+   },
+   {
+    "file": "k8-coin0.cq",
+    "job": 1742634,
+    "sha256": "840e6d89a4a22607a299eadc3b53645c7c90c8bba4402aa72c7a162ab4725769"
+   },
+   {
+    "file": "k8-coin1.cq",
+    "job": 1742635,
+    "sha256": "b87e10ef63e0f3234dc55ced7bf4b8646f4bbd6802e837533e12901f8ae4ad26"
+   },
+   {
+    "file": "readout-1.cq",
+    "job": 1742636,
+    "sha256": "fa6aca1516ebe2a2437409372d4e5d77b079ca0706745b1838c5cf256f43565a"
+   },
+   {
+    "file": "k8.cq",
+    "job": 1742637,
+    "sha256": "687603a86eaa737fc6bfba359ef6274df6ebc84478a14e126d3a6fae7a2894c4"
+   }
+  ],
+  "submitted_utc": "2026-11-15T18:53:54+00:00"
+ },
+ "confirmed_utc": "2026-11-15T18:53:54+00:00"
+}
