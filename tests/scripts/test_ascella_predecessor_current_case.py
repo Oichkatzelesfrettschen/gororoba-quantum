@@ -148,7 +148,8 @@ def test_a_changed_current_case_source_is_refused_when_the_case_loads(tmp_path: 
 def test_a_manifest_without_current_case_sources_passes_and_a_malformed_one_is_refused() -> None:
     qd.verify_current_case_sources({})
     qd.verify_current_case_sources({"preregistered": {}})
-    for bad in ({}, [], "x", {"../escape.py": "0" * 64}, {"scripts/qd_platform.py": 7}):
+    malformed: list[object] = [{}, [], "x", {"../escape.py": "0" * 64}, {"scripts/qd_platform.py": 7}]
+    for bad in malformed:
         with pytest.raises(qd.PlatformError):
             qd.verify_current_case_sources({"preregistered": {"current_case_sources": bad}})
 
