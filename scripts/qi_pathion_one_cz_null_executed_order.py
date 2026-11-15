@@ -33,6 +33,9 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 
+import numpy as np
+from scipy.stats import chi2
+
 Row = tuple[float, float, float]  # (twin contrast, standard error, executed position offset x of the batch)
 
 
@@ -151,3 +154,71 @@ def operating_characteristics(
             p95 = ratio
             break
     return {"confounded": confounded, "mean_error_ratio": mean, "p95_error_ratio": p95}
+
+
+def constrained_weights(times: Sequence[float], ses: Sequence[float], reference: float, order: int = 1) -> list[float]:
+    """Weights w of the minimum-variance level at `reference` that annihilates a drift polynomial of `order`.
+
+    Model: v_r = mu + sum_{k=1..order} g_k (t_r - reference)^k + e_r, var(e_r) = se_r^2. The estimator mu_hat = sum
+    w_r v_r is unbiased for mu whatever g_k are exactly when B^T w = e_0, with B_rk = (t_r - reference)^k for k =
+    0..order (so sum w = 1 and sum w (t - reference)^k = 0), and the minimum-variance solution is w = C^-1 B (B^T
+    C^-1 B)^-1 e_0 with C = diag(se^2): the weighted regression's intercept at `reference`. For order 1, var(mu_hat)
+    = (1 / W)(1 + (t_w - reference)^2 / S_tt) with W = sum 1/se^2, t_w the inverse-variance mean time and S_tt = sum
+    (t - t_w)^2 / se^2 / W, so the cost over the plain mean is 1 + (t_w - reference)^2 / S_tt: nothing when the
+    weighted mean time is the reference, and large when the replicates cluster in time. Fewer distinct times than
+    order + 1 leave the polynomial unseparated.
+    """
+    if order < 0 or len(times) != len(ses) or len(set(times)) < order + 1:
+        raise ConfoundedOrder("the replicate times cannot separate the drift polynomial from the level")
+    if not all(math.isfinite(x) and x > 0.0 for x in ses) or not all(math.isfinite(t) for t in times):
+        raise ValueError("a replicate time or error is not usable")
+    shifted = np.asarray(times, dtype=float) - reference
+    design = np.vander(shifted, order + 1, increasing=True)
+    precision = np.diag(1.0 / np.asarray(ses, dtype=float) ** 2)
+    information = design.T @ precision @ design
+    unit = np.zeros(order + 1)
+    unit[0] = 1.0
+    solved = np.linalg.solve(information, unit)
+    return [float(x) for x in precision @ design @ solved]
+
+
+def level_at(
+    values: Sequence[float], ses: Sequence[float], times: Sequence[float], reference: float, order: int = 1
+) -> tuple[float, float]:
+    """(level at `reference`, its standard error) from `constrained_weights`; the variance is sum w^2 se^2."""
+    weights = constrained_weights(times, ses, reference, order)
+    level = sum(w * v for w, v in zip(weights, values, strict=True))
+    return level, math.sqrt(sum(w * w * se * se for w, se in zip(weights, ses, strict=True)))
+
+
+MONITOR_ALPHA = 0.001
+
+
+def drift_monitor(times: Sequence[float], values: Sequence[float], ses: Sequence[float]) -> dict[str, float | bool]:
+    """The preregistered check of the linear drift model on a reference series (the readout offset of every batch).
+    Weighted least squares of the series on time gives a slope and its error; the residual chi-square has n - 2
+    degrees of freedom and exceeds the alpha = MONITOR_ALPHA quantile when the series carries more than a line plus
+    its shot noise (a step, a burst, a curve). `adequate` is False then. A slope that departs from zero is a finding
+    about the drift rate, and not a failure of the model.
+    """
+    n = len(times)
+    if n < 3 or len(values) != n or len(ses) != n or len(set(times)) < 2:
+        raise ConfoundedOrder("the reference series cannot fit a line and test its residual")
+    weights = [1.0 / (se * se) for se in ses]
+    total = sum(weights)
+    mean_t = sum(w * t for w, t in zip(weights, times, strict=True)) / total
+    mean_v = sum(w * v for w, v in zip(weights, values, strict=True)) / total
+    stt = sum(w * (t - mean_t) ** 2 for w, t in zip(weights, times, strict=True))
+    slope = sum(w * (t - mean_t) * (v - mean_v) for w, t, v in zip(weights, times, values, strict=True)) / stt
+    statistic = sum(
+        w * (v - mean_v - slope * (t - mean_t)) ** 2 for w, t, v in zip(weights, times, values, strict=True)
+    )
+    threshold = float(chi2.ppf(1.0 - MONITOR_ALPHA, n - 2))
+    return {
+        "slope": slope,
+        "slope_se": math.sqrt(1.0 / stt),
+        "chi_square": statistic,
+        "degrees_of_freedom": float(n - 2),
+        "threshold": threshold,
+        "adequate": statistic <= threshold,
+    }
