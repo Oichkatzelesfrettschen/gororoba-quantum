@@ -1,10 +1,14 @@
-"""The retained germ, quadric and plane-image records of the A_5 fiber track hold their findings.
+"""The checks of the germ, quadric and plane-image records of the A_5 fiber track, on fixtures built here.
 
-Each test applies a record's check() to the retained record and to copies that drop, relabel or alter a row.
+A fixture is a record as the scripts write it, assembled from each module's tables and constants; check() accepts
+it and reports every copy that drops, relabels or alters a row. The retained records replay on demand through the
+gates core-a5-quadric-and-germ-probes and core-a5-embedded-plane-images of ci/gates.json.
 """
 
+import copy
 import importlib.util
-import json
+from fractions import Fraction
+from math import comb
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -12,6 +16,31 @@ from typing import Any
 import pytest
 
 HERE = Path(__file__).resolve().parents[1] / "docs/evidence/a5-exceptional-fibers/structure"
+# The first Hilbert numerator of the 148 quadrics of E8-bar -> N+- over (1 - t)^21.
+NUM_K_E8 = [
+    1,
+    0,
+    -148,
+    1562,
+    -8745,
+    32753,
+    -89936,
+    190224,
+    -319606,
+    435500,
+    -488280,
+    454948,
+    -354354,
+    231126,
+    -125840,
+    56672,
+    -20763,
+    6028,
+    -1332,
+    210,
+    -21,
+    1,
+]
 
 
 def load(name: str) -> ModuleType:
@@ -23,22 +52,47 @@ def load(name: str) -> ModuleType:
     return mod
 
 
-def record(name: str = "quadric-and-germ-probes") -> list[dict[str, Any]]:
-    return [json.loads(ln) for ln in (HERE / f"{name}.jsonl").read_text().splitlines()]
+def sections(mod: ModuleType, degree: int) -> dict[str, Any]:
+    point = {"projdim": 0, "degree": degree, "reduced": True, "orbits": [1, degree - 1]}
+    return {str(base): dict(point) for base in mod.BASES}
+
+
+def probe_fixture(mod: ModuleType) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = [mod.expected_germ(item) for item in mod.GERMS]
+    closed = {
+        str(d): [7 * comb(d + 2, 3) + comb(d + 2, 2), 3 * comb(d + 2, 3) + comb(d + 2, 2),
+                 4 * comb(d + 2, 3) + comb(d + 2, 2), comb(d + 2, 2)]
+        for d in range(1, 8)
+    }  # fmt: skip
+    for p, rel in mod.VB:
+        parts = [{"projdim": 3, "degree": e, "sections": sections(mod, e)} for e in (3, 4)]
+        rows.append({"check": "vb-components", "fiber": "E8-bar -> VB", "prime": p, "relations": rel, "primes": 2,
+                     "components": parts, "hf": copy.deepcopy(closed), "meet": dict(mod.MEET)})  # fmt: skip
+    for fiber, p, rel in mod.XS:
+        sign = "-" if fiber == "X- -> N-" else "+"
+        rows.append({"check": "x-colon", "fiber": fiber, "prime": p, "relations": rel, "primes": [1],
+                     "prime_ideal": [4, 12, 1], "colon": [3, 1, 12, 12, 1], "bicolon": [1],
+                     "forms": [f.replace("SIGN", sign) for f in mod.PLANE_FORMS], "sections": sections(mod, 12),
+                     "numK": list(mod.NUM_K), "numP": list(mod.NUM_P), "numA": list(mod.NUM_A)})  # fmt: skip
+    unit = [(-1) ** i * comb(21, i) for i in range(22)]
+    num_a = mod.NUM_A_E8 + [0] * (22 - len(mod.NUM_A_E8))
+    num_r = [k - a + u for k, a, u in zip(NUM_K_E8, num_a, unit, strict=True)]
+    for fiber, p, rel in mod.E8S:
+        rows.append({"check": "e8-colon", "fiber": fiber, "prime": p, "relations": rel, "radical": [5, 1, 5, 11],
+                     "square": [1], "colon": [4, 2, 17, 16, 1, 1], "bicolon": [1], "numK": list(NUM_K_E8),
+                     "numR": list(num_r), "numA": list(mod.NUM_A_E8)})  # fmt: skip
+    return rows
 
 
 def row(rows: list[dict[str, Any]], kind: str, index: int = 0) -> dict[str, Any]:
     return [r for r in rows if r["check"] == kind][index]
 
 
-def test_the_retained_probe_record_passes_and_names_existing_inputs() -> None:
+def test_the_fixture_record_passes() -> None:
     mod = load("quadric_and_germ_probes")
-    rows = record()
-    if mod.check(rows):
+    rows = probe_fixture(mod)
+    if len(rows) != 21 or mod.check(rows):
         raise AssertionError(mod.check(rows))
-    for r in rows:
-        if not (mod.W / r.get("input", r.get("relations", ""))).is_file():
-            raise AssertionError(r)
 
 
 def drop_pivot(rows: list[dict[str, Any]]) -> None:
@@ -52,9 +106,9 @@ def duplicate_a_germ(rows: list[dict[str, Any]]) -> None:
 
 
 def drop_sections(rows: list[dict[str, Any]]) -> None:
-    sections = row(rows, "vb-components")["components"][0]["sections"]
+    kept = row(rows, "vb-components")["components"][0]["sections"]
     for base in ("3", "4", "5"):
-        del sections[base]
+        del kept[base]
 
 
 MUTATIONS = {
@@ -89,29 +143,45 @@ MUTATIONS = {
 @pytest.mark.parametrize("name", sorted(MUTATIONS))
 def test_a_changed_probe_record_is_reported(name: str) -> None:
     mod = load("quadric_and_germ_probes")
-    rows = record()
+    rows = probe_fixture(mod)
     MUTATIONS[name](rows)
     if not mod.check(rows):
         raise AssertionError(f"{name}: the changed record passes")
 
 
-def test_the_retained_plane_images_pass_and_recompute() -> None:
-    mod = load("embedded_plane_images")
-    rows = record("embedded-plane-images")
-    if mod.check(rows) or mod.build() != rows:
-        raise AssertionError(mod.check(rows))
+def test_the_hilbert_function_of_a_numerator_expands_exactly() -> None:
+    mod = load("quadric_and_germ_probes")
+    if mod.hilbert_function([1, 0, -1], 3, range(5)) != [1, 3, 5, 7, 9]:
+        raise AssertionError("the plane conic k[x, y, z]/(q) has Hilbert function 2d + 1")
+    if mod.hilbert_function(NUM_K_E8, 21, range(1, 8)) != mod.HF_E8:
+        raise AssertionError("the fixture numerator misses the retained Hilbert function")
 
 
-def test_meeting_spans_or_a_plane_outside_the_section_are_reported() -> None:
+def test_changed_plane_images_are_reported() -> None:
     mod = load("embedded_plane_images")
-    meeting = record("embedded-plane-images")
+    if mod.check(copy.deepcopy(mod.EXPECTED)):
+        raise AssertionError(mod.check(mod.EXPECTED))
+    meeting = copy.deepcopy(mod.EXPECTED)
     meeting[0]["ranks"] = [15, 3, 17]
-    outside = record("embedded-plane-images")
+    outside = copy.deepcopy(mod.EXPECTED)
     outside[2]["Va"]["with_forms"] = 13
-    shared = record("embedded-plane-images")
+    shared = copy.deepcopy(mod.EXPECTED)
     shared[3]["Va"]["on_opposite"] = 2
     if not all(mod.check(rows) for rows in (meeting, outside, shared, outside[:-1])):
         raise AssertionError("a changed plane record passes")
+
+
+def test_exact_ranks_and_kernels_on_small_matrices() -> None:
+    mod = load("embedded_plane_images")
+    one, zero, i = (Fraction(1), Fraction(0)), (Fraction(0), Fraction(0)), (Fraction(0), Fraction(1))
+    minus = (Fraction(-1), Fraction(0))
+    if mod.rank_gauss([[one, i], [i, minus]]) != 1 or mod.rank_gauss([[one, i], [i, one]]) != 2:
+        raise AssertionError("(1, i) and (i, -1) are proportional over Q(i); (1, i) and (i, 1) are independent")
+    if mod.rank_gauss([[zero, zero]]) != 0 or mod.rank_mod([[1, 2, 3], [2, 4, 6], [0, 1, 1]], 7) != 2:
+        raise AssertionError("rank")
+    kernel = mod.kernel_mod([[1, 0, 6], [0, 1, 6]], 3, 7)
+    if kernel != [[1, 1, 1]]:
+        raise AssertionError(kernel)
 
 
 def test_a_form_that_is_not_a_sum_of_signed_variables_is_rejected() -> None:
