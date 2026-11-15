@@ -196,6 +196,14 @@ def is_face(face: tuple[int, ...], monomials: tuple[Exponents, ...]) -> bool:
     return containing != [] and set.intersection(*containing) == set(face)
 
 
+def face_names(face: tuple[int, ...], monomials: tuple[Exponents, ...], names: tuple[str, ...]) -> list[str] | None:
+    """The names of a face given by indices into MONOMIALS, or None when a monomial is absent or the set is no face."""
+    if any(MONOMIALS[index] not in monomials for index in face):
+        return None
+    positions = tuple(monomials.index(MONOMIALS[index]) for index in face)
+    return [names[position] for position in positions] if is_face(positions, monomials) else None
+
+
 def polytope(monomials: tuple[Exponents, ...] = MONOMIALS, names: tuple[str, ...] = NAMES) -> dict[str, Any]:
     points = [_lattice(m) for m in monomials]
     differences = [[(x - y, 0) for x, y in zip(point, points[0], strict=True)] for point in points[1:]]
@@ -213,9 +221,7 @@ def polytope(monomials: tuple[Exponents, ...] = MONOMIALS, names: tuple[str, ...
             for exponents in degree_monomials()
             if exponents not in monomials and inside(exponents, monomials)
         ],
-        "faces": {
-            key: [names[index] for index in face] if is_face(face, monomials) else None for key, face in faces.items()
-        },
+        "faces": {key: face_names(face, monomials, names) for key, face in faces.items()},
     }
 
 

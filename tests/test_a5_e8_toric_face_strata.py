@@ -135,6 +135,18 @@ def test_a_missing_boundary_monomial_that_is_no_vertex_is_reported_as_a_lattice_
     )
     _same(found["lattice_points_outside"], ["(1, 1, 0, 1, 0)"])
     _same(len(found["facets"]), 7)
+    # The three faces keep their monomials, at other positions of the shorter tuple.
+    _same(found["faces"], {"point": ["z l"], "line": ["a m", "b m"], "plane": ["z l", "a m", "b m"]})
+
+
+def test_the_faces_are_resolved_by_their_monomials_in_a_subset_or_a_reordered_set() -> None:
+    def faces(kept: list[int]) -> dict[str, Any]:
+        monomials = tuple(strata.MONOMIALS[index] for index in kept)
+        return strata.polytope(monomials, tuple(strata.NAMES[index] for index in kept))["faces"]
+
+    _same(faces(list(reversed(range(12)))), {"point": ["z l"], "line": ["a m", "b m"], "plane": ["z l", "a m", "b m"]})
+    _same(faces([index for index in range(12) if index != 9]), {"point": None, "line": ["a m", "b m"], "plane": None})
+    _same(faces([index for index in range(12) if index != 10]), {"point": ["z l"], "line": None, "plane": None})
 
 
 def test_the_generator_lists_parse_into_linear_forms_over_the_gaussian_integers() -> None:
