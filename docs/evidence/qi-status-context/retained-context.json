@@ -1,0 +1,737 @@
+{
+ "implied_t1_assumption": "the whole P(1|1) drop between the no-wait and the wait run is T1 decay during the wait, and readout fidelity is unchanged between the two runs",
+ "jobs": {
+  "QXsinglenodesimulator": [
+   {
+    "day": "2026-10-16",
+    "jobs": 20,
+    "max_turnaround_seconds": 38.4133,
+    "median_execution_seconds": 0.22984,
+    "median_turnaround_seconds": 8.4819,
+    "shots": 40960
+   },
+   {
+    "day": "2026-10-17",
+    "jobs": 82,
+    "max_turnaround_seconds": 28.6229,
+    "median_execution_seconds": 0.048852,
+    "median_turnaround_seconds": 6.89519,
+    "shots": 167936
+   },
+   {
+    "day": "2026-10-18",
+    "jobs": 11,
+    "max_turnaround_seconds": 8.36579,
+    "median_execution_seconds": 0.059743,
+    "median_turnaround_seconds": 6.38724,
+    "shots": 22528
+   },
+   {
+    "day": "2026-10-22",
+    "jobs": 41,
+    "max_turnaround_seconds": 8.11197,
+    "median_execution_seconds": 0.058236,
+    "median_turnaround_seconds": 6.69623,
+    "shots": 83968
+   },
+   {
+    "day": "2026-10-23",
+    "jobs": 18,
+    "max_turnaround_seconds": 12.636,
+    "median_execution_seconds": 2.09281,
+    "median_turnaround_seconds": 9.848,
+    "shots": 36864
+   },
+   {
+    "day": "2026-10-27",
+    "jobs": 3,
+    "max_turnaround_seconds": 7.52007,
+    "median_execution_seconds": 0.418324,
+    "median_turnaround_seconds": 7.1704,
+    "shots": 6144
+   },
+   {
+    "day": "2026-10-30",
+    "jobs": 9,
+    "max_turnaround_seconds": 41.1555,
+    "median_execution_seconds": 11.316,
+    "median_turnaround_seconds": 29.6933,
+    "shots": 18432
+   },
+   {
+    "day": "2026-11-06",
+    "jobs": 24,
+    "max_turnaround_seconds": 9.34996,
+    "median_execution_seconds": 0.212326,
+    "median_turnaround_seconds": 7.41609,
+    "shots": 49152
+   },
+   {
+    "day": "2026-11-07",
+    "jobs": 16,
+    "max_turnaround_seconds": 9.77205,
+    "median_execution_seconds": 0.196218,
+    "median_turnaround_seconds": 8.97339,
+    "shots": 32768
+   },
+   {
+    "day": "2026-11-15",
+    "jobs": 13,
+    "max_turnaround_seconds": 9.82648,
+    "median_execution_seconds": 0.720792,
+    "median_turnaround_seconds": 8.4262,
+    "shots": 26624
+   }
+  ],
+  "Rydberg": [
+   {
+    "day": "2026-10-16",
+    "jobs": 1,
+    "max_turnaround_seconds": 17.3563,
+    "median_execution_seconds": 16.2575,
+    "median_turnaround_seconds": 17.3563,
+    "shots": 1024
+   },
+   {
+    "day": "2026-10-17",
+    "jobs": 15,
+    "max_turnaround_seconds": 68.807,
+    "median_execution_seconds": 18.6669,
+    "median_turnaround_seconds": 38.7993,
+    "shots": 15360
+   }
+  ],
+  "tuna_17": [
+   {
+    "day": "2026-10-16",
+    "jobs": 20,
+    "max_turnaround_seconds": 230.497,
+    "median_execution_seconds": 11.0912,
+    "median_turnaround_seconds": 95.2887,
+    "shots": 327680
+   },
+   {
+    "day": "2026-10-17",
+    "jobs": 106,
+    "max_turnaround_seconds": 2205.91,
+    "median_execution_seconds": 7.26888,
+    "median_turnaround_seconds": 57.7763,
+    "shots": 1175552
+   },
+   {
+    "day": "2026-10-18",
+    "jobs": 33,
+    "max_turnaround_seconds": 1673.27,
+    "median_execution_seconds": 72.3145,
+    "median_turnaround_seconds": 195.265,
+    "shots": 4325376
+   },
+   {
+    "day": "2026-10-22",
+    "jobs": 27,
+    "max_turnaround_seconds": 769.575,
+    "median_execution_seconds": 20.3209,
+    "median_turnaround_seconds": 346.279,
+    "shots": 884736
+   },
+   {
+    "day": "2026-10-23",
+    "jobs": 18,
+    "max_turnaround_seconds": 325.462,
+    "median_execution_seconds": 11.5484,
+    "median_turnaround_seconds": 216.046,
+    "shots": 294912
+   },
+   {
+    "day": "2026-10-27",
+    "jobs": 3,
+    "max_turnaround_seconds": 1015.72,
+    "median_execution_seconds": 4.94818,
+    "median_turnaround_seconds": 1011.09,
+    "shots": 12288
+   },
+   {
+    "day": "2026-10-30",
+    "jobs": 9,
+    "max_turnaround_seconds": 3113.81,
+    "median_execution_seconds": 41.5801,
+    "median_turnaround_seconds": 346.013,
+    "shots": 679824
+   },
+   {
+    "day": "2026-11-06",
+    "jobs": 12,
+    "max_turnaround_seconds": 472.996,
+    "median_execution_seconds": 10.9523,
+    "median_turnaround_seconds": 57.0657,
+    "shots": 196608
+   },
+   {
+    "day": "2026-11-07",
+    "jobs": 25,
+    "max_turnaround_seconds": 4285.78,
+    "median_execution_seconds": 23.3849,
+    "median_turnaround_seconds": 2087.79,
+    "shots": 1392640
+   },
+   {
+    "day": "2026-11-08",
+    "jobs": 41,
+    "max_turnaround_seconds": 4227.94,
+    "median_execution_seconds": 18.977,
+    "median_turnaround_seconds": 2256.97,
+    "shots": 1507328
+   },
+   {
+    "day": "2026-11-15",
+    "jobs": 52,
+    "max_turnaround_seconds": 375.789,
+    "median_execution_seconds": 66.4026,
+    "median_turnaround_seconds": 76.0434,
+    "shots": 4653056
+   }
+  ]
+ },
+ "profile": "tuna_17",
+ "qubits": [
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 18478.1,
+    "detuning_se_hz": 1452.01,
+    "max_abs_j_hz": 7902.75,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.974123,
+     0.755046
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 14.1847,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 0,
+   "readout": {
+    "p1_given_0": 0.0165405,
+    "p1_given_1": 0.968933,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 55464.8,
+    "detuning_se_hz": 1145.03,
+    "max_abs_j_hz": 19281.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.985444,
+     0.957703
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 25.4796,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 1,
+   "readout": {
+    "p1_given_0": 0.0261841,
+    "p1_given_1": 0.970398,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": 6247.84,
+    "detuning_se_hz": 1308.05,
+    "max_abs_j_hz": 7902.75,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.968438,
+     0.897224
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 17.7789,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 2,
+   "readout": {
+    "p1_given_0": 0.0134277,
+    "p1_given_1": 0.972534,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -21614.9,
+    "detuning_se_hz": 1336.43,
+    "max_abs_j_hz": 11730.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.95011,
+     0.878586
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 9.27136,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 3,
+   "readout": {
+    "p1_given_0": 0.0125122,
+    "p1_given_1": 0.957642,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 26688.5,
+    "detuning_se_hz": 1384.59,
+    "max_abs_j_hz": 19281.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.965908,
+     0.845515
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 15.599,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 4,
+   "readout": {
+    "p1_given_0": 0.0114746,
+    "p1_given_1": 0.951416,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 321522.0,
+    "detuning_se_hz": 9631.8,
+    "max_abs_j_hz": 11730.8,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.813396,
+     0.110761
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 15.1261,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 5,
+   "readout": {
+    "p1_given_0": 0.0373535,
+    "p1_given_1": 0.963745,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 323668.0,
+    "detuning_se_hz": 3381.74,
+    "max_abs_j_hz": 7823.68,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.686826,
+     0.294973
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 5.49741,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 6,
+   "readout": {
+    "p1_given_0": 0.0352173,
+    "p1_given_1": 0.932129,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": -115766.0,
+    "detuning_se_hz": 8708.2,
+    "max_abs_j_hz": 3143.19,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.809804,
+     0.0950932
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 52.0291,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 7,
+   "readout": {
+    "p1_given_0": 0.0349731,
+    "p1_given_1": 0.936035,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 28630.3,
+    "detuning_se_hz": 1356.74,
+    "max_abs_j_hz": 6612.76,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.937788,
+     0.911532
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 18.0558,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 8,
+   "readout": {
+    "p1_given_0": 0.0323486,
+    "p1_given_1": 0.945679,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": -13435.6,
+    "detuning_se_hz": 1466.42,
+    "max_abs_j_hz": 3730.18,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.938599,
+     0.875596
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 5.14269,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 9,
+   "readout": {
+    "p1_given_0": 0.0194702,
+    "p1_given_1": 0.92572,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": 39154.5,
+    "detuning_se_hz": 1160.83,
+    "max_abs_j_hz": 3143.19,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.981375,
+     1.03364
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 18.7183,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 10,
+   "readout": {
+    "p1_given_0": 0.0548706,
+    "p1_given_1": 0.978271,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": 7021.29,
+    "detuning_se_hz": 1327.79,
+    "max_abs_j_hz": 31434.1,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.95997,
+     0.853334
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 22.3764,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 11,
+   "readout": {
+    "p1_given_0": 0.0164185,
+    "p1_given_1": 0.953857,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 4,
+    "detuning_hz": -56571.8,
+    "detuning_se_hz": 1251.19,
+    "max_abs_j_hz": 10353.1,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.954619,
+     0.857017
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 20.973,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 12,
+   "readout": {
+    "p1_given_0": 0.00518799,
+    "p1_given_1": 0.970764,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -1476.64,
+    "detuning_se_hz": 1357.91,
+    "max_abs_j_hz": 7501.98,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     1.06273,
+     1.00208
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 22.9606,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 13,
+   "readout": {
+    "p1_given_0": 0.0287476,
+    "p1_given_1": 0.911316,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 3,
+    "detuning_hz": 24573.5,
+    "detuning_se_hz": 1415.93,
+    "max_abs_j_hz": 31434.1,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.934678,
+     0.75936
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 13.0612,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 14,
+   "readout": {
+    "p1_given_0": 0.0376587,
+    "p1_given_1": 0.974121,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -2541.46,
+    "detuning_se_hz": 1383.62,
+    "max_abs_j_hz": 5322.01,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.936266,
+     0.880542
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 6.27035,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 15,
+   "readout": {
+    "p1_given_0": 0.055542,
+    "p1_given_1": 0.980408,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  },
+  {
+   "coupler_map": {
+    "couplers": 2,
+    "detuning_hz": -1509.19,
+    "detuning_se_hz": 1376.99,
+    "max_abs_j_hz": 5322.01,
+    "visibility_delays_us": [
+     0.5,
+     2.0
+    ],
+    "visibility_zero_sector": [
+     0.957892,
+     0.882093
+    ]
+   },
+   "implied_t1": {
+    "no_wait_run_utc": "2026-10-16T22:11:33+00:00",
+    "us": 16.6033,
+    "wait_run_utc": "2026-10-17T03:20:34+00:00",
+    "wait_us": 2.0
+   },
+   "qubit": 16,
+   "readout": {
+    "p1_given_0": 0.0339966,
+    "p1_given_1": 0.971191,
+    "run": "results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_t0-batch-02",
+    "shots": 16384,
+    "utc": "2026-10-17T15:23:24+00:00",
+    "wait_before_readout_us": 0.0
+   }
+  }
+ ],
+ "schema": "qi-retained-context-v1",
+ "sources": {
+  "coupler_map_runs_utc": [
+   "2026-10-16T22:49:24+00:00",
+   "2026-10-16T22:49:24+00:00",
+   "2026-10-16T22:49:24+00:00",
+   "2026-10-16T22:49:24+00:00"
+  ],
+  "device_context": "results/quantum_inspire/readout_ringdown_tuna_17_device_context.json",
+  "device_context_sha256": "293a97af8c510d022e8e90b3949a54ab779ee23317ed776a5de43811e6bd798c",
+  "job_runs": "results/quantum_inspire/runs"
+ }
+}
