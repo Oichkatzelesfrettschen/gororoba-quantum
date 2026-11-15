@@ -440,9 +440,12 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `real_nullity_bordered_matrix.py` shows that the bordered matrix of these records equals the one on which `A5-364`
   proves the transport of left multiplication, exactly, and the 66 fixtures agree). Where `mu = 0`, `l_z` lies in `E_eps = {(a; 0; eps i a)}` and
   `C(l_z)` in `C z + E_(-eps)`; these subspaces are Hermitian-orthogonal and preserved by the group, so `P = l_z`
-  gives `dim L = 12`, and 8 and 10 never occur. Where `mu` is nonzero, `dim L` is 2, 4 or 6. `hypothesis`
-  (`A5-551`): 4 occurs; two double-precision points have `P = l_z` and `dim L = 4` (singular-value gaps 0.49 and
-  0.28 above zeros near 1e-15), and no exact or interval-certified point is known.
+  gives `dim L = 12`, and 8 and 10 never occur. Where `mu` is nonzero, `dim L` is 2, 4 or 6. The value 4 occurs
+  (`A5-551`, certified): `nullity4_real_polar_fiber_four.py` moves the normal-form point `(s, v_1, mu) = (4, 3, 5i)`
+  by `Theta = exp(i sum xi_k D_k)` and encloses, in an arb Krawczyk box of radius `2^-24` on six coordinates, one
+  zero of the system `z_0^* Pi l = 0`, `det N = 0` with `Pi = Theta^* Theta`; there the kernel plane is `l_z` and
+  the pairing has rank 1. The ranks at the normal form are exact and constant on the orbit; the point is a
+  certified existence, and no exact algebraic point is known.
 - `A5-539`, proved (same producer): at every point with `Delta` nonzero the orbit rank is 16 minus the dimension
   of the stabilizer of the real span of `u` and `v` in the compact `g_2`, which is 3 in quaternion position and 0
   otherwise, so the orbit rank is 13 exactly in quaternion position and 16 elsewhere. Replay:
@@ -463,11 +466,13 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   have `dim C(P)` of 5, 4, 4. Exact real points over Q(i) at `s = 0` and `s = 2` have these kernel planes, so
   `dim L` is 6, 4 and 4 there: the value 4 occurs, and `fiber_dimension` of
   `nullity4_gauss_image.py`, the routine of the grid classes, returns the same 6, 4, 4 there. At a real point with kernel plane `P_x` and `s^2` other
-  than 1 the vectors of `P` have nullity 7. `hypothesis` (`A5-553`): no other value occurs, and every point with
-  `dim L = 6` has plane nullity 7; open at `s = +-1` (`dim C(P_x) = 7`, which would give 10), at the point
-  `(beta, lambda) = (i, 0)`, and for `dim L = 6` the lemma that every point with
-  `dim C(P) = 5` lies in the covered family; the totally isotropic pairs hold no nullity-4 point (rank at most 10 by
-  `A5-359`, 8 on the special planes `u x v = 0` by `A5-360`). Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
+  than 1 the vectors of `P` have nullity 7. No other value occurs, and every point with `dim L = 6` has plane nullity 7 (`A5-555` to `A5-558`, proved,
+  `nullity4_qg_orbit_types.py`, which succeed `A5-553`): at `s = +-1` the plane `P_x` lies in the
+  `G_2(C)`-invariant subspace `E_eps` and its Hermitian complement in `K` lies in the cone `J`, so no real point
+  has kernel plane `P_x` and 10 does not occur; the point `(beta, lambda) = (i, 0)` has the dimensions 5, 4, 4 in
+  the chart `1 / s`; exact maximal minors of the plane stacks show that a plane with `dim C(P) = 5` is `P_x` with
+  `s^2` other than 1; the points with `u.u = 0` are rotation images of four chart points; the totally isotropic
+  pairs hold no nullity-4 point (rank at most 10 by `A5-359`, 8 on the special planes `u x v = 0` by `A5-360`). Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
   --check` (about 45 s).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).

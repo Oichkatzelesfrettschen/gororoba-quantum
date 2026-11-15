@@ -5490,6 +5490,28 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_orbit_types.py --check",
+      "name": "core-a5-nullity4-qg-orbit-types",
+      "seconds": 8.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-qg-orbit-types-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_fiber_four.py --check",
+      "name": "core-a5-nullity4-real-polar-fiber-four",
+      "seconds": 2.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-fiber-four-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
