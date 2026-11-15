@@ -51,11 +51,10 @@ C(l_z) = {x : M(x) l_z = 0} that is Hermitian-orthogonal to l_z, so dim L = 2 di
       has a four-dimensional real image S in the 2 x 2 complex matrices on which det is i times a definite quadratic
       form. Floating-point witnesses at finite distance have P = l_z and the pairing of rank 1: dim L_z = 2 and
       dim L = 4 (see WITNESSES). The record keeps them as booleans of the singular-value gaps. That is not an exact
-      result, and no exact point with dim L = 4 is known. A second round looked for one (a Gaussian-rational point, an
-      exact algebraic point, an interval certificate) and reached none: the fiber conditions are linear in the
-      Hermitian form of the group element but the group elements with Gaussian-rational entries off the quaternion
-      position were not parametrized, and an interval Newton step needs derivative enclosures of the kernel chart that
-      were not built. The two-digit singular values of the witnesses are retained in WITNESS_SINGULAR_VALUES.
+      result, and no exact point with dim L = 4 is known. The fiber conditions are linear in the Hermitian form of
+      the group element; an exact point needs group elements with Gaussian-rational entries off the quaternion
+      position, and an interval Newton certificate needs derivative enclosures of the kernel chart.
+      The two-digit singular values of the witnesses are retained in WITNESS_SINGULAR_VALUES.
 
 Evidence classes. Identities and certificates are exact (Q or Q(i), the integer samples named by their labels). The
 witnesses are double-precision floating point: each is a z in C^15 whose singular values separate (a kernel of
