@@ -336,9 +336,10 @@ def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
     batches: dict[str, dict[str, Any]] = {}
     for row in batch_rows(TUNA_SERIES):
         requested = [circuit["file"] for circuit in row["circuits"]]
-        stamps = {name: executed.get(f"{row['batch']}/{name}") for name in requested}
-        if any(stamp is None for stamp in stamps.values()):
+        found = {name: executed.get(f"{row['batch']}/{name}") for name in requested}
+        if any(stamp is None for stamp in found.values()):
             continue
+        stamps = {name: str(stamp) for name, stamp in found.items()}
         ran = sorted(requested, key=lambda name: stamps[name])
         tied = len(set(stamps.values())) < len(requested)
         batches[row["batch"]] = {"requested": requested, "executed": ran, "intact": ran == requested and not tied}
