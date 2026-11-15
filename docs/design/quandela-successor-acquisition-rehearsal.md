@@ -1,7 +1,9 @@
 # Quandela successor acquisition pairs: simulator rehearsal plan
 
-Status: written case, unsubmitted and unapproved. No job in this document has run, and no command below sends one
-until the owner approves the case it names.
+Status: sim:ascella (2026-11-14) and the sim:belenos jobs b1-j1 (2026-11-14) and b1-j2 (2026-11-15, canceled at the 300 s
+limit) ran under separate owner approvals and are recorded below; stages B and C (b2-j1, b2-j2), any reshaped Belenos request
+and every QPU case stay unsubmitted and unapproved, and no command below sends a job until the owner approves the case it
+names.
 
 A new acquisition of the Ascella target-slot request or of the Belenos diagnostic request builds with a successor
 builder and reads with its paired analyzer. Each pair states the billing rule of
@@ -206,10 +208,12 @@ the 176.16 s figure is the QPU's estimate and the simulator's value replaces it 
 The owner approved the second job of block 1 after the local review round. `results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2`
 (job fa2da727, `b1-j2`, tree `bdsc_diagnostic_billing_rule_sim_belenos`, plan with the token idle) ended `canceled` with
 `failure_code` "Max duration reached (300.0 seconds)", `duration` 305, progress 0.9587 ("Computing phases to apply (step 2)") and
-920000 of 960000 samples (the `iterations` list of `results.json` holds 23 entries of 40000 samples and a 24th marked `missing`); `--admit-only` refuses it ("the job did not complete"). The usage report moved by one job and 1.0
+920000 of 960000 samples (the `iterations` list of `results.json` holds 23 entries of 40000 samples and a 24th marked `missing`); `--admit-only` refused it at collection ("the job did not complete") and now also refuses it on the changed source digest. The usage report moved by one job and 1.0
 credit (free credits 23 to 24, jobs 25 to 26). Collection exited 0 and kept the partial counts (`partial` true).
 
-The two records bound end-to-end job throughput, not individual iteration latency: b1-j1 returned 960000 samples with a
+The two records bound end-to-end job throughput, not individual iteration latency (the jobs also carry different
+`(template, seed)` groups, `out-s0..1` and `rev-s2..3` in b1-j1 against `out-s2..3` and `rev-s0..1` in b1-j2, so they are one
+shape and not one request): b1-j1 returned 960000 samples with a
 reported duration of 300 s, while b1-j2 returned 920000 samples with a reported duration of 305 s and its 24th iteration
 missing. The b1-j2 observation demonstrates that this frozen request can exceed the platform's 300 s limit; the records hold
 no iteration timestamps and no provider load measurement, so they identify neither a per-iteration cost nor the cause of the
@@ -217,11 +221,11 @@ difference between the two jobs. `hypothesis:` the completion time of this reque
 Falsifier: a repeat of b1-j2 that completes well inside 300 s; a controlled repeat with provider timing or load telemetry
 would separate request cost from service variation. Consequence: a four-job rehearsal of this tree is not a 300 s-bounded
 procedure, stages B and C were not submitted, and a request that fits (fewer iterations per job) is a change of the
-preregistered request that needs a new preregistration, a fresh resource estimate, the full review course and the owner's
+frozen diagnostic request shape that needs a new preregistration, a fresh resource estimate, the full review course and the owner's
 approval before any submission.
 
 PR 920 changed the digest of `scripts/qd_platform.py`, which the tree binds, so the retained tree and runs now refuse a later
-plan or collect with `reviewed source changed: scripts/qd_platform.py` (the property `successor_sources` has). A rebuild of the
+plan or collect with `reviewed source changed: scripts/qd_platform.py` (the property `successor_sources` has; `plan`, `review`, `submit`, `collect` and the analyzer's `--admit-only` and `--matched-check` read it through `qd_platform.load_case`). A rebuild of the
 same frozen request on the merged digest was built on 2026-11-15 and withdrawn in the same change: its manifests read
 `acquisition_admission: ready` and carry the 176.16 s estimate that the two jobs disproved, so a tree of this shape is not
 acquisition-ready. The free ANU draw taken for it, `docs/evidence/anu_qrng/draw-2026-11-15T190401Z.json`, stays unclaimed for
