@@ -1,0 +1,74 @@
+{
+ "families": {
+  "4, 7": {
+   "incidence_at_SR_zero": [
+    "-2*I*CL*SL*(7*cL + 24*sL)",
+    "2*I*CL*SL*(24*cL - 7*sL)"
+   ],
+   "instance": [
+    true,
+    true,
+    false,
+    2
+   ],
+   "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
+   "structure": true,
+   "sum_of_squares": "625"
+  },
+  "5, 6": {
+   "incidence_at_SR_zero": [
+    "10*CL*SL*(4*cL - 3*sL)",
+    "10*CL*SL*(3*cL + 4*sL)"
+   ],
+   "instance": [
+    true,
+    true,
+    false,
+    2
+   ],
+   "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
+   "structure": true,
+   "sum_of_squares": "25"
+  }
+ },
+ "field": "Q(i) and Q(i)[c, s, C, S] modulo c^2 + s^2 = 1, C^2 - S^2 = 1; arb balls at the listed precisions",
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_fiber_four.py": "d0d1aced9ccca0305b566ddc838c97165b5e5fb7de8b3e2566bd8fd89067a96f",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py": "5bddd6ed337595f2da2d33f9d98c4893778c6d1fc229e51b9488d026afbd32ad",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py": "286c7c78e743abc8c4e71d25e8da8f274369b9590d4e3caf41f942c0d8dd2cca"
+ },
+ "instance": {
+  "C": "5/3",
+  "S": "4/3",
+  "c": "3/5",
+  "s": "4/5"
+ },
+ "pass": true,
+ "precisions": {
+  "131": {
+   "contraction_bits": 13,
+   "interior": true,
+   "pairing_bound_bits": 36
+  },
+  "400": {
+   "contraction_bits": 13,
+   "interior": true,
+   "pairing_bound_bits": 36
+  }
+ },
+ "root_subgroups": {
+  "candidates": 182,
+  "incidence_zero": 24,
+  "nilpotent": 100,
+  "pairing_zero_among_them": 24
+ },
+ "schema": "a5-kernel-bundles-residuals-nullity4-real-polar-rational-charts-v1",
+ "stabilizers": {
+  "common_kernel": 3,
+  "first_order_vanishes": true,
+  "plane": 3,
+  "point": 3,
+  "span": 3
+ }
+}

@@ -445,7 +445,16 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   by `Theta = exp(i sum xi_k D_k)` and encloses, in an arb Krawczyk box of radius `2^-24` on six coordinates, one
   zero of the system `z_0^* Pi l = 0`, `det N = 0` with `Pi = Theta^* Theta`; there the kernel plane is `l_z` and
   the pairing has rank 1. The ranks at the normal form are exact and constant on the orbit; the point is a
-  certified existence, and no exact algebraic point is known.
+  certified existence, and no exact algebraic point is known. The Krawczyk test gives the same containment,
+  contraction and pairing bound at 131 and 400 bits. Two exact searches for an algebraic point end in closed forms
+  (`A5-561`, proved as a bounded negative, `nullity4_real_polar_rational_charts.py`, record
+  `nullity4-real-polar-rational-charts-result.json`): the stabilizers of `z_0`, of `l` and of `C(l)` in
+  `g_2(C)` are one three-dimensional subalgebra that keeps the pairing zero, the 24 root subgroups
+  `exp(t (D_a +- i D_b))` that keep the incidence keep it zero as well, and on the two four-parameter families of
+  Hermitian elements of the subgroups `SO(4, C)` of the pairs `(4, 7)` and `(5, 6)` the pairing has rank 0 or
+  2. `hypothesis:` an exact point exists in a rational chart outside these families; no elimination was run and
+  no eliminant degree is known. Replay:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check` (about 4 s).
 - `A5-539`, proved (same producer): at every point with `Delta` nonzero the orbit rank is 16 minus the dimension
   of the stabilizer of the real span of `u` and `v` in the compact `g_2`, which is 3 in quaternion position and 0
   otherwise, so the orbit rank is 13 exactly in quaternion position and 16 elsewhere. Replay:
@@ -474,6 +483,17 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `s^2` other than 1; the points with `u.u = 0` are rotation images of four chart points; the totally isotropic
   pairs hold no nullity-4 point (rank at most 10 by `A5-359`, 8 on the special planes `u x v = 0` by `A5-360`). Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
   --check` (about 45 s).
+- `A5-559` and `A5-560`, proved (`nullity4_qg_plane_incidence.py`, record
+  `nullity4-qg-plane-incidence-result.json`); they settle the two hypotheses that `A5-558` and `A5-555`
+  carried. The stratum is the disjoint union of the sets `K` minus `J`, and in each the real points with kernel
+  plane `P_j` are one complex line minus its points of `J`, so the points with `dim L = 6` and those with
+  `dim L = 4` each have real codimension 4, fiber by fiber; at the six exact witnesses the real Jacobian of the
+  incidence map has rank 4 on a tangent space of dimension 13. At `s = +-1` the vector `q` lies in `P_y` and
+  `P_z` and is Hermitian-orthogonal to `g P_x` for every `g` of `G_2(C)`, so the Hermitian complement of
+  `g P_y` or `g P_z` in `g K` lies in `g P_x`, inside the cone: neither plane is the kernel plane of a real
+  point, and the type holds `dim L = 2` alone. The exact check runs at the base frame and at a unipotent element
+  that is not unitary. Replay:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_plane_incidence.py --check` (about 3 s).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
 The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the
