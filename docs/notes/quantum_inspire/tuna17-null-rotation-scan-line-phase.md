@@ -160,7 +160,8 @@ this analysis lacks.
 phase-bin contrasts and the nine q4 line amplitudes of the nine `Rx` arm types. No candidate is adequate (limit
 112.3 on the contrasts, 70 degrees of freedom): a conditional phase on coupler 8-12 reads 315 and a phase on q12
 376 (before its pulses and after its CZ gates alike), and both predict no line on q4's bit, so the alignment of
-each arm to the line is unidentified in them and each arm takes the better of the two; a conditional phase on
+each arm to the line is unidentified in them and each arm takes the better of the two, which makes those scores
+lower bounds; a conditional phase on
 every CZ reproduces q4's amplitudes and reads 806. `phase_resolved_two_source.py` drives two parameters with one phase: the best pair, a
 conditional phase on coupler 4-8 (static -0.025 rad, oscillating 0.125 rad) with a phase on q12 (static -0.15 rad,
 oscillating 0.10 rad), reads 304 against 109.8 (68 degrees of freedom).

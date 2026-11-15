@@ -5,7 +5,9 @@ Scripts and outputs behind
 Every script reads the retained runs
 `results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-*` and the retained
 analysis, changes neither, and writes its JSON beside itself. Evidence class: exploratory; candidates and
-falsifiers stand in each docstring or opening `print` and were fixed before the fit. No random draw is used.
+falsifiers stand in each docstring or opening `print` and were fixed before the fit, with one exception: the
+alignment rule and the 72-point bounds of the two phase-resolved fits were set after their first fit, on review.
+No random draw is used.
 
 Run from the repository root under the pinned interpreter:
 

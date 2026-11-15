@@ -9,6 +9,9 @@ center reads visibility 0.42 through the mean bracket matrix. Candidates: z, x o
 all; conditional phase on each coupler or all; a z phase on one qubit after each of its CZs on one coupler.
 Falsifier of a candidate: chi-square of the 72 contrast points above 112.3 (upper tail 0.001, 70 degrees of
 freedom; `contrast_limit` in each row is computed from the selected data);
+the alignment rule and this bound were set after the first fit, which scored the same 72 points against the
+80-point bound 124.8 and took the alignment from the sign of a zero slope. A free alignment per arm is not removed
+from the degrees of freedom, so the score of a candidate with free arms is a lower bound;
 calibration: exact pulses with A = 0."""
 
 import json

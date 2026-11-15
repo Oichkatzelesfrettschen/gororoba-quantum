@@ -114,7 +114,7 @@ q4 arms by a reference-free amplitude.
 6. q4. The mean contrast less its batch center at +5 and +20 degrees with the retained values at -10, 0 and +10
    degrees in one weighted straight-line fit (chi-square, zero crossing with its interval). For the oscillation,
    the reference-free amplitude of the selector-coin parity bit over the line band against its off-line maximum
-   (`line_parity_amplitude.py`), since q4's bit loses the line at +10 degrees in the retained series and a signed
+   (`line_parity_amplitude.py`), since q4's bit reads at its off-line level at +10 degrees in the retained series and a signed
    fold has no reference there: the retained amplitudes are 0.0186, 0.0142 and 0.0067 at -10, 0 and +10 degrees
    against an off-line level near 0.005. Reported: the amplitudes at +5 and +20 degrees; an amplitude at +20
    degrees above the off-line maxima of its jobs reads as a return of the oscillation beyond its zero.
@@ -126,10 +126,11 @@ every other outcome reports the numbers.
 
 - Backend: Tuna-17 (type 7), region q2, q4, q8, q11, q12. QX emulator (type 1) for the twin.
 - Tuna-17 jobs and shots: 42 jobs in 17 batches, 3,735,552 shots (24 data jobs at 131,072, 18 readout jobs at
-  32,768), every job at or under 131,072 shots and about 80 s against the 300 s limit.
+  32,768), every job at or under 131,072 shots and 72 to 92 s (2.6 s plus 0.53 ms per shot; 0.7 ms per shot
+  planning rule, [usage.md](usage.md)) against the 300 s limit.
 - QX twin: the seven distinct circuits at 2,048 shots in 3 batches, 7 jobs, 14,336 shots. Both together: 20
   batches, 49 jobs, 3,749,888 shots.
-- Expected time: 35 to 45 minutes of execution (0.53 to 0.70 ms per shot) and 16 pauses. The wall-time ceiling
+- Expected time: 35 to 45 minutes of execution at those two rates and 16 pauses. The wall-time ceiling
   takes the top pause step, 120 s ([usage.md](usage.md), "Pause escalation"): 32 minutes of pauses, 67 to 77
   minutes in all; at the 30 s step 43 to 53 minutes. The predecessor's 21 batches took 66 minutes. The execution
   seconds of the QX twin are not estimated.
