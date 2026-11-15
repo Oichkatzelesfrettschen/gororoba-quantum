@@ -8,16 +8,16 @@
    "files": [
     "b0.cq",
     "b0-rx.cq",
-    "b0-rx-all-m5.cq"
+    "b0-rx-all-m10.cq"
    ]
   },
   {
    "batch": "batch-01",
    "kind": "control",
    "files": [
-    "b0-rx-all-p5.cq",
-    "b0-rx-q8-m5.cq",
-    "b0-rx-q8-p5.cq"
+    "b0-rx-all-p10.cq",
+    "b0-rx-q4-m10.cq",
+    "b0-rx-q4-p10.cq"
    ]
   },
   {
@@ -26,14 +26,14 @@
    "files": [
     "b0-rx-q8-m10.cq",
     "b0-rx-q8-p10.cq",
-    "b0-rx-all-m10.cq"
+    "b0-rx-all-m20.cq"
    ]
   },
   {
    "batch": "batch-03",
    "kind": "control",
    "files": [
-    "b0-rx-all-p10.cq"
+    "b0-rx-all-p20.cq"
    ]
   }
  ]

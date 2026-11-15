@@ -113,8 +113,7 @@ trust boundary. The kernel receipts determine which theorems were checked.
 ## Replay and source binding
 
 The toolchain is Rocq 9.3.0, OCaml 5.5.1 and Stdlib 9.2.0, as recorded by
-[toolchain.txt](toolchain.txt) and
-[ci/rocq_toolchain.pin](../../../ci/rocq_toolchain.pin).
+[toolchain.txt](toolchain.txt).
 
 ```sh
 export PYTHON="${PYTHON:-python3}"

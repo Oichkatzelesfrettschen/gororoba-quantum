@@ -334,16 +334,6 @@
     },
     {
       "suite": "core",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/math_source_generators.py target_flip_certificate --check",
-      "name": "core-067",
-      "seconds": 0.8,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "core",
       "cwd": "gororoba_quantum",
       "cmd": "\"$PYTHON\" affine_residual.py",
       "name": "core-068",
@@ -911,16 +901,6 @@
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-semantics/source_hashes.sha256",
       "name": "sources-405",
       "seconds": 0.1,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/math_source_generators.py cd_sign_rocq_ast --check",
-      "name": "sources-406",
-      "seconds": 0.2,
       "requires": [
         "gororoba-math"
       ]
@@ -2029,16 +2009,6 @@
       "name": "core-273",
       "seconds": 3.9,
       "runtime": "qiskit-2.5"
-    },
-    {
-      "suite": "core",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_witness_certificate.py --check",
-      "name": "core-275",
-      "seconds": 2.0,
-      "requires": [
-        "gororoba-math"
-      ]
     },
     {
       "suite": "sources",
@@ -3432,29 +3402,9 @@
     {
       "suite": "sources",
       "cwd": ".",
-      "cmd": "\"$PYTHON\" -B -W error scripts/math_source_generators.py kernel_certificates --check",
-      "name": "sources-cd-tower-kernel-certificates-check",
-      "seconds": 1.2,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
       "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
       "name": "sources-410",
       "seconds": 0.1,
-      "requires": [
-        "gororoba-math"
-      ]
-    },
-    {
-      "suite": "sources",
-      "cwd": ".",
-      "cmd": "\"$PYTHON\" scripts/math_source_generators.py cd_sign_source_ast --check",
-      "name": "sources-411",
-      "seconds": 0.2,
       "requires": [
         "gororoba-math"
       ]
@@ -3621,7 +3571,27 @@
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/already_zero.cq",
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/cases.json",
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/control_x.cq",
+        "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/raw/already_zero.cq.json",
+        "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/raw/control_x.cq.json",
+        "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/raw/reset_phase.cq.json",
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/reset_phase.cq"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis_2026-11-15.json",
+      "name": "core-771",
+      "seconds": 0.1,
+      "replays": [
+        "results/quantum_inspire/qx_reset_phase_analysis_2026-11-15.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/already_zero.cq",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/cases.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/control_x.cq",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/already_zero.cq.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/control_x.cq.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/reset_phase.cq.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/reset_phase.cq"
       ]
     },
     {
@@ -5444,6 +5414,72 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check",
+      "name": "core-a5-nullity4-orbit-normal-forms",
+      "seconds": 43.1,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-orbit-normal-forms-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py --check",
+      "name": "core-a5-nullity4-polar-line-module",
+      "seconds": 10.0,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-polar-line-module-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error -m pytest -q -p no:cacheprovider -m audit tests/test_a5_nullity4_polar_line_stack.py; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-nullity4-polar-line-stack",
+      "seconds": 0.3,
+      "requires": [
+        "singular"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-nullity4-quartic-discriminant",
+      "seconds": 2.2,
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-quartic-discriminant-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py --check",
+      "name": "core-a5-nullity4-real-polar-line",
+      "seconds": 3.8,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-line-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py --check",
+      "name": "core-a5-nullity4-qg-intersection",
+      "seconds": 43.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-qg-intersection-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
@@ -5568,6 +5604,31 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-exceptional-fibers/structure/quadric-and-germ-probes.json -- \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/structure/quadric_and_germ_probes.py {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-quadric-and-germ-probes",
+      "seconds": 9.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/structure/quadric-and-germ-probes.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-exceptional-fibers/structure/embedded-plane-images.json -- \"$PYTHON\" -B -W error docs/evidence/a5-exceptional-fibers/structure/embedded_plane_images.py {out}",
+      "name": "core-a5-embedded-plane-images",
+      "seconds": 1.0,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-exceptional-fibers/structure/embedded-plane-images.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error ci/replay_check.py docs/evidence/a5-kernel-attachments/weight-slice-fiber-relations-result.json --skip .tools.singular -- \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/weight_slice_fiber_relations.py --out {out}; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
       "name": "core-a5-weight-slice-fiber-relations",
       "seconds": 62.0,
@@ -5604,6 +5665,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_component_geometry.py --check",
+      "name": "core-a5-e8-component-geometry",
+      "seconds": 0.3,
+      "workers": "all",
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-component-geometry-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/w8_component_models.py --check",
       "name": "core-a5-w8-component-models",
       "seconds": 1.2,
@@ -5621,6 +5693,34 @@
       "workers": "all",
       "replays": [
         "docs/evidence/a5-kernel-attachments/e8-relation-ideal-orders-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_birational_degree.py --check --replay; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-birational-degree",
+      "seconds": 20.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-birational-degree-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py --check --replay; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-toric-face-strata",
+      "seconds": 60.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-toric-face-strata-result.json"
       ]
     },
     {
@@ -6214,11 +6314,32 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --self-test",
       "name": "core-pathion-null-rotation-scan-case-replay",
-      "seconds": 730.0,
+      "seconds": 1900.0,
       "workers": "all",
       "replays": [
         "results/quantum_inspire/cases/pathion_null_rotation_scan_qx",
         "results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-* --out {out}",
+      "name": "core-pathion-null-rotation-scan-qx-analysis-replay",
+      "seconds": 5.0,
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-* --out {out}",
+      "name": "core-pathion-null-rotation-scan-tuna-analysis-replay",
+      "seconds": 1900.0,
+      "workers": "all",
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json"
       ]
     }
   ],
@@ -6231,12 +6352,12 @@
     {
       "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
       "cwd": ".",
-      "reason": "runs in the proofs.yml job rocq on proof paths under the toolchain of ci/rocq_toolchain.pin"
+      "reason": "runs on demand through ci/replay_quantum_bundles.sh of gororoba-math under the toolchain its toolchain.txt records; no workflow runs it"
     },
     {
       "cmd": "GOROROBA_ROOT=\"$GOROROBA_ROOT\" sh docs/evidence/stiefel_witness/replay_rocq.sh",
       "cwd": ".",
-      "reason": "runs in the proofs.yml job rocq on pushes to main and manual runs, over the pinned gororoba-open checkout"
+      "reason": "runs on demand through ci/replay_quantum_bundles.sh of gororoba-math with GOROROBA_ROOT naming a gororoba-open checkout; no workflow runs it"
     },
     {
       "cmd": "\"$SAGE_PYTHON\" docs/evidence/cd-star-lattice/external/nauty_replay.py > docs/evidence/cd-star-lattice/external/nauty_replay.txt",

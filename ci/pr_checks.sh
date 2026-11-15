@@ -69,6 +69,11 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py"
 	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/singular_kernel_formula.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_closure_certificate.py docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/arc_jets_qi.py"
 	checked_files="$checked_files docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py"
@@ -79,7 +84,8 @@ lint)
 	checked_files="$checked_files docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	checked_files="$checked_files docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	checked_files="$checked_files docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py"
-	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/w8_component_models.py docs/evidence/a5-kernel-attachments/g2_derivation_tables.py docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
+	checked_files="$checked_files docs/evidence/a5-gaussian-certificates/gaussian_certificates.py docs/evidence/a5-gaussian-certificates/span_certificate.py docs/evidence/a5-gaussian-certificates/render_span.py"
+	checked_files="$checked_files docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py docs/evidence/a5-kernel-attachments/e8_component_geometry.py docs/evidence/a5-kernel-attachments/e8_birational_degree.py docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py docs/evidence/a5-kernel-attachments/w8_component_models.py docs/evidence/a5-kernel-attachments/g2_derivation_tables.py docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	# shellcheck disable=SC2086
 	"$PYTHON" ci/pinned_tool.py ruff check $code_dirs $checked_files
 	# shellcheck disable=SC2086
@@ -99,6 +105,11 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/kernel_plane_identities.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/kernel_product_pfaffian_tensor.py"
 	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/singular_kernel_formula.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_closure_certificate.py ../docs/evidence/a5-char0-transfer/e8_closure_validation.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/arc_jets_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-char0-transfer/e8_fiber_components_qi.py"
@@ -109,7 +120,8 @@ types)
 	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/symmetry_algebra_qi.py ../docs/evidence/a5-kernel-attachments/stabilizer_action_qi.py"
 	typed_files="$typed_files ../docs/evidence/a5-exceptional-fibers/arc-jets/jet_rank_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_v2.py ../docs/evidence/a5-exceptional-fibers/monomial-ladder/e8_target_basis_verify.py"
 	typed_files="$typed_files ../docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py"
-	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py ../docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py ../docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py ../docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/w8_component_models.py ../docs/evidence/a5-kernel-attachments/g2_derivation_tables.py ../docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py ../docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
+	typed_files="$typed_files ../docs/evidence/a5-gaussian-certificates/gaussian_certificates.py ../docs/evidence/a5-gaussian-certificates/span_certificate.py ../docs/evidence/a5-gaussian-certificates/render_span.py"
+	typed_files="$typed_files ../docs/evidence/a5-kernel-attachments/weight_slice_smooth_points.py ../docs/evidence/a5-kernel-attachments/e8_quadric_nilradical.py ../docs/evidence/a5-kernel-attachments/e8_component_geometry.py ../docs/evidence/a5-kernel-attachments/e8_birational_degree.py ../docs/evidence/a5-kernel-attachments/e8_toric_face_strata.py ../docs/evidence/a5-kernel-attachments/e8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/weight_slice_relation_membership.py ../docs/evidence/a5-kernel-attachments/iso_w8_relation_ideal_orders.py ../docs/evidence/a5-kernel-attachments/w8_component_models.py ../docs/evidence/a5-kernel-attachments/g2_derivation_tables.py ../docs/evidence/a5-char0-transfer/w8_component_arcs_qi.py ../docs/evidence/a5-char0-transfer/w8_component_arc_matrices_qi.py"
 	cd gororoba_quantum
 	# shellcheck disable=SC2086
 	"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel $typed_files

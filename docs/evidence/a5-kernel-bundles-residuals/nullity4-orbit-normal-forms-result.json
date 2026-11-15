@@ -1,0 +1,176 @@
+{
+ "common_kernel_certificate": {
+  "sigma = -1": {
+   "entries": 14,
+   "mutation_entries": 0,
+   "unit_ideals": [
+    true,
+    true,
+    true
+   ]
+  },
+  "sigma = 1": {
+   "entries": 14,
+   "mutation_entries": 0,
+   "unit_ideals": [
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "complement_pfaffian_sign": 1,
+ "field": "Q for the identities and certificates; GF(32029), i = 9115, for the samples and fixtures",
+ "fixtures": [
+  [
+   false,
+   8,
+   3,
+   1,
+   true,
+   13,
+   true,
+   6,
+   13
+  ],
+  [
+   false,
+   8,
+   3,
+   1,
+   true,
+   16,
+   false,
+   2,
+   2
+  ],
+  [
+   true,
+   6,
+   6,
+   1,
+   true,
+   13,
+   true,
+   12,
+   16
+  ],
+  [
+   true,
+   6,
+   6,
+   1,
+   true,
+   16,
+   false,
+   2,
+   21
+  ]
+ ],
+ "identities": {
+  "complement_pfaffian_is_plus_or_minus_g": true,
+  "double_cross_product": true,
+  "fixed_and_complement_blocks_decouple": true,
+  "hessian_on_the_complement": true,
+  "kernel_quartic_formula": true,
+  "line_r_zero_has_mixed_term": true,
+  "node_pencil_determinant": true,
+  "pfaffian_adjoint": true,
+  "quadric_kernel_is_null": true,
+  "quadric_kernel_parametrization": true,
+  "quadric_kernel_product_is_central": true,
+  "quartic_normal_form_on_v_g": true,
+  "rotation_by_120_degrees_is_an_automorphism": true,
+  "rotation_moves_the_norm_of_u": true,
+  "tangent_line_restrictions": true
+ },
+ "inputs": {
+  "docs/evidence/a5-kernel-bundles-residuals/kernel-three-plane-zero-divisors-result.json": "9dce514c265208235b4c911026e21a4b4857353922fe7b3c394d7c7d3b41e5eb",
+  "docs/evidence/a5-kernel-bundles-residuals/kernel_three_plane_zero_divisors.py": "33fecf3a4f2f65a8624d3e910cce7a32f329e0526363da52dbe4c6050848b320",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-gauss-image-result.json": "8c2b82678a84186cb5f371996cb657503bbb41a2d79a170ad92f46a04467508f",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4-kernel-gauss-result.json": "41f9a54716b599a8d73f447626e557f5048b389c3f85c37ab0f0ff31d1bb2427",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_gauss_image.py": "d388bdfa74314ac193e8fa12b5b15ca490b90aff88c7c5fac5a579509200f5c6",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72"
+ },
+ "kernel_product": "2*(s*t1 - s1*t)",
+ "long_grid_points": [
+  32,
+  32
+ ],
+ "node_cubic": "lambda**3 + lambda**2*v1 - lambda*(2*rho**2 + 2*v1**2 + 1) + v1",
+ "node_discriminant": "4*(8*rho**6 + 25*rho**4*v1**2 + 12*rho**4 + 26*rho**2*v1**4 + 16*rho**2*v1**2 + 6*rho**2 + 9*v1**6 + 3*v1**4 - 5*v1**2 + 1)",
+ "pass": true,
+ "quaternion_position": [
+  [
+   "V(G) minus V(Q)",
+   13,
+   true,
+   29
+  ],
+  [
+   "V(G) minus V(Q)",
+   16,
+   false,
+   23
+  ],
+  [
+   "V(Q) intersect V(G)",
+   16,
+   false,
+   2
+  ],
+  [
+   "V(Q) minus V(G)",
+   13,
+   true,
+   9
+  ],
+  [
+   "V(Q) minus V(G)",
+   16,
+   false,
+   3
+  ]
+ ],
+ "samples": {
+  "mu nonzero": [
+   [
+    false,
+    8,
+    3,
+    3,
+    1,
+    true,
+    60
+   ]
+  ],
+  "mu zero": [
+   [
+    true,
+    6,
+    6,
+    4,
+    1,
+    true,
+    60
+   ]
+  ]
+ },
+ "schema": "a5-kernel-bundles-residuals-nullity4-orbit-normal-forms-v1",
+ "singular_schemes": {
+  "off the discriminant": [
+   [
+    3,
+    0,
+    68
+   ]
+  ],
+  "on the discriminant": [
+   [
+    4,
+    0,
+    5
+   ]
+  ]
+ }
+}

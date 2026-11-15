@@ -1,0 +1,59 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-15T01:46:53+00:00",
+ "approval": "Submit to Tuna-17 now (owner, question tool, 2026-11-14)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "fc14316c17193a781423dfad7598d4af2f019fe4e005301497a67bf182db3a23",
+ "shots": 32768,
+ "jobs": [
+  {
+   "file": "readout-1.cq",
+   "job": 1741808,
+   "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+  },
+  {
+   "file": "readout-0.cq",
+   "job": 1741809,
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  }
+ ],
+ "project": 858400,
+ "batch_job": 958293,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-15T01:46:55+00:00",
+  "approval": "Submit to Tuna-17 now (owner, question tool, 2026-11-14)",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "fc14316c17193a781423dfad7598d4af2f019fe4e005301497a67bf182db3a23",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 1,
+  "batch_job": 958293,
+  "project": 858400,
+  "shots": 32768,
+  "jobs": [
+   {
+    "file": "readout-1.cq",
+    "job": 1741808,
+    "sha256": "9ab3ef152dab6ab9fb472c9b7583674feb5d7fc4fb006a2b514af4f89c917d36"
+   },
+   {
+    "file": "readout-0.cq",
+    "job": 1741809,
+    "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+   }
+  ],
+  "submitted_utc": "2026-11-15T01:46:55+00:00"
+ },
+ "confirmed_utc": "2026-11-15T01:46:55+00:00"
+}
