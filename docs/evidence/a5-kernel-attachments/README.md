@@ -1033,12 +1033,34 @@ but the origin, so that component is not a cone. Its tangent cone, computed in a
 to the normal cone, has multiplicity 4 at the isolated singular point, 2 at a point of the singular line and 1 at a
 point of the meeting plane.
 
-**Refuted (`A5-510`) and restated (`A5-512`, open):** the five-parameter map of `A5-457` is dominant onto the
-degree-11 component and is not birational as an affine map: its 21 initial forms are weighted homogeneous of degree 5
-for the weights `(1, 1, 2, 1, 2)`, so the fifth roots of unity act on every fiber and a general fiber holds at least
-five points. The open hypothesis is that the induced map from the weighted projective space `P(1, 1, 2, 1, 2)` is
-birational, which would make the component rational; in scratch runs the fiber over two points is one orbit of five
-reduced points at both basepoints.
+**Refuted (`A5-510`), proved (`A5-512`):** the five-parameter map of `A5-457` is dominant onto the degree-11
+component and is not birational as an affine map: its 21 initial forms are weighted homogeneous of degree 5 for the
+weights `(1, 1, 2, 1, 2)`, so the fifth roots of unity act on every fiber and a general fiber holds at least five
+points. [`e8_birational_degree.py`](e8_birational_degree.py) proves that the induced map from the weighted projective
+space `P(1, 1, 2, 1, 2)` is birational onto the component ([record](e8-birational-degree-result.json)). It holds the
+17 nonzero initial forms at each basepoint as exact `Q(i)` coefficients, extracts them from the slice to confirm the
+fixture, and checks four facts. The ten parameters of the two factors are `(p, q)`.
+
+- Each of the 17 forms is divisible by `pl`. After the change of variable `m = 4 pz^2 - pm` at `N-` or
+  `m = -(pm + 4 pz^2)` at `N+` the quotients span 12 monomials of weighted degree 3 (14 before the change) with
+  coefficient matrix of rank 12 over `Q(i)`.
+- **Inferred from that rank:** the monomials `a^3, a^2 b, a^2 z, a l, a m` fix `b/a`, `z/a`, `l/a^2` and `m/a^2`, so
+  two points with the same image and `pa * pl != 0` differ by a weighted scalar `t` with `t^5 = 1`. A fiber over such
+  a point is one orbit of five points, the affine map has degree 5, the projective map is birational onto its image,
+  and the image is the component, since it lies in the irreducible degree-11 prime of `A5-457` and has the same
+  dimension. The component is a rational fourfold.
+- The 12 monomials span a toric variety of degree 11: the normalized volume of their hull in the lattice of weighted
+  degree 3 is 11 over a triangulation of 11 unimodular simplices, which the module verifies in exact integers (every
+  interior facet lies in two simplices on opposite sides, every boundary facet supports the hull), and the edges
+  span the lattice.
+- The saturation of the ideal of the 17 differences `V_k(p) - V_k(q)` by `pa * pl * qa * ql` equals the ideal of the
+  five graphs `q = zeta p` of the fifth roots of unity (dimension 5, multiplicity 5; two components of degrees 4 and
+  1 over `Q(i)`, each dominating both factors; dimension 8 before the saturation). A mutated difference gives a
+  saturation of dimension 4 that the graphs do not fill, and the graphs of the fourth roots of unity are neither
+  inside nor outside it.
+
+The fixture checks run in the pull-request lane; the Singular stage runs in the module and in the replay gate
+`core-a5-e8-birational-degree`. The scratch runs modulo 32009 at both basepoints agree and are not retained.
 
 **Method (`A5-505`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
