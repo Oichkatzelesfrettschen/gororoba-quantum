@@ -453,9 +453,16 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   while two smooth conics would give `8 - N`. Both triple branches, `v_1 = 0`, `2 rho^2 + 1 = 0` (the 32 grid
   points) and `v_1^2 = 27`, `rho^2 = -32`, have length 5. Replay, with Singular 4.4:
   `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py --check` (about 3 s).
-- `hypothesis` (`A5-541`): on `V(Q) n V(G)` a real nullity-4 point has `dim L` of 2 or 6, and where it is 6 the
-  kernel vectors have nullity 12 (4 grid points, last row of the grid table above). The normal form does not reach
-  this stratum, where `Delta = 0`.
+- `A5-541`, refuted by `A5-552` (proved, `nullity4_qg_intersection.py`, record `nullity4-qg-intersection-result.json`).
+  On `V(Q) n V(G)` the product on `K` vanishes, so `K` lies in `C(P)` and `dim L = 2 (dim C(P) - 2)`. A point with
+  `u.u` nonzero is `z(s) = (1 + s^2) (e_1; beta; lambda e_1 + i e_2 + e_3 - i e_4 + e_5)` on the conic
+  `beta^2 + lambda^2 = -1`; the vectors of `K` of nullity above 3 form three lines, whose planes `P_x`, `P_y`, `P_z`
+  have `dim C(P)` of 5, 4, 4. Exact real points over Q(i) at `s = 0` and `s = 2` have these kernel planes, so
+  `dim L` is 6, 4 and 4 there: the value 4 occurs. Where `dim L = 6` the vectors of `P` have nullity 7 for
+  `s^2` other than 1, so the real kernel vectors have nullity 12. `hypothesis` (`A5-553`): no other value occurs;
+  open at `s = +-1` (`dim C(P_x) = 7`, which would give 10), at the point `(beta, lambda) = (i, 0)` and at the
+  totally isotropic pairs. Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
+  --check` (about 45 s).
 
 Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
 The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the
