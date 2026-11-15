@@ -7,26 +7,35 @@
    "kind": "control",
    "files": [
     "b0-rx.cq",
-    "b0-rx-q4-m5.cq",
-    "b0-rx-q4-p5.cq"
+    "b0-rxz.cq",
+    "b0-rxz-q4-m10.cq"
    ]
   },
   {
    "batch": "batch-01",
    "kind": "control",
    "files": [
-    "b0-rx-q4-p10.cq",
-    "b0-rx-q4-p15.cq",
-    "b0-rx-z12-m30.cq"
+    "b0-rxz-q4-m5.cq",
+    "b0-rxz-q4-p5.cq",
+    "b0-rxz-q4-p10.cq"
    ]
   },
   {
    "batch": "batch-02",
    "kind": "control",
    "files": [
-    "b0-rx-z12-m10.cq",
-    "b0-rx-z12-p10.cq",
-    "b0-rx-z12-p30.cq"
+    "b0-rxz-z12-m30.cq",
+    "b0-rxz-z12-m10.cq",
+    "b0-rxz-z12-p10.cq"
+   ]
+  },
+  {
+   "batch": "batch-03",
+   "kind": "control",
+   "files": [
+    "b0-rxz-z12-p30.cq",
+    "b0-rxz-z8c-m10.cq",
+    "b0-rxz-z8c-p10.cq"
    ]
   }
  ]

@@ -2,10 +2,13 @@
 
 Status: superseded by the written case
 [pathion_null_phase_scan_tuna_17/CASE.md](../../../results/quantum_inspire/cases/pathion_null_phase_scan_tuna_17/CASE.md),
-which the generator `scripts/qi_pathion_null_phase_scan_cases.py` builds. The case differs from this draft: its
-outer z12 arms sit at +-30 degrees, its fit carries the d2 split beside the contrast and guards all five qubits,
-and a deciding label needs every z12 batch to agree. The text below is the draft as first written; where the two
-differ the case governs. Nothing is approved and nothing is submitted. Ledger row: A5-186. Predecessor: the injected-rotation scan
+which the generator `scripts/qi_pathion_null_phase_scan_cases.py` builds. The case keeps this draft's z12, z8c and
+q4 questions and changes the design: every circuit but a bridge arm carries the same nine `Rz` (zero where an arm
+injects none), so the arms share one schedule; the z12 arms sit at +-10 and +-30 degrees, the z8c arms at +-10
+degrees in four batches, the q4 arms at -10, -5, +5 and +10 degrees, and two bridge batches compare the padded
+center with the unpadded one; the fit carries relative d2 splits and CZ damping beside the contractions, and a
+deciding label needs every deciding kind to agree. The text below is the draft as reviewed; where the two differ
+the case governs. Nothing is approved and nothing is submitted. Ledger row: A5-186. Predecessor: the injected-rotation scan
 ([case](../../../results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17/CASE.md), verdict
 `unresolved_none`) and its exploratory reading
 ([tuna17-null-rotation-scan-line-phase.md](tuna17-null-rotation-scan-line-phase.md)).

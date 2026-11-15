@@ -1,88 +1,125 @@
 {
  "design": {
-  "batches": 17,
+  "batches": 29,
   "contrast_se": 0.002762,
-  "data_batches": 8,
+  "data_batches": 14,
   "execution_seconds_range": [
-   2089.0,
-   2315.3
+   3625.9,
+   4018.9
   ],
   "job_seconds_limit": 300,
-  "jobs": 42,
+  "jobs": 72,
   "longest_job_seconds": 80.0,
   "pause_seconds_per_batch": 120,
-  "pause_seconds_total": 1920,
-  "shots_total": 3735552
+  "pause_seconds_total": 3360,
+  "shots_total": 6488064
  },
  "design_visibility": 0.42,
- "limits": "contraction share 0 and the design visibility for every truth; Gaussian sampling noise with every batch admitted; the gate-noise families, a drifting readout and a phase beside a readout offset are not simulated",
+ "limits": "contraction share 0 and the design visibility for every truth; Gaussian sampling noise with every batch admitted; CZ damping at one strength is the only gate noise simulated; a drifting readout and a phase beside a readout offset are not simulated",
  "operating_characteristics": {
+  "kind_margin": 6.63,
   "label_counts": {
    "coupler 8-12 phase +0.25 rad": {
-    "coupler_phase": 498,
+    "coupler_phase": 494,
     "none_adequate": 1,
-    "phase_mixed": 1
+    "phase_mixed": 5
    },
    "coupler 8-12 phase -0.25 rad": {
-    "coupler_phase": 465,
+    "coupler_phase": 496,
     "none_adequate": 3,
-    "phase_mixed": 20,
-    "phase_unresolved": 12
+    "phase_mixed": 1
+   },
+   "coupler 8-12 phase -0.25 rad with CZ damping": {
+    "coupler_phase": 493,
+    "none_adequate": 3,
+    "phase_mixed": 4
+   },
+   "coupler 8-12 phase -0.25 rad with CZ damping x1.25": {
+    "coupler_phase": 500
    },
    "exact gates": {
-    "offset_absent": 499,
+    "offset_absent": 498,
+    "offset_reversed": 2
+   },
+   "exact gates with CZ damping": {
+    "exact_parabola": 1,
+    "offset_absent": 498,
     "offset_reversed": 1
    },
    "exact gates, selector flip 0.0166 when q12 reads 0": {
-    "exact_parabola": 25,
-    "none_adequate": 471,
-    "phase_unresolved": 4
+    "none_adequate": 500
    },
    "exact gates, selector flip 0.036 when q12 reads 0": {
     "none_adequate": 500
    },
    "q12 phase +0.18 rad": {
+    "none_adequate": 3,
+    "phase_mixed": 2,
+    "q12_phase": 495
+   },
+   "q12 phase -0.15 rad": {
+    "none_adequate": 2,
+    "phase_mixed": 1,
+    "q12_phase": 497
+   },
+   "q12 phase -0.15 rad with CZ damping": {
+    "none_adequate": 4,
+    "phase_mixed": 1,
+    "q12_phase": 495
+   },
+   "q12 phase -0.15 rad with CZ damping x1.25": {
     "phase_mixed": 2,
     "q12_phase": 498
    },
-   "q12 phase -0.15 rad": {
-    "none_adequate": 1,
-    "phase_mixed": 46,
-    "q12_phase": 453
+   "q12 phase -0.15 rad with CZ damping x3": {
+    "exact_parabola": 1,
+    "offset_absent": 330,
+    "phase_unresolved": 159,
+    "q12_phase": 10
    },
    "q12 phase -0.18 rad": {
-    "none_adequate": 1,
-    "phase_mixed": 29,
-    "q12_phase": 470
+    "none_adequate": 2,
+    "phase_mixed": 7,
+    "q12_phase": 491
    },
-   "z12 +-10 from q12 phase -0.18, z12 +-30 from coupler phase -0.25": {
-    "coupler_phase": 50,
-    "none_adequate": 23,
-    "phase_mixed": 328,
-    "phase_unresolved": 99
+   "q8 phase at coupler 8-12 -0.25 rad": {
+    "none_adequate": 496,
+    "phase_mixed": 4
+   },
+   "z12 from coupler phase -0.25, z8c from q12 phase -0.18": {
+    "none_adequate": 475,
+    "phase_mixed": 24,
+    "q12_phase": 1
+   },
+   "z12 from q12 phase -0.18, z8c from coupler phase -0.25": {
+    "coupler_phase": 2,
+    "none_adequate": 406,
+    "phase_mixed": 92
    }
   },
-  "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-13T172143Z.json",
-  "seed_index": 4,
+  "qrng_draw": "docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json",
+  "seed_index": 1,
   "series_per_truth": 500,
   "static_d2_split": 0.0083
  },
  "preregistered": {
-  "adequacy": "a world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of chi-square with one degree of freedom per fitted value (5 per z12 batch, 3 when its d2 splits are left out), less one per fitted parameter and one for the share",
+  "adequacy": "a world is adequate when its sum is at most the upper 0.001 point (the 99.9th percentile) of chi-square with one degree of freedom per fitted value (5 per deciding batch, 3 when its d2 splits are left out), less one per fitted parameter and one for the noise model",
+  "bridge": "reported outside the label: the padded center's contrast less the mean of the two plain arms in each admitted bridge batch, pooled, and whether it lies within 3.0 standard errors of zero",
   "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds 3.0 standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
-  "d2_split": "also reported beside the label: the d2 split of the +10 and +30 degree z12 arms pooled over the admitted replicates, beside the values each world predicts",
+  "d2_split": "also reported beside the label: the d2 split of every arm of the deciding kinds pooled over the admitted replicates whose d2 qubit passed its guard, beside the values each world predicts",
   "estimates": "per data circuit, the raw selector contrast P(s=0 | coin read 1) - P(s=0 | coin read 0) with its binomial standard error, the d2 split and the visibility of the center arm of each batch",
-  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted z12 batch is fitted to its three contrasts and to the d2 split of each outer arm less its center arm's, at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one contraction share of the predecessor's grid that makes the sum least",
-  "guard": "a data batch is admitted when e01 and e10 of each qubit the contrast reads (d0, d1, the selector and the coin) change by at most 0.02 between the readout batch before it and the one after; its d2 splits enter the fit only when d2's qubit passes the same bound, otherwise the batch is fitted on its three contrasts; the decision needs at least one admitted batch of each z12 kind, otherwise it reads unresolved_guard",
-  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate, its sum lies at least 25.0 below the other error world's, and each z12 kind, summed over its admitted replicates, reads that world at or below the upper 0.001 point of chi-square on its own degrees of freedom and no higher than the other error world; phase_mixed: the sums prefer one error world and a kind does not; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
+  "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error of the CZ gates of coupler 8-12) one parameter per admitted deciding batch is fitted to its three contrasts and to the d2 split of each outer arm less its center arm's, at the retention that reproduces the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one noise model that makes the sum least, among the contraction shares of the predecessor's grid and CZ amplitude and phase damping of 0.019 and 0.031 per CZ qubit at multiples 0 to 3 in steps of 1/16",
+  "guard": "a data batch is admitted when e01 and e10 of each qubit the contrast reads (d0, d1, the selector and the coin) change by at most 0.02 between the readout batch before it and the one after; its d2 splits enter the fit only when d2's qubit passes the same bound, otherwise the batch is fitted on its three contrasts; the decision needs at least one admitted batch of each deciding kind (z12-10, z12-30 and z8c-10), otherwise it reads unresolved_guard",
+  "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the cause of the offset; q12_phase or coupler_phase: that world is adequate, its sum lies at least 25.0 below the other error world's, and each deciding kind, summed over its admitted replicates, reads that world at or below the upper 0.001 point of chi-square on its own degrees of freedom and no higher than the other error world; phase_mixed: the sums prefer one error world and a kind does not; phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives the same laws as one before each pulse; a phase on q8 after each CZ of coupler 8-12 is no world of the fit",
   "ledger": "A5-186 changes only on q12_phase or coupler_phase, to the statement of that label; every other label reports the numbers",
   "line_phase": "outside this analysis: the shot-order fold of docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py is run on the retained jobs afterwards and decides nothing",
-  "q4_line": "reported outside the label: a weighted straight line through the contrast of each q4 arm less its batch center against q4's injected angle (-5, +5, +10, +15 degrees, 0 at the center), with its chi-square on 3 degrees of freedom, slope and the angle at which the pooled center plus the line reads zero",
+  "q4_line": "reported outside the label: a weighted straight line through the origin of the contrast of each q4 arm less its batch center against q4's injected angle (-10, -5, +5, +10 degrees), with its chi-square, slope and the angle at which the pooled center plus the line reads zero; when the bridge reads within its bound the same line is also reported with the predecessor's admitted q4 +-10 degree points added",
   "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
-  "visibility": "reported outside the label: each arm's visibility over its batch center's, beside the exact circuit's ratio; a phase on q12 moves the z12 ratios with the total phase, so the comparison bounds a finite duration of Rz and does not isolate it"
+  "visibility": "reported outside the label: each arm's visibility over its batch center's, beside the exact circuit's ratio",
+  "z8c": "reported beside the label: a weighted parabola through the z8c arms and their centers against the injected q8 phase"
  },
  "readout": "mean bracket rates of results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json",
- "schema": "qi-pathion-null-phase-scan-prediction-v1",
+ "schema": "qi-pathion-null-phase-scan-prediction-v2",
  "truths": {
   "coupler 8-12 phase +0.25 rad": {
    "arms": {
@@ -90,43 +127,55 @@
      "contrast": 0.02036,
      "d2_split": 0.00917
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.02036,
+     "d2_split": 0.00917
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.00353,
+     "d2_split": -0.00017
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.01177,
      "d2_split": 0.00454
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": 0.03527,
      "d2_split": 0.01776
     },
-    "b0-rx-q4-p15": {
-     "contrast": 0.04009,
-     "d2_split": 0.02135
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.02846,
      "d2_split": 0.01363
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 0.01109,
      "d2_split": 0.0192
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.05513,
      "d2_split": 0.03615
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.05031,
      "d2_split": -0.00137
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.13148,
      "d2_split": -0.02184
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.00011,
+     "d2_split": -0.0097
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.0502,
+     "d2_split": 0.04407
     }
    },
    "chi2_at_expected_values": {
     "coupler_phase": 0.0,
-    "exact": 1326.514,
-    "q12_phase": 145.354
+    "exact": 2452.851,
+    "q12_phase": 298.42
    },
    "label_at_expected_values": "coupler_phase"
   },
@@ -136,43 +185,171 @@
      "contrast": 0.01568,
      "d2_split": 0.00385
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.01568,
+     "d2_split": 0.00385
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.03045,
+     "d2_split": 0.01254
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.02358,
      "d2_split": 0.00842
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": -8e-05,
      "d2_split": -0.00622
     },
-    "b0-rx-q4-p15": {
-     "contrast": -0.00639,
-     "d2_split": -0.0113
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.00752,
      "d2_split": -0.00108
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 0.05464,
      "d2_split": -0.00422
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.1635,
      "d2_split": -0.02005
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.00355,
      "d2_split": 0.01179
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.06557,
      "d2_split": 0.02674
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.04172,
+     "d2_split": 0.04033
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": -0.00136,
+     "d2_split": -0.00647
     }
    },
    "chi2_at_expected_values": {
     "coupler_phase": 0.0,
-    "exact": 2010.618,
-    "q12_phase": 48.812
+    "exact": 3088.732,
+    "q12_phase": 218.739
+   },
+   "label_at_expected_values": "coupler_phase"
+  },
+  "coupler 8-12 phase -0.25 rad with CZ damping": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.01389,
+     "d2_split": 0.00454
+    },
+    "b0-rxz": {
+     "contrast": 0.01389,
+     "d2_split": 0.00454
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.02969,
+     "d2_split": 0.01632
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 0.02234,
+     "d2_split": 0.01066
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.00283,
+     "d2_split": -0.00837
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.00519,
+     "d2_split": -0.00187
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.04976,
+     "d2_split": 0.0042
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.15087,
+     "d2_split": 0.01123
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 0.00333,
+     "d2_split": 0.01051
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.06337,
+     "d2_split": 0.03938
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.04134,
+     "d2_split": 0.04078
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": -0.00297,
+     "d2_split": -0.00705
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 0.0,
+    "exact": 2682.827,
+    "q12_phase": 238.677
+   },
+   "label_at_expected_values": "coupler_phase"
+  },
+  "coupler 8-12 phase -0.25 rad with CZ damping x1.25": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.01136,
+     "d2_split": 0.00401
+    },
+    "b0-rxz": {
+     "contrast": 0.01136,
+     "d2_split": 0.00401
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.02501,
+     "d2_split": 0.01476
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 0.01866,
+     "d2_split": 0.00957
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.00305,
+     "d2_split": -0.00764
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.00386,
+     "d2_split": -0.00179
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.04112,
+     "d2_split": 0.00526
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.12523,
+     "d2_split": 0.0158
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 0.00278,
+     "d2_split": 0.00869
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.05339,
+     "d2_split": 0.03602
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.03503,
+     "d2_split": 0.03479
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": -0.00291,
+     "d2_split": -0.00611
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 0.0,
+    "exact": 1845.36,
+    "q12_phase": 167.778
    },
    "label_at_expected_values": "coupler_phase"
   },
@@ -182,37 +359,103 @@
      "contrast": -0.0,
      "d2_split": 0.0
     },
-    "b0-rx-q4-m5": {
-     "contrast": 0.0,
-     "d2_split": 0.0
-    },
-    "b0-rx-q4-p10": {
-     "contrast": 0.0,
-     "d2_split": -0.0
-    },
-    "b0-rx-q4-p15": {
+    "b0-rxz": {
      "contrast": -0.0,
      "d2_split": 0.0
     },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-m10": {
      "contrast": 0.0,
      "d2_split": 0.0
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-q4-m5": {
+     "contrast": 0.0,
+     "d2_split": 0.0
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": 0.0,
+     "d2_split": -0.0
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.0,
+     "d2_split": 0.0
+    },
+    "b0-rxz-z12-m10": {
      "contrast": 0.0127,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.09108,
      "d2_split": 0.00125
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.01288,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.09542,
      "d2_split": 0.00125
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.0032,
+     "d2_split": 0.00594
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.00946,
+     "d2_split": 0.01764
+    }
+   },
+   "chi2_at_expected_values": null,
+   "label_at_expected_values": "offset_absent"
+  },
+  "exact gates with CZ damping": {
+   "arms": {
+    "b0-rx": {
+     "contrast": -6e-05,
+     "d2_split": -3e-05
+    },
+    "b0-rxz": {
+     "contrast": -6e-05,
+     "d2_split": -3e-05
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.00011,
+     "d2_split": 0.0001
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 3e-05,
+     "d2_split": 4e-05
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.00023,
+     "d2_split": -0.00018
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": -0.00015,
+     "d2_split": -0.00011
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.013,
+     "d2_split": 0.00177
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.09361,
+     "d2_split": 0.01861
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 0.01319,
+     "d2_split": 0.00422
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.098,
+     "d2_split": 0.02569
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.0038,
+     "d2_split": 0.0051
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.01055,
+     "d2_split": 0.01987
     }
    },
    "chi2_at_expected_values": null,
@@ -224,43 +467,55 @@
      "contrast": 0.00731,
      "d2_split": -0.0
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.00731,
+     "d2_split": -0.0
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.00703,
+     "d2_split": -0.00011
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.00724,
      "d2_split": -3e-05
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": 0.00703,
      "d2_split": -7e-05
     },
-    "b0-rx-q4-p15": {
-     "contrast": 0.0067,
-     "d2_split": -0.00016
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.00724,
      "d2_split": -2e-05
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 0.01957,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.09555,
      "d2_split": 0.00125
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.01998,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.10044,
      "d2_split": 0.00124
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.01018,
+     "d2_split": 0.00593
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.01643,
+     "d2_split": 0.01762
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 47.927,
-    "exact": 48.892,
-    "q12_phase": 48.88
+    "coupler_phase": 119.468,
+    "exact": 121.946,
+    "q12_phase": 110.404
    },
    "label_at_expected_values": "none_adequate"
   },
@@ -270,43 +525,55 @@
      "contrast": 0.01617,
      "d2_split": -0.0
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.01617,
+     "d2_split": -0.0
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.01554,
+     "d2_split": -0.00024
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.01602,
      "d2_split": -6e-05
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": 0.01554,
      "d2_split": -0.00016
     },
-    "b0-rx-q4-p15": {
-     "contrast": 0.01481,
-     "d2_split": -0.00036
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.01601,
      "d2_split": -4e-05
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 0.02791,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.10097,
      "d2_split": 0.00125
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.02857,
      "d2_split": 0.00015
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.10652,
      "d2_split": 0.00124
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.01863,
+     "d2_split": 0.00592
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.02489,
+     "d2_split": 0.01759
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 205.463,
-    "exact": 238.143,
-    "q12_phase": 237.962
+    "coupler_phase": 527.999,
+    "exact": 598.327,
+    "q12_phase": 390.626
    },
    "label_at_expected_values": "none_adequate"
   },
@@ -316,42 +583,54 @@
      "contrast": 0.01414,
      "d2_split": 0.00017
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.01414,
+     "d2_split": 0.00017
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.00312,
+     "d2_split": -0.00832
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.00856,
      "d2_split": -0.00424
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": 0.02371,
      "d2_split": 0.00887
     },
-    "b0-rx-q4-p15": {
-     "contrast": 0.02676,
-     "d2_split": 0.01257
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.01936,
      "d2_split": 0.00463
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 1e-05,
      "d2_split": 0.0
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.04685,
      "d2_split": 0.00059
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.05107,
      "d2_split": 0.00062
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.14653,
      "d2_split": 0.00216
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.00599,
+     "d2_split": 0.0061
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.03394,
+     "d2_split": 0.01775
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 157.631,
-    "exact": 1706.509,
+    "coupler_phase": 239.971,
+    "exact": 2112.989,
     "q12_phase": 0.0
    },
    "label_at_expected_values": "q12_phase"
@@ -362,45 +641,227 @@
      "contrast": 0.00992,
      "d2_split": 0.00012
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.00992,
+     "d2_split": 0.00012
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.01899,
+     "d2_split": 0.0047
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.01479,
      "d2_split": 0.00247
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": 0.00015,
      "d2_split": -0.00499
     },
-    "b0-rx-q4-p15": {
-     "contrast": -0.00375,
-     "d2_split": -0.00762
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.00486,
      "d2_split": -0.00238
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 0.04292,
      "d2_split": 0.00053
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.13314,
      "d2_split": 0.00204
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 0.00027,
      "d2_split": 0.0
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.05693,
      "d2_split": 0.0007
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.02614,
+     "d2_split": 0.00622
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.00626,
+     "d2_split": 0.01813
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 106.354,
-    "exact": 1184.737,
+    "coupler_phase": 136.976,
+    "exact": 1512.151,
     "q12_phase": 0.0
    },
    "label_at_expected_values": "q12_phase"
+  },
+  "q12 phase -0.15 rad with CZ damping": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.00969,
+     "d2_split": 0.00117
+    },
+    "b0-rxz": {
+     "contrast": 0.00969,
+     "d2_split": 0.00117
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.02006,
+     "d2_split": 0.00836
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 0.01526,
+     "d2_split": 0.00485
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.0014,
+     "d2_split": -0.0065
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.00393,
+     "d2_split": -0.00264
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.04214,
+     "d2_split": 0.00759
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.1308,
+     "d2_split": 0.02708
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 0.0002,
+     "d2_split": 0.0002
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.05589,
+     "d2_split": 0.01529
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.02618,
+     "d2_split": 0.00883
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.00719,
+     "d2_split": 0.01778
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 120.451,
+    "exact": 1470.347,
+    "q12_phase": 0.0
+   },
+   "label_at_expected_values": "q12_phase"
+  },
+  "q12 phase -0.15 rad with CZ damping x1.25": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.00807,
+     "d2_split": 0.00121
+    },
+    "b0-rxz": {
+     "contrast": 0.00807,
+     "d2_split": 0.00121
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.01707,
+     "d2_split": 0.00789
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 0.01291,
+     "d2_split": 0.00463
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.00155,
+     "d2_split": -0.00586
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.00307,
+     "d2_split": -0.00232
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.03517,
+     "d2_split": 0.00788
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.10923,
+     "d2_split": 0.02805
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 0.00016,
+     "d2_split": 0.0002
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.04674,
+     "d2_split": 0.01589
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.02197,
+     "d2_split": 0.008
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.00626,
+     "d2_split": 0.01488
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 87.368,
+    "exact": 1030.33,
+    "q12_phase": 0.0
+   },
+   "label_at_expected_values": "q12_phase"
+  },
+  "q12 phase -0.15 rad with CZ damping x3": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.00197,
+     "d2_split": 0.00089
+    },
+    "b0-rxz": {
+     "contrast": 0.00197,
+     "d2_split": 0.00089
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.00519,
+     "d2_split": 0.00459
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 0.00371,
+     "d2_split": 0.00276
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.00149,
+     "d2_split": -0.00281
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.00016,
+     "d2_split": -0.00099
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.00911,
+     "d2_split": 0.00562
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.02892,
+     "d2_split": 0.01957
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 8e-05,
+     "d2_split": 7e-05
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.01319,
+     "d2_split": 0.01077
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.00597,
+     "d2_split": 0.00369
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.00236,
+     "d2_split": 0.00417
+    }
+   },
+   "chi2_at_expected_values": null,
+   "label_at_expected_values": "offset_absent"
   },
   "q12 phase -0.18 rad": {
    "arms": {
@@ -408,45 +869,115 @@
      "contrast": 0.0144,
      "d2_split": 0.00017
     },
-    "b0-rx-q4-m5": {
+    "b0-rxz": {
+     "contrast": 0.0144,
+     "d2_split": 0.00017
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.02537,
+     "d2_split": 0.00544
+    },
+    "b0-rxz-q4-m5": {
      "contrast": 0.02032,
      "d2_split": 0.00287
     },
-    "b0-rx-q4-p10": {
+    "b0-rxz-q4-p10": {
      "contrast": 0.00237,
      "d2_split": -0.00577
     },
-    "b0-rx-q4-p15": {
-     "contrast": -0.0025,
-     "d2_split": -0.0089
-    },
-    "b0-rx-q4-p5": {
+    "b0-rxz-q4-p5": {
      "contrast": 0.0082,
      "d2_split": -0.00271
     },
-    "b0-rx-z12-m10": {
+    "b0-rxz-z12-m10": {
      "contrast": 0.05117,
      "d2_split": 0.00064
     },
-    "b0-rx-z12-m30": {
+    "b0-rxz-z12-m30": {
      "contrast": 0.142,
      "d2_split": 0.00223
     },
-    "b0-rx-z12-p10": {
+    "b0-rxz-z12-p10": {
      "contrast": 1e-05,
      "d2_split": 0.0
     },
-    "b0-rx-z12-p30": {
+    "b0-rxz-z12-p30": {
      "contrast": 0.04986,
      "d2_split": 0.0006
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.03377,
+     "d2_split": 0.00632
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": 0.00746,
+     "d2_split": 0.0183
     }
    },
    "chi2_at_expected_values": {
-    "coupler_phase": 157.045,
-    "exact": 1763.217,
+    "coupler_phase": 190.94,
+    "exact": 2353.747,
     "q12_phase": 0.0
    },
    "label_at_expected_values": "q12_phase"
+  },
+  "q8 phase at coupler 8-12 -0.25 rad": {
+   "arms": {
+    "b0-rx": {
+     "contrast": 0.00904,
+     "d2_split": 0.01679
+    },
+    "b0-rxz": {
+     "contrast": 0.00904,
+     "d2_split": 0.01679
+    },
+    "b0-rxz-q4-m10": {
+     "contrast": 0.02329,
+     "d2_split": 0.02856
+    },
+    "b0-rxz-q4-m5": {
+     "contrast": 0.0166,
+     "d2_split": 0.0231
+    },
+    "b0-rxz-q4-p10": {
+     "contrast": -0.00565,
+     "d2_split": 0.00274
+    },
+    "b0-rxz-q4-p5": {
+     "contrast": 0.00136,
+     "d2_split": 0.00988
+    },
+    "b0-rxz-z12-m10": {
+     "contrast": 0.04483,
+     "d2_split": 0.01659
+    },
+    "b0-rxz-z12-m30": {
+     "contrast": 0.17945,
+     "d2_split": 0.01471
+    },
+    "b0-rxz-z12-p10": {
+     "contrast": 0.00643,
+     "d2_split": 0.01647
+    },
+    "b0-rxz-z12-p30": {
+     "contrast": 0.08638,
+     "d2_split": 0.01439
+    },
+    "b0-rxz-z8c-m10": {
+     "contrast": 0.02721,
+     "d2_split": 0.05049
+    },
+    "b0-rxz-z8c-p10": {
+     "contrast": -0.00021,
+     "d2_split": -0.00039
+    }
+   },
+   "chi2_at_expected_values": {
+    "coupler_phase": 64.673,
+    "exact": 2102.174,
+    "q12_phase": 172.854
+   },
+   "label_at_expected_values": "none_adequate"
   }
  }
 }
