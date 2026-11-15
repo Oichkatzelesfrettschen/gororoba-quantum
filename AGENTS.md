@@ -60,20 +60,23 @@ the two differ.
   --out ../results/live`, a record under results/live/) belongs to a change
   of calibration admission, the approval comparison, the submission path or
   execution readiness, and to every case that heads for `--submit`.
-- The Rocq proof sources live in gororoba-math under `rocq/quantum`, and this
-  repository tracks no `proofs/` directory. A new Rocq file lands there by a
-  pull request in gororoba-math (listed in its `rocq/quantum/_RocqProject`),
-  followed here by a bump of `ci/gororoba_math.pin` to the merged commit; a
-  change to an existing source takes the same route. A local run resolves the checkout
-  through `GOROROBA_MATH` (unset ends the run with a message); hosted CI fetches
-  the pin. A record names a source as `gororoba-math:rocq/quantum/NAME.v`. A
-  published replay bundle keeps its bytes and its `proofs/NAME.v` reads, which
-  `scripts/rocq_kaggle_replay.py` and the gates that declare
-  `requires: ["gororoba-math"]` supply from a shadow root of
-  `gororoba_quantum/math_sources.py`, after each source's sha256 equals the
-  digest the retained ledgers hold. A change to a pin, a replay bundle or its
-  receipts runs the Rocq compile of `proofs.yml` (path-filtered, not a
-  required check; [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates)).
+- The Rocq proof sources and their generators live in gororoba-math: sources under `rocq/quantum`, generators under
+  `ci/quantum-sources/`, and `ci/check_quantum_sources.sh` and `ci/replay_quantum_bundles.sh` there run the
+  generators and the retained replays against this checkout (`GOROROBA_QUANTUM`). This repository tracks no `proofs/`
+  directory, compiles no Rocq and runs no Rocq workflow. A new or changed source lands by a pull request in
+  gororoba-math (listed in its `rocq/quantum/_RocqProject`), followed here by a bump of `ci/gororoba_math.pin` when a
+  record cites it. `gororoba_quantum/math_sources.py` verifies the sources that retained records cite (a
+  `proofs/NAME.v` ledger row or an evidence entry of `docs/state/research_state.json`) and no other: the pin names a
+  commit at which each cited source keeps its recorded sha256, so it moves to any commit that leaves those bytes
+  unchanged, and a changed cited source lands in a successor file. A local run resolves the checkout through
+  `GOROROBA_MATH` (unset ends the run with a message; `ci/fetch_gororoba_math.sh` fetches the pin). A record names a
+  source as `gororoba-math:rocq/quantum/NAME.v`. A published replay bundle keeps its bytes and its `proofs/NAME.v`
+  reads, which the gates that declare `requires: ["gororoba-math"]` supply from a shadow root of the cited sources. A
+  generator that a retained ledger binds (`scripts/cd_sign_rocq_ast.py`, `scripts/cd_sign_source_ast.py`,
+  `gororoba_quantum/target_flip_certificate.py`, `docs/evidence/cd-tower-kernel-certificates/kernel_certificates.py`
+  with `certificates.json`, and the three generators and `span.json` of `docs/evidence/a5-gaussian-certificates/` that
+  the findings ledger cites) keeps its bytes here as the record of the commit that ledger names, and no gate renders a
+  source from it; the live generator is the file of the same name in gororoba-math, where a change lands.
 
 ## Seeds
 

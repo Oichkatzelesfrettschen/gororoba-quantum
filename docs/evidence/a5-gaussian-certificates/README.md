@@ -1,7 +1,7 @@
 # Gaussian-integer certificates of the G_2 derivation tables and the W8 arc matrices
 
-Three Rocq sources of gororoba-math (`rocq/quantum`) are rendered from tracked records by the generators in this
-directory, so that every integer in them has one home here and a `--check` that compares the two:
+Three Rocq sources of gororoba-math (`rocq/quantum`) are rendered from tracked records by generators that live in gororoba-math (`ci/quantum-sources/`), so that every
+integer in them has one home and a `--check` that compares the two:
 
 | Rocq source | Generator | Record it reads | What it states |
 | --- | --- | --- | --- |
@@ -9,54 +9,19 @@ directory, so that every integer in them has one home here and a `--check` that 
 | `gororoba-math:rocq/quantum/A5W8ArcMatrixRanks.v` | `gaussian_certificates.py` | [w8-component-arc-matrices-qi.json](../a5-char0-transfer/w8-component-arc-matrices-qi.json) (ledger row `A5-448`), `left-inverses.json` | for each of the eight 24 x 6 matrices M a 6 x 24 matrix L and a Gaussian integer d with L M = d I, so that a column relation M a = 0 has h(d) a_l = 0 and the six columns are independent where h(d) is a nonzero divisor |
 | `gororoba-math:rocq/quantum/CdTowerG2DerivationSpan.v` | `render_span.py` | `span.json` | for every linear map F of the sedenions that satisfies the Leibniz rule on the basis units, h(6) F is a combination of the 14 tables ([derivations_spanned]); where h(6) is invertible or a nonzero divisor, F is that combination ([derivations_spanned_invertible], [derivations_spanned_regular]), and so over the Gaussian integers ([derivations_spanned_gaussian]) |
 
-## Files
+## Generators
 
-| File | Kind | Content |
-| --- | --- | --- |
-| `gaussian_certificates.py` | generator | reads the two records with exact key sets and integer types, computes a left inverse of each matrix (adjugate of the first independent rows, divided by the integer content of the block; a unit scalar becomes 1), renders the first two Rocq files and `left-inverses.json` |
-| `left-inverses.json` | record | the selected rows, the scalar d, its norm and the nonzero entries of each left inverse (one for the 256 x 14 matrix of the derivation tables, eight for the arc matrices); every entry is [real part, imaginary part] |
-| `make_mutants.py` | mutation controls | six edited copies of the first two Rocq files, each of which must fail to compile in the lemma named beside it |
-| `span_certificate.py` | computation | the Leibniz system of the sedenions (4096 forms in 256 unknowns, product `cd_sign(16, a, b)` of `gororoba_quantum/cd_core.py`), a greedy choice of 242 independent forms, and P, d with P M + d V C = d I for the tables V and their left inverse C; writes `span.json`, or verifies it |
-| `span.json` | record | row order 0 (`"seed": 0`, the lexicographic order of the triples, no random draw): d = 6, 242 triples, 1195 nonzero entries of P, largest absolute value 12 |
-| `render_span.py` | generator | reads `span.json` with exact key sets, integer types, counts and index ranges and renders the third Rocq source |
-| `make_span_mutants.py` | mutation controls | six edited copies of the span source, each with the lemma that must reject it |
-| `run_span_checks.sh`, `SpanQueries.v` | driver | the Rocq half of the span checks for a machine that holds Rocq: compile of the three span sources, 15 assumption queries, kernel check, the six mutants, one verdict line |
-
-The tests are [test_a5_gaussian_certificates.py](../../../tests/gororoba_quantum/test_a5_gaussian_certificates.py).
-
-## Commands
-
-Run from the repository root with `PYTHON` naming the interpreter of the pins. The `--check` commands read
-gororoba-math through `GOROROBA_MATH` at the commit of `ci/gororoba_math.pin`, with each source checked against the
-sha256 the retained records hold ([math_source_generators.py](../../../scripts/math_source_generators.py));
-`--write` replaces the sources in that checkout and `left-inverses.json` here.
-
-```sh
-"$PYTHON" scripts/math_source_generators.py gaussian_certificates --check
-"$PYTHON" scripts/math_source_generators.py render_span --check
-"$PYTHON" docs/evidence/a5-gaussian-certificates/span_certificate.py \
-  --left-inverses docs/evidence/a5-gaussian-certificates/left-inverses.json --verify
-```
-
-The first two are on-demand gates of `ci/gates.json` (`sources-a5-gaussian-certificates-check` and
-`sources-a5-gaussian-certificates-span-check`, tagged `requires: ["gororoba-math"]`). The third checks
-C V = I and P M + d V C = d I on `span.json` in Python integers, a Gaussian integer being a pair, and needs no
-python-flint. Without the runner, `--rocq DIRECTORY` names the directory of the Rocq files.
-
-`span_certificate.py` without `--verify` recomputes `span.json`; with `--check` it compares the recomputation with the
-file. It needs python-flint 0.9.0, the pin of `requirements.txt`. The test
-`test_flint_recomputes_the_tracked_span_record` recomputes the record at row order 0 and is marked `audit`: a
-pull-request run deselects it and checks the recorded identity P M + d V C = d I and a small synthetic solve, and
-`pytest -m audit` on that test file regenerates the record. The left-inverse
-record is an explicit argument (`--left-inverses`), and C V = I is checked before P is computed.
-
-The mutation controls need Rocq. On a machine that has it, `make_mutants.py ROCQ_DIRECTORY OUTPUT_DIRECTORY` and
-`make_span_mutants.py SOURCE_V OUTPUT_DIRECTORY` write the edited copies, and `sh run_span_checks.sh BUILD_DIRECTORY`
-runs the span checks. The build directory holds the three span sources, `SpanQueries.v`, `make_span_mutants.py` and the
-compiled sources they import (`MatrixSplittingCertificate.v`, `CdTowerLeibnizSystem.v`, `CdTowerG2Derivations.v` and
-the files below them). No Rocq compile
-runs in the pull-request checks; the tests check that each mutant differs from its original in the one intended line,
-ahead of the lemma named for it.
+The generators `gaussian_certificates.py`, `span_certificate.py` and `render_span.py`, the records they write
+(`left-inverses.json`, `span.json`) and the mutation controls and Rocq driver of the span checks (`make_mutants.py`,
+`make_span_mutants.py`, `run_span_checks.sh`, `SpanQueries.v`) are files of gororoba-math under `ci/quantum-sources/`.
+They read the two records named above and `gororoba_quantum/cd_core.py` of this repository through
+`GOROROBA_QUANTUM`, and `GOROROBA_QUANTUM=PATH sh ci/check_quantum_sources.sh` there renders the three sources again
+and compares each with the tracked file. Three of them, `gaussian_certificates.py`, `span_certificate.py` and
+`render_span.py`, and `span.json` stay here with their bytes, because the A5-500 row of the findings ledger cites them
+as evidence; no gate renders a source from them. This directory also keeps [source_hashes.sha256](source_hashes.sha256), the
+sha256 of the seven gororoba-math sources that the retained records bind (the three generated files and
+`GaussianIntegerHom.v`, `MatrixLeftInverseCertificate.v`, `MatrixSplittingCertificate.v` and
+`CdTowerLeibnizSystem.v`).
 
 ## Scope and limits
 
@@ -88,12 +53,6 @@ ahead of the lemma named for it.
 
 ## Binding to gororoba-math
 
-`scripts/math_source_generators.py` resolves each source through `gororoba_quantum/math_sources.py`. A checkout at the
-commit of `ci/gororoba_math.pin` supplies the sources, and a retained record must hold the sha256 of each one it
-reads: a ledger row `DIGEST  proofs/NAME.v` in `docs/evidence/*/*.sha256`, or a registry evidence entry. Every name in
-the `_RocqProject` of the pinned checkout needs such a digest, because the shadow root of the replay bundles and
-`verified_sources` read them all; the sources of this directory add seven names to that list: the three generated
-files named above and the hand-written `GaussianIntegerHom.v`, `MatrixLeftInverseCertificate.v`,
-`MatrixSplittingCertificate.v` and `CdTowerLeibnizSystem.v`. A pin that holds a source without its digest fails every
-gate tagged `requires: ["gororoba-math"]` and the Rocq replay of `proofs.yml`, with a message that names the missing
-digest.
+`gororoba_quantum/math_sources.py` resolves each source of that ledger through a gororoba-math checkout at the commit
+of `ci/gororoba_math.pin`, and a pin that holds a different byte of one of the seven fails the gates tagged
+`requires: ["gororoba-math"]`. A source of gororoba-math that no record here or elsewhere cites is not read.
