@@ -359,7 +359,7 @@
    "calibration": {
     "state": "datasource-error",
     "http_status": 400,
-    "error": "Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp 131.180.205.138:443: i/o timeout"
+    "error": "Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp <address>:443: i/o timeout"
    }
   },
   "tuna-9": {
@@ -376,7 +376,7 @@
    "calibration": {
     "state": "datasource-error",
     "http_status": 400,
-    "error": "Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp 131.180.205.138:443: i/o timeout"
+    "error": "Post \"https://prometheus.qi2.qutech.support/api/v1/query\": dial tcp <address>:443: i/o timeout"
    }
   },
   "tuna-5": {

@@ -119,5 +119,199 @@
    "id",
    "job_id"
   ]
+ },
+ "openapi": {
+  "url": "https://api.quantum-inspire.com/openapi.json",
+  "retrieved_utc": "2026-11-15T16:22:38Z",
+  "sha256_of_served_bytes": "714f66165611b38842dfe3497bb7f1ea818c9df756b3ed87ff128c838cac185f",
+  "info": {
+   "title": "Quantum Inspire 2",
+   "version": "0.1.0"
+  },
+  "paths": {
+   "/algorithms": [
+    "get",
+    "post"
+   ],
+   "/algorithms/{id}": [
+    "delete",
+    "get",
+    "put"
+   ],
+   "/auth_config": [
+    "get"
+   ],
+   "/backend_types/": [
+    "get"
+   ],
+   "/backend_types/me": [
+    "patch"
+   ],
+   "/backend_types/{id}": [
+    "get"
+   ],
+   "/backend_types/{id}/queue": [
+    "get"
+   ],
+   "/backends": [
+    "get",
+    "post"
+   ],
+   "/backends/hostnames": [
+    "get"
+   ],
+   "/backends/me": [
+    "get",
+    "patch"
+   ],
+   "/backends/{id}": [
+    "get"
+   ],
+   "/batch_jobs": [
+    "get",
+    "post"
+   ],
+   "/batch_jobs/peek": [
+    "patch"
+   ],
+   "/batch_jobs/pop": [
+    "patch"
+   ],
+   "/batch_jobs/{id}/enqueue": [
+    "patch"
+   ],
+   "/batch_jobs/{id}/finish": [
+    "patch"
+   ],
+   "/batch_jobs/{id}/unpop": [
+    "patch"
+   ],
+   "/commits": [
+    "get",
+    "post"
+   ],
+   "/commits/{id}": [
+    "delete",
+    "get"
+   ],
+   "/commits/{id}/compile": [
+    "post"
+   ],
+   "/drain_mode": [
+    "get",
+    "patch"
+   ],
+   "/files": [
+    "get",
+    "post"
+   ],
+   "/files/{id}": [
+    "delete",
+    "get"
+   ],
+   "/final_results": [
+    "post"
+   ],
+   "/final_results/job/{job_id}": [
+    "get"
+   ],
+   "/final_results/{id}": [
+    "get"
+   ],
+   "/healthz": [
+    "get"
+   ],
+   "/jobs": [
+    "get",
+    "post"
+   ],
+   "/jobs/{id}": [
+    "delete",
+    "get",
+    "patch"
+   ],
+   "/jobs/{id}/logs": [
+    "get"
+   ],
+   "/languages": [
+    "get"
+   ],
+   "/languages/{id}": [
+    "get"
+   ],
+   "/members": [
+    "get",
+    "post"
+   ],
+   "/members/{id}": [
+    "delete",
+    "get"
+   ],
+   "/permission_groups/": [
+    "get"
+   ],
+   "/permission_groups/{id}": [
+    "get"
+   ],
+   "/permissions/": [
+    "get"
+   ],
+   "/permissions/{id}": [
+    "get"
+   ],
+   "/projects": [
+    "get",
+    "post"
+   ],
+   "/projects/{id}": [
+    "delete",
+    "get",
+    "patch",
+    "put"
+   ],
+   "/reservations": [
+    "get",
+    "post"
+   ],
+   "/reservations/{id}": [
+    "get"
+   ],
+   "/reservations/{id}/terminate": [
+    "patch"
+   ],
+   "/results": [
+    "post"
+   ],
+   "/results/algorithm/{algorithm_id}": [
+    "get"
+   ],
+   "/results/job/{job_id}": [
+    "delete",
+    "get"
+   ],
+   "/results/{id}": [
+    "get"
+   ],
+   "/teams/": [
+    "get"
+   ],
+   "/teams/{id}": [
+    "get"
+   ],
+   "/transactions/": [
+    "get"
+   ],
+   "/transactions/{id}": [
+    "get"
+   ],
+   "/users": [
+    "get",
+    "post"
+   ],
+   "/users/{id}": [
+    "delete",
+    "get"
+   ]
+  }
  }
 }
