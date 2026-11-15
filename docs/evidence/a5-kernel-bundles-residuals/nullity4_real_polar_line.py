@@ -28,9 +28,11 @@ C(l_z) = {x : M(x) l_z = 0} that is Hermitian-orthogonal to l_z, so dim L = 2 di
    a. Nullity (argument; the identification of the real kernel vectors with algebra elements is checked at the 66
       fixtures). For a nonzero p with conjugate(p).p nonzero, the bordered matrix A(p, conjugate(p)) has kernel
       {(0, x) : M(p) x = 0, conjugate(p).x = 0}, because conjugate(p) is outside the image of M(p) (its pairing with
-      p in the kernel is nonzero), so the real nullity of left multiplication by p is 2 (nullity M(p) - 1). On the polar
-      line M has rank 8 (mu nonzero) and 6 (mu = 0), so the real nullity is 12 and 16. The retained exact nullities of
-      the real kernel vectors equal 2 (plane nullity - 1) at all 66 fixtures. dim L = 6 forces P = l_z and mu nonzero,
+      p in the kernel is nonzero), so its complex dimension is nullity M(p) - 1. On the polar line M has rank 8 (mu
+      nonzero) and 6 (mu = 0), so that dimension is 6 and 8. The retained exact real nullities of the real kernel
+      vectors equal 2 (plane nullity - 1) at all 66 fixtures, 12 and 16 on the polar line; the identification of the
+      real left multiplication with A(p, conjugate(p)) behind that factor 2 is measured there, not derived (A5-554).
+      dim L = 6 forces P = l_z and mu nonzero,
       dim L = 12 forces mu = 0, because dim C(l_z) is 3 and 6 and L_z lies in C(l_z). In
       quaternion position A5-536 gives P = l_z and dim L at least 6, so dim L = 6 at mu nonzero and 12 at mu = 0 (by b):
       A5-539's clause "dim L of 6 or 12" holds there.

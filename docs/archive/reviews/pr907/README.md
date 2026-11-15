@@ -1,9 +1,9 @@
 # Review of PR 907 (residual nullity-4 strata of the orbit normal forms)
 
-The launcher ran one local reviewer on this pull request: `codex` on gpt-daybreak-blue-latest at high effort. It read
+The owner chose one local reviewer for this pull request: `codex` on gpt-daybreak-blue-latest at high effort. It read
 [brief.md](brief.md) at head ac3255d55 and wrote [review-codex.md](review-codex.md); every computation ran on a
 remote checkout of that head. It confirms the arguments of A5-537, A5-539 and A5-540, the exact witnesses of A5-552,
-and the dispositions of A5-441, A5-442 and A5-538. The launcher checked each finding against the source, and all four
+and the dispositions of A5-441, A5-442 and A5-538. Each finding is checked against the source below, and all four
 hold. Local paths, host names and the remote command in both files are replaced by placeholders.
 
 | # | Finding | Verdict | Action |
@@ -19,3 +19,12 @@ falsifiers in the bases of A5-551 and A5-553.
 
 ## Advisor verdict
 
+The Advisor reviewed last and confirmed the four dispositions from the source lines and the row texts. It did not
+audit the proofs of A5-537, A5-539 and A5-540 again; the reviewer's audit above is their only outside one. It required
+three checks of the changes made after the review, all done: the five gates and the six test files, audit tests
+included, pass on a clean checkout of the head with Singular 4.4.1 required (165 and 11 tests), since the hosted checks
+skip every Singular path; the regenerated quartic record differs from the reviewed one in the producer digest alone,
+and the ledger differs from `main` only in the rows this pull request owns; and the wording of findings 2 and 3
+reaches every text: the docstring of `nullity4_real_polar_line.py` states the complex dimension and cites A5-554 for
+the real nullity, and A5-554 names A5-538 in its `supersedes` column, as the only successor of that row's
+real-nullity clause.
