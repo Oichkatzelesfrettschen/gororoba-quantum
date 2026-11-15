@@ -163,10 +163,13 @@ MUTATIONS: list[Mutation] = [
 ]
 
 
-def test_record_rules_accept_the_pinned_record() -> None:
+def test_record_rules_accept_the_pinned_record(monkeypatch: pytest.MonkeyPatch) -> None:
     _same(forms.verdict(forms.expected_record()), [])
-    # The retained text is the record the constants determine; a changed value fails the rules.
+    # The retained text is the record the constants determine; a changed value fails the rules. The rules run
+    # against the digests the record retains; the on-demand gate compares them with the live sources.
     retained = json.loads(forms.RECORD.read_text(encoding="utf-8"))
+    retained_inputs = dict(retained["inputs"])
+    monkeypatch.setattr(forms, "_inputs", lambda: dict(retained_inputs))
     _same(forms.verdict(retained), [])
     _same(forms.RECORD.read_text(encoding="utf-8"), forms._serialized(forms.expected_record()))
     retained["complement_pfaffian_sign"] = 0
