@@ -25,9 +25,9 @@ other column, so the meeting is the image of the triangle.
 Tangent cones. Singular computes the toric ideal of A over Q (25 quadrics, dimension 5, multiplicity 11, the
 invariants of A5-503) and the multiplicity of X_A at the torus-fixed point of z l (4), at the point of the edge with
 both coordinates 1 (2) and at the point of the triangle with all three coordinates 1 (1): the multiplicities of
-A5-511 at the three strata. Each comes from a standard basis in a local ordering of the affine chart, whose
-dimension 4 is that of X_A. Two controls: the vertex a^3 is a smooth point (1), and the 11 monomials without z l
-give a variety of multiplicity 7.
+A5-511 at the three strata. Each is the multiplicity of the tangent cone of the affine chart, computed in a global
+ordering by the deformation to the normal cone; the dimension 4 of the cone is that of X_A. Two controls: the vertex
+a^3 is a smooth point (1), and the 11 monomials without z l give a variety of multiplicity 7.
 
 `--check` verifies the polytope, the faces, the strata and the meeting in exact arithmetic, binds the record to its
 producers and compares the constants of `e8_component_geometry.py` used here with its retained record.
@@ -158,19 +158,27 @@ def degree_monomials() -> list[Exponents]:
     ]
 
 
+def _supporting(candidate: tuple[tuple[tuple[int, ...], ...], tuple[int, ...]]) -> tuple[tuple[int, ...], int] | None:
+    """The points on the hyperplane through four points and the side of the others, or None when it cuts the hull."""
+    points, spanning = candidate
+    base, rest = list(points[spanning[0]]), [list(points[index]) for index in spanning[1:]]
+    sides = [_side(base, rest, list(point)) for point in points]
+    signs = {side > 0 for side in sides if side != 0}
+    if len(signs) != 1:
+        return None
+    return tuple(index for index, side in enumerate(sides) if side == 0), 1 if signs == {True} else -1
+
+
 @functools.cache
 def facets(monomials: tuple[Exponents, ...]) -> list[tuple[tuple[int, ...], tuple[int, ...], int]]:
     """The facets of the hull as (points on it, four points that span it, sign of the side of the hull)."""
-    points = [_lattice(m) for m in monomials]
+    points = tuple(tuple(_lattice(m)) for m in monomials)
+    candidates = list(itertools.combinations(range(len(points)), 4))
     found: dict[tuple[int, ...], tuple[tuple[int, ...], int]] = {}
-    for spanning in itertools.combinations(range(len(points)), 4):
-        base, rest = points[spanning[0]], [points[index] for index in spanning[1:]]
-        sides = [_side(base, rest, point) for point in points]
-        signs = {side > 0 for side in sides if side != 0}
-        if len(signs) != 1:
-            continue
-        on = tuple(index for index, side in enumerate(sides) if side == 0)
-        found.setdefault(on, (spanning, 1 if signs == {True} else -1))
+    supports = parallel.ordered_map(_supporting, [(points, spanning) for spanning in candidates])
+    for spanning, support in zip(candidates, supports, strict=True):
+        if support is not None:
+            found.setdefault(support[0], (spanning, support[1]))
     return [(on, spanning, sign) for on, (spanning, sign) in sorted(found.items())]
 
 
@@ -338,9 +346,13 @@ intvec degrees; for(k=1;k<=size(B);k++){ degrees[k]=deg(B[k]); }
 print("RESULT $key "+string(size(B))+";"+string(degrees)+";"+string(dim(J))+","+string(mult(J)));
 $locals
 """
-LOCAL_STAGE = """ring L$name=0,(u(1..$others)),ds;
-ideal sub$name=$images; map f$name=S,sub$name; ideal I$name=std(f$name(J));
-print("RESULT $name "+string(dim(I$name))+","+string(mult(I$name)));
+# The tangent cone in a global ordering, by the deformation to the normal cone: with the point at the origin of the
+# chart, substitute u -> h u, saturate by h and set h = 0; the ideal h makes the dimension that of the cone.
+LOCAL_STAGE = """ring L$name=0,(u(1..$others),h),dp;
+ideal sub$name=$images; map f$name=S,sub$name; ideal T$name=sat(f$name(J),h);
+print("RESULT saturation_type "+typeof(T$name));
+T$name=std(subst(T$name,h,0)+ideal(h));
+print("RESULT $name "+string(dim(T$name))+","+string(mult(T$name)));
 setring S;
 """
 
@@ -353,7 +365,7 @@ def local_stage(name: str, chart: int, ones: tuple[int, ...], count: int) -> str
     """The chart where coordinate `chart` is 1, moved so that the point with coordinates 1 at `ones` is the origin."""
     others = [index for index in range(count) if index != chart]
     images = [
-        "1" if index == chart else f"u({others.index(index) + 1})" + ("+1" if index in ones else "")
+        "1" if index == chart else f"h*u({others.index(index) + 1})" + ("+1" if index in ones else "")
         for index in range(count)
     ]
     return LOCAL_STAGE.replace("$name", name).replace("$others", str(count - 1)).replace("$images", ",".join(images))
@@ -389,6 +401,9 @@ def toric() -> dict[str, Any]:
     without = tuple(m for index, m in enumerate(MONOMIALS) if index != DROPPED_MONOMIAL)
     control = ws.run_singular(toric_stage(without, "toric", ""))["values"]
     generators, degrees, invariants = _global(values["toric"][0])
+
+    if set(values.get("saturation_type", [])) != {"ideal"}:
+        raise RuntimeError(f"sat returns {values.get('saturation_type')}, not an ideal")
 
     def pair(key: str) -> list[int]:
         return [int(part) for part in values[key][0].split(",")]

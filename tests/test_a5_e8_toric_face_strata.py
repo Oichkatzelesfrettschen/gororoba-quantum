@@ -235,12 +235,14 @@ def test_a_form_whose_z_l_term_moves_takes_the_vertex_off_the_singular_point() -
 
 
 def test_the_singular_stages_name_the_charts_and_the_controls() -> None:
-    _same(strata.local_stage("point", 9, (), 12).count("u("), 11 + 1)
+    _same(strata.local_stage("point", 9, (), 12).count("h*u("), 11)
     stage = strata.local_stage("line", 10, (11,), 12)
-    _same("u(10),1,u(11)+1;" in stage, True)
-    _same("ring Lline=0,(u(1..11)),ds;" in stage, True)
+    _same("h*u(10),1,h*u(11)+1;" in stage, True)
+    _same("ring Lline=0,(u(1..11),h),dp;" in stage, True)
+    _same("sat(fline(J),h)" in stage and "subst(Tline,h,0)+ideal(h)" in stage, True)
+    _same(",ds" in stage or ",ls" in stage or ",Ds" in stage, False)
     stage = strata.local_stage("plane", 9, (10, 11), 12)
-    _same("u(9),1,u(10)+1,u(11)+1;" in stage, True)
+    _same("h*u(9),1,h*u(10)+1,h*u(11)+1;" in stage, True)
     script = strata.toric_stage(strata.MONOMIALS, "toric", "")
     _same(
         "ideal mon=a^3,a^2*b^1,a^1*b^2,b^3,a^2*z^1,a^1*b^1*z^1,b^2*z^1,a^1*l^1,b^1*l^1,l^1*z^1,a^1*m^1,b^1*m^1;"
@@ -399,6 +401,10 @@ def test_singular_finds_the_toric_invariants_and_the_three_multiplicities() -> N
 
 
 @pytest.mark.audit
+@pytest.mark.skipif(
+    shutil.which("Singular") is None or shutil.which("prlimit") is None,
+    reason="Singular 4.4 or prlimit is absent; the quadrics of the slice and their primes need both",
+)
 def test_singular_regenerates_the_meeting_forms_from_the_quadrics_of_the_slice() -> None:
     for orbit in strata.ORBITS:
         found = strata.meeting(orbit)

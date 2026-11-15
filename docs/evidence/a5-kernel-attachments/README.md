@@ -1081,7 +1081,8 @@ the polytope of the monomials and matches its faces with the strata above
   image of the triangle. The forms of the other basepoint vanish on no column.
 - Over `Q` the toric ideal of the monomials has 25 quadrics, dimension 5 and multiplicity 11, and its local
   multiplicity is 4 at the vertex `z l`, 2 at a point of the edge and 1 at a point of the triangle, the tangent-cone
-  multiplicities above. Each comes from a standard basis in a local ordering of the affine chart. The vertex `a^3`
+  multiplicities above. Each is the multiplicity of the tangent cone of the affine chart, computed in a global ordering by the deformation
+  to the normal cone. The vertex `a^3`
   is a smooth point, and the 11 monomials without `z l` give multiplicity 7.
 
 The polytope, the strata and the meeting forms held as constants run in the pull-request lane; the Singular stages
