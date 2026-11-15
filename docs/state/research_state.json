@@ -3432,6 +3432,13 @@
       "question": "Admit the successor acquisition pair's one-job sim:belenos rehearsal (b1-j1) of the diagnostic request and read its duration and billing."
     },
     {
+      "id": "qd-bdsc-diagnostic-acquisition-pair-sim-belenos-b1-j2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2",
+      "family": "bdsc_diagnostic",
+      "question": "Does the 24-iteration b1-j2 request of the successor tree finish inside sim:belenos's 300 s job limit, and what does a job that reaches the limit return?"
+    },
+    {
       "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-00",

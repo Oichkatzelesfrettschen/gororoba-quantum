@@ -200,3 +200,25 @@ a full four-job rehearsal at the per-job limit, so one job was the right size fo
 that a job at the limit reports 300. Falsifier: a second run of the same `b1-j1` request reporting a duration well below
 300. The one-job rehearsal answers the admission and billing questions;
 the 176.16 s figure is the QPU's estimate and the simulator's value replaces it as the rehearsal ceiling.
+
+## Measured second rehearsal job (2026-11-15)
+
+The owner approved the second job of block 1 after the local review round. `results/quandela/runs/2026-11-15T180000Z-sim_belenos-bdsc_diagnostic-b1-j2`
+(job fa2da727, `b1-j2`, tree `bdsc_diagnostic_billing_rule_sim_belenos`, plan with the token idle) ended `canceled` with
+`failure_code` "Max duration reached (300.0 seconds)", `duration` 305, progress 0.9587 ("Computing phases to apply (step 2)") and
+920000 of 960000 samples; `--admit-only` refuses it ("the job did not complete"). The usage report moved by one job and 1.0
+credit (free credits 23 to 24, jobs 25 to 26). Collection exited 0 and kept the partial counts (`partial` true).
+
+The second job of the same shape separates the two readings of the first job's 300 s: the simulator needs more than 300 s
+for a 24-iteration request of this shape, and the first job finished at the limit's margin. `hypothesis:` the request's
+cost is the simulator's per-iteration cost (about 12.7 s of the 305 s for 23 iterations) and the margin of b1-j1 was luck of
+load; the falsifier is a job of this shape completing again well inside 300 s. Consequence: a four-job rehearsal of this
+tree is not a 300 s-bounded procedure, stages B and C were not submitted, and a shape that fits (fewer iterations per job)
+is a change of the preregistered request that needs the full review course before its approval.
+
+The merge of the current-case-source check into `qd_platform.load_case` changed the digest of `scripts/qd_platform.py`, which
+the tree binds, so the tree was rebuilt under a new name from a new QRNG draw:
+`results/quandela/cases/bdsc_diagnostic_billing_rule_sim_belenos_v2` (draw `docs/evidence/anu_qrng/draw-2026-11-15T190401Z.json`,
+`bdsc_diagnostic_acquisition_case.py --check` matches a fresh build, and the plan of its `b1-j2` request reads the merged
+digests). The earlier tree and the two retained runs keep their bytes and their old digests, so a later `collect` or plan of
+those directories refuses with `reviewed source changed: scripts/qd_platform.py`, the property `successor_sources` has.
