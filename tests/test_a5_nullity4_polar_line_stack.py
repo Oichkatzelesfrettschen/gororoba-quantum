@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import os
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -15,6 +14,7 @@ HERE = ROOT / "docs" / "evidence" / "a5-kernel-bundles-residuals"
 sys.path.insert(0, str(HERE))
 
 import nullity4_polar_line_module as module  # noqa: E402
+import nullity4_quartic_discriminant as disc  # noqa: E402
 import sympy as sp  # noqa: E402
 
 SCRIPT = HERE / "nullity4_polar_line_stack.sing"
@@ -81,21 +81,28 @@ def test_stack_script_changes_with_a_flipped_sign() -> None:
         raise AssertionError("a flipped sign of p_1 leaves the replayed stack unchanged")
 
 
+def replay(singular: str) -> list[str]:
+    """The non-empty output lines of the script under a checked Singular run (exit 0, empty stderr, marker)."""
+    lines = disc.run_checked(singular, SCRIPT, None, 600)
+    return [line.strip() for line in lines if line.strip()]
+
+
+def test_a_failed_singular_process_with_the_expected_output_is_refused(tmp_path: Path) -> None:
+    path = tmp_path / "Singular"
+    path.write_text(
+        "#!/bin/sh\n" + "".join(f"echo '{line}'\n" for line in EXPECTED) + "echo 'fatal: planted' >&2\nexit 7\n"
+    )
+    path.chmod(0o755)
+    with pytest.raises(RuntimeError):
+        replay(str(path))
+
+
 @pytest.mark.audit
 def test_singular_replay_gives_the_unit_ideals() -> None:
-    singular = os.environ.get("SINGULAR") or shutil.which("Singular")
-    if singular is None:
+    if os.environ.get("SINGULAR") is None and shutil.which("Singular") is None:
         if os.environ.get("GOROROBA_SINGULAR_REQUIRED") == "1":
             raise AssertionError("GOROROBA_SINGULAR_REQUIRED=1 and Singular 4.4 is absent")
         pytest.skip("Singular 4.4 is absent; set SINGULAR to its path")
-    result = subprocess.run(
-        [singular, "-q", "--no-rc", str(SCRIPT)],
-        stdin=subprocess.DEVNULL,
-        capture_output=True,
-        text=True,
-        timeout=600,
-        check=False,
-    )
-    lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    lines = replay(disc._singular())
     if lines != EXPECTED:
         raise AssertionError(lines)

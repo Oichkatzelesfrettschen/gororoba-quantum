@@ -120,7 +120,7 @@
  },
  "inputs": {
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py": "df6ed616b0271038742386360e48b722335fefa04261625077779488897619ec",
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py": "b1cb15640959724cc15dc5807069f1d2d7c144454ad599512090673008a24747",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant_certificates.sing": "b743a52abd14fc71eb14d7d98104ed22650f5fb50a5a286c1ada53b14f2309a0",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant_fiber.sing": "bd2435307ad4bdd7e5f5f1dae4ebafdfac34c7c2620ee622c0c83e63597b7e72"
  },

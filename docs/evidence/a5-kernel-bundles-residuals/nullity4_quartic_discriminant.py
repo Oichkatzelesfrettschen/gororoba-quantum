@@ -63,6 +63,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -94,6 +95,8 @@ SOURCE_PATHS = (
 )
 FIELD = "Q: sympy identities, Singular unit ideals and Singular fibers over the prime components of rational points"
 SINGULAR_TIMEOUT = 600
+# The Singular release the records were computed with (ci/AGENTS.md, gates that require singular).
+SINGULAR_VERSION = "4.4.1"
 ENVIRONMENT_NAMES = ("PATH", "HOME", "SINGULARPATH", "LD_LIBRARY_PATH")
 
 LAM, A, B, W, V = sp.symbols("lambda a b w v")
@@ -308,30 +311,54 @@ def fiber_jobs() -> list[tuple[str, str]]:
     return jobs
 
 
+def singular_version(path: str) -> str:
+    """The version number in the first line of `path --version`, read with stdin closed (Singular reads stdin)."""
+    done = subprocess.run(
+        [path, "--version"], stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=60, check=False
+    )
+    banner = done.stdout.splitlines()[0] if done.stdout else ""
+    match = re.search(r"version (\d+\.\d+\.\d+)", banner)
+    _require(done.returncode == 0 and match is not None, f"{path} --version gives no version: {banner!r}")
+    return match.group(1) if match is not None else ""
+
+
 def _singular() -> str:
     path = os.environ.get("SINGULAR") or shutil.which("Singular")
     if path is None:
         raise SystemExit("not run: Singular 4.4 is missing (package singular); set SINGULAR to its path")
+    found = singular_version(path)
+    _require(found == SINGULAR_VERSION, f"{path} is Singular {found}; the records need {SINGULAR_VERSION}")
     return path
 
 
-def _run_singular(script: Path, extra: dict[str, str]) -> list[str]:
-    """The output lines of a script run with stdin closed; the terminal marker, not the exit status, ends a run."""
-    environment = {name: os.environ[name] for name in ENVIRONMENT_NAMES if name in os.environ}
-    environment.update({"MALLOC_ARENA_MAX": "2", "LC_ALL": "C", **extra})
+def run_checked(path: str, script: Path, environment: dict[str, str] | None, timeout: int) -> list[str]:
+    """The output lines of a script run with stdin closed and no init file.
+
+    Singular's SIGTERM handler exits 0, so the terminal marker decides that a run finished; exit status 0 and an
+    empty stderr decide that it did not fail. A line beginning with "?" is a Singular error message.
+    """
     done = subprocess.run(
-        [_singular(), "-q", str(script)],
+        [path, "-q", "--no-rc", str(script)],
         stdin=subprocess.DEVNULL,
         capture_output=True,
         text=True,
         env=environment,
-        timeout=SINGULAR_TIMEOUT,
+        timeout=timeout,
         check=False,
     )
+    _require(done.returncode == 0, f"{script.name}: Singular exits with status {done.returncode}")
+    _require(done.stderr.strip() == "", f"{script.name}: Singular writes to stderr: {done.stderr.strip()[:200]!r}")
     lines = done.stdout.splitlines()
     _require(not any(line.lstrip().startswith("?") for line in lines), f"{script.name} reports an error")
     _require(any(line.startswith("MARKER DONE") for line in lines), f"{script.name} ends without its marker")
     return lines
+
+
+def _run_singular(script: Path, extra: dict[str, str]) -> list[str]:
+    """The output lines of a script under Singular 4.4.1 (run_checked)."""
+    environment = {name: os.environ[name] for name in ENVIRONMENT_NAMES if name in os.environ}
+    environment.update({"MALLOC_ARENA_MAX": "2", "LC_ALL": "C", **extra})
+    return run_checked(_singular(), script, environment, SINGULAR_TIMEOUT)
 
 
 def certificate_facts() -> dict[str, dict[str, bool]]:

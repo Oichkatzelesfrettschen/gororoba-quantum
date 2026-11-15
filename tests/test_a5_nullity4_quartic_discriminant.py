@@ -156,6 +156,8 @@ def _lines(*extra: str) -> list[str]:
 
 def test_singular_output_without_a_marker_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
     class Done:
+        returncode = 0
+        stderr = ""
         stdout = "CERT a 1\n"
 
     monkeypatch.setattr(disc, "_singular", lambda: "Singular")
@@ -166,12 +168,49 @@ def test_singular_output_without_a_marker_is_refused(monkeypatch: pytest.MonkeyP
 
 def test_singular_error_line_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
     class Done:
+        returncode = 0
+        stderr = ""
         stdout = "   ? wrong type declaration\nMARKER DONE certificates\n"
 
     monkeypatch.setattr(disc, "_singular", lambda: "Singular")
     monkeypatch.setattr(disc.subprocess, "run", lambda *args, **kwargs: Done())
     with pytest.raises(RuntimeError):
         disc._run_singular(disc.CERTIFICATE_SCRIPT, {})
+
+
+def planted_singular(directory: Path, version: str, status: int, stderr: str, stdout: str) -> str:
+    """An executable that answers --version with the banner of `version` and any script with the given streams."""
+    path = directory / "Singular"
+    path.write_text(
+        "#!/bin/sh\n"
+        'if [ "$1" = "--version" ]; then\n'
+        f'  echo "Singular for x86_64-Linux version {version} (44105, 64 bit)"\n'
+        "  exit 0\n"
+        "fi\n"
+        f"printf '%s\\n' '{stdout}'\n" + (f"echo '{stderr}' >&2\n" if stderr else "") + f"exit {status}\n"
+    )
+    path.chmod(0o755)
+    return str(path)
+
+
+@pytest.mark.parametrize(("status", "stderr"), [(7, "fatal: planted failure"), (7, ""), (0, "fatal: planted failure")])
+def test_a_failed_singular_process_is_refused(tmp_path: Path, status: int, stderr: str) -> None:
+    fake = planted_singular(tmp_path, disc.SINGULAR_VERSION, status, stderr, "MARKER DONE planted")
+    with pytest.raises(RuntimeError):
+        disc.run_checked(fake, disc.CERTIFICATE_SCRIPT, None, 60)
+
+
+def test_a_clean_singular_process_is_accepted(tmp_path: Path) -> None:
+    fake = planted_singular(tmp_path, disc.SINGULAR_VERSION, 0, "", "MARKER DONE planted")
+    _same(disc.run_checked(fake, disc.CERTIFICATE_SCRIPT, None, 60), ["MARKER DONE planted"])
+
+
+def test_another_singular_release_is_refused(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("SINGULAR", planted_singular(tmp_path, "4.3.2", 0, "", "MARKER DONE planted"))
+    with pytest.raises(RuntimeError):
+        disc._singular()
+    monkeypatch.setenv("SINGULAR", planted_singular(tmp_path, disc.SINGULAR_VERSION, 0, "", "MARKER DONE planted"))
+    _same(disc._singular(), str(tmp_path / "Singular"))
 
 
 def test_certificate_parser_reads_flags_and_refuses_duplicates(monkeypatch: pytest.MonkeyPatch) -> None:
