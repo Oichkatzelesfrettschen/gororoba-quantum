@@ -1,0 +1,495 @@
+{
+ "check": "e8-header-relation-ideal-orders",
+ "families": {
+  "scroll": [
+   1,
+   1,
+   1,
+   1,
+   2,
+   [
+    "k",
+    0
+   ],
+   "rs"
+  ],
+  "top": [
+   2,
+   1,
+   1,
+   1,
+   5,
+   [
+    "near",
+    -1,
+    2
+   ],
+   "pq"
+  ],
+  "embedded": [
+   1,
+   2,
+   2,
+   2,
+   7,
+   [
+    "near",
+    -1,
+    1
+   ],
+   "rs"
+  ]
+ },
+ "rows": [
+  {
+   "target": "e8nm-p32009",
+   "family": "embedded",
+   "mode": "structure",
+   "nu": 4,
+   "P2NONVAN": 10,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 0,
+   "EMIN": 2,
+   "annihilator": [
+    4,
+    2
+   ],
+   "nilpotent_count": 5,
+   "radical_is_P1_meet_P2": true,
+   "primary": [
+    [
+     5,
+     11,
+     11,
+     1,
+     0,
+     0
+    ],
+    [
+     4,
+     4,
+     4,
+     0,
+     1,
+     0
+    ],
+    [
+     4,
+     2,
+     4,
+     0,
+     0,
+     1
+    ]
+   ],
+   "nilpotent": [
+    {
+     "form": "y(14)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(12)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(7)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(6)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(4)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    }
+   ]
+  },
+  {
+   "target": "e8nm-p32029",
+   "family": "embedded",
+   "mode": "structure",
+   "nu": 4,
+   "P2NONVAN": 10,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 0,
+   "EMIN": 2,
+   "annihilator": [
+    4,
+    2
+   ],
+   "nilpotent_count": 5,
+   "radical_is_P1_meet_P2": true,
+   "primary": [
+    [
+     5,
+     11,
+     11,
+     1,
+     0,
+     0
+    ],
+    [
+     4,
+     4,
+     4,
+     0,
+     1,
+     0
+    ],
+    [
+     4,
+     2,
+     4,
+     0,
+     0,
+     1
+    ]
+   ],
+   "nilpotent": [
+    {
+     "form": "y(14)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(12)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(7)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(6)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(4)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    }
+   ]
+  },
+  {
+   "target": "e8np-p32009",
+   "family": "embedded",
+   "mode": "structure",
+   "nu": 4,
+   "P2NONVAN": 10,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 0,
+   "EMIN": 2,
+   "annihilator": [
+    4,
+    2
+   ],
+   "nilpotent_count": 5,
+   "radical_is_P1_meet_P2": true,
+   "primary": [
+    [
+     5,
+     11,
+     11,
+     1,
+     0,
+     0
+    ],
+    [
+     4,
+     4,
+     4,
+     0,
+     1,
+     0
+    ],
+    [
+     4,
+     2,
+     4,
+     0,
+     0,
+     1
+    ]
+   ],
+   "nilpotent": [
+    {
+     "form": "y(14)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(12)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(7)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(6)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(4)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    }
+   ]
+  },
+  {
+   "target": "e8np-p32029",
+   "family": "embedded",
+   "mode": "structure",
+   "nu": 4,
+   "P2NONVAN": 10,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 0,
+   "EMIN": 2,
+   "annihilator": [
+    4,
+    2
+   ],
+   "nilpotent_count": 5,
+   "radical_is_P1_meet_P2": true,
+   "primary": [
+    [
+     5,
+     11,
+     11,
+     1,
+     0,
+     0
+    ],
+    [
+     4,
+     4,
+     4,
+     0,
+     1,
+     0
+    ],
+    [
+     4,
+     2,
+     4,
+     0,
+     0,
+     1
+    ]
+   ],
+   "nilpotent": [
+    {
+     "form": "y(14)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(12)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(7)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(6)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    },
+    {
+     "form": "y(4)",
+     "vanishes_on_limit": true,
+     "next_coefficient_nonzero": true
+    }
+   ]
+  },
+  {
+   "target": "e8nm-p32009",
+   "family": "scroll",
+   "mode": "plain",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8nm-p32009",
+   "family": "top",
+   "mode": "plain",
+   "nu": 5,
+   "P2NONVAN": 15,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 5,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8nm-p32029",
+   "family": "scroll",
+   "mode": "plain",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8nm-p32029",
+   "family": "top",
+   "mode": "plain",
+   "nu": 5,
+   "P2NONVAN": 15,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 5,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8np-p32009",
+   "family": "scroll",
+   "mode": "plain",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8np-p32009",
+   "family": "top",
+   "mode": "plain",
+   "nu": 5,
+   "P2NONVAN": 15,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 5,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8np-p32029",
+   "family": "scroll",
+   "mode": "plain",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8np-p32029",
+   "family": "top",
+   "mode": "plain",
+   "nu": 5,
+   "P2NONVAN": 15,
+   "P1NONVAN": 0,
+   "K2NONVAN": 0,
+   "RANK5": 5,
+   "x0_zero": true,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8nm-p32009",
+   "family": "scroll",
+   "mode": "control",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 5,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8nm-p32029",
+   "family": "scroll",
+   "mode": "control",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 5,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8np-p32009",
+   "family": "scroll",
+   "mode": "control",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 5,
+   "primary": [],
+   "nilpotent": []
+  },
+  {
+   "target": "e8np-p32029",
+   "family": "scroll",
+   "mode": "control",
+   "nu": 2,
+   "P2NONVAN": 0,
+   "P1NONVAN": 24,
+   "K2NONVAN": 0,
+   "RANK5": 4,
+   "x0_zero": true,
+   "ANONVAN": 5,
+   "primary": [],
+   "nilpotent": []
+  }
+ ],
+ "problems": [],
+ "pass": true
+}

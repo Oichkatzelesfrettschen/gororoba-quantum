@@ -11,11 +11,13 @@ not Cohen-Macaulay, or a nonreduced ring that is. This program decides both prop
   linear form of R is a nilpotent outside K2.
 - Reduced, for a Cohen-Macaulay ring A = k[y]/K2 of dimension a and degree e: the forms l_1, ..., l_a of the
   Cohen-Macaulay test are a regular sequence, so A_1 = A/(l_1, ..., l_{a-1}) is Cohen-Macaulay of dimension 1 and
-  every point of Proj A_1 lies in the chart l_a = 1. When the chart ring A_1/(l_a - 1) has length e and equals its
-  radical, Proj A_1 is e reduced points; A_1 has no embedded prime (depth 1), so A_1 is reduced, and a graded ring
-  A with a homogeneous nonzerodivisor x of positive degree and A/xA reduced is reduced (a homogeneous nilpotent of
-  least degree would be x times a nilpotent of smaller degree). A nonreduced chart decides nothing for a special
-  choice of forms, and the row then reports no verdict.
+  every point of Proj A_1 lies in the chart l_a = 1. The chart ring k[y]/Z = A_1/(l_a - 1) is reduced of length e
+  when multiplication by one of four fixed linear forms u on it has a squarefree characteristic polynomial of degree
+  e (the e eigenvalues over the closure are distinct; e is below p). Then Proj A_1 is e reduced points, A_1 has no
+  embedded prime (depth 1), so A_1 is reduced, and a graded ring A with a homogeneous nonzerodivisor x of positive
+  degree and A/xA reduced is reduced (a homogeneous nilpotent of least degree would be x times a nilpotent of
+  smaller degree). A chart with no squarefree characteristic polynomial decides nothing for a special choice of
+  forms, and the row then reports no verdict.
 - Defect structure: the `x-colon`, `e8-colon` and `vb-components` rows of `structure/quadric_and_germ_probes.py`
   on the new files, judged by that module's own `check` with its job lists replaced by these rows.
 
@@ -41,6 +43,7 @@ sys.path.insert(0, str(A5))
 sys.path.insert(0, str(A5 / "structure"))
 sys.path.insert(0, str(A5.parents[2] / "gororoba_quantum"))
 
+import flint  # noqa: E402
 import k2_cm  # noqa: E402
 import quadric_and_germ_probes as qp  # noqa: E402
 
@@ -77,8 +80,14 @@ for(i=1;i<=a;i++){{g=0; c=1;
   for(j=1;j<=nvars(r);j++){{c=(c*(i+2)) mod {p}; g=g+((c+17*j*i) mod {p})*var(j);}}
   Lf[i]=g;}}
 ideal L1; for(i=1;i<a;i++){{ L1[i]=Lf[i]; }}
-ideal Z=std(K+L1+ideal(Lf[a]-1));
-"RESULT chart",dim(Z),vdim(Z),vdim(std(radical(Z))),e;
+option(redSB); ideal Z=std(K+L1+ideal(Lf[a]-1));
+"RESULT chart",dim(Z),vdim(Z),e;
+ideal B=kbase(Z); int eb=size(B); poly pv=1; for(i=1;i<=nvars(r);i++){{ pv=pv*var(i); }}
+int base; poly u; matrix M; string row;
+for(base=7;base<=10;base++){{ u=0; c=1;
+  for(j=1;j<=nvars(r);j++){{ c=(c*base) mod {p}; u=u+((c+31*j) mod {p})*var(j); }}
+  M=coeffs(reduce(u*B,Z),B,pv);
+  for(i=1;i<=eb;i++){{ row=""; for(j=1;j<=eb;j++){{ row=row+string(M[i,j])+","; }} "RESULT mrow",base,i,row; }} }}
 {nil}
 quit;
 """
@@ -99,9 +108,28 @@ def reducedness(item: tuple[str, int, int, Path, bool]) -> dict[str, Any]:
     fiber, p, n, path, nilpotent = item
     source = REDUCED_SING.format(p=p, n=n, rel=path, nil=NIL if nilpotent else "")
     rec: dict[str, Any] = {"fiber": fiber}
+    rows: dict[int, dict[int, list[int]]] = {}
     for f in qp.singular(source):
-        rec[f[0]] = [int(x) for x in f[1:]]
+        if f[0] == "mrow":
+            rows.setdefault(int(f[1]), {})[int(f[2])] = [int(x) % p for x in "".join(f[3:]).split(",") if x != ""]
+        else:
+            rec[f[0]] = [int(x) for x in f[1:]]
+    rec["squarefree_charpoly_bases"] = [base for base, m in sorted(rows.items()) if squarefree_charpoly(m, p)]
+    rec["bases_tried"] = sorted(rows)
     return rec
+
+
+def squarefree_charpoly(rows: dict[int, list[int]], p: int) -> bool:
+    """Whether the characteristic polynomial of the multiplication matrix is squarefree over F_p.
+
+    A squarefree characteristic polynomial of degree e = dim A gives e distinct eigenvalues of multiplication by u
+    over the algebraic closure, so A is a product of e copies of the closure and is reduced; its degree is below p,
+    so a zero derivative cannot hide a repeated factor.
+    """
+    e = len(rows)
+    matrix = flint.nmod_mat([rows[i] for i in range(1, e + 1)], p)
+    charpoly = matrix.charpoly()
+    return charpoly.degree() == e and charpoly.gcd(charpoly.derivative()).degree() == 0
 
 
 def cm(item: tuple[str, int, int, Path]) -> dict[str, Any]:
@@ -121,8 +149,8 @@ def run(job: tuple[str, Any]) -> dict[str, Any]:
 
 
 def verdict(cm_row: dict[str, Any], red: dict[str, Any]) -> dict[str, Any]:
-    dim0, length, radical_length, degree = red["chart"]
-    chart_reduced = dim0 == 0 and length == degree and radical_length == length
+    dim0, length, degree = red["chart"]
+    chart_reduced = dim0 == 0 and length == degree and bool(red["squarefree_charpoly_bases"])
     out: dict[str, Any] = {"chart_reduced": chart_reduced}
     if "nilpotent" in red:
         count, square, outside = red["nilpotent"]

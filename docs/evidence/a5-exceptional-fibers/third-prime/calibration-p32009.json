@@ -1,0 +1,234 @@
+{
+ "check": "a5-548-calibration",
+ "prime": 32009,
+ "cells": [
+  {
+   "check": "k2-cohen-macaulay",
+   "fiber": "X- -> N-",
+   "prime": 32009,
+   "relations": "working/distribute/out/a5-xm-d4/xm_p1/d2/relations-upto-d2.rel",
+   "h_vector": [
+    1,
+    11,
+    3
+   ],
+   "krull_dim": 4,
+   "degree": 12,
+   "length": 15,
+   "cohen_macaulay": false,
+   "relations_sha256": "596c48a75c5101f4aeca9da7cd89888f5270abf628aa6f1567160f778e583245",
+   "reducedness": {
+    "fiber": "X- -> N-",
+    "chart": [
+     0,
+     12,
+     12
+    ],
+    "nilpotent": [
+     3,
+     1,
+     1
+    ],
+    "squarefree_charpoly_bases": [
+     7,
+     8,
+     9,
+     10
+    ],
+    "bases_tried": [
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "chart_reduced": true,
+   "nilpotent_linear_forms": 3,
+   "nilpotent_certificate": true,
+   "reduced": false,
+   "hypothesis_holds": true
+  },
+  {
+   "check": "k2-cohen-macaulay",
+   "fiber": "E8-bar -> VB",
+   "prime": 32009,
+   "relations": "working/runs/e8vb_a2/k2.rel",
+   "h_vector": [
+    1,
+    6
+   ],
+   "krull_dim": 4,
+   "degree": 7,
+   "length": 7,
+   "cohen_macaulay": true,
+   "components": [
+    {
+     "projdim": 3,
+     "degree": 3,
+     "span": 5
+    },
+    {
+     "projdim": 3,
+     "degree": 4,
+     "span": 6
+    }
+   ],
+   "join": {
+    "spans_meet_projdim": 2,
+    "components_meet_projdim": 2,
+    "meet_equals_span_meet": true,
+    "K2_is_intersection": true
+   },
+   "relations_sha256": "977af3c02824113271dc94ae36d5c2c862af6d36a46bf5da23f476a30b39d0ed",
+   "reducedness": {
+    "fiber": "E8-bar -> VB",
+    "chart": [
+     0,
+     7,
+     7
+    ],
+    "squarefree_charpoly_bases": [
+     7,
+     8,
+     9,
+     10
+    ],
+    "bases_tried": [
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "chart_reduced": true,
+   "reduced": true,
+   "hypothesis_holds": true
+  },
+  {
+   "check": "k2-cohen-macaulay",
+   "fiber": "Iso",
+   "prime": 32009,
+   "relations": "working/distribute/out/a5-iso-d4/iso_p1/d2/relations-upto-d2.rel",
+   "h_vector": [
+    1,
+    12,
+    10
+   ],
+   "krull_dim": 5,
+   "degree": 23,
+   "length": 23,
+   "cohen_macaulay": true,
+   "relations_sha256": "e5d2792f13332ffaabaaba7970f239b64bcf88325f5691e693555ade60cf0bfc",
+   "reducedness": {
+    "fiber": "Iso",
+    "chart": [
+     0,
+     23,
+     23
+    ],
+    "squarefree_charpoly_bases": [
+     7,
+     8,
+     9,
+     10
+    ],
+    "bases_tried": [
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "chart_reduced": true,
+   "reduced": true,
+   "hypothesis_holds": true
+  },
+  {
+   "check": "k2-cohen-macaulay",
+   "fiber": "E8-bar -> N-",
+   "prime": 32009,
+   "relations": "working/distribute/out/a5-e8-d2/e8nm_p1/d2/relations-upto-d2.rel",
+   "h_vector": [
+    1,
+    16,
+    3
+   ],
+   "krull_dim": 5,
+   "degree": 11,
+   "length": 20,
+   "cohen_macaulay": false,
+   "relations_sha256": "e047f996ad609a40ca9d65a64cb7f28755cbaeea3013a9ada7ff71e76e708de6",
+   "reducedness": {
+    "fiber": "E8-bar -> N-",
+    "chart": [
+     0,
+     11,
+     11
+    ],
+    "nilpotent": [
+     5,
+     1,
+     1
+    ],
+    "squarefree_charpoly_bases": [
+     7,
+     8,
+     9,
+     10
+    ],
+    "bases_tried": [
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "chart_reduced": true,
+   "nilpotent_linear_forms": 5,
+   "nilpotent_certificate": true,
+   "reduced": false,
+   "hypothesis_holds": true
+  },
+  {
+   "check": "k2-cohen-macaulay",
+   "fiber": "W8 -> N-",
+   "prime": 32009,
+   "relations": "working/runs/w8_a2/w8_k2.rel",
+   "h_vector": [
+    1,
+    18,
+    27,
+    4
+   ],
+   "krull_dim": 6,
+   "degree": 50,
+   "length": 50,
+   "cohen_macaulay": true,
+   "relations_sha256": "31feaac8cace8050dfbd42ead4cdc3fb669382d0253f687429d2f1583f2e8df2",
+   "reducedness": {
+    "fiber": "W8 -> N-",
+    "chart": [
+     0,
+     50,
+     50
+    ],
+    "squarefree_charpoly_bases": [
+     7,
+     8,
+     9,
+     10
+    ],
+    "bases_tried": [
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "chart_reduced": true,
+   "reduced": true,
+   "hypothesis_holds": true
+  }
+ ],
+ "problems": []
+}
