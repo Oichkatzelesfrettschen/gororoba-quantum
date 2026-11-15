@@ -56,4 +56,6 @@ matrix Jac[21][5]; for (j=1;j<=21;j++) { Jac[j,1]=diff(F[1,j],W); Jac[j,2]=diff(
 int cc; matrix Jv[21][5];
 for (j=1;j<=21;j++) { for (cc=1;cc<=5;cc++) { Jv[j,cc]=subst(subst(subst(subst(subst(Jac[j,cc],W,3),R,5),S,7),Z,11),E,2); } }
 "RANK5", rank(Jv);
+ideal JX=f(J); for (jj=1;jj<=ncols(JX);jj++) { JX[jj]=reduce(JX[jj],rel); }
+"JNONVAN", size(simplify(JX,2));
 quit;

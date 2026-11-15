@@ -56,18 +56,23 @@ matrix Jac[21][5]; for (j=1;j<=21;j++) { Jac[j,1]=diff(F[1,j],W); Jac[j,2]=diff(
 int cc; matrix Jv[21][5];
 for (j=1;j<=21;j++) { for (cc=1;cc<=5;cc++) { Jv[j,cc]=subst(subst(subst(subst(subst(Jac[j,cc],W,3),R,5),S,7),Z,11),E,2); } }
 "RANK5", rank(Jv);
+ideal JX=f(J); for (jj=1;jj<=ncols(JX);jj++) { JX[jj]=reduce(JX[jj],rel); }
+"JNONVAN", size(simplify(JX,2));
 LIB "primdec.lib";
 setring Y;
 ideal sK=std(K2); ideal Rd=std(radical(sK)); ideal N=simplify(jet(Rd,1),2);
 ideal A=std(quotient(sK,Rd)); ideal sP1=std(P1); ideal sP2=std(P2);
 proc same(ideal X, ideal Y0){ return(size(reduce(X,std(Y0)))==0 && size(reduce(Y0,std(X)))==0); }
 "ANNIHILATOR", dim(A), mult(A), size(N), same(Rd, intersect(P1,P2));
+"NUMK", hilb(sK,1); "NUMR", hilb(Rd,1); "NUMA", hilb(A,1);
 list PD=primdecGTZ(K2); int pk; ideal pp; ideal pq;
-for (pk=1;pk<=size(PD);pk++) { pq=std(PD[pk][1]); pp=std(PD[pk][2]);
+ideal Icap=1;
+for (pk=1;pk<=size(PD);pk++) { pq=std(PD[pk][1]); pp=std(PD[pk][2]); Icap=intersect(Icap,PD[pk][1]);
   "PRIMARY", dim(pp), mult(pp), mult(pq), same(pp,sP1), same(pp,sP2), same(pp,A); }
+"DECOMPOSITION", same(Icap,sK);
 int nN=size(N); list NS; int qq; for (qq=1;qq<=nN;qq++) { NS[qq]=string(N[qq]); }
 setring Q;
-ideal AF=g1(A); for (jj=1;jj<=size(AF);jj++) { AF[jj]=reduce(AF[jj],rel); } "ANONVAN", size(AF);
+ideal AF=g1(A); for (jj=1;jj<=ncols(AF);jj++) { AF[jj]=reduce(AF[jj],rel); } "ANONVAN", size(AF);
 matrix Fn[1][21]; for (j=1;j<=21;j++) { Fn[1,j]=Cf[nu+2,j]; }
 map gn=Y,Fn[1,1],Fn[1,2],Fn[1,3],Fn[1,4],Fn[1,5],Fn[1,6],Fn[1,7],Fn[1,8],Fn[1,9],Fn[1,10],Fn[1,11],Fn[1,12],Fn[1,13],Fn[1,14],Fn[1,15],Fn[1,16],Fn[1,17],Fn[1,18],Fn[1,19],Fn[1,20],Fn[1,21];
 ideal NL=g1(N); ideal NN=gn(N);

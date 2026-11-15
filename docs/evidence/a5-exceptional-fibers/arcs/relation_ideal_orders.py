@@ -32,7 +32,12 @@ of L / K2 and the class of l are dependent over S / A with both coefficients non
 c l in L; then v(c(G)) > deg(c) nu, so c vanishes on V of the embedded family and lies in A. Hence L = K2, given K2
 inside L (the degree-2 receipts).
 
-A control runs the embedded test on the scroll family, whose limits must leave A.
+Every run also evaluates the 16 generators of J on its arc modulo s^(n+1) (`JNONVAN`, zero; every loop over an
+ideal runs to `ncols`, since Singular's `size` counts only the nonzero generators), and the embedded run
+checks that the primary components intersect to K2 and that the first Hilbert numerators satisfy
+N_K2 - N_R = N_A - (1 - t)^21 with the numerators of A5-547 (rank one of R / K2 over S / A). Two controls run on the
+scroll family: the embedded prime A must leave a residue on its limits, and the arc with t9 + s^2 must leave a residue
+in J.
 
 Usage, from the repository root: "$PYTHON" docs/evidence/a5-exceptional-fibers/arcs/relation_ideal_orders.py OUT.json
 """
@@ -47,9 +52,11 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent / "structure"))
 sys.path.insert(0, str(HERE.parents[3] / "gororoba_quantum"))
 
 import gen_family as gf  # noqa: E402
+import quadric_and_germ_probes as qp  # noqa: E402
 from arc_targets import TARGETS, load_primes  # noqa: E402
 
 import parallel  # noqa: E402
@@ -68,12 +75,15 @@ ideal sK=std(K2); ideal Rd=std(radical(sK)); ideal N=simplify(jet(Rd,1),2);
 ideal A=std(quotient(sK,Rd)); ideal sP1=std(P1); ideal sP2=std(P2);
 proc same(ideal X, ideal Y0){ return(size(reduce(X,std(Y0)))==0 && size(reduce(Y0,std(X)))==0); }
 "ANNIHILATOR", dim(A), mult(A), size(N), same(Rd, intersect(P1,P2));
+"NUMK", hilb(sK,1); "NUMR", hilb(Rd,1); "NUMA", hilb(A,1);
 list PD=primdecGTZ(K2); int pk; ideal pp; ideal pq;
-for (pk=1;pk<=size(PD);pk++) { pq=std(PD[pk][1]); pp=std(PD[pk][2]);
+ideal Icap=1;
+for (pk=1;pk<=size(PD);pk++) { pq=std(PD[pk][1]); pp=std(PD[pk][2]); Icap=intersect(Icap,PD[pk][1]);
   "PRIMARY", dim(pp), mult(pp), mult(pq), same(pp,sP1), same(pp,sP2), same(pp,A); }
+"DECOMPOSITION", same(Icap,sK);
 int nN=size(N); list NS; int qq; for (qq=1;qq<=nN;qq++) { NS[qq]=string(N[qq]); }
 setring Q;
-ideal AF=g1(A); for (jj=1;jj<=size(AF);jj++) { AF[jj]=reduce(AF[jj],rel); } "ANONVAN", size(AF);
+ideal AF=g1(A); for (jj=1;jj<=ncols(AF);jj++) { AF[jj]=reduce(AF[jj],rel); } "ANONVAN", size(AF);
 matrix Fn[1][21]; for (j=1;j<=21;j++) { Fn[1,j]=Cf[nu+2,j]; }
 map gn=Y,"""
     + ",".join(f"Fn[1,{i}]" for i in range(1, NGEN + 1))
@@ -87,11 +97,16 @@ for (jj=1;jj<=9;jj++) { TT=TL[jj];
 quit;
 """
 )
+JCHECK = """ideal JX=f(J); for (jj=1;jj<=ncols(JX);jj++) { JX[jj]=reduce(JX[jj],rel); }
+"JNONVAN", size(simplify(JX,2));
+"""
 CONTROL = """LIB "primdec.lib";
 setring Y;
 ideal A=std(quotient(std(K2),std(radical(std(K2)))));
 setring Q;
-ideal AF=g1(A); for (jj=1;jj<=size(AF);jj++) { AF[jj]=reduce(AF[jj],rel); } "ANONVAN", size(AF);
+ideal AF=g1(A); for (jj=1;jj<=ncols(AF);jj++) { AF[jj]=reduce(AF[jj],rel); } "ANONVAN", size(AF);
+poly T9c=T9+s^2; map fc=r,T1,T2,T3,T4,T5,T6,T7,T8,T9c;
+ideal JC=fc(J); for (jj=1;jj<=ncols(JC);jj++) { JC[jj]=reduce(JC[jj],rel); } "JCORRUPT", size(JC);
 quit;
 """
 
@@ -100,12 +115,12 @@ def script(target_name: str, family: str, tail: str) -> str:
     target = TARGETS[target_name]
     p1, p2, k2 = load_primes(target)
     text = gf.make_script(target, FAMILIES[family], p1, p2, k2)
-    return text[: text.rindex("quit;")] + tail if tail else text
+    return text[: text.rindex("quit;")] + tail
 
 
 def run(job: tuple[str, str, str]) -> dict[str, Any]:
     target_name, family, mode = job
-    tail = {"structure": STRUCTURE, "control": CONTROL, "plain": ""}[mode]
+    tail = JCHECK + {"structure": STRUCTURE, "control": CONTROL, "plain": "quit;\n"}[mode]
     out = HERE / "relation-ideal-orders" / target_name
     out.mkdir(parents=True, exist_ok=True)
     path = out / f"{family}-{mode}.sing"
@@ -116,7 +131,7 @@ def run(job: tuple[str, str, str]) -> dict[str, Any]:
         raise RuntimeError(f"{target_name} {family} {mode}: Singular error")
     row: dict[str, Any] = {"target": target_name, "family": family, "mode": mode, **(gf.parse(text) or {})}
     row.pop("nonzero", None)
-    for key in ("ANONVAN", "EMIN"):
+    for key in ("ANONVAN", "EMIN", "JNONVAN", "JCORRUPT"):
         m = re.search(key + r" (\d+)", text)
         if m:
             row[key] = int(m.group(1))
@@ -125,6 +140,13 @@ def run(job: tuple[str, str, str]) -> dict[str, Any]:
         row["annihilator"] = [int(m.group(i)) for i in (1, 2)]
         row["nilpotent_count"] = int(m.group(3))
         row["radical_is_P1_meet_P2"] = m.group(4) == "1"
+    for key, field in (("NUMK", "numK"), ("NUMR", "numR"), ("NUMA", "numA")):
+        m = re.search(key + r" ([-0-9,]+)", text)
+        if m:
+            row[field] = [int(x) for x in m.group(1).split(",")][:-1]
+    m = re.search(r"DECOMPOSITION (\d)", text)
+    if m:
+        row["decomposition_complete"] = m.group(1) == "1"
     row["primary"] = [[int(x) for x in g] for g in re.findall(r"PRIMARY (\d+) (\d+) (\d+) (\d) (\d) (\d)", text)]
     row["nilpotent"] = [
         {"form": f, "vanishes_on_limit": a == "1", "next_coefficient_nonzero": b == "1"}
@@ -158,6 +180,19 @@ def problems(rows: list[dict[str, Any]]) -> list[str]:
             bad.append(f"{t} embedded: a nilpotent form without order nu + 1 < nu + e_min")
         if not ctl.get("ANONVAN"):
             bad.append(f"{t} control: A vanishes on the scroll limits, so the test does not separate")
+        if not ctl.get("JCORRUPT"):
+            bad.append(f"{t} control: the arc with t9 + s^2 still satisfies J, so the J test does not separate")
+        for row in (scroll, top, emb, ctl):
+            if row.get("JNONVAN") != 0:
+                bad.append(f"{t} {row['family']} {row['mode']}: J leaves a residue on the arc")
+        if not emb.get("decomposition_complete"):
+            bad.append(f"{t} embedded: the primary components do not intersect to K2")
+        if (
+            emb.get("numK") != qp.NUM_K_E8
+            or emb.get("numA") != qp.NUM_A_E8
+            or not qp.numerator_identity(emb, "numR", NGEN)
+        ):
+            bad.append(f"{t} embedded: N_K2 - N_R differs from N_A - (1 - t)^21 or a numerator from A5-547")
     return bad
 
 
