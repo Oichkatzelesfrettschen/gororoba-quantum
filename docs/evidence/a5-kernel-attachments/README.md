@@ -517,9 +517,9 @@ exhausted (`A5-042`, `A5-048`, `A5-070`, `A5-071`, `A5-328`).
 | --- | ---: | --- | --- | --- |
 | `X+->N-`, `X-->N+` | 3 | 2, 1: the plane `P^2`, `K2 = 0` | every degree at 32009 and 32029 (`A5-001`) | decided: `Q(i)[y1, y2, y3]` (`A5-270`) |
 | `X+->N+`, `X-->N-` | 15 | 3, 12: one threefold; the scheme has nilpotents `y1`, `y5`, `y6` | every degree (`A5-304`) | decided: 69 quadrics over `Q(i)` reducing to `K2` (`A5-305`) |
-| `Iso->N+`, `Iso->N-` | 17 | 4, 23: one geometrically prime fourfold, Cohen-Macaulay | every degree (`A5-007`, `A5-067`) | open: dimension at least 5 and the 68 quadrics (`A5-293`, `A5-294`) |
-| `W8->N+`, `W8->N-` | 24 | 5, 50: two fivefolds of degrees 20 and 30, Cohen-Macaulay | every degree (`A5-008`, `A5-066`) | open: dimension at least 6 (`A5-293`) |
-| `E8bar->N+`, `E8bar->N-` | 21 | 4, 11: a fourfold of degree 11 and a threefold of degree 4 | degrees 1 to 7 (`A5-009`, `A5-335`, `A5-339`) | open: lower bounds on `h_d` for `d` at most 7 (`A5-346`) |
+| `Iso->N+`, `Iso->N-` | 17 | 4, 23: one geometrically prime fourfold, Cohen-Macaulay | every degree (`A5-007`, `A5-067`) | header slice open: dimension at least 5 and the 68 quadrics (`A5-293`, `A5-294`); weight slice decided: `Q(i)[y]/K` (`A5-446`, `A5-475`) |
+| `W8->N+`, `W8->N-` | 24 | 5, 50: two fivefolds of degrees 20 and 30, Cohen-Macaulay | every degree (`A5-008`, `A5-066`) | header slice open: dimension at least 6 (`A5-293`); weight slice decided: `Q(i)[y]/K` (`A5-448`, `A5-475`) |
+| `E8bar->N+`, `E8bar->N-` | 21 | 4, 11: a fourfold of degree 11 and a threefold of degree 4 | degrees 1 to 7 (`A5-009`, `A5-335`, `A5-339`) | header slice open: lower bounds on `h_d` for `d` at most 7 (`A5-346`); weight slice decided: `Q(i)[y]/K` in every degree (`A5-457`, `A5-507`) |
 | `E8bar->VB` | 10 | 3, 7: threefolds of degrees 3 and 4, Cohen-Macaulay | every degree (`A5-005`) | open: the 21 quadrics at 32029 (`A5-315`) |
 
 The record binds, for each row, the Hilbert and Cohen-Macaulay rows of `k2-hilbert.jsonl` and `k2-cm.jsonl` and the
@@ -584,8 +584,10 @@ the quadric ideal for `W8` and `E8bar` (`A5-421`) with its radicality (`A5-447`)
 conditional on `A5-421` and the slice premise of `A5-423`, the complex point set of the `E8bar` fiber, the union of
 both components of its quadric scheme after a complex-linear change of generators
 ([arc record](../a5-char0-transfer/README.md#both-components-of-the-e8-bar-quadric-scheme-lie-in-the-fiber-over-qi-ledger-a5-425),
-`A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open is the
-scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-449` shows is not reduced.
+`A5-425`). Every incidence of `A5-418` is thereby decided as a set of points under those conditions; open on the
+header slices is the scheme structure of the `E8bar` fiber above degree 7 (`A5-009`), which `A5-449` shows is not
+reduced. On the weight slice the three fiber cones are `S / K` as schemes without the slice premise (`A5-457`,
+`A5-475`), and `A5-507` describes the `E8bar` fiber.
 
 Evidence: [`nullity8-fiber-import-result.json`](nullity8-fiber-import-result.json),
 [`nullity16-rees-fibers-result.json`](nullity16-rees-fibers-result.json), the header receipts under
@@ -849,7 +851,7 @@ For `W8` and `E8bar` the quadric ideal has the Hilbert numerator of the modular 
 same). Two controls run in the record: a permuted weight vector leaves 59 Pfaffians inhomogeneous, and without the
 component step `X+->N-` returns 12 generators in place of 3.
 
-**Inferred (`A5-446`, conditional on `A5-293`, `A5-421`, `A5-450` and the slice premise of `A5-423`):** the fiber cone of `Iso->N+` and of `Iso->N-` over
+**Inferred (`A5-446`; proved on the weight slice by `A5-475` with `A5-474`, which removes the conditions `A5-293`, `A5-450` and the slice premise of `A5-423` that this paragraph's arc argument needs):** the fiber cone of `Iso->N+` and of `Iso->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 68 quadrics. `K` is prime of dimension 5 and degree 23 over `Q(i)`
 by the computation above and lies in the relation ideal `L`, whose quotient has dimension at least 5 at both
 basepoints (`A5-293`); a proper quotient of the domain `Q(i)[y]/K` has dimension below 5, so `L = K`. The
@@ -857,7 +859,7 @@ arcs live on the header slice and the quadrics on the weight slice, and the isom
 over C alone (`A5-423`), so the comparison runs over C: `K` is absolutely prime (`A5-450`), and the same argument
 holds there.
 
-**Inferred (`A5-448`, conditional on `A5-421`, `A5-447`, `A5-450` and the slice premise of `A5-423`):** the fiber cone of `W8->N+` and of `W8->N-` over
+**Inferred (`A5-448`; proved on the weight slice by `A5-475` with `A5-474`, which removes the conditions `A5-450` and the slice premise of `A5-423` that this paragraph's arc argument needs):** the fiber cone of `W8->N+` and of `W8->N-` over
 `Q(i)` is `Q(i)[y]/K` with `K` the ideal of the 144 quadrics. Two arc families over `Q(i)`
 ([`w8_component_arcs_qi.py`](../a5-char0-transfer/w8_component_arcs_qi.py),
 [record](../a5-char0-transfer/w8-component-arcs-qi.json)) each have a 6-dimensional set of limits in `V(L)`, which
@@ -914,7 +916,7 @@ nilpotent modulo `K`, hence modulo the relation ideal `L`, and none lies in `L`,
 three primary components: the two minimal primes and one embedded component of dimension 4 and degree 4 over a
 prime of degree 2. **Inferred:** the five forms are nilpotent and nonzero in the fiber cone, since `K` lies in `L`
 and `L` holds no linear form; whether their products with the other generators vanish in the fiber cone as they
-do modulo `K` is the open scheme statement above degree 7.
+do modulo `K` was the open scheme statement above degree 7; `A5-457` settles it on the weight slice (`L = K`).
 
 **Computed (`A5-454`):** the same producer records the annihilator `A = K : R` of the nilradical module `R / K`
 (`R` the radical of `K`) and the first Hilbert numerators of `S/K`, `S/R` and `S/A`. `A` is prime: `minAssGTZ`
@@ -928,7 +930,7 @@ ring of a quadric threefold.
 **Inferred (`A5-455`, conditional on `A5-425`, with `K` inside `L` by `A5-474`):** the relation ideal `L` lies between `K` and `R`,
 and it equals `K` at both minimal primes, where `K` is already prime. `L / K` is then a submodule of the rank-1
 torsion-free module `R / K`, so it is zero or of rank 1, and `L = K` in every degree exactly when the nilradical
-`R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything open about the `E8bar` fiber cone
+`R / L` of the fiber cone is nonzero at the generic point of `V(A)`. Everything that was open about the `E8bar` fiber cone
 above degree 7 (`A5-009`) is that one condition. A sufficient test needs no standard basis of the Rees ideal: a
 family of arcs in the slice germ whose limit points are dense in `V(A)` and along which one of the five nilpotent
 linear forms has order strictly between `nu` and `nu + e` (`nu` the order of the generators, `e` the order of the
@@ -999,6 +1001,54 @@ relation with both coefficients nonzero in `S / A`, which gives such a `c` outsi
 fiber cone on the weight slice is `S / K` in every degree, with dimension 5, multiplicity 11 and the nilradical
 of `A5-454`. The statement on the header slices in characteristic `p` (`A5-009`) stays with its own row, since the
 passage between the slices rests on the premise of `A5-423`.
+
+**Computed (`A5-501` to `A5-504`):** [`e8_component_geometry.py`](e8_component_geometry.py) computes over `Q(i)`
+at both basepoints how the three associated primes of the `E8bar` quadric ideal sit together
+([record](e8-component-geometry-result.json)). The embedded prime `A` contains the minimal prime of degree 11 and
+not the one of degree 4; its quadric has rank 4 in five variables, so `V(A)` is the cone over a quadric threefold
+with one singular point. The two minimal primes add up to 18 linear forms: the two components meet in a linear space
+of dimension 3, which lies on `V(A)` and is also where the degree-4 component meets `V(A)`. The degree-4 prime is 14
+linear forms and six quadrics with Betti table `1; 6, 8, 3` and a singular locus equal to the origin. The degree-11
+prime is nine linear forms and 25 quadrics in 12 variables with second Hilbert numerator `1 + 7t + 3t^2` and a
+resolution of length 7, the codimension. Its singular locus is a plane and a line through the origin, with Jacobian
+rank 6 and 4 against 7 at a smooth point; both lie in the linear space where the components meet and in `V(A)`, and
+the line is the vertex of `V(A)`. **Inferred:** the degree-4 component is the cone over the smooth scroll
+`S(1,1,2)`, the only smooth threefold of minimal degree in `P^6` that is a scroll with three positive degrees of sum
+4 (the header-slice description in
+[`arcs/README.md`](../a5-exceptional-fibers/arcs/README.md) reaches the same scroll in its own coordinates). The
+degree-11 component is Cohen-Macaulay of type 3 (Auslander-Buchsbaum), not Gorenstein, and normal (Serre's
+criterion, singular locus of codimension 3).
+
+**Inferred (`A5-507`):** with `L = K` (`A5-457`) the exceptional fiber of `E8bar` on the weight slice is one
+explicit scheme in `P^20`: a normal Cohen-Macaulay fourfold of degree 11 in a `P^11` and a smooth scroll
+`S(1,1,2)` in a `P^6` that meet in a plane; a nilradical of square zero, torsion free of rank 1, on a quadric
+threefold of rank 4 that lies in the fourfold and contains the plane; and the fourfold singular exactly along a
+line of that plane and at the singular point of the quadric.
+
+**Computed (`A5-508`, `A5-509`, `A5-511`):** the same producer records three further facts. The six quadrics of
+the scroll prime are the `2 x 2` minors of the matrix with rows `(y19, y16, y15, y14)` and `(y18, y15, y10, y9)`,
+and on the meeting of the two components the second row is `-i` times the first (`i` at `N+`), so the meeting is a
+ruling plane of the scroll. The partial derivatives of the 25 quadrics of the degree-11 prime have no common zero
+but the origin, so that component is not a cone. Its tangent cone, computed in a global ordering by the deformation
+to the normal cone, has multiplicity 4 at the isolated singular point, 2 at a point of the singular line and 1 at a
+point of the meeting plane.
+
+**Refuted (`A5-510`) and restated (`A5-512`, open):** the five-parameter map of `A5-457` is dominant onto the
+degree-11 component and is not birational as an affine map: its 21 initial forms are weighted homogeneous of degree 5
+for the weights `(1, 1, 2, 1, 2)`, so the fifth roots of unity act on every fiber and a general fiber holds at least
+five points. The open hypothesis is that the induced map from the weighted projective space `P(1, 1, 2, 1, 2)` is
+birational, which would make the component rational; in scratch runs the fiber over two points is one orbit of five
+reduced points at both basepoints.
+
+**Method (`A5-505`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
+decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
+dense minors ran out of a 20 GB address space on the same ideal.
+
+**Hypothesis (`A5-506`, open):** scratch runs modulo 32009 at three values of the slice coordinate `s2` find 32
+minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the `2 x 2`
+minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in `y`-degree 2.
+No tracked record holds them. The test that would falsify the block route is the count of `y`-degree-2 generators
+that survive modulo the slice coordinates, which must be the 148 quadrics.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-446`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
