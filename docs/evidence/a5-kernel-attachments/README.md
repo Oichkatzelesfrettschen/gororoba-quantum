@@ -1069,7 +1069,8 @@ dense minors ran out of a 20 GB address space on the same ideal.
 **Refuted (`A5-506`), restated (`A5-542`, open):** scratch runs modulo 32009 at three values of the slice coordinate
 `s2` find 32 minimal generators of `y`-degree 1 of the `E8bar` Rees ideal at `N-` beyond the germ products and the
 `2 x 2` minors, in 11 bidegrees of the two slice weights, and bidegree blocks of at most 33,899 monomials in
-`y`-degree 2. The row is refuted as stated, since at `s2 = 0` the same script finds 86 generators in 24 blocks and
+`y`-degree 2. The row is refuted as stated modulo 32009, the field of all of these runs, since at `s2 = 0` the
+same script finds 86 generators in 24 blocks and
 generators with `tw` up to 11. No fixed `s2` reaches the 148 quadrics: `s2` lies in the maximal ideal, and the fibers
 at `s2 = 0` and `s2 = 7013` have dimension 61 and 34 in `y`-degree 2 against 83. The surviving statement is for
 generic `s2`: over the function field in `s2`, or at a value that a nonzero minor certifies as outside the
