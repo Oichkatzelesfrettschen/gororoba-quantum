@@ -6322,6 +6322,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_one_cz_null_bracketed_pricing.py --check docs/evidence/qi-bracketed-pricing/cells.jsonl > /dev/null",
+      "name": "core-pathion-one-cz-null-bracketed-pricing-cells",
+      "seconds": 36.2,
+      "replays": [
+        "docs/evidence/qi-bracketed-pricing/cells.jsonl"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --check results/quantum_inspire/cases && \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --self-test",
       "name": "core-pathion-null-rotation-scan-case-replay",
       "seconds": 1900.0,

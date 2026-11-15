@@ -14,9 +14,16 @@ Drift models: `contrast` adds the drift to the twin contrast of each batch (the 
 leaves the twin contrast free of it, as a drift common to the two twins of a batch. Batch gates: `fixed` keeps the
 BATCH_CHI2 of 1 degree of freedom, `dof` takes the alpha = 0.001 quantile at the replicates' degrees of freedom.
 
+`--check CELLS` regenerates every row of a retained cells file from the value of the draw its `seed_source` names and
+compares layout and counts exactly; it exits 1 on any difference. The draw of the retained cells is owned whole by
+the bracketed case's `prediction.json` (the seed ledger takes no row for it): the nine cells take values 911 to 919
+in index order, and the case's operating-characteristic tables take 920 to 922.
+
 Usage: "$PYTHON" scripts/qi_pathion_one_cz_null_bracketed_pricing.py
        --seed qrng:docs/evidence/anu_qrng/draw-<UTC>.json#I --base-replicates 4 --twin-replicates 4
        --shot-factor 0.5 --draws 20000 [--reference]
+       "$PYTHON" scripts/qi_pathion_one_cz_null_bracketed_pricing.py
+       --check docs/evidence/qi-bracketed-pricing/cells.jsonl
 """
 
 from __future__ import annotations
@@ -143,14 +150,11 @@ def one_series(
         rows = build_rows(item, mean, se_base, n_twin, model == "contrast")
         replicates_base, replicates_twin = len(rows["b0"]["base"]), len(rows["b0"]["twin"])
         for mode in GATE_MODES:
-            if replicates_base > 1:
-                label, tripped = decide(
-                    rows,
-                    gate_threshold(replicates_base - 1, mode),
-                    gate_threshold(replicates_twin - 1, mode),
-                )
-            else:
-                label, tripped = decide(rows, 1e300, 1e300)
+            # A kind with one replicate has no heterogeneity to test, so its threshold is infinite; the other kind keeps
+            # its own degrees of freedom.
+            base_threshold = gate_threshold(replicates_base - 1, mode) if replicates_base > 1 else 1e300
+            twin_threshold = gate_threshold(replicates_twin - 1, mode) if replicates_twin > 1 else 1e300
+            label, tripped = decide(rows, base_threshold, twin_threshold)
             out[f"{model}/{mode}"] = (label, tuple(tripped))
         if reference:
             out[f"{model}/ref"] = (str(rule.decide_estimates(rows, oc.B0_LIKE_Z)["label"]), ())
@@ -246,15 +250,40 @@ def result_line(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
+def replay(cells: Path) -> list[str]:
+    """The rows of a retained cells file whose regenerated layout or counts differ from the stored ones."""
+    problems = []
+    for number, line in enumerate(cells.read_text(encoding="utf-8").splitlines(), 1):
+        cell = json.loads(line)
+        seed = qrng_seeds.resolve(cell["seed_source"]["sources"][0])[0]
+        reference = "contrast/ref" in cell["counts"][WORLD_NAMES[0]]
+        option, counts = simulate(seed, cell["rb"], cell["rt"], cell["f"], cell["draws"], reference)
+        if option != cell["layout"] or counts != cell["counts"]:
+            problems.append(
+                f"row {number} ({cell['rb']}/{cell['rt']} at factor {cell['f']}) differs from its regeneration"
+            )
+    return problems
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Price one replicate and shot option of the bracketed twin layout.")
-    qrng_seeds.add_seed_argument(parser, "--seed", required=True, help="qrng:<draw>#<index> or repro:<integer>")
-    parser.add_argument("--base-replicates", type=int, required=True)
-    parser.add_argument("--twin-replicates", type=int, required=True)
-    parser.add_argument("--shot-factor", type=float, required=True)
+    qrng_seeds.add_seed_argument(parser, "--seed", help="qrng:<draw>#<index> or repro:<integer>")
+    parser.add_argument("--base-replicates", type=int)
+    parser.add_argument("--twin-replicates", type=int)
+    parser.add_argument("--shot-factor", type=float)
     parser.add_argument("--draws", type=int, default=20000)
     parser.add_argument("--reference", action="store_true")
+    parser.add_argument("--check", type=Path, help="regenerate every row of a retained cells file")
     args = parser.parse_args(argv)
+    if args.check is not None:
+        problems = replay(args.check)
+        for problem in problems:
+            print(problem, file=sys.stderr)
+        if not problems:
+            print(f"{args.check}: every row regenerates count for count")
+        return 1 if problems else 0
+    if args.seed is None or args.base_replicates is None or args.twin_replicates is None or args.shot_factor is None:
+        parser.error("--seed, --base-replicates, --twin-replicates and --shot-factor are required without --check")
     if min(args.base_replicates, args.twin_replicates, args.draws) < 1 or args.shot_factor <= 0:
         parser.error("replicates and draws must be positive and the shot factor above zero")
     print(json.dumps(result_line(args), sort_keys=True))

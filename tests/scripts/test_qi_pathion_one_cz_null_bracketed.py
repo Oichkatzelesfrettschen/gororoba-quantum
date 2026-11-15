@@ -838,6 +838,24 @@ def test_a_batch_out_of_its_requested_order_reads_unresolved_order(
     _expect(decision["label_if_order_ignored"] == "zero", f"{label}: {decision['label_if_order_ignored']}")
 
 
+def test_a_missing_start_stamp_is_not_an_intact_order(stub_decision: dict[str, Any]) -> None:
+    stamps = _stamped()
+    batch = f"batch-{TWIN_BATCHES[0]:02d}"
+    gone = f"{batch}/readout-0.cq"
+    del stamps[gone]
+    record = bc.evaluate({}, {}, stamps)
+    gate = record["order_gate"]
+    _expect(gate["intact"] is False, f"a batch without one stamp left the series intact: {gate['intact']}")
+    _expect(gate["batches"][batch]["missing_stamps"] == ["readout-0.cq"], f"{gate['batches'][batch]}")
+    _expect(len(gate["batches"]) == len(list(bc.batch_rows(bc.TUNA_SERIES))), "a batch left the gate")
+    _expect(record["decision"]["label"] == "unresolved_order", f"{record['decision']['label']}")
+    stamps = _stamped()
+    stamps[gone] = None  # type: ignore[assignment]
+    nulled = bc.order_gate(stamps)
+    _expect(nulled is not None and nulled["intact"] is False, "a null stamp left the series intact")
+    _expect(bc.order_gate({}) is None, "an empty mapping read as an intact order")
+
+
 def test_two_jobs_with_one_start_stamp_do_not_order_a_batch(stub_decision: dict[str, Any]) -> None:
     stamps = _stamped()
     batch = f"batch-{TWIN_BATCHES[0]:02d}"

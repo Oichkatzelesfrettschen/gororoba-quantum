@@ -325,25 +325,32 @@ def order_gate(executed: dict[str, str] | None) -> dict[str, Any] | None:
     """Whether every batch ran its circuits in the requested order, read from the provider's per-job start stamps.
 
     `executed` maps "batch/file" to the job's `queued_at`, which in the retained Tuna-17 series follows the previous
-    job's `finished_at` and so orders the executions (measured on batch-06 of the predecessor series). The queue
-    fixes the order requested, not the order executed (the provider's terms allow priority without regard to the
-    queue): 7 of the 19 retained batches of the predecessor series ran out of the requested order.
-    The mirror of the rounds cancels a linear drift only when each batch keeps its requested order, so a batch whose
-    stamps order its circuits otherwise, or tie two of them, is not intact (issue 894). None when no stamps are read.
+    job's `finished_at` by 0.03 to 0.19 s and so orders the executions (measured on the 19 retained batches of the
+    predecessor series; provider behavior, not a documented guarantee). The queue fixes the order requested, not the
+    order executed (the provider's terms allow priority without regard to the queue): 7 of those 19 batches ran out
+    of the requested order. The mirror of the rounds cancels a linear drift only when each batch keeps its requested
+    order, so a batch whose stamps order its circuits otherwise, tie two of them or lack one is not intact, and the
+    series is intact only when every expected batch is (issue 894). None when no stamps are read.
     """
-    if executed is None:
+    if not executed:
         return None
     batches: dict[str, dict[str, Any]] = {}
-    for row in batch_rows(TUNA_SERIES):
+    rows = list(batch_rows(TUNA_SERIES))
+    for row in rows:
         requested = [circuit["file"] for circuit in row["circuits"]]
         found = {name: executed.get(f"{row['batch']}/{name}") for name in requested}
-        if any(stamp is None for stamp in found.values()):
+        missing = [name for name, stamp in found.items() if not stamp]
+        if missing:
+            batches[row["batch"]] = {"requested": requested, "executed": [], "intact": False, "missing_stamps": missing}
             continue
         stamps = {name: str(stamp) for name, stamp in found.items()}
         ran = sorted(requested, key=lambda name: stamps[name])
         tied = len(set(stamps.values())) < len(requested)
         batches[row["batch"]] = {"requested": requested, "executed": ran, "intact": ran == requested and not tied}
-    return {"batches": batches, "intact": all(entry["intact"] for entry in batches.values())}
+    return {
+        "batches": batches,
+        "intact": len(batches) == len(rows) and all(entry["intact"] for entry in batches.values()),
+    }
 
 
 def evaluate(

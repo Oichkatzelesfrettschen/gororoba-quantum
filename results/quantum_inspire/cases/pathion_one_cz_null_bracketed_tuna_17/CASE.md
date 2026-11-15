@@ -45,8 +45,9 @@ queued at a time, and 60 s between runs of those three before queuing the next. 
 three batches of a wave back to back, collects all three, runs the sanity check on each, and the next wave's first batch
 is refused until every job of the account has been finished for 60 s (`pause_seconds` of the policy row; a higher
 `QI_HARDWARE_PAUSE_SECONDS` ladder step raises it); the driver sleeps the refusal's remainder and retries. Each batch is
-refused while three batches of the account are in flight on the backend type. The series pays 11 pauses of 60 s (660 s; the driver adds one second to each, 671 s, measured by `test_a_twelve_wave_series_pays_eleven_pauses_of_the_policy_and_never_queues_a_fourth_batch`)
-between its 12 waves. Submitting a wave's batches in series order requests that order; the service owns the execution
+refused while three batches of the account are in flight on the backend type. The driver enforces eleven intervals of 61 seconds from the last finish of one wave to the next enqueue, 671 seconds in
+total (the policy requires 60 seconds and the retry adds a one-second margin; measured by
+`test_a_twelve_wave_series_pays_eleven_pauses_of_the_policy_and_never_queues_a_fourth_batch`) between its 12 waves. Submitting a wave's batches in series order requests that order; the service owns the execution
 order (its terms allow priority without regard to the queue), so the mirrored layout's cancellation is read from the
 retained `queued_at` times, not assumed. An unfinished job on another hardware backend type refuses the batch, and the
 pause clock is account-wide across every `is_hardware` type, the Ry emulator included
@@ -114,8 +115,9 @@ the tests.
    series' 19 batches (01, 06, 08, 10, 12, 15 and 16) ran out of the requested order, so that series would have read
    `unresolved_order` and a wave of this layout needs the platform to keep its order in every one of 35 batches. The three X-only calibration batches of the predecessor follow (3, 3 and 2
    circuits): 35 batches. b0 is `pathion_coset_coin_tuna_17/batch-02/b0.cq` byte for byte, as in the predecessor. The
-   platform sets the execution order of the jobs of a batch (the retained `created_on` shows reversed twins in some
-   batches), so the estimator uses batch co-membership, not the listed order.
+   platform sets the execution order of the jobs of a batch (the retained `queued_at` stamps show reversed twins in 7 of
+   the 19 predecessor batches while `created_on` follows the requested order in all 19), so `order_gate` requires the
+   platform to execute each batch in its listed order and the decision reads only a series that did.
 7. Shots and time. b0 base batches run at 65,536 shots per circuit, every other base batch and every twin batch at
    16,384, calibration at 16,384 (the predecessor's shots halved except the calibration). Jobs: 120 (16 base x 3, 16 twin
    x 4, 8 calibration); shots 2,555,904, equal to the predecessor's two-replicate layout at twice the shots
@@ -134,7 +136,8 @@ the tests.
   priced by simulation (20,000 series per cell, independent drift 0.003, the matched bound, one value of the draw below
   per cell, values 911 to 919 in index order). `scripts/qi_pathion_one_cz_null_bracketed_pricing.py` computes each
   cell from its value and `docs/evidence/qi-bracketed-pricing/cells.jsonl` retains the nine results, which the script
-  regenerates count for count (issue 903). Power in percent, dropout / superposition-only, independent drift and
+  regenerates count for count (`--check`, gate `core-pathion-one-cz-null-bracketed-pricing-cells`; issue 903). The draw
+  belongs to the case manifest, so the seed ledger holds no row for these values. Power in percent, dropout / superposition-only, independent drift and
   common-pair drift:
 
   | replicates (base / twin) and shots per circuit | batches | waves | jobs | shots | execution s | independent | common |
@@ -145,6 +148,7 @@ the tests.
   | 3 / 3 at 32,768 | 27 | 9 | 92 | 3,768,320 | 2,236 to 2,465 | 69.9 / 80.1 | 80.0 / 89.7 |
   | 2 / 4 at 32,768 | 27 | 9 | 96 | 3,604,480 | 2,160 to 2,378 | 71.1 / 80.2 | 82.9 / 91.1 |
   | 2 / 2 at 65,536 | 19 | 7 | 64 | 4,980,736 | 2,806 to 3,108 | 51.3 / 65.0 | 68.9 / 83.9 |
+  | 2 / 2 at 16,384 | 19 | 7 | 64 | 1,343,488 | 878 to 960 | 73.9 / 58.8 | 80.4 / 62.1 |
   | 3 / 3 at 16,384 | 27 | 9 | 92 | 1,949,696 | 1,273 to 1,391 | 81.6 / 77.3 | 86.7 / 81.9 |
   | 4 / 4 at 16,384 (this case) | 35 | 12 | 120 | 2,555,904 | 1,667 to 1,821 | 82.1 / 85.3 | 86.9 / 90.0 |
 
@@ -280,7 +284,8 @@ single-qubit gate, Rz included, and in under 0.1 percent of runs of any admitted
   largest total variation distance is 1.31 times its sampling floor, the bound 2), no readout shot is misassigned and
   every bracketed twin contrast equals its raw one. The retained counts
   `results/quantum_inspire/pathion_one_cz_null_bracketed_qx_local_counts.json` replay through gate
-  `core-pathion-one-cz-null-bracketed-qx-local-control`; a local qxelarator run says nothing about the hosted emulator
+  `core-pathion-one-cz-null-bracketed-qx-local-control`, which re-reads the retained counts and runs no new qxelarator
+  execution; a local qxelarator run says nothing about the hosted emulator
   (the remote QX run below is the plumbing check) or about Tuna-17.
 - QX remote (type 1): the same series, a written case for the owner's approval (repository rule), 4 batches.
 - Ry (type 5): not built for the decision (predecessor CASE.md, owner decision 2026-11-07: 1,024 shots per job and an

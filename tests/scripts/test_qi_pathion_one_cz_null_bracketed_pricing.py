@@ -28,6 +28,7 @@ TABLE = {
     (3, 3, 1.0): (27, 9, 92, 3_768_320, 2_236, 2_465),
     (2, 4, 1.0): (27, 9, 96, 3_604_480, 2_160, 2_378),
     (2, 2, 2.0): (19, 7, 64, 4_980_736, 2_806, 3_108),
+    (2, 2, 0.5): (19, 7, 64, 1_343_488, 878, 960),
     (3, 3, 0.5): (27, 9, 92, 1_949_696, 1_273, 1_391),
     (4, 4, 0.5): (35, 12, 120, 2_555_904, 1_667, 1_821),
 }
@@ -83,6 +84,52 @@ def test_the_retained_cells_take_values_911_to_919_of_the_draw_once_each_in_inde
         _expect(cell["draws"] == 20000, f"{cell['rb']}/{cell['rt']}: {cell['draws']} draws")
 
 
+def test_the_pricing_indices_never_meet_the_operating_characteristic_indices_of_the_case() -> None:
+    # The draw belongs to the case manifest, so the seed ledger takes no row for 911 to 919; this check keeps them
+    # apart from the case's own values 920 to 922.
+    import qi_pathion_one_cz_null_bracketed_cases as bracketed
+
+    used = [int(c["seed_source"]["sources"][0].rpartition("#")[2]) for c in _cells()]
+    _expect(len(set(used)) == len(used), f"a draw value serves two cells: {used}")
+    _expect(not set(used) & set(bracketed.OC_SEED_INDICES.values()), f"{used} meet {bracketed.OC_SEED_INDICES}")
+    _expect(all(c["seed_source"]["sources"][0].startswith(f"qrng:{bracketed.OC_DRAW}#") for c in _cells()), "draw")
+
+
+def test_a_replicated_kind_keeps_its_own_gate_when_the_other_has_one_replicate(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    seen: list[tuple[float, float]] = []
+    real = pricing.decide
+
+    def recording(rows: Any, base_gate: float, twin_gate: float) -> Any:
+        seen.append((base_gate, twin_gate))
+        return real(rows, base_gate, twin_gate)
+
+    monkeypatch.setattr(pricing, "decide", recording)
+    pricing.simulate(7, 1, 3, 0.5, 2)
+    _expect(bool(seen) and all(base == 1e300 and twin < 1e300 for base, twin in seen), f"gates {seen[:2]}")
+    seen.clear()
+    pricing.simulate(7, 3, 1, 0.5, 2)
+    _expect(bool(seen) and all(base < 1e300 and twin == 1e300 for base, twin in seen), f"gates {seen[:2]}")
+
+
+def test_check_regenerates_every_row_and_names_a_changed_one(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GOROROBA_WORKERS", "1")
+    ref = next(c for c in _cells() if (c["rb"], c["rt"], c["f"]) == (2, 2, 0.5))
+    seed = qrng_seeds.resolve(ref["seed_source"]["sources"][0])[0]
+    layout, counts = pricing.simulate(seed, 2, 2, 0.5, 40)
+    cell = {**ref, "draws": 40, "layout": layout, "counts": counts}
+    good = tmp_path / "cells.jsonl"
+    good.write_text(json.dumps(cell) + "\n", encoding="utf-8")
+    _expect(pricing.replay(good) == [], "a regenerated row was reported as different")
+    counts["coin_dropout"]["contrast/dof"]["b0_like"] = counts["coin_dropout"]["contrast/dof"].get("b0_like", 0) + 1
+    bad = tmp_path / "bad.jsonl"
+    bad.write_text(json.dumps({**cell, "counts": counts}) + "\n", encoding="utf-8")
+    _expect(len(pricing.replay(bad)) == 1, "a changed count was not reported")
+    _expect(pricing.main(["--check", str(bad)]) == 1 and pricing.main(["--check", str(good)]) == 0, "exit codes")
+
+
 @pytest.mark.audit
 def test_a_stored_cell_regenerates_from_its_draw_value() -> None:
     cell = next(c for c in _cells() if (c["rb"], c["rt"], c["f"]) == (2, 2, 0.5))
@@ -99,17 +146,17 @@ POWER = {
     (3, 3, 1.0): ("69.9 / 80.1", "80.0 / 89.7"),
     (2, 4, 1.0): ("71.1 / 80.2", "82.9 / 91.1"),
     (2, 2, 2.0): ("51.3 / 65.0", "68.9 / 83.9"),
+    (2, 2, 0.5): ("73.9 / 58.8", "80.4 / 62.1"),
     (3, 3, 0.5): ("81.6 / 77.3", "86.7 / 81.9"),
     (4, 4, 0.5): ("82.1 / 85.3", "86.9 / 90.0"),
 }
 
 
 def test_the_case_table_is_the_power_of_the_retained_cells() -> None:
+    _expect(set(POWER) == {(c["rb"], c["rt"], c["f"]) for c in _cells()}, "the table and the cells name other options")
     target = {"coin_dropout": "b0_like", "superposition_only": "superposition_only"}
     for cell in _cells():
         option = (cell["rb"], cell["rt"], cell["f"])
-        if option not in POWER:
-            continue
         seen = tuple(
             " / ".join(
                 f"{100 * cell['counts'][w][f'{model}/dof'].get(label, 0) / cell['draws']:.1f}"

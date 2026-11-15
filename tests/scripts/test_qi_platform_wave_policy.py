@@ -664,9 +664,21 @@ def test_a_batch_that_a_rival_enqueues_after_admission_is_not_enqueued(
 def test_the_enqueue_recheck_leaves_the_submitters_own_planned_batch_out(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    # One earlier batch is queued and a rival enqueues a second after the admission: the fresh read holds two rival
+    # batches and the submitter's own planned one, so a recheck that counted its own batch would see three and refuse.
     case(tmp_path, 2, hardware_policy="wave-v1")
-    fake = rival_service(monkeypatch, 2, arrival=[], arrival_jobs=[], queued_after=2)
+    fake = rival_service(monkeypatch, 1, arrival=[batch(300)], arrival_jobs=[job(400, 300, "queued")], queued_after=2)
+    rechecks: list[int] = []
+    real = wave.recheck_before_enqueue
+
+    def spy(client: Any, cases: dict[str, Any], backend_type: dict[str, Any], type_id: int, own_batch: int) -> None:
+        rechecks.append(own_batch)
+        real(client, cases, backend_type, type_id, own_batch)
+
+    monkeypatch.setattr(wave, "recheck_before_enqueue", spy)
     record = wave.submit(tmp_path, 7, "fixture approval")
+    if rechecks != [Rival.OWN_BATCH]:
+        raise AssertionError(f"the fresh recheck ran for batches {rechecks}")
     if fake.patched != [f"/batch_jobs/{Rival.OWN_BATCH}/enqueue"] or record["state"] != "enqueued":
         raise AssertionError(f"patched {fake.patched}, receipt {record['state']}")
 
