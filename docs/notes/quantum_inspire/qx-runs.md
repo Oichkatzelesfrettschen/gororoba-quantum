@@ -114,8 +114,8 @@ A local run needs no account, queue or approval and records nothing.
    `results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00`,
    gate core-771: the same counts, with both controls at "10"), so the
    qxelarator 0.10.0 pin stays the local twin of the remote emulator and
-   0.11.0 (phase-preserving reset) is not; so a QX dry run of a reset circuit checks
-   syntax and plumbing, never its law (knowledge-base.md C22); the upstream
+   0.11.0 (phase-preserving reset) is not. A QX dry run of a reset circuit
+   therefore checks syntax and plumbing, never its law (knowledge-base.md C22); the upstream
    report is https://github.com/QuTech-Delft/qx-simulator/issues/217. No
    box-kite dialect maps `reset` (`box_kite_cases.DIALECTS`), so `emit`
    refuses it for every generated case.
