@@ -18,11 +18,16 @@ Models (every model is a fit of those counts; nothing else is read):
 
 Evidence class: exploratory post-hoc fit of retained shots; no provider job, no random draw, no preregistered
 decision. A parameter that sits on a bound is reported as such (`at_bound`), and degrees of freedom count every
-declared parameter. `--check` replays the fits and requires agreement within TOLERANCE, the reproducibility that the
-optimizer's own stopping tolerance supports across BLAS builds.
+declared parameter. Every model carries its starts, bounds, step scales and difference step, and one rule for the
+expected probability in the Pearson denominator (a floor of CLIP). `--check` replays the headline fits and requires
+agreement within TOLERANCE, the reproducibility that the optimizer's own stopping tolerance supports across BLAS
+builds, and that the stored search found no lower chi-square. `--profile` replays that search: a phase profile with
+refinement for the two q12-phase models, four starts for each five-noise-term model and ten one-dimensional
+retention profiles. The search draws no random number.
 
-Usage: `--write DIR` writes DIR/RECORD; `--check DIR` replays and compares DIR/RECORD; `--self-test` runs the
-simulator and optimizer against exact laws and a planted parameter.
+Usage: `--write DIR` writes DIR/RECORD with the search; `--check DIR` replays the headline fits against DIR/RECORD;
+`--profile DIR` replays the search; `--self-test` runs the simulator and optimizer against exact laws and planted
+parameters.
 """
 
 from __future__ import annotations
@@ -38,7 +43,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from scipy.optimize import least_squares
+from scipy.optimize import least_squares, minimize_scalar
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
@@ -47,7 +52,7 @@ import qi_pathion_null_rotation_scan_noise as ns  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
-SCHEMA = "qi-pathion-null-rotation-scan-phase-refit-v1"
+SCHEMA = "qi-pathion-null-rotation-scan-phase-refit-v2"
 RECORD = "pathion_null_rotation_scan_tuna_17_phase_refit.json"
 RUNS = "results/quantum_inspire/runs"
 RUN_PREFIX = "2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-"
@@ -65,11 +70,27 @@ Observation = dict[str, Any]
 # Loading ------------------------------------------------------------------------------------------------------------
 
 
+def verify_raw_files(directory: Path, listed: list[str]) -> None:
+    """The raw directory of a run holds exactly the files its retained manifest lists, one `FILE.json` per circuit."""
+    expected = sorted(f"{name}.json" for name in listed)
+    raw = directory / "raw"
+    actual = sorted(p.name for p in raw.iterdir()) if raw.is_dir() else []
+    if actual != expected:
+        raise ValueError(f"{directory.name}/raw holds {actual}, the manifest lists {expected}")
+
+
 def run_directories() -> list[Path]:
-    runs = sorted((ROOT / RUNS).glob(f"{RUN_PREFIX}*"))
-    planned = len(rs.batch_rows(rs.TUNA_SERIES))
-    if len(runs) != planned:
-        raise ValueError(f"{len(runs)} retained runs under {RUNS}, the series plan holds {planned}")
+    """The run directories the series plan names, each with the raw files its retained manifest lists."""
+    runs: list[Path] = []
+    for row in rs.batch_rows(rs.TUNA_SERIES):
+        directory = ROOT / RUNS / f"{RUN_PREFIX}{row['batch'][-2:]}"
+        manifest = json.loads((directory / "cases.json").read_text(encoding="utf-8"))
+        listed = [circuit["file"] for circuit in manifest["circuits"]]
+        planned = [circuit["file"] for circuit in row["circuits"]]
+        if sorted(listed) != sorted(planned):
+            raise ValueError(f"{directory.name} lists {sorted(listed)}, the series plan holds {sorted(planned)}")
+        verify_raw_files(directory, listed)
+        runs.append(directory)
     return runs
 
 
@@ -225,7 +246,10 @@ class FitSpec:
     lower: tuple[float, ...]
     upper: tuple[float, ...]
     x_scale: tuple[float, ...]
+    fixed: tuple[tuple[str, float], ...] = ()
 
+
+DIFF_STEP = 1e-3
 
 NOISE_BOUNDS = {"pa": (0.0, 0.3), "pp": (0.0, 0.3), "cd": (0.0, 0.5), "ca": (0.0, 0.3), "cp": (0.0, 0.3)}
 NOISE_START = {"pa": 0.003, "pp": 0.003, "cd": 0.02, "ca": 0.005, "cp": 0.005}
@@ -315,31 +339,41 @@ def summary(
         "n_free": n_free,
         "dof": len(found) * (rs.NOUT - 1) - n_free,
         "histogram_chi2": histogram,
+        "min_expected_probability": min(float(p.min()) for p in predicted),
         "contrast_chi2": total,
         "contrast_chi2_by_kind": dict(sorted(by_kind.items())),
         "values": {k: float(v) for k, v in values.items()},
     }
 
 
-def fit_item(item: tuple[FitSpec, list[Observation]]) -> tuple[str, dict[str, Any]]:
-    spec, found = item
+def optimize(spec: FitSpec, found: list[Observation], start: tuple[float, ...]) -> tuple[Any, dict[str, float]]:
+    """One bounded least-squares fit of the free parameters from `start`; the fixed ones join the values."""
+    fixed = dict(spec.fixed)
 
     def full(x: np.ndarray) -> dict[str, float]:
-        return {k: float(v) for k, v in zip(spec.free, x, strict=True)}
+        return {**fixed, **{k: float(v) for k, v in zip(spec.free, x, strict=True)}}
 
     def residual(x: np.ndarray) -> np.ndarray:
         return pearson(found, predict(found, full(x)))
 
     result = least_squares(
         residual,
-        list(spec.start),
+        list(start),
         bounds=(list(spec.lower), list(spec.upper)),
         x_scale=list(spec.x_scale),
-        diff_step=1e-3,
+        diff_step=DIFF_STEP,
     )
-    values = full(result.x)
+    return result, full(result.x)
+
+
+def fit_item(item: tuple[FitSpec, list[Observation]]) -> tuple[str, dict[str, Any]]:
+    spec, found = item
+    result, values = optimize(spec, found, spec.start)
     record = summary(found, predict(found, values), len(spec.free), float(2 * result.cost), values)
     record["free"] = list(spec.free)
+    record["start"] = dict(zip(spec.free, spec.start, strict=True))
+    record["x_scale"] = dict(zip(spec.free, spec.x_scale, strict=True))
+    record["diff_step"] = DIFF_STEP
     record["bounds"] = {k: [lo, hi] for k, lo, hi in zip(spec.free, spec.lower, spec.upper, strict=True)}
     record["at_bound"] = [
         k
@@ -355,10 +389,22 @@ def exact_item(found: list[Observation]) -> tuple[str, dict[str, Any]]:
     histogram = float(np.sum(pearson(found, predicted) ** 2))
     record = summary(found, predicted, 0, histogram, {})
     record["free"] = []
+    record["start"] = {}
+    record["x_scale"] = {}
+    record["diff_step"] = None
     record["bounds"] = {}
     record["at_bound"] = []
     record["optimizer_status"] = None
     return EXACT, record
+
+
+RETENTION_START = 0.45
+RETENTION_BOUNDS = (0.05, 1.0)
+
+
+def contract(exact: np.ndarray, retention: float) -> np.ndarray:
+    """The exact law contracted toward uniform by one retention."""
+    return retention * exact + (1 - retention) / rs.NOUT
 
 
 def retention_item(found: list[Observation]) -> tuple[str, dict[str, Any]]:
@@ -368,24 +414,21 @@ def retention_item(found: list[Observation]) -> tuple[str, dict[str, Any]]:
 
     def predicted(x: np.ndarray) -> list[np.ndarray]:
         retention = dict(zip(batches, x, strict=True))
-        return [
-            o["matrix"] @ (retention[o["batch"]] * exact[o["arm"]] + (1 - retention[o["batch"]]) / rs.NOUT)
-            for o in found
-        ]
+        return [o["matrix"] @ contract(exact[o["arm"]], retention[o["batch"]]) for o in found]
 
     def residual(x: np.ndarray) -> np.ndarray:
-        return np.concatenate(
-            [
-                (o["counts"] - o["counts"].sum() * p) / np.sqrt(o["counts"].sum() * p)
-                for o, p in zip(found, predicted(x), strict=True)
-            ]
-        )
+        return pearson(found, predicted(x))
 
     count = len(batches)
-    result = least_squares(residual, [0.45] * count, bounds=([0.05] * count, [1.0] * count))
+    result = least_squares(
+        residual, [RETENTION_START] * count, bounds=([RETENTION_BOUNDS[0]] * count, [RETENTION_BOUNDS[1]] * count)
+    )
     record = summary(found, predicted(result.x), count, float(2 * result.cost), {})
     record["free"] = [f"retention_{b}" for b in batches]
-    record["bounds"] = {f"retention_{b}": [0.05, 1.0] for b in batches}
+    record["start"] = {f"retention_{b}": RETENTION_START for b in batches}
+    record["x_scale"] = {f"retention_{b}": 1.0 for b in batches}
+    record["diff_step"] = None
+    record["bounds"] = {f"retention_{b}": list(RETENTION_BOUNDS) for b in batches}
     record["at_bound"] = [
         f"retention_{b}"
         for b, v in zip(batches, result.x, strict=True)
@@ -407,14 +450,159 @@ def fit_all(found: list[Observation]) -> dict[str, dict[str, Any]]:
     return ordered
 
 
+# Deterministic multistart and profile search ------------------------------------------------------------------------
+
+PHASE_POINTS = 17
+RETENTION_POINTS = 96
+NEAR_LOWER = 0.01
+NEAR_ZERO = 1e-4
+SearchItem = tuple[FitSpec, list[Observation], tuple[float, ...]]
+
+
+def clipped(spec: FitSpec, point: list[float] | tuple[float, ...]) -> tuple[float, ...]:
+    return tuple(min(max(v, lo), hi) for v, lo, hi in zip(point, spec.lower, spec.upper, strict=True))
+
+
+def search_item(item: SearchItem) -> tuple[float, list[float]]:
+    """Chi-square and parameters of one fit from one start."""
+    spec, found, start = item
+    result, _ = optimize(spec, found, clipped(spec, start))
+    return float(2 * result.cost), [float(v) for v in result.x]
+
+
+def phase_search(spec: FitSpec, found: list[Observation]) -> dict[str, Any]:
+    """The last free parameter, a phase, is fixed on a grid across its bounds and the others are fitted from a start
+    near their lower bounds, the stored start and the bound midpoints; each local minimum of the profile is then
+    refined with the phase free."""
+    phase, lower, upper = spec.free[-1], spec.lower[-1], spec.upper[-1]
+    grid = [float(v) for v in np.linspace(lower, upper, PHASE_POINTS)]
+    items: list[SearchItem] = []
+    for value in grid:
+        reduced = FitSpec(
+            spec.name,
+            spec.free[:-1],
+            spec.start[:-1],
+            spec.lower[:-1],
+            spec.upper[:-1],
+            spec.x_scale[:-1],
+            ((phase, value),),
+        )
+        near = tuple(lo + NEAR_LOWER * (hi - lo) for lo, hi in zip(reduced.lower, reduced.upper, strict=True))
+        middle = tuple((lo + hi) / 2 for lo, hi in zip(reduced.lower, reduced.upper, strict=True))
+        items += [(reduced, found, start) for start in (near, reduced.start, middle)]
+    results = ordered_map(search_item, items, min_items=2)
+    profile: list[float] = []
+    nuisance: list[list[float]] = []
+    for index in range(PHASE_POINTS):
+        best = min(results[3 * index : 3 * index + 3], key=lambda r: r[0])
+        profile.append(best[0])
+        nuisance.append(best[1])
+    basins = [
+        i
+        for i in range(PHASE_POINTS)
+        if (i == 0 or profile[i] <= profile[i - 1]) and (i == PHASE_POINTS - 1 or profile[i] <= profile[i + 1])
+    ]
+    refined = ordered_map(search_item, [(spec, found, (*nuisance[i], grid[i])) for i in basins], min_items=2)
+    return {
+        "method": f"{phase} fixed on {PHASE_POINTS} grid points across its bounds, the other parameters fitted from "
+        "three starts (near the lower bounds, the stored start, the bound midpoints), then every local minimum of "
+        "the profile refined with the phase free",
+        "starts": len(items) + len(basins),
+        "phase_grid": grid,
+        "profile_histogram_chi2": profile,
+        "refined_phases": [grid[i] for i in basins],
+        "best_histogram_chi2": min([*profile, *(r[0] for r in refined)]),
+    }
+
+
+def noise_search(spec: FitSpec, found: list[Observation], values: dict[str, float]) -> dict[str, Any]:
+    """The fit from the stored start, a start near zero, the bound midpoints and the fitted point."""
+    zero = tuple(NEAR_ZERO for _ in spec.free)
+    middle = tuple((lo + hi) / 2 for lo, hi in zip(spec.lower, spec.upper, strict=True))
+    fitted = tuple(values[k] for k in spec.free)
+    starts = (spec.start, zero, middle, fitted)
+    results = ordered_map(search_item, [(spec, found, start) for start in starts], min_items=2)
+    return {
+        "method": "the fit from the stored start, a start of 1e-4 in every parameter, the bound midpoints and the "
+        "fitted point",
+        "starts": len(starts),
+        "start_histogram_chi2": [r[0] for r in results],
+        "best_histogram_chi2": min(r[0] for r in results),
+    }
+
+
+def retention_profile_item(item: tuple[str, list[Observation], dict[str, np.ndarray]]) -> tuple[str, float, float]:
+    """One batch's chi-square over its retention: a grid across the bounds, then a bounded scalar refinement."""
+    batch, found, exact = item
+
+    def chi2(retention: float) -> float:
+        predicted = [o["matrix"] @ contract(exact[o["arm"]], retention) for o in found]
+        return float(np.sum(pearson(found, predicted) ** 2))
+
+    grid = np.linspace(RETENTION_BOUNDS[0], RETENTION_BOUNDS[1], RETENTION_POINTS)
+    values = [chi2(float(r)) for r in grid]
+    best = int(np.argmin(values))
+    window = (float(grid[max(best - 1, 0)]), float(grid[min(best + 1, RETENTION_POINTS - 1)]))
+    result = minimize_scalar(chi2, bounds=window, method="bounded", options={"xatol": 1e-10})
+    return batch, min(float(result.fun), values[best]), float(result.x)
+
+
+def retention_search(found: list[Observation]) -> dict[str, Any]:
+    """The objective is a sum over batches, so each batch's retention is profiled on its own."""
+    batches = sorted({o["batch"] for o in found})
+    exact = {arm: law(arm, {}) for arm in sorted({o["arm"] for o in found})}
+    items = [(b, [o for o in found if o["batch"] == b], exact) for b in batches]
+    results = ordered_map(retention_profile_item, items, min_items=2)
+    return {
+        "method": f"one-dimensional bounded profile of each batch's retention: {RETENTION_POINTS} grid points across "
+        "the bounds, then a bounded scalar refinement around the lowest",
+        "starts": len(batches),
+        "batch_histogram_chi2": {b: chi2 for b, chi2, _ in results},
+        "best_histogram_chi2": float(sum(chi2 for _, chi2, _ in results)),
+    }
+
+
+def search_all(found: list[Observation], models: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """The search record of every model; `models` supplies the headline values and chi-squares."""
+    searches: dict[str, dict[str, Any]] = {
+        EXACT: {"method": "no free parameter", "starts": 0, "best_histogram_chi2": models[EXACT]["histogram_chi2"]},
+        RETENTION: retention_search(found),
+    }
+    for spec in SPECS:
+        if spec.name.startswith("cz_noise"):
+            searches[spec.name] = phase_search(spec, found)
+        else:
+            searches[spec.name] = noise_search(spec, found, models[spec.name]["values"])
+    for name, record in searches.items():
+        record["best_minus_headline"] = record["best_histogram_chi2"] - models[name]["histogram_chi2"]
+    return {name: searches[name] for name in MODEL_NAMES}
+
+
+def verify_search(models: dict[str, dict[str, Any]]) -> None:
+    """No start of the search reaches a chi-square below the headline by more than the tolerance."""
+    lower = []
+    for name, model in models.items():
+        search = model["search"]
+        headline = model["histogram_chi2"]
+        if search["best_histogram_chi2"] < headline - TOLERANCE * max(1.0, abs(headline)):
+            lower.append(f"{name}: {search['best_histogram_chi2']!r} below the headline {headline!r}")
+    if lower:
+        raise ValueError(f"the search found a lower minimum: {lower}")
+
+
 # Record -------------------------------------------------------------------------------------------------------------
 
 
-def build() -> dict[str, Any]:
+def build(search: bool = True) -> dict[str, Any]:
+    """The record: every model's headline fit and, with `search`, its multistart or profile search."""
     found, runs = observations()
     kinds = sorted({o["kind"] for o in found})
     if len(found) != 30 or kinds != ["all10", "all20", "bridge", "q4-10", "q8-10"]:
         raise ValueError(f"expected 30 scan circuits of five kinds, read {len(found)} of {kinds}")
+    models = fit_all(found)
+    if search:
+        for name, record in search_all(found, models).items():
+            models[name]["search"] = record
     return {
         "schema": SCHEMA,
         "evidence_class": "exploratory post-hoc fit of retained shots; no provider job, no random draw",
@@ -426,8 +614,11 @@ def build() -> dict[str, Any]:
         "statistic": "Pearson chi-square of the 32 logical outcome counts of each circuit against the model law read "
         "through the mean of the two adjacent readout brackets; contrast_chi2 is the 30-circuit selector-contrast "
         "chi-square",
+        "expected_probability_floor": CLIP,
+        "floor_rule": "an expected probability below the floor enters the Pearson denominator as the floor, in every "
+        "model; min_expected_probability is the smallest expected probability of a model at its headline point",
         "tolerance": TOLERANCE,
-        "models": fit_all(found),
+        "models": models,
     }
 
 
@@ -466,12 +657,41 @@ def differences(retained: Any, fresh: Any, path: str = "") -> list[str]:
     return [] if same else [f"{path or '.'}: {retained!r} -> {fresh!r}"]
 
 
+def without_search(record: dict[str, Any]) -> dict[str, Any]:
+    """The record with the search section of every model removed."""
+    stripped = json.loads(json.dumps(record))
+    for model in stripped["models"].values():
+        model.pop("search", None)
+    return stripped
+
+
 def check(directory: Path, fresh: dict[str, Any] | None = None) -> None:
-    """The retained record holds the replayed fits; a difference raises ValueError listing the first of them."""
+    """The retained record holds the replayed headline fits, and its stored search found no lower minimum.
+
+    A difference raises ValueError listing the first of them. The search itself replays under `profile`."""
     retained = json.loads((directory / RECORD).read_text(encoding="utf-8"))
-    found = differences(retained, build() if fresh is None else fresh)
+    if any("search" not in model for model in retained["models"].values()):
+        raise ValueError(f"{directory / RECORD} stores no search section for a model")
+    found = differences(without_search(retained), build(search=False) if fresh is None else fresh)
     if found:
         raise ValueError(f"{directory / RECORD} differs from the replay in {len(found)} places: {found[:10]}")
+    verify_search(retained["models"])
+
+
+def profile(directory: Path, fresh: dict[str, dict[str, Any]] | None = None) -> None:
+    """Replay the multistart and profile search: it equals the stored one and finds no lower minimum."""
+    retained = json.loads((directory / RECORD).read_text(encoding="utf-8"))
+    models = retained["models"]
+    if fresh is None:
+        found, _ = observations()
+        if data_digest(found) != retained["data_sha256"]:
+            raise ValueError(f"the retained counts differ from {directory / RECORD}")
+        fresh = search_all(found, models)
+    stored = {name: model["search"] for name, model in models.items()}
+    problems = differences(stored, fresh)
+    if problems:
+        raise ValueError(f"the stored search differs from its replay in {len(problems)} places: {problems[:10]}")
+    verify_search({name: {**model, "search": fresh[name]} for name, model in models.items()})
 
 
 # Self-test ----------------------------------------------------------------------------------------------------------
@@ -479,6 +699,7 @@ def check(directory: Path, fresh: dict[str, Any] | None = None) -> None:
 PLANTED = {"ca": 0.015, "cp": 0.035, f"z{Z_QUBIT}": -0.1}
 PLANTED_ARMS = (rs.CENTER, "b0-rx-q4-p10", "b0-rx-q8-m10", "b0-rx-all-p20")
 PLANTED_SHOTS = 1_000_000
+PLANTED_RETENTION = 0.6
 
 
 def planted_observations(values: dict[str, float]) -> list[Observation]:
@@ -530,10 +751,32 @@ def self_test() -> str:
     _, miss = fit_item((blind, found))
     if miss["histogram_chi2"] < 100.0 * max(fit["histogram_chi2"], 1.0):
         raise AssertionError(f"a model without the planted q12 phase fits it: {miss['histogram_chi2']}")
+    exact = {arm: law(arm, {}) for arm in PLANTED_ARMS}
+    retained = [
+        {
+            "batch": "planted",
+            "kind": "planted",
+            "arm": arm,
+            "counts": PLANTED_SHOTS * contract(exact[arm], PLANTED_RETENTION),
+            "matrix": np.eye(rs.NOUT),
+        }
+        for arm in PLANTED_ARMS
+    ]
+    _, retention_chi2, retention = retention_profile_item(("planted", retained, exact))
+    if abs(retention - PLANTED_RETENTION) > 1e-6 or retention_chi2 > 1e-3:
+        raise AssertionError(f"planted retention {PLANTED_RETENTION} profiled as {retention} at {retention_chi2}")
+    lower = {"m": {"histogram_chi2": 100.0, "search": {"best_histogram_chi2": 99.0}}}
+    try:
+        verify_search(lower)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("a search that finds a lower minimum passes verify_search")
+    verify_search({"m": {"histogram_chi2": 100.0, "search": {"best_histogram_chi2": 100.0 - 1e-6}}})
     return (
         f"qi_pathion_null_rotation_scan_phase_refit self-test: OK (noisy_law gap {gap:.1e}; planted q12 phase "
         f"{fit['values'][f'z{Z_QUBIT}']:+.5f} recovered, chi-square {fit['histogram_chi2']:.2e}, "
-        f"{miss['histogram_chi2']:.0f} without it)"
+        f"{miss['histogram_chi2']:.0f} without it; planted retention {retention:.6f} profiled)"
     )
 
 
@@ -542,17 +785,21 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", type=Path, metavar="DIR")
     mode.add_argument("--check", type=Path, metavar="DIR")
+    mode.add_argument("--profile", type=Path, metavar="DIR")
     mode.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.write is not None:
         print(f"wrote {write(args.write)}")
-    elif args.check is not None:
+    elif args.check is not None or args.profile is not None:
         try:
-            check(args.check)
+            if args.check is not None:
+                check(args.check)
+            else:
+                profile(args.profile)
         except ValueError as error:
             print(error, file=sys.stderr)
             return 1
-        print(f"{args.check / RECORD} matches the replay")
+        print(f"{(args.check or args.profile) / RECORD} matches the replay")
     else:
         print(self_test())
     return 0
