@@ -116,7 +116,7 @@ IDENTITIES = (
     "normal_form_on_V_G_off_V_Q",
     "rank_of_M_at_the_normal_form_is_12",
     "polar_line_in_the_kernel_with_dim_C_3",
-    "rank_8_on_the_polar_line",
+    "rank_8_at_five_polar_vectors",
 )
 POINT_FACTS = {"Q": 10, "G": 0, "mu": "5*I", "cone": 0}
 EXACT_FACTS = {"rank_M_z0": 12, "stack_rank": 12, "dim_C": 3, "polar_line_ranks": [8, 8, 8, 8, 8]}

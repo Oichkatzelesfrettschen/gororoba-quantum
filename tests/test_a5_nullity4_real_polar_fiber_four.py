@@ -106,26 +106,26 @@ def test_interval_evaluation_agrees_with_a_double_precision_evaluation() -> None
     _same(bool(abs(np.linalg.det(reference[1:])) < 1e-9 * scale**2), True)
 
 
-def test_jacobian_columns_match_central_differences() -> None:
-    # The block-exponential derivative of each free column agrees with a central difference of f at the midpoint.
+@pytest.mark.parametrize("column", range(len(fiber.SLICE_FREE)))
+def test_jacobian_column_matches_central_differences(column: int) -> None:
+    # The block-exponential derivative of a free column agrees with a central difference of f at the midpoint.
     step = 1 << (fiber.MIDPOINT_BITS - 30)
-    for column, _ in enumerate(fiber.SLICE_FREE):
-        t, dt = fiber.evaluation((0, fiber.MIDPOINT, fiber.SLICE_FREE[column]))
-        _, jacobian = fiber._equations(fiber._de_matrix(t), [fiber._de_matrix(dt)])
-        plus = list(fiber.MIDPOINT)
-        minus = list(fiber.MIDPOINT)
-        plus[column] += step
-        minus[column] -= step
-        tp, _ = fiber.evaluation((0, tuple(plus), fiber.SLICE_FREE[column]))
-        tm, _ = fiber.evaluation((0, tuple(minus), fiber.SLICE_FREE[column]))
-        fp, _ = fiber._equations(fiber._de_matrix(tp), [])
-        fm, _ = fiber._equations(fiber._de_matrix(tm), [])
-        width = 2.0 * step / (1 << fiber.MIDPOINT_BITS)
-        for row in range(6):
-            numeric = float((fp[row] - fm[row]).mid()) / width
-            analytic = float(jacobian[row][0].mid())
-            if abs(numeric - analytic) > 1e-5 * max(1.0, abs(analytic)):
-                raise AssertionError((column, row, numeric, analytic))
+    t, dt = fiber.evaluation((0, fiber.MIDPOINT, fiber.SLICE_FREE[column]))
+    _, jacobian = fiber._equations(fiber._de_matrix(t), [fiber._de_matrix(dt)])
+    plus = list(fiber.MIDPOINT)
+    minus = list(fiber.MIDPOINT)
+    plus[column] += step
+    minus[column] -= step
+    tp, _ = fiber.evaluation((0, tuple(plus), fiber.SLICE_FREE[column]))
+    tm, _ = fiber.evaluation((0, tuple(minus), fiber.SLICE_FREE[column]))
+    fp, _ = fiber._equations(fiber._de_matrix(tp), [])
+    fm, _ = fiber._equations(fiber._de_matrix(tm), [])
+    width = 2.0 * step / (1 << fiber.MIDPOINT_BITS)
+    for row in range(6):
+        numeric = float((fp[row] - fm[row]).mid()) / width
+        analytic = float(jacobian[row][0].mid())
+        if abs(numeric - analytic) > 1e-5 * max(1.0, abs(analytic)):
+            raise AssertionError((column, row, numeric, analytic))
 
 
 def test_double_precision_dimensions_at_the_midpoint() -> None:
@@ -155,7 +155,7 @@ def test_pinned_record_passes_its_rules(monkeypatch: pytest.MonkeyPatch) -> None
 @pytest.mark.parametrize(
     ("label", "mutate"),
     [
-        ("an identity", lambda r: r["identities"].__setitem__("rank_8_on_the_polar_line", False)),
+        ("an identity", lambda r: r["identities"].__setitem__("rank_8_at_five_polar_vectors", False)),
         ("the normal-form point", lambda r: r["point"].__setitem__("mu", "0")),
         ("a rank", lambda r: r["exact"].__setitem__("rank_M_z0", 11)),
         ("the slice", lambda r: r["slice"]["midpoint"].__setitem__(0, 0)),

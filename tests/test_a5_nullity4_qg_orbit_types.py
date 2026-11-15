@@ -38,11 +38,14 @@ def test_the_plane_x_is_in_no_eigenline_at_s_two() -> None:
     _same([ot._in_eigenline(k1, eps) or ot._in_eigenline(k2, eps) for eps in (1, -1)], [False, False])
 
 
-def test_a_derivation_that_mixes_the_blocks_breaks_the_eigenline_check(monkeypatch: pytest.MonkeyPatch) -> None:
-    # Adding a coupling between u and v to the first derivation makes the equivariance check fail.
+def test_a_skew_matrix_that_mixes_the_blocks_is_rejected(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A skew coupling between u and v added to the first derivation leaves the matrix skew; it is no longer
+    # equivariant and no longer maps E_eps into itself, so the check rejects it for those reasons alone.
     matrices = list(ot.derivation_matrices())
     bad = matrices[0].copy()
-    bad[0, 9] = 1
+    bad[0, 9] += 1
+    bad[9, 0] -= 1
+    _same(bad + bad.T, sp.zeros(15, 15))
     monkeypatch.setattr(ot, "derivation_matrices", lambda: tuple([bad, *matrices[1:]]))
     _same(ot.derivations_preserve_the_eigenlines(), False)
 
@@ -61,10 +64,11 @@ def test_sigma_witness_has_the_pinned_facts(plane: str) -> None:
     _same(point, ot.SIGMA_POINTS[plane])
 
 
-def test_sigma_zero_agrees_with_the_chart_point_s_zero() -> None:
-    # Scaling by -1 exchanges s and 1 / s, so the chart point sigma = 0 has the facts of s = 0.
-    _same(ot.SIGMA_FACTS[2], qg.SPECIAL_S["0"][:3])
-    _same([row[4] for row in ot.SIGMA_WITNESSES.values()], [qg.WITNESS_FACTS[f"s = 0, {p}"][4] for p in "xyz"])
+def test_sigma_zero_has_the_computed_facts_of_the_chart_point_s_zero() -> None:
+    # The docstring argues that s and 1 / s are one orbit type. This compares the two computations, not the two
+    # pinned tables: dim C of the three planes at sigma = 0 and at s = 0, and the fiber dimension at each witness.
+    _same(ot.sigma_facts()[2], qg.special_facts(0)[:3])
+    _same([ot.sigma_witness(p)[1][4] for p in "xyz"], [qg.witness_facts((0, p))[1][4] for p in "xyz"])
 
 
 def test_dimension_table_is_derived_from_the_minors() -> None:

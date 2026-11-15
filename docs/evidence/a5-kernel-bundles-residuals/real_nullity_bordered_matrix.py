@@ -73,14 +73,18 @@ def constructors_agree() -> bool:
     conjugates = dict(zip([sp.conjugate(value) for value in z], w, strict=True))
     first = frames._bordered_matrix(z).xreplace(conjugates)
     second = germs.bordered_matrix(z, w, germs.SIGNS16)
+    rows: list[tuple[list[Any], list[Any]]] = []
     for row in range(germs.HALF):
-        for column in range(germs.HALF):
-            entry = second[row][column]
-            # The corner and the diagonal of the second matrix hold that module's own zero.
-            value = sp.Integer(0) if isinstance(entry, germs.GQ) and entry == germs.ZERO else entry
-            if isinstance(value, germs.GQ) or sp.expand(first[row, column] - value) != 0:
-                return False
-    return True
+        # The corner and the diagonal of the second matrix hold that module's own zero.
+        values = [sp.Integer(0) if isinstance(e, germs.GQ) and e == germs.ZERO else e for e in second[row]]
+        if any(isinstance(value, germs.GQ) for value in values):
+            return False
+        rows.append((list(first[row, :]), values))
+    return all(parallel.ordered_map(_rows_agree, rows, min_items=2))
+
+
+def _rows_agree(pair: tuple[list[Any], list[Any]]) -> bool:
+    return all(sp.expand(a - b) == 0 for a, b in zip(*pair, strict=True))
 
 
 def left_matrix_agrees(index: int) -> bool:

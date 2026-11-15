@@ -216,22 +216,28 @@ def _eigenline_vector(first: Sequence[Any], middle: Any, sign: int) -> sp.Matrix
 
 def derivations_preserve_the_eigenlines() -> bool:
     """The 14 matrices are equivariant, skew, span 14 dimensions, vanish on e_8 and map E_eps into itself."""
+    matrices = derivation_matrices()
+    if not all(parallel.ordered_map(_derivation_preserves, list(matrices), min_items=2)):
+        return False
+    return len(matrices) == 14 and sp.Matrix([list(m) for m in matrices]).rank() == 14
+
+
+def _derivation_preserves(matrix: sp.Matrix) -> bool:
+    """One matrix is equivariant and skew, vanishes on e_8 and maps E_eps into itself."""
     t = sp.Matrix(sp.symbols("t1:16"))
     a = sp.Matrix(sp.symbols("a1:8"))
     block = forms.block(list(t), forms.ALL, forms.ALL)
-    matrices = derivation_matrices()
-    for matrix in matrices:
-        moved = forms.block(list(matrix * t), forms.ALL, forms.ALL)
-        if not _zero(list(moved - matrix * block - block * matrix.T)) or matrix + matrix.T != sp.zeros(15, 15):
+    moved = forms.block(list(matrix * t), forms.ALL, forms.ALL)
+    if not _zero(list(moved - matrix * block - block * matrix.T)) or matrix + matrix.T != sp.zeros(15, 15):
+        return False
+    if any(matrix[7, :]) or any(matrix[:, 7]):
+        return False
+    small = matrix[0:7, 0:7]
+    for sign in (1, -1):
+        image = matrix * _eigenline_vector(a, 0, sign)
+        if not _zero(list(image - _eigenline_vector(small * a, 0, sign))):
             return False
-        if any(matrix[7, :]) or any(matrix[:, 7]):
-            return False
-        small = matrix[0:7, 0:7]
-        for sign in (1, -1):
-            image = matrix * _eigenline_vector(a, 0, sign)
-            if not _zero(list(image - _eigenline_vector(small * a, 0, sign))):
-                return False
-    return len(matrices) == 14 and sp.Matrix([list(m) for m in matrices]).rank() == 14
+    return True
 
 
 def eigenlines_are_hermitian_orthogonal() -> bool:
