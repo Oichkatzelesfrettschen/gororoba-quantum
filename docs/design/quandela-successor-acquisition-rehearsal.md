@@ -56,8 +56,9 @@ nested callee that must see the successor record or platform as its own override
 frozen readout and require the hand-computed expectations to reject it.
 
 Source binding differs by family. The Ascella request records the digests of its builder, analyzer and shared modules in
-`preregistered.current_case_sources`; `qd_platform.acquisition_sources` verifies them at `review` and `submit`, and the
-analyzer rebuilds the request from the tree it runs in. `plan` and `collect` do not verify them. The Belenos manifests
+`preregistered.current_case_sources`; `qd_platform.acquisition_sources` verifies them, with the completeness of the set,
+at `review` and `submit`, `qd_platform.load_case` verifies their digests before `plan`, `review`, `submit` and
+`collect`, and the analyzer rebuilds the request from the tree it runs in. The Belenos manifests
 record the sha256 of every repository module the readout imports as `successor_sources`; `qd_platform.load_case`
 verifies them before `plan`, `review`, `submit` and `collect`, and the analyzer verifies them before it reads a run.
 Both bindings include `scripts/qd_platform.py`, so a built request is valid in one source tree and is rebuilt after a
