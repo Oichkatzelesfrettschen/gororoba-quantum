@@ -419,10 +419,12 @@ Modulo 32029 the singular scheme has length 3 at 68 normal-form points off the d
 | fixtures | no | 8 | 3 | | 1 | 15 |
 | fixtures | yes | 6 | 6 | | 1 | 37 |
 
-`A5-441` (survives) stated these facts at the fixtures and the grid: `A5-530`, `A5-534` and `A5-535` now exclude
-its three falsifiers at every point, and its clause "nullity at least 7 on `l_z`" continues as `A5-537`.
+`A5-441` stated these facts at the fixtures and the grid and is superseded: `A5-530`, `A5-534` and `A5-535` exclude
+its three falsifiers at every point, and its clause "nullity at least 7 on `l_z`" continues as `A5-537`. `A5-442`
+is superseded the same way: `A5-531` proves its zero-set and no-line statements at every point, and its modular
+lengths of the singular scheme continue in `A5-533` and `A5-540`.
 
-These rows replace `A5-433`, `A5-443`, `A5-444` and `A5-445`. Five hypotheses remain open:
+These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`. Five hypotheses remain open:
 
 - `hypothesis` (`A5-537`): the rank of `M` on `l_z` is 8 where `mu` is nonzero and 6 where `mu = 0`, and
   `C(l_z)` has dimension 3 and 6 respectively; the record holds the table above and no proof.
