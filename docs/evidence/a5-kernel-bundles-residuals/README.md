@@ -437,10 +437,15 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `C(l_z)` or cuts it to the line of `z`, so `dim L` is 2, 6 or 12; no retained point has `dim L` of 4, 8 or 10.
 - `hypothesis` (`A5-539`): the real points of orbit rank 13 are the points in one quaternion subalgebra; this
   holds at the 66 fixtures.
-- `hypothesis` (`A5-540`): the singular scheme is longer than 3 exactly on the discriminant of `chi`, of length
-  5 at a triple root, and the quartic is irreducible at every point. `chi` has a triple root on two branches:
-  `v_1 = 0`, `2 rho^2 + 1 = 0`, where the 32 grid points lie, and `v_1^2 = 27`, `rho^2 = -32`, which no record
-  samples.
+- `A5-540`, proved (`nullity4_quartic_discriminant.py` with two Singular scripts, record
+  `nullity4-quartic-discriminant-result.json`): the singular scheme has length `3 + deg gcd(chi, chi')` at every
+  point, with an `A_{2e-1}` point at the base point of a root of multiplicity `e`, and the quartic is absolutely
+  irreducible. The partials of `F = -4 w.w`, `w = x cross y`, lie in the base ideal `I_B`; unit ideals over Q
+  keep the singular points on `B` and off the conic `n = 0`, so `F` is a unit times `f' g'` with
+  `(f', g') = I_B` there: two smooth branches with contact `e`. The length is `6 - N` for `N` distinct roots,
+  while two smooth conics would give `8 - N`. Both triple branches, `v_1 = 0`, `2 rho^2 + 1 = 0` (the 32 grid
+  points) and `v_1^2 = 27`, `rho^2 = -32`, have length 5. Replay, with Singular 4.4:
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py --check` (about 3 s).
 - `hypothesis` (`A5-541`): on `V(Q) n V(G)` a real nullity-4 point has `dim L` of 2 or 6, and where it is 6 the
   kernel vectors have nullity 12 (4 grid points, last row of the grid table above). The normal form does not reach
   this stratum, where `Delta = 0`.
