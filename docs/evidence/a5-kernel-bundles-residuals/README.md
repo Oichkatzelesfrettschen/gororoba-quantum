@@ -222,7 +222,7 @@ is the real rank in characteristic 0 (`A5-430`). At the 37 fixtures with `dim L 
 immersion of the projective stratum. Through each of the other 29 it has a linear fiber of real dimension 4 or 10.
 The nullity column is the least nullity, as elements of the algebra, among six vectors of the real kernel of left
 multiplication by the fixture: where the fiber is large, the six sampled kernel vectors are zero divisors of a
-deeper stratum, which bounds the nullity of a general kernel vector from above only (`A5-433`, part c).
+deeper stratum, which bounds the nullity of a general kernel vector from above only (`A5-538`).
 
 **Proved in characteristic 0 (`A5-431`): the real Gauss map is not injective on `V(G)` minus `V(Q)`.** The
 retained fixture record gives the normalized Plucker vector of the kernel plane at each fixture; the 66 fixtures
@@ -364,23 +364,83 @@ These results refute the finiteness clause of `A5-439`: the higher zero divisors
 are a curve at the fixtures. Its clause that confines the line on `V(G)` minus `V(Q)` to a proper closed subset
 of the orbit-rank-16 points is contradicted by every tested point, including 40 points of the stratum with
 sha256 coordinates (Gram rank 1, nullity 7 on the polar line, 3 off it); finitely many points do not refute it,
-and `A5-444` states the corrected form. The net of `A5-437` met the quartic at its few points of small height and saw the polar
+and `A5-444` stated the corrected form, which `A5-534` proves. The net of `A5-437` met the quartic at its few points of small height and saw the polar
 line only where it is a line of the net.
 
-`hypothesis` (`A5-443`, open): at every nullity-4 point of `V(Q)` minus `V(G)` the quartic contains no line, and
-`dim L = 2` at every real point of the stratum. `hypothesis` (`A5-444`, open): on `V(G)` minus `V(Q)` the higher
-zero divisors of `K` are exactly the polar line, and `dim L > 2` exactly where `P = l_z` and the conjugate plane
-is orthogonal to the common kernel of `M` on `l_z`; at the grid points the record tests one vector off the line. `hypothesis`
-(`A5-445`, open): the points where the singular scheme of the quartic is longer than 3 form a proper closed
-subset on which the quartic stays irreducible and free of lines; the record holds no type for those singular
-points.
+##### Orbit normal forms decide the kernel-plane hypotheses
 
-`hypothesis` (`A5-433`, open): on `V(G)` minus `V(Q)` every real point of orbit rank 13 has `dim L` of 6 or 12
-(139 grid points with the orbit rank modulo 32029, 29 fixtures); on `V(Q)` minus `V(G)` every real point has `dim L = 2` (2,096 grid points, 12
-fixtures); a real point with `dim L` of 6 or 12 has kernel vectors of nullity 12 or 16 (157 grid points, 29
-fixtures), and row 6 shows that nullity 12 does not force a large fiber. The grid is one integer family; the
-record holds no equations for the locus `dim L > 2`; `A5-438` adds real points with non-real split coordinates
-to the second part.
+`nullity4_orbit_normal_forms.py` (record `nullity4-orbit-normal-forms-result.json`) reduces both strata to one
+normal form (`A5-530`). `Delta` is nonzero on `V(Q)` minus `V(G)` and on `V(G)` minus `V(Q)`, so the plane of
+`u` and `v` is nondegenerate, and `G_2(C)`, the rotation of `(u, v)` by 120 degrees and the scaling carry every
+point to `z = (e_1; mu; v_1 e_1 + rho e_2)` with `rho` nonzero, in the imaginary part of the octonion subalgebra
+`O'` on the units 0, 1, 2, 3, 8, 9, 10, 11. For `t` in those seven coordinates `M(t)` is the direct sum of a
+7 x 7 block and an 8 x 8 block whose Pfaffian is `G(t)`, and the `SL_2` that fixes `O'` acts on `K(z)`.
+
+**Proved in characteristic 0 on `V(Q)` minus `V(G)`.** `K(z)` lies in `O'` and is the set of
+`k(c0, s, t) = (x; r; y)`, `x = (c0, -t, s)`, `r = mu c0 + rho s`,
+`y = (c0 v_1 - rho t, c0 rho - mu s + v_1 t, -mu t - v_1 s)`, with product `M(k) k' = 2 (s t' - s' t) z`. The
+kernel quartic is `4 (n (n + r^2) + q^2)`, `n = c0^2 + s^2 + t^2`, `q = v_1 (c0^2 - s^2 - t^2) - 2 rho c0 t`.
+
+- `A5-531`: the higher zero divisors of `K(z)` are exactly the zero set of the quartic at every point, and the
+  quartic contains no line. On a line `n (n + r^2) = -q^2` as binary quartics, which leaves the line `r = 0` and
+  the two tangents of the conic `n = 0` at its points on `r = 0`; the first fails at the mixed monomial of `q`
+  (coefficient `-2 rho^2`), the second at the coefficient `2 rho^2 (v_1 - eps)`, `eps^2 = 1 + v_1^2`.
+- `A5-532`: a plane of `K(z)` off `z` has common kernel `C z`, because the Heisenberg product `M(p1) p2` is a
+  nonzero multiple of `z` and of every general point of the common kernel. So `dim L = 2` at every real point,
+  and the real Gauss map is an injective immersion of the projectivized real points of the stratum: the
+  derivative of the kernel plane of a constant-rank family vanishes in a direction `d` exactly when `A(d) P = 0`,
+  so the kernel of the differential is `L`.
+- `A5-533`: the quartic is -4 times the squared length of `x cross y`, singular at the base points of that net
+  of conics, which are the roots of `chi = lambda^3 + v_1 lambda^2 - (1 + 2 v_1^2 + 2 rho^2) lambda + v_1`. The
+  points with singular scheme longer than 3 form a proper closed subset, and a quartic of length 3 that
+  contains no line is irreducible.
+
+Modulo 32029 the singular scheme has length 3 at 68 normal-form points off the discriminant of `chi` and length
+4 at 5 points on it. The 32 grid points of length 5 lie at the triple root `v_1 = 0`, `2 rho^2 + 1 = 0`
+(`u.v = 0` and `u.u + 2 v.v = 0`).
+
+**Proved in characteristic 0 on `V(G)` minus `V(Q)`.** At a rank-12 normal-form point `K(z) = C z + l_z`, with
+`l_z` the kernel of the 8 x 8 block, an irreducible `SL_2`-module, and `Q` on `K(z)` is `Q(z) s^2`.
+
+- `A5-534`: the higher zero divisors of `K(z)` are exactly the polar line `l_z`. They form a closed
+  `SL_2`-stable set that misses `z`, and the three orbits are the point of `z`, the line and their complement.
+- `A5-535`: a plane of `K(z)` off `z` other than `l_z` has common kernel `C z`, so at a real point `dim L > 2`
+  only where the kernel plane is `l_z`. A second vector of the common kernel would make the 8 x 8 block of `M(h)`,
+  `h = M(z) grad G(z)`, kill `l_z`; three Groebner bases equal to (1) show that this happens only at the
+  rank-10 point `(v_1, mu, rho) = (0, 0, sigma)`. The certificate rejects `h = z`.
+- `A5-536`: at a real rank-12 point whose `u` and `v` lie in one quaternion subalgebra, the kernel plane is
+  `l_z` and `dim L` is at least 6. The 29 fixtures in that position have `dim L` of 6 or 12, the other 23 have
+  `dim L = 2`, and at all 66 fixtures the orbit rank is 13 exactly in that position.
+
+| Points, modulo 32029 | `mu = 0` | Rank of `M` on `l_z` | `dim C(l_z)` | Of it in `O'` | `dim C(P)`, `P` other than `l_z` | Count |
+|---|---|---:|---:|---:|---:|---:|
+| normal form | no | 8 | 3 | 3 | 1 | 60 |
+| normal form | yes | 6 | 6 | 4 | 1 | 60 |
+| fixtures | no | 8 | 3 | | 1 | 15 |
+| fixtures | yes | 6 | 6 | | 1 | 37 |
+
+`A5-441` (survives) stated these facts at the fixtures and the grid: `A5-530`, `A5-534` and `A5-535` now exclude
+its three falsifiers at every point, and its clause "nullity at least 7 on `l_z`" continues as `A5-537`.
+
+These rows replace `A5-433`, `A5-443`, `A5-444` and `A5-445`. Five hypotheses remain open:
+
+- `hypothesis` (`A5-537`): the rank of `M` on `l_z` is 8 where `mu` is nonzero and 6 where `mu = 0`, and
+  `C(l_z)` has dimension 3 and 6 respectively; the record holds the table above and no proof.
+- `hypothesis` (`A5-538`): at a real point with kernel plane `l_z` the conjugate plane is orthogonal to
+  `C(l_z)` or cuts it to the line of `z`, so `dim L` is 2, 6 or 12; no retained point has `dim L` of 4, 8 or 10.
+- `hypothesis` (`A5-539`): the real points of orbit rank 13 are the points in one quaternion subalgebra; this
+  holds at the 66 fixtures.
+- `hypothesis` (`A5-540`): the singular scheme is longer than 3 exactly on the discriminant of `chi`, of length
+  5 at a triple root, and the quartic is irreducible at every point. `chi` has a triple root on two branches:
+  `v_1 = 0`, `2 rho^2 + 1 = 0`, where the 32 grid points lie, and `v_1^2 = 27`, `rho^2 = -32`, which no record
+  samples.
+- `hypothesis` (`A5-541`): on `V(Q) n V(G)` a real nullity-4 point has `dim L` of 2 or 6, and where it is 6 the
+  kernel vectors have nullity 12 (4 grid points, last row of the grid table above). The normal form does not reach
+  this stratum, where `Delta = 0`.
+
+Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check` (about 45 s).
+The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the
+reconciliation of their findings.
 
 The count of quadrics on each image (`A5-434`, superseded by `A5-460`) is tested and taken apart in the next
 subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of

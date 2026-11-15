@@ -3423,6 +3423,181 @@
       "run": "results/quandela/runs/2026-11-14T203218Z-sim_belenos-bdsc_diagnostic-b1-j1",
       "family": "bdsc_diagnostic",
       "question": "Admit the successor acquisition pair's one-job sim:belenos rehearsal (b1-j1) of the diagnostic request and read its duration and billing."
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-00",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-01",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-02",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-qx-2026-11-15t001929-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-03",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On the QX emulator, do b0, its Rx(pi/2) form and the eight scaled-pulse arms of the rotation scan reproduce their ideal laws, as the control the Tuna-17 rotation scan requires?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-00",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-00",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-01",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-01",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-02",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-02",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-03",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-03",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-04",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-04",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-05",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-05",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-06",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-06",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-07",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-07",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-08",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-08",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-09",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-09",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-10",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-10",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-11",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-11",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-12",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-12",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-13",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-13",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-14",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-14",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-15",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-15",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-16",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-16",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-17",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-17",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-18",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-18",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-19",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-19",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
+    },
+    {
+      "id": "qi-pathion-null-rotation-scan-tuna-17-2026-11-15t001929-batch-20",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-20",
+      "family": "pathion coset-block null offset, rotation-angle scan of b0 (A_5, dimension 32)",
+      "question": "On Tuna-17, does the selector contrast of b0 respond to scaled X90 pulse angles on all pulses, on q4's or on q8's as a coherent rotation about x, another pulse axis or a readout fault predicts, with a center arm in every scan batch, an Rx-to-X90 bridge and per-batch readout brackets?"
     }
   ],
   "claims": [

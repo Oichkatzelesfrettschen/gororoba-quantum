@@ -1,0 +1,69 @@
+{
+ "schema": "qi-submission-state-v1",
+ "phase": "enqueued",
+ "started_utc": "2026-11-15T00:59:34+00:00",
+ "approval": "QX twin only for now (owner, question tool, 2026-11-14)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "88190103cc2fab6433bc47ad7e3414dcc75d0054e2489422a3fc51d566f80e6a",
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "b0-rx-all-p10.cq",
+   "job": 1741766,
+   "sha256": "1da376308dccebb316efe28b421351fbe4978e4540519de56d526036b997bd65"
+  },
+  {
+   "file": "b0-rx-q4-m10.cq",
+   "job": 1741767,
+   "sha256": "9c2529061a6caa6f36acd28f21b358433d79e4758b76451af88ef8d6a57b39c2"
+  },
+  {
+   "file": "b0-rx-q4-p10.cq",
+   "job": 1741768,
+   "sha256": "9661431a554ca23aa592ffeed749145187b087d0ac654ec8dfe396e27ae27f24"
+  }
+ ],
+ "project": 858383,
+ "batch_job": 958276,
+ "submission": {
+  "schema": "qi-submission-v2",
+  "state": "enqueued",
+  "created_utc": "2026-11-15T00:59:38+00:00",
+  "approval": "QX twin only for now (owner, question tool, 2026-11-14)",
+  "backend": "QXsinglenodesimulator",
+  "backend_type_id": 1,
+  "cases_sha256": "88190103cc2fab6433bc47ad7e3414dcc75d0054e2489422a3fc51d566f80e6a",
+  "backend_status_at_submit": "idle",
+  "queue_at_submit": {
+   "number_of_jobs_in_queue": 0,
+   "min_wait_time_in_queue_secs": 0.0,
+   "avg_wait_time_in_queue_secs": 0.0,
+   "max_wait_time_in_queue_secs": 0.0
+  },
+  "queue_user_only": true,
+  "queue_limit_at_submit": 5,
+  "batch_job": 958276,
+  "project": 858383,
+  "shots": 2048,
+  "jobs": [
+   {
+    "file": "b0-rx-all-p10.cq",
+    "job": 1741766,
+    "sha256": "1da376308dccebb316efe28b421351fbe4978e4540519de56d526036b997bd65"
+   },
+   {
+    "file": "b0-rx-q4-m10.cq",
+    "job": 1741767,
+    "sha256": "9c2529061a6caa6f36acd28f21b358433d79e4758b76451af88ef8d6a57b39c2"
+   },
+   {
+    "file": "b0-rx-q4-p10.cq",
+    "job": 1741768,
+    "sha256": "9661431a554ca23aa592ffeed749145187b087d0ac654ec8dfe396e27ae27f24"
+   }
+  ],
+  "submitted_utc": "2026-11-15T00:59:38+00:00"
+ },
+ "confirmed_utc": "2026-11-15T00:59:38+00:00"
+}

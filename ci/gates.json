@@ -5394,6 +5394,17 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py --check",
+      "name": "core-a5-nullity4-orbit-normal-forms",
+      "seconds": 43.1,
+      "workers": 2,
+      "replays": [
+        "docs/evidence/a5-kernel-bundles-residuals/nullity4-orbit-normal-forms-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json",
       "name": "core-757",
       "seconds": 1.3,
@@ -5582,6 +5593,20 @@
       "workers": "all",
       "replays": [
         "docs/evidence/a5-kernel-attachments/e8-relation-ideal-orders-result.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-attachments/e8_birational_degree.py --check --replay; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-e8-birational-degree",
+      "seconds": 20.0,
+      "workers": "all",
+      "requires": [
+        "singular"
+      ],
+      "replays": [
+        "docs/evidence/a5-kernel-attachments/e8-birational-degree-result.json"
       ]
     },
     {
@@ -6177,6 +6202,27 @@
       "replays": [
         "results/quantum_inspire/cases/pathion_null_rotation_scan_qx",
         "results/quantum_inspire/cases/pathion_null_rotation_scan_tuna_17"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_qx-batch-* --out {out}",
+      "name": "core-pathion-null-rotation-scan-qx-analysis-replay",
+      "seconds": 5.0,
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_qx_analysis.json"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json -- \"$PYTHON\" -B -W error scripts/qi_pathion_null_rotation_scan_cases.py --analyze results/quantum_inspire/runs/2026-11-15T001929Z-pathion_null_rotation_scan_tuna_17-batch-* --out {out}",
+      "name": "core-pathion-null-rotation-scan-tuna-analysis-replay",
+      "seconds": 1900.0,
+      "workers": "all",
+      "replays": [
+        "results/quantum_inspire/pathion_null_rotation_scan_tuna_17_analysis.json"
       ]
     }
   ],
