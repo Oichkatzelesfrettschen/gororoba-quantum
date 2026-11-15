@@ -19,7 +19,7 @@ lint and type-check configuration only.
 **Pull requests.** [.github/workflows/pr.yml](../.github/workflows/pr.yml)
 runs on every pull-request push, on every push to main (so the merged result is
 checked once) and on `workflow_dispatch`, cancels the run a newer pull-request
-push replaces, and holds four jobs that call
+push replaces, and holds five jobs that call
 [ci/pr_checks.sh](pr_checks.sh) with its environment (loader TLS, one thread
 per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `lint` installs the Ruff pin of ci/requirements-ci.txt and runs `ruff check`
@@ -27,10 +27,13 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
   kaggle_kernel/;
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
-  under a 5-minute step timeout and writes the 25 slowest tests to the job
+  under an 8-minute step timeout and writes the 25 slowest tests to the job
   summary, leaving out tests/gororoba_quantum/test_contract_suites.py;
-- `contracts` runs that file the same way in parallel with `tests`, so neither
-  pytest step approaches its timeout.
+- `contracts` runs that file the same way in parallel with `tests` under a
+  5-minute step timeout, so neither pytest step approaches its timeout;
+- `arm` runs the `tests` and `contracts` lanes on `ubuntu-26.04-arm` and
+  `macos-15` (a matrix with fail-fast off, a 10-minute pytest step and a
+  6-minute contract-suites step).
 
 Pull-request CI answers one question: does the change break the repository's
 own Python. Each test it runs builds its input or reads a small fixture and
@@ -51,12 +54,14 @@ resolve, with the reason. One file per library
 exercises the calls the code makes against answers fixed by construction (a Bell
 pair's support, the Hong-Ou-Mandel zero, a certain readout flip), locally and
 without credentials.
-`lint`, `types`, `tests` and `contracts` time out at 8 minutes.
+The job timeouts are 8 minutes for `lint`, 10 for `types` (its mypy step 4), 12 for `tests` and
+`contracts`, and 25 for `arm`.
 `types`, `tests` and `contracts` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
-pull requests restore it. Branch protection on main requires `lint`, `types`, `tests` and `contracts`
-green on the head, for administrators too, without requiring the branch to
+pull requests restore it. Branch protection on main requires `lint`, `types`, `tests`, `contracts` and
+both `arm` legs green on the head (read through the branch-protection API on
+2026-11-15), for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
 (scripts/qd_schedule_tick.sh does so when a schedule finishes); a branch whose
@@ -392,7 +397,7 @@ on every pull request. The rules that keep that run small:
 - Cases that differ in kind are `pytest.mark.parametrize` rows of one test;
   a numeric sweep belongs in an audit test.
 - The job summary lists the 25 slowest tests. Hosted pytest time at about
-  2 minutes is the point to shrink or mark tests, well inside the 5-minute
+  2 minutes is the point to shrink or mark tests, well inside the 8-minute
   step timeout; the PR job adds no coverage or other plugin.
 The behavioral-suite gates select by path and ignore the marker, so they run
 every marked test they name; like every gate of ci/gates.json they run on demand.
