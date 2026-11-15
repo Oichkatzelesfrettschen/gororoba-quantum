@@ -25,9 +25,13 @@ from typing import Any
 from unittest.mock import Mock, patch
 
 import qi_platform as platform
+import qi_submit_lease
 
 # submit() takes the account submit lock; the fixtures lock a private file.
 platform.SUBMIT_LOCK = Path(tempfile.mkdtemp(prefix="qi-submit-lock-")) / "submit.lock"
+# A hardware admission read under that lock takes the account's submit lease; the fixtures grant it locally and
+# tests/scripts/test_qi_submit_lease.py holds the refusal cases.
+qi_submit_lease.ask = lambda *words: {"nonce": "0" * 32, "lease_seconds": 600}
 
 
 class FakeToolError(RuntimeError):

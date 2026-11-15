@@ -275,6 +275,32 @@ From the same conditions:
 - A simulation of 14 qubits or fewer runs on Kaggle (root AGENTS.md); a
   Quantum Inspire hardware run answers a question about the device.
 
+### Submit lease
+
+The queue and pause checks read one snapshot of the account, and `SUBMIT_LOCK` is a file on one device, so two
+devices that share the account can both pass the checks before either batch exists on the service
+([issue 893](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/893)). A hardware submission
+therefore takes an account-wide lease before it reads the account (`scripts/qi_submit_lease.py`):
+
+- `qi_platform.token_lock` opens a lease session while it holds `SUBMIT_LOCK`, and `hardware_pause_left` takes the
+  lease inside that session, so `qi_platform.submit`, `qi_platform_submission_deadline.submit` and the MCP tool
+  `qi_submit_case` are covered by the bytes of `qi_platform.py` alone. A pause read outside the lock, as a series
+  makes while it waits, takes nothing. Emulator batches take no lease.
+- `QI_SUBMIT_LEASE_COMMAND` names the command that reaches the lease holder; the runner appends `take HOLDER` or
+  `release NONCE`. `take` answers one JSON object with `nonce` and `lease_seconds`. `QI_SUBMIT_LEASE_HOLDER` names
+  the device, by default its host name in lowercase letters, digits and hyphens. The command and the host that
+  grants the lease are the account owner's configuration and stay outside this repository.
+- No command, no answer, a malformed answer and a lease another device holds each refuse the hardware submission
+  before any resource request.
+- The session's end reads the account again and releases the lease when no hardware batch younger than
+  `ABANDONED_PLANNING_SECONDS` is still `planned`; the next holder's read then shows every batch this submission
+  created. A failed read or a batch still in planning leaves the lease to expire on the grantor's clock, and
+  `hardware_pause_left` refuses every submission while that batch is recent.
+
+Limits. The lease orders the devices that run this module. The provider's web client and any other client of the
+account enqueue outside it, so the falsifier of issue 893 stays open for those. A submission that runs longer than
+`lease_seconds` is protected from its first batch request on by the planned-batch refusal alone. Evidence class:
+`tests/scripts/test_qi_submit_lease.py` exercises the session against a stand-in command; no provider job tested it.
 
 ## Pause escalation
 

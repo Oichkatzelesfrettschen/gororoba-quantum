@@ -28,7 +28,8 @@ Subcommands:
 - submit CASE_DIR --backend-type-id N --approval TEXT (network, spends quota)
   creates one project, one algorithm, commit and file per circuit, one batch
   job holding every circuit of cases.json, and enqueues it. It verifies each
-  circuit's sha256 against cases.json first. A hardware batch is refused
+  circuit's sha256 against cases.json first. A hardware batch takes the
+  account's submit lease (scripts/qi_submit_lease.py) and is refused
   while any of the account's jobs on a hardware backend type is unfinished or
   finished less than HARDWARE_PAUSE_SECONDS ago. An exclusive submission-state.json
   is retained before the first remote write; either it or submission.json
@@ -65,6 +66,8 @@ from collections import Counter, defaultdict
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
+
+import qi_submit_lease
 
 HOST = "https://api.quantum-inspire.com"
 CATALOGUE_SCHEMA = "qi-catalogue-v1"
@@ -117,7 +120,8 @@ TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
 # Every process that refreshes the shared OAuth tokens holds this lock while it
 # reads, exchanges and writes them.
 TOKEN_LOCK = TOKEN_FILE.with_name("config.json.lock")
-# Held from the hardware pause and queue checks until a batch is enqueued.
+# Held from the hardware pause and queue checks until a batch is enqueued. token_lock opens a submit-lease session
+# for its span, so the account's other devices wait as this device's other sessions do (qi_submit_lease).
 SUBMIT_LOCK = TOKEN_FILE.with_name("submit.lock")
 # The API answers a request carrying an expired access token with HTTP 403 and
 # this detail, not with 401.
@@ -188,7 +192,11 @@ def token_lock(path: Path | None = None) -> Iterator[None]:
     descriptor = os.open(lock, os.O_RDWR | os.O_CREAT, 0o600)
     try:
         fcntl.flock(descriptor, fcntl.LOCK_EX)
-        yield
+        if lock == SUBMIT_LOCK:
+            with qi_submit_lease.session():
+                yield
+        else:
+            yield
     finally:
         os.close(descriptor)
 
@@ -748,7 +756,10 @@ def hardware_pause_left(client: Client) -> int:
     A job counts when its batch runs on a backend type with is_hardware set. An
     unfinished job (a status outside TERMINAL) refuses the batch outright,
     except in a batch that stayed un-enqueued for ABANDONED_PLANNING_SECONDS.
+    Under SUBMIT_LOCK the read is preceded by the account's submit lease, which
+    orders it after every batch another device's submission created.
     """
+    qi_submit_lease.take(lambda: hardware_batch_in_planning(client))
     hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
     at = utc_now()
     batches = set()
@@ -772,6 +783,18 @@ def hardware_pause_left(client: Client) -> int:
         elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
         left = max(left, HARDWARE_PAUSE_SECONDS - elapsed)
     return math.ceil(left)
+
+
+def hardware_batch_in_planning(client: Client) -> bool:
+    """Whether a fresh read shows a hardware batch younger than ABANDONED_PLANNING_SECONDS that is not enqueued."""
+    hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
+    at = utc_now()
+    return any(
+        row["backend_type_id"] in hardware
+        and row["status"] == "planned"
+        and (at - datetime.datetime.fromisoformat(row["created_on"])).total_seconds() < ABANDONED_PLANNING_SECONDS
+        for row in client.pages("/batch_jobs")
+    )
 
 
 def pre_dispatch_refused(case_dir: Path, cases_sha256: str) -> bool:
