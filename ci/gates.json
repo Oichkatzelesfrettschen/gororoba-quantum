@@ -3571,7 +3571,27 @@
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/already_zero.cq",
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/cases.json",
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/control_x.cq",
+        "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/raw/already_zero.cq.json",
+        "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/raw/control_x.cq.json",
+        "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/raw/reset_phase.cq.json",
         "results/quantum_inspire/runs/2026-10-18T161620Z-qx_reset_phase-batch-00/reset_phase.cq"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
+      "cmd": "\"$PYTHON\" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phase_analysis_2026-11-15.json",
+      "name": "core-771",
+      "seconds": 0.1,
+      "replays": [
+        "results/quantum_inspire/qx_reset_phase_analysis_2026-11-15.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/already_zero.cq",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/cases.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/control_x.cq",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/already_zero.cq.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/control_x.cq.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/raw/reset_phase.cq.json",
+        "results/quantum_inspire/runs/2026-11-15T025704Z-qx_reset_phase-batch-00/reset_phase.cq"
       ]
     },
     {

@@ -1,0 +1,39 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-11-15T02:57:16+00:00",
+ "approval": "Owner 2026-11-14, AskUserQuestion: \"Approve QX reset probe\" and \"Run the 3-circuit batch (Recommended)\" for CASE-qx-remote-reset-probe.md (amended: 3 circuits, 2048 shots each, QX backend type 1)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "cases_sha256": "c506657d7698735adc4d98ec680dd6b8b02a2d3d5e9cbd4c099fee11d5229729",
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 5,
+ "batch_job": 958302,
+ "project": 858407,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "reset_phase.cq",
+   "job": 1741827,
+   "sha256": "7d4ac09ba0430ec9e4435a350e60a413ba191bbd15f555292e2b3983dfd6a80c"
+  },
+  {
+   "file": "control_x.cq",
+   "job": 1741828,
+   "sha256": "f5ec426d4c47de527927df4061cffe051b8ae68faf38a02414c59e3e61349c13"
+  },
+  {
+   "file": "already_zero.cq",
+   "job": 1741829,
+   "sha256": "c51eac1c974959e2bcc3cd07fc944fca57b494154ec64e99950671674ed99b87"
+  }
+ ],
+ "submitted_utc": "2026-11-15T02:57:17+00:00"
+}

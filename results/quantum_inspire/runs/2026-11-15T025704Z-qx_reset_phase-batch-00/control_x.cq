@@ -1,0 +1,11 @@
+version 3.0
+
+qubit[2] q
+bit[2] b
+
+X q[0]
+X q[1]
+H q[1]
+X q[0]
+H q[1]
+b = measure q
