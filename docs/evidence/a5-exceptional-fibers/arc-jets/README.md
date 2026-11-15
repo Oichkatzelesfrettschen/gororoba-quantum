@@ -12,8 +12,9 @@ homogeneous generator in degrees three to seven beyond the 148 quadrics.
 
 Each header carries its own arcs, quadratic relation file and column bases. The N+ ranks are measured directly
 on N+; the N+ upper bound at 32009 uses the retained sign transport of the N- degree-two membership receipt
-(described below). Every equality holds over its named prime field. Characteristic zero and degrees eight and
-above remain open.
+(described below). Every equality holds over its named prime field. Degrees eight and above are settled by
+[the order functions of the arc package](../arcs/README.md#the-relation-ideal-in-every-degree-a5-555), L = K2 in every
+degree (A5-555); characteristic zero on these slices remains open.
 
 ## Method
 
@@ -210,7 +211,7 @@ the gate. The direct verifier command above always requests the exact export rep
   the minimum valuation of the nine coordinates t_i, which generate m_R.
 - The equalities through degree seven rest on K2 inside L at each prime. The jets bound h_d from below only and cannot prove
   h_d < HF(k[y]/K2, d); a plateau below the K2 value would have been a lower bound alone.
-- Open: generators of L in degree eight and above, characteristic zero, and a direct degree-two membership
+- Generators of L in degree eight and above: none, by A5-555. Open: characteristic zero and a direct degree-two membership
   receipt of the N+ header at p = 32009 (the upper bound there rests on the N- receipt and the sign isomorphism).
 
 ## Routes that did not close degree 6
