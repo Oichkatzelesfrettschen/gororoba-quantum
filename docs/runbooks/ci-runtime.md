@@ -94,6 +94,16 @@ upload-artifact v7.0.2 and download-artifact v8.0.2. The workflow pins each
 release by its resolved commit SHA, avoiding the deprecated Node 20 actions
 reported by the initial hosted run.
 
+The macOS leg of the `arm` job once failed in its "Fetch main" step with `git: 'remote-https' is not a git
+command` and `fatal: remote helper 'https' aborted session` (exit 128, 0.2 s after `brew install flock coreutils`
+returned; run 43661745421, job 132652376957, image `macos-15-arm64/20261104.0514`, `/opt/homebrew/bin/git`
+2.56.0; no test ran). The Homebrew step poured only the flock 0.4.0 and coreutils 9.12_1 bottles and touched no
+git formula, and the next run of the same workflow (43662577177, ten minutes later) passed that step on the same
+image, the same git, the same two bottles and the same step order, which has stood since 2026-11-09. The failure is
+unreproduced and the workflow keeps its order. `hypothesis:` a transient state of the runner's Homebrew prefix
+hid `git-remote-https` from git's exec path; a second occurrence with `git --exec-path` and a listing of that
+directory in the step's log would test it.
+
 ## Selection and resource boundaries
 
 - PRs always run the behavioral `pr` tier and add affected `full` gates.
