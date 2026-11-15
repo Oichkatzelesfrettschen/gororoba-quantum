@@ -29,10 +29,9 @@ def _record() -> dict[str, Any]:
     return record
 
 
-def test_the_retained_record_passes_and_agrees_with_the_weight_slice_record() -> None:
+def test_the_retained_record_passes_its_checker() -> None:
     record = _record()
     _same(membership.problems(record), [])
-    _same(membership.slice_problems(record), [])
     _same(record["pass"], True)
     _same(len(record["cells"]), 10)
 
@@ -115,8 +114,59 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
         raise AssertionError((name, found))
 
 
-def test_the_slice_comparison_rejects_other_relations_counts_and_bounds() -> None:
-    record = copy.deepcopy(_record())
+def _constructed_cell(index: int, orbit: str, source: str) -> dict[str, Any]:
+    relations = membership.RELATIONS[source][-1]
+    cell: dict[str, Any] = {key: 0 for key in membership.ZERO_KEYS}
+    cell.update(
+        orbit=orbit,
+        source=source,
+        relations_sha256=f"{index + 1:064x}",
+        relations=relations,
+        truncation_bound=16,
+        truncation_min_weight=17,
+        control_single_product_rejected=1,
+        selection_truncation_bound=10,
+        selection_truncation_min_weight=11,
+        spanning_products=relations + 1,
+        spanning_normal_form_rank=1,
+        spanning_relation_rank=relations,
+    )
+    return cell
+
+
+def _constructed_record(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> dict[str, Any]:
+    """A passing record and the weight-slice record it matches, one characteristic-0 cell per membership cell."""
+    cells = [_constructed_cell(index, orbit, source) for index, (orbit, source) in enumerate(membership.CELLS)]
+    slice_cells = [
+        {
+            "orbit": cell["orbit"],
+            "source": cell["source"],
+            "characteristic": 0,
+            "relations_sha256": cell["relations_sha256"],
+            "relation_count": cell["relations"],
+            "product_max_weight": cell["truncation_bound"],
+        }
+        for cell in cells
+    ]
+    slice_cells.append({"orbit": "N-", "source": "w8", "characteristic": 32009, "relations_sha256": "f" * 64})
+    fixture = tmp_path / "weight-slice.json"
+    fixture.write_text(json.dumps({"cells": slice_cells}), encoding="utf-8")
+    monkeypatch.setattr(membership, "WEIGHT_SLICE", fixture)
+    return {
+        "schema": membership.SCHEMA,
+        "field": "Q(i)",
+        "inputs": {name: hashlib.sha256((ATTACH / name).read_bytes()).hexdigest() for name in membership.INPUTS},
+        "weight_slice_record_sha256": hashlib.sha256(fixture.read_bytes()).hexdigest(),
+        "cells": cells,
+        "pass": True,
+    }
+
+
+def test_the_slice_comparison_rejects_other_relations_counts_and_bounds(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    record = _constructed_record(tmp_path, monkeypatch)
+    _same(membership.slice_problems(record), [])
     record["cells"][0]["relations_sha256"] = "0" * 64
     record["cells"][1]["relations"] = 147
     record["cells"][2]["truncation_bound"] = 11
@@ -127,16 +177,19 @@ def test_the_slice_comparison_rejects_other_relations_counts_and_bounds() -> Non
             raise AssertionError((fragment, found))
 
 
-def test_the_full_validator_reports_a_changed_input_digest() -> None:
-    record = copy.deepcopy(_record())
+def test_the_full_validator_reports_a_changed_input_digest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    record = _constructed_record(tmp_path, monkeypatch)
+    _same(membership.check_problems(record), [])
     record["inputs"]["weight_slice_fiber_relations.py"] = "0" * 64
-    found = membership.check_problems(record)
-    _same(found, ["input digest of weight_slice_fiber_relations.py differs"])
+    _same(membership.check_problems(record), ["input digest of weight_slice_fiber_relations.py differs"])
+    record["weight_slice_record_sha256"] = "0" * 64
+    _same(len(membership.check_problems(record)), 2)
 
 
 @pytest.mark.audit
 def test_the_retained_record_binds_the_current_input_digests() -> None:
     record = _record()
+    _same(membership.slice_problems(record), [])
     _same(sorted(record["inputs"]), sorted(membership.INPUTS))
     for name in membership.INPUTS:
         _same(record["inputs"][name], hashlib.sha256((ATTACH / name).read_bytes()).hexdigest())
