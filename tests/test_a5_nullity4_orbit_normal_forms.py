@@ -71,13 +71,17 @@ def test_kernel_quartic_agrees_with_the_block_of_the_retained_producer() -> None
 
 
 def test_exclusion_of_the_line_r_zero_rests_on_rho_nonzero() -> None:
-    # The exclusion of the line r = 0 rests on rho != 0: at rho = 0 and v_1 = 0 the quartic n (n + r^2) + q^2 is
-    # n (n + mu^2 c0^2), which vanishes on neither line, while at rho = 0 the mixed coefficient -2 rho^2 is zero.
+    # The exclusion of the line r = 0 needs rho != 0: the mixed coefficient of q is -2 rho^2, and at rho = v_1 = 0,
+    # mu^2 = -1, the quartic is (s - i t)(s + i t)(c0^2 + s^2 + t^2), which holds two lines.
     tau, theta = sp.symbols("tau theta")
     _, _, q = forms._quartic_parts(forms.RHO * tau, -forms.MU * tau, theta)
     mixed = sp.Poly(sp.expand(q), tau, theta).coeff_monomial(tau * theta)
     _same(sp.expand(mixed.subs(forms.RHO, 0)), 0)
     _same(sp.expand(mixed.subs(forms.RHO, 1)), -2)
+    n, r, q = forms._quartic_parts(forms.C0, forms.S, forms.T)
+    quartic = sp.expand((n * (n + r**2) + q**2).subs({forms.RHO: 0, forms.V1: 0}))
+    degenerate = sp.expand(sp.rem(quartic, forms.MU**2 + 1, forms.MU))
+    _same(sp.expand(degenerate - (forms.S**2 + forms.T**2) * n), 0)
 
 
 def test_node_cubic_at_orthogonal_u_and_v() -> None:
@@ -94,7 +98,8 @@ def test_common_kernel_certificate_accepts_h_and_rejects_z(sigma: int) -> None:
     # W vanishes at the rank-10 point (v_1, mu, rho) = (0, 0, sigma), which the three factors exclude.
     at = {forms.V1: 0, forms.MU: 0, forms.RHO: sigma}
     _same(
-        [sp.expand(entry.subs(at)) for entry in forms.common_kernel_matrix(sigma)], [0] * forms.CERTIFICATE["entries"]
+        [sp.expand(entry.subs(at)) for entry in forms.common_kernel_matrix(sigma)],
+        [0] * int(forms.CERTIFICATE["entries"]),
     )
 
 
@@ -160,8 +165,12 @@ MUTATIONS: list[Mutation] = [
 
 def test_record_rules_accept_the_pinned_record() -> None:
     _same(forms.verdict(forms.expected_record()), [])
+    # The retained text is the record the constants determine; a changed value fails the rules.
     retained = json.loads(forms.RECORD.read_text(encoding="utf-8"))
-    _same(sorted(retained), sorted(forms.expected_record()))
+    _same(forms.verdict(retained), [])
+    _same(forms.RECORD.read_text(encoding="utf-8"), forms._serialized(forms.expected_record()))
+    retained["complement_pfaffian_sign"] = 0
+    _same(forms.verdict(retained), ["the Pfaffian of the complement block is not G"])
 
 
 @pytest.mark.parametrize("mutation", MUTATIONS, ids=[name for name, _ in MUTATIONS])

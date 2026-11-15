@@ -19,7 +19,10 @@ u.v = v.v = 0, where Delta = 0. SO_3(C) inside the stabilizer of O' in G_2(C) th
 of e_1, e_2, and the scaling gives u = e_1: every point of the two strata is equivalent, by automorphisms and the
 scaling, to a point z = (e_1; mu; v_1 e_1 + rho e_2) with rho nonzero (Delta = rho^2).
 
-This producer checks, exactly over Q (items 1 to 7) and modulo 32029 (item 8):
+Items 1 to 7 are written arguments. The producer checks, exactly over Q, the identities those arguments use (the
+functions of `CHECKS`) and the Groebner certificate of item 7; the orbit statement above, the case analysis of
+item 4, the semicontinuity step of the ledger and the reduction of item 7 are prose that no function replays. Items
+8 and 9 are measurements modulo 32029.
 
 1. For t in the FIXED coordinates M(t) has no entry between FIXED and COMPLEMENT, and the Pfaffian of its
    COMPLEMENT block is G or -G. So at a normal-form point of V(Q) minus V(G) the COMPLEMENT block is invertible and
@@ -153,7 +156,7 @@ NODE_DISCRIMINANT = (
 KERNEL_PRODUCT = "2*(s*t1 - s1*t)"
 # Per sign sigma: nonzero entries of W = M_C(h) Omega modulo the relation, the three Groebner bases that equal (1),
 # and the nonzero entries of W when h is replaced by z.
-CERTIFICATE = {"entries": 14, "unit_ideals": [True, True, True], "mutation_entries": 0}
+CERTIFICATE: dict[str, Any] = {"entries": 14, "unit_ideals": [True, True, True], "mutation_entries": 0}
 # (mu = 0, rank of M on l_z, dim C(l_z), dim of its FIXED part, dim C(P) for P off z other than l_z, M(h) l_z != 0).
 SAMPLE_TALLY = {"mu nonzero": [[False, 8, 3, 3, 1, True, SAMPLES]], "mu zero": [[True, 6, 6, 4, 1, True, SAMPLES]]}
 # (mu = 0, rank of M on l_z, dim C(l_z), dim C(P) for P off z other than l_z, M(h) l_z != 0, exact orbit rank,
@@ -178,7 +181,7 @@ LONG_POINTS = 32
 # (length of the singular scheme, Hilbert value of the trisecant ideal: 0 certifies that no line lies in the quartic).
 SCHEME_TALLY = {"off the discriminant": [[3, 0, 68]], "on the discriminant": [[4, 0, 5]]}
 
-V1, RHO, MU, EPS, Y, W = sp.symbols("v1 rho mu eps y w")
+V1, RHO, MU, EPS, SLACK_RHO, SLACK_FACTOR = sp.symbols("v1 rho mu eps y w")
 C0, S, T, C1, S1, T1 = sp.symbols("c0 s t c1 s1 t1")
 Vector = list[Any]
 
@@ -381,6 +384,9 @@ def tangent_line_restrictions() -> bool:
         and reduce(n + EPS**2 * lam**2) == 0
         and reduce(leading - 2 * RHO**2 * (V1 - EPS)) == 0
         and reduce((V1 - EPS) * (V1 + EPS) + 1) == 0
+        # The tangent rho c0 - mu s + eps t of the conic at p0 and the line r = mu c0 + rho s have the 2 x 2 minor
+        # rho^2 + mu^2 = -eps^2 in (c0, s), so at eps = 0 the tangent is the line r = 0.
+        and reduce(RHO**2 + MU**2 + EPS**2) == 0
     )
 
 
@@ -503,7 +509,15 @@ def common_kernel_certificate(sigma: int) -> dict[str, Any]:
     entries = common_kernel_matrix(sigma)
     units = []
     for factor in (V1, MU, RHO - sigma):
-        basis = sp.groebner([*entries, relation, 1 - Y * RHO, 1 - W * factor], Y, W, MU, V1, RHO, order="grevlex")
+        basis = sp.groebner(
+            [*entries, relation, 1 - SLACK_RHO * RHO, 1 - SLACK_FACTOR * factor],
+            SLACK_RHO,
+            SLACK_FACTOR,
+            MU,
+            V1,
+            RHO,
+            order="grevlex",
+        )
         units.append(list(basis.exprs) == [1])
     return {
         "entries": len(entries),
