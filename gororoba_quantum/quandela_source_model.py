@@ -30,11 +30,19 @@ def click_visibility(overlap: float, g2: float) -> float:
 
 
 def overlap_for_click_visibility(visibility: float, g2: float) -> float:
-    """The overlap M with click_visibility(M, g2) equal to `visibility`, by bisection (the visibility rises with M)."""
+    """The overlap M with click_visibility(M, g2) equal to `visibility`, by bisection (the visibility rises with M).
+
+    The final overlap bracket is at most SOLVER_TOLERANCE wide. Measured with Perceval 1.3.1 (2026-11-15): the
+    simulator drops probabilities below 1e-6, so click_visibility reads exactly 1.0 within about 1e-6 of M = 1 and a
+    bisection to the ceiling would stop 1e-6 short; the ceiling therefore returns M = 1. Each evaluation takes about
+    2 s, so a solve of about 40 evaluations suits a case builder and not an inner loop.
+    """
     low, high = OVERLAP_BOUNDS
     floor, ceiling = click_visibility(low, g2), click_visibility(high, g2)
     if not floor <= visibility <= ceiling:
         raise ValueError(f"a click visibility of {visibility} lies outside [{floor}, {ceiling}] at g2 {g2}")
+    if visibility == ceiling:
+        return high
     while high - low > SOLVER_TOLERANCE:
         middle = (low + high) / 2
         if click_visibility(middle, g2) < visibility:
