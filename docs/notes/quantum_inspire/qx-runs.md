@@ -88,7 +88,10 @@ width.
 
 ## Run QX locally (qxelarator)
 
-A local run needs no account, queue or approval and records nothing.
+A local run needs no account, queue or approval. A direct `qi_run_local` call
+writes no run directory; `scripts/qx_local_series.py` writes a local-control run
+directory, and retaining that directory adds its runtime seed-ledger row and
+research-state entry.
 
 1. Activate nothing: call the QI interpreter directly,
    `QI_PYTHON=${QI_PYTHON:-$HOME/.local/share/quantuminspire/venv/bin/python}`.
@@ -99,11 +102,17 @@ A local run needs no account, queue or approval and records nothing.
    `scripts/qx_local_series.py CASE_DIR OUT_DIR SHOTS --seed qrng:DRAW#INDEX`,
    which derives each circuit's seed from one QRNG value and records them.
    Measured with qxelarator 0.10.0 (2026-11-15, 1000 and 10000 iterations):
-   `execute_string` accepts `seed`; equal seeds return equal counts and
-   different seeds differ; circuits of equal law share their counts under one
-   seed, so a series never reuses one seed across circuits; a seed of
-   2**64 - 1 ends the process with a segmentation fault, so every seed stays
-   below 2**31.
+   `execute_string` accepts `seed`; equal seeds return equal counts and the
+   tested different seeds returned different counts; circuits of equal law
+   share their counts under one seed, so a series gives every circuit its own
+   seed and `qx_local_series.py` refuses a series in which two circuits derive
+   the same one (the 31-bit map collides for some pairs of names, for example
+   `c8869.cq` and `c71149.cq` under run seed 518 in `batch-00`). The
+   accepted seeds measured are 2**31 - 1, 2**32 and 2**63 - 1; seeds of 2**63
+   and 2**64 - 1, and the float seeds 1.0 and 1.5, end the process with a
+   segmentation fault. The 0..2**31 - 1 integer range is the chosen
+   conservative policy inside that accepted range, and `qi_run_local` refuses
+   anything else before qxelarator runs.
 3. Read the result by qubit index (qubit 0 rightmost); the tool returns
    counts, never shots, so expand counts into a shot list before feeding an
    analysis that expects `raw/<file>.json`.
@@ -130,16 +139,18 @@ A local run needs no account, queue or approval and records nothing.
    report is https://github.com/QuTech-Delft/qx-simulator/issues/217. No
    box-kite dialect maps `reset` (`box_kite_cases.DIALECTS`), so `emit`
    refuses it for every generated case.
-6. Twin rule. qxelarator 0.10.0 stays the pin while the newest remote
-   reset probe reads its map (2026-11-15: it does). qxelarator 0.11.0 (released
+6. Twin rule. qxelarator 0.10.0 stays pinned while the newest remote
+   `reset_phase` probe matches its outcome on that one input (2026-11-15: it
+   does). qxelarator 0.11.0 (released
    2026-10-21) runs from a separate virtual environment outside every
    checkout; with seed 11 and 1000 iterations it matches 0.10.0 on a Bell
    pair (`00` 504, `11` 496 in both) and on an X-then-H-twice control, and
-   differs only on the reset program above (2026-11-14). The pin moves when a
-   later `scripts/qx_reset_phase_probe.py` batch reads `10` on `reset_phase`:
-   then bump the pin in `requirements-qi.txt`, regenerate the toolchain
-   record with `scripts/qi_toolchain_check.py`, and rerun the gates that cite
-   it (core-594, core-683, core-632, core-633 and the Tuna gates) against the
+   differs only on the reset program above among the three programs tested
+   (2026-11-14). The pin moves when a later `scripts/qx_reset_phase_probe.py`
+   batch reads `10` on `reset_phase`, an observation that does not establish
+   the remote reset map on other inputs: then bump the pin in
+   `requirements-qi.txt`, regenerate the toolchain record with
+   `scripts/qi_toolchain_check.py`, and rerun the gates that cite it (core-594, core-683, core-632, core-633 and the Tuna gates) against the
    main baseline. Whether one remote probe per redeployment is enough is
    open; the catalogue records no emulator version.
 

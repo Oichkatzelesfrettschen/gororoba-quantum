@@ -32,7 +32,7 @@ def _expect(condition: bool, message: str) -> None:
 
 
 class StandIn(types.ModuleType):
-    """execute_string keyed by seed, recording every call."""
+    """execute_string keyed by seed (an unseeded call varies from call to call), recording every call."""
 
     class SimulationError:
         pass
@@ -43,7 +43,8 @@ class StandIn(types.ModuleType):
 
     def execute_string(self, text: str, iterations: int, **kwargs: Any) -> Any:
         self.calls.append({"text": text, "iterations": iterations, **kwargs})
-        ones = kwargs.get("seed", 0) % iterations
+        seed = kwargs.get("seed")
+        ones = (len(self.calls) if seed is None else seed) % iterations  # an unseeded call varies with each call
         results = {"0": iterations - ones, "1": ones} if ones else {"0": iterations}
         return types.SimpleNamespace(shots_done=iterations, results=results)
 
@@ -57,12 +58,14 @@ def qx(monkeypatch: pytest.MonkeyPatch) -> StandIn:
     return module
 
 
-def _case(root: Path) -> Path:
+def _case(root: Path, names: tuple[str, ...] = CIRCUITS) -> Path:
     batch = root / "case" / "batch-00"
     batch.mkdir(parents=True, exist_ok=True)
-    for name in CIRCUITS:
+    for name in names:
         (batch / name).write_text(PROGRAM, encoding="utf-8")
-    (batch / "cases.json").write_text(json.dumps({"circuits": [{"file": name} for name in CIRCUITS]}), encoding="utf-8")
+    # the case's own generation seed, a value the run must leave alone (len keeps it out of the seed ledger's literals)
+    manifest = {"seed": len(CIRCUITS), "circuits": [{"file": name} for name in names]}
+    (batch / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
     return root / "case"
 
 
@@ -85,8 +88,9 @@ def test_circuit_seeds_differ_by_circuit_and_stay_below_two_to_the_31() -> None:
 def test_every_circuit_runs_with_its_recorded_seed(qx: StandIn, tmp_path: Path) -> None:
     run = _run(tmp_path, "run")
     manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
-    _expect(manifest["seed"]["sources"] == [DRAW], f"seed source {manifest['seed']['sources']}")
-    _expect(manifest["seed"]["flag"] == "--seed", f"seed flag {manifest['seed']['flag']}")
+    _expect(manifest["seed"] == len(CIRCUITS), f"the case manifest's own seed became {manifest['seed']!r}")
+    _expect(manifest["seed_source"]["sources"] == [DRAW], f"seed source {manifest['seed_source']['sources']}")
+    _expect(manifest["seed_source"]["flag"] == "--seed", f"seed flag {manifest['seed_source']['flag']}")
     _expect(sorted(manifest["circuit_seeds"]) == sorted(CIRCUITS), "circuit_seeds does not name every circuit")
     called = [call["seed"] for call in qx.calls]
     _expect(called == [manifest["circuit_seeds"][name] for name in CIRCUITS], f"recorded seeds differ from {called}")
@@ -100,6 +104,27 @@ def test_a_second_run_with_the_same_draw_value_returns_the_same_shots(qx: StandI
         _expect(same, f"the replay of {name} differs")
 
 
+# Measured with sha256 over "518|batch-00|NAME": these two names derive 1158210912 under the 31-bit map.
+COLLIDING = ("c8869.cq", "c71149.cq")
+
+
+def test_circuits_whose_derived_seeds_collide_are_refused_before_anything_runs(qx: StandIn, tmp_path: Path) -> None:
+    seeds = [qls.circuit_seed(518, "batch-00", name) for name in COLLIDING]
+    _expect(seeds[0] == seeds[1], f"the fixture pair no longer collides: {seeds}")
+    case = _case(tmp_path, COLLIDING)
+    with pytest.raises(SystemExit, match="derive the same circuit seed"):
+        qls.main([str(case), str(tmp_path / "out"), str(SHOTS), "--seed", DRAW])
+    _expect(qx.calls == [], "a refused series still reached qxelarator")
+    _expect(not (tmp_path / "out").exists(), "a refused series still wrote a run directory")
+
+
+def test_a_circuit_file_listed_twice_is_refused(qx: StandIn, tmp_path: Path) -> None:
+    case = _case(tmp_path, ("a.cq", "a.cq"))
+    with pytest.raises(SystemExit, match="listed twice"):
+        qls.main([str(case), str(tmp_path / "out"), str(SHOTS), "--seed", DRAW])
+    _expect(qx.calls == [], "a refused series still reached qxelarator")
+
+
 def test_a_bare_integer_seed_and_a_missing_seed_are_refused(qx: StandIn, tmp_path: Path) -> None:
     case = _case(tmp_path)
     for flags in (["--seed", "12345"], []):
@@ -108,13 +133,13 @@ def test_a_bare_integer_seed_and_a_missing_seed_are_refused(qx: StandIn, tmp_pat
     _expect(qx.calls == [], "a refused run still reached qxelarator")
 
 
-def test_qi_run_local_passes_a_seed_and_refuses_one_outside_the_range(qx: StandIn) -> None:
+def test_qi_run_local_passes_a_seed_and_refuses_a_seed_that_is_not_an_integer_in_range(qx: StandIn) -> None:
     _expect(qi_mcp_server.qi_run_local(PROGRAM, shots=4, seed=518)["shots"] == 4, "a seeded run returned no shots")
     _expect(qx.calls[-1]["seed"] == 518, "the seed did not reach qxelarator")
     qi_mcp_server.qi_run_local(PROGRAM, shots=4)
     _expect("seed" not in qx.calls[-1], "an unseeded run passed a seed")
     calls = len(qx.calls)
-    for bad in (-1, 2**31, 2**64 - 1):
-        with pytest.raises(ToolError, match="seed must lie"):
+    for bad in (-1, 2**31, 2**63, 2**64 - 1, 1.0, 1.5, True):
+        with pytest.raises(ToolError, match="seed must be an integer"):
             qi_mcp_server.qi_run_local(PROGRAM, shots=4, seed=bad)
     _expect(len(qx.calls) == calls, "a refused seed still reached qxelarator")

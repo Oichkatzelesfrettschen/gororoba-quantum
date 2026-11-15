@@ -199,7 +199,8 @@ def qi_results(job_id: int, include_raw: bool = False) -> list[dict[str, Any]]:
 def qi_run_local(cqasm: str, shots: int = 1024, seed: int | None = None) -> dict[str, Any]:
     """Run cQASM 3.0 on the local qxelarator emulator (no account, no queue); returns outcome counts.
 
-    An unseeded run differs from run to run; a run with `seed` (0 to 2**31 - 1) returns the same counts each time.
+    An unseeded stochastic run may differ from run to run; a run with `seed`, an integer from 0 to 2**31 - 1, returns
+    the same counts each time.
     """
     import qxelarator
 
@@ -208,8 +209,10 @@ def qi_run_local(cqasm: str, shots: int = 1024, seed: int | None = None) -> dict
         raise ValueError(f"{qubits} qubits exceed the local bound of {LOCAL_MAX_QUBITS}")
     if not 1 <= shots <= LOCAL_MAX_SHOTS:
         raise ValueError(f"shots must lie in 1..{LOCAL_MAX_SHOTS}")
-    if seed is not None and not 0 <= seed < LOCAL_SEED_LIMIT:
-        raise ValueError(f"seed must lie in 0..{LOCAL_SEED_LIMIT - 1}")
+    # Measured with qxelarator 0.10.0: a float seed, or an integer of 2**63 or more, ends the process with a
+    # segmentation fault.
+    if seed is not None and (isinstance(seed, bool) or not isinstance(seed, int) or not 0 <= seed < LOCAL_SEED_LIMIT):
+        raise ValueError(f"seed must be an integer in 0..{LOCAL_SEED_LIMIT - 1}")
     try:
         result = (
             qxelarator.execute_string(cqasm, iterations=shots)

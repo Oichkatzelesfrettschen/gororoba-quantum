@@ -7,8 +7,10 @@ a hardware inference. The circuits of a batch run in parallel through gororoba_q
 raw/<file>.json holds the shot list of each circuit: qxelarator's histogram expanded in sorted
 bit-string order, one character per declared qubit with qubit 0 rightmost. The run takes one
 seed, a quantum random value (--seed qrng:<draw>#<index>), and derives each circuit's qxelarator
-seed from it, so a second run with the same seed returns the same shots bit for bit and the
-manifest records the seed spelling and every circuit seed. The run needs no account
+seed from it, so a second run with the same seed returns the same shots bit for bit; the
+manifest records the seed spelling under "seed_source" and every circuit seed under "circuit_seeds", and a
+case manifest's own "seed" entry passes through unchanged. A run refuses a series whose circuits share a
+derived seed before it copies or runs anything. The run needs no account
 and no network, and it submits nothing; qxelarator is the local twin of the hosted QX emulator
 (docs/notes/quantum_inspire/qx-runs.md), so the shots check cQASM syntax, register shape and the
 noiseless law of the circuits and say nothing about a device. It runs under the Quantum Inspire
@@ -38,11 +40,32 @@ def circuit_seed(seed: int, batch: str, circuit: str) -> int:
 
     Measured with qxelarator 0.10.0: equal seeds return equal counts even for two circuits of equal law,
     so one seed shared by a series would give twin circuits identical sampling noise and a twin contrast
-    of zero variance; and a seed of 2**64 - 1 ends the process with a segmentation fault, so every seed
-    stays below 2**31.
+    of zero variance; a seed of 2**63 or more, and a float seed, end the process with a segmentation fault.
+    Every seed stays below 2**31, a conservative policy inside the measured accepted range. The 31-bit map
+    collides for some pairs of circuit names, so plan_seeds refuses a series that contains one.
     """
     digest = hashlib.sha256(f"{seed}|{batch}|{circuit}".encode()).digest()
     return int.from_bytes(digest[:4], "big") & 0x7FFFFFFF
+
+
+def plan_seeds(case_dir: Path, seed: int) -> dict[str, dict[str, int]]:
+    """Every batch's circuit seeds, refused when two circuits of the series share a file name or a derived seed."""
+    plan: dict[str, dict[str, int]] = {}
+    owner: dict[int, str] = {}
+    for batch in sorted(p for p in case_dir.glob("batch-*") if p.is_dir()):
+        rows = json.loads((batch / "cases.json").read_text(encoding="utf-8"))["circuits"]
+        names = [row["file"] for row in rows]
+        if len(set(names)) != len(names):
+            raise SystemExit(f"{batch.name}: a circuit file is listed twice")
+        plan[batch.name] = {}
+        for name in names:
+            value = circuit_seed(seed, batch.name, name)
+            place = f"{batch.name}/{name}"
+            if value in owner:
+                raise SystemExit(f"{place} and {owner[value]} derive the same circuit seed {value}; rename one circuit")
+            owner[value] = place
+            plan[batch.name][name] = value
+    return plan
 
 
 class RunCircuit:
@@ -64,6 +87,7 @@ class RunCircuit:
 def run_series(case_dir: Path, out_dir: Path, shots: int, seed: int, seed_source: str) -> int:
     simulator = {"name": "qxelarator", "version": version("qxelarator")}
     count = 0
+    plan = plan_seeds(case_dir, seed)
     for batch in sorted(p for p in case_dir.glob("batch-*") if p.is_dir()):
         target = out_dir / batch.name
         if target.exists():
@@ -71,12 +95,12 @@ def run_series(case_dir: Path, out_dir: Path, shots: int, seed: int, seed_source
         shutil.copytree(batch, target)
         manifest = json.loads((batch / "cases.json").read_text(encoding="utf-8"))
         rows = manifest["circuits"]
-        seeds = {row["file"]: circuit_seed(seed, batch.name, row["file"]) for row in rows}
+        seeds = plan[batch.name]
         manifest |= {
             "shots": shots,
             "control": "local_qxelarator",
             "simulator": simulator,
-            "seed": qrng_seeds.seed_record("scripts/qx_local_series.py", "--seed", case_dir.name, seed_source),
+            "seed_source": qrng_seeds.seed_record("scripts/qx_local_series.py", "--seed", case_dir.name, seed_source),
             "circuit_seeds": seeds,
         }
         (target / "cases.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
