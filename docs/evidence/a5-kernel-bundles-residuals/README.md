@@ -431,11 +431,13 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `SL_2`-summands inside `O'`, or four trivial summands inside `O'` and one standard summand outside it. The three
   derivations that fix `e_1`, `e_2` make the eight outer coordinates a module of the quaternions over `C`, so
   `rank M(p) = 2 rank B(p)` for the 7 x 8 block `B` and the rank is constant on `l_z` minus 0; unit ideals in the
-  ring of `x = (rho - sigma, v_1, mu)` modulo the cone `x.x = 0` fix `rank B` at 4 off `mu = 0` and 3 on it.
+  ring of `x = (rho - sigma, v_1, mu)` modulo the cone `x.x = 0` fix `rank B` at 4 off `mu = 0` and 3 on it; `nullity4_polar_line_stack.sing` replays the rank 8 of the stack
+  of `B` and `B D_1` off `mu = 0` as a row module that spans the free module, a second route to that unit ideal.
   Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_polar_line_module.py --check` (about 10 s).
 - `A5-538`, superseded by `A5-550` (proved) and `A5-551` (open), both from `nullity4_real_polar_line.py` (record
   `nullity4-real-polar-line-result.json`). For every nonzero `p`, `ker A(p, conjugate(p))` has complex dimension
-  `nullity M(p) - 1`, 6 and 8 on `l_z`; the real nullities 12 and 16 are twice these at all 66 fixtures. Where `mu = 0`, `l_z` lies in `E_eps = {(a; 0; eps i a)}` and
+  `nullity M(p) - 1`, 6 and 8 on `l_z`; the real nullities 12 and 16 are twice these at all 66 fixtures (`A5-554`, survives: the
+  identification is checked at the fixtures and not derived). Where `mu = 0`, `l_z` lies in `E_eps = {(a; 0; eps i a)}` and
   `C(l_z)` in `C z + E_(-eps)`; these subspaces are Hermitian-orthogonal and preserved by the group, so `P = l_z`
   gives `dim L = 12`, and 8 and 10 never occur. Where `mu` is nonzero, `dim L` is 2, 4 or 6. `hypothesis`
   (`A5-551`): 4 occurs; two double-precision points have `P = l_z` and `dim L = 4` (singular-value gaps 0.49 and
@@ -458,8 +460,9 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   `u.u` nonzero is `z(s) = (1 + s^2) (e_1; beta; lambda e_1 + i e_2 + e_3 - i e_4 + e_5)` on the conic
   `beta^2 + lambda^2 = -1`; the vectors of `K` of nullity above 3 form three lines, whose planes `P_x`, `P_y`, `P_z`
   have `dim C(P)` of 5, 4, 4. Exact real points over Q(i) at `s = 0` and `s = 2` have these kernel planes, so
-  `dim L` is 6, 4 and 4 there: the value 4 occurs. At a real point with kernel plane `P_x` and `s^2` other
-  than 1 the vectors of `P` have nullity 7 (real nullity 12, as at the fixtures). `hypothesis` (`A5-553`): no other value occurs;
+  `dim L` is 6, 4 and 4 there: the value 4 occurs, and `fiber_dimension` of
+  `nullity4_gauss_image.py`, the routine of the grid classes, returns the same 6, 4, 4 there. At a real point with kernel plane `P_x` and `s^2` other
+  than 1 the vectors of `P` have nullity 7 (real nullity 12 through `A5-554`). `hypothesis` (`A5-553`): no other value occurs;
   open at `s = +-1` (`dim C(P_x) = 7`, which would give 10), at the point `(beta, lambda) = (i, 0)` and at the
   totally isotropic pairs. Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_qg_intersection.py
   --check` (about 45 s).

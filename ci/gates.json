@@ -5493,6 +5493,16 @@
     {
       "suite": "core",
       "cwd": ".",
+      "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error -m pytest -q -p no:cacheprovider -m audit tests/test_a5_nullity4_polar_line_stack.py; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
+      "name": "core-a5-nullity4-polar-line-stack",
+      "seconds": 0.3,
+      "requires": [
+        "singular"
+      ]
+    },
+    {
+      "suite": "core",
+      "cwd": ".",
       "cmd": "if [ \"${GOROROBA_SINGULAR_REQUIRED:-0}\" = 1 ]; then \"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_quartic_discriminant.py --check; else echo \"skipped: Singular 4.4 is absent here; rerun with GOROROBA_SINGULAR_REQUIRED=1 on a host with Singular 4.4 to replay this record\"; exit 77; fi",
       "name": "core-a5-nullity4-quartic-discriminant",
       "seconds": 2.2,
