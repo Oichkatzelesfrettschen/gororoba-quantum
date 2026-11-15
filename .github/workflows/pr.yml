@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (475 MB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (475 MB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -84,7 +84,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (475 MB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -123,7 +123,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (475 MB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
@@ -162,7 +162,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
         # The W8 N = 16 export tables (235 MB, docs/evidence/a5-exceptional-fibers/w8-n16-azure/README.md) and the
-        # E8-bar and W8 products files at 32057 (475 MB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
+        # E8-bar and W8 products files at 32057 (473 MiB, docs/evidence/a5-exceptional-fibers/third-prime/README.md) are
         # evidence no check reads; leaving their blobs unfetched keeps checkout inside each job's limit.
         with:
           filter: blob:none
