@@ -51,8 +51,7 @@ Six batches of at most 3 circuits, one queued at a time, each after the pause `q
 | 4 | x90-32, x90-64 | 8,192 |
 | 5 | readout-0, readout-1 | 16,384 |
 
-Each qubit is measured once per shot, so the largest count per qubit per job is 16,384, under the provider's
-500,000. Total: 14 jobs and 147,456 shots.
+The largest job holds 16,384 shots, under the backend type's limit of 131,072. Total: 14 jobs and 147,456 shots.
 
 ## Expected seconds and credits
 
@@ -77,7 +76,7 @@ far below the 300 s job limit. Credits: 0; the account's ledger holds no charge 
   assignment correction). Falsifier: a non-monotone or two-rate decay, which a spurious two-level system produces.
 - hypothesis: the provider's tip that Q5, Q6 and Q7 sit away from their flux sweet spot shows as the lowest
   visibility in the retained map and need not lower T1; this run tests the T1 half.
-- `X90` ladder: P(0) at 256 pulses stays above 0.5 on every qubit the retained crosstalk run did not flag.
+- `X90` ladder: P(0) at 32, 128 and 256 pulses stays above 0.5 on every qubit the retained crosstalk run did not flag.
 
 ## Record
 

@@ -8,8 +8,9 @@ so this case measures three quantities on every qubit at once:
 - t1-N: X on every qubit, then wait(N) cycles of 20 ns on every qubit, N in T1_CYCLES; the corrected excited
   population (P1 - P(1|0)) / (P(1|1) - P(1|0)) against the delay gives T1 by a weighted fit of its logarithm;
 - x90-K: 4K X90 pulses on every qubit, K in LADDER_TURNS, each sequence a whole number of full turns; the corrected
-  ground population 2 p0 - 1 against the pulse count gives a decay length in pulses, an upper bound on the error
-  of one X90 (coherent over-rotation and decoherence together), and no randomized-benchmarking figure.
+  ground population at 32, 128 and 256 pulses is a pass or fail endpoint, and 2 p0 - 1 against the pulse count
+  gives a decay length in pulses when the contrast stays positive. P(0) is periodic in a coherent over-rotation
+  (cos^2(n e / 2) after n pulses), so the ladder bounds no error, and it gives no randomized-benchmarking figure.
 
 Profiles: tuna_17 (17 qubits; 16,384 shots per readout circuit, 8,192 per other circuit) and qx (the same texts
 on 10 qubits at 1,024 shots, within the emulator's 10 qubits and 2,048 shots). Bit order: qubit 0 is the
@@ -20,12 +21,16 @@ rightmost character of a shot.
     --check ROOT        regenerate and compare every file of both directories except CASE.md
     --local             run every circuit of the qx profile once on the local qxelarator emulator and require its
                         noiseless outcome; the tuna_17 texts come from the same builder at 17 qubits
-    --sanity RUN_DIR    after a collection: every job completed with all its shots, and a readout batch separates
-                        its two circuits
-    --analyze OUT RUN_DIR...   per-qubit readout, T1 and ladder rows with the verdicts of prediction.json
+    --sanity RUN_DIR    after a collection: every job completed with all its shots, and each circuit with a fixed
+                        noiseless outcome (readout-0, readout-1, t1-0, x90-0) reads it on all but
+                        SANITY_WRONG_QUBITS qubits; batches 02 and 04 hold no such circuit and get the job check only
+    --analyze OUT RUN_DIR...   per-qubit readout, T1 and ladder rows with the verdicts of prediction.json;
+                        --retained PATH names the retained rows of the readout verdict (default: this checkout's
+                        docs/evidence/qi-status-context/retained-context.json, used when its profile has the
+                        runs' qubit count)
 
 Usage: "$QI_PYTHON" scripts/qi_tuna17_characterization_cases.py (--write ROOT | --check ROOT | --local |
-       --sanity RUN_DIR | --analyze OUT RUN_DIR...)
+       --sanity RUN_DIR | --analyze OUT RUN_DIR... [--retained PATH])
 """
 
 from __future__ import annotations
@@ -60,6 +65,12 @@ READOUT_TOLERANCE = 0.03
 T1_CHI_SQUARE_PROBABILITY = 0.01
 LADDER_MIN_P0 = 0.5
 POPULATION_FLOOR = 0.05
+# A readout pair whose two probabilities lie closer than this cannot correct a population.
+MIN_READOUT_SPAN = 0.2
+# sanity() stops a series when more qubits than this read the wrong side of 0.5 on a circuit whose noiseless
+# outcome is fixed. Single weak qubits are the finding the series records and stop nothing.
+SANITY_WRONG_QUBITS = 3
+RETAINED_CONTEXT = Path(__file__).resolve().parents[1] / "docs/evidence/qi-status-context/retained-context.json"
 # Seconds per job from docs/notes/quantum_inspire/usage.md ("Run on Tuna-17"): 2.6 s plus 0.53 ms per shot.
 JOB_SECONDS, SHOT_SECONDS = 2.6, 0.53e-3
 
@@ -93,14 +104,14 @@ def batches() -> list[list[str]]:
     return [readout, t1[:3], t1[3:], ladder[:2], ladder[2:], readout]
 
 
+def job_seconds(profile: dict[str, Any], name: str) -> float:
+    shots = profile["readout_shots"] if name.startswith("readout") else profile["shots"]
+    wait = int(name[3:-3]) * CYCLE_SECONDS if name.startswith("t1-") else 0.0
+    return float(JOB_SECONDS + shots * (SHOT_SECONDS + wait))
+
+
 def expected_seconds(profile: dict[str, Any]) -> float:
-    total = 0.0
-    for names in batches():
-        for name in names:
-            shots = profile["readout_shots"] if name.startswith("readout") else profile["shots"]
-            wait = int(name[3:-3]) * CYCLE_SECONDS if name.startswith("t1-") else 0.0
-            total += JOB_SECONDS + shots * (SHOT_SECONDS + wait)
-    return round(total, 1)
+    return round(sum(job_seconds(profile, name) for names in batches() for name in names), 1)
 
 
 def files(profile_name: str) -> dict[str, str]:
@@ -151,13 +162,14 @@ def files(profile_name: str) -> dict[str, str]:
         "thresholds": {
             "readout_tolerance_against_2026_10_17": READOUT_TOLERANCE,
             "t1_chi_square_probability": T1_CHI_SQUARE_PROBABILITY,
-            "ladder_min_p0_at_256_pulses": LADDER_MIN_P0,
+            "ladder_min_p0": LADDER_MIN_P0,
             "population_floor": POPULATION_FLOOR,
         },
         "verdicts": {
             "readout": "per qubit: both closing-pair probabilities within the tolerance of the retained row",
+            "readout_stable": "per qubit: the closing pair within the tolerance of the opening pair",
             "t1": "per qubit: a single exponential fits the points above the population floor",
-            "ladder": "per qubit: corrected P(0) at 256 pulses at or above the minimum",
+            "ladder": "per qubit: corrected P(0) at 32, 128 and 256 pulses each at or above the minimum",
         },
     }
     out["prediction.json"] = json.dumps(prediction, indent=1) + "\n"
@@ -244,11 +256,50 @@ def sanity(run: Path) -> list[str]:
             problems.append(f"{row['file']}: no completed job")
         elif results[0].get("shots_done") != cases["shots"] or len(raw.get(row["file"], [])) != cases["shots"]:
             problems.append(f"{row['file']}: {results[0].get('shots_done')} shots done of {cases['shots']}")
-    if not problems and {"readout-0.cq", "readout-1.cq"} <= set(raw):
-        zero, one = p1(raw["readout-0.cq"], cases["nqubits"]), p1(raw["readout-1.cq"], cases["nqubits"])
-        if sum(zero) / len(zero) > 0.2 or sum(one) / len(one) < 0.8:
-            problems.append("the readout pair does not separate: mean P(1|0) above 0.2 or mean P(1|1) below 0.8")
+    if problems:
+        return problems
+    for row in cases["circuits"]:
+        want = anchor(row)
+        if want is None:
+            continue
+        wrong = [q for q, value in enumerate(p1(raw[row["file"]], cases["nqubits"])) if (value > 0.5) != (want == 1)]
+        if len(wrong) > SANITY_WRONG_QUBITS:
+            problems.append(f"{row['file']}: qubits {wrong} read the wrong side of 0.5, want all {want}")
     return problems
+
+
+def anchor(row: dict[str, Any]) -> int | None:
+    """The noiseless bit of a circuit that holds no wait and no pulse train, or None.
+
+    Every circuit treats all qubits alike, so no check here detects a reversed bit order; bit() rests on the
+    manifest's bit_order, which the retained Tuna-17 runs established.
+    """
+    if row["kind"] == "readout":
+        return int(row["prepared"])
+    if row["kind"] == "t1" and row["wait_cycles"] == 0:
+        return 1
+    if row["kind"] == "x90" and row["pulses"] == 0:
+        return 0
+    return None
+
+
+def retained_rows(path: Path, nqubits: int) -> dict[int, dict[str, float]]:
+    """Qubit -> retained readout pair of scripts/qi_retained_context.py's document, or {} for another register."""
+    if not path.is_file():
+        return {}
+    document = json.loads(path.read_text(encoding="utf-8"))
+    rows = [row for row in document.get("qubits", []) if "readout" in row]
+    if len(document.get("qubits", [])) != nqubits:
+        return {}
+    return {
+        row["qubit"]: {"p1_given_0": row["readout"]["p1_given_0"], "p1_given_1": row["readout"]["p1_given_1"]}
+        for row in rows
+    }
+
+
+def binomial_variance(p: float, count: int) -> float:
+    """Variance of an observed fraction, with the quarter-count term that keeps it positive at p = 0 or 1."""
+    return (p * (1 - p) + 0.25 / count) / count
 
 
 def chi_square_probability(chi_square: float, freedom: int) -> float:
@@ -305,8 +356,13 @@ def decay_fit(points: list[tuple[float, float, float]]) -> dict[str, Any] | None
 
 
 def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = None) -> dict[str, Any]:
-    """Per-qubit readout, T1 and ladder rows from collected run directories, with the verdicts of prediction.json."""
-    readouts: list[dict[str, list[float]]] = []
+    """Per-qubit readout, T1 and ladder rows from collected run directories, with the verdicts of prediction.json.
+
+    A corrected population is (p - zero) / span with zero and span from the mean of the readout pairs. Its
+    variance holds the binomial terms of p, zero and one; the covariance that the shared pair puts between two
+    points is left out, so the chi-square probability is approximate where the readout terms dominate.
+    """
+    readouts: list[dict[str, Any]] = []
     t1_raw: dict[int, tuple[list[float], int]] = {}
     ladder_raw: dict[int, tuple[list[float], int]] = {}
     nqubits = 0
@@ -316,7 +372,11 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
         rows = {row["file"]: row for row in cases["circuits"]}
         if {"readout-0.cq", "readout-1.cq"} <= set(raw):
             readouts.append(
-                {"p1_given_0": p1(raw["readout-0.cq"], nqubits), "p1_given_1": p1(raw["readout-1.cq"], nqubits)}
+                {
+                    "p1_given_0": p1(raw["readout-0.cq"], nqubits),
+                    "p1_given_1": p1(raw["readout-1.cq"], nqubits),
+                    "shots": min(len(raw["readout-0.cq"]), len(raw["readout-1.cq"])),
+                }
             )
         for name, shots in raw.items():
             if rows[name]["kind"] == "t1":
@@ -325,6 +385,8 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
                 ladder_raw[rows[name]["pulses"]] = (p1(shots, nqubits), len(shots))
     if not readouts:
         raise SystemExit("qi_tuna17_characterization_cases: no collected readout pair among the run directories")
+    readout_shots = sum(pair["shots"] for pair in readouts)
+    longest = 4 * max(LADDER_TURNS)
     qubits = []
     for qubit in range(nqubits):
         zero = sum(pair["p1_given_0"][qubit] for pair in readouts) / len(readouts)
@@ -336,21 +398,40 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
                 {"p1_given_0": pair["p1_given_0"][qubit], "p1_given_1": pair["p1_given_1"][qubit]} for pair in readouts
             ],
         }
+        last = readouts[-1]
         if retained and qubit in retained:
-            last = readouts[-1]
             moved = max(
                 abs(last["p1_given_0"][qubit] - retained[qubit]["p1_given_0"]),
                 abs(last["p1_given_1"][qubit] - retained[qubit]["p1_given_1"]),
             )
             row["readout_within_tolerance"] = moved <= READOUT_TOLERANCE
-        points = []
-        for cycles, (values, count) in sorted(t1_raw.items()):
-            p = values[qubit]
-            points.append(
-                (cycles * CYCLE_SECONDS * 1e6, (p - zero) / span, math.sqrt(max(p * (1 - p), 1e-12) / count) / span)
+        if len(readouts) > 1:
+            first = readouts[0]
+            row["readout_drift"] = max(
+                abs(last["p1_given_0"][qubit] - first["p1_given_0"][qubit]),
+                abs(last["p1_given_1"][qubit] - first["p1_given_1"][qubit]),
             )
-        fit = decay_fit(points) if span > 0.2 else None
-        if fit is not None:
+            row["readout_stable"] = row["readout_drift"] <= READOUT_TOLERANCE
+        if span <= MIN_READOUT_SPAN:
+            row["readout_unusable"] = True
+            qubits.append(row)
+            continue
+        zero_variance, one_variance = binomial_variance(zero, readout_shots), binomial_variance(one, readout_shots)
+
+        def corrected(p: float, count: int, zero: float = zero, span: float = span) -> tuple[float, float]:
+            value = (p - zero) / span
+            variance = binomial_variance(p, count) + (1 - value) ** 2 * zero_variance + value**2 * one_variance  # noqa: B023
+            return value, math.sqrt(variance) / span
+
+        points = [
+            (cycles * CYCLE_SECONDS * 1e6, *corrected(values[qubit], count))
+            for cycles, (values, count) in sorted(t1_raw.items())
+        ]
+        fit = decay_fit(points)
+        if fit is None:
+            if t1_raw:
+                row["t1_unfitted"] = "fewer than three points above the population floor"
+        else:
             row["t1"] = {
                 "us": fit.get("length"),
                 "us_se": fit.get("length_se"),
@@ -359,21 +440,24 @@ def analyze(runs: list[Path], retained: dict[int, dict[str, float]] | None = Non
             row["t1_single_exponential"] = (
                 fit.get("length") is not None and fit["chi_square_probability"] >= T1_CHI_SQUARE_PROBABILITY
             )
+            if fit.get("length") is not None and points:
+                # A decay this slow leaves the points flat within the window; the fitted value is a lower scale.
+                row["t1_beyond_window"] = fit["length"] > 10 * points[-1][0]
         ladder_points = []
+        ladder_p0 = {}
         for pulses, (values, count) in sorted(ladder_raw.items()):
-            p0 = 1.0 - (values[qubit] - zero) / span if span > 0.2 else float("nan")
-            ladder_points.append(
-                (
-                    float(pulses),
-                    2 * p0 - 1,
-                    2 * math.sqrt(max(values[qubit] * (1 - values[qubit]), 1e-12) / count) / max(span, 1e-9),
-                )
-            )
-            if pulses == max(ladder_raw):
-                row["ladder_p0_at_longest"] = p0
-                row["ladder_clears"] = p0 >= LADDER_MIN_P0
-        ladder_fit = decay_fit(ladder_points) if span > 0.2 else None
-        if ladder_fit is not None and ladder_fit.get("length"):
+            value, error = corrected(values[qubit], count)
+            ladder_p0[pulses] = 1.0 - value
+            ladder_points.append((float(pulses), 1 - 2 * value, 2 * error))
+        if ladder_p0:
+            row["ladder_p0"] = {str(pulses): p0 for pulses, p0 in ladder_p0.items()}
+        if longest in ladder_p0:
+            row["ladder_p0_at_longest"] = ladder_p0[longest]
+        if {4 * turns for turns in LADDER_TURNS if turns} <= set(ladder_p0):
+            row["ladder_clears"] = all(p0 >= LADDER_MIN_P0 for pulses, p0 in ladder_p0.items() if pulses)
+        ladder_fit = decay_fit(ladder_points)
+        # A point at or below the floor is a contrast an exponential cannot hold, so the decay length needs them all.
+        if ladder_fit is not None and ladder_fit.get("length") and ladder_fit["points"] == len(ladder_points):
             row["ladder"] = {
                 "decay_pulses": ladder_fit["length"],
                 "decay_pulses_se": ladder_fit["length_se"],
@@ -391,6 +475,7 @@ def main(argv: list[str]) -> int:
     group.add_argument("--local", action="store_true")
     group.add_argument("--sanity", type=Path, metavar="RUN_DIR")
     group.add_argument("--analyze", nargs="+", type=Path, metavar="PATH", help="OUT followed by the run directories")
+    parser.add_argument("--retained", type=Path, default=RETAINED_CONTEXT, help="retained rows of the readout verdict")
     args = parser.parse_args(argv)
     if args.write:
         write(args.write)
@@ -398,7 +483,9 @@ def main(argv: list[str]) -> int:
     if args.analyze:
         if len(args.analyze) < 2:
             parser.error("--analyze takes OUT and at least one RUN_DIR")
-        args.analyze[0].write_text(json.dumps(analyze(args.analyze[1:]), indent=1) + "\n", encoding="utf-8")
+        nqubits = json.loads((args.analyze[1] / "cases.json").read_text(encoding="utf-8"))["nqubits"]
+        found = analyze(args.analyze[1:], retained_rows(args.retained, nqubits))
+        args.analyze[0].write_text(json.dumps(found, indent=1, allow_nan=False) + "\n", encoding="utf-8")
         return 0
     problems = check(args.check) if args.check else local() if args.local else sanity(args.sanity)
     for problem in problems:
