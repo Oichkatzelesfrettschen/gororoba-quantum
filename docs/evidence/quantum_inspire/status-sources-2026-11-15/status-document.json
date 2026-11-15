@@ -1,6 +1,6 @@
 {
  "schema": "qi-status-v1",
- "request_started_utc": "2026-11-15T17:47:52.112714+00:00",
+ "request_started_utc": "2026-11-15T19:40:10.200471+00:00",
  "account": {
   "backend_types": [
    {
@@ -40,10 +40,11 @@
     "instances": [
      {
       "name": "QX emulator",
+      "backend_type_id": 1,
       "status": "idle",
       "message": "",
-      "last_heartbeat": "2026-11-15T17:47:47.950784Z",
-      "heartbeat_age_seconds": 4.2
+      "last_heartbeat": "2026-11-15T19:40:08.019137Z",
+      "heartbeat_age_seconds": 2.2
      }
     ]
    },
@@ -71,9 +72,9 @@
     "definition_sha256": "9eee84cdee784ba3880c48eb8332abba1339e2adb7976f01e45a51671e2e96b5",
     "queue_all": {
      "number_of_jobs_in_queue": 8,
-     "min_wait_time_in_queue_secs": 3208576.0,
-     "avg_wait_time_in_queue_secs": 4939402.0,
-     "max_wait_time_in_queue_secs": 10039225.0
+     "min_wait_time_in_queue_secs": 3215314.0,
+     "avg_wait_time_in_queue_secs": 4946140.0,
+     "max_wait_time_in_queue_secs": 10045964.0
     },
     "queue_own": {
      "number_of_jobs_in_queue": 0,
@@ -84,10 +85,11 @@
     "instances": [
      {
       "name": "Tuna-5",
+      "backend_type_id": 4,
       "status": "offline",
       "message": "",
       "last_heartbeat": "2026-03-09T17:41:44.628372Z",
-      "heartbeat_age_seconds": 21686767.5
+      "heartbeat_age_seconds": 21693505.6
      }
     ]
    },
@@ -128,10 +130,11 @@
     "instances": [
      {
       "name": "Ry emulator",
+      "backend_type_id": 5,
       "status": "idle",
       "message": "",
-      "last_heartbeat": "2026-11-15T17:47:51.329390Z",
-      "heartbeat_age_seconds": 0.8
+      "last_heartbeat": "2026-11-15T19:40:09.045799Z",
+      "heartbeat_age_seconds": 1.2
      }
     ]
    },
@@ -159,9 +162,9 @@
     "definition_sha256": "5cddc401c5e94853e013f6c95c527a7a44ebc59c14d4f29b8531e211204b2c97",
     "queue_all": {
      "number_of_jobs_in_queue": 8,
-     "min_wait_time_in_queue_secs": 3566465.0,
-     "avg_wait_time_in_queue_secs": 5954954.0,
-     "max_wait_time_in_queue_secs": 7285720.0
+     "min_wait_time_in_queue_secs": 3573204.0,
+     "avg_wait_time_in_queue_secs": 5961693.0,
+     "max_wait_time_in_queue_secs": 7292459.0
     },
     "queue_own": {
      "number_of_jobs_in_queue": 0,
@@ -172,10 +175,11 @@
     "instances": [
      {
       "name": "Tuna-9",
+      "backend_type_id": 6,
       "status": "offline",
       "message": "Please be aware that Q8 is affected by a spurious two-level system (TLS)",
-      "last_heartbeat": "2026-11-15T17:47:44.466953Z",
-      "heartbeat_age_seconds": 7.6
+      "last_heartbeat": "2026-11-15T19:40:10.478492Z",
+      "heartbeat_age_seconds": -0.3
      }
     ]
    },
@@ -202,10 +206,10 @@
     },
     "definition_sha256": "1499aeb7559fa31a255990a4f119ee552b59c65581f11b41bd068a4a1a448c1a",
     "queue_all": {
-     "number_of_jobs_in_queue": 13,
-     "min_wait_time_in_queue_secs": 337.0,
-     "avg_wait_time_in_queue_secs": 6798.0,
-     "max_wait_time_in_queue_secs": 10955.0
+     "number_of_jobs_in_queue": 19,
+     "min_wait_time_in_queue_secs": 1019.0,
+     "avg_wait_time_in_queue_secs": 9831.0,
+     "max_wait_time_in_queue_secs": 17694.0
     },
     "queue_own": {
      "number_of_jobs_in_queue": 0,
@@ -216,31 +220,34 @@
     "instances": [
      {
       "name": "Tuna-17",
+      "backend_type_id": 7,
       "status": "calibrating",
       "message": "",
-      "last_heartbeat": "2026-11-15T17:47:46.368005Z",
-      "heartbeat_age_seconds": 5.7
+      "last_heartbeat": "2026-11-15T19:40:06.856805Z",
+      "heartbeat_age_seconds": 3.3
      }
     ]
    }
   ],
-  "retired": [
+  "unlisted": [
    {
     "name": "Spin-2+",
+    "backend_type_id": 2,
     "status": "offline",
     "message": "",
     "last_heartbeat": "2025-12-10T13:01:25Z",
-    "heartbeat_age_seconds": 29393187.1
+    "heartbeat_age_seconds": 29399925.2
    },
    {
     "name": "Starmon-7",
+    "backend_type_id": 3,
     "status": "offline",
     "message": "",
     "last_heartbeat": "2026-03-27T17:04:14.958013Z",
-    "heartbeat_age_seconds": 20133817.2
+    "heartbeat_age_seconds": 20140555.2
    }
   ],
-  "read_utc": "2026-11-15T17:47:52.112725+00:00"
+  "read_utc": "2026-11-15T19:40:10.200484+00:00"
  },
  "platform": {
   "value_text": {
@@ -252,23 +259,23 @@
   },
   "current": {
    "QX emulator": {
-    "utc": "2026-11-15T17:47:55.981000+00:00",
+    "utc": "2026-11-15T19:40:15.196000+00:00",
     "value": 0
    },
    "Ry emulator": {
-    "utc": "2026-11-15T17:47:55.981000+00:00",
+    "utc": "2026-11-15T19:40:15.196000+00:00",
     "value": 0
    },
    "Tuna-17": {
-    "utc": "2026-11-15T17:47:55.981000+00:00",
+    "utc": "2026-11-15T19:40:15.196000+00:00",
     "value": 2
    },
    "Tuna-5": {
-    "utc": "2026-11-15T17:47:55.981000+00:00",
+    "utc": "2026-11-15T19:40:15.196000+00:00",
     "value": 3
    },
    "Tuna-9": {
-    "utc": "2026-11-15T17:47:55.981000+00:00",
+    "utc": "2026-11-15T19:40:15.196000+00:00",
     "value": 3
    }
   },
@@ -279,35 +286,19 @@
   "history": {
    "QX emulator": [
     [
-     "2026-11-15T11:47:00+00:00",
+     "2026-11-15T13:40:00+00:00",
      0
     ]
    ],
    "Ry emulator": [
     [
-     "2026-11-15T11:47:00+00:00",
+     "2026-11-15T13:40:00+00:00",
      0
     ]
    ],
    "Tuna-17": [
     [
-     "2026-11-15T11:47:00+00:00",
-     0
-    ],
-    [
-     "2026-11-15T12:16:00+00:00",
-     2
-    ],
-    [
-     "2026-11-15T12:17:00+00:00",
-     0
-    ],
-    [
-     "2026-11-15T12:47:00+00:00",
-     4
-    ],
-    [
-     "2026-11-15T13:12:00+00:00",
+     "2026-11-15T13:40:00+00:00",
      0
     ],
     [
@@ -329,16 +320,20 @@
    ],
    "Tuna-5": [
     [
-     "2026-11-15T11:47:00+00:00",
+     "2026-11-15T13:40:00+00:00",
      3
     ]
    ],
    "Tuna-9": [
     [
-     "2026-11-15T11:47:00+00:00",
+     "2026-11-15T13:40:00+00:00",
      3
     ]
    ]
+  },
+  "history_reach": {
+   "state": "data",
+   "http_status": 200
   },
   "version": 2,
   "updated": "2026-07-24T16:57:27Z"
@@ -405,5 +400,5 @@
    }
   }
  },
- "retrieved_utc": "2026-11-15T17:48:31.257676+00:00"
+ "retrieved_utc": "2026-11-15T19:40:50.427961+00:00"
 }

@@ -16,11 +16,11 @@ in place of each network address. Status and availability change after the read.
 ## What each source reports
 
 - Compute API, `GET /backends`: one of `offline`, `idle`, `executing`, `calibrating`, `benchmarking` per physical
-  instance, with its message and last heartbeat. In `status-document.json` Tuna-17 is `calibrating` with a heartbeat 5.7 s old.
+  instance, with its message and last heartbeat. In `status-document.json` Tuna-17 is `calibrating` with a heartbeat 3.3 s old.
 - Compute API, `GET /backend_types/{id}/queue`: the job count and the minimum, average and maximum wait, over all
-  users (`user_only=false`) and over the account. In `status-document.json` the Tuna-17 queue holds 13 jobs, 0 of them the account's.
+  users (`user_only=false`) and over the account. In `status-document.json` the Tuna-17 queue holds 19 jobs, 0 of them the account's.
 - Public Status dashboard (datasource `prometheus-qtc`): the status value of each backend type at one-minute
-  spacing over the last 6 hours. In `status-document.json` Tuna-17 changes state 8 times in that window.
+  spacing over the last 6 hours. In `status-document.json` Tuna-17 changes state 4 times in that window.
 - Public backend dashboards: dated notices, and per-qubit T1, T2 Ramsey, T2 echo, initialization, readout, readout
   QND, single-qubit gate and Bell-state error from the datasource `prometheus-qi2-monitoring`.
 
