@@ -8189,16 +8189,55 @@
    "queued_at": "2026-11-15T02:09:43.237317Z",
    "shots_done": 32768,
    "status": "completed"
+  },
+  {
+   "backend_type_id": 1,
+   "batch_job": 958302,
+   "charged": 0,
+   "created_on": "2026-11-15T02:57:14.668083Z",
+   "execution_time_in_seconds": 0.012477,
+   "finished_at": "2026-11-15T02:57:22.291371Z",
+   "job": 1741827,
+   "number_of_shots": 2048,
+   "queued_at": "2026-11-15T02:57:22.058864Z",
+   "shots_done": 2048,
+   "status": "completed"
+  },
+  {
+   "backend_type_id": 1,
+   "batch_job": 958302,
+   "charged": 0,
+   "created_on": "2026-11-15T02:57:15.763966Z",
+   "execution_time_in_seconds": 0.012823,
+   "finished_at": "2026-11-15T02:57:22.539087Z",
+   "job": 1741828,
+   "number_of_shots": 2048,
+   "queued_at": "2026-11-15T02:57:22.340179Z",
+   "shots_done": 2048,
+   "status": "completed"
+  },
+  {
+   "backend_type_id": 1,
+   "batch_job": 958302,
+   "charged": 0,
+   "created_on": "2026-11-15T02:57:16.781728Z",
+   "execution_time_in_seconds": 0.010683,
+   "finished_at": "2026-11-15T02:57:21.903001Z",
+   "job": 1741829,
+   "number_of_shots": 2048,
+   "queued_at": "2026-11-15T02:57:21.706968Z",
+   "shots_done": 2048,
+   "status": "completed"
   }
  ],
- "retrieved_utc": "2026-11-15T02:17:25+00:00",
+ "retrieved_utc": "2026-11-15T07:35:32+00:00",
  "schema": "qi-usage-v2",
  "totals": {
   "by_backend_type_id": {},
   "by_domain": {},
   "change": 0,
-  "execution_seconds": 9837.409635,
-  "shots_done": 16363408
+  "execution_seconds": 9837.445618,
+  "shots_done": 16369552
  },
  "transactions": [],
  "unretained": []
