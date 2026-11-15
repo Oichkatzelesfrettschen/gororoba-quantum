@@ -113,8 +113,8 @@ A PR merges after this sequence:
    the head that round reviewed, accepts its verdict, waits on the current
    head's checks and requests nothing (the plain form treats a new head as an
    unreviewed round and re-requests after the stall interval).
-3. The `pr.yml` checks `lint`, `types`, `tests` and `contracts` pass on the
-   head. A push that changes the head reruns them; a red job gets its fix commit on the branch.
+3. The six `pr.yml` checks `lint`, `types`, `tests`, `contracts` and the two
+   `arm` legs pass on the head. A push that changes the head reruns them; a red job gets its fix commit on the branch.
 4. GitHub reports mergeable_state clean. While a PR's mergeable_state is
    `dirty`, GitHub starts no new `pull_request`-triggered run (a
    `workflow_dispatch` run still can), so a wait loop exits on `dirty`
@@ -125,7 +125,7 @@ A PR merges after this sequence:
 When the owner says "just merge", that is the decision of step 5, given at
 once: the operator merges and cleans up and does nothing else, with no edited
 body, no exception record and no further review. Steps 3 and 4 still bind the
-merge itself, because branch protection on `main` requires the four checks
+merge itself, because branch protection on `main` requires the six checks
 with admins enforced and refuses an earlier merge; while they run, one
 background loop polls them and calls the merge once they pass and the state
 is clean.

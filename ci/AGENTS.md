@@ -59,8 +59,9 @@ The job timeouts are 8 minutes for `lint`, 10 for `types` (its mypy step 4), 12 
 `types`, `tests` and `contracts` restore the pinned venv through
 .github/actions/pins-venv, under a cache key that hashes the venv's inputs, and
 build it with ci/install_pins.sh on a miss; a push to main saves it where later
-pull requests restore it. Branch protection on main requires `lint`, `types`, `tests` and `contracts`
-green on the head, for administrators too, without requiring the branch to
+pull requests restore it. Branch protection on main requires `lint`, `types`, `tests`, `contracts` and
+both `arm` legs (`arm (ubuntu-26.04-arm)`, `arm (macos-15)`) green on the
+head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
 (scripts/qd_schedule_tick.sh does so when a schedule finishes); a branch whose
