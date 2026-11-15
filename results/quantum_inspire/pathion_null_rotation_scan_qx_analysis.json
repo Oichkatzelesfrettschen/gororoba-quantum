@@ -1,0 +1,68 @@
+{
+ "backend": "QXsinglenodesimulator",
+ "batch_cases_sha256": {
+  "batch-00": "8750581b17c1a492ba24c9ff2d483f1452bb58568af3b4d207aa1a6ca9591cca",
+  "batch-01": "88190103cc2fab6433bc47ad7e3414dcc75d0054e2489422a3fc51d566f80e6a",
+  "batch-02": "44f55f23c7884a2df91fd1425e19469f61d51e843d151786cbe25e616efd247d",
+  "batch-03": "2d87027487913c71f0679cc90514c25cfb9536cb0254c41f4fc075a885d560bd"
+ },
+ "claim_kind": "preregistered emulator control",
+ "complete": true,
+ "qx_control": {
+  "arms": {
+   "batch-00/b0-rx-all-m10.cq": {
+    "floor": 0.043272710712750996,
+    "ok": true,
+    "tvd": 0.047960801994999996
+   },
+   "batch-00/b0-rx.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.031448017498
+   },
+   "batch-00/b0.cq": {
+    "floor": 0.03567304289284069,
+    "ok": true,
+    "tvd": 0.028749409913
+   },
+   "batch-01/b0-rx-all-p10.cq": {
+    "floor": 0.044448456966250396,
+    "ok": true,
+    "tvd": 0.0457550324985
+   },
+   "batch-01/b0-rx-q4-m10.cq": {
+    "floor": 0.038561075881873574,
+    "ok": true,
+    "tvd": 0.0266218313375
+   },
+   "batch-01/b0-rx-q4-p10.cq": {
+    "floor": 0.03848295264138471,
+    "ok": true,
+    "tvd": 0.038681209089
+   },
+   "batch-02/b0-rx-all-m20.cq": {
+    "floor": 0.04261012979707089,
+    "ok": true,
+    "tvd": 0.05892442449850001
+   },
+   "batch-02/b0-rx-q8-m10.cq": {
+    "floor": 0.04572514478602134,
+    "ok": true,
+    "tvd": 0.056056015084500005
+   },
+   "batch-02/b0-rx-q8-p10.cq": {
+    "floor": 0.045524883189375184,
+    "ok": true,
+    "tvd": 0.051170994780499995
+   },
+   "batch-03/b0-rx-all-p20.cq": {
+    "floor": 0.044749654071946754,
+    "ok": true,
+    "tvd": 0.044402873486
+   }
+  },
+  "factor": 2.0,
+  "pass": true
+ },
+ "schema": "qi-pathion-null-rotation-scan-analysis-v1"
+}
