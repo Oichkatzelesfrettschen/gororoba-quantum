@@ -1062,7 +1062,7 @@ fixture, and checks four facts. The ten parameters of the two factors are `(p, q
 The fixture checks run in the pull-request lane; the Singular stage runs in the module and in the replay gate
 `core-a5-e8-birational-degree`. The scratch runs modulo 32009 at both basepoints agree and are not retained.
 
-**Proved (`A5-543`):** the rank 12 of `A5-512` makes the degree-11 component the image, under an injective linear
+**Proved (`A5-543`, `A5-549`):** the rank 12 of `A5-512` makes the degree-11 component the image, under an injective linear
 map `M`, of the toric fourfold of the 12 monomials. [`e8_toric_face_strata.py`](e8_toric_face_strata.py) computes
 the polytope of the monomials and matches its faces with the strata above
 ([record](e8-toric-face-strata-result.json)).
@@ -1075,16 +1075,18 @@ the polytope of the monomials and matches its faces with the strata above
   span the singular line, and no other column lies on either; the test evaluates the minimal generators of the two
   components, held as constants by `e8_component_geometry.py`, on the columns over `Q(i)`. The generators of the
   other basepoint reject the faces.
-- **Inferred:** the three columns have rank 3, and both components lie in the meeting plane of `A5-504`, a linear
-  space of dimension 3, so the meeting plane is the image of the triangle. The 18 linear forms of the meeting are in
-  no record, and the module compares nothing with them.
+- **Proved (`A5-549`):** Singular regenerates the 148 quadrics, takes their two minimal primes and prints the minimal
+  generators of the sum, 18 linear forms: the meeting plane of the two components. The forms have rank 18 and vanish
+  on the columns of `M` at `z l`, `a m` and `b m`, of rank 3, and on no other column, so the meeting plane is the
+  image of the triangle. The forms of the other basepoint vanish on no column.
 - Over `Q` the toric ideal of the monomials has 25 quadrics, dimension 5 and multiplicity 11, and its local
   multiplicity is 4 at the vertex `z l`, 2 at a point of the edge and 1 at a point of the triangle, the tangent-cone
   multiplicities above. Each comes from a standard basis in a local ordering of the affine chart. The vertex `a^3`
   is a smooth point, and the 11 monomials without `z l` give multiplicity 7.
 
-The polytope and the strata run in the pull-request lane; the Singular stage runs in the module and in the replay
-gate `core-a5-e8-toric-face-strata`.
+The polytope, the strata and the meeting forms held as constants run in the pull-request lane; the Singular stages
+(the toric ideal, the quadrics and their primes) run in the module and in the replay gate
+`core-a5-e8-toric-face-strata`.
 
 **Method (`A5-505`):** the singular locus comes from kept minors of the sparse quadrics (an outer bound), a
 decomposition of the bound, and the Fitting ideal of the pruned Jacobian cokernel on each component. `slocus` and
@@ -1099,7 +1101,11 @@ generators with `tw` up to 11. No fixed `s2` reaches the 148 quadrics: `s2` lies
 at `s2 = 0` and `s2 = 7013` have dimension 61 and 34 in `y`-degree 2 against 83. The surviving statement is for
 generic `s2`: over the function field in `s2`, or at a value that a nonzero minor certifies as outside the
 exceptional set, the count is 32 generators in 11 blocks. The polynomial ring in `s2` is another regime: there `s2`
-lies in the maximal ideal, and the `y`-degree-2 generators modulo every slice coordinate must be the 148 quadrics. No tracked record holds these runs.
+lies in the maximal ideal, and the `y`-degree-2 generators modulo every slice coordinate must be the 148 quadrics.
+A scratch run over the function field `GF(32009)(s2)`, the same script with `s2` a transcendental parameter (24
+minutes, 240 MB), finds the 32 generators in the same 11 bidegrees, none with `tw` above 8, and a table of the 75
+blocks equal to that at `s2 = 3567`; the count over the function field therefore holds modulo 32009, and the row
+stays open for a second prime and characteristic 0. No tracked record holds these runs.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-446`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has
