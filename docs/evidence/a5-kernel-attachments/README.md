@@ -1056,7 +1056,7 @@ fixture, and checks four facts. The ten parameters of the two factors are `(p, q
 - The saturation of the ideal of the 17 differences `V_k(p) - V_k(q)` by `pa * pl * qa * ql` equals the ideal of the
   five graphs `q = zeta p` of the fifth roots of unity (dimension 5, multiplicity 5; two components of degrees 4 and
   1 over `Q(i)`, each dominating both factors; dimension 8 before the saturation). A mutated difference gives a
-  saturation of dimension 4 that the graphs do not fill, and for the graphs of the fourth roots of unity neither
+  saturation whose variety has dimension 4 and lies strictly inside the graphs, and for the graphs of the fourth roots of unity neither
   ideal contains the other.
 
 The fixture checks run in the pull-request lane; the Singular stage runs in the module and in the replay gate
@@ -1072,7 +1072,8 @@ dense minors ran out of a 20 GB address space on the same ideal.
 `y`-degree 2. The row is refuted as stated, since at `s2 = 0` the same script finds 86 generators in 24 blocks and
 generators with `tw` up to 11. No fixed `s2` reaches the 148 quadrics: `s2` lies in the maximal ideal, and the fibers
 at `s2 = 0` and `s2 = 7013` have dimension 61 and 34 in `y`-degree 2 against 83. The surviving statement is for
-generic `s2`, with `s2` kept as a variable or drawn from a quantum random source; its test is the count of
+generic `s2`, with `s2` kept as a variable or set to a value that a nonzero minor certifies as outside the
+exceptional set; its test is the count of
 `y`-degree-2 generators of the fiber, which must be the 148 quadrics. No tracked record holds these runs.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-446`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the

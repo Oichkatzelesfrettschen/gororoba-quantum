@@ -47,12 +47,16 @@ def _cell(orbit: str, shift: int) -> dict[str, Any]:
         "saturated_multiplicity": 5,
         "graphs_dimension": 5,
         "graphs_multiplicity": 5,
-        "graphs_in_saturated": True,
-        "saturated_in_graphs": True,
+        "graph_ideal_in_saturation": True,
+        "saturation_in_graph_ideal": True,
         "components": [[5, 1, True, True], [5, 4, True, True]],
         "controls": {
-            "mutated_difference": {"dimension": 4, "graphs_in_saturated": True, "saturated_in_graphs": False},
-            "fourth_roots": {"graphs_in_saturated": False, "saturated_in_graphs": False},
+            "mutated_difference": {
+                "dimension": 4,
+                "graph_ideal_in_saturation": True,
+                "saturation_in_graph_ideal": False,
+            },
+            "fourth_roots": {"graph_ideal_in_saturation": False, "saturation_in_graph_ideal": False},
         },
     }
 
@@ -234,12 +238,12 @@ def test_a_form_survives_the_round_trip_through_singular_syntax() -> None:
 
 RECORD_MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
     "a graph missing from the saturation": (
-        lambda record: record["cells"][0].update(graphs_in_saturated=False),
-        "graphs_in_saturated",
+        lambda record: record["cells"][0].update(graph_ideal_in_saturation=False),
+        "graph_ideal_in_saturation",
     ),
     "the saturation larger than the graphs": (
-        lambda record: record["cells"][1].update(saturated_in_graphs=False),
-        "saturated_in_graphs",
+        lambda record: record["cells"][1].update(saturation_in_graph_ideal=False),
+        "saturation_in_graph_ideal",
     ),
     "a saturation of dimension 6": (
         lambda record: record["cells"][0].update(saturated_dimension=6),
@@ -260,15 +264,15 @@ RECORD_MUTATIONS: dict[str, tuple[Callable[[dict[str, Any]], None], str]] = {
         "components",
     ),
     "the mutated difference accepted": (
-        lambda record: record["cells"][0]["controls"]["mutated_difference"].update(saturated_in_graphs=True),
+        lambda record: record["cells"][0]["controls"]["mutated_difference"].update(saturation_in_graph_ideal=True),
         "controls",
     ),
     "the fourth roots accepted": (
-        lambda record: record["cells"][1]["controls"]["fourth_roots"].update(saturated_in_graphs=True),
+        lambda record: record["cells"][1]["controls"]["fourth_roots"].update(saturation_in_graph_ideal=True),
         "controls",
     ),
     "the fourth roots equal the saturation": (
-        lambda record: record["cells"][0]["controls"]["fourth_roots"].update(graphs_in_saturated=True),
+        lambda record: record["cells"][0]["controls"]["fourth_roots"].update(graph_ideal_in_saturation=True),
         "controls",
     ),
     "a quotient rank of 11": (lambda record: record["cells"][0].update(rank=11), "rank"),

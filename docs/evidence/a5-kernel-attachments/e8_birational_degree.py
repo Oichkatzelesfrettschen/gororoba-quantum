@@ -25,9 +25,13 @@ the same map degree 1 on the torus.
 
 Step D. In ten parameters (p, q) the ideal I of the 17 differences V_k(p) - V_k(q), saturated by pa pl qa ql,
 equals the ideal of the five graphs q = zeta . p (zeta^5 = 1) over Q(i). A component of dimension 5 of V(I) that
-dominates a factor meets pa pl qa ql != 0, since V(q) != 0 makes ql and then qa nonzero, so it is one of the five
-graphs. Two controls reject: a mutated difference leaves the graphs strictly inside a smaller saturation, and the
-four fourth roots of unity give an ideal that equals neither side.
+dominates a factor meets pa pl qa ql != 0: a general point of that factor has pa pl != 0, and V(p) = V(q) with the
+rank 12 of step A gives ql qa^3 = pl pa^3, so ql and qa are nonzero; the component is then one of the five graphs.
+The record names ideal containments: `graph_ideal_in_saturation` says the ideal of the graphs lies in the saturated
+ideal (the variety of the saturation lies in the graphs) and `saturation_in_graph_ideal` says the converse. Two
+controls reject: a mutated difference gives a saturated ideal that strictly contains the ideal of the graphs, a
+variety of dimension 4 strictly inside them, and the four fourth roots of unity give an ideal that neither contains
+the saturated ideal nor lies in it.
 
 The fixture holds the 17 nonzero forms per basepoint as exact Q(i) coefficients. `--check` verifies steps A to C on
 the fixture in exact integer and rational arithmetic and binds the record to the fixture, the producers and the
@@ -133,14 +137,14 @@ EXPECTED_CELL: dict[str, Any] = {
     "saturated_multiplicity": LENGTH,
     "graphs_dimension": 5,
     "graphs_multiplicity": LENGTH,
-    "graphs_in_saturated": True,
-    "saturated_in_graphs": True,
-    # [dimension, degree, dominates the second factor, dominates the first factor]: over Q(i) the four primitive roots
+    "graph_ideal_in_saturation": True,
+    "saturation_in_graph_ideal": True,
+    # [dimension, degree, dominates the p factor, dominates the q factor]: over Q(i) the four primitive roots
     # form one Galois orbit of degree 4 and the diagonal has degree 1.
     "components": [[5, 1, True, True], [5, 4, True, True]],
     "controls": {
-        "mutated_difference": {"dimension": 4, "graphs_in_saturated": True, "saturated_in_graphs": False},
-        "fourth_roots": {"graphs_in_saturated": False, "saturated_in_graphs": False},
+        "mutated_difference": {"dimension": 4, "graph_ideal_in_saturation": True, "saturation_in_graph_ideal": False},
+        "fourth_roots": {"graph_ideal_in_saturation": False, "saturation_in_graph_ideal": False},
     },
 }
 
@@ -492,8 +496,8 @@ ideal Gt4=$graph,t^$wrong-1; ideal Gam4=eliminate(Gt4,t);
 setring R;
 ideal Gm=std(fetch(T,Gam)); ideal Gm4=std(fetch(T,Gam4));
 print("RESULT graphs "+string(dim(Gm))+","+string(mult(Gm)));
-print("RESULT graphs_in_saturated "+string(size(reduce(Gm,sS))==0));
-print("RESULT saturated_in_graphs "+string(size(reduce(S,Gm))==0));
+print("RESULT graph_ideal_in_saturation "+string(size(reduce(Gm,sS))==0));
+print("RESULT saturation_in_graph_ideal "+string(size(reduce(S,Gm))==0));
 ideal I3=I; I3[3]=I3[3]+$mutation; ideal S3=std(sat(I3,h));
 print("RESULT mutated_difference "+string(dim(S3))+","+string(size(reduce(Gm,S3))==0)
   +","+string(size(reduce(S3,Gm))==0));
@@ -537,16 +541,16 @@ def ideal_record(values: dict[str, list[str]]) -> dict[str, Any]:
         "saturated_multiplicity": saturated[1],
         "graphs_dimension": graphs[0],
         "graphs_multiplicity": graphs[1],
-        "graphs_in_saturated": values["graphs_in_saturated"] == ["1"],
-        "saturated_in_graphs": values["saturated_in_graphs"] == ["1"],
+        "graph_ideal_in_saturation": values["graph_ideal_in_saturation"] == ["1"],
+        "saturation_in_graph_ideal": values["saturation_in_graph_ideal"] == ["1"],
         "components": sorted([c[0], c[1], c[2] == 1, c[3] == 1] for c in map(_integers, values["component"])),
         "controls": {
             "mutated_difference": {
                 "dimension": mutated[0],
-                "graphs_in_saturated": mutated[1] == 1,
-                "saturated_in_graphs": mutated[2] == 1,
+                "graph_ideal_in_saturation": mutated[1] == 1,
+                "saturation_in_graph_ideal": mutated[2] == 1,
             },
-            "fourth_roots": {"graphs_in_saturated": fourth[0] == 1, "saturated_in_graphs": fourth[1] == 1},
+            "fourth_roots": {"graph_ideal_in_saturation": fourth[0] == 1, "saturation_in_graph_ideal": fourth[1] == 1},
         },
     }
 

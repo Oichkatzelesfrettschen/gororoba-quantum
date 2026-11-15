@@ -2,7 +2,7 @@
  "schema": "gororoba.a5.e8-birational-degree/1",
  "field": "Q(i)",
  "inputs": {
-  "e8_birational_degree.py": "ff2cb23bc8534d57dcbaed872183edc9fbecd051f22b9ece97e7cda1907dea09",
+  "e8_birational_degree.py": "f3c78516b9cd2faecd3a8afc5443258b31c48e083aad39ae04243bd5c1f4b279",
   "e8_relation_ideal_orders.py": "b1d424ed192818b7abaefbcbb35daeb51112c8858488b8a712d783b0fa3b0773",
   "e8_quadric_nilradical.py": "91bbd6907aba7d9b85de2744fe99a9dae2649a001349b54446cfa1bb123883d4",
   "weight_slice_fiber_relations.py": "7806c8bcd0a04590f55ef5ca185c9c6a0f1637e279e813ba418666265dfd892e"
@@ -60,8 +60,8 @@
    "saturated_multiplicity": 5,
    "graphs_dimension": 5,
    "graphs_multiplicity": 5,
-   "graphs_in_saturated": true,
-   "saturated_in_graphs": true,
+   "graph_ideal_in_saturation": true,
+   "saturation_in_graph_ideal": true,
    "components": [
     [
      5,
@@ -79,12 +79,12 @@
    "controls": {
     "mutated_difference": {
      "dimension": 4,
-     "graphs_in_saturated": true,
-     "saturated_in_graphs": false
+     "graph_ideal_in_saturation": true,
+     "saturation_in_graph_ideal": false
     },
     "fourth_roots": {
-     "graphs_in_saturated": false,
-     "saturated_in_graphs": false
+     "graph_ideal_in_saturation": false,
+     "saturation_in_graph_ideal": false
     }
    }
   },
@@ -132,8 +132,8 @@
    "saturated_multiplicity": 5,
    "graphs_dimension": 5,
    "graphs_multiplicity": 5,
-   "graphs_in_saturated": true,
-   "saturated_in_graphs": true,
+   "graph_ideal_in_saturation": true,
+   "saturation_in_graph_ideal": true,
    "components": [
     [
      5,
@@ -151,12 +151,12 @@
    "controls": {
     "mutated_difference": {
      "dimension": 4,
-     "graphs_in_saturated": true,
-     "saturated_in_graphs": false
+     "graph_ideal_in_saturation": true,
+     "saturation_in_graph_ideal": false
     },
     "fourth_roots": {
-     "graphs_in_saturated": false,
-     "saturated_in_graphs": false
+     "graph_ideal_in_saturation": false,
+     "saturation_in_graph_ideal": false
     }
    }
   }
