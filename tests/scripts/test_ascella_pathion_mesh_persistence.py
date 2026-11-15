@@ -12,6 +12,7 @@ from the retained records; the audit test compares the cut with them.
 from __future__ import annotations
 
 import copy
+import itertools
 import json
 import shutil
 import sys
@@ -462,7 +463,7 @@ def reference_map_reading(levels: list[list[float]]) -> dict[str, float]:
     count = 0
     for order in itertools.permutations(range(len(levels))):
         shuffled = [level - ideal for k in order for level, ideal in zip(levels[k], MAP_IDEAL, strict=True)]
-        count += pearson(o, centered(shuffled)) >= r - 1e-12
+        count += order == tuple(range(len(levels))) or pearson(o, centered(shuffled)) >= r
     mean_o = sum(obs) / len(obs)
     ceiling = 1 - (sum(variance) / len(variance)) / (sum((v - mean_o) ** 2 for v in obs) / (len(obs) - 1))
     return {"r": r, "p": count / 120, "ceiling": ceiling, "share": r**2 / ceiling if r > 0 and ceiling > 0 else 0.0}
@@ -589,6 +590,71 @@ def test_the_successor_plan_refuses_a_cutoff_that_the_scenario_does_not_set() ->
         printer.cutoff_scenario_median(record)
     with pytest.raises(KeyError):
         printer.cutoff_scenario_median({"r_quantiles": {"none": {"0.5": 0.99}}, "persistence_cutoff": 0.9})
+
+
+FIVE_BLOCKS = np.array([0.13, -0.13, 0.64, 0.1, -0.54])
+
+
+def test_a_relabeling_that_reproduces_the_observed_pairing_counts_as_a_tie() -> None:
+    # All 120 relabelings of a perfect five-block alignment: only the identity reaches r = 1. The exhaustive
+    # permutation p is 1/120; permutation_p applies the analyzer's plus-one formula to this 120-row batch, which
+    # contains the identity, and returns 2/121. np.corrcoef and the centered dot product of batch_r read the identity
+    # one ulp apart (finite_r 1.0, batch_r 0.9999999999999997), which gave 1/121 when the two kernels met in a
+    # comparison.
+    relabeled = np.array(list(itertools.permutations(FIVE_BLOCKS)))
+    check(reading.finite_r(FIVE_BLOCKS, FIVE_BLOCKS) == 1.0, "the corrcoef reading of the identity is 1.0")
+    check(float(reading.batch_r(FIVE_BLOCKS, relabeled)[0]) < 1.0, "the batch reading of the identity is below 1.0")
+    p = reading.permutation_p(FIVE_BLOCKS, FIVE_BLOCKS, relabeled)
+    check(p == 2 / 121, f"p = {p}, expected 2/121")
+
+
+def test_a_relabeling_below_the_observed_r_by_less_than_any_tolerance_is_not_a_tie() -> None:
+    # Exchanging the first two distinct entries loses (x1 - x0)^2 / sum((x - mean)^2), 1.47e-13 of r, which the
+    # statistic resolves; a fixed tolerance of 1e-12 would call the exchange a tie and give p = 1 instead of 1/2.
+    x = np.array([0.0, 1e-6, 1.0, 2.0, 3.0])
+    swapped = x.copy()
+    swapped[[0, 1]] = swapped[[1, 0]]
+    gap = float(reading.batch_r(x, x[None, :])[0] - reading.batch_r(x, swapped[None, :])[0])
+    check(0 < gap < 1e-12, f"the exchange must read below the observed r by less than 1e-12, got {gap}")
+    check(reading.permutation_p(x, x, swapped[None, :]) == 1 / 2, "the exchange is not counted")
+
+
+def test_a_relabeling_below_the_observed_r_by_more_than_rounding_is_not_counted() -> None:
+    relabeled = np.array([FIVE_BLOCKS, FIVE_BLOCKS[::-1], np.roll(FIVE_BLOCKS, 1)])
+    check(float(np.max(reading.batch_r(FIVE_BLOCKS, relabeled)[1:])) < 1 - 1e-3, "the shifted relabelings read below")
+    check(reading.permutation_p(FIVE_BLOCKS, FIVE_BLOCKS, relabeled) == 2 / 4, "only the identity ties")
+
+
+def spy_on_permutation_p(monkeypatch: pytest.MonkeyPatch) -> list[int]:
+    """Record the relabeling count of every permutation_p call, and run the real function."""
+    calls: list[int] = []
+    real = reading.permutation_p
+
+    def recording(x: np.ndarray, y: np.ndarray, relabeled: np.ndarray) -> float:
+        calls.append(len(relabeled))
+        return real(x, y, relabeled)
+
+    monkeypatch.setattr(reading, "permutation_p", recording)
+    return calls
+
+
+def test_the_map_score_scores_its_relabelings_through_permutation_p(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls = spy_on_permutation_p(monkeypatch)
+    rows, settings, pred = map_case(MAP_ALIGNED)
+    got = reading.map_score(rows, settings, pred, map_generator(), 4000, 0.05)
+    check(calls == [4000], f"permutation_p calls {calls}")
+    check(0 < got["p_one_sided"] <= 1, "the map score reports the p of permutation_p")
+
+
+def test_the_persistence_test_scores_its_relabelings_through_permutation_p(
+    tree: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls = spy_on_permutation_p(monkeypatch)
+    report = reading.analyze(synthetic_run(tree))
+    persistence = report["persistence"]
+    # one call for each frozen map (gain, offset) and one for the persistence statistic
+    check(calls == [case.PERMUTATIONS] * 3, f"permutation_p calls {calls}")
+    check(persistence["p"] > 0, "the persistence reading carries the p of permutation_p")
 
 
 if __name__ == "__main__":
