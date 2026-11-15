@@ -2,7 +2,7 @@
 
 The nullity-16 Rees record (`a5-kernel-attachments/nullity16-rees-fibers-result.json`) gives, for each incidence
 into N+ or N-, the 126 principal four-Pfaffians as a constant matrix applied to the Nakayama generators, over Q(i).
-This script reads the 12 linear forms of A = K2 : P from `quadric-and-germ-probes.jsonl` and records two kinds of row:
+This script reads the 12 linear forms of A = K2 : P from `quadric-and-germ-probes.json` and records two kinds of row:
 
 - `spans`, per basepoint, over Q(i): the ranks of the embedding matrices of the same-sign and the opposite-sign X
   incidence and of the two side by side. Rank 15 + 3 = 18 means the two linear spans share no point, so no point of
@@ -20,7 +20,7 @@ through source-against-stratum pairs: the V^a section holds the whole embedded p
 opposite-sign fiber. Their ranks 12 and 0, far from the generic 15 and 3, are the evidence that the source and
 stratum matrices of a basepoint share one frame. Exact arithmetic throughout; no Singular run.
 
-Usage: embedded_plane_images.py OUT.jsonl; run from any directory.
+Usage: embedded_plane_images.py OUT.json; run from any directory.
 """
 
 from __future__ import annotations
@@ -189,7 +189,7 @@ def build() -> list[dict[str, Any]]:
             break
     import parallel
 
-    probes = [json.loads(ln) for ln in (HERE / "quadric-and-germ-probes.jsonl").read_text().splitlines()]
+    probes = json.loads((HERE / "quadric-and-germ-probes.json").read_text())
     jobs: list[tuple[str, Any]] = [("spans", basepoint) for basepoint in BASEPOINTS]
     jobs += [("plane", probe) for probe in probes if probe["check"] == "x-colon"]
     rows: list[dict[str, Any]] = parallel.ordered_map(run, jobs, min_items=1)
@@ -230,7 +230,7 @@ def main() -> int:
         print(__doc__, file=sys.stderr)
         return 2
     rows = build()
-    Path(sys.argv[1]).write_text("".join(json.dumps(r) + "\n" for r in rows))
+    Path(sys.argv[1]).write_text("[\n" + ",\n".join(json.dumps(r) for r in rows) + "\n]\n")
     problems = check(rows)
     for line in problems:
         print(line)

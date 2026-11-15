@@ -27,7 +27,7 @@ No random source enters: the linear forms are fixed by their base. check() compa
 expected value, row by row in the order of the job list, so a missing, relabeled or altered row is reported, and
 tests/test_a5_quadric_and_germ_probes.py applies it to the record and to mutated copies.
 
-Usage: quadric_and_germ_probes.py OUT.jsonl; run from any directory, Singular on PATH or in $SINGULAR.
+Usage: quadric_and_germ_probes.py OUT.json; run from any directory, Singular on PATH or in $SINGULAR.
 """
 
 from __future__ import annotations
@@ -306,6 +306,32 @@ NUM_A = [(-1) ** i * comb(12, i) for i in range(13)]
 # (1 - t)^17 (1 + t): the numerator over (1 - t)^21 of a quadric hypersurface in five variables.
 NUM_A_E8 = [(-1) ** i * (comb(17, i) - (comb(17, i - 1) if i else 0)) for i in range(19)]
 HF_E8 = [21, 83, 225, 495, 952, 1666, 2718]
+# The first Hilbert numerator of the 148 quadrics of E8-bar -> N+- over (1 - t)^21; with NUM_A_E8 and the identity
+# it fixes the numerator of the radical in every degree.
+NUM_K_E8 = [
+    1,
+    0,
+    -148,
+    1562,
+    -8745,
+    32753,
+    -89936,
+    190224,
+    -319606,
+    435500,
+    -488280,
+    454948,
+    -354354,
+    231126,
+    -125840,
+    56672,
+    -20763,
+    6028,
+    -1332,
+    210,
+    -21,
+    1,
+]
 MEET = {"projdim": 2, "degree": 1, "reduced": True, "linear": 7, "generators": 7}
 
 
@@ -378,9 +404,9 @@ def check(rows: list[dict[str, Any]]) -> list[str]:
         tag = f"e8-colon {fiber} {p}"
         fixed = {
             "check": "e8-colon", "fiber": fiber, "prime": p, "relations": rel, "radical": [5, 1, 5, 11], "square": [1],
-            "colon": [4, 2, 17, 16, 1, 1], "bicolon": [1], "numA": NUM_A_E8,
+            "colon": [4, 2, 17, 16, 1, 1], "bicolon": [1], "numA": NUM_A_E8, "numK": NUM_K_E8,
         }  # fmt: skip
-        if {k: r.get(k) for k in fixed} != fixed or set(r) != {*fixed, "numK", "numR"}:
+        if {k: r.get(k) for k in fixed} != fixed or set(r) != {*fixed, "numR"}:
             bad.append(f"{tag}: the row differs from R = K2 + N, N^2 in K2, K2 : R a prime quadric cone, K2 : A = R")
         elif not numerator_identity(r, "numR", 21) or hilbert_function(r["numK"], 21, range(1, 8)) != HF_E8:
             bad.append(f"{tag}: N_K2 - N_R differs from N_A - (1 - t)^21, or N_K2 from the retained Hilbert function")
@@ -414,7 +440,7 @@ def main() -> int:
     jobs: list[tuple[str, Any]] = [("germ-prime", g) for g in GERMS]
     jobs += [("vb-components", v) for v in VB] + [("x-colon", x) for x in XS] + [("e8-colon", e) for e in E8S]
     rows = parallel.ordered_map(run, jobs, min_items=1)
-    Path(sys.argv[1]).write_text("".join(json.dumps(r) + "\n" for r in rows))
+    Path(sys.argv[1]).write_text("[\n" + ",\n".join(json.dumps(r) for r in rows) + "\n]\n")
     problems = check(rows)
     for line in problems:
         print(line)

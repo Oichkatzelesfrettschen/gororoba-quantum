@@ -184,7 +184,7 @@ pullback, a residual of a different dimension, or any disagreement between the t
 
 ## Germ ideals and three quadric schemes, probed exactly
 
-`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.jsonl` (21 rows, Singular 4.4.1 in dp, under a minute
+`quadric_and_germ_probes.py` writes `quadric-and-germ-probes.json` (21 rows, Singular 4.4.1 in dp, under a minute
 on the laptop). Its `check()` compares every field of a record with the expected value, row by row:
 
 - `germ-prime`, 12 rows: the germ ideal J of X- -> N-, E8-bar -> VB, Iso -> N-, W8 -> N-, E8-bar -> N+ and
@@ -205,7 +205,7 @@ on the laptop). Its `check()` compares every field of a record with the expected
 
 ## Where the embedded plane of same-sign X sits in the Pluecker space
 
-`embedded_plane_images.py` writes `embedded-plane-images.jsonl` (5 rows, exact arithmetic, under a second) from the
+`embedded_plane_images.py` writes `embedded-plane-images.json` (5 rows, exact arithmetic, under a second) from the
 embedding matrices of the [nullity-16 Rees record](../../a5-kernel-attachments/README.md) and the 12 forms above:
 
 - over Q(i), at N- and at N+, the embedding matrices of the same-sign and of the opposite-sign X incidence have
