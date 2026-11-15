@@ -14,6 +14,7 @@
    "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
    "structure": {
     "commute": true,
+    "equivariant": true,
     "hermitian": true,
     "in_g2": true,
     "left": true,
@@ -35,6 +36,7 @@
    "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
    "structure": {
     "commute": true,
+    "equivariant": true,
     "hermitian": true,
     "in_g2": true,
     "left": true,
@@ -48,7 +50,7 @@
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_normal_forms.py": "745edad5ec0fe70aa3167564c25f17983054504b4706d4db82c57cd73fa16d72",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_fiber_four.py": "d0d1aced9ccca0305b566ddc838c97165b5e5fb7de8b3e2566bd8fd89067a96f",
   "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_line.py": "5bddd6ed337595f2da2d33f9d98c4893778c6d1fc229e51b9488d026afbd32ad",
-  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py": "c50aca47aab31b84cb6373a26c1e88a141f97a9a0d064f8deb2c216881903822"
+  "docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py": "47c593ec0d206741e90fff6d110857f298f8566cda6f0f9b47b23dd270cc47e6"
  },
  "instance": {
   "C": "5/3",
@@ -71,6 +73,7 @@
  },
  "root_subgroups": {
   "candidates": 182,
+  "incidence_only_at_origin": 76,
   "incidence_zero": 24,
   "nilpotent": 100,
   "pairing_zero_among_them": 24

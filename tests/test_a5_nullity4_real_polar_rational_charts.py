@@ -29,6 +29,15 @@ def test_normal_form_has_zero_incidence_and_zero_pairing() -> None:
     _same(any(kernel.H * line), False)
 
 
+def test_real_zero_certificate_separates_a_point_from_a_curve() -> None:
+    a, b = sp.symbols("a b", real=True)
+    _same(rc._origin_is_the_only_real_zero([a - b, b * (b**2 + 2)], a, b), True)
+    _same(rc._origin_is_the_only_real_zero([a**2 + b**2], a, b), False)  # no member in b alone: not certified
+    _same(rc._origin_is_the_only_real_zero([a * (a - 1), b], a, b), False)  # a second real zero at (1, 0)
+    _same(rc._origin_is_the_only_real_zero([a * b], a, b), False)  # two lines of zeros
+    _same(rc._origin_is_the_only_real_zero([a**2 + b**2 + 1], a, b), False)  # the origin is not a zero
+
+
 def test_stabilizers_are_one_subalgebra() -> None:
     _same(rc.stabilizer_facts(), rc.STABILIZERS)
 
@@ -41,8 +50,8 @@ def test_an_unknown_stabilizer_is_refused() -> None:
 @pytest.mark.parametrize(
     ("job", "expected"),
     [
-        ((0, 1, 1), [False, False]),  # nilpotent of order 2 that moves z_0 off the incidence
-        ((2, 6, 1), [True, True]),  # nilpotent of order 3 that keeps the incidence and the zero pairing
+        ((0, 1, 1), [False, False, True]),  # order 2; the incidence holds at t = 0 alone
+        ((2, 6, 1), [True, True, False]),  # order 3; keeps the incidence and the zero pairing for every t
         ((0, 3, 1), None),  # not nilpotent
     ],
 )

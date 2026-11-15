@@ -1,9 +1,11 @@
 """Rational charts of G_2(C) at the polar normal form of V(G) minus V(Q): the pairing rank is 0 or 2 on each.
 
 Setting (nullity4_real_polar_fiber_four.py, ff). z_0 = (e_1; 5 i; 3 e_1 + 5 e_2) is the normal form (s, v_1, mu) =
-(4, 3, 5 i), l its polar plane and C = C(l) = span(z_0, c_2, c_3). For g in G_2(C) and Pi = g^* g the point z = g z_0
-has kernel plane g l exactly when F = z_0^* Pi l vanishes, and then dim L = 2 (3 - rank R) with R = C^* Pi l (3 x 2;
-its rank is the rank of the pairing N of ff, because the row of z_0 is F). At Pi = 1 both F and R vanish: z_0 is a
+(4, 3, 5 i), l its polar plane and C = C(l) = span(k_0, k_1, k_2), a space that holds z_0 (z_0 = i k_0 + 3 k_1 +
+5 k_2 in the primitive basis of polar()). For g in G_2(C) and Pi = g^* g the point z = g z_0 has kernel plane g l
+exactly when F = z_0^* Pi l vanishes, and then dim L = 2 (3 - rank R) with R = [k_0, k_1, k_2]^* Pi l (3 x 2; where
+F = 0 its rank is the rank of the pairing N of ff, because F is a combination of the rows of R). At Pi = 1 both F
+and R vanish: z_0 is a
 point with dim L = 6. A point with dim L = 4 needs F = 0 and rank R = 1; ff certifies one by an interval box and
 holds no exact point. This file records two exact searches for one and the certificate at two further precisions.
 
@@ -13,15 +15,20 @@ holds no exact point. This file records two exact searches for one and the certi
    order.
 2. Root subgroups. Among the elements D_a + sign i D_b (a < b, sign = +-1) of g_2(C), 100 are nilpotent. For
    g = exp(t X), Pi = exp(conj(t) X^*) exp(t X) is a polynomial in t and conj(t); F vanishes identically for 24 of
-   them, and R vanishes identically for each of those 24.
+   them, and R vanishes identically for each of those 24. For each of the other 76, t = 0 is the only complex number
+   with F(t, conj(t)) = 0: a lexicographic Groebner basis of the real and imaginary parts of F in (Re t, Im t) has
+   a univariate member whose only real root is 0, and at Im t = 0 the only common real root is Re t = 0. So no
+   root subgroup holds a point with F = 0 other than the points with R = 0.
 3. Boost families. For the pair (4, 7), and for the pair (5, 6), the reflections sigma (+1 on e_1, e_2, e_3) and tau
    (-1 on e_1, e_2 and the pair) lie in G_2, and the elements of g_2 that commute with tau and anticommute with sigma
    are spanned by L_1, L_2 (zero on the three +1 directions of tau, with n_L^2 = -1 on the other four for
    n_L = c_L L_1 + s_L L_2, c_L^2 + s_L^2 = 1) and R_1, R_2 (n_R^2 = -1 on the four and n_R^3 = -4 n_R on the three).
    L_j and R_k commute. With C^2 - S^2 = 1 the matrices A_L = P_3 + P_4 (C_L + i S_L n_L) and
    A_R = P_4 (C_R + i S_R n_R) + P_3 (1 + i S_R C_R n_R - S_R^2 n_R^2 / 2) are exp(i theta n) with C = cosh theta,
-   S = sinh theta: Hermitian elements of G_2(C), rational for rational (c, s, C, S). For g = A_L A_R and Pi = g^2 the
-   2 x 2 minor of R on the rows c_2, c_3 is a nonzero constant times S_R^2 (S_R^2 + 1) (2 S_L^2 + 1)^2, so
+   S = sinh theta, so C is at least 1: Hermitian elements of G_2(C), rational for rational (c, s, C, S), with
+   M(g t) = g M(t) g^T for g = diag(A, 1, A) checked as an identity modulo the two relations. For g = A_L A_R and
+   Pi = g^2 the
+   2 x 2 minor of R on the rows k_1, k_2 is a nonzero constant times S_R^2 (S_R^2 + 1) (2 S_L^2 + 1)^2, so
    rank R = 2 unless S_R = 0; at S_R = 0 the two entries of F are C_L S_L times two linear forms in (c_L, s_L)
    whose squares sum to a positive constant, so F = 0 forces S_L = 0, the identity. On each family a point with
    F = 0 has rank R = 0 (the identity) or 2: dim L = 6 or 2, never 4. A point with dim L = 4 needs a Hermitian
@@ -84,7 +91,13 @@ CL, SL, CR, SR = sp.symbols("cL sL cR sR", real=True)
 CHL, SHL, CHR, SHR = sp.symbols("CL SL CR SR", real=True)
 
 STABILIZERS = {"point": 3, "plane": 3, "common_kernel": 3, "span": 3, "first_order_vanishes": True}
-ROOT_SUBGROUPS = {"candidates": 182, "nilpotent": 100, "incidence_zero": 24, "pairing_zero_among_them": 24}
+ROOT_SUBGROUPS = {
+    "candidates": 182,
+    "nilpotent": 100,
+    "incidence_zero": 24,
+    "pairing_zero_among_them": 24,
+    "incidence_only_at_origin": 76,
+}
 # Each generator as a list of (a, b, value): the skew 7 x 7 matrix with entry value at (a, b), 1-based.
 FAMILIES: dict[str, dict[str, Any]] = {
     "4, 7": {
@@ -98,18 +111,19 @@ FAMILIES: dict[str, dict[str, Any]] = {
         "R": [[(1, 6, 1), (2, 5, -1), (3, 4, 2)], [(1, 5, 1), (2, 6, 1), (3, 7, -2)]],
     },
 }
+STRUCTURE_KEYS = ("in_g2", "commute", "left", "right", "hermitian", "equivariant")
 # A rational point of each family: (c, s) = (3/5, 4/5) and (C, S) = (5/3, 4/3) on both factors.
 INSTANCE = {"c": "3/5", "s": "4/5", "C": "5/3", "S": "4/3"}
 FAMILY_FACTS: dict[str, dict[str, Any]] = {
     "4, 7": {
-        "structure": dict.fromkeys(("in_g2", "commute", "left", "right", "hermitian"), True),
+        "structure": dict.fromkeys(STRUCTURE_KEYS, True),
         "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
         "incidence_at_SR_zero": ["-2*I*CL*SL*(7*cL + 24*sL)", "2*I*CL*SL*(24*cL - 7*sL)"],
         "sum_of_squares": "625",
         "instance": [True, True, False, 2],
     },
     "5, 6": {
-        "structure": dict.fromkeys(("in_g2", "commute", "left", "right", "hermitian"), True),
+        "structure": dict.fromkeys(STRUCTURE_KEYS, True),
         "minor": "400*SR**2*(2*SL**2 + 1)**2*(SR**2 + 1)",
         "incidence_at_SR_zero": ["10*CL*SL*(4*cL - 3*sL)", "10*CL*SL*(3*cL + 4*sL)"],
         "sum_of_squares": "25",
@@ -216,8 +230,35 @@ def _stabilizer_job(name: str) -> list[sp.Matrix]:
 ROOT_JOBS = tuple((a, b, sign) for a, b in itertools.combinations(range(14), 2) for sign in (1, -1))
 
 
+def _origin_is_the_only_real_zero(polynomials: list[Any], a: sp.Symbol, b: sp.Symbol) -> bool:
+    """Whether (0, 0) is the only real common zero of the polynomials in (a, b), all of which vanish there.
+
+    Certificate: a lexicographic Groebner basis for a > b holds members in b alone whose greatest common divisor
+    has the single real root 0, and the members at b = 0 have a greatest common divisor in a with the single real
+    root 0. False when the basis has no member in b alone or when every member vanishes at b = 0.
+    """
+    nonzero = [p for p in polynomials if p != 0]
+    if not nonzero or any(p.subs({a: 0, b: 0}) != 0 for p in nonzero):
+        return False
+    basis = [sp.expand(p) for p in sp.groebner(nonzero, a, b, order="lex").exprs]
+    in_b = [sp.Poly(p, b) for p in basis if p.free_symbols <= {b}]
+    if not in_b:
+        return False
+    common_b = functools.reduce(sp.gcd, in_b)
+    if set(sp.real_roots(common_b)) != {sp.Integer(0)}:
+        return False
+    at_zero = [sp.Poly(p.subs(b, 0), a) for p in basis if p.subs(b, 0) != 0]
+    if not at_zero:
+        return False
+    return set(sp.real_roots(functools.reduce(sp.gcd, at_zero))) <= {sp.Integer(0)}
+
+
 def root_subgroup(job: tuple[int, int, int]) -> list[bool] | None:
-    """For X = D_a + sign i D_b: None when X is not nilpotent, else whether F and R vanish identically in t."""
+    """For X = D_a + sign i D_b: None when X is not nilpotent, else three facts of g = exp(t X).
+
+    Whether F vanishes identically in t; whether R does; and, when F does not, whether t = 0 is the only complex
+    number with F(t, conj(t)) = 0 (False when F vanishes identically).
+    """
     a, b, sign = job
     x = derivations()[a] + sign * IU * derivations()[b]
     t, tb = sp.symbols("t tb")
@@ -232,10 +273,18 @@ def root_subgroup(job: tuple[int, int, int]) -> list[bool] | None:
         return None
     z0, line, kernel = polar()
     pi = gs * g
-    return [
-        not any((z0.H * pi * line).applyfunc(sp.expand)),
-        not any((kernel.H * pi * line).applyfunc(sp.expand)),
-    ]
+    incidence = (z0.H * pi * line).applyfunc(sp.expand)
+    identically_zero = not any(incidence)
+    isolated = False
+    if not identically_zero:
+        re, im = sp.symbols("re im", real=True)
+        parts = [
+            part
+            for entry in incidence
+            for part in sp.expand(entry.subs({t: re + IU * im, tb: re - IU * im})).as_real_imag()
+        ]
+        isolated = _origin_is_the_only_real_zero([sp.expand(part) for part in parts], re, im)
+    return [identically_zero, not any((kernel.H * pi * line).applyfunc(sp.expand)), isolated]
 
 
 def root_subgroup_tally() -> dict[str, int]:
@@ -245,6 +294,7 @@ def root_subgroup_tally() -> dict[str, int]:
         "nilpotent": len(rows),
         "incidence_zero": sum(row[0] for row in rows),
         "pairing_zero_among_them": sum(row[0] and row[1] for row in rows),
+        "incidence_only_at_origin": sum(not row[0] and row[2] for row in rows),
     }
 
 
@@ -292,11 +342,8 @@ def _hermitian_element(name: str) -> sp.Matrix:
     return (a_left * a_right).applyfunc(_reduced)
 
 
-STRUCTURE_KEYS = ("in_g2", "commute", "left", "right", "hermitian")
-
-
 def family_structure(name: str) -> dict[str, bool]:
-    """Per STRUCTURE_KEYS: the generators lie in g_2; L_j and R_k commute; the minimal polynomials; A is Hermitian."""
+    """Per STRUCTURE_KEYS: generators in g_2; L_j, R_k commute; minimal polynomials; A Hermitian; A equivariant."""
     n_left, n_right, p4, p3, generators = _family(name)
     small = [matrix[0:7, 0:7] for matrix in derivations()]
     flat = sp.Matrix([list(matrix) for matrix in small])
@@ -309,7 +356,11 @@ def family_structure(name: str) -> dict[str, bool]:
     right = (p4 * n_right * n_right + p4).applyfunc(_reduced) == zero
     right = right and (p3 * (n_right**3 + 4 * n_right)).applyfunc(_reduced) == zero
     a = _hermitian_element(name)
-    values = (in_g2, commute, left, right, (a - a.H).applyfunc(_reduced) == zero)
+    g = sp.diag(a, sp.Matrix([[1]]), a)
+    t = sp.Matrix(sp.symbols("t1:16"))
+    moved = forms.block(list(g * t), forms.ALL, forms.ALL)
+    difference = (moved - g * forms.block(list(t), forms.ALL, forms.ALL) * g.T).applyfunc(_reduced)
+    values = (in_g2, commute, left, right, (a - a.H).applyfunc(_reduced) == zero, not any(difference))
     return dict(zip(STRUCTURE_KEYS, [bool(value) for value in values], strict=True))
 
 
@@ -324,7 +375,7 @@ def _pairings(name: str) -> tuple[sp.Matrix, sp.Matrix]:
 
 
 def family_minor(name: str) -> str:
-    """The 2 x 2 minor of R on the rows of c_2 and c_3 of the primitive basis of C(l), factored."""
+    """The 2 x 2 minor of R on the rows of k_1 and k_2 of the primitive basis of C(l), factored."""
     _, r = _pairings(name)
     return str(sp.factor(_reduced(r[1, 0] * r[2, 1] - r[1, 1] * r[2, 0])))
 
@@ -433,7 +484,10 @@ def krawczyk_at(precision: int) -> dict[str, Any]:
 
 
 def precision_record() -> dict[str, dict[str, Any]]:
-    return {str(p): row for p, row in zip(PRECISIONS, parallel.ordered_map(krawczyk_at, list(PRECISIONS)), strict=True)}
+    return {
+        str(p): row
+        for p, row in zip(PRECISIONS, parallel.ordered_map(krawczyk_at, list(PRECISIONS), min_items=2), strict=True)
+    }
 
 
 def _inputs() -> dict[str, str]:

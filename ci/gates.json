@@ -5525,7 +5525,7 @@
       "cwd": ".",
       "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check",
       "name": "core-a5-nullity4-real-polar-rational-charts",
-      "seconds": 4.0,
+      "seconds": 7.0,
       "workers": "all",
       "replays": [
         "docs/evidence/a5-kernel-bundles-residuals/nullity4-real-polar-rational-charts-result.json"

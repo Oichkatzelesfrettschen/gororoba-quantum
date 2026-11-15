@@ -450,11 +450,12 @@ These rows replace `A5-433`, `A5-441`, `A5-442`, `A5-443`, `A5-444` and `A5-445`
   (`A5-561`, proved as a bounded negative, `nullity4_real_polar_rational_charts.py`, record
   `nullity4-real-polar-rational-charts-result.json`): the stabilizers of `z_0`, of `l` and of `C(l)` in
   `g_2(C)` are one three-dimensional subalgebra that keeps the pairing zero, the 24 root subgroups
-  `exp(t (D_a +- i D_b))` that keep the incidence keep it zero as well, and on the two four-parameter families of
+  `exp(t (D_a +- i D_b))` that keep the incidence keep it zero as well, the other 76 meet the incidence at the
+  identity alone, and on the two four-parameter families of
   Hermitian elements of the subgroups `SO(4, C)` of the pairs `(4, 7)` and `(5, 6)` the pairing has rank 0 or
   2. `hypothesis:` an exact point exists in a rational chart outside these families; no elimination was run and
   no eliminant degree is known. Replay:
-  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check` (about 4 s).
+  `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_real_polar_rational_charts.py --check` (about 6 s).
 - `A5-539`, proved (same producer): at every point with `Delta` nonzero the orbit rank is 16 minus the dimension
   of the stabilizer of the real span of `u` and `v` in the compact `g_2`, which is 3 in quaternion position and 0
   otherwise, so the orbit rank is 13 exactly in quaternion position and 16 elsewhere. Replay:
@@ -501,7 +502,8 @@ Replay: `"$PYTHON" docs/evidence/a5-kernel-bundles-residuals/nullity4_orbit_norm
 The [review record](../../archive/reviews/pr904/README.md) holds the brief, both reviewer reports and the
 reconciliation of their findings; the [review record of the residual rows](../../archive/reviews/pr907/README.md)
 holds those of the rows from `A5-537` on, and the
-[review record of the open rows](../../archive/reviews/pr915/README.md) those of `A5-551` and `A5-554` to `A5-558`.
+[review record of the open rows](../../archive/reviews/pr915/README.md) those of `A5-551` and `A5-554` to `A5-558`,
+and the [review record of the open hypotheses](../../archive/reviews/pr929/README.md) those of `A5-559` to `A5-561`.
 
 The count of quadrics on each image (`A5-434`, superseded by `A5-460`) is tested and taken apart in the next
 subsection. `hypothesis:` the complexified ranks of the first table hold in characteristic 0 and at every point of

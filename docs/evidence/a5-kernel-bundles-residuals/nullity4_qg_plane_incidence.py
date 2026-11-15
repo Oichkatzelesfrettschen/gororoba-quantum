@@ -10,7 +10,10 @@ is the Hermitian form sum a_i conj(b_i). S is the set of nullity-4 points of V(Q
    in K, so P(z) = P_j exactly when z lies on the complex line of K Hermitian-orthogonal to P_j: the map
    k -> (<k, p_1>, <k, p_2>) from K to C^2, p_1, p_2 a basis of P_j, is complex-linear and onto, because the form
    is positive definite on K. Hence inside each fiber K minus J (real dimension 6) the points with kernel plane
-   P_j form a complex line minus the points of J (real dimension 2): real codimension 4 in every fiber. With A5-557
+   P_j form a complex line minus the points of J. A line of K that is not inside one of the three planes of J
+   meets J at 0 alone, so the set is the punctured line (real dimension 2, real codimension 4 in the fiber) or it
+   is empty, when the line lies in J: always at s = +-1 (A5-555 and item 3), and elsewhere over the kernels g K
+   whose Hermitian form puts the line of P_y or P_z inside g P_x. With A5-557
    the set {dim L = 6} is the set P = P_x (s^2 other than 1) and the set {dim L = 4} is the set P = P_y or P_z
    away from the roots of D1 D2. The fiberwise statement does not give the dimension of these sets in S: that needs
    the dimension of the set of kernels over which the line leaves J. Item 2 gives the local answer at six points.
