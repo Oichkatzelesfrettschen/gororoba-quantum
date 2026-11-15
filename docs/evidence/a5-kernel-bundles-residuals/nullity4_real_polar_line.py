@@ -454,6 +454,8 @@ def sample_parts(kind: str, label: str) -> list[list[int]]:
 def orbit_rank_samples() -> dict[str, list[int]]:
     """Orbit ranks at samples with Delta nonzero, by position, and at planted points with Delta = 0."""
     seen: dict[str, set[int]] = {name: set() for name in ORBIT_RANKS}
+    names: list[str] = []
+    points: list[list[int]] = []
     for kind in SAMPLE_KINDS:
         for index in range(SAMPLES_PER_KIND):
             for mu in ((0, 0), (2, -1)):
@@ -463,11 +465,14 @@ def orbit_rank_samples() -> dict[str, list[int]]:
                     if gram_determinant(parts) != 0:
                         break
                 _require(gram_determinant(parts) != 0, "no sample with Delta nonzero")
-                name = "quaternion position" if quaternion_position(parts) else "other position"
-                seen[name].add(orbit_rank(point_from_parts(parts, mu)))
+                names.append("quaternion position" if quaternion_position(parts) else "other position")
+                points.append(point_from_parts(parts, mu))
     unit = [[1 if column == row else 0 for column in range(7)] for row in range(7)]
     zero = [0] * 7
-    seen["gram zero calibration"].add(orbit_rank(point_from_parts([unit[0], unit[1], zero, zero], (0, 0))))
+    names.append("gram zero calibration")
+    points.append(point_from_parts([unit[0], unit[1], zero, zero], (0, 0)))
+    for name, rank in zip(names, parallel.ordered_map(orbit_rank, points, min_items=2), strict=True):
+        seen[name].add(rank)
     return {name: sorted(ranks) for name, ranks in seen.items()}
 
 

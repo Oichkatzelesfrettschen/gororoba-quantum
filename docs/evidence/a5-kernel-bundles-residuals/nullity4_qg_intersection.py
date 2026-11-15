@@ -425,8 +425,8 @@ def identity(name: str) -> bool:
     return CHECKS[name]()
 
 
-def orbit_ranks() -> dict[str, int]:
-    """The generic rank of M(z) over Q(i)(s) at the four types of w in x-perp."""
+def _orbit_types() -> dict[str, list[Any]]:
+    """The points (x; beta; lambda x + w) of the four types of w in x-perp, over Q(i)[s]."""
     d = 1 + S**2
     head = [d, 0, 0, 0, 0, 0, 0, -IU * (1 - S**2), -2 * IU * S]
     types = {
@@ -435,15 +435,30 @@ def orbit_ranks() -> dict[str, int]:
         "b only": [0, 0, -IU * d, d, 0, 0],
         "a + b": [IU * d, d, -IU * d, d, 0, 0],
     }
-    return {name: _function_field_rank(msym(head + w).applyfunc(sp.expand)) for name, w in types.items()}
+    return {name: head + w for name, w in types.items()}
+
+
+def orbit_type_rank(name: str) -> int:
+    return _function_field_rank(msym(_orbit_types()[name]).applyfunc(sp.expand))
+
+
+def orbit_ranks() -> dict[str, int]:
+    """The generic rank of M(z) over Q(i)(s) at the four types of w in x-perp."""
+    names = list(_orbit_types())
+    return dict(zip(names, parallel.ordered_map(orbit_type_rank, names, min_items=2), strict=True))
 
 
 def _stack(plane: tuple[Vector, Vector]) -> sp.Matrix:
     return sp.Matrix.vstack(msym(plane[0]), msym(plane[1])).applyfunc(sp.expand)
 
 
+def stack_rank(name: str) -> int:
+    return _function_field_rank(_stack(plane_vectors(S)[name]))
+
+
 def stack_ranks() -> dict[str, int]:
-    return {name: _function_field_rank(_stack(plane)) for name, plane in plane_vectors(S).items()}
+    names = list(plane_vectors(S))
+    return dict(zip(names, parallel.ordered_map(stack_rank, names, min_items=2), strict=True))
 
 
 def line_x_rank() -> int:
@@ -742,13 +757,15 @@ def compute() -> dict[str, Any]:
         "stack_ranks": stack_ranks(),
         "line_x_rank": line_x_rank(),
         "line_x_groebner": line_x_groebner(),
-        "special_s": {str(s): special_facts(s) for s in (0, 1, -1)},
+        "special_s": dict(
+            zip(("0", "1", "-1"), parallel.ordered_map(special_facts, [0, 1, -1], min_items=2), strict=True)
+        ),
         "witnesses": {label: row for label, row, _ in witnesses},
         "witness_points": {label: point for label, _, point in witnesses},
         "scan": scan(),
         "isotropic": _tally(parallel.ordered_map(isotropic_rank, list(range(ISOTROPIC_SAMPLES)), min_items=2)),
         "retained_points": len(retained),
-        "retained_facts": [retained_facts(row) for row in retained],
+        "retained_facts": parallel.ordered_map(retained_facts, retained, min_items=2),
         "pass": True,
     }
     record["pass"] = verdict(record) == []

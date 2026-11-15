@@ -32,6 +32,8 @@ def _same(found: object, expected: object) -> None:
 
 def _need_singular() -> None:
     if os.environ.get("SINGULAR") is None and shutil.which("Singular") is None:
+        if os.environ.get("GOROROBA_SINGULAR_REQUIRED") == "1":
+            raise AssertionError("GOROROBA_SINGULAR_REQUIRED=1 and Singular 4.4 is absent")
         pytest.skip("Singular 4.4 is missing (package singular)")
 
 
