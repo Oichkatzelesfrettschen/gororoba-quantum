@@ -1072,9 +1072,9 @@ dense minors ran out of a 20 GB address space on the same ideal.
 `y`-degree 2. The row is refuted as stated, since at `s2 = 0` the same script finds 86 generators in 24 blocks and
 generators with `tw` up to 11. No fixed `s2` reaches the 148 quadrics: `s2` lies in the maximal ideal, and the fibers
 at `s2 = 0` and `s2 = 7013` have dimension 61 and 34 in `y`-degree 2 against 83. The surviving statement is for
-generic `s2`, with `s2` kept as a variable or set to a value that a nonzero minor certifies as outside the
-exceptional set; its test is the count of
-`y`-degree-2 generators of the fiber, which must be the 148 quadrics. No tracked record holds these runs.
+generic `s2`: over the function field in `s2`, or at a value that a nonzero minor certifies as outside the
+exceptional set, the count is 32 generators in 11 blocks. The polynomial ring in `s2` is another regime: there `s2`
+lies in the maximal ideal, and the `y`-degree-2 generators modulo every slice coordinate must be the 148 quadrics. No tracked record holds these runs.
 
 **Second route at `N-` (`A5-422`, superseded by `A5-446`; conditional on `A5-293` and `A5-294`):** the reduction `K'` of the saturated lattice of `K` has the Hilbert function of `K` and contains the
 modular `K2`, which is prime of dimension 5 (`A5-060`); `K` lies in the relation ideal `L`, whose quotient has

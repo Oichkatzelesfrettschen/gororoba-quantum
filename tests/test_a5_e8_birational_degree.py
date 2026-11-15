@@ -147,9 +147,22 @@ FIXTURE_MUTATIONS: dict[str, tuple[Callable[[], list[str]], str]] = {
     ),
     "a zero coefficient": (_form_mutation("N+", 0, ((0, 0, (0, 3, 1, 0, 0)),)), "zero coefficient"),
     "a form dropped": (_forms_mutation("N-", lambda forms: forms[:-1]), "generators is 20"),
+    # a^3 l occurs in the last form alone, so replacing it by a^2 b l leaves 11 monomials.
     "a monomial dropped from the quotients": (
-        _form_mutation("N-", 20, ((-67108864, 0, (2, 1, 0, 0, 1)), (1, 0, (3, 0, 1, 0, 0)))),
-        "divisible_by_pl is 16",
+        _form_mutation("N-", 20, ((-67108864, 0, (2, 1, 1, 0, 0)),)),
+        "the changed quotients carry 11 monomials",
+    ),
+    # a^3 l and a^2 z l occur in the last two forms alone; two proportional forms make their columns proportional.
+    "two proportional forms": (
+        _forms_mutation(
+            "N-",
+            lambda forms: (
+                *forms[:19],
+                ((1, 0, (2, 0, 1, 1, 0)), (1, 0, (3, 0, 1, 0, 0))),
+                ((2, 0, (2, 0, 1, 1, 0)), (2, 0, (3, 0, 1, 0, 0))),
+            ),
+        ),
+        "the coefficient matrix has rank 11",
     ),
 }
 
