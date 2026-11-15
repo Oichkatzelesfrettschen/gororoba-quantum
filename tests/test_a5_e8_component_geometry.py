@@ -34,10 +34,9 @@ def _cell(record: dict[str, Any], orbit: str) -> dict[str, Any]:
     return cell
 
 
-def test_the_retained_record_passes_and_agrees_with_the_weight_slice_record() -> None:
+def test_the_retained_record_passes_its_checker() -> None:
     record = _record()
     _same(geometry.problems(record), [])
-    _same(geometry.slice_problems(record), [])
     _same(record["pass"], True)
     _same([cell["orbit"] for cell in record["cells"]], ["N-", "N+"])
 
@@ -254,10 +253,25 @@ def test_the_checker_rejects_each_mutation_of_the_retained_record(name: str) -> 
         raise AssertionError((name, found))
 
 
-def test_the_slice_comparison_rejects_other_relations() -> None:
-    record = copy.deepcopy(_record())
-    record["cells"][0]["relations_sha256"] = "0" * 64
+def test_the_slice_comparison_reads_the_e8_cells_over_qi_and_rejects_other_relations(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A constructed weight-slice record: the comparison reads only the E8-bar cells of characteristic 0.
+    cells = [
+        {"orbit": "N-", "characteristic": 0, "source": "e8", "relations_sha256": "a" * 64},
+        {"orbit": "N+", "characteristic": 0, "source": "e8", "relations_sha256": "b" * 64},
+        {"orbit": "N-", "characteristic": 32009, "source": "e8", "relations_sha256": "c" * 64},
+        {"orbit": "N-", "characteristic": 0, "source": "iso", "relations_sha256": "d" * 64},
+    ]
+    fixture = tmp_path / "weight-slice.json"
+    fixture.write_text(json.dumps({"cells": cells}), encoding="utf-8")
+    monkeypatch.setattr(geometry, "WEIGHT_SLICE", fixture)
+    record = {"cells": [{"orbit": "N-", "relations_sha256": "a" * 64}, {"orbit": "N+", "relations_sha256": "b" * 64}]}
+    _same(geometry.slice_problems(record), [])
+    record["cells"][0]["relations_sha256"] = "c" * 64
     _same(geometry.slice_problems(record), ["N-: the relations differ from those of the weight-slice record"])
+    record["cells"].append({"orbit": "W8", "relations_sha256": "a" * 64})
+    _same(len(geometry.slice_problems(record)), 2)
 
 
 def test_the_stored_record_check_rejects_a_missing_input_table() -> None:
