@@ -18,7 +18,8 @@ costs. hypothesis: the control stack after the compiler keeps a zero-angle `Rz` 
 hold the predecessor's unpadded center beside the padded one, measure what the padding changes. Under a phase theta
 on q12 the z12 contrast against the injected phi is the curve of the exact circuit shifted by -theta; under a
 conditional phase of coupler 8-12 the curve keeps a nonzero least value and the d2 split of the outer arms departs
-from its center's; the z8c arms, a phase on q8 after each CZ of the coupler, separate the two worlds most.
+from its center's; the z8c arms, a phase on q8 after each CZ of the coupler, separate the two worlds most and fit
+a third error world, a phase on q8 itself, which otherwise reads as the coupler's phase.
 
 Circuits. Every circuit is the retained b0 text with each X90 as Rx(pi/2). "b0-rx" is the predecessor's center arm
 byte for byte (rs.arm_lines). Every "b0-rxz" arm adds the nine `Rz` and one rewrite: "-q4-mK" / "-pK" put q4's
@@ -33,11 +34,11 @@ of the predecessor.
 
 Decision. For each world of WORLDS, fit_batch() fits the world's one parameter to the three raw selector contrasts
 of a z12 or z8c batch and to the d2 split of each outer arm less the center arm's, at the retention that reproduces
-the center arm's visibility, for each contraction share of the predecessor's MIX_FINE; decide() sums the
-chi-squares over the admitted batches of the deciding kinds at the one share that makes the sum least, and a
-deciding label also needs each deciding kind to agree with the series. The gate-noise families of the predecessor
-are outside this fit; the operating characteristics simulate truths that carry CZ damping to measure what that
-omission costs. preregistered() states the rules and operating_characteristics() simulates them.
+the center arm's visibility, for each noise model of noise_models() (the contraction shares of the predecessor's
+MIX_FINE and CZ damping at multiples of CZ_DAMPING) and each readout flip of FLIP_GRID composed onto the batch's
+assignment matrix; decide() sums the chi-squares over the admitted batches of the deciding kinds at the one noise
+model and flip that make the sum least, and a deciding label also needs each deciding kind to agree with the
+series. preregistered() states the rules and operating_characteristics() simulates them.
 
 Usage: "$PYTHON" scripts/qi_pathion_null_phase_scan_cases.py
        (--write DIR | --check DIR | --sanity RUN_DIR... | --analyze RUN_DIR... --out FILE | --self-test)
@@ -57,6 +58,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scipy.stats import beta as beta_law
 from scipy.stats import chi2 as chi2_law
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,17 +119,20 @@ QX_QUBITS, QX_BATCH_CIRCUITS = rs.QX_QUBITS, rs.QX_BATCH_CIRCUITS
 PAUSE_CEILING = rs.PAUSE_CEILING
 DESIGN_VISIBILITY = 0.42
 
-# Worlds of the decision: exact gates, a rotation about z before each pulse of q12, a conditional-phase error of
-# each CZ of coupler 8-12. The parameter grid of the two error worlds is in radians.
-THETA = np.linspace(-0.50, 0.50, 501)
-WORLDS: dict[str, np.ndarray] = {"exact": np.zeros(1), "q12_phase": THETA, "coupler_phase": THETA}
-# Placements outside the decision that forward_laws also simulates. A rotation about z after each q12 pulse gives
-# the laws of q12_phase (every q12 operation between two pulses is diagonal, the first rotation acts on |0> and the
-# last precedes a measurement in z), so the q12_phase label names a single-qubit phase at q12's pulses and leaves
-# its placement open. A rotation about z on q8 after each CZ of coupler 8-12 is the error the z8c arms inject; it is
-# a named limit of the decision, which holds no world for it.
 AFTER_PULSE = "q12_phase_after_pulse"
 Q8_PHASE = "q8_phase_at_coupler"
+# Worlds of the decision: exact gates, a rotation about z before each pulse of q12, a conditional-phase error of
+# each CZ of coupler 8-12, and a rotation about z on q8 after each CZ of coupler 8-12 (the error the z8c arms
+# inject). Without the q8 world a q8 phase near +-0.1 rad or -0.17 rad read coupler_phase at expected values; with
+# it those truths fit their own world and the coupler world lies 11 to 250 above. The parameter grid of the error
+# worlds is in radians.
+THETA = np.linspace(-0.50, 0.50, 501)
+WORLDS: dict[str, np.ndarray] = {"exact": np.zeros(1), "q12_phase": THETA, "coupler_phase": THETA, Q8_PHASE: THETA}
+ERROR_WORLDS = tuple(w for w in WORLDS if w != "exact")
+# A placement outside the decision that forward_laws also simulates: a rotation about z after each q12 pulse gives
+# the laws of q12_phase (every q12 operation between two pulses is diagonal, the first rotation acts on |0> and the
+# last precedes a measurement in z), so the q12_phase label names a single-qubit phase at q12's pulses and leaves
+# its placement open.
 # World -> the error item of gororoba_quantum/elementary_error_laws.py.
 WORLD_ITEMS: dict[str, tuple[str, Any, Any]] = {
     "exact": ("none", None, None),
@@ -137,14 +142,34 @@ WORLD_ITEMS: dict[str, tuple[str, Any, Any]] = {
     Q8_PHASE: ("czz", Q8, COUPLER),
 }
 ADEQUACY_ALPHA = rs.ADEQUACY_ALPHA
-SEPARATION = rs.SEPARATION
-# A deciding kind disagrees with the series' world when it reads the other error world lower by more than this, the
-# upper 0.01 point of chi-square with one degree of freedom. Fixed on value 0 of OC_DRAW before the recorded
-# characteristics (value 1): at 0, single mechanisms read phase_mixed in up to 94 of 500 series (the +-10 degree
-# z12 kind separates the error worlds by 3 to 48); at 6.63 in at most 7, and a series whose z12 and z8c batches
-# follow different mechanisms reads a deciding label in 3 of 500 against 0.
+# The least error world must lie at least this far below every other, after the gap is divided by the least world's
+# chi-square per degree of freedom when that exceeds 1 (the Birge scale factor squared): a world that fits worse than
+# its noise allows separates less. A no-phase null outside the fit's noise models (a selector flip beside CZ or pulse
+# phase damping) read q12_phase in exploratory draws at 1.26 to 1.97 per degree of freedom, leading the next world by
+# up to 45 in the unscaled sum and 29.0 scaled, while single q12 and coupler phases led by 24 to 384 scaled. On
+# value 9 of OC_DRAW no scenario read a deciding label of another world at 30, 35 or 40
+# (docs/evidence/qi-null-phase-scan-decision-probes/separation_calibration.json); on value 10 at 30, the null with
+# flip 0.025 and CZ phase damping 0.13 read q12_phase in 1 of 500 series. The threshold is fixed at 40, where value 9
+# left every q12 and coupler truth's counts unchanged and the cost falls on q8 phases of 0.17 rad and less.
+SEPARATION = 40.0
+# A deciding kind disagrees with the series' world when it reads another error world lower by more than this, the
+# upper 0.01 point of chi-square with one degree of freedom. Fixed on value 0 of OC_DRAW for the two-error-world
+# decision: at 0, single mechanisms read phase_mixed in up to 94 of 500 series (the +-10 degree z12 kind separates
+# the error worlds by 3 to 48); at 6.63 in at most 7, and a series whose z12 and z8c batches follow different
+# mechanisms reads a deciding label in 3 of 500 against 0. The q8 world joined after; the margin stays fixed.
 KIND_MARGIN = 6.63
-SEEN_CACHE: dict[tuple[str, tuple[str, ...], bytes, float, str], tuple[np.ndarray, np.ndarray]] = {}
+SEEN_CACHE: dict[tuple[str, tuple[str, ...], bytes, float, str], tuple[np.ndarray, np.ndarray, np.ndarray]] = {}
+# Retention and visibility miss of a world's center arm per (world, damping, contraction share, matrix, center
+# visibility); every arm tuple of the world at those arguments shares them.
+RETENTION_CACHE: dict[tuple[str, float, float, bytes, float], tuple[np.ndarray, np.ndarray]] = {}
+# Readout-flip nuisance: the selector read flips with probability f when d0 reads 0, the predecessor's readout world
+# (a misread conditioned on another qubit's state, which the bracket circuits of all-0 and all-1 inputs do not
+# measure). Every world is fitted at each f of FLIP_GRID composed onto each batch's own assignment matrix, one f per
+# series and world, ties to the smaller f. Without it a true q12 or coupler phase beside a flip of 0.0166 to 0.042
+# read none_adequate in 290 to 300 of 300 exploratory series; with it, its own label in 195 to 200 of 200
+# (docs/evidence/qi-null-phase-scan-decision-probes/readout-flip/).
+FLIP_GRID = tuple(round(0.0025 * k, 6) for k in range(25))
+FLIP_QUBIT = KEYS.index("d0")
 GUARD_LIMIT = rs.GUARD_LIMIT
 Z_RESOLVE = rs.Z_RESOLVE
 BATCH_FIELDS = rs.BATCH_FIELDS
@@ -261,11 +286,15 @@ def forward_law(arm: str, world: str = "exact", theta: float = 0.0, noise: Noise
 CZ_DAMPING: Noise = (0.0, 0.0, 0.019, 0.031)
 NO_NOISE: Noise = (0.0, 0.0, 0.0, 0.0)
 # Noise models of the fit beside the contraction shares: CZ damping at multiples of CZ_DAMPING, each with a uniform
-# contraction (share 0) at the retention that reproduces the center visibility. Laws are computed on DAMPING_GRID
-# and the fitted statistics interpolated linearly onto FIT_DAMPING, so a truth between grid points stays in reach.
-DAMPING_GRID = np.linspace(0.0, 3.0, 13)
+# contraction (share 0) at the retention that reproduces the center visibility. Laws are computed at every multiple:
+# linear interpolation from a grid of 0.25 missed the arm laws by up to 0.0066, 2.4 contrast standard errors.
 FIT_DAMPING = np.linspace(0.0, 3.0, 49)
-TABLE_VERSION = 1
+# A noise model is eligible for a batch only when some retention reproduces its center visibility within this
+# tolerance, 3 standard errors of a visibility at SCAN_SHOTS (the mean of four bin contrasts, each over a quarter of
+# the shots, has the standard error of the whole-batch contrast, 1 / sqrt(shots)). Without it a model whose largest
+# visibility lies below the batch's stayed eligible at retention 1.
+VISIBILITY_TOLERANCE = Z_RESOLVE / math.sqrt(SCAN_SHOTS)
+TABLE_VERSION = 2
 
 
 def scaled(noise: Noise, factor: float) -> Noise:
@@ -286,15 +315,18 @@ def noise_models(models: str = "all") -> tuple[str, ...]:
 
 @cache
 def table_directory() -> Path:
-    """Scratch directory of the damped law tables, keyed by every input a table depends on."""
+    """Scratch directory of the damped law tables, keyed by every input a table depends on: the bytes of the law
+    module, the retained circuit, every arm's operations, every world's error item and the parameter grids."""
     key = json.dumps(
         [
             TABLE_VERSION,
+            hashlib.sha256(Path(el.__file__).read_bytes()).hexdigest(),
             hashlib.sha256(rs.retained()["text"].encode()).hexdigest(),
-            ARMS,
+            {arm: repr(arm_operations(arm)) for arm in ARM_NAMES},
+            {world: repr(item) for world, item in WORLD_ITEMS.items()},
             [float(THETA[0]), float(THETA[-1]), len(THETA)],
             list(CZ_DAMPING),
-            [float(k) for k in DAMPING_GRID],
+            [float(k) for k in FIT_DAMPING],
         ],
         sort_keys=True,
     )
@@ -327,17 +359,16 @@ def table_item(item: tuple[str, float]) -> tuple[int, ...]:
 
 def build_tables() -> int:
     """Fill table_directory() with every damped table over the process pool, so later workers load them."""
-    items = [(world, float(k)) for world in WORLDS for k in DAMPING_GRID if k]
+    items = [(world, float(k)) for world in WORLDS for k in FIT_DAMPING if k]
     return len(ordered_map(table_item, items, min_items=2))
 
 
-def matched(
-    table: np.ndarray, arms: tuple[str, ...], matrix: np.ndarray, center_visibility: float, mix: float
+def center_retention(
+    table: np.ndarray, matrix: np.ndarray, center_visibility: float, mix: float
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Raw selector contrasts of `arms` then the d2 split of each outer arm less the center arm's, shape (parameter,
-    2 x arm - 1), and the retention per parameter at which the center arm reads `center_visibility`."""
-    outer = [n for n, a in enumerate(arms) if a != CENTER]
-    picked = [ARM_NAMES.index(arm_of(a)) for a in arms]
+    """The retention per parameter at which the center arm reads `center_visibility`, and the distance per parameter
+    from `center_visibility` to the range of center visibilities the retention grid reaches (0 inside it;
+    interpolation clamps the retention at the grid's end outside it)."""
     center = table[:, [ARM_NAMES.index(CENTER)]]
     seen = np.stack(
         [rs.visibility(rs.read(rs.contract(center, float(r), mix), matrix))[:, 0] for r in rs.RETENTION_GRID]
@@ -346,42 +377,61 @@ def matched(
     for j in range(seen.shape[1]):
         order = np.argsort(seen[:, j])
         retention[j] = float(np.interp(center_visibility, seen[order, j], rs.RETENTION_GRID[order]))
+    miss = np.maximum(0.0, np.maximum(center_visibility - seen.max(0), seen.min(0) - center_visibility))
+    return retention, miss
+
+
+def matched(
+    table: np.ndarray,
+    arms: tuple[str, ...],
+    matrix: np.ndarray,
+    center_visibility: float,
+    mix: float,
+    center: tuple[np.ndarray, np.ndarray] | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Raw selector contrasts of `arms` then the d2 split of each outer arm less the center arm's, shape (parameter,
+    2 x arm - 1), then the retention and visibility miss of center_retention(), which `center` supplies when the
+    caller holds them."""
+    outer = [n for n, a in enumerate(arms) if a != CENTER]
+    picked = [ARM_NAMES.index(arm_of(a)) for a in arms]
+    retention, miss = center_retention(table, matrix, center_visibility, mix) if center is None else center
     read = rs.read(rs.contract(table[:, picked], retention, mix), matrix)
     split = rs.d2_split(read)[0]
     relative = split[..., outer] - split[..., [arms.index(CENTER)]]
-    return np.concatenate([rs.selector_contrast(read), relative], axis=-1), retention
+    return np.concatenate([rs.selector_contrast(read), relative], axis=-1), retention, miss
 
 
 def seen_contrasts(
     world: str, arms: tuple[str, ...], matrix: np.ndarray, center_visibility: float, models: str = "all"
-) -> tuple[np.ndarray, np.ndarray]:
-    """matched() under every noise model of noise_models(), shape (model, parameter, 2 x arm - 1), and the retentions,
-    shape (model, parameter): the contraction shares of rs.MIX_FINE (interpolated from rs.MIX_GRID), then CZ damping
-    at each FIT_DAMPING multiple. Results are kept per argument set; a simulation refits one set many times."""
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """matched() under every noise model of noise_models(): statistics, shape (model, parameter, 2 x arm - 1), then
+    retentions and visibility misses, shape (model, parameter); the contraction shares of rs.MIX_FINE (interpolated
+    from rs.MIX_GRID), then CZ damping at each FIT_DAMPING multiple. Results are kept per argument set; a simulation
+    refits one set many times."""
     if models not in MODEL_SETS:
         raise ValueError(f"unknown noise-model set {models}")
     key = (world, arms, matrix.tobytes(), float(center_visibility), models)
     if key in SEEN_CACHE:
         return SEEN_CACHE[key]
-    shares = [matched(world_table(world), arms, matrix, center_visibility, float(mix)) for mix in rs.MIX_GRID]
-    if models == "contraction":
-        SEEN_CACHE[key] = (rs.fine_mix(np.stack([m for m, _ in shares])), rs.fine_mix(np.stack([r for _, r in shares])))
-        return SEEN_CACHE[key]
-    damped = [matched(world_table(world, float(k)), arms, matrix, center_visibility, 0.0) for k in DAMPING_GRID]
 
-    def fine_damping(values: np.ndarray) -> np.ndarray:
-        position = np.interp(FIT_DAMPING, DAMPING_GRID, np.arange(len(DAMPING_GRID)))
-        low = np.minimum(position.astype(int), len(DAMPING_GRID) - 2)
-        weight = (position - low).reshape(-1, *([1] * (values.ndim - 1)))
-        return np.asarray((1 - weight) * values[low] + weight * values[low + 1])
+    def center(damping: float, mix: float) -> tuple[np.ndarray, np.ndarray]:
+        at = (world, damping, mix, key[2], key[3])
+        if at not in RETENTION_CACHE:
+            RETENTION_CACHE[at] = center_retention(world_table(world, damping), matrix, center_visibility, mix)
+        return RETENTION_CACHE[at]
 
-    statistics = np.concatenate(
-        [rs.fine_mix(np.stack([m for m, _ in shares])), fine_damping(np.stack([m for m, _ in damped]))]
-    )
-    kept = np.concatenate(
-        [rs.fine_mix(np.stack([r for _, r in shares])), fine_damping(np.stack([r for _, r in damped]))]
-    )
-    SEEN_CACHE[key] = (statistics, kept)
+    shares = [
+        matched(world_table(world), arms, matrix, center_visibility, float(mix), center(0.0, float(mix)))
+        for mix in rs.MIX_GRID
+    ]
+    parts = [rs.fine_mix(np.stack([s[n] for s in shares])) for n in range(3)]
+    if models != "contraction":
+        damped = [
+            matched(world_table(world, float(k)), arms, matrix, center_visibility, 0.0, center(float(k), 0.0))
+            for k in FIT_DAMPING
+        ]
+        parts = [np.concatenate([parts[n], np.stack([d[n] for d in damped])]) for n in range(3)]
+    SEEN_CACHE[key] = (parts[0], parts[1], parts[2])
     return SEEN_CACHE[key]
 
 
@@ -396,7 +446,8 @@ def fit_batch(
     """Per world and contraction share, the least chi-square over the world's parameter of a batch's raw selector
     contrasts and relative d2 splits (`contrasts` and `errors` hold the three contrasts, then the d2 split of each
     outer arm less the center arm's): "chi2", "parameter", "retention" (one value per share) and "predicted"
-    (share, 5).
+    (share, 5). A noise model and parameter whose retentions cannot reproduce the center visibility within
+    VISIBILITY_TOLERANCE take an infinite chi-square.
 
     The split enters relative to the batch's center because the predecessor's centers read a d2 split of
     +0.0083 +- 0.0017 that no world of this decision gives; the coupler world's split is odd in the injected phase
@@ -405,8 +456,8 @@ def fit_batch(
     rows: dict[str, dict[str, np.ndarray]] = {}
     take = np.arange(len(noise_models(models)))
     for world, grid in WORLDS.items():
-        model, kept = seen_contrasts(world, arms, matrix, center_visibility, models)
-        curve = (((model - contrasts) / errors) ** 2).sum(-1)
+        model, kept, miss = seen_contrasts(world, arms, matrix, center_visibility, models)
+        curve = np.where(miss <= VISIBILITY_TOLERANCE, (((model - contrasts) / errors) ** 2).sum(-1), np.inf)
         best = curve.argmin(1)
         rows[world] = {
             "chi2": curve[take, best],
@@ -485,11 +536,16 @@ def batch_values(batch: dict[str, Any]) -> int:
     return 5 if batch.get("split_admitted", True) else 3
 
 
-def adequacy_limit(world: str, values: list[int]) -> float:
-    """Chi-square bound of a world over deciding batches that hold `values` fitted values each: one fitted parameter per
-    batch for an error world and none for the exact world, and one contraction share for the series."""
-    freedom = sum(v - (0 if world == "exact" else 1) for v in values) - 1
-    return float(chi2_law.ppf(1 - ADEQUACY_ALPHA, freedom))
+def freedom(world: str, values: list[int], flip_fitted: bool = True) -> int:
+    """Degrees of freedom of a world over deciding batches that hold `values` fitted values each: one fitted parameter
+    per batch for an error world and none for the exact world, one noise model for the series, and one readout flip
+    for the series when the flip is fitted."""
+    return sum(v - (0 if world == "exact" else 1) for v in values) - 1 - (1 if flip_fitted else 0)
+
+
+def adequacy_limit(world: str, values: list[int], flip_fitted: bool = True) -> float:
+    """Chi-square bound of a world: its upper ADEQUACY_ALPHA point on freedom(world, values, flip_fitted)."""
+    return float(chi2_law.ppf(1 - ADEQUACY_ALPHA, freedom(world, values, flip_fitted)))
 
 
 def preregistered() -> dict[str, str]:
@@ -504,25 +560,36 @@ def preregistered() -> dict[str, str]:
         "control": "the inverse-variance mean of the center arm's contrast over the admitted batches exceeds "
         f"{Z_RESOLVE} standard errors; otherwise the decision reads offset_absent (within) or offset_reversed (below)",
         "fit": "for each world (exact gates, a rotation about z before each pulse of q12, a conditional-phase error "
-        "of the CZ gates of coupler 8-12) one parameter per admitted deciding batch is fitted to its three "
-        "contrasts and to the d2 split of each outer arm less its center arm's, at the retention that reproduces "
-        "the batch's center visibility through its own bracket assignment; the chi-squares are summed at the one "
-        "noise model that makes the sum least, among the contraction shares of the predecessor's grid and CZ "
-        "amplitude and phase damping of 0.019 and 0.031 per CZ qubit at multiples 0 to 3 in steps of 1/16",
+        "of the CZ gates of coupler 8-12, a rotation about z on q8 after each CZ of coupler 8-12) one parameter per "
+        "admitted deciding batch is fitted to its three contrasts and to the d2 split of each outer arm less its "
+        "center arm's, at the retention that reproduces the batch's center visibility through its own bracket "
+        "assignment; a noise model whose center reaches no visibility within "
+        f"{VISIBILITY_TOLERANCE:.4f} ({Z_RESOLVE:g} over the square root of the circuit's {SCAN_SHOTS:,} shots) of the "
+        "batch's does not fit that batch; the chi-squares are summed at the one "
+        "noise model and readout flip that make the sum least, among the contraction shares of the predecessor's "
+        "grid and CZ amplitude and phase damping of 0.019 and 0.031 per CZ qubit at multiples 0 to 3 in steps of "
+        "1/16, and among probabilities that the selector reads flipped when d0 reads 0, composed onto each batch's "
+        f"assignment matrix, from 0 to {FLIP_GRID[-1]:g} in steps of {FLIP_GRID[1]:g}, one per series and world, a "
+        "tie keeping the smaller",
         "adequacy": f"a world is adequate when its sum is at most the upper {ADEQUACY_ALPHA} point (the "
         f"{100 * (1 - ADEQUACY_ALPHA):.1f}th percentile) of chi-square with one degree of freedom per fitted value "
-        "(5 per deciding batch, 3 when its d2 splits are left out), less one per fitted parameter and one for the "
-        "noise model",
-        "labels": "exact_parabola: the exact world is adequate, so a phase on or around q12 is falsified as the "
-        "cause of the offset; q12_phase or coupler_phase: that world is adequate, its sum lies at least "
-        f"{SEPARATION} below the other error world's, and each deciding kind, summed over its admitted replicates, "
-        f"reads that world at or below the upper {ADEQUACY_ALPHA} point of chi-square on its own degrees of freedom "
-        "and no higher than the other error world; phase_mixed: the sums prefer one error world and a kind does not; "
-        "phase_unresolved: an error world is adequate and the two are closer; none_adequate: no world is "
-        "adequate. q12_phase names a single-qubit phase at q12's pulses: a rotation about z after each pulse gives "
-        "the same laws as one before each pulse; a phase on q8 after each CZ of coupler 8-12 is no world of the fit",
-        "sign": "reported with a q12_phase or coupler_phase label: the fitted parameter of each admitted z12 batch, "
-        "and the injected phase of least contrast from a parabola through the pooled z12 arms and centers",
+        "(5 per deciding batch, 3 when its d2 splits are left out), less one per fitted parameter, one for the "
+        "noise model and one for the readout flip",
+        "readout_flip": "reported beside the label: each world's fitted readout flip, and the worlds whose flip "
+        f"lies at the grid's end, {FLIP_GRID[-1]:g}, where the excess of a larger flip is outside the fit",
+        "labels": "exact_parabola: the exact world, at its fitted readout flip, is adequate, so a phase on or "
+        "around q12 is falsified as the cause of the offset, and a fitted flip above 0 names a selector misread "
+        f"conditioned on d0 as its candidate cause; {', '.join(ERROR_WORLDS[:-1])} or {ERROR_WORLDS[-1]}: that "
+        "world is adequate, its "
+        f"sum lies at least {SEPARATION:g} times the larger of 1 and its sum per degree of freedom below every other "
+        "error world's, and each deciding kind, summed over its "
+        f"admitted replicates, reads that world at or below the upper {ADEQUACY_ALPHA} point of chi-square on its "
+        f"own degrees of freedom and at most {KIND_MARGIN} above every other error world; phase_mixed: the sums "
+        "prefer one error world and a kind does not; phase_unresolved: an error world is adequate and the least "
+        "is closer to another; none_adequate: no world is adequate. q12_phase names a single-qubit phase at q12's "
+        "pulses: a rotation about z after each pulse gives the same laws as one before each pulse",
+        "sign": "reported with a deciding label: the fitted parameter of each admitted deciding batch, and the "
+        "injected phase of least contrast from a parabola through the pooled z12 arms and centers",
         "d2_split": "also reported beside the label: the d2 split of every arm of the deciding kinds pooled over the "
         "admitted replicates whose d2 qubit passed its guard, beside the values each world predicts",
         "z8c": "reported beside the label: a weighted parabola through the z8c arms and their centers against the "
@@ -533,14 +600,16 @@ def preregistered() -> dict[str, str]:
         "q4_line": "reported outside the label: a weighted straight line through the origin of the contrast of each "
         "q4 arm less its batch center against q4's injected angle (-10, -5, +5, +10 degrees), with its chi-square, "
         "slope and the angle at which the pooled center plus the line reads zero; when the bridge reads within its "
-        "bound the same line is also reported with the predecessor's admitted q4 +-10 degree points added",
+        "bound and the slope of the new +-10 degree arms lies within "
+        f"{Z_RESOLVE} standard errors of the slope of the predecessor's admitted q4 +-10 degree points, the same "
+        "line is also reported with those points added",
         "visibility": "reported outside the label: each arm's visibility over its batch center's, beside the "
         "exact circuit's ratio",
         "line_phase": "outside this analysis: the shot-order fold of "
         "docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.py is run on the retained jobs afterwards "
         "and decides nothing",
-        "ledger": "A5-186 changes only on q12_phase or coupler_phase, to the statement of that label; every other "
-        "label reports the numbers",
+        "ledger": f"A5-186 changes only on {', '.join(ERROR_WORLDS[:-1])} or {ERROR_WORLDS[-1]}, to the statement "
+        "of that label; every other label reports the numbers",
     }
 
 
@@ -658,55 +727,113 @@ def relative_splits(batch: dict[str, Any]) -> tuple[list[float], list[float]]:
     return values, errors
 
 
-def decide(
-    batches: list[dict[str, Any]], matrix_of: Any, models: str = "all", margin: float | None = None
-) -> dict[str, Any]:
-    """Label and numbers from data batches: each holds "name", "kind", "arms", "contrasts", "errors", "splits",
-    "split_errors", "center_visibility", "admitted" and, optionally, "split_admitted" (default true); `matrix_of(batch)`
-    is its assignment matrix."""
+def screen(batches: list[dict[str, Any]]) -> tuple[str | None, list[dict[str, Any]], dict[str, Any]]:
+    """The guard and center tests of decide(): a label that ends the decision before any fit, or None, then the
+    admitted deciding batches and the numbers so far."""
     admitted = [b for b in batches if b["admitted"]]
     numbers: dict[str, Any] = {"admitted_batches": [b["name"] for b in admitted]}
     z12 = [b for b in admitted if b["kind"] in DECIDING_KINDS]
     if {b["kind"] for b in z12} != set(DECIDING_KINDS):
-        return {"label": "unresolved_guard", "numbers": numbers}
+        return "unresolved_guard", z12, numbers
     centers = [(b["contrasts"][b["arms"].index(CENTER)], b["errors"][b["arms"].index(CENTER)]) for b in admitted]
     center = pooled(centers)
     numbers["center_contrast"] = list(center)
     if center[0] <= Z_RESOLVE * center[1]:
-        label = "offset_reversed" if center[0] < -Z_RESOLVE * center[1] else "offset_absent"
-        return {"label": label, "numbers": numbers}
-    fits = {
-        b["name"]: fit_batch(
+        return ("offset_reversed" if center[0] < -Z_RESOLVE * center[1] else "offset_absent"), z12, numbers
+    return None, z12, numbers
+
+
+def flipped(matrix: np.ndarray, flip: float) -> np.ndarray:
+    """An assignment matrix with the selector read flipped at probability `flip` when d0 reads 0."""
+    return matrix if flip == 0 else matrix @ oc.selector_flip(FLIP_QUBIT, 0, float(flip))
+
+
+# Per world, the fit at the series' least sum over readout flip and noise model: "total", "flip", "model" (index into
+# noise_models), and per deciding batch "chi2", "parameter" and "predicted".
+Fitted = dict[str, dict[str, Any]]
+
+
+def absorb(best: Fitted, flip: float, z12: list[dict[str, Any]], matrix_of: Any, models: str) -> None:
+    """Fit every deciding batch at readout flip `flip` and keep, per world, the noise model of least sum when it lies
+    below the sum `best` holds; flips are offered in increasing order, so a tie keeps the smaller."""
+    fits = [
+        fit_batch(
             tuple(b["arms"]),
             np.array([*b["contrasts"], *relative_splits(b)[0]]),
             np.array([*b["errors"], *relative_splits(b)[1]]),
-            matrix_of(b),
+            flipped(matrix_of(b), flip),
             b["center_visibility"],
             models,
         )
         for b in z12
-    }
-    total = {w: np.sum([fits[b["name"]][w]["chi2"] for b in z12], axis=0) for w in WORLDS}
-    share = {w: int(total[w].argmin()) for w in WORLDS}
-    best = {w: float(total[w][share[w]]) for w in WORLDS}
-    limit = {w: adequacy_limit(w, [batch_values(b) for b in z12]) for w in WORLDS}
+    ]
+    for w in WORLDS:
+        chi = np.stack([f[w]["chi2"] for f in fits])
+        total = chi.sum(0)
+        j = int(total.argmin())
+        if w not in best or total[j] < best[w]["total"]:
+            best[w] = {
+                "total": float(total[j]),
+                "flip": flip,
+                "model": j,
+                "chi2": chi[:, j].copy(),
+                "parameter": np.array([f[w]["parameter"][j] for f in fits]),
+                "predicted": np.stack([f[w]["predicted"][j] for f in fits]),
+            }
+
+
+def clear_caches() -> None:
+    SEEN_CACHE.clear()
+    RETENTION_CACHE.clear()
+
+
+def fit_flips(z12: list[dict[str, Any]], matrix_of: Any, models: str, flips: tuple[float, ...]) -> Fitted:
+    """The fit of every world over `flips`; the caches are cleared after each flip, so one decision holds one flip's
+    tables at a time."""
+    best: Fitted = {}
+    for flip in flips:
+        absorb(best, flip, z12, matrix_of, models)
+        clear_caches()
+    return best
+
+
+def decide(
+    batches: list[dict[str, Any]],
+    matrix_of: Any,
+    models: str = "all",
+    margin: float | None = None,
+    separation: float | None = None,
+    flips: tuple[float, ...] = FLIP_GRID,
+    fitted: Fitted | None = None,
+) -> dict[str, Any]:
+    """Label and numbers from data batches: each holds "name", "kind", "arms", "contrasts", "errors", "splits",
+    "split_errors", "center_visibility", "admitted" and, optionally, "split_admitted" (default true); `matrix_of(batch)`
+    is its assignment matrix. The readout flip is fitted over `flips` (a single value fixes it and frees no degree
+    of freedom); `fitted` supplies a fit absorb() already made over `flips`."""
+    label, z12, numbers = screen(batches)
+    if label is not None:
+        return {"label": label, "numbers": numbers}
+    fit = fitted if fitted is not None else fit_flips(z12, matrix_of, models, flips)
+    flip_fitted = len(flips) > 1
+    values = [batch_values(b) for b in z12]
+    best = {w: fit[w]["total"] for w in WORLDS}
+    limit = {w: adequacy_limit(w, values, flip_fitted) for w in WORLDS}
     adequate = {w: best[w] <= limit[w] for w in WORLDS}
+    names = [b["name"] for b in z12]
     numbers.update(
         chi2={w: round(best[w], 3) for w in WORLDS},
         adequacy_limit={w: round(limit[w], 3) for w in WORLDS},
-        noise_model={w: noise_models(models)[share[w]] for w in WORLDS},
+        noise_model={w: noise_models(models)[fit[w]["model"]] for w in WORLDS},
+        readout_flip={w: fit[w]["flip"] for w in WORLDS},
+        flip_at_grid_end=sorted(w for w in WORLDS if flip_fitted and fit[w]["flip"] == flips[-1]),
         parameters={
-            w: {b["name"]: float(fits[b["name"]][w]["parameter"][share[w]]) for b in z12}
-            for w in WORLDS
-            if w != "exact"
+            w: dict(zip(names, (float(x) for x in fit[w]["parameter"]), strict=True)) for w in WORLDS if w != "exact"
         },
         predicted={
-            w: {b["name"]: [float(x) for x in fits[b["name"]][w]["predicted"][share[w]]] for b in z12} for w in WORLDS
+            w: {n: [float(x) for x in row] for n, row in zip(names, fit[w]["predicted"], strict=True)} for w in WORLDS
         },
     )
-    per_batch = {
-        w: {b["name"]: float(fits[b["name"]][w]["chi2"][share[w]]) for b in z12} for w in WORLDS if w != "exact"
-    }
+    per_batch = {w: dict(zip(names, (float(x) for x in fit[w]["chi2"]), strict=True)) for w in WORLDS if w != "exact"}
     # Each deciding kind, summed over its admitted replicates: the series' world must fit it and the other error
     # world may undercut it by at most KIND_MARGIN.
     kind_chi2 = {
@@ -723,17 +850,24 @@ def decide(
         split_admitted=[b["name"] for b in z12 if b.get("split_admitted", True)],
     )
 
-    def homogeneous(world: str, other: str) -> bool:
+    def homogeneous(world: str) -> bool:
         slack = KIND_MARGIN if margin is None else margin
-        return all(v <= bound[k] and v <= kind_chi2[other][k] + slack for k, v in kind_chi2[world].items())
+        return all(
+            v <= bound[k] and all(v <= kind_chi2[other][k] + slack for other in ERROR_WORLDS if other != world)
+            for k, v in kind_chi2[world].items()
+        )
 
+    # Every error world holds one parameter per batch and so the same bound, so the least sum is the only one that
+    # can be adequate and separated from every other.
+    lead = min(ERROR_WORLDS, key=lambda w: best[w])
+    scale = max(1.0, best[lead] / freedom(lead, values, flip_fitted))
+    needed = (SEPARATION if separation is None else separation) * scale
+    numbers["separation_needed"] = round(needed, 3)
     if adequate["exact"]:
         label = "exact_parabola"
-    elif adequate["q12_phase"] and best["q12_phase"] <= best["coupler_phase"] - SEPARATION:
-        label = "q12_phase" if homogeneous("q12_phase", "coupler_phase") else "phase_mixed"
-    elif adequate["coupler_phase"] and best["coupler_phase"] <= best["q12_phase"] - SEPARATION:
-        label = "coupler_phase" if homogeneous("coupler_phase", "q12_phase") else "phase_mixed"
-    elif adequate["q12_phase"] or adequate["coupler_phase"]:
+    elif adequate[lead] and all(best[lead] <= best[w] - needed for w in ERROR_WORLDS if w != lead):
+        label = lead if homogeneous(lead) else "phase_mixed"
+    elif any(adequate[w] for w in ERROR_WORLDS):
         label = "phase_unresolved"
     else:
         label = "none_adequate"
@@ -804,26 +938,40 @@ TRUTHS: dict[str, tuple[str, float, float, Noise, str | None]] = {
     "q12 phase -0.15 rad": ("q12_phase", -0.15, 0.0, NO_NOISE, "q12_phase"),
     "coupler 8-12 phase -0.25 rad": ("coupler_phase", -0.25, 0.0, NO_NOISE, "coupler_phase"),
     "coupler 8-12 phase +0.25 rad": ("coupler_phase", 0.25, 0.0, NO_NOISE, "coupler_phase"),
-    "exact gates, selector flip 0.0166 when q12 reads 0": ("exact", 0.0, 0.0166, NO_NOISE, "none_adequate"),
-    "exact gates, selector flip 0.036 when q12 reads 0": ("exact", 0.0, 0.036, NO_NOISE, "none_adequate"),
-    "q8 phase at coupler 8-12 -0.25 rad": (Q8_PHASE, -0.25, 0.0, NO_NOISE, None),
+    "exact gates, selector flip 0.0166 when q12 reads 0": ("exact", 0.0, 0.0166, NO_NOISE, "exact_parabola"),
+    "exact gates, selector flip 0.036 when q12 reads 0": ("exact", 0.0, 0.036, NO_NOISE, "exact_parabola"),
+    "q12 phase -0.18 rad, selector flip 0.036": ("q12_phase", -0.18, 0.036, NO_NOISE, "q12_phase"),
+    "coupler 8-12 phase -0.25 rad, selector flip 0.036": ("coupler_phase", -0.25, 0.036, NO_NOISE, "coupler_phase"),
+    "q8 phase at coupler 8-12 -0.25 rad, selector flip 0.042": (Q8_PHASE, -0.25, 0.042, NO_NOISE, None),
+    "q8 phase at coupler 8-12 -0.25 rad": (Q8_PHASE, -0.25, 0.0, NO_NOISE, Q8_PHASE),
+    "q8 phase at coupler 8-12 -0.17 rad": (Q8_PHASE, -0.17, 0.0, NO_NOISE, None),
+    "q8 phase at coupler 8-12 +0.10 rad": (Q8_PHASE, 0.10, 0.0, NO_NOISE, None),
     "q12 phase -0.15 rad with CZ damping": ("q12_phase", -0.15, 0.0, CZ_DAMPING, "q12_phase"),
     "coupler 8-12 phase -0.25 rad with CZ damping": ("coupler_phase", -0.25, 0.0, CZ_DAMPING, "coupler_phase"),
     "exact gates with CZ damping": ("exact", 0.0, 0.0, CZ_DAMPING, "offset_absent"),
     "q12 phase -0.15 rad with CZ damping x1.25": ("q12_phase", -0.15, 0.0, scaled(CZ_DAMPING, 1.25), None),
     "coupler 8-12 phase -0.25 rad with CZ damping x1.25": ("coupler_phase", -0.25, 0.0, scaled(CZ_DAMPING, 1.25), None),
     "q12 phase -0.15 rad with CZ damping x3": ("q12_phase", -0.15, 0.0, scaled(CZ_DAMPING, 3.0), None),
+    "exact gates, selector flip 0.0166, CZ phase damping 0.10": ("exact", 0.0, 0.0166, (0.0, 0.0, 0.0, 0.10), None),
+    "exact gates, selector flip 0.025, CZ phase damping 0.13": ("exact", 0.0, 0.025, (0.0, 0.0, 0.0, 0.13), None),
+    "q8 phase at coupler 8-12 -0.25 rad, pulse phase damping 0.10": (Q8_PHASE, -0.25, 0.0, (0.0, 0.10, 0.0, 0.0), None),
+    "q8 phase at coupler 8-12 -0.25 rad, CZ phase damping 0.12": (Q8_PHASE, -0.25, 0.0, (0.0, 0.0, 0.0, 0.12), None),
+    "exact gates, selector flip 0.036, CZ phase damping 0.16": ("exact", 0.0, 0.036, (0.0, 0.0, 0.0, 0.16), None),
+    "exact gates, selector flip 0.025, pulse phase damping 0.10": ("exact", 0.0, 0.025, (0.0, 0.10, 0.0, 0.0), None),
 }
 # Truths the prediction record states: world, parameter in radians, probability of a selector flip conditioned on
-# d0 reading 0 (the predecessor's readout world, outside this decision's worlds), gate noise, and the label the
-# self-test requires at expected values (None: reported, not required; the truth lies outside the fit's worlds).
+# d0 reading 0 (the predecessor's readout world, which the fit's FLIP_GRID absorbs), gate noise, and the label the
+# self-test requires at expected values (None: reported, not required; the truth lies outside the fit's worlds or
+# near the separation, where phase_unresolved and the truth's own label are both correct readings).
 
 
 def truth_row(
     world: str, theta: float, matrix: np.ndarray, flip: float = 0.0, mix: float = 0.0, noise: Noise = NO_NOISE
 ) -> dict[str, dict[str, float]]:
     """Contrast and d2 split of every arm under a truth at the retention where its center reads the design
-    visibility; `flip` is the probability that the selector read flips when d0 reads 0."""
+    visibility, and the center's visibility at that retention: a truth whose noise keeps the center below the design
+    visibility at every retention is taken at the largest it reaches; `flip` is the probability that the selector
+    read flips when d0 reads 0."""
     laws = np.stack([forward_law(arm, world, theta, noise) for arm in ARM_NAMES])[None]
     center = laws[:, [ARM_NAMES.index(CENTER)]]
     seen_matrix = matrix @ oc.selector_flip(KEYS.index("d0"), 0, flip)
@@ -834,18 +982,24 @@ def truth_row(
         ]
     )
     order = np.argsort(seen)
-    retention = float(np.interp(DESIGN_VISIBILITY, seen[order], rs.RETENTION_GRID[order]))
+    if DESIGN_VISIBILITY <= seen.max():
+        retention = float(np.interp(DESIGN_VISIBILITY, seen[order], rs.RETENTION_GRID[order]))
+    else:
+        retention = float(rs.RETENTION_GRID[seen.argmax()])
     read = rs.read(rs.contract(laws, retention, mix), seen_matrix)[0]
     contrast = rs.selector_contrast(read)
     split = rs.d2_split(read)[0]
-    return {
+    row = {
         arm: {"contrast": round(float(contrast[i]), 5), "d2_split": round(float(split[i]), 5)}
         for i, arm in enumerate(ARM_NAMES)
     }
+    row[CENTER]["visibility"] = round(float(rs.visibility(read[[ARM_NAMES.index(CENTER)]])[0]), 5)
+    return row
 
 
 def planted_batches(row: dict[str, dict[str, float]]) -> list[dict[str, Any]]:
-    """The fourteen data batches at a truth's expected contrasts and d2 splits and the design standard errors."""
+    """The fourteen data batches at a truth's expected contrasts and d2 splits, its center visibility and the design
+    standard errors."""
     error = 1.0 / math.sqrt(SCAN_SHOTS)
     out = []
     for n, (kind, replicate) in enumerate(batch_order()):
@@ -859,7 +1013,7 @@ def planted_batches(row: dict[str, dict[str, float]]) -> list[dict[str, Any]]:
                 "errors": [error] * 3,
                 "splits": [row[arm_of(a)]["d2_split"] for a in arms],
                 "split_errors": [2 * error] * 3,
-                "center_visibility": DESIGN_VISIBILITY,
+                "center_visibility": row[CENTER]["visibility"],
                 "admitted": True,
             }
         )
@@ -887,9 +1041,18 @@ def scenario_batches(name: str) -> list[dict[str, Any]]:
 
 
 OC_DRAW = "docs/evidence/anu_qrng/draw-2026-11-15T084216Z.json"
-# Value 0 of OC_DRAW calibrated KIND_MARGIN; the recorded characteristics use value 1.
-OC_SEED_INDEX = 1
+# Value 0 of OC_DRAW calibrated KIND_MARGIN and value 1 recorded the characteristics of the two-error-world
+# decision; values 2 through 7 seeded a reviewer's replication; value 8 recorded the three-error-world decision with
+# an unscaled separation of 25, under which no-phase nulls outside the noise models read q12_phase in up to 48 of
+# 500 series. Value 9 calibrated SEPARATION, value 10 recorded it at 30 (one null read q12_phase once in 500), value
+# 11 recorded it at 40 with the readout flip fixed at 0, and value 12 records the decision this module holds, with
+# the readout flip fitted over FLIP_GRID.
+OC_SEED_INDEX = 12
 OC_SERIES = 500
+# Scenarios of exact gates draw NULL_SERIES series, so that a count of 0 deciding labels bounds the rate at 0.06%
+# (one-sided 95% Clopper-Pearson) where 500 series bound it at 0.60%; OC_CHUNK series make one work item.
+NULL_SERIES = 5000
+OC_CHUNK = 250
 # A static d2 split added to every circuit of a simulated series, the size the predecessor's centers read.
 OC_SPLIT_OFFSET = 0.0083
 
@@ -900,20 +1063,36 @@ def oc_seed(index: int = OC_SEED_INDEX) -> int:
     return int(read_record(OC_DRAW)["values"][index])
 
 
-def oc_worker(item: tuple[int, str, int, float]) -> dict[str, int]:
-    """Label counts of OC_SERIES simulated series of one scenario: Gaussian contrasts and d2 splits at the design
+def scenario_series(name: str) -> int:
+    return NULL_SERIES if name in TRUTHS and TRUTHS[name][0] == "exact" else OC_SERIES
+
+
+def wrong_labels(name: str) -> tuple[str, ...]:
+    """Deciding labels that misread a scenario: every error world for exact gates and for a mixed scenario, every
+    other error world for a single phase."""
+    world = TRUTHS[name][0] if name in TRUTHS else None
+    return tuple(w for w in ERROR_WORLDS if w != world)
+
+
+def upper_bound(count: int, series: int, confidence: float = 0.95) -> float:
+    """One-sided Clopper-Pearson upper bound on a rate seen `count` times in `series` trials."""
+    return 1.0 if count >= series else float(beta_law.ppf(confidence, count + 1, series - count))
+
+
+def oc_worker(item: tuple[int, str, int, int, int, float, float, tuple[float, ...]]) -> dict[str, int]:
+    """Label counts of series `start` to `stop` of one scenario: Gaussian contrasts and d2 splits at the design
     standard errors around the scenario's expected values, every batch admitted, a static d2 split of
-    OC_SPLIT_OFFSET on every circuit. The generator is seeded with (seed, scenario position), so each scenario's
-    draws are fixed whatever the worker count."""
-    seed, name, position, margin = item
+    OC_SPLIT_OFFSET on every circuit. The generator is seeded with (seed, scenario position) and draws the
+    scenario's whole series, so each series is fixed whatever the chunking and worker count. Every series is fitted
+    at one readout flip before the next, so the caches hold one flip's tables at a time."""
+    seed, name, position, start, stop, margin, separation, flips = item
     rng = np.random.default_rng([seed, position])
     matrix = predecessor_matrix()
     error = 1.0 / math.sqrt(SCAN_SHOTS)
     base = scenario_batches(name)
-    noise = rng.standard_normal((OC_SERIES, len(base), 6))
-    tally: dict[str, int] = {}
-    for i in range(OC_SERIES):
-        series_batches = [
+    noise = rng.standard_normal((scenario_series(name), len(base), 6))[start:stop]
+    drawn = [
+        [
             {
                 **b,
                 "contrasts": [v + error * noise[i, n, j] for j, v in enumerate(b["contrasts"])],
@@ -921,52 +1100,148 @@ def oc_worker(item: tuple[int, str, int, float]) -> dict[str, int]:
             }
             for n, b in enumerate(base)
         ]
-        label = decide(series_batches, lambda b: matrix, margin=margin)["label"]
+        for i in range(stop - start)
+    ]
+    screened = [screen(s) for s in drawn]
+    fits: list[Fitted] = [{} for _ in drawn]
+    for flip in flips:
+        for (label, z12, _), fit in zip(screened, fits, strict=True):
+            if label is None:
+                absorb(fit, flip, z12, lambda b: matrix, "all")
+        clear_caches()
+    tally: dict[str, int] = {}
+    for s, fit in zip(drawn, fits, strict=True):
+        label = decide(s, lambda b: matrix, margin=margin, separation=separation, flips=flips, fitted=fit)["label"]
         tally[label] = tally.get(label, 0) + 1
-    return dict(sorted(tally.items()))
+    return tally
 
 
-def operating_characteristics(index: int = OC_SEED_INDEX, margin: float | None = None) -> dict[str, Any]:
+def operating_characteristics(
+    index: int = OC_SEED_INDEX,
+    margin: float | None = None,
+    separation: float | None = None,
+    flips: tuple[float, ...] = FLIP_GRID,
+) -> dict[str, Any]:
     """Label counts per scenario (every truth of TRUTHS and every mixed scenario), seeded from value `index` of
-    OC_DRAW and mapped over the process pool; `margin` replaces KIND_MARGIN for a calibration."""
+    OC_DRAW and mapped over the process pool in chunks of OC_CHUNK series, with the one-sided 95% Clopper-Pearson
+    upper bound on the rate of a deciding label that misreads the scenario; `margin` and `separation` replace
+    KIND_MARGIN and SEPARATION for a calibration and `flips` replaces FLIP_GRID."""
     names = [*TRUTHS, *MIXED]
     seed = oc_seed(index)
     slack = KIND_MARGIN if margin is None else margin
+    gap = SEPARATION if separation is None else separation
     build_tables()
-    counts = ordered_map(oc_worker, [(seed, name, n, slack) for n, name in enumerate(names)], min_items=2)
+    items = [
+        (seed, name, n, start, min(start + OC_CHUNK, scenario_series(name)), slack, gap, flips)
+        for n, name in enumerate(names)
+        for start in range(0, scenario_series(name), OC_CHUNK)
+    ]
+    counts: dict[str, dict[str, int]] = {name: {} for name in names}
+    for item, tally in zip(items, ordered_map(oc_worker, items, min_items=2), strict=True):
+        for label, k in tally.items():
+            counts[item[1]][label] = counts[item[1]].get(label, 0) + k
+    wrong = {name: sum(counts[name].get(w, 0) for w in wrong_labels(name)) for name in names}
     return {
-        "series_per_truth": OC_SERIES,
+        "series_per_scenario": {name: scenario_series(name) for name in names},
         "qrng_draw": OC_DRAW,
         "seed_index": index,
         "kind_margin": slack,
+        "separation": gap,
+        "readout_flip_grid": list(flips) if len(flips) < 3 else [flips[0], round(flips[1] - flips[0], 6), flips[-1]],
         "static_d2_split": OC_SPLIT_OFFSET,
-        "label_counts": dict(zip(names, counts, strict=True)),
+        "label_counts": {name: dict(sorted(counts[name].items())) for name in names},
+        "wrong_deciding": {
+            name: {"count": wrong[name], "upper_95": round(upper_bound(wrong[name], scenario_series(name)), 6)}
+            for name in names
+        },
+    }
+
+
+def expected_decision(name: str) -> dict[str, Any]:
+    """A truth's expected contrasts and the decision on its planted batches."""
+    world, theta, flip, noise, _ = TRUTHS[name]
+    matrix = predecessor_matrix()
+    row = truth_row(world, theta, matrix, flip, noise=noise)
+    decision = decide(planted_batches(row), lambda b: matrix)
+    return {
+        "arms": row,
+        "label_at_expected_values": decision["label"],
+        "chi2_at_expected_values": decision["numbers"].get("chi2"),
+        "readout_flip_at_expected_values": decision["numbers"].get("readout_flip"),
     }
 
 
 def predictions() -> dict[str, Any]:
-    matrix = predecessor_matrix()
-    truths: dict[str, Any] = {}
-    for name, (world, theta, flip, noise, _) in TRUTHS.items():
-        row = truth_row(world, theta, matrix, flip, noise=noise)
-        decision = decide(planted_batches(row), lambda b: matrix)
-        truths[name] = {
-            "arms": row,
-            "label_at_expected_values": decision["label"],
-            "chi2_at_expected_values": decision["numbers"].get("chi2"),
-        }
+    build_tables()
+    truths = dict(zip(TRUTHS, ordered_map(expected_decision, list(TRUTHS), min_items=2), strict=True))
     return {
-        "schema": "qi-pathion-null-phase-scan-prediction-v2",
+        "schema": "qi-pathion-null-phase-scan-prediction-v3",
         "design": design(),
         "design_visibility": DESIGN_VISIBILITY,
         "readout": f"mean bracket rates of {PREDECESSOR_ANALYSIS}",
         "preregistered": preregistered(),
         "truths": truths,
         "operating_characteristics": operating_characteristics(),
-        "limits": "contraction share 0 and the design visibility for every truth; Gaussian sampling noise with "
-        "every batch admitted; CZ damping at one strength is the only gate noise simulated; a drifting readout and a "
-        "phase beside a readout offset are not simulated",
+        "limits": "contraction share 0 and the design visibility for every truth, or the largest visibility its "
+        "noise reaches; Gaussian sampling noise with every batch admitted; the gate noise simulated is CZ damping at "
+        "one ratio (multiples 1, 1.25 and 3) and the six phase-damping truths outside the fit's noise models; one "
+        "readout flip per series: a flip that drifts during the series is outside the fit (exploratory draws: no "
+        "deciding label on a drifting null, a true phase beside a flip drifting from 0 to 0.036 read its label in "
+        "about half its series and none_adequate or phase_mixed otherwise); a flip above the grid's 0.06 is outside "
+        "the fit",
     }
+
+
+# CASE.md tables rendered from prediction.json between these markers; write() fills them and check() compares them,
+# so the hand-written case cannot carry a stale number.
+TABLE_BEGIN = "<!-- generated from prediction.json by scripts/qi_pathion_null_phase_scan_cases.py: {} -->"
+TABLE_END = "<!-- end of generated table -->"
+TABLE_ARMS = (CENTER, *(a for a in ARM_NAMES if a not in (PLAIN, CENTER)))
+
+
+def signed(value: float) -> str:
+    return "0" if round(value, 4) == 0 else f"{value:+.4f}"
+
+
+def case_tables(record: dict[str, Any]) -> dict[str, str]:
+    """The expected-contrast table of every truth and the label-count table of every scenario."""
+    heads = ["center"]
+    heads += [arm.removeprefix(f"{CENTER}-").replace("-m", " -").replace("-p", " +") for arm in TABLE_ARMS[1:]]
+    truths = ["| truth | " + " | ".join(heads) + " | label | fitted flip |", "|---" * (len(heads) + 3) + "|"]
+    for name in sorted(record["truths"]):
+        row = record["truths"][name]
+        cells = " | ".join(signed(row["arms"][arm]["contrast"]) for arm in TABLE_ARMS)
+        label = row["label_at_expected_values"]
+        flips = row["readout_flip_at_expected_values"]
+        world = label if flips and label in flips else ("exact" if label == "exact_parabola" else None)
+        flip = f"{flips[world]:g}" if flips and world else "-"
+        truths.append(f"| {name} | {cells} | `{label}` | {flip} |")
+    oc_record = record["operating_characteristics"]
+    counts = oc_record["label_counts"]
+    scenarios = [
+        "| scenario | series | label counts | misreading deciding labels (one-sided 95% upper bound) |",
+        "|---|---|---|---|",
+    ]
+    for name in sorted(counts):
+        tallies = ", ".join(f"`{k}` {v}" for k, v in sorted(counts[name].items()))
+        wrong = oc_record["wrong_deciding"][name]
+        scenarios.append(
+            f"| {name} | {oc_record['series_per_scenario'][name]} | {tallies} | "
+            f"{wrong['count']} (< {100 * wrong['upper_95']:.2f}%) |"
+        )
+    return {"truths": "\n".join(truths), "operating_characteristics": "\n".join(scenarios)}
+
+
+def render_case(text: str, record: dict[str, Any]) -> str:
+    """CASE.md text with each generated table replaced by its rendering from `record`."""
+    for key, table in case_tables(record).items():
+        begin = TABLE_BEGIN.format(key)
+        if text.count(begin) != 1:
+            raise ValueError(f"CASE.md holds {text.count(begin)} markers for the {key} table, not 1")
+        start = text.index(begin) + len(begin)
+        end = text.index(TABLE_END, start)
+        text = f"{text[:start]}\n{table}\n{text[end:]}"
+    return text
 
 
 def write(directory: Path) -> None:
@@ -975,16 +1250,21 @@ def write(directory: Path) -> None:
             path = directory / name / rel
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text, encoding="utf-8")
+    record = predictions()
     (directory / TUNA_SERIES / "prediction.json").write_text(
-        json.dumps(predictions(), indent=1, sort_keys=True) + "\n", encoding="utf-8"
+        json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8"
     )
+    case = directory / TUNA_SERIES / "CASE.md"
+    case.write_text(render_case(case.read_text(encoding="utf-8"), record), encoding="utf-8")
     print(f"wrote {TUNA_SERIES} and {QX_SERIES} under {directory}")
 
 
 def check(directory: Path) -> None:
-    """The case directories hold exactly the built files; CASE.md, the hand-written case, is the one extra file."""
+    """The case directories hold exactly the built files; CASE.md, the hand-written case, is the one extra file, and
+    its generated tables match the prediction record."""
     built = build()
-    built[TUNA_SERIES]["prediction.json"] = json.dumps(predictions(), indent=1, sort_keys=True) + "\n"
+    record = predictions()
+    built[TUNA_SERIES]["prediction.json"] = json.dumps(record, indent=1, sort_keys=True) + "\n"
     for name, files in built.items():
         root = directory / name
         present = {
@@ -997,8 +1277,12 @@ def check(directory: Path) -> None:
         for rel, text in files.items():
             if (root / rel).read_text(encoding="utf-8") != text:
                 raise ValueError(f"{root}/{rel} differs from the build")
-    if not (directory / TUNA_SERIES / "CASE.md").is_file():
+    case = directory / TUNA_SERIES / "CASE.md"
+    if not case.is_file():
         raise ValueError(f"{directory / TUNA_SERIES}/CASE.md is missing")
+    text = case.read_text(encoding="utf-8")
+    if render_case(text, record) != text:
+        raise ValueError(f"{case}: a generated table differs from prediction.json")
     print(f"{directory}: {TUNA_SERIES} and {QX_SERIES} match the build")
 
 
@@ -1122,18 +1406,40 @@ def evaluate(shots: dict[str, list[str]], manifest: dict[str, Any]) -> dict[str,
         reported["d2_split"] = {arm: list(pooled(v)) for arm, v in sorted(split.items())}
     if len(q4_points) >= 2 and "center_contrast" in decision["numbers"]:
         center_value = decision["numbers"]["center_contrast"][0]
-        reported["q4_line"] = line_fit(q4_points, center_value)
-        if agree:
-            reported["q4_line_with_retained"] = line_fit(q4_points + retained_q4_points(), center_value)
+        reported.update(q4_reports(q4_points, center_value, agree, retained_q4_points()))
     ledger = "unchanged; the numbers are reported"
-    if decision["label"] in ("q12_phase", "coupler_phase"):
+    if decision["label"] in ERROR_WORLDS:
         ledger = f"changes to the statement of {decision['label']}"
     return {"batch_rows": rows, "decision": {**decision, "a5_186": ledger}, "reported": reported}
 
 
+def q4_reports(
+    points: list[tuple[float, float, float]],
+    center: float,
+    bridge_agrees: bool,
+    retained: list[tuple[float, float, float]],
+) -> dict[str, Any]:
+    """The q4 line of the new arms and, when the bridge agrees, its slope comparison with the retained points; the
+    bridge compares centers alone, so the retained points join the line only when the new +-10 degree slope also lies
+    within Z_RESOLVE standard errors of theirs, and a padding that changes the slope keeps them apart."""
+    out: dict[str, Any] = {"q4_line": line_fit(points, center)}
+    far = [p for p in points if abs(p[0]) == 10.0]
+    if not (bridge_agrees and far and retained):
+        return out
+    new, old = line_fit(far, center), line_fit(retained, center)
+    gap = new["slope_per_degree"] - old["slope_per_degree"]
+    gap_se = math.hypot(new["slope_se"], old["slope_se"])
+    agrees = abs(gap) <= Z_RESOLVE * gap_se
+    out["q4_slope_against_retained"] = {"difference": [gap, gap_se], "within_resolve": agrees}
+    if agrees:
+        out["q4_line_with_retained"] = line_fit(points + retained, center)
+    return out
+
+
 def retained_q4_points() -> list[tuple[float, float, float]]:
     """(q4 degrees, contrast less its batch center, error) of the predecessor's admitted q4 batches, whose center is
-    the plain arm; they join the q4 line only when the bridge reads padded and plain centers alike."""
+    the plain arm; they join the q4 line only when the bridge reads padded and plain centers alike and the slopes
+    of the new and retained +-10 degree arms agree."""
     analysis = json.loads((ROOT / PREDECESSOR_ANALYSIS).read_text(encoding="utf-8"))
     points = []
     for row in analysis["batch_rows"].values():
@@ -1216,20 +1522,23 @@ def self_test() -> str:
         if gap > 1e-12:
             raise ValueError(f"{arm}: the after-pulse placement differs from the before-pulse one by {gap}")
     lines.append("a q12 phase after each pulse gives the laws of one before each pulse")
-    matrix = predecessor_matrix()
-    for name, (world, theta, flip, noise, label) in TRUTHS.items():
-        if label is None:
-            continue
-        got = decide(planted_batches(truth_row(world, theta, matrix, flip, noise=noise)), lambda b: matrix)["label"]
-        if got != label:
-            raise ValueError(f"planted {name} reads {got}, not {label}")
+    build_tables()
+    required = [name for name, truth in TRUTHS.items() if truth[4] is not None]
+    for name, decision in zip(required, ordered_map(expected_decision, required, min_items=2), strict=True):
+        got = decision["label_at_expected_values"]
+        if got != TRUTHS[name][4]:
+            raise ValueError(f"planted {name} reads {got}, not {TRUTHS[name][4]}")
         lines.append(f"planted {name}: {got}")
-    for name in MIXED:
-        got = decide(scenario_batches(name), lambda b: matrix)["label"]
-        if got in ("q12_phase", "coupler_phase"):
+    for name, got in zip(MIXED, ordered_map(mixed_label, list(MIXED), min_items=2), strict=True):
+        if got in ERROR_WORLDS:
             raise ValueError(f"{name} reads the deciding label {got}")
         lines.append(f"{name}: {got}")
     return "\n".join(lines)
+
+
+def mixed_label(name: str) -> str:
+    matrix = predecessor_matrix()
+    return str(decide(scenario_batches(name), lambda b: matrix)["label"])
 
 
 def main() -> int:

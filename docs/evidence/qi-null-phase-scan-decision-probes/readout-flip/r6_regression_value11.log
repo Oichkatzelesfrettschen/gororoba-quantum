@@ -1,0 +1,50 @@
+flip-0 slice reproduces value 11 in all 25 scenarios
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/eirikr/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/concurrent/futures/process.py", line 254, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/gororoba_quantum/parallel.py", line 228, in _run_chunk
+    return [function(item) for item in chunk]
+            ~~~~~~~~^^^^^^
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/docs/local/rebuild/r6_regression.py", line 60, in nuisance_check
+    ps.absorb(fit, flip, z12, lambda b: matrix, "all")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/scripts/qi_pathion_null_phase_scan_cases.py", line 760, in absorb
+    fit_batch(
+    ~~~~~~~~~^
+        tuple(b["arms"]),
+        ^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        models,
+        ^^^^^^^
+    )
+    ^
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/scripts/qi_pathion_null_phase_scan_cases.py", line 459, in fit_batch
+    model, kept, miss = seen_contrasts(world, arms, matrix, center_visibility, models)
+                        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/scripts/qi_pathion_null_phase_scan_cases.py", line 424, in seen_contrasts
+    matched(world_table(world), arms, matrix, center_visibility, float(mix), center(0.0, float(mix)))
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: matched_shared() takes 5 positional arguments but 6 were given
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/docs/local/rebuild/r6_regression.py", line 94, in <module>
+    main()
+    ~~~~^^
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/docs/local/rebuild/r6_regression.py", line 86, in main
+    for name, got, stored in ordered_map(nuisance_check, list(CHECKED), min_items=2):
+                             ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eirikr/worktrees/gororoba-quantum/qi-null-phase-scan-case/gororoba_quantum/parallel.py", line 248, in ordered_map
+    return [result for future in futures for result in future.result()]
+                                                       ~~~~~~~~~~~~~^^
+  File "/home/eirikr/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/concurrent/futures/_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/home/eirikr/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+TypeError: matched_shared() takes 5 positional arguments but 6 were given
+exit=1

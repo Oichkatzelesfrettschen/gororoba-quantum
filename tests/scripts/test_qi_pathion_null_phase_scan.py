@@ -34,6 +34,9 @@ def _place() -> dict[int, int]:
 # Fast decisions fit the contraction shares alone; the damped noise models need tables that take minutes to build,
 # and the audit tests run the full fit.
 FAST = "contraction"
+# Decisions that test the label logic hold the readout flip at 0 (one fit instead of one per flip of FLIP_GRID); the
+# flip tests offer the planted flip beside 0.
+NO_FLIP = (0.0,)
 
 
 def test_the_plain_arm_is_the_predecessors_center_arm() -> None:
@@ -153,17 +156,73 @@ def test_a_planted_truth_reads_its_label(truth: str) -> None:
     matrix = ps.predecessor_matrix()
     world, theta, flip, noise, label = ps.TRUTHS[truth]
     batches = ps.planted_batches(ps.truth_row(world, theta, matrix, flip, noise=noise))
-    decision = ps.decide(batches, lambda b: matrix, FAST)
+    decision = ps.decide(batches, lambda b: matrix, FAST, flips=(0.0, flip) if flip else NO_FLIP)
     _expect(decision["label"] == label, f"{truth} reads {decision['label']}")
-    if world in ("q12_phase", "coupler_phase"):
+    if world in ps.ERROR_WORLDS:
         fitted = decision["numbers"]["parameters"][world].values()
         _expect(max(abs(v - theta) for v in fitted) < 0.004, f"the fitted {list(fitted)} miss the planted {theta}")
+
+
+def test_the_case_tables_are_the_rendering_of_the_prediction_record() -> None:
+    root = CASES / ps.TUNA_SERIES
+    record = json.loads((root / "prediction.json").read_text(encoding="utf-8"))
+    text = (root / "CASE.md").read_text(encoding="utf-8")
+    _expect(ps.render_case(text, record) == text, "a CASE.md table differs from prediction.json")
+    stale = text.replace(ps.TABLE_END, "| stale | row |\n" + ps.TABLE_END, 1)
+    _expect(stale != text and ps.render_case(stale, record) == text, "a stale table row is not replaced")
+
+
+def test_a_world_that_misfits_needs_a_wider_separation() -> None:
+    """The separation scales with the least error world's chi-square per degree of freedom once that exceeds 1: a
+    planted q12 phase whose outer arms move 2 standard errors apart needs the scaled gap, not SEPARATION."""
+    matrix = ps.predecessor_matrix()
+    world, theta, flip, noise, _ = ps.TRUTHS["q12 phase -0.18 rad"]
+    batches = ps.planted_batches(ps.truth_row(world, theta, matrix, flip, noise=noise))
+    for batch in batches:
+        batch["contrasts"] = [
+            c + 2 * s * e for c, e, s in zip(batch["contrasts"], batch["errors"], (1, 0, -1), strict=True)
+        ]
+    numbers = ps.decide(batches, lambda b: matrix, FAST, flips=NO_FLIP)["numbers"]
+    chi2 = numbers["chi2"]
+    lead = min(ps.ERROR_WORLDS, key=lambda w: chi2[w])
+    values = [ps.batch_values(b) for b in batches if b["kind"] in ps.DECIDING_KINDS]
+    scale = chi2[lead] / ps.freedom(lead, values, flip_fitted=False)
+    _expect(scale > 1, f"the shifted series fits {lead} at {scale} per degree of freedom")
+    _expect(
+        math.isclose(numbers["separation_needed"], round(ps.SEPARATION * scale, 3), abs_tol=2e-3),
+        f"separation {numbers['separation_needed']} against {ps.SEPARATION} x {scale}",
+    )
+
+
+@pytest.mark.parametrize(("world", "theta"), [("exact", 0.0), ("q12_phase", -0.18)])
+def test_a_fitted_readout_flip_restores_the_planted_world(world: str, theta: float) -> None:
+    """A selector flip of 0.036 beside exact gates or a q12 phase: with the flip held at 0 no world is adequate;
+    with 0.036 offered, the planted world reads its label at that flip and the bounds lose one degree of freedom."""
+    matrix = ps.predecessor_matrix()
+    batches = ps.planted_batches(ps.truth_row(world, theta, matrix, 0.036))
+    fixed = ps.decide(batches, lambda b: matrix, FAST, flips=NO_FLIP)
+    fitted = ps.decide(batches, lambda b: matrix, FAST, flips=(0.0, 0.036))
+    label = "exact_parabola" if world == "exact" else world
+    _expect(fixed["label"] == "none_adequate", f"the fixed flip reads {fixed['label']}")
+    _expect(fitted["label"] == label, f"the fitted flip reads {fitted['label']}")
+    _expect(fitted["numbers"]["readout_flip"][world] == 0.036, f"the flip reads {fitted['numbers']['readout_flip']}")
+    _expect(fitted["numbers"]["flip_at_grid_end"] != [], "a flip at the grid's end is not reported")
+    for w in ps.WORLDS:
+        drop = fixed["numbers"]["adequacy_limit"][w] - fitted["numbers"]["adequacy_limit"][w]
+        _expect(0 < drop < 5, f"{w}: the bound moves by {drop}")
+
+
+def test_clopper_pearson_bounds_a_clean_count() -> None:
+    _expect(math.isclose(ps.upper_bound(0, 5000), 1 - 0.05 ** (1 / 5000), rel_tol=1e-9), "the 5,000-series bound")
+    _expect(math.isclose(ps.upper_bound(0, 500), 1 - 0.05 ** (1 / 500), rel_tol=1e-9), "the 500-series bound")
+    _expect(ps.upper_bound(3, 500) > ps.upper_bound(0, 500), "a count does not raise the bound")
+    _expect(ps.upper_bound(5, 5) == 1.0, "a full count is not bounded by 1")
 
 
 def test_a_readout_offset_beside_exact_gates_is_not_read_as_a_phase() -> None:
     labels = {v[4] for v in ps.TRUTHS.values() if v[0] == "exact" and v[2]}
     _expect(len(labels) > 0, "no readout truth is planted")
-    _expect(not labels & {"q12_phase", "coupler_phase", "phase_mixed"}, f"readout truths read {labels}")
+    _expect(not labels & {*ps.ERROR_WORLDS, "phase_mixed"}, f"readout truths read {labels}")
 
 
 def test_a_phase_after_each_q12_pulse_gives_the_laws_of_one_before() -> None:
@@ -175,8 +234,8 @@ def test_a_phase_after_each_q12_pulse_gives_the_laws_of_one_before() -> None:
 @pytest.mark.parametrize("name", list(ps.MIXED))
 def test_batches_of_two_mechanisms_read_no_deciding_label(name: str) -> None:
     matrix = ps.predecessor_matrix()
-    label = ps.decide(ps.scenario_batches(name), lambda b: matrix, FAST)["label"]
-    _expect(label not in ("q12_phase", "coupler_phase"), f"{name} reads {label}")
+    label = ps.decide(ps.scenario_batches(name), lambda b: matrix, FAST, flips=NO_FLIP)["label"]
+    _expect(label not in ps.ERROR_WORLDS, f"{name} reads {label}")
 
 
 @pytest.mark.parametrize("kind", ps.DECIDING_KINDS)
@@ -195,15 +254,17 @@ def test_every_label_is_reachable_and_one_label_is_returned() -> None:
     for world, theta, flip, noise, _ in ps.TRUTHS.values():
         if not any(noise):
             seen.add(
-                ps.decide(ps.planted_batches(ps.truth_row(world, theta, matrix, flip)), lambda b: matrix, FAST)["label"]
+                ps.decide(
+                    ps.planted_batches(ps.truth_row(world, theta, matrix, flip)), lambda b: matrix, FAST, flips=NO_FLIP
+                )["label"]
             )
     for name in ps.MIXED:
-        seen.add(ps.decide(ps.scenario_batches(name), lambda b: matrix, FAST)["label"])
+        seen.add(ps.decide(ps.scenario_batches(name), lambda b: matrix, FAST, flips=NO_FLIP)["label"])
     reversed_batches = ps.planted_batches(ps.truth_row("q12_phase", -0.18, matrix))
     for batch in reversed_batches:
         batch["contrasts"] = [-0.05 for _ in batch["contrasts"]]
-    seen.add(ps.decide(reversed_batches, lambda b: matrix, FAST)["label"])
-    expected = {"offset_absent", "offset_reversed", "q12_phase", "coupler_phase", "phase_mixed", "none_adequate"}
+    seen.add(ps.decide(reversed_batches, lambda b: matrix, FAST, flips=NO_FLIP)["label"])
+    expected = {"offset_absent", "offset_reversed", *ps.ERROR_WORLDS, "phase_mixed", "none_adequate"}
     _expect(expected <= seen, f"unreached labels: {sorted(expected - seen)}")
 
 
@@ -276,21 +337,37 @@ def test_evaluate_reads_a_planted_q12_phase_through_the_analysis_path() -> None:
     least = report["reported"]["z12_parabola"]
     _expect(abs(least["phi_degrees"] - math.degrees(0.18)) < 2.0, f"the least point is {least['phi_degrees']} degrees")
     _expect(report["reported"]["q4_line"]["slope_per_degree"] < 0, "the q4 line of a negative q12 phase rises")
-    _expect("q4_line_with_retained" in report["reported"], "an agreeing bridge leaves the retained q4 points out")
+    slope = report["reported"]["q4_slope_against_retained"]
+    _expect(
+        ("q4_line_with_retained" in report["reported"]) == slope["within_resolve"],
+        f"the retained q4 points join the line against the slope comparison {slope}",
+    )
     _expect(decision["a5_186"].startswith("changes"), "a deciding label leaves the ledger row unchanged")
     ratios = report["reported"]["visibility_ratio"]
     _expect(set(ratios) == set(ps.ARM_NAMES) - {ps.CENTER}, "a visibility ratio is missing")
     _expect(all(len(r["measured"]) >= 2 and 0 < r["exact"] <= 1.0 + 1e-12 for r in ratios.values()), f"ratios {ratios}")
 
 
+def test_the_retained_q4_points_join_only_an_agreeing_bridge_and_slope() -> None:
+    retained = ps.retained_q4_points()
+    slope = ps.line_fit(retained, 0.0)["slope_per_degree"]
+    same = [(x, slope * x, 0.002) for x in (-10.0, -5.0, 5.0, 10.0)]
+    doubled = [(x, 2 * slope * x, 0.002) for x in (-10.0, -5.0, 5.0, 10.0)]
+    _expect("q4_line_with_retained" in ps.q4_reports(same, 0.01, True, retained), "an equal slope stays apart")
+    _expect("q4_line_with_retained" not in ps.q4_reports(same, 0.01, False, retained), "a failed bridge pools")
+    report = ps.q4_reports(doubled, 0.01, True, retained)
+    _expect("q4_line_with_retained" not in report, "a doubled slope joins the retained points")
+    _expect(not report["q4_slope_against_retained"]["within_resolve"], f"the comparison reads {report}")
+
+
 def test_a_jump_of_d2s_qubit_drops_the_splits_and_keeps_the_batch() -> None:
     matrix = ps.predecessor_matrix()
     batches = ps.planted_batches(ps.truth_row("q12_phase", -0.18, matrix))
-    whole = ps.decide(batches, lambda b: matrix, FAST)
+    whole = ps.decide(batches, lambda b: matrix, FAST, flips=NO_FLIP)
     for batch in batches:
         batch["split_admitted"] = False
         batch["splits"] = [9.0, -9.0, 9.0]
-    partial = ps.decide(batches, lambda b: matrix, FAST)
+    partial = ps.decide(batches, lambda b: matrix, FAST, flips=NO_FLIP)
     _expect(partial["numbers"]["split_admitted"] == [], "a batch without its splits is listed as holding them")
     _expect(partial["numbers"]["chi2"]["q12_phase"] < 1e-6, "dropped splits still enter the chi-square")
     limits = (whole["numbers"]["adequacy_limit"]["q12_phase"], partial["numbers"]["adequacy_limit"]["q12_phase"])
@@ -324,7 +401,7 @@ def test_the_recorded_operating_characteristics_read_no_wrong_deciding_label() -
     record = json.loads((CASES / ps.TUNA_SERIES / "prediction.json").read_text(encoding="utf-8"))
     counts = record["operating_characteristics"]["label_counts"]
     for name, (world, _, _, _, _) in ps.TRUTHS.items():
-        wrong = {"q12_phase", "coupler_phase"} - {world}
+        wrong = set(ps.ERROR_WORLDS) - {world}
         _expect(not wrong & set(counts[name]), f"{name} reads {counts[name]}")
 
 

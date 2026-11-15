@@ -1,0 +1,2 @@
+{"scenario": "null: flip 0.025, CZ phase damping 0.13", "load_average": [14.6845703125, 20.70947265625, 25.57568359375], "current_cold_first_series_s": 4.657, "current_warm_per_series_s": 0.0443, "nuisance_cold_1_series_s": 91.77, "nuisan/home/eirikr/.local/share/uv/python/cpython-3.14.7-linux-x86_64-gnu/lib/python3.14/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown: {'/mp-mebqusfo', '/mp-bcqhjeze', '/mp-1b7_j6ve', '/mp-363bv26m', '/mp-ir9gc9n_'}
+  warnings.warn(
