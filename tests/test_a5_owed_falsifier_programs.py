@@ -87,6 +87,7 @@ MUTATIONS = [
     ("embedded", "structure", "primary", [[5, 11, 11, 1, 0, 0], [4, 4, 4, 0, 1, 0]]),
     ("embedded", "structure", "numA", [1]),
     ("top", "plain", "P1NONVAN", 2),
+    ("scroll", "plain", "P2NONVAN", 2),
     ("scroll", "plain", "RANK5", 3),
     ("scroll", "plain", "JNONVAN", 1),
     ("scroll", "control", "ANONVAN", 0),

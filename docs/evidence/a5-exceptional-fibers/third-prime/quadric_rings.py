@@ -61,6 +61,10 @@ CALIBRATION = (
     ("W8 -> N-", 24, "runs/w8_a2/w8_k2.rel", True, True),
 )
 CALIBRATION_PRIME = 32009
+# The chart certificate's known-bad input: K = (y1^2) in three variables is a Cohen-Macaulay hypersurface that is not
+# reduced, so its chart ring k[y1]/(y1^2) carries a repeated eigenvalue for every u. The chart must withhold its
+# verdict (no squarefree base), and with the nilpotent probe off the ring stays undecided rather than reduced.
+CHART_KNOWN_BAD = ("y1^2 in k[y1, y2, y3]", 3, HERE / "calibration" / "double-plane.rel")
 # (fiber, number of G generators, slug of the header and relation directory)
 CELLS = (
     ("X- -> N-", 15, "xm-nm"),
@@ -171,14 +175,22 @@ def calibrate(out: Path) -> int:
     work = A5 / "working"
     jobs: list[tuple[str, Any]] = [("cm", (f, CALIBRATION_PRIME, n, work / rel)) for f, n, rel, _, _ in CALIBRATION]
     jobs += [("reduced", (f, CALIBRATION_PRIME, n, work / rel, not red)) for f, n, rel, _, red in CALIBRATION]
+    fiber_bad, n_bad, rel_bad = CHART_KNOWN_BAD
+    jobs += [("cm", (fiber_bad, CALIBRATION_PRIME, n_bad, rel_bad))]
+    jobs += [("reduced", (fiber_bad, CALIBRATION_PRIME, n_bad, rel_bad, False))]
     rows = parallel.ordered_map(run, jobs, min_items=1)
     k = len(CALIBRATION)
     cells, bad = [], []
-    for (fiber, _, _, want_cm, want_red), cm_row, red in zip(CALIBRATION, rows[:k], rows[k:], strict=True):
+    for (fiber, _, _, want_cm, want_red), cm_row, red in zip(CALIBRATION, rows[:k], rows[k : 2 * k], strict=True):
         cell = {**cm_row, "reducedness": red, **verdict(cm_row, red)}
         cells.append(cell)
         if (cell["cohen_macaulay"], cell["reduced"]) != (want_cm, want_red):
             bad.append(f"{fiber}: Cohen-Macaulay {cell['cohen_macaulay']}, reduced {cell['reduced']}")
+    cell = {**rows[2 * k], "reducedness": rows[2 * k + 1], **verdict(rows[2 * k], rows[2 * k + 1])}
+    cells.append(cell)
+    if (cell["cohen_macaulay"], cell["chart_reduced"], cell["reduced"]) != (True, False, None):
+        bad.append(f"{fiber_bad}: Cohen-Macaulay {cell['cohen_macaulay']}, chart {cell['chart_reduced']}, "
+                   f"reduced {cell['reduced']}; the chart certificate accepts a nonreduced ring")  # fmt: skip
     out.write_text(json.dumps({"check": "a5-548-calibration", "prime": CALIBRATION_PRIME, "cells": cells,
                                "problems": bad}, indent=1) + "\n", encoding="utf-8")  # fmt: skip
     for line in bad:

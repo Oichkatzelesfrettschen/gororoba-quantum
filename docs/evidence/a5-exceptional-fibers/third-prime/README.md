@@ -69,7 +69,11 @@ module's `check`.
 
 `quadric_rings.py --calibrate` runs the same verdicts on five retained 32009 cells whose answers the ledger proves
 (A5-010, A5-019, A5-058, A5-061, A5-303, A5-312) and exits 1 on a departure; [calibration-p32009.json](calibration-p32009.json)
-is its record, with every answer reproduced. The predictions were recorded in [predictions.md](predictions.md) before
+is its record, with every answer reproduced. Those five cells never make the chart withhold a verdict: the chart is
+squarefree on all of them, nonreduced ones included, since only the Cohen-Macaulay gate lets the chart decide. The
+chart's known-bad input is therefore a sixth cell, [calibration/double-plane.rel](calibration/double-plane.rel):
+K = (y1^2) in three variables, Cohen-Macaulay and not reduced, whose chart has no squarefree base, so the ring
+stays undecided with the nilpotent probe off; a chart that accepted it would fail the calibration. The predictions were recorded in [predictions.md](predictions.md) before
 any relation file at 32057 existed, with one labeled correction of three mislabeled counts.
 
 ## Result

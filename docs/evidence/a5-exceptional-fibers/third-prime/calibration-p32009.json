@@ -228,6 +228,39 @@
    "chart_reduced": true,
    "reduced": true,
    "hypothesis_holds": true
+  },
+  {
+   "check": "k2-cohen-macaulay",
+   "fiber": "y1^2 in k[y1, y2, y3]",
+   "prime": 32009,
+   "relations": "third-prime/calibration/double-plane.rel",
+   "h_vector": [
+    1,
+    1
+   ],
+   "krull_dim": 2,
+   "degree": 2,
+   "length": 2,
+   "cohen_macaulay": true,
+   "relations_sha256": "62f52fecab7db99d92a4b2fe86eb7116cd40042a6500556bf06045ba93308932",
+   "reducedness": {
+    "fiber": "y1^2 in k[y1, y2, y3]",
+    "chart": [
+     0,
+     2,
+     2
+    ],
+    "squarefree_charpoly_bases": [],
+    "bases_tried": [
+     7,
+     8,
+     9,
+     10
+    ]
+   },
+   "chart_reduced": false,
+   "reduced": null,
+   "hypothesis_holds": null
   }
  ],
  "problems": []
