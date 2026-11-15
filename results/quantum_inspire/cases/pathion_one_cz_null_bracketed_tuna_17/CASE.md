@@ -354,3 +354,42 @@ SANITY_COMMAND="true" sh scripts/qi_pathion_one_cz_null_submit.sh 1 "$CASES/path
 Never resubmit a directory that holds `submission.json` (`qi_platform.py reconcile` recovers its receipt); see
 `docs/notes/quantum_inspire/usage.md`, "Run on Tuna-17". The retention change that follows holds the run directories, the
 analyses, a refreshed `usage.json` and the `docs/state/research_state.json` registration.
+
+## Pre-flight record (2026-11-15, before any Tuna-17 spend)
+
+Five lines, then the comparison with the retained shape and the decision each outcome changes.
+
+1. Hypothesis: the +0.0164 +- 0.0039 raw selector contrast of the null block b0 is produced by one of three mechanisms
+   (over-rotation, coin-conditioned selector dropout, q12 flip), which the twin contrast and the in-batch brackets separate
+   (`prediction.json`, `predicted_contrast`; issue 791 items 1 to 3).
+2. Quantity: the pooled twin contrast t = P1 - P0 of each template and the base offset, as `qi_pathion_one_cz_null_analysis.py`
+   and `qi_pathion_one_cz_null_rule_v2.py` define them (definitions in this repository; no external paper defines them).
+3. Falsifier: a label that the preregistered world rows do not predict, or any `unresolved_*` label (batch, block, negative
+   twin, order), which decides nothing and leaves A5-186 unchanged.
+4. Predicted outcome and budget: power 82.1 / 85.3 percent (dropout / superposition-only world) under independent drift 0.003
+   and 86.9 / 90.0 under common-pair drift, for 120 jobs, 2,555,904 shots, 1,667 to 1,821 s of execution plus 671 s of
+   pauses (hypothesis: the drift model; the retained forward-against-mirror comparison shows no twin drift above noise).
+5. Next step by outcome: a label confirms or rules out one mechanism and moves A5-186; `unresolved_batch` repeats the
+   predecessor's b0 base-replicate heterogeneity and moves the design to drift control; `unresolved_order` is the case below.
+
+Comparison with the retained shape. The predecessor's 19 batches had 7 out of the requested order by `queued_at` (batches 01,
+06, 08, 10, 12, 15 and 16). The decision requires every one of 35 batches in order. If the batches reorder independently at
+the predecessor's rate of 7/19 = 0.37, the chance that all 35 are intact is 1.0e-7; at half that rate 8.0e-4; at a quarter
+3.4e-2; the rate that leaves an even chance is 0.020 per batch. The predicted power above is therefore conditional on an order
+rate that the retained data contradict by a factor of at least 18. The prediction for this series as written is
+`unresolved_order`, with the label the rule would have read beside it.
+
+Decision before spending. A rate of 0.02 cannot be confirmed by a probe (35 intact batches bound the rate below 0.086 at 95
+percent), so a probe does not rescue the strict gate. Two ways remain, each for the owner's ruling and a review round before any
+job: (A) keep the strict order gate and accept that the series almost surely reads `unresolved_order`, which spends 2.6
+million shots to learn the platform's order rate; (B) preregister an executed-order analysis before the run, which reads each
+batch's circuit positions from `queued_at` (the stamp that follows the previous job's `finished_at` by 0.03 to 0.19 s in the
+retained batches) and fits the linear drift on those positions, so a reordered batch costs precision and no decision. The
+cheaper way to learn the rate is one wave (3 batches, 15 circuits, about 15 x 12 s of device time) of the cheapest circuits,
+which measures how this layout's submission pattern reorders without claiming a decision.
+
+Results already in hand and what they change: the hosted QX run passes its noiseless control (`qx_control.pass`,
+`qx_brackets.pass`), so the batch of five circuits parses and returns in its listed order on the emulator, which says nothing
+about the device's order; the sim:belenos b1-j1 job finished at 300 s of a 300 s limit, which predicted that the same shape
+could be cut off, and b1-j2 was (305 s, 23 of 24 iterations): a result at a limit is a warning for the next job of its shape.
+
