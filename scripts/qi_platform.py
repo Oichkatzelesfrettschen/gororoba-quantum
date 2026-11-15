@@ -121,7 +121,8 @@ TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
 # reads, exchanges and writes them.
 TOKEN_LOCK = TOKEN_FILE.with_name("config.json.lock")
 # Held from the hardware pause and queue checks until a batch is enqueued. token_lock opens a submit-lease session
-# for its span, so the account's other devices wait as this device's other sessions do (qi_submit_lease).
+# for its span, so the account's other devices wait as this device's other sessions do (qi_submit_lease); the lock
+# is not re-entrant.
 SUBMIT_LOCK = TOKEN_FILE.with_name("submit.lock")
 # The API answers a request carrying an expired access token with HTTP 403 and
 # this detail, not with 401.
@@ -394,6 +395,8 @@ class Client:
             _check_execution_deadline(execution_deadline)
         except TimeoutError as error:
             raise RequestNotDispatched(str(error)) from error
+        if method != "GET" and qi_submit_lease.expired():
+            raise RequestNotDispatched("the account's submit lease passed its deadline; the request was not sent")
         response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code == 401 or _expired_signature(response):
             self.refresh()
@@ -405,7 +408,11 @@ class Client:
         if response.status_code >= 400:
             raise PlatformError(f"{method} {path}: {response.status_code} {response.text[:500]}")
         # The compile endpoint answers 204 with no body.
-        return response.json() if response.content else None
+        body = response.json() if response.content else None
+        if method == "POST" and path == "/batch_jobs" and isinstance(body, dict):
+            created = body["id"]
+            qi_submit_lease.created(lambda: str(self.get(f"/batch_jobs/{created}")["status"]))
+        return body
 
     def get(self, path: str, *, execution_deadline: float | None = None, **params: Any) -> Any:
         return self.request("GET", path, execution_deadline=execution_deadline, params=params)
@@ -759,7 +766,7 @@ def hardware_pause_left(client: Client) -> int:
     Under SUBMIT_LOCK the read is preceded by the account's submit lease, which
     orders it after every batch another device's submission created.
     """
-    qi_submit_lease.take(lambda: hardware_batch_in_planning(client))
+    qi_submit_lease.take()
     hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
     at = utc_now()
     batches = set()
@@ -783,18 +790,6 @@ def hardware_pause_left(client: Client) -> int:
         elapsed = (at - datetime.datetime.fromisoformat(job["finished_at"])).total_seconds()
         left = max(left, HARDWARE_PAUSE_SECONDS - elapsed)
     return math.ceil(left)
-
-
-def hardware_batch_in_planning(client: Client) -> bool:
-    """Whether a fresh read shows a hardware batch younger than ABANDONED_PLANNING_SECONDS that is not enqueued."""
-    hardware = {row["id"] for row in client.pages("/backend_types/") if row["is_hardware"]}
-    at = utc_now()
-    return any(
-        row["backend_type_id"] in hardware
-        and row["status"] == "planned"
-        and (at - datetime.datetime.fromisoformat(row["created_on"])).total_seconds() < ABANDONED_PLANNING_SECONDS
-        for row in client.pages("/batch_jobs")
-    )
 
 
 def pre_dispatch_refused(case_dir: Path, cases_sha256: str) -> bool:
@@ -936,10 +931,13 @@ def _submit(
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
+    if backend_type["is_hardware"]:
+        qi_submit_lease.take()
     queue = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)
-    # The API names '(batch) job queue statistics'. Both retained five-circuit
-    # Tuna-17 receipts report queue count 2 before any child-job queued_at
-    # timestamp. Treat it as batches; the separate circuit limit is above.
+    # The API names '(batch) job queue statistics', and one enqueued three-job
+    # QX batch read as user-scoped count 1 (measured 2026-10-17; usage.md,
+    # "Rules this repository adds"). Treat it as batches; the separate circuit
+    # limit is above.
     queue_limit = backend_type["batchjobs_per_queue_limit"]
     queued = queue["number_of_jobs_in_queue"]
     if type(queue_limit) is not int or queue_limit < 0 or type(queued) is not int or queued < 0:

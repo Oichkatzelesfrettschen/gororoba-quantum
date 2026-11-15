@@ -93,8 +93,16 @@ and stay unused for runs.
 | Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the hardware rules above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
 | QX emulator (type 1) | emulator | none | the service's own ceilings: 5 circuits per batch, 5 queued batches; terms item 9 asks for syntax checking first | [qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator) |
 
-[Rules this repository adds](#rules-this-repository-adds) holds the evidence
-that the API's queue count is in batches.
+[Rules this repository adds](#rules-this-repository-adds) holds the one measurement
+that the user-scoped queue count is in batch jobs, and what stays unmeasured.
+
+A twin run that rehearses a hardware series emulates its workflow, as well as its circuits, when it submits to the QX
+emulator (backend type 1) through `qi_platform.py submit` in the batch shape of the hardware plan: the REST sequence
+and the limit fields are the same on both backend types, and the provider's clients never branch on `is_hardware`.
+The local simulator qxelarator runs a cQASM program in process and applies no platform object, queue or limit, so
+it serves as a result oracle and a syntax check
+([QuTech-Delft/qx-simulator issue 220](https://github.com/QuTech-Delft/qx-simulator/issues/220) asks for that
+boundary in its documentation).
 
 ### Run on Tuna-17
 
@@ -226,15 +234,21 @@ From the same conditions:
   than three circuits and any batch while one of the account's batches is
   still queued, so at most three jobs are queued whether the FAQ's "jobs"
   means batches or circuits. The receipt records that scoped queue and the
-  applied limit. The queue count is in batches: the API endpoint names
-  "(batch) job queue statistics", and both retained five-circuit Tuna-17
-  receipts reported queue count 2 before their first child-job `queued_at`
-  timestamps (21:16:52 versus 21:17:29, and 22:11:41 versus 22:11:56 UTC on
-  2026-10-16; [first run](../../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/),
-  [witness run](../../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/)).
-  This is an inference from the API and retained runs; the FAQ itself says
-  "jobs" without distinguishing batches from their circuits, which is why the
-  hardware rule bounds both. Those two five-circuit Tuna-17 batches predate
+  applied limit. The user-scoped queue count is in batch jobs. Measured once,
+  on the QX emulator: a three-job batch enqueued at 15:23:31 UTC on 2026-10-17
+  ([batch-00](../../../results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-00/))
+  read as `number_of_jobs_in_queue` 1 with `queue_user_only` true four seconds later
+  ([batch-04](../../../results/quantum_inspire/runs/2026-10-17T152324Z-box_kite_tuna_twins_qx-batch-04/)).
+  The batch statuses that count are unmeasured, and no hardware reading separates the units: the two five-circuit
+  Tuna-17 receipts of 2026-10-16
+  ([first run](../../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/),
+  [witness run](../../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/)) are
+  `qi-submission-v1` records without `queue_user_only`, so their count of 2 includes other users' work. The API
+  describes `number_of_jobs_in_queue` as "The number of jobs in queue for a backendtype" under the summary
+  "(batch) job queue statistics", and the FAQ says "jobs" without distinguishing batches from their circuits,
+  which is why the hardware rule bounds both. The provider is asked for the unit, the operative number and the
+  counted statuses in [QuTech-Delft/quantuminspire issue 528](https://github.com/QuTech-Delft/quantuminspire/issues/528);
+  the rule here stays as it is until an answer arrives. Those two five-circuit Tuna-17 batches predate
   the rule and held five queued circuits. Between hardware batches a series
   collects the previous batch, passes its sanity checks and pauses before
   submitting the next. `submit` enforces the pause account-wide: it refuses a
@@ -282,25 +296,31 @@ devices that share the account can both pass the checks before either batch exis
 ([issue 893](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/893)). A hardware submission
 therefore takes an account-wide lease before it reads the account (`scripts/qi_submit_lease.py`):
 
-- `qi_platform.token_lock` opens a lease session while it holds `SUBMIT_LOCK`, and `hardware_pause_left` takes the
-  lease inside that session, so `qi_platform.submit`, `qi_platform_submission_deadline.submit` and the MCP tool
-  `qi_submit_case` are covered by the bytes of `qi_platform.py` alone. A pause read outside the lock, as a series
-  makes while it waits, takes nothing. Emulator batches take no lease.
+- `qi_platform.token_lock` opens a lease session while it holds `SUBMIT_LOCK`. `qi_platform.submit` takes the lease
+  before its queue read, and `hardware_pause_left` takes it before its account read, so
+  `qi_platform_submission_deadline.submit`, whose bytes retained records pin, is covered through that call: its
+  queue-count read precedes the lease, and its pause read, which refuses on any unfinished hardware job of the
+  account, follows it. The MCP tool `qi_submit_case` and the series scripts call one of the two. A pause read
+  outside the lock, as a series makes while it waits, takes nothing. Emulator batches take no lease.
 - `QI_SUBMIT_LEASE_COMMAND` names the command that reaches the lease holder; the runner appends `take HOLDER` or
   `release NONCE`. `take` answers one JSON object with `nonce` and `lease_seconds`. `QI_SUBMIT_LEASE_HOLDER` names
   the device, by default its host name in lowercase letters, digits and hyphens. The command and the host that
   grants the lease are the account owner's configuration and stay outside this repository.
 - No command, no answer, a malformed answer and a lease another device holds each refuse the hardware submission
-  before any resource request.
-- The session's end reads the account again and releases the lease when no hardware batch younger than
-  `ABANDONED_PLANNING_SECONDS` is still `planned`; the next holder's read then shows every batch this submission
-  created. A failed read or a batch still in planning leaves the lease to expire on the grantor's clock, and
-  `hardware_pause_left` refuses every submission while that batch is recent.
+  before any write to the service.
+- The lease has a deadline: `lease_seconds` less 90 s, counted on the device's boot-time clock from before the lease
+  was asked for. After it `Client.request` sends no POST or PATCH, so a submission that stalls cannot enqueue beside
+  the next holder; a batch it had created stays `planned`, and `reconcile` reads the case as it does after any
+  interrupted submission.
+- The session's end releases the lease when no batch job was created, or when a fresh read of the created batch job
+  shows it `queued`, `reserved`, `running` or `finished`. A batch still `planned` and a failed read leave the lease
+  to expire on the grantor's clock.
 
 Limits. The lease orders the devices that run this module. The provider's web client and any other client of the
-account enqueue outside it, so the falsifier of issue 893 stays open for those. A submission that runs longer than
-`lease_seconds` is protected from its first batch request on by the planned-batch refusal alone. Evidence class:
-`tests/scripts/test_qi_submit_lease.py` exercises the session against a stand-in command; no provider job tested it.
+account enqueue outside it, so the falsifier of issue 893 stays open for those. Whether the service's list reads
+show an enqueued batch as soon as the single-batch read does is unmeasured. Evidence class:
+`tests/scripts/test_qi_submit_lease.py` exercises the session against a stand-in command and a stand-in service; no
+provider job tested it.
 
 ## Pause escalation
 
