@@ -6,6 +6,7 @@ harmonic of the selector contrast over the phase, per job and pooled over the el
 harmonic amplitudes within their binomial errors; calibration: the same fold at a frequency outside the line
 (0.0237 cycles per shot) gives the null distribution in the same data."""
 
+# ruff: noqa: E402  (repository modules are imported after the path insertion that locates them)
 import json
 import sys
 from pathlib import Path
@@ -75,6 +76,8 @@ for batch, _row in A["batch_rows"].items():
                 "se": se,
                 "null_h1": float(abs(g1)),
                 "null_h2": float(abs(g2)),
+                "null_h1_phase": float(np.angle(g1)),
+                "null_h2_phase": float(np.angle(g2)),
             }
         )
         pooled.setdefault(arm, []).append((c, h1, h2, se, g1, g2))
@@ -87,6 +90,7 @@ for batch, _row in A["batch_rows"].items():
             flush=True,
         )
 print("POOLED (coherent mean over jobs of one arm)")
+summary: dict[str, Any] = {}
 for arm, v in pooled.items():
     h1 = np.mean([x[1] for x in v])
     h2 = np.mean([x[2] for x in v])
@@ -101,4 +105,18 @@ for arm, v in pooled.items():
         f"({abs(h2) / se:.1f} se) null {abs(g1) / se:.1f} {abs(g2) / se:.1f}",
         c.round(4).tolist(),
     )
+    proj = (np.array([x[1] for x in v]) * np.conj(h1 / abs(h1))).real
+    summary[arm] = {
+        "jobs": len(v),
+        "mean_contrast": float(c.mean()),
+        "h1": [float(abs(h1)), float(np.angle(h1))],
+        "h2": [float(abs(h2)), float(np.angle(h2))],
+        "shot_noise_se": se,
+        "cluster_se_h1": float(proj.std(ddof=1) / np.sqrt(len(v))) if len(v) > 2 else None,
+        "off_line_h1": float(abs(g1)),
+        "off_line_h2": float(abs(g2)),
+    }
+(ROOT / "docs/evidence/qi-null-rotation-scan-line-phase/line_phase_bins_pooled.json").write_text(
+    json.dumps(summary, indent=1) + "\n"
+)
 (ROOT / "docs/evidence/qi-null-rotation-scan-line-phase/line_phase_bins.json").write_text(json.dumps(rows, indent=1))

@@ -2,6 +2,7 @@
 shots; the selector contrast is folded on the even-indexed shots. Null by the same procedure: maximize q4's Fourier
 amplitude in an off-line band (0.02350 to 0.02358 cycles per shot), then fold. b0 and b0-rx jobs only."""
 
+# ruff: noqa: E402  (repository modules are imported after the path insertion that locates them)
 import json
 import sys
 from pathlib import Path
@@ -66,7 +67,7 @@ for d in sorted((ROOT / "results/quantum_inspire/runs").glob(f"{S}-pathion_null_
                 "f": float(fo),
                 "h1": [float(abs(h)), float(np.angle(h))],
                 "se": se,
-                "off_line_h1": float(abs(g)),
+                "off_line_h1": [float(abs(g)), float(np.angle(g))],
             }
         )
         print(
@@ -84,11 +85,37 @@ for name, v in (("line", on), ("off-line", off)):
         f"coherent mean |h1|={abs(h):.4f} ({abs(h) / se:.1f} se) phase {np.angle(h):+.2f}; mean of |h1| "
         f"{np.mean([abs(x[0]) for x in v]):.4f}; per-job se {v[0][1]:.4f}",
     )
+
+
+def job_level(values):
+    """Job-level calibration of a coherent mean of per-job harmonics: the standard error of the projections on the
+    mean's direction over jobs, and the exact sign-flip null (every pattern of +-1 per job), whose spread and tail
+    take the fitted phases, the frequency drift and the between-job scatter as random."""
+    h = np.array(values)
+    mean = h.mean()
+    unit = mean / abs(mean)
+    projections = (h * np.conj(unit)).real
+    signs = np.array(np.meshgrid(*[[1.0, -1.0]] * len(h), indexing="ij")).reshape(len(h), -1)
+    null = np.abs((signs * h[:, None]).mean(0))
+    return {
+        "cluster_se": float(projections.std(ddof=1) / np.sqrt(len(h))),
+        "sign_flip_p": float((null >= abs(mean) - 1e-15).mean()),
+        "sign_flip_null_component_sd": float(np.sqrt((np.abs(h) ** 2).sum() / 2) / len(h)),
+    }
+
+
 summary = {}
 for name, v in (("line", on), ("off_line", off)):
     h = np.mean([x[0] for x in v])
     se = float(np.sqrt(np.mean([x[1] ** 2 for x in v]) / len(v)))
-    summary[name] = {"jobs": len(v), "coherent_h1": float(abs(h)), "se": se, "phase": float(np.angle(h))}
+    summary[name] = {
+        "jobs": len(v),
+        "coherent_h1": float(abs(h)),
+        "shot_noise_se": se,
+        "phase": float(np.angle(h)),
+        **job_level([x[0] for x in v]),
+    }
+    print(name, summary[name])
 (ROOT / "docs/evidence/qi-null-rotation-scan-line-phase/line_phase_split.json").write_text(
     json.dumps({"jobs": rows, "summary": summary}, indent=1) + "\n"
 )

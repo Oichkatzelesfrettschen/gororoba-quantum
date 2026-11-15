@@ -1,5 +1,6 @@
 """Exploratory: selector contrast of every data job in 8 consecutive shot bins, and heterogeneity of the centers."""
 
+# ruff: noqa: E402  (repository modules are imported after the path insertion that locates them)
 import json
 import sys
 from pathlib import Path

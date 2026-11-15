@@ -1,5 +1,6 @@
 """Exploratory: measured selector contrast minus the exact-pulse forward law at matched center visibility."""
 
+# ruff: noqa: E402  (repository modules are imported after the path insertion that locates them)
 import json
 import sys
 from pathlib import Path

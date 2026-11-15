@@ -28,11 +28,13 @@ that module builds on first use (about thirty minutes) and caches.
 | `widened_worlds_round3.py` | `widened_worlds_round3.json` | two-parameter composites of the two leading worlds |
 | `full_histogram_fit.py` | `full_histogram_fit.json` | Pearson chi-square of all 96 outcome counts per batch (contraction model) |
 | `line_scan.py` | `line_scan.json` | the shot-order line scan of `scripts/qi_shot_record_line.py` on all 62 jobs |
-| `line_phase_bins.py` | `line_phase_bins.json` | selector contrast in 8 bins of the line's phase per job |
-| `line_phase_split.py` | `line_phase_split.json` | the same fold with the phase from odd shots and the contrast from even shots |
+| `line_phase_bins.py` | `line_phase_bins.json`, `line_phase_bins_pooled.json` | selector contrast in 8 bins of the line's phase per job; pooled harmonics per arm |
+| `line_phase_split.py` | `line_phase_split.json` | the same fold with the phase from odd shots and the contrast from even shots; error over jobs and exact sign-flip null |
+| `line_phase_conditionals.py` | `line_phase_conditionals.json` | first harmonic of the conditional and marginal probabilities and of the contrast by q4's read value |
 | `phase_resolved_fit.py` | `phase_resolved_fit.json` | one parameter that follows the line, fitted to the phase-bin contrasts |
 | `phase_resolved_two_source.py` | `phase_resolved_two_source.json` | two parameters driven by one line phase |
 | `followup_predictions.py` | `followup_predictions.json` | model contrasts of the draft follow-up arms under three worlds |
 
-`line_scan.py` imports `worker1` from `docs/evidence/hardware-residuals/tuna-quandela`. The round-2, round-3 and
-later forward-model scripts repeat the state-vector routine of `widened_worlds.py` with their own candidate lists.
+`line_scan.py` imports `worker1` from `docs/evidence/hardware-residuals/tuna-quandela`. The forward-model scripts
+share the state-vector routine of `scan_forward.py`, which equals `forward_laws` of the scan module where both
+apply.

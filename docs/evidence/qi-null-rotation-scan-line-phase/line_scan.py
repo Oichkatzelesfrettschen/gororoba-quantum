@@ -1,5 +1,6 @@
 """Exploratory: the repository's shot-order line scan (primary and secondary band) on every job of the new series."""
 
+# ruff: noqa: E402  (repository modules are imported after the path insertion that locates them)
 import json
 import sys
 from pathlib import Path
