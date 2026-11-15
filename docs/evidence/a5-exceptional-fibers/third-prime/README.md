@@ -44,16 +44,19 @@ from the retained receipts (W8 6,560 s products stage on this host, E8-bar 12,60
 this host's speed). Falsifier: a ring at 32057 that is reduced and not Cohen-Macaulay, or nonreduced and
 Cohen-Macaulay. This case was written into the record after the launch. Measured peak resident set: 1.4 GB (E8-bar)
 and 2.0 GB (W8). The products files `sq.txt` and `nf-d2.txt` of these two cells (166 and 39 MB, 209 and 61 MB) are
-not retained here; each `receipt-d2.json` binds `nf-d2.txt` by `normal_form_sha256`, and the sha256 of each is:
+retained for analysis. Each file above 50 MB is split into 45 MiB parts `FILE.part00`, `FILE.part01`, ..., as in
+`working/` (`../README.md`), and `cat FILE.part* > FILE` restores it; the 39 MB `e8-nm/d2/nf-d2.txt` stays whole. Each
+`receipt-d2.json` binds `nf-d2.txt` by `normal_form_sha256`. The `pr.yml` checkouts skip these blobs, since no check
+reads them. The sha256 of each restored file is:
 
-| File | sha256 |
-|---|---|
-| `relations/e8-nm/d2/sq.txt` | `eab34c94fe0c04ff561e24f4a82552f0ae35b2f752f4c2f7ef2a4ba413b3d999` |
-| `relations/w8-nm/d2/sq.txt` | `802ff19b125a50736c028068d4bf95d492e68a1d77a967d7f9e2cc68a5a859fb` |
-| `relations/e8-nm/d2/nf-d2.txt` | `f3308fcfb504d1b50d4e57fb07062b86aa3bce184ddbce1ff9c42b378ba16e5f` |
-| `relations/w8-nm/d2/nf-d2.txt` | `669d5215dd4b89bf6f02c7eef051d7cd97e23da36b9b64acb9eb2948a9923ac7` |
+| File | Parts | sha256 |
+|---|---|---|
+| `relations/e8-nm/d2/sq.txt` | 4 | `eab34c94fe0c04ff561e24f4a82552f0ae35b2f752f4c2f7ef2a4ba413b3d999` |
+| `relations/w8-nm/d2/sq.txt` | 5 | `802ff19b125a50736c028068d4bf95d492e68a1d77a967d7f9e2cc68a5a859fb` |
+| `relations/e8-nm/d2/nf-d2.txt` | whole | `f3308fcfb504d1b50d4e57fb07062b86aa3bce184ddbce1ff9c42b378ba16e5f` |
+| `relations/w8-nm/d2/nf-d2.txt` | 2 | `669d5215dd4b89bf6f02c7eef051d7cd97e23da36b9b64acb9eb2948a9923ac7` |
 
-The relation files the test reads are retained.
+The relation files the test reads are retained whole.
 
 ## The test
 
