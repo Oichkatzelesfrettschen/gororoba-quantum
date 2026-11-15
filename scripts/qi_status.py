@@ -1,20 +1,23 @@
 """Quantum Inspire status document: backend instances, queues, public status history, notices and calibration reach.
 
-One read-only pass joins the two sources that report on the platform:
+One pass joins the two sources that report on the platform. Every request it sends for data is a read; the one
+write it can cause is qi_platform.Client's own token exchange, which runs when the stored access token is within
+its refresh margin and which --public-only never reaches.
 
 - the compute API (an account's bearer token, GET only): every backend type with its status and enable flag, each
   physical instance with its status, message and heartbeat, the queue of each type counted over all users and
   over this account, its job limits, and a digest of its published definition (gate set, topology, compiler
-  passes), so a changed device definition shows as a changed digest;
+  passes) as served, so a changed device definition shows as a changed digest;
 - QuTech's public Grafana dashboards (no account, through qi_monitoring.py): the Status dashboard's value per
   backend type with its history, and for each backend dashboard its dated notices and whether its calibration
   datasource answers. While it answers, the document carries the latest per-qubit value of every "Latest" panel.
 
 Each section fails alone: a section that cannot be read holds `{"error": TEXT}` and the others stay. The document
-names no team, member or user.
+names no team, member or user, and every error text passes redact(), which replaces network addresses and
+token-shaped strings.
 
-The link service is asked once per dashboard, LINK_PAUSE_SECONDS apart. Measured 2026-11-15: of 20 link requests
-sent inside 5 s the first four were redirected and the fifth and every later one drew HTTP 428, while requests
+The link service is asked once per dashboard, LINK_PAUSE_SECONDS apart. Measured 2026-11-15: of 23 link requests
+sent inside 5 s the first four were redirected and the other nineteen drew HTTP 428, while requests
 3 s and 8 s apart were all redirected; hypothesis: a burst limit. A dashboard whose first "Latest" panel fails is
 not asked for the others, since every panel of a backend dashboard names one datasource.
 
@@ -32,6 +35,7 @@ import argparse
 import datetime
 import hashlib
 import json
+import re
 import sys
 import time
 from collections.abc import Callable
@@ -76,14 +80,24 @@ QUEUE_FIELDS = (
     "max_wait_time_in_queue_secs",
 )
 # What one section's read can raise: qi_platform.PlatformError and MonitoringError are RuntimeErrors, a transport
-# failure of requests is an OSError, and a response of another shape raises one of the last three.
-READ_ERRORS = (RuntimeError, OSError, KeyError, TypeError, ValueError)
+# failure of requests is an OSError, and a response body of another shape than the one read here raises one of
+# the last five.
+READ_ERRORS = (RuntimeError, OSError, KeyError, TypeError, ValueError, AttributeError, IndexError)
+# IPv4 addresses, bracketed IPv6 addresses and bare ones of three or more colons (a clock time holds two), and
+# JSON web tokens, as they appear in transport and provider errors.
+ADDRESS = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b|\[[0-9a-fA-F:.]+\]|\b(?:[0-9a-fA-F]{0,4}:){3,7}[0-9a-fA-F]{0,4}")
+TOKEN = re.compile(r"\beyJ[\w-]+\.[\w-]+\.[\w-]+")
 
 Pause = Callable[[float], None]
 
 
+def redact(text: object) -> str:
+    """Error text cut to ERROR_LENGTH with each network address and token-shaped string replaced by a marker."""
+    return TOKEN.sub("<token>", ADDRESS.sub("<address>", str(text)))[:ERROR_LENGTH]
+
+
 def _error(error: BaseException) -> dict[str, str]:
-    return {"error": f"{type(error).__name__}: {error}"[:ERROR_LENGTH]}
+    return {"error": redact(f"{type(error).__name__}: {error}")}
 
 
 def _instance(row: dict[str, Any], now: datetime.datetime) -> dict[str, Any]:
@@ -163,11 +177,19 @@ def _data_panels(definition: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def transitions(points: list[list[Any]]) -> list[list[Any]]:
-    """The points at which the value differs from the point before, so a flat week reads as one row."""
-    kept: list[list[Any]] = []
+    """The points at which the value differs from the point before, so a flat week reads as one row.
+
+    Points are read in time order whatever order the frame holds; a point with no stamp or no value is dropped,
+    and of several points at one stamp the last in the frame stands.
+    """
+    latest: dict[datetime.datetime, list[Any]] = {}
     for stamp, value in points:
-        if value is not None and (not kept or kept[-1][1] != value):
-            kept.append([stamp, value])
+        if stamp is not None and value is not None:
+            latest[datetime.datetime.fromisoformat(stamp)] = [stamp, value]
+    kept: list[list[Any]] = []
+    for _, point in sorted(latest.items()):
+        if not kept or kept[-1][1] != point[1]:
+            kept.append(point)
     return kept
 
 
@@ -180,7 +202,9 @@ def platform_status(http: Any, pause: Pause = time.sleep) -> dict[str, Any]:
     if latest is None:
         raise monitoring.MonitoringError("the Status dashboard holds no instant panel")
     _, answer = _panel(http, token, latest["id"])
-    current = {_name(row): row["points"][-1] for row in _series(answer) if row["points"]}
+    current = {
+        _name(row): row["points"][-1] for row in _series(answer) if row["points"] and row["points"][-1][1] is not None
+    }
     if not current:
         raise monitoring.MonitoringError(f"Status panel {latest['id']} returned no series")
     history: dict[str, list[list[Any]]] = {}
@@ -203,10 +227,10 @@ def _reach(status: int, body: Any) -> dict[str, Any]:
     results = body.get("results") if isinstance(body, dict) else None
     if not isinstance(results, dict) or not results:
         message = body.get("message") if isinstance(body, dict) else None
-        return {"state": "http-error", "http_status": status, "error": str(message or "no query result")[:ERROR_LENGTH]}
+        return {"state": "http-error", "http_status": status, "error": redact(message or "no query result")}
     errors = [str(result["error"]) for result in results.values() if result.get("error")]
     if len(errors) == len(results):
-        return {"state": "datasource-error", "http_status": status, "error": errors[0][:ERROR_LENGTH]}
+        return {"state": "datasource-error", "http_status": status, "error": redact(errors[0])}
     return {"state": "data" if any(row["points"] for row in _series(body)) else "empty", "http_status": status}
 
 
@@ -260,11 +284,11 @@ def document(
     http = http or monitoring.session()
     found: dict[str, Any] = {"schema": SCHEMA, "request_started_utc": monitoring.utc_now()}
     if client is None:
-        found["account"] = {"error": account_error[:ERROR_LENGTH]}
+        found["account"] = {"error": redact(account_error)}
     else:
         try:
             found["account"] = account(client)
-        except READ_ERRORS as error:
+        except Exception as error:  # noqa: BLE001 - the SDK's authorization error derives from Exception alone
             found["account"] = _error(error)
     try:
         found["platform"] = platform_status(http, pause)
@@ -293,7 +317,7 @@ def main(argv: list[str]) -> int:
             from qi_platform import Client  # noqa: PLC0415 - the public read needs no SDK
 
             client = Client()
-        except READ_ERRORS as error:
+        except Exception as error:  # noqa: BLE001 - the SDK's authorization error derives from Exception alone
             reason = f"{type(error).__name__}: {error}"
     print(json.dumps(document(client, account_error=reason), indent=1, ensure_ascii=False))
     return 0

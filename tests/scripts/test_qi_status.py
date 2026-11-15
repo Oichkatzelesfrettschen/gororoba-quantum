@@ -49,7 +49,7 @@ BACKEND_DEFINITION = {
     },
     "meta": {"updated": "2026-10-26T11:54:58Z"},
 }
-DOWN = {"results": {"A": {"status": 502, "error": "dial tcp: i/o timeout"}}}
+DOWN = {"results": {"A": {"status": 502, "error": "dial tcp 192.0.2.7:443: i/o timeout"}}}
 
 
 class Response:
@@ -169,7 +169,11 @@ def test_document_asks_the_link_service_once_per_dashboard_and_stops_at_a_dead_d
     if [call for call in http.posted if call[0] == "tuna-17"] != [("tuna-17", 3)]:
         raise AssertionError(http.posted)
     board = found["dashboards"]["tuna-17"]
-    if board["calibration"] != {"state": "datasource-error", "http_status": 400, "error": "dial tcp: i/o timeout"}:
+    if board["calibration"] != {
+        "state": "datasource-error",
+        "http_status": 400,
+        "error": "dial tcp <address>:443: i/o timeout",
+    }:
         raise AssertionError(board)
     if board["notices"] != ["[2026-10-22] Data withheld."] or "latest" in board or board["data_panels"] != 3:
         raise AssertionError(board)
@@ -218,3 +222,57 @@ def test_sections_fail_alone() -> None:
         raise AssertionError(found)
     if "HTTP 428" not in found["dashboards"]["tuna-9"]["error"] or "calibration" not in found["dashboards"]["tuna-17"]:
         raise AssertionError(found["dashboards"])
+
+
+def test_transitions_order_points_and_drop_unstamped_or_null_ones() -> None:
+    points: list[list[Any]] = [
+        ["2026-11-15T10:03:00+00:00", 2],
+        [None, 4],
+        ["2026-11-15T10:01:00+00:00", 0],
+        ["2026-11-15T10:02:00+00:00", None],
+        ["2026-11-15T10:03:00+00:00", 3],
+        ["2026-11-15T10:02:30.500000+00:00", 0],
+    ]
+    # Time order, the later of the two 10:03 points, and no row for the repeated 0.
+    if status.transitions(points) != [["2026-11-15T10:01:00+00:00", 0], ["2026-11-15T10:03:00+00:00", 3]]:
+        raise AssertionError(status.transitions(points))
+
+
+def test_error_text_carries_no_address_or_token() -> None:
+    raw = "Post https://h/api: dial tcp 192.0.2.7:443 via [2001:db8::1]:443 at 10:03:00 from 2001:db8::2 Bearer "
+    text = status.redact(raw + "eyJhbGci.eyJzdWIi.c2ln")
+    want = "Post https://h/api: dial tcp <address>:443 via <address>:443 at 10:03:00 from <address> Bearer <token>"
+    if text != want:
+        raise AssertionError(text)
+    if len(status.redact("x" * 999)) != status.ERROR_LENGTH:
+        raise AssertionError("an error text kept its full length")
+
+
+def test_a_body_of_another_shape_fails_its_own_section_only() -> None:
+    http = Transport(
+        {"tuna-17": (200, {"results": ["not", "a", "mapping"]}), "tuna-9": (200, {"results": {"A": None}})}
+    )
+    found = status.document(None, http, pause=no_pause)
+    boards = found["dashboards"]
+    if boards["tuna-17"]["calibration"]["state"] != "http-error" or "AttributeError" not in boards["tuna-9"]["error"]:
+        raise AssertionError(boards)
+    if "current" not in found["platform"]:
+        raise AssertionError(found["platform"])
+
+
+class AuthorisationError(Exception):
+    """Shaped like the SDK's error, which derives from Exception alone."""
+
+
+class Refused:
+    def pages(self, path: str) -> list[dict[str, Any]]:
+        raise AuthorisationError("Not enough segments")
+
+
+def test_an_authorization_failure_of_the_client_fails_the_account_section_only() -> None:
+    http = Transport(dict.fromkeys(status.BACKEND_DASHBOARDS, (400, DOWN)))
+    found = status.document(Refused(), http, pause=no_pause)
+    if found["account"] != {"error": "AuthorisationError: Not enough segments"}:
+        raise AssertionError(found["account"])
+    if "current" not in found["platform"] or len(found["dashboards"]) != len(status.BACKEND_DASHBOARDS):
+        raise AssertionError(found)
