@@ -28,6 +28,7 @@ import sys
 import tempfile
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[4]
@@ -64,7 +65,11 @@ class Gauss:
         self.re, self.im = Fraction(re), Fraction(im)
 
     def _lift(self, other: object) -> Gauss:
-        return other if isinstance(other, Gauss) else Gauss(Fraction(other))  # type: ignore[arg-type]
+        if isinstance(other, Gauss):
+            return other
+        if isinstance(other, (int, Fraction)):
+            return Gauss(other)
+        raise TypeError(f"no Q(i) value for {other!r}")
 
     def __add__(self, other: object) -> Gauss:
         o = self._lift(other)
@@ -121,7 +126,7 @@ def gauss(text: str) -> Gauss:
     """Parse a Singular Q(i) coefficient: integers, I, + - * / ^ and parentheses only."""
     if not COEFFICIENT.fullmatch(text):
         raise ValueError(f"unexpected coefficient text {text!r}")
-    expr = re.sub(r"(\d+)", r"Fraction(\1)", text.replace("^", "**"))
+    expr = re.sub(r"(?<!\*\*)(\d+)", r"Fraction(\1)", text.replace("^", "**"))
     value = eval(expr, {"__builtins__": {}}, {"Fraction": Fraction, "I": Gauss(0, 1)})  # noqa: S307
     return value if isinstance(value, Gauss) else Gauss(value)
 
@@ -313,7 +318,10 @@ def reduction(row: dict, p: int, root: int) -> dict:
     hp, hj, hg = parse_header(path)
     if hp != p:
         raise RuntimeError(f"{path.name}: prime {hp}, expected {p}")
-    out = {"header": f"p{p}-r{root}/{row['slug']}.sing", "header_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    out: dict[str, Any] = {
+        "header": f"p{p}-r{root}/{row['slug']}.sing",
+        "header_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
     for kind, header in (("J", hj), ("G", hg)):
         mine = [reduce_mod(f, p, root) for f in row[kind]]
         out[f"{kind}_counts"] = [len(mine), len(header)]
@@ -331,7 +339,7 @@ def main() -> int:
         return 2
     rows = dict(zip(SLUGS, parallel.ordered_map(run, list(SLUGS), min_items=1), strict=True))
     plus, minus = rows["e8-np"], rows["e8-nm"]
-    record = {
+    record: dict[str, Any] = {
         "check": "e8-np-nm-coordinate-map-qi",
         "field": "Q(i), minpoly I^2 + 1",
         "sigma": "t8 -> -t8, t9 -> -t9",
