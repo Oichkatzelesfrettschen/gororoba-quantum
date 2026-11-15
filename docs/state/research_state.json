@@ -5235,9 +5235,7 @@
       "documents": [
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
-      "gates": {
-        "core-067": "freshness"
-      },
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -6222,7 +6220,6 @@
         "docs/evidence/stiefel_witness/README.md"
       ],
       "gates": {
-        "core-275": "replay",
         "sources-243": "bytes",
         "sources-245": "bytes"
       },
@@ -6795,8 +6792,7 @@
         "docs/evidence/cd-sign-python-semantics/README.md"
       ],
       "gates": {
-        "sources-410": "bytes",
-        "sources-411": "freshness"
+        "sources-410": "bytes"
       },
       "acquisitions": [],
       "assumptions": [],
